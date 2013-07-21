@@ -1,0 +1,355 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DualityEditor</RootNamespace>
+    <AssemblyName>DualityEditor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>DualityIconC.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>DualityEditor.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\DualityEditor.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>DualityEditor.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\DualityEditor.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aga.Controls, Version=1.7.0.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Aga.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomPropertyGrid">
+      <HintPath>.\CustomPropertyGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>.\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Duality\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Duality\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>.\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="Windows7.DesktopIntegration">
+      <HintPath>.\Windows7.DesktopIntegration.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controls\ColorPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ColorShowBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ColorSlider.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CueTextbox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\EnumFlagCheckedListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\EnumComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DualitorPropertyGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ExplorerListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ToolStrip\DualitorToolStripRenderer.cs" />
+    <Compile Include="Controls\ToolStrip\ToolStripCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ToolStrip\ToolStripNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TreeModels\FileSystem\ModelItems.cs" />
+    <Compile Include="Controls\TreeModels\FileSystem\FolderBrowserTreeModel.cs" />
+    <Compile Include="Controls\PropertyEditors\IColorDataPropertyEditor.cs" />
+    <Compile Include="Controls\PropertyEditors\RectPropertyEditor.cs" />
+    <Compile Include="Controls\PropertyEditors\Vector4PropertyEditor.cs" />
+    <Compile Include="Controls\PropertyEditors\Vector3PropertyEditor.cs" />
+    <Compile Include="Controls\PropertyEditors\VectorPropertyEditor.cs" />
+    <Compile Include="Controls\PropertyEditors\Provider.cs" />
+    <Compile Include="Controls\PropertyEditors\Vector2PropertyEditor.cs" />
+    <Compile Include="CorePluginInterface\CorePluginRegistry.cs" />
+    <Compile Include="CorePluginInterface\DataConversion.cs" />
+    <Compile Include="CorePluginInterface\EditorAction.cs" />
+    <Compile Include="CorePluginInterface\DesignTimeObjectData.cs" />
+    <Compile Include="CorePluginInterface\PreviewProvider.cs" />
+    <Compile Include="DualityEditorApp.cs" />
+    <Compile Include="EditorRes\GeneralResCache.cs" />
+    <Compile Include="Helpers\CursorHelper.cs" />
+    <Compile Include="Helpers\EditorHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EditorRes\GeneralRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GeneralRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\EventArgs.cs" />
+    <Compile Include="Helpers\ExtMethodsControl.cs" />
+    <Compile Include="Helpers\ExtMethodsDataObject.cs" />
+    <Compile Include="Helpers\ExtMethodsSystemDrawingColor.cs" />
+    <Compile Include="CorePluginInterface\FileImportProvider.cs" />
+    <Compile Include="Forms\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ColorPickerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ColorPickerDialog.Designer.cs">
+      <DependentUpon>ColorPickerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AppRunningDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AppRunningDialog.Designer.cs">
+      <DependentUpon>AppRunningDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\NewProjectDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\NewProjectDialog.Designer.cs">
+      <DependentUpon>NewProjectDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ProcessingBigTaskDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ProcessingBigTaskDialog.Designer.cs">
+      <DependentUpon>ProcessingBigTaskDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditorPlugin.cs" />
+    <Compile Include="Forms\ReloadCorePluginDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ReloadCorePluginDialog.Designer.cs">
+      <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ExtMethodsTreeViewAdv.cs" />
+    <Compile Include="Forms\SplashScreen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SplashScreen.Designer.cs">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\HelpInfo.cs" />
+    <Compile Include="Helpers\ExtMethodsGraphics.cs" />
+    <Compile Include="Helpers\MessageFilter.cs" />
+    <Compile Include="Helpers\ExtMethodsToolStrip.cs" />
+    <Compile Include="Helpers\ExtMethodsMouseButtons.cs" />
+    <Compile Include="Helpers\ExtMethodsKeys.cs" />
+    <Compile Include="Helpers\ExtMethodsCamera.cs" />
+    <Compile Include="Helpers\NativeMethods.cs" />
+    <Compile Include="Helpers\ObjectSelection.cs" />
+    <Compile Include="HelpSystem.cs" />
+    <Compile Include="FileEventManager.cs" />
+    <Compile Include="Sandbox.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers\RecycleBin.cs" />
+    <Compile Include="Helpers\XmlCodeDoc.cs" />
+    <Compile Include="UndoRedoActions\DeleteGameObjectAction.cs" />
+    <Compile Include="UndoRedoActions\CloneGameObjectAction.cs" />
+    <Compile Include="UndoRedoActions\DeleteComponentAction.cs" />
+    <Compile Include="UndoRedoActions\CreateGameObjectAction.cs" />
+    <Compile Include="UndoRedoActions\CreateComponentAction.cs" />
+    <Compile Include="UndoRedoActions\GameObjectAction.cs" />
+    <Compile Include="UndoRedoActions\ComponentAction.cs" />
+    <Compile Include="UndoRedoActions\EditPropertyAction.cs" />
+    <Compile Include="UndoRedoActions\EditFieldAction.cs" />
+    <Compile Include="UndoRedoActions\ApplyToPrefabAction.cs" />
+    <Compile Include="UndoRedoActions\BreakPrefabLinkAction.cs" />
+    <Compile Include="UndoRedoActions\ResetGameObjectAction.cs" />
+    <Compile Include="UndoRedoActions\ResetComponentAction.cs" />
+    <Compile Include="UndoRedoActions\SetGameObjectNameAction.cs" />
+    <Compile Include="UndoRedoActions\SetComponentParentAction.cs" />
+    <Compile Include="UndoRedoActions\SetGameObjectParentAction.cs" />
+    <Compile Include="UndoRedoActions\UndoRedoMacroAction.cs" />
+    <Compile Include="UndoRedoManager.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="EditorRes\GeneralRes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>GeneralRes.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ColorPickerDialog.resx">
+      <DependentUpon>ColorPickerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AppRunningDialog.resx">
+      <DependentUpon>AppRunningDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\NewProjectDialog.resx">
+      <DependentUpon>NewProjectDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ProcessingBigTaskDialog.resx">
+      <DependentUpon>ProcessingBigTaskDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ReloadCorePluginDialog.resx">
+      <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SplashScreen.resx">
+      <DependentUpon>SplashScreen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Aga.Controls.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="DualityIcon.ico" />
+    <Content Include="DualityIconB.ico" />
+    <Content Include="DualityIconC.ico" />
+    <None Include="EditorRes\application_stopwatch.png" />
+    <Content Include="EditorRes\WorkingFolderIcon.ico" />
+    <None Include="EditorRes\arrow_undo.png" />
+    <None Include="EditorRes\arrow_redo.png" />
+    <None Include="EditorRes\CursorHandGrabbing.png" />
+    <None Include="EditorRes\CursorHandGrab.png" />
+    <None Include="EditorRes\control_step_blue.png" />
+    <None Include="EditorRes\drive_disk.png" />
+    <None Include="EditorRes\working_bigtask.png" />
+    <None Include="EditorRes\template_empty.png" />
+    <None Include="EditorRes\template_current.png" />
+    <None Include="EditorRes\DualityIcon48.png" />
+    <None Include="EditorRes\DualityIcon256.png" />
+    <None Include="EditorRes\application_create.png" />
+    <None Include="EditorRes\page_gear.png" />
+    <None Include="EditorRes\page_code.png" />
+    <None Include="EditorRes\control_stop_blue.png" />
+    <None Include="EditorRes\control_play_blue.png" />
+    <None Include="EditorRes\control_pause_blue.png" />
+    <None Include="EditorRes\DualitorLogoHalfSize.png" />
+    <EmbeddedResource Include="EditorRes\GameResTemplate.txt" />
+    <None Include="EditorRes\page_white_csharp.png" />
+    <None Include="EditorRes\disk_multiple.png" />
+    <None Include="EditorRes\application_bug.png" />
+    <None Include="EditorRes\application_go.png" />
+    <None Include="EditorRes\arrow_refresh.png" />
+    <EmbeddedResource Include="EditorRes\GamePluginTemplate.zip" />
+    <None Include="EditorRes\icon_color.png" />
+    <None Include="EditorRes\add.png" />
+    <None Include="EditorRes\cross.png" />
+    <None Include="EditorRes\CursorArrowActionScale.png" />
+    <None Include="EditorRes\CursorArrowActionRotate.png" />
+    <None Include="EditorRes\CursorArrowActionMove.png" />
+    <None Include="EditorRes\CursorArrowAction.png" />
+    <None Include="EditorRes\CursorArrow.png" />
+    <None Include="EditorRes\cog.ico" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

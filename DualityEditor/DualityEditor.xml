@@ -1,0 +1,865 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DualityEditor</name>
+    </assembly>
+    <members>
+        <member name="T:DualityEditor.Controls.FlagCheckedListBoxItem">
+            <summary>
+            Represents an item in the checklistbox
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Controls.EnumComboBox.FillEnumMembers">
+            <summary>
+            Adds items to the checklistbox based on the members of the enum
+            </summary>
+        </member>
+        <member name="F:DualityEditor.CorePluginInterface.ConvertOperation.Operation.Convert">
+            <summary>
+            A simple conversion operation that does not affect any data.
+            Example: Retrieving Texture from Material.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.CorePluginInterface.ConvertOperation.Operation.CreateRes">
+            <summary>
+            A conversion that might create new resource data.
+            Example: Creating Material from Texture.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.CorePluginInterface.ConvertOperation.Operation.CreateObj">
+            <summary>
+            A conversion that might create new object data.
+            Example: Construct a GameObject out of a set of Resources.
+            </summary>
+        </member>
+        <member name="T:DualityEditor.EditorRes.GeneralResCache">
+            <summary>
+            Since directly accessing code generated from .resx files will result in a deserialization on
+            each Resource access, this class allows cached Resource access.
+            </summary>
+        </member>
+        <member name="T:DualityEditor.EditorRes.GeneralRes">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Category_Advanced">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Advanced ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Category_General">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die General ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Category_Graphics">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Graphics ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Category_Physics">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Physics ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Category_Sound">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Sound ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.GameResTemplate">
+             <summary>
+               Sucht eine lokalisierte Zeichenfolge, die /*
+             * A set of static helper classes that provide easy runtime access to the games resources.
+             * This file is auto-generated. Any changes made to it are lost as soon as Duality decides
+             * to regenerate it.
+             */
+            namespace GameRes
+            {
+            CONTENT
+            }
+             ähnelt.
+             </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.HelpInfo_NotAvailable_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die No information available. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Language">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die English ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_ConfigureLauncher">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Select which launcher application should be used for external game tests. By default, the Duality Launcher is used. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_DebugGame">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die If you&apos;re using a professional version of Visual Studio, this action will run the Duality launcher and trigger a debug event that allows you to attach the debugger to your game before anything happens. You can achieve the same by clicking the &quot;Run&quot; button of your Core Plugin in Visual Studio itself. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_FormatUpdateAll">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die This operation will load and re-save all existing Resources. Due to the serialization progress, all Resources will be guaranteed to use the same file format and to be up-to-date according to core plugin class definitions. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_NewProject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Duality always works locally in a project folder. The New Project dialog will help you setting up a new one for your project. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_OpenProjectSource">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die The project source code is where your game logic happens. To help you get started, Duality will create and open a suitable Visual Studio solution for you. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_ProfileGame">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Runs the game in profiling mode without VSync or any other frame rate limiting mechanism. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_RunGame">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Want to see how your game looks like in its release version? This will save all project data and run the external Duality launcher. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_SandboxFaster">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Increases the Sandboxes game speed. This will not cause it to update more often, but simulate a higher timestep in each update. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_SandboxPause">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Pausing the Sandbox will suspend any game updates. Until being unpaused, the Sandbox will behave as if it wasn&apos;t there. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_SandboxPlay">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Unlike &quot;Run Game&quot;, entering the Sandbox mode doesn&apos;t rely on the Duality Launcher and will instead run the game directly inside the editor. This allows you to test and debug your game in real time while at the same time providing full editing functionality. Note that you&apos;ll have to focus a Cam View in &quot;Game View&quot; mode in order to pass on keyboard and mouse input to the game. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_SandboxSlower">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Decreases the Sandboxes game speed. This will not cause it to update less often, but simulate a lower timestep in each update. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_SandboxStep">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die A Sandbox step will cause the game to advance exactly one standard frame. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_SandboxStop">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die When leaving the Sandbox mode, the current Scene will be reset to its original state. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemInfo_SaveAll">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die This will save all project data, i.e. all existing Resources. If you take a look at the Project View, you might notice that some Resources are written italic - these are the ones that have been changed without being saved yet. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_About">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die About ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_ConfigureLauncher">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Select Launcher... ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_NewProject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die New Project... ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_ProfileGame">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Profile Game ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_Quit">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Quit ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_Redo">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Redo: {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_RedoEmpty">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Redo ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_SandboxFaster">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Increase Speed ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_SandboxSlower">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Decrease Speed ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_Undo">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Undo: {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuItemName_UndoEmpty">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Undo ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuName_Edit">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Edit ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuName_File">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die File ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuName_Help">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Help ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuName_Run">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Run ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuName_Settings">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Settings ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuName_Tools">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Tools ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.MenuName_View">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die View ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_CantImport_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Can&apos;t import file ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_CantImport_Text">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Can&apos;t import file &apos;{0}&apos;. The files format is not supported. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmBreakPrefabLink_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Break Prefab Link? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmBreakPrefabLink_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die This action will break the objects Prefab Link. Proceed? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Delete selected objects? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Text">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Do you really want to delete the selected objects? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmQuit_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Really quit? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmQuit_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Do you really want to quit? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmQuitUnsaved_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Really quit? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmQuitUnsaved_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die The following Resources have been modified without saving:{0}Do you want to save them before exiting? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmQuitUnsaved_Desc_More">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die [ and {0} more ] ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmReloadResource_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Reload Resource? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ConfirmReloadResource_Text">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die The currently active Resource &apos;{0}&apos; has been modified externally. Do you want to reload it from file? Any unsaved changes might be lost. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_EnterSandboxUnsavedScene_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Save current Scene? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_EnterSandboxUnsavedScene_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die You are about to enter Sandbox mode although the current Scene is temporary, so it won&apos;t be restored when leaving Sandbox mode. Do you want to make it restorable by saving it before? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ErrorPerformBigTask_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Failed to perform task ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ErrorPerformBigTask_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die An error occurred while performing task &apos;{0}&apos;: {1}{2} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ErrorReloadCorePlugin_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Can&apos;t reload core plugin ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ErrorReloadCorePlugin_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die An error occurred reloading Duality core plugins: {0}{1} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ImportConfirmOverwrite_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Overwrite file? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_ImportConfirmOverwrite_Text">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Importing file &apos;{0}&apos; would overwrite an already imported file. Do you want to continue? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_InstallNewTemplate_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Install new Template? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Msg_InstallNewTemplate_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die The Template you selected is not located inside your global Template directory. Do you wish to send it there for future usage? ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.OpenTemplateDialog_Filters">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Project Templates (*.zip)|*.zip ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.OpenTemplateDialog_Title">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Select Project Template.. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.PropertyGrid_N_Objects">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die {0} objects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.SelectNewProjectFolderDialog_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Select the folder in which a new project will be created below. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.TaskBarOverlay_ReloadCorePlugin_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Reloading core plugins... ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.TaskChangeDataFormat_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Changing project data format... ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.TaskChangeDataFormat_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die The project data format has been changed to {0}. Existing Resource files will be converted shortly. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.TaskFormatUpdateAll_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Updating all Resources... ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.TaskFormatUpdateAll_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die All existing Resource files are being updated according to the current file format specifications. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.TaskRenameContentRefs_Caption">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Relocating ContentRefs... ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.TaskRenameContentRefs_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die One or more Resources have been moved or renamed. Duality is searching for references to these Resources in order to update them. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Template_Current_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Creates a new project by cloning the current one. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Template_Current_Name">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Current Project ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Template_Empty_Desc">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die A project without any content. ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.Template_Empty_Name">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Empty Project ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_ApplyToPrefab">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Apply {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_ApplyToPrefabMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Apply  {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_BreakPrefabLink">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Unlink {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_BreakPrefabLinkMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Unlink  {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_CloneGameObject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Clone {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_CloneGameObjectMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Clone {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_CreateComponent">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Create {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_CreateComponentMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Create {0} Components ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_CreateGameObject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Create {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_CreateGameObjectMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Create {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_DeleteComponent">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Delete {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_DeleteComponentMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Delete {0} Components ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_DeleteGameObject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Delete {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_DeleteGameObjectMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Delete {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_EditProperty">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Edit {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_Macro">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Macro: {0} Actions ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_ResetComponent">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Reset {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_ResetComponentMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Reset {0} Components ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_ResetGameObject">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Revert {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_ResetGameObjectMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Revert {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_SetComponentParent">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Re-Parent {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_SetComponentParentMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Re-Parent {0} Components ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_SetGameObjectName">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Rename {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_SetGameObjectNameMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Rename {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_SetGameObjectParent">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Re-Parent {0} ähnelt.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.EditorRes.GeneralRes.UndoRedo_SetGameObjectParentMulti">
+            <summary>
+              Sucht eine lokalisierte Zeichenfolge, die Re-Parent {0} GameObjects ähnelt.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.AboutBox.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.AboutBox.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.AboutBox.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.ColorPickerDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.ColorPickerDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:DualityEditor.Forms.ColorPickerDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.AppRunningDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.AppRunningDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:DualityEditor.Forms.AppRunningDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.NewProjectDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.NewProjectDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:DualityEditor.Forms.NewProjectDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.ProcessingBigTaskDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.ProcessingBigTaskDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:DualityEditor.Forms.ProcessingBigTaskDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.MainForm.components">
+            <summary>
+            Erforderliche Designervariable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.MainForm.Dispose(System.Boolean)">
+            <summary>
+            Verwendete Ressourcen bereinigen.
+            </summary>
+            <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
+        </member>
+        <member name="M:DualityEditor.Forms.MainForm.InitializeComponent">
+            <summary>
+            Erforderliche Methode für die Designerunterstützung.
+            Der Inhalt der Methode darf nicht mit dem Code-Editor geändert werden.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.EditorPlugin.LoadPlugin">
+            <summary>
+            This method is called as soon as the plugins assembly is loaded. Initializes the plugins internal data.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.EditorPlugin.InitPlugin(DualityEditor.Forms.MainForm)">
+            <summary>
+            This method is called when all plugins and the editors user data and layout are loaded. May initialize GUI.
+            </summary>
+            <param name="main"></param>
+        </member>
+        <member name="M:DualityEditor.EditorPlugin.SaveUserData(System.Xml.XmlElement)">
+            <summary>
+            Saves the plugins user data to the provided Xml Node.
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:DualityEditor.EditorPlugin.LoadUserData(System.Xml.XmlElement)">
+            <summary>
+            Loads the plugins user data from the provided Xml Node.
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:DualityEditor.EditorPlugin.DeserializeDockContent(System.Type)">
+            <summary>
+            Called when initializing the editors layout and trying to set up one of this plugins DockContent.
+            Returns an IDockContent instance of the specified dockContentType. May return already existing
+            DockContent, a new an pre-setup instance or null as default.
+            </summary>
+            <param name="dockContentType"></param>
+            <returns></returns>
+        </member>
+        <member name="P:DualityEditor.EditorPlugin.Id">
+            <summary>
+            The Plugins ID. This should be unique.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.ReloadCorePluginDialog.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.ReloadCorePluginDialog.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:DualityEditor.Forms.ReloadCorePluginDialog.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.Forms.SplashScreen.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Forms.SplashScreen.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:DualityEditor.Forms.SplashScreen.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="T:DualityEditor.NativeMethods.FileOperationFlags">
+            <summary>
+            Possible flags for the SHFileOperation method.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationFlags.FOF_SILENT">
+            <summary>
+            Do not show a dialog during the process
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationFlags.FOF_NOCONFIRMATION">
+            <summary>
+            Do not ask the user to confirm selection
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationFlags.FOF_ALLOWUNDO">
+            <summary>
+            Delete the file to the recycle bin.  (Required flag to send a file to the bin
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationFlags.FOF_SIMPLEPROGRESS">
+            <summary>
+            Do not show the names of the files or folders that are being recycled.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationFlags.FOF_NOERRORUI">
+            <summary>
+            Surpress errors, if any occur during the process.
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationFlags.FOF_WANTNUKEWARNING">
+            <summary>
+            Warn if files are too big to fit in the recycle bin and will need
+            to be deleted completely.
+            </summary>
+        </member>
+        <member name="T:DualityEditor.NativeMethods.FileOperationType">
+            <summary>
+            File Operation Function Type for SHFileOperation
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationType.FO_MOVE">
+            <summary>
+            Move the objects
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationType.FO_COPY">
+            <summary>
+            Copy the objects
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationType.FO_DELETE">
+            <summary>
+            Delete (or recycle) the objects
+            </summary>
+        </member>
+        <member name="F:DualityEditor.NativeMethods.FileOperationType.FO_RENAME">
+            <summary>
+            Rename the object(s)
+            </summary>
+        </member>
+        <member name="M:DualityEditor.Program.Main(System.String[])">
+            <summary>
+            Der Haupteinstiegspunkt für die Anwendung.
+            </summary>
+        </member>
+        <member name="T:DualityEditor.RecycleBin">
+            <summary>
+            Send files directly to the recycle bin.
+            </summary>
+        </member>
+        <member name="M:DualityEditor.RecycleBin.Send(System.String,DualityEditor.NativeMethods.FileOperationFlags)">
+            <summary>
+            Send file to recycle bin
+            </summary>
+            <param name="path">Location of directory or file to recycle</param>
+            <param name="flags">FileOperationFlags to add in addition to FOF_ALLOWUNDO</param>
+        </member>
+        <member name="M:DualityEditor.RecycleBin.Send(System.String)">
+            <summary>
+            Send file to recycle bin.  Display dialog, display warning if files are too big to fit (FOF_WANTNUKEWARNING)
+            </summary>
+            <param name="path">Location of directory or file to recycle</param>
+        </member>
+        <member name="M:DualityEditor.RecycleBin.SendSilent(System.String)">
+            <summary>
+            Send file silently to recycle bin.  Surpress dialog, surpress errors, delete if too large.
+            </summary>
+            <param name="path">Location of directory or file to recycle</param>
+        </member>
+        <member name="T:DualityEditor.Properties.Resources">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.Properties.Resources.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:DualityEditor.Properties.Resources.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+    </members>
+</doc>
