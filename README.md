@@ -1,4 +1,4 @@
-Duality - A 2D Game Development Framework
+Duality - A 2D GameDev Framework
 =======
 
 Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the project page http://duality.fetzenet.de.
