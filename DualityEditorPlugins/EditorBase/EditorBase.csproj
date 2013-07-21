@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D0C5CAAD-1344-4E8F-BD8B-B26F81672F4B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EditorBase</RootNamespace>
+    <AssemblyName>EditorBase.editor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aga.Controls">
+      <HintPath>..\..\DualityEditor\Aga.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomPropertyGrid">
+      <HintPath>..\..\DualityEditor\CustomPropertyGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Duality\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Duality\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\DualityEditor\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Modules\CamView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\CamView.Designer.cs">
+      <DependentUpon>CamView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\CamViewClient.cs" />
+    <Compile Include="CamViewLayers\CamViewLayer.cs" />
+    <Compile Include="CamViewLayers\BackPlateCamViewLayer.cs" />
+    <Compile Include="CamViewLayers\GridCamViewLayer.cs" />
+    <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
+    <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
+    <Compile Include="CamViewStates\CamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditorCamViewState.SelObj.cs" />
+    <Compile Include="EditorBasePlugin.cs" />
+    <Compile Include="Importers\AudioDataFileImporter.cs" />
+    <Compile Include="Importers\FontFileImporter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CamViewStates\GameViewCamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\SceneEditorCamViewState.cs" />
+    <Compile Include="DataConverters.cs" />
+    <Compile Include="Modules\LogEntryList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PluginRes\EditorBaseResCache.cs" />
+    <Compile Include="PreviewGenerators.cs" />
+    <Compile Include="Modules\LogView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\LogView.Designer.cs">
+      <DependentUpon>LogView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditors\BatchInfoPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ComponentPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Components\RigidBodyPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Components\RigidBodyShapePropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Components\SoundEmitterPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Components\TransformPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\GameObjectOverviewPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\GameObjectPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\IContentRefPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ComponentRefPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\GameObjectRefPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ObjectRefPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ResourcePropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\FontPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\AudioDataPreviewPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\AudioDataPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\FontPreviewPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\FontContentPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\DrawTechniquePropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\ImagePreviewPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\PixmapContentPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\TextureContentPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\TexturePreviewPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\TexturePropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\MaterialPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\PixmapPreviewPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Resources\PixmapPropertyEditor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Importers\ShaderFileImporter.cs" />
+    <Compile Include="Importers\PixmapFileImporter.cs" />
+    <Compile Include="Modules\ObjectInspector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\ObjectInspector.Designer.cs">
+      <DependentUpon>ObjectInspector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditors\Provider.cs" />
+    <Compile Include="Modules\SceneView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\SceneView.Designer.cs">
+      <DependentUpon>SceneView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PluginRes\EditorBaseRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EditorBaseRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\ProjectFolderView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\ProjectFolderView.Designer.cs">
+      <DependentUpon>ProjectFolderView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UndoRedoActions\CamViewObjAction.cs" />
+    <Compile Include="UndoRedoActions\DeleteRigidBodyShapeAction.cs" />
+    <Compile Include="UndoRedoActions\DropGameObjectInSceneAction.cs" />
+    <Compile Include="UndoRedoActions\CreateRigidBodyShapeAction.cs" />
+    <Compile Include="UndoRedoActions\DeleteRigidBodyJointAction.cs" />
+    <Compile Include="UndoRedoActions\CreateRigidBodyJointAction.cs" />
+    <Compile Include="UndoRedoActions\CreateSoundEmitterSourceAction.cs" />
+    <Compile Include="UndoRedoActions\DeleteSoundEmitterSourceAction.cs" />
+    <Compile Include="UndoRedoActions\SoundEmitterSourceAction.cs" />
+    <Compile Include="UndoRedoActions\ReparentRigidBodyJointAction.cs" />
+    <Compile Include="UndoRedoActions\RigidBodyJointAction.cs" />
+    <Compile Include="UndoRedoActions\RigidBodyShapeAction.cs" />
+    <Compile Include="UndoRedoActions\ScaleCamViewObjAction.cs" />
+    <Compile Include="UndoRedoActions\RotateCamViewObjAction.cs" />
+    <Compile Include="UndoRedoActions\MoveCamViewObjAction.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
+      <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
+      <Name>DualityEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Modules\CamView.resx">
+      <DependentUpon>CamView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\LogView.resx">
+      <DependentUpon>LogView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\ObjectInspector.resx">
+      <DependentUpon>ObjectInspector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\SceneView.resx">
+      <DependentUpon>SceneView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PluginRes\EditorBaseRes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>EditorBaseRes.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Modules\ProjectFolderView.resx">
+      <DependentUpon>ProjectFolderView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="PluginRes\overlayLinkBroken.png" />
+    <None Include="PluginRes\overlayLink.png" />
+    <None Include="PluginRes\bell.png" />
+    <None Include="PluginRes\DropdownSettingsBlack.png" />
+    <None Include="PluginRes\shape_perspective.png" />
+    <None Include="PluginRes\speaker.png" />
+    <None Include="PluginRes\arrow_right_accelerate.png" />
+    <None Include="PluginRes\arrow_refresh.png" />
+    <None Include="PluginRes\wrench.ico" />
+    <None Include="PluginRes\sceneview.ico" />
+    <None Include="PluginRes\WorkingFolderIcon16.png" />
+    <None Include="PluginRes\cut.png" />
+    <None Include="PluginRes\cross.png" />
+    <None Include="PluginRes\disk.png" />
+    <None Include="PluginRes\AddScene.png" />
+    <None Include="PluginRes\curArrowCreateCircle.png" />
+    <None Include="PluginRes\curArrowCreatePolygon.png" />
+    <None Include="PluginRes\curArrowCreateEdge.png" />
+    <None Include="PluginRes\curArrowCreateLoop.png" />
+    <None Include="PluginRes\bug.png" />
+    <Content Include="PluginRes\eye.ico" />
+    <None Include="PluginRes\iconResDrawTechnique.png" />
+    <None Include="PluginRes\iconResFragmentShader.png" />
+    <None Include="PluginRes\iconResMaterial.png" />
+    <None Include="PluginRes\iconResPixmap.png" />
+    <None Include="PluginRes\iconResPrefabEmpty.png" />
+    <None Include="PluginRes\iconResPrefabFull.png" />
+    <None Include="PluginRes\iconResRenderTarget.png" />
+    <None Include="PluginRes\iconResShaderProgram.png" />
+    <None Include="PluginRes\iconResTexture.png" />
+    <None Include="PluginRes\iconResVertexShader.png" />
+    <None Include="PluginRes\iconResUnknown.png" />
+    <None Include="PluginRes\page_copy.png" />
+    <None Include="PluginRes\page_paste.png" />
+    <None Include="PluginRes\folder.png" />
+    <None Include="PluginRes\iconResScene.png" />
+    <None Include="PluginRes\GotoScene.png" />
+    <None Include="PluginRes\iconGameObj.png" />
+    <None Include="PluginRes\iconCmpCamera.png" />
+    <None Include="PluginRes\iconCmpSpriteRenderer.png" />
+    <None Include="PluginRes\iconCmpTransform.png" />
+    <None Include="PluginRes\iconCmpUnknown.png" />
+    <None Include="PluginRes\iconResAudioData.png" />
+    <None Include="PluginRes\iconResSound.png" />
+    <None Include="PluginRes\iconCmpSoundListener.png" />
+    <None Include="PluginRes\iconResFont.png" />
+    <None Include="PluginRes\iconCmpCapsuleCollider.png" />
+    <None Include="PluginRes\iconCmpCircleCollider.png" />
+    <None Include="PluginRes\iconCmpRectCollider.png" />
+    <None Include="PluginRes\log_core.png" />
+    <None Include="PluginRes\log_editor.png" />
+    <None Include="PluginRes\log_game.png" />
+    <None Include="PluginRes\log_error.png" />
+    <None Include="PluginRes\log_message.png" />
+    <None Include="PluginRes\log_warning.png" />
+    <None Include="PluginRes\logview.ico" />
+    <None Include="PluginRes\picture_empty.png" />
+    <None Include="PluginRes\lock.png" />
+    <None Include="PluginRes\layers.png" />
+    <None Include="PluginRes\iconCmpEdgeCollider.png" />
+    <None Include="PluginRes\iconCmpLoopCollider.png" />
+    <None Include="PluginRes\eye_cross.png" />
+    <None Include="PluginRes\magifier_zoom_out.png" />
+    <None Include="PluginRes\magnifier_one.png" />
+    <None Include="PluginRes\magnifier_zoom_in.png" />
+    <None Include="PluginRes\IconSpeakerBlack.png" />
+    <None Include="PluginRes\IconSpeakerWhite.png" />
+    <None Include="PluginRes\logview.png" />
+    <Content Include="PluginRes\projectview.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

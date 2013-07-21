@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C25812BD-1699-496E-B946-9E999FD7C9C1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ResourceHacker</RootNamespace>
+    <AssemblyName>ResourceHacker.editor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aga.Controls, Version=1.7.0.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\DualityEditor\Aga.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomPropertyGrid">
+      <HintPath>..\..\DualityEditor\CustomPropertyGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.5.0.24670, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\DualityEditor\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="PluginRes\ResourceHackerRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResourceHackerRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PluginRes\ResourceHackerResCache.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PropertyEditors\ArrayNodePropertyEditor.cs" />
+    <Compile Include="PropertyEditors\PrimitiveNodePropertyEditor.cs" />
+    <Compile Include="PropertyEditors\Provider.cs" />
+    <Compile Include="RenameTypeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenameTypeDialog.Designer.cs">
+      <DependentUpon>RenameTypeDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceHacker.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResourceHacker.Designer.cs">
+      <DependentUpon>ResourceHacker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ResourceHackerPlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
+      <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
+      <Name>DualityEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PluginRes\ResourceHackerRes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResourceHackerRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RenameTypeDialog.resx">
+      <DependentUpon>RenameTypeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResourceHacker.resx">
+      <DependentUpon>ResourceHacker.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\iconResourceHacker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\iconSaveFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\iconOpenFile.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Array.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Class.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Delegate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Event.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Field.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Method.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Object.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Primitive.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\Property.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\ObjectRef.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\iconRenameClass.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\iconRenameField.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PluginRes\iconBatchAction.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
