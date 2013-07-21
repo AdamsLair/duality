@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{44E2FD11-C687-41ED-B72F-1A4C92479EDC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CustomPropertyGrid</RootNamespace>
+    <AssemblyName>CustomPropertyGrid</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <OutputPath>..\..\bin\Release\</OutputPath>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BitmaskItem.cs" />
+    <Compile Include="ControlRenderer.cs" />
+    <Compile Include="EditorTemplates\ComboBoxDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EditorTemplates\ComboBoxEditorTemplate.cs" />
+    <Compile Include="EditorTemplates\EditorTemplate.cs" />
+    <Compile Include="EditorTemplates\BitmaskSelectorDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EditorTemplates\BitmaskEditorTemplate.cs" />
+    <Compile Include="EditorTemplates\MultiComboBoxDropDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EditorTemplates\MultiComboBoxEditorTemplate.cs" />
+    <Compile Include="EditorTemplates\NumericEditorTemplate.cs" />
+    <Compile Include="EditorTemplates\StringEditorTemplate.cs" />
+    <Compile Include="GroupedPropertyEditor.cs" />
+    <Compile Include="ObjectItem.cs" />
+    <Compile Include="MemberwisePropertyEditor.cs" />
+    <Compile Include="PopupControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyEditor.cs" />
+    <Compile Include="PropertyEditors\BoolPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\EnumPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\FlaggedEnumPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\BitmaskPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\IListPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\IDictionaryPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ObjectSelectorPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\StringPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\NumericPropertyEditor.cs" />
+    <Compile Include="PropertyGrid.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Resources\Resources.cs" />
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\add.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\cross.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ExpandNodeClosedDisabled.png" />
+    <EmbeddedResource Include="Resources\ExpandNodeClosedHot.png" />
+    <EmbeddedResource Include="Resources\ExpandNodeClosedNormal.png" />
+    <EmbeddedResource Include="Resources\ExpandNodeClosedPressed.png" />
+    <EmbeddedResource Include="Resources\ExpandNodeOpenedDisabled.png" />
+    <EmbeddedResource Include="Resources\ExpandNodeOpenedHot.png" />
+    <EmbeddedResource Include="Resources\ExpandNodeOpenedPressed.png" />
+    <EmbeddedResource Include="Resources\ExpandNodeOpenedNormal.png" />
+    <EmbeddedResource Include="Resources\NumberGripIcon.png" />
+    <EmbeddedResource Include="Resources\DropDownIcon.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

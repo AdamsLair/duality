@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ConfigFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SolutionPath>..\..\Duality.sln</SolutionPath>
+  <BuildResultDir>..\..\DualityEditor\bin\Release</BuildResultDir>
+  <DocSolutionPath>..\..\Documentation\Documentation.shfbproj</DocSolutionPath>
+  <DocBuildResultDir>..\..\Documentation\Help</DocBuildResultDir>
+  <DocBuildResultFile>DDoc.chm</DocBuildResultFile>
+  <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
+  <TargetDir>Duality</TargetDir>
+  <PackageDir>Package</PackageDir>
+  <PackageName>Duality.zip</PackageName>
+  <NoDocs>false</NoDocs>
+  <CommitSVN>false</CommitSVN>
+  <FileCopyBlackList>
+    <string>Backup</string>
+    <string>Source</string>
+    <string>Data</string>
+    <string>GamePlugin.*.dll</string>
+    <string>*.vshost.*</string>
+    <string>logfile*</string>
+    <string>perflog*</string>
+    <string>defaultuserdata.dat</string>
+    <string>designtimedata.dat</string>
+    <string>appdata.dat</string>
+    <string>editoruserdata.xml</string>
+    <string>FarseerOpenTK.xml</string>
+    <string>OpenTK.GLControl.xml</string>
+    <string>OpenTK.GLControl.xml</string>
+    <string>VistaBridgeLibrary.xml</string>
+    <string>WeifenLuo.WinFormsUI.Docking.pdb</string>
+    <string>Windows7.DesktopIntegration.xml</string>
+  </FileCopyBlackList>
+</ConfigFile>
