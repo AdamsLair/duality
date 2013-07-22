@@ -127,6 +127,19 @@ namespace NightlyBuilder
 				Console.WriteLine();
 				Console.WriteLine();
 			}
+			else if (File.Exists(Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile)))
+			{
+				Console.WriteLine("============================== Copy existing Docs =============================");
+				{
+					File.Copy(
+						Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile), 
+						Path.Combine(config.BuildResultDir, config.DocBuildResultFile),
+						true);
+				}
+				Console.WriteLine("===============================================================================");
+				Console.WriteLine();
+				Console.WriteLine();
+			}
 
 			// Copy the results to the target directory
 			Console.WriteLine("================================ Copy to Target ===============================");

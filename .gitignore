@@ -21,3 +21,6 @@ VisualStudio/DualityDebuggingTest/bin/
 VisualStudio/DualityDebuggingTest/obj/
 DualityEditorPlugins/DynamicLighting/bin/
 DualityPlugins/DynamicLighting/bin/
+Documentation/Help/LastBuild.log
+Other/NightlyBuild/NightlyBuilder.vshost.exe.manifest
+Other/Tools/NightlyBuilder/obj/
