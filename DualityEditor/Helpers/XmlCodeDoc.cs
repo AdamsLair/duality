@@ -245,6 +245,7 @@ namespace DualityEditor
 
 			// Determine the members (declaring) type
 			Type memberType = ResolveDocStyleType(memberTypeName);
+			if (memberType == null) return null;
 
 			// Determine the member info
 			MemberInfo member = null;

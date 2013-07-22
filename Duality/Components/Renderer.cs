@@ -46,8 +46,8 @@ namespace Duality.Components
 		/// <returns></returns>
 		public virtual bool IsVisible(IDrawDevice device)
 		{
-			if ((this.visibilityGroup & device.VisibilityMask) == VisibilityFlag.None) return false;
 			if ((device.VisibilityMask & VisibilityFlag.ScreenOverlay) != (this.visibilityGroup & VisibilityFlag.ScreenOverlay)) return false;
+			if ((this.visibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return false;
 			return device.IsCoordInView(this.gameobj.Transform.Pos, this.BoundRadius);
 		}
 

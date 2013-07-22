@@ -195,7 +195,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Default\Checkerboard256.png" />
-    <Content Include="ToDo.txt" />
     <Content Include="OggvorbisDotNet.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

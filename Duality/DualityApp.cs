@@ -75,7 +75,7 @@ namespace Duality
 		private	static	bool						isUpdating			= false;
 		private	static	bool						runFromEditor		= false;
 		private	static	bool						terminateScheduled	= false;
-		private	static	string						logfilePath			= "logfile";
+		private	static	string						logfilePath			= "logfile.txt";
 		private	static	StreamWriter				logfile				= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
 		private	static	GraphicsMode				targetMode			= null;
@@ -244,6 +244,13 @@ namespace Duality
 			}
 		}
 		/// <summary>
+		/// [GET] Returns the path where the current logfile is located at.
+		/// </summary>
+		public static string LogfilePath
+		{
+			get { return logfilePath; }
+		}
+		/// <summary>
 		/// [GET] Returns the <see cref="GraphicsMode"/> that Duality intends to use by default.
 		/// </summary>
 		public static GraphicsMode DefaultMode
@@ -325,7 +332,12 @@ namespace Duality
 				// Run from editor
 				if (args.Contains(CmdArgEditor)) runFromEditor = true;
 				// Set logfile path
-				if (logArgIndex != -1) logfilePath = args[logArgIndex];
+				if (logArgIndex != -1)
+				{
+					logfilePath = args[logArgIndex];
+					if (string.IsNullOrWhiteSpace(Path.GetExtension(logfilePath)))
+						logfilePath += ".txt";
+				}
 			}
 
 			environment = env;
@@ -334,7 +346,7 @@ namespace Duality
 			// Initialize Logfile
 			try
 			{
-				logfile = new StreamWriter(logfilePath + ".txt");
+				logfile = new StreamWriter(logfilePath);
 				logfile.AutoFlush = true;
 				TextWriterLogOutput logfileOutput = new TextWriterLogOutput(logfile);
 				Log.Game.RegisterOutput(logfileOutput);
@@ -789,7 +801,8 @@ namespace Duality
 		{
 			Log.Core.Write("Initializing core plugins...");
 			Log.Core.PushIndent();
-			foreach (CorePlugin plugin in plugins.Values)
+			CorePlugin[] initPlugins = plugins.Values.ToArray();
+			foreach (CorePlugin plugin in initPlugins)
 			{
 				Log.Core.Write("{0}...", plugin.AssemblyName);
 				Log.Core.PushIndent();
@@ -800,7 +813,7 @@ namespace Duality
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError("Error initializing plugin: {0}", Log.Exception(e));
+					Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
 					UnloadPlugin(plugin);
 				}
 				Log.Core.PopIndent();
@@ -812,17 +825,31 @@ namespace Duality
 			foreach (CorePlugin plugin in plugins.Values)
 			{
 				disposedPlugins.Add(plugin.PluginAssembly);
-				plugin.Dispose();
+				try
+				{
+					plugin.Dispose();
+				}
+				catch (Exception e)
+				{
+					Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+				}
 			}
 			OnDiscardPluginData(plugins.Values);
 			plugins.Clear();
 		}
 		private static void UnloadPlugin(CorePlugin plugin)
 		{
+			disposedPlugins.Add(plugin.PluginAssembly);
 			OnDiscardPluginData(new[] { plugin });
 			plugins.Remove(plugin.AssemblyName);
-			disposedPlugins.Add(plugin.PluginAssembly);
-			plugin.Dispose();
+			try
+			{
+				plugin.Dispose();
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+			}
 		}
 		internal static void ReloadPlugin(string pluginFileName)
 		{
@@ -907,8 +934,14 @@ namespace Duality
 			IEnumerable<Assembly> asmQuery = GetDualityAssemblies();
 			foreach (Assembly asm in asmQuery)
 			{
+				// Try to retrieve all Types from the current Assembly
+				Type[] types;
+				try { types = asm.GetExportedTypes(); }
+				catch (Exception) { continue; }
+
+				// Add the matching subset of these types to the result
 				availTypes.AddRange(
-					from t in asm.GetExportedTypes()
+					from t in types
 					where baseType.IsAssignableFrom(t)
 					orderby t.Name
 					select t);
@@ -952,6 +985,9 @@ namespace Duality
 		}
 		private static void OnDiscardPluginData(IEnumerable<CorePlugin> oldPlugins)
 		{
+			oldPlugins = oldPlugins.NotNull().Distinct();
+			if (!oldPlugins.Any()) oldPlugins = null;
+
 			if (DiscardPluginData != null)
 				DiscardPluginData(null, EventArgs.Empty);
 

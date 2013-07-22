@@ -697,12 +697,9 @@ namespace Duality
 			get { return this.fonts; }
 			set
 			{
-				if (this.fonts != value)
-				{
-					if (value == null || value.Length == 0) value = new ContentRef<Font>[] { Font.GenericMonospace10 };
-					this.fonts = value;
-					this.updateVertexCache = true;
-				}
+				if (value == null || value.Length == 0) value = new ContentRef<Font>[] { Font.GenericMonospace10 };
+				this.fonts = value;
+				this.updateVertexCache = true;
 			}
 		}
 		/// <summary>

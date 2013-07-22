@@ -271,12 +271,16 @@ namespace DualityEditor.Forms
 					Log.Editor.WriteError(Log.Exception(e));
 					workInterface.Error = e;
 				}
+				// If we failed before but it wasn't a full restart, let's try this.
 				else
 				{
 					Log.Editor.WriteError("Failed reloading plugins on the fly: {0}", Log.Exception(e));
 					Log.Editor.Write("Trying full restart...");
+					if (File.Exists(DualityApp.LogfilePath))
+					{
+						File.Copy(DualityApp.LogfilePath, Path.GetFileNameWithoutExtension(DualityApp.LogfilePath) + "_reloadfailure" + Path.GetExtension(DualityApp.LogfilePath));
+					}
 
-					// If we failed before but it wasn't a full restart, let's try this.
 					fullRestart = true;
 					try { PerformPluginReload(ref workInterface, ref fullRestart); }
 					catch (Exception e2)
@@ -294,6 +298,11 @@ namespace DualityEditor.Forms
 			Stream strScene;
 			Stream strData;
 
+			string tempDir = Path.Combine(Path.GetTempPath(), "Duality");
+			string tempScenePath = Path.Combine(tempDir, "ReloadPluginBackup" + Scene.FileExt);
+			string tempDataPath = Path.Combine(tempDir, "ReloadPluginBackup.dat");
+			if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
+
 			if (!workInterface.RecoverMode)
 			{
 				// No full restart scheduled? Well, check if it should be!
@@ -304,9 +313,8 @@ namespace DualityEditor.Forms
 
 				if (fullRestart)
 				{
-					if (!Directory.Exists("Temp")) Directory.CreateDirectory("Temp");
-					strScene = File.Create(@"Temp\_reloadPluginData_Scene.tmp");
-					strData = File.Create(@"Temp\_reloadPluginData_Data.tmp");
+					strScene = File.Create(tempScenePath);
+					strData = File.Create(tempDataPath);
 				}
 				else
 				{
@@ -321,16 +329,9 @@ namespace DualityEditor.Forms
 				strDataWriter.Flush();
 				workInterface.MainForm.Invoke((Action)delegate()
 				{
-					try
-					{
-						// Save all data
-						DualityEditorApp.SaveAllProjectData();
-						Scene.Current.Save(strScene);
-					}
-					catch (Exception e)
-					{
-						Log.Editor.WriteError("Error saving current Data backup: {0}", Log.Exception(e));
-					}
+					// Save all data
+					DualityEditorApp.SaveAllProjectData();
+					Scene.Current.Save(strScene);
 				});
 				workInterface.Progress += 0.4f;
 				Thread.Sleep(20);
@@ -382,8 +383,8 @@ namespace DualityEditor.Forms
 			}
 			else
 			{
-				strScene = File.OpenRead(@"Temp\_reloadPluginData_Scene.tmp");
-				strData = File.OpenRead(@"Temp\_reloadPluginData_Data.tmp");
+				strScene = File.OpenRead(tempScenePath);
+				strData = File.OpenRead(tempDataPath);
 				workInterface.Progress = 0.6f;
 			}
 

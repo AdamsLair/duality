@@ -379,8 +379,14 @@ namespace DualityEditor
 			IEnumerable<Assembly> asmQuery = GetDualityEditorAssemblies();
 			foreach (Assembly asm in asmQuery)
 			{
+				// Try to retrieve all Types from the current Assembly
+				Type[] types;
+				try { types = asm.GetExportedTypes(); }
+				catch (Exception) { continue; }
+
+				// Add the matching subset of these types to the result
 				availTypes.AddRange(
-					from t in asm.GetExportedTypes()
+					from t in types
 					where baseType.IsAssignableFrom(t)
 					orderby t.Name
 					select t);
@@ -965,22 +971,40 @@ namespace DualityEditor
 						asmName);
 				}
 			}
-
-			// Query Component types
-			var cmpTypeQuery = from Type t in plugin.PluginAssembly.GetExportedTypes()
-							   where typeof(Component).IsAssignableFrom(t)
-							   select t;
-			foreach (var cmpType in cmpTypeQuery)
+			
+			// Try to retrieve all Types from the current Assembly
+			Type[] exportedTypes;
+			try
 			{
-				// Scan for public Fields
-				FieldInfo[] fields = cmpType.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-				if (fields.Length > 0)
+				exportedTypes = plugin.PluginAssembly.GetExportedTypes();
+			}
+			catch (Exception e)
+			{
+				Log.Editor.WriteError(
+					"Unable to analyze exported types because an error occured: {0}",
+					Log.Exception(e));
+				exportedTypes = null;
+			}
+
+			// Analyze exported types
+			if (exportedTypes != null)
+			{
+				// Query Component types
+				var cmpTypeQuery = from Type t in exportedTypes
+								   where typeof(Component).IsAssignableFrom(t)
+								   select t;
+				foreach (var cmpType in cmpTypeQuery)
 				{
-					Log.Editor.WriteWarning(
-						"Found public fields in Component class '{0}': {1}. " + 
-						"The usage of public fields is strongly discouraged in Component classes. Consider using properties instead.",
-						cmpType.GetTypeCSCodeName(true),
-						fields.ToString(f => Log.FieldInfo(f, false), ", "));
+					// Scan for public Fields
+					FieldInfo[] fields = cmpType.GetFields(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
+					if (fields.Length > 0)
+					{
+						Log.Editor.WriteWarning(
+							"Found public fields in Component class '{0}': {1}. " + 
+							"The usage of public fields is strongly discouraged in Component classes. Consider using properties instead.",
+							cmpType.GetTypeCSCodeName(true),
+							fields.ToString(f => Log.FieldInfo(f, false), ", "));
+					}
 				}
 			}
 

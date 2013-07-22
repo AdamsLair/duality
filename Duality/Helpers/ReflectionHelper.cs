@@ -846,8 +846,13 @@ namespace Duality
 				{
 					foreach (Assembly asm in asmSearch)
 					{
-						Type[]	asmTypes = asm.GetTypes();
-						foreach (Type t in asmTypes)
+						// Try to retrieve all Types from the current Assembly
+						Type[] types;
+						try { types = asm.GetTypes(); }
+						catch (Exception) { continue; }
+
+						// Iterate over types and manually compare then
+						foreach (Type t in types)
 						{
 							string	nameTemp = t.FullName.Replace('+', '.');
 							if (csCodeType == nameTemp) return t;
@@ -946,7 +951,13 @@ namespace Duality
 				{
 					foreach (Assembly a in asmSearch)
 					{
-						foreach (Type t in a.GetTypes())
+						// Try to retrieve all Types from the current Assembly
+						Type[] types;
+						try { types = a.GetTypes(); }
+						catch (Exception) { continue; }
+
+						// Iterate and manually compare names
+						foreach (Type t in types)
 						{
 							string nameTemp = t.FullName.Replace('+', '.');
 							if (typeNameBase == nameTemp)

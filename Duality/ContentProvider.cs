@@ -105,10 +105,12 @@ namespace Duality
 		/// Returns a list of all available / existing content matching the specified Type
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
+		/// <param name="baseDirectory">The base directory to search in. Defaults to <see cref="DualityApp.DataDirectory"/> if not specified otherwise.</param>
 		/// <returns></returns>
-		public static List<ContentRef<T>> GetAvailableContent<T>() where T : Resource
+		public static List<ContentRef<T>> GetAvailableContent<T>(string baseDirectory = null) where T : Resource
 		{
-			IEnumerable<string> resFiles = Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
+			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
+			IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p))
 				.Where(r => r.Is<T>())
@@ -120,9 +122,11 @@ namespace Duality
 		/// Returns a list of all available / existing content matching the specified Type
 		/// </summary>
 		/// <param name="t"></param>
+		/// <param name="baseDirectory">The base directory to search in. Defaults to <see cref="DualityApp.DataDirectory"/> if not specified otherwise.</param>
 		/// <returns></returns>
-		public static List<IContentRef> GetAvailableContent(Type t)
+		public static List<IContentRef> GetAvailableContent(Type t, string baseDirectory = null)
 		{
+			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
 			IEnumerable<string> resFiles = Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p) as IContentRef)
