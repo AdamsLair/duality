@@ -30,13 +30,6 @@ namespace Duality
 
 
 		/// <summary>
-		/// [GET] The underlying OpenTK AudioContext.
-		/// </summary>
-		internal AudioContext Context
-		{
-			get { return this.context; }
-		}
-		/// <summary>
 		/// [GET] A queue of currently playing ambient pads.
 		/// </summary>
 		public SoundBudgetQueue Ambient
@@ -49,6 +42,13 @@ namespace Duality
 		public SoundBudgetQueue Music
 		{
 			get { return this.budgetMusic; }
+		}
+		/// <summary>
+		/// [GET] Returns whether the SoundDevice is available. If false, no audio output can be generated.
+		/// </summary>
+		public bool IsAvailable
+		{
+			get { return this.context != null; }
 		}
 
 		/// <summary>
@@ -143,22 +143,36 @@ namespace Duality
 
 		public SoundDevice()
 		{
-			this.context = new AudioContext();
+			Log.Core.Write("Initializing OpenAL...");
+			Log.Core.PushIndent();
 
-			// Generate OpenAL source pool
-			while (true)
+			try
 			{
-				int newSrc = AL.GenSource();
-				if (!DualityApp.CheckOpenALErrors(true))
-					this.alSourcePool.Push(newSrc);
-				else
-					break;
-			}
-			this.maxAlSources = this.alSourcePool.Count;
+				Log.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
+					AudioContext.AvailableDevices.ToString(d => d == AudioContext.DefaultDevice ? d + " (Default)" : d, "," + Environment.NewLine));
 
-			Log.Core.Write(
-				"OpenAL initialized. {0} sound sources available",
-				this.alSourcePool.Count);
+				// Create OpenAL audio context
+				this.context = new AudioContext();
+				Log.Core.Write("Current device: {0}", this.context.CurrentDevice);
+
+				// Generate OpenAL source pool
+				while (true)
+				{
+					int newSrc = AL.GenSource();
+					if (!DualityApp.CheckOpenALErrors(true))
+						this.alSourcePool.Push(newSrc);
+					else
+						break;
+				}
+				this.maxAlSources = this.alSourcePool.Count;
+				Log.Core.Write("{0} sources available", this.alSourcePool.Count);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("An error occured initializing OpenAL: {0}", Log.Exception(e));
+			}
+
+			Log.Core.PopIndent();
 
 			DualityApp.AppDataChanged += this.DualityApp_AppDataChanged;
 		}
@@ -177,18 +191,18 @@ namespace Duality
 			{
 				this.disposed = true;
 				DualityApp.AppDataChanged -= this.DualityApp_AppDataChanged;
-				this.OnDisposed(manually);
+				
+				foreach (SoundInstance inst in this.sounds) inst.Dispose();
+				this.sounds.Clear();
+
+				ContentProvider.UnregisterAllContent<Sound>();
+
+				if (this.context != null)
+				{
+					this.context.Dispose();
+					this.context = null;
+				}
 			}
-		}
-		protected virtual void OnDisposed(bool manually)
-		{
-			foreach (SoundInstance inst in this.sounds) inst.Dispose();
-			this.sounds.Clear();
-
-			ContentProvider.UnregisterAllContent<Sound>();
-
-			this.context.Dispose();
-			this.context = null;
 		}
 
 		/// <summary>
@@ -258,6 +272,7 @@ namespace Duality
 		/// </summary>
 		public void Update()
 		{
+			if (this.context == null) return;
 			Performance.TimeUpdateAudio.BeginMeasure();
 
 			this.budgetAmbient.Update();
@@ -278,6 +293,7 @@ namespace Duality
 		}
 		private void UpdateListener()
 		{
+			if (this.context == null) return;
 			if (this.soundListener != null && (this.soundListener.Disposed || !this.soundListener.Active)) this.soundListener = null;
 
 			// If no listener is defined, search one
@@ -354,6 +370,7 @@ namespace Duality
 		
 		private void DualityApp_AppDataChanged(object sender, EventArgs e)
 		{
+			if (this.context == null) return;
 			AL.DistanceModel(ALDistanceModel.LinearDistanceClamped);
 			AL.DopplerFactor(DualityApp.AppData.SoundDopplerFactor);
 			AL.SpeedOfSound(DualityApp.AppData.SpeedOfSound);

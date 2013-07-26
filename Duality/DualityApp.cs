@@ -1125,6 +1125,7 @@ namespace Duality
 		/// <returns>True, if an error occurred, false if not.</returns>
 		public static bool CheckOpenALErrors(bool silent = false)
 		{
+			if (sound != null && !sound.IsAvailable) return false;
 			ALError error;
 			bool found = false;
 			while ((error = AL.GetError()) != ALError.NoError)
