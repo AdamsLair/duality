@@ -24,3 +24,14 @@ DualityPlugins/DynamicLighting/bin/
 Documentation/Help/LastBuild.log
 Other/NightlyBuild/NightlyBuilder.vshost.exe.manifest
 Other/Tools/NightlyBuilder/obj/
+Other/Dependencies/Farseer/FarseerOpenTK/obj/
+Other/Dependencies/OpenTK/Source/GLControl/obj/
+Other/Dependencies/OpenTK/Source/OpenTK/obj/
+Other/Dependencies/bin/
+Other/Dependencies/netrtfwriter/RtfWriter/obj/
+Other/Dependencies/propertygrid/CustomPropertyGrid/obj/
+Other/Dependencies/propertygrid/TestApp/TestApp/bin/
+Other/Dependencies/propertygrid/TestApp/TestApp/obj/
+Other/Dependencies/treeviewadv/Aga.Controls/obj/
+Other/Dependencies/treeviewadv/TestApp/bin/
+Other/Dependencies/treeviewadv/TestApp/obj/

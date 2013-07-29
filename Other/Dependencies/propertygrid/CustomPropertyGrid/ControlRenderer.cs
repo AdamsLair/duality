@@ -760,22 +760,8 @@ namespace AdamsLair.PropertyGrid.Renderer
 			RectangleF clipRect = innerRect;
 			clipRect.Intersect(g.ClipBounds);
 			g.SetClip(clipRect);
-
-			if (icon == null && !string.IsNullOrEmpty(text))
-			{
-				DrawStringLine(g, text, this.DefaultFont, innerRect, colorText);
-			}
-			else if (string.IsNullOrEmpty(text))
-			{
-				Rectangle iconRect;
-				iconRect = new Rectangle(
-					innerRect.X + innerRect.Width / 2 - icon.Width / 2, 
-					innerRect.Y + innerRect.Height / 2 - icon.Height / 2, 
-					icon.Width, 
-					icon.Height);
-				g.DrawImageUnscaled(icon, iconRect);
-			}
-			else
+			
+			if (icon != null && !string.IsNullOrEmpty(text))
 			{
 				Region[] charRegions = MeasureStringLine(g, text, new [] { new CharacterRange(0, text.Length) }, this.DefaultFont, innerRect);
 				SizeF textSize = charRegions[0].GetBounds(g).Size;
@@ -797,6 +783,20 @@ namespace AdamsLair.PropertyGrid.Renderer
 
 				g.DrawImageUnscaled(icon, iconRect);
 				DrawStringLine(g, text, this.DefaultFont, textRect, colorText);
+			}
+			else if (!string.IsNullOrEmpty(text))
+			{
+				DrawStringLine(g, text, this.DefaultFont, innerRect, colorText);
+			}
+			else if (icon != null)
+			{
+				Rectangle iconRect;
+				iconRect = new Rectangle(
+					innerRect.X + innerRect.Width / 2 - icon.Width / 2, 
+					innerRect.Y + innerRect.Height / 2 - icon.Height / 2, 
+					icon.Width, 
+					icon.Height);
+				g.DrawImageUnscaled(icon, iconRect);
 			}
 
 			g.Restore(graphicsState);

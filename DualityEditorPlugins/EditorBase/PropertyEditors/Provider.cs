@@ -24,12 +24,12 @@ namespace EditorBase.PropertyEditors
 			else if (baseType == typeof(Pixmap))		return PropertyGrid.EditorPriority_Specialized;
 			else if (baseType == typeof(Font))			return PropertyGrid.EditorPriority_Specialized;
 
-			//// -------- Semi-Specialized area --------
+			// -------- Semi-Specialized area --------
 			else if (typeof(RigidBody).IsAssignableFrom(baseType))			return PropertyGrid.EditorPriority_General + 1;
 			else if (typeof(DrawTechnique).IsAssignableFrom(baseType))		return PropertyGrid.EditorPriority_General + 1;
 
 			// -------- General area --------
-			else if (typeof(ShapeInfo).IsAssignableFrom(baseType))	return PropertyGrid.EditorPriority_General;
+			else if (typeof(ShapeInfo).IsAssignableFrom(baseType))			return PropertyGrid.EditorPriority_General;
 			else if (typeof(Component).IsAssignableFrom(baseType))			return PropertyGrid.EditorPriority_General;
 			else if (typeof(Resource).IsAssignableFrom(baseType))			return PropertyGrid.EditorPriority_General;
 			else if (typeof(IContentRef).IsAssignableFrom(baseType))		return PropertyGrid.EditorPriority_General;
