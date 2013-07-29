@@ -216,7 +216,7 @@ namespace Duality.Resources
 			// Non-Streamed Audio
 			else
 			{
-				if (this.alBuffer <= AlBuffer_NotAvailable)
+				if (this.alBuffer <= AlBuffer_NotAvailable && DualityApp.Sound.IsAvailable)
 				{
 					this.alBuffer = AL.GenBuffer();
 					PcmData pcm = OV.LoadFromMemory(this.data);
