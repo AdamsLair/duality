@@ -26,7 +26,11 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		public IEnumerable<BitmaskItem> Items
 		{
 			get { return this.bitmaskSelector.DropDownItems; }
-			set { this.bitmaskSelector.DropDownItems = value; }
+			set
+			{
+				this.bitmaskSelector.DropDownItems = value;
+				this.bitmaskSelector.BitmaskValue = this.val;
+			}
 		}
 		public bool IsDropDownOpened
 		{

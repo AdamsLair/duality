@@ -22,7 +22,11 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		public IEnumerable<ObjectItem> Items
 		{
 			get { return this.objSelector.DropDownItems.Cast<ObjectItem>(); }
-			set { this.objSelector.DropDownItems = value; }
+			set 
+			{
+				this.objSelector.DropDownItems = value;
+				this.UpdateEditorValue();
+			}
 		}
 		public bool IsDropDownOpened
 		{
@@ -71,8 +75,13 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 				this.valMultiple = values.Any(o => o == null) || !values.All(o => object.Equals(o, this.val));
 			}
 
-			this.objSelector.SelectedObject = this.objSelector.DropDownItems.Cast<ObjectItem>().FirstOrDefault(i => object.Equals(i.Value, this.val));
+			this.UpdateEditorValue();
 			this.EndUpdate();
+		}
+
+		private void UpdateEditorValue()
+		{
+			this.objSelector.SelectedObject = this.objSelector.DropDownItems.Cast<ObjectItem>().FirstOrDefault(i => object.Equals(i.Value, this.val));
 		}
 
 		protected internal override void OnPaint(PaintEventArgs e)
