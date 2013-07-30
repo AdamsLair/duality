@@ -57,12 +57,12 @@ namespace Duality
 	/// Wraps a SoundInstance in order to make it budget-based. Intended
 	/// only to be used for longer sound pads such as ambient or music.
 	/// </summary>
-	public class SoundBudgetPad : IDisposable
+	public sealed class SoundBudgetPad : IDisposable
 	{
 		private static int idCounter = 0;
 
 		private	bool			disposed	= false;
-		private	SoundInstance	sound		= null;
+		private	SoundInstance	instance	= null;
 		private	SoundBudgetPriority	prio	= SoundBudgetPriority.Lowest;
 		private	bool			giveUp		= false;
 		private	bool			weak		= false;
@@ -80,10 +80,10 @@ namespace Duality
 		/// <summary>
 		/// [GET] The <see cref="SoundInstance"/> that is wrapped by this budget pad.
 		/// </summary>
-		public SoundInstance Sound
+		public SoundInstance Instance
 		{
-			get { return this.sound; }
-		}			//	G
+			get { return this.instance; }
+		}		//	G
 		/// <summary>
 		/// [GET] The priority of this budget pad. Higher priorities overpower lower priorities.
 		/// </summary>
@@ -134,31 +134,35 @@ namespace Duality
 			set { this.weight = value; }
 		}					//	GS
 		
-		internal SoundBudgetPad(SoundInstance snd, SoundBudgetPriority prio, bool music = true)
+		internal SoundBudgetPad(SoundInstance snd, SoundBudgetPriority prio)
 		{
-			this.sound = snd;
+			this.instance = snd;
 			this.prio = prio;
 		}
 		~SoundBudgetPad()
 		{
-			this.OnDisposed(false);
+			this.Dispose(false);
 		}
 		public void Dispose()
 		{
-			this.OnDisposed(true);
+			this.Dispose(true);
 			GC.SuppressFinalize(this);
 		}
-		protected virtual void OnDisposed(bool disposing)
+		private void Dispose(bool manually)
 		{
 			if (!this.disposed)
 			{
-				this.prio = SoundBudgetPriority.Lowest;
-				if (this.sound != null)
-				{
-					this.sound.Stop();
-					this.sound = null;
-				}
 				this.disposed = true;
+				this.OnDisposed(manually);
+			}
+		}
+		private void OnDisposed(bool manually)
+		{
+			this.prio = SoundBudgetPriority.Lowest;
+			if (this.instance != null)
+			{
+				this.instance.Stop();
+				this.instance = null;
 			}
 		}
 
@@ -169,14 +173,14 @@ namespace Duality
 		/// <param name="budget"></param>
 		public void Update(bool nonWeakAbove, ref float budget)
 		{
-			if (this.sound.Disposed || this.sound == null)
+			if (this.instance.Disposed || this.instance == null)
 			{
 				this.Dispose();
 				return;
 			}
 
 			float myBudget = Math.Min(this.weight, budget);
-			float myFadedBudget = Math.Min(this.weight * this.sound.CurrentFade, budget);
+			float myFadedBudget = Math.Min(this.weight * this.instance.CurrentFade, budget);
 			budget -= myFadedBudget;
 
 			if (myBudget < 0.01f && (this.giveUp || (this.weak && nonWeakAbove)))
@@ -185,15 +189,15 @@ namespace Duality
 				return;
 			}
 
-			this.sound.Volume = myFadedBudget;
-			this.sound.Paused = (myBudget <= 0.01f && this.sound.FadeTarget > 0.0f);
+			this.instance.Volume = myFadedBudget;
+			this.instance.Paused = (myBudget <= 0.01f && this.instance.FadeTarget > 0.0f);
 		}
 	}
 
 	/// <summary>
 	/// A queue of <see cref="SoundBudgetPad">SoundBudgetPads</see>.
 	/// </summary>
-	public class SoundBudgetQueue
+	public sealed class SoundBudgetQueue
 	{
 		/// <summary>
 		/// A pads default fadein time in seconds.
@@ -212,7 +216,43 @@ namespace Duality
 		/// <returns>True, if there is, false if not.</returns>
 		public bool IsAnyScheduled
 		{
-			get { return this.budgetPads.Any(pad => pad.Sound.FadeTarget > 0.0f); }
+			get { return this.budgetPads.Any(pad => pad.Instance.FadeTarget > 0.0f); }
+		}
+		/// <summary>
+		/// [GET] Returns the main active pad, i.e. the one that is scheduled with the highest priority.
+		/// </summary>
+		public SoundBudgetPad ActiveMainPad
+		{
+			get { return this.budgetPads.Count > 0 ? this.budgetPads[this.budgetPads.Count - 1] : null; }
+		}
+		/// <summary>
+		/// [GET] Enumerates all active pads, sorted descending by priority.
+		/// </summary>
+		public IEnumerable<SoundBudgetPad> ActivePads
+		{
+			get { return (this.budgetPads as IEnumerable<SoundBudgetPad>).Reverse(); }
+		}
+		/// <summary>
+		/// [GET] Returns the main active sound, i.e. the one that is scheduled with the highest priority.
+		/// </summary>
+		public ContentRef<Sound> ActiveMainSound
+		{
+			get
+			{
+				SoundBudgetPad pad = this.ActiveMainPad;
+				if (pad == null || pad.Instance == null) return null;
+				return pad.Instance.Sound;
+			}
+		}
+		/// <summary>
+		/// [GET] Enumerates all active sounds, sorted descending by priority.
+		/// </summary>
+		public IEnumerable<ContentRef<Sound>> ActiveSounds
+		{
+			get
+			{
+				return this.ActivePads.Select(p => p.Instance != null ? p.Instance.Sound : null);
+			}
 		}
 
 		/// <summary>
@@ -253,8 +293,8 @@ namespace Duality
 		{
 			SoundInstance inst = DualityApp.Sound.PlaySound(snd);
 			SoundBudgetPad bP = new SoundBudgetPad(inst, priority);
-			bP.Sound.Paused = true;
-			if (fadeInTimeSec > 0.05f) bP.Sound.BeginFadeIn(fadeInTimeSec);
+			bP.Instance.Paused = true;
+			if (fadeInTimeSec > 0.05f) bP.Instance.BeginFadeIn(fadeInTimeSec);
 			this.budgetPads.Add(bP);
 			return bP;
 		}
@@ -267,9 +307,9 @@ namespace Duality
 		{
 			foreach (SoundBudgetPad t in this.budgetPads)
 			{
-				if (t.Sound.SoundRef.Res == snd.Res)
+				if (t.Instance.Sound.Res == snd.Res)
 				{
-					t.Sound.FadeOut(fadeOutTimeSec);
+					t.Instance.FadeOut(fadeOutTimeSec);
 				}
 			}
 		}
@@ -281,7 +321,7 @@ namespace Duality
 		public void PopHigh(float fadeOutTimeSec = DefaultFadeOutTime)
 		{
 			if (this.budgetPads.Count == 0) return;
-			this.budgetPads[this.budgetPads.Count - 1].Sound.FadeOut(fadeOutTimeSec);
+			this.budgetPads[this.budgetPads.Count - 1].Instance.FadeOut(fadeOutTimeSec);
 		}
 		/// <summary>
 		/// Fades out the pad with the lowest priority i.e. that is (most) inaudible.
@@ -290,7 +330,7 @@ namespace Duality
 		public void PopLow(float fadeOutTimeSec = DefaultFadeOutTime)
 		{
 			if (this.budgetPads.Count == 0) return;
-			this.budgetPads[0].Sound.FadeOut(fadeOutTimeSec);
+			this.budgetPads[0].Instance.FadeOut(fadeOutTimeSec);
 		}
 		/// <summary>
 		/// Fades out all currently scheduled pads.
@@ -300,7 +340,7 @@ namespace Duality
 		{
 			if (this.budgetPads.Count == 0) return;
 			foreach (SoundBudgetPad t in this.budgetPads)
-				t.Sound.FadeOut(fadeOutTimeSec);
+				t.Instance.FadeOut(fadeOutTimeSec);
 		}
 	}
 }

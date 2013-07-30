@@ -219,10 +219,15 @@ namespace Duality.Serialization
 			GC.SuppressFinalize(this);
 			this.Dispose(true);
 		}
-		protected virtual void Dispose(bool manually)
+		private void Dispose(bool manually)
 		{
-			this.disposed = true;
+			if (!this.disposed)
+			{
+				this.disposed = true;
+				this.OnDisposed(manually);
+			}
 		}
+		protected virtual void OnDisposed(bool manually) {}
 
 		
 		/// <summary>

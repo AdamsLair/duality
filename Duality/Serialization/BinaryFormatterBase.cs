@@ -151,9 +151,9 @@ namespace Duality.Serialization
 			this.WriteTarget = (stream != null && stream.CanWrite) ? new BinaryWriter(stream) : null;
 			this.ReadTarget = (stream != null && stream.CanRead) ? new BinaryReader(stream) : null;
 		}
-		protected override void Dispose(bool manually)
+		protected override void OnDisposed(bool manually)
 		{
-			if (this.Disposed) return;
+			base.OnDisposed(manually);
 
 			if (this.writer != null)
 			{
@@ -165,8 +165,6 @@ namespace Duality.Serialization
 			{
 				this.reader = null;
 			}
-
-			base.Dispose(manually);
 		}
 
 		/// <summary>

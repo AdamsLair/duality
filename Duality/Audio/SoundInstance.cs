@@ -36,7 +36,7 @@ namespace Duality
 	/// <summary>
 	/// An instance of a <see cref="Duality.Resources.Sound"/>.
 	/// </summary>
-	public class SoundInstance : IDisposable
+	public sealed class SoundInstance : IDisposable
 	{
 		[FlagsAttribute]
 		private enum DirtyFlag : uint
@@ -107,7 +107,7 @@ namespace Duality
 		/// [GET] A referene to the <see cref="Duality.Resources.Sound"/> that is being played by
 		/// this SoundInstance.
 		/// </summary>
-		public ContentRef<Sound> SoundRef
+		public ContentRef<Sound> Sound
 		{
 			get { return this.snd; }
 		}	//	G
@@ -224,7 +224,7 @@ namespace Duality
 				this.OnDisposed(manually);
 			}
 		}
-		protected virtual void OnDisposed(bool manually)
+		private void OnDisposed(bool manually)
 		{
 			if (manually)
 			{

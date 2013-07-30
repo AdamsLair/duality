@@ -135,7 +135,7 @@ namespace Duality.Components
 				if (this.instance != null && this.instance.Disposed) this.instance = null;
 
 				// If there is a SoundInstance playing, but it's the wrong one, stop it
-				if (this.instance != null && this.instance.SoundRef != this.sound)
+				if (this.instance != null && this.instance.Sound != this.sound)
 				{
 					this.instance.Stop();
 					this.instance = null;
