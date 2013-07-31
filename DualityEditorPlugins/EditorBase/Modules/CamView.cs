@@ -702,8 +702,7 @@ namespace EditorBase
 			if (this.waitForInputFilter == null)
 			{
 				this.waitForInputFilter = new InputEventMessageRedirector(this.glControl, this.FocusHookFilter,
-					InputEventMessageRedirector.MessageType.MouseWheel, 
-					InputEventMessageRedirector.MessageType.KeyDown);
+					InputEventMessageRedirector.MessageType.MouseWheel);
 				Application.AddMessageFilter(this.waitForInputFilter);
 			}
 		}
@@ -718,11 +717,9 @@ namespace EditorBase
 		}
 		private bool FocusHookFilter(InputEventMessageRedirector.MessageType type, EventArgs e)
 		{
+			// Don't capture stuff in sandbox mode. Input is likely to be needed in the current Game View
 			if (Sandbox.State == SandboxState.Playing)
-			{
-				// Don't capture keys in sandbox mode. They're likely to be needed in the current Game View
-				if (type == InputEventMessageRedirector.MessageType.KeyDown) return false;
-			}
+				return false;
 			
 			return true;
 		}

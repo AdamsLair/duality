@@ -586,4 +586,19 @@
   <data name="ColliderEditor_CreateLoop" xml:space="preserve">
     <value>Create Loop...</value>
   </data>
+  <data name="RigidBodyCamViewState_SelBodyName" xml:space="preserve">
+    <value>RigidBody</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelCircleShapeName" xml:space="preserve">
+    <value>Circle Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelLoopShapeName" xml:space="preserve">
+    <value>Loop Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelPolyShapeName" xml:space="preserve">
+    <value>Polygon Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelShapeName" xml:space="preserve">
+    <value>Shape</value>
+  </data>
 </root>

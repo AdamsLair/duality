@@ -429,48 +429,50 @@ namespace AdamsLair.PropertyGrid.Renderer
 				textRect.Y,
 				textRect.Width + scroll,
 				textRect.Height);
-			if (text == null) return;
 			
 			RectangleF clipRect = g.ClipBounds;
 			clipRect = textRect;
 			g.SetClip(clipRect);
 
-			// Draw Selection
-			if ((state & TextBoxState.Focus) == TextBoxState.Focus && cursorPos >= 0 && selLength != 0)
+			if (text != null)
 			{
-				int selPos = Math.Min(cursorPos + selLength, cursorPos);
-				CharacterRange[] charRanges = new [] { new CharacterRange(selPos, Math.Abs(selLength)) };
-				Region[] charRegions = MeasureStringLine(g, text, charRanges, font, textRectScrolled);
-				RectangleF selectionRect = charRegions.Length > 0 ? charRegions[0].GetBounds(g) : RectangleF.Empty;
-				selectionRect.Inflate(0, 2);
-				selectionRect.Y += GetFontYOffset(font);
-				if (selPos == 0)
+				// Draw Selection
+				if ((state & TextBoxState.Focus) == TextBoxState.Focus && cursorPos >= 0 && selLength != 0)
 				{
-					selectionRect.X -= 2;
-					selectionRect.Width += 2;
-				}
-				if (selPos + Math.Abs(selLength) == text.Length)
-				{
-					selectionRect.Width += 2;
+					int selPos = Math.Min(cursorPos + selLength, cursorPos);
+					CharacterRange[] charRanges = new [] { new CharacterRange(selPos, Math.Abs(selLength)) };
+					Region[] charRegions = MeasureStringLine(g, text, charRanges, font, textRectScrolled);
+					RectangleF selectionRect = charRegions.Length > 0 ? charRegions[0].GetBounds(g) : RectangleF.Empty;
+					selectionRect.Inflate(0, 2);
+					selectionRect.Y += GetFontYOffset(font);
+					if (selPos == 0)
+					{
+						selectionRect.X -= 2;
+						selectionRect.Width += 2;
+					}
+					if (selPos + Math.Abs(selLength) == text.Length)
+					{
+						selectionRect.Width += 2;
+					}
+
+					if ((state & TextBoxState.ReadOnlyFlag) == TextBoxState.ReadOnlyFlag)
+						g.FillRectangle(new SolidBrush(Color.FromArgb(128, this.ColorGrayText)), selectionRect);
+					else
+						g.FillRectangle(new SolidBrush(Color.FromArgb(128, this.ColorHightlight)), selectionRect);
 				}
 
-				if ((state & TextBoxState.ReadOnlyFlag) == TextBoxState.ReadOnlyFlag)
-					g.FillRectangle(new SolidBrush(Color.FromArgb(128, this.ColorGrayText)), selectionRect);
-				else
-					g.FillRectangle(new SolidBrush(Color.FromArgb(128, this.ColorHightlight)), selectionRect);
+				// Draw Text
+				if ((state & TextBoxState.Disabled) == TextBoxState.Disabled ||
+					(state & TextBoxState.ReadOnlyFlag) == TextBoxState.ReadOnlyFlag)
+					textColor = Color.FromArgb(128, textColor);
+				DrawStringLine(g, text, font, textRectScrolled, textColor);
 			}
-
-			// Draw Text
-			if ((state & TextBoxState.Disabled) == TextBoxState.Disabled ||
-				(state & TextBoxState.ReadOnlyFlag) == TextBoxState.ReadOnlyFlag)
-				textColor = Color.FromArgb(128, textColor);
-			DrawStringLine(g, text, font, textRectScrolled, textColor);
 
 			// Draw Cursor
 			if ((state & TextBoxState.ReadOnlyFlag) != TextBoxState.ReadOnlyFlag && cursorPos >= 0 && selLength == 0)
 			{
 				CharacterRange[] charRanges = new [] { new CharacterRange(0, cursorPos) };
-				Region[] charRegions = MeasureStringLine(g, text, charRanges, font, textRectScrolled);
+				Region[] charRegions = MeasureStringLine(g, text ?? "", charRanges, font, textRectScrolled);
 				RectangleF textRectUntilCursor = charRegions.Length > 0 ? charRegions[0].GetBounds(g) : RectangleF.Empty;
 				int curPixelPos = textRectScrolled.X + (int)textRectUntilCursor.Width + 2;
 				DrawCursor(g, new Rectangle(curPixelPos, textRectScrolled.Top + 1, 1, textRectScrolled.Height - 2));

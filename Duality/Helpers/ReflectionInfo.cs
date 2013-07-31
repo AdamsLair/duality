@@ -147,6 +147,7 @@ namespace Duality
 
 		public static readonly FieldInfo Field_GameObject_Name;
 		public static readonly FieldInfo Field_GameObject_PrefabLink;
+		public static readonly FieldInfo Field_GameObject_Identifier;
 
 		public static readonly FieldInfo Field_Transform_Pos;
 		public static readonly FieldInfo Field_Transform_Angle;
@@ -321,6 +322,7 @@ namespace Duality
 			const BindingFlags fieldFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
 			Field_GameObject_Name		= gameobject.GetField("name", fieldFlags);
 			Field_GameObject_PrefabLink	= gameobject.GetField("prefabLink", fieldFlags);
+			Field_GameObject_Identifier	= gameobject.GetField("identifier", fieldFlags);
 
 			Field_Transform_Pos		= transform.GetField("pos", fieldFlags);
 			Field_Transform_Angle	= transform.GetField("angle", fieldFlags);

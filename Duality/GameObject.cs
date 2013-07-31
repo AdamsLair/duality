@@ -117,7 +117,7 @@ namespace Duality
 		public string Name
 		{
 			get { return this.name; }
-			set { this.name = value; }
+			set { this.name = string.IsNullOrWhiteSpace(value) ? "null" : value; }
 		}							//	GS
 		/// <summary>
 		/// [GET] The path-like hierarchial name of this GameObject.

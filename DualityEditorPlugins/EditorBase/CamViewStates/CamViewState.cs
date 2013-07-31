@@ -78,6 +78,10 @@ namespace EditorBase.CamViewStates
 			{
 				get { return false; }
 			}
+			public virtual string DisplayObjectName
+			{
+				get { return this.ActualObject != null ? this.ActualObject.ToString() : "null"; }
+			}
 			public bool IsInvalid
 			{
 				get { return this.ActualObject == null; }

@@ -14,20 +14,34 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 {
 	public class IListPropertyEditor : GroupedPropertyEditor
 	{
+		public delegate void IndexValueSetter(PropertyInfo indexer, IEnumerable<object> targetObjects, IEnumerable<object> values, int index);
+
 		private	bool					buttonIsCreate	= false;
 		private	NumericPropertyEditor	sizeEditor		= null;
 		private	NumericPropertyEditor	offsetEditor	= null;
 		private	int						offset			= 0;
 		private	int						internalEditors	= 0;
+		private	IndexValueSetter		listIndexSetter	= null;
 		
 		public override object DisplayedValue
 		{
 			get { return this.GetValue(); }
 		}
+		public IndexValueSetter ListIndexSetter
+		{
+			get { return this.listIndexSetter; }
+			set
+			{
+				if (value == null) value = DefaultPropertySetter;
+				this.listIndexSetter = value;
+			}
+		}
 
 		public IListPropertyEditor()
 		{
 			this.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
+
+			this.listIndexSetter = DefaultPropertySetter;
 
 			this.sizeEditor = new NumericPropertyEditor();
 			this.sizeEditor.EditedType = typeof(uint);
@@ -179,20 +193,6 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			if (childEditor == this.offsetEditor) return false;
 			return base.IsChildReadOnly(childEditor);
 		}
-		
-		//protected void elementEditor_ButtonPressed(object sender, EventArgs e)
-		//{
-		//    PropertyEditor editor = sender as PropertyEditor;
-		//    int index = 0;
-		//    foreach (PropertyEditor child in this.Children)
-		//    {
-		//        if (child == editor) break;
-		//        index++;
-		//    }
-		//    index -= this.internalEditors;
-
-		//    this.RemoveElementAt(index);
-		//}
 
 		protected void RemoveElementAt(int index)
 		{
@@ -290,16 +290,8 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		{
 			return delegate(IEnumerable<object> values)
 			{
-				IEnumerator<object> valuesEnum = values.GetEnumerator();
 				object[] targetArray = this.GetValue().ToArray();
-
-				object curValue = null;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (object target in targetArray)
-				{
-					if (target != null) indexer.SetValue(target, curValue, new object[] {index});
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				}
+				this.listIndexSetter(indexer, targetArray, values, index);
 				if (this.ForceWriteBack) this.SetValues(targetArray);
 			};
 		}
@@ -344,6 +336,19 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		protected internal override void ConfigureEditor(object configureData)
 		{
 			base.ConfigureEditor(configureData);
+		}
+
+		protected static void DefaultPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values, int index)
+		{
+			IEnumerator<object> valuesEnum = values.GetEnumerator();
+			object curValue = null;
+
+			if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
+			foreach (object target in targetObjects)
+			{
+				if (target != null) property.SetValue(target, curValue, new object[] { index });
+				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
+			}
 		}
 	}
 }

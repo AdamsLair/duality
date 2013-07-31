@@ -136,7 +136,7 @@ namespace Duality.Serialization
 				{
 					object val = field.GetValue(obj);
 
-					if (val != null && this.IsFieldBlocked(field))
+					if (val != null && this.IsFieldBlocked(field, obj))
 						val = field.FieldType.GetDefaultInstanceOf();
 
 					this.WriteObject(val);

@@ -23,6 +23,7 @@ namespace DualityEditor.UndoRedoActions
 		protected	object[]		targetObj		= null;
 		protected	object[]		targetValue		= null;
 		protected	object[]		backupValue		= null;
+		protected	object[]		targetIndices	= null;
 		
 		public override string Name
 		{
@@ -33,13 +34,14 @@ namespace DualityEditor.UndoRedoActions
 			get { return this.targetObj == null || this.targetObj.Length == 0; }
 		}
 
-		public EditPropertyAction(PropertyGrid parent, PropertyInfo property, IEnumerable<object> target, IEnumerable<object> value)
+		public EditPropertyAction(PropertyGrid parent, PropertyInfo property, IEnumerable<object> target, IEnumerable<object> value, object[] indices = null)
 		{
 			if (property == null) throw new ArgumentNullException("property");
 			if (target == null) throw new ArgumentNullException("target");
 			this.targetProperty = property;
 			this.targetObj = target.Where(o => o != null).ToArray();
 			this.targetValue = value != null ? value.ToArray() : null;
+			this.targetIndices = indices;
 			this.parent = parent;
 		}
 
@@ -73,11 +75,11 @@ namespace DualityEditor.UndoRedoActions
 				{
 					this.backupValue = new object[this.targetObj.Length];
 					for (int i = 0; i < this.targetObj.Length; i++)
-						this.backupValue[i] = this.targetProperty.GetValue(this.targetObj[i], null);
+						this.backupValue[i] = this.targetProperty.GetValue(this.targetObj[i], this.targetIndices);
 				}
 
 				for (int i = 0; i < this.targetObj.Length; i++)
-					this.targetProperty.SetValue(this.targetObj[i], this.targetValue[Math.Min(i, this.targetValue.Length - 1)], null);
+					this.targetProperty.SetValue(this.targetObj[i], this.targetValue[Math.Min(i, this.targetValue.Length - 1)], this.targetIndices);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this.parent, new ObjectSelection(this.targetObj), this.targetProperty);
@@ -92,7 +94,7 @@ namespace DualityEditor.UndoRedoActions
 				if (this.backupValue == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");
 
 				for (int i = 0; i < this.targetObj.Length; i++)
-					this.targetProperty.SetValue(this.targetObj[i], this.backupValue[i], null);
+					this.targetProperty.SetValue(this.targetObj[i], this.backupValue[i], this.targetIndices);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this.parent, new ObjectSelection(this.targetObj), this.targetProperty);

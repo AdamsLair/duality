@@ -440,8 +440,9 @@ namespace Duality
 		/// fields flagged with a <see cref="NonSerializedResourceAttribute"/> from being serialized.
 		/// </summary>
 		/// <param name="field"></param>
+		/// <param name="obj"></param>
 		/// <returns></returns>
-		public static bool NonSerializedResourceBlocker(FieldInfo field)
+		public static bool NonSerializedResourceBlocker(FieldInfo field, object obj)
 		{
 			return field.GetCustomAttributes(typeof(NonSerializedResourceAttribute), true).Any();
 		}

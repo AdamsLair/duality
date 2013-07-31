@@ -64,6 +64,16 @@ namespace DualityEditor.Controls
 				memberEditor.MemberPropertySetter = this.EditorMemberPropertySetter;
 				memberEditor.MemberFieldSetter = this.EditorMemberFieldSetter;
 			}
+			if (editor is IListPropertyEditor)
+			{
+				IListPropertyEditor listEditor = editor as IListPropertyEditor;
+				listEditor.ListIndexSetter = this.EditorListIndexSetter;
+			}
+			if (editor is IDictionaryPropertyEditor)
+			{
+				IDictionaryPropertyEditor dictEditor = editor as IDictionaryPropertyEditor;
+				dictEditor.DictionaryKeySetter = this.EditorDictionaryKeySetter;
+			}
 
 			var flagsAttrib = editor.EditedMember.GetEditorHint<EditorHintFlagsAttribute>(hintOverride);
 			if (flagsAttrib != null)
@@ -143,6 +153,14 @@ namespace DualityEditor.Controls
 		private void EditorMemberFieldSetter(FieldInfo field, IEnumerable<object> targetObjects, IEnumerable<object> values)
 		{
 			UndoRedoManager.Do(new EditFieldAction(this, field, targetObjects, values));
+		}
+		private void EditorListIndexSetter(PropertyInfo indexer, IEnumerable<object> targetObjects, IEnumerable<object> values, int index)
+		{
+			UndoRedoManager.Do(new EditPropertyAction(this, indexer, targetObjects, values, new object[] {index}));
+		}
+		private void EditorDictionaryKeySetter(PropertyInfo indexer, IEnumerable<object> targetObjects, IEnumerable<object> values, object key)
+		{
+			UndoRedoManager.Do(new EditPropertyAction(this, indexer, targetObjects, values, new object[] {key}));
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)

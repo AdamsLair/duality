@@ -14,21 +14,34 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 {
 	public class IDictionaryPropertyEditor : GroupedPropertyEditor
 	{
-		private	bool					buttonIsCreate	= false;
-		private	PropertyEditor			addKeyEditor	= null;
-		private	object					addKey			= null;
-		private	NumericPropertyEditor	offsetEditor	= null;
-		private	int						offset			= 0;
-		private	int						internalEditors	= 0;
+		public delegate void KeyValueSetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values, object key);
+
+		private	bool					buttonIsCreate		= false;
+		private	PropertyEditor			addKeyEditor		= null;
+		private	object					addKey				= null;
+		private	NumericPropertyEditor	offsetEditor		= null;
+		private	int						offset				= 0;
+		private	int						internalEditors		= 0;
+		private	KeyValueSetter			dictKeySetter		= null;
 		
 		public override object DisplayedValue
 		{
 			get { return this.GetValue(); }
 		}
+		public KeyValueSetter DictionaryKeySetter
+		{
+			get { return this.dictKeySetter; }
+			set
+			{
+				if (value == null) value = DefaultPropertySetter;
+				this.dictKeySetter = value;
+			}
+		}
 
 		public IDictionaryPropertyEditor()
 		{
 			this.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
+			this.dictKeySetter = DefaultPropertySetter;
 
 			this.offsetEditor = new NumericPropertyEditor();
 			this.offsetEditor.EditedType = typeof(uint);
@@ -244,6 +257,12 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 					}
 				}
 			}
+
+			// Focus-Unfocus to trigger some kind of "select all" / "reset" behaivor in the "Add Key" field.
+			this.ParentGrid.Focus(this);
+			this.addKeyEditor.Focus();
+
+			// Reset add key editor and update sub-editors
 			this.addKey = null;
 			this.PerformGetValue();
 		}
@@ -269,16 +288,8 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		{
 			return delegate(IEnumerable<object> values)
 			{
-				IEnumerator<object> valuesEnum = values.GetEnumerator();
 				object[] targetArray = this.GetValue().ToArray();
-
-				object curValue = null;
-				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				foreach (object target in targetArray)
-				{
-					if (target != null) indexer.SetValue(target, curValue, new object[] {key});
-					if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
-				}
+				this.dictKeySetter(indexer, targetArray, values, key);
 				if (this.ForceWriteBack) this.SetValues(targetArray);
 			};
 		}
@@ -307,6 +318,19 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			}
 
 			this.PerformGetValue();
+		}
+
+		protected static void DefaultPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values, object key)
+		{
+			IEnumerator<object> valuesEnum = values.GetEnumerator();
+			object curValue = null;
+
+			if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
+			foreach (object target in targetObjects)
+			{
+				if (target != null) property.SetValue(target, curValue, new object[] {key});
+				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
+			}
 		}
 	}
 }

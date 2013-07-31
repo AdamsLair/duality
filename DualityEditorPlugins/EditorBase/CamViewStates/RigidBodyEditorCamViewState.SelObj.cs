@@ -19,6 +19,10 @@ namespace EditorBase.CamViewStates
 			{
 				get { return this.bodyObj == null || this.bodyObj.Disposed ? null : this.bodyObj; }
 			}
+			public override string DisplayObjectName
+			{
+				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelBodyName; }
+			}
 			public override bool HasTransform
 			{
 				get { return this.bodyObj != null && !this.bodyObj.Disposed && this.bodyObj.Transform != null; }
@@ -73,6 +77,10 @@ namespace EditorBase.CamViewStates
 			public override object ActualObject
 			{
 				get { return this.shape; }
+			}
+			public override string DisplayObjectName
+			{
+				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelShapeName; }
 			}
 			public RigidBody Body
 			{
@@ -131,6 +139,10 @@ namespace EditorBase.CamViewStates
 			public override float BoundRadius
 			{
 				get { return this.circle.Radius * this.Body.GameObj.Transform.Scale; }
+			}
+			public override string DisplayObjectName
+			{
+				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelCircleShapeName; }
 			}
 
 			public SelCircleShape(CircleShapeInfo shape) : base(shape)
@@ -203,6 +215,10 @@ namespace EditorBase.CamViewStates
 			public override float BoundRadius
 			{
 				get { return this.boundRad * this.Body.GameObj.Transform.Scale; }
+			}
+			public override string DisplayObjectName
+			{
+				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelPolyShapeName; }
 			}
 
 			public SelPolyShape(PolyShapeInfo shape) : base(shape)
@@ -341,6 +357,10 @@ namespace EditorBase.CamViewStates
 			public override float BoundRadius
 			{
 				get { return this.boundRad * this.Body.GameObj.Transform.Scale; }
+			}
+			public override string DisplayObjectName
+			{
+				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelLoopShapeName; }
 			}
 
 			public SelLoopShape(LoopShapeInfo shape) : base(shape)

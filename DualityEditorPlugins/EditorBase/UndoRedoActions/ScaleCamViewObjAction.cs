@@ -25,7 +25,7 @@ namespace EditorBase.UndoRedoActions
 		public override string Name
 		{
 			get { return this.targetObj.Length == 1 ? 
-				string.Format(EditorBaseRes.UndoRedo_ScaleCamViewObj, this.targetObj[0].ActualObject) :
+				string.Format(EditorBaseRes.UndoRedo_ScaleCamViewObj, this.targetObj[0].DisplayObjectName) :
 				string.Format(EditorBaseRes.UndoRedo_ScaleCamViewObjMulti, this.targetObj.Length); }
 		}
 		public override bool IsVoid

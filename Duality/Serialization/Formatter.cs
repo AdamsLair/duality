@@ -32,6 +32,15 @@ namespace Duality.Serialization
 	public abstract class Formatter : IDisposable
 	{
 		/// <summary>
+		/// Declares a <see cref="System.Reflection.FieldInfo">field</see> blocker. If a field blocker
+		/// returns true upon serializing a specific field, a default value is assumed instead.
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public delegate bool FieldBlocker(FieldInfo field, object obj);
+
+		/// <summary>
 		/// Buffer object for <see cref="Duality.Serialization.ISerializable">custom de/serialization</see>, 
 		/// providing read and write functionality.
 		/// </summary>
@@ -152,18 +161,18 @@ namespace Duality.Serialization
 		/// A list of <see cref="System.Reflection.FieldInfo">field</see> blockers. If any registered field blocker
 		/// returns true upon serializing a specific field, a default value is assumed instead.
 		/// </summary>
-		protected	List<Predicate<FieldInfo>>	fieldBlockers	= new List<Predicate<FieldInfo>>();
+		protected	List<FieldBlocker>	fieldBlockers	= new List<FieldBlocker>();
 		/// <summary>
 		/// A list of <see cref="Duality.Serialization.ISurrogate">Serialization Surrogates</see>. If any of them
 		/// matches the <see cref="System.Type"/> of an object that is to be serialized, instead of letting it
 		/// serialize itsself, the <see cref="Duality.Serialization.ISurrogate"/> with the highest <see cref="Duality.Serialization.ISurrogate.Priority"/>
 		/// is used instead.
 		/// </summary>
-		protected	List<ISurrogate>			surrogates		= new List<ISurrogate>();
+		protected	List<ISurrogate>	surrogates		= new List<ISurrogate>();
 		/// <summary>
 		/// Manages object IDs during de/serialization.
 		/// </summary>
-		protected	ObjectIdManager				idManager		= new ObjectIdManager();
+		protected	ObjectIdManager		idManager		= new ObjectIdManager();
 
 		private	bool	disposed	= false;
 		private	Log		log			= Log.Core;
@@ -181,7 +190,7 @@ namespace Duality.Serialization
 		/// [GET] Enumerates registered <see cref="System.Reflection.FieldInfo">field</see> blockers. If any registered field blocker
 		/// returns true upon serializing a specific field, a default value is assumed instead.
 		/// </summary>
-		public IEnumerable<Predicate<FieldInfo>> FieldBlockers
+		public IEnumerable<FieldBlocker> FieldBlockers
 		{
 			get { return this.fieldBlockers; }
 		}
@@ -294,7 +303,7 @@ namespace Duality.Serialization
 		/// Registers a new <see cref="FieldBlockers">FieldBlocker</see>.
 		/// </summary>
 		/// <param name="blocker"></param>
-		public void AddFieldBlocker(Predicate<FieldInfo> blocker)
+		public void AddFieldBlocker(FieldBlocker blocker)
 		{
 			if (this.fieldBlockers.Contains(blocker)) return;
 			this.fieldBlockers.Add(blocker);
@@ -303,7 +312,7 @@ namespace Duality.Serialization
 		/// Unregisters an existing <see cref="FieldBlockers">FieldBlocker</see>.
 		/// </summary>
 		/// <param name="blocker"></param>
-		public void RemoveFieldBlocker(Predicate<FieldInfo> blocker)
+		public void RemoveFieldBlocker(FieldBlocker blocker)
 		{
 			this.fieldBlockers.Remove(blocker);
 		}
@@ -312,11 +321,12 @@ namespace Duality.Serialization
 		/// Instead of writing the value of a blocked field, the matching <see cref="System.Type">Types</see>
 		/// defautl value is assumed.
 		/// </summary>
-		/// <param name="field">The <see cref="System.Reflection.FieldInfo">field</see> in question</param>
+		/// <param name="field">The <see cref="System.Reflection.FieldInfo">field</see> in question.</param>
+		/// <param name="obj">The object where this field originates from.</param>
 		/// <returns>True, if the <see cref="System.Reflection.FieldInfo">field</see> is blocked, false if not.</returns>
-		public bool IsFieldBlocked(FieldInfo field)
+		public bool IsFieldBlocked(FieldInfo field, object obj)
 		{
-			return this.fieldBlockers.Any(blocker => blocker(field));
+			return this.fieldBlockers.Any(blocker => blocker(field, obj));
 		}
 
 		/// <summary>
