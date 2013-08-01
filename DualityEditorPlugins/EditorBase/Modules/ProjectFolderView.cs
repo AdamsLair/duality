@@ -519,15 +519,13 @@ namespace EditorBase
 			if (!PathHelper.IsPathVisible(dirPath)) return null;
 			DirectoryNode thisNode = new DirectoryNode(dirPath);
 
-			string[] subDirs = Directory.GetDirectories(dirPath);
-			foreach (string dir in subDirs)
+			foreach (string dir in Directory.EnumerateDirectories(dirPath))
 			{
 				DirectoryNode dirNode = this.ScanDirectory(dir);
 				if (dirNode != null) this.InsertNodeSorted(dirNode, thisNode);
 			}
 
-			string[] files = Directory.GetFiles(dirPath);
-			foreach (string file in files)
+			foreach (string file in Directory.EnumerateFiles(dirPath))
 			{
 				NodeBase fileNode = this.ScanFile(file);
 				if (fileNode != null) this.InsertNodeSorted(fileNode, thisNode);

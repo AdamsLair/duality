@@ -138,16 +138,27 @@ namespace Duality.Serialization
 			else
 			{
 				bool skipLayout = false;
+				TypeDataLayout layout = null;
 				if (node.SubNodes.FirstOrDefault() is TypeDataLayoutNode)
 				{
 					TypeDataLayoutNode typeDataLayout = node.SubNodes.FirstOrDefault() as TypeDataLayoutNode;
 					this.WriteTypeDataLayout(typeDataLayout.Layout, node.TypeString);
+					layout = typeDataLayout.Layout;
 					skipLayout = true;
 				}
 				else
 				{
 					this.WriteTypeDataLayout(node.TypeString);
+					layout = this.GetCachedTypeDataLayout(node.TypeString);
 				}
+
+				// Write the structs omitted mask
+				bool[] fieldOmitted = new bool[layout.Fields.Length];
+				for (int i = 0; i < layout.Fields.Length; i++)
+				{
+					fieldOmitted[i] = !node.SubNodes.Any(n => !(n is DummyNode) && n.Name == layout.Fields[i].name);
+				}
+				this.WriteArrayData(fieldOmitted);
 
 				// Write the structs fields
 				foreach (DataNode subNode in node.SubNodes)
@@ -336,7 +347,7 @@ namespace Duality.Serialization
 			else
 			{
 				// Determine data layout
-				bool wasThereBefore = this.IsTypeDataLayoutCached(objTypeString);
+				bool wasThereBefore = this.GetCachedTypeDataLayout(objTypeString) != null;
 				TypeDataLayout layout = this.ReadTypeDataLayout(objTypeString);
 				if (!wasThereBefore)
 				{
@@ -345,11 +356,27 @@ namespace Duality.Serialization
 				}
 
 				// Read fields
-				for (int i = 0; i < layout.Fields.Length; i++)
+				if (this.dataVersion <= 2)
 				{
-					DataNode fieldValue = this.ReadObject() as DataNode;
-					fieldValue.Parent = result;
-					fieldValue.Name = layout.Fields[i].name;
+					for (int i = 0; i < layout.Fields.Length; i++)
+					{
+						DataNode fieldValue = this.ReadObject() as DataNode;
+						fieldValue.Parent = result;
+						fieldValue.Name = layout.Fields[i].name;
+					}
+				}
+				else if (this.dataVersion >= 3)
+				{
+					bool[] fieldOmitted = new bool[layout.Fields.Length];
+					this.ReadArrayData(fieldOmitted);
+					
+					for (int i = 0; i < layout.Fields.Length; i++)
+					{
+						if (fieldOmitted[i]) continue;
+						DataNode fieldValue = this.ReadObject() as DataNode;
+						fieldValue.Parent = result;
+						fieldValue.Name = layout.Fields[i].name;
+					}
 				}
 			}
 

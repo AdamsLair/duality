@@ -545,7 +545,7 @@ namespace Duality.Serialization
 			get { return defaultMethod; }
 			set { defaultMethod = value; }
 		}
-
+		
 		internal static void InitDefaultMethod()
 		{
 			if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
@@ -553,7 +553,7 @@ namespace Duality.Serialization
 			else
 				defaultMethod = FormattingMethod.Binary;
 
-			foreach (string anyResource in Directory.GetFiles(".", "*" + Resource.FileExt, SearchOption.AllDirectories))
+			foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories))
 			{
 				using (FileStream stream = File.OpenRead(anyResource))
 				{

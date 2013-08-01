@@ -746,7 +746,6 @@ namespace Duality
 				{
 					using (var formatter = Formatter.Create(str, FormattingMethod.Xml))
 					{
-						formatter.AddFieldBlocker(Resource.NonSerializedResourceBlocker);
 						formatter.WriteObject(metaData);
 					}
 				}

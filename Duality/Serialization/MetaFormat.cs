@@ -404,6 +404,7 @@ namespace Duality.Serialization.MetaFormat
 		public bool CustomSerialization
 		{
 			get { return this.customSerialization; }
+			set { this.customSerialization = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether this structural object uses an <see cref="Duality.Serialization.ISurrogate"/>.
@@ -411,6 +412,7 @@ namespace Duality.Serialization.MetaFormat
 		public bool SurrogateSerialization
 		{
 			get { return this.surrogateSerialization; }
+			set { this.surrogateSerialization = value; }
 		}
 
 		public StructNode(bool isClass, string typeString, uint objId, bool customSerialization, bool surrogateSerialization) : base(isClass ? DataType.Class : DataType.Struct, typeString, objId)

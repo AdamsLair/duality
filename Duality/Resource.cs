@@ -186,7 +186,9 @@ namespace Duality
 
 			using (var formatter = Formatter.Create(str))
 			{
-				formatter.AddFieldBlocker(NonSerializedResourceBlocker);
+				formatter.AddFieldBlocker(Resource.NonSerializedResourceBlocker);
+				if (this is Duality.Resources.Scene) // This is an unfortunate hack. Refactor when necessary.
+					formatter.AddFieldBlocker(Resource.PrefabLinkedFieldBlocker);
 				formatter.WriteObject(this);
 			}
 		}
@@ -445,6 +447,22 @@ namespace Duality
 		public static bool NonSerializedResourceBlocker(FieldInfo field, object obj)
 		{
 			return field.GetCustomAttributes(typeof(NonSerializedResourceAttribute), true).Any();
+		}
+		/// <summary>
+		/// A <see cref="Duality.Serialization.Formatter.FieldBlockers">FieldBlocker</see> to prevent
+		/// fields of <see cref="PrefabLink">PrefabLink-ed</see> objects from being serialized unnecessarily.
+		/// </summary>
+		/// <param name="field"></param>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public static bool PrefabLinkedFieldBlocker(FieldInfo field, object obj)
+		{
+			Component cmp = obj as Component;
+			return 
+				cmp != null && 
+				cmp.GameObj != null && 
+				cmp.GameObj.PrefabLink != null && 
+				field.DeclaringType != typeof(Component);
 		}
 
 		internal static void RunCleanup()

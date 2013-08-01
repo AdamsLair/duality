@@ -131,15 +131,19 @@ namespace Duality.Serialization
 				// Assure the type data layout has bee written (only once per file)
 				this.WriteTypeDataLayout(objSerializeType);
 
-				// Write the structs fields
-				foreach (FieldInfo field in objSerializeType.Fields)
+				// Write omitted field bitmask
+				bool[] fieldOmitted = new bool[objSerializeType.Fields.Length];
+				for (int i = 0; i < fieldOmitted.Length; i++)
 				{
-					object val = field.GetValue(obj);
+					fieldOmitted[i] = this.IsFieldBlocked(objSerializeType.Fields[i], obj);
+				}
+				this.WriteArrayData(fieldOmitted);
 
-					if (val != null && this.IsFieldBlocked(field, obj))
-						val = field.FieldType.GetDefaultInstanceOf();
-
-					this.WriteObject(val);
+				// Write the structs fields
+				for (int i = 0; i < objSerializeType.Fields.Length; i++)
+				{
+					if (fieldOmitted[i]) continue;
+					this.WriteObject(objSerializeType.Fields[i].GetValue(obj));
 				}
 			}
 		}
@@ -327,10 +331,24 @@ namespace Duality.Serialization
 				TypeDataLayout layout	= this.ReadTypeDataLayout(objTypeString);
 
 				// Read fields
-				for (int i = 0; i < layout.Fields.Length; i++)
+				if (this.dataVersion <= 2)
 				{
-					object fieldValue = this.ReadObject();
-					this.AssignValueToField(objSerializeType, obj, layout.Fields[i].name, fieldValue);
+					for (int i = 0; i < layout.Fields.Length; i++)
+					{
+						object fieldValue = this.ReadObject();
+						this.AssignValueToField(objSerializeType, obj, layout.Fields[i].name, fieldValue);
+					}
+				}
+				else if (this.dataVersion >= 3)
+				{
+					bool[] fieldOmitted = new bool[layout.Fields.Length];
+					this.ReadArrayData(fieldOmitted);
+					for (int i = 0; i < layout.Fields.Length; i++)
+					{
+						if (fieldOmitted[i]) continue;
+						object fieldValue = this.ReadObject();
+						this.AssignValueToField(objSerializeType, obj, layout.Fields[i].name, fieldValue);
+					}
 				}
 			}
 
@@ -362,7 +380,7 @@ namespace Duality.Serialization
 			try
 			{
 				#region Version 1
-				if (this.dataVersion == 1)
+				if (this.dataVersion <= 1)
 				{
 					if (dataType == DataType.Type)
 					{
@@ -459,7 +477,7 @@ namespace Duality.Serialization
 						throw new ApplicationException(string.Format("Invalid DataType '{0}' in ReadMemberInfo method.", dataType));
 				}
 				#endregion
-				else if (dataVersion == 2)
+				else if (this.dataVersion >= 2)
 				{
 					if (dataType == DataType.Type)
 					{

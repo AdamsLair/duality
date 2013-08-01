@@ -239,7 +239,19 @@ namespace DualityEditor
 			else if (template.SpecialTag == ProjectTemplateInfo.SpecialInfo.Current)
 			{
 				DualityEditorApp.SaveAllProjectData();
-				PathHelper.CopyDirectory(Environment.CurrentDirectory, projFolder, true);
+				PathHelper.CopyDirectory(Environment.CurrentDirectory, projFolder, true, delegate(string path)
+				{
+					bool isDir = Directory.Exists(path);
+					string fullPath = Path.GetFullPath(path);
+					if (isDir)
+					{
+						return fullPath != Path.GetFullPath(EditorHelper.BackupDirectory);
+					}
+					else
+					{
+						return true;
+					}
+				});
 			}
 			else
 			{
@@ -251,12 +263,13 @@ namespace DualityEditor
 					{
 						return 
 							fullPath != Path.GetFullPath(DualityApp.DataDirectory) &&
-							fullPath != Path.GetFullPath(EditorHelper.SourceDirectory);
+							fullPath != Path.GetFullPath(EditorHelper.SourceDirectory) &&
+							fullPath != Path.GetFullPath(EditorHelper.BackupDirectory);
 					}
 					else
 					{
 						string fileName = Path.GetFileName(fullPath);
-						return fileName != "appdata.dat" && fileName != "defaultuserdata.dat";
+						return fileName != "appdata.dat" && fileName != "defaultuserdata.dat" && fileName != "designtimedata.dat";
 					}
 				});
 			}

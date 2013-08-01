@@ -73,7 +73,7 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Binary serialization version number.
 		/// </summary>
-		protected	const	ushort	Version		= 2;
+		protected	const	ushort	Version		= 3;
 
 
 		/// <summary>
@@ -218,15 +218,16 @@ namespace Duality.Serialization
 		protected abstract object ReadObjectBody(DataType dataType);
 
 		/// <summary>
-		/// Returns whether the <see cref="Duality.Serialization.TypeDataLayout"/> for the specified <see cref="System.Type"/> is
-		/// already present in the binary serializers internal cache.
+		/// Returns the cached version of the specified typenames <see cref="Duality.Serialization.TypeDataLayout"/>.
 		/// </summary>
 		/// <param name="t">A string referring to the <see cref="System.Type"/> that is described by the 
 		/// <see cref="Duality.Serialization.TypeDataLayout"/> in question.</param>
-		/// <returns>True, if the <see cref="Duality.Serialization.TypeDataLayout"/> is already cached, false if not.</returns>
-		public bool IsTypeDataLayoutCached(string t)
+		/// <returns></returns>
+		protected TypeDataLayout GetCachedTypeDataLayout(string t)
 		{
-			return this.typeDataLayout.ContainsKey(t);
+			TypeDataLayout result;
+			if (!this.typeDataLayout.TryGetValue(t, out result)) return null;
+			return result;
 		}
 		/// <summary>
 		/// Reads the <see cref="Duality.Serialization.TypeDataLayout"/> describing the specified <see cref="System.Type"/>.

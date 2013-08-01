@@ -567,6 +567,23 @@ namespace DualityEditor
 		{
 			glSwapBuffers.Add(control.WindowInfo);
 		}
+		public static void GLUpdateBufferSwap()
+		{
+			// Perform a buffer swap
+			if (glSwapBuffers.Count > 0)
+			{
+				Performance.TimeRender.BeginMeasure();
+				Performance.TimeSwapBuffers.BeginMeasure();
+				foreach (IWindowInfo window in glSwapBuffers)
+				{
+					mainContextControl.Context.MakeCurrent(window);
+					mainContextControl.SwapBuffers();
+				}
+				Performance.TimeSwapBuffers.EndMeasure();
+				Performance.TimeRender.EndMeasure();
+				glSwapBuffers.Clear();
+			}
+		}
 		public static GLControl GLCreateControl()
 		{
 			return new GLControl(mainContextControl.GraphicsMode);
@@ -1226,19 +1243,7 @@ namespace DualityEditor
 				}
 				
 				// Perform a buffer swap
-				if (glSwapBuffers.Count > 0)
-				{
-					Performance.TimeRender.BeginMeasure();
-					Performance.TimeSwapBuffers.BeginMeasure();
-					foreach (IWindowInfo window in glSwapBuffers)
-					{
-						mainContextControl.Context.MakeCurrent(window);
-						mainContextControl.SwapBuffers();
-					}
-					Performance.TimeSwapBuffers.EndMeasure();
-					Performance.TimeRender.EndMeasure();
-					glSwapBuffers.Clear();
-				}
+				GLUpdateBufferSwap();
 
 				// Give the processor a rest if we have the time, don't use 100% CPU
 				while (watch.Elapsed.TotalSeconds < 0.01d)

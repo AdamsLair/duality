@@ -959,8 +959,7 @@ namespace Duality
 						// Iterate and manually compare names
 						foreach (Type t in types)
 						{
-							string nameTemp = t.FullName.Replace('+', '.');
-							if (typeNameBase == nameTemp)
+							if (IsFullTypeNameEqual(typeNameBase, t.FullName))
 							{
 								baseType = t;
 								break;
@@ -1135,6 +1134,34 @@ namespace Duality
 				return resolveError.ResolvedMember;
 			else
 				return null;
+		}
+		/// <summary>
+		/// Compares two Type names for equality, ignoring the plus / dot difference.
+		/// </summary>
+		/// <param name="typeNameA"></param>
+		/// <param name="typeNameB"></param>
+		/// <returns></returns>
+		private static unsafe bool IsFullTypeNameEqual(string typeNameA, string typeNameB)
+		{
+			// Not doing this for performance reasons:
+			//string nameTemp = typeNameA.Replace('+', '.');
+			//if (typeNameB == nameTemp)
+
+			if (typeNameA.Length != typeNameB.Length) return false;
+
+			for (int i = 0; i < typeNameA.Length; ++i)
+			{
+				if (typeNameA[i] != typeNameB[i])
+				{
+					if (typeNameA[i] == '.' && typeNameB[i] == '+')
+						continue;
+					if (typeNameA[i] == '+' && typeNameB[i] == '.')
+						continue;
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>

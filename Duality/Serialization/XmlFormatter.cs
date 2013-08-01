@@ -124,12 +124,8 @@ namespace Duality.Serialization
 				// Write the structs fields
 				foreach (FieldInfo field in objSerializeType.Fields)
 				{
-					object val = field.GetValue(obj);
-
-					if (val != null && this.IsFieldBlocked(field, obj))
-						val = field.FieldType.GetDefaultInstanceOf();
-
-					this.WriteObject(val, field.Name);
+					if (this.IsFieldBlocked(field, obj)) continue;
+					this.WriteObject(field.GetValue(obj), field.Name);
 				}
 			}
 		}

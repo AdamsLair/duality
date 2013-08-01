@@ -1529,6 +1529,8 @@ namespace EditorBase.CamViewStates
 		private void LocalGLControl_DragOver(object sender, DragEventArgs e)
 		{
 			this.OnDragOver(e);
+			// Force immediate buffer swap, because there is no event loop while dragging.
+			DualityEditorApp.GLUpdateBufferSwap();
 		}
 		private void LocalGLControl_DragLeave(object sender, EventArgs e)
 		{
