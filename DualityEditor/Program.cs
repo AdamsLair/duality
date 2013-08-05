@@ -32,7 +32,11 @@ namespace DualityEditor
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.ThreadException += Application_ThreadException;
-			Application.Run(new SplashScreen(recover));
+
+			SplashScreen splashScreen = new SplashScreen(recover);
+			splashScreen.Show();
+
+			Application.Run();
 		}
 		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
 		{

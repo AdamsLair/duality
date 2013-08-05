@@ -39,7 +39,7 @@ namespace DualityEditor.Forms
 			this.Hide();
 			try
 			{
-				(e.Result as MainForm).ShowDialog();
+				(e.Result as MainForm).Show();
 			}
 			finally
 			{

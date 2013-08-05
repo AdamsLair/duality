@@ -352,6 +352,11 @@ namespace DualityEditor.Forms
 			base.OnFormClosing(e);
 			e.Cancel = !DualityEditorApp.Terminate(!this.nonUserClosing && !DualityEditorApp.IsReloadingPlugins);
 		}
+		protected override void OnFormClosed(FormClosedEventArgs e)
+		{
+			base.OnFormClosed(e);
+			Application.Exit();
+		}
 
 		private void actionRunApp_Click(object sender, EventArgs e)
 		{
