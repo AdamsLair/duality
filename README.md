@@ -8,3 +8,5 @@ Besides the github project overview and documentation, there is also a [develope
 Duality Pages on GitHub: http://adamslair.github.io/duality/
 
 Latest binary release: http://dualitybin.fetzenet.de/
+
+Buy me a drink: [ Donate via PayPal ](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC)
