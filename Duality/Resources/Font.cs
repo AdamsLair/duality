@@ -13,6 +13,7 @@ using Duality.VertexFormat;
 using Duality.EditorHints;
 
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
 
 namespace Duality.Resources
 {
@@ -211,8 +212,6 @@ namespace Duality.Resources
 		private	string		familyName			= FontFamily.GenericMonospace.Name;
 		private	float		size				= 10.0f;
 		private	FontStyle	style				= FontStyle.Regular;
-		private	ColorRgba	color				= ColorRgba.White;
-		private	ColorRgba	bgColor				= ColorRgba.TransparentWhite;
 		private	RenderHint	hint				= RenderHint.AntiAlias;
 		private	float		spacing				= 0.0f;
 		private	float		lineHeightFactor	= 1.0f;
@@ -715,17 +714,13 @@ namespace Duality.Resources
 				}
 			}
 
-			// Adjust colors based on alpha value
-			//for (int i = 0; i < pixelLayer.Data.Length; i++)
-			System.Threading.Tasks.Parallel.For(0, pixelLayer.Data.Length, i =>
+			// White out texture except alpha channel.
+			for (int i = 0; i < pixelLayer.Data.Length; i++)
 			{
-				float factor = pixelLayer.Data[i].A / 255.0f;
-				float invFactor = 1.0f - factor;
-				pixelLayer.Data[i].R = (byte)Math.Min(255.0f, Math.Max(0.0f, this.bgColor.R * invFactor + this.color.R * factor));
-				pixelLayer.Data[i].G = (byte)Math.Min(255.0f, Math.Max(0.0f, this.bgColor.G * invFactor + this.color.G * factor));
-				pixelLayer.Data[i].B = (byte)Math.Min(255.0f, Math.Max(0.0f, this.bgColor.B * invFactor + this.color.B * factor));
-				pixelLayer.Data[i].A = (byte)Math.Min(255.0f, Math.Max(0.0f, this.bgColor.A * invFactor + this.color.A * factor));
-			});
+				pixelLayer.Data[i].R = 255;
+				pixelLayer.Data[i].G = 255;
+				pixelLayer.Data[i].B = 255;
+			}
 
 			this.height = this.internalFont.Height;
 			this.ascent = (int)Math.Round(this.internalFont.FontFamily.GetCellAscent(this.internalFont.Style) * this.internalFont.Size / this.internalFont.FontFamily.GetEmHeight(this.internalFont.Style));
@@ -739,8 +734,11 @@ namespace Duality.Resources
 			this.pixelData.Atlas = new List<Rect>(atlas);
 			this.texture = new Texture(this.pixelData, 
 				Texture.SizeMode.Enlarge, 
-				useNearest ? OpenTK.Graphics.OpenGL.TextureMagFilter.Nearest : OpenTK.Graphics.OpenGL.TextureMagFilter.Linear,
-				useNearest ? OpenTK.Graphics.OpenGL.TextureMinFilter.Nearest : OpenTK.Graphics.OpenGL.TextureMinFilter.LinearMipmapLinear);
+				useNearest ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
+				useNearest ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear,
+				TextureWrapMode.ClampToEdge,
+				TextureWrapMode.ClampToEdge,
+				PixelInternalFormat.Alpha);
 
 			this.mat = new Material(this.hint == RenderHint.Monochrome ? DrawTechnique.Mask : DrawTechnique.Alpha, ColorRgba.White, this.texture);
 		}
@@ -820,12 +818,8 @@ namespace Duality.Resources
 
 			for (int i = 0; i < len; i++)
 			{
-				Vector3 vertex = vertices[i].Pos;
-
-				MathF.TransformDotVec(ref vertex, ref xDot, ref yDot);
-				vertex += offset;
-
-				vertices[i].Pos = vertex;
+				MathF.TransformDotVec(ref vertices[i].Pos, ref xDot, ref yDot);
+				Vector3.Add(ref vertices[i].Pos, ref offset, out vertices[i].Pos);
 				vertices[i].Color = clr;
 			}
 
@@ -849,9 +843,7 @@ namespace Duality.Resources
 
 			for (int i = 0; i < len; i++)
 			{
-				Vector3 vertex = vertices[i].Pos;
-				vertex += offset;
-				vertices[i].Pos = vertex;
+				Vector3.Add(ref vertices[i].Pos, ref offset, out vertices[i].Pos);
 				vertices[i].Color = clr;
 			}
 
@@ -1206,8 +1198,6 @@ namespace Duality.Resources
 			c.size = this.size;
 			c.style = this.style;
 			c.hint = this.hint;
-			c.bgColor = this.bgColor;
-			c.color = this.color;
 			c.monospace = this.monospace;
 			c.kerning = this.kerning;
 			c.spacing = this.spacing;

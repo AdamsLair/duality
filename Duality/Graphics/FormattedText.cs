@@ -999,22 +999,35 @@ namespace Duality
 			
 			Vector3 offset = new Vector3(x, y, 0);
 
-			for (int i = 0; i < vertText.Length; i++)
+			if (clr == ColorRgba.White)
 			{
-				for (int j = 0; j < vertLen[i + 1]; j++)
+				for (int i = 0; i < vertText.Length; i++)
 				{
-					Vector3 vertex = vertText[i][j].Pos;
-					vertex += offset;
-					vertText[i][j].Pos = vertex;
-					vertText[i][j].Color *= clr;
+					for (int j = 0; j < vertLen[i + 1]; j++)
+					{
+						Vector3.Add(ref vertText[i][j].Pos, ref offset, out vertText[i][j].Pos);
+					}
+				}
+				for (int i = 0; i < vertLen[0]; i++)
+				{
+					Vector3.Add(ref vertIcons[i].Pos, ref offset, out vertIcons[i].Pos);
 				}
 			}
-			for (int i = 0; i < vertLen[0]; i++)
+			else
 			{
-				Vector3 vertex = vertIcons[i].Pos;
-				vertex += offset;
-				vertIcons[i].Pos = vertex;
-				vertIcons[i].Color *= clr;
+				for (int i = 0; i < vertText.Length; i++)
+				{
+					for (int j = 0; j < vertLen[i + 1]; j++)
+					{
+						Vector3.Add(ref vertText[i][j].Pos, ref offset, out vertText[i][j].Pos);
+						ColorRgba.Multiply(ref vertText[i][j].Color, ref clr, out vertText[i][j].Color);
+					}
+				}
+				for (int i = 0; i < vertLen[0]; i++)
+				{
+					Vector3.Add(ref vertIcons[i].Pos, ref offset, out vertIcons[i].Pos);
+					ColorRgba.Multiply(ref vertIcons[i].Color, ref clr, out vertIcons[i].Color);
+				}
 			}
 
 			return vertLen;
@@ -1062,28 +1075,40 @@ namespace Duality
 			int[] vertLen = this.EmitVertices(ref vertText, ref vertIcons);
 			
 			Vector3 offset = new Vector3(x, y, z);
-			for (int i = 0; i < vertText.Length; i++)
+
+			if (clr == ColorRgba.White)
 			{
-				for (int j = 0; j < vertLen[i + 1]; j++)
+				for (int i = 0; i < vertText.Length; i++)
 				{
-					Vector3 vertex = vertText[i][j].Pos;
-
-					MathF.TransformDotVec(ref vertex, ref xDot, ref yDot);
-					vertex += offset;
-
-					vertText[i][j].Pos = vertex;
-					vertText[i][j].Color *= clr;
+					for (int j = 0; j < vertLen[i + 1]; j++)
+					{
+						MathF.TransformDotVec(ref vertText[i][j].Pos, ref xDot, ref yDot);
+						Vector3.Add(ref vertText[i][j].Pos, ref offset, out vertText[i][j].Pos);
+					}
+				}
+				for (int i = 0; i < vertLen[0]; i++)
+				{
+					MathF.TransformDotVec(ref vertIcons[i].Pos, ref xDot, ref yDot);
+					Vector3.Add(ref vertIcons[i].Pos, ref offset, out vertIcons[i].Pos);
 				}
 			}
-			for (int i = 0; i < vertLen[0]; i++)
+			else
 			{
-				Vector3 vertex = vertIcons[i].Pos;
-
-				MathF.TransformDotVec(ref vertex, ref xDot, ref yDot);
-				vertex += offset;
-
-				vertIcons[i].Pos = vertex;
-				vertIcons[i].Color *= clr;
+				for (int i = 0; i < vertText.Length; i++)
+				{
+					for (int j = 0; j < vertLen[i + 1]; j++)
+					{
+						MathF.TransformDotVec(ref vertText[i][j].Pos, ref xDot, ref yDot);
+						Vector3.Add(ref vertText[i][j].Pos, ref offset, out vertText[i][j].Pos);
+						ColorRgba.Multiply(ref vertText[i][j].Color, ref clr, out vertText[i][j].Color);
+					}
+				}
+				for (int i = 0; i < vertLen[0]; i++)
+				{
+					MathF.TransformDotVec(ref vertIcons[i].Pos, ref xDot, ref yDot);
+					Vector3.Add(ref vertIcons[i].Pos, ref offset, out vertIcons[i].Pos);
+					ColorRgba.Multiply(ref vertIcons[i].Color, ref clr, out vertIcons[i].Color);
+				}
 			}
 
 			return vertLen;

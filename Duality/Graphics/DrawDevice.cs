@@ -369,12 +369,14 @@ namespace Duality
 			{
 				if (vertices == null || vertices.Length == 0) throw new ArgumentException("A zero-vertex DrawBatch is invalid.");
 				
+				// Assign data
+				this.vertexCount = Math.Min(vertexCount, vertices.Length);
+				this.vertices = vertices;
 				this.material = material;
 				this.vertexMode = vertexMode;
-				this.vertices = vertices;
-				this.vertexCount = Math.Min(vertexCount, vertices.Length);
 				this.zSortIndex = zSortIndex;
 
+				// Determine sorting index for non-Z-Sort materials
 				if (!this.material.Technique.Res.NeedsZSort)
 				{
 					int vTypeSI = vertices[0].TypeIndex;
@@ -935,7 +937,7 @@ namespace Duality
 			else if (material.Technique == null || !material.Technique.IsAvailable)
 			{
 				material = new BatchInfo(material);
-				material.Technique = DrawTechnique.Invert;
+				material.Technique = DrawTechnique.Solid;
 			}
 			else if (material.Technique.Res.NeedsPreprocess)
 			{
@@ -945,7 +947,7 @@ namespace Duality
 				if (vertexBuffer == null || vertexBuffer.Length == 0) return;
 				if (vertexCount > vertexBuffer.Length) vertexCount = vertexBuffer.Length;
 				if (material.Technique == null || !material.Technique.IsAvailable)
-					material.Technique = DrawTechnique.Invert;
+					material.Technique = DrawTechnique.Solid;
 			}
 			
 			// When rendering without depth writing, use z sorting everywhere - there's no real depth buffering!

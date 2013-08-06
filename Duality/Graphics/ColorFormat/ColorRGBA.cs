@@ -415,27 +415,7 @@ namespace Duality.ColorFormat
             return !left.Equals(right);
         }
 		/// <summary>
-		/// Performs a logical AND operation on the int-Rgba values of two colors.
-		/// </summary>
-		/// <param name="left">The first color.</param>
-		/// <param name="right">The second color.</param>
-		/// <returns></returns>
-		public static ColorRgba operator &(ColorRgba left, ColorRgba right)
-        {
-            return new ColorRgba(left.ToIntRgba() & right.ToIntRgba());
-        }
-		/// <summary>
-		/// Performs a logical OR operation on the int-Rgba values of two colors.
-		/// </summary>
-		/// <param name="left">The first color.</param>
-		/// <param name="right">The second color.</param>
-		/// <returns></returns>
-		public static ColorRgba operator |(ColorRgba left, ColorRgba right)
-        {
-            return new ColorRgba(left.ToIntRgba() | right.ToIntRgba());
-        }
-		/// <summary>
-		/// Adds two colors.
+		/// Adds two colors component-wise.
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
@@ -449,7 +429,7 @@ namespace Duality.ColorFormat
 				(byte)Math.Min(255, left.A + right.A));
         }
 		/// <summary>
-		/// Subtracts the second color from the first.
+		/// Subtracts the second color from the first component-wise.
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
@@ -463,7 +443,7 @@ namespace Duality.ColorFormat
 				(byte)Math.Max(0, left.A - right.A));
         }
 		/// <summary>
-		/// Multiplies two colors.
+		/// Multiplies two colors component-wise.
 		/// </summary>
 		/// <param name="left">The first color.</param>
 		/// <param name="right">The second color.</param>
@@ -477,7 +457,7 @@ namespace Duality.ColorFormat
 				(byte)(left.A * right.A / 255));
         }
 		/// <summary>
-		/// Returns the inverse of a color.
+		/// Returns the component-wise inverse of a color.
 		/// </summary>
 		/// <param name="c">The color to invert.</param>
 		/// <returns></returns>
@@ -489,6 +469,49 @@ namespace Duality.ColorFormat
 				(byte)(255 - c.B), 
 				(byte)(255 - c.A));
         }
+		
+		/// <summary>
+		/// Adds two colors component-wise.
+		/// </summary>
+		/// <param name="left">The first color.</param>
+		/// <param name="right">The second color.</param>
+		/// <param name="result"></param>
+		public static void Add(ref ColorRgba left, ref ColorRgba right, out ColorRgba result)
+		{
+			result = new ColorRgba(
+				(byte)Math.Min(255, left.R + right.R), 
+				(byte)Math.Min(255, left.G + right.G), 
+				(byte)Math.Min(255, left.B + right.B), 
+				(byte)Math.Min(255, left.A + right.A));
+		}
+		/// <summary>
+		/// Subtracts two colors component-wise.
+		/// </summary>
+		/// <param name="left">The first color.</param>
+		/// <param name="right">The second color.</param>
+		/// <param name="result"></param>
+		public static void Subtract(ref ColorRgba left, ref ColorRgba right, out ColorRgba result)
+		{
+			result = new ColorRgba(
+				(byte)Math.Max(0, left.R - right.R), 
+				(byte)Math.Max(0, left.G - right.G), 
+				(byte)Math.Max(0, left.B - right.B), 
+				(byte)Math.Max(0, left.A - right.A));
+		}
+		/// <summary>
+		/// Multiplies two colors component-wise.
+		/// </summary>
+		/// <param name="left">The first color.</param>
+		/// <param name="right">The second color.</param>
+		/// <param name="result"></param>
+		public static void Multiply(ref ColorRgba left, ref ColorRgba right, out ColorRgba result)
+		{
+			result = new ColorRgba(
+				(byte)(left.R * right.R / 255), 
+				(byte)(left.G * right.G / 255), 
+				(byte)(left.B * right.B / 255), 
+				(byte)(left.A * right.A / 255));
+		}
 		
 		public static explicit operator ColorRgba(int c)
 		{
