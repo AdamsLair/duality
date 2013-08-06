@@ -735,10 +735,7 @@ namespace Duality.Resources
 			this.texture = new Texture(this.pixelData, 
 				Texture.SizeMode.Enlarge, 
 				useNearest ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
-				useNearest ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear,
-				TextureWrapMode.ClampToEdge,
-				TextureWrapMode.ClampToEdge,
-				PixelInternalFormat.Alpha);
+				useNearest ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
 
 			this.mat = new Material(this.hint == RenderHint.Monochrome ? DrawTechnique.Mask : DrawTechnique.Alpha, ColorRgba.White, this.texture);
 		}
