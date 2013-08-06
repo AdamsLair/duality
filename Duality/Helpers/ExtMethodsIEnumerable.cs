@@ -201,7 +201,7 @@ namespace Duality
 			StringBuilder sb = new StringBuilder();
 			foreach (var item in collection)
 			{
-				sb.Append(item.ToString());
+				sb.Append(item != null ? item.ToString() : "null");
 				sb.Append(separator);
 			}
 			return sb.ToString(0, Math.Max(0, sb.Length - separator.Length));  // Remove at the end is faster

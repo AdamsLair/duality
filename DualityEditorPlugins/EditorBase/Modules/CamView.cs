@@ -801,7 +801,7 @@ namespace EditorBase
 		}
 		private void glControl_LostFocus(object sender, EventArgs e)
 		{
-			if (this.activeState.EngineUserInput)
+			if (this.activeState != null && this.activeState.EngineUserInput)
 			{
 				this.inputKeyFocus = false;
 			}

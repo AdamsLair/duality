@@ -286,30 +286,6 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET / SET] When pre-rasterizing the necessary glyphs, they are rendered in this color.
-		/// </summary>
-		public ColorRgba GlyphColor
-		{
-			get { return this.color; }
-			set
-			{
-				this.color = value;
-				this.needsReload = true;
-			}
-		}
-		/// <summary>
-		/// [GET / SET] When pre-rasterizing the necessary glyphs, their background has this color.
-		/// </summary>
-		public ColorRgba GlyphBgColor
-		{
-			get { return this.bgColor; }
-			set
-			{
-				this.bgColor = value;
-				this.needsReload = true;
-			}
-		}
-		/// <summary>
 		/// [GET / SET] Configures the internal glyph rasterizer.
 		/// </summary>
 		public RenderHint GlyphRenderHint
