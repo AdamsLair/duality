@@ -30,27 +30,6 @@ namespace Duality.Resources
 		public new const string FileExt = ".Font" + Resource.FileExt;
 		
 		/// <summary>
-		/// (Virtual) base path for Duality's embedded default Fonts.
-		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "Font:";
-		/// <summary>
-		/// (Virtual) path of the <see cref="GenericMonospace10"/> Font.
-		/// </summary>
-		public const string ContentPath_GenericMonospace10	= VirtualContentPath + "GenericMonospace10";
-		/// <summary>
-		/// (Virtual) path of the <see cref="GenericMonospace8"/> Font.
-		/// </summary>
-		public const string ContentPath_GenericMonospace8	= VirtualContentPath + "GenericMonospace8";
-		/// <summary>
-		/// (Virtual) path of the <see cref="GenericSerif12"/> Font.
-		/// </summary>
-		public const string ContentPath_GenericSerif12		= VirtualContentPath + "GenericSerif12";
-		/// <summary>
-		/// (Virtual) path of the <see cref="GenericSansSerif12"/> Font.
-		/// </summary>
-		public const string ContentPath_GenericSansSerif12	= VirtualContentPath + "GenericSansSerif12";
-		
-		/// <summary>
 		/// A generic <see cref="MonoSpace">monospace</see> Font (Size 8) that has been loaded from your systems font library.
 		/// This is usually "Courier New".
 		/// </summary>
@@ -73,13 +52,19 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
+			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Font:";
+			const string ContentPath_GenericMonospace10	= VirtualContentPath + "GenericMonospace10";
+			const string ContentPath_GenericMonospace8	= VirtualContentPath + "GenericMonospace8";
+			const string ContentPath_GenericSerif12		= VirtualContentPath + "GenericSerif12";
+			const string ContentPath_GenericSansSerif12	= VirtualContentPath + "GenericSansSerif12";
+
 			Font tmp;
 			
 			tmp = new Font();
 			tmp.Family = FontFamily.GenericMonospace.Name;
 			tmp.Size = 8;
 			tmp.CharSpacing = 0;
-			tmp.GlyphRenderHint = RenderHint.Monochrome;
+			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.MonoSpace = true;
 			tmp.ReloadData();
 			ContentProvider.RegisterContent(ContentPath_GenericMonospace8, tmp);
@@ -88,7 +73,7 @@ namespace Duality.Resources
 			tmp.Family = FontFamily.GenericMonospace.Name;
 			tmp.Size = 10;
 			tmp.CharSpacing = 0;
-			tmp.GlyphRenderHint = RenderHint.Monochrome;
+			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.MonoSpace = true;
 			tmp.ReloadData();
 			ContentProvider.RegisterContent(ContentPath_GenericMonospace10, tmp);
@@ -96,16 +81,16 @@ namespace Duality.Resources
 			tmp = new Font();
 			tmp.Family = FontFamily.GenericSerif.Name;
 			tmp.Size = 12;
+			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.Kerning = true;
-			tmp.GlyphRenderHint = RenderHint.Monochrome;
 			tmp.ReloadData();
 			ContentProvider.RegisterContent(ContentPath_GenericSerif12, tmp);
 
 			tmp = new Font();
 			tmp.Family = FontFamily.GenericSansSerif.Name;
 			tmp.Size = 12;
+			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.Kerning = true;
-			tmp.GlyphRenderHint = RenderHint.Monochrome;
 			tmp.ReloadData();
 			ContentProvider.RegisterContent(ContentPath_GenericSansSerif12, tmp);
 
@@ -167,18 +152,22 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Configures a Fonts internal glyph rasterizer.
+		/// Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
 		/// </summary>
-		public enum RenderHint
+		public enum RenderMode
 		{
 			/// <summary>
-			/// Each glyph is rasterized monochrome
+			/// A monochrome bitmap is used to store glyphs. Rendering is unfiltered and pixel-perfect.
 			/// </summary>
-			Monochrome	= TextRenderingHint.SingleBitPerPixelGridFit,
+			MonochromeBitmap,
 			/// <summary>
-			/// Each glyph is rasterized in grayscale, allowing smooth, antialiazed edges.
+			/// A greyscale bitmap is used to store glyphs. Rendering is properly filtered but may blur text display a little.
 			/// </summary>
-			AntiAlias	= TextRenderingHint.AntiAliasGridFit
+			SmoothBitmap,
+			/// <summary>
+			/// A greyscale bitmap is used to store glyphs. Rendering is properly filtered and uses a shader to enforce sharp masked edges.
+			/// </summary>
+			SharpBitmap
 		}
 
 		/// <summary>
@@ -212,16 +201,15 @@ namespace Duality.Resources
 		private	string		familyName			= FontFamily.GenericMonospace.Name;
 		private	float		size				= 10.0f;
 		private	FontStyle	style				= FontStyle.Regular;
-		private	RenderHint	hint				= RenderHint.AntiAlias;
+		private	RenderMode	renderMode			= RenderMode.SharpBitmap;
 		private	float		spacing				= 0.0f;
 		private	float		lineHeightFactor	= 1.0f;
 		private	bool		monospace			= false;
 		private	bool		kerning				= false;
-		private	bool		filtering			= false;
 		// Embedded custom font family
 		private	byte[]		customFamilyData	= null;
 		// Data that is automatically acquired while loading the font
-		[NonSerialized]	private SysDrawFont	internalFont	= new SysDrawFont(FontFamily.GenericMonospace, 10);
+		[NonSerialized]	private SysDrawFont	internalFont	= null;
 		[NonSerialized]	private	GlyphData[]	glyphs			= null;
 		[NonSerialized]	private	Material	mat				= null;
 		[NonSerialized]	private	Pixmap		pixelData		= null;
@@ -285,14 +273,14 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET / SET] Configures the internal glyph rasterizer.
+		/// [GET / SET] Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
 		/// </summary>
-		public RenderHint GlyphRenderHint
+		public RenderMode GlyphRenderMode
 		{
-			get { return this.hint; }
+			get { return this.renderMode; }
 			set
 			{
-				this.hint = value;
+				this.renderMode = value;
 				this.UpdateInternalFont();
 				this.needsReload = true;
 			}
@@ -342,16 +330,6 @@ namespace Duality.Resources
 			set { this.kerning = value; this.needsReload = true; }
 		}
 		/// <summary>
-		/// [GET / SET] Whether or not this Font uses texture filtering. Note that if texture filtering is enabled, 
-		/// fonts may appear slightly blurred due to full screen antialiazing / multisampling.
-		/// </summary>
-		/// <seealso cref="GlyphData"/>
-		public bool Filtering
-		{
-			get { return this.filtering; }
-			set { this.filtering = value; this.needsReload = true; }
-		}
-		/// <summary>
 		/// [GET] Returns whether this Font needs a <see cref="ReloadData">reload</see> in order to apply
 		/// changes that have been made to its Properties.
 		/// </summary>
@@ -370,6 +348,13 @@ namespace Duality.Resources
 			get { return this.customFamilyData; }
 		}
 
+		/// <summary>
+		/// [GET] Returns whether this Font is (requesting to be) aligned to the pixel grid.
+		/// </summary>
+		public bool IsPixelGridAligned
+		{
+			get { return this.renderMode == RenderMode.MonochromeBitmap; }
+		}
 		/// <summary>
 		/// [GET] The Fonts height.
 		/// </summary>
@@ -607,7 +592,9 @@ namespace Duality.Resources
 				}
 			}
 			else
+			{
 				this.internalFont = new SysDrawFont(FontFamily.GenericMonospace, this.size, this.style);
+			}
 		}
 		private void ReleaseResources()
 		{
@@ -625,6 +612,12 @@ namespace Duality.Resources
 		{
 			if (this.mat != null || this.texture != null || this.pixelData != null)
 				this.ReleaseResources();
+
+			TextRenderingHint textRenderingHint;
+			if (this.renderMode == RenderMode.MonochromeBitmap)
+				textRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+			else
+				textRenderingHint = TextRenderingHint.AntiAliasGridFit;
 
 			int cols;
 			int rows;
@@ -654,16 +647,17 @@ namespace Duality.Resources
 					bool isSpace = str == " ";
 					SizeF charSize = measureGraphics.MeasureString(str, this.internalFont, pixelLayer.Width, formatDef);
 
-					// Render a single glyph
+					// Rasterize a single glyph for rendering
 					bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), this.internalFont.Height + 1);
 					using (Graphics glyphGraphics = Graphics.FromImage(bm))
 					{
 						glyphGraphics.Clear(Color.Transparent);
-						glyphGraphics.TextRenderingHint = (System.Drawing.Text.TextRenderingHint)this.hint;
+						glyphGraphics.TextRenderingHint = textRenderingHint;
 						glyphGraphics.DrawString(str, this.internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatDef);
 					}
 					glyphTemp = new Pixmap.Layer(bm);
 					
+					// Rasterize a single glyph in typographic mode for metric analysis
 					if (!isSpace)
 					{
 						Rectangle glyphTempBounds = glyphTemp.OpaqueBounds();
@@ -671,19 +665,20 @@ namespace Duality.Resources
 						if (BodyAscentRef.Contains(SupportedChars[i]))
 							this.bodyAscent += glyphTempBounds.Height;
 						
-						// Render a single glyph in typographic mode
 						bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), this.internalFont.Height + 1);
 						using (Graphics glyphGraphics = Graphics.FromImage(bm))
 						{
 							glyphGraphics.Clear(Color.Transparent);
-							glyphGraphics.TextRenderingHint = (System.Drawing.Text.TextRenderingHint)this.hint;
+							glyphGraphics.TextRenderingHint = textRenderingHint;
 							glyphGraphics.DrawString(str, this.internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatTypo);
 						}
 						glyphTempTypo = new Pixmap.Layer(bm);
 						glyphTempTypo.Crop(true, false);
 					}
 					else
+					{
 						glyphTempTypo = glyphTemp;
+					}
 
 					// Update xy values if it doesn't fit anymore
 					if (x + glyphTemp.Width + 2 > pixelLayer.Width)
@@ -728,16 +723,22 @@ namespace Duality.Resources
 			this.descent = (int)Math.Round(this.internalFont.FontFamily.GetCellDescent(this.internalFont.Style) * this.internalFont.GetHeight() / this.internalFont.FontFamily.GetLineSpacing(this.internalFont.Style));
 			this.baseLine = (int)Math.Round(this.internalFont.FontFamily.GetCellAscent(this.internalFont.Style) * this.internalFont.GetHeight() / this.internalFont.FontFamily.GetLineSpacing(this.internalFont.Style));
 
-			bool useNearest = this.hint == RenderHint.Monochrome || !this.filtering;
-
 			this.pixelData = new Pixmap(pixelLayer);
 			this.pixelData.Atlas = new List<Rect>(atlas);
 			this.texture = new Texture(this.pixelData, 
 				Texture.SizeMode.Enlarge, 
-				useNearest ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
-				useNearest ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
+				(this.renderMode == RenderMode.MonochromeBitmap) ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
+				(this.renderMode == RenderMode.MonochromeBitmap) ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
 
-			this.mat = new Material(this.hint == RenderHint.Monochrome ? DrawTechnique.Mask : DrawTechnique.Alpha, ColorRgba.White, this.texture);
+			ContentRef<DrawTechnique> technique;
+			if (this.renderMode == RenderMode.MonochromeBitmap)
+				technique = DrawTechnique.Mask;
+			else if (this.renderMode == RenderMode.SmoothBitmap)
+				technique = DrawTechnique.Alpha;
+			else
+				technique = DrawTechnique.SharpMask;
+
+			this.mat = new Material(technique, ColorRgba.White, this.texture);
 		}
 
 		/// <summary>
@@ -1194,7 +1195,7 @@ namespace Duality.Resources
 			c.familyName = this.familyName;
 			c.size = this.size;
 			c.style = this.style;
-			c.hint = this.hint;
+			c.renderMode = this.renderMode;
 			c.monospace = this.monospace;
 			c.kerning = this.kerning;
 			c.spacing = this.spacing;
@@ -1267,5 +1268,77 @@ namespace Duality.Resources
 			stream.Read(buffer, 0, buffer.Length);
 			return LoadFontFamilyFromMemory(buffer);
 		}
+
+		/* Distance Field Equations
+        private static Pixmap.Layer CalcDistField(Pixmap.Layer input, int scaleDownFactor, float spread)
+        {
+            Pixmap.Layer output = new Pixmap.Layer(MathF.Max(input.Width / scaleDownFactor, 1), MathF.Max(input.Height / scaleDownFactor, 1));
+            int targetWidth = output.Width;
+            int targetHeight = output.Height;
+            float sourceSpread = spread * scaleDownFactor;
+
+            for (int y = 0; y < targetHeight; ++y)
+			{
+                for (int x = 0; x < targetWidth; ++x)
+                {
+					int i = y * targetWidth + x;
+                    float signedDistance = CalcDistFieldValue(input, x * scaleDownFactor + scaleDownFactor / 2, y * scaleDownFactor + scaleDownFactor / 2, sourceSpread);
+					output.Data[i].R = input.Data[i].R;
+					output.Data[i].G = input.Data[i].G;
+					output.Data[i].B = input.Data[i].B;
+                    output.Data[i].A = (byte)((signedDistance + sourceSpread) * 255.0f / (sourceSpread * 2));
+                }
+            }
+
+            return output;
+        }
+        private static float CalcDistFieldValue(Pixmap.Layer input, int inputX, int inputY, float sourceSpread)
+        {
+            int w = input.Width;
+            int h = input.Height;
+
+            float inputVal = (input.Data[inputY * w + inputX].A / 255.0f) - 0.5f;
+
+            int minX = MathF.Max(inputX - (int)sourceSpread - 1, 0);
+            int maxX = MathF.Min(inputX + (int)sourceSpread + 1, w - 1);
+
+            float distance = sourceSpread;
+            for (int y = 0; y <= (int)sourceSpread + 1; ++y)
+			{
+                if (y > distance) continue;
+
+                if (inputY - y >= 0)
+				{
+                    int y1 = inputY - y;
+                    for (int x = minX; x <= maxX; ++x)
+                    {
+                        if (x - inputX > distance) continue;
+                        float val = (input.Data[y1 * w + x].A / 255.0f) - 0.5f;
+                        if (inputVal * val < 0)
+						{
+                            float distQuad = (y1 - inputY) * (y1 - inputY) + (x - inputX) * (x - inputX);
+                            if (distQuad < distance * distance) distance = MathF.Sqrt(distQuad);
+                        }
+                    }
+                }
+
+                if (y != 0 && inputY + y < h)
+				{
+                    int y2 = inputY + y;
+                    for (int x = minX; x <= maxX; ++x)
+                    {
+                        if (x - inputX > distance) continue;
+                        float val = (input.Data[y2 * w + x].A / 255.0f) - 0.5f;
+                        if (inputVal * val < 0)
+						{
+                            float distQuad = (y2 - inputY) * (y2 - inputY) + (x - inputX) * (x - inputX);
+                            if (distQuad < distance * distance) distance = MathF.Sqrt(distQuad);
+                        }
+                    }
+                }
+            }
+
+			return inputVal > 0 ? distance : -distance;
+        }*/
 	}
 }

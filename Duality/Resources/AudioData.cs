@@ -24,23 +24,6 @@ namespace Duality.Resources
 		public new const string FileExt = ".AudioData" + Resource.FileExt;
 		
 		/// <summary>
-		/// (Virtual) base path for Duality's embedded default AudioData.
-		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "AudioData:";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Beep"/> AudioData.
-		/// </summary>
-		public const string ContentPath_Beep		= VirtualContentPath + "Beep";
-		/// <summary>
-		/// (Virtual) path of the <see cref="DroneLoop"/> AudioData.
-		/// </summary>
-		public const string ContentPath_DroneLoop	= VirtualContentPath + "DroneLoop";
-		/// <summary>
-		/// (Virtual) path of the <see cref="LogoJingle"/> AudioData.
-		/// </summary>
-		public const string ContentPath_LogoJingle	= VirtualContentPath + "LogoJingle";
-		
-		/// <summary>
 		/// [GET] A simple beep AudioData.
 		/// </summary>
 		public static ContentRef<AudioData> Beep		{ get; private set; }
@@ -55,6 +38,11 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
+			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "AudioData:";
+			const string ContentPath_Beep		= VirtualContentPath + "Beep";
+			const string ContentPath_DroneLoop	= VirtualContentPath + "DroneLoop";
+			const string ContentPath_LogoJingle	= VirtualContentPath + "LogoJingle";
+
 			ContentProvider.RegisterContent(ContentPath_Beep, new AudioData(DefaultRes.Beep));
 			ContentProvider.RegisterContent(ContentPath_DroneLoop, new AudioData(DefaultRes.DroneLoop));
 			ContentProvider.RegisterContent(ContentPath_LogoJingle, new AudioData(DefaultRes.LogoJingle));

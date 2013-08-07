@@ -20,23 +20,6 @@ namespace Duality.Resources
 		/// A ShaderProgram resources file extension.
 		/// </summary>
 		public new const string FileExt = ".ShaderProgram" + Resource.FileExt;
-		
-		/// <summary>
-		/// (Virtual) base path for Duality's embedded default ShaderPrograms.
-		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "ShaderProgram:";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Minimal"/> ShaderProgram.
-		/// </summary>
-		public const string ContentPath_Minimal		= VirtualContentPath + "Minimal";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Picking"/> ShaderProgram.
-		/// </summary>
-		public const string ContentPath_Picking		= VirtualContentPath + "Picking";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim"/> ShaderProgram.
-		/// </summary>
-		public const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
 
 		/// <summary>
 		/// A minimal ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and
@@ -56,16 +39,29 @@ namespace Duality.Resources
 		/// vertex format.
 		/// </summary>
 		public static ContentRef<ShaderProgram> SmoothAnim	{ get; private set; }
+		/// <summary>
+		/// The SharpMask ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and
+		/// a <see cref="Duality.Resources.FragmentShader.SharpMask"/> FragmentShader.
+		/// </summary>
+		public static ContentRef<ShaderProgram> SharpMask	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
+			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "ShaderProgram:";
+			const string ContentPath_Minimal	= VirtualContentPath + "Minimal";
+			const string ContentPath_Picking	= VirtualContentPath + "Picking";
+			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
+			const string ContentPath_SharpMask	= VirtualContentPath + "SharpMask";
+
 			ContentProvider.RegisterContent(ContentPath_Minimal, new ShaderProgram(VertexShader.Minimal, FragmentShader.Minimal));
 			ContentProvider.RegisterContent(ContentPath_Picking, new ShaderProgram(VertexShader.Minimal, FragmentShader.Picking));
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim, new ShaderProgram(VertexShader.SmoothAnim, FragmentShader.SmoothAnim));
+			ContentProvider.RegisterContent(ContentPath_SharpMask, new ShaderProgram(VertexShader.Minimal, FragmentShader.SharpMask));
 
-			Minimal	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Minimal);
-			Picking	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Picking);
+			Minimal		= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Minimal);
+			Picking		= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Picking);
 			SmoothAnim	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SmoothAnim);
+			SharpMask	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SharpMask);
 		}
 		
 		/// <summary>

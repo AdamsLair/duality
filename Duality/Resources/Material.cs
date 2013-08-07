@@ -23,66 +23,69 @@ namespace Duality.Resources
 		/// A Material resources file extension.
 		/// </summary>
 		public new const string FileExt = ".Material" + Resource.FileExt;
-		
-		/// <summary>
-		/// (Virtual) base path for Duality's embedded default Materials.
-		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "Material:";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SolidWhite"/> Material.
-		/// </summary>
-		public const string ContentPath_SolidWhite		= VirtualContentPath + "SolidWhite";
-		/// <summary>
-		/// (Virtual) path of the <see cref="InvertWhite"/> Material.
-		/// </summary>
-		public const string ContentPath_InvertWhite		= VirtualContentPath + "InvertWhite";
-		/// <summary>
-		/// (Virtual) path of the <see cref="DualityLogo256"/> Material.
-		/// </summary>
-		public const string ContentPath_DualityLogo256	= VirtualContentPath + "DualityLogo256";
-		/// <summary>
-		/// (Virtual) path of the <see cref="DualityLogoB256"/> Material.
-		/// </summary>
-		public const string ContentPath_DualityLogoB256	= VirtualContentPath + "DualityLogoB256";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Checkerboard256"/> Material.
-		/// </summary>
-		public const string ContentPath_Checkerboard256	= VirtualContentPath + "Checkerboard256";
 
 		/// <summary>
 		/// A solid, white Material.
 		/// </summary>
-		public static ContentRef<Material> SolidWhite		{ get; private set; }
+		public static ContentRef<Material> SolidWhite			{ get; private set; }
 		/// <summary>
 		/// A Material that inverts its background.
 		/// </summary>
-		public static ContentRef<Material> InvertWhite		{ get; private set; }
+		public static ContentRef<Material> InvertWhite			{ get; private set; }
+		/// <summary>
+		/// A Material showing the Duality icon.
+		/// </summary>
+		public static ContentRef<Material> DualityIcon			{ get; private set; }
+		/// <summary>
+		/// A Material showing the Duality icon, but without the text on it.
+		/// </summary>
+		public static ContentRef<Material> DualityIconB			{ get; private set; }
 		/// <summary>
 		/// A Material showing the Duality logo.
 		/// </summary>
-		public static ContentRef<Material> DualityLogo256	{ get; private set; }
+		public static ContentRef<Material> DualityLogoBig		{ get; private set; }
 		/// <summary>
-		/// A Material showing the Duality logo, but without the text on it.
+		/// A Material showing the Duality logo.
 		/// </summary>
-		public static ContentRef<Material> DualityLogoB256	{ get; private set; }
+		public static ContentRef<Material> DualityLogoMedium	{ get; private set; }
+		/// <summary>
+		/// A Material showing the Duality logo.
+		/// </summary>
+		public static ContentRef<Material> DualityLogoSmall		{ get; private set; }
 		/// <summary>
 		/// A Material showing a black and white checkerboard.
 		/// </summary>
-		public static ContentRef<Material> Checkerboard256	{ get; private set; }
+		public static ContentRef<Material> Checkerboard			{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
+			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Material:";
+			const string ContentPath_SolidWhite			= VirtualContentPath + "SolidWhite";
+			const string ContentPath_InvertWhite		= VirtualContentPath + "InvertWhite";
+			const string ContentPath_DualityIcon		= VirtualContentPath + "DualityIcon";
+			const string ContentPath_DualityIconB		= VirtualContentPath + "DualityIconB";
+			const string ContentPath_DualityLogoBig		= VirtualContentPath + "DualityLogoBig";
+			const string ContentPath_DualityLogoMedium	= VirtualContentPath + "DualityLogoMedium";
+			const string ContentPath_DualityLogoSmall	= VirtualContentPath + "DualityLogoSmall";
+			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
+
 			ContentProvider.RegisterContent(ContentPath_SolidWhite, new Material(DrawTechnique.Solid, ColorRgba.White));
 			ContentProvider.RegisterContent(ContentPath_InvertWhite, new Material(DrawTechnique.Invert, ColorRgba.White));
-			ContentProvider.RegisterContent(ContentPath_DualityLogo256, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityLogo256));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoB256, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityLogoB256));
-			ContentProvider.RegisterContent(ContentPath_Checkerboard256, new Material(DrawTechnique.Solid, ColorRgba.White, Texture.Checkerboard256));
+			ContentProvider.RegisterContent(ContentPath_DualityIcon, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIcon));
+			ContentProvider.RegisterContent(ContentPath_DualityIconB, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIconB));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoBig, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoBig));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoMedium, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoMedium));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoSmall, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoSmall));
+			ContentProvider.RegisterContent(ContentPath_Checkerboard, new Material(DrawTechnique.Solid, ColorRgba.White, Texture.Checkerboard));
 
-			SolidWhite		= ContentProvider.RequestContent<Material>(ContentPath_SolidWhite);
-			InvertWhite		= ContentProvider.RequestContent<Material>(ContentPath_InvertWhite);
-			DualityLogo256	= ContentProvider.RequestContent<Material>(ContentPath_DualityLogo256);
-			DualityLogoB256	= ContentProvider.RequestContent<Material>(ContentPath_DualityLogoB256);
-			Checkerboard256	= ContentProvider.RequestContent<Material>(ContentPath_Checkerboard256);
+			SolidWhite			= ContentProvider.RequestContent<Material>(ContentPath_SolidWhite);
+			InvertWhite			= ContentProvider.RequestContent<Material>(ContentPath_InvertWhite);
+			DualityIcon			= ContentProvider.RequestContent<Material>(ContentPath_DualityIcon);
+			DualityIconB		= ContentProvider.RequestContent<Material>(ContentPath_DualityIconB);
+			DualityLogoBig		= ContentProvider.RequestContent<Material>(ContentPath_DualityLogoBig);
+			DualityLogoMedium	= ContentProvider.RequestContent<Material>(ContentPath_DualityLogoMedium);
+			DualityLogoSmall	= ContentProvider.RequestContent<Material>(ContentPath_DualityLogoSmall);
+			Checkerboard		= ContentProvider.RequestContent<Material>(ContentPath_Checkerboard);
 		}
 
 		/// <summary>

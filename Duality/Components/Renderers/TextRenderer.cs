@@ -111,7 +111,7 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref textOffset, ref xDot, ref yDot);
 			posTemp.X += textOffset.X;
 			posTemp.Y += textOffset.Y;
-			if (this.text.Fonts != null && this.text.Fonts.Any(r => r.IsAvailable && !r.Res.Filtering))
+			if (this.text.Fonts != null && this.text.Fonts.Any(r => r.IsAvailable && r.Res.IsPixelGridAligned))
 			{
 				posTemp.X = MathF.Round(posTemp.X);
 				posTemp.Y = MathF.Round(posTemp.Y);

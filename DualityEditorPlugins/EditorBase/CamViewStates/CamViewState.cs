@@ -626,7 +626,8 @@ namespace EditorBase.CamViewStates
 				Vector2 targetOff = (-(curPos - lastPos) / this.GetScaleAtZ(refZ));
 				Vector2 targetVel = targetOff / Time.TimeMult;
 				MathF.TransformCoord(ref targetVel.X, ref targetVel.Y, camObj.Transform.Angle);
-				this.camVel += (new Vector3(targetVel) - this.camVel) * Time.TimeMult;
+				this.camVel.Z *= MathF.Pow(0.9f, Time.TimeMult);
+				this.camVel += (new Vector3(targetVel, this.camVel.Z) - this.camVel) * Time.TimeMult;
 				this.camTransformChanged = true;
 			}
 			else if (this.camAction == CameraAction.Move)

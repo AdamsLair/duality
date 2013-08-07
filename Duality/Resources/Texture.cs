@@ -25,34 +25,25 @@ namespace Duality.Resources
 		public new const string FileExt = ".Texture" + Resource.FileExt;
 		
 		/// <summary>
-		/// (Virtual) base path for Duality's embedded default Textures.
+		/// [GET] A Texture showing the Duality icon.
 		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "Texture:";
+		public static ContentRef<Texture> DualityIcon		{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="DualityLogo256"/> Texture.
+		/// [GET] A Texture showing the Duality icon without the text on it.
 		/// </summary>
-		public const string ContentPath_DualityLogo256	= VirtualContentPath + "DualityLogo256";
+		public static ContentRef<Texture> DualityIconB		{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="DualityLogoB256"/> Texture.
+		/// A Texture showing the Duality logo.
 		/// </summary>
-		public const string ContentPath_DualityLogoB256	= VirtualContentPath + "DualityLogoB256";
+		public static ContentRef<Texture> DualityLogoBig	{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="White"/> Texture.
+		/// A Texture showing the Duality logo.
 		/// </summary>
-		public const string ContentPath_White			= VirtualContentPath + "White";
+		public static ContentRef<Texture> DualityLogoMedium	{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="Checkerboard256"/> Texture.
+		/// A Texture showing the Duality logo.
 		/// </summary>
-		public const string ContentPath_Checkerboard256	= VirtualContentPath + "Checkerboard256";
-		
-		/// <summary>
-		/// [GET] A Texture showing the Duality logo.
-		/// </summary>
-		public static ContentRef<Texture> DualityLogo256	{ get; private set; }
-		/// <summary>
-		/// [GET] A Texture showing the Duality logo without the text on it.
-		/// </summary>
-		public static ContentRef<Texture> DualityLogoB256	{ get; private set; }
+		public static ContentRef<Texture> DualityLogoSmall	{ get; private set; }
 		/// <summary>
 		/// [GET] A plain white 1x1 Texture. Can be used as a dummy.
 		/// </summary>
@@ -60,19 +51,34 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] A 256x256 black and white checkerboard texture.
 		/// </summary>
-		public static ContentRef<Texture> Checkerboard256	{ get; private set; }
+		public static ContentRef<Texture> Checkerboard		{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
-			ContentProvider.RegisterContent(ContentPath_DualityLogo256, new Texture(Pixmap.DualityLogo256));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoB256, new Texture(Pixmap.DualityLogoB256));
-			ContentProvider.RegisterContent(ContentPath_White, new Texture(Pixmap.White));
-			ContentProvider.RegisterContent(ContentPath_Checkerboard256, new Texture(Pixmap.Checkerboard256, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat));
+			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Texture:";
+			const string ContentPath_DualityIcon		= VirtualContentPath + "DualityIcon";
+			const string ContentPath_DualityIconB		= VirtualContentPath + "DualityIconB";
+			const string ContentPath_DualityLogoBig		= VirtualContentPath + "DualityLogoBig";
+			const string ContentPath_DualityLogoMedium	= VirtualContentPath + "DualityLogoMedium";
+			const string ContentPath_DualityLogoSmall	= VirtualContentPath + "DualityLogoSmall";
+			const string ContentPath_White				= VirtualContentPath + "White";
+			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
 
-			DualityLogo256	= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogo256);
-			DualityLogoB256	= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoB256);
-			White			= ContentProvider.RequestContent<Texture>(ContentPath_White);
-			Checkerboard256	= ContentProvider.RequestContent<Texture>(ContentPath_Checkerboard256);
+			ContentProvider.RegisterContent(ContentPath_DualityIcon, new Texture(Pixmap.DualityIcon));
+			ContentProvider.RegisterContent(ContentPath_DualityIconB, new Texture(Pixmap.DualityIconB));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoBig, new Texture(Pixmap.DualityLogoBig));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoMedium, new Texture(Pixmap.DualityLogoMedium));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoSmall, new Texture(Pixmap.DualityLogoSmall));
+			ContentProvider.RegisterContent(ContentPath_White, new Texture(Pixmap.White));
+			ContentProvider.RegisterContent(ContentPath_Checkerboard, new Texture(Pixmap.Checkerboard, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat));
+
+			DualityIcon			= ContentProvider.RequestContent<Texture>(ContentPath_DualityIcon);
+			DualityIconB		= ContentProvider.RequestContent<Texture>(ContentPath_DualityIconB);
+			DualityLogoBig		= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoBig);
+			DualityLogoMedium	= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoMedium);
+			DualityLogoSmall	= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoSmall);
+			White				= ContentProvider.RequestContent<Texture>(ContentPath_White);
+			Checkerboard		= ContentProvider.RequestContent<Texture>(ContentPath_Checkerboard);
 		}
 
 
@@ -194,7 +200,7 @@ namespace Duality.Resources
 		{
 			if (!initialized) Init();
 
-			Texture texRes = tex.IsExplicitNull ? null : (tex.Res ?? Checkerboard256.Res);
+			Texture texRes = tex.IsExplicitNull ? null : (tex.Res ?? Checkerboard.Res);
 			if (curBound[texUnit] == texRes) return;
 			if (activeTexUnit != texUnit) GL.ActiveTexture(texUnits[texUnit]);
 			activeTexUnit = texUnit;
@@ -480,7 +486,7 @@ namespace Duality.Resources
 		}		//	G
 
 
-		public Texture() : this(Pixmap.Checkerboard256, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat) {}
+		public Texture() : this(Pixmap.Checkerboard, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat) {}
 		/// <summary>
 		/// Creates a new Texture based on a <see cref="Duality.Resources.Pixmap"/>.
 		/// </summary>
@@ -581,7 +587,7 @@ namespace Duality.Resources
 				}
 
 				if (pixelData == null)
-					pixelData = Pixmap.Checkerboard256.Res.MainLayer;
+					pixelData = Pixmap.Checkerboard.Res.MainLayer;
 
 				this.AdjustSize(pixelData.Width, pixelData.Height);
 				this.SetupOpenGLRes();

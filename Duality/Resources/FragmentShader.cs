@@ -15,23 +15,6 @@ namespace Duality.Resources
 		public new const string FileExt = ".FragmentShader" + Resource.FileExt;
 		
 		/// <summary>
-		/// (Virtual) base path for Duality's embedded default FragmentShaders.
-		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "FragmentShader:";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Minimal"/> FragmentShader.
-		/// </summary>
-		public const string ContentPath_Minimal		= VirtualContentPath + "Minimal";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Picking"/> FragmentShader.
-		/// </summary>
-		public const string ContentPath_Picking		= VirtualContentPath + "Picking";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim"/> FragmentShader.
-		/// </summary>
-		public const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
-		
-		/// <summary>
 		/// [GET] A minimal FragmentShader. It performs a texture lookup
 		/// and applies vertex-coloring.
 		/// </summary>
@@ -46,9 +29,19 @@ namespace Duality.Resources
 		/// on the same texture and blends the results using an incoming float value.
 		/// </summary>
 		public static ContentRef<FragmentShader> SmoothAnim	{ get; private set; }
+		/// <summary>
+		/// [GET] The SharpMask FragmentShader. It enforces an antialiazed sharp mask when upscaling linearly blended textures.
+		/// </summary>
+		public static ContentRef<FragmentShader> SharpMask	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
+			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "FragmentShader:";
+			const string ContentPath_Minimal	= VirtualContentPath + "Minimal";
+			const string ContentPath_Picking	= VirtualContentPath + "Picking";
+			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
+			const string ContentPath_SharpMask	= VirtualContentPath + "SharpMask";
+
 			FragmentShader tmp;
 
 			tmp = new FragmentShader();
@@ -63,9 +56,14 @@ namespace Duality.Resources
 			tmp.SetSource(DefaultRes.SmoothAnimFrag);
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim, tmp);
 
+			tmp = new FragmentShader();
+			tmp.SetSource(DefaultRes.SharpMaskFrag);
+			ContentProvider.RegisterContent(ContentPath_SharpMask, tmp);
+
 			Minimal		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Minimal);
 			Picking		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Picking);
 			SmoothAnim	= ContentProvider.RequestContent<FragmentShader>(ContentPath_SmoothAnim);
+			SharpMask	= ContentProvider.RequestContent<FragmentShader>(ContentPath_SharpMask);
 		}
 
 

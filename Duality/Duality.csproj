@@ -194,13 +194,16 @@
     <Compile Include="Audio\OggVorbis\NativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Default\Checkerboard256.png" />
+    <None Include="Resources\Default\Checkerboard.png" />
     <Content Include="OggvorbisDotNet.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="OpenAL32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <EmbeddedResource Include="Resources\Default\DualityLogoBig.png" />
+    <EmbeddedResource Include="Resources\Default\DualityLogoMedium.png" />
+    <EmbeddedResource Include="Resources\Default\DualityLogoSmall.png" />
     <Content Include="wrap_oal.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -209,8 +212,9 @@
       <LastGenOutput>DefaultRes.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Default\DualityLogo256.png" />
-    <EmbeddedResource Include="Resources\Default\DualityLogoB256.png" />
+    <EmbeddedResource Include="Resources\Default\DualityIcon.png" />
+    <EmbeddedResource Include="Resources\Default\DualityIconB.png" />
+    <EmbeddedResource Include="Resources\Default\SharpMask.frag" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Default\DroneLoop.ogg" />

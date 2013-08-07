@@ -121,17 +121,26 @@
   <data name="Beep" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Default\Beep.ogg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Checkerboard256" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Default\Checkerboard256.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Checkerboard" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\Checkerboard.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="DroneLoop" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Default\DroneLoop.ogg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DualityLogo256" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Default\DualityLogo256.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DualityIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\DualityIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DualityLogoB256" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Default\DualityLogoB256.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="DualityIconB" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\DualityIconB.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DualityLogoBig" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\DualityLogoBig.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DualityLogoMedium" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\DualityLogoMedium.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DualityLogoSmall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\DualityLogoSmall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="LogoJingle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Default\LogoJingle.ogg;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -144,6 +153,9 @@
   </data>
   <data name="PickingFrag" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Default\Picking.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SharpMaskFrag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\SharpMask.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="SmoothAnimFrag" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Default\SmoothAnim.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

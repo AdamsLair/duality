@@ -210,9 +210,8 @@ namespace EditorBase.CamViewLayers
 				bigFontRes.Family = System.Drawing.FontFamily.GenericSansSerif.Name;
 				bigFontRes.Size = 32;
 				bigFontRes.Kerning = true;
-				bigFontRes.GlyphRenderHint = Duality.Resources.Font.RenderHint.AntiAlias;
 				bigFontRes.ReloadData();
-				ContentProvider.RegisterContent("__editor__bigfont__", bigFontRes);
+				ContentProvider.RegisterContent(bigFont.Path, bigFontRes);
 			}
 		}
 		private IEnumerable<RigidBody> QueryVisibleColliders()

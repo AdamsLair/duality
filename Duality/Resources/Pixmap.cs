@@ -44,34 +44,25 @@ namespace Duality.Resources
 		protected const int ResFormat_Version_LayerPng	= 3;
 		
 		/// <summary>
-		/// (Virtual) base path for Duality's embedded default Pixmaps.
+		/// [GET] A Pixmap showing the Duality icon.
 		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "Pixmap:";
+		public static ContentRef<Pixmap> DualityIcon		{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="DualityLogo256"/> Pixmap.
+		/// [GET] A Pixmap showing the Duality icon without the text on it.
 		/// </summary>
-		public const string ContentPath_DualityLogo256	= VirtualContentPath + "DualityLogo256";
+		public static ContentRef<Pixmap> DualityIconB		{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="DualityLogoB256"/> Pixmap.
+		/// A Pixmap showing the Duality logo.
 		/// </summary>
-		public const string ContentPath_DualityLogoB256	= VirtualContentPath + "DualityLogoB256";
+		public static ContentRef<Pixmap> DualityLogoBig		{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="White"/> Pixmap.
+		/// A Pixmap showing the Duality logo.
 		/// </summary>
-		public const string ContentPath_White			= VirtualContentPath + "White";
+		public static ContentRef<Pixmap> DualityLogoMedium	{ get; private set; }
 		/// <summary>
-		/// (Virtual) path of the <see cref="Checkerboard256"/> Pixmap.
+		/// A Pixmap showing the Duality logo.
 		/// </summary>
-		public const string ContentPath_Checkerboard256	= VirtualContentPath + "Checkerboard256";
-		
-		/// <summary>
-		/// [GET] A Pixmap showing the Duality logo.
-		/// </summary>
-		public static ContentRef<Pixmap> DualityLogo256		{ get; private set; }
-		/// <summary>
-		/// [GET] A Pixmap showing the Duality logo without the text on it.
-		/// </summary>
-		public static ContentRef<Pixmap> DualityLogoB256	{ get; private set; }
+		public static ContentRef<Pixmap> DualityLogoSmall	{ get; private set; }
 		/// <summary>
 		/// [GET] A plain white 1x1 Pixmap. Can be used as a dummy.
 		/// </summary>
@@ -79,19 +70,34 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] A 256x256 black and white checkerboard image.
 		/// </summary>
-		public static ContentRef<Pixmap> Checkerboard256	{ get; private set; }
+		public static ContentRef<Pixmap> Checkerboard		{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
-			ContentProvider.RegisterContent(ContentPath_DualityLogo256, new Pixmap(new Bitmap(DefaultRes.DualityLogo256)));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoB256, new Pixmap(new Bitmap(DefaultRes.DualityLogoB256)));
-			ContentProvider.RegisterContent(ContentPath_White, new Pixmap(new Layer(1, 1, ColorRgba.White)));
-			ContentProvider.RegisterContent(ContentPath_Checkerboard256, new Pixmap(new Bitmap(DefaultRes.Checkerboard256)));
+			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Pixmap:";
+			const string ContentPath_DualityIcon		= VirtualContentPath + "DualityIcon";
+			const string ContentPath_DualityIconB		= VirtualContentPath + "DualityIconB";
+			const string ContentPath_DualityLogoBig		= VirtualContentPath + "DualityLogoBig";
+			const string ContentPath_DualityLogoMedium	= VirtualContentPath + "DualityLogoMedium";
+			const string ContentPath_DualityLogoSmall	= VirtualContentPath + "DualityLogoSmall";
+			const string ContentPath_White				= VirtualContentPath + "White";
+			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
 
-			DualityLogo256		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogo256);
-			DualityLogoB256		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogoB256);
+			ContentProvider.RegisterContent(ContentPath_DualityIcon,		new Pixmap(new Bitmap(DefaultRes.DualityIcon)));
+			ContentProvider.RegisterContent(ContentPath_DualityIconB,		new Pixmap(new Bitmap(DefaultRes.DualityIconB)));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoBig,		new Pixmap(new Bitmap(DefaultRes.DualityLogoBig)));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoMedium,	new Pixmap(new Bitmap(DefaultRes.DualityLogoMedium)));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoSmall,	new Pixmap(new Bitmap(DefaultRes.DualityLogoSmall)));
+			ContentProvider.RegisterContent(ContentPath_White,				new Pixmap(new Layer(1, 1, ColorRgba.White)));
+			ContentProvider.RegisterContent(ContentPath_Checkerboard,		new Pixmap(new Bitmap(DefaultRes.Checkerboard)));
+
+			DualityIcon			= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIcon);
+			DualityIconB		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIconB);
+			DualityLogoBig		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogoBig);
+			DualityLogoMedium	= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogoMedium);
+			DualityLogoSmall	= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogoSmall);
 			White				= ContentProvider.RequestContent<Pixmap>(ContentPath_White);
-			Checkerboard256		= ContentProvider.RequestContent<Pixmap>(ContentPath_Checkerboard256);
+			Checkerboard		= ContentProvider.RequestContent<Pixmap>(ContentPath_Checkerboard);
 		}
 
 		
@@ -1134,7 +1140,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// Creates a new, empty Pixmap.
 		/// </summary>
-		public Pixmap() : this(Checkerboard256.Res.MainLayer.Clone()) {}
+		public Pixmap() : this(Checkerboard.Res.MainLayer.Clone()) {}
 		/// <summary>
 		/// Creates a new Pixmap from the specified <see cref="System.Drawing.Bitmap"/>.
 		/// </summary>
@@ -1174,7 +1180,7 @@ namespace Duality.Resources
 			if (this.MainLayer != null)
 				this.MainLayer.SavePixelData(imagePath);
 			else
-				Checkerboard256.Res.MainLayer.SavePixelData(imagePath);
+				Checkerboard.Res.MainLayer.SavePixelData(imagePath);
 		}
 		/// <summary>
 		/// Replaces the Pixmaps pixel data with a new dataset that has been retrieved from file.

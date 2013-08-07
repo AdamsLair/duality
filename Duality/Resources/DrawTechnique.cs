@@ -26,77 +26,6 @@ namespace Duality.Resources
 		public new const string FileExt = ".DrawTechnique" + Resource.FileExt;
 		
 		/// <summary>
-		/// (Virtual) base path for Duality's embedded default DrawTechniques.
-		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "DrawTechnique:";
-		/// <summary>
-		/// (Virtual) base path for Duality's embedded SmoothAnim DrawTechniques.
-		/// </summary>
-		public const string ContentDir_SmoothAnim	= VirtualContentPath + "SmoothAnim:";
-		
-		/// <summary>
-		/// (Virtual) path of the <see cref="Solid"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Solid		= VirtualContentPath + "Solid";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Mask"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Mask		= VirtualContentPath + "Mask";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Add"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Add			= VirtualContentPath + "Add";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Alpha"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Alpha		= VirtualContentPath + "Alpha";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Multiply"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Multiply	= VirtualContentPath + "Multiply";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Light"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Light		= VirtualContentPath + "Light";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Invert"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Invert		= VirtualContentPath + "Invert";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Picking"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_Picking		= VirtualContentPath + "Picking";
-		
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim_Solid"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_SmoothAnim_Solid	= ContentDir_SmoothAnim + "Solid";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim_Mask"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_SmoothAnim_Mask		= ContentDir_SmoothAnim + "Mask";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim_Add"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_SmoothAnim_Add		= ContentDir_SmoothAnim + "Add";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim_Alpha"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_SmoothAnim_Alpha	= ContentDir_SmoothAnim + "Alpha";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim_Multiply"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_SmoothAnim_Multiply	= ContentDir_SmoothAnim + "Multiply";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim_Light"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_SmoothAnim_Light	= ContentDir_SmoothAnim + "Light";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim_Invert"/> DrawTechnique.
-		/// </summary>
-		public const string ContentPath_SmoothAnim_Invert	= ContentDir_SmoothAnim + "Invert";
-		
-		/// <summary>
 		/// Renders solid geometry without utilizing the alpha channel. This is the fastest default DrawTechnique.
 		/// </summary>
 		public static ContentRef<DrawTechnique> Solid		{ get; private set; }
@@ -105,6 +34,11 @@ namespace Duality.Resources
 		/// If multisampling is available, it is utilized to smooth masked edges.
 		/// </summary>
 		public static ContentRef<DrawTechnique> Mask		{ get; private set; }
+		/// <summary>
+		/// Renders alpha-masked solid geometry and enforces sharp edges by using an adaptive antialiazing shader.
+		/// This is the recommended DrawTechnique for rendering text or stencil sprites.
+		/// </summary>
+		public static ContentRef<DrawTechnique> SharpMask	{ get; private set; }
 		/// <summary>
 		/// Renders additive geometry. Ideal for glow effects.
 		/// </summary>
@@ -179,6 +113,27 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
+			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "DrawTechnique:";
+			const string ContentDir_SmoothAnim	= VirtualContentPath + "SmoothAnim:";
+		
+			const string ContentPath_Solid		= VirtualContentPath + "Solid";
+			const string ContentPath_Mask		= VirtualContentPath + "Mask";
+			const string ContentPath_SharpMask	= VirtualContentPath + "SharpMask";
+			const string ContentPath_Add		= VirtualContentPath + "Add";
+			const string ContentPath_Alpha		= VirtualContentPath + "Alpha";
+			const string ContentPath_Multiply	= VirtualContentPath + "Multiply";
+			const string ContentPath_Light		= VirtualContentPath + "Light";
+			const string ContentPath_Invert		= VirtualContentPath + "Invert";
+			const string ContentPath_Picking	= VirtualContentPath + "Picking";
+		
+			const string ContentPath_SmoothAnim_Solid		= ContentDir_SmoothAnim + "Solid";
+			const string ContentPath_SmoothAnim_Mask		= ContentDir_SmoothAnim + "Mask";
+			const string ContentPath_SmoothAnim_Add			= ContentDir_SmoothAnim + "Add";
+			const string ContentPath_SmoothAnim_Alpha		= ContentDir_SmoothAnim + "Alpha";
+			const string ContentPath_SmoothAnim_Multiply	= ContentDir_SmoothAnim + "Multiply";
+			const string ContentPath_SmoothAnim_Light		= ContentDir_SmoothAnim + "Light";
+			const string ContentPath_SmoothAnim_Invert		= ContentDir_SmoothAnim + "Invert";
+
 			ContentProvider.RegisterContent(ContentPath_Solid,		new DrawTechnique(BlendMode.Solid));
 			ContentProvider.RegisterContent(ContentPath_Mask,		new DrawTechnique(BlendMode.Mask));
 			ContentProvider.RegisterContent(ContentPath_Add,		new DrawTechnique(BlendMode.Add));
@@ -188,6 +143,7 @@ namespace Duality.Resources
 			ContentProvider.RegisterContent(ContentPath_Invert,		new DrawTechnique(BlendMode.Invert));
 
 			ContentProvider.RegisterContent(ContentPath_Picking,	new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
+			ContentProvider.RegisterContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Mask, ShaderProgram.SharpMask));
 			
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Solid,		new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
@@ -205,6 +161,7 @@ namespace Duality.Resources
 			Light		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Light);
 			Invert		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Invert);
 			Picking		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Picking);
+			SharpMask	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SharpMask);
 
 			SmoothAnim_Solid	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Solid);
 			SmoothAnim_Mask		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Mask);

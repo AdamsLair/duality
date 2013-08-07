@@ -907,7 +907,7 @@ namespace Duality
 
 		public void AddVertices<T>(ContentRef<Material> material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData
 		{
-			this.AddVertices<T>(material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard256.Res.InfoDirect, vertexMode, vertices, vertices.Length);
+			this.AddVertices<T>(material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard.Res.InfoDirect, vertexMode, vertices, vertices.Length);
 		}
 		public void AddVertices<T>(BatchInfo material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData
 		{
@@ -915,14 +915,14 @@ namespace Duality
 		}
 		public void AddVertices<T>(ContentRef<Material> material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
 		{
-			this.AddVertices<T>(material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard256.Res.InfoDirect, vertexMode, vertexBuffer, vertexCount);
+			this.AddVertices<T>(material.IsAvailable ? material.Res.InfoDirect : Material.Checkerboard.Res.InfoDirect, vertexMode, vertexBuffer, vertexCount);
 		}
 		public void AddVertices<T>(BatchInfo material, VertexMode vertexMode, T[] vertexBuffer, int vertexCount) where T : struct, IVertexData
 		{
 			if (vertexCount == 0) return;
 			if (vertexBuffer == null || vertexBuffer.Length == 0) return;
 			if (vertexCount > vertexBuffer.Length) vertexCount = vertexBuffer.Length;
-			if (material == null) material = Material.Checkerboard256.Res.InfoDirect;
+			if (material == null) material = Material.Checkerboard.Res.InfoDirect;
 
 			if (this.pickingIndex != 0)
 			{

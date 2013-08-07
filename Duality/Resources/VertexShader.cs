@@ -13,19 +13,6 @@ namespace Duality.Resources
 		/// A VertexShader resources file extension.
 		/// </summary>
 		public new const string FileExt = ".VertexShader" + Resource.FileExt;
-		
-		/// <summary>
-		/// (Virtual) base path for Duality's embedded default VertexShaders.
-		/// </summary>
-		public const string VirtualContentPath = ContentProvider.VirtualContentPath + "VertexShader:";
-		/// <summary>
-		/// (Virtual) path of the <see cref="Minimal"/> VertexShader.
-		/// </summary>
-		public const string ContentPath_Minimal		= VirtualContentPath + "Minimal";
-		/// <summary>
-		/// (Virtual) path of the <see cref="SmoothAnim"/> VertexShader.
-		/// </summary>
-		public const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
 
 		/// <summary>
 		/// [GET] A minimal VertexShader. It performs OpenGLs default transformation
@@ -40,6 +27,10 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
+			const string VirtualContentPath			= ContentProvider.VirtualContentPath + "VertexShader:";
+			const string ContentPath_Minimal		= VirtualContentPath + "Minimal";
+			const string ContentPath_SmoothAnim		= VirtualContentPath + "SmoothAnim";
+
 			VertexShader tmp;
 
 			tmp = new VertexShader();
