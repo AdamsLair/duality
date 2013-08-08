@@ -233,7 +233,7 @@ namespace EditorBase.PropertyEditors
 		{
 			PropertyEditor oldEditor;
 			this.shaderVarEditors.TryGetValue(varInfo.name, out oldEditor);
-			List<EditorHintMemberAttribute> configData = new List<EditorHintMemberAttribute>();
+			List<EditorHintAttribute> configData = new List<EditorHintAttribute>();
 
 			if (varInfo.arraySize == 1)
 			{

@@ -28,7 +28,7 @@ namespace DualityEditor.CorePluginInterface
 			if (File.Exists(srcFilePath)) return true;
 
 			// Find an importer and check if one of its output files already exist
-			IFileImporter importer = CorePluginRegistry.RequestFileImporter(i => i.CanImportFile(srcFilePath));
+			IFileImporter importer = CorePluginRegistry.GetFileImporter(i => i.CanImportFile(srcFilePath));
 			return importer != null && importer.GetOutputFiles(srcFilePath, targetName, targetDir).Any(File.Exists);
 		}
 		public static bool ImportFile(string filePath)
@@ -38,7 +38,7 @@ namespace DualityEditor.CorePluginInterface
 			PrepareImportFilePaths(filePath, out srcFilePath, out targetName, out targetDir);
 
 			// Find an importer to handle the file import
-			IFileImporter importer = CorePluginRegistry.RequestFileImporter(i => i.CanImportFile(srcFilePath));
+			IFileImporter importer = CorePluginRegistry.GetFileImporter(i => i.CanImportFile(srcFilePath));
 			if (importer != null)
 			{
 				try
@@ -68,7 +68,7 @@ namespace DualityEditor.CorePluginInterface
 		public static void ReimportFile(string filePath)
 		{
 			// Find an importer to handle the file import
-			IFileImporter importer = CorePluginRegistry.RequestFileImporter(i => i.CanImportFile(filePath));
+			IFileImporter importer = CorePluginRegistry.GetFileImporter(i => i.CanImportFile(filePath));
 			if (importer == null) return;
 
 			// Guess which Resources are affected and check them first
@@ -119,7 +119,7 @@ namespace DualityEditor.CorePluginInterface
 			if (string.IsNullOrEmpty(filePathOld)) return;
 
 			// Find an importer to handle the file rename
-			IFileImporter importer = CorePluginRegistry.RequestFileImporter(i => i.CanImportFile(filePathOld));
+			IFileImporter importer = CorePluginRegistry.GetFileImporter(i => i.CanImportFile(filePathOld));
 			if (importer == null) return;
 			
 			// Guess which Resources are affected and check them first

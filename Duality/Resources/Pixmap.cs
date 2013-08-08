@@ -83,13 +83,13 @@ namespace Duality.Resources
 			const string ContentPath_White				= VirtualContentPath + "White";
 			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
 
-			ContentProvider.RegisterContent(ContentPath_DualityIcon,		new Pixmap(new Bitmap(DefaultRes.DualityIcon)));
-			ContentProvider.RegisterContent(ContentPath_DualityIconB,		new Pixmap(new Bitmap(DefaultRes.DualityIconB)));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoBig,		new Pixmap(new Bitmap(DefaultRes.DualityLogoBig)));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoMedium,	new Pixmap(new Bitmap(DefaultRes.DualityLogoMedium)));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoSmall,	new Pixmap(new Bitmap(DefaultRes.DualityLogoSmall)));
+			ContentProvider.RegisterContent(ContentPath_DualityIcon,		new Pixmap(DefaultRes.DualityIcon));
+			ContentProvider.RegisterContent(ContentPath_DualityIconB,		new Pixmap(DefaultRes.DualityIconB));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoBig,		new Pixmap(DefaultRes.DualityLogoBig));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoMedium,	new Pixmap(DefaultRes.DualityLogoMedium));
+			ContentProvider.RegisterContent(ContentPath_DualityLogoSmall,	new Pixmap(DefaultRes.DualityLogoSmall));
 			ContentProvider.RegisterContent(ContentPath_White,				new Pixmap(new Layer(1, 1, ColorRgba.White)));
-			ContentProvider.RegisterContent(ContentPath_Checkerboard,		new Pixmap(new Bitmap(DefaultRes.Checkerboard)));
+			ContentProvider.RegisterContent(ContentPath_Checkerboard,		new Pixmap(DefaultRes.Checkerboard));
 
 			DualityIcon			= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIcon);
 			DualityIconB		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIconB);

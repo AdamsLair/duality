@@ -256,7 +256,7 @@ namespace DualityEditor.CorePluginInterface
 			if (!result && this.data.ContainsComponentRefs(target)) result = true;
 			if (!result)
 			{
-				result = CorePluginRegistry.RequestDataConverters(target).Any(s => !this.usedConverters.Contains(s) && s.CanConvertFrom(this));
+				result = CorePluginRegistry.GetDataConverters(target).Any(s => !this.usedConverters.Contains(s) && s.CanConvertFrom(this));
 			}
 
 			if (result || this.allowedOp != oldAllowedOp) this.checkedTypes.Remove(target);
@@ -313,7 +313,7 @@ namespace DualityEditor.CorePluginInterface
 			// No result yet? Search suitable converters
 			if (!fittingDataFound)
 			{
-				var converterQuery = CorePluginRegistry.RequestDataConverters(target);
+				var converterQuery = CorePluginRegistry.GetDataConverters(target);
 				List<ConvComplexityEntry> converters = new List<ConvComplexityEntry>();
 				foreach (var c in converterQuery)
 				{

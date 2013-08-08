@@ -30,9 +30,9 @@ namespace Duality
 		/// </summary>
 		public const string	VirtualContentPath = "Default:";
 
-		private	static	bool	defaultContentInitialized	= false;
-		private	static	Dictionary<string,Resource>	resLibrary		= new Dictionary<string,Resource>();
-		private	static	List<Resource>				defaultContent	= new List<Resource>();
+		private	static	bool						defaultContentInitialized	= false;
+		private	static	Dictionary<string,Resource>	resLibrary					= new Dictionary<string,Resource>();
+		private	static	List<Resource>				defaultContent				= new List<Resource>();
 
 		/// <summary>
 		/// Initializes Dualitys embedded default content.

@@ -478,4 +478,7 @@
   <data name="TaskFormatUpdateAll_Desc" xml:space="preserve">
     <value>All existing Resource files are being updated according to the current file format specifications.</value>
   </data>
+  <data name="DefaultEditorUserData" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>editoruserdata.xml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
+  </data>
 </root>

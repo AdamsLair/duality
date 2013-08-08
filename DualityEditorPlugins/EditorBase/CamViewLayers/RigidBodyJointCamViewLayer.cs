@@ -992,7 +992,7 @@ namespace EditorBase.CamViewLayers
 			var allColliders = Scene.Current.FindComponents<RigidBody>();
 			return allColliders.Where(r => 
 				r.Active && 
-				!CorePluginRegistry.RequestDesignTimeData(r.GameObj).IsHidden && 
+				!CorePluginRegistry.GetDesignTimeData(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		private RigidBody QuerySelectedCollider()

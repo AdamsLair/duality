@@ -321,10 +321,11 @@ namespace Duality
 			return counterMap.Values.Where(p => p.WasUsed);
 		}
 
-		public static void BeginMeasure(string counter)
+		public static TimeCounter BeginMeasure(string counter)
 		{
 			TimeCounter tc = RequestCounter<TimeCounter>(counter);
 			tc.BeginMeasure();
+			return tc;
 		}
 		public static void EndMeasure(string counter)
 		{

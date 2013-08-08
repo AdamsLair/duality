@@ -38,7 +38,7 @@ namespace EditorBase.PropertyEditors
 				this.editorPos.Getter = this.PosGetter;
 				this.editorPos.Setter = this.PosSetter;
 				this.editorPos.PropertyName = "Pos";
-				this.ParentGrid.ConfigureEditor(this.editorPos, new EditorHintMemberAttribute[] 
+				this.ParentGrid.ConfigureEditor(this.editorPos, new EditorHintAttribute[] 
 				{ new EditorHintDecimalPlacesAttribute(0), new EditorHintIncrementAttribute(1) });
 				this.AddPropertyEditor(this.editorPos);
 				this.editorPos.EndUpdate();
@@ -71,7 +71,7 @@ namespace EditorBase.PropertyEditors
 				this.editorAngle.Getter = this.AngleGetter;
 				this.editorAngle.Setter = this.AngleSetter;
 				this.editorAngle.PropertyName = "Angle";
-				this.ParentGrid.ConfigureEditor(this.editorAngle, new EditorHintMemberAttribute[] 
+				this.ParentGrid.ConfigureEditor(this.editorAngle, new EditorHintAttribute[] 
 				{ new EditorHintDecimalPlacesAttribute(1), new EditorHintIncrementAttribute(1) });
 				this.AddPropertyEditor(this.editorAngle);
 				this.editorAngle.EndUpdate();

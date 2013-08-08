@@ -282,13 +282,13 @@ namespace EditorBase
 				if (type == typeof(Duality.Resources.Prefab))
 				{
 					bool prefabHasContent = (resLink.IsAvailable && (resLink.Res as Duality.Resources.Prefab).ContainsData);
-					result = CorePluginRegistry.RequestTypeImage(type, prefabHasContent ? 
+					result = CorePluginRegistry.GetTypeImage(type, prefabHasContent ? 
 						CorePluginRegistry.ImageContext_Icon + "_Full" : 
 						CorePluginRegistry.ImageContext_Icon);
 				}
 				else
 				{
-					result = CorePluginRegistry.RequestTypeImage(type);
+					result = CorePluginRegistry.GetTypeImage(type);
 				}
 
 				return result ?? PluginRes.EditorBaseResCache.IconResUnknown;
@@ -736,7 +736,7 @@ namespace EditorBase
 			if (resNode == null) return null;
 
 			// Determine applying open actions
-			var actions = CorePluginRegistry.RequestEditorActions(resNode.ResType, CorePluginRegistry.ActionContext_OpenRes, new[] { resNode.ResLink.Res });
+			var actions = CorePluginRegistry.GetEditorActions(resNode.ResType, CorePluginRegistry.ActionContext_OpenRes, new[] { resNode.ResLink.Res });
 
 			// Perform first open action
 			return actions.FirstOrDefault();
@@ -1336,7 +1336,7 @@ namespace EditorBase
 			{
 				this.toolStripSeparatorCustomActions.Visible = true;
 				int baseIndex = this.contextMenuNode.Items.IndexOf(this.toolStripSeparatorCustomActions);
-				var customActions = CorePluginRegistry.RequestEditorActions(
+				var customActions = CorePluginRegistry.GetEditorActions(
 					mainResType, 
 					CorePluginRegistry.ActionContext_ContextMenu, 
 					selResData.Select(resRef => resRef.Res))
@@ -1366,7 +1366,7 @@ namespace EditorBase
 			foreach (Type resType in this.QueryResourceTypes())
 			{
 				// Generate category item
-				string[] category = CorePluginRegistry.RequestTypeCategory(resType);
+				string[] category = CorePluginRegistry.GetTypeCategory(resType);
 				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;
 				for (int i = 0; i < category.Length; i++)
 				{

@@ -35,15 +35,15 @@ namespace Duality.EditorHints
 	}
 
 	/// <summary>
-	/// An attribute that provides member-related information about preferred editor behaviour
+	/// An attribute that provides information about a Types or Members preferred editor behaviour.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
-	public abstract class EditorHintMemberAttribute : Attribute {}
+	public abstract class EditorHintAttribute : Attribute {}
 
 	/// <summary>
 	/// Provides general information about a members preferred editor behaviour.
 	/// </summary>
-	public class EditorHintFlagsAttribute : EditorHintMemberAttribute
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+	public class EditorHintFlagsAttribute : EditorHintAttribute
 	{
 		private	MemberFlags	flags;
 		/// <summary>
@@ -62,7 +62,8 @@ namespace Duality.EditorHints
 	/// <summary>
 	/// Provides information about a numerical members allowed value range.
 	/// </summary>
-	public class EditorHintRangeAttribute : EditorHintMemberAttribute
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+	public class EditorHintRangeAttribute : EditorHintAttribute
 	{
 		private	decimal	min;
 		private	decimal	max;
@@ -95,7 +96,8 @@ namespace Duality.EditorHints
 	/// <summary>
 	/// Provides information about a numerical members value increment.
 	/// </summary>
-	public class EditorHintIncrementAttribute : EditorHintMemberAttribute
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+	public class EditorHintIncrementAttribute : EditorHintAttribute
 	{
 		private	decimal	inc;
 		/// <summary>
@@ -118,7 +120,8 @@ namespace Duality.EditorHints
 	/// <summary>
 	/// Provides information about a numerical members decimal accuracy
 	/// </summary>
-	public class EditorHintDecimalPlacesAttribute : EditorHintMemberAttribute
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+	public class EditorHintDecimalPlacesAttribute : EditorHintAttribute
 	{
 		private	int places;
 		/// <summary>
@@ -134,29 +137,62 @@ namespace Duality.EditorHints
 		}
 	}
 
+	/// <summary>
+	/// Provides information about a Types editor category.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
+	public class EditorHintCategoryAttribute : EditorHintAttribute
+	{
+		private	string[] category	= null;
+		private	string context	= null;
+		/// <summary>
+		/// [GET] The preferred category tree to fit this Type in.
+		/// </summary>
+		public string[] Category
+		{
+			get { return this.category; }
+		}
+		/// <summary>
+		/// [GET] The context this category applies to.
+		/// </summary>
+		public string Context
+		{
+			get { return this.context; }
+		}
+		public EditorHintCategoryAttribute(string category) : this(category, null) {}
+		public EditorHintCategoryAttribute(string category, string context)
+		{
+			if (category != null)
+				this.category = category.Split(new[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+			else
+				this.category = null;
+			this.context = context;
+		}
+	}
+
 	public static class ExtMethodsMemberInfoEditorHint
 	{
-		public static T GetEditorHint<T>(this MemberInfo info) where T : EditorHintMemberAttribute
+		public static T GetEditorHint<T>(this MemberInfo info) where T : EditorHintAttribute
 		{
 			return Attribute.GetCustomAttributes(info, typeof(T), true).FirstOrDefault() as T;
 		}
-		public static T GetEditorHint<T>(this MemberInfo info, IEnumerable<EditorHintMemberAttribute> hintOverride) where T : EditorHintMemberAttribute
+		public static T GetEditorHint<T>(this MemberInfo info, IEnumerable<EditorHintAttribute> hintOverride) where T : EditorHintAttribute
 		{
 			T attrib = null;
 			if (hintOverride != null) attrib = hintOverride.OfType<T>().FirstOrDefault();
 			if (attrib == null && info != null) attrib = info.GetEditorHint<T>();
 			return attrib;
 		}
-		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info) where T : EditorHintMemberAttribute
+		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info) where T : EditorHintAttribute
 		{
 			return Attribute.GetCustomAttributes(info, typeof(T), true).OfType<T>();
 		}
-		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info, IEnumerable<EditorHintMemberAttribute> hintOverride) where T : EditorHintMemberAttribute
+		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info, IEnumerable<EditorHintAttribute> hintOverride) where T : EditorHintAttribute
 		{
 			if (info != null) return info.GetEditorHints<T>().OverrideEditorHintsBy(hintOverride).OfType<T>();
 			return null;
 		}
-		public static IEnumerable<EditorHintMemberAttribute> OverrideEditorHintsBy(this IEnumerable<EditorHintMemberAttribute> hints, IEnumerable<EditorHintMemberAttribute> overrideHints)
+		public static IEnumerable<EditorHintAttribute> OverrideEditorHintsBy(this IEnumerable<EditorHintAttribute> hints, IEnumerable<EditorHintAttribute> overrideHints)
 		{
 			if (overrideHints == null) return hints;
 			if (hints == null) return overrideHints;

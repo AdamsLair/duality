@@ -38,7 +38,7 @@ namespace DualityEditor.CorePluginInterface
 			//w.Restart();
 
 			var generators = (
-				from g in CorePluginRegistry.RequestPreviewGenerators()
+				from g in CorePluginRegistry.GetPreviewGenerators()
 				orderby query.SourceFits(g.ObjectType) descending, g.Priority descending
 				select g).ToArray();
 

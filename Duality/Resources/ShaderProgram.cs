@@ -248,7 +248,7 @@ namespace Duality.Resources
 			if (result == 0)
 			{
 				string infoLog = GL.GetProgramInfoLog(this.glProgramId);
-				Log.Core.WriteError("Error linking shader program. InfoLog:\n{0}", infoLog);
+				Log.Core.WriteError("Error linking shader program. InfoLog:{1}{0}", infoLog, Environment.NewLine);
 				return;
 			}
 			this.compiled = true;

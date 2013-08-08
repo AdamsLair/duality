@@ -78,7 +78,7 @@ namespace DualityEditor
 		public static HelpInfo FromMember(MemberInfo member)
 		{
 			if (member == null) return null;
-			XmlCodeDoc.Entry doc = CorePluginRegistry.RequestXmlCodeDoc(member);
+			XmlCodeDoc.Entry doc = CorePluginRegistry.GetXmlCodeDoc(member);
 
 			if (doc != null)
 			{
@@ -98,7 +98,27 @@ namespace DualityEditor
 		}
 		public static HelpInfo FromResource(IContentRef res)
 		{
-			return FromMember(res.ResType);
+			Type resType = res.ResType;
+
+			// Default content? Attempt to retrieve the associated Property description.
+			if (res.IsDefaultContent)
+			{
+				string[] defaultPath = res.Path.Split(':');
+				PropertyInfo property = null;
+				for (int i = 1; i <  defaultPath.Length; i++)
+				{
+					string memberName = string.Join("_", defaultPath.Skip(i));
+					property = resType.GetProperty(memberName, BindingFlags.Static | BindingFlags.Public);
+					if (property != null) break;
+				}
+				if (property != null)
+				{
+					return FromMember(property);
+				}
+			}
+
+			// Default to Type description.
+			return FromMember(resType);
 		}
 		public static HelpInfo FromGameObject(GameObject obj)
 		{

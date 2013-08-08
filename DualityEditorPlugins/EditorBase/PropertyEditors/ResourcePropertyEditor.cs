@@ -46,7 +46,7 @@ namespace EditorBase.PropertyEditors
 		{
 			base.OnEditedTypeChanged();
 
-			System.Drawing.Bitmap iconBitmap = CorePluginRegistry.RequestTypeImage(this.EditedType) as System.Drawing.Bitmap;
+			System.Drawing.Bitmap iconBitmap = CorePluginRegistry.GetTypeImage(this.EditedType) as System.Drawing.Bitmap;
 			ColorHsva avgClr = iconBitmap != null ? 
 				iconBitmap.GetAverageColor().ToHsva() : 
 				Duality.ColorFormat.ColorHsva.TransparentWhite;

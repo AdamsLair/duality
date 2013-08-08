@@ -143,7 +143,7 @@ namespace EditorBase
 						{
 							if (availCmpTypes.Any(c => Component.RequiresComponent(c, cmpType)))
 								continue;
-							if (CorePluginRegistry.RequestTypeImage(cmpType) == null)
+							if (CorePluginRegistry.GetTypeImage(cmpType) == null)
 								continue;
 
 							int score = 
@@ -159,7 +159,7 @@ namespace EditorBase
 					}
 
 					this.customIconSet = (representant != null);
-					Image img = CorePluginRegistry.RequestTypeImage(representant ?? typeof(GameObject));
+					Image img = CorePluginRegistry.GetTypeImage(representant ?? typeof(GameObject));
 					if (this.LinkState != PrefabLinkState.None)
 					{
 						img = EditorHelper.GetImageWithOverlay(img, this.LinkState == PrefabLinkState.Active ? 
@@ -170,7 +170,7 @@ namespace EditorBase
 				}
 				else
 				{
-					Image img = CorePluginRegistry.RequestTypeImage(typeof(GameObject));
+					Image img = CorePluginRegistry.GetTypeImage(typeof(GameObject));
 					if (this.LinkState != PrefabLinkState.None)
 					{
 						img = EditorHelper.GetImageWithOverlay(img, this.LinkState == PrefabLinkState.Active ? 
@@ -206,7 +206,7 @@ namespace EditorBase
 
 			public static Image GetTypeImage(Type type)
 			{
-				return CorePluginRegistry.RequestTypeImage(type) ?? EditorBaseResCache.IconCmpUnknown;
+				return CorePluginRegistry.GetTypeImage(type) ?? EditorBaseResCache.IconCmpUnknown;
 			}
 		}
 
@@ -704,12 +704,12 @@ namespace EditorBase
 		}
 		protected IEditorAction GetResourceOpenAction(GameObject obj)
 		{
-			var actions = CorePluginRegistry.RequestEditorActions<GameObject>(CorePluginRegistry.ActionContext_OpenRes, new[] { obj });
+			var actions = CorePluginRegistry.GetEditorActions<GameObject>(CorePluginRegistry.ActionContext_OpenRes, new[] { obj });
 			return actions == null ? null : actions.FirstOrDefault();
 		}
 		protected IEditorAction GetResourceOpenAction(Component cmp)
 		{
-			var actions = CorePluginRegistry.RequestEditorActions(cmp.GetType(), CorePluginRegistry.ActionContext_OpenRes, new[] { cmp });
+			var actions = CorePluginRegistry.GetEditorActions(cmp.GetType(), CorePluginRegistry.ActionContext_OpenRes, new[] { cmp });
 			return actions == null ? null : actions.FirstOrDefault();
 		}
 
@@ -1102,7 +1102,7 @@ namespace EditorBase
 
 			ComponentNode cmpNode = node as ComponentNode;
 			GameObjectNode objNode = (cmpNode != null ? cmpNode.Parent : node) as GameObjectNode;
-			DesignTimeObjectData data = objNode != null ? CorePluginRegistry.RequestDesignTimeData(objNode.Obj) : null;
+			DesignTimeObjectData data = objNode != null ? CorePluginRegistry.GetDesignTimeData(objNode.Obj) : null;
 			bool lockedOrHidden = data != null ? data.IsLocked || data.IsHidden : false;
 
 			if (lockedOrHidden) e.IconColorMatrix = this.inactiveIconMatrix;
@@ -1114,7 +1114,7 @@ namespace EditorBase
 
 			ComponentNode cmpNode = node as ComponentNode;
 			GameObjectNode objNode = (cmpNode != null ? cmpNode.Parent : node) as GameObjectNode;
-			DesignTimeObjectData data = objNode != null ? CorePluginRegistry.RequestDesignTimeData(objNode.Obj) : null;
+			DesignTimeObjectData data = objNode != null ? CorePluginRegistry.GetDesignTimeData(objNode.Obj) : null;
 			bool lockedOrHidden = data != null ? data.IsLocked || data.IsHidden : false;
 
 			// Prefab-linked entities
@@ -1156,7 +1156,7 @@ namespace EditorBase
 			}
 			else
 			{
-				DesignTimeObjectData data = CorePluginRegistry.RequestDesignTimeData(objNode.Obj);
+				DesignTimeObjectData data = CorePluginRegistry.GetDesignTimeData(objNode.Obj);
 				if (data.IsLocked) e.Cancel = true;
 			}
 
@@ -1342,7 +1342,7 @@ namespace EditorBase
 			{
 				this.toolStripSeparatorCustomActions.Visible = true;
 				int baseIndex = this.contextMenuNode.Items.IndexOf(this.toolStripSeparatorCustomActions);
-				var customActions = CorePluginRegistry.RequestEditorActions(
+				var customActions = CorePluginRegistry.GetEditorActions(
 					mainResType, 
 					CorePluginRegistry.ActionContext_ContextMenu, 
 					selObjData)
@@ -1362,7 +1362,7 @@ namespace EditorBase
 				this.toolStripSeparatorCustomActions.Visible = false;
 
 			// Reset "New" menu to original state
-			this.gameObjectToolStripMenuItem.Image = CorePluginRegistry.RequestTypeImage(typeof(GameObject));
+			this.gameObjectToolStripMenuItem.Image = CorePluginRegistry.GetTypeImage(typeof(GameObject));
 			List<ToolStripItem> oldItems = new List<ToolStripItem>(this.newToolStripMenuItem.DropDownItems.OfType<ToolStripItem>());
 			this.newToolStripMenuItem.DropDownItems.Clear();
 			foreach (ToolStripItem item in oldItems.Skip(2)) item.Dispose();
@@ -1373,7 +1373,7 @@ namespace EditorBase
 			foreach (Type cmpType in this.QueryComponentTypes())
 			{
 				// Generate category item
-				string[] category = CorePluginRegistry.RequestTypeCategory(cmpType);
+				string[] category = CorePluginRegistry.GetTypeCategory(cmpType);
 				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;
 				for (int i = 0; i < category.Length; i++)
 				{
@@ -1418,7 +1418,7 @@ namespace EditorBase
 			var selNodeData =
 				from vn in this.objectView.SelectedNodes
 				where vn.Tag is GameObjectNode
-				select CorePluginRegistry.RequestDesignTimeData((vn.Tag as GameObjectNode).Obj);
+				select CorePluginRegistry.GetDesignTimeData((vn.Tag as GameObjectNode).Obj);
 			bool locked = false;
 			bool hidden = false;
 			foreach (var data in selNodeData)
@@ -1466,7 +1466,7 @@ namespace EditorBase
 				from vn in this.objectView.SelectedNodes
 				where vn.Tag is GameObjectNode
 				select vn.Tag as GameObjectNode).ToArray();
-			var selNodeData = selNode.Select(n => CorePluginRegistry.RequestDesignTimeData(n.Obj)).ToArray();
+			var selNodeData = selNode.Select(n => CorePluginRegistry.GetDesignTimeData(n.Obj)).ToArray();
 			bool locked = true;
 			bool hidden = true;
 			foreach (var data in selNodeData)

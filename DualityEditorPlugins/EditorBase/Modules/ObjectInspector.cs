@@ -74,7 +74,7 @@ namespace EditorBase
 		{
 			base.OnShown(e);
 
-			this.propertyGrid.RegisterEditorProvider(CorePluginRegistry.RequestPropertyEditorProviders());
+			this.propertyGrid.RegisterEditorProvider(CorePluginRegistry.GetPropertyEditorProviders());
 			this.UpdateButtons();
 
 			// Add the global selection event once
@@ -287,7 +287,7 @@ namespace EditorBase
 				objView.Show(this.DockHandler.Pane, DockAlignment.Bottom, 0.5d);
 			
 			// Need it before showing because of instant-selection
-			objView.propertyGrid.RegisterEditorProvider(CorePluginRegistry.RequestPropertyEditorProviders());
+			objView.propertyGrid.RegisterEditorProvider(CorePluginRegistry.GetPropertyEditorProviders());
 			objView.propertyGrid.SelectObjects(this.propertyGrid.Selection);
 			objView.gridExpandState.ApplyTo(objView.propertyGrid.MainEditor);
 		}

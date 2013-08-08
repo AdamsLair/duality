@@ -10,6 +10,7 @@ using AdamsLair.PropertyGrid;
 using Duality;
 using Duality.Resources;
 using Duality.Serialization;
+using Duality.EditorHints;
 
 using DualityEditor.CorePluginInterface;
 
@@ -58,7 +59,7 @@ namespace DualityEditor.CorePluginInterface
 			public	string		context;
 			public CategoryEntry(string category, string context)
 			{
-				this.categoryTree = category.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+				this.categoryTree = category.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 				this.context = context;
 			}
 		}
@@ -143,7 +144,7 @@ namespace DualityEditor.CorePluginInterface
 			}
 			yield break;
 		}
-		private static T RequestCorePluginRes<T>(Type type, bool contravariantType, Predicate<T> predicate) where T : IResEntry
+		private static T GetCorePluginRes<T>(Type type, bool contravariantType, Predicate<T> predicate) where T : IResEntry
 		{
 			if (type == null) return default(T);
 			if (contravariantType)
@@ -168,12 +169,12 @@ namespace DualityEditor.CorePluginInterface
 					return entry;
 
 				if (type != typeof(object))
-					return RequestCorePluginRes<T>(type.BaseType, contravariantType, predicate);
+					return GetCorePluginRes<T>(type.BaseType, contravariantType, predicate);
 				else
 					return default(T);
 			}
 		}
-		private static List<T> RequestAllCorePluginRes<T>(Type type, bool contravariantType, Predicate<T> predicate) where T : IResEntry
+		private static List<T> GetAllCorePluginRes<T>(Type type, bool contravariantType, Predicate<T> predicate) where T : IResEntry
 		{
 			if (contravariantType)
 			{
@@ -218,18 +219,29 @@ namespace DualityEditor.CorePluginInterface
 		{
 			RegisterCorePluginRes(type, new ImageResEntry(image, context));
 		}
-		public static Image RequestTypeImage(Type type, string context = ImageContext_Icon)
+		public static Image GetTypeImage(Type type, string context = ImageContext_Icon)
 		{
-			return RequestCorePluginRes<ImageResEntry>(type, false, e => e.context == context).img;
+			return GetCorePluginRes<ImageResEntry>(type, false, e => e.context == context).img;
 		}
 
 		public static void RegisterTypeCategory(Type type, string category, string context = CategoryContext_General)
 		{
 			RegisterCorePluginRes(type, new CategoryEntry(category, context));
 		}
-		public static string[] RequestTypeCategory(Type type, string context = CategoryContext_General)
+		public static string[] GetTypeCategory(Type type, string context = CategoryContext_General)
 		{
-			string[] tree = RequestCorePluginRes<CategoryEntry>(type, false, e => e.context == context).categoryTree;
+			string[] tree = GetCorePluginRes<CategoryEntry>(type, false, e => e.context == context).categoryTree;
+			if (tree == null)
+			{
+				foreach (var attrib in type.GetEditorHints<EditorHintCategoryAttribute>())
+				{
+					if (attrib.Context == context || (string.IsNullOrEmpty(attrib.Context) && context == CategoryContext_General))
+					{
+						tree = attrib.Category;
+						if (tree != null) break;
+					}
+				}
+			}
 			if (tree == null) tree = type.Namespace.Split('.');
 			return tree;
 		}
@@ -238,9 +250,9 @@ namespace DualityEditor.CorePluginInterface
 		{
 			RegisterCorePluginRes(typeof(object), new PropertyEditorProviderResEntry(provider));
 		}
-		public static IEnumerable<IPropertyEditorProvider> RequestPropertyEditorProviders()
+		public static IEnumerable<IPropertyEditorProvider> GetPropertyEditorProviders()
 		{
-			return RequestAllCorePluginRes<PropertyEditorProviderResEntry>(typeof(object), false, null).Select(e => e.provider);
+			return GetAllCorePluginRes<PropertyEditorProviderResEntry>(typeof(object), false, null).Select(e => e.provider);
 		}
 
 		public static void RegisterEditorAction<T>(EditorAction<T> action, string context)
@@ -251,64 +263,64 @@ namespace DualityEditor.CorePluginInterface
 		{
 			RegisterCorePluginRes(typeof(T), new EditorActionEntry(action, context));
 		}
-		public static IEnumerable<IEditorAction> RequestEditorActions<T>(string context, IEnumerable<object> forGroup = null)
+		public static IEnumerable<IEditorAction> GetEditorActions<T>(string context, IEnumerable<object> forGroup = null)
 		{
-			return RequestEditorActions(typeof(T), context, forGroup);
+			return GetEditorActions(typeof(T), context, forGroup);
 		}
-		public static IEnumerable<IEditorAction> RequestEditorActions(Type type, string context, IEnumerable<object> forGroup = null)
+		public static IEnumerable<IEditorAction> GetEditorActions(Type type, string context, IEnumerable<object> forGroup = null)
 		{
-			return RequestAllCorePluginRes<EditorActionEntry>(type, false, e => e.context == context && e.action.CanPerformOn(forGroup)).Select(e => e.action);
+			return GetAllCorePluginRes<EditorActionEntry>(type, false, e => e.context == context && e.action.CanPerformOn(forGroup)).Select(e => e.action);
 		}
 
 		public static void RegisterDataConverter<T>(DataConverter selector)
 		{
 			RegisterCorePluginRes(typeof(T), new DataSelectorEntry(selector));
 		}
-		public static IEnumerable<DataConverter> RequestDataConverters<T>()
+		public static IEnumerable<DataConverter> GetDataConverters<T>()
 		{
-			return RequestDataConverters(typeof(T));
+			return GetDataConverters(typeof(T));
 		}
-		public static IEnumerable<DataConverter> RequestDataConverters(Type type)
+		public static IEnumerable<DataConverter> GetDataConverters(Type type)
 		{
-			return RequestAllCorePluginRes<DataSelectorEntry>(type, true, null).Select(e => e.selector);
+			return GetAllCorePluginRes<DataSelectorEntry>(type, true, null).Select(e => e.selector);
 		}
 
 		public static void RegisterPreviewGenerator(IPreviewGenerator generator)
 		{
 			RegisterCorePluginRes(typeof(object), new PreviewGeneratorEntry(generator));
 		}
-		public static IEnumerable<IPreviewGenerator> RequestPreviewGenerators()
+		public static IEnumerable<IPreviewGenerator> GetPreviewGenerators()
 		{
-			return RequestAllCorePluginRes<PreviewGeneratorEntry>(typeof(object), false, null).Select(e => e.generator);
+			return GetAllCorePluginRes<PreviewGeneratorEntry>(typeof(object), false, null).Select(e => e.generator);
 		}
 
 		public static void RegisterFileImporter(IFileImporter importer)
 		{
 			RegisterCorePluginRes(typeof(object), new FileImporterEntry(importer));
 		}
-		public static IFileImporter RequestFileImporter(Predicate<IFileImporter> predicate = null)
+		public static IFileImporter GetFileImporter(Predicate<IFileImporter> predicate = null)
 		{
-			return RequestCorePluginRes<FileImporterEntry>(typeof(object), false, e => predicate(e.importer)).importer;
+			return GetCorePluginRes<FileImporterEntry>(typeof(object), false, e => predicate(e.importer)).importer;
 		}
-		public static IEnumerable<IFileImporter> RequestFileImporters(Predicate<IFileImporter> predicate = null)
+		public static IEnumerable<IFileImporter> GetFileImporters(Predicate<IFileImporter> predicate = null)
 		{
-			return RequestAllCorePluginRes<FileImporterEntry>(typeof(object), false, e => predicate(e.importer)).Select(e => e.importer);
+			return GetAllCorePluginRes<FileImporterEntry>(typeof(object), false, e => predicate(e.importer)).Select(e => e.importer);
 		}
 
 		public static void RegisterXmlCodeDoc(XmlCodeDoc doc)
 		{
 			corePluginDoc.AppendDoc(doc);
 		}
-		public static XmlCodeDoc.Entry RequestXmlCodeDoc(MemberInfo info)
+		public static XmlCodeDoc.Entry GetXmlCodeDoc(MemberInfo info)
 		{
 			return corePluginDoc.GetMemberDoc(info);
 		}
 
-		public static DesignTimeObjectData RequestDesignTimeData(Guid objId)
+		public static DesignTimeObjectData GetDesignTimeData(Guid objId)
 		{
 			return designTimeData.RequestDesignTimeData(objId);
 		}
-		public static DesignTimeObjectData RequestDesignTimeData(GameObject obj)
+		public static DesignTimeObjectData GetDesignTimeData(GameObject obj)
 		{
 			return designTimeData.RequestDesignTimeData(obj.Id);
 		}

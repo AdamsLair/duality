@@ -302,6 +302,7 @@
     <Content Include="DualityIcon.ico" />
     <Content Include="DualityIconB.ico" />
     <Content Include="DualityIconC.ico" />
+    <None Include="EditorRes\editoruserdata.xml" />
     <None Include="EditorRes\application_stopwatch.png" />
     <Content Include="EditorRes\WorkingFolderIcon.ico" />
     <None Include="EditorRes\arrow_undo.png" />

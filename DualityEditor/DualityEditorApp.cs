@@ -435,7 +435,11 @@ namespace DualityEditor
 		}
 		private static void LoadUserData()
 		{
-			if (!File.Exists(UserDataFile)) return;
+			if (!File.Exists(UserDataFile))
+			{
+				File.WriteAllText(UserDataFile, EditorRes.GeneralRes.DefaultEditorUserData);
+				if (!File.Exists(UserDataFile)) return;
+			}
 
 			Log.Editor.Write("Loading user data...");
 			Log.Editor.PushIndent();

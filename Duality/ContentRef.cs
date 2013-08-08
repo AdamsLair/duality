@@ -159,7 +159,7 @@ namespace Duality
 				if (this.IsExplicitNull) return "null";
 				if (this.IsRuntimeResource) return this.contentInstance.GetHashCode().ToString(CultureInfo.InvariantCulture);
 				string nameTemp = this.contentPath;
-				if (this.IsDefaultContent) nameTemp = nameTemp.Replace(':', '/');
+				if (this.IsDefaultContent) nameTemp = nameTemp.Replace(':', System.IO.Path.DirectorySeparatorChar);
 				return System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileNameWithoutExtension(nameTemp));
 			}
 		}
@@ -173,7 +173,7 @@ namespace Duality
 				if (this.IsExplicitNull) return "null";
 				if (this.IsRuntimeResource) return this.contentInstance.GetHashCode().ToString(CultureInfo.InvariantCulture);
 				string nameTemp = this.contentPath;
-				if (this.IsDefaultContent) nameTemp = nameTemp.Replace(':', '/');
+				if (this.IsDefaultContent) nameTemp = nameTemp.Replace(':', System.IO.Path.DirectorySeparatorChar);
 				return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(nameTemp), this.Name);
 			}
 		}

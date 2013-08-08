@@ -145,7 +145,7 @@ namespace EditorBase.CamViewStates
 			ShapeInfo pickedShape = null;
 
 			RigidBody[] visibleColliders = this.QueryVisibleColliders()
-				.Where(r => !CorePluginRegistry.RequestDesignTimeData(r.GameObj).IsLocked)
+				.Where(r => !CorePluginRegistry.GetDesignTimeData(r.GameObj).IsLocked)
 				.ToArray();
 			visibleColliders.StableSort(delegate(RigidBody c1, RigidBody c2) 
 			{ 
@@ -180,7 +180,7 @@ namespace EditorBase.CamViewStates
 			ShapeInfo pickedShape = null;
 
 			RigidBody[] visibleColliders = this.QueryVisibleColliders()
-				.Where(r => !CorePluginRegistry.RequestDesignTimeData(r.GameObj).IsLocked)
+				.Where(r => !CorePluginRegistry.GetDesignTimeData(r.GameObj).IsLocked)
 				.ToArray();
 			visibleColliders.StableSort(delegate(RigidBody c1, RigidBody c2) 
 			{ 
@@ -430,7 +430,7 @@ namespace EditorBase.CamViewStates
 			var allColliders = Scene.Current.FindComponents<RigidBody>();
 			return allColliders.Where(r => 
 				r.Active && 
-				!CorePluginRegistry.RequestDesignTimeData(r.GameObj).IsHidden && 
+				!CorePluginRegistry.GetDesignTimeData(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		protected RigidBody QuerySelectedCollider()
@@ -444,7 +444,7 @@ namespace EditorBase.CamViewStates
 			GameObject obj = (r as Component).GameObj;
 			if (obj.RigidBody == null || !(r as Component).Active) return false;
 
-			DesignTimeObjectData data = CorePluginRegistry.RequestDesignTimeData(obj);
+			DesignTimeObjectData data = CorePluginRegistry.GetDesignTimeData(obj);
 			return !data.IsHidden;
 		}
 

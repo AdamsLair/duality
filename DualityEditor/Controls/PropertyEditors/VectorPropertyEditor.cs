@@ -293,7 +293,7 @@ namespace DualityEditor.Controls.PropertyEditors
 		protected override void ConfigureEditor(object configureData)
 		{
 			base.ConfigureEditor(configureData);
-			var hintOverride = configureData as IEnumerable<EditorHintMemberAttribute>;
+			var hintOverride = configureData as IEnumerable<EditorHintAttribute>;
 
 			foreach (NumericEditorTemplate t in this.editor)
 			{

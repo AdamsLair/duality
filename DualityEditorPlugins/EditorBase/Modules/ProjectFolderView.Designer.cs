@@ -76,7 +76,7 @@
             this.toolStripLabelProjectName});
 			this.toolStrip.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip.Name = "toolStrip";
-			this.toolStrip.Size = new System.Drawing.Size(206, 25);
+			this.toolStrip.Size = new System.Drawing.Size(304, 25);
 			this.toolStrip.TabIndex = 0;
 			// 
 			// toolStripButtonWorkDir
@@ -122,7 +122,7 @@
 			this.folderView.SelectedNode = null;
 			this.folderView.SelectionMode = Aga.Controls.Tree.TreeSelectionMode.Multi;
 			this.folderView.ShowNodeToolTips = true;
-			this.folderView.Size = new System.Drawing.Size(206, 496);
+			this.folderView.Size = new System.Drawing.Size(304, 494);
 			this.folderView.TabIndex = 1;
 			this.folderView.UseColumns = true;
 			this.folderView.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.folderView_ItemDrag);
@@ -141,7 +141,7 @@
 			this.treeColumnName.Header = "Name";
 			this.treeColumnName.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.treeColumnName.TooltipText = null;
-			this.treeColumnName.Width = 150;
+			this.treeColumnName.Width = 200;
 			// 
 			// treeColumnType
 			// 
@@ -323,10 +323,10 @@
 			this.panelBottom.Controls.Add(this.textBoxFilter);
 			this.panelBottom.Controls.Add(this.labelFilter);
 			this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panelBottom.Location = new System.Drawing.Point(0, 521);
+			this.panelBottom.Location = new System.Drawing.Point(0, 519);
 			this.panelBottom.Name = "panelBottom";
 			this.panelBottom.Padding = new System.Windows.Forms.Padding(3);
-			this.panelBottom.Size = new System.Drawing.Size(206, 26);
+			this.panelBottom.Size = new System.Drawing.Size(304, 26);
 			this.panelBottom.TabIndex = 2;
 			// 
 			// textBoxFilter
@@ -336,7 +336,7 @@
 			this.textBoxFilter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.textBoxFilter.Location = new System.Drawing.Point(41, 3);
 			this.textBoxFilter.Name = "textBoxFilter";
-			this.textBoxFilter.Size = new System.Drawing.Size(162, 20);
+			this.textBoxFilter.Size = new System.Drawing.Size(260, 20);
 			this.textBoxFilter.TabIndex = 0;
 			this.textBoxFilter.TextChanged += new System.EventHandler(this.textBoxFilter_TextChanged);
 			// 
@@ -358,7 +358,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
-			this.ClientSize = new System.Drawing.Size(206, 547);
+			this.ClientSize = new System.Drawing.Size(304, 545);
 			this.Controls.Add(this.folderView);
 			this.Controls.Add(this.panelBottom);
 			this.Controls.Add(this.toolStrip);

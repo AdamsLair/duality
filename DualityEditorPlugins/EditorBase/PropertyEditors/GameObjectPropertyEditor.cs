@@ -318,7 +318,7 @@ namespace EditorBase.PropertyEditors
 			if (e.KeyCode == Keys.Return)
 			{
 				GameObject[] values = this.GetValue().Cast<GameObject>().ToArray();
-				var actions = CorePluginRegistry.RequestEditorActions<GameObject>(CorePluginRegistry.ActionContext_OpenRes, values);
+				var actions = CorePluginRegistry.GetEditorActions<GameObject>(CorePluginRegistry.ActionContext_OpenRes, values);
 				var action = actions.FirstOrDefault();
 				if (action != null)
 				{

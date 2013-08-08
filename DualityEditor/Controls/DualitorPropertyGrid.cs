@@ -28,13 +28,13 @@ namespace DualityEditor.Controls
 
 		public override void ConfigureEditor(PropertyEditor editor, object configureData = null)
 		{
-			IEnumerable<EditorHintMemberAttribute> hintOverride = configureData as IEnumerable<EditorHintMemberAttribute>;
-			IEnumerable<EditorHintMemberAttribute> parentHint = null;
+			IEnumerable<EditorHintAttribute> hintOverride = configureData as IEnumerable<EditorHintAttribute>;
+			IEnumerable<EditorHintAttribute> parentHint = null;
 			if (editor.ParentEditor != null)
 			{
-				IEnumerable<EditorHintMemberAttribute> parentHintOverride = editor.ParentEditor.ConfigureData as IEnumerable<EditorHintMemberAttribute>;
+				IEnumerable<EditorHintAttribute> parentHintOverride = editor.ParentEditor.ConfigureData as IEnumerable<EditorHintAttribute>;
 				if (editor.ParentEditor.EditedMember != null)
-					parentHint = editor.ParentEditor.EditedMember.GetEditorHints<EditorHintMemberAttribute>(parentHintOverride);
+					parentHint = editor.ParentEditor.EditedMember.GetEditorHints<EditorHintAttribute>(parentHintOverride);
 				else
 					parentHint = parentHintOverride;
 			}

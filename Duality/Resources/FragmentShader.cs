@@ -42,23 +42,10 @@ namespace Duality.Resources
 			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
 			const string ContentPath_SharpMask	= VirtualContentPath + "SharpMask";
 
-			FragmentShader tmp;
-
-			tmp = new FragmentShader();
-			tmp.SetSource(DefaultRes.MinimalFrag);
-			ContentProvider.RegisterContent(ContentPath_Minimal, tmp);
-
-			tmp = new FragmentShader();
-			tmp.SetSource(DefaultRes.PickingFrag);
-			ContentProvider.RegisterContent(ContentPath_Picking, tmp);
-
-			tmp = new FragmentShader();
-			tmp.SetSource(DefaultRes.SmoothAnimFrag);
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim, tmp);
-
-			tmp = new FragmentShader();
-			tmp.SetSource(DefaultRes.SharpMaskFrag);
-			ContentProvider.RegisterContent(ContentPath_SharpMask, tmp);
+			ContentProvider.RegisterContent(ContentPath_Minimal,	new FragmentShader(DefaultRes.MinimalFrag));
+			ContentProvider.RegisterContent(ContentPath_Picking,	new FragmentShader(DefaultRes.PickingFrag));
+			ContentProvider.RegisterContent(ContentPath_SmoothAnim,	new FragmentShader(DefaultRes.SmoothAnimFrag));
+			ContentProvider.RegisterContent(ContentPath_SharpMask,	new FragmentShader(DefaultRes.SharpMaskFrag));
 
 			Minimal		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Minimal);
 			Picking		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Picking);
@@ -72,10 +59,7 @@ namespace Duality.Resources
 			get { return ShaderType.FragmentShader; }
 		}
 		
-		public FragmentShader()
-		{
-			// By default, use minimal shader source.
-			this.SetSource(DefaultRes.MinimalFrag);
-		}
+		public FragmentShader() : base(DefaultRes.MinimalFrag) {}
+		public FragmentShader(string sourceCode) : base(sourceCode) {}
 	}
 }

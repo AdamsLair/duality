@@ -80,7 +80,7 @@ namespace ResourceHacker
 			}
 			public static Image GetIcon(DataNode data)
 			{
-				return CorePluginRegistry.RequestTypeImage(data.GetType()) ?? CorePluginRegistry.RequestTypeImage(typeof(DataNode));
+				return CorePluginRegistry.GetTypeImage(data.GetType()) ?? CorePluginRegistry.GetTypeImage(typeof(DataNode));
 			}
 		}
 		protected class PrimitiveTreeNode : DataTreeNode
@@ -231,7 +231,7 @@ namespace ResourceHacker
 
 		protected override void OnShown(EventArgs e)
 		{
-			this.propertyGrid.RegisterEditorProvider(CorePluginRegistry.RequestPropertyEditorProviders());
+			this.propertyGrid.RegisterEditorProvider(CorePluginRegistry.GetPropertyEditorProviders());
 			base.OnShown(e);
 		}
 

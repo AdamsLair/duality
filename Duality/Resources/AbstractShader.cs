@@ -241,18 +241,22 @@ namespace Duality.Resources
 		public string Source
 		{
 			get { return this.source; }
+			set
+			{
+				this.compiled = false;
+				this.sourcePath = null;
+				this.source = value;
+			}
 		}
 
-		/// <summary>
-		/// Applies the specified source code to the shader.
-		/// </summary>
-		/// <param name="source">The new shader source code.</param>
-		public void SetSource(string source)
+
+		protected AbstractShader() {}
+		protected AbstractShader(string sourceCode)
 		{
-			this.compiled = false;
-			this.sourcePath = null;
-			this.source = source;
+			this.Source = sourceCode;
 		}
+
+
 		/// <summary>
 		/// Loads new shader source code from the specified <see cref="System.IO.Stream"/>.
 		/// </summary>
