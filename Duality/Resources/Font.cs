@@ -161,6 +161,10 @@ namespace Duality.Resources
 			/// </summary>
 			MonochromeBitmap,
 			/// <summary>
+			/// A greyscale bitmap is used to store glyphs. Rendering is unfiltered and pixel-perfect.
+			/// </summary>
+			GrayscaleBitmap,
+			/// <summary>
 			/// A greyscale bitmap is used to store glyphs. Rendering is properly filtered but may blur text display a little.
 			/// </summary>
 			SmoothBitmap,
@@ -353,7 +357,12 @@ namespace Duality.Resources
 		/// </summary>
 		public bool IsPixelGridAligned
 		{
-			get { return this.renderMode == RenderMode.MonochromeBitmap; }
+			get
+			{ 
+				return 
+					this.renderMode == RenderMode.MonochromeBitmap || 
+					this.renderMode == RenderMode.GrayscaleBitmap;
+			}
 		}
 		/// <summary>
 		/// [GET] The Fonts height.
@@ -727,12 +736,14 @@ namespace Duality.Resources
 			this.pixelData.Atlas = new List<Rect>(atlas);
 			this.texture = new Texture(this.pixelData, 
 				Texture.SizeMode.Enlarge, 
-				(this.renderMode == RenderMode.MonochromeBitmap) ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
-				(this.renderMode == RenderMode.MonochromeBitmap) ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
+				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
+				this.IsPixelGridAligned ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
 
 			ContentRef<DrawTechnique> technique;
 			if (this.renderMode == RenderMode.MonochromeBitmap)
 				technique = DrawTechnique.Mask;
+			else if (this.renderMode == RenderMode.GrayscaleBitmap)
+				technique = DrawTechnique.Alpha;
 			else if (this.renderMode == RenderMode.SmoothBitmap)
 				technique = DrawTechnique.Alpha;
 			else
