@@ -505,7 +505,11 @@ namespace DualityEditor
 							break;
 						}
 					}
-					if (!canReferenceRes) continue;
+					if (!canReferenceRes)
+					{
+						state.Progress += 0.9f / resFiles.Count;
+						continue;
+					}
 				}
 
 				// Set displayed name
