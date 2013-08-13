@@ -589,9 +589,9 @@ namespace EditorBase
 			{
 				if (resRef.IsLoaded)
 				{
-					Texture fnt = resRef.As<Texture>().Res;
-					if (fnt.NeedsReload)
-						fnt.ReloadData();
+					Texture tex = resRef.As<Texture>().Res;
+					if (tex.NeedsReload)
+						tex.ReloadData();
 				}
 
 				ContentRef<Texture> texRef = resRef.As<Texture>();

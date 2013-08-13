@@ -48,7 +48,7 @@ namespace Duality.Serialization.MetaFormat
 				}
 			}
 		}
-		public static void FilePerformAction(string filePath, Action<DataNode> action, bool updateContent = true)
+		public static void FilePerformAction(string filePath, Action<DataNode> action)
 		{
 			// Load data
 			List<DataNode> data = FileReadAll(filePath);
@@ -59,13 +59,27 @@ namespace Duality.Serialization.MetaFormat
 
 			// Save data
 			FileSaveAll(filePath, data);
+		}
+		public static bool FilePerformAction(string filePath, Func<DataNode,bool> action)
+		{
+			// Load data
+			List<DataNode> data = FileReadAll(filePath);
 
-			// Assure reloading the modified resource
-			if (updateContent && PathHelper.IsPathLocatedIn(filePath, "."))
+			// Process data
+			bool saveData = false;
+			foreach (DataNode dataNode in data)
 			{
-				string dataPath = PathHelper.MakeFilePathRelative(filePath);
-				ContentProvider.UnregisterContent(dataPath);
+				if (action(dataNode))
+					saveData = true;
 			}
+
+			// Save data
+			if (saveData)
+			{
+				FileSaveAll(filePath, data);
+			}
+
+			return saveData;
 		}
 	}
 

@@ -290,7 +290,7 @@ namespace DualityEditor
 				List<string> resFiles = Resource.GetResourceFiles(DualityApp.DataDirectory);
 				foreach (string resFile in resFiles)
 				{
-					MetaFormatHelper.FilePerformAction(resFile, d => d.ReplaceTypeStrings(oldRootNamespaceNameCore, newRootNamespaceNameCore), false);
+					MetaFormatHelper.FilePerformAction(resFile, d => d.ReplaceTypeStrings(oldRootNamespaceNameCore, newRootNamespaceNameCore));
 				}
 			}
 

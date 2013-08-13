@@ -453,7 +453,11 @@ namespace Duality
 				Log.Core.Write("DualityApp terminated");
 			}
 
-			if (logfile != null) logfile.Close();
+			if (logfile != null)
+			{
+				logfile.Flush();
+				logfile.Close();
+			}
 
 			initialized = false;
 			execContext = ExecutionContext.Terminated;
@@ -1075,7 +1079,7 @@ namespace Duality
 		}
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
-			Log.Core.WriteError(e.ExceptionObject.ToString());
+			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
 			if (e.IsTerminating) Terminate(true);
 		}
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)

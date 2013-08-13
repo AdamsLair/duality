@@ -493,7 +493,7 @@ namespace ResourceHacker
 			{
 				state.StateDesc = file; yield return null;
 
-				MetaFormatHelper.FilePerformAction(file, data.Action, false);
+				MetaFormatHelper.FilePerformAction(file, data.Action);
 
 				state.Progress += 0.9f / files.Count; yield return null;
 			}

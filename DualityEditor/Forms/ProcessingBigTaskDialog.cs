@@ -175,8 +175,11 @@ namespace DualityEditor.Forms
 					{
 						TimeSpan lastTime = DateTime.Now - lastCheck;
 						// Wait a little so the main thread has time for drawing the GUI.
-						Thread.Sleep((int)Math.Min(20, lastTime.TotalMilliseconds));
-						lastCheck = DateTime.Now;
+						if (lastTime.TotalMilliseconds > 1000.0f)
+						{
+							Thread.Sleep(20);
+							lastCheck = DateTime.Now;
+						}
 					}
 				}
 

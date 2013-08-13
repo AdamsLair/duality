@@ -66,9 +66,25 @@ namespace Duality
 		{
 			SharedState state = new SharedState();
 			data = new DataLogOutput();
-			logGame		= new Log("Game", state, new ConsoleLogOutput(ConsoleColor.DarkGray), data);
-			logCore		= new Log("Core", state, new ConsoleLogOutput(ConsoleColor.DarkBlue), data);
-			logEditor	= new Log("Edit", state, new ConsoleLogOutput(ConsoleColor.DarkMagenta), data);
+			logGame		= new Log("Game", state, data);
+			logCore		= new Log("Core", state, data);
+			logEditor	= new Log("Edit", state, data);
+
+			bool hasConsole = true;
+			try
+			{
+				int doesThisThrow = Console.WindowHeight;
+			}
+			catch (Exception)
+			{
+				hasConsole = false;
+			}
+			if (System.Diagnostics.Debugger.IsAttached || hasConsole)
+			{
+				logGame.RegisterOutput(new ConsoleLogOutput(ConsoleColor.DarkGray));
+				logCore.RegisterOutput(new ConsoleLogOutput(ConsoleColor.DarkBlue));
+				logEditor.RegisterOutput(new ConsoleLogOutput(ConsoleColor.DarkMagenta));
+			}
 		}
 
 
