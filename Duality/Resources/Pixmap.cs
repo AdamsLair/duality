@@ -19,6 +19,7 @@ namespace Duality.Resources
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Texture"/>
 	[Serializable]
+	[ExplicitResourceReference()]
 	public class Pixmap : Resource
 	{
 		/// <summary>

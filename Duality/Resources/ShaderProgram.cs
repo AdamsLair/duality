@@ -14,6 +14,7 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.VertexShader"/>
 	/// <seealso cref="Duality.Resources.FragmentShader"/>
 	[Serializable]
+	[ExplicitResourceReference(typeof(AbstractShader))]
 	public class ShaderProgram : Resource
 	{
 		/// <summary>

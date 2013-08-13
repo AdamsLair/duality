@@ -17,6 +17,7 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.Pixmap"/>
 	/// <seealso cref="Duality.Resources.RenderTarget"/>
 	[Serializable]
+	[ExplicitResourceReference(typeof(Pixmap))]
 	public class Texture : Resource
 	{
 		/// <summary>

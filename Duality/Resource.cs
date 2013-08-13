@@ -483,4 +483,31 @@ namespace Duality
 	public class NonSerializedResourceAttribute : Attribute
 	{
 	}
+
+	/// <summary>
+	/// Allows to explicitly specify what kinds of Resources a certain Resource Type is able to reference (both directly and indirectly).
+	/// This is an optional attribute that is used for certain runtime optimizations. Keep in mind that you'll need to specify both direct
+	/// and indirect references.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class)]
+	public class ExplicitResourceReferenceAttribute : Attribute
+	{
+		private	Type[]	referencedTypes	= null;
+
+		public IEnumerable<Type> ReferencedTypes
+		{
+			get { return this.referencedTypes; }
+		}
+
+		public ExplicitResourceReferenceAttribute(params Type[] referencedTypes)
+		{
+			if (referencedTypes == null) throw new ArgumentNullException("referencedTypes");
+			for (int i = 0; i < referencedTypes.Length; ++i)
+			{
+				if (referencedTypes[i] == null || !typeof(Resource).IsAssignableFrom(referencedTypes[i]))
+					throw new ArgumentException("Only Resource Types are valied in this Attribute");
+			}
+			this.referencedTypes = referencedTypes;
+		}
+	}
 }

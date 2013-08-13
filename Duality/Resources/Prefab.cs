@@ -14,6 +14,7 @@ namespace Duality.Resources
 	/// have been deliberately modified in the editor and restores them after re-applying the original Prefabs data.
 	/// </summary>
 	[Serializable]
+	[ExplicitResourceReference()]
 	public class Prefab : Resource
 	{
 		/// <summary>

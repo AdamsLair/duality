@@ -22,6 +22,7 @@ namespace Duality
 		private	static	Dictionary<string,MemberInfo>	memberResolveCache		= new Dictionary<string,MemberInfo>();
 		private	static	Dictionary<Type,bool>			deepByValTypeCache		= new Dictionary<Type,bool>();
 		private	static	List<SerializeErrorHandler>		serializeHandlerCache	= new List<SerializeErrorHandler>();
+		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache	= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
 		/// <summary>
 		/// Equals <c>BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic</c>.
@@ -319,6 +320,43 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// Returns whether a certain <see cref="Duality.Resource"/> Type is able to reference another specific <see cref="Duality.Resource"/> Type.
+		/// This is a pure optimization method that doesn't guarantee exact information in all cases - returns true, when in doubt.
+		/// </summary>
+		/// <param name="sourceResType"></param>
+		/// <param name="targetResType"></param>
+		/// <returns></returns>
+		public static bool CanReferenceResource(Type sourceResType, Type targetResType)
+		{
+			if (!typeof(Resource).IsAssignableFrom(sourceResType)) throw new ArgumentException("Only Resource Types are valid.", "sourceResType");
+			if (!typeof(Resource).IsAssignableFrom(targetResType)) throw new ArgumentException("Only Resource Types are valid.", "targetResType");
+			
+			bool result;
+			if (!resRefCache.TryGetValue(new KeyValuePair<Type,Type>(sourceResType, targetResType), out result))
+			{
+				bool foundIt = false;
+				Attribute[] attrib = Attribute.GetCustomAttributes(sourceResType, typeof(ExplicitResourceReferenceAttribute), true);
+				foreach (ExplicitResourceReferenceAttribute refAttrib in attrib)
+				{
+					foreach (Type refType in refAttrib.ReferencedTypes)
+					{
+						if (refType.IsAssignableFrom(targetResType))
+						{
+							foundIt = true;
+							break;
+						}
+					}
+					if (foundIt) break;
+				}
+
+				result = foundIt || attrib.Length == 0;
+				resRefCache[new KeyValuePair<Type,Type>(sourceResType, targetResType)] = result;
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Returns whether the specified type doesn't contain any non-byvalue contents and thus can be cloned by assignment. 
 		/// This is typically the case for any primitive types or types being constructed only of primitive and shallow types.
 		/// </summary>
@@ -440,6 +478,7 @@ namespace Duality
 			memberResolveCache.Clear();
 			deepByValTypeCache.Clear();
 			serializeHandlerCache.Clear();
+			resRefCache.Clear();
 		}
 		/// <summary>
 		/// Resolves a Type based on its <see cref="GetTypeId">type id</see>.

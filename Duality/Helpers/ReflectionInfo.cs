@@ -155,6 +155,8 @@ namespace Duality
 
 		public static readonly FieldInfo Field_Material_Info;
 
+		public static readonly FieldInfo Field_ContentRef_ContentPath;
+
 
 		static ReflectionInfo()
 		{
@@ -329,6 +331,9 @@ namespace Duality
 			Field_Transform_Scale	= transform.GetField("scale", fieldFlags);
 
 			Field_Material_Info	= material.GetField("info", fieldFlags);
+
+			Type contentRef = typeof(ContentRef<>);
+			Field_ContentRef_ContentPath = contentRef.GetField("contentPath", fieldFlags);
 		}
 	}
 }

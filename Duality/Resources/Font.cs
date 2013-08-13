@@ -22,6 +22,7 @@ namespace Duality.Resources
 	/// pre-rasterized and stored in a <see cref="Duality.Resources.Texture"/> with an <see cref="Duality.Resources.Pixmap.Atlas"/>.
 	/// </summary>
 	[Serializable]
+	[ExplicitResourceReference()]
 	public class Font : Resource
 	{
 		/// <summary>

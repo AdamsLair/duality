@@ -11,6 +11,8 @@ using System.Text.RegularExpressions;
 
 using Duality;
 using Duality.Resources;
+using Duality.Serialization;
+using Duality.Serialization.MetaFormat;
 
 using DualityEditor.Forms;
 using DualityEditor.CorePluginInterface;
@@ -483,46 +485,59 @@ namespace DualityEditor
 			}
 
 			// Rename in actual content
+			var targetResTypes = renameData.Any(e => e.IsDirectory) ? null : renameData.Select(e => e.ContentType).ToArray();
 			var loadedContent = ContentProvider.GetLoadedContent<Resource>();
 			var reloadContent = new List<IContentRef>();
 			List<string> resFiles = Resource.GetResourceFiles();
 			List<Resource> modifiedRes = new List<Resource>();
 			foreach (string file in resFiles)
 			{
+				// Early-out, if this kind of Resource isn't able to reference the renamed Resource
+				IContentRef cr = new ContentRef<Resource>(null, file);
+				if (targetResTypes != null)
+				{
+					bool canReferenceRes = false;
+					foreach (Type targetType in targetResTypes)
+					{
+						if (ReflectionHelper.CanReferenceResource(cr.ResType, targetType))
+						{
+							canReferenceRes = true;
+							break;
+						}
+					}
+					if (!canReferenceRes) continue;
+				}
+
+				// Set displayed name
 				state.StateDesc = file; yield return null;
 
-				// Loaded for the first time? Schedule for later reload.
-				bool reload = !loadedContent.Any(r => r.Path == file);
+				// Wasn't loaded before? Unload it later to keep the memory footprint small.
+				bool wasLoaded = loadedContent.Any(r => r.Path == file);
 				// Keep in mind that this operation is performed while Duality content was
 				// in an inconsistent state. Loading Resources now may lead to wrong data.
 				// Because the ContentRefs might be wrong right now.
 
 				// Load content
-				var cr = ContentProvider.RequestContent(file);
-				state.Progress += 0.35f / resFiles.Count; yield return null;
+				cr.MakeAvailable();
+				state.Progress += 0.45f / resFiles.Count; yield return null;
 
 				// Perform rename and flag unsaved / modified
 				fileCounter = async_RenameContentRefs_Perform(cr.Res, renameData);
-				totalCounter += fileCounter;
 				if (fileCounter > 0)
 				{
-					if (!reload)
-						modifiedRes.Add(cr.Res);
-					else
-						reloadContent.Add(cr);
+					if (wasLoaded)	modifiedRes.Add(cr.Res);
+					else			cr.Res.Save();
 				}
-				state.Progress += 0.35f / resFiles.Count; yield return null;
-			}
-			if (modifiedRes.Count > 0)
-				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(modifiedRes));
+				if (!wasLoaded) ContentProvider.UnregisterContent(cr.Path);
 
-			// Perform Resource unload where scheduled
-			state.StateDesc = "Saving Resources.."; yield return null;
-			foreach (IContentRef cr in reloadContent)
+				totalCounter += fileCounter;
+				state.Progress += 0.45f / resFiles.Count; yield return null;
+			}
+
+			// Notify the editor about modified Resources
+			if (modifiedRes.Count > 0)
 			{
-				cr.Res.Save();
-				ContentProvider.UnregisterContent(cr.Path);
-				state.Progress += 0.2f / reloadContent.Count; yield return null;
+				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(modifiedRes));
 			}
 		}
 		private static int async_RenameContentRefs_Perform(object obj, List<ResourceRenamedEventArgs> args)

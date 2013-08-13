@@ -17,6 +17,7 @@ namespace Duality.Resources
 	/// </summary>
 	/// <seealso cref="BatchInfo"/>
 	[Serializable]
+	[ExplicitResourceReference(typeof(Texture))]
 	public class Material : Resource
 	{
 		/// <summary>

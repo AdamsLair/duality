@@ -14,6 +14,7 @@ namespace Duality.Resources
 	/// </example>
 	/// <seealso cref="Duality.Resources.AudioData"/>
 	[Serializable]
+	[ExplicitResourceReference(typeof(AudioData))]
 	public class Sound : Resource
 	{
 		/// <summary>

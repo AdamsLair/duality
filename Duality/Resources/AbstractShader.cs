@@ -202,6 +202,7 @@ namespace Duality.Resources
 	/// Represents an OpenGL Shader in an abstract form.
 	/// </summary>
 	[Serializable]
+	[ExplicitResourceReference()]
 	public abstract class AbstractShader : Resource
 	{
 		private	string	source		= null;
