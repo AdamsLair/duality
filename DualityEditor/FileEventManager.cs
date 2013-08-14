@@ -469,10 +469,10 @@ namespace DualityEditor
 				// Because changes we'll do will be discarded when leaving the sandbox we'll need to
 				// do it the hard way - manually load an save the file.
 				state.StateDesc = "Current Scene"; yield return null;
-				Scene curScene = Resource.LoadResource<Scene>(Scene.CurrentPath);
+				Scene curScene = Resource.LoadResource<Scene>(Scene.CurrentPath, null, false);
 				fileCounter = async_RenameContentRefs_Perform(curScene, renameData);
 				totalCounter += fileCounter;
-				if (fileCounter > 0) curScene.Save(Scene.CurrentPath);
+				if (fileCounter > 0) curScene.Save(Scene.CurrentPath, false);
 			}
 			// Special case: Current Scene NOT in sandbox mode, but still unsaved
 			else if (Scene.Current.IsRuntimeResource)
@@ -493,13 +493,13 @@ namespace DualityEditor
 			foreach (string file in resFiles)
 			{
 				// Early-out, if this kind of Resource isn't able to reference the renamed Resource
-				IContentRef cr = new ContentRef<Resource>(null, file);
 				if (targetResTypes != null)
 				{
+					Type resType = Resource.GetTypeByFileName(file);
 					bool canReferenceRes = false;
 					foreach (Type targetType in targetResTypes)
 					{
-						if (ReflectionHelper.CanReferenceResource(cr.ResType, targetType))
+						if (ReflectionHelper.CanReferenceResource(resType, targetType))
 						{
 							canReferenceRes = true;
 							break;
@@ -521,18 +521,26 @@ namespace DualityEditor
 				// in an inconsistent state. Loading Resources now may lead to wrong data.
 				// Because the ContentRefs might be wrong right now.
 
-				// Load content
-				cr.MakeAvailable();
-				state.Progress += 0.45f / resFiles.Count; yield return null;
-
-				// Perform rename and flag unsaved / modified
-				fileCounter = async_RenameContentRefs_Perform(cr.Res, renameData);
-				if (fileCounter > 0)
+				if (wasLoaded)
 				{
-					if (wasLoaded)	modifiedRes.Add(cr.Res);
-					else			cr.Res.Save();
+					// Retrieve already loaded content
+					IContentRef cr = ContentProvider.RequestContent(file);
+					state.Progress += 0.45f / resFiles.Count; yield return null;
+
+					// Perform rename and flag unsaved / modified
+					fileCounter = async_RenameContentRefs_Perform(cr.Res, renameData);
+					if (fileCounter > 0) modifiedRes.Add(cr.Res);
 				}
-				if (!wasLoaded) ContentProvider.UnregisterContent(cr.Path);
+				else
+				{
+					// Load content without initializing it
+					Resource res = Resource.LoadResource<Resource>(file, null, false);
+					state.Progress += 0.45f / resFiles.Count; yield return null;
+
+					// Perform rename and save it without making it globally available
+					fileCounter = async_RenameContentRefs_Perform(res, renameData);
+					if (fileCounter > 0) res.Save(null, false);
+				}
 
 				totalCounter += fileCounter;
 				state.Progress += 0.45f / resFiles.Count; yield return null;

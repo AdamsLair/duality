@@ -204,12 +204,12 @@ namespace Duality.Resources
 
 		
 		private	string		familyName			= FontFamily.GenericMonospace.Name;
-		private	float		size				= 10.0f;
+		private	float		size				= 8.0f;
 		private	FontStyle	style				= FontStyle.Regular;
 		private	RenderMode	renderMode			= RenderMode.SharpBitmap;
 		private	float		spacing				= 0.0f;
 		private	float		lineHeightFactor	= 1.0f;
-		private	bool		monospace			= false;
+		private	bool		monospace			= true;
 		private	bool		kerning				= false;
 		// Embedded custom font family
 		private	byte[]		customFamilyData	= null;
@@ -219,7 +219,7 @@ namespace Duality.Resources
 		[NonSerialized]	private	Material	mat				= null;
 		[NonSerialized]	private	Pixmap		pixelData		= null;
 		[NonSerialized]	private	Texture		texture			= null;
-		[NonSerialized] private	bool		needsReload		= false;
+		[NonSerialized] private	bool		needsReload		= true;
 		[NonSerialized] private	int			maxGlyphWidth	= 0;
 		[NonSerialized] private	int			height			= 0;
 		[NonSerialized] private	int			ascent			= 0;
@@ -408,25 +408,25 @@ namespace Duality.Resources
 			get { return this.baseLine; }
 		}
 
-
+		
+		/// <summary>
+		/// Sets up a new Font.
+		/// </summary>
+		public Font()
+		{
+			this.ReloadData();
+		}
 		/// <summary>
 		/// Creates a new Font based on a system font.
 		/// </summary>
 		/// <param name="familyName">The font family to use.</param>
 		/// <param name="emSize">The Fonts <see cref="Size"/>.</param>
 		/// <param name="style">The Fonts style.</param>
-		public Font(string familyName, float emSize, FontStyle style) 
+		public Font(string familyName, float emSize, FontStyle style = FontStyle.Regular) 
 		{
 			this.familyName = familyName;
 			this.size = emSize;
 			this.style = style;
-			this.ReloadData();
-		}
-		/// <summary>
-		/// Creates a new, empty Font.
-		/// </summary>
-		public Font()
-		{
 			this.ReloadData();
 		}
 		
@@ -748,9 +748,14 @@ namespace Duality.Resources
 			else if (this.renderMode == RenderMode.SmoothBitmap)
 				technique = DrawTechnique.Alpha;
 			else
-				technique = DrawTechnique.SharpMask;
+				technique = DrawTechnique.SharpAlpha;
 
-			this.mat = new Material(technique, ColorRgba.White, this.texture);
+			BatchInfo matInfo = new BatchInfo(technique, ColorRgba.White, this.texture);
+			if (technique == DrawTechnique.SharpAlpha)
+			{
+				matInfo.SetUniform("smoothness", this.size * 3.0f);
+			}
+			this.mat = new Material(matInfo);
 		}
 
 		/// <summary>

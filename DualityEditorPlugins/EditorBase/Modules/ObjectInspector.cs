@@ -187,6 +187,7 @@ namespace EditorBase
 		private void EditorForm_ResourceModified(object sender, ResourceEventArgs e)
 		{
 			if (!e.IsResource) return;
+			if (!e.Content.IsLoaded) return;
 			if (this.propertyGrid.Selection.Contains(e.Content.Res))
 			{
 				// To force updating all probably generated previews, reselect everything

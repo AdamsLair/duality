@@ -276,7 +276,7 @@ namespace Duality.Resources
 		[NonSerialized]	private	int		texWidth	= 0;
 		[NonSerialized]	private	int		texHeight	= 0;
 		[NonSerialized]	private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
-		[NonSerialized] private	bool	needsReload	= false;
+		[NonSerialized] private	bool	needsReload	= true;
 		[NonSerialized] private	Rect[]	atlas		= null;
 		[NonSerialized] private	int		animCols	= 0;
 		[NonSerialized] private	int		animRows	= 0;
@@ -487,7 +487,10 @@ namespace Duality.Resources
 		}		//	G
 
 
-		public Texture() : this(Pixmap.Checkerboard, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat) {}
+		/// <summary>
+		/// Sets up a new, uninitialized Texture.
+		/// </summary>
+		public Texture() : this(0, 0) {}
 		/// <summary>
 		/// Creates a new Texture based on a <see cref="Duality.Resources.Pixmap"/>.
 		/// </summary>

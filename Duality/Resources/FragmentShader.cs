@@ -32,7 +32,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] The SharpMask FragmentShader. It enforces an antialiazed sharp mask when upscaling linearly blended textures.
 		/// </summary>
-		public static ContentRef<FragmentShader> SharpMask	{ get; private set; }
+		public static ContentRef<FragmentShader> SharpAlpha	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
@@ -40,17 +40,17 @@ namespace Duality.Resources
 			const string ContentPath_Minimal	= VirtualContentPath + "Minimal";
 			const string ContentPath_Picking	= VirtualContentPath + "Picking";
 			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
-			const string ContentPath_SharpMask	= VirtualContentPath + "SharpMask";
+			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
 
 			ContentProvider.RegisterContent(ContentPath_Minimal,	new FragmentShader(DefaultRes.MinimalFrag));
 			ContentProvider.RegisterContent(ContentPath_Picking,	new FragmentShader(DefaultRes.PickingFrag));
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim,	new FragmentShader(DefaultRes.SmoothAnimFrag));
-			ContentProvider.RegisterContent(ContentPath_SharpMask,	new FragmentShader(DefaultRes.SharpMaskFrag));
+			ContentProvider.RegisterContent(ContentPath_SharpMask,	new FragmentShader(DefaultRes.SharpAlphaFrag));
 
 			Minimal		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Minimal);
 			Picking		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Picking);
 			SmoothAnim	= ContentProvider.RequestContent<FragmentShader>(ContentPath_SmoothAnim);
-			SharpMask	= ContentProvider.RequestContent<FragmentShader>(ContentPath_SharpMask);
+			SharpAlpha	= ContentProvider.RequestContent<FragmentShader>(ContentPath_SharpMask);
 		}
 
 

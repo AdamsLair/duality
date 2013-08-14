@@ -209,12 +209,12 @@
     </Content>
     <EmbeddedResource Include="Resources\DefaultRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DefaultRes.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>DefaultRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Default\DualityIcon.png" />
     <EmbeddedResource Include="Resources\Default\DualityIconB.png" />
-    <EmbeddedResource Include="Resources\Default\SharpMask.frag" />
+    <EmbeddedResource Include="Resources\Default\SharpAlpha.frag" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Default\DroneLoop.ogg" />

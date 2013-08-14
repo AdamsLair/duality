@@ -35,10 +35,10 @@ namespace Duality.Resources
 		/// </summary>
 		public static ContentRef<DrawTechnique> Mask		{ get; private set; }
 		/// <summary>
-		/// Renders alpha-masked solid geometry and enforces sharp edges by using an adaptive antialiazing shader.
+		/// Renders geometry using the alpha channel, but enforces sharp edges by using an adaptive antialiazing shader.
 		/// This is the recommended DrawTechnique for rendering text or stencil sprites.
 		/// </summary>
-		public static ContentRef<DrawTechnique> SharpMask	{ get; private set; }
+		public static ContentRef<DrawTechnique> SharpAlpha	{ get; private set; }
 		/// <summary>
 		/// Renders additive geometry. Ideal for glow effects.
 		/// </summary>
@@ -118,9 +118,9 @@ namespace Duality.Resources
 		
 			const string ContentPath_Solid		= VirtualContentPath + "Solid";
 			const string ContentPath_Mask		= VirtualContentPath + "Mask";
-			const string ContentPath_SharpMask	= VirtualContentPath + "SharpMask";
 			const string ContentPath_Add		= VirtualContentPath + "Add";
 			const string ContentPath_Alpha		= VirtualContentPath + "Alpha";
+			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
 			const string ContentPath_Multiply	= VirtualContentPath + "Multiply";
 			const string ContentPath_Light		= VirtualContentPath + "Light";
 			const string ContentPath_Invert		= VirtualContentPath + "Invert";
@@ -143,7 +143,7 @@ namespace Duality.Resources
 			ContentProvider.RegisterContent(ContentPath_Invert,		new DrawTechnique(BlendMode.Invert));
 
 			ContentProvider.RegisterContent(ContentPath_Picking,	new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
-			ContentProvider.RegisterContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpMask));
+			ContentProvider.RegisterContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha));
 			
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Solid,		new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
@@ -161,7 +161,7 @@ namespace Duality.Resources
 			Light		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Light);
 			Invert		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Invert);
 			Picking		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Picking);
-			SharpMask	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SharpMask);
+			SharpAlpha	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SharpMask);
 
 			SmoothAnim_Solid	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Solid);
 			SmoothAnim_Mask		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Mask);
@@ -368,9 +368,12 @@ namespace Duality.Resources
 					{
 						if (varInfo[i].glVarLoc == -1) continue;
 						if (varInfo[i].type != ShaderVarType.Sampler2D) continue;
-						ContentRef<Texture> tex = material.GetTexture(varInfo[i].name);
-						Texture.Bind(tex, curSamplerIndex);
+
+						// Bind Texture
+						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].name);
+						Texture.Bind(texRef, curSamplerIndex);
 						GL.Uniform1(varInfo[i].glVarLoc, curSamplerIndex);
+
 						curSamplerIndex++;
 					}
 				}

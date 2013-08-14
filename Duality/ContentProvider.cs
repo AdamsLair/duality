@@ -316,6 +316,9 @@ namespace Duality
 
 		private static Resource LoadContent(string path)
 		{
+			Log.Core.Write("Loading Ressource '{0}'...", path);
+			Log.Core.PushIndent();
+
 			// Load the Resource and register it
 			Resource res = Resource.LoadResource<Resource>(path, r => 
 			{ 
@@ -324,6 +327,8 @@ namespace Duality
 				// each other in their initialization code.
 				if (r != null) RegisterContent(path, r);
 			});
+
+			Log.Core.PopIndent();
 			return res;
 		}
 	}

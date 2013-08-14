@@ -42,9 +42,9 @@ namespace Duality.Resources
 		public static ContentRef<ShaderProgram> SmoothAnim	{ get; private set; }
 		/// <summary>
 		/// The SharpMask ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and
-		/// a <see cref="Duality.Resources.FragmentShader.SharpMask"/> FragmentShader.
+		/// a <see cref="Duality.Resources.FragmentShader.SharpAlpha"/> FragmentShader.
 		/// </summary>
-		public static ContentRef<ShaderProgram> SharpMask	{ get; private set; }
+		public static ContentRef<ShaderProgram> SharpAlpha	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
@@ -52,17 +52,17 @@ namespace Duality.Resources
 			const string ContentPath_Minimal	= VirtualContentPath + "Minimal";
 			const string ContentPath_Picking	= VirtualContentPath + "Picking";
 			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
-			const string ContentPath_SharpMask	= VirtualContentPath + "SharpMask";
+			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
 
 			ContentProvider.RegisterContent(ContentPath_Minimal, new ShaderProgram(VertexShader.Minimal, FragmentShader.Minimal));
 			ContentProvider.RegisterContent(ContentPath_Picking, new ShaderProgram(VertexShader.Minimal, FragmentShader.Picking));
 			ContentProvider.RegisterContent(ContentPath_SmoothAnim, new ShaderProgram(VertexShader.SmoothAnim, FragmentShader.SmoothAnim));
-			ContentProvider.RegisterContent(ContentPath_SharpMask, new ShaderProgram(VertexShader.Minimal, FragmentShader.SharpMask));
+			ContentProvider.RegisterContent(ContentPath_SharpMask, new ShaderProgram(VertexShader.Minimal, FragmentShader.SharpAlpha));
 
 			Minimal		= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Minimal);
 			Picking		= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Picking);
 			SmoothAnim	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SmoothAnim);
-			SharpMask	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SharpMask);
+			SharpAlpha	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SharpMask);
 		}
 		
 		/// <summary>

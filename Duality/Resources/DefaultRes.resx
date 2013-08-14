@@ -154,8 +154,8 @@
   <data name="PickingFrag" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Default\Picking.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="SharpMaskFrag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Default\SharpMask.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="SharpAlphaFrag" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Default\SharpAlpha.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
   <data name="SmoothAnimFrag" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Default\SmoothAnim.frag;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>

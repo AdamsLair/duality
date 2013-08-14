@@ -553,28 +553,48 @@ namespace DualityEditor.Forms
 			state.Progress += 0.05f; yield return null;
 
 			// Special case: Current Scene in sandbox mode
-			if (Sandbox.IsActive)
+			if (Sandbox.IsActive && !string.IsNullOrEmpty(Scene.CurrentPath))
 			{
 				// Because changes we'll do will be discarded when leaving the sandbox we'll need to
 				// do it the hard way - manually load an save the file.
 				state.StateDesc = "Current Scene"; yield return null;
-				Scene curScene = Resource.LoadResource<Scene>(Scene.CurrentPath);
-				curScene.Save(Scene.CurrentPath);
+				Scene curScene = Resource.LoadResource<Scene>(Scene.CurrentPath, null, false);
+				if (curScene != null)
+				{
+					curScene.Save(null, false);
+				}
 			}
 
+			var loadedContent = ContentProvider.GetLoadedContent<Resource>();
 			List<string> resFiles = Resource.GetResourceFiles();
 			foreach (string file in resFiles)
 			{
 				if (Sandbox.IsActive && file == Scene.CurrentPath) continue; // Skip current Scene in Sandbox
 				state.StateDesc = file; yield return null;
 
-				//var data = MetaFormatHelper.FileReadAll(file);	// Removed again so we don't need to handle "unsaved resources".
-				var cr = ContentProvider.RequestContent(file);
-				state.Progress += 0.45f / resFiles.Count; yield return null;
+				// Wasn't loaded before? Unload it later to keep the memory footprint small.
+				bool wasLoaded = loadedContent.Any(r => r.Path == file);
 
-				//MetaFormatHelper.FileSaveAll(file, data);
-				cr.Res.Save(file);
-				state.Progress += 0.45f / resFiles.Count; yield return null;
+				if (wasLoaded)
+				{
+					// Retrieve already loaded content
+					var cr = ContentProvider.RequestContent(file);
+					state.Progress += 0.45f / resFiles.Count; yield return null;
+
+					// Perform rename and flag unsaved / modified
+					cr.Res.Save();
+					state.Progress += 0.45f / resFiles.Count; yield return null;
+				}
+				else
+				{
+					// Load content without initializing it
+					Resource res = Resource.LoadResource<Resource>(file, null, false);
+					state.Progress += 0.45f / resFiles.Count; yield return null;
+
+					// Perform rename and save it without making it globally available
+					res.Save(null, false);
+					state.Progress += 0.45f / resFiles.Count; yield return null;
+				}
 			}
 		}
 

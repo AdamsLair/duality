@@ -213,9 +213,9 @@ namespace Duality.Resources {
         ///	gl_FragColor = texClr * gl_Color; 
         ///} ähnelt.
         /// </summary>
-        internal static string SharpMaskFrag {
+        internal static string SharpAlphaFrag {
             get {
-                return ResourceManager.GetString("SharpMaskFrag", resourceCulture);
+                return ResourceManager.GetString("SharpAlphaFrag", resourceCulture);
             }
         }
         

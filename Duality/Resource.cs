@@ -123,24 +123,28 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Saves the Resource to the specified path. If it has been generated at runtime, i.e. has
-		/// not been loaded from file before, this will set the Resources <see cref="Path"/> Property.
+		/// Saves the Resource to the specified path. 
 		/// </summary>
 		/// <param name="saveAsPath">The path to which this Resource is saved to. If null, the Resources <see cref="Path"/> is used as destination.</param>
-		public void Save(string saveAsPath = null)
+		/// <param name="makePermanent">
+		/// When true, the Resource will be made permanently available from now on. If it has been generated at runtime 
+		/// or was loaded explicitly outside the ContentProvider, this will set the Resources <see cref="Path"/> Property
+		/// and register it in the ContentProvider. If the Resource already is a permanent, this parameter will be ignored.
+		/// </param>
+		public void Save(string saveAsPath = null, bool makePermanent = true)
 		{
-			if (this.initState != InitState.Initialized) throw new ApplicationException("Can't save Ressource that already has been disposed.");
+			if (this.Disposed) throw new ApplicationException("Can't save a Ressource that has been disposed.");
 			if (string.IsNullOrWhiteSpace(saveAsPath))
 			{
 				saveAsPath = this.path;
 				if (string.IsNullOrWhiteSpace(saveAsPath))
-					throw new ArgumentException("Can't save Resource to an undefined path.", "saveAsPath");
+					throw new ArgumentException("Can't save a Resource to an undefined path.", "saveAsPath");
 			}
 
 			this.CheckedOnSaving();
 
 			// We're saving a new Ressource for the first time: Register it in the library
-			if (string.IsNullOrWhiteSpace(this.path))
+			if (makePermanent && string.IsNullOrWhiteSpace(this.path))
 			{
 				this.path = saveAsPath;
 				ContentProvider.RegisterContent(this.path, this);
@@ -154,8 +158,6 @@ namespace Duality
 				this.WriteToStream(str, out streamName);
 			}
 			this.CheckedOnSaved();
-
-			Log.Core.Write("Resource saved: {0}", streamName);
 		}
 		/// <summary>
 		/// Saves the Resource to the specified stream.
@@ -163,13 +165,13 @@ namespace Duality
 		/// <param name="str"></param>
 		public void Save(Stream str)
 		{
+			if (this.Disposed) throw new ApplicationException("Can't save a Ressource that has been disposed.");
+
 			string streamName;
 
 			this.CheckedOnSaving();
 			this.WriteToStream(str, out streamName);
 			this.CheckedOnSaved();
-
-			Log.Core.Write("Resource saved: {0}", streamName);
 		}
 		private void WriteToStream(Stream str, out string streamName)
 		{
@@ -194,6 +196,7 @@ namespace Duality
 		}
 		private bool CheckedOnSaving()
 		{
+			if (this.initState != InitState.Initialized) return true;
 			try
 			{
 				this.OnSaving();
@@ -207,6 +210,7 @@ namespace Duality
 		}
 		private bool CheckedOnSaved()
 		{
+			if (this.initState != InitState.Initialized) return true;
 			try
 			{
 				this.OnSaved();
@@ -329,8 +333,8 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Loads the Resource that is located at the specified path. You usually don't need this method. 
-		/// Consider requesting the Resource from the <see cref="ContentProvider"/> instead.
+		/// Loads the Resource that is located at the specified path. You shouldn't need this method in almost all cases.
+		/// Only use it when you know exactly what you're doing. Consider requesting the Resource from the <see cref="ContentProvider"/> instead.
 		/// </summary>
 		/// <typeparam name="T">
 		/// Desired Type of the returned reference. Does not affect the loaded Resource in any way - it is simply returned as T.
@@ -338,21 +342,25 @@ namespace Duality
 		/// </typeparam>
 		/// <param name="path">The path to load the Resource from.</param>
 		/// <param name="loadCallback">An optional callback that is invoked right after loading the Resource, but before initializing it.</param>
+		/// <param name="initResource">
+		/// Specifies whether or not the Resource is initialized by calling <see cref="Resource.OnLoaded"/>. Never attempt to use
+		/// uninitialized Resources or register them in the ContentProvider.
+		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
-		public static T LoadResource<T>(string path, Action<T> loadCallback = null) where T : Resource
+		public static T LoadResource<T>(string path, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
 			if (!File.Exists(path)) return null;
 
 			T newContent;
 			using (FileStream str = File.OpenRead(path))
 			{
-				newContent = LoadResource<T>(str, path, loadCallback);
+				newContent = LoadResource<T>(str, path, loadCallback, initResource);
 			}
 			return newContent;
 		}
 		/// <summary>
-		/// Loads the Resource from the specified <see cref="Stream"/>. You usually don't need this method. 
-		/// Consider requesting the Resource from the <see cref="ContentProvider"/> instead.
+		/// Loads the Resource from the specified <see cref="Stream"/>. You shouldn't need this method in almost all cases.
+		/// Only use it when you know exactly what you're doing. Consider requesting the Resource from the <see cref="ContentProvider"/> instead.
 		/// </summary>
 		/// <typeparam name="T">
 		/// Desired Type of the returned reference. Does not affect the loaded Resource in any way - it is simply returned as T.
@@ -361,13 +369,15 @@ namespace Duality
 		/// <param name="str">The stream to load the Resource from.</param>
 		/// <param name="resPath">The path that is assumed as the loaded Resource's origin.</param>
 		/// <param name="loadCallback">An optional callback that is invoked right after loading the Resource, but before initializing it.</param>
+		/// <param name="initResource">
+		/// Specifies whether or not the Resource is initialized by calling <see cref="Resource.OnLoaded"/>. Never attempt to use
+		/// uninitialized Resources or register them in the ContentProvider.
+		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
-		public static T LoadResource<T>(Stream str, string resPath = null, Action<T> loadCallback = null) where T : Resource
+		public static T LoadResource<T>(Stream str, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
-			Log.Core.Write("Loading Ressource '{0}'...", resPath);
-			Log.Core.PushIndent();
-
 			T newContent = null;
+
 			try
 			{
 				Resource res;
@@ -377,9 +387,14 @@ namespace Duality
 				}
 				if (res == null) throw new ApplicationException("Loading Resource failed");
 
+				res.initState = InitState.Initializing;
 				res.path = resPath;
 				if (loadCallback != null) loadCallback(res as T); // Callback before initializing.
-				res.OnLoaded();
+				if (initResource)
+				{
+					res.OnLoaded();
+					res.initState = InitState.Initialized;
+				}
 				newContent = res as T;
 			}
 			catch (Exception e)
@@ -390,7 +405,6 @@ namespace Duality
 					Log.Exception(e));
 			}
 
-			Log.Core.PopIndent();
 			return newContent;
 		}
 
