@@ -385,7 +385,7 @@ namespace Duality.Serialization
 					if (dataType == DataType.Type)
 					{
 						string typeString = this.reader.ReadString();
-						Type type = ReflectionHelper.ResolveType(typeString);
+						Type type = this.ResolveType(typeString);
 						result = type;
 					}
 					else if (dataType == DataType.FieldInfo)
@@ -394,7 +394,7 @@ namespace Duality.Serialization
 						string declaringTypeString = this.reader.ReadString();
 						string fieldName = this.reader.ReadString();
 
-						Type declaringType = ReflectionHelper.ResolveType(declaringTypeString);
+						Type declaringType = this.ResolveType(declaringTypeString);
 						FieldInfo field = declaringType.GetField(fieldName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll);
 						result = field;
 					}
@@ -410,11 +410,11 @@ namespace Duality.Serialization
 						for (int i = 0; i < paramCount; i++)
 							paramTypeStrings[i] = this.reader.ReadString();
 
-						Type declaringType = ReflectionHelper.ResolveType(declaringTypeString);
-						Type propertyType = ReflectionHelper.ResolveType(propertyTypeString);
+						Type declaringType = this.ResolveType(declaringTypeString);
+						Type propertyType = this.ResolveType(propertyTypeString);
 						Type[] paramTypes = new Type[paramCount];
 						for (int i = 0; i < paramCount; i++)
-							paramTypes[i] = ReflectionHelper.ResolveType(paramTypeStrings[i]);
+							paramTypes[i] = this.ResolveType(paramTypeStrings[i]);
 
 						PropertyInfo property = declaringType.GetProperty(
 							propertyName, 
@@ -437,10 +437,10 @@ namespace Duality.Serialization
 						for (int i = 0; i < paramCount; i++)
 							paramTypeStrings[i] = this.reader.ReadString();
 
-						Type declaringType = ReflectionHelper.ResolveType(declaringTypeString);
+						Type declaringType = this.ResolveType(declaringTypeString);
 						Type[] paramTypes = new Type[paramCount];
 						for (int i = 0; i < paramCount; i++)
-							paramTypes[i] = ReflectionHelper.ResolveType(paramTypeStrings[i]);
+							paramTypes[i] = this.ResolveType(paramTypeStrings[i]);
 
 						MethodInfo method = declaringType.GetMethod(methodName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll, null, paramTypes, null);
 						result = method;
@@ -455,10 +455,10 @@ namespace Duality.Serialization
 						for (int i = 0; i < paramCount; i++)
 							paramTypeStrings[i] = this.reader.ReadString();
 
-						Type declaringType = ReflectionHelper.ResolveType(declaringTypeString);
+						Type declaringType = this.ResolveType(declaringTypeString);
 						Type[] paramTypes = new Type[paramCount];
 						for (int i = 0; i < paramCount; i++)
-							paramTypes[i] = ReflectionHelper.ResolveType(paramTypeStrings[i]);
+							paramTypes[i] = this.ResolveType(paramTypeStrings[i]);
 
 						ConstructorInfo method = declaringType.GetConstructor(isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll, null, paramTypes, null);
 						result = method;
@@ -469,7 +469,7 @@ namespace Duality.Serialization
 						string declaringTypeString = this.reader.ReadString();
 						string eventName = this.reader.ReadString();
 
-						Type declaringType = ReflectionHelper.ResolveType(declaringTypeString);
+						Type declaringType = this.ResolveType(declaringTypeString);
 						EventInfo e = declaringType.GetEvent(eventName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll);
 						result = e;
 					}

@@ -551,7 +551,7 @@ namespace Duality.Serialization
 				return;
 			}
 
-			Type resolved = ReflectionHelper.ResolveType(typeString, false);
+			Type resolved = this.ResolveType(typeString);
 			SerializeType cached = resolved != null ? resolved.GetSerializeType() : null;
 			TypeDataLayout layout = cached != null ? new TypeDataLayout(cached) : null;
 			this.WriteTypeDataLayout(layout, typeString);
