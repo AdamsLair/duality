@@ -112,11 +112,11 @@ namespace Duality.Resources
 		/// <summary>
 		/// Fired when a <see cref="GameObject"/> has been registered in the current Scene.
 		/// </summary>
-		public static event EventHandler<GameObjectEventArgs> GameObjectRegistered;
+		public static event EventHandler<GameObjectEventArgs> GameObjectAdded;
 		/// <summary>
 		/// Fired when a <see cref="GameObject"/> has been unregistered from the current Scene.
 		/// </summary>
-		public static event EventHandler<GameObjectEventArgs> GameObjectUnregistered;
+		public static event EventHandler<GameObjectEventArgs> GameObjectRemoved;
 		/// <summary>
 		/// Fired when a <see cref="Component"/> has been added to a <see cref="GameObject"/> that is registered in the current Scene.
 		/// </summary>
@@ -156,14 +156,14 @@ namespace Duality.Resources
 		{
 			if (GameObjectParentChanged != null) GameObjectParentChanged(current, args);
 		}
-		private static void OnGameObjectRegistered(GameObjectEventArgs args)
+		private static void OnGameObjectAdded(GameObjectEventArgs args)
 		{
 			args.Object.OnActivate();
-			if (GameObjectRegistered != null) GameObjectRegistered(current, args);
+			if (GameObjectAdded != null) GameObjectAdded(current, args);
 		}
-		private static void OnGameObjectUnregistered(GameObjectEventArgs args)
+		private static void OnGameObjectRemoved(GameObjectEventArgs args)
 		{
-			if (GameObjectUnregistered != null) GameObjectUnregistered(current, args);
+			if (GameObjectRemoved != null) GameObjectRemoved(current, args);
 			args.Object.OnDeactivate();
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
@@ -422,7 +422,7 @@ namespace Duality.Resources
 		public void Append(ContentRef<Scene> scene)
 		{
 			if (!scene.IsAvailable) return;
-			this.objectManager.RegisterObj(scene.Res.RootObjects.Select(o => o.Clone()));
+			this.objectManager.AddObject(scene.Res.RootObjects.Select(o => o.Clone()));
 		}
 		/// <summary>
 		/// Appends the specified Scene's contents to this Scene and consumes the specified Scene.
@@ -434,7 +434,7 @@ namespace Duality.Resources
 			Scene otherScene = scene.Res;
 			var otherObj = otherScene.RootObjects.ToArray();
 			otherScene.Clear();
-			this.objectManager.RegisterObj(otherObj);
+			this.objectManager.AddObject(otherObj);
 			otherScene.Dispose();
 		}
 
@@ -442,33 +442,33 @@ namespace Duality.Resources
 		/// Registers a GameObject and all of its children.
 		/// </summary>
 		/// <param name="obj"></param>
-		public void RegisterObj(GameObject obj)
+		public void AddObject(GameObject obj)
 		{
-			this.objectManager.RegisterObj(obj);
+			this.objectManager.AddObject(obj);
 		}
 		/// <summary>
 		/// Registers a set of GameObjects and all of their children.
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void RegisterObj(IEnumerable<GameObject> objEnum)
+		public void AddObject(IEnumerable<GameObject> objEnum)
 		{
-			this.objectManager.RegisterObj(objEnum);
+			this.objectManager.AddObject(objEnum);
 		}
 		/// <summary>
 		/// Unregisters a GameObject and all of its children
 		/// </summary>
 		/// <param name="obj"></param>
-		public void UnregisterObj(GameObject obj)
+		public void RemoveObject(GameObject obj)
 		{
-			this.objectManager.UnregisterObj(obj);
+			this.objectManager.RemoveObject(obj);
 		}
 		/// <summary>
 		/// Unregisters a set of GameObjects and all of their children.
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void UnregisterObj(IEnumerable<GameObject> objEnum)
+		public void RemoveObject(IEnumerable<GameObject> objEnum)
 		{
-			this.objectManager.UnregisterObj(objEnum);
+			this.objectManager.RemoveObject(objEnum);
 		}
 
 		/// <summary>
@@ -674,16 +674,16 @@ namespace Duality.Resources
 		}
 		private void RegisterManagerEvents()
 		{
-			this.objectManager.Registered		+= this.objectManager_Registered;
-			this.objectManager.Unregistered		+= this.objectManager_Unregistered;
+			this.objectManager.GameObjectAdded		+= this.objectManager_GameObjectAdded;
+			this.objectManager.GameObjectRemoved		+= this.objectManager_GameObjectRemoved;
 			this.objectManager.ParentChanged	+= this.objectManager_ParentChanged;
 			this.objectManager.ComponentAdded	+= this.objectManager_ComponentAdded;
 			this.objectManager.ComponentRemoving += this.objectManager_ComponentRemoving;
 		}
 		private void UnregisterManagerEvents()
 		{
-			this.objectManager.Registered		-= this.objectManager_Registered;
-			this.objectManager.Unregistered		-= this.objectManager_Unregistered;
+			this.objectManager.GameObjectAdded		-= this.objectManager_GameObjectAdded;
+			this.objectManager.GameObjectRemoved		-= this.objectManager_GameObjectRemoved;
 			this.objectManager.ParentChanged	-= this.objectManager_ParentChanged;
 			this.objectManager.ComponentAdded	-= this.objectManager_ComponentAdded;
 			this.objectManager.ComponentRemoving -= this.objectManager_ComponentRemoving;
@@ -703,15 +703,15 @@ namespace Duality.Resources
 				b.Awake = true;
 		}
 
-		private void objectManager_Registered(object sender, GameObjectEventArgs e)
+		private void objectManager_GameObjectAdded(object sender, GameObjectEventArgs e)
 		{
 			this.AddToManagers(e.Object);
-			if (this.IsCurrent) OnGameObjectRegistered(e);
+			if (this.IsCurrent) OnGameObjectAdded(e);
 		}
-		private void objectManager_Unregistered(object sender, GameObjectEventArgs e)
+		private void objectManager_GameObjectRemoved(object sender, GameObjectEventArgs e)
 		{
 			this.RemoveFromManagers(e.Object);
-			if (this.IsCurrent) OnGameObjectUnregistered(e);
+			if (this.IsCurrent) OnGameObjectRemoved(e);
 		}
 		private void objectManager_ParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
@@ -738,7 +738,7 @@ namespace Duality.Resources
 
 			// Copy objects
 			s.objectManager.Clear();
-			s.objectManager.RegisterObj(this.RootObjects.Select(o => provider.RequestObjectClone(o)));
+			s.objectManager.AddObject(this.RootObjects.Select(o => provider.RequestObjectClone(o)));
 		}
 		protected override void OnSaving()
 		{
@@ -766,7 +766,7 @@ namespace Duality.Resources
 				foreach (GameObject obj in this.serializeObj) obj.PerformSanitaryCheck();
 				foreach (GameObject obj in this.serializeObj)
 				{
-					this.objectManager.RegisterObj(obj);
+					this.objectManager.AddObject(obj);
 					this.AddToManagers(obj);
 				}
 				this.RegisterManagerEvents();

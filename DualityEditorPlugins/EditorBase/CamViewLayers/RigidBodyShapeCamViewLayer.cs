@@ -211,7 +211,7 @@ namespace EditorBase.CamViewLayers
 				bigFontRes.Size = 32;
 				bigFontRes.Kerning = true;
 				bigFontRes.ReloadData();
-				ContentProvider.RegisterContent(bigFont.Path, bigFontRes);
+				ContentProvider.AddContent(bigFont.Path, bigFontRes);
 			}
 		}
 		private IEnumerable<RigidBody> QueryVisibleColliders()

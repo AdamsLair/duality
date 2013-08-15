@@ -70,14 +70,14 @@ namespace Duality.Resources
 			const string ContentPath_DualityLogoSmall	= VirtualContentPath + "DualityLogoSmall";
 			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
 
-			ContentProvider.RegisterContent(ContentPath_SolidWhite, new Material(DrawTechnique.Solid, ColorRgba.White));
-			ContentProvider.RegisterContent(ContentPath_InvertWhite, new Material(DrawTechnique.Invert, ColorRgba.White));
-			ContentProvider.RegisterContent(ContentPath_DualityIcon, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIcon));
-			ContentProvider.RegisterContent(ContentPath_DualityIconB, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIconB));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoBig, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoBig));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoMedium, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoMedium));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoSmall, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoSmall));
-			ContentProvider.RegisterContent(ContentPath_Checkerboard, new Material(DrawTechnique.Solid, ColorRgba.White, Texture.Checkerboard));
+			ContentProvider.AddContent(ContentPath_SolidWhite, new Material(DrawTechnique.Solid, ColorRgba.White));
+			ContentProvider.AddContent(ContentPath_InvertWhite, new Material(DrawTechnique.Invert, ColorRgba.White));
+			ContentProvider.AddContent(ContentPath_DualityIcon, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIcon));
+			ContentProvider.AddContent(ContentPath_DualityIconB, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIconB));
+			ContentProvider.AddContent(ContentPath_DualityLogoBig, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoBig));
+			ContentProvider.AddContent(ContentPath_DualityLogoMedium, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoMedium));
+			ContentProvider.AddContent(ContentPath_DualityLogoSmall, new Material(DrawTechnique.Alpha, ColorRgba.White, Texture.DualityLogoSmall));
+			ContentProvider.AddContent(ContentPath_Checkerboard, new Material(DrawTechnique.Solid, ColorRgba.White, Texture.Checkerboard));
 
 			SolidWhite			= ContentProvider.RequestContent<Material>(ContentPath_SolidWhite);
 			InvertWhite			= ContentProvider.RequestContent<Material>(ContentPath_InvertWhite);

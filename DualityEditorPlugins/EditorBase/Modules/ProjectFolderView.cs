@@ -155,7 +155,7 @@ namespace EditorBase
 				foreach (ResourceNode resNode in this.NodesDeep.OfType<ResourceNode>())
 				{
 					if (resNode.ResLink.ResWeak != null)
-						ContentProvider.RegisterContent(resNode.NodePath.Replace(oldPath, newPath), resNode.ResLink.ResWeak);
+						ContentProvider.AddContent(resNode.NodePath.Replace(oldPath, newPath), resNode.ResLink.ResWeak);
 				}
 
 				this.NodePath = newPath;
@@ -246,7 +246,7 @@ namespace EditorBase
 				// short window of inconsistency where the existing Resource is still registered under its old name
 				// but the file is already renamed to the new name. To prevent loading the Resource twice, we'll pre-register
 				// it under its new name.
-				if (this.res.ResWeak != null) ContentProvider.RegisterContent(newPath, this.res.ResWeak);
+				if (this.res.ResWeak != null) ContentProvider.AddContent(newPath, this.res.ResWeak);
 
 				this.NodePath = newPath;
 				return true;

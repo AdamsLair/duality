@@ -147,7 +147,7 @@ namespace Duality
 			if (makePermanent && string.IsNullOrWhiteSpace(this.path))
 			{
 				this.path = saveAsPath;
-				ContentProvider.RegisterContent(this.path, this);
+				ContentProvider.AddContent(this.path, this);
 			}
 
 			string streamName;

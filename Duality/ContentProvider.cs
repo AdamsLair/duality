@@ -16,7 +16,7 @@ namespace Duality
 	/// Resources from being loaded more than once at a time, thus reducing loading times and redundancy.
 	/// </para>
 	/// <para>
-	/// You can also manually <see cref="RegisterContent">register Resources</see> that have been created at runtime 
+	/// You can also manually <see cref="AddContent">register Resources</see> that have been created at runtime 
 	/// using a string alias of your choice.
 	/// </para>
 	/// </summary>
@@ -142,7 +142,7 @@ namespace Duality
 		{
 			var nonDefaultContent = resLibrary.Where(p => !p.Key.Contains(':')).ToArray();
 			foreach (var pair in nonDefaultContent)
-				UnregisterContent(pair.Key, dispose);
+				RemoveContent(pair.Key, dispose);
 		}
 
 		/// <summary>
@@ -150,7 +150,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="path">The path key to map the Resource to</param>
 		/// <param name="content">The Resource to register.</param>
-		public static void RegisterContent(string path, Resource content)
+		public static void AddContent(string path, Resource content)
 		{
 			if (String.IsNullOrEmpty(path)) return;
 			if (String.IsNullOrEmpty(content.Path)) content.Path = path;
@@ -161,7 +161,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="path">The path key to look for content</param>
 		/// <returns>True, if there is content available for that path key, false if not.</returns>
-		public static bool IsContentRegistered(string path)
+		public static bool IsContentAvailable(string path)
 		{
 			if (String.IsNullOrEmpty(path)) return false;
 			Resource res;
@@ -174,7 +174,7 @@ namespace Duality
 		/// <param name="path">The path key to unregister.</param>
 		/// <param name="dispose">If true, unregistered content is also disposed.</param>
 		/// <returns>True, if the content has been found and successfully removed. False, if no</returns>
-		public static bool UnregisterContent(string path, bool dispose = true)
+		public static bool RemoveContent(string path, bool dispose = true)
 		{
 			if (String.IsNullOrEmpty(path)) return false;
 			if (path.Contains(':')) return false;
@@ -191,7 +191,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="dir">The directory to unregister</param>
 		/// <param name="dispose">If true, unregistered content is also disposed.</param>
-		public static void UnregisterContentTree(string dir, bool dispose = true)
+		public static void RemoveContentTree(string dir, bool dispose = true)
 		{
 			if (String.IsNullOrEmpty(dir)) return;
 
@@ -201,29 +201,29 @@ namespace Duality
 				select p);
 
 			foreach (string p in unregisterList)
-				UnregisterContent(p, dispose);
+				RemoveContent(p, dispose);
 		}
 		/// <summary>
 		/// Unregisters all content of the specified Type or subclassed Types.
 		/// </summary>
 		/// <typeparam name="T">The content Type to look for.</typeparam>
 		/// <param name="dispose">If true, unregistered content is also disposed.</param>
-		public static void UnregisterAllContent<T>(bool dispose = true) where T : Resource
+		public static void RemoveAllContent<T>(bool dispose = true) where T : Resource
 		{
 			var affectedContent = GetLoadedContent<T>().Where(c => !c.IsDefaultContent);
 			foreach (ContentRef<T> content in affectedContent)
-				UnregisterContent(content.Path, dispose);
+				RemoveContent(content.Path, dispose);
 		}
 		/// <summary>
 		/// Unregisters all content of the specified Type or subclassed Types.
 		/// </summary>
 		/// <param name="t">The content Type to look for.</param>
 		/// <param name="dispose">If true, unregistered content is also disposed.</param>
-		public static void UnregisterAllContent(Type t, bool dispose = true)
+		public static void RemoveAllContent(Type t, bool dispose = true)
 		{
 			var affectedContent = GetLoadedContent(t).Where(c => !c.IsDefaultContent).ToArray();
 			foreach (IContentRef content in affectedContent)
-				UnregisterContent(content.Path, dispose);
+				RemoveContent(content.Path, dispose);
 		}
 		internal static IEnumerable<Resource> EnumeratePluginContent()
 		{
@@ -325,7 +325,7 @@ namespace Duality
 				// Registering takes place in the callback - before initializing the Resource, because
 				// that may result in requesting more Resources and an infinite loop if two Resources request
 				// each other in their initialization code.
-				if (r != null) RegisterContent(path, r);
+				if (r != null) AddContent(path, r);
 			});
 
 			Log.Core.PopIndent();

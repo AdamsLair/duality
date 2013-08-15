@@ -295,7 +295,7 @@ namespace EditorBase
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
 			Scene.Entered += this.Scene_Entered;
 			Scene.Leaving += this.Scene_Leaving;
-			Scene.GameObjectUnregistered += this.Scene_GameObjectUnregistered;
+			Scene.GameObjectRemoved += this.Scene_GameObjectUnregistered;
 			Scene.ComponentRemoving += this.Scene_ComponentRemoving;
 
 			// Update Camera values according to GUI (which carries loaded or default settings)
@@ -328,7 +328,7 @@ namespace EditorBase
 			DualityEditorApp.UpdatingEngine -= this.DualityEditorApp_UpdatingEngine;
 			Scene.Entered -= this.Scene_Entered;
 			Scene.Leaving -= this.Scene_Leaving;
-			Scene.GameObjectUnregistered -= this.Scene_GameObjectUnregistered;
+			Scene.GameObjectRemoved -= this.Scene_GameObjectUnregistered;
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
 
 			this.SetCurrentState((CamViewState)null);
@@ -432,7 +432,7 @@ namespace EditorBase
 			c.FarZ = 100000.0f;
 
 			this.nativeCamObj.Transform.Pos = new Vector3(0.0f, 0.0f, -c.FocusDist);
-			DualityEditorApp.EditorObjects.RegisterObj(this.nativeCamObj);
+			DualityEditorApp.EditorObjects.AddObject(this.nativeCamObj);
 		}
 		private int GetCameraSelectorIndex(Camera c)
 		{

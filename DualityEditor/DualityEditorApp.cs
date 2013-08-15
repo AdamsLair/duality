@@ -222,8 +222,8 @@ namespace DualityEditor
 			Resource.ResourceSaved += Resource_ResourceSaved;
 			Resource.ResourceSaving += Resource_ResourceSaving;
 			FileEventManager.PluginChanged += FileEventManager_PluginChanged;
-			editorObjects.Registered += editorObjects_Registered;
-			editorObjects.Unregistered += editorObjects_Unregistered;
+			editorObjects.GameObjectAdded += editorObjects_Registered;
+			editorObjects.GameObjectRemoved += editorObjects_Unregistered;
 			editorObjects.ComponentAdded += editorObjects_ComponentAdded;
 			editorObjects.ComponentRemoving += editorObjects_ComponentRemoved;
 

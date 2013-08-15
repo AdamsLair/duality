@@ -31,8 +31,8 @@ namespace Duality.Resources
 			const string ContentPath_Minimal		= VirtualContentPath + "Minimal";
 			const string ContentPath_SmoothAnim		= VirtualContentPath + "SmoothAnim";
 
-			ContentProvider.RegisterContent(ContentPath_Minimal, new VertexShader(DefaultRes.MinimalVert));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim, new VertexShader(DefaultRes.SmoothAnimVert));
+			ContentProvider.AddContent(ContentPath_Minimal, new VertexShader(DefaultRes.MinimalVert));
+			ContentProvider.AddContent(ContentPath_SmoothAnim, new VertexShader(DefaultRes.SmoothAnimVert));
 
 			Minimal		= ContentProvider.RequestContent<VertexShader>(ContentPath_Minimal);
 			SmoothAnim	= ContentProvider.RequestContent<VertexShader>(ContentPath_SmoothAnim);

@@ -40,7 +40,7 @@ namespace DualityEditor.UndoRedoActions
 				}
 			}
 
-			Scene.Current.UnregisterObj(this.targetObj);
+			Scene.Current.RemoveObject(this.targetObj);
 			foreach (GameObject obj in this.targetObj)
 				obj.Dispose();
 
@@ -52,7 +52,7 @@ namespace DualityEditor.UndoRedoActions
 			for (int i = 0; i < this.backupObj.Length; i++)
 			{
 				CloneProvider.DeepCopyTo(this.backupObj[i], this.targetObj[i], BackupCloneContext);
-				Scene.Current.RegisterObj(this.targetObj[i]);
+				Scene.Current.AddObject(this.targetObj[i]);
 				this.targetObj[i].Parent = this.backupParentObj[i];
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));

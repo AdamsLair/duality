@@ -42,9 +42,9 @@ namespace Duality.Resources
 			const string ContentPath_DroneLoop	= VirtualContentPath + "DroneLoop";
 			const string ContentPath_LogoJingle	= VirtualContentPath + "LogoJingle";
 
-			ContentProvider.RegisterContent(ContentPath_Beep, new Sound(AudioData.Beep));
-			ContentProvider.RegisterContent(ContentPath_DroneLoop, new Sound(AudioData.DroneLoop));
-			ContentProvider.RegisterContent(ContentPath_LogoJingle, new Sound(AudioData.LogoJingle));
+			ContentProvider.AddContent(ContentPath_Beep, new Sound(AudioData.Beep));
+			ContentProvider.AddContent(ContentPath_DroneLoop, new Sound(AudioData.DroneLoop));
+			ContentProvider.AddContent(ContentPath_LogoJingle, new Sound(AudioData.LogoJingle));
 
 			Beep		= ContentProvider.RequestContent<Sound>(ContentPath_Beep);
 			DroneLoop	= ContentProvider.RequestContent<Sound>(ContentPath_DroneLoop);

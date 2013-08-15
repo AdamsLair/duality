@@ -65,11 +65,11 @@ namespace Duality
 		/// <summary>
 		/// Fired when a GameObject is registered
 		/// </summary>
-		public event EventHandler<GameObjectEventArgs>	Registered;
+		public event EventHandler<GameObjectEventArgs>	GameObjectAdded;
 		/// <summary>
 		/// Fired when a GameObject is unregistered
 		/// </summary>
-		public event EventHandler<GameObjectEventArgs>	Unregistered;
+		public event EventHandler<GameObjectEventArgs>	GameObjectRemoved;
 		/// <summary>
 		/// Fired when a registered GameObjects parent has changed
 		/// </summary>
@@ -89,26 +89,26 @@ namespace Duality
 		/// Registers a GameObject and all of its children.
 		/// </summary>
 		/// <param name="obj"></param>
-		public bool RegisterObj(GameObject obj)
+		public bool AddObject(GameObject obj)
 		{
-			return this.RegisterObjDeep(obj);
+			return this.AddObjectDeep(obj);
 		}
 		/// <summary>
 		/// Registers a set of GameObjects
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void RegisterObj(IEnumerable<GameObject> objEnum)
+		public void AddObject(IEnumerable<GameObject> objEnum)
 		{
 			foreach (GameObject obj in objEnum.ToArray())
-				this.RegisterObjDeep(obj);
+				this.AddObjectDeep(obj);
 		}
 		/// <summary>
 		/// Unregisters a GameObject and all of its children
 		/// </summary>
 		/// <param name="obj"></param>
-		public bool UnregisterObj(GameObject obj)
+		public bool RemoveObject(GameObject obj)
 		{
-			bool removed = this.UnregisterObjDeep(obj);;
+			bool removed = this.RemoveObjectDeep(obj);;
 			this.Flush();
 			return removed;
 		}
@@ -116,10 +116,10 @@ namespace Duality
 		/// Unregisters a set of GameObjects
 		/// </summary>
 		/// <param name="objEnum"></param>
-		public void UnregisterObj(IEnumerable<GameObject> objEnum)
+		public void RemoveObject(IEnumerable<GameObject> objEnum)
 		{
 			foreach (GameObject obj in objEnum.ToArray())
-				this.UnregisterObjDeep(obj);
+				this.RemoveObjectDeep(obj);
 			this.Flush();
 		}
 		/// <summary>
@@ -128,7 +128,7 @@ namespace Duality
 		public void Clear()
 		{
 			foreach (GameObject obj in this.allObj)
-				this.OnUnregistered(obj);
+				this.OnObjectRemoved(obj);
 			this.allObj.Clear();
 		}
 		/// <summary>
@@ -139,33 +139,33 @@ namespace Duality
 			List<GameObject> removed;
 			this.allObj.FlushDisposedObj(out removed);
 			foreach (GameObject obj in removed)
-				this.OnUnregistered(obj);
+				this.OnObjectRemoved(obj);
 		}
 
 
-		private bool RegisterObjDeep(GameObject obj)
+		private bool AddObjectDeep(GameObject obj)
 		{
 			bool added = false;
 			if (!this.allObj.Contains(obj))
 			{
 				this.allObj.Add(obj);
-				this.OnRegistered(obj);
+				this.OnObjectAdded(obj);
 				added = true;
 			}
 			foreach (GameObject child in obj.Children)
 			{
-				this.RegisterObjDeep(child);
+				this.AddObjectDeep(child);
 			}
 			return added;
 		}
-		private bool UnregisterObjDeep(GameObject obj)
+		private bool RemoveObjectDeep(GameObject obj)
 		{
 			foreach (GameObject child in obj.Children)
 			{
-				this.UnregisterObjDeep(child);
+				this.RemoveObjectDeep(child);
 			}
 			bool removed = this.allObj.Remove(obj);
-			if (removed) this.OnUnregistered(obj);
+			if (removed) this.OnObjectRemoved(obj);
 			return removed;
 		}
 
@@ -182,17 +182,17 @@ namespace Duality
 			obj.EventComponentRemoving	-= this.OnComponentRemoving;
 		}
 
-		private void OnRegistered(GameObject obj)
+		private void OnObjectAdded(GameObject obj)
 		{
 			this.RegisterEvents(obj);
-			if (this.Registered != null)
-				this.Registered(this, new GameObjectEventArgs(obj));
+			if (this.GameObjectAdded != null)
+				this.GameObjectAdded(this, new GameObjectEventArgs(obj));
 		}
-		private void OnUnregistered(GameObject obj)
+		private void OnObjectRemoved(GameObject obj)
 		{
 			this.UnregisterEvents(obj);
-			if (this.Unregistered != null)
-				this.Unregistered(this, new GameObjectEventArgs(obj));
+			if (this.GameObjectRemoved != null)
+				this.GameObjectRemoved(this, new GameObjectEventArgs(obj));
 		}
 		private void OnParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{

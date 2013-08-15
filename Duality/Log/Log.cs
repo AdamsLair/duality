@@ -81,9 +81,9 @@ namespace Duality
 			}
 			if (System.Diagnostics.Debugger.IsAttached || hasConsole)
 			{
-				logGame.RegisterOutput(new ConsoleLogOutput(ConsoleColor.DarkGray));
-				logCore.RegisterOutput(new ConsoleLogOutput(ConsoleColor.DarkBlue));
-				logEditor.RegisterOutput(new ConsoleLogOutput(ConsoleColor.DarkMagenta));
+				logGame.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkGray));
+				logCore.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkBlue));
+				logEditor.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkMagenta));
 			}
 		}
 
@@ -136,18 +136,18 @@ namespace Duality
 		public Log(string name, params ILogOutput[] output) : this(name, new SharedState(), output) {}
 
 		/// <summary>
-		/// Registers an output to write log entries to.
+		/// Adds an output to write log entries to.
 		/// </summary>
 		/// <param name="writer"></param>
-		public void RegisterOutput(ILogOutput writer)
+		public void AddOutput(ILogOutput writer)
 		{
 			this.strOut.Add(writer);
 		}
 		/// <summary>
-		/// Unregisters a registered output.
+		/// Removes a certain output.
 		/// </summary>
 		/// <param name="writer"></param>
-		public void UnregisterOutput(ILogOutput writer)
+		public void RemoveOutput(ILogOutput writer)
 		{
 			this.strOut.Remove(writer);
 		}

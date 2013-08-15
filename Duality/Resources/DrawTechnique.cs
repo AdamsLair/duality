@@ -134,24 +134,24 @@ namespace Duality.Resources
 			const string ContentPath_SmoothAnim_Light		= ContentDir_SmoothAnim + "Light";
 			const string ContentPath_SmoothAnim_Invert		= ContentDir_SmoothAnim + "Invert";
 
-			ContentProvider.RegisterContent(ContentPath_Solid,		new DrawTechnique(BlendMode.Solid));
-			ContentProvider.RegisterContent(ContentPath_Mask,		new DrawTechnique(BlendMode.Mask));
-			ContentProvider.RegisterContent(ContentPath_Add,		new DrawTechnique(BlendMode.Add));
-			ContentProvider.RegisterContent(ContentPath_Alpha,		new DrawTechnique(BlendMode.Alpha));
-			ContentProvider.RegisterContent(ContentPath_Multiply,	new DrawTechnique(BlendMode.Multiply));
-			ContentProvider.RegisterContent(ContentPath_Light,		new DrawTechnique(BlendMode.Light));
-			ContentProvider.RegisterContent(ContentPath_Invert,		new DrawTechnique(BlendMode.Invert));
+			ContentProvider.AddContent(ContentPath_Solid,		new DrawTechnique(BlendMode.Solid));
+			ContentProvider.AddContent(ContentPath_Mask,		new DrawTechnique(BlendMode.Mask));
+			ContentProvider.AddContent(ContentPath_Add,		new DrawTechnique(BlendMode.Add));
+			ContentProvider.AddContent(ContentPath_Alpha,		new DrawTechnique(BlendMode.Alpha));
+			ContentProvider.AddContent(ContentPath_Multiply,	new DrawTechnique(BlendMode.Multiply));
+			ContentProvider.AddContent(ContentPath_Light,		new DrawTechnique(BlendMode.Light));
+			ContentProvider.AddContent(ContentPath_Invert,		new DrawTechnique(BlendMode.Invert));
 
-			ContentProvider.RegisterContent(ContentPath_Picking,	new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
-			ContentProvider.RegisterContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha));
+			ContentProvider.AddContent(ContentPath_Picking,	new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
+			ContentProvider.AddContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha));
 			
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Solid,		new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Add,			new DrawTechnique(BlendMode.Add,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Alpha,		new DrawTechnique(BlendMode.Alpha,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Multiply,	new DrawTechnique(BlendMode.Multiply,	ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Light,		new DrawTechnique(BlendMode.Light,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim_Invert,		new DrawTechnique(BlendMode.Invert,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Solid,		new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Add,			new DrawTechnique(BlendMode.Add,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Alpha,		new DrawTechnique(BlendMode.Alpha,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Multiply,	new DrawTechnique(BlendMode.Multiply,	ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Light,		new DrawTechnique(BlendMode.Light,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Invert,		new DrawTechnique(BlendMode.Invert,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
 
 			Solid		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Solid);
 			Mask		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Mask);

@@ -349,9 +349,9 @@ namespace Duality
 				logfile = new StreamWriter(logfilePath);
 				logfile.AutoFlush = true;
 				TextWriterLogOutput logfileOutput = new TextWriterLogOutput(logfile);
-				Log.Game.RegisterOutput(logfileOutput);
-				Log.Core.RegisterOutput(logfileOutput);
-				Log.Editor.RegisterOutput(logfileOutput);
+				Log.Game.AddOutput(logfileOutput);
+				Log.Core.AddOutput(logfileOutput);
+				Log.Editor.AddOutput(logfileOutput);
 			}
 			catch (Exception e)
 			{
@@ -1003,7 +1003,7 @@ namespace Duality
 			if (!Scene.Current.IsEmpty)
 				Scene.Current.Dispose();
 			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())
-				ContentProvider.UnregisterContent(r.Path);
+				ContentProvider.RemoveContent(r.Path);
 			
 			// Clean input sources that a disposed Assembly forgot to unregister.
 			if (oldPlugins != null)

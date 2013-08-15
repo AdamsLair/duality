@@ -65,13 +65,13 @@ namespace Duality.Resources
 			const string ContentPath_White				= VirtualContentPath + "White";
 			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
 
-			ContentProvider.RegisterContent(ContentPath_DualityIcon, new Texture(Pixmap.DualityIcon));
-			ContentProvider.RegisterContent(ContentPath_DualityIconB, new Texture(Pixmap.DualityIconB));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoBig, new Texture(Pixmap.DualityLogoBig));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoMedium, new Texture(Pixmap.DualityLogoMedium));
-			ContentProvider.RegisterContent(ContentPath_DualityLogoSmall, new Texture(Pixmap.DualityLogoSmall));
-			ContentProvider.RegisterContent(ContentPath_White, new Texture(Pixmap.White));
-			ContentProvider.RegisterContent(ContentPath_Checkerboard, new Texture(Pixmap.Checkerboard, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat));
+			ContentProvider.AddContent(ContentPath_DualityIcon, new Texture(Pixmap.DualityIcon));
+			ContentProvider.AddContent(ContentPath_DualityIconB, new Texture(Pixmap.DualityIconB));
+			ContentProvider.AddContent(ContentPath_DualityLogoBig, new Texture(Pixmap.DualityLogoBig));
+			ContentProvider.AddContent(ContentPath_DualityLogoMedium, new Texture(Pixmap.DualityLogoMedium));
+			ContentProvider.AddContent(ContentPath_DualityLogoSmall, new Texture(Pixmap.DualityLogoSmall));
+			ContentProvider.AddContent(ContentPath_White, new Texture(Pixmap.White));
+			ContentProvider.AddContent(ContentPath_Checkerboard, new Texture(Pixmap.Checkerboard, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat));
 
 			DualityIcon			= ContentProvider.RequestContent<Texture>(ContentPath_DualityIcon);
 			DualityIconB		= ContentProvider.RequestContent<Texture>(ContentPath_DualityIconB);

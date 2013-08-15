@@ -55,7 +55,7 @@ namespace DualityEditor.UndoRedoActions
 			{
 				GameObject obj = this.targetObj[i];
 				obj.Parent = this.targetParentObj;
-				Scene.Current.RegisterObj(obj);
+				Scene.Current.AddObject(obj);
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
@@ -65,7 +65,7 @@ namespace DualityEditor.UndoRedoActions
 			foreach (GameObject obj in this.targetObj)
 			{
 				obj.Dispose();
-				Scene.Current.UnregisterObj(obj);
+				Scene.Current.RemoveObject(obj);
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}

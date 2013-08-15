@@ -195,7 +195,7 @@ namespace Duality
 				foreach (SoundInstance inst in this.sounds) inst.Dispose();
 				this.sounds.Clear();
 
-				ContentProvider.UnregisterAllContent<Sound>();
+				ContentProvider.RemoveAllContent<Sound>();
 
 				if (this.context != null)
 				{

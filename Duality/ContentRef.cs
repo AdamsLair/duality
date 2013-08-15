@@ -132,7 +132,7 @@ namespace Duality
 			get
 			{
 				if (this.contentInstance != null && !this.contentInstance.Disposed) return true;
-				return ContentProvider.IsContentRegistered(this.contentPath);
+				return ContentProvider.IsContentAvailable(this.contentPath);
 			}
 		}
 		/// <summary>

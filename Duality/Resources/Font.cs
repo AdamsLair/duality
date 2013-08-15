@@ -68,7 +68,7 @@ namespace Duality.Resources
 			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.MonoSpace = true;
 			tmp.ReloadData();
-			ContentProvider.RegisterContent(ContentPath_GenericMonospace8, tmp);
+			ContentProvider.AddContent(ContentPath_GenericMonospace8, tmp);
 
 			tmp = new Font();
 			tmp.Family = FontFamily.GenericMonospace.Name;
@@ -77,7 +77,7 @@ namespace Duality.Resources
 			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.MonoSpace = true;
 			tmp.ReloadData();
-			ContentProvider.RegisterContent(ContentPath_GenericMonospace10, tmp);
+			ContentProvider.AddContent(ContentPath_GenericMonospace10, tmp);
 
 			tmp = new Font();
 			tmp.Family = FontFamily.GenericSerif.Name;
@@ -85,7 +85,7 @@ namespace Duality.Resources
 			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.Kerning = true;
 			tmp.ReloadData();
-			ContentProvider.RegisterContent(ContentPath_GenericSerif12, tmp);
+			ContentProvider.AddContent(ContentPath_GenericSerif12, tmp);
 
 			tmp = new Font();
 			tmp.Family = FontFamily.GenericSansSerif.Name;
@@ -93,7 +93,7 @@ namespace Duality.Resources
 			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.Kerning = true;
 			tmp.ReloadData();
-			ContentProvider.RegisterContent(ContentPath_GenericSansSerif12, tmp);
+			ContentProvider.AddContent(ContentPath_GenericSansSerif12, tmp);
 
 			GenericMonospace8	= ContentProvider.RequestContent<Font>(ContentPath_GenericMonospace8);
 			GenericMonospace10	= ContentProvider.RequestContent<Font>(ContentPath_GenericMonospace10);

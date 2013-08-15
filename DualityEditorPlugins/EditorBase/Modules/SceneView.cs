@@ -298,8 +298,8 @@ namespace EditorBase
 
 			Scene.Entered += this.Scene_Entered;
 			Scene.Leaving += this.Scene_Leaving;
-			Scene.GameObjectRegistered += this.Scene_GameObjectRegistered;
-			Scene.GameObjectUnregistered += this.Scene_GameObjectUnregistered;
+			Scene.GameObjectAdded += this.Scene_GameObjectRegistered;
+			Scene.GameObjectRemoved += this.Scene_GameObjectUnregistered;
 			Scene.GameObjectParentChanged += this.Scene_GameObjectParentChanged;
 			Scene.ComponentAdded += this.Scene_ComponentAdded;
 			Scene.ComponentRemoving += this.Scene_ComponentRemoving;
@@ -318,8 +318,8 @@ namespace EditorBase
 
 			Scene.Entered -= this.Scene_Entered;
 			Scene.Leaving -= this.Scene_Leaving;
-			Scene.GameObjectRegistered -= this.Scene_GameObjectRegistered;
-			Scene.GameObjectUnregistered -= this.Scene_GameObjectUnregistered;
+			Scene.GameObjectAdded -= this.Scene_GameObjectRegistered;
+			Scene.GameObjectRemoved -= this.Scene_GameObjectUnregistered;
 			Scene.GameObjectParentChanged -= this.Scene_GameObjectParentChanged;
 			Scene.ComponentAdded -= this.Scene_ComponentAdded;
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;

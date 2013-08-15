@@ -65,7 +65,7 @@ namespace DualityEditor.UndoRedoActions
 				if (clone.Transform != null && clone.RigidBody != null)
 					clone.Transform.Pos += Vector3.UnitX * 0.001f;
 
-				Scene.Current.RegisterObj(clone);
+				Scene.Current.AddObject(clone);
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
@@ -75,7 +75,7 @@ namespace DualityEditor.UndoRedoActions
 			foreach (GameObject clone in this.resultObj)
 			{
 				clone.Dispose();
-				Scene.Current.UnregisterObj(clone);
+				Scene.Current.RemoveObject(clone);
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}

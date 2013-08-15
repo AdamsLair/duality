@@ -42,10 +42,10 @@ namespace Duality.Resources
 			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
 			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
 
-			ContentProvider.RegisterContent(ContentPath_Minimal,	new FragmentShader(DefaultRes.MinimalFrag));
-			ContentProvider.RegisterContent(ContentPath_Picking,	new FragmentShader(DefaultRes.PickingFrag));
-			ContentProvider.RegisterContent(ContentPath_SmoothAnim,	new FragmentShader(DefaultRes.SmoothAnimFrag));
-			ContentProvider.RegisterContent(ContentPath_SharpMask,	new FragmentShader(DefaultRes.SharpAlphaFrag));
+			ContentProvider.AddContent(ContentPath_Minimal,	new FragmentShader(DefaultRes.MinimalFrag));
+			ContentProvider.AddContent(ContentPath_Picking,	new FragmentShader(DefaultRes.PickingFrag));
+			ContentProvider.AddContent(ContentPath_SmoothAnim,	new FragmentShader(DefaultRes.SmoothAnimFrag));
+			ContentProvider.AddContent(ContentPath_SharpMask,	new FragmentShader(DefaultRes.SharpAlphaFrag));
 
 			Minimal		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Minimal);
 			Picking		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Picking);

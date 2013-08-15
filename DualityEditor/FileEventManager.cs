@@ -220,7 +220,7 @@ namespace DualityEditor
 					if (!justSaved && (Resource.IsResourceFile(e.FullPath) || args.IsDirectory))
 					{
 						// Unregister outdated resources, if modified outside the editor
-						if (!args.IsDirectory && ContentProvider.IsContentRegistered(args.Path))
+						if (!args.IsDirectory && ContentProvider.IsContentAvailable(args.Path))
 						{
 							bool isCurrentScene = args.Content.Is<Scene>() && Scene.Current == args.Content.Res;
 							if (isCurrentScene || DualityEditorApp.IsResourceUnsaved(e.FullPath))
@@ -233,12 +233,12 @@ namespace DualityEditor
 								if (result == DialogResult.Yes)
 								{
 									string curScenePath = Scene.CurrentPath;
-									ContentProvider.UnregisterContent(args.Path);
+									ContentProvider.RemoveContent(args.Path);
 									if (isCurrentScene) Scene.Current = ContentProvider.RequestContent<Scene>(curScenePath).Res;
 								}
 							}
 							else
-								ContentProvider.UnregisterContent(args.Path);
+								ContentProvider.RemoveContent(args.Path);
 						}
 
 						if (ResourceModified != null) ResourceModified(null, args);
@@ -299,8 +299,8 @@ namespace DualityEditor
 					{
 
 						// Unregister no-more existing resources
-						if (args.IsDirectory)	ContentProvider.UnregisterContentTree(args.Path);
-						else					ContentProvider.UnregisterContent(args.Path);
+						if (args.IsDirectory)	ContentProvider.RemoveContentTree(args.Path);
+						else					ContentProvider.RemoveContent(args.Path);
 
 						if (ResourceDeleted != null)
 							ResourceDeleted(null, args);

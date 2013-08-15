@@ -287,7 +287,7 @@ namespace EditorBase.CamViewStates
 			foreach (SelObj obj in this.allObjSel)
 			{
 				GameObject gameObj = obj.ActualObject as GameObject;
-				Scene.Current.UnregisterObj(gameObj);
+				Scene.Current.RemoveObject(gameObj);
 				gameObj.Dispose();
 			}
 			DualityEditorApp.Select(this, this.selBeforeDrag);

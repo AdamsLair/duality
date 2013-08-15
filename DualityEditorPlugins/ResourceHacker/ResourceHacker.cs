@@ -290,7 +290,7 @@ namespace ResourceHacker
 			if (PathHelper.IsPathLocatedIn(this.filePath, "."))
 			{
 				string dataPath = PathHelper.MakeFilePathRelative(this.filePath);
-				ContentProvider.UnregisterContent(dataPath, true);
+				ContentProvider.RemoveContent(dataPath, true);
 			}
 		}
 
@@ -502,7 +502,7 @@ namespace ResourceHacker
 			if (PathHelper.IsPathLocatedIn(data.FolderPath, "."))
 			{
 				string dataPath = PathHelper.MakeFilePathRelative(data.FolderPath);
-				ContentProvider.UnregisterContentTree(dataPath);
+				ContentProvider.RemoveContentTree(dataPath);
 			}
 			state.Progress += 0.05f;
 		}
