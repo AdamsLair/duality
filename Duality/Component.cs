@@ -330,6 +330,7 @@ namespace Duality
 					foreach (RequiredComponentAttribute a in attribs)
 					{
 						Type reqType = a.RequiredComponentType;
+						if (reqType == type) continue; // Don't require itself
 						this.Requirements.AddRange(GetRequiredComponents(reqType).Where(t => !this.Requirements.Contains(t)));
 						this.Requirements.Add(reqType);
 					}
