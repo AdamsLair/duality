@@ -173,7 +173,7 @@ namespace Duality
 		/// <param name="budget"></param>
 		public void Update(bool nonWeakAbove, ref float budget)
 		{
-			if (this.instance.Disposed || this.instance == null)
+			if (this.instance == null || this.instance.Disposed)
 			{
 				this.Dispose();
 				return;
