@@ -216,7 +216,7 @@ namespace Duality
 		/// <returns>True, if there is, false if not.</returns>
 		public bool IsAnyScheduled
 		{
-			get { return this.budgetPads.Any(pad => pad.Instance.FadeTarget > 0.0f); }
+			get { return this.budgetPads.Any(pad => pad.Instance != null && pad.Instance.FadeTarget > 0.0f); }
 		}
 		/// <summary>
 		/// [GET] Returns the main active pad, i.e. the one that is scheduled with the highest priority.
