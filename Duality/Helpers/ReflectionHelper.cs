@@ -598,8 +598,11 @@ namespace Duality
 					if (handlerType.IsAbstract) continue;
 					try
 					{
-						SerializeErrorHandler handler = (handlerType.CreateInstanceOf() ?? handlerType.CreateInstanceOf(true)) as SerializeErrorHandler;
-						serializeHandlerCache.Add(handler);
+						SerializeErrorHandler handler = handlerType.CreateInstanceOf() as SerializeErrorHandler;
+						if (handler != null)
+						{
+							serializeHandlerCache.Add(handler);
+						}
 					}
 					catch (Exception) {}
 				}

@@ -9,7 +9,7 @@ namespace Duality.Serialization
 	/// <summary>
 	/// De/Serializes object data.
 	/// </summary>
-	/// <seealso cref="Duality.Serialization.BinaryMetaFormatter"/>
+	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
 	public class BinaryFormatter : BinaryFormatterBase
 	{
 		public BinaryFormatter() : this(null) {}

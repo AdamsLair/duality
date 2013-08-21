@@ -620,9 +620,9 @@ namespace Duality.Serialization
 			}
 
 			if (method == FormattingMethod.Xml)
-				return new XmlMetaFormatter(stream);
+				return new MetaFormat.XmlMetaFormatter(stream);
 			else
-				return new BinaryMetaFormatter(stream);
+				return new MetaFormat.BinaryMetaFormatter(stream);
 		}
 	}
 }

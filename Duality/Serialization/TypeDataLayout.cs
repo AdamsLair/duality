@@ -7,7 +7,7 @@ namespace Duality.Serialization
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.BinaryFormatterBase"/>
 	/// <seealso cref="Duality.Serialization.BinaryFormatter"/>
-	/// <seealso cref="Duality.Serialization.BinaryMetaFormatter"/>
+	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
 	public class TypeDataLayout
 	{
 		/// <summary>

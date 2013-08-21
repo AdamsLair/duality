@@ -10,7 +10,7 @@ namespace Duality.Serialization
 	/// <summary>
 	/// De/Serializes object data.
 	/// </summary>
-	/// <seealso cref="Duality.Serialization.XmlMetaFormatter"/>
+	/// <seealso cref="Duality.Serialization.MetaFormat.XmlMetaFormatter"/>
 	public class XmlFormatter : XmlFormatterBase
 	{
 		public XmlFormatter() {}

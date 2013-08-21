@@ -558,7 +558,7 @@ namespace DualityEditor.Forms
 				// Because changes we'll do will be discarded when leaving the sandbox we'll need to
 				// do it the hard way - manually load an save the file.
 				state.StateDesc = "Current Scene"; yield return null;
-				Scene curScene = Resource.LoadResource<Scene>(Scene.CurrentPath, null, false);
+				Scene curScene = Resource.Load<Scene>(Scene.CurrentPath, null, false);
 				if (curScene != null)
 				{
 					curScene.Save(null, false);
@@ -588,7 +588,7 @@ namespace DualityEditor.Forms
 				else
 				{
 					// Load content without initializing it
-					Resource res = Resource.LoadResource<Resource>(file, null, false);
+					Resource res = Resource.Load<Resource>(file, null, false);
 					state.Progress += 0.45f / resFiles.Count; yield return null;
 
 					// Perform rename and save it without making it globally available

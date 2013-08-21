@@ -347,14 +347,14 @@ namespace Duality
 		/// uninitialized Resources or register them in the ContentProvider.
 		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
-		public static T LoadResource<T>(string path, Action<T> loadCallback = null, bool initResource = true) where T : Resource
+		public static T Load<T>(string path, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
 			if (!File.Exists(path)) return null;
 
 			T newContent;
 			using (FileStream str = File.OpenRead(path))
 			{
-				newContent = LoadResource<T>(str, path, loadCallback, initResource);
+				newContent = Load<T>(str, path, loadCallback, initResource);
 			}
 			return newContent;
 		}
@@ -374,38 +374,66 @@ namespace Duality
 		/// uninitialized Resources or register them in the ContentProvider.
 		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
-		public static T LoadResource<T>(Stream str, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
+		public static T Load<T>(Stream str, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
+		{
+			using (var formatter = Formatter.Create(str))
+			{
+				return Load<T>(formatter, resPath, loadCallback, initResource);
+			}
+		}
+		/// <summary>
+		/// Loads the Resource from the specified <see cref="Stream"/>. You shouldn't need this method in almost all cases.
+		/// Only use it when you know exactly what you're doing. Consider requesting the Resource from the <see cref="ContentProvider"/> instead.
+		/// </summary>
+		/// <typeparam name="T">
+		/// Desired Type of the returned reference. Does not affect the loaded Resource in any way - it is simply returned as T.
+		/// Results in returning null if the loaded Resource's Type isn't assignable to T.
+		/// </typeparam>
+		/// <param name="str">The stream to load the Resource from.</param>
+		/// <param name="resPath">The path that is assumed as the loaded Resource's origin.</param>
+		/// <param name="loadCallback">An optional callback that is invoked right after loading the Resource, but before initializing it.</param>
+		/// <param name="initResource">
+		/// Specifies whether or not the Resource is initialized by calling <see cref="Resource.OnLoaded"/>. Never attempt to use
+		/// uninitialized Resources or register them in the ContentProvider.
+		/// </param>
+		/// <returns>The Resource that has been loaded.</returns>
+		public static T Load<T>(Formatter formatter, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
 			T newContent = null;
 
 			try
 			{
-				Resource res;
-				using (var formatter = Formatter.Create(str))
-				{
-					res = formatter.ReadObject() as Resource;
-				}
+				Resource res = formatter.ReadObject() as Resource;
 				if (res == null) throw new ApplicationException("Loading Resource failed");
 
 				res.initState = InitState.Initializing;
 				res.path = resPath;
 				if (loadCallback != null) loadCallback(res as T); // Callback before initializing.
-				if (initResource)
-				{
-					res.OnLoaded();
-					res.initState = InitState.Initialized;
-				}
+				if (initResource) Init(res);
 				newContent = res as T;
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Can't load {0} from Stream '{1}', because an error occurred: \n{2}",
+				Log.Core.WriteError("Can't load {0} from '{1}', because an error occurred: {3}{2}",
 					Log.Type(typeof(T)),
-					(str is FileStream) ? (str as FileStream).Name : str.ToString(),
-					Log.Exception(e));
+					resPath ?? formatter.ToString(),
+					Log.Exception(e),
+					Environment.NewLine);
 			}
 
 			return newContent;
+		}
+
+		/// <summary>
+		/// Initializes a Resource that has been <see cref="Load{T}">loaded</see> without initialization. You shouldn't need this method in almost all cases.
+		/// Only use it when you know exactly what you're doing. Consider requesting the Resource from the <see cref="ContentProvider"/> instead.
+		/// </summary>
+		/// <param name="res">The Resource to initialize.</param>
+		public static void Init(Resource res)
+		{
+			if (res.initState != InitState.Initializing) return;
+			res.OnLoaded();
+			res.initState = InitState.Initialized;
 		}
 
 		/// <summary>
@@ -464,7 +492,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// A <see cref="Duality.Serialization.Formatter.FieldBlockers">FieldBlocker</see> to prevent
-		/// fields of <see cref="PrefabLink">PrefabLink-ed</see> objects from being serialized unnecessarily.
+		/// fields of <see cref="Duality.Resources.PrefabLink">PrefabLink-ed</see> objects from being serialized unnecessarily.
 		/// </summary>
 		/// <param name="field"></param>
 		/// <param name="obj"></param>

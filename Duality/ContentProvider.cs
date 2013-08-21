@@ -320,7 +320,7 @@ namespace Duality
 			Log.Core.PushIndent();
 
 			// Load the Resource and register it
-			Resource res = Resource.LoadResource<Resource>(path, r => 
+			Resource res = Resource.Load<Resource>(path, r => 
 			{ 
 				// Registering takes place in the callback - before initializing the Resource, because
 				// that may result in requesting more Resources and an infinite loop if two Resources request

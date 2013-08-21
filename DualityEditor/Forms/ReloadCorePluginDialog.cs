@@ -278,7 +278,10 @@ namespace DualityEditor.Forms
 					Log.Editor.Write("Trying full restart...");
 					if (File.Exists(DualityApp.LogfilePath))
 					{
-						File.Copy(DualityApp.LogfilePath, Path.GetFileNameWithoutExtension(DualityApp.LogfilePath) + "_reloadfailure" + Path.GetExtension(DualityApp.LogfilePath));
+						File.Copy(
+							DualityApp.LogfilePath, 
+							Path.GetFileNameWithoutExtension(DualityApp.LogfilePath) + "_reloadfailure" + Path.GetExtension(DualityApp.LogfilePath), 
+							true);
 					}
 
 					fullRestart = true;
@@ -392,7 +395,12 @@ namespace DualityEditor.Forms
 			Log.Editor.Write("Restoring data...");
 			StreamReader strDataReader = new StreamReader(strData);
 			string scenePath = strDataReader.ReadLine();
-			workInterface.TempScene = Resource.LoadResource<Scene>(strScene, scenePath);
+			workInterface.TempScene = Resource.Load<Scene>(strScene, scenePath);
+			if (!workInterface.TempScene.IsRuntimeResource)
+			{
+				// Register the reloaded Scene in the ContentProvider, if it wasn't just a temporary one.
+				ContentProvider.AddContent(scenePath, workInterface.TempScene);
+			}
 			strScene.Close();
 			strData.Close();
 
