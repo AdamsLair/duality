@@ -991,7 +991,9 @@ namespace Duality
 				// Failed to retrieve base type? Try manually and ignore plus / dot difference.
 				if (baseType == null)
 				{
-					foreach (Assembly a in asmSearch)
+					string assemblyNameGuess = typeName.Split('.', '+').FirstOrDefault();
+					IEnumerable<Assembly> sortedAsmSearch = asmSearch.OrderByDescending(a => a.GetShortAssemblyName() == assemblyNameGuess);
+					foreach (Assembly a in sortedAsmSearch)
 					{
 						// Try to retrieve all Types from the current Assembly
 						Type[] types;

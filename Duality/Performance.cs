@@ -297,6 +297,10 @@ namespace Duality
 		public static readonly StatCounter	StatNumRawBatches			= RequestCounter<StatCounter>(@"Duality\Stats\Render\NumRawBatches");
 		public static readonly StatCounter	StatNumMergedBatches		= RequestCounter<StatCounter>(@"Duality\Stats\Render\NumMergedBatches");
 		public static readonly StatCounter	StatNumOptimizedBatches		= RequestCounter<StatCounter>(@"Duality\Stats\Render\NumOptimizedBatches");
+		public static readonly StatCounter	StatMemoryTotalUsage		= RequestCounter<StatCounter>(@"Duality\Stats\Memory\TotalUsage");
+		public static readonly StatCounter	StatMemoryGarbageCollect0	= RequestCounter<StatCounter>(@"Duality\Stats\Memory\GarbageCollect0");
+		public static readonly StatCounter	StatMemoryGarbageCollect1	= RequestCounter<StatCounter>(@"Duality\Stats\Memory\GarbageCollect1");
+		public static readonly StatCounter	StatMemoryGarbageCollect2	= RequestCounter<StatCounter>(@"Duality\Stats\Memory\GarbageCollect2");
 
 
 		public static T GetCounter<T>(string name) where T : Counter
@@ -355,12 +359,14 @@ namespace Duality
 				return 0;
 		}
 
-		public static void DrawTextReport(Canvas canvas, float x = 10.0f, float y = 10.0f, float z = 0.0f, bool background = true, ReportOptions options = ReportOptions.LastValue | ReportOptions.FormattedText)
+		public static void DrawTextReport(Canvas canvas, IEnumerable<Counter> counters = null, float x = 10.0f, float y = 10.0f, float z = 0.0f, bool background = true, ReportOptions options = ReportOptions.LastValue | ReportOptions.FormattedText)
 		{
 			BeginMeasure(@"DrawTextReport");
+
+			if (counters == null) counters = GetUsedCounters();
 			if (textReport == null || (Time.MainTimer - textReportLast).TotalMilliseconds > 250)
 			{
-				string report = GetTextReport(GetUsedCounters(), options);
+				string report = GetTextReport(counters, options);
 				if (textReport == null)
 				{
 					textReport = new FormattedText(report);
@@ -533,6 +539,13 @@ namespace Duality
 
 		internal static void FrameTick()
 		{
+			// Collect more globally available data
+			StatMemoryTotalUsage.Add((int)(GC.GetTotalMemory(false) / 1024L));
+			StatMemoryGarbageCollect0.Add(GC.CollectionCount(0));
+			StatMemoryGarbageCollect1.Add(GC.CollectionCount(1));
+			StatMemoryGarbageCollect2.Add(GC.CollectionCount(2));
+
+			// Run frametick counter operations
 			foreach (Counter c in counterMap.Values.ToArray())
 				c.OnFrameTick();
 		}
