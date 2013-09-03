@@ -23,6 +23,7 @@ namespace EditorBase.PluginRes
 		public static readonly Bitmap	IconCmpEdgeCollider			= EditorBaseRes.IconCmpEdgeCollider;
 		public static readonly Bitmap	IconCmpLoopCollider			= EditorBaseRes.IconCmpLoopCollider;
 		public static readonly Bitmap	IconCmpRectCollider			= EditorBaseRes.IconCmpRectCollider;
+		public static readonly Bitmap	IconCmpProfileRenderer		= EditorBaseRes.IconCmpProfileRenderer;
 		public static readonly Bitmap	IconCmpSoundListener		= EditorBaseRes.IconCmpSoundListener;
 		public static readonly Bitmap	IconCmpSpriteRenderer		= EditorBaseRes.IconCmpSpriteRenderer;
 		public static readonly Bitmap	IconCmpTransform			= EditorBaseRes.IconCmpTransform;

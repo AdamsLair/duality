@@ -61,7 +61,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap arrow_redo {
             get {
@@ -71,7 +71,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap arrow_undo {
             get {
@@ -86,6 +86,15 @@ namespace DualityEditor.EditorRes {
         public static string Category_Advanced {
             get {
                 return ResourceManager.GetString("Category_Advanced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Diagnostics ähnelt.
+        /// </summary>
+        public static string Category_Diagnostics {
+            get {
+                return ResourceManager.GetString("Category_Diagnostics", resourceCulture);
             }
         }
         
@@ -126,7 +135,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap ColorWheel {
             get {
@@ -136,7 +145,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap CursorArrow {
             get {
@@ -146,7 +155,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap CursorArrowAction {
             get {
@@ -156,7 +165,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap CursorArrowActionMove {
             get {
@@ -166,7 +175,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap CursorArrowActionRotate {
             get {
@@ -176,7 +185,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap CursorArrowActionScale {
             get {
@@ -186,7 +195,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap CursorHandGrab {
             get {
@@ -196,7 +205,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap CursorHandGrabbing {
             get {
@@ -225,7 +234,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Byte[].
         /// </summary>
         public static byte[] GamePluginTemplate {
             get {
@@ -262,7 +271,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Symbol).
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
         /// </summary>
         public static System.Drawing.Icon IconCog {
             get {
@@ -272,7 +281,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Symbol).
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
         /// </summary>
         public static System.Drawing.Icon IconWorkingFolder {
             get {
@@ -282,7 +291,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap ImageAppCreate {
             get {
@@ -292,7 +301,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap ImageTemplateCurrent {
             get {
@@ -302,7 +311,7 @@ namespace DualityEditor.EditorRes {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap ImageTemplateEmpty {
             get {

@@ -10,6 +10,7 @@ using Duality.EditorHints;
 using Duality.VertexFormat;
 using Duality.ColorFormat;
 using Duality.Resources;
+using Duality.Profiling;
 
 namespace Duality.Components
 {
@@ -130,12 +131,12 @@ namespace Duality.Components
 
 			internal void NotifyCollectDrawcalls(IDrawDevice device)
 			{
-				Performance.TimeCollectDrawcalls.BeginMeasure();
+				Profile.TimeCollectDrawcalls.BeginMeasure();
 
 				if (this.CollectDrawcalls != null)
 					this.CollectDrawcalls(this, new CollectDrawcallEventArgs(device));
 
-				Performance.TimeCollectDrawcalls.EndMeasure();
+				Profile.TimeCollectDrawcalls.EndMeasure();
 			}
 
 			public override string ToString()
@@ -340,8 +341,8 @@ namespace Duality.Components
 			this.UpdateDeviceConfig();
 
 			string counterName = Path.Combine("Cameras", this.gameobj.Name);
-			Performance.BeginMeasure(counterName);
-			Performance.TimeRender.BeginMeasure();
+			Profile.BeginMeasure(counterName);
+			Profile.TimeRender.BeginMeasure();
 
 			foreach (Pass t in this.passes)
 			{
@@ -352,8 +353,8 @@ namespace Duality.Components
 			this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
 			this.drawDevice.UpdateMatrices(); // Reset matrices for projection calculations during update
 
-			Performance.TimeRender.EndMeasure();
-			Performance.EndMeasure(counterName);
+			Profile.TimeRender.EndMeasure();
+			Profile.EndMeasure(counterName);
 		}
 		/// <summary>
 		/// Renders a picking map of the current <see cref="Duality.Resources.Scene"/>.
@@ -365,7 +366,7 @@ namespace Duality.Components
 		{
 			if (this.pickingLast == Time.FrameCount) return false;
 			this.pickingLast = Time.FrameCount;
-			Performance.TimeVisualPicking.BeginMeasure();
+			Profile.TimeVisualPicking.BeginMeasure();
 
 			// Render picking map
 			{
@@ -401,7 +402,7 @@ namespace Duality.Components
 			RenderTarget.Bind(lastTex);
 			GL.ReadBuffer(ReadBufferMode.Back);
 
-			Performance.TimeVisualPicking.EndMeasure();
+			Profile.TimeVisualPicking.EndMeasure();
 			return true;
 		}
 		/// <summary>
@@ -595,7 +596,7 @@ namespace Duality.Components
 			}
 			else
 			{
-				Performance.TimePostProcessing.BeginMeasure();
+				Profile.TimePostProcessing.BeginMeasure();
 				this.drawDevice.BeginRendering(p.ClearFlags, p.ClearColor, p.ClearDepth);
 
 				Texture mainTex = p.Input.MainTexture.Res;
@@ -610,13 +611,13 @@ namespace Duality.Components
 
 				IDrawDevice device = this.DrawDevice;
 				device.AddVertices(p.Input, VertexMode.Quads,
-					new VertexC1P3T2(targetRect.MinX,	targetRect.MinY,	0.0f,	0.0f,		0.0f),
-					new VertexC1P3T2(targetRect.MaxX,	targetRect.MinY,	0.0f,	uvRatio.X,	0.0f),
-					new VertexC1P3T2(targetRect.MaxX,	targetRect.MaxY,	0.0f,	uvRatio.X,	uvRatio.Y),
-					new VertexC1P3T2(targetRect.MinX,	targetRect.MaxY,	0.0f,	0.0f,		uvRatio.Y));
+					new VertexC1P3T2(targetRect.MinimumX,	targetRect.MinimumY,	0.0f,	0.0f,		0.0f),
+					new VertexC1P3T2(targetRect.MaximumX,	targetRect.MinimumY,	0.0f,	uvRatio.X,	0.0f),
+					new VertexC1P3T2(targetRect.MaximumX,	targetRect.MaximumY,	0.0f,	uvRatio.X,	uvRatio.Y),
+					new VertexC1P3T2(targetRect.MinimumX,	targetRect.MaximumY,	0.0f,	0.0f,		uvRatio.Y));
 
 				this.drawDevice.EndRendering();
-				Performance.TimePostProcessing.EndMeasure();
+				Profile.TimePostProcessing.EndMeasure();
 			}
 		}
 		private void CollectDrawcalls()
@@ -640,12 +641,12 @@ namespace Duality.Components
 			}
 			else
 			{
-				Performance.TimeCollectDrawcalls.BeginMeasure();
+				Profile.TimeCollectDrawcalls.BeginMeasure();
 
 				foreach (ICmpRenderer r in rendererQuery)
 					r.Draw(this.drawDevice);
 
-				Performance.TimeCollectDrawcalls.EndMeasure();
+				Profile.TimeCollectDrawcalls.EndMeasure();
 			}
 		}
 		private void SetupPickingRT()

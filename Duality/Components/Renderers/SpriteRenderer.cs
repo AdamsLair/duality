@@ -184,20 +184,20 @@ namespace Duality.Components.Renderers
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.MaxY;
+			vertices[1].TexCoord.Y = uvRect.MaximumY;
 			vertices[1].Color = mainClr;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.MaxX;
-			vertices[2].TexCoord.Y = uvRect.MaxY;
+			vertices[2].TexCoord.X = uvRect.MaximumX;
+			vertices[2].TexCoord.Y = uvRect.MaximumY;
 			vertices[2].Color = mainClr;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.MaxX;
+			vertices[3].TexCoord.X = uvRect.MaximumX;
 			vertices[3].TexCoord.Y = uvRect.Y;
 			vertices[3].Color = mainClr;
 		}

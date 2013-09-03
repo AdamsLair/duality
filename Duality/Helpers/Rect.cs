@@ -51,28 +51,28 @@ namespace Duality
 		/// <summary>
 		/// [GET] The minimum x-Coordinate occupied by the Rect. Accounts for negative sizes.
 		/// </summary>
-		public float MinX
+		public float MinimumX
 		{
 			get { return MathF.Min(X, X + W); }
 		}
 		/// <summary>
 		/// [GET] The minimum y-Coordinate occupied by the Rect. Accounts for negative sizes.
 		/// </summary>
-		public float MinY
+		public float MinimumY
 		{
 			get { return MathF.Min(Y, Y + H); }
 		}
 		/// <summary>
-		/// [GET] The maximum x-Coordinate occupied by the Rect. Accounts for negative sizes.
+		/// [GET] The maximum y-Coordinate occupied by the Rect. Accounts for negative sizes.
 		/// </summary>
-		public float MaxY
+		public float MaximumY
 		{
 			get { return MathF.Max(Y, Y + H); }
 		}
 		/// <summary>
-		/// [GET] The maximum y-Coordinate occupied by the Rect. Accounts for negative sizes.
+		/// [GET] The maximum x-Coordinate occupied by the Rect. Accounts for negative sizes.
 		/// </summary>
-		public float MaxX
+		public float MaximumX
 		{
 			get { return MathF.Max(X, X + W); }
 		}
@@ -96,56 +96,56 @@ namespace Duality
 		/// </summary>
 		public Vector2 TopLeft
 		{
-			get { return new Vector2(this.MinX, this.MinY); }
+			get { return new Vector2(this.MinimumX, this.MinimumY); }
 		}
 		/// <summary>
 		/// [GET] The Rects top right coordinates
 		/// </summary>
 		public Vector2 TopRight
 		{
-			get { return new Vector2(this.MaxX, this.MinY); }
+			get { return new Vector2(this.MaximumX, this.MinimumY); }
 		}
 		/// <summary>
 		/// [GET] The Rects top coordinates
 		/// </summary>
 		public Vector2 Top
 		{
-			get { return new Vector2(this.CenterX, this.MinY); }
+			get { return new Vector2(this.CenterX, this.MinimumY); }
 		}
 		/// <summary>
 		/// [GET] The Rects bottom left coordinates
 		/// </summary>
 		public Vector2 BottomLeft
 		{
-			get { return new Vector2(this.MinX, this.MaxY); }
+			get { return new Vector2(this.MinimumX, this.MaximumY); }
 		}
 		/// <summary>
 		/// [GET] The Rects bottom right coordinates
 		/// </summary>
 		public Vector2 BottomRight
 		{
-			get { return new Vector2(this.MaxX, this.MaxY); }
+			get { return new Vector2(this.MaximumX, this.MaximumY); }
 		}
 		/// <summary>
 		/// [GET] The Rects bottom coordinates
 		/// </summary>
 		public Vector2 Bottom
 		{
-			get { return new Vector2(this.CenterX, this.MaxY); }
+			get { return new Vector2(this.CenterX, this.MaximumY); }
 		}
 		/// <summary>
 		/// [GET] The Rects left coordinates
 		/// </summary>
 		public Vector2 Left
 		{
-			get { return new Vector2(this.MinX, this.CenterY); }
+			get { return new Vector2(this.MinimumX, this.CenterY); }
 		}
 		/// <summary>
 		/// [GET] The Rects right coordinates
 		/// </summary>
 		public Vector2 Right
 		{
-			get { return new Vector2(this.MaxX, this.CenterY); }
+			get { return new Vector2(this.MaximumX, this.CenterY); }
 		}
 		/// <summary>
 		/// [GET] The Rects center coordinates
@@ -178,10 +178,10 @@ namespace Duality
 			get 
 			{ 
 				return MathF.Max(
-					MathF.Distance(this.MaxX, this.MaxY),
-					MathF.Distance(this.MinX, this.MinY),
-					MathF.Distance(this.MaxX, this.MinY),
-					MathF.Distance(this.MinX, this.MaxY)); 
+					MathF.Distance(this.MaximumX, this.MaximumY),
+					MathF.Distance(this.MinimumX, this.MinimumY),
+					MathF.Distance(this.MaximumX, this.MinimumY),
+					MathF.Distance(this.MinimumX, this.MaximumY)); 
 			}
 		}
 		
@@ -402,7 +402,7 @@ namespace Duality
 		/// <returns>True, if the Rect contains the point, false if not.</returns>
 		public bool Contains(float x, float y)
 		{
-			return x >= this.MinX && x <= this.MaxX && y >= this.MinY && y <= this.MaxY;
+			return x >= this.MinimumX && x <= this.MaximumX && y >= this.MinimumY && y <= this.MaximumY;
 		}
 		/// <summary>
 		/// Returns whether this Rect contains a given point.
@@ -411,7 +411,7 @@ namespace Duality
 		/// <returns>True, if the Rect contains the point, false if not.</returns>
 		public bool Contains(Vector2 pos)
 		{
-			return pos.X >= this.MinX && pos.X <= this.MaxX && pos.Y >= this.MinY && pos.Y <= this.MaxY;
+			return pos.X >= this.MinimumX && pos.X <= this.MaximumX && pos.Y >= this.MinimumY && pos.Y <= this.MaximumY;
 		}
 		/// <summary>
 		/// Returns whether this Rect contains a given rectangular area.

@@ -180,6 +180,7 @@ namespace EditorBase
 			CorePluginRegistry.RegisterTypeImage(typeof(SoundEmitter),			EditorBaseResCache.IconResSound);
 			CorePluginRegistry.RegisterTypeImage(typeof(SoundListener),			EditorBaseResCache.IconCmpSoundListener);
 			CorePluginRegistry.RegisterTypeImage(typeof(RigidBody),				EditorBaseResCache.IconCmpRectCollider);
+			CorePluginRegistry.RegisterTypeImage(typeof(ProfileRenderer),		EditorBaseResCache.IconCmpProfileRenderer);
 
 			CorePluginRegistry.RegisterTypeCategory(typeof(Transform),			"");
 			CorePluginRegistry.RegisterTypeCategory(typeof(SpriteRenderer),		GeneralRes.Category_Graphics);
@@ -189,6 +190,7 @@ namespace EditorBase
 			CorePluginRegistry.RegisterTypeCategory(typeof(SoundEmitter),		GeneralRes.Category_Sound);
 			CorePluginRegistry.RegisterTypeCategory(typeof(SoundListener),		GeneralRes.Category_Sound);
 			CorePluginRegistry.RegisterTypeCategory(typeof(RigidBody),			GeneralRes.Category_Physics);
+			CorePluginRegistry.RegisterTypeCategory(typeof(ProfileRenderer),	GeneralRes.Category_Diagnostics);
 
 			CorePluginRegistry.RegisterTypeCategory(typeof(Scene),				"");
 			CorePluginRegistry.RegisterTypeCategory(typeof(Prefab),				"");

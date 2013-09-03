@@ -13,7 +13,7 @@ namespace Duality
 	/// <summary>
 	/// Provides high level drawing operations on top of an existing <see cref="IDrawDevice"/>. However, this class is not designed
 	/// for drawing large batches of primitives / vertices at once. For large amounts of primitives you should consider directly 
-	/// using the underlying IDrawDevice instead to achieve best performance.
+	/// using the underlying IDrawDevice instead to achieve best Profile.
 	/// </summary>
 	public class Canvas
 	{
@@ -1295,7 +1295,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="values">An array of value samples that will be represented by the graph.</param>
 		/// <param name="colors">An array of color values corresponding to the supplied values. Specify null, if no coloring is required.</param>
-		/// <param name="vertices">Optional vertex cache to use for the graph. If set, the graphs vertices are cached and re-used for better performance.</param>
+		/// <param name="vertices">Optional vertex cache to use for the graph. If set, the graphs vertices are cached and re-used for better Profile.</param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="z"></param>
@@ -1319,8 +1319,11 @@ namespace Duality
 			ColorRgba baseColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
 			float sampleXRatio = w / (float)(values.Length - 1);
 			
-			if (vertices == null || vertices.Length < values.Length)
+			if (vertices == null)
+				vertices = new VertexC1P3[MathF.Max(values.Length, 16)];
+			else if (vertices.Length < values.Length)
 				vertices = new VertexC1P3[MathF.Max(vertices.Length * 2, values.Length, 16)];
+
 			for (int i = 0; i < values.Length; i++)
 			{
 				vertices[i].Pos.X = pos.X + 0.5f + i * sampleXRatio;
@@ -1351,7 +1354,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="values">An array of value samples that will be represented by the graph.</param>
 		/// <param name="colors">An array of color values corresponding to the supplied values. Specify null, if no coloring is required.</param>
-		/// <param name="vertices">Optional vertex cache to use for the graph. If set, the graphs vertices are cached and re-used for better performance.</param>
+		/// <param name="vertices">Optional vertex cache to use for the graph. If set, the graphs vertices are cached and re-used for better Profile.</param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="w"></param>
@@ -1391,7 +1394,7 @@ namespace Duality
 		/// Draws the specified text.
 		/// </summary>
 		/// <param name="text"></param>
-		/// <param name="vertices">Optional vertex cache to use for the text. If set, the texts vertices are cached and re-used for better performance.</param>
+		/// <param name="vertices">Optional vertex cache to use for the text. If set, the texts vertices are cached and re-used for better Profile.</param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="z"></param>
@@ -1446,8 +1449,8 @@ namespace Duality
 		/// Draws the specified formatted text.
 		/// </summary>
 		/// <param name="text"></param>
-		/// <param name="vertText">Optional vertex cache to use for the text. If set, the texts vertices are cached and re-used for better performance.</param>
-		/// <param name="vertIcon">Optional vertex cache to use for the icons. If set, the texts vertices are cached and re-used for better performance.</param>
+		/// <param name="vertText">Optional vertex cache to use for the text. If set, the texts vertices are cached and re-used for better Profile.</param>
+		/// <param name="vertIcon">Optional vertex cache to use for the icons. If set, the texts vertices are cached and re-used for better Profile.</param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="z"></param>

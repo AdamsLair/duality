@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Reflection;
 
+using Duality.Profiling;
+
 namespace Duality
 {
 	/// <summary>
@@ -169,7 +171,7 @@ namespace Duality
 
 		private void Write(LogMessageType type, string msg)
 		{
-			Performance.TimeLog.BeginMeasure();
+			Profile.TimeLog.BeginMeasure();
 			foreach (ILogOutput log in this.strOut)
 			{
 				try
@@ -182,7 +184,7 @@ namespace Duality
 					// because they would result in another log - and more exceptions.
 				}
 			}
-			Performance.TimeLog.EndMeasure();
+			Profile.TimeLog.EndMeasure();
 		}
 		private string FormatMessage(string format, object[] obj)
 		{

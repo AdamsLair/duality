@@ -82,9 +82,12 @@
     <Compile Include="Components\Physics\Joints\FixedAngleJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\FixedDistanceJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\WeldJointInfo.cs" />
+    <Compile Include="Components\Renderers\ProfileRenderer.cs" />
     <Compile Include="ContentRef.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Graphics\DrawDevice.cs" />
+    <Compile Include="Graphics\IDrawDevice.cs" />
+    <Compile Include="Graphics\DrawDeviceEnums.cs" />
     <Compile Include="Helpers\Alignment.cs" />
     <Compile Include="Graphics\ColorFormat\ColorHsva.cs" />
     <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
@@ -113,7 +116,12 @@
     <Compile Include="Input\KeyboardInput.cs" />
     <Compile Include="Input\Sources\OpenTKMouseInputSource.cs" />
     <Compile Include="Input\Sources\OpenTKKeyboardInputSource.cs" />
-    <Compile Include="Performance.cs" />
+    <Compile Include="Profiling\ReportCounterData.cs" />
+    <Compile Include="Profiling\ReportOptions.cs" />
+    <Compile Include="Profiling\StatCounter.cs" />
+    <Compile Include="Profiling\TimeCounter.cs" />
+    <Compile Include="Profiling\ProfileCounter.cs" />
+    <Compile Include="Profiling\Profile.cs" />
     <Compile Include="Log\ConsoleLogOutput.cs" />
     <Compile Include="ContentProvider.cs" />
     <Compile Include="Helpers\EventArgs.cs" />

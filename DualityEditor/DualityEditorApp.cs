@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using Duality;
 using Duality.Serialization;
 using Duality.Resources;
+using Duality.Profiling;
 
 using DualityEditor.Forms;
 using DualityEditor.CorePluginInterface;
@@ -576,15 +577,15 @@ namespace DualityEditor
 			// Perform a buffer swap
 			if (glSwapBuffers.Count > 0)
 			{
-				Performance.TimeRender.BeginMeasure();
-				Performance.TimeSwapBuffers.BeginMeasure();
+				Profile.TimeRender.BeginMeasure();
+				Profile.TimeSwapBuffers.BeginMeasure();
 				foreach (IWindowInfo window in glSwapBuffers)
 				{
 					mainContextControl.Context.MakeCurrent(window);
 					mainContextControl.SwapBuffers();
 				}
-				Performance.TimeSwapBuffers.EndMeasure();
-				Performance.TimeRender.EndMeasure();
+				Profile.TimeSwapBuffers.EndMeasure();
+				Profile.TimeRender.EndMeasure();
 				glSwapBuffers.Clear();
 			}
 		}

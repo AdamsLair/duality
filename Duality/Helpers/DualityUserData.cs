@@ -38,11 +38,11 @@ namespace Duality
 		/// </summary>
 		High,
 		/// <summary>
-		/// Medium quality. A tradeoff between looks and performance.
+		/// Medium quality. A tradeoff between looks and Profile.
 		/// </summary>
 		Medium,
 		/// <summary>
-		/// Low quality. Favors performance.
+		/// Low quality. Favors Profile.
 		/// </summary>
 		Low,
 		/// <summary>

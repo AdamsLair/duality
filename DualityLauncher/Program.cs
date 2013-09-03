@@ -6,6 +6,7 @@ using System.Drawing;
 
 using Duality;
 using Duality.Resources;
+using Duality.Profiling;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -71,11 +72,11 @@ namespace DualityLauncher
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 
 			DualityApp.Render();
-			Performance.TimeRender.BeginMeasure();
-			Performance.TimeSwapBuffers.BeginMeasure();
+			Profile.TimeRender.BeginMeasure();
+			Profile.TimeSwapBuffers.BeginMeasure();
 			this.SwapBuffers();
-			Performance.TimeSwapBuffers.EndMeasure();
-			Performance.TimeRender.EndMeasure();
+			Profile.TimeSwapBuffers.EndMeasure();
+			Profile.TimeRender.EndMeasure();
 		}
 
 		private void SetMouseDeviceX(int x)

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using OpenTK;
 using AudioContext = OpenTK.Audio.AudioContext;
 using OpenTK.Audio.OpenAL;
 
 using Duality.Resources;
 using Duality.Components;
+using Duality.Profiling;
 
 namespace Duality
 {
@@ -273,7 +275,7 @@ namespace Duality
 		public void Update()
 		{
 			if (this.context == null) return;
-			Performance.TimeUpdateAudio.BeginMeasure();
+			Profile.TimeUpdateAudio.BeginMeasure();
 
 			this.budgetAmbient.Update();
 			this.budgetMusic.Update();
@@ -287,9 +289,9 @@ namespace Duality
 			}
 			this.sounds.Sort((obj1, obj2) => obj2.Priority - obj1.Priority);
 
-			Performance.TimeUpdateAudio.EndMeasure();
-			Performance.StatNumPlaying2D.Add(this.numPlaying2D);
-			Performance.StatNumPlaying3D.Add(this.numPlaying3D);
+			Profile.TimeUpdateAudio.EndMeasure();
+			Profile.StatNumPlaying2D.Add(this.numPlaying2D);
+			Profile.StatNumPlaying3D.Add(this.numPlaying3D);
 		}
 		private void UpdateListener()
 		{

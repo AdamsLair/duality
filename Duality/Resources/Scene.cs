@@ -9,6 +9,7 @@ using FarseerPhysics.Dynamics;
 using Duality.EditorHints;
 using Duality.Components;
 using Duality.Serialization;
+using Duality.Profiling;
 
 namespace Duality.Resources
 {
@@ -309,7 +310,7 @@ namespace Duality.Resources
 				int iterations = 0;
 				if (physicsAcc >= Time.MsPFMult)
 				{
-					Performance.TimeUpdatePhysics.BeginMeasure();
+					Profile.TimeUpdatePhysics.BeginMeasure();
 					double timeUpdateBegin = Time.MainTimer.TotalMilliseconds;
 					while (physicsAcc >= Time.MsPFMult)
 					{
@@ -323,28 +324,28 @@ namespace Duality.Resources
 						if (timeSpent >= Time.MsPFMult * 10.0f) break; // Emergency exit
 					}
 					physUpdate = true;
-					Performance.TimeUpdatePhysics.EndMeasure();
+					Profile.TimeUpdatePhysics.EndMeasure();
 				}
 			}
 			else
 			{
-				Performance.TimeUpdatePhysics.BeginMeasure();
+				Profile.TimeUpdatePhysics.BeginMeasure();
 				FarseerPhysics.Settings.VelocityThreshold = PhysicsConvert.ToPhysicalUnit(Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold / Time.SPFMult);
 				physicsWorld.Step(Time.TimeMult * Time.SPFMult);
 				physicsAcc = PhysicsAccStart;
 				physUpdate = true;
-				Performance.TimeUpdatePhysics.EndMeasure();
+				Profile.TimeUpdatePhysics.EndMeasure();
 			}
 			double physTime = Time.MainTimer.TotalMilliseconds - physBegin;
 
 			// Apply Farseers internal measurements to Duality
 			if (physUpdate)
 			{
-				Performance.TimeUpdatePhysicsAddRemove.Set(1000.0f * physicsWorld.AddRemoveTime / System.Diagnostics.Stopwatch.Frequency);
-				Performance.TimeUpdatePhysicsContacts.Set(1000.0f * physicsWorld.ContactsUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-				Performance.TimeUpdatePhysicsContinous.Set(1000.0f * physicsWorld.ContinuousPhysicsTime / System.Diagnostics.Stopwatch.Frequency);
-				Performance.TimeUpdatePhysicsController.Set(1000.0f * physicsWorld.ControllersUpdateTime / System.Diagnostics.Stopwatch.Frequency);
-				Performance.TimeUpdatePhysicsSolve.Set(1000.0f * physicsWorld.SolveUpdateTime / System.Diagnostics.Stopwatch.Frequency);
+				Profile.TimeUpdatePhysicsAddRemove.Set(1000.0f * physicsWorld.AddRemoveTime / System.Diagnostics.Stopwatch.Frequency);
+				Profile.TimeUpdatePhysicsContacts.Set(1000.0f * physicsWorld.ContactsUpdateTime / System.Diagnostics.Stopwatch.Frequency);
+				Profile.TimeUpdatePhysicsContinous.Set(1000.0f * physicsWorld.ContinuousPhysicsTime / System.Diagnostics.Stopwatch.Frequency);
+				Profile.TimeUpdatePhysicsController.Set(1000.0f * physicsWorld.ControllersUpdateTime / System.Diagnostics.Stopwatch.Frequency);
+				Profile.TimeUpdatePhysicsSolve.Set(1000.0f * physicsWorld.SolveUpdateTime / System.Diagnostics.Stopwatch.Frequency);
 			}
 
 			// Update low fps physics state
@@ -353,14 +354,14 @@ namespace Duality.Resources
 			else
 				physicsLowFps = !(Time.LastDelta < Time.MsPFMult * 0.9f || physTime < Time.LastDelta * 0.6f);
 
-			Performance.TimeUpdateScene.BeginMeasure();
+			Profile.TimeUpdateScene.BeginMeasure();
 			{
 				// Update all GameObjects
 				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.Update();
 			}
-			Performance.TimeUpdateScene.EndMeasure();
+			Profile.TimeUpdateScene.EndMeasure();
 		}
 		/// <summary>
 		/// Updates the Scene in the editor.
@@ -369,14 +370,14 @@ namespace Duality.Resources
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
 
-			Performance.TimeUpdateScene.BeginMeasure();
+			Profile.TimeUpdateScene.BeginMeasure();
 			{
 				// Update all GameObjects
 				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.EditorUpdate();
 			}
-			Performance.TimeUpdateScene.EndMeasure();
+			Profile.TimeUpdateScene.EndMeasure();
 		}
 		/// <summary>
 		/// Cleanes up disposed Scene objects.

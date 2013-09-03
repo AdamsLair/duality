@@ -92,22 +92,22 @@ namespace DynamicLighting
 			vertices[1].pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[1].texCoord.X = uvRect.X;
-			vertices[1].texCoord.Y = uvRect.MaxY;
+			vertices[1].texCoord.Y = uvRect.MaximumY;
 			vertices[1].clr = mainClr;
 			vertices[1].attrib = perPixel ? objRotMat : vertexLight[1];
 
 			vertices[2].pos.X = posTemp.X + edge3.X;
 			vertices[2].pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].texCoord.X = uvRect.MaxX;
-			vertices[2].texCoord.Y = uvRect.MaxY;
+			vertices[2].texCoord.X = uvRect.MaximumX;
+			vertices[2].texCoord.Y = uvRect.MaximumY;
 			vertices[2].clr = mainClr;
 			vertices[2].attrib = perPixel ? objRotMat : vertexLight[2];
 				
 			vertices[3].pos.X = posTemp.X + edge4.X;
 			vertices[3].pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].texCoord.X = uvRect.MaxX;
+			vertices[3].texCoord.X = uvRect.MaximumX;
 			vertices[3].texCoord.Y = uvRect.Y;
 			vertices[3].clr = mainClr;
 			vertices[3].attrib = perPixel ? objRotMat : vertexLight[3];

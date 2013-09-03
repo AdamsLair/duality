@@ -134,7 +134,7 @@ namespace Duality.Components.Physics
 		}
 		/// <summary>
 		/// [GET / SET] Whether the body is included in continous collision detection or not.
-		/// It prevents the body from moving through others at high speeds at the cost of performance.
+		/// It prevents the body from moving through others at high speeds at the cost of Profile.
 		/// </summary>
 		public bool ContinousCollision
 		{
@@ -741,7 +741,7 @@ namespace Duality.Components.Physics
 			this.schedUpdateBody = false;
 		}
 		/// <summary>
-		/// Prepares this RigidBody for a large-scale shape update. This isn't required but might boost update performance.
+		/// Prepares this RigidBody for a large-scale shape update. This isn't required but might boost update Profile.
 		/// </summary>
 		public void BeginUpdateBodyShape()
 		{

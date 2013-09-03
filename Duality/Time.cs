@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 
+using Duality.Profiling;
+
 namespace Duality
 {
 	/// <summary>
@@ -114,8 +116,8 @@ namespace Duality
 			// Initial timer start
 			if (!watch.IsRunning) watch.Restart();
 
-			Performance.TimeFrame.EndMeasure();
-			Performance.TimeFrame.BeginMeasure();
+			Profile.TimeFrame.EndMeasure();
+			Profile.TimeFrame.BeginMeasure();
 
 			frameCount++;
 

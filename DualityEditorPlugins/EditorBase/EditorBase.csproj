@@ -228,6 +228,7 @@
     <None Include="PluginRes\curArrowCreateEdge.png" />
     <None Include="PluginRes\curArrowCreateLoop.png" />
     <None Include="PluginRes\bug.png" />
+    <None Include="PluginRes\clock.png" />
     <Content Include="PluginRes\eye.ico" />
     <None Include="PluginRes\iconResDrawTechnique.png" />
     <None Include="PluginRes\iconResFragmentShader.png" />
