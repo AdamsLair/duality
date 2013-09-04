@@ -304,6 +304,7 @@ namespace Duality
 			{
 				this.initState = InitState.Disposing;
 				this.OnDisposing(manually);
+				ContentProvider.RemoveContent(this, false);
 				this.initState = InitState.Disposed;
 			}
 		}

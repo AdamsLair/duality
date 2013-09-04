@@ -1200,20 +1200,23 @@ namespace DualityEditor
 		{
 			Application.Idle -= Application_Idle;
 
-			// Trigger idle event if no modal dialog is open.
+			// Perform some global operations, if no modal dialog is open
 			if (mainForm.Visible && mainForm.CanFocus)
+			{
+				// Trigger global idle event.
 				OnIdling();
 
-			// Trigger autosave after a while
-			if (autosaveFrequency != AutosaveFrequency.Disabled)
-			{
-				TimeSpan timeSinceLastAutosave = DateTime.Now - autosaveLast;
-				if ((autosaveFrequency == AutosaveFrequency.OneHour && timeSinceLastAutosave.TotalMinutes > 60) ||
-					(autosaveFrequency == AutosaveFrequency.ThirtyMinutes && timeSinceLastAutosave.TotalMinutes > 30) ||
-					(autosaveFrequency == AutosaveFrequency.TenMinutes && timeSinceLastAutosave.TotalMinutes > 10))
+				// Trigger autosave after a while
+				if (autosaveFrequency != AutosaveFrequency.Disabled)
 				{
-					SaveAllProjectData();
-					autosaveLast = DateTime.Now;
+					TimeSpan timeSinceLastAutosave = DateTime.Now - autosaveLast;
+					if ((autosaveFrequency == AutosaveFrequency.OneHour && timeSinceLastAutosave.TotalMinutes > 60) ||
+						(autosaveFrequency == AutosaveFrequency.ThirtyMinutes && timeSinceLastAutosave.TotalMinutes > 30) ||
+						(autosaveFrequency == AutosaveFrequency.TenMinutes && timeSinceLastAutosave.TotalMinutes > 10))
+					{
+						SaveAllProjectData();
+						autosaveLast = DateTime.Now;
+					}
 				}
 			}
 

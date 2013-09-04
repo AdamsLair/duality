@@ -99,30 +99,15 @@ namespace DualityEditor
 			propName = GenerateGameResSrcFile_ClassName(filePath);
 
 			builder.Append(indentStr); 
-			builder.Append("private static Duality.ContentRef<");
-			builder.Append(typeStr);
-			builder.Append("> _");
-			builder.Append(propName);
-			builder.AppendLine(";");
-
-			builder.Append(indentStr); 
 			builder.Append("public static Duality.ContentRef<");
 			builder.Append(typeStr);
 			builder.Append("> ");
 			builder.Append(propName);
-			builder.Append(" { get { ");
-			builder.Append("if (_");
-			builder.Append(propName);
-			builder.Append(".IsExplicitNull) _");
-			builder.Append(propName);
-			builder.Append(" = Duality.ContentProvider.RequestContent<");
+			builder.Append(" { get { return Duality.ContentProvider.RequestContent<");
 			builder.Append(typeStr);
 			builder.Append(">(@\"");
 			builder.Append(filePath);
-			builder.Append("\"); ");
-			builder.Append("return _");
-			builder.Append(propName);
-			builder.AppendLine("; }}");
+			builder.AppendLine("\"); }}");
 		}
 		private static void GenerateGameResSrcFile_ScanDir(StringBuilder builder, string dirPath, int indent, out string className)
 		{

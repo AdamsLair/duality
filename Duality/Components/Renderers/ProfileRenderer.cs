@@ -276,8 +276,15 @@ namespace Duality.Components.Renderers
 		{
 			base.OnCopyTo(target, provider);
 			ProfileRenderer t = target as ProfileRenderer;
-			t.textReportStat = this.textReportStat;
-			t.textReportOptions = this.textReportOptions;
+			t.textReportStat		= this.textReportStat;
+			t.textReportOptions		= this.textReportOptions;
+			t.drawGraphs			= this.drawGraphs;
+			t.counterGraphs			= this.counterGraphs;
+			t.textReportOptions		= this.textReportOptions;
+			t.updateInterval		= this.updateInterval;
+			t.keyToggleGraph		= this.keyToggleGraph;
+			t.keyToggleTextPerf		= this.keyToggleTextPerf;
+			t.keyToggleTextStat		= this.keyToggleTextStat;
 		}
 	}
 }

@@ -57,7 +57,7 @@ namespace Duality
 			Sound.InitDefaultContent();
 
 			// Make a list of all default content available
-			foreach (KeyValuePair<string,Resource> pair in resLibrary)
+			foreach (var pair in resLibrary)
 			{
 				if (oldResLib.Contains(pair.Value)) continue;
 				defaultContent.Add(pair.Value);
@@ -90,7 +90,11 @@ namespace Duality
 		/// <returns></returns>
 		public static List<ContentRef<T>> GetLoadedContent<T>() where T : Resource
 		{
-			return resLibrary.Values.OfType<T>().Where(r => !r.Disposed).Select(r => new ContentRef<T>(r)).ToList();
+			return resLibrary.Values
+				.OfType<T>()
+				.Where(r => !r.Disposed)
+				.Select(r => new ContentRef<T>(r))
+				.ToList();
 		}
 		/// <summary>
 		/// Returns a list of all currently loaded content matching the specified Type
@@ -99,7 +103,10 @@ namespace Duality
 		/// <returns></returns>
 		public static List<IContentRef> GetLoadedContent(Type t)
 		{
-			return resLibrary.Values.Where(r => t.IsInstanceOfType(r) && !r.Disposed).Select(r => r.GetContentRef()).ToList();
+			return resLibrary.Values
+				.Where(r => t.IsInstanceOfType(r) && !r.Disposed)
+				.Select(r => r.GetContentRef())
+				.ToList();
 		}
 		/// <summary>
 		/// Returns a list of all available / existing content matching the specified Type
@@ -167,7 +174,27 @@ namespace Duality
 			Resource res;
 			return resLibrary.TryGetValue(path, out res) && !res.Disposed;
 		}
+		
+		/// <summary>
+		/// Explicitly removes a specific Resource from the ContentProvider.
+		/// </summary>
+		/// <param name="res"></param>
+		/// <param name="dispose"></param>
+		/// <returns></returns>
+		public static bool RemoveContent(Resource res, bool dispose = true)
+		{
+			if (res == null) return false;
+			if (res.IsRuntimeResource) return false;
+			if (res.IsDefaultContent) return false;
 
+			// Remove content from library
+			Resource entry;
+			bool success = resLibrary.TryGetValue(res.Path, out entry) && entry == res && resLibrary.Remove(res.Path);
+
+			// Dispose cached content
+			if (dispose) res.Dispose();
+			return success;
+		}
 		/// <summary>
 		/// Unregisters content that has been registered using the specified path key.
 		/// </summary>
@@ -296,7 +323,10 @@ namespace Duality
 
 			// Return cached content
 			Resource res;
-			if (resLibrary.TryGetValue(path, out res) && !res.Disposed) return new ContentRef<T>(res as T, path);
+			if (resLibrary.TryGetValue(path, out res) && !res.Disposed)
+			{
+				return new ContentRef<T>(res as T, path);
+			}
 
 			// Load new content
 			return new ContentRef<T>(LoadContent(path) as T, path);

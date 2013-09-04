@@ -312,28 +312,32 @@ namespace Duality
 			public TypeData(Type type)
 			{
 				this.Component = type;
+			}
 
-				this.RequiredBy = new List<Type>();
-				{
-					foreach (Type cmp in DualityApp.GetAvailDualityTypes(typeof(Component)))
-					{
-						if (RequiresComponent(cmp, type))
-							this.RequiredBy.Add(cmp);
-					}
-				}
-
+			public void InitRequirements()
+			{
+				if (this.Requirements != null) return;
 				this.Requirements = new List<Type>();
+				IEnumerable<RequiredComponentAttribute> attribs = 
+					this.Component.GetCustomAttributes(typeof(RequiredComponentAttribute), true).
+					Cast<RequiredComponentAttribute>();
+				foreach (RequiredComponentAttribute a in attribs)
 				{
-					IEnumerable<RequiredComponentAttribute> attribs = 
-						type.GetCustomAttributes(typeof(RequiredComponentAttribute), true).
-						Cast<RequiredComponentAttribute>();
-					foreach (RequiredComponentAttribute a in attribs)
-					{
-						Type reqType = a.RequiredComponentType;
-						if (reqType == type) continue; // Don't require itself
-						this.Requirements.AddRange(GetRequiredComponents(reqType).Where(t => !this.Requirements.Contains(t)));
-						this.Requirements.Add(reqType);
-					}
+					Type reqType = a.RequiredComponentType;
+					if (reqType == this.Component) continue; // Don't require itself
+					this.Requirements.AddRange(GetRequiredComponents(reqType).Where(t => !this.Requirements.Contains(t)));
+					this.Requirements.Add(reqType);
+				}
+			}
+			public void InitRequiredBy()
+			{
+				if (this.RequiredBy != null) return;
+				this.RequiredBy = new List<Type>();
+				foreach (Type cmp in DualityApp.GetAvailDualityTypes(typeof(Component)))
+				{
+					if (cmp == this.Component) continue; // Don't require itself
+					if (RequiresComponent(cmp, this.Component))
+						this.RequiredBy.Add(cmp);
 				}
 			}
 		}
@@ -346,12 +350,15 @@ namespace Duality
 		/// <returns>True, if there is a requirement, false if not</returns>
 		public static bool RequiresComponent(Type cmpType, Type requiredType)
 		{
-			RequiredComponentAttribute[] attribs = 
-				cmpType.GetCustomAttributes(typeof(RequiredComponentAttribute), true).
-				Cast<RequiredComponentAttribute>().
-				ToArray();
-
-			return attribs.Any(a => a.RequiredComponentType.IsAssignableFrom(requiredType) || RequiresComponent(a.RequiredComponentType, requiredType));
+			if (cmpType == requiredType) return false;
+			TypeData data;
+			if (!typeCache.TryGetValue(cmpType, out data))
+			{
+				data = new TypeData(cmpType);
+				typeCache[cmpType] = data;
+			}
+			data.InitRequirements();
+			return data.Requirements.Any(r => r.IsAssignableFrom(requiredType));
 		}
 		/// <summary>
 		/// Returns all required Component Types of a specified Component Type.
@@ -367,6 +374,7 @@ namespace Duality
 				data = new TypeData(cmpType);
 				typeCache[cmpType] = data;
 			}
+			data.InitRequirements();
 			return data.Requirements;
 		}
 		/// <summary>
@@ -383,6 +391,7 @@ namespace Duality
 				data = new TypeData(requiredType);
 				typeCache[requiredType] = data;
 			}
+			data.InitRequiredBy();
 			return data.RequiredBy;
 		}
 		/// <summary>

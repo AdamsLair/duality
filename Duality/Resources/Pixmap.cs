@@ -566,7 +566,6 @@ namespace Duality.Resources
 				Point	pos		= new Point();
 				int[]	nPos	= new int[8];
 				bool[]	nOk		= new bool[8];
-				int[]	nMult	= new int[] {2, 2, 2, 2, 1, 1, 1, 1};
 				int[]	mixClr	= new int[4];
 
 				for (int i = 0; i < this.data.Length; i++)
@@ -581,33 +580,36 @@ namespace Duality.Resources
 					mixClr[2] = 0;
 					mixClr[3] = 0;
 
-					nPos[0] = (pos.X + ((pos.Y - 1) * this.width));
-					nPos[1] = (pos.X + ((pos.Y + 1) * this.width));
-					nPos[2] = ((pos.X - 1) + (pos.Y * this.width));
-					nPos[3] = ((pos.X + 1) + (pos.Y * this.width));
-					nPos[4] = ((pos.X - 1) + ((pos.Y - 1) * this.width));
-					nPos[5] = ((pos.X - 1) + ((pos.Y + 1) * this.width));
-					nPos[6] = ((pos.X + 1) + ((pos.Y - 1) * this.width));
-					nPos[7] = ((pos.X + 1) + ((pos.Y + 1) * this.width));
+					nPos[0] = i - this.width;
+					nPos[1] = i + this.width;
+					nPos[2] = i - 1;
+					nPos[3] = i + 1;
+					nPos[4] = i - this.width - 1;
+					nPos[5] = i + this.width - 1;
+					nPos[6] = i - this.width + 1;
+					nPos[7] = i + this.width + 1;
 
 					nOk[0]	= pos.Y > 0;
 					nOk[1]	= pos.Y < this.height - 1;
 					nOk[2]	= pos.X > 0;
 					nOk[3]	= pos.X < this.width - 1;
-					nOk[4]	= pos.X > 0 && pos.Y > 0;
-					nOk[5]	= pos.X > 0 && pos.Y < this.height - 1;
-					nOk[6]	= pos.X < this.width - 1 && pos.Y > 0;
-					nOk[7]	= pos.X < this.width - 1 && pos.Y < this.height - 1;
+					nOk[4]	= nOk[2] && nOk[0];
+					nOk[5]	= nOk[2] && nOk[1];
+					nOk[6]	= nOk[3] && nOk[0];
+					nOk[7]	= nOk[3] && nOk[1];
 
-					for (int j = 0; j < nPos.Length; j++)
+					int nMult = 2;
+					for (int j = 0; j < 8; j++)
 					{
 						if (!nOk[j]) continue;
 						if (this.data[nPos[j]].A == 0) continue;
 
-						mixClr[0] += this.data[nPos[j]].R * nMult[j];
-						mixClr[1] += this.data[nPos[j]].G * nMult[j];
-						mixClr[2] += this.data[nPos[j]].B * nMult[j];
-						mixClr[3] += nMult[j];
+						mixClr[0] += this.data[nPos[j]].R * nMult;
+						mixClr[1] += this.data[nPos[j]].G * nMult;
+						mixClr[2] += this.data[nPos[j]].B * nMult;
+						mixClr[3] += nMult;
+
+						if (j > 3) nMult = 1;
 					}
 
 					if (mixClr[3] > 0)

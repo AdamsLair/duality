@@ -517,6 +517,7 @@ namespace Duality
 		}
 		private static void RunCleanup()
 		{
+			// Perform scheduled object disposals
 			foreach (object o in disposeSchedule)
 			{
 				IManageableObject m = o as IManageableObject;
@@ -525,6 +526,8 @@ namespace Duality
 				if (d != null) { d.Dispose(); continue; }
 			}
 			disposeSchedule.Clear();
+
+			// Perform late finalization and remove disposed object references
 			Resource.RunCleanup();
 			Scene.Current.RunCleanup();
 		}
