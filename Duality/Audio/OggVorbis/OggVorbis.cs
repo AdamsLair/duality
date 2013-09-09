@@ -6,64 +6,28 @@ namespace Duality.OggVorbis
 	public struct PcmData
 	{
 		public	byte[]	data;
+		public	int		dataLength;
 		public	int		channelCount;
 		public	int		sampleRate;
 	}
 
-	public static class OV
+	public class VorbisStreamHandle : IDisposable
 	{
-		public static PcmData LoadFromFile(string filename)
+		private bool disposed;
+		private IntPtr ovStream;
+
+		public bool Disposed
 		{
-			MemoryStream dataStream = null;
-			PcmData result;
-			IntPtr ovStream;
-
-			BeginStreamFromFile(filename, out ovStream);
-			while (StreamChunk(ovStream, ref dataStream, out result.channelCount, out result.sampleRate));
-			EndStream(ref ovStream);
-
-			// Return data
-			result.data = (dataStream != null) ? dataStream.ToArray() : null;
-			return result;
+			get { return this.disposed; }
 		}
-		public static PcmData LoadFromMemory(byte[] memory, int maxPcmByteCount = 0)
+		internal IntPtr VorbisInstance
 		{
-			MemoryStream dataStream = null;
-			PcmData result;
-			IntPtr ovStream;
-
-			BeginStreamFromMemory(memory, out ovStream);
-			while (StreamChunk(ovStream, ref dataStream, out result.channelCount, out result.sampleRate))
-			{
-				if (maxPcmByteCount != 0 && dataStream.Length > maxPcmByteCount) break;
-			}
-			EndStream(ref ovStream);
-
-			// Return data
-			result.data = (dataStream != null) ? dataStream.ToArray() : null;
-			return result;
+			get { return this.ovStream; }
 		}
 
-		public static void BeginStreamFromFile(string filename, out IntPtr vFPtr)
+		internal VorbisStreamHandle(byte[] memory)
 		{
-			vFPtr = IntPtr.Zero;
-
-			unsafe
-			{
-				void* vorbisFile = null;
-				NativeMethods.ErrorCode err = (NativeMethods.ErrorCode)NativeMethods.init_for_ogg_decode(filename, &vorbisFile);
-				if (err != NativeMethods.ErrorCode.None)
-				{
-					throw new ApplicationException(
-						String.Format("An OggVorbis error occurred: {0}", err));
-				}
-				vFPtr = (IntPtr)vorbisFile;
-			}
-		}
-		public static void BeginStreamFromMemory(byte[] memory, out IntPtr vFPtr)
-		{
-			vFPtr = IntPtr.Zero;
-
+			this.ovStream = IntPtr.Zero;
 			unsafe
 			{
 				void* vorbisFile = null;
@@ -73,15 +37,97 @@ namespace Duality.OggVorbis
 					throw new ApplicationException(
 						String.Format("An OggVorbis error occurred: {0}", err));
 				}
-				vFPtr = (IntPtr)vorbisFile;
+				this.ovStream = (IntPtr)vorbisFile;
 			}
 		}
-		public static void EndStream(ref IntPtr vFPtr)
+		internal VorbisStreamHandle(string fileName)
 		{
-			if (vFPtr != IntPtr.Zero)
+			this.ovStream = IntPtr.Zero;
+			unsafe
 			{
-				unsafe { NativeMethods.final_ogg_cleanup((void*)vFPtr); }
-				vFPtr = IntPtr.Zero;
+				void* vorbisFile = null;
+				NativeMethods.ErrorCode err = (NativeMethods.ErrorCode)NativeMethods.init_for_ogg_decode(fileName, &vorbisFile);
+				if (err != NativeMethods.ErrorCode.None)
+				{
+					throw new ApplicationException(
+						String.Format("An OggVorbis error occurred: {0}", err));
+				}
+				this.ovStream = (IntPtr)vorbisFile;
+			}
+		}
+
+		~VorbisStreamHandle()
+		{
+			this.Dispose(false);
+		}
+		private void Dispose(bool manually)
+		{
+			if (this.disposed) return;
+			
+			if (this.ovStream != IntPtr.Zero)
+			{
+				unsafe { NativeMethods.final_ogg_cleanup((void*)this.ovStream); }
+				this.ovStream = IntPtr.Zero;
+			}
+
+			this.disposed = true;
+		}
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+	}
+
+	public static class OV
+	{
+		public static PcmData LoadFromFile(string filename)
+		{
+			MemoryStream dataStream = new MemoryStream();
+			PcmData pcm;
+			VorbisStreamHandle handle;
+
+			BeginStreamFromFile(filename, out handle);
+			while (StreamChunk(handle, ref dataStream, out pcm)) {}
+			EndStream(ref handle);
+
+			// Return data
+			pcm.data = (dataStream != null) ? dataStream.ToArray() : null;
+			return pcm;
+		}
+		public static PcmData LoadFromMemory(byte[] memory, int maxPcmByteCount = 0)
+		{
+			MemoryStream dataStream = new MemoryStream();
+			PcmData pcm;
+			VorbisStreamHandle handle;
+
+			BeginStreamFromMemory(memory, out handle);
+			while (StreamChunk(handle, ref dataStream, out pcm)) {}
+			EndStream(ref handle);
+
+			// Return data
+			pcm.data = (dataStream != null) ? dataStream.ToArray() : null;
+			return pcm;
+		}
+
+		public static void BeginStreamFromFile(string filename, out VorbisStreamHandle handle)
+		{
+			handle = new VorbisStreamHandle(filename);
+		}
+		public static void BeginStreamFromMemory(byte[] memory, out VorbisStreamHandle handle)
+		{
+			handle = new VorbisStreamHandle(memory);
+		}
+		public static bool IsStreamValid(VorbisStreamHandle handle)
+		{
+			return handle != null && !handle.Disposed;
+		}
+		public static void EndStream(ref VorbisStreamHandle handle)
+		{
+			if (handle != null)
+			{
+				handle.Dispose();
+				handle = null;
 			}
 		}
 		/// <summary>
@@ -90,35 +136,35 @@ namespace Duality.OggVorbis
 		/// <param name="alBufferId">OpenAL buffer id to stream to</param>
 		/// <param name="vFPtr">Ogg Vorbis file handle</param>
 		/// <returns>Returns false, if EOF is reached.</returns>
-		public static bool StreamChunk(IntPtr vFPtr, ref MemoryStream pcmOutputStream, out int channelCount, out int sampleRate)
+		public static bool StreamChunk(VorbisStreamHandle handle, ref MemoryStream pcmOutputStream, out PcmData pcm)
 		{
 			unsafe
 			{
-				void* vorbisFile = (void*)vFPtr;
-				byte[] pcmBuffer = new byte[1024 * 32]; // was 1024 * 16
+				void* vorbisFile = (void*)handle.VorbisInstance;
 				int chnCount = 0;
 				int smpRate = 0;
 				int errHoleCount = 0;
 				int errBadLinkCount = 0;
-				int totalPcmSize = 0;
 				bool eof = false;
 
-				while(totalPcmSize < pcmBuffer.Length)
+				pcm.data = new byte[1024 * 32]; // was 1024 * 16
+				pcm.dataLength = 0;
+				while(pcm.dataLength < pcm.data.Length)
 				{
 					int pcmBytes;
-					fixed(byte* buf = &pcmBuffer[0])
+					fixed (byte* buf = &pcm.data[0])
 					{
 						pcmBytes = NativeMethods.ogg_decode_one_vorbis_packet(
 							vorbisFile, 
-							buf + totalPcmSize, 
-							pcmBuffer.Length - totalPcmSize,
+							buf + pcm.dataLength, 
+							pcm.data.Length - pcm.dataLength,
 							16,
 							&chnCount, &smpRate,
 							&errHoleCount, &errBadLinkCount);
 					}
 
 					if (pcmBytes > 0)
-						totalPcmSize += pcmBytes;
+						pcm.dataLength += pcmBytes;
 					else
 					{
 						eof = true;
@@ -126,27 +172,27 @@ namespace Duality.OggVorbis
 					}
 				}
 
-				if (totalPcmSize > 0)
+				if (pcm.dataLength > 0)
 				{
-					channelCount = chnCount;
-					sampleRate = smpRate;
-					if (pcmOutputStream == null) pcmOutputStream = new MemoryStream(pcmBuffer.Length);
-					pcmOutputStream.Write(pcmBuffer, 0, totalPcmSize);
+					pcm.channelCount = chnCount;
+					pcm.sampleRate = smpRate;
+					if (pcmOutputStream == null) pcmOutputStream = new MemoryStream(pcm.data.Length);
+					pcmOutputStream.Write(pcm.data, 0, pcm.dataLength);
 					return !eof;
 				}
 				else
 				{
-					channelCount = 0;
-					sampleRate = 0;
+					pcm.channelCount = 0;
+					pcm.sampleRate = 0;
 					return false;
 				}
 			}
 		}
-		public static bool StreamChunk(IntPtr vFPtr, out PcmData result)
+		public static bool StreamChunk(VorbisStreamHandle handle, out PcmData result)
 		{
 			MemoryStream dataStream = null;
-			bool notEof = StreamChunk(vFPtr, ref dataStream, out result.channelCount, out result.sampleRate);
-			result.data = dataStream != null ? dataStream.ToArray() : new byte[0];
+			bool notEof = StreamChunk(handle, ref dataStream, out result);
+			result.data = dataStream != null ? dataStream.ToArray() : null;
 			return notEof;
 		}
 	}

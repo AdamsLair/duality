@@ -87,12 +87,12 @@ namespace Duality
 		private	float			fadeWaitEnd		= 0.0f;
 
 		// Streaming
-		private	bool			strStreamed		= false;
-		private	IntPtr			strOvStr		= IntPtr.Zero;
-		private	int[]			strAlBuffers	= null;
-		private	Thread			strWorker		= null;
-		private	bool			strStopReq		= false;
-		private	object			strLock			= new object();
+		private	bool				strStreamed		= false;
+		private	VorbisStreamHandle	strOvStr		= null;
+		private	int[]				strAlBuffers	= null;
+		private	Thread				strWorker		= null;
+		private	bool				strStopReq		= false;
+		private	object				strLock			= new object();
 		
 
 		/// <summary>
@@ -232,7 +232,7 @@ namespace Duality
 				{
 					lock (this.strLock)
 					{
-						if (this.strOvStr != IntPtr.Zero) OV.EndStream(ref this.strOvStr);
+						OV.EndStream(ref this.strOvStr);
 					}
 				}
 				this.strWorker = null;
@@ -785,7 +785,7 @@ namespace Duality
 							int unqueued;
 							unqueued = AL.SourceUnqueueBuffer(sndInst.alSource);
 
-							if (sndInst.strOvStr != IntPtr.Zero)
+							if (OV.IsStreamValid(sndInst.strOvStr))
 							{
 								PcmData pcm;
 								bool eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);
