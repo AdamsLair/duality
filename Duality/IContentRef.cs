@@ -90,5 +90,10 @@ namespace Duality
 		/// You don't usually need to call this method. It is invoked implicitly by trying to access the ContentRef.
 		/// </summary>
 		void MakeAvailable();
+		/// <summary>
+		/// Discards the resolved content reference cache to allow garbage-collecting the Resource
+		/// without losing its reference. Accessing it will result in reloading the Resource.
+		/// </summary>
+		void Detach();
 	}
 }

@@ -30,19 +30,19 @@ namespace Duality.Resources
 		/// <summary>
 		/// Represents an unknown Pixmap version.
 		/// </summary>
-		protected const int ResFormat_Version_Unknown	= 0;
+		private const int ResFormat_Version_Unknown		= 0;
 		/// <summary>
 		/// Represents the old, uncompressed Pixmap version using a <see cref="System.Drawing.Bitmap"/>.
 		/// </summary>
-		protected const int ResFormat_Version_Bitmap	= 1;
+		private const int ResFormat_Version_Bitmap		= 1;
 		/// <summary>
 		/// Represents the PNG-compressed Pixmap version.
 		/// </summary>
-		protected const int ResFormat_Version_Png		= 2;
+		private const int ResFormat_Version_Png			= 2;
 		/// <summary>
 		/// Represents the PNG-compressed layered Pixmap version.
 		/// </summary>
-		protected const int ResFormat_Version_LayerPng	= 3;
+		private const int ResFormat_Version_LayerPng	= 3;
 		
 		/// <summary>
 		/// [GET] A Pixmap showing the Duality icon.
@@ -1274,6 +1274,14 @@ namespace Duality.Resources
 			Rect result;
 			this.LookupAtlas(index, out result);
 			return result;
+		}
+
+		protected override void OnDisposing(bool manually)
+		{
+			base.OnDisposing(manually);
+
+			// Get rid of the big data blob, so the GC can collect it.
+			this.layers.Clear();
 		}
 
 		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)

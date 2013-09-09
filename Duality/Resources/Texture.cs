@@ -410,7 +410,7 @@ namespace Duality.Resources
 		{
 			get { return this.anisoFilter; }
 			set { if (this.anisoFilter != value) { this.anisoFilter = value; this.needsReload = true; } }
-		}		//	GS
+		}			//	GS
 		/// <summary>
 		/// [GET / SET] The Textures horizontal wrap mode
 		/// </summary>
@@ -781,6 +781,8 @@ namespace Duality.Resources
 		protected override void OnDisposing(bool manually)
 		{
 			base.OnDisposing(manually);
+
+			// Dispose unmanages Resources
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
 				this.glTexId != 0)
 			{
@@ -788,6 +790,9 @@ namespace Duality.Resources
 				GL.DeleteTexture(this.glTexId);
 				this.glTexId = 0;
 			}
+
+			// Get rid of big data references, so the GC can collect them.
+			this.basePixmap.Detach();
 		}
 
 		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)

@@ -247,6 +247,14 @@ namespace Duality
 		{
 			if (this.contentInstance == null || this.contentInstance.Disposed) this.RetrieveInstance();
 		}
+		/// <summary>
+		/// Discards the resolved content reference cache to allow garbage-collecting the Resource
+		/// without losing its reference. Accessing it will result in reloading the Resource.
+		/// </summary>
+		public void Detach()
+		{
+			this.contentInstance = null;
+		}
 		private void RetrieveInstance()
 		{
 			if (!String.IsNullOrEmpty(this.contentPath))

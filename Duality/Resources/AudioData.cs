@@ -226,8 +226,13 @@ namespace Duality.Resources
 		protected override void OnDisposing(bool manually)
 		{
 			base.OnDisposing(manually);
+
+			// Dispose unmanages Resources
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 				this.DisposeAlBuffer();
+
+			// Get rid of the big data blob, so the GC can collect it.
+			this.data = null;
 		}
 
 		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)

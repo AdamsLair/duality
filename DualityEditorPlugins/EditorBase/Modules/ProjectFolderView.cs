@@ -729,11 +729,12 @@ namespace EditorBase
 				openAction.Perform(resNode.ResLink.Res);
 			}
 		}
-		protected IEditorAction GetResourceOpenAction(TreeNodeAdv node)
+		protected IEditorAction GetResourceOpenAction(TreeNodeAdv node, bool loadWhenNecessary = true)
 		{
 			if (node == null) return null;
 			ResourceNode resNode = node.Tag as ResourceNode;
 			if (resNode == null) return null;
+			if (!resNode.ResLink.IsLoaded && !loadWhenNecessary) return null;
 
 			// Determine applying open actions
 			var actions = CorePluginRegistry.GetEditorActions(resNode.ResType, CorePluginRegistry.ActionContext_OpenRes, new[] { resNode.ResLink.Res });
@@ -1661,7 +1662,7 @@ namespace EditorBase
 
 		string IToolTipProvider.GetToolTip(TreeNodeAdv viewNode, Aga.Controls.Tree.NodeControls.NodeControl nodeControl)
 		{
-			IEditorAction action = this.GetResourceOpenAction(viewNode);
+			IEditorAction action = this.GetResourceOpenAction(viewNode, false);
 			if (action != null) return string.Format(
 				EditorBase.PluginRes.EditorBaseRes.ProjectFolderView_Help_Doubleclick,
 				action.Description);

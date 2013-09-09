@@ -219,11 +219,8 @@ namespace Duality.Resources
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			if (this.info != null)
-			{
-				// Make references available
-				this.info.MakeAvailable();
-			}
+			// Make references available
+			if (this.info != null) this.info.MakeAvailable();
 		}
 	}
 
@@ -434,7 +431,9 @@ namespace Duality.Resources
 			{
 				foreach (var pair in this.textures.ToArray())
 				{
-					this.textures[pair.Key] = pair.Value.IsAvailable ? pair.Value.Res : pair.Value;
+					ContentRef<Texture> texRef = pair.Value;
+					texRef.MakeAvailable();
+					this.textures[pair.Key] = texRef;
 				}
 			}
 			this.InvalidateHashCode();
