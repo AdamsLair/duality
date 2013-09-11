@@ -192,7 +192,7 @@ namespace Duality.OggVorbis
 		{
 			MemoryStream dataStream = null;
 			bool notEof = StreamChunk(handle, ref dataStream, out result);
-			result.data = dataStream != null ? dataStream.ToArray() : null;
+			result.data = dataStream != null ? dataStream.ToArray() : new byte[0];
 			return notEof;
 		}
 	}
