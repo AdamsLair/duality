@@ -25,7 +25,7 @@ namespace EditorBase
 		{
 			public static string GetNodePathId(string nodePath)
 			{
-				if (nodePath.Contains(':'))
+				if (ContentProvider.IsDefaultContentPath(nodePath))
 					return nodePath.ToUpper();
 				else
 					return Path.GetFullPath(nodePath).ToUpper();
@@ -98,7 +98,7 @@ namespace EditorBase
 			}
 			public virtual string GetNameFromPath(string path)
 			{
-				if (path.Contains(':'))
+				if (ContentProvider.IsDefaultContentPath(path))
 				{
 					string[] pathSplit = path.Split(new[] {':'}, StringSplitOptions.RemoveEmptyEntries);
 					return pathSplit[pathSplit.Length - 1];
@@ -163,7 +163,7 @@ namespace EditorBase
 			}
 			public override string GetNameFromPath(string path)
 			{
-				if (!path.Contains(':'))
+				if (!ContentProvider.IsDefaultContentPath(path))
 					return Path.GetFileName(path);
 				else
 					return base.GetNameFromPath(path);
@@ -204,7 +204,7 @@ namespace EditorBase
 				this.resType = Resource.GetTypeByFileName(path);
 				this.ApplyPathToName();
 			}
-			public ResourceNode(IContentRef res) : base(res.Path, null, res.Path.Contains(':'))
+			public ResourceNode(IContentRef res) : base(res.Path, null, res.IsDefaultContent)
 			{
 				this.res = res;
 				this.resType = res.ResType;
@@ -253,7 +253,7 @@ namespace EditorBase
 			}
 			public override string GetNameFromPath(string path)
 			{
-				if (!path.Contains(':'))
+				if (!ContentProvider.IsDefaultContentPath(path))
 				{
 					string fileName = Path.GetFileNameWithoutExtension(path);
 					string[] fileNameSplit = fileName.Split('.');
@@ -752,7 +752,7 @@ namespace EditorBase
 				select (c.Tag as ResourceNode).ResLink as IContentRef);
 			data.SetFiles(
 				from c in nodes
-				where c.Tag is NodeBase && !(c.Tag as NodeBase).NodePath.Contains(':')
+				where c.Tag is NodeBase && !ContentProvider.IsDefaultContentPath((c.Tag as NodeBase).NodePath)
 				select (c.Tag as NodeBase).NodePath);
 		}
 
@@ -814,7 +814,7 @@ namespace EditorBase
 		protected string GetInsertActionTargetBasePath(NodeBase baseNode)
 		{
 			string baseTargetPath = (baseNode != null) ? baseNode.NodePath : DualityApp.DataDirectory;
-			if (!baseTargetPath.Contains(':'))
+			if (!ContentProvider.IsDefaultContentPath(baseTargetPath))
 			{
 				if (File.Exists(baseTargetPath)) baseTargetPath = Path.GetDirectoryName(baseTargetPath);
 				baseTargetPath = Path.GetFullPath(baseTargetPath);
@@ -1207,6 +1207,9 @@ namespace EditorBase
 				// Skip if target is located inside source
 				if (PathHelper.IsPathLocatedIn(dstPath, srcPath)) continue;
 
+				// From here, continue with relative destination path
+				dstPath = PathHelper.MakeFilePathRelative(dstPath);
+
 				// Move or copy files / directories
 				bool errorMove = false;
 				if (File.Exists(srcPath) && !File.Exists(dstPath))
@@ -1245,6 +1248,9 @@ namespace EditorBase
 				if (srcPath == dstPath) continue;
 				// Skip if target is located inside source
 				if (PathHelper.IsPathLocatedIn(dstPath, srcPath)) continue;
+
+				// From here, continue with relative destination path
+				dstPath = PathHelper.MakeFilePathRelative(dstPath);
 
 				// Move or copy files / directories
 				bool errorMove = false;
@@ -1599,7 +1605,7 @@ namespace EditorBase
 			if (this.skipGlobalRenamePath.Remove(Path.GetFullPath(e.OldPath)))
 				e.Cancel = true;
 		}
-		private void Resource_ResourceSaved(object sender, ResourceEventArgs e)
+		private void Resource_ResourceSaved(object sender, ResourceSaveEventArgs e)
 		{
 			// If a Resources modified state changes, invalidate
 			this.folderView.Invalidate();

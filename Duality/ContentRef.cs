@@ -132,7 +132,7 @@ namespace Duality
 			get
 			{
 				if (this.contentInstance != null && !this.contentInstance.Disposed) return true;
-				return ContentProvider.IsContentAvailable(this.contentPath);
+				return ContentProvider.HasContent(this.contentPath);
 			}
 		}
 		/// <summary>
@@ -140,7 +140,7 @@ namespace Duality
 		/// </summary>
 		public bool IsDefaultContent
 		{
-			get { return this.contentPath != null && this.contentPath.Contains(':'); }
+			get { return this.contentPath != null && ContentProvider.IsDefaultContentPath(this.contentPath); }
 		}
 		/// <summary>
 		/// [GET] Returns whether the Resource has been generated at runtime and cannot be retrieved via content path.

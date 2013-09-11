@@ -126,13 +126,30 @@ namespace Duality
 		public ResourceEventArgs(ContentRef<Resource> resRef)
 		{
 			this.content = resRef;
-			this.isDirectory = System.IO.Directory.Exists(this.content.Path);
-			this.isResource = System.IO.File.Exists(this.content.Path);
+			this.isResource = this.content.IsLoaded || this.content.IsDefaultContent || System.IO.File.Exists(this.content.Path);
+			this.isDirectory = !this.isResource && System.IO.Directory.Exists(this.content.Path);
 			if (!this.isDirectory && !this.isResource)
 			{
 				this.isDirectory = string.IsNullOrEmpty(System.IO.Path.GetExtension(this.content.Path));
 				this.isResource = !this.isDirectory;
 			}
+		}
+	}
+
+	public class ResourceSaveEventArgs : ResourceEventArgs
+	{
+		private	string	saveAsPath;
+
+		public string SaveAsPath
+		{
+			get { return this.saveAsPath; }
+		}
+		
+		public ResourceSaveEventArgs(string path, string saveAsPath) : this(new ContentRef<Resource>(null, path), saveAsPath) {}
+		public ResourceSaveEventArgs(IContentRef resRef, string saveAsPath) : this(new ContentRef<Resource>(resRef.ResWeak, resRef.Path), saveAsPath) {}
+		public ResourceSaveEventArgs(ContentRef<Resource> resRef, string saveAsPath) : base(resRef)
+		{
+			this.saveAsPath = saveAsPath;
 		}
 	}
 

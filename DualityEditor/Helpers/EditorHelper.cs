@@ -262,7 +262,7 @@ namespace DualityEditor
 				DualityEditorApp.ReadPluginSourceCodeContentData(out oldRootNamespaceNameCore, out newRootNamespaceNameCore);
 
 				// Rename classes / namespaces
-				List<string> resFiles = Resource.GetResourceFiles(DualityApp.DataDirectory);
+				List<string> resFiles = Resource.GetResourceFiles();
 				foreach (string resFile in resFiles)
 				{
 					MetaFormatHelper.FilePerformAction(resFile, d => d.ReplaceTypeStrings(oldRootNamespaceNameCore, newRootNamespaceNameCore));

@@ -294,7 +294,7 @@ namespace Duality.Resources
 			if (filePath == null) filePath = this.sourcePath;
 
 			// We're saving this data for the first time
-			if (!this.path.Contains(':') && this.sourcePath == null) this.sourcePath = filePath;
+			if (!this.IsDefaultContent && this.sourcePath == null) this.sourcePath = filePath;
 
 			if (this.source != null)
 				File.WriteAllText(filePath, this.source);

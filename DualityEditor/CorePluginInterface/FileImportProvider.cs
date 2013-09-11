@@ -170,7 +170,7 @@ namespace DualityEditor.CorePluginInterface
 		public static void OpenSourceFile(ContentRef<Resource> resourceRef, string srcFileExt, Action<string> saveSrcToAction)
 		{
 			// Default content: Use temporary location
-			if (resourceRef.Path.Contains(':'))
+			if (resourceRef.IsDefaultContent)
 			{
 				string tmpLoc = Path.Combine(Path.GetTempPath(), resourceRef.Path.Replace(':', '_')) + srcFileExt;
 				saveSrcToAction(tmpLoc);

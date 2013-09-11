@@ -29,10 +29,10 @@ namespace Duality
 
 		private	static	List<Resource>	finalizeSched	= new List<Resource>();
 
-		public static event EventHandler<ResourceEventArgs>	ResourceDisposed = null;
+		public static event EventHandler<ResourceEventArgs>	ResourceDisposing = null;
 		public static event EventHandler<ResourceEventArgs>	ResourceLoaded = null;
-		public static event EventHandler<ResourceEventArgs>	ResourceSaved = null;
-		public static event EventHandler<ResourceEventArgs>	ResourceSaving = null;
+		public static event EventHandler<ResourceSaveEventArgs>	ResourceSaved = null;
+		public static event EventHandler<ResourceSaveEventArgs>	ResourceSaving = null;
 		
 		/// <summary>
 		/// The path of the file from which the Resource has been originally imported or initialized.
@@ -107,7 +107,7 @@ namespace Duality
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool IsDefaultContent
 		{
-			get { return this.path != null && this.path.Contains(':'); }
+			get { return this.path != null && ContentProvider.IsDefaultContentPath(this.path); }
 		}
 		/// <summary>
 		/// [GET] Returns whether the Resource has been generated at runtime and  cannot be retrieved via content path.
@@ -141,7 +141,7 @@ namespace Duality
 					throw new ArgumentException("Can't save a Resource to an undefined path.", "saveAsPath");
 			}
 
-			this.CheckedOnSaving();
+			this.CheckedOnSaving(saveAsPath);
 
 			// We're saving a new Ressource for the first time: Register it in the library
 			if (makePermanent && string.IsNullOrWhiteSpace(this.path))
@@ -157,7 +157,7 @@ namespace Duality
 			{
 				this.WriteToStream(str, out streamName);
 			}
-			this.CheckedOnSaved();
+			this.CheckedOnSaved(saveAsPath);
 		}
 		/// <summary>
 		/// Saves the Resource to the specified stream.
@@ -169,9 +169,9 @@ namespace Duality
 
 			string streamName;
 
-			this.CheckedOnSaving();
+			this.CheckedOnSaving(null);
 			this.WriteToStream(str, out streamName);
-			this.CheckedOnSaved();
+			this.CheckedOnSaved(null);
 		}
 		private void WriteToStream(Stream str, out string streamName)
 		{
@@ -194,12 +194,13 @@ namespace Duality
 				formatter.WriteObject(this);
 			}
 		}
-		private bool CheckedOnSaving()
+		private bool CheckedOnSaving(string saveAsPath)
 		{
 			if (this.initState != InitState.Initialized) return true;
 			try
 			{
-				this.OnSaving();
+				if (ResourceSaving != null) ResourceSaving(this, new ResourceSaveEventArgs(this, saveAsPath));
+				this.OnSaving(saveAsPath);
 				return true;
 			}
 			catch (Exception e)
@@ -208,12 +209,13 @@ namespace Duality
 				return false;
 			}
 		}
-		private bool CheckedOnSaved()
+		private bool CheckedOnSaved(string saveAsPath)
 		{
 			if (this.initState != InitState.Initialized) return true;
 			try
 			{
-				this.OnSaved();
+				this.OnSaved(saveAsPath);
+				if (ResourceSaved != null) ResourceSaved(this, new ResourceSaveEventArgs(this, saveAsPath));
 				return true;
 			}
 			catch (Exception e)
@@ -264,27 +266,15 @@ namespace Duality
 		/// <summary>
 		/// Called when this Resource is now beginning to be saved.
 		/// </summary>
-		protected virtual void OnSaving()
-		{
-			if (ResourceSaving != null)
-				ResourceSaving(this, new ResourceEventArgs(this));
-		}
+		protected virtual void OnSaving(string saveAsPath) {}
 		/// <summary>
 		/// Called when this Resource has just been saved.
 		/// </summary>
-		protected virtual void OnSaved()
-		{
-			if (ResourceSaved != null)
-				ResourceSaved(this, new ResourceEventArgs(this));
-		}
+		protected virtual void OnSaved(string saveAsPath) {}
 		/// <summary>
 		/// Called when this Resource has just been loaded.
 		/// </summary>
-		protected virtual void OnLoaded()
-		{
-			if (ResourceLoaded != null)
-				ResourceLoaded(this, new ResourceEventArgs(this));
-		}
+		protected virtual void OnLoaded() {}
 
 		~Resource()
 		{
@@ -303,6 +293,7 @@ namespace Duality
 			if (this.initState == InitState.Initialized)
 			{
 				this.initState = InitState.Disposing;
+				if (ResourceDisposing != null) ResourceDisposing(this, new ResourceEventArgs(this));
 				this.OnDisposing(manually);
 				ContentProvider.RemoveContent(this, false);
 				this.initState = InitState.Disposed;
@@ -312,11 +303,7 @@ namespace Duality
 		/// Called when beginning to dispose the Resource.
 		/// </summary>
 		/// <param name="manually"></param>
-		protected virtual void OnDisposing(bool manually)
-		{
-			if (ResourceDisposed != null)
-				ResourceDisposed(this, new ResourceEventArgs(this));
-		}
+		protected virtual void OnDisposing(bool manually) {}
 
 		/// <summary>
 		/// Creates a <see cref="ContentRef{T}"/> referring to this Resource.
@@ -434,6 +421,7 @@ namespace Duality
 		{
 			if (res.initState != InitState.Initializing) return;
 			res.OnLoaded();
+			if (ResourceLoaded != null) ResourceLoaded(res, new ResourceEventArgs(res));
 			res.initState = InitState.Initialized;
 		}
 
@@ -473,7 +461,7 @@ namespace Duality
 		/// <returns>The Resource Type of the specified file</returns>
 		public static Type GetTypeByFileName(string filePath)
 		{
-			if (string.IsNullOrEmpty(filePath) || filePath.Contains(':')) return null;
+			if (string.IsNullOrEmpty(filePath) || ContentProvider.IsDefaultContentPath(filePath)) return null;
 			filePath = System.IO.Path.GetFileNameWithoutExtension(filePath);
 			string[] token = filePath.Split('.');
 			if (token.Length < 2) return null;

@@ -150,7 +150,7 @@ namespace EditorBase
 			{
 				this.displaySel = new ObjectSelection(sel.Resources);
 				this.displayCat = ObjectSelection.Category.Resource;
-				this.propertyGrid.SelectObjects(this.displaySel, this.displaySel.Resources.Any(r => r.Path.Contains(':')));
+				this.propertyGrid.SelectObjects(this.displaySel, this.displaySel.Resources.Any(r => r.IsDefaultContent));
 			}
 			else if ((showCat & ObjectSelection.Category.Other) != ObjectSelection.Category.None)
 			{

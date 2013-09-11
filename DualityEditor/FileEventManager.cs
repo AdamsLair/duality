@@ -220,7 +220,7 @@ namespace DualityEditor
 					if (!justSaved && (Resource.IsResourceFile(e.FullPath) || args.IsDirectory))
 					{
 						// Unregister outdated resources, if modified outside the editor
-						if (!args.IsDirectory && ContentProvider.IsContentAvailable(args.Path))
+						if (!args.IsDirectory && ContentProvider.HasContent(args.Path))
 						{
 							bool isCurrentScene = args.Content.Is<Scene>() && Scene.Current == args.Content.Res;
 							if (isCurrentScene || DualityEditorApp.IsResourceUnsaved(e.FullPath))
@@ -398,11 +398,10 @@ namespace DualityEditor
 				lastEventProc = DateTime.Now;
 			}
 		}
-		private static void Resource_ResourceSaved(object sender, Duality.ResourceEventArgs e)
+		private static void Resource_ResourceSaved(object sender, ResourceSaveEventArgs e)
 		{
-			if (string.IsNullOrEmpty(e.Path)) return;	// Ignore Resources without a path.
-			if (e.IsDefaultContent) return;				// Ignore default content
-			editorJustSavedRes.Add(Path.GetFullPath(e.Path));
+			if (string.IsNullOrEmpty(e.SaveAsPath)) return; // Ignore unknown destinations
+			editorJustSavedRes.Add(Path.GetFullPath(e.SaveAsPath));
 		}
 		
 		private static void mainForm_Activated(object sender, EventArgs e)

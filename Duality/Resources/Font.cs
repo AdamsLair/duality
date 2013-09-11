@@ -458,7 +458,7 @@ namespace Duality.Resources
 			if (path == null) path = this.sourcePath;
 
 			// We're saving this Pixmaps pixel data for the first time
-			if (!this.path.Contains(':') && this.sourcePath == null) this.sourcePath = path;
+			if (!this.IsDefaultContent && this.sourcePath == null) this.sourcePath = path;
 
 			File.WriteAllBytes(path, this.customFamilyData);
 		}

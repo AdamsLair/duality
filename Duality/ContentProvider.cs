@@ -68,6 +68,17 @@ namespace Duality
 			Log.Core.Write("..done");
 		}
 		/// <summary>
+		/// Returns whether or not the specified path points to Duality default content.
+		/// </summary>
+		/// <param name="resPath"></param>
+		/// <returns></returns>
+		public static bool IsDefaultContentPath(string resPath)
+		{
+			int index = resPath.IndexOf(':');
+			return index > 1 || index == 0; // Ignore absolute paths like "C:\", but react to anything else that contains ':' chars.
+		}
+
+		/// <summary>
 		/// Returns a list of embedded default content that matches the specified type.
 		/// </summary>
 		/// <returns></returns>
@@ -147,7 +158,7 @@ namespace Duality
 		/// <param name="dispose">If true, unregistered content is also disposed.</param>
 		public static void ClearContent(bool dispose = true)
 		{
-			var nonDefaultContent = resLibrary.Where(p => !p.Key.Contains(':')).ToArray();
+			var nonDefaultContent = resLibrary.Where(p => !p.Value.IsDefaultContent).ToArray();
 			foreach (var pair in nonDefaultContent)
 				RemoveContent(pair.Key, dispose);
 		}
@@ -168,7 +179,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="path">The path key to look for content</param>
 		/// <returns>True, if there is content available for that path key, false if not.</returns>
-		public static bool IsContentAvailable(string path)
+		public static bool HasContent(string path)
 		{
 			if (String.IsNullOrEmpty(path)) return false;
 			Resource res;
@@ -204,11 +215,15 @@ namespace Duality
 		public static bool RemoveContent(string path, bool dispose = true)
 		{
 			if (String.IsNullOrEmpty(path)) return false;
-			if (path.Contains(':')) return false;
+			if (IsDefaultContentPath(path)) return false;
+
+			Resource res;
+			if (!resLibrary.TryGetValue(path, out res)) return false;
+			if (res == null) return false;
+			if (res.IsDefaultContent) return false;
 
 			// Dispose cached content
-			Resource res;
-			if (dispose && resLibrary.TryGetValue(path, out res)) res.Dispose();
+			if (dispose) res.Dispose();
 
 			return resLibrary.Remove(path);
 		}
@@ -224,7 +239,7 @@ namespace Duality
 
 			List<string> unregisterList = new List<string>(
 				from p in resLibrary.Keys
-				where !p.Contains(':') && PathHelper.IsPathLocatedIn(p, dir)
+				where !IsDefaultContentPath(p) && PathHelper.IsPathLocatedIn(p, dir)
 				select p);
 
 			foreach (string p in unregisterList)
@@ -297,7 +312,7 @@ namespace Duality
 
 			List<string> renameList = new List<string>(
 				from p in resLibrary.Keys
-				where !p.Contains(':') && PathHelper.IsPathLocatedIn(p, dir)
+				where !IsDefaultContentPath(p) && PathHelper.IsPathLocatedIn(p, dir)
 				select p);
 
 			foreach (string p in renameList)
