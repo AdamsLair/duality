@@ -756,13 +756,13 @@ namespace Duality
 						{
 							PcmData pcm;
 							bool eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);
-							if (pcm.data.Length > 0)
+							if (pcm.dataLength > 0)
 							{
 								AL.BufferData(
 									sndInst.strAlBuffers[i], 
-									pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16, 
+									pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
 									pcm.data, 
-									pcm.data.Length, 
+									pcm.dataLength * PcmData.SizeOfDataElement, 
 									pcm.sampleRate);
 								AL.SourceQueueBuffer(sndInst.alSource, sndInst.strAlBuffers[i]);
 								if (eof) break;
@@ -789,26 +789,32 @@ namespace Duality
 							{
 								PcmData pcm;
 								bool eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);
-								if (pcm.data.Length > 0)
-								{
-									AL.BufferData(
-										unqueued, 
-										pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16, 
-										pcm.data, 
-										pcm.data.Length, 
-										pcm.sampleRate);
-								}
-								AL.SourceQueueBuffer(sndInst.alSource, unqueued);
-								if (eof && pcm.data.Length == 0)
+								if (eof)
 								{
 									OV.EndStream(ref sndInst.strOvStr);
 									if (sndInst.looped)
-										OV.BeginStreamFromMemory(res.Data.Res.OggVorbisData, out sndInst.strOvStr);
-									else
 									{
-										sndInst.strStopReq = true;
-										break;
+										OV.BeginStreamFromMemory(res.Data.Res.OggVorbisData, out sndInst.strOvStr);
+										if (pcm.dataLength == 0)
+										{
+											eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);
+										}
 									}
+								}
+								if (pcm.dataLength > 0)
+								{
+									AL.BufferData(
+										unqueued, 
+										pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
+										pcm.data, 
+										pcm.dataLength * PcmData.SizeOfDataElement, 
+										pcm.sampleRate);
+									AL.SourceQueueBuffer(sndInst.alSource, unqueued);
+								}
+								else
+								{
+									sndInst.strStopReq = true;
+									break;
 								}
 							}
 						}

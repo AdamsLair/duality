@@ -1,11 +1,14 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Duality.OggVorbis
 {
 	public struct PcmData
 	{
-		public	byte[]	data;
+		public const int SizeOfDataElement = sizeof(short);
+
+		public	short[]	data;
 		public	int		dataLength;
 		public	int		channelCount;
 		public	int		sampleRate;
@@ -24,7 +27,7 @@ namespace Duality.OggVorbis
 		{
 			get { return this.ovStream; }
 		}
-
+		
 		internal VorbisStreamHandle(byte[] memory)
 		{
 			this.ovStream = IntPtr.Zero;
@@ -81,32 +84,39 @@ namespace Duality.OggVorbis
 
 	public static class OV
 	{
+		private const int DefaultBufferSize = 1024 * 8;
+
 		public static PcmData LoadFromFile(string filename)
 		{
-			MemoryStream dataStream = new MemoryStream();
 			PcmData pcm;
 			VorbisStreamHandle handle;
 
 			BeginStreamFromFile(filename, out handle);
-			while (StreamChunk(handle, ref dataStream, out pcm)) {}
+			ReadAll(handle, out pcm);
 			EndStream(ref handle);
 
-			// Return data
-			pcm.data = (dataStream != null) ? dataStream.ToArray() : null;
 			return pcm;
 		}
-		public static PcmData LoadFromMemory(byte[] memory, int maxPcmByteCount = 0)
+		public static PcmData LoadFromMemory(byte[] memory)
 		{
-			MemoryStream dataStream = new MemoryStream();
 			PcmData pcm;
 			VorbisStreamHandle handle;
 
 			BeginStreamFromMemory(memory, out handle);
-			while (StreamChunk(handle, ref dataStream, out pcm)) {}
+			ReadAll(handle, out pcm);
 			EndStream(ref handle);
 
-			// Return data
-			pcm.data = (dataStream != null) ? dataStream.ToArray() : null;
+			return pcm;
+		}
+		public static PcmData LoadChunkFromMemory(byte[] memory, uint sampleCount)
+		{
+			PcmData pcm;
+			VorbisStreamHandle handle;
+
+			BeginStreamFromMemory(memory, out handle);
+			StreamChunk(handle, out pcm, sampleCount);
+			EndStream(ref handle);
+
 			return pcm;
 		}
 
@@ -130,13 +140,7 @@ namespace Duality.OggVorbis
 				handle = null;
 			}
 		}
-		/// <summary>
-		/// Streams a pcm chunk from an opened ogg vorbis file to the specified OpenAL buffer.
-		/// </summary>
-		/// <param name="alBufferId">OpenAL buffer id to stream to</param>
-		/// <param name="vFPtr">Ogg Vorbis file handle</param>
-		/// <returns>Returns false, if EOF is reached.</returns>
-		public static bool StreamChunk(VorbisStreamHandle handle, ref MemoryStream pcmOutputStream, out PcmData pcm)
+		public static bool StreamChunk(VorbisStreamHandle handle, out PcmData pcm, uint bufferSize = DefaultBufferSize)
 		{
 			unsafe
 			{
@@ -147,24 +151,26 @@ namespace Duality.OggVorbis
 				int errBadLinkCount = 0;
 				bool eof = false;
 
-				pcm.data = new byte[1024 * 32]; // was 1024 * 16
+				pcm.data = new short[bufferSize];
 				pcm.dataLength = 0;
 				while(pcm.dataLength < pcm.data.Length)
 				{
 					int pcmBytes;
-					fixed (byte* buf = &pcm.data[0])
+					fixed (short* bufferPtr = &pcm.data[0])
 					{
 						pcmBytes = NativeMethods.ogg_decode_one_vorbis_packet(
 							vorbisFile, 
-							buf + pcm.dataLength, 
-							pcm.data.Length - pcm.dataLength,
+							bufferPtr + pcm.dataLength, 
+							(pcm.data.Length - pcm.dataLength) * PcmData.SizeOfDataElement,
 							16,
 							&chnCount, &smpRate,
 							&errHoleCount, &errBadLinkCount);
 					}
 
 					if (pcmBytes > 0)
-						pcm.dataLength += pcmBytes;
+					{
+						pcm.dataLength += pcmBytes / PcmData.SizeOfDataElement;
+					}
 					else
 					{
 						eof = true;
@@ -176,8 +182,6 @@ namespace Duality.OggVorbis
 				{
 					pcm.channelCount = chnCount;
 					pcm.sampleRate = smpRate;
-					if (pcmOutputStream == null) pcmOutputStream = new MemoryStream(pcm.data.Length);
-					pcmOutputStream.Write(pcm.data, 0, pcm.dataLength);
 					return !eof;
 				}
 				else
@@ -188,12 +192,81 @@ namespace Duality.OggVorbis
 				}
 			}
 		}
-		public static bool StreamChunk(VorbisStreamHandle handle, out PcmData result)
+		public static bool ReadAll(VorbisStreamHandle handle, out PcmData pcm)
 		{
-			MemoryStream dataStream = null;
-			bool notEof = StreamChunk(handle, ref dataStream, out result);
-			result.data = dataStream != null ? dataStream.ToArray() : new byte[0];
-			return notEof;
+			pcm.channelCount = 0;
+			pcm.sampleRate = 0;
+			pcm.dataLength = 0;
+
+			List<short[]> allBuffers = new List<short[]>();
+			bool eof = false;
+			int totalSamplesRead = 0;
+			while (!eof)
+			{
+				short[] buffer = new short[DefaultBufferSize];
+				int bufferSamplesRead = 0;
+				unsafe
+				{
+					void* vorbisFile = (void*)handle.VorbisInstance;
+					int chnCount = 0;
+					int smpRate = 0;
+					int errHoleCount = 0;
+					int errBadLinkCount = 0;
+
+					bufferSamplesRead = 0;
+					while(bufferSamplesRead < buffer.Length)
+					{
+						int pcmBytes;
+						fixed (short* bufferPtr = &buffer[0])
+						{
+							pcmBytes = NativeMethods.ogg_decode_one_vorbis_packet(
+								vorbisFile, 
+								bufferPtr + bufferSamplesRead, 
+								(buffer.Length - bufferSamplesRead) * PcmData.SizeOfDataElement,
+								16,
+								&chnCount, &smpRate,
+								&errHoleCount, &errBadLinkCount);
+						}
+
+						if (pcmBytes > 0)
+						{
+							bufferSamplesRead += pcmBytes / PcmData.SizeOfDataElement;
+						}
+						else
+						{
+							eof = true;
+							break;
+						}
+					}
+
+					if (bufferSamplesRead > 0)
+					{
+						pcm.channelCount = chnCount;
+						pcm.sampleRate = smpRate;
+					}
+				}
+				allBuffers.Add(buffer);
+				totalSamplesRead += bufferSamplesRead;
+			}
+				
+			if (totalSamplesRead > 0)
+			{
+				pcm.dataLength = totalSamplesRead;
+				pcm.data = new short[totalSamplesRead];
+				int offset = 0;
+				for (int i = 0; i < allBuffers.Count; i++)
+				{
+					int len = Math.Min(pcm.data.Length - offset, allBuffers[i].Length);
+					Array.Copy(allBuffers[i], 0, pcm.data, offset, len);
+					offset += len;
+				}
+				return !eof;
+			}
+			else
+			{
+				pcm.data = new short[0];
+				return false;
+			}
 		}
 	}
 }

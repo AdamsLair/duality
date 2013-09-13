@@ -1145,8 +1145,8 @@ namespace Duality
 						Log.CurrentMethod(1));
 				}
 				found = true;
+				if (!silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
 			}
-			if (found && !silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
 			return found;
 		}
 		/// <summary>

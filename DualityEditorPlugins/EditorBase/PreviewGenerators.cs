@@ -59,12 +59,11 @@ namespace EditorBase.PreviewGenerators
 			int desiredHeight = query.DesiredHeight;
 			int oggHash = audio.OggVorbisData.GetCombinedHashCode();
 			int oggLen = audio.OggVorbisData.Length;
-			Duality.OggVorbis.PcmData pcm = Duality.OggVorbis.OV.LoadFromMemory(audio.OggVorbisData, 1000000); //41236992
-			short[] sdata = new short[pcm.data.Length / 2];
-			Buffer.BlockCopy(pcm.data, 0, sdata, 0, pcm.data.Length);
+			Duality.OggVorbis.PcmData pcm = Duality.OggVorbis.OV.LoadChunkFromMemory(audio.OggVorbisData, 500000);
+			short[] sdata = pcm.data;
 
 			Bitmap result = new Bitmap(desiredWidth, desiredHeight);
-			int channelLength = sdata.Length / pcm.channelCount;
+			int channelLength = pcm.dataLength / pcm.channelCount;
 			int yMid = result.Height / 2;
 			int stepWidth = (channelLength / (2 * result.Width)) - 1;
 			const int samples = 10;

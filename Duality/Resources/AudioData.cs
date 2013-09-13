@@ -213,7 +213,7 @@ namespace Duality.Resources
 						this.alBuffer,
 						pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
 						pcm.data.ToArray(), 
-						(int)pcm.data.Length, 
+						pcm.dataLength * PcmData.SizeOfDataElement, 
 						pcm.sampleRate);
 				}
 				else
