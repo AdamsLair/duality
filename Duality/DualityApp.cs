@@ -403,9 +403,14 @@ namespace Duality
 
 			Formatter.InitDefaultMethod();
 			
-			Log.Core.Write("DualityApp initialized");
-			Log.Core.Write("Debug Mode: {0}", System.Diagnostics.Debugger.IsAttached);
-			Log.Core.Write("Command line arguments: {0}", args != null ? args.ToString(", ") : "null");
+			Log.Core.Write(
+				"DualityApp initialized" + Environment.NewLine +
+				"Debug Mode: {0}" + Environment.NewLine +
+				"Command line arguments: {1}" + Environment.NewLine +
+				"Is64BitProcess: {2}",
+				System.Diagnostics.Debugger.IsAttached,
+				args != null ? args.ToString(", ") : "null",
+				Environment.Is64BitProcess);
 
 			initialized = true;
 			InitPlugins();

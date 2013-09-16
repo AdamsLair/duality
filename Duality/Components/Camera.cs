@@ -465,27 +465,25 @@ namespace Duality.Components
 
 			HashSet<ICmpRenderer> result = new HashSet<ICmpRenderer>();
 			int rendererIdLast = 0;
-			unsafe { fixed (byte* pDataBegin = this.pickingBuffer) {
-				for (int j = 0; j < h; ++j)
+			for (int j = 0; j < h; ++j)
+			{
+				int offset = 4 * (x + (y + j) * this.pickingTex.PixelWidth);
+				for (int i = 0; i < w; ++i)
 				{
-					byte* pData = pDataBegin + 4 * (x + (y + j) * this.pickingTex.PixelWidth);
-					for (int i = 0; i < w; ++i)
+					int rendererId =	(this.pickingBuffer[offset]		<< 16) |
+						                (this.pickingBuffer[offset + 1] << 8) |
+						                (this.pickingBuffer[offset + 2] << 0);
+					if (rendererId != rendererIdLast)
 					{
-						int rendererId = (*pData << 16) |
-						                 (*(pData + 1) << 8) |
-						                 (*(pData + 2) << 0);
-						if (rendererId != rendererIdLast)
-						{
-							if (rendererId - 1 > this.pickingMap.Count)
-								Log.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
-							else if (rendererId != 0 && !(this.pickingMap[rendererId - 1] as Component).Disposed)
-								result.Add(this.pickingMap[rendererId - 1]);
-							rendererIdLast = rendererId;
-						}
-						pData += 4;
+						if (rendererId - 1 > this.pickingMap.Count)
+							Log.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
+						else if (rendererId != 0 && !(this.pickingMap[rendererId - 1] as Component).Disposed)
+							result.Add(this.pickingMap[rendererId - 1]);
+						rendererIdLast = rendererId;
 					}
+					offset += 4;
 				}
-			}}
+			}
 
 			return result;
 		}

@@ -1185,7 +1185,7 @@ namespace Duality
 		/// <param name="typeNameA"></param>
 		/// <param name="typeNameB"></param>
 		/// <returns></returns>
-		private static unsafe bool IsFullTypeNameEqual(string typeNameA, string typeNameB)
+		private static bool IsFullTypeNameEqual(string typeNameA, string typeNameB)
 		{
 			// Not doing this for performance reasons:
 			//string nameTemp = typeNameA.Replace('+', '.');

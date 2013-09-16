@@ -219,10 +219,7 @@ namespace Duality.Resources
 			// Determine currently attached shaders
 			int[] attachedShaders = new int[10];
 			int attachCount = 0;
-			unsafe
-			{
-				GL.GetAttachedShaders(this.glProgramId, attachedShaders.Length, &attachCount, attachedShaders);
-			}
+			GL.GetAttachedShaders(this.glProgramId, attachedShaders.Length, out attachCount, attachedShaders);
 
 			// Detach all attached shaders
 			for (int i = 0; i < attachCount; i++)
