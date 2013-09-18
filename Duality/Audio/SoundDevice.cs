@@ -142,7 +142,6 @@ namespace Duality
 			get { return this.sounds; }
 		}
 
-
 		public SoundDevice()
 		{
 			Log.Core.Write("Initializing OpenAL...");
@@ -150,6 +149,8 @@ namespace Duality
 
 			try
 			{
+				AudioLibraryLoader.LoadAudioLibrary();
+
 				Log.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
 					AudioContext.AvailableDevices.ToString(d => d == AudioContext.DefaultDevice ? d + " (Default)" : d, "," + Environment.NewLine));
 
@@ -171,7 +172,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("An error occured initializing OpenAL: {0}", Log.Exception(e));
+				Log.Core.WriteError("An error occured while initializing OpenAL: {0}", Log.Exception(e));
 			}
 
 			Log.Core.PopIndent();
@@ -199,10 +200,19 @@ namespace Duality
 
 				ContentProvider.RemoveAllContent<Sound>();
 
-				if (this.context != null)
+				try
 				{
-					this.context.Dispose();
-					this.context = null;
+					if (this.context != null)
+					{
+						this.context.Dispose();
+						this.context = null;
+					}
+
+					AudioLibraryLoader.UnloadAudioLibrary();
+				}
+				catch (Exception e)
+				{
+					Log.Core.WriteError("An error occured while shutting down OpenAL: {0}", Log.Exception(e));
 				}
 			}
 		}
