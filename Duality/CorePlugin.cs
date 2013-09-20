@@ -9,6 +9,8 @@ namespace Duality
 		private	bool		disposed	= false;
 		private	Assembly	assembly	= null;
 		private	string		asmName		= null;
+		private	string 		filePath	= null;
+		private	int			fileHash	= 0;
 
 		public bool Disposed
 		{
@@ -21,6 +23,19 @@ namespace Duality
 		public string AssemblyName
 		{
 			get { return this.asmName; }
+		}
+		public string FilePath
+		{
+			get { return this.filePath; }
+			internal set
+			{
+				this.filePath = value;
+				this.fileHash = PathHelper.GetFileHash(this.filePath);
+			}
+		}
+		public int FileHash
+		{
+			get { return this.fileHash; }
 		}
 
 		protected CorePlugin()

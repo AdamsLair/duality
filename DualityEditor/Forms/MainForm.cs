@@ -235,7 +235,7 @@ namespace DualityEditor.Forms
 		{
 			if (menuNames == null || menuNames.Length < 1) throw new ArgumentException("You need to specify at least one menu name");
 
-			string menuPath = PathHelper.Combine(menuNames).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);;
+			string menuPath = Path.Combine(menuNames).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);;
 			string menuId = menuPath.ToUpper();
 
 			int lastDirSeparator = menuPath.LastIndexOf(Path.DirectorySeparatorChar);

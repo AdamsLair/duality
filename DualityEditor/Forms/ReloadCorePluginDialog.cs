@@ -14,7 +14,7 @@ using Duality.Resources;
 
 namespace DualityEditor.Forms
 {
-	public partial class ReloadCorePluginDialog : Form
+	public sealed partial class ReloadCorePluginDialog : Form
 	{
 		private class WorkerInterface
 		{
@@ -111,6 +111,8 @@ namespace DualityEditor.Forms
 					return;
 				if (value == ReloaderState.ReloadPlugins && this.Visible)
 					return;
+				if (value == ReloaderState.ReloadPlugins && !this.VerifyReloadSchedule())
+					value = ReloaderState.Idle;
 
 				this.state = value;
 				if (this.state == ReloaderState.Idle)
@@ -144,15 +146,31 @@ namespace DualityEditor.Forms
 			this.owner = owner;
 		}
 
-		protected void OnBeforeBeginReload()
+		private void OnBeforeBeginReload()
 		{
 			if (this.BeforeBeginReload != null)
 				this.BeforeBeginReload(this, null);
 		}
-		protected void OnAfterEndReload()
+		private void OnAfterEndReload()
 		{
 			if (this.AfterEndReload != null)
 				this.AfterEndReload(this, null);
+		}
+		private bool VerifyReloadSchedule()
+		{
+			for (int i = this.reloadSchedule.Count - 1; i >= 0; i--)
+			{
+				string fullPath = Path.GetFullPath(this.reloadSchedule[i]);
+				CorePlugin plugin = DualityApp.LoadedPlugins.FirstOrDefault(p => Path.GetFullPath(p.FilePath) == fullPath);
+				if (plugin == null) continue;
+
+				int hash = PathHelper.GetFileHash(this.reloadSchedule[i]);
+				if (plugin.FileHash == hash)
+				{
+					this.reloadSchedule.RemoveAt(i);
+				}
+			}
+			return this.reloadSchedule.Count > 0;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -311,7 +329,19 @@ namespace DualityEditor.Forms
 				// No full restart scheduled? Well, check if it should be!
 				if (!fullRestart)
 				{
-					fullRestart = workInterface.ReloadSched.Any(asmFile => asmFile.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase) || !DualityApp.IsLeafPlugin(asmFile));
+					// If there is any editor plugin to be reloaded, we need a full restart.
+					if (workInterface.ReloadSched.Any(asmFile => asmFile.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase)))
+					{
+						fullRestart = true;
+					}
+					// If any plugin dependency needs to be reloaded, do a full restart. Due to the way, bindings between
+					// different assemblies are resolved, it is impossible to prevent any plugin from still binding the old
+					// version of the dependency in question. Any source code referring to the disposed dependency may
+					// result in undefined behavior. A full restart is necessary.
+					else if (workInterface.ReloadSched.Any(asmFile => DualityApp.IsDependencyPlugin(asmFile)))
+					{
+						fullRestart = true;
+					}
 				}
 
 				if (fullRestart)

@@ -811,6 +811,7 @@ namespace Duality
 				else
 				{
 					plugin = (CorePlugin)pluginType.CreateInstanceOf();
+					plugin.FilePath = pluginFilePath;
 					plugins.Add(plugin.AssemblyName, plugin);
 				}
 			}
@@ -891,6 +892,7 @@ namespace Duality
 			Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(pluginFilePath));
 			Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(CorePlugin).IsAssignableFrom(t));
 			CorePlugin plugin = (CorePlugin)pluginType.CreateInstanceOf();
+			plugin.FilePath = pluginFilePath;
 
 			// If we're overwriting an old plugin here, add the old version to the "disposed" blacklist
 			CorePlugin oldPlugin;
@@ -915,15 +917,34 @@ namespace Duality
 				OnPluginReady(plugin);
 			}
 		}
-		internal static bool IsLeafPlugin(string pluginFilePath)
+		/// <summary>
+		/// Determines whether the plugin that is represented by the specified Assembly file is referenced by any other plugin.
+		/// </summary>
+		/// <param name="pluginFilePath"></param>
+		/// <returns></returns>
+		public static bool IsDependencyPlugin(string pluginFilePath)
 		{
 			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);
 			foreach (CorePlugin plugin in plugins.Values)
 			{
 				AssemblyName[] refNames = plugin.PluginAssembly.GetReferencedAssemblies();
-				if (refNames.Any(rn => rn.Name == asmName)) return false;
+				if (refNames.Any(rn => rn.Name == asmName)) return true;
 			}
-			return true;
+			return false;
+		}
+		/// <summary>
+		/// Determines whether the specified plugin is referenced by any other plugin.
+		/// </summary>
+		/// <param name="plugin"></param>
+		/// <returns></returns>
+		public static bool IsDependencyPlugin(CorePlugin plugin)
+		{
+			foreach (CorePlugin loadedPlugin in plugins.Values)
+			{
+				AssemblyName[] refNames = loadedPlugin.PluginAssembly.GetReferencedAssemblies();
+				if (refNames.Any(rn => rn.Name == plugin.AssemblyName)) return true;
+			}
+			return false;
 		}
 
 		/// <summary>

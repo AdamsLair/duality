@@ -10,26 +10,6 @@ namespace Duality
 	public static class PathHelper
 	{
 		/// <summary>
-		/// Combines several path tokens sequencially.
-		/// </summary>
-		/// <param name="paths"></param>
-		/// <returns>
-		/// A combined version of all path tokens.
-		/// If only one token is specified, it is returned unchanged.
-		/// If no tokens are specified, null is returned.
-		/// </returns>
-		public static string Combine(params string[] paths)
-		{
-			if (paths == null || paths.Length == 0) return null;
-			if (paths.Length == 1) return paths[0];
-			if (paths.Length == 2) return Path.Combine(paths[0], paths[1]);
-			string result = paths[0];
-			for (int i = 1; i < paths.Length; i++)
-				result = Path.Combine(result, paths[i]);
-			return result;
-		}
-
-		/// <summary>
 		/// Returns a path that isn't taken yet.
 		/// </summary>
 		/// <param name="pathBase">The path to use as base for finding a available path.</param>
@@ -254,6 +234,54 @@ namespace Duality
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// Determines whether the contents of two files are completely equal.
+		/// </summary>
+		/// <param name="filePathA"></param>
+		/// <param name="filePathB"></param>
+		/// <returns></returns>
+		public static bool FilesEqual(string filePathA, string filePathB)
+		{
+			filePathA = Path.GetFullPath(filePathA);
+			filePathB = Path.GetFullPath(filePathB);
+			if (filePathA == filePathB) return true;
+
+			if (!File.Exists(filePathA)) return false;
+			if (!File.Exists(filePathB)) return false;
+
+			using (FileStream streamA = File.OpenRead(filePathA))
+			using (FileStream streamB = File.OpenRead(filePathB))
+			{
+				if (streamA.Length != streamB.Length) return false;
+				while (streamA.Position < streamA.Length)
+				{
+					if (streamA.ReadByte() != streamB.ReadByte()) return false;
+				}
+			}
+			return true;
+		}
+		/// <summary>
+		/// Calculates a hash value from the full (byte by byte) content of a file.
+		/// </summary>
+		/// <param name="filePath"></param>
+		/// <returns></returns>
+		public static int GetFileHash(string filePath)
+		{
+			if (!File.Exists(filePath)) return 0;
+			int hash = 17;
+			using (FileStream stream = File.OpenRead(filePath))
+			{
+				unchecked
+				{
+					while (stream.Position < stream.Length)
+					{
+						hash = hash * 23 + stream.ReadByte();
+					}
+				}
+			}
+			return hash;
 		}
 	}
 }
