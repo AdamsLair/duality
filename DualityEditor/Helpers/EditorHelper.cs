@@ -20,23 +20,26 @@ namespace DualityEditor
 {
 	public static class EditorHelper
 	{
-		public const string DualityLauncherExecFile		= @"DualityLauncher.exe";
-		public const string BackupDirectory				= @"Backup";
-		public const string SourceDirectory				= @"Source";
-		public const string SourceMediaDirectory		= SourceDirectory + @"\Media";
-		public const string SourceCodeDirectory			= SourceDirectory + @"\Code";
+		public const string DualityLauncherExecFile				= @"DualityLauncher.exe";
+		public const string BackupDirectory						= @"Backup";
+		public const string SourceDirectory						= @"Source";
+		public const string SourceMediaDirectory				= SourceDirectory + @"\Media";
+		public const string SourceCodeDirectory					= SourceDirectory + @"\Code";
 		public const string SourceCodeProjectCorePluginDir		= SourceCodeDirectory + @"\CorePlugin";
 		public const string SourceCodeProjectEditorPluginDir	= SourceCodeDirectory + @"\EditorPlugin";
 		public const string SourceCodeSolutionFile				= SourceCodeDirectory + @"\ProjectPlugins.sln";
 		public const string SourceCodeProjectCorePluginFile		= SourceCodeProjectCorePluginDir + @"\CorePlugin.csproj";
 		public const string SourceCodeProjectEditorPluginFile	= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.csproj";
-		public const string SourceCodeGameResFile			= SourceCodeProjectCorePluginDir + @"\Properties\GameRes.cs";
-		public const string SourceCodeCorePluginFile		= SourceCodeProjectCorePluginDir + @"\CorePlugin.cs";
-		public const string SourceCodeComponentExampleFile	= SourceCodeProjectCorePluginDir + @"\YourCustomComponentType.cs";
-		public const string SourceCodeEditorPluginFile		= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.cs";
+		public const string SourceCodeGameResFile				= SourceCodeProjectCorePluginDir + @"\Properties\GameRes.cs";
+		public const string SourceCodeCorePluginFile			= SourceCodeProjectCorePluginDir + @"\CorePlugin.cs";
+		public const string SourceCodeComponentExampleFile		= SourceCodeProjectCorePluginDir + @"\YourCustomComponentType.cs";
+		public const string SourceCodeEditorPluginFile			= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.cs";
 
-		public static readonly string GlobalUserDirectory = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality"));
-		public static readonly string GlobalProjectTemplateDirectory = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality"), "ProjectTemplates");
+		public static readonly string GlobalUserDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality");
+		public static readonly string GlobalProjectTemplateDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Duality", "ProjectTemplates");
+
+		private static bool isJitDebuggerAvailable;
+		private static VisualStudioEdition vsEdition;
 
 		public static string CurrentProjectName
 		{
@@ -47,15 +50,35 @@ namespace DualityEditor
 				return Path.GetFileName(dataDir);
 			}
 		}
-
-
-		public static bool IsJITDebuggerAvailable()
+		public static bool IsJITDebuggerAvailable
 		{
-			return Registry.LocalMachine
-				.OpenSubKey("SOFTWARE")
-				.OpenSubKey("Microsoft")
-				.OpenSubKey(".NetFramework")
-				.GetValueNames().Contains("DbgManagedDebugger");
+			get { return isJitDebuggerAvailable; }
+		}
+		public static VisualStudioEdition VisualStudioEdition
+		{
+			get { return vsEdition; }
+		}
+
+		static EditorHelper()
+		{
+			isJitDebuggerAvailable = Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\.NetFramework", "DbgManagedDebugger", null) != null;
+			
+			RegistryKey localMachine = null;
+			if (Environment.Is64BitOperatingSystem)	localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+			else									localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+
+			RegistryKey visualStudio = localMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio");
+			string[] visualStudioSubKeys = visualStudio != null ? visualStudio.GetSubKeyNames() : null;
+
+			vsEdition = VisualStudioEdition.Express;
+			if (visualStudioSubKeys != null)
+			{
+				if (visualStudioSubKeys.Contains("8.0"))	vsEdition = VisualStudioEdition.Standard;
+				if (visualStudioSubKeys.Contains("9.0"))	vsEdition = VisualStudioEdition.Standard;
+				if (visualStudioSubKeys.Contains("10.0"))	vsEdition = VisualStudioEdition.Standard;
+				if (visualStudioSubKeys.Contains("11.0"))	vsEdition = VisualStudioEdition.Standard;
+				if (visualStudioSubKeys.Contains("12.0"))	vsEdition = VisualStudioEdition.Standard;
+			}
 		}
 
 		public static string GenerateClassNameFromPath(string path)
@@ -382,6 +405,13 @@ namespace DualityEditor
 			}
 			return overlaySet.GetOverlay(overlayImage);
 		}
+	}
+
+	public enum VisualStudioEdition
+	{
+		Unknown,
+		Express,
+		Standard
 	}
 
 	public class ProjectTemplateInfo

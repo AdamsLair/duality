@@ -46,7 +46,7 @@ namespace DualityEditor.Forms
 			this.mainMenuStrip.Renderer = new Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			this.mainToolStrip.Renderer = new Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 
-			this.actionDebugApp.Enabled = EditorHelper.IsJITDebuggerAvailable();
+			this.actionDebugApp.Enabled = EditorHelper.IsJITDebuggerAvailable;
 
 			this.splitButtonBackupSettings.DropDown.Closing += this.splitButtonBackupSettings_Closing;
 			this.menuAutosave.DropDown.Closing += this.menuAutosave_Closing;

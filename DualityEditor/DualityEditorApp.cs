@@ -826,7 +826,7 @@ namespace DualityEditor
 			}
 
 			// If Visual Studio is available, don't use the express version
-			if (File.Exists(EditorHelper.SourceCodeSolutionFile) && EditorHelper.IsJITDebuggerAvailable())
+			if (File.Exists(EditorHelper.SourceCodeSolutionFile) && (int)EditorHelper.VisualStudioEdition >= (int)VisualStudioEdition.Standard)
 			{
 				string solution = File.ReadAllText(EditorHelper.SourceCodeSolutionFile);
 				File.WriteAllText(EditorHelper.SourceCodeSolutionFile, solution.Replace("# Visual C# Express 2010", "# Visual Studio 2010"), Encoding.UTF8);
