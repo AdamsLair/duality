@@ -332,6 +332,7 @@ namespace Duality.Resources
 				Profile.TimeUpdatePhysics.BeginMeasure();
 				FarseerPhysics.Settings.VelocityThreshold = PhysicsConvert.ToPhysicalUnit(Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold / Time.SPFMult);
 				physicsWorld.Step(Time.TimeMult * Time.SPFMult);
+				if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
 				physicsAcc = PhysicsAccStart;
 				physUpdate = true;
 				Profile.TimeUpdatePhysics.EndMeasure();

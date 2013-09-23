@@ -61,6 +61,11 @@ namespace EditorBase.PreviewGenerators
 			int oggLen = audio.OggVorbisData.Length;
 			Duality.OggVorbis.PcmData pcm = Duality.OggVorbis.OV.LoadChunkFromMemory(audio.OggVorbisData, 500000);
 			short[] sdata = pcm.data;
+			short maxVal = 1;
+			for (int i = 0; i < pcm.dataLength; i++)
+			{
+				maxVal = Math.Max(maxVal, Math.Abs(pcm.data[i]));
+			}
 
 			Bitmap result = new Bitmap(desiredWidth, desiredHeight);
 			int channelLength = pcm.dataLength / pcm.channelCount;
@@ -77,6 +82,7 @@ namespace EditorBase.PreviewGenerators
 				g.Clear(Color.Transparent);
 				for (int x = 0; x < result.Width; x++)
 				{
+					float invMaxVal = 2.0f / ((float)maxVal + (float)short.MaxValue);
 					float timePercentage = (float)x / (float)result.Width;
 					int i = MathF.RoundToInt(timePercentage * channelLength);
 					float left;
@@ -86,11 +92,11 @@ namespace EditorBase.PreviewGenerators
 
 					for (int s = 0; s <= samples; s++)
 					{
-						int offset = MathF.RoundToInt((float)stepWidth * (float)s / (float)samples);
+						int offset = stepWidth * s / samples;
 						channel1 = sdata[(i + offset) * pcm.channelCount + 0];
 						channel2 = sdata[(i + offset) * pcm.channelCount + 1];
-						left = (float)Math.Abs((int)channel1) / (float)short.MaxValue;
-						right = (float)Math.Abs((int)channel2) / (float)short.MaxValue;
+						left = (float)Math.Abs(channel1) * invMaxVal;
+						right = (float)Math.Abs(channel2) * invMaxVal;
 						g.DrawLine(linePen, x, yMid, x, yMid + MathF.RoundToInt(left * yMid));
 						g.DrawLine(linePen, x, yMid, x, yMid - MathF.RoundToInt(right * yMid));
 					}

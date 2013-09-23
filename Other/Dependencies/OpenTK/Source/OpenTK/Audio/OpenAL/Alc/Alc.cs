@@ -278,6 +278,8 @@ namespace OpenTK.Audio.OpenAL
         {
             List<string> result = new List<string>();
             IntPtr t = GetStringPrivate(IntPtr.Zero, (AlcGetString)param);
+			if (t == IntPtr.Zero) return result;
+
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             byte b;
             int offset = 0;
@@ -296,7 +298,7 @@ namespace OpenTK.Audio.OpenAL
                 }
             } while (true);
 
-            return (IList<string>)result;
+            return result;
         }
 
         [DllImport(Alc.Lib, EntryPoint = "alcGetIntegerv", ExactSpelling = true, CallingConvention = Alc.Style, CharSet = CharSet.Ansi), SuppressUnmanagedCodeSecurity()]

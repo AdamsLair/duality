@@ -136,7 +136,8 @@ namespace DualityEditor
 				Scene.Current.Dispose();
 			}
 
-			Time.TimeScale = 1.0f; // Reset time scale
+			Time.TimeScale = 1.0f;	// Reset time scale
+			Time.Resume(true);		// Reset any previously (user-)generated time freeze events
 			state = SandboxState.Inactive;
 			DualityApp.ExecContext = DualityApp.ExecutionContext.Editor;
 			

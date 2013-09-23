@@ -340,7 +340,12 @@ namespace Duality
 		{
 			if (this.budgetPads.Count == 0) return;
 			foreach (SoundBudgetPad t in this.budgetPads)
-				t.Instance.FadeOut(fadeOutTimeSec);
+			{
+				if (t.Instance != null)
+				{
+					t.Instance.FadeOut(fadeOutTimeSec);
+				}
+			}
 		}
 	}
 }

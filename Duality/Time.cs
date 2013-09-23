@@ -110,6 +110,13 @@ namespace Duality
 			if (timeFreeze == 0) return;
 			timeFreeze--;
 		}
+		internal static void Resume(bool hardReset)
+		{
+			if (hardReset)
+				timeFreeze = 0;
+			else
+				Resume();
+		}
 
 		internal static void FrameTick(bool forceFixedStep = false)
 		{
