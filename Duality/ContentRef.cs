@@ -186,13 +186,15 @@ namespace Duality
 		/// </summary>
 		/// <param name="res">The Resource to reference.</param>
 		/// <param name="altPath">The referenced Resource's file path.</param>
-		public ContentRef(T res, string altPath)
+		public ContentRef(T res, string requestPath)
 		{
 			this.contentInstance = res;
-			if (res != null && !String.IsNullOrEmpty(res.Path))
+			if (!string.IsNullOrEmpty(requestPath))
+				this.contentPath = requestPath;
+			else if (res != null && !string.IsNullOrEmpty(res.Path))
 				this.contentPath = res.Path;
 			else 
-				this.contentPath = altPath;
+				this.contentPath = requestPath;
 		}
 		/// <summary>
 		/// Creates a ContentRef pointing to the specified <see cref="Resource"/>.

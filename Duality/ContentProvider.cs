@@ -34,6 +34,8 @@ namespace Duality
 		private	static	Dictionary<string,Resource>	resLibrary					= new Dictionary<string,Resource>();
 		private	static	List<Resource>				defaultContent				= new List<Resource>();
 
+		public static event EventHandler<ResourceResolveEventArgs>	ResourceResolve = null;
+
 		/// <summary>
 		/// Initializes Dualitys embedded default content.
 		/// </summary>
@@ -344,7 +346,8 @@ namespace Duality
 			}
 
 			// Load new content
-			return new ContentRef<T>(LoadContent(path) as T, path);
+			res = LoadContent(path) ?? ResolveContent(path);
+			return new ContentRef<T>(res as T, path);
 		}
 		/// <summary>
 		/// Requests a <see cref="Resource"/>.
@@ -359,6 +362,27 @@ namespace Duality
 			return RequestContent<Resource>(path);
 		}
 
+		private static Resource ResolveContent(string path)
+		{
+			if (string.IsNullOrEmpty(path) || ResourceResolve == null) return null;
+
+			ResourceResolveEventArgs args = new ResourceResolveEventArgs(path);
+			ResourceResolve(null, args);
+
+			if (args.Handled)
+			{
+				if (string.IsNullOrEmpty(args.Result.Path))
+				{
+					args.Result.Path = path;
+				}
+				AddContent(path, args.Result);
+				return args.Result;
+			}
+			else
+			{
+				return null;
+			}
+		}
 		private static Resource LoadContent(string path)
 		{
 			if (string.IsNullOrEmpty(path) || !File.Exists(path)) return null;

@@ -530,7 +530,14 @@ namespace EditorBase.CamViewStates
 					}
 					canvas.PopState();
 				}
-			
+				
+				// Normalize action text position
+				if (this.actionText.Fonts != null && this.actionText.Fonts.Any(r => r.IsAvailable && r.Res.IsPixelGridAligned))
+				{
+					actionTextPos.X = MathF.Round(actionTextPos.X);
+					actionTextPos.Y = MathF.Round(actionTextPos.Y);
+				}
+
 				// Draw current action text
 				if (!this.actionText.IsEmpty)
 				{
