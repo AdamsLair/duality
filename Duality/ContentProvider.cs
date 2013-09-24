@@ -367,7 +367,14 @@ namespace Duality
 			if (string.IsNullOrEmpty(path) || ResourceResolve == null) return null;
 
 			ResourceResolveEventArgs args = new ResourceResolveEventArgs(path);
-			ResourceResolve(null, args);
+			try
+			{
+				ResourceResolve(null, args);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("An error occured in custom ResourceResolve code: {0}", Log.Exception(e));
+			}
 
 			if (args.Handled)
 			{
