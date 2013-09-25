@@ -111,7 +111,12 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			else
 			{
 				if (this.ContentInitialized)
-					this.UpdateElementEditors(values, valueType);
+				{
+					if (this.Expanded)
+						this.UpdateElementEditors(values, valueType);
+					else
+						this.ClearContent();
+				}
 				
 				this.Hints |= HintFlags.ExpandEnabled;
 				if (!this.CanExpand) this.Expanded = false;

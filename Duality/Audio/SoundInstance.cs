@@ -70,7 +70,8 @@ namespace Duality
 		public const int PriorityStealLoopedThreshold = 30;
 
 
-		private	ContentRef<Sound>	snd			= null;
+		private	ContentRef<Sound>		sound		= null;
+		private	ContentRef<AudioData>	audioData	= null;
 		private	bool			disposed		= false;
 		private	int				alSource		= AlSource_NotYetAssigned;
 		private	GameObject		attachedTo		= null;
@@ -81,6 +82,7 @@ namespace Duality
 		private	bool			is3D			= false;
 		private	bool			looped			= false;
 		private	bool			paused			= false;
+		private	bool			registered		= false;
 		private	int				curPriority		= 0;
 		private	DirtyFlag		dirtyState		= DirtyFlag.All;
 		private	float			playTime		= 0.0f;
@@ -108,50 +110,58 @@ namespace Duality
 		public bool Disposed
 		{
 			get { return this.disposed; }
-		}					//	G
+		}
 		/// <summary>
-		/// [GET] A referene to the <see cref="Duality.Resources.Sound"/> that is being played by
+		/// [GET] A reference to the <see cref="Duality.Resources.Sound"/> that is being played by
 		/// this SoundInstance.
 		/// </summary>
 		public ContentRef<Sound> Sound
 		{
-			get { return this.snd; }
-		}	//	G
+			get { return this.sound; }
+		}
+		/// <summary>
+		/// [GET] A reference to the <see cref="Duality.Resources.AudioData"/> that is being played by
+		/// this SoundInstance.
+		/// </summary>
+		public ContentRef<AudioData> AudioData
+		{
+			get { return this.audioData; }
+		}
 		/// <summary>
 		/// [GET] The <see cref="GameObject"/> that this SoundInstance is attached to.
 		/// </summary>
 		public GameObject AttachedTo
 		{
 			get { return this.attachedTo; }
-		}			//	G
+		}
 		/// <summary>
 		/// [GET] Whether the sound is played 3d, "in space" or not.
 		/// </summary>
 		public bool Is3D
 		{
 			get { return this.is3D; }
-		}						//	G
+		}
 		/// <summary>
 		/// [GET] The SoundInstances priority.
 		/// </summary>
 		public int Priority
 		{
 			get { return this.curPriority; }
-		}					//	G
+		}
 		/// <summary>
 		/// [GET] When fading in or out, this value represents the current fading state.
 		/// </summary>
 		public float CurrentFade
 		{
 			get { return this.curFade; }
-		}				//	G
+		}
 		/// <summary>
 		/// [GET] The target value for the current fade. Usually 0.0f or 1.0f for fadint out / in.
 		/// </summary>
 		public float FadeTarget
 		{
 			get { return this.fadeTarget; }
-		}				//	G
+		}
 		/// <summary>
 		/// [GET] The time in seconds that this SoundInstance has been playing its sound.
 		/// This value is affected by the sounds <see cref="Pitch"/>.
@@ -159,7 +169,7 @@ namespace Duality
 		public float PlayTime
 		{
 			get { return this.playTime; }
-		}				//	G
+		}
 
 		/// <summary>
 		/// [GET / SET] The sounds local volume factor.
@@ -168,7 +178,7 @@ namespace Duality
 		{
 			get { return this.vol; }
 			set { this.vol = value; this.dirtyState |= DirtyFlag.Vol; }
-		}			//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The sounds local pitch factor.
 		/// </summary>
@@ -176,7 +186,7 @@ namespace Duality
 		{
 			get { return this.pitch; }
 			set { this.pitch = value; this.dirtyState |= DirtyFlag.Pitch; }
-		}			//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Whether the sound is played in a loop.
 		/// </summary>
@@ -184,7 +194,7 @@ namespace Duality
 		{
 			get { return this.looped; }
 			set { this.looped = value; this.dirtyState |= DirtyFlag.Loop; }
-		}			//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Whether the sound is currently paused.
 		/// </summary>
@@ -192,7 +202,7 @@ namespace Duality
 		{
 			get { return this.paused; }
 			set { this.paused = value; this.dirtyState |= DirtyFlag.Paused; }
-		}			//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The sounds position in space. If it is <see cref="AttachedTo">attached</see> to a GameObject,
 		/// this value is considered relative to it.
@@ -201,7 +211,7 @@ namespace Duality
 		{
 			get { return this.pos; }
 			set { this.pos = value; }
-		}			//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The sounds velocity. If it is <see cref="AttachedTo">attached</see> to a GameObject,
 		/// this value is considered relative to it.
@@ -210,7 +220,7 @@ namespace Duality
 		{
 			get { return this.vel; }
 			set { this.vel = value; }
-		}			//	GS
+		}
 
 
 		~SoundInstance()
@@ -263,27 +273,31 @@ namespace Duality
 						}
 						this.strAlBuffers = null;
 					}
+					this.UnregisterPlaying();
 				}
 			}
 		}
 
 		
-		internal SoundInstance(ContentRef<Sound> snd, GameObject attachObj)
+		internal SoundInstance(ContentRef<Sound> sound, GameObject attachObj)
 		{
 			this.attachedTo = attachObj;
 			this.is3D = true;
-			this.snd = snd;
+			this.sound = sound;
+			this.audioData = this.sound.IsAvailable ? this.sound.Res.FetchData() : null;
 		}
-		internal SoundInstance(ContentRef<Sound> snd, Vector3 pos)
+		internal SoundInstance(ContentRef<Sound> sound, Vector3 pos)
 		{
 			this.pos = pos;
 			this.is3D = true;
-			this.snd = snd;
+			this.sound = sound;
+			this.audioData = this.sound.IsAvailable ? this.sound.Res.FetchData() : null;
 		}
-		internal SoundInstance(ContentRef<Sound> snd)
+		internal SoundInstance(ContentRef<Sound> sound)
 		{
-			this.snd = snd;
+			this.sound = sound;
 			this.is3D = false;
+			this.audioData = this.sound.IsAvailable ? this.sound.Res.FetchData() : null;
 		}
 
 		/// <summary>
@@ -384,17 +398,17 @@ namespace Duality
 			// Determine how many sources of this kind (2D / 3D) are playing
 			int curNum = this.is3D ? DualityApp.Sound.NumPlaying3D : DualityApp.Sound.NumPlaying2D;
 			// Determine how many sources using this sound resource are playing
-			int curNumSoundRes = DualityApp.Sound.GetNumPlaying(this.snd);
+			int curNumSoundRes = DualityApp.Sound.GetNumPlaying(this.sound);
 
 			if (DualityApp.Sound.NumAvailable > 0 &&
 				curNum < maxNum &&
-				curNumSoundRes < this.snd.Res.MaxInstances)
+				curNumSoundRes < this.sound.Res.MaxInstances)
 			{
 				this.alSource = DualityApp.Sound.RequestAlSource();
 			}
 			else
 			{
-				bool searchSimilar = curNumSoundRes >= this.snd.Res.MaxInstances;
+				bool searchSimilar = curNumSoundRes >= this.sound.Res.MaxInstances;
 				lock (this.strLock)
 				{
 					this.alSource = AlSource_NotAvailable;
@@ -404,7 +418,7 @@ namespace Duality
 					{
 						if (inst.alSource <= AlSource_NotAvailable) continue;
 						if (!searchSimilar && this.is3D != inst.is3D) continue;
-						if (searchSimilar && this.snd.Res != inst.snd.Res) continue;
+						if (searchSimilar && this.sound.Res != inst.sound.Res) continue;
 						
 						float ownPrioMult = 1.0f;
 						if (searchSimilar && !inst.Looped) ownPrioMult *= MathF.Sqrt(inst.playTime + 1.0f);
@@ -434,14 +448,14 @@ namespace Duality
 		{
 			// Don't take fade into account: If a yet-to-fade-in sound wants to grab
 			// the source of a already-playing sound, it should get its chance.
-			float volTemp = this.GetTypeVolFactor() * this.snd.Res.VolumeFactor * this.vol;
+			float volTemp = this.GetTypeVolFactor() * this.sound.Res.VolumeFactor * this.vol;
 			float priorityTemp = 1000.0f;
 			priorityTemp *= volTemp;
 
 			if (this.is3D)
 			{
-				float minDistTemp = this.snd.Res.MinDist;
-				float maxDistTemp = this.snd.Res.MaxDist;
+				float minDistTemp = this.sound.Res.MinDist;
+				float maxDistTemp = this.sound.Res.MaxDist;
 				Vector3 listenerPos = DualityApp.Sound.ListenerPos;
 				Vector3 posTemp;
 				if (this.attachedTo != null)	posTemp = this.attachedTo.Transform.Pos + this.pos;
@@ -453,13 +467,13 @@ namespace Duality
 				priorityTemp *= Math.Max(0.0f, 1.0f - (dist - minDistTemp) / (maxDistTemp - minDistTemp));
 			}
 
-			int numPlaying = DualityApp.Sound.GetNumPlaying(this.snd);
+			int numPlaying = DualityApp.Sound.GetNumPlaying(this.sound);
 			return (int)Math.Round(priorityTemp / Math.Sqrt(numPlaying));
 		}
 		private float GetTypeVolFactor()
 		{
 			float optVolFactor;
-			switch (this.snd.IsAvailable ? this.snd.Res.Type : SoundType.EffectWorld)
+			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.EffectWorld)
 			{
 				case SoundType.EffectUI:
 					optVolFactor = DualityApp.UserData.SfxEffectVol;
@@ -479,6 +493,18 @@ namespace Duality
 			}
 			return optVolFactor * DualityApp.UserData.SfxMasterVol * 0.5f;
 		}
+		private void RegisterPlaying()
+		{
+			if (this.registered) return;
+			DualityApp.Sound.RegisterPlaying(this.sound, this.is3D);
+			this.registered = true;
+		}
+		private void UnregisterPlaying()
+		{
+			if (!this.registered) return;
+			DualityApp.Sound.UnregisterPlaying(this.sound, this.is3D);
+			this.registered = false;
+		}
 
 		/// <summary>
 		/// Updates the SoundInstance
@@ -492,18 +518,18 @@ namespace Duality
 				if (this.attachedTo != null && this.attachedTo.Disposed) this.attachedTo = null;
 
 				// Retrieve sound resource values
-				Sound res = this.snd.Res;
-				if (res == null)
+				Sound soundRes = this.sound.Res;
+				AudioData audioDataRes = this.audioData.Res;
+				if (soundRes == null || audioDataRes == null)
 				{
-					DualityApp.Sound.UnregisterPlaying(this.snd, this.is3D);
 					this.Dispose();
 					return;
 				}
 				float optVolFactor = this.GetTypeVolFactor();
-				float minDistTemp = res.MinDist;
-				float maxDistTemp = res.MaxDist;
-				float volTemp = optVolFactor * res.VolumeFactor * this.vol * this.curFade * this.pauseFade;
-				float pitchTemp = res.PitchFactor * this.pitch;
+				float minDistTemp = soundRes.MinDist;
+				float maxDistTemp = soundRes.MaxDist;
+				float volTemp = optVolFactor * soundRes.VolumeFactor * this.vol * this.curFade * this.pauseFade;
+				float pitchTemp = soundRes.PitchFactor * this.pitch;
 				float priorityTemp = 1000.0f;
 				priorityTemp *= volTemp;
 
@@ -538,7 +564,6 @@ namespace Duality
 							posAbs.Z * posAbs.Z * 0.25f);
 					if (dist > maxDistTemp)
 					{
-						DualityApp.Sound.UnregisterPlaying(this.snd, this.is3D);
 						this.Dispose();
 						return;
 					}
@@ -551,7 +576,7 @@ namespace Duality
 				{
 					if (this.GrabAlSource())
 					{
-						DualityApp.Sound.RegisterPlaying(this.snd, this.is3D);
+						this.RegisterPlaying();
 					}
 					else
 					{
@@ -567,16 +592,14 @@ namespace Duality
 				// If the source is stopped / finished, dispose and return
 				if (stateTemp == ALSourceState.Stopped)
 				{
-					if (!this.snd.Res.IsStreamed || this.strStopReq != StopRequest.None)
+					if (!audioDataRes.IsStreamed || this.strStopReq != StopRequest.None)
 					{
-						DualityApp.Sound.UnregisterPlaying(this.snd, this.is3D);
 						this.Dispose();
 						return;
 					}
 				}
 				else if (stateTemp == ALSourceState.Initial && this.strStopReq == StopRequest.Immediately)
 				{
-					DualityApp.Sound.UnregisterPlaying(this.snd, this.is3D);
 					this.Dispose();
 					return;
 				} 
@@ -657,7 +680,7 @@ namespace Duality
 				if ((this.dirtyState & DirtyFlag.RefDist) != DirtyFlag.None)
 					AL.Source(this.alSource, ALSourcef.ReferenceDistance, minDistTemp);
 				if ((this.dirtyState & DirtyFlag.Loop) != DirtyFlag.None)
-					AL.Source(this.alSource, ALSourceb.Looping, (this.looped && !res.IsStreamed));
+					AL.Source(this.alSource, ALSourceb.Looping, (this.looped && !audioDataRes.IsStreamed));
 				if ((this.dirtyState & DirtyFlag.Vol) != DirtyFlag.None)
 					AL.Source(this.alSource, ALSourcef.Gain, volTemp);
 				if ((this.dirtyState & DirtyFlag.Pitch) != DirtyFlag.None)
@@ -675,17 +698,17 @@ namespace Duality
 				if (!this.paused)
 				{
 					this.playTime += MathF.Max(0.5f, pitchTemp) * Time.TimeMult * Time.SPFMult;
-					if (this.snd.Res.FadeOutAt > 0.0f && this.playTime >= this.snd.Res.FadeOutAt)
-						this.FadeOut(this.snd.Res.FadeOutTime);
+					if (this.sound.Res.FadeOutAt > 0.0f && this.playTime >= this.sound.Res.FadeOutAt)
+						this.FadeOut(this.sound.Res.FadeOutTime);
 				}
 
 				// Finish priority calculation
-				this.curPriority = (int)Math.Round(priorityTemp / Math.Sqrt(DualityApp.Sound.GetNumPlaying(this.snd))); 
+				this.curPriority = (int)Math.Round(priorityTemp / Math.Sqrt(DualityApp.Sound.GetNumPlaying(this.sound))); 
 
 				// Initially play the source
 				if (stateTemp == ALSourceState.Initial && !this.paused)
 				{
-					if (res.IsStreamed)
+					if (audioDataRes.IsStreamed)
 					{
 						this.strStreamed = true;
 						this.strWorker = new Thread(ThreadStreamFunc);
@@ -693,7 +716,7 @@ namespace Duality
 					}
 					else
 					{
-						AL.SourceQueueBuffer(this.alSource, res.AlBuffer);
+						AL.SourceQueueBuffer(this.alSource, audioDataRes.AlBuffer);
 						AL.SourcePlay(this.alSource);
 					} 
 				}
@@ -706,7 +729,6 @@ namespace Duality
 					if (this.fadeWaitEnd > 50.0f)
 					{
 						this.Dispose();
-						DualityApp.Sound.UnregisterPlaying(this.snd, this.is3D);
 						return;
 					}
 				}
@@ -744,8 +766,9 @@ namespace Duality
 						return;
 					}
 
-					Sound res = sndInst.snd.Res;
-					if (res == null)
+					Sound soundRes = sndInst.sound.Res;
+					AudioData audioDataRes = sndInst.audioData.Res;
+					if (soundRes == null || audioDataRes == null)
 					{
 						sndInst.Dispose();
 						return;
@@ -760,7 +783,7 @@ namespace Duality
 						}
 
 						// Begin streaming
-						OV.BeginStreamFromMemory(res.Data.Res.OggVorbisData, out sndInst.strOvStr);
+						OV.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
 
 						// Initially, completely fill all buffers
 						for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
@@ -805,7 +828,7 @@ namespace Duality
 									OV.EndStream(ref sndInst.strOvStr);
 									if (sndInst.looped)
 									{
-										OV.BeginStreamFromMemory(res.Data.Res.OggVorbisData, out sndInst.strOvStr);
+										OV.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
 										if (pcm.dataLength == 0)
 										{
 											eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);

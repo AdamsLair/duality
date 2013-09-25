@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using Duality.EditorHints;
 
 namespace Duality.Resources
@@ -73,15 +76,38 @@ namespace Duality.Resources
 		private	float		fadeOutAt		= 0.0f;
 		private	float		fadeOutTime		= 0.0f;
 		private	SoundType	type			= SoundType.EffectWorld;
-		private	ContentRef<AudioData>	audioData	= ContentRef<AudioData>.Null;
+		private	List<ContentRef<AudioData>>	audioData	= null;
 
 		/// <summary>
-		/// [GET / SET] The <see cref="Duality.Resources.AudioData"/> that is parameterized by this Sound.
+		/// [GET / SET] A collection of <see cref="DataEntry">parameterized data entries</see> that refers to the source <see cref="Duality.Resources.AudioData"/> that is used by this Sound.
 		/// </summary>
-		public ContentRef<AudioData> Data
+		[EditorHintFlags(MemberFlags.ForceWriteback | MemberFlags.AffectsOthers)]
+		public List<ContentRef<AudioData>> Data
 		{
 			get { return this.audioData; }
-			set { this.LoadData(value); }
+			set
+			{ 
+				this.audioData = value;
+				this.PreloadData();
+			}
+		}
+		/// <summary>
+		/// [GET / SET] The main source <see cref="Duality.Resources.AudioData"/> that is used by this Sound.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		public ContentRef<AudioData> MainData
+		{
+			get { return this.audioData != null && this.audioData.Count > 0 ? this.audioData[0] : null; }
+			set
+			{
+				if (this.audioData == null)
+					this.audioData = new List<ContentRef<AudioData>>();
+
+				if (this.audioData.Count == 0)
+					this.audioData.Add(value);
+				else 
+					this.audioData[0] = value;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The category to which this Sound belongs.
@@ -175,21 +201,6 @@ namespace Duality.Resources
 			get { return DualityApp.Sound.DefaultMaxDist * this.maxDistFactor; }
 			set { this.maxDistFactor = value / DualityApp.Sound.DefaultMaxDist; }
 		}
-		/// <summary>
-		/// [GET] Returns whether the Sound will be streamed when playing.
-		/// </summary>
-		public bool IsStreamed
-		{
-			get { return this.audioData.IsAvailable && this.audioData.Res.IsStreamed; }
-		}
-		/// <summary>
-		/// The OpenAL buffer handle to the audio data that is used by this Sound.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		internal int AlBuffer
-		{
-			get { return this.audioData.IsAvailable ? this.audioData.Res.AlBuffer : AudioData.AlBuffer_NotAvailable; }
-		}
 
 		/// <summary>
 		/// Creates a new, empty sound. Since it does not refer to any <see cref="Duality.Resources.AudioData"/> yet,
@@ -202,17 +213,41 @@ namespace Duality.Resources
 		/// <param name="baseData"></param>
 		public Sound(ContentRef<AudioData> baseData)
 		{
-			this.LoadData(baseData);
+			this.audioData = new List<ContentRef<AudioData>>{ baseData };
+			this.PreloadData();
+		}
+		/// <summary>
+		/// Creates a new Sound referring to an existing set of <see cref="Duality.Resources.AudioData"/>.
+		/// </summary>
+		/// <param name="baseData"></param>
+		public Sound(IEnumerable<ContentRef<AudioData>> baseData)
+		{
+			this.audioData = baseData.ToList();
+			this.PreloadData();
+		}
+
+		/// <summary>
+		/// Upon playing the Sound, this method is called once to determine which of the referenced
+		/// <see cref="Duality.Resources.AudioData"/> objects is to be played.
+		/// </summary>
+		/// <returns></returns>
+		public ContentRef<AudioData> FetchData()
+		{
+			return MathF.Rnd.OneOf(this.audioData);
 		}
 
 		/// <summary>
 		/// Assigns new <see cref="Duality.Resources.AudioData"/> to this Sound.
 		/// </summary>
 		/// <param name="data"></param>
-		public void LoadData(ContentRef<AudioData> data)
+		private void PreloadData()
 		{
-			this.audioData = data;
-			if (this.audioData.IsAvailable) this.audioData.Res.SetupAlBuffer();
+			if (this.audioData == null) return;
+			for (int i = 0; i < this.audioData.Count; i++)
+			{
+				if (this.audioData[i].IsAvailable)
+					this.audioData[i].Res.SetupAlBuffer();
+			}
 		}
 
 		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
@@ -226,7 +261,13 @@ namespace Duality.Resources
 			c.pitchFactor = this.pitchFactor;
 			c.fadeOutAt = this.fadeOutAt;
 			c.fadeOutTime = this.fadeOutTime;
-			c.LoadData(this.audioData);
+			c.audioData = this.audioData != null ? this.audioData.ToList() : null;
+			c.PreloadData();
+		}
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			this.PreloadData();
 		}
 	}
 }

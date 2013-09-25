@@ -599,7 +599,7 @@ namespace EditorBase.DataConverters
 			else if (baseRes.IsDefaultContent)
 			{
 				var defaultContent = ContentProvider.GetDefaultContent<Resource>();
-				return defaultContent.Res().OfType<Sound>().FirstOrDefault(r => r.Data == baseRes);
+				return defaultContent.Res().OfType<Sound>().FirstOrDefault(r => r.Data.Count == 1 && r.MainData == baseRes);
 			}
 			else
 			{
@@ -617,7 +617,7 @@ namespace EditorBase.DataConverters
 				{
 					if (!resFile.EndsWith(Sound.FileExt)) continue;
 					match = ContentProvider.RequestContent<Sound>(resFile).Res;
-					if (match != null && match.Data == baseRes) return match;
+					if (match != null && match.Data.Count == 1 && match.MainData == baseRes) return match;
 				}
 
 				// Give up.
@@ -643,10 +643,12 @@ namespace EditorBase.DataConverters
 			foreach (Sound baseRes in availData)
 			{
 				if (convert.IsObjectHandled(baseRes)) continue;
-				if (!baseRes.Data.IsAvailable) continue;
-
-				convert.AddResult(baseRes.Data.Res);
-				finishConvertOp = true;
+				for (int i = 0; i < baseRes.Data.Count; i++)
+				{
+					if (!baseRes.Data[i].IsAvailable) continue;
+					convert.AddResult(baseRes.Data[i].Res);
+					finishConvertOp = true;
+				}
 				convert.MarkObjectHandled(baseRes);
 			}
 

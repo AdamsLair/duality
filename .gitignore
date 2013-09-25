@@ -39,3 +39,5 @@ Other/Dependencies/treeviewadv/TestApp/obj/
 Duality/Duality.csproj.user
 DualityPlugins/DynamicLighting/DynamicLighting.core.xml
 Documentation/Documentation.shfbproj_Fedja Adam
+DualityPlugins/ResourceVersionCompatibility/bin/
+DualityPlugins/ResourceVersionCompatibility/obj/
