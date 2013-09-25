@@ -65,7 +65,8 @@ namespace Duality.OggVorbis
 
 	public static class OV
 	{
-		private const int DefaultBufferSize = 1024 * 8;
+		private const int DefaultBufferSize = 1024 * 16;
+		private static object readMutex = new object();
 
 		public static PcmData LoadFromFile(string filename)
 		{
@@ -131,7 +132,11 @@ namespace Duality.OggVorbis
 			float[] buffer = new float[bufferSize];
 			while (pcm.dataLength < buffer.Length)
 			{
-				int samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.dataLength, buffer.Length - pcm.dataLength);
+				int samplesRead;
+				lock (readMutex)
+				{
+					samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.dataLength, buffer.Length - pcm.dataLength);
+				}
 				if (samplesRead > 0)
 				{
 					pcm.dataLength += samplesRead;
@@ -163,7 +168,11 @@ namespace Duality.OggVorbis
 				int bufferSamplesRead = 0;
 				while(bufferSamplesRead < buffer.Length)
 				{
-					int samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.dataLength, buffer.Length - pcm.dataLength);
+					int samplesRead;
+					lock (readMutex)
+					{
+						samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.dataLength, buffer.Length - pcm.dataLength);
+					}
 					if (samplesRead > 0)
 					{
 						bufferSamplesRead += samplesRead;

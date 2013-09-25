@@ -860,7 +860,7 @@ namespace Duality
 						AL.SourcePlay(sndInst.alSource);
 					}
 				}
-				Thread.Sleep(8);
+				Thread.Sleep(16);
 			}
 		}
 	}

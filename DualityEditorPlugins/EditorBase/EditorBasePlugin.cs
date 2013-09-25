@@ -209,7 +209,7 @@ namespace EditorBase
 			// Register conversion actions
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>				(EditorBaseRes.ActionName_CreateTexture,		EditorBaseRes.IconResTexture,		this.ActionPixmapCreateTexture,		EditorBaseRes.ActionDesc_CreateTexture),		CorePluginRegistry.ActionContext_ContextMenu);
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<Texture>				(EditorBaseRes.ActionName_CreateMaterial,		EditorBaseRes.IconResMaterial,		this.ActionTextureCreateMaterial,	EditorBaseRes.ActionDesc_CreateMaterial),		CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<AudioData>				(EditorBaseRes.ActionName_CreateSound,			EditorBaseRes.IconResSound,			this.ActionAudioDataCreateSound,	EditorBaseRes.ActionDesc_CreateSound),			CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AudioData>		(EditorBaseRes.ActionName_CreateSound,			EditorBaseRes.IconResSound,			this.ActionAudioDataCreateSound,	EditorBaseRes.ActionDesc_CreateSound),			CorePluginRegistry.ActionContext_ContextMenu);
 			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AbstractShader>	(EditorBaseRes.ActionName_CreateShaderProgram,	EditorBaseRes.IconResShaderProgram, this.ActionShaderCreateProgram,		EditorBaseRes.ActionDesc_CreateShaderProgram),	CorePluginRegistry.ActionContext_ContextMenu);
 
 			// Register open actions
@@ -423,9 +423,9 @@ namespace EditorBase
 		{
 			Material.CreateFromTexture(tex);
 		}
-		private void ActionAudioDataCreateSound(AudioData audio)
+		private void ActionAudioDataCreateSound(IEnumerable<AudioData> audioEnum)
 		{
-			Sound.CreateFromAudioData(audio);
+			Sound.CreateMultipleFromAudioData(audioEnum.Ref());
 		}
 		private void ActionShaderCreateProgram(IEnumerable<AbstractShader> shaderEnum)
 		{

@@ -189,14 +189,12 @@ namespace DualityEditor.CorePluginInterface
 			if (data == null) return;
 			if (data is IContentRef) data = (data as IContentRef).Res;
 			this.handledObj.Add(data);
-			//Log.Editor.Write("handled: {0} {1}", data != null ? data.GetType().Name : "", data);
 		}
 		public void AddResult(object obj)
 		{
 			if (obj == null) return;
 			if (this.result.Contains(obj)) return;
 			this.result.Add(obj);
-			//Log.Editor.Write("addresult: {0} {1}", obj != null ? obj.GetType().Name : "", obj);
 		}
 		public void AddResult(IEnumerable<object> objEnum)
 		{
