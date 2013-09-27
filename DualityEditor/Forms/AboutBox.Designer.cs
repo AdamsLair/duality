@@ -72,7 +72,7 @@
 			this.linkLabelDevWebsite.Location = new System.Drawing.Point(110, 235);
 			this.linkLabelDevWebsite.Margin = new System.Windows.Forms.Padding(3);
 			this.linkLabelDevWebsite.Name = "linkLabelDevWebsite";
-			this.linkLabelDevWebsite.Size = new System.Drawing.Size(176, 17);
+			this.linkLabelDevWebsite.Size = new System.Drawing.Size(129, 17);
 			this.linkLabelDevWebsite.TabIndex = 6;
 			this.linkLabelDevWebsite.TabStop = true;
 			this.linkLabelDevWebsite.Text = "http://www.fetzenet.de";
@@ -136,10 +136,10 @@
 			this.linkLabelWebsite.Location = new System.Drawing.Point(110, 212);
 			this.linkLabelWebsite.Margin = new System.Windows.Forms.Padding(3);
 			this.linkLabelWebsite.Name = "linkLabelWebsite";
-			this.linkLabelWebsite.Size = new System.Drawing.Size(176, 17);
+			this.linkLabelWebsite.Size = new System.Drawing.Size(129, 17);
 			this.linkLabelWebsite.TabIndex = 5;
 			this.linkLabelWebsite.TabStop = true;
-			this.linkLabelWebsite.Text = "https://code.google.com/p/duality/";
+			this.linkLabelWebsite.Text = "http://duality.fetzenet.de/";
 			this.linkLabelWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWebsite_LinkClicked);
 			// 
@@ -148,7 +148,7 @@
 			this.labelVersion.AutoSize = true;
 			this.labelVersion.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.labelVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelVersion.Location = new System.Drawing.Point(292, 212);
+			this.labelVersion.Location = new System.Drawing.Point(245, 212);
 			this.labelVersion.Margin = new System.Windows.Forms.Padding(3);
 			this.labelVersion.Name = "labelVersion";
 			this.tableLayoutPanel.SetRowSpan(this.labelVersion, 2);
@@ -163,11 +163,11 @@
 			this.labelVersionData.AutoSize = true;
 			this.labelVersionData.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.labelVersionData.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelVersionData.Location = new System.Drawing.Point(394, 212);
+			this.labelVersionData.Location = new System.Drawing.Point(347, 212);
 			this.labelVersionData.Margin = new System.Windows.Forms.Padding(3);
 			this.labelVersionData.Name = "labelVersionData";
 			this.tableLayoutPanel.SetRowSpan(this.labelVersionData, 2);
-			this.labelVersionData.Size = new System.Drawing.Size(107, 40);
+			this.labelVersionData.Size = new System.Drawing.Size(154, 40);
 			this.labelVersionData.TabIndex = 8;
 			this.labelVersionData.Text = "{0}\r\n{1}\r\n{2}";
 			this.labelVersionData.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
