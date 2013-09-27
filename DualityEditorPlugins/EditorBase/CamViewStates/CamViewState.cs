@@ -1584,7 +1584,7 @@ namespace EditorBase.CamViewStates
 		}
 		private void camPassEdScreen_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
 		{
-			Canvas canvas = new Canvas(this.CameraComponent.DrawDevice);
+			Canvas canvas = new Canvas(e.Device);
 			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
 			canvas.CurrentState.TextFont = OverlayFont;
 
@@ -1592,7 +1592,7 @@ namespace EditorBase.CamViewStates
 		}
 		private void camPassEdWorld_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
 		{
-			Canvas canvas = new Canvas(this.CameraComponent.DrawDevice);
+			Canvas canvas = new Canvas(e.Device);
 			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
 			canvas.CurrentState.TextFont = Duality.Resources.Font.GenericMonospace8;
 
@@ -1600,7 +1600,7 @@ namespace EditorBase.CamViewStates
 		}
 		private void camPassBg_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
 		{
-			Canvas canvas = new Canvas(this.CameraComponent.DrawDevice);
+			Canvas canvas = new Canvas(e.Device);
 			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
 			canvas.CurrentState.TextFont = Duality.Resources.Font.GenericMonospace8;
 
