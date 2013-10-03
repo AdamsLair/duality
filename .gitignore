@@ -41,3 +41,6 @@ DualityPlugins/DynamicLighting/DynamicLighting.core.xml
 Documentation/Documentation.shfbproj_Fedja Adam
 DualityPlugins/ResourceVersionCompatibility/bin/
 DualityPlugins/ResourceVersionCompatibility/obj/
+Other/Dependencies/WinFormsUI/Source/obj/
+Other/Dependencies/WinFormsUI/Source/bin/
+Other/Dependencies/WinFormsUI/Source/Docking/Resources/Thumbs.db

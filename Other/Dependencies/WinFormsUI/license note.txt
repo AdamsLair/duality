@@ -1,0 +1,1 @@
+The included version of DockPanel Suite has been altered to fit project needs.

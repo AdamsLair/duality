@@ -51,7 +51,7 @@ namespace EditorBase
 		{
 			base.OnShown(e);
 
-			this.DockPanel.ActiveAutoHideContentChanged += this.DockPanel_ActiveAutoHideContentChanged;
+			this.DockPanel.ActiveContentChanged += DockPanel_ActiveContentChanged;
 			Sandbox.Entering += this.Sandbox_Entering;
 		}
 		protected override void OnClosed(EventArgs e)
@@ -61,7 +61,7 @@ namespace EditorBase
 			this.logEntryList.BindToOutput(null);
 			Log.LogData.NewEntry -= LogData_NewEntry;
 
-			this.DockPanel.ActiveAutoHideContentChanged -= this.DockPanel_ActiveAutoHideContentChanged;
+			this.DockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
 			Sandbox.Entering -= this.Sandbox_Entering;
 		}
 		protected override void OnGotFocus(EventArgs e)
@@ -79,7 +79,7 @@ namespace EditorBase
 				this.MarkAsRead();
 			}
 		}
-		private void DockPanel_ActiveAutoHideContentChanged(object sender, EventArgs e)
+		private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
 		{
 			if (this.DockPanel.ActiveAutoHideContent == this)
 			{
