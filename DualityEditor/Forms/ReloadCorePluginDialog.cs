@@ -5,8 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Threading;
 using System.Diagnostics;
-using Windows7.DesktopIntegration;
-using Windows7.DesktopIntegration.WindowsForms;
 
 using Duality;
 using DualityEditor.EditorRes;
@@ -206,7 +204,7 @@ namespace DualityEditor.Forms
 			if (this.workerInterface.Shutdown) return;
 
 			this.owner.SetTaskbarProgress(0.0f);
-			this.owner.SetTaskbarProgressState(Windows7Taskbar.ThumbnailProgressState.NoProgress);
+			this.owner.SetTaskbarProgressState(ThumbnailProgressState.NoProgress);
 			this.owner.SetTaskbarOverlayIcon(null, null);
 			if (this.workerInterface.ReloadDone != null)
 			{
@@ -238,7 +236,7 @@ namespace DualityEditor.Forms
 			else if (this.state == ReloaderState.ReloadPlugins)
 			{
 				this.progressBar.Value = (int)Math.Round(this.workerInterface.Progress * 100.0f);
-				this.owner.SetTaskbarProgressState(Windows7Taskbar.ThumbnailProgressState.Normal);
+				this.owner.SetTaskbarProgressState(ThumbnailProgressState.Normal);
 				this.owner.SetTaskbarProgress(this.progressBar.Value);
 
 				if (this.workerInterface.Error != null)
@@ -246,7 +244,7 @@ namespace DualityEditor.Forms
 					this.progressTimer.Stop();
 					try
 					{
-						this.owner.SetTaskbarProgressState(Windows7Taskbar.ThumbnailProgressState.Error);
+						this.owner.SetTaskbarProgressState(ThumbnailProgressState.Error);
 						MessageBox.Show(this, 
 							String.Format(GeneralRes.Msg_ErrorReloadCorePlugin_Desc, "\n", Log.Exception(this.workerInterface.Error)), 
 							GeneralRes.Msg_ErrorReloadCorePlugin_Caption, 

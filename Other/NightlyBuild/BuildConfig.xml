@@ -29,5 +29,6 @@
     <string>VistaBridgeLibrary.xml</string>
     <string>WeifenLuo.WinFormsUI.Docking.pdb</string>
     <string>Windows7.DesktopIntegration.xml</string>
+    <string>OpenAL32.dll</string>
   </FileCopyBlackList>
 </ConfigFile>
