@@ -912,7 +912,7 @@ namespace Duality.Components.Physics
             int count = contact.Manifold.PointCount;
             for (int i = 0; i < count; ++i)
             {
-				if (impulse.Points[i].NormalImpulse > 0.0f || impulse.Points[i].TangentImpulse > 0.0f)
+				if (impulse.Points[i].NormalImpulse != 0.0f || impulse.Points[i].TangentImpulse != 0.0f)
 				{
 					CollisionData colData = new CollisionData(this.body, impulse, i);
 					if (contact.FixtureA.Body == this.body)
