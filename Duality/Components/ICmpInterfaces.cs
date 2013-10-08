@@ -136,14 +136,14 @@ namespace Duality
 		private	float	tangentMass;
 
 		/// <summary>
-		/// [GET] The position at which the collision occurred.
+		/// [GET] The position at which the collision occurred in absolute world coordinates.
 		/// </summary>
 		public Vector2 Pos
 		{
 			get { return this.pos; }
 		}
 		/// <summary>
-		/// [GET] The normal vector that is associated with the collision.
+		/// [GET] The normal vector of the collision impulse, in the global coordinate system.
 		/// </summary>
 		public Vector2 Normal
 		{
@@ -164,14 +164,14 @@ namespace Duality
 			get { return this.normalMass; }
 		}
 		/// <summary>
-		/// [GET] The speed at which the collision occurred along the provided normal vector.
+		/// [GET] The speed change that will occur when applying <see cref="NormalImpulse"/> to <see cref="NormalMass"/>.
 		/// </summary>
 		public float NormalSpeed
 		{
 			get { return this.normalImpulse / this.normalMass; }
 		}
 		/// <summary>
-		/// [GET] The tangent vector that is associated with the collision.
+		/// [GET] The tangent vector of the collision impulse, in the global coordinate system.
 		/// </summary>
 		public Vector2 Tangent
 		{
@@ -192,7 +192,7 @@ namespace Duality
 			get { return this.tangentMass; }
 		}
 		/// <summary>
-		/// [GET] The speed at which the collision occurred along the provided tangent vector.
+		/// [GET] The speed change that will occur when applying <see cref="TangentImpulse"/> to <see cref="TangentMass"/>.
 		/// </summary>
 		public float TangentSpeed
 		{
@@ -212,7 +212,7 @@ namespace Duality
 		{
 			if (localBody == impulse.BodyA)
 			{
-				this.pos = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].rA);
+				this.pos = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].rA + impulse.BodyA.Position);
 				this.normal = impulse.Normal;
 				this.normalImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].NormalImpulse * Time.SPFMult));
 				this.tangentImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].TangentImpulse * Time.SPFMult));
@@ -221,7 +221,7 @@ namespace Duality
 			}
 			else if (localBody == impulse.BodyB)
 			{
-				this.pos = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].rB);
+				this.pos = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].rB + impulse.BodyB.Position);
 				this.normal = -impulse.Normal;
 				this.normalImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].NormalImpulse * Time.SPFMult));
 				this.tangentImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].TangentImpulse * Time.SPFMult));

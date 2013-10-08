@@ -17,6 +17,7 @@ using Duality.Resources;
 using DualityEditor;
 using DualityEditor.Forms;
 using DualityEditor.UndoRedoActions;
+using DualityEditor.CorePluginInterface;
 
 using EditorBase.CamViewStates;
 using EditorBase.CamViewLayers;
@@ -932,7 +933,7 @@ namespace EditorBase
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (!e.Objects.Resources.Any()) return;
+			if (!e.Objects.Resources.Any() && !e.Objects.OfType<DesignTimeObjectData>().Any()) return;
 			this.glControl.Invalidate();
 		}
 		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)
