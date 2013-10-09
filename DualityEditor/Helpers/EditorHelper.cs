@@ -71,14 +71,40 @@ namespace DualityEditor
 			string[] visualStudioSubKeys = visualStudio != null ? visualStudio.GetSubKeyNames() : null;
 
 			vsEdition = VisualStudioEdition.Express;
-			if (visualStudioSubKeys != null)
-			{
-				if (visualStudioSubKeys.Contains("8.0"))	vsEdition = VisualStudioEdition.Standard;
-				if (visualStudioSubKeys.Contains("9.0"))	vsEdition = VisualStudioEdition.Standard;
-				if (visualStudioSubKeys.Contains("10.0"))	vsEdition = VisualStudioEdition.Standard;
-				if (visualStudioSubKeys.Contains("11.0"))	vsEdition = VisualStudioEdition.Standard;
-				if (visualStudioSubKeys.Contains("12.0"))	vsEdition = VisualStudioEdition.Standard;
-			}
+			// Doesn't work:
+			//if (visualStudioSubKeys != null)
+			//{
+			//    if (visualStudioSubKeys.Contains("8.0"))	vsEdition = VisualStudioEdition.Standard;
+			//    if (visualStudioSubKeys.Contains("9.0"))	vsEdition = VisualStudioEdition.Standard;
+			//    if (visualStudioSubKeys.Contains("10.0"))	vsEdition = VisualStudioEdition.Standard;
+			//    if (visualStudioSubKeys.Contains("11.0"))	vsEdition = VisualStudioEdition.Standard;
+			//    if (visualStudioSubKeys.Contains("12.0"))	vsEdition = VisualStudioEdition.Standard;
+			//}
+
+			// Doesn't work either:
+			//RegistryKey visualStudio = localMachine.OpenSubKey(@"SOFTWARE\Microsoft\VisualStudio");
+			//if (visualStudio != null)
+			//{
+			//    // Determine highest installed visual studio version
+			//    RegistryKey visualStudioVersion = null;
+			//    if (visualStudioVersion == null) visualStudioVersion = visualStudio.OpenSubKey("11.0");
+			//    if (visualStudioVersion == null) visualStudioVersion = visualStudio.OpenSubKey("10.0");
+			//    if (visualStudioVersion == null) visualStudioVersion = visualStudio.OpenSubKey("9.0");
+			//    if (visualStudioVersion == null) visualStudioVersion = visualStudio.OpenSubKey("8.0");
+
+			//    // Determine edition
+			//    if (visualStudioVersion != null)
+			//    {
+			//        RegistryKey visualStudioSetup = visualStudioVersion.OpenSubKey("Setup");
+			//        string[] subKeys = (visualStudioSetup != null) ? visualStudioSetup.GetSubKeyNames() : null;
+			//        if (subKeys != null)
+			//        {
+			//            // This won't work
+			//            if (subKeys.Any(k => k.Contains("Visual Studio Ultimate"))) vsEdition = VisualStudioEdition.Standard;
+			//            if (subKeys.Any(k => k.Contains("Visual Studio Professional"))) vsEdition = VisualStudioEdition.Standard;
+			//        }
+			//    }
+			//}
 		}
 
 		public static string GenerateClassNameFromPath(string path)
