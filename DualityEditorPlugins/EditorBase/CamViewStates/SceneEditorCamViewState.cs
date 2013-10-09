@@ -77,9 +77,10 @@ namespace EditorBase.CamViewStates
 
 			public override bool IsActionAvailable(ObjectAction action)
 			{
-				if (action == ObjectAction.Move) return true;
-				if (action == ObjectAction.Rotate) return true;
-				if (action == ObjectAction.Scale) return true;
+				if (action == ObjectAction.Move ||
+					action == ObjectAction.Rotate ||
+					action == ObjectAction.Scale)
+					return this.HasTransform;
 				return false;
 			}
 			public override string UpdateActionText(ObjectAction action, bool performing)
