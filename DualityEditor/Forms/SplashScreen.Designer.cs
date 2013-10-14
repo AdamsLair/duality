@@ -28,11 +28,14 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.logoPanel = new System.Windows.Forms.Panel();
-			this.labelLoading = new System.Windows.Forms.Label();
 			this.mainFormLoader = new System.ComponentModel.BackgroundWorker();
-			this.logoPanel.SuspendLayout();
+			this.logoPanel = new System.Windows.Forms.Panel();
 			this.SuspendLayout();
+			// 
+			// mainFormLoader
+			// 
+			this.mainFormLoader.DoWork += new System.ComponentModel.DoWorkEventHandler(this.mainFormLoader_DoWork);
+			this.mainFormLoader.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.mainFormLoader_RunWorkerCompleted);
 			// 
 			// logoPanel
 			// 
@@ -40,28 +43,11 @@
 			this.logoPanel.BackgroundImage = global::DualityEditor.Properties.Resources.DualitorLogoHalfSize;
 			this.logoPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.logoPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.logoPanel.Controls.Add(this.labelLoading);
 			this.logoPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.logoPanel.Location = new System.Drawing.Point(0, 0);
 			this.logoPanel.Name = "logoPanel";
 			this.logoPanel.Size = new System.Drawing.Size(700, 325);
 			this.logoPanel.TabIndex = 0;
-			// 
-			// labelLoading
-			// 
-			this.labelLoading.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelLoading.AutoSize = true;
-			this.labelLoading.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.labelLoading.Location = new System.Drawing.Point(554, 274);
-			this.labelLoading.Name = "labelLoading";
-			this.labelLoading.Size = new System.Drawing.Size(117, 25);
-			this.labelLoading.TabIndex = 0;
-			this.labelLoading.Text = "Loading...";
-			// 
-			// mainFormLoader
-			// 
-			this.mainFormLoader.DoWork += new System.ComponentModel.DoWorkEventHandler(this.mainFormLoader_DoWork);
-			this.mainFormLoader.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.mainFormLoader_RunWorkerCompleted);
 			// 
 			// SplashScreen
 			// 
@@ -74,8 +60,6 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "SplashScreen";
-			this.logoPanel.ResumeLayout(false);
-			this.logoPanel.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -83,7 +67,6 @@
 		#endregion
 
 		private System.Windows.Forms.Panel logoPanel;
-		private System.Windows.Forms.Label labelLoading;
 		private System.ComponentModel.BackgroundWorker mainFormLoader;
 
 	}
