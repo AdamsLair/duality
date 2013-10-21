@@ -504,7 +504,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 			this.ApplyWorldImpulse(
 				this.gameobj.Transform.GetWorldVector(new Vector3(impulse)).Xy, 
-				this.LocalMassCenter);
+				this.gameobj.Transform.GetWorldPoint(this.LocalMassCenter));
 		}
 		/// <summary>
 		/// Applies a Transform-local impulse to the specified point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -526,11 +526,10 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(impulse);
 			if (this.body == null) return;
 			this.body.ApplyLinearImpulse(
-				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult, 
-				this.body.GetWorldPoint(this.LocalMassCenter));
+				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult);
 		}
 		/// <summary>
-		/// Applies a world impulse to the specified point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
+		/// Applies a world impulse to the specified world point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
 		/// </summary>
 		/// <param name="impulse"></param>
 		/// <param name="applyAt"></param>
