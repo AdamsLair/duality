@@ -605,7 +605,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public T FindComponent<T>(bool activeOnly = true) where T : class
 		{
-			return FindComponent(typeof(T)) as T;
+			return FindComponent(typeof(T), activeOnly) as T;
 		}
 		/// <summary>
 		/// Finds a single Component of the specified type in this Scene.
