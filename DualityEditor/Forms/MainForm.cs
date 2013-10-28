@@ -30,6 +30,9 @@ namespace DualityEditor.Forms
 		private ToolStripMenuItem	menuRunSandboxSlower	= null;
 		private ToolStripMenuItem	menuEditUndo			= null;
 		private ToolStripMenuItem	menuEditRedo			= null;
+		private ToolStripMenuItem	menuRunApp				= null;
+		private ToolStripMenuItem	menuDebugApp			= null;
+		private ToolStripMenuItem	menuProfileApp			= null;
 
 
 		public DockPanel MainDockPanel
@@ -46,12 +49,11 @@ namespace DualityEditor.Forms
 			this.mainMenuStrip.Renderer = new Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			this.mainToolStrip.Renderer = new Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 
-			this.actionDebugApp.Enabled = EditorHelper.IsJITDebuggerAvailable;
-
 			this.splitButtonBackupSettings.DropDown.Closing += this.splitButtonBackupSettings_Closing;
 			this.menuAutosave.DropDown.Closing += this.menuAutosave_Closing;
 
 			this.InitMenus();
+			this.UpdateLaunchAppActions();
 		}
 		private void ApplyDockPanelSkin()
 		{
@@ -119,9 +121,9 @@ namespace DualityEditor.Forms
 			this.menuEditRedo =						this.RequestMenu(GeneralRes.MenuName_Edit, GeneralRes.MenuItemName_Redo);
 			ToolStripMenuItem viewItem =		this.RequestMenu(GeneralRes.MenuName_View);
 			ToolStripMenuItem runItem =			this.RequestMenu(GeneralRes.MenuName_Run);
-			ToolStripMenuItem runGameItem =			this.RequestMenu(GeneralRes.MenuName_Run, this.actionRunApp.Text);
-			ToolStripMenuItem debugGameItem	=		this.RequestMenu(GeneralRes.MenuName_Run, this.actionDebugApp.Text);
-			ToolStripMenuItem profileGameItem =		this.RequestMenu(GeneralRes.MenuName_Run, GeneralRes.MenuItemName_ProfileGame);
+			this.menuRunApp =						this.RequestMenu(GeneralRes.MenuName_Run, this.actionRunApp.Text);
+			this.menuDebugApp =						this.RequestMenu(GeneralRes.MenuName_Run, this.actionDebugApp.Text);
+			this.menuProfileApp =					this.RequestMenu(GeneralRes.MenuName_Run, GeneralRes.MenuItemName_ProfileGame);
 			ToolStripMenuItem configLauncherItem =	this.RequestMenu(GeneralRes.MenuName_Run, GeneralRes.MenuItemName_ConfigureLauncher);
 													this.RequestSeparator(GeneralRes.MenuName_Run, "SandboxSeparator");
 			this.menuRunSandboxPlay	=				this.RequestMenu(GeneralRes.MenuName_Run, this.actionRunSandbox.Text);
@@ -161,20 +163,19 @@ namespace DualityEditor.Forms
 			this.menuEditRedo.Image = GeneralResCache.arrow_redo;
 
 			// ---------- Run ----------
-			runGameItem.Image = this.actionRunApp.Image;
-			runGameItem.Click += this.actionRunApp_Click;
-			runGameItem.ShortcutKeys = Keys.Alt | Keys.F5;
-			runGameItem.Tag = HelpInfo.FromText(runGameItem.Text, GeneralRes.MenuItemInfo_RunGame);
+			this.menuRunApp.Image = this.actionRunApp.Image;
+			this.menuRunApp.Click += this.actionRunApp_Click;
+			this.menuRunApp.ShortcutKeys = Keys.Alt | Keys.F5;
+			this.menuRunApp.Tag = HelpInfo.FromText(this.menuRunApp.Text, GeneralRes.MenuItemInfo_RunGame);
 
-			debugGameItem.Image = this.actionDebugApp.Image;
-			debugGameItem.Click += this.actionDebugApp_Click;
-			debugGameItem.Enabled = this.actionDebugApp.Enabled;
-			debugGameItem.ShortcutKeys = Keys.Alt | Keys.F6;
-			debugGameItem.Tag = HelpInfo.FromText(debugGameItem.Text, GeneralRes.MenuItemInfo_DebugGame);
+			this.menuDebugApp.Image = this.actionDebugApp.Image;
+			this.menuDebugApp.Click += this.actionDebugApp_Click;
+			this.menuDebugApp.ShortcutKeys = Keys.Alt | Keys.F6;
+			this.menuDebugApp.Tag = HelpInfo.FromText(this.menuDebugApp.Text, GeneralRes.MenuItemInfo_DebugGame);
 
-			profileGameItem.Image = Properties.Resources.application_stopwatch;
-			profileGameItem.Click += this.actionProfileApp_Click;
-			profileGameItem.Tag = HelpInfo.FromText(profileGameItem.Text, GeneralRes.MenuItemInfo_ProfileGame);
+			this.menuProfileApp.Image = Properties.Resources.application_stopwatch;
+			this.menuProfileApp.Click += this.actionProfileApp_Click;
+			this.menuProfileApp.Tag = HelpInfo.FromText(this.menuProfileApp.Text, GeneralRes.MenuItemInfo_ProfileGame);
 
 			configLauncherItem.Click += this.actionConfigureLauncher_Click;
 			configLauncherItem.Tag = HelpInfo.FromText(configLauncherItem.Text, GeneralRes.MenuItemInfo_ConfigureLauncher);
@@ -409,6 +410,7 @@ namespace DualityEditor.Forms
 			if (fileDialog.ShowDialog(this) == DialogResult.OK)
 			{
 				DualityEditorApp.LauncherAppPath = PathHelper.MakeFilePathRelative(fileDialog.FileName);
+				this.UpdateLaunchAppActions();
 			}
 		}
 		private void actionSaveAll_Click(object sender, EventArgs e)
@@ -658,6 +660,16 @@ namespace DualityEditor.Forms
 			this.optionAutosaveTenMinutes.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.TenMinutes;
 			this.optionAutosaveThirtyMinutes.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.ThirtyMinutes;
 			this.optionAutoSaveOneHour.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.OneHour;
+		}
+
+		private void UpdateLaunchAppActions()
+		{
+			bool launcherAvailable = File.Exists(DualityEditorApp.LauncherAppPath);
+			this.actionRunApp.Enabled = launcherAvailable;
+			this.actionDebugApp.Enabled = launcherAvailable && EditorHelper.IsJITDebuggerAvailable;
+			this.menuRunApp.Enabled = launcherAvailable;
+			this.menuDebugApp.Enabled = launcherAvailable && EditorHelper.IsJITDebuggerAvailable;
+			this.menuProfileApp.Enabled = launcherAvailable;
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
