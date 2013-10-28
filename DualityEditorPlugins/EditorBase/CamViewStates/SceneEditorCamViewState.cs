@@ -247,6 +247,7 @@ namespace EditorBase.CamViewStates
 		}
 		public override List<SelObj> CloneObjects(IEnumerable<SelObj> objEnum)
 		{
+			if (objEnum == null || !objEnum.Any()) return base.CloneObjects(objEnum);
 			var objList = objEnum.Select(s => s.ActualObject as GameObject).ToList();
 
 			CloneGameObjectAction cloneAction = new CloneGameObjectAction(objList);

@@ -375,6 +375,7 @@ namespace EditorBase.CamViewStates
 		}
 		public override List<CamViewState.SelObj> CloneObjects(IEnumerable<CamViewState.SelObj> objEnum)
 		{
+			if (objEnum == null || !objEnum.Any()) return base.CloneObjects(objEnum);
 			List<SelObj> result = new List<SelObj>();
 			if (objEnum.OfType<SelShape>().Any())
 			{

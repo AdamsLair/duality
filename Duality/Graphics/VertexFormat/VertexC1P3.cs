@@ -48,7 +48,7 @@ namespace Duality.VertexFormat
 		}
 		void IVertexData.UploadToVBO<T>(T[] vertexData, int vertexCount)
 		{
-			GL.BufferData(BufferTarget.ArrayBuffer, IntPtr.Zero, IntPtr.Zero, BufferUsageHint.StreamDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Size * vertexCount), IntPtr.Zero, BufferUsageHint.StreamDraw);
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(Size * vertexCount), vertexData, BufferUsageHint.StreamDraw);
 		}
 		void IVertexData.FinishVBO(Resources.BatchInfo mat)

@@ -740,7 +740,7 @@ namespace Duality.Components.Physics
 			this.schedUpdateBody = false;
 		}
 		/// <summary>
-		/// Prepares this RigidBody for a large-scale shape update. This isn't required but might boost update Profile.
+		/// Prepares this RigidBody for a large-scale shape update. This isn't required but might boost update performance.
 		/// </summary>
 		public void BeginUpdateBodyShape()
 		{

@@ -316,9 +316,11 @@ namespace Duality
 		/// Creates a new, empty GameObject with a specific name.
 		/// </summary>
 		/// <param name="name"></param>
-		public GameObject(string name)
+		/// <param name="parent"></param>
+		public GameObject(string name, GameObject parent = null)
 		{
 			this.name = name;
+			this.Parent = parent;
 		}
 		/// <summary>
 		/// Creates a GameObject based on a specific <see cref="Duality.Resources.Prefab"/>.
