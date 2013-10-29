@@ -489,11 +489,12 @@ namespace Duality
 		public static bool PrefabLinkedFieldBlocker(FieldInfo field, object obj)
 		{
 			Component cmp = obj as Component;
-			return 
-				cmp != null && 
-				cmp.GameObj != null && 
-				cmp.GameObj.PrefabLink != null && 
-				field.DeclaringType != typeof(Component);
+			if (cmp == null || cmp.GameObj == null) return false;
+
+			Resources.PrefabLink link = cmp.GameObj.AffectedByPrefabLink;
+			if (link == null || !link.AffectsObject(cmp)) return false;
+
+			return field.DeclaringType != typeof(Component);
 		}
 
 		internal static void RunCleanup()

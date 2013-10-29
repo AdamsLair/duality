@@ -184,6 +184,33 @@ namespace Duality.Resources
 			public	Type			componentType;
 			public	List<int>		childIndex;
 			public	object			val;
+
+			public override string ToString()
+			{
+				string childStr;
+				string propStr;
+				string valueStr;
+
+				if (this.childIndex == null)
+					childStr = "null";
+				else 
+					childStr = this.childIndex.Any() ? "(" + this.childIndex.ToString(",") + ")" : "this";
+
+				if (this.componentType != null)
+					childStr += "." + this.componentType.GetTypeCSCodeName(true);
+
+				if (this.prop != null)
+					propStr = this.prop.Name;
+				else
+					propStr = "null";
+
+				if (this.val != null)
+					valueStr = this.val.ToString();
+				else
+					valueStr = "null";
+
+				return string.Format("VarMod: {0}.{1} = {2}", childStr, propStr, valueStr);
+			}
 		}
 
 		private static CloneProvider changeListValueCloneProvider = null;
@@ -394,6 +421,10 @@ namespace Duality.Resources
 		{
 			if (this.changes == null || this.changes.Count == 0) return;
 
+			// Remove empty changelist entries
+			this.ClearEmptyChanges();
+
+			// Update changelist values from properties
 			for (int i = 0; i < this.changes.Count; i++)
 			{
 				GameObject targetObj = this.obj.ChildAtIndexPath(this.changes[i].childIndex);
@@ -532,6 +563,14 @@ namespace Duality.Resources
 				if (cmpType != null && !cmpType.IsAssignableFrom(this.changes[i].componentType)) continue;
 				if (prop != null && prop != this.changes[i].prop) continue;
 				this.changes.RemoveAt(i);
+			}
+		}
+		private void ClearEmptyChanges()
+		{
+			for (int i = this.changes.Count - 1; i >= 0; i--)
+			{
+				if (this.changes[i].prop == null)
+					this.changes.RemoveAt(i);
 			}
 		}
 

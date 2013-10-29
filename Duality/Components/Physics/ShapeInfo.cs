@@ -100,6 +100,14 @@ namespace Duality.Components.Physics
 		{
 			this.density = density;
 		}
+		
+		/// <summary>
+		/// Updates the internal <see cref="RigidBody"/> Shape according to its properties.
+		/// </summary>
+		public void UpdateShape()
+		{
+			this.UpdateFixture(true);
+		}
 
 		internal void DestroyFixture(Body body, bool isBodyDisposing)
 		{

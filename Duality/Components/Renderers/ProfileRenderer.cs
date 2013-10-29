@@ -277,6 +277,7 @@ namespace Duality.Components.Renderers
 			base.OnCopyTo(target, provider);
 			ProfileRenderer t = target as ProfileRenderer;
 			t.textReportStat		= this.textReportStat;
+			t.textReportPerf		= this.textReportPerf;
 			t.textReportOptions		= this.textReportOptions;
 			t.drawGraphs			= this.drawGraphs;
 			t.counterGraphs			= this.counterGraphs;

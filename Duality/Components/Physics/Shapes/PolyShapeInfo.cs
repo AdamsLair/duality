@@ -22,7 +22,7 @@ namespace Duality.Components.Physics
 		private	Vector2[]	vertices;
 
 		/// <summary>
-		/// [GET / SET] The polygons vertices.
+		/// [GET / SET] The polygons vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="UpdateShape"/> manually.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.ForceWriteback)]
 		[EditorHintIncrement(1)]

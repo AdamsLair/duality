@@ -56,6 +56,8 @@ namespace Duality.Serialization
 			this.fields = this.type.GetAllFields(ReflectionHelper.BindInstanceAll).Where(f => !f.IsNotSerialized).ToArray();
 			this.typeString = this.type.GetTypeId();
 			this.dataType = this.type.GetDataType();
+
+			this.fields.StableSort((a, b) => string.Compare(a.Name, b.Name));
 		}
 	}
 }

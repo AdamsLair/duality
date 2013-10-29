@@ -142,11 +142,18 @@ namespace Duality.Resources
 		{
 			if (current.ResWeak != null)
 			{
+				// Apply physical properties
 				ResetPhysics();
 				physicsWorld.Gravity = PhysicsConvert.ToPhysicalUnit(current.ResWeak.GlobalGravity / Time.SPFMult);
+
 				// When in the editor, apply prefab links
 				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
 					current.ResWeak.ApplyPrefabLinks();
+
+				// When running the game, break prefab links
+				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
+					current.ResWeak.BreakPrefabLinks();
+
 				// Activate GameObjects
 				foreach (GameObject o in current.ResWeak.ActiveObjects.ToArray())
 					o.OnActivate();
@@ -778,7 +785,6 @@ namespace Duality.Resources
 			base.OnLoaded();
 
 			this.ApplyPrefabLinks();
-			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game) this.BreakPrefabLinks();
 
 			foreach (GameObject obj in this.objectManager.AllObjects)
 				obj.OnLoaded();
