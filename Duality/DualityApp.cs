@@ -852,6 +852,10 @@ namespace Duality
 			foreach (CorePlugin plugin in plugins.Values)
 			{
 				disposedPlugins.Add(plugin.PluginAssembly);
+			}
+			OnDiscardPluginData();
+			foreach (CorePlugin plugin in plugins.Values)
+			{
 				try
 				{
 					plugin.Dispose();
@@ -861,13 +865,13 @@ namespace Duality
 					Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
 				}
 			}
-			OnDiscardPluginData(plugins.Values);
+			CleanupAfterPlugins(plugins.Values);
 			plugins.Clear();
 		}
 		private static void UnloadPlugin(CorePlugin plugin)
 		{
 			disposedPlugins.Add(plugin.PluginAssembly);
-			OnDiscardPluginData(new[] { plugin });
+			OnDiscardPluginData();
 			plugins.Remove(plugin.AssemblyName);
 			try
 			{
@@ -877,6 +881,7 @@ namespace Duality
 			{
 				Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
 			}
+			CleanupAfterPlugins(new[] { plugin });
 		}
 		internal static void ReloadPlugin(string pluginFilePath)
 		{
@@ -899,6 +904,7 @@ namespace Duality
 			if (plugins.TryGetValue(plugin.AssemblyName, out oldPlugin))
 			{
 				disposedPlugins.Add(oldPlugin.PluginAssembly);
+				OnDiscardPluginData();
 				oldPlugin.Dispose();
 			}
 
@@ -906,7 +912,7 @@ namespace Duality
 			plugins[plugin.AssemblyName] = plugin;
 			
 			// Discard temporary plugin-related data (cached Types, etc.)
-			OnDiscardPluginData(new[] { oldPlugin });
+			CleanupAfterPlugins(new[] { oldPlugin });
 
 			Log.Core.PopIndent();
 
@@ -1030,24 +1036,26 @@ namespace Duality
 			if (Terminating != null)
 				Terminating(null, EventArgs.Empty);
 		}
-		private static void OnDiscardPluginData(IEnumerable<CorePlugin> oldPlugins)
+		private static void OnDiscardPluginData()
 		{
-			oldPlugins = oldPlugins.NotNull().Distinct();
-			if (!oldPlugins.Any()) oldPlugins = null;
-
 			if (DiscardPluginData != null)
 				DiscardPluginData(null, EventArgs.Empty);
-
-			// Clean globally cached type values
-			availTypeDict.Clear();
-			ReflectionHelper.ClearTypeCache();
-			Component.ClearTypeCache();
 
 			// Dispose any existing Resources that could reference plugin data
 			if (!Scene.Current.IsEmpty)
 				Scene.Current.Dispose();
 			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())
 				ContentProvider.RemoveContent(r.Path);
+		}
+		private static void CleanupAfterPlugins(IEnumerable<CorePlugin> oldPlugins)
+		{
+			oldPlugins = oldPlugins.NotNull().Distinct();
+			if (!oldPlugins.Any()) oldPlugins = null;
+
+			// Clean globally cached type values
+			availTypeDict.Clear();
+			ReflectionHelper.ClearTypeCache();
+			Component.ClearTypeCache();
 			
 			// Clean input sources that a disposed Assembly forgot to unregister.
 			if (oldPlugins != null)

@@ -89,6 +89,12 @@ namespace Duality.Profiling
 			StatMemoryGarbageCollect2.IsSingleValue = true;
 		}
 
+		/// <summary>
+		/// Returns an existing <see cref="ProfileCounter"/> with the specified name.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name">The <see cref="ProfileCounter"/> name to use for this measurement. For nested measurements, use path strings, e.g. "ParentCounter\ChildCounter"</param>
+		/// <returns></returns>
 		public static T GetCounter<T>(string name) where T : ProfileCounter
 		{
 			if (name == null) return null;
@@ -100,6 +106,12 @@ namespace Duality.Profiling
 			if (cc == null) throw new InvalidOperationException(string.Format("The specified performance counter '{0}' is not a {1}.", name, Log.Type(typeof(T))));
 			return cc;
 		}
+		/// <summary>
+		/// Returns an existing <see cref="ProfileCounter"/> with the specified name, or creates one if none is found.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name">The <see cref="ProfileCounter"/> name to use for this measurement. For nested measurements, use path strings, e.g. "ParentCounter\ChildCounter"</param>
+		/// <returns></returns>
 		public static T RequestCounter<T>(string name) where T : ProfileCounter, new()
 		{
 			if (name == null) return null;
@@ -108,26 +120,44 @@ namespace Duality.Profiling
 			if (c != null) return c;
 			
 			c = new T();
-			c.Name = name;
+			c.FullName = name;
 			counterMap[name] = c;
 			return c;
 		}
+		/// <summary>
+		/// Enumerates all <see cref="ProfileCounter"/> objects that have been actively used this frame.
+		/// </summary>
+		/// <returns></returns>
 		public static IEnumerable<ProfileCounter> GetUsedCounters()
 		{
 			return counterMap.Values.Where(p => p.WasUsed);
 		}
 
+		/// <summary>
+		/// Begins time measurement using a new or existing <see cref="ProfileCounter"/> with the specified name.
+		/// </summary>
+		/// <param name="counter">The <see cref="ProfileCounter"/> name to use for this measurement. For nested measurements, use path strings, e.g. "ParentCounter\ChildCounter"</param>
+		/// <returns></returns>
 		public static TimeCounter BeginMeasure(string counter)
 		{
 			TimeCounter tc = RequestCounter<TimeCounter>(counter);
 			tc.BeginMeasure();
 			return tc;
 		}
+		/// <summary>
+		/// Ends time measurement using an existing <see cref="ProfileCounter"/> with the specified name.
+		/// </summary>
+		/// <param name="counter">The <see cref="ProfileCounter"/> name to use for this measurement. For nested measurements, use path strings, e.g. "ParentCounter\ChildCounter"</param>
 		public static void EndMeasure(string counter)
 		{
 			TimeCounter tc = RequestCounter<TimeCounter>(counter);
 			tc.EndMeasure();
 		}
+		/// <summary>
+		/// Queries this frames time measurement value from an existing <see cref="ProfileCounter"/> with the specified name.
+		/// </summary>
+		/// <param name="counter">The <see cref="ProfileCounter"/> name to use for this measurement. For nested measurements, use path strings, e.g. "ParentCounter\ChildCounter"</param>
+		/// <returns></returns>
 		public static float GetMeasure(string counter)
 		{
 			TimeCounter tc = GetCounter<TimeCounter>(counter);
@@ -137,11 +167,21 @@ namespace Duality.Profiling
 				return 0.0f;
 		}
 
+		/// <summary>
+		/// Accumulates a statistical information value to a new or existing <see cref="ProfileCounter"/> with the specified name.
+		/// </summary>
+		/// <param name="counter">The <see cref="ProfileCounter"/> name to use for this measurement. For nested measurements, use path strings, e.g. "ParentCounter\ChildCounter"</param>
+		/// <param name="value"></param>
 		public static void AddToStat(string counter, int value)
 		{
 			StatCounter sc = RequestCounter<StatCounter>(counter);
 			sc.Add(value);
 		}
+		/// <summary>
+		/// Queries a statistical information value from an existing <see cref="ProfileCounter"/> with the specified name.
+		/// </summary>
+		/// <param name="counter">The <see cref="ProfileCounter"/> name to use for this measurement. For nested measurements, use path strings, e.g. "ParentCounter\ChildCounter"</param>
+		/// <param name="value"></param>
 		public static int GetStat(string counter)
 		{
 			StatCounter sc = RequestCounter<StatCounter>(counter);
@@ -151,34 +191,10 @@ namespace Duality.Profiling
 				return 0;
 		}
 
-		public static void DrawTextReport(Canvas canvas, IEnumerable<ProfileCounter> counters = null, float x = 10.0f, float y = 10.0f, float z = 0.0f, bool background = true, ReportOptions options = ReportOptions.LastValue | ReportOptions.FormattedText)
-		{
-			BeginMeasure(@"DrawTextReport");
-
-			if (counters == null) counters = GetUsedCounters();
-			if (textReport == null || (Time.MainTimer - textReportLast).TotalMilliseconds > 250)
-			{
-				string report = GetTextReport(counters, options);
-				if (textReport == null)
-				{
-					textReport = new FormattedText(report);
-					textReport.Fonts = new [] { canvas.CurrentState.TextFont };
-				}
-				else
-				{
-					textReport.SourceText = report;
-				}
-				textReportLast = Time.MainTimer;
-			}
-
-			canvas.PushState();
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White, null));
-			if (background) canvas.DrawTextBackground(textReport, x, y, z);
-			canvas.DrawText(textReport, ref textReportTextVert, ref textReportIconVert, x, y, z);
-			canvas.PopState();
-
-			EndMeasure(@"DrawTextReport");
-		}
+		/// <summary>
+		/// Saves a text report of the current profiling data to the specified file.
+		/// </summary>
+		/// <param name="filePath"></param>
 		public static void SaveTextReport(string filePath)
 		{
 			using (FileStream str = File.Open(filePath, FileMode.Create))
@@ -186,9 +202,13 @@ namespace Duality.Profiling
 				SaveTextReport(str);
 			}
 		}
+		/// <summary>
+		/// Saves a text report of the current profiling data to the specified stream.
+		/// </summary>
+		/// <param name="filePath"></param>
 		public static void SaveTextReport(Stream stream)
 		{
-			string report = GetTextReport(counterMap.Values, 
+			string report = GetTextReport(counterMap.Values.Where(c => c.HasData), 
 				ReportOptions.GroupHeader | 
 				ReportOptions.Header | 
 				ReportOptions.AverageValue |
@@ -200,6 +220,10 @@ namespace Duality.Profiling
 				writer.Write(report);
 			}
 		}
+		/// <summary>
+		/// Creates a text report of the current profiling data and returns it as string.
+		/// </summary>
+		/// <param name="filePath"></param>
 		public static string GetTextReport(IEnumerable<ProfileCounter> reportCounters, ReportOptions options = ReportOptions.LastValue)
 		{
 			// Group Counters by Type
