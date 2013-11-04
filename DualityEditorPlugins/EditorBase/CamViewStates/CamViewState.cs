@@ -262,6 +262,11 @@ namespace EditorBase.CamViewStates
 			get { return this.actionText.SourceText; }
 		}
 
+		public Vector3 SelectionCenter
+		{
+			get { return selectionCenter; }
+		}
+
 
 		internal protected virtual void OnEnterState()
 		{

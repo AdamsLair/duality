@@ -105,9 +105,10 @@ namespace EditorBase.CamViewStates
 			}
 		}
 
-		private ObjectSelection selBeforeDrag	= null;
-		private	DateTime		dragTime		= DateTime.Now;
-		private	Point			dragLastLoc		= Point.Empty;
+		private ObjectSelection selBeforeDrag			= null;
+		private	DateTime		dragTime				= DateTime.Now;
+		private	Point			dragLastLoc				= Point.Empty;
+		private Point			mousePosOnContextMenu	= Point.Empty;
 
 		public override string StateName
 		{
@@ -143,8 +144,13 @@ namespace EditorBase.CamViewStates
 				var parentlessGameObj = current.GameObjects.Where(g => !current.GameObjects.Any(g2 => g.IsChildOf(g2))).ToList();
 				this.actionObjSel = parentlessGameObj.Select(g => new SelGameObj(g) as SelObj).Where(s => s.HasTransform).ToList();
 			}
+
+			this.LocalGLControl.ContextMenu.Popup += OnContextMenuShown;
+			this.AttachContextMenu();
+
 			this.InvalidateSelectionStats();
 		}
+
 		internal protected override void OnLeaveState()
 		{
 			base.OnLeaveState();
@@ -199,7 +205,9 @@ namespace EditorBase.CamViewStates
 		{
 			base.ClearSelection();
 			DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+			ClearContextMenu();
 		}
+
 		public override void SelectObjects(IEnumerable<CamViewState.SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
 		{
 			base.SelectObjects(selObjEnum, mode);
@@ -375,7 +383,11 @@ namespace EditorBase.CamViewStates
 		}
 		private void EditorForm_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if ((e.AffectedCategories & ObjectSelection.Category.GameObjCmp) == ObjectSelection.Category.None) return;
+			if ((e.AffectedCategories & ObjectSelection.Category.GameObjCmp) == ObjectSelection.Category.None)
+			{
+				ClearContextMenu();
+				return;
+			}
 			if (e.SameObjects) return;
 
 			// Update object selection
@@ -401,9 +413,40 @@ namespace EditorBase.CamViewStates
 				this.actionObjSel.AddRange(addedParentFreeGameObj.Select(g => new SelGameObj(g) as SelObj).Where(s => s.HasTransform));
 			}
 
+			this.AttachContextMenu();
 			this.InvalidateSelectionStats();
 			this.UpdateAction();
 			this.Invalidate();
+		}
+
+		private void AttachContextMenu()
+		{
+			if (this.LocalGLControl == null || this.LocalGLControl.ContextMenu == null)
+				return;
+
+			if (this.allObjSel.Count == 0)
+				return;
+
+			var moveSelectedItemMenuItem = new MenuItem("Move selected objects here");
+			moveSelectedItemMenuItem.Click += OnMoveSelectedItemHere;
+			this.LocalGLControl.ContextMenu.MenuItems.Clear();
+			this.LocalGLControl.ContextMenu.MenuItems.Add(moveSelectedItemMenuItem);
+		}
+
+		private void OnContextMenuShown(object sender, EventArgs e)
+		{
+			this.mousePosOnContextMenu = Cursor.Position;
+		}
+
+		private void OnMoveSelectedItemHere(object sender, EventArgs e)
+		{
+			var mouseLoc = this.PointToClient(this.mousePosOnContextMenu);
+			var spaceCoord = this.GetSpaceCoord(new Vector3(
+				mouseLoc.X,
+				mouseLoc.Y,
+				this.SelectionCenter.Z));
+
+			this.MoveSelectionBy(new Vector3(spaceCoord.Xy - this.SelectionCenter.Xy, 0));
 		}
 
 		private bool IsAffectedByParent(GameObject child, GameObject parent)
@@ -415,6 +458,13 @@ namespace EditorBase.CamViewStates
 			GameObject obj = (r as Component).GameObj;
 			DesignTimeObjectData data = CorePluginRegistry.GetDesignTimeData(obj);
 			return !data.IsHidden;
+		}
+		private void ClearContextMenu()
+		{
+			if (this.LocalGLControl == null || this.LocalGLControl.ContextMenu == null)
+				return;
+
+			this.LocalGLControl.ContextMenu.MenuItems.Clear();
 		}
 	}
 }
