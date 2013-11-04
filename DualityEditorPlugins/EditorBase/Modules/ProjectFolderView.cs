@@ -823,6 +823,35 @@ namespace EditorBase
 			return baseTargetPath;
 		}
 
+		protected void UpdateContextMenuActions()
+		{
+			List<NodeBase> selNodeData = new List<NodeBase>(
+				from vn in this.folderView.SelectedNodes
+				where vn.Tag is NodeBase
+				select vn.Tag as NodeBase);
+
+			bool noSelect = selNodeData.Count == 0;
+			bool singleSelect = selNodeData.Count == 1;
+			bool multiSelect = selNodeData.Count > 1;
+			bool anyReadOnly = this.folderView.SelectedNodes.Any(viewNode => (viewNode.Tag as NodeBase).ReadOnly);
+
+			this.newToolStripMenuItem.Visible = !anyReadOnly && !multiSelect;
+			this.toolStripSeparatorNew.Visible = !anyReadOnly && !multiSelect;
+
+			this.renameToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
+			this.cutToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
+			this.copyToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
+			this.deleteToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
+
+			this.pasteToolStripMenuItem.Visible = !anyReadOnly;
+
+			this.pasteToolStripMenuItem.Enabled = this.ClipboardCanPasteNodes(this.folderView.SelectedNode);
+			this.renameToolStripMenuItem.Enabled = singleSelect;
+
+			this.showInExplorerToolStripMenuItem.Visible = singleSelect && !anyReadOnly;
+			this.toolStripSeparatorShowInExplorer.Visible = singleSelect && !anyReadOnly;
+		}
+
 		private void textBoxFilter_TextChanged(object sender, EventArgs e)
 		{
 			this.ApplyNodeFilter();
@@ -867,11 +896,8 @@ namespace EditorBase
 				select rn.ResLink.Res
 				).ToArray();
 
-			// Some ResourceNodes might need to be loaded to display additional information.
-			// After loading the selected Resources, update their image according to possibly available new information
-			//foreach (ResourceNode resNode in selResNode)
-			//	resNode.UpdateImage();
-			// Note: Removed this. They'll now just grab their resource if available as soon as they need their data.
+			// Update context menu
+			this.UpdateContextMenuActions();
 
 			// Adjust editor-wide selection
 			if (!DualityEditorApp.IsSelectionChanging)
@@ -1293,33 +1319,15 @@ namespace EditorBase
 				where n is ResourceNode
 				select (n as ResourceNode).ResLink).ToList();
 
-			bool noSelect = selNodeData.Count == 0;
-			bool singleSelect = selNodeData.Count == 1;
-			bool multiSelect = selNodeData.Count > 1;
 			bool anyReadOnly = this.folderView.SelectedNodes.Any(viewNode => (viewNode.Tag as NodeBase).ReadOnly);
-
-
 			if (anyReadOnly) 
 			{ 
 				e.Cancel = true; 
 				return;
 			}
 
-			this.newToolStripMenuItem.Visible = !anyReadOnly && !multiSelect;
-			this.toolStripSeparatorNew.Visible = !anyReadOnly && !multiSelect;
-
-			this.renameToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
-			this.cutToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
-			this.copyToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
-			this.deleteToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
-
-			this.pasteToolStripMenuItem.Visible = !anyReadOnly;
-
-			this.pasteToolStripMenuItem.Enabled = this.ClipboardCanPasteNodes(this.folderView.SelectedNode);
-			this.renameToolStripMenuItem.Enabled = singleSelect;
-
-			this.showInExplorerToolStripMenuItem.Visible = singleSelect && !anyReadOnly;
-			this.toolStripSeparatorShowInExplorer.Visible = singleSelect && !anyReadOnly;
+			// Update main actions
+			this.UpdateContextMenuActions();
 
 			// Provide custom actions
 			Type mainResType = null;

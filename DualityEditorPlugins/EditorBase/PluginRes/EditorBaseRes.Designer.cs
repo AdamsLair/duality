@@ -259,7 +259,7 @@ namespace EditorBase.PluginRes {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Hold X, Y or Z to limit an action to one or two axes. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hold Shift to limit an action to one axis. ähnelt.
         /// </summary>
         public static string CamView_Help_ObjActions_AxisLock {
             get {
@@ -282,6 +282,15 @@ namespace EditorBase.PluginRes {
         public static string CamView_Help_ObjActions_Delete {
             get {
                 return ResourceManager.GetString("CamView_Help_ObjActions_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Hold Alt to perform an action on a clone of the current selection. ähnelt.
+        /// </summary>
+        public static string CamView_Help_ObjActions_EditClone {
+            get {
+                return ResourceManager.GetString("CamView_Help_ObjActions_EditClone", resourceCulture);
             }
         }
         
