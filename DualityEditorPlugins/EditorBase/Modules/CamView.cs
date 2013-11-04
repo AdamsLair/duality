@@ -162,7 +162,6 @@ namespace EditorBase
 		private	bool		inputKeyFocus		= false;
 		private	int			inputKeyRepeatCount	= 0;
 		private	BitArray	inputKeyPressed		= new BitArray((int)Key.LastKey + 1, false);
-		private ContextMenu contextMenu;
 
 		public event EventHandler PerspectiveChanged	= null;
 		public event EventHandler<CameraChangedEventArgs> CurrentCameraChanged	= null;
@@ -228,7 +227,6 @@ namespace EditorBase
 		public CamView(int runtimeId, string initStateTypeName = null)
 		{
 			this.InitializeComponent();
-			this.contextMenu = new ContextMenu();
 			this.loadTempState = initStateTypeName;
 			this.bgColorDialog.OldColor = Color.FromArgb(64, 64, 64);
 			this.bgColorDialog.SelectedColor = this.bgColorDialog.OldColor;
@@ -380,7 +378,6 @@ namespace EditorBase
 			this.glControl.KeyDown += this.glControl_KeyDown;
 			this.glControl.KeyUp += this.glControl_KeyUp;
 			this.glControl.Resize += this.glControl_Resize;
-			this.glControl.ContextMenu = contextMenu;
 			this.Controls.Add(this.glControl);
 			this.Controls.SetChildIndex(this.glControl, 0);
 
@@ -495,11 +492,7 @@ namespace EditorBase
 			// No glControl yet? We're not initialized properly and this is the initial state. Enter the state later.
 			if (this.glControl != null)
 			{
-				if (this.activeState != null)
-				{
-					this.contextMenu.MenuItems.Clear();
-					this.activeState.OnEnterState();
-				}
+				if (this.activeState != null) this.activeState.OnEnterState();
 				this.glControl.Invalidate();
 			}
 		}

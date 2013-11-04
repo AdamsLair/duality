@@ -145,9 +145,6 @@ namespace EditorBase.CamViewStates
 				this.actionObjSel = parentlessGameObj.Select(g => new SelGameObj(g) as SelObj).Where(s => s.HasTransform).ToList();
 			}
 
-			this.LocalGLControl.ContextMenu.Popup += OnContextMenuShown;
-			this.AttachContextMenu();
-
 			this.InvalidateSelectionStats();
 		}
 
@@ -413,40 +410,9 @@ namespace EditorBase.CamViewStates
 				this.actionObjSel.AddRange(addedParentFreeGameObj.Select(g => new SelGameObj(g) as SelObj).Where(s => s.HasTransform));
 			}
 
-			this.AttachContextMenu();
 			this.InvalidateSelectionStats();
 			this.UpdateAction();
 			this.Invalidate();
-		}
-
-		private void AttachContextMenu()
-		{
-			if (this.LocalGLControl == null || this.LocalGLControl.ContextMenu == null)
-				return;
-
-			if (this.allObjSel.Count == 0)
-				return;
-
-			var moveSelectedItemMenuItem = new MenuItem("Move selected objects here");
-			moveSelectedItemMenuItem.Click += OnMoveSelectedItemHere;
-			this.LocalGLControl.ContextMenu.MenuItems.Clear();
-			this.LocalGLControl.ContextMenu.MenuItems.Add(moveSelectedItemMenuItem);
-		}
-
-		private void OnContextMenuShown(object sender, EventArgs e)
-		{
-			this.mousePosOnContextMenu = Cursor.Position;
-		}
-
-		private void OnMoveSelectedItemHere(object sender, EventArgs e)
-		{
-			var mouseLoc = this.PointToClient(this.mousePosOnContextMenu);
-			var spaceCoord = this.GetSpaceCoord(new Vector3(
-				mouseLoc.X,
-				mouseLoc.Y,
-				this.SelectionCenter.Z));
-
-			this.MoveSelectionBy(new Vector3(spaceCoord.Xy - this.SelectionCenter.Xy, 0));
 		}
 
 		private bool IsAffectedByParent(GameObject child, GameObject parent)
