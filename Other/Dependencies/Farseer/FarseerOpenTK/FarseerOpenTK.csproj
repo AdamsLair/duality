@@ -96,7 +96,6 @@
     <Compile Include="Common\PolygonManipulation\SimplifyTools.cs" />
     <Compile Include="Common\PolygonManipulation\YuPengClipper.cs" />
     <Compile Include="Common\PolygonTools.cs" />
-    <Compile Include="Common\Serialization.cs" />
     <Compile Include="Common\TextureTools\MarchingSquares.cs" />
     <Compile Include="Common\TextureTools\MSTerrain.cs" />
     <Compile Include="Common\TextureTools\TextureConverter.cs" />

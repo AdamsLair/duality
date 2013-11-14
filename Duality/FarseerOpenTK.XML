@@ -4029,10 +4029,6 @@
             </summary>
             <value></value>
         </member>
-        <member name="T:FarseerPhysics.Common.WorldXmlSerializer">
-            <summary>
-            </summary>
-        </member>
         <member name="M:Poly2Tri.Triangulation.Delaunay.Sweep.DTSweep.Triangulate(Poly2Tri.Triangulation.Delaunay.Sweep.DTSweepContext)">
             <summary>
             Triangulate simple polygon with holes

@@ -90,8 +90,6 @@ namespace FarseerPhysics.Collision.Shapes
             Debug.Assert(0 <= index && index < Vertices.Count);
             edge.ShapeType = ShapeType.Edge;
             edge._radius = _radius;
-            edge.HasVertex0 = true;
-            edge.HasVertex3 = true;
 
             int i0 = index - 1 >= 0 ? index - 1 : Vertices.Count - 1;
             int i1 = index;
@@ -106,6 +104,9 @@ namespace FarseerPhysics.Collision.Shapes
             edge.Vertex1 = Vertices[i1];
             edge.Vertex2 = Vertices[i2];
             edge.Vertex3 = Vertices[i3];
+
+			edge.HasVertex0 = Vector2.CalculateAngle(edge.Vertex0, edge.Vertex1) > MathHelper.PiOver2;
+			edge.HasVertex3 = Vector2.CalculateAngle(edge.Vertex2, edge.Vertex3) > MathHelper.PiOver2;
         }
 
         /// <summary>
