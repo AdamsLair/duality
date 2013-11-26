@@ -915,6 +915,10 @@ namespace Duality.Components
 			t.angleVel			= this.angleVel;
 			t.angleVelAbs		= this.angleVelAbs;
 
+			// Update absolute transformation. 
+			// Need to update parent transform, because this may happen 
+			// during Prefab.Apply, which occurs before OnLoaded. 
+			t.parentTransform	= (t.gameobj != null && t.gameobj.Parent != null) ? t.gameobj.Parent.Transform : null;
 			t.UpdateAbs();
 		}
 
