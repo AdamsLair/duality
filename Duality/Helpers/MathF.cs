@@ -483,6 +483,29 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// Performs linear interpolation between two values.
+		/// </summary>
+		/// <param name="a">The first anchor value.</param>
+		/// <param name="b">The second anchor value.</param>
+		/// <param name="ratio">Ratio between first and second anchor. Zero will result in anchor a, one will result in anchor b.</param>
+		/// <returns></returns>
+		public static float Lerp(float a, float b, float ratio)
+		{
+			return a + ratio * (b - a);
+		}
+		/// <summary>
+		/// Performs linear interpolation between two values.
+		/// </summary>
+		/// <param name="a">The first anchor value.</param>
+		/// <param name="b">The second anchor value.</param>
+		/// <param name="ratio">Ratio between first and second anchor. Zero will result in anchor a, one will result in anchor b.</param>
+		/// <returns></returns>
+		public static int Lerp(int a, int b, float ratio)
+		{
+			return MathF.RoundToInt(a + ratio * (float)(b - a));
+		}
+
+		/// <summary>
 		/// Returns the specified power of <see cref="E"/>.
 		/// </summary>
 		/// <param name="v"></param>
