@@ -320,7 +320,8 @@ namespace DualityEditor
 
 					if (paramTypeNames[i][0] == '`' && paramTypeNames[i][1] != '`')
 					{
-						int typeGenArgIndex = int.Parse(paramTypeNames[i].Substring(1, paramTypeNames[i].Length - 1));
+						int typeGenArgIndex = 0;
+						int.TryParse(paramTypeNames[i].Substring(1, paramTypeNames[i].Length - 1), out typeGenArgIndex);
 						paramTypes[i] = memberType.GetGenericArguments()[typeGenArgIndex];
 					}
 					else if (paramTypeNames[i].StartsWith("``"))

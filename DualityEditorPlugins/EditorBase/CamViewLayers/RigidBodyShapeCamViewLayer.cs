@@ -35,9 +35,9 @@ namespace EditorBase.CamViewLayers
 			{
 				float fgLum = this.FgColor.GetLuminance();
 				if (fgLum > 0.5f)
-					return ColorRgba.Mix(new ColorRgba(255, 0, 255), ColorRgba.VeryLightGrey, 0.5f);
+					return ColorRgba.Lerp(new ColorRgba(255, 0, 255), ColorRgba.VeryLightGrey, 0.5f);
 				else
-					return ColorRgba.Mix(new ColorRgba(255, 0, 255), ColorRgba.VeryDarkGrey, 0.5f);
+					return ColorRgba.Lerp(new ColorRgba(255, 0, 255), ColorRgba.VeryDarkGrey, 0.5f);
 			}
 		}
 		public ColorRgba ShapeColor
@@ -46,9 +46,9 @@ namespace EditorBase.CamViewLayers
 			{
 				float fgLum = this.FgColor.GetLuminance();
 				if (fgLum > 0.5f)
-					return ColorRgba.Mix(ColorRgba.Blue, ColorRgba.VeryLightGrey, 0.5f);
+					return ColorRgba.Lerp(ColorRgba.Blue, ColorRgba.VeryLightGrey, 0.5f);
 				else
-					return ColorRgba.Mix(ColorRgba.Blue, ColorRgba.VeryDarkGrey, 0.5f);
+					return ColorRgba.Lerp(ColorRgba.Blue, ColorRgba.VeryDarkGrey, 0.5f);
 			}
 		}
 		public ColorRgba ShapeSensorColor
@@ -57,9 +57,9 @@ namespace EditorBase.CamViewLayers
 			{
 				float fgLum = this.FgColor.GetLuminance();
 				if (fgLum > 0.5f)
-					return ColorRgba.Mix(new ColorRgba(255, 128, 0), ColorRgba.VeryLightGrey, 0.5f);
+					return ColorRgba.Lerp(new ColorRgba(255, 128, 0), ColorRgba.VeryLightGrey, 0.5f);
 				else
-					return ColorRgba.Mix(new ColorRgba(255, 128, 0), ColorRgba.VeryDarkGrey, 0.5f);
+					return ColorRgba.Lerp(new ColorRgba(255, 128, 0), ColorRgba.VeryDarkGrey, 0.5f);
 			}
 		}
 		public ColorRgba ShapeErrorColor
@@ -68,9 +68,9 @@ namespace EditorBase.CamViewLayers
 			{
 				float fgLum = this.FgColor.GetLuminance();
 				if (fgLum > 0.5f)
-					return ColorRgba.Mix(ColorRgba.Red, ColorRgba.VeryLightGrey, 0.5f);
+					return ColorRgba.Lerp(ColorRgba.Red, ColorRgba.VeryLightGrey, 0.5f);
 				else
-					return ColorRgba.Mix(ColorRgba.Red, ColorRgba.VeryDarkGrey, 0.5f);
+					return ColorRgba.Lerp(ColorRgba.Red, ColorRgba.VeryDarkGrey, 0.5f);
 			}
 		}
 

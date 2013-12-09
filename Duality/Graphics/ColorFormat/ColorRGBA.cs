@@ -384,14 +384,14 @@ namespace Duality.ColorFormat
 		/// <param name="second">The second color.</param>
 		/// <param name="factor">The linear interpolation value. Zero equals the first color, one equals the second color.</param>
 		/// <returns>The interpolated / mixed color.</returns>
-		public static ColorRgba Mix(ColorRgba first, ColorRgba second, float factor)
+		public static ColorRgba Lerp(ColorRgba first, ColorRgba second, float factor)
 		{
 			float invFactor = 1.0f - factor;
 			return new ColorRgba(
-				(byte)Math.Min(255.0f, Math.Max(0.0f, first.R * invFactor + second.R * factor)),
-				(byte)Math.Min(255.0f, Math.Max(0.0f, first.G * invFactor + second.G * factor)),
-				(byte)Math.Min(255.0f, Math.Max(0.0f, first.B * invFactor + second.B * factor)),
-				(byte)Math.Min(255.0f, Math.Max(0.0f, first.A * invFactor + second.A * factor)));
+				(byte)MathF.Clamp(MathF.Round(first.R * invFactor + second.R * factor), 0.0f, 255.0f),
+				(byte)MathF.Clamp(MathF.Round(first.G * invFactor + second.G * factor), 0.0f, 255.0f),
+				(byte)MathF.Clamp(MathF.Round(first.B * invFactor + second.B * factor), 0.0f, 255.0f),
+				(byte)MathF.Clamp(MathF.Round(first.A * invFactor + second.A * factor), 0.0f, 255.0f));
 		}
 
 		/// <summary>
@@ -451,23 +451,24 @@ namespace Duality.ColorFormat
 		public static ColorRgba operator *(ColorRgba left, ColorRgba right)
         {
             return new ColorRgba(
-				(byte)(left.R * right.R / 255), 
-				(byte)(left.G * right.G / 255), 
-				(byte)(left.B * right.B / 255), 
-				(byte)(left.A * right.A / 255));
+				(byte)MathF.Clamp(MathF.Round(left.R * right.R / 255), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.G * right.G / 255), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.B * right.B / 255), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.A * right.A / 255), 0.0f, 255.0f));
         }
 		/// <summary>
-		/// Returns the component-wise inverse of a color.
+		/// Scales a color by the specified factor. This affects color and alpha equally.
 		/// </summary>
-		/// <param name="c">The color to invert.</param>
+		/// <param name="left">The color to scale.</param>
+		/// <param name="right">The scaling factor.</param>
 		/// <returns></returns>
-		public static ColorRgba operator -(ColorRgba c)
+		public static ColorRgba operator *(ColorRgba left, float right)
         {
             return new ColorRgba(
-				(byte)(255 - c.R), 
-				(byte)(255 - c.G), 
-				(byte)(255 - c.B), 
-				(byte)(255 - c.A));
+				(byte)MathF.Clamp(MathF.Round(left.R * right), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.G * right), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.B * right), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.A * right), 0.0f, 255.0f));
         }
 		
 		/// <summary>
@@ -507,10 +508,24 @@ namespace Duality.ColorFormat
 		public static void Multiply(ref ColorRgba left, ref ColorRgba right, out ColorRgba result)
 		{
 			result = new ColorRgba(
-				(byte)(left.R * right.R / 255), 
-				(byte)(left.G * right.G / 255), 
-				(byte)(left.B * right.B / 255), 
-				(byte)(left.A * right.A / 255));
+				(byte)MathF.Clamp(MathF.Round(left.R * right.R / 255), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.G * right.G / 255), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.B * right.B / 255), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.A * right.A / 255), 0.0f, 255.0f));
+		}
+		/// <summary>
+		/// Scales a color by the specified factor. This affects color and alpha equally.
+		/// </summary>
+		/// <param name="left">The color that is to be scaled.</param>
+		/// <param name="right">The scaling factor.</param>
+		/// <param name="result"></param>
+		public static void Scale(ref ColorRgba left, float right, out ColorRgba result)
+		{
+			result = new ColorRgba(
+				(byte)MathF.Clamp(MathF.Round(left.R * right), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.G * right), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.B * right), 0.0f, 255.0f), 
+				(byte)MathF.Clamp(MathF.Round(left.A * right), 0.0f, 255.0f));
 		}
 		
 		public static explicit operator ColorRgba(int c)

@@ -217,7 +217,7 @@ namespace Duality.Components.Renderers
 						{
 							float factor = timeCounter.ValueGraph[i] / Time.MsPFMult;
 							cache.GraphValues[i] = factor * 0.75f;
-							cache.GraphColors[i] = ColorRgba.Mix(ColorRgba.White, ColorRgba.Red, factor);
+							cache.GraphColors[i] = ColorRgba.Lerp(ColorRgba.White, ColorRgba.Red, factor);
 						}
 						canvas.CurrentState.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
 						canvas.FillRect(graphRect.X, graphY, graphRect.W, graphH);

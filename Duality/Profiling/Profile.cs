@@ -287,8 +287,8 @@ namespace Duality.Profiling
 					{
 						float severity = data.Severity;
 						ColorRgba lineColor = severity >= 0.5f ? 
-							ColorRgba.Mix(ColorRgba.White, ColorRgba.Red, 2.0f * (severity - 0.5f)) :
-							ColorRgba.Mix(ColorRgba.TransparentWhite, ColorRgba.White, 0.1f + 0.9f * (2.0f * severity));
+							ColorRgba.Lerp(ColorRgba.White, ColorRgba.Red, 2.0f * (severity - 0.5f)) :
+							ColorRgba.Lerp(ColorRgba.TransparentWhite, ColorRgba.White, 0.1f + 0.9f * (2.0f * severity));
 						reportBuilder.Append(FormattedText.FormatColor(lineColor));
 					}
 					reportBuilder.Append(' ', current.ParentDepth * 2);
