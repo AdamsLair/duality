@@ -143,6 +143,8 @@ namespace DualityEditor
 			if (!Resource.IsResourceFile(filePath)) { propName = null; return; }
 
 			Type resType = Resource.GetTypeByFileName(filePath);
+			if (resType == null) { propName = null; return; }
+
 			string typeStr = resType.GetTypeCSCodeName();
 			string indentStr = new string('\t', indent);
 			propName = GenerateGameResSrcFile_ClassName(filePath);

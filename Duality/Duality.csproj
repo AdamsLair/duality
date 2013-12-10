@@ -67,6 +67,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Animation\AnimationGroup.cs" />
     <Compile Include="Audio\AudioLibraryLoader.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />
     <Compile Include="Cloning\CloneProviderContext.cs" />
@@ -105,12 +106,12 @@
     <Compile Include="Graphics\DrawDevice.cs" />
     <Compile Include="Graphics\IDrawDevice.cs" />
     <Compile Include="Graphics\DrawDeviceEnums.cs" />
-    <Compile Include="Helpers\Animation\Animation.cs" />
-    <Compile Include="Helpers\Animation\FieldAnimation.cs" />
-    <Compile Include="Helpers\Animation\IAnimation.cs" />
-    <Compile Include="Helpers\Animation\IPropertyAnimation.cs" />
-    <Compile Include="Helpers\Animation\IFieldAnimation.cs" />
-    <Compile Include="Helpers\Animation\PropertyAnimation.cs" />
+    <Compile Include="Animation\Animation.cs" />
+    <Compile Include="Animation\FieldAnimation.cs" />
+    <Compile Include="Animation\IAnimation.cs" />
+    <Compile Include="Animation\IPropertyAnimation.cs" />
+    <Compile Include="Animation\IFieldAnimation.cs" />
+    <Compile Include="Animation\PropertyAnimation.cs" />
     <Compile Include="Helpers\Math\Alignment.cs" />
     <Compile Include="Graphics\ColorFormat\ColorHsva.cs" />
     <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
@@ -124,11 +125,11 @@
     <Compile Include="Helpers\Extensions\ExtMethodsBitmap.cs" />
     <Compile Include="Helpers\IManageableObject.cs" />
     <Compile Include="Helpers\InitState.cs" />
-    <Compile Include="Helpers\Animation\AnimationKeyFrame.cs" />
-    <Compile Include="Helpers\Animation\AnimationTrack.cs" />
+    <Compile Include="Animation\AnimationKeyFrame.cs" />
+    <Compile Include="Animation\AnimationTrack.cs" />
     <Compile Include="Helpers\Math\GenericOperator.cs" />
-    <Compile Include="Helpers\Animation\IAnimationKeyFrame.cs" />
-    <Compile Include="Helpers\Animation\IAnimationTrack.cs" />
+    <Compile Include="Animation\IAnimationKeyFrame.cs" />
+    <Compile Include="Animation\IAnimationTrack.cs" />
     <Compile Include="Helpers\Math\PhysicsConvert.cs" />
     <Compile Include="Helpers\EditorHint.cs" />
     <Compile Include="Helpers\Extensions\ExtMethodsIEnumerable.cs" />
