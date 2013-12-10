@@ -1334,17 +1334,6 @@ namespace Duality
 			first = second;
 			second = temp;
 		}
-		/// <summary>
-		/// Encapsulates a range of values within a <see cref="Duality.Range{T}" /> struct.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="min"></param>
-		/// <param name="max"></param>
-		/// <returns></returns>
-		public static Range<T> Range<T>(T min, T max) where T : struct, IEquatable<T>, IComparable<T>
-		{
-			return new Range<T>(min, max);
-		}
 
 		/// <summary>
 		/// Combines two hash codes.

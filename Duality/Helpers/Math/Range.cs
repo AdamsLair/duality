@@ -9,33 +9,40 @@ namespace Duality
 	/// Represents a range of values between a specific minimum and maximum value.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public struct Range<T> : IEquatable<Range<T>> where T : struct, IEquatable<T>, IComparable<T>
+	public struct Range : IEquatable<Range>
 	{
 		/// <summary>
 		/// The minimum value of this Range.
 		/// </summary>
-		public T MinValue;
+		public float MinValue;
 		/// <summary>
 		/// The maximum value of this Range.
 		/// </summary>
-		public T MaxValue;
+		public float MaxValue;
 
 		/// <summary>
 		/// [GET] The total width of this Range. This value may be negative for irregular ranges, 
 		/// i.e. ranges with a higher minimum value than their maximum value.
 		/// </summary>
-		public T Width
+		public float Width
 		{
-			get { return GenericOperator.Subtract(this.MaxValue, this.MinValue); }
+			get { return this.MaxValue - this.MinValue; }
+		}
+		/// <summary>
+		/// [GET] The center value of this Range.
+		/// </summary>
+		public float Center
+		{
+			get { return (this.MaxValue + this.MinValue) * 0.5f; }
 		}
 		/// <summary>
 		/// [GET] Returns a normalized version of this Range where the minimum is guaranteed to be smaller than the maximum value.
 		/// </summary>
-		public Range<T> Normalized
+		public Range Normalized
 		{
 			get
 			{
-				Range<T> result = this;
+				Range result = this;
 				result.Normalize();
 				return result;
 			}
@@ -46,7 +53,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="min"></param>
 		/// <param name="max"></param>
-		public Range(T min, T max)
+		public Range(float min, float max)
 		{
 			this.MinValue = min;
 			this.MaxValue = max;
@@ -55,7 +62,7 @@ namespace Duality
 		/// Creates a new Range with zero-width from a single value.
 		/// </summary>
 		/// <param name="value"></param>
-		public Range(T value)
+		public Range(float value)
 		{
 			this.MinValue = value;
 			this.MaxValue = value;
@@ -66,16 +73,16 @@ namespace Duality
 		/// </summary>
 		/// <param name="ratio"></param>
 		/// <returns></returns>
-		public T Lerp(float ratio)
+		public float Lerp(float ratio)
 		{
-			return GenericOperator.Lerp(this.MinValue, this.MaxValue, ratio);
+			return MathF.Lerp(this.MinValue, this.MaxValue, ratio);
 		}
 		/// <summary>
 		/// Normalizes this Range, i.e. flips minimum and maximum value, if irregular.
 		/// </summary>
 		public void Normalize()
 		{
-			if (Comparer<T>.Default.Compare(this.MinValue, this.MaxValue) > 0)
+			if (this.MaxValue < this.MinValue)
 			{
 				MathF.Swap(ref this.MinValue, ref this.MaxValue);
 			}
@@ -85,23 +92,21 @@ namespace Duality
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public bool Contains(T value)
+		public bool Contains(float value)
 		{
-			return 
-				Comparer<T>.Default.Compare(this.MinValue, value) <= 0 &&
-				Comparer<T>.Default.Compare(this.MaxValue, value) >= 0;
+			return this.MinValue <= value && this.MaxValue >= value;
 		}
 		/// <summary>
 		/// Returns whether this Range contains a certain other range.
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public bool Contains(Range<T> value)
+		public bool Contains(Range value)
 		{
 			return this.Contains(value.MinValue) && this.Contains(value.MaxValue);
 		}
 
-		public bool Equals(Range<T> other)
+		public bool Equals(Range other)
 		{
 			return 
 				this.MinValue.Equals(other.MinValue) &&
@@ -109,8 +114,8 @@ namespace Duality
 		}
 		public override bool Equals(object obj)
 		{
-			if (obj is Range<T>)
-				return this.Equals((Range<T>)obj);
+			if (obj is Range)
+				return this.Equals((Range)obj);
 			else
 				return false;
 		}
@@ -129,7 +134,7 @@ namespace Duality
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static bool operator ==(Range<T> left, Range<T> right)
+		public static bool operator ==(Range left, Range right)
         {
             return left.Equals(right);
         }
@@ -139,7 +144,7 @@ namespace Duality
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static bool operator !=(Range<T> left, Range<T> right)
+		public static bool operator !=(Range left, Range right)
         {
             return !left.Equals(right);
         }
@@ -150,11 +155,11 @@ namespace Duality
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Range<T> operator +(Range<T> left, Range<T> right)
+		public static Range operator +(Range left, Range right)
         {
-            return new Range<T>(
-				GenericOperator.Add(left.MinValue, right.MinValue),
-				GenericOperator.Add(left.MaxValue, right.MaxValue));
+            return new Range(
+				left.MinValue + right.MinValue,
+				left.MaxValue + right.MaxValue);
         }
 		/// <summary>
 		/// Subtracts two Ranges by subtracting each of their components individually.
@@ -162,11 +167,11 @@ namespace Duality
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Range<T> operator -(Range<T> left, Range<T> right)
+		public static Range operator -(Range left, Range right)
         {
-            return new Range<T>(
-				GenericOperator.Subtract(left.MinValue, right.MinValue),
-				GenericOperator.Subtract(left.MaxValue, right.MaxValue));
+            return new Range(
+				left.MinValue - right.MinValue,
+				left.MaxValue - right.MaxValue);
         }
 		/// <summary>
 		/// Multiplies two Ranges by multiplying each of their components individually.
@@ -174,11 +179,11 @@ namespace Duality
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Range<T> operator *(Range<T> left, Range<T> right)
+		public static Range operator *(Range left, Range right)
         {
-            return new Range<T>(
-				GenericOperator.Multiply(left.MinValue, right.MinValue),
-				GenericOperator.Multiply(left.MaxValue, right.MaxValue));
+            return new Range(
+				left.MinValue * right.MinValue,
+				left.MaxValue * right.MaxValue);
         }
 		/// <summary>
 		/// Divides two Ranges by dividing each of their components individually.
@@ -186,11 +191,11 @@ namespace Duality
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static Range<T> operator /(Range<T> left, Range<T> right)
+		public static Range operator /(Range left, Range right)
         {
-            return new Range<T>(
-				GenericOperator.Divide(left.MinValue, right.MinValue),
-				GenericOperator.Divide(left.MaxValue, right.MaxValue));
+            return new Range(
+				left.MinValue / right.MinValue,
+				left.MaxValue / right.MaxValue);
         }
 
 		/// <summary>
@@ -198,9 +203,9 @@ namespace Duality
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static implicit operator Range<T>(T value)
+		public static implicit operator Range(float value)
 		{
-			return new Range<T>(value);
+			return new Range(value);
 		}
 	}
 }
