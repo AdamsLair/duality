@@ -84,6 +84,7 @@ namespace Duality.Resources
 			tmp.Size = 12;
 			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.Kerning = true;
+			tmp.MonoSpace = false;
 			tmp.ReloadData();
 			ContentProvider.AddContent(ContentPath_GenericSerif12, tmp);
 
@@ -92,6 +93,7 @@ namespace Duality.Resources
 			tmp.Size = 12;
 			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
 			tmp.Kerning = true;
+			tmp.MonoSpace = false;
 			tmp.ReloadData();
 			ContentProvider.AddContent(ContentPath_GenericSansSerif12, tmp);
 
