@@ -216,78 +216,194 @@ namespace Duality
 		/// <returns></returns>
 		public static T Lerp<T>(T first, T second, float factor)
 		{
-			return 
-				DualType<T,T>.Add(
-					DualType<T,float>.Multiply(first, 1.0f - factor), 
-					DualType<T,float>.Multiply(second, factor)
-				);
+			return SingleType<T>.Lerp(first, second, factor);
 		}
 		
+		
+		private static readonly Type[] SortedNumericPrimitives = new[]
+		{
+			typeof(double),
+			typeof(float),
+			typeof(long),
+			typeof(ulong),
+			typeof(int),
+			typeof(uint),
+			typeof(short),
+			typeof(ushort),
+			typeof(sbyte),
+			typeof(byte),
+			typeof(bool)
+		};
 
-		private static Func<T,U,V> CreateOperatorFunc<T,U,V>(Func<Expression,Expression,Expression> mainExpressionConstruct)
+		private static Type SelectIntermediateType<T,U>()
+		{
+			if (typeof(T) == typeof(U)) return typeof(T);
+
+			bool firstInList = false;
+			bool secondInList = false;
+			Type favored = null;
+			for (int i = 0; i < SortedNumericPrimitives.Length; i++)
+			{
+				if (SortedNumericPrimitives[i] == typeof(T))
+				{
+					if (favored == null) favored = typeof(T);
+					firstInList = true;
+				}
+				if (SortedNumericPrimitives[i] == typeof(U))
+				{
+					if (favored == null) favored = typeof(U);
+					secondInList = true;
+				}
+				if (firstInList && secondInList) return favored;
+			}
+
+			return typeof(T);
+		}
+		private static Func<TParamA,TParamB,TParamC,TResult> CreateOperatorFunc<TParamA,TParamB,TParamC,TResult>(Func<Expression,Expression,Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
 			{
-				ParameterExpression paramLeft = Expression.Parameter(typeof(T));
-				ParameterExpression paramRight = Expression.Parameter(typeof(U));
+				ParameterExpression paramA = Expression.Parameter(typeof(TParamA));
+				ParameterExpression paramB = Expression.Parameter(typeof(TParamB));
+				ParameterExpression paramC = Expression.Parameter(typeof(TParamC));
 				try
 				{
-					return Expression.Lambda<Func<T,U,V>>(mainExpressionConstruct(paramLeft, paramRight), paramLeft, paramRight).Compile();
+					return Expression.Lambda<Func<TParamA,TParamB,TParamC,TResult>>(mainExpressionConstruct(paramA, paramB, paramC), paramA, paramB, paramC).Compile();
 				}
 				catch (InvalidOperationException)
 				{
-					Expression exprLeft;
-					Expression exprRight;
+					Expression exprA;
+					Expression exprB;
+					Expression exprC;
+					Expression exprReturn;
 
-					if (typeof(T) == typeof(V))
-						exprLeft = paramLeft;
+					if (typeof(TParamA) != intermediateType && intermediateType != null)
+						exprA = Expression.Convert(paramA, intermediateType);
 					else
-						exprLeft = Expression.Convert(paramLeft, typeof(V));
+						exprA = paramA;
 
-					if (typeof(U) == typeof(V))
-						exprRight = paramRight;
+					if (typeof(TParamB) != intermediateType && intermediateType != null)
+						exprB = Expression.Convert(paramB, intermediateType);
 					else
-						exprRight = Expression.Convert(paramRight, typeof(V));
+						exprB = paramB;
 
-					return Expression.Lambda<Func<T,U,V>>(mainExpressionConstruct(exprLeft, exprRight), paramLeft, paramRight).Compile();
+					if (typeof(TParamC) != intermediateType && intermediateType != null)
+						exprC = Expression.Convert(paramC, intermediateType);
+					else
+						exprC = paramC;
+
+					exprReturn = mainExpressionConstruct(exprA, exprB, exprC);
+
+					if (exprReturn.Type != typeof(TResult) && intermediateType != null)
+						exprReturn = Expression.ConvertChecked(exprReturn, typeof(TResult));
+
+					return Expression.Lambda<Func<TParamA,TParamB,TParamC,TResult>>(exprReturn, paramA, paramB, paramC).Compile();
 				}
 			}
             catch (Exception e)
             {
-                return delegate { throw new InvalidOperationException(e.Message); };
+				if (exceptionFallback)
+					return delegate { throw new InvalidOperationException(e.Message); };
+				else
+					return null;
             }
 		}
-		private static Func<T,U> CreateOperatorFunc<T,U>(Func<Expression,Expression> mainExpressionConstruct)
+		private static Func<TParamA,TParamB,TResult> CreateOperatorFunc<TParamA,TParamB,TResult>(Func<Expression,Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
 			{
-				ParameterExpression param = Expression.Parameter(typeof(T));
+				ParameterExpression paramA = Expression.Parameter(typeof(TParamA));
+				ParameterExpression paramB = Expression.Parameter(typeof(TParamB));
 				try
 				{
-					return Expression.Lambda<Func<T,U>>(mainExpressionConstruct(param), param).Compile();
+					return Expression.Lambda<Func<TParamA,TParamB,TResult>>(mainExpressionConstruct(paramA, paramB), paramA, paramB).Compile();
+				}
+				catch (InvalidOperationException)
+				{
+					Expression exprA;
+					Expression exprB;
+					Expression exprReturn;
+
+					if (typeof(TParamA) != intermediateType && intermediateType != null)
+						exprA = Expression.Convert(paramA, intermediateType);
+					else
+						exprA = paramA;
+
+					if (typeof(TParamB) != intermediateType && intermediateType != null)
+						exprB = Expression.Convert(paramB, intermediateType);
+					else
+						exprB = paramB;
+
+					exprReturn = mainExpressionConstruct(exprA, exprB);
+
+					if (intermediateType != null)
+						exprReturn = Expression.ConvertChecked(exprReturn, typeof(TResult));
+
+					return Expression.Lambda<Func<TParamA,TParamB,TResult>>(exprReturn, paramA, paramB).Compile();
+				}
+			}
+            catch (Exception e)
+            {
+				if (exceptionFallback)
+					return delegate { throw new InvalidOperationException(e.Message); };
+				else
+					return null;
+            }
+		}
+		private static Func<TParam,TResult> CreateOperatorFunc<TParam,TResult>(Func<Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
+		{
+			try
+			{
+				ParameterExpression param = Expression.Parameter(typeof(TParam));
+				try
+				{
+					return Expression.Lambda<Func<TParam,TResult>>(mainExpressionConstruct(param), param).Compile();
 				}
 				catch (InvalidOperationException)
 				{
 					Expression expr;
+					Expression exprReturn;
 
-					if (typeof(T) == typeof(U))
-						expr = param;
+					if (typeof(TParam) != intermediateType && intermediateType != null)
+						expr = Expression.ConvertChecked(param, intermediateType);
 					else
-						expr = Expression.Convert(param, typeof(U));
+						expr = param;
 
-					return Expression.Lambda<Func<T,U>>(mainExpressionConstruct(expr), param).Compile();
+					exprReturn = mainExpressionConstruct(expr);
+
+					if (intermediateType != null)
+						exprReturn = Expression.ConvertChecked(exprReturn, typeof(TResult));
+
+					return Expression.Lambda<Func<TParam,TResult>>(exprReturn, param).Compile();
 				}
+			}
+            catch (Exception e)
+            {
+				if (exceptionFallback)
+					return delegate { throw new InvalidOperationException(e.Message); };
+				else
+					return null;
+            }
+		}
+		private static Func<T,U> CreateNoOpFunc<T,U>()
+		{
+			try
+			{
+				ParameterExpression param = Expression.Parameter(typeof(T));
+				return Expression.Lambda<Func<T,U>>(param, param).Compile();
 			}
             catch (Exception e)
             {
                 return delegate { throw new InvalidOperationException(e.Message); };
             }
 		}
+
 		private static class SingleType<T>
 		{
 			public static readonly Func<T,T,T> Modulo;
 			public static readonly Func<T,T> Negate;
 			public static readonly Func<T,T> Abs;
+			public static readonly Func<T,T,float,T> Lerp;
 
 			public static readonly Func<T,T,T> Or;
 			public static readonly Func<T,T,T> And;
@@ -304,8 +420,8 @@ namespace Duality
 			static SingleType()
 			{
 				Modulo				= CreateOperatorFunc<T,T,T>(Expression.Modulo);
-				Negate				= CreateOperatorFunc<T,T>(Expression.Negate);
-				Abs					= CreateOperatorFunc<T,T>(body => Expression.Condition(Expression.LessThan(body, Expression.Constant(default(T), typeof(T))), Expression.Negate(body), body));
+				Negate				= CreateOperatorFunc<T,T>(Expression.NegateChecked);
+				Abs					= CreateOperatorFunc<T,T>(body => Expression.Condition(Expression.LessThan(body, Expression.Constant(default(T), typeof(T))), Expression.NegateChecked(body), body));
 
 				Or					= CreateOperatorFunc<T,T,T>(Expression.Or);
 				And					= CreateOperatorFunc<T,T,T>(Expression.And);
@@ -317,6 +433,34 @@ namespace Duality
 				GreaterThanOrEqual	= CreateOperatorFunc<T,T,bool>(Expression.GreaterThanOrEqual);
 				LessThan			= CreateOperatorFunc<T,T,bool>(Expression.LessThan);
 				LessThanOrEqual		= CreateOperatorFunc<T,T,bool>(Expression.LessThanOrEqual);
+				
+				{
+					Type intermediate = SelectIntermediateType<T,float>();
+					Func<T,T,float,T> temp;
+
+					// Try to create a Lerp term without casting the scale factor
+					temp = CreateOperatorFunc<T,T,float,T>((left, right, factor) => 
+						Expression.AddChecked(
+							Expression.MultiplyChecked(left, Expression.SubtractChecked(Expression.Constant(1.0f), factor)), 
+							Expression.MultiplyChecked(right, factor)
+						),
+						intermediate,
+						false);
+
+					// Doesn't work? Try with casting the scale factor to the intermediate Type then.
+					if (temp == null)
+					{
+						temp = CreateOperatorFunc<T,T,float,T>((left, right, factor) => 
+							Expression.AddChecked(
+								Expression.MultiplyChecked(left, Expression.SubtractChecked(Expression.ConvertChecked(Expression.Constant(1.0f), intermediate), factor)), 
+								Expression.MultiplyChecked(right, factor)
+							),
+							intermediate);
+					}
+
+					// Assign Lerp method;
+					Lerp = temp;
+				}
 			}
 		}
 		private static class DualType<T,U>
@@ -330,11 +474,13 @@ namespace Duality
 			[System.Diagnostics.DebuggerNonUserCode] 
 			static DualType()
 			{
-				Add			= CreateOperatorFunc<T,U,T>(Expression.Add);
-				Subtract	= CreateOperatorFunc<T,U,T>(Expression.Subtract);
-				Multiply	= CreateOperatorFunc<T,U,T>(Expression.Multiply);
-				Divide		= CreateOperatorFunc<T,U,T>(Expression.Divide);
-				Convert		= CreateOperatorFunc<T,U>(body => Expression.Convert(body, typeof(U)));
+				Type intermediateType = SelectIntermediateType<T,U>();
+
+				Add			= CreateOperatorFunc<T,U,T>(Expression.AddChecked, intermediateType);
+				Subtract	= CreateOperatorFunc<T,U,T>(Expression.SubtractChecked, intermediateType);
+				Multiply	= CreateOperatorFunc<T,U,T>(Expression.MultiplyChecked, intermediateType);
+				Divide		= CreateOperatorFunc<T,U,T>(Expression.Divide, intermediateType);
+				Convert		= (typeof(T) != typeof(U)) ? CreateOperatorFunc<T,U>(body => Expression.ConvertChecked(body, typeof(U))) : CreateNoOpFunc<T,U>();
 			}
 		}
 	}

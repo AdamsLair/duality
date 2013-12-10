@@ -403,65 +403,120 @@ namespace Duality
 		}
 
 		
-		public delegate void Setter<in T, in U>(T instance, U value);
-		public delegate void ByRefSetter<T, in U>(ref T instance, U value);
-		public static ByRefSetter<T,U> BuildFieldRefSetter<T,U>(this FieldInfo field)
+		public delegate void ByRefValueSetter<TObject, in TValue>(ref TObject instance, TValue value);
+		public static ByRefValueSetter<TObject,TValue> BuildFieldRefSetter<TObject,TValue>(this FieldInfo field)
 		{
-			ParameterExpression instance = Expression.Parameter(typeof(T).MakeByRefType(), "instance");
-			ParameterExpression value = Expression.Parameter(typeof(U), "value");
+			if (field == null) throw new ArgumentNullException("field");
 
-			Expression<ByRefSetter<T,U>> expr =
-				Expression.Lambda<ByRefSetter<T,U>>(
-					Expression.Assign(
-						Expression.Field(instance, field),
-						Expression.Convert(value, field.FieldType)),
-					instance,
-					value);
+			ParameterExpression instance = Expression.Parameter(typeof(TObject).MakeByRefType(), "instance");
+			ParameterExpression value = Expression.Parameter(typeof(TValue), "value");
+			
+			Expression<ByRefValueSetter<TObject,TValue>> expr;
+			if (field.FieldType != typeof(TValue))
+			{
+				expr =
+					Expression.Lambda<ByRefValueSetter<TObject,TValue>>(
+						Expression.Assign(
+							Expression.Field(field.IsStatic ? null : instance, field),
+							Expression.Convert(value, field.FieldType)),
+						instance,
+						value);
+			}
+			else
+			{
+				expr =
+					Expression.Lambda<ByRefValueSetter<TObject,TValue>>(
+						Expression.Assign(Expression.Field(field.IsStatic ? null : instance, field), value),
+						instance,
+						value);
+			}
 
 			return expr.Compile();
 		}
-		public static Setter<T,U> BuildFieldSetter<T,U>(this FieldInfo field)
+		public static ByRefValueSetter<TObject,TValue> BuildPropertyRefSetter<TObject,TValue>(this PropertyInfo property)
 		{
-			ParameterExpression instance = Expression.Parameter(typeof(T), "instance");
-			ParameterExpression value = Expression.Parameter(typeof(U), "value");
+			if (property == null) throw new ArgumentNullException("property");
 
-			Expression<Setter<T,U>> expr =
-				Expression.Lambda<Setter<T,U>>(
-					Expression.Assign(
-						Expression.Field(instance, field),
-						Expression.Convert(value, field.FieldType)),
-					instance,
-					value);
+			ParameterExpression instance = Expression.Parameter(typeof(TObject).MakeByRefType(), "instance");
+			ParameterExpression value = Expression.Parameter(typeof(TValue), "value");
+
+			Expression<ByRefValueSetter<TObject,TValue>> expr;
+			if (property.PropertyType != typeof(TValue))
+			{
+				expr =
+					Expression.Lambda<ByRefValueSetter<TObject,TValue>>(
+						Expression.Assign(
+							Expression.Property(property.GetSetMethod().IsStatic ? null : instance, property),
+							Expression.Convert(value, property.PropertyType)),
+						instance,
+						value);
+			}
+			else
+			{
+				expr =
+					Expression.Lambda<ByRefValueSetter<TObject,TValue>>(
+						Expression.Assign(Expression.Property(property.GetSetMethod().IsStatic ? null : instance, property), value),
+						instance,
+						value);
+			}
 
 			return expr.Compile();
 		}
-		public static ByRefSetter<T,U> BuildPropertyRefSetter<T,U>(this PropertyInfo prop)
+		public static Action<TObject,TValue> BuildFieldSetter<TObject,TValue>(this FieldInfo field)
 		{
-			ParameterExpression instance = Expression.Parameter(typeof(T).MakeByRefType(), "instance");
-			ParameterExpression value = Expression.Parameter(typeof(U), "value");
+			if (field == null) throw new ArgumentNullException("field");
 
-			Expression<ByRefSetter<T,U>> expr =
-				Expression.Lambda<ByRefSetter<T,U>>(
-					Expression.Assign(
-						Expression.Property(instance, prop),
-						Expression.Convert(value, prop.PropertyType)),
-					instance,
-					value);
+			ParameterExpression instance = Expression.Parameter(typeof(TObject), "instance");
+			ParameterExpression value = Expression.Parameter(typeof(TValue), "value");
+			
+			Expression<Action<TObject,TValue>> expr;
+			if (field.FieldType != typeof(TValue))
+			{
+				expr =
+					Expression.Lambda<Action<TObject,TValue>>(
+						Expression.Assign(
+							Expression.Field(field.IsStatic ? null : instance, field),
+							Expression.Convert(value, field.FieldType)),
+						instance,
+						value);
+			}
+			else
+			{
+				expr =
+					Expression.Lambda<Action<TObject,TValue>>(
+					Expression.Assign(Expression.Field(field.IsStatic ? null : instance, field), value),
+						instance,
+						value);
+			}
 
 			return expr.Compile();
 		}
-		public static Setter<T,U> BuildPropertySetter<T,U>(this PropertyInfo prop)
+		public static Action<TObject,TValue> BuildPropertySetter<TObject,TValue>(this PropertyInfo property)
 		{
-			ParameterExpression instance = Expression.Parameter(typeof(T), "instance");
-			ParameterExpression value = Expression.Parameter(typeof(U), "value");
+			if (property == null) throw new ArgumentNullException("property");
 
-			Expression<Setter<T,U>> expr =
-				Expression.Lambda<Setter<T,U>>(
-					Expression.Assign(
-						Expression.Property(instance, prop),
-						Expression.Convert(value, prop.PropertyType)),
-					instance,
-					value);
+			ParameterExpression instance = Expression.Parameter(typeof(TObject), "instance");
+			ParameterExpression value = Expression.Parameter(typeof(TValue), "value");
+
+			Expression<Action<TObject,TValue>> expr;
+			if (property.PropertyType != typeof(TValue))
+			{
+				expr =
+					Expression.Lambda<Action<TObject,TValue>>(
+						Expression.Assign(
+							Expression.Property(property.GetSetMethod().IsStatic ? null : instance, property),
+							Expression.Convert(value, property.PropertyType)),
+						instance,
+						value);
+			}
+			else
+			{
+				expr =
+					Expression.Lambda<Action<TObject,TValue>>(
+						Expression.Assign(Expression.Property(property.GetSetMethod().IsStatic ? null : instance, property), value),
+						instance,
+						value);
+			}
 
 			return expr.Compile();
 		}

@@ -4,22 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Duality
+namespace Duality.Animation
 {
-	public class AnimationTrack<T> : IEnumerable<AnimationTrack<T>.KeyFrame> where T : struct
+	public class AnimationTrack<T> : IEnumerable<AnimationKeyFrame<T>>, IAnimationTrack
 	{
-        private List<KeyFrame>	keyFrames	= new List<KeyFrame>();
-        private bool			loop		= false;
+        private List<AnimationKeyFrame<T>>	keyFrames	= new List<AnimationKeyFrame<T>>();
+        private bool						loop		= false;
 
 
-        public IEnumerable<KeyFrame> KeyFrames
+        public IEnumerable<AnimationKeyFrame<T>> KeyFrames
         {
             get { return this.keyFrames; }
             set
 			{
 				if (this.keyFrames != value)
 				{
-					this.keyFrames = (value != null) ? value.ToList() : new List<KeyFrame>();
+					this.keyFrames = (value != null) ? value.ToList() : new List<AnimationKeyFrame<T>>();
 					this.ValidateKeyFrames();
 				}
 			}
@@ -39,37 +39,41 @@ namespace Duality
 		}
 		public T this[float time]
 		{
-			get { return this.GetValueAt(time); }
+			get { return this.GetValue(time); }
+			set { this.Add(time, value); }
 		}
 
 
 		public AnimationTrack() {}
-        public AnimationTrack(IEnumerable<KeyFrame> frames)
+        public AnimationTrack(IEnumerable<AnimationKeyFrame<T>> frames)
         {
 			this.AddRange(frames);
         }
 
-		public void AddRange(IEnumerable<KeyFrame> frames)
+		public void AddRange(IEnumerable<AnimationKeyFrame<T>> frames)
 		{
 			this.keyFrames.AddRange(frames);
 			this.ValidateKeyFrames();
 		}
-		public void Add(KeyFrame frame)
+		public void Add(AnimationKeyFrame<T> frame)
 		{
-			int insertIndex = this.BinarySearchIndexBelow(frame.Time) + 1;
+			int insertIndex = this.SearchIndexBelow(frame.Time) + 1;
+
 			if (insertIndex >= this.keyFrames.Count)
 				this.keyFrames.Add(frame);
+			else if (this.keyFrames[insertIndex].Time == frame.Time)
+				this.keyFrames[insertIndex] = frame;
 			else
 				this.keyFrames.Insert(insertIndex, frame);
 
 			if (insertIndex == 0 && frame.Time > 0.0f)
-				this.keyFrames.Insert(0, new KeyFrame(0.0f, frame.Value));
+				this.keyFrames.Insert(0, new AnimationKeyFrame<T>(0.0f, frame.Value));
 		}
         public void Add(float time, T value)
         {
-			this.Add(new KeyFrame(time, value));
+			this.Add(new AnimationKeyFrame<T>(time, value));
         }
-		public void RemoveAt(float time)
+		public void Remove(float time)
 		{
 			this.keyFrames.RemoveAll(f => f.Time == time);
 		}
@@ -78,7 +82,7 @@ namespace Duality
 			this.keyFrames.Clear();
 		}
 
-        public T GetValueAt(float time)
+        public T GetValue(float time)
         {
             if (this.keyFrames.Count == 0) throw new InvalidOperationException("Can't interpolate on empty AnimationTrack.");
 
@@ -86,23 +90,27 @@ namespace Duality
 			float duration = this.Duration;
             if (this.loop) time = MathF.NormalizeVar(time, 0.0f, duration);
 
-			int baseIndex = this.BinarySearchIndexBelow(time);
+			int baseIndex = this.SearchIndexBelow(time);
 			if (baseIndex < 0) return this.keyFrames[0].Value;
 			if (baseIndex == frameCount - 1 && !this.loop) return this.keyFrames[frameCount - 1].Value;
 
-			KeyFrame keyBefore = this.keyFrames[baseIndex];
-			KeyFrame keyAfter = this.keyFrames[(baseIndex + 1) % frameCount];
+			AnimationKeyFrame<T> keyBefore = this.keyFrames[baseIndex];
+			AnimationKeyFrame<T> keyAfter = this.keyFrames[(baseIndex + 1) % frameCount];
 			if (keyAfter.Time < keyBefore.Time) keyAfter.Time += duration;
 
 			float factor = (time - keyBefore.Time) / (keyAfter.Time - keyBefore.Time);
 			return GenericOperator.Lerp(keyBefore.Value, keyAfter.Value, factor);
         }
+		public void SetValue(float time, T value)
+		{
+			this.Add(time, value);
+		}
         public override string ToString()
         {
             return this.keyFrames.ToString(", ");
         }
 		
-		private int BinarySearchIndexBelow(float time)
+		private int SearchIndexBelow(float time)
 		{
 			int left = 0;
 			int right = this.keyFrames.Count - 1;
@@ -146,39 +154,53 @@ namespace Duality
 			this.keyFrames.Sort();
 			if (this.keyFrames[0].Time > 0.0f)
 			{
-				this.keyFrames.Insert(0, new KeyFrame(0.0f, this.keyFrames[0].Value));
+				this.keyFrames.Insert(0, new AnimationKeyFrame<T>(0.0f, this.keyFrames[0].Value));
 			}
 		}
 
-		IEnumerator<AnimationTrack<T>.KeyFrame> IEnumerable<AnimationTrack<T>.KeyFrame>.GetEnumerator()
+
+		IEnumerator<AnimationKeyFrame<T>> IEnumerable<AnimationKeyFrame<T>>.GetEnumerator()
 		{
 			return this.keyFrames.GetEnumerator();
+		}
+		IEnumerator<IAnimationKeyFrame> IEnumerable<IAnimationKeyFrame>.GetEnumerator()
+		{
+			return this.keyFrames.Cast<IAnimationKeyFrame>().GetEnumerator();
 		}
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.keyFrames.GetEnumerator();
 		}
 
-		public struct KeyFrame : IComparable<KeyFrame>
+		IEnumerable<IAnimationKeyFrame> IAnimationTrack.KeyFrames
 		{
-			public float Time;
-			public T Value;
-
-			public KeyFrame(float time, T value)
-			{
-				this.Time = time;
-				this.Value = value;
-			}
-
-			int IComparable<KeyFrame>.CompareTo(KeyFrame other)
-			{
-				return this.Time.CompareTo(other.Time);
-			}
-
-			public override string ToString()
-			{
-				return string.Format("[{0:F}: {1:F}]", this.Time, this.Value);
-			}
+			get { return this.KeyFrames.Cast<IAnimationKeyFrame>(); }
+			set { this.KeyFrames = value.Cast<AnimationKeyFrame<T>>(); }
+		}
+		object IAnimationTrack.this[float time]
+		{
+			get { return this.GetValue(time); }
+			set { this.SetValue(time, (T)value); }
+		}
+		void IAnimationTrack.AddRange(IEnumerable<IAnimationKeyFrame> frames)
+		{
+			this.AddRange(frames.Cast<AnimationKeyFrame<T>>());
+		}
+		void IAnimationTrack.Add(IAnimationKeyFrame frame)
+		{
+			this.Add((AnimationKeyFrame<T>)frame);
+		}
+		void IAnimationTrack.Add<U>(float time, U value)
+		{
+			this.Add(time, GenericOperator.Convert<U,T>(value));
+		}
+		U IAnimationTrack.GetValue<U>(float time)
+		{
+			return GenericOperator.Convert<T,U>(this.GetValue(time));
+		}
+		void IAnimationTrack.SetValue<U>(float time, U value)
+		{
+			this.SetValue(time, GenericOperator.Convert<U,T>(value));
 		}
 	}
 }
