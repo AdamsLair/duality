@@ -1462,11 +1462,9 @@ namespace EditorBase
 		}
 		private void lockedToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var selNode =(
-				from vn in this.objectView.SelectedNodes
-				where vn.Tag is GameObjectNode
-				select vn.Tag as GameObjectNode).ToArray();
-			var selNodeData = selNode.Select(n => CorePluginRegistry.GetDesignTimeData(n.Obj)).ToArray();
+			var selNodes = GetSelNodesFlattened();
+
+			var selNodeData = selNodes.Select(n => CorePluginRegistry.GetDesignTimeData(n.Obj)).ToArray();
 			bool locked = true;
 			bool hidden = true;
 			foreach (var data in selNodeData)
@@ -1494,7 +1492,7 @@ namespace EditorBase
 				}
 			}
 
-			foreach (var gameObjNode in selNode) gameObjNode.UpdateIcon();
+			foreach (var gameObjNode in selNodes) gameObjNode.UpdateIcon();
 			this.contextMenuNode_UpdateLockHideItem();
 			this.objectView.Invalidate();
 
@@ -1731,6 +1729,16 @@ namespace EditorBase
 			dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(dragObjNode));
 			dragObjViewNode.IsSelected = wasSelected;
 			this.objectView.RestoreNodesExpanded(dragObjViewNode, expandedMap);
+		}
+
+		private List<GameObjectNode> GetSelNodesFlattened()
+		{
+			Func<IEnumerable<TreeNodeAdv>, IEnumerable<GameObjectNode>> flattenNodes = null;
+			flattenNodes = n => n.SelectMany(nodes => flattenNodes(
+				nodes.Children.Where(c => c.Tag is GameObjectNode)))
+				.Concat(n.Select(c => c.Tag as GameObjectNode));
+
+			return flattenNodes(this.objectView.SelectedNodes).ToList();
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
