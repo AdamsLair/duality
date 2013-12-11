@@ -6,12 +6,19 @@ using System.Text;
 
 namespace Duality.Animation
 {
+	/// <summary>
+	/// Describes the animation of a value as a set of <see cref="AnimationKeyFrame{0}">keyframes</see>.
+	/// </summary>
+	/// <typeparam name="T">Type of the animated value.</typeparam>
 	public class AnimationTrack<T> : IEnumerable<AnimationKeyFrame<T>>, IAnimationTrack
 	{
         private List<AnimationKeyFrame<T>>	keyFrames	= new List<AnimationKeyFrame<T>>();
         private bool						loop		= false;
 
 
+		/// <summary>
+		/// [GET / SET] The set of keyframes that is used to describe the animation.
+		/// </summary>
         public IEnumerable<AnimationKeyFrame<T>> KeyFrames
         {
             get { return this.keyFrames; }
@@ -24,19 +31,34 @@ namespace Duality.Animation
 				}
 			}
         }
+		/// <summary>
+		/// [GET] The total number of keyframes in this track.
+		/// </summary>
 		public int KeyFrameCount
 		{
 			get { return this.keyFrames.Count; }
 		}
+		/// <summary>
+		/// [GET / SET] Describes whether or not this track is considered to be a loop.
+		/// </summary>
         public bool IsLooping
         {
             get { return this.loop; }
             set { this.loop = value; }
         }
+		/// <summary>
+		/// [GET] Returns the total duration of this track in seconds, i.e. the last keyframes time value.
+		/// </summary>
 		public float Duration
 		{
 			get { return this.keyFrames[this.keyFrames.Count - 1].Time; }
 		}
+		/// <summary>
+		/// [GET / SET] The animated value at a certain time. Setting this value may
+		/// introduce new keyframes or modify existing ones.
+		/// </summary>
+		/// <param name="time">Time in seconds.</param>
+		/// <returns></returns>
 		public T this[float time]
 		{
 			get { return this.GetValue(time); }
@@ -50,11 +72,21 @@ namespace Duality.Animation
 			this.AddRange(frames);
         }
 
+		/// <summary>
+		/// Adds a range of keyframes to the track. They do not need to be sorted 
+		/// or at the end of the track, as they will be sorted anyway.
+		/// </summary>
+		/// <param name="frames"></param>
 		public void AddRange(IEnumerable<AnimationKeyFrame<T>> frames)
 		{
 			this.keyFrames.AddRange(frames);
 			this.ValidateKeyFrames();
 		}
+		/// <summary>
+		/// Adds a single keyframe to the track. You may use this method to add
+		/// keyframes at arbitrary times.
+		/// </summary>
+		/// <param name="frame"></param>
 		public void Add(AnimationKeyFrame<T> frame)
 		{
 			int insertIndex = this.SearchIndexBelow(frame.Time) + 1;
@@ -69,19 +101,37 @@ namespace Duality.Animation
 			if (insertIndex == 0 && frame.Time > 0.0f)
 				this.keyFrames.Insert(0, new AnimationKeyFrame<T>(0.0f, frame.Value));
 		}
+		/// <summary>
+		/// Adds a single keyframe to the track. You may use this method to add
+		/// keyframes at arbitrary times.
+		/// </summary>
+		/// <param name="time">Time in seconds.</param>
+		/// <param name="value"></param>
         public void Add(float time, T value)
         {
 			this.Add(new AnimationKeyFrame<T>(time, value));
         }
+		/// <summary>
+		/// Removes a single keyframe from the track.
+		/// </summary>
+		/// <param name="time">Time in seconds.</param>
 		public void Remove(float time)
 		{
 			this.keyFrames.RemoveAll(f => f.Time == time);
 		}
+		/// <summary>
+		/// Clears the track from all keyframes.
+		/// </summary>
 		public void Clear()
 		{
 			this.keyFrames.Clear();
 		}
 
+		/// <summary>
+		/// Returns the animated value at the specified time.
+		/// </summary>
+		/// <param name="time">Time in seconds.</param>
+		/// <returns></returns>
         public T GetValue(float time)
         {
             if (this.keyFrames.Count == 0) throw new InvalidOperationException("Can't interpolate on empty AnimationTrack.");
@@ -101,6 +151,11 @@ namespace Duality.Animation
 			float factor = (time - keyBefore.Time) / (keyAfter.Time - keyBefore.Time);
 			return GenericOperator.Lerp(keyBefore.Value, keyAfter.Value, factor);
         }
+		/// <summary>
+		/// Assigns a value at the specified time. This may introduce new keyframes or modify existing ones.
+		/// </summary>
+		/// <param name="time">Time in seconds.</param>
+		/// <param name="value"></param>
 		public void SetValue(float time, T value)
 		{
 			this.Add(time, value);
@@ -110,6 +165,7 @@ namespace Duality.Animation
             return this.keyFrames.ToString(", ");
         }
 		
+
 		private int SearchIndexBelow(float time)
 		{
 			int left = 0;
