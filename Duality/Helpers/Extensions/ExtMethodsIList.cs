@@ -42,7 +42,7 @@ namespace Duality
 				}
 			}
 		}
-
+		
 		/// <summary>
 		/// Performs a stable sort.
 		/// </summary>
@@ -70,60 +70,81 @@ namespace Duality
 		/// <param name="comparison">The comparison to use.</param>
 		public static void StableSort<T>(this IList<T> list, Comparison<T> comparison)
 		{
+			StableSort<T>(list, 0, list.Count, comparison);
+		}
+		/// <summary>
+		/// Performs a stable sort.
+		/// </summary>
+		/// <typeparam name="T">The lists object type.</typeparam>
+		/// <param name="list">List to perform the sort operation on.</param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		public static void StableSort<T>(this IList<T> list, int index, int count)
+		{
+			StableSort<T>(list, index, count, Comparer<T>.Default.Compare);
+		}
+		/// <summary>
+		/// Performs a stable sort.
+		/// </summary>
+		/// <typeparam name="T">The lists object type.</typeparam>
+		/// <param name="list">List to perform the sort operation on.</param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		/// <param name="comparer">The comparer to use.</param>
+		public static void StableSort<T>(this IList<T> list, int index, int count, Comparer<T> comparer)
+		{
+			StableSort<T>(list, index, count, comparer.Compare);
+		}
+		/// <summary>
+		/// Performs a stable sort.
+		/// </summary>
+		/// <typeparam name="T">The lists object type.</typeparam>
+		/// <param name="list">List to perform the sort operation on.</param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		/// <param name="comparison">The comparison to use.</param>
+		public static void StableSort<T>(this IList<T> list, int index, int count, Comparison<T> comparison)
+		{
 			// System.Threading.Tasks.Parallel is not a good idea in WinForms because it triggers the message loop.
 			// Thus, parallel merge sorting isn't used anymore. Maybe it could be re-activated later.
 			//if (list.Count >= 512 && DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Launcher)
-			//	StableSort_Parallel(list, comparison);
+			//	StableSort_Parallel(list, index, count, comparison);
 			//else
-			StableSort_Sequential(list, comparison);
+				StableSort_Sequential(list, index, count, comparison);
 		}
-		private static void StableSort_Parallel<T>(IList<T> list, Comparison<T> comparison)
+
+		private static void StableSort_Sequential<T>(this IList<T> list, int index, int count, Comparison<T> comparison)
 		{
-			if (list.Count < 2) return;
+			if (count < 2) return;
 
-			int middle = list.Count / 2;
-			T[] left = null;
-			T[] right = null;
+			int middle = index + count / 2;
+			T[] left = new T[middle - index];
+			T[] right = new T[count - left.Length];
 
-			Parallel.Invoke(
-				() =>
-				{
-					left = new T[middle];
-					if (list is T[])
-					{
-						T[] array = list as T[];
-						Array.Copy(array, 0, left, 0, left.Length);
-					}
-					else
-					{
-						for (int i = 0; i < middle; i++)
-							left[i] = list[i];
-					}
-					StableSort(left, comparison);
-				},
-				() => 
-				{
-					right = new T[list.Count - middle];
-					if (list is T[])
-					{
-						T[] array = list as T[];
-						Array.Copy(array, middle, right, 0, right.Length);
-					}
-					else
-					{
-						for (int i = 0; i < list.Count - middle; i++)
-							right[i] = list[i + middle];
-					}
-					StableSort(right, comparison);
-				});
+			if (list is T[])
+			{
+				T[] array = list as T[];
+				Array.Copy(array, index, left, 0, left.Length);
+				Array.Copy(array, middle, right, 0, right.Length);
+			}
+			else
+			{
+				for (int i = 0; i < middle; i++)
+					left[i] = list[i + index];
+				for (int i = 0; i < count - middle; i++)
+					right[i] = list[i + middle];
+			}
+
+			StableSort_Sequential(left, 0, left.Length, comparison);
+			StableSort_Sequential(right, 0, right.Length, comparison);
 
 			int leftptr = 0;
 			int rightptr = 0;
-			for (int k = 0 ; k < list.Count; k++)
+			for (int k = index ; k < index + count; k++)
 			{
 				if (rightptr == right.Length || ((leftptr < left.Length ) && comparison(left[leftptr], right[rightptr]) <= 0))
 				{
-					list[ k ] = left[leftptr];
+					list[k] = left[leftptr];
 					leftptr++;
 				}
 				else if (leftptr == left.Length || ((rightptr < right.Length ) && comparison(right[rightptr], left[leftptr]) <= 0))
@@ -133,38 +154,53 @@ namespace Duality
 				}
 			}
 		}
-		private static void StableSort_Sequential<T>(IList<T> list, Comparison<T> comparison)
+		private static void StableSort_Parallel<T>(IList<T> list, int index, int count, Comparison<T> comparison)
 		{
 			if (list.Count < 2) return;
 
-			int middle = list.Count / 2;
-			T[] left = new T[middle];
-			T[] right = new T[list.Count - middle];
+			int middle = index + count / 2;
+			T[] left = null;
+			T[] right = null;
 
-			if (list is T[])
-			{
-				T[] array = list as T[];
-				Array.Copy(array, 0, left, 0, left.Length);
-				Array.Copy(array, middle, right, 0, right.Length);
-			}
-			else
-			{
-				for (int i = 0; i < middle; i++)
-					left[i] = list[i];
-				for (int i = 0; i < list.Count - middle; i++)
-					right[i] = list[i + middle];
-			}
-
-			StableSort_Sequential(left, comparison);
-			StableSort_Sequential(right, comparison);
-
+			Parallel.Invoke(
+				() =>
+				{
+					left = new T[middle - index];
+					if (list is T[])
+					{
+						T[] array = list as T[];
+						Array.Copy(array, index, left, 0, left.Length);
+					}
+					else
+					{
+						for (int i = 0; i < middle; i++)
+							left[i] = list[i + index];
+					}
+					StableSort(left, 0, left.Length, comparison);
+				},
+				() => 
+				{
+					right = new T[count - (middle - index)];
+					if (list is T[])
+					{
+						T[] array = list as T[];
+						Array.Copy(array, middle, right, 0, right.Length);
+					}
+					else
+					{
+						for (int i = 0; i < count - middle; i++)
+							right[i] = list[i + middle];
+					}
+					StableSort(right, 0, right.Length, comparison);
+				});
+			
 			int leftptr = 0;
 			int rightptr = 0;
-			for (int k = 0 ; k < list.Count; k++)
+			for (int k = index ; k < index + count; k++)
 			{
 				if (rightptr == right.Length || ((leftptr < left.Length ) && comparison(left[leftptr], right[rightptr]) <= 0))
 				{
-					list[ k ] = left[leftptr];
+					list[k] = left[leftptr];
 					leftptr++;
 				}
 				else if (leftptr == left.Length || ((rightptr < right.Length ) && comparison(right[rightptr], left[leftptr]) <= 0))

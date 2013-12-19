@@ -12,8 +12,8 @@ namespace Duality.Animation
 	/// <typeparam name="T">Type of the animated value.</typeparam>
 	public class AnimationTrack<T> : IEnumerable<AnimationKeyFrame<T>>, IAnimationTrack
 	{
-        private List<AnimationKeyFrame<T>>	keyFrames	= new List<AnimationKeyFrame<T>>();
-        private bool						loop		= false;
+        private RawList<AnimationKeyFrame<T>>	keyFrames	= new RawList<AnimationKeyFrame<T>>();
+        private bool							loop		= false;
 
 
 		/// <summary>
@@ -26,7 +26,8 @@ namespace Duality.Animation
 			{
 				if (this.keyFrames != value)
 				{
-					this.keyFrames = (value != null) ? value.ToList() : new List<AnimationKeyFrame<T>>();
+					this.keyFrames.Data = value.ToArray();
+					this.keyFrames.Count = this.keyFrames.Data.Length;
 					this.ValidateKeyFrames();
 				}
 			}
@@ -51,7 +52,7 @@ namespace Duality.Animation
 		/// </summary>
 		public float Duration
 		{
-			get { return this.keyFrames[this.keyFrames.Count - 1].Time; }
+			get { return this.keyFrames.Data[this.keyFrames.Count - 1].Time; }
 		}
 		/// <summary>
 		/// [GET / SET] The animated value at a certain time. Setting this value may
@@ -64,13 +65,42 @@ namespace Duality.Animation
 			get { return this.GetValue(time); }
 			set { this.Add(time, value); }
 		}
+		/// <summary>
+		/// [GET / SET] The keyframe at a certain index.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public AnimationKeyFrame<T> this[int index]
+		{
+			get { return this.keyFrames[index]; }
+			set { this.keyFrames[index] = value; }
+		}
 
 
 		public AnimationTrack() {}
         public AnimationTrack(IEnumerable<AnimationKeyFrame<T>> frames)
         {
+			if (frames == null) throw new ArgumentNullException("frames");
 			this.AddRange(frames);
         }
+        public AnimationTrack(params T[] evenlyDistributedValues)
+        {
+			if (evenlyDistributedValues == null) throw new ArgumentNullException("evenlyDistributedValues");
+
+			// Just one value? Add only this one.
+			if (evenlyDistributedValues.Length == 1)
+			{
+				this.Add(0.0f, evenlyDistributedValues[0]);
+				return;
+			}
+
+			// Otherwise, evenly distribute them along [0 ... 1]
+			for (int i = 0; i < evenlyDistributedValues.Length; i++)
+			{
+				this.Add((float)i / (float)(evenlyDistributedValues.Length - 1), evenlyDistributedValues[i]);
+			}
+        }
+        public AnimationTrack(IEnumerable<T> evenlyDistributedValues) : this(evenlyDistributedValues.ToArray()) {}
 
 		/// <summary>
 		/// Adds a range of keyframes to the track. They do not need to be sorted 
@@ -93,8 +123,8 @@ namespace Duality.Animation
 
 			if (insertIndex >= this.keyFrames.Count)
 				this.keyFrames.Add(frame);
-			else if (this.keyFrames[insertIndex].Time == frame.Time)
-				this.keyFrames[insertIndex] = frame;
+			else if (this.keyFrames.Data[insertIndex].Time == frame.Time)
+				this.keyFrames.Data[insertIndex] = frame;
 			else
 				this.keyFrames.Insert(insertIndex, frame);
 
@@ -128,6 +158,19 @@ namespace Duality.Animation
 		}
 
 		/// <summary>
+		/// Scales the animation to use the specified amount of time for completing one cycle.
+		/// </summary>
+		/// <param name="duration"></param>
+		public void ScaleToDuration(float duration)
+		{
+			float oldDuration = this.Duration;
+			for (int i = 0; i < this.keyFrames.Count; i++)
+			{
+				this.keyFrames.Data[i].Time *= duration / oldDuration;
+			}
+		}
+
+		/// <summary>
 		/// Returns the animated value at the specified time.
 		/// </summary>
 		/// <param name="time">Time in seconds.</param>
@@ -136,20 +179,21 @@ namespace Duality.Animation
         {
             if (this.keyFrames.Count == 0) throw new InvalidOperationException("Can't interpolate on empty AnimationTrack.");
 
+			AnimationKeyFrame<T>[] data = this.keyFrames.Data;
 			int frameCount = this.KeyFrameCount;
 			float duration = this.Duration;
             if (this.loop) time = MathF.NormalizeVar(time, 0.0f, duration);
 
 			int baseIndex = this.SearchIndexBelow(time);
-			if (baseIndex < 0) return this.keyFrames[0].Value;
-			if (baseIndex == frameCount - 1 && !this.loop) return this.keyFrames[frameCount - 1].Value;
+			if (baseIndex < 0) return data[0].Value;
+			if (baseIndex == frameCount - 1 && !this.loop) return data[frameCount - 1].Value;
 
-			AnimationKeyFrame<T> keyBefore = this.keyFrames[baseIndex];
-			AnimationKeyFrame<T> keyAfter = this.keyFrames[(baseIndex + 1) % frameCount];
-			if (keyAfter.Time < keyBefore.Time) keyAfter.Time += duration;
+			int nextIndex = (baseIndex + 1) % frameCount;
+			float nextTime = data[nextIndex].Time;
+			if (nextTime < data[baseIndex].Time) nextTime += duration;
 
-			float factor = (time - keyBefore.Time) / (keyAfter.Time - keyBefore.Time);
-			return GenericOperator.Lerp(keyBefore.Value, keyAfter.Value, factor);
+			float factor = (time - data[baseIndex].Time) / (nextTime - data[baseIndex].Time);
+			return GenericOperator.Lerp(data[baseIndex].Value, data[nextIndex].Value, factor);
         }
 		/// <summary>
 		/// Assigns a value at the specified time. This may introduce new keyframes or modify existing ones.
@@ -170,10 +214,11 @@ namespace Duality.Animation
 		{
 			int left = 0;
 			int right = this.keyFrames.Count - 1;
+			AnimationKeyFrame<T>[] array = this.keyFrames.Data;
 			while (right >= left)
 			{
 				int mid = (left + right) / 2;
-				float midTime = this.keyFrames[mid].Time;
+				float midTime = array[mid].Time;
 				if (midTime > time)
 				{
 					right = mid - 1;
@@ -186,7 +231,7 @@ namespace Duality.Animation
 					}
 					else
 					{
-						float rightTime = this.keyFrames[right].Time;
+						float rightTime = array[right].Time;
 						if (rightTime <= time)
 							return right;
 						else
@@ -204,13 +249,13 @@ namespace Duality.Animation
 		{
 			for (int i = this.keyFrames.Count - 1; i >= 0; i--)
 			{
-				if (this.keyFrames[i].Time < 0.0f)
+				if (this.keyFrames.Data[i].Time < 0.0f)
 					this.keyFrames.RemoveAt(i);
 			}
 			this.keyFrames.Sort();
-			if (this.keyFrames[0].Time > 0.0f)
+			if (this.keyFrames.Data[0].Time > 0.0f)
 			{
-				this.keyFrames.Insert(0, new AnimationKeyFrame<T>(0.0f, this.keyFrames[0].Value));
+				this.keyFrames.Insert(0, new AnimationKeyFrame<T>(0.0f, this.keyFrames.Data[0].Value));
 			}
 		}
 

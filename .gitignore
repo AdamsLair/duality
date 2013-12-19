@@ -44,3 +44,8 @@ DualityPlugins/ResourceVersionCompatibility/obj/
 Other/Dependencies/WinFormsUI/Source/obj/
 Other/Dependencies/WinFormsUI/Source/bin/
 Other/Dependencies/WinFormsUI/Source/Docking/Resources/Thumbs.db
+UnitTesting/DualityTests/bin/
+UnitTesting/DualityTests/obj/
+UnitTesting/TestResult.xml
+UnitTesting/Duality.VisualState.xml
+UnitTesting/DualityTests/DualityTests.csproj.user

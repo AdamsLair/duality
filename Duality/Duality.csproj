@@ -137,6 +137,7 @@
     <Compile Include="Helpers\EditorHint.cs" />
     <Compile Include="Helpers\Extensions\ExtMethodsIEnumerable.cs" />
     <Compile Include="Helpers\Math\Range.cs" />
+    <Compile Include="Helpers\RawList.cs" />
     <Compile Include="IContentRef.cs" />
     <Compile Include="Input\IUserInput.cs" />
     <Compile Include="Input\JoystickInputCollection.cs" />
