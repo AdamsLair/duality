@@ -6,7 +6,9 @@
   <DocBuildResultDir>..\..\Documentation\Help</DocBuildResultDir>
   <DocBuildResultFile>DDoc.chm</DocBuildResultFile>
   <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
-  <TargetDir>Duality</TargetDir>
+  <NUnitBinDir>..\..\UnitTesting\NUnit</NUnitBinDir>
+  <UnitTestProjectDir>..\..\UnitTesting\</UnitTestProjectDir>
+  <IntermediateTargetDir>Duality</IntermediateTargetDir>
   <PackageDir>Package</PackageDir>
   <PackageName>Duality.zip</PackageName>
   <NoDocs>false</NoDocs>

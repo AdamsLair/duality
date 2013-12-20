@@ -15,9 +15,12 @@ namespace NightlyBuilder
 		public string DocBuildResultDir { get; set; }
 		public string DocBuildResultFile { get; set; }
 		public string AdditionalFileDir { get; set; }
-		public string TargetDir { get; set; }
+		public string NUnitBinDir { get; set; }
+		public string UnitTestProjectDir { get; set; }
+		public string IntermediateTargetDir { get; set; }
 		public string PackageDir { get; set; }
 		public string PackageName { get; set; }
+		public string CopyPackageTo { get; set; }
 		public bool NoDocs { get; set; }
 		public bool CommitSVN { get; set; }
 		public List<string> FileCopyBlackList { get; set; }

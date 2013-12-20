@@ -1,6 +1,6 @@
 ﻿<NUnitProject>
   <Settings activeconfig="Default" />
   <Config name="Default" binpathtype="Auto">
-    <assembly path="DualityTests\bin\Debug\DualityTests.dll" />
+    <assembly path="DualityTests\bin\DualityTests.dll" />
   </Config>
 </NUnitProject>

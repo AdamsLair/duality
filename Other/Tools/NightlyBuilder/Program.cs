@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -21,10 +22,6 @@ namespace NightlyBuilder
 		public static void Main(string[] args)
 		{
 			ConfigFile config = ConfigFile.Load("BuildConfig.xml");
-			string packagePath = Path.Combine(config.PackageDir, config.PackageName);
-			FileVersionInfo versionCore = null;
-			FileVersionInfo versionEditor = null;
-			FileVersionInfo versionLauncher = null;
 
 			// Parse command line arguments
 			PropertyInfo[] configProps = typeof(ConfigFile).GetProperties();
@@ -68,6 +65,29 @@ namespace NightlyBuilder
 			Console.WriteLine();
 			Console.WriteLine();
 
+			try
+			{
+				PerformNightlyBuild(config);
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine();
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("ERROR: {0}", e);
+				Console.ForegroundColor = ConsoleColor.Gray;
+				Console.WriteLine();
+				System.Threading.Thread.Sleep(5000);
+			}
+		}
+
+		public static void PerformNightlyBuild(ConfigFile config)
+		{
+			string packagePath = Path.Combine(config.PackageDir, config.PackageName);
+			FileVersionInfo versionCore = null;
+			FileVersionInfo versionEditor = null;
+			FileVersionInfo versionLauncher = null;
+
 			// Do an SVN Revert of the package
 			if (config.CommitSVN)
 			{
@@ -88,10 +108,10 @@ namespace NightlyBuilder
 				var buildProperties = new Dictionary<string,string>(){ { "Configuration", "Release"} };
 				var buildRequest = new BuildRequestData(config.SolutionPath, buildProperties, null, new string[] { "Build" }, null);
 				var buildParameters = new BuildParameters();
-				buildParameters.Loggers = new[] { new ConsoleLogger(LoggerVerbosity.Minimal) };
+				//buildParameters.Loggers = new[] { new ConsoleLogger(LoggerVerbosity.Minimal) };
 				var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
 				if (buildResult.OverallResult != BuildResultCode.Success)
-					throw new ApplicationException("Project Build Failure");
+					throw new ApplicationException("The project doesn't compile properly. Cannot proceed in this state.");
 
 				versionCore = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "Duality.dll"));
 				versionEditor = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityEditor.exe"));
@@ -106,6 +126,77 @@ namespace NightlyBuilder
 			Console.WriteLine();
 			Console.WriteLine();
 
+			// Perform unit testing
+			Console.WriteLine("================================= Unit Testing ================================");
+			{
+				foreach (string nunitProjectFile in Directory.EnumerateFiles(config.UnitTestProjectDir, "*.nunit", SearchOption.TopDirectoryOnly))
+				{
+					Console.Write("Testing '{0}'... ", Path.GetFileName(nunitProjectFile));
+
+					string resultFile = "UnitTestResult.xml";
+					ExecuteCommand(
+						string.Format("{0} {1} /timeout=30000 /result={2}", 
+							Path.Combine(config.NUnitBinDir, "nunit-console.exe"), 
+							nunitProjectFile,
+							resultFile), 
+						verbose: false);
+
+					if (File.Exists(resultFile))
+					{
+						bool unitTestFailed = false;
+						XmlDocument resultDoc = new XmlDocument();
+						resultDoc.Load(resultFile);
+
+						Stack<XmlElement> elementStack = new Stack<XmlElement>();
+						elementStack.Push(resultDoc["test-results"]);
+						do
+						{
+							XmlElement currentElement = elementStack.Pop();
+							XmlAttribute successAttribute = currentElement.Attributes["success"];
+							if (successAttribute == null)
+							{
+								foreach (XmlElement child in currentElement.OfType<XmlElement>().Reverse())
+								{
+									elementStack.Push(child);
+								}
+							}
+							else
+							{
+								bool success = (successAttribute == null) || XmlConvert.ToBoolean(successAttribute.Value.ToLower());
+								if (!success)
+								{
+									unitTestFailed = true;
+									break;
+								}
+							}
+						} while (elementStack.Count > 0);
+
+						File.Delete(resultFile);
+
+						if (unitTestFailed)
+						{
+							ExecuteBackgroundCommand(
+								string.Format("{0} {1} /run", 
+									Path.Combine(config.NUnitBinDir, "nunit.exe"), 
+									nunitProjectFile,
+									resultFile));
+							throw new ApplicationException("At least one unit test has failed.");
+						}
+						else
+						{
+							Console.WriteLine("success!");
+						}
+					}
+					else
+					{
+						throw new ApplicationException("Something appears to have failed during unit testing, because no result file was found.");
+					}
+				}
+			}
+			Console.WriteLine("===============================================================================");
+			Console.WriteLine();
+			Console.WriteLine();
+
 			// Build the documentation
 			if (!config.NoDocs)
 			{
@@ -114,7 +205,7 @@ namespace NightlyBuilder
 					var buildProperties = new Dictionary<string,string>(){ { "Configuration", "Release"} };
 					var buildRequest = new BuildRequestData(config.DocSolutionPath, buildProperties, null, new string[] { "Build" }, null);
 					var buildParameters = new BuildParameters();
-					buildParameters.Loggers = new[] { new ConsoleLogger(LoggerVerbosity.Normal) };
+					//buildParameters.Loggers = new[] { new ConsoleLogger(LoggerVerbosity.Minimal) };
 					var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
 					if (buildResult.OverallResult != BuildResultCode.Success)
 						throw new ApplicationException("Documentation Build Failure");
@@ -122,6 +213,7 @@ namespace NightlyBuilder
 						Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile), 
 						Path.Combine(config.BuildResultDir, config.DocBuildResultFile),
 						true);
+					Console.WriteLine("Documentation Build Successful");
 				}
 				Console.WriteLine("===============================================================================");
 				Console.WriteLine();
@@ -144,10 +236,10 @@ namespace NightlyBuilder
 			// Copy the results to the target directory
 			Console.WriteLine("================================ Copy to Target ===============================");
 			{
-				Console.WriteLine("Creating target directory '{0}'", config.TargetDir);
-				if (Directory.Exists(config.TargetDir))
-					Directory.Delete(config.TargetDir, true);
-				CopyDirectory(config.BuildResultDir, config.TargetDir, true, path => 
+				Console.WriteLine("Creating target directory '{0}'", config.IntermediateTargetDir);
+				if (Directory.Exists(config.IntermediateTargetDir))
+					Directory.Delete(config.IntermediateTargetDir, true);
+				CopyDirectory(config.BuildResultDir, config.IntermediateTargetDir, true, path => 
 					{
 						string fileName = Path.GetFileName(path);
 						foreach (string blackListEntry in config.FileCopyBlackList)
@@ -163,7 +255,7 @@ namespace NightlyBuilder
 						Console.WriteLine("Copy   {0}", path);
 						return true;
 					});
-				CopyDirectory(config.AdditionalFileDir, config.TargetDir, true);
+				CopyDirectory(config.AdditionalFileDir, config.IntermediateTargetDir, true);
 			}
 			Console.WriteLine("===============================================================================");
 			Console.WriteLine();
@@ -177,7 +269,7 @@ namespace NightlyBuilder
 					Directory.CreateDirectory(config.PackageDir);
 
 				ZipFile package = new ZipFile();
-				string[] files = Directory.GetFiles(config.TargetDir, "*", SearchOption.AllDirectories);
+				string[] files = Directory.GetFiles(config.IntermediateTargetDir, "*", SearchOption.AllDirectories);
 				package.AddFiles(files);
 				package.Save(packagePath);
 			}
@@ -188,13 +280,28 @@ namespace NightlyBuilder
 			// Cleanup
 			Console.WriteLine("=================================== Cleanup ===================================");
 			{
-				Console.WriteLine("Deleting target directory '{0}'", config.TargetDir);
-				if (Directory.Exists(config.TargetDir))
-					Directory.Delete(config.TargetDir, true);
+				Console.WriteLine("Deleting target directory '{0}'", config.IntermediateTargetDir);
+				if (Directory.Exists(config.IntermediateTargetDir))
+					Directory.Delete(config.IntermediateTargetDir, true);
 			}
 			Console.WriteLine("===============================================================================");
 			Console.WriteLine();
 			Console.WriteLine();
+			
+			// Copy Package
+			if (!string.IsNullOrWhiteSpace(config.CopyPackageTo))
+			{
+				Console.WriteLine("================================= Copy Package ================================");
+				{
+					Console.WriteLine("Copying package to '{0}'", config.CopyPackageTo);
+					if (!Directory.Exists(config.CopyPackageTo))
+						Directory.CreateDirectory(config.CopyPackageTo);
+					File.Copy(packagePath, Path.Combine(config.CopyPackageTo, config.PackageName), true);
+				}
+				Console.WriteLine("===============================================================================");
+				Console.WriteLine();
+				Console.WriteLine();
+			}
 
 			// Do an SVN Commit of the package
 			if (config.CommitSVN)
@@ -246,20 +353,32 @@ namespace NightlyBuilder
 				CopyDirectory(subDir, Path.Combine(targetPath, Path.GetFileName(subDir)), overwrite, filter);
 			}
 		}
-		public static void ExecuteCommand(string command, string workingDir = null)
+		public static void ExecuteBackgroundCommand(string command, string workingDir = null)
 		{
 			if (workingDir == null) workingDir = Environment.CurrentDirectory;
-			Console.WriteLine(command);
 
 			ProcessStartInfo info = new ProcessStartInfo("cmd.exe", "/C " + command);
-			info.UseShellExecute = false;
-			info.RedirectStandardOutput = true;
 			info.WindowStyle = ProcessWindowStyle.Hidden;
 			info.WorkingDirectory = workingDir;
 			Process proc = Process.Start(info);
-			while (!proc.StandardOutput.EndOfStream)
+		}
+		public static void ExecuteCommand(string command, string workingDir = null, bool verbose = true)
+		{
+			if (workingDir == null) workingDir = Environment.CurrentDirectory;
+			if (verbose) Console.WriteLine(command);
+
+			ProcessStartInfo info = new ProcessStartInfo("cmd.exe", "/C " + command);
+			info.UseShellExecute = !verbose;
+			info.RedirectStandardOutput = verbose;
+			info.WindowStyle = ProcessWindowStyle.Hidden;
+			info.WorkingDirectory = workingDir;
+			Process proc = Process.Start(info);
+			if (verbose)
 			{
-				Console.WriteLine(proc.StandardOutput.ReadLine());
+				while (!proc.StandardOutput.EndOfStream)
+				{
+					Console.WriteLine(proc.StandardOutput.ReadLine());
+				}
 			}
 			proc.WaitForExit();
 		}
