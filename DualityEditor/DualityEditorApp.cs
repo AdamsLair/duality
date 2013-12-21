@@ -581,8 +581,15 @@ namespace DualityEditor
 				Profile.TimeSwapBuffers.BeginMeasure();
 				foreach (IWindowInfo window in glSwapBuffers)
 				{
-					mainContextControl.Context.MakeCurrent(window);
-					mainContextControl.SwapBuffers();
+					// Wrap actual buffer swapping in a try-catch block, since
+					// it is possible that the window has been disposed, but we have
+					// no way of checking its disposal state... so let's try it the hard way.
+					try
+					{
+						mainContextControl.Context.MakeCurrent(window);
+						mainContextControl.SwapBuffers();
+					}
+					catch (Exception) {}
 				}
 				Profile.TimeSwapBuffers.EndMeasure();
 				Profile.TimeRender.EndMeasure();

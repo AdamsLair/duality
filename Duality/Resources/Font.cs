@@ -112,7 +112,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A string containing all characters that are supported by Duality.
 		/// </summary>
-		public static readonly string			SupportedChars	= " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=?`²³{[]}\\´öäüÖÄÜß";
+		public static readonly string			SupportedChars	= "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß";
 		private const string					BodyAscentRef = "acehmnorsuvwxz";
 		private static readonly int[]			CharLookup;
 
@@ -729,12 +729,14 @@ namespace Duality.Resources
 				pixelLayer.Data[i].B = 255;
 			}
 
+			// Determine Font properties
 			this.height = this.internalFont.Height;
 			this.ascent = (int)Math.Round(this.internalFont.FontFamily.GetCellAscent(this.internalFont.Style) * this.internalFont.Size / this.internalFont.FontFamily.GetEmHeight(this.internalFont.Style));
 			this.bodyAscent /= BodyAscentRef.Length;
 			this.descent = (int)Math.Round(this.internalFont.FontFamily.GetCellDescent(this.internalFont.Style) * this.internalFont.GetHeight() / this.internalFont.FontFamily.GetLineSpacing(this.internalFont.Style));
 			this.baseLine = (int)Math.Round(this.internalFont.FontFamily.GetCellAscent(this.internalFont.Style) * this.internalFont.GetHeight() / this.internalFont.FontFamily.GetLineSpacing(this.internalFont.Style));
 
+			// Create internal Pixmap and Texture Resources
 			this.pixelData = new Pixmap(pixelLayer);
 			this.pixelData.Atlas = new List<Rect>(atlas);
 			this.texture = new Texture(this.pixelData, 
@@ -742,6 +744,7 @@ namespace Duality.Resources
 				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
 				this.IsPixelGridAligned ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
 
+			// Select DrawTechnique to use
 			ContentRef<DrawTechnique> technique;
 			if (this.renderMode == RenderMode.MonochromeBitmap)
 				technique = DrawTechnique.Mask;
@@ -752,6 +755,7 @@ namespace Duality.Resources
 			else
 				technique = DrawTechnique.SharpAlpha;
 
+			// Create and configure internal BatchInfo
 			BatchInfo matInfo = new BatchInfo(technique, ColorRgba.White, this.texture);
 			if (technique == DrawTechnique.SharpAlpha)
 			{
@@ -765,13 +769,13 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="glyph">The glyph to retrieve information about.</param>
 		/// <param name="data">A struct holding the retrieved information.</param>
-		/// <returns>True, if successful, false if not. This is the case if the specified glyph is not supported.</returns>
+		/// <returns>True, if successful, false if the specified glyph is not supported.</returns>
 		public bool GetGlyphData(char glyph, out GlyphData data)
 		{
 			int glyphId = (int)glyph;
 			if (glyphId >= CharLookup.Length)
 			{
-				data = new GlyphData();
+				data = this.glyphs[0];
 				return false;
 			}
 			else
@@ -788,7 +792,8 @@ namespace Duality.Resources
 		public Pixmap.Layer GetGlyphBitmap(char glyph)
 		{
 			Rect targetRect;
-			this.pixelData.LookupAtlas(CharLookup[(int)glyph], out targetRect);
+			int charIndex = (int)glyph > CharLookup.Length ? 0 : CharLookup[(int)glyph];
+			this.pixelData.LookupAtlas(charIndex, out targetRect);
 			Pixmap.Layer subImg = new Pixmap.Layer(
 				MathF.RoundToInt(targetRect.W), 
 				MathF.RoundToInt(targetRect.H));
@@ -1171,7 +1176,8 @@ namespace Duality.Resources
 		private void ProcessTextAdv(string text, int index, out GlyphData glyphData, out Rect uvRect, out float glyphXAdv, out float glyphXOff)
 		{
 			char glyph = text[index];
-			this.texture.LookupAtlas(CharLookup[(int)glyph], out uvRect);
+			int charIndex = (int)glyph > CharLookup.Length ? 0 : CharLookup[(int)glyph];
+			this.texture.LookupAtlas(charIndex, out uvRect);
 
 			this.GetGlyphData(glyph, out glyphData);
 			glyphXOff = -glyphData.offsetX;
