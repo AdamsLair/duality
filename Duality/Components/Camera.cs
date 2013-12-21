@@ -247,54 +247,6 @@ namespace Duality.Components
 			}
 		}
 
-		/// <summary>
-		/// [GET] The drawing devices target size for rendering the Scene.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public Vector2 SceneTargetSize
-		{
-			get
-			{
-				foreach (Pass t in this.passes)
-				{
-					if (t.Input == null)
-					{
-						return !t.Output.IsAvailable ?
-							DualityApp.TargetResolution :
-							new Vector2(t.Output.Res.Width, t.Output.Res.Height);
-					}
-				}
-				return DualityApp.TargetResolution;
-			}
-		}
-		/// <summary>
-		/// [GET] A Rect describing the Cameras absolute ortho value.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public Rect SceneOrthoAbs
-		{
-			get { return new Rect(this.SceneTargetSize); }
-		}
-		/// <summary>
-		/// [GET] A Rect describing the Cameras absolute viewport.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public Rect SceneViewportAbs
-		{
-			get { return new Rect(this.SceneTargetSize); }
-		}
-		/// <summary>
-		/// [GET] The Cameras view space bounding circle radius.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public float ViewBoundingRadius
-		{
-			get 
-			{ 
-				Rect orthoAbs = this.SceneOrthoAbs;
-				return orthoAbs.Size.Length * 0.5f;
-			}
-		}
 
 		public Camera()
 		{

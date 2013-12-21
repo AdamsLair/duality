@@ -8,7 +8,6 @@ namespace Duality
 	/// <summary>
 	/// Represents a range of values between a specific minimum and maximum value.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
 	public struct Range : IEquatable<Range>
 	{
 		/// <summary>

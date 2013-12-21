@@ -130,7 +130,7 @@ namespace Duality.Resources
 		private	List<ContentRef<AudioData>>	audioData	= null;
 
 		/// <summary>
-		/// [GET / SET] A collection of <see cref="DataEntry">parameterized data entries</see> that refers to the source <see cref="Duality.Resources.AudioData"/> that is used by this Sound.
+		/// [GET / SET] A collection of <see cref="Duality.Resources.AudioData"/>, which are used by this Sound.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.ForceWriteback | MemberFlags.AffectsOthers)]
 		public List<ContentRef<AudioData>> Data

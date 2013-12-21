@@ -170,10 +170,6 @@ namespace Duality.Resources
 			}
 		}
 
-		static Texture()
-		{
-			DualityApp.UserDataChanged += DualityApp_UserDataChanged;
-		}
 		private static void Init()
 		{
 			if (initialized) return;
@@ -234,16 +230,6 @@ namespace Duality.Resources
 				Bind(None, i);
 			}
 		}
-		private static void DualityApp_UserDataChanged(object sender, EventArgs e)
-		{
-			// Reload relative textures
-			foreach (ContentRef<Texture> texRef in ContentProvider.GetLoadedContent<Texture>())
-			{
-				if (!texRef.IsLoaded || !texRef.IsAvailable) continue;
-				Texture tex = texRef.Res;
-				if (tex.SizeRelative) tex.ReloadData();
-			}
-		}
 
 		/// <summary>
 		/// Creates a new Texture Resource based on the specified Pixmap, saves it and returns a reference to it.
@@ -267,7 +253,6 @@ namespace Duality.Resources
 		private	TextureWrapMode			wrapX		= TextureWrapMode.ClampToEdge;
 		private	TextureWrapMode			wrapY		= TextureWrapMode.ClampToEdge;
 		private	PixelInternalFormat		pixelformat	= PixelInternalFormat.Rgba;
-		private	bool					sizeRelative	= false;
 		private	bool					anisoFilter		= false;
 		[NonSerialized]	private	int		pxWidth		= 0;
 		[NonSerialized]	private	int		pxHeight	= 0;
@@ -369,24 +354,6 @@ namespace Duality.Resources
 				}
 			}
 		}						//	GS
-		/// <summary>
-		/// [GET / SET] If true, <see cref="Size"/> will be multiplied with <see cref="DualityApp.TargetResolution"/> to determine the actual texture size.
-		/// This essentially makes the Textures size relative to the current screen resolution.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		public bool SizeRelative
-		{
-			get { return this.sizeRelative; }
-			set
-			{
-				if (this.basePixmap.IsExplicitNull && this.sizeRelative != value)
-				{
-					this.sizeRelative = value;
-					this.AdjustSize(this.size.X, this.size.Y);
-					this.needsReload = true;
-				}
-			}
-		}					//	GS
 		/// <summary>
 		/// [GET / SET] The Textures magnifying filter
 		/// </summary>
@@ -704,16 +671,8 @@ namespace Duality.Resources
 		protected void AdjustSize(float width, float height)
 		{
 			this.size = new Vector2(MathF.Abs(width), MathF.Abs(height));
-			if (this.sizeRelative)
-			{
-				this.pxWidth = MathF.RoundToInt(this.size.X * DualityApp.UserData.GfxWidth);
-				this.pxHeight = MathF.RoundToInt(this.size.Y * DualityApp.UserData.GfxHeight);
-			}
-			else
-			{
-				this.pxWidth = MathF.RoundToInt(this.size.X);
-				this.pxHeight = MathF.RoundToInt(this.size.Y);
-			}
+			this.pxWidth = MathF.RoundToInt(this.size.X);
+			this.pxHeight = MathF.RoundToInt(this.size.Y);
 			this.pxDiameter = MathF.Distance(this.pxWidth, this.pxHeight);
 
 			if (this.texSizeMode == SizeMode.NonPowerOfTwo)
@@ -799,7 +758,6 @@ namespace Duality.Resources
 		{
 			base.OnCopyTo(r, provider);
 			Texture c = r as Texture;
-			c.sizeRelative = this.sizeRelative;
 			c.size = this.size;
 			c.filterMag = this.filterMag;
 			c.filterMin = this.filterMin;

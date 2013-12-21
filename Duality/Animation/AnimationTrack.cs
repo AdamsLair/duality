@@ -7,7 +7,7 @@ using System.Text;
 namespace Duality.Animation
 {
 	/// <summary>
-	/// Describes the animation of a value as a set of <see cref="AnimationKeyFrame{0}">keyframes</see>.
+	/// Describes the animation of a value as a set of <see cref="AnimationKeyFrame{T}">keyframes</see>.
 	/// </summary>
 	/// <typeparam name="T">Type of the animated value.</typeparam>
 	public class AnimationTrack<T> : IEnumerable<AnimationKeyFrame<T>>, IAnimationTrack
