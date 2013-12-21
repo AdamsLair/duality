@@ -924,31 +924,19 @@ namespace Duality
 			}
 		}
 		/// <summary>
-		/// Determines whether the plugin that is represented by the specified Assembly file is referenced by any other plugin.
+		/// Determines whether the plugin that is represented by the specified Assembly file is referenced by any of the
+		/// specified Assemblies.
 		/// </summary>
 		/// <param name="pluginFilePath"></param>
+		/// <param name="assemblies"></param>
 		/// <returns></returns>
-		public static bool IsDependencyPlugin(string pluginFilePath)
+		public static bool IsDependencyPlugin(string pluginFilePath, IEnumerable<Assembly> assemblies)
 		{
 			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);
-			foreach (CorePlugin plugin in plugins.Values)
+			foreach (Assembly assembly in assemblies)
 			{
-				AssemblyName[] refNames = plugin.PluginAssembly.GetReferencedAssemblies();
+				AssemblyName[] refNames = assembly.GetReferencedAssemblies();
 				if (refNames.Any(rn => rn.Name == asmName)) return true;
-			}
-			return false;
-		}
-		/// <summary>
-		/// Determines whether the specified plugin is referenced by any other plugin.
-		/// </summary>
-		/// <param name="plugin"></param>
-		/// <returns></returns>
-		public static bool IsDependencyPlugin(CorePlugin plugin)
-		{
-			foreach (CorePlugin loadedPlugin in plugins.Values)
-			{
-				AssemblyName[] refNames = loadedPlugin.PluginAssembly.GetReferencedAssemblies();
-				if (refNames.Any(rn => rn.Name == plugin.AssemblyName)) return true;
 			}
 			return false;
 		}

@@ -712,6 +712,7 @@ namespace Duality
 					{
 						this.strStreamed = true;
 						this.strWorker = new Thread(ThreadStreamFunc);
+						this.strWorker.IsBackground = true;
 						this.strWorker.Start(this);
 					}
 					else

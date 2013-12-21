@@ -153,6 +153,7 @@ namespace NightlyBuilder
 						{
 							XmlElement currentElement = elementStack.Pop();
 							XmlAttribute successAttribute = currentElement.Attributes["success"];
+
 							if (successAttribute == null)
 							{
 								foreach (XmlElement child in currentElement.OfType<XmlElement>().Reverse())
@@ -171,20 +172,19 @@ namespace NightlyBuilder
 							}
 						} while (elementStack.Count > 0);
 
-						File.Delete(resultFile);
-
 						if (unitTestFailed)
 						{
+							ExecuteBackgroundCommand(resultFile);
 							ExecuteBackgroundCommand(
-								string.Format("{0} {1} /run", 
+								string.Format("{0} {1}", 
 									Path.Combine(config.NUnitBinDir, "nunit.exe"), 
-									nunitProjectFile,
-									resultFile));
-							throw new ApplicationException("At least one unit test has failed.");
+									nunitProjectFile));
+							throw new ApplicationException(string.Format("At least one unit test has failed. See {0} for more information.", resultFile));
 						}
 						else
 						{
 							Console.WriteLine("success!");
+							File.Delete(resultFile);
 						}
 					}
 					else
