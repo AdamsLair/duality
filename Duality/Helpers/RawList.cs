@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace Duality
 {
@@ -17,6 +18,8 @@ namespace Duality
 	/// </remarks>
 	/// <typeparam name="T"></typeparam>
 	[Serializable]
+	[DebuggerTypeProxy(typeof(RawList<>.DebuggerTypeProxy))]
+	[DebuggerDisplay("Count = {Count}")]
 	public class RawList<T> : IList<T>, IList
 	{
 		private const int BaseCapacity = 8;
@@ -335,7 +338,7 @@ namespace Duality
 			if (index < 0 || index >= this.count)		throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
 			if (index + count > this.count)				throw new IndexOutOfRangeException("'index + count' is out of range.");
 
-			Array.Sort(this.data, index, count, new FunctorComparer<T>(comparison));
+			Array.Sort(this.data, index, count, new FunctorComparer(comparison));
 		}
 
 		/// <summary>
@@ -473,7 +476,7 @@ namespace Duality
 			this.CopyTo((T[])array, index);
 		}
 
-		internal sealed class FunctorComparer<T> : IComparer<T>
+		internal sealed class FunctorComparer : IComparer<T>
 		{
 			private Comparison<T> comparison;
 			public FunctorComparer(Comparison<T> comparison)
@@ -483,6 +486,27 @@ namespace Duality
 			public int Compare(T x, T y)
 			{
 				return this.comparison(x, y);
+			}
+		}
+		internal sealed class DebuggerTypeProxy
+		{
+			private RawList<T> rawList;
+
+			public DebuggerTypeProxy(RawList<T> rawList)
+			{
+				if (rawList == null) throw new ArgumentNullException("rawList");
+				this.rawList = rawList;
+			}
+
+			[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+			public T[] Items
+			{
+				get
+				{
+					T[] array = new T[this.rawList.Count];
+					this.rawList.CopyTo(array, 0);
+					return array;
+				}
 			}
 		}
 	}

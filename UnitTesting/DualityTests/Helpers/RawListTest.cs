@@ -34,6 +34,14 @@ namespace DualityTests
 			CollectionAssert.AreEqual(new int[] { 10, 17, 94 }, intList);
 			CollectionAssert.AreEqual(new int[] { 10, 17, 94 }, intList.Data.Take(3));
 
+			intList.Insert(1, 100);
+			CollectionAssert.AreEqual(new int[] { 10, 100, 17, 94 }, intList);
+			CollectionAssert.AreEqual(new int[] { 10, 100, 17, 94 }, intList.Data.Take(4));
+
+			intList.InsertRange(2, new int[] { 150, 200, 250, 300 });
+			CollectionAssert.AreEqual(new int[] { 10, 100, 150, 200, 250, 300, 17, 94 }, intList);
+			CollectionAssert.AreEqual(new int[] { 10, 100, 150, 200, 250, 300, 17, 94 }, intList.Data.Take(8));
+
 			intList.Clear();
 			Assert.AreEqual(0, intList.Count);
 			Assert.IsTrue(!intList.Contains(94));
