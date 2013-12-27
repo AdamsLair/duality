@@ -33,8 +33,9 @@ namespace EditorBase.CamViewStates
 		protected override void OnRenderState()
 		{
 			// Render game pov
-			if (!Scene.Current.Cameras.Any())	DrawDevice.RenderVoid();
-			else								DualityApp.Render();
+			Rect viewportRect = new Rect(this.ClientSize.Width, this.ClientSize.Height);
+			if (!Scene.Current.Cameras.Any())	DrawDevice.RenderVoid(viewportRect);
+			else								DualityApp.Render(viewportRect);
 		}
 	}
 }

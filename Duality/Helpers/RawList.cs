@@ -421,10 +421,33 @@ namespace Duality
 		}
 
 
-		bool ICollection<T>.IsReadOnly
+		#region Explicit Interfaces
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool ICollection<T>.IsReadOnly
 		{
 			get { return false; }
 		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool IList.IsFixedSize
+		{
+			get { return false; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool IList.IsReadOnly
+		{
+			get { return false; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool ICollection.IsSynchronized
+		{
+			get { return false; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] object ICollection.SyncRoot
+		{
+			get { return this.data; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] object IList.this[int index]
+		{
+			get { return this[index]; }
+			set { this[index] = (T)value; }
+		}
+
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return this.GetEnumerator();
@@ -446,35 +469,16 @@ namespace Duality
 		{
 			this.Insert(index, (T)value);
 		}
-		bool IList.IsFixedSize
-		{
-			get { return false; }
-		}
-		bool IList.IsReadOnly
-		{
-			get { return false; }
-		}
 		void IList.Remove(object value)
 		{
 			this.Remove((T)value);
-		}
-		object IList.this[int index]
-		{
-			get { return this[index]; }
-			set { this[index] = (T)value; }
-		}
-		bool ICollection.IsSynchronized
-		{
-			get { return false; }
-		}
-		object ICollection.SyncRoot
-		{
-			get { return this.data; }
 		}
 		void ICollection.CopyTo(Array array, int index)
 		{
 			this.CopyTo((T[])array, index);
 		}
+		#endregion
+
 
 		internal sealed class FunctorComparer : IComparer<T>
 		{

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 
 using OpenTK.Input;
 
@@ -10,7 +11,7 @@ namespace Duality
 	/// <summary>
 	/// Provides access to a set of <see cref="JoystickInput">JoystickInputs</see>.
 	/// </summary>
-	public sealed class JoystickInputCollection : IList<JoystickInput>, ICollection<JoystickInput>, IList, ICollection, IEnumerable<JoystickInput>, IEnumerable
+	public sealed class JoystickInputCollection : IList<JoystickInput>, IList
 	{
 		private List<JoystickInput> input = new List<JoystickInput>();
 		private JoystickInput dummyInput = new JoystickInput(true);
@@ -165,11 +166,38 @@ namespace Duality
 				j.Update();
 		}
 
-		#region Explicit Interface Implementation
-		bool ICollection<JoystickInput>.IsReadOnly
+		#region Explicit Interfaces
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool IList.IsReadOnly
 		{
 			get { return true; }
 		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool IList.IsFixedSize
+		{
+			get { return false; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool ICollection<JoystickInput>.IsReadOnly
+		{
+			get { return true; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] bool ICollection.IsSynchronized
+		{
+			get { return false; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] object ICollection.SyncRoot
+		{
+			get { return (this.input as ICollection).SyncRoot; }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] JoystickInput IList<JoystickInput>.this[int index]
+		{
+			get { return input[index]; }
+			set { throw new NotSupportedException("Collection is read-only"); }
+		}
+		[DebuggerBrowsable(DebuggerBrowsableState.Never)] object IList.this[int index]
+		{
+			get { return input[index]; }
+			set { throw new NotSupportedException("Collection is read-only"); }
+		}
+
 		void IList<JoystickInput>.Insert(int index, JoystickInput item)
 		{
 			throw new NotSupportedException("Collection is read-only");
@@ -177,11 +205,6 @@ namespace Duality
 		void IList<JoystickInput>.RemoveAt(int index)
 		{
 			throw new NotSupportedException("Collection is read-only");
-		}
-		JoystickInput IList<JoystickInput>.this[int index]
-		{
-			get { return input[index]; }
-			set { throw new NotSupportedException("Collection is read-only"); }
 		}
 		void ICollection<JoystickInput>.Add(JoystickInput item)
 		{
@@ -200,14 +223,6 @@ namespace Duality
 			return this.input.GetEnumerator();
 		}
 		
-		bool IList.IsReadOnly
-		{
-			get { return true; }
-		}
-		bool IList.IsFixedSize
-		{
-			get { return false; }
-		}
 		int IList.Add(object value)
 		{
 			throw new NotSupportedException("Collection is read-only");
@@ -236,22 +251,9 @@ namespace Duality
 		{
 			throw new NotSupportedException("Collection is read-only");
 		}
-		object IList.this[int index]
-		{
-			get { return input[index]; }
-			set { throw new NotSupportedException("Collection is read-only"); }
-		}
 		void ICollection.CopyTo(Array array, int index)
 		{
 			(this.input as IList).CopyTo(array, index);
-		}
-		bool ICollection.IsSynchronized
-		{
-			get { return false; }
-		}
-		object ICollection.SyncRoot
-		{
-			get { return (this.input as ICollection).SyncRoot; }
 		}
 		#endregion
 	}

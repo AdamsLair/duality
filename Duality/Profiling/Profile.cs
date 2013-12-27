@@ -18,11 +18,7 @@ namespace Duality.Profiling
 	/// </summary>
 	public static class Profile
 	{
-		private	static	Dictionary<string,ProfileCounter>	counterMap			= new Dictionary<string,ProfileCounter>();
-		private static	FormattedText						textReport			= null;
-		private static  VertexC1P3T2[]						textReportIconVert	= null;
-		private static  VertexC1P3T2[][]					textReportTextVert	= null;
-		private	static	TimeSpan							textReportLast		= TimeSpan.Zero;
+		private	static	Dictionary<string,ProfileCounter>	counterMap	= new Dictionary<string,ProfileCounter>();
 
 		public static readonly TimeCounter	TimeFrame;
 		public static readonly TimeCounter	TimeUpdate;

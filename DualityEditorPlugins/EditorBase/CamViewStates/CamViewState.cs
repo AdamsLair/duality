@@ -297,6 +297,7 @@ namespace EditorBase.CamViewStates
 			this.LocalGLControl.MouseLeave	+= this.LocalGLControl_MouseLeave;
 			this.LocalGLControl.KeyDown		+= this.LocalGLControl_KeyDown;
 			this.LocalGLControl.KeyUp		+= this.LocalGLControl_KeyUp;
+			this.LocalGLControl.GotFocus	+= this.LocalGLControl_GotFocus;
 			this.LocalGLControl.LostFocus	+= this.LocalGLControl_LostFocus;
 			this.LocalGLControl.DragDrop	+= this.LocalGLControl_DragDrop;
 			this.LocalGLControl.DragEnter	+= this.LocalGLControl_DragEnter;
@@ -613,7 +614,7 @@ namespace EditorBase.CamViewStates
 		protected virtual void OnRenderState()
 		{
 			// Render CamView
-			this.CameraComponent.Render();
+			this.CameraComponent.Render(new Rect(this.ClientSize.Width, this.ClientSize.Height));
 		}
 		protected virtual void OnUpdateState()
 		{
@@ -737,6 +738,7 @@ namespace EditorBase.CamViewStates
 			this.Invalidate();
 		}
 		protected virtual void OnCurrentCameraChanged(CamView.CameraChangedEventArgs e) {}
+		protected virtual void OnGotFocus() {}
 		protected virtual void OnLostFocus() {}
 
 		protected virtual void OnDragEnter(DragEventArgs e) {}
@@ -1255,7 +1257,6 @@ namespace EditorBase.CamViewStates
 
 			// Retrieve OpenGL context
  			try { DualityEditorApp.GLMakeCurrent(this.LocalGLControl); } catch (Exception) { return; }
-			this.MakeDualityTarget();
 
 			try
 			{
@@ -1547,6 +1548,11 @@ namespace EditorBase.CamViewStates
 				this.UpdateAction();
 
 			this.OnKeyUp(e);
+		}
+		private void LocalGLControl_GotFocus(object sender, EventArgs e)
+		{
+			this.MakeDualityTarget();
+			this.OnGotFocus();
 		}
 		private void LocalGLControl_LostFocus(object sender, EventArgs e)
 		{

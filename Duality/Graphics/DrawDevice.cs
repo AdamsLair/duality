@@ -254,6 +254,7 @@ namespace Duality
 		private	float				farZ			= 10000.0f;
 		private	float				zSortAccuracy	= 0.0f;
 		private	float				focusDist		= DefaultFocusDist;
+		private	Rect				viewportRect	= Rect.Empty;
 		private	Vector3				refPos			= Vector3.Zero;
 		private	float				refAngle		= 0.0f;
 		private	RenderMatrix		renderMode		= RenderMatrix.OrthoScreen;
@@ -341,22 +342,18 @@ namespace Duality
 			get { return this.renderMode; }
 			set { this.renderMode = value; }
 		}
+		public Rect ViewportRect
+		{
+			get { return this.viewportRect; }
+			set { this.viewportRect = value; }
+		}
 		public bool DepthWrite
 		{
 			get { return this.renderMode != RenderMatrix.OrthoScreen; }
 		}
 		public Vector2 TargetSize
 		{
-			get
-			{
-				if (this.renderTarget.IsAvailable)
-				{
-					RenderTarget target = this.renderTarget.Res;
-					return new Vector2(target.Width, target.Height);
-				}
-				else
-					return DualityApp.TargetResolution;
-			}
+			get { return this.viewportRect.Size; }
 		}
 
 		
@@ -689,10 +686,8 @@ namespace Duality
 			RenderTarget.Bind(this.renderTarget);
 
 			// Setup viewport
-			Vector2 refSize = this.TargetSize;
-			Rect viewportAbs = new Rect(refSize);
-			GL.Viewport((int)viewportAbs.X, (int)refSize.Y - (int)viewportAbs.H - (int)viewportAbs.Y, (int)viewportAbs.W, (int)viewportAbs.H);
-			GL.Scissor((int)viewportAbs.X, (int)refSize.Y - (int)viewportAbs.H - (int)viewportAbs.Y, (int)viewportAbs.W, (int)viewportAbs.H);
+			GL.Viewport((int)this.viewportRect.X, (int)this.viewportRect.Y, (int)this.viewportRect.W, (int)this.viewportRect.H);
+			GL.Scissor((int)this.viewportRect.X, (int)this.viewportRect.Y, (int)this.viewportRect.W, (int)this.viewportRect.H);
 
 			// Clear buffers
 			ClearBufferMask glClearMask = 0;
@@ -912,14 +907,12 @@ namespace Duality
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 		}
 
-		public static void RenderVoid()
+		public static void RenderVoid(Rect viewportRect)
 		{
 			RenderTarget.Bind(ContentRef<RenderTarget>.Null);
 			
-			Vector2 refSize = DualityApp.TargetResolution;
-			Rect viewportAbs = new Rect(refSize);
-			GL.Viewport((int)viewportAbs.X, (int)refSize.Y - (int)viewportAbs.H - (int)viewportAbs.Y, (int)viewportAbs.W, (int)viewportAbs.H);
-			GL.Scissor((int)viewportAbs.X, (int)refSize.Y - (int)viewportAbs.H - (int)viewportAbs.Y, (int)viewportAbs.W, (int)viewportAbs.H);
+			GL.Viewport((int)viewportRect.X, (int)viewportRect.Y, (int)viewportRect.W, (int)viewportRect.H);
+			GL.Scissor((int)viewportRect.X, (int)viewportRect.Y, (int)viewportRect.W, (int)viewportRect.H);
 
 			GL.ClearDepth(1.0d);
 			GL.ClearColor((OpenTK.Graphics.Color4)ColorRgba.TransparentBlack);

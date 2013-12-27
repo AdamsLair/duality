@@ -29,7 +29,7 @@ namespace DualityLauncher
 
 		protected override void OnResize(EventArgs e)
 		{
-			DualityApp.TargetResolution = new Vector2(Width, Height);
+			DualityApp.TargetResolution = new Vector2(ClientSize.Width, ClientSize.Height);
 		}
 		protected override void OnUpdateFrame(FrameEventArgs e)
 		{
@@ -71,7 +71,7 @@ namespace DualityLauncher
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 
-			DualityApp.Render();
+			DualityApp.Render(new Rect(this.ClientSize.Width, this.ClientSize.Height));
 			Profile.TimeRender.BeginMeasure();
 			Profile.TimeSwapBuffers.BeginMeasure();
 			this.SwapBuffers();
@@ -133,7 +133,7 @@ namespace DualityLauncher
 
 				// Initialize default content
 				launcherWindow.MakeCurrent();
-				DualityApp.TargetResolution = new Vector2(launcherWindow.Width, launcherWindow.Height);
+				DualityApp.TargetResolution = new Vector2(launcherWindow.ClientSize.Width, launcherWindow.ClientSize.Height);
 				DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
 				ContentProvider.InitDefaultContent();
 

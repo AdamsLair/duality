@@ -279,7 +279,8 @@ namespace Duality.Components
 		/// <summary>
 		/// Renders the current <see cref="Duality.Resources.Scene"/>.
 		/// </summary>
-		public void Render()
+		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
+		public void Render(Rect viewportRect)
 		{
 			this.MakeAvailable();
 			this.UpdateDeviceConfig();
@@ -290,7 +291,7 @@ namespace Duality.Components
 
 			foreach (Pass t in this.passes)
 			{
-				this.RenderSinglePass(t);
+				this.RenderSinglePass(viewportRect, t);
 			}
 			RenderTarget.Bind(RenderTarget.None);
 			this.drawDevice.VisibilityMask = this.visibilityMask;
@@ -305,8 +306,9 @@ namespace Duality.Components
 		/// If picking is required, this will be (automatically) done each frame a picking operation needs to
 		/// be performed. 
 		/// </summary>
+		/// <param name="viewportSize">Sife of the viewport area to which will be rendered.</param>
 		/// <returns>True, if the picking map has been rendered. False, if this frames cached version is used.</returns>
-		public bool RenderPickingMap()
+		public bool RenderPickingMap(Vector2 viewportSize)
 		{
 			if (this.pickingLast == Time.FrameCount) return false;
 			this.pickingLast = Time.FrameCount;
@@ -316,13 +318,14 @@ namespace Duality.Components
 			{
 				this.MakeAvailable();
 				this.UpdateDeviceConfig();
-				this.SetupPickingRT();
+				this.SetupPickingRT(viewportSize);
 
 				// Setup DrawDevice
 				this.drawDevice.PickingIndex = 1;
 				this.drawDevice.Target = this.pickingRT;
 				this.drawDevice.VisibilityMask = this.visibilityMask & VisibilityFlag.AllGroups;
 				this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
+				this.drawDevice.ViewportRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
 
 				// Render Scene
 				this.drawDevice.BeginRendering(ClearFlag.All, ColorRgba.Black, 1.0f);
@@ -354,16 +357,17 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="x">x-Coordinate of the pixel to check.</param>
 		/// <param name="y">y-Coordinate of the pixel to check.</param>
+		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
 		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
-		public ICmpRenderer PickRendererAt(int x, int y)
+		public ICmpRenderer PickRendererAt(Rect viewportRect, int x, int y)
 		{
-			if (x < 0 || x >= DualityApp.TargetResolution.X) return null;
-			if (y < 0 || y >= DualityApp.TargetResolution.Y) return null;
+			if (x < viewportRect.MinimumX || x >= viewportRect.MaximumX) return null;
+			if (y < viewportRect.MinimumY || y >= viewportRect.MaximumY) return null;
 			
-			this.RenderPickingMap();
+			this.RenderPickingMap(viewportRect.Size);
 
-			x = MathF.Clamp(x, 0, this.pickingTex.PixelWidth - 1);
-			y = MathF.Clamp(y, 0, this.pickingTex.PixelHeight - 1);
+			x = MathF.Clamp(x - (int)viewportRect.X, 0, this.pickingTex.PixelWidth - 1);
+			y = MathF.Clamp(y - (int)viewportRect.Y, 0, this.pickingTex.PixelHeight - 1);
 
 			int rendererId = 
 				(this.pickingBuffer[4 * (x + y * this.pickingTex.PixelWidth) + 0] << 16) |
@@ -385,6 +389,16 @@ namespace Duality.Components
 				return null;
 		}
 		/// <summary>
+		/// Picks the <see cref="Duality.ICmpRenderer"/> that owns the pixel at the specified position.
+		/// </summary>
+		/// <param name="x">x-Coordinate of the pixel to check.</param>
+		/// <param name="y">y-Coordinate of the pixel to check.</param>
+		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
+		public ICmpRenderer PickRendererAt(int x, int y)
+		{
+			return this.PickRendererAt(new Rect(DualityApp.TargetResolution), x, y);
+		}
+		/// <summary>
 		/// Picks all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> contained within the specified
 		/// rectangular area.
 		/// </summary>
@@ -392,15 +406,17 @@ namespace Duality.Components
 		/// <param name="y">y-Coordinate of the Rect.</param>
 		/// <param name="w">Width of the Rect.</param>
 		/// <param name="h">Height of the Rect.</param>
+		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
 		/// <returns>A set of all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> that have been picked.</returns>
-		public HashSet<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
+		public HashSet<ICmpRenderer> PickRenderersIn(Rect viewportRect, int x, int y, int w, int h)
 		{
 			Rect dstRect = new Rect(x, y, w, h);
-			Rect srcRect = new Rect(DualityApp.TargetResolution);
-			if (!dstRect.Intersects(srcRect)) return new HashSet<ICmpRenderer>();
-			dstRect = dstRect.Intersection(srcRect);
+			if (!dstRect.Intersects(viewportRect)) return new HashSet<ICmpRenderer>();
+			dstRect = dstRect.Intersection(viewportRect);
+			dstRect.X -= viewportRect.X;
+			dstRect.Y -= viewportRect.Y;
 
-			this.RenderPickingMap();
+			this.RenderPickingMap(viewportRect.Size);
 
 			x = Math.Max((int)dstRect.X, 0);
 			y = Math.Max((int)dstRect.Y, 0);
@@ -430,6 +446,19 @@ namespace Duality.Components
 			}
 
 			return result;
+		}
+		/// <summary>
+		/// Picks all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> contained within the specified
+		/// rectangular area.
+		/// </summary>
+		/// <param name="x">x-Coordinate of the Rect.</param>
+		/// <param name="y">y-Coordinate of the Rect.</param>
+		/// <param name="w">Width of the Rect.</param>
+		/// <param name="h">Height of the Rect.</param>
+		/// <returns>A set of all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> that have been picked.</returns>
+		public HashSet<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
+		{
+			return this.PickRenderersIn(new Rect(DualityApp.TargetResolution), x, y, w, h);
 		}
 
 		/// <summary>
@@ -508,6 +537,9 @@ namespace Duality.Components
 		}
 		private void UpdateDeviceConfig()
 		{
+			// Lazy setup, in case someone uses this Camera despite being inactive. (Editor)
+			if (this.drawDevice == null) this.SetupDevice();
+
 			this.drawDevice.RefCoord = this.gameobj.Transform.Pos;
 			this.drawDevice.RefAngle = this.gameobj.Transform.Angle;
 			this.drawDevice.NearZ = this.nearZ;
@@ -515,11 +547,12 @@ namespace Duality.Components
 			this.drawDevice.FocusDist = this.focusDist;
 			this.drawDevice.Perspective = this.perspective;
 		}
-		private void RenderSinglePass(Pass p)
+		private void RenderSinglePass(Rect viewportRect, Pass p)
 		{
 			this.drawDevice.VisibilityMask = this.visibilityMask & p.VisibilityMask;
 			this.drawDevice.RenderMode = p.MatrixMode;
 			this.drawDevice.Target = p.Output;
+			this.drawDevice.ViewportRect = p.Output.IsAvailable ? new Rect(p.Output.Res.Width, p.Output.Res.Height) : viewportRect;
 
 			if (p.Input == null)
 			{
@@ -591,17 +624,16 @@ namespace Duality.Components
 				Profile.TimeCollectDrawcalls.EndMeasure();
 			}
 		}
-		private void SetupPickingRT()
+		private void SetupPickingRT(Vector2 size)
 		{
-			Vector2 refSize = DualityApp.TargetResolution;
 			if (this.pickingTex == null || 
-				this.pickingTex.PixelWidth != MathF.RoundToInt(refSize.X) || 
-				this.pickingTex.PixelHeight != MathF.RoundToInt(refSize.Y))
+				this.pickingTex.PixelWidth != MathF.RoundToInt(size.X) || 
+				this.pickingTex.PixelHeight != MathF.RoundToInt(size.Y))
 			{
 				if (this.pickingTex != null) this.pickingTex.Dispose();
 				if (this.pickingRT != null) this.pickingRT.Dispose();
 				this.pickingTex = new Texture(
-					MathF.RoundToInt(refSize.X), MathF.RoundToInt(refSize.Y), Texture.SizeMode.Default, 
+					MathF.RoundToInt(size.X), MathF.RoundToInt(size.Y), Texture.SizeMode.Default, 
 					TextureMagFilter.Nearest, TextureMinFilter.Nearest);
 				this.pickingRT = new RenderTarget(AAQuality.Off, this.pickingTex);
 			}

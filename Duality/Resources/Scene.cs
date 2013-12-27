@@ -291,15 +291,16 @@ namespace Duality.Resources
 		/// <summary>
 		/// Renders the Scene
 		/// </summary>
+		/// <param name="viewportRect">The viewport to which will be rendered.</param>
 		/// <param name="camPredicate">Optional predicate to select which Cameras may be rendered and which not.</param>
-		internal void Render(Predicate<Camera> camPredicate = null)
+		internal void Render(Rect viewportRect, Predicate<Camera> camPredicate = null)
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
 
 			Camera[] activeCams = this.cameras.Where(c => c.Active && (camPredicate == null || camPredicate(c))).ToArray();
 			// Maybe sort / process list first later on.
 			foreach (Camera c in activeCams)
-				c.Render();
+				c.Render(viewportRect);
 		}
 		/// <summary>
 		/// Updates the Scene

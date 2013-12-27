@@ -81,59 +81,45 @@ namespace EditorBase
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
 			DualityEditorApp.GLMakeCurrent(this.LocalGLControl);
-			this.MakeDualityTarget();
-			var result = this.CameraComponent.PickRendererAt(x, y);
+			var result = this.CameraComponent.PickRendererAt(new Rect(this.ClientSize.Width, this.ClientSize.Height), x, y);
 			return result;
 		}
 		public HashSet<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
 			DualityEditorApp.GLMakeCurrent(this.LocalGLControl);
-			this.MakeDualityTarget();
-			var result = this.CameraComponent.PickRenderersIn(x, y, w, h);
+			var result = this.CameraComponent.PickRenderersIn(new Rect(this.ClientSize.Width, this.ClientSize.Height), x, y, w, h);
 			return result;
 		}
 		public bool IsCoordInView(Vector3 c, float boundRad = 1.0f)
 		{
-			this.UpdateTargetResolution();
 			return this.CameraComponent.IsCoordInView(c, boundRad);
 		}
 		public float GetScaleAtZ(float z)
 		{
-			this.UpdateTargetResolution();
 			return this.CameraComponent.GetScaleAtZ(z);
 		}
 		public Vector3 GetSpaceCoord(Vector3 screenCoord)
 		{
-			this.UpdateTargetResolution();
 			return this.CameraComponent.GetSpaceCoord(screenCoord);
 		}
 		public Vector3 GetSpaceCoord(Vector2 screenCoord)
 		{
-			this.UpdateTargetResolution();
 			return this.CameraComponent.GetSpaceCoord(screenCoord);
 		}
 		public Vector3 GetScreenCoord(Vector3 spaceCoord)
 		{
-			this.UpdateTargetResolution();
 			return this.CameraComponent.GetScreenCoord(spaceCoord);
 		}
 
-		private void UpdateTargetResolution()
-		{
-			DualityApp.TargetResolution = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
-		}
 		public void MakeDualityTarget()
 		{
-			this.UpdateTargetResolution();
-			if (this.view.ContainsFocus)
+			DualityApp.TargetResolution = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
+			DualityApp.Mouse.Source = this.view;
+			DualityApp.Keyboard.Source = this.view;
+			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 			{
-				DualityApp.Mouse.Source = this.view;
-				DualityApp.Keyboard.Source = this.view;
-				if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
-				{
-					if (this.CameraObj.GetComponent<SoundListener>() != null)
-						this.CameraObj.GetComponent<SoundListener>().MakeCurrent();
-				}
+				if (this.CameraObj.GetComponent<SoundListener>() != null)
+					this.CameraObj.GetComponent<SoundListener>().MakeCurrent();
 			}
 		}
 	}
