@@ -553,16 +553,19 @@ namespace Duality.Serialization
 			else
 				defaultMethod = FormattingMethod.Binary;
 
-			foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories))
+			if (Directory.Exists(DualityApp.DataDirectory))
 			{
-				using (FileStream stream = File.OpenRead(anyResource))
+				foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories))
 				{
-					try
+					using (FileStream stream = File.OpenRead(anyResource))
 					{
-						defaultMethod = XmlFormatterBase.IsXmlStream(stream) ? FormattingMethod.Xml : FormattingMethod.Binary;
-						break;
+						try
+						{
+							defaultMethod = XmlFormatterBase.IsXmlStream(stream) ? FormattingMethod.Xml : FormattingMethod.Binary;
+							break;
+						}
+						catch (Exception) {}
 					}
-					catch (Exception) {}
 				}
 			}
 		}

@@ -116,6 +116,13 @@ namespace Duality
 		{
 			get { return this.state.Indent; }
 		}
+		/// <summary>
+		/// [GET] Enumerates all the output writers of this log.
+		/// </summary>
+		public IEnumerable<ILogOutput> Outputs
+		{
+			get { return this.strOut; }
+		}
 
 		/// <summary>
 		/// Creates a new Log.

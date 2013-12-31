@@ -259,6 +259,7 @@ namespace Duality
 
 			return typeof(T);
 		}
+		[System.Diagnostics.DebuggerNonUserCode] 
 		private static Func<TParamA,TParamB,TParamC,TResult> CreateOperatorFunc<TParamA,TParamB,TParamC,TResult>(Func<Expression,Expression,Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
@@ -308,6 +309,7 @@ namespace Duality
 					return null;
             }
 		}
+		[System.Diagnostics.DebuggerNonUserCode] 
 		private static Func<TParamA,TParamB,TResult> CreateOperatorFunc<TParamA,TParamB,TResult>(Func<Expression,Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
@@ -350,6 +352,7 @@ namespace Duality
 					return null;
             }
 		}
+		[System.Diagnostics.DebuggerNonUserCode] 
 		private static Func<TParam,TResult> CreateOperatorFunc<TParam,TResult>(Func<Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
@@ -385,6 +388,7 @@ namespace Duality
 					return null;
             }
 		}
+		[System.Diagnostics.DebuggerNonUserCode] 
 		private static Func<T,U> CreateNoOpFunc<T,U>()
 		{
 			try
