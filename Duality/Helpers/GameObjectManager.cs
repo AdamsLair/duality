@@ -108,7 +108,7 @@ namespace Duality
 		/// <param name="obj"></param>
 		public bool RemoveObject(GameObject obj)
 		{
-			bool removed = this.RemoveObjectDeep(obj);;
+			bool removed = this.RemoveObjectDeep(obj);
 			this.Flush();
 			return removed;
 		}
@@ -119,7 +119,9 @@ namespace Duality
 		public void RemoveObject(IEnumerable<GameObject> objEnum)
 		{
 			foreach (GameObject obj in objEnum.ToArray())
+			{
 				this.RemoveObjectDeep(obj);
+			}
 			this.Flush();
 		}
 		/// <summary>

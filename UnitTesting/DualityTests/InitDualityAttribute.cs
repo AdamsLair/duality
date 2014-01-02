@@ -46,13 +46,17 @@ namespace DualityTests
 			// Initialize Duality
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game);
 
+			// Manually register pseudo-plugin for the Unit Testing Assembly
+			DualityApp.AddLoadedPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
+
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
 		public void AfterTest(TestDetails details)
 		{
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
 
-			DualityApp.Terminate();
+			// Just leave it initialized - speeds up re-running individual tests.
+			//DualityApp.Terminate();
 			Environment.CurrentDirectory = this.oldEnvDir;
 
 			Console.WriteLine("----- Duality environment teardown complete -----");

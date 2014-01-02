@@ -197,7 +197,6 @@ namespace Duality.Resources
 		private	Vector2			globalGravity	= Vector2.UnitY * 33.0f;
 		private	GameObject[]	serializeObj	= null;
 		[NonSerialized] private	GameObjectManager					objectManager		= new GameObjectManager();
-		[NonSerialized] private	List<Camera>						cameras				= new List<Camera>();
 		[NonSerialized] private	List<Component>						renderers			= new List<Component>();
 		[NonSerialized] private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
 
@@ -233,14 +232,6 @@ namespace Duality.Resources
 		public IEnumerable<GameObject> ActiveRootObjects
 		{
 			get { return this.objectManager.ActiveRootObjects; }
-		}
-		/// <summary>
-		/// [GET] Enumerates the Scenes <see cref="Camera"/> objects.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public IEnumerable<Camera> Cameras
-		{
-			get { return this.cameras.Where(c => !c.Disposed); }
 		}
 		/// <summary>
 		/// [GET / SET] Global gravity force that is applied to all objects that obey the laws of physics.
@@ -297,7 +288,7 @@ namespace Duality.Resources
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
 
-			Camera[] activeCams = this.cameras.Where(c => c.Active && (camPredicate == null || camPredicate(c))).ToArray();
+			Camera[] activeCams = this.FindComponents<Camera>().Where(c => c.Active && (camPredicate == null || camPredicate(c))).ToArray();
 			// Maybe sort / process list first later on.
 			foreach (Camera c in activeCams)
 				c.Render(viewportRect);
@@ -394,7 +385,6 @@ namespace Duality.Resources
 		new internal void RunCleanup()
 		{
 			this.objectManager.Flush();
-			this.cameras.FlushDisposedObj();
 			this.renderers.FlushDisposedObj();
 			foreach (var cmpList in this.componentyByType.Values)
 				cmpList.FlushDisposedObj();
@@ -454,6 +444,7 @@ namespace Duality.Resources
 		/// <param name="obj"></param>
 		public void AddObject(GameObject obj)
 		{
+			if (obj.ParentScene != null) obj.ParentScene.RemoveObject(obj);
 			this.objectManager.AddObject(obj);
 		}
 		/// <summary>
@@ -462,6 +453,11 @@ namespace Duality.Resources
 		/// <param name="objEnum"></param>
 		public void AddObject(IEnumerable<GameObject> objEnum)
 		{
+			foreach (GameObject obj in objEnum)
+			{
+				if (obj.ParentScene == null) continue;
+				obj.ParentScene.RemoveObject(obj);
+			}
 			this.objectManager.AddObject(objEnum);
 		}
 		/// <summary>
@@ -470,6 +466,11 @@ namespace Duality.Resources
 		/// <param name="obj"></param>
 		public void RemoveObject(GameObject obj)
 		{
+			if (obj.ParentScene != this) return;
+			if (obj.Parent != null && obj.Parent.ParentScene == this)
+			{
+				obj.Parent = null;
+			}
 			this.objectManager.RemoveObject(obj);
 		}
 		/// <summary>
@@ -478,6 +479,13 @@ namespace Duality.Resources
 		/// <param name="objEnum"></param>
 		public void RemoveObject(IEnumerable<GameObject> objEnum)
 		{
+			objEnum = objEnum.Where(o => o.ParentScene == this);
+			foreach (GameObject obj in objEnum)
+			{
+				if (obj.Parent == null) continue;
+				if (obj.Parent.ParentScene != this) continue;
+				obj.Parent = null;
+			}
 			this.objectManager.RemoveObject(objEnum);
 		}
 
@@ -662,7 +670,6 @@ namespace Duality.Resources
 			cmpList.Add(cmp);
 
 			// Specialized lists
-			if (cmp is Camera)			this.cameras.Add(cmp as Camera);
 			if (cmp is ICmpRenderer)	this.renderers.Add(cmp);
 		}
 		private void RemoveFromManagers(GameObject obj)
@@ -679,7 +686,6 @@ namespace Duality.Resources
 				cmpList.Remove(cmp);
 
 			// Specialized lists
-			if (cmp is Camera)			this.cameras.Remove(cmp as Camera);
 			if (cmp is ICmpRenderer)	this.renderers.Remove(cmp);
 		}
 		private void RegisterManagerEvents()
@@ -716,11 +722,13 @@ namespace Duality.Resources
 		private void objectManager_GameObjectAdded(object sender, GameObjectEventArgs e)
 		{
 			this.AddToManagers(e.Object);
+			e.Object.ParentScene = this;
 			if (this.IsCurrent) OnGameObjectAdded(e);
 		}
 		private void objectManager_GameObjectRemoved(object sender, GameObjectEventArgs e)
 		{
 			this.RemoveFromManagers(e.Object);
+			e.Object.ParentScene = null;
 			if (this.IsCurrent) OnGameObjectRemoved(e);
 		}
 		private void objectManager_ParentChanged(object sender, GameObjectParentChangedEventArgs e)
@@ -776,6 +784,7 @@ namespace Duality.Resources
 				foreach (GameObject obj in this.serializeObj) obj.PerformSanitaryCheck();
 				foreach (GameObject obj in this.serializeObj)
 				{
+					obj.ParentScene = this;
 					this.objectManager.AddObject(obj);
 					this.AddToManagers(obj);
 				}

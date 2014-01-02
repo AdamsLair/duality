@@ -23,9 +23,11 @@ namespace Duality
 	[Serializable]
 	public sealed class GameObject : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
 	{
+		[NonSerialized] 
+		private		Scene						scene		= null;
+		private		GameObject					parent		= null;
 		private		PrefabLink					prefabLink	= null;
 		private		Guid						identifier	= Guid.NewGuid();
-		private		GameObject					parent		= null;
 		private		List<GameObject>			children	= null;
 		private		Dictionary<Type,Component>	compMap		= new Dictionary<Type,Component>();
 		private		List<Component>				compList	= new List<Component>();
@@ -54,8 +56,14 @@ namespace Duality
 				if (this.parent != value)
 				{
 					GameObject oldParent = this.parent;
+					Scene newScene = (value != null) ? value.scene : this.scene;
 
 					if (this.parent != null) this.parent.children.Remove(this);
+					if (newScene != this.scene)
+					{
+						if (this.scene != null) this.scene.RemoveObject(this);
+						if (newScene != null) newScene.AddObject(this);
+					}
 					this.parent = value;
 					if (this.parent != null)
 					{
@@ -66,7 +74,17 @@ namespace Duality
 					this.OnParentChanged(oldParent, this.parent);
 				}
 			}
-		}						//	GS
+		}
+		/// <summary>
+		/// [GET] The GameObjects parent <see cref="Duality.Resources.Scene"/>. Each GameObject can belong to
+		/// exactly one Scene, or no Scene at all. To add or remove GameObjects to / from a Scene, use the <see cref="Duality.Resources.Scene.AddObject"/> and
+		/// <see cref="Duality.Resources.Scene.RemoveObject"/> methods.
+		/// </summary>
+		public Scene ParentScene
+		{
+			get { return this.scene; }
+			internal set { this.scene = value; }
+		}
 		/// <summary>
 		/// [GET / SET] Whether or not the GameObject is currently active. To return true,
 		/// both the GameObject itsself and all of its parent GameObjects need to be active.
@@ -76,7 +94,7 @@ namespace Duality
 		{
 			get { return this.ActiveSingle && (this.parent == null || this.parent.Active); }
 			set { this.ActiveSingle = value; }
-		}							//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Whether or not the GameObject is currently active. Unlike <see cref="Active"/>,
 		/// this property ignores parent activation states and depends only on this single GameObject.
@@ -110,7 +128,7 @@ namespace Duality
 					this.active = value;
 				}
 			}
-		}						//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The name of this GameObject.
 		/// </summary>
@@ -118,7 +136,7 @@ namespace Duality
 		{
 			get { return this.name; }
 			set { this.name = string.IsNullOrWhiteSpace(value) ? "null" : value; }
-		}							//	GS
+		}
 		/// <summary>
 		/// [GET] The path-like hierarchial name of this GameObject.
 		/// </summary>
@@ -126,7 +144,7 @@ namespace Duality
 		public string FullName
 		{
 			get { return (this.parent != null) ? this.parent.FullName + '/' + this.name : this.name; }
-		}						//	G
+		}
 		/// <summary>
 		/// [GET] The GameObjects persistent globally unique identifier.
 		/// </summary>
@@ -135,7 +153,7 @@ namespace Duality
 		{
 			get { return this.identifier; }
 			internal set { this.identifier = value; }
-		}								//	G[S]
+		}
 		/// <summary>
 		/// [GET] Returns the number of parents this object has when travelling upwards the scene graph hierarchy.
 		/// </summary>
@@ -150,7 +168,7 @@ namespace Duality
 				if (this.parent == null) return 0;
 				else return this.parent.HierarchyLevel + 1;
 			}
-		}					//	G
+		}
 		/// <summary>
 		/// [GET] The number of child GameObjects this object has.
 		/// </summary>
@@ -160,7 +178,7 @@ namespace Duality
 			{
 				return (this.children != null) ? this.children.Count : 0;
 			}
-		}						//  G
+		}
 		/// <summary>
 		/// [GET] The number of <see cref="Component"/>s this object consists of.
 		/// </summary>
@@ -170,7 +188,7 @@ namespace Duality
 			{
 				return this.compList.Count;
 			}
-		}					//  G
+		}
 		/// <summary>
 		/// [GET] Enumerates this objects child GameObjects.
 		/// </summary>
@@ -184,7 +202,7 @@ namespace Duality
 					yield return c;
 				}
 			}
-		}		//  G
+		}
 		/// <summary>
 		/// [GET] Enumerates all GameObjects that are directly or indirectly parented to this object, i.e. its
 		/// children, grandchildren, etc.
@@ -203,7 +221,7 @@ namespace Duality
 					}
 				}
 			}
-		}	//  G
+		}
 		/// <summary>
 		/// [GET] The <see cref="Duality.Resources.PrefabLink"/> that connects this object to a <see cref="Duality.Resources.Prefab"/>.
 		/// </summary>
@@ -213,7 +231,7 @@ namespace Duality
 		{
 			get { return this.prefabLink; }
 			internal set { this.prefabLink = value; }
-		}					//	G[S]
+		}
 		/// <summary>
 		/// [GET] The <see cref="Duality.Resources.PrefabLink"/> that connects this object or one or its parent GameObjects to a <see cref="Duality.Resources.Prefab"/>.
 		/// </summary>
@@ -231,7 +249,7 @@ namespace Duality
 				else if (this.parent != null) return this.parent.AffectedByPrefabLink;
 				else return null;
 			}
-		}		//	G
+		}
 		/// <summary>
 		/// [GET] Returns whether this GameObject has been disposed. Disposed GameObjects are not to be used and should
 		/// be treated specifically or as null references by your code.
@@ -239,7 +257,7 @@ namespace Duality
 		public bool Disposed
 		{
 			get { return this.initState == InitState.Disposed; }
-		}							//	G
+		}
 
 		/// <summary>
 		/// [GET] The GameObject's <see cref="Duality.Components.Transform"/> Component, if existing.

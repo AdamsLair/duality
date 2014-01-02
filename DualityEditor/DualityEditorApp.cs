@@ -1158,8 +1158,8 @@ namespace DualityEditor
 				}
 
 				// If a GameObjects's Property is modified, notify changes to the current Scene
-				if (args.Objects.GameObjects.Any(g => Scene.Current.AllObjects.Contains(g)) ||
-					args.Objects.Components.Any(c => Scene.Current.AllObjects.Contains(c.GameObj)))
+				if (args.Objects.GameObjects.Any(g => g.ParentScene == Scene.Current) ||
+					args.Objects.Components.Any(c => c.GameObj.ParentScene == Scene.Current))
 				{
 					NotifyObjPropChanged(sender, new ObjectSelection(Scene.Current));
 				}

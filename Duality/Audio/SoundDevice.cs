@@ -194,14 +194,24 @@ namespace Duality
 			{
 				this.disposed = true;
 				DualityApp.AppDataChanged -= this.DualityApp_AppDataChanged;
-				
-				foreach (SoundInstance inst in this.sounds) inst.Dispose();
-				this.sounds.Clear();
-
-				ContentProvider.RemoveAllContent<Sound>();
 
 				try
 				{
+					// Clear all playing sounds
+					foreach (SoundInstance inst in this.sounds) inst.Dispose();
+					this.sounds.Clear();
+
+					// Clear all audio related Resources
+					ContentProvider.RemoveAllContent<AudioData>();
+					ContentProvider.RemoveAllContent<Sound>();
+
+					// Clear OpenAL source pool
+					foreach (int alSource in this.alSourcePool)
+					{
+						AL.DeleteSource(alSource);
+					}
+
+					// Shut down OpenAL context
 					if (this.context != null)
 					{
 						this.context.Dispose();

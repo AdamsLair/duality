@@ -454,6 +454,7 @@ namespace Duality
 					SaveMetaData();
 				}
 				sound.Dispose();
+				sound = null;
 				UnloadPlugins();
 				Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 				Log.Core.Write("DualityApp terminated");
@@ -554,7 +555,7 @@ namespace Duality
 
 				foreach (GameObject obj in updateObjects)
 				{
-					if (!freezeScene && Scene.Current.AllObjects.Contains(obj)) continue;
+					if (!freezeScene && obj.ParentScene == Scene.Current) continue;
 					obj.Update();
 				}
 			}
@@ -802,17 +803,10 @@ namespace Duality
 				else
 					pluginAssembly = Assembly.Load(File.ReadAllBytes(pluginFilePath));
 
-				Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(CorePlugin).IsAssignableFrom(t));
-				if (pluginType == null)
+				plugin = AddLoadedPlugin(pluginAssembly, pluginFilePath);
+				if (plugin == null)
 				{
 					Log.Core.WriteWarning("Can't find CorePlugin class. Discarding plugin...");
-					disposedPlugins.Add(pluginAssembly);
-				}
-				else
-				{
-					plugin = (CorePlugin)pluginType.CreateInstanceOf();
-					plugin.FilePath = pluginFilePath;
-					plugins.Add(plugin.AssemblyName, plugin);
 				}
 			}
 			catch (Exception e)
@@ -822,6 +816,26 @@ namespace Duality
 			}
 
 			Log.Core.PopIndent();
+			return plugin;
+		}
+		internal static CorePlugin AddLoadedPlugin(Assembly pluginAssembly, string pluginFilePath)
+		{
+			string asmName = pluginAssembly.GetShortAssemblyName();
+			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
+			if (plugin != null) return plugin;
+
+			Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(CorePlugin).IsAssignableFrom(t));
+			if (pluginType == null)
+			{
+				disposedPlugins.Add(pluginAssembly);
+			}
+			else
+			{
+				plugin = (CorePlugin)pluginType.CreateInstanceOf();
+				plugin.FilePath = pluginFilePath;
+				plugins.Add(plugin.AssemblyName, plugin);
+			}
+
 			return plugin;
 		}
 		private static void InitPlugins()
