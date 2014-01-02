@@ -84,7 +84,7 @@ namespace DualityTests.Resources
 			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();
 			Scene.Current = this.scene;
 			this.obj.Dispose();
-			Scene.Current.RunCleanup(); // Need to run cleanup, so disposed GameObjects will be processed.
+			DualityApp.RunCleanup(); // Need to run cleanup, so disposed GameObjects will be processed.
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
 		}
 		[Test] public void DeactivateComponentDispose()

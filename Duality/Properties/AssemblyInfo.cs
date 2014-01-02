@@ -35,5 +35,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.*")]
 
 [assembly: InternalsVisibleTo("DualityEditor")]
-[assembly: InternalsVisibleTo("DualityDebugging")]
-[assembly: InternalsVisibleTo("DualityTests")]

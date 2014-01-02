@@ -47,7 +47,7 @@ namespace DualityTests
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game);
 
 			// Manually register pseudo-plugin for the Unit Testing Assembly
-			DualityApp.AddLoadedPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
+			DualityApp.AddPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
 
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
