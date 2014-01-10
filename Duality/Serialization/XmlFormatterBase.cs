@@ -424,11 +424,13 @@ namespace Duality.Serialization
 
 		protected string GetXmlElementName(string codeName)
 		{
-			return codeName.Replace("<", "__sbo__").Replace(">", "__sbc__");
+			return XmlConvert.EncodeName(codeName);
 		}
 		protected string GetCodeElementName(string xmlName)
 		{
-			return xmlName.Replace("__sbo__", "<").Replace("__sbc__", ">");
+			// Legacy support. Remove later. (Written 2014-01-10)
+			xmlName = xmlName.Replace("__sbo__", "<").Replace("__sbc__", ">");
+			return XmlConvert.DecodeName(xmlName);
 		}
 	}
 }
