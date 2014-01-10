@@ -11,7 +11,6 @@ namespace Duality.Serialization.MetaFormat
 	/// <seealso cref="Duality.Serialization.BinaryFormatter"/>
 	public class BinaryMetaFormatter : BinaryFormatterBase
 	{
-		public BinaryMetaFormatter() {}
 		public BinaryMetaFormatter(Stream stream) : base(stream) {}
 		
 		protected override void GetWriteObjectData(object obj, out SerializeType objSerializeType, out DataType dataType, out uint objId)

@@ -13,7 +13,6 @@ namespace Duality.Serialization
 	/// <seealso cref="Duality.Serialization.MetaFormat.XmlMetaFormatter"/>
 	public class XmlFormatter : XmlFormatterBase
 	{
-		public XmlFormatter() {}
 		public XmlFormatter(Stream stream) : base(stream) {}
 
 		protected override void WriteObjectBody(DataType dataType, object obj, SerializeType objSerializeType, uint objId)

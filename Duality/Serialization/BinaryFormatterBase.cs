@@ -96,40 +96,6 @@ namespace Duality.Serialization
 
 		
 		/// <summary>
-		/// [GET / SET] The <see cref="BinaryWriter"/> that is used for serialization.
-		/// </summary>
-		public BinaryWriter WriteTarget
-		{
-			get { return this.writer; }
-			set
-			{
-				if (this.writer == value) return;
-				this.writer = value;
-
-				if (this.writer != null && !this.writer.BaseStream.CanSeek) throw new ArgumentException("Cannot use a WriteTarget without seeking capability.");
-
-				// We're switching the stream, so we should discard all stream-specific temporary / cache data
-				this.EndOperation();
-			}
-		}
-		/// <summary>
-		/// [GET / SET] The <see cref="BinaryReader"/> that is used for deserialization.
-		/// </summary>
-		public BinaryReader ReadTarget
-		{
-			get { return this.reader; }
-			set
-			{
-				if (this.reader == value) return;
-				this.reader = value;
-
-				if (this.reader != null && !this.reader.BaseStream.CanSeek) throw new ArgumentException("Cannot use a ReadTarget without seeking capability.");
-
-				// We're switching the stream, so we should discard all stream-specific temporary / cache data
-				this.EndOperation();
-			}
-		}
-		/// <summary>
 		/// [GET] Can this binary serializer write data?
 		/// </summary>
 		public bool CanWrite
@@ -148,8 +114,8 @@ namespace Duality.Serialization
 		protected BinaryFormatterBase() : this(null) {}
 		protected BinaryFormatterBase(Stream stream)
 		{
-			this.WriteTarget = (stream != null && stream.CanWrite) ? new BinaryWriter(stream) : null;
-			this.ReadTarget = (stream != null && stream.CanRead) ? new BinaryReader(stream) : null;
+			this.writer = (stream != null && stream.CanWrite) ? new BinaryWriter(stream) : null;
+			this.reader = (stream != null && stream.CanRead) ? new BinaryReader(stream) : null;
 		}
 		protected override void OnDisposed(bool manually)
 		{

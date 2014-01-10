@@ -89,34 +89,6 @@ namespace Duality.Serialization
 		protected	XmlReader	reader	= null;
 		
 		/// <summary>
-		/// [GET / SET] The <see cref="XmlWriter"/> that is used for serialization.
-		/// </summary>
-		public XmlWriter WriteTarget
-		{
-			get { return this.writer; }
-			set
-			{
-				if (this.writer != value)
-				{
-					this.writer = value;
-				}
-			}
-		}
-		/// <summary>
-		/// [GET / SET] The <see cref="XmlReader"/> that is used for deserialization.
-		/// </summary>
-		public XmlReader ReadTarget
-		{
-			get { return this.reader; }
-			set
-			{
-				if (this.reader != value)
-				{
-					this.reader = value;
-				}
-			}
-		}
-		/// <summary>
 		/// [GET] Can this binary serializer write data?
 		/// </summary>
 		public bool CanWrite
@@ -141,8 +113,8 @@ namespace Duality.Serialization
 			readerSettings.IgnoreComments = true;
 			readerSettings.IgnoreProcessingInstructions = true;
 
-			this.WriteTarget = (stream != null && stream.CanWrite) ? XmlTextWriter.Create(stream, writerSettings) : null;
-			this.ReadTarget = (stream != null && stream.CanRead) ? XmlTextReader.Create(stream, readerSettings) : null;
+			this.writer = (stream != null && stream.CanWrite) ? XmlTextWriter.Create(stream, writerSettings) : null;
+			this.reader = (stream != null && stream.CanRead) ? XmlTextReader.Create(stream, readerSettings) : null;
 		}
 		protected override void OnDisposed(bool manually)
 		{

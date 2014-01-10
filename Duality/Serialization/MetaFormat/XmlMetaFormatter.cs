@@ -12,7 +12,6 @@ namespace Duality.Serialization.MetaFormat
 	/// <seealso cref="Duality.Serialization.XmlFormatter"/>
 	public class XmlMetaFormatter : XmlFormatterBase
 	{
-		public XmlMetaFormatter() {}
 		public XmlMetaFormatter(Stream stream) : base(stream) {}
 		
 		protected override void GetWriteObjectData(object obj, out SerializeType objSerializeType, out DataType dataType, out uint objId)
