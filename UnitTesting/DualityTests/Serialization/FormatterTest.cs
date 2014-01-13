@@ -53,6 +53,7 @@ namespace DualityTests.Serialization
 			public string StringField;
 			public TestData DataField;
 			public List<int> ListField;
+			public List<string> ListField2;
 			public Dictionary<string,TestObject> DictField;
 			
 			public TestObject(Random rnd, int maxChildren = 5)
@@ -60,6 +61,7 @@ namespace DualityTests.Serialization
 				this.StringField	= rnd.Next().ToString();
 				this.DataField		= new TestData(rnd);
 				this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).ToList();
+				this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).Select(i => i.ToString()).ToList();
 				this.DictField		= new Dictionary<string,TestObject>();
 
 				for (int i = rnd.Next(0, maxChildren); i > 0; i--)
@@ -89,6 +91,7 @@ namespace DualityTests.Serialization
 					other.StringField == this.StringField &&
 					other.DataField == this.DataField &&
 					other.ListField.SequenceEqual(this.ListField) &&
+					other.ListField2.SequenceEqual(this.ListField2) &&
 					other.DictField.SetEqual(this.DictField);
 			}
 		}

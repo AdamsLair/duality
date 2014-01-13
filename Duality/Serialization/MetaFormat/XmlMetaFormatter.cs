@@ -74,8 +74,16 @@ namespace Duality.Serialization.MetaFormat
 				else
 				{
 					SerializeType elemType = objAsArray.GetType().GetElementType().GetSerializeType();
-					for (long l = 0; l < objAsArray.Length; l++)
-						this.WriteObject(new PrimitiveNode(elemType.DataType, objAsArray.GetValue(l)));
+					if (elemType.DataType == DataType.String)
+					{
+						for (long l = 0; l < objAsArray.Length; l++)
+							this.WriteObject(new StringNode((string)objAsArray.GetValue(l)));
+					}
+					else
+					{
+						for (long l = 0; l < objAsArray.Length; l++)
+							this.WriteObject(new PrimitiveNode(elemType.DataType, objAsArray.GetValue(l)));
+					}
 				}
 			}
 			else
@@ -258,8 +266,14 @@ namespace Duality.Serialization.MetaFormat
 					{
 						for (int l = 0; l < arrLength; l++)
 						{
-							PrimitiveNode elemNode = this.ReadObject() as PrimitiveNode;
-							if (arrObj != null) arrObj.SetValue(elemNode.PrimitiveValue, l);
+							DataNode elemNode = this.ReadObject() as DataNode;
+							if (arrObj != null)
+							{
+								if (elemNode is PrimitiveNode)
+									arrObj.SetValue((elemNode as PrimitiveNode).PrimitiveValue, l);
+								else if (elemNode is StringNode)
+									arrObj.SetValue((elemNode as StringNode).StringValue, l);
+							}
 						}
 					}
 					result.PrimitiveData = arrObj;
