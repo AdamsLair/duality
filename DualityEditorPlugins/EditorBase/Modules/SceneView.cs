@@ -1665,6 +1665,9 @@ namespace EditorBase
 		}
 		private void Scene_ComponentAdded(object sender, ComponentEventArgs e)
 		{
+			// Ignore events during transition
+			if (Scene.IsSwitching) return;
+
 			if (!this.buttonShowComponents.Checked)
 			{
 				GameObjectNode objNode = (e.Component != null && e.Component.GameObj != null) ? this.FindNode(e.Component.GameObj) : null;
@@ -1679,6 +1682,9 @@ namespace EditorBase
 		}
 		private void Scene_ComponentRemoving(object sender, ComponentEventArgs e)
 		{
+			// Ignore events during transition
+			if (Scene.IsSwitching) return;
+
 			if (!this.buttonShowComponents.Checked)
 			{
 				GameObjectNode objNode = (e.Component != null && e.Component.GameObj != null) ? this.FindNode(e.Component.GameObj) : null;
@@ -1695,6 +1701,9 @@ namespace EditorBase
 		}
 		private void Scene_GameObjectUnregistered(object sender, GameObjectEventArgs e)
 		{
+			// Ignore events during transition
+			if (Scene.IsSwitching) return;
+
 			GameObjectNode oldObjNode = this.FindNode(e.Object);
 			if (oldObjNode == null) return;
 
@@ -1704,6 +1713,9 @@ namespace EditorBase
 		}
 		private void Scene_GameObjectRegistered(object sender, GameObjectEventArgs e)
 		{
+			// Ignore events during transition
+			if (Scene.IsSwitching) return;
+
 			GameObjectNode newObjNode = this.ScanGameObject(e.Object, false);
 			Node parentNode = e.Object.Parent != null ? this.FindNode(e.Object.Parent) : this.objectModel.Root;
 			this.InsertNodeSorted(newObjNode, parentNode);
@@ -1711,6 +1723,9 @@ namespace EditorBase
 		}
 		private void Scene_GameObjectParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
+			// Ignore events during transition
+			if (Scene.IsSwitching) return;
+
 			// Find the moved node
 			GameObjectNode dragObjNode = this.FindNode(e.Object);
 			Node parent = dragObjNode.Parent;

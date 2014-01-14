@@ -34,6 +34,7 @@ namespace Duality.Resources
 		private	static	bool				physicsLowFps	= false;
 		private	static	ContentRef<Scene>	current			= ContentRef<Scene>.Null;
 		private	static	bool				curAutoGen		= false;
+		private	static	bool				isSwitching		= false;
 
 
 		/// <summary>
@@ -96,6 +97,14 @@ namespace Duality.Resources
 		{
 			get { return current.Res != null ? current.Res.Path : current.Path; }
 		}
+		/// <summary>
+		/// [GET] Returns whether <see cref="Scene.Current"/> is in a transition between two different states, i.e.
+		/// whether the current Scene is being changed right now.
+		/// </summary>
+		public static bool IsSwitching
+		{
+			get { return isSwitching; }
+		}
 
 
 		/// <summary>
@@ -131,6 +140,7 @@ namespace Duality.Resources
 		private static void OnLeaving()
 		{
 			if (Leaving != null) Leaving(current, null);
+			isSwitching = true;
 			if (current.ResWeak != null)
 			{
 				foreach (GameObject o in current.ResWeak.ActiveObjects.ToArray()) o.OnDeactivate();
@@ -158,6 +168,7 @@ namespace Duality.Resources
 				foreach (GameObject o in current.ResWeak.ActiveObjects.ToArray())
 					o.OnActivate();
 			}
+			isSwitching = false;
 			if (Entered != null) Entered(current, null);
 		}
 		private static void OnGameObjectParentChanged(GameObjectParentChangedEventArgs args)
