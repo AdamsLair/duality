@@ -444,7 +444,7 @@ namespace Duality.Resources
 		/// <param name="obj"></param>
 		public void AddObject(GameObject obj)
 		{
-			if (obj.ParentScene != null) obj.ParentScene.RemoveObject(obj);
+			if (obj.ParentScene != null && obj.ParentScene != this) obj.ParentScene.RemoveObject(obj);
 			this.objectManager.AddObject(obj);
 		}
 		/// <summary>
@@ -455,7 +455,7 @@ namespace Duality.Resources
 		{
 			foreach (GameObject obj in objEnum)
 			{
-				if (obj.ParentScene == null) continue;
+				if (obj.ParentScene == null || obj.ParentScene == this) continue;
 				obj.ParentScene.RemoveObject(obj);
 			}
 			this.objectManager.AddObject(objEnum);
