@@ -310,5 +310,16 @@ namespace Duality
 		{
 			return this.currentState.AxisValue[(int)axis] - this.lastState.AxisValue[(int)axis];
 		}
+		
+		/// <summary>
+		/// Sets the gamepads current vibration values.
+		/// </summary>
+		/// <param name="left">Left vibration between 0.0 and 1.0</param>
+		/// <param name="right">Right vibration between 0.0 and 1.0</param>
+		public void SetVibration(float left, float right)
+		{
+			if (this.source == null) return;
+			this.source.SetVibration(left, right);
+		}
 	}
 }
