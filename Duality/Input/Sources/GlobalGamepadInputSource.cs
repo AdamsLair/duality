@@ -1,0 +1,87 @@
+﻿using System;
+using OpenTK.Input;
+
+namespace Duality
+{
+	public class GlobalGamepadInputSource : IGamepadInputSource
+	{
+		private	int	deviceIndex;
+		private	GamePadState state;
+		private	GamePadCapabilities caps;
+		
+		public string Description
+		{
+			get { return string.Format("Gamepad {0}", this.deviceIndex); }
+		}
+		public bool IsAvailable
+		{
+			get { return this.caps.IsConnected; }
+		}
+		public GamePadType GamepadType
+		{
+			get { return this.caps.GamePadType; }
+		}
+		public bool this[GamepadButton button]
+		{
+			get 
+			{
+				switch (button)
+				{
+					case GamepadButton.A:				return this.state.Buttons.A == ButtonState.Pressed;
+					case GamepadButton.B:				return this.state.Buttons.B == ButtonState.Pressed;
+					case GamepadButton.X:				return this.state.Buttons.X == ButtonState.Pressed;
+					case GamepadButton.Y:				return this.state.Buttons.Y == ButtonState.Pressed;
+
+					case GamepadButton.DPadLeft:		return this.state.DPad.Left == ButtonState.Pressed;
+					case GamepadButton.DPadRight:		return this.state.DPad.Right == ButtonState.Pressed;
+					case GamepadButton.DPadUp:			return this.state.DPad.Up == ButtonState.Pressed;
+					case GamepadButton.DPadDown:		return this.state.DPad.Down == ButtonState.Pressed;
+
+					case GamepadButton.LeftShoulder:	return this.state.Buttons.LeftShoulder == ButtonState.Pressed;
+					case GamepadButton.LeftStick:		return this.state.Buttons.LeftStick == ButtonState.Pressed;
+					case GamepadButton.RightShoulder:	return this.state.Buttons.RightShoulder == ButtonState.Pressed;
+					case GamepadButton.RightStick:		return this.state.Buttons.RightStick == ButtonState.Pressed;
+
+					case GamepadButton.BigButton:		return this.state.Buttons.BigButton == ButtonState.Pressed;
+					case GamepadButton.Back:			return this.state.Buttons.Back == ButtonState.Pressed;
+					case GamepadButton.Start:			return this.state.Buttons.Start == ButtonState.Pressed;
+
+					default: return false;
+				}
+			}
+		}
+		public float this[GamepadAxis axis]
+		{
+			get 
+			{
+				switch (axis)
+				{
+					case GamepadAxis.LeftTrigger:		return this.state.Triggers.Left;
+					case GamepadAxis.LeftThumbstickX:	return this.state.ThumbSticks.Left.X;
+					case GamepadAxis.LeftThumbstickY:	return -this.state.ThumbSticks.Left.Y;
+
+					case GamepadAxis.RightTrigger:		return this.state.Triggers.Right;
+					case GamepadAxis.RightThumbstickX:	return this.state.ThumbSticks.Right.X;
+					case GamepadAxis.RightThumbstickY:	return -this.state.ThumbSticks.Right.Y;
+
+					default: return 0.0f;
+				}
+			}
+		}
+
+		public GlobalGamepadInputSource(int deviceIndex)
+		{
+			this.deviceIndex = deviceIndex;
+		}
+
+		public void UpdateState()
+		{
+			this.caps = GamePad.GetCapabilities(this.deviceIndex);
+			this.state = GamePad.GetState(this.deviceIndex);
+		}
+		public void SetVibration(float left, float right)
+		{
+			GamePad.SetVibration(this.deviceIndex, left, right);
+		}
+	}
+}

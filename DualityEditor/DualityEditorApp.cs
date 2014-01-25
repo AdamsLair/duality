@@ -197,19 +197,6 @@ namespace DualityEditor
 			DualityApp.PluginReady += DualityApp_PluginReady;
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, new[] {"logfile", "logfile_editor"});
 			InitMainGLContext();
-			{
-				// Initialize Joysticks
-				int deviceIndex = 0;
-				while (true)
-				{
-					GlobalJoystickInputSource joystick = new GlobalJoystickInputSource(deviceIndex);
-					joystick.UpdateState();
-					if (!joystick.IsAvailable) break;
-
-					DualityApp.Joysticks.AddSource(joystick);
-					deviceIndex++;
-				}
-			}
 			ContentProvider.InitDefaultContent();
 			LoadPlugins();
 			LoadUserData();

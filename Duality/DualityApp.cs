@@ -85,6 +85,7 @@ namespace Duality
 		private	static	MouseInput					mouse				= new MouseInput();
 		private	static	KeyboardInput				keyboard			= new KeyboardInput();
 		private	static	JoystickInputCollection		joysticks			= new JoystickInputCollection();
+		private	static	GamepadInputCollection		gamepads			= new GamepadInputCollection();
 		private	static	SoundDevice					sound				= null;
 		private	static	ExecutionEnvironment		environment			= ExecutionEnvironment.Unknown;
 		private	static	ExecutionContext			execContext			= ExecutionContext.Terminated;
@@ -158,6 +159,13 @@ namespace Duality
 		public static JoystickInputCollection Joysticks
 		{
 			get { return joysticks; }
+		}
+		/// <summary>
+		/// [GET] Provides access to gamepad user input.
+		/// </summary>
+		public static GamepadInputCollection Gamepads
+		{
+			get { return gamepads; }
 		}
 		/// <summary>
 		/// [GET] Provides access to the main <see cref="SoundDevice"/>.
@@ -402,7 +410,9 @@ namespace Duality
 			OnUserDataChanged();
 
 			Formatter.InitDefaultMethod();
-			
+			joysticks.AddGlobalDevices();
+			gamepads.AddGlobalDevices();
+
 			Log.Core.Write(
 				"DualityApp initialized" + Environment.NewLine +
 				"Debug Mode: {0}" + Environment.NewLine +
@@ -503,6 +513,7 @@ namespace Duality
 			mouse.Update();
 			keyboard.Update();
 			joysticks.Update();
+			gamepads.Update();
 		}
 		/// <summary>
 		/// Performs a single render cycle.
@@ -1129,6 +1140,10 @@ namespace Duality
 			{
 				if (ReflectionHelper.CleanEventBindings(joystick,				invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Joysticks");
 			}
+			foreach (GamepadInput gamepad in gamepads)
+			{
+				if (ReflectionHelper.CleanEventBindings(gamepad,				invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Gamepads");
+			}
 		}
 		private static void CleanInputSources(Assembly invalidAssembly)
 		{
@@ -1156,6 +1171,14 @@ namespace Duality
 				{
 					joysticks.RemoveSource(joystick.Source);
 					Log.Core.WriteWarning(warningText, Log.Type(joystick.Source.GetType()));
+				}
+			}
+			foreach (GamepadInput gamepad in gamepads.ToArray())
+			{
+				if (gamepad.Source != null && gamepad.Source.GetType().Assembly == invalidAssembly)
+				{
+					gamepads.RemoveSource(gamepad.Source);
+					Log.Core.WriteWarning(warningText, Log.Type(gamepad.Source.GetType()));
 				}
 			}
 		}
