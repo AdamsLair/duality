@@ -56,13 +56,13 @@ namespace Duality
 			{
 				switch (axis)
 				{
-					case GamepadAxis.LeftTrigger:		return this.state.Triggers.Left;
-					case GamepadAxis.LeftThumbstickX:	return this.state.ThumbSticks.Left.X;
-					case GamepadAxis.LeftThumbstickY:	return -this.state.ThumbSticks.Left.Y;
+					case GamepadAxis.LeftTrigger:		return MathF.Clamp(this.state.Triggers.Left, 0.0f, 1.0f);
+					case GamepadAxis.LeftThumbstickX:	return MathF.Clamp(this.state.ThumbSticks.Left.X, -1.0f, 1.0f);
+					case GamepadAxis.LeftThumbstickY:	return MathF.Clamp(-this.state.ThumbSticks.Left.Y, -1.0f, 1.0f);
 
-					case GamepadAxis.RightTrigger:		return this.state.Triggers.Right;
-					case GamepadAxis.RightThumbstickX:	return this.state.ThumbSticks.Right.X;
-					case GamepadAxis.RightThumbstickY:	return -this.state.ThumbSticks.Right.Y;
+					case GamepadAxis.RightTrigger:		return MathF.Clamp(this.state.Triggers.Right, 0.0f, 1.0f);
+					case GamepadAxis.RightThumbstickX:	return MathF.Clamp(this.state.ThumbSticks.Right.X, -1.0f, 1.0f);
+					case GamepadAxis.RightThumbstickY:	return MathF.Clamp(-this.state.ThumbSticks.Right.Y, -1.0f, 1.0f);
 
 					default: return 0.0f;
 				}
