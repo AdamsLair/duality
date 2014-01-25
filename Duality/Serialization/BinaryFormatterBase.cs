@@ -134,7 +134,7 @@ namespace Duality.Serialization
 		}
 
 		/// <summary>
-		/// Reads an object including all referenced objects using the <see cref="ReadTarget"/>.
+		/// Reads an object including all referenced objects.
 		/// </summary>
 		/// <returns>The object that has been read.</returns>
 		public override object ReadObject()
@@ -415,7 +415,7 @@ namespace Duality.Serialization
 		}
 		
 		/// <summary>
-		/// Writes the specified object including all referenced objects using the <see cref="WriteTarget"/>.
+		/// Writes the specified object including all referenced objects.
 		/// </summary>
 		/// <param name="obj">The object to write.</param>
 		public override void WriteObject(object obj)

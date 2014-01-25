@@ -6,12 +6,8 @@ namespace Duality
 	/// <summary>
 	/// Describes a source of user keyboard input. This is usually an input device.
 	/// </summary>
-	public interface IKeyboardInputSource
+	public interface IKeyboardInputSource : IUserInputSource
 	{
-		/// <summary>
-		/// [GET] Returns whether the keyboard source currently has input focus.
-		/// </summary>
-		bool HasFocus { get; }
 		/// <summary>
 		/// [GET / SET] Whether a key that is pressed and hold down should fire the KeyDown event repeatedly.
 		/// </summary>

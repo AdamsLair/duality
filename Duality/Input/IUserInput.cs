@@ -15,5 +15,14 @@ namespace Duality
 		/// [GET] Returns whether this input is currently available.
 		/// </summary>
 		bool IsAvailable { get; }
+		
+		/// <summary>
+		/// Fired when the input becomes available to Duality.
+		/// </summary>
+		event EventHandler BecomesAvailable;
+		/// <summary>
+		/// Fired when the input is no longer available to Duality.
+		/// </summary>
+		event EventHandler NoLongerAvailable;
 	}
 }

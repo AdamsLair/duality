@@ -18,16 +18,16 @@ namespace Duality
 	/// </summary>
 	public enum VertexMode
 	{
-		Points = BeginMode.Points,
-		Lines = BeginMode.Lines,
-		LineStrip = BeginMode.LineStrip,
-		LineLoop = BeginMode.LineLoop,
-		Triangles = BeginMode.Triangles,
-		TriangleStrip = BeginMode.TriangleStrip,
-		TriangleFan = BeginMode.TriangleFan,
-		Quads = BeginMode.Quads,
-		QuadStrip = BeginMode.QuadStrip,
-		Polygon = BeginMode.Polygon
+		Points = PrimitiveType.Points,
+		Lines = PrimitiveType.Lines,
+		LineStrip = PrimitiveType.LineStrip,
+		LineLoop = PrimitiveType.LineLoop,
+		Triangles = PrimitiveType.Triangles,
+		TriangleStrip = PrimitiveType.TriangleStrip,
+		TriangleFan = PrimitiveType.TriangleFan,
+		Quads = PrimitiveType.Quads,
+		QuadStrip = PrimitiveType.QuadStrip,
+		Polygon = PrimitiveType.Polygon
 	}
 
 	/// <summary>

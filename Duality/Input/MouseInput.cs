@@ -13,10 +13,10 @@ namespace Duality
 	{
 		private class State
 		{
+			public bool IsAvailable		= false;
 			public int X				= -1;
 			public int Y				= -1;
 			public float Wheel			= 0.0f;
-			public bool CursorInView	= false;
 			public bool[] ButtonPressed	= new bool[(int)MouseButton.LastButton + 1];
 
 			public State() {}
@@ -26,19 +26,20 @@ namespace Duality
 			}
 			public void CopyTo(State other)
 			{
+				other.IsAvailable	= this.IsAvailable;
 				other.X				= this.X;
 				other.Y				= this.Y;
 				other.Wheel			= this.Wheel;
-				other.CursorInView	= this.CursorInView;
 				this.ButtonPressed.CopyTo(other.ButtonPressed, 0);
 			}
 			public void UpdateFromSource(IMouseInputSource source)
 			{
+				this.IsAvailable = source != null ? source.IsAvailable : false;
 				if (source == null) return;
+
 				this.X = source.X;
 				this.Y = source.Y;
 				this.Wheel = source.Wheel;
-				this.CursorInView = source.CursorInView;
 				for (int i = 0; i < this.ButtonPressed.Length; i++)
 				{
 					this.ButtonPressed[i] = source[(MouseButton)i];
@@ -72,7 +73,7 @@ namespace Duality
 		/// </summary>
 		public bool IsAvailable
 		{
-			get { return this.source != null && this.currentState.CursorInView; }
+			get { return this.currentState.IsAvailable; }
 		}
 		/// <summary>
 		/// [GET / SET] The current viewport-local cursor X position.
@@ -171,11 +172,11 @@ namespace Duality
 		/// <summary>
 		/// Fired when the cursor leaves the viewport area.
 		/// </summary>
-		public event EventHandler Leave;
+		public event EventHandler NoLongerAvailable;
 		/// <summary>
 		/// Fired when the cursor enters the viewport area.
 		/// </summary>
-		public event EventHandler Enter;
+		public event EventHandler BecomesAvailable;
 		/// <summary>
 		/// Fired when the mouse wheel value changes.
 		/// </summary>
@@ -188,21 +189,24 @@ namespace Duality
 			// Memorize last state
 			this.currentState.CopyTo(this.lastState);
 
+			// Update source state
+			this.source.UpdateState();
+
 			// Obtain new state
 			this.currentState.UpdateFromSource(this.source);
 
 			// Fire events
-			if (this.currentState.CursorInView && !this.lastState.CursorInView)
+			if (this.currentState.IsAvailable && !this.lastState.IsAvailable)
 			{
-				if (this.Enter != null)
-					this.Enter(this, EventArgs.Empty);
+				if (this.BecomesAvailable != null)
+					this.BecomesAvailable(this, EventArgs.Empty);
 			}
-			if (!this.currentState.CursorInView && this.lastState.CursorInView)
+			if (!this.currentState.IsAvailable && this.lastState.IsAvailable)
 			{
-				if (this.Leave != null)
-					this.Leave(this, EventArgs.Empty);
+				if (this.NoLongerAvailable != null)
+					this.NoLongerAvailable(this, EventArgs.Empty);
 			}
-			if (this.currentState.CursorInView)
+			if (this.currentState.IsAvailable)
 			{
 				if (this.currentState.X != this.lastState.X || this.currentState.Y != this.lastState.Y)
 				{

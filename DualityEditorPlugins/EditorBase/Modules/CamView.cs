@@ -1103,10 +1103,6 @@ namespace EditorBase
 		{
 			get { return this.inputMouseWheel; }
 		}
-		bool IMouseInputSource.CursorInView
-		{
-			get { return this.inputMouseInView; }
-		}
 		bool IMouseInputSource.this[MouseButton btn]
 		{
 			get { return (this.inputMouseButtons & (1 << (int)btn)) != 0; }
@@ -1121,13 +1117,20 @@ namespace EditorBase
 		{
 			get { return this.inputKeyRepeatCount; }
 		}
-		bool IKeyboardInputSource.HasFocus
-		{
-			get { return this.inputKeyFocus; }
-		}
 		bool IKeyboardInputSource.this[Key key]
 		{
 			get { return this.inputKeyPressed[(int)key]; }
 		}
+		
+		string IUserInputSource.Description
+		{
+			get { return "Camera View"; }
+		}
+		bool IUserInputSource.IsAvailable
+		{
+			// These should be separated.. but C# doesn't allow to implement IsAvailable for both sources separately.
+			get { return this.inputKeyFocus && this.inputMouseInView; }
+		}
+		void IUserInputSource.UpdateState() {}
 	}
 }

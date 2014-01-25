@@ -14,6 +14,7 @@ namespace Duality
 	{
 		private class State
 		{
+			public bool		IsAvailable		= false;
 			public float[]	AxisValue		= new float[(int)JoystickAxis.Axis9 + 1];
 			public bool[]	ButtonPressed	= new bool[(int)JoystickButton.Button15 + 1];
 
@@ -24,12 +25,15 @@ namespace Duality
 			}
 			public void CopyTo(State other)
 			{
+				other.IsAvailable = this.IsAvailable;
 				this.AxisValue.CopyTo(other.AxisValue, 0);
 				this.ButtonPressed.CopyTo(other.ButtonPressed, 0);
 			}
 			public void UpdateFromSource(IJoystickInputSource source)
 			{
+				this.IsAvailable = source != null ? source.IsAvailable : false;
 				if (source == null) return;
+
 				for (int i = 0; i < this.ButtonPressed.Length; i++)
 				{
 					this.ButtonPressed[i] = source[(JoystickButton)i];
@@ -130,6 +134,14 @@ namespace Duality
 		/// Fired whenever a device axis changes its value.
 		/// </summary>
 		public event EventHandler<JoystickMoveEventArgs> Move;
+		/// <summary>
+		/// Fired when the joystick is no longer available to Duality.
+		/// </summary>
+		public event EventHandler NoLongerAvailable;
+		/// <summary>
+		/// Fired when the joystick becomes available to Duality.
+		/// </summary>
+		public event EventHandler BecomesAvailable;
 		
 
 		internal JoystickInput(bool dummy = false)
@@ -141,10 +153,23 @@ namespace Duality
 			// Memorize last state
 			this.currentState.CopyTo(this.lastState);
 
+			// Update source state
+			this.source.UpdateState();
+
 			// Obtain new state
 			this.currentState.UpdateFromSource(this.source);
 
 			// Fire events
+			if (this.currentState.IsAvailable && !this.lastState.IsAvailable)
+			{
+				if (this.BecomesAvailable != null)
+					this.BecomesAvailable(this, EventArgs.Empty);
+			}
+			if (!this.currentState.IsAvailable && this.lastState.IsAvailable)
+			{
+				if (this.NoLongerAvailable != null)
+					this.NoLongerAvailable(this, EventArgs.Empty);
+			}
 			for (int i = 0; i < this.currentState.ButtonPressed.Length; i++)
 			{
 				if (this.currentState.ButtonPressed[i] && !this.lastState.ButtonPressed[i])

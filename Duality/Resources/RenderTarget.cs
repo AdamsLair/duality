@@ -76,7 +76,7 @@ namespace Duality.Resources
 						GL.Ext.BlitFramebuffer(
 							0, 0, curBound.targetInfo[i].target.Res.TexelWidth, curBound.targetInfo[i].target.Res.TexelHeight,
 							0, 0, curBound.targetInfo[i].target.Res.TexelWidth, curBound.targetInfo[i].target.Res.TexelHeight,
-							ClearBufferMask.ColorBufferBit, (ExtFramebufferBlit)(int)BlitFramebufferFilter.Nearest);
+							ClearBufferMask.ColorBufferBit, BlitFramebufferFilter.Nearest);
 					}
 					GL.ReadBuffer(ReadBufferMode.Back);
 					GL.DrawBuffer(DrawBufferMode.Back);
@@ -400,7 +400,7 @@ namespace Duality.Resources
 
 					if (info.glRboIdColorMSAA == 0) GL.GenRenderbuffers(1, out info.glRboIdColorMSAA);
 					GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, info.glRboIdColorMSAA);
-					GL.Ext.RenderbufferStorageMultisample((ExtFramebufferMultisample)(int)RenderbufferTarget.RenderbufferExt, this.samples, (ExtFramebufferMultisample)(int)rbColorFormat, oglWidth, oglHeight);
+					GL.Ext.RenderbufferStorageMultisample(RenderbufferTarget.RenderbufferExt, this.samples, rbColorFormat, oglWidth, oglHeight);
 					GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, attachment, RenderbufferTarget.RenderbufferExt, info.glRboIdColorMSAA);
 					this.targetInfo[i] = info;
 				}
@@ -409,7 +409,7 @@ namespace Duality.Resources
 				// Attach depth renderbuffer
 				if (this.glRboIdDepth == 0) GL.Ext.GenRenderbuffers(1, out this.glRboIdDepth);
 				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, this.glRboIdDepth);
-				GL.Ext.RenderbufferStorageMultisample((ExtFramebufferMultisample)(int)RenderbufferTarget.RenderbufferExt, this.samples, (ExtFramebufferMultisample)(int)RenderbufferStorage.DepthComponent24, oglWidth, oglHeight);
+				GL.Ext.RenderbufferStorageMultisample(RenderbufferTarget.RenderbufferExt, this.samples, RenderbufferStorage.DepthComponent24, oglWidth, oglHeight);
 				GL.Ext.FramebufferRenderbuffer(FramebufferTarget.FramebufferExt, FramebufferAttachment.DepthAttachmentExt, RenderbufferTarget.RenderbufferExt, this.glRboIdDepth);
 				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, 0);
 

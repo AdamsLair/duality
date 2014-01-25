@@ -242,7 +242,7 @@ namespace Duality.Resources
 			GL.LinkProgram(this.glProgramId);
 
 			int result;
-			GL.GetProgram(this.glProgramId, ProgramParameter.LinkStatus, out result);
+			GL.GetProgram(this.glProgramId, GetProgramParameterName.LinkStatus, out result);
 			if (result == 0)
 			{
 				string infoLog = GL.GetProgramInfoLog(this.glProgramId);

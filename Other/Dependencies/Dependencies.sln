@@ -9,10 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "treeviewadv", "treeviewadv"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarseerOpenTK", "Farseer\FarseerOpenTK\FarseerOpenTK.csproj", "{AC4AD95C-B497-4466-AC90-CF9260279400}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTK", "OpenTK\Source\OpenTK\OpenTK.csproj", "{A37A7E14-0000-0000-0000-000000000000}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTK.GLControl", "OpenTK\Source\GLControl\OpenTK.GLControl.csproj", "{A625BE88-0000-0000-0000-000000000000}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "propertygrid", "propertygrid", "{7CC724E8-2578-413F-8DF2-CDE916303956}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPropertyGrid", "propertygrid\CustomPropertyGrid\CustomPropertyGrid.csproj", "{44E2FD11-C687-41ED-B72F-1A4C92479EDC}"
@@ -41,14 +37,6 @@ Global
 		{AC4AD95C-B497-4466-AC90-CF9260279400}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC4AD95C-B497-4466-AC90-CF9260279400}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC4AD95C-B497-4466-AC90-CF9260279400}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A37A7E14-0000-0000-0000-000000000000}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A625BE88-0000-0000-0000-000000000000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A625BE88-0000-0000-0000-000000000000}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A625BE88-0000-0000-0000-000000000000}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A625BE88-0000-0000-0000-000000000000}.Release|Any CPU.Build.0 = Release|Any CPU
 		{44E2FD11-C687-41ED-B72F-1A4C92479EDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{44E2FD11-C687-41ED-B72F-1A4C92479EDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44E2FD11-C687-41ED-B72F-1A4C92479EDC}.Release|Any CPU.ActiveCfg = Release|Any CPU

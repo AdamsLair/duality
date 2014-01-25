@@ -10,9 +10,9 @@ namespace Duality
 	{
 		private class State
 		{
+			public bool		IsAvailable		= false;
 			public bool		KeyRepeat		= true;
 			public int		KeyRepeatCount	= 0;
-			public bool		HasFocus		= false;
 			public bool[]	KeyPressed		= new bool[(int)Key.LastKey + 1];
 
 			public State() {}
@@ -22,15 +22,16 @@ namespace Duality
 			}
 			public void CopyTo(State other)
 			{
+				other.IsAvailable		= this.IsAvailable;
 				other.KeyRepeat			= this.KeyRepeat;
 				other.KeyRepeatCount	= this.KeyRepeatCount;
-				other.HasFocus			= this.HasFocus;
 				this.KeyPressed.CopyTo(other.KeyPressed, 0);
 			}
 			public void UpdateFromSource(IKeyboardInputSource source)
 			{
+				this.IsAvailable = source != null ? source.IsAvailable : false;
 				if (source == null) return;
-				this.HasFocus = source.HasFocus;
+
 				this.KeyRepeat = source.KeyRepeat;
 				this.KeyRepeatCount = source.KeyRepeatCounter;
 				for (int i = 0; i < this.KeyPressed.Length; i++)
@@ -76,7 +77,7 @@ namespace Duality
 		/// </summary>
 		public bool IsAvailable
 		{
-			get { return this.source != null && this.currentState.HasFocus; }
+			get { return this.currentState.IsAvailable; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether a key that is pressed and hold down should fire the <see cref="KeyDown"/> event repeatedly.
@@ -111,11 +112,11 @@ namespace Duality
 		/// <summary>
 		/// Fired when keyboard input is no longer available to Duality.
 		/// </summary>
-		public event EventHandler LostFocus;
+		public event EventHandler NoLongerAvailable;
 		/// <summary>
 		/// Fired when keyboard input becomes available to Duality.
 		/// </summary>
-		public event EventHandler GotFocus;
+		public event EventHandler BecomesAvailable;
 		
 
 		internal KeyboardInput() {}
@@ -124,19 +125,22 @@ namespace Duality
 			// Memorize last state
 			this.currentState.CopyTo(this.lastState);
 
+			// Update source state
+			this.source.UpdateState();
+
 			// Obtain new state
 			this.currentState.UpdateFromSource(this.source);
 
 			// Fire events
-			if (this.currentState.HasFocus && !this.lastState.HasFocus)
+			if (this.currentState.IsAvailable && !this.lastState.IsAvailable)
 			{
-				if (this.GotFocus != null)
-					this.GotFocus(this, EventArgs.Empty);
+				if (this.BecomesAvailable != null)
+					this.BecomesAvailable(this, EventArgs.Empty);
 			}
-			if (!this.currentState.HasFocus && this.lastState.HasFocus)
+			if (!this.currentState.IsAvailable && this.lastState.IsAvailable)
 			{
-				if (this.LostFocus != null)
-					this.LostFocus(this, EventArgs.Empty);
+				if (this.NoLongerAvailable != null)
+					this.NoLongerAvailable(this, EventArgs.Empty);
 			}
 			bool anyKeyDown = false;
 			for (int i = 0; i < this.currentState.KeyPressed.Length; i++)

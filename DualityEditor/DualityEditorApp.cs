@@ -50,7 +50,6 @@ namespace DualityEditor
 		
 		private	static MainForm						mainForm			= null;
 		private	static GLControl					mainContextControl	= null;
-		private	static WinMMJoystick				mainJoystickDriver	= null;
 		private	static List<EditorPlugin>			plugins				= new List<EditorPlugin>();
 		private	static Dictionary<Type,List<Type>>	availTypeDict		= new Dictionary<Type,List<Type>>();
 		private	static ReloadCorePluginDialog		corePluginReloader	= null;
@@ -199,10 +198,17 @@ namespace DualityEditor
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, new[] {"logfile", "logfile_editor"});
 			InitMainGLContext();
 			{
-				// Initialize Joystick support in the editor
-				mainJoystickDriver = new OpenTK.Platform.Windows.WinMMJoystick();
-				if (mainJoystickDriver != null && mainJoystickDriver.Joysticks != null)
-					DualityApp.Joysticks.AddSource(mainJoystickDriver.Joysticks.Select(j => new OpenTKJoystickInputSource(j)));
+				// Initialize Joysticks
+				int deviceIndex = 0;
+				while (true)
+				{
+					GlobalJoystickInputSource joystick = new GlobalJoystickInputSource(deviceIndex);
+					joystick.UpdateState();
+					if (!joystick.IsAvailable) break;
+
+					DualityApp.Joysticks.AddSource(joystick);
+					deviceIndex++;
+				}
 			}
 			ContentProvider.InitDefaultContent();
 			LoadPlugins();
@@ -1240,8 +1246,6 @@ namespace DualityEditor
 
 					try
 					{
-						if (mainJoystickDriver != null)
-							mainJoystickDriver.Poll();
 						DualityApp.EditorUpdate(
 							editorObjects.ActiveObjects.Concat(updateObjects), 
 							Sandbox.IsFreezed, 

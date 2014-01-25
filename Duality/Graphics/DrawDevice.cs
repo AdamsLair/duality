@@ -153,7 +153,7 @@ namespace Duality
 				if (lastBatchRendered == null || lastBatchRendered.Material != this.material)
 				    this.material.SetupForRendering(device, lastBatchRendered == null ? null : lastBatchRendered.Material);
 
-				GL.DrawArrays((BeginMode)this.vertexMode, vertexOffset, this.vertexCount);
+				GL.DrawArrays((PrimitiveType)this.vertexMode, vertexOffset, this.vertexCount);
 
 				vertexOffset += this.vertexCount;
 				lastBatchRendered = this;

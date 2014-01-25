@@ -145,11 +145,12 @@
     <Compile Include="Input\Sources\IMouseInputSource.cs" />
     <Compile Include="Input\Sources\IJoystickInputSource.cs" />
     <Compile Include="Input\JoystickInput.cs" />
-    <Compile Include="Input\Sources\OpenTKJoystickInputSource.cs" />
+    <Compile Include="Input\Sources\IUserInputSource.cs" />
+    <Compile Include="Input\Sources\GlobalJoystickInputSource.cs" />
     <Compile Include="Input\MouseInput.cs" />
     <Compile Include="Input\KeyboardInput.cs" />
-    <Compile Include="Input\Sources\OpenTKMouseInputSource.cs" />
-    <Compile Include="Input\Sources\OpenTKKeyboardInputSource.cs" />
+    <Compile Include="Input\Sources\GameWindowMouseInputSource.cs" />
+    <Compile Include="Input\Sources\GameWindowKeyboardInputSource.cs" />
     <Compile Include="Profiling\ReportCounterData.cs" />
     <Compile Include="Profiling\ReportOptions.cs" />
     <Compile Include="Profiling\StatCounter.cs" />

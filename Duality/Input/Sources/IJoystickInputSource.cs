@@ -6,16 +6,8 @@ namespace Duality
 	/// <summary>
 	/// Describes a source of extended user input such as joysticks or gamepads. This is usually an input device.
 	/// </summary>
-	public interface IJoystickInputSource
+	public interface IJoystickInputSource : IUserInputSource
 	{
-		/// <summary>
-		/// [GET] A string containing a unique description for this instance.
-		/// </summary>
-		string Description { get; }
-		/// <summary>
-		/// [GET] Returns whether this input is currently available.
-		/// </summary>
-		bool IsAvailable { get; }
 		/// <summary>
 		/// [GET] Returns the number of axes.
 		/// </summary>

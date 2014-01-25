@@ -33,6 +33,9 @@
     <DocumentationFile>..\..\bin\Release\FarseerOpenTK.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenTK">
+      <HintPath>..\..\..\..\Duality\OpenTK.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -143,12 +146,6 @@
     <Compile Include="Wrapper\MathHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\OpenTK\Source\OpenTK\OpenTK.csproj">
-      <Project>{A37A7E14-0000-0000-0000-000000000000}</Project>
-      <Name>OpenTK</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

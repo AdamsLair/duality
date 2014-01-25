@@ -6,7 +6,10 @@
     <members>
         <member name="T:OpenTK.GLControl">
             <summary>
-            Defines a UserControl with OpenGL rendering capabilities.
+            OpenGL-aware WinForms control.
+            The WinForms designer will always call the default constructor.
+            Inherit from this class and call one of its specialized constructors
+            to enable antialiasing or custom <see cref="P:OpenTK.GLControl.GraphicsMode"/>s.
             </summary>
         </member>
         <member name="F:OpenTK.GLControl.components">
@@ -28,18 +31,18 @@
         </member>
         <member name="M:OpenTK.GLControl.#ctor">
             <summary>
-            Constructs a new GLControl.
+            Constructs a new instance.
             </summary>
         </member>
         <member name="M:OpenTK.GLControl.#ctor(OpenTK.Graphics.GraphicsMode)">
             <summary>
-            Constructs a new GLControl with the specified GraphicsMode.
+            Constructs a new instance with the specified GraphicsMode.
             </summary>
             <param name="mode">The OpenTK.Graphics.GraphicsMode of the control.</param>
         </member>
         <member name="M:OpenTK.GLControl.#ctor(OpenTK.Graphics.GraphicsMode,System.Int32,System.Int32,OpenTK.Graphics.GraphicsContextFlags)">
             <summary>
-            Constructs a new GLControl with the specified GraphicsMode.
+            Constructs a new instance with the specified GraphicsMode.
             </summary>
             <param name="mode">The OpenTK.Graphics.GraphicsMode of the control.</param>
             <param name="major">The major version for the OpenGL GraphicsContext.</param>
@@ -91,6 +94,11 @@
             <exception cref="T:OpenTK.Graphics.GraphicsContextException">
             Occurs when no OpenTK.Graphics.GraphicsContext is current in the calling thread.
             </exception>
+        </member>
+        <member name="P:OpenTK.GLControl.CreateParams">
+            <summary>
+            Gets the <c>CreateParams</c> instance for this <c>GLControl</c>
+            </summary>
         </member>
         <member name="P:OpenTK.GLControl.IsIdle">
             <summary>
