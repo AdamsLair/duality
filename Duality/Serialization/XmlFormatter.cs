@@ -80,7 +80,7 @@ namespace Duality.Serialization
 			else
 			{
 				for (long l = 0; l < objAsArray.Length; l++)
-					this.WriteObject(objAsArray.GetValue(l));
+					this.WriteObjectData(objAsArray.GetValue(l));
 			}
 		}
 		/// <summary>
@@ -124,7 +124,7 @@ namespace Duality.Serialization
 				foreach (FieldInfo field in objSerializeType.Fields)
 				{
 					if (this.IsFieldBlocked(field, obj)) continue;
-					this.WriteObject(field.GetValue(obj), field.Name);
+					this.WriteObjectData(field.GetValue(obj), field.Name);
 				}
 			}
 		}
@@ -146,16 +146,16 @@ namespace Duality.Serialization
 			if (!multi)
 			{
 				Delegate objAsDelegate = obj as Delegate;
-				this.WriteObject(objAsDelegate.Method);
-				this.WriteObject(objAsDelegate.Target);
+				this.WriteObjectData(objAsDelegate.Method);
+				this.WriteObjectData(objAsDelegate.Target);
 			}
 			else
 			{
 				MulticastDelegate objAsDelegate = obj as MulticastDelegate;
 				Delegate[] invokeList = objAsDelegate.GetInvocationList();
-				this.WriteObject(objAsDelegate.Method);
-				this.WriteObject(objAsDelegate.Target);
-				this.WriteObject(invokeList);
+				this.WriteObjectData(objAsDelegate.Method);
+				this.WriteObjectData(objAsDelegate.Target);
+				this.WriteObjectData(invokeList);
 			}
 		}
 		/// <summary>
@@ -219,7 +219,7 @@ namespace Duality.Serialization
 
 			    for (int l = 0; l < arrLength; l++)
 			    {
-			        object elem = this.ReadObject();
+			        object elem = this.ReadObjectData();
 			        if (arrObj != null) arrObj.SetValue(elem, l);
 			    }
 			}
@@ -315,7 +315,7 @@ namespace Duality.Serialization
 				object fieldValue;
 				while (true)
 				{
-					fieldValue = this.ReadObject(out fieldName, out scopeChanged);
+					fieldValue = this.ReadObjectData(out fieldName, out scopeChanged);
 					if (scopeChanged) break;
 					this.AssignValueToField(objSerializeType, obj, fieldName, fieldValue);
 				}
@@ -389,7 +389,7 @@ namespace Duality.Serialization
 			Type	delType				= this.ResolveType(delegateTypeString, objId);
 
 			// Create the delegate without target and fix it later, so we can register its object id before loading its target object
-			MethodInfo	method	= this.ReadObject() as MethodInfo;
+			MethodInfo	method	= this.ReadObjectData() as MethodInfo;
 			object		target	= null;
 			Delegate	del		= delType != null && method != null ? Delegate.CreateDelegate(delType, target, method) : null;
 
@@ -397,7 +397,7 @@ namespace Duality.Serialization
 			this.idManager.Inject(del, objId);
 
 			// Read the target object now and replace the dummy
-			target = this.ReadObject();
+			target = this.ReadObjectData();
 			if (del != null && target != null)
 			{
 				FieldInfo targetField = delType.GetField("_target", ReflectionHelper.BindInstanceAll);
@@ -407,7 +407,7 @@ namespace Duality.Serialization
 			// Combine multicast delegates
 			if (multi)
 			{
-				Delegate[] invokeList = (this.ReadObject() as Delegate[]).NotNull().ToArray();
+				Delegate[] invokeList = (this.ReadObjectData() as Delegate[]).NotNull().ToArray();
 				del = invokeList.Length > 0 ? Delegate.Combine(invokeList) : null;
 			}
 

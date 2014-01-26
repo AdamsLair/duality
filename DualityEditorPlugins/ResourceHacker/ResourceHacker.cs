@@ -251,7 +251,7 @@ namespace ResourceHacker
 					try
 					{
 						this.treeView.BeginUpdate();
-						while ((dataNode = formatter.ReadObject() as DataNode) != null)
+						while ((dataNode = formatter.ReadObject<DataNode>()) != null)
 						{
 							DataTreeNode data = this.AddData(dataNode);
 							this.rootData.Add(data);

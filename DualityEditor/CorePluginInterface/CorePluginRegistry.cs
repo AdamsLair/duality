@@ -359,7 +359,7 @@ namespace DualityEditor.CorePluginInterface
 						using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
 						{
 							formatter.SerializationLog = Log.Editor;
-							designTimeData = formatter.ReadObject() as DesignTimeObjectDataManager;
+							designTimeData = formatter.ReadObject<DesignTimeObjectDataManager>();
 						}
 					}
 				}

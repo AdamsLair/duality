@@ -25,7 +25,7 @@ namespace Duality.Serialization
 				foreach (var pair in this.data)
 				{
 					formatter.WriteString(pair.Key);
-					formatter.WriteObject(pair.Value);
+					formatter.WriteObjectData(pair.Value);
 				}
 				this.Clear();
 			}
@@ -40,72 +40,31 @@ namespace Duality.Serialization
 				for (int i = 0; i < count; i++)
 				{
 					string key = formatter.ReadString();
-					object value = formatter.ReadObject();
+					object value = formatter.ReadObjectData();
 					this.data.Add(key, value);
 				}
 			}
 		}
 
-		/// <summary>
-		/// Operations, the serializer is able to perform.
-		/// </summary>
-		protected enum Operation
-		{
-			/// <summary>
-			/// No operation.
-			/// </summary>
-			None,
 
-			/// <summary>
-			/// Read a dataset / object
-			/// </summary>
-			Read,
-			/// <summary>
-			/// Write a dataset / object
-			/// </summary>
-			Write
-		}
-
-		/// <summary>
-		/// Binary serialization header id. 
-		/// </summary>
 		protected	const	string	HeaderId	= "BinaryFormatterHeader";
-		/// <summary>
-		/// Binary serialization version number.
-		/// </summary>
 		protected	const	ushort	Version		= 3;
 
 
-		/// <summary>
-		/// The <see cref="BinaryWriter"/> that is used for serialization.
-		/// </summary>
 		protected	BinaryWriter	writer		= null;
-		/// <summary>
-		/// The <see cref="BinaryReader"/> that is used for deserialization.
-		/// </summary>
 		protected	BinaryReader	reader		= null;
-		/// <summary>
-		/// The binary format version in which the currently incoming data is available.
-		/// </summary>
 		protected	ushort			dataVersion	= 0;
 
-		private		Operation							lastOperation		= Operation.None;
 		private		Stack<long>							offsetStack			= new Stack<long>();
 		private		Dictionary<string,TypeDataLayout>	typeDataLayout		= new Dictionary<string,TypeDataLayout>();
 		private		Dictionary<string,long>				typeDataLayoutMap	= new Dictionary<string,long>();
 
 		
-		/// <summary>
-		/// [GET] Can this binary serializer write data?
-		/// </summary>
-		public bool CanWrite
+		public override bool CanWrite
 		{
 			get { return this.writer != null; }
 		}
-		/// <summary>
-		/// [GET] Can this binary serializer read data?
-		/// </summary>
-		public bool CanRead
+		public override bool CanRead
 		{
 			get { return this.reader != null; }
 		}
@@ -133,16 +92,9 @@ namespace Duality.Serialization
 			}
 		}
 
-		/// <summary>
-		/// Reads an object including all referenced objects.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		public override object ReadObject()
+		protected override object ReadObjectData()
 		{
-			if (!this.CanRead) throw new InvalidOperationException("Can't read object from a write-only serializer");
 			if (this.reader.BaseStream.Position == this.reader.BaseStream.Length) throw new EndOfStreamException("No more data to read.");
-			if (this.BeginOperation(Operation.Read))
-				this.ReadFormatterHeader();
 
 			// Not null flag
 			bool isNotNull = this.reader.ReadBoolean();
@@ -414,18 +366,10 @@ namespace Duality.Serialization
 			}
 		}
 		
-		/// <summary>
-		/// Writes the specified object including all referenced objects.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		public override void WriteObject(object obj)
+		protected override void WriteObjectData(object obj)
 		{
-			if (!this.CanWrite) throw new InvalidOperationException("Can't write object to a read-only serializer");
-			if (this.BeginOperation(Operation.Write))
-				this.WriteFormatterHeader();
-
 			// NotNull flag
-			if (obj == null)
+			if (obj == this.GetNullObject())
 			{
 				this.writer.Write(false);
 				return;
@@ -743,32 +687,30 @@ namespace Duality.Serialization
 			this.writer.BaseStream.Seek(curPos, SeekOrigin.Begin);
 		}
 
-		private bool BeginOperation(Operation operation)
+		protected override void BeginReadOperation()
 		{
-			bool switched = false;
-			if (this.lastOperation != operation)
-			{
-				this.ClearStreamSpecificData();
-				switched = true;
-			}
-
-			this.lastOperation = operation;
-			return switched;
+			base.BeginReadOperation();
+			this.ReadFormatterHeader();
 		}
-		private void EndOperation()
+		protected override void BeginWriteOperation()
 		{
-			this.lastOperation = Operation.None;
+			base.BeginWriteOperation();
+			this.WriteFormatterHeader();
 		}
-
-		/// <summary>
-		/// Clears all <see cref="System.IO.Stream"/>- or Operation-specific cache data.
-		/// </summary>
-		protected void ClearStreamSpecificData()
+		protected override void EndReadOperation()
 		{
-			this.idManager.Clear();
+			base.EndReadOperation();
 			this.typeDataLayout.Clear();
 			this.typeDataLayoutMap.Clear();
 			this.offsetStack.Clear();
+		}
+		protected override void EndWriteOperation()
+		{
+			base.EndWriteOperation();
+			this.typeDataLayout.Clear();
+			this.typeDataLayoutMap.Clear();
+			this.offsetStack.Clear();
+			this.writer.Flush();
 		}
 	}
 }

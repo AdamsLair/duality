@@ -16,7 +16,8 @@ namespace DualityTests
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
 	public class InitDualityAttribute : Attribute, ITestAction
 	{
-		private	string	oldEnvDir = null;
+		private	string		oldEnvDir	= null;
+		private	GameWindow	dummyWindow	= null;
 
 		public ActionTargets Targets
 		{
@@ -49,6 +50,13 @@ namespace DualityTests
 			// Manually register pseudo-plugin for the Unit Testing Assembly
 			DualityApp.AddPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
 
+			// Create a dummy window, to get access to all the device contexts
+			if (this.dummyWindow != null)
+			{
+				this.dummyWindow = new GameWindow();
+				DualityApp.TargetResolution = new Vector2(this.dummyWindow.Width, this.dummyWindow.Height);
+			}
+
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
 		public void AfterTest(TestDetails details)
@@ -56,6 +64,11 @@ namespace DualityTests
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
 
 			// Just leave it initialized - speeds up re-running individual tests.
+			//if (this.dummyWindow != null)
+			//{
+			//    this.dummyWindow.Dispose();
+			//    this.dummyWindow = null;
+			//}
 			//DualityApp.Terminate();
 			Environment.CurrentDirectory = this.oldEnvDir;
 

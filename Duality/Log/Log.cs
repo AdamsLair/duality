@@ -64,6 +64,7 @@ namespace Duality
 			get { return data; }
 		}
 
+		[System.Diagnostics.DebuggerNonUserCode]
 		static Log()
 		{
 			SharedState state = new SharedState();

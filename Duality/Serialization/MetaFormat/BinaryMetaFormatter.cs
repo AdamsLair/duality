@@ -84,7 +84,7 @@ namespace Duality.Serialization.MetaFormat
 			{
 				this.writer.Write(node.SubNodes.Count());
 				foreach (DataNode subNode in node.SubNodes)
-					this.WriteObject(subNode);
+					this.WriteObjectData(subNode);
 			}
 		}
 		/// <summary>
@@ -168,7 +168,7 @@ namespace Duality.Serialization.MetaFormat
 						continue;
 					}
 					if (subNode is DummyNode) continue;
-					this.WriteObject(subNode);
+					this.WriteObjectData(subNode);
 				}
 			}
 		}
@@ -183,9 +183,9 @@ namespace Duality.Serialization.MetaFormat
 			this.writer.Write(node.ObjId);
 			this.writer.Write(node.InvokeList != null);
 
-			this.WriteObject(node.Method);
-			this.WriteObject(node.Target);
-			if (node.InvokeList != null) this.WriteObject(node.InvokeList);
+			this.WriteObjectData(node.Method);
+			this.WriteObjectData(node.Target);
+			if (node.InvokeList != null) this.WriteObjectData(node.InvokeList);
 		}
 		/// <summary>
 		/// Writes the specified <see cref="Duality.Serialization.MetaFormat.EnumNode"/>.
@@ -283,7 +283,7 @@ namespace Duality.Serialization.MetaFormat
 			{
 				for (int i = 0; i < arrLength; i++)
 				{
-					DataNode child = this.ReadObject() as DataNode;
+					DataNode child = this.ReadObjectData() as DataNode;
 					child.Parent = result;
 				}
 			}
@@ -359,7 +359,7 @@ namespace Duality.Serialization.MetaFormat
 				{
 					for (int i = 0; i < layout.Fields.Length; i++)
 					{
-						DataNode fieldValue = this.ReadObject() as DataNode;
+						DataNode fieldValue = this.ReadObjectData() as DataNode;
 						fieldValue.Parent = result;
 						fieldValue.Name = layout.Fields[i].name;
 					}
@@ -372,7 +372,7 @@ namespace Duality.Serialization.MetaFormat
 					for (int i = 0; i < layout.Fields.Length; i++)
 					{
 						if (fieldOmitted[i]) continue;
-						DataNode fieldValue = this.ReadObject() as DataNode;
+						DataNode fieldValue = this.ReadObjectData() as DataNode;
 						fieldValue.Parent = result;
 						fieldValue.Name = layout.Fields[i].name;
 					}
@@ -391,7 +391,7 @@ namespace Duality.Serialization.MetaFormat
 			uint		objId				= this.reader.ReadUInt32();
 			bool		multi				= this.reader.ReadBoolean();
 
-			DataNode method	= this.ReadObject() as DataNode;
+			DataNode method	= this.ReadObjectData() as DataNode;
 			DataNode target	= null;
 
 			// Create the delegate without target and fix it later, so we don't load its target object before setting this object id
@@ -401,14 +401,14 @@ namespace Duality.Serialization.MetaFormat
 			this.idManager.Inject(result, objId);
 
 			// Load & fix the target object
-			target = this.ReadObject() as DataNode;
+			target = this.ReadObjectData() as DataNode;
 			target.Parent = result;
 			result.Target = target;
 
 			// Combine multicast delegates
 			if (multi)
 			{
-				DataNode invokeList = this.ReadObject() as DataNode;
+				DataNode invokeList = this.ReadObjectData() as DataNode;
 				result.InvokeList = invokeList;
 			}
 

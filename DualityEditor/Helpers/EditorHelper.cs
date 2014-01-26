@@ -327,11 +327,9 @@ namespace DualityEditor
 				try
 				{
 					using (FileStream str = File.OpenRead(DualityApp.AppDataPath))
+					using (var formatter = Formatter.Create(str))
 					{
-						using (var formatter = Formatter.Create(str))
-						{
-							data = formatter.ReadObject() as DualityAppData ?? new DualityAppData();
-						}
+						data = formatter.ReadObject<DualityAppData>() ?? new DualityAppData();
 					}
 				}
 				catch (Exception) { data = new DualityAppData(); }
@@ -344,11 +342,9 @@ namespace DualityEditor
 			data.AuthorName = Environment.UserName;
 			data.Version = 0;
 			using (FileStream str = File.Open(DualityApp.AppDataPath, FileMode.Create))
+			using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
 			{
-				using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
-				{
-					formatter.WriteObject(data);
-				}
+				formatter.WriteObject(data);
 			}
 
 			// Initialize source code

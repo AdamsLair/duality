@@ -35,7 +35,7 @@ namespace Duality.Serialization
 				try
 				{
 					foreach (var pair in this.data)
-						formatter.WriteObject(pair.Value, pair.Key);
+						formatter.WriteObjectData(pair.Value, pair.Key);
 				}
 				finally
 				{
@@ -62,7 +62,7 @@ namespace Duality.Serialization
 						object value;
 						while (true)
 						{
-							value = formatter.ReadObject(out key, out scopeChanged);
+							value = formatter.ReadObjectData(out key, out scopeChanged);
 							if (scopeChanged) break;
 							else
 							{
@@ -79,66 +79,70 @@ namespace Duality.Serialization
 		}
 
 		
-		/// <summary>
-		/// The <see cref="XmlWriter"/> that is used for serialization.
-		/// </summary>
+		protected	Stream		stream	= null;
 		protected	XmlWriter	writer	= null;
-		/// <summary>
-		/// The <see cref="XmlReader"/> that is used for deserialization.
-		/// </summary>
 		protected	XmlReader	reader	= null;
 		
-		/// <summary>
-		/// [GET] Can this binary serializer write data?
-		/// </summary>
-		public bool CanWrite
+
+		public override bool CanWrite
 		{
-			get { return this.writer != null; }
+			get { return this.stream != null && this.stream.CanWrite; }
 		}
-		/// <summary>
-		/// [GET] Can this binary serializer read data?
-		/// </summary>
-		public bool CanRead
+		public override bool CanRead
 		{
-			get { return this.reader != null; }
+			get { return this.stream != null && this.stream.CanRead; }
 		}
+
 
 		protected XmlFormatterBase() : this(null) {}
 		protected XmlFormatterBase(Stream stream)
 		{
-			XmlWriterSettings writerSettings = new XmlWriterSettings();
-			writerSettings.Indent = true;
-			XmlReaderSettings readerSettings = new XmlReaderSettings();
-			readerSettings.IgnoreWhitespace = true;
-			readerSettings.IgnoreComments = true;
-			readerSettings.IgnoreProcessingInstructions = true;
-
-			this.writer = (stream != null && stream.CanWrite) ? XmlTextWriter.Create(stream, writerSettings) : null;
-			this.reader = (stream != null && stream.CanRead) ? XmlTextReader.Create(stream, readerSettings) : null;
+			this.stream = stream;
 		}
 		protected override void OnDisposed(bool manually)
 		{
 			base.OnDisposed(manually);
-
-			if (this.writer != null)
-			{
-				if (this.writer.WriteState != WriteState.Start) this.writer.WriteEndDocument();
-				this.writer.Flush();
-				this.writer = null;
-			}
-
-			if (this.reader != null)
-			{
-				this.reader = null;
-			}
+			this.DisposeWriter();
+			this.DisposeReader();
 		}
-		
 
-		/// <summary>
-		/// Reads an object including all referenced objects.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		public override object ReadObject()
+		protected void DisposeWriter()
+		{
+			if (this.writer == null) return;
+			this.writer.Flush();
+			this.writer.Close();
+			this.writer = null;
+		}
+		protected void DisposeReader()
+		{
+			if (this.reader == null) return;
+			this.reader.Close();
+			this.reader = null;
+		}
+		protected void CreateWriter()
+		{
+			this.DisposeWriter();
+
+			XmlWriterSettings writerSettings = new XmlWriterSettings();
+			writerSettings.Indent = true;
+			writerSettings.CloseOutput = false;
+
+			this.writer = (this.stream != null && this.stream.CanWrite) ? XmlTextWriter.Create(this.stream, writerSettings) : null;
+		}
+		protected void CreateReader()
+		{
+			this.DisposeReader();
+
+			XmlReaderSettings readerSettings = new XmlReaderSettings();
+			readerSettings.IgnoreWhitespace = true;
+			readerSettings.IgnoreComments = true;
+			readerSettings.IgnoreProcessingInstructions = true;
+			readerSettings.CloseInput = false;
+
+			this.reader = (stream != null && stream.CanRead) ? XmlTextReader.Create(stream, readerSettings) : null;
+		}
+
+		protected override object ReadObjectData()
 		{
 			string objName;
 			bool scopeChanged;
@@ -146,22 +150,15 @@ namespace Duality.Serialization
 
 			do
 			{
-				obj = this.ReadObject(out objName, out scopeChanged);
+				obj = this.ReadObjectData(out objName, out scopeChanged);
 			} while (scopeChanged);
 
 			return obj;
 		}
-		protected object ReadObject(out string objName, out bool scopeChanged)
+		protected object ReadObjectData(out string objName, out bool scopeChanged)
 		{
-			if (!this.CanRead) throw new InvalidOperationException("Can't read object from a write-only serializer.");
 			if (this.reader.ReadState == ReadState.EndOfFile) throw new EndOfStreamException("No more data to read.");
 			if (this.reader.ReadState == ReadState.Error) throw new EndOfStreamException("An XML Error occurred.");
-			if (this.reader.ReadState == ReadState.Initial)
-			{
-				this.reader.Read();
-				this.reader.MoveToContent();
-			}
-
 
 			int elementDepth = this.ReadUntilElementStart();
 			objName = this.GetCodeElementName(this.reader.Name);
@@ -265,23 +262,17 @@ namespace Duality.Serialization
 		}
 		
 
-		/// <summary>
-		/// Writes the specified object including all referenced objects.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		public override void WriteObject(object obj)
+		protected override void WriteObjectData(object obj)
 		{
-			this.WriteObject(obj, "object");
+			this.WriteObjectData(obj, "object");
 		}
-		protected void WriteObject(object obj, string elementName)
+		protected void WriteObjectData(object obj, string elementName)
 		{
-			if (!this.CanWrite) throw new InvalidOperationException("Can't write object to a read-only serializer");
-			if (this.writer.WriteState == WriteState.Start) this.writer.WriteStartElement("root");
 			elementName = this.GetXmlElementName(elementName);
 			this.writer.WriteStartElement(elementName);
 
 			// Null? Empty Element.
-			if (obj == null)
+			if (obj == this.GetNullObject())
 			{
 				this.writer.WriteEndElement();
 				return;
@@ -351,6 +342,34 @@ namespace Duality.Serialization
 				throw new ArgumentNullException("obj");
 			else
 				throw new ArgumentException(string.Format("Type '{0}' is not a primitive.", obj.GetType()));
+		}
+
+
+		protected override void BeginReadOperation()
+		{
+			base.BeginReadOperation();
+			this.CreateReader();
+			this.reader.Read();
+			this.reader.MoveToContent();
+		}
+		protected override void EndReadOperation()
+		{
+			base.EndReadOperation();
+			this.DisposeReader();
+		}
+		protected override void BeginWriteOperation()
+		{
+			base.BeginWriteOperation();
+			this.CreateWriter();
+			this.writer.WriteStartElement("root");
+		}
+		protected override void EndWriteOperation()
+		{
+			base.EndWriteOperation();
+			this.writer.WriteEndDocument();
+			this.writer.Flush();
+			this.DisposeWriter();
+
 		}
 
 

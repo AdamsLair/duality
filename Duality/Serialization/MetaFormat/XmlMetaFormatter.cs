@@ -77,12 +77,15 @@ namespace Duality.Serialization.MetaFormat
 					if (elemType.DataType == DataType.String)
 					{
 						for (long l = 0; l < objAsArray.Length; l++)
-							this.WriteObject(new StringNode((string)objAsArray.GetValue(l)));
+						{
+							string str = (string)objAsArray.GetValue(l);
+							this.WriteObjectData(str != null ? new StringNode(str) : this.GetNullObject());
+						}
 					}
 					else
 					{
 						for (long l = 0; l < objAsArray.Length; l++)
-							this.WriteObject(new PrimitiveNode(elemType.DataType, objAsArray.GetValue(l)));
+							this.WriteObjectData(new PrimitiveNode(elemType.DataType, objAsArray.GetValue(l)));
 					}
 				}
 			}
@@ -90,7 +93,7 @@ namespace Duality.Serialization.MetaFormat
 			{
 				this.writer.WriteAttributeString("length", XmlConvert.ToString(node.SubNodes.Count()));
 				foreach (DataNode subNode in node.SubNodes)
-					this.WriteObject(subNode);
+					this.WriteObjectData(subNode);
 			}
 		}
 		/// <summary>
@@ -147,7 +150,7 @@ namespace Duality.Serialization.MetaFormat
 				{
 					if (subNode is DummyNode) continue;
 					if (subNode is TypeDataLayoutNode) continue;
-					this.WriteObject(subNode, subNode.Name);
+					this.WriteObjectData(subNode, subNode.Name);
 				}
 			}
 		}
@@ -162,9 +165,9 @@ namespace Duality.Serialization.MetaFormat
 			if (node.ObjId != 0) this.writer.WriteAttributeString("id", XmlConvert.ToString(node.ObjId));
 			if (node.InvokeList != null) this.writer.WriteAttributeString("multi", XmlConvert.ToString(true));
 
-			this.WriteObject(node.Method);
-			this.WriteObject(node.Target);
-			if (node.InvokeList != null) this.WriteObject(node.InvokeList);
+			this.WriteObjectData(node.Method);
+			this.WriteObjectData(node.Target);
+			if (node.InvokeList != null) this.WriteObjectData(node.InvokeList);
 		}
 		/// <summary>
 		/// Writes the specified <see cref="Duality.Serialization.MetaFormat.EnumNode"/>.
@@ -266,7 +269,7 @@ namespace Duality.Serialization.MetaFormat
 					{
 						for (int l = 0; l < arrLength; l++)
 						{
-							DataNode elemNode = this.ReadObject() as DataNode;
+							DataNode elemNode = this.ReadObjectData() as DataNode;
 							if (arrObj != null)
 							{
 								if (elemNode is PrimitiveNode)
@@ -287,7 +290,7 @@ namespace Duality.Serialization.MetaFormat
 			{
 				for (int i = 0; i < arrLength; i++)
 				{
-					DataNode child = this.ReadObject() as DataNode;
+					DataNode child = this.ReadObjectData() as DataNode;
 					child.Parent = result;
 				}
 			}
@@ -360,7 +363,7 @@ namespace Duality.Serialization.MetaFormat
 				DataNode fieldValue;
 				while (true)
 				{
-					fieldValue = this.ReadObject(out fieldName, out scopeChanged) as DataNode;
+					fieldValue = this.ReadObjectData(out fieldName, out scopeChanged) as DataNode;
 					if (scopeChanged) break;
 					else
 					{
@@ -384,7 +387,7 @@ namespace Duality.Serialization.MetaFormat
 			uint	objId				= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
 			bool	multi				= objIdString != null && XmlConvert.ToBoolean(multiString);
 
-			DataNode method	= this.ReadObject() as DataNode;
+			DataNode method	= this.ReadObjectData() as DataNode;
 			DataNode target	= null;
 
 			// Create the delegate without target and fix it later, so we don't load its target object before setting this object id
@@ -394,14 +397,14 @@ namespace Duality.Serialization.MetaFormat
 			this.idManager.Inject(result, objId);
 
 			// Load & fix the target object
-			target = this.ReadObject() as DataNode;
+			target = this.ReadObjectData() as DataNode;
 			target.Parent = result;
 			result.Target = target;
 
 			// Combine multicast delegates
 			if (multi)
 			{
-				DataNode invokeList = this.ReadObject() as DataNode;
+				DataNode invokeList = this.ReadObjectData() as DataNode;
 				result.InvokeList = invokeList;
 			}
 

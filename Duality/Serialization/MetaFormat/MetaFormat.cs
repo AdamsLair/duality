@@ -21,7 +21,7 @@ namespace Duality.Serialization.MetaFormat
 					DataNode dataNode;
 					try
 					{
-						while ((dataNode = formatter.ReadObject() as DataNode) != null)
+						while ((dataNode = formatter.ReadObject<DataNode>()) != null)
 							data.Add(dataNode);
 					}
 					catch (EndOfStreamException) {}
@@ -208,7 +208,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization primitive data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
-	public class PrimitiveNode : DataNode
+	public class PrimitiveNode : DataNode, IEquatable<PrimitiveNode>
 	{
 		protected	object	value;
 
@@ -224,6 +224,33 @@ namespace Duality.Serialization.MetaFormat
 		public PrimitiveNode(DataType dataType, object value) : base(dataType)
 		{
 			this.value = value;
+		}
+
+		public bool Equals(PrimitiveNode other)
+		{
+			return other.value == this.value;
+		}
+		public override bool Equals(object other)
+		{
+			if (other is PrimitiveNode)
+				return (other as PrimitiveNode).Equals(this);
+			else
+				return false;
+		}
+		public override int GetHashCode()
+		{
+			return this.value != null ? this.value.GetHashCode() : 0;
+		}
+		public static bool operator ==(PrimitiveNode a, PrimitiveNode b)
+		{
+			if (object.ReferenceEquals(a, b)) return true;
+			if (object.ReferenceEquals(a, null)) return false;
+			if (object.ReferenceEquals(b, null)) return false;
+			return a.Equals(b);
+		}
+		public static bool operator !=(PrimitiveNode a, PrimitiveNode b)
+		{
+			return !(a == b);
 		}
 	}
 	/// <summary>

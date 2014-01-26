@@ -282,6 +282,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET / SET] Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public RenderMode GlyphRenderMode
 		{
 			get { return this.renderMode; }

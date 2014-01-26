@@ -391,7 +391,7 @@ namespace Duality
 
 			try
 			{
-				Resource res = formatter.ReadObject() as Resource;
+				Resource res = formatter.ReadObject<Resource>();
 				if (res == null) throw new ApplicationException("Loading Resource failed");
 
 				res.initState = InitState.Initializing;

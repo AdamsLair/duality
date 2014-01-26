@@ -634,7 +634,7 @@ namespace Duality
 					{
 						using (var formatter = Formatter.Create(str))
 						{
-							appData = formatter.ReadObject() as DualityAppData ?? new DualityAppData();
+							appData = formatter.ReadObject<DualityAppData>() ?? new DualityAppData();
 						}
 					}
 					Log.Core.PopIndent();
@@ -664,7 +664,7 @@ namespace Duality
 					{
 						using (var formatter = Formatter.Create(str))
 						{
-							UserData = formatter.ReadObject() as DualityUserData ?? new DualityUserData();
+							UserData = formatter.ReadObject<DualityUserData>() ?? new DualityUserData();
 						}
 					}
 					Log.Core.PopIndent();
@@ -693,7 +693,7 @@ namespace Duality
 					{
 						using (var formatter = Formatter.Create(str))
 						{
-							metaData = formatter.ReadObject() as DualityMetaData ?? new DualityMetaData();
+							metaData = formatter.ReadObject<DualityMetaData>() ?? new DualityMetaData();
 						}
 					}
 					Log.Core.PopIndent();

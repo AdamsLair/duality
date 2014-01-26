@@ -177,7 +177,15 @@ namespace Duality.Serialization
 		private	bool	disposed	= false;
 		private	Log		log			= Log.Core;
 
-
+		
+		/// <summary>
+		/// [GET] Can this serializer read data?
+		/// </summary>
+		public abstract bool CanRead { get; }
+		/// <summary>
+		/// [GET] Can this serializer write data?
+		/// </summary>
+		public abstract bool CanWrite { get; }
 		/// <summary>
 		/// [GET / SET] The de/serialization <see cref="Duality.Log"/>.
 		/// </summary>
@@ -239,58 +247,35 @@ namespace Duality.Serialization
 		protected virtual void OnDisposed(bool manually) {}
 
 		
-		/// <summary>
-		/// Writes the specified object including all referenced objects.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		public abstract object ReadObject();
-		/// <summary>
-		/// Reads an object including all referenced objects.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		public abstract void WriteObject(object obj);
-		
-		/// <summary>
-		/// Returns an object indicating a "null" value.
-		/// </summary>
-		/// <returns></returns>
-		protected virtual object GetNullObject() 
+		public object ReadObject()
 		{
-			return null;
+			if (!this.CanRead) throw new InvalidOperationException("Can't read object from a write-only serializer!");
+			this.BeginReadOperation();
+			object result = this.ReadObjectData();
+			this.EndReadOperation();
+			return result;
 		}
-		/// <summary>
-		/// Determines internal data for writing a given object.
-		/// </summary>
-		/// <param name="obj">The object to write</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> that describes the specified object.</param>
-		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> that is used for writing the specified object.</param>
-		/// <param name="objId">An object id that is assigned to the specified object.</param>
-		protected virtual void GetWriteObjectData(object obj, out SerializeType objSerializeType, out DataType dataType, out uint objId)
+		public T ReadObject<T>()
 		{
-			Type objType = obj.GetType();
-			objSerializeType = objType.GetSerializeType();
-			objId = 0;
-			dataType = objSerializeType.DataType;
-			
-			// Check whether it's going to be an ObjectRef or not
-			if (dataType == DataType.Array || dataType == DataType.Class || dataType == DataType.Delegate || dataType.IsMemberInfoType())
-			{
-				bool newId;
-				objId = this.idManager.Request(obj, out newId);
-
-				// If its not a new id, write a reference
-				if (!newId) dataType = DataType.ObjectRef;
-			}
-
-			if (dataType != DataType.ObjectRef &&
-				!objSerializeType.Type.IsSerializable && 
-				!typeof(ISerializable).IsAssignableFrom(objSerializeType.Type) &&
-				this.GetSurrogateFor(objSerializeType.Type) == null) 
-			{
-				this.SerializationLog.WriteWarning("Serializing object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
-			}
+			object result = this.ReadObject();
+			return result is T ? (T)result : default(T);
 		}
-
+		public void ReadObject<T>(out T obj)
+		{
+			object result = this.ReadObject();
+			obj = result is T ? (T)result : default(T);
+		}
+		public void WriteObject(object obj)
+		{
+			if (!this.CanWrite) throw new InvalidOperationException("Can't write object to a read-only serializer!");
+			this.BeginWriteOperation();
+			this.WriteObjectData(obj);
+			this.EndWriteOperation();
+		}
+		public void WriteObject<T>(T obj)
+		{
+			this.WriteObject((object)obj);
+		}
 
 		/// <summary>
 		/// Unregisters all <see cref="FieldBlockers"/>.
@@ -363,6 +348,82 @@ namespace Duality.Serialization
 		{
 			return this.surrogates.FirstOrDefault(s => s.MatchesType(t));
 		}
+		
+
+		/// <summary>
+		/// Writes the specified object including all referenced objects.
+		/// </summary>
+		/// <param name="obj">The object to write.</param>
+		protected abstract object ReadObjectData();
+		/// <summary>
+		/// Reads an object including all referenced objects.
+		/// </summary>
+		/// <returns>The object that has been read.</returns>
+		protected abstract void WriteObjectData(object obj);
+		/// <summary>
+		/// Signals the beginning of an atomic ReadObject operation.
+		/// </summary>
+		protected virtual void BeginReadOperation() {}
+		/// <summary>
+		/// Signals the beginning of an atomic WriteObject operation.
+		/// </summary>
+		protected virtual void BeginWriteOperation() {}
+		/// <summary>
+		/// Signals the end of an atomic ReadObject operation.
+		/// </summary>
+		protected virtual void EndReadOperation()
+		{
+			this.idManager.Clear();
+		}
+		/// <summary>
+		/// Signals the end of an atomic WriteObject operation.
+		/// </summary>
+		protected virtual void EndWriteOperation()
+		{
+			this.idManager.Clear();
+		}
+		
+		/// <summary>
+		/// Returns an object indicating a "null" value.
+		/// </summary>
+		/// <returns></returns>
+		protected virtual object GetNullObject() 
+		{
+			return null;
+		}
+		/// <summary>
+		/// Determines internal data for writing a given object.
+		/// </summary>
+		/// <param name="obj">The object to write</param>
+		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> that describes the specified object.</param>
+		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> that is used for writing the specified object.</param>
+		/// <param name="objId">An object id that is assigned to the specified object.</param>
+		protected virtual void GetWriteObjectData(object obj, out SerializeType objSerializeType, out DataType dataType, out uint objId)
+		{
+			Type objType = obj.GetType();
+			objSerializeType = objType.GetSerializeType();
+			objId = 0;
+			dataType = objSerializeType.DataType;
+			
+			// Check whether it's going to be an ObjectRef or not
+			if (dataType == DataType.Array || dataType == DataType.Class || dataType == DataType.Delegate || dataType.IsMemberInfoType())
+			{
+				bool newId;
+				objId = this.idManager.Request(obj, out newId);
+
+				// If its not a new id, write a reference
+				if (!newId) dataType = DataType.ObjectRef;
+			}
+
+			if (dataType != DataType.ObjectRef &&
+				!objSerializeType.Type.IsSerializable && 
+				!typeof(ISerializable).IsAssignableFrom(objSerializeType.Type) &&
+				this.GetSurrogateFor(objSerializeType.Type) == null) 
+			{
+				this.SerializationLog.WriteWarning("Serializing object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
+			}
+		}
+
 
 		/// <summary>
 		/// Logs an error that occurred during <see cref="Duality.Serialization.ISerializable">custom serialization</see>.
