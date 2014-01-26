@@ -80,37 +80,66 @@ namespace DynamicLighting
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2A4[4];
 
 			// Directly pass World Position with each vertex, see note in Light.cs
-			vertices[0].pos.X = posTemp.X + edge1.X;
-			vertices[0].pos.Y = posTemp.Y + edge1.Y;
-			vertices[0].pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].texCoord.X = uvRect.X;
-			vertices[0].texCoord.Y = uvRect.Y;
-			vertices[0].clr = mainClr;
-			vertices[0].attrib = perPixel ? objRotMat : vertexLight[0];
+			vertices[0].Pos.X = posTemp.X + edge1.X;
+			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
+			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[0].TexCoord.X = uvRect.X;
+			vertices[0].TexCoord.Y = uvRect.Y;
+			vertices[0].Color = mainClr;
+			vertices[0].Attrib = perPixel ? objRotMat : vertexLight[0];
 
-			vertices[1].pos.X = posTemp.X + edge2.X;
-			vertices[1].pos.Y = posTemp.Y + edge2.Y;
-			vertices[1].pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].texCoord.X = uvRect.X;
-			vertices[1].texCoord.Y = uvRect.MaximumY;
-			vertices[1].clr = mainClr;
-			vertices[1].attrib = perPixel ? objRotMat : vertexLight[1];
+			vertices[1].Pos.X = posTemp.X + edge2.X;
+			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
+			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[1].TexCoord.X = uvRect.X;
+			vertices[1].TexCoord.Y = uvRect.MaximumY;
+			vertices[1].Color = mainClr;
+			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
 
-			vertices[2].pos.X = posTemp.X + edge3.X;
-			vertices[2].pos.Y = posTemp.Y + edge3.Y;
-			vertices[2].pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].texCoord.X = uvRect.MaximumX;
-			vertices[2].texCoord.Y = uvRect.MaximumY;
-			vertices[2].clr = mainClr;
-			vertices[2].attrib = perPixel ? objRotMat : vertexLight[2];
+			vertices[2].Pos.X = posTemp.X + edge3.X;
+			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
+			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[2].TexCoord.X = uvRect.MaximumX;
+			vertices[2].TexCoord.Y = uvRect.MaximumY;
+			vertices[2].Color = mainClr;
+			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
 				
-			vertices[3].pos.X = posTemp.X + edge4.X;
-			vertices[3].pos.Y = posTemp.Y + edge4.Y;
-			vertices[3].pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].texCoord.X = uvRect.MaximumX;
-			vertices[3].texCoord.Y = uvRect.Y;
-			vertices[3].clr = mainClr;
-			vertices[3].attrib = perPixel ? objRotMat : vertexLight[3];
+			vertices[3].Pos.X = posTemp.X + edge4.X;
+			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
+			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
+			vertices[3].TexCoord.X = uvRect.MaximumX;
+			vertices[3].TexCoord.Y = uvRect.Y;
+			vertices[3].Color = mainClr;
+			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];
+			
+			if (this.pixelGrid)
+			{
+				vertices[0].Pos.X = MathF.Round(vertices[0].Pos.X);
+				vertices[1].Pos.X = MathF.Round(vertices[1].Pos.X);
+				vertices[2].Pos.X = MathF.Round(vertices[2].Pos.X);
+				vertices[3].Pos.X = MathF.Round(vertices[3].Pos.X);
+
+				if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2)
+				{
+					vertices[0].Pos.X += 0.5f;
+					vertices[1].Pos.X += 0.5f;
+					vertices[2].Pos.X += 0.5f;
+					vertices[3].Pos.X += 0.5f;
+				}
+
+				vertices[0].Pos.Y = MathF.Round(vertices[0].Pos.Y);
+				vertices[1].Pos.Y = MathF.Round(vertices[1].Pos.Y);
+				vertices[2].Pos.Y = MathF.Round(vertices[2].Pos.Y);
+				vertices[3].Pos.Y = MathF.Round(vertices[3].Pos.Y);
+
+				if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2)
+				{
+					vertices[0].Pos.Y += 0.5f;
+					vertices[1].Pos.Y += 0.5f;
+					vertices[2].Pos.Y += 0.5f;
+					vertices[3].Pos.Y += 0.5f;
+				}
+			}
 		}
 
 		public override void Draw(IDrawDevice device)

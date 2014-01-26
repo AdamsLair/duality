@@ -47,6 +47,7 @@ namespace Duality.Components.Renderers
 		protected	ColorRgba				colorTint	= ColorRgba.White;
 		protected	UVMode					rectMode	= UVMode.Stretch;
 		protected	float					uvBorder	= 0.0f;
+		protected	bool					pixelGrid	= false;
 		protected	int						offset		= 0;
 		[NonSerialized]
 		protected	VertexFormat.VertexC1P3T2[]	vertices	= null;
@@ -108,6 +109,14 @@ namespace Duality.Components.Renderers
 		{
 			get { return this.uvBorder; }
 			set { this.uvBorder = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specified whether or not the rendered sprite will be aligned to actual screen pixels.
+		/// </summary>
+		public bool AlignToPixelGrid
+		{
+			get { return this.pixelGrid; }
+			set { this.pixelGrid = value; }
 		}
 		/// <summary>
 		/// [GET / SET] A virtual Z offset that affects the order in which objects are drawn. If you want to assure an object is drawn after another one,
@@ -211,6 +220,35 @@ namespace Duality.Components.Renderers
 			vertices[3].TexCoord.X = uvRect.MaximumX;
 			vertices[3].TexCoord.Y = uvRect.Y;
 			vertices[3].Color = mainClr;
+			
+			if (this.pixelGrid)
+			{
+				vertices[0].Pos.X = MathF.Round(vertices[0].Pos.X);
+				vertices[1].Pos.X = MathF.Round(vertices[1].Pos.X);
+				vertices[2].Pos.X = MathF.Round(vertices[2].Pos.X);
+				vertices[3].Pos.X = MathF.Round(vertices[3].Pos.X);
+
+				if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2)
+				{
+					vertices[0].Pos.X += 0.5f;
+					vertices[1].Pos.X += 0.5f;
+					vertices[2].Pos.X += 0.5f;
+					vertices[3].Pos.X += 0.5f;
+				}
+
+				vertices[0].Pos.Y = MathF.Round(vertices[0].Pos.Y);
+				vertices[1].Pos.Y = MathF.Round(vertices[1].Pos.Y);
+				vertices[2].Pos.Y = MathF.Round(vertices[2].Pos.Y);
+				vertices[3].Pos.Y = MathF.Round(vertices[3].Pos.Y);
+
+				if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2)
+				{
+					vertices[0].Pos.Y += 0.5f;
+					vertices[1].Pos.Y += 0.5f;
+					vertices[2].Pos.Y += 0.5f;
+					vertices[3].Pos.Y += 0.5f;
+				}
+			}
 		}
 
 		public override void Draw(IDrawDevice device)

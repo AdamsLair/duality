@@ -19,22 +19,22 @@ namespace DynamicLighting
 			get { return vertexTypeIndex; }
 		}
 
-		public ColorRgba clr;
-		public Vector3 pos;
-		public Vector4 texCoord;
-		public Vector4 attrib;
-		public float attrib2;
+		public ColorRgba Color;
+		public Vector3 Pos;
+		public Vector4 TexCoord;
+		public Vector4 Attrib;
+		public float Attrib2;
 		// Add Vector3 for lighting world position, see note in Light.cs
 
-		public OpenTK.Vector3 Pos
+		Vector3 IVertexData.Pos
 		{
-			get { return this.pos; }
-			set { this.pos = value; }
+			get { return this.Pos; }
+			set { this.Pos = value; }
 		}
 		ColorRgba IVertexData.Color
 		{
-			get { return this.clr; }
-			set { this.clr = value; }
+			get { return this.Color; }
+			set { this.Color = value; }
 		}
 		public int TypeIndex
 		{

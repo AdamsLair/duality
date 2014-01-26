@@ -378,7 +378,7 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
-
+			
 			if (vertices == null || vertices.Length != 4) vertices = new VertexFormat.VertexC1P3T4A1[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
@@ -420,6 +420,35 @@ namespace Duality.Components.Renderers
 			vertices[3].TexCoord.W = uvRectNext.Y;
 			vertices[3].Color = mainClr;
 			vertices[3].Attrib = curAnimFrameFade;
+
+			if (this.pixelGrid)
+			{
+				vertices[0].Pos.X = MathF.Round(vertices[0].Pos.X);
+				vertices[1].Pos.X = MathF.Round(vertices[1].Pos.X);
+				vertices[2].Pos.X = MathF.Round(vertices[2].Pos.X);
+				vertices[3].Pos.X = MathF.Round(vertices[3].Pos.X);
+
+				if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2)
+				{
+					vertices[0].Pos.X += 0.5f;
+					vertices[1].Pos.X += 0.5f;
+					vertices[2].Pos.X += 0.5f;
+					vertices[3].Pos.X += 0.5f;
+				}
+
+				vertices[0].Pos.Y = MathF.Round(vertices[0].Pos.Y);
+				vertices[1].Pos.Y = MathF.Round(vertices[1].Pos.Y);
+				vertices[2].Pos.Y = MathF.Round(vertices[2].Pos.Y);
+				vertices[3].Pos.Y = MathF.Round(vertices[3].Pos.Y);
+
+				if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2)
+				{
+					vertices[0].Pos.Y += 0.5f;
+					vertices[1].Pos.Y += 0.5f;
+					vertices[2].Pos.Y += 0.5f;
+					vertices[3].Pos.Y += 0.5f;
+				}
+			}
 		}
 		protected void GetAnimData(Texture mainTex, DrawTechnique tech, bool smoothShaderInput, out Rect uvRect, out Rect uvRectNext)
 		{
