@@ -174,7 +174,7 @@ namespace DynamicLighting
 
 			vertices[0].pos.X = posTemp.X + edge1.X;
 			vertices[0].pos.Y = posTemp.Y + edge1.Y;
-			vertices[0].pos.Z = posTemp.Z;
+			vertices[0].pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[0].texCoord.X = uvRect.X;
 			vertices[0].texCoord.Y = uvRect.Y;
 			vertices[0].clr = mainClr;
@@ -182,7 +182,7 @@ namespace DynamicLighting
 
 			vertices[1].pos.X = posTemp.X + edge2.X;
 			vertices[1].pos.Y = posTemp.Y + edge2.Y;
-			vertices[1].pos.Z = posTemp.Z;
+			vertices[1].pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[1].texCoord.X = uvRect.X;
 			vertices[1].texCoord.Y = uvRect.MaximumY;
 			vertices[1].clr = mainClr;
@@ -190,7 +190,7 @@ namespace DynamicLighting
 
 			vertices[2].pos.X = posTemp.X + edge3.X;
 			vertices[2].pos.Y = posTemp.Y + edge3.Y;
-			vertices[2].pos.Z = posTemp.Z;
+			vertices[2].pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[2].texCoord.X = uvRect.MaximumX;
 			vertices[2].texCoord.Y = uvRect.MaximumY;
 			vertices[2].clr = mainClr;
@@ -198,7 +198,7 @@ namespace DynamicLighting
 				
 			vertices[3].pos.X = posTemp.X + edge4.X;
 			vertices[3].pos.Y = posTemp.Y + edge4.Y;
-			vertices[3].pos.Z = posTemp.Z;
+			vertices[3].pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[3].texCoord.X = uvRect.MaximumX;
 			vertices[3].texCoord.Y = uvRect.Y;
 			vertices[3].clr = mainClr;
@@ -215,6 +215,21 @@ namespace DynamicLighting
 			Rect uvRectNext;
 			bool smoothShaderInput = tech != null && tech.PreferredVertexFormat == VertexC1P3T4A4A1.VertexTypeIndex;
 			this.GetAnimData(mainTex, tech, smoothShaderInput, out uvRect, out uvRectNext);
+			
+			if (mainTex != null && this.uvBorder != 0.0f)
+			{
+				Vector2 offsetBase;
+				offsetBase.X = this.uvBorder * mainTex.UVRatio.X / mainTex.PixelWidth;
+				offsetBase.Y = this.uvBorder * mainTex.UVRatio.Y / mainTex.PixelHeight;
+				uvRect.X += offsetBase.X;
+				uvRect.Y += offsetBase.Y;
+				uvRect.W -= offsetBase.X * 2.0f;
+				uvRect.H -= offsetBase.Y * 2.0f;
+				uvRectNext.X += offsetBase.X;
+				uvRectNext.Y += offsetBase.Y;
+				uvRectNext.W -= offsetBase.X * 2.0f;
+				uvRectNext.H -= offsetBase.Y * 2.0f;
+			}
 
 			if (!smoothShaderInput)
 			{

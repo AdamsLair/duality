@@ -118,10 +118,32 @@ namespace DynamicLighting
 			Texture mainTex = this.RetrieveMainTex();
 			ColorRgba mainClr = this.RetrieveMainColor();
 			DrawTechnique tech = this.RetrieveDrawTechnique();
-
+			
 			Rect uvRect;
-			if (mainTex != null)	uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
-			else					uvRect = new Rect(1.0f, 1.0f);
+			if (mainTex != null)
+			{
+				if (this.rectMode == UVMode.WrapBoth)
+					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
+				else if (this.rectMode == UVMode.WrapHorizontal)
+					uvRect = new Rect(mainTex.UVRatio.X * this.rect.W / mainTex.PixelWidth, mainTex.UVRatio.Y);
+				else if (this.rectMode == UVMode.WrapVertical)
+					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
+				else
+					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
+			
+				if (this.uvBorder != 0.0f)
+				{
+					Vector2 offsetBase;
+					offsetBase.X = this.uvBorder * mainTex.UVRatio.X / mainTex.PixelWidth;
+					offsetBase.Y = this.uvBorder * mainTex.UVRatio.Y / mainTex.PixelHeight;
+					uvRect.X += offsetBase.X;
+					uvRect.Y += offsetBase.Y;
+					uvRect.W -= offsetBase.X * 2.0f;
+					uvRect.H -= offsetBase.Y * 2.0f;
+				}
+			}
+			else
+				uvRect = new Rect(1.0f, 1.0f);
 
 			this.PrepareVerticesLight(ref this.verticesLight, device, mainClr, uvRect, tech);
 
