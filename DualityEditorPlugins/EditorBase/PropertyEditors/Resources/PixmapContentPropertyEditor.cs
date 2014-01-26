@@ -26,6 +26,7 @@ namespace EditorBase.PropertyEditors
 			base.OnPropertySet(property, targets);
 			if (ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_AnimCols) ||
 				ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_AnimRows) ||
+				ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_AnimFrameBorder) ||
 				ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_Atlas))
 			{
 				this.PerformGetValue();

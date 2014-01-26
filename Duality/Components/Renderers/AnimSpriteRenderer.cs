@@ -478,21 +478,6 @@ namespace Duality.Components.Renderers
 			bool smoothShaderInput = tech != null && tech.PreferredVertexFormat == DrawTechnique.VertexType_C1P3T4A1;
 			this.GetAnimData(mainTex, tech, smoothShaderInput, out uvRect, out uvRectNext);
 			
-			if (mainTex != null && this.uvBorder != 0.0f)
-			{
-				Vector2 offsetBase;
-				offsetBase.X = this.uvBorder * mainTex.UVRatio.X / mainTex.PixelWidth;
-				offsetBase.Y = this.uvBorder * mainTex.UVRatio.Y / mainTex.PixelHeight;
-				uvRect.X += offsetBase.X;
-				uvRect.Y += offsetBase.Y;
-				uvRect.W -= offsetBase.X * 2.0f;
-				uvRect.H -= offsetBase.Y * 2.0f;
-				uvRectNext.X += offsetBase.X;
-				uvRectNext.Y += offsetBase.Y;
-				uvRectNext.W -= offsetBase.X * 2.0f;
-				uvRectNext.H -= offsetBase.Y * 2.0f;
-			}
-
 			if (!smoothShaderInput)
 			{
 				this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);

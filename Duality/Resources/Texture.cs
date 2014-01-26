@@ -263,8 +263,6 @@ namespace Duality.Resources
 		[NonSerialized]	private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
 		[NonSerialized] private	bool	needsReload	= true;
 		[NonSerialized] private	Rect[]	atlas		= null;
-		[NonSerialized] private	int		animCols	= 0;
-		[NonSerialized] private	int		animRows	= 0;
 
 
 		/// <summary>
@@ -428,30 +426,6 @@ namespace Duality.Resources
 			get { return this.basePixmap; }
 			set { if (this.basePixmap.Res != value.Res) { this.basePixmap = value; this.needsReload = true; } }
 		}		//	GS
-		/// <summary>
-		/// [GET] Total number of animation frames in this Texture
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int AnimFrames
-		{
-			get { return this.animCols * this.animRows; }
-		}	//	G
-		/// <summary>
-		/// [GET] The number of animation frame rows in this Texture
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int AnimRows
-		{
-			get { return this.animRows; }
-		}		//	G
-		/// <summary>
-		/// [GET] The number of animation frame cols in this Texture
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int AnimCols
-		{
-			get { return this.animCols; }
-		}		//	G
 
 
 		/// <summary>
@@ -553,8 +527,6 @@ namespace Duality.Resources
 				{
 					pixelData = basePixmapRes.MainLayer;
 					this.atlas = basePixmapRes.Atlas != null ? basePixmapRes.Atlas.ToArray() : null;
-					this.animCols = basePixmapRes.AnimCols;
-					this.animRows = basePixmapRes.AnimRows;
 				}
 
 				if (pixelData == null)
@@ -601,8 +573,6 @@ namespace Duality.Resources
 			else
 			{
 				this.atlas = null;
-				this.animCols = 0;
-				this.animRows = 0;
 				this.AdjustSize(this.size.X, this.size.Y);
 				this.SetupOpenGLRes();
 			}

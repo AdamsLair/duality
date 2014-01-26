@@ -102,6 +102,7 @@ namespace Duality
 		public static readonly PropertyInfo	Property_Pixmap_PixelDataBasePath;
 		public static readonly PropertyInfo	Property_Pixmap_AnimCols;
 		public static readonly PropertyInfo	Property_Pixmap_AnimRows;
+		public static readonly PropertyInfo	Property_Pixmap_AnimFrameBorder;
 		public static readonly PropertyInfo	Property_Pixmap_Atlas;
 
 		public static readonly PropertyInfo	Property_Texture_PxWidth;
@@ -261,6 +262,7 @@ namespace Duality
 			Property_Pixmap_PixelDataBasePath	= pixmap.GetProperty("PixelDataBasePath");
 			Property_Pixmap_AnimCols			= pixmap.GetProperty("AnimCols");
 			Property_Pixmap_AnimRows			= pixmap.GetProperty("AnimRows");
+			Property_Pixmap_AnimFrameBorder		= pixmap.GetProperty("AnimFrameBorder");
 			Property_Pixmap_Atlas				= pixmap.GetProperty("Atlas");
 
 			Type texture = typeof(Texture);

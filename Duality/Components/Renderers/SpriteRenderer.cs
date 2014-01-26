@@ -46,7 +46,6 @@ namespace Duality.Components.Renderers
 		protected	BatchInfo				customMat	= null;
 		protected	ColorRgba				colorTint	= ColorRgba.White;
 		protected	UVMode					rectMode	= UVMode.Stretch;
-		protected	float					uvBorder	= 0.0f;
 		protected	bool					pixelGrid	= false;
 		protected	int						offset		= 0;
 		[NonSerialized]
@@ -99,16 +98,6 @@ namespace Duality.Components.Renderers
 		{
 			get { return this.rectMode; }
 			set { this.rectMode = value; }
-		}
-		/// <summary>
-		/// [GET / SET] An additional inward-facing offset that is applied to all generated uv-Coordinates.
-		/// A value of 1.0 indicates that there is a one pixel border within the target texture area, which
-		/// will be cropped away during rendering.
-		/// </summary>
-		public float TexCoordBorder
-		{
-			get { return this.uvBorder; }
-			set { this.uvBorder = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Specified whether or not the rendered sprite will be aligned to actual screen pixels.
@@ -267,17 +256,6 @@ namespace Duality.Components.Renderers
 					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
 				else
 					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
-			
-				if (this.uvBorder != 0.0f)
-				{
-					Vector2 offsetBase;
-					offsetBase.X = this.uvBorder * mainTex.UVRatio.X / mainTex.PixelWidth;
-					offsetBase.Y = this.uvBorder * mainTex.UVRatio.Y / mainTex.PixelHeight;
-					uvRect.X += offsetBase.X;
-					uvRect.Y += offsetBase.Y;
-					uvRect.W -= offsetBase.X * 2.0f;
-					uvRect.H -= offsetBase.Y * 2.0f;
-				}
 			}
 			else
 				uvRect = new Rect(1.0f, 1.0f);

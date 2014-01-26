@@ -162,9 +162,10 @@ namespace EditorBase.DataConverters
 			{
 				if (convert.IsObjectHandled(mat)) continue;
 				Texture mainTex = mat.MainTexture.Res;
+				Pixmap basePixmap = (mainTex != null) ? mainTex.BasePixmap.Res : null;
 				GameObject gameobj = convert.Result.OfType<GameObject>().FirstOrDefault();
 
-				if (mainTex == null || mainTex.AnimFrames == 0)
+				if (mainTex == null || basePixmap == null || basePixmap.AnimFrames == 0)
 				{
 					SpriteRenderer sprite = convert.Result.OfType<SpriteRenderer>().FirstOrDefault();
 					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
@@ -180,9 +181,13 @@ namespace EditorBase.DataConverters
 					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<AnimSpriteRenderer>();
 					if (sprite == null) sprite = new AnimSpriteRenderer();
 					sprite.SharedMaterial = mat;
-					sprite.Rect = Rect.AlignCenter(0.0f, 0.0f, mainTex.PixelWidth / mainTex.AnimCols, mainTex.PixelHeight / mainTex.AnimRows);
+					sprite.Rect = Rect.AlignCenter(
+						0.0f, 
+						0.0f, 
+						(mainTex.PixelWidth / basePixmap.AnimCols) - basePixmap.AnimFrameBorder * 2, 
+						(mainTex.PixelHeight / basePixmap.AnimRows) - basePixmap.AnimFrameBorder * 2);
 					sprite.AnimDuration = 5.0f;
-					sprite.AnimFrameCount = mainTex.AnimFrames;
+					sprite.AnimFrameCount = basePixmap.AnimFrames;
 					convert.SuggestResultName(sprite, mat.Name);
 					results.Add(sprite);
 				}

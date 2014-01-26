@@ -159,17 +159,6 @@ namespace DynamicLighting
 					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y * this.rect.H / mainTex.PixelHeight);
 				else
 					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
-			
-				if (this.uvBorder != 0.0f)
-				{
-					Vector2 offsetBase;
-					offsetBase.X = this.uvBorder * mainTex.UVRatio.X / mainTex.PixelWidth;
-					offsetBase.Y = this.uvBorder * mainTex.UVRatio.Y / mainTex.PixelHeight;
-					uvRect.X += offsetBase.X;
-					uvRect.Y += offsetBase.Y;
-					uvRect.W -= offsetBase.X * 2.0f;
-					uvRect.H -= offsetBase.Y * 2.0f;
-				}
 			}
 			else
 				uvRect = new Rect(1.0f, 1.0f);
