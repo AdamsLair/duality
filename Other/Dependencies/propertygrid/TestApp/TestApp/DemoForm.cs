@@ -86,6 +86,7 @@ namespace AdamsLair.PropertyGrid
 			public bool BoolTwo { get; set; }
 			public List<Test2> StructList { get; set; }
 			public Dictionary<string,int> SomeDict { get; set; }
+			public Dictionary<string,List<int>> SomeDict2 { get; set; }
 			public TimeSpan ElapsedTime
 			{
 				get { return this.w.Elapsed; }
@@ -184,10 +185,6 @@ namespace AdamsLair.PropertyGrid
 		private void buttonRefresh_Click(object sender, EventArgs e)
 		{
 			this.propertyGrid1.UpdateFromObjects();
-		}
-		private void checkBoxSmallMode_CheckedChanged(object sender, EventArgs e)
-		{
-			this.propertyGrid1.SmallMode = this.checkBoxSmallMode.Checked;
 		}
 		private void checkBoxNonPublic_CheckedChanged(object sender, EventArgs e)
 		{

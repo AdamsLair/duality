@@ -98,6 +98,9 @@ namespace AdamsLair.PropertyGrid
 		private	string			propertyDesc	= null;
 		private	object			configureData	= null;
 		private	bool			forceWriteBack	= false;
+		private	bool			valueModified	= false;
+		private	bool			mutableValue	= false;
+		private	bool			memberNonPublic	= false;
 		private	bool			updatingFromObj	= false;
 		private	bool			disposed		= false;
 		private	HintFlags		hints			= HintFlags.Default;
@@ -244,13 +247,20 @@ namespace AdamsLair.PropertyGrid
 			get { return this.forceWriteBack; }
 			set { this.forceWriteBack = value; }
 		}
-		public bool IsValueModified
+		public bool ValueModified
 		{
-			get { return this.parentEditor == null ? false : this.parentEditor.IsChildValueModified(this); }
+			get { return this.valueModified; }
+			set { this.valueModified = value; }
 		}
-		public bool IsNonPublic
+		public bool ValueMutable
 		{
-			get { return this.parentEditor == null ? false : this.parentEditor.IsChildNonPublic(this); }
+			get { return this.mutableValue; }
+			set { this.mutableValue = value; }
+		}
+		public bool NonPublic
+		{
+			get { return this.memberNonPublic; }
+			set { this.memberNonPublic = value; }
 		}
 		public Func<IEnumerable<object>> Getter
 		{
@@ -285,17 +295,11 @@ namespace AdamsLair.PropertyGrid
 		public abstract object DisplayedValue { get; }
 		public bool ReadOnly
 		{
-			get 
-			{ 
-				return this.setter == null || (this.parentEditor != null && this.parentEditor.IsChildReadOnly(this));
-			}
+			get { return this.setter == null || (!this.mutableValue && this.parentEditor != null && this.parentEditor.ReadOnly); }
 		}
 		public bool Enabled
 		{
-			get 
-			{ 
-				return this.parentGrid != null && this.parentGrid.Enabled;
-			}
+			get { return this.parentGrid != null && this.parentGrid.Enabled; }
 		}
 		public bool Focused
 		{
@@ -517,10 +521,6 @@ namespace AdamsLair.PropertyGrid
 			this.updatingFromObj = false;
 		}
 		
-		protected virtual bool IsChildReadOnly(PropertyEditor childEditor) { return this.ReadOnly; }
-		protected virtual bool IsChildValueModified(PropertyEditor childEditor) { return false; }
-		protected virtual bool IsChildNonPublic(PropertyEditor childEditor) { return false; }
-
 		protected void PaintBackground(Graphics g)
 		{
 			bool focusBg = this.Focused || (this is IPopupControlHost && (this as IPopupControlHost).IsDropDownOpened);
@@ -563,9 +563,9 @@ namespace AdamsLair.PropertyGrid
 			if ((this.hints & HintFlags.HasPropertyName) == HintFlags.None) return;
 			ControlRenderer.DrawStringLine(g, 
 				this.propertyName, 
-				this.IsValueModified ? ControlRenderer.DefaultFontBold : ControlRenderer.DefaultFont, 
+				this.ValueModified ? ControlRenderer.DefaultFontBold : ControlRenderer.DefaultFont, 
 				this.nameLabelRect, 
-				this.Enabled && !this.IsNonPublic ? ControlRenderer.ColorText : ControlRenderer.ColorGrayText);
+				this.Enabled && !this.NonPublic ? ControlRenderer.ColorText : ControlRenderer.ColorGrayText);
 		}
 		internal protected virtual void OnPaint(PaintEventArgs e)
 		{

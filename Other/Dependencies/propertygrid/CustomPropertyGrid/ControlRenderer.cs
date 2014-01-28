@@ -97,7 +97,6 @@ namespace AdamsLair.PropertyGrid.Renderer
 	{
 		private const int DrawStringWidthAdd = 5;
 
-		private bool								smallMode			= false;
 		private	Size								expandNodeSize		= Size.Empty;
 		private	Dictionary<ExpandNodeState,Bitmap>	expandNodeImages	= null;
 		private	Size								checkBoxSize		= Size.Empty;
@@ -105,11 +104,6 @@ namespace AdamsLair.PropertyGrid.Renderer
 		private	IconImage	dropDownIcon	= new IconImage(Resources.DropDownIcon);
 
 
-		public bool SmallMode
-		{
-			get { return this.smallMode; }
-			internal set { this.smallMode = value; }
-		}
 		public Size CheckBoxSize
 		{
 			get
@@ -135,14 +129,14 @@ namespace AdamsLair.PropertyGrid.Renderer
 		{
 			get
 			{
-				return this.smallMode ? EmbeddedResources.Resources.DefaultFontSmall : EmbeddedResources.Resources.DefaultFont;
+				return EmbeddedResources.Resources.DefaultFont;
 			}
 		}
 		public Font DefaultFontBold
 		{
 			get
 			{
-				return this.smallMode ? EmbeddedResources.Resources.DefaultFontBoldSmall : EmbeddedResources.Resources.DefaultFontBold;
+				return EmbeddedResources.Resources.DefaultFontBold;
 			}
 		}
 		public Color ColorHightlight { get; set; }
@@ -156,9 +150,8 @@ namespace AdamsLair.PropertyGrid.Renderer
 		public Color ColorGrayText { get; set; }
 
 
-		public ControlRenderer(bool smallMode)
+		public ControlRenderer()
 		{
-			this.smallMode = smallMode;
 			this.ResetColors();
 		}
 		public void ResetColors()

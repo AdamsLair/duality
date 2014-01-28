@@ -35,15 +35,27 @@ namespace EditorBase.PropertyEditors
 				this.GetValue(), 
 				new object[] { active }));
 		}
+		public void UpdatePrefabModifiedState(PropertyEditor specificEditor = null)
+		{
+			if (specificEditor == null)
+			{
+				foreach (PropertyEditor editor in this.Children)
+				{
+					MemberInfo member = this.MapEditorToMember(editor);
+					editor.ValueModified = this.IsMemberInPrefabLinkChanges(member);
+				}
+			}
+			else
+			{
+				MemberInfo member = this.MapEditorToMember(specificEditor);
+				specificEditor.ValueModified = this.IsMemberInPrefabLinkChanges(member);
+			}
+		}
+		public virtual MemberInfo MapEditorToMember(PropertyEditor editor)
+		{
+			return editor != null ? editor.EditedMember : null;
+		}
 
-		protected override bool IsAutoCreateMember(MemberInfo info)
-		{
-			return base.IsAutoCreateMember(info) && info.DeclaringType != typeof(Component);
-		}
-		protected override bool IsChildValueModified(PropertyEditor childEditor)
-		{
-			return this.IsMemberInPrefabLinkChanges(childEditor.EditedMember);
-		}
 		protected bool IsMemberInPrefabLinkChanges(MemberInfo info)
 		{
 			if (info == null) return false;
@@ -55,11 +67,9 @@ namespace EditorBase.PropertyEditors
 				return l != null && l.HasChange(c, info as PropertyInfo);
 			});
 		}
-		protected override bool IsChildNonPublic(PropertyEditor childEditor)
+		protected override bool IsAutoCreateMember(MemberInfo info)
 		{
-			if (base.IsChildNonPublic(childEditor)) return true;
-			if (childEditor.EditedMember is FieldInfo) return true; // Discourage use of fields in Components
-			return false;
+			return base.IsAutoCreateMember(info) && info.DeclaringType != typeof(Component);
 		}
 		protected override void OnUpdateFromObjects(object[] values)
 		{
@@ -73,6 +83,8 @@ namespace EditorBase.PropertyEditors
 				this.Active = false;
 			else
 				this.Active = (values.First(o => o is Component) as Component).ActiveSingle;
+
+			this.UpdatePrefabModifiedState();
 		}
 		protected override void OnValueChanged(object sender, PropertyEditorValueEventArgs args)
 		{
@@ -96,6 +108,8 @@ namespace EditorBase.PropertyEditors
 					UndoRedoManager.Do(new EditFieldAction(this.ParentGrid, directChild.EditedMember as FieldInfo, this.GetValue(), null));
 				this.isInvokingDirectChild = false;
 			}
+
+			this.UpdatePrefabModifiedState(directChild);
 		}
 		protected override void OnActiveChanged()
 		{
@@ -121,6 +135,16 @@ namespace EditorBase.PropertyEditors
 			this.PropertyName = this.EditedType.GetTypeCSCodeName(true);
 			this.HeaderIcon = iconBitmap;
 			this.HeaderColor = ExtMethodsSystemDrawingColor.ColorFromHSV(avgClr.H, 0.2f, 0.8f);
+		}
+		protected override void OnEditorAdded(PropertyEditor editor)
+		{
+			base.OnEditorAdded(editor);
+			this.UpdatePrefabModifiedState(editor);
+		}
+		protected override void OnEditorRemoving(PropertyEditor editor)
+		{
+			base.OnEditorRemoving(editor);
+			this.UpdatePrefabModifiedState();
 		}
 
 		protected override void OnButtonPressed()

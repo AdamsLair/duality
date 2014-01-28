@@ -42,6 +42,7 @@ namespace Duality.Components.Physics
 			}
 		}
 
+
 		private	BodyType	bodyType		= BodyType.Dynamic;
 		private	float		linearDamp		= 0.3f;
 		private	float		angularDamp		= 0.3f;
@@ -56,11 +57,13 @@ namespace Duality.Components.Physics
 		private	Category	colWith			= Category.All;
 		private	List<ShapeInfo>	shapes		= null;
 		private	List<JointInfo>	joints		= null;
+
 		[NonSerialized]	private	InitState		bodyInitState	= InitState.Disposed;
 		[NonSerialized]	private	bool			schedUpdateBody	= false;
 		[NonSerialized]	private	bool			isUpdatingBody	= false;
 		[NonSerialized]	private	Body			body			= null;
 		[NonSerialized]	private	List<ColEvent>	eventBuffer		= new List<ColEvent>();
+
 
 		internal Body PhysicsBody
 		{

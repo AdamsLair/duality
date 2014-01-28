@@ -114,29 +114,33 @@ namespace DualityEditor.Controls
 			UndoRedoManager.Finish();
 		}
 
-		private bool EditorMemberPredicate(MemberInfo info)
+		private bool EditorMemberPredicate(MemberInfo info, bool showNonPublic)
 		{
-			if (this.ShowNonPublic)
-			{
-				// Show member, if not declared inside Duality itself
-				if (info.DeclaringType.Assembly != typeof(DualityApp).Assembly) return true;
-
-				// Reject non-public fields
-				FieldInfo field = info as FieldInfo;
-				if (field != null && !field.IsPublic) return false;
-
-				// Reject non-public properties
-				PropertyInfo property = info as PropertyInfo;
-				if (property != null && property.GetGetMethod(false) == null && property.GetSetMethod(false) == null) return false;
-			}
-			else
-			{
-				// Don't show fields of a Component - we don't want to encourage using them, since Duality basically works with Properties.
-				if (info is FieldInfo && typeof(Component).IsAssignableFrom(info.DeclaringType)) return false;
-			}
-
-			// Reject invisible members
+			PropertyInfo property = info as PropertyInfo;
+			FieldInfo field = info as FieldInfo;
 			EditorHintFlagsAttribute flagsAttrib = info.GetEditorHint<EditorHintFlagsAttribute>();
+
+			// Accept all members in "Debug Mode", if not declared inside Duality itself
+			if (showNonPublic && info.DeclaringType.Assembly != typeof(DualityApp).Assembly) return true;
+
+			// Accept explicitly visible members
+			if (flagsAttrib != null && (flagsAttrib.Flags & MemberFlags.Visible) != MemberFlags.None) return true;
+			
+			// Reject properties with non-public getters
+			if (property != null)
+			{
+				MethodInfo getter = property.GetGetMethod(true);
+				if (getter == null) return false;
+				if (!getter.IsPublic) return false;
+			}
+
+			// Reject non-public fields
+			if (field != null && !field.IsPublic) return false;
+
+			// Reject even public fields of a Component - we don't want to encourage using them, since Duality basically works with Properties.
+			if (field != null && typeof(Component).IsAssignableFrom(info.DeclaringType)) return false;
+
+			// Reject explicitly invisible members
 			if (flagsAttrib != null && (flagsAttrib.Flags & MemberFlags.Invisible) != MemberFlags.None) return false;
 
 			return true;

@@ -23,6 +23,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		private	int						offset				= 0;
 		private	int						internalEditors		= 0;
 		private	KeyValueSetter			dictKeySetter		= null;
+		private	object[]				displayedKeys		= null;
 		
 		public override object DisplayedValue
 		{
@@ -48,6 +49,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.offsetEditor.PropertyName = "Offset";
 			this.offsetEditor.Getter = this.OffsetValueGetter;
 			this.offsetEditor.Setter = this.OffsetValueSetter;
+			this.offsetEditor.ValueMutable = true;
 		}
 
 		public override void InitContent()
@@ -182,12 +184,12 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			
 			// Determine which keys are currently displayed
 			int elemIndex = 0;
-			object[] keys = new object[visibleElementCount];
+			this.displayedKeys = new object[visibleElementCount];
 			foreach (object key in values.Where(o => o != null).First().Keys)
 			{
 				if (elemIndex >= this.offset)
 				{
-					keys[elemIndex - this.offset] = key;
+					this.displayedKeys[elemIndex - this.offset] = key;
 				}
 				elemIndex++;
 				if (elemIndex >= this.offset + visibleElementCount) break;
@@ -208,23 +210,24 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 					elementEditor = this.ParentGrid.CreateEditor(valueType, this);
 					this.AddPropertyEditor(elementEditor);
 					this.ParentGrid.ConfigureEditor(elementEditor);
+					if (!elementEditor.Hints.HasFlag(HintFlags.HasButton))
+					{
+						elementEditor.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
+						elementEditor.ButtonPressed += this.elementEditor_ButtonPressed;
+					}
 				}
-				elementEditor.Getter = this.CreateElementValueGetter(indexer, keys[i - this.internalEditors]);
-				elementEditor.Setter = this.CreateElementValueSetter(indexer, keys[i - this.internalEditors]);
-				elementEditor.PropertyName = "[" + keys[i - this.internalEditors].ToString() + "]";
+				elementEditor.Getter = this.CreateElementValueGetter(indexer, this.displayedKeys[i - this.internalEditors]);
+				elementEditor.Setter = this.CreateElementValueSetter(indexer, this.displayedKeys[i - this.internalEditors]);
+				elementEditor.PropertyName = "[" + this.displayedKeys[i - this.internalEditors].ToString() + "]";
 			}
 			// Remove overflowing editors
 			for (int i = this.Children.Count() - (this.internalEditors + 1); i >= visibleElementCount; i--)
 			{
 				PropertyEditor child = this.Children.Last();
 				this.RemovePropertyEditor(child);
+				child.ButtonPressed -= this.elementEditor_ButtonPressed;
 			}
 			this.EndUpdate();
-		}
-		protected override bool IsChildReadOnly(PropertyEditor childEditor)
-		{
-			if (childEditor == this.offsetEditor) return false;
-			return base.IsChildReadOnly(childEditor);
 		}
 		
 		protected IEnumerable<object> AddKeyValueGetter()
@@ -240,28 +243,8 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		{
 			if (this.addKey == null) return;
 
-			IDictionary[] targetArray = this.GetValue().Cast<IDictionary>().ToArray();
-			Type valueType = this.GetValueType();
-
-			for (int t = 0; t < targetArray.Length; t++)
-			{
-				IDictionary target = targetArray[t];
-				if (target != null)
-				{
-					if (!target.IsFixedSize && !target.IsReadOnly)
-					{
-						if (!target.Contains(this.addKey))
-						{
-							// Add a new key value pair
-							target.Add(this.addKey, valueType.IsValueType ? ReflectionHelper.CreateInstanceOf(valueType) : null);
-						}
-					}
-					else
-					{
-						// Just some read-only container? Well, can't do anything here.
-					}
-				}
-			}
+			// Add new key
+			this.AddKeyToDictionary(this.addKey);
 
 			// Focus-Unfocus to trigger some kind of "select all" / "reset" behaivor in the "Add Key" field.
 			this.ParentGrid.Focus(this);
@@ -293,9 +276,19 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		{
 			return delegate(IEnumerable<object> values)
 			{
-				object[] targetArray = this.GetValue().ToArray();
-				this.dictKeySetter(indexer, targetArray, values, key);
-				if (this.ForceWriteBack) this.SetValues(targetArray);
+				// Explicitly setting the values to null: Remove corresponding source list entry
+				if (values.All(v => v == null))
+				{
+					this.RemoveKeyFromDictionary(key);
+					this.PerformGetValue();
+				}
+				// Assign values
+				else
+				{
+					object[] targetArray = this.GetValue().ToArray();
+					this.dictKeySetter(indexer, targetArray, values, key);
+					if (this.ForceWriteBack) this.SetValues(targetArray);
+				}
 			};
 		}
 
@@ -323,6 +316,76 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			}
 
 			this.PerformGetValue();
+		}
+
+		private void elementEditor_ButtonPressed(object sender, EventArgs e)
+		{
+			PropertyEditor elementEditor = sender as PropertyEditor;
+
+			// Determine key
+			int clickedIndex = -this.internalEditors;
+			foreach (PropertyEditor editor in this.Children)
+			{
+				if (editor == elementEditor) break;
+				clickedIndex++;
+			}
+			object clickedKey = this.displayedKeys[clickedIndex];
+
+			// Remove key
+			this.RemoveKeyFromDictionary(clickedKey);
+
+			// Update sub-editors
+			this.PerformGetValue();
+		}
+
+		private void AddKeyToDictionary(object key)
+		{
+			IDictionary[] targetArray = this.GetValue().Cast<IDictionary>().ToArray();
+			Type valueType = this.GetValueType();
+
+			for (int t = 0; t < targetArray.Length; t++)
+			{
+				IDictionary target = targetArray[t];
+				if (target != null)
+				{
+					if (!target.IsFixedSize && !target.IsReadOnly)
+					{
+						if (!target.Contains(key))
+						{
+							// Add a new key value pair
+							target.Add(key, valueType.IsValueType ? ReflectionHelper.CreateInstanceOf(valueType) : null);
+						}
+					}
+					else
+					{
+						// Just some read-only container? Well, can't do anything here.
+					}
+				}
+			}
+		}
+		private void RemoveKeyFromDictionary(object key)
+		{
+			IDictionary[] targetArray = this.GetValue().Cast<IDictionary>().ToArray();
+			Type valueType = this.GetValueType();
+
+			for (int t = 0; t < targetArray.Length; t++)
+			{
+				IDictionary target = targetArray[t];
+				if (target != null)
+				{
+					if (!target.IsFixedSize && !target.IsReadOnly)
+					{
+						if (target.Contains(key))
+						{
+							target.Remove(key);
+						}
+					}
+					else
+					{
+						// Just some read-only container? Well, can't do anything here.
+					}
+				}
+			}
 		}
 
 		protected static void DefaultPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values, object key)

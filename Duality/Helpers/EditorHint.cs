@@ -14,24 +14,28 @@ namespace Duality.EditorHints
 		/// <summary>
 		/// No flags set.
 		/// </summary>
-		None			= 0x0,
+		None			= 0x00,
 
 		/// <summary>
 		/// When editing the Properties or Fields value, a final set operation is requested to finish editing.
 		/// </summary>
-		ForceWriteback	= 0x1,
+		ForceWriteback	= 0x01,
 		/// <summary>
-		/// The member is considered invisible.
+		/// The member is considered invisible. Will override visibility rules derived from reflection.
 		/// </summary>
-		Invisible		= 0x2,
+		Invisible		= 0x02,
 		/// <summary>
 		/// The member is considered read-only, even if writing is possible via reflection.
 		/// </summary>
-		ReadOnly		= 0x4,
+		ReadOnly		= 0x04,
 		/// <summary>
 		/// Indicates that editing the member may have an effect on any other member of the current object.
 		/// </summary>
-		AffectsOthers	= 0x8
+		AffectsOthers	= 0x08,
+		/// <summary>
+		/// The member is considered visible. Will override visibility rules derived from reflection.
+		/// </summary>
+		Visible			= 0x10
 	}
 
 	/// <summary>

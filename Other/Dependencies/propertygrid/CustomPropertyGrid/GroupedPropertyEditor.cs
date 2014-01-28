@@ -376,12 +376,6 @@ namespace AdamsLair.PropertyGrid
 				this.EditorRemoving(this, new PropertyEditorEventArgs(e));
 		}
 
-		protected override bool IsChildValueModified(PropertyEditor childEditor)
-		{
-			return base.IsChildValueModified(childEditor);
-			// Do not propagate the modified state to child editors. It's really nasty.
-			//return this.modifiedStateCache;
-		}
 		internal protected override void OnReadOnlyChanged()
 		{
 			base.OnReadOnlyChanged();
@@ -502,12 +496,12 @@ namespace AdamsLair.PropertyGrid
 
 			ControlRenderer.DrawStringLine(g, 
 				this.PropertyName, 
-				this.IsValueModified ? ControlRenderer.DefaultFontBold : ControlRenderer.DefaultFont, 
+				this.ValueModified ? ControlRenderer.DefaultFontBold : ControlRenderer.DefaultFont, 
 				nameTextRect, 
-				this.Enabled && !this.IsNonPublic ? ControlRenderer.ColorText : ControlRenderer.ColorGrayText);
+				this.Enabled && !this.NonPublic ? ControlRenderer.ColorText : ControlRenderer.ColorGrayText);
 			ControlRenderer.DrawStringLine(g, 
 				this.headerValueText, 
-				this.IsValueModified ? ControlRenderer.DefaultFontBold : ControlRenderer.DefaultFont, 
+				this.ValueModified ? ControlRenderer.DefaultFontBold : ControlRenderer.DefaultFont, 
 				valueTextRect, 
 				this.Enabled ? ControlRenderer.ColorText : ControlRenderer.ColorGrayText);
 		}

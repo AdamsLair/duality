@@ -30,12 +30,19 @@ namespace EditorBase.PropertyEditors
 			this.jointEditors.Clear();
 			this.addJointEditor = null;
 		}
+		public override MemberInfo MapEditorToMember(PropertyEditor editor)
+		{
+			if (this.jointEditors.Contains(editor))
+				return ReflectionInfo.Property_RigidBody_Joints;
+			else
+				return base.MapEditorToMember(editor);
+		}
+
 		protected override void BeforeAutoCreateEditors()
 		{
 			base.BeforeAutoCreateEditors();
 			this.UpdateJointEditors(this.GetValue().Cast<RigidBody>());
 		}
-
 		protected override void OnUpdateFromObjects(object[] values)
 		{
 			base.OnUpdateFromObjects(values);
@@ -46,19 +53,6 @@ namespace EditorBase.PropertyEditors
 			base.OnPropertySet(property, targets);
 			foreach (RigidBody c in targets.OfType<RigidBody>())
 				c.AwakeBody();
-		}
-		protected override bool IsChildValueModified(PropertyEditor childEditor)
-		{
-			if (this.jointEditors.Contains(childEditor))
-			{
-				Component[] values = this.GetValue().Cast<Component>().NotNull().ToArray();
-				return values.Any(c => 
-				{
-					Duality.Resources.PrefabLink l = c.GameObj.AffectedByPrefabLink;
-					return l != null && l.HasChange(c, ReflectionInfo.Property_RigidBody_Joints);
-				});
-			}
-			else return base.IsChildValueModified(childEditor);
 		}
 
 		protected void UpdateJointEditors(IEnumerable<RigidBody> values)

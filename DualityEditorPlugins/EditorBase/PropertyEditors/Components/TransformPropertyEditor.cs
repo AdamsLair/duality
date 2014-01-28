@@ -22,6 +22,22 @@ namespace EditorBase.PropertyEditors
 		private PropertyEditor	editorAngle		= null;
 		private PropertyEditor	editorAngleVel	= null;
 		private PropertyEditor	editorShowRelative	= null;
+		
+		public override MemberInfo MapEditorToMember(PropertyEditor editor)
+		{
+			if (editor == this.editorPos)
+				return ReflectionInfo.Property_Transform_RelativePos;
+			else if (editor == this.editorVel)
+				return ReflectionInfo.Property_Transform_RelativeVel;
+			else if (editor == this.editorScale)
+				return ReflectionInfo.Property_Transform_RelativeScale;
+			else if (editor == this.editorAngle)
+				return ReflectionInfo.Property_Transform_RelativeAngle;
+			else if (editor == this.editorAngleVel)
+				return ReflectionInfo.Property_Transform_RelativeAngleVel;
+			else
+				return base.MapEditorToMember(editor);
+		}
 
 		protected override bool IsAutoCreateMember(MemberInfo info)
 		{
@@ -101,34 +117,6 @@ namespace EditorBase.PropertyEditors
 				this.AddPropertyEditor(this.editorShowRelative);
 				this.editorShowRelative.EndUpdate();
 			}
-		}
-
-		protected override bool IsChildValueModified(PropertyEditor childEditor)
-		{
-			MemberInfo info = childEditor.EditedMember;
-
-			if (childEditor == this.editorPos)
-				info = ReflectionInfo.Property_Transform_RelativePos;
-			else if (childEditor == this.editorVel)
-				info = ReflectionInfo.Property_Transform_RelativeVel;
-			else if (childEditor == this.editorScale)
-				info = ReflectionInfo.Property_Transform_RelativeScale;
-			else if (childEditor == this.editorAngle)
-				info = ReflectionInfo.Property_Transform_RelativeAngle;
-			else if (childEditor == this.editorAngleVel)
-				info = ReflectionInfo.Property_Transform_RelativeAngleVel;
-
-			if (info != null)
-			{
-				Component[] values = this.GetValue().Cast<Component>().NotNull().ToArray();
-				return values.Any(delegate (Component c)
-				{
-					Duality.Resources.PrefabLink l = c.GameObj.AffectedByPrefabLink;
-					return l != null && l.HasChange(c, info as PropertyInfo);
-				});
-			}
-			else
-				return base.IsChildValueModified(childEditor);
 		}
 
 		protected IEnumerable<object> ShowRelativeGetter()

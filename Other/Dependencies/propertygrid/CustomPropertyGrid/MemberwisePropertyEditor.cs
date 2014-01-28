@@ -10,11 +10,12 @@ namespace AdamsLair.PropertyGrid
 {
 	public class MemberwisePropertyEditor : GroupedPropertyEditor
 	{
+		public delegate bool AutoMemberPredicate(MemberInfo member, bool showNonPublic);
 		public delegate void PropertyValueSetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values);
 		public delegate void FieldValueSetter(FieldInfo field, IEnumerable<object> targetObjects, IEnumerable<object> values);
 
 		private	bool	buttonIsCreate	= false;
-		private	Predicate<MemberInfo>			memberPredicate			= null;
+		private	AutoMemberPredicate				memberPredicate			= null;
 		private	Predicate<MemberInfo>			memberAffectsOthers		= null;
 		private	Func<MemberInfo,PropertyEditor>	memberEditorCreator		= null;
 		private	PropertyValueSetter				memberPropertySetter	= null;
@@ -24,12 +25,12 @@ namespace AdamsLair.PropertyGrid
 		{
 			get { return this.GetValue().FirstOrDefault(); }
 		}
-		public Predicate<MemberInfo> MemberPredicate
+		public AutoMemberPredicate MemberPredicate
 		{
 			get { return this.memberPredicate; }
 			set
 			{
-				if (value == null) value = this.DefaultMemberPredicate;
+				if (value == null) value = DefaultMemberPredicate;
 				if (this.memberPredicate != value)
 				{
 					this.memberPredicate = value;
@@ -42,7 +43,7 @@ namespace AdamsLair.PropertyGrid
 			get { return this.memberAffectsOthers; }
 			set
 			{
-				if (value == null) value = this.DefaultMemberAffectsOthers;
+				if (value == null) value = DefaultMemberAffectsOthers;
 				if (this.memberAffectsOthers != value)
 				{
 					this.memberAffectsOthers = value;
@@ -55,7 +56,7 @@ namespace AdamsLair.PropertyGrid
 			get { return this.memberEditorCreator; }
 			set
 			{
-				if (value == null) value = this.DefaultMemberEditorCreator;
+				if (value == null) value = DefaultMemberEditorCreator;
 				if (this.memberEditorCreator != value)
 				{
 					this.memberEditorCreator = value;
@@ -86,9 +87,9 @@ namespace AdamsLair.PropertyGrid
 		public MemberwisePropertyEditor()
 		{
 			this.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
-			this.memberEditorCreator = this.DefaultMemberEditorCreator;
-			this.memberPredicate = this.DefaultMemberPredicate;
-			this.memberAffectsOthers = this.DefaultMemberAffectsOthers;
+			this.memberEditorCreator = DefaultMemberEditorCreator;
+			this.memberPredicate = DefaultMemberPredicate;
+			this.memberAffectsOthers = DefaultMemberAffectsOthers;
 			this.memberPropertySetter = DefaultPropertySetter;
 			this.memberFieldSetter = DefaultFieldSetter;
 		}
@@ -100,9 +101,8 @@ namespace AdamsLair.PropertyGrid
 			{
 				base.InitContent();
 
-				BindingFlags flags = BindingFlags.Instance | BindingFlags.Public;
-				if (this.ParentGrid.ShowNonPublic)
-					flags |= BindingFlags.NonPublic;
+				// Look for all the properties, even nonpublic - they'll get sorted out by the predicate, if unwanted.
+				BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
 				// Generate and add property editors for the current type
 				this.BeginUpdate();
@@ -148,6 +148,7 @@ namespace AdamsLair.PropertyGrid
 			e.Setter = prop.CanWrite ? this.CreatePropertyValueSetter(prop) : null;
 			e.PropertyName = prop.Name;
 			e.EditedMember = prop;
+			e.NonPublic = !this.memberPredicate(prop, false);
 			this.AddPropertyEditor(e);
 			this.ParentGrid.ConfigureEditor(e);
 			e.EndUpdate();
@@ -163,6 +164,7 @@ namespace AdamsLair.PropertyGrid
 			e.Setter = this.CreateFieldValueSetter(field);
 			e.PropertyName = field.Name;
 			e.EditedMember = field;
+			e.NonPublic = !this.memberPredicate(field, false);
 			this.AddPropertyEditor(e);
 			this.ParentGrid.ConfigureEditor(e);
 			e.EndUpdate();
@@ -262,22 +264,9 @@ namespace AdamsLair.PropertyGrid
 		}
 
 		protected virtual void BeforeAutoCreateEditors() {}
-		protected override bool IsChildNonPublic(PropertyEditor childEditor)
-		{
-			if (base.IsChildNonPublic(childEditor)) return true;
-			if (childEditor.EditedMember == null) return false;
-
-			FieldInfo field = childEditor.EditedMember as FieldInfo;
-			if (field != null) return !field.IsPublic;
-
-			PropertyInfo property = childEditor.EditedMember as PropertyInfo;
-			if (property != null) return property.GetGetMethod(false) == null && property.GetSetMethod(false) == null;
-
-			return false;
-		}
 		protected virtual bool IsAutoCreateMember(MemberInfo info)
 		{
-			return this.memberPredicate(info);
+			return this.memberPredicate(info, this.ParentGrid.ShowNonPublic);
 		}
 		protected virtual PropertyEditor AutoCreateMemberEditor(MemberInfo info)
 		{
@@ -309,7 +298,7 @@ namespace AdamsLair.PropertyGrid
 		}
 		protected Action<IEnumerable<object>> CreatePropertyValueSetter(PropertyInfo property)
 		{
-			bool affectsOthers = this.memberAffectsOthers(property);
+			bool affectsOthers = this.ParentGrid.ShowNonPublic || this.memberAffectsOthers(property);
 			return delegate(IEnumerable<object> values)
 			{
 				object[] targetArray = this.GetValue().ToArray();
@@ -329,7 +318,7 @@ namespace AdamsLair.PropertyGrid
 		}
 		protected Action<IEnumerable<object>> CreateFieldValueSetter(FieldInfo field)
 		{
-			bool affectsOthers = this.memberAffectsOthers(field);
+			bool affectsOthers = this.ParentGrid.ShowNonPublic || this.memberAffectsOthers(field);
 			return delegate(IEnumerable<object> values)
 			{
 				object[] targetArray = this.GetValue().ToArray();
@@ -351,15 +340,33 @@ namespace AdamsLair.PropertyGrid
 		protected virtual void OnPropertySet(PropertyInfo property, IEnumerable<object> targets) {}
 		protected virtual void OnFieldSet(FieldInfo property, IEnumerable<object> targets) {}
 
-		protected bool DefaultMemberPredicate(MemberInfo info)
+		protected static bool DefaultMemberPredicate(MemberInfo info, bool showNonPublic)
 		{
-			return true;
+			if (showNonPublic)
+			{
+				return true;
+			}
+			else if (info is PropertyInfo)
+			{
+				PropertyInfo property = info as PropertyInfo;
+				MethodInfo getter = property.GetGetMethod(true);
+				return getter != null && getter.IsPublic;
+			}
+			else if (info is FieldInfo)
+			{
+				FieldInfo field = info as FieldInfo;
+				return field.IsPublic;
+			}
+			else
+			{
+				return false;
+			}
 		}
-		protected bool DefaultMemberAffectsOthers(MemberInfo info)
+		protected static bool DefaultMemberAffectsOthers(MemberInfo info)
 		{
-			return this.ParentGrid.ShowNonPublic;
+			return false;
 		}
-		protected PropertyEditor DefaultMemberEditorCreator(MemberInfo info)
+		protected static PropertyEditor DefaultMemberEditorCreator(MemberInfo info)
 		{
 			return null;
 		}

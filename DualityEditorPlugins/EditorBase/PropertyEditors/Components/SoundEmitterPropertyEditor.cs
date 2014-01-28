@@ -27,19 +27,18 @@ namespace EditorBase.PropertyEditors
 			base.ClearContent();
 			this.soundSourceEditors.Clear();
 		}
+		public override MemberInfo MapEditorToMember(PropertyEditor editor)
+		{
+			if (editor is SoundEmitterSourcePropertyEditor)
+				return ReflectionInfo.Property_SoundEmitter_Sources;
+			else
+				return base.MapEditorToMember(editor);
+		}
 
 		protected override void BeforeAutoCreateEditors()
 		{
 			base.BeforeAutoCreateEditors();
 			this.UpdateSourceEditors(this.GetValue().Cast<SoundEmitter>());
-		}
-
-		protected override bool IsChildValueModified(PropertyEditor childEditor)
-		{
-			if (childEditor is SoundEmitterSourcePropertyEditor)
-				return this.IsMemberInPrefabLinkChanges(ReflectionInfo.Property_SoundEmitter_Sources);
-			else
-				return base.IsChildValueModified(childEditor);
 		}
 		protected override bool IsAutoCreateMember(MemberInfo info)
 		{

@@ -187,7 +187,6 @@ namespace AdamsLair.PropertyGrid
 		private	PropertyEditor		focusEditor			= null;
 		private	List<object>		selectedObjects		= new List<object>();
 		private	bool				showNonPublic		= false;
-		private	bool				smallMode			= false;
 		private	bool				readOnly			= false;
 		private	Timer				updateTimer			= null;
 		private	int					updateTimerChangeMs	= 0;
@@ -234,26 +233,6 @@ namespace AdamsLair.PropertyGrid
 				}
 			}
 		}
-		public bool SmallMode
-		{
-			get { return this.smallMode; }
-			set
-			{
-				if (this.smallMode != value)
-				{
-					this.smallMode = value;
-					this.renderer.SmallMode = this.smallMode;
-					if (this.mainEditor != null)
-					{
-						ExpandState state = new ExpandState();
-						state.UpdateFrom(this.mainEditor);
-						this.DisposePropertyEditor();
-						this.UpdateFromObjects();
-						state.ApplyTo(this.mainEditor);
-					}
-				}
-			}
-		}
 		public PropertyEditor MainEditor
 		{
 			get { return this.mainEditor; }
@@ -279,7 +258,7 @@ namespace AdamsLair.PropertyGrid
 
 		public PropertyGrid()
 		{
-			this.renderer = new ControlRenderer(this.smallMode);
+			this.renderer = new ControlRenderer();
 
 			this.updateTimer = new Timer();
 			this.updateTimer.Interval = 100;

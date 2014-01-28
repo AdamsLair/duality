@@ -138,7 +138,6 @@
 			this.propertyGrid.ReadOnly = false;
 			this.propertyGrid.ShowNonPublic = false;
 			this.propertyGrid.Size = new System.Drawing.Size(231, 407);
-			this.propertyGrid.SmallMode = false;
 			this.propertyGrid.TabIndex = 0;
 			// 
 			// toolStripSeparator1

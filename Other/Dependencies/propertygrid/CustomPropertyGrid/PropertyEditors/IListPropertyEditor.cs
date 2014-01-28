@@ -54,6 +54,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.offsetEditor.PropertyName = "Offset";
 			this.offsetEditor.Getter = this.OffsetValueGetter;
 			this.offsetEditor.Setter = this.OffsetValueSetter;
+			this.offsetEditor.ValueMutable = true;
 		}
 
 		public override void InitContent()
@@ -192,11 +193,6 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 				this.RemovePropertyEditor(child);
 			}
 			this.EndUpdate();
-		}
-		protected override bool IsChildReadOnly(PropertyEditor childEditor)
-		{
-			if (childEditor == this.offsetEditor) return false;
-			return base.IsChildReadOnly(childEditor);
 		}
 
 		protected void RemoveElementAt(int index)
