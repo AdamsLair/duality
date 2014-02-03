@@ -170,26 +170,6 @@ namespace Duality
 			}
 		}
 		/// <summary>
-		/// [GET] The number of child GameObjects this object has.
-		/// </summary>
-		public int ChildCount
-		{
-			get
-			{
-				return (this.children != null) ? this.children.Count : 0;
-			}
-		}
-		/// <summary>
-		/// [GET] The number of <see cref="Component"/>s this object consists of.
-		/// </summary>
-		public int ComponentCount
-		{
-			get
-			{
-				return this.compList.Count;
-			}
-		}
-		/// <summary>
 		/// [GET] Enumerates this objects child GameObjects.
 		/// </summary>
 		public IEnumerable<GameObject> Children
@@ -813,16 +793,31 @@ namespace Duality
 		/// </summary>
 		internal void PerformSanitaryCheck()
 		{
-			// Check Component List
+			// Check for null or disposed child objects
+			if (this.children != null)
+			{
+				for (int i = this.children.Count - 1;  i >= 0; i--)
+				{
+					if (this.children[i] == null || this.children[i].Disposed)
+					{
+						this.children.RemoveAt(i);
+						Log.Core.WriteWarning(
+							"Missing or Disposed Child in GameObject '{0}'. This should never happen and is likely the cause of malformed data", 
+							this);
+					}
+				}
+			}
+
+			// Check Component List for null or disposed entries
 			if (this.compList != null)
 			{
 				for (int i = this.compList.Count - 1;  i >= 0; i--)
 				{
-					if (this.compList[i] == null)
+					if (this.compList[i] == null || this.compList[i].Disposed)
 					{
 						this.compList.RemoveAt(i);
 						Log.Core.WriteWarning(
-							"Missing Component in GameObject '{0}'. This should never happen and is likely the cause of malformed data", 
+							"Missing or Disposed Component in GameObject '{0}'. This should never happen and is likely the cause of malformed data", 
 							this);
 					}
 				}
@@ -835,16 +830,16 @@ namespace Duality
 					this);
 			}
 
-			// Check Component Map
+			// Check Component Map for null or disposed entries
 			if (this.compMap != null)
 			{
 				foreach (Type key in this.compMap.Keys.ToArray())
 				{
-					if (this.compMap[key] == null)
+					if (this.compMap[key] == null || this.compMap[key].Disposed)
 					{
 						this.compMap.Remove(key);
 						Log.Core.WriteWarning(
-							"Missing Component '{0}' in GameObject '{1}'. This should never happen and is likely the cause of malformed data", 
+							"Missing or Disposed Component '{0}' in GameObject '{1}'. This should never happen and is likely the cause of malformed data", 
 							key,
 							this);
 					}
