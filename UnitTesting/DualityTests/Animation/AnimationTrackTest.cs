@@ -11,7 +11,7 @@ using OpenTK;
 
 using NUnit.Framework;
 
-namespace DualityTests.Animation
+namespace Duality.Tests.Animation
 {
 	[TestFixture]
 	public class AnimationTrackTest

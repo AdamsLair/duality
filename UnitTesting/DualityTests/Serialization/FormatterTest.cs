@@ -11,7 +11,7 @@ using Duality.Serialization.MetaFormat;
 using OpenTK;
 using NUnit.Framework;
 
-namespace DualityTests.Serialization
+namespace Duality.Tests.Serialization
 {
 	public abstract class FormatterTest
 	{

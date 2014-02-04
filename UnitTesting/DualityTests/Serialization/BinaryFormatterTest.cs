@@ -10,7 +10,7 @@ using Duality.Serialization;
 using OpenTK;
 using NUnit.Framework;
 
-namespace DualityTests.Serialization
+namespace Duality.Tests.Serialization
 {
 	[TestFixture]
 	public class BinaryFormatterTest : FormatterTest

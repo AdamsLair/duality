@@ -7,7 +7,7 @@ using Duality;
 
 using NUnit.Framework;
 
-namespace DualityTests
+namespace Duality.Tests
 {
 	[TestFixture]
 	public class RawListTest
