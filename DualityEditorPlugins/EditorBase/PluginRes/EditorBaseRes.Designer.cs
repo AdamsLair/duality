@@ -607,6 +607,16 @@ namespace EditorBase.PluginRes {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconCmpRigidBodyRenderer {
+            get {
+                object obj = ResourceManager.GetObject("IconCmpRigidBodyRenderer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconCmpSoundListener {
             get {
                 object obj = ResourceManager.GetObject("IconCmpSoundListener", resourceCulture);

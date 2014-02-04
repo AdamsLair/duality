@@ -30,6 +30,10 @@ namespace Duality.Resources
 		/// </summary>
 		public static ContentRef<Material> SolidWhite			{ get; private set; }
 		/// <summary>
+		/// A solid, black Material.
+		/// </summary>
+		public static ContentRef<Material> SolidBlack			{ get; private set; }
+		/// <summary>
 		/// A Material that inverts its background.
 		/// </summary>
 		public static ContentRef<Material> InvertWhite			{ get; private set; }
@@ -62,6 +66,7 @@ namespace Duality.Resources
 		{
 			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Material:";
 			const string ContentPath_SolidWhite			= VirtualContentPath + "SolidWhite";
+			const string ContentPath_SolidBlack			= VirtualContentPath + "SolidBlack";
 			const string ContentPath_InvertWhite		= VirtualContentPath + "InvertWhite";
 			const string ContentPath_DualityIcon		= VirtualContentPath + "DualityIcon";
 			const string ContentPath_DualityIconB		= VirtualContentPath + "DualityIconB";
@@ -71,6 +76,7 @@ namespace Duality.Resources
 			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
 
 			ContentProvider.AddContent(ContentPath_SolidWhite, new Material(DrawTechnique.Solid, ColorRgba.White));
+			ContentProvider.AddContent(ContentPath_SolidBlack, new Material(DrawTechnique.Solid, ColorRgba.Black));
 			ContentProvider.AddContent(ContentPath_InvertWhite, new Material(DrawTechnique.Invert, ColorRgba.White));
 			ContentProvider.AddContent(ContentPath_DualityIcon, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIcon));
 			ContentProvider.AddContent(ContentPath_DualityIconB, new Material(DrawTechnique.Mask, ColorRgba.White, Texture.DualityIconB));
@@ -80,6 +86,7 @@ namespace Duality.Resources
 			ContentProvider.AddContent(ContentPath_Checkerboard, new Material(DrawTechnique.Solid, ColorRgba.White, Texture.Checkerboard));
 
 			SolidWhite			= ContentProvider.RequestContent<Material>(ContentPath_SolidWhite);
+			SolidBlack			= ContentProvider.RequestContent<Material>(ContentPath_SolidBlack);
 			InvertWhite			= ContentProvider.RequestContent<Material>(ContentPath_InvertWhite);
 			DualityIcon			= ContentProvider.RequestContent<Material>(ContentPath_DualityIcon);
 			DualityIconB		= ContentProvider.RequestContent<Material>(ContentPath_DualityIconB);

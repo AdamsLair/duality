@@ -208,6 +208,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="PluginRes\iconCmpRigidBodyRenderer.png" />
     <None Include="PluginRes\overlayLinkBroken.png" />
     <None Include="PluginRes\overlayLink.png" />
     <None Include="PluginRes\bell.png" />

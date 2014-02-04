@@ -103,7 +103,8 @@
     <Compile Include="Components\Physics\Joints\FixedAngleJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\FixedDistanceJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\WeldJointInfo.cs" />
-    <Compile Include="Components\Renderers\ProfileRenderer.cs" />
+    <Compile Include="Components\Renderers\Diagnostics\RigidBodyRenderer.cs" />
+    <Compile Include="Components\Renderers\Diagnostics\ProfileRenderer.cs" />
     <Compile Include="ContentRef.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Graphics\DrawDevice.cs" />

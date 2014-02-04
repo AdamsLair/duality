@@ -30,6 +30,7 @@ namespace Duality
 			private	float		transformAngle;
 			private	Vector2		transformScale;
 			private	Vector2		transformHandle;
+			private	Rect		uvGenRect;
 
 			private	Vector2		curTX;
 			private	Vector2		curTY;
@@ -61,6 +62,14 @@ namespace Duality
 			{
 				get { return this.invariantTextScale; }
 				set { this.invariantTextScale = value; }
+			}
+			/// <summary>
+			/// [GET / SET] The texture coordinate rect which is used for UV generation when drawing shapes.
+			/// </summary>
+			public Rect TextureCoordinateRect
+			{
+				get { return this.uvGenRect; }
+				set { this.uvGenRect = value; }
 			}
 			/// <summary>
 			/// [GET / SET] The color tint to use for drawing.
@@ -124,6 +133,7 @@ namespace Duality
 			public State(State other)
 			{
 				this.batchInfo = other.batchInfo;
+				this.uvGenRect = other.uvGenRect;
 				this.font = other.font;
 				this.color = other.color;
 				this.invariantTextScale = other.invariantTextScale;
@@ -148,6 +158,7 @@ namespace Duality
 			public void Reset()
 			{
 				this.batchInfo = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+				this.uvGenRect = new Rect(1.0f, 1.0f);
 				this.font = Font.GenericMonospace10;
 				this.color = ColorRgba.White;
 				this.invariantTextScale = false;
@@ -165,6 +176,10 @@ namespace Duality
 			public void SetMaterial(BatchInfo material)
 			{
 				this.batchInfo = material;
+				if (this.batchInfo.MainTexture.IsAvailable)
+				{
+					this.uvGenRect = new Rect(this.batchInfo.MainTexture.Res.UVRatio);
+				}
 			}
 			/// <summary>
 			/// Sets the States drawing material.
@@ -173,6 +188,10 @@ namespace Duality
 			public void SetMaterial(ContentRef<Material> material)
 			{
 				this.batchInfo = material.Res.InfoDirect;
+				if (this.batchInfo.MainTexture.IsAvailable)
+				{
+					this.uvGenRect = new Rect(this.batchInfo.MainTexture.Res.UVRatio);
+				}
 			}
 
 			private void UpdateTransform()
@@ -901,12 +920,25 @@ namespace Duality
 			this.device.PreprocessCoords(ref posTemp, ref scale);
 
 			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			VertexC1P3[] vertices = new VertexC1P3[points.Length];
+			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			Rect pointBoundingRect = new Rect();
+			for (int i = 0; i < points.Length; i++)
+			{
+				pointBoundingRect.X = MathF.Min(points[i].X, pointBoundingRect.X);
+				pointBoundingRect.Y = MathF.Min(points[i].Y, pointBoundingRect.Y);
+				pointBoundingRect.W = MathF.Max(points[i].X, pointBoundingRect.X);
+				pointBoundingRect.H = MathF.Max(points[i].Y, pointBoundingRect.Y);
+			}
+			pointBoundingRect.W -= pointBoundingRect.X;
+			pointBoundingRect.H -= pointBoundingRect.Y;
+			VertexC1P3T2[] vertices = new VertexC1P3T2[points.Length];
 			for (int i = 0; i < points.Length; i++)
 			{
 				vertices[i].Pos.X = (points[i].X - pos.X) * scale + posTemp.X;
 				vertices[i].Pos.Y = (points[i].Y - pos.Y) * scale + posTemp.Y;
 				vertices[i].Pos.Z = (z - pos.Z) * scale + posTemp.Z;
+				vertices[i].TexCoord.X = texCoordRect.X + ((points[i].X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[i].TexCoord.Y = texCoordRect.Y + ((points[i].Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[i].Color = shapeColor;
 			}
 
@@ -941,15 +973,24 @@ namespace Duality
 
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			VertexC1P3[] vertices = new VertexC1P3[4];
+			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			VertexC1P3T2[] vertices = new VertexC1P3T2[4];
+
 			vertices[0].Pos = pos + new Vector3(left);
 			vertices[1].Pos = target + new Vector3(left2);
 			vertices[2].Pos = target + new Vector3(right2);
 			vertices[3].Pos = pos + new Vector3(right);
+
+			vertices[0].TexCoord = texCoordRect.TopLeft;
+			vertices[1].TexCoord = texCoordRect.TopRight;
+			vertices[2].TexCoord = texCoordRect.BottomRight;
+			vertices[3].TexCoord = texCoordRect.BottomLeft;
+
 			vertices[0].Color = shapeColor;
 			vertices[1].Color = shapeColor;
 			vertices[2].Color = shapeColor;
 			vertices[3].Color = shapeColor;
+
 			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
 			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Quads, vertices);
 		}
@@ -998,17 +1039,23 @@ namespace Duality
 			float angleStep = angleRange / segmentNum;
 			Vector2 shapeHandle = pos.Xy - new Vector2(w, h);
 			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			VertexC1P3[] vertices = new VertexC1P3[segmentNum + 2];
+			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			VertexC1P3T2[] vertices = new VertexC1P3T2[segmentNum + 2];
 			float angle = minAngle;
 
 			vertices[0].Pos = pos;
 			vertices[0].Color = shapeColor;
+			vertices[0].TexCoord = texCoordRect.Center;
 			for (int i = 1; i < vertices.Length; i++)
 			{
-				vertices[i].Pos.X = pos.X + (float)Math.Sin(angle) * w;
-				vertices[i].Pos.Y = pos.Y - (float)Math.Cos(angle) * h;
+				float sin = (float)Math.Sin(angle);
+				float cos = (float)Math.Cos(angle); 
+				vertices[i].Pos.X = pos.X + sin * w;
+				vertices[i].Pos.Y = pos.Y - cos * h;
 				vertices[i].Pos.Z = pos.Z;
 				vertices[i].Color = shapeColor;
+				vertices[i].TexCoord.X = texCoordRect.X + (0.5f + 0.5f * sin) * texCoordRect.W;
+				vertices[i].TexCoord.Y = texCoordRect.Y + (0.5f - 0.5f * cos) * texCoordRect.H;
 				angle += angleStep;
 			}
 			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
@@ -1125,11 +1172,18 @@ namespace Duality
 
 			Vector2 shapeHandle = pos.Xy;
 			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			VertexC1P3[] vertices = new VertexC1P3[4];
+			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			VertexC1P3T2[] vertices = new VertexC1P3T2[4];
+
 			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
 			vertices[1].Pos = new Vector3(pos.X + w * scale, pos.Y, pos.Z);
 			vertices[2].Pos = new Vector3(pos.X + w * scale, pos.Y + h * scale, pos.Z);
 			vertices[3].Pos = new Vector3(pos.X, pos.Y + h * scale, pos.Z);
+
+			vertices[0].TexCoord = texCoordRect.TopLeft;
+			vertices[1].TexCoord = texCoordRect.TopRight;
+			vertices[2].TexCoord = texCoordRect.BottomRight;
+			vertices[3].TexCoord = texCoordRect.BottomLeft;
 
 			vertices[0].Color = shapeColor;
 			vertices[1].Color = shapeColor;
@@ -1149,145 +1203,6 @@ namespace Duality
 		public void FillRect(float x, float y, float w, float h)
 		{
 			this.FillRect(x, y, 0, w, h);
-		}
-
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		/// <param name="uvX">UV x coordinate</param>
-		/// <param name="uvY">UV y coordinate</param>
-		/// <param name="uvW">UV coordinate width</param>
-		/// <param name="uvH">UV coordinate height</param>
-		public void DrawTexturedRect(float x, float y, float z, float w, float h, float uvX, float uvY, float uvW, float uvH)
-		{
-			if (w < 0.0f) { x += w; w = -w; }
-			if (h < 0.0f) { y += h; h = -h; }
-
-			Vector3 pos = new Vector3(x, y, z);
-			float scale = 1.0f;
-			device.PreprocessCoords(ref pos, ref scale);
-
-			Texture mainTex = this.CurrentState.MaterialDirect.MainTexture.Res;
-			Vector2 mainTexUVRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
-
-			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			VertexC1P3T2[] vertices = new VertexC1P3T2[4];
-
-			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
-			vertices[1].Pos = new Vector3(pos.X + w * scale, pos.Y, pos.Z);
-			vertices[2].Pos = new Vector3(pos.X + w * scale, pos.Y + h * scale, pos.Z);
-			vertices[3].Pos = new Vector3(pos.X, pos.Y + h * scale, pos.Z);
-
-			vertices[0].TexCoord = new Vector2(uvX * mainTexUVRatio.X, uvY * mainTexUVRatio.Y);
-			vertices[1].TexCoord = new Vector2((uvX + uvW) * mainTexUVRatio.X, uvY * mainTexUVRatio.Y);
-			vertices[2].TexCoord = new Vector2((uvX + uvW) * mainTexUVRatio.X, (uvY + uvH) * mainTexUVRatio.Y);
-			vertices[3].TexCoord = new Vector2(uvX * mainTexUVRatio.X, (uvY + uvH) * mainTexUVRatio.Y);
-
-			vertices[0].Color = shapeColor;
-			vertices[1].Color = shapeColor;
-			vertices[2].Color = shapeColor;
-			vertices[3].Color = shapeColor;
-
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Quads, vertices);
-		}
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="uvX">UV x coordinate</param>
-		/// <param name="uvY">UV y coordinate</param>
-		/// <param name="uvW">UV coordinate width</param>
-		/// <param name="uvH">UV coordinate height</param>
-		public void DrawTexturedRect(float x, float y, float z, float uvX, float uvY, float uvW, float uvH)
-		{
-			Texture mainTex = this.CurrentState.MaterialDirect.MainTexture.Res;
-			Vector2 mainTexSize = mainTex != null ? mainTex.Size : Vector2.One * 10.0f;
-			this.DrawTexturedRect(x, y, z, mainTexSize.X, mainTexSize.Y, uvX, uvY, uvW, uvH);
-		}
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawTexturedRect(float x, float y, float z, float w, float h)
-		{
-			this.DrawTexturedRect(x, y, z, w, h, 0.0f, 0.0f, 1.0f, 1.0f);
-		}
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		public void DrawTexturedRect(float x, float y, float z)
-		{
-			Texture mainTex = this.CurrentState.MaterialDirect.MainTexture.Res;
-			Vector2 mainTexSize = mainTex != null ? mainTex.Size : Vector2.One * 10.0f;
-			this.DrawTexturedRect(x, y, z, mainTexSize.X, mainTexSize.Y, 0.0f, 0.0f, 1.0f, 1.0f);
-		}
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		/// <param name="uvX">UV x coordinate</param>
-		/// <param name="uvY">UV y coordinate</param>
-		/// <param name="uvW">UV coordinate width</param>
-		/// <param name="uvH">UV coordinate height</param>
-		public void DrawTexturedRect(float x, float y, float w, float h, float uvX, float uvY, float uvW, float uvH)
-		{
-			this.DrawTexturedRect(x, y, 0, w, h, uvX, uvY, uvW, uvH);
-		}
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="uvX">UV x coordinate</param>
-		/// <param name="uvY">UV y coordinate</param>
-		/// <param name="uvW">UV coordinate width</param>
-		/// <param name="uvH">UV coordinate height</param>
-		public void DrawTexturedRect(float x, float y, float uvX, float uvY, float uvW, float uvH)
-		{
-			Texture mainTex = this.CurrentState.MaterialDirect.MainTexture.Res;
-			Vector2 mainTexSize = mainTex != null ? mainTex.Size : Vector2.One * 10.0f;
-			this.DrawTexturedRect(x, y, 0, mainTexSize.X, mainTexSize.Y, uvX, uvY, uvW, uvH);
-		}
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawTexturedRect(float x, float y, float w, float h)
-		{
-			this.DrawTexturedRect(x, y, 0, w, h, 0.0f, 0.0f, 1.0f, 1.0f);
-		}
-		/// <summary>
-		/// Draws a textured rectangle.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		public void DrawTexturedRect(float x, float y)
-		{
-			Texture mainTex = this.CurrentState.MaterialDirect.MainTexture.Res;
-			Vector2 mainTexSize = mainTex != null ? mainTex.Size : Vector2.One * 10.0f;
-			this.DrawTexturedRect(x, y, 0, mainTexSize.X, mainTexSize.Y, 0.0f, 0.0f, 1.0f, 1.0f);
 		}
 
 		/// <summary>
