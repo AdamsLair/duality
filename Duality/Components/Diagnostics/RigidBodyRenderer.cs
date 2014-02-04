@@ -12,7 +12,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-namespace Duality.Components.Renderers
+namespace Duality.Components.Diagnostics
 {
 	/// <summary>
 	/// A diagnostic <see cref="Duality.Component"/> that renders a RigidBodies shape for debugging purposes.
@@ -101,8 +101,32 @@ namespace Duality.Components.Renderers
 
 			canvas.FillCircle(pos.X, pos.Y, pos.Z, 50.0f);
 
-			canvas.CurrentState.TransformHandle = new Vector2(-128.0f, 0.0f);
-			canvas.FillRect(pos.X, pos.Y, 128.0f, 128.0f);
+			canvas.CurrentState.TransformHandle = new Vector2(125.0f, 0.0f);
+			canvas.FillRect(pos.X, pos.Y, pos.Z, 128.0f, 128.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-125.0f, 0.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 32.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-250.0f, 0.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 16.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-375.0f, 0.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 8.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-500.0f, 0.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 49.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-125.0f, -125.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 32.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-250.0f, -125.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 16.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-375.0f, -125.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 8.0f);
+
+			canvas.CurrentState.TransformHandle = new Vector2(-500.0f, -125.0f);
+			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 49.0f);
 		}
 		protected override void OnCopyTo(Component target, Cloning.CloneProvider provider)
 		{

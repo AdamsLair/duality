@@ -12,7 +12,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-namespace Duality.Components.Renderers
+namespace Duality.Components.Diagnostics
 {
 	/// <summary>
 	/// A diagnostic <see cref="Duality.Component"/> that displays current performance measurements and other profiling stats.

@@ -35,6 +35,12 @@ namespace Duality.Tests.Cloning
 			{
 				return !first.Equals(second);
 			}
+			public override int GetHashCode()
+			{
+				return MathF.CombineHashCode(
+					this.IntField.GetHashCode(),
+					this.FloatField.GetHashCode());
+			}
 			public override bool Equals(object obj)
 			{
 				if (obj is TestData)
@@ -49,7 +55,7 @@ namespace Duality.Tests.Cloning
 					other.FloatField == this.FloatField;
 			}
 		}
-		private class TestObject
+		private class TestObject : IEquatable<TestObject>
 		{
 			public string StringField;
 			public TestData DataField;
@@ -78,6 +84,10 @@ namespace Duality.Tests.Cloning
 			public static bool operator !=(TestObject first, TestObject second)
 			{
 				return !first.Equals(second);
+			}
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
 			}
 			public override bool Equals(object obj)
 			{

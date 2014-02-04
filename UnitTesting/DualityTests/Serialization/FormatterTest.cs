@@ -35,6 +35,12 @@ namespace Duality.Tests.Serialization
 			{
 				return !first.Equals(second);
 			}
+			public override int GetHashCode()
+			{
+				return MathF.CombineHashCode(
+					this.IntField.GetHashCode(),
+					this.FloatField.GetHashCode());
+			}
 			public override bool Equals(object obj)
 			{
 				if (obj is TestData)
@@ -50,7 +56,7 @@ namespace Duality.Tests.Serialization
 			}
 		}
 		[Serializable]
-		private class TestObject
+		private class TestObject : IEquatable<TestObject>
 		{
 			public string StringField;
 			public TestData DataField;
@@ -86,6 +92,10 @@ namespace Duality.Tests.Serialization
 					return this.Equals((TestObject)obj);
 				else
 					return base.Equals(obj);
+			}
+			public override int GetHashCode()
+			{
+				return base.GetHashCode();
 			}
 			public bool Equals(TestObject other)
 			{

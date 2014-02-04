@@ -8,6 +8,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Duality;
 using Duality.Components;
 using Duality.Components.Renderers;
+using Duality.Components.Diagnostics;
 using Duality.Components.Physics;
 using Duality.Resources;
 using TextRenderer = Duality.Components.Renderers.TextRenderer;
