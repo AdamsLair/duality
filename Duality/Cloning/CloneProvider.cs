@@ -314,4 +314,16 @@ namespace Duality.Cloning
 			provider.SetExplicitUnwrap((Type[])null);
 		}
 	}
+
+	public static class ExtMethodsCloning
+	{
+		public static T DeepClone<T>(this T baseObj, CloneProviderContext context = null)
+		{
+			return CloneProvider.DeepClone<T>(baseObj, context);
+		}
+		public static void DeepCopyTo<T>(this T baseObj, T targetObj, CloneProviderContext context = null)
+		{
+			CloneProvider.DeepCopyTo<T>(baseObj, targetObj, context);
+		}
+	}
 }
