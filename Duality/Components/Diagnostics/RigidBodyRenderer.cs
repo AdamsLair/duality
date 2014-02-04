@@ -14,6 +14,7 @@ using OpenTK.Input;
 
 namespace Duality.Components.Diagnostics
 {
+#if FALSE
 	/// <summary>
 	/// A diagnostic <see cref="Duality.Component"/> that renders a RigidBodies shape for debugging purposes.
 	/// </summary>
@@ -141,4 +142,5 @@ namespace Duality.Components.Diagnostics
 			t.offset				= this.offset;
 		}
 	}
+#endif
 }
