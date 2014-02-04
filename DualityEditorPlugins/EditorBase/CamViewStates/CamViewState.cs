@@ -547,8 +547,7 @@ namespace EditorBase.CamViewStates
 				// Draw current action text
 				if (!this.actionText.IsEmpty)
 				{
-					canvas.DrawTextBackground(this.actionText, actionTextPos.X, actionTextPos.Y);
-					canvas.DrawText(this.actionText, actionTextPos.X, actionTextPos.Y);
+					canvas.DrawText(this.actionText, actionTextPos.X, actionTextPos.Y, drawBackground: true);
 				}
 
 				// Update / Draw current status text
@@ -557,8 +556,7 @@ namespace EditorBase.CamViewStates
 					if (!this.statusText.IsEmpty)
 					{
 						Vector2 statusTextSize = this.statusText.Size;
-						canvas.DrawTextBackground(this.statusText, 10, this.ClientSize.Height - statusTextSize.Y - 10);
-						canvas.DrawText(this.statusText, 10, this.ClientSize.Height - statusTextSize.Y - 10);
+						canvas.DrawText(this.statusText, 10, this.ClientSize.Height - statusTextSize.Y - 10, drawBackground: true);
 					}
 				}
 

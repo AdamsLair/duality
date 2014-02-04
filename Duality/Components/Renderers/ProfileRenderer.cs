@@ -177,8 +177,7 @@ namespace Duality.Components.Renderers
 				}
 
 				// Draw Report
-				canvas.DrawTextBackground(textReport, textReportRect.X, textReportRect.Y);
-				canvas.DrawText(textReport, ref textReportTextVert, ref textReportIconVert, textReportRect.X, textReportRect.Y);
+				canvas.DrawText(textReport, ref textReportTextVert, ref textReportIconVert, textReportRect.X, textReportRect.Y, drawBackground: true);
 			}
 
 			// Counter Graphs
@@ -222,7 +221,7 @@ namespace Duality.Components.Renderers
 						canvas.CurrentState.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
 						canvas.FillRect(graphRect.X, graphY, graphRect.W, graphH);
 						canvas.CurrentState.ColorTint = ColorRgba.White;
-						canvas.DrawHorizontalGraph(cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
+						this.DrawHorizontalGraph(canvas, cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
 						cursorRatio = (float)timeCounter.ValueGraphCursor / (float)ProfileCounter.ValueHistoryLen;
 					}
 					else if (counter is StatCounter)
@@ -236,7 +235,7 @@ namespace Duality.Components.Renderers
 						canvas.CurrentState.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
 						canvas.FillRect(graphRect.X, graphY, graphRect.W, graphH);
 						canvas.CurrentState.ColorTint = ColorRgba.White;
-						canvas.DrawHorizontalGraph(cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
+						this.DrawHorizontalGraph(canvas, cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
 						cursorRatio = (float)statCounter.ValueGraphCursor / (float)ProfileCounter.ValueHistoryLen;
 					}
 					
@@ -286,6 +285,31 @@ namespace Duality.Components.Renderers
 			t.keyToggleGraph		= this.keyToggleGraph;
 			t.keyToggleTextPerf		= this.keyToggleTextPerf;
 			t.keyToggleTextStat		= this.keyToggleTextStat;
+		}
+		
+		private void DrawHorizontalGraph(Canvas canvas, float[] values, ColorRgba[] colors, ref VertexC1P3[] vertices, float x, float y, float w, float h)
+		{
+			if (h > 0.0f) h--;
+			if (h < 0.0f) h++;
+			
+			IDrawDevice device = canvas.DrawDevice;
+
+			ColorRgba baseColor = canvas.CurrentState.ColorTint * canvas.CurrentState.MaterialDirect.MainColor;
+			float sampleXRatio = w / (float)(values.Length - 1);
+			
+			if (vertices == null)
+				vertices = new VertexC1P3[MathF.Max(values.Length, 16)];
+			else if (vertices.Length < values.Length)
+				vertices = new VertexC1P3[MathF.Max(vertices.Length * 2, values.Length, 16)];
+
+			for (int i = 0; i < values.Length; i++)
+			{
+				vertices[i].Pos.X = x + 0.5f + i * sampleXRatio;
+				vertices[i].Pos.Y = y + 0.5f + (1.0f - values[i]) * h;
+				vertices[i].Pos.Z = 0.0f;
+				vertices[i].Color = baseColor * colors[i];
+			}
+			device.AddVertices(canvas.CurrentState.MaterialDirect, VertexMode.LineStrip, vertices, values.Length);
 		}
 	}
 }

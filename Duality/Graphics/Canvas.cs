@@ -635,51 +635,6 @@ namespace Duality
 		{
 			this.DrawThickLine(x, y, 0, x2, y2, 0, width);
 		}
-		
-		/// <summary>
-		/// Draws a cross at the specified position.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="r"></param>
-		public void DrawCross(float x, float y, float z, float r)
-		{
-			Vector3 pos = new Vector3(x - r, y, z);
-			Vector3 pos2 = new Vector3(x, y - r, z);
-			Vector3 target = new Vector3(x + r, y, z);
-			Vector3 target2 = new Vector3(x, y + r, z);
-			float scale = 1.0f;
-			
-			device.PreprocessCoords(ref pos, ref scale);
-			device.PreprocessCoords(ref pos2, ref scale);
-			device.PreprocessCoords(ref target, ref scale);
-			device.PreprocessCoords(ref target2, ref scale);
-
-			Vector2 shapeHandle = new Vector2(x, y);
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			VertexC1P3[] vertices = new VertexC1P3[4];
-			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
-			vertices[1].Pos = target + new Vector3(0.5f, 0.5f, 0.0f);
-			vertices[2].Pos = pos2 + new Vector3(0.5f, 0.5f, 0.0f);
-			vertices[3].Pos = target2 + new Vector3(0.5f, 0.5f, 0.0f);
-			vertices[0].Color = shapeColor;
-			vertices[1].Color = shapeColor;
-			vertices[2].Color = shapeColor;
-			vertices[3].Color = shapeColor;
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Lines, vertices);
-		}
-		/// <summary>
-		/// Draws a cross at the specified position.
-		/// </summary>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="r"></param>
-		public void DrawCross(float x, float y, float r)
-		{
-			this.DrawCross(x, y, 0.0f, r);
-		}
 
 		/// <summary>
 		/// Draws a rectangle.
@@ -888,11 +843,11 @@ namespace Duality
 		}
 		
 		/// <summary>
-		/// Fills a convex polygon. All vertices share the same Z value.
+		/// Fills a polygon. All vertices share the same Z value, and the polygon needs to be convex.
 		/// </summary>
 		/// <param name="points"></param>
 		/// <param name="z"></param>
-		public void FillConvexPolygon(Vector2[] points, float z = 0.0f)
+		public void FillPolygon(Vector2[] points, float z = 0.0f)
 		{
 			Vector3 pos = new Vector3(points[0].X, points[0].Y, z);
 
@@ -1291,94 +1246,6 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Draws a horizontally aligned graph.
-		/// </summary>
-		/// <param name="values">An array of value samples that will be represented by the graph.</param>
-		/// <param name="colors">An array of color values corresponding to the supplied values. Specify null, if no coloring is required.</param>
-		/// <param name="vertices">Optional vertex cache to use for the graph. If set, the graphs vertices are cached and re-used for better Profile.</param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawHorizontalGraph(float[] values, ColorRgba[] colors, ref VertexC1P3[] vertices, float x, float y, float z, float w, float h)
-		{
-			if (values == null)
-				throw new ArgumentNullException("values");
-			if (colors != null && colors.Length != values.Length)
-				throw new ArgumentException("The number of color samples needs to be equal to the number of value samples.", "colors");
-
-			if (h > 0.0f) h--;
-			if (h < 0.0f) h++;
-			Vector3 pos = new Vector3(x, y, z);
-			float scale = 1.0f;
-			
-			device.PreprocessCoords(ref pos, ref scale);
-
-			Vector2 shapeHandle = pos.Xy;
-			ColorRgba baseColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			float sampleXRatio = w / (float)(values.Length - 1);
-			
-			if (vertices == null)
-				vertices = new VertexC1P3[MathF.Max(values.Length, 16)];
-			else if (vertices.Length < values.Length)
-				vertices = new VertexC1P3[MathF.Max(vertices.Length * 2, values.Length, 16)];
-
-			for (int i = 0; i < values.Length; i++)
-			{
-				vertices[i].Pos.X = pos.X + 0.5f + i * sampleXRatio;
-				vertices[i].Pos.Y = pos.Y + 0.5f + (1.0f - values[i]) * h;
-				vertices[i].Pos.Z = pos.Z;
-				vertices[i].Color = (colors != null) ? (baseColor * colors[i]) : baseColor;
-			}
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.LineStrip, vertices, values.Length);
-		}
-		/// <summary>
-		/// Draws a horizontally aligned graph.
-		/// </summary>
-		/// <param name="values">An array of value samples that will be represented by the graph.</param>
-		/// <param name="colors">An array of color values corresponding to the supplied values. Specify null, if no coloring is required.</param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawHorizontalGraph(float[] values, ColorRgba[] colors, float x, float y, float z, float w, float h)
-		{
-			VertexC1P3[] vertices = null;
-			this.DrawHorizontalGraph(values, colors, ref vertices, x, y, z, w, h);
-		}
-		/// <summary>
-		/// Draws a horizontally aligned graph.
-		/// </summary>
-		/// <param name="values">An array of value samples that will be represented by the graph.</param>
-		/// <param name="colors">An array of color values corresponding to the supplied values. Specify null, if no coloring is required.</param>
-		/// <param name="vertices">Optional vertex cache to use for the graph. If set, the graphs vertices are cached and re-used for better Profile.</param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawHorizontalGraph(float[] values, ColorRgba[] colors, ref VertexC1P3[] vertices, float x, float y, float w, float h)
-		{
-			this.DrawHorizontalGraph(values, colors, ref vertices, x, y, 0.0f, w, h);
-		}
-		/// <summary>
-		/// Draws a horizontally aligned graph.
-		/// </summary>
-		/// <param name="values">An array of value samples that will be represented by the graph.</param>
-		/// <param name="colors">An array of color values corresponding to the supplied values. Specify null, if no coloring is required.</param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="w"></param>
-		/// <param name="h"></param>
-		public void DrawHorizontalGraph(float[] values, ColorRgba[] colors, float x, float y, float w, float h)
-		{
-			VertexC1P3[] vertices = null;
-			this.DrawHorizontalGraph(values, colors, ref vertices, x, y, 0.0f, w, h);
-		}
-
-		/// <summary>
 		/// Draws the specified text.
 		/// </summary>
 		/// <param name="text"></param>
@@ -1386,9 +1253,9 @@ namespace Duality
 		/// <param name="y"></param>
 		/// <param name="z"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block.</param>
-		public void DrawText(string text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft)
+		public void DrawText(string text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
-			this.DrawText(new string[] { text }, x, y, z, blockAlign);
+			this.DrawText(new string[] { text }, x, y, z, blockAlign, drawBackground);
 		}
 		/// <summary>
 		/// Draws the specified text.
@@ -1399,14 +1266,34 @@ namespace Duality
 		/// <param name="y"></param>
 		/// <param name="z"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, use the <see cref="FormattedText"/> overload.</param>
-		public void DrawText(string[] text, ref VertexC1P3T2[] vertices, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft)
+		public void DrawText(string[] text, ref VertexC1P3T2[] vertices, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			if (text == null || text.Length == 0) return;
 
+			Vector2 textSize = Vector2.Zero;
 			if (blockAlign != Alignment.TopLeft)
 			{
-				Vector2 textSize = this.MeasureText(text);
+				if (textSize == Vector2.Zero) textSize = this.MeasureText(text);
 				blockAlign.ApplyTo(ref x, ref y, textSize.X, textSize.Y);
+			}
+
+			if (drawBackground)
+			{
+				if (textSize == Vector2.Zero) textSize = this.MeasureText(text);
+				Vector2 padding = new Vector2(this.CurrentState.TextFont.Res.Height, this.CurrentState.TextFont.Res.Height) * 0.35f;
+
+				ColorFormat.ColorRgba baseColor = this.CurrentState.MaterialDirect.MainColor * this.CurrentState.ColorTint;
+				const float backAlpha = 0.65f;
+				float baseAlpha = (float)baseColor.A / 255.0f;
+				float baseLuminance = baseColor.GetLuminance();
+
+				this.PushState();
+				this.CurrentState.SetMaterial(new Resources.BatchInfo(
+					Resources.DrawTechnique.Alpha, 
+					(baseLuminance > 0.5f ? ColorFormat.ColorRgba.Black : ColorFormat.ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
+				this.CurrentState.ColorTint = ColorFormat.ColorRgba.White;
+				this.FillRect(x - padding.X, y - padding.Y, textSize.X + padding.X * 2, textSize.Y + padding.Y * 2);
+				this.PopState();
 			}
 
 			Vector3 pos = new Vector3(x, y, z);
@@ -1440,10 +1327,10 @@ namespace Duality
 		/// <param name="y"></param>
 		/// <param name="z"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, use the <see cref="FormattedText"/> overload.</param>
-		public void DrawText(string[] text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft)
+		public void DrawText(string[] text, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			VertexC1P3T2[] vertices = null;
-			this.DrawText(text, ref vertices, x, y, z, blockAlign);
+			this.DrawText(text, ref vertices, x, y, z, blockAlign, drawBackground);
 		}
 		/// <summary>
 		/// Draws the specified formatted text.
@@ -1456,12 +1343,30 @@ namespace Duality
 		/// <param name="z"></param>
 		/// <param name="iconMat"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, make use of <see cref="FormattedText"/> format tags.</param>
-		public void DrawText(FormattedText text, ref VertexC1P3T2[][] vertText, ref VertexC1P3T2[] vertIcon, float x, float y, float z = 0.0f, BatchInfo iconMat = null, Alignment blockAlign = Alignment.TopLeft)
+		public void DrawText(FormattedText text, ref VertexC1P3T2[][] vertText, ref VertexC1P3T2[] vertIcon, float x, float y, float z = 0.0f, BatchInfo iconMat = null, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			if (text == null || text.IsEmpty) return;
 
 			if (blockAlign != Alignment.TopLeft)
 				blockAlign.ApplyTo(ref x, ref y, text.Size.X, text.Size.Y);
+
+			if (drawBackground)
+			{
+				Vector2 padding = new Vector2(this.CurrentState.TextFont.Res.Height, this.CurrentState.TextFont.Res.Height) * 0.35f;
+
+				ColorFormat.ColorRgba baseColor = this.CurrentState.MaterialDirect.MainColor * this.CurrentState.ColorTint;
+				const float backAlpha = 0.65f;
+				float baseAlpha = (float)baseColor.A / 255.0f;
+				float baseLuminance = baseColor.GetLuminance();
+
+				this.PushState();
+				this.CurrentState.SetMaterial(new Resources.BatchInfo(
+					Resources.DrawTechnique.Alpha, 
+					(baseLuminance > 0.5f ? ColorFormat.ColorRgba.Black : ColorFormat.ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
+				this.CurrentState.ColorTint = ColorFormat.ColorRgba.White;
+				this.FillRect(x - padding.X, y - padding.Y, text.Size.X + padding.X * 2, text.Size.Y + padding.Y * 2);
+				this.PopState();
+			}
 
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
@@ -1498,82 +1403,11 @@ namespace Duality
 		/// <param name="z"></param>
 		/// <param name="iconMat"></param>
 		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, make use of <see cref="FormattedText"/> format tags.</param>
-		public void DrawText(FormattedText text, float x, float y, float z = 0.0f, BatchInfo iconMat = null, Alignment blockAlign = Alignment.TopLeft)
+		public void DrawText(FormattedText text, float x, float y, float z = 0.0f, BatchInfo iconMat = null, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			VertexC1P3T2[][] vertText = null;
 			VertexC1P3T2[] vertIcon = null;
-			this.DrawText(text, ref vertText, ref vertIcon, x, y, z, iconMat, blockAlign);
-		}
-
-		/// <summary>
-		/// Draws a simple background rectangle for the specified text. Its color is automatically determined
-		/// based on the current state in order to generate an optimal contrast to the text.
-		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="backAlpha"></param>
-		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, use the <see cref="FormattedText"/> overload.</param>
-		public void DrawTextBackground(string text, float x, float y, float z = 0.0f, float backAlpha = 0.65f, Alignment blockAlign = Alignment.TopLeft)
-		{
-			this.DrawTextBackground(this.MeasureText(text), x, y, z, backAlpha, blockAlign);
-		}
-		/// <summary>
-		/// Draws a simple background rectangle for the specified text. Its color is automatically determined
-		/// based on the current state in order to generate an optimal contrast to the text.
-		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="backAlpha"></param>
-		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, use the <see cref="FormattedText"/> overload.</param>
-		public void DrawTextBackground(string[] text, float x, float y, float z = 0.0f, float backAlpha = 0.65f, Alignment blockAlign = Alignment.TopLeft)
-		{
-			this.DrawTextBackground(this.MeasureText(text), x, y, z, backAlpha, blockAlign);
-		}
-		/// <summary>
-		/// Draws a simple background rectangle for the specified text. Its color is automatically determined
-		/// based on the current state in order to generate an optimal contrast to the text.
-		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="backAlpha"></param>
-		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, make use of <see cref="FormattedText"/> format tags.</param>
-		public void DrawTextBackground(FormattedText text, float x, float y, float z = 0.0f, float backAlpha = 0.65f, Alignment blockAlign = Alignment.TopLeft)
-		{
-			this.DrawTextBackground(text.Size, x, y, z, backAlpha, blockAlign);
-		}
-		/// <summary>
-		/// Draws a simple background rectangle for a text of the specified size. Its color is automatically determined
-		/// based on the current state in order to generate an optimal contrast to the text.
-		/// </summary>
-		/// <param name="textSize"></param>
-		/// <param name="x"></param>
-		/// <param name="y"></param>
-		/// <param name="z"></param>
-		/// <param name="backAlpha"></param>
-		/// <param name="blockAlign">Specifies the alignment of the text block. To make use of individual line alignment, use the <see cref="FormattedText"/> overload.</param>
-		public void DrawTextBackground(Vector2 textSize, float x, float y, float z = 0.0f, float backAlpha = 0.65f, Alignment blockAlign = Alignment.TopLeft)
-		{
-			Vector2 padding = new Vector2(this.CurrentState.TextFont.Res.Height, this.CurrentState.TextFont.Res.Height) * 0.35f;
-			
-			blockAlign.ApplyTo(ref x, ref y, textSize.X, textSize.Y);
-
-			ColorFormat.ColorRgba clr = this.CurrentState.MaterialDirect.MainColor * this.CurrentState.ColorTint;
-			float alpha = (float)clr.A / 255.0f;
-			float lum = clr.GetLuminance();
-
-			this.PushState();
-			this.CurrentState.SetMaterial(new Resources.BatchInfo(
-				Resources.DrawTechnique.Alpha, 
-				(lum > 0.5f ? ColorFormat.ColorRgba.Black : ColorFormat.ColorRgba.White).WithAlpha(alpha * backAlpha)));
-			this.CurrentState.ColorTint = ColorFormat.ColorRgba.White;
-			this.FillRect(x - padding.X, y - padding.Y, textSize.X + padding.X * 2, textSize.Y + padding.Y * 2);
-			this.PopState();
+			this.DrawText(text, ref vertText, ref vertIcon, x, y, z, iconMat, blockAlign, drawBackground);
 		}
 
 		/// <summary>

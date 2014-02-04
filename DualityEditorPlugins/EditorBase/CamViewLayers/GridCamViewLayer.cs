@@ -130,8 +130,7 @@ namespace EditorBase.CamViewLayers
 					string.Format("X:{0,7:0}", cursorSpacePos.X),
 					string.Format("Y:{0,7:0}", cursorSpacePos.Y)
 				};
-				canvas.DrawTextBackground(text, cursorPos.X, cursorPos.Y);
-				canvas.DrawText(text, cursorPos.X, cursorPos.Y);
+				canvas.DrawText(text, cursorPos.X, cursorPos.Y, drawBackground: true);
 			}
 		}
 	}

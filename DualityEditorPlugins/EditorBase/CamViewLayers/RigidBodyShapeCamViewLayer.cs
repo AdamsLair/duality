@@ -149,7 +149,7 @@ namespace EditorBase.CamViewLayers
 						MathF.TransformCoord(ref center.X, ref center.Y, c.GameObj.Transform.Angle);
 
 						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
-						canvas.FillConvexPolygon(polyVert, colliderPos.Z);
+						canvas.FillPolygon(polyVert, colliderPos.Z);
 						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
 						canvas.DrawPolygon(polyVert, colliderPos.Z);
 					}
@@ -193,11 +193,20 @@ namespace EditorBase.CamViewLayers
 					Vector2 localMassCenter = c.LocalMassCenter;
 					MathF.TransformCoord(ref localMassCenter.X, ref localMassCenter.Y, c.GameObj.Transform.Angle);
 					canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.MassCenterColor.WithAlpha(colliderAlpha)));
-					canvas.DrawCross(
-						colliderPos.X + localMassCenter.X, 
+					canvas.DrawLine(
+						colliderPos.X + localMassCenter.X - 5.0f, 
 						colliderPos.Y + localMassCenter.Y, 
-						colliderPos.Z, 
-						5.0f);
+						colliderPos.Z,
+						colliderPos.X + localMassCenter.X + 5.0f, 
+						colliderPos.Y + localMassCenter.Y, 
+						colliderPos.Z);
+					canvas.DrawLine(
+						colliderPos.X + localMassCenter.X, 
+						colliderPos.Y + localMassCenter.Y - 5.0f, 
+						colliderPos.Z,
+						colliderPos.X + localMassCenter.X, 
+						colliderPos.Y + localMassCenter.Y + 5.0f, 
+						colliderPos.Z);
 				}
 			}
 		}
