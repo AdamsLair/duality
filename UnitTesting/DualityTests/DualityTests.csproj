@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation\AnimationTrackTest.cs" />
+    <Compile Include="Cloning\CloneProviderTest.cs" />
     <Compile Include="Components\ICmpInitializableTest.cs" />
     <Compile Include="Components\InitializableEventReceiver.cs" />
     <Compile Include="CorePlugin.cs" />

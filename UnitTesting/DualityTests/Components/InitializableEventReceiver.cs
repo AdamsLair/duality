@@ -10,7 +10,7 @@ using OpenTK;
 
 using NUnit.Framework;
 
-namespace DualityTests.Components
+namespace Duality.Tests.Components
 {
 	[Serializable]
 	public class InitializableEventReceiver : Component, ICmpInitializable

@@ -7,13 +7,13 @@ using Duality;
 using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Renderers;
-using DualityTests.Components;
+using Duality.Tests.Components;
 
 using OpenTK;
 using NUnit.Framework;
 
 
-namespace DualityTests.Resources
+namespace Duality.Tests.Resources
 {
 	[TestFixture]
 	public class SceneTest
