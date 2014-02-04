@@ -1070,7 +1070,7 @@ namespace Duality
 			{
 				vertices = new VertexC1P3T2[(segmentNum + 1) * 2];
 				float angle = minAngle;
-				Vector2 donutWidthTexCoord = 0.5f * donutWidth * texCoordRect.Size / new Vector2(width, height);
+				Vector2 donutWidthTexCoord = 0.5f * donutWidth * Vector2.One / new Vector2(width, height);
 				for (int i = 0; i < vertices.Length; i += 2)
 				{
 					float sin = (float)Math.Sin(angle);

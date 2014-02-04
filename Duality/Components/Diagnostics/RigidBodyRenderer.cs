@@ -98,6 +98,7 @@ namespace Duality.Components.Diagnostics
 			Canvas canvas = new Canvas(device);
 			canvas.CurrentState.TransformAngle = this.gameobj.Transform.Angle;
 			canvas.CurrentState.SetMaterial(this.areaMaterial);
+			canvas.CurrentState.TextureCoordinateRect = new Rect(10.0f, 10.0f);
 
 			canvas.FillCircle(pos.X, pos.Y, pos.Z, 50.0f);
 
