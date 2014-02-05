@@ -71,7 +71,7 @@ namespace Duality.Resources
 			ContentProvider.AddContent(ContentPath_DualityLogoMedium, new Texture(Pixmap.DualityLogoMedium));
 			ContentProvider.AddContent(ContentPath_DualityLogoSmall, new Texture(Pixmap.DualityLogoSmall));
 			ContentProvider.AddContent(ContentPath_White, new Texture(Pixmap.White));
-			ContentProvider.AddContent(ContentPath_Checkerboard, new Texture(Pixmap.Checkerboard, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat));
+			ContentProvider.AddContent(ContentPath_Checkerboard, new Texture(Pixmap.Checkerboard, wrapX: TextureWrapMode.Repeat, wrapY: TextureWrapMode.Repeat, filterMag: TextureMagFilter.Nearest));
 
 			DualityIcon			= ContentProvider.RequestContent<Texture>(ContentPath_DualityIcon);
 			DualityIconB		= ContentProvider.RequestContent<Texture>(ContentPath_DualityIconB);
