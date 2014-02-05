@@ -116,6 +116,7 @@
     <Compile Include="Animation\IPropertyAnimation.cs" />
     <Compile Include="Animation\IFieldAnimation.cs" />
     <Compile Include="Animation\PropertyAnimation.cs" />
+    <Compile Include="Graphics\CanvasBuffer.cs" />
     <Compile Include="Helpers\Math\Alignment.cs" />
     <Compile Include="Graphics\ColorFormat\ColorHsva.cs" />
     <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />

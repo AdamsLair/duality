@@ -26,7 +26,7 @@ namespace Duality.Components.Diagnostics
 			public float[] GraphValues;
 			public ColorRgba[] GraphColors;
 			public VertexC1P3[] VertGraph;
-			public VertexC1P3T2[] VertText;
+			public VertexC1P3T2[][] VertText;
 		}
 
 		private	bool			textReportPerf		= true;

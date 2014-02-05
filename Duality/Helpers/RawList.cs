@@ -19,7 +19,7 @@ namespace Duality
 	/// <typeparam name="T"></typeparam>
 	[Serializable]
 	[DebuggerTypeProxy(typeof(RawList<>.DebuggerTypeProxy))]
-	[DebuggerDisplay("Count = {Count}")]
+	[DebuggerDisplay("Count = {Count}, Capacity = {Capacity}")]
 	public class RawList<T> : IList<T>, IList
 	{
 		private const int BaseCapacity = 8;

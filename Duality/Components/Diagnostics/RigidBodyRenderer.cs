@@ -29,6 +29,9 @@ namespace Duality.Components.Diagnostics
 		private	ColorRgba				colorTint				= ColorRgba.White;
 		private	int						offset					= 0;
 
+		[NonSerialized]
+		private	CanvasBuffer			vertexBuffer			= new CanvasBuffer();
+
 
 		public override float BoundRadius
 		{
@@ -95,8 +98,10 @@ namespace Duality.Components.Diagnostics
 
 		public override void Draw(IDrawDevice device)
 		{
+			RigidBody body = this.GameObj.RigidBody;
 			Vector3 pos = this.gameobj.Transform.Pos;
-			Canvas canvas = new Canvas(device);
+
+			Canvas canvas = new Canvas(device, this.vertexBuffer);
 			canvas.CurrentState.TransformAngle = this.gameobj.Transform.Angle;
 			canvas.CurrentState.SetMaterial(this.areaMaterial);
 			canvas.CurrentState.TextureCoordinateRect = new Rect(10.0f, 10.0f);
