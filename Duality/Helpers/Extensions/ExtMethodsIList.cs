@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using OpenTK;
+
 namespace Duality
 {
 	/// <summary>
@@ -305,6 +307,44 @@ namespace Duality
 			
 				return hash;
 			}
+		}
+
+		/// <summary>
+		/// Determines the bounding box of a list of vectors.
+		/// </summary>
+		/// <param name="list"></param>
+		/// <returns></returns>
+		public static Rect BoundingBox(this IList<Vector2> list)
+		{
+			Rect pointBoundingRect = new Rect(
+				float.MaxValue, 
+				float.MaxValue, 
+				float.MinValue, 
+				float.MinValue);
+			if (list is Vector2[])
+			{
+				Vector2[] array = list as Vector2[];
+				for (int i = 0; i < array.Length; i++)
+				{
+					pointBoundingRect.X = MathF.Min(array[i].X, pointBoundingRect.X);
+					pointBoundingRect.Y = MathF.Min(array[i].Y, pointBoundingRect.Y);
+					pointBoundingRect.W = MathF.Max(array[i].X, pointBoundingRect.W);
+					pointBoundingRect.H = MathF.Max(array[i].Y, pointBoundingRect.H);
+				}
+			}
+			else
+			{
+				for (int i = 0; i < list.Count; i++)
+				{
+					pointBoundingRect.X = MathF.Min(list[i].X, pointBoundingRect.X);
+					pointBoundingRect.Y = MathF.Min(list[i].Y, pointBoundingRect.Y);
+					pointBoundingRect.W = MathF.Max(list[i].X, pointBoundingRect.W);
+					pointBoundingRect.H = MathF.Max(list[i].Y, pointBoundingRect.H);
+				}
+			}
+			pointBoundingRect.W -= pointBoundingRect.X;
+			pointBoundingRect.H -= pointBoundingRect.Y;
+			return pointBoundingRect;
 		}
 	}
 }

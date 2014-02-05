@@ -8,6 +8,8 @@ using OpenTK;
 using Duality.VertexFormat;
 using Duality.ColorFormat;
 using Duality.Resources;
+using Duality.Cloning;
+using ICloneable = Duality.Cloning.ICloneable;
 
 namespace Duality
 {
@@ -21,7 +23,7 @@ namespace Duality
 		/// <summary>
 		/// Describes the state of a <see cref="Canvas"/>.
 		/// </summary>
-		public class State
+		public class State : ICloneable
 		{
 			private	BatchInfo			batchInfo;
 			private	ColorRgba			color;
@@ -35,6 +37,7 @@ namespace Duality
 
 			private	Vector2		curTX;
 			private	Vector2		curTY;
+			private	Vector2		texBaseSize;
 
 
 			internal BatchInfo MaterialDirect
@@ -71,6 +74,13 @@ namespace Duality
 			{
 				get { return this.uvGenRect; }
 				set { this.uvGenRect = value; }
+			}
+			/// <summary>
+			/// [GET] The currently bound main textures size.
+			/// </summary>
+			public Vector2 TextureBaseSize
+			{
+				get { return this.texBaseSize; }
 			}
 			/// <summary>
 			/// [GET / SET] The color tint to use for drawing.
@@ -133,18 +143,27 @@ namespace Duality
 			}
 			public State(State other)
 			{
-				this.batchInfo = other.batchInfo;
-				this.uvGenRect = other.uvGenRect;
-				this.font = other.font;
-				this.color = other.color;
-				this.invariantTextScale = other.invariantTextScale;
-				this.zOffset = other.zOffset;
-				this.transformAngle = other.transformAngle;
-				this.transformHandle = other.transformHandle;
-				this.transformScale = other.transformScale;
-				this.UpdateTransform();
+				other.CopyTo(this);
 			}
-
+			
+			/// <summary>
+			/// Copies all state data to the specified target.
+			/// </summary>
+			/// <param name="target"></param>
+			public void CopyTo(State target)
+			{
+				target.batchInfo			= this.batchInfo;
+				target.uvGenRect			= this.uvGenRect;
+				target.texBaseSize			= this.texBaseSize;
+				target.font					= this.font;
+				target.color				= this.color;
+				target.invariantTextScale	= this.invariantTextScale;
+				target.zOffset				= this.zOffset;
+				target.transformAngle		= this.transformAngle;
+				target.transformHandle		= this.transformHandle;
+				target.transformScale		= this.transformScale;
+				target.UpdateTransform();
+			}
 			/// <summary>
 			/// Creates a clone of this State.
 			/// </summary>
@@ -160,6 +179,7 @@ namespace Duality
 			{
 				this.batchInfo = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 				this.uvGenRect = new Rect(1.0f, 1.0f);
+				this.texBaseSize = Vector2.Zero;
 				this.font = Font.GenericMonospace10;
 				this.color = ColorRgba.White;
 				this.invariantTextScale = false;
@@ -179,7 +199,13 @@ namespace Duality
 				this.batchInfo = material;
 				if (this.batchInfo.MainTexture.IsAvailable)
 				{
-					this.uvGenRect = new Rect(this.batchInfo.MainTexture.Res.UVRatio);
+					Texture tex = this.batchInfo.MainTexture.Res;
+					this.uvGenRect = new Rect(tex.UVRatio);
+					this.texBaseSize = tex.Size;
+				}
+				else
+				{
+					this.texBaseSize = Vector2.Zero;
 				}
 			}
 			/// <summary>
@@ -191,7 +217,13 @@ namespace Duality
 				this.batchInfo = material.Res.InfoDirect;
 				if (this.batchInfo.MainTexture.IsAvailable)
 				{
-					this.uvGenRect = new Rect(this.batchInfo.MainTexture.Res.UVRatio);
+					Texture tex = this.batchInfo.MainTexture.Res;
+					this.uvGenRect = new Rect(tex.UVRatio);
+					this.texBaseSize = tex.Size;
+				}
+				else
+				{
+					this.texBaseSize = Vector2.Zero;
 				}
 			}
 
@@ -258,6 +290,11 @@ namespace Duality
 						vertexData[i].Pos.Z += this.zOffset;
 					}
 				}
+			}
+			
+			void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
+			{
+				this.CopyTo(targetObj as State);
 			}
 		}
 
@@ -407,23 +444,24 @@ namespace Duality
 		/// Draws a convex polygon. All vertices share the same Z value.
 		/// </summary>
 		/// <param name="points"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		/// <param name="z"></param>
-		public void DrawPolygon(Vector2[] points, float z = 0.0f)
+		public void DrawPolygon(Vector2[] points, float x, float y, float z = 0.0f)
 		{
-			Vector3 pos = new Vector3(points[0].X, points[0].Y, z);
+			Vector3 pos = new Vector3(x, y, z);
 
 			float scale = 1.0f;
-			Vector3 posTemp = pos;
-			this.device.PreprocessCoords(ref posTemp, ref scale);
+			this.device.PreprocessCoords(ref pos, ref scale);
 
 			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
 			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(points.Length);
 			for (int i = 0; i < points.Length; i++)
 			{
-				vertices[i].Pos.X = (points[i].X - pos.X) * scale + posTemp.X + 0.5f;
-				vertices[i].Pos.Y = (points[i].Y - pos.Y) * scale + posTemp.Y + 0.5f;
-				vertices[i].Pos.Z = (z - pos.Z) * scale + posTemp.Z;
+				vertices[i].Pos.X = points[i].X * scale + pos.X + 0.5f;
+				vertices[i].Pos.Y = points[i].Y * scale + pos.Y + 0.5f;
+				vertices[i].Pos.Z = pos.Z;
 				vertices[i].TexCoord.X = texCoordRect.X + texCoordRect.W * (float)i / (float)(points.Length - 1);
 				vertices[i].TexCoord.Y = texCoordRect.Y;
 				vertices[i].Color = shapeColor;
@@ -898,37 +936,29 @@ namespace Duality
 		/// Fills a polygon. All vertices share the same Z value, and the polygon needs to be convex.
 		/// </summary>
 		/// <param name="points"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
 		/// <param name="z"></param>
-		public void FillPolygon(Vector2[] points, float z = 0.0f)
+		public void FillPolygon(Vector2[] points, float x, float y, float z = 0.0f)
 		{
-			Vector3 pos = new Vector3(points[0].X, points[0].Y, z);
+			Vector3 pos = new Vector3(x, y, z);
 
 			float scale = 1.0f;
-			Vector3 posTemp = pos;
-			this.device.PreprocessCoords(ref posTemp, ref scale);
+			this.device.PreprocessCoords(ref pos, ref scale);
 
 			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
 			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
 
 			// Determine bounding box
-			Rect pointBoundingRect = new Rect();
-			for (int i = 0; i < points.Length; i++)
-			{
-				pointBoundingRect.X = MathF.Min(points[i].X, pointBoundingRect.X);
-				pointBoundingRect.Y = MathF.Min(points[i].Y, pointBoundingRect.Y);
-				pointBoundingRect.W = MathF.Max(points[i].X, pointBoundingRect.X);
-				pointBoundingRect.H = MathF.Max(points[i].Y, pointBoundingRect.Y);
-			}
-			pointBoundingRect.W -= pointBoundingRect.X;
-			pointBoundingRect.H -= pointBoundingRect.Y;
+			Rect pointBoundingRect = points.BoundingBox();
 
 			// Set up vertex array
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(points.Length);
 			for (int i = 0; i < points.Length; i++)
 			{
-				vertices[i].Pos.X = (points[i].X - pos.X) * scale + posTemp.X;
-				vertices[i].Pos.Y = (points[i].Y - pos.Y) * scale + posTemp.Y;
-				vertices[i].Pos.Z = (z - pos.Z) * scale + posTemp.Z;
+				vertices[i].Pos.X = points[i].X * scale + pos.X;
+				vertices[i].Pos.Y = points[i].Y * scale + pos.Y;
+				vertices[i].Pos.Z = pos.Z;
 				vertices[i].TexCoord.X = texCoordRect.X + ((points[i].X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
 				vertices[i].TexCoord.Y = texCoordRect.Y + ((points[i].Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
 				vertices[i].Color = shapeColor;
@@ -936,6 +966,83 @@ namespace Duality
 
 			this.CurrentState.TransformVertices(vertices, pos.Xy, scale);
 			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Polygon, vertices, points.Length);
+		}
+		/// <summary>
+		/// Fills a polygons outline. All vertices share the same Z value.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <param name="width"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void FillPolygonOutline(Vector2[] points, float width, float x, float y, float z = 0.0f)
+		{
+			width *= 0.5f;
+			Vector3 pos = new Vector3(x, y, z);
+
+			float scale = 1.0f;
+			this.device.PreprocessCoords(ref pos, ref scale);
+
+			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
+			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+
+			// Determine bounding box
+			Rect pointBoundingRect = points.BoundingBox();
+			pointBoundingRect.X -= width * 0.5f;
+			pointBoundingRect.Y -= width * 0.5f;
+			pointBoundingRect.W += width;
+			pointBoundingRect.H += width;
+
+			// Set up vertex array
+			int vertexCount = points.Length * 2 + 2;
+			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(vertexCount);
+			for (int i = 0; i < points.Length; i++)
+			{
+				int vertexBase = i * 2;
+
+				int cur = i;
+				int prev = (i - 1 + points.Length) % points.Length;
+				int next = (i + 1) % points.Length;
+				
+				Vector2 tangent = (points[cur] - points[prev]).Normalized;
+				Vector2 tangent2 = (points[next] - points[cur]).Normalized;
+				Vector2 normal = tangent.PerpendicularLeft;
+				Vector2 normal2 = tangent2.PerpendicularLeft;
+				
+				float dot = Vector2.Dot(normal, tangent2);
+
+				Vector2 cross;
+				MathF.LinesCross(
+					points[prev].X - normal.X * width, points[prev].Y - normal.Y * width, 
+					points[cur].X  - normal.X * width, points[cur].Y  - normal.Y * width, 
+					points[cur].X  - normal2.X * width, points[cur].Y  - normal2.Y * width,
+					points[next].X - normal2.X * width, points[next].Y - normal2.Y * width,
+					out cross.X, out cross.Y,
+					true);
+
+				Vector2 leftOffset = Vector2.Zero;
+				Vector2 rightOffset = (tangent - tangent2).Normalized * (cross - points[cur]).Length * MathF.Sign(dot) * -2;
+
+				vertices[vertexBase + 0].Pos.X = (points[cur].X + leftOffset.X) * scale + pos.X;
+				vertices[vertexBase + 0].Pos.Y = (points[cur].Y + leftOffset.Y) * scale + pos.Y;
+				vertices[vertexBase + 0].Pos.Z = pos.Z;
+				vertices[vertexBase + 0].TexCoord.X = texCoordRect.X + ((points[i].X + leftOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 0].TexCoord.Y = texCoordRect.Y + ((points[i].Y + leftOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 0].Color = shapeColor;
+				
+				vertices[vertexBase + 1].Pos.X = (points[cur].X  + rightOffset.X) * scale + pos.X;
+				vertices[vertexBase + 1].Pos.Y = (points[cur].Y  + rightOffset.Y) * scale + pos.Y;
+				vertices[vertexBase + 1].Pos.Z = pos.Z;
+				vertices[vertexBase + 1].TexCoord.X = texCoordRect.X + ((points[i].X + rightOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 1].TexCoord.Y = texCoordRect.Y + ((points[i].Y + rightOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 1].Color = shapeColor;
+			}
+
+			vertices[vertexCount - 2] = vertices[0];
+			vertices[vertexCount - 1] = vertices[1];
+
+			this.CurrentState.TransformVertices(vertices, pos.Xy, scale);
+			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
 		}
 
 		/// <summary>

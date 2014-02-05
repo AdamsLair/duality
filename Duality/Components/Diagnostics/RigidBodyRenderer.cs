@@ -14,7 +14,6 @@ using OpenTK.Input;
 
 namespace Duality.Components.Diagnostics
 {
-#if FALSE
 	/// <summary>
 	/// A diagnostic <see cref="Duality.Component"/> that renders a RigidBodies shape for debugging purposes.
 	/// </summary>
@@ -27,7 +26,9 @@ namespace Duality.Components.Diagnostics
 		private	BatchInfo				customAreaMaterial		= null;
 		private	BatchInfo				customOutlineMaterial	= null;
 		private	ColorRgba				colorTint				= ColorRgba.White;
+		private	float					outlineWidth			= 3.0f;
 		private	int						offset					= 0;
+		private	bool					wrapTexture				= true;
 
 		[NonSerialized]
 		private	CanvasBuffer			vertexBuffer			= new CanvasBuffer();
@@ -87,6 +88,24 @@ namespace Duality.Components.Diagnostics
 			set { this.offset = value; }
 		}
 		/// <summary>
+		/// [GET / SET] Specifies the width of the RigidBody outline when rendering. 
+		/// No outline will be rendered, if this value is smaller than or equal zero.
+		/// </summary>
+		[EditorHintRange(0.0f, 100.0f)]
+		public float OutlineWidth
+		{
+			get { return this.outlineWidth; }
+			set { this.outlineWidth = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specifies, whether or not texture wrapping will be active when rendering the RigidBody area and outline.
+		/// </summary>
+		public bool WrapTexture
+		{
+			get { return this.wrapTexture; }
+			set { this.wrapTexture = value; }
+		}
+		/// <summary>
 		/// [GET] The internal Z-Offset added to the renderers vertices based on its <see cref="Offset"/> value.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -98,43 +117,161 @@ namespace Duality.Components.Diagnostics
 
 		public override void Draw(IDrawDevice device)
 		{
+			Transform tranform = this.GameObj.Transform;
 			RigidBody body = this.GameObj.RigidBody;
-			Vector3 pos = this.gameobj.Transform.Pos;
 
 			Canvas canvas = new Canvas(device, this.vertexBuffer);
-			canvas.CurrentState.TransformAngle = this.gameobj.Transform.Angle;
+
+			// Draw Shape Areas
+			canvas.CurrentState.ZOffset = this.offset;
 			canvas.CurrentState.SetMaterial(this.areaMaterial);
-			canvas.CurrentState.TextureCoordinateRect = new Rect(10.0f, 10.0f);
+			foreach (ShapeInfo shape in body.Shapes)
+			{
+				if (!shape.IsValid)
+					canvas.CurrentState.ColorTint = this.colorTint * ColorRgba.Red;
+				else if (shape.IsSensor)
+					canvas.CurrentState.ColorTint = this.colorTint.WithAlpha(0.25f);
+				else
+					canvas.CurrentState.ColorTint = this.colorTint;
+				this.DrawShapeArea(canvas, tranform, shape);
+			}
 
-			canvas.FillCircle(pos.X, pos.Y, pos.Z, 50.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(125.0f, 0.0f);
-			canvas.FillRect(pos.X, pos.Y, pos.Z, 128.0f, 128.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-125.0f, 0.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 32.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-250.0f, 0.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 16.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-375.0f, 0.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 8.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-500.0f, 0.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle45 + MathF.RadAngle90, 49.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-125.0f, -125.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 32.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-250.0f, -125.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 16.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-375.0f, -125.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 8.0f);
-
-			canvas.CurrentState.TransformHandle = new Vector2(-500.0f, -125.0f);
-			canvas.FillCircleSegment(pos.X, pos.Y, pos.Z, 50.0f, 0.0f, MathF.RadAngle360, 49.0f);
+			// Draw Shape Outlines
+			if (this.outlineWidth > 0.0f)
+			{
+				canvas.CurrentState.ZOffset = this.offset - 1;
+				canvas.CurrentState.SetMaterial(this.outlineMaterial);
+				foreach (ShapeInfo shape in body.Shapes)
+				{
+					if (!shape.IsValid)
+						canvas.CurrentState.ColorTint = this.colorTint * ColorRgba.Red;
+					else if (shape.IsSensor)
+						canvas.CurrentState.ColorTint = this.colorTint.WithAlpha(0.4f);
+					else
+						canvas.CurrentState.ColorTint = this.colorTint;
+					this.DrawShapeOutline(canvas, tranform, shape);
+				}
+			}
 		}
+
+		private void DrawShapeArea(Canvas canvas, Transform transform, ShapeInfo shape)
+		{
+			canvas.PushState();
+			if		(shape is CircleShapeInfo)	this.DrawShapeArea(canvas, transform, shape as CircleShapeInfo);
+			else if (shape is PolyShapeInfo)	this.DrawShapeArea(canvas, transform, shape as PolyShapeInfo);
+			else if (shape is LoopShapeInfo)	this.DrawShapeArea(canvas, transform, shape as LoopShapeInfo);
+			canvas.PopState();
+		}
+		private void DrawShapeArea(Canvas canvas, Transform transform, CircleShapeInfo shape)
+		{
+			Vector3 pos = transform.Pos;
+			float angle = transform.Angle;
+			float scale = transform.Scale;
+
+			if (this.wrapTexture)
+			{
+				canvas.CurrentState.TextureCoordinateRect = new Rect(
+					shape.Radius * 2.0f / canvas.CurrentState.TextureBaseSize.X,
+					shape.Radius * 2.0f / canvas.CurrentState.TextureBaseSize.Y);
+			}
+			canvas.CurrentState.TransformScale = new Vector2(scale, scale);
+			canvas.CurrentState.TransformAngle = angle;
+			canvas.CurrentState.TransformHandle = -shape.Position;
+			canvas.FillCircle(
+				pos.X, 
+				pos.Y, 
+				pos.Z, 
+				shape.Radius);
+		}
+		private void DrawShapeArea(Canvas canvas, Transform transform, PolyShapeInfo shape)
+		{
+			Vector3 pos = transform.Pos;
+			float angle = transform.Angle;
+			float scale = transform.Scale;
+
+			if (this.wrapTexture)
+			{
+				Rect pointBoundingRect = shape.Vertices.BoundingBox();
+				canvas.CurrentState.TextureCoordinateRect = new Rect(
+					pointBoundingRect.W / canvas.CurrentState.TextureBaseSize.X,
+					pointBoundingRect.H / canvas.CurrentState.TextureBaseSize.Y);
+			}
+			canvas.CurrentState.TransformAngle = angle;
+			canvas.CurrentState.TransformScale = new Vector2(scale, scale);
+			canvas.FillPolygon(shape.Vertices, pos.X, pos.Y, pos.Z);
+		}
+		private void DrawShapeArea(Canvas canvas, Transform transform, LoopShapeInfo shape)
+		{
+			// LoopShapes don't have an area. Do nothing here.
+		}
+
+		private void DrawShapeOutline(Canvas canvas, Transform transform, ShapeInfo shape)
+		{
+			canvas.PushState();
+			if		(shape is CircleShapeInfo)	this.DrawShapeOutline(canvas, transform, shape as CircleShapeInfo);
+			else if (shape is PolyShapeInfo)	this.DrawShapeOutline(canvas, transform, shape as PolyShapeInfo);
+			else if (shape is LoopShapeInfo)	this.DrawShapeOutline(canvas, transform, shape as LoopShapeInfo);
+			canvas.PopState();
+		}
+		private void DrawShapeOutline(Canvas canvas, Transform transform, CircleShapeInfo shape)
+		{
+			Vector3 pos = transform.Pos;
+			float angle = transform.Angle;
+			float scale = transform.Scale;
+
+			if (this.wrapTexture)
+			{
+				canvas.CurrentState.TextureCoordinateRect = new Rect(
+					shape.Radius * 2.0f / canvas.CurrentState.TextureBaseSize.X,
+					shape.Radius * 2.0f / canvas.CurrentState.TextureBaseSize.Y);
+			}
+			canvas.CurrentState.TransformScale = new Vector2(scale, scale);
+			canvas.CurrentState.TransformAngle = angle;
+			canvas.CurrentState.TransformHandle = -shape.Position;
+			canvas.FillCircleSegment(
+				pos.X, 
+				pos.Y, 
+				pos.Z, 
+				shape.Radius,
+				0.0f,
+				MathF.RadAngle360,
+				this.outlineWidth);
+		}
+		private void DrawShapeOutline(Canvas canvas, Transform transform, PolyShapeInfo shape)
+		{
+			Vector3 pos = transform.Pos;
+			float angle = transform.Angle;
+			float scale = transform.Scale;
+
+			if (this.wrapTexture)
+			{
+				Rect pointBoundingRect = shape.Vertices.BoundingBox();
+				canvas.CurrentState.TextureCoordinateRect = new Rect(
+					pointBoundingRect.W / canvas.CurrentState.TextureBaseSize.X,
+					pointBoundingRect.H / canvas.CurrentState.TextureBaseSize.Y);
+			}
+			canvas.CurrentState.TransformAngle = angle;
+			canvas.CurrentState.TransformScale = new Vector2(scale, scale);
+			canvas.FillPolygonOutline(shape.Vertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
+		}
+		private void DrawShapeOutline(Canvas canvas, Transform transform, LoopShapeInfo shape)
+		{
+			Vector3 pos = transform.Pos;
+			float angle = transform.Angle;
+			float scale = transform.Scale;
+
+			if (this.wrapTexture)
+			{
+				Rect pointBoundingRect = shape.Vertices.BoundingBox();
+				canvas.CurrentState.TextureCoordinateRect = new Rect(
+					pointBoundingRect.W / canvas.CurrentState.TextureBaseSize.X,
+					pointBoundingRect.H / canvas.CurrentState.TextureBaseSize.Y);
+			}
+			canvas.CurrentState.TransformAngle = angle;
+			canvas.CurrentState.TransformScale = new Vector2(scale, scale);
+			canvas.FillPolygonOutline(shape.Vertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
+		}
+
 		protected override void OnCopyTo(Component target, Cloning.CloneProvider provider)
 		{
 			base.OnCopyTo(target, provider);
@@ -145,7 +282,7 @@ namespace Duality.Components.Diagnostics
 			t.customOutlineMaterial	= this.customOutlineMaterial;
 			t.colorTint				= this.colorTint;
 			t.offset				= this.offset;
+			t.wrapTexture			= this.wrapTexture;
 		}
 	}
-#endif
 }
