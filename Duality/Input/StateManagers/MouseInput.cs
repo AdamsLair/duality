@@ -194,11 +194,14 @@ namespace Duality
 			// Memorize last state
 			this.currentState.CopyTo(this.lastState);
 
-			// Update source state
-			this.source.UpdateState();
+			if (this.source != null)
+			{
+				// Update source state
+				this.source.UpdateState();
 
-			// Obtain new state
-			this.currentState.UpdateFromSource(this.source);
+				// Obtain new state
+				this.currentState.UpdateFromSource(this.source);
+			}
 
 			// Fire events
 			if (this.currentState.IsAvailable && !this.lastState.IsAvailable)

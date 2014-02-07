@@ -1675,8 +1675,18 @@ namespace EditorBase
 					objNode.UpdateIcon();
 				return;
 			}
-			ComponentNode newObjNode = this.ScanComponent(e.Component);
+
+			// Find the parent node to add to
 			Node parentNode = e.Component.GameObj != null ? this.FindNode(e.Component.GameObj) : this.objectModel.Root;
+			
+			// No parent node existing? This must be a new object then.
+			if (parentNode == null)
+			{
+				// Let the parent handle it when it registers.
+				return;
+			}
+
+			ComponentNode newObjNode = this.ScanComponent(e.Component);
 			this.InsertNodeSorted(newObjNode, parentNode);
 			this.RegisterNodeTree(newObjNode);
 		}
@@ -1692,6 +1702,7 @@ namespace EditorBase
 					objNode.UpdateIcon(e.Component);
 				return;
 			}
+
 			ComponentNode oldObjNode = this.FindNode(e.Component);
 			if (oldObjNode == null) return;
 
@@ -1716,8 +1727,21 @@ namespace EditorBase
 			// Ignore events during transition
 			if (Scene.IsSwitching) return;
 
-			GameObjectNode newObjNode = this.ScanGameObject(e.Object, false);
+			// Ignore already added nodes
+			if (this.FindNode(e.Object) != null) return;
+
+			// Find the parent node to add to
 			Node parentNode = e.Object.Parent != null ? this.FindNode(e.Object.Parent) : this.objectModel.Root;
+			
+			// No parent node existing? This must be a new object then.
+			if (parentNode == null)
+			{
+				// Let the parent handle it when it registers.
+				return;
+			}
+
+			// Create a new node and add it
+			GameObjectNode newObjNode = this.ScanGameObject(e.Object, true);
 			this.InsertNodeSorted(newObjNode, parentNode);
 			this.RegisterNodeTree(newObjNode);
 		}
@@ -1728,22 +1752,32 @@ namespace EditorBase
 
 			// Find the moved node
 			GameObjectNode dragObjNode = this.FindNode(e.Object);
-			Node parent = dragObjNode.Parent;
+			Node oldParentNode = dragObjNode.Parent;
+			Node newParentNode = e.Object.Parent == null ? this.objectModel.Root : this.FindNode(e.Object.Parent);
+			
+			// No parent node existing? This must be a new object then.
+			if (newParentNode == null)
+			{
+				// Remove this node and let the parent handle it when it registers.
+				oldParentNode.Nodes.Remove(dragObjNode);
+				this.UnregisterNodeTree(dragObjNode);
+				return;
+			}
+			
+			// Save old state
+			HashSet<object> expandedMap = new HashSet<object>();
+			TreeNodeAdv dragObjViewNodeOld = this.objectView.FindNode(this.objectModel.GetPath(dragObjNode));
+			bool wasSelected = dragObjViewNodeOld.IsSelected;
+			this.objectView.SaveNodesExpanded(dragObjViewNodeOld, expandedMap);
 
 			// Remove node
-			TreeNodeAdv dragObjViewNode;
-			HashSet<object> expandedMap = new HashSet<object>();
-			dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(dragObjNode));
-			bool wasSelected = dragObjViewNode.IsSelected;
-			this.objectView.SaveNodesExpanded(dragObjViewNode, expandedMap);
-			parent.Nodes.Remove(dragObjNode);
+			oldParentNode.Nodes.Remove(dragObjNode);
 
 			// Re-add node
-			parent = e.Object.Parent == null ? this.objectModel.Root : this.FindNode(e.Object.Parent);
-			this.InsertNodeSorted(dragObjNode, parent);
-			dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(dragObjNode));
-			dragObjViewNode.IsSelected = wasSelected;
-			this.objectView.RestoreNodesExpanded(dragObjViewNode, expandedMap);
+			this.InsertNodeSorted(dragObjNode, newParentNode);
+			TreeNodeAdv dragObjViewNodeNew = this.objectView.FindNode(this.objectModel.GetPath(dragObjNode));
+			dragObjViewNodeNew.IsSelected = wasSelected;
+			this.objectView.RestoreNodesExpanded(dragObjViewNodeNew, expandedMap);
 		}
 
 		private List<GameObjectNode> GetSelNodesFlattened()
