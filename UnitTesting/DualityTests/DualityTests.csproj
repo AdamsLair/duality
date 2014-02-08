@@ -59,10 +59,10 @@
     <Compile Include="Serialization\FormatterTest.cs" />
     <Compile Include="Serialization\BinaryFormatterTest.cs" />
     <Compile Include="Serialization\XmlFormatterTest.cs" />
-    <Compile Include="TestingResources.Designer.cs">
+    <Compile Include="TestingResources\TestRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>TestingResources.resx</DependentUpon>
+      <DependentUpon>TestRes.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -72,16 +72,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TestingResources.resx">
+    <EmbeddedResource Include="TestingResources\TestRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TestingResources.Designer.cs</LastGenOutput>
+      <LastGenOutput>TestRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\CanvasTestNothing.png" />
+    <None Include="TestingResources\CanvasTestNothing.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\CanvasTestRedSquare.png" />
+    <None Include="TestingResources\CanvasTestRedSquare.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestingResources\CanvasTestDiagonalLine.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

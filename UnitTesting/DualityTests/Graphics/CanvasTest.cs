@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
@@ -8,12 +9,13 @@ using Duality;
 using Duality.Resources;
 using Duality.Animation;
 using Duality.ColorFormat;
+using Duality.Tests.TestingResources;
 
 using OpenTK;
 
 using NUnit.Framework;
 
-namespace Duality.Tests.Animation
+namespace Duality.Tests.Graphics
 {
 	[TestFixture]
 	public class CanvasTest
@@ -21,7 +23,7 @@ namespace Duality.Tests.Animation
 		[Test] public void RenderFail()
 		{
 			// Perform the RedSquare test, but with a one pixel offset. This should fail.
-			Assert.IsFalse(this.AreImagesEqual(TestingResources.CanvasTestRedSquare, c => 
+			Assert.IsFalse(this.AreImagesEqual(TestRes.CanvasTestRedSquare, c => 
 			{
 				c.CurrentState.ColorTint = ColorRgba.Red;
 				c.FillRect(1, 0, c.Width, c.Height);
@@ -29,21 +31,33 @@ namespace Duality.Tests.Animation
 		}
 		[Test] public void RenderNothing()
 		{
-			Assert.IsTrue(this.AreImagesEqual(TestingResources.CanvasTestNothing, c => {}));
+			Assert.IsTrue(this.AreImagesEqual(TestRes.CanvasTestNothing, c => {}));
 		}
 		[Test] public void RenderRedSquare()
 		{
-			Assert.IsTrue(this.AreImagesEqual(TestingResources.CanvasTestRedSquare, c => 
+			Assert.IsTrue(this.AreImagesEqual(TestRes.CanvasTestRedSquare, c => 
 			{
 				c.CurrentState.ColorTint = ColorRgba.Red;
 				c.FillRect(0, 0, c.Width, c.Height);
 			}));
 		}
-
+		[Test] public void RenderDiagonalLine()
+		{
+			Assert.IsTrue(this.AreImagesEqual(TestRes.CanvasTestDiagonalLine, c => 
+			{
+				c.DrawLine(0, 0, c.Width, c.Height);
+			}));
+		}
+		
+		private void CreateReferenceImage(int width, int height, Action<Canvas> renderMethod)
+		{
+			Pixmap.Layer image = this.RenderToTexture(width, height, renderMethod);
+			image.SavePixelData(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "CanvasTestOutput.png"));
+		}
 		private bool AreImagesEqual(Bitmap referenceImage, Action<Canvas> renderMethod)
 		{
-			Pixmap.Layer reference = new Pixmap.Layer(referenceImage);
 			Pixmap.Layer image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
+			Pixmap.Layer reference = new Pixmap.Layer(referenceImage);
 			return this.AreImagesEqual(reference, image);
 		}
 		private bool AreImagesEqual(Pixmap.Layer first, Pixmap.Layer second)
@@ -54,14 +68,14 @@ namespace Duality.Tests.Animation
 
 			ColorRgba[] firstData = first.Data;
 			ColorRgba[] secondData = second.Data;
-			int error = 0;
-			int maxError = firstData.Length / (16 * 16); // 1/255 off per 16x16 pixels is okay.
+			float error = 0;
+			float maxError = firstData.Length; // (1/255) off per pixel is probably okay.
 			for (int i = 0; i < firstData.Length; i++)
 			{
-				error += Math.Abs(firstData[i].R - secondData[i].R);
-				error += Math.Abs(firstData[i].G - secondData[i].G);
-				error += Math.Abs(firstData[i].B - secondData[i].B);
-				error += Math.Abs(firstData[i].A - secondData[i].A);
+				error += MathF.Abs(firstData[i].R * (firstData[i].A / 255.0f) - secondData[i].R * (secondData[i].A / 255.0f));
+				error += MathF.Abs(firstData[i].G * (firstData[i].A / 255.0f) - secondData[i].G * (secondData[i].A / 255.0f));
+				error += MathF.Abs(firstData[i].B * (firstData[i].A / 255.0f) - secondData[i].B * (secondData[i].A / 255.0f));
+				error += MathF.Abs(firstData[i].A - secondData[i].A);
 				if (error >= maxError) return false;
 			}
 
@@ -72,7 +86,7 @@ namespace Duality.Tests.Animation
 			Pixmap.Layer pixelData;
 
 			using (Texture texture = new Texture(width, height, Texture.SizeMode.NonPowerOfTwo))
-			using (RenderTarget renderTarget = new RenderTarget(AAQuality.High, texture))
+			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, texture))
 			using (DrawDevice device = new DrawDevice())
 			{
 				device.Perspective = PerspectiveMode.Flat;
