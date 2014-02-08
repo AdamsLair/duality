@@ -7,6 +7,8 @@ using System.IO;
 using Duality;
 
 using OpenTK;
+using OpenTK.Graphics;
+using OpenTK.Graphics.OpenGL;
 
 using NUnit.Framework;
 
@@ -51,10 +53,17 @@ namespace DualityTests
 			DualityApp.AddPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
 
 			// Create a dummy window, to get access to all the device contexts
-			if (this.dummyWindow != null)
+			if (this.dummyWindow == null)
 			{
-				this.dummyWindow = new GameWindow();
+				this.dummyWindow = new GameWindow(800, 600);
+				this.dummyWindow.Context.LoadAll();
+				this.dummyWindow.Visible = true;
+				this.dummyWindow.Context.Update(this.dummyWindow.WindowInfo);
+				this.dummyWindow.MakeCurrent();
+				this.dummyWindow.ProcessEvents();
 				DualityApp.TargetResolution = new Vector2(this.dummyWindow.Width, this.dummyWindow.Height);
+				DualityApp.TargetMode = this.dummyWindow.Context.GraphicsMode;
+				ContentProvider.InitDefaultContent();
 			}
 
 			Console.WriteLine("----- Duality environment setup complete -----");
@@ -63,13 +72,12 @@ namespace DualityTests
 		{
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
 
-			// Just leave it initialized - speeds up re-running individual tests.
-			//if (this.dummyWindow != null)
-			//{
-			//    this.dummyWindow.Dispose();
-			//    this.dummyWindow = null;
-			//}
-			//DualityApp.Terminate();
+			if (this.dummyWindow != null)
+			{
+			    this.dummyWindow.Dispose();
+			    this.dummyWindow = null;
+			}
+			DualityApp.Terminate();
 			Environment.CurrentDirectory = this.oldEnvDir;
 
 			Console.WriteLine("----- Duality environment teardown complete -----");
