@@ -1295,6 +1295,19 @@ namespace Duality
 		}
 
 		/// <summary>
+		/// This method performs an action only when compiling your plugin in debug mode.
+		/// In release mode, any calls to this method (and thus the specified action) are omitted
+		/// by the compiler.
+		/// This method is intended to be used conveniently in conjunction with lambda expressions.
+		/// </summary>
+		/// <param name="action"></param>
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void Dbg(Action action)
+		{
+			action();
+		}
+
+		/// <summary>
 		/// Guards the calling method agains being called from a thread that is not the main thread.
 		/// Use this only at critical code segments that are likely to be called from somewhere else than the main thread
 		/// but aren't allowed to.
