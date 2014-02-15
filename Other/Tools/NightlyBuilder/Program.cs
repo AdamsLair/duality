@@ -133,9 +133,11 @@ namespace NightlyBuilder
 				{
 					Console.Write("Testing '{0}'... ", Path.GetFileName(nunitProjectFile));
 
+					// Don't use /timeout, as it will execute tests from a different thread,
+					// which will break a lot of graphics-related Duality stuff!
 					string resultFile = "UnitTestResult.xml";
 					ExecuteCommand(
-						string.Format("{0} {1} /timeout=30000 /result={2}", 
+						string.Format("{0} {1} /result={2}", 
 							Path.Combine(config.NUnitBinDir, "nunit-console.exe"), 
 							nunitProjectFile,
 							resultFile), 
@@ -205,7 +207,7 @@ namespace NightlyBuilder
 					var buildProperties = new Dictionary<string,string>(){ { "Configuration", "Release"} };
 					var buildRequest = new BuildRequestData(config.DocSolutionPath, buildProperties, null, new string[] { "Build" }, null);
 					var buildParameters = new BuildParameters();
-					//buildParameters.Loggers = new[] { new ConsoleLogger(LoggerVerbosity.Minimal) };
+					buildParameters.Loggers = new[] { new ConsoleLogger(LoggerVerbosity.Minimal) };
 					var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
 					if (buildResult.OverallResult != BuildResultCode.Success)
 						throw new ApplicationException("Documentation Build Failure");
