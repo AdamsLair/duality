@@ -48,6 +48,10 @@ namespace Duality
 		/// </summary>
 		bool DepthWrite { get; }
 		/// <summary>
+		/// [GET] Returns whether the drawing device is currently performing a visual picking opreation.
+		/// </summary>
+		bool IsPicking { get; }
+		/// <summary>
 		/// [GET] The size of the surface this drawing device operates on.
 		/// </summary>
 		Vector2 TargetSize { get; }

@@ -46,7 +46,7 @@ namespace Duality.EditorHints
 	/// <summary>
 	/// Provides general information about a members preferred editor behaviour.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Class, AllowMultiple = false)]
 	public class EditorHintFlagsAttribute : EditorHintAttribute
 	{
 		private	MemberFlags	flags;

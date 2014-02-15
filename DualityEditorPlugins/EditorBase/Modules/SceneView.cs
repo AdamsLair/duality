@@ -13,6 +13,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 
 using Duality;
+using Duality.EditorHints;
 using Duality.Resources;
 using Duality.ColorFormat;
 
@@ -391,14 +392,6 @@ namespace EditorBase
 			this.tempUpperFilter = String.IsNullOrEmpty(this.textBoxFilter.Text) ? null : this.textBoxFilter.Text.ToUpper();
 			this.tempNodeVisibilityCache.Clear();
 			this.objectView.NodeFilter = this.tempUpperFilter != null ? this.objectModel_IsNodeVisible : (Predicate<object>)null;
-		}
-
-		protected IEnumerable<Type> QueryComponentTypes()
-		{
-			return
-				from t in DualityApp.GetAvailDualityTypes(typeof(Component))
-				where !t.IsAbstract
-				select t;
 		}
 
 		protected void InitObjects()
@@ -1370,8 +1363,13 @@ namespace EditorBase
 
 			// Populate the "New" menu
 			List<ToolStripItem> newItems = new List<ToolStripItem>();
-			foreach (Type cmpType in this.QueryComponentTypes())
+			foreach (Type cmpType in DualityApp.GetAvailDualityTypes(typeof(Component)))
 			{
+				// Omit abstract and invisible Component Types
+				if (cmpType.IsAbstract) continue;
+				EditorHintFlagsAttribute editorHintFlags = cmpType.GetEditorHint<EditorHintFlagsAttribute>();
+				if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
+
 				// Generate category item
 				string[] category = CorePluginRegistry.GetTypeCategory(cmpType);
 				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;

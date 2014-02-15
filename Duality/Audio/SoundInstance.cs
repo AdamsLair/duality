@@ -5,7 +5,6 @@ using OpenTK;
 using OpenTK.Audio.OpenAL;
 
 using Duality.Resources;
-using Duality.OggVorbis;
 
 namespace Duality
 {
@@ -248,7 +247,7 @@ namespace Duality
 				{
 					lock (this.strLock)
 					{
-						OV.EndStream(ref this.strOvStr);
+						OggVorbis.EndStream(ref this.strOvStr);
 					}
 				}
 				this.strWorker = null;
@@ -784,13 +783,13 @@ namespace Duality
 						}
 
 						// Begin streaming
-						OV.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
+						OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
 
 						// Initially, completely fill all buffers
 						for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
 						{
 							PcmData pcm;
-							bool eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);
+							bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
 							if (pcm.dataLength > 0)
 							{
 								AL.BufferData(
@@ -820,19 +819,19 @@ namespace Duality
 							int unqueued;
 							unqueued = AL.SourceUnqueueBuffer(sndInst.alSource);
 
-							if (OV.IsStreamValid(sndInst.strOvStr))
+							if (OggVorbis.IsStreamValid(sndInst.strOvStr))
 							{
 								PcmData pcm;
-								bool eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);
+								bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
 								if (eof)
 								{
-									OV.EndStream(ref sndInst.strOvStr);
+									OggVorbis.EndStream(ref sndInst.strOvStr);
 									if (sndInst.looped)
 									{
-										OV.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
+										OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
 										if (pcm.dataLength == 0)
 										{
-											eof = !OV.StreamChunk(sndInst.strOvStr, out pcm);
+											eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
 										}
 									}
 								}

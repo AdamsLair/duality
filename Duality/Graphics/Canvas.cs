@@ -99,7 +99,7 @@ namespace Duality
 				set { this.zOffset = value; }
 			}
 			/// <summary>
-			/// [GET / SET] The angle by which all shapes are transformed.
+			/// [GET / SET] The angle by which all shapes are transformed locally.
 			/// </summary>
 			public float TransformAngle
 			{
@@ -107,7 +107,7 @@ namespace Duality
 				set { this.transformAngle = value; this.UpdateTransform(); }
 			}
 			/// <summary>
-			/// [GET / SET] The scale by which all shapes are transformed.
+			/// [GET / SET] The scale by which all shapes are transformed locally.
 			/// </summary>
 			public Vector2 TransformScale
 			{
@@ -115,7 +115,8 @@ namespace Duality
 				set { this.transformScale = value; this.UpdateTransform(); }
 			}
 			/// <summary>
-			/// [GET / SET] The handle used for transforming all shapes.
+			/// [GET / SET] The handle used for locally transforming all shapes. 
+			/// You can think of it as the "fixed point" of a shape when rotating or scaling it.
 			/// </summary>
 			public Vector2 TransformHandle
 			{
@@ -1318,18 +1319,30 @@ namespace Duality
 		public void DrawText(string[] text, ref VertexC1P3T2[][] vertices, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			if (text == null || text.Length == 0) return;
+			Font font = this.CurrentState.TextFont.Res;
 
 			Vector2 textSize = Vector2.Zero;
 			if (blockAlign != Alignment.TopLeft)
 			{
 				if (textSize == Vector2.Zero) textSize = this.MeasureText(text);
-				blockAlign.ApplyTo(ref x, ref y, textSize.X, textSize.Y);
+				Vector2 blockAlignVec = Vector2.Zero;
+				blockAlign.ApplyTo(
+					ref blockAlignVec.X, 
+					ref blockAlignVec.Y, 
+					textSize.X * this.CurrentState.TransformScale.X, 
+					textSize.Y * this.CurrentState.TransformScale.Y);
+				MathF.TransformCoord(ref blockAlignVec.X, ref blockAlignVec.Y, this.CurrentState.TransformAngle);
+				x += blockAlignVec.X;
+				y += blockAlignVec.Y;
 			}
 
 			if (drawBackground)
 			{
 				if (textSize == Vector2.Zero) textSize = this.MeasureText(text);
-				Vector2 padding = new Vector2(this.CurrentState.TextFont.Res.Height, this.CurrentState.TextFont.Res.Height) * 0.35f;
+				Rect padding = new Rect(font.Height * 0.7f, font.Height * 0.7f);
+				padding.X = padding.W * this.CurrentState.TransformScale.X * 0.5f;
+				padding.Y = padding.H * this.CurrentState.TransformScale.Y * 0.5f;
+				MathF.TransformCoord(ref padding.X, ref padding.Y, this.CurrentState.TransformAngle);
 
 				ColorFormat.ColorRgba baseColor = this.CurrentState.MaterialDirect.MainColor * this.CurrentState.ColorTint;
 				const float backAlpha = 0.65f;
@@ -1341,17 +1354,31 @@ namespace Duality
 					Resources.DrawTechnique.Alpha, 
 					(baseLuminance > 0.5f ? ColorFormat.ColorRgba.Black : ColorFormat.ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
 				this.CurrentState.ColorTint = ColorFormat.ColorRgba.White;
-				this.FillRect(x - padding.X, y - padding.Y, textSize.X + padding.X * 2, textSize.Y + padding.Y * 2);
+				this.CurrentState.ZOffset += 1;
+				this.FillRect(
+					x - padding.X, 
+					y - padding.Y, 
+					textSize.X + padding.W, 
+					textSize.Y + padding.H);
 				this.PopState();
 			}
 
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
 			device.PreprocessCoords(ref pos, ref scale);
-			if (this.CurrentState.TextInvariantScale) scale = 1.0f;
-
+			bool worldSpace = (pos != new Vector3(x, y, z));
+			
+			if (font.IsPixelGridAligned)
+			{
+				pos.X = MathF.Round(pos.X);
+				pos.Y = MathF.Round(pos.Y);
+				if (worldSpace)
+				{
+					if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2) pos.X += 0.5f;
+					if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2) pos.Y += 0.5f;
+				}
+			}
 			Vector2 shapeHandle = pos.Xy;
-			Font font = this.CurrentState.TextFont.Res;
 			
 			BatchInfo customMat = new BatchInfo(this.CurrentState.MaterialDirect);
 			customMat.MainTexture = font.Material.MainTexture;
@@ -1404,11 +1431,25 @@ namespace Duality
 			if (text == null || text.IsEmpty) return;
 
 			if (blockAlign != Alignment.TopLeft)
-				blockAlign.ApplyTo(ref x, ref y, text.Size.X, text.Size.Y);
+			{
+				Vector2 blockAlignVec = Vector2.Zero;
+				blockAlign.ApplyTo(
+					ref blockAlignVec.X, 
+					ref blockAlignVec.Y, 
+					text.Size.X * this.CurrentState.TransformScale.X, 
+					text.Size.Y * this.CurrentState.TransformScale.Y);
+				MathF.TransformCoord(ref blockAlignVec.X, ref blockAlignVec.Y, this.CurrentState.TransformAngle);
+				x += blockAlignVec.X;
+				y += blockAlignVec.Y;
+			}
 
 			if (drawBackground)
 			{
-				Vector2 padding = new Vector2(this.CurrentState.TextFont.Res.Height, this.CurrentState.TextFont.Res.Height) * 0.35f;
+				Font font = this.CurrentState.TextFont.Res;
+				Rect padding = new Rect(font.Height * 0.7f, font.Height * 0.7f);
+				padding.X = padding.W * this.CurrentState.TransformScale.X * 0.5f;
+				padding.Y = padding.H * this.CurrentState.TransformScale.Y * 0.5f;
+				MathF.TransformCoord(ref padding.X, ref padding.Y, this.CurrentState.TransformAngle);
 
 				ColorFormat.ColorRgba baseColor = this.CurrentState.MaterialDirect.MainColor * this.CurrentState.ColorTint;
 				const float backAlpha = 0.65f;
@@ -1420,15 +1461,29 @@ namespace Duality
 					Resources.DrawTechnique.Alpha, 
 					(baseLuminance > 0.5f ? ColorFormat.ColorRgba.Black : ColorFormat.ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
 				this.CurrentState.ColorTint = ColorFormat.ColorRgba.White;
-				this.FillRect(x - padding.X, y - padding.Y, text.Size.X + padding.X * 2, text.Size.Y + padding.Y * 2);
+				this.FillRect(
+					x - padding.X, 
+					y - padding.Y, 
+					text.Size.X + padding.W, 
+					text.Size.Y + padding.H);
 				this.PopState();
 			}
 
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
 			device.PreprocessCoords(ref pos, ref scale);
-			if (this.CurrentState.TextInvariantScale) scale = 1.0f;
-
+			bool worldSpace = (pos != new Vector3(x, y, z));
+			
+			if (text.Fonts != null && text.Fonts.Any(r => r.IsAvailable && r.Res.IsPixelGridAligned))
+			{
+				pos.X = MathF.Round(pos.X);
+				pos.Y = MathF.Round(pos.Y);
+				if (worldSpace)
+				{
+					if (MathF.RoundToInt(device.TargetSize.X) != (MathF.RoundToInt(device.TargetSize.X) / 2) * 2) pos.X += 0.5f;
+					if (MathF.RoundToInt(device.TargetSize.Y) != (MathF.RoundToInt(device.TargetSize.Y) / 2) * 2) pos.Y += 0.5f;
+				}
+			}
 			Vector2 shapeHandle = pos.Xy;
 			int[] vertLen = text.EmitVertices(ref vertText, ref vertIcon, pos.X, pos.Y, pos.Z, this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor, 0.0f, scale);
 			

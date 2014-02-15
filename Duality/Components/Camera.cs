@@ -605,7 +605,7 @@ namespace Duality.Components
 			foreach (Predicate<ICmpRenderer> p in this.editorRenderFilter) rendererQuery = rendererQuery.Where(r => p(r));
 
 			// Collect drawcalls
-			if (this.drawDevice.PickingIndex != 0)
+			if (this.drawDevice.IsPicking)
 			{
 				this.pickingMap = new List<ICmpRenderer>(rendererQuery);
 				foreach (ICmpRenderer r in this.pickingMap)

@@ -3,7 +3,6 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
-using Duality.OggVorbis;
 using OpenTK.Audio.OpenAL;
 using Duality.EditorHints;
 
@@ -69,7 +68,7 @@ namespace Duality.Resources
 		[NonSerialized]	private	int	alBuffer	= AlBuffer_NotAvailable;
 
 		/// <summary>
-		/// [GET / SET] A data chunk representing <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> compressed
+		/// [GET / SET] A data chunk representing Ogg Vorbis compressed
 		/// audio data.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -113,33 +112,33 @@ namespace Duality.Resources
 		/// </summary>
 		public AudioData() : this(Beep.Res.OggVorbisData.Clone() as byte[]) {}
 		/// <summary>
-		/// Creates a new AudioData based on an <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> memory chunk.
+		/// Creates a new AudioData based on an Ogg Vorbis memory chunk.
 		/// </summary>
-		/// <param name="oggVorbisData">An <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> memory chunk</param>
+		/// <param name="oggVorbisData">An Ogg Vorbis memory chunk</param>
 		public AudioData(byte[] oggVorbisData)
 		{
 			this.data = oggVorbisData;
 		}
 		/// <summary>
-		/// Creates a new AudioData based on a <see cref="System.IO.Stream"/> containing <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> data.
+		/// Creates a new AudioData based on a <see cref="System.IO.Stream"/> containing Ogg Vorbis data.
 		/// </summary>
-		/// <param name="oggVorbisDataStream">A <see cref="System.IO.Stream"/> containing <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> data</param>
+		/// <param name="oggVorbisDataStream">A <see cref="System.IO.Stream"/> containing Ogg Vorbis data</param>
 		public AudioData(Stream oggVorbisDataStream)
 		{
 			this.data = new byte[oggVorbisDataStream.Length];
 			oggVorbisDataStream.Read(this.data, 0, (int)oggVorbisDataStream.Length);
 		}
 		/// <summary>
-		/// Creates a new AudioData base on an <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> file.
+		/// Creates a new AudioData base on an Ogg Vorbis file.
 		/// </summary>
-		/// <param name="filepath">Path to the <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> file.</param>
+		/// <param name="filepath">Path to the Ogg Vorbis file.</param>
 		public AudioData(string filepath)
 		{
 			this.LoadOggVorbisData(filepath);
 		}
 
 		/// <summary>
-		/// Saves the audio data as <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> file.
+		/// Saves the audio data as Ogg Vorbis file.
 		/// </summary>
 		/// <param name="oggVorbisPath">The path of the file to which the audio data is written.</param>
 		public void SaveOggVorbisData(string oggVorbisPath = null)
@@ -155,7 +154,7 @@ namespace Duality.Resources
 				File.WriteAllBytes(oggVorbisPath, Beep.Res.OggVorbisData);
 		}
 		/// <summary>
-		/// Loads new audio data from an <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> file.
+		/// Loads new audio data from an Ogg Vorbis file.
 		/// </summary>
 		/// <param name="oggVorbisPath">The path of the file from which the audio data is read.</param>
 		public void LoadOggVorbisData(string oggVorbisPath = null)
@@ -184,8 +183,7 @@ namespace Duality.Resources
 		}
 		/// <summary>
 		/// Sets up a new OpenAL buffer for this AudioData. This will result in decompressing
-		/// the <see cref="Duality.OggVorbis.OV">Ogg Vorbis</see> data and uploading it to OpenAL,
-		/// unless the AudioData is streamed.
+		/// the Ogg Vorbis data and uploading it to OpenAL, unless the AudioData is streamed.
 		/// </summary>
 		public void SetupAlBuffer()
 		{
@@ -208,7 +206,7 @@ namespace Duality.Resources
 				if (this.alBuffer <= AlBuffer_NotAvailable && DualityApp.Sound.IsAvailable)
 				{
 					this.alBuffer = AL.GenBuffer();
-					PcmData pcm = OV.LoadFromMemory(this.data);
+					PcmData pcm = OggVorbis.LoadFromMemory(this.data);
 					AL.BufferData(
 						this.alBuffer,
 						pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,

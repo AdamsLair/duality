@@ -490,11 +490,13 @@ namespace Duality
 
 			Time.FrameTick();
 			Profile.FrameTick();
+			VisualLog.UpdateLogEntries();
 			OnBeforeUpdate();
 			UpdateUserInput();
 			Scene.Current.Update();
 			sound.Update();
 			OnAfterUpdate();
+			VisualLog.PrepareRenderLogEntries();
 			CheckOpenALErrors();
 			//CheckOpenGLErrors();
 			RunCleanup();
@@ -504,11 +506,7 @@ namespace Duality
 
 			if (terminateScheduled) Terminate();
 		}
-		/// <summary>
-		/// Updates all input devices and fires input events, when necessary. You don't usually need to call this manually, 
-		/// since it is automatically called each frame.
-		/// </summary>
-		public static void UpdateUserInput()
+		private static void UpdateUserInput()
 		{
 			mouse.Update();
 			keyboard.Update();
@@ -561,6 +559,10 @@ namespace Duality
 
 			Time.FrameTick(forceFixedStep);
 			Profile.FrameTick();
+			if (execContext == ExecutionContext.Game && !freezeScene)
+			{
+				VisualLog.UpdateLogEntries();
+			}
 			OnBeforeUpdate();
 			if (execContext == ExecutionContext.Game)
 			{
@@ -582,6 +584,7 @@ namespace Duality
 			}
 			sound.Update();
 			OnAfterUpdate();
+			VisualLog.PrepareRenderLogEntries();
 			CheckOpenALErrors();
 			//CheckOpenGLErrors();
 			RunCleanup();
@@ -1087,6 +1090,7 @@ namespace Duality
 				DiscardPluginData(null, EventArgs.Empty);
 
 			// Dispose any existing Resources that could reference plugin data
+			VisualLog.ClearAll();
 			if (!Scene.Current.IsEmpty)
 				Scene.Current.Dispose();
 			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())

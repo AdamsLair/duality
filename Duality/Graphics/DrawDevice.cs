@@ -337,6 +337,10 @@ namespace Duality
 			get { return this.pickingIndex; }
 			set { this.pickingIndex = value; }
 		}
+		public bool IsPicking
+		{
+			get { return this.pickingIndex != 0; }
+		}
 		public RenderMatrix RenderMode
 		{
 			get { return this.renderMode; }
@@ -563,28 +567,14 @@ namespace Duality
 				pos.Y *= scaleTemp;
 				scale *= scaleTemp;
 			}
-			//else if (this.perspective == PerspectiveMode.Isometric)
-			//{
-			//    // Assure that objects at focus distance don't have an offset.
-			//    pos.Z -= this.focusDist;
-			//    // Apply Z to Y because of isometric perspective
-			//    pos.Y += pos.Z;
-			//    // Sort from "north" to "south" by applying Y to Z.
-			//    pos.Z -= pos.Y;
-
-			//    // Make sure nothing is culled away due to its Z value
-			//    pos.Z += (this.farZ + this.nearZ) / 2;
-
-			//    // Scale globally
-			//    scaleTemp = this.focusDist / DefaultFocusDist;
-			//    pos.X *= scaleTemp;
-			//    pos.Y *= scaleTemp;
-			//    scale *= scaleTemp;
-			//}
 		}
 		public bool IsCoordInView(Vector3 c, float boundRad)
 		{
-			if (c.Z <= this.refPos.Z/* && this.perspective != PerspectiveMode.Isometric*/) return false;
+			if (this.renderMode == RenderMatrix.OrthoScreen)
+			{
+				if (c.Z < this.nearZ) return false;
+			}
+			else if (c.Z <= this.refPos.Z) return false;
 
 			// Retrieve center vertex coord
 			float scaleTemp = 1.0f;

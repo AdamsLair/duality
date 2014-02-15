@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using NVorbis;
 using NVorbis.Ogg;
 
-namespace Duality.OggVorbis
+namespace Duality.Resources
 {
 	public struct PcmData
 	{
@@ -63,7 +63,7 @@ namespace Duality.OggVorbis
 		}
 	}
 
-	public static class OV
+	public static class OggVorbis
 	{
 		private const int DefaultBufferSize = 1024 * 16;
 		private static object readMutex = new object();
