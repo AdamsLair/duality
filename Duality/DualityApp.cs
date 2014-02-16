@@ -1297,7 +1297,7 @@ namespace Duality
 		/// <summary>
 		/// This method performs an action only when compiling your plugin in debug mode.
 		/// In release mode, any calls to this method (and thus the specified action) are omitted
-		/// by the compiler.
+		/// by the compiler. It is essentially syntactical sugar for one-line #if DEBUG blocks.
 		/// This method is intended to be used conveniently in conjunction with lambda expressions.
 		/// </summary>
 		/// <param name="action"></param>

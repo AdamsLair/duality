@@ -138,10 +138,10 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="entry"></param>
 		/// <returns></returns>
-		public T Draw<T>(T entry) where T : VisualLogEntry
+		public void Draw<T>(T entry) where T : VisualLogEntry
 		{
+			if (!this.visible) return;
 			if (!this.entries.Contains(entry)) this.entries.Add(entry);
-			return entry;
 		}
 
 		/// <summary>
