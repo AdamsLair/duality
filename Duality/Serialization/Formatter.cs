@@ -478,19 +478,13 @@ namespace Duality.Serialization
 
 			if (field == null)
 			{
-				if (!this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue))
-				{
-					this.SerializationLog.WriteWarning("Field '{0}' not found. Discarding value '{1}'", fieldName, fieldValue);
-				}
+				this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue);
 				return;
 			}
 
 			if (field.IsNotSerialized)
 			{
-				if (!this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue))
-				{
-					this.SerializationLog.WriteWarning("Field '{0}' flagged as [NonSerialized]. Discarding value '{1}'", fieldName, fieldValue);
-				}
+				this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue);
 				return;
 			}
 
