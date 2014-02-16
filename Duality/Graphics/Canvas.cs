@@ -374,6 +374,18 @@ namespace Duality
 			if (this.stateStack.Count == 0) this.stateStack.Push(new State());
 		}
 
+		/// <summary>
+		/// Creates or retrieves an unused vertex array with the specified minimum size.
+		/// If the Canvas has been created using a valid <see cref="CanvasBuffer"/>, old
+		/// vertex arrays will be re-used wherever possible.
+		/// </summary>
+		/// <param name="minSize">The minimum size of the requested vertex array.</param>
+		/// <returns>A vertex array with the specified minimum size. It may actually be larger.</returns>
+		public VertexC1P3T2[] RequestVertexArray(int minSize)
+		{
+			return this.buffer.RequestVertexArray(minSize);
+		}
+
 		
 		/// <summary>
 		/// Draws a predefined set of vertices using the Canvas transformation.
