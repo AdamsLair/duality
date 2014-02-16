@@ -69,10 +69,9 @@ namespace Duality
 			/// </summary>
 			Loaded,
 			/// <summary>
-			/// The Component is being activated. This can be the result of <see cref="Active">activating</see> it,
-			/// <see cref="GameObject.Active">activating</see> its GameObject, adding itsself or its GameObject
-			/// to the <see cref="Duality.Resources.Scene.Current">current Scene</see> or entering a <see cref="Scene"/>
-			/// in which this Component is registered.
+			/// The Component is being activated. This can be the result of activating it,
+			/// activating its GameObject, adding itsself or its GameObject to the current 
+			/// Scene or entering a <see cref="Scene"/> in which this Component is registered.
 			/// </summary>
 			Activate,
 			/// <summary>
@@ -90,10 +89,9 @@ namespace Duality
 			/// </summary>
 			Saving,
 			/// <summary>
-			/// The Component has been deactivated. This can be the result of <see cref="Active">deactivating</see> it,
-			/// <see cref="GameObject.Active">deactivating</see> its GameObject, removing itsself or its GameObject
-			/// from the <see cref="Duality.Resources.Scene.Current">current Scene</see> or leaving a <see cref="Scene"/>
-			/// in which this Component is registered.
+			/// The Component has been deactivated. This can be the result of deactivating it,
+			/// deactivating its GameObject, removing itsself or its GameObject from the 
+			/// current Scene or leaving a <see cref="Scene"/> in which this Component is registered.
 			/// </summary>
 			Deactivate,
 			/// <summary>

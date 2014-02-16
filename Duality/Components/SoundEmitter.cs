@@ -209,7 +209,7 @@ namespace Duality.Components
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
 		{
-			if (context == ShutdownContext.Deactivate || context == ShutdownContext.RemovingFromGameObject)
+			if (context == ShutdownContext.Deactivate)
 			{
 				for (int i = this.sources.Count - 1; i >= 0; i--)
 					if (this.sources[i].Instance != null) this.sources[i].Instance.Stop();

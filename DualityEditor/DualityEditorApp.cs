@@ -10,6 +10,7 @@ using System.Xml;
 using System.Text.RegularExpressions;
 
 using Duality;
+using Duality.Components;
 using Duality.Serialization;
 using Duality.Resources;
 using Duality.Profiling;
@@ -227,6 +228,16 @@ namespace DualityEditor
 			HelpSystem.Init();
 			FileEventManager.Init();
 			UndoRedoManager.Init();
+
+			// If there are no Scenes in the current project, init the first one with some default objects.
+			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Scene.FileExt, SearchOption.AllDirectories).Any())
+			{
+				GameObject mainCam = new GameObject("MainCamera");
+				mainCam.AddComponent<Transform>().Pos = new Vector3(0, 0, -DrawDevice.DefaultFocusDist);
+				mainCam.AddComponent<Camera>();
+				mainCam.AddComponent<SoundListener>();
+				Scene.Current.AddObject(mainCam);
+			}
 
 			// Allow the engine to run
 			dualityAppSuspended = false;
@@ -644,6 +655,13 @@ namespace DualityEditor
 				string path = PathHelper.GetFreePath(basePath, Scene.FileExt);
 				Scene.Current.Save(path);
 				DualityApp.AppData.Version++;
+				
+				// If there is no start scene defined, use this one.
+				if (DualityApp.AppData.StartScene == null)
+				{
+					DualityApp.AppData.StartScene = Scene.Current;
+					DualityApp.SaveAppData();
+				}
 			}
 			return Scene.Current.Path;
 		}

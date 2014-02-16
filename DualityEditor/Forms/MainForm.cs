@@ -362,33 +362,42 @@ namespace DualityEditor.Forms
 		private void actionRunApp_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.SaveAllProjectData();
+			this.VerifyStartScene();
+
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 			startInfo.FileName = Path.GetFileName(DualityEditorApp.LauncherAppPath);
 			startInfo.Arguments = DualityApp.CmdArgEditor;
 			startInfo.WorkingDirectory = Path.GetDirectoryName(DualityEditorApp.LauncherAppPath);
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
+
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);
 			runningDialog.ShowDialog(this);
 		}
 		private void actionDebugApp_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.SaveAllProjectData();
+			this.VerifyStartScene();
+
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 			startInfo.FileName = Path.GetFileName(DualityEditorApp.LauncherAppPath);
 			startInfo.Arguments = DualityApp.CmdArgEditor + " " + DualityApp.CmdArgDebug;
 			startInfo.WorkingDirectory = Path.GetDirectoryName(DualityEditorApp.LauncherAppPath);
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
+
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);
 			runningDialog.ShowDialog(this);
 		}
 		private void actionProfileApp_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.SaveAllProjectData();
+			this.VerifyStartScene();
+
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
 			startInfo.FileName = Path.GetFileName(DualityEditorApp.LauncherAppPath);
 			startInfo.Arguments = DualityApp.CmdArgEditor + " " + DualityApp.CmdArgProfiling;
 			startInfo.WorkingDirectory = Path.GetDirectoryName(DualityEditorApp.LauncherAppPath);
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
+
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);
 			runningDialog.ShowDialog(this);
 		}
@@ -670,6 +679,32 @@ namespace DualityEditor.Forms
 			this.menuRunApp.Enabled = launcherAvailable;
 			this.menuDebugApp.Enabled = launcherAvailable && EditorHelper.IsJITDebuggerAvailable;
 			this.menuProfileApp.Enabled = launcherAvailable;
+		}
+		private void VerifyStartScene()
+		{
+			if (DualityApp.AppData.StartScene != null) return;
+
+			// If there is no StartScene defined, attempt to find one automatically.
+			if (!Scene.Current.IsRuntimeResource)
+			{
+				DualityApp.AppData.StartScene = Scene.Current;
+				DualityApp.SaveAppData();
+			}
+			else
+			{
+				ContentRef<Scene> existingScene = ContentProvider.GetAvailableContent<Scene>().FirstOrDefault();
+				if (existingScene != null)
+				{
+					DualityApp.AppData.StartScene = existingScene;
+					DualityApp.SaveAppData();
+				}
+				else if (!Scene.Current.IsEmpty)
+				{
+					DualityEditorApp.SaveCurrentScene(false);
+					DualityApp.AppData.StartScene = Scene.Current;
+					DualityApp.SaveAppData();
+				}
+			}
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
