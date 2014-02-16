@@ -1090,6 +1090,7 @@ namespace Duality
 				this.FillRect(
 					x - padding.X, 
 					y - padding.Y, 
+					z,
 					textSize.X + padding.W, 
 					textSize.Y + padding.H);
 				this.PopState();
@@ -1196,6 +1197,7 @@ namespace Duality
 				this.FillRect(
 					x - padding.X, 
 					y - padding.Y, 
+					z,
 					text.Size.X + padding.W, 
 					text.Size.Y + padding.H);
 				this.PopState();
