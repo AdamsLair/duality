@@ -228,8 +228,7 @@ namespace DualityEditor
 			FileEventManager.Init();
 			UndoRedoManager.Init();
 
-			// Enter an empty Scene and allow the engine to run
-			Scene.Current = new Scene();
+			// Allow the engine to run
 			dualityAppSuspended = false;
 		}
 		public static bool Terminate(bool byUser)

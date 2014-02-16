@@ -502,7 +502,7 @@ namespace EditorBase
 			string lastPath = Scene.CurrentPath;
 			try
 			{
-				Scene.Current = scene;
+				Scene.SwitchTo(scene);
 			}
 			catch (Exception exception)
 			{

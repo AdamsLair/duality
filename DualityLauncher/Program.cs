@@ -141,7 +141,7 @@ namespace DualityLauncher
 				DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(launcherWindow.Keyboard);
 
 				// Load the starting Scene
-				Scene.Current = DualityApp.AppData.StartScene.Res;
+				Scene.SwitchTo(DualityApp.AppData.StartScene);
 
 				// Run the DualityApp
 				launcherWindow.CursorVisible = isDebugging || DualityApp.UserData.SystemCursorVisible;

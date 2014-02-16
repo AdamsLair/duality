@@ -263,7 +263,7 @@ namespace DualityEditor.Forms
 					try
 					{
 						// Re-Apply temporarily saved Scene
-						Scene.Current = this.workerInterface.TempScene;
+						Scene.SwitchTo(this.workerInterface.TempScene, true);
 					}
 					catch (Exception exception)
 					{

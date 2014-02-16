@@ -234,7 +234,7 @@ namespace DualityEditor
 								{
 									string curScenePath = Scene.CurrentPath;
 									ContentProvider.RemoveContent(args.Path);
-									if (isCurrentScene) Scene.Current = ContentProvider.RequestContent<Scene>(curScenePath).Res;
+									if (isCurrentScene) Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curScenePath), true);
 								}
 							}
 							else

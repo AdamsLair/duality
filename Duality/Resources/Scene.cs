@@ -29,12 +29,15 @@ namespace Duality.Resources
 		private const float PhysicsAccStart = Time.MsPFMult;
 
 
-		private	static	World				physicsWorld	= new World(Vector2.Zero);
-		private	static	float				physicsAcc		= 0.0f;
-		private	static	bool				physicsLowFps	= false;
-		private	static	ContentRef<Scene>	current			= ContentRef<Scene>.Null;
-		private	static	bool				curAutoGen		= false;
-		private	static	bool				isSwitching		= false;
+		private	static	World				physicsWorld		= new World(Vector2.Zero);
+		private	static	float				physicsAcc			= 0.0f;
+		private	static	bool				physicsLowFps		= false;
+		private	static	ContentRef<Scene>	current				= new Scene();
+		private	static	bool				curAutoGen			= false;
+		private	static	bool				isSwitching			= false;
+		private	static	int					switchLock			= 0;
+		private	static	bool				switchToScheduled	= false;
+		private	static	ContentRef<Scene>	switchToTarget		= null;
 
 
 		/// <summary>
@@ -75,7 +78,7 @@ namespace Duality.Resources
 				}
 				return current.Res;
 			}
-			set
+			private set
 			{
 				if (current.ResWeak != value)
 				{
@@ -137,8 +140,29 @@ namespace Duality.Resources
 		public static event EventHandler<ComponentEventArgs> ComponentRemoving;
 
 
+		/// <summary>
+		/// Switches to the specified <see cref="Scene"/>, which will become the new <see cref="Current">current one</see>.
+		/// By default, this method does not guarantee to perform the Scene switch immediately, but may defer the switch
+		/// to the end of the current update cycle.
+		/// </summary>
+		/// <param name="scene">The Scene to switch to.</param>
+		/// <param name="forceImmediately">If true, an immediate switch is forced. Use only when necessary.</param>
+		public static void SwitchTo(ContentRef<Scene> scene, bool forceImmediately = false)
+		{
+			if (switchLock == 0 || forceImmediately)
+			{
+				Scene.Current = scene.Res;
+			}
+			else
+			{
+				switchToTarget = scene;
+				switchToScheduled = true;
+			}
+		}
+
 		private static void OnLeaving()
 		{
+			switchLock++;
 			if (Leaving != null) Leaving(current, null);
 			isSwitching = true;
 			if (current.ResWeak != null)
@@ -147,9 +171,11 @@ namespace Duality.Resources
 				physicsWorld.Clear();
 				ResetPhysics();
 			}
+			switchLock--;
 		}
 		private static void OnEntered()
 		{
+			switchLock++;
 			if (current.ResWeak != null)
 			{
 				// Apply physical properties
@@ -170,6 +196,7 @@ namespace Duality.Resources
 			}
 			isSwitching = false;
 			if (Entered != null) Entered(current, null);
+			switchLock--;
 		}
 		private static void OnGameObjectParentChanged(GameObjectParentChangedEventArgs args)
 		{
@@ -298,11 +325,14 @@ namespace Duality.Resources
 		internal void Render(Rect viewportRect, Predicate<Camera> camPredicate = null)
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't render non-current Scene!");
+			switchLock++;
 
 			Camera[] activeCams = this.FindComponents<Camera>().Where(c => c.Active && (camPredicate == null || camPredicate(c))).ToArray();
 			// Maybe sort / process list first later on.
 			foreach (Camera c in activeCams)
 				c.Render(viewportRect);
+
+			switchLock--;
 		}
 		/// <summary>
 		/// Updates the Scene
@@ -310,6 +340,7 @@ namespace Duality.Resources
 		internal void Update()
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
+			switchLock++;
 
 			// Update physics
 			bool physUpdate = false;
@@ -373,6 +404,16 @@ namespace Duality.Resources
 					obj.Update();
 			}
 			Profile.TimeUpdateScene.EndMeasure();
+
+			// Perform a scheduled Scene switch
+			if (switchToScheduled)
+			{
+				Scene.Current = switchToTarget.Res;
+				switchToTarget = null;
+				switchToScheduled = false;
+			}
+
+			switchLock--;
 		}
 		/// <summary>
 		/// Updates the Scene in the editor.
@@ -380,6 +421,7 @@ namespace Duality.Resources
 		internal void EditorUpdate()
 		{
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
+			switchLock++;
 
 			Profile.TimeUpdateScene.BeginMeasure();
 			{
@@ -389,6 +431,8 @@ namespace Duality.Resources
 					obj.EditorUpdate();
 			}
 			Profile.TimeUpdateScene.EndMeasure();
+
+			switchLock--;
 		}
 		/// <summary>
 		/// Cleanes up disposed Scene objects.

@@ -104,7 +104,7 @@ namespace DualityEditor
 
 				// (Re)Load Scene.
 				if (curPath != null)
-					Scene.Current = ContentProvider.RequestContent<Scene>(curPath).Res;
+					Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curPath), true);
 			}
 
 			OnSandboxStateChanged();
@@ -143,7 +143,7 @@ namespace DualityEditor
 			
 			// (Re)Load Scene
 			if (curPath != null)
-				Scene.Current = ContentProvider.RequestContent<Scene>(curPath).Res;
+				Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curPath));
 
 			OnLeaveSandbox();
 			OnSandboxStateChanged();

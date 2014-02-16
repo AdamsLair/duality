@@ -300,8 +300,6 @@ namespace Duality
 		}
 
 
-		private static Dictionary<uint,Texture>	dashTextures = new Dictionary<uint,Texture>();
-
 		private	IDrawDevice		device		= null;
 		private	Stack<State>	stateStack	= new Stack<State>(new [] { new State() });
 		private	CanvasBuffer	buffer		= null;
@@ -569,13 +567,15 @@ namespace Duality
 		public void DrawDashLine(float x, float y, float z, float x2, float y2, float z2, DashPattern pattern = DashPattern.Dash, float patternLen = 1.0f)
 		{
 			uint patternBits = (uint)pattern;
-			if (!dashTextures.ContainsKey(patternBits))
+			string dashTextPath = string.Format("__DashLineTexture{0}__", patternBits);
+			ContentRef<Texture> dashTexRef = new ContentRef<Texture>(null, dashTextPath);
+			if (!dashTexRef.IsAvailable)
 			{
 				Pixmap.Layer pxLayerDash = new Pixmap.Layer(32, 1);
 				for (int i = 31; i >= 0; i--) pxLayerDash[i, 0] = ((patternBits & (1U << i)) != 0) ? ColorRgba.White : ColorRgba.TransparentWhite;
 				Pixmap pxDash = new Pixmap(pxLayerDash);
 				Texture texDash = new Texture(pxDash, Texture.SizeMode.Stretch, TextureMagFilter.Nearest, TextureMinFilter.Nearest, TextureWrapMode.Repeat);
-				dashTextures[patternBits] = texDash;
+				ContentProvider.AddContent(dashTextPath, texDash);
 			}
 
 			Vector3 pos = new Vector3(x, y, z);
@@ -597,7 +597,7 @@ namespace Duality
 			vertices[1].Color = shapeColor;
 
 			BatchInfo customMat = new BatchInfo(this.CurrentState.MaterialDirect);
-			customMat.MainTexture = dashTextures[patternBits];
+			customMat.MainTexture = dashTexRef;
 			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
 			device.AddVertices(customMat, VertexMode.Lines, vertices, 2);
 		}

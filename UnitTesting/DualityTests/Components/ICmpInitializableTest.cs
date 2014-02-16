@@ -50,7 +50,7 @@ namespace Duality.Tests.Resources
 			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();
 
 			// Activate by Scene.Current
-			Scene.Current = this.scene;
+			Scene.SwitchTo(this.scene, true);
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate));
 			initTester.Reset();
 
@@ -75,14 +75,14 @@ namespace Duality.Tests.Resources
 			initTester.Reset();
 
 			// Deactivate by Scene.Current
-			Scene.Current = null;
+			Scene.SwitchTo(null, true);
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
 			initTester.Reset();
 		}
 		[Test] public void DeactivateGameObjectDispose()
 		{
 			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();
-			Scene.Current = this.scene;
+			Scene.SwitchTo(this.scene, true);
 			this.obj.Dispose();
 			DualityApp.RunCleanup(); // Need to run cleanup, so disposed GameObjects will be processed.
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
@@ -90,14 +90,14 @@ namespace Duality.Tests.Resources
 		[Test] public void DeactivateComponentDispose()
 		{
 			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();
-			Scene.Current = this.scene;
+			Scene.SwitchTo(this.scene, true);
 			initTester.Dispose();
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
 		}
 		[Test] public void DeactivateSceneDispose()
 		{
 			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();
-			Scene.Current = this.scene;
+			Scene.SwitchTo(this.scene, true);
 			this.scene.Dispose();
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
 		}

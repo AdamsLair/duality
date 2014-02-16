@@ -86,6 +86,11 @@
   <ItemGroup>
     <None Include="TestingResources\CanvasTestDiagonalLine.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestingResources\CanvasTestAllShapes.png" />
+    <Content Include="TestingResources\CanvasTestAllShapesTransformed.png" />
+    <Content Include="TestingResources\TexCoordUV.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)Duality\bin\$(ConfigurationName)\*.*" "$(TargetDir)"</PostBuildEvent>

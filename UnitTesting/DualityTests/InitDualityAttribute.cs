@@ -74,6 +74,8 @@ namespace DualityTests
 
 			if (this.dummyWindow != null)
 			{
+				ContentProvider.ClearContent();
+				ContentProvider.DisposeDefaultContent();
 			    this.dummyWindow.Dispose();
 			    this.dummyWindow = null;
 			}

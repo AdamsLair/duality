@@ -1563,7 +1563,7 @@ namespace EditorBase
 		private void buttonCreateScene_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.SaveCurrentScene(true);
-			Scene.Current = null;
+			Scene.SwitchTo(null);
 		}
 		private void buttonSaveScene_Click(object sender, EventArgs e)
 		{
