@@ -917,14 +917,6 @@ namespace Duality
 		}
 		private void OnParentChanged(GameObject oldParent, GameObject newParent)
 		{
-			// Notify Components
-			foreach (Component c in this.compList)
-			{
-				if (!c.Active) continue;
-				ICmpGameObjectListener cParent = c as ICmpGameObjectListener;
-				if (cParent != null) cParent.OnGameObjectParentChanged(oldParent, this.parent);
-			}
-
 			// Public event
 			if (this.eventParentChanged != null)
 				this.eventParentChanged(this, new GameObjectParentChangedEventArgs(this, oldParent, newParent));
@@ -934,12 +926,6 @@ namespace Duality
 			// Notify Components
 			ICmpInitializable cmpInit = cmp as ICmpInitializable;
 			if (cmpInit != null) cmpInit.OnInit(Component.InitContext.AddToGameObject);
-			foreach (Component c in this.compList)
-			{
-				if (!c.Active || c == cmp) continue;
-				ICmpComponentListener cTemp = c as ICmpComponentListener;
-				if (cTemp != null) cTemp.OnComponentAdded(cmp);
-			}
 
 			// Public event
 			if (this.eventComponentAdded != null)
@@ -950,12 +936,6 @@ namespace Duality
 			// Notify Components
 			ICmpInitializable cmpInit = cmp as ICmpInitializable;
 			if (cmpInit != null) cmpInit.OnShutdown(Component.ShutdownContext.RemovingFromGameObject);
-			foreach (Component c in this.compList)
-			{
-				if (!c.Active || c == cmp) continue;
-				ICmpComponentListener cTemp = c as ICmpComponentListener;
-				if (cTemp != null) cTemp.OnComponentRemoving(cmp);
-			}
 
 			// Public event
 			if (this.eventComponentRemoving != null)

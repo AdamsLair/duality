@@ -31,36 +31,6 @@ namespace Duality
 		void OnUpdate();
 	}
 	/// <summary>
-	/// Implement this interface in <see cref="Component">Components</see> that require notifications for other Components 
-	/// being added or removed at the same GameObject.
-	/// </summary>
-	public interface ICmpComponentListener
-	{
-		/// <summary>
-		/// Called whenever another Component has been added to this Components GameObject.
-		/// </summary>
-		/// <param name="comp">The Component that has been added</param>
-		void OnComponentAdded(Component comp);
-		/// <summary>
-		/// Called whenever another Component is being removed from this Components GameObject.
-		/// </summary>
-		/// <param name="comp">The Component that is being removed</param>
-		void OnComponentRemoving(Component comp);
-	}
-	/// <summary>
-	/// Implement this interface in <see cref="Component">Components</see> that require notification if the location of 
-	/// their GameObject inside the scene graph changes.
-	/// </summary>
-	public interface ICmpGameObjectListener
-	{
-		/// <summary>
-		/// Called whenever this Components GameObjects <see cref="GameObject.Parent"/> has changed.
-		/// </summary>
-		/// <param name="oldParent">The old parent object.</param>
-		/// <param name="newParent">The new parent object.</param>
-		void OnGameObjectParentChanged(GameObject oldParent, GameObject newParent);
-	}
-	/// <summary>
 	/// Implement this interface in <see cref="Component">Components</see> that require specific init and shutdown logic.
 	/// </summary>
 	public interface ICmpInitializable
