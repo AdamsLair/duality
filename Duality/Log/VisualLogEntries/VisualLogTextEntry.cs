@@ -82,12 +82,12 @@ namespace Duality
 			originPos += basePos;
 
 			// Draw text and background
-			BatchInfo matBoostAlpha = target.CurrentState.Material;
+			BatchInfo matBoostAlpha = target.State.Material;
 			matBoostAlpha.MainColor = matBoostAlpha.MainColor.WithAlpha(matBoostAlpha.MainColor.A * 2.0f / 255.0f);
-			target.CurrentState.SetMaterial(matBoostAlpha);
-			target.CurrentState.ColorTint *= this.Color;
-			if (worldSpace) target.CurrentState.TransformAngle = target.DrawDevice.RefAngle;
-			target.CurrentState.TransformScale = new Vector2(textScale, textScale);
+			target.State.SetMaterial(matBoostAlpha);
+			target.State.ColorTint *= this.Color;
+			if (worldSpace) target.State.TransformAngle = target.DrawDevice.RefAngle;
+			target.State.TransformScale = new Vector2(textScale, textScale);
 			target.DrawText(
 				this.lines,
 				originPos.X, 

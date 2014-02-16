@@ -135,7 +135,7 @@ namespace Duality.Components.Diagnostics
 		{
 			Profile.BeginMeasure(@"ProfileRenderer");
 			Canvas canvas = new Canvas(device);
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White, null));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White, null));
 			
 			bool anyTextReport = this.textReportPerf || this.textReportStat;
 			bool anyGraph = this.drawGraphs && this.counterGraphs.Count > 0;
@@ -218,9 +218,9 @@ namespace Duality.Components.Diagnostics
 							cache.GraphValues[i] = factor * 0.75f;
 							cache.GraphColors[i] = ColorRgba.Lerp(ColorRgba.White, ColorRgba.Red, factor);
 						}
-						canvas.CurrentState.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
+						canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
 						canvas.FillRect(graphRect.X, graphY, graphRect.W, graphH);
-						canvas.CurrentState.ColorTint = ColorRgba.White;
+						canvas.State.ColorTint = ColorRgba.White;
 						this.DrawHorizontalGraph(canvas, cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
 						cursorRatio = (float)timeCounter.ValueGraphCursor / (float)ProfileCounter.ValueHistoryLen;
 					}
@@ -232,9 +232,9 @@ namespace Duality.Components.Diagnostics
 							cache.GraphValues[i] = (float)(statCounter.ValueGraph[i] - statCounter.MinValue) / statCounter.MaxValue;
 							cache.GraphColors[i] = ColorRgba.White;
 						}
-						canvas.CurrentState.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
+						canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
 						canvas.FillRect(graphRect.X, graphY, graphRect.W, graphH);
-						canvas.CurrentState.ColorTint = ColorRgba.White;
+						canvas.State.ColorTint = ColorRgba.White;
 						this.DrawHorizontalGraph(canvas, cache.GraphValues, cache.GraphColors, ref cache.VertGraph, graphRect.X, graphY, graphRect.W, graphH);
 						cursorRatio = (float)statCounter.ValueGraphCursor / (float)ProfileCounter.ValueHistoryLen;
 					}
@@ -294,7 +294,7 @@ namespace Duality.Components.Diagnostics
 			
 			IDrawDevice device = canvas.DrawDevice;
 
-			ColorRgba baseColor = canvas.CurrentState.ColorTint * canvas.CurrentState.MaterialDirect.MainColor;
+			ColorRgba baseColor = canvas.State.ColorTint * canvas.State.MaterialDirect.MainColor;
 			float sampleXRatio = w / (float)(values.Length - 1);
 			
 			if (vertices == null)
@@ -309,7 +309,7 @@ namespace Duality.Components.Diagnostics
 				vertices[i].Pos.Z = 0.0f;
 				vertices[i].Color = baseColor * colors[i];
 			}
-			device.AddVertices(canvas.CurrentState.MaterialDirect, VertexMode.LineStrip, vertices, values.Length);
+			device.AddVertices(canvas.State.MaterialDirect, VertexMode.LineStrip, vertices, values.Length);
 		}
 	}
 }

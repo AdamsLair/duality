@@ -40,12 +40,12 @@ namespace Duality.Components.Diagnostics
 					if (log.BaseColor.A == 0) continue;
 					if ((log.VisibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) continue;
 
-					target.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, log.BaseColor));
+					target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, log.BaseColor));
 					foreach (VisualLogEntry logEntry in log.Entries)
 					{
 						if (logEntry.Anchor != VisualLogAnchor.Screen) continue;
 						target.PushState();
-						target.CurrentState.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
+						target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
 						logEntry.Draw(target);
 						target.PopState();
 					}
@@ -54,19 +54,19 @@ namespace Duality.Components.Diagnostics
 			else
 			{
 				Canvas target = new Canvas(device, this.vertexBufferWorld);
-				target.CurrentState.ZOffset = -1;
+				target.State.ZOffset = -1;
 				foreach (VisualLog log in VisualLog.All)
 				{
 					if (!log.Visible) continue;
 					if (log.BaseColor.A == 0) continue;
 					if ((log.VisibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) continue;
 
-					target.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, log.BaseColor));
+					target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, log.BaseColor));
 					foreach (VisualLogEntry logEntry in log.Entries)
 					{
 						if (logEntry.Anchor == VisualLogAnchor.Screen) continue;
 						target.PushState();
-						target.CurrentState.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
+						target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
 						if (logEntry.Anchor == VisualLogAnchor.Object && logEntry.AnchorObj != null && logEntry.AnchorObj.Transform != null)
 						{
 							Transform anchorTransform = logEntry.AnchorObj.Transform;

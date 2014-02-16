@@ -82,10 +82,10 @@ namespace EditorBase.CamViewLayers
 			this.RetrieveResources();
 			RigidBody selectedBody = this.QuerySelectedCollider();
 
-			canvas.CurrentState.TextFont = Font.GenericMonospace10;
-			canvas.CurrentState.TextInvariantScale = true;
-			canvas.CurrentState.ZOffset = -1;
-			Font textFont = canvas.CurrentState.TextFont.Res;
+			canvas.State.TextFont = Font.GenericMonospace10;
+			canvas.State.TextInvariantScale = true;
+			canvas.State.ZOffset = -1;
+			Font textFont = canvas.State.TextFont.Res;
 
 			// Draw Shape layer
 			foreach (RigidBody c in visibleColliders)
@@ -119,13 +119,13 @@ namespace EditorBase.CamViewLayers
 						Vector2 circlePos = circle.Position * colliderScale;
 						MathF.TransformCoord(ref circlePos.X, ref circlePos.Y, c.GameObj.Transform.Angle);
 
-						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
+						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
 						canvas.FillCircle(
 							colliderPos.X + circlePos.X,
 							colliderPos.Y + circlePos.Y,
 							colliderPos.Z, 
 							circle.Radius * colliderScale);
-						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
+						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
 						canvas.DrawCircle(
 							colliderPos.X + circlePos.X,
 							colliderPos.Y + circlePos.Y,
@@ -147,9 +147,9 @@ namespace EditorBase.CamViewLayers
 						Vector2.Multiply(ref center, colliderScale, out center);
 						MathF.TransformCoord(ref center.X, ref center.Y, c.GameObj.Transform.Angle);
 
-						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
+						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
 						canvas.FillPolygon(polyVert, colliderPos.X, colliderPos.Y, colliderPos.Z);
-						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
+						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
 						canvas.DrawPolygon(polyVert, colliderPos.X, colliderPos.Y, colliderPos.Z);
 					}
 					else if (loop != null)
@@ -165,7 +165,7 @@ namespace EditorBase.CamViewLayers
 						Vector2.Multiply(ref center, colliderScale, out center);
 						MathF.TransformCoord(ref center.X, ref center.Y, c.GameObj.Transform.Angle);
 
-						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
+						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
 						canvas.DrawPolygon(loopVert, colliderPos.X, colliderPos.Y, colliderPos.Z);
 					}
 					
@@ -173,13 +173,13 @@ namespace EditorBase.CamViewLayers
 					if (c == selectedBody)
 					{
 						Vector2 textSize = textFont.MeasureText(index.ToString(CultureInfo.InvariantCulture));
-						canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, fontClr.WithAlpha((shapeAlpha + 1.0f) * 0.5f)));
-						canvas.CurrentState.TransformHandle = textSize * 0.5f;
+						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, fontClr.WithAlpha((shapeAlpha + 1.0f) * 0.5f)));
+						canvas.State.TransformHandle = textSize * 0.5f;
 						canvas.DrawText(index.ToString(CultureInfo.InvariantCulture), 
 							colliderPos.X + center.X, 
 							colliderPos.Y + center.Y,
 							colliderPos.Z);
-						canvas.CurrentState.TransformHandle = Vector2.Zero;
+						canvas.State.TransformHandle = Vector2.Zero;
 					}
 
 					index++;
@@ -190,7 +190,7 @@ namespace EditorBase.CamViewLayers
 				{
 					Vector2 localMassCenter = c.LocalMassCenter;
 					MathF.TransformCoord(ref localMassCenter.X, ref localMassCenter.Y, c.GameObj.Transform.Angle, c.GameObj.Transform.Scale);
-					canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.MassCenterColor.WithAlpha(colliderAlpha)));
+					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.MassCenterColor.WithAlpha(colliderAlpha)));
 					canvas.DrawLine(
 						colliderPos.X + localMassCenter.X - 5.0f, 
 						colliderPos.Y + localMassCenter.Y, 

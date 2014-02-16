@@ -47,7 +47,7 @@ namespace Duality
 			circlePos += basePos;
 
 			// Draw circle
-			target.CurrentState.ColorTint *= this.Color;
+			target.State.ColorTint *= this.Color;
 			target.FillCircle(
 				circlePos.X, 
 				circlePos.Y, 
@@ -55,8 +55,8 @@ namespace Duality
 				circleRadius - borderRadius * 0.5f);
 
 			// Draw circle outline
-			if (target.DrawDevice.DepthWrite) target.CurrentState.ZOffset -= 1;
-			target.CurrentState.ColorTint *= ColorRgba.Black;
+			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 1;
+			target.State.ColorTint *= ColorRgba.Black;
 			target.FillCircleSegment(
 				circlePos.X, 
 				circlePos.Y, 

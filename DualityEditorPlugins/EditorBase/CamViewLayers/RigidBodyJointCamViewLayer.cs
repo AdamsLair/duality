@@ -64,8 +64,8 @@ namespace EditorBase.CamViewLayers
 		protected internal override void OnCollectDrawcalls(Canvas canvas)
 		{
 			base.OnCollectDrawcalls(canvas);
-			canvas.CurrentState.TextInvariantScale = true;
-			canvas.CurrentState.ZOffset = -1;
+			canvas.State.TextInvariantScale = true;
+			canvas.State.ZOffset = -1;
 
 			RigidBody selectedBody = this.QuerySelectedCollider();
 
@@ -80,7 +80,7 @@ namespace EditorBase.CamViewLayers
 			{
 				float jointAlpha = selectedBody != null && (j.BodyA == selectedBody || j.BodyB == selectedBody) ? 1.0f : 0.5f;
 				if (!j.Enabled) jointAlpha *= 0.25f;
-				canvas.CurrentState.ColorTint = canvas.CurrentState.ColorTint.WithAlpha(jointAlpha);
+				canvas.State.ColorTint = canvas.State.ColorTint.WithAlpha(jointAlpha);
 
 				if (j.BodyA == null) continue;
 				if (j.DualJoint && j.BodyB == null) continue;
@@ -316,7 +316,7 @@ namespace EditorBase.CamViewLayers
 			this.DrawLocalAnchor(canvas, joint.BodyA, joint.CarAnchor);
 			this.DrawLocalAnchor(canvas, joint.BodyB, joint.WheelAnchor);
 			
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.JointColor));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.JointColor));
 			this.DrawLocalText(canvas, joint.BodyA, "Car", Vector2.Zero, 0.0f);
 			this.DrawLocalText(canvas, joint.BodyB, "Wheel", Vector2.Zero, 0.0f);
 
@@ -355,14 +355,14 @@ namespace EditorBase.CamViewLayers
 			handle *= textSize;
 			if (flipText) handle = textSize - handle;
 
-			canvas.CurrentState.TransformHandle = handle;
-			canvas.CurrentState.TransformAngle = baseAngle;
+			canvas.State.TransformHandle = handle;
+			canvas.State.TransformAngle = baseAngle;
 			canvas.DrawText(text, 
 				bodyPos.X + pos.X, 
 				bodyPos.Y + pos.Y, 
 				bodyPos.Z);
-			canvas.CurrentState.TransformAngle = 0.0f;
-			canvas.CurrentState.TransformHandle = Vector2.Zero;
+			canvas.State.TransformAngle = 0.0f;
+			canvas.State.TransformHandle = Vector2.Zero;
 		}
 		private void DrawLocalAnchor(Canvas canvas, RigidBody body, Vector2 anchor)
 		{
@@ -372,7 +372,7 @@ namespace EditorBase.CamViewLayers
 			float markerCircleRad = body.BoundRadius * 0.02f;
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.FillCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
@@ -387,7 +387,7 @@ namespace EditorBase.CamViewLayers
 			float markerCircleRad = body.BoundRadius * 0.02f;
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.FillCircle(
 				colliderPos.X + anchorToWorld.X,
 				colliderPos.Y + anchorToWorld.Y,
@@ -426,7 +426,7 @@ namespace EditorBase.CamViewLayers
 					circleEnd = circleBegin + MathF.CircularDist(circleBegin, circleEnd);
 				}
 
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
 				canvas.DrawLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
@@ -447,7 +447,7 @@ namespace EditorBase.CamViewLayers
 					Vector2.UnitY,
 					errorVec.Angle);
 			}
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawLine(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
@@ -486,7 +486,7 @@ namespace EditorBase.CamViewLayers
 					circleEnd = circleBegin + MathF.CircularDist(circleBegin, circleEnd);
 				}
 
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
 				canvas.DrawLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
@@ -507,7 +507,7 @@ namespace EditorBase.CamViewLayers
 					Vector2.UnitY,
 					errorVec.Angle);
 			}
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
@@ -552,7 +552,7 @@ namespace EditorBase.CamViewLayers
 			Vector2 arrorA = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45, MathF.Sign(speed) * radius * 0.05f);
 			Vector2 arrorB = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45 + MathF.RadAngle270, MathF.Sign(speed) * radius * 0.05f);
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawCircleSegment(
 				bodyPos.X + anchorToWorld.X,
 				bodyPos.Y + anchorToWorld.Y,
@@ -604,7 +604,7 @@ namespace EditorBase.CamViewLayers
 			bool hasError = errorVec.Length >= 1.0f;
 			if (hasError)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
 				canvas.DrawLine(
 					colliderPosA.X + anchorAToWorld.X,
 					colliderPosA.Y + anchorAToWorld.Y,
@@ -619,7 +619,7 @@ namespace EditorBase.CamViewLayers
 					errorVec.PerpendicularLeft.Angle);
 			}
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawLine(
 				colliderPosA.X,
 				colliderPosA.Y,
@@ -654,7 +654,7 @@ namespace EditorBase.CamViewLayers
 
 			if (hasError)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
 				canvas.DrawLine(
 					bodyPosA.X + anchorA.X + distVec.X,
 					bodyPosA.Y + anchorA.Y + distVec.Y,
@@ -668,7 +668,7 @@ namespace EditorBase.CamViewLayers
 					Vector2.UnitY,
 					errorVec.Angle);
 			}
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawLine(
 				bodyPosA.X + anchorA.X,
 				bodyPosA.Y + anchorA.Y,
@@ -720,7 +720,7 @@ namespace EditorBase.CamViewLayers
 			Vector2 anchorAToWorld = bodyA.GameObj.Transform.GetWorldVector(anchorA);
 			Vector2 anchorBToWorld = bodyB.GameObj.Transform.GetWorldVector(anchorB);
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawDashLine(
 				bodyPosA.X + anchorAToWorld.X,
 				bodyPosA.Y + anchorAToWorld.Y,
@@ -736,7 +736,7 @@ namespace EditorBase.CamViewLayers
 			float markerCircleRad = body.BoundRadius * 0.02f;
 			ColorRgba clr = this.JointColor;
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.FillCircle(
 				anchor.X,
 				anchor.Y,
@@ -758,7 +758,7 @@ namespace EditorBase.CamViewLayers
 			bool hasError = errorVec.Length >= 1.0f;
 			if (hasError)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
 				canvas.DrawLine(
 					bodyPos.X + anchorAToWorld.X,
 					bodyPos.Y + anchorAToWorld.Y,
@@ -773,7 +773,7 @@ namespace EditorBase.CamViewLayers
 					errorVec.PerpendicularLeft.Angle);
 			}
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawLine(
 				bodyPos.X,
 				bodyPos.Y,
@@ -799,7 +799,7 @@ namespace EditorBase.CamViewLayers
 
 			if (hasError)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
 				canvas.DrawLine(
 					colliderPosA.X + anchorA.X + distVec.X,
 					colliderPosA.Y + anchorA.Y + distVec.Y,
@@ -813,7 +813,7 @@ namespace EditorBase.CamViewLayers
 					Vector2.UnitY,
 					errorVec.Angle);
 			}
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawLine(
 				colliderPosA.X + anchorA.X,
 				colliderPosA.Y + anchorA.Y,
@@ -867,7 +867,7 @@ namespace EditorBase.CamViewLayers
 			
 			if (hasError)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clrErr));
 				canvas.DrawLine(
 					bodyPos.X + anchorToWorld.X,
 					bodyPos.Y + anchorToWorld.Y,
@@ -882,7 +882,7 @@ namespace EditorBase.CamViewLayers
 					errorVec.PerpendicularLeft.Angle);
 			}
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawLine(
 				worldAnchor.X + worldAxis.X * min,
 				worldAnchor.Y + worldAxis.Y * min,
@@ -922,7 +922,7 @@ namespace EditorBase.CamViewLayers
 			Vector2 arrowA = Vector2.FromAngleLength(axisAngle + MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * MathF.Max(offset * 0.05f, 5.0f));
 			Vector2 arrowB = Vector2.FromAngleLength(axisAngle - MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * MathF.Max(offset * 0.05f, 5.0f));
 			
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawLine(
 				arrowBegin.X + worldAxis.PerpendicularLeft.X * 2.0f,
 				arrowBegin.Y + worldAxis.PerpendicularLeft.Y * 2.0f,
@@ -965,7 +965,7 @@ namespace EditorBase.CamViewLayers
 
 			ColorRgba clr = this.JointColor;
 
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawDashLine(
 				anchorA.X,
 				anchorA.Y,

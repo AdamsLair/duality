@@ -20,289 +20,9 @@ namespace Duality
 	/// </summary>
 	public class Canvas
 	{
-		/// <summary>
-		/// Describes the state of a <see cref="Canvas"/>.
-		/// </summary>
-		public class State : ICloneable
-		{
-			private	BatchInfo			batchInfo;
-			private	ColorRgba			color;
-			private	ContentRef<Font>	font;
-			private	float				zOffset;
-			private	bool		invariantTextScale;
-			private	float		transformAngle;
-			private	Vector2		transformScale;
-			private	Vector2		transformHandle;
-			private	Rect		uvGenRect;
-
-			private	Vector2		curTX;
-			private	Vector2		curTY;
-			private	Vector2		texBaseSize;
-
-
-			internal BatchInfo MaterialDirect
-			{
-				get { return this.batchInfo; }
-			}
-			/// <summary>
-			/// [GET] The material that is used for drawing.
-			/// </summary>
-			public BatchInfo Material
-			{
-				get { return new BatchInfo(this.batchInfo); }
-			}
-			/// <summary>
-			/// [GET / SET] The <see cref="Duality.Resources.Font"/> to use for text rendering.
-			/// </summary>
-			public ContentRef<Font> TextFont
-			{
-				get { return this.font; }
-				set { this.font = value.IsAvailable ? value : Font.GenericMonospace10; }
-			}
-			/// <summary>
-			/// [GET / SET] If true, text does not scale due to its position in space
-			/// </summary>
-			public bool TextInvariantScale
-			{
-				get { return this.invariantTextScale; }
-				set { this.invariantTextScale = value; }
-			}
-			/// <summary>
-			/// [GET / SET] The texture coordinate rect which is used for UV generation when drawing shapes.
-			/// </summary>
-			public Rect TextureCoordinateRect
-			{
-				get { return this.uvGenRect; }
-				set { this.uvGenRect = value; }
-			}
-			/// <summary>
-			/// [GET] The currently bound main textures size.
-			/// </summary>
-			public Vector2 TextureBaseSize
-			{
-				get { return this.texBaseSize; }
-			}
-			/// <summary>
-			/// [GET / SET] The color tint to use for drawing.
-			/// </summary>
-			public ColorRgba ColorTint
-			{
-				get { return this.color; }
-				set { this.color = value; }
-			}
-			/// <summary>
-			/// [GET / SET] A Z-Offset value that is added to each emitted vertices Z coordinate after all projection calculations have been done.
-			/// </summary>
-			public float ZOffset
-			{
-				get { return this.zOffset; }
-				set { this.zOffset = value; }
-			}
-			/// <summary>
-			/// [GET / SET] The angle by which all shapes are transformed locally.
-			/// </summary>
-			public float TransformAngle
-			{
-				get { return this.transformAngle; }
-				set { this.transformAngle = value; this.UpdateTransform(); }
-			}
-			/// <summary>
-			/// [GET / SET] The scale by which all shapes are transformed locally.
-			/// </summary>
-			public Vector2 TransformScale
-			{
-				get { return this.transformScale; }
-				set { this.transformScale = value; this.UpdateTransform(); }
-			}
-			/// <summary>
-			/// [GET / SET] The handle used for locally transforming all shapes. 
-			/// You can think of it as the "fixed point" of a shape when rotating or scaling it.
-			/// </summary>
-			public Vector2 TransformHandle
-			{
-				get { return this.transformHandle; }
-				set { this.transformHandle = value; this.UpdateTransform(); }
-			}
-			/// <summary>
-			/// [GET] Returns whether the current transformation is an identity transformation (i.e. doesn't do anything).
-			/// </summary>
-			public bool IsTransformIdentity
-			{
-				get
-				{
-					return 
-						this.transformAngle == 0.0f &&
-						this.transformScale == Vector2.One &&
-						this.transformHandle == Vector2.Zero;
-				}
-			}
-
-
-			public State() 
-			{
-				this.Reset();
-			}
-			public State(State other)
-			{
-				other.CopyTo(this);
-			}
-			
-			/// <summary>
-			/// Copies all state data to the specified target.
-			/// </summary>
-			/// <param name="target"></param>
-			public void CopyTo(State target)
-			{
-				target.batchInfo			= this.batchInfo;
-				target.uvGenRect			= this.uvGenRect;
-				target.texBaseSize			= this.texBaseSize;
-				target.font					= this.font;
-				target.color				= this.color;
-				target.invariantTextScale	= this.invariantTextScale;
-				target.zOffset				= this.zOffset;
-				target.transformAngle		= this.transformAngle;
-				target.transformHandle		= this.transformHandle;
-				target.transformScale		= this.transformScale;
-				target.UpdateTransform();
-			}
-			/// <summary>
-			/// Creates a clone of this State.
-			/// </summary>
-			/// <returns></returns>
-			public State Clone()
-			{
-				return new State(this);
-			}
-			/// <summary>
-			/// Resets this State to its initial settings.
-			/// </summary>
-			public void Reset()
-			{
-				this.batchInfo = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
-				this.uvGenRect = new Rect(1.0f, 1.0f);
-				this.texBaseSize = Vector2.Zero;
-				this.font = Font.GenericMonospace10;
-				this.color = ColorRgba.White;
-				this.invariantTextScale = false;
-				this.zOffset = 0.0f;
-				this.transformAngle = 0.0f;
-				this.transformHandle = Vector2.Zero;
-				this.transformScale = Vector2.One;
-				this.UpdateTransform();
-			}
-
-			/// <summary>
-			/// Sets the States drawing material.
-			/// </summary>
-			/// <param name="material"></param>
-			public void SetMaterial(BatchInfo material)
-			{
-				this.batchInfo = material;
-				if (this.batchInfo.MainTexture.IsAvailable)
-				{
-					Texture tex = this.batchInfo.MainTexture.Res;
-					this.uvGenRect = new Rect(tex.UVRatio);
-					this.texBaseSize = tex.Size;
-				}
-				else
-				{
-					this.texBaseSize = Vector2.Zero;
-				}
-			}
-			/// <summary>
-			/// Sets the States drawing material.
-			/// </summary>
-			/// <param name="material"></param>
-			public void SetMaterial(ContentRef<Material> material)
-			{
-				this.batchInfo = material.Res.InfoDirect;
-				if (this.batchInfo.MainTexture.IsAvailable)
-				{
-					Texture tex = this.batchInfo.MainTexture.Res;
-					this.uvGenRect = new Rect(tex.UVRatio);
-					this.texBaseSize = tex.Size;
-				}
-				else
-				{
-					this.texBaseSize = Vector2.Zero;
-				}
-			}
-
-			private void UpdateTransform()
-			{
-				MathF.GetTransformDotVec(
-					this.transformAngle, 
-					out this.curTX, 
-					out this.curTY);
-			}
-			internal void TransformVertices<T>(T[] vertexData, Vector2 shapeHandle, float shapeHandleScale) where T : struct, IVertexData
-			{
-				if (this.IsTransformIdentity)
-				{
-					for (int i = 0; i < vertexData.Length; i++)
-					{
-						Vector3 pos = vertexData[i].Pos;
-						pos.Z += this.zOffset;
-						vertexData[i].Pos = pos;
-					}
-				}
-				else
-				{
-					this.UpdateTransform();
-					Vector2 transformHandle = this.transformHandle;
-					Vector2 transformScale = this.transformScale;
-					for (int i = 0; i < vertexData.Length; i++)
-					{
-						Vector3 pos = vertexData[i].Pos;
-						pos.X -= transformHandle.X * shapeHandleScale + shapeHandle.X;
-						pos.Y -= transformHandle.Y * shapeHandleScale + shapeHandle.Y;
-						pos.X *= transformScale.X;
-						pos.Y *= transformScale.Y;
-						MathF.TransformDotVec(ref pos, ref this.curTX, ref this.curTY);
-						pos.X += shapeHandle.X;
-						pos.Y += shapeHandle.Y;
-						pos.Z += this.zOffset;
-						vertexData[i].Pos = pos;
-					}
-				}
-			}
-			internal void TransformVertices(VertexC1P3T2[] vertexData, Vector2 shapeHandle, float shapeHandleScale)
-			{
-				if (this.IsTransformIdentity)
-				{
-					for (int i = 0; i < vertexData.Length; i++)
-					{
-						vertexData[i].Pos.Z += this.zOffset;
-					}
-				}
-				else
-				{
-					Vector2 transformHandle = this.transformHandle;
-					Vector2 transformScale = this.transformScale;
-					for (int i = 0; i < vertexData.Length; i++)
-					{
-						vertexData[i].Pos.X -= transformHandle.X * shapeHandleScale + shapeHandle.X;
-						vertexData[i].Pos.Y -= transformHandle.Y * shapeHandleScale + shapeHandle.Y;
-						vertexData[i].Pos.X *= transformScale.X;
-						vertexData[i].Pos.Y *= transformScale.Y;
-						MathF.TransformDotVec(ref vertexData[i].Pos, ref this.curTX, ref this.curTY);
-						vertexData[i].Pos.X += shapeHandle.X;
-						vertexData[i].Pos.Y += shapeHandle.Y;
-						vertexData[i].Pos.Z += this.zOffset;
-					}
-				}
-			}
-			
-			void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
-			{
-				this.CopyTo(targetObj as State);
-			}
-		}
-
-
-		private	IDrawDevice		device		= null;
-		private	Stack<State>	stateStack	= new Stack<State>(new [] { new State() });
-		private	CanvasBuffer	buffer		= null;
+		private	IDrawDevice			device		= null;
+		private	Stack<CanvasState>	stateStack	= new Stack<CanvasState>(new [] { new CanvasState() });
+		private	CanvasBuffer		buffer		= null;
 
 
 		/// <summary>
@@ -313,9 +33,9 @@ namespace Duality
 			get { return this.device; }
 		}
 		/// <summary>
-		/// [GET / SET] The Canvas' current <see cref="State"/>.
+		/// [GET / SET] The Canvas' current <see cref="CanvasState"/>.
 		/// </summary>
-		public State CurrentState
+		public CanvasState State
 		{
 			get { return this.stateStack.Peek(); }
 			set 
@@ -356,20 +76,20 @@ namespace Duality
 		
 
 		/// <summary>
-		/// Adds a clone of the <see cref="Canvas.CurrentState">current state</see> on top of the internal
-		/// <see cref="State"/> stack.
+		/// Adds a clone of the <see cref="Canvas.State">current state</see> on top of the internal
+		/// <see cref="CanvasState"/> stack.
 		/// </summary>
 		public void PushState()
 		{
 			this.stateStack.Push(this.stateStack.Peek().Clone());
 		}
 		/// <summary>
-		/// Removes the topmost <see cref="State"/> from the internal State stack.
+		/// Removes the topmost <see cref="CanvasState"/> from the internal State stack.
 		/// </summary>
 		public void PopState()
 		{
 			this.stateStack.Pop();
-			if (this.stateStack.Count == 0) this.stateStack.Push(new State());
+			if (this.stateStack.Count == 0) this.stateStack.Push(new CanvasState());
 		}
 
 		/// <summary>
@@ -397,8 +117,8 @@ namespace Duality
 			float scale = 1.0f;
 			device.PreprocessCoords(ref pos, ref scale);
 
-			this.CurrentState.TransformVertices(vertices, pos.Xy, scale);
-			this.device.AddVertices<T>(this.CurrentState.MaterialDirect, mode, vertices);
+			this.State.TransformVertices(vertices, pos.Xy, scale);
+			this.device.AddVertices<T>(this.State.MaterialDirect, mode, vertices);
 		}
 
 		/// <summary>
@@ -415,8 +135,8 @@ namespace Duality
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(points.Length);
 			for (int i = 0; i < points.Length; i++)
 			{
@@ -428,8 +148,8 @@ namespace Duality
 				vertices[i].Color = shapeColor;
 			}
 
-			this.CurrentState.TransformVertices(vertices, pos.Xy, scale);
-			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.LineLoop, vertices, points.Length);
+			this.State.TransformVertices(vertices, pos.Xy, scale);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, points.Length);
 		}
 
 		/// <summary>
@@ -452,8 +172,8 @@ namespace Duality
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(r * scale, 0.65f) * 2.5f), 4, 128);
 			Vector2 shapeHandle = pos.Xy;
 			float shapeHandleScale = scale;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices;
 			float angle;
 
@@ -471,8 +191,8 @@ namespace Duality
 				this.device.PreprocessCoords(ref vertices[i].Pos, ref scale);
 				angle += (MathF.TwoPi / segmentNum);
 			}
-			this.CurrentState.TransformVertices(vertices, shapeHandle, shapeHandleScale);
-			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
+			this.State.TransformVertices(vertices, shapeHandle, shapeHandleScale);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
 
 			// XZ circle
 			vertices = this.buffer.RequestVertexArray(segmentNum);
@@ -488,8 +208,8 @@ namespace Duality
 				this.device.PreprocessCoords(ref vertices[i].Pos, ref scale);
 				angle += (MathF.TwoPi / segmentNum);
 			}
-			this.CurrentState.TransformVertices(vertices, shapeHandle, shapeHandleScale);
-			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
+			this.State.TransformVertices(vertices, shapeHandle, shapeHandleScale);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
 
 			// YZ circle
 			vertices = this.buffer.RequestVertexArray(segmentNum);
@@ -505,8 +225,8 @@ namespace Duality
 				this.device.PreprocessCoords(ref vertices[i].Pos, ref scale);
 				angle += (MathF.TwoPi / segmentNum);
 			}
-			this.CurrentState.TransformVertices(vertices, shapeHandle, shapeHandleScale);
-			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
+			this.State.TransformVertices(vertices, shapeHandle, shapeHandleScale);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, segmentNum);
 		}
 
 		/// <summary>
@@ -528,8 +248,8 @@ namespace Duality
 			device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(2);
 
 			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
@@ -541,8 +261,8 @@ namespace Duality
 			vertices[0].Color = shapeColor;
 			vertices[1].Color = shapeColor;
 
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Lines, vertices, 2);
+			this.State.TransformVertices(vertices, shapeHandle, scale);
+			device.AddVertices(this.State.MaterialDirect, VertexMode.Lines, vertices, 2);
 		}
 		/// <summary>
 		/// Draws a flat line.
@@ -587,7 +307,7 @@ namespace Duality
 			device.PreprocessCoords(ref target, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(2);
 			vertices[0].Pos = pos + new Vector3(0.5f, 0.5f, 0.0f);
 			vertices[1].Pos = target + new Vector3(0.5f, 0.5f, 0.0f);
@@ -596,9 +316,9 @@ namespace Duality
 			vertices[0].Color = shapeColor;
 			vertices[1].Color = shapeColor;
 
-			BatchInfo customMat = new BatchInfo(this.CurrentState.MaterialDirect);
+			BatchInfo customMat = new BatchInfo(this.State.MaterialDirect);
 			customMat.MainTexture = dashTexRef;
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
+			this.State.TransformVertices(vertices, shapeHandle, scale);
 			device.AddVertices(customMat, VertexMode.Lines, vertices, 2);
 		}
 		/// <summary>
@@ -638,8 +358,8 @@ namespace Duality
 			Vector2 right2 = dir.PerpendicularRight * width * 0.5f * scale2;
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
 			vertices[0].Pos = pos + new Vector3(left);
@@ -657,8 +377,8 @@ namespace Duality
 			vertices[2].Color = shapeColor;
 			vertices[3].Color = shapeColor;
 
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.LineLoop, vertices, 4);
+			this.State.TransformVertices(vertices, shapeHandle, scale);
+			device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
 		}
 		/// <summary>
 		/// Draws a thick, flat line.
@@ -690,8 +410,8 @@ namespace Duality
 			device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
 			vertices[0].Pos = new Vector3(pos.X + 0.5f, pos.Y + 0.5f, pos.Z);
@@ -709,8 +429,8 @@ namespace Duality
 			vertices[2].Color = shapeColor;
 			vertices[3].Color = shapeColor;
 
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.LineLoop, vertices, 4);
+			this.State.TransformVertices(vertices, shapeHandle, scale);
+			device.AddVertices(this.State.MaterialDirect, VertexMode.LineLoop, vertices, 4);
 		}
 		/// <summary>
 		/// Draws a rectangle.
@@ -744,7 +464,7 @@ namespace Duality
 			height *= 0.5f; y += height;
 
 			Vector3 pos = new Vector3(x, y, z);
-			if (!this.device.IsCoordInView(pos, MathF.Max(width, height) + this.CurrentState.TransformHandle.Length)) return;
+			if (!this.device.IsCoordInView(pos, MathF.Max(width, height) + this.State.TransformHandle.Length)) return;
 
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
@@ -762,8 +482,8 @@ namespace Duality
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(MathF.Max(width, height), 0.65f) * 3.5f * angleRange / MathF.RadAngle360), 4, 128);
 			float angleStep = angleRange / segmentNum;
 			Vector2 shapeHandle = pos.Xy - new Vector2(width, height);
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			int vertexCount = segmentNum + (loop ? 0 : 1) + (outline ? 2 : 0);
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(vertexCount);
 			float angle = minAngle;
@@ -789,8 +509,8 @@ namespace Duality
 				vertices[i].Color = shapeColor;
 				angle += angleStep;
 			}
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			this.device.AddVertices(this.CurrentState.MaterialDirect, loop ? VertexMode.LineLoop : VertexMode.LineStrip, vertices, vertexCount);
+			this.State.TransformVertices(vertices, shapeHandle, scale);
+			this.device.AddVertices(this.State.MaterialDirect, loop ? VertexMode.LineLoop : VertexMode.LineStrip, vertices, vertexCount);
 		}
 		/// <summary>
 		/// Draws the section of an oval.
@@ -818,9 +538,9 @@ namespace Duality
 		/// <param name="outline">If true, the circle sections complete outline is drawn instead of just the outer perimeter.</param>
 		public void DrawCircleSegment(float x, float y, float z, float radius, float minAngle, float maxAngle, bool outline = false)
 		{
-			this.CurrentState.TransformHandle += new Vector2(radius, radius);
+			this.State.TransformHandle += new Vector2(radius, radius);
 			this.DrawOvalSegment(x, y, z, radius * 2, radius * 2, minAngle, maxAngle, outline);
-			this.CurrentState.TransformHandle -= new Vector2(radius, radius);
+			this.State.TransformHandle -= new Vector2(radius, radius);
 		}
 		/// <summary>
 		/// Draws the section of a circle
@@ -833,9 +553,9 @@ namespace Duality
 		/// <param name="outline">If true, the circle sections complete outline is drawn instead of just the outer perimeter.</param>
 		public void DrawCircleSegment(float x, float y, float radius, float minAngle, float maxAngle, bool outline = false)
 		{
-			this.CurrentState.TransformHandle += new Vector2(radius, radius);
+			this.State.TransformHandle += new Vector2(radius, radius);
 			this.DrawOvalSegment(x, y, 0, radius * 2, radius * 2, minAngle, maxAngle, outline);
-			this.CurrentState.TransformHandle -= new Vector2(radius, radius);
+			this.State.TransformHandle -= new Vector2(radius, radius);
 		}
 
 		/// <summary>
@@ -876,9 +596,9 @@ namespace Duality
 		/// <param name="maxAngle"></param>
 		public void DrawCircle(float x, float y, float z, float radius)
 		{
-			this.CurrentState.TransformHandle += new Vector2(radius, radius);
+			this.State.TransformHandle += new Vector2(radius, radius);
 			this.DrawOvalSegment(x, y, z, radius * 2, radius * 2, 0.0f, MathF.RadAngle360);
-			this.CurrentState.TransformHandle -= new Vector2(radius, radius);
+			this.State.TransformHandle -= new Vector2(radius, radius);
 		}
 		/// <summary>
 		/// Draws the section of a circle
@@ -890,9 +610,9 @@ namespace Duality
 		/// <param name="maxAngle"></param>
 		public void DrawCircle(float x, float y, float radius)
 		{
-			this.CurrentState.TransformHandle += new Vector2(radius, radius);
+			this.State.TransformHandle += new Vector2(radius, radius);
 			this.DrawOvalSegment(x, y, 0, radius * 2, radius * 2, 0.0f, MathF.RadAngle360);
-			this.CurrentState.TransformHandle -= new Vector2(radius, radius);
+			this.State.TransformHandle -= new Vector2(radius, radius);
 		}
 		
 		/// <summary>
@@ -909,8 +629,8 @@ namespace Duality
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 
 			// Determine bounding box
 			Rect pointBoundingRect = points.BoundingBox();
@@ -927,8 +647,8 @@ namespace Duality
 				vertices[i].Color = shapeColor;
 			}
 
-			this.CurrentState.TransformVertices(vertices, pos.Xy, scale);
-			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Polygon, vertices, points.Length);
+			this.State.TransformVertices(vertices, pos.Xy, scale);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.Polygon, vertices, points.Length);
 		}
 		/// <summary>
 		/// Fills a polygons outline. All vertices share the same Z value.
@@ -946,8 +666,8 @@ namespace Duality
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
 
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 
 			// Determine bounding box
 			Rect pointBoundingRect = points.BoundingBox();
@@ -1004,8 +724,8 @@ namespace Duality
 			vertices[vertexCount - 2] = vertices[0];
 			vertices[vertexCount - 1] = vertices[1];
 
-			this.CurrentState.TransformVertices(vertices, pos.Xy, scale);
-			this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
+			this.State.TransformVertices(vertices, pos.Xy, scale);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
 		}
 
 		/// <summary>
@@ -1034,8 +754,8 @@ namespace Duality
 			Vector2 right2 = dir.PerpendicularRight * width * 0.5f * scale2;
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
 			vertices[0].Pos = pos + new Vector3(left);
@@ -1053,8 +773,8 @@ namespace Duality
 			vertices[2].Color = shapeColor;
 			vertices[3].Color = shapeColor;
 
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Quads, vertices, 4);
+			this.State.TransformVertices(vertices, shapeHandle, scale);
+			device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
 		}
 		/// <summary>
 		/// Fills a thick, flat line.
@@ -1089,7 +809,7 @@ namespace Duality
 			height *= 0.5f; y += height;
 
 			Vector3 pos = new Vector3(x, y, z);
-			if (!this.device.IsCoordInView(pos, MathF.Max(width, height) + this.CurrentState.TransformHandle.Length)) return;
+			if (!this.device.IsCoordInView(pos, MathF.Max(width, height) + this.State.TransformHandle.Length)) return;
 
 			float scale = 1.0f;
 			this.device.PreprocessCoords(ref pos, ref scale);
@@ -1103,8 +823,8 @@ namespace Duality
 			int segmentNum = MathF.Clamp(MathF.RoundToInt(MathF.Pow(MathF.Max(width, height), 0.65f) * 3.5f * angleRange / MathF.RadAngle360), 4, 128);
 			float angleStep = angleRange / segmentNum;
 			Vector2 shapeHandle = pos.Xy - new Vector2(width, height);
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			int vertexCount;
 			VertexC1P3T2[] vertices;
 
@@ -1128,8 +848,8 @@ namespace Duality
 					vertices[i].TexCoord.Y = texCoordRect.Y + (0.5f - 0.5f * cos) * texCoordRect.H;
 					angle += angleStep;
 				}
-				this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-				this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.TriangleFan, vertices, vertexCount);
+				this.State.TransformVertices(vertices, shapeHandle, scale);
+				this.device.AddVertices(this.State.MaterialDirect, VertexMode.TriangleFan, vertices, vertexCount);
 			}
 			else
 			{
@@ -1158,8 +878,8 @@ namespace Duality
 
 					angle += angleStep;
 				}
-				this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-				this.device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
+				this.State.TransformVertices(vertices, shapeHandle, scale);
+				this.device.AddVertices(this.State.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
 			}
 		}
 		/// <summary>
@@ -1187,9 +907,9 @@ namespace Duality
 		/// <param name="donutWidth">If bigger than zero, a donut with the specified width is rendered instead of a completely filled circle area.</param>
 		public void FillCircleSegment(float x, float y, float z, float radius, float minAngle, float maxAngle, float donutWidth = 0.0f)
 		{
-			this.CurrentState.TransformHandle += new Vector2(radius, radius);
+			this.State.TransformHandle += new Vector2(radius, radius);
 			this.FillOvalSegment(x, y, z, radius * 2, radius * 2, minAngle, maxAngle, donutWidth);
-			this.CurrentState.TransformHandle -= new Vector2(radius, radius);
+			this.State.TransformHandle -= new Vector2(radius, radius);
 		}
 		/// <summary>
 		/// Fills the section of a circle
@@ -1201,9 +921,9 @@ namespace Duality
 		/// <param name="maxAngle"></param>
 		public void FillCircleSegment(float x, float y, float r, float minAngle, float maxAngle)
 		{
-			this.CurrentState.TransformHandle += new Vector2(r, r);
+			this.State.TransformHandle += new Vector2(r, r);
 			this.FillOvalSegment(x, y, 0, r * 2, r * 2, minAngle, maxAngle, 0);
-			this.CurrentState.TransformHandle -= new Vector2(r, r);
+			this.State.TransformHandle -= new Vector2(r, r);
 		}
 
 		/// <summary>
@@ -1238,9 +958,9 @@ namespace Duality
 		/// <param name="radius"></param>
 		public void FillCircle(float x, float y, float z, float radius)
 		{
-			this.CurrentState.TransformHandle += new Vector2(radius, radius);
+			this.State.TransformHandle += new Vector2(radius, radius);
 			this.FillOvalSegment(x, y, z, radius * 2, radius * 2, 0.0f, MathF.RadAngle360, 0.0f);
-			this.CurrentState.TransformHandle -= new Vector2(radius, radius);
+			this.State.TransformHandle -= new Vector2(radius, radius);
 		}
 		/// <summary>
 		/// Fills a circle.
@@ -1250,9 +970,9 @@ namespace Duality
 		/// <param name="r"></param>
 		public void FillCircle(float x, float y, float r)
 		{
-			this.CurrentState.TransformHandle += new Vector2(r, r);
+			this.State.TransformHandle += new Vector2(r, r);
 			this.FillOvalSegment(x, y, 0, r * 2, r * 2, 0.0f, MathF.RadAngle360, 0.0f);
-			this.CurrentState.TransformHandle -= new Vector2(r, r);
+			this.State.TransformHandle -= new Vector2(r, r);
 		}
 
 		/// <summary>
@@ -1273,8 +993,8 @@ namespace Duality
 			device.PreprocessCoords(ref pos, ref scale);
 
 			Vector2 shapeHandle = pos.Xy;
-			ColorRgba shapeColor = this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor;
-			Rect texCoordRect = this.CurrentState.TextureCoordinateRect;
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
 			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(4);
 
 			vertices[0].Pos = new Vector3(pos.X, pos.Y, pos.Z);
@@ -1292,8 +1012,8 @@ namespace Duality
 			vertices[2].Color = shapeColor;
 			vertices[3].Color = shapeColor;
 
-			this.CurrentState.TransformVertices(vertices, shapeHandle, scale);
-			device.AddVertices(this.CurrentState.MaterialDirect, VertexMode.Quads, vertices, 4);
+			this.State.TransformVertices(vertices, shapeHandle, scale);
+			device.AddVertices(this.State.MaterialDirect, VertexMode.Quads, vertices, 4);
 		}
 		/// <summary>
 		/// Fills a rectangle.
@@ -1331,7 +1051,7 @@ namespace Duality
 		public void DrawText(string[] text, ref VertexC1P3T2[][] vertices, float x, float y, float z = 0.0f, Alignment blockAlign = Alignment.TopLeft, bool drawBackground = false)
 		{
 			if (text == null || text.Length == 0) return;
-			Font font = this.CurrentState.TextFont.Res;
+			Font font = this.State.TextFont.Res;
 
 			Vector2 textSize = Vector2.Zero;
 			if (blockAlign != Alignment.TopLeft)
@@ -1341,9 +1061,9 @@ namespace Duality
 				blockAlign.ApplyTo(
 					ref blockAlignVec.X, 
 					ref blockAlignVec.Y, 
-					textSize.X * this.CurrentState.TransformScale.X, 
-					textSize.Y * this.CurrentState.TransformScale.Y);
-				MathF.TransformCoord(ref blockAlignVec.X, ref blockAlignVec.Y, this.CurrentState.TransformAngle);
+					textSize.X * this.State.TransformScale.X, 
+					textSize.Y * this.State.TransformScale.Y);
+				MathF.TransformCoord(ref blockAlignVec.X, ref blockAlignVec.Y, this.State.TransformAngle);
 				x += blockAlignVec.X;
 				y += blockAlignVec.Y;
 			}
@@ -1352,21 +1072,21 @@ namespace Duality
 			{
 				if (textSize == Vector2.Zero) textSize = this.MeasureText(text);
 				Rect padding = new Rect(font.Height * 0.7f, font.Height * 0.7f);
-				padding.X = padding.W * this.CurrentState.TransformScale.X * 0.5f;
-				padding.Y = padding.H * this.CurrentState.TransformScale.Y * 0.5f;
-				MathF.TransformCoord(ref padding.X, ref padding.Y, this.CurrentState.TransformAngle);
+				padding.X = padding.W * this.State.TransformScale.X * 0.5f;
+				padding.Y = padding.H * this.State.TransformScale.Y * 0.5f;
+				MathF.TransformCoord(ref padding.X, ref padding.Y, this.State.TransformAngle);
 
-				ColorFormat.ColorRgba baseColor = this.CurrentState.MaterialDirect.MainColor * this.CurrentState.ColorTint;
+				ColorFormat.ColorRgba baseColor = this.State.MaterialDirect.MainColor * this.State.ColorTint;
 				const float backAlpha = 0.65f;
 				float baseAlpha = (float)baseColor.A / 255.0f;
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.CurrentState.SetMaterial(new Resources.BatchInfo(
+				this.State.SetMaterial(new Resources.BatchInfo(
 					Resources.DrawTechnique.Alpha, 
 					(baseLuminance > 0.5f ? ColorFormat.ColorRgba.Black : ColorFormat.ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
-				this.CurrentState.ColorTint = ColorFormat.ColorRgba.White;
-				this.CurrentState.ZOffset += 1;
+				this.State.ColorTint = ColorFormat.ColorRgba.White;
+				this.State.ZOffset += 1;
 				this.FillRect(
 					x - padding.X, 
 					y - padding.Y, 
@@ -1392,7 +1112,7 @@ namespace Duality
 			}
 			Vector2 shapeHandle = pos.Xy;
 			
-			BatchInfo customMat = new BatchInfo(this.CurrentState.MaterialDirect);
+			BatchInfo customMat = new BatchInfo(this.State.MaterialDirect);
 			customMat.MainTexture = font.Material.MainTexture;
 
 			// Prepare for attempt to use Canvas buffering
@@ -1406,9 +1126,9 @@ namespace Duality
 				if (vertices[i] == null || vertices[i].Length < text[i].Length * 4)
 					vertices[i] = this.buffer.RequestVertexArray(text[i].Length * 4);
 
-				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor, 0.0f, scale);
+				int vertexCount = font.EmitTextVertices(text[i], ref vertices[i], pos.X, pos.Y, pos.Z, this.State.ColorTint * this.State.MaterialDirect.MainColor, 0.0f, scale);
 
-				this.CurrentState.TransformVertices(vertices[i], shapeHandle, scale);
+				this.State.TransformVertices(vertices[i], shapeHandle, scale);
 				device.AddVertices(customMat, VertexMode.Quads, vertices[i], vertexCount);
 
 				pos.Y += font.LineSpacing * scale;
@@ -1448,31 +1168,31 @@ namespace Duality
 				blockAlign.ApplyTo(
 					ref blockAlignVec.X, 
 					ref blockAlignVec.Y, 
-					text.Size.X * this.CurrentState.TransformScale.X, 
-					text.Size.Y * this.CurrentState.TransformScale.Y);
-				MathF.TransformCoord(ref blockAlignVec.X, ref blockAlignVec.Y, this.CurrentState.TransformAngle);
+					text.Size.X * this.State.TransformScale.X, 
+					text.Size.Y * this.State.TransformScale.Y);
+				MathF.TransformCoord(ref blockAlignVec.X, ref blockAlignVec.Y, this.State.TransformAngle);
 				x += blockAlignVec.X;
 				y += blockAlignVec.Y;
 			}
 
 			if (drawBackground)
 			{
-				Font font = this.CurrentState.TextFont.Res;
+				Font font = this.State.TextFont.Res;
 				Rect padding = new Rect(font.Height * 0.7f, font.Height * 0.7f);
-				padding.X = padding.W * this.CurrentState.TransformScale.X * 0.5f;
-				padding.Y = padding.H * this.CurrentState.TransformScale.Y * 0.5f;
-				MathF.TransformCoord(ref padding.X, ref padding.Y, this.CurrentState.TransformAngle);
+				padding.X = padding.W * this.State.TransformScale.X * 0.5f;
+				padding.Y = padding.H * this.State.TransformScale.Y * 0.5f;
+				MathF.TransformCoord(ref padding.X, ref padding.Y, this.State.TransformAngle);
 
-				ColorFormat.ColorRgba baseColor = this.CurrentState.MaterialDirect.MainColor * this.CurrentState.ColorTint;
+				ColorFormat.ColorRgba baseColor = this.State.MaterialDirect.MainColor * this.State.ColorTint;
 				const float backAlpha = 0.65f;
 				float baseAlpha = (float)baseColor.A / 255.0f;
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.CurrentState.SetMaterial(new Resources.BatchInfo(
+				this.State.SetMaterial(new Resources.BatchInfo(
 					Resources.DrawTechnique.Alpha, 
 					(baseLuminance > 0.5f ? ColorFormat.ColorRgba.Black : ColorFormat.ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
-				this.CurrentState.ColorTint = ColorFormat.ColorRgba.White;
+				this.State.ColorTint = ColorFormat.ColorRgba.White;
 				this.FillRect(
 					x - padding.X, 
 					y - padding.Y, 
@@ -1497,7 +1217,7 @@ namespace Duality
 				}
 			}
 			Vector2 shapeHandle = pos.Xy;
-			int[] vertLen = text.EmitVertices(ref vertText, ref vertIcon, pos.X, pos.Y, pos.Z, this.CurrentState.ColorTint * this.CurrentState.MaterialDirect.MainColor, 0.0f, scale);
+			int[] vertLen = text.EmitVertices(ref vertText, ref vertIcon, pos.X, pos.Y, pos.Z, this.State.ColorTint * this.State.MaterialDirect.MainColor, 0.0f, scale);
 			
 			if (text.Fonts != null)
 			{
@@ -1505,8 +1225,8 @@ namespace Duality
 				{
 					if (text.Fonts[i] != null && text.Fonts[i].IsAvailable) 
 					{
-						this.CurrentState.TransformVertices(vertText[i], shapeHandle, scale);
-						BatchInfo customMat = new BatchInfo(this.CurrentState.MaterialDirect);
+						this.State.TransformVertices(vertText[i], shapeHandle, scale);
+						BatchInfo customMat = new BatchInfo(this.State.MaterialDirect);
 						customMat.MainTexture = text.Fonts[i].Res.Material.MainTexture;
 						device.AddVertices(customMat, VertexMode.Quads, vertText[i], vertLen[i + 1]);
 					}
@@ -1540,7 +1260,7 @@ namespace Duality
 		/// <returns></returns>
 		public Vector2 MeasureText(string text)
 		{
-			Font font = this.CurrentState.TextFont.Res;
+			Font font = this.State.TextFont.Res;
 			return font.MeasureText(text);
 		}
 		/// <summary>
@@ -1550,7 +1270,7 @@ namespace Duality
 		/// <returns></returns>
 		public Vector2 MeasureText(string[] text)
 		{
-			Font font = this.CurrentState.TextFont.Res;
+			Font font = this.State.TextFont.Res;
 			return font.MeasureText(text);
 		}
 	}

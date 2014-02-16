@@ -99,9 +99,9 @@ namespace Duality
 			arrowLine[3] = arrow[6];
 
 			// Draw vector and outline
-			ColorRgba areaColor = target.CurrentState.ColorTint * this.Color;
+			ColorRgba areaColor = target.State.ColorTint * this.Color;
 			ColorRgba outlineColor = areaColor * ColorRgba.Black;
-			target.CurrentState.ColorTint = areaColor;
+			target.State.ColorTint = areaColor;
 			target.FillPolygon(
 				arrowLine, 
 				originPos.X, 
@@ -112,8 +112,8 @@ namespace Duality
 				originPos.X, 
 				originPos.Y, 
 				originPos.Z);
-			if (target.DrawDevice.DepthWrite) target.CurrentState.ZOffset -= 0.1f;
-			target.CurrentState.ColorTint = outlineColor;
+			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			target.State.ColorTint = outlineColor;
 			target.FillPolygonOutline(
 				arrow, 
 				borderRadius,
@@ -122,15 +122,15 @@ namespace Duality
 				originPos.Z);
 
 			// Draw origin and outline
-			if (target.DrawDevice.DepthWrite) target.CurrentState.ZOffset -= 0.1f;
-			target.CurrentState.ColorTint = areaColor;
+			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			target.State.ColorTint = areaColor;
 			target.FillCircle(
 				originPos.X, 
 				originPos.Y, 
 				originPos.Z, 
 				originRadius - borderRadius * 0.5f);
-			if (target.DrawDevice.DepthWrite) target.CurrentState.ZOffset -= 0.1f;
-			target.CurrentState.ColorTint = outlineColor;
+			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			target.State.ColorTint = outlineColor;
 			target.FillCircleSegment(
 				originPos.X, 
 				originPos.Y, 

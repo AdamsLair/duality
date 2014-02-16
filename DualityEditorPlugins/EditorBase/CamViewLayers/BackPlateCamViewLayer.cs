@@ -34,7 +34,7 @@ namespace EditorBase.CamViewLayers
 		protected internal override void OnCollectBackgroundDrawcalls(Canvas canvas)
 		{
 			base.OnCollectBackgroundDrawcalls(canvas);
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.BgColor.WithAlpha(0.75f)));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.BgColor.WithAlpha(0.75f)));
 			canvas.FillRect(0, 0, canvas.DrawDevice.TargetSize.X, canvas.DrawDevice.TargetSize.Y);
 		}
 	}

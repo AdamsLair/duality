@@ -64,16 +64,16 @@ namespace Duality
 			circlePos += basePos;
 
 			// Draw polygon and outline
-			target.CurrentState.ColorTint *= this.Color;
-			target.CurrentState.TransformAngle = baseRotation;
-			target.CurrentState.TransformScale = new Vector2(baseScale, baseScale) * polyScale;
+			target.State.ColorTint *= this.Color;
+			target.State.TransformAngle = baseRotation;
+			target.State.TransformScale = new Vector2(baseScale, baseScale) * polyScale;
 			target.FillPolygon(
 				this.vertices,
 				circlePos.X, 
 				circlePos.Y, 
 				circlePos.Z);
-			if (target.DrawDevice.DepthWrite) target.CurrentState.ZOffset -= 0.1f;
-			target.CurrentState.ColorTint *= ColorRgba.Black;
+			if (target.DrawDevice.DepthWrite) target.State.ZOffset -= 0.1f;
+			target.State.ColorTint *= ColorRgba.Black;
 			target.FillPolygonOutline(
 				this.vertices,
 				borderRadius / polyScale,

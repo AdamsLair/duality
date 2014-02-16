@@ -401,13 +401,13 @@ namespace EditorBase.CamViewStates
 			canvas.PushState();
 			
 			// Draw indirectly selected object overlay
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f)));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f)));
 			this.DrawSelectionMarkers(canvas, this.indirectObjSel);
 			if (this.mouseoverObject != null && (this.mouseoverAction == ObjectAction.RectSelect || this.mouseoverSelect) && !transformObjSel.Contains(this.mouseoverObject)) 
 				this.DrawSelectionMarkers(canvas, new [] { this.mouseoverObject });
 
 			// Draw selected object overlay
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
 			this.DrawSelectionMarkers(canvas, transformObjSel);
 
 			// Draw overall selection boundary
@@ -417,7 +417,7 @@ namespace EditorBase.CamViewStates
 				float maxZDiff = transformObjSel.Max(t => MathF.Abs(t.Pos.Z - midZ));
 				if (maxZDiff > 0.001f)
 				{
-					canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
+					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
 					canvas.DrawSphere(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
@@ -426,7 +426,7 @@ namespace EditorBase.CamViewStates
 				}
 				else
 				{
-					canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
+					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
 					canvas.DrawCircle(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
@@ -441,7 +441,7 @@ namespace EditorBase.CamViewStates
 			if (canScale)
 			{
 				float dotR = 3.0f / this.GetScaleAtZ(this.selectionCenter.Z);
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
 				canvas.FillCircle(
 					this.selectionCenter.X + this.selectionRadius, 
 					this.selectionCenter.Y, 
@@ -514,7 +514,7 @@ namespace EditorBase.CamViewStates
 				if (this.camAction != CameraAction.None)
 				{
 					canvas.PushState();
-					canvas.CurrentState.ColorTint = ColorRgba.White.WithAlpha(0.5f);
+					canvas.State.ColorTint = ColorRgba.White.WithAlpha(0.5f);
 					if (this.camAction == CameraAction.DragScene)
 					{
 						// Don't draw anything.
@@ -845,7 +845,7 @@ namespace EditorBase.CamViewStates
 			MathF.TransformDotVec(ref right, ref catDotX, ref catDotY);
 			MathF.TransformDotVec(ref down, ref catDotX, ref catDotY);
 
-			canvas.CurrentState.ZOffset = -1.0f;
+			canvas.State.ZOffset = -1.0f;
 			foreach (SelObj selObj in obj)
 			{
 				if (!selObj.HasTransform) continue;
@@ -860,7 +860,7 @@ namespace EditorBase.CamViewStates
 				{
 					canvas.DrawDevice.PreprocessCoords(ref posTemp, ref scaleTemp);
 					posTemp.Z = 0.0f;
-					canvas.DrawDevice.AddVertices(canvas.CurrentState.Material, VertexMode.Lines,
+					canvas.DrawDevice.AddVertices(canvas.State.Material, VertexMode.Lines,
 						new VertexC1P3(posTemp - right * 10.0f),
 						new VertexC1P3(posTemp + right * 10.0f),
 						new VertexC1P3(posTemp - down * 10.0f),
@@ -880,7 +880,7 @@ namespace EditorBase.CamViewStates
 				if (selObj.ShowBoundRadius && radTemp > 0.0f)
 					canvas.DrawCircle(selObj.Pos.X, selObj.Pos.Y, selObj.Pos.Z, radTemp);
 			}
-			canvas.CurrentState.ZOffset = 0.0f;
+			canvas.State.ZOffset = 0.0f;
 		}
 		protected void DrawLockedAxes(Canvas canvas, float x, float y, float z, float r)
 		{
@@ -890,17 +890,17 @@ namespace EditorBase.CamViewStates
 			canvas.PushState();
 			if (this.actionLockedAxis == LockedAxis.X)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f)));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f)));
 				canvas.DrawLine(x - r, y, z, x + r, y, z);
 			}
 			if (this.actionLockedAxis == LockedAxis.Y)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f)));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f)));
 				canvas.DrawLine(x, y - r, z, x, y + r, z);
 			}
 			if (this.actionLockedAxis == LockedAxis.Z)
 			{
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f)));
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f)));
 				canvas.DrawLine(x, y, MathF.Max(z - r, refPos.Z + nearZ + 10), x, y, z);
 				canvas.DrawLine(x, y, z, x, y, z + r);
 			}
@@ -1612,24 +1612,24 @@ namespace EditorBase.CamViewStates
 		private void camPassEdScreen_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
 		{
 			Canvas canvas = new Canvas(e.Device);
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
-			canvas.CurrentState.TextFont = OverlayFont;
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+			canvas.State.TextFont = OverlayFont;
 
 			this.OnCollectStateOverlayDrawcalls(canvas);
 		}
 		private void camPassEdWorld_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
 		{
 			Canvas canvas = new Canvas(e.Device);
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
-			canvas.CurrentState.TextFont = Duality.Resources.Font.GenericMonospace8;
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+			canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
 
 			this.OnCollectStateDrawcalls(canvas);
 		}
 		private void camPassBg_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
 		{
 			Canvas canvas = new Canvas(e.Device);
-			canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
-			canvas.CurrentState.TextFont = Duality.Resources.Font.GenericMonospace8;
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+			canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
 
 			this.OnCollectStateBackgroundDrawcalls(canvas);
 		}

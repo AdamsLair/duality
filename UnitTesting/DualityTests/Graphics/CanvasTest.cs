@@ -38,7 +38,7 @@ namespace Duality.Tests.Graphics
 			// Perform the RedSquare test, but with a one pixel offset. This should fail.
 			Assert.IsFalse(this.AreImagesEqual(TestRes.CanvasTestRedSquare, c => 
 			{
-				c.CurrentState.ColorTint = ColorRgba.Red;
+				c.State.ColorTint = ColorRgba.Red;
 				c.FillRect(1, 0, c.Width, c.Height);
 			}));
 		}
@@ -50,7 +50,7 @@ namespace Duality.Tests.Graphics
 		{
 			this.TestImagesEqual(TestRes.CanvasTestRedSquare, c => 
 			{
-				c.CurrentState.ColorTint = ColorRgba.Red;
+				c.State.ColorTint = ColorRgba.Red;
 				c.FillRect(0, 0, c.Width, c.Height);
 			});
 		}
@@ -66,15 +66,15 @@ namespace Duality.Tests.Graphics
 			this.TestImagesEqual(TestRes.CanvasTestAllShapes, c => 
 			{
 				// Background
-				c.CurrentState.ColorTint = new ColorRgba(128, 192, 255);
+				c.State.ColorTint = new ColorRgba(128, 192, 255);
 				c.FillRect(0, 0, c.Width, c.Height);
-				c.CurrentState.ColorTint = ColorRgba.White;
+				c.State.ColorTint = ColorRgba.White;
 
 				// White shapes
 				this.DrawTestImageRow(c, 100, 100);
 
 				// Textured shapes
-				c.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
+				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
 				this.DrawTestImageRow(c, 100, 300);
 			});
 		}
@@ -83,19 +83,19 @@ namespace Duality.Tests.Graphics
 			this.TestImagesEqual(TestRes.CanvasTestAllShapesTransformed, c => 
 			{
 				// Background
-				c.CurrentState.ColorTint = new ColorRgba(128, 192, 255);
+				c.State.ColorTint = new ColorRgba(128, 192, 255);
 				c.FillRect(0, 0, c.Width, c.Height);
-				c.CurrentState.ColorTint = ColorRgba.White;
-				c.CurrentState.TransformHandle = new Vector2(5, 5);
-				c.CurrentState.TransformScale = new Vector2(0.75f, 0.75f);
-				c.CurrentState.TransformAngle = MathF.RadAngle30;
+				c.State.ColorTint = ColorRgba.White;
+				c.State.TransformHandle = new Vector2(5, 5);
+				c.State.TransformScale = new Vector2(0.75f, 0.75f);
+				c.State.TransformAngle = MathF.RadAngle30;
 
 				// White shapes
 				this.DrawTestImageRow(c, 100, 100);
 
 				// Textured shapes
 				c.PushState();
-				c.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
+				c.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, ColorRgba.White, this.texCoordUV));
 				this.DrawTestImageRow(c, 100, 300);
 				c.PopState();
 			});

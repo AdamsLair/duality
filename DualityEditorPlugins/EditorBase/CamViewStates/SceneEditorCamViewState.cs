@@ -166,13 +166,13 @@ namespace EditorBase.CamViewStates
 			if (this.SelObjAction == ObjectAction.None && this.DragMustWait && !this.dragLastLoc.IsEmpty)
 			{
 				canvas.PushState();
-				canvas.CurrentState.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
-				canvas.CurrentState.ColorTint = ColorRgba.White.WithAlpha(this.DragMustWaitProgress);
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
+				canvas.State.ColorTint = ColorRgba.White.WithAlpha(this.DragMustWaitProgress);
 				canvas.FillCircle(
 					this.dragLastLoc.X, 
 					this.dragLastLoc.Y, 
 					15.0f);
-				canvas.CurrentState.ColorTint = ColorRgba.White;
+				canvas.State.ColorTint = ColorRgba.White;
 				canvas.DrawCircle(
 					this.dragLastLoc.X, 
 					this.dragLastLoc.Y, 
