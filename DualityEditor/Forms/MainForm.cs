@@ -435,6 +435,7 @@ namespace DualityEditor.Forms
 		private void actionRunSandbox_Click(object sender, EventArgs e)
 		{
 			Sandbox.Play();
+            signal.Image = global::DualityEditor.Properties.Resources.signal_red_light;
 		}
 		private void actionStepSandbox_Click(object sender, EventArgs e)
 		{
@@ -453,6 +454,7 @@ namespace DualityEditor.Forms
 		private void actionStopSandbox_Click(object sender, EventArgs e)
 		{
 			Sandbox.Stop();
+            signal.Image = global::DualityEditor.Properties.Resources.signal_green_light;
 		}
 		private void menuRunSandboxSlower_Click(object sender, EventArgs e)
 		{

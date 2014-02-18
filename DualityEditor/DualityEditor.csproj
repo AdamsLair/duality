@@ -313,6 +313,9 @@
     <None Include="EditorRes\clock.png" />
     <None Include="EditorRes\editoruserdata.xml" />
     <None Include="EditorRes\application_stopwatch.png" />
+    <None Include="EditorRes\signal_green_light.png" />
+    <None Include="EditorRes\signal_red_light.png" />
+    <None Include="EditorRes\signal_yellow_light.png" />
     <Content Include="EditorRes\WorkingFolderIcon.ico" />
     <None Include="EditorRes\arrow_undo.png" />
     <None Include="EditorRes\arrow_redo.png" />
