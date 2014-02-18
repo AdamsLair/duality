@@ -45,7 +45,10 @@ namespace Duality.Components.Diagnostics
 					{
 						if (logEntry.Anchor != VisualLogAnchor.Screen) continue;
 						target.PushState();
-						target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
+						if(logEntry.LifetimeAsAlpha)
+							target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
+						else
+							target.State.ColorTint = new ColorRgba(1.0f);
 						logEntry.Draw(target);
 						target.PopState();
 					}

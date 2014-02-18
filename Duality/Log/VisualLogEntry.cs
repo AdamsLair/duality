@@ -21,11 +21,12 @@ namespace Duality
 		protected	const	float	DefaultOutlineWidth	= 1.5f;
 		private		const	float	LifeTimeEpsilon		= 0.000001f;
 
-		private	float			maxLifetime	= LifeTimeEpsilon;
-		private	float			lifetime	= LifeTimeEpsilon;
-		private	ColorRgba		color		= ColorRgba.White;
-		private	VisualLogAnchor	anchor		= VisualLogAnchor.Screen;
-		private	GameObject		anchorObj	= null;
+		private	float			maxLifetime	        = LifeTimeEpsilon;
+		private	float			lifetime	        = LifeTimeEpsilon;
+		private	ColorRgba		color		        = ColorRgba.White;
+        private bool            lifetimeAsAlpha     = false;   
+		private	VisualLogAnchor	anchor		        = VisualLogAnchor.Screen;
+		private	GameObject		anchorObj	        = null;
 
 
 		/// <summary>
@@ -64,6 +65,14 @@ namespace Duality
 		{
 			get { return this.color; }
 			set { this.color = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Whether the lifetime of this entry should be used as alpha-value of the specified color.
+		/// </summary>
+		public bool LifetimeAsAlpha
+		{
+			get { return this.lifetimeAsAlpha; }
+			set { this.lifetimeAsAlpha = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The anchor which is used for interpreting this log entries coordinates and sizes.
