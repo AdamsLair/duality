@@ -300,13 +300,13 @@ namespace Duality
 					return Expression.Lambda<Func<TParamA,TParamB,TParamC,TResult>>(exprReturn, paramA, paramB, paramC).Compile();
 				}
 			}
-            catch (Exception e)
-            {
+			catch (Exception e)
+			{
 				if (exceptionFallback)
 					return delegate { throw new InvalidOperationException(e.Message); };
 				else
 					return null;
-            }
+			}
 		}
 		private static Func<TParamA,TParamB,TResult> CreateOperatorFunc<TParamA,TParamB,TResult>(Func<Expression,Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
@@ -342,13 +342,13 @@ namespace Duality
 					return Expression.Lambda<Func<TParamA,TParamB,TResult>>(exprReturn, paramA, paramB).Compile();
 				}
 			}
-            catch (Exception e)
-            {
+			catch (Exception e)
+			{
 				if (exceptionFallback)
 					return delegate { throw new InvalidOperationException(e.Message); };
 				else
 					return null;
-            }
+			}
 		}
 		private static Func<TParam,TResult> CreateOperatorFunc<TParam,TResult>(Func<Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
@@ -377,13 +377,13 @@ namespace Duality
 					return Expression.Lambda<Func<TParam,TResult>>(exprReturn, param).Compile();
 				}
 			}
-            catch (Exception e)
-            {
+			catch (Exception e)
+			{
 				if (exceptionFallback)
 					return delegate { throw new InvalidOperationException(e.Message); };
 				else
 					return null;
-            }
+			}
 		}
 		private static Func<T,U> CreateNoOpFunc<T,U>()
 		{
@@ -392,10 +392,10 @@ namespace Duality
 				ParameterExpression param = Expression.Parameter(typeof(T));
 				return Expression.Lambda<Func<T,U>>(param, param).Compile();
 			}
-            catch (Exception e)
-            {
-                return delegate { throw new InvalidOperationException(e.Message); };
-            }
+			catch (Exception e)
+			{
+				return delegate { throw new InvalidOperationException(e.Message); };
+			}
 		}
 
 		private static class SingleType<T>

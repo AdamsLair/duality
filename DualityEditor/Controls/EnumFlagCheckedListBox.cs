@@ -114,7 +114,7 @@ namespace DualityEditor.Controls
 		{
 			this.isUpdatingCheckStates = true;
 
-            // Iterate over all items
+			// Iterate over all items
 			for (int i = 0; i < this.Items.Count; i++)
 			{
 				FlagCheckedListBoxItem item = this.Items[i] as FlagCheckedListBoxItem;
@@ -126,10 +126,10 @@ namespace DualityEditor.Controls
 			this.isUpdatingCheckStates = false;
 		}
 
-        protected override void OnItemCheck(ItemCheckEventArgs e)
-        {
-            base.OnItemCheck(e);
-            if (this.isUpdatingCheckStates) return;
+		protected override void OnItemCheck(ItemCheckEventArgs e)
+		{
+			base.OnItemCheck(e);
+			if (this.isUpdatingCheckStates) return;
 
 			FlagCheckedListBoxItem item = this.Items[e.Index] as FlagCheckedListBoxItem;
 			
@@ -142,7 +142,7 @@ namespace DualityEditor.Controls
 
 			this.UpdateCheckedItems();
 			this.OnFlagValueChanged();
-        }
+		}
 		protected virtual void OnFlagValueChanged()
 		{
 			if (this.FlagValueChanged != null)
@@ -153,9 +153,9 @@ namespace DualityEditor.Controls
 	/// <summary>
 	/// Represents an item in the checklistbox
 	/// </summary>
-    public class FlagCheckedListBoxItem
-    {
-        private ulong	value	= 0;
+	public class FlagCheckedListBoxItem
+	{
+		private ulong	value	= 0;
 		private string	caption	= null;
 
 		public string Caption
@@ -167,15 +167,15 @@ namespace DualityEditor.Controls
 			get { return this.value; }
 		}
 
-        public FlagCheckedListBoxItem(ulong v, string c)
-        {
-            this.value = v;
+		public FlagCheckedListBoxItem(ulong v, string c)
+		{
+			this.value = v;
 			this.caption = c;
-        }
+		}
 
-        public override string ToString()
-        {
-            return this.caption;
-        }
-    }
+		public override string ToString()
+		{
+			return this.caption;
+		}
+	}
 }

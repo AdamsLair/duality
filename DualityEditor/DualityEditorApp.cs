@@ -1271,10 +1271,10 @@ namespace DualityEditor
 				// Give the processor a rest if we have the time, don't use 100% CPU
 				while (watch.Elapsed.TotalSeconds < 0.01d)
 				{
-				    // Sleep a little
-				    System.Threading.Thread.Sleep(1);
-				    // App wants to do something? Stop waiting.
-				    if (!AppStillIdle) break;
+					// Sleep a little
+					System.Threading.Thread.Sleep(1);
+					// App wants to do something? Stop waiting.
+					if (!AppStillIdle) break;
 				}
 			}
 
@@ -1336,9 +1336,9 @@ namespace DualityEditor
 			// Deselect disposed Resources
 			if (selectionCurrent.Resources.Contains(e.Content.Res))
 				Deselect(sender, new ObjectSelection(e.Content.Res));
-            // Unflag disposed Resources
-            if (unsavedResources.Contains(e.Content.Res))
-                FlagResourceSaved(e.Content.Res);
+			// Unflag disposed Resources
+			if (unsavedResources.Contains(e.Content.Res))
+				FlagResourceSaved(e.Content.Res);
 		}
 
 		private static void mainForm_Activated(object sender, EventArgs e)
@@ -1390,12 +1390,12 @@ namespace DualityEditor
 
 		private static void FileEventManager_PluginChanged(object sender, FileSystemEventArgs e)
 		{
-            string pluginStr = Path.Combine("Plugins", e.Name);
-            if (!corePluginReloader.ReloadSchedule.Contains(pluginStr))
-            {
-                corePluginReloader.ReloadSchedule.Add(pluginStr);
-                DualityApp.AppData.Version++;
-            }
+			string pluginStr = Path.Combine("Plugins", e.Name);
+			if (!corePluginReloader.ReloadSchedule.Contains(pluginStr))
+			{
+				corePluginReloader.ReloadSchedule.Add(pluginStr);
+				DualityApp.AppData.Version++;
+			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;
 		}
 		private static void DualityApp_PluginReady(object sender, CorePluginEventArgs e)

@@ -19,7 +19,7 @@ namespace Duality
 		/// <param name="lifetime">The time in milliseconds that will be added to the log entries lifetime.</param>
 		/// <param name="lifetimeAsAlpha">Whether the lifetime of this entry should be used as alpha-value of the specified color. If set to true the entry will fade out over time.</param>
 		/// <returns></returns>
-        public static T KeepAlive<T>(this T entry, float lifetime, bool lifetimeAsAlpha = true) where T : VisualLogEntry
+		public static T KeepAlive<T>(this T entry, float lifetime, bool lifetimeAsAlpha = true) where T : VisualLogEntry
 		{
 			entry.Lifetime += lifetime;
 			entry.LifetimeAsAlpha = lifetimeAsAlpha;

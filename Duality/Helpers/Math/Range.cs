@@ -134,9 +134,9 @@ namespace Duality
 		/// <param name="right"></param>
 		/// <returns></returns>
 		public static bool operator ==(Range left, Range right)
-        {
-            return left.Equals(right);
-        }
+		{
+			return left.Equals(right);
+		}
 		/// <summary>
 		/// Returns whether two Ranges are inequal.
 		/// </summary>
@@ -144,9 +144,9 @@ namespace Duality
 		/// <param name="right"></param>
 		/// <returns></returns>
 		public static bool operator !=(Range left, Range right)
-        {
-            return !left.Equals(right);
-        }
+		{
+			return !left.Equals(right);
+		}
 
 		/// <summary>
 		/// Adds two Ranges by adding each of their components individually.
@@ -155,11 +155,11 @@ namespace Duality
 		/// <param name="right"></param>
 		/// <returns></returns>
 		public static Range operator +(Range left, Range right)
-        {
-            return new Range(
+		{
+			return new Range(
 				left.MinValue + right.MinValue,
 				left.MaxValue + right.MaxValue);
-        }
+		}
 		/// <summary>
 		/// Subtracts two Ranges by subtracting each of their components individually.
 		/// </summary>
@@ -167,11 +167,11 @@ namespace Duality
 		/// <param name="right"></param>
 		/// <returns></returns>
 		public static Range operator -(Range left, Range right)
-        {
-            return new Range(
+		{
+			return new Range(
 				left.MinValue - right.MinValue,
 				left.MaxValue - right.MaxValue);
-        }
+		}
 		/// <summary>
 		/// Multiplies two Ranges by multiplying each of their components individually.
 		/// </summary>
@@ -179,11 +179,11 @@ namespace Duality
 		/// <param name="right"></param>
 		/// <returns></returns>
 		public static Range operator *(Range left, Range right)
-        {
-            return new Range(
+		{
+			return new Range(
 				left.MinValue * right.MinValue,
 				left.MaxValue * right.MaxValue);
-        }
+		}
 		/// <summary>
 		/// Divides two Ranges by dividing each of their components individually.
 		/// </summary>
@@ -191,11 +191,11 @@ namespace Duality
 		/// <param name="right"></param>
 		/// <returns></returns>
 		public static Range operator /(Range left, Range right)
-        {
-            return new Range(
+		{
+			return new Range(
 				left.MinValue / right.MinValue,
 				left.MaxValue / right.MaxValue);
-        }
+		}
 
 		/// <summary>
 		/// Performs an implicit conversion from a single value to a ranged value.

@@ -1311,16 +1311,16 @@ namespace Duality
 			return true;
 		}
 		
-        /// <summary>
-        /// Returns the next power of two that is larger than the specified number.
-        /// </summary>
-        /// <param name="n">The specified number.</param>
-        /// <returns>The next power of two.</returns>
-        public static int NextPowerOfTwo(int n)
-        {
-            if (n < 0) throw new ArgumentOutOfRangeException("n", "Must be positive.");
-            return (int)System.Math.Pow(2, System.Math.Ceiling(System.Math.Log((double)n, 2)));
-        }
+		/// <summary>
+		/// Returns the next power of two that is larger than the specified number.
+		/// </summary>
+		/// <param name="n">The specified number.</param>
+		/// <returns>The next power of two.</returns>
+		public static int NextPowerOfTwo(int n)
+		{
+			if (n < 0) throw new ArgumentOutOfRangeException("n", "Must be positive.");
+			return (int)System.Math.Pow(2, System.Math.Ceiling(System.Math.Log((double)n, 2)));
+		}
 
 		/// <summary>
 		/// Swaps the values of two variables.

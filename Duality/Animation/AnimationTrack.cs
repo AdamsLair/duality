@@ -12,17 +12,17 @@ namespace Duality.Animation
 	/// <typeparam name="T">Type of the animated value.</typeparam>
 	public class AnimationTrack<T> : IEnumerable<AnimationKeyFrame<T>>, IAnimationTrack
 	{
-        private RawList<AnimationKeyFrame<T>>	keyFrames	= new RawList<AnimationKeyFrame<T>>();
-        private bool							loop		= false;
+		private RawList<AnimationKeyFrame<T>>	keyFrames	= new RawList<AnimationKeyFrame<T>>();
+		private bool							loop		= false;
 
 
 		/// <summary>
 		/// [GET / SET] The set of keyframes that is used to describe the animation.
 		/// </summary>
-        public IEnumerable<AnimationKeyFrame<T>> KeyFrames
-        {
-            get { return this.keyFrames; }
-            set
+		public IEnumerable<AnimationKeyFrame<T>> KeyFrames
+		{
+			get { return this.keyFrames; }
+			set
 			{
 				if (this.keyFrames != value)
 				{
@@ -31,7 +31,7 @@ namespace Duality.Animation
 					this.ValidateKeyFrames();
 				}
 			}
-        }
+		}
 		/// <summary>
 		/// [GET] The total number of keyframes in this track.
 		/// </summary>
@@ -42,11 +42,11 @@ namespace Duality.Animation
 		/// <summary>
 		/// [GET / SET] Describes whether or not this track is considered to be a loop.
 		/// </summary>
-        public bool IsLooping
-        {
-            get { return this.loop; }
-            set { this.loop = value; }
-        }
+		public bool IsLooping
+		{
+			get { return this.loop; }
+			set { this.loop = value; }
+		}
 		/// <summary>
 		/// [GET] Returns the total duration of this track in seconds, i.e. the last keyframes time value.
 		/// </summary>
@@ -78,13 +78,13 @@ namespace Duality.Animation
 
 
 		public AnimationTrack() {}
-        public AnimationTrack(IEnumerable<AnimationKeyFrame<T>> frames)
-        {
+		public AnimationTrack(IEnumerable<AnimationKeyFrame<T>> frames)
+		{
 			if (frames == null) throw new ArgumentNullException("frames");
 			this.AddRange(frames);
-        }
-        public AnimationTrack(params T[] evenlyDistributedValues)
-        {
+		}
+		public AnimationTrack(params T[] evenlyDistributedValues)
+		{
 			if (evenlyDistributedValues == null) throw new ArgumentNullException("evenlyDistributedValues");
 
 			// Just one value? Add only this one.
@@ -99,8 +99,8 @@ namespace Duality.Animation
 			{
 				this.Add((float)i / (float)(evenlyDistributedValues.Length - 1), evenlyDistributedValues[i]);
 			}
-        }
-        public AnimationTrack(IEnumerable<T> evenlyDistributedValues) : this(evenlyDistributedValues.ToArray()) {}
+		}
+		public AnimationTrack(IEnumerable<T> evenlyDistributedValues) : this(evenlyDistributedValues.ToArray()) {}
 
 		/// <summary>
 		/// Adds a range of keyframes to the track. They do not need to be sorted 
@@ -137,10 +137,10 @@ namespace Duality.Animation
 		/// </summary>
 		/// <param name="time">Time in seconds.</param>
 		/// <param name="value"></param>
-        public void Add(float time, T value)
-        {
+		public void Add(float time, T value)
+		{
 			this.Add(new AnimationKeyFrame<T>(time, value));
-        }
+		}
 		/// <summary>
 		/// Removes a single keyframe from the track.
 		/// </summary>
@@ -175,14 +175,14 @@ namespace Duality.Animation
 		/// </summary>
 		/// <param name="time">Time in seconds.</param>
 		/// <returns></returns>
-        public T GetValue(float time)
-        {
-            if (this.keyFrames.Count == 0) throw new InvalidOperationException("Can't interpolate on empty AnimationTrack.");
+		public T GetValue(float time)
+		{
+			if (this.keyFrames.Count == 0) throw new InvalidOperationException("Can't interpolate on empty AnimationTrack.");
 
 			AnimationKeyFrame<T>[] data = this.keyFrames.Data;
 			int frameCount = this.KeyFrameCount;
 			float duration = this.Duration;
-            if (this.loop) time = MathF.NormalizeVar(time, 0.0f, duration);
+			if (this.loop) time = MathF.NormalizeVar(time, 0.0f, duration);
 
 			int baseIndex = this.SearchIndexBelow(time);
 			if (baseIndex < 0) return data[0].Value;
@@ -194,7 +194,7 @@ namespace Duality.Animation
 
 			float factor = (time - data[baseIndex].Time) / (nextTime - data[baseIndex].Time);
 			return GenericOperator.Lerp(data[baseIndex].Value, data[nextIndex].Value, factor);
-        }
+		}
 		/// <summary>
 		/// Assigns a value at the specified time. This may introduce new keyframes or modify existing ones.
 		/// </summary>
@@ -204,10 +204,10 @@ namespace Duality.Animation
 		{
 			this.Add(time, value);
 		}
-        public override string ToString()
-        {
-            return this.keyFrames.ToString(", ");
-        }
+		public override string ToString()
+		{
+			return this.keyFrames.ToString(", ");
+		}
 		
 
 		private int SearchIndexBelow(float time)

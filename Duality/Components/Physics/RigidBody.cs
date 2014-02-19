@@ -302,7 +302,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<JointInfo> Joints
 		{
-		    get { return this.joints; }
+			get { return this.joints; }
 			set { this.SetJoints(value); }
 		}
 		/// <summary>
@@ -799,9 +799,9 @@ namespace Duality.Components.Physics
 
 			// Manually generate OnSeparation events directy in-place, since 
 			// we won't receive next frames Farseer events anymore
-            ContactEdge edge = this.body.ContactList;
-            while (edge != null)
-            {
+			ContactEdge edge = this.body.ContactList;
+			while (edge != null)
+			{
 				if (edge.Contact != null && edge.Contact.IsTouching())
 				{
 					Fixture fixtureA = edge.Contact.FixtureA;
@@ -811,8 +811,8 @@ namespace Duality.Components.Physics
 					else if (fixtureB != null && fixtureB.Body != null && fixtureB.Body.UserData == this)
 						this.eventBuffer.Add(new ColEvent(ColEvent.EventType.Separation, fixtureB, fixtureA, null)); 
 				}
-                edge = edge.Next;
-            }
+				edge = edge.Next;
+			}
 
 			this.body.Dispose();
 			this.body = null;
@@ -910,11 +910,11 @@ namespace Duality.Components.Physics
 		{
 			this.eventBuffer.Add(new ColEvent(ColEvent.EventType.Separation, fixtureA, fixtureB, null));
 		}
-        private void body_PostSolve(Contact contact, ContactConstraint impulse)
-        {
-            int count = contact.Manifold.PointCount;
-            for (int i = 0; i < count; ++i)
-            {
+		private void body_PostSolve(Contact contact, ContactConstraint impulse)
+		{
+			int count = contact.Manifold.PointCount;
+			for (int i = 0; i < count; ++i)
+			{
 				if (impulse.Points[i].NormalImpulse != 0.0f || impulse.Points[i].TangentImpulse != 0.0f)
 				{
 					CollisionData colData = new CollisionData(this.body, impulse, i);
@@ -923,8 +923,8 @@ namespace Duality.Components.Physics
 					else
 						this.eventBuffer.Add(new ColEvent(ColEvent.EventType.PostSolve, contact.FixtureB, contact.FixtureA, colData));
 				}
-            }
-        }
+			}
+		}
 		private void ProcessCollisionEvents()
 		{
 			// Don't use foreach here in case someone decides to add something at the end while iterating..
@@ -1038,11 +1038,11 @@ namespace Duality.Components.Physics
 			Transform t = e.Component as Transform;
 
 			if ((e.Changes & Transform.DirtyFlags.Pos) != Transform.DirtyFlags.None)
-			    this.body.Position = PhysicsConvert.ToPhysicalUnit(t.Pos.Xy);
+				this.body.Position = PhysicsConvert.ToPhysicalUnit(t.Pos.Xy);
 			if ((e.Changes & Transform.DirtyFlags.Angle) != Transform.DirtyFlags.None)
-			    this.body.Rotation = t.Angle;
+				this.body.Rotation = t.Angle;
 			if ((e.Changes & Transform.DirtyFlags.Scale) != Transform.DirtyFlags.None)
-			    this.FlagBodyShape();
+				this.FlagBodyShape();
 
 			if (e.Changes != Transform.DirtyFlags.None)
 				this.body.Awake = true;

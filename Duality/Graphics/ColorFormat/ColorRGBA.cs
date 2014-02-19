@@ -401,9 +401,9 @@ namespace Duality.ColorFormat
 		/// <param name="right">The second color.</param>
 		/// <returns></returns>
 		public static bool operator ==(ColorRgba left, ColorRgba right)
-        {
-            return left.Equals(right);
-        }
+		{
+			return left.Equals(right);
+		}
 		/// <summary>
 		/// Returns whether two colors are unequal.
 		/// </summary>
@@ -411,9 +411,9 @@ namespace Duality.ColorFormat
 		/// <param name="right">The second color.</param>
 		/// <returns></returns>
 		public static bool operator !=(ColorRgba left, ColorRgba right)
-        {
-            return !left.Equals(right);
-        }
+		{
+			return !left.Equals(right);
+		}
 		/// <summary>
 		/// Adds two colors component-wise.
 		/// </summary>
@@ -421,13 +421,13 @@ namespace Duality.ColorFormat
 		/// <param name="right">The second color.</param>
 		/// <returns></returns>
 		public static ColorRgba operator +(ColorRgba left, ColorRgba right)
-        {
-            return new ColorRgba(
+		{
+			return new ColorRgba(
 				(byte)Math.Min(255, left.R + right.R), 
 				(byte)Math.Min(255, left.G + right.G), 
 				(byte)Math.Min(255, left.B + right.B), 
 				(byte)Math.Min(255, left.A + right.A));
-        }
+		}
 		/// <summary>
 		/// Subtracts the second color from the first component-wise.
 		/// </summary>
@@ -435,13 +435,13 @@ namespace Duality.ColorFormat
 		/// <param name="right">The second color.</param>
 		/// <returns></returns>
 		public static ColorRgba operator -(ColorRgba left, ColorRgba right)
-        {
-            return new ColorRgba(
+		{
+			return new ColorRgba(
 				(byte)Math.Max(0, left.R - right.R), 
 				(byte)Math.Max(0, left.G - right.G), 
 				(byte)Math.Max(0, left.B - right.B), 
 				(byte)Math.Max(0, left.A - right.A));
-        }
+		}
 		/// <summary>
 		/// Multiplies two colors component-wise.
 		/// </summary>
@@ -449,13 +449,13 @@ namespace Duality.ColorFormat
 		/// <param name="right">The second color.</param>
 		/// <returns></returns>
 		public static ColorRgba operator *(ColorRgba left, ColorRgba right)
-        {
-            return new ColorRgba(
+		{
+			return new ColorRgba(
 				(byte)MathF.Clamp(MathF.Round(left.R * right.R / 255), 0.0f, 255.0f), 
 				(byte)MathF.Clamp(MathF.Round(left.G * right.G / 255), 0.0f, 255.0f), 
 				(byte)MathF.Clamp(MathF.Round(left.B * right.B / 255), 0.0f, 255.0f), 
 				(byte)MathF.Clamp(MathF.Round(left.A * right.A / 255), 0.0f, 255.0f));
-        }
+		}
 		/// <summary>
 		/// Scales a color by the specified factor. This affects color and alpha equally.
 		/// </summary>
@@ -463,13 +463,13 @@ namespace Duality.ColorFormat
 		/// <param name="right">The scaling factor.</param>
 		/// <returns></returns>
 		public static ColorRgba operator *(ColorRgba left, float right)
-        {
-            return new ColorRgba(
+		{
+			return new ColorRgba(
 				(byte)MathF.Clamp(MathF.Round(left.R * right), 0.0f, 255.0f), 
 				(byte)MathF.Clamp(MathF.Round(left.G * right), 0.0f, 255.0f), 
 				(byte)MathF.Clamp(MathF.Round(left.B * right), 0.0f, 255.0f), 
 				(byte)MathF.Clamp(MathF.Round(left.A * right), 0.0f, 255.0f));
-        }
+		}
 		
 		/// <summary>
 		/// Adds two colors component-wise.

@@ -151,7 +151,7 @@ namespace Duality
 			public void Render(IDrawDevice device, ref int vertexOffset, ref IDrawBatch lastBatchRendered)
 			{
 				if (lastBatchRendered == null || lastBatchRendered.Material != this.material)
-				    this.material.SetupForRendering(device, lastBatchRendered == null ? null : lastBatchRendered.Material);
+					this.material.SetupForRendering(device, lastBatchRendered == null ? null : lastBatchRendered.Material);
 
 				GL.DrawArrays((PrimitiveType)this.vertexMode, vertexOffset, this.vertexCount);
 
@@ -507,18 +507,6 @@ namespace Duality
 				spacePos.X *= scaleTemp;
 				spacePos.Y *= scaleTemp;
 			}
-			//else if (this.perspective == PerspectiveMode.Isometric)
-			//{
-			//    // Apply isometric projection
-			//    spacePos.Z -= this.focusDist;
-			//    spacePos.Y += spacePos.Z;
-			//    spacePos.Z -= spacePos.Y;
-
-			//    // Scale globally
-			//    scaleTemp = this.focusDist / DefaultFocusDist;
-			//    spacePos.X *= scaleTemp;
-			//    spacePos.Y *= scaleTemp;
-			//}
 
 			MathF.TransformCoord(ref spacePos.X, ref spacePos.Y, -this.refAngle);
 
