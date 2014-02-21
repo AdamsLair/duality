@@ -5,7 +5,7 @@ using System.Text;
 
 using Duality;
 
-namespace DualityTests
+namespace Duality.Tests
 {
 	public class DualityTestsPlugin : CorePlugin {}
 }
