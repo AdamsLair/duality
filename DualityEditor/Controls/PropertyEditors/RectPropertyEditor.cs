@@ -5,7 +5,7 @@ using AdamsLair.PropertyGrid.EditorTemplates;
 
 using Duality;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class RectPropertyEditor : VectorPropertyEditor
 	{

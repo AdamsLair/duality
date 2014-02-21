@@ -10,7 +10,7 @@ using AdamsLair.PropertyGrid.EditorTemplates;
 using Duality;
 using Duality.EditorHints;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public abstract class VectorPropertyEditor : PropertyEditor
 	{

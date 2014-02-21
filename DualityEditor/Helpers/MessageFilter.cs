@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	enum WindowsMessages
 	{

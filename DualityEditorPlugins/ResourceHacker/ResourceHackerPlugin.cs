@@ -3,10 +3,10 @@ using System.Windows.Forms;
 using System.IO;
 using Duality.Serialization.MetaFormat;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.Properties;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.Properties;
+using Duality.Editor.CorePluginInterface;
 
 using WeifenLuo.WinFormsUI.Docking;
 

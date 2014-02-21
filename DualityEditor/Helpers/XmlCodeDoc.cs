@@ -8,7 +8,7 @@ using System.Reflection;
 
 using Duality;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public class XmlCodeDoc
 	{

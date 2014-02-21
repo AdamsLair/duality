@@ -10,9 +10,9 @@ using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
 using Duality;
 using Duality.ColorFormat;
 
-using DualityEditor.Forms;
+using Duality.Editor.Forms;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class IColorDataPropertyEditor : PropertyEditor
 	{

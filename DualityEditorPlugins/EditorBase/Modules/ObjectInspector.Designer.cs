@@ -38,7 +38,7 @@
 			this.buttonDebug = new System.Windows.Forms.ToolStripButton();
 			this.buttonClone = new System.Windows.Forms.ToolStripButton();
 			this.buttonLock = new System.Windows.Forms.ToolStripButton();
-			this.propertyGrid = new DualityEditor.Controls.DualitorPropertyGrid();
+			this.propertyGrid = new Duality.Editor.Controls.DualitorPropertyGrid();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -170,7 +170,7 @@
 
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxName;
 		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeStateIcon;
-		private DualityEditor.Controls.DualitorPropertyGrid propertyGrid;
+		private Duality.Editor.Controls.DualitorPropertyGrid propertyGrid;
 		private System.Windows.Forms.Timer timerSelectSched;
 		private System.Windows.Forms.ToolStrip toolStrip;
 		private System.Windows.Forms.ToolStripButton buttonAutoRefresh;

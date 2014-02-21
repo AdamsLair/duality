@@ -9,10 +9,10 @@ using Duality.Components;
 using Duality.Resources;
 using Duality.ColorFormat;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
 using EditorBase.UndoRedoActions;
 

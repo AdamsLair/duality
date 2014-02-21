@@ -15,9 +15,9 @@ using Duality.Serialization;
 using Duality.Resources;
 using Duality.Profiling;
 
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
 using OpenTK;
 using OpenTK.Platform;
@@ -26,7 +26,7 @@ using OpenTK.Platform.Windows;
 using Ionic.Zip;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public enum SelectMode
 	{

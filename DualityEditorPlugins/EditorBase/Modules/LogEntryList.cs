@@ -11,7 +11,7 @@ using System.Reflection;
 using System.Diagnostics;
 
 using Duality;
-using DualityEditor;
+using Duality.Editor;
 
 namespace EditorBase
 {

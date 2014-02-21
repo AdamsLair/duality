@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using DualityEditor;
+using Duality.Editor;
 using HelpAdvisor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;

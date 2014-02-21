@@ -5,7 +5,7 @@ using System.Drawing;
 using Duality;
 using Duality.Resources;
 
-namespace DualityEditor.CorePluginInterface
+namespace Duality.Editor.CorePluginInterface
 {
 	public enum PreviewSizeMode
 	{

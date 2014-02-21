@@ -11,9 +11,9 @@ using PropertyGrid = AdamsLair.PropertyGrid.PropertyGrid;
 using Duality;
 using Duality.EditorHints;
 
-using DualityEditor.UndoRedoActions;
+using Duality.Editor.UndoRedoActions;
 
-namespace DualityEditor.Controls
+namespace Duality.Editor.Controls
 {
 	public class DualitorPropertyGrid : PropertyGrid, IHelpProvider
 	{

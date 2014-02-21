@@ -7,7 +7,7 @@ using OpenTK;
 using Duality;
 using Duality.ColorFormat;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class DualityPropertyEditorProvider : IPropertyEditorProvider
 	{

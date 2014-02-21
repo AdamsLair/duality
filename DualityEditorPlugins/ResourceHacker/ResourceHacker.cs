@@ -11,9 +11,9 @@ using Duality;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
 
 using Aga.Controls.Tree;
 using WeifenLuo.WinFormsUI.Docking;
@@ -226,7 +226,7 @@ namespace ResourceHacker
 			this.saveFileDialog.InitialDirectory = this.openFileDialog.InitialDirectory;
 			this.saveFileDialog.Filter = this.openFileDialog.Filter;
 
-			this.mainToolStrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.mainToolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 
 		protected override void OnShown(EventArgs e)

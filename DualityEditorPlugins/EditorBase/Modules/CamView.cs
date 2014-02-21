@@ -14,10 +14,10 @@ using Duality.Components;
 using Duality.ColorFormat;
 using Duality.Resources;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.UndoRedoActions;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.UndoRedoActions;
+using Duality.Editor.CorePluginInterface;
 
 using EditorBase.CamViewStates;
 using EditorBase.CamViewLayers;
@@ -233,7 +233,7 @@ namespace EditorBase
 			this.bgColorDialog.AlphaEnabled = false;
 			this.Text = Properties.EditorBaseRes.MenuItemName_CamView + " #" + runtimeId;
 			this.runtimeId = runtimeId;
-			this.toolbarCamera.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolbarCamera.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			
 			var camViewStateTypeQuery = 
 				from t in DualityEditorApp.GetAvailDualityEditorTypes(typeof(CamViewState))

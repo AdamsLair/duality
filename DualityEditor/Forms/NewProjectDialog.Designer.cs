@@ -1,4 +1,4 @@
-﻿namespace DualityEditor.Forms
+﻿namespace Duality.Editor.Forms
 {
 	partial class NewProjectDialog
 	{
@@ -35,7 +35,7 @@
 			this.folderViewControlName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.imageListTemplateView = new System.Windows.Forms.ImageList(this.components);
 			this.splitFolderTemplate = new System.Windows.Forms.SplitContainer();
-			this.templateView = new DualityEditor.Controls.ExplorerListView();
+			this.templateView = new Duality.Editor.Controls.ExplorerListView();
 			this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.columnDesc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonCancel = new System.Windows.Forms.Button();
@@ -43,12 +43,12 @@
 			this.labelProjectName = new System.Windows.Forms.Label();
 			this.labelProjectFolder = new System.Windows.Forms.Label();
 			this.buttonBrowseFolder = new System.Windows.Forms.Button();
-			this.textBoxFolder = new DualityEditor.Controls.CueTextBox();
+			this.textBoxFolder = new Duality.Editor.Controls.CueTextBox();
 			this.labelLowerArea = new System.Windows.Forms.Label();
-			this.textBoxName = new DualityEditor.Controls.CueTextBox();
+			this.textBoxName = new Duality.Editor.Controls.CueTextBox();
 			this.labelDialogDesc = new System.Windows.Forms.Label();
 			this.labelProjectTemplate = new System.Windows.Forms.Label();
-			this.textBoxTemplate = new DualityEditor.Controls.CueTextBox();
+			this.textBoxTemplate = new Duality.Editor.Controls.CueTextBox();
 			this.buttonBrowseTemplate = new System.Windows.Forms.Button();
 			this.pictureBoxLogo = new System.Windows.Forms.PictureBox();
 			this.labelHeader = new System.Windows.Forms.Label();
@@ -293,7 +293,7 @@
 			// 
 			// pictureBoxLogo
 			// 
-			this.pictureBoxLogo.Image = global::DualityEditor.Properties.Resources.DualityIcon48;
+			this.pictureBoxLogo.Image = global::Duality.Editor.Properties.Resources.DualityIcon48;
 			this.pictureBoxLogo.Location = new System.Drawing.Point(9, 6);
 			this.pictureBoxLogo.Margin = new System.Windows.Forms.Padding(0);
 			this.pictureBoxLogo.Name = "pictureBoxLogo";
@@ -358,7 +358,7 @@
 		#endregion
 
 		private Aga.Controls.Tree.TreeViewAdv folderView;
-		private DualityEditor.Controls.ExplorerListView templateView;
+		private Duality.Editor.Controls.ExplorerListView templateView;
 		private System.Windows.Forms.ColumnHeader columnName;
 		private System.Windows.Forms.ColumnHeader columnDesc;
 		private System.Windows.Forms.SplitContainer splitFolderTemplate;
@@ -367,12 +367,12 @@
 		private System.Windows.Forms.Label labelProjectName;
 		private System.Windows.Forms.Label labelProjectFolder;
 		private System.Windows.Forms.Button buttonBrowseFolder;
-		private DualityEditor.Controls.CueTextBox textBoxFolder;
+		private Duality.Editor.Controls.CueTextBox textBoxFolder;
 		private System.Windows.Forms.Label labelLowerArea;
-		private DualityEditor.Controls.CueTextBox textBoxName;
+		private Duality.Editor.Controls.CueTextBox textBoxName;
 		private System.Windows.Forms.Label labelDialogDesc;
 		private System.Windows.Forms.Label labelProjectTemplate;
-		private DualityEditor.Controls.CueTextBox textBoxTemplate;
+		private Duality.Editor.Controls.CueTextBox textBoxTemplate;
 		private System.Windows.Forms.Button buttonBrowseTemplate;
 		private Aga.Controls.Tree.NodeControls.NodeStateIcon folderViewControlIcon;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox folderViewControlName;

@@ -14,9 +14,9 @@ using Duality;
 using Duality.Resources;
 using Duality.EditorHints;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
 namespace EditorBase
 {
@@ -346,7 +346,7 @@ namespace EditorBase
 			this.treeColumnName.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
 			this.treeColumnType.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
 
-			this.toolStrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 
 		protected override void OnShown(EventArgs e)

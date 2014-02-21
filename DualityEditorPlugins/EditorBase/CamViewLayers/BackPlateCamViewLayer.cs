@@ -8,8 +8,8 @@ using Duality.ColorFormat;
 using Duality.Resources;
 using Duality.Components.Physics;
 
-using DualityEditor;
-using DualityEditor.Forms;
+using Duality.Editor;
+using Duality.Editor.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;

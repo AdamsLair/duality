@@ -13,11 +13,11 @@ using Duality.Components.Physics;
 using Duality.Resources;
 using TextRenderer = Duality.Components.Renderers.TextRenderer;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.Properties;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.Properties;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
 using EditorBase.Properties;
 

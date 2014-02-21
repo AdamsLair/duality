@@ -5,7 +5,7 @@ using Vector2 = OpenTK.Vector2;
 
 using Duality;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class Vector2PropertyEditor : VectorPropertyEditor
 	{

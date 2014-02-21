@@ -7,7 +7,7 @@ using AdamsLair.PropertyGrid.PropertyEditors;
 
 using Duality;
 using Duality.Resources;
-using DualityEditor.Controls.PropertyEditors;
+using Duality.Editor.Controls.PropertyEditors;
 
 namespace EditorBase.PropertyEditors
 {

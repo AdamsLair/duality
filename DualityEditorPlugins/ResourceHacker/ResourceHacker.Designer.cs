@@ -49,7 +49,7 @@
 			this.batchActionRenameType = new System.Windows.Forms.ToolStripMenuItem();
 			this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
 			this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-			this.propertyGrid = new DualityEditor.Controls.DualitorPropertyGrid();
+			this.propertyGrid = new Duality.Editor.Controls.DualitorPropertyGrid();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
 			this.splitContainer.Panel1.SuspendLayout();
 			this.splitContainer.Panel2.SuspendLayout();
@@ -289,7 +289,7 @@
 		private System.Windows.Forms.SplitContainer splitContainer;
 		private Aga.Controls.Tree.TreeViewAdv treeView;
 		private System.Windows.Forms.ToolStrip mainToolStrip;
-		private DualityEditor.Controls.DualitorPropertyGrid propertyGrid;
+		private Duality.Editor.Controls.DualitorPropertyGrid propertyGrid;
 		private System.Windows.Forms.ToolStripButton actionOpen;
 		private System.Windows.Forms.ToolStripButton actionSave;
 		private System.Windows.Forms.OpenFileDialog openFileDialog;

@@ -2,7 +2,7 @@
 // 05/05/08
 // Updated 04/18/2010 for x64
 
-namespace DualityEditor
+namespace Duality.Editor
 {
     /// <summary>
     /// Send files directly to the recycle bin.

@@ -7,7 +7,7 @@ using Duality;
 using Duality.Cloning;
 using Duality.Components;
 
-using DualityEditor;
+using Duality.Editor;
 
 using EditorBase.Properties;
 

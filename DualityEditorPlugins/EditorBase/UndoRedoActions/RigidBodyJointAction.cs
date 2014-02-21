@@ -7,7 +7,7 @@ using Duality;
 using Duality.Cloning;
 using Duality.Components.Physics;
 
-using DualityEditor;
+using Duality.Editor;
 
 namespace EditorBase.UndoRedoActions
 {

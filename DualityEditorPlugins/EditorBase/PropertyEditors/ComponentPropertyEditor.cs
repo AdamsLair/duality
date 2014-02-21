@@ -10,9 +10,9 @@ using AdamsLair.PropertyGrid;
 using Duality;
 using Duality.ColorFormat;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
 namespace EditorBase.PropertyEditors
 {

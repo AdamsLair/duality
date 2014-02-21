@@ -17,10 +17,10 @@ using Duality.EditorHints;
 using Duality.Resources;
 using Duality.ColorFormat;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
 using EditorBase.Properties;
 
@@ -284,7 +284,7 @@ namespace EditorBase
 
 			this.nodeStateIcon.DrawIcon += this.nodeStateIcon_DrawIcon;
 
-			this.toolStrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 		protected override void OnShown(EventArgs e)
 		{

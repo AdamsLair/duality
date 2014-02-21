@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsSystemDrawingColor
 	{

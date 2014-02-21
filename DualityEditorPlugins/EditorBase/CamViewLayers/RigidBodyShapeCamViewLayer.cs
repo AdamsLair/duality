@@ -8,9 +8,9 @@ using Duality.ColorFormat;
 using Duality.Resources;
 using Duality.Components.Physics;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.Forms;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;

@@ -16,7 +16,7 @@ using Duality;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class EditorHelper
 	{

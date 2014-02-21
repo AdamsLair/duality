@@ -7,8 +7,8 @@ using Duality;
 using Duality.Cloning;
 using Duality.Resources;
 
-using DualityEditor;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.UndoRedoActions;
 
 using EditorBase.Properties;
 using EditorBase.CamViewStates;

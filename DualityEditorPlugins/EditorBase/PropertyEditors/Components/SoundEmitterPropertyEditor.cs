@@ -10,9 +10,9 @@ using Duality;
 using Duality.Components;
 using Duality.Resources;
 
-using DualityEditor;
-using DualityEditor.UndoRedoActions;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.UndoRedoActions;
+using Duality.Editor.CorePluginInterface;
 
 using EditorBase.UndoRedoActions;
 

@@ -3,9 +3,9 @@ using System.Windows.Forms;
 using System.Threading;
 using System.Globalization;
 
-using DualityEditor.Forms;
+using Duality.Editor.Forms;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	static class Program
 	{

@@ -9,11 +9,11 @@ using System.Reflection;
 using Duality;
 using Duality.Resources;
 
-using DualityEditor.Properties;
+using Duality.Editor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	public partial class MainForm : Form, IHelpProvider
 	{

@@ -4,9 +4,9 @@ using System.Linq;
 using Duality;
 using Duality.Resources;
 
-using DualityEditor;
-using DualityEditor.Properties;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Properties;
+using Duality.Editor.CorePluginInterface;
 
 using DynamicLighting.Properties;
 

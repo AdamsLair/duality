@@ -7,11 +7,11 @@ using System.Windows.Forms;
 using Duality;
 using Duality.Resources;
 
-using DualityEditor.Properties;
+using Duality.Editor.Properties;
 
 using OpenTK;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public enum SandboxState
 	{

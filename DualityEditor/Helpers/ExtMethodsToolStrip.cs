@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Drawing;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsToolStrip
 	{

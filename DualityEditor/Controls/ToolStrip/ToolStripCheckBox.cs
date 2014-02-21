@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
-namespace DualityEditor.Controls.ToolStrip
+namespace Duality.Editor.Controls.ToolStrip
 {
 	[ToolStripItemDesignerAvailability(ToolStripItemDesignerAvailability.ToolStrip | ToolStripItemDesignerAvailability.StatusStrip)]
 	public class ToolStripCheckBox : ToolStripControlHost

@@ -8,8 +8,8 @@ using Duality;
 using Duality.Resources;
 using Font = Duality.Resources.Font;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
 
 
 namespace EditorBase.PreviewGenerators

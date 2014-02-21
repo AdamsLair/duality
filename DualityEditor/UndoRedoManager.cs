@@ -7,9 +7,9 @@ using Duality;
 using Duality.Resources;
 using Duality.Cloning;
 
-using DualityEditor.UndoRedoActions;
+using Duality.Editor.UndoRedoActions;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class UndoRedoManager
 	{

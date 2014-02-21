@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 
-namespace DualityEditor.Controls.TreeModels.FileSystem
+namespace Duality.Editor.Controls.TreeModels.FileSystem
 {
 	public abstract class BaseItem
 	{

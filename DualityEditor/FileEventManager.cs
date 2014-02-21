@@ -14,15 +14,15 @@ using Duality.Resources;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
 
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
 
 using OpenTK;
 
 using Ionic.Zip;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class FileEventManager
 	{

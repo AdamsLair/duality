@@ -15,10 +15,10 @@ using Aga.Controls.Tree.NodeControls;
 
 using Duality;
 
-using DualityEditor.Controls.TreeModels.FileSystem;
-using DualityEditor.Properties;
+using Duality.Editor.Controls.TreeModels.FileSystem;
+using Duality.Editor.Properties;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	public partial class NewProjectDialog : Form
 	{

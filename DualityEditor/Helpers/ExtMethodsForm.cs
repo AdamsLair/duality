@@ -5,7 +5,7 @@ using System.Drawing;
 using Windows7.DesktopIntegration;
 using Windows7.DesktopIntegration.WindowsForms;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	/// <summary>
 	/// Provides extension methods for <see cref="System.Windows.Forms.Form"/>.

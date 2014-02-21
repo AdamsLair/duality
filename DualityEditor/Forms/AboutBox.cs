@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 using Duality;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	partial class AboutBox : Form
 	{

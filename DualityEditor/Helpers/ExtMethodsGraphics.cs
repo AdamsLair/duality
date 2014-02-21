@@ -8,7 +8,7 @@ using System.Drawing.Drawing2D;
 
 using Duality;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsGraphics
 	{

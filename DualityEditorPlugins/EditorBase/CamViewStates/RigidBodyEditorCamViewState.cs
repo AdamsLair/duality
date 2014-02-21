@@ -12,9 +12,9 @@ using Duality.Resources;
 using Duality.ColorFormat;
 using Font = Duality.Resources.Font;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.Forms;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Forms;
 
 using EditorBase.UndoRedoActions;
 using EditorBase.Properties;
@@ -94,7 +94,7 @@ namespace EditorBase.CamViewStates
 			this.toolCreateLoop.AutoToolTip = true;
 			this.toolstrip.Items.Add(this.toolCreateLoop);
 
-			this.toolstrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
 
 			this.View.Controls.Add(this.toolstrip);

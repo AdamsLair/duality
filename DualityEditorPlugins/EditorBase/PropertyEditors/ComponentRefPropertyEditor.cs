@@ -11,8 +11,8 @@ using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
 using BorderStyle = AdamsLair.PropertyGrid.Renderer.BorderStyle;
 
 using Duality;
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
 
 namespace EditorBase.PropertyEditors
 {

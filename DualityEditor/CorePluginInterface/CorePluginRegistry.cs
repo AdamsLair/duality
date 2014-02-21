@@ -12,9 +12,9 @@ using Duality.Resources;
 using Duality.Serialization;
 using Duality.EditorHints;
 
-using DualityEditor.CorePluginInterface;
+using Duality.Editor.CorePluginInterface;
 
-namespace DualityEditor.CorePluginInterface
+namespace Duality.Editor.CorePluginInterface
 {
 	public static class CorePluginRegistry
 	{

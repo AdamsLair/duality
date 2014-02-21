@@ -31,7 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CamView));
 			this.stateSelector = new System.Windows.Forms.ToolStripComboBox();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-			this.focusDist = new DualityEditor.Controls.ToolStrip.ToolStripNumericUpDown();
+			this.focusDist = new Duality.Editor.Controls.ToolStrip.ToolStripNumericUpDown();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.camSelector = new System.Windows.Forms.ToolStripComboBox();
 			this.toolbarCamera = new System.Windows.Forms.ToolStrip();
@@ -192,7 +192,7 @@
 
 		private System.Windows.Forms.ToolStripComboBox stateSelector;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-		private DualityEditor.Controls.ToolStrip.ToolStripNumericUpDown focusDist;
+		private Duality.Editor.Controls.ToolStrip.ToolStripNumericUpDown focusDist;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.ToolStripButton showBgColorDialog;
 		private System.Windows.Forms.ToolStripComboBox camSelector;

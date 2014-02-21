@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Duality;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public class ObjectSelection : IEquatable<ObjectSelection>, IEnumerable<object>
 	{

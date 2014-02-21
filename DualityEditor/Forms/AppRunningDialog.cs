@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	public partial class AppRunningDialog : Form
 	{

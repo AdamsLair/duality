@@ -2,9 +2,9 @@
 using System.Windows.Forms;
 using System.Drawing;
 
-using DualityEditor.Properties;
+using Duality.Editor.Properties;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class CursorHelper
 	{

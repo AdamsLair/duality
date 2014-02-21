@@ -4,9 +4,9 @@ using System.IO;
 
 using HelpAdvisor.Properties;
 
-using DualityEditor;
-using DualityEditor.Properties;
-using DualityEditor.Forms;
+using Duality.Editor;
+using Duality.Editor.Properties;
+using Duality.Editor.Forms;
 
 using WeifenLuo.WinFormsUI.Docking;
 

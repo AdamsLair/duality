@@ -9,7 +9,7 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Threading;
 
-namespace DualityEditor.Controls.TreeModels.FileSystem
+namespace Duality.Editor.Controls.TreeModels.FileSystem
 {
 	public class FolderBrowserTreeModel : ITreeModel
 	{

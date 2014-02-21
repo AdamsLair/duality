@@ -8,7 +8,7 @@ using OpenTK.Input;
 
 using Duality;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsKeys
 	{

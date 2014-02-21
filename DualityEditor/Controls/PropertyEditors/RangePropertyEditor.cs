@@ -3,7 +3,7 @@ using System.Linq;
 
 using Duality;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class RangePropertyEditor : VectorPropertyEditor
 	{

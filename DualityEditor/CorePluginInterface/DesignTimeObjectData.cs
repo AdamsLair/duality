@@ -6,7 +6,7 @@ using System.Drawing;
 using Duality;
 using Duality.Serialization;
 
-namespace DualityEditor.CorePluginInterface
+namespace Duality.Editor.CorePluginInterface
 {
 	public class DesignTimeObjectData
 	{

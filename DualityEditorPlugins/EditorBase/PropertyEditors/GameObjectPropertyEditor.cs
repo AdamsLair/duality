@@ -9,9 +9,9 @@ using AdamsLair.PropertyGrid.Renderer;
 using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
 
 using Duality;
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
 namespace EditorBase.PropertyEditors
 {
@@ -83,7 +83,7 @@ namespace EditorBase.PropertyEditors
 				}
 				else
 				{
-					this.displayedName = string.Format(DualityEditor.Properties.GeneralRes.PropertyGrid_N_Objects, values.Count());
+					this.displayedName = string.Format(Duality.Editor.Properties.GeneralRes.PropertyGrid_N_Objects, values.Count());
 					this.displayedNameExt = "";
 				}
 				this.prefabLinked = values.Any(o => o.PrefabLink != null);

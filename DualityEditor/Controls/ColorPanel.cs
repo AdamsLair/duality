@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.ComponentModel;
 
-namespace DualityEditor.Controls
+namespace Duality.Editor.Controls
 {
 	public class ColorPanel : UserControl
 	{
