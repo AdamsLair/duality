@@ -9,7 +9,7 @@ using Duality;
 using Duality.Resources;
 using Duality.Editor.Controls.PropertyEditors;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class PixmapContentPropertyEditor : ResourcePropertyEditor
 	{

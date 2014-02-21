@@ -8,7 +8,7 @@
     <ProjectGuid>{C25812BD-1699-496E-B946-9E999FD7C9C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ResourceHacker</RootNamespace>
+    <RootNamespace>Duality.Editor.Plugins.ResourceHacker</RootNamespace>
     <AssemblyName>ResourceHacker.editor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

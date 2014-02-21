@@ -12,7 +12,7 @@ using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 
 
-namespace EditorBase.DataConverters
+namespace Duality.Editor.Plugins.Base.DataConverters
 {
 	public class GameObjFromPrefab : DataConverter
 	{

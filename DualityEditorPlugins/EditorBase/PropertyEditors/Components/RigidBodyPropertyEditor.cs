@@ -13,11 +13,10 @@ using Duality.Components.Physics;
 using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 
-using EditorBase.UndoRedoActions;
 
-
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class RigidBodyPropertyEditor : ComponentPropertyEditor
 	{

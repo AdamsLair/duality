@@ -1,4 +1,4 @@
-﻿namespace HelpAdvisor
+﻿namespace Duality.Editor.Plugins.HelpAdvisor
 {
 	partial class HelpAdvisor
 	{

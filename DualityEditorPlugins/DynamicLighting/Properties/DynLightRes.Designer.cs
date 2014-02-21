@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DynamicLighting.Properties {
+namespace Duality.Editor.Plugins.DynamicLighting.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace DynamicLighting.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DynamicLighting.Properties.DynLightRes", typeof(DynLightRes).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.DynamicLighting.Properties.DynLightRes", typeof(DynLightRes).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

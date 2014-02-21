@@ -8,10 +8,9 @@ using Duality.Cloning;
 using Duality.Components;
 
 using Duality.Editor;
+using Duality.Editor.Plugins.Base.Properties;
 
-using EditorBase.Properties;
-
-namespace EditorBase.UndoRedoActions
+namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class CreateSoundEmitterSourceAction : SoundEmitterSourceAction
 	{

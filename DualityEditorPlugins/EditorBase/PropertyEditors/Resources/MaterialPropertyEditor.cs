@@ -3,7 +3,7 @@ using System.Reflection;
 using Duality;
 using Duality.Editor;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class MaterialPropertyEditor : ResourcePropertyEditor
 	{

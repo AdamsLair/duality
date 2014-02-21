@@ -13,12 +13,10 @@ using Aga.Controls.Tree;
 using Duality;
 using Duality.Resources;
 using Duality.Editor;
-
-using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class ProjectFolderView : DockContent, IHelpProvider, IToolTipProvider
 	{
@@ -1679,7 +1677,7 @@ namespace EditorBase
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode, false);
 			if (action != null) return string.Format(
-				EditorBase.Properties.EditorBaseRes.ProjectFolderView_Help_Doubleclick,
+				Duality.Editor.Plugins.Base.Properties.EditorBaseRes.ProjectFolderView_Help_Doubleclick,
 				action.Description);
 			else return null;
 		}

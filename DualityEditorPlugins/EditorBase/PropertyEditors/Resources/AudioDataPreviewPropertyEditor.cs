@@ -13,9 +13,9 @@ using Duality.Resources;
 using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 
-using EditorBase.Properties;
+using Duality.Editor.Plugins.Base.Properties;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public partial class AudioDataPreviewPropertyEditor : PropertyEditor
 	{

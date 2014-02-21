@@ -11,7 +11,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Duality;
 using Duality.Editor;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class LogView : DockContent
 	{

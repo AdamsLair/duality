@@ -9,9 +9,8 @@ using OpenTK;
 using Duality;
 using Duality.Editor;
 using Duality.Components;
-using Duality.Editor;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class TransformPropertyEditor : ComponentPropertyEditor, IHelpProvider
 	{

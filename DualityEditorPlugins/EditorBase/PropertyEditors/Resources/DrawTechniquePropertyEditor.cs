@@ -7,7 +7,7 @@ using Duality.Resources;
 using AdamsLair.PropertyGrid;
 using AdamsLair.PropertyGrid.PropertyEditors;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class DrawTechniquePropertyEditor : ResourcePropertyEditor
 	{

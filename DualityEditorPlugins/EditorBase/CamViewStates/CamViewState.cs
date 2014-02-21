@@ -13,14 +13,13 @@ using Duality.VertexFormat;
 
 using Duality.Editor;
 using Duality.Editor.Forms;
+using Duality.Editor.Plugins.Base.Properties;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-using EditorBase.Properties;
-using EditorBase.UndoRedoActions;
-
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public abstract class CamViewState : CamViewClient, IHelpProvider
 	{

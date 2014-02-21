@@ -1,7 +1,7 @@
 ﻿using Duality;
 using Duality.Resources;
 
-namespace DynamicLighting
+namespace Duality.Plugins.DynamicLighting
 {
 	/// <summary>
 	/// Defines the dynamic lighting core plugin.

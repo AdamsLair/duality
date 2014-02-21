@@ -4,7 +4,7 @@ using Duality;
 using Duality.Components;
 using Duality.Resources;
 
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public class GameViewCamViewState : CamViewState
 	{

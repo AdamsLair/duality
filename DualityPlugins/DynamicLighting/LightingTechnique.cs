@@ -7,7 +7,7 @@ using Duality.Properties;
 
 using OpenTK;
 
-namespace DynamicLighting
+namespace Duality.Plugins.DynamicLighting
 {
 	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]

@@ -13,7 +13,7 @@ using System.Diagnostics;
 using Duality;
 using Duality.Editor;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public class LogEntryList : UserControl
 	{

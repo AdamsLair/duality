@@ -13,7 +13,7 @@ using OpenTK.Input;
 using OpenTK.Graphics;
 using OpenTK.Platform.Windows;
 
-namespace DualityLauncher
+namespace Duality.Launcher
 {
 	public class DualityLauncher : GameWindow
 	{

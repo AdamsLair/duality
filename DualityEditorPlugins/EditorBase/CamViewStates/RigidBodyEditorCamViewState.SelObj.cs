@@ -7,7 +7,7 @@ using Duality.Components.Physics;
 
 using OpenTK;
 
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public partial class RigidBodyEditorCamViewState
 	{

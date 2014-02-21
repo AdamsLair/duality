@@ -15,7 +15,7 @@ using Duality.Editor.Forms;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace EditorBase.CamViewLayers
+namespace Duality.Editor.Plugins.Base.CamViewLayers
 {
 	public class RigidBodyShapeCamViewLayer : CamViewLayer
 	{

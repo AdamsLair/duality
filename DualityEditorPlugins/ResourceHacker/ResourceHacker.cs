@@ -18,7 +18,7 @@ using Duality.Editor.CorePluginInterface;
 using Aga.Controls.Tree;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace ResourceHacker
+namespace Duality.Editor.Plugins.ResourceHacker
 {
 	public partial class ResourceHacker : DockContent
 	{

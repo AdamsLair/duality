@@ -14,7 +14,7 @@ using Duality.Resources;
 using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class ObjectInspector : DockContent
 	{

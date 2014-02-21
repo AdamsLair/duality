@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace EditorBase.Properties
+namespace Duality.Editor.Plugins.Base.Properties
 {
 	/// <summary>
 	/// Since directly accessing code generated from .resx files will result in a deserialization on

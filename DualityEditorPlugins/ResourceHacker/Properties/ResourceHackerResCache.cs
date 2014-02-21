@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 
-namespace ResourceHacker.Properties
+namespace Duality.Editor.Plugins.ResourceHacker.Properties
 {
 	/// <summary>
 	/// Since directly accessing code generated from .resx files will result in a deserialization on

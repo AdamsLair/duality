@@ -7,7 +7,7 @@ using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Components.Renderers;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class PropertyEditorProvider : IPropertyEditorProvider
 	{

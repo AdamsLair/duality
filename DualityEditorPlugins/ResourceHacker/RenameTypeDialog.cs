@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace ResourceHacker
+namespace Duality.Editor.Plugins.ResourceHacker
 {
 	public partial class RenameTypeDialog : Form
 	{

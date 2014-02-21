@@ -5,17 +5,17 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 using Duality.Resources;
 
 [assembly: DebuggerVisualizer(
-	typeof(DualityDebugging.BitmapDebuggerVisualizer), 
-	typeof(DualityDebugging.PixmapDebuggerVisualizerObjectSource), 
+	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
+	typeof(Duality.VisualStudio.PixmapDebuggerVisualizerObjectSource), 
 	Target = typeof(Pixmap), 
 	Description = "Pixmap Visualizer")]
 [assembly: DebuggerVisualizer(
-	typeof(DualityDebugging.BitmapDebuggerVisualizer), 
-	typeof(DualityDebugging.PixmapLayerDebuggerVisualizerObjectSource), 
+	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
+	typeof(Duality.VisualStudio.PixmapLayerDebuggerVisualizerObjectSource), 
 	Target = typeof(Pixmap.Layer), 
 	Description = "Pixmap Layer Visualizer")]
 
-namespace DualityDebugging
+namespace Duality.VisualStudio
 {
 	public class PixmapDebuggerVisualizerObjectSource : VisualizerObjectSource
 	{

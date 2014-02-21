@@ -15,7 +15,7 @@ using Duality.Properties;
 //	-->	Instead, add an additional worldPosition attribute to the vertex format.
 //	-->	This is the only way to allow flexible lighting when using different perspective modes.
 
-namespace DynamicLighting
+namespace Duality.Plugins.DynamicLighting
 {
 	/// <summary>
 	/// A source of light. Supported light types are directional, ambient, point and spot.

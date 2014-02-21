@@ -15,13 +15,12 @@ using Font = Duality.Resources.Font;
 using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.Forms;
-
-using EditorBase.UndoRedoActions;
-using EditorBase.Properties;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
+using Duality.Editor.Plugins.Base.Properties;
 
 using OpenTK;
 
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public partial class RigidBodyEditorCamViewState : CamViewState
 	{

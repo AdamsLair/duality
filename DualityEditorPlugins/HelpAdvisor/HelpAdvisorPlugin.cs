@@ -2,15 +2,14 @@
 using System.Windows.Forms;
 using System.IO;
 
-using HelpAdvisor.Properties;
-
 using Duality.Editor;
 using Duality.Editor.Properties;
 using Duality.Editor.Forms;
+using Duality.Editor.Plugins.HelpAdvisor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace HelpAdvisor
+namespace Duality.Editor.Plugins.HelpAdvisor
 {
 	public class HelpAdvisorPlugin : EditorPlugin
 	{

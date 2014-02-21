@@ -1,4 +1,4 @@
-﻿namespace EditorBase
+﻿namespace Duality.Editor.Plugins.Base
 {
 	partial class CamView
 	{
@@ -123,7 +123,7 @@
 			// layerSelector
 			// 
 			this.layerSelector.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.layerSelector.Image = global::EditorBase.Properties.Resources.layers;
+			this.layerSelector.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.layers;
 			this.layerSelector.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.layerSelector.Name = "layerSelector";
 			this.layerSelector.Size = new System.Drawing.Size(29, 22);
@@ -136,7 +136,7 @@
 			// 
 			this.buttonResetZoom.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.buttonResetZoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonResetZoom.Image = global::EditorBase.Properties.Resources.magnifier_one;
+			this.buttonResetZoom.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.magnifier_one;
 			this.buttonResetZoom.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonResetZoom.Name = "buttonResetZoom";
 			this.buttonResetZoom.Size = new System.Drawing.Size(23, 22);
@@ -147,7 +147,7 @@
 			// 
 			this.perspectiveDropDown.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.perspectiveDropDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.perspectiveDropDown.Image = global::EditorBase.Properties.Resources.shape_perspective;
+			this.perspectiveDropDown.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.shape_perspective;
 			this.perspectiveDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.perspectiveDropDown.Name = "perspectiveDropDown";
 			this.perspectiveDropDown.Size = new System.Drawing.Size(29, 22);

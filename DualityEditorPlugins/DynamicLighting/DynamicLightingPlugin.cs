@@ -3,14 +3,14 @@ using System.Linq;
 
 using Duality;
 using Duality.Resources;
+using Duality.Plugins.DynamicLighting;
 
 using Duality.Editor;
 using Duality.Editor.Properties;
 using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Plugins.DynamicLighting.Properties;
 
-using DynamicLighting.Properties;
-
-namespace DynamicLighting
+namespace Duality.Editor.Plugins.DynamicLighting
 {
 	public class DynamicLightingPlugin : EditorPlugin
 	{

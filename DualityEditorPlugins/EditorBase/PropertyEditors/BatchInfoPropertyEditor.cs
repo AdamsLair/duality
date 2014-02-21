@@ -12,12 +12,10 @@ using OpenTK;
 
 using Duality;
 using Duality.Resources;
-using Duality.Editor; 
-
 using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class BatchInfoPropertyEditor : MemberwisePropertyEditor
 	{

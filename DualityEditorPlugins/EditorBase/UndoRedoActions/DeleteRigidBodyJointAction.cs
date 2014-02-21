@@ -9,9 +9,9 @@ using Duality.Components.Physics;
 
 using Duality.Editor;
 
-using EditorBase.Properties;
+using Duality.Editor.Plugins.Base.Properties;
 
-namespace EditorBase.UndoRedoActions
+namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class DeleteRigidBodyJointAction : RigidBodyJointAction
 	{

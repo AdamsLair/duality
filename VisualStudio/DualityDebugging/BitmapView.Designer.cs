@@ -1,4 +1,4 @@
-﻿namespace DualityDebugging
+﻿namespace Duality.VisualStudio
 {
 	partial class BitmapView
 	{

@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+
 using Duality.Serialization.MetaFormat;
 
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
 using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Plugins.ResourceHacker.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-using ResourceHacker.Properties;
-
-namespace ResourceHacker
+namespace Duality.Editor.Plugins.ResourceHacker
 {
 	public class ResourceHackerPlugin : EditorPlugin
 	{

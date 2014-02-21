@@ -218,14 +218,14 @@ namespace Duality.Editor.Properties {
         ///   Sucht eine lokalisierte Zeichenfolge, die &lt;UserData&gt;
         ///  &lt;EditorApp backups=&quot;True&quot; autosaves=&quot;ThirtyMinutes&quot; /&gt;
         ///  &lt;Plugin_EditorBase&gt;
-        ///    &lt;CamView_0 perspective=&quot;Parallax&quot; focusDist=&quot;500&quot; bgColorArgb=&quot;4210752&quot; activeState=&quot;EditorBase.CamViewStates.SceneEditorCamViewState&quot;&gt;
+        ///    &lt;CamView_0 perspective=&quot;Parallax&quot; focusDist=&quot;500&quot; bgColorArgb=&quot;4210752&quot; activeState=&quot;Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState&quot;&gt;
         ///      &lt;states&gt;
-        ///        &lt;EditorBase.CamViewStates.GameViewCamViewState&gt;
+        ///        &lt;Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState&gt;
         ///          &lt;activeLayers /&gt;
-        ///        &lt;/EditorBase.CamViewStates.GameViewCamViewState&gt;
-        ///        &lt;EditorBase.CamViewStates.RigidBodyEditorCamViewState&gt;
+        ///        &lt;/Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState&gt;
+        ///        &lt;Duality.Editor.Plugins.Base.CamViewStates.RigidBodyEditorCamViewState&gt;
         ///          &lt;activeLayers&gt;
-        ///            &lt;EditorBase.CamVi [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///            &lt;Duality.Editor.Plugins.Base.CamVi [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         public static string DefaultEditorUserData {
             get {

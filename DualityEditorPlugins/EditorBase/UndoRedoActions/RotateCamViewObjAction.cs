@@ -9,12 +9,12 @@ using Duality.Resources;
 
 using Duality.Editor;
 
-using EditorBase.Properties;
-using EditorBase.CamViewStates;
+using Duality.Editor.Plugins.Base.Properties;
+using Duality.Editor.Plugins.Base.CamViewStates;
 
 using OpenTK;
 
-namespace EditorBase.UndoRedoActions
+namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class RotateCamViewObjAction : CamViewObjAction
 	{

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EditorBase.Properties {
+namespace Duality.Editor.Plugins.Base.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace EditorBase.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EditorBase.Properties.EditorBaseRes", typeof(EditorBaseRes).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.Base.Properties.EditorBaseRes", typeof(EditorBaseRes).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

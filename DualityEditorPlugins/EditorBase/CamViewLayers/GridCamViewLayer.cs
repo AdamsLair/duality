@@ -11,9 +11,9 @@ using Duality.Resources;
 
 using OpenTK;
 
-using EditorBase.CamViewStates;
+using Duality.Editor.Plugins.Base.CamViewStates;
 
-namespace EditorBase.CamViewLayers
+namespace Duality.Editor.Plugins.Base.CamViewLayers
 {
 	public class GridCamViewLayer : CamViewLayer
 	{

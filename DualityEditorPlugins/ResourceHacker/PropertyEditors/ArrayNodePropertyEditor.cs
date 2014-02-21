@@ -7,7 +7,7 @@ using AdamsLair.PropertyGrid;
 using Duality;
 using Duality.Serialization.MetaFormat;
 
-namespace ResourceHacker.PropertyEditors
+namespace Duality.Editor.Plugins.ResourceHacker.PropertyEditors
 {
 	public class ArrayNodePropertyEditor : MemberwisePropertyEditor
 	{

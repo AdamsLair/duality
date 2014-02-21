@@ -13,12 +13,11 @@ using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
-
-using EditorBase.UndoRedoActions;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 using OpenTK;
 
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public class SceneEditorCamViewState : CamViewState
 	{

@@ -9,7 +9,7 @@ using Duality.Components.Physics;
 
 using Duality.Editor;
 
-namespace EditorBase.UndoRedoActions
+namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public abstract class RigidBodyJointAction : UndoRedoAction
 	{

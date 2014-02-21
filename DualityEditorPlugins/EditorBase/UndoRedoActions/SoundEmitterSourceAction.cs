@@ -9,7 +9,7 @@ using Duality.Components;
 
 using Duality.Editor;
 
-namespace EditorBase.UndoRedoActions
+namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public abstract class SoundEmitterSourceAction : UndoRedoAction
 	{

@@ -18,9 +18,8 @@ using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.CorePluginInterface;
-
-using EditorBase.CamViewStates;
-using EditorBase.CamViewLayers;
+using Duality.Editor.Plugins.Base.CamViewStates;
+using Duality.Editor.Plugins.Base.CamViewLayers;
 
 using OpenTK;
 using Key = OpenTK.Input.Key;
@@ -30,7 +29,7 @@ using KeyboardKeyEventArgs = OpenTK.Input.KeyboardKeyEventArgs;
 using MouseMoveEventArgs = OpenTK.Input.MouseMoveEventArgs;
 using MouseWheelEventArgs = OpenTK.Input.MouseWheelEventArgs;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class CamView : DockContent, IHelpProvider, IMouseInputSource, IKeyboardInputSource
 	{

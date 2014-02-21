@@ -13,18 +13,16 @@ using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 
 using Duality;
-using Duality.Editor;
 using Duality.Resources;
 using Duality.ColorFormat;
-
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
-using EditorBase.Properties;
+using Duality.Editor.Plugins.Base.Properties;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class SceneView : DockContent, IHelpProvider, IToolTipProvider
 	{
@@ -1829,7 +1827,7 @@ namespace EditorBase
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode);
 			if (action != null) return string.Format(
-				EditorBase.Properties.EditorBaseRes.SceneView_Help_Doubleclick,
+				Duality.Editor.Plugins.Base.Properties.EditorBaseRes.SceneView_Help_Doubleclick,
 				action.Description);
 			else return null;
 		}

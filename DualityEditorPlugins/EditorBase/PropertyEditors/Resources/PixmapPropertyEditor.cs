@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Linq;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class PixmapPropertyEditor : ResourcePropertyEditor
 	{

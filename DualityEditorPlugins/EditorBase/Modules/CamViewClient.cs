@@ -15,7 +15,7 @@ using Duality.Editor.Forms;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public abstract class CamViewClient
 	{

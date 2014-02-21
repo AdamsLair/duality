@@ -12,7 +12,7 @@ using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 
 
-namespace EditorBase.PreviewGenerators
+namespace Duality.Editor.Plugins.Base.PreviewGenerators
 {
 	public class PixmapPreviewGenerator : PreviewGenerator<Pixmap>
 	{

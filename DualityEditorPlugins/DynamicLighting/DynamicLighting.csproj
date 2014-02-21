@@ -8,7 +8,7 @@
     <ProjectGuid>{3518ECDE-DC59-472A-AB91-7AEF884C6DDA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DynamicLighting</RootNamespace>
+    <RootNamespace>Duality.Editor.Plugins.DynamicLighting</RootNamespace>
     <AssemblyName>DynamicLighting.editor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

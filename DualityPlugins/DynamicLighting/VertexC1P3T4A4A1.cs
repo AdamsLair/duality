@@ -7,7 +7,7 @@ using Duality.ColorFormat;
 using Duality.VertexFormat;
 using Duality.Resources;
 
-namespace DynamicLighting
+namespace Duality.Plugins.DynamicLighting
 {
 	[Serializable]
 	[StructLayout(LayoutKind.Sequential)]

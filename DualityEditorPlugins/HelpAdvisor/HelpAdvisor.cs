@@ -3,11 +3,11 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using Duality.Editor;
-using HelpAdvisor.Properties;
+using Duality.Editor.Plugins.HelpAdvisor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace HelpAdvisor
+namespace Duality.Editor.Plugins.HelpAdvisor
 {
 	public partial class HelpAdvisor : DockContent
 	{

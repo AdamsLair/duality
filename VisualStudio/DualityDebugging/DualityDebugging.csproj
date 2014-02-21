@@ -8,7 +8,7 @@
     <ProjectGuid>{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DualityDebugging</RootNamespace>
+    <RootNamespace>Duality.VisualStudio</RootNamespace>
     <AssemblyName>DualityDebugging</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

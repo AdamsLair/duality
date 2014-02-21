@@ -8,7 +8,7 @@
     <ProjectGuid>{C8DB64F9-9FBD-456F-A8AB-BC3478DFAA85}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HelpAdvisor</RootNamespace>
+    <RootNamespace>Duality.Editor.Plugins.HelpAdvisor</RootNamespace>
     <AssemblyName>HelpAdvisor.editor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

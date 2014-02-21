@@ -7,7 +7,7 @@ using Duality;
 using Duality.Components.Diagnostics;
 using Duality.Serialization;
 
-namespace ResourceVersionCompatibility
+namespace Duality.Plugins.Compatibility
 {
 	public class ProfileRendererErrorHandler : SerializeErrorHandler
 	{

@@ -7,7 +7,7 @@ using Duality;
 using Duality.Resources;
 using Duality.Serialization;
 
-namespace ResourceVersionCompatibility
+namespace Duality.Plugins.Compatibility
 {
 	public class SoundErrorHandler : SerializeErrorHandler
 	{

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using Duality;
 using Duality.ColorFormat;
 
-namespace DualityDebugging
+namespace Duality.VisualStudio
 {
 	public partial class BitmapForm : Form
 	{

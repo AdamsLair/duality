@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class AudioDataPropertyEditor : ResourcePropertyEditor
 	{

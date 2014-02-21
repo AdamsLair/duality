@@ -1,4 +1,4 @@
-﻿namespace ResourceHacker
+﻿namespace Duality.Editor.Plugins.ResourceHacker
 {
 	partial class ResourceHacker
 	{
@@ -198,7 +198,7 @@
 			// actionSave
 			// 
 			this.actionSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionSave.Image = global::ResourceHacker.Properties.Resources.iconSaveFile;
+			this.actionSave.Image = global::Duality.Editor.Plugins.ResourceHacker.Properties.Resources.iconSaveFile;
 			this.actionSave.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionSave.Name = "actionSave";
 			this.actionSave.Size = new System.Drawing.Size(23, 22);
@@ -213,7 +213,7 @@
 			// actionRenameType
 			// 
 			this.actionRenameType.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionRenameType.Image = global::ResourceHacker.Properties.Resources.iconRenameClass;
+			this.actionRenameType.Image = global::Duality.Editor.Plugins.ResourceHacker.Properties.Resources.iconRenameClass;
 			this.actionRenameType.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionRenameType.Name = "actionRenameType";
 			this.actionRenameType.Size = new System.Drawing.Size(23, 22);
@@ -225,7 +225,7 @@
 			this.batchActionButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.batchActionButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.batchActionRenameType});
-			this.batchActionButton.Image = global::ResourceHacker.Properties.Resources.iconBatchAction;
+			this.batchActionButton.Image = global::Duality.Editor.Plugins.ResourceHacker.Properties.Resources.iconBatchAction;
 			this.batchActionButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.batchActionButton.Name = "batchActionButton";
 			this.batchActionButton.Size = new System.Drawing.Size(121, 22);
@@ -234,7 +234,7 @@
 			// 
 			// batchActionRenameType
 			// 
-			this.batchActionRenameType.Image = global::ResourceHacker.Properties.Resources.iconRenameClass;
+			this.batchActionRenameType.Image = global::Duality.Editor.Plugins.ResourceHacker.Properties.Resources.iconRenameClass;
 			this.batchActionRenameType.Name = "batchActionRenameType";
 			this.batchActionRenameType.Size = new System.Drawing.Size(155, 22);
 			this.batchActionRenameType.Text = "Rename Type...";

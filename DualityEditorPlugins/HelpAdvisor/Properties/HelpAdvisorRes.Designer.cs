@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HelpAdvisor.Properties {
+namespace Duality.Editor.Plugins.HelpAdvisor.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace HelpAdvisor.Properties {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HelpAdvisor.Properties.HelpAdvisorRes", typeof(HelpAdvisorRes).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Duality.Editor.Plugins.HelpAdvisor.Properties.HelpAdvisorRes", typeof(HelpAdvisorRes).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

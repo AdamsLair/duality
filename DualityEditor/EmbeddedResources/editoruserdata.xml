@@ -1,29 +1,29 @@
 <UserData>
   <EditorApp backups="True" autosaves="ThirtyMinutes" />
   <Plugin_EditorBase>
-    <CamView_0 perspective="Parallax" focusDist="500" bgColorArgb="4210752" activeState="EditorBase.CamViewStates.SceneEditorCamViewState">
+    <CamView_0 perspective="Parallax" focusDist="500" bgColorArgb="4210752" activeState="Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState">
       <states>
-        <EditorBase.CamViewStates.GameViewCamViewState>
+        <Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState>
           <activeLayers />
-        </EditorBase.CamViewStates.GameViewCamViewState>
-        <EditorBase.CamViewStates.RigidBodyEditorCamViewState>
+        </Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState>
+        <Duality.Editor.Plugins.Base.CamViewStates.RigidBodyEditorCamViewState>
           <activeLayers>
-            <EditorBase.CamViewLayers.GridCamViewLayer />
-            <EditorBase.CamViewLayers.RigidBodyShapeCamViewLayer />
-            <EditorBase.CamViewLayers.RigidBodyJointCamViewLayer />
+            <Duality.Editor.Plugins.Base.CamViewLayers.GridCamViewLayer />
+            <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyShapeCamViewLayer />
+            <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyJointCamViewLayer />
           </activeLayers>
-        </EditorBase.CamViewStates.RigidBodyEditorCamViewState>
-        <EditorBase.CamViewStates.SceneEditorCamViewState>
+        </Duality.Editor.Plugins.Base.CamViewStates.RigidBodyEditorCamViewState>
+        <Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState>
           <activeLayers>
-            <EditorBase.CamViewLayers.GridCamViewLayer />
+            <Duality.Editor.Plugins.Base.CamViewLayers.GridCamViewLayer />
           </activeLayers>
-        </EditorBase.CamViewStates.SceneEditorCamViewState>
+        </Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState>
       </states>
       <layers>
-        <EditorBase.CamViewLayers.BackPlateCamViewLayer />
-        <EditorBase.CamViewLayers.GridCamViewLayer />
-        <EditorBase.CamViewLayers.RigidBodyJointCamViewLayer />
-        <EditorBase.CamViewLayers.RigidBodyShapeCamViewLayer />
+        <Duality.Editor.Plugins.Base.CamViewLayers.BackPlateCamViewLayer />
+        <Duality.Editor.Plugins.Base.CamViewLayers.GridCamViewLayer />
+        <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyJointCamViewLayer />
+        <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyShapeCamViewLayer />
       </layers>
     </CamView_0>
     <ObjInspector_0 autoRefresh="True" locked="False" titleText="Object Inspector" debug="False" />
@@ -39,12 +39,12 @@
 <!--!!! AUTOMATICALLY GENERATED FILE. DO NOT MODIFY !!!-->
 <DockPanel FormatVersion="1.0" DockLeftPortion="0.25" DockRightPortion="0.440885416666667" DockTopPortion="0.25" DockBottomPortion="0.25" ActiveDocumentPane="7" ActivePane="7">
   <Contents Count="6">
-    <Content ID="0" PersistString="EditorBase.CamView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
-    <Content ID="1" PersistString="EditorBase.ProjectFolderView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
-    <Content ID="2" PersistString="EditorBase.SceneView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
-    <Content ID="3" PersistString="EditorBase.ObjectInspector" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
+    <Content ID="0" PersistString="Duality.Editor.Plugins.Base.CamView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
+    <Content ID="1" PersistString="Duality.Editor.Plugins.Base.ProjectFolderView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
+    <Content ID="2" PersistString="Duality.Editor.Plugins.Base.SceneView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
+    <Content ID="3" PersistString="Duality.Editor.Plugins.Base.ObjectInspector" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
     <Content ID="4" PersistString="HelpAdvisor.HelpAdvisor" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
-    <Content ID="5" PersistString="EditorBase.LogView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
+    <Content ID="5" PersistString="Duality.Editor.Plugins.Base.LogView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
   </Contents>
   <Panes Count="8">
     <Pane ID="0" DockState="DockRight" ActiveContent="2">

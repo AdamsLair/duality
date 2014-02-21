@@ -19,10 +19,10 @@ using Duality.Editor.Properties;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
-using EditorBase.Properties;
+using Duality.Editor.Plugins.Base.Properties;
 
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public class EditorBasePlugin : EditorPlugin
 	{

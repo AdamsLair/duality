@@ -8,7 +8,7 @@
     <ProjectGuid>{D0C5CAAD-1344-4E8F-BD8B-B26F81672F4B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EditorBase</RootNamespace>
+    <RootNamespace>Duality.Editor.Plugins.Base</RootNamespace>
     <AssemblyName>EditorBase.editor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

@@ -14,7 +14,7 @@ using Duality;
 using Duality.Resources;
 using Duality.Editor.CorePluginInterface;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class PixmapPreviewPropertyEditor : ImagePreviewPropertyEditor
 	{

@@ -14,7 +14,7 @@ using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class ComponentPropertyEditor : MemberwisePropertyEditor
 	{

@@ -8,7 +8,7 @@
     <ProjectGuid>{FDA21F0F-1646-4E41-A1FC-1C3F05694CE4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ResourceVersionCompatibility</RootNamespace>
+    <RootNamespace>Duality.Plugins.Compatibility</RootNamespace>
     <AssemblyName>ResourceVersionCompatibility.core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
