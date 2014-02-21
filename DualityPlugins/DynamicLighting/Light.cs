@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 using OpenTK;
+
 using Duality;
 using Duality.Editor;
 using Duality.Resources;
 using Duality.Drawing;
 using Duality.Properties;
+using Duality.Plugins.DynamicLighting.Properties;
 
 //	Note:
 //
@@ -22,7 +24,8 @@ namespace Duality.Plugins.DynamicLighting
 	/// To create directional or ambient lights, add this Component to a GameObject without Transform.
 	/// </summary>
 	[Serializable]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(DynLightRes), DynLightResNames.IconResourceLight)]
     public class Light : Component
     {
 		private class DeviceLightInfo

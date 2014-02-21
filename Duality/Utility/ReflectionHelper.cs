@@ -17,11 +17,12 @@ namespace Duality
 	/// </summary>
 	public static class ReflectionHelper
 	{
-		private	static	Dictionary<Type,SerializeType>	serializeTypeCache		= new Dictionary<Type,SerializeType>();
-		private	static	Dictionary<string,Type>			typeResolveCache		= new Dictionary<string,Type>();
-		private	static	Dictionary<string,MemberInfo>	memberResolveCache		= new Dictionary<string,MemberInfo>();
-		private	static	Dictionary<Type,bool>			deepByValTypeCache		= new Dictionary<Type,bool>();
-		private	static	List<SerializeErrorHandler>		serializeHandlerCache	= new List<SerializeErrorHandler>();
+		private	static	Dictionary<Type,SerializeType>		serializeTypeCache		= new Dictionary<Type,SerializeType>();
+		private	static	Dictionary<string,Type>				typeResolveCache		= new Dictionary<string,Type>();
+		private	static	Dictionary<string,MemberInfo>		memberResolveCache		= new Dictionary<string,MemberInfo>();
+		private	static	Dictionary<Type,bool>				deepByValTypeCache		= new Dictionary<Type,bool>();
+		private	static	Dictionary<MemberInfo,Attribute[]>	customAttributeCache	= new Dictionary<MemberInfo,Attribute[]>();
+		private	static	List<SerializeErrorHandler>			serializeHandlerCache	= new List<SerializeErrorHandler>();
 		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache	= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
 		/// <summary>
@@ -163,6 +164,24 @@ namespace Duality
 			while ((type = type.BaseType) != null);
 
 			return result;
+		}
+		/// <summary>
+		/// Returns all custom attributes of the specified Type that are attached to the specified member.
+		/// Inherites attributes are returned as well. This method is usually faster than <see cref="Attribute.GetCustomAttributes"/>,
+		/// because it caches previous results internally.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="member"></param>
+		/// <returns></returns>
+		public static IEnumerable<T> GetCustomAttributes<T>(this MemberInfo member) where T : Attribute
+		{
+			Attribute[] result;
+			if (!customAttributeCache.TryGetValue(member, out result))
+			{
+				result = Attribute.GetCustomAttributes(member, true);
+				customAttributeCache[member] = result;
+			}
+			return result.OfType<T>();
 		}
 
 		/// <summary>
@@ -534,6 +553,7 @@ namespace Duality
 			deepByValTypeCache.Clear();
 			serializeHandlerCache.Clear();
 			resRefCache.Clear();
+			customAttributeCache.Clear();
 		}
 		/// <summary>
 		/// Resolves a Type based on its <see cref="GetTypeId">type id</see>.

@@ -80,7 +80,7 @@ namespace Duality.Editor.Plugins.ResourceHacker
 			}
 			public static Image GetIcon(DataNode data)
 			{
-				return CorePluginRegistry.GetTypeImage(data.GetType()) ?? CorePluginRegistry.GetTypeImage(typeof(DataNode));
+				return data.GetType().GetEditorImage();
 			}
 		}
 		protected class PrimitiveTreeNode : DataTreeNode

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Duality.Editor.Plugins.DynamicLighting.Properties {
+namespace Duality.Plugins.DynamicLighting.Properties {
     using System;
     
     

@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using Duality.Drawing;
-using Duality.Drawing;
 using Duality.Resources;
 
 namespace Duality.Plugins.DynamicLighting

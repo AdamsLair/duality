@@ -51,14 +51,6 @@ namespace Duality.Editor.Plugins.ResourceHacker
 		protected override void LoadPlugin()
 		{
 			base.LoadPlugin();
-			
-			CorePluginRegistry.RegisterTypeImage(typeof(DataNode),				Properties.ResourceHackerResCache.IconPrimitive);
-			CorePluginRegistry.RegisterTypeImage(typeof(ArrayNode),				Properties.ResourceHackerResCache.IconArray);
-			CorePluginRegistry.RegisterTypeImage(typeof(StructNode),			Properties.ResourceHackerResCache.IconObject);
-			CorePluginRegistry.RegisterTypeImage(typeof(ObjectRefNode),			Properties.ResourceHackerResCache.IconObjectRef);
-			CorePluginRegistry.RegisterTypeImage(typeof(TypeDataLayoutNode),	Properties.ResourceHackerResCache.IconClass);
-			CorePluginRegistry.RegisterTypeImage(typeof(MemberInfoNode),		Properties.ResourceHackerResCache.IconMethod);
-			CorePluginRegistry.RegisterTypeImage(typeof(DelegateNode),			Properties.ResourceHackerResCache.IconDelegate);
 
 			// Register PropertyEditor provider
 			CorePluginRegistry.RegisterPropertyEditorProvider(new PropertyEditors.PropertyEditorProvider());

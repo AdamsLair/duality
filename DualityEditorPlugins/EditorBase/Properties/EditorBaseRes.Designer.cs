@@ -537,26 +537,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconCmpCamera {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpCamera", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconCmpCapsuleCollider {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpCapsuleCollider", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap IconCmpCircleCollider {
             get {
                 object obj = ResourceManager.GetObject("IconCmpCircleCollider", resourceCulture);
@@ -587,69 +567,9 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconCmpProfileRenderer {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpProfileRenderer", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap IconCmpRectCollider {
             get {
                 object obj = ResourceManager.GetObject("IconCmpRectCollider", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconCmpRigidBodyRenderer {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpRigidBodyRenderer", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconCmpSoundListener {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpSoundListener", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconCmpSpriteRenderer {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpSpriteRenderer", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconCmpTransform {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpTransform", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconCmpUnknown {
-            get {
-                object obj = ResourceManager.GetObject("IconCmpUnknown", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -670,16 +590,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static System.Drawing.Bitmap IconEyeCross {
             get {
                 object obj = ResourceManager.GetObject("IconEyeCross", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconGameObj {
-            get {
-                object obj = ResourceManager.GetObject("IconGameObj", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -781,156 +691,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
             get {
                 object obj = ResourceManager.GetObject("IconProjectView", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResAudioData {
-            get {
-                object obj = ResourceManager.GetObject("IconResAudioData", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResDrawTechnique {
-            get {
-                object obj = ResourceManager.GetObject("IconResDrawTechnique", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResFont {
-            get {
-                object obj = ResourceManager.GetObject("IconResFont", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResFragmentShader {
-            get {
-                object obj = ResourceManager.GetObject("IconResFragmentShader", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResMaterial {
-            get {
-                object obj = ResourceManager.GetObject("IconResMaterial", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResPixmap {
-            get {
-                object obj = ResourceManager.GetObject("IconResPixmap", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResPrefabEmpty {
-            get {
-                object obj = ResourceManager.GetObject("IconResPrefabEmpty", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResPrefabFull {
-            get {
-                object obj = ResourceManager.GetObject("IconResPrefabFull", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResRenderTarget {
-            get {
-                object obj = ResourceManager.GetObject("IconResRenderTarget", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResScene {
-            get {
-                object obj = ResourceManager.GetObject("IconResScene", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResShaderProgram {
-            get {
-                object obj = ResourceManager.GetObject("IconResShaderProgram", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResSound {
-            get {
-                object obj = ResourceManager.GetObject("IconResSound", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResTexture {
-            get {
-                object obj = ResourceManager.GetObject("IconResTexture", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResUnknown {
-            get {
-                object obj = ResourceManager.GetObject("IconResUnknown", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconResVertexShader {
-            get {
-                object obj = ResourceManager.GetObject("IconResVertexShader", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

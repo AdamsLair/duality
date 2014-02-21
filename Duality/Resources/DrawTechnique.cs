@@ -18,7 +18,8 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.ShaderProgram"/>
 	/// <seealso cref="Duality.Drawing.BlendMode"/>
 	[Serializable]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageDrawTechnique)]
 	public class DrawTechnique : Resource
 	{
 		/// <summary>

@@ -8,7 +8,6 @@ using Duality.Plugins.DynamicLighting;
 using Duality.Editor;
 using Duality.Editor.Properties;
 using Duality.Editor.CorePluginInterface;
-using Duality.Editor.Plugins.DynamicLighting.Properties;
 
 namespace Duality.Editor.Plugins.DynamicLighting
 {
@@ -22,11 +21,6 @@ namespace Duality.Editor.Plugins.DynamicLighting
 		protected override void LoadPlugin()
 		{
 			base.LoadPlugin();
-			CorePluginRegistry.RegisterTypeImage(typeof(LightingTechnique),				DynLightResCache.IconResLightingTechnique);
-			CorePluginRegistry.RegisterTypeImage(typeof(LightingSpriteRenderer),		DynLightResCache.IconCmpLightingSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(LightingAnimSpriteRenderer),	DynLightResCache.IconCmpLightingSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(Light),							DynLightResCache.IconLight);
-
 			CorePluginRegistry.RegisterDataConverter<Component>(new LightingRendererFromMaterial());
 		}
 	}

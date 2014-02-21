@@ -12,7 +12,8 @@ namespace Duality.Resources
 	/// Represents an OpenGL VertexShader.
 	/// </summary>
 	[Serializable]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageVertexShader)]
 	public class VertexShader : AbstractShader
 	{
 		/// <summary>

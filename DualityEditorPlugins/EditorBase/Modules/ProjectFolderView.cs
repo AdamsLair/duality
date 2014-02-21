@@ -275,22 +275,7 @@ namespace Duality.Editor.Plugins.Base
 
 			public static Image GetTypeImage(Type type, IContentRef resLink = null)
 			{
-				if (resLink == null) resLink = ContentRef<Resource>.Null;
-
-				Image result = null;
-				if (type == typeof(Duality.Resources.Prefab))
-				{
-					bool prefabHasContent = (resLink.IsAvailable && (resLink.Res as Duality.Resources.Prefab).ContainsData);
-					result = CorePluginRegistry.GetTypeImage(type, prefabHasContent ? 
-						CorePluginRegistry.ImageContext_Icon + "_Full" : 
-						CorePluginRegistry.ImageContext_Icon);
-				}
-				else
-				{
-					result = CorePluginRegistry.GetTypeImage(type);
-				}
-
-				return result ?? Properties.EditorBaseResCache.IconResUnknown;
+				return type.GetEditorImage();
 			}
 		}
 		private struct ScheduleSelectEntry

@@ -142,7 +142,7 @@ namespace Duality.Editor.Plugins.Base
 						{
 							if (availCmpTypes.Any(c => Component.RequiresComponent(c, cmpType)))
 								continue;
-							if (CorePluginRegistry.GetTypeImage(cmpType) == null)
+							if (cmpType.GetEditorImage() == null)
 								continue;
 
 							int score = 
@@ -158,7 +158,7 @@ namespace Duality.Editor.Plugins.Base
 					}
 
 					this.customIconSet = (representant != null);
-					Image img = CorePluginRegistry.GetTypeImage(representant ?? typeof(GameObject));
+					Image img = (representant ?? typeof(GameObject)).GetEditorImage();
 					if (this.LinkState != PrefabLinkState.None)
 					{
 						img = EditorHelper.GetImageWithOverlay(img, this.LinkState == PrefabLinkState.Active ? 
@@ -169,7 +169,7 @@ namespace Duality.Editor.Plugins.Base
 				}
 				else
 				{
-					Image img = CorePluginRegistry.GetTypeImage(typeof(GameObject));
+					Image img = typeof(GameObject).GetEditorImage();
 					if (this.LinkState != PrefabLinkState.None)
 					{
 						img = EditorHelper.GetImageWithOverlay(img, this.LinkState == PrefabLinkState.Active ? 
@@ -205,7 +205,7 @@ namespace Duality.Editor.Plugins.Base
 
 			public static Image GetTypeImage(Type type)
 			{
-				return CorePluginRegistry.GetTypeImage(type) ?? EditorBaseResCache.IconCmpUnknown;
+				return type.GetEditorImage();
 			}
 		}
 
@@ -1353,7 +1353,7 @@ namespace Duality.Editor.Plugins.Base
 				this.toolStripSeparatorCustomActions.Visible = false;
 
 			// Reset "New" menu to original state
-			this.gameObjectToolStripMenuItem.Image = CorePluginRegistry.GetTypeImage(typeof(GameObject));
+			this.gameObjectToolStripMenuItem.Image = typeof(GameObject).GetEditorImage();
 			List<ToolStripItem> oldItems = new List<ToolStripItem>(this.newToolStripMenuItem.DropDownItems.OfType<ToolStripItem>());
 			this.newToolStripMenuItem.DropDownItems.Clear();
 			foreach (ToolStripItem item in oldItems.Skip(2)) item.Dispose();

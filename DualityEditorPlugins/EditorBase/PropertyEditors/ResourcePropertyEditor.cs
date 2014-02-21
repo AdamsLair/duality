@@ -46,7 +46,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			base.OnEditedTypeChanged();
 
-			System.Drawing.Bitmap iconBitmap = CorePluginRegistry.GetTypeImage(this.EditedType) as System.Drawing.Bitmap;
+			System.Drawing.Bitmap iconBitmap = this.EditedType.GetEditorImage() as System.Drawing.Bitmap;
 			ColorHsva avgClr = iconBitmap != null ? 
 				iconBitmap.GetAverageColor().ToHsva() : 
 				Duality.Drawing.ColorHsva.TransparentWhite;

@@ -8,6 +8,7 @@ using Duality.Components.Renderers;
 using Duality.Drawing;
 using Duality.Resources;
 using Duality.Properties;
+using Duality.Plugins.DynamicLighting.Properties;
 
 namespace Duality.Plugins.DynamicLighting
 {
@@ -15,7 +16,8 @@ namespace Duality.Plugins.DynamicLighting
 	/// Renders a sprite using dynamic lighting, either per-vertex or per-pixel, depending on the DrawTechnique that is used.
 	/// </summary>
 	[Serializable]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(DynLightRes), DynLightResNames.IconComponentLightingSpriteRenderer)]
 	public class LightingSpriteRenderer : SpriteRenderer
 	{
 		private	float	vertexTranslucency	= 0.0f;

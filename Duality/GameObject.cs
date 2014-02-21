@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Resources;
 using Duality.Cloning;
 using Duality.Editor;
+using Duality.Properties;
 
 using ICloneable = Duality.Cloning.ICloneable;
 
@@ -21,6 +22,8 @@ namespace Duality
 	/// <seealso cref="Duality.Resources.Scene"/>
 	/// <seealso cref="Duality.Resources.PrefabLink"/>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageGameObject)]
 	public sealed class GameObject : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
 	{
 		[NonSerialized] 

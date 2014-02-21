@@ -208,7 +208,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="EmbeddedResources\iconCmpRigidBodyRenderer.png" />
     <None Include="EmbeddedResources\overlayLinkBroken.png" />
     <None Include="EmbeddedResources\overlayLink.png" />
     <None Include="EmbeddedResources\bell.png" />
@@ -231,32 +230,10 @@
     <None Include="EmbeddedResources\bug.png" />
     <None Include="EmbeddedResources\clock.png" />
     <Content Include="EmbeddedResources\eye.ico" />
-    <None Include="EmbeddedResources\iconResDrawTechnique.png" />
-    <None Include="EmbeddedResources\iconResFragmentShader.png" />
-    <None Include="EmbeddedResources\iconResMaterial.png" />
-    <None Include="EmbeddedResources\iconResPixmap.png" />
-    <None Include="EmbeddedResources\iconResPrefabEmpty.png" />
-    <None Include="EmbeddedResources\iconResPrefabFull.png" />
-    <None Include="EmbeddedResources\iconResRenderTarget.png" />
-    <None Include="EmbeddedResources\iconResShaderProgram.png" />
-    <None Include="EmbeddedResources\iconResTexture.png" />
-    <None Include="EmbeddedResources\iconResVertexShader.png" />
-    <None Include="EmbeddedResources\iconResUnknown.png" />
     <None Include="EmbeddedResources\page_copy.png" />
     <None Include="EmbeddedResources\page_paste.png" />
     <None Include="EmbeddedResources\folder.png" />
-    <None Include="EmbeddedResources\iconResScene.png" />
     <None Include="EmbeddedResources\GotoScene.png" />
-    <None Include="EmbeddedResources\iconGameObj.png" />
-    <None Include="EmbeddedResources\iconCmpCamera.png" />
-    <None Include="EmbeddedResources\iconCmpSpriteRenderer.png" />
-    <None Include="EmbeddedResources\iconCmpTransform.png" />
-    <None Include="EmbeddedResources\iconCmpUnknown.png" />
-    <None Include="EmbeddedResources\iconResAudioData.png" />
-    <None Include="EmbeddedResources\iconResSound.png" />
-    <None Include="EmbeddedResources\iconCmpSoundListener.png" />
-    <None Include="EmbeddedResources\iconResFont.png" />
-    <None Include="EmbeddedResources\iconCmpCapsuleCollider.png" />
     <None Include="EmbeddedResources\iconCmpCircleCollider.png" />
     <None Include="EmbeddedResources\iconCmpRectCollider.png" />
     <None Include="EmbeddedResources\log_core.png" />
@@ -278,6 +255,9 @@
     <None Include="EmbeddedResources\IconSpeakerBlack.png" />
     <None Include="EmbeddedResources\IconSpeakerWhite.png" />
     <None Include="EmbeddedResources\logview.png" />
+    <None Include="EmbeddedResources\iconGameObj.png" />
+    <None Include="EmbeddedResources\iconResUnknown.png" />
+    <None Include="EmbeddedResources\iconCmpUnknown.png" />
     <Content Include="EmbeddedResources\projectview.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

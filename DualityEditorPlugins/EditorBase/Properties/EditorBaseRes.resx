@@ -223,12 +223,6 @@
   <data name="CursorArrowCreatePolygon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\curArrowCreatePolygon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="IconCmpCamera" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconCmpCamera.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconCmpCapsuleCollider" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconCmpCapsuleCollider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="IconCmpCircleCollider" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\iconCmpCircleCollider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -241,23 +235,8 @@
   <data name="IconCmpRectCollider" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\iconCmpRectCollider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="IconCmpSoundListener" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconCmpSoundListener.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconCmpSpriteRenderer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconCmpSpriteRenderer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconCmpTransform" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconCmpTransform.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconCmpUnknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconCmpUnknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="IconEye" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\eye.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconGameObj" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconGameObj.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="IconLogView" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\logview.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -267,51 +246,6 @@
   </data>
   <data name="IconProjectView" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\projectview.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResAudioData" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResAudioData.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResDrawTechnique" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResDrawTechnique.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResFont" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResFont.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResFragmentShader" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResFragmentShader.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResMaterial" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResMaterial.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResPixmap" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResPixmap.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResPrefabEmpty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResPrefabEmpty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResPrefabFull" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResPrefabFull.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResRenderTarget" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResRenderTarget.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResScene" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResScene.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResShaderProgram" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResShaderProgram.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResSound" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResSound.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResTexture" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResTexture.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResUnknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResUnknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconResVertexShader" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconResVertexShader.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="IconSceneView" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\sceneview.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -601,13 +535,7 @@
   <data name="RigidBodyCamViewState_SelShapeName" xml:space="preserve">
     <value>Shape</value>
   </data>
-  <data name="IconCmpProfileRenderer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\clock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="CamView_Help_ObjActions_EditClone" xml:space="preserve">
     <value>Hold Alt to perform an action on a clone of the current selection.</value>
-  </data>
-  <data name="IconCmpRigidBodyRenderer" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\iconCmpRigidBodyRenderer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

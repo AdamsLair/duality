@@ -19,7 +19,8 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.Texture"/>
 	[Serializable]
 	[ExplicitResourceReference(typeof(Texture))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRenderTarget)]
 	public class RenderTarget : Resource
 	{
 		/// <summary>

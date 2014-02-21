@@ -270,6 +270,7 @@
     <EmbeddedResource Include="Properties\CoreRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CoreRes.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="EmbeddedResources\DualityLogoBig.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityLogoMedium.png" />
@@ -298,6 +299,44 @@
     <EmbeddedResource Include="EmbeddedResources\Minimal.vert" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="EmbeddedResources\EditorSupport\iconResVertexShader.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpCamera.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpCapsuleCollider.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpCircleCollider.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpEdgeCollider.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpLoopCollider.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpRectCollider.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpRigidBodyRenderer.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpSoundListener.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpSpriteRenderer.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpTransform.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpUnknown.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconGameObj.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResAudioData.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResDrawTechnique.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResFont.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResFragmentShader.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResMaterial.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResPixmap.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResPrefabEmpty.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResPrefabFull.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResRenderTarget.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResScene.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResShaderProgram.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResSound.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResTexture.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconResUnknown.png" />
+    <None Include="EmbeddedResources\EditorSupport\Primitive.png" />
+    <None Include="EmbeddedResources\EditorSupport\Object.png" />
+    <None Include="EmbeddedResources\EditorSupport\ObjectRef.png" />
+    <None Include="EmbeddedResources\EditorSupport\Method.png" />
+    <None Include="EmbeddedResources\EditorSupport\Array.png" />
+    <None Include="EmbeddedResources\EditorSupport\Delegate.png" />
+    <None Include="EmbeddedResources\EditorSupport\Class.png" />
+    <None Include="EmbeddedResources\EditorSupport\Event.png" />
+    <None Include="EmbeddedResources\EditorSupport\Field.png" />
+    <None Include="EmbeddedResources\EditorSupport\Property.png" />
+    <None Include="EmbeddedResources\EditorSupport\iconCmpProfileRenderer.png" />
     <Content Include="OpenALSoft32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

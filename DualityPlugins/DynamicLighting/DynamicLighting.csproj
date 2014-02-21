@@ -41,10 +41,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="Properties\DynLightResNames.cs" />
+    <Compile Include="Properties\DynLightRes.Designer.cs">
+      <DependentUpon>DynLightRes.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="VertexC1P3T4A4A1.cs" />
     <Compile Include="LightingAnimSpriteRenderer.cs" />
     <Compile Include="Light.cs" />
@@ -58,6 +65,22 @@
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EmbeddedResources\iconCmpLightingSpriteRenderer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="EmbeddedResources\iconResLightingTechnique.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EmbeddedResources\lightbulb.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\DynLightRes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DynLightRes.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

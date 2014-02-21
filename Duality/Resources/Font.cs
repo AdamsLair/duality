@@ -23,7 +23,8 @@ namespace Duality.Resources
 	/// </summary>
 	[Serializable]
 	[ExplicitResourceReference()]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
 	public class Font : Resource
 	{
 		/// <summary>

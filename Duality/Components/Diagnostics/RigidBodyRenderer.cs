@@ -19,7 +19,8 @@ namespace Duality.Components.Diagnostics
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(RigidBody))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Diagnostics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryDiagnostics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRigidBodyRenderer)]
 	public class RigidBodyRenderer : Renderer
 	{
 		private	ContentRef<Material>	areaMaterial			= Material.Checkerboard;

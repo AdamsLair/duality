@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.IO;
+using System.Drawing;
 
 namespace Duality.Editor
 {
@@ -145,7 +146,7 @@ namespace Duality.Editor
 	/// <summary>
 	/// Provides information about a Types editor category.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
 	public class EditorHintCategoryAttribute : EditorHintAttribute
 	{
 		private	string		category		= null;
@@ -199,8 +200,43 @@ namespace Duality.Editor
 		}
 	}
 
+	/// <summary>
+	/// Provides an icon or image that can be used to represent the given Type within the editor.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
+	public class EditorHintImageAttribute : EditorHintAttribute
+	{
+		private	Image	iconImage	= null;
+
+		/// <summary>
+		/// [GET] The icon image that will be used to represent this Type.
+		/// </summary>
+		public Image IconImage
+		{
+			get { return this.iconImage; }
+		}
+
+		public EditorHintImageAttribute(Type resourceClass, string propertyName)
+		{
+			PropertyInfo resourceProperty = resourceClass.GetProperty(propertyName, ReflectionHelper.BindStaticAll);
+			if (resourceProperty != null && typeof(Image).IsAssignableFrom(resourceProperty.PropertyType))
+			{
+				this.iconImage = resourceProperty.GetValue(null, null) as Image;
+			}
+			else
+			{
+				this.iconImage = null;
+			}
+		}
+	}
+
 	public static class ExtMethodsMemberInfoEditorHint
 	{
+		/// <summary>
+		/// Returns the category tree which this Type prefers to be in.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		public static string[] GetEditorCategory(this Type type)
 		{
 			string[] tree = null;
@@ -212,11 +248,42 @@ namespace Duality.Editor
 			if (tree == null) tree = type.Namespace.Split('.');
 			return tree;
 		}
+		/// <summary>
+		/// Return the preferred icon image representation of the specified Type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static Image GetEditorImage(this Type type)
+		{
+			var w = System.Diagnostics.Stopwatch.StartNew();
+			Image image = null;
+			foreach (var attrib in type.GetEditorHints<EditorHintImageAttribute>())
+			{
+				image = attrib.IconImage;
+				if (image != null) break;
+			}
+			w.Stop();
+			Console.WriteLine("{0}: {1:F}", type.Name, w.Elapsed.TotalMilliseconds);
+			return image;
+		}
 
+		/// <summary>
+		/// Retrieves the first <see cref="EditorHintAttribute"/> of the specified Type that is attached to the specified Member.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="info"></param>
+		/// <returns></returns>
 		public static T GetEditorHint<T>(this MemberInfo info) where T : EditorHintAttribute
 		{
-			return Attribute.GetCustomAttributes(info, typeof(T), true).FirstOrDefault() as T;
+			return info.GetCustomAttributes<T>().FirstOrDefault();
 		}
+		/// <summary>
+		/// Retrieves the first <see cref="EditorHintAttribute"/> of the specified Type that is attached to the specified Member.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="info"></param>
+		/// <param name="hintOverride">If set, the specified collection of available hints will be used to override the Members own attributes.</param>
+		/// <returns></returns>
 		public static T GetEditorHint<T>(this MemberInfo info, IEnumerable<EditorHintAttribute> hintOverride) where T : EditorHintAttribute
 		{
 			T attrib = null;
@@ -224,10 +291,23 @@ namespace Duality.Editor
 			if (attrib == null && info != null) attrib = info.GetEditorHint<T>();
 			return attrib;
 		}
+		/// <summary>
+		/// Retrieves all <see cref="EditorHintAttribute"/> instances of the specified Type that are attached to the specified Member.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="info"></param>
+		/// <returns></returns>
 		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info) where T : EditorHintAttribute
 		{
-			return Attribute.GetCustomAttributes(info, typeof(T), true).OfType<T>();
+			return info.GetCustomAttributes<T>();
 		}
+		/// <summary>
+		/// Retrieves all <see cref="EditorHintAttribute"/> instances of the specified Type that are attached to the specified Member.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="info"></param>
+		/// <param name="hintOverride">If set, the specified collection of available hints will be used to override the Members own attributes.</param>
+		/// <returns></returns>
 		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info, IEnumerable<EditorHintAttribute> hintOverride) where T : EditorHintAttribute
 		{
 			if (info == null) return null;

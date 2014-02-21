@@ -11,6 +11,7 @@ using Duality.Components.Renderers;
 using Duality.Components.Diagnostics;
 using Duality.Components.Physics;
 using Duality.Resources;
+using Duality.Properties;
 using TextRenderer = Duality.Components.Renderers.TextRenderer;
 
 using Duality.Editor;
@@ -18,7 +19,6 @@ using Duality.Editor.Forms;
 using Duality.Editor.Properties;
 using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
-
 using Duality.Editor.Plugins.Base.Properties;
 
 
@@ -155,40 +155,11 @@ namespace Duality.Editor.Plugins.Base
 		{
 			base.LoadPlugin();
 
-			// Register core resource lookups
-			CorePluginRegistry.RegisterTypeImage(typeof(DrawTechnique),			EditorBaseResCache.IconResDrawTechnique);
-			CorePluginRegistry.RegisterTypeImage(typeof(FragmentShader),		EditorBaseResCache.IconResFragmentShader);
-			CorePluginRegistry.RegisterTypeImage(typeof(Material),				EditorBaseResCache.IconResMaterial);
-			CorePluginRegistry.RegisterTypeImage(typeof(Pixmap),				EditorBaseResCache.IconResPixmap);
-			CorePluginRegistry.RegisterTypeImage(typeof(Prefab),				EditorBaseResCache.IconResPrefabFull, CorePluginRegistry.ImageContext_Icon + "_Full");
-			CorePluginRegistry.RegisterTypeImage(typeof(Prefab),				EditorBaseResCache.IconResPrefabEmpty);
-			CorePluginRegistry.RegisterTypeImage(typeof(RenderTarget),			EditorBaseResCache.IconResRenderTarget);
-			CorePluginRegistry.RegisterTypeImage(typeof(ShaderProgram),			EditorBaseResCache.IconResShaderProgram);
-			CorePluginRegistry.RegisterTypeImage(typeof(Texture),				EditorBaseResCache.IconResTexture);
-			CorePluginRegistry.RegisterTypeImage(typeof(VertexShader),			EditorBaseResCache.IconResVertexShader);
-			CorePluginRegistry.RegisterTypeImage(typeof(Scene),					EditorBaseResCache.IconResScene);
-			CorePluginRegistry.RegisterTypeImage(typeof(AudioData),				EditorBaseResCache.IconResAudioData);
-			CorePluginRegistry.RegisterTypeImage(typeof(Sound),					EditorBaseResCache.IconResSound);
-			CorePluginRegistry.RegisterTypeImage(typeof(Font),					EditorBaseResCache.IconResFont);
-
-			CorePluginRegistry.RegisterTypeImage(typeof(GameObject),			EditorBaseResCache.IconGameObj);
-			CorePluginRegistry.RegisterTypeImage(typeof(Component),				EditorBaseResCache.IconCmpUnknown);
-			CorePluginRegistry.RegisterTypeImage(typeof(SpriteRenderer),		EditorBaseResCache.IconCmpSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(AnimSpriteRenderer),	EditorBaseResCache.IconCmpSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(TextRenderer),			EditorBaseResCache.IconResFont);
-			CorePluginRegistry.RegisterTypeImage(typeof(Transform),				EditorBaseResCache.IconCmpTransform);
-			CorePluginRegistry.RegisterTypeImage(typeof(Camera),				EditorBaseResCache.IconCmpCamera);
-			CorePluginRegistry.RegisterTypeImage(typeof(SoundEmitter),			EditorBaseResCache.IconResSound);
-			CorePluginRegistry.RegisterTypeImage(typeof(SoundListener),			EditorBaseResCache.IconCmpSoundListener);
-			CorePluginRegistry.RegisterTypeImage(typeof(RigidBody),				EditorBaseResCache.IconCmpRectCollider);
-			CorePluginRegistry.RegisterTypeImage(typeof(ProfileRenderer),		EditorBaseResCache.IconCmpProfileRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(RigidBodyRenderer),		EditorBaseResCache.IconCmpRigidBodyRenderer);
-
 			// Register conversion actions
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>				(EditorBaseRes.ActionName_CreateTexture,		EditorBaseRes.IconResTexture,		this.ActionPixmapCreateTexture,		EditorBaseRes.ActionDesc_CreateTexture),		CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Texture>				(EditorBaseRes.ActionName_CreateMaterial,		EditorBaseRes.IconResMaterial,		this.ActionTextureCreateMaterial,	EditorBaseRes.ActionDesc_CreateMaterial),		CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AudioData>		(EditorBaseRes.ActionName_CreateSound,			EditorBaseRes.IconResSound,			this.ActionAudioDataCreateSound,	EditorBaseRes.ActionDesc_CreateSound),			CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AbstractShader>	(EditorBaseRes.ActionName_CreateShaderProgram,	EditorBaseRes.IconResShaderProgram, this.ActionShaderCreateProgram,		EditorBaseRes.ActionDesc_CreateShaderProgram),	CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>				(EditorBaseRes.ActionName_CreateTexture,		CoreRes.IconResTexture,			this.ActionPixmapCreateTexture,		EditorBaseRes.ActionDesc_CreateTexture),		CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorAction<Texture>				(EditorBaseRes.ActionName_CreateMaterial,		CoreRes.IconResMaterial,		this.ActionTextureCreateMaterial,	EditorBaseRes.ActionDesc_CreateMaterial),		CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AudioData>		(EditorBaseRes.ActionName_CreateSound,			CoreRes.IconResSound,			this.ActionAudioDataCreateSound,	EditorBaseRes.ActionDesc_CreateSound),			CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AbstractShader>	(EditorBaseRes.ActionName_CreateShaderProgram,	CoreRes.IconResShaderProgram,	this.ActionShaderCreateProgram,		EditorBaseRes.ActionDesc_CreateShaderProgram),	CorePluginRegistry.ActionContext_ContextMenu);
 
 			// Register open actions
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>			(null, null, this.ActionPixmapOpenRes,			EditorBaseRes.ActionDesc_OpenResourceExternal), CorePluginRegistry.ActionContext_OpenRes);

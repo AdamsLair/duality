@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 
 using Duality.Editor;
+using Duality.Properties;
 
 namespace Duality.Serialization.MetaFormat
 {
@@ -87,6 +88,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a single serialization data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageDataNode)]
 	public abstract class DataNode
 	{
 		protected	DataType		dataType;
@@ -332,6 +334,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization object data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageStructNode)]
 	public abstract class ObjectNode : DataNode
 	{
 		protected	string	typeString;
@@ -381,6 +384,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization array data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageArrayNode)]
 	public class ArrayNode : ObjectNode
 	{
 		protected	int		rank;
@@ -434,6 +438,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization structural object data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageStructNode)]
 	public class StructNode : ObjectNode
 	{
 		protected	bool	customSerialization;
@@ -466,6 +471,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization object reference data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageObjectRefNode)]
 	public class ObjectRefNode : DataNode
 	{
 		protected uint objId;
@@ -488,6 +494,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization <see cref="System.Reflection.MemberInfo"/> data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageMemberInfoNode)]
 	public class MemberInfoNode : ObjectNode
 	{
 		public MemberInfoNode(DataType dataType, string memberString, uint objId) : base(dataType, memberString, objId)
@@ -498,6 +505,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization <see cref="System.Delegate"/> data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageDelegateNode)]
 	public class DelegateNode : ObjectNode
 	{
 		protected	DataNode	method;
@@ -548,6 +556,7 @@ namespace Duality.Serialization.MetaFormat
 	/// Describes a serialization <see cref="Duality.Serialization.TypeDataLayout"/> data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageTypeDataLayoutNode)]
 	public class TypeDataLayoutNode : DataNode
 	{
 		protected	TypeDataLayout	layout;

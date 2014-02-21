@@ -17,7 +17,8 @@ namespace Duality.Resources
 	/// </summary>
 	[Serializable]
 	[ExplicitResourceReference()]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_None)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePrefab)]
 	public class Prefab : Resource
 	{
 		/// <summary>

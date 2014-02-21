@@ -12,7 +12,8 @@ namespace Duality.Resources
 	/// Represents an OpenGL FragmentShader.
 	/// </summary>
 	[Serializable]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFragmentShader)]
 	public class FragmentShader : AbstractShader
 	{
 		/// <summary>

@@ -40,12 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicLightingPlugin.cs" />
-    <Compile Include="Properties\DynLightRes.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DynLightRes.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\DynLightResCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,18 +55,6 @@
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\iconCmpLightingSpriteRenderer.png" />
-    <None Include="EmbeddedResources\iconResLightingTechnique.png" />
-    <Content Include="EmbeddedResources\lightbulb.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\DynLightRes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>DynLightRes.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

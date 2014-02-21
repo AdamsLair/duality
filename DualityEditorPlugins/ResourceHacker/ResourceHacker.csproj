@@ -117,36 +117,6 @@
     <None Include="EmbeddedResources\iconOpenFile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="EmbeddedResources\Array.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Class.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Delegate.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Event.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Field.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Method.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Object.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Primitive.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\Property.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="EmbeddedResources\ObjectRef.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\iconRenameClass.png" />
   </ItemGroup>
   <ItemGroup>

@@ -25,16 +25,6 @@ namespace Duality.Editor.CorePluginInterface
 
 		#region Resource Entries
 		private interface IResEntry {}
-		private struct ImageResEntry : IResEntry
-		{
-			public	Image	img;
-			public	string	context;
-			public ImageResEntry(Image img, string context)
-			{
-				this.img = img;
-				this.context = context;
-			}
-		}
 		private struct PropertyEditorProviderResEntry : IResEntry
 		{
 			public	IPropertyEditorProvider	provider;
@@ -204,15 +194,6 @@ namespace Duality.Editor.CorePluginInterface
 			}
 		}
 
-
-		public static void RegisterTypeImage(Type type, Image image, string context = ImageContext_Icon)
-		{
-			RegisterCorePluginRes(type, new ImageResEntry(image, context));
-		}
-		public static Image GetTypeImage(Type type, string context = ImageContext_Icon)
-		{
-			return GetCorePluginRes<ImageResEntry>(type, false, e => e.context == context).img;
-		}
 
 		public static void RegisterPropertyEditorProvider(IPropertyEditorProvider provider)
 		{

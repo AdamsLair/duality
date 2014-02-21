@@ -21,7 +21,8 @@ namespace Duality.Resources
 	/// on you own design.
 	/// </summary>
 	[Serializable]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_None)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
 		/// <summary>
