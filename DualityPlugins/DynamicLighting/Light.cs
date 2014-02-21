@@ -7,6 +7,7 @@ using Duality;
 using Duality.EditorHints;
 using Duality.Resources;
 using Duality.ColorFormat;
+using Duality.Properties;
 
 //	Note:
 //
@@ -21,6 +22,7 @@ namespace DynamicLighting
 	/// To create directional or ambient lights, add this Component to a GameObject without Transform.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
     public class Light : Component
     {
 		private class DeviceLightInfo

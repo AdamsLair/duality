@@ -3,6 +3,7 @@
 using OpenTK;
 
 using Duality.EditorHints;
+using Duality.Properties;
 
 namespace Duality.Components
 {
@@ -10,6 +11,7 @@ namespace Duality.Components
 	/// Represents a <see cref="GameObject">GameObjects</see> physical location in the world, relative to its <see cref="GameObject.Parent"/>.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_None)]
 	public sealed class Transform : Component, ICmpUpdatable, ICmpEditorUpdatable, ICmpInitializable
 	{
 		/// <summary>

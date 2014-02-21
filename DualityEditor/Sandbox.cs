@@ -7,6 +7,8 @@ using System.Windows.Forms;
 using Duality;
 using Duality.Resources;
 
+using DualityEditor.Properties;
+
 using OpenTK;
 
 namespace DualityEditor
@@ -69,8 +71,8 @@ namespace DualityEditor
 			{
 				askUnsaved = false;
 				DialogResult result = MessageBox.Show(DualityEditorApp.MainForm,
-					EditorRes.GeneralRes.Msg_EnterSandboxUnsavedScene_Desc,
-					EditorRes.GeneralRes.Msg_EnterSandboxUnsavedScene_Caption,
+					GeneralRes.Msg_EnterSandboxUnsavedScene_Desc,
+					GeneralRes.Msg_EnterSandboxUnsavedScene_Caption,
 					MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question);
 				if (result == DialogResult.Cancel) return false;

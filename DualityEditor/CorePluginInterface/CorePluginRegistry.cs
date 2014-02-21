@@ -53,16 +53,6 @@ namespace DualityEditor.CorePluginInterface
 				this.context = context;
 			}
 		}
-		private	struct CategoryEntry : IResEntry
-		{
-			public	string[]	categoryTree;
-			public	string		context;
-			public CategoryEntry(string category, string context)
-			{
-				this.categoryTree = category.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
-				this.context = context;
-			}
-		}
 		private struct DataSelectorEntry : IResEntry
 		{
 			public	DataConverter	selector;
@@ -222,28 +212,6 @@ namespace DualityEditor.CorePluginInterface
 		public static Image GetTypeImage(Type type, string context = ImageContext_Icon)
 		{
 			return GetCorePluginRes<ImageResEntry>(type, false, e => e.context == context).img;
-		}
-
-		public static void RegisterTypeCategory(Type type, string category, string context = CategoryContext_General)
-		{
-			RegisterCorePluginRes(type, new CategoryEntry(category, context));
-		}
-		public static string[] GetTypeCategory(Type type, string context = CategoryContext_General)
-		{
-			string[] tree = GetCorePluginRes<CategoryEntry>(type, false, e => e.context == context).categoryTree;
-			if (tree == null)
-			{
-				foreach (var attrib in type.GetEditorHints<EditorHintCategoryAttribute>())
-				{
-					if (attrib.Context == context || (string.IsNullOrEmpty(attrib.Context) && context == CategoryContext_General))
-					{
-						tree = attrib.Category;
-						if (tree != null) break;
-					}
-				}
-			}
-			if (tree == null) tree = type.Namespace.Split('.');
-			return tree;
 		}
 
 		public static void RegisterPropertyEditorProvider(IPropertyEditorProvider provider)

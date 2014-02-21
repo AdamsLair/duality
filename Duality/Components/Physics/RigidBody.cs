@@ -9,6 +9,7 @@ using FarseerPhysics.Dynamics.Contacts;
 
 using Duality.EditorHints;
 using Duality.Resources;
+using Duality.Properties;
 
 namespace Duality.Components.Physics
 {
@@ -17,6 +18,7 @@ namespace Duality.Components.Physics
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(Transform))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Physics)]
 	public partial class RigidBody : Component, ICmpInitializable, ICmpUpdatable, ICmpEditorUpdatable
 	{
 		private struct ColEvent

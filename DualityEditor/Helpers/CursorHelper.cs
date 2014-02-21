@@ -2,6 +2,8 @@
 using System.Windows.Forms;
 using System.Drawing;
 
+using DualityEditor.Properties;
+
 namespace DualityEditor
 {
 	public static class CursorHelper
@@ -16,13 +18,13 @@ namespace DualityEditor
 
 		static CursorHelper()
 		{
-			HandGrab			= CreateCursor(EditorRes.GeneralResCache.CursorHandGrab, 8, 8);
-			HandGrabbing		= CreateCursor(EditorRes.GeneralResCache.CursorHandGrabbing, 8, 8);
-			Arrow				= CreateCursor(EditorRes.GeneralResCache.CursorArrow, 0, 0);
-			ArrowAction			= CreateCursor(EditorRes.GeneralResCache.CursorArrowAction, 0, 0);
-			ArrowActionMove		= CreateCursor(EditorRes.GeneralResCache.CursorArrowActionMove, 0, 0);
-			ArrowActionRotate	= CreateCursor(EditorRes.GeneralResCache.CursorArrowActionRotate, 0, 0);
-			ArrowActionScale	= CreateCursor(EditorRes.GeneralResCache.CursorArrowActionScale, 0, 0);
+			HandGrab			= CreateCursor(GeneralResCache.CursorHandGrab, 8, 8);
+			HandGrabbing		= CreateCursor(GeneralResCache.CursorHandGrabbing, 8, 8);
+			Arrow				= CreateCursor(GeneralResCache.CursorArrow, 0, 0);
+			ArrowAction			= CreateCursor(GeneralResCache.CursorArrowAction, 0, 0);
+			ArrowActionMove		= CreateCursor(GeneralResCache.CursorArrowActionMove, 0, 0);
+			ArrowActionRotate	= CreateCursor(GeneralResCache.CursorArrowActionRotate, 0, 0);
+			ArrowActionScale	= CreateCursor(GeneralResCache.CursorArrowActionScale, 0, 0);
 		}
 
 		public static Cursor CreateCursor(Bitmap bmp, int xHotSpot, int yHotSpot)

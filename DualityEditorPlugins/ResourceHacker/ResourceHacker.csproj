@@ -50,12 +50,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PluginRes\ResourceHackerRes.Designer.cs">
+    <Compile Include="Properties\ResourceHackerRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourceHackerRes.resx</DependentUpon>
     </Compile>
-    <Compile Include="PluginRes\ResourceHackerResCache.cs" />
+    <Compile Include="Properties\ResourceHackerResCache.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -90,12 +90,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PluginRes\ResourceHackerRes.resx">
+    <EmbeddedResource Include="Properties\ResourceHackerRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>ResourceHackerRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RenameTypeDialog.resx">
@@ -106,52 +108,52 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconResourceHacker.png" />
+    <None Include="EmbeddedResources\iconResourceHacker.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconSaveFile.png" />
+    <None Include="EmbeddedResources\iconSaveFile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconOpenFile.png" />
+    <None Include="EmbeddedResources\iconOpenFile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Array.png" />
+    <None Include="EmbeddedResources\Array.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Class.png" />
+    <None Include="EmbeddedResources\Class.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Delegate.png" />
+    <None Include="EmbeddedResources\Delegate.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Event.png" />
+    <None Include="EmbeddedResources\Event.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Field.png" />
+    <None Include="EmbeddedResources\Field.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Method.png" />
+    <None Include="EmbeddedResources\Method.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Object.png" />
+    <None Include="EmbeddedResources\Object.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Primitive.png" />
+    <None Include="EmbeddedResources\Primitive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Property.png" />
+    <None Include="EmbeddedResources\Property.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\ObjectRef.png" />
+    <None Include="EmbeddedResources\ObjectRef.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconRenameClass.png" />
+    <None Include="EmbeddedResources\iconRenameClass.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconRenameField.png" />
+    <None Include="EmbeddedResources\iconRenameField.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconBatchAction.png" />
+    <None Include="EmbeddedResources\iconBatchAction.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

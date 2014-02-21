@@ -11,6 +11,7 @@ using Duality.VertexFormat;
 using Duality.ColorFormat;
 using Duality.Resources;
 using Duality.Profiling;
+using Duality.Properties;
 
 namespace Duality.Components
 {
@@ -19,6 +20,7 @@ namespace Duality.Components
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(Transform))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public sealed class Camera : Component, ICmpInitializable
 	{
 		/// <summary>

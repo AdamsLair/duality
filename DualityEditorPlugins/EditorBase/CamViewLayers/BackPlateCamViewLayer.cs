@@ -20,11 +20,11 @@ namespace EditorBase.CamViewLayers
 	{
 		public override string LayerName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_BackPlate_Name; }
+			get { return Properties.EditorBaseRes.CamViewLayer_BackPlate_Name; }
 		}
 		public override string LayerDesc
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_BackPlate_Desc; }
+			get { return Properties.EditorBaseRes.CamViewLayer_BackPlate_Desc; }
 		}
 		public override int Priority
 		{

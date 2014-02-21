@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality.ColorFormat;
+using Duality.Properties;
+using Duality.EditorHints;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -18,6 +20,7 @@ namespace Duality.Resources
 	/// <seealso cref="BatchInfo"/>
 	[Serializable]
 	[ExplicitResourceReference(typeof(Texture))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class Material : Resource
 	{
 		/// <summary>

@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 
 using DualityEditor;
-using HelpAdvisor.PluginRes;
+using HelpAdvisor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.IO;
 
 namespace Duality.EditorHints
 {
@@ -147,35 +148,71 @@ namespace Duality.EditorHints
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
 	public class EditorHintCategoryAttribute : EditorHintAttribute
 	{
-		private	string[] category	= null;
-		private	string context	= null;
+		private	string		category		= null;
+		private	string[]	categoryTree	= null;
+
+		/// <summary>
+		/// [GET] The preferred category tree to fit this Type in, split into hierarchial tokens.
+		/// </summary>
+		public string[] CategoryTree
+		{
+			get { return this.categoryTree; }
+		}
 		/// <summary>
 		/// [GET] The preferred category tree to fit this Type in.
 		/// </summary>
-		public string[] Category
+		public string Category
 		{
 			get { return this.category; }
 		}
-		/// <summary>
-		/// [GET] The context this category applies to.
-		/// </summary>
-		public string Context
+
+		public EditorHintCategoryAttribute(Type resourceClass, string propertyName)
 		{
-			get { return this.context; }
-		}
-		public EditorHintCategoryAttribute(string category) : this(category, null) {}
-		public EditorHintCategoryAttribute(string category, string context)
-		{
-			if (category != null)
-				this.category = category.Split(new[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+			PropertyInfo resourceProperty = resourceClass.GetProperty(propertyName, ReflectionHelper.BindStaticAll);
+			if (resourceProperty != null && resourceProperty.PropertyType == typeof(string))
+			{
+				this.category = (string)resourceProperty.GetValue(null, null);
+			}
 			else
-				this.category = null;
-			this.context = context;
+			{
+				this.category = propertyName;
+			}
+			this.UpdateCategoryTree();
+		}
+		public EditorHintCategoryAttribute(string category)
+		{
+			this.category = category;
+			this.UpdateCategoryTree();
+		}
+		private void UpdateCategoryTree()
+		{
+			if (!string.IsNullOrWhiteSpace(this.category))
+			{
+				this.categoryTree = this.category.Split(
+					new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, 
+					StringSplitOptions.RemoveEmptyEntries);
+			}
+			else
+			{
+				this.categoryTree = new string[0];
+			}
 		}
 	}
 
 	public static class ExtMethodsMemberInfoEditorHint
 	{
+		public static string[] GetEditorCategory(this Type type)
+		{
+			string[] tree = null;
+			foreach (var attrib in type.GetEditorHints<EditorHintCategoryAttribute>())
+			{
+				tree = attrib.CategoryTree;
+				if (tree != null) break;
+			}
+			if (tree == null) tree = type.Namespace.Split('.');
+			return tree;
+		}
+
 		public static T GetEditorHint<T>(this MemberInfo info) where T : EditorHintAttribute
 		{
 			return Attribute.GetCustomAttributes(info, typeof(T), true).FirstOrDefault() as T;
@@ -193,14 +230,13 @@ namespace Duality.EditorHints
 		}
 		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info, IEnumerable<EditorHintAttribute> hintOverride) where T : EditorHintAttribute
 		{
-			if (info != null) return info.GetEditorHints<T>().OverrideEditorHintsBy(hintOverride).OfType<T>();
-			return null;
-		}
-		public static IEnumerable<EditorHintAttribute> OverrideEditorHintsBy(this IEnumerable<EditorHintAttribute> hints, IEnumerable<EditorHintAttribute> overrideHints)
-		{
-			if (overrideHints == null) return hints;
-			if (hints == null) return overrideHints;
-			return hints.Where(h => !overrideHints.Any(o => o.GetType().IsInstanceOfType(h)));
+			if (info == null) return null;
+
+			IEnumerable<EditorHintAttribute> infoHints = info.GetEditorHints<T>();
+			if (hintOverride == null) return infoHints.OfType<T>();
+			if (infoHints == null) return hintOverride.OfType<T>();
+
+			return infoHints.Where(h => !hintOverride.Any(o => o.GetType().IsInstanceOfType(h))).OfType<T>();
 		}
 	}
 }

@@ -119,7 +119,7 @@ namespace DualityEditor.Controls.PropertyEditors
 				this.rectButton, 
 				buttonState, 
 				null, 
-				EditorRes.GeneralResCache.ColorWheel);
+				Properties.GeneralResCache.ColorWheel);
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{

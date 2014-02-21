@@ -10,7 +10,7 @@ using Duality;
 using Duality.Resources;
 using Duality.Animation;
 using Duality.ColorFormat;
-using Duality.Tests.TestingResources;
+using Duality.Tests.Properties;
 
 using OpenTK;
 

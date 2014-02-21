@@ -5,6 +5,7 @@ using Duality.ColorFormat;
 using Duality.VertexFormat;
 using Duality.Resources;
 using Duality.EditorHints;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -15,6 +16,7 @@ namespace Duality.Components.Renderers
 	/// Renders a text to represent the <see cref="GameObject"/>.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class TextRenderer : Renderer, ICmpInitializable
 	{
 		protected	Alignment				blockAlign	= Alignment.Center;

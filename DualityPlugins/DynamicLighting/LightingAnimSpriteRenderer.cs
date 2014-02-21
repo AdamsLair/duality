@@ -7,6 +7,7 @@ using Duality.EditorHints;
 using Duality.Components.Renderers;
 using Duality.ColorFormat;
 using Duality.Resources;
+using Duality.Properties;
 
 namespace DynamicLighting
 {
@@ -14,6 +15,7 @@ namespace DynamicLighting
 	/// Renders an animated sprite using dynamic lighting, either per-vertex or per-pixel, depending on the DrawTechnique that is used.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class LightingAnimSpriteRenderer : AnimSpriteRenderer
 	{
 		private	float	vertexTranslucency	= 0.0f;

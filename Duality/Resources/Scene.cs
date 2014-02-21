@@ -10,6 +10,7 @@ using Duality.EditorHints;
 using Duality.Components;
 using Duality.Serialization;
 using Duality.Profiling;
+using Duality.Properties;
 
 namespace Duality.Resources
 {
@@ -20,6 +21,7 @@ namespace Duality.Resources
 	/// on you own design.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_None)]
 	public sealed class Scene : Resource
 	{
 		/// <summary>

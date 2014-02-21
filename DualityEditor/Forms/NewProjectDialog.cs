@@ -16,6 +16,7 @@ using Aga.Controls.Tree.NodeControls;
 using Duality;
 
 using DualityEditor.Controls.TreeModels.FileSystem;
+using DualityEditor.Properties;
 
 namespace DualityEditor.Forms
 {
@@ -47,15 +48,15 @@ namespace DualityEditor.Forms
 
 			// Create hardcoded templates
 			this.templateEmpty = new ProjectTemplateInfo();
-			this.templateEmpty.Icon = EditorRes.GeneralResCache.ImageTemplateEmpty;
-			this.templateEmpty.Name = EditorRes.GeneralRes.Template_Empty_Name;
-			this.templateEmpty.Description = EditorRes.GeneralRes.Template_Empty_Desc;
+			this.templateEmpty.Icon = GeneralResCache.ImageTemplateEmpty;
+			this.templateEmpty.Name = GeneralRes.Template_Empty_Name;
+			this.templateEmpty.Description = GeneralRes.Template_Empty_Desc;
 			this.templateEmpty.SpecialTag = ProjectTemplateInfo.SpecialInfo.Empty;
 
 			this.templateCurrent = new ProjectTemplateInfo();
-			this.templateCurrent.Icon = EditorRes.GeneralResCache.ImageTemplateCurrent;
-			this.templateCurrent.Name = EditorRes.GeneralRes.Template_Current_Name;
-			this.templateCurrent.Description = EditorRes.GeneralRes.Template_Current_Desc;
+			this.templateCurrent.Icon = GeneralResCache.ImageTemplateCurrent;
+			this.templateCurrent.Name = GeneralRes.Template_Current_Name;
+			this.templateCurrent.Description = GeneralRes.Template_Current_Desc;
 			this.templateCurrent.SpecialTag = ProjectTemplateInfo.SpecialInfo.Current;
 
 			// Hilde folder selector, if empty
@@ -165,8 +166,8 @@ namespace DualityEditor.Forms
 				!PathHelper.IsPathLocatedIn(this.selectedTemplate.FilePath, EditorHelper.GlobalProjectTemplateDirectory))
 			{
 				DialogResult result = MessageBox.Show(
-					EditorRes.GeneralRes.Msg_InstallNewTemplate_Desc,
-					EditorRes.GeneralRes.Msg_InstallNewTemplate_Caption,
+					Properties.GeneralRes.Msg_InstallNewTemplate_Desc,
+					Properties.GeneralRes.Msg_InstallNewTemplate_Caption,
 					MessageBoxButtons.YesNoCancel,
 					MessageBoxIcon.Question);
 				if (result == System.Windows.Forms.DialogResult.Cancel) return;
@@ -194,11 +195,11 @@ namespace DualityEditor.Forms
 			fileDialog.CheckFileExists = true;
 			fileDialog.CheckPathExists = true;
 			fileDialog.Multiselect = false;
-			fileDialog.Title = EditorRes.GeneralRes.OpenTemplateDialog_Title;
+			fileDialog.Title = Properties.GeneralRes.OpenTemplateDialog_Title;
 			fileDialog.RestoreDirectory = true;
 			fileDialog.InitialDirectory = Environment.CurrentDirectory;
 			fileDialog.AddExtension = true;
-			fileDialog.Filter = EditorRes.GeneralRes.OpenTemplateDialog_Filters;
+			fileDialog.Filter = Properties.GeneralRes.OpenTemplateDialog_Filters;
 
 			DialogResult result = fileDialog.ShowDialog();
 			if (result == DialogResult.OK)
@@ -211,7 +212,7 @@ namespace DualityEditor.Forms
 			FolderBrowserDialog folderDialog = new FolderBrowserDialog();
 			folderDialog.ShowNewFolderButton = true;
 			folderDialog.SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			folderDialog.Description =EditorRes.GeneralRes.SelectNewProjectFolderDialog_Desc;
+			folderDialog.Description =Properties.GeneralRes.SelectNewProjectFolderDialog_Desc;
 			
 			DialogResult result = folderDialog.ShowDialog();
 			if (result == DialogResult.OK)

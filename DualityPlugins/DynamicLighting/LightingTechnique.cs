@@ -1,11 +1,16 @@
 ﻿using System;
-using OpenTK;
+
 using Duality;
 using Duality.Resources;
+using Duality.EditorHints;
+using Duality.Properties;
+
+using OpenTK;
 
 namespace DynamicLighting
 {
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class LightingTechnique : DrawTechnique
 	{
 		public override bool NeedsPreparation

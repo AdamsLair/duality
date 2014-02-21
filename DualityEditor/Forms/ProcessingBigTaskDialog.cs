@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Threading;
 
 using Duality;
-using DualityEditor.EditorRes;
+using DualityEditor.Properties;
 
 namespace DualityEditor.Forms
 {

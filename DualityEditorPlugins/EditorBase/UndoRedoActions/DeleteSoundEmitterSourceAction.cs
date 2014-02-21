@@ -9,7 +9,7 @@ using Duality.Components;
 
 using DualityEditor;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 
 namespace EditorBase.UndoRedoActions
 {

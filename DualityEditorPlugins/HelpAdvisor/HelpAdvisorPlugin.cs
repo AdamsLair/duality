@@ -2,10 +2,10 @@
 using System.Windows.Forms;
 using System.IO;
 
-using HelpAdvisor.PluginRes;
+using HelpAdvisor.Properties;
 
 using DualityEditor;
-using DualityEditor.EditorRes;
+using DualityEditor.Properties;
 using DualityEditor.Forms;
 
 using WeifenLuo.WinFormsUI.Docking;

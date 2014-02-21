@@ -22,7 +22,7 @@ using DualityEditor.Forms;
 using DualityEditor.CorePluginInterface;
 using DualityEditor.UndoRedoActions;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 
 namespace EditorBase
 {
@@ -39,7 +39,7 @@ namespace EditorBase
 				if (objNode == null) return null;
 				if (objNode.Obj.PrefabLink == null) return null;
 
-				return String.Format(PluginRes.EditorBaseRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
+				return String.Format(Properties.EditorBaseRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
 			}
 		}
 
@@ -791,7 +791,7 @@ namespace EditorBase
 		{
 			bool sceneAvail = Scene.Current != null;
 			this.toolStripLabelSceneName.Text = (!sceneAvail || Scene.Current.IsRuntimeResource) ? 
-				PluginRes.EditorBaseRes.SceneNameNotYetSaved : 
+				Properties.EditorBaseRes.SceneNameNotYetSaved : 
 				Scene.Current.Name;
 			this.toolStripButtonSaveScene.Enabled = !Sandbox.IsActive;
 		}
@@ -1371,7 +1371,7 @@ namespace EditorBase
 				if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
 
 				// Generate category item
-				string[] category = CorePluginRegistry.GetTypeCategory(cmpType);
+				string[] category = cmpType.GetEditorCategory();
 				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;
 				for (int i = 0; i < category.Length; i++)
 				{
@@ -1428,20 +1428,20 @@ namespace EditorBase
 
 			if (hidden)
 			{
-				this.lockedToolStripMenuItem.Text = PluginRes.EditorBaseRes.SceneView_Item_Hidden;
-				this.lockedToolStripMenuItem.ToolTipText = PluginRes.EditorBaseRes.SceneView_Item_Hidden_Tooltip;
-				this.lockedToolStripMenuItem.Image = PluginRes.EditorBaseResCache.IconEyeCross;
+				this.lockedToolStripMenuItem.Text = Properties.EditorBaseRes.SceneView_Item_Hidden;
+				this.lockedToolStripMenuItem.ToolTipText = Properties.EditorBaseRes.SceneView_Item_Hidden_Tooltip;
+				this.lockedToolStripMenuItem.Image = Properties.EditorBaseResCache.IconEyeCross;
 			}
 			else if (locked)
 			{
-				this.lockedToolStripMenuItem.Text = PluginRes.EditorBaseRes.SceneView_Item_Locked;
-				this.lockedToolStripMenuItem.ToolTipText = PluginRes.EditorBaseRes.SceneView_Item_Locked_Tooltip;
-				this.lockedToolStripMenuItem.Image = PluginRes.EditorBaseResCache.IconLock;
+				this.lockedToolStripMenuItem.Text = Properties.EditorBaseRes.SceneView_Item_Locked;
+				this.lockedToolStripMenuItem.ToolTipText = Properties.EditorBaseRes.SceneView_Item_Locked_Tooltip;
+				this.lockedToolStripMenuItem.Image = Properties.EditorBaseResCache.IconLock;
 			}
 			else
 			{
-				this.lockedToolStripMenuItem.Text = PluginRes.EditorBaseRes.SceneView_Item_LockHide;
-				this.lockedToolStripMenuItem.ToolTipText = PluginRes.EditorBaseRes.SceneView_Item_LockHide_Tooltip;
+				this.lockedToolStripMenuItem.Text = Properties.EditorBaseRes.SceneView_Item_LockHide;
+				this.lockedToolStripMenuItem.ToolTipText = Properties.EditorBaseRes.SceneView_Item_LockHide_Tooltip;
 				this.lockedToolStripMenuItem.Image = null;
 			}
 		}
@@ -1829,7 +1829,7 @@ namespace EditorBase
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode);
 			if (action != null) return string.Format(
-				EditorBase.PluginRes.EditorBaseRes.SceneView_Help_Doubleclick,
+				EditorBase.Properties.EditorBaseRes.SceneView_Help_Doubleclick,
 				action.Description);
 			else return null;
 		}

@@ -10,7 +10,7 @@ using Duality.Resources;
 using DualityEditor;
 using DualityEditor.UndoRedoActions;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 using EditorBase.CamViewStates;
 
 using OpenTK;

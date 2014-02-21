@@ -13,7 +13,7 @@ using Duality.Resources;
 using DualityEditor;
 using DualityEditor.CorePluginInterface;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 
 namespace EditorBase.PropertyEditors
 {

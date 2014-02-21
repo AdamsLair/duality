@@ -165,7 +165,7 @@ namespace DualityEditor
 				Directory.CreateDirectory(DualityApp.DataDirectory);
 				using (FileStream s = File.OpenWrite(Path.Combine(DualityApp.DataDirectory, "WorkingFolderIcon.ico")))
 				{
-					EditorRes.GeneralResCache.IconWorkingFolder.Save(s);
+					Properties.GeneralResCache.IconWorkingFolder.Save(s);
 				}
 				using (StreamWriter w = new StreamWriter(Path.Combine(DualityApp.DataDirectory, "desktop.ini")))
 				{
@@ -254,10 +254,10 @@ namespace DualityEditor
 				{
 					string unsavedResText = unsavedResTemp.Take(5).ToString(r => r.GetType().GetTypeCSCodeName(true) + ":\t" + r.FullName, "\n");
 					if (unsavedResTemp.Count() > 5) 
-						unsavedResText += "\n" + string.Format(EditorRes.GeneralRes.Msg_ConfirmQuitUnsaved_Desc_More, unsavedResTemp.Count() - 5);
+						unsavedResText += "\n" + string.Format(Properties.GeneralRes.Msg_ConfirmQuitUnsaved_Desc_More, unsavedResTemp.Count() - 5);
 					DialogResult result = MessageBox.Show(
-						string.Format(EditorRes.GeneralRes.Msg_ConfirmQuitUnsaved_Desc, "\n\n" + unsavedResText + "\n\n"), 
-						EditorRes.GeneralRes.Msg_ConfirmQuitUnsaved_Caption, 
+						string.Format(Properties.GeneralRes.Msg_ConfirmQuitUnsaved_Desc, "\n\n" + unsavedResText + "\n\n"), 
+						Properties.GeneralRes.Msg_ConfirmQuitUnsaved_Caption, 
 						MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
 					if (result == DialogResult.Yes)
 					{
@@ -270,8 +270,8 @@ namespace DualityEditor
 				else
 				{
 					DialogResult result = MessageBox.Show(
-						EditorRes.GeneralRes.Msg_ConfirmQuit_Desc, 
-						EditorRes.GeneralRes.Msg_ConfirmQuit_Caption, 
+						Properties.GeneralRes.Msg_ConfirmQuit_Desc, 
+						Properties.GeneralRes.Msg_ConfirmQuit_Caption, 
 						MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 					if (result == DialogResult.No)
 						cancel = true;
@@ -441,7 +441,7 @@ namespace DualityEditor
 		{
 			if (!File.Exists(UserDataFile))
 			{
-				File.WriteAllText(UserDataFile, EditorRes.GeneralRes.DefaultEditorUserData);
+				File.WriteAllText(UserDataFile, Properties.GeneralRes.DefaultEditorUserData);
 				if (!File.Exists(UserDataFile)) return;
 			}
 
@@ -760,7 +760,7 @@ namespace DualityEditor
 				if (!File.Exists(userFileCore))
 				{
 					if (gamePluginZip == null)
-						gamePluginZip = ZipFile.Read(EditorRes.GeneralRes.GamePluginTemplate);
+						gamePluginZip = ZipFile.Read(Properties.GeneralRes.GamePluginTemplate);
 					foreach (var e in gamePluginZip.Entries)
 					{
 						if (string.Equals(Path.GetFileName(e.FileName), Path.GetFileName(userFileCore), StringComparison.InvariantCultureIgnoreCase))
@@ -784,7 +784,7 @@ namespace DualityEditor
 				if (!File.Exists(userFileEditor))
 				{
 					if (gamePluginZip == null)
-						gamePluginZip = ZipFile.Read(EditorRes.GeneralRes.GamePluginTemplate);
+						gamePluginZip = ZipFile.Read(Properties.GeneralRes.GamePluginTemplate);
 					foreach (var e in gamePluginZip.Entries)
 					{
 						if (string.Equals(Path.GetFileName(e.FileName), Path.GetFileName(userFileEditor), StringComparison.InvariantCultureIgnoreCase))
@@ -836,7 +836,7 @@ namespace DualityEditor
 			// Create solution file if not existing yet
 			if (!File.Exists(EditorHelper.SourceCodeSolutionFile))
 			{
-				using (ZipFile gamePluginZip = ZipFile.Read(EditorRes.GeneralRes.GamePluginTemplate))
+				using (ZipFile gamePluginZip = ZipFile.Read(Properties.GeneralRes.GamePluginTemplate))
 				{
 					gamePluginZip.ExtractAll(EditorHelper.SourceCodeDirectory, ExtractExistingFileAction.DoNotOverwrite);
 				}
@@ -1054,8 +1054,8 @@ namespace DualityEditor
 		{
 			if (Sandbox.State == SandboxState.Playing) return true;
 			DialogResult result = MessageBox.Show(
-				EditorRes.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Text, 
-				EditorRes.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Caption, 
+				Properties.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Text, 
+				Properties.GeneralRes.Msg_ConfirmDeleteSelectedObjects_Caption, 
 				MessageBoxButtons.YesNo, 
 				MessageBoxIcon.Question);
 			return result == DialogResult.Yes;
@@ -1082,8 +1082,8 @@ namespace DualityEditor
 		public static bool DisplayConfirmBreakPrefabLink()
 		{
 			DialogResult result = MessageBox.Show(
-				EditorRes.GeneralRes.Msg_ConfirmBreakPrefabLink_Desc, 
-				EditorRes.GeneralRes.Msg_ConfirmBreakPrefabLink_Caption, 
+				Properties.GeneralRes.Msg_ConfirmBreakPrefabLink_Desc, 
+				Properties.GeneralRes.Msg_ConfirmBreakPrefabLink_Caption, 
 				MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 			return result == DialogResult.Yes;
 		}

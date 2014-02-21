@@ -23,11 +23,11 @@ namespace EditorBase.CamViewLayers
 
 		public override string LayerName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyShape_Name; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyShape_Name; }
 		}
 		public override string LayerDesc
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyShape_Desc; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyShape_Desc; }
 		}
 		public ColorRgba MassCenterColor
 		{

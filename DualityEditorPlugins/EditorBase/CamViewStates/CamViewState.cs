@@ -17,7 +17,7 @@ using DualityEditor.Forms;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 using EditorBase.UndoRedoActions;
 
 namespace EditorBase.CamViewStates
@@ -597,10 +597,10 @@ namespace EditorBase.CamViewStates
 			}
 
 			// Draw action hints
-			if (visibleObjectAction == ObjectAction.Move)				return PluginRes.EditorBaseRes.CamView_Action_Move;
-			else if (visibleObjectAction == ObjectAction.Rotate)		return PluginRes.EditorBaseRes.CamView_Action_Rotate;
-			else if (visibleObjectAction == ObjectAction.Scale)			return PluginRes.EditorBaseRes.CamView_Action_Scale;
-			else if (visibleObjectAction == ObjectAction.RectSelect)	return PluginRes.EditorBaseRes.CamView_Action_Select_Active;
+			if (visibleObjectAction == ObjectAction.Move)				return Properties.EditorBaseRes.CamView_Action_Move;
+			else if (visibleObjectAction == ObjectAction.Rotate)		return Properties.EditorBaseRes.CamView_Action_Rotate;
+			else if (visibleObjectAction == ObjectAction.Scale)			return Properties.EditorBaseRes.CamView_Action_Scale;
+			else if (visibleObjectAction == ObjectAction.RectSelect)	return Properties.EditorBaseRes.CamView_Action_Select_Active;
 
 			// Unhandled
 			return null;

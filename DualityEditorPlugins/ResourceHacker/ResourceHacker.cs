@@ -441,8 +441,8 @@ namespace ResourceHacker
 				int replaced = 0;
 				this.CurrentPerformAction(n => replaced += n.ReplaceTypeStrings(dialog.SearchFor, dialog.ReplaceWith));
 				MessageBox.Show(
-					string.Format(PluginRes.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
-					PluginRes.ResourceHackerRes.MessageBox_RenameType_Title, 
+					string.Format(Properties.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
+					Properties.ResourceHackerRes.MessageBox_RenameType_Title, 
 					MessageBoxButtons.OK, 
 					MessageBoxIcon.Information);
 			}
@@ -464,16 +464,16 @@ namespace ResourceHacker
 				{
 					int replaced = 0;
 					ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(
-						PluginRes.ResourceHackerRes.TaskBatchRenameType_Caption,
-						string.Format(PluginRes.ResourceHackerRes.TaskBatchRenameType_Desc, dialog.SearchFor, dialog.ReplaceWith), 
+						Properties.ResourceHackerRes.TaskBatchRenameType_Caption,
+						string.Format(Properties.ResourceHackerRes.TaskBatchRenameType_Desc, dialog.SearchFor, dialog.ReplaceWith), 
 						this.async_PerformBatchAction,
 						new BatchActionTaskData(folderDialog.SelectedPath, n => replaced += n.ReplaceTypeStrings(dialog.SearchFor, dialog.ReplaceWith)));
 					taskDialog.MainThreadRequired = false;
 					taskDialog.ShowDialog();
 
 					MessageBox.Show(
-						string.Format(PluginRes.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
-						PluginRes.ResourceHackerRes.MessageBox_RenameType_Title, 
+						string.Format(Properties.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
+						Properties.ResourceHackerRes.MessageBox_RenameType_Title, 
 						MessageBoxButtons.OK, 
 						MessageBoxIcon.Information);
 				}

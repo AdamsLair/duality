@@ -5,10 +5,10 @@ using Duality;
 using Duality.Resources;
 
 using DualityEditor;
-using DualityEditor.EditorRes;
+using DualityEditor.Properties;
 using DualityEditor.CorePluginInterface;
 
-using DynamicLighting.PluginRes;
+using DynamicLighting.Properties;
 
 namespace DynamicLighting
 {
@@ -26,11 +26,6 @@ namespace DynamicLighting
 			CorePluginRegistry.RegisterTypeImage(typeof(LightingSpriteRenderer),		DynLightResCache.IconCmpLightingSpriteRenderer);
 			CorePluginRegistry.RegisterTypeImage(typeof(LightingAnimSpriteRenderer),	DynLightResCache.IconCmpLightingSpriteRenderer);
 			CorePluginRegistry.RegisterTypeImage(typeof(Light),							DynLightResCache.IconLight);
-
-			CorePluginRegistry.RegisterTypeCategory(typeof(LightingTechnique),			GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(LightingSpriteRenderer),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(LightingAnimSpriteRenderer), GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Light),						GeneralRes.Category_Graphics);
 
 			CorePluginRegistry.RegisterDataConverter<Component>(new LightingRendererFromMaterial());
 		}

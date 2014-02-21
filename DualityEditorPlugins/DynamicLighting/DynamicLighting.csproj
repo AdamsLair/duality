@@ -40,12 +40,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DynamicLightingPlugin.cs" />
-    <Compile Include="PluginRes\DynLightRes.Designer.cs">
+    <Compile Include="Properties\DynLightRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>DynLightRes.resx</DependentUpon>
     </Compile>
-    <Compile Include="PluginRes\DynLightResCache.cs" />
+    <Compile Include="Properties\DynLightResCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -63,15 +63,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconCmpLightingSpriteRenderer.png" />
-    <None Include="PluginRes\iconResLightingTechnique.png" />
-    <Content Include="PluginRes\lightbulb.png" />
+    <None Include="EmbeddedResources\iconCmpLightingSpriteRenderer.png" />
+    <None Include="EmbeddedResources\iconResLightingTechnique.png" />
+    <Content Include="EmbeddedResources\lightbulb.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PluginRes\DynLightRes.resx">
+    <EmbeddedResource Include="Properties\DynLightRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>DynLightRes.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>DynLightRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

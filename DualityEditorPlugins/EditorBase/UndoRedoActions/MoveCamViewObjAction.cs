@@ -9,7 +9,7 @@ using Duality.Resources;
 
 using DualityEditor;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 using EditorBase.CamViewStates;
 
 using OpenTK;

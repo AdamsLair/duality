@@ -49,12 +49,12 @@
       <DependentUpon>HelpAdvisor.cs</DependentUpon>
     </Compile>
     <Compile Include="HelpAdvisorPlugin.cs" />
-    <Compile Include="PluginRes\HelpAdvisorRes.Designer.cs">
+    <Compile Include="Properties\HelpAdvisorRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>HelpAdvisorRes.resx</DependentUpon>
     </Compile>
-    <Compile Include="PluginRes\HelpAdvisorResCache.cs" />
+    <Compile Include="Properties\HelpAdvisorResCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,13 +71,14 @@
     <EmbeddedResource Include="HelpAdvisor.resx">
       <DependentUpon>HelpAdvisor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PluginRes\HelpAdvisorRes.resx">
+    <EmbeddedResource Include="Properties\HelpAdvisorRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>HelpAdvisorRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\help.png" />
+    <None Include="EmbeddedResources\help.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

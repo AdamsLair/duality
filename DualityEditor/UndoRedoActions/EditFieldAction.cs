@@ -8,7 +8,7 @@ using Duality;
 using Duality.Cloning;
 using Duality.Resources;
 
-using DualityEditor.EditorRes;
+using DualityEditor.Properties;
 using DualityEditor.Controls;
 
 using AdamsLair.PropertyGrid;

@@ -76,7 +76,7 @@ namespace EditorBase.PropertyEditors
 			base.OnUpdateFromObjects(values);
 
 			this.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
-			this.ButtonIcon = PluginRes.EditorBaseResCache.DropdownSettingsBlack;
+			this.ButtonIcon = Properties.EditorBaseResCache.DropdownSettingsBlack;
 			this.PropertyName = this.EditedType.GetTypeCSCodeName(true);
 			this.HeaderValueText = null;
 			if (!values.Any() || values.All(o => o == null))
@@ -177,13 +177,13 @@ namespace EditorBase.PropertyEditors
 			menuPos.Y += thisLoc.Y;
 
 			// Default items
-			ToolStripItem itemReset = contextMenu.Items.Add(PluginRes.EditorBaseRes.MenuItemName_ResetComponent, null, this.contextMenu_ResetComponent);
-			ToolStripItem itemRemove = contextMenu.Items.Add(PluginRes.EditorBaseRes.MenuItemName_RemoveComponent, PluginRes.EditorBaseResCache.IconAbortCross, this.contextMenu_RemoveComponent);
+			ToolStripItem itemReset = contextMenu.Items.Add(Properties.EditorBaseRes.MenuItemName_ResetComponent, null, this.contextMenu_ResetComponent);
+			ToolStripItem itemRemove = contextMenu.Items.Add(Properties.EditorBaseRes.MenuItemName_RemoveComponent, Properties.EditorBaseResCache.IconAbortCross, this.contextMenu_RemoveComponent);
 			itemRemove.Enabled = canRemove;
 			if (!canRemove) 
 			{
 				itemRemove.ToolTipText = string.Format(
-					PluginRes.EditorBaseRes.MenuItemDesc_CantRemoveComponent, 
+					Properties.EditorBaseRes.MenuItemDesc_CantRemoveComponent, 
 					values.First().GetType().Name, 
 					removeConflict.GetType().Name);
 			}

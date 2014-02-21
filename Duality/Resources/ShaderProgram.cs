@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Duality.EditorHints;
+using Duality.Properties;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -15,6 +16,7 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.FragmentShader"/>
 	[Serializable]
 	[ExplicitResourceReference(typeof(AbstractShader))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class ShaderProgram : Resource
 	{
 		/// <summary>

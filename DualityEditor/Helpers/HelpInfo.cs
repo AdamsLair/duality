@@ -157,7 +157,7 @@ namespace DualityEditor
 		}
 		public static HelpInfo CreateNotAvailable(string topic)
 		{
-			return FromText(topic ?? "Unknown", DualityEditor.EditorRes.GeneralRes.HelpInfo_NotAvailable_Desc);
+			return FromText(topic ?? "Unknown", DualityEditor.Properties.GeneralRes.HelpInfo_NotAvailable_Desc);
 		}
 
 		public static bool DefaultPerformHelpAction(HelpInfo info)

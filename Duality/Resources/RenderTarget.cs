@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality.EditorHints;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -18,6 +19,7 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.Texture"/>
 	[Serializable]
 	[ExplicitResourceReference(typeof(Texture))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class RenderTarget : Resource
 	{
 		/// <summary>

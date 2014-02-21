@@ -231,7 +231,7 @@ namespace EditorBase
 			this.bgColorDialog.OldColor = Color.FromArgb(64, 64, 64);
 			this.bgColorDialog.SelectedColor = this.bgColorDialog.OldColor;
 			this.bgColorDialog.AlphaEnabled = false;
-			this.Text = PluginRes.EditorBaseRes.MenuItemName_CamView + " #" + runtimeId;
+			this.Text = Properties.EditorBaseRes.MenuItemName_CamView + " #" + runtimeId;
 			this.runtimeId = runtimeId;
 			this.toolbarCamera.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			

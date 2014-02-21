@@ -7,6 +7,7 @@ using Duality.EditorHints;
 using Duality.VertexFormat;
 using Duality.Resources;
 using Duality.Components.Physics;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -19,6 +20,7 @@ namespace Duality.Components.Diagnostics
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(RigidBody))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Diagnostics)]
 	public class RigidBodyRenderer : Renderer
 	{
 		private	ContentRef<Material>	areaMaterial			= Material.Checkerboard;

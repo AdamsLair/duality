@@ -52,18 +52,18 @@ namespace EditorBase
 			{
 				get
 				{
-					if (this.log.Type == LogMessageType.Error) return PluginRes.EditorBaseResCache.IconLogError;
-					if (this.log.Type == LogMessageType.Warning) return PluginRes.EditorBaseResCache.IconLogWarning;
-					return PluginRes.EditorBaseResCache.IconLogMessage;
+					if (this.log.Type == LogMessageType.Error) return Properties.EditorBaseResCache.IconLogError;
+					if (this.log.Type == LogMessageType.Warning) return Properties.EditorBaseResCache.IconLogWarning;
+					return Properties.EditorBaseResCache.IconLogMessage;
 				}
 			}
 			public Image SourceIcon
 			{
 				get
 				{
-					if (this.log.Source == Log.Game) return PluginRes.EditorBaseResCache.IconLogGame;
-					if (this.log.Source == Log.Editor) return PluginRes.EditorBaseResCache.IconLogEditor;
-					return PluginRes.EditorBaseResCache.IconLogCore;
+					if (this.log.Source == Log.Game) return Properties.EditorBaseResCache.IconLogGame;
+					if (this.log.Source == Log.Editor) return Properties.EditorBaseResCache.IconLogEditor;
+					return Properties.EditorBaseResCache.IconLogCore;
 				}
 			}
 
@@ -223,8 +223,8 @@ namespace EditorBase
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 
 			this.entryMenu = new ContextMenuStrip();
-			this.entryMenu.Items.Add(PluginRes.EditorBaseRes.LogView_ContextMenu_CopyItem, null, this.entryMenu_CopyItem_Click);
-			this.entryMenu.Items.Add(PluginRes.EditorBaseRes.LogView_ContextMenu_CopyAllItems, null, this.entryMenu_CopyAllItems_Click);
+			this.entryMenu.Items.Add(Properties.EditorBaseRes.LogView_ContextMenu_CopyItem, null, this.entryMenu_CopyItem_Click);
+			this.entryMenu.Items.Add(Properties.EditorBaseRes.LogView_ContextMenu_CopyAllItems, null, this.entryMenu_CopyAllItems_Click);
 
 			this.timerLogSchedule = new Timer(this.components);
 			this.timerLogSchedule.Interval = 50;

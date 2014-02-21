@@ -21,11 +21,11 @@ namespace EditorBase.CamViewLayers
 	{
 		public override string LayerName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyJoint_Name; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyJoint_Name; }
 		}
 		public override string LayerDesc
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyJoint_Desc; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyJoint_Desc; }
 		}
 		public ColorRgba MotorColor
 		{

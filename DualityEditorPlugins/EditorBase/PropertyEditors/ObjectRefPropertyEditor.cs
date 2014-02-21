@@ -15,14 +15,14 @@ using Duality.Resources;
 using DualityEditor;
 using DualityEditor.CorePluginInterface;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 
 namespace EditorBase.PropertyEditors
 {
 	public abstract class ObjectRefPropertyEditor : PropertyEditor
 	{
-		private static readonly IconImage iconShow = new IconImage(PluginRes.EditorBaseResCache.IconEye.ToBitmap());
-		private static readonly IconImage iconReset = new IconImage(PluginRes.EditorBaseResCache.IconAbortCross);
+		private static readonly IconImage iconShow = new IconImage(Properties.EditorBaseResCache.IconEye.ToBitmap());
+		private static readonly IconImage iconReset = new IconImage(Properties.EditorBaseResCache.IconAbortCross);
 
 		protected	bool		multiple			= false;
 		protected	bool		dragHover			= false;

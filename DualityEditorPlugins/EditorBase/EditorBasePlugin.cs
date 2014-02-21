@@ -15,11 +15,11 @@ using TextRenderer = Duality.Components.Renderers.TextRenderer;
 
 using DualityEditor;
 using DualityEditor.Forms;
-using DualityEditor.EditorRes;
+using DualityEditor.Properties;
 using DualityEditor.CorePluginInterface;
 using DualityEditor.UndoRedoActions;
 
-using EditorBase.PluginRes;
+using EditorBase.Properties;
 
 
 namespace EditorBase
@@ -183,31 +183,6 @@ namespace EditorBase
 			CorePluginRegistry.RegisterTypeImage(typeof(RigidBody),				EditorBaseResCache.IconCmpRectCollider);
 			CorePluginRegistry.RegisterTypeImage(typeof(ProfileRenderer),		EditorBaseResCache.IconCmpProfileRenderer);
 			CorePluginRegistry.RegisterTypeImage(typeof(RigidBodyRenderer),		EditorBaseResCache.IconCmpRigidBodyRenderer);
-
-			CorePluginRegistry.RegisterTypeCategory(typeof(Transform),			"");
-			CorePluginRegistry.RegisterTypeCategory(typeof(SpriteRenderer),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(AnimSpriteRenderer), GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(TextRenderer),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Camera),				GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(SoundEmitter),		GeneralRes.Category_Sound);
-			CorePluginRegistry.RegisterTypeCategory(typeof(SoundListener),		GeneralRes.Category_Sound);
-			CorePluginRegistry.RegisterTypeCategory(typeof(RigidBody),			GeneralRes.Category_Physics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(ProfileRenderer),	GeneralRes.Category_Diagnostics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(RigidBodyRenderer),	GeneralRes.Category_Diagnostics);
-
-			CorePluginRegistry.RegisterTypeCategory(typeof(Scene),				"");
-			CorePluginRegistry.RegisterTypeCategory(typeof(Prefab),				"");
-			CorePluginRegistry.RegisterTypeCategory(typeof(Pixmap),				GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Texture),			GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Material),			GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Font),				GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(RenderTarget),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(DrawTechnique),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(ShaderProgram),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(VertexShader),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(FragmentShader),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(AudioData),			GeneralRes.Category_Sound);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Sound),				GeneralRes.Category_Sound);
 
 			// Register conversion actions
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>				(EditorBaseRes.ActionName_CreateTexture,		EditorBaseRes.IconResTexture,		this.ActionPixmapCreateTexture,		EditorBaseRes.ActionDesc_CreateTexture),		CorePluginRegistry.ActionContext_ContextMenu);

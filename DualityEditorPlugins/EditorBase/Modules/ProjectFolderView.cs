@@ -12,6 +12,7 @@ using Aga.Controls.Tree;
 
 using Duality;
 using Duality.Resources;
+using Duality.EditorHints;
 
 using DualityEditor;
 using DualityEditor.CorePluginInterface;
@@ -291,7 +292,7 @@ namespace EditorBase
 					result = CorePluginRegistry.GetTypeImage(type);
 				}
 
-				return result ?? PluginRes.EditorBaseResCache.IconResUnknown;
+				return result ?? Properties.EditorBaseResCache.IconResUnknown;
 			}
 		}
 		private struct ScheduleSelectEntry
@@ -447,7 +448,7 @@ namespace EditorBase
 		protected void InitRessources()
 		{
 			this.toolStripLabelProjectName.Text = String.Format("{0}: {1}",
-				PluginRes.EditorBaseRes.ProjectNameLabel,
+				Properties.EditorBaseRes.ProjectNameLabel,
 				EditorHelper.CurrentProjectName);
 
 			Node nodeTree = this.ScanDirectory(DualityApp.DataDirectory);
@@ -685,7 +686,7 @@ namespace EditorBase
 		protected void CreateFolder(TreeNodeAdv baseNode)
 		{
 			string basePath = this.GetInsertActionTargetBasePath(baseNode != null ? baseNode.Tag as NodeBase : null);
-			string dirPath = PathHelper.GetFreePath(Path.Combine(basePath, PluginRes.EditorBaseRes.NewFolderName), "");
+			string dirPath = PathHelper.GetFreePath(Path.Combine(basePath, Properties.EditorBaseRes.NewFolderName), "");
 
 			Directory.CreateDirectory(dirPath);
 			
@@ -767,8 +768,8 @@ namespace EditorBase
 			else
 			{
 				MessageBox.Show(
-					String.Format(PluginRes.EditorBaseRes.ProjectFolderView_MsgBox_CantMove_Text, targetPath), 
-					PluginRes.EditorBaseRes.ProjectFolderView_MsgBox_CantMove_Caption, 
+					String.Format(Properties.EditorBaseRes.ProjectFolderView_MsgBox_CantMove_Text, targetPath), 
+					Properties.EditorBaseRes.ProjectFolderView_MsgBox_CantMove_Caption, 
 					MessageBoxButtons.OK, 
 					MessageBoxIcon.Error);
 			}
@@ -784,8 +785,8 @@ namespace EditorBase
 			else
 			{
 				MessageBox.Show(
-					String.Format(PluginRes.EditorBaseRes.ProjectFolderView_MsgBox_CantRename_Text, Path.GetFileNameWithoutExtension(conflictPath)), 
-					PluginRes.EditorBaseRes.ProjectFolderView_MsgBox_CantRename_Caption, 
+					String.Format(Properties.EditorBaseRes.ProjectFolderView_MsgBox_CantRename_Text, Path.GetFileNameWithoutExtension(conflictPath)), 
+					Properties.EditorBaseRes.ProjectFolderView_MsgBox_CantRename_Caption, 
 					MessageBoxButtons.OK, 
 					MessageBoxIcon.Error);
 			}
@@ -793,8 +794,8 @@ namespace EditorBase
 		protected bool DisplayConfirmDeleteSelectedFiles()
 		{
 			DialogResult result = MessageBox.Show(
-				PluginRes.EditorBaseRes.ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Text, 
-				PluginRes.EditorBaseRes.ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Caption, 
+				Properties.EditorBaseRes.ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Text, 
+				Properties.EditorBaseRes.ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Caption, 
 				MessageBoxButtons.YesNo, 
 				MessageBoxIcon.Question);
 			return result == DialogResult.Yes;
@@ -1381,7 +1382,7 @@ namespace EditorBase
 			foreach (Type resType in this.QueryResourceTypes())
 			{
 				// Generate category item
-				string[] category = CorePluginRegistry.GetTypeCategory(resType);
+				string[] category = resType.GetEditorCategory();
 				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;
 				for (int i = 0; i < category.Length; i++)
 				{
@@ -1678,7 +1679,7 @@ namespace EditorBase
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode, false);
 			if (action != null) return string.Format(
-				EditorBase.PluginRes.EditorBaseRes.ProjectFolderView_Help_Doubleclick,
+				EditorBase.Properties.EditorBaseRes.ProjectFolderView_Help_Doubleclick,
 				action.Description);
 			else return null;
 		}

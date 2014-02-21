@@ -178,8 +178,8 @@ namespace EditorBase.PropertyEditors
 					this.otherColEditor = this.ParentGrid.CreateEditor(typeof(RigidBody), this);
 					this.otherColEditor.Getter = this.CreateOtherColValueGetter();
 					this.otherColEditor.Setter = this.CreateOtherColValueSetter();
-					this.otherColEditor.PropertyName = PluginRes.EditorBaseRes.PropertyName_OtherCollider;
-					this.otherColEditor.PropertyDesc = PluginRes.EditorBaseRes.PropertyDesc_OtherCollider;
+					this.otherColEditor.PropertyName = Properties.EditorBaseRes.PropertyName_OtherCollider;
+					this.otherColEditor.PropertyDesc = Properties.EditorBaseRes.PropertyDesc_OtherCollider;
 					this.ParentGrid.ConfigureEditor(this.otherColEditor);
 					this.AddPropertyEditor(this.otherColEditor);
 				}
@@ -260,8 +260,8 @@ namespace EditorBase.PropertyEditors
 			this.EditedType = typeof(Type);
 			this.ButtonIcon = AdamsLair.PropertyGrid.EmbeddedResources.Resources.ImageAdd;
 			this.Hints = HintFlags.Default | HintFlags.HasButton | HintFlags.ButtonEnabled;
-			this.PropertyName = PluginRes.EditorBaseRes.PropertyName_AddJoint;
-			this.PropertyDesc = PluginRes.EditorBaseRes.PropertyDesc_AddJoint;
+			this.PropertyName = Properties.EditorBaseRes.PropertyName_AddJoint;
+			this.PropertyDesc = Properties.EditorBaseRes.PropertyDesc_AddJoint;
 
 			this.Items = 
 				from t in DualityApp.GetAvailDualityTypes(typeof(JointInfo))

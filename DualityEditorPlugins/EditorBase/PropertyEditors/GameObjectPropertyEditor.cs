@@ -83,7 +83,7 @@ namespace EditorBase.PropertyEditors
 				}
 				else
 				{
-					this.displayedName = string.Format(DualityEditor.EditorRes.GeneralRes.PropertyGrid_N_Objects, values.Count());
+					this.displayedName = string.Format(DualityEditor.Properties.GeneralRes.PropertyGrid_N_Objects, values.Count());
 					this.displayedNameExt = "";
 				}
 				this.prefabLinked = values.Any(o => o.PrefabLink != null);

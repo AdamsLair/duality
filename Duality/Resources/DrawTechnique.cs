@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.VertexFormat;
 using Duality.EditorHints;
 using Duality.ColorFormat;
+using Duality.Properties;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -18,6 +19,7 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.ShaderProgram"/>
 	/// <seealso cref="Duality.BlendMode"/>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class DrawTechnique : Resource
 	{
 		/// <summary>

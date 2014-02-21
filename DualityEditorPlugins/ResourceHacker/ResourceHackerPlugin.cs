@@ -5,12 +5,12 @@ using Duality.Serialization.MetaFormat;
 
 using DualityEditor;
 using DualityEditor.Forms;
-using DualityEditor.EditorRes;
+using DualityEditor.Properties;
 using DualityEditor.CorePluginInterface;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-using ResourceHacker.PluginRes;
+using ResourceHacker.Properties;
 
 namespace ResourceHacker
 {
@@ -52,13 +52,13 @@ namespace ResourceHacker
 		{
 			base.LoadPlugin();
 			
-			CorePluginRegistry.RegisterTypeImage(typeof(DataNode),				PluginRes.ResourceHackerResCache.IconPrimitive);
-			CorePluginRegistry.RegisterTypeImage(typeof(ArrayNode),				PluginRes.ResourceHackerResCache.IconArray);
-			CorePluginRegistry.RegisterTypeImage(typeof(StructNode),			PluginRes.ResourceHackerResCache.IconObject);
-			CorePluginRegistry.RegisterTypeImage(typeof(ObjectRefNode),			PluginRes.ResourceHackerResCache.IconObjectRef);
-			CorePluginRegistry.RegisterTypeImage(typeof(TypeDataLayoutNode),	PluginRes.ResourceHackerResCache.IconClass);
-			CorePluginRegistry.RegisterTypeImage(typeof(MemberInfoNode),		PluginRes.ResourceHackerResCache.IconMethod);
-			CorePluginRegistry.RegisterTypeImage(typeof(DelegateNode),			PluginRes.ResourceHackerResCache.IconDelegate);
+			CorePluginRegistry.RegisterTypeImage(typeof(DataNode),				Properties.ResourceHackerResCache.IconPrimitive);
+			CorePluginRegistry.RegisterTypeImage(typeof(ArrayNode),				Properties.ResourceHackerResCache.IconArray);
+			CorePluginRegistry.RegisterTypeImage(typeof(StructNode),			Properties.ResourceHackerResCache.IconObject);
+			CorePluginRegistry.RegisterTypeImage(typeof(ObjectRefNode),			Properties.ResourceHackerResCache.IconObjectRef);
+			CorePluginRegistry.RegisterTypeImage(typeof(TypeDataLayoutNode),	Properties.ResourceHackerResCache.IconClass);
+			CorePluginRegistry.RegisterTypeImage(typeof(MemberInfoNode),		Properties.ResourceHackerResCache.IconMethod);
+			CorePluginRegistry.RegisterTypeImage(typeof(DelegateNode),			Properties.ResourceHackerResCache.IconDelegate);
 
 			// Register PropertyEditor provider
 			CorePluginRegistry.RegisterPropertyEditorProvider(new PropertyEditors.PropertyEditorProvider());

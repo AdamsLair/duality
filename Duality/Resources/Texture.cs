@@ -4,7 +4,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using BitmapPixelFormat = System.Drawing.Imaging.PixelFormat;
+
 using Duality.EditorHints;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -18,6 +20,7 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.RenderTarget"/>
 	[Serializable]
 	[ExplicitResourceReference(typeof(Pixmap))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class Texture : Resource
 	{
 		/// <summary>

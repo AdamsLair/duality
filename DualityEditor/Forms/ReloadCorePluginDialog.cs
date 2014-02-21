@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.Reflection;
 
 using Duality;
-using DualityEditor.EditorRes;
+using DualityEditor.Properties;
 using Duality.Resources;
 
 namespace DualityEditor.Forms

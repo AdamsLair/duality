@@ -108,6 +108,12 @@
     <Compile Include="Components\Diagnostics\ProfileRenderer.cs" />
     <Compile Include="ContentRef.cs" />
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="Properties\CoreRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoreRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\CoreResNames.cs" />
     <Compile Include="Graphics\DrawDevice.cs" />
     <Compile Include="Graphics\IDrawDevice.cs" />
     <Compile Include="Graphics\DrawDeviceEnums.cs" />
@@ -210,10 +216,10 @@
     <Compile Include="Resource.cs" />
     <Compile Include="Resources\AbstractShader.cs" />
     <Compile Include="Resources\AudioData.cs" />
-    <Compile Include="Resources\DefaultRes.Designer.cs">
+    <Compile Include="Resources\DefaultContent.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>DefaultRes.resx</DependentUpon>
+      <DependentUpon>DefaultContent.resx</DependentUpon>
     </Compile>
     <Compile Include="Resources\DrawTechnique.cs" />
     <Compile Include="Resources\FragmentShader.cs" />
@@ -260,32 +266,36 @@
     <Compile Include="Graphics\VertexFormat\VertexC1P3.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Default\Checkerboard.png" />
-    <EmbeddedResource Include="Resources\Default\DualityLogoBig.png" />
-    <EmbeddedResource Include="Resources\Default\DualityLogoMedium.png" />
-    <EmbeddedResource Include="Resources\Default\DualityLogoSmall.png" />
-    <EmbeddedResource Include="Resources\DefaultRes.resx">
+    <None Include="EmbeddedResources\Checkerboard.png" />
+    <EmbeddedResource Include="Properties\CoreRes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CoreRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResources\DualityLogoBig.png" />
+    <EmbeddedResource Include="EmbeddedResources\DualityLogoMedium.png" />
+    <EmbeddedResource Include="EmbeddedResources\DualityLogoSmall.png" />
+    <EmbeddedResource Include="Resources\DefaultContent.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
-      <LastGenOutput>DefaultRes.Designer.cs</LastGenOutput>
+      <LastGenOutput>DefaultContent.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Default\DualityIcon.png" />
-    <EmbeddedResource Include="Resources\Default\DualityIconB.png" />
-    <EmbeddedResource Include="Resources\Default\SharpAlpha.frag" />
+    <EmbeddedResource Include="EmbeddedResources\DualityIcon.png" />
+    <EmbeddedResource Include="EmbeddedResources\DualityIconB.png" />
+    <EmbeddedResource Include="EmbeddedResources\SharpAlpha.frag" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Default\DroneLoop.ogg" />
-    <EmbeddedResource Include="Resources\Default\LogoJingle.ogg" />
+    <EmbeddedResource Include="EmbeddedResources\DroneLoop.ogg" />
+    <EmbeddedResource Include="EmbeddedResources\LogoJingle.ogg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Default\Beep.ogg" />
+    <EmbeddedResource Include="EmbeddedResources\Beep.ogg" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Default\SmoothAnim.vert" />
-    <EmbeddedResource Include="Resources\Default\SmoothAnim.frag" />
-    <EmbeddedResource Include="Resources\Default\Picking.frag" />
-    <EmbeddedResource Include="Resources\Default\Minimal.frag" />
-    <EmbeddedResource Include="Resources\Default\Minimal.vert" />
+    <EmbeddedResource Include="EmbeddedResources\SmoothAnim.vert" />
+    <EmbeddedResource Include="EmbeddedResources\SmoothAnim.frag" />
+    <EmbeddedResource Include="EmbeddedResources\Picking.frag" />
+    <EmbeddedResource Include="EmbeddedResources\Minimal.frag" />
+    <EmbeddedResource Include="EmbeddedResources\Minimal.vert" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="OpenALSoft32.dll">

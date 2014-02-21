@@ -21,11 +21,11 @@ namespace EditorBase.CamViewLayers
 
 	    public override string LayerName
 	    {
-	        get { return PluginRes.EditorBaseRes.CamViewLayer_Grid_Name; }
+	        get { return Properties.EditorBaseRes.CamViewLayer_Grid_Name; }
 	    }
 	    public override string LayerDesc
 	    {
-	        get { return PluginRes.EditorBaseRes.CamViewLayer_Grid_Desc; }
+	        get { return Properties.EditorBaseRes.CamViewLayer_Grid_Desc; }
 	    }
 	    public override int Priority
 	    {

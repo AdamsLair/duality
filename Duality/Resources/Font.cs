@@ -11,6 +11,7 @@ using SysDrawFont = System.Drawing.Font;
 using Duality.ColorFormat;
 using Duality.VertexFormat;
 using Duality.EditorHints;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -23,6 +24,7 @@ namespace Duality.Resources
 	/// </summary>
 	[Serializable]
 	[ExplicitResourceReference()]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class Font : Resource
 	{
 		/// <summary>

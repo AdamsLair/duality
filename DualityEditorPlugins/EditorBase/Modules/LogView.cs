@@ -140,20 +140,20 @@ namespace EditorBase
 				this.DockHandler.TabText = this.Text + string.Format(" ({0} {2}, {1} {3})", 
 					this.unseenErrors, 
 					this.unseenWarnings,
-					PluginRes.EditorBaseRes.LogView_Errors,
-					PluginRes.EditorBaseRes.LogView_Warnings);
+					Properties.EditorBaseRes.LogView_Errors,
+					Properties.EditorBaseRes.LogView_Warnings);
 			}
 			else if (this.unseenErrors > 0)
 			{
 				this.DockHandler.TabText = this.Text + string.Format(" ({0} {1})", 
 					this.unseenErrors,
-					PluginRes.EditorBaseRes.LogView_Errors);
+					Properties.EditorBaseRes.LogView_Errors);
 			}
 			else if (this.unseenWarnings > 0)
 			{
 				this.DockHandler.TabText = this.Text + string.Format(" ({0} {1})", 
 					this.unseenWarnings,
-					PluginRes.EditorBaseRes.LogView_Warnings);
+					Properties.EditorBaseRes.LogView_Warnings);
 			}
 			else
 			{

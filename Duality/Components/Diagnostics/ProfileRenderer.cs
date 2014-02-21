@@ -7,6 +7,7 @@ using Duality.EditorHints;
 using Duality.Profiling;
 using Duality.VertexFormat;
 using Duality.Resources;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -18,6 +19,7 @@ namespace Duality.Components.Diagnostics
 	/// A diagnostic <see cref="Duality.Component"/> that displays current performance measurements and other profiling stats.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Diagnostics)]
 	public class ProfileRenderer : Component, ICmpRenderer, ICmpUpdatable
 	{
 		private class GraphCacheEntry
