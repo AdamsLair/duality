@@ -5,7 +5,7 @@ using AdamsLair.PropertyGrid;
 using OpenTK;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
 namespace Duality.Editor.Controls.PropertyEditors
 {

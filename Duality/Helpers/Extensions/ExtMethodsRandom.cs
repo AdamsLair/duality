@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using OpenTK;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
 namespace Duality
 {

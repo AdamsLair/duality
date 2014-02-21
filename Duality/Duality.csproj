@@ -114,25 +114,25 @@
       <DependentUpon>CoreRes.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\CoreResNames.cs" />
-    <Compile Include="Graphics\DrawDevice.cs" />
-    <Compile Include="Graphics\IDrawDevice.cs" />
-    <Compile Include="Graphics\DrawDeviceEnums.cs" />
+    <Compile Include="Drawing\DrawDevice.cs" />
+    <Compile Include="Drawing\IDrawDevice.cs" />
+    <Compile Include="Drawing\DrawDeviceEnums.cs" />
     <Compile Include="Animation\Animation.cs" />
     <Compile Include="Animation\FieldAnimation.cs" />
     <Compile Include="Animation\IAnimation.cs" />
     <Compile Include="Animation\IPropertyAnimation.cs" />
     <Compile Include="Animation\IFieldAnimation.cs" />
     <Compile Include="Animation\PropertyAnimation.cs" />
-    <Compile Include="Graphics\CanvasBuffer.cs" />
-    <Compile Include="Graphics\DashPattern.cs" />
-    <Compile Include="Graphics\CanvasState.cs" />
+    <Compile Include="Drawing\CanvasBuffer.cs" />
+    <Compile Include="Drawing\DashPattern.cs" />
+    <Compile Include="Drawing\CanvasState.cs" />
     <Compile Include="Helpers\Math\Alignment.cs" />
-    <Compile Include="Graphics\ColorFormat\ColorHsva.cs" />
+    <Compile Include="Drawing\ColorFormat\ColorHsva.cs" />
     <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
     <Compile Include="Components\Renderers\TextRenderer.cs" />
     <Compile Include="Components\SoundEmitter.cs" />
     <Compile Include="Components\SoundListener.cs" />
-    <Compile Include="Graphics\Canvas.cs" />
+    <Compile Include="Drawing\Canvas.cs" />
     <Compile Include="Helpers\DualityAppData.cs" />
     <Compile Include="Helpers\DualityMetaData.cs" />
     <Compile Include="Helpers\DualityUserData.cs" />
@@ -181,8 +181,8 @@
     <Compile Include="Log\VisualLogEntries\VisualLogCircleEntry.cs" />
     <Compile Include="Log\VisualLogEntries\VisualLogPointEntry.cs" />
     <Compile Include="Log\VisualLogEntry.cs" />
-    <Compile Include="Profiling\ReportCounterData.cs" />
-    <Compile Include="Profiling\ReportOptions.cs" />
+    <Compile Include="Profiling\ProfileReportCounterData.cs" />
+    <Compile Include="Profiling\ProfileReportOptions.cs" />
     <Compile Include="Profiling\StatCounter.cs" />
     <Compile Include="Profiling\TimeCounter.cs" />
     <Compile Include="Profiling\ProfileCounter.cs" />
@@ -193,13 +193,13 @@
     <Compile Include="Helpers\Extensions\ExtMethodsIList.cs" />
     <Compile Include="Helpers\Extensions\ExtMethodsRandom.cs" />
     <Compile Include="Helpers\Extensions\ExtMethodsString.cs" />
-    <Compile Include="Graphics\GraphicsModeComparer.cs" />
+    <Compile Include="Drawing\GraphicsModeComparer.cs" />
     <Compile Include="Helpers\ReflectionInfo.cs" />
     <Compile Include="Audio\OggVorbis\OggVorbis.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
     <Compile Include="Helpers\ReflectionHelper.cs" />
-    <Compile Include="Graphics\ColorFormat\ColorRgba.cs" />
-    <Compile Include="Graphics\ColorFormat\IColorData.cs" />
+    <Compile Include="Drawing\ColorFormat\ColorRgba.cs" />
+    <Compile Include="Drawing\ColorFormat\IColorData.cs" />
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="Components\Renderer.cs" />
@@ -236,7 +236,7 @@
     <Compile Include="Audio\SoundBudgetPad.cs" />
     <Compile Include="Audio\SoundDevice.cs" />
     <Compile Include="Audio\SoundInstance.cs" />
-    <Compile Include="Graphics\FormattedText.cs" />
+    <Compile Include="Drawing\FormattedText.cs" />
     <Compile Include="Log\TextWriterLogOutput.cs" />
     <Compile Include="Serialization\BinaryFormatter.cs" />
     <Compile Include="Serialization\MetaFormat\BinaryMetaFormatter.cs" />
@@ -260,10 +260,10 @@
     <Compile Include="Serialization\TypeDataLayout.cs" />
     <Compile Include="Serialization\MetaFormat\XmlMetaFormatter.cs" />
     <Compile Include="Time.cs" />
-    <Compile Include="Graphics\VertexFormat\IVertexData.cs" />
-    <Compile Include="Graphics\VertexFormat\VertexC1P3T4A1.cs" />
-    <Compile Include="Graphics\VertexFormat\VertexC1P3T2.cs" />
-    <Compile Include="Graphics\VertexFormat\VertexC1P3.cs" />
+    <Compile Include="Drawing\VertexFormat\IVertexData.cs" />
+    <Compile Include="Drawing\VertexFormat\VertexC1P3T4A1.cs" />
+    <Compile Include="Drawing\VertexFormat\VertexC1P3T2.cs" />
+    <Compile Include="Drawing\VertexFormat\VertexC1P3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\Checkerboard.png" />

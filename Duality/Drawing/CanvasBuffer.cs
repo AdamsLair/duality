@@ -5,15 +5,13 @@ using System.Linq;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
-using Duality.VertexFormat;
-using Duality.ColorFormat;
 using Duality.Resources;
 
-namespace Duality
+namespace Duality.Drawing
 {
 	/// <summary>
-	/// This class handles buffering and reusing vertex arrays created by a <see cref="Duality.Canvas"/> and is a measure of
-	/// performance and memory footprint improvement when using <see cref="Duality.Canvas"/> on a regular basis.
+	/// This class handles buffering and reusing vertex arrays created by a <see cref="Duality.Drawing.Canvas"/> and is a measure of
+	/// performance and memory footprint improvement when using <see cref="Duality.Drawing.Canvas"/> on a regular basis.
 	/// </summary>
 	public class CanvasBuffer
 	{

@@ -5,7 +5,7 @@ using System.Text;
 
 using OpenTK;
 
-using Duality.ColorFormat;
+using Duality.Drawing;
 
 namespace Duality
 {

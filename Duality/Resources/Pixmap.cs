@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Editor;
 using Duality.Serialization;
 using Duality.Properties;

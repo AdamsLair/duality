@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Editor;
 using Duality.Resources;
 

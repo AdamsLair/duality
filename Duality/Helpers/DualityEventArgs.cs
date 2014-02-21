@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Duality.Drawing;
+
 namespace Duality
 {
 	/// <summary>

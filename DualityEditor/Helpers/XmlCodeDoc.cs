@@ -214,6 +214,9 @@ namespace Duality.Editor
 
 		private static MemberInfo ResolveDocStyleMember(string docId)
 		{
+			// Conversion operator syntax not supported yet
+			if (docId.Contains('~')) return null;
+
 			// Determine entry type
 			EntryType memberEntryType;
 			switch (docId[0])

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Duality.Profiling
+namespace Duality
 {
 	[Flags]
-	public enum ReportOptions
+	public enum ProfileReportOptions
 	{
 		None			= 0x00,
 

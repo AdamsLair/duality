@@ -14,7 +14,7 @@ using Aga.Controls.Tree;
 
 using Duality;
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.CorePluginInterface;

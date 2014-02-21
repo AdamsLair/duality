@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL;
 using Duality;
 using Duality.Editor;
 using Duality.Components.Renderers;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Properties;
 

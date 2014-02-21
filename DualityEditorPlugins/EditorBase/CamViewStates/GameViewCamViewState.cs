@@ -3,6 +3,7 @@
 using Duality;
 using Duality.Components;
 using Duality.Resources;
+using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.Base.CamViewStates
 {

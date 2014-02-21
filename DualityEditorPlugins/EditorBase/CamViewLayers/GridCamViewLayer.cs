@@ -5,8 +5,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using Duality;
-using Duality.VertexFormat;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 
 using OpenTK;

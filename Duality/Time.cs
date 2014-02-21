@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Duality.Profiling;
-
 namespace Duality
 {
 	/// <summary>

@@ -12,7 +12,7 @@ using OpenTK.Audio.OpenAL;
 
 using Duality.Resources;
 using Duality.Serialization;
-using Duality.Profiling;
+using Duality.Drawing;
 
 namespace Duality
 {

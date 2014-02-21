@@ -4,7 +4,7 @@ using System.Linq;
 using System.Globalization;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components.Physics;
 

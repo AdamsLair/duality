@@ -6,7 +6,7 @@ using OpenTK;
 using Duality;
 using Duality.Editor;
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Properties;
 
 //	Note:

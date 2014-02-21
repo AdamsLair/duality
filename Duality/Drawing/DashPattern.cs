@@ -5,13 +5,11 @@ using System.Linq;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
-using Duality.VertexFormat;
-using Duality.ColorFormat;
 using Duality.Resources;
 using Duality.Cloning;
 using ICloneable = Duality.Cloning.ICloneable;
 
-namespace Duality
+namespace Duality.Drawing
 {
 	/// <summary>
 	/// Describes a pattern for dashed lines.

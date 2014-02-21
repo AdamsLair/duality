@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality.Editor;
-using Duality.ColorFormat;
-using Duality.VertexFormat;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Properties;
 
@@ -361,7 +360,7 @@ namespace Duality.Components.Renderers
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
 		
-		protected void PrepareVerticesSmooth(ref VertexFormat.VertexC1P3T4A1[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
+		protected void PrepareVerticesSmooth(ref VertexC1P3T4A1[] vertices, IDrawDevice device, float curAnimFrameFade, ColorRgba mainClr, Rect uvRect, Rect uvRectNext)
 		{
 			Vector3 posTemp = this.gameobj.Transform.Pos;
 			float scaleTemp = 1.0f;
@@ -381,7 +380,7 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
 			
-			if (vertices == null || vertices.Length != 4) vertices = new VertexFormat.VertexC1P3T4A1[4];
+			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;

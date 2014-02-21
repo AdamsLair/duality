@@ -8,7 +8,7 @@ using AdamsLair.PropertyGrid;
 using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
 using Duality.Editor.Forms;
 

@@ -6,12 +6,9 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
 using Duality.Editor;
-using Duality.VertexFormat;
-using Duality.ColorFormat;
 using Duality.Resources;
-using Duality.Profiling;
 
-namespace Duality
+namespace Duality.Drawing
 {
 	/// <summary>
 	/// Specifies the way in which incoming vertex data is interpreted in order to generate geometry.

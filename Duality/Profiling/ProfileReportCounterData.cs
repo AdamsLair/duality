@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Duality.Profiling
+namespace Duality
 {
-	public struct ReportCounterData
+	public struct ProfileReportCounterData
 	{
 		public	float	Severity;
 		public	string	LastValue;

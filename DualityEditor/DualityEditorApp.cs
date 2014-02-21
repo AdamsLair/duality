@@ -13,7 +13,7 @@ using Duality;
 using Duality.Components;
 using Duality.Serialization;
 using Duality.Resources;
-using Duality.Profiling;
+using Duality.Drawing;
 
 using Duality.Editor.Forms;
 using Duality.Editor.CorePluginInterface;

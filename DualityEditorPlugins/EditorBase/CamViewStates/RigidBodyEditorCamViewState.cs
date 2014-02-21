@@ -9,7 +9,7 @@ using Duality;
 using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Font = Duality.Resources.Font;
 
 using Duality.Editor;

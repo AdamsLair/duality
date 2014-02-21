@@ -8,8 +8,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using SysDrawFont = System.Drawing.Font;
 
-using Duality.ColorFormat;
-using Duality.VertexFormat;
+using Duality.Drawing;
 using Duality.Editor;
 using Duality.Properties;
 

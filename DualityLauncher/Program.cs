@@ -6,7 +6,6 @@ using System.Drawing;
 
 using Duality;
 using Duality.Resources;
-using Duality.Profiling;
 
 using OpenTK;
 using OpenTK.Input;

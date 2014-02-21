@@ -7,6 +7,7 @@ using OpenTK;
 
 using Duality.Resources;
 using Duality.Editor;
+using Duality.Drawing;
 
 namespace Duality
 {

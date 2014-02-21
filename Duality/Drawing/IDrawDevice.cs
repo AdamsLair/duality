@@ -6,12 +6,10 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
 using Duality.Editor;
-using Duality.VertexFormat;
-using Duality.ColorFormat;
 using Duality.Resources;
-using Duality.Profiling;
+using Duality.Drawing;
 
-namespace Duality
+namespace Duality.Drawing
 {
 	/// <summary>
 	/// Defines a general interface for drawing devices. Its main duty is to accept and collect parameterized vertex data.

@@ -8,7 +8,7 @@ using System.Drawing;
 using AdamsLair.PropertyGrid;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
 using Duality.Editor;
 using Duality.Editor.CorePluginInterface;
@@ -123,7 +123,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			System.Drawing.Bitmap iconBitmap = CorePluginRegistry.GetTypeImage(this.EditedType) as System.Drawing.Bitmap;
 			ColorHsva avgClr = iconBitmap != null ? 
 				iconBitmap.GetAverageColor().ToHsva() : 
-				Duality.ColorFormat.ColorHsva.TransparentWhite;
+				Duality.Drawing.ColorHsva.TransparentWhite;
 			if (avgClr.S <= 0.05f)
 			{
 				avgClr = new ColorHsva(

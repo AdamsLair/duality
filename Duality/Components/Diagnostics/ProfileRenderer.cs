@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Editor;
-using Duality.Profiling;
-using Duality.VertexFormat;
 using Duality.Resources;
 using Duality.Properties;
 
@@ -35,7 +33,7 @@ namespace Duality.Components.Diagnostics
 		private	bool			textReportStat		= true;
 		private	bool			drawGraphs			= true;
 		private	List<string>	counterGraphs		= new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
-		private	ReportOptions	textReportOptions	= ReportOptions.LastValue;
+		private	ProfileReportOptions	textReportOptions	= ProfileReportOptions.LastValue;
 		private	int				updateInterval		= 250;
 		private	Key				keyToggleTextPerf	= Key.F2;
 		private	Key				keyToggleTextStat	= Key.F3;
@@ -101,7 +99,7 @@ namespace Duality.Components.Diagnostics
 			set { this.keyToggleGraph = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The names of <see cref="Duality.Profiling.ProfileCounter"/> instances that should be drawn in graph form.
+		/// [GET / SET] The names of <see cref="Duality.ProfileCounter"/> instances that should be drawn in graph form.
 		/// </summary>
 		public List<string> CounterGraphs
 		{
@@ -111,7 +109,7 @@ namespace Duality.Components.Diagnostics
 		/// <summary>
 		/// [GET / SET] A bitmask that specifies which report features are used.
 		/// </summary>
-		public ReportOptions Options
+		public ProfileReportOptions Options
 		{
 			get { return this.textReportOptions; }
 			set { this.textReportOptions = value; }
@@ -166,7 +164,7 @@ namespace Duality.Components.Diagnostics
 				if (!this.textReportStat) counters = counters.Where(c => !(c is StatCounter));
 				if (this.textReport == null || (Time.MainTimer - this.textReportLast).TotalMilliseconds > this.updateInterval)
 				{
-					string report = Profile.GetTextReport(counters, this.textReportOptions | ReportOptions.FormattedText);
+					string report = Profile.GetTextReport(counters, this.textReportOptions | ProfileReportOptions.FormattedText);
 
 					if (this.textReport == null)
 					{

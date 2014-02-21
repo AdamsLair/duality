@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using Duality.ColorFormat;
-using Duality.VertexFormat;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Editor;
 using Duality.Properties;

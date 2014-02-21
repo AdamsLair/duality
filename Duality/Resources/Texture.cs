@@ -7,6 +7,7 @@ using BitmapPixelFormat = System.Drawing.Imaging.PixelFormat;
 
 using Duality.Editor;
 using Duality.Properties;
+using Duality.Drawing;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;

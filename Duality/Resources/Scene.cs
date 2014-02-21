@@ -9,8 +9,8 @@ using FarseerPhysics.Dynamics;
 using Duality.Editor;
 using Duality.Components;
 using Duality.Serialization;
-using Duality.Profiling;
 using Duality.Properties;
+using Duality.Drawing;
 
 namespace Duality.Resources
 {

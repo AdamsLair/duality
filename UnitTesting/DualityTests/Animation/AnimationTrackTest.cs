@@ -5,7 +5,7 @@ using System.Linq;
 
 using Duality;
 using Duality.Animation;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
 using OpenTK;
 

@@ -2,7 +2,7 @@
 using System.Linq;
 using System;
 
-namespace Duality.Profiling
+namespace Duality
 {
 	public class StatCounter : ProfileCounter
 	{
@@ -58,28 +58,28 @@ namespace Duality.Profiling
 			this.value = 0;
 		}
 		
-		public override void GetReportData(out ReportCounterData data, ReportOptions options)
+		public override void GetReportData(out ProfileReportCounterData data, ProfileReportOptions options)
 		{
-			data = new ReportCounterData();
+			data = new ProfileReportCounterData();
 			data.Severity = 0.5f;
 			
-			if ((options & ReportOptions.LastValue) != ReportOptions.None)
+			if ((options & ProfileReportOptions.LastValue) != ProfileReportOptions.None)
 				data.LastValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.lastValue);
 
 			if (this.IsSingleValue)
 			{
-				if ((options & ReportOptions.AverageValue) != ReportOptions.None)
+				if ((options & ProfileReportOptions.AverageValue) != ProfileReportOptions.None)
 					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.lastValue);
 			}
 			else
 			{
-				if ((options & ReportOptions.AverageValue) != ReportOptions.None)
+				if ((options & ProfileReportOptions.AverageValue) != ProfileReportOptions.None)
 					data.AverageValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", (int)Math.Round((double)this.accumValue / (double)this.sampleCount));
-				if ((options & ReportOptions.MinValue) != ReportOptions.None)
+				if ((options & ProfileReportOptions.MinValue) != ProfileReportOptions.None)
 					data.MinValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.accumMinValue);
-				if ((options & ReportOptions.MaxValue) != ReportOptions.None)
+				if ((options & ProfileReportOptions.MaxValue) != ProfileReportOptions.None)
 					data.MaxValue = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.accumMaxValue);
-				if ((options & ReportOptions.SampleCount) != ReportOptions.None)
+				if ((options & ProfileReportOptions.SampleCount) != ProfileReportOptions.None)
 					data.SampleCount = string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0}", this.sampleCount);
 			}
 		}

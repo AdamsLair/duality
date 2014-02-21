@@ -8,10 +8,9 @@ using System;
 using OpenTK;
 
 using Duality.Resources;
-using Duality.ColorFormat;
-using Duality.VertexFormat;
+using Duality.Drawing;
 
-namespace Duality.Profiling
+namespace Duality
 {
 	public abstract class ProfileCounter
 	{
@@ -118,7 +117,7 @@ namespace Duality.Profiling
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="options"></param>
-		public abstract void GetReportData(out ReportCounterData data, ReportOptions options);
+		public abstract void GetReportData(out ProfileReportCounterData data, ProfileReportOptions options);
 		protected virtual void OnFrameTick() {}
 
 		internal void TickFrame()

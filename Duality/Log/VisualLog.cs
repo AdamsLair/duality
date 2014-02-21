@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Components.Diagnostics;
 
 using OpenTK;

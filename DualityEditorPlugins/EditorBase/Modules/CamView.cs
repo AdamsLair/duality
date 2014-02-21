@@ -11,7 +11,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 using Duality;
 using Duality.Components;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 
 using Duality.Editor;

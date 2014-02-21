@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="OldNamespacesErrorHandler.cs" />
     <Compile Include="ProfileRendererErrorHandler.cs" />
     <Compile Include="SoundErrorHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

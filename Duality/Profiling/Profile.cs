@@ -8,10 +8,9 @@ using System;
 using OpenTK;
 
 using Duality.Resources;
-using Duality.ColorFormat;
-using Duality.VertexFormat;
+using Duality.Drawing;
 
-namespace Duality.Profiling
+namespace Duality
 {
 	/// <summary>
 	/// This class houses several performance counters and performance measurement utility
@@ -205,12 +204,12 @@ namespace Duality.Profiling
 		public static void SaveTextReport(Stream stream)
 		{
 			string report = GetTextReport(counterMap.Values.Where(c => c.HasData), 
-				ReportOptions.GroupHeader | 
-				ReportOptions.Header | 
-				ReportOptions.AverageValue |
-				ReportOptions.MaxValue | 
-				ReportOptions.MinValue |
-				ReportOptions.SampleCount);
+				ProfileReportOptions.GroupHeader | 
+				ProfileReportOptions.Header | 
+				ProfileReportOptions.AverageValue |
+				ProfileReportOptions.MaxValue | 
+				ProfileReportOptions.MinValue |
+				ProfileReportOptions.SampleCount);
 			using (StreamWriter writer = new StreamWriter(stream))
 			{
 				writer.Write(report);
@@ -220,7 +219,7 @@ namespace Duality.Profiling
 		/// Creates a text report of the current profiling data and returns it as string.
 		/// </summary>
 		/// <param name="filePath"></param>
-		public static string GetTextReport(IEnumerable<ProfileCounter> reportCounters, ReportOptions options = ReportOptions.LastValue)
+		public static string GetTextReport(IEnumerable<ProfileCounter> reportCounters, ProfileReportOptions options = ProfileReportOptions.LastValue)
 		{
 			// Group Counters by Type
 			Dictionary<Type,List<ProfileCounter>> countersByType = new Dictionary<Type,List<ProfileCounter>>();
@@ -242,44 +241,44 @@ namespace Duality.Profiling
 
 				int maxNameLen	= counters.Max(c => c.DisplayName.Length + c.ParentDepth * 2);
 					
-				if (options.HasFlag(ReportOptions.GroupHeader))
+				if (options.HasFlag(ProfileReportOptions.GroupHeader))
 				{
-					reportBuilder.Append(options.HasFlag(ReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
+					reportBuilder.Append(options.HasFlag(ProfileReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
 					reportBuilder.AppendLine(("[ " + pair.Key.Name + " ]").PadLeft(35, '-').PadRight(50,'-'));
-					reportBuilder.Append(options.HasFlag(ReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
+					reportBuilder.Append(options.HasFlag(ProfileReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
 				}
 				else if (reportBuilder.Length > 0)
 				{
-					reportBuilder.Append(options.HasFlag(ReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
+					reportBuilder.Append(options.HasFlag(ProfileReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
 				}
 
-				if (options.HasFlag(ReportOptions.Header))
+				if (options.HasFlag(ProfileReportOptions.Header))
 				{
 					reportBuilder.Append("Name");
 					reportBuilder.Append(' ', 1 + Math.Max((1 + maxNameLen) - "Name".Length, 0));
 
-					if (options.HasFlag(ReportOptions.LastValue))
+					if (options.HasFlag(ProfileReportOptions.LastValue))
 						reportBuilder.Append("   Last Value ");
-					if (options.HasFlag(ReportOptions.AverageValue))
+					if (options.HasFlag(ProfileReportOptions.AverageValue))
 						reportBuilder.Append("   Avg. Value ");
-					if (options.HasFlag(ReportOptions.MinValue))
+					if (options.HasFlag(ProfileReportOptions.MinValue))
 						reportBuilder.Append("   Min. Value ");
-					if (options.HasFlag(ReportOptions.MaxValue))
+					if (options.HasFlag(ProfileReportOptions.MaxValue))
 						reportBuilder.Append("   Max. Value ");
-					if (options.HasFlag(ReportOptions.SampleCount))
+					if (options.HasFlag(ProfileReportOptions.SampleCount))
 						reportBuilder.Append("        Samples ");
 
-					reportBuilder.Append(options.HasFlag(ReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
+					reportBuilder.Append(options.HasFlag(ProfileReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
 				}
 				Stack<ProfileCounter> appendStack = new Stack<ProfileCounter>(rootCounters.Reverse());
 				while (appendStack.Count > 0)
 				{
 					ProfileCounter current = appendStack.Pop();
 
-					ReportCounterData data;
+					ProfileReportCounterData data;
 					current.GetReportData(out data, options);
 					
-					if (options.HasFlag(ReportOptions.FormattedText))
+					if (options.HasFlag(ProfileReportOptions.FormattedText))
 					{
 						float severity = data.Severity;
 						ColorRgba lineColor = severity >= 0.5f ? 
@@ -292,48 +291,48 @@ namespace Duality.Profiling
 					reportBuilder.Append(':');
 					reportBuilder.Append(' ', 1 + Math.Max((1 + maxNameLen) - (current.ParentDepth * 2 + current.DisplayName.Length + 1), 0));
 
-					if (options.HasFlag(ReportOptions.LastValue))
+					if (options.HasFlag(ProfileReportOptions.LastValue))
 					{
 						string valStr = data.LastValue ?? "-";
 						reportBuilder.Append(' ', Math.Max(13 - valStr.Length, 0));
 						reportBuilder.Append(valStr);
 						reportBuilder.Append(' ');
 					}
-					if (options.HasFlag(ReportOptions.AverageValue))
+					if (options.HasFlag(ProfileReportOptions.AverageValue))
 					{
 						string valStr = data.AverageValue ?? "-";
 						reportBuilder.Append(' ', Math.Max(13 - valStr.Length, 0));
 						reportBuilder.Append(valStr);
 						reportBuilder.Append(' ');
 					}
-					if (options.HasFlag(ReportOptions.MinValue))
+					if (options.HasFlag(ProfileReportOptions.MinValue))
 					{
 						string valStr = data.MinValue ?? "-";
 						reportBuilder.Append(' ', Math.Max(13 - valStr.Length, 0));
 						reportBuilder.Append(valStr);
 						reportBuilder.Append(' ');
 					}
-					if (options.HasFlag(ReportOptions.MaxValue))
+					if (options.HasFlag(ProfileReportOptions.MaxValue))
 					{
 						string valStr = data.MaxValue ?? "-";
 						reportBuilder.Append(' ', Math.Max(13 - valStr.Length, 0));
 						reportBuilder.Append(valStr);
 						reportBuilder.Append(' ');
 					}
-					if (options.HasFlag(ReportOptions.SampleCount))
+					if (options.HasFlag(ProfileReportOptions.SampleCount))
 					{
 						string valStr = data.SampleCount ?? "-";
 						reportBuilder.Append(' ', Math.Max(15 - valStr.Length, 0));
 						reportBuilder.Append(valStr);
 						reportBuilder.Append(' ');
 					}
-					reportBuilder.Append(options.HasFlag(ReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
+					reportBuilder.Append(options.HasFlag(ProfileReportOptions.FormattedText) ? FormattedText.FormatNewline : Environment.NewLine);
 
 					IEnumerable<ProfileCounter> childCounters = counters.Where(c => c.Parent == current);
 					foreach (ProfileCounter child in childCounters.Reverse())
 						appendStack.Push(child);
 				}
-				if (options.HasFlag(ReportOptions.FormattedText))
+				if (options.HasFlag(ProfileReportOptions.FormattedText))
 				{
 					reportBuilder.Append(FormattedText.FormatColor(ColorRgba.White));
 				}

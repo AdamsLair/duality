@@ -7,10 +7,8 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
 using Duality.Editor;
-using Duality.VertexFormat;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
-using Duality.Profiling;
 using Duality.Properties;
 
 namespace Duality.Components
@@ -152,12 +150,12 @@ namespace Duality.Components
 		}
 
 
-		private	float	nearZ				= 0.0f;
-		private	float	farZ				= 10000.0f;
-		private	float	focusDist			= Duality.DrawDevice.DefaultFocusDist;
-		private	PerspectiveMode	perspective	= PerspectiveMode.Parallax;
+		private	float	nearZ					= 0.0f;
+		private	float	farZ					= 10000.0f;
+		private	float	focusDist				= DrawDevice.DefaultFocusDist;
+		private	PerspectiveMode	perspective		= PerspectiveMode.Parallax;
 		private	VisibilityFlag	visibilityMask	= VisibilityFlag.All;
-		private	List<Pass>	passes			= new List<Pass>();
+		private	List<Pass>	passes				= new List<Pass>();
 
 		[NonSerialized]	private	DrawDevice			drawDevice		= null;
 		[NonSerialized]	private	List<ICmpRenderer>	pickingMap		= null;

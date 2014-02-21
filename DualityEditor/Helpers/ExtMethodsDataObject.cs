@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using System.IO;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 
 using Duality.Editor.CorePluginInterface;

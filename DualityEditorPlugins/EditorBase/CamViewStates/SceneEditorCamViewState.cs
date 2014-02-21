@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using Duality;
 using Duality.Components;
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
 using Duality.Editor;
 using Duality.Editor.Forms;

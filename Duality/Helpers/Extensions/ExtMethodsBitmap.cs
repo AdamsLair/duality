@@ -2,7 +2,8 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
-using Duality.ColorFormat;
+
+using Duality.Drawing;
 
 namespace Duality
 {

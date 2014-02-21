@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Duality.VertexFormat;
+using Duality.Drawing;
 using Duality.Editor;
-using Duality.ColorFormat;
 using Duality.Properties;
 
 using OpenTK.Graphics.OpenGL;
@@ -17,7 +16,7 @@ namespace Duality.Resources
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Material"/>
 	/// <seealso cref="Duality.Resources.ShaderProgram"/>
-	/// <seealso cref="Duality.BlendMode"/>
+	/// <seealso cref="Duality.Drawing.BlendMode"/>
 	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.Category_Graphics)]
 	public class DrawTechnique : Resource
@@ -187,15 +186,15 @@ namespace Duality.Resources
 		/// </summary>
 		public	const	int		VertexType_Unknown	= -1;
 		/// <summary>
-		/// <see cref="Duality.VertexFormat.VertexC1P3"/> format.
+		/// <see cref="Duality.Drawing.VertexC1P3"/> format.
 		/// </summary>
 		public	const	int		VertexType_C1P3		= 1;
 		/// <summary>
-		/// <see cref="Duality.VertexFormat.VertexC1P3T2"/> format.
+		/// <see cref="Duality.Drawing.VertexC1P3T2"/> format.
 		/// </summary>
 		public	const	int		VertexType_C1P3T2	= 2;
 		/// <summary>
-		/// <see cref="Duality.VertexFormat.VertexC1P3T4A1"/> format.
+		/// <see cref="Duality.Drawing.VertexC1P3T4A1"/> format.
 		/// </summary>
 		public	const	int		VertexType_C1P3T4A1	= 3;
 
