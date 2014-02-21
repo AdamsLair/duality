@@ -6,7 +6,7 @@ using System.Reflection;
 using OpenTK;
 
 using Duality.Resources;
-using Duality.EditorHints;
+using Duality.Editor;
 
 namespace Duality
 {

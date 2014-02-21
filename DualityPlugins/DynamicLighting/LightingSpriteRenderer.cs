@@ -3,7 +3,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Components.Renderers;
 using Duality.ColorFormat;
 using Duality.Resources;

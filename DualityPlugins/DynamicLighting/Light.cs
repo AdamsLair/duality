@@ -4,7 +4,7 @@ using System.Linq;
 
 using OpenTK;
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
 using Duality.ColorFormat;
 using Duality.Properties;

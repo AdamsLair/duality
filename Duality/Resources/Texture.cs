@@ -5,7 +5,7 @@ using System.Drawing.Imaging;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using BitmapPixelFormat = System.Drawing.Imaging.PixelFormat;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Properties;
 
 using OpenTK;

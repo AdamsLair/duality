@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Duality.EditorHints;
+using Duality.Editor;
 
 using OpenTK;
 

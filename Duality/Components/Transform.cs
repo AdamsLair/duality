@@ -2,7 +2,7 @@
 
 using OpenTK;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Properties;
 
 namespace Duality.Components

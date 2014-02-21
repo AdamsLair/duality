@@ -3,7 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Properties;
 
 using OpenTK.Audio.OpenAL;

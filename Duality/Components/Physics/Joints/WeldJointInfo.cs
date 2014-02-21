@@ -6,7 +6,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using FarseerPhysics.Dynamics.Joints;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
 
 namespace Duality.Components.Physics

@@ -5,7 +5,7 @@ using System.Linq;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.VertexFormat;
 using Duality.ColorFormat;
 using Duality.Resources;

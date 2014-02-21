@@ -4,7 +4,7 @@ using System.Linq;
 
 using Duality.Resources;
 using Duality.Cloning;
-using Duality.EditorHints;
+using Duality.Editor;
 
 using ICloneable = Duality.Cloning.ICloneable;
 

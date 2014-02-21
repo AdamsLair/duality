@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using OpenTK;
 using FarseerPhysics.Dynamics;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Components;
 using Duality.Serialization;
 using Duality.Profiling;

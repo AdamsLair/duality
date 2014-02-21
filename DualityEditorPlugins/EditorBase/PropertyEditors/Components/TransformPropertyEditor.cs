@@ -7,7 +7,7 @@ using AdamsLair.PropertyGrid;
 using OpenTK;
 
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Components;
 using Duality.Editor;
 

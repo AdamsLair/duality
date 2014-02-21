@@ -12,7 +12,7 @@ using Aga.Controls.Tree;
 
 using Duality;
 using Duality.Resources;
-using Duality.EditorHints;
+using Duality.Editor;
 
 using Duality.Editor;
 using Duality.Editor.CorePluginInterface;

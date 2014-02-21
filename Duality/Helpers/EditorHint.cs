@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 
-namespace Duality.EditorHints
+namespace Duality.Editor
 {
 	/// <summary>
 	/// Some general flags for Type members that indicate preferred editor behaviour.

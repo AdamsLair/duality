@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Properties;
 
 using OpenTK.Graphics.OpenGL;

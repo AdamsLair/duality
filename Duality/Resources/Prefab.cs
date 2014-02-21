@@ -5,7 +5,7 @@ using System.Reflection;
 
 using Duality.Cloning;
 using Duality.Properties;
-using Duality.EditorHints;
+using Duality.Editor;
 
 namespace Duality.Resources
 {

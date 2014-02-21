@@ -7,7 +7,7 @@ using OpenTK;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Collision.Shapes;
 
-using Duality.EditorHints;
+using Duality.Editor;
 
 namespace Duality.Components.Physics
 {

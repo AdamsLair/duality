@@ -7,7 +7,7 @@ using OpenTK;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
 using Duality.Properties;
 

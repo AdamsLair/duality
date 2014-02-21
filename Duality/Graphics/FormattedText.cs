@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
 using Duality.VertexFormat;
 using Duality.ColorFormat;

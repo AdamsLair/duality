@@ -7,7 +7,7 @@ using System.IO;
 using System.Reflection;
 
 using Duality.ColorFormat;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Serialization;
 using Duality.Properties;
 

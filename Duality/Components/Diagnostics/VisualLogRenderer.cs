@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality.ColorFormat;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
 
 using OpenTK;

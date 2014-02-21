@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-using Duality.EditorHints;
+using Duality.Editor;
 
 namespace Duality.Serialization.MetaFormat
 {

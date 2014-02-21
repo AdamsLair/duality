@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 
 using Duality.Serialization;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Cloning;
 
 using ICloneable = Duality.Cloning.ICloneable;

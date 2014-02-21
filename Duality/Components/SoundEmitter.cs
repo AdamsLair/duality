@@ -4,7 +4,7 @@ using System.Linq;
 
 using OpenTK;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
 using Duality.Properties;
 using ICloneable = Duality.Cloning.ICloneable;

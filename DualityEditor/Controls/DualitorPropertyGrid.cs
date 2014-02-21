@@ -9,7 +9,7 @@ using AdamsLair.PropertyGrid.PropertyEditors;
 using PropertyGrid = AdamsLair.PropertyGrid.PropertyGrid;
 
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 
 using Duality.Editor.UndoRedoActions;
 

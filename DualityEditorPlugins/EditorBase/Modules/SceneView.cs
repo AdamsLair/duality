@@ -13,7 +13,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
 using Duality.ColorFormat;
 
