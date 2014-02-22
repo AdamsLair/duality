@@ -13,7 +13,7 @@ namespace Duality.Animation
 		/// <summary>
 		/// [GET / SET] The set of keyframes that is used to describe the animation.
 		/// </summary>
-        IEnumerable<IAnimationKeyFrame> KeyFrames { get; set; }
+		IEnumerable<IAnimationKeyFrame> KeyFrames { get; set; }
 		/// <summary>
 		/// [GET] The total number of keyframes in this track.
 		/// </summary>
@@ -21,7 +21,7 @@ namespace Duality.Animation
 		/// <summary>
 		/// [GET / SET] Describes whether or not this track is considered to be a loop.
 		/// </summary>
-        bool IsLooping { get; set; }
+		bool IsLooping { get; set; }
 		/// <summary>
 		/// [GET] Returns the total duration of this track in seconds, i.e. the last keyframes time value.
 		/// </summary>
@@ -52,7 +52,7 @@ namespace Duality.Animation
 		/// </summary>
 		/// <param name="time">Time in seconds.</param>
 		/// <param name="value"></param>
-        void Add<T>(float time, T value);
+		void Add<T>(float time, T value);
 		/// <summary>
 		/// Removes a single keyframe from the track.
 		/// </summary>
@@ -68,7 +68,7 @@ namespace Duality.Animation
 		/// </summary>
 		/// <param name="time">Time in seconds.</param>
 		/// <returns></returns>
-        T GetValue<T>(float time);
+		T GetValue<T>(float time);
 		/// <summary>
 		/// Assigns a value at the specified time, converted from Type T. This may introduce new keyframes or modify existing ones.
 		/// </summary>

@@ -351,9 +351,9 @@ namespace Duality.ColorFormat
 		/// <param name="right">The second color.</param>
 		/// <returns></returns>
 		public static bool operator ==(ColorHsva left, ColorHsva right)
-        {
-            return left.Equals(right);
-        }
+		{
+			return left.Equals(right);
+		}
 		/// <summary>
 		/// Returns whether two colors are unequal.
 		/// </summary>
@@ -361,9 +361,9 @@ namespace Duality.ColorFormat
 		/// <param name="right">The second color.</param>
 		/// <returns></returns>
 		public static bool operator !=(ColorHsva left, ColorHsva right)
-        {
-            return !left.Equals(right);
-        }
+		{
+			return !left.Equals(right);
+		}
 
 		public static explicit operator ColorHsva(int c)
 		{

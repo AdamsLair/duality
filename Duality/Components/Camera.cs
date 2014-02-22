@@ -431,8 +431,8 @@ namespace Duality.Components
 				for (int i = 0; i < w; ++i)
 				{
 					int rendererId =	(this.pickingBuffer[offset]		<< 16) |
-						                (this.pickingBuffer[offset + 1] << 8) |
-						                (this.pickingBuffer[offset + 2] << 0);
+										(this.pickingBuffer[offset + 1] << 8) |
+										(this.pickingBuffer[offset + 2] << 0);
 					if (rendererId != rendererIdLast)
 					{
 						if (rendererId - 1 > this.pickingMap.Count)

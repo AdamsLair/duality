@@ -661,9 +661,9 @@ namespace Duality
 		/// <param name="right">The second Rect.</param>
 		/// <returns></returns>
 		public static bool operator ==(Rect left, Rect right)
-        {
-            return left.Equals(right);
-        }
+		{
+			return left.Equals(right);
+		}
 		/// <summary>
 		/// Returns whether two Rects are unequal.
 		/// </summary>
@@ -671,9 +671,9 @@ namespace Duality
 		/// <param name="right">The second Rect.</param>
 		/// <returns></returns>
 		public static bool operator !=(Rect left, Rect right)
-        {
-            return !left.Equals(right);
-        }
+		{
+			return !left.Equals(right);
+		}
 
 		public static implicit operator System.Drawing.Rectangle(Rect r)
 		{

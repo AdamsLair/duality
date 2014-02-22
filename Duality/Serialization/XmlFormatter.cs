@@ -204,24 +204,24 @@ namespace Duality.Serialization
 			Array arrObj;
 			if (arrType == typeof(byte[]))
 			{
-			    string binHexString = this.reader.ReadString();
-			    byte[] byteArr = this.StringToByteArray(binHexString);
+				string binHexString = this.reader.ReadString();
+				byte[] byteArr = this.StringToByteArray(binHexString);
 
-			    // Set object reference
-			    this.idManager.Inject(byteArr, objId);
-			    arrObj = byteArr;
+				// Set object reference
+				this.idManager.Inject(byteArr, objId);
+				arrObj = byteArr;
 			}
 			else
 			{
-			    // Prepare object reference
-			    arrObj = arrType != null ? Array.CreateInstance(arrType.GetElementType(), arrLength) : null;
-			    this.idManager.Inject(arrObj, objId);
+				// Prepare object reference
+				arrObj = arrType != null ? Array.CreateInstance(arrType.GetElementType(), arrLength) : null;
+				this.idManager.Inject(arrObj, objId);
 
-			    for (int l = 0; l < arrLength; l++)
-			    {
-			        object elem = this.ReadObjectData();
-			        if (arrObj != null) arrObj.SetValue(elem, l);
-			    }
+				for (int l = 0; l < arrLength; l++)
+				{
+					object elem = this.ReadObjectData();
+					if (arrObj != null) arrObj.SetValue(elem, l);
+				}
 			}
 
 			return arrObj;

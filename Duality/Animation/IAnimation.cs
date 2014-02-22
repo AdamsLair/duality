@@ -36,7 +36,7 @@ namespace Duality.Animation
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-        T GetCurrentValue<T>();
+		T GetCurrentValue<T>();
 		/// <summary>
 		/// Updates the <see cref="Target"/> object based on the animations current time and value.
 		/// </summary>

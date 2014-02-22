@@ -206,15 +206,15 @@ namespace Duality.Resources
 				return false;
 			}
 		}
-        private static void CastBuffer(float[] source, short[] target, int targetOffset, int length)
-        {
-            for (int i = 0; i < length; i++)
-            {
-                var temp = (int)(32767f * source[i]);
-                if (temp > short.MaxValue) temp = short.MaxValue;
-                else if (temp < short.MinValue) temp = short.MinValue;
-                target[targetOffset + i] = (short)temp;
-            }
-        }
+		private static void CastBuffer(float[] source, short[] target, int targetOffset, int length)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				var temp = (int)(32767f * source[i]);
+				if (temp > short.MaxValue) temp = short.MaxValue;
+				else if (temp < short.MinValue) temp = short.MinValue;
+				target[targetOffset + i] = (short)temp;
+			}
+		}
 	}
 }

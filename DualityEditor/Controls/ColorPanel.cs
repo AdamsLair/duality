@@ -6,16 +6,16 @@ using System.ComponentModel;
 
 namespace DualityEditor.Controls
 {
-    public class ColorPanel : UserControl
-    {
-        private	Bitmap	srcImage		= null;
-        private	int		pickerSize		= 8;
-        private	PointF	pickerPos		= new PointF(0.5f, 0.5f);
+	public class ColorPanel : UserControl
+	{
+		private	Bitmap	srcImage		= null;
+		private	int		pickerSize		= 8;
+		private	PointF	pickerPos		= new PointF(0.5f, 0.5f);
 		private	Color	clrTopLeft		= Color.Transparent;
 		private	Color	clrTopRight		= Color.Transparent;
 		private	Color	clrBottomLeft	= Color.Transparent;
 		private	Color	clrBottomRight	= Color.Transparent;
-        private	Color	valTemp			= Color.Transparent;
+		private	Color	valTemp			= Color.Transparent;
 		private	Timer	pickerDragTimer	= null;
 		private	bool	designSerializeColor = false;
 
@@ -24,45 +24,45 @@ namespace DualityEditor.Controls
 		public event EventHandler PercentualValueChanged = null;
 
 
-        public Rectangle ColorAreaRectangle
-        {
-            get { return new Rectangle(
-                this.ClientRectangle.X + 2,
-                this.ClientRectangle.Y + 2,
-                this.ClientRectangle.Width - 4,
-                this.ClientRectangle.Height - 4); }
-        }
+		public Rectangle ColorAreaRectangle
+		{
+			get { return new Rectangle(
+				this.ClientRectangle.X + 2,
+				this.ClientRectangle.Y + 2,
+				this.ClientRectangle.Width - 4,
+				this.ClientRectangle.Height - 4); }
+		}
 		[DefaultValue(8)]
-        public int PickerSize
-        {
-            get { return this.pickerSize; }
-            set { this.pickerSize = value; this.Invalidate(); }
-        }
+		public int PickerSize
+		{
+			get { return this.pickerSize; }
+			set { this.pickerSize = value; this.Invalidate(); }
+		}
 		[DefaultValue(0.5f)]
-        public PointF ValuePercentual
-        {
-            get { return this.pickerPos; }
-            set
-            {
+		public PointF ValuePercentual
+		{
+			get { return this.pickerPos; }
+			set
+			{
 				PointF last = this.pickerPos;
-                this.pickerPos = new PointF(
-                    Math.Min(1.0f, Math.Max(0.0f, value.X)),
-                    Math.Min(1.0f, Math.Max(0.0f, value.Y)));
+				this.pickerPos = new PointF(
+					Math.Min(1.0f, Math.Max(0.0f, value.X)),
+					Math.Min(1.0f, Math.Max(0.0f, value.Y)));
 				if (this.pickerPos != last)
 				{
 					this.OnPercentualValueChanged();
 					this.UpdateColorValue();
 					this.Invalidate();
 				}
-            }
-        }
-        public Color Value
-        {
-            get
-            {
-                return this.valTemp;
-            }
-        }
+			}
+		}
+		public Color Value
+		{
+			get
+			{
+				return this.valTemp;
+			}
+		}
 		public Color TopLeftColor
 		{
 			get { return this.clrTopLeft; }
@@ -113,8 +113,8 @@ namespace DualityEditor.Controls
 		}
 
 
-        public ColorPanel()
-        {
+		public ColorPanel()
+		{
 			this.pickerDragTimer = new Timer();
 			this.pickerDragTimer.Interval = 10;
 			this.pickerDragTimer.Tick += pickerDragTimer_Tick;
@@ -126,7 +126,7 @@ namespace DualityEditor.Controls
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			this.SetStyle(ControlStyles.ResizeRedraw, true);
 			this.SetupHueBrightnessGradient();
-        }
+		}
 		protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
@@ -279,14 +279,14 @@ namespace DualityEditor.Controls
 			this.SetupXYGradient(blendX, blendY, accuracy);
 		}
 
-        protected void UpdateColorValue()
-        {
+		protected void UpdateColorValue()
+		{
 			Color oldVal = this.valTemp;
-            this.valTemp = this.srcImage.GetPixel(
-                (int)Math.Round((this.srcImage.Width - 1) * this.pickerPos.X), 
-                (int)Math.Round((this.srcImage.Height - 1) * (1.0f - this.pickerPos.Y)));
+			this.valTemp = this.srcImage.GetPixel(
+				(int)Math.Round((this.srcImage.Width - 1) * this.pickerPos.X), 
+				(int)Math.Round((this.srcImage.Height - 1) * (1.0f - this.pickerPos.Y)));
 			if (oldVal != this.valTemp) this.OnValueChanged();
-        }
+		}
 
 		protected void OnValueChanged()
 		{
@@ -299,22 +299,22 @@ namespace DualityEditor.Controls
 				this.PercentualValueChanged(this, null);
 		}
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
+		protected override void OnPaint(PaintEventArgs e)
+		{
+			base.OnPaint(e);
 
-            Rectangle colorBoxOuter = new Rectangle(
-                this.ClientRectangle.X,
-                this.ClientRectangle.Y,
-                this.ClientRectangle.Width - 1,
-                this.ClientRectangle.Height - 1);
-            Rectangle colorBoxInner = new Rectangle(
-                colorBoxOuter.X + 1,
-                colorBoxOuter.Y + 1,
-                colorBoxOuter.Width - 2,
-                colorBoxOuter.Height - 2);
-            Rectangle colorArea = this.ColorAreaRectangle;
-            Point pickerVisualPos = new Point(
+			Rectangle colorBoxOuter = new Rectangle(
+				this.ClientRectangle.X,
+				this.ClientRectangle.Y,
+				this.ClientRectangle.Width - 1,
+				this.ClientRectangle.Height - 1);
+			Rectangle colorBoxInner = new Rectangle(
+				colorBoxOuter.X + 1,
+				colorBoxOuter.Y + 1,
+				colorBoxOuter.Width - 2,
+				colorBoxOuter.Height - 2);
+			Rectangle colorArea = this.ColorAreaRectangle;
+			Point pickerVisualPos = new Point(
 				colorArea.X + (int)Math.Round(this.pickerPos.X * colorArea.Width),
 				colorArea.Y + (int)Math.Round((1.0f - this.pickerPos.Y) * colorArea.Height));
 
@@ -346,26 +346,26 @@ namespace DualityEditor.Controls
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, SystemColors.Control)), colorArea);
 			}
 
-            e.Graphics.DrawRectangle(SystemPens.ControlDark, colorBoxOuter);
-            e.Graphics.DrawRectangle(SystemPens.ControlLightLight, colorBoxInner);
-        }
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
-            {
-                this.Focus();
-                this.ValuePercentual = new PointF(
+			e.Graphics.DrawRectangle(SystemPens.ControlDark, colorBoxOuter);
+			e.Graphics.DrawRectangle(SystemPens.ControlLightLight, colorBoxInner);
+		}
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e);
+			if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			{
+				this.Focus();
+				this.ValuePercentual = new PointF(
 					(float)(e.X - this.ColorAreaRectangle.X) / (float)this.ColorAreaRectangle.Width,
 					1.0f - (float)(e.Y - this.ColorAreaRectangle.Y) / (float)this.ColorAreaRectangle.Height);
 				this.pickerDragTimer.Start();
-            }
-        }
-        protected override void OnMouseUp(MouseEventArgs e)
-        {
-            base.OnMouseUp(e);
+			}
+		}
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
 			this.pickerDragTimer.Stop();
-        }
+		}
 		private void pickerDragTimer_Tick(object sender, EventArgs e)
 		{
 			Point pos = this.PointToClient(System.Windows.Forms.Cursor.Position);
@@ -373,16 +373,16 @@ namespace DualityEditor.Controls
 				(float)(pos.X - this.ColorAreaRectangle.X) / (float)this.ColorAreaRectangle.Width,
 				1.0f - (float)(pos.Y - this.ColorAreaRectangle.Y) / (float)this.ColorAreaRectangle.Height);
 		}
-        protected override void OnLostFocus(EventArgs e)
-        {
-            base.OnLostFocus(e);
-            this.Invalidate();
-        }
-        protected override void OnGotFocus(EventArgs e)
-        {
-            base.OnGotFocus(e);
-            this.Invalidate();
-        }
+		protected override void OnLostFocus(EventArgs e)
+		{
+			base.OnLostFocus(e);
+			this.Invalidate();
+		}
+		protected override void OnGotFocus(EventArgs e)
+		{
+			base.OnGotFocus(e);
+			this.Invalidate();
+		}
 
 		private void ResetTopLeftColor()
 		{
@@ -420,5 +420,5 @@ namespace DualityEditor.Controls
 		{
 			return this.designSerializeColor;
 		}
-    }
+	}
 }
