@@ -240,7 +240,7 @@ namespace Duality.Editor
 		public static string[] GetEditorCategory(this Type type)
 		{
 			string[] tree = null;
-			foreach (var attrib in type.GetEditorHints<EditorHintCategoryAttribute>())
+			foreach (var attrib in type.GetCustomAttributes<EditorHintCategoryAttribute>())
 			{
 				tree = attrib.CategoryTree;
 				if (tree != null) break;
@@ -255,68 +255,48 @@ namespace Duality.Editor
 		/// <returns></returns>
 		public static Image GetEditorImage(this Type type)
 		{
-			var w = System.Diagnostics.Stopwatch.StartNew();
 			Image image = null;
-			foreach (var attrib in type.GetEditorHints<EditorHintImageAttribute>())
+			foreach (var attrib in type.GetCustomAttributes<EditorHintImageAttribute>())
 			{
 				image = attrib.IconImage;
 				if (image != null) break;
 			}
-			w.Stop();
-			Console.WriteLine("{0}: {1:F}", type.Name, w.Elapsed.TotalMilliseconds);
 			return image;
 		}
 
 		/// <summary>
-		/// Retrieves the first <see cref="EditorHintAttribute"/> of the specified Type that is attached to the specified Member.
+		/// Retrieves the specified editor hint attribute from a member, if existing.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="info"></param>
+		/// <typeparam name="T">The Type of editor hint to retrieve.</typeparam>
+		/// <param name="member">The member to extract the hint from.</param>
+		/// <param name="overrideHint">An optional override hint, that will be preferred, if applicable.</param>
 		/// <returns></returns>
-		public static T GetEditorHint<T>(this MemberInfo info) where T : EditorHintAttribute
+		public static T GetEditorHint<T>(this MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
 		{
-			return info.GetCustomAttributes<T>().FirstOrDefault();
+			T hint = member.GetCustomAttributes<T>().FirstOrDefault();
+			if (overrideHints == null)
+				return hint;
+			else if (hint == null)
+				return overrideHints.OfType<T>().FirstOrDefault();
+			else
+				return overrideHints.OfType<T>().Where(o => hint.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? hint;
 		}
 		/// <summary>
-		/// Retrieves the first <see cref="EditorHintAttribute"/> of the specified Type that is attached to the specified Member.
+		/// Retrieves the specified editor hint attributes from a member, if existing.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="info"></param>
-		/// <param name="hintOverride">If set, the specified collection of available hints will be used to override the Members own attributes.</param>
+		/// <typeparam name="T">The Type of editor hints to retrieve.</typeparam>
+		/// <param name="member">The member to extract the hints from.</param>
+		/// <param name="overrideHints">An optional collection of override hints, that will be preferred, if applicable.</param>
 		/// <returns></returns>
-		public static T GetEditorHint<T>(this MemberInfo info, IEnumerable<EditorHintAttribute> hintOverride) where T : EditorHintAttribute
+		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
 		{
-			T attrib = null;
-			if (hintOverride != null) attrib = hintOverride.OfType<T>().FirstOrDefault();
-			if (attrib == null && info != null) attrib = info.GetEditorHint<T>();
-			return attrib;
-		}
-		/// <summary>
-		/// Retrieves all <see cref="EditorHintAttribute"/> instances of the specified Type that are attached to the specified Member.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="info"></param>
-		/// <returns></returns>
-		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info) where T : EditorHintAttribute
-		{
-			return info.GetCustomAttributes<T>();
-		}
-		/// <summary>
-		/// Retrieves all <see cref="EditorHintAttribute"/> instances of the specified Type that are attached to the specified Member.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="info"></param>
-		/// <param name="hintOverride">If set, the specified collection of available hints will be used to override the Members own attributes.</param>
-		/// <returns></returns>
-		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo info, IEnumerable<EditorHintAttribute> hintOverride) where T : EditorHintAttribute
-		{
-			if (info == null) return null;
-
-			IEnumerable<EditorHintAttribute> infoHints = info.GetEditorHints<T>();
-			if (hintOverride == null) return infoHints.OfType<T>();
-			if (infoHints == null) return hintOverride.OfType<T>();
-
-			return infoHints.Where(h => !hintOverride.Any(o => o.GetType().IsInstanceOfType(h))).OfType<T>();
+			IEnumerable<T> hints = member.GetCustomAttributes<T>();
+			if (overrideHints == null)
+				return hints;
+			else if (hints == null)
+				return overrideHints.OfType<T>();
+			else
+				return hints.Select(original => overrideHints.OfType<T>().Where(o => original.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? original);
 		}
 	}
 }
