@@ -72,9 +72,9 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.offset = 0;
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			IList[] values = this.GetValue().Cast<IList>().ToArray();
 			Type elementType = this.GetElementType();
 
@@ -121,11 +121,11 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			foreach (PropertyEditor e in this.Children)
 				e.PerformGetValue();
 		}
-		public override void PerformSetValue()
+		protected override void OnSetValue()
 		{
 			if (this.ReadOnly) return;
 			if (!this.Children.Any()) return;
-			base.PerformSetValue();
+			base.OnSetValue();
 
 			foreach (PropertyEditor e in this.Children)
 				e.PerformSetValue();

@@ -66,9 +66,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.PerformGetValue();
 			this.OnEditingFinished(FinishReason.LeapValue);
 		}
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			IContentRef[] values = this.GetValue().Cast<IContentRef>().ToArray();
 
 			this.BeginUpdate();

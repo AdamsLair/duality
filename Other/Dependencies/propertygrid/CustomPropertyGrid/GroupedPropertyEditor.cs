@@ -211,7 +211,7 @@ namespace AdamsLair.PropertyGrid
 			return false;
 		}
 
-		public override void PerformSetValue() {}
+		protected override void OnSetValue() {}
 
 		public PropertyEditor PickEditorAt(int x, int y, bool ownChildrenOnly)
 		{
@@ -1001,6 +1001,7 @@ namespace AdamsLair.PropertyGrid
 		protected override void OnSizeChanged()
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 			base.OnSizeChanged();
 			this.UpdateChildWidth();
 		}

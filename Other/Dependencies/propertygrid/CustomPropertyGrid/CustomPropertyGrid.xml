@@ -22,6 +22,25 @@
             </summary>
             <param name="obj"></param>
         </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.VerifyReflectedTypeEditors(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            This method is called in order to determine whether all of the editors children
+            are still valid regarding their dynamically reflected member Types. When a child
+            editor of an typeof(object) member has been dynamically typed to typeof(int) because
+            of its content, this method allows to switch re-initialize or re-create the editor
+            with an updated Type after the members value has changed from typeof(int) to typeof(float).
+            </summary>
+            <param name="values"></param>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.ReflectTypeForMember(System.Reflection.MemberInfo,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Determines the Type to use as a basis for generating a PropertyEditor for the specified member
+            by evaluating the members current value and static Type.
+            </summary>
+            <param name="member"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
         <member name="M:AdamsLair.PropertyGrid.PropertyEditor.BeginUpdate">
             <summary>
             Begins a refresh operation on this editor.

@@ -435,11 +435,16 @@ namespace AdamsLair.PropertyGrid
 		}
 		protected virtual void OnDisposing(bool manually) {}
 
-		public virtual void PerformGetValue() {}
-		public virtual void PerformSetValue()
+		public void PerformGetValue()
+		{
+			if (this.Disposed) return;
+			this.OnGetValue();
+		}
+		public void PerformSetValue()
 		{
 			if (this.ReadOnly) return;
-			this.SetValue(this.DisplayedValue);
+			if (this.Disposed) return;
+			this.OnSetValue();
 		}
 
 		/// <summary>
@@ -468,8 +473,11 @@ namespace AdamsLair.PropertyGrid
 				this.setter(objEnum.Select(this.converterSet));
 			else
 				this.setter(objEnum);
-			this.OnValueChanged();
 
+			if (this.parentEditor != null)
+				this.parentEditor.VerifyReflectedTypeEditors(this.parentEditor.GetValue());
+
+			this.OnValueChanged();
 			this.parentGrid.PostSetValue();
 		}
 		/// <summary>
@@ -479,6 +487,44 @@ namespace AdamsLair.PropertyGrid
 		protected void SetValue(object obj)
 		{
 			this.SetValues(new object[] { obj });
+		}
+
+		protected virtual void OnGetValue() {}
+		protected virtual void OnSetValue()
+		{
+			this.SetValue(this.DisplayedValue);
+		}
+
+		/// <summary>
+		/// This method is called in order to determine whether all of the editors children
+		/// are still valid regarding their dynamically reflected member Types. When a child
+		/// editor of an typeof(object) member has been dynamically typed to typeof(int) because
+		/// of its content, this method allows to switch re-initialize or re-create the editor
+		/// with an updated Type after the members value has changed from typeof(int) to typeof(float).
+		/// </summary>
+		/// <param name="values"></param>
+		protected virtual void VerifyReflectedTypeEditors(IEnumerable<object> values) {}
+		/// <summary>
+		/// Determines the Type to use as a basis for generating a PropertyEditor for the specified member
+		/// by evaluating the members current value and static Type.
+		/// </summary>
+		/// <param name="member"></param>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		protected Type ReflectTypeForMember(MemberInfo member, IEnumerable<object> values)
+		{
+			if (member is FieldInfo)
+			{
+				FieldInfo field = member as FieldInfo;
+				return PropertyEditor.ReflectDynamicType(field.FieldType, values.Where(v => v != null).Select(v => field.GetValue(v)));
+			}
+			else if (member is PropertyInfo)
+			{
+				PropertyInfo property = member as PropertyInfo;
+				return PropertyEditor.ReflectDynamicType(property.PropertyType, values.Where(v => v != null).Select(v => property.GetValue(v, null)));
+			}
+			else
+				throw new ArgumentException("Only PropertyInfo and FieldInfo members are supported");
 		}
 
 		public void Invalidate()

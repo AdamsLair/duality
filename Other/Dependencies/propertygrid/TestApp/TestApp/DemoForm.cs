@@ -43,6 +43,7 @@ namespace AdamsLair.PropertyGrid
 			private string t;
 			private Test2 substruct;
 			private Test3 subclass;
+			private	object any = "Hello";
 			public List<string> stringListField;
 			public FlaggedEnumTest enumField1;
 			public EnumTest enumField2;
@@ -101,6 +102,11 @@ namespace AdamsLair.PropertyGrid
 			{
 				get { return this.subclass; }
 				set { this.subclass = value as Test3; }
+			}
+			public object CouldBeAnything
+			{
+				get { return this.any; }
+				set { this.any = 17; }
 			}
 			public bool BoolOne { get; set; }
 			public bool BoolTwo { get; set; }

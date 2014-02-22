@@ -46,9 +46,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.componentEditors.Clear();
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			GameObject[] values = this.GetValue().Cast<GameObject>().ToArray();
 			if (values == null) return;
 
@@ -68,9 +68,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.Expanded = !this.ContentInitialized || this.Children.Any();
 			}
 		}
-		public override void PerformSetValue()
+		protected override void OnSetValue()
 		{
-			base.PerformSetValue();
+			base.OnSetValue();
 			if (this.ReadOnly) return;
 			if (!this.Children.Any()) return;
 

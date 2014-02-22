@@ -173,7 +173,7 @@ namespace AdamsLair.PropertyGrid
 
 			return e;
 		}
-		protected void VerifyReflectedTypeEditors(IEnumerable<object> values)
+		protected override void VerifyReflectedTypeEditors(IEnumerable<object> values)
 		{
 			if (this.EditedType == null) return;
 			if (!this.ContentInitialized) return;
@@ -197,21 +197,6 @@ namespace AdamsLair.PropertyGrid
 			{
 				this.ReInitContent(invalidEditors);
 			}
-		}
-		protected Type ReflectTypeForMember(MemberInfo member, IEnumerable<object> values)
-		{
-			if (member is FieldInfo)
-			{
-				FieldInfo field = member as FieldInfo;
-				return PropertyEditor.ReflectDynamicType(field.FieldType, values.Where(v => v != null).Select(v => field.GetValue(v)));
-			}
-			else if (member is PropertyInfo)
-			{
-				PropertyInfo property = member as PropertyInfo;
-				return PropertyEditor.ReflectDynamicType(property.PropertyType, values.Where(v => v != null).Select(v => property.GetValue(v, null)));
-			}
-			else
-				throw new ArgumentException("Only PropertyInfo and FieldInfo members are supported");
 		}
 
 		protected IEnumerable<MemberInfo> QueryEditedMembers()
@@ -253,9 +238,9 @@ namespace AdamsLair.PropertyGrid
 				select f;
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			object[] curObjects = this.GetValue().ToArray();
 
 			this.VerifyReflectedTypeEditors(curObjects);
@@ -271,11 +256,11 @@ namespace AdamsLair.PropertyGrid
 			foreach (PropertyEditor e in this.Children)
 				e.PerformGetValue();
 		}
-		public override void PerformSetValue()
+		protected override void OnSetValue()
 		{
 			if (this.ReadOnly) return;
 			if (!this.Children.Any()) return;
-			base.PerformSetValue();
+			base.OnSetValue();
 
 			foreach (PropertyEditor e in this.Children)
 				e.PerformSetValue();
