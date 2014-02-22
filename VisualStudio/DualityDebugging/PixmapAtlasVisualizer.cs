@@ -7,16 +7,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 
 [assembly: DebuggerVisualizer(
-	typeof(DualityDebugging.BitmapDebuggerVisualizer), 
-	typeof(DualityDebugging.PixmapAtlasDebuggerVisualizerObjectSource), 
+	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
+	typeof(Duality.VisualStudio.PixmapAtlasDebuggerVisualizerObjectSource), 
 	Target = typeof(Pixmap), 
 	Description = "Pixmap Atlas Visualizer")]
 
-namespace DualityDebugging
+namespace Duality.VisualStudio
 {
 	public class PixmapAtlasDebuggerVisualizerObjectSource : VisualizerObjectSource
 	{

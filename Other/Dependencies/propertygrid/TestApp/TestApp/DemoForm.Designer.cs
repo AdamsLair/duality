@@ -34,14 +34,17 @@
 			this.radioReadOnly = new System.Windows.Forms.RadioButton();
 			this.buttonRefresh = new System.Windows.Forms.Button();
 			this.checkBoxNonPublic = new System.Windows.Forms.CheckBox();
+			this.buttonObjA = new System.Windows.Forms.Button();
+			this.buttonObjB = new System.Windows.Forms.Button();
+			this.buttonObjMulti = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// propertyGrid1
 			// 
 			this.propertyGrid1.AllowDrop = true;
-			this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.propertyGrid1.AutoScroll = true;
 			this.propertyGrid1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.propertyGrid1.Location = new System.Drawing.Point(12, 12);
@@ -113,11 +116,47 @@
 			this.checkBoxNonPublic.UseVisualStyleBackColor = true;
 			this.checkBoxNonPublic.CheckedChanged += new System.EventHandler(this.checkBoxNonPublic_CheckedChanged);
 			// 
+			// buttonObjA
+			// 
+			this.buttonObjA.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonObjA.Location = new System.Drawing.Point(93, 312);
+			this.buttonObjA.Name = "buttonObjA";
+			this.buttonObjA.Size = new System.Drawing.Size(99, 23);
+			this.buttonObjA.TabIndex = 9;
+			this.buttonObjA.Text = "Single Object A";
+			this.buttonObjA.UseVisualStyleBackColor = true;
+			this.buttonObjA.Click += new System.EventHandler(this.buttonObjA_Click);
+			// 
+			// buttonObjB
+			// 
+			this.buttonObjB.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonObjB.Location = new System.Drawing.Point(198, 312);
+			this.buttonObjB.Name = "buttonObjB";
+			this.buttonObjB.Size = new System.Drawing.Size(99, 23);
+			this.buttonObjB.TabIndex = 10;
+			this.buttonObjB.Text = "Single Object B";
+			this.buttonObjB.UseVisualStyleBackColor = true;
+			this.buttonObjB.Click += new System.EventHandler(this.buttonObjB_Click);
+			// 
+			// buttonObjMulti
+			// 
+			this.buttonObjMulti.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.buttonObjMulti.Location = new System.Drawing.Point(303, 312);
+			this.buttonObjMulti.Name = "buttonObjMulti";
+			this.buttonObjMulti.Size = new System.Drawing.Size(108, 23);
+			this.buttonObjMulti.TabIndex = 11;
+			this.buttonObjMulti.Text = "Multiselect A and B";
+			this.buttonObjMulti.UseVisualStyleBackColor = true;
+			this.buttonObjMulti.Click += new System.EventHandler(this.buttonObjMulti_Click);
+			// 
 			// DemoForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(538, 370);
+			this.Controls.Add(this.buttonObjMulti);
+			this.Controls.Add(this.buttonObjB);
+			this.Controls.Add(this.buttonObjA);
 			this.Controls.Add(this.checkBoxNonPublic);
 			this.Controls.Add(this.buttonRefresh);
 			this.Controls.Add(this.radioReadOnly);
@@ -139,6 +178,9 @@
 		private System.Windows.Forms.RadioButton radioReadOnly;
 		private System.Windows.Forms.Button buttonRefresh;
 		private System.Windows.Forms.CheckBox checkBoxNonPublic;
+		private System.Windows.Forms.Button buttonObjA;
+		private System.Windows.Forms.Button buttonObjB;
+		private System.Windows.Forms.Button buttonObjMulti;
 	}
 }
 

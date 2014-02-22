@@ -9,11 +9,11 @@ using System.Reflection;
 using Duality;
 using Duality.Resources;
 
-using DualityEditor.EditorRes;
+using Duality.Editor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	public partial class MainForm : Form, IHelpProvider
 	{
@@ -137,7 +137,7 @@ namespace DualityEditor.Forms
 			ToolStripMenuItem aboutItem =			this.RequestMenu(GeneralRes.MenuName_Help, GeneralRes.MenuItemName_About);
 
 			// ---------- File ----------
-			newProjectItem.Image = EditorRes.GeneralResCache.ImageAppCreate;
+			newProjectItem.Image = Properties.GeneralResCache.ImageAppCreate;
 			newProjectItem.Click += this.newProjectItem_Click;
 			newProjectItem.Tag = HelpInfo.FromText(newProjectItem.Text, GeneralRes.MenuItemInfo_NewProject);
 
@@ -502,8 +502,8 @@ namespace DualityEditor.Forms
 			this.UpdateToolbar();
 
 			ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(this, 
-				EditorRes.GeneralRes.TaskChangeDataFormat_Caption, 
-				string.Format(EditorRes.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Formatter.DefaultMethod.ToString()), 
+				Properties.GeneralRes.TaskChangeDataFormat_Caption, 
+				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Formatter.DefaultMethod.ToString()), 
 				this.async_ChangeDataFormat, null);
 			taskDialog.ShowDialog();
 		}
@@ -514,16 +514,16 @@ namespace DualityEditor.Forms
 			this.UpdateToolbar();
 
 			ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(this, 
-				EditorRes.GeneralRes.TaskChangeDataFormat_Caption, 
-				string.Format(EditorRes.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Formatter.DefaultMethod.ToString()), 
+				Properties.GeneralRes.TaskChangeDataFormat_Caption, 
+				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Formatter.DefaultMethod.ToString()), 
 				this.async_ChangeDataFormat, null);
 			taskDialog.ShowDialog();
 		}
 		private void formatUpdateAll_Click(object sender, EventArgs e)
 		{
 			ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(this, 
-				EditorRes.GeneralRes.TaskFormatUpdateAll_Caption, 
-				EditorRes.GeneralRes.TaskFormatUpdateAll_Desc, 
+				Properties.GeneralRes.TaskFormatUpdateAll_Caption, 
+				Properties.GeneralRes.TaskFormatUpdateAll_Desc, 
 				this.async_ChangeDataFormat, null);
 			taskDialog.ShowDialog();
 		}

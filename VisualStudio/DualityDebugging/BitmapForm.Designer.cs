@@ -1,4 +1,4 @@
-﻿namespace DualityDebugging
+﻿namespace Duality.VisualStudio
 {
 	partial class BitmapForm
 	{
@@ -35,7 +35,7 @@
 			this.checkBlue = new System.Windows.Forms.ToolStripButton();
 			this.checkGreen = new System.Windows.Forms.ToolStripButton();
 			this.checkRed = new System.Windows.Forms.ToolStripButton();
-			this.bitmapView = new DualityDebugging.BitmapView();
+			this.bitmapView = new Duality.VisualStudio.BitmapView();
 			this.actionSave = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -137,7 +137,7 @@
 			// actionSave
 			// 
 			this.actionSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionSave.Image = global::DualityDebugging.Properties.Resources.disk;
+			this.actionSave.Image = global::Duality.VisualStudio.Properties.Resources.disk;
 			this.actionSave.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionSave.Name = "actionSave";
 			this.actionSave.Size = new System.Drawing.Size(23, 22);

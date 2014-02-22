@@ -8,7 +8,6 @@ using OpenTK.Audio.OpenAL;
 
 using Duality.Resources;
 using Duality.Components;
-using Duality.Profiling;
 
 namespace Duality
 {

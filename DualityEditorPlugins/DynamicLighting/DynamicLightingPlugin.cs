@@ -3,14 +3,13 @@ using System.Linq;
 
 using Duality;
 using Duality.Resources;
+using Duality.Plugins.DynamicLighting;
 
-using DualityEditor;
-using DualityEditor.EditorRes;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Properties;
+using Duality.Editor.CorePluginInterface;
 
-using DynamicLighting.PluginRes;
-
-namespace DynamicLighting
+namespace Duality.Editor.Plugins.DynamicLighting
 {
 	public class DynamicLightingPlugin : EditorPlugin
 	{
@@ -22,16 +21,6 @@ namespace DynamicLighting
 		protected override void LoadPlugin()
 		{
 			base.LoadPlugin();
-			CorePluginRegistry.RegisterTypeImage(typeof(LightingTechnique),				DynLightResCache.IconResLightingTechnique);
-			CorePluginRegistry.RegisterTypeImage(typeof(LightingSpriteRenderer),		DynLightResCache.IconCmpLightingSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(LightingAnimSpriteRenderer),	DynLightResCache.IconCmpLightingSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(Light),							DynLightResCache.IconLight);
-
-			CorePluginRegistry.RegisterTypeCategory(typeof(LightingTechnique),			GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(LightingSpriteRenderer),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(LightingAnimSpriteRenderer), GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Light),						GeneralRes.Category_Graphics);
-
 			CorePluginRegistry.RegisterDataConverter<Component>(new LightingRendererFromMaterial());
 		}
 	}

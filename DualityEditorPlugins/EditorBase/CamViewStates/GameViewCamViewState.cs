@@ -3,14 +3,15 @@
 using Duality;
 using Duality.Components;
 using Duality.Resources;
+using Duality.Drawing;
 
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public class GameViewCamViewState : CamViewState
 	{
 		public override string StateName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewState_GameView_Name; }
+			get { return Properties.EditorBaseRes.CamViewState_GameView_Name; }
 		}
 
 		public GameViewCamViewState()

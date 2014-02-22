@@ -8,7 +8,7 @@ using System.Reflection;
 
 using Duality;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public class XmlCodeDoc
 	{
@@ -214,6 +214,9 @@ namespace DualityEditor
 
 		private static MemberInfo ResolveDocStyleMember(string docId)
 		{
+			// Conversion operator syntax not supported yet
+			if (docId.Contains('~')) return null;
+
 			// Determine entry type
 			EntryType memberEntryType;
 			switch (docId[0])

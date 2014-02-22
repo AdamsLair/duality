@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using OpenTK;
 using OpenTK.Graphics;
+
 using Duality;
 using Duality.Resources;
-using DualityDebugging;
 
-namespace DualityDebuggingTest
+namespace Duality.VisualStudio
 {
 	public class DualityDebuggingTester : GameWindow
 	{

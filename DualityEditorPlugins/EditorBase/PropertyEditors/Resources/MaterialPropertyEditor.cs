@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Duality;
-using DualityEditor;
+using Duality.Editor;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class MaterialPropertyEditor : ResourcePropertyEditor
 	{
 		protected override void BeforeAutoCreateEditors()
 		{
 			base.BeforeAutoCreateEditors();
-			BatchInfoPropertyEditor e = this.AddEditorForField(ReflectionInfo.Field_Material_Info) as BatchInfoPropertyEditor;
+			BatchInfoPropertyEditor e = this.AddEditorForMember(ReflectionInfo.Field_Material_Info) as BatchInfoPropertyEditor;
 			e.PropertyName = null;
 			e.Hints = HintFlags.None;
 			e.HeaderIcon = null;

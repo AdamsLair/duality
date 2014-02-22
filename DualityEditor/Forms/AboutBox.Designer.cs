@@ -1,4 +1,4 @@
-﻿namespace DualityEditor.Forms
+﻿namespace Duality.Editor.Forms
 {
 	partial class AboutBox
 	{
@@ -82,7 +82,7 @@
 			// panel1
 			// 
 			this.panel1.BackColor = System.Drawing.Color.DarkGray;
-			this.panel1.BackgroundImage = global::DualityEditor.Properties.Resources.DualitorLogoHalfSize;
+			this.panel1.BackgroundImage = global::Duality.Editor.Properties.Resources.DualitorLogoHalfSize;
 			this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.tableLayoutPanel.SetColumnSpan(this.panel1, 4);

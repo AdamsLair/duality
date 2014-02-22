@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsSystemDrawingColor
 	{
@@ -24,15 +24,15 @@ namespace DualityEditor
 			return (max == 0) ? 0.0f : 1.0f - (1.0f * (float)min / (float)max);
 		}
 
-		public static Duality.ColorFormat.ColorRgba ToDualityRgba(this System.Drawing.Color color)
+		public static Duality.Drawing.ColorRgba ToDualityRgba(this System.Drawing.Color color)
 		{
-			return Duality.ColorFormat.ColorRgba.FromIntArgb(color.ToArgb());
+			return Duality.Drawing.ColorRgba.FromIntArgb(color.ToArgb());
 		}
-		public static Duality.ColorFormat.ColorHsva ToDualityHsva(this System.Drawing.Color color)
+		public static Duality.Drawing.ColorHsva ToDualityHsva(this System.Drawing.Color color)
 		{
-			return Duality.ColorFormat.ColorHsva.FromIntArgb(color.ToArgb());
+			return Duality.Drawing.ColorHsva.FromIntArgb(color.ToArgb());
 		}
-		public static System.Drawing.Color ToSysDrawColor(this Duality.ColorFormat.IColorData color)
+		public static System.Drawing.Color ToSysDrawColor(this Duality.Drawing.IColorData color)
 		{
 			return System.Drawing.Color.FromArgb(color.ToIntArgb());
 		}

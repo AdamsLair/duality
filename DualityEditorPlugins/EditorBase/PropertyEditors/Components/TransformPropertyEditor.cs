@@ -7,11 +7,10 @@ using AdamsLair.PropertyGrid;
 using OpenTK;
 
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Components;
-using DualityEditor;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class TransformPropertyEditor : ComponentPropertyEditor, IHelpProvider
 	{
@@ -103,8 +102,8 @@ namespace EditorBase.PropertyEditors
 				this.editorAngleVel.EndUpdate();
 			}
 
-			this.AddEditorForProperty(ReflectionInfo.Property_Transform_DeriveAngle);
-			this.AddEditorForProperty(ReflectionInfo.Property_Transform_IgnoreParent);
+			this.AddEditorForMember(ReflectionInfo.Property_Transform_DeriveAngle);
+			this.AddEditorForMember(ReflectionInfo.Property_Transform_IgnoreParent);
 
 			this.editorShowRelative = this.ParentGrid.CreateEditor(typeof(bool), this);
 			if (editorShowRelative != null)

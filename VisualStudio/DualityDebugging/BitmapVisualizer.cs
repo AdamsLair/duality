@@ -7,12 +7,12 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 using Duality.Resources;
 
 [assembly: DebuggerVisualizer(
-	typeof(DualityDebugging.BitmapDebuggerVisualizer), 
-	typeof(DualityDebugging.BitmapDebuggerVisualizerObjectSource), 
+	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
+	typeof(Duality.VisualStudio.BitmapDebuggerVisualizerObjectSource), 
 	Target = typeof(Bitmap), 
 	Description = "Bitmap Visualizer")]
 
-namespace DualityDebugging
+namespace Duality.VisualStudio
 {
 	public class BitmapDebuggerVisualizerObjectSource : VisualizerObjectSource
 	{

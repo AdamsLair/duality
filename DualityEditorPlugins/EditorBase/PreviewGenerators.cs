@@ -6,13 +6,14 @@ using OpenTK;
 
 using Duality;
 using Duality.Resources;
+using Duality.Drawing;
 using Font = Duality.Resources.Font;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
 
 
-namespace EditorBase.PreviewGenerators
+namespace Duality.Editor.Plugins.Base.PreviewGenerators
 {
 	public class PixmapPreviewGenerator : PreviewGenerator<Pixmap>
 	{

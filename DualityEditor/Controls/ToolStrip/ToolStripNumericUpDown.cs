@@ -4,7 +4,7 @@ using System.Windows.Forms.Design;
 using System.Drawing;
 using System.ComponentModel;
 
-namespace DualityEditor.Controls.ToolStrip
+namespace Duality.Editor.Controls.ToolStrip
 {
 	[ToolStripItemDesignerAvailability(ToolStripItemDesignerAvailability.ToolStrip | ToolStripItemDesignerAvailability.StatusStrip)]
 	public class ToolStripNumericUpDown : ToolStripControlHost

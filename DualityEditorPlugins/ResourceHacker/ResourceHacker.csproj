@@ -8,7 +8,7 @@
     <ProjectGuid>{C25812BD-1699-496E-B946-9E999FD7C9C1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ResourceHacker</RootNamespace>
+    <RootNamespace>Duality.Editor.Plugins.ResourceHacker</RootNamespace>
     <AssemblyName>ResourceHacker.editor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -50,12 +50,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PluginRes\ResourceHackerRes.Designer.cs">
+    <Compile Include="Properties\ResourceHackerRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ResourceHackerRes.resx</DependentUpon>
     </Compile>
-    <Compile Include="PluginRes\ResourceHackerResCache.cs" />
+    <Compile Include="Properties\ResourceHackerResCache.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -90,12 +90,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PluginRes\ResourceHackerRes.resx">
+    <EmbeddedResource Include="Properties\ResourceHackerRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>ResourceHackerRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RenameTypeDialog.resx">
@@ -106,52 +108,22 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconResourceHacker.png" />
+    <None Include="EmbeddedResources\iconResourceHacker.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconSaveFile.png" />
+    <None Include="EmbeddedResources\iconSaveFile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\iconOpenFile.png" />
+    <None Include="EmbeddedResources\iconOpenFile.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Array.png" />
+    <None Include="EmbeddedResources\iconRenameClass.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Class.png" />
+    <None Include="EmbeddedResources\iconRenameField.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="PluginRes\Delegate.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\Event.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\Field.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\Method.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\Object.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\Primitive.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\Property.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\ObjectRef.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\iconRenameClass.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\iconRenameField.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="PluginRes\iconBatchAction.png" />
+    <None Include="EmbeddedResources\iconBatchAction.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

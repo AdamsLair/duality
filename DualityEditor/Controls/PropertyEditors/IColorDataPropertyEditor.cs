@@ -8,11 +8,11 @@ using AdamsLair.PropertyGrid;
 using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
-using DualityEditor.Forms;
+using Duality.Editor.Forms;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class IColorDataPropertyEditor : PropertyEditor
 	{
@@ -119,7 +119,7 @@ namespace DualityEditor.Controls.PropertyEditors
 				this.rectButton, 
 				buttonState, 
 				null, 
-				EditorRes.GeneralResCache.ColorWheel);
+				Properties.GeneralResCache.ColorWheel);
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{

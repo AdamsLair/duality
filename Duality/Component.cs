@@ -7,7 +7,8 @@ using OpenTK;
 
 using Duality.Resources;
 using Duality.Cloning;
-using Duality.EditorHints;
+using Duality.Editor;
+using Duality.Properties;
 
 using ICloneable = Duality.Cloning.ICloneable;
 
@@ -53,6 +54,7 @@ namespace Duality
 	/// Also, a Component may not belong to multiple GameObjects at once.
 	/// </summary>
 	[Serializable]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
 	public abstract class Component : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
 	{
 		/// <summary>

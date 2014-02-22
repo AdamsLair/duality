@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
 
-namespace DualityEditor.Controls.ToolStrip
+namespace Duality.Editor.Controls.ToolStrip
 {
 	public class DualitorToolStripProfessionalRenderer : ToolStripProfessionalRenderer
 	{

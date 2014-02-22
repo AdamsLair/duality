@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Drawing;
 
-namespace DualityEditor.Controls
+namespace Duality.Editor.Controls
 {
 	public class ExplorerListView : ListView
 	{

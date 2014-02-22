@@ -4,8 +4,9 @@ using System.Linq;
 
 using OpenTK;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
+using Duality.Properties;
 using ICloneable = Duality.Cloning.ICloneable;
 
 namespace Duality.Components
@@ -15,6 +16,8 @@ namespace Duality.Components
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(Transform))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSoundEmitter)]
 	public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable, ICmpEditorUpdatable
 	{
 		/// <summary>

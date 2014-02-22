@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using OpenTK;
 using FarseerPhysics.Dynamics;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Components;
 using Duality.Serialization;
-using Duality.Profiling;
+using Duality.Properties;
+using Duality.Drawing;
 
 namespace Duality.Resources
 {
@@ -20,6 +21,8 @@ namespace Duality.Resources
 	/// on you own design.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
 		/// <summary>

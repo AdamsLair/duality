@@ -7,11 +7,11 @@ using Duality;
 using Duality.Cloning;
 using Duality.Resources;
 
-using DualityEditor.EditorRes;
+using Duality.Editor.Properties;
 
 using OpenTK;
 
-namespace DualityEditor.UndoRedoActions
+namespace Duality.Editor.UndoRedoActions
 {
 	public class CloneGameObjectAction : GameObjectAction
 	{

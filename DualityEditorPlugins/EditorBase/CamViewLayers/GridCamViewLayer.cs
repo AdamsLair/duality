@@ -5,15 +5,14 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using Duality;
-using Duality.VertexFormat;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 
 using OpenTK;
 
-using EditorBase.CamViewStates;
+using Duality.Editor.Plugins.Base.CamViewStates;
 
-namespace EditorBase.CamViewLayers
+namespace Duality.Editor.Plugins.Base.CamViewLayers
 {
 	public class GridCamViewLayer : CamViewLayer
 	{
@@ -21,11 +20,11 @@ namespace EditorBase.CamViewLayers
 
 	    public override string LayerName
 	    {
-	        get { return PluginRes.EditorBaseRes.CamViewLayer_Grid_Name; }
+	        get { return Properties.EditorBaseRes.CamViewLayer_Grid_Name; }
 	    }
 	    public override string LayerDesc
 	    {
-	        get { return PluginRes.EditorBaseRes.CamViewLayer_Grid_Desc; }
+	        get { return Properties.EditorBaseRes.CamViewLayer_Grid_Desc; }
 	    }
 	    public override int Priority
 	    {

@@ -7,9 +7,9 @@ using System.Diagnostics;
 using System.IO;
 
 using Duality;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor.CorePluginInterface;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public interface IHelpProvider
 	{
@@ -157,7 +157,7 @@ namespace DualityEditor
 		}
 		public static HelpInfo CreateNotAvailable(string topic)
 		{
-			return FromText(topic ?? "Unknown", DualityEditor.EditorRes.GeneralRes.HelpInfo_NotAvailable_Desc);
+			return FromText(topic ?? "Unknown", Duality.Editor.Properties.GeneralRes.HelpInfo_NotAvailable_Desc);
 		}
 
 		public static bool DefaultPerformHelpAction(HelpInfo info)

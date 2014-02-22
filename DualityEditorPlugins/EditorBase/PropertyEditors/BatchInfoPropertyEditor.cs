@@ -12,12 +12,10 @@ using OpenTK;
 
 using Duality;
 using Duality.Resources;
-using Duality.EditorHints; 
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class BatchInfoPropertyEditor : MemberwisePropertyEditor
 	{
@@ -216,7 +214,7 @@ namespace EditorBase.PropertyEditors
 				if (invokeSetter)
 				{
 					this.SetValues(batchInfos);
-					if (!this.IsUpdatingFromObject)
+					if (!this.IsUpdating)
 						this.PerformGetValue();
 				}
 			}

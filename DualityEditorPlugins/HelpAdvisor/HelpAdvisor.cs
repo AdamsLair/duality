@@ -2,12 +2,12 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using DualityEditor;
-using HelpAdvisor.PluginRes;
+using Duality.Editor;
+using Duality.Editor.Plugins.HelpAdvisor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace HelpAdvisor
+namespace Duality.Editor.Plugins.HelpAdvisor
 {
 	public partial class HelpAdvisor : DockContent
 	{

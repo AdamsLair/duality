@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 
-namespace DualityEditor.Controls
+namespace Duality.Editor.Controls
 {
 	public class EnumFlagCheckedListBox : CustomFlagCheckedListBox
 	{

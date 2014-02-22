@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 using Duality;
 
-namespace DualityEditor.CorePluginInterface
+namespace Duality.Editor.CorePluginInterface
 {
 	public class ConversionData : IDataObject
 	{

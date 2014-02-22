@@ -1,4 +1,4 @@
-﻿namespace EditorBase
+﻿namespace Duality.Editor.Plugins.Base
 {
 	partial class ProjectFolderView
 	{
@@ -82,7 +82,7 @@
 			// toolStripButtonWorkDir
 			// 
 			this.toolStripButtonWorkDir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonWorkDir.Image = global::EditorBase.Properties.Resources.WorkingFolderIcon16;
+			this.toolStripButtonWorkDir.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.WorkingFolderIcon16;
 			this.toolStripButtonWorkDir.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonWorkDir.Name = "toolStripButtonWorkDir";
 			this.toolStripButtonWorkDir.Size = new System.Drawing.Size(23, 22);
@@ -184,7 +184,7 @@
 			// 
 			// folderToolStripMenuItem
 			// 
-			this.folderToolStripMenuItem.Image = global::EditorBase.Properties.Resources.folder;
+			this.folderToolStripMenuItem.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.folder;
 			this.folderToolStripMenuItem.Name = "folderToolStripMenuItem";
 			this.folderToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
 			this.folderToolStripMenuItem.Text = "Folder";
@@ -202,7 +202,7 @@
 			// 
 			// cutToolStripMenuItem
 			// 
-			this.cutToolStripMenuItem.Image = global::EditorBase.Properties.Resources.cut;
+			this.cutToolStripMenuItem.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.cut;
 			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
 			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
 			this.cutToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
@@ -211,7 +211,7 @@
 			// 
 			// copyToolStripMenuItem
 			// 
-			this.copyToolStripMenuItem.Image = global::EditorBase.Properties.Resources.page_copy;
+			this.copyToolStripMenuItem.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.page_copy;
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
@@ -220,7 +220,7 @@
 			// 
 			// pasteToolStripMenuItem
 			// 
-			this.pasteToolStripMenuItem.Image = global::EditorBase.Properties.Resources.page_paste;
+			this.pasteToolStripMenuItem.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.page_paste;
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
 			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
 			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
@@ -229,7 +229,7 @@
 			// 
 			// deleteToolStripMenuItem
 			// 
-			this.deleteToolStripMenuItem.Image = global::EditorBase.Properties.Resources.cross;
+			this.deleteToolStripMenuItem.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.cross;
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(161, 22);

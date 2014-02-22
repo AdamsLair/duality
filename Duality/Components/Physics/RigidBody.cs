@@ -7,8 +7,9 @@ using OpenTK;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
+using Duality.Properties;
 
 namespace Duality.Components.Physics
 {
@@ -17,6 +18,8 @@ namespace Duality.Components.Physics
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(Transform))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryPhysics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRigidBody)]
 	public partial class RigidBody : Component, ICmpInitializable, ICmpUpdatable, ICmpEditorUpdatable
 	{
 		private struct ColEvent

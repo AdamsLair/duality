@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace DualityEditor.Controls
+namespace Duality.Editor.Controls
 {
 	public class ColorShowBox : UserControl
 	{

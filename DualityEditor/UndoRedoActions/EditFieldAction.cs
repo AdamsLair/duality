@@ -8,12 +8,12 @@ using Duality;
 using Duality.Cloning;
 using Duality.Resources;
 
-using DualityEditor.EditorRes;
-using DualityEditor.Controls;
+using Duality.Editor.Properties;
+using Duality.Editor.Controls;
 
 using AdamsLair.PropertyGrid;
 
-namespace DualityEditor.UndoRedoActions
+namespace Duality.Editor.UndoRedoActions
 {
 	public class EditFieldAction : UndoRedoAction
 	{

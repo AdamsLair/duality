@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Aga.Controls.Tree;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsTreeViewAdv
 	{

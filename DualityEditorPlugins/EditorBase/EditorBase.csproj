@@ -8,7 +8,7 @@
     <ProjectGuid>{D0C5CAAD-1344-4E8F-BD8B-B26F81672F4B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EditorBase</RootNamespace>
+    <RootNamespace>Duality.Editor.Plugins.Base</RootNamespace>
     <AssemblyName>EditorBase.editor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -83,7 +83,12 @@
     <Compile Include="Modules\LogEntryList.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PluginRes\EditorBaseResCache.cs" />
+    <Compile Include="Properties\EditorBaseRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EditorBaseRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\EditorBaseResCache.cs" />
     <Compile Include="PreviewGenerators.cs" />
     <Compile Include="Modules\LogView.cs">
       <SubType>Form</SubType>
@@ -134,11 +139,6 @@
     </Compile>
     <Compile Include="Modules\SceneView.Designer.cs">
       <DependentUpon>SceneView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PluginRes\EditorBaseRes.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>EditorBaseRes.resx</DependentUpon>
     </Compile>
     <Compile Include="Modules\ProjectFolderView.cs">
       <SubType>Form</SubType>
@@ -192,10 +192,10 @@
     <EmbeddedResource Include="Modules\SceneView.resx">
       <DependentUpon>SceneView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PluginRes\EditorBaseRes.resx">
+    <EmbeddedResource Include="Properties\EditorBaseRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>EditorBaseRes.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>EditorBaseRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\ProjectFolderView.resx">
       <DependentUpon>ProjectFolderView.cs</DependentUpon>
@@ -208,77 +208,57 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="PluginRes\iconCmpRigidBodyRenderer.png" />
-    <None Include="PluginRes\overlayLinkBroken.png" />
-    <None Include="PluginRes\overlayLink.png" />
-    <None Include="PluginRes\bell.png" />
-    <None Include="PluginRes\DropdownSettingsBlack.png" />
-    <None Include="PluginRes\shape_perspective.png" />
-    <None Include="PluginRes\speaker.png" />
-    <None Include="PluginRes\arrow_right_accelerate.png" />
-    <None Include="PluginRes\arrow_refresh.png" />
-    <None Include="PluginRes\wrench.ico" />
-    <None Include="PluginRes\sceneview.ico" />
-    <None Include="PluginRes\WorkingFolderIcon16.png" />
-    <None Include="PluginRes\cut.png" />
-    <None Include="PluginRes\cross.png" />
-    <None Include="PluginRes\disk.png" />
-    <None Include="PluginRes\AddScene.png" />
-    <None Include="PluginRes\curArrowCreateCircle.png" />
-    <None Include="PluginRes\curArrowCreatePolygon.png" />
-    <None Include="PluginRes\curArrowCreateEdge.png" />
-    <None Include="PluginRes\curArrowCreateLoop.png" />
-    <None Include="PluginRes\bug.png" />
-    <None Include="PluginRes\clock.png" />
-    <Content Include="PluginRes\eye.ico" />
-    <None Include="PluginRes\iconResDrawTechnique.png" />
-    <None Include="PluginRes\iconResFragmentShader.png" />
-    <None Include="PluginRes\iconResMaterial.png" />
-    <None Include="PluginRes\iconResPixmap.png" />
-    <None Include="PluginRes\iconResPrefabEmpty.png" />
-    <None Include="PluginRes\iconResPrefabFull.png" />
-    <None Include="PluginRes\iconResRenderTarget.png" />
-    <None Include="PluginRes\iconResShaderProgram.png" />
-    <None Include="PluginRes\iconResTexture.png" />
-    <None Include="PluginRes\iconResVertexShader.png" />
-    <None Include="PluginRes\iconResUnknown.png" />
-    <None Include="PluginRes\page_copy.png" />
-    <None Include="PluginRes\page_paste.png" />
-    <None Include="PluginRes\folder.png" />
-    <None Include="PluginRes\iconResScene.png" />
-    <None Include="PluginRes\GotoScene.png" />
-    <None Include="PluginRes\iconGameObj.png" />
-    <None Include="PluginRes\iconCmpCamera.png" />
-    <None Include="PluginRes\iconCmpSpriteRenderer.png" />
-    <None Include="PluginRes\iconCmpTransform.png" />
-    <None Include="PluginRes\iconCmpUnknown.png" />
-    <None Include="PluginRes\iconResAudioData.png" />
-    <None Include="PluginRes\iconResSound.png" />
-    <None Include="PluginRes\iconCmpSoundListener.png" />
-    <None Include="PluginRes\iconResFont.png" />
-    <None Include="PluginRes\iconCmpCapsuleCollider.png" />
-    <None Include="PluginRes\iconCmpCircleCollider.png" />
-    <None Include="PluginRes\iconCmpRectCollider.png" />
-    <None Include="PluginRes\log_core.png" />
-    <None Include="PluginRes\log_editor.png" />
-    <None Include="PluginRes\log_game.png" />
-    <None Include="PluginRes\log_error.png" />
-    <None Include="PluginRes\log_message.png" />
-    <None Include="PluginRes\log_warning.png" />
-    <None Include="PluginRes\logview.ico" />
-    <None Include="PluginRes\picture_empty.png" />
-    <None Include="PluginRes\lock.png" />
-    <None Include="PluginRes\layers.png" />
-    <None Include="PluginRes\iconCmpEdgeCollider.png" />
-    <None Include="PluginRes\iconCmpLoopCollider.png" />
-    <None Include="PluginRes\eye_cross.png" />
-    <None Include="PluginRes\magifier_zoom_out.png" />
-    <None Include="PluginRes\magnifier_one.png" />
-    <None Include="PluginRes\magnifier_zoom_in.png" />
-    <None Include="PluginRes\IconSpeakerBlack.png" />
-    <None Include="PluginRes\IconSpeakerWhite.png" />
-    <None Include="PluginRes\logview.png" />
-    <Content Include="PluginRes\projectview.ico" />
+    <None Include="EmbeddedResources\overlayLinkBroken.png" />
+    <None Include="EmbeddedResources\overlayLink.png" />
+    <None Include="EmbeddedResources\bell.png" />
+    <None Include="EmbeddedResources\DropdownSettingsBlack.png" />
+    <None Include="EmbeddedResources\shape_perspective.png" />
+    <None Include="EmbeddedResources\speaker.png" />
+    <None Include="EmbeddedResources\arrow_right_accelerate.png" />
+    <None Include="EmbeddedResources\arrow_refresh.png" />
+    <None Include="EmbeddedResources\wrench.ico" />
+    <None Include="EmbeddedResources\sceneview.ico" />
+    <None Include="EmbeddedResources\WorkingFolderIcon16.png" />
+    <None Include="EmbeddedResources\cut.png" />
+    <None Include="EmbeddedResources\cross.png" />
+    <None Include="EmbeddedResources\disk.png" />
+    <None Include="EmbeddedResources\AddScene.png" />
+    <None Include="EmbeddedResources\curArrowCreateCircle.png" />
+    <None Include="EmbeddedResources\curArrowCreatePolygon.png" />
+    <None Include="EmbeddedResources\curArrowCreateEdge.png" />
+    <None Include="EmbeddedResources\curArrowCreateLoop.png" />
+    <None Include="EmbeddedResources\bug.png" />
+    <None Include="EmbeddedResources\clock.png" />
+    <Content Include="EmbeddedResources\eye.ico" />
+    <None Include="EmbeddedResources\page_copy.png" />
+    <None Include="EmbeddedResources\page_paste.png" />
+    <None Include="EmbeddedResources\folder.png" />
+    <None Include="EmbeddedResources\GotoScene.png" />
+    <None Include="EmbeddedResources\iconCmpCircleCollider.png" />
+    <None Include="EmbeddedResources\iconCmpRectCollider.png" />
+    <None Include="EmbeddedResources\log_core.png" />
+    <None Include="EmbeddedResources\log_editor.png" />
+    <None Include="EmbeddedResources\log_game.png" />
+    <None Include="EmbeddedResources\log_error.png" />
+    <None Include="EmbeddedResources\log_message.png" />
+    <None Include="EmbeddedResources\log_warning.png" />
+    <None Include="EmbeddedResources\logview.ico" />
+    <None Include="EmbeddedResources\picture_empty.png" />
+    <None Include="EmbeddedResources\lock.png" />
+    <None Include="EmbeddedResources\layers.png" />
+    <None Include="EmbeddedResources\iconCmpEdgeCollider.png" />
+    <None Include="EmbeddedResources\iconCmpLoopCollider.png" />
+    <None Include="EmbeddedResources\eye_cross.png" />
+    <None Include="EmbeddedResources\magifier_zoom_out.png" />
+    <None Include="EmbeddedResources\magnifier_one.png" />
+    <None Include="EmbeddedResources\magnifier_zoom_in.png" />
+    <None Include="EmbeddedResources\IconSpeakerBlack.png" />
+    <None Include="EmbeddedResources\IconSpeakerWhite.png" />
+    <None Include="EmbeddedResources\logview.png" />
+    <None Include="EmbeddedResources\iconGameObj.png" />
+    <None Include="EmbeddedResources\iconResUnknown.png" />
+    <None Include="EmbeddedResources\iconCmpUnknown.png" />
+    <Content Include="EmbeddedResources\projectview.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

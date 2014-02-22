@@ -2,7 +2,7 @@
 using Duality;
 using Duality.Components;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsCamera
 	{

@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 using OpenTK;
+
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
+using Duality.Properties;
+using Duality.Plugins.DynamicLighting.Properties;
 
 //	Note:
 //
@@ -14,13 +17,15 @@ using Duality.ColorFormat;
 //	-->	Instead, add an additional worldPosition attribute to the vertex format.
 //	-->	This is the only way to allow flexible lighting when using different perspective modes.
 
-namespace DynamicLighting
+namespace Duality.Plugins.DynamicLighting
 {
 	/// <summary>
 	/// A source of light. Supported light types are directional, ambient, point and spot.
 	/// To create directional or ambient lights, add this Component to a GameObject without Transform.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(DynLightRes), DynLightResNames.IconResourceLight)]
     public class Light : Component
     {
 		private class DeviceLightInfo

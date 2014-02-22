@@ -4,9 +4,9 @@ using System.Windows.Forms;
 using System.Threading;
 
 using Duality;
-using DualityEditor.EditorRes;
+using Duality.Editor.Properties;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	public partial class ProcessingBigTaskDialog : Form
 	{

@@ -10,13 +10,12 @@ using Duality;
 using Duality.Components;
 using Duality.Resources;
 
-using DualityEditor;
-using DualityEditor.UndoRedoActions;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.UndoRedoActions;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 
-using EditorBase.UndoRedoActions;
-
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class SoundEmitterPropertyEditor : ComponentPropertyEditor
 	{

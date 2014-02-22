@@ -3,8 +3,11 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using Duality.Editor;
+using Duality.Properties;
+
 using OpenTK.Audio.OpenAL;
-using Duality.EditorHints;
+
 
 namespace Duality.Resources
 {
@@ -16,6 +19,8 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.Sound"/>
 	[Serializable]
 	[ExplicitResourceReference()]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageAudioData)]
 	public class AudioData : Resource
 	{
 		/// <summary>
@@ -43,9 +48,9 @@ namespace Duality.Resources
 			const string ContentPath_DroneLoop	= VirtualContentPath + "DroneLoop";
 			const string ContentPath_LogoJingle	= VirtualContentPath + "LogoJingle";
 
-			ContentProvider.AddContent(ContentPath_Beep, new AudioData(DefaultRes.Beep));
-			ContentProvider.AddContent(ContentPath_DroneLoop, new AudioData(DefaultRes.DroneLoop));
-			ContentProvider.AddContent(ContentPath_LogoJingle, new AudioData(DefaultRes.LogoJingle));
+			ContentProvider.AddContent(ContentPath_Beep, new AudioData(DefaultContent.Beep));
+			ContentProvider.AddContent(ContentPath_DroneLoop, new AudioData(DefaultContent.DroneLoop));
+			ContentProvider.AddContent(ContentPath_LogoJingle, new AudioData(DefaultContent.LogoJingle));
 
 			Beep		= ContentProvider.RequestContent<AudioData>(ContentPath_Beep);
 			DroneLoop	= ContentProvider.RequestContent<AudioData>(ContentPath_DroneLoop);

@@ -1,5 +1,10 @@
 ﻿using System;
+
+using Duality.Properties;
+using Duality.Editor;
+
 using OpenTK.Graphics.OpenGL;
+
 
 namespace Duality.Resources
 {
@@ -7,6 +12,8 @@ namespace Duality.Resources
 	/// Represents an OpenGL FragmentShader.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFragmentShader)]
 	public class FragmentShader : AbstractShader
 	{
 		/// <summary>
@@ -42,10 +49,10 @@ namespace Duality.Resources
 			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
 			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
 
-			ContentProvider.AddContent(ContentPath_Minimal,	new FragmentShader(DefaultRes.MinimalFrag));
-			ContentProvider.AddContent(ContentPath_Picking,	new FragmentShader(DefaultRes.PickingFrag));
-			ContentProvider.AddContent(ContentPath_SmoothAnim,	new FragmentShader(DefaultRes.SmoothAnimFrag));
-			ContentProvider.AddContent(ContentPath_SharpMask,	new FragmentShader(DefaultRes.SharpAlphaFrag));
+			ContentProvider.AddContent(ContentPath_Minimal,	new FragmentShader(DefaultContent.MinimalFrag));
+			ContentProvider.AddContent(ContentPath_Picking,	new FragmentShader(DefaultContent.PickingFrag));
+			ContentProvider.AddContent(ContentPath_SmoothAnim,	new FragmentShader(DefaultContent.SmoothAnimFrag));
+			ContentProvider.AddContent(ContentPath_SharpMask,	new FragmentShader(DefaultContent.SharpAlphaFrag));
 
 			Minimal		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Minimal);
 			Picking		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Picking);
@@ -59,7 +66,7 @@ namespace Duality.Resources
 			get { return ShaderType.FragmentShader; }
 		}
 		
-		public FragmentShader() : base(DefaultRes.MinimalFrag) {}
+		public FragmentShader() : base(DefaultContent.MinimalFrag) {}
 		public FragmentShader(string sourceCode) : base(sourceCode) {}
 	}
 }

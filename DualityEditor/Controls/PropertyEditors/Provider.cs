@@ -5,9 +5,9 @@ using AdamsLair.PropertyGrid;
 using OpenTK;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class DualityPropertyEditorProvider : IPropertyEditorProvider
 	{

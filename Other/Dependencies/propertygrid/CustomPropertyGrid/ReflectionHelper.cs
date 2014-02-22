@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace AdamsLair.PropertyGrid
 {
-	internal static class ReflectionHelper
+	public static class ReflectionHelper
 	{
 		public const BindingFlags BindInstanceAll = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 		public const BindingFlags BindStaticAll = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
@@ -78,6 +78,36 @@ namespace AdamsLair.PropertyGrid
 			int level = 0;
 			while (t.BaseType != null) { t = t.BaseType; level++; }
 			return level;
+		}
+		public static Type GetCommonBaseClass(this IEnumerable<Type> types)
+		{
+			Type commonBase = null;
+			foreach (Type type in types)
+			{
+				if (commonBase == null)
+				{
+					commonBase = type;
+					continue;
+				}
+				while (commonBase != null && !commonBase.IsAssignableFrom(type))
+				{
+					commonBase = commonBase.BaseType ?? typeof(object);
+					if (commonBase == typeof(object)) return commonBase;
+				}
+			}
+			return commonBase;
+		}
+		public static bool IsTypeDerivedFrom(this Type type, Type baseType)
+		{
+			do
+			{
+				if (type.BaseType == baseType)
+					return true;
+
+				type = type.BaseType;
+			} while (type != null);
+
+			return false;
 		}
 
 

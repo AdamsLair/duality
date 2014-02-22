@@ -5,7 +5,7 @@ using Vector4 = OpenTK.Vector4;
 
 using Duality;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class Vector4PropertyEditor : VectorPropertyEditor
 	{
@@ -63,7 +63,7 @@ namespace DualityEditor.Controls.PropertyEditors
 
 		private void editorX_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();
@@ -84,7 +84,7 @@ namespace DualityEditor.Controls.PropertyEditors
 		}
 		private void editorY_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();
@@ -105,7 +105,7 @@ namespace DualityEditor.Controls.PropertyEditors
 		}
 		private void editorZ_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();
@@ -126,7 +126,7 @@ namespace DualityEditor.Controls.PropertyEditors
 		}
 		private void editorW_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();

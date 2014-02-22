@@ -7,15 +7,15 @@ using System.Windows.Forms;
 
 using Duality;
 using Duality.Components;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
-using DualityEditor;
-using DualityEditor.Forms;
+using Duality.Editor;
+using Duality.Editor.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public abstract class CamViewClient
 	{

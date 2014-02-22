@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Duality.EditorHints;
+using Duality.Editor;
+using Duality.Properties;
+
 
 namespace Duality.Resources
 {
@@ -18,6 +20,8 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.AudioData"/>
 	[Serializable]
 	[ExplicitResourceReference(typeof(AudioData))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSound)]
 	public class Sound : Resource
 	{
 		/// <summary>

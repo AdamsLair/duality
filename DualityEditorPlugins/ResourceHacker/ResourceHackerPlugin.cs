@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.IO;
+
 using Duality.Serialization.MetaFormat;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.EditorRes;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.Properties;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Plugins.ResourceHacker.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-using ResourceHacker.PluginRes;
-
-namespace ResourceHacker
+namespace Duality.Editor.Plugins.ResourceHacker
 {
 	public class ResourceHackerPlugin : EditorPlugin
 	{
@@ -51,14 +51,6 @@ namespace ResourceHacker
 		protected override void LoadPlugin()
 		{
 			base.LoadPlugin();
-			
-			CorePluginRegistry.RegisterTypeImage(typeof(DataNode),				PluginRes.ResourceHackerResCache.IconPrimitive);
-			CorePluginRegistry.RegisterTypeImage(typeof(ArrayNode),				PluginRes.ResourceHackerResCache.IconArray);
-			CorePluginRegistry.RegisterTypeImage(typeof(StructNode),			PluginRes.ResourceHackerResCache.IconObject);
-			CorePluginRegistry.RegisterTypeImage(typeof(ObjectRefNode),			PluginRes.ResourceHackerResCache.IconObjectRef);
-			CorePluginRegistry.RegisterTypeImage(typeof(TypeDataLayoutNode),	PluginRes.ResourceHackerResCache.IconClass);
-			CorePluginRegistry.RegisterTypeImage(typeof(MemberInfoNode),		PluginRes.ResourceHackerResCache.IconMethod);
-			CorePluginRegistry.RegisterTypeImage(typeof(DelegateNode),			PluginRes.ResourceHackerResCache.IconDelegate);
 
 			// Register PropertyEditor provider
 			CorePluginRegistry.RegisterPropertyEditorProvider(new PropertyEditors.PropertyEditorProvider());

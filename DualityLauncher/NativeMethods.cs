@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Drawing;
 
-namespace DualityLauncher
+namespace Duality.Launcher
 {
 	internal static class NativeMethods
 	{

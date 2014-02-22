@@ -10,9 +10,9 @@ using System.Text;
 using System.Windows.Forms;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
-namespace DualityDebugging
+namespace Duality.VisualStudio
 {
 	public partial class BitmapView : UserControl
 	{

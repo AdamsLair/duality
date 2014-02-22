@@ -150,7 +150,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		}
 		private void stringSelector_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 
 			this.val = this.bitmaskSelector.BitmaskValue;
 			this.Invalidate();

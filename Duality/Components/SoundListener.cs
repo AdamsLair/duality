@@ -1,5 +1,8 @@
 ﻿using System;
 
+using Duality.Properties;
+using Duality.Editor;
+
 namespace Duality.Components
 {
 	/// <summary>
@@ -7,6 +10,8 @@ namespace Duality.Components
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(Transform))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSoundListener)]
 	public sealed class SoundListener : Component, ICmpInitializable
 	{
 		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)

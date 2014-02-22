@@ -8,11 +8,11 @@ using System.Drawing;
 
 using Duality;
 
-using DualityEditor.CorePluginInterface;
+using Duality.Editor.CorePluginInterface;
 
 using OpenTK;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class HelpSystem
 	{

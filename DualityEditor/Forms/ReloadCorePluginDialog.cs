@@ -8,10 +8,10 @@ using System.Diagnostics;
 using System.Reflection;
 
 using Duality;
-using DualityEditor.EditorRes;
+using Duality.Editor.Properties;
 using Duality.Resources;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	public sealed partial class ReloadCorePluginDialog : Form
 	{

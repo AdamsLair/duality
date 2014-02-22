@@ -1,8 +1,9 @@
 ﻿using System;
 
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
-using Duality.EditorHints;
+using Duality.Editor;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -13,6 +14,8 @@ namespace Duality.Components.Renderers
 	/// Renders a sprite to represent the <see cref="GameObject"/>.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSpriteRenderer)]
 	public class SpriteRenderer : Renderer
 	{
 		/// <summary>
@@ -49,7 +52,7 @@ namespace Duality.Components.Renderers
 		protected	bool					pixelGrid	= false;
 		protected	int						offset		= 0;
 		[NonSerialized]
-		protected	VertexFormat.VertexC1P3T2[]	vertices	= null;
+		protected	VertexC1P3T2[]			vertices	= null;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override float BoundRadius
@@ -160,7 +163,7 @@ namespace Duality.Components.Renderers
 			else
 				return null;
 		}
-		protected void PrepareVertices(ref VertexFormat.VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect)
+		protected void PrepareVertices(ref VertexC1P3T2[] vertices, IDrawDevice device, ColorRgba mainClr, Rect uvRect)
 		{
 			Vector3 posTemp = this.gameobj.Transform.Pos;
 			float scaleTemp = 1.0f;
@@ -180,7 +183,7 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
 
-			if (vertices == null || vertices.Length != 4) vertices = new VertexFormat.VertexC1P3T2[4];
+			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;

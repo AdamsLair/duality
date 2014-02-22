@@ -1,4 +1,4 @@
-﻿namespace DualityEditor.Forms
+﻿namespace Duality.Editor.Forms
 {
 	partial class ColorPickerDialog
 	{
@@ -52,10 +52,10 @@
 			this.labelHueUnit = new System.Windows.Forms.Label();
 			this.labelSaturationUnit = new System.Windows.Forms.Label();
 			this.labelValueUnit = new System.Windows.Forms.Label();
-			this.alphaSlider = new DualityEditor.Controls.ColorSlider();
-			this.colorShowBox = new DualityEditor.Controls.ColorShowBox();
-			this.colorSlider = new DualityEditor.Controls.ColorSlider();
-			this.colorPanel = new DualityEditor.Controls.ColorPanel();
+			this.alphaSlider = new Duality.Editor.Controls.ColorSlider();
+			this.colorShowBox = new Duality.Editor.Controls.ColorShowBox();
+			this.colorSlider = new Duality.Editor.Controls.ColorSlider();
+			this.colorPanel = new Duality.Editor.Controls.ColorPanel();
 			((System.ComponentModel.ISupportInitialize)(this.numHue)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numSaturation)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numValue)).BeginInit();

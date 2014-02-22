@@ -9,11 +9,11 @@ using AdamsLair.PropertyGrid.PropertyEditors;
 using PropertyGrid = AdamsLair.PropertyGrid.PropertyGrid;
 
 using Duality;
-using Duality.EditorHints;
+using Duality.Editor;
 
-using DualityEditor.UndoRedoActions;
+using Duality.Editor.UndoRedoActions;
 
-namespace DualityEditor.Controls
+namespace Duality.Editor.Controls
 {
 	public class DualitorPropertyGrid : PropertyGrid, IHelpProvider
 	{
@@ -75,27 +75,30 @@ namespace DualityEditor.Controls
 				dictEditor.DictionaryKeySetter = this.EditorDictionaryKeySetter;
 			}
 
-			var flagsAttrib = editor.EditedMember.GetEditorHint<EditorHintFlagsAttribute>(hintOverride);
-			if (flagsAttrib != null)
+			if (editor.EditedMember != null)
 			{
-				editor.ForceWriteBack = (flagsAttrib.Flags & MemberFlags.ForceWriteback) == MemberFlags.ForceWriteback;
-				if ((flagsAttrib.Flags & MemberFlags.ReadOnly) == MemberFlags.ReadOnly)
-					editor.Setter = null;
-			}
-
-			if (editor is NumericPropertyEditor)
-			{
-				var rangeAttrib = editor.EditedMember.GetEditorHint<EditorHintRangeAttribute>(hintOverride);
-				var incAttrib = editor.EditedMember.GetEditorHint<EditorHintIncrementAttribute>(hintOverride);
-				var placesAttrib = editor.EditedMember.GetEditorHint<EditorHintDecimalPlacesAttribute>(hintOverride);
-				NumericPropertyEditor numEditor = editor as NumericPropertyEditor;
-				if (rangeAttrib != null)
+				var flagsAttrib = editor.EditedMember.GetEditorHint<EditorHintFlagsAttribute>(hintOverride);
+				if (flagsAttrib != null)
 				{
-					numEditor.Maximum = rangeAttrib.Max;
-					numEditor.Minimum = rangeAttrib.Min;
+					editor.ForceWriteBack = (flagsAttrib.Flags & MemberFlags.ForceWriteback) == MemberFlags.ForceWriteback;
+					if ((flagsAttrib.Flags & MemberFlags.ReadOnly) == MemberFlags.ReadOnly)
+						editor.Setter = null;
 				}
-				if (incAttrib != null) numEditor.Increment = incAttrib.Increment;
-				if (placesAttrib != null) numEditor.DecimalPlaces = placesAttrib.Places;
+
+				if (editor is NumericPropertyEditor)
+				{
+					var rangeAttrib = editor.EditedMember.GetEditorHint<EditorHintRangeAttribute>(hintOverride);
+					var incAttrib = editor.EditedMember.GetEditorHint<EditorHintIncrementAttribute>(hintOverride);
+					var placesAttrib = editor.EditedMember.GetEditorHint<EditorHintDecimalPlacesAttribute>(hintOverride);
+					NumericPropertyEditor numEditor = editor as NumericPropertyEditor;
+					if (rangeAttrib != null)
+					{
+						numEditor.Maximum = rangeAttrib.Max;
+						numEditor.Minimum = rangeAttrib.Min;
+					}
+					if (incAttrib != null) numEditor.Increment = incAttrib.Increment;
+					if (placesAttrib != null) numEditor.DecimalPlaces = placesAttrib.Places;
+				}
 			}
 		}
 		protected override void PrepareSetValue()

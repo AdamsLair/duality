@@ -10,11 +10,11 @@ using AdamsLair.PropertyGrid;
 using Duality;
 using Duality.Resources;
 using Duality.Serialization;
-using Duality.EditorHints;
+using Duality.Editor;
 
-using DualityEditor.CorePluginInterface;
+using Duality.Editor.CorePluginInterface;
 
-namespace DualityEditor.CorePluginInterface
+namespace Duality.Editor.CorePluginInterface
 {
 	public static class CorePluginRegistry
 	{
@@ -25,16 +25,6 @@ namespace DualityEditor.CorePluginInterface
 
 		#region Resource Entries
 		private interface IResEntry {}
-		private struct ImageResEntry : IResEntry
-		{
-			public	Image	img;
-			public	string	context;
-			public ImageResEntry(Image img, string context)
-			{
-				this.img = img;
-				this.context = context;
-			}
-		}
 		private struct PropertyEditorProviderResEntry : IResEntry
 		{
 			public	IPropertyEditorProvider	provider;
@@ -50,16 +40,6 @@ namespace DualityEditor.CorePluginInterface
 			public EditorActionEntry(IEditorAction action, string context)
 			{
 				this.action = action;
-				this.context = context;
-			}
-		}
-		private	struct CategoryEntry : IResEntry
-		{
-			public	string[]	categoryTree;
-			public	string		context;
-			public CategoryEntry(string category, string context)
-			{
-				this.categoryTree = category.Split(new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
 				this.context = context;
 			}
 		}
@@ -214,37 +194,6 @@ namespace DualityEditor.CorePluginInterface
 			}
 		}
 
-
-		public static void RegisterTypeImage(Type type, Image image, string context = ImageContext_Icon)
-		{
-			RegisterCorePluginRes(type, new ImageResEntry(image, context));
-		}
-		public static Image GetTypeImage(Type type, string context = ImageContext_Icon)
-		{
-			return GetCorePluginRes<ImageResEntry>(type, false, e => e.context == context).img;
-		}
-
-		public static void RegisterTypeCategory(Type type, string category, string context = CategoryContext_General)
-		{
-			RegisterCorePluginRes(type, new CategoryEntry(category, context));
-		}
-		public static string[] GetTypeCategory(Type type, string context = CategoryContext_General)
-		{
-			string[] tree = GetCorePluginRes<CategoryEntry>(type, false, e => e.context == context).categoryTree;
-			if (tree == null)
-			{
-				foreach (var attrib in type.GetEditorHints<EditorHintCategoryAttribute>())
-				{
-					if (attrib.Context == context || (string.IsNullOrEmpty(attrib.Context) && context == CategoryContext_General))
-					{
-						tree = attrib.Category;
-						if (tree != null) break;
-					}
-				}
-			}
-			if (tree == null) tree = type.Namespace.Split('.');
-			return tree;
-		}
 
 		public static void RegisterPropertyEditorProvider(IPropertyEditorProvider provider)
 		{

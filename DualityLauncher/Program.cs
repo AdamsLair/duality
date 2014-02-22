@@ -6,14 +6,13 @@ using System.Drawing;
 
 using Duality;
 using Duality.Resources;
-using Duality.Profiling;
 
 using OpenTK;
 using OpenTK.Input;
 using OpenTK.Graphics;
 using OpenTK.Platform.Windows;
 
-namespace DualityLauncher
+namespace Duality.Launcher
 {
 	public class DualityLauncher : GameWindow
 	{

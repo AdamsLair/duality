@@ -4,7 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
 
-using Duality.EditorHints;
+using Duality.Editor;
 
 using OpenTK.Graphics.OpenGL;
 

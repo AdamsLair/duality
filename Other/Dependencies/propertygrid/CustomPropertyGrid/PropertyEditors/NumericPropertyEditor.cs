@@ -216,7 +216,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 
 		private void numEditor_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 
 			this.val = this.numEditor.Value;
 			this.PerformSetValue();

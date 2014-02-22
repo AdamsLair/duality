@@ -3,7 +3,7 @@ using System.Linq;
 
 using Duality;
 
-namespace DualityEditor.Controls.PropertyEditors
+namespace Duality.Editor.Controls.PropertyEditors
 {
 	public class RangePropertyEditor : VectorPropertyEditor
 	{
@@ -51,7 +51,7 @@ namespace DualityEditor.Controls.PropertyEditors
 
 		private void editorMin_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();
@@ -72,7 +72,7 @@ namespace DualityEditor.Controls.PropertyEditors
 		}
 		private void editorMax_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();

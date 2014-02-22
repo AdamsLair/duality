@@ -8,7 +8,7 @@
     <ProjectGuid>{60AFE733-4F2A-4045-B829-ED3E9612D5BC}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DualityLauncher</RootNamespace>
+    <RootNamespace>Duality.Launcher</RootNamespace>
     <AssemblyName>DualityLauncher</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>

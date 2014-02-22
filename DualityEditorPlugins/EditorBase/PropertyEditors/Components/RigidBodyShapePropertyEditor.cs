@@ -7,10 +7,10 @@ using AdamsLair.PropertyGrid;
 using Duality;
 using Duality.Components.Physics;
 
-using DualityEditor;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.UndoRedoActions;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class RigidBodyShapePropertyEditor : MemberwisePropertyEditor
 	{

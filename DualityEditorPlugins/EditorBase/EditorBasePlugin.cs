@@ -11,18 +11,18 @@ using Duality.Components.Renderers;
 using Duality.Components.Diagnostics;
 using Duality.Components.Physics;
 using Duality.Resources;
+using Duality.Properties;
 using TextRenderer = Duality.Components.Renderers.TextRenderer;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.EditorRes;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.Properties;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
+using Duality.Editor.Plugins.Base.Properties;
 
-using EditorBase.PluginRes;
 
-
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public class EditorBasePlugin : EditorPlugin
 	{
@@ -155,65 +155,11 @@ namespace EditorBase
 		{
 			base.LoadPlugin();
 
-			// Register core resource lookups
-			CorePluginRegistry.RegisterTypeImage(typeof(DrawTechnique),			EditorBaseResCache.IconResDrawTechnique);
-			CorePluginRegistry.RegisterTypeImage(typeof(FragmentShader),		EditorBaseResCache.IconResFragmentShader);
-			CorePluginRegistry.RegisterTypeImage(typeof(Material),				EditorBaseResCache.IconResMaterial);
-			CorePluginRegistry.RegisterTypeImage(typeof(Pixmap),				EditorBaseResCache.IconResPixmap);
-			CorePluginRegistry.RegisterTypeImage(typeof(Prefab),				EditorBaseResCache.IconResPrefabFull, CorePluginRegistry.ImageContext_Icon + "_Full");
-			CorePluginRegistry.RegisterTypeImage(typeof(Prefab),				EditorBaseResCache.IconResPrefabEmpty);
-			CorePluginRegistry.RegisterTypeImage(typeof(RenderTarget),			EditorBaseResCache.IconResRenderTarget);
-			CorePluginRegistry.RegisterTypeImage(typeof(ShaderProgram),			EditorBaseResCache.IconResShaderProgram);
-			CorePluginRegistry.RegisterTypeImage(typeof(Texture),				EditorBaseResCache.IconResTexture);
-			CorePluginRegistry.RegisterTypeImage(typeof(VertexShader),			EditorBaseResCache.IconResVertexShader);
-			CorePluginRegistry.RegisterTypeImage(typeof(Scene),					EditorBaseResCache.IconResScene);
-			CorePluginRegistry.RegisterTypeImage(typeof(AudioData),				EditorBaseResCache.IconResAudioData);
-			CorePluginRegistry.RegisterTypeImage(typeof(Sound),					EditorBaseResCache.IconResSound);
-			CorePluginRegistry.RegisterTypeImage(typeof(Font),					EditorBaseResCache.IconResFont);
-
-			CorePluginRegistry.RegisterTypeImage(typeof(GameObject),			EditorBaseResCache.IconGameObj);
-			CorePluginRegistry.RegisterTypeImage(typeof(Component),				EditorBaseResCache.IconCmpUnknown);
-			CorePluginRegistry.RegisterTypeImage(typeof(SpriteRenderer),		EditorBaseResCache.IconCmpSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(AnimSpriteRenderer),	EditorBaseResCache.IconCmpSpriteRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(TextRenderer),			EditorBaseResCache.IconResFont);
-			CorePluginRegistry.RegisterTypeImage(typeof(Transform),				EditorBaseResCache.IconCmpTransform);
-			CorePluginRegistry.RegisterTypeImage(typeof(Camera),				EditorBaseResCache.IconCmpCamera);
-			CorePluginRegistry.RegisterTypeImage(typeof(SoundEmitter),			EditorBaseResCache.IconResSound);
-			CorePluginRegistry.RegisterTypeImage(typeof(SoundListener),			EditorBaseResCache.IconCmpSoundListener);
-			CorePluginRegistry.RegisterTypeImage(typeof(RigidBody),				EditorBaseResCache.IconCmpRectCollider);
-			CorePluginRegistry.RegisterTypeImage(typeof(ProfileRenderer),		EditorBaseResCache.IconCmpProfileRenderer);
-			CorePluginRegistry.RegisterTypeImage(typeof(RigidBodyRenderer),		EditorBaseResCache.IconCmpRigidBodyRenderer);
-
-			CorePluginRegistry.RegisterTypeCategory(typeof(Transform),			"");
-			CorePluginRegistry.RegisterTypeCategory(typeof(SpriteRenderer),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(AnimSpriteRenderer), GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(TextRenderer),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Camera),				GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(SoundEmitter),		GeneralRes.Category_Sound);
-			CorePluginRegistry.RegisterTypeCategory(typeof(SoundListener),		GeneralRes.Category_Sound);
-			CorePluginRegistry.RegisterTypeCategory(typeof(RigidBody),			GeneralRes.Category_Physics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(ProfileRenderer),	GeneralRes.Category_Diagnostics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(RigidBodyRenderer),	GeneralRes.Category_Diagnostics);
-
-			CorePluginRegistry.RegisterTypeCategory(typeof(Scene),				"");
-			CorePluginRegistry.RegisterTypeCategory(typeof(Prefab),				"");
-			CorePluginRegistry.RegisterTypeCategory(typeof(Pixmap),				GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Texture),			GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Material),			GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Font),				GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(RenderTarget),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(DrawTechnique),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(ShaderProgram),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(VertexShader),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(FragmentShader),		GeneralRes.Category_Graphics);
-			CorePluginRegistry.RegisterTypeCategory(typeof(AudioData),			GeneralRes.Category_Sound);
-			CorePluginRegistry.RegisterTypeCategory(typeof(Sound),				GeneralRes.Category_Sound);
-
 			// Register conversion actions
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>				(EditorBaseRes.ActionName_CreateTexture,		EditorBaseRes.IconResTexture,		this.ActionPixmapCreateTexture,		EditorBaseRes.ActionDesc_CreateTexture),		CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Texture>				(EditorBaseRes.ActionName_CreateMaterial,		EditorBaseRes.IconResMaterial,		this.ActionTextureCreateMaterial,	EditorBaseRes.ActionDesc_CreateMaterial),		CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AudioData>		(EditorBaseRes.ActionName_CreateSound,			EditorBaseRes.IconResSound,			this.ActionAudioDataCreateSound,	EditorBaseRes.ActionDesc_CreateSound),			CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AbstractShader>	(EditorBaseRes.ActionName_CreateShaderProgram,	EditorBaseRes.IconResShaderProgram, this.ActionShaderCreateProgram,		EditorBaseRes.ActionDesc_CreateShaderProgram),	CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>				(EditorBaseRes.ActionName_CreateTexture,		CoreRes.IconResTexture,			this.ActionPixmapCreateTexture,		EditorBaseRes.ActionDesc_CreateTexture),		CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorAction<Texture>				(EditorBaseRes.ActionName_CreateMaterial,		CoreRes.IconResMaterial,		this.ActionTextureCreateMaterial,	EditorBaseRes.ActionDesc_CreateMaterial),		CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AudioData>		(EditorBaseRes.ActionName_CreateSound,			CoreRes.IconResSound,			this.ActionAudioDataCreateSound,	EditorBaseRes.ActionDesc_CreateSound),			CorePluginRegistry.ActionContext_ContextMenu);
+			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AbstractShader>	(EditorBaseRes.ActionName_CreateShaderProgram,	CoreRes.IconResShaderProgram,	this.ActionShaderCreateProgram,		EditorBaseRes.ActionDesc_CreateShaderProgram),	CorePluginRegistry.ActionContext_ContextMenu);
 
 			// Register open actions
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>			(null, null, this.ActionPixmapOpenRes,			EditorBaseRes.ActionDesc_OpenResourceExternal), CorePluginRegistry.ActionContext_OpenRes);

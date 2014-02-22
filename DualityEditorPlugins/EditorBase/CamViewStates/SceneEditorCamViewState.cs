@@ -7,18 +7,17 @@ using System.Windows.Forms;
 using Duality;
 using Duality.Components;
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
-
-using EditorBase.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
+using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 using OpenTK;
 
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public class SceneEditorCamViewState : CamViewState
 	{
@@ -112,7 +111,7 @@ namespace EditorBase.CamViewStates
 
 		public override string StateName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewState_SceneEditor_Name; }
+			get { return Properties.EditorBaseRes.CamViewState_SceneEditor_Name; }
 		}
 		private bool DragMustWait
 		{

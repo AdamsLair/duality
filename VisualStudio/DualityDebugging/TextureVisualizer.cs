@@ -9,12 +9,12 @@ using Duality;
 using Duality.Resources;
 
 [assembly: DebuggerVisualizer(
-	typeof(DualityDebugging.BitmapDebuggerVisualizer), 
-	typeof(DualityDebugging.TextureDebuggerVisualizerObjectSource), 
+	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
+	typeof(Duality.VisualStudio.TextureDebuggerVisualizerObjectSource), 
 	Target = typeof(Texture), 
 	Description = "Texture Visualizer")]
 
-namespace DualityDebugging
+namespace Duality.VisualStudio
 {
 	public class TextureDebuggerVisualizerObjectSource : VisualizerObjectSource
 	{

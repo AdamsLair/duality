@@ -6,9 +6,10 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 
-using Duality.ColorFormat;
-using Duality.EditorHints;
+using Duality.Drawing;
+using Duality.Editor;
 using Duality.Serialization;
+using Duality.Properties;
 
 using OpenTK;
 
@@ -20,6 +21,8 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.Texture"/>
 	[Serializable]
 	[ExplicitResourceReference()]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePixmap)]
 	public class Pixmap : Resource
 	{
 		/// <summary>
@@ -84,13 +87,13 @@ namespace Duality.Resources
 			const string ContentPath_White				= VirtualContentPath + "White";
 			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
 
-			ContentProvider.AddContent(ContentPath_DualityIcon,		new Pixmap(DefaultRes.DualityIcon));
-			ContentProvider.AddContent(ContentPath_DualityIconB,		new Pixmap(DefaultRes.DualityIconB));
-			ContentProvider.AddContent(ContentPath_DualityLogoBig,		new Pixmap(DefaultRes.DualityLogoBig));
-			ContentProvider.AddContent(ContentPath_DualityLogoMedium,	new Pixmap(DefaultRes.DualityLogoMedium));
-			ContentProvider.AddContent(ContentPath_DualityLogoSmall,	new Pixmap(DefaultRes.DualityLogoSmall));
+			ContentProvider.AddContent(ContentPath_DualityIcon,		new Pixmap(DefaultContent.DualityIcon));
+			ContentProvider.AddContent(ContentPath_DualityIconB,		new Pixmap(DefaultContent.DualityIconB));
+			ContentProvider.AddContent(ContentPath_DualityLogoBig,		new Pixmap(DefaultContent.DualityLogoBig));
+			ContentProvider.AddContent(ContentPath_DualityLogoMedium,	new Pixmap(DefaultContent.DualityLogoMedium));
+			ContentProvider.AddContent(ContentPath_DualityLogoSmall,	new Pixmap(DefaultContent.DualityLogoSmall));
 			ContentProvider.AddContent(ContentPath_White,				new Pixmap(new Layer(1, 1, ColorRgba.White)));
-			ContentProvider.AddContent(ContentPath_Checkerboard,		new Pixmap(DefaultRes.Checkerboard));
+			ContentProvider.AddContent(ContentPath_Checkerboard,		new Pixmap(DefaultContent.Checkerboard));
 
 			DualityIcon			= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIcon);
 			DualityIconB		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIconB);

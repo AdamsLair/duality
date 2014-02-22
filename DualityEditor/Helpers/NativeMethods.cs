@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Drawing;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public class NativeMethods
 	{

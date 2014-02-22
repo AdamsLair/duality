@@ -1,4 +1,4 @@
-﻿namespace ResourceHacker
+﻿namespace Duality.Editor.Plugins.ResourceHacker
 {
 	partial class RenameTypeDialog
 	{

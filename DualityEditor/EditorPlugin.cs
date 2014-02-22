@@ -2,11 +2,11 @@
 using System.Reflection;
 
 using Duality;
-using DualityEditor.Forms;
+using Duality.Editor.Forms;
 
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public abstract class EditorPlugin
 	{

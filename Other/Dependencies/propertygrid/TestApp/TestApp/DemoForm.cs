@@ -29,6 +29,10 @@ namespace AdamsLair.PropertyGrid
 			Two,
 			Three
 		}
+		private interface ISomeInterface
+		{
+			int InterfaceInt { get; }
+		}
 		private class Test
 		{
 			private int i;
@@ -37,7 +41,8 @@ namespace AdamsLair.PropertyGrid
 			private byte b;
 			private int[] i3 = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 			private string t;
-			private Test2 subclass;
+			private Test2 substruct;
+			private Test3 subclass;
 			public List<string> stringListField;
 			public FlaggedEnumTest enumField1;
 			public EnumTest enumField2;
@@ -77,10 +82,25 @@ namespace AdamsLair.PropertyGrid
 				get { return this.t; }
 				set { this.t = value; }
 			}
-			public Test2 Subclass
+			public Test2 Substruct
+			{
+				get { return this.substruct; }
+				set { this.substruct = value; }
+			}
+			public Test3 Subclass
 			{
 				get { return this.subclass; }
 				set { this.subclass = value; }
+			}
+			public ISomeInterface SubclassInterface
+			{
+				get { return this.subclass; }
+				set { this.subclass = value as Test3; }
+			}
+			public object SubclassObj
+			{
+				get { return this.subclass; }
+				set { this.subclass = value as Test3; }
 			}
 			public bool BoolOne { get; set; }
 			public bool BoolTwo { get; set; }
@@ -130,32 +150,43 @@ namespace AdamsLair.PropertyGrid
 				return "Yoink: " + this.yoink;
 			}
 		}
+		private class Test3 : ISomeInterface
+		{
+			public int InterfaceInt { get; set; }
+			public string HiddenString { get; set; }
+		}
 		#endregion
+
+		interface I {}
+		class A {}
+		struct B {}
+
+		private Test objA;
+		private Test objB;
 
 		public DemoForm()
 		{
 			this.InitializeComponent();
 
 			// Generate some test / demo objects
-			Test testObj = new Test();
-			testObj.IPropWithAVeryLongName = 42;
-			testObj.SomeString = "Blubdiwupp";
-			testObj.SomeFloat = (float)Math.PI;
-			testObj.SomeByte = 128;
-			testObj.Subclass = new Test2(42);
-			testObj.stringListField = new List<string>() { "hallo", "welt" };
-			Test testObj2 = new Test();
-			testObj2.IPropWithAVeryLongName = 447;
-			testObj2.SomeString = "Kratatazong";
-			testObj2.Subclass = new Test2();
-			testObj2.enumField2 = EnumTest.Three;
+			this.objA = new Test();
+			this.objA.IPropWithAVeryLongName = 42;
+			this.objA.SomeString = "Blubdiwupp";
+			this.objA.SomeFloat = (float)Math.PI;
+			this.objA.SomeByte = 128;
+			this.objA.Substruct = new Test2(42);
+			this.objA.Subclass = new Test3();
+			this.objA.stringListField = new List<string>() { "hallo", "welt" };
 
-			// Case A: Singleselect
-			this.propertyGrid1.SelectObject(testObj);
-			// Case B: Multiselect
-			//this.propertyGrid1.SelectObjects(new object[] { testObj, testObj2 });
-			// Case C: Select this very form
-			//this.propertyGrid1.SelectObject(this);
+			this.objB = new Test();
+			this.objB.IPropWithAVeryLongName = 17;
+			this.objB.SomeString = "Kratatazong";
+			this.objB.SomeFloat = 3.0f;
+			this.objB.SomeByte = 0;
+			this.objB.Substruct = new Test2(100);
+			this.objB.stringListField = new List<string>() { "hallo", "welt" };
+
+			this.propertyGrid1.SelectObject(this.objA);
 		}
 
 		private void radioEnabled_CheckedChanged(object sender, EventArgs e)
@@ -189,6 +220,19 @@ namespace AdamsLair.PropertyGrid
 		private void checkBoxNonPublic_CheckedChanged(object sender, EventArgs e)
 		{
 			this.propertyGrid1.ShowNonPublic = this.checkBoxNonPublic.Checked;
+		}
+
+		private void buttonObjMulti_Click(object sender, EventArgs e)
+		{
+			this.propertyGrid1.SelectObjects(new object[] { this.objA, this.objB });
+		}
+		private void buttonObjB_Click(object sender, EventArgs e)
+		{
+			this.propertyGrid1.SelectObject(this.objB);
+		}
+		private void buttonObjA_Click(object sender, EventArgs e)
+		{
+			this.propertyGrid1.SelectObject(this.objA);
 		}
 	}
 }

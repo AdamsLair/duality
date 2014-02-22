@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using OpenTK.Input;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class ExtMethodsMouseButtons
 	{

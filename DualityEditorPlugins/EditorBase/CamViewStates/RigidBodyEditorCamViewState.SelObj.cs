@@ -7,7 +7,7 @@ using Duality.Components.Physics;
 
 using OpenTK;
 
-namespace EditorBase.CamViewStates
+namespace Duality.Editor.Plugins.Base.CamViewStates
 {
 	public partial class RigidBodyEditorCamViewState
 	{
@@ -21,7 +21,7 @@ namespace EditorBase.CamViewStates
 			}
 			public override string DisplayObjectName
 			{
-				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelBodyName; }
+				get { return Properties.EditorBaseRes.RigidBodyCamViewState_SelBodyName; }
 			}
 			public override bool HasTransform
 			{
@@ -80,7 +80,7 @@ namespace EditorBase.CamViewStates
 			}
 			public override string DisplayObjectName
 			{
-				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelShapeName; }
+				get { return Properties.EditorBaseRes.RigidBodyCamViewState_SelShapeName; }
 			}
 			public RigidBody Body
 			{
@@ -142,7 +142,7 @@ namespace EditorBase.CamViewStates
 			}
 			public override string DisplayObjectName
 			{
-				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelCircleShapeName; }
+				get { return Properties.EditorBaseRes.RigidBodyCamViewState_SelCircleShapeName; }
 			}
 
 			public SelCircleShape(CircleShapeInfo shape) : base(shape)
@@ -218,7 +218,7 @@ namespace EditorBase.CamViewStates
 			}
 			public override string DisplayObjectName
 			{
-				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelPolyShapeName; }
+				get { return Properties.EditorBaseRes.RigidBodyCamViewState_SelPolyShapeName; }
 			}
 
 			public SelPolyShape(PolyShapeInfo shape) : base(shape)
@@ -360,7 +360,7 @@ namespace EditorBase.CamViewStates
 			}
 			public override string DisplayObjectName
 			{
-				get { return PluginRes.EditorBaseRes.RigidBodyCamViewState_SelLoopShapeName; }
+				get { return Properties.EditorBaseRes.RigidBodyCamViewState_SelLoopShapeName; }
 			}
 
 			public SelLoopShape(LoopShapeInfo shape) : base(shape)

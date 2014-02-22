@@ -13,7 +13,7 @@ using OpenTK.Graphics.OpenGL;
 using NUnit.Framework;
 
 
-namespace DualityTests
+namespace Duality.Tests
 {
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
 	public class InitDualityAttribute : Attribute, ITestAction

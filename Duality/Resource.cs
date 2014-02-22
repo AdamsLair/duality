@@ -6,8 +6,9 @@ using System.IO;
 using System.Reflection;
 
 using Duality.Serialization;
-using Duality.EditorHints;
+using Duality.Editor;
 using Duality.Cloning;
+using Duality.Properties;
 
 using ICloneable = Duality.Cloning.ICloneable;
 
@@ -20,6 +21,7 @@ namespace Duality
 	/// <seealso cref="ContentRef{T}"/>
 	/// <seealso cref="ContentProvider"/>
 	[Serializable]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
 	public abstract class Resource : IManageableObject, IDisposable, ICloneable
 	{
 		/// <summary>

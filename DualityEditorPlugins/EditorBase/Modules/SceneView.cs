@@ -13,18 +13,16 @@ using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 
 using Duality;
-using Duality.EditorHints;
 using Duality.Resources;
-using Duality.ColorFormat;
+using Duality.Drawing;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor.Plugins.Base.Properties;
 
-using EditorBase.PluginRes;
-
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class SceneView : DockContent, IHelpProvider, IToolTipProvider
 	{
@@ -39,7 +37,7 @@ namespace EditorBase
 				if (objNode == null) return null;
 				if (objNode.Obj.PrefabLink == null) return null;
 
-				return String.Format(PluginRes.EditorBaseRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
+				return String.Format(Properties.EditorBaseRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
 			}
 		}
 
@@ -144,7 +142,7 @@ namespace EditorBase
 						{
 							if (availCmpTypes.Any(c => Component.RequiresComponent(c, cmpType)))
 								continue;
-							if (CorePluginRegistry.GetTypeImage(cmpType) == null)
+							if (cmpType.GetEditorImage() == null)
 								continue;
 
 							int score = 
@@ -160,7 +158,7 @@ namespace EditorBase
 					}
 
 					this.customIconSet = (representant != null);
-					Image img = CorePluginRegistry.GetTypeImage(representant ?? typeof(GameObject));
+					Image img = (representant ?? typeof(GameObject)).GetEditorImage();
 					if (this.LinkState != PrefabLinkState.None)
 					{
 						img = EditorHelper.GetImageWithOverlay(img, this.LinkState == PrefabLinkState.Active ? 
@@ -171,7 +169,7 @@ namespace EditorBase
 				}
 				else
 				{
-					Image img = CorePluginRegistry.GetTypeImage(typeof(GameObject));
+					Image img = typeof(GameObject).GetEditorImage();
 					if (this.LinkState != PrefabLinkState.None)
 					{
 						img = EditorHelper.GetImageWithOverlay(img, this.LinkState == PrefabLinkState.Active ? 
@@ -207,7 +205,7 @@ namespace EditorBase
 
 			public static Image GetTypeImage(Type type)
 			{
-				return CorePluginRegistry.GetTypeImage(type) ?? EditorBaseResCache.IconCmpUnknown;
+				return type.GetEditorImage();
 			}
 		}
 
@@ -284,7 +282,7 @@ namespace EditorBase
 
 			this.nodeStateIcon.DrawIcon += this.nodeStateIcon_DrawIcon;
 
-			this.toolStrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 		protected override void OnShown(EventArgs e)
 		{
@@ -791,7 +789,7 @@ namespace EditorBase
 		{
 			bool sceneAvail = Scene.Current != null;
 			this.toolStripLabelSceneName.Text = (!sceneAvail || Scene.Current.IsRuntimeResource) ? 
-				PluginRes.EditorBaseRes.SceneNameNotYetSaved : 
+				Properties.EditorBaseRes.SceneNameNotYetSaved : 
 				Scene.Current.Name;
 			this.toolStripButtonSaveScene.Enabled = !Sandbox.IsActive;
 		}
@@ -1355,7 +1353,7 @@ namespace EditorBase
 				this.toolStripSeparatorCustomActions.Visible = false;
 
 			// Reset "New" menu to original state
-			this.gameObjectToolStripMenuItem.Image = CorePluginRegistry.GetTypeImage(typeof(GameObject));
+			this.gameObjectToolStripMenuItem.Image = typeof(GameObject).GetEditorImage();
 			List<ToolStripItem> oldItems = new List<ToolStripItem>(this.newToolStripMenuItem.DropDownItems.OfType<ToolStripItem>());
 			this.newToolStripMenuItem.DropDownItems.Clear();
 			foreach (ToolStripItem item in oldItems.Skip(2)) item.Dispose();
@@ -1371,7 +1369,7 @@ namespace EditorBase
 				if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
 
 				// Generate category item
-				string[] category = CorePluginRegistry.GetTypeCategory(cmpType);
+				string[] category = cmpType.GetEditorCategory();
 				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;
 				for (int i = 0; i < category.Length; i++)
 				{
@@ -1428,20 +1426,20 @@ namespace EditorBase
 
 			if (hidden)
 			{
-				this.lockedToolStripMenuItem.Text = PluginRes.EditorBaseRes.SceneView_Item_Hidden;
-				this.lockedToolStripMenuItem.ToolTipText = PluginRes.EditorBaseRes.SceneView_Item_Hidden_Tooltip;
-				this.lockedToolStripMenuItem.Image = PluginRes.EditorBaseResCache.IconEyeCross;
+				this.lockedToolStripMenuItem.Text = Properties.EditorBaseRes.SceneView_Item_Hidden;
+				this.lockedToolStripMenuItem.ToolTipText = Properties.EditorBaseRes.SceneView_Item_Hidden_Tooltip;
+				this.lockedToolStripMenuItem.Image = Properties.EditorBaseResCache.IconEyeCross;
 			}
 			else if (locked)
 			{
-				this.lockedToolStripMenuItem.Text = PluginRes.EditorBaseRes.SceneView_Item_Locked;
-				this.lockedToolStripMenuItem.ToolTipText = PluginRes.EditorBaseRes.SceneView_Item_Locked_Tooltip;
-				this.lockedToolStripMenuItem.Image = PluginRes.EditorBaseResCache.IconLock;
+				this.lockedToolStripMenuItem.Text = Properties.EditorBaseRes.SceneView_Item_Locked;
+				this.lockedToolStripMenuItem.ToolTipText = Properties.EditorBaseRes.SceneView_Item_Locked_Tooltip;
+				this.lockedToolStripMenuItem.Image = Properties.EditorBaseResCache.IconLock;
 			}
 			else
 			{
-				this.lockedToolStripMenuItem.Text = PluginRes.EditorBaseRes.SceneView_Item_LockHide;
-				this.lockedToolStripMenuItem.ToolTipText = PluginRes.EditorBaseRes.SceneView_Item_LockHide_Tooltip;
+				this.lockedToolStripMenuItem.Text = Properties.EditorBaseRes.SceneView_Item_LockHide;
+				this.lockedToolStripMenuItem.ToolTipText = Properties.EditorBaseRes.SceneView_Item_LockHide_Tooltip;
 				this.lockedToolStripMenuItem.Image = null;
 			}
 		}
@@ -1829,7 +1827,7 @@ namespace EditorBase
 		{
 			IEditorAction action = this.GetResourceOpenAction(viewNode);
 			if (action != null) return string.Format(
-				EditorBase.PluginRes.EditorBaseRes.SceneView_Help_Doubleclick,
+				Duality.Editor.Plugins.Base.Properties.EditorBaseRes.SceneView_Help_Doubleclick,
 				action.Description);
 			else return null;
 		}

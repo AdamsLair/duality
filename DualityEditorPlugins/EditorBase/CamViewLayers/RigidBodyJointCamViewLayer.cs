@@ -4,28 +4,28 @@ using System.Linq;
 using System.Globalization;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components.Physics;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace EditorBase.CamViewLayers
+namespace Duality.Editor.Plugins.Base.CamViewLayers
 {
 	public class RigidBodyJointCamViewLayer : CamViewLayer
 	{
 		public override string LayerName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyJoint_Name; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyJoint_Name; }
 		}
 		public override string LayerDesc
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyJoint_Desc; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyJoint_Desc; }
 		}
 		public ColorRgba MotorColor
 		{

@@ -7,9 +7,9 @@ using Duality;
 using Duality.Cloning;
 using Duality.Resources;
 
-using DualityEditor.EditorRes;
+using Duality.Editor.Properties;
 
-namespace DualityEditor.UndoRedoActions
+namespace Duality.Editor.UndoRedoActions
 {
 	public class DeleteGameObjectAction : GameObjectAction
 	{

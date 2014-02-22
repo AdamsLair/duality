@@ -11,10 +11,10 @@ using PropertyGrid = AdamsLair.PropertyGrid.PropertyGrid;
 
 using Duality;
 using Duality.Resources;
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class ObjectInspector : DockContent
 	{
@@ -52,7 +52,7 @@ namespace EditorBase
 		{
 			this.InitializeComponent();
 			this.runtimeId = runtimeId;
-			this.toolStrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 		public void CopyTo(ObjectInspector other)
 		{

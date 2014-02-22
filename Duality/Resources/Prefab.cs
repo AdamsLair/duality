@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 
 using Duality.Cloning;
+using Duality.Properties;
+using Duality.Editor;
 
 namespace Duality.Resources
 {
@@ -15,6 +17,8 @@ namespace Duality.Resources
 	/// </summary>
 	[Serializable]
 	[ExplicitResourceReference()]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePrefab)]
 	public class Prefab : Resource
 	{
 		/// <summary>

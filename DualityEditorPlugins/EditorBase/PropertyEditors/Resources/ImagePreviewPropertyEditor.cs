@@ -12,9 +12,9 @@ using BorderStyle = AdamsLair.PropertyGrid.Renderer.BorderStyle;
 
 using Duality;
 using Duality.Resources;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor.CorePluginInterface;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public abstract class ImagePreviewPropertyEditor : PropertyEditor
 	{

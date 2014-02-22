@@ -9,8 +9,8 @@ using System.Diagnostics;
 using Duality;
 using Duality.Resources;
 using Duality.Animation;
-using Duality.ColorFormat;
-using Duality.Tests.TestingResources;
+using Duality.Drawing;
+using Duality.Tests.Properties;
 
 using OpenTK;
 

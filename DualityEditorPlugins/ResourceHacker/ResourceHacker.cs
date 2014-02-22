@@ -11,14 +11,14 @@ using Duality;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
 
 using Aga.Controls.Tree;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace ResourceHacker
+namespace Duality.Editor.Plugins.ResourceHacker
 {
 	public partial class ResourceHacker : DockContent
 	{
@@ -80,7 +80,7 @@ namespace ResourceHacker
 			}
 			public static Image GetIcon(DataNode data)
 			{
-				return CorePluginRegistry.GetTypeImage(data.GetType()) ?? CorePluginRegistry.GetTypeImage(typeof(DataNode));
+				return data.GetType().GetEditorImage();
 			}
 		}
 		protected class PrimitiveTreeNode : DataTreeNode
@@ -226,7 +226,7 @@ namespace ResourceHacker
 			this.saveFileDialog.InitialDirectory = this.openFileDialog.InitialDirectory;
 			this.saveFileDialog.Filter = this.openFileDialog.Filter;
 
-			this.mainToolStrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.mainToolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -441,8 +441,8 @@ namespace ResourceHacker
 				int replaced = 0;
 				this.CurrentPerformAction(n => replaced += n.ReplaceTypeStrings(dialog.SearchFor, dialog.ReplaceWith));
 				MessageBox.Show(
-					string.Format(PluginRes.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
-					PluginRes.ResourceHackerRes.MessageBox_RenameType_Title, 
+					string.Format(Properties.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
+					Properties.ResourceHackerRes.MessageBox_RenameType_Title, 
 					MessageBoxButtons.OK, 
 					MessageBoxIcon.Information);
 			}
@@ -464,16 +464,16 @@ namespace ResourceHacker
 				{
 					int replaced = 0;
 					ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(
-						PluginRes.ResourceHackerRes.TaskBatchRenameType_Caption,
-						string.Format(PluginRes.ResourceHackerRes.TaskBatchRenameType_Desc, dialog.SearchFor, dialog.ReplaceWith), 
+						Properties.ResourceHackerRes.TaskBatchRenameType_Caption,
+						string.Format(Properties.ResourceHackerRes.TaskBatchRenameType_Desc, dialog.SearchFor, dialog.ReplaceWith), 
 						this.async_PerformBatchAction,
 						new BatchActionTaskData(folderDialog.SelectedPath, n => replaced += n.ReplaceTypeStrings(dialog.SearchFor, dialog.ReplaceWith)));
 					taskDialog.MainThreadRequired = false;
 					taskDialog.ShowDialog();
 
 					MessageBox.Show(
-						string.Format(PluginRes.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
-						PluginRes.ResourceHackerRes.MessageBox_RenameType_Title, 
+						string.Format(Properties.ResourceHackerRes.MessageBox_RenameType_Text, replaced, dialog.SearchFor, dialog.ReplaceWith), 
+						Properties.ResourceHackerRes.MessageBox_RenameType_Title, 
 						MessageBoxButtons.OK, 
 						MessageBoxIcon.Information);
 				}

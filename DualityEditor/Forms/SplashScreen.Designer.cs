@@ -1,4 +1,4 @@
-﻿namespace DualityEditor.Forms
+﻿namespace Duality.Editor.Forms
 {
 	partial class SplashScreen
 	{
@@ -40,7 +40,7 @@
 			// logoPanel
 			// 
 			this.logoPanel.BackColor = System.Drawing.Color.DarkGray;
-			this.logoPanel.BackgroundImage = global::DualityEditor.Properties.Resources.DualitorLogoHalfSize;
+			this.logoPanel.BackgroundImage = global::Duality.Editor.Properties.Resources.DualitorLogoHalfSize;
 			this.logoPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.logoPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.logoPanel.Dock = System.Windows.Forms.DockStyle.Fill;

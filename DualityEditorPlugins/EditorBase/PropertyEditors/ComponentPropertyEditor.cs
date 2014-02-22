@@ -8,13 +8,13 @@ using System.Drawing;
 using AdamsLair.PropertyGrid;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.UndoRedoActions;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.UndoRedoActions;
 
-namespace EditorBase.PropertyEditors
+namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class ComponentPropertyEditor : MemberwisePropertyEditor
 	{
@@ -76,7 +76,7 @@ namespace EditorBase.PropertyEditors
 			base.OnUpdateFromObjects(values);
 
 			this.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
-			this.ButtonIcon = PluginRes.EditorBaseResCache.DropdownSettingsBlack;
+			this.ButtonIcon = Properties.EditorBaseResCache.DropdownSettingsBlack;
 			this.PropertyName = this.EditedType.GetTypeCSCodeName(true);
 			this.HeaderValueText = null;
 			if (!values.Any() || values.All(o => o == null))
@@ -114,16 +114,16 @@ namespace EditorBase.PropertyEditors
 		protected override void OnActiveChanged()
 		{
 			base.OnActiveChanged();
-			if (!this.IsUpdatingFromObject) this.PerformSetActive(this.Active);
+			if (!this.IsUpdating) this.PerformSetActive(this.Active);
 		}
 		protected override void OnEditedTypeChanged()
 		{
 			base.OnEditedTypeChanged();
 
-			System.Drawing.Bitmap iconBitmap = CorePluginRegistry.GetTypeImage(this.EditedType) as System.Drawing.Bitmap;
+			System.Drawing.Bitmap iconBitmap = this.EditedType.GetEditorImage() as System.Drawing.Bitmap;
 			ColorHsva avgClr = iconBitmap != null ? 
 				iconBitmap.GetAverageColor().ToHsva() : 
-				Duality.ColorFormat.ColorHsva.TransparentWhite;
+				Duality.Drawing.ColorHsva.TransparentWhite;
 			if (avgClr.S <= 0.05f)
 			{
 				avgClr = new ColorHsva(
@@ -177,13 +177,13 @@ namespace EditorBase.PropertyEditors
 			menuPos.Y += thisLoc.Y;
 
 			// Default items
-			ToolStripItem itemReset = contextMenu.Items.Add(PluginRes.EditorBaseRes.MenuItemName_ResetComponent, null, this.contextMenu_ResetComponent);
-			ToolStripItem itemRemove = contextMenu.Items.Add(PluginRes.EditorBaseRes.MenuItemName_RemoveComponent, PluginRes.EditorBaseResCache.IconAbortCross, this.contextMenu_RemoveComponent);
+			ToolStripItem itemReset = contextMenu.Items.Add(Properties.EditorBaseRes.MenuItemName_ResetComponent, null, this.contextMenu_ResetComponent);
+			ToolStripItem itemRemove = contextMenu.Items.Add(Properties.EditorBaseRes.MenuItemName_RemoveComponent, Properties.EditorBaseResCache.IconAbortCross, this.contextMenu_RemoveComponent);
 			itemRemove.Enabled = canRemove;
 			if (!canRemove) 
 			{
 				itemRemove.ToolTipText = string.Format(
-					PluginRes.EditorBaseRes.MenuItemDesc_CantRemoveComponent, 
+					Properties.EditorBaseRes.MenuItemDesc_CantRemoveComponent, 
 					values.First().GetType().Name, 
 					removeConflict.GetType().Name);
 			}

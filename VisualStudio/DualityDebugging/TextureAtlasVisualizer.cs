@@ -6,16 +6,16 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 
 [assembly: DebuggerVisualizer(
-	typeof(DualityDebugging.BitmapDebuggerVisualizer), 
-	typeof(DualityDebugging.TextureAtlasDebuggerVisualizerObjectSource), 
+	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
+	typeof(Duality.VisualStudio.TextureAtlasDebuggerVisualizerObjectSource), 
 	Target = typeof(Texture), 
 	Description = "Texture Atlas Visualizer")]
 
-namespace DualityDebugging
+namespace Duality.VisualStudio
 {
 	public class TextureAtlasDebuggerVisualizerObjectSource : VisualizerObjectSource
 	{

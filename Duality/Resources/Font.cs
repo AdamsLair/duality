@@ -8,9 +8,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using SysDrawFont = System.Drawing.Font;
 
-using Duality.ColorFormat;
-using Duality.VertexFormat;
-using Duality.EditorHints;
+using Duality.Drawing;
+using Duality.Editor;
+using Duality.Properties;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -23,6 +23,8 @@ namespace Duality.Resources
 	/// </summary>
 	[Serializable]
 	[ExplicitResourceReference()]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
+	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
 	public class Font : Resource
 	{
 		/// <summary>

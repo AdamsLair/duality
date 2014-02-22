@@ -1,4 +1,4 @@
-﻿namespace DualityEditor.Forms
+﻿namespace Duality.Editor.Forms
 {
 	partial class ProcessingBigTaskDialog
 	{
@@ -89,7 +89,7 @@
 			this.labelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
 			this.labelIcon.BackColor = System.Drawing.Color.White;
-			this.labelIcon.Image = global::DualityEditor.Properties.Resources.working_bigtask;
+			this.labelIcon.Image = global::Duality.Editor.Properties.Resources.working_bigtask;
 			this.labelIcon.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.labelIcon.Location = new System.Drawing.Point(-1, -1);
 			this.labelIcon.Margin = new System.Windows.Forms.Padding(0);

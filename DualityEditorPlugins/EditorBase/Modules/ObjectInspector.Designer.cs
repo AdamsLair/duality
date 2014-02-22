@@ -1,4 +1,4 @@
-﻿namespace EditorBase
+﻿namespace Duality.Editor.Plugins.Base
 {
 	partial class ObjectInspector
 	{
@@ -38,7 +38,7 @@
 			this.buttonDebug = new System.Windows.Forms.ToolStripButton();
 			this.buttonClone = new System.Windows.Forms.ToolStripButton();
 			this.buttonLock = new System.Windows.Forms.ToolStripButton();
-			this.propertyGrid = new DualityEditor.Controls.DualitorPropertyGrid();
+			this.propertyGrid = new Duality.Editor.Controls.DualitorPropertyGrid();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -84,7 +84,7 @@
 			// 
 			this.buttonAutoRefresh.CheckOnClick = true;
 			this.buttonAutoRefresh.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonAutoRefresh.Image = global::EditorBase.Properties.Resources.arrow_refresh;
+			this.buttonAutoRefresh.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.arrow_refresh;
 			this.buttonAutoRefresh.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonAutoRefresh.Name = "buttonAutoRefresh";
 			this.buttonAutoRefresh.Size = new System.Drawing.Size(23, 22);
@@ -96,7 +96,7 @@
 			this.buttonDebug.AutoToolTip = false;
 			this.buttonDebug.CheckOnClick = true;
 			this.buttonDebug.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonDebug.Image = global::EditorBase.Properties.Resources.bug;
+			this.buttonDebug.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.bug;
 			this.buttonDebug.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonDebug.Name = "buttonDebug";
 			this.buttonDebug.Size = new System.Drawing.Size(23, 22);
@@ -108,7 +108,7 @@
 			// 
 			this.buttonClone.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonClone.Enabled = false;
-			this.buttonClone.Image = global::EditorBase.Properties.Resources.page_copy;
+			this.buttonClone.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.page_copy;
 			this.buttonClone.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonClone.Name = "buttonClone";
 			this.buttonClone.Size = new System.Drawing.Size(23, 22);
@@ -120,7 +120,7 @@
 			this.buttonLock.CheckOnClick = true;
 			this.buttonLock.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonLock.Enabled = false;
-			this.buttonLock.Image = global::EditorBase.Properties.Resources.lockIcon;
+			this.buttonLock.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.lockIcon;
 			this.buttonLock.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonLock.Name = "buttonLock";
 			this.buttonLock.Size = new System.Drawing.Size(23, 22);
@@ -170,7 +170,7 @@
 
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxName;
 		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeStateIcon;
-		private DualityEditor.Controls.DualitorPropertyGrid propertyGrid;
+		private Duality.Editor.Controls.DualitorPropertyGrid propertyGrid;
 		private System.Windows.Forms.Timer timerSelectSched;
 		private System.Windows.Forms.ToolStrip toolStrip;
 		private System.Windows.Forms.ToolStripButton buttonAutoRefresh;

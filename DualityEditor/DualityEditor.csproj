@@ -8,7 +8,7 @@
     <ProjectGuid>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DualityEditor</RootNamespace>
+    <RootNamespace>Duality.Editor</RootNamespace>
     <AssemblyName>DualityEditor</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -145,15 +145,15 @@
     <Compile Include="CorePluginInterface\DesignTimeObjectData.cs" />
     <Compile Include="CorePluginInterface\PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
-    <Compile Include="EditorRes\GeneralResCache.cs" />
-    <Compile Include="Helpers\CursorHelper.cs" />
-    <Compile Include="Helpers\EditorHelper.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="EditorRes\GeneralRes.Designer.cs">
+    <Compile Include="Properties\GeneralRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>GeneralRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\GeneralResCache.cs" />
+    <Compile Include="Helpers\CursorHelper.cs" />
+    <Compile Include="Helpers\EditorHelper.cs">
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\EventArgs.cs" />
     <Compile Include="Helpers\ExtMethodsControl.cs" />
@@ -247,10 +247,10 @@
     <Compile Include="UndoRedoManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="EditorRes\GeneralRes.resx">
+    <EmbeddedResource Include="Properties\GeneralRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>GeneralRes.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>GeneralRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
@@ -310,44 +310,44 @@
     <Content Include="DualityIcon.ico" />
     <Content Include="DualityIconB.ico" />
     <Content Include="DualityIconC.ico" />
-    <None Include="EditorRes\clock.png" />
-    <None Include="EditorRes\editoruserdata.xml" />
-    <None Include="EditorRes\application_stopwatch.png" />
-    <Content Include="EditorRes\WorkingFolderIcon.ico" />
-    <None Include="EditorRes\arrow_undo.png" />
-    <None Include="EditorRes\arrow_redo.png" />
-    <None Include="EditorRes\CursorHandGrabbing.png" />
-    <None Include="EditorRes\CursorHandGrab.png" />
-    <None Include="EditorRes\control_step_blue.png" />
-    <None Include="EditorRes\drive_disk.png" />
-    <None Include="EditorRes\working_bigtask.png" />
-    <None Include="EditorRes\template_empty.png" />
-    <None Include="EditorRes\template_current.png" />
-    <None Include="EditorRes\DualityIcon48.png" />
-    <None Include="EditorRes\DualityIcon256.png" />
-    <None Include="EditorRes\application_create.png" />
-    <None Include="EditorRes\page_gear.png" />
-    <None Include="EditorRes\page_code.png" />
-    <None Include="EditorRes\control_stop_blue.png" />
-    <None Include="EditorRes\control_play_blue.png" />
-    <None Include="EditorRes\control_pause_blue.png" />
-    <None Include="EditorRes\DualitorLogoHalfSize.png" />
-    <EmbeddedResource Include="EditorRes\GameResTemplate.txt" />
-    <None Include="EditorRes\page_white_csharp.png" />
-    <None Include="EditorRes\disk_multiple.png" />
-    <None Include="EditorRes\application_bug.png" />
-    <None Include="EditorRes\application_go.png" />
-    <None Include="EditorRes\arrow_refresh.png" />
-    <EmbeddedResource Include="EditorRes\GamePluginTemplate.zip" />
-    <None Include="EditorRes\icon_color.png" />
-    <None Include="EditorRes\add.png" />
-    <None Include="EditorRes\cross.png" />
-    <None Include="EditorRes\CursorArrowActionScale.png" />
-    <None Include="EditorRes\CursorArrowActionRotate.png" />
-    <None Include="EditorRes\CursorArrowActionMove.png" />
-    <None Include="EditorRes\CursorArrowAction.png" />
-    <None Include="EditorRes\CursorArrow.png" />
-    <None Include="EditorRes\cog.ico" />
+    <None Include="EmbeddedResources\clock.png" />
+    <None Include="EmbeddedResources\editoruserdata.xml" />
+    <None Include="EmbeddedResources\application_stopwatch.png" />
+    <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
+    <None Include="EmbeddedResources\arrow_undo.png" />
+    <None Include="EmbeddedResources\arrow_redo.png" />
+    <None Include="EmbeddedResources\CursorHandGrabbing.png" />
+    <None Include="EmbeddedResources\CursorHandGrab.png" />
+    <None Include="EmbeddedResources\control_step_blue.png" />
+    <None Include="EmbeddedResources\drive_disk.png" />
+    <None Include="EmbeddedResources\working_bigtask.png" />
+    <None Include="EmbeddedResources\template_empty.png" />
+    <None Include="EmbeddedResources\template_current.png" />
+    <None Include="EmbeddedResources\DualityIcon48.png" />
+    <None Include="EmbeddedResources\DualityIcon256.png" />
+    <None Include="EmbeddedResources\application_create.png" />
+    <None Include="EmbeddedResources\page_gear.png" />
+    <None Include="EmbeddedResources\page_code.png" />
+    <None Include="EmbeddedResources\control_stop_blue.png" />
+    <None Include="EmbeddedResources\control_play_blue.png" />
+    <None Include="EmbeddedResources\control_pause_blue.png" />
+    <None Include="EmbeddedResources\DualitorLogoHalfSize.png" />
+    <EmbeddedResource Include="EmbeddedResources\GameResTemplate.txt" />
+    <None Include="EmbeddedResources\page_white_csharp.png" />
+    <None Include="EmbeddedResources\disk_multiple.png" />
+    <None Include="EmbeddedResources\application_bug.png" />
+    <None Include="EmbeddedResources\application_go.png" />
+    <None Include="EmbeddedResources\arrow_refresh.png" />
+    <EmbeddedResource Include="EmbeddedResources\GamePluginTemplate.zip" />
+    <None Include="EmbeddedResources\icon_color.png" />
+    <None Include="EmbeddedResources\add.png" />
+    <None Include="EmbeddedResources\cross.png" />
+    <None Include="EmbeddedResources\CursorArrowActionScale.png" />
+    <None Include="EmbeddedResources\CursorArrowActionRotate.png" />
+    <None Include="EmbeddedResources\CursorArrowActionMove.png" />
+    <None Include="EmbeddedResources\CursorArrowAction.png" />
+    <None Include="EmbeddedResources\CursorArrow.png" />
+    <None Include="EmbeddedResources\cog.ico" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

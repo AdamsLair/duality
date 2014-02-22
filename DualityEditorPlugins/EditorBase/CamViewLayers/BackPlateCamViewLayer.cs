@@ -4,27 +4,27 @@ using System.Linq;
 using System.Globalization;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components.Physics;
 
-using DualityEditor;
-using DualityEditor.Forms;
+using Duality.Editor;
+using Duality.Editor.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace EditorBase.CamViewLayers
+namespace Duality.Editor.Plugins.Base.CamViewLayers
 {
 	public class BackPlateCamViewLayer : CamViewLayer
 	{
 		public override string LayerName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_BackPlate_Name; }
+			get { return Properties.EditorBaseRes.CamViewLayer_BackPlate_Name; }
 		}
 		public override string LayerDesc
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_BackPlate_Desc; }
+			get { return Properties.EditorBaseRes.CamViewLayer_BackPlate_Desc; }
 		}
 		public override int Priority
 		{

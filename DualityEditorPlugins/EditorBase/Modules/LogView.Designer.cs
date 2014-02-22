@@ -1,4 +1,4 @@
-﻿namespace EditorBase
+﻿namespace Duality.Editor.Plugins.Base
 {
 	partial class LogView
 	{
@@ -45,7 +45,7 @@
 			this.buttonPauseOnError = new System.Windows.Forms.ToolStripButton();
 			this.textBoxEntry = new System.Windows.Forms.TextBox();
 			this.splitContainer = new System.Windows.Forms.SplitContainer();
-			this.logEntryList = new EditorBase.LogEntryList();
+			this.logEntryList = new Duality.Editor.Plugins.Base.LogEntryList();
 			this.toolStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
 			this.splitContainer.Panel1.SuspendLayout();
@@ -102,7 +102,7 @@
 			this.buttonErrors.CheckOnClick = true;
 			this.buttonErrors.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonErrors.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonErrors.Image = global::EditorBase.Properties.Resources.log_error;
+			this.buttonErrors.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.log_error;
 			this.buttonErrors.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonErrors.Margin = new System.Windows.Forms.Padding(1, 1, 1, 2);
 			this.buttonErrors.Name = "buttonErrors";
@@ -116,7 +116,7 @@
 			this.buttonWarnings.CheckOnClick = true;
 			this.buttonWarnings.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonWarnings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonWarnings.Image = global::EditorBase.Properties.Resources.log_warning;
+			this.buttonWarnings.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.log_warning;
 			this.buttonWarnings.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonWarnings.Margin = new System.Windows.Forms.Padding(1, 1, 1, 2);
 			this.buttonWarnings.Name = "buttonWarnings";
@@ -130,7 +130,7 @@
 			this.buttonMessages.CheckOnClick = true;
 			this.buttonMessages.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonMessages.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonMessages.Image = global::EditorBase.Properties.Resources.log_message;
+			this.buttonMessages.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.log_message;
 			this.buttonMessages.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonMessages.Margin = new System.Windows.Forms.Padding(1, 1, 1, 2);
 			this.buttonMessages.Name = "buttonMessages";
@@ -149,7 +149,7 @@
 			this.buttonCore.CheckOnClick = true;
 			this.buttonCore.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonCore.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonCore.Image = global::EditorBase.Properties.Resources.log_core;
+			this.buttonCore.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.log_core;
 			this.buttonCore.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonCore.Margin = new System.Windows.Forms.Padding(1, 1, 1, 2);
 			this.buttonCore.Name = "buttonCore";
@@ -163,7 +163,7 @@
 			this.buttonEditor.CheckOnClick = true;
 			this.buttonEditor.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonEditor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonEditor.Image = global::EditorBase.Properties.Resources.log_editor;
+			this.buttonEditor.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.log_editor;
 			this.buttonEditor.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonEditor.Margin = new System.Windows.Forms.Padding(1, 1, 1, 2);
 			this.buttonEditor.Name = "buttonEditor";
@@ -177,7 +177,7 @@
 			this.buttonGame.CheckOnClick = true;
 			this.buttonGame.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonGame.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonGame.Image = global::EditorBase.Properties.Resources.log_game;
+			this.buttonGame.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.log_game;
 			this.buttonGame.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonGame.Margin = new System.Windows.Forms.Padding(1, 1, 1, 2);
 			this.buttonGame.Name = "buttonGame";
@@ -191,7 +191,7 @@
 			this.actionClear.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.actionClear.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.checkAutoClear});
-			this.actionClear.Image = global::EditorBase.Properties.Resources.cross;
+			this.actionClear.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.cross;
 			this.actionClear.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionClear.Name = "actionClear";
 			this.actionClear.Size = new System.Drawing.Size(32, 22);
@@ -214,7 +214,7 @@
 			this.buttonPauseOnError.CheckOnClick = true;
 			this.buttonPauseOnError.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonPauseOnError.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonPauseOnError.Image = global::EditorBase.Properties.Resources.bell;
+			this.buttonPauseOnError.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.bell;
 			this.buttonPauseOnError.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonPauseOnError.Margin = new System.Windows.Forms.Padding(1, 1, 1, 2);
 			this.buttonPauseOnError.Name = "buttonPauseOnError";
@@ -267,11 +267,11 @@
 			this.logEntryList.AutoScroll = true;
 			this.logEntryList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.logEntryList.BaseColor = System.Drawing.Color.FromArgb(((int)(((byte)(162)))), ((int)(((byte)(162)))), ((int)(((byte)(162)))));
-			this.logEntryList.DisplayFilter = ((EditorBase.LogEntryList.MessageFilter)((((((EditorBase.LogEntryList.MessageFilter.SourceCore | EditorBase.LogEntryList.MessageFilter.SourceEditor)
-						| EditorBase.LogEntryList.MessageFilter.SourceGame)
-						| EditorBase.LogEntryList.MessageFilter.TypeMessage)
-						| EditorBase.LogEntryList.MessageFilter.TypeWarning)
-						| EditorBase.LogEntryList.MessageFilter.TypeError)));
+			this.logEntryList.DisplayFilter = ((Duality.Editor.Plugins.Base.LogEntryList.MessageFilter)((((((Duality.Editor.Plugins.Base.LogEntryList.MessageFilter.SourceCore | Duality.Editor.Plugins.Base.LogEntryList.MessageFilter.SourceEditor)
+						| Duality.Editor.Plugins.Base.LogEntryList.MessageFilter.SourceGame)
+						| Duality.Editor.Plugins.Base.LogEntryList.MessageFilter.TypeMessage)
+						| Duality.Editor.Plugins.Base.LogEntryList.MessageFilter.TypeWarning)
+						| Duality.Editor.Plugins.Base.LogEntryList.MessageFilter.TypeError)));
 			this.logEntryList.DisplayMinTime = new System.DateTime(((long)(0)));
 			this.logEntryList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.logEntryList.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -282,7 +282,7 @@
 			this.logEntryList.Size = new System.Drawing.Size(681, 83);
 			this.logEntryList.TabIndex = 2;
 			this.logEntryList.SelectionChanged += new System.EventHandler(this.logEntryList_SelectionChanged);
-			this.logEntryList.NewEntry += new System.EventHandler<EditorBase.LogEntryList.ViewEntryEventArgs>(this.logEntryList_NewEntry);
+			this.logEntryList.NewEntry += new System.EventHandler<Duality.Editor.Plugins.Base.LogEntryList.ViewEntryEventArgs>(this.logEntryList_NewEntry);
 			this.logEntryList.Enter += new System.EventHandler(this.logEntryList_Enter);
 			// 
 			// LogView

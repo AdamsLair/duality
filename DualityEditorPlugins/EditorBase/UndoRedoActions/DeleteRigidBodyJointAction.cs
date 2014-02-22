@@ -7,11 +7,11 @@ using Duality;
 using Duality.Cloning;
 using Duality.Components.Physics;
 
-using DualityEditor;
+using Duality.Editor;
 
-using EditorBase.PluginRes;
+using Duality.Editor.Plugins.Base.Properties;
 
-namespace EditorBase.UndoRedoActions
+namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class DeleteRigidBodyJointAction : RigidBodyJointAction
 	{

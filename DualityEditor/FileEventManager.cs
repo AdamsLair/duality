@@ -14,15 +14,15 @@ using Duality.Resources;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
 
-using DualityEditor.Forms;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor.Forms;
+using Duality.Editor.CorePluginInterface;
 
 using OpenTK;
 
 using Ionic.Zip;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class FileEventManager
 	{
@@ -226,8 +226,8 @@ namespace DualityEditor
 							if (isCurrentScene || DualityEditorApp.IsResourceUnsaved(e.FullPath))
 							{
 								DialogResult result = MessageBox.Show(
-									String.Format(EditorRes.GeneralRes.Msg_ConfirmReloadResource_Text, e.FullPath), 
-									EditorRes.GeneralRes.Msg_ConfirmReloadResource_Caption, 
+									String.Format(Properties.GeneralRes.Msg_ConfirmReloadResource_Text, e.FullPath), 
+									Properties.GeneralRes.Msg_ConfirmReloadResource_Caption, 
 									MessageBoxButtons.YesNo,
 									MessageBoxIcon.Exclamation);
 								if (result == DialogResult.Yes)
@@ -262,8 +262,8 @@ namespace DualityEditor
 							if (FileImportProvider.IsImportFileExisting(e.FullPath))
 							{
 								DialogResult result = MessageBox.Show(
-									String.Format(EditorRes.GeneralRes.Msg_ImportConfirmOverwrite_Text, e.FullPath), 
-									EditorRes.GeneralRes.Msg_ImportConfirmOverwrite_Caption, 
+									String.Format(Properties.GeneralRes.Msg_ImportConfirmOverwrite_Text, e.FullPath), 
+									Properties.GeneralRes.Msg_ImportConfirmOverwrite_Caption, 
 									MessageBoxButtons.YesNo, 
 									MessageBoxIcon.Warning);
 								abort = result == DialogResult.No;
@@ -275,8 +275,8 @@ namespace DualityEditor
 								if (!importedSuccessfully)
 								{
 									MessageBox.Show(
-										String.Format(EditorRes.GeneralRes.Msg_CantImport_Text, e.FullPath), 
-										EditorRes.GeneralRes.Msg_CantImport_Caption, 
+										String.Format(Properties.GeneralRes.Msg_CantImport_Text, e.FullPath), 
+										Properties.GeneralRes.Msg_CantImport_Caption, 
 										MessageBoxButtons.OK, 
 										MessageBoxIcon.Error);
 								}
@@ -344,8 +344,8 @@ namespace DualityEditor
 				// Don't do it now - schedule it for the main form event loop so we don't block here.
 				DualityEditorApp.MainForm.BeginInvoke((Action)delegate() {
 					ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog( 
-						EditorRes.GeneralRes.TaskRenameContentRefs_Caption, 
-						EditorRes.GeneralRes.TaskRenameContentRefs_Desc, 
+						Properties.GeneralRes.TaskRenameContentRefs_Caption, 
+						Properties.GeneralRes.TaskRenameContentRefs_Desc, 
 						async_RenameContentRefs, renameEventBuffer);
 					taskDialog.ShowDialog(DualityEditorApp.MainForm);
 				});

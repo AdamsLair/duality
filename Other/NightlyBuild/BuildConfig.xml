@@ -18,6 +18,7 @@
     <string>Source</string>
     <string>Data</string>
     <string>GamePlugin.*.dll</string>
+    <string>DynamicLighting.*.dll</string>
     <string>*.vshost.*</string>
     <string>logfile*</string>
     <string>perflog*</string>

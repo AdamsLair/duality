@@ -16,7 +16,7 @@ using Duality;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
 
-namespace DualityEditor
+namespace Duality.Editor
 {
 	public static class EditorHelper
 	{
@@ -131,7 +131,7 @@ namespace DualityEditor
 		}
 		public static string GenerateGameResSrcFile()
 		{
-			string gameRes = EditorRes.GeneralRes.GameResTemplate;
+			string gameRes = Properties.GeneralRes.GameResTemplate;
 			string mainClassName;
 			StringBuilder builder = new StringBuilder();
 			GenerateGameResSrcFile_ScanDir(builder, DualityApp.DataDirectory, 1, out mainClassName);

@@ -9,9 +9,9 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 using Duality;
-using DualityEditor;
+using Duality.Editor;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class LogView : DockContent
 	{
@@ -28,7 +28,7 @@ namespace EditorBase
 			this.SetStyle(ControlStyles.Opaque, true);
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-			this.toolStrip.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 		protected override void OnHandleCreated(EventArgs e)
 		{
@@ -140,20 +140,20 @@ namespace EditorBase
 				this.DockHandler.TabText = this.Text + string.Format(" ({0} {2}, {1} {3})", 
 					this.unseenErrors, 
 					this.unseenWarnings,
-					PluginRes.EditorBaseRes.LogView_Errors,
-					PluginRes.EditorBaseRes.LogView_Warnings);
+					Properties.EditorBaseRes.LogView_Errors,
+					Properties.EditorBaseRes.LogView_Warnings);
 			}
 			else if (this.unseenErrors > 0)
 			{
 				this.DockHandler.TabText = this.Text + string.Format(" ({0} {1})", 
 					this.unseenErrors,
-					PluginRes.EditorBaseRes.LogView_Errors);
+					Properties.EditorBaseRes.LogView_Errors);
 			}
 			else if (this.unseenWarnings > 0)
 			{
 				this.DockHandler.TabText = this.Text + string.Format(" ({0} {1})", 
 					this.unseenWarnings,
-					PluginRes.EditorBaseRes.LogView_Warnings);
+					Properties.EditorBaseRes.LogView_Warnings);
 			}
 			else
 			{

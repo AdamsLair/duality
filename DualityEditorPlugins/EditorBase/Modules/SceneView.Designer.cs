@@ -1,4 +1,4 @@
-﻿namespace EditorBase
+﻿namespace Duality.Editor.Plugins.Base
 {
 	partial class SceneView
 	{
@@ -87,7 +87,7 @@
 			this.buttonShowComponents.CheckOnClick = true;
 			this.buttonShowComponents.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonShowComponents.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonShowComponents.Image = global::EditorBase.Properties.Resources.iconCmpUnknown;
+			this.buttonShowComponents.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.iconCmpUnknown;
 			this.buttonShowComponents.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonShowComponents.Name = "buttonShowComponents";
 			this.buttonShowComponents.Size = new System.Drawing.Size(23, 22);
@@ -102,7 +102,7 @@
 			// toolStripButtonCreateScene
 			// 
 			this.toolStripButtonCreateScene.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonCreateScene.Image = global::EditorBase.Properties.Resources.AddScene;
+			this.toolStripButtonCreateScene.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.AddScene;
 			this.toolStripButtonCreateScene.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonCreateScene.Name = "toolStripButtonCreateScene";
 			this.toolStripButtonCreateScene.Size = new System.Drawing.Size(23, 22);
@@ -112,7 +112,7 @@
 			// toolStripButtonSaveScene
 			// 
 			this.toolStripButtonSaveScene.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.toolStripButtonSaveScene.Image = global::EditorBase.Properties.Resources.disk;
+			this.toolStripButtonSaveScene.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.disk;
 			this.toolStripButtonSaveScene.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.toolStripButtonSaveScene.Name = "toolStripButtonSaveScene";
 			this.toolStripButtonSaveScene.Size = new System.Drawing.Size(23, 22);
@@ -180,7 +180,7 @@
 			// 
 			// cloneToolStripMenuItem
 			// 
-			this.cloneToolStripMenuItem.Image = global::EditorBase.Properties.Resources.page_copy;
+			this.cloneToolStripMenuItem.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.page_copy;
 			this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
 			this.cloneToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.cloneToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
@@ -189,7 +189,7 @@
 			// 
 			// deleteToolStripMenuItem
 			// 
-			this.deleteToolStripMenuItem.Image = global::EditorBase.Properties.Resources.cross;
+			this.deleteToolStripMenuItem.Image = global::Duality.Editor.Plugins.Base.Properties.Resources.cross;
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
 			this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
 			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(149, 22);

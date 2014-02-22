@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace DualityEditor.Forms
+namespace Duality.Editor.Forms
 {
 	public partial class SplashScreen : Form
 	{

@@ -55,15 +55,15 @@
     <Compile Include="Helpers\RawListTest.cs" />
     <Compile Include="InitDualityAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\SceneTest.cs" />
-    <Compile Include="Serialization\FormatterTest.cs" />
-    <Compile Include="Serialization\BinaryFormatterTest.cs" />
-    <Compile Include="Serialization\XmlFormatterTest.cs" />
-    <Compile Include="TestingResources\TestRes.Designer.cs">
+    <Compile Include="Properties\TestRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>TestRes.resx</DependentUpon>
     </Compile>
+    <Compile Include="Resources\SceneTest.cs" />
+    <Compile Include="Serialization\FormatterTest.cs" />
+    <Compile Include="Serialization\BinaryFormatterTest.cs" />
+    <Compile Include="Serialization\XmlFormatterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Duality\Duality.csproj">
@@ -72,24 +72,25 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="TestingResources\TestRes.resx">
+    <EmbeddedResource Include="Properties\TestRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>TestRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestingResources\CanvasTestNothing.png" />
+    <None Include="EmbeddedResources\CanvasTestNothing.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestingResources\CanvasTestRedSquare.png" />
+    <None Include="EmbeddedResources\CanvasTestRedSquare.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestingResources\CanvasTestDiagonalLine.png" />
+    <None Include="EmbeddedResources\CanvasTestDiagonalLine.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TestingResources\CanvasTestAllShapes.png" />
-    <Content Include="TestingResources\CanvasTestAllShapesTransformed.png" />
-    <Content Include="TestingResources\TexCoordUV.png" />
+    <Content Include="EmbeddedResources\CanvasTestAllShapes.png" />
+    <Content Include="EmbeddedResources\CanvasTestAllShapesTransformed.png" />
+    <Content Include="EmbeddedResources\TexCoordUV.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

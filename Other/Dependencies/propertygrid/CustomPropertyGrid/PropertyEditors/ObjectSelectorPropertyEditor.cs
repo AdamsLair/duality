@@ -151,7 +151,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		}
 		private void objSelector_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 
 			this.val = (this.objSelector.SelectedObject as ObjectItem).Value;
 			this.Invalidate();

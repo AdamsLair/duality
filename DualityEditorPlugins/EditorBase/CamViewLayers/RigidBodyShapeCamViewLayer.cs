@@ -4,18 +4,18 @@ using System.Linq;
 using System.Globalization;
 
 using Duality;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components.Physics;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
-using DualityEditor.Forms;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace EditorBase.CamViewLayers
+namespace Duality.Editor.Plugins.Base.CamViewLayers
 {
 	public class RigidBodyShapeCamViewLayer : CamViewLayer
 	{
@@ -23,11 +23,11 @@ namespace EditorBase.CamViewLayers
 
 		public override string LayerName
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyShape_Name; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyShape_Name; }
 		}
 		public override string LayerDesc
 		{
-			get { return PluginRes.EditorBaseRes.CamViewLayer_RigidBodyShape_Desc; }
+			get { return Properties.EditorBaseRes.CamViewLayer_RigidBodyShape_Desc; }
 		}
 		public ColorRgba MassCenterColor
 		{

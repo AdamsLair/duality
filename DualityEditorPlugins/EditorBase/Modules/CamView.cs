@@ -11,16 +11,15 @@ using WeifenLuo.WinFormsUI.Docking;
 
 using Duality;
 using Duality.Components;
-using Duality.ColorFormat;
+using Duality.Drawing;
 using Duality.Resources;
 
-using DualityEditor;
-using DualityEditor.Forms;
-using DualityEditor.UndoRedoActions;
-using DualityEditor.CorePluginInterface;
-
-using EditorBase.CamViewStates;
-using EditorBase.CamViewLayers;
+using Duality.Editor;
+using Duality.Editor.Forms;
+using Duality.Editor.UndoRedoActions;
+using Duality.Editor.CorePluginInterface;
+using Duality.Editor.Plugins.Base.CamViewStates;
+using Duality.Editor.Plugins.Base.CamViewLayers;
 
 using OpenTK;
 using Key = OpenTK.Input.Key;
@@ -30,7 +29,7 @@ using KeyboardKeyEventArgs = OpenTK.Input.KeyboardKeyEventArgs;
 using MouseMoveEventArgs = OpenTK.Input.MouseMoveEventArgs;
 using MouseWheelEventArgs = OpenTK.Input.MouseWheelEventArgs;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public partial class CamView : DockContent, IHelpProvider, IMouseInputSource, IKeyboardInputSource
 	{
@@ -231,9 +230,9 @@ namespace EditorBase
 			this.bgColorDialog.OldColor = Color.FromArgb(64, 64, 64);
 			this.bgColorDialog.SelectedColor = this.bgColorDialog.OldColor;
 			this.bgColorDialog.AlphaEnabled = false;
-			this.Text = PluginRes.EditorBaseRes.MenuItemName_CamView + " #" + runtimeId;
+			this.Text = Properties.EditorBaseRes.MenuItemName_CamView + " #" + runtimeId;
 			this.runtimeId = runtimeId;
-			this.toolbarCamera.Renderer = new DualityEditor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolbarCamera.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 			
 			var camViewStateTypeQuery = 
 				from t in DualityEditorApp.GetAvailDualityEditorTypes(typeof(CamViewState))

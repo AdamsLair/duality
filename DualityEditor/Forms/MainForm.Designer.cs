@@ -1,4 +1,4 @@
-﻿namespace DualityEditor.Forms
+﻿namespace Duality.Editor.Forms
 {
 	partial class MainForm
 	{
@@ -204,7 +204,7 @@
 			// actionSaveAll
 			// 
 			this.actionSaveAll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionSaveAll.Image = global::DualityEditor.Properties.Resources.disk_multiple;
+			this.actionSaveAll.Image = global::Duality.Editor.Properties.Resources.disk_multiple;
 			this.actionSaveAll.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionSaveAll.Name = "actionSaveAll";
 			this.actionSaveAll.Size = new System.Drawing.Size(23, 22);
@@ -219,7 +219,7 @@
 			// actionOpenCode
 			// 
 			this.actionOpenCode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionOpenCode.Image = global::DualityEditor.Properties.Resources.page_white_csharp;
+			this.actionOpenCode.Image = global::Duality.Editor.Properties.Resources.page_white_csharp;
 			this.actionOpenCode.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionOpenCode.Name = "actionOpenCode";
 			this.actionOpenCode.Size = new System.Drawing.Size(23, 22);
@@ -234,7 +234,7 @@
 			// actionRunApp
 			// 
 			this.actionRunApp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionRunApp.Image = global::DualityEditor.Properties.Resources.application_go;
+			this.actionRunApp.Image = global::Duality.Editor.Properties.Resources.application_go;
 			this.actionRunApp.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionRunApp.Name = "actionRunApp";
 			this.actionRunApp.Size = new System.Drawing.Size(23, 22);
@@ -244,7 +244,7 @@
 			// actionDebugApp
 			// 
 			this.actionDebugApp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionDebugApp.Image = global::DualityEditor.Properties.Resources.application_bug;
+			this.actionDebugApp.Image = global::Duality.Editor.Properties.Resources.application_bug;
 			this.actionDebugApp.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionDebugApp.Name = "actionDebugApp";
 			this.actionDebugApp.Size = new System.Drawing.Size(23, 22);
@@ -260,7 +260,7 @@
 			// 
 			this.actionRunSandbox.AutoToolTip = false;
 			this.actionRunSandbox.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionRunSandbox.Image = global::DualityEditor.Properties.Resources.control_play_blue;
+			this.actionRunSandbox.Image = global::Duality.Editor.Properties.Resources.control_play_blue;
 			this.actionRunSandbox.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionRunSandbox.Name = "actionRunSandbox";
 			this.actionRunSandbox.Size = new System.Drawing.Size(23, 22);
@@ -272,7 +272,7 @@
 			// 
 			this.actionStepSandbox.AutoToolTip = false;
 			this.actionStepSandbox.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionStepSandbox.Image = global::DualityEditor.Properties.Resources.control_step_blue;
+			this.actionStepSandbox.Image = global::Duality.Editor.Properties.Resources.control_step_blue;
 			this.actionStepSandbox.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionStepSandbox.Name = "actionStepSandbox";
 			this.actionStepSandbox.Size = new System.Drawing.Size(23, 22);
@@ -284,7 +284,7 @@
 			// 
 			this.actionPauseSandbox.AutoToolTip = false;
 			this.actionPauseSandbox.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionPauseSandbox.Image = global::DualityEditor.Properties.Resources.control_pause_blue;
+			this.actionPauseSandbox.Image = global::Duality.Editor.Properties.Resources.control_pause_blue;
 			this.actionPauseSandbox.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionPauseSandbox.Name = "actionPauseSandbox";
 			this.actionPauseSandbox.Size = new System.Drawing.Size(23, 22);
@@ -296,7 +296,7 @@
 			// 
 			this.actionStopSandbox.AutoToolTip = false;
 			this.actionStopSandbox.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.actionStopSandbox.Image = global::DualityEditor.Properties.Resources.control_stop_blue;
+			this.actionStopSandbox.Image = global::Duality.Editor.Properties.Resources.control_stop_blue;
 			this.actionStopSandbox.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.actionStopSandbox.Name = "actionStopSandbox";
 			this.actionStopSandbox.Size = new System.Drawing.Size(23, 22);
@@ -311,7 +311,7 @@
 			this.splitButtonBackupSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.checkBackups,
             this.menuAutosave});
-			this.splitButtonBackupSettings.Image = global::DualityEditor.Properties.Resources.drive_disk;
+			this.splitButtonBackupSettings.Image = global::Duality.Editor.Properties.Resources.drive_disk;
 			this.splitButtonBackupSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.splitButtonBackupSettings.Name = "splitButtonBackupSettings";
 			this.splitButtonBackupSettings.Size = new System.Drawing.Size(32, 22);
@@ -388,7 +388,7 @@
 			// 
 			// formatBinary
 			// 
-			this.formatBinary.Image = global::DualityEditor.Properties.Resources.page_gear;
+			this.formatBinary.Image = global::Duality.Editor.Properties.Resources.page_gear;
 			this.formatBinary.Name = "formatBinary";
 			this.formatBinary.Size = new System.Drawing.Size(152, 22);
 			this.formatBinary.Text = "Binary";
@@ -396,7 +396,7 @@
 			// 
 			// formatXml
 			// 
-			this.formatXml.Image = global::DualityEditor.Properties.Resources.page_code;
+			this.formatXml.Image = global::Duality.Editor.Properties.Resources.page_code;
 			this.formatXml.Name = "formatXml";
 			this.formatXml.Size = new System.Drawing.Size(152, 22);
 			this.formatXml.Text = "Xml";

@@ -3,10 +3,10 @@
 using Duality;
 using Duality.Resources;
 
-using DualityEditor;
-using DualityEditor.CorePluginInterface;
+using Duality.Editor;
+using Duality.Editor.CorePluginInterface;
 
-namespace EditorBase
+namespace Duality.Editor.Plugins.Base
 {
 	public class PixmapFileImporter : IFileImporter
 	{
