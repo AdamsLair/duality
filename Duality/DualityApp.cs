@@ -1207,7 +1207,7 @@ namespace Duality
 				return plugin.PluginAssembly;
 			}
 			// Not there? Search for other libraries in the Plugins folder
-			else
+			else if (Directory.Exists(PluginDirectory))
 			{
 				foreach (string libFile in Directory.EnumerateFiles(PluginDirectory, "*.dll", SearchOption.AllDirectories))
 				{
@@ -1236,8 +1236,10 @@ namespace Duality
 						}
 					}
 				}
-				return null;
 			}
+
+			// Admit that we didn't find anything.
+			return null;
 		}
 		private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
 		{
