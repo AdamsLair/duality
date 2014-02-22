@@ -14,10 +14,11 @@ namespace AdamsLair.PropertyGrid
 		public delegate void PropertyValueSetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values);
 		public delegate void FieldValueSetter(FieldInfo field, IEnumerable<object> targetObjects, IEnumerable<object> values);
 
+		private	static System.Diagnostics.Stopwatch w = new System.Diagnostics.Stopwatch();
+
 		private	bool	buttonIsCreate	= false;
 		private	AutoMemberPredicate				memberPredicate			= null;
 		private	Predicate<MemberInfo>			memberAffectsOthers		= null;
-		private	Func<MemberInfo,PropertyEditor>	memberEditorCreator		= null;
 		private	PropertyValueSetter				memberPropertySetter	= null;
 		private	FieldValueSetter				memberFieldSetter		= null;
 
@@ -51,19 +52,6 @@ namespace AdamsLair.PropertyGrid
 				}
 			}
 		}
-		public Func<MemberInfo,PropertyEditor> MemberEditorCreator
-		{
-			get { return this.memberEditorCreator; }
-			set
-			{
-				if (value == null) value = DefaultMemberEditorCreator;
-				if (this.memberEditorCreator != value)
-				{
-					this.memberEditorCreator = value;
-					if (this.ContentInitialized) this.InitContent();
-				}
-			}
-		}
 		public PropertyValueSetter MemberPropertySetter
 		{
 			get { return this.memberPropertySetter; }
@@ -87,7 +75,6 @@ namespace AdamsLair.PropertyGrid
 		public MemberwisePropertyEditor()
 		{
 			this.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
-			this.memberEditorCreator = DefaultMemberEditorCreator;
 			this.memberPredicate = DefaultMemberPredicate;
 			this.memberAffectsOthers = DefaultMemberAffectsOthers;
 			this.memberPropertySetter = DefaultPropertySetter;
@@ -96,79 +83,174 @@ namespace AdamsLair.PropertyGrid
 
 		public override void InitContent()
 		{
-			this.ClearContent();
-			if (this.EditedType != null)
+			this.BeginUpdate();
 			{
+				// Clear previous contents and invoke base method
+				this.ClearContent();
 				base.InitContent();
 
-				// Look for all the properties, even nonpublic - they'll get sorted out by the predicate, if unwanted.
-				BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-
 				// Generate and add property editors for the current type
-				this.BeginUpdate();
-				this.BeforeAutoCreateEditors();
-				// Properties
+				if (this.EditedType != null)
 				{
-					PropertyInfo[] propArr = this.EditedType.GetProperties(flags);
-					var propQuery = 
-						from p in propArr
-						where p.CanRead && p.GetIndexParameters().Length == 0 && this.IsAutoCreateMember(p)
-						orderby GetTypeHierarchyLevel(p.DeclaringType) ascending, p.Name
-						select p;
-					foreach (PropertyInfo prop in propQuery)
+					object[] values = this.GetValue().ToArray();
+					this.BeforeAutoCreateEditors();
+					foreach (MemberInfo member in this.QueryEditedMembers())
 					{
-						this.AddEditorForProperty(prop);
+						this.AddEditorForMember(member, values);
 					}
 				}
-				// Fields
+			}
+			this.EndUpdate();
+
+			// Update all values for this editor and its children
+			this.PerformGetValue();
+		}
+		protected void ReInitContent(IEnumerable<PropertyEditor> updateEditors)
+		{
+			if (this.EditedType == null) return;
+
+			this.BeginUpdate();
+			{
+				object[] values = this.GetValue().ToArray();
+				foreach (PropertyEditor editor in updateEditors)
 				{
-					FieldInfo[] fieldArr = this.EditedType.GetFields(flags);
-					var fieldQuery =
-						from f in fieldArr
-						where this.IsAutoCreateMember(f)
-						orderby GetTypeHierarchyLevel(f.DeclaringType) ascending, f.Name
-						select f;
-					foreach (FieldInfo field in fieldQuery)
-					{
-						this.AddEditorForField(field);
-					}
+					this.AddEditorForMember(editor.EditedMember, values, editor);
 				}
-				this.EndUpdate();
-				this.PerformGetValue();
+			}
+			this.EndUpdate();
+
+			// Update all values for this editor and its children
+			this.PerformGetValue();
+		}
+
+		public PropertyEditor AddEditorForMember(MemberInfo member, IEnumerable<object> values = null, PropertyEditor replaceOld = null)
+		{
+			if (!(member is FieldInfo) && !(member is PropertyInfo))
+			{
+				throw new ArgumentException("Only PropertyInfo and FieldInfo members are supported");
+			}
+
+			PropertyEditor e;
+			Type editType = ReflectTypeForMember(member, values ?? this.GetValue());
+			e = this.AutoCreateMemberEditor(member);
+			if (e == null) e = this.ParentGrid.CreateEditor(editType, this);
+			if (e == null) return null;
+
+			e.BeginUpdate();
+			{
+				if (member is PropertyInfo)
+				{
+					PropertyInfo property = member as PropertyInfo;
+					e.Getter = this.CreatePropertyValueGetter(property);
+					e.Setter = property.CanWrite ? this.CreatePropertyValueSetter(property) : null;
+					e.PropertyName = property.Name;
+					e.EditedMember = property;
+					e.NonPublic = !this.memberPredicate(property, false);
+				}
+				else if (member is FieldInfo)
+				{
+					FieldInfo field = member as FieldInfo;
+					e.Getter = this.CreateFieldValueGetter(field);
+					e.Setter = this.CreateFieldValueSetter(field);
+					e.PropertyName = field.Name;
+					e.EditedMember = field;
+					e.NonPublic = !this.memberPredicate(field, false);
+				}
+
+				if (replaceOld != null)
+				{
+					this.AddPropertyEditor(e, replaceOld);
+					this.RemovePropertyEditor(replaceOld);
+					replaceOld.Dispose();
+				}
+				else
+				{
+					this.AddPropertyEditor(e);
+				}
+				this.ParentGrid.ConfigureEditor(e);
+			}
+			e.EndUpdate();
+
+			return e;
+		}
+		protected void VerifyReflectedTypeEditors(IEnumerable<object> values)
+		{
+			if (this.EditedType == null) return;
+			if (!this.ContentInitialized) return;
+
+			List<PropertyEditor> invalidEditors = null;
+			foreach (PropertyEditor editor in this.Children)
+			{
+				if (editor.EditedMember == null) continue;
+				if (editor.EditedType == null) continue;
+				if (!this.IsAutoCreateMember(editor.EditedMember)) continue;
+
+				Type reflectedType = this.ReflectTypeForMember(editor.EditedMember, values);
+				if (reflectedType != editor.EditedType)
+				{
+					if (invalidEditors == null) invalidEditors = new List<PropertyEditor>();
+					invalidEditors.Add(editor);
+				}
+			}
+
+			if (invalidEditors != null)
+			{
+				this.ReInitContent(invalidEditors);
 			}
 		}
-
-		public PropertyEditor AddEditorForProperty(PropertyInfo prop)
+		protected Type ReflectTypeForMember(MemberInfo member, IEnumerable<object> values)
 		{
-			PropertyEditor e = this.AutoCreateMemberEditor(prop);
-			if (e == null) e = this.ParentGrid.CreateEditor(prop.PropertyType, this);
-			if (e == null) return null;
-			e.BeginUpdate();
-			e.Getter = this.CreatePropertyValueGetter(prop);
-			e.Setter = prop.CanWrite ? this.CreatePropertyValueSetter(prop) : null;
-			e.PropertyName = prop.Name;
-			e.EditedMember = prop;
-			e.NonPublic = !this.memberPredicate(prop, false);
-			this.AddPropertyEditor(e);
-			this.ParentGrid.ConfigureEditor(e);
-			e.EndUpdate();
-			return e;
+			if (member is FieldInfo)
+			{
+				FieldInfo field = member as FieldInfo;
+				return PropertyEditor.ReflectDynamicType(field.FieldType, values.Where(v => v != null).Select(v => field.GetValue(v)));
+			}
+			else if (member is PropertyInfo)
+			{
+				PropertyInfo property = member as PropertyInfo;
+				return PropertyEditor.ReflectDynamicType(property.PropertyType, values.Where(v => v != null).Select(v => property.GetValue(v, null)));
+			}
+			else
+				throw new ArgumentException("Only PropertyInfo and FieldInfo members are supported");
 		}
-		public PropertyEditor AddEditorForField(FieldInfo field)
+
+		protected IEnumerable<MemberInfo> QueryEditedMembers()
 		{
-			PropertyEditor e = this.AutoCreateMemberEditor(field);
-			if (e == null) e = this.ParentGrid.CreateEditor(field.FieldType, this);
-			if (e == null) return null;
-			e.BeginUpdate();
-			e.Getter = this.CreateFieldValueGetter(field);
-			e.Setter = this.CreateFieldValueSetter(field);
-			e.PropertyName = field.Name;
-			e.EditedMember = field;
-			e.NonPublic = !this.memberPredicate(field, false);
-			this.AddPropertyEditor(e);
-			this.ParentGrid.ConfigureEditor(e);
-			e.EndUpdate();
-			return e;
+			PropertyInfo[] propArr = this.EditedType.GetProperties(
+				BindingFlags.Instance | 
+				BindingFlags.Public | 
+				BindingFlags.NonPublic);
+			FieldInfo[] fieldArr = this.EditedType.GetFields(
+				BindingFlags.Instance | 
+				BindingFlags.Public | 
+				BindingFlags.NonPublic);
+			return (
+
+				from p in propArr
+				where p.CanRead && p.GetIndexParameters().Length == 0 && this.IsAutoCreateMember(p)
+				orderby GetTypeHierarchyLevel(p.DeclaringType) ascending, p.Name
+				select p
+
+				).Concat((IEnumerable<MemberInfo>)
+
+				from f in fieldArr
+				where this.IsAutoCreateMember(f)
+				orderby GetTypeHierarchyLevel(f.DeclaringType) ascending, f.Name
+				select f
+
+				);
+		}
+		protected IEnumerable<FieldInfo> QueryEditedFields()
+		{
+			FieldInfo[] fieldArr = this.EditedType.GetFields(
+				BindingFlags.Instance | 
+				BindingFlags.Public | 
+				BindingFlags.NonPublic);
+			return
+				from f in fieldArr
+				where this.IsAutoCreateMember(f)
+				orderby GetTypeHierarchyLevel(f.DeclaringType) ascending, f.Name
+				select f;
 		}
 
 		public override void PerformGetValue()
@@ -176,6 +258,7 @@ namespace AdamsLair.PropertyGrid
 			base.PerformGetValue();
 			object[] curObjects = this.GetValue().ToArray();
 
+			this.VerifyReflectedTypeEditors(curObjects);
 			this.BeginUpdate();
 			if (curObjects == null)
 			{
@@ -270,7 +353,7 @@ namespace AdamsLair.PropertyGrid
 		}
 		protected virtual PropertyEditor AutoCreateMemberEditor(MemberInfo info)
 		{
-			return this.memberEditorCreator(info);
+			return null;
 		}
 
 		protected internal override void OnKeyDown(KeyEventArgs e)
@@ -365,10 +448,6 @@ namespace AdamsLair.PropertyGrid
 		protected static bool DefaultMemberAffectsOthers(MemberInfo info)
 		{
 			return false;
-		}
-		protected static PropertyEditor DefaultMemberEditorCreator(MemberInfo info)
-		{
-			return null;
 		}
 		protected static void DefaultPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values)
 		{

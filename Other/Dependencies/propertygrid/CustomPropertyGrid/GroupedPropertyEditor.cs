@@ -192,16 +192,23 @@ namespace AdamsLair.PropertyGrid
 			this.contentInit = false;
 			this.ClearPropertyEditors();
 		}
-		public override void BeginUpdate()
+		public override bool BeginUpdate()
 		{
-			base.BeginUpdate();
-			this.sizeBeforeUpdate = this.Size;
+			if (base.BeginUpdate())
+			{
+				this.sizeBeforeUpdate = this.Size;
+				return true;
+			}
+			return false;
 		}
-		public override void EndUpdate()
+		public override bool EndUpdate()
 		{
-			base.EndUpdate();
-			if (this.Size != this.sizeBeforeUpdate)
-				this.OnSizeChanged();
+			if (base.EndUpdate())
+			{
+				if (this.Size != this.sizeBeforeUpdate)
+					this.OnSizeChanged();
+			}
+			return false;
 		}
 
 		public override void PerformSetValue() {}
@@ -250,6 +257,24 @@ namespace AdamsLair.PropertyGrid
 		protected bool HasPropertyEditor(PropertyEditor editor)
 		{
 			return this.propertyEditors.Contains(editor);
+		}
+		protected void AddPropertyEditor(PropertyEditor editor, PropertyEditor before)
+		{
+			int atIndex = -1;
+			if (before != null && before.ParentEditor == this)
+			{
+				int index = 0;
+				foreach (PropertyEditor child in this.Children)
+				{
+					if (child == before)
+					{
+						atIndex = index;
+						break;
+					}
+					++index;
+				}
+			}
+			this.AddPropertyEditor(editor, atIndex);
 		}
 		protected void AddPropertyEditor(PropertyEditor editor, int atIndex = -1)
 		{
@@ -975,7 +1000,7 @@ namespace AdamsLair.PropertyGrid
 		}
 		protected override void OnSizeChanged()
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 			base.OnSizeChanged();
 			this.UpdateChildWidth();
 		}

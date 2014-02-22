@@ -123,7 +123,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		}
 		private void stringEditor_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 
 			this.val = this.stringEditor.Text;
 			this.Invalidate();

@@ -101,7 +101,7 @@ namespace AdamsLair.PropertyGrid
 		private	bool			valueModified	= false;
 		private	bool			mutableValue	= false;
 		private	bool			memberNonPublic	= false;
-		private	bool			updatingFromObj	= false;
+		private	int				updateLockCount	= 0;
 		private	bool			disposed		= false;
 		private	HintFlags		hints			= HintFlags.Default;
 		private	Size			size			= new Size(0, 20);
@@ -197,6 +197,9 @@ namespace AdamsLair.PropertyGrid
 		{
 			get { return this.disposed; }
 		}
+		/// <summary>
+		/// [GET / SET] The Type of values that this PropertyEditor is able to edit.
+		/// </summary>
 		public Type EditedType
 		{
 			get { return this.editedType; }
@@ -209,6 +212,10 @@ namespace AdamsLair.PropertyGrid
 				}
 			}
 		}
+		/// <summary>
+		/// [GET / SET] The underlying reflected MemberInfo, which is edited by this PropertyEditor.
+		/// This is usually null for PropertyEditors that haven't been instantiated by <see cref="MemberwisePropertyEditor"/>
+		/// </summary>
 		public MemberInfo EditedMember
 		{
 			get { return this.editedMember; }
@@ -252,11 +259,19 @@ namespace AdamsLair.PropertyGrid
 			get { return this.valueModified; }
 			set { this.valueModified = value; }
 		}
+		/// <summary>
+		/// [GET / SET] Specifies whether this PropertyEditor can be modified, even when its parents are set to <see cref="ReadOnly"/> mode.
+		/// </summary>
 		public bool ValueMutable
 		{
 			get { return this.mutableValue; }
 			set { this.mutableValue = value; }
 		}
+		/// <summary>
+		/// [GET / SET] Specifies whether this PropertyEditor represents a non-public value. It will
+		/// usually be displayed "greyed out", so the user is able to make a distinction between
+		/// public and non-public data, which is only displayed for debugging purposes.
+		/// </summary>
 		public bool NonPublic
 		{
 			get { return this.memberNonPublic; }
@@ -342,9 +357,12 @@ namespace AdamsLair.PropertyGrid
 				}
 			}
 		}
-		protected bool IsUpdatingFromObject
+		/// <summary>
+		/// [GET] Returns whether or not this editor is currently performing a refresh operation.
+		/// </summary>
+		protected bool IsUpdating
 		{
-			get { return this.updatingFromObj; }
+			get { return this.updateLockCount > 0; }
 		}
 
 		public Size Size
@@ -424,6 +442,10 @@ namespace AdamsLair.PropertyGrid
 			this.SetValue(this.DisplayedValue);
 		}
 
+		/// <summary>
+		/// Performs a get operation using the PropertyEditors <see cref="Getter"/> and <see cref="ConverterGet"/>.
+		/// </summary>
+		/// <returns></returns>
 		protected IEnumerable<object> GetValue()
 		{
 			if (this.getter == null) return null;
@@ -433,6 +455,10 @@ namespace AdamsLair.PropertyGrid
 			else
 				return result;
 		}
+		/// <summary>
+		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSer"/>.
+		/// </summary>
+		/// <param name="objEnum"></param>
 		protected void SetValues(IEnumerable<object> objEnum)
 		{
 			if (this.setter == null) return;
@@ -446,6 +472,10 @@ namespace AdamsLair.PropertyGrid
 
 			this.parentGrid.PostSetValue();
 		}
+		/// <summary>
+		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSer"/>.
+		/// </summary>
+		/// <param name="obj"></param>
 		protected void SetValue(object obj)
 		{
 			this.SetValues(new object[] { obj });
@@ -510,15 +540,28 @@ namespace AdamsLair.PropertyGrid
 			this.clientRect.Width -= this.nameLabelRect.Width;
 			this.clientRect.Width -= this.buttonRect.Width;
 		}
-		public virtual void BeginUpdate()
+		/// <summary>
+		/// Begins a refresh operation on this editor.
+		/// </summary>
+		/// <returns>
+		/// Returns whether this method call initialized the current refresh operation. 
+		/// False, if it already has been initialized by a previous call.
+		/// </returns>
+		public virtual bool BeginUpdate()
 		{
-			if (this.updatingFromObj) throw new InvalidOperationException("The PropertyEditor already is updating");
-			this.updatingFromObj = true;
+			return (this.updateLockCount++) == 0;
 		}
-		public virtual void EndUpdate()
+		/// <summary>
+		/// Ends a the current refresh operation on this editor.
+		/// </summary>
+		/// <returns>
+		/// Returns whether this method call terminated the current refresh operation. 
+		/// False, if termination will occur by one of the subsequent calls of this method.
+		/// </returns>
+		public virtual bool EndUpdate()
 		{
-			if (!this.updatingFromObj) throw new InvalidOperationException("The PropertyEditor was not updating");
-			this.updatingFromObj = false;
+			if (this.updateLockCount == 0) throw new InvalidOperationException("The PropertyEditor was not updating");
+			return (--this.updateLockCount) == 0;
 		}
 		
 		protected void PaintBackground(Graphics g)
@@ -683,6 +726,38 @@ namespace AdamsLair.PropertyGrid
 		protected void OnEditingFinished(FinishReason reason)
 		{
 			this.OnEditingFinished(this, new PropertyEditingFinishedEventArgs(this, this.DisplayedValue, reason));
+		}
+		
+		/// <summary>
+		/// Determines the most specific shared Type of all the specified objects.
+		/// The specified static Type will be used as a shared fallback, if no other
+		/// common root is found.
+		/// </summary>
+		/// <param name="staticType"></param>
+		/// <param name="values"></param>
+		/// <returns></returns>
+		protected static Type ReflectDynamicType(Type staticType, IEnumerable<object> values)
+		{
+			return ReflectDynamicType(staticType, values.Where(v => v != null).Select(v => v.GetType()));
+		}
+		/// <summary>
+		/// Determines the most specific shared Type of all the specified Types.
+		/// The specified static Type will be used as a shared fallback, if no other
+		/// common root is found.
+		/// </summary>
+		/// <param name="staticType"></param>
+		/// <param name="dynamicTypes"></param>
+		/// <returns></returns>
+		protected static Type ReflectDynamicType(Type staticType, IEnumerable<Type> dynamicTypes)
+		{
+			if (staticType.IsSealed) return staticType;
+			if (!staticType.IsClass && !staticType.IsInterface) return staticType;
+
+			Type commonBaseType = dynamicTypes.GetCommonBaseClass();
+			if (staticType.IsTypeDerivedFrom(commonBaseType) || (staticType.IsInterface && commonBaseType == typeof(object)))
+				return staticType;
+			else
+				return commonBaseType;
 		}
 	}
 }

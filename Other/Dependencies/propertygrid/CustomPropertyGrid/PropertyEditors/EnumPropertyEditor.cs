@@ -144,7 +144,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		}
 		private void stringSelector_Edited(object sender, EventArgs e)
 		{
-			if (this.IsUpdatingFromObject) return;
+			if (this.IsUpdating) return;
 
 			this.val = (Enum)Enum.Parse(this.EditedType, this.stringSelector.SelectedObject.ToString());
 			this.Invalidate();

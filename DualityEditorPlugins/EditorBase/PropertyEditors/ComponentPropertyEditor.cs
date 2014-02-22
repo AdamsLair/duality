@@ -114,7 +114,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnActiveChanged()
 		{
 			base.OnActiveChanged();
-			if (!this.IsUpdatingFromObject) this.PerformSetActive(this.Active);
+			if (!this.IsUpdating) this.PerformSetActive(this.Active);
 		}
 		protected override void OnEditedTypeChanged()
 		{

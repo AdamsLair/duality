@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CustomPropertyGrid</name>
+    </assembly>
+    <members>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.GetValue">
+            <summary>
+            Performs a get operation using the PropertyEditors <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.Getter"/> and <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.ConverterGet"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.SetValues(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.Setter"/> and <see cref="!:ConverterSer"/>.
+            </summary>
+            <param name="objEnum"></param>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.SetValue(System.Object)">
+            <summary>
+            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.Setter"/> and <see cref="!:ConverterSer"/>.
+            </summary>
+            <param name="obj"></param>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.BeginUpdate">
+            <summary>
+            Begins a refresh operation on this editor.
+            </summary>
+            <returns>
+            Returns whether this method call initialized the current refresh operation. 
+            False, if it already has been initialized by a previous call.
+            </returns>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.EndUpdate">
+            <summary>
+            Ends a the current refresh operation on this editor.
+            </summary>
+            <returns>
+            Returns whether this method call terminated the current refresh operation. 
+            False, if termination will occur by one of the subsequent calls of this method.
+            </returns>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.ReflectDynamicType(System.Type,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Determines the most specific shared Type of all the specified objects.
+            The specified static Type will be used as a shared fallback, if no other
+            common root is found.
+            </summary>
+            <param name="staticType"></param>
+            <param name="values"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.ReflectDynamicType(System.Type,System.Collections.Generic.IEnumerable{System.Type})">
+            <summary>
+            Determines the most specific shared Type of all the specified Types.
+            The specified static Type will be used as a shared fallback, if no other
+            common root is found.
+            </summary>
+            <param name="staticType"></param>
+            <param name="dynamicTypes"></param>
+            <returns></returns>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PropertyEditor.EditedType">
+            <summary>
+            [GET / SET] The Type of values that this PropertyEditor is able to edit.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PropertyEditor.EditedMember">
+            <summary>
+            [GET / SET] The underlying reflected MemberInfo, which is edited by this PropertyEditor.
+            This is usually null for PropertyEditors that haven't been instantiated by <see cref="T:AdamsLair.PropertyGrid.MemberwisePropertyEditor"/>
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PropertyEditor.ValueMutable">
+            <summary>
+            [GET / SET] Specifies whether this PropertyEditor can be modified, even when its parents are set to <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.ReadOnly"/> mode.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PropertyEditor.NonPublic">
+            <summary>
+            [GET / SET] Specifies whether this PropertyEditor represents a non-public value. It will
+            usually be displayed "greyed out", so the user is able to make a distinction between
+            public and non-public data, which is only displayed for debugging purposes.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PropertyEditor.IsUpdating">
+            <summary>
+            [GET] Returns whether or not this editor is currently performing a refresh operation.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PopupDropDown.ResizeMode">
+            <summary>
+            Type of resize mode, grips are automatically drawn at bottom-left and bottom-right corners.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PopupDropDown.GripBounds">
+            <summary>
+            Bounds of active grip box position.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PopupDropDown.IsGripShown">
+            <summary>
+            Indicates when a grip box is shown.
+            </summary>
+        </member>
+        <member name="P:AdamsLair.PropertyGrid.PopupControl.PopupControlHost">
+            <summary>
+            Gets or sets the popup control host, this is used to hide/show popup.
+            </summary>
+        </member>
+    </members>
+</doc>

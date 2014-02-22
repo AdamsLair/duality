@@ -214,7 +214,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (invokeSetter)
 				{
 					this.SetValues(batchInfos);
-					if (!this.IsUpdatingFromObject)
+					if (!this.IsUpdating)
 						this.PerformGetValue();
 				}
 			}

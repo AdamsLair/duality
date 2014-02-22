@@ -102,8 +102,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.editorAngleVel.EndUpdate();
 			}
 
-			this.AddEditorForProperty(ReflectionInfo.Property_Transform_DeriveAngle);
-			this.AddEditorForProperty(ReflectionInfo.Property_Transform_IgnoreParent);
+			this.AddEditorForMember(ReflectionInfo.Property_Transform_DeriveAngle);
+			this.AddEditorForMember(ReflectionInfo.Property_Transform_IgnoreParent);
 
 			this.editorShowRelative = this.ParentGrid.CreateEditor(typeof(bool), this);
 			if (editorShowRelative != null)
