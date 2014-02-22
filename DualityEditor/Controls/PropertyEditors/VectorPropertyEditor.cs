@@ -301,18 +301,21 @@ namespace Duality.Editor.Controls.PropertyEditors
 				this.ApplyDefaultSubEditorConfig(t);
 			}
 
-			var places = this.EditedMember.GetEditorHint<EditorHintDecimalPlacesAttribute>(hintOverride);
-			var increment = this.EditedMember.GetEditorHint<EditorHintIncrementAttribute>(hintOverride);
-			var range = this.EditedMember.GetEditorHint<EditorHintRangeAttribute>(hintOverride);
-				
-			foreach (NumericEditorTemplate t in this.editor)
+			if (this.EditedMember != null)
 			{
-				if (places != null) t.DecimalPlaces = places.Places;
-				if (increment != null) t.Increment = increment.Increment;
-				if (range != null)
+				var places = this.EditedMember.GetEditorHint<EditorHintDecimalPlacesAttribute>(hintOverride);
+				var increment = this.EditedMember.GetEditorHint<EditorHintIncrementAttribute>(hintOverride);
+				var range = this.EditedMember.GetEditorHint<EditorHintRangeAttribute>(hintOverride);
+				
+				foreach (NumericEditorTemplate t in this.editor)
 				{
-					t.Minimum = range.Min;
-					t.Maximum = range.Max;
+					if (places != null) t.DecimalPlaces = places.Places;
+					if (increment != null) t.Increment = increment.Increment;
+					if (range != null)
+					{
+						t.Minimum = range.Min;
+						t.Maximum = range.Max;
+					}
 				}
 			}
 		}
