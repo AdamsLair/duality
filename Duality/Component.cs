@@ -54,7 +54,6 @@ namespace Duality
 	/// Also, a Component may not belong to multiple GameObjects at once.
 	/// </summary>
 	[Serializable]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
 	public abstract class Component : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
 	{
