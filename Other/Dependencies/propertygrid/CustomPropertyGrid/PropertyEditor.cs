@@ -453,12 +453,18 @@ namespace AdamsLair.PropertyGrid
 		/// <returns></returns>
 		protected IEnumerable<object> GetValue()
 		{
-			if (this.getter == null) return null;
-			IEnumerable<object> result = this.getter();
-			if (this.converterGet != null && result != null)
-				return result.Select(this.converterGet);
-			else
-				return result;
+			// Retrieve raw value from getter
+			IEnumerable<object> result = null;
+			if (this.getter != null) result = this.getter();
+
+			// Perform converter operation, if available
+			if (this.converterGet != null)
+				result = result.Select(this.converterGet);
+
+			// Perform a safety check, whether the EditedType matches the received value
+			result = result.Where(v => this.editedType.IsInstanceOfType(v));
+			
+			return result;
 		}
 		/// <summary>
 		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSer"/>.
