@@ -48,11 +48,14 @@ namespace AdamsLair.PropertyGrid
 				if (this.expanded != value)
 				{
 					this.expanded = value;
-					this.Invalidate();
-					if (this.expanded && !this.contentInit)
-						this.InitContent();
-					else
-						this.UpdateHeight();
+					if (this.ParentGrid != null)
+					{
+						this.Invalidate();
+						if (this.expanded && !this.contentInit)
+							this.InitContent();
+						else
+							this.UpdateHeight();
+					}
 				}
 			}
 		}
@@ -997,6 +1000,8 @@ namespace AdamsLair.PropertyGrid
 			if (!this.headerColor.HasValue) this.headerColor = ControlRenderer.ColorBackground;
 			if (this.HeaderHeight == DefaultHeaderHeight)
 				this.HeaderHeight = 5 + (int)Math.Round((float)this.ControlRenderer.DefaultFont.Height);
+			if (this.expanded && !this.contentInit)
+				this.InitContent();
 		}
 		protected override void OnSizeChanged()
 		{

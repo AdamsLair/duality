@@ -45,7 +45,8 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.dictKeySetter = DefaultPropertySetter;
 
 			this.offsetEditor = new NumericPropertyEditor();
-			this.offsetEditor.EditedType = typeof(uint);
+			this.offsetEditor.EditedType = typeof(int);
+			this.offsetEditor.Minimum = 0;
 			this.offsetEditor.PropertyName = "Offset";
 			this.offsetEditor.Getter = this.OffsetValueGetter;
 			this.offsetEditor.Setter = this.OffsetValueSetter;
@@ -58,7 +59,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 
 			if (this.EditedType != null)
 			{
-				Type keyType = this.GetKeyType();
+				Type keyType = GetIDictionaryKeyType(this.EditedType);
 				this.addKeyEditor = this.ParentGrid.CreateEditor(keyType, this);
 				this.addKeyEditor.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
 				this.addKeyEditor.ButtonIcon = EmbeddedResources.Resources.ImageAdd;
@@ -90,13 +91,6 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		{
 			base.OnGetValue();
 			IDictionary[] values = this.GetValue().Cast<IDictionary>().ToArray();
-			Type valueType = this.GetValueType();
-
-			if (values == null)
-			{
-				this.HeaderValueText = null;
-				return;
-			}
 
 			string valString = null;
 			if (!values.Any() || values.All(o => o == null))
@@ -115,7 +109,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 				if (this.ContentInitialized)
 				{
 					if (this.Expanded)
-						this.UpdateElementEditors(values, valueType);
+						this.UpdateElementEditors(values);
 					else
 						this.ClearContent();
 				}
@@ -144,22 +138,20 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			foreach (PropertyEditor e in this.Children)
 				e.PerformSetValue();
 		}
+		protected override void VerifyReflectedTypeEditors(IEnumerable<object> values)
+		{
+			base.VerifyReflectedTypeEditors(values);
+			if (!this.ContentInitialized) return;
+			if (!this.Expanded) return;
+
+			IDictionary[] valuesCast = this.GetValue().Cast<IDictionary>().ToArray();
+			if (values.Any() && values.Any(o => o != null))
+			{
+				this.UpdateElementEditors(valuesCast);
+			}
+		}
 		
-		protected Type GetValueType()
-		{
-			if (this.EditedType.IsGenericType && this.EditedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-				return this.EditedType.GetGenericArguments()[1];
-			else
-				return typeof(object);
-		}
-		protected Type GetKeyType()
-		{
-			if (this.EditedType.IsGenericType && this.EditedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-				return this.EditedType.GetGenericArguments()[0];
-			else
-				return typeof(object);
-		}
-		protected void UpdateElementEditors(IDictionary[] values, Type valueType)
+		protected void UpdateElementEditors(IDictionary[] values)
 		{
 			PropertyInfo indexer = typeof(IDictionary).GetProperty("Item");
 			int visibleElementCount = values.Where(o => o != null).Min(o => (int)o.Count);
@@ -198,16 +190,37 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.BeginUpdate();
 
 			// Add missing editors
+			Type dictValueType = GetIDictionaryValueType(this.EditedType);
+			Type reflectedDictValueType = PropertyEditor.ReflectDynamicType(dictValueType, values.Select(a => GetIDictionaryValueType(a.GetType())));
 			for (int i = this.internalEditors; i < visibleElementCount + this.internalEditors; i++)
 			{
+				object elementKey = this.displayedKeys[i - this.internalEditors];
+				Type reflectedElementValueType = PropertyEditor.ReflectDynamicType(
+					reflectedDictValueType, 
+					values.Where(v => v != null).Select(v => indexer.GetValue(v, new object[] { elementKey })));
 				PropertyEditor elementEditor;
+
+				// Retrieve and Update existing editor
 				if (i < this.Children.Count())
 				{
 					elementEditor = this.Children.ElementAt(i);
+					if (elementEditor.EditedType != reflectedElementValueType)
+					{
+						// If the editor has the wrong type, we'll need to create a new one
+						PropertyEditor oldEditor = elementEditor;
+						elementEditor = this.ParentGrid.CreateEditor(reflectedElementValueType, this);
+						
+						this.AddPropertyEditor(elementEditor, oldEditor);
+						this.RemovePropertyEditor(oldEditor);
+						oldEditor.Dispose();
+
+						this.ParentGrid.ConfigureEditor(elementEditor);
+					}
 				}
+				// Create a new editor
 				else
 				{
-					elementEditor = this.ParentGrid.CreateEditor(valueType, this);
+					elementEditor = this.ParentGrid.CreateEditor(reflectedElementValueType, this);
 					this.AddPropertyEditor(elementEditor);
 					this.ParentGrid.ConfigureEditor(elementEditor);
 					if (!elementEditor.Hints.HasFlag(HintFlags.HasButton))
@@ -216,9 +229,9 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 						elementEditor.ButtonPressed += this.elementEditor_ButtonPressed;
 					}
 				}
-				elementEditor.Getter = this.CreateElementValueGetter(indexer, this.displayedKeys[i - this.internalEditors]);
-				elementEditor.Setter = this.CreateElementValueSetter(indexer, this.displayedKeys[i - this.internalEditors]);
-				elementEditor.PropertyName = "[" + this.displayedKeys[i - this.internalEditors].ToString() + "]";
+				elementEditor.Getter = this.CreateElementValueGetter(indexer, elementKey);
+				elementEditor.Setter = this.CreateElementValueSetter(indexer, elementKey);
+				elementEditor.PropertyName = "[" + elementKey.ToString() + "]";
 			}
 			// Remove overflowing editors
 			for (int i = this.Children.Count() - (this.internalEditors + 1); i >= visibleElementCount; i--)
@@ -261,11 +274,11 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		}
 		protected IEnumerable<object> OffsetValueGetter()
 		{
-			yield return (uint)this.offset;
+			yield return this.offset;
 		}
 		protected void OffsetValueSetter(IEnumerable<object> values)
 		{
-			this.offset = (int)Convert.ChangeType(values.First(), typeof(int));
+			this.offset = (int)values.First();
 			this.PerformGetValue();
 		}
 		protected Func<IEnumerable<object>> CreateElementValueGetter(PropertyInfo indexer, object key)
@@ -341,7 +354,8 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		private void AddKeyToDictionary(object key)
 		{
 			IDictionary[] targetArray = this.GetValue().Cast<IDictionary>().ToArray();
-			Type valueType = this.GetValueType();
+			Type valueType = GetIDictionaryValueType(this.EditedType);
+			Type reflectedValueType = PropertyEditor.ReflectDynamicType(valueType, targetArray.Select(a => GetIDictionaryValueType(a.GetType())));
 
 			for (int t = 0; t < targetArray.Length; t++)
 			{
@@ -353,7 +367,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 						if (!target.Contains(key))
 						{
 							// Add a new key value pair
-							target.Add(key, valueType.IsValueType ? ReflectionHelper.CreateInstanceOf(valueType) : null);
+							target.Add(key, valueType.IsValueType ? ReflectionHelper.CreateInstanceOf(reflectedValueType) : null);
 						}
 					}
 					else
@@ -366,7 +380,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		private void RemoveKeyFromDictionary(object key)
 		{
 			IDictionary[] targetArray = this.GetValue().Cast<IDictionary>().ToArray();
-			Type valueType = this.GetValueType();
+			Type valueType = GetIDictionaryValueType(this.EditedType);
 
 			for (int t = 0; t < targetArray.Length; t++)
 			{
@@ -387,7 +401,21 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 				}
 			}
 		}
-
+		
+		protected static Type GetIDictionaryValueType(Type dictType)
+		{
+			if (dictType.IsGenericType && dictType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+				return dictType.GetGenericArguments()[1];
+			else
+				return typeof(object);
+		}
+		protected static Type GetIDictionaryKeyType(Type dictType)
+		{
+			if (dictType.IsGenericType && dictType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+				return dictType.GetGenericArguments()[0];
+			else
+				return typeof(object);
+		}
 		protected static void DefaultPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values, object key)
 		{
 			IEnumerator<object> valuesEnum = values.GetEnumerator();

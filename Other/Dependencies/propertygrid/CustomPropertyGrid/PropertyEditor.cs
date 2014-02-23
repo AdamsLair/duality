@@ -132,6 +132,7 @@ namespace AdamsLair.PropertyGrid
 				this.parentGrid = value;
 				if (this.parentGrid == null) this.parentEditor = null;
 				if (this.ReadOnly != lastReadOnly) this.OnReadOnlyChanged();
+				this.OnParentEditorChanged();
 			}
 		}
 		public PropertyEditor ParentEditor
@@ -458,16 +459,17 @@ namespace AdamsLair.PropertyGrid
 			if (this.getter != null) result = this.getter();
 
 			// Perform converter operation, if available
-			if (this.converterGet != null)
+			if (this.converterGet != null && result != null)
 				result = result.Select(this.converterGet);
 
 			// Perform a safety check, whether the EditedType matches the received value
-			result = result.Where(v => this.editedType.IsInstanceOfType(v));
+			if (this.editedType != null && result != null)
+				result = result.Where(v => this.editedType.IsInstanceOfType(v));
 			
 			return result;
 		}
 		/// <summary>
-		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSer"/>.
+		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSet"/>.
 		/// </summary>
 		/// <param name="objEnum"></param>
 		protected void SetValues(IEnumerable<object> objEnum)
@@ -487,7 +489,7 @@ namespace AdamsLair.PropertyGrid
 			this.parentGrid.PostSetValue();
 		}
 		/// <summary>
-		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSer"/>.
+		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSet"/>.
 		/// </summary>
 		/// <param name="obj"></param>
 		protected void SetValue(object obj)
@@ -510,28 +512,6 @@ namespace AdamsLair.PropertyGrid
 		/// </summary>
 		/// <param name="values"></param>
 		protected virtual void VerifyReflectedTypeEditors(IEnumerable<object> values) {}
-		/// <summary>
-		/// Determines the Type to use as a basis for generating a PropertyEditor for the specified member
-		/// by evaluating the members current value and static Type.
-		/// </summary>
-		/// <param name="member"></param>
-		/// <param name="values"></param>
-		/// <returns></returns>
-		protected Type ReflectTypeForMember(MemberInfo member, IEnumerable<object> values)
-		{
-			if (member is FieldInfo)
-			{
-				FieldInfo field = member as FieldInfo;
-				return PropertyEditor.ReflectDynamicType(field.FieldType, values.Where(v => v != null).Select(v => field.GetValue(v)));
-			}
-			else if (member is PropertyInfo)
-			{
-				PropertyInfo property = member as PropertyInfo;
-				return PropertyEditor.ReflectDynamicType(property.PropertyType, values.Where(v => v != null).Select(v => property.GetValue(v, null)));
-			}
-			else
-				throw new ArgumentException("Only PropertyInfo and FieldInfo members are supported");
-		}
 
 		public void Invalidate()
 		{

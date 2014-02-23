@@ -12,13 +12,13 @@
         </member>
         <member name="M:AdamsLair.PropertyGrid.PropertyEditor.SetValues(System.Collections.Generic.IEnumerable{System.Object})">
             <summary>
-            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.Setter"/> and <see cref="!:ConverterSer"/>.
+            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.Setter"/> and <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.ConverterSet"/>.
             </summary>
             <param name="objEnum"></param>
         </member>
         <member name="M:AdamsLair.PropertyGrid.PropertyEditor.SetValue(System.Object)">
             <summary>
-            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.Setter"/> and <see cref="!:ConverterSer"/>.
+            Performs a set operation using the PropertyEditors <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.Setter"/> and <see cref="P:AdamsLair.PropertyGrid.PropertyEditor.ConverterSet"/>.
             </summary>
             <param name="obj"></param>
         </member>
@@ -31,15 +31,6 @@
             with an updated Type after the members value has changed from typeof(int) to typeof(float).
             </summary>
             <param name="values"></param>
-        </member>
-        <member name="M:AdamsLair.PropertyGrid.PropertyEditor.ReflectTypeForMember(System.Reflection.MemberInfo,System.Collections.Generic.IEnumerable{System.Object})">
-            <summary>
-            Determines the Type to use as a basis for generating a PropertyEditor for the specified member
-            by evaluating the members current value and static Type.
-            </summary>
-            <param name="member"></param>
-            <param name="values"></param>
-            <returns></returns>
         </member>
         <member name="M:AdamsLair.PropertyGrid.PropertyEditor.BeginUpdate">
             <summary>
@@ -126,6 +117,15 @@
             <summary>
             Gets or sets the popup control host, this is used to hide/show popup.
             </summary>
+        </member>
+        <member name="M:AdamsLair.PropertyGrid.MemberwisePropertyEditor.ReflectTypeForMember(System.Reflection.MemberInfo,System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Determines the Type to use as a basis for generating a PropertyEditor for the specified member
+            by evaluating the members current value and static Type.
+            </summary>
+            <param name="member"></param>
+            <param name="values"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>
