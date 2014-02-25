@@ -86,9 +86,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 
 			Texture lastValue = this.value;
 			Texture[] values = this.GetValue().Cast<Texture>().ToArray();

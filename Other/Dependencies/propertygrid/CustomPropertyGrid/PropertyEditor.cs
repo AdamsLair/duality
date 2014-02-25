@@ -132,6 +132,7 @@ namespace AdamsLair.PropertyGrid
 				this.parentGrid = value;
 				if (this.parentGrid == null) this.parentEditor = null;
 				if (this.ReadOnly != lastReadOnly) this.OnReadOnlyChanged();
+				this.OnParentEditorChanged();
 			}
 		}
 		public PropertyEditor ParentEditor
@@ -435,11 +436,16 @@ namespace AdamsLair.PropertyGrid
 		}
 		protected virtual void OnDisposing(bool manually) {}
 
-		public virtual void PerformGetValue() {}
-		public virtual void PerformSetValue()
+		public void PerformGetValue()
+		{
+			if (this.Disposed) return;
+			this.OnGetValue();
+		}
+		public void PerformSetValue()
 		{
 			if (this.ReadOnly) return;
-			this.SetValue(this.DisplayedValue);
+			if (this.Disposed) return;
+			this.OnSetValue();
 		}
 
 		/// <summary>
@@ -448,15 +454,22 @@ namespace AdamsLair.PropertyGrid
 		/// <returns></returns>
 		protected IEnumerable<object> GetValue()
 		{
-			if (this.getter == null) return null;
-			IEnumerable<object> result = this.getter();
+			// Retrieve raw value from getter
+			IEnumerable<object> result = null;
+			if (this.getter != null) result = this.getter();
+
+			// Perform converter operation, if available
 			if (this.converterGet != null && result != null)
-				return result.Select(this.converterGet);
-			else
-				return result;
+				result = result.Select(this.converterGet);
+
+			// Perform a safety check, whether the EditedType matches the received value
+			if (this.editedType != null && result != null)
+				result = result.Where(v => this.editedType.IsInstanceOfType(v));
+			
+			return result;
 		}
 		/// <summary>
-		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSer"/>.
+		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSet"/>.
 		/// </summary>
 		/// <param name="objEnum"></param>
 		protected void SetValues(IEnumerable<object> objEnum)
@@ -468,18 +481,37 @@ namespace AdamsLair.PropertyGrid
 				this.setter(objEnum.Select(this.converterSet));
 			else
 				this.setter(objEnum);
-			this.OnValueChanged();
 
+			if (this.parentEditor != null)
+				this.parentEditor.VerifyReflectedTypeEditors(this.parentEditor.GetValue());
+
+			this.OnValueChanged();
 			this.parentGrid.PostSetValue();
 		}
 		/// <summary>
-		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSer"/>.
+		/// Performs a set operation using the PropertyEditors <see cref="Setter"/> and <see cref="ConverterSet"/>.
 		/// </summary>
 		/// <param name="obj"></param>
 		protected void SetValue(object obj)
 		{
 			this.SetValues(new object[] { obj });
 		}
+
+		protected virtual void OnGetValue() {}
+		protected virtual void OnSetValue()
+		{
+			this.SetValue(this.DisplayedValue);
+		}
+
+		/// <summary>
+		/// This method is called in order to determine whether all of the editors children
+		/// are still valid regarding their dynamically reflected member Types. When a child
+		/// editor of an typeof(object) member has been dynamically typed to typeof(int) because
+		/// of its content, this method allows to switch re-initialize or re-create the editor
+		/// with an updated Type after the members value has changed from typeof(int) to typeof(float).
+		/// </summary>
+		/// <param name="values"></param>
+		protected virtual void VerifyReflectedTypeEditors(IEnumerable<object> values) {}
 
 		public void Invalidate()
 		{

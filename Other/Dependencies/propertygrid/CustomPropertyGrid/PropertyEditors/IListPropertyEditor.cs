@@ -44,13 +44,15 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.listIndexSetter = DefaultPropertySetter;
 
 			this.sizeEditor = new NumericPropertyEditor();
-			this.sizeEditor.EditedType = typeof(uint);
+			this.sizeEditor.EditedType = typeof(int);
+			this.sizeEditor.Minimum = 0;
 			this.sizeEditor.PropertyName = "Size";
 			this.sizeEditor.Getter = this.SizeValueGetter;
 			this.sizeEditor.Setter = this.SizeValueSetter;
 
 			this.offsetEditor = new NumericPropertyEditor();
 			this.offsetEditor.EditedType = typeof(uint);
+			this.offsetEditor.Minimum = 0;
 			this.offsetEditor.PropertyName = "Offset";
 			this.offsetEditor.Getter = this.OffsetValueGetter;
 			this.offsetEditor.Setter = this.OffsetValueSetter;
@@ -72,17 +74,10 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.offset = 0;
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			IList[] values = this.GetValue().Cast<IList>().ToArray();
-			Type elementType = this.GetElementType();
-
-			if (values == null)
-			{
-				this.HeaderValueText = null;
-				return;
-			}
 
 			string valString = null;
 			if (!values.Any() || values.All(o => o == null))
@@ -101,7 +96,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 				if (this.ContentInitialized)
 				{
 					if (this.Expanded)
-						this.UpdateElementEditors(values, elementType);
+						this.UpdateElementEditors(values);
 					else
 						this.ClearContent();
 				}
@@ -121,26 +116,29 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			foreach (PropertyEditor e in this.Children)
 				e.PerformGetValue();
 		}
-		public override void PerformSetValue()
+		protected override void OnSetValue()
 		{
 			if (this.ReadOnly) return;
 			if (!this.Children.Any()) return;
-			base.PerformSetValue();
+			base.OnSetValue();
 
 			foreach (PropertyEditor e in this.Children)
 				e.PerformSetValue();
 		}
-
-		protected Type GetElementType()
+		protected override void VerifyReflectedTypeEditors(IEnumerable<object> values)
 		{
-			if (this.EditedType.HasElementType)
-				return this.EditedType.GetElementType();
-			else if (this.EditedType.IsGenericType)
-				return this.EditedType.GetGenericArguments()[0];
-			else
-				return typeof(object);
+			base.VerifyReflectedTypeEditors(values);
+			if (!this.ContentInitialized) return;
+			if (!this.Expanded) return;
+
+			IList[] valuesCast = values.Cast<IList>().ToArray();
+			if (values.Any() && values.Any(o => o != null))
+			{
+				this.UpdateElementEditors(valuesCast);
+			}
 		}
-		protected void UpdateElementEditors(IList[] values, Type elementType)
+
+		protected void UpdateElementEditors(IList[] values)
 		{
 			PropertyInfo indexer = typeof(IList).GetProperty("Item");
 			int visibleElementCount = values.Where(o => o != null).Min(o => (int)o.Count);
@@ -166,68 +164,51 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.BeginUpdate();
 
 			// Add missing editors
+			Type elementType = GetIListElementType(this.EditedType);
+			Type reflectedArrayType = PropertyEditor.ReflectDynamicType(elementType, values.Select(a => GetIListElementType(a.GetType())));
 			for (int i = this.internalEditors; i < visibleElementCount + this.internalEditors; i++)
 			{
+				int elementIndex = i - this.internalEditors + this.offset;
+				Type reflectedElementType = PropertyEditor.ReflectDynamicType(
+					reflectedArrayType, 
+					values.Where(v => v != null).Select(v => indexer.GetValue(v, new object[] { elementIndex })));
 				PropertyEditor elementEditor;
+
+				// Retrieve and Update existing editor
 				if (i < this.Children.Count())
 				{
 					elementEditor = this.Children.ElementAt(i);
+					if (elementEditor.EditedType != reflectedElementType)
+					{
+						// If the editor has the wrong type, we'll need to create a new one
+						PropertyEditor oldEditor = elementEditor;
+						elementEditor = this.ParentGrid.CreateEditor(reflectedElementType, this);
+						
+						this.AddPropertyEditor(elementEditor, oldEditor);
+						this.RemovePropertyEditor(oldEditor);
+						oldEditor.Dispose();
+
+						this.ParentGrid.ConfigureEditor(elementEditor);
+					}
 				}
+				// Create a new editor
 				else
 				{
-					elementEditor = this.ParentGrid.CreateEditor(elementType, this);
-					//elementEditor.ButtonPressed += elementEditor_ButtonPressed;
+					elementEditor = this.ParentGrid.CreateEditor(reflectedElementType, this);
 					this.AddPropertyEditor(elementEditor);
 					this.ParentGrid.ConfigureEditor(elementEditor);
 				}
-				elementEditor.Getter = this.CreateElementValueGetter(indexer, i - this.internalEditors + this.offset);
-				elementEditor.Setter = this.CreateElementValueSetter(indexer, i - this.internalEditors + this.offset);
-				elementEditor.PropertyName = "[" + (i - this.internalEditors + this.offset) + "]";
-				//elementEditor.Hints |= HintFlags.HasButton | HintFlags.ButtonEnabled;
+				elementEditor.Getter = this.CreateElementValueGetter(indexer, elementIndex);
+				elementEditor.Setter = this.CreateElementValueSetter(indexer, elementIndex);
+				elementEditor.PropertyName = "[" + elementIndex + "]";
 			}
 			// Remove overflowing editors
 			for (int i = this.Children.Count() - (this.internalEditors + 1); i >= visibleElementCount; i--)
 			{
 				PropertyEditor child = this.Children.Last();
-				//child.ButtonPressed -= elementEditor_ButtonPressed;
 				this.RemovePropertyEditor(child);
 			}
 			this.EndUpdate();
-		}
-
-		protected void RemoveElementAt(int index)
-		{
-			IList[] targetArray = this.GetValue().Cast<IList>().ToArray();
-			Type elementType = this.GetElementType();
-
-			bool writeBack = false;
-			for (int t = 0; t < targetArray.Length; t++)
-			{
-				IList target = targetArray[t];
-				if (target != null)
-				{
-					if (!target.IsFixedSize && !target.IsReadOnly)
-					{
-						// Dynamically adjust IList length
-						target.RemoveAt(index);
-					}
-					else if (target is Array)
-					{
-						// Create new array that replaces the old one
-						Array newTarget = Array.CreateInstance(elementType, target.Count - 1);
-						for (int i = 0; i < index; i++)					newTarget.SetValue(target[i], i);
-						for (int i = index + 1; i < target.Count; i++)	newTarget.SetValue(target[i], i - 1);
-						targetArray[t] = newTarget;
-						writeBack = true;
-					}
-					else
-					{
-						// Just some read-only container? Well, can't do anything here.
-					}
-				}
-			}
-			if (writeBack || this.ForceWriteBack) this.SetValues(targetArray);
-			this.PerformGetValue();
 		}
 
 		protected IEnumerable<object> SizeValueGetter()
@@ -238,11 +219,12 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		{
 			IEnumerator<object> valuesEnum = values.GetEnumerator();
 			IList[] targetArray = this.GetValue().Cast<IList>().ToArray();
-			Type elementType = this.GetElementType();
+			Type elementType = GetIListElementType(this.EditedType);
+			Type reflectedArrayType = PropertyEditor.ReflectDynamicType(elementType, targetArray.Select(a => GetIListElementType(a.GetType())));
 
 			bool writeBack = false;
-			uint curValue = 0;
-			if (valuesEnum.MoveNext()) curValue = (uint)valuesEnum.Current;
+			int curValue = 0;
+			if (valuesEnum.MoveNext()) curValue = (int)valuesEnum.Current;
 			for (int t = 0; t < targetArray.Length; t++)
 			{
 				IList target = targetArray[t];
@@ -252,14 +234,14 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 					{
 						// Dynamically adjust IList length
 						while (target.Count < curValue)
-							target.Add(elementType.IsValueType ? ReflectionHelper.CreateInstanceOf(elementType) : null);
+							target.Add(elementType.IsValueType ? ReflectionHelper.CreateInstanceOf(reflectedArrayType) : null);
 						while (target.Count > curValue)
 							target.RemoveAt(target.Count - 1);
 					}
 					else if (target is Array)
 					{
 						// Create new array that replaces the old one
-						Array newTarget = Array.CreateInstance(elementType, curValue);
+						Array newTarget = Array.CreateInstance(reflectedArrayType, curValue);
 						for (int i = 0; i < Math.Min(curValue, target.Count); i++) newTarget.SetValue(target[i], i);
 						targetArray[t] = newTarget;
 						writeBack = true;
@@ -269,7 +251,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 						// Just some read-only container? Well, can't do anything here.
 					}
 				}
-				if (valuesEnum.MoveNext()) curValue = (uint)valuesEnum.Current;
+				if (valuesEnum.MoveNext()) curValue = (int)valuesEnum.Current;
 			}
 			if (writeBack || this.ForceWriteBack) this.SetValues(targetArray);
 			this.PerformGetValue();
@@ -315,7 +297,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 
 				if (newCollection == null)
 				{
-					Type elementType = this.GetElementType();
+					Type elementType = GetIListElementType(this.EditedType);
 					Type listType = elementType != null ? elementType.MakeArrayType() : null;
 					if (listType != null && this.EditedType.IsAssignableFrom(listType))
 						newCollection = this.ParentGrid.CreateObjectInstance(listType) as IList;
@@ -339,6 +321,15 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			base.ConfigureEditor(configureData);
 		}
 
+		protected static Type GetIListElementType(Type listType)
+		{
+			if (listType.HasElementType)
+				return listType.GetElementType();
+			else if (listType.IsGenericType)
+				return listType.GetGenericArguments()[0];
+			else
+				return typeof(object);
+		}
 		protected static void DefaultPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values, int index)
 		{
 			IEnumerator<object> valuesEnum = values.GetEnumerator();

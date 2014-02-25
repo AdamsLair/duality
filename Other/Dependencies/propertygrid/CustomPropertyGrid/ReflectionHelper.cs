@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Reflection;
 
 namespace AdamsLair.PropertyGrid
 {
-	public static class ReflectionHelper
+	internal static class ReflectionHelper
 	{
 		public const BindingFlags BindInstanceAll = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 		public const BindingFlags BindStaticAll = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
@@ -109,7 +110,6 @@ namespace AdamsLair.PropertyGrid
 
 			return false;
 		}
-
 
 		public static string GetTypeKeyword(this Type T)
 		{

@@ -26,9 +26,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 		}
 
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			object[] values = this.GetValue().ToArray();
 
 			this.BeginUpdate();
@@ -59,6 +59,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 		private void editorX_Edited(object sender, EventArgs e)
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();
@@ -80,6 +81,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 		private void editorY_Edited(object sender, EventArgs e)
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();
@@ -101,6 +103,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 		private void editorZ_Edited(object sender, EventArgs e)
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 			if (!this.ReadOnly)
 			{
 				object[] values = this.GetValue().ToArray();

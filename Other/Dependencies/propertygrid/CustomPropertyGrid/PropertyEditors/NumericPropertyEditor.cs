@@ -57,9 +57,9 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		}
 
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			this.BeginUpdate();
 			object[] values = this.GetValue().ToArray();
 
@@ -217,6 +217,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		private void numEditor_Edited(object sender, EventArgs e)
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 
 			this.val = this.numEditor.Value;
 			this.PerformSetValue();

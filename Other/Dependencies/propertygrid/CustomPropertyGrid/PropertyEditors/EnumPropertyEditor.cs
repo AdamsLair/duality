@@ -51,9 +51,9 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		{
 			this.stringSelector.HideDropDown();
 		}
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			this.BeginUpdate();
 			object[] values = this.GetValue().ToArray();
 
@@ -145,6 +145,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		private void stringSelector_Edited(object sender, EventArgs e)
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 
 			this.val = (Enum)Enum.Parse(this.EditedType, this.stringSelector.SelectedObject.ToString());
 			this.Invalidate();

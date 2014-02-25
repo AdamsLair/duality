@@ -37,9 +37,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.dialog.ColorEdited += this.dialog_ColorEdited;
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			IColorData[] values = this.GetValue().Cast<IColorData>().ToArray();
 
 			this.BeginUpdate();

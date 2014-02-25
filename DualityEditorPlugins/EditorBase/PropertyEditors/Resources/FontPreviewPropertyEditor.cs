@@ -67,9 +67,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.Invalidate();
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			Font[] values = this.GetValue().OfType<Font>().ToArray();
 			this.value = values.NotNull().FirstOrDefault() as Font;
 			this.GeneratePreviewImage();

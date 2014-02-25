@@ -16,7 +16,7 @@ namespace Duality.Editor.Plugins.ResourceHacker.PropertyEditors
 		protected	bool			isInitializingContent	= false;
 		
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
 			if (this.isInitializingContent) return;
 
@@ -24,7 +24,7 @@ namespace Duality.Editor.Plugins.ResourceHacker.PropertyEditors
 			this.InitContent();
 			this.isInitializingContent = false;
 
-			base.PerformGetValue();
+			base.OnGetValue();
 		}
 		protected override PropertyEditor AutoCreateMemberEditor(MemberInfo info)
 		{

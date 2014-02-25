@@ -72,9 +72,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			}
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 
 			Pixmap lastValue = this.value;
 			Pixmap[] values = this.GetValue().Cast<Pixmap>().ToArray();

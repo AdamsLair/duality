@@ -48,11 +48,14 @@ namespace AdamsLair.PropertyGrid
 				if (this.expanded != value)
 				{
 					this.expanded = value;
-					this.Invalidate();
-					if (this.expanded && !this.contentInit)
-						this.InitContent();
-					else
-						this.UpdateHeight();
+					if (this.ParentGrid != null)
+					{
+						this.Invalidate();
+						if (this.expanded && !this.contentInit)
+							this.InitContent();
+						else
+							this.UpdateHeight();
+					}
 				}
 			}
 		}
@@ -211,7 +214,7 @@ namespace AdamsLair.PropertyGrid
 			return false;
 		}
 
-		public override void PerformSetValue() {}
+		protected override void OnSetValue() {}
 
 		public PropertyEditor PickEditorAt(int x, int y, bool ownChildrenOnly)
 		{
@@ -997,10 +1000,13 @@ namespace AdamsLair.PropertyGrid
 			if (!this.headerColor.HasValue) this.headerColor = ControlRenderer.ColorBackground;
 			if (this.HeaderHeight == DefaultHeaderHeight)
 				this.HeaderHeight = 5 + (int)Math.Round((float)this.ControlRenderer.DefaultFont.Height);
+			if (this.expanded && !this.contentInit)
+				this.InitContent();
 		}
 		protected override void OnSizeChanged()
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 			base.OnSizeChanged();
 			this.UpdateChildWidth();
 		}

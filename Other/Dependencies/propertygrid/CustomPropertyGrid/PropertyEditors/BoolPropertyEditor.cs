@@ -29,9 +29,9 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.Height = Math.Max(13, 3 + (int)Math.Round((float)this.ControlRenderer.DefaultFont.Height));
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			this.BeginUpdate();
 			CheckState lastState = this.state;
 			object[] values = this.GetValue().ToArray();
@@ -51,10 +51,10 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.EndUpdate();
 			if (this.state != lastState) this.Invalidate();
 		}
-		public override void PerformSetValue()
+		protected override void OnSetValue()
 		{
 			if (this.state == CheckState.Indeterminate) return;
-			base.PerformSetValue();
+			base.OnSetValue();
 		}
 
 		protected void ToggleState()

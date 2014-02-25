@@ -92,9 +92,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.Invalidate();
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			AudioData lastValue = this.value;
 			AudioData[] values = this.GetValue().Cast<AudioData>().ToArray();
 			this.value = values.NotNull().FirstOrDefault() as AudioData;

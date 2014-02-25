@@ -63,9 +63,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				new object[] { active }));
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			GameObject[] values = this.GetValue().Cast<GameObject>().ToArray();
 
 			this.BeginUpdate();

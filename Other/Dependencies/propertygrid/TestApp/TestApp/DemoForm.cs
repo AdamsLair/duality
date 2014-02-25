@@ -42,7 +42,7 @@ namespace AdamsLair.PropertyGrid
 			private int[] i3 = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 			private string t;
 			private Test2 substruct;
-			private Test3 subclass;
+			private	object any = "Hello";
 			public List<string> stringListField;
 			public FlaggedEnumTest enumField1;
 			public EnumTest enumField2;
@@ -87,20 +87,12 @@ namespace AdamsLair.PropertyGrid
 				get { return this.substruct; }
 				set { this.substruct = value; }
 			}
-			public Test3 Subclass
+			public object[] ReflectedTypeTestA { get; set; }
+			public Dictionary<string,object> ReflectedTypeTestB { get; set; }
+			public object ReflectedTypeTestC
 			{
-				get { return this.subclass; }
-				set { this.subclass = value; }
-			}
-			public ISomeInterface SubclassInterface
-			{
-				get { return this.subclass; }
-				set { this.subclass = value as Test3; }
-			}
-			public object SubclassObj
-			{
-				get { return this.subclass; }
-				set { this.subclass = value as Test3; }
+				get { return this.any; }
+				set { this.any = 17; }
 			}
 			public bool BoolOne { get; set; }
 			public bool BoolTwo { get; set; }
@@ -157,10 +149,6 @@ namespace AdamsLair.PropertyGrid
 		}
 		#endregion
 
-		interface I {}
-		class A {}
-		struct B {}
-
 		private Test objA;
 		private Test objB;
 
@@ -175,7 +163,8 @@ namespace AdamsLair.PropertyGrid
 			this.objA.SomeFloat = (float)Math.PI;
 			this.objA.SomeByte = 128;
 			this.objA.Substruct = new Test2(42);
-			this.objA.Subclass = new Test3();
+			this.objA.ReflectedTypeTestA = new Test3[] { new Test3() };
+			this.objA.ReflectedTypeTestB = new Dictionary<string,object> { { "First", new Test3() } };
 			this.objA.stringListField = new List<string>() { "hallo", "welt" };
 
 			this.objB = new Test();

@@ -92,7 +92,8 @@ namespace AdamsLair.PropertyGrid
 				// Generate and add property editors for the current type
 				if (this.EditedType != null)
 				{
-					object[] values = this.GetValue().ToArray();
+					IEnumerable<object> valueQuery = this.GetValue();
+					object[] values = (valueQuery != null ? valueQuery.ToArray() : null);
 					this.BeforeAutoCreateEditors();
 					foreach (MemberInfo member in this.QueryEditedMembers())
 					{
@@ -173,7 +174,7 @@ namespace AdamsLair.PropertyGrid
 
 			return e;
 		}
-		protected void VerifyReflectedTypeEditors(IEnumerable<object> values)
+		protected override void VerifyReflectedTypeEditors(IEnumerable<object> values)
 		{
 			if (this.EditedType == null) return;
 			if (!this.ContentInitialized) return;
@@ -198,17 +199,30 @@ namespace AdamsLair.PropertyGrid
 				this.ReInitContent(invalidEditors);
 			}
 		}
+		/// <summary>
+		/// Determines the Type to use as a basis for generating a PropertyEditor for the specified member
+		/// by evaluating the members current value and static Type.
+		/// </summary>
+		/// <param name="member"></param>
+		/// <param name="values"></param>
+		/// <returns></returns>
 		protected Type ReflectTypeForMember(MemberInfo member, IEnumerable<object> values)
 		{
 			if (member is FieldInfo)
 			{
 				FieldInfo field = member as FieldInfo;
-				return PropertyEditor.ReflectDynamicType(field.FieldType, values.Where(v => v != null).Select(v => field.GetValue(v)));
+				if (values != null)
+					return PropertyEditor.ReflectDynamicType(field.FieldType, values.Where(v => v != null).Select(v => field.GetValue(v)));
+				else
+					return field.FieldType;
 			}
 			else if (member is PropertyInfo)
 			{
 				PropertyInfo property = member as PropertyInfo;
-				return PropertyEditor.ReflectDynamicType(property.PropertyType, values.Where(v => v != null).Select(v => property.GetValue(v, null)));
+				if (values != null)
+					return PropertyEditor.ReflectDynamicType(property.PropertyType, values.Where(v => v != null).Select(v => property.GetValue(v, null)));
+				else
+					return property.PropertyType;
 			}
 			else
 				throw new ArgumentException("Only PropertyInfo and FieldInfo members are supported");
@@ -253,29 +267,30 @@ namespace AdamsLair.PropertyGrid
 				select f;
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
-			object[] curObjects = this.GetValue().ToArray();
+			base.OnGetValue();
+			IEnumerable<object> valueQuery = this.GetValue();
+			object[] values = (valueQuery != null ? valueQuery.ToArray() : null);
 
-			this.VerifyReflectedTypeEditors(curObjects);
+			this.VerifyReflectedTypeEditors(values);
 			this.BeginUpdate();
-			if (curObjects == null)
+			if (values == null)
 			{
 				this.HeaderValueText = null;
 				return;
 			}
-			this.OnUpdateFromObjects(curObjects);
+			this.OnUpdateFromObjects(values);
 			this.EndUpdate();
 
 			foreach (PropertyEditor e in this.Children)
 				e.PerformGetValue();
 		}
-		public override void PerformSetValue()
+		protected override void OnSetValue()
 		{
 			if (this.ReadOnly) return;
 			if (!this.Children.Any()) return;
-			base.PerformSetValue();
+			base.OnSetValue();
 
 			foreach (PropertyEditor e in this.Children)
 				e.PerformSetValue();
@@ -284,7 +299,7 @@ namespace AdamsLair.PropertyGrid
 		{
 			string valString = null;
 
-			if (!values.Any() || values.All(o => o == null))
+			if (values == null || !values.Any() || values.All(o => o == null))
 			{
 				this.ClearContent();
 

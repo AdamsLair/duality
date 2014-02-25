@@ -69,7 +69,7 @@ namespace Duality.Editor.UndoRedoActions
 		}
 		public override void Do()
 		{
-			if (this.targetValue != null)
+			if (this.targetValue != null && this.targetValue.Length > 0)
 			{
 				if (this.backupValue == null)
 				{

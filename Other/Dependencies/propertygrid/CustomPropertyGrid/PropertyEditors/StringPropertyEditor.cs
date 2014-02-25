@@ -36,9 +36,9 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.Height = 5 + (int)Math.Round((float)this.ControlRenderer.DefaultFont.Height);
 		}
 
-		public override void PerformGetValue()
+		protected override void OnGetValue()
 		{
-			base.PerformGetValue();
+			base.OnGetValue();
 			this.BeginUpdate();
 			object[] values = this.GetValue().ToArray();
 
@@ -124,6 +124,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		private void stringEditor_Edited(object sender, EventArgs e)
 		{
 			if (this.IsUpdating) return;
+			if (this.Disposed) return;
 
 			this.val = this.stringEditor.Text;
 			this.Invalidate();
