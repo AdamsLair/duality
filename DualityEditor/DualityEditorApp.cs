@@ -313,8 +313,6 @@ namespace Duality.Editor
 
 		private static void LoadPlugins()
 		{
-			CorePluginRegistry.RegisterPropertyEditorProvider(new Controls.PropertyEditors.DualityPropertyEditorProvider());
-
 			Log.Editor.Write("Scanning for editor plugins...");
 			Log.Editor.PushIndent();
 

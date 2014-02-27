@@ -24,6 +24,7 @@ namespace Duality.Editor.Controls
 			this.ControlRenderer.ColorVeryLightBackground = Color.FromArgb(224, 224, 224);
 			this.ControlRenderer.ColorLightBackground = Color.FromArgb(212, 212, 212);
 			this.ControlRenderer.ColorBackground = Color.FromArgb(196, 196, 196);
+			this.RegisterEditorProvider(new PropertyEditors.DualityPropertyEditorProvider());
 		}
 
 		public override void ConfigureEditor(PropertyEditor editor, object configureData = null)
