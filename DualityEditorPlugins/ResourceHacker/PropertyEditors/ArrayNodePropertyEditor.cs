@@ -9,6 +9,7 @@ using Duality.Serialization.MetaFormat;
 
 namespace Duality.Editor.Plugins.ResourceHacker.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(ArrayNode))]
 	public class ArrayNodePropertyEditor : MemberwisePropertyEditor
 	{
 		protected	PropertyEditor	editorPrimitiveData	= null;

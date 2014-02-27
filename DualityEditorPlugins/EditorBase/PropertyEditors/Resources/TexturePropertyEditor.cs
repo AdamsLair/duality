@@ -1,8 +1,11 @@
 ﻿using System.Linq;
 using System.Reflection;
 
+using Duality.Resources;
+
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(Texture), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class TexturePropertyEditor : ResourcePropertyEditor
 	{
 		public TexturePropertyEditor()

@@ -122,6 +122,7 @@
     <Compile Include="Controls\ExplorerListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\PropertyEditors\PropertyEditorAssignmentAttribute.cs" />
     <Compile Include="Controls\PropertyEditors\RangePropertyEditor.cs" />
     <Compile Include="Controls\ToolStrip\DualitorToolStripRenderer.cs" />
     <Compile Include="Controls\ToolStrip\ToolStripCheckBox.cs">

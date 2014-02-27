@@ -1,7 +1,10 @@
 ﻿using System.Reflection;
 
+using Duality.Resources;
+
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(AudioData), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class AudioDataPropertyEditor : ResourcePropertyEditor
 	{
 		public AudioDataPropertyEditor()

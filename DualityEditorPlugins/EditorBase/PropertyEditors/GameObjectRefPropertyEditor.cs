@@ -16,6 +16,7 @@ using Duality.Editor.CorePluginInterface;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(GameObjectRefPropertyEditor), "MatchToProperty")]
 	public class GameObjectRefPropertyEditor : ObjectRefPropertyEditor
 	{
 		protected	GameObject	gameObj			= null;
@@ -128,6 +129,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override bool CanDeserializeFromData(DataObject data)
 		{
 			return new ConvertOperation(data, ConvertOperation.Operation.Convert).CanPerform(typeof(GameObject));
+		}
+
+		private static int MatchToProperty(Type propertyType, ProviderContext context)
+		{
+			if (typeof(GameObject).IsAssignableFrom(propertyType) && context.ParentEditor != null)
+				return PropertyEditorAssignmentAttribute.PrioritySpecialized;
+			else
+				return PropertyEditorAssignmentAttribute.PriorityNone;
 		}
 	}
 }

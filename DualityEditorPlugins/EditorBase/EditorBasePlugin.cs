@@ -197,9 +197,6 @@ namespace Duality.Editor.Plugins.Base
 			CorePluginRegistry.RegisterFileImporter(new AudioDataFileImporter());
 			CorePluginRegistry.RegisterFileImporter(new ShaderFileImporter());
 			CorePluginRegistry.RegisterFileImporter(new FontFileImporter());
-
-			// Register PropertyEditor provider
-			CorePluginRegistry.RegisterPropertyEditorProvider(new PropertyEditors.PropertyEditorProvider());
 		}
 		protected override void InitPlugin(MainForm main)
 		{

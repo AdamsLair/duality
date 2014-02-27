@@ -12,6 +12,7 @@ using Duality.Components;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(TransformPropertyEditor), "MatchToProperty")]
 	public class TransformPropertyEditor : ComponentPropertyEditor, IHelpProvider
 	{
 		private bool			showRelative	= false;
@@ -349,6 +350,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				return HelpInfo.FromMember(pickedEditor.EditedType);
 
 			return null;
+		}
+
+		private static int MatchToProperty(Type propertyType, ProviderContext context)
+		{
+			bool compRef = !(context.ParentEditor is GameObjectOverviewPropertyEditor);
+			if (typeof(Transform).IsAssignableFrom(propertyType) && !compRef)
+				return PropertyEditorAssignmentAttribute.PrioritySpecialized;
+			else
+				return PropertyEditorAssignmentAttribute.PriorityNone;
 		}
 	}
 }

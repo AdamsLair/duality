@@ -9,6 +9,7 @@ using AdamsLair.PropertyGrid.PropertyEditors;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(DrawTechnique), PropertyEditorAssignmentAttribute.PriorityGeneral + 1)]
 	public class DrawTechniquePropertyEditor : ResourcePropertyEditor
 	{
 		protected override PropertyEditor AutoCreateMemberEditor(MemberInfo info)

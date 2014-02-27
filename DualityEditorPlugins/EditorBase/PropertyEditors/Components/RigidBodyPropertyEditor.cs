@@ -18,6 +18,7 @@ using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(RigidBodyPropertyEditor), "MatchToProperty")]
 	public class RigidBodyPropertyEditor : ComponentPropertyEditor
 	{
 		private RigidBodyJointAddNewPropertyEditor	addJointEditor	= null;
@@ -139,6 +140,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.addJointEditor.TargetColliders = this.GetValue().Cast<RigidBody>().ToArray();
 				return new object[] { this.addJointEditor.DisplayedValue };
 			};
+		}
+
+		private static int MatchToProperty(Type propertyType, ProviderContext context)
+		{
+			bool compRef = !(context.ParentEditor is GameObjectOverviewPropertyEditor);
+			if (typeof(RigidBody).IsAssignableFrom(propertyType) && !compRef)
+				return PropertyEditorAssignmentAttribute.PriorityGeneral + 1;
+			else
+				return PropertyEditorAssignmentAttribute.PriorityNone;
 		}
 	}
 
