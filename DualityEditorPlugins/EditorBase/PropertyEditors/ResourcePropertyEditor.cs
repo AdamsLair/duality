@@ -13,6 +13,7 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(Resource))]
 	public class ResourcePropertyEditor : MemberwisePropertyEditor
 	{
 		private	bool	isInvokingDirectChild	= false;

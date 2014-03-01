@@ -7,6 +7,7 @@ using Duality;
 
 namespace Duality.Editor.Controls.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(Rect))]
 	public class RectPropertyEditor : VectorPropertyEditor
 	{
 		public override object DisplayedValue

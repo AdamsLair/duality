@@ -16,6 +16,7 @@ using Duality.Editor.CorePluginInterface;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(ComponentRefPropertyEditor), "MatchToProperty")]
 	public class ComponentRefPropertyEditor : ObjectRefPropertyEditor
 	{
 		protected	Type		editedCmpType		= null;
@@ -159,6 +160,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.editedCmpType = this.EditedType;
 			else
 				this.editedCmpType = typeof(Component);
+		}
+
+		private static int MatchToProperty(Type propertyType, ProviderContext context)
+		{
+			bool compRef = !(context.ParentEditor is GameObjectOverviewPropertyEditor);
+			if (typeof(Component).IsAssignableFrom(propertyType) && compRef)
+				return PropertyEditorAssignmentAttribute.PriorityGeneral;
+			else
+				return PropertyEditorAssignmentAttribute.PriorityNone;
 		}
 	}
 }

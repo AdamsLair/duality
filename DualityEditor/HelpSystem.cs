@@ -67,8 +67,17 @@ namespace Duality.Editor
 		
 		public static void LoadXmlCodeDoc()
 		{
-			LoadXmlCodeDoc("Duality.xml");
-			foreach (string xmlDocFile in Directory.EnumerateFiles("Plugins", "*.core.xml", SearchOption.AllDirectories))
+			string mainDocPath = "Duality.xml";
+			
+			if (!File.Exists(mainDocPath))
+			{
+				string remappedPath = Path.Combine(PathHelper.ExecutingAssemblyDir, mainDocPath);
+				if (File.Exists(remappedPath))
+					mainDocPath = remappedPath;
+			}
+
+			if (File.Exists(mainDocPath)) LoadXmlCodeDoc(mainDocPath);
+			foreach (string xmlDocFile in DualityApp.GetPluginLibPaths("*.core.xml"))
 				LoadXmlCodeDoc(xmlDocFile);
 		}
 		public static void LoadXmlCodeDoc(string file)

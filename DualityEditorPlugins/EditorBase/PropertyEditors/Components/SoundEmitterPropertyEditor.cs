@@ -17,6 +17,7 @@ using Duality.Editor.Plugins.Base.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(SoundEmitterPropertyEditor), "MatchToProperty")]
 	public class SoundEmitterPropertyEditor : ComponentPropertyEditor
 	{
 		private	List<SoundEmitterSourcePropertyEditor>	soundSourceEditors	= new List<SoundEmitterSourcePropertyEditor>();
@@ -135,6 +136,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						targetArray.Select(e => e.Sources[index])));
 				}
 			};
+		}
+
+		private static int MatchToProperty(Type propertyType, ProviderContext context)
+		{
+			bool compRef = !(context.ParentEditor is GameObjectOverviewPropertyEditor);
+			if (typeof(SoundEmitter).IsAssignableFrom(propertyType) && !compRef)
+				return PropertyEditorAssignmentAttribute.PrioritySpecialized;
+			else
+				return PropertyEditorAssignmentAttribute.PriorityNone;
 		}
 	}
 

@@ -25,14 +25,6 @@ namespace Duality.Editor.CorePluginInterface
 
 		#region Resource Entries
 		private interface IResEntry {}
-		private struct PropertyEditorProviderResEntry : IResEntry
-		{
-			public	IPropertyEditorProvider	provider;
-			public PropertyEditorProviderResEntry(IPropertyEditorProvider provider)
-			{
-				this.provider = provider;
-			}
-		}
 		private struct EditorActionEntry : IResEntry
 		{
 			public	IEditorAction	action;
@@ -194,15 +186,6 @@ namespace Duality.Editor.CorePluginInterface
 			}
 		}
 
-
-		public static void RegisterPropertyEditorProvider(IPropertyEditorProvider provider)
-		{
-			RegisterCorePluginRes(typeof(object), new PropertyEditorProviderResEntry(provider));
-		}
-		public static IEnumerable<IPropertyEditorProvider> GetPropertyEditorProviders()
-		{
-			return GetAllCorePluginRes<PropertyEditorProviderResEntry>(typeof(object), false, null).Select(e => e.provider);
-		}
 
 		public static void RegisterEditorAction<T>(EditorAction<T> action, string context)
 		{

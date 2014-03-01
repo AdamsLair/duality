@@ -18,6 +18,7 @@ using Duality.Editor.CorePluginInterface;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(IContentRef))]
 	public class IContentRefPropertyEditor : ObjectRefPropertyEditor
 	{
 		protected	Type		editedResType		= null;
@@ -27,7 +28,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			get 
 			{ 
-				IContentRef ctRef = ReflectionHelper.CreateInstanceOf(this.EditedType) as IContentRef;
+				IContentRef ctRef = (this.EditedType.CreateInstanceOf() ?? typeof(ContentRef<Resource>).CreateInstanceOf()) as IContentRef;
 				ctRef.Path = this.contentPath;
 				ctRef.MakeAvailable();
 				return ctRef;

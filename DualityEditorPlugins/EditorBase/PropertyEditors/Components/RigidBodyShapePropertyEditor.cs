@@ -12,6 +12,7 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(ShapeInfo))]
 	public class RigidBodyShapePropertyEditor : MemberwisePropertyEditor
 	{
 		public RigidBodyShapePropertyEditor()

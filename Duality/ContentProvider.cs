@@ -167,7 +167,7 @@ namespace Duality
 		public static List<IContentRef> GetAvailableContent(Type t, string baseDirectory = null)
 		{
 			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
-			IEnumerable<string> resFiles = Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
+			IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p) as IContentRef)
 				.Where(r => r.Is(t))

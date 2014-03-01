@@ -1,8 +1,11 @@
 ﻿using System.Linq;
 using System.Reflection;
 
+using Duality.Resources;
+
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(Font), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class FontPropertyEditor : ResourcePropertyEditor
 	{
 		public FontPropertyEditor()

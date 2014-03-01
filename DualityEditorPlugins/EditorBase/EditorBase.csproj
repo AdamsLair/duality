@@ -133,7 +133,6 @@
     <Compile Include="Modules\ObjectInspector.Designer.cs">
       <DependentUpon>ObjectInspector.cs</DependentUpon>
     </Compile>
-    <Compile Include="PropertyEditors\Provider.cs" />
     <Compile Include="Modules\SceneView.cs">
       <SubType>Form</SubType>
     </Compile>

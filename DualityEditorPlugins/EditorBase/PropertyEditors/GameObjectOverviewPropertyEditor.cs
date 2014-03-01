@@ -7,6 +7,7 @@ using Duality;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(GameObjectOverviewPropertyEditor), "MatchToProperty")]
 	public class GameObjectOverviewPropertyEditor : GroupedPropertyEditor
 	{
 		private	GameObjectPropertyEditor		gameObjEditor		= null;
@@ -127,6 +128,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			// We don't need a setter. At all.
 			return v => {};
+		}
+
+		private static int MatchToProperty(Type propertyType, ProviderContext context)
+		{
+			if (typeof(GameObject).IsAssignableFrom(propertyType) && context.ParentEditor == null)
+				return PropertyEditorAssignmentAttribute.PrioritySpecialized;
+			else
+				return PropertyEditorAssignmentAttribute.PriorityNone;
 		}
 	}
 }

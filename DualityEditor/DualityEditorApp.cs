@@ -313,38 +313,33 @@ namespace Duality.Editor
 
 		private static void LoadPlugins()
 		{
-			CorePluginRegistry.RegisterPropertyEditorProvider(new Controls.PropertyEditors.DualityPropertyEditorProvider());
-
 			Log.Editor.Write("Scanning for editor plugins...");
 			Log.Editor.PushIndent();
 
-			if (Directory.Exists("Plugins"))
+			foreach (string dllPath in DualityApp.GetPluginLibPaths("*.editor.dll"))
 			{
-				string[] pluginDllPaths = Directory.GetFiles("Plugins", "*.editor.dll", SearchOption.AllDirectories);
-				foreach (string dllPath in pluginDllPaths)
+				Log.Editor.Write("Loading '{0}'...", dllPath);
+				Log.Editor.PushIndent();
+				try
 				{
-					Log.Editor.Write("Loading '{0}'...", dllPath);
-					Log.Editor.PushIndent();
-					try
+					Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(dllPath));
+					Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(EditorPlugin).IsAssignableFrom(t));
+					if (pluginType == null)
 					{
-						Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(dllPath));
-						Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(EditorPlugin).IsAssignableFrom(t));
-						if (pluginType == null)
-						{
-							Log.Editor.WriteWarning("Can't find EditorPlugin class. Discarding plugin...");
-							continue;
-						}
-						EditorPlugin plugin = (EditorPlugin)pluginType.CreateInstanceOf();
-						plugin.LoadPlugin();
-						plugins.Add(plugin);
+						Log.Editor.WriteWarning("Can't find EditorPlugin class. Discarding plugin...");
+						continue;
 					}
-					catch (Exception e)
-					{
-						Log.Editor.WriteError("Error loading plugin: {0}", Log.Exception(e));
-					}
-					Log.Editor.PopIndent();
+					EditorPlugin plugin = (EditorPlugin)pluginType.CreateInstanceOf();
+					plugin.LoadPlugin();
+					plugins.Add(plugin);
 				}
+				catch (Exception e)
+				{
+					Log.Editor.WriteError("Error loading plugin: {0}", Log.Exception(e));
+				}
+				Log.Editor.PopIndent();
 			}
+
 			Log.Editor.PopIndent();
 		}
 		private static void InitPlugins()
@@ -1390,7 +1385,7 @@ namespace Duality.Editor
 
 		private static void FileEventManager_PluginChanged(object sender, FileSystemEventArgs e)
 		{
-			string pluginStr = Path.Combine("Plugins", e.Name);
+			string pluginStr = Path.Combine(DualityApp.PluginDirectory, e.Name);
 			if (!corePluginReloader.ReloadSchedule.Contains(pluginStr))
 			{
 				corePluginReloader.ReloadSchedule.Add(pluginStr);

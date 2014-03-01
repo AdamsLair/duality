@@ -14,6 +14,7 @@ using Duality.Editor.Forms;
 
 namespace Duality.Editor.Controls.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(IColorData))]
 	public class IColorDataPropertyEditor : PropertyEditor
 	{
 		protected	ColorPickerDialog	dialog	= new ColorPickerDialog();

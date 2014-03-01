@@ -48,13 +48,6 @@ namespace Duality.Editor.Plugins.ResourceHacker
 			this.isLoading = false;
 			return result;
 		}
-		protected override void LoadPlugin()
-		{
-			base.LoadPlugin();
-
-			// Register PropertyEditor provider
-			CorePluginRegistry.RegisterPropertyEditorProvider(new PropertyEditors.PropertyEditorProvider());
-		}
 		protected override void InitPlugin(MainForm main)
 		{
 			base.InitPlugin(main);

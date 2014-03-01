@@ -5,6 +5,7 @@ using Duality;
 
 namespace Duality.Editor.Controls.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(Range))]
 	public class RangePropertyEditor : VectorPropertyEditor
 	{
 		public override object DisplayedValue

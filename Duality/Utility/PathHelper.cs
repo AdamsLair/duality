@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Reflection;
 
 namespace Duality
 {
@@ -9,6 +10,23 @@ namespace Duality
 	/// </summary>
 	public static class PathHelper
 	{
+		private static string executingBinDir;
+		/// <summary>
+		/// Returns the directory
+		/// </summary>
+		public static string ExecutingAssemblyDir
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(executingBinDir))
+				{
+					Assembly entryAssembly = Assembly.GetEntryAssembly();
+					executingBinDir = Path.GetFullPath(Path.GetDirectoryName(entryAssembly.Location));
+				}
+				return executingBinDir;
+			}
+		}
+
 		/// <summary>
 		/// Returns a path that isn't taken yet.
 		/// </summary>

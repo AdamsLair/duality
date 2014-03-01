@@ -74,7 +74,6 @@ namespace Duality.Editor.Plugins.Base
 		{
 			base.OnShown(e);
 
-			this.propertyGrid.RegisterEditorProvider(CorePluginRegistry.GetPropertyEditorProviders());
 			this.UpdateButtons();
 
 			// Add the global selection event once
@@ -288,7 +287,6 @@ namespace Duality.Editor.Plugins.Base
 				objView.Show(this.DockHandler.Pane, DockAlignment.Bottom, 0.5d);
 			
 			// Need it before showing because of instant-selection
-			objView.propertyGrid.RegisterEditorProvider(CorePluginRegistry.GetPropertyEditorProviders());
 			objView.propertyGrid.SelectObjects(this.propertyGrid.Selection);
 			objView.gridExpandState.ApplyTo(objView.propertyGrid.MainEditor);
 		}

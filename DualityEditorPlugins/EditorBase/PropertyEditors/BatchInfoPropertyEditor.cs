@@ -17,6 +17,7 @@ using Duality.Editor.CorePluginInterface;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(BatchInfo), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class BatchInfoPropertyEditor : MemberwisePropertyEditor
 	{
 		private	Point	dragBeginPos	= Point.Empty;

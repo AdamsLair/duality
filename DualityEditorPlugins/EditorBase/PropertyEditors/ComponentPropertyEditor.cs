@@ -16,6 +16,7 @@ using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
+	[PropertyEditorAssignment(typeof(ComponentPropertyEditor), "MatchToProperty")]
 	public class ComponentPropertyEditor : MemberwisePropertyEditor
 	{
 		private	bool isInvokingDirectChild = false;
@@ -235,6 +236,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
 			IEditorAction action = clickedItem.Tag as IEditorAction;
 			action.Perform(values);
+		}
+
+		private static int MatchToProperty(Type propertyType, ProviderContext context)
+		{
+			bool compRef = !(context.ParentEditor is GameObjectOverviewPropertyEditor);
+			if (typeof(Component).IsAssignableFrom(propertyType) && !compRef)
+				return PropertyEditorAssignmentAttribute.PriorityGeneral;
+			else
+				return PropertyEditorAssignmentAttribute.PriorityNone;
 		}
 	}
 }

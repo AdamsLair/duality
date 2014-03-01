@@ -229,12 +229,6 @@ namespace Duality.Editor.Plugins.ResourceHacker
 			this.mainToolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 
-		protected override void OnShown(EventArgs e)
-		{
-			this.propertyGrid.RegisterEditorProvider(CorePluginRegistry.GetPropertyEditorProviders());
-			base.OnShown(e);
-		}
-
 		public void LoadFile(string filePath)
 		{
 			if (!File.Exists(filePath)) throw new FileNotFoundException("Can't open Resource file. File not found.", filePath);
