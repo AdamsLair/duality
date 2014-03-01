@@ -45,8 +45,8 @@ namespace Duality.Editor
 
 	public static class DualityEditorApp
 	{
-		private	const	string	DesignTimeDataFile		= "designtimedata.dat";
-		private	const	string	UserDataFile			= "editoruserdata.xml";
+		public	const	string	DesignTimeDataFile		= "designtimedata.dat";
+		public	const	string	UserDataFile			= "editoruserdata.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
 		
 		private	static MainForm						mainForm			= null;
@@ -201,7 +201,6 @@ namespace Duality.Editor
 			ContentProvider.InitDefaultContent();
 			LoadPlugins();
 			LoadUserData();
-			LoadDesignTimeObjectData();
 			InitPlugins();
 
 			// Set up core plugin reloader
@@ -223,7 +222,10 @@ namespace Duality.Editor
 			editorObjects.ComponentRemoving += editorObjects_ComponentRemoved;
 
 			// Initialize secondary editor components
-			CorePluginRegistry.Init();
+			DesignTimeObjectData.Init();
+			FileImportProvider.Init();
+			ConvertOperation.Init();
+			PreviewProvider.Init();
 			Sandbox.Init();
 			HelpSystem.Init();
 			FileEventManager.Init();
@@ -299,11 +301,13 @@ namespace Duality.Editor
 				FileEventManager.Terminate();
 				HelpSystem.Terminate();
 				Sandbox.Terminate();
-				CorePluginRegistry.Terminate();
+				PreviewProvider.Terminate();
+				ConvertOperation.Terminate();
+				FileImportProvider.Terminate();
+				DesignTimeObjectData.Terminate();
 
 				// Terminate Duality
 				DualityEditorApp.SaveUserData();
-				DualityEditorApp.SaveDesignTimeObjectData();
 				DualityApp.SaveAppData();
 				DualityApp.Terminate();
 			}
@@ -428,10 +432,6 @@ namespace Duality.Editor
 
 			Log.Editor.PopIndent();
 		}
-		private static void SaveDesignTimeObjectData()
-		{
-			CorePluginRegistry.SaveDesignTimeData(DesignTimeDataFile);
-		}
 		private static void LoadUserData()
 		{
 			if (!File.Exists(UserDataFile))
@@ -509,10 +509,6 @@ namespace Duality.Editor
 			}
 
 			Log.Editor.PopIndent();
-		}
-		private static void LoadDesignTimeObjectData()
-		{
-			CorePluginRegistry.LoadDesignTimeData(DesignTimeDataFile);
 		}
 		private static IDockContent DeserializeDockContent(string persistName)
 		{
@@ -1385,10 +1381,9 @@ namespace Duality.Editor
 
 		private static void FileEventManager_PluginChanged(object sender, FileSystemEventArgs e)
 		{
-			string pluginStr = Path.Combine(DualityApp.PluginDirectory, e.Name);
-			if (!corePluginReloader.ReloadSchedule.Contains(pluginStr))
+			if (!corePluginReloader.ReloadSchedule.Contains(e.FullPath))
 			{
-				corePluginReloader.ReloadSchedule.Add(pluginStr);
+				corePluginReloader.ReloadSchedule.Add(e.FullPath);
 				DualityApp.AppData.Version++;
 			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;

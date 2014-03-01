@@ -169,34 +169,6 @@ namespace Duality.Editor.Plugins.Base
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<Scene>				(null, null, this.ActionSceneOpenRes,			EditorBaseRes.ActionDesc_OpenScene),			CorePluginRegistry.ActionContext_OpenRes);
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<GameObject>		(null, null, this.ActionGameObjectOpenRes,		EditorBaseRes.ActionDesc_FocusGameObject,		g => g.Transform != null),			CorePluginRegistry.ActionContext_OpenRes);
 			CorePluginRegistry.RegisterEditorAction(new EditorAction<Component>			(null, null, this.ActionComponentOpenRes,		EditorBaseRes.ActionDesc_FocusGameObject,		c => c.GameObj.Transform != null),	CorePluginRegistry.ActionContext_OpenRes);
-
-			// Register data converters
-			CorePluginRegistry.RegisterDataConverter<GameObject>(new DataConverters.GameObjFromPrefab());
-			CorePluginRegistry.RegisterDataConverter<GameObject>(new DataConverters.GameObjFromComponents());
-			CorePluginRegistry.RegisterDataConverter<Component>(new DataConverters.ComponentFromSound());
-			CorePluginRegistry.RegisterDataConverter<Component>(new DataConverters.ComponentFromMaterial());
-			CorePluginRegistry.RegisterDataConverter<Component>(new DataConverters.ComponentFromFont());
-			CorePluginRegistry.RegisterDataConverter<BatchInfo>(new DataConverters.BatchInfoFromMaterial());
-			CorePluginRegistry.RegisterDataConverter<Material>(new DataConverters.MaterialFromBatchInfo());
-			CorePluginRegistry.RegisterDataConverter<Material>(new DataConverters.MaterialFromTexture());
-			CorePluginRegistry.RegisterDataConverter<Texture>(new DataConverters.TextureFromMaterial());
-			CorePluginRegistry.RegisterDataConverter<Texture>(new DataConverters.TextureFromPixmap());
-			CorePluginRegistry.RegisterDataConverter<Pixmap>(new DataConverters.PixmapFromTexture());
-			CorePluginRegistry.RegisterDataConverter<Sound>(new DataConverters.SoundFromAudioData());
-			CorePluginRegistry.RegisterDataConverter<AudioData>(new DataConverters.AudioDataFromSound());
-			CorePluginRegistry.RegisterDataConverter<Prefab>(new DataConverters.PrefabFromGameObject());
-
-			// Register preview generators
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.PixmapPreviewGenerator());
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.AudioDataPreviewGenerator());
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.SoundPreviewGenerator());
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.FontPreviewGenerator());
-
-			// Register file importers
-			CorePluginRegistry.RegisterFileImporter(new PixmapFileImporter());
-			CorePluginRegistry.RegisterFileImporter(new AudioDataFileImporter());
-			CorePluginRegistry.RegisterFileImporter(new ShaderFileImporter());
-			CorePluginRegistry.RegisterFileImporter(new FontFileImporter());
 		}
 		protected override void InitPlugin(MainForm main)
 		{
@@ -228,9 +200,6 @@ namespace Duality.Editor.Plugins.Base
 
 			Sandbox.Entering += this.Sandbox_Entering;
 			FileEventManager.ResourceModified += this.FileEventManager_ResourceChanged;
-		//	FileEventManager.ResourceCreated += this.FileEventManager_ResourceChanged;
-		//	FileEventManager.ResourceDeleted += this.FileEventManager_ResourceChanged;
-		//	FileEventManager.ResourceRenamed += this.FileEventManager_ResourceChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
 		

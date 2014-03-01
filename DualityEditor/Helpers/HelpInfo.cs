@@ -78,7 +78,7 @@ namespace Duality.Editor
 		public static HelpInfo FromMember(MemberInfo member)
 		{
 			if (member == null) return null;
-			XmlCodeDoc.Entry doc = CorePluginRegistry.GetXmlCodeDoc(member);
+			XmlCodeDoc.Entry doc = HelpSystem.GetXmlCodeDoc(member);
 
 			if (doc != null)
 			{

@@ -144,7 +144,7 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 			ShapeInfo pickedShape = null;
 
 			RigidBody[] visibleColliders = this.QueryVisibleColliders()
-				.Where(r => !CorePluginRegistry.GetDesignTimeData(r.GameObj).IsLocked)
+				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)
 				.ToArray();
 			visibleColliders.StableSort(delegate(RigidBody c1, RigidBody c2) 
 			{ 
@@ -179,7 +179,7 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 			ShapeInfo pickedShape = null;
 
 			RigidBody[] visibleColliders = this.QueryVisibleColliders()
-				.Where(r => !CorePluginRegistry.GetDesignTimeData(r.GameObj).IsLocked)
+				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)
 				.ToArray();
 			visibleColliders.StableSort(delegate(RigidBody c1, RigidBody c2) 
 			{ 
@@ -430,7 +430,7 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 			var allColliders = Scene.Current.FindComponents<RigidBody>();
 			return allColliders.Where(r => 
 				r.Active && 
-				!CorePluginRegistry.GetDesignTimeData(r.GameObj).IsHidden && 
+				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		protected RigidBody QuerySelectedCollider()
@@ -444,7 +444,7 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 			GameObject obj = (r as Component).GameObj;
 			if (obj.RigidBody == null || !(r as Component).Active) return false;
 
-			DesignTimeObjectData data = CorePluginRegistry.GetDesignTimeData(obj);
+			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
 			return !data.IsHidden;
 		}
 

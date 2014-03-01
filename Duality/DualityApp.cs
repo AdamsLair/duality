@@ -999,8 +999,7 @@ namespace Duality
 
 		/// <summary>
 		/// Enumerates all available plugin directory file paths that match the specified search pattern.
-		/// This method will properly react to situations where the working directory isn't equal to the
-		/// executing binary file directory and merge the list of available plugin files accordingly.
+		/// This method 
 		/// </summary>
 		/// <param name="searchPattern"></param>
 		/// <returns></returns>
@@ -1013,7 +1012,7 @@ namespace Duality
 				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(PluginDirectory, searchPattern, SearchOption.AllDirectories));
 			}
 			string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, PluginDirectory);
-			if (Directory.Exists(execPluginDir))
+			if (Path.GetFullPath(execPluginDir) != Path.GetFullPath(PluginDirectory) && Directory.Exists(execPluginDir))
 			{
 				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(execPluginDir, searchPattern, SearchOption.AllDirectories));
 			}

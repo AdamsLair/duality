@@ -992,7 +992,7 @@ namespace Duality.Editor.Plugins.Base.CamViewLayers
 			var allColliders = Scene.Current.FindComponents<RigidBody>();
 			return allColliders.Where(r => 
 				r.Active && 
-				!CorePluginRegistry.GetDesignTimeData(r.GameObj).IsHidden && 
+				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
 		private RigidBody QuerySelectedCollider()

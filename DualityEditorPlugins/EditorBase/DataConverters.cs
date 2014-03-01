@@ -16,6 +16,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 {
 	public class GameObjFromPrefab : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(GameObject); }
+		}
 		public override int Priority
 		{
 			get { return CorePluginRegistry.Priority_Specialized; }
@@ -52,6 +56,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class GameObjFromComponents : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(GameObject); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -114,6 +123,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class ComponentFromSound : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(SoundEmitter); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -146,6 +160,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class ComponentFromMaterial : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(SpriteRenderer); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -201,6 +220,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class ComponentFromFont : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(TextRenderer); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -242,6 +266,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class PrefabFromGameObject : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(Prefab); }
+		}
 		public override int Priority
 		{
 			get { return CorePluginRegistry.Priority_Specialized; }
@@ -285,6 +313,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class BatchInfoFromMaterial : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(BatchInfo); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -312,6 +345,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class MaterialFromBatchInfo : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(Material); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -345,6 +383,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class MaterialFromTexture : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(Material); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			if (convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes))
@@ -422,6 +465,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class TextureFromMaterial : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(Texture); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -450,6 +498,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class TextureFromPixmap : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(Texture); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			if (convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes))
@@ -527,6 +580,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class PixmapFromTexture : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(Pixmap); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 
@@ -555,6 +613,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class SoundFromAudioData : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(Sound); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			if (convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes))
@@ -655,6 +718,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 	}
 	public class AudioDataFromSound : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(AudioData); }
+		}
+
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
 			return 

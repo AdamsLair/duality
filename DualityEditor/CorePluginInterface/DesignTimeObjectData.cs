@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using System.IO;
 
 using Duality;
 using Duality.Serialization;
+using Duality.Resources;
 
 namespace Duality.Editor.CorePluginInterface
 {
@@ -76,19 +78,96 @@ namespace Duality.Editor.CorePluginInterface
 			}
 		}
 
+		private	static	DesignTimeObjectDataManager	manager	= new DesignTimeObjectDataManager();
+		
+		internal static void Init()
+		{
+			Load(DualityEditorApp.DesignTimeDataFile);
+			Scene.Leaving += Scene_Leaving;
+		}
+		internal static void Terminate()
+		{
+			Scene.Leaving -= Scene_Leaving;
+			Save(DualityEditorApp.DesignTimeDataFile);
+		}
+
+		public static DesignTimeObjectData Get(Guid objId)
+		{
+			return manager.RequestDesignTimeData(objId);
+		}
+		public static DesignTimeObjectData Get(GameObject obj)
+		{
+			return manager.RequestDesignTimeData(obj.Id);
+		}
+
+		private static void Save(string filePath)
+		{
+			Log.Editor.Write("Saving designtime object data data...");
+			Log.Editor.PushIndent();
+
+			try
+			{
+				using (FileStream str = File.Create(filePath))
+				{
+					using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
+					{
+						formatter.SerializationLog = Log.Editor;
+						formatter.WriteObject(manager);
+					}
+				}
+			}
+			catch (Exception e) { Log.Editor.WriteError(Log.Exception(e)); }
+
+			Log.Editor.PopIndent();
+		}
+		private static void Load(string filePath)
+		{
+			Log.Editor.Write("Loading designtime object data data...");
+			Log.Editor.PushIndent();
+
+			manager = null;
+			if (File.Exists(filePath))
+			{
+				try
+				{
+					using (FileStream str = File.OpenRead(filePath))
+					{
+						using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
+						{
+							formatter.SerializationLog = Log.Editor;
+							manager = formatter.ReadObject<DesignTimeObjectDataManager>();
+						}
+					}
+				}
+				catch (Exception e) { Log.Editor.WriteError(Log.Exception(e)); }
+			}
+
+			if (manager == null)
+			{
+				manager = new DesignTimeObjectDataManager();
+			}
+
+			Log.Editor.PopIndent();
+		}
+		private static void Scene_Leaving(object sender, EventArgs e)
+		{
+			manager.CleanupDesignTimeData();
+		}
+
+
 		public static readonly DesignTimeObjectData Default = new DesignTimeObjectData();
 
-		private	Guid			objId	= Guid.Empty;
-		private DataContainer	data	= null;
-		private	bool			dirty	= false;
+		private	Guid			objId		= Guid.Empty;
+		private DataContainer	data		= null;
+		private	bool			attached	= false;
 
 		internal DataContainer Data
 		{
 			get { return this.data; }
 		}
-		internal bool IsDirty
+		internal bool IsAttached
 		{
-			get { return this.dirty; }
+			get { return this.attached; }
 		}
 		public Guid ParentObjectId
 		{
@@ -101,7 +180,7 @@ namespace Duality.Editor.CorePluginInterface
 			{
 				if (this.data.hidden != value)
 				{
-					this.CleanDirty();
+					this.Detach();
 					this.data.hidden = value;
 				}
 			}
@@ -113,7 +192,7 @@ namespace Duality.Editor.CorePluginInterface
 			{
 				if (this.data.locked != value)
 				{
-					this.CleanDirty();
+					this.Detach();
 					this.data.locked = value;
 				}
 			}
@@ -133,7 +212,7 @@ namespace Duality.Editor.CorePluginInterface
 		{
 			this.objId = parentId;
 			this.data = data;
-			this.dirty = dirty;
+			this.attached = dirty;
 		}
 		public DesignTimeObjectData(Guid parentId)
 		{
@@ -144,12 +223,12 @@ namespace Duality.Editor.CorePluginInterface
 		{
 			this.objId = parentId;
 			this.data = baseData.data;
-			this.dirty = true;
+			this.attached = true;
 		}
 
 		public T RequestCustomData<T>() where T : new()
 		{
-			this.CleanDirty();
+			this.Detach();
 
 			if (this.data.custom == null) this.data.custom = new Dictionary<Type,object>();
 
@@ -167,7 +246,7 @@ namespace Duality.Editor.CorePluginInterface
 		}
 		public void RemoveCustomData<T>()
 		{
-			this.CleanDirty();
+			this.Detach();
 
 			if (this.data.custom == null) return;
 			this.data.custom.Remove(typeof(T));
@@ -179,18 +258,18 @@ namespace Duality.Editor.CorePluginInterface
 			if (this.data == other.data)
 			{
 				other.data = this.data;
-				this.dirty = true;
-				other.dirty = true;
+				this.attached = true;
+				other.attached = true;
 				return true;
 			}
 			return false;
 		}
-		private void CleanDirty()
+		private void Detach()
 		{
-			if (!this.dirty) return;
+			if (!this.attached) return;
 			if (this.data == null)	this.data = new DataContainer();
 			else					this.data = new DataContainer(this.data);
-			this.dirty = false;
+			this.attached = false;
 		}
 	}
 
@@ -252,7 +331,7 @@ namespace Duality.Editor.CorePluginInterface
 					data, i * GuidByteLength, GuidByteLength);
 			}
 			DesignTimeObjectData.DataContainer[] objData = dataStore.Values.Select(d => d.Data).ToArray();
-			bool[] objDataDirty = dataStore.Values.Select(d => d.IsDirty).ToArray();
+			bool[] objDataDirty = dataStore.Values.Select(d => d.IsAttached).ToArray();
 
 			writer.WriteValue("version", Version_First);
 			writer.WriteValue("dataStoreKeys", data);

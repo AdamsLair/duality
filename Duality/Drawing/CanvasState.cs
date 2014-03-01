@@ -16,6 +16,8 @@ namespace Duality.Drawing
 	/// </summary>
 	public class CanvasState : ICloneable
 	{
+		private static readonly BatchInfo DefaultMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+
 		private	BatchInfo			batchInfo;
 		private	ColorRgba			color;
 		private	ContentRef<Font>	font;
@@ -169,7 +171,7 @@ namespace Duality.Drawing
 		/// </summary>
 		public void Reset()
 		{
-			this.batchInfo = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+			this.batchInfo = DefaultMaterial;
 			this.uvGenRect = new Rect(1.0f, 1.0f);
 			this.texBaseSize = Vector2.Zero;
 			this.font = Font.GenericMonospace10;
@@ -188,7 +190,7 @@ namespace Duality.Drawing
 		/// <param name="material"></param>
 		public void SetMaterial(BatchInfo material)
 		{
-			this.batchInfo = material;
+			this.batchInfo = material ?? DefaultMaterial;
 			if (this.batchInfo.MainTexture.IsAvailable)
 			{
 				Texture tex = this.batchInfo.MainTexture.Res;
@@ -206,7 +208,13 @@ namespace Duality.Drawing
 		/// <param name="material"></param>
 		public void SetMaterial(ContentRef<Material> material)
 		{
-			this.batchInfo = material.Res.InfoDirect;
+			if (material.IsExplicitNull)
+				this.batchInfo = DefaultMaterial;
+			else if (material.IsAvailable)
+				this.batchInfo = material.Res.InfoDirect;
+			else
+				this.batchInfo = Resources.Material.Checkerboard.Res.InfoDirect;
+
 			if (this.batchInfo.MainTexture.IsAvailable)
 			{
 				Texture tex = this.batchInfo.MainTexture.Res;

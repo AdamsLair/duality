@@ -5,10 +5,9 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Reflection;
 
 using Duality;
-
-using Duality.Editor.CorePluginInterface;
 
 using OpenTK;
 
@@ -16,6 +15,7 @@ namespace Duality.Editor
 {
 	public static class HelpSystem
 	{
+		private	static XmlCodeDoc		docDatabase			= new XmlCodeDoc();
 		private	static InputEventMessageFilter	inputFilter	= null;
 		private	static Control			hoveredControl		= null;
 		private	static IHelpProvider	hoveredHelpProvider	= null;
@@ -54,6 +54,8 @@ namespace Duality.Editor
 		}
 		internal static void Terminate()
 		{
+			docDatabase.Clear();
+
 			DualityEditorApp.Idling -= DualityEditorApp_Idling;
 
 			// Remove global message filter
@@ -83,7 +85,11 @@ namespace Duality.Editor
 		public static void LoadXmlCodeDoc(string file)
 		{
 			XmlCodeDoc xmlDoc = new XmlCodeDoc(file);
-			CorePluginRegistry.RegisterXmlCodeDoc(xmlDoc);
+			docDatabase.AppendDoc(xmlDoc);
+		}
+		public static XmlCodeDoc.Entry GetXmlCodeDoc(MemberInfo info)
+		{
+			return docDatabase.GetMemberDoc(info);
 		}
 
 		private static void UpdateHelpStack()
