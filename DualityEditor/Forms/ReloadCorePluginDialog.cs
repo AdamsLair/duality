@@ -455,8 +455,8 @@ namespace Duality.Editor.Forms
 			workInterface.MainForm.Invoke((Action)delegate()
 			{
 				// Save all persistent data
-				DualityEditorApp.SaveAllProjectData();
-				Scene.Current.Save(strScene);
+				workInterface.MainForm.Invoke((Action)DualityEditorApp.SaveAllProjectData);
+				workInterface.MainForm.Invoke((Action)(() => Scene.Current.Save(strScene)));
 			});
 			workInterface.Progress += 0.4f;
 		}
@@ -464,11 +464,11 @@ namespace Duality.Editor.Forms
 		{
 			StreamReader strDataReader = new StreamReader(strData);
 			string scenePath = strDataReader.ReadLine();
-			workInterface.TempScene = Resource.Load<Scene>(strScene, scenePath);
+			workInterface.MainForm.Invoke((Action)(() => workInterface.TempScene = Resource.Load<Scene>(strScene, scenePath)));
 			if (!workInterface.TempScene.IsRuntimeResource)
 			{
 				// Register the reloaded Scene in the ContentProvider, if it wasn't just a temporary one.
-				ContentProvider.AddContent(scenePath, workInterface.TempScene);
+				workInterface.MainForm.Invoke((Action)(() => ContentProvider.AddContent(scenePath, workInterface.TempScene)));
 			}
 		}
 
