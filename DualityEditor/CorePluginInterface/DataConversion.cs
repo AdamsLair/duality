@@ -124,6 +124,28 @@ namespace Duality.Editor.CorePluginInterface
 			All		= Convert | CreateRes | CreateObj
 		}
 
+		
+		private static List<DataConverter> converters = new List<DataConverter>();
+		
+		internal static void Init()
+		{
+			foreach (Type genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(DataConverter)))
+			{
+				if (genType.IsAbstract) continue;
+				DataConverter gen = genType.CreateInstanceOf() as DataConverter;
+				if (gen != null) converters.Add(gen);
+			}
+		}
+		internal static void Terminate()
+		{
+			converters.Clear();
+		}
+		private static IEnumerable<DataConverter> GetConverters(Type target)
+		{
+			return converters.Where(c => target.IsAssignableFrom(c.TargetType));
+		}
+
+
 		private	Operation		allowedOp	= Operation.All;
 		private	ConversionData	data		= null;
 		private	List<object>	result		= new List<object>();
@@ -254,7 +276,7 @@ namespace Duality.Editor.CorePluginInterface
 			if (!result && this.data.ContainsComponentRefs(target)) result = true;
 			if (!result)
 			{
-				result = CorePluginRegistry.GetDataConverters(target).Any(s => !this.usedConverters.Contains(s) && s.CanConvertFrom(this));
+				result = GetConverters(target).Any(s => !this.usedConverters.Contains(s) && s.CanConvertFrom(this));
 			}
 
 			if (result || this.allowedOp != oldAllowedOp) this.checkedTypes.Remove(target);
@@ -311,7 +333,7 @@ namespace Duality.Editor.CorePluginInterface
 			// No result yet? Search suitable converters
 			if (!fittingDataFound)
 			{
-				var converterQuery = CorePluginRegistry.GetDataConverters(target);
+				var converterQuery = GetConverters(target);
 				List<ConvComplexityEntry> converters = new List<ConvComplexityEntry>();
 				foreach (var c in converterQuery)
 				{
@@ -362,6 +384,7 @@ namespace Duality.Editor.CorePluginInterface
 	}
 	public abstract class DataConverter
 	{
+		public abstract Type TargetType { get; }
 		public virtual int Priority
 		{
 			get { return CorePluginRegistry.Priority_General; }

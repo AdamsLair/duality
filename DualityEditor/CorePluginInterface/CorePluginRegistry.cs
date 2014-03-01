@@ -35,22 +35,6 @@ namespace Duality.Editor.CorePluginInterface
 				this.context = context;
 			}
 		}
-		private struct DataSelectorEntry : IResEntry
-		{
-			public	DataConverter	selector;
-			public DataSelectorEntry(DataConverter selector)
-			{
-				this.selector = selector;
-			}
-		}
-		private struct FileImporterEntry : IResEntry
-		{
-			public	IFileImporter	importer;
-			public FileImporterEntry(IFileImporter importer)
-			{
-				this.importer = importer;
-			}
-		}
 		#endregion
 
 
@@ -60,22 +44,7 @@ namespace Duality.Editor.CorePluginInterface
 		public const string ActionContext_OpenRes			= "OpenRes";
 
 		private	static	Dictionary<string,List<IResEntry>>		corePluginRes	= new Dictionary<string,List<IResEntry>>();
-		private	static	DesignTimeObjectDataManager				designTimeData	= new DesignTimeObjectDataManager();
 		
-
-		internal static void Init()
-		{
-			Scene.Leaving += Scene_Leaving;
-		}
-		internal static void Terminate()
-		{
-			Scene.Leaving -= Scene_Leaving;
-		}
-		private static void Scene_Leaving(object sender, EventArgs e)
-		{
-			designTimeData.CleanupDesignTimeData();
-		}
-
 
 		private static void RegisterCorePluginRes(Type type, IResEntry res)
 		{
@@ -193,90 +162,6 @@ namespace Duality.Editor.CorePluginInterface
 		public static IEnumerable<IEditorAction> GetEditorActions(Type type, string context, IEnumerable<object> forGroup = null)
 		{
 			return GetAllCorePluginRes<EditorActionEntry>(type, false, e => e.context == context && e.action.CanPerformOn(forGroup)).Select(e => e.action);
-		}
-
-		public static void RegisterDataConverter<T>(DataConverter selector)
-		{
-			RegisterCorePluginRes(typeof(T), new DataSelectorEntry(selector));
-		}
-		public static IEnumerable<DataConverter> GetDataConverters<T>()
-		{
-			return GetDataConverters(typeof(T));
-		}
-		public static IEnumerable<DataConverter> GetDataConverters(Type type)
-		{
-			return GetAllCorePluginRes<DataSelectorEntry>(type, true, null).Select(e => e.selector);
-		}
-
-		public static void RegisterFileImporter(IFileImporter importer)
-		{
-			RegisterCorePluginRes(typeof(object), new FileImporterEntry(importer));
-		}
-		public static IFileImporter GetFileImporter(Predicate<IFileImporter> predicate = null)
-		{
-			return GetCorePluginRes<FileImporterEntry>(typeof(object), false, e => predicate(e.importer)).importer;
-		}
-		public static IEnumerable<IFileImporter> GetFileImporters(Predicate<IFileImporter> predicate = null)
-		{
-			return GetAllCorePluginRes<FileImporterEntry>(typeof(object), false, e => predicate(e.importer)).Select(e => e.importer);
-		}
-
-		public static DesignTimeObjectData GetDesignTimeData(Guid objId)
-		{
-			return designTimeData.RequestDesignTimeData(objId);
-		}
-		public static DesignTimeObjectData GetDesignTimeData(GameObject obj)
-		{
-			return designTimeData.RequestDesignTimeData(obj.Id);
-		}
-		internal static void SaveDesignTimeData(string filePath)
-		{
-			Log.Editor.Write("Saving designtime object data data...");
-			Log.Editor.PushIndent();
-
-			try
-			{
-				using (FileStream str = File.Create(filePath))
-				{
-					using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
-					{
-						formatter.SerializationLog = Log.Editor;
-						formatter.WriteObject(designTimeData);
-					}
-				}
-			}
-			catch (Exception e) { Log.Editor.WriteError(Log.Exception(e)); }
-
-			Log.Editor.PopIndent();
-		}
-		internal static void LoadDesignTimeData(string filePath)
-		{
-			Log.Editor.Write("Loading designtime object data data...");
-			Log.Editor.PushIndent();
-
-			designTimeData = null;
-			if (File.Exists(filePath))
-			{
-				try
-				{
-					using (FileStream str = File.OpenRead(filePath))
-					{
-						using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
-						{
-							formatter.SerializationLog = Log.Editor;
-							designTimeData = formatter.ReadObject<DesignTimeObjectDataManager>();
-						}
-					}
-				}
-				catch (Exception e) { Log.Editor.WriteError(Log.Exception(e)); }
-			}
-
-			if (designTimeData == null)
-			{
-				designTimeData = new DesignTimeObjectDataManager();
-			}
-
-			Log.Editor.PopIndent();
 		}
 	}
 }

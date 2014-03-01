@@ -1093,7 +1093,7 @@ namespace Duality.Editor.Plugins.Base
 
 			ComponentNode cmpNode = node as ComponentNode;
 			GameObjectNode objNode = (cmpNode != null ? cmpNode.Parent : node) as GameObjectNode;
-			DesignTimeObjectData data = objNode != null ? CorePluginRegistry.GetDesignTimeData(objNode.Obj) : null;
+			DesignTimeObjectData data = objNode != null ? DesignTimeObjectData.Get(objNode.Obj) : null;
 			bool lockedOrHidden = data != null ? data.IsLocked || data.IsHidden : false;
 
 			if (lockedOrHidden) e.IconColorMatrix = this.inactiveIconMatrix;
@@ -1105,7 +1105,7 @@ namespace Duality.Editor.Plugins.Base
 
 			ComponentNode cmpNode = node as ComponentNode;
 			GameObjectNode objNode = (cmpNode != null ? cmpNode.Parent : node) as GameObjectNode;
-			DesignTimeObjectData data = objNode != null ? CorePluginRegistry.GetDesignTimeData(objNode.Obj) : null;
+			DesignTimeObjectData data = objNode != null ? DesignTimeObjectData.Get(objNode.Obj) : null;
 			bool lockedOrHidden = data != null ? data.IsLocked || data.IsHidden : false;
 
 			// Prefab-linked entities
@@ -1147,7 +1147,7 @@ namespace Duality.Editor.Plugins.Base
 			}
 			else
 			{
-				DesignTimeObjectData data = CorePluginRegistry.GetDesignTimeData(objNode.Obj);
+				DesignTimeObjectData data = DesignTimeObjectData.Get(objNode.Obj);
 				if (data.IsLocked) e.Cancel = true;
 			}
 
@@ -1414,7 +1414,7 @@ namespace Duality.Editor.Plugins.Base
 			var selNodeData =
 				from vn in this.objectView.SelectedNodes
 				where vn.Tag is GameObjectNode
-				select CorePluginRegistry.GetDesignTimeData((vn.Tag as GameObjectNode).Obj);
+				select DesignTimeObjectData.Get((vn.Tag as GameObjectNode).Obj);
 			bool locked = false;
 			bool hidden = false;
 			foreach (var data in selNodeData)
@@ -1460,7 +1460,7 @@ namespace Duality.Editor.Plugins.Base
 		{
 			var selNodes = GetSelNodesFlattened();
 
-			var selNodeData = selNodes.Select(n => CorePluginRegistry.GetDesignTimeData(n.Obj)).ToArray();
+			var selNodeData = selNodes.Select(n => DesignTimeObjectData.Get(n.Obj)).ToArray();
 			bool locked = true;
 			bool hidden = true;
 			foreach (var data in selNodeData)

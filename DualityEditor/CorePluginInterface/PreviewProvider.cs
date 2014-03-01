@@ -20,6 +20,20 @@ namespace Duality.Editor.CorePluginInterface
 	{
 		private static List<IPreviewGenerator> previewGenerators = new List<IPreviewGenerator>();
 
+		internal static void Init()
+		{
+			foreach (Type genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(IPreviewGenerator)))
+			{
+				if (genType.IsAbstract) continue;
+				IPreviewGenerator gen = genType.CreateInstanceOf() as IPreviewGenerator;
+				if (gen != null) previewGenerators.Add(gen);
+			}
+		}
+		internal static void Terminate()
+		{
+			previewGenerators.Clear();
+		}
+
 		public static Bitmap GetPreviewImage(object obj, int desiredWidth, int desiredHeight, PreviewSizeMode mode = PreviewSizeMode.FixedNone)
 		{
 			PreviewImageQuery query = new PreviewImageQuery(obj, desiredWidth, desiredHeight, mode);
@@ -36,17 +50,6 @@ namespace Duality.Editor.CorePluginInterface
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 			if (query == null) return;
-			
-			// Initialize IPreviewGenerator instances
-			if (previewGenerators.Count == 0)
-			{
-				foreach (Type genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(IPreviewGenerator)))
-				{
-					if (genType.IsAbstract) continue;
-					IPreviewGenerator gen = genType.CreateInstanceOf() as IPreviewGenerator;
-					if (gen != null) previewGenerators.Add(gen);
-				}
-			}
 
 			// Query all IPreviewGenerator instances that match the specified query
 			var generators = (

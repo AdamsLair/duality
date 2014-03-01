@@ -1012,7 +1012,7 @@ namespace Duality
 				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(PluginDirectory, searchPattern, SearchOption.AllDirectories));
 			}
 			string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, PluginDirectory);
-			if (Directory.Exists(execPluginDir))
+			if (Path.GetFullPath(execPluginDir) != Path.GetFullPath(PluginDirectory) && Directory.Exists(execPluginDir))
 			{
 				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(execPluginDir, searchPattern, SearchOption.AllDirectories));
 			}

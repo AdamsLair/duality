@@ -183,7 +183,7 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 		public override CamViewState.SelObj PickSelObjAt(int x, int y)
 		{
 			Component picked = this.PickRendererAt(x, y) as Component;
-			if (picked != null && CorePluginRegistry.GetDesignTimeData(picked.GameObj).IsLocked) picked = null;
+			if (picked != null && DesignTimeObjectData.Get(picked.GameObj).IsLocked) picked = null;
 			if (picked != null) return new SelGameObj(picked.GameObj);
 			return null;
 		}
@@ -192,7 +192,7 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 			HashSet<ICmpRenderer> picked = this.PickRenderersIn(x, y, w, h);
 			return picked
 				.OfType<Component>()
-				.Where(r => !CorePluginRegistry.GetDesignTimeData(r.GameObj).IsLocked)
+				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)
 				.Select(r => new SelGameObj(r.GameObj) as SelObj)
 				.ToList();
 		}
@@ -421,7 +421,7 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 		private bool RendererFilter(ICmpRenderer r)
 		{
 			GameObject obj = (r as Component).GameObj;
-			DesignTimeObjectData data = CorePluginRegistry.GetDesignTimeData(obj);
+			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
 			return !data.IsHidden;
 		}
 		private void ClearContextMenu()
