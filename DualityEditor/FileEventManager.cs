@@ -27,7 +27,8 @@ namespace Duality.Editor
 	public static class FileEventManager
 	{
 		private	static DateTime						lastEventProc			= DateTime.Now;
-		private static FileSystemWatcher			pluginWatcher			= null;
+		private static FileSystemWatcher			pluginWatcherWorking	= null;
+		private static FileSystemWatcher			pluginWatcherExec		= null;
 		private static FileSystemWatcher			dataDirWatcher			= null;
 		private static FileSystemWatcher			sourceDirWatcher		= null;
 		private	static HashSet<string>				reimportSchedule		= new HashSet<string>();
@@ -50,16 +51,27 @@ namespace Duality.Editor
 		internal static void Init()
 		{
 			// Set up different file system watchers
-			pluginWatcher = new FileSystemWatcher();
-			pluginWatcher.SynchronizingObject = DualityEditorApp.MainForm;
-			pluginWatcher.EnableRaisingEvents = false;
-			pluginWatcher.Filter = "*.dll";
-			pluginWatcher.IncludeSubdirectories = true;
-			pluginWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
-			pluginWatcher.Path = DualityApp.PluginDirectory;
-			pluginWatcher.Changed += corePluginWatcher_Changed;
-			pluginWatcher.Created += corePluginWatcher_Changed;
-			pluginWatcher.EnableRaisingEvents = true;
+			pluginWatcherWorking = new FileSystemWatcher();
+			pluginWatcherWorking.SynchronizingObject = DualityEditorApp.MainForm;
+			pluginWatcherWorking.EnableRaisingEvents = false;
+			pluginWatcherWorking.Filter = "*.dll";
+			pluginWatcherWorking.IncludeSubdirectories = true;
+			pluginWatcherWorking.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+			pluginWatcherWorking.Path = DualityApp.PluginDirectory;
+			pluginWatcherWorking.Changed += corePluginWatcher_Changed;
+			pluginWatcherWorking.Created += corePluginWatcher_Changed;
+			pluginWatcherWorking.EnableRaisingEvents = true;
+
+			pluginWatcherExec = new FileSystemWatcher();
+			pluginWatcherExec.SynchronizingObject = DualityEditorApp.MainForm;
+			pluginWatcherExec.EnableRaisingEvents = false;
+			pluginWatcherExec.Filter = "*.dll";
+			pluginWatcherExec.IncludeSubdirectories = true;
+			pluginWatcherExec.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+			pluginWatcherExec.Path = Path.Combine(PathHelper.ExecutingAssemblyDir, DualityApp.PluginDirectory);
+			pluginWatcherExec.Changed += corePluginWatcher_Changed;
+			pluginWatcherExec.Created += corePluginWatcher_Changed;
+			pluginWatcherExec.EnableRaisingEvents = true;
 			
 			dataDirWatcher = new FileSystemWatcher();
 			dataDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
@@ -96,12 +108,12 @@ namespace Duality.Editor
 			Resource.ResourceSaved -= Resource_ResourceSaved;
 
 			// Destroy file system watchers
-			pluginWatcher.EnableRaisingEvents = false;
-			pluginWatcher.Changed -= corePluginWatcher_Changed;
-			pluginWatcher.Created -= corePluginWatcher_Changed;
-			pluginWatcher.SynchronizingObject = null;
-			pluginWatcher.Dispose();
-			pluginWatcher = null;
+			pluginWatcherWorking.EnableRaisingEvents = false;
+			pluginWatcherWorking.Changed -= corePluginWatcher_Changed;
+			pluginWatcherWorking.Created -= corePluginWatcher_Changed;
+			pluginWatcherWorking.SynchronizingObject = null;
+			pluginWatcherWorking.Dispose();
+			pluginWatcherWorking = null;
 
 			dataDirWatcher.EnableRaisingEvents = false;
 			dataDirWatcher.Created -= fileSystemWatcher_ForwardData;

@@ -49,3 +49,4 @@ UnitTesting/DualityTests/obj/
 UnitTesting/TestResult.xml
 UnitTesting/Duality.VisualState.xml
 UnitTesting/DualityTests/DualityTests.csproj.user
+DualityEditor/DualityEditor.csproj.user

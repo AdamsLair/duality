@@ -1385,10 +1385,9 @@ namespace Duality.Editor
 
 		private static void FileEventManager_PluginChanged(object sender, FileSystemEventArgs e)
 		{
-			string pluginStr = Path.Combine(DualityApp.PluginDirectory, e.Name);
-			if (!corePluginReloader.ReloadSchedule.Contains(pluginStr))
+			if (!corePluginReloader.ReloadSchedule.Contains(e.FullPath))
 			{
-				corePluginReloader.ReloadSchedule.Add(pluginStr);
+				corePluginReloader.ReloadSchedule.Add(e.FullPath);
 				DualityApp.AppData.Version++;
 			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;
