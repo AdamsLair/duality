@@ -186,12 +186,6 @@ namespace Duality.Editor.Plugins.Base
 			CorePluginRegistry.RegisterDataConverter<AudioData>(new DataConverters.AudioDataFromSound());
 			CorePluginRegistry.RegisterDataConverter<Prefab>(new DataConverters.PrefabFromGameObject());
 
-			// Register preview generators
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.PixmapPreviewGenerator());
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.AudioDataPreviewGenerator());
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.SoundPreviewGenerator());
-			CorePluginRegistry.RegisterPreviewGenerator(new PreviewGenerators.FontPreviewGenerator());
-
 			// Register file importers
 			CorePluginRegistry.RegisterFileImporter(new PixmapFileImporter());
 			CorePluginRegistry.RegisterFileImporter(new AudioDataFileImporter());

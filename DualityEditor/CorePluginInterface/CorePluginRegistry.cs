@@ -43,14 +43,6 @@ namespace Duality.Editor.CorePluginInterface
 				this.selector = selector;
 			}
 		}
-		private struct PreviewGeneratorEntry : IResEntry
-		{
-			public	IPreviewGenerator	generator;
-			public PreviewGeneratorEntry(IPreviewGenerator generator)
-			{
-				this.generator = generator;
-			}
-		}
 		private struct FileImporterEntry : IResEntry
 		{
 			public	IFileImporter	importer;
@@ -67,7 +59,6 @@ namespace Duality.Editor.CorePluginInterface
 		public const string ActionContext_ContextMenu		= "ContextMenu";
 		public const string ActionContext_OpenRes			= "OpenRes";
 
-		private	static	XmlCodeDoc								corePluginDoc	= new XmlCodeDoc();
 		private	static	Dictionary<string,List<IResEntry>>		corePluginRes	= new Dictionary<string,List<IResEntry>>();
 		private	static	DesignTimeObjectDataManager				designTimeData	= new DesignTimeObjectDataManager();
 		
@@ -217,15 +208,6 @@ namespace Duality.Editor.CorePluginInterface
 			return GetAllCorePluginRes<DataSelectorEntry>(type, true, null).Select(e => e.selector);
 		}
 
-		public static void RegisterPreviewGenerator(IPreviewGenerator generator)
-		{
-			RegisterCorePluginRes(typeof(object), new PreviewGeneratorEntry(generator));
-		}
-		public static IEnumerable<IPreviewGenerator> GetPreviewGenerators()
-		{
-			return GetAllCorePluginRes<PreviewGeneratorEntry>(typeof(object), false, null).Select(e => e.generator);
-		}
-
 		public static void RegisterFileImporter(IFileImporter importer)
 		{
 			RegisterCorePluginRes(typeof(object), new FileImporterEntry(importer));
@@ -237,15 +219,6 @@ namespace Duality.Editor.CorePluginInterface
 		public static IEnumerable<IFileImporter> GetFileImporters(Predicate<IFileImporter> predicate = null)
 		{
 			return GetAllCorePluginRes<FileImporterEntry>(typeof(object), false, e => predicate(e.importer)).Select(e => e.importer);
-		}
-
-		public static void RegisterXmlCodeDoc(XmlCodeDoc doc)
-		{
-			corePluginDoc.AppendDoc(doc);
-		}
-		public static XmlCodeDoc.Entry GetXmlCodeDoc(MemberInfo info)
-		{
-			return corePluginDoc.GetMemberDoc(info);
 		}
 
 		public static DesignTimeObjectData GetDesignTimeData(Guid objId)

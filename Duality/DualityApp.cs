@@ -999,8 +999,7 @@ namespace Duality
 
 		/// <summary>
 		/// Enumerates all available plugin directory file paths that match the specified search pattern.
-		/// This method will properly react to situations where the working directory isn't equal to the
-		/// executing binary file directory and merge the list of available plugin files accordingly.
+		/// This method 
 		/// </summary>
 		/// <param name="searchPattern"></param>
 		/// <returns></returns>
