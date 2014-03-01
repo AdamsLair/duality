@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 using Duality;
 
-namespace Duality.Editor.CorePluginInterface
+namespace Duality.Editor
 {
 	public class ConversionData : IDataObject
 	{
@@ -384,10 +384,15 @@ namespace Duality.Editor.CorePluginInterface
 	}
 	public abstract class DataConverter
 	{
+		public const int PriorityNone			= 0;
+		public const int PriorityGeneral		= 20;
+		public const int PrioritySpecialized	= 50;
+		public const int PriorityOverride		= 100;
+
 		public abstract Type TargetType { get; }
 		public virtual int Priority
 		{
-			get { return CorePluginRegistry.Priority_General; }
+			get { return PriorityGeneral; }
 		}
 
 		public abstract bool CanConvertFrom(ConvertOperation convert);

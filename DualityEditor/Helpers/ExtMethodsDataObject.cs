@@ -8,8 +8,6 @@ using Duality;
 using Duality.Drawing;
 using Duality.Resources;
 
-using Duality.Editor.CorePluginInterface;
-
 namespace Duality.Editor
 {
 	public static class ExtMethodsDataObject

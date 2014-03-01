@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorActions.cs" />
     <Compile Include="Modules\CamView.cs">
       <SubType>Form</SubType>
     </Compile>

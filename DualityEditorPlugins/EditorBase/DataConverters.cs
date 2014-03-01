@@ -7,9 +7,7 @@ using Duality;
 using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Resources;
-
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 
 
 namespace Duality.Editor.Plugins.Base.DataConverters
@@ -22,7 +20,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		}
 		public override int Priority
 		{
-			get { return CorePluginRegistry.Priority_Specialized; }
+			get { return PrioritySpecialized; }
 		}
 
 		public override bool CanConvertFrom(ConvertOperation convert)
@@ -272,7 +270,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		}
 		public override int Priority
 		{
-			get { return CorePluginRegistry.Priority_Specialized; }
+			get { return PrioritySpecialized; }
 		}
 
 		public override bool CanConvertFrom(ConvertOperation convert)

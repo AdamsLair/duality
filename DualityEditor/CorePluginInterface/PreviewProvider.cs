@@ -6,7 +6,7 @@ using System.Drawing;
 using Duality;
 using Duality.Resources;
 
-namespace Duality.Editor.CorePluginInterface
+namespace Duality.Editor
 {
 	public enum PreviewSizeMode
 	{
@@ -163,9 +163,14 @@ namespace Duality.Editor.CorePluginInterface
 	}
 	public abstract class PreviewGenerator<T> : IPreviewGenerator
 	{
+		public const int PriorityNone			= 0;
+		public const int PriorityGeneral		= 20;
+		public const int PrioritySpecialized	= 50;
+		public const int PriorityOverride		= 100;
+
 		public virtual int Priority
 		{
-			get { return CorePluginRegistry.Priority_General; }
+			get { return PriorityGeneral; }
 		}
 		public Type ObjectType
 		{

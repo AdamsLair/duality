@@ -10,13 +10,11 @@ using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Resources;
 using Duality.Drawing;
-using Font = Duality.Resources.Font;
-
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.Forms;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
 using Duality.Editor.Plugins.Base.Properties;
+using Font = Duality.Resources.Font;
 
 using OpenTK;
 

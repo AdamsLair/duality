@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.IO;
 
 using Duality;
-using Duality.Editor.CorePluginInterface;
 
 namespace Duality.Editor
 {

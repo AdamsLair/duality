@@ -10,7 +10,6 @@ using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
 
 using Duality;
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
@@ -318,7 +317,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			if (e.KeyCode == Keys.Return)
 			{
 				GameObject[] values = this.GetValue().Cast<GameObject>().ToArray();
-				var actions = CorePluginRegistry.GetEditorActions<GameObject>(CorePluginRegistry.ActionContext_OpenRes, values);
+				var actions = DualityEditorApp.GetEditorActions(typeof(GameObject), values, DualityEditorApp.ActionContextOpenRes);
 				var action = actions.FirstOrDefault();
 				if (action != null)
 				{

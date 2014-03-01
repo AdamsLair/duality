@@ -5,7 +5,7 @@ using System.Linq;
 
 using Duality;
 
-namespace Duality.Editor.CorePluginInterface
+namespace Duality.Editor
 {
 	public interface IFileImporter
 	{

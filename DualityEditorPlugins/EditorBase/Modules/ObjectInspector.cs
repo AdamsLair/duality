@@ -12,7 +12,6 @@ using PropertyGrid = AdamsLair.PropertyGrid.PropertyGrid;
 using Duality;
 using Duality.Resources;
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 
 namespace Duality.Editor.Plugins.Base
 {

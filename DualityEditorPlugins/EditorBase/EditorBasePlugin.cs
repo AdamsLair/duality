@@ -17,7 +17,6 @@ using TextRenderer = Duality.Components.Renderers.TextRenderer;
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.Base.Properties;
 
@@ -56,6 +55,10 @@ namespace Duality.Editor.Plugins.Base
 		public IEnumerable<ObjectInspector>	ObjViews
 		{
 			get { return this.objViews; }
+		}
+		public IEnumerable<CamView>	CamViews
+		{
+			get { return this.camViews; }
 		}
 
 
@@ -151,25 +154,6 @@ namespace Duality.Editor.Plugins.Base
 			this.isLoading = false;
 		}
 
-		protected override void LoadPlugin()
-		{
-			base.LoadPlugin();
-
-			// Register conversion actions
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>				(EditorBaseRes.ActionName_CreateTexture,		CoreRes.IconResTexture,			this.ActionPixmapCreateTexture,		EditorBaseRes.ActionDesc_CreateTexture),		CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Texture>				(EditorBaseRes.ActionName_CreateMaterial,		CoreRes.IconResMaterial,		this.ActionTextureCreateMaterial,	EditorBaseRes.ActionDesc_CreateMaterial),		CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AudioData>		(EditorBaseRes.ActionName_CreateSound,			CoreRes.IconResSound,			this.ActionAudioDataCreateSound,	EditorBaseRes.ActionDesc_CreateSound),			CorePluginRegistry.ActionContext_ContextMenu);
-			CorePluginRegistry.RegisterEditorAction(new EditorGroupAction<AbstractShader>	(EditorBaseRes.ActionName_CreateShaderProgram,	CoreRes.IconResShaderProgram,	this.ActionShaderCreateProgram,		EditorBaseRes.ActionDesc_CreateShaderProgram),	CorePluginRegistry.ActionContext_ContextMenu);
-
-			// Register open actions
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Pixmap>			(null, null, this.ActionPixmapOpenRes,			EditorBaseRes.ActionDesc_OpenResourceExternal), CorePluginRegistry.ActionContext_OpenRes);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<AudioData>			(null, null, this.ActionAudioDataOpenRes,		EditorBaseRes.ActionDesc_OpenResourceExternal), CorePluginRegistry.ActionContext_OpenRes);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<AbstractShader>	(null, null, this.ActionAbstractShaderOpenRes,	EditorBaseRes.ActionDesc_OpenResourceExternal), CorePluginRegistry.ActionContext_OpenRes);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Prefab>			(null, null, this.ActionPrefabOpenRes,			EditorBaseRes.ActionDesc_InstantiatePrefab),	CorePluginRegistry.ActionContext_OpenRes);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Scene>				(null, null, this.ActionSceneOpenRes,			EditorBaseRes.ActionDesc_OpenScene),			CorePluginRegistry.ActionContext_OpenRes);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<GameObject>		(null, null, this.ActionGameObjectOpenRes,		EditorBaseRes.ActionDesc_FocusGameObject,		g => g.Transform != null),			CorePluginRegistry.ActionContext_OpenRes);
-			CorePluginRegistry.RegisterEditorAction(new EditorAction<Component>			(null, null, this.ActionComponentOpenRes,		EditorBaseRes.ActionDesc_FocusGameObject,		c => c.GameObj.Transform != null),	CorePluginRegistry.ActionContext_OpenRes);
-		}
 		protected override void InitPlugin(MainForm main)
 		{
 			base.InitPlugin(main);
@@ -328,113 +312,6 @@ namespace Duality.Editor.Plugins.Base
 		private void menuItemUserData_Click(object sender, EventArgs e)
 		{
 			DualityEditorApp.Select(this, new ObjectSelection(new [] { DualityApp.UserData }));
-		}
-
-		private void ActionPixmapCreateTexture(Pixmap pixmap)
-		{
-			Texture.CreateFromPixmap(pixmap);
-		}
-		private void ActionTextureCreateMaterial(Texture tex)
-		{
-			Material.CreateFromTexture(tex);
-		}
-		private void ActionAudioDataCreateSound(IEnumerable<AudioData> audioEnum)
-		{
-			Sound.CreateMultipleFromAudioData(audioEnum.Ref());
-		}
-		private void ActionShaderCreateProgram(IEnumerable<AbstractShader> shaderEnum)
-		{
-			List<VertexShader> vertexShaders = shaderEnum.OfType<VertexShader>().ToList();
-			List<FragmentShader> fragmentShaders = shaderEnum.OfType<FragmentShader>().ToList();
-
-			if (vertexShaders.Count == 1 && fragmentShaders.Count >= 1)
-				foreach (FragmentShader frag in fragmentShaders) this.ActionShaderCreateProgram_Create(frag, vertexShaders[0]);
-			else if (fragmentShaders.Count == 1 && vertexShaders.Count >= 1)
-				foreach (VertexShader vert in vertexShaders) this.ActionShaderCreateProgram_Create(fragmentShaders[0], vert);
-			else
-			{
-				for (int i = 0; i < MathF.Max(vertexShaders.Count, fragmentShaders.Count); i++)
-				{
-					this.ActionShaderCreateProgram_Create(
-						i < fragmentShaders.Count ? fragmentShaders[i] : null, 
-						i < vertexShaders.Count ? vertexShaders[i] : null);
-				}
-			}
-		}
-		private void ActionShaderCreateProgram_Create(FragmentShader frag, VertexShader vert)
-		{
-			AbstractShader refShader = (vert != null) ? (AbstractShader)vert : (AbstractShader)frag;
-
-			string nameTemp = refShader.Name;
-			string dirTemp = Path.GetDirectoryName(refShader.Path);
-			if (nameTemp.Contains("Shader"))
-				nameTemp = nameTemp.Replace("Shader", "Program");
-			else if (nameTemp.Contains("Shader"))
-				nameTemp = nameTemp.Replace("shader", "program");
-			else
-				nameTemp += "Program";
-
-			string programPath = PathHelper.GetFreePath(Path.Combine(dirTemp, nameTemp), ShaderProgram.FileExt);
-			ShaderProgram program = new ShaderProgram(vert, frag);
-			program.Save(programPath);
-		}
-
-		private void ActionPixmapOpenRes(Pixmap pixmap)
-		{
-			if (pixmap == null) return;
-			FileImportProvider.OpenSourceFile(pixmap, ".png", pixmap.SavePixelData);
-		}
-		private void ActionAudioDataOpenRes(AudioData audio)
-		{
-			if (audio == null) return;
-			FileImportProvider.OpenSourceFile(audio, ".ogg", audio.SaveOggVorbisData);
-		}
-		private void ActionAbstractShaderOpenRes(AbstractShader shader)
-		{
-			if (shader == null) return;
-			FileImportProvider.OpenSourceFile(shader, shader is FragmentShader ? ".frag" : ".vert", shader.SaveSource);
-		}
-		private void ActionPrefabOpenRes(Prefab prefab)
-		{
-			try
-			{
-				CreateGameObjectAction undoRedoAction = new CreateGameObjectAction(null, prefab.Instantiate());
-				UndoRedoManager.Do(undoRedoAction);
-				DualityEditorApp.Select(this, new ObjectSelection(undoRedoAction.Result));
-			}
-			catch (Exception exception)
-			{
-				Log.Editor.WriteError("An error occurred instanciating Prefab {1}: {0}", 
-					Log.Exception(exception),
-					prefab != null ? prefab.Path : "null");
-			}
-		}
-		private void ActionSceneOpenRes(Scene scene)
-		{
-			string lastPath = Scene.CurrentPath;
-			try
-			{
-				Scene.SwitchTo(scene);
-			}
-			catch (Exception exception)
-			{
-				Log.Editor.WriteError("An error occurred while switching from Scene {1} to Scene {2}: {0}", 
-					Log.Exception(exception),
-					lastPath,
-					scene != null ? scene.Path : "null");
-			}
-		}
-		private void ActionGameObjectOpenRes(GameObject obj)
-		{
-			if (obj.Transform == null) return;
-			foreach (CamView view in this.camViews)
-				view.FocusOnObject(obj);
-		}
-		private void ActionComponentOpenRes(Component cmp)
-		{
-			GameObject obj = cmp.GameObj;
-			if (obj == null) return;
-			this.ActionGameObjectOpenRes(obj);
 		}
 
 		private void FileEventManager_ResourceChanged(object sender, ResourceEventArgs e)

@@ -140,7 +140,6 @@
     <Compile Include="Controls\PropertyEditors\VectorPropertyEditor.cs" />
     <Compile Include="Controls\PropertyEditors\Provider.cs" />
     <Compile Include="Controls\PropertyEditors\Vector2PropertyEditor.cs" />
-    <Compile Include="CorePluginInterface\CorePluginRegistry.cs" />
     <Compile Include="CorePluginInterface\DataConversion.cs" />
     <Compile Include="CorePluginInterface\EditorAction.cs" />
     <Compile Include="CorePluginInterface\DesignTimeObjectData.cs" />

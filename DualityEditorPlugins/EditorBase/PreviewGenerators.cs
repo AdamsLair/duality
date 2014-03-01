@@ -7,10 +7,8 @@ using OpenTK;
 using Duality;
 using Duality.Resources;
 using Duality.Drawing;
-using Font = Duality.Resources.Font;
-
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
+using Font = Duality.Resources.Font;
 
 
 namespace Duality.Editor.Plugins.Base.PreviewGenerators

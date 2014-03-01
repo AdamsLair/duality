@@ -9,10 +9,8 @@ using AdamsLair.PropertyGrid.Renderer;
 using BorderStyle = AdamsLair.PropertyGrid.Renderer.BorderStyle;
 
 using Duality;
-using Font = Duality.Resources.Font;
-
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
+using Font = Duality.Resources.Font;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {

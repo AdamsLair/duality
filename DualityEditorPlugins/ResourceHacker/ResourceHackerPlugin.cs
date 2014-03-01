@@ -7,7 +7,6 @@ using Duality.Serialization.MetaFormat;
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.Plugins.ResourceHacker.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;

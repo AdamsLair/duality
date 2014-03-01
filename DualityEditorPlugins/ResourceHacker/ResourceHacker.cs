@@ -10,10 +10,8 @@ using System.Reflection;
 using Duality;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
-
 using Duality.Editor;
 using Duality.Editor.Forms;
-using Duality.Editor.CorePluginInterface;
 
 using Aga.Controls.Tree;
 using WeifenLuo.WinFormsUI.Docking;

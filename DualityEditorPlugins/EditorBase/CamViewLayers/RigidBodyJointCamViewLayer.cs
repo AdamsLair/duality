@@ -7,10 +7,8 @@ using Duality;
 using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components.Physics;
-
 using Duality.Editor;
 using Duality.Editor.Forms;
-using Duality.Editor.CorePluginInterface;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;

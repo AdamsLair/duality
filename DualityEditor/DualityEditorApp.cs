@@ -14,9 +14,7 @@ using Duality.Components;
 using Duality.Serialization;
 using Duality.Resources;
 using Duality.Drawing;
-
 using Duality.Editor.Forms;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
 using OpenTK;
@@ -48,11 +46,15 @@ namespace Duality.Editor
 		public	const	string	DesignTimeDataFile		= "designtimedata.dat";
 		public	const	string	UserDataFile			= "editoruserdata.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
+
+		public	const	string	ActionContextMenu		= "ContextMenu";
+		public	const	string	ActionContextOpenRes	= "OpenRes";
 		
 		private	static MainForm						mainForm			= null;
 		private	static GLControl					mainContextControl	= null;
 		private	static List<EditorPlugin>			plugins				= new List<EditorPlugin>();
 		private	static Dictionary<Type,List<Type>>	availTypeDict		= new Dictionary<Type,List<Type>>();
+		private	static List<IEditorAction>			editorActions		= new List<IEditorAction>();
 		private	static ReloadCorePluginDialog		corePluginReloader	= null;
 		private	static bool							needsRecovery		= false;
 		private	static GameObjectManager			editorObjects		= new GameObjectManager();
@@ -231,6 +233,14 @@ namespace Duality.Editor
 			FileEventManager.Init();
 			UndoRedoManager.Init();
 
+			// Initialize editor actions
+			foreach (Type actionType in GetAvailDualityEditorTypes(typeof(IEditorAction)))
+			{
+				if (actionType.IsAbstract) continue;
+				IEditorAction action = actionType.CreateInstanceOf() as IEditorAction;
+				if (action != null) editorActions.Add(action);
+			}
+
 			// If there are no Scenes in the current project, init the first one with some default objects.
 			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Scene.FileExt, SearchOption.AllDirectories).Any())
 			{
@@ -296,7 +306,10 @@ namespace Duality.Editor
 				Resource.ResourceSaving -= Resource_ResourceSaving;
 				FileEventManager.PluginChanged -= FileEventManager_PluginChanged;
 
-				// Initialize secondary editor components
+				// Terminate editor actions
+				editorActions.Clear();
+
+				// Terminate secondary editor components
 				UndoRedoManager.Terminate();
 				FileEventManager.Terminate();
 				HelpSystem.Terminate();
@@ -397,6 +410,13 @@ namespace Duality.Editor
 			availTypeDict[baseType] = availTypes;
 
 			return availTypes;
+		}
+		public static IEnumerable<IEditorAction> GetEditorActions(Type subjectType, IEnumerable<object> objects, string context = ActionContextMenu)
+		{
+			return editorActions.Where(a => 
+				a.SubjectType.IsAssignableFrom(subjectType) && 
+				a.MatchesContext(context) && 
+				a.CanPerformOn(objects));
 		}
 
 		private static void SaveUserData()

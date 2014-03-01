@@ -8,7 +8,7 @@ using Duality;
 using Duality.Serialization;
 using Duality.Resources;
 
-namespace Duality.Editor.CorePluginInterface
+namespace Duality.Editor
 {
 	public class DesignTimeObjectData
 	{

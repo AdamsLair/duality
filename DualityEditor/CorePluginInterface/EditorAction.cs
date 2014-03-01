@@ -3,42 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 
-namespace Duality.Editor.CorePluginInterface
+namespace Duality.Editor
 {
 	public interface IEditorAction
 	{
 		string Name { get; }
 		string Description { get; }
 		Image Icon { get; }
+		Type SubjectType { get; }
 
 		void Perform(object obj);
 		void Perform(IEnumerable<object> obj);
 		bool CanPerformOn(IEnumerable<object> obj);
+		bool MatchesContext(string context);
 	}
-	public abstract class EditorActionBase<T> : IEditorAction
+	public abstract class EditorAction<T> : IEditorAction
 	{
-		private	string		name;
-		private	string		desc;
-		private	Image		icon;
-
-		public string Name
+		public virtual string Name
 		{
-			get { return this.name; }
+			get { return null; }
 		}
-		public string Description
+		public virtual string Description
 		{
-			get { return this.desc; }
+			get { return null; }
 		}
-		public Image Icon
+		public virtual Image Icon
 		{
-			get { return this.icon; }
+			get { return null; }
 		}
-
-		protected EditorActionBase(string name, Image icon, string desc)
+		public Type SubjectType
 		{
-			this.name = name;
-			this.icon = icon;
-			this.desc = desc;
+			get { return typeof(T); }
 		}
 
 		public void Perform(T obj)
@@ -46,7 +41,14 @@ namespace Duality.Editor.CorePluginInterface
 			this.Perform(new[] { obj });
 		}
 		public abstract void Perform(IEnumerable<T> objEnum);
-		public abstract bool CanPerformOn(IEnumerable<T> objEnum);
+		public virtual bool CanPerformOn(IEnumerable<T> objEnum)
+		{
+			return true;
+		}
+		public virtual bool MatchesContext(string context)
+		{
+			return context == DualityEditorApp.ActionContextMenu;
+		}
 
 		void IEditorAction.Perform(object obj)
 		{
@@ -62,52 +64,24 @@ namespace Duality.Editor.CorePluginInterface
 			return this.CanPerformOn(obj.Cast<T>());
 		}
 	}
-	public class EditorAction<T> : EditorActionBase<T>
+	public abstract class EditorSingleAction<T> : EditorAction<T>
 	{
-		private	Action<T>		action;
-		private	Predicate<T>	actionPredicate;
-
-		public EditorAction(string name, Image icon, Action<T> action, string desc = null, Predicate<T> predicate = null) : base(name, icon, desc)
+		public abstract new void Perform(T obj);
+		public virtual bool CanPerformOn(T obj)
 		{
-			this.action = action;
-			this.actionPredicate = predicate;
+			return true;
 		}
 
 		public override void Perform(IEnumerable<T> objEnum)
 		{
-			foreach (T obj in objEnum)
+			foreach (T o in objEnum)
 			{
-				if (this.actionPredicate != null && !this.actionPredicate(obj)) continue;
-				this.action(obj);
+				this.Perform(o);
 			}
 		}
 		public override bool CanPerformOn(IEnumerable<T> objEnum)
 		{
-			if (objEnum == null) return true;
-			if (this.actionPredicate == null) return true;
-			return objEnum.Any(o => this.actionPredicate(o));
-		}
-	}
-	public class EditorGroupAction<T> : EditorActionBase<T>
-	{
-		private	Action<IEnumerable<T>>		action;
-		private	Predicate<IEnumerable<T>>	actionPredicate;
-
-		public EditorGroupAction(string name, Image icon, Action<IEnumerable<T>> action, string desc = null, Predicate<IEnumerable<T>> predicate = null) : base(name, icon, desc)
-		{
-			this.action = action;
-			this.actionPredicate = predicate;
-		}
-
-		public override void Perform(IEnumerable<T> objEnum)
-		{
-			this.action(objEnum);
-		}
-		public override bool CanPerformOn(IEnumerable<T> objEnum)
-		{
-			if (objEnum == null) return true;
-			if (this.actionPredicate == null) return true;
-			return this.actionPredicate(objEnum);
+			return objEnum.All(o => this.CanPerformOn(o));
 		}
 	}
 }

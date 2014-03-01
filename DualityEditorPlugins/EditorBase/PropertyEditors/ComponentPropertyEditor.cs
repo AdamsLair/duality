@@ -9,9 +9,7 @@ using AdamsLair.PropertyGrid;
 
 using Duality;
 using Duality.Drawing;
-
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
@@ -192,11 +190,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			contextMenu.Items.Add(itemDefaultSep);
 
 			// Custom actions
-			var customActions = CorePluginRegistry.GetEditorActions(
-				values.First().GetType(), 
-				CorePluginRegistry.ActionContext_ContextMenu, 
-				values)
-				.ToArray();
+			var customActions = DualityEditorApp.GetEditorActions(values.First().GetType(), values).ToArray();
 			foreach (var actionEntry in customActions)
 			{
 				ToolStripMenuItem actionItem = new ToolStripMenuItem(actionEntry.Name, actionEntry.Icon);

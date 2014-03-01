@@ -6,9 +6,7 @@ using AdamsLair.PropertyGrid;
 
 using Duality;
 using Duality.Drawing;
-
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors

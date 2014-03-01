@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
+
 using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 
 using Duality;
 using Duality.Resources;
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Base
@@ -721,7 +720,7 @@ namespace Duality.Editor.Plugins.Base
 			if (!resNode.ResLink.IsLoaded && !loadWhenNecessary) return null;
 
 			// Determine applying open actions
-			var actions = CorePluginRegistry.GetEditorActions(resNode.ResType, CorePluginRegistry.ActionContext_OpenRes, new[] { resNode.ResLink.Res });
+			var actions = DualityEditorApp.GetEditorActions(resNode.ResType, new[] { resNode.ResLink.Res }, DualityEditorApp.ActionContextOpenRes);
 
 			// Perform first open action
 			return actions.FirstOrDefault();
@@ -1335,11 +1334,7 @@ namespace Duality.Editor.Plugins.Base
 			{
 				this.toolStripSeparatorCustomActions.Visible = true;
 				int baseIndex = this.contextMenuNode.Items.IndexOf(this.toolStripSeparatorCustomActions);
-				var customActions = CorePluginRegistry.GetEditorActions(
-					mainResType, 
-					CorePluginRegistry.ActionContext_ContextMenu, 
-					selResData.Select(resRef => resRef.Res))
-					.ToArray();
+				var customActions = DualityEditorApp.GetEditorActions(mainResType, selResData.Res()).ToArray();
 				foreach (var actionEntry in customActions)
 				{
 					ToolStripMenuItem actionItem = new ToolStripMenuItem(actionEntry.Name, actionEntry.Icon);

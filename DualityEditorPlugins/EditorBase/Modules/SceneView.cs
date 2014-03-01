@@ -17,7 +17,6 @@ using Duality.Resources;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Editor.Forms;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 
 using Duality.Editor.Plugins.Base.Properties;
@@ -695,12 +694,12 @@ namespace Duality.Editor.Plugins.Base
 		}
 		protected IEditorAction GetResourceOpenAction(GameObject obj)
 		{
-			var actions = CorePluginRegistry.GetEditorActions<GameObject>(CorePluginRegistry.ActionContext_OpenRes, new[] { obj });
+			var actions = DualityEditorApp.GetEditorActions(typeof(GameObject), new[] { obj }, DualityEditorApp.ActionContextOpenRes);
 			return actions == null ? null : actions.FirstOrDefault();
 		}
 		protected IEditorAction GetResourceOpenAction(Component cmp)
 		{
-			var actions = CorePluginRegistry.GetEditorActions(cmp.GetType(), CorePluginRegistry.ActionContext_OpenRes, new[] { cmp });
+			var actions = DualityEditorApp.GetEditorActions(cmp.GetType(), new[] { cmp }, DualityEditorApp.ActionContextOpenRes);
 			return actions == null ? null : actions.FirstOrDefault();
 		}
 
@@ -1333,11 +1332,7 @@ namespace Duality.Editor.Plugins.Base
 			{
 				this.toolStripSeparatorCustomActions.Visible = true;
 				int baseIndex = this.contextMenuNode.Items.IndexOf(this.toolStripSeparatorCustomActions);
-				var customActions = CorePluginRegistry.GetEditorActions(
-					mainResType, 
-					CorePluginRegistry.ActionContext_ContextMenu, 
-					selObjData)
-					.ToArray();
+				var customActions = DualityEditorApp.GetEditorActions(mainResType, selObjData).ToArray();
 				foreach (var actionEntry in customActions)
 				{
 					ToolStripMenuItem actionItem = new ToolStripMenuItem(actionEntry.Name, actionEntry.Icon);

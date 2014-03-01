@@ -9,9 +9,7 @@ using AdamsLair.PropertyGrid.PropertyEditors;
 
 using Duality;
 using Duality.Components.Physics;
-
 using Duality.Editor;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
 

@@ -8,10 +8,8 @@ using Duality;
 using Duality.Components;
 using Duality.Resources;
 using Duality.Drawing;
-
 using Duality.Editor;
 using Duality.Editor.Forms;
-using Duality.Editor.CorePluginInterface;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.Base.UndoRedoActions;
 
