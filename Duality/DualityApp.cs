@@ -64,11 +64,11 @@ namespace Duality
 			Editor
 		}
 
-		public const string CmdArgDebug = "debug";
-		public const string CmdArgEditor = "editor";
+		public const string CmdArgDebug		= "debug";
+		public const string CmdArgEditor	= "editor";
 		public const string CmdArgProfiling = "profile";
 		public const string PluginDirectory = "Plugins";
-		public const string DataDirectory = "Data";
+		public const string DataDirectory	= "Data";
 
 
 		private	static	Thread						mainThread			= null;
@@ -795,13 +795,9 @@ namespace Duality
 			Log.Core.Write("Scanning for core plugins...");
 			Log.Core.PushIndent();
 
-			if (Directory.Exists("Plugins"))
+			foreach (string dllPath in GetPluginLibPaths("*.core.dll"))
 			{
-				string[] pluginDllPaths = Directory.GetFiles("Plugins", "*.core.dll", SearchOption.AllDirectories);
-				foreach (string dllPath in pluginDllPaths)
-				{
-					LoadPlugin(dllPath);
-				}
+				LoadPlugin(dllPath);
 			}
 
 			Log.Core.PopIndent();
@@ -1001,6 +997,28 @@ namespace Duality
 			return false;
 		}
 
+		/// <summary>
+		/// Enumerates all available plugin directory file paths that match the specified search pattern.
+		/// This method will properly react to situations where the working directory isn't equal to the
+		/// executing binary file directory and merge the list of available plugin files accordingly.
+		/// </summary>
+		/// <param name="searchPattern"></param>
+		/// <returns></returns>
+		public static IEnumerable<string> GetPluginLibPaths(string searchPattern)
+		{
+			// Search for plugin libraries in both "WorkingDir/Plugins" and "ExecDir/Plugins"
+			IEnumerable<string> availLibFiles = new string[0];
+			if (Directory.Exists(PluginDirectory)) 
+			{
+				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(PluginDirectory, searchPattern, SearchOption.AllDirectories));
+			}
+			string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, PluginDirectory);
+			if (Directory.Exists(execPluginDir))
+			{
+				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(execPluginDir, searchPattern, SearchOption.AllDirectories));
+			}
+			return availLibFiles;
+		}
 		/// <summary>
 		/// Enumerates all currently loaded assemblies that are part of Duality, i.e. Duality itsself and all loaded plugins.
 		/// </summary>
@@ -1207,9 +1225,10 @@ namespace Duality
 				return plugin.PluginAssembly;
 			}
 			// Not there? Search for other libraries in the Plugins folder
-			else if (Directory.Exists(PluginDirectory))
+			else
 			{
-				foreach (string libFile in Directory.EnumerateFiles(PluginDirectory, "*.dll", SearchOption.AllDirectories))
+				// Iterate over available library files
+				foreach (string libFile in GetPluginLibPaths("*.dll"))
 				{
 					string libFileName = Path.GetFileNameWithoutExtension(libFile);
 					if (libFileName.Equals(assemblyNameStub, StringComparison.InvariantCultureIgnoreCase))

@@ -258,8 +258,16 @@ namespace Duality.Editor
 				// Update plugin directory
 				foreach (string dstFile in Directory.GetFiles(Path.Combine(projFolder, DualityApp.PluginDirectory), "*", SearchOption.AllDirectories))
 				{
-					string srcFile = Path.Combine(DualityApp.PluginDirectory, Path.GetFileName(dstFile));
-					if (File.Exists(srcFile)) File.Copy(srcFile, dstFile, true);
+					string srcFileWorking = Path.Combine(DualityApp.PluginDirectory, Path.GetFileName(dstFile));
+					string srcFileExec = Path.Combine(PathHelper.ExecutingAssemblyDir, DualityApp.PluginDirectory, Path.GetFileName(dstFile));
+					if (File.Exists(srcFileWorking))
+					{
+						File.Copy(srcFileWorking, dstFile, true);
+					}
+					else if (File.Exists(srcFileExec))
+					{
+						File.Copy(srcFileExec, dstFile, true);
+					}
 				}
 			}
 			else if (template.SpecialTag == ProjectTemplateInfo.SpecialInfo.Current)
