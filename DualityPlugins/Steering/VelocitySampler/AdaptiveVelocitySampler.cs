@@ -28,6 +28,10 @@ namespace Duality.Plugins.Steering
 			int commonSampleCount = this.layerCount * this.outerLayerSampleCount;
 			Vector2 oldVelocity = agent.SuggestedVel / agent.Characteristics.MaxSpeed;
 			
+			// this can happen if the max speed changed during the last update
+			if (oldVelocity.LengthSquared > 1f)
+				oldVelocity.Normalize();
+			
 			if (this.currentSampleIdx >= commonSampleCount + 1)
 				return Vector2.Zero;
 			if (this.currentSampleIdx >= commonSampleCount)
