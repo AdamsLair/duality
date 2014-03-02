@@ -21,6 +21,7 @@ namespace Duality.Plugins.Steering
 	/// need a high-level pathfinding layer on top of the local avoidance.
 	/// </summary>
 	[Serializable]
+	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryAI)]
 	[EditorHintImage(typeof(SteeringRes), SteeringResNames.ImageAgent)]
 	public class Agent : Component, ICmpUpdatable
