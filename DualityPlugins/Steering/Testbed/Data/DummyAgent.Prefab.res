@@ -105,20 +105,20 @@
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
             <wrapTexture dataType="Bool">false</wrapTexture>
           </object>
-          <object dataType="Class" type="Duality.Plugins.Navigation.Agent" id="29948788">
+          <object dataType="Class" type="Duality.Plugins.Steering.Agent" id="2639804075">
             <active dataType="Bool">true</active>
-            <characteristics dataType="Class" type="Duality.Plugins.Navigation.DefaultCharacteristics" id="2307648820">
-              <aggresivity dataType="Float">0.1</aggresivity>
+            <characteristics dataType="Class" type="Duality.Plugins.Steering.DefaultAgentCharacteristics" id="3135367491">
+              <aggressiveness dataType="Float">0.5</aggressiveness>
             </characteristics>
-            <debugVisualizationMode dataType="Enum" type="Duality.Plugins.Navigation.Agent+VisualLoggingMode" name="NONE" value="0" />
+            <debugVisualizationMode dataType="Enum" type="Duality.Plugins.Steering.Agent+VisualLoggingMode" name="None" value="0" />
             <gameobj dataType="ObjectRef">1557773463</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             <radius dataType="Float">0</radius>
-            <sampler dataType="Class" type="Duality.Plugins.Navigation.AdaptiveVelocitySampler" id="3154225752">
+            <sampler dataType="Class" type="Duality.Plugins.Steering.AdaptiveVelocitySampler" id="2860577942">
               <layerCount dataType="Int">3</layerCount>
               <outerLayerSampleCount dataType="Int">11</outerLayerSampleCount>
             </sampler>
-            <target dataType="Class" type="Duality.Plugins.Navigation.PointTarget" id="665175212">
+            <target dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="383030277">
               <point dataType="Struct" type="OpenTK.Vector2">
                 <X dataType="Float">0</X>
                 <Y dataType="Float">0</Y>
@@ -126,7 +126,7 @@
             </target>
             <toiHorizon dataType="Float">240</toiHorizon>
           </object>
-          <object dataType="Class" type="NavigationTestbed.AgentAttributeTranslator" id="2245505546">
+          <object dataType="Class" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="3618709670">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1557773463</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -145,15 +145,15 @@
             <object dataType="Type" id="95016848" value="Duality.Components.Transform" />
             <object dataType="Type" id="796452064" value="Duality.Components.Physics.RigidBody" />
             <object dataType="Type" id="3199248240" value="Duality.Components.Diagnostics.RigidBodyRenderer" />
-            <object dataType="Type" id="2059484608" value="Duality.Plugins.Navigation.Agent" />
-            <object dataType="Type" id="942372048" value="NavigationTestbed.AgentAttributeTranslator" />
+            <object dataType="Type" id="2059484608" value="Duality.Plugins.Steering.Agent" />
+            <object dataType="Type" id="942372048" value="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" />
           </keys>
           <values dataType="Array" type="Duality.Component[]" id="3067593776" length="5">
             <object dataType="ObjectRef">3918088395</object>
             <object dataType="ObjectRef">325582691</object>
             <object dataType="ObjectRef">1714998165</object>
-            <object dataType="ObjectRef">29948788</object>
-            <object dataType="ObjectRef">2245505546</object>
+            <object dataType="ObjectRef">2639804075</object>
+            <object dataType="ObjectRef">3618709670</object>
           </values>
         </body>
       </compMap>

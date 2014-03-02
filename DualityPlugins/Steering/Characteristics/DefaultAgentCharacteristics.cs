@@ -5,7 +5,7 @@ using System;
 namespace Duality.Plugins.Steering
 {
 	[Serializable]
-	public class DefaultCharacteristics : IAgentCharacteristics
+	public class DefaultAgentCharacteristics : IAgentCharacteristics
 	{
 		private const float MinToiExponent		= 0.02f;
 		private const float MaxToiExponent		= 40.0f;

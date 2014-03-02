@@ -3,4 +3,7 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartWorkingDirectory>C:\Fedja\Duality\master\DualityPlugins\Steering\Testbed\</StartWorkingDirectory>
+  </PropertyGroup>
 </Project>

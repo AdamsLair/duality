@@ -21,7 +21,7 @@ namespace Duality.Plugins.Steering
 	public class Agent : Component, ICmpUpdatable
 	{
 		private IVelocitySampler		sampler			= new AdaptiveVelocitySampler();
-		private IAgentCharacteristics	characteristics	= new DefaultCharacteristics();
+		private IAgentCharacteristics	characteristics	= new DefaultAgentCharacteristics();
 		private ISteeringTarget			target			= new PointTarget();
 		private float					radius			= 64.0f;
 		private float					toiHorizon		= 240.0f;

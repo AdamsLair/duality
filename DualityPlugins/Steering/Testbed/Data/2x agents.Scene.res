@@ -5,47 +5,7 @@
       <X dataType="Float">0</X>
       <Y dataType="Float">33</Y>
     </globalGravity>
-    <serializeObj dataType="Array" type="Duality.GameObject[]" id="292984781" length="3">
-      <object dataType="Class" type="Duality.GameObject" id="1015542799">
-        <active dataType="Bool">true</active>
-        <children />
-        <compList dataType="Class" type="System.Collections.Generic.List`1[[Duality.Component]]" id="188368065">
-          <_items dataType="Array" type="Duality.Component[]" id="104730282" length="4">
-            <object dataType="Class" type="Duality.Plugins.Navigation.AgentManager" id="1617392423">
-              <active dataType="Bool">true</active>
-              <gameobj dataType="ObjectRef">1015542799</gameobj>
-              <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            </object>
-            <object />
-            <object />
-            <object />
-          </_items>
-          <_size dataType="Int">1</_size>
-          <_version dataType="Int">1</_version>
-        </compList>
-        <compMap dataType="Class" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1695549678" surrogate="true">
-          <header />
-          <body>
-            <keys dataType="Array" type="System.Type[]" id="3716293565" length="1">
-              <object dataType="Type" id="228898" value="Duality.Plugins.Navigation.AgentManager" />
-            </keys>
-            <values dataType="Array" type="Duality.Component[]" id="3595986582" length="1">
-              <object dataType="ObjectRef">1617392423</object>
-            </values>
-          </body>
-        </compMap>
-        <compTransform />
-        <identifier dataType="Struct" type="System.Guid" surrogate="true">
-          <header>
-            <data dataType="Array" type="System.Byte[]" id="2217814779" length="16">srdwjfcvHEOMvJ76ZPs3oQ==</data>
-          </header>
-          <body />
-        </identifier>
-        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-        <name dataType="String">AgentManager</name>
-        <parent />
-        <prefabLink />
-      </object>
+    <serializeObj dataType="Array" type="Duality.GameObject[]" id="292984781" length="2">
       <object dataType="Class" type="Duality.GameObject" id="3959643605">
         <active dataType="Bool">true</active>
         <children />
@@ -66,12 +26,12 @@
               <gameobj dataType="ObjectRef">3959643605</gameobj>
               <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             </object>
-            <object dataType="Class" type="Duality.Plugins.Navigation.Agent" id="3742876658">
+            <object dataType="Class" type="Duality.Plugins.Steering.Agent" id="746706921">
               <active dataType="Bool">true</active>
               <gameobj dataType="ObjectRef">3959643605</gameobj>
               <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             </object>
-            <object dataType="Class" type="NavigationTestbed.AgentAttributeTranslator" id="1985282080">
+            <object dataType="Class" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="1725612516">
               <active dataType="Bool">true</active>
               <gameobj dataType="ObjectRef">3959643605</gameobj>
               <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -90,15 +50,15 @@
               <object dataType="Type" id="1914743562" value="Duality.Components.Transform" />
               <object dataType="Type" id="1696569932" value="Duality.Components.Physics.RigidBody" />
               <object dataType="Type" id="2224275174" value="Duality.Components.Diagnostics.RigidBodyRenderer" />
-              <object dataType="Type" id="4190115896" value="Duality.Plugins.Navigation.Agent" />
-              <object dataType="Type" id="1943294466" value="NavigationTestbed.AgentAttributeTranslator" />
+              <object dataType="Type" id="4190115896" value="Duality.Plugins.Steering.Agent" />
+              <object dataType="Type" id="1943294466" value="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" />
             </keys>
             <values dataType="Array" type="Duality.Component[]" id="323893006" length="5">
               <object dataType="ObjectRef">2024991241</object>
               <object dataType="ObjectRef">2727452833</object>
               <object dataType="ObjectRef">4116868307</object>
-              <object dataType="ObjectRef">3742876658</object>
-              <object dataType="ObjectRef">1985282080</object>
+              <object dataType="ObjectRef">746706921</object>
+              <object dataType="ObjectRef">1725612516</object>
             </values>
           </body>
         </compMap>
@@ -122,8 +82,8 @@
                   <_version dataType="Int">1</_version>
                 </childIndex>
                 <componentType dataType="ObjectRef">4190115896</componentType>
-                <prop dataType="PropertyInfo" id="97301216" value="P:Duality.Plugins.Navigation.Agent:Target" />
-                <val dataType="Class" type="Duality.Plugins.Navigation.PointTarget" id="286482192">
+                <prop dataType="PropertyInfo" id="97301216" value="P:Duality.Plugins.Steering.Agent:Target" />
+                <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="286482192">
                   <point dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">200</X>
                     <Y dataType="Float">0</Y>
@@ -151,9 +111,9 @@
                   <_version dataType="Int">1</_version>
                 </childIndex>
                 <componentType dataType="ObjectRef">4190115896</componentType>
-                <prop dataType="PropertyInfo" id="3660402384" value="P:Duality.Plugins.Navigation.Agent:Characteristics" />
-                <val dataType="Class" type="Duality.Plugins.Navigation.DefaultCharacteristics" id="2710601600">
-                  <aggresivity dataType="Float">0.1</aggresivity>
+                <prop dataType="PropertyInfo" id="3660402384" value="P:Duality.Plugins.Steering.Agent:Characteristics" />
+                <val dataType="Class" type="Duality.Plugins.Steering.DefaultAgentCharacteristics" id="2710601600">
+                  <aggressiveness dataType="Float">0.5</aggressiveness>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -224,12 +184,12 @@
               <gameobj dataType="ObjectRef">1396203244</gameobj>
               <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             </object>
-            <object dataType="Class" type="Duality.Plugins.Navigation.Agent" id="1179436297">
+            <object dataType="Class" type="Duality.Plugins.Steering.Agent" id="2478233856">
               <active dataType="Bool">true</active>
               <gameobj dataType="ObjectRef">1396203244</gameobj>
               <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             </object>
-            <object dataType="Class" type="NavigationTestbed.AgentAttributeTranslator" id="3716809015">
+            <object dataType="Class" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="3457139451">
               <active dataType="Bool">true</active>
               <gameobj dataType="ObjectRef">1396203244</gameobj>
               <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -255,8 +215,8 @@
               <object dataType="ObjectRef">3756518176</object>
               <object dataType="ObjectRef">164012472</object>
               <object dataType="ObjectRef">1553427946</object>
-              <object dataType="ObjectRef">1179436297</object>
-              <object dataType="ObjectRef">3716809015</object>
+              <object dataType="ObjectRef">2478233856</object>
+              <object dataType="ObjectRef">3457139451</object>
             </values>
           </body>
         </compMap>
@@ -295,7 +255,7 @@
                 </childIndex>
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">97301216</prop>
-                <val dataType="Class" type="Duality.Plugins.Navigation.PointTarget" id="2642480672">
+                <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="2642480672">
                   <point dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">-200</X>
                     <Y dataType="Float">0</Y>
@@ -320,8 +280,8 @@
                 </childIndex>
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">3660402384</prop>
-                <val dataType="Class" type="Duality.Plugins.Navigation.DefaultCharacteristics" id="2718521152">
-                  <aggresivity dataType="Float">0.1</aggresivity>
+                <val dataType="Class" type="Duality.Plugins.Steering.DefaultAgentCharacteristics" id="2718521152">
+                  <aggressiveness dataType="Float">0.5</aggressiveness>
                 </val>
               </object>
             </_items>
