@@ -52,6 +52,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
@@ -60,6 +61,12 @@
     <Compile Include="Agent\AgentManager.cs" />
     <Compile Include="Characteristics\AdvancedAgentCharacteristics.cs" />
     <Compile Include="Characteristics\DefaultAgentCharacteristics.cs" />
+    <Compile Include="Properties\SteeringResNames.cs" />
+    <Compile Include="Properties\SteeringRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SteeringRes.resx</DependentUpon>
+    </Compile>
     <Compile Include="Targets\ISteeringTarget.cs" />
     <Compile Include="Targets\PointTarget.cs" />
     <Compile Include="VelocitySampler\IVelocitySampler.cs" />
@@ -73,6 +80,15 @@
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EmbeddedResources\CmpIconAgent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\SteeringRes.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SteeringRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

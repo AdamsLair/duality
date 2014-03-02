@@ -15,6 +15,7 @@ namespace Duality.Properties
 		public const string CategorySound		= "Category_Sound";
 		public const string CategoryPhysics		= "Category_Physics";
 		public const string CategoryDiagnostics	= "Category_Diagnostics";
+		public const string CategoryAI			= "Category_AI";
 
 		public const string ImageGameObject		= "IconGameObj";
 		public const string ImageComponent		= "IconCmpUnknown";

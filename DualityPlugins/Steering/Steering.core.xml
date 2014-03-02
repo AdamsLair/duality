@@ -139,5 +139,31 @@
             [GET] The maximum speed of the agent which has this characteristics attached
             </summary>
         </member>
+        <member name="T:Duality.Plugins.Steering.Properties.SteeringRes">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:Duality.Plugins.Steering.Properties.SteeringRes.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:Duality.Plugins.Steering.Properties.SteeringRes.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="P:Duality.Plugins.Steering.Properties.SteeringRes.IconCmpAgent">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+            </summary>
+        </member>
+        <member name="T:Duality.Plugins.Steering.Properties.SteeringResNames">
+            <summary>
+            This static class contains constant string representations of certain <see cref="T:Duality.Plugins.Steering.Properties.SteeringRes"/> resource entries.
+            </summary>
+        </member>
     </members>
 </doc>

@@ -5,6 +5,9 @@ using Duality;
 using Duality.Cloning;
 using Duality.Components;
 using Duality.Drawing;
+using Duality.Editor;
+using Duality.Properties;
+using Duality.Plugins.Steering.Properties;
 
 using OpenTK;
 
@@ -18,6 +21,8 @@ namespace Duality.Plugins.Steering
 	/// need a high-level pathfinding layer on top of the local avoidance.
 	/// </summary>
 	[Serializable]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryAI)]
+	[EditorHintImage(typeof(SteeringRes), SteeringResNames.ImageAgent)]
 	public class Agent : Component, ICmpUpdatable
 	{
 		private IVelocitySampler		sampler			= new AdaptiveVelocitySampler();
