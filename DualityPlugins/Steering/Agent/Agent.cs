@@ -18,7 +18,7 @@ namespace Duality.Plugins.Steering
 	{
 		private IVelocitySampler sampler;
 		private ICharacteristics characteristics;
-		private ITarget target;
+		private ISteeringTarget target;
 
 		private float radius;
 		private float toiHorizon;
@@ -79,7 +79,7 @@ namespace Duality.Plugins.Steering
 			set { characteristics = value; }
 		}
 
-		public ITarget Target
+		public ISteeringTarget Target
 		{
 			get { return target; }
 			set { target = value; }
