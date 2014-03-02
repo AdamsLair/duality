@@ -2,7 +2,7 @@
 using OpenTK;
 using System;
 
-namespace Duality.Plugins.Navigation
+namespace Duality.Plugins.Steering
 {
 	/// <summary>
 	/// Defines the basic reactive behavior of an Agent

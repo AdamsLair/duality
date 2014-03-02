@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Duality.Plugins.Navigation
+namespace Duality.Plugins.Steering
 {
 	[Serializable]
 	public class AgentManager : Component, ICmpUpdatable

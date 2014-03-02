@@ -1,7 +1,7 @@
 ﻿using OpenTK;
 using System;
 
-namespace Duality.Plugins.Navigation
+namespace Duality.Plugins.Steering
 {
 	/// <summary>
 	/// This interface should but doesn't need to be used by implementations of <see cref="ICharacteristics"/>.

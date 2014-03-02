@@ -4,7 +4,7 @@ using Duality.Drawing;
 using OpenTK;
 using System;
 
-namespace Duality.Plugins.Navigation
+namespace Duality.Plugins.Steering
 {
 	/// <summary>
 	/// An agent is the basic component you want to attach to computer-controlled characters. 

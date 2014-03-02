@@ -3,7 +3,7 @@ using OpenTK;
 using System;
 using System.Collections.Generic;
 
-namespace Duality.Plugins.Navigation
+namespace Duality.Plugins.Steering
 {
 	/// <summary>
 	/// Creates velocity samples which are going to get tested with <see cref="ICharacteristics"/>. 

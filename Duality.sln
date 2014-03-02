@@ -36,7 +36,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityTests", "UnitTesting\DualityTests\DualityTests.csproj", "{0C1B88A8-4FF3-43D3-9BC6-E71DBB561075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Navigation", "DualityPlugins\Navigation\Navigation.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering", "DualityPlugins\Steering\Steering.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

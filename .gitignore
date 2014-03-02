@@ -61,3 +61,15 @@ DualityPlugins/NavigationTestbed/designtimedata.dat
 DualityPlugins/NavigationTestbed/defaultuserdata.dat
 DualityPlugins/NavigationTestbed/appdata.dat
 DualityEditor/DualityEditor.csproj.user
+DualityPlugins/Steering/Testbed/Backup/
+DualityPlugins/Steering/Testbed/Plugins/
+DualityPlugins/Steering/Testbed/Source/Code/CorePlugin/CorePlugin.csproj.user
+DualityPlugins/Steering/Testbed/Source/Code/CorePlugin/obj/
+DualityPlugins/Steering/Testbed/Source/Code/CorePlugin/bin/
+DualityPlugins/Steering/bin/
+DualityPlugins/Steering/Testbed/Source/Code/DualityLauncher/bin/
+DualityPlugins/Steering/Testbed/Source/Code/DualityEditor/bin/
+DualityPlugins/Steering/obj/
+DualityPlugins/Steering/Testbed/appdata.dat
+DualityPlugins/Steering/Testbed/designtimedata.dat
+DualityPlugins/Steering/Testbed/Source/Code/CorePlugin/Properties/GameRes.cs
