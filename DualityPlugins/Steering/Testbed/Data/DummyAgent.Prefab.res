@@ -119,10 +119,10 @@
               <outerLayerSampleCount dataType="Int">11</outerLayerSampleCount>
             </sampler>
             <target dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="383030277">
-              <point dataType="Struct" type="OpenTK.Vector2">
+              <location dataType="Struct" type="OpenTK.Vector2">
                 <X dataType="Float">0</X>
                 <Y dataType="Float">0</Y>
-              </point>
+              </location>
             </target>
             <toiHorizon dataType="Float">240</toiHorizon>
           </object>

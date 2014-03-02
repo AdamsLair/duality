@@ -6,23 +6,23 @@ namespace Duality.Plugins.Steering
 	[Serializable]
 	public class PointTarget : ISteeringTarget
 	{
-		private Vector2 point;
+		private Vector2 location;
 
-		public Vector2 Point
+		public Vector2 Location
 		{
-			get { return this.point; }
-			set { this.point = value; }
+			get { return this.location; }
+			set { this.location = value; }
 		}
 
 		public float CalculateCost(Agent agent, Vector2 sampleDirection)
 		{
 			var agentPos = agent.GameObj.Transform.Pos.Xy;
-			var posDelta = this.point - agentPos;
+			var posDelta = this.location - agentPos;
 			return 0.5f * (1f - Vector2.Dot(posDelta.Normalized, sampleDirection));
 		}
 		public override string ToString()
 		{
-			return string.Format("Point: {0}, {1}", (int)this.point.X, (int)this.point.Y);
+			return string.Format("Point: {0}, {1}", (int)this.location.X, (int)this.location.Y);
 		}
 	}
 }

@@ -98,10 +98,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="PropertyInfo" id="909540800" value="P:Duality.Plugins.Steering.Agent:Target" />
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="851604912">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">200</X>
                     <Y dataType="Float">0</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -265,10 +265,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">909540800</prop>
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="2642480672">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">-200</X>
                     <Y dataType="Float">0</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -432,10 +432,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">909540800</prop>
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="3377182992">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">-200</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -599,10 +599,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">909540800</prop>
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="3122172160">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">200</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -776,10 +776,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">909540800</prop>
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="4240525488">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">140</X>
                     <Y dataType="Float">-140</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -943,10 +943,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">909540800</prop>
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="3874162112">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">140</X>
                     <Y dataType="Float">140</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -1110,10 +1110,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">909540800</prop>
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="2003371456">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">-140</X>
                     <Y dataType="Float">140</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -1277,10 +1277,10 @@
                 <componentType dataType="ObjectRef">4190115896</componentType>
                 <prop dataType="ObjectRef">909540800</prop>
                 <val dataType="Class" type="Duality.Plugins.Steering.PointTarget" id="1623518720">
-                  <point dataType="Struct" type="OpenTK.Vector2">
+                  <location dataType="Struct" type="OpenTK.Vector2">
                     <X dataType="Float">-140</X>
                     <Y dataType="Float">-140</Y>
-                  </point>
+                  </location>
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">

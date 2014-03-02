@@ -20,6 +20,13 @@
             <see cref="P:Duality.Plugins.Steering.Agent.Target"/> to the appropriate values.
             </summary>
         </member>
+        <member name="P:Duality.Plugins.Steering.Agent.TargetPos">
+            <summary>
+            [GET / SET] The Agents target velocity, i.e. the one which it tries to acquire.
+            This is a convenience property that automatically sets <see cref="P:Duality.Plugins.Steering.Agent.TargetSpeed"/> and 
+            <see cref="P:Duality.Plugins.Steering.Agent.Target"/> to the appropriate values.
+            </summary>
+        </member>
         <member name="P:Duality.Plugins.Steering.Agent.TargetSpeed">
             <summary>
             [GET / SET] The target speed this Agent attempts to acquire unless distracted by other Agents.

@@ -77,6 +77,31 @@ namespace Duality.Plugins.Steering
 			}
 		}
 		/// <summary>
+		/// [GET / SET] The Agents target velocity, i.e. the one which it tries to acquire.
+		/// This is a convenience property that automatically sets <see cref="TargetSpeed"/> and 
+		/// <see cref="Target"/> to the appropriate values.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		public Vector2 TargetPos
+		{
+			get
+			{
+				if (this.target is PointTarget)
+				{
+					return (this.target as PointTarget).Location;
+				}
+				else
+				{
+					return Vector2.Zero;
+				}
+			}
+			set
+			{
+				if (!(this.target is PointTarget)) this.target = new PointTarget();
+				(this.target as PointTarget).Location = value;
+			}
+		}
+		/// <summary>
 		/// [GET / SET] The target speed this Agent attempts to acquire unless distracted by other Agents.
 		/// </summary>
 		public float TargetSpeed
