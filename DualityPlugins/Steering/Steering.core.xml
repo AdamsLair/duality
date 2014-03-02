@@ -13,6 +13,18 @@
             need a high-level pathfinding layer on top of the local avoidance.
             </summary>
         </member>
+        <member name="P:Duality.Plugins.Steering.Agent.TargetVel">
+            <summary>
+            [GET / SET] The Agents target velocity, i.e. the one which it tries to acquire.
+            This is a convenience property that automatically sets <see cref="P:Duality.Plugins.Steering.Agent.TargetSpeed"/> and 
+            <see cref="P:Duality.Plugins.Steering.Agent.Target"/> to the appropriate values.
+            </summary>
+        </member>
+        <member name="P:Duality.Plugins.Steering.Agent.TargetSpeed">
+            <summary>
+            [GET / SET] The target speed this Agent attempts to acquire unless distracted by other Agents.
+            </summary>
+        </member>
         <member name="P:Duality.Plugins.Steering.Agent.Radius">
             <summary>
             [GET / SET] The radius of the agent (an agent is always representet as circle)
@@ -134,9 +146,14 @@
             </param>
             <returns>The cost for the given velocity which should be between 0 and 1</returns>
         </member>
+        <member name="P:Duality.Plugins.Steering.IAgentCharacteristics.PreferredSpeed">
+            <summary>
+            [GET / SET] The preferred speed of the agent.
+            </summary>
+        </member>
         <member name="P:Duality.Plugins.Steering.IAgentCharacteristics.MaxSpeed">
             <summary>
-            [GET] The maximum speed of the agent which has this characteristics attached
+            [GET] The maximum speed of the agent.
             </summary>
         </member>
         <member name="T:Duality.Plugins.Steering.Properties.SteeringRes">

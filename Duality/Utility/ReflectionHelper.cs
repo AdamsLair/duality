@@ -179,6 +179,32 @@ namespace Duality
 			if (!customAttributeCache.TryGetValue(member, out result))
 			{
 				result = Attribute.GetCustomAttributes(member, true);
+				if (member.DeclaringType != null && !member.DeclaringType.IsInterface)
+				{
+					IEnumerable<Attribute> query = result;
+					Type[] interfaces = member.DeclaringType.GetInterfaces();
+					if (interfaces.Length > 0)
+					{
+						bool addedAny = false;
+						foreach (Type interfaceType in interfaces)
+						{
+							MemberInfo[] interfaceMembers = interfaceType.GetMember(member.Name, member.MemberType, ReflectionHelper.BindInstanceAll);
+							foreach (MemberInfo interfaceMemberInfo in interfaceMembers)
+							{
+								IEnumerable<Attribute> subQuery = GetCustomAttributes<Attribute>(interfaceMemberInfo);
+								if (subQuery.Any())
+								{
+									query = query.Concat(subQuery);
+									addedAny = true;
+								}
+							}
+						}
+						if (addedAny)
+						{
+							result = query.Distinct().ToArray();
+						}
+					}
+				}
 				customAttributeCache[member] = result;
 			}
 			return result.OfType<T>();

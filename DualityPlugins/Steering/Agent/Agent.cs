@@ -26,9 +26,9 @@ namespace Duality.Plugins.Steering
 	[EditorHintImage(typeof(SteeringRes), SteeringResNames.ImageAgent)]
 	public class Agent : Component, ICmpUpdatable
 	{
-		private IVelocitySampler		sampler			= new AdaptiveVelocitySampler();
-		private IAgentCharacteristics	characteristics	= new DefaultAgentCharacteristics();
-		private ISteeringTarget			target			= new PointTarget();
+		private IVelocitySampler		sampler			= null;
+		private IAgentCharacteristics	characteristics	= null;
+		private ISteeringTarget			target			= null;
 		private float					radius			= 64.0f;
 		private float					toiHorizon		= 240.0f;
 		[NonSerialized] private Vector2 suggestedVel	= Vector2.Zero;
@@ -48,6 +48,45 @@ namespace Duality.Plugins.Steering
 		{
 			get { return this.target; }
 			set { this.target = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The Agents target velocity, i.e. the one which it tries to acquire.
+		/// This is a convenience property that automatically sets <see cref="TargetSpeed"/> and 
+		/// <see cref="Target"/> to the appropriate values.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		public Vector2 TargetVel
+		{
+			get
+			{
+				if (this.target is DirectionTarget)
+				{
+					return (this.target as DirectionTarget).Direction * this.TargetSpeed;
+				}
+				else
+				{
+					return Vector2.Zero;
+				}
+			}
+			set
+			{
+				if (!(this.target is DirectionTarget)) this.target = new DirectionTarget();
+				float valueLen = value.Length;
+				(this.target as DirectionTarget).Direction = value / (valueLen > 0.0f ? valueLen : 1.0f);
+				this.TargetSpeed = value.Length;
+			}
+		}
+		/// <summary>
+		/// [GET / SET] The target speed this Agent attempts to acquire unless distracted by other Agents.
+		/// </summary>
+		public float TargetSpeed
+		{
+			get { return this.characteristics != null ? this.characteristics.PreferredSpeed : 0.0f; }
+			set
+			{
+				this.AcquireConfigObjects();
+				this.characteristics.PreferredSpeed = value;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The radius of the agent (an agent is always representet as circle)
@@ -76,8 +115,14 @@ namespace Duality.Plugins.Steering
 		}
 
 
+		public Agent()
+		{
+			this.AcquireConfigObjects();
+		}
+
 		void ICmpUpdatable.OnUpdate()
 		{
+			this.AcquireConfigObjects();
 			Transform transform = this.GameObj.Transform;
 
 			Agent[] otherAgents = AgentManager.Instance.FindNeighborAgents(this).ToArray();
@@ -215,6 +260,12 @@ namespace Duality.Plugins.Steering
 			}
 #endif
 			#endregion
+		}
+		private void AcquireConfigObjects()
+		{
+			if (this.sampler == null)			this.sampler = new AdaptiveVelocitySampler();
+			if (this.target == null)			this.target = new DirectionTarget();
+			if (this.characteristics == null)	this.characteristics = new DefaultAgentCharacteristics();
 		}
 		protected override void OnCopyTo(Component target, CloneProvider provider)
 		{

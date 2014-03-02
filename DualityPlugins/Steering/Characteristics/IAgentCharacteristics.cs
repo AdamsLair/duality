@@ -1,6 +1,9 @@
-﻿using Duality;
+﻿using System;
+
+using Duality;
+using Duality.Editor;
+
 using OpenTK;
-using System;
 
 namespace Duality.Plugins.Steering
 {
@@ -10,9 +13,17 @@ namespace Duality.Plugins.Steering
 	public interface IAgentCharacteristics
 	{
 		/// <summary>
-		/// [GET] The maximum speed of the agent which has this characteristics attached
+		/// [GET / SET] The preferred speed of the agent.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		[EditorHintRange(0.0f, 10000.0f)]
+		float PreferredSpeed { get; set; }
+		/// <summary>
+		/// [GET] The maximum speed of the agent.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		float MaxSpeed { get; }
+
 		/// <summary>
 		/// Calculates the "cost" of a given velocity which are used to decide which velocity an agent should actually
 		/// choose. There are multiple things this method needs to consider:

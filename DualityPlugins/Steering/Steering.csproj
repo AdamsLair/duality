@@ -68,6 +68,7 @@
       <DependentUpon>SteeringRes.resx</DependentUpon>
     </Compile>
     <Compile Include="Targets\ISteeringTarget.cs" />
+    <Compile Include="Targets\DirectionTarget.cs" />
     <Compile Include="Targets\PointTarget.cs" />
     <Compile Include="VelocitySampler\IVelocitySampler.cs" />
     <Compile Include="CorePlugin.cs" />

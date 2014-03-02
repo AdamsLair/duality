@@ -23,16 +23,14 @@ namespace Duality.Plugins.Steering
 		[NonSerialized] private bool updateBaseImplParams = true;
 
 
-		[EditorHintRange(0.0f, 10000.0f)]
 		public float MaxSpeed
 		{
 			get { return this.baseImpl.MaxSpeed; }
 		}
-		[EditorHintRange(0.0f, 10000.0f)]
-		public float PrefSpeed
+		public float PreferredSpeed
 		{
-			get { return this.baseImpl.PrefSpeed; }
-			set { this.baseImpl.PrefSpeed = value; }
+			get { return this.baseImpl.PreferredSpeed; }
+			set { this.baseImpl.PreferredSpeed = value; }
 		}
 		[EditorHintRange(0.0f, 1.0f)]
 		public float Aggressiveness
@@ -58,6 +56,11 @@ namespace Duality.Plugins.Steering
 				this.updateBaseImplParams = false;
 			}
 			return this.baseImpl.CalculateVelocityCost(agent, sampleVelocity, toiPenality);
+		}
+
+		public override string ToString()
+		{
+			return string.Format("Default Characteristics");
 		}
 	}
 }

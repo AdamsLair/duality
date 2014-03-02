@@ -43,7 +43,7 @@ namespace Duality.Plugins.Steering
 		{
 			get { return this.prefSpeed; }
 		}
-		public float PrefSpeed
+		public float PreferredSpeed
 		{
 			get { return this.prefSpeed; }
 			set { this.prefSpeed = value; }
@@ -66,6 +66,11 @@ namespace Duality.Plugins.Steering
 
 			score /= this.velocityPreservationFactor + this.speedFactor + this.directionFactor + this.toiFactor;
 			return score;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("Advanced Characteristics");
 		}
 	}
 }

@@ -20,5 +20,9 @@ namespace Duality.Plugins.Steering
 			var posDelta = this.point - agentPos;
 			return 0.5f * (1f - Vector2.Dot(posDelta.Normalized, sampleDirection));
 		}
+		public override string ToString()
+		{
+			return string.Format("Point: {0}, {1}", (int)this.point.X, (int)this.point.Y);
+		}
 	}
 }

@@ -53,5 +53,10 @@ namespace Duality.Plugins.Steering
 			else
 				return false;
 		}
+
+		public override string ToString()
+		{
+			return string.Format("Adaptive, {0} Layers, {1} Samples", this.layerCount, this.outerLayerSampleCount);
+		}
 	}
 }

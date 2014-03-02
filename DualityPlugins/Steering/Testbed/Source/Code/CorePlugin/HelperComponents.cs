@@ -6,6 +6,8 @@ using System.Text;
 using Duality;
 using Duality.Components;
 using Duality.Components.Physics;
+using Duality.Editor;
+using Duality.Properties;
 
 namespace Duality.Plugins.Steering.Testbed
 {
@@ -13,6 +15,7 @@ namespace Duality.Plugins.Steering.Testbed
 	[RequiredComponent(typeof(Agent))]
 	[RequiredComponent(typeof(Transform))]
 	[RequiredComponent(typeof(RigidBody))]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryAI)]
 	public class AgentAttributeTranslator : Component, ICmpUpdatable
 	{
 		public void OnUpdate()
