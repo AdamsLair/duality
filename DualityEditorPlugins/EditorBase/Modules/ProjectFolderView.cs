@@ -274,7 +274,7 @@ namespace Duality.Editor.Plugins.Base
 
 			public static Image GetTypeImage(Type type, IContentRef resLink = null)
 			{
-				return type.GetEditorImage();
+				return (type ?? typeof(Resource)).GetEditorImage();
 			}
 		}
 		private struct ScheduleSelectEntry
