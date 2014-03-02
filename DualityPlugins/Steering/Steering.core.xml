@@ -15,12 +15,12 @@
         </member>
         <member name="P:Duality.Plugins.Steering.Agent.Radius">
             <summary>
-            [GET/SET] The radius of the agent (an agent is always representet as circle)
+            [GET / SET] The radius of the agent (an agent is always representet as circle)
             </summary>
         </member>
         <member name="P:Duality.Plugins.Steering.Agent.ToiHorizon">
             <summary>
-            [Get/SET] The maximum time of impact wich the agent will react on. 
+            [GET / SET] The maximum time of impact wich the agent will react on. 
             If you set this too high your agent will oscillate alot in crowded situations and if you set
             it too low your agent will avoid very late which looks artificial.
             </summary>

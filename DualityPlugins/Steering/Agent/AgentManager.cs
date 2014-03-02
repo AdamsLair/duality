@@ -1,38 +1,29 @@
-﻿using Duality;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
+using Duality;
+using Duality.Resources;
+
 namespace Duality.Plugins.Steering
 {
-	[Serializable]
-	public class AgentManager : Component, ICmpUpdatable
+	internal class AgentManager
 	{
-		public IEnumerable<Agent> FindNeighborAgents(Agent referenceAgent)
+		private static AgentManager instance = null;
+		public static AgentManager Instance
 		{
-			var result = new List<Agent>();
-			var allAgents = GameObj.ParentScene.FindComponents<Agent>();
-			foreach(var agent in allAgents)
+			get
 			{
-				if (agent != referenceAgent)
-					result.Add(agent);
+				if (instance == null) instance = new AgentManager();
+				return instance;
 			}
-			return result;
 		}
 
-		public void OnUpdate()
+		public IEnumerable<Agent> FindNeighborAgents(Agent referenceAgent)
 		{
-			foreach (var agent in GameObj.ParentScene.FindComponents<Agent>())
-			{
-				agent.OnUpdate();
-			}
-
-			float factor = 1f;
-			foreach (var agent in GameObj.ParentScene.FindComponents<Agent>())
-			{
-				agent.GameObj.RigidBody.LinearVelocity = (1f - factor) * agent.GameObj.RigidBody.LinearVelocity + factor * agent.BestVel;
-			}
+			// ToDo: Performance Optimization when necessary.
+			return Scene.Current.FindComponents<Agent>().Where(a => a != referenceAgent);
 		}
 	}
 }
