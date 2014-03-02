@@ -25,7 +25,7 @@
             it too low your agent will avoid very late which looks artificial.
             </summary>
         </member>
-        <member name="P:Duality.Plugins.Steering.Agent.BestVel">
+        <member name="P:Duality.Plugins.Steering.Agent.SuggestedVel">
             <summary>
             [GET] The calculated velocity which the agent calculated as optimum. 
             </summary>

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 
 using Duality;
-using Duality.Plugins.Navigation;
 using Duality.Components;
 using Duality.Components.Physics;
 
-namespace NavigationTestbed
+namespace Duality.Plugins.Steering.Testbed
 {
 	[Serializable]
 	[RequiredComponent(typeof(Agent))]
@@ -18,13 +17,15 @@ namespace NavigationTestbed
 	{
 		public void OnUpdate()
 		{
-			var transform = this.GameObj.GetComponent<Transform>();
-			var rigidBody = this.GameObj.RigidBody;
-			var agent = GameObj.GetComponent<Agent>();
-			var shapeInfo = (CircleShapeInfo)rigidBody.Shapes.ElementAt(0);
-			agent.Radius = shapeInfo.Radius;
-
-			rigidBody.AngularVelocity = 0f;
+			RigidBody		rigidBody	= this.GameObj.RigidBody;
+			Agent			agent		= GameObj.GetComponent<Agent>();
+			CircleShapeInfo shapeInfo	= rigidBody.Shapes.ElementAtOrDefault(0) as CircleShapeInfo;
+			if (shapeInfo != null)
+			{
+				agent.Radius = shapeInfo.Radius;
+			}
+			rigidBody.AngularVelocity = 0.0f;
+			rigidBody.LinearVelocity = agent.SuggestedVel;
 		}
 	}
 }

@@ -1,7 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CorePlugin", "CorePlugin\CorePlugin.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering", "..\..\..\Steering.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality", "..\..\..\..\..\Duality\Duality.csproj", "{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,6 +17,14 @@ Global
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0130132B-C38D-463E-90AC-5D389E934FAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0130132B-C38D-463E-90AC-5D389E934FAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0130132B-C38D-463E-90AC-5D389E934FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0130132B-C38D-463E-90AC-5D389E934FAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

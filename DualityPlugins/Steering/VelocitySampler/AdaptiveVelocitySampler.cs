@@ -26,7 +26,7 @@ namespace Duality.Plugins.Steering
 		public Vector2 GetCurrentSample(Agent agent)
 		{
 			int commonSampleCount = this.layerCount * this.outerLayerSampleCount;
-			Vector2 oldVelocity = agent.BestVel / agent.Characteristics.MaxSpeed;
+			Vector2 oldVelocity = agent.SuggestedVel / agent.Characteristics.MaxSpeed;
 			
 			if (this.currentSampleIdx >= commonSampleCount + 1)
 				return Vector2.Zero;

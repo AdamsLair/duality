@@ -64,7 +64,7 @@ namespace Duality.Plugins.Steering
 		/// <summary>
 		/// [GET] The calculated velocity which the agent calculated as optimum. 
 		/// </summary>
-		public Vector2 BestVel
+		public Vector2 SuggestedVel
 		{
 			get { return this.suggestedVel; }
 		}

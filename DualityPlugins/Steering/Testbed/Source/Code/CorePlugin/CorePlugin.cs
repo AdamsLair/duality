@@ -5,13 +5,7 @@ using System.Text;
 
 using Duality;
 
-namespace NavigationTestbed
+namespace Duality.Plugins.Steering.Testbed
 {
-	/// <summary>
-	/// Defines a Duality core plugin.
-	/// </summary>
-    public class NavigationTestbedCorePlugin : CorePlugin
-    {
-		// Override methods here for global logic
-    }
+    public class NavigationTestbedCorePlugin : CorePlugin {}
 }

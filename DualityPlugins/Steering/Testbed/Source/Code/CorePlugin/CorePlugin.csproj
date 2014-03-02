@@ -8,8 +8,8 @@
     <ProjectGuid>{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NavigationTestbed</RootNamespace>
-    <AssemblyName>GamePlugin.core</AssemblyName>
+    <RootNamespace>Duality.Plugins.Steering.Testbed</RootNamespace>
+    <AssemblyName>SteeringTestbed.core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>GamePlugin.core.xml</DocumentationFile>
+    <DocumentationFile>SteeringTestbed.core.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -31,18 +31,12 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>GamePlugin.core.xml</DocumentationFile>
+    <DocumentationFile>SteeringTestbed.core.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Duality">
-      <HintPath>..\..\..\..\..\Duality\bin\Release\Duality.dll</HintPath>
-    </Reference>
-    <Reference Include="Navigation.core">
-      <HintPath>..\..\..\..\Navigation\bin\Release\Navigation.core.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK">
-      <HintPath>..\..\..\..\..\Duality\OpenTK.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Duality\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -54,11 +48,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\GameRes.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Steering.csproj">
+      <Project>{0130132B-C38D-463E-90AC-5D389E934FAE}</Project>
+      <Name>Steering</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(TargetDir)..\..\..\..\..\Plugins"
 copy "$(TargetPath)" "$(TargetDir)..\..\..\..\..\Plugins"
-copy "$(TargetDir)GamePlugin.core.xml" "$(TargetDir)..\..\..\..\..\Plugins"</PostBuildEvent>
+copy "$(TargetDir)SteeringTestbed.core.xml" "$(TargetDir)..\..\..\..\..\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
