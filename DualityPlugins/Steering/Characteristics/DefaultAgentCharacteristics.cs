@@ -1,6 +1,9 @@
-﻿using Duality;
+﻿using System;
+
+using Duality;
+using Duality.Editor;
+
 using OpenTK;
-using System;
 
 namespace Duality.Plugins.Steering
 {
@@ -20,15 +23,18 @@ namespace Duality.Plugins.Steering
 		[NonSerialized] private bool updateBaseImplParams = true;
 
 
+		[EditorHintRange(0.0f, 10000.0f)]
 		public float MaxSpeed
 		{
 			get { return this.baseImpl.MaxSpeed; }
 		}
+		[EditorHintRange(0.0f, 10000.0f)]
 		public float PrefSpeed
 		{
 			get { return this.baseImpl.PrefSpeed; }
 			set { this.baseImpl.PrefSpeed = value; }
 		}
+		[EditorHintRange(0.0f, 1.0f)]
 		public float Aggressiveness
 		{
 			get { return this.aggressiveness; }

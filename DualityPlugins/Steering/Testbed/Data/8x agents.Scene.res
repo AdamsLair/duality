@@ -137,10 +137,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="3510750528">
+                  <_items dataType="Array" type="System.Int32[]" id="408502160" length="0" />
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="PropertyInfo" id="4272667696" value="P:Duality.Components.Diagnostics.RigidBodyRenderer:ColorTint" />
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">224</B>
+                  <G dataType="Byte">128</G>
+                  <R dataType="Byte">255</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -155,8 +164,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">90</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">155</_version>
           </changes>
           <obj dataType="ObjectRef">3959643605</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -295,10 +304,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="490143488">
+                  <_items dataType="ObjectRef">408502160</_items>
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="ObjectRef">4272667696</prop>
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">159</B>
+                  <G dataType="Byte">255</G>
+                  <R dataType="Byte">128</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -313,8 +331,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">433</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">480</_version>
           </changes>
           <obj dataType="ObjectRef">1396203244</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -453,10 +471,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="163049344">
+                  <_items dataType="ObjectRef">408502160</_items>
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="ObjectRef">4272667696</prop>
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">255</B>
+                  <G dataType="Byte">159</G>
+                  <R dataType="Byte">128</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -471,8 +498,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">439</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">472</_version>
           </changes>
           <obj dataType="ObjectRef">2587165737</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -611,10 +638,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="53671936">
+                  <_items dataType="ObjectRef">408502160</_items>
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="ObjectRef">4272667696</prop>
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">128</B>
+                  <G dataType="Byte">224</G>
+                  <R dataType="Byte">255</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -629,8 +665,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">73</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">118</_version>
           </changes>
           <obj dataType="ObjectRef">354782310</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -769,10 +805,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="3155415408">
+                  <_items dataType="ObjectRef">408502160</_items>
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="ObjectRef">4272667696</prop>
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">255</B>
+                  <G dataType="Byte">128</G>
+                  <R dataType="Byte">192</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -787,8 +832,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">18148</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">18203</_version>
           </changes>
           <obj dataType="ObjectRef">1770758309</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -927,10 +972,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="3604631424">
+                  <_items dataType="ObjectRef">408502160</_items>
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="ObjectRef">4272667696</prop>
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">128</B>
+                  <G dataType="Byte">128</G>
+                  <R dataType="Byte">255</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -945,8 +999,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">18160</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">18197</_version>
           </changes>
           <obj dataType="ObjectRef">4011406579</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -1085,10 +1139,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="1260932992">
+                  <_items dataType="ObjectRef">408502160</_items>
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="ObjectRef">4272667696</prop>
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">128</B>
+                  <G dataType="Byte">255</G>
+                  <R dataType="Byte">192</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -1103,8 +1166,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">18148</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">18187</_version>
           </changes>
           <obj dataType="ObjectRef">3103949419</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -1243,10 +1306,19 @@
                 </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                <childIndex />
-                <componentType />
-                <prop />
-                <val />
+                <childIndex dataType="Class" type="System.Collections.Generic.List`1[[System.Int32]]" id="2478976000">
+                  <_items dataType="ObjectRef">408502160</_items>
+                  <_size dataType="Int">0</_size>
+                  <_version dataType="Int">1</_version>
+                </childIndex>
+                <componentType dataType="ObjectRef">2224275174</componentType>
+                <prop dataType="ObjectRef">4272667696</prop>
+                <val dataType="Struct" type="Duality.Drawing.ColorRgba">
+                  <A dataType="Byte">255</A>
+                  <B dataType="Byte">255</B>
+                  <G dataType="Byte">255</G>
+                  <R dataType="Byte">128</R>
+                </val>
               </object>
               <object dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                 <childIndex />
@@ -1261,8 +1333,8 @@
                 <val />
               </object>
             </_items>
-            <_size dataType="Int">5</_size>
-            <_version dataType="Int">18148</_version>
+            <_size dataType="Int">6</_size>
+            <_version dataType="Int">18183</_version>
           </changes>
           <obj dataType="ObjectRef">2048440334</obj>
           <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
