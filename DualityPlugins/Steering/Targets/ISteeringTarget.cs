@@ -4,7 +4,7 @@ using System;
 namespace Duality.Plugins.Steering
 {
 	/// <summary>
-	/// This interface should but doesn't need to be used by implementations of <see cref="ICharacteristics"/>.
+	/// This interface should but doesn't need to be used by implementations of <see cref="IAgentCharacteristics"/>.
 	/// It defines which directions of velocities an agent preferes aka in which direction is the target of the agent
 	/// </summary>
 	public interface ISteeringTarget

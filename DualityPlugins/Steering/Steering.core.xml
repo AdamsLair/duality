@@ -4,9 +4,35 @@
         <name>Steering.core</name>
     </assembly>
     <members>
+        <member name="T:Duality.Plugins.Steering.Agent">
+            <summary>
+            An agent is the basic component you want to attach to computer-controlled characters. 
+            It contains functionallity to avoid collisions with other agents/obstacles and tries
+            to get to some defined target-location. The avoidance is only local therefore it's 
+            possible that the agent get stuck in local minima. For more complex navigation you
+            need a high-level pathfinding layer on top of the local avoidance.
+            </summary>
+        </member>
+        <member name="P:Duality.Plugins.Steering.Agent.Radius">
+            <summary>
+            [GET/SET] The radius of the agent (an agent is always representet as circle)
+            </summary>
+        </member>
+        <member name="P:Duality.Plugins.Steering.Agent.ToiHorizon">
+            <summary>
+            [Get/SET] The maximum time of impact wich the agent will react on. 
+            If you set this too high your agent will oscillate alot in crowded situations and if you set
+            it too low your agent will avoid very late which looks artificial.
+            </summary>
+        </member>
+        <member name="P:Duality.Plugins.Steering.Agent.BestVel">
+            <summary>
+            [GET] The calculated velocity which the agent calculated as optimum. 
+            </summary>
+        </member>
         <member name="T:Duality.Plugins.Steering.IVelocitySampler">
             <summary>
-            Creates velocity samples which are going to get tested with <see cref="T:Duality.Plugins.Steering.ICharacteristics"/>. 
+            Creates velocity samples which are going to get tested with <see cref="T:Duality.Plugins.Steering.IAgentCharacteristics"/>. 
             If the samples are poorly chosen or if there are simply not enough samples the agent won't be able to
             choose "good" velocities which lead to a bad steering quality. If on the other hand to many samples are
             generated the performance will suffer because for every sample the agent needs to calculate time of imapacts
@@ -32,7 +58,7 @@
             Feeds the evaluated cost back into the sampler. The cost value can be used to adapt and intelligent choose the next
             velocities.
             </summary>
-            <param name="cost">The cost which was returned from <see cref="M:Duality.Plugins.Steering.ICharacteristics.CalculateVelocityCost(Duality.Plugins.Steering.Agent,OpenTK.Vector2,System.Single)"/> 
+            <param name="cost">The cost which was returned from <see cref="M:Duality.Plugins.Steering.IAgentCharacteristics.CalculateVelocityCost(Duality.Plugins.Steering.Agent,OpenTK.Vector2,System.Single)"/> 
             with the current velocity as parameter
             </param>
             <returns>
@@ -54,13 +80,13 @@
             but can potentially lead to undesired behavior.
             </summary>
         </member>
-        <member name="T:Duality.Plugins.Steering.ITarget">
+        <member name="T:Duality.Plugins.Steering.ISteeringTarget">
             <summary>
-            This interface should but doesn't need to be used by implementations of <see cref="T:Duality.Plugins.Steering.ICharacteristics"/>.
+            This interface should but doesn't need to be used by implementations of <see cref="T:Duality.Plugins.Steering.IAgentCharacteristics"/>.
             It defines which directions of velocities an agent preferes aka in which direction is the target of the agent
             </summary>
         </member>
-        <member name="M:Duality.Plugins.Steering.ITarget.CalculateCost(Duality.Plugins.Steering.Agent,OpenTK.Vector2)">
+        <member name="M:Duality.Plugins.Steering.ISteeringTarget.CalculateCost(Duality.Plugins.Steering.Agent,OpenTK.Vector2)">
             <summary>
             Evaluates the cost function for a given velocity direction. 
             </summary>
@@ -71,12 +97,12 @@
             </param>
             <returns>Cost for the given velocity which should be between 0 and 1</returns>
         </member>
-        <member name="T:Duality.Plugins.Steering.ICharacteristics">
+        <member name="T:Duality.Plugins.Steering.IAgentCharacteristics">
             <summary>
             Defines the basic reactive behavior of an Agent
             </summary>
         </member>
-        <member name="M:Duality.Plugins.Steering.ICharacteristics.CalculateVelocityCost(Duality.Plugins.Steering.Agent,OpenTK.Vector2,System.Single)">
+        <member name="M:Duality.Plugins.Steering.IAgentCharacteristics.CalculateVelocityCost(Duality.Plugins.Steering.Agent,OpenTK.Vector2,System.Single)">
             <summary>
             Calculates the "cost" of a given velocity which are used to decide which velocity an agent should actually
             choose. There are multiple things this method needs to consider:
@@ -108,35 +134,9 @@
             </param>
             <returns>The cost for the given velocity which should be between 0 and 1</returns>
         </member>
-        <member name="P:Duality.Plugins.Steering.ICharacteristics.MaxSpeed">
+        <member name="P:Duality.Plugins.Steering.IAgentCharacteristics.MaxSpeed">
             <summary>
             [GET] The maximum speed of the agent which has this characteristics attached
-            </summary>
-        </member>
-        <member name="T:Duality.Plugins.Steering.Agent">
-            <summary>
-            An agent is the basic component you want to attach to computer-controlled characters. 
-            It contains functionallity to avoid collisions with other agents/obstacles and tries
-            to get to some defined target-location. The avoidance is only local therefore it's 
-            possible that the agent get stuck in local minima. For more complex navigation you
-            need a high-level pathfinding layer on top of the local avoidance.
-            </summary>
-        </member>
-        <member name="P:Duality.Plugins.Steering.Agent.Radius">
-            <summary>
-            [GET/SET] The radius of the agent (an agent is always representet as circle)
-            </summary>
-        </member>
-        <member name="P:Duality.Plugins.Steering.Agent.ToiHorizon">
-            <summary>
-            [Get/SET] The maximum time of impact wich the agent will react on. 
-            If you set this too high your agent will oscillate alot in crowded situations and if you set
-            it too low your agent will avoid very late which looks artificial.
-            </summary>
-        </member>
-        <member name="P:Duality.Plugins.Steering.Agent.BestVel">
-            <summary>
-            [GET] The calculated velocity which the agent calculated as optimum. 
             </summary>
         </member>
     </members>

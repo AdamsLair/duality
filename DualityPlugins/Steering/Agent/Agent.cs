@@ -17,7 +17,7 @@ namespace Duality.Plugins.Steering
 	public class Agent : Component
 	{
 		private IVelocitySampler sampler;
-		private ICharacteristics characteristics;
+		private IAgentCharacteristics characteristics;
 		private ISteeringTarget target;
 
 		private float radius;
@@ -53,7 +53,7 @@ namespace Duality.Plugins.Steering
 
 		public Agent()
 		{
-			sampler = CommonVelocitySampler.PERFORMANCE;
+			sampler = new AdaptiveVelocitySampler();
 			characteristics = new DefaultCharacteristics();
 			target = new PointTarget();
 			toiHorizon = 240f;
@@ -73,7 +73,7 @@ namespace Duality.Plugins.Steering
 			set { sampler = value; }
 		}
 
-		public ICharacteristics Characteristics
+		public IAgentCharacteristics Characteristics
 		{
 			get { return characteristics; }
 			set { characteristics = value; }
