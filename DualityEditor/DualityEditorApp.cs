@@ -74,7 +74,8 @@ namespace Duality.Editor
 
 
 		public	static	event	EventHandler	Terminating			= null;
-		public	static	event	EventHandler	Idling				= null;
+		public	static	event	EventHandler	EventLoopIdling		= null;
+		public	static	event	EventHandler	EditorIdling		= null;
 		public	static	event	EventHandler	UpdatingEngine		= null;
 		public	static	event	EventHandler	SaveAllTriggered	= null;
 		public	static	event	EventHandler<SelectionChangedEventArgs>			SelectionChanged		= null;
@@ -1098,11 +1099,16 @@ namespace Duality.Editor
 				MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 			return result == DialogResult.Yes;
 		}
-
-		private static void OnIdling()
+		
+		private static void OnEventLoopIdling()
 		{
-			if (Idling != null)
-				Idling(null, EventArgs.Empty);
+			if (EventLoopIdling != null)
+				EventLoopIdling(null, EventArgs.Empty);
+		}
+		private static void OnEditorIdling()
+		{
+			if (EditorIdling != null)
+				EditorIdling(null, EventArgs.Empty);
 		}
 		private static void OnUpdatingEngine()
 		{
@@ -1227,12 +1233,15 @@ namespace Duality.Editor
 		private static void Application_Idle(object sender, EventArgs e)
 		{
 			Application.Idle -= Application_Idle;
+			
+			// Trigger global event loop idle event.
+			OnEventLoopIdling();
 
 			// Perform some global operations, if no modal dialog is open
 			if (mainForm.Visible && mainForm.CanFocus)
 			{
-				// Trigger global idle event.
-				OnIdling();
+				// Trigger global editor idle event.
+				OnEditorIdling();
 
 				// Trigger autosave after a while
 				if (autosaveFrequency != AutosaveFrequency.Disabled)

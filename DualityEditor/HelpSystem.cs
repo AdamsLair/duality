@@ -50,13 +50,13 @@ namespace Duality.Editor
 			inputFilter.MouseUp += inputFilter_MouseUp;
 			Application.AddMessageFilter(inputFilter);
 
-			DualityEditorApp.Idling += DualityEditorApp_Idling;
+			DualityEditorApp.EventLoopIdling += DualityEditorApp_EventLoopIdling;
 		}
 		internal static void Terminate()
 		{
 			docDatabase.Clear();
 
-			DualityEditorApp.Idling -= DualityEditorApp_Idling;
+			DualityEditorApp.EventLoopIdling -= DualityEditorApp_EventLoopIdling;
 
 			// Remove global message filter
 			Application.RemoveMessageFilter(inputFilter);
@@ -166,7 +166,7 @@ namespace Duality.Editor
 			return success;
 		}
 		
-		private static void DualityEditorApp_Idling(object sender, EventArgs e)
+		private static void DualityEditorApp_EventLoopIdling(object sender, EventArgs e)
 		{
 			if (needStackUpdate)
 			{

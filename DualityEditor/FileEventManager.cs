@@ -95,14 +95,14 @@ namespace Duality.Editor
 
 			// Register events
 			DualityEditorApp.MainForm.Activated += mainForm_Activated;
-			DualityEditorApp.Idling += DualityEditorApp_Idle;
+			DualityEditorApp.EditorIdling += DualityEditorApp_EditorIdling;
 			Resource.ResourceSaved += Resource_ResourceSaved;
 		}
 		internal static void Terminate()
 		{
 			// Unregister events
 			DualityEditorApp.MainForm.Activated -= mainForm_Activated;
-			DualityEditorApp.Idling -= DualityEditorApp_Idle;
+			DualityEditorApp.EditorIdling -= DualityEditorApp_EditorIdling;
 			Resource.ResourceSaved -= Resource_ResourceSaved;
 
 			// Destroy file system watchers
@@ -397,7 +397,7 @@ namespace Duality.Editor
 			}
 		}
 
-		private static void DualityEditorApp_Idle(object sender, EventArgs e)
+		private static void DualityEditorApp_EditorIdling(object sender, EventArgs e)
 		{
 			// Process file / source events regularily, if no modal dialog is open.
 			if ((DateTime.Now - lastEventProc).TotalMilliseconds > 100.0d)

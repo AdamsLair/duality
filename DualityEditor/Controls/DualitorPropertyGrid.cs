@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.Reflection;
+using System.Windows.Forms;
 
 using AdamsLair.PropertyGrid;
 using AdamsLair.PropertyGrid.PropertyEditors;
@@ -10,8 +11,8 @@ using PropertyGrid = AdamsLair.PropertyGrid.PropertyGrid;
 
 using Duality;
 using Duality.Editor;
-
 using Duality.Editor.UndoRedoActions;
+using Duality.Editor.Forms;
 
 namespace Duality.Editor.Controls
 {
@@ -116,6 +117,24 @@ namespace Duality.Editor.Controls
 		{
 			base.OnEditingFinished(e);
 			UndoRedoManager.Finish();
+		}
+		public override object CreateObjectInstance(Type objectType)
+		{
+			object obj = null;
+
+			if (objectType.IsAbstract || objectType.IsInterface || objectType == typeof(object))
+			{
+				CreateObjectDialog createDialog = new CreateObjectDialog();
+				createDialog.BaseType = objectType;
+				createDialog.ShowNamespaces = objectType == typeof(object);
+				DialogResult result = createDialog.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					obj = createDialog.SelectedType.CreateInstanceOf();
+				}
+			}
+
+			return obj ?? base.CreateObjectInstance(objectType);
 		}
 
 		private bool EditorMemberPredicate(MemberInfo info, bool showNonPublic)

@@ -1028,6 +1028,17 @@ namespace Duality
 			foreach (CorePlugin p in LoadedPlugins) yield return p.PluginAssembly;
 		}
 		/// <summary>
+		/// Enumerates all currently loaded assemblies.
+		/// </summary>
+		/// <returns></returns>
+		public static IEnumerable<Assembly> GetLoadedAssemblies()
+		{
+			return GetDualityAssemblies()
+				.Concat(GetDualityAssemblies().SelectMany(a => a.GetReferencedAssemblies().Select(n => Assembly.Load(n))))
+				.Distinct()
+				.Where(a => !disposedPlugins.Contains(a));
+		}
+		/// <summary>
 		/// Enumerates all available Duality <see cref="System.Type">Types</see> that are assignable
 		/// to the specified Type. 
 		/// </summary>

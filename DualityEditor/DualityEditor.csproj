@@ -107,6 +107,14 @@
     <Compile Include="Controls\ColorSlider.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
+    <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
+    <Compile Include="Forms\CreateObjectDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CreateObjectDialog.Designer.cs">
+      <DependentUpon>CreateObjectDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\CueTextbox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -247,6 +255,9 @@
     <Compile Include="UndoRedoManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
+      <DependentUpon>CreateObjectDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\GeneralRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -313,6 +324,7 @@
     <None Include="EmbeddedResources\clock.png" />
     <None Include="EmbeddedResources\editoruserdata.xml" />
     <None Include="EmbeddedResources\application_stopwatch.png" />
+    <Content Include="EmbeddedResources\namespace.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
     <None Include="EmbeddedResources\arrow_undo.png" />
     <None Include="EmbeddedResources\arrow_redo.png" />
