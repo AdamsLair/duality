@@ -30,8 +30,6 @@
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ObjectInspector));
-			this.nodeStateIcon = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
-			this.nodeTextBoxName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.timerSelectSched = new System.Windows.Forms.Timer(this.components);
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
 			this.buttonAutoRefresh = new System.Windows.Forms.ToolStripButton();
@@ -42,21 +40,6 @@
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// nodeStateIcon
-			// 
-			this.nodeStateIcon.DataPropertyName = "Image";
-			this.nodeStateIcon.LeftMargin = 1;
-			this.nodeStateIcon.ParentColumn = null;
-			this.nodeStateIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
-			// 
-			// nodeTextBoxName
-			// 
-			this.nodeTextBoxName.DataPropertyName = "Text";
-			this.nodeTextBoxName.EditEnabled = true;
-			this.nodeTextBoxName.IncrementalSearchEnabled = true;
-			this.nodeTextBoxName.LeftMargin = 3;
-			this.nodeTextBoxName.ParentColumn = null;
 			// 
 			// timerSelectSched
 			// 
@@ -168,8 +151,6 @@
 
 		#endregion
 
-		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxName;
-		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeStateIcon;
 		private Duality.Editor.Controls.DualitorPropertyGrid propertyGrid;
 		private System.Windows.Forms.Timer timerSelectSched;
 		private System.Windows.Forms.ToolStrip toolStrip;

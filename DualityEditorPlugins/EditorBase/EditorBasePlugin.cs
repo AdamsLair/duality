@@ -32,12 +32,10 @@ namespace Duality.Editor.Plugins.Base
 		}
 
 
-		private	ProjectFolderView		projectView		= null;
 		private	SceneView				sceneView		= null;
 		private	List<CamView>			camViews		= new List<CamView>();
 		private	bool					isLoading		= false;
 
-		private	ToolStripMenuItem	menuItemProjectView	= null;
 		private	ToolStripMenuItem	menuItemSceneView	= null;
 		private	ToolStripMenuItem	menuItemCamView		= null;
 		private	ToolStripMenuItem	menuItemAppData		= null;
@@ -64,8 +62,6 @@ namespace Duality.Editor.Plugins.Base
 			IDockContent result;
 			if (dockContentType == typeof(CamView))
 				result = this.RequestCamView();
-			else if (dockContentType == typeof(ProjectFolderView))
-				result = this.RequestProjectView();
 			else if (dockContentType == typeof(SceneView))
 				result = this.RequestSceneView();
 			else
@@ -73,7 +69,6 @@ namespace Duality.Editor.Plugins.Base
 			this.isLoading = false;
 			return result;
 		}
-
 		protected override void SaveUserData(System.Xml.XmlElement node)
 		{
 			System.Xml.XmlDocument doc = node.OwnerDocument;
@@ -112,24 +107,20 @@ namespace Duality.Editor.Plugins.Base
 			}
 			this.isLoading = false;
 		}
-
 		protected override void InitPlugin(MainForm main)
 		{
 			base.InitPlugin(main);
 
 			// Request menus
-			this.menuItemProjectView = main.RequestMenu(GeneralRes.MenuName_View, EditorBaseRes.MenuItemName_ProjectView);
 			this.menuItemSceneView = main.RequestMenu(GeneralRes.MenuName_View, EditorBaseRes.MenuItemName_SceneView);
 			this.menuItemCamView = main.RequestMenu(GeneralRes.MenuName_View, EditorBaseRes.MenuItemName_CamView);
 			this.menuItemAppData = main.RequestMenu(GeneralRes.MenuName_Settings, EditorBaseRes.MenuItemName_AppData);
 			this.menuItemUserData = main.RequestMenu(GeneralRes.MenuName_Settings, EditorBaseRes.MenuItemName_UserData);
 
 			// Configure menus
-			this.menuItemProjectView.Image = EditorBaseResCache.IconProjectView.ToBitmap();
 			this.menuItemSceneView.Image = EditorBaseResCache.IconSceneView.ToBitmap();
 			this.menuItemCamView.Image = EditorBaseResCache.IconEye.ToBitmap();
 
-			this.menuItemProjectView.Click += this.menuItemProjectView_Click;
 			this.menuItemSceneView.Click += this.menuItemSceneView_Click;
 			this.menuItemCamView.Click += this.menuItemCamView_Click;
 			this.menuItemAppData.Click += this.menuItemAppData_Click;
@@ -140,26 +131,6 @@ namespace Duality.Editor.Plugins.Base
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
 		
-		public ProjectFolderView RequestProjectView()
-		{
-			if (this.projectView == null || this.projectView.IsDisposed)
-			{
-				this.projectView = new ProjectFolderView();
-				this.projectView.FormClosed += delegate(object sender, FormClosedEventArgs e) { this.projectView = null; };
-			}
-
-			if (!this.isLoading)
-			{
-				this.projectView.Show(DualityEditorApp.MainForm.MainDockPanel);
-				if (this.projectView.Pane != null)
-				{
-					this.projectView.Pane.Activate();
-					this.projectView.Focus();
-				}
-			}
-
-			return this.projectView;
-		}
 		public SceneView RequestSceneView()
 		{
 			if (this.sceneView == null || this.sceneView.IsDisposed)
@@ -201,10 +172,6 @@ namespace Duality.Editor.Plugins.Base
 			return cam;
 		}
 
-		private void menuItemProjectView_Click(object sender, EventArgs e)
-		{
-			this.RequestProjectView();
-		}
 		private void menuItemSceneView_Click(object sender, EventArgs e)
 		{
 			this.RequestSceneView();

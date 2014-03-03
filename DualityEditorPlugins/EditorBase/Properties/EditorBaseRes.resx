@@ -262,33 +262,6 @@
   <data name="MenuItemName_UserData" xml:space="preserve">
     <value>Default User Data</value>
   </data>
-  <data name="NewFolderName" xml:space="preserve">
-    <value>New Folder</value>
-  </data>
-  <data name="ProjectFolderView_Help_Doubleclick" xml:space="preserve">
-    <value>Doubleclick: {0}</value>
-  </data>
-  <data name="ProjectFolderView_MsgBox_CantMove_Caption" xml:space="preserve">
-    <value>Can't move file</value>
-  </data>
-  <data name="ProjectFolderView_MsgBox_CantMove_Text" xml:space="preserve">
-    <value>Can't move file to '{0}' because it would overwrite an existing file.</value>
-  </data>
-  <data name="ProjectFolderView_MsgBox_CantRename_Caption" xml:space="preserve">
-    <value>Can't rename file</value>
-  </data>
-  <data name="ProjectFolderView_MsgBox_CantRename_Text" xml:space="preserve">
-    <value>Can't rename file to '{0}' because it would overwrite an existing file.</value>
-  </data>
-  <data name="ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Caption" xml:space="preserve">
-    <value>Delete selected files?</value>
-  </data>
-  <data name="ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Text" xml:space="preserve">
-    <value>Do you really want to delete the selected files?</value>
-  </data>
-  <data name="ProjectNameLabel" xml:space="preserve">
-    <value>Project</value>
-  </data>
   <data name="PropertyDesc_AddJoint" xml:space="preserve">
     <value>Select a joint type and click the add button to add a new joint to the Collider</value>
   </data>

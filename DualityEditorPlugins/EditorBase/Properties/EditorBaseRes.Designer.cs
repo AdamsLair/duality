@@ -726,15 +726,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die New Folder ähnelt.
-        /// </summary>
-        public static string NewFolderName {
-            get {
-                return ResourceManager.GetString("NewFolderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap OverlayLink {
@@ -751,78 +742,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
             get {
                 object obj = ResourceManager.GetObject("OverlayLinkBroken", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Doubleclick: {0} ähnelt.
-        /// </summary>
-        public static string ProjectFolderView_Help_Doubleclick {
-            get {
-                return ResourceManager.GetString("ProjectFolderView_Help_Doubleclick", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t move file ähnelt.
-        /// </summary>
-        public static string ProjectFolderView_MsgBox_CantMove_Caption {
-            get {
-                return ResourceManager.GetString("ProjectFolderView_MsgBox_CantMove_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t move file to &apos;{0}&apos; because it would overwrite an existing file. ähnelt.
-        /// </summary>
-        public static string ProjectFolderView_MsgBox_CantMove_Text {
-            get {
-                return ResourceManager.GetString("ProjectFolderView_MsgBox_CantMove_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t rename file ähnelt.
-        /// </summary>
-        public static string ProjectFolderView_MsgBox_CantRename_Caption {
-            get {
-                return ResourceManager.GetString("ProjectFolderView_MsgBox_CantRename_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t rename file to &apos;{0}&apos; because it would overwrite an existing file. ähnelt.
-        /// </summary>
-        public static string ProjectFolderView_MsgBox_CantRename_Text {
-            get {
-                return ResourceManager.GetString("ProjectFolderView_MsgBox_CantRename_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Delete selected files? ähnelt.
-        /// </summary>
-        public static string ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Caption {
-            get {
-                return ResourceManager.GetString("ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Do you really want to delete the selected files? ähnelt.
-        /// </summary>
-        public static string ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Text {
-            get {
-                return ResourceManager.GetString("ProjectFolderView_MsgBox_ConfirmDeleteSelectedFiles_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Project ähnelt.
-        /// </summary>
-        public static string ProjectNameLabel {
-            get {
-                return ResourceManager.GetString("ProjectNameLabel", resourceCulture);
             }
         }
         

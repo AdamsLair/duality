@@ -125,12 +125,6 @@
     <Compile Include="Modules\SceneView.Designer.cs">
       <DependentUpon>SceneView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Modules\ProjectFolderView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modules\ProjectFolderView.Designer.cs">
-      <DependentUpon>ProjectFolderView.cs</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -176,9 +170,6 @@
       <SubType>Designer</SubType>
       <LastGenOutput>EditorBaseRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Modules\ProjectFolderView.resx">
-      <DependentUpon>ProjectFolderView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -195,8 +186,6 @@
     <None Include="EmbeddedResources\arrow_right_accelerate.png" />
     <None Include="EmbeddedResources\arrow_refresh.png" />
     <None Include="EmbeddedResources\sceneview.ico" />
-    <None Include="EmbeddedResources\WorkingFolderIcon16.png" />
-    <None Include="EmbeddedResources\cut.png" />
     <None Include="EmbeddedResources\cross.png" />
     <None Include="EmbeddedResources\disk.png" />
     <None Include="EmbeddedResources\AddScene.png" />
@@ -204,13 +193,10 @@
     <None Include="EmbeddedResources\curArrowCreatePolygon.png" />
     <None Include="EmbeddedResources\curArrowCreateEdge.png" />
     <None Include="EmbeddedResources\curArrowCreateLoop.png" />
-    <None Include="EmbeddedResources\bug.png" />
     <None Include="EmbeddedResources\clock.png" />
     <Content Include="EmbeddedResources\eye.ico" />
     <None Include="EmbeddedResources\page_copy.png" />
     <None Include="EmbeddedResources\page_paste.png" />
-    <None Include="EmbeddedResources\folder.png" />
-    <None Include="EmbeddedResources\GotoScene.png" />
     <None Include="EmbeddedResources\iconCmpCircleCollider.png" />
     <None Include="EmbeddedResources\iconCmpRectCollider.png" />
     <None Include="EmbeddedResources\picture_empty.png" />
@@ -218,7 +204,6 @@
     <None Include="EmbeddedResources\layers.png" />
     <None Include="EmbeddedResources\iconCmpEdgeCollider.png" />
     <None Include="EmbeddedResources\iconCmpLoopCollider.png" />
-    <None Include="EmbeddedResources\eye_cross.png" />
     <None Include="EmbeddedResources\magifier_zoom_out.png" />
     <None Include="EmbeddedResources\magnifier_one.png" />
     <None Include="EmbeddedResources\magnifier_zoom_in.png" />
@@ -227,6 +212,7 @@
     <None Include="EmbeddedResources\iconGameObj.png" />
     <None Include="EmbeddedResources\iconResUnknown.png" />
     <None Include="EmbeddedResources\iconCmpUnknown.png" />
+    <Content Include="EmbeddedResources\eye_cross.png" />
     <Content Include="EmbeddedResources\projectview.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

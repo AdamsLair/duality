@@ -79,3 +79,6 @@ DualityEditorPlugins/LogView/obj/
 DualityEditorPlugins/ObjectInspector/bin/
 DualityEditorPlugins/ObjectInspector/obj/
 DualityEditorPlugins/LogView/LogView.csproj.user
+DualityEditorPlugins/ProjectView/bin/
+DualityEditorPlugins/ProjectView/obj/
+DualityEditorPlugins/ObjectInspector/ObjectInspector.csproj.user

@@ -1568,11 +1568,7 @@ namespace Duality.Editor.Plugins.Base
 
 			if (isNewScene)
 			{
-				ProjectFolderView projectView = EditorBasePlugin.Instance.RequestProjectView();
-				if (projectView != null)
-				{
-					projectView.ScheduleSelect(scenePath, true);
-				}
+				DualityEditorApp.Select(this, new ObjectSelection(Scene.Current));
 			}
 		}
 		private void buttonShowComponents_CheckedChanged(object sender, EventArgs e)
