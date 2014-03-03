@@ -16,7 +16,6 @@ namespace Duality.Plugins.Steering
 		/// [GET / SET] The preferred speed of the agent.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		[EditorHintRange(0.0f, 10000.0f)]
 		float PreferredSpeed { get; set; }
 		/// <summary>
 		/// [GET] The maximum speed of the agent.

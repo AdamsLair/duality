@@ -104,6 +104,7 @@ namespace Duality.Plugins.Steering
 		/// <summary>
 		/// [GET / SET] The target speed this Agent attempts to acquire unless distracted by other Agents.
 		/// </summary>
+		[EditorHintRange(0.0f, 10000.0f)]
 		public float TargetSpeed
 		{
 			get { return this.characteristics != null ? this.characteristics.PreferredSpeed : 0.0f; }
@@ -116,18 +117,11 @@ namespace Duality.Plugins.Steering
 		/// <summary>
 		/// [GET / SET] The radius of the agent (an agent is always representet as circle)
 		/// </summary>
+		[EditorHintRange(0.0f, 10000.0f)]
 		public float Radius
 		{
 			get { return this.radius; }
 			set { this.radius = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The radius of the agent (an agent is always representet as circle)
-		/// </summary>
-		public float ScaledRadius
-		{
-			get { return this.radius * this.GameObj.Transform.Scale; }
-			set { this.radius = value / this.GameObj.Transform.Scale; }
 		}
 		/// <summary>
 		/// [GET / SET] The maximum time of impact wich the agent will react on. 
@@ -156,7 +150,9 @@ namespace Duality.Plugins.Steering
 		internal void Update()
 		{
 			this.AcquireConfigObjects();
+
 			Transform transform = this.GameObj.Transform;
+			float scaledRad = this.radius * transform.Scale;
 
 			Agent[] otherAgents = AgentManager.Instance.FindNeighborAgents(this).ToArray();
 			this.sampler.Reset();
@@ -204,7 +200,8 @@ namespace Duality.Plugins.Steering
 					float curMinToi;
 					float curMaxToi;
 					Vector2 expectedRelVel = sample - (selfFactor * transform.Vel.Xy + otherFactor * otherTransform.Vel.Xy);
-					if (ToiCircleCircle(relPos, this.ScaledRadius + otherAgent.ScaledRadius, expectedRelVel, out curMinToi, out curMaxToi) && 0f < curMaxToi)
+					float otherScaledRad = otherAgent.radius * otherTransform.Scale;
+					if (ToiCircleCircle(relPos, scaledRad + otherScaledRad, expectedRelVel, out curMinToi, out curMaxToi) && 0f < curMaxToi)
 					{
 						if (curMinToi <= 0f)
 						{
