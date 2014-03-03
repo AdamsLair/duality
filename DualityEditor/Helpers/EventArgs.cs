@@ -73,6 +73,27 @@ namespace Duality.Editor
 		}
 	}
 
+	public class HighlightObjectEventArgs : EventArgs
+	{
+		private	ObjectSelection	target;
+		private	HighlightMode	mode;
+
+		public ObjectSelection Target
+		{
+			get { return this.target; }
+		}
+		public HighlightMode Mode
+		{
+			get { return this.mode; }
+		}
+
+		public HighlightObjectEventArgs(ObjectSelection target, HighlightMode mode)
+		{
+			this.target = target;
+			this.mode = mode;
+		}
+	}
+
 	public class ObjectPropertyChangedEventArgs : EventArgs
 	{
 		private	ObjectSelection		obj;

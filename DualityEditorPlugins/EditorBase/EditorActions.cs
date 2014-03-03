@@ -224,8 +224,7 @@ namespace Duality.Editor.Plugins.Base
 		public override void Perform(GameObject obj)
 		{
 			if (obj.Transform == null) return;
-			foreach (CamView view in EditorBasePlugin.Instance.CamViews)
-				view.FocusOnObject(obj);
+			DualityEditorApp.Highlight(this, new ObjectSelection(obj), HighlightMode.Spatial);
 		}
 		public override bool MatchesContext(string context)
 		{
@@ -247,8 +246,7 @@ namespace Duality.Editor.Plugins.Base
 		{
 			if (obj.GameObj == null) return;
 			if (obj.GameObj.Transform == null) return;
-			foreach (CamView view in EditorBasePlugin.Instance.CamViews)
-				view.FocusOnObject(obj.GameObj);
+			DualityEditorApp.Highlight(this, new ObjectSelection(obj), HighlightMode.Spatial);
 		}
 		public override bool MatchesContext(string context)
 		{

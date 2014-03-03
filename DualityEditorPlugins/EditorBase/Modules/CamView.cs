@@ -289,13 +289,14 @@ namespace Duality.Editor.Plugins.Base
 			}
 
 			// Register DualityApp updater for camera steering behaviour
-			FileEventManager.ResourceModified += this.FileEventManager_ResourceModified;
-			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
-			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
-			Scene.Entered += this.Scene_Entered;
-			Scene.Leaving += this.Scene_Leaving;
-			Scene.GameObjectRemoved += this.Scene_GameObjectUnregistered;
-			Scene.ComponentRemoving += this.Scene_ComponentRemoving;
+			FileEventManager.ResourceModified		+= this.FileEventManager_ResourceModified;
+			DualityEditorApp.HighlightObject		+= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.ObjectPropertyChanged	+= this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.UpdatingEngine			+= this.DualityEditorApp_UpdatingEngine;
+			Scene.Entered							+= this.Scene_Entered;
+			Scene.Leaving							+= this.Scene_Leaving;
+			Scene.GameObjectRemoved					+= this.Scene_GameObjectUnregistered;
+			Scene.ComponentRemoving					+= this.Scene_ComponentRemoving;
 
 			// Update Camera values according to GUI (which carries loaded or default settings)
 			this.focusDist_ValueChanged(this.focusDist, null);
@@ -322,13 +323,14 @@ namespace Duality.Editor.Plugins.Base
 
 			if (this.nativeCamObj != null) this.nativeCamObj.Dispose();
 
-			FileEventManager.ResourceModified -= this.FileEventManager_ResourceModified;
-			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
-			DualityEditorApp.UpdatingEngine -= this.DualityEditorApp_UpdatingEngine;
-			Scene.Entered -= this.Scene_Entered;
-			Scene.Leaving -= this.Scene_Leaving;
-			Scene.GameObjectRemoved -= this.Scene_GameObjectUnregistered;
-			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
+			FileEventManager.ResourceModified		-= this.FileEventManager_ResourceModified;
+			DualityEditorApp.HighlightObject		-= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.ObjectPropertyChanged	-= this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.UpdatingEngine			-= this.DualityEditorApp_UpdatingEngine;
+			Scene.Entered							-= this.Scene_Entered;
+			Scene.Leaving							-= this.Scene_Leaving;
+			Scene.GameObjectRemoved					-= this.Scene_GameObjectUnregistered;
+			Scene.ComponentRemoving					-= this.Scene_ComponentRemoving;
 
 			this.SetCurrentState((CamViewState)null);
 		}
@@ -928,6 +930,17 @@ namespace Duality.Editor.Plugins.Base
 		{
 			if (!e.IsResource) return;
 			this.glControl.Invalidate();
+		}
+		private void DualityEditorApp_HighlightObject(object sender, HighlightObjectEventArgs e)
+		{
+			if (!e.Mode.HasFlag(HighlightMode.Spatial)) return;
+			if (sender == this) return;
+
+			GameObject obj = e.Target.MainGameObject;
+			Component cmp = e.Target.MainComponent;
+
+			if (obj != null) this.FocusOnObject(obj);
+			if (cmp != null) this.FocusOnObject(cmp.GameObj);
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{

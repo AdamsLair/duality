@@ -38,9 +38,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public override void ShowReferencedContent()
 		{
 			if (this.component == null) return;
-			SceneView view = EditorBasePlugin.Instance.RequestSceneView();
-			view.FlashNode(view.FindNode(this.component));
-			System.Media.SystemSounds.Beep.Play();
+			DualityEditorApp.Highlight(this, new ObjectSelection(this.component));
 		}
 		public override void ResetReference()
 		{

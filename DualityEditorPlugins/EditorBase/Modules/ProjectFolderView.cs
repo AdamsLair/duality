@@ -335,26 +335,28 @@ namespace Duality.Editor.Plugins.Base
 		{
 			base.OnShown(e);
 			this.InitRessources();
-			DualityEditorApp.SelectionChanged += this.EditorForm_SelectionChanged;
-			FileEventManager.ResourceCreated += this.FileEventManager_ResourceCreated;
-			FileEventManager.ResourceDeleted += this.FileEventManager_ResourceDeleted;
-			FileEventManager.ResourceModified += this.FileEventManager_ResourceModified;
-			FileEventManager.ResourceRenamed += this.FileEventManager_ResourceRenamed;
-			FileEventManager.BeginGlobalRename += this.FileEventManager_BeginGlobalRename;
-			DualityEditorApp.ObjectPropertyChanged += this.EditorForm_ObjectPropertyChanged;
-			Resource.ResourceSaved += this.Resource_ResourceSaved;
+			DualityEditorApp.HighlightObject		+= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.SelectionChanged		+= this.EditorForm_SelectionChanged;
+			FileEventManager.ResourceCreated		+= this.FileEventManager_ResourceCreated;
+			FileEventManager.ResourceDeleted		+= this.FileEventManager_ResourceDeleted;
+			FileEventManager.ResourceModified		+= this.FileEventManager_ResourceModified;
+			FileEventManager.ResourceRenamed		+= this.FileEventManager_ResourceRenamed;
+			FileEventManager.BeginGlobalRename		+= this.FileEventManager_BeginGlobalRename;
+			DualityEditorApp.ObjectPropertyChanged	+= this.EditorForm_ObjectPropertyChanged;
+			Resource.ResourceSaved					+= this.Resource_ResourceSaved;
 		}
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
-			DualityEditorApp.SelectionChanged -= this.EditorForm_SelectionChanged;
-			FileEventManager.ResourceCreated -= this.FileEventManager_ResourceCreated;
-			FileEventManager.ResourceDeleted -= this.FileEventManager_ResourceDeleted;
-			FileEventManager.ResourceModified -= this.FileEventManager_ResourceModified;
-			FileEventManager.ResourceRenamed -= this.FileEventManager_ResourceRenamed;
-			FileEventManager.BeginGlobalRename -= this.FileEventManager_BeginGlobalRename;
-			DualityEditorApp.ObjectPropertyChanged -= this.EditorForm_ObjectPropertyChanged;
-			Resource.ResourceSaved -= this.Resource_ResourceSaved;
+			DualityEditorApp.HighlightObject		-= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.SelectionChanged		-= this.EditorForm_SelectionChanged;
+			FileEventManager.ResourceCreated		-= this.FileEventManager_ResourceCreated;
+			FileEventManager.ResourceDeleted		-= this.FileEventManager_ResourceDeleted;
+			FileEventManager.ResourceModified		-= this.FileEventManager_ResourceModified;
+			FileEventManager.ResourceRenamed		-= this.FileEventManager_ResourceRenamed;
+			FileEventManager.BeginGlobalRename		-= this.FileEventManager_BeginGlobalRename;
+			DualityEditorApp.ObjectPropertyChanged	-= this.EditorForm_ObjectPropertyChanged;
+			Resource.ResourceSaved					-= this.Resource_ResourceSaved;
 		}
 
 		public void FlashNode(NodeBase node)
@@ -1454,7 +1456,17 @@ namespace Duality.Editor.Plugins.Base
 			string argument = filePath;
 			System.Diagnostics.Process.Start("explorer.exe", argument);
 		}
+		
+		private void DualityEditorApp_HighlightObject(object sender, HighlightObjectEventArgs e)
+		{
+			if (!e.Mode.HasFlag(HighlightMode.Conceptual)) return;
+			if (sender == this) return;
 
+			Resource res = e.Target.MainResource;
+			NodeBase node = null;
+			if (res != null) node = this.NodeFromPath(res.Path);
+			if (node != null) this.FlashNode(node);
+		}
 		private void EditorForm_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (sender == this) return;

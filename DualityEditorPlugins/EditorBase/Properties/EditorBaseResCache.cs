@@ -22,7 +22,6 @@ namespace Duality.Editor.Plugins.Base.Properties
 		public static readonly Bitmap	IconCmpLoopCollider			= EditorBaseRes.IconCmpLoopCollider;
 		public static readonly Bitmap	IconCmpRectCollider			= EditorBaseRes.IconCmpRectCollider;
 		public static readonly Icon		IconEye						= EditorBaseRes.IconEye;
-		public static readonly Icon		IconObjView					= EditorBaseRes.IconObjView;
 		public static readonly Icon		IconProjectView				= EditorBaseRes.IconProjectView;
 		public static readonly Icon		IconSceneView				= EditorBaseRes.IconSceneView;
 		public static readonly Bitmap	IconSpeakerBlack			= EditorBaseRes.IconSpeakerBlack;

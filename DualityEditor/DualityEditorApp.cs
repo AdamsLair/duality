@@ -33,6 +33,23 @@ namespace Duality.Editor
 		Toggle
 	}
 
+	[Flags]
+	public enum HighlightMode
+	{
+		None		= 0x0,
+
+		/// <summary>
+		/// Highlights an objects conceptual representation, e.g. flashing its entry in an object overview.
+		/// </summary>
+		Conceptual	= 0x1,
+		/// <summary>
+		/// Highlights an objects spatial location, e.g. focusing it spatially in a scene view.
+		/// </summary>
+		Spatial		= 0x2,
+
+		All			= Conceptual | Spatial
+	}
+
 	public enum AutosaveFrequency
 	{
 		Disabled,
@@ -78,6 +95,7 @@ namespace Duality.Editor
 		public	static	event	EventHandler	EditorIdling		= null;
 		public	static	event	EventHandler	UpdatingEngine		= null;
 		public	static	event	EventHandler	SaveAllTriggered	= null;
+		public	static	event	EventHandler<HighlightObjectEventArgs>			HighlightObject			= null;
 		public	static	event	EventHandler<SelectionChangedEventArgs>			SelectionChanged		= null;
 		public	static	event	EventHandler<ObjectPropertyChangedEventArgs>	ObjectPropertyChanged	= null;
 		
@@ -621,6 +639,17 @@ namespace Duality.Editor
 			updateObjects.Add(obj);
 		}
 
+		/// <summary>
+		/// Triggers a highlight event in the editor, to which the appropriate modules will
+		/// be able to react. This usually means flashing a certain tree view entry or similar.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="obj"></param>
+		/// <param name="mode"></param>
+		public static void Highlight(object sender, ObjectSelection obj, HighlightMode mode = HighlightMode.Conceptual)
+		{
+			OnHightlightObject(sender, obj, mode);
+		}
 		public static void Select(object sender, ObjectSelection sel, SelectMode mode = SelectMode.Set)
 		{
 			selectionPrevious = selectionCurrent;
@@ -1114,6 +1143,11 @@ namespace Duality.Editor
 		{
 			if (UpdatingEngine != null)
 				UpdatingEngine(null, EventArgs.Empty);
+		}
+		private static void OnHightlightObject(object sender, ObjectSelection target, HighlightMode mode)
+		{
+			if (HighlightObject != null)
+				HighlightObject(sender, new HighlightObjectEventArgs(target, mode));
 		}
 		private static void OnSelectionChanged(object sender, ObjectSelection.Category changedCategoryFallback)
 		{

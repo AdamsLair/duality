@@ -607,16 +607,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
         /// </summary>
-        public static System.Drawing.Icon IconObjView {
-            get {
-                object obj = ResourceManager.GetObject("IconObjView", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
-        /// </summary>
         public static System.Drawing.Icon IconProjectView {
             get {
                 object obj = ResourceManager.GetObject("IconProjectView", resourceCulture);
@@ -678,15 +668,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string MenuItemName_CamView {
             get {
                 return ResourceManager.GetString("MenuItemName_CamView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Object Inspector ähnelt.
-        /// </summary>
-        public static string MenuItemName_ObjView {
-            get {
-                return ResourceManager.GetString("MenuItemName_ObjView", resourceCulture);
             }
         }
         

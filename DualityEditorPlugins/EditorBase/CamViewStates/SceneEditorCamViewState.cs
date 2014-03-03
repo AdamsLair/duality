@@ -201,7 +201,6 @@ namespace Duality.Editor.Plugins.Base.CamViewStates
 			DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 			ClearContextMenu();
 		}
-
 		public override void SelectObjects(IEnumerable<CamViewState.SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
 		{
 			base.SelectObjects(selObjEnum, mode);

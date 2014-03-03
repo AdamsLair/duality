@@ -53,9 +53,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public override void ShowReferencedContent()
 		{
 			if (string.IsNullOrEmpty(this.contentPath)) return;
-			ProjectFolderView view = EditorBasePlugin.Instance.RequestProjectView();
-			view.FlashNode(view.NodeFromPath(this.contentPath));
-			System.Media.SystemSounds.Beep.Play();
+			IContentRef resRef = ContentProvider.RequestContent(this.contentPath);
+			DualityEditorApp.Highlight(this, new ObjectSelection(resRef.Res));
 		}
 		public override void ResetReference()
 		{

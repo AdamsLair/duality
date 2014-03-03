@@ -341,9 +341,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			GameObject[] values = this.GetValue().Cast<GameObject>().Where(o => o.PrefabLink != null).ToArray();
 			Duality.Resources.PrefabLink link = values.First().PrefabLink;
 
-			ProjectFolderView view = EditorBasePlugin.Instance.RequestProjectView();
-			view.FlashNode(view.NodeFromPath(link.Prefab.Path));
-			System.Media.SystemSounds.Beep.Play();
+			DualityEditorApp.Highlight(this, new ObjectSelection(link.Prefab.Res));
 		}
 		private void OnPrefabLinkRevertPressed()
 		{

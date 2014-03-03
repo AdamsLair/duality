@@ -288,11 +288,12 @@ namespace Duality.Editor.Plugins.Base
 			base.OnShown(e);
 			this.InitObjects();
 
-			DualityEditorApp.SelectionChanged += this.EditorForm_SelectionChanged;
-			DualityEditorApp.ObjectPropertyChanged += this.EditorForm_ObjectPropertyChanged;
-			FileEventManager.ResourceCreated += this.EditorForm_ResourceCreated;
-			FileEventManager.ResourceDeleted += this.EditorForm_ResourceDeleted;
-			FileEventManager.ResourceRenamed += this.EditorForm_ResourceRenamed;
+			DualityEditorApp.HighlightObject += this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
+			FileEventManager.ResourceCreated += this.DualityEditorApp_ResourceCreated;
+			FileEventManager.ResourceDeleted += this.DualityEditorApp_ResourceDeleted;
+			FileEventManager.ResourceRenamed += this.DualityEditorApp_ResourceRenamed;
 
 			Scene.Entered += this.Scene_Entered;
 			Scene.Leaving += this.Scene_Leaving;
@@ -308,11 +309,12 @@ namespace Duality.Editor.Plugins.Base
 		{
 			base.OnClosed(e);
 
-			DualityEditorApp.SelectionChanged -= this.EditorForm_SelectionChanged;
-			DualityEditorApp.ObjectPropertyChanged -= this.EditorForm_ObjectPropertyChanged;
-			FileEventManager.ResourceCreated -= this.EditorForm_ResourceCreated;
-			FileEventManager.ResourceDeleted -= this.EditorForm_ResourceDeleted;
-			FileEventManager.ResourceRenamed -= this.EditorForm_ResourceRenamed;
+			DualityEditorApp.HighlightObject -= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
+			FileEventManager.ResourceCreated -= this.DualityEditorApp_ResourceCreated;
+			FileEventManager.ResourceDeleted -= this.DualityEditorApp_ResourceDeleted;
+			FileEventManager.ResourceRenamed -= this.DualityEditorApp_ResourceRenamed;
 
 			Scene.Entered -= this.Scene_Entered;
 			Scene.Leaving -= this.Scene_Leaving;
@@ -1596,7 +1598,21 @@ namespace Duality.Editor.Plugins.Base
 			return node.Tag;
 		}
 
-		private void EditorForm_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void DualityEditorApp_HighlightObject(object sender, HighlightObjectEventArgs e)
+		{
+			if (!e.Mode.HasFlag(HighlightMode.Conceptual)) return;
+			if (sender == this) return;
+
+			GameObject obj = e.Target.MainGameObject;
+			Component cmp = e.Target.MainComponent;
+			NodeBase node = null;
+
+			if (obj != null) node = this.FindNode(obj);
+			if (cmp != null) node = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
+
+			if (node != null) this.FlashNode(node);
+		}
+		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (sender == this) return;
 			if ((e.AffectedCategories & ObjectSelection.Category.GameObjCmp) == ObjectSelection.Category.None) return;
@@ -1613,7 +1629,7 @@ namespace Duality.Editor.Plugins.Base
 			this.SelectNodes(removedObjQuery, false);
 			this.SelectNodes(addedObjQuery, true);
 		}
-		private void EditorForm_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
+		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e is PrefabAppliedEventArgs || 
 				(e.HasProperty(ReflectionInfo.Property_GameObject_PrefabLink) && e.HasAnyObject(Scene.Current.AllObjects)) || 
@@ -1626,19 +1642,19 @@ namespace Duality.Editor.Plugins.Base
 					if (node != null) node.Text = node.Obj.Name;
 			}
 		}
-		private void EditorForm_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
+		private void DualityEditorApp_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
 		{
 			if (e.Path == Scene.CurrentPath) this.UpdateSceneLabel();
 
 			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
 			this.UpdatePrefabLinkStatus(true);
 		}
-		private void EditorForm_ResourceCreated(object sender, ResourceEventArgs e)
+		private void DualityEditorApp_ResourceCreated(object sender, ResourceEventArgs e)
 		{
 			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
 			this.UpdatePrefabLinkStatus(true);
 		}
-		private void EditorForm_ResourceDeleted(object sender, ResourceEventArgs e)
+		private void DualityEditorApp_ResourceDeleted(object sender, ResourceEventArgs e)
 		{
 			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
 			this.UpdatePrefabLinkStatus(true);
