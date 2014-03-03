@@ -63,16 +63,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap AddScene {
-            get {
-                object obj = ResourceManager.GetObject("AddScene", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap arrow_refresh {
             get {
                 object obj = ResourceManager.GetObject("arrow_refresh", resourceCulture);
@@ -196,16 +186,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         internal static System.Drawing.Bitmap page_paste {
             get {
                 object obj = ResourceManager.GetObject("page_paste", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap picture_empty {
-            get {
-                object obj = ResourceManager.GetObject("picture_empty", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

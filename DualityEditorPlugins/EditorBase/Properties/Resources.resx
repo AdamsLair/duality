@@ -148,9 +148,6 @@
   <data name="arrow_refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\arrow_refresh.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="AddScene" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\AddScene.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="iconCmpUnknown" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\iconCmpUnknown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -159,9 +156,6 @@
   </data>
   <data name="magnifier_one" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\magnifier_one.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="picture_empty" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\picture_empty.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="magnifier_zoom_in" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\magnifier_zoom_in.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

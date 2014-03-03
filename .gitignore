@@ -82,3 +82,7 @@ DualityEditorPlugins/LogView/LogView.csproj.user
 DualityEditorPlugins/ProjectView/bin/
 DualityEditorPlugins/ProjectView/obj/
 DualityEditorPlugins/ObjectInspector/ObjectInspector.csproj.user
+DualityEditorPlugins/SceneView/bin/
+DualityEditorPlugins/SceneView/obj/
+DualityEditorPlugins/ProjectView/ProjectView.csproj.user
+DualityEditorPlugins/SceneView/SceneView.csproj.user

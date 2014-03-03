@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B237138D-ED43-400B-85B2-C1705A85D856}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Duality.Editor.Plugins.SceneView</RootNamespace>
+    <AssemblyName>SceneView.editor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aga.Controls">
+      <HintPath>..\..\DualityEditor\Aga.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="CustomPropertyGrid">
+      <HintPath>..\..\DualityEditor\CustomPropertyGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Duality\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Duality\OpenTK.GLControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking">
+      <HintPath>..\..\DualityEditor\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SceneViewPlugin.cs" />
+    <Compile Include="Properties\SceneViewRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SceneViewRes.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\SceneViewResCache.cs" />
+    <Compile Include="Modules\SceneView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\SceneView.Designer.cs">
+      <DependentUpon>SceneView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
+      <Project>{9FB9F397-FD39-460C-A9AD-B4780D19945F}</Project>
+      <Name>DualityEditor</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Modules\SceneView.resx">
+      <DependentUpon>SceneView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\SceneViewRes.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>SceneViewRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="EmbeddedResources\iconCmpUnknown.png" />
+    <None Include="EmbeddedResources\overlayLinkBroken.png" />
+    <None Include="EmbeddedResources\overlayLink.png" />
+    <None Include="EmbeddedResources\sceneview.ico" />
+    <None Include="EmbeddedResources\cross.png" />
+    <None Include="EmbeddedResources\disk.png" />
+    <None Include="EmbeddedResources\AddScene.png" />
+    <None Include="EmbeddedResources\page_copy.png" />
+    <None Include="EmbeddedResources\page_paste.png" />
+    <None Include="EmbeddedResources\lock.png" />
+    <Content Include="EmbeddedResources\eye_cross.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

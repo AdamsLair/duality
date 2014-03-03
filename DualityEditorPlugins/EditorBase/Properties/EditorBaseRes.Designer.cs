@@ -587,46 +587,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconEyeCross {
-            get {
-                object obj = ResourceManager.GetObject("IconEyeCross", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap IconLock {
-            get {
-                object obj = ResourceManager.GetObject("IconLock", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
-        /// </summary>
-        public static System.Drawing.Icon IconProjectView {
-            get {
-                object obj = ResourceManager.GetObject("IconProjectView", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
-        /// </summary>
-        public static System.Drawing.Icon IconSceneView {
-            get {
-                object obj = ResourceManager.GetObject("IconSceneView", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap IconSpeakerBlack {
             get {
                 object obj = ResourceManager.GetObject("IconSpeakerBlack", resourceCulture);
@@ -672,15 +632,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Project View ähnelt.
-        /// </summary>
-        public static string MenuItemName_ProjectView {
-            get {
-                return ResourceManager.GetString("MenuItemName_ProjectView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Remove ähnelt.
         /// </summary>
         public static string MenuItemName_RemoveComponent {
@@ -699,49 +650,11 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Resource Inspector ähnelt.
-        /// </summary>
-        public static string MenuItemName_ResView {
-            get {
-                return ResourceManager.GetString("MenuItemName_ResView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Scene View ähnelt.
-        /// </summary>
-        public static string MenuItemName_SceneView {
-            get {
-                return ResourceManager.GetString("MenuItemName_SceneView", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Default User Data ähnelt.
         /// </summary>
         public static string MenuItemName_UserData {
             get {
                 return ResourceManager.GetString("MenuItemName_UserData", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap OverlayLink {
-            get {
-                object obj = ResourceManager.GetObject("OverlayLink", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap OverlayLinkBroken {
-            get {
-                object obj = ResourceManager.GetObject("OverlayLinkBroken", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -823,96 +736,6 @@ namespace Duality.Editor.Plugins.Base.Properties {
         public static string RigidBodyCamViewState_SelShapeName {
             get {
                 return ResourceManager.GetString("RigidBodyCamViewState_SelShapeName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Scene ähnelt.
-        /// </summary>
-        public static string SceneNameLabel {
-            get {
-                return ResourceManager.GetString("SceneNameLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Unsaved Scene ähnelt.
-        /// </summary>
-        public static string SceneNameNotYetSaved {
-            get {
-                return ResourceManager.GetString("SceneNameNotYetSaved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Doubleclick: {0} ähnelt.
-        /// </summary>
-        public static string SceneView_Help_Doubleclick {
-            get {
-                return ResourceManager.GetString("SceneView_Help_Doubleclick", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Hidden ähnelt.
-        /// </summary>
-        public static string SceneView_Item_Hidden {
-            get {
-                return ResourceManager.GetString("SceneView_Item_Hidden", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die The object is currently locked and hidden. Click to show and unlock. ähnelt.
-        /// </summary>
-        public static string SceneView_Item_Hidden_Tooltip {
-            get {
-                return ResourceManager.GetString("SceneView_Item_Hidden_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Locked ähnelt.
-        /// </summary>
-        public static string SceneView_Item_Locked {
-            get {
-                return ResourceManager.GetString("SceneView_Item_Locked", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die The object is currently locked. Click to hide or unlock. ähnelt.
-        /// </summary>
-        public static string SceneView_Item_Locked_Tooltip {
-            get {
-                return ResourceManager.GetString("SceneView_Item_Locked_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Lock / Hide ähnelt.
-        /// </summary>
-        public static string SceneView_Item_LockHide {
-            get {
-                return ResourceManager.GetString("SceneView_Item_LockHide", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Click to lock or hide the object while editing. ähnelt.
-        /// </summary>
-        public static string SceneView_Item_LockHide_Tooltip {
-            get {
-                return ResourceManager.GetString("SceneView_Item_LockHide_Tooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Linked to: {0} ähnelt.
-        /// </summary>
-        public static string SceneView_PrefabLink {
-            get {
-                return ResourceManager.GetString("SceneView_PrefabLink", resourceCulture);
             }
         }
         
