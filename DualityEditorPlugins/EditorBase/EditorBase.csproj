@@ -58,28 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EditorActions.cs" />
-    <Compile Include="Modules\CamView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modules\CamView.Designer.cs">
-      <DependentUpon>CamView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Modules\CamViewClient.cs" />
-    <Compile Include="CamViewLayers\CamViewLayer.cs" />
-    <Compile Include="CamViewLayers\BackPlateCamViewLayer.cs" />
-    <Compile Include="CamViewLayers\GridCamViewLayer.cs" />
-    <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
-    <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
-    <Compile Include="CamViewStates\CamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditorCamViewState.SelObj.cs" />
     <Compile Include="EditorBasePlugin.cs" />
     <Compile Include="Importers\AudioDataFileImporter.cs" />
     <Compile Include="Importers\FontFileImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CamViewStates\GameViewCamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditorCamViewState.cs" />
-    <Compile Include="CamViewStates\SceneEditorCamViewState.cs" />
     <Compile Include="DataConverters.cs" />
     <Compile Include="Properties\EditorBaseRes.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -125,10 +108,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UndoRedoActions\CamViewObjAction.cs" />
-    <Compile Include="UndoRedoActions\DeleteRigidBodyShapeAction.cs" />
-    <Compile Include="UndoRedoActions\DropGameObjectInSceneAction.cs" />
-    <Compile Include="UndoRedoActions\CreateRigidBodyShapeAction.cs" />
     <Compile Include="UndoRedoActions\DeleteRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\CreateSoundEmitterSourceAction.cs" />
@@ -136,10 +115,6 @@
     <Compile Include="UndoRedoActions\SoundEmitterSourceAction.cs" />
     <Compile Include="UndoRedoActions\ReparentRigidBodyJointAction.cs" />
     <Compile Include="UndoRedoActions\RigidBodyJointAction.cs" />
-    <Compile Include="UndoRedoActions\RigidBodyShapeAction.cs" />
-    <Compile Include="UndoRedoActions\ScaleCamViewObjAction.cs" />
-    <Compile Include="UndoRedoActions\RotateCamViewObjAction.cs" />
-    <Compile Include="UndoRedoActions\MoveCamViewObjAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
@@ -152,10 +127,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Modules\CamView.resx">
-      <DependentUpon>CamView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\EditorBaseRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -170,34 +141,10 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="EmbeddedResources\DropdownSettingsBlack.png" />
-    <None Include="EmbeddedResources\shape_perspective.png" />
-    <None Include="EmbeddedResources\speaker.png" />
-    <None Include="EmbeddedResources\arrow_right_accelerate.png" />
-    <None Include="EmbeddedResources\arrow_refresh.png" />
     <None Include="EmbeddedResources\cross.png" />
-    <None Include="EmbeddedResources\disk.png" />
-    <None Include="EmbeddedResources\curArrowCreateCircle.png" />
-    <None Include="EmbeddedResources\curArrowCreatePolygon.png" />
-    <None Include="EmbeddedResources\curArrowCreateEdge.png" />
-    <None Include="EmbeddedResources\curArrowCreateLoop.png" />
-    <None Include="EmbeddedResources\clock.png" />
     <Content Include="EmbeddedResources\eye.ico" />
-    <None Include="EmbeddedResources\page_copy.png" />
-    <None Include="EmbeddedResources\page_paste.png" />
-    <None Include="EmbeddedResources\iconCmpCircleCollider.png" />
-    <None Include="EmbeddedResources\iconCmpRectCollider.png" />
-    <None Include="EmbeddedResources\lock.png" />
-    <None Include="EmbeddedResources\layers.png" />
-    <None Include="EmbeddedResources\iconCmpEdgeCollider.png" />
-    <None Include="EmbeddedResources\iconCmpLoopCollider.png" />
-    <None Include="EmbeddedResources\magifier_zoom_out.png" />
-    <None Include="EmbeddedResources\magnifier_one.png" />
-    <None Include="EmbeddedResources\magnifier_zoom_in.png" />
     <None Include="EmbeddedResources\IconSpeakerBlack.png" />
     <None Include="EmbeddedResources\IconSpeakerWhite.png" />
-    <None Include="EmbeddedResources\iconGameObj.png" />
-    <None Include="EmbeddedResources\iconResUnknown.png" />
-    <None Include="EmbeddedResources\iconCmpUnknown.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

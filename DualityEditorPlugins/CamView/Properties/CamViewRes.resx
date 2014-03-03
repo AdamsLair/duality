@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CamViewLayer_BackPlate_Desc" xml:space="preserve">
+    <value>Fades out the actual scene rendering to improve Layer visibility</value>
+  </data>
+  <data name="CamViewLayer_BackPlate_Name" xml:space="preserve">
+    <value>Background Plate</value>
+  </data>
+  <data name="CamViewLayer_RigidBodyJoint_Desc" xml:space="preserve">
+    <value>Displays the physical constraints of a RigidBody Component</value>
+  </data>
+  <data name="CamViewLayer_RigidBodyJoint_Name" xml:space="preserve">
+    <value>RigidBody Joints</value>
+  </data>
+  <data name="CamViewLayer_RigidBodyShape_Desc" xml:space="preserve">
+    <value>Displays the physical shape of a RigidBody Component</value>
+  </data>
+  <data name="CamViewLayer_RigidBodyShape_Name" xml:space="preserve">
+    <value>RigidBody Shapes</value>
+  </data>
+  <data name="CamViewState_GameView_Name" xml:space="preserve">
+    <value>Game View</value>
+  </data>
+  <data name="CamViewState_RigidBodyEditor_Name" xml:space="preserve">
+    <value>RigidBody Editor</value>
+  </data>
+  <data name="CamViewState_SceneEditor_Name" xml:space="preserve">
+    <value>Scene Editor</value>
+  </data>
+  <data name="CamView_Action_Move" xml:space="preserve">
+    <value>Move</value>
+  </data>
+  <data name="CamView_Action_Rotate" xml:space="preserve">
+    <value>Rotate</value>
+  </data>
+  <data name="CamView_Action_Scale" xml:space="preserve">
+    <value>Scale</value>
+  </data>
+  <data name="CamView_Action_Select_Active" xml:space="preserve">
+    <value>Selecting...</value>
+  </data>
+  <data name="CamView_Status_Angle" xml:space="preserve">
+    <value>Angle: {0:F}°</value>
+  </data>
+  <data name="CamView_Status_PosX" xml:space="preserve">
+    <value>X: {0:F}</value>
+  </data>
+  <data name="CamView_Status_PosY" xml:space="preserve">
+    <value>Y: {0:F}</value>
+  </data>
+  <data name="CamView_Status_PosZ" xml:space="preserve">
+    <value>Z: {0:F}</value>
+  </data>
+  <data name="ColliderEditor_CreateCircle" xml:space="preserve">
+    <value>Create Circle...</value>
+  </data>
+  <data name="ColliderEditor_CreatePolygon" xml:space="preserve">
+    <value>Create Polygon...</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CursorArrowCreateCircle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\curArrowCreateCircle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CursorArrowCreateEdge" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\curArrowCreateEdge.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CursorArrowCreateLoop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\curArrowCreateLoop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CursorArrowCreatePolygon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\curArrowCreatePolygon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconCmpCircleCollider" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\iconCmpCircleCollider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconCmpEdgeCollider" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\iconCmpEdgeCollider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconCmpLoopCollider" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\iconCmpLoopCollider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconCmpRectCollider" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\iconCmpRectCollider.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconEye" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\eye.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MenuItemName_AppData" xml:space="preserve">
+    <value>Application Data</value>
+  </data>
+  <data name="MenuItemName_CamView" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="MenuItemName_UserData" xml:space="preserve">
+    <value>Default User Data</value>
+  </data>
+  <data name="CamViewLayer_Grid_Desc" xml:space="preserve">
+    <value>Displays a uniform spatial grid</value>
+  </data>
+  <data name="CamViewLayer_Grid_Name" xml:space="preserve">
+    <value>Grid</value>
+  </data>
+  <data name="CamView_Help_CamActions" xml:space="preserve">
+    <value>Camera Control Shortcuts</value>
+  </data>
+  <data name="CamView_Help_CamActions_Focus" xml:space="preserve">
+    <value>Press F to focus the world origin.</value>
+  </data>
+  <data name="CamView_Help_CamActions_Move" xml:space="preserve">
+    <value>Use Mouse Wheel and Right Mouse button to move.</value>
+  </data>
+  <data name="CamView_Help_CamActions_MoveAlternate" xml:space="preserve">
+    <value>Hold Space for alternative camera movement.</value>
+  </data>
+  <data name="CamView_Help_CamActions_MoveStep" xml:space="preserve">
+    <value>Press Ctrl + Arrow Keys, Add or Subtract to move by a fixed step.</value>
+  </data>
+  <data name="CamView_Help_ObjActions" xml:space="preserve">
+    <value>Object Action Shortcuts</value>
+  </data>
+  <data name="CamView_Help_ObjActions_AxisLock" xml:space="preserve">
+    <value>Hold Shift to limit an action to one axis.</value>
+  </data>
+  <data name="CamView_Help_ObjActions_Clone" xml:space="preserve">
+    <value>Press Ctrl + C to clone the selected objects.</value>
+  </data>
+  <data name="CamView_Help_ObjActions_Delete" xml:space="preserve">
+    <value>Press Delete to remove the selected objects.</value>
+  </data>
+  <data name="CamView_Help_ObjActions_Focus" xml:space="preserve">
+    <value>Press F to focus on the current selection.</value>
+  </data>
+  <data name="CamView_Help_ObjActions_MoveStep" xml:space="preserve">
+    <value>Press Arrow Keys, Add or Subtract to move the selected objects by a fixed step.</value>
+  </data>
+  <data name="MenuItemDesc_CantRemoveComponent" xml:space="preserve">
+    <value>Can't remove {0} because it is required by the '{1}' Component.</value>
+  </data>
+  <data name="MenuItemName_RemoveComponent" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="MenuItemName_ResetComponent" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="UndoRedo_MoveCamViewObj" xml:space="preserve">
+    <value>Move {0}</value>
+  </data>
+  <data name="UndoRedo_MoveCamViewObjMulti" xml:space="preserve">
+    <value>Move {0} Objects</value>
+  </data>
+  <data name="UndoRedo_RotateCamViewObj" xml:space="preserve">
+    <value>Rotate {0}</value>
+  </data>
+  <data name="UndoRedo_RotateCamViewObjMulti" xml:space="preserve">
+    <value>Rotate {0} Objects</value>
+  </data>
+  <data name="UndoRedo_ScaleCamViewObj" xml:space="preserve">
+    <value>Scale {0}</value>
+  </data>
+  <data name="UndoRedo_ScaleCamViewObjMulti" xml:space="preserve">
+    <value>Scale {0} Objects</value>
+  </data>
+  <data name="UndoRedo_DropGameObjectInScene" xml:space="preserve">
+    <value>Drop {0}</value>
+  </data>
+  <data name="UndoRedo_DropGameObjectInSceneMulti" xml:space="preserve">
+    <value>Drop {0} GameObjects</value>
+  </data>
+  <data name="UndoRedo_CreateRigidBodyShape" xml:space="preserve">
+    <value>Create {0}</value>
+  </data>
+  <data name="UndoRedo_CreateRigidBodyShapeMulti" xml:space="preserve">
+    <value>Create {0} Shapes</value>
+  </data>
+  <data name="UndoRedo_DeleteRigidBodyShape" xml:space="preserve">
+    <value>Delete {0}</value>
+  </data>
+  <data name="UndoRedo_DeleteRigidBodyShapeMulti" xml:space="preserve">
+    <value>Delete {0} Shapes</value>
+  </data>
+  <data name="ColliderEditor_CreateLoop" xml:space="preserve">
+    <value>Create Loop...</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelBodyName" xml:space="preserve">
+    <value>RigidBody</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelCircleShapeName" xml:space="preserve">
+    <value>Circle Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelLoopShapeName" xml:space="preserve">
+    <value>Loop Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelPolyShapeName" xml:space="preserve">
+    <value>Polygon Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_SelShapeName" xml:space="preserve">
+    <value>Shape</value>
+  </data>
+  <data name="CamView_Help_ObjActions_EditClone" xml:space="preserve">
+    <value>Hold Alt to perform an action on a clone of the current selection.</value>
+  </data>
+</root>

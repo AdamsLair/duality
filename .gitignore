@@ -86,3 +86,5 @@ DualityEditorPlugins/SceneView/bin/
 DualityEditorPlugins/SceneView/obj/
 DualityEditorPlugins/ProjectView/ProjectView.csproj.user
 DualityEditorPlugins/SceneView/SceneView.csproj.user
+DualityEditorPlugins/CamView/bin/
+DualityEditorPlugins/CamView/obj/

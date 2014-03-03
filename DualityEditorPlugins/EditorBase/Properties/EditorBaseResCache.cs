@@ -12,15 +12,7 @@ namespace Duality.Editor.Plugins.Base.Properties
 	/// </summary>
 	public static class EditorBaseResCache
 	{
-		public static readonly Bitmap	CursorArrowCreateCircle		= EditorBaseRes.CursorArrowCreateCircle;
-		public static readonly Bitmap	CursorArrowCreateEdge		= EditorBaseRes.CursorArrowCreateEdge;
-		public static readonly Bitmap	CursorArrowCreateLoop		= EditorBaseRes.CursorArrowCreateLoop;
-		public static readonly Bitmap	CursorArrowCreatePolygon	= EditorBaseRes.CursorArrowCreatePolygon;
 		public static readonly Bitmap	DropdownSettingsBlack		= EditorBaseRes.DropdownSettingsBlack;
-		public static readonly Bitmap	IconCmpCircleCollider		= EditorBaseRes.IconCmpCircleCollider;
-		public static readonly Bitmap	IconCmpEdgeCollider			= EditorBaseRes.IconCmpEdgeCollider;
-		public static readonly Bitmap	IconCmpLoopCollider			= EditorBaseRes.IconCmpLoopCollider;
-		public static readonly Bitmap	IconCmpRectCollider			= EditorBaseRes.IconCmpRectCollider;
 		public static readonly Icon		IconEye						= EditorBaseRes.IconEye;
 		public static readonly Bitmap	IconSpeakerBlack			= EditorBaseRes.IconSpeakerBlack;
 		public static readonly Bitmap	IconSpeakerWhite			= EditorBaseRes.IconSpeakerWhite;
