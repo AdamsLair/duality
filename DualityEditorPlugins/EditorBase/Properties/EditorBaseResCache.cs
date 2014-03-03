@@ -22,7 +22,6 @@ namespace Duality.Editor.Plugins.Base.Properties
 		public static readonly Bitmap	IconCmpLoopCollider			= EditorBaseRes.IconCmpLoopCollider;
 		public static readonly Bitmap	IconCmpRectCollider			= EditorBaseRes.IconCmpRectCollider;
 		public static readonly Icon		IconEye						= EditorBaseRes.IconEye;
-		public static readonly Icon		IconLogView					= EditorBaseRes.IconLogView;
 		public static readonly Icon		IconObjView					= EditorBaseRes.IconObjView;
 		public static readonly Icon		IconProjectView				= EditorBaseRes.IconProjectView;
 		public static readonly Icon		IconSceneView				= EditorBaseRes.IconSceneView;
@@ -30,12 +29,6 @@ namespace Duality.Editor.Plugins.Base.Properties
 		public static readonly Bitmap	IconSpeakerWhite			= EditorBaseRes.IconSpeakerWhite;
 		public static readonly Bitmap	OverlayLink					= EditorBaseRes.OverlayLink;
 		public static readonly Bitmap	OverlayLinkBroken			= EditorBaseRes.OverlayLinkBroken;
-		public static readonly Bitmap	IconLogCore					= EditorBaseRes.IconLogCore;
-		public static readonly Bitmap	IconLogEditor				= EditorBaseRes.IconLogEditor;
-		public static readonly Bitmap	IconLogError				= EditorBaseRes.IconLogError;
-		public static readonly Bitmap	IconLogGame					= EditorBaseRes.IconLogGame;
-		public static readonly Bitmap	IconLogMessage				= EditorBaseRes.IconLogMessage;
-		public static readonly Bitmap	IconLogWarning				= EditorBaseRes.IconLogWarning;
 		public static readonly Bitmap	IconAbortCross				= EditorBaseRes.IconAbortCross;
 		public static readonly Bitmap	IconEyeCross				= EditorBaseRes.IconEyeCross;
 		public static readonly Bitmap	IconLock					= EditorBaseRes.IconLock;

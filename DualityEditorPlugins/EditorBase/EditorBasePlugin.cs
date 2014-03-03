@@ -34,7 +34,6 @@ namespace Duality.Editor.Plugins.Base
 
 		private	ProjectFolderView		projectView		= null;
 		private	SceneView				sceneView		= null;
-		private	LogView					logView			= null;
 		private	List<ObjectInspector>	objViews		= new List<ObjectInspector>();
 		private	List<CamView>			camViews		= new List<CamView>();
 		private	bool					isLoading		= false;
@@ -43,7 +42,6 @@ namespace Duality.Editor.Plugins.Base
 		private	ToolStripMenuItem	menuItemSceneView	= null;
 		private	ToolStripMenuItem	menuItemObjView		= null;
 		private	ToolStripMenuItem	menuItemCamView		= null;
-		private	ToolStripMenuItem	menuItemLogView		= null;
 		private	ToolStripMenuItem	menuItemAppData		= null;
 		private	ToolStripMenuItem	menuItemUserData	= null;
 
@@ -78,8 +76,6 @@ namespace Duality.Editor.Plugins.Base
 				result = this.RequestSceneView();
 			else if (dockContentType == typeof(ObjectInspector))
 				result = this.RequestObjView();
-			else if (dockContentType == typeof(LogView))
-				result = this.RequestLogView();
 			else
 				result = base.DeserializeDockContent(dockContentType);
 			this.isLoading = false;
@@ -100,12 +96,6 @@ namespace Duality.Editor.Plugins.Base
 				System.Xml.XmlElement objViewElem = doc.CreateElement("ObjInspector_" + i);
 				node.AppendChild(objViewElem);
 				this.objViews[i].SaveUserData(objViewElem);
-			}
-			if (this.logView != null)
-			{
-				System.Xml.XmlElement logViewElem = doc.CreateElement("LogView_0");
-				node.AppendChild(logViewElem);
-				this.logView.SaveUserData(logViewElem);
 			}
 			if (this.sceneView != null)
 			{
@@ -133,15 +123,6 @@ namespace Duality.Editor.Plugins.Base
 				System.Xml.XmlElement objViewElem = objViewElemQuery[0] as System.Xml.XmlElement;
 				this.objViews[i].LoadUserData(objViewElem);
 			}
-			if (this.logView != null)
-			{
-				System.Xml.XmlNodeList logViewElemQuery = node.GetElementsByTagName("LogView_0");
-				if (logViewElemQuery.Count > 0)
-				{
-					System.Xml.XmlElement logViewElem = logViewElemQuery[0] as System.Xml.XmlElement;
-					this.logView.LoadUserData(logViewElem);
-				}
-			}
 			if (this.sceneView != null)
 			{
 				System.Xml.XmlNodeList sceneViewElemQuery = node.GetElementsByTagName("SceneView_0");
@@ -163,7 +144,6 @@ namespace Duality.Editor.Plugins.Base
 			this.menuItemSceneView = main.RequestMenu(GeneralRes.MenuName_View, EditorBaseRes.MenuItemName_SceneView);
 			this.menuItemObjView = main.RequestMenu(GeneralRes.MenuName_View, EditorBaseRes.MenuItemName_ObjView);
 			this.menuItemCamView = main.RequestMenu(GeneralRes.MenuName_View, EditorBaseRes.MenuItemName_CamView);
-			this.menuItemLogView = main.RequestMenu(GeneralRes.MenuName_View, EditorBaseRes.MenuItemName_LogView);
 			this.menuItemAppData = main.RequestMenu(GeneralRes.MenuName_Settings, EditorBaseRes.MenuItemName_AppData);
 			this.menuItemUserData = main.RequestMenu(GeneralRes.MenuName_Settings, EditorBaseRes.MenuItemName_UserData);
 
@@ -172,13 +152,11 @@ namespace Duality.Editor.Plugins.Base
 			this.menuItemSceneView.Image = EditorBaseResCache.IconSceneView.ToBitmap();
 			this.menuItemObjView.Image = EditorBaseResCache.IconObjView.ToBitmap();
 			this.menuItemCamView.Image = EditorBaseResCache.IconEye.ToBitmap();
-			this.menuItemLogView.Image = EditorBaseResCache.IconLogView.ToBitmap();
 
 			this.menuItemProjectView.Click += this.menuItemProjectView_Click;
 			this.menuItemSceneView.Click += this.menuItemSceneView_Click;
 			this.menuItemObjView.Click += this.menuItemObjView_Click;
 			this.menuItemCamView.Click += this.menuItemCamView_Click;
-			this.menuItemLogView.Click += this.menuItemLogView_Click;
 			this.menuItemAppData.Click += this.menuItemAppData_Click;
 			this.menuItemUserData.Click += this.menuItemUserData_Click;
 
@@ -226,26 +204,6 @@ namespace Duality.Editor.Plugins.Base
 			}
 
 			return this.sceneView;
-		}
-		public LogView RequestLogView()
-		{
-			if (this.logView == null || this.logView.IsDisposed)
-			{
-				this.logView = new LogView();
-				this.logView.FormClosed += delegate(object sender, FormClosedEventArgs e) { this.logView = null; };
-			}
-
-			if (!this.isLoading)
-			{
-				this.logView.Show(DualityEditorApp.MainForm.MainDockPanel);
-				if (this.logView.Pane != null)
-				{
-					this.logView.Pane.Activate();
-					this.logView.Focus();
-				}
-			}
-
-			return this.logView;
 		}
 		public ObjectInspector RequestObjView(bool dontShow = false)
 		{
@@ -300,10 +258,6 @@ namespace Duality.Editor.Plugins.Base
 		private void menuItemCamView_Click(object sender, EventArgs e)
 		{
 			this.RequestCamView();
-		}
-		private void menuItemLogView_Click(object sender, EventArgs e)
-		{
-			this.RequestLogView();
 		}
 		private void menuItemAppData_Click(object sender, EventArgs e)
 		{

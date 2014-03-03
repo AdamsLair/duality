@@ -44,7 +44,7 @@
     <Content ID="2" PersistString="Duality.Editor.Plugins.Base.SceneView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
     <Content ID="3" PersistString="Duality.Editor.Plugins.Base.ObjectInspector" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
     <Content ID="4" PersistString="Duality.Editor.Plugins.HelpAdvisor.HelpAdvisor" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
-    <Content ID="5" PersistString="Duality.Editor.Plugins.Base.LogView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
+    <Content ID="5" PersistString="Duality.Editor.Plugins.LogView.LogView" AutoHidePortion="0.25" IsHidden="False" IsFloat="False" />
   </Contents>
   <Panes Count="8">
     <Pane ID="0" DockState="DockRight" ActiveContent="2">

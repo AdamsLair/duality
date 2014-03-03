@@ -74,3 +74,5 @@ DualityPlugins/Steering/Testbed/appdata.dat
 DualityPlugins/Steering/Testbed/designtimedata.dat
 DualityPlugins/Steering/Testbed/Source/Code/CorePlugin/Properties/GameRes.cs
 DualityPlugins/Steering/Testbed/Source/Code/EditorPlugin/EditorPlugin.csproj.user
+DualityEditorPlugins/LogView/bin/
+DualityEditorPlugins/LogView/obj/

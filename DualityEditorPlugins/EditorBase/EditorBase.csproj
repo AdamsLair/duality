@@ -81,9 +81,6 @@
     <Compile Include="CamViewStates\RigidBodyEditorCamViewState.cs" />
     <Compile Include="CamViewStates\SceneEditorCamViewState.cs" />
     <Compile Include="DataConverters.cs" />
-    <Compile Include="Modules\LogEntryList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Properties\EditorBaseRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -91,12 +88,6 @@
     </Compile>
     <Compile Include="Properties\EditorBaseResCache.cs" />
     <Compile Include="PreviewGenerators.cs" />
-    <Compile Include="Modules\LogView.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modules\LogView.Designer.cs">
-      <DependentUpon>LogView.cs</DependentUpon>
-    </Compile>
     <Compile Include="PropertyEditors\BatchInfoPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ComponentPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Components\RigidBodyPropertyEditor.cs" />
@@ -183,9 +174,6 @@
       <DependentUpon>CamView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Modules\LogView.resx">
-      <DependentUpon>LogView.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Modules\ObjectInspector.resx">
       <DependentUpon>ObjectInspector.cs</DependentUpon>
     </EmbeddedResource>
@@ -210,7 +198,6 @@
   <ItemGroup>
     <None Include="EmbeddedResources\overlayLinkBroken.png" />
     <None Include="EmbeddedResources\overlayLink.png" />
-    <None Include="EmbeddedResources\bell.png" />
     <None Include="EmbeddedResources\DropdownSettingsBlack.png" />
     <None Include="EmbeddedResources\shape_perspective.png" />
     <None Include="EmbeddedResources\speaker.png" />
@@ -236,13 +223,6 @@
     <None Include="EmbeddedResources\GotoScene.png" />
     <None Include="EmbeddedResources\iconCmpCircleCollider.png" />
     <None Include="EmbeddedResources\iconCmpRectCollider.png" />
-    <None Include="EmbeddedResources\log_core.png" />
-    <None Include="EmbeddedResources\log_editor.png" />
-    <None Include="EmbeddedResources\log_game.png" />
-    <None Include="EmbeddedResources\log_error.png" />
-    <None Include="EmbeddedResources\log_message.png" />
-    <None Include="EmbeddedResources\log_warning.png" />
-    <None Include="EmbeddedResources\logview.ico" />
     <None Include="EmbeddedResources\picture_empty.png" />
     <None Include="EmbeddedResources\lock.png" />
     <None Include="EmbeddedResources\layers.png" />
@@ -254,7 +234,6 @@
     <None Include="EmbeddedResources\magnifier_zoom_in.png" />
     <None Include="EmbeddedResources\IconSpeakerBlack.png" />
     <None Include="EmbeddedResources\IconSpeakerWhite.png" />
-    <None Include="EmbeddedResources\logview.png" />
     <None Include="EmbeddedResources\iconGameObj.png" />
     <None Include="EmbeddedResources\iconResUnknown.png" />
     <None Include="EmbeddedResources\iconCmpUnknown.png" />
