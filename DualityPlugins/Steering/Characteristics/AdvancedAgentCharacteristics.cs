@@ -7,12 +7,18 @@ namespace Duality.Plugins.Steering
 	[Serializable]
 	public class AdvancedAgentCharacteristics : IAgentCharacteristics
 	{
-		private float directionFactor				= 0.75f;
-		private float velocityPreservationFactor	= 0.0f;
-		private float prefSpeed						= 2.0f;
-		private float speedFactor					= 0.9f;
-		private float toiFactor						= 3.0f;
-		private float toiExponent					= 4.0f;
+		public const float DEFAULT_DIRECTION_FACTOR = 0.75f;
+		public const float DEFAULT_VELOCITY_PRESERVATION_FACTOR = 0f;
+		public const float DEFAULT_SPEED_FACTOR = 0.9f;
+		public const float DEFAULT_TOI_FACTOR = 3f;
+		public const float DEFAULT_TOI_EXPONENT = 4f;
+
+		private float directionFactor = DEFAULT_DIRECTION_FACTOR;
+		private float velocityPreservationFactor = DEFAULT_VELOCITY_PRESERVATION_FACTOR;
+		private float prefSpeed	= 2.0f;
+		private float speedFactor = DEFAULT_SPEED_FACTOR;
+		private float toiFactor = DEFAULT_TOI_FACTOR;
+		private float toiExponent = DEFAULT_TOI_EXPONENT;
 
 		public float VelocityPreservationFactor
 		{

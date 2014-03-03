@@ -8,7 +8,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)DualityPlugins\SteeringTestbed\</StartWorkingDirectory>
+    <StartWorkingDirectory>$(SolutionDir)DualityPlugins\Steering\Testbed\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
