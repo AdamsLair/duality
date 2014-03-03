@@ -153,7 +153,7 @@ namespace Duality.Plugins.Steering
 			this.AcquireConfigObjects();
 		}
 
-		public void Update()
+		internal void Update()
 		{
 			this.AcquireConfigObjects();
 			Transform transform = this.GameObj.Transform;
