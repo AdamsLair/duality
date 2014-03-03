@@ -24,7 +24,7 @@ namespace Duality.Plugins.Steering
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryAI)]
 	[EditorHintImage(typeof(SteeringRes), SteeringResNames.ImageAgent)]
-	public class Agent : Component, ICmpUpdatable
+	public class Agent : Component
 	{
 		private IVelocitySampler		sampler			= null;
 		private IAgentCharacteristics	characteristics	= null;
@@ -122,6 +122,14 @@ namespace Duality.Plugins.Steering
 			set { this.radius = value; }
 		}
 		/// <summary>
+		/// [GET / SET] The radius of the agent (an agent is always representet as circle)
+		/// </summary>
+		public float ScaledRadius
+		{
+			get { return this.radius * this.GameObj.Transform.Scale; }
+			set { this.radius = value / this.GameObj.Transform.Scale; }
+		}
+		/// <summary>
 		/// [GET / SET] The maximum time of impact wich the agent will react on. 
 		/// If you set this too high your agent will oscillate alot in crowded situations and if you set
 		/// it too low your agent will avoid very late which looks artificial.
@@ -145,7 +153,7 @@ namespace Duality.Plugins.Steering
 			this.AcquireConfigObjects();
 		}
 
-		void ICmpUpdatable.OnUpdate()
+		public void Update()
 		{
 			this.AcquireConfigObjects();
 			Transform transform = this.GameObj.Transform;
@@ -196,7 +204,7 @@ namespace Duality.Plugins.Steering
 					float curMinToi;
 					float curMaxToi;
 					Vector2 expectedRelVel = sample - (selfFactor * transform.Vel.Xy + otherFactor * otherTransform.Vel.Xy);
-					if (ToiCircleCircle(relPos, this.Radius + otherAgent.Radius, expectedRelVel, out curMinToi, out curMaxToi) && 0f < curMaxToi)
+					if (ToiCircleCircle(relPos, this.ScaledRadius + otherAgent.ScaledRadius, expectedRelVel, out curMinToi, out curMaxToi) && 0f < curMaxToi)
 					{
 						if (curMinToi <= 0f)
 						{

@@ -7,16 +7,15 @@ using OpenTK;
 
 namespace Duality.Plugins.Steering
 {
+	/// <summary>
+	/// Implementation of <see cref="IAgentCharacteristics"/> which offers parameters
+	/// which are intuitve for end users. The purpose of this implementation is to 
+	/// hide implementation details as much as possible. If you need more control you can
+	/// either use <see cref="AdvancedAgentCharacteristics"/> or use a custom implementation.
+	/// </summary>
 	[Serializable]
 	public class DefaultAgentCharacteristics : IAgentCharacteristics
 	{
-		private const float MinToiExponent		= 0.02f;
-		private const float MaxToiExponent		= 40.0f;
-		private const float MinSpeedFactor		= 0.5f;
-		private const float MaxSpeedFactor		= 5.0f;
-		private const float MinDirectionFactor	= 0.3f;
-		private const float MaxDirectionFactor	= 5.0f;
-
 		private float aggressiveness = 0.5f;
 
 		[NonSerialized] private AdvancedAgentCharacteristics baseImpl = new AdvancedAgentCharacteristics();
@@ -47,11 +46,17 @@ namespace Duality.Plugins.Steering
 		{
 			if (this.updateBaseImplParams)
 			{
-				//this.baseImpl.DirectionFactor = MathF.Lerp(MinDirectionFactor, MaxDirectionFactor, this.aggressiveness);
-				//this.baseImpl.SpeedFactor = MathF.Lerp(MinSpeedFactor, MaxSpeedFactor, this.aggressiveness);
-				//this.baseImpl.ToiExponent = MathF.Lerp(MinToiExponent, MaxToiExponent, this.aggressiveness);
-				//this.baseImpl.ToiExponent = 1f / (0.5f * MathF.Log(1f - MathF.Lerp(this.aggressiveness, 0.0001f, 0.9999f)) / MathF.Log(0.5f));
-				this.baseImpl.ToiExponent = 3.0f * MathF.Log(1.0f - MathF.Lerp(0.0001f, 0.9999f, this.aggressiveness)) / MathF.Log(0.5f);
+				// [aggressiveness]
+				// interpretation: aggressive agents are likely to ignore other agents more => avoid them only if absolutly necessary
+				// implementation: 
+				// we use a function which is
+				// - zero if aggressiveness == 0
+				// - one if aggressiveness == 0.5
+				// - infinity if aggressiveness == 1 [to prevent numerical problem we don't actually use infinity but just a high value]
+				// ... and use it as toi exponent. This will lead to a toi-cost-function which is very steep close to one 
+				// => the agent will avoid other agents in the last moment
+				// => if aggressiveness is 0 the opposit happens - the agent avoids other agents very early
+				this.baseImpl.ToiExponent = AdvancedAgentCharacteristics.DEFAULT_TOI_EXPONENT * (1f / (1f - MathF.Lerp(0.01f, 0.99f, this.aggressiveness)) - 1f);
 
 				this.updateBaseImplParams = false;
 			}
