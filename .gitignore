@@ -88,3 +88,5 @@ DualityEditorPlugins/ProjectView/ProjectView.csproj.user
 DualityEditorPlugins/SceneView/SceneView.csproj.user
 DualityEditorPlugins/CamView/bin/
 DualityEditorPlugins/CamView/obj/
+DualityPlugins/Compatibility/bin/
+DualityPlugins/Compatibility/obj/

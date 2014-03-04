@@ -298,7 +298,9 @@ namespace Duality.Resources
 		public void SetupOpenGLRes()
 		{
 			DualityApp.GuardSingleThreadState();
-			if (this.targetInfo == null || this.targetInfo.Count == 0) return;
+			if (this.targetInfo == null) return;
+			if (this.targetInfo.Count == 0) return;
+			if (this.targetInfo.All(i => !i.target.IsAvailable)) return;
 			
 			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(MaxRenderTargetSamples, 1.0f), 2.0f));
 			int targetAALevel = highestAALevel;

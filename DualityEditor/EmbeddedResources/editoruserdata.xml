@@ -1,37 +1,45 @@
 <UserData>
   <EditorApp backups="True" autosaves="ThirtyMinutes" />
-  <Plugin_EditorBase>
-    <CamView_0 perspective="Parallax" focusDist="500" bgColorArgb="4210752" activeState="Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState">
+  <Plugin_CamView>
+    <CamView_0 perspective="Parallax" focusDist="500" bgColorArgb="4210752" activeState="Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState">
       <states>
-        <Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState>
+        <Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState>
           <activeLayers />
-        </Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState>
-        <Duality.Editor.Plugins.Base.CamViewStates.RigidBodyEditorCamViewState>
+        </Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState>
+        <Duality.Editor.Plugins.CamView.CamViewStates.RigidBodyEditorCamViewState>
           <activeLayers>
-            <Duality.Editor.Plugins.Base.CamViewLayers.GridCamViewLayer />
-            <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyShapeCamViewLayer />
-            <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyJointCamViewLayer />
+            <Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer />
+            <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyShapeCamViewLayer />
+            <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyJointCamViewLayer />
           </activeLayers>
-        </Duality.Editor.Plugins.Base.CamViewStates.RigidBodyEditorCamViewState>
-        <Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState>
+        </Duality.Editor.Plugins.CamView.CamViewStates.RigidBodyEditorCamViewState>
+        <Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState>
           <activeLayers>
-            <Duality.Editor.Plugins.Base.CamViewLayers.GridCamViewLayer />
+            <Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer />
           </activeLayers>
-        </Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState>
+        </Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState>
       </states>
       <layers>
-        <Duality.Editor.Plugins.Base.CamViewLayers.BackPlateCamViewLayer />
-        <Duality.Editor.Plugins.Base.CamViewLayers.GridCamViewLayer />
-        <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyJointCamViewLayer />
-        <Duality.Editor.Plugins.Base.CamViewLayers.RigidBodyShapeCamViewLayer />
+        <Duality.Editor.Plugins.CamView.CamViewLayers.BackPlateCamViewLayer />
+        <Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer />
+        <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyJointCamViewLayer />
+        <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyShapeCamViewLayer />
       </layers>
     </CamView_0>
-    <ObjInspector_0 autoRefresh="True" locked="False" titleText="Object Inspector" debug="False" />
-    <LogView_0 showMessages="True" showWarnings="True" showErrors="True" showCore="True" showEditor="True" showGame="True" autoClear="True" pauseOnError="True" />
-    <SceneView_0 showComponents="True" />
-  </Plugin_EditorBase>
+  </Plugin_CamView>
+  <Plugin_EditorBase />
   <Plugin_HelpAdvisor />
+  <Plugin_LogView>
+    <LogView_0 showMessages="True" showWarnings="True" showErrors="True" showCore="True" showEditor="True" showGame="True" autoClear="True" pauseOnError="True" />
+  </Plugin_LogView>
+  <Plugin_ObjectInspector>
+    <ObjInspector_0 autoRefresh="True" locked="False" titleText="Object Inspector" debug="False" />
+  </Plugin_ObjectInspector>
+  <Plugin_ProjectView />
   <Plugin_ResourceHacker />
+  <Plugin_SceneView>
+    <SceneView_0 showComponents="True" />
+  </Plugin_SceneView>
 </UserData>
 <!-- DockPanel Data -->
 <?xml version="1.0" encoding="utf-8"?>

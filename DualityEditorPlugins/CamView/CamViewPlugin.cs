@@ -25,7 +25,7 @@ namespace Duality.Editor.Plugins.CamView
 
 		public override string Id
 		{
-			get { return "EditorBase"; }
+			get { return "CamView"; }
 		}
 
 
