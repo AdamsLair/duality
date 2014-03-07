@@ -20,7 +20,7 @@ namespace Duality
 			{
 				if (string.IsNullOrEmpty(executingBinDir))
 				{
-					Assembly entryAssembly = Assembly.GetEntryAssembly();
+					Assembly entryAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityApp).Assembly;
 					executingBinDir = Path.GetFullPath(Path.GetDirectoryName(entryAssembly.Location));
 				}
 				return executingBinDir;

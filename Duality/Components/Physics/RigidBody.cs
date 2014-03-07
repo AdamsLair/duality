@@ -960,27 +960,21 @@ namespace Duality.Components.Physics
 		
 		private void NotifyCollisionBegin(CollisionEventArgs args)
 		{
-			foreach (ICmpCollisionListener c in this.gameobj.GetComponents<ICmpCollisionListener>())
-			{
-				if (!(c as Component).Active) continue;
-				c.OnCollisionBegin(this, args);
-			}
+			this.gameobj.IterateComponents<ICmpCollisionListener>(
+				l => l.OnCollisionBegin(this, args), 
+				l => (l as Component).Active);
 		}
 		private void NotifyCollisionEnd(CollisionEventArgs args)
 		{
-			foreach (ICmpCollisionListener c in this.gameobj.GetComponents<ICmpCollisionListener>())
-			{
-				if (!(c as Component).Active) continue;
-				c.OnCollisionEnd(this, args);
-			}
+			this.gameobj.IterateComponents<ICmpCollisionListener>(
+				l => l.OnCollisionEnd(this, args), 
+				l => (l as Component).Active);
 		}
 		private void NotifyCollisionSolve(CollisionEventArgs args)
 		{
-			foreach (ICmpCollisionListener c in this.gameobj.GetComponents<ICmpCollisionListener>())
-			{
-				if (!(c as Component).Active) continue;
-				c.OnCollisionSolve(this, args);
-			}
+			this.gameobj.IterateComponents<ICmpCollisionListener>(
+				l => l.OnCollisionSolve(this, args), 
+				l => (l as Component).Active);
 		}
 
 		void ICmpUpdatable.OnUpdate()
