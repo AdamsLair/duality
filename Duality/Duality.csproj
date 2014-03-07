@@ -70,6 +70,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Serialization\NonClosingStreamWrapper.cs" />
     <Compile Include="Utility\Animation\AnimationGroup.cs" />
     <Compile Include="Audio\AudioLibraryLoader.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />

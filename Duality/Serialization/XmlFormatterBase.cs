@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
+using System.Text;
 
 namespace Duality.Serialization
 {
@@ -79,6 +81,8 @@ namespace Duality.Serialization
 		}
 
 		
+		protected const string DocumentSeparator = "<!-- XmlFormatterBase Document Separator -->";
+
 		protected	Stream		stream	= null;
 		protected	XmlWriter	writer	= null;
 		protected	XmlReader	reader	= null;
@@ -123,23 +127,17 @@ namespace Duality.Serialization
 		{
 			this.DisposeWriter();
 
-			XmlWriterSettings writerSettings = new XmlWriterSettings();
-			writerSettings.Indent = true;
-			writerSettings.CloseOutput = false;
-
-			this.writer = (this.stream != null && this.stream.CanWrite) ? XmlTextWriter.Create(this.stream, writerSettings) : null;
+			this.writer = (this.stream != null && this.stream.CanWrite) ? 
+				XmlTextWriter.Create(this.stream, GetWriterSettings()) : 
+				null;
 		}
 		protected void CreateReader()
 		{
 			this.DisposeReader();
 
-			XmlReaderSettings readerSettings = new XmlReaderSettings();
-			readerSettings.IgnoreWhitespace = true;
-			readerSettings.IgnoreComments = true;
-			readerSettings.IgnoreProcessingInstructions = true;
-			readerSettings.CloseInput = false;
-
-			this.reader = (stream != null && stream.CanRead) ? XmlTextReader.Create(stream, readerSettings) : null;
+			this.reader = (stream != null && stream.CanRead) ? 
+				XmlTextReader.Create(ReadSingleDocument(stream), GetReaderSettings()) : 
+				null;
 		}
 
 		protected override object ReadObjectData()
@@ -161,7 +159,7 @@ namespace Duality.Serialization
 			if (this.reader.ReadState == ReadState.Error) throw new EndOfStreamException("An XML Error occurred.");
 
 			int elementDepth = this.ReadUntilElementStart();
-			objName = this.GetCodeElementName(this.reader.Name);
+			objName = GetCodeElementName(this.reader.Name);
 			scopeChanged = elementDepth == -1;
 
 			// Moved outside of current scope? Return null
@@ -268,7 +266,7 @@ namespace Duality.Serialization
 		}
 		protected void WriteObjectData(object obj, string elementName)
 		{
-			elementName = this.GetXmlElementName(elementName);
+			elementName = GetXmlElementName(elementName);
 			this.writer.WriteStartElement(elementName);
 
 			// Null? Empty Element.
@@ -360,6 +358,18 @@ namespace Duality.Serialization
 		protected override void BeginWriteOperation()
 		{
 			base.BeginWriteOperation();
+
+			// Separate from previous Xml content
+			if (this.stream.Position > 0)
+			{
+				using (NonClosingStreamWrapper wrapper = new NonClosingStreamWrapper(this.stream))
+				using (StreamWriter writer = new StreamWriter(wrapper))
+				{
+					writer.WriteLine();
+					writer.WriteLine(DocumentSeparator);
+				}
+			}
+
 			this.CreateWriter();
 			this.writer.WriteStartElement("root");
 		}
@@ -369,7 +379,6 @@ namespace Duality.Serialization
 			this.writer.WriteEndDocument();
 			this.writer.Flush();
 			this.DisposeWriter();
-
 		}
 
 
@@ -387,14 +396,9 @@ namespace Duality.Serialization
 			long oldPos = stream.Position;
 
 			bool isXml = true;
-			var xmlSettings = new XmlReaderSettings();
-			xmlSettings.CloseInput = false;
-			xmlSettings.IgnoreComments = true;
-			xmlSettings.IgnoreWhitespace = true;
-			xmlSettings.IgnoreProcessingInstructions = true;
 			try
 			{
-				using (XmlReader xmlRead = XmlReader.Create(stream, xmlSettings))
+				using (XmlReader xmlRead = XmlReader.Create(stream, GetReaderSettings()))
 				{
 					xmlRead.Read();
 				}
@@ -404,24 +408,98 @@ namespace Duality.Serialization
 			return isXml;
 		}
 
-		protected byte[] StringToByteArray(string str)
+		/// <summary>
+		/// Wraps the specified <see cref="Stream"/> in a sub-stream that can only access the next available XML document section.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns></returns>
+		protected static Stream ReadSingleDocument(Stream stream)
+		{
+			if (!stream.CanSeek) throw new InvalidOperationException("The specified stream needs to be seekable");
+
+			long oldPos = stream.Position;
+
+			Encoding encoding = null;
+			StringBuilder docDataBuilder = new StringBuilder();
+			int byteOffset = 0;
+
+			using (NonClosingStreamWrapper wrapper = new NonClosingStreamWrapper(stream))
+			using (StreamReader reader = new StreamReader(wrapper))
+			{
+				encoding = reader.CurrentEncoding;
+				if (stream.Position == 0) byteOffset += encoding.GetPreamble().Length;
+
+				bool firstContentLine = true;
+				while (!reader.EndOfStream)
+				{
+					string line = reader.ReadLine();
+
+					int indexOf = line.IndexOf(DocumentSeparator);
+					if (indexOf == -1)
+					{
+						docDataBuilder.AppendLine(line);
+					}
+					else if (firstContentLine)
+					{
+						docDataBuilder.AppendLine(line.Remove(0, indexOf + DocumentSeparator.Length));
+						byteOffset += Encoding.Default.GetBytes(DocumentSeparator).Length;
+					}
+					else
+					{
+						docDataBuilder.Append(line.Substring(0, indexOf));
+						byteOffset += Encoding.Default.GetBytes(DocumentSeparator + Environment.NewLine).Length;
+						break;
+					}
+
+					if (!string.IsNullOrWhiteSpace(line)) firstContentLine = false;
+				}
+			}
+
+			string reducedDoc = docDataBuilder.ToString();
+			byte[] reducedData = Encoding.Default.GetBytes(reducedDoc);
+			MemoryStream result = new MemoryStream(reducedData);
+
+			stream.Position = oldPos + byteOffset + reducedData.Length;
+			return result;
+		}
+
+		protected static byte[] DecodeByteArray(string str)
 		{
 			return Convert.FromBase64String(str);
 		}
-		protected string ByteArrayToString(byte[] arr)
+		protected static string EncodeByteArray(byte[] arr)
 		{
 			return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 		}
 
-		protected string GetXmlElementName(string codeName)
+		protected static string GetXmlElementName(string codeName)
 		{
 			return XmlConvert.EncodeName(codeName);
 		}
-		protected string GetCodeElementName(string xmlName)
+		protected static string GetCodeElementName(string xmlName)
 		{
 			// Legacy support. Remove later. (Written 2014-01-10)
 			xmlName = xmlName.Replace("__sbo__", "<").Replace("__sbc__", ">");
 			return XmlConvert.DecodeName(xmlName);
+		}
+
+		protected static XmlReaderSettings GetReaderSettings()
+		{
+			XmlReaderSettings settings = new XmlReaderSettings();
+			settings.DtdProcessing = DtdProcessing.Ignore;
+			settings.IgnoreWhitespace = true;
+			settings.IgnoreComments = true;
+			settings.IgnoreProcessingInstructions = true;
+			settings.CloseInput = false;
+			return settings;
+		}
+		protected static XmlWriterSettings GetWriterSettings()
+		{
+			XmlWriterSettings settings = new XmlWriterSettings();
+			settings.OmitXmlDeclaration = true;
+			settings.Indent = true;
+			settings.CloseOutput = false;
+			return settings;
 		}
 	}
 }

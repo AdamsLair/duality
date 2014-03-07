@@ -18,8 +18,9 @@ namespace Duality.Tests
 	[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = false)]
 	public class InitDualityAttribute : Attribute, ITestAction
 	{
-		private	string		oldEnvDir	= null;
-		private	GameWindow	dummyWindow	= null;
+		private	string				oldEnvDir			= null;
+		private	GameWindow			dummyWindow			= null;
+		private	ConsoleLogOutput	consoleLogOutput	= null;
 
 		public ActionTargets Targets
 		{
@@ -41,9 +42,10 @@ namespace Duality.Tests
 			// Add some Console logs manually for NUnit
 			if (!Log.Game.Outputs.OfType<ConsoleLogOutput>().Any())
 			{
-				Log.Game.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkGray));
-				Log.Core.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkBlue));
-				Log.Editor.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkMagenta));
+				if (this.consoleLogOutput == null) this.consoleLogOutput = new ConsoleLogOutput();
+				Log.Game.AddOutput(this.consoleLogOutput);
+				Log.Core.AddOutput(this.consoleLogOutput);
+				Log.Editor.AddOutput(this.consoleLogOutput);
 			}
 
 			// Initialize Duality
@@ -71,6 +73,12 @@ namespace Duality.Tests
 		public void AfterTest(TestDetails details)
 		{
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
+			
+			// Remove NUnit Console logs
+			Log.Game.RemoveOutput(this.consoleLogOutput);
+			Log.Core.RemoveOutput(this.consoleLogOutput);
+			Log.Editor.RemoveOutput(this.consoleLogOutput);
+			this.consoleLogOutput = null;
 
 			if (this.dummyWindow != null)
 			{

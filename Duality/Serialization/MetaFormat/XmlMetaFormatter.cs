@@ -69,7 +69,7 @@ namespace Duality.Serialization.MetaFormat
 				if (objAsArray is byte[])
 				{
 					byte[] byteArr = objAsArray as byte[];
-					this.writer.WriteString(this.ByteArrayToString(byteArr));
+					this.writer.WriteString(EncodeByteArray(byteArr));
 				}
 				else
 				{
@@ -261,7 +261,7 @@ namespace Duality.Serialization.MetaFormat
 					{
 						byte[] byteArr = arrObj as byte[];
 						string binHexString = this.reader.ReadString();
-						byte[] byteArr2 = this.StringToByteArray(binHexString);
+						byte[] byteArr2 = DecodeByteArray(binHexString);
 						for (int l = 0; l < arrLength; l++)
 							byteArr[l] = byteArr2[l];
 					}

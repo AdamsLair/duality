@@ -213,7 +213,7 @@ namespace Duality.Serialization
 			get { return this.surrogates; }
 		}
 		/// <summary>
-		/// [GET] Whether this binary serializer has been disposed. A disposed object cannot be used anymore.
+		/// [GET] Whether this formatter has been disposed. A disposed object cannot be used anymore.
 		/// </summary>
 		public bool Disposed
 		{

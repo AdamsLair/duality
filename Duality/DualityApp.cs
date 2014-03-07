@@ -78,6 +78,7 @@ namespace Duality
 		private	static	bool						terminateScheduled	= false;
 		private	static	string						logfilePath			= "logfile.txt";
 		private	static	StreamWriter				logfile				= null;
+		private	static	TextWriterLogOutput			logfileOutput		= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
 		private	static	GraphicsMode				targetMode			= null;
 		private	static	HashSet<GraphicsMode>		availModes			= new HashSet<GraphicsMode>(new GraphicsModeComparer());
@@ -357,7 +358,7 @@ namespace Duality
 			{
 				logfile = new StreamWriter(logfilePath);
 				logfile.AutoFlush = true;
-				TextWriterLogOutput logfileOutput = new TextWriterLogOutput(logfile);
+				logfileOutput = new TextWriterLogOutput(logfile);
 				Log.Game.AddOutput(logfileOutput);
 				Log.Core.AddOutput(logfileOutput);
 				Log.Editor.AddOutput(logfileOutput);
@@ -470,10 +471,16 @@ namespace Duality
 				Log.Core.Write("DualityApp terminated");
 			}
 
+			// Terminate Logfile
 			if (logfile != null)
 			{
+				Log.Game.RemoveOutput(logfileOutput);
+				Log.Core.RemoveOutput(logfileOutput);
+				Log.Editor.RemoveOutput(logfileOutput);
+				logfileOutput = null;
 				logfile.Flush();
 				logfile.Close();
+				logfile = null;
 			}
 
 			initialized = false;

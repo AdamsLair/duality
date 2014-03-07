@@ -259,6 +259,7 @@ namespace Duality
 
 			return typeof(T);
 		}
+		[System.Diagnostics.DebuggerStepThrough]
 		private static Func<TParamA,TParamB,TParamC,TResult> CreateOperatorFunc<TParamA,TParamB,TParamC,TResult>(Func<Expression,Expression,Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
@@ -308,6 +309,7 @@ namespace Duality
 					return null;
 			}
 		}
+		[System.Diagnostics.DebuggerStepThrough]
 		private static Func<TParamA,TParamB,TResult> CreateOperatorFunc<TParamA,TParamB,TResult>(Func<Expression,Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
@@ -350,6 +352,7 @@ namespace Duality
 					return null;
 			}
 		}
+		[System.Diagnostics.DebuggerStepThrough]
 		private static Func<TParam,TResult> CreateOperatorFunc<TParam,TResult>(Func<Expression,Expression> mainExpressionConstruct, Type intermediateType = null, bool exceptionFallback = true)
 		{
 			try
@@ -385,6 +388,7 @@ namespace Duality
 					return null;
 			}
 		}
+		[System.Diagnostics.DebuggerStepThrough]
 		private static Func<T,U> CreateNoOpFunc<T,U>()
 		{
 			try
@@ -416,12 +420,13 @@ namespace Duality
 			public static readonly Func<T,T,bool> LessThan;
 			public static readonly Func<T,T,bool> LessThanOrEqual;
 
-			[System.Diagnostics.DebuggerNonUserCode] 
+			private static readonly Type FloatFactorIntermediateType;
+
 			static SingleType()
 			{
 				Modulo				= CreateOperatorFunc<T,T,T>(Expression.Modulo);
 				Negate				= CreateOperatorFunc<T,T>(Expression.NegateChecked);
-				Abs					= CreateOperatorFunc<T,T>(body => Expression.Condition(Expression.LessThan(body, Expression.Constant(default(T), typeof(T))), Expression.NegateChecked(body), body));
+				Abs					= CreateOperatorFunc<T,T>(OperatorBodyAbs);
 
 				Or					= CreateOperatorFunc<T,T,T>(Expression.Or);
 				And					= CreateOperatorFunc<T,T,T>(Expression.And);
@@ -435,32 +440,45 @@ namespace Duality
 				LessThanOrEqual		= CreateOperatorFunc<T,T,bool>(Expression.LessThanOrEqual);
 				
 				{
-					Type intermediate = SelectIntermediateType<T,float>();
+					FloatFactorIntermediateType = SelectIntermediateType<T,float>();
 					Func<T,T,float,T> temp;
 
 					// Try to create a Lerp term without casting the scale factor
-					temp = CreateOperatorFunc<T,T,float,T>((left, right, factor) => 
-						Expression.AddChecked(
-							Expression.MultiplyChecked(left, Expression.SubtractChecked(Expression.Constant(1.0f), factor)), 
-							Expression.MultiplyChecked(right, factor)
-						),
-						intermediate,
-						false);
+					temp = CreateOperatorFunc<T,T,float,T>(OperatorBodyLerp, FloatFactorIntermediateType, false);
 
 					// Doesn't work? Try with casting the scale factor to the intermediate Type then.
 					if (temp == null)
 					{
-						temp = CreateOperatorFunc<T,T,float,T>((left, right, factor) => 
-							Expression.AddChecked(
-								Expression.MultiplyChecked(left, Expression.SubtractChecked(Expression.ConvertChecked(Expression.Constant(1.0f), intermediate), factor)), 
-								Expression.MultiplyChecked(right, factor)
-							),
-							intermediate);
+						temp = CreateOperatorFunc<T,T,float,T>(OperatorBodyLerpCast, FloatFactorIntermediateType);
 					}
 
 					// Assign Lerp method;
 					Lerp = temp;
 				}
+			}
+
+			[System.Diagnostics.DebuggerStepThrough]
+			private static Expression OperatorBodyAbs(Expression body)
+			{
+				return Expression.Condition(Expression.LessThan(body, Expression.Constant(default(T), typeof(T))), Expression.NegateChecked(body), body);
+			}
+			[System.Diagnostics.DebuggerStepThrough]
+			private static Expression OperatorBodyLerp(Expression left, Expression right, Expression factor)
+			{
+				return 
+					Expression.AddChecked(
+						Expression.MultiplyChecked(left, Expression.SubtractChecked(Expression.Constant(1.0f), factor)), 
+						Expression.MultiplyChecked(right, factor)
+					);
+			}
+			[System.Diagnostics.DebuggerStepThrough]
+			private static Expression OperatorBodyLerpCast(Expression left, Expression right, Expression factor)
+			{
+				return 
+					Expression.AddChecked(
+						Expression.MultiplyChecked(left, Expression.SubtractChecked(Expression.ConvertChecked(Expression.Constant(1.0f), FloatFactorIntermediateType), factor)), 
+						Expression.MultiplyChecked(right, factor)
+					);
 			}
 		}
 		private static class DualType<T,U>
@@ -471,7 +489,6 @@ namespace Duality
 			public static readonly Func<T,U,T> Divide;
 			public static readonly Func<T,U> Convert;
 
-			[System.Diagnostics.DebuggerNonUserCode] 
 			static DualType()
 			{
 				Type intermediateType = SelectIntermediateType<T,U>();
@@ -480,7 +497,13 @@ namespace Duality
 				Subtract	= CreateOperatorFunc<T,U,T>(Expression.SubtractChecked, intermediateType);
 				Multiply	= CreateOperatorFunc<T,U,T>(Expression.MultiplyChecked, intermediateType);
 				Divide		= CreateOperatorFunc<T,U,T>(Expression.Divide, intermediateType);
-				Convert		= (typeof(T) != typeof(U)) ? CreateOperatorFunc<T,U>(body => Expression.ConvertChecked(body, typeof(U))) : CreateNoOpFunc<T,U>();
+				Convert		= (typeof(T) != typeof(U)) ? CreateOperatorFunc<T,U>(OperatorBodyConvert) : CreateNoOpFunc<T,U>();
+			}
+
+			[System.Diagnostics.DebuggerStepThrough]
+			private static Expression OperatorBodyConvert(Expression body)
+			{
+				return Expression.ConvertChecked(body, typeof(U));
 			}
 		}
 	}

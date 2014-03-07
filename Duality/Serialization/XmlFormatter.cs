@@ -73,7 +73,7 @@ namespace Duality.Serialization
 			if (objAsArray is byte[])
 			{
 				byte[] byteArr = objAsArray as byte[];
-				this.writer.WriteString(this.ByteArrayToString(byteArr));
+				this.writer.WriteString(EncodeByteArray(byteArr));
 				//for (int l = 0; l < byteArr.Length; l++)
 				//	this.writer.WriteString(byteArr[l].ToString("X2"));
 			}
@@ -205,7 +205,7 @@ namespace Duality.Serialization
 			if (arrType == typeof(byte[]))
 			{
 				string binHexString = this.reader.ReadString();
-				byte[] byteArr = this.StringToByteArray(binHexString);
+				byte[] byteArr = DecodeByteArray(binHexString);
 
 				// Set object reference
 				this.idManager.Inject(byteArr, objId);
