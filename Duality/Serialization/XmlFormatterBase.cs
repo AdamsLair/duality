@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
@@ -426,24 +428,41 @@ namespace Duality.Serialization
 			using (NonClosingStreamWrapper wrapper = new NonClosingStreamWrapper(stream))
 			using (StreamReader reader = new StreamReader(wrapper))
 			{
+				// Determine Encoding and preamble length when at the beginning of the stream
 				encoding = reader.CurrentEncoding;
-				if (stream.Position == 0) byteOffset += encoding.GetPreamble().Length;
+				if (stream.Position == 0)
+				{
+					byte[] preamble = encoding.GetPreamble(); 
+					byte[] preambleRead = new byte[preamble.Length]; 
+					if (stream.Read(preambleRead, 0, preambleRead.Length) == preamble.Length)
+					{
+						if (preamble.SequenceEqual(preambleRead))
+						{
+							byteOffset += preamble.Length;
+						}
+					}
+					stream.Position = 0;
+				}
 
+				// Read the appropriate XML document portion of the stream.
 				bool firstContentLine = true;
 				while (!reader.EndOfStream)
 				{
 					string line = reader.ReadLine();
-
 					int indexOf = line.IndexOf(DocumentSeparator);
+
+					// Consume regular lines
 					if (indexOf == -1)
 					{
 						docDataBuilder.AppendLine(line);
 					}
+					// Consume the separator when it occurs first
 					else if (firstContentLine)
 					{
 						docDataBuilder.AppendLine(line.Remove(0, indexOf + DocumentSeparator.Length));
 						byteOffset += Encoding.Default.GetBytes(DocumentSeparator).Length;
 					}
+					// Stop at the separator when it occurs last
 					else
 					{
 						docDataBuilder.Append(line.Substring(0, indexOf));
@@ -455,10 +474,12 @@ namespace Duality.Serialization
 				}
 			}
 
+			// Create a MemoryStream from the desired subsection of the original Stream
 			string reducedDoc = docDataBuilder.ToString();
 			byte[] reducedData = Encoding.Default.GetBytes(reducedDoc);
 			MemoryStream result = new MemoryStream(reducedData);
 
+			// Reset the original Stream to the expected position and return the substream
 			stream.Position = oldPos + byteOffset + reducedData.Length;
 			return result;
 		}
