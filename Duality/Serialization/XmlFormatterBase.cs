@@ -360,18 +360,6 @@ namespace Duality.Serialization
 		protected override void BeginWriteOperation()
 		{
 			base.BeginWriteOperation();
-
-			// Separate from previous Xml content
-			if (this.stream.Position > 0)
-			{
-				using (NonClosingStreamWrapper wrapper = new NonClosingStreamWrapper(this.stream))
-				using (StreamWriter writer = new StreamWriter(wrapper))
-				{
-					writer.WriteLine();
-					writer.WriteLine(DocumentSeparator);
-				}
-			}
-
 			this.CreateWriter();
 			this.writer.WriteStartElement("root");
 		}
@@ -381,6 +369,15 @@ namespace Duality.Serialization
 			this.writer.WriteEndDocument();
 			this.writer.Flush();
 			this.DisposeWriter();
+
+			// Insert "stop token" separator, so reading Xml data won't screw up 
+			// the underlying streams position when reading it again later.
+			using (NonClosingStreamWrapper wrapper = new NonClosingStreamWrapper(this.stream))
+			using (StreamWriter writer = new StreamWriter(wrapper))
+			{
+				writer.WriteLine();
+				writer.WriteLine(DocumentSeparator);
+			}
 		}
 
 
