@@ -270,7 +270,7 @@ namespace Duality.Tests.Serialization
 				DataNode metaNodeB = null;
 				using (Formatter formatter = this.CreateMetaFormatter(stream))
 				{
-				stream.Position = beginPos;
+					stream.Position = beginPos;
 					metaNodeA = (DataNode)formatter.ReadObject();
 					metaNodeB = (DataNode)formatter.ReadObject();
 					
