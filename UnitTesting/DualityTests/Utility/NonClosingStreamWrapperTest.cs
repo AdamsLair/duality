@@ -21,7 +21,7 @@ namespace Duality.Tests.Utility
 				stream.Close();
 				Assert.IsFalse(stream.CanRead);
 				Assert.IsTrue(baseStream.CanRead);
-				Assert.Throws<InvalidOperationException>(() => stream.ReadByte());
+				Assert.Throws<ObjectDisposedException>(() => stream.ReadByte());
 			}
 		}
 		[Test] public void Read()
