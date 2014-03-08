@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 using System.Text;
 
 namespace Duality.Serialization
@@ -21,28 +22,17 @@ namespace Duality.Serialization
 			public const string HeaderElement = "header";
 			public const string BodyElement = "body";
 
-			private string elementName = "customSerialIO";
-
-			public CustomSerialIO(string elementName)
-			{
-				this.elementName = elementName;
-			}
-
 			/// <summary>
 			/// Writes the contained data to the specified serializer.
 			/// </summary>
 			/// <param name="formatter">The serializer to write data to.</param>
-			public override void Serialize(XmlFormatterBase formatter)
+			public void Serialize(XmlFormatterBase formatter, XElement element)
 			{
-				formatter.writer.WriteStartElement(this.elementName);
-				try
+				foreach (var pair in this.data)
 				{
-					foreach (var pair in this.data)
-						formatter.WriteObjectData(pair.Value, pair.Key);
-				}
-				finally
-				{
-					formatter.writer.WriteEndElement();
+					XElement fieldElement = new XElement(GetXmlElementName(pair.Key));
+					element.Add(fieldElement);
+					formatter.WriteObjectData(fieldElement, pair.Value);
 				}
 				this.Clear();
 			}
@@ -50,33 +40,17 @@ namespace Duality.Serialization
 			/// Reads data from the specified serializer
 			/// </summary>
 			/// <param name="formatter">The serializer to read data from.</param>
-			public override void Deserialize(XmlFormatterBase formatter)
+			public void Deserialize(XmlFormatterBase formatter, XElement element)
 			{
 				this.Clear();
-
-				int elementDepth = formatter.ReadUntilElementStart();
-
-				try
+				if (!element.IsEmpty)
 				{
-					if (!formatter.reader.IsEmptyElement)
+					object value;
+					foreach (XElement fieldElement in element.Elements())
 					{
-						bool scopeChanged;
-						string key;
-						object value;
-						while (true)
-						{
-							value = formatter.ReadObjectData(out key, out scopeChanged);
-							if (scopeChanged) break;
-							else
-							{
-								this.data.Add(key, value);
-							}
-						}
+						value = formatter.ReadObjectData(fieldElement);
+						this.data.Add(GetCodeElementName(fieldElement.Name.LocalName), value);
 					}
-				}
-				finally
-				{
-					formatter.ReadUntilElementEnd(elementDepth);
 				}
 			}
 		}
@@ -85,8 +59,7 @@ namespace Duality.Serialization
 		protected const string DocumentSeparator = "<!-- XmlFormatterBase Document Separator -->";
 
 		protected	Stream		stream	= null;
-		protected	XmlWriter	writer	= null;
-		protected	XmlReader	reader	= null;
+		protected	XDocument	doc		= null;
 		
 
 		public override bool CanWrite
@@ -104,87 +77,28 @@ namespace Duality.Serialization
 		{
 			this.stream = stream;
 		}
-		protected override void OnDisposed(bool manually)
-		{
-			base.OnDisposed(manually);
-			this.DisposeWriter();
-			this.DisposeReader();
-		}
-
-		protected void DisposeWriter()
-		{
-			if (this.writer == null) return;
-			this.writer.Flush();
-			this.writer.Close();
-			this.writer = null;
-		}
-		protected void DisposeReader()
-		{
-			if (this.reader == null) return;
-			this.reader.Close();
-			this.reader = null;
-		}
-		protected void CreateWriter()
-		{
-			this.DisposeWriter();
-
-			this.writer = (this.stream != null && this.stream.CanWrite) ? 
-				XmlTextWriter.Create(this.stream, GetWriterSettings()) : 
-				null;
-		}
-		protected void CreateReader()
-		{
-			this.DisposeReader();
-
-			this.reader = (stream != null && stream.CanRead) ? 
-				XmlTextReader.Create(ReadSingleDocument(stream), GetReaderSettings()) : 
-				null;
-		}
 
 		protected override object ReadObjectData()
 		{
-			string objName;
-			bool scopeChanged;
-			object obj;
-
-			do
-			{
-				obj = this.ReadObjectData(out objName, out scopeChanged);
-			} while (scopeChanged);
-
-			return obj;
+			XElement objElement = this.doc.Root;
+			if (!objElement.HasAttributes) objElement = objElement.Elements().FirstOrDefault();
+			return this.ReadObjectData(objElement);
 		}
-		protected object ReadObjectData(out string objName, out bool scopeChanged)
+		protected object ReadObjectData(XElement element)
 		{
-			if (this.reader.ReadState == ReadState.EndOfFile) throw new EndOfStreamException("No more data to read.");
-			if (this.reader.ReadState == ReadState.Error) throw new EndOfStreamException("An XML Error occurred.");
-
-			int elementDepth = this.ReadUntilElementStart();
-			objName = GetCodeElementName(this.reader.Name);
-			scopeChanged = elementDepth == -1;
-
-			// Moved outside of current scope? Return null
-			if (scopeChanged)
-			{
-				this.ReadUntilElementEnd(elementDepth);
-				return this.GetNullObject();
-			}
-
 			// Empty element without type data? Return null
-			if (this.reader.IsEmptyElement && !this.reader.HasAttributes)
+			if (element.IsEmpty && !element.HasAttributes)
 			{
-				this.ReadUntilElementEnd(elementDepth);
 				return this.GetNullObject();
 			}
 
 			// Read data type header
-			string dataTypeStr = this.reader.GetAttribute("dataType");
+			string dataTypeStr = element.GetAttributeValue("dataType");
 			DataType dataType;
 			if (!Enum.TryParse<DataType>(dataTypeStr, out dataType))
 			{
 				dataType = DataType.Unknown;
 				this.SerializationLog.WriteError("Can't resolve DataType: {0}. Returning null reference.", dataTypeStr);
-				this.ReadUntilElementEnd(elementDepth);
 				return this.GetNullObject();
 			}
 
@@ -193,15 +107,11 @@ namespace Duality.Serialization
 			try
 			{
 				// Read the objects body
-				result = this.ReadObjectBody(dataType);
+				result = this.ReadObjectBody(element, dataType);
 			}
 			catch (Exception e)
 			{
 				this.SerializationLog.WriteError("Error reading object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
-			}
-			finally
-			{
-				this.ReadUntilElementEnd(elementDepth);
 			}
 
 			return result ?? this.GetNullObject();
@@ -209,17 +119,19 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Reads the body of an object.
 		/// </summary>
+		/// <param name="element">The XML element that describes the object.</param>
 		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> that is assumed.</param>
 		/// <returns>The object that has been read.</returns>
-		protected abstract object ReadObjectBody(DataType dataType);
+		protected abstract object ReadObjectBody(XElement element, DataType dataType);
 		/// <summary>
 		/// Reads a single primitive value, assuming the specified <see cref="Duality.Serialization.DataType"/>.
 		/// </summary>
+		/// <param name="element"></param>
 		/// <param name="dataType"></param>
 		/// <returns></returns>
-		protected object ReadPrimitive(DataType dataType)
+		protected object ReadPrimitive(XElement element, DataType dataType)
 		{
-			string val = this.reader.ReadString();
+			string val = element.Value;
 			switch (dataType)
 			{
 				case DataType.Bool:			return XmlConvert.ToBoolean(val);
@@ -240,40 +152,15 @@ namespace Duality.Serialization
 			}
 		}
 
-		protected int ReadUntilElementStart()
-		{
-			int oldDepth = this.reader.Depth;
-			while (this.reader.Read())
-			{
-				if (this.reader.Depth < oldDepth) return -1;
-				if (this.reader.NodeType == XmlNodeType.Element) return this.reader.Depth;
-			}
-			return -1;
-		}
-		protected void ReadUntilElementEnd(int depth)
-		{
-			if (depth == -1) return;
-			if (this.reader.IsEmptyElement && this.reader.Depth == depth) return;
-			do
-			{
-				if (this.reader.NodeType == XmlNodeType.EndElement && this.reader.Depth == depth) return;
-			} while (this.reader.Read());
-		}
-		
-
 		protected override void WriteObjectData(object obj)
 		{
-			this.WriteObjectData(obj, "object");
+			this.WriteObjectData(this.doc.Root, obj);
 		}
-		protected void WriteObjectData(object obj, string elementName)
+		protected void WriteObjectData(XElement element, object obj)
 		{
-			elementName = GetXmlElementName(elementName);
-			this.writer.WriteStartElement(elementName);
-
 			// Null? Empty Element.
 			if (obj == this.GetNullObject())
 			{
-				this.writer.WriteEndElement();
 				return;
 			}
 			
@@ -286,18 +173,17 @@ namespace Duality.Serialization
 			// Unknown DataType? Empty Element.
 			if (dataType == DataType.Unknown)
 			{
-				this.writer.WriteEndElement();
 				return;
 			}
 
 			// Write data type header
-			this.writer.WriteAttributeString("dataType", dataType.ToString());
+			element.SetAttributeValue("dataType", dataType.ToString());
 
 			// Write object
 			try 
 			{
 				this.idManager.PushIdLevel();
-				this.WriteObjectBody(dataType, obj, objSerializeType, objId);
+				this.WriteObjectBody(element, dataType, obj, objSerializeType, objId);
 			}
 			catch (Exception e)
 			{
@@ -306,37 +192,38 @@ namespace Duality.Serialization
 			}
 			finally
 			{
-				this.writer.WriteEndElement();
 				this.idManager.PopIdLevel();
 			}
 		}
 		/// <summary>
 		/// Writes the body of a given object.
 		/// </summary>
+		/// <param name="element">The XML element to write to.</param>
 		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> as which the object will be written.</param>
 		/// <param name="obj">The object to be written.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> that describes the specified object.</param>
 		/// <param name="objId">An object id that is assigned to the specified object.</param>
-		protected abstract void WriteObjectBody(DataType dataType, object obj, SerializeType objSerializeType, uint objId);
+		protected abstract void WriteObjectBody(XElement element, DataType dataType, object obj, SerializeType objSerializeType, uint objId);
 		/// <summary>
 		/// Writes a single primitive value.
 		/// </summary>
+		/// <param name="element"></param>
 		/// <param name="obj">The primitive value to write.</param>
-		protected void WritePrimitive(object obj)
+		protected void WritePrimitive(XElement element, object obj)
 		{
-			if		(obj is bool)		this.writer.WriteValue((bool)obj);
-			else if (obj is byte)		this.writer.WriteValue((byte)obj);
-			else if (obj is char)		this.writer.WriteValue((char)obj);
-			else if (obj is sbyte)		this.writer.WriteValue((sbyte)obj);
-			else if (obj is short)		this.writer.WriteValue((short)obj);
-			else if (obj is ushort)		this.writer.WriteValue((ushort)obj);
-			else if (obj is int)		this.writer.WriteValue((int)obj);
-			else if (obj is uint)		this.writer.WriteValue((uint)obj);
-			else if (obj is long)		this.writer.WriteValue((long)obj);
-			else if (obj is ulong)		this.writer.WriteValue((decimal)(ulong)obj);
-			else if (obj is float)		this.writer.WriteValue((float)obj);
-			else if (obj is double)		this.writer.WriteValue((double)obj);
-			else if (obj is decimal)	this.writer.WriteValue((decimal)obj);
+			if		(obj is bool)		element.Value = XmlConvert.ToString((bool)obj);
+			else if (obj is byte)		element.Value = XmlConvert.ToString((byte)obj);
+			else if (obj is char)		element.Value = XmlConvert.ToString((char)obj);
+			else if (obj is sbyte)		element.Value = XmlConvert.ToString((sbyte)obj);
+			else if (obj is short)		element.Value = XmlConvert.ToString((short)obj);
+			else if (obj is ushort)		element.Value = XmlConvert.ToString((ushort)obj);
+			else if (obj is int)		element.Value = XmlConvert.ToString((int)obj);
+			else if (obj is uint)		element.Value = XmlConvert.ToString((uint)obj);
+			else if (obj is long)		element.Value = XmlConvert.ToString((long)obj);
+			else if (obj is ulong)		element.Value = XmlConvert.ToString((decimal)(ulong)obj);
+			else if (obj is float)		element.Value = XmlConvert.ToString((float)obj);
+			else if (obj is double)		element.Value = XmlConvert.ToString((double)obj);
+			else if (obj is decimal)	element.Value = XmlConvert.ToString((decimal)obj);
 			else if (obj == null)
 				throw new ArgumentNullException("obj");
 			else
@@ -346,28 +233,36 @@ namespace Duality.Serialization
 
 		protected override void BeginReadOperation()
 		{
+			if (this.stream == null) throw new InvalidOperationException("Can't read data, because the Stream is unavailable.");
+			if (!this.stream.CanRead) throw new InvalidOperationException("Can't read data, because the Stream doesn't support it.");
+
 			base.BeginReadOperation();
-			this.CreateReader();
-			this.reader.Read();
-			this.reader.MoveToContent();
+
+			using (XmlReader reader = XmlReader.Create(ReadSingleDocument(this.stream), GetReaderSettings()))
+			{
+				this.doc = XDocument.Load(reader);
+			}
 		}
 		protected override void EndReadOperation()
 		{
 			base.EndReadOperation();
-			this.DisposeReader();
+			this.doc = null;
 		}
 		protected override void BeginWriteOperation()
 		{
+			if (this.stream == null) throw new InvalidOperationException("Can't write data, because the Stream is unavailable.");
+			if (!this.stream.CanWrite) throw new InvalidOperationException("Can't write data, because the Stream doesn't support it.");
+
 			base.BeginWriteOperation();
-			this.CreateWriter();
-			this.writer.WriteStartElement("root");
+			this.doc = new XDocument(new XElement("root"));
 		}
 		protected override void EndWriteOperation()
 		{
 			base.EndWriteOperation();
-			this.writer.WriteEndDocument();
-			this.writer.Flush();
-			this.DisposeWriter();
+			using (XmlWriter writer = XmlWriter.Create(this.stream, GetWriterSettings()))
+			{
+				this.doc.Save(writer);
+			}
 
 			// Insert "stop token" separator, so reading Xml data won't screw up 
 			// the underlying streams position when reading it again later.

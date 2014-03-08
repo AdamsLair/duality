@@ -19,7 +19,7 @@ namespace Duality.Serialization
 			/// Writes the contained data to the specified serializer.
 			/// </summary>
 			/// <param name="formatter">The serializer to write data to.</param>
-			public override void Serialize(BinaryFormatterBase formatter)
+			public void Serialize(BinaryFormatterBase formatter)
 			{
 				formatter.WritePrimitive(this.data.Count);
 				foreach (var pair in this.data)
@@ -33,7 +33,7 @@ namespace Duality.Serialization
 			/// Reads data from the specified serializer
 			/// </summary>
 			/// <param name="formatter">The serializer to read data from.</param>
-			public override void Deserialize(BinaryFormatterBase formatter)
+			public void Deserialize(BinaryFormatterBase formatter)
 			{
 				this.Clear();
 				int count = (int)formatter.ReadPrimitive(DataType.Int);
@@ -73,6 +73,7 @@ namespace Duality.Serialization
 		protected BinaryFormatterBase() : this(null) {}
 		protected BinaryFormatterBase(Stream stream)
 		{
+			stream = stream.NonClosing();
 			this.writer = (stream != null && stream.CanWrite) ? new BinaryWriter(stream) : null;
 			this.reader = (stream != null && stream.CanRead) ? new BinaryReader(stream) : null;
 		}
@@ -83,11 +84,13 @@ namespace Duality.Serialization
 			if (this.writer != null)
 			{
 				this.writer.Flush();
+				this.writer.Dispose();
 				this.writer = null;
 			}
 
 			if (this.reader != null)
 			{
+				this.reader.Dispose();
 				this.reader = null;
 			}
 		}

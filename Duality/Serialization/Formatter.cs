@@ -69,23 +69,12 @@ namespace Duality.Serialization
 			}
 
 			/// <summary>
-			/// Writes the contained data to the specified serializer.
-			/// </summary>
-			/// <param name="formatter">The serializer to write data to.</param>
-			public abstract void Serialize(T formatter);
-			/// <summary>
-			/// Reads data from the specified serializer
-			/// </summary>
-			/// <param name="formatter">The serializer to read data from.</param>
-			public abstract void Deserialize(T formatter);
-			/// <summary>
 			/// Clears all contained data.
 			/// </summary>
 			public void Clear()
 			{
 				this.data.Clear();
 			}
-			
 			/// <summary>
 			/// Writes the specified name and value.
 			/// </summary>
