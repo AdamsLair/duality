@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Xml;
+using System.Xml.Linq;
 using System.Windows.Forms;
 
 using Duality;
@@ -358,27 +358,27 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.OnCurrentCameraChanged(new CamView.CameraChangedEventArgs(this.CameraComponent, null));
 		}
 		
-		internal protected virtual void SaveUserData(XmlElement node)
+		internal protected virtual void SaveUserData(XElement node)
 		{
 			if (this.IsActive) this.SaveActiveLayers();
 
-			XmlElement activeLayersNode = node.OwnerDocument.CreateElement("activeLayers");
+			XElement activeLayersNode = new XElement("activeLayers");
 			foreach (Type t in this.lastActiveLayers)
 			{
-				XmlElement typeEntry = node.OwnerDocument.CreateElement(t.GetTypeId());
-				activeLayersNode.AppendChild(typeEntry);
+				XElement typeEntry = new XElement(t.GetTypeId());
+				activeLayersNode.Add(typeEntry);
 			}
-			node.AppendChild(activeLayersNode);
+			node.Add(activeLayersNode);
 		}
-		internal protected virtual void LoadUserData(XmlElement node)
+		internal protected virtual void LoadUserData(XElement node)
 		{
-			XmlElement activeLayersNode = node.ChildNodes.OfType<XmlElement>().FirstOrDefault(e => e.Name == "activeLayers");
+			XElement activeLayersNode = node.Element("activeLayers");
 			if (activeLayersNode != null)
 			{
 				this.lastActiveLayers.Clear();
-				foreach (XmlElement layerNode in activeLayersNode.ChildNodes.OfType<XmlElement>())
+				foreach (XElement layerNode in activeLayersNode.Elements())
 				{
-					Type layerType = ReflectionHelper.ResolveType(layerNode.Name, false);
+					Type layerType = ReflectionHelper.ResolveType(layerNode.Name.LocalName, false);
 					if (layerType != null) this.lastActiveLayers.Add(layerType);
 				}
 			}

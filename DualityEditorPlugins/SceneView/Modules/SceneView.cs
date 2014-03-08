@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
-using System.Xml;
+using System.Xml.Linq;
 using CancelEventHandler = System.ComponentModel.CancelEventHandler;
 using CancelEventArgs = System.ComponentModel.CancelEventArgs;
 
@@ -325,15 +325,15 @@ namespace Duality.Editor.Plugins.SceneView
 			Scene.ComponentRemoving -= this.Scene_ComponentRemoving;
 		}
 
-		internal void SaveUserData(XmlElement node)
+		internal void SaveUserData(XElement node)
 		{
-			node.SetAttribute("showComponents", this.buttonShowComponents.Checked.ToString(CultureInfo.InvariantCulture));
+			node.SetAttributeValue("showComponents", this.buttonShowComponents.Checked.ToString(CultureInfo.InvariantCulture));
 		}
-		internal void LoadUserData(XmlElement node)
+		internal void LoadUserData(XElement node)
 		{
 			bool tryParseBool;
 
-			if (bool.TryParse(node.GetAttribute("showComponents"), out tryParseBool))
+			if (bool.TryParse(node.GetAttributeValue("showComponents"), out tryParseBool))
 				this.buttonShowComponents.Checked = tryParseBool;
 		}
 

@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
+using System.Xml.Linq;
 using BitArray = System.Collections.BitArray;
 
 using WeifenLuo.WinFormsUI.Docking;
@@ -569,66 +569,66 @@ namespace Duality.Editor.Plugins.CamView
 			this.lockedLayers.Remove(layerType);
 		}
 
-		internal void SaveUserData(XmlElement node)
+		internal void SaveUserData(XElement node)
 		{
-			node.SetAttribute("perspective", this.nativeCamObj.Camera.Perspective.ToString());
-			node.SetAttribute("focusDist", this.nativeCamObj.Camera.FocusDist.ToString(CultureInfo.InvariantCulture));
-			node.SetAttribute("bgColorArgb", this.nativeCamObj.Camera.ClearColor.ToIntArgb().ToString(CultureInfo.InvariantCulture));
+			node.SetAttributeValue("perspective", this.nativeCamObj.Camera.Perspective.ToString());
+			node.SetAttributeValue("focusDist", this.nativeCamObj.Camera.FocusDist.ToString(CultureInfo.InvariantCulture));
+			node.SetAttributeValue("bgColorArgb", this.nativeCamObj.Camera.ClearColor.ToIntArgb().ToString(CultureInfo.InvariantCulture));
 
 			if (this.activeState != null) 
-				node.SetAttribute("activeState", this.activeState.GetType().GetTypeId());
+				node.SetAttributeValue("activeState", this.activeState.GetType().GetTypeId());
 
-			var stateListNode = node.OwnerDocument.CreateElement("states");
+			XElement stateListNode = new XElement("states");
 			foreach (var pair in this.availStates)
 			{
-				var stateNode = node.OwnerDocument.CreateElement(pair.Key.GetTypeId());
+				XElement stateNode = new XElement(pair.Key.GetTypeId());
 				pair.Value.SaveUserData(stateNode);
-				stateListNode.AppendChild(stateNode);
+				stateListNode.Add(stateNode);
 			}
-			node.AppendChild(stateListNode);
+			node.Add(stateListNode);
 
-			var layerListNode = node.OwnerDocument.CreateElement("layers");
+			XElement layerListNode = new XElement("layers");
 			foreach (var pair in this.availLayers)
 			{
-				var layerNode = node.OwnerDocument.CreateElement(pair.Key.GetTypeId());
+				XElement layerNode = new XElement(pair.Key.GetTypeId());
 				pair.Value.SaveUserData(layerNode);
-				layerListNode.AppendChild(layerNode);
+				layerListNode.Add(layerNode);
 			}
-			node.AppendChild(layerListNode);
+			node.Add(layerListNode);
 		}
-		internal void LoadUserData(XmlElement node)
+		internal void LoadUserData(XElement node)
 		{
 			decimal tryParseDecimal;
 			int tryParseInt;
 
-			if (decimal.TryParse(node.GetAttribute("focusDist"), out tryParseDecimal))
+			if (decimal.TryParse(node.GetAttributeValue("focusDist"), out tryParseDecimal))
 				this.focusDist.Value = Math.Abs(tryParseDecimal);
-			if (int.TryParse(node.GetAttribute("bgColorArgb"), out tryParseInt))
+			if (int.TryParse(node.GetAttributeValue("bgColorArgb"), out tryParseInt))
 			{
 				this.bgColorDialog.OldColor = Color.FromArgb(tryParseInt);
 				this.bgColorDialog.SelectedColor = this.bgColorDialog.OldColor;
 			}
 
-			this.loadTempPerspective = node.GetAttribute("perspective");
-			this.loadTempState = node.GetAttribute("activeState");
+			this.loadTempPerspective = node.GetAttributeValue("perspective");
+			this.loadTempState = node.GetAttributeValue("activeState");
 
-			var stateListNode = node.ChildNodes.OfType<XmlElement>().FirstOrDefault(e => e.Name == "states");
+			XElement stateListNode = node.Element("states");
 			if (stateListNode != null)
 			{
 				foreach (var pair in this.availStates)
 				{
-					var stateNode = stateListNode.ChildNodes.OfType<XmlElement>().FirstOrDefault(e => e.Name == pair.Key.GetTypeId());
+					XElement stateNode = stateListNode.Element(pair.Key.GetTypeId());
 					if (stateNode == null) continue;
 					pair.Value.LoadUserData(stateNode);
 				}
 			}
 
-			var layerListNode = node.ChildNodes.OfType<XmlElement>().FirstOrDefault(e => e.Name == "layers");
+			XElement layerListNode = node.Element("layers");
 			if (layerListNode != null)
 			{
 				foreach (var pair in this.availLayers)
 				{
-					var layerNode = layerListNode.ChildNodes.OfType<XmlElement>().FirstOrDefault(e => e.Name == pair.Key.GetTypeId());
+					XElement layerNode = layerListNode.Element(pair.Key.GetTypeId());
 					if (layerNode == null) continue;
 					pair.Value.LoadUserData(layerNode);
 				}

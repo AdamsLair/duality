@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
 
@@ -103,24 +104,24 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.propertyGrid.Focus();
 		}
 
-		internal void SaveUserData(System.Xml.XmlElement node)
+		internal void SaveUserData(XElement node)
 		{
-			node.SetAttribute("autoRefresh", this.buttonAutoRefresh.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttribute("locked", this.buttonLock.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttribute("titleText", this.Text);
-			node.SetAttribute("debug", this.buttonDebug.Checked.ToString(CultureInfo.InvariantCulture));
+			node.SetAttributeValue("autoRefresh", this.buttonAutoRefresh.Checked.ToString(CultureInfo.InvariantCulture));
+			node.SetAttributeValue("locked", this.buttonLock.Checked.ToString(CultureInfo.InvariantCulture));
+			node.SetAttributeValue("titleText", this.Text);
+			node.SetAttributeValue("debug", this.buttonDebug.Checked.ToString(CultureInfo.InvariantCulture));
 		}
-		internal void LoadUserData(System.Xml.XmlElement node)
+		internal void LoadUserData(XElement node)
 		{
 			bool tryParseBool;
 
-			if (bool.TryParse(node.GetAttribute("autoRefresh"), out tryParseBool))
+			if (bool.TryParse(node.GetAttributeValue("autoRefresh"), out tryParseBool))
 				this.buttonAutoRefresh.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttribute("locked"), out tryParseBool))
+			if (bool.TryParse(node.GetAttributeValue("locked"), out tryParseBool))
 				this.buttonLock.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttribute("debug"), out tryParseBool))
+			if (bool.TryParse(node.GetAttributeValue("debug"), out tryParseBool))
 				this.buttonDebug.Checked = tryParseBool;
-			this.Text = node.GetAttribute("titleText");
+			this.Text = node.GetAttributeValue("titleText");
 		}
 
 		private void UpdateButtons()

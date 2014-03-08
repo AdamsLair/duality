@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using System.Windows.Forms;
 using System.IO;
 using WeifenLuo.WinFormsUI.Docking;
@@ -40,25 +41,22 @@ namespace Duality.Editor.Plugins.CamView
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(System.Xml.XmlElement node)
+		protected override void SaveUserData(XElement node)
 		{
-			System.Xml.XmlDocument doc = node.OwnerDocument;
 			for (int i = 0; i < this.camViews.Count; i++)
 			{
-				System.Xml.XmlElement camViewElem = doc.CreateElement("CamView_" + i);
-				node.AppendChild(camViewElem);
+				XElement camViewElem = new XElement("CamView_" + i);
+				node.Add(camViewElem);
 				this.camViews[i].SaveUserData(camViewElem);
 			}
 		}
-		protected override void LoadUserData(System.Xml.XmlElement node)
+		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
 			for (int i = 0; i < this.camViews.Count; i++)
 			{
-				System.Xml.XmlNodeList camViewElemQuery = node.GetElementsByTagName("CamView_" + i);
-				if (camViewElemQuery.Count == 0) continue;
-
-				System.Xml.XmlElement camViewElem = camViewElemQuery[0] as System.Xml.XmlElement;
+				XElement camViewElem = node.Element("CamView_" + i);
+				if (camViewElem == null) continue;
 				this.camViews[i].LoadUserData(camViewElem);
 			}
 			this.isLoading = false;

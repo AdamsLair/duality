@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Xml;
+using System.Xml.Linq;
 using System.Text.RegularExpressions;
 
 using Duality;
@@ -447,18 +447,18 @@ namespace Duality.Editor
 			{
 				StreamWriter writer = new StreamWriter(str);
 				// --- Save custom user data here ---
-				XmlDocument xmlDoc = new XmlDocument();
-				XmlElement rootElement = xmlDoc.CreateElement("UserData");
-				xmlDoc.AppendChild(rootElement);
-				XmlElement editorAppElement = xmlDoc.CreateElement("EditorApp");
-				rootElement.AppendChild(editorAppElement);
-				editorAppElement.SetAttribute("backups", backupsEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
-				editorAppElement.SetAttribute("autosaves", autosaveFrequency.ToString());
-				editorAppElement.SetAttribute("launcher", launcherApp);
+				XDocument xmlDoc = new XDocument();
+				XElement rootElement = new XElement("UserData");
+				xmlDoc.Add(rootElement);
+				XElement editorAppElement = new XElement("EditorApp");
+				rootElement.Add(editorAppElement);
+				editorAppElement.SetAttributeValue("backups", backupsEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
+				editorAppElement.SetAttributeValue("autosaves", autosaveFrequency.ToString());
+				editorAppElement.SetAttributeValue("launcher", launcherApp);
 				foreach (EditorPlugin plugin in plugins)
 				{
-					XmlElement pluginXmlElement = xmlDoc.CreateElement("Plugin_" + plugin.Id);
-					rootElement.AppendChild(pluginXmlElement);
+					XElement pluginXmlElement = new XElement("Plugin_" + plugin.Id);
+					rootElement.Add(pluginXmlElement);
 					plugin.SaveUserData(pluginXmlElement);
 				}
 				xmlDoc.Save(writer.BaseStream);
@@ -502,7 +502,7 @@ namespace Duality.Editor
 				{
 					mainForm.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
 				}
-				catch (XmlException e)
+				catch (Exception e)
 				{
 					Log.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", Log.Exception(e));
 				}
@@ -511,23 +511,22 @@ namespace Duality.Editor
 				// --- Read custom user data from StringBuilder here ---
 				Log.Editor.Write("Loading editor user data...");
 				Log.Editor.PushIndent();
-				XmlDocument xmlDoc = new XmlDocument();
 				try
 				{
-					xmlDoc.LoadXml(editorData.ToString());
-					System.Xml.XmlNodeList editorAppElemQuery = xmlDoc.DocumentElement.GetElementsByTagName("EditorApp");
-					if (editorAppElemQuery.Count > 0)
+					XDocument xmlDoc = XDocument.Parse(editorData.ToString());
+					IEnumerable<XElement> editorAppElemQuery = xmlDoc.Descendants("EditorApp");
+					if (editorAppElemQuery.Any())
 					{
-						XmlElement editorAppElement = editorAppElemQuery[0] as System.Xml.XmlElement;
-						bool.TryParse(editorAppElement.GetAttribute("backups"), out backupsEnabled);
-						Enum.TryParse<AutosaveFrequency>(editorAppElement.GetAttribute("autosaves"), out autosaveFrequency);
-						launcherApp = editorAppElement.GetAttribute("launcher");
+						XElement editorAppElement = editorAppElemQuery.First();
+						bool.TryParse(editorAppElement.GetAttributeValue("backups"), out backupsEnabled);
+						Enum.TryParse<AutosaveFrequency>(editorAppElement.GetAttributeValue("autosaves"), out autosaveFrequency);
+						launcherApp = editorAppElement.GetAttributeValue("launcher");
 					}
-					foreach (XmlElement child in xmlDoc.DocumentElement)
+					foreach (XElement child in xmlDoc.Descendants())
 					{
-						if (child.Name.StartsWith("Plugin_"))
+						if (child.Name.LocalName.StartsWith("Plugin_"))
 						{
-							string pluginName = child.Name.Substring(7, child.Name.Length - 7);
+							string pluginName = child.Name.LocalName.Substring(7, child.Name.LocalName.Length - 7);
 							foreach (EditorPlugin plugin in plugins)
 							{
 								if (plugin.Id == pluginName)
@@ -539,7 +538,7 @@ namespace Duality.Editor
 						}
 					}
 				}
-				catch (XmlException e)
+				catch (Exception e)
 				{
 					Log.Editor.WriteError("Cannot load plugin user data due to malformed or non-existent Xml: {0}", Log.Exception(e));
 				}
@@ -793,7 +792,7 @@ namespace Duality.Editor
 			
 			// Replace exec path in user files, since VS doesn't support relative paths there..
 			{
-				XmlDocument userDoc;
+				XDocument userDoc;
 				const string userFileCore = EditorHelper.SourceCodeProjectCorePluginFile + ".user";
 				const string userFileEditor = EditorHelper.SourceCodeProjectEditorPluginFile + ".user";
 				ZipFile gamePluginZip = null;
@@ -813,12 +812,11 @@ namespace Duality.Editor
 				}
 				if (File.Exists(userFileCore))
 				{
-					userDoc = new XmlDocument();
-					userDoc.Load(userFileCore);
-					foreach (XmlElement element in userDoc.GetElementsByTagName("StartProgram").OfType<XmlElement>())
-						element.InnerText = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
-					foreach (XmlElement element in userDoc.GetElementsByTagName("StartWorkingDirectory").OfType<XmlElement>())
-						element.InnerText = Path.GetFullPath(".");
+					userDoc = XDocument.Load(userFileCore);
+					foreach (XElement element in userDoc.Descendants("StartProgram", true))
+						element.Value = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
+					foreach (XElement element in userDoc.Descendants("StartWorkingDirectory", true))
+						element.Value = Path.GetFullPath(".");
 					userDoc.Save(userFileCore);
 				}
 				
@@ -837,12 +835,11 @@ namespace Duality.Editor
 				}
 				if (File.Exists(userFileEditor))
 				{
-					userDoc = new XmlDocument();
-					userDoc.Load(userFileEditor);
-					foreach (XmlElement element in userDoc.GetElementsByTagName("StartProgram").OfType<XmlElement>())
-						element.InnerText = Path.GetFullPath("DualityEditor.exe");
-					foreach (XmlElement element in userDoc.GetElementsByTagName("StartWorkingDirectory").OfType<XmlElement>())
-						element.InnerText = Path.GetFullPath(".");
+					userDoc = XDocument.Load(userFileEditor);
+					foreach (XElement element in userDoc.Descendants("StartProgram", true))
+						element.Value = Path.GetFullPath("DualityEditor.exe");
+					foreach (XElement element in userDoc.Descendants("StartWorkingDirectory", true))
+						element.Value = Path.GetFullPath(".");
 					userDoc.Save(userFileEditor);
 				}
 
@@ -864,11 +861,10 @@ namespace Duality.Editor
 			// Read root namespaces
 			if (File.Exists(EditorHelper.SourceCodeProjectCorePluginFile))
 			{
-				XmlDocument projXml = new XmlDocument();
-				projXml.Load(EditorHelper.SourceCodeProjectCorePluginFile);
-				foreach (XmlElement element in projXml.GetElementsByTagName("RootNamespace").OfType<XmlElement>())
+				XDocument projXml = XDocument.Load(EditorHelper.SourceCodeProjectCorePluginFile);
+				foreach (XElement element in projXml.Descendants("RootNamespace", true))
 				{
-					if (rootNamespace == null) rootNamespace = element.InnerText;
+					if (rootNamespace == null) rootNamespace = element.Value;
 				}
 			}
 		}
@@ -901,24 +897,22 @@ namespace Duality.Editor
 			// Update root namespaces
 			if (File.Exists(EditorHelper.SourceCodeProjectCorePluginFile))
 			{
-				XmlDocument projXml = new XmlDocument();
-				projXml.Load(EditorHelper.SourceCodeProjectCorePluginFile);
-				foreach (XmlElement element in projXml.GetElementsByTagName("RootNamespace").OfType<XmlElement>())
+				XDocument projXml = XDocument.Load(EditorHelper.SourceCodeProjectCorePluginFile);
+				foreach (XElement element in projXml.Descendants("RootNamespace", true))
 				{
-					if (oldRootNamespaceCore == null) oldRootNamespaceCore = element.InnerText;
-					element.InnerText = newRootNamespaceCore;
+					if (oldRootNamespaceCore == null) oldRootNamespaceCore = element.Value;
+					element.Value = newRootNamespaceCore;
 				}
 				projXml.Save(EditorHelper.SourceCodeProjectCorePluginFile);
 			}
 
 			if (File.Exists(EditorHelper.SourceCodeProjectEditorPluginFile))
 			{
-				XmlDocument projXml = new XmlDocument();
-				projXml.Load(EditorHelper.SourceCodeProjectEditorPluginFile);
-				foreach (XmlElement element in projXml.GetElementsByTagName("RootNamespace").OfType<XmlElement>())
+				XDocument projXml = XDocument.Load(EditorHelper.SourceCodeProjectEditorPluginFile);
+				foreach (XElement element in projXml.Descendants("RootNamespace", true))
 				{
-					if (oldRootNamespaceEditor == null) oldRootNamespaceEditor = element.InnerText;
-					element.InnerText = newRootNamespaceEditor;
+					if (oldRootNamespaceEditor == null) oldRootNamespaceEditor = element.Value;
+					element.Value = newRootNamespaceEditor;
 				}
 				projXml.Save(EditorHelper.SourceCodeProjectEditorPluginFile);
 			}

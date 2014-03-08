@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml;
+using System.Xml.Linq;
 using System.IO;
 using System.Reflection;
 
@@ -131,18 +131,16 @@ namespace Duality.Editor
 		{
 			this.Clear();
 
-			XmlDocument xmlDoc = new XmlDocument();
-			xmlDoc.LoadXml(xml);
+			XDocument xmlDoc = XDocument.Parse(xml);
 			
-			XmlNode assemblyNode = xmlDoc.DocumentElement["assembly"];
-			XmlNode assemblyNameNode = assemblyNode != null ? assemblyNode["name"] : null;
-			string assemblyName = assemblyNameNode.InnerText;
+			XElement assemblyNode = xmlDoc.Descendants("assembly").FirstOrDefault();
+			XElement assemblyNameNode = assemblyNode != null ? assemblyNode.Element("name") : null;
+			string assemblyName = assemblyNameNode != null ? assemblyNameNode.Value : null;
 
-			XmlNode memberNode = xmlDoc.DocumentElement["members"];
-			foreach (XmlNode child in memberNode)
+			XElement memberNode = xmlDoc.Descendants("members").FirstOrDefault();
+			foreach (XElement child in memberNode.Elements())
 			{
-				if (child is XmlComment) continue;
-				XmlAttribute memberNameAttrib = child.Attributes["name"];
+				XAttribute memberNameAttrib = child.Attribute("name");
 				if (memberNameAttrib == null) continue;
 
 				// Create a member entry based on the determined data.
@@ -151,12 +149,12 @@ namespace Duality.Editor
 				{
 					Entry memberEntry = Entry.Create(member);
 
-					XmlNode summaryNode = child["summary"];
-					XmlNode remarksNode = child["remarks"];
+					XElement summaryNode = child.Element("summary");
+					XElement remarksNode = child.Element("remarks");
 					
 					if (summaryNode != null)
 					{
-						string summary = summaryNode.InnerXml;
+						string summary = summaryNode.Value;
 						summary = Regex.Replace(summary, "[\n\r\t\\s]+", " ", RegexOptions.Multiline);
 						summary = Regex.Replace(summary, "<c>(.*?)<\\/c>", m => m.Groups[1].Value.Trim('"'));
 						summary = Regex.Replace(summary, "<code>(.*?)<\\/code>", m => m.Groups[1].Value.Trim('"'));
@@ -171,7 +169,7 @@ namespace Duality.Editor
 					}
 					if (remarksNode != null)
 					{
-						string remarks = remarksNode.InnerXml;
+						string remarks = remarksNode.Value;
 						remarks = Regex.Replace(remarks, "[\n\r\t\\s]+", " ", RegexOptions.Multiline);
 						remarks = Regex.Replace(remarks, "<c>(.*?)<\\/c>", m => m.Groups[1].Value.Trim('"'));
 						remarks = Regex.Replace(remarks, "<code>(.*?)<\\/code>", m => m.Groups[1].Value.Trim('"'));

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
-using System.Xml;
+using System.Xml.Linq;
 
 using Duality;
 using Duality.Editor;
@@ -42,25 +42,23 @@ namespace Duality.Editor.Plugins.SceneView
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(XmlElement node)
+		protected override void SaveUserData(XElement node)
 		{
-			XmlDocument doc = node.OwnerDocument;
 			if (this.sceneView != null)
 			{
-				XmlElement sceneViewElem = doc.CreateElement("SceneView_0");
-				node.AppendChild(sceneViewElem);
+				XElement sceneViewElem = new XElement("SceneView_0");
+				node.Add(sceneViewElem);
 				this.sceneView.SaveUserData(sceneViewElem);
 			}
 		}
-		protected override void LoadUserData(XmlElement node)
+		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
 			if (this.sceneView != null)
 			{
-				XmlNodeList sceneViewElemQuery = node.GetElementsByTagName("SceneView_0");
-				if (sceneViewElemQuery.Count > 0)
+				XElement sceneViewElem = node.Element("SceneView_0");
+				if (sceneViewElem != null)
 				{
-					XmlElement sceneViewElem = sceneViewElemQuery[0] as XmlElement;
 					this.sceneView.LoadUserData(sceneViewElem);
 				}
 			}

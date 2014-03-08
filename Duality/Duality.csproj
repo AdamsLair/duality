@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\NonClosingStreamWrapper.cs" />
     <Compile Include="Utility\Animation\AnimationGroup.cs" />
     <Compile Include="Audio\AudioLibraryLoader.cs" />

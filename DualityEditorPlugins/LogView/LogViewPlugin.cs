@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
-using System.Xml;
+using System.Xml.Linq;
 
 using Duality;
 using Duality.Editor;
@@ -41,25 +41,23 @@ namespace Duality.Editor.Plugins.LogView
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(XmlElement node)
+		protected override void SaveUserData(XElement node)
 		{
-			XmlDocument doc = node.OwnerDocument;
 			if (this.logView != null)
 			{
-				XmlElement logViewElem = doc.CreateElement("LogView_0");
-				node.AppendChild(logViewElem);
+				XElement logViewElem = new XElement("LogView_0");
+				node.Add(logViewElem);
 				this.logView.SaveUserData(logViewElem);
 			}
 		}
-		protected override void LoadUserData(XmlElement node)
+		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
 			if (this.logView != null)
 			{
-				XmlNodeList logViewElemQuery = node.GetElementsByTagName("LogView_0");
-				if (logViewElemQuery.Count > 0)
+				XElement logViewElem = node.Element("LogView_0");
+				if (logViewElem != null)
 				{
-					XmlElement logViewElem = logViewElemQuery[0] as System.Xml.XmlElement;
 					this.logView.LoadUserData(logViewElem);
 				}
 			}

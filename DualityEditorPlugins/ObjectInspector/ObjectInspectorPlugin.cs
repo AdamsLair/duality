@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
-using System.Xml;
+using System.Xml.Linq;
 
 using Duality;
 using Duality.Editor;
@@ -57,25 +57,22 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			this.isLoading = false;
 			return result;
 		}
-		protected override void SaveUserData(XmlElement node)
+		protected override void SaveUserData(XElement node)
 		{
-			XmlDocument doc = node.OwnerDocument;
 			for (int i = 0; i < this.objViews.Count; i++)
 			{
-				XmlElement objViewElem = doc.CreateElement("ObjInspector_" + i);
-				node.AppendChild(objViewElem);
+				XElement objViewElem = new XElement("ObjInspector_" + i);
+				node.Add(objViewElem);
 				this.objViews[i].SaveUserData(objViewElem);
 			}
 		}
-		protected override void LoadUserData(XmlElement node)
+		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
 			for (int i = 0; i < this.objViews.Count; i++)
 			{
-				XmlNodeList objViewElemQuery = node.GetElementsByTagName("ObjInspector_" + i);
-				if (objViewElemQuery.Count == 0) continue;
-
-				XmlElement objViewElem = objViewElemQuery[0] as System.Xml.XmlElement;
+				XElement objViewElem = node.Element("ObjInspector_" + i);
+				if (objViewElem == null) continue;
 				this.objViews[i].LoadUserData(objViewElem);
 			}
 			this.isLoading = false;

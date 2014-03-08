@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Xml;
-using System.Xml.Linq;
 using System.Text;
 
 namespace Duality.Serialization
@@ -413,7 +412,7 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		protected static Stream ReadSingleDocument(Stream stream)
 		{
-			if (!stream.CanSeek) throw new InvalidOperationException("The specified stream needs to be seekable");
+			if (!stream.CanSeek) throw new InvalidOperationException("The specified stream needs to be seekable.");
 
 			long oldPos = stream.Position;
 

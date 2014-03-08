@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Xml;
+using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Drawing;
@@ -551,14 +551,13 @@ namespace Duality.Editor
 						}
 					}
 
-					XmlDocument xmlDoc = new XmlDocument();
-					xmlDoc.LoadXml(xmlSource);
+					XDocument xmlDoc = XDocument.Parse(xmlSource);
 
-					XmlElement elemName = xmlDoc.DocumentElement["name"];
-					if (elemName != null) this.name = elemName.InnerText;
+					XElement elemName = xmlDoc.Element("name");
+					if (elemName != null) this.name = elemName.Value;
 
-					XmlElement elemDesc = xmlDoc.DocumentElement["description"];
-					if (elemDesc != null) this.desc = elemDesc.InnerText;
+					XElement elemDesc = xmlDoc.Element("description");
+					if (elemDesc != null) this.desc = elemDesc.Value;
 				}
 			}
 

@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Xml;
+using System.Xml.Linq;
 using System.Text.RegularExpressions;
 
 using Duality;
