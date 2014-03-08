@@ -470,7 +470,7 @@ namespace Duality.Serialization
 
 			// Create a MemoryStream from the desired subsection of the original Stream
 			string reducedDoc = docDataBuilder.ToString();
-			byte[] reducedData = Encoding.Default.GetBytes(reducedDoc);
+			byte[] reducedData = encoding.GetBytes(reducedDoc);
 			MemoryStream result = new MemoryStream(reducedData);
 
 			// Reset the original Stream to the expected position and return the substream

@@ -16,7 +16,7 @@ using OpenTK;
 
 using NUnit.Framework;
 
-namespace Duality.Tests.Graphics
+namespace Duality.Tests.Drawing
 {
 	[TestFixture]
 	public class CanvasTest

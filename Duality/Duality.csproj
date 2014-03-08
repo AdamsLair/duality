@@ -72,7 +72,9 @@
   <ItemGroup>
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
-    <Compile Include="Utility\NonClosingStreamWrapper.cs" />
+    <Compile Include="Utility\Streams\SubStreamWrapper.cs" />
+    <Compile Include="Utility\Streams\StreamWrapper.cs" />
+    <Compile Include="Utility\Streams\NonClosingStreamWrapper.cs" />
     <Compile Include="Utility\Animation\AnimationGroup.cs" />
     <Compile Include="Audio\AudioLibraryLoader.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />
