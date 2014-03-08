@@ -41,7 +41,7 @@ namespace Duality.Serialization
 		public delegate bool FieldBlocker(FieldInfo field, object obj);
 
 		/// <summary>
-		/// Buffer object for <see cref="Duality.Serialization.ISerializable">custom de/serialization</see>, 
+		/// Buffer object for <see cref="Duality.Serialization.ISerializeExplicit">custom de/serialization</see>, 
 		/// providing read and write functionality.
 		/// </summary>
 		protected abstract class CustomSerialIOBase<T> : IDataReader, IDataWriter where T : Formatter
@@ -163,13 +163,6 @@ namespace Duality.Serialization
 		/// </summary>
 		protected	List<FieldBlocker>	fieldBlockers	= new List<FieldBlocker>();
 		/// <summary>
-		/// A list of <see cref="Duality.Serialization.ISurrogate">Serialization Surrogates</see>. If any of them
-		/// matches the <see cref="System.Type"/> of an object that is to be serialized, instead of letting it
-		/// serialize itsself, the <see cref="Duality.Serialization.ISurrogate"/> with the highest <see cref="Duality.Serialization.ISurrogate.Priority"/>
-		/// is used instead.
-		/// </summary>
-		protected	List<ISurrogate>	surrogates		= new List<ISurrogate>();
-		/// <summary>
 		/// Manages object IDs during de/serialization.
 		/// </summary>
 		protected	ObjectIdManager		idManager		= new ObjectIdManager();
@@ -203,16 +196,6 @@ namespace Duality.Serialization
 			get { return this.fieldBlockers; }
 		}
 		/// <summary>
-		/// [GET] Enumerates registered <see cref="Duality.Serialization.ISurrogate">Serialization Surrogates</see>. If any of them
-		/// matches the <see cref="System.Type"/> of an object that is to be serialized, instead of letting it
-		/// serialize itsself, the <see cref="Duality.Serialization.ISurrogate"/> with the highest <see cref="Duality.Serialization.ISurrogate.Priority"/>
-		/// is used instead.
-		/// </summary>
-		public IEnumerable<ISurrogate> Surrogates
-		{
-			get { return this.surrogates; }
-		}
-		/// <summary>
 		/// [GET] Whether this formatter has been disposed. A disposed object cannot be used anymore.
 		/// </summary>
 		public bool Disposed
@@ -221,12 +204,7 @@ namespace Duality.Serialization
 		}
 
 
-		protected Formatter()
-		{
-			this.AddSurrogate(new Surrogates.BitmapSurrogate());
-			this.AddSurrogate(new Surrogates.DictionarySurrogate());
-			this.AddSurrogate(new Surrogates.GuidSurrogate());
-		}
+		protected Formatter() {}
 		~Formatter()
 		{
 			this.Dispose(false);
@@ -315,42 +293,6 @@ namespace Duality.Serialization
 		}
 
 		/// <summary>
-		/// Unregisters all <see cref="Duality.Serialization.ISurrogate">Surrogates</see>.
-		/// </summary>
-		public void ClearSurrogates()
-		{
-			this.surrogates.Clear();
-		}
-		/// <summary>
-		/// Registers a new <see cref="Duality.Serialization.ISurrogate">Surrogate</see>.
-		/// </summary>
-		/// <param name="surrogate"></param>
-		public void AddSurrogate(ISurrogate surrogate)
-		{
-			if (this.surrogates.Contains(surrogate)) return;
-			this.surrogates.Add(surrogate);
-			this.surrogates.StableSort((s1, s2) => s1.Priority - s2.Priority);
-		}
-		/// <summary>
-		/// Unregisters an existing <see cref="Duality.Serialization.ISurrogate">Surrogate</see>.
-		/// </summary>
-		/// <param name="surrogate"></param>
-		public void RemoveSurrogate(ISurrogate surrogate)
-		{
-			this.surrogates.Remove(surrogate);
-		}
-		/// <summary>
-		/// Retrieves a matching <see cref="Duality.Serialization.ISurrogate"/> for the specified <see cref="System.Type"/>.
-		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISurrogate"/> for.</param>
-		/// <returns></returns>
-		public ISurrogate GetSurrogateFor(Type t)
-		{
-			return this.surrogates.FirstOrDefault(s => s.MatchesType(t));
-		}
-		
-
-		/// <summary>
 		/// Writes the specified object including all referenced objects.
 		/// </summary>
 		/// <param name="obj">The object to write.</param>
@@ -417,8 +359,8 @@ namespace Duality.Serialization
 
 			if (dataType != DataType.ObjectRef &&
 				!objSerializeType.Type.IsSerializable && 
-				!typeof(ISerializable).IsAssignableFrom(objSerializeType.Type) &&
-				this.GetSurrogateFor(objSerializeType.Type) == null) 
+				!typeof(ISerializeExplicit).IsAssignableFrom(objSerializeType.Type) &&
+				GetSurrogateFor(objSerializeType.Type) == null) 
 			{
 				this.SerializationLog.WriteWarning("Serializing object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
 			}
@@ -426,7 +368,7 @@ namespace Duality.Serialization
 
 
 		/// <summary>
-		/// Logs an error that occurred during <see cref="Duality.Serialization.ISerializable">custom serialization</see>.
+		/// Logs an error that occurred during <see cref="Duality.Serialization.ISerializeExplicit">custom serialization</see>.
 		/// </summary>
 		/// <param name="objId">The object id of the affected object.</param>
 		/// <param name="serializeType">The <see cref="System.Type"/> of the affected object.</param>
@@ -440,7 +382,7 @@ namespace Duality.Serialization
 				Log.Exception(e));
 		}
 		/// <summary>
-		/// Logs an error that occurred during <see cref="Duality.Serialization.ISerializable">custom deserialization</see>.
+		/// Logs an error that occurred during <see cref="Duality.Serialization.ISerializeExplicit">custom deserialization</see>.
 		/// </summary>
 		/// <param name="objId">The object id of the affected object.</param>
 		/// <param name="serializeType">The <see cref="System.Type"/> of the affected object.</param>
@@ -591,7 +533,9 @@ namespace Duality.Serialization
 		}
 
 
-		private static FormattingMethod defaultMethod = FormattingMethod.Xml;
+		private	static List<ISerializeSurrogate>	surrogates		= null;
+		private static FormattingMethod defaultMethod	= FormattingMethod.Xml;
+
 		/// <summary>
 		/// [GET / SET] The default formatting method to use, if no other is specified.
 		/// </summary>
@@ -599,6 +543,26 @@ namespace Duality.Serialization
 		{
 			get { return defaultMethod; }
 			set { defaultMethod = value; }
+		}
+
+		/// <summary>
+		/// Retrieves a matching <see cref="Duality.Serialization.ISerializeSurrogate"/> for the specified <see cref="System.Type"/>.
+		/// </summary>
+		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISerializeSurrogate"/> for.</param>
+		/// <returns></returns>
+		protected static ISerializeSurrogate GetSurrogateFor(Type type)
+		{
+			if (surrogates == null)
+			{
+				surrogates = 
+					DualityApp.GetAvailDualityTypes(typeof(ISerializeSurrogate))
+					.Select(t => t.CreateInstanceOf())
+					.OfType<ISerializeSurrogate>()
+					.NotNull()
+					.ToList();
+				surrogates.StableSort((s1, s2) => s1.Priority - s2.Priority);
+			}
+			return surrogates.FirstOrDefault(s => s.MatchesType(type));
 		}
 		
 		internal static void InitDefaultMethod()
@@ -624,6 +588,11 @@ namespace Duality.Serialization
 				}
 			}
 		}
+		internal static void ClearTypeCache()
+		{
+			surrogates = null;
+		}
+
 		/// <summary>
 		/// Creates a new Formatter using the specified stream for I/O.
 		/// </summary>

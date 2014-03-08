@@ -91,8 +91,8 @@ namespace Duality.Serialization
 		/// <param name="id">The objects id.</param>
 		protected void WriteStruct(object obj, SerializeType objSerializeType, uint id = 0)
 		{
-			ISerializable objAsCustom = obj as ISerializable;
-			ISurrogate objSurrogate = this.GetSurrogateFor(objSerializeType.Type);
+			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
+			ISerializeSurrogate objSurrogate = GetSurrogateFor(objSerializeType.Type);
 
 			// Write the structs data type
 			this.writer.WriteAttributeString("type", objSerializeType.TypeString);
@@ -246,8 +246,8 @@ namespace Duality.Serialization
 			if (objType != null) objSerializeType = objType.GetSerializeType();
 			
 			// Retrieve surrogate if requested
-			ISurrogate objSurrogate = null;
-			if (surrogate && objType != null) objSurrogate = this.GetSurrogateFor(objType);
+			ISerializeSurrogate objSurrogate = null;
+			if (surrogate && objType != null) objSurrogate = GetSurrogateFor(objType);
 
 			// Construct object
 			object obj = null;
@@ -278,14 +278,14 @@ namespace Duality.Serialization
 				CustomSerialIO customIO = new CustomSerialIO(CustomSerialIO.BodyElement);
 				customIO.Deserialize(this);
 
-				ISerializable objAsCustom;
+				ISerializeExplicit objAsCustom;
 				if (objSurrogate != null)
 				{
 					objSurrogate.RealObject = obj;
 					objAsCustom = objSurrogate.SurrogateObject;
 				}
 				else
-					objAsCustom = obj as ISerializable;
+					objAsCustom = obj as ISerializeExplicit;
 
 				if (objAsCustom != null)
 				{

@@ -14,7 +14,7 @@ namespace Duality.Serialization
 	public abstract class XmlFormatterBase : Formatter
 	{
 		/// <summary>
-		/// Buffer object for <see cref="Duality.Serialization.ISerializable">custom de/serialization</see>, 
+		/// Buffer object for <see cref="Duality.Serialization.ISerializeExplicit">custom de/serialization</see>, 
 		/// providing read and write functionality.
 		/// </summary>
 		protected class CustomSerialIO : CustomSerialIOBase<XmlFormatterBase>
@@ -372,8 +372,7 @@ namespace Duality.Serialization
 
 			// Insert "stop token" separator, so reading Xml data won't screw up 
 			// the underlying streams position when reading it again later.
-			using (NonClosingStreamWrapper wrapper = new NonClosingStreamWrapper(this.stream))
-			using (StreamWriter writer = new StreamWriter(wrapper))
+			using (StreamWriter writer = new StreamWriter(this.stream.NonClosing()))
 			{
 				writer.WriteLine();
 				writer.WriteLine(DocumentSeparator);
@@ -422,8 +421,7 @@ namespace Duality.Serialization
 			StringBuilder docDataBuilder = new StringBuilder();
 			int byteOffset = 0;
 
-			using (NonClosingStreamWrapper wrapper = new NonClosingStreamWrapper(stream))
-			using (StreamReader reader = new StreamReader(wrapper))
+			using (StreamReader reader = new StreamReader(stream.NonClosing()))
 			{
 				// Determine Encoding and preamble length when at the beginning of the stream
 				encoding = reader.CurrentEncoding;

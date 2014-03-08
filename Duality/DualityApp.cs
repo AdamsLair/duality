@@ -1140,6 +1140,8 @@ namespace Duality
 			availTypeDict.Clear();
 			ReflectionHelper.ClearTypeCache();
 			Component.ClearTypeCache();
+			Formatter.ClearTypeCache();
+			Cloning.CloneProvider.ClearTypeCache();
 			
 			// Clean input sources that a disposed Assembly forgot to unregister.
 			if (oldPlugins != null)

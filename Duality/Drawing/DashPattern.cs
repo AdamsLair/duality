@@ -2,13 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OpenTK.Graphics.OpenGL;
-using OpenTK;
-
-using Duality.Resources;
-using Duality.Cloning;
-using ICloneable = Duality.Cloning.ICloneable;
-
 namespace Duality.Drawing
 {
 	/// <summary>

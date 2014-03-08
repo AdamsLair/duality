@@ -70,13 +70,14 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Serialization\NonClosingStreamWrapper.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
+    <Compile Include="Utility\NonClosingStreamWrapper.cs" />
     <Compile Include="Utility\Animation\AnimationGroup.cs" />
     <Compile Include="Audio\AudioLibraryLoader.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />
     <Compile Include="Cloning\CloneProviderContext.cs" />
-    <Compile Include="Cloning\ICloneable.cs" />
-    <Compile Include="Cloning\ISurrogate.cs" />
+    <Compile Include="Cloning\ICloneExplicit.cs" />
+    <Compile Include="Cloning\ICloneSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\BitmapSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\DelegateSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\DictionarySurrogate.cs" />
@@ -241,10 +242,10 @@
     <Compile Include="Utility\Log\TextWriterLogOutput.cs" />
     <Compile Include="Serialization\BinaryFormatter.cs" />
     <Compile Include="Serialization\MetaFormat\BinaryMetaFormatter.cs" />
-    <Compile Include="Serialization\ISerializable.cs" />
+    <Compile Include="Serialization\ISerializeExplicit.cs" />
     <Compile Include="Serialization\IDataWriter.cs" />
     <Compile Include="Serialization\IDataReader.cs" />
-    <Compile Include="Serialization\ISurrogate.cs" />
+    <Compile Include="Serialization\ISerializeSurrogate.cs" />
     <Compile Include="Serialization\Formatter.cs" />
     <Compile Include="Serialization\IUniqueIdentifyable.cs" />
     <Compile Include="Serialization\MetaFormat\MetaFormat.cs" />

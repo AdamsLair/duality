@@ -445,7 +445,7 @@ namespace Duality.Serialization.MetaFormat
 		protected	bool	surrogateSerialization;
 
 		/// <summary>
-		/// [GET / SET] Whether this structural object uses <see cref="Duality.Serialization.ISerializable">custom serialization</see>.
+		/// [GET / SET] Whether this structural object uses <see cref="Duality.Serialization.ISerializeExplicit">custom serialization</see>.
 		/// </summary>
 		public bool CustomSerialization
 		{
@@ -453,7 +453,7 @@ namespace Duality.Serialization.MetaFormat
 			set { this.customSerialization = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Whether this structural object uses an <see cref="Duality.Serialization.ISurrogate"/>.
+		/// [GET / SET] Whether this structural object uses an <see cref="Duality.Serialization.ISerializeSurrogate"/>.
 		/// </summary>
 		public bool SurrogateSerialization
 		{

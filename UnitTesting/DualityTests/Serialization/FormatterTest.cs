@@ -109,27 +109,27 @@ namespace Duality.Tests.Serialization
 		}
 		
 
-		[Test] public void SerializePlainOldData()
+		[Test] public void SerializePlainOldData([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
 			TestData data = new TestData(rnd);
 			TestData dataResult;
 
-			this.TestWriteRead(data, out dataResult, false);
+			this.TestWriteRead(data, out dataResult, meta);
 
 			Assert.IsTrue(data.Equals(dataResult));
 		}
-		[Test] public void SerializeComplexObject()
+		[Test] public void SerializeComplexObject([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
 			TestObject data = new TestObject(rnd);
 			TestObject dataResult;
 
-			this.TestWriteRead(data, out dataResult, false);
+			this.TestWriteRead(data, out dataResult, meta);
 
 			Assert.IsTrue(data.Equals(dataResult));
 		}
-		[Test] public void SerializeSequentially()
+		[Test] public void SerializeSequentially([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
 			TestObject dataA = new TestObject(rnd);
@@ -137,12 +137,12 @@ namespace Duality.Tests.Serialization
 			TestObject dataResultA;
 			TestObject dataResultB;
 
-			this.TestSequential(dataA, dataB, out dataResultA, out dataResultB, false);
+			this.TestSequential(dataA, dataB, out dataResultA, out dataResultB, meta);
 
 			Assert.IsTrue(dataA.Equals(dataResultA));
 			Assert.IsTrue(dataB.Equals(dataResultB));
 		}
-		[Test] public void SerializeRandomAccess()
+		[Test] public void SerializeRandomAccess([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
 			TestObject dataA = new TestObject(rnd);
@@ -150,56 +150,70 @@ namespace Duality.Tests.Serialization
 			TestObject dataResultA;
 			TestObject dataResultB;
 
-			this.TestRandomAccess(dataA, dataB, out dataResultA, out dataResultB, false);
+			this.TestRandomAccess(dataA, dataB, out dataResultA, out dataResultB, meta);
 
 			Assert.IsTrue(dataA.Equals(dataResultA));
 			Assert.IsTrue(dataB.Equals(dataResultB));
 		}
-		[Test] public void SerializeMetaPlainOldData()
+		[Test] public void SerializeMixed([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
-			TestData data = new TestData(rnd);
-			TestData dataResult;
 
-			this.TestWriteRead(data, out dataResult, true);
+			string		rawDataA	= "Hello World";
+			long		rawDataB	= 17;
+			TestObject	data		= new TestObject(rnd);
 
+			string		rawDataResultA;
+			long		rawDataResultB;
+			TestObject	dataResult;
+
+			using (MemoryStream stream = new MemoryStream())
+			using (Formatter formatter = this.CreateFormatter(stream))
+			{
+				using (BinaryWriter binWriter = new BinaryWriter(stream.NonClosing()))
+				{
+					binWriter.Write(rawDataA);
+					formatter.WriteObject(data);
+					binWriter.Write(rawDataB);
+				}
+
+				if (meta)
+				{
+					using (Formatter metaFormatter = this.CreateMetaFormatter(stream))
+					{
+						DataNode metaNode;
+
+						stream.Position = 0;
+						using (BinaryReader binReader = new BinaryReader(stream.NonClosing()))
+						{
+							rawDataResultA = binReader.ReadString();
+							metaFormatter.ReadObject(out metaNode);
+							rawDataResultB = binReader.ReadInt64();
+						}
+
+						stream.Position = 0;
+						stream.SetLength(0);
+						using (BinaryWriter binWriter = new BinaryWriter(stream.NonClosing()))
+						{
+							binWriter.Write(rawDataA);
+							metaFormatter.WriteObject(metaNode);
+							binWriter.Write(rawDataB);
+						}
+					}
+				}
+
+				stream.Position = 0;
+				using (BinaryReader binReader = new BinaryReader(stream.NonClosing()))
+				{
+					rawDataResultA = binReader.ReadString();
+					formatter.ReadObject(out dataResult);
+					rawDataResultB = binReader.ReadInt64();
+				}
+			}
+
+			Assert.IsTrue(rawDataA.Equals(rawDataResultA));
+			Assert.IsTrue(rawDataB.Equals(rawDataResultB));
 			Assert.IsTrue(data.Equals(dataResult));
-		}
-		[Test] public void SerializeMetaComplexObject()
-		{
-			Random rnd = new Random();
-			TestObject data = new TestObject(rnd);
-			TestObject dataResult;
-
-			this.TestWriteRead(data, out dataResult, true);
-
-			Assert.IsTrue(data.Equals(dataResult));
-		}
-		[Test] public void SerializeMetaSequentially()
-		{
-			Random rnd = new Random();
-			TestObject dataA = new TestObject(rnd);
-			TestObject dataB = new TestObject(rnd);
-			TestObject dataResultA;
-			TestObject dataResultB;
-
-			this.TestSequential(dataA, dataB, out dataResultA, out dataResultB, true);
-
-			Assert.IsTrue(dataA.Equals(dataResultA));
-			Assert.IsTrue(dataB.Equals(dataResultB));
-		}
-		[Test] public void SerializeMetaRandomAccess()
-		{
-			Random rnd = new Random();
-			TestObject dataA = new TestObject(rnd);
-			TestObject dataB = new TestObject(rnd);
-			TestObject dataResultA;
-			TestObject dataResultB;
-
-			this.TestRandomAccess(dataA, dataB, out dataResultA, out dataResultB, true);
-
-			Assert.IsTrue(dataA.Equals(dataResultA));
-			Assert.IsTrue(dataB.Equals(dataResultB));
 		}
 
 
@@ -208,149 +222,145 @@ namespace Duality.Tests.Serialization
 
 		private void TestWriteRead<T>(T writeObj, out T readObj, bool testMeta)
 		{
-			MemoryStream stream = new MemoryStream();
-
-			// Write
-			using (Formatter formatterWrite = this.CreateFormatter(stream))
+			using (MemoryStream stream = new MemoryStream())
 			{
-				formatterWrite.WriteObject(writeObj);
-			}
-
-			// Read-Write using MetaFormatter
-			stream.Seek(0, SeekOrigin.Begin);
-			if (testMeta)
-			{
-				DataNode metaNode = null;
-				using (Formatter formatterRead = this.CreateMetaFormatter(stream))
+				// Write
+				using (Formatter formatterWrite = this.CreateFormatter(stream))
 				{
-					metaNode = formatterRead.ReadObject<DataNode>();
+					formatterWrite.WriteObject(writeObj);
 				}
+
+				// Read-Write using MetaFormatter
 				stream.Seek(0, SeekOrigin.Begin);
-				stream.SetLength(0);
-				using (Formatter formatterWrite = this.CreateMetaFormatter(stream))
+				if (testMeta)
 				{
-					formatterWrite.WriteObject(metaNode);
+					DataNode metaNode = null;
+					using (Formatter formatterRead = this.CreateMetaFormatter(stream))
+					{
+						metaNode = formatterRead.ReadObject<DataNode>();
+					}
+					stream.Seek(0, SeekOrigin.Begin);
+					stream.SetLength(0);
+					using (Formatter formatterWrite = this.CreateMetaFormatter(stream))
+					{
+						formatterWrite.WriteObject(metaNode);
+					}
+				}
+
+				// Read
+				stream.Seek(0, SeekOrigin.Begin);
+				using (Formatter formatterRead = this.CreateFormatter(stream))
+				{
+					readObj = formatterRead.ReadObject<T>();
 				}
 			}
-
-			// Read
-			stream.Seek(0, SeekOrigin.Begin);
-			using (Formatter formatterRead = this.CreateFormatter(stream))
-			{
-				readObj = formatterRead.ReadObject<T>();
-			}
-
-			stream.Dispose();
-			stream = null;
 		}
 		private void TestSequential<T>(T writeObjA, T writeObjB, out T readObjA, out T readObjB, bool testMeta)
 		{
-			MemoryStream stream = new MemoryStream();
-			long beginPos = stream.Position;
-			// Write
-			using (Formatter formatter = this.CreateFormatter(stream))
+			using (MemoryStream stream = new MemoryStream())
 			{
-				stream.Position = beginPos;
-				formatter.WriteObject(writeObjA);
-				formatter.WriteObject(writeObjB);
-
-				stream.Position = beginPos;
-				readObjA = (T)formatter.ReadObject();
-				readObjB = (T)formatter.ReadObject();
-
-				stream.Position = beginPos;
-				formatter.WriteObject(writeObjA);
-				formatter.WriteObject(writeObjB);
-			}
-
-			// Read-Write using MetaFormatter
-			if (testMeta)
-			{
-				DataNode metaNodeA = null;
-				DataNode metaNodeB = null;
-				using (Formatter formatter = this.CreateMetaFormatter(stream))
+				long beginPos = stream.Position;
+				// Write
+				using (Formatter formatter = this.CreateFormatter(stream))
 				{
 					stream.Position = beginPos;
-					metaNodeA = (DataNode)formatter.ReadObject();
-					metaNodeB = (DataNode)formatter.ReadObject();
-					
+					formatter.WriteObject(writeObjA);
+					formatter.WriteObject(writeObjB);
+
 					stream.Position = beginPos;
-					formatter.WriteObject(metaNodeA);
-					formatter.WriteObject(metaNodeB);
+					readObjA = (T)formatter.ReadObject();
+					readObjB = (T)formatter.ReadObject();
+
+					stream.Position = beginPos;
+					formatter.WriteObject(writeObjA);
+					formatter.WriteObject(writeObjB);
+				}
+
+				// Read-Write using MetaFormatter
+				if (testMeta)
+				{
+					DataNode metaNodeA = null;
+					DataNode metaNodeB = null;
+					using (Formatter formatter = this.CreateMetaFormatter(stream))
+					{
+						stream.Position = beginPos;
+						metaNodeA = (DataNode)formatter.ReadObject();
+						metaNodeB = (DataNode)formatter.ReadObject();
+					
+						stream.Position = beginPos;
+						formatter.WriteObject(metaNodeA);
+						formatter.WriteObject(metaNodeB);
+					}
+				}
+
+				// Read
+				using (Formatter formatter = this.CreateFormatter(stream))
+				{
+					stream.Position = beginPos;
+					readObjA = (T)formatter.ReadObject();
+					readObjB = (T)formatter.ReadObject();
 				}
 			}
-
-			// Read
-			using (Formatter formatter = this.CreateFormatter(stream))
-			{
-				stream.Position = beginPos;
-				readObjA = (T)formatter.ReadObject();
-				readObjB = (T)formatter.ReadObject();
-			}
-
-			stream.Dispose();
-			stream = null;
 		}
 		private void TestRandomAccess<T>(T writeObjA, T writeObjB, out T readObjA, out T readObjB, bool testMeta)
 		{
-			MemoryStream stream = new MemoryStream();
-			long posB = 0;
-			long posA = 0;
-			// Write
-			using (Formatter formatter = this.CreateFormatter(stream))
+			using (MemoryStream stream = new MemoryStream())
 			{
-				posB = stream.Position;
-				formatter.WriteObject(writeObjB);
-				posA = stream.Position;
-				formatter.WriteObject(writeObjA);
-				stream.Position = posB;
-				formatter.WriteObject(writeObjB);
+				long posB = 0;
+				long posA = 0;
+				// Write
+				using (Formatter formatter = this.CreateFormatter(stream))
+				{
+					posB = stream.Position;
+					formatter.WriteObject(writeObjB);
+					posA = stream.Position;
+					formatter.WriteObject(writeObjA);
+					stream.Position = posB;
+					formatter.WriteObject(writeObjB);
 
-				stream.Position = posA;
-				readObjA = (T)formatter.ReadObject();
-				stream.Position = posB;
-				readObjB = (T)formatter.ReadObject();
+					stream.Position = posA;
+					readObjA = (T)formatter.ReadObject();
+					stream.Position = posB;
+					readObjB = (T)formatter.ReadObject();
 
-				stream.Position = posA;
-				formatter.WriteObject(writeObjA);
-				stream.Position = posB;
-				formatter.WriteObject(writeObjB);
-			}
+					stream.Position = posA;
+					formatter.WriteObject(writeObjA);
+					stream.Position = posB;
+					formatter.WriteObject(writeObjB);
+				}
 
-			// Read-Write using MetaFormatter
-			if (testMeta)
-			{
-				DataNode metaNodeA = null;
-				DataNode metaNodeB = null;
-				using (Formatter formatter = this.CreateMetaFormatter(stream))
+				// Read-Write using MetaFormatter
+				if (testMeta)
+				{
+					DataNode metaNodeA = null;
+					DataNode metaNodeB = null;
+					using (Formatter formatter = this.CreateMetaFormatter(stream))
+					{
+						stream.Position = posA;
+						metaNodeA = (DataNode)formatter.ReadObject();
+						stream.Position = posB;
+						metaNodeB = (DataNode)formatter.ReadObject();
+					
+						stream.Position = posB;
+						formatter.WriteObject(metaNodeB);
+						formatter.WriteObject(metaNodeA);
+						formatter.WriteObject(metaNodeB);
+						stream.Position = posA;
+						formatter.WriteObject(metaNodeA);
+						stream.Position = posB;
+						formatter.WriteObject(metaNodeB);
+					}
+				}
+
+				// Read
+				using (Formatter formatter = this.CreateFormatter(stream))
 				{
 					stream.Position = posA;
-					metaNodeA = (DataNode)formatter.ReadObject();
+					readObjA = (T)formatter.ReadObject();
 					stream.Position = posB;
-					metaNodeB = (DataNode)formatter.ReadObject();
-					
-					stream.Position = posB;
-					formatter.WriteObject(metaNodeB);
-					formatter.WriteObject(metaNodeA);
-					formatter.WriteObject(metaNodeB);
-					stream.Position = posA;
-					formatter.WriteObject(metaNodeA);
-					stream.Position = posB;
-					formatter.WriteObject(metaNodeB);
+					readObjB = (T)formatter.ReadObject();
 				}
 			}
-
-			// Read
-			using (Formatter formatter = this.CreateFormatter(stream))
-			{
-				stream.Position = posA;
-				readObjA = (T)formatter.ReadObject();
-				stream.Position = posB;
-				readObjB = (T)formatter.ReadObject();
-			}
-
-			stream.Dispose();
-			stream = null;
 		}
 	}
 }

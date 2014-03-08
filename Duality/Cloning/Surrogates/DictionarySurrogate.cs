@@ -9,6 +9,8 @@ namespace Duality.Cloning.Surrogates
 {
 	public class DictionarySurrogate : Surrogate<IDictionary>
 	{
+		private static readonly MethodInfo copyMethodTemplate = typeof(DictionarySurrogate).GetMethod("CopyDataSpecific", ReflectionHelper.BindInstanceAll);
+
 		public override bool MatchesType(Type t)
 		{
 			return typeof(IDictionary).IsAssignableFrom(t);
@@ -17,13 +19,13 @@ namespace Duality.Cloning.Surrogates
 		{
 			Type dictType = this.RealObject.GetType();
 			Type[] genArgs = dictType.GetGenericArguments();
-			MethodInfo cast = typeof(DictionarySurrogate).GetMethod("CopyDataSpecific", ReflectionHelper.BindInstanceAll).MakeGenericMethod(genArgs);
+			MethodInfo cast = copyMethodTemplate.MakeGenericMethod(genArgs);
 			cast.Invoke(this, new object[] { targetObj, provider });
 		}
 
-		private void CopyDataSpecific<T,U>(Dictionary<T,U> targetObj, CloneProvider provider)
+		private void CopyDataSpecific<T,U>(IDictionary<T,U> targetObj, CloneProvider provider)
 		{
-			Dictionary<T,U> dict = this.RealObject as Dictionary<T,U>;
+			IDictionary<T,U> dict = this.RealObject as IDictionary<T,U>;
 			targetObj.Clear();
 			foreach (var pair in dict) targetObj.Add(pair.Key, pair.Value);
 		}

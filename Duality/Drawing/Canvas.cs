@@ -7,7 +7,6 @@ using OpenTK;
 
 using Duality.Resources;
 using Duality.Cloning;
-using ICloneable = Duality.Cloning.ICloneable;
 
 namespace Duality.Drawing
 {

@@ -7,7 +7,7 @@ using OpenTK;
 using Duality.Editor;
 using Duality.Resources;
 using Duality.Properties;
-using ICloneable = Duality.Cloning.ICloneable;
+using Duality.Cloning;
 
 namespace Duality.Components
 {
@@ -24,7 +24,7 @@ namespace Duality.Components
 		/// A single sound source.
 		/// </summary>
 		[Serializable]
-		public class Source : ICloneable
+		public class Source : ICloneExplicit
 		{
 			private	ContentRef<Sound>	sound		= ContentRef<Sound>.Null;
 			private	bool				looped		= true;
@@ -162,7 +162,7 @@ namespace Duality.Components
 				return true;
 			}
 
-			void ICloneable.CopyDataTo(object targetObj, Cloning.CloneProvider provider)
+			void ICloneExplicit.CopyDataTo(object targetObj, Cloning.CloneProvider provider)
 			{
 				Source newSrc = targetObj as Source;
 				newSrc.sound			= this.sound;

@@ -9,6 +9,7 @@ using System.Reflection;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Serialization;
+using Duality.Cloning;
 using Duality.Properties;
 
 using OpenTK;
@@ -122,7 +123,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// Represents a pixel data layer.
 		/// </summary>
-		public class Layer : Duality.Cloning.ICloneable, ISerializable
+		public class Layer : ICloneExplicit, ISerializeExplicit
 		{
 			private	int	width;
 			private	int height;
@@ -1017,14 +1018,14 @@ namespace Duality.Resources
 				return tempDestData;
 			}
 
-			void Cloning.ICloneable.CopyDataTo(object targetObj, Cloning.CloneProvider provider)
+			void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
 			{
 				Layer targetLayer = targetObj as Layer;
 				targetLayer.width = this.width;
 				targetLayer.height = this.height;
 				targetLayer.data = this.data == null ? null : this.data.Clone() as ColorRgba[];
 			}
-			void ISerializable.WriteData(IDataWriter writer)
+			void ISerializeExplicit.WriteData(IDataWriter writer)
 			{
 				writer.WriteValue("version", ResFormat_Version_LayerPng);
 
@@ -1034,7 +1035,7 @@ namespace Duality.Resources
 					writer.WriteValue("pixelData", str.ToArray());
 				}
 			}
-			void ISerializable.ReadData(IDataReader reader)
+			void ISerializeExplicit.ReadData(IDataReader reader)
 			{
 				int version;
 				try { reader.ReadValue("version", out version); }

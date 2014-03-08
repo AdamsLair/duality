@@ -10,21 +10,10 @@ namespace Duality.Cloning
 	public class CloneProvider
 	{
 		private Dictionary<object, object>	objToClone		= new Dictionary<object,object>();
-		private	List<ISurrogate>			surrogates		= new List<ISurrogate>();
-		private	Type[]						explicitUnwrap	= null;
+		private	List<Type>					explicitUnwrap	= new List<Type>();
 		private	CloneProviderContext		context			= CloneProviderContext.Default;
 		
 
-		/// <summary>
-		/// [GET] Enumerates registered <see cref="Duality.Cloning.ISurrogate">Cloning Surrogates</see>. If any of them
-		/// matches the <see cref="System.Type"/> of an object that is to be cloned, instead of letting it
-		/// clone itsself, the <see cref="Duality.Cloning.ISurrogate"/> with the highest <see cref="Duality.Cloning.ISurrogate.Priority"/>
-		/// is used instead.
-		/// </summary>
-		public IEnumerable<ISurrogate> Surrogates
-		{
-			get { return this.surrogates; }
-		}
 		/// <summary>
 		/// [GET] Provides information about the context in which the operation is performed.
 		/// </summary>
@@ -32,56 +21,21 @@ namespace Duality.Cloning
 		{
 			get { return this.context; }
 		}
+		/// <summary>
+		/// [GET / SET] When set, this CloneProvider will not unwrap any value that isn't assignable to one of the 
+		/// specified Types, essentially shallow-copying all except them.
+		/// </summary>
+		public List<Type> ExplicitUnwrap
+		{
+			get { return this.explicitUnwrap; }
+		}
 		
 
 		public CloneProvider(CloneProviderContext context = null)
 		{
 			if (context != null) this.context = context;
-			this.AddSurrogate(new DelegateSurrogate());
-			this.AddSurrogate(new DictionarySurrogate());
-			this.AddSurrogate(new BitmapSurrogate());
 		}
 
-		/// <summary>
-		/// Unregisters all <see cref="Duality.Cloning.ISurrogate">Surrogates</see>.
-		/// </summary>
-		public void ClearSurrogates()
-		{
-			this.surrogates.Clear();
-		}
-		/// <summary>
-		/// Registers a new <see cref="Duality.Cloning.ISurrogate">Surrogate</see>.
-		/// </summary>
-		/// <param name="surrogate"></param>
-		public void AddSurrogate(ISurrogate surrogate)
-		{
-			if (this.surrogates.Contains(surrogate)) return;
-			this.surrogates.Add(surrogate);
-			this.surrogates.StableSort((s1, s2) => s1.Priority - s2.Priority);
-		}
-		/// <summary>
-		/// Unregisters an existing <see cref="Duality.Cloning.ISurrogate">Surrogate</see>.
-		/// </summary>
-		/// <param name="surrogate"></param>
-		public void RemoveSurrogate(ISurrogate surrogate)
-		{
-			this.surrogates.Remove(surrogate);
-		}
-		/// <summary>
-		/// Retrieves a matching <see cref="Duality.Cloning.ISurrogate"/> for the specified <see cref="System.Type"/>.
-		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Cloning.ISurrogate"/> for.</param>
-		/// <returns></returns>
-		public ISurrogate GetSurrogateFor(Type t)
-		{
-			return this.surrogates.FirstOrDefault(s => s.MatchesType(t));
-		}
-
-		public void SetExplicitUnwrap(params Type[] unwrapTypes)
-		{
-			if (unwrapTypes != null && unwrapTypes.Any(t => t == null)) throw new ArgumentException("Cannot unwrap null Type.", "unwrapTypes");
-			this.explicitUnwrap = unwrapTypes;
-		}
 
 		/// <summary>
 		/// Clears all existing object mappings.
@@ -150,14 +104,14 @@ namespace Duality.Cloning
 				if (!this.DoesUnwrapType(objType)) return;
 
 				// IClonables
-				if (baseObj is ICloneable)
+				if (baseObj is ICloneExplicit)
 				{
-					(baseObj as ICloneable).CopyDataTo(targetObj, this);
+					(baseObj as ICloneExplicit).CopyDataTo(targetObj, this);
 					return;
 				}
 
 				// ISurrogate
-				ISurrogate surrogate = this.GetSurrogateFor(objType);
+				ICloneSurrogate surrogate = GetSurrogateFor(objType);
 				if (surrogate != null)
 				{
 					surrogate.RealObject = baseObj;
@@ -181,11 +135,11 @@ namespace Duality.Cloning
 			if (clone == null) throw new ArgumentNullException("clone");
 			this.objToClone[baseObj] = clone;
 		}
-
+		
 		private bool DoesUnwrapType(Type type)
 		{
 			bool unwrap = !type.IsDeepByValueType();
-			if (this.explicitUnwrap != null)
+			if (this.explicitUnwrap.Count > 0)
 			{
 				unwrap = unwrap && type.IsValueType;
 				if (!unwrap) unwrap = this.explicitUnwrap.Any(t => t.IsAssignableFrom(type));
@@ -198,16 +152,16 @@ namespace Duality.Cloning
 			if (!this.DoesUnwrapType(objType)) return baseObj;
 
 			// IClonables
-			if (baseObj is ICloneable)
+			if (baseObj is ICloneExplicit)
 			{
 				object copy = objType.CreateInstanceOf() ?? objType.CreateInstanceOf(true);
 				if (objType.IsClass) this.RegisterObjectClone(baseObj, copy);
-				(baseObj as ICloneable).CopyDataTo(copy, this);
+				(baseObj as ICloneExplicit).CopyDataTo(copy, this);
 				return copy;
 			}
 
 			// ISurrogate
-			ISurrogate surrogate = this.GetSurrogateFor(objType);
+			ICloneSurrogate surrogate = GetSurrogateFor(objType);
 			if (surrogate != null)
 			{
 				surrogate.RealObject = baseObj;
@@ -264,6 +218,23 @@ namespace Duality.Cloning
 			}
 		}
 
+
+		private	static List<ICloneSurrogate>	surrogates	= null;
+		private static ICloneSurrogate GetSurrogateFor(Type type)
+		{
+			if (surrogates == null)
+			{
+				surrogates = 
+					DualityApp.GetAvailDualityTypes(typeof(ICloneSurrogate))
+					.Select(t => t.CreateInstanceOf())
+					.OfType<ICloneSurrogate>()
+					.NotNull()
+					.ToList();
+				surrogates.StableSort((s1, s2) => s1.Priority - s2.Priority);
+			}
+			return surrogates.FirstOrDefault(s => s.MatchesType(type));
+		}
+
 		public static T DeepClone<T>(T baseObj, CloneProviderContext context = null)
 		{
 			CloneProvider provider = new CloneProvider(context);
@@ -284,7 +255,7 @@ namespace Duality.Cloning
 			if (targetObj == null) throw new ArgumentNullException("targetObj");
 
 			// Use explicit unwrapping: Only unwrap (deep-copy) collection types, shallow-copy others.
-			provider.SetExplicitUnwrap(typeof(System.Collections.ICollection));
+			provider.ExplicitUnwrap.Add(typeof(System.Collections.ICollection));
 
 			// Travel up the inheritance hierarchy
 			// Don't fallback for types from the Duality Assembly. Those are required to do explicit copying.
@@ -311,7 +282,11 @@ namespace Duality.Cloning
 			}
 
 			// Deactivate explicit unwrapping again
-			provider.SetExplicitUnwrap((Type[])null);
+			provider.ExplicitUnwrap.Remove(typeof(System.Collections.ICollection));
+		}
+		internal static void ClearTypeCache()
+		{
+			surrogates = null;
 		}
 	}
 

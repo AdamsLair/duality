@@ -7,14 +7,13 @@ using OpenTK;
 
 using Duality.Resources;
 using Duality.Cloning;
-using ICloneable = Duality.Cloning.ICloneable;
 
 namespace Duality.Drawing
 {
 	/// <summary>
 	/// Describes the state of a <see cref="Canvas"/>.
 	/// </summary>
-	public class CanvasState : ICloneable
+	public class CanvasState : ICloneExplicit
 	{
 		private static readonly BatchInfo DefaultMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
@@ -292,7 +291,7 @@ namespace Duality.Drawing
 			}
 		}
 			
-		void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
+		void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
 		{
 			this.CopyTo(targetObj as CanvasState);
 		}

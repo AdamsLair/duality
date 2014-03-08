@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.Remoting;
 
 
-namespace Duality.Serialization
+namespace Duality
 {
 	/// <summary>
 	/// Wraps a <see cref="Stream"/>, but only pretends to close it without actually doing so.

@@ -134,7 +134,7 @@ namespace Duality.Tests.Cloning
 			TestObject data = new TestObject(rnd);
 
 			CloneProvider provider = new CloneProvider();
-			provider.SetExplicitUnwrap(typeof(System.Collections.ICollection));
+			provider.ExplicitUnwrap.Add(typeof(System.Collections.ICollection));
 
 			// Need to trick CloneProvider to deep-clone TestObject, because we just explicitly told it not to unwrap it.
 			TestObject dataResult = new TestObject(rnd, 0);

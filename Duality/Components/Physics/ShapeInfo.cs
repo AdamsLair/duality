@@ -8,6 +8,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Collision.Shapes;
 
 using Duality.Editor;
+using Duality.Cloning;
 
 namespace Duality.Components.Physics
 {
@@ -15,7 +16,7 @@ namespace Duality.Components.Physics
 	/// Describes a <see cref="RigidBody">Colliders</see> primitive shape. A Colliders overall shape may be combined of any number of primitive shapes.
 	/// </summary>
 	[Serializable]
-	public abstract class ShapeInfo : Duality.Cloning.ICloneable
+	public abstract class ShapeInfo : Duality.Cloning.ICloneExplicit
 	{
 		[NonSerialized]	
 		protected	Fixture		fixture		= null;
@@ -172,7 +173,7 @@ namespace Duality.Components.Physics
 			Cloning.CloneProvider.DeepCopyTo(this, other);
 		}
 
-		void Cloning.ICloneable.CopyDataTo(object targetObj, Cloning.CloneProvider provider)
+		void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
 		{
 			ShapeInfo targetShape = targetObj as ShapeInfo;
 			this.OnCopyTo(targetShape);

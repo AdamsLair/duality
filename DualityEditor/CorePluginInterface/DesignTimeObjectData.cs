@@ -274,7 +274,7 @@ namespace Duality.Editor
 	}
 
 	[Serializable]
-	internal class DesignTimeObjectDataManager : ISerializable
+	internal class DesignTimeObjectDataManager : ISerializeExplicit
 	{
 		private static readonly int GuidByteLength = Guid.Empty.ToByteArray().Length;
 		private	const int Version_First	= 1;
@@ -317,7 +317,7 @@ namespace Duality.Editor
 			}
 		}
 
-		void ISerializable.WriteData(IDataWriter writer)
+		void ISerializeExplicit.WriteData(IDataWriter writer)
 		{
 			this.CleanupDesignTimeData();
 			this.OptimizeDesignTimeData();
@@ -338,7 +338,7 @@ namespace Duality.Editor
 			writer.WriteValue("dataStoreValues", objData);
 			writer.WriteValue("dataStoreDirtyFlag", objDataDirty);
 		}
-		void ISerializable.ReadData(IDataReader reader)
+		void ISerializeExplicit.ReadData(IDataReader reader)
 		{
 			int version;
 			reader.ReadValue("version", out version);

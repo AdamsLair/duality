@@ -7,7 +7,7 @@ using Duality.Cloning;
 using Duality.Editor;
 using Duality.Properties;
 
-using ICloneable = Duality.Cloning.ICloneable;
+using ICloneable = Duality.Cloning.ICloneExplicit;
 
 namespace Duality
 {
