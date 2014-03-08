@@ -61,7 +61,7 @@ namespace Duality
 		{
 			if (this.pretendClosed)
 			{
-				throw new InvalidOperationException("The Stream has been closed or disposed.");
+				throw new ObjectDisposedException("The Stream has been closed or disposed.");
 			}
 		}
 		protected override void Dispose(bool disposing)

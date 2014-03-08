@@ -69,32 +69,6 @@ namespace Duality
 			this.advanceBuffer = null;
 			this.subStream = null;
 		}
-
-		private void RequirePosition(long pos)
-		{
-			pos = Math.Max(pos, 0);
-			if (this.maxLength != -1) pos = Math.Min(pos, this.maxLength);
-
-			long requiredBytes = pos - this.subStream.Length;
-			if (requiredBytes > 0)
-			{
-				if (this.advanceBuffer == null) this.advanceBuffer = new byte[1024 * 4];
-
-				long oldSubStreamPos = this.subStream.Position;
-				while (requiredBytes > 0)
-				{
-					int bytesToAdvance = Math.Min(this.advanceBuffer.Length, (int)requiredBytes);
-					int bytesRead = base.Read(this.advanceBuffer, 0, bytesToAdvance);
-
-					this.subStream.Write(this.advanceBuffer, 0, bytesRead);
-					requiredBytes -= bytesRead;
-
-					if (bytesRead < bytesToAdvance) break;
-				}
-				this.subStream.Position = oldSubStreamPos;
-			}
-		}
-
 		public override long Seek(long offset, SeekOrigin origin)
 		{
 			if (this.subStream == null) throw new ObjectDisposedException("Can't operate on closed Stream.");
@@ -142,7 +116,7 @@ namespace Duality
 
 			long oldBasePos = base.Position;
 			long newBasePos = this.baseStreamOrigin + oldPos;
-			if (oldBasePos != newBasePos) base.Position = this.baseStreamOrigin + oldPos;
+			if (oldBasePos != newBasePos) base.Position = newBasePos;
 			base.Write(buffer, offset, count);
 			if (oldBasePos != newBasePos) base.Position = oldBasePos;
 		}
@@ -150,6 +124,31 @@ namespace Duality
 		{
 			this.maxLength = Math.Min(this.originalMaxLength, value);
 			this.subStream.SetLength(this.maxLength);
+		}
+
+		private void RequirePosition(long pos)
+		{
+			pos = Math.Max(pos, 0);
+			if (this.maxLength != -1) pos = Math.Min(pos, this.maxLength);
+
+			long requiredBytes = pos - this.subStream.Length;
+			if (requiredBytes > 0)
+			{
+				if (this.advanceBuffer == null) this.advanceBuffer = new byte[1024 * 4];
+
+				long oldSubStreamPos = this.subStream.Position;
+				while (requiredBytes > 0)
+				{
+					int bytesToAdvance = Math.Min(this.advanceBuffer.Length, (int)requiredBytes);
+					int bytesRead = base.Read(this.advanceBuffer, 0, bytesToAdvance);
+
+					this.subStream.Write(this.advanceBuffer, 0, bytesRead);
+					requiredBytes -= bytesRead;
+
+					if (bytesRead < bytesToAdvance) break;
+				}
+				this.subStream.Position = oldSubStreamPos;
+			}
 		}
 	}
 }
