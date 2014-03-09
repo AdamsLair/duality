@@ -60,14 +60,13 @@ namespace Duality.Serialization.MetaFormat
 		{
 			if (node.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 			
-									element.SetAttributeValue("type", node.TypeString);
+			element.SetAttributeValue("type", node.TypeString);
 			if (node.ObjId != 0)	element.SetAttributeValue("id", XmlConvert.ToString(node.ObjId));
 			if (node.Rank != 1)		element.SetAttributeValue("rank", XmlConvert.ToString(node.Rank));
 
 			
 			if (node.PrimitiveData != null)
 			{
-				element.SetAttributeValue("length", XmlConvert.ToString(node.PrimitiveData.Length));
 				Array objAsArray = node.PrimitiveData;
 				if (objAsArray is byte[])
 				{
@@ -77,9 +76,10 @@ namespace Duality.Serialization.MetaFormat
 				else
 				{
 					SerializeType elemType = objAsArray.GetType().GetElementType().GetSerializeType();
+					int nonDefaultElementCount = this.GetArrayNonDefaultElementCount(objAsArray, elemType.Type);
 					if (elemType.DataType == DataType.String)
 					{
-						for (long l = 0; l < objAsArray.Length; l++)
+						for (long l = 0; l < nonDefaultElementCount; l++)
 						{
 							XElement itemElement = new XElement("item");
 							element.Add(itemElement);
@@ -89,23 +89,34 @@ namespace Duality.Serialization.MetaFormat
 					}
 					else
 					{
-						for (long l = 0; l < objAsArray.Length; l++)
+						for (long l = 0; l < nonDefaultElementCount; l++)
 						{
 							XElement itemElement = new XElement("item");
 							element.Add(itemElement);
 							this.WriteObjectData(itemElement, new PrimitiveNode(elemType.DataType, objAsArray.GetValue(l)));
 						}
 					}
+
+					// Write original length, in case trailing elements were omitted.
+					if (nonDefaultElementCount != objAsArray.Length)
+					{
+						element.SetAttributeValue("length", XmlConvert.ToString(node.PrimitiveData.Length));
+					}
 				}
 			}
 			else
 			{
-				element.SetAttributeValue("length", XmlConvert.ToString(node.SubNodes.Count()));
 				foreach (DataNode subNode in node.SubNodes)
 				{
 					XElement itemElement = new XElement("item");
 					element.Add(itemElement);
 					this.WriteObjectData(itemElement, subNode);
+				}
+
+				// Write original length, in case trailing elements were omitted.
+				if (node.SubNodes.Count() != node.Length)
+				{
+					element.SetAttributeValue("length", XmlConvert.ToString(node.Length));
 				}
 			}
 		}
@@ -268,7 +279,7 @@ namespace Duality.Serialization.MetaFormat
 			string	arrLengthString	= element.GetAttributeValue("length");
 			uint	objId			= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
 			int		arrRank			= arrRankString == null ? 1 : XmlConvert.ToInt32(arrRankString);
-			int		arrLength		= arrLengthString == null ? 0 : XmlConvert.ToInt32(arrLengthString);
+			int		arrLength		= arrLengthString == null ? element.Elements().Count() : XmlConvert.ToInt32(arrLengthString);
 			Type	arrType			= ReflectionHelper.ResolveType(arrTypeString, false);
 
 			ArrayNode result = new ArrayNode(arrTypeString, objId, arrRank, arrLength);

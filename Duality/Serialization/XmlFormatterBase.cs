@@ -230,6 +230,25 @@ namespace Duality.Serialization
 				throw new ArgumentException(string.Format("Type '{0}' is not a primitive.", obj.GetType()));
 		}
 
+		/// <summary>
+		/// Determines the length of the longest Array element sequence that contains
+		/// non-default values, beginning at index zero. It is the number of elements
+		/// that actually needs to be serialized.
+		/// </summary>
+		/// <param name="array"></param>
+		/// <param name="elementType"></param>
+		/// <returns></returns>
+		protected int GetArrayNonDefaultElementCount(Array array, Type elementType)
+		{
+			int omitElementCount = 0;
+			object defaultValue = elementType.GetDefaultInstanceOf();
+			while (object.Equals(array.GetValue(array.Length - omitElementCount - 1), defaultValue))
+			{
+				omitElementCount++;
+			}
+			return array.Length - omitElementCount;
+		}
+
 
 		protected override void BeginReadOperation()
 		{

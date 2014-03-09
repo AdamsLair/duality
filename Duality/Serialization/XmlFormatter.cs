@@ -67,11 +67,10 @@ namespace Duality.Serialization
 
 			if (objAsArray.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new ArgumentException("Non zero-based arrays are not supported");
-
-										element.SetAttributeValue("type", objSerializeType.TypeString);
+			
+			element.SetAttributeValue("type", objSerializeType.TypeString);
 			if (id != 0)				element.SetAttributeValue("id", XmlConvert.ToString(id));
 			if (objAsArray.Rank != 1)	element.SetAttributeValue("rank", XmlConvert.ToString(objAsArray.Rank));
-										element.SetAttributeValue("length", XmlConvert.ToString(objAsArray.Length));
 
 			if (objAsArray is byte[])
 			{
@@ -80,12 +79,20 @@ namespace Duality.Serialization
 			}
 			else
 			{
-				for (long l = 0; l < objAsArray.Length; l++)
+				// Write Array elements
+				int nonDefaultElementCount = this.GetArrayNonDefaultElementCount(objAsArray, objSerializeType.Type.GetElementType());
+				for (int i = 0; i < nonDefaultElementCount; i++)
 				{
 					XElement itemElement = new XElement("item");
 					element.Add(itemElement);
 
-					this.WriteObjectData(itemElement, objAsArray.GetValue(l));
+					this.WriteObjectData(itemElement, objAsArray.GetValue(i));
+				}
+
+				// Write original length, in case trailing elements were omitted.
+				if (nonDefaultElementCount != objAsArray.Length)
+				{
+					element.SetAttributeValue("length", XmlConvert.ToString(objAsArray.Length));
 				}
 			}
 		}
@@ -230,7 +237,7 @@ namespace Duality.Serialization
 			string	arrLengthString	= element.GetAttributeValue("length");
 			uint	objId			= objIdString == null		? 0 : XmlConvert.ToUInt32(objIdString);
 			int		arrRank			= arrRankString == null		? 1 : XmlConvert.ToInt32(arrRankString);
-			int		arrLength		= arrLengthString == null	? 0 : XmlConvert.ToInt32(arrLengthString);
+			int		arrLength		= arrLengthString == null	? element.Elements().Count() : XmlConvert.ToInt32(arrLengthString);
 			Type	arrType			= this.ResolveType(arrTypeString, objId);
 
 			Array arrObj;
