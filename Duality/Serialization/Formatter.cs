@@ -150,6 +150,7 @@ namespace Duality.Serialization
 			private	uint			objectId;
 			private	DataType		dataType;
 			private	SerializeType	serializeType;
+			private	string			typeString;
 
 			/// <summary>
 			/// [GET] The objects unique ID. May be zero for non-referenced object types.
@@ -180,11 +181,32 @@ namespace Duality.Serialization
 				get { return (this.serializeType != null) ? this.serializeType.Type : null; }
 			}
 			/// <summary>
+			/// [GET] The string representing this objects type in the serialized data stream.
+			/// </summary>
+			public string TypeString
+			{
+				get { return this.typeString; }
+			}
+			/// <summary>
 			/// [GET] Whether or not the object is considered a primitive value according to its <see cref="DataType"/>.
 			/// </summary>
 			public bool IsPrimitive
 			{
 				get { return this.dataType.IsPrimitiveType(); }
+			}
+			/// <summary>
+			/// [GET] Returns whether this kind of object requires an explicit <see cref="ObjectType"/> to be fully described.
+			/// </summary>
+			public bool IsObjectTypeRequired
+			{
+				get 
+				{
+					return 
+						!this.IsPrimitive && 
+						!this.dataType.IsMemberInfoType() && 
+						this.dataType != DataType.String && 
+						this.dataType != DataType.ObjectRef;
+				}
 			}
 
 			public ObjectHeader(uint id, DataType type, SerializeType serializeType)
@@ -192,6 +214,39 @@ namespace Duality.Serialization
 				this.objectId = id;
 				this.dataType = type;
 				this.serializeType = serializeType;
+				this.typeString = serializeType != null ? serializeType.TypeString : null;
+			}
+			public ObjectHeader(uint id, DataType type, string typeString)
+			{
+				this.objectId = id;
+				this.dataType = type;
+				this.serializeType = null;
+				this.typeString = typeString;
+			}
+			public ObjectHeader(MetaFormat.DataNode node)
+			{
+				var enumNode = node as MetaFormat.EnumNode;
+				var objNode = node as MetaFormat.ObjectNode;
+				var refNode = node as MetaFormat.ObjectRefNode;
+
+				this.dataType = node.NodeType;
+				this.objectId = 0;
+				this.typeString = null;
+				this.serializeType = null;
+
+				if (objNode != null)
+				{
+					this.typeString = objNode.TypeString;
+					this.objectId = objNode.ObjId;
+				}
+				else if (refNode != null)
+				{
+					this.objectId = refNode.ObjRefId;
+				}
+				else if (enumNode != null)
+				{
+					this.typeString = enumNode.EnumType;
+				}
 			}
 		}
 

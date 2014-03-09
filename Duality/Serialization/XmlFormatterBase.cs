@@ -93,12 +93,19 @@ namespace Duality.Serialization
 			}
 
 			// Read data type header
+			string objIdString = element.GetAttributeValue("id");
 			string dataTypeStr = element.GetAttributeValue("dataType");
+			string typeStr = element.GetAttributeValue("type");
+			uint objId = objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
 			DataType dataType;
 			if (!Enum.TryParse<DataType>(dataTypeStr, out dataType))
 			{
 				dataType = DataType.Unknown;
-				this.SerializationLog.WriteError("Can't resolve DataType: {0}. Returning null reference.", dataTypeStr);
+			}
+			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
+			if (header.DataType == DataType.Unknown)
+			{
+				this.SerializationLog.WriteError("Unable to process DataType: {0}.", dataTypeStr);
 				return this.GetNullObject();
 			}
 
@@ -107,7 +114,7 @@ namespace Duality.Serialization
 			try
 			{
 				// Read the objects body
-				result = this.ReadObjectBody(element, dataType);
+				result = this.ReadObjectBody(element, header);
 			}
 			catch (Exception e)
 			{
@@ -116,23 +123,33 @@ namespace Duality.Serialization
 
 			return result ?? this.GetNullObject();
 		}
+		protected virtual ObjectHeader ParseObjectHeader(uint objId, DataType dataType, string typeString)
+		{
+			Type type = null;
+			if (typeString != null)
+			{
+				type = this.ResolveType(typeString, objId);
+				if (type == null) return null;
+			}
+			return new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
+		}
 		/// <summary>
 		/// Reads the body of an object.
 		/// </summary>
 		/// <param name="element">The XML element that describes the object.</param>
 		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> that is assumed.</param>
 		/// <returns>The object that has been read.</returns>
-		protected abstract object ReadObjectBody(XElement element, DataType dataType);
+		protected abstract object ReadObjectBody(XElement element, ObjectHeader header);
 		/// <summary>
 		/// Reads a single primitive value, assuming the specified <see cref="Duality.Serialization.DataType"/>.
 		/// </summary>
 		/// <param name="element"></param>
 		/// <param name="dataType"></param>
 		/// <returns></returns>
-		protected object ReadPrimitive(XElement element, DataType dataType)
+		protected object ReadPrimitive(XElement element, ObjectHeader header)
 		{
 			string val = element.Value;
-			switch (dataType)
+			switch (header.DataType)
 			{
 				case DataType.Bool:			return XmlConvert.ToBoolean(val);
 				case DataType.Byte:			return XmlConvert.ToByte(val);
@@ -148,7 +165,7 @@ namespace Duality.Serialization
 				case DataType.Decimal:		return XmlConvert.ToDecimal(val);
 				case DataType.Char:			return XmlConvert.ToChar(val);
 				default:
-					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", dataType));
+					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", header.DataType));
 			}
 		}
 
@@ -170,6 +187,8 @@ namespace Duality.Serialization
 
 			// Write data type header
 			element.SetAttributeValue("dataType", header.DataType.ToString());
+			if (header.IsObjectTypeRequired) element.SetAttributeValue("type", header.TypeString);
+			if (header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
 
 			// Write object
 			try 

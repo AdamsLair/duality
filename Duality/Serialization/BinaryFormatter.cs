@@ -65,7 +65,7 @@ namespace Duality.Serialization
 			if (objAsArray.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new ArgumentException("Non zero-based arrays are not supported");
 
-			this.writer.Write(header.SerializeType.TypeString);
+			this.writer.Write(header.TypeString);
 			this.writer.Write(header.ObjectId);
 			this.writer.Write(objAsArray.Rank);
 			this.writer.Write(objAsArray.Length);
@@ -102,7 +102,7 @@ namespace Duality.Serialization
 			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
 
 			// Write the structs data type
-			this.writer.Write(header.SerializeType.TypeString);
+			this.writer.Write(header.TypeString);
 			this.writer.Write(header.ObjectId);
 			this.writer.Write(objAsCustom != null);
 			this.writer.Write(objSurrogate != null);
@@ -157,7 +157,7 @@ namespace Duality.Serialization
 			bool multi = obj is MulticastDelegate;
 
 			// Write the delegates type
-			this.writer.Write(header.SerializeType.TypeString);
+			this.writer.Write(header.TypeString);
 			this.writer.Write(header.ObjectId);
 			this.writer.Write(multi);
 
@@ -183,7 +183,7 @@ namespace Duality.Serialization
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		protected void WriteEnum(Enum obj, ObjectHeader header)
 		{
-			this.writer.Write(header.SerializeType.TypeString);
+			this.writer.Write(header.TypeString);
 			this.writer.Write(obj.ToString());
 			this.writer.Write(Convert.ToInt64(obj));
 		}

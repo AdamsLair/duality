@@ -17,12 +17,7 @@ namespace Duality.Serialization.MetaFormat
 		{
 			DataNode node = obj as DataNode;
 			if (node == null) throw new InvalidOperationException("The BinaryMetaFormatter can't serialize objects that do not derive from DataNode");
-
-			uint objId = 0;
-			if (node is ObjectNode) objId = (node as ObjectNode).ObjId;
-			else if (node is ObjectRefNode) objId = (node as ObjectRefNode).ObjRefId;
-
-			header = new ObjectHeader(objId, node.NodeType, null);
+			header = new ObjectHeader(node);
 		}
 		protected override void WriteObjectBody(object obj, ObjectHeader header)
 		{

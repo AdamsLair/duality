@@ -19,12 +19,7 @@ namespace Duality.Serialization.MetaFormat
 		{
 			DataNode node = obj as DataNode;
 			if (node == null) throw new InvalidOperationException("The XmlMetaFormatter can't serialize objects that do not derive from DataNode");
-			
-			uint objId = 0;
-			if (node is ObjectNode) objId = (node as ObjectNode).ObjId;
-			else if (node is ObjectRefNode) objId = (node as ObjectRefNode).ObjRefId;
-
-			header = new ObjectHeader(objId, node.NodeType, null);
+			header = new ObjectHeader(node);
 		}
 		protected override void WriteObjectBody(XElement element, object obj, ObjectHeader header)
 		{
@@ -45,10 +40,7 @@ namespace Duality.Serialization.MetaFormat
 		/// <param name="node"></param>
 		protected void WriteMemberInfo(XElement element, MemberInfoNode node)
 		{
-			if (node == null) throw new ArgumentNullException("node");
-
-			if (node.ObjId != 0)	element.SetAttributeValue("id", XmlConvert.ToString(node.ObjId));
-									element.SetAttributeValue("value", node.TypeString);
+			element.SetAttributeValue("value", node.TypeString);
 		}
 		/// <summary>
 		/// Writes the specified <see cref="Duality.Serialization.MetaFormat.ArrayNode"/>, including possible child nodes.
@@ -58,11 +50,6 @@ namespace Duality.Serialization.MetaFormat
 		protected void WriteArray(XElement element, ArrayNode node)
 		{
 			if (node.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
-			
-			element.SetAttributeValue("type", node.TypeString);
-			if (node.ObjId != 0)	element.SetAttributeValue("id", XmlConvert.ToString(node.ObjId));
-			if (node.Rank != 1)		element.SetAttributeValue("rank", XmlConvert.ToString(node.Rank));
-
 			
 			if (node.PrimitiveData != null)
 			{
@@ -127,8 +114,6 @@ namespace Duality.Serialization.MetaFormat
 		protected void WriteStruct(XElement element, StructNode node)
 		{
 			// Write the structs data type
-												element.SetAttributeValue("type", node.TypeString);
-			if (node.ObjId != 0)				element.SetAttributeValue("id", XmlConvert.ToString(node.ObjId));
 			if (node.CustomSerialization)		element.SetAttributeValue("custom", XmlConvert.ToString(true));
 			if (node.SurrogateSerialization)	element.SetAttributeValue("surrogate", XmlConvert.ToString(true));
 
@@ -196,9 +181,7 @@ namespace Duality.Serialization.MetaFormat
 		protected void WriteDelegate(XElement element, DelegateNode node)
 		{
 			// Write the delegates type
-											element.SetAttributeValue("type", node.TypeString);
-			if (node.ObjId != 0)			element.SetAttributeValue("id", XmlConvert.ToString(node.ObjId));
-			if (node.InvokeList != null)	element.SetAttributeValue("multi", XmlConvert.ToString(true));
+			if (node.InvokeList != null) element.SetAttributeValue("multi", XmlConvert.ToString(true));
 			
 			XElement methodElement = new XElement("method");
 			XElement targetElement = new XElement("target");
@@ -222,7 +205,6 @@ namespace Duality.Serialization.MetaFormat
 		/// <param name="node"></param>
 		protected void WriteEnum(XElement element, EnumNode node)
 		{
-			element.SetAttributeValue("type", node.EnumType);
 			element.SetAttributeValue("name", node.ValueName);
 			element.SetAttributeValue("value", XmlConvert.ToString(node.Value));
 		}
@@ -231,19 +213,23 @@ namespace Duality.Serialization.MetaFormat
 		{
 			return new PrimitiveNode(DataType.Unknown, null);
 		}
-		protected override object ReadObjectBody(XElement element, DataType dataType)
+		protected override Formatter.ObjectHeader ParseObjectHeader(uint objId, DataType dataType, string typeString)
+		{
+			return new ObjectHeader(objId, dataType, typeString);
+		}
+		protected override object ReadObjectBody(XElement element, ObjectHeader header)
 		{
 			DataNode result = null;
 
-			if (dataType.IsPrimitiveType())				result = new PrimitiveNode(dataType, this.ReadPrimitive(element, dataType));
-			else if (dataType == DataType.String)		result = new StringNode(element.Value);
-			else if (dataType == DataType.Enum)			result = this.ReadEnum(element);
-			else if (dataType == DataType.Struct)		result = this.ReadStruct(element, false);
-			else if (dataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
-			else if (dataType == DataType.Array)		result = this.ReadArray(element);
-			else if (dataType == DataType.Class)		result = this.ReadStruct(element, true);
-			else if (dataType == DataType.Delegate)		result = this.ReadDelegate(element);
-			else if (dataType.IsMemberInfoType())		result = this.ReadMemberInfo(element, dataType);
+			if (header.IsPrimitive)							result = new PrimitiveNode(header.DataType, this.ReadPrimitive(element, header));
+			else if (header.DataType == DataType.String)	result = new StringNode(element.Value);
+			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
+			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
+			else if (header.DataType == DataType.Class)		result = this.ReadStruct(element, header);
+			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
+			else if (header.DataType == DataType.Array)		result = this.ReadArray(element, header);
+			else if (header.DataType == DataType.Delegate)	result = this.ReadDelegate(element, header);
+			else if (header.DataType.IsMemberInfoType())	result = this.ReadMemberInfo(element, header);
 
 			return result;
 		}
@@ -252,16 +238,13 @@ namespace Duality.Serialization.MetaFormat
 		/// </summary>
 		/// <param name="element"></param>
 		/// <param name="node"></param>
-		protected MemberInfoNode ReadMemberInfo(XElement element, DataType dataType)
+		protected MemberInfoNode ReadMemberInfo(XElement element, ObjectHeader header)
 		{
-			string	objIdString		= element.GetAttributeValue("id");
-			uint	objId			= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
-
 			string typeString = element.GetAttributeValue("value");
-			MemberInfoNode result = new MemberInfoNode(dataType, typeString, objId);
+			MemberInfoNode result = new MemberInfoNode(header.DataType, typeString, header.ObjectId);
 			
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			return result;
 		}
@@ -270,21 +253,16 @@ namespace Duality.Serialization.MetaFormat
 		/// </summary>
 		/// <param name="element"></param>
 		/// <param name="node"></param>
-		protected ArrayNode ReadArray(XElement element)
+		protected ArrayNode ReadArray(XElement element, ObjectHeader header)
 		{
-			string	arrTypeString	= element.GetAttributeValue("type");
-			string	objIdString		= element.GetAttributeValue("id");
-			string	arrRankString	= element.GetAttributeValue("rank");
 			string	arrLengthString	= element.GetAttributeValue("length");
-			uint	objId			= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
-			int		arrRank			= arrRankString == null ? 1 : XmlConvert.ToInt32(arrRankString);
 			int		arrLength		= arrLengthString == null ? element.Elements().Count() : XmlConvert.ToInt32(arrLengthString);
-			Type	arrType			= ReflectionHelper.ResolveType(arrTypeString, false);
+			Type	arrType			= ReflectionHelper.ResolveType(header.TypeString, false);
 
-			ArrayNode result = new ArrayNode(arrTypeString, objId, arrRank, arrLength);
+			ArrayNode result = new ArrayNode(header.TypeString, header.ObjectId, 1, arrLength);
 			
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			// Store primitive data block
 			bool nonPrimitive;
@@ -359,18 +337,15 @@ namespace Duality.Serialization.MetaFormat
 		/// </summary>
 		/// <param name="element"></param>
 		/// <param name="node"></param>
-		protected StructNode ReadStruct(XElement element, bool classType)
+		protected StructNode ReadStruct(XElement element, ObjectHeader header)
 		{
 			// Read struct type
-			string	objTypeString	= element.GetAttributeValue("type");
-			string	objIdString		= element.GetAttributeValue("id");
 			string	customString	= element.GetAttributeValue("custom");
 			string	surrogateString	= element.GetAttributeValue("surrogate");
-			uint	objId			= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
 			bool	custom			= customString != null && XmlConvert.ToBoolean(customString);
 			bool	surrogate		= surrogateString != null && XmlConvert.ToBoolean(surrogateString);
 
-			StructNode result = new StructNode(classType, objTypeString, objId, custom, surrogate);
+			StructNode result = new StructNode(header.DataType == DataType.Class, header.TypeString, header.ObjectId, custom, surrogate);
 			
 			// Read surrogate constructor data
 			if (surrogate)
@@ -378,7 +353,7 @@ namespace Duality.Serialization.MetaFormat
 				custom = true;
 
 				// Set fake object reference for surrogate constructor: No self-references allowed here.
-				this.idManager.Inject(null, objId);
+				this.idManager.Inject(null, header.ObjectId);
 				
 				CustomSerialIO customIO = new CustomSerialIO();
 				XElement customHeaderElement = element.Element(CustomSerialIO.HeaderElement) ?? element.Elements().FirstOrDefault();
@@ -401,7 +376,7 @@ namespace Duality.Serialization.MetaFormat
 			}
 
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 			
 			// Read custom object data
 			if (custom)
@@ -440,13 +415,10 @@ namespace Duality.Serialization.MetaFormat
 		/// </summary>
 		/// <param name="element"></param>
 		/// <param name="node"></param>
-		protected DelegateNode ReadDelegate(XElement element)
+		protected DelegateNode ReadDelegate(XElement element, ObjectHeader header)
 		{
-			string	delegateTypeString	= element.GetAttributeValue("type");
-			string	objIdString			= element.GetAttributeValue("id");
-			string	multiString			= element.GetAttributeValue("multi");
-			uint	objId				= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
-			bool	multi				= objIdString != null && XmlConvert.ToBoolean(multiString);
+			string multiString= element.GetAttributeValue("multi");
+			bool multi = multiString != null && XmlConvert.ToBoolean(multiString);
 			
 			XElement methodElement = element.Element("method") ?? element.Elements().FirstOrDefault();
 			XElement targetElement = element.Element("target") ?? element.Elements().ElementAtOrDefault(1);
@@ -456,10 +428,10 @@ namespace Duality.Serialization.MetaFormat
 			DataNode target	= null;
 
 			// Create the delegate without target and fix it later, so we don't load its target object before setting this object id
-			DelegateNode result = new DelegateNode(delegateTypeString, objId, method, target, null);
+			DelegateNode result = new DelegateNode(header.TypeString, header.ObjectId, method, target, null);
 
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			// Load & fix the target object
 			target = this.ReadObjectData(targetElement) as DataNode;
@@ -480,13 +452,12 @@ namespace Duality.Serialization.MetaFormat
 		/// </summary>
 		/// <param name="element"></param>
 		/// <param name="node"></param>
-		protected EnumNode ReadEnum(XElement element)
+		protected EnumNode ReadEnum(XElement element, ObjectHeader header)
 		{
-			string typeName		= element.GetAttributeValue("type");
-			string name			= element.GetAttributeValue("name");
-			string valueString	= element.GetAttributeValue("value");
+			string name = element.GetAttributeValue("name");
+			string valueString = element.GetAttributeValue("value");
 			long val = valueString == null ? 0 : XmlConvert.ToInt64(valueString);
-			return new EnumNode(typeName, name, val);
+			return new EnumNode(header.TypeString, name, val);
 		}
 		/// <summary>
 		/// Reads an <see cref="Duality.Serialization.MetaFormat.ObjectRefNode"/>.

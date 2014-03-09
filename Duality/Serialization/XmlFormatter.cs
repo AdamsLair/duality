@@ -36,8 +36,6 @@ namespace Duality.Serialization
 		/// <param name="id">The objects id.</param>
 		protected void WriteMemberInfo(XElement element, object obj, ObjectHeader header)
 		{
-			if (header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
-
 			if (obj is Type)
 			{
 				Type type = obj as Type;
@@ -67,9 +65,6 @@ namespace Duality.Serialization
 
 			if (objAsArray.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new ArgumentException("Non zero-based arrays are not supported");
-			
-			element.SetAttributeValue("type", header.SerializeType.TypeString);
-			if (header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
 
 			if (objAsArray is byte[])
 			{
@@ -108,8 +103,6 @@ namespace Duality.Serialization
 			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
 
 			// Write the structs data type
-										element.SetAttributeValue("type", header.SerializeType.TypeString);
-			if (header.ObjectId != 0)	element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
 			if (objAsCustom != null)	element.SetAttributeValue("custom", XmlConvert.ToString(true));
 			if (objSurrogate != null)	element.SetAttributeValue("surrogate", XmlConvert.ToString(true));
 
@@ -163,9 +156,7 @@ namespace Duality.Serialization
 			bool multi = obj is MulticastDelegate;
 
 			// Write the delegates type
-										element.SetAttributeValue("type", header.SerializeType.TypeString);
-			if (header.ObjectId != 0)	element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
-			if (multi)					element.SetAttributeValue("multi", XmlConvert.ToString(multi));
+			if (multi) element.SetAttributeValue("multi", XmlConvert.ToString(multi));
 
 			if (!multi)
 			{
@@ -202,24 +193,23 @@ namespace Duality.Serialization
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		protected void WriteEnum(XElement element, Enum obj, ObjectHeader header)
 		{
-			element.SetAttributeValue("type", header.SerializeType.TypeString);
 			element.SetAttributeValue("name", obj.ToString());
 			element.SetAttributeValue("value", XmlConvert.ToString(Convert.ToInt64(obj)));
 		}
 
-		protected override object ReadObjectBody(XElement element, DataType dataType)
+		protected override object ReadObjectBody(XElement element, ObjectHeader header)
 		{
 			object result = null;
 
-			if (dataType.IsPrimitiveType())				result = this.ReadPrimitive(element, dataType);
-			else if (dataType == DataType.String)		result = element.Value;
-			else if (dataType == DataType.Enum)			result = this.ReadEnum(element);
-			else if (dataType == DataType.Struct)		result = this.ReadStruct(element);
-			else if (dataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
-			else if (dataType == DataType.Array)		result = this.ReadArray(element);
-			else if (dataType == DataType.Class)		result = this.ReadStruct(element);
-			else if (dataType == DataType.Delegate)		result = this.ReadDelegate(element);
-			else if (dataType.IsMemberInfoType())		result = this.ReadMemberInfo(element, dataType);
+			if (header.IsPrimitive)							result = this.ReadPrimitive(element, header);
+			else if (header.DataType == DataType.String)	result = element.Value;
+			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
+			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
+			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
+			else if (header.DataType == DataType.Array)		result = this.ReadArray(element, header);
+			else if (header.DataType == DataType.Class)		result = this.ReadStruct(element, header);
+			else if (header.DataType == DataType.Delegate)	result = this.ReadDelegate(element, header);
+			else if (header.DataType.IsMemberInfoType())	result = this.ReadMemberInfo(element, header);
 
 			return result;
 		}
@@ -228,32 +218,26 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="element"></param>
 		/// <returns>The object that has been read.</returns>
-		protected Array ReadArray(XElement element)
+		protected Array ReadArray(XElement element, ObjectHeader header)
 		{
-			string	arrTypeString	= element.GetAttributeValue("type");
-			string	objIdString		= element.GetAttributeValue("id");
-			string	arrRankString	= element.GetAttributeValue("rank");
-			string	arrLengthString	= element.GetAttributeValue("length");
-			uint	objId			= objIdString == null		? 0 : XmlConvert.ToUInt32(objIdString);
-			int		arrRank			= arrRankString == null		? 1 : XmlConvert.ToInt32(arrRankString);
-			int		arrLength		= arrLengthString == null	? element.Elements().Count() : XmlConvert.ToInt32(arrLengthString);
-			Type	arrType			= this.ResolveType(arrTypeString, objId);
+			string arrLengthString = element.GetAttributeValue("length");
+			int arrLength = arrLengthString == null	? element.Elements().Count() : XmlConvert.ToInt32(arrLengthString);
 
 			Array arrObj;
-			if (arrType == typeof(byte[]))
+			if (header.ObjectType == typeof(byte[]))
 			{
 				string binHexString = element.Value;
 				byte[] byteArr = DecodeByteArray(binHexString);
 
 				// Set object reference
-				this.idManager.Inject(byteArr, objId);
+				this.idManager.Inject(byteArr, header.ObjectId);
 				arrObj = byteArr;
 			}
 			else
 			{
 				// Prepare object reference
-				arrObj = arrType != null ? Array.CreateInstance(arrType.GetElementType(), arrLength) : null;
-				this.idManager.Inject(arrObj, objId);
+				arrObj = Array.CreateInstance(header.ObjectType.GetElementType(), arrLength);
+				this.idManager.Inject(arrObj, header.ObjectId);
 
 				int itemIndex = 0;
 				foreach (XElement itemElement in element.Elements())
@@ -273,35 +257,28 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="element"></param>
 		/// <returns>The object that has been read.</returns>
-		protected object ReadStruct(XElement element)
+		protected object ReadStruct(XElement element, ObjectHeader header)
 		{
 			// Read struct type
-			string	objTypeString	= element.GetAttributeValue("type");
-			string	objIdString		= element.GetAttributeValue("id");
 			string	customString	= element.GetAttributeValue("custom");
 			string	surrogateString	= element.GetAttributeValue("surrogate");
-			uint	objId			= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
 			bool	custom			= customString != null && XmlConvert.ToBoolean(customString);
 			bool	surrogate		= surrogateString != null && XmlConvert.ToBoolean(surrogateString);
-			Type	objType			= this.ResolveType(objTypeString, objId);
 
-			SerializeType objSerializeType = null;
-			if (objType != null) objSerializeType = objType.GetSerializeType();
-			
 			// Retrieve surrogate if requested
 			ISerializeSurrogate objSurrogate = null;
-			if (surrogate && objType != null) objSurrogate = GetSurrogateFor(objType);
+			if (surrogate && header.ObjectType != null) objSurrogate = GetSurrogateFor(header.ObjectType);
 
 			// Construct object
 			object obj = null;
-			if (objType != null)
+			if (header.ObjectType != null)
 			{
 				if (objSurrogate != null)
 				{
 					custom = true;
 
 					// Set fake object reference for surrogate constructor: No self-references allowed here.
-					this.idManager.Inject(null, objId);
+					this.idManager.Inject(null, header.ObjectId);
 
 					CustomSerialIO customIO = new CustomSerialIO();
 					XElement customHeaderElement = element.Element(CustomSerialIO.HeaderElement) ?? element.Elements().FirstOrDefault();
@@ -309,15 +286,15 @@ namespace Duality.Serialization
 					{
 						customIO.Deserialize(this, customHeaderElement);
 					}
-					try { obj = objSurrogate.ConstructObject(customIO, objType); }
-					catch (Exception e) { this.LogCustomDeserializationError(objId, objType, e); }
+					try { obj = objSurrogate.ConstructObject(customIO, header.ObjectType); }
+					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
-				if (obj == null) obj = objType.CreateInstanceOf();
-				if (obj == null) obj = objType.CreateInstanceOf(true);
+				if (obj == null) obj = header.ObjectType.CreateInstanceOf();
+				if (obj == null) obj = header.ObjectType.CreateInstanceOf(true);
 			}
 
 			// Prepare object reference
-			this.idManager.Inject(obj, objId);
+			this.idManager.Inject(obj, header.ObjectId);
 
 			// Read custom object data
 			if (custom)
@@ -341,18 +318,18 @@ namespace Duality.Serialization
 				if (objAsCustom != null)
 				{
 					try { objAsCustom.ReadData(customIO); }
-					catch (Exception e) { this.LogCustomDeserializationError(objId, objType, e); }
+					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
-				else if (obj != null && objType != null)
+				else if (obj != null && header.ObjectType != null)
 				{
 					this.SerializationLog.WriteWarning(
 						"Object data (Id {0}) is flagged for custom deserialization, yet the objects Type ('{1}') does not support it. Guessing associated fields...",
-						objId,
-						Log.Type(objType));
+						header.ObjectId,
+						Log.Type(header.ObjectType));
 					this.SerializationLog.PushIndent();
 					foreach (var pair in customIO.Data)
 					{
-						this.AssignValueToField(objSerializeType, obj, pair.Key, pair.Value);
+						this.AssignValueToField(header.SerializeType, obj, pair.Key, pair.Value);
 					}
 					this.SerializationLog.PopIndent();
 				}
@@ -365,7 +342,7 @@ namespace Duality.Serialization
 				foreach (XElement fieldElement in element.Elements())
 				{
 					fieldValue = this.ReadObjectData(fieldElement);
-					this.AssignValueToField(objSerializeType, obj, GetCodeElementName(fieldElement.Name.LocalName), fieldValue);
+					this.AssignValueToField(header.SerializeType, obj, GetCodeElementName(fieldElement.Name.LocalName), fieldValue);
 				}
 			}
 
@@ -391,23 +368,20 @@ namespace Duality.Serialization
 		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> of the object to read.</param>
 		/// <param name="element"></param>
 		/// <returns>The object that has been read.</returns>
-		protected MemberInfo ReadMemberInfo(XElement element, DataType dataType)
+		protected MemberInfo ReadMemberInfo(XElement element, ObjectHeader header)
 		{
-			string	objIdString		= element.GetAttributeValue("id");
-			uint	objId			= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
 			MemberInfo result;
-
 			try
 			{
-				if (dataType == DataType.Type)
+				if (header.DataType == DataType.Type)
 				{
 					string typeString = element.GetAttributeValue("value");
-					result = this.ResolveType(typeString, objId);
+					result = this.ResolveType(typeString, header.ObjectId);
 				}
 				else
 				{
 					string memberString = element.GetAttributeValue("value");
-					result = this.ResolveMember(memberString, objId);
+					result = this.ResolveMember(memberString, header.ObjectId);
 				}
 			}
 			catch (Exception e)
@@ -415,13 +389,13 @@ namespace Duality.Serialization
 				result = null;
 				this.SerializationLog.WriteError(
 					"An error occurred in deserializing MemberInfo object Id {0} of type '{1}': {2}",
-					objId,
-					Log.Type(dataType.ToActualType()),
+					header.ObjectId,
+					Log.Type(header.ObjectType),
 					Log.Exception(e));
 			}
 
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			return result;
 		}
@@ -430,14 +404,10 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="element"></param>
 		/// <returns>The object that has been read.</returns>
-		protected Delegate ReadDelegate(XElement element)
+		protected Delegate ReadDelegate(XElement element, ObjectHeader header)
 		{
-			string	delegateTypeString	= element.GetAttributeValue("type");
-			string	objIdString			= element.GetAttributeValue("id");
-			string	multiString			= element.GetAttributeValue("multi");
-			uint	objId				= objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
-			bool	multi				= objIdString != null && XmlConvert.ToBoolean(multiString);
-			Type	delType				= this.ResolveType(delegateTypeString, objId);
+			string multiString = element.GetAttributeValue("multi");
+			bool multi = multiString != null && XmlConvert.ToBoolean(multiString);
 
 			XElement methodElement = element.Element("method") ?? element.Elements().FirstOrDefault();
 			XElement targetElement = element.Element("target") ?? element.Elements().ElementAtOrDefault(1);
@@ -446,16 +416,16 @@ namespace Duality.Serialization
 			// Create the delegate without target and fix it later, so we can register its object id before loading its target object
 			MethodInfo	method	= this.ReadObjectData(methodElement) as MethodInfo;
 			object		target	= null;
-			Delegate	del		= delType != null && method != null ? Delegate.CreateDelegate(delType, target, method) : null;
+			Delegate	del		= header.ObjectType != null && method != null ? Delegate.CreateDelegate(header.ObjectType, target, method) : null;
 
 			// Prepare object reference
-			this.idManager.Inject(del, objId);
+			this.idManager.Inject(del, header.ObjectId);
 
 			// Read the target object now and replace the dummy
 			target = this.ReadObjectData(targetElement);
 			if (del != null && target != null)
 			{
-				FieldInfo targetField = delType.GetField("_target", ReflectionHelper.BindInstanceAll);
+				FieldInfo targetField = header.ObjectType.GetField("_target", ReflectionHelper.BindInstanceAll);
 				targetField.SetValue(del, target);
 			}
 
@@ -473,15 +443,12 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="element"></param>
 		/// <returns>The object that has been read.</returns>
-		protected Enum ReadEnum(XElement element)
+		protected Enum ReadEnum(XElement element, ObjectHeader header)
 		{
-			string typeName		= element.GetAttributeValue("type");
-			string name			= element.GetAttributeValue("name");
-			string valueString	= element.GetAttributeValue("value");
+			string name = element.GetAttributeValue("name");
+			string valueString = element.GetAttributeValue("value");
 			long val = valueString == null ? 0 : XmlConvert.ToInt64(valueString);
-			Type enumType = this.ResolveType(typeName);
-
-			return (enumType == null) ? null : this.ResolveEnumValue(enumType, name, val);
+			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType, name, val);
 		}
 	}
 }
