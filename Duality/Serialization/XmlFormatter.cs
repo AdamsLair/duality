@@ -24,7 +24,6 @@ namespace Duality.Serialization
 			else if (header.DataType == DataType.Struct)	this.WriteStruct		(element, obj, header);
 			else if (header.DataType == DataType.ObjectRef)	element.Value = XmlConvert.ToString(header.ObjectId);
 			else if	(header.DataType == DataType.Array)		this.WriteArray			(element, obj, header);
-			else if (header.DataType == DataType.Class)		this.WriteStruct		(element, obj, header);
 			else if (header.DataType == DataType.Delegate)	this.WriteDelegate		(element, obj, header);
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo	(element, obj, header);
 		}
@@ -207,7 +206,6 @@ namespace Duality.Serialization
 			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
 			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
 			else if (header.DataType == DataType.Array)		result = this.ReadArray(element, header);
-			else if (header.DataType == DataType.Class)		result = this.ReadStruct(element, header);
 			else if (header.DataType == DataType.Delegate)	result = this.ReadDelegate(element, header);
 			else if (header.DataType.IsMemberInfoType())	result = this.ReadMemberInfo(element, header);
 

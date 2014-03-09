@@ -109,10 +109,6 @@ namespace Duality.Serialization
 		/// </summary>
 		Array,
 		/// <summary>
-		/// A class object
-		/// </summary>
-		Class,
-		/// <summary>
 		/// A struct object
 		/// </summary>
 		Struct,
@@ -159,7 +155,6 @@ namespace Duality.Serialization
 				case DataType.Bool:				return typeof(bool);
 				case DataType.Byte:				return typeof(byte);
 				case DataType.Char:				return typeof(char);
-				case DataType.Class:			return typeof(object);
 				case DataType.ConstructorInfo:	return typeof(ConstructorInfo);
 				case DataType.Decimal:			return typeof(decimal);
 				case DataType.Delegate:			return typeof(Delegate);

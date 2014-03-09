@@ -676,7 +676,7 @@ namespace Duality
 			else if (t.IsArray)
 				return DataType.Array;
 			else if (t.IsClass)
-				return DataType.Class;
+				return DataType.Struct;
 			else if (t.IsValueType)
 				return DataType.Struct;
 

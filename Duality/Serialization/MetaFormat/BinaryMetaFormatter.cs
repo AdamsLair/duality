@@ -27,7 +27,6 @@ namespace Duality.Serialization.MetaFormat
 			else if (header.DataType == DataType.Struct)	this.WriteStruct(obj as StructNode);
 			else if (header.DataType == DataType.ObjectRef)	this.writer.Write((obj as ObjectRefNode).ObjRefId);
 			else if	(header.DataType == DataType.Array)		this.WriteArray(obj as ArrayNode);
-			else if (header.DataType == DataType.Class)		this.WriteStruct(obj as StructNode);
 			else if (header.DataType == DataType.Delegate)	this.WriteDelegate(obj as DelegateNode);
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo(obj as MemberInfoNode);
 		}
@@ -203,10 +202,9 @@ namespace Duality.Serialization.MetaFormat
 			if (dataType.IsPrimitiveType())				result = new PrimitiveNode(dataType, this.ReadPrimitive(dataType));
 			else if (dataType == DataType.String)		result = new StringNode(this.ReadString());
 			else if (dataType == DataType.Enum)			result = this.ReadEnum();
-			else if (dataType == DataType.Struct)		result = this.ReadStruct(false);
+			else if (dataType == DataType.Struct)		result = this.ReadStruct();
 			else if (dataType == DataType.ObjectRef)	result = this.ReadObjectRef();
 			else if (dataType == DataType.Array)		result = this.ReadArray();
-			else if (dataType == DataType.Class)		result = this.ReadStruct(true);
 			else if (dataType == DataType.Delegate)		result = this.ReadDelegate();
 			else if (dataType.IsMemberInfoType())		result = this.ReadMemberInfo(dataType);
 
@@ -288,7 +286,7 @@ namespace Duality.Serialization.MetaFormat
 		/// Reads a <see cref="Duality.Serialization.MetaFormat.StructNode"/>, including possible child nodes.
 		/// </summary>
 		/// <param name="node"></param>
-		protected StructNode ReadStruct(bool classType)
+		protected StructNode ReadStruct()
 		{
 			// Read struct type
 			string	objTypeString	= this.reader.ReadString();
@@ -296,7 +294,7 @@ namespace Duality.Serialization.MetaFormat
 			bool	custom			= this.reader.ReadBoolean();
 			bool	surrogate		= this.reader.ReadBoolean();
 
-			StructNode result = new StructNode(classType, objTypeString, objId, custom, surrogate);
+			StructNode result = new StructNode(objTypeString, objId, custom, surrogate);
 			
 			// Read surrogate constructor data
 			if (surrogate)

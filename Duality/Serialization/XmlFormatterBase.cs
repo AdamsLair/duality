@@ -100,7 +100,10 @@ namespace Duality.Serialization
 			DataType dataType;
 			if (!Enum.TryParse<DataType>(dataTypeStr, out dataType))
 			{
-				dataType = DataType.Unknown;
+				if (dataTypeStr == "Class") // Legacy support
+					dataType = DataType.Struct;
+				else 
+					dataType = DataType.Unknown;
 			}
 			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
 			if (header.DataType == DataType.Unknown)

@@ -52,11 +52,11 @@ namespace Duality.Serialization
 		{
 			get
 			{
-				return 
+				return !this.type.IsValueType && (
 					this.dataType == DataType.Array || 
-					this.dataType == DataType.Class || 
+					this.dataType == DataType.Struct || 
 					this.dataType == DataType.Delegate || 
-					this.dataType.IsMemberInfoType();
+					this.dataType.IsMemberInfoType());
 			}
 		}
 

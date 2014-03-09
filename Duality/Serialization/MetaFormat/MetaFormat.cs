@@ -461,7 +461,7 @@ namespace Duality.Serialization.MetaFormat
 			set { this.surrogateSerialization = value; }
 		}
 
-		public StructNode(bool isClass, string typeString, uint objId, bool customSerialization, bool surrogateSerialization) : base(isClass ? DataType.Class : DataType.Struct, typeString, objId)
+		public StructNode(string typeString, uint objId, bool customSerialization, bool surrogateSerialization) : base(DataType.Struct, typeString, objId)
 		{
 			this.customSerialization = customSerialization;
 			this.surrogateSerialization = surrogateSerialization;

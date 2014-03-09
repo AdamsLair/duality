@@ -29,7 +29,6 @@ namespace Duality.Serialization.MetaFormat
 			else if (header.DataType == DataType.Struct)	this.WriteStruct	(element, obj as StructNode);
 			else if (header.DataType == DataType.ObjectRef)	element.Value = XmlConvert.ToString((obj as ObjectRefNode).ObjRefId);
 			else if	(header.DataType == DataType.Array)		this.WriteArray		(element, obj as ArrayNode);
-			else if (header.DataType == DataType.Class)		this.WriteStruct	(element, obj as StructNode);
 			else if (header.DataType == DataType.Delegate)	this.WriteDelegate	(element, obj as DelegateNode);
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo(element, obj as MemberInfoNode);
 		}
@@ -225,7 +224,6 @@ namespace Duality.Serialization.MetaFormat
 			else if (header.DataType == DataType.String)	result = new StringNode(element.Value);
 			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
 			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
-			else if (header.DataType == DataType.Class)		result = this.ReadStruct(element, header);
 			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);
 			else if (header.DataType == DataType.Array)		result = this.ReadArray(element, header);
 			else if (header.DataType == DataType.Delegate)	result = this.ReadDelegate(element, header);
@@ -345,7 +343,7 @@ namespace Duality.Serialization.MetaFormat
 			bool	custom			= customString != null && XmlConvert.ToBoolean(customString);
 			bool	surrogate		= surrogateString != null && XmlConvert.ToBoolean(surrogateString);
 
-			StructNode result = new StructNode(header.DataType == DataType.Class, header.TypeString, header.ObjectId, custom, surrogate);
+			StructNode result = new StructNode(header.TypeString, header.ObjectId, custom, surrogate);
 			
 			// Read surrogate constructor data
 			if (surrogate)
