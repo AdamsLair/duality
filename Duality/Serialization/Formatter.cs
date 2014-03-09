@@ -142,6 +142,59 @@ namespace Duality.Serialization
 			}
 		}
 
+		/// <summary>
+		/// Describes the serialization header of an object that is being de/serialized.
+		/// </summary>
+		protected class ObjectHeader
+		{
+			private	uint			objectId;
+			private	DataType		dataType;
+			private	SerializeType	serializeType;
+
+			/// <summary>
+			/// [GET] The objects unique ID. May be zero for non-referenced object types.
+			/// </summary>
+			public uint ObjectId
+			{
+				get { return this.objectId; }
+			}
+			/// <summary>
+			/// [GET] The objects data type.
+			/// </summary>
+			public DataType DataType
+			{
+				get { return this.dataType; }
+			}
+			/// <summary>
+			/// [GET] The objects resolved serialization type information. May be unavailable / null when loading objects.
+			/// </summary>
+			public SerializeType SerializeType
+			{
+				get { return this.serializeType; }
+			}
+			/// <summary>
+			/// [GET] The objects resolved type information. May be unavailable / null when loading objects.
+			/// </summary>
+			public Type ObjectType
+			{
+				get { return (this.serializeType != null) ? this.serializeType.Type : null; }
+			}
+			/// <summary>
+			/// [GET] Whether or not the object is considered a primitive value according to its <see cref="DataType"/>.
+			/// </summary>
+			public bool IsPrimitive
+			{
+				get { return this.dataType.IsPrimitiveType(); }
+			}
+
+			public ObjectHeader(uint id, DataType type, SerializeType serializeType)
+			{
+				this.objectId = id;
+				this.dataType = type;
+				this.serializeType = serializeType;
+			}
+		}
+
 
 		/// <summary>
 		/// The de/serialization <see cref="Duality.Log"/>.
@@ -329,15 +382,15 @@ namespace Duality.Serialization
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> that describes the specified object.</param>
 		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> that is used for writing the specified object.</param>
 		/// <param name="objId">An object id that is assigned to the specified object.</param>
-		protected virtual void GetWriteObjectData(object obj, out SerializeType objSerializeType, out DataType dataType, out uint objId)
+		protected virtual void PrepareWriteObject(object obj, out ObjectHeader header)
 		{
 			Type objType = obj.GetType();
-			objSerializeType = objType.GetSerializeType();
-			objId = 0;
-			dataType = objSerializeType.DataType;
+			SerializeType objSerializeType = objType.GetSerializeType();
+			DataType dataType = objSerializeType.DataType;
+			uint objId = 0;
 			
 			// Check whether it's going to be an ObjectRef or not
-			if (dataType == DataType.Array || dataType == DataType.Class || dataType == DataType.Delegate || dataType.IsMemberInfoType())
+			if (objSerializeType.CanBeReferenced)
 			{
 				bool newId;
 				objId = this.idManager.Request(obj, out newId);
@@ -346,6 +399,10 @@ namespace Duality.Serialization
 				if (!newId) dataType = DataType.ObjectRef;
 			}
 
+			// Generate object header information
+			header = new ObjectHeader(objId, dataType, objSerializeType);
+
+			// Check whether the object is expected to be serialized
 			if (dataType != DataType.ObjectRef &&
 				!objSerializeType.Type.IsSerializable && 
 				!typeof(ISerializeExplicit).IsAssignableFrom(objSerializeType.Type) &&

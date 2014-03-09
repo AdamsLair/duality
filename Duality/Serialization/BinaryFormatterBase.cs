@@ -372,7 +372,7 @@ namespace Duality.Serialization
 		protected override void WriteObjectData(object obj)
 		{
 			// NotNull flag
-			if (obj == this.GetNullObject())
+			if (object.Equals(obj, this.GetNullObject()))
 			{
 				this.writer.Write(false);
 				return;
@@ -381,19 +381,17 @@ namespace Duality.Serialization
 				this.writer.Write(true);
 			
 			// Retrieve type data
-			SerializeType objSerializeType;
-			uint objId;
-			DataType dataType;
-			this.GetWriteObjectData(obj, out objSerializeType, out dataType, out objId);
+			ObjectHeader header;
+			this.PrepareWriteObject(obj, out header);
 
 			// Write data type header
-			this.WriteDataType(dataType);
+			this.WriteDataType(header.DataType);
 			this.WritePushOffset();
 			try
 			{
 				// Write object
 				this.idManager.PushIdLevel();
-				this.WriteObjectBody(dataType, obj, objSerializeType, objId);
+				this.WriteObjectBody(obj, header);
 			}
 			finally
 			{
@@ -409,7 +407,7 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to be written.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> that describes the specified object.</param>
 		/// <param name="objId">An object id that is assigned to the specified object.</param>
-		protected abstract void WriteObjectBody(DataType dataType, object obj, SerializeType objSerializeType, uint objId);
+		protected abstract void WriteObjectBody(object obj, ObjectHeader header);
 		
 		/// <summary>
 		/// Writes the binary serialization header.

@@ -10,6 +10,8 @@ namespace Duality.Serialization
 	/// </summary>
 	public class ObjectIdManager
 	{
+		private const int BaseId = 129723834;
+
 		private	int							idLevel			= 0;
 		private	List<uint>					idGenSeed		= new List<uint> { 0 };
 		private	List<uint>					idStack			= new List<uint> { 0 };
@@ -59,6 +61,9 @@ namespace Duality.Serialization
 			{
 				id = this.idGenSeed[this.idLevel];
 			}
+
+			// Don't allow zero-ids
+			if (id == 0) id = BaseId;
 
 			// Make sure it doesn't collide
 			unchecked

@@ -45,6 +45,20 @@ namespace Duality.Serialization
 		{
 			get { return this.dataType; }
 		}
+		/// <summary>
+		/// [GET] Returns whether object of this Type can be referenced by other serialized objects.
+		/// </summary>
+		public bool CanBeReferenced
+		{
+			get
+			{
+				return 
+					this.dataType == DataType.Array || 
+					this.dataType == DataType.Class || 
+					this.dataType == DataType.Delegate || 
+					this.dataType.IsMemberInfoType();
+			}
+		}
 
 		/// <summary>
 		/// Creates a new SerializeType based on a <see cref="System.Type"/>, gathering all the information that is necessary for serialization.

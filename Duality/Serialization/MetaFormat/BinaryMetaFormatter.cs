@@ -13,29 +13,28 @@ namespace Duality.Serialization.MetaFormat
 	{
 		public BinaryMetaFormatter(Stream stream) : base(stream) {}
 		
-		protected override void GetWriteObjectData(object obj, out SerializeType objSerializeType, out DataType dataType, out uint objId)
+		protected override void PrepareWriteObject(object obj, out ObjectHeader header)
 		{
 			DataNode node = obj as DataNode;
 			if (node == null) throw new InvalidOperationException("The BinaryMetaFormatter can't serialize objects that do not derive from DataNode");
 
-			objSerializeType = null;
-			objId = 0;
-			dataType = node.NodeType;
-
-			if		(node is ObjectNode)	objId = (node as ObjectNode).ObjId;
+			uint objId = 0;
+			if (node is ObjectNode) objId = (node as ObjectNode).ObjId;
 			else if (node is ObjectRefNode) objId = (node as ObjectRefNode).ObjRefId;
+
+			header = new ObjectHeader(objId, node.NodeType, null);
 		}
-		protected override void WriteObjectBody(DataType dataType, object obj, SerializeType objSerializeType, uint objId)
+		protected override void WriteObjectBody(object obj, ObjectHeader header)
 		{
-			if (dataType.IsPrimitiveType())				this.WritePrimitive((obj as PrimitiveNode).PrimitiveValue);
-			else if (dataType == DataType.String)		this.WriteString((obj as StringNode).StringValue);
-			else if (dataType == DataType.Enum)			this.WriteEnum(obj as EnumNode);
-			else if (dataType == DataType.Struct)		this.WriteStruct(obj as StructNode);
-			else if (dataType == DataType.ObjectRef)	this.writer.Write((obj as ObjectRefNode).ObjRefId);
-			else if	(dataType == DataType.Array)		this.WriteArray(obj as ArrayNode);
-			else if (dataType == DataType.Class)		this.WriteStruct(obj as StructNode);
-			else if (dataType == DataType.Delegate)		this.WriteDelegate(obj as DelegateNode);
-			else if (dataType.IsMemberInfoType())		this.WriteMemberInfo(obj as MemberInfoNode);
+			if (header.IsPrimitive)							this.WritePrimitive((obj as PrimitiveNode).PrimitiveValue);
+			else if (header.DataType == DataType.String)	this.WriteString((obj as StringNode).StringValue);
+			else if (header.DataType == DataType.Enum)		this.WriteEnum(obj as EnumNode);
+			else if (header.DataType == DataType.Struct)	this.WriteStruct(obj as StructNode);
+			else if (header.DataType == DataType.ObjectRef)	this.writer.Write((obj as ObjectRefNode).ObjRefId);
+			else if	(header.DataType == DataType.Array)		this.WriteArray(obj as ArrayNode);
+			else if (header.DataType == DataType.Class)		this.WriteStruct(obj as StructNode);
+			else if (header.DataType == DataType.Delegate)	this.WriteDelegate(obj as DelegateNode);
+			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo(obj as MemberInfoNode);
 		}
 		/// <summary>
 		/// Writes the specified <see cref="Duality.Serialization.MetaFormat.MemberInfoNode"/>, including possible child nodes.

@@ -19,6 +19,7 @@ namespace Duality.Tests
 	public class InitDualityAttribute : Attribute, ITestAction
 	{
 		private	string				oldEnvDir			= null;
+		private	CorePlugin			unitTestPlugin		= null;
 		private	GameWindow			dummyWindow			= null;
 		private	ConsoleLogOutput	consoleLogOutput	= null;
 
@@ -52,7 +53,7 @@ namespace Duality.Tests
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game);
 
 			// Manually register pseudo-plugin for the Unit Testing Assembly
-			DualityApp.AddPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
+			this.unitTestPlugin = DualityApp.LoadPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
 
 			// Create a dummy window, to get access to all the device contexts
 			if (this.dummyWindow == null)

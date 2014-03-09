@@ -159,31 +159,23 @@ namespace Duality.Serialization
 		protected void WriteObjectData(XElement element, object obj)
 		{
 			// Null? Empty Element.
-			if (obj == this.GetNullObject())
+			if (object.Equals(obj, this.GetNullObject()))
 			{
 				return;
 			}
 			
 			// Retrieve type data
-			SerializeType objSerializeType;
-			uint objId;
-			DataType dataType;
-			this.GetWriteObjectData(obj, out objSerializeType, out dataType, out objId);
-			
-			// Unknown DataType? Empty Element.
-			if (dataType == DataType.Unknown)
-			{
-				return;
-			}
+			ObjectHeader header;
+			this.PrepareWriteObject(obj, out header);
 
 			// Write data type header
-			element.SetAttributeValue("dataType", dataType.ToString());
+			element.SetAttributeValue("dataType", header.DataType.ToString());
 
 			// Write object
 			try 
 			{
 				this.idManager.PushIdLevel();
-				this.WriteObjectBody(element, dataType, obj, objSerializeType, objId);
+				this.WriteObjectBody(element, obj, header);
 			}
 			catch (Exception e)
 			{
@@ -203,7 +195,7 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to be written.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> that describes the specified object.</param>
 		/// <param name="objId">An object id that is assigned to the specified object.</param>
-		protected abstract void WriteObjectBody(XElement element, DataType dataType, object obj, SerializeType objSerializeType, uint objId);
+		protected abstract void WriteObjectBody(XElement element, object obj, ObjectHeader header);
 		/// <summary>
 		/// Writes a single primitive value.
 		/// </summary>
@@ -240,12 +232,15 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		protected int GetArrayNonDefaultElementCount(Array array, Type elementType)
 		{
+			if (array.Length == 0) return 0;
+
 			int omitElementCount = 0;
 			object defaultValue = elementType.GetDefaultInstanceOf();
 			while (object.Equals(array.GetValue(array.Length - omitElementCount - 1), defaultValue))
 			{
 				omitElementCount++;
 			}
+
 			return array.Length - omitElementCount;
 		}
 

@@ -825,7 +825,7 @@ namespace Duality
 				else
 					pluginAssembly = Assembly.Load(File.ReadAllBytes(pluginFilePath));
 
-				plugin = AddPlugin(pluginAssembly, pluginFilePath);
+				plugin = LoadPlugin(pluginAssembly, pluginFilePath);
 				if (plugin == null)
 				{
 					Log.Core.WriteWarning("Can't find CorePlugin class. Discarding plugin...");
@@ -854,9 +854,9 @@ namespace Duality
 		/// <param name="pluginAssembly"></param>
 		/// <param name="pluginFilePath"></param>
 		/// <returns></returns>
-		public static CorePlugin AddPlugin(Assembly pluginAssembly, string pluginFilePath)
+		public static CorePlugin LoadPlugin(Assembly pluginAssembly, string pluginFilePath)
 		{
-			if (disposedPlugins.Contains(pluginAssembly)) return null;
+			disposedPlugins.Remove(pluginAssembly);
 
 			string asmName = pluginAssembly.GetShortAssemblyName();
 			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);

@@ -16,17 +16,17 @@ namespace Duality.Serialization
 	{
 		public XmlFormatter(Stream stream) : base(stream) {}
 
-		protected override void WriteObjectBody(XElement element, DataType dataType, object obj, SerializeType objSerializeType, uint objId)
+		protected override void WriteObjectBody(XElement element, object obj, ObjectHeader header)
 		{
-			if (dataType.IsPrimitiveType())				this.WritePrimitive		(element, obj);
-			else if (dataType == DataType.Enum)			this.WriteEnum			(element, obj as Enum, objSerializeType);
-			else if (dataType == DataType.String)		element.Value = obj as string;
-			else if (dataType == DataType.Struct)		this.WriteStruct		(element, obj, objSerializeType);
-			else if (dataType == DataType.ObjectRef)	element.Value = XmlConvert.ToString(objId);
-			else if	(dataType == DataType.Array)		this.WriteArray			(element, obj, objSerializeType, objId);
-			else if (dataType == DataType.Class)		this.WriteStruct		(element, obj, objSerializeType, objId);
-			else if (dataType == DataType.Delegate)		this.WriteDelegate		(element, obj, objSerializeType, objId);
-			else if (dataType.IsMemberInfoType())		this.WriteMemberInfo	(element, obj, objId);
+			if (header.IsPrimitive)							this.WritePrimitive		(element, obj);
+			else if (header.DataType == DataType.Enum)		this.WriteEnum			(element, obj as Enum, header);
+			else if (header.DataType == DataType.String)	element.Value = obj as string;
+			else if (header.DataType == DataType.Struct)	this.WriteStruct		(element, obj, header);
+			else if (header.DataType == DataType.ObjectRef)	element.Value = XmlConvert.ToString(header.ObjectId);
+			else if	(header.DataType == DataType.Array)		this.WriteArray			(element, obj, header);
+			else if (header.DataType == DataType.Class)		this.WriteStruct		(element, obj, header);
+			else if (header.DataType == DataType.Delegate)	this.WriteDelegate		(element, obj, header);
+			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo	(element, obj, header);
 		}
 		/// <summary>
 		/// Writes the specified <see cref="System.Reflection.MemberInfo"/>, including references objects.
@@ -34,9 +34,9 @@ namespace Duality.Serialization
 		/// <param name="element"></param>
 		/// <param name="obj">The object to write.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteMemberInfo(XElement element, object obj, uint id = 0)
+		protected void WriteMemberInfo(XElement element, object obj, ObjectHeader header)
 		{
-			if (id != 0) element.SetAttributeValue("id", XmlConvert.ToString(id));
+			if (header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
 
 			if (obj is Type)
 			{
@@ -61,16 +61,15 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteArray(XElement element, object obj, SerializeType objSerializeType, uint id = 0)
+		protected void WriteArray(XElement element, object obj, ObjectHeader header)
 		{
 			Array objAsArray = obj as Array;
 
 			if (objAsArray.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new ArgumentException("Non zero-based arrays are not supported");
 			
-			element.SetAttributeValue("type", objSerializeType.TypeString);
-			if (id != 0)				element.SetAttributeValue("id", XmlConvert.ToString(id));
-			if (objAsArray.Rank != 1)	element.SetAttributeValue("rank", XmlConvert.ToString(objAsArray.Rank));
+			element.SetAttributeValue("type", header.SerializeType.TypeString);
+			if (header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
 
 			if (objAsArray is byte[])
 			{
@@ -80,7 +79,7 @@ namespace Duality.Serialization
 			else
 			{
 				// Write Array elements
-				int nonDefaultElementCount = this.GetArrayNonDefaultElementCount(objAsArray, objSerializeType.Type.GetElementType());
+				int nonDefaultElementCount = this.GetArrayNonDefaultElementCount(objAsArray, header.ObjectType.GetElementType());
 				for (int i = 0; i < nonDefaultElementCount; i++)
 				{
 					XElement itemElement = new XElement("item");
@@ -103,14 +102,14 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteStruct(XElement element, object obj, SerializeType objSerializeType, uint id = 0)
+		protected void WriteStruct(XElement element, object obj, ObjectHeader header)
 		{
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
-			ISerializeSurrogate objSurrogate = GetSurrogateFor(objSerializeType.Type);
+			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
 
 			// Write the structs data type
-										element.SetAttributeValue("type", objSerializeType.TypeString);
-			if (id != 0)				element.SetAttributeValue("id", XmlConvert.ToString(id));
+										element.SetAttributeValue("type", header.SerializeType.TypeString);
+			if (header.ObjectId != 0)	element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
 			if (objAsCustom != null)	element.SetAttributeValue("custom", XmlConvert.ToString(true));
 			if (objSurrogate != null)	element.SetAttributeValue("surrogate", XmlConvert.ToString(true));
 
@@ -121,7 +120,7 @@ namespace Duality.Serialization
 
 				CustomSerialIO customIO = new CustomSerialIO();
 				try { objSurrogate.WriteConstructorData(customIO); }
-				catch (Exception e) { this.LogCustomSerializationError(id, objSerializeType.Type, e); }
+				catch (Exception e) { this.LogCustomSerializationError(header.ObjectId, header.ObjectType, e); }
 
 				XElement customHeaderElement = new XElement(CustomSerialIO.HeaderElement);
 				element.Add(customHeaderElement);
@@ -132,7 +131,7 @@ namespace Duality.Serialization
 			{
 				CustomSerialIO customIO = new CustomSerialIO();
 				try { objAsCustom.WriteData(customIO); }
-				catch (Exception e) { this.LogCustomSerializationError(id, objSerializeType.Type, e); }
+				catch (Exception e) { this.LogCustomSerializationError(header.ObjectId, header.ObjectType, e); }
 				
 				XElement customBodyElement = new XElement(CustomSerialIO.BodyElement);
 				element.Add(customBodyElement);
@@ -141,7 +140,7 @@ namespace Duality.Serialization
 			else
 			{
 				// Write the structs fields
-				foreach (FieldInfo field in objSerializeType.Fields)
+				foreach (FieldInfo field in header.SerializeType.Fields)
 				{
 					if (this.IsFieldBlocked(field, obj)) continue;
 
@@ -159,14 +158,14 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteDelegate(XElement element, object obj, SerializeType objSerializeType, uint id = 0)
+		protected void WriteDelegate(XElement element, object obj, ObjectHeader header)
 		{
 			bool multi = obj is MulticastDelegate;
 
 			// Write the delegates type
-							element.SetAttributeValue("type", objSerializeType.TypeString);
-			if (id != 0)	element.SetAttributeValue("id", XmlConvert.ToString(id));
-			if (multi)		element.SetAttributeValue("multi", XmlConvert.ToString(multi));
+										element.SetAttributeValue("type", header.SerializeType.TypeString);
+			if (header.ObjectId != 0)	element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
+			if (multi)					element.SetAttributeValue("multi", XmlConvert.ToString(multi));
 
 			if (!multi)
 			{
@@ -201,9 +200,9 @@ namespace Duality.Serialization
 		/// <param name="element"></param>
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		protected void WriteEnum(XElement element, Enum obj, SerializeType objSerializeType)
+		protected void WriteEnum(XElement element, Enum obj, ObjectHeader header)
 		{
-			element.SetAttributeValue("type", objSerializeType.TypeString);
+			element.SetAttributeValue("type", header.SerializeType.TypeString);
 			element.SetAttributeValue("name", obj.ToString());
 			element.SetAttributeValue("value", XmlConvert.ToString(Convert.ToInt64(obj)));
 		}

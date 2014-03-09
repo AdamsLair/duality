@@ -15,17 +15,35 @@ namespace Duality.Tests.Serialization
 {
 	public abstract class FormatterTest
 	{
+		private enum SomeEnum
+		{
+			Zero,
+			First,
+			Second,
+			Third
+		}
 		[Serializable]
 		private struct TestData : IEquatable<TestData>
 		{
 			public int IntField;
 			public float FloatField;
+			public string StringField;
+			public Type TypeField;
+			public Func<int,bool> DelegateField;
+			public SomeEnum EnumField;
 
 			public TestData(Random rnd)
 			{
-				this.IntField	= rnd.Next();
-				this.FloatField	= rnd.NextFloat();
+				this.IntField		= rnd.Next();
+				this.FloatField		= rnd.NextFloat();
+				this.StringField	= rnd.Next().ToString();
+				this.EnumField		= (SomeEnum)rnd.Next(10);
+				this.TypeField		= rnd.OneOf(new[] { typeof(int), typeof(Component), typeof(GenericOperator) });
+				this.DelegateField	= rnd.OneOf(new Func<int,bool>[] { DelegateA, DelegateB });
 			}
+
+			private static bool DelegateA(int v) { return false; } 
+			private static bool DelegateB(int v) { return true; } 
 
 			public static bool operator ==(TestData first, TestData second)
 			{
@@ -39,7 +57,11 @@ namespace Duality.Tests.Serialization
 			{
 				return MathF.CombineHashCode(
 					this.IntField.GetHashCode(),
-					this.FloatField.GetHashCode());
+					this.FloatField.GetHashCode(),
+					this.StringField.GetHashCode(),
+					this.EnumField.GetHashCode(),
+					this.TypeField.GetHashCode(),
+					this.DelegateField.GetHashCode());
 			}
 			public override bool Equals(object obj)
 			{
@@ -52,7 +74,11 @@ namespace Duality.Tests.Serialization
 			{
 				return 
 					other.IntField == this.IntField &&
-					other.FloatField == this.FloatField;
+					other.FloatField == this.FloatField &&
+					other.StringField == this.StringField &&
+					other.EnumField == this.EnumField &&
+					other.TypeField == this.TypeField &&
+					other.DelegateField == this.DelegateField;
 			}
 		}
 		[Serializable]
@@ -340,7 +366,7 @@ namespace Duality.Tests.Serialization
 						metaNodeA = (DataNode)formatter.ReadObject();
 						stream.Position = posB;
 						metaNodeB = (DataNode)formatter.ReadObject();
-					
+
 						stream.Position = posB;
 						formatter.WriteObject(metaNodeB);
 						formatter.WriteObject(metaNodeA);

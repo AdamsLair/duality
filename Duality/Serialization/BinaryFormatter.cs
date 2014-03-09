@@ -14,26 +14,26 @@ namespace Duality.Serialization
 	{
 		public BinaryFormatter(Stream stream) : base(stream) {}
 
-		protected override void WriteObjectBody(DataType dataType, object obj, SerializeType objSerializeType, uint objId)
+		protected override void WriteObjectBody(object obj, ObjectHeader header)
 		{
-			if (dataType.IsPrimitiveType())				this.WritePrimitive(obj);
-			else if (dataType == DataType.Enum)			this.WriteEnum(obj as Enum, objSerializeType);
-			else if (dataType == DataType.String)		this.WriteString(obj as string);
-			else if (dataType == DataType.Struct)		this.WriteStruct(obj, objSerializeType);
-			else if (dataType == DataType.ObjectRef)	this.writer.Write(objId);
-			else if	(dataType == DataType.Array)		this.WriteArray(obj, objSerializeType, objId);
-			else if (dataType == DataType.Class)		this.WriteStruct(obj, objSerializeType, objId);
-			else if (dataType == DataType.Delegate)		this.WriteDelegate(obj, objSerializeType, objId);
-			else if (dataType.IsMemberInfoType())		this.WriteMemberInfo(obj, objId);
+			if (header.IsPrimitive)							this.WritePrimitive(obj);
+			else if (header.DataType == DataType.Enum)		this.WriteEnum(obj as Enum, header);
+			else if (header.DataType == DataType.String)	this.WriteString(obj as string);
+			else if (header.DataType == DataType.Struct)	this.WriteStruct(obj, header);
+			else if (header.DataType == DataType.ObjectRef)	this.writer.Write(header.ObjectId);
+			else if	(header.DataType == DataType.Array)		this.WriteArray(obj, header);
+			else if (header.DataType == DataType.Class)		this.WriteStruct(obj, header);
+			else if (header.DataType == DataType.Delegate)	this.WriteDelegate(obj, header);
+			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo(obj, header);
 		}
 		/// <summary>
 		/// Writes the specified <see cref="System.Reflection.MemberInfo"/>, including references objects.
 		/// </summary>
 		/// <param name="obj">The object to write.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteMemberInfo(object obj, uint id = 0)
+		protected void WriteMemberInfo(object obj, ObjectHeader header)
 		{
-			this.writer.Write(id);
+			this.writer.Write(header.ObjectId);
 			if (obj is Type)
 			{
 				Type type = obj as Type;
@@ -58,15 +58,15 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteArray(object obj, SerializeType objSerializeType, uint id = 0)
+		protected void WriteArray(object obj, ObjectHeader header)
 		{
 			Array objAsArray = obj as Array;
 
 			if (objAsArray.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new ArgumentException("Non zero-based arrays are not supported");
 
-			this.writer.Write(objSerializeType.TypeString);
-			this.writer.Write(id);
+			this.writer.Write(header.SerializeType.TypeString);
+			this.writer.Write(header.ObjectId);
 			this.writer.Write(objAsArray.Rank);
 			this.writer.Write(objAsArray.Length);
 
@@ -96,14 +96,14 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteStruct(object obj, SerializeType objSerializeType, uint id = 0)
+		protected void WriteStruct(object obj, ObjectHeader header)
 		{
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
-			ISerializeSurrogate objSurrogate = GetSurrogateFor(objSerializeType.Type);
+			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
 
 			// Write the structs data type
-			this.writer.Write(objSerializeType.TypeString);
-			this.writer.Write(id);
+			this.writer.Write(header.SerializeType.TypeString);
+			this.writer.Write(header.ObjectId);
 			this.writer.Write(objAsCustom != null);
 			this.writer.Write(objSurrogate != null);
 
@@ -114,7 +114,7 @@ namespace Duality.Serialization
 
 				CustomSerialIO customIO = new CustomSerialIO();
 				try { objSurrogate.WriteConstructorData(customIO); }
-				catch (Exception e) { this.LogCustomSerializationError(id, objSerializeType.Type, e); }
+				catch (Exception e) { this.LogCustomSerializationError(header.ObjectId, header.ObjectType, e); }
 				customIO.Serialize(this);
 			}
 
@@ -122,27 +122,27 @@ namespace Duality.Serialization
 			{
 				CustomSerialIO customIO = new CustomSerialIO();
 				try { objAsCustom.WriteData(customIO); }
-				catch (Exception e) { this.LogCustomSerializationError(id, objSerializeType.Type, e); }
+				catch (Exception e) { this.LogCustomSerializationError(header.ObjectId, header.ObjectType, e); }
 				customIO.Serialize(this);
 			}
 			else
 			{
 				// Assure the type data layout has bee written (only once per file)
-				this.WriteTypeDataLayout(objSerializeType);
+				this.WriteTypeDataLayout(header.SerializeType);
 
 				// Write omitted field bitmask
-				bool[] fieldOmitted = new bool[objSerializeType.Fields.Length];
+				bool[] fieldOmitted = new bool[header.SerializeType.Fields.Length];
 				for (int i = 0; i < fieldOmitted.Length; i++)
 				{
-					fieldOmitted[i] = this.IsFieldBlocked(objSerializeType.Fields[i], obj);
+					fieldOmitted[i] = this.IsFieldBlocked(header.SerializeType.Fields[i], obj);
 				}
 				this.WriteArrayData(fieldOmitted);
 
 				// Write the structs fields
-				for (int i = 0; i < objSerializeType.Fields.Length; i++)
+				for (int i = 0; i < header.SerializeType.Fields.Length; i++)
 				{
 					if (fieldOmitted[i]) continue;
-					this.WriteObjectData(objSerializeType.Fields[i].GetValue(obj));
+					this.WriteObjectData(header.SerializeType.Fields[i].GetValue(obj));
 				}
 			}
 		}
@@ -152,13 +152,13 @@ namespace Duality.Serialization
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		/// <param name="id">The objects id.</param>
-		protected void WriteDelegate(object obj, SerializeType objSerializeType, uint id = 0)
+		protected void WriteDelegate(object obj, ObjectHeader header)
 		{
 			bool multi = obj is MulticastDelegate;
 
 			// Write the delegates type
-			this.writer.Write(objSerializeType.TypeString);
-			this.writer.Write(id);
+			this.writer.Write(header.SerializeType.TypeString);
+			this.writer.Write(header.ObjectId);
 			this.writer.Write(multi);
 
 			if (!multi)
@@ -181,9 +181,9 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="obj">The object to write.</param>
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		protected void WriteEnum(Enum obj, SerializeType objSerializeType)
+		protected void WriteEnum(Enum obj, ObjectHeader header)
 		{
-			this.writer.Write(objSerializeType.TypeString);
+			this.writer.Write(header.SerializeType.TypeString);
 			this.writer.Write(obj.ToString());
 			this.writer.Write(Convert.ToInt64(obj));
 		}
