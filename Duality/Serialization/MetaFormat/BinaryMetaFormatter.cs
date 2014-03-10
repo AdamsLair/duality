@@ -13,16 +13,15 @@ namespace Duality.Serialization.MetaFormat
 	{
 		public BinaryMetaFormatter(Stream stream) : base(stream) {}
 		
-		protected override void PrepareWriteObject(object obj, out ObjectHeader header)
+		protected override ObjectHeader PrepareWriteObject(object obj)
 		{
 			DataNode node = obj as DataNode;
 			if (node == null) throw new InvalidOperationException("The BinaryMetaFormatter can't serialize objects that do not derive from DataNode");
-			header = new ObjectHeader(node);
+			return new ObjectHeader(node);
 		}
 		protected override void WriteObjectBody(object obj, ObjectHeader header)
 		{
 			if (header.IsPrimitive)							this.WritePrimitive((obj as PrimitiveNode).PrimitiveValue);
-			else if (header.DataType == DataType.String)	this.WriteString((obj as StringNode).StringValue);
 			else if (header.DataType == DataType.Enum)		this.WriteEnum(obj as EnumNode);
 			else if (header.DataType == DataType.Struct)	this.WriteStruct(obj as StructNode);
 			else if (header.DataType == DataType.ObjectRef)	this.writer.Write((obj as ObjectRefNode).ObjRefId);
@@ -101,11 +100,11 @@ namespace Duality.Serialization.MetaFormat
 					var enumerator = surrogateConstructor.SubNodes.GetEnumerator();
 					while (enumerator.MoveNext())
 					{
-						StringNode key = enumerator.Current as StringNode;
+						PrimitiveNode key = enumerator.Current as PrimitiveNode;
 						if (enumerator.MoveNext() && key != null)
 						{
 							DataNode value = enumerator.Current;
-							customIO.WriteValue(key.StringValue, value);
+							customIO.WriteValue(key.PrimitiveValue as string, value);
 						}
 					}
 				}
@@ -118,11 +117,11 @@ namespace Duality.Serialization.MetaFormat
 				var enumerator = node.SubNodes.GetEnumerator();
 				while (enumerator.MoveNext())
 				{
-					StringNode key = enumerator.Current as StringNode;
+					PrimitiveNode key = enumerator.Current as PrimitiveNode;
 					if (key != null && enumerator.MoveNext())
 					{
 						DataNode value = enumerator.Current;
-						customIO.WriteValue(key.StringValue, value);
+						customIO.WriteValue(key.PrimitiveValue as string, value);
 					}
 				}
 				customIO.Serialize(this);
@@ -195,12 +194,15 @@ namespace Duality.Serialization.MetaFormat
 		{
 			return new PrimitiveNode(DataType.Unknown, null);
 		}
+		protected override ObjectHeader ParseObjectHeader(uint objId, DataType dataType, string typeString)
+		{
+			return new ObjectHeader(objId, dataType, typeString);
+		}
 		protected override object ReadObjectBody(DataType dataType)
 		{
 			DataNode result = null;
 
 			if (dataType.IsPrimitiveType())				result = new PrimitiveNode(dataType, this.ReadPrimitive(dataType));
-			else if (dataType == DataType.String)		result = new StringNode(this.ReadString());
 			else if (dataType == DataType.Enum)			result = this.ReadEnum();
 			else if (dataType == DataType.Struct)		result = this.ReadStruct();
 			else if (dataType == DataType.ObjectRef)	result = this.ReadObjectRef();
@@ -312,7 +314,7 @@ namespace Duality.Serialization.MetaFormat
 					surrogateConstructor.Parent = result;
 					foreach (var pair in customIO.Data)
 					{
-						StringNode key = new StringNode(pair.Key);
+						PrimitiveNode key = new PrimitiveNode(DataType.String, pair.Key);
 						DataNode value = pair.Value as DataNode;
 						key.Parent = surrogateConstructor;
 						value.Parent = surrogateConstructor;
@@ -329,7 +331,7 @@ namespace Duality.Serialization.MetaFormat
 				customIO.Deserialize(this);
 				foreach (var pair in customIO.Data)
 				{
-					StringNode key = new StringNode(pair.Key);
+					PrimitiveNode key = new PrimitiveNode(DataType.String, pair.Key);
 					DataNode value = pair.Value as DataNode;
 					key.Parent = result;
 					value.Parent = result;

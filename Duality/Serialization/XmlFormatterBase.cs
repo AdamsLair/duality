@@ -100,7 +100,7 @@ namespace Duality.Serialization
 			DataType dataType;
 			if (!Enum.TryParse<DataType>(dataTypeStr, out dataType))
 			{
-				if (dataTypeStr == "Class") // Legacy support
+				if (dataTypeStr == "Class") // Legacy support (Written 2014-03-10)
 					dataType = DataType.Struct;
 				else 
 					dataType = DataType.Unknown;
@@ -125,16 +125,6 @@ namespace Duality.Serialization
 			}
 
 			return result ?? this.GetNullObject();
-		}
-		protected virtual ObjectHeader ParseObjectHeader(uint objId, DataType dataType, string typeString)
-		{
-			Type type = null;
-			if (typeString != null)
-			{
-				type = this.ResolveType(typeString, objId);
-				if (type == null) return null;
-			}
-			return new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
 		}
 		/// <summary>
 		/// Reads the body of an object.
@@ -167,6 +157,7 @@ namespace Duality.Serialization
 				case DataType.Double:		return XmlConvert.ToDouble(val);
 				case DataType.Decimal:		return XmlConvert.ToDecimal(val);
 				case DataType.Char:			return XmlConvert.ToChar(val);
+				case DataType.String:		return val;
 				default:
 					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", header.DataType));
 			}
@@ -185,8 +176,7 @@ namespace Duality.Serialization
 			}
 			
 			// Retrieve type data
-			ObjectHeader header;
-			this.PrepareWriteObject(obj, out header);
+			ObjectHeader header = this.PrepareWriteObject(obj);
 
 			// Write data type header
 			element.SetAttributeValue("dataType", header.DataType.ToString());
@@ -228,6 +218,7 @@ namespace Duality.Serialization
 			if		(obj is bool)		element.Value = XmlConvert.ToString((bool)obj);
 			else if (obj is byte)		element.Value = XmlConvert.ToString((byte)obj);
 			else if (obj is char)		element.Value = XmlConvert.ToString((char)obj);
+			else if (obj is string)		element.Value = (string)obj;
 			else if (obj is sbyte)		element.Value = XmlConvert.ToString((sbyte)obj);
 			else if (obj is short)		element.Value = XmlConvert.ToString((short)obj);
 			else if (obj is ushort)		element.Value = XmlConvert.ToString((ushort)obj);

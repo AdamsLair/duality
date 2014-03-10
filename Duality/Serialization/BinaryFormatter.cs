@@ -18,7 +18,6 @@ namespace Duality.Serialization
 		{
 			if (header.IsPrimitive)							this.WritePrimitive(obj);
 			else if (header.DataType == DataType.Enum)		this.WriteEnum(obj as Enum, header);
-			else if (header.DataType == DataType.String)	this.WriteString(obj as string);
 			else if (header.DataType == DataType.Struct)	this.WriteStruct(obj, header);
 			else if (header.DataType == DataType.ObjectRef)	this.writer.Write(header.ObjectId);
 			else if	(header.DataType == DataType.Array)		this.WriteArray(obj, header);
@@ -192,7 +191,6 @@ namespace Duality.Serialization
 			object result = null;
 
 			if (dataType.IsPrimitiveType())				result = this.ReadPrimitive(dataType);
-			else if (dataType == DataType.String)		result = this.ReadString();
 			else if (dataType == DataType.Enum)			result = this.ReadEnum();
 			else if (dataType == DataType.Struct)		result = this.ReadStruct();
 			else if (dataType == DataType.ObjectRef)	result = this.ReadObjectRef();

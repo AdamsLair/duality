@@ -15,173 +15,52 @@ namespace Duality.Tests.Serialization
 {
 	public abstract class FormatterTest
 	{
-		private enum SomeEnum
+		protected abstract FormattingMethod PrimaryFormat { get; }
+		protected IEnumerable<FormattingMethod> OtherFormats
 		{
-			Zero,
-			First,
-			Second,
-			Third
+			get { return Enum.GetValues(typeof(FormattingMethod)).Cast<FormattingMethod>().Where(m => m != FormattingMethod.Unknown && m != this.PrimaryFormat); }
 		}
-		[Serializable]
-		private struct TestData : IEquatable<TestData>
-		{
-			public int IntField;
-			public float FloatField;
-			public string StringField;
-			public Type TypeField;
-			public Func<int,bool> DelegateField;
-			public SomeEnum EnumField;
 
-			public TestData(Random rnd)
-			{
-				this.IntField		= rnd.Next();
-				this.FloatField		= rnd.NextFloat();
-				this.StringField	= rnd.Next().ToString();
-				this.EnumField		= (SomeEnum)rnd.Next(10);
-				this.TypeField		= rnd.OneOf(new[] { typeof(int), typeof(Component), typeof(GenericOperator) });
-				this.DelegateField	= rnd.OneOf(new Func<int,bool>[] { DelegateA, DelegateB });
-			}
-
-			private static bool DelegateA(int v) { return false; } 
-			private static bool DelegateB(int v) { return true; } 
-
-			public static bool operator ==(TestData first, TestData second)
-			{
-				return first.Equals(second);
-			}
-			public static bool operator !=(TestData first, TestData second)
-			{
-				return !first.Equals(second);
-			}
-			public override int GetHashCode()
-			{
-				return MathF.CombineHashCode(
-					this.IntField.GetHashCode(),
-					this.FloatField.GetHashCode(),
-					this.StringField.GetHashCode(),
-					this.EnumField.GetHashCode(),
-					this.TypeField.GetHashCode(),
-					this.DelegateField.GetHashCode());
-			}
-			public override bool Equals(object obj)
-			{
-				if (obj is TestData)
-					return this.Equals((TestData)obj);
-				else
-					return base.Equals(obj);
-			}
-			public bool Equals(TestData other)
-			{
-				return 
-					other.IntField == this.IntField &&
-					other.FloatField == this.FloatField &&
-					other.StringField == this.StringField &&
-					other.EnumField == this.EnumField &&
-					other.TypeField == this.TypeField &&
-					other.DelegateField == this.DelegateField;
-			}
-		}
-		[Serializable]
-		private class TestObject : IEquatable<TestObject>
-		{
-			public string StringField;
-			public TestData DataField;
-			public List<int> ListField;
-			public List<string> ListField2;
-			public Dictionary<string,TestObject> DictField;
-			
-			public TestObject(Random rnd, int maxChildren = 5)
-			{
-				this.StringField	= rnd.Next().ToString();
-				this.DataField		= new TestData(rnd);
-				this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).ToList();
-				this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).Select(i => i.ToString()).ToList();
-				this.DictField		= new Dictionary<string,TestObject>();
-
-				for (int i = rnd.Next(0, maxChildren); i > 0; i--)
-				{
-					this.DictField.Add(rnd.Next().ToString(), new TestObject(rnd, maxChildren / 2));
-				}
-			}
-
-			public static bool operator ==(TestObject first, TestObject second)
-			{
-				return first.Equals(second);
-			}
-			public static bool operator !=(TestObject first, TestObject second)
-			{
-				return !first.Equals(second);
-			}
-			public override bool Equals(object obj)
-			{
-				if (obj is TestObject)
-					return this.Equals((TestObject)obj);
-				else
-					return base.Equals(obj);
-			}
-			public override int GetHashCode()
-			{
-				return base.GetHashCode();
-			}
-			public bool Equals(TestObject other)
-			{
-				return 
-					other.StringField == this.StringField &&
-					other.DataField == this.DataField &&
-					other.ListField.SequenceEqual(this.ListField) &&
-					other.ListField2.SequenceEqual(this.ListField2) &&
-					other.DictField.SetEqual(this.DictField);
-			}
-		}
-		
 
 		[Test] public void SerializePlainOldData([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
-			TestData data = new TestData(rnd);
-			TestData dataResult;
 
-			this.TestWriteRead(data, out dataResult, meta);
-
-			Assert.IsTrue(data.Equals(dataResult));
+			this.TestWriteRead(rnd.NextBool(),			this.PrimaryFormat, meta);
+			this.TestWriteRead(rnd.NextByte(),			this.PrimaryFormat, meta);
+			this.TestWriteRead(rnd.Next(),				this.PrimaryFormat, meta);
+			this.TestWriteRead(rnd.NextFloat(),			this.PrimaryFormat, meta);
+			this.TestWriteRead(rnd.NextDouble(),		this.PrimaryFormat, meta);
+			this.TestWriteRead(rnd.Next().ToString(),	this.PrimaryFormat, meta);
+			this.TestWriteRead((SomeEnum)rnd.Next(10),	this.PrimaryFormat, meta);
 		}
-		[Test] public void SerializeComplexObject([Values(true, false)] bool meta)
+		[Test] public void SerializeFlatStruct([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
-			TestObject data = new TestObject(rnd);
-			TestObject dataResult;
-
-			this.TestWriteRead(data, out dataResult, meta);
-
-			Assert.IsTrue(data.Equals(dataResult));
+			this.TestWriteRead(new TestData(rnd), this.PrimaryFormat, meta);
 		}
-		[Test] public void SerializeSequentially([Values(true, false)] bool meta)
+		[Test] public void SerializeObjectTree([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
-			TestObject dataA = new TestObject(rnd);
-			TestObject dataB = new TestObject(rnd);
-			TestObject dataResultA;
-			TestObject dataResultB;
-
-			this.TestSequential(dataA, dataB, out dataResultA, out dataResultB, meta);
-
-			Assert.IsTrue(dataA.Equals(dataResultA));
-			Assert.IsTrue(dataB.Equals(dataResultB));
+			this.TestWriteRead(new TestObject(rnd), this.PrimaryFormat, meta);
 		}
-		[Test] public void SerializeRandomAccess([Values(true, false)] bool meta)
+		[Test] public void SequentialAccess([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
 			TestObject dataA = new TestObject(rnd);
 			TestObject dataB = new TestObject(rnd);
-			TestObject dataResultA;
-			TestObject dataResultB;
 
-			this.TestRandomAccess(dataA, dataB, out dataResultA, out dataResultB, meta);
-
-			Assert.IsTrue(dataA.Equals(dataResultA));
-			Assert.IsTrue(dataB.Equals(dataResultB));
+			this.TestSequential(dataA, dataB, this.PrimaryFormat, meta);
 		}
-		[Test] public void SerializeMixed([Values(true, false)] bool meta)
+		[Test] public void RandomAccess([Values(true, false)] bool meta)
+		{
+			Random rnd = new Random();
+			TestObject dataA = new TestObject(rnd);
+			TestObject dataB = new TestObject(rnd);
+
+			this.TestRandomAccess(dataA, dataB, this.PrimaryFormat, meta);
+		}
+		[Test] public void BlendInOtherData([Values(true, false)] bool meta)
 		{
 			Random rnd = new Random();
 
@@ -194,7 +73,7 @@ namespace Duality.Tests.Serialization
 			TestObject	dataResult;
 
 			using (MemoryStream stream = new MemoryStream())
-			using (Formatter formatter = this.CreateFormatter(stream))
+			using (Formatter formatter = Formatter.Create(stream, this.PrimaryFormat))
 			{
 				using (BinaryWriter binWriter = new BinaryWriter(stream.NonClosing()))
 				{
@@ -205,7 +84,7 @@ namespace Duality.Tests.Serialization
 
 				if (meta)
 				{
-					using (Formatter metaFormatter = this.CreateMetaFormatter(stream))
+					using (Formatter metaFormatter = Formatter.CreateMeta(stream, this.PrimaryFormat))
 					{
 						DataNode metaNode;
 
@@ -241,53 +120,93 @@ namespace Duality.Tests.Serialization
 			Assert.IsTrue(rawDataB.Equals(rawDataResultB));
 			Assert.IsTrue(data.Equals(dataResult));
 		}
-
-
-		protected abstract Formatter CreateFormatter(Stream stream);
-		protected abstract Formatter CreateMetaFormatter(Stream stream);
-
-		private void TestWriteRead<T>(T writeObj, out T readObj, bool testMeta)
+		[Test] public void ConvertFormat([ValueSource("OtherFormats")] FormattingMethod to)
 		{
+			Random rnd = new Random();
+			TestObject data = new TestObject(rnd);
+			TestObject dataResult;
+
 			using (MemoryStream stream = new MemoryStream())
 			{
 				// Write
-				using (Formatter formatterWrite = this.CreateFormatter(stream))
+				using (Formatter formatterWrite = Formatter.Create(stream, this.PrimaryFormat))
+				{
+					formatterWrite.WriteObject(data);
+				}
+
+				// Read-Write using MetaFormatter
+				stream.Position = 0;
+				DataNode metaNode = null;
+				using (Formatter formatterRead = Formatter.CreateMeta(stream))
+				{
+					formatterRead.ReadObject(out metaNode);
+				}
+				stream.Position = 0;
+				stream.SetLength(0);
+				using (Formatter formatterWrite = Formatter.CreateMeta(stream, to))
+				{
+					formatterWrite.WriteObject(metaNode);
+				}
+
+				// Read
+				stream.Position = 0;
+				using (Formatter formatterRead = Formatter.Create(stream))
+				{
+					formatterRead.ReadObject(out dataResult);
+				}
+			}
+
+			Assert.IsTrue(data.Equals(dataResult));
+		}
+
+
+		protected void TestWriteRead<T>(T writeObj, FormattingMethod format, bool testMeta)
+		{
+			T readObj;
+			using (MemoryStream stream = new MemoryStream())
+			{
+				// Write
+				using (Formatter formatterWrite = Formatter.Create(stream, format))
 				{
 					formatterWrite.WriteObject(writeObj);
 				}
 
 				// Read-Write using MetaFormatter
-				stream.Seek(0, SeekOrigin.Begin);
 				if (testMeta)
 				{
 					DataNode metaNode = null;
-					using (Formatter formatterRead = this.CreateMetaFormatter(stream))
+					stream.Position = 0;
+					using (Formatter formatterRead = Formatter.CreateMeta(stream))
 					{
 						metaNode = formatterRead.ReadObject<DataNode>();
 					}
-					stream.Seek(0, SeekOrigin.Begin);
+					stream.Position = 0;
 					stream.SetLength(0);
-					using (Formatter formatterWrite = this.CreateMetaFormatter(stream))
+					using (Formatter formatterWrite = Formatter.CreateMeta(stream))
 					{
 						formatterWrite.WriteObject(metaNode);
 					}
 				}
 
 				// Read
-				stream.Seek(0, SeekOrigin.Begin);
-				using (Formatter formatterRead = this.CreateFormatter(stream))
+				stream.Position = 0;
+				using (Formatter formatterRead = Formatter.Create(stream))
 				{
 					readObj = formatterRead.ReadObject<T>();
 				}
 			}
+			Assert.IsTrue(writeObj.Equals(readObj), "Failed single WriteRead of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		private void TestSequential<T>(T writeObjA, T writeObjB, out T readObjA, out T readObjB, bool testMeta)
+		protected void TestSequential<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
 		{
+			T readObjA;
+			T readObjB;
+
 			using (MemoryStream stream = new MemoryStream())
 			{
 				long beginPos = stream.Position;
 				// Write
-				using (Formatter formatter = this.CreateFormatter(stream))
+				using (Formatter formatter = Formatter.Create(stream, format))
 				{
 					stream.Position = beginPos;
 					formatter.WriteObject(writeObjA);
@@ -307,7 +226,7 @@ namespace Duality.Tests.Serialization
 				{
 					DataNode metaNodeA = null;
 					DataNode metaNodeB = null;
-					using (Formatter formatter = this.CreateMetaFormatter(stream))
+					using (Formatter formatter = Formatter.CreateMeta(stream, format))
 					{
 						stream.Position = beginPos;
 						metaNodeA = (DataNode)formatter.ReadObject();
@@ -320,22 +239,28 @@ namespace Duality.Tests.Serialization
 				}
 
 				// Read
-				using (Formatter formatter = this.CreateFormatter(stream))
+				stream.Position = beginPos;
+				using (Formatter formatter = Formatter.Create(stream))
 				{
-					stream.Position = beginPos;
 					readObjA = (T)formatter.ReadObject();
 					readObjB = (T)formatter.ReadObject();
 				}
 			}
+
+			Assert.IsTrue(writeObjA.Equals(readObjA), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
+			Assert.IsTrue(writeObjB.Equals(readObjB), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
 		}
-		private void TestRandomAccess<T>(T writeObjA, T writeObjB, out T readObjA, out T readObjB, bool testMeta)
+		protected void TestRandomAccess<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
 		{
+			T readObjA;
+			T readObjB;
+
 			using (MemoryStream stream = new MemoryStream())
 			{
 				long posB = 0;
 				long posA = 0;
 				// Write
-				using (Formatter formatter = this.CreateFormatter(stream))
+				using (Formatter formatter = Formatter.Create(stream, format))
 				{
 					posB = stream.Position;
 					formatter.WriteObject(writeObjB);
@@ -360,7 +285,7 @@ namespace Duality.Tests.Serialization
 				{
 					DataNode metaNodeA = null;
 					DataNode metaNodeB = null;
-					using (Formatter formatter = this.CreateMetaFormatter(stream))
+					using (Formatter formatter = Formatter.CreateMeta(stream, format))
 					{
 						stream.Position = posA;
 						metaNodeA = (DataNode)formatter.ReadObject();
@@ -379,7 +304,7 @@ namespace Duality.Tests.Serialization
 				}
 
 				// Read
-				using (Formatter formatter = this.CreateFormatter(stream))
+				using (Formatter formatter = Formatter.Create(stream, format))
 				{
 					stream.Position = posA;
 					readObjA = (T)formatter.ReadObject();
@@ -387,6 +312,9 @@ namespace Duality.Tests.Serialization
 					readObjB = (T)formatter.ReadObject();
 				}
 			}
+
+			Assert.IsTrue(writeObjA.Equals(readObjA), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
+			Assert.IsTrue(writeObjB.Equals(readObjB), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
 		}
 	}
 }

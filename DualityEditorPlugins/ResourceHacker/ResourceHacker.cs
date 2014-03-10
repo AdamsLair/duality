@@ -71,8 +71,6 @@ namespace Duality.Editor.Plugins.ResourceHacker
 					return new PrimitiveTreeNode(data as PrimitiveNode);
 				else if (data is EnumNode)
 					return new EnumTreeNode(data as EnumNode);
-				else if (data is StringNode)
-					return new StringTreeNode(data as StringNode);
 				else
 					return new DataTreeNode(data);
 			}
@@ -123,24 +121,6 @@ namespace Duality.Editor.Plugins.ResourceHacker
 			public EnumTreeNode(EnumNode data) : base(data)
 			{
 				this.enumData = data;
-			}
-		}
-		protected class StringTreeNode : DataTreeNode
-		{
-			protected	StringNode	stringData;
-
-			public string ResolvedTypeName
-			{
-				get { return typeof(string).GetTypeKeyword(); }
-			}
-			public object DataValue
-			{
-				get { return this.stringData.StringValue; }
-			}
-
-			public StringTreeNode(StringNode data) : base(data)
-			{
-				this.stringData = data;
 			}
 		}
 		protected class ObjectTreeNode : DataTreeNode

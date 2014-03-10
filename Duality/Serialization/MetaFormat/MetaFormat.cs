@@ -256,28 +256,6 @@ namespace Duality.Serialization.MetaFormat
 		}
 	}
 	/// <summary>
-	/// Describes a serialization <see cref="System.String"/> data node.
-	/// </summary>
-	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
-	public class StringNode : DataNode
-	{
-		protected	string	value;
-
-		/// <summary>
-		/// [GET / SET] This nodes <see cref="System.String"/> value.
-		/// </summary>
-		public string StringValue
-		{
-			get { return this.value; }
-			set { this.value = value; }
-		}
-
-		public StringNode(string value) : base(DataType.String)
-		{
-			this.value = value;
-		}
-	}
-	/// <summary>
 	/// Describes a serialization <see cref="System.Enum"/> data node.
 	/// </summary>
 	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>

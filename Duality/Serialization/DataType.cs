@@ -65,6 +65,10 @@ namespace Duality.Serialization
 		/// A <see cref="System.Char"/> value
 		/// </summary>
 		Char,
+		/// <summary>
+		/// A <see cref="System.String"/> value
+		/// </summary>
+		String,
 
 		/// <summary>
 		/// A <see cref="System.Type"/> value
@@ -101,10 +105,6 @@ namespace Duality.Serialization
 		/// </summary>
 		Enum,
 		/// <summary>
-		/// A <see cref="System.String"/> value
-		/// </summary>
-		String,
-		/// <summary>
 		/// A <see cref="System.Array"/> value
 		/// </summary>
 		Array,
@@ -131,7 +131,7 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		public static bool IsPrimitiveType(this DataType dt)
 		{
-			return (ushort)dt >= (ushort)DataType.Bool && (ushort)dt <= (ushort)DataType.Char;
+			return (ushort)dt >= (ushort)DataType.Bool && (ushort)dt <= (ushort)DataType.String;
 		}
 		/// <summary>
 		/// Returns whether the <see cref="Duality.Serialization.DataType"/> represents a <see cref="System.Reflection.MemberInfo"/> type.

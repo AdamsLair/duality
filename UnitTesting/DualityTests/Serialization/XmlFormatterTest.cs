@@ -6,22 +6,18 @@ using System.Text;
 
 using Duality;
 using Duality.Serialization;
+using Duality.Serialization.MetaFormat;
 
 using OpenTK;
 using NUnit.Framework;
 
 namespace Duality.Tests.Serialization
 {
-	[TestFixture]
 	public class XmlFormatterTest : FormatterTest
 	{
-		protected override Formatter CreateFormatter(Stream stream)
+		protected override FormattingMethod PrimaryFormat
 		{
-			return Formatter.Create(stream, FormattingMethod.Xml);
-		}
-		protected override Formatter CreateMetaFormatter(Stream stream)
-		{
-			return Formatter.CreateMeta(stream, FormattingMethod.Xml);
+			get { return FormattingMethod.Xml; }
 		}
 	}
 }

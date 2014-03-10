@@ -45,6 +45,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Serialization\BinaryFormatterTest.cs" />
+    <Compile Include="Serialization\XmlFormatterTest.cs" />
+    <Compile Include="Serialization\TestObjects.cs" />
     <Compile Include="Utility\Animation\AnimationTrackTest.cs" />
     <Compile Include="Cloning\CloneProviderTest.cs" />
     <Compile Include="Components\ICmpInitializableTest.cs" />
@@ -64,8 +67,6 @@
     </Compile>
     <Compile Include="Resources\SceneTest.cs" />
     <Compile Include="Serialization\FormatterTest.cs" />
-    <Compile Include="Serialization\BinaryFormatterTest.cs" />
-    <Compile Include="Serialization\XmlFormatterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Duality\Duality.csproj">

@@ -204,7 +204,6 @@ namespace Duality.Serialization
 					return 
 						!this.IsPrimitive && 
 						!this.dataType.IsMemberInfoType() && 
-						this.dataType != DataType.String && 
 						this.dataType != DataType.ObjectRef;
 				}
 			}
@@ -431,13 +430,10 @@ namespace Duality.Serialization
 			return null;
 		}
 		/// <summary>
-		/// Determines internal data for writing a given object.
+		/// Prepares an object for serialization and generates its header information.
 		/// </summary>
 		/// <param name="obj">The object to write</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> that describes the specified object.</param>
-		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> that is used for writing the specified object.</param>
-		/// <param name="objId">An object id that is assigned to the specified object.</param>
-		protected virtual void PrepareWriteObject(object obj, out ObjectHeader header)
+		protected virtual ObjectHeader PrepareWriteObject(object obj)
 		{
 			Type objType = obj.GetType();
 			SerializeType objSerializeType = objType.GetSerializeType();
@@ -454,9 +450,6 @@ namespace Duality.Serialization
 				if (!newId) dataType = DataType.ObjectRef;
 			}
 
-			// Generate object header information
-			header = new ObjectHeader(objId, dataType, objSerializeType);
-
 			// Check whether the object is expected to be serialized
 			if (dataType != DataType.ObjectRef &&
 				!objSerializeType.Type.IsSerializable && 
@@ -465,6 +458,26 @@ namespace Duality.Serialization
 			{
 				this.SerializationLog.WriteWarning("Serializing object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
 			}
+
+			// Generate object header information
+			return new ObjectHeader(objId, dataType, objSerializeType);
+		}
+		/// <summary>
+		/// Parses the available object header information in order to prepare deserializing an object.
+		/// </summary>
+		/// <param name="objId"></param>
+		/// <param name="dataType"></param>
+		/// <param name="typeString"></param>
+		/// <returns></returns>
+		protected virtual ObjectHeader ParseObjectHeader(uint objId, DataType dataType, string typeString)
+		{
+			Type type = null;
+			if (typeString != null)
+			{
+				type = this.ResolveType(typeString, objId);
+				if (type == null) return null;
+			}
+			return new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
 		}
 
 

@@ -236,6 +236,7 @@ namespace Duality.Serialization
 				case DataType.Double:		return this.reader.ReadDouble();
 				case DataType.Decimal:		return this.reader.ReadDecimal();
 				case DataType.Char:			return this.reader.ReadChar();
+				case DataType.String:		return this.reader.ReadString();
 				default:
 					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", dataType));
 			}
@@ -381,8 +382,7 @@ namespace Duality.Serialization
 				this.writer.Write(true);
 			
 			// Retrieve type data
-			ObjectHeader header;
-			this.PrepareWriteObject(obj, out header);
+			ObjectHeader header = this.PrepareWriteObject(obj);
 
 			// Write data type header
 			this.WriteDataType(header.DataType);
@@ -494,6 +494,7 @@ namespace Duality.Serialization
 			if		(obj is bool)		this.writer.Write((bool)obj);
 			else if (obj is byte)		this.writer.Write((byte)obj);
 			else if (obj is char)		this.writer.Write((char)obj);
+			else if (obj is string)		this.writer.Write((string)obj);
 			else if (obj is sbyte)		this.writer.Write((sbyte)obj);
 			else if (obj is short)		this.writer.Write((short)obj);
 			else if (obj is ushort)		this.writer.Write((ushort)obj);
