@@ -655,7 +655,9 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		protected DataType ReadDataType()
 		{
-			return (DataType)this.reader.ReadUInt16();
+			DataType dataType = (DataType)this.reader.ReadUInt16();
+			if (dataType == (DataType)24) dataType = DataType.Struct; // Legacy support (Written 2014-03-10)
+			return dataType;
 		}
 		/// <summary>
 		/// Writes the begin of a new "safe zone", usually encapsulating a data set.

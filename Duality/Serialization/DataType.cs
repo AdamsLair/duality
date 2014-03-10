@@ -11,112 +11,112 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Unknown data type
 		/// </summary>
-		Unknown,
+		Unknown = 0,
 
 		/// <summary>
 		/// A <see cref="System.Boolean"/> value
 		/// </summary>
-		Bool,
+		Bool = 1,
 		/// <summary>
 		/// A <see cref="System.Byte"/> value
 		/// </summary>
-		Byte,
+		Byte = 2,
 		/// <summary>
 		/// A <see cref="System.SByte"/> value
 		/// </summary>
-		SByte,
+		SByte = 3,
 		/// <summary>
 		/// A <see cref="System.Int16"/> value
 		/// </summary>
-		Short,
+		Short = 4,
 		/// <summary>
 		/// A <see cref="System.UInt16"/> value
 		/// </summary>
-		UShort,
+		UShort = 5,
 		/// <summary>
 		/// A <see cref="System.Int32"/> value
 		/// </summary>
-		Int,
+		Int = 6,
 		/// <summary>
 		/// A <see cref="System.UInt32"/> value
 		/// </summary>
-		UInt,
+		UInt = 7,
 		/// <summary>
 		/// A <see cref="System.Int64"/> value
 		/// </summary>
-		Long,
+		Long = 8,
 		/// <summary>
 		/// A <see cref="System.UInt64"/> value
 		/// </summary>
-		ULong,
+		ULong = 9,
 		/// <summary>
 		/// A <see cref="System.Single"/> value
 		/// </summary>
-		Float,
+		Float = 10,
 		/// <summary>
 		/// A <see cref="System.Double"/> value
 		/// </summary>
-		Double,
+		Double = 11,
 		/// <summary>
 		/// A <see cref="System.Decimal"/> value
 		/// </summary>
-		Decimal,
+		Decimal = 12,
 		/// <summary>
 		/// A <see cref="System.Char"/> value
 		/// </summary>
-		Char,
+		Char = 13,
 		/// <summary>
 		/// A <see cref="System.String"/> value
 		/// </summary>
-		String,
+		String = 22,
 
 		/// <summary>
 		/// A <see cref="System.Type"/> value
 		/// </summary>
-		Type,
+		Type = 14,
 		/// <summary>
 		/// A <see cref="System.Reflection.FieldInfo"/> value
 		/// </summary>
-		FieldInfo,
+		FieldInfo = 15,
 		/// <summary>
 		/// A <see cref="System.Reflection.PropertyInfo"/> value
 		/// </summary>
-		PropertyInfo,
+		PropertyInfo = 16,
 		/// <summary>
 		/// A <see cref="System.Reflection.MethodInfo"/> value
 		/// </summary>
-		MethodInfo,
+		MethodInfo = 17,
 		/// <summary>
 		/// A <see cref="System.Reflection.ConstructorInfo"/> value
 		/// </summary>
-		ConstructorInfo,
+		ConstructorInfo = 18,
 		/// <summary>
 		/// A <see cref="System.Reflection.EventInfo"/> value
 		/// </summary>
-		EventInfo,
+		EventInfo = 19,
 
 		/// <summary>
 		/// A <see cref="System.Delegate"/> value
 		/// </summary>
-		Delegate,
+		Delegate = 20,
 
 		/// <summary>
 		/// A <see cref="System.Enum"/> value
 		/// </summary>
-		Enum,
+		Enum = 21,
 		/// <summary>
 		/// A <see cref="System.Array"/> value
 		/// </summary>
-		Array,
+		Array = 23,
 		/// <summary>
 		/// A struct object
 		/// </summary>
-		Struct,
+		Struct = 25,
 
 		/// <summary>
 		/// The reference to an object
 		/// </summary>
-		ObjectRef
+		ObjectRef = 26
 	}
 
 	/// <summary>
@@ -131,7 +131,7 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		public static bool IsPrimitiveType(this DataType dt)
 		{
-			return (ushort)dt >= (ushort)DataType.Bool && (ushort)dt <= (ushort)DataType.String;
+			return ((ushort)dt >= (ushort)DataType.Bool && (ushort)dt <= (ushort)DataType.Char) || dt == DataType.String;
 		}
 		/// <summary>
 		/// Returns whether the <see cref="Duality.Serialization.DataType"/> represents a <see cref="System.Reflection.MemberInfo"/> type.
