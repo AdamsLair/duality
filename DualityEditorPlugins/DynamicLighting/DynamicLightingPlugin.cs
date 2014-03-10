@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Duality;
@@ -7,7 +8,6 @@ using Duality.Plugins.DynamicLighting;
 
 using Duality.Editor;
 using Duality.Editor.Properties;
-using Duality.Editor.CorePluginInterface;
 
 namespace Duality.Editor.Plugins.DynamicLighting
 {
@@ -17,19 +17,17 @@ namespace Duality.Editor.Plugins.DynamicLighting
 		{
 			get { return "DynamicLighting"; }
 		}
-
-		protected override void LoadPlugin()
-		{
-			base.LoadPlugin();
-			CorePluginRegistry.RegisterDataConverter<Component>(new LightingRendererFromMaterial());
-		}
 	}
 
 	public class LightingRendererFromMaterial : DataConverter
 	{
+		public override Type TargetType
+		{
+			get { return typeof(LightingSpriteRenderer); }
+		}
 		public override int Priority
 		{
-			get { return CorePluginRegistry.Priority_Specialized; }
+			get { return DataConverter.PrioritySpecialized; }
 		}
 		public override bool CanConvertFrom(ConvertOperation convert)
 		{
