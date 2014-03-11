@@ -4,6 +4,7 @@ using System.Text;
 using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Diagnostics;
 
 using Duality;
@@ -176,11 +177,6 @@ namespace Duality.Tests.Drawing
 			c.PopState();
 		}
 
-		private void CreateReferenceImage(int width, int height, Action<Canvas> renderMethod)
-		{
-			Pixmap.Layer image = this.RenderToTexture(width, height, renderMethod);
-			image.SavePixelData(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "CanvasTestOutput.png"));
-		}
 		private void TestImagesEqual(Bitmap referenceImage, Action<Canvas> renderMethod)
 		{
 			Pixmap.Layer image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
@@ -220,6 +216,23 @@ namespace Duality.Tests.Drawing
 
 			return true;
 		}
+		
+		private void UpdateReferenceImage(Expression<Func<Bitmap>> oldReferenceImageGetter, Action<Canvas> renderMethod)
+		{
+			var resourceMember = oldReferenceImageGetter.Body as MemberExpression;
+			if (resourceMember == null) throw new ArgumentException("Only lambda methods of the form '() => Property' are accepted");
+
+			string name = resourceMember.Member.Name;
+			Bitmap oldRef = oldReferenceImageGetter.Compile()();
+
+			this.CreateReferenceImage(name, oldRef.Width, oldRef.Height, renderMethod);
+		}
+		private void CreateReferenceImage(string name, int width, int height, Action<Canvas> renderMethod)
+		{
+			Pixmap.Layer image = this.RenderToTexture(width, height, renderMethod);
+			image.SavePixelData(TestHelper.GetEmbeddedResourcePath(name, ".png"));
+		}
+
 		private Pixmap.Layer CreateDiffImage(Pixmap.Layer first, Pixmap.Layer second)
 		{
 			if (first == second) return new Pixmap.Layer(first.Width, first.Height);

@@ -45,9 +45,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Serialization\BinaryFormatterTest.cs" />
-    <Compile Include="Serialization\XmlFormatterTest.cs" />
     <Compile Include="Serialization\TestObjects.cs" />
+    <Compile Include="TestHelper.cs" />
     <Compile Include="Utility\Animation\AnimationTrackTest.cs" />
     <Compile Include="Cloning\CloneProviderTest.cs" />
     <Compile Include="Components\ICmpInitializableTest.cs" />
@@ -83,6 +82,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CanvasTestNothing.png" />
+    <None Include="EmbeddedResources\FormatterTestOldBinaryData.dat" />
+    <None Include="EmbeddedResources\FormatterTestOldXmlData.dat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CanvasTestRedSquare.png" />

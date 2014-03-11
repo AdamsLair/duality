@@ -1,0 +1,294 @@
+﻿<root dataType="Struct" type="Duality.Tests.Serialization.TestObject" id="129723834">
+  <DataField dataType="Struct" type="Duality.Tests.Serialization.TestData">
+    <EnumField dataType="Enum" type="Duality.Tests.Serialization.SomeEnum" name="9" value="9" />
+    <FloatField dataType="Float">0.206033155</FloatField>
+    <IntField dataType="Int">1198642031</IntField>
+    <StringField dataType="String">1200195957</StringField>
+  </DataField>
+  <DelegateField dataType="Delegate" type="System.Func`2[[System.Int32],[System.Boolean]]" id="427169525" multi="true">
+    <method dataType="MethodInfo" id="1100841590" value="M:Duality.Tests.Serialization.TestObject:DelegateB(System.Int32)" />
+    <target />
+    <invocationList dataType="Array" type="System.Delegate[]" id="649525530">
+      <item dataType="ObjectRef" id="427169525">427169525</item>
+    </invocationList>
+  </DelegateField>
+  <DictField dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.Tests.Serialization.TestObject]]" id="2035693768" surrogate="true">
+    <header />
+    <body>
+      <_x0031_358625013 dataType="Struct" type="Duality.Tests.Serialization.TestObject" id="2696347487">
+        <DataField dataType="Struct" type="Duality.Tests.Serialization.TestData">
+          <EnumField dataType="Enum" type="Duality.Tests.Serialization.SomeEnum" name="Third" value="3" />
+          <FloatField dataType="Float">0.9953471</FloatField>
+          <IntField dataType="Int">1851925803</IntField>
+          <StringField dataType="String">1454235444</StringField>
+        </DataField>
+        <DelegateField dataType="Delegate" type="System.Func`2[[System.Int32],[System.Boolean]]" id="1485019246" multi="true">
+          <method dataType="MethodInfo" id="2204481104" value="M:Duality.Tests.Serialization.TestObject:DelegateA(System.Int32)" />
+          <target />
+          <invocationList dataType="Array" type="System.Delegate[]" id="1943235950">
+            <item dataType="ObjectRef" id="1485019246">1485019246</item>
+          </invocationList>
+        </DelegateField>
+        <DictField dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.Tests.Serialization.TestObject]]" id="1014616010" surrogate="true">
+          <header />
+          <body>
+            <_x0031_130186590 dataType="Struct" type="Duality.Tests.Serialization.TestObject" id="1372777964">
+              <DataField dataType="Struct" type="Duality.Tests.Serialization.TestData">
+                <EnumField dataType="Enum" type="Duality.Tests.Serialization.SomeEnum" name="Second" value="2" />
+                <FloatField dataType="Float">0.18712458</FloatField>
+                <IntField dataType="Int">174182291</IntField>
+                <StringField dataType="String">973512717</StringField>
+              </DataField>
+              <DelegateField dataType="ObjectRef" id="427169525">427169525</DelegateField>
+              <DictField dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.Tests.Serialization.TestObject]]" id="3904983652" surrogate="true">
+                <header />
+                <body />
+              </DictField>
+              <ListField dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2520299542">
+                <_items dataType="Array" type="System.Int32[]" id="2514576686">
+                  <item dataType="Int">977</item>
+                  <item dataType="Int">978</item>
+                  <item dataType="Int">979</item>
+                  <item dataType="Int">980</item>
+                  <item dataType="Int">981</item>
+                  <item dataType="Int">982</item>
+                  <item dataType="Int">983</item>
+                  <item dataType="Int">984</item>
+                  <item dataType="Int">985</item>
+                  <item dataType="Int">986</item>
+                  <item dataType="Int">987</item>
+                  <item dataType="Int">988</item>
+                  <item dataType="Int">989</item>
+                  <item dataType="Int">990</item>
+                  <item dataType="Int">991</item>
+                  <item dataType="Int">992</item>
+                  <item dataType="Int">993</item>
+                  <item dataType="Int">994</item>
+                  <item dataType="Int">995</item>
+                  <item dataType="Int">996</item>
+                  <item dataType="Int">997</item>
+                  <item dataType="Int">998</item>
+                  <item dataType="Int">999</item>
+                  <item dataType="Int">1000</item>
+                  <item dataType="Int">1001</item>
+                  <item dataType="Int">1002</item>
+                  <item dataType="Int">1003</item>
+                  <item dataType="Int">1004</item>
+                  <item dataType="Int">1005</item>
+                  <item dataType="Int">1006</item>
+                  <item dataType="Int">1007</item>
+                  <item dataType="Int">1008</item>
+                </_items>
+                <_size dataType="Int">32</_size>
+                <_version dataType="Int">32</_version>
+              </ListField>
+              <ListField2 dataType="Struct" type="System.Collections.Generic.List`1[[System.String]]" id="3420133216">
+                <_items dataType="Array" type="System.String[]" id="776456712" length="4">
+                  <item dataType="String">525</item>
+                </_items>
+                <_size dataType="Int">1</_size>
+                <_version dataType="Int">1</_version>
+              </ListField2>
+              <StringField dataType="String">2005789796</StringField>
+              <TypeField dataType="Type" id="3686408034" value="Duality.GenericOperator" />
+            </_x0031_130186590>
+          </body>
+        </DictField>
+        <ListField dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1845743710">
+          <_items dataType="Array" type="System.Int32[]" id="1307056800" length="64">
+            <item dataType="Int">633</item>
+            <item dataType="Int">634</item>
+            <item dataType="Int">635</item>
+            <item dataType="Int">636</item>
+            <item dataType="Int">637</item>
+            <item dataType="Int">638</item>
+            <item dataType="Int">639</item>
+            <item dataType="Int">640</item>
+            <item dataType="Int">641</item>
+            <item dataType="Int">642</item>
+            <item dataType="Int">643</item>
+            <item dataType="Int">644</item>
+            <item dataType="Int">645</item>
+            <item dataType="Int">646</item>
+            <item dataType="Int">647</item>
+            <item dataType="Int">648</item>
+            <item dataType="Int">649</item>
+            <item dataType="Int">650</item>
+            <item dataType="Int">651</item>
+            <item dataType="Int">652</item>
+            <item dataType="Int">653</item>
+            <item dataType="Int">654</item>
+            <item dataType="Int">655</item>
+            <item dataType="Int">656</item>
+            <item dataType="Int">657</item>
+            <item dataType="Int">658</item>
+            <item dataType="Int">659</item>
+            <item dataType="Int">660</item>
+            <item dataType="Int">661</item>
+            <item dataType="Int">662</item>
+            <item dataType="Int">663</item>
+            <item dataType="Int">664</item>
+            <item dataType="Int">665</item>
+            <item dataType="Int">666</item>
+            <item dataType="Int">667</item>
+            <item dataType="Int">668</item>
+            <item dataType="Int">669</item>
+            <item dataType="Int">670</item>
+            <item dataType="Int">671</item>
+            <item dataType="Int">672</item>
+            <item dataType="Int">673</item>
+            <item dataType="Int">674</item>
+          </_items>
+          <_size dataType="Int">42</_size>
+          <_version dataType="Int">42</_version>
+        </ListField>
+        <ListField2 dataType="Struct" type="System.Collections.Generic.List`1[[System.String]]" id="732033882">
+          <_items dataType="Array" type="System.String[]" id="2557564508" length="4">
+            <item dataType="String">983</item>
+          </_items>
+          <_size dataType="Int">1</_size>
+          <_version dataType="Int">1</_version>
+        </ListField2>
+        <StringField dataType="String">1008269081</StringField>
+        <TypeField dataType="ObjectRef" id="3686408034">3686408034</TypeField>
+      </_x0031_358625013>
+      <_x0037_36891500 dataType="Struct" type="Duality.Tests.Serialization.TestObject" id="847900448">
+        <DataField dataType="Struct" type="Duality.Tests.Serialization.TestData">
+          <EnumField dataType="Enum" type="Duality.Tests.Serialization.SomeEnum" name="7" value="7" />
+          <FloatField dataType="Float">0.273451477</FloatField>
+          <IntField dataType="Int">255459778</IntField>
+          <StringField dataType="String">1947978014</StringField>
+        </DataField>
+        <DelegateField dataType="ObjectRef" id="427169525">427169525</DelegateField>
+        <DictField dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.Tests.Serialization.TestObject]]" id="855378517" surrogate="true">
+          <header />
+          <body />
+        </DictField>
+        <ListField dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1844585800">
+          <_items dataType="Array" type="System.Int32[]" id="3747280767" length="32">
+            <item dataType="Int">-326</item>
+            <item dataType="Int">-325</item>
+            <item dataType="Int">-324</item>
+            <item dataType="Int">-323</item>
+            <item dataType="Int">-322</item>
+            <item dataType="Int">-321</item>
+            <item dataType="Int">-320</item>
+            <item dataType="Int">-319</item>
+            <item dataType="Int">-318</item>
+            <item dataType="Int">-317</item>
+            <item dataType="Int">-316</item>
+            <item dataType="Int">-315</item>
+            <item dataType="Int">-314</item>
+            <item dataType="Int">-313</item>
+            <item dataType="Int">-312</item>
+            <item dataType="Int">-311</item>
+            <item dataType="Int">-310</item>
+            <item dataType="Int">-309</item>
+            <item dataType="Int">-308</item>
+            <item dataType="Int">-307</item>
+            <item dataType="Int">-306</item>
+            <item dataType="Int">-305</item>
+          </_items>
+          <_size dataType="Int">22</_size>
+          <_version dataType="Int">22</_version>
+        </ListField>
+        <ListField2 dataType="Struct" type="System.Collections.Generic.List`1[[System.String]]" id="2240739423">
+          <_items dataType="Array" type="System.String[]" id="3735323140" length="16">
+            <item dataType="String">-707</item>
+            <item dataType="String">-706</item>
+            <item dataType="String">-705</item>
+            <item dataType="String">-704</item>
+            <item dataType="String">-703</item>
+            <item dataType="String">-702</item>
+            <item dataType="String">-701</item>
+            <item dataType="String">-700</item>
+            <item dataType="String">-699</item>
+            <item dataType="String">-698</item>
+            <item dataType="String">-697</item>
+          </_items>
+          <_size dataType="Int">11</_size>
+          <_version dataType="Int">11</_version>
+        </ListField2>
+        <StringField dataType="String">2056119311</StringField>
+        <TypeField dataType="Type" id="2301142486" value="Duality.Component" />
+      </_x0037_36891500>
+    </body>
+  </DictField>
+  <ListField dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="876525375">
+    <_items dataType="Array" type="System.Int32[]" id="295733828" length="64">
+      <item dataType="Int">-116</item>
+      <item dataType="Int">-115</item>
+      <item dataType="Int">-114</item>
+      <item dataType="Int">-113</item>
+      <item dataType="Int">-112</item>
+      <item dataType="Int">-111</item>
+      <item dataType="Int">-110</item>
+      <item dataType="Int">-109</item>
+      <item dataType="Int">-108</item>
+      <item dataType="Int">-107</item>
+      <item dataType="Int">-106</item>
+      <item dataType="Int">-105</item>
+      <item dataType="Int">-104</item>
+      <item dataType="Int">-103</item>
+      <item dataType="Int">-102</item>
+      <item dataType="Int">-101</item>
+      <item dataType="Int">-100</item>
+      <item dataType="Int">-99</item>
+      <item dataType="Int">-98</item>
+      <item dataType="Int">-97</item>
+      <item dataType="Int">-96</item>
+      <item dataType="Int">-95</item>
+      <item dataType="Int">-94</item>
+      <item dataType="Int">-93</item>
+      <item dataType="Int">-92</item>
+      <item dataType="Int">-91</item>
+      <item dataType="Int">-90</item>
+      <item dataType="Int">-89</item>
+      <item dataType="Int">-88</item>
+      <item dataType="Int">-87</item>
+      <item dataType="Int">-86</item>
+      <item dataType="Int">-85</item>
+      <item dataType="Int">-84</item>
+      <item dataType="Int">-83</item>
+      <item dataType="Int">-82</item>
+      <item dataType="Int">-81</item>
+      <item dataType="Int">-80</item>
+      <item dataType="Int">-79</item>
+      <item dataType="Int">-78</item>
+      <item dataType="Int">-77</item>
+      <item dataType="Int">-76</item>
+      <item dataType="Int">-75</item>
+      <item dataType="Int">-74</item>
+      <item dataType="Int">-73</item>
+      <item dataType="Int">-72</item>
+      <item dataType="Int">-71</item>
+      <item dataType="Int">-70</item>
+      <item dataType="Int">-69</item>
+    </_items>
+    <_size dataType="Int">48</_size>
+    <_version dataType="Int">48</_version>
+  </ListField>
+  <ListField2 dataType="Struct" type="System.Collections.Generic.List`1[[System.String]]" id="2716248726">
+    <_items dataType="Array" type="System.String[]" id="3244550529" length="16">
+      <item dataType="String">-453</item>
+      <item dataType="String">-452</item>
+      <item dataType="String">-451</item>
+      <item dataType="String">-450</item>
+      <item dataType="String">-449</item>
+      <item dataType="String">-448</item>
+      <item dataType="String">-447</item>
+      <item dataType="String">-446</item>
+      <item dataType="String">-445</item>
+      <item dataType="String">-444</item>
+      <item dataType="String">-443</item>
+      <item dataType="String">-442</item>
+      <item dataType="String">-441</item>
+      <item dataType="String">-440</item>
+    </_items>
+    <_size dataType="Int">14</_size>
+    <_version dataType="Int">14</_version>
+  </ListField2>
+  <StringField dataType="String">1559595546</StringField>
+  <TypeField dataType="ObjectRef" id="3686408034">3686408034</TypeField>
+</root>
+<!-- XmlFormatterBase Document Separator -->

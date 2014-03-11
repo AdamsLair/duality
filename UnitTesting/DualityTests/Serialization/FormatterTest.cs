@@ -1,24 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.IO;
 using System.Text;
 
 using Duality;
 using Duality.Serialization;
 using Duality.Serialization.MetaFormat;
+using Duality.Tests.Properties;
 
 using OpenTK;
 using NUnit.Framework;
 
 namespace Duality.Tests.Serialization
 {
-	public abstract class FormatterTest
+	[TestFixture(FormattingMethod.Xml)]
+	[TestFixture(FormattingMethod.Binary)]
+	public class FormatterTest
 	{
-		protected abstract FormattingMethod PrimaryFormat { get; }
-		protected IEnumerable<FormattingMethod> OtherFormats
+		private FormattingMethod format;
+
+		private FormattingMethod PrimaryFormat
+		{
+			get { return this.format; }
+		}
+		private IEnumerable<FormattingMethod> OtherFormats
 		{
 			get { return Enum.GetValues(typeof(FormattingMethod)).Cast<FormattingMethod>().Where(m => m != FormattingMethod.Unknown && m != this.PrimaryFormat); }
+		}
+
+		public FormatterTest(FormattingMethod format)
+		{
+			this.format = format;
 		}
 
 
@@ -158,9 +172,43 @@ namespace Duality.Tests.Serialization
 
 			Assert.IsTrue(data.Equals(dataResult));
 		}
+		[Test] public void BackwardsCompatibility()
+		{
+			Random rnd = new Random(0);
+			TestObject obj = new TestObject(rnd);
+			this.TestDataEqual("Old", obj, this.PrimaryFormat);
 
+			// Test Data last updated 2014-03-11
+			// this.CreateReferenceFile("Old", obj, this.PrimaryFormat);
+		}
 
-		protected void TestWriteRead<T>(T writeObj, FormattingMethod format, bool testMeta)
+		
+		private string GetReferenceResourceName(string name, FormattingMethod format)
+		{
+			return string.Format("FormatterTest{0}{1}Data", name, format);
+		}
+		private void CreateReferenceFile<T>(string name, T writeObj, FormattingMethod format)
+		{
+			string filePath = TestHelper.GetEmbeddedResourcePath(GetReferenceResourceName(name, format), ".dat");
+			using (FileStream stream = File.Open(filePath, FileMode.Create))
+			using (Formatter formatter = Formatter.Create(stream, format))
+			{
+				formatter.WriteObject(writeObj);
+			}
+		}
+
+		private void TestDataEqual<T>(string name, T writeObj, FormattingMethod format)
+		{
+			T readObj;
+			byte[] data = (byte[])TestRes.ResourceManager.GetObject(this.GetReferenceResourceName(name, format), System.Globalization.CultureInfo.InvariantCulture);
+			using (MemoryStream stream = new MemoryStream(data))
+			using (Formatter formatter = Formatter.Create(stream, format))
+			{
+				formatter.ReadObject(out readObj);
+			}
+			Assert.IsTrue(writeObj.Equals(readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
+		}
+		private void TestWriteRead<T>(T writeObj, FormattingMethod format, bool testMeta)
 		{
 			T readObj;
 			using (MemoryStream stream = new MemoryStream())
@@ -197,7 +245,7 @@ namespace Duality.Tests.Serialization
 			}
 			Assert.IsTrue(writeObj.Equals(readObj), "Failed single WriteRead of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		protected void TestSequential<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
+		private void TestSequential<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
 		{
 			T readObjA;
 			T readObjB;
@@ -250,7 +298,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsTrue(writeObjA.Equals(readObjA), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
 			Assert.IsTrue(writeObjB.Equals(readObjB), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
 		}
-		protected void TestRandomAccess<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
+		private void TestRandomAccess<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
 		{
 			T readObjA;
 			T readObjB;
