@@ -108,7 +108,7 @@ namespace Duality.Serialization
 			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
 			if (header.DataType == DataType.Unknown)
 			{
-				this.SerializationLog.WriteError("Unable to process DataType: {0}.", dataTypeStr);
+				this.LocalLog.WriteError("Unable to process DataType: {0}.", dataTypeStr);
 				return this.GetNullObject();
 			}
 
@@ -121,7 +121,7 @@ namespace Duality.Serialization
 			}
 			catch (Exception e)
 			{
-				this.SerializationLog.WriteError("Error reading object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
+				this.LocalLog.WriteError("Error reading object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
 			}
 
 			return result ?? this.GetNullObject();
@@ -192,7 +192,7 @@ namespace Duality.Serialization
 			catch (Exception e)
 			{
 				// Log the error
-				this.SerializationLog.WriteError("Error writing object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
+				this.LocalLog.WriteError("Error writing object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
 			}
 			finally
 			{

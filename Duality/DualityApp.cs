@@ -633,29 +633,7 @@ namespace Duality
 		/// </summary>
 		public static void LoadAppData()
 		{
-			string path = AppDataPath;
-			if (File.Exists(path))
-			{
-				try
-				{
-					Log.Core.Write("Loading AppData..");
-					Log.Core.PushIndent();
-					using (FileStream str = File.OpenRead(path))
-					{
-						using (var formatter = Formatter.Create(str))
-						{
-							appData = formatter.ReadObject<DualityAppData>() ?? new DualityAppData();
-						}
-					}
-					Log.Core.PopIndent();
-				}
-				catch (Exception)
-				{
-					appData = new DualityAppData();
-				}
-			}
-			else
-				appData = new DualityAppData();
+			appData = Formatter.TryReadObject<DualityAppData>(AppDataPath) ?? new DualityAppData();
 		}
 		/// <summary>
 		/// Triggers Duality to (re)load its <see cref="DualityUserData"/>.
@@ -664,135 +642,40 @@ namespace Duality
 		{
 			string path = UserDataPath;
 			if (!File.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor) path = "defaultuserdata.dat";
-			if (File.Exists(path))
-			{
-				try
-				{
-					Log.Core.Write("Loading UserData..");
-					Log.Core.PushIndent();
-					using (FileStream str = File.OpenRead(path))
-					{
-						using (var formatter = Formatter.Create(str))
-						{
-							UserData = formatter.ReadObject<DualityUserData>() ?? new DualityUserData();
-						}
-					}
-					Log.Core.PopIndent();
-				}
-				catch (Exception)
-				{
-					UserData = new DualityUserData();
-				}
-			}
-			else
-				UserData = new DualityUserData();
+			userData = Formatter.TryReadObject<DualityUserData>(path) ?? new DualityUserData();
 		}
 		/// <summary>
 		/// Triggers Duality to (re)load its <see cref="DualityMetaData"/>.
 		/// </summary>
 		public static void LoadMetaData()
 		{
-			string path = MetaDataPath;
-			if (File.Exists(path))
-			{
-				try
-				{
-					Log.Core.Write("Loading MetaData..");
-					Log.Core.PushIndent();
-					using (FileStream str = File.OpenRead(path))
-					{
-						using (var formatter = Formatter.Create(str))
-						{
-							metaData = formatter.ReadObject<DualityMetaData>() ?? new DualityMetaData();
-						}
-					}
-					Log.Core.PopIndent();
-				}
-				catch (Exception)
-				{
-					metaData = new DualityMetaData();
-				}
-			}
-			else
-				metaData = new DualityMetaData();
+			metaData = Formatter.TryReadObject<DualityMetaData>(MetaDataPath) ?? new DualityMetaData();
 		}
 		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityAppData"/>.
 		/// </summary>
 		public static void SaveAppData()
 		{
-			Log.Core.Write("Saving AppData..");
-			Log.Core.PushIndent();
-
-			try
-			{
-				string path = AppDataPath;
-				string dirName = Path.GetDirectoryName(path);
-				if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
-				using (FileStream str = File.Open(path, FileMode.Create))
-				{
-					using (var formatter = Formatter.Create(str, FormattingMethod.Xml))
-					{
-						formatter.WriteObject(appData);
-					}
-				}
-			}
-			catch (Exception e) { Log.Core.WriteError(Log.Exception(e)); }
-
-			Log.Core.PopIndent();
+			Formatter.WriteObject(appData, AppDataPath, FormattingMethod.Xml);
 		}
 		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityUserData"/>.
 		/// </summary>
 		public static void SaveUserData()
 		{
-			Log.Core.Write("Saving UserData..");
-			Log.Core.PushIndent();
-
-			try
+			string path = UserDataPath;
+			Formatter.WriteObject(userData, UserDataPath, FormattingMethod.Xml);
+			if (execContext == ExecutionContext.Editor)
 			{
-				string path = UserDataPath;
-				string dirName = Path.GetDirectoryName(path);
-				if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
-				if (execContext == ExecutionContext.Editor) path = "defaultuserdata.dat";
-
-				using (FileStream str = File.Open(path, FileMode.Create))
-				{
-					using (var formatter = Formatter.Create(str, FormattingMethod.Xml))
-					{
-						formatter.WriteObject(userData);
-					}
-				}
+				Formatter.WriteObject(userData, "defaultuserdata.dat", FormattingMethod.Xml);
 			}
-			catch (Exception e) { Log.Core.WriteError(Log.Exception(e)); }
-
-			Log.Core.PopIndent();
 		}
 		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityMetaData"/>.
 		/// </summary>
 		public static void SaveMetaData()
 		{
-			Log.Core.Write("Saving MetaData..");
-			Log.Core.PushIndent();
-
-			try
-			{
-				string path = MetaDataPath;
-				string dirName = Path.GetDirectoryName(path);
-				if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
-
-				using (FileStream str = File.Open(path, FileMode.Create))
-				{
-					using (var formatter = Formatter.Create(str, FormattingMethod.Xml))
-					{
-						formatter.WriteObject(metaData);
-					}
-				}
-			}
-			catch (Exception e) { Log.Core.WriteError(Log.Exception(e)); }
-
-			Log.Core.PopIndent();
+			Formatter.WriteObject(metaData, MetaDataPath, FormattingMethod.Xml);
 		}
 
 		private static void LoadPlugins()

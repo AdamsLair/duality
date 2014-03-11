@@ -276,9 +276,9 @@ namespace Duality.Serialization
 		/// </summary>
 		public abstract bool CanWrite { get; }
 		/// <summary>
-		/// [GET / SET] The de/serialization <see cref="Duality.Log"/>.
+		/// [GET / SET] The local de/serialization <see cref="Duality.Log"/>.
 		/// </summary>
-		public Log SerializationLog
+		public Log LocalLog
 		{
 			get { return this.log; }
 			set { this.log = value ?? new Log("Serialize"); }
@@ -321,6 +321,10 @@ namespace Duality.Serialization
 		protected virtual void OnDisposed(bool manually) {}
 
 		
+		/// <summary>
+		/// Reads a single object and returns it.
+		/// </summary>
+		/// <returns></returns>
 		public object ReadObject()
 		{
 			if (!this.CanRead) throw new InvalidOperationException("Can't read object from a write-only serializer!");
@@ -329,16 +333,31 @@ namespace Duality.Serialization
 			this.EndReadOperation();
 			return result;
 		}
+		/// <summary>
+		/// Reads a single object, casts it to the specified Type and returns it.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
 		public T ReadObject<T>()
 		{
 			object result = this.ReadObject();
 			return result is T ? (T)result : default(T);
 		}
+		/// <summary>
+		/// Reads a single object, casts it to the specified Type and returns it via output parameter.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj"></param>
 		public void ReadObject<T>(out T obj)
 		{
 			object result = this.ReadObject();
 			obj = result is T ? (T)result : default(T);
 		}
+
+		/// <summary>
+		/// Writes a single object.
+		/// </summary>
+		/// <param name="obj"></param>
 		public void WriteObject(object obj)
 		{
 			if (!this.CanWrite) throw new InvalidOperationException("Can't write object to a read-only serializer!");
@@ -346,6 +365,11 @@ namespace Duality.Serialization
 			this.WriteObjectData(obj);
 			this.EndWriteOperation();
 		}
+		/// <summary>
+		/// Writes a single object.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj"></param>
 		public void WriteObject<T>(T obj)
 		{
 			this.WriteObject((object)obj);
@@ -387,6 +411,7 @@ namespace Duality.Serialization
 		{
 			return this.fieldBlockers.Any(blocker => blocker(field, obj));
 		}
+
 
 		/// <summary>
 		/// Writes the specified object including all referenced objects.
@@ -456,7 +481,7 @@ namespace Duality.Serialization
 				!typeof(ISerializeExplicit).IsAssignableFrom(objSerializeType.Type) &&
 				GetSurrogateFor(objSerializeType.Type) == null) 
 			{
-				this.SerializationLog.WriteWarning("Serializing object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
+				this.LocalLog.WriteWarning("Serializing object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
 			}
 
 			// Generate object header information
@@ -548,23 +573,23 @@ namespace Duality.Serialization
 			{
 				if (!this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue))
 				{
-					this.SerializationLog.WriteWarning("Actual Type '{0}' of object value in field '{1}' does not match reflected FieldType '{2}'. Trying to convert...'", 
+					this.LocalLog.WriteWarning("Actual Type '{0}' of object value in field '{1}' does not match reflected FieldType '{2}'. Trying to convert...'", 
 						fieldValue != null ? Log.Type(fieldValue.GetType()) : "unknown", 
 						fieldName, 
 						Log.Type(field.FieldType));
-					this.SerializationLog.PushIndent();
+					this.LocalLog.PushIndent();
 					object castVal;
 					try
 					{
 						castVal = Convert.ChangeType(fieldValue, field.FieldType, System.Globalization.CultureInfo.InvariantCulture);
-						this.SerializationLog.Write("...succeeded! Assigning value '{0}'", castVal);
+						this.LocalLog.Write("...succeeded! Assigning value '{0}'", castVal);
 						field.SetValue(obj, castVal);
 					}
 					catch (Exception)
 					{
-						this.SerializationLog.WriteWarning("...failed! Discarding value '{0}'", fieldValue);
+						this.LocalLog.WriteWarning("...failed! Discarding value '{0}'", fieldValue);
 					}
-					this.SerializationLog.PopIndent();
+					this.LocalLog.PopIndent();
 				}
 				return;
 			}
@@ -764,6 +789,112 @@ namespace Duality.Serialization
 				return new MetaFormat.XmlMetaFormatter(stream);
 			else
 				return new MetaFormat.BinaryMetaFormatter(stream);
+		}
+		/// <summary>
+		/// Reads an object of the specified Type from an existing data file, expecting that it might fail.
+		/// This method does not throw an Exception when the file does not exist or another
+		/// error occurred during the read operation. Instead, it will simply return null in these cases.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="file"></param>
+		/// <param name="method"></param>
+		/// <returns></returns>
+		public static T TryReadObject<T>(string file, FormattingMethod method = FormattingMethod.Unknown)
+		{
+			try
+			{
+				if (!File.Exists(file)) return default(T);
+				using (FileStream str = File.OpenRead(file))
+				{
+					return Formatter.TryReadObject<T>(str, method);
+				}
+			}
+			catch (Exception)
+			{
+				return default(T);
+			}
+		}
+		/// <summary>
+		/// Reads an object of the specified Type from an existing data Stream, expecting that it might fail.
+		/// This method does not throw an Exception when the file does not exist or an expected
+		/// error occurred during the read operation. Instead, it will simply return null in these cases.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="stream"></param>
+		/// <param name="method"></param>
+		/// <returns></returns>
+		public static T TryReadObject<T>(Stream stream, FormattingMethod method = FormattingMethod.Unknown)
+		{
+			try
+			{
+				using (Formatter formatter = Formatter.Create(stream, method))
+				{
+					return formatter.ReadObject<T>();
+				}
+			}
+			catch (Exception)
+			{
+				return default(T);
+			}
+		}
+		/// <summary>
+		/// Reads an object of the specified Type from an existing data file. 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="file"></param>
+		/// <param name="method"></param>
+		/// <returns></returns>
+		public static T ReadObject<T>(string file, FormattingMethod method = FormattingMethod.Unknown)
+		{
+			using (FileStream str = File.OpenRead(file))
+			{
+				return Formatter.ReadObject<T>(str, method);
+			}
+		}
+		/// <summary>
+		/// Reads an object of the specified Type from an existing data Stream.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="stream"></param>
+		/// <param name="method"></param>
+		/// <returns></returns>
+		public static T ReadObject<T>(Stream stream, FormattingMethod method = FormattingMethod.Unknown)
+		{
+			using (Formatter formatter = Formatter.Create(stream, method))
+			{
+				return formatter.ReadObject<T>();
+			}
+		}
+		/// <summary>
+		/// Saves an object to the specified data file. If it already exists, the file will be overwritten.
+		/// Automatically creates the appropriate directory structure, if it doesn't exist yet.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj"></param>
+		/// <param name="file"></param>
+		/// <param name="method"></param>
+		public static void WriteObject<T>(T obj, string file, FormattingMethod method = FormattingMethod.Unknown)
+		{
+			string dirName = Path.GetDirectoryName(file);
+			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
+			using (FileStream str = File.Open(file, FileMode.Create))
+			{
+				Formatter.WriteObject<T>(obj, str, method);
+			}
+		}
+		/// <summary>
+		/// Saves an object to the specified data stream.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj"></param>
+		/// <param name="stream"></param>
+		/// <param name="method"></param>
+		public static void WriteObject<T>(T obj, Stream stream, FormattingMethod method = FormattingMethod.Unknown)
+		{
+			using (Formatter formatter = Formatter.Create(stream, method))
+			{
+				formatter.WriteObject(obj);
+			}
 		}
 	}
 }

@@ -330,30 +330,11 @@ namespace Duality.Editor
 
 			// Initialize AppData
 			DualityAppData data;
-			if (File.Exists(DualityApp.AppDataPath))
-			{
-				try
-				{
-					using (FileStream str = File.OpenRead(DualityApp.AppDataPath))
-					using (var formatter = Formatter.Create(str))
-					{
-						data = formatter.ReadObject<DualityAppData>() ?? new DualityAppData();
-					}
-				}
-				catch (Exception) { data = new DualityAppData(); }
-			}
-			else
-			{
-				data = new DualityAppData();
-			}
+			data = Formatter.TryReadObject<DualityAppData>(DualityApp.AppDataPath) ?? new DualityAppData();
 			data.AppName = projName;
 			data.AuthorName = Environment.UserName;
 			data.Version = 0;
-			using (FileStream str = File.Open(DualityApp.AppDataPath, FileMode.Create))
-			using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
-			{
-				formatter.WriteObject(data);
-			}
+			Formatter.WriteObject(data, DualityApp.AppDataPath, FormattingMethod.Xml);
 
 			// Initialize source code
 			DualityEditorApp.InitPluginSourceCode(); // Force re-init to update namespaces, etc.

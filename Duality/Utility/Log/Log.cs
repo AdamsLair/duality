@@ -178,6 +178,15 @@ namespace Duality
 		private void Write(LogMessageType type, string msg)
 		{
 			Profile.TimeLog.BeginMeasure();
+
+			// Check whether the message contains null characters. If it does, crop it, because it's probably broken.
+			int nullCharIndex = msg.IndexOf('\0');
+			if (nullCharIndex != -1)
+			{
+				msg = msg.Substring(0, Math.Min(nullCharIndex, 50)) + " | Contains '\0' and is likely broken.";
+			}
+
+			// Forward the message to all outputs
 			foreach (ILogOutput log in this.strOut)
 			{
 				try
@@ -194,6 +203,7 @@ namespace Duality
 		}
 		private string FormatMessage(string format, object[] obj)
 		{
+			if (obj == null || obj.Length == 0) return format;
 			string msg;
 			try
 			{

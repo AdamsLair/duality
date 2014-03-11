@@ -102,52 +102,11 @@ namespace Duality.Editor
 
 		private static void Save(string filePath)
 		{
-			Log.Editor.Write("Saving designtime object data data...");
-			Log.Editor.PushIndent();
-
-			try
-			{
-				using (FileStream str = File.Create(filePath))
-				{
-					using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
-					{
-						formatter.SerializationLog = Log.Editor;
-						formatter.WriteObject(manager);
-					}
-				}
-			}
-			catch (Exception e) { Log.Editor.WriteError(Log.Exception(e)); }
-
-			Log.Editor.PopIndent();
+			Formatter.WriteObject(manager, filePath, FormattingMethod.Binary);
 		}
 		private static void Load(string filePath)
 		{
-			Log.Editor.Write("Loading designtime object data data...");
-			Log.Editor.PushIndent();
-
-			manager = null;
-			if (File.Exists(filePath))
-			{
-				try
-				{
-					using (FileStream str = File.OpenRead(filePath))
-					{
-						using (var formatter = Formatter.Create(str, FormattingMethod.Binary))
-						{
-							formatter.SerializationLog = Log.Editor;
-							manager = formatter.ReadObject<DesignTimeObjectDataManager>();
-						}
-					}
-				}
-				catch (Exception e) { Log.Editor.WriteError(Log.Exception(e)); }
-			}
-
-			if (manager == null)
-			{
-				manager = new DesignTimeObjectDataManager();
-			}
-
-			Log.Editor.PopIndent();
+			manager = Formatter.TryReadObject<DesignTimeObjectDataManager>(filePath) ?? new DesignTimeObjectDataManager();
 		}
 		private static void Scene_Leaving(object sender, EventArgs e)
 		{

@@ -307,16 +307,16 @@ namespace Duality.Serialization
 				}
 				else if (obj != null && objType != null)
 				{
-					this.SerializationLog.WriteWarning(
+					this.LocalLog.WriteWarning(
 						"Object data (Id {0}) is flagged for custom deserialization, yet the objects Type ('{1}') does not support it. Guessing associated fields...",
 						objId,
 						Log.Type(objType));
-					this.SerializationLog.PushIndent();
+					this.LocalLog.PushIndent();
 					foreach (var pair in customIO.Data)
 					{
 						this.AssignValueToField(objSerializeType, obj, pair.Key, pair.Value);
 					}
-					this.SerializationLog.PopIndent();
+					this.LocalLog.PopIndent();
 				}
 			}
 			// Red non-custom object data
@@ -489,7 +489,7 @@ namespace Duality.Serialization
 			catch (Exception e)
 			{
 				result = null;
-				this.SerializationLog.WriteError(
+				this.LocalLog.WriteError(
 					"An error occurred in deserializing MemberInfo object Id {0} of type '{1}': {2}",
 					objId,
 					Log.Type(dataType.ToActualType()),

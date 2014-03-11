@@ -123,7 +123,7 @@ namespace Duality.Serialization
 				// If anything goes wrong, assure the stream position is valid and points to the next data entry
 				this.reader.BaseStream.Seek(lastPos + offset, SeekOrigin.Begin);
 				// Log the error
-				this.SerializationLog.WriteError("Error reading object at '{0:X8}'-'{1:X8}': {2}", 
+				this.LocalLog.WriteError("Error reading object at '{0:X8}'-'{1:X8}': {2}", 
 					lastPos,
 					lastPos + offset, 
 					e is ApplicationException ? e.Message : Log.Exception(e));
@@ -205,13 +205,13 @@ namespace Duality.Serialization
 				{
 					// If anything goes wrong, assure the stream position is valid and points to the next data entry
 					this.reader.BaseStream.Seek(lastPos + offset, SeekOrigin.Begin);
-					this.SerializationLog.WriteError("Error reading header at '{0:X8}'-'{1:X8}': {2}", lastPos, lastPos + offset, Log.Exception(e));
+					this.LocalLog.WriteError("Error reading header at '{0:X8}'-'{1:X8}': {2}", lastPos, lastPos + offset, Log.Exception(e));
 				}
 			}
 			catch (Exception e) 
 			{
 				this.reader.BaseStream.Seek(initialPos, SeekOrigin.Begin);
-				this.SerializationLog.WriteError("Error reading header: {0}", Log.Exception(e));
+				this.LocalLog.WriteError("Error reading header: {0}", Log.Exception(e));
 			}
 		}
 		/// <summary>

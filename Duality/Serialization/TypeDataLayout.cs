@@ -30,6 +30,11 @@ namespace Duality.Serialization
 				this.name = name;
 				this.typeString = typeString;
 			}
+
+			public override string ToString()
+			{
+				return string.Format("{0} {1}", this.typeString, this.name);
+			}
 		}
 
 		private	FieldDataInfo[]	fields;
