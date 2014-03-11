@@ -72,7 +72,7 @@
 			this.descLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.descLabel.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.descLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.descLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.descLabel.Location = new System.Drawing.Point(-1, -1);
 			this.descLabel.Margin = new System.Windows.Forms.Padding(0);
@@ -88,7 +88,7 @@
 			// 
 			this.labelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.labelIcon.BackColor = System.Drawing.Color.White;
+			this.labelIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.labelIcon.Image = global::Duality.Editor.Properties.Resources.working_bigtask;
 			this.labelIcon.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.labelIcon.Location = new System.Drawing.Point(-1, -1);
@@ -96,11 +96,13 @@
 			this.labelIcon.Name = "labelIcon";
 			this.labelIcon.Size = new System.Drawing.Size(43, 52);
 			this.labelIcon.TabIndex = 3;
+			this.labelIcon.UseWaitCursor = true;
 			// 
 			// ProcessingBigTaskDialog
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.ClientSize = new System.Drawing.Size(329, 130);
 			this.ControlBox = false;
 			this.Controls.Add(this.labelIcon);

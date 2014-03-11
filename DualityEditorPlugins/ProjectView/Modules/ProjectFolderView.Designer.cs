@@ -164,7 +164,7 @@
             this.toolStripSeparatorShowInExplorer,
             this.showInExplorerToolStripMenuItem});
 			this.contextMenuNode.Name = "contextMenuNode";
-			this.contextMenuNode.Size = new System.Drawing.Size(162, 198);
+			this.contextMenuNode.Size = new System.Drawing.Size(162, 176);
 			this.contextMenuNode.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuNode_Opening);
 			// 
 			// toolStripSeparatorCustomActions
@@ -362,10 +362,10 @@
 			this.Controls.Add(this.folderView);
 			this.Controls.Add(this.panelBottom);
 			this.Controls.Add(this.toolStrip);
-			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft)
-						| WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight)
-						| WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop)
-						| WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
+			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

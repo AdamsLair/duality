@@ -141,6 +141,7 @@
 			// 
 			// numHue
 			// 
+			this.numHue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.numHue.Increment = new decimal(new int[] {
             15,
             0,
@@ -159,6 +160,7 @@
 			// 
 			// numSaturation
 			// 
+			this.numSaturation.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.numSaturation.Increment = new decimal(new int[] {
             5,
             0,
@@ -172,6 +174,7 @@
 			// 
 			// numValue
 			// 
+			this.numValue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.numValue.Increment = new decimal(new int[] {
             5,
             0,
@@ -185,6 +188,7 @@
 			// 
 			// numRed
 			// 
+			this.numRed.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.numRed.Location = new System.Drawing.Point(402, 159);
 			this.numRed.Maximum = new decimal(new int[] {
             255,
@@ -198,6 +202,7 @@
 			// 
 			// numGreen
 			// 
+			this.numGreen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.numGreen.Location = new System.Drawing.Point(402, 182);
 			this.numGreen.Maximum = new decimal(new int[] {
             255,
@@ -211,6 +216,7 @@
 			// 
 			// numBlue
 			// 
+			this.numBlue.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.numBlue.Location = new System.Drawing.Point(402, 205);
 			this.numBlue.Maximum = new decimal(new int[] {
             255,
@@ -224,6 +230,8 @@
 			// 
 			// textBoxHex
 			// 
+			this.textBoxHex.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+			this.textBoxHex.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxHex.Location = new System.Drawing.Point(32, 279);
 			this.textBoxHex.Name = "textBoxHex";
 			this.textBoxHex.Size = new System.Drawing.Size(75, 20);
@@ -284,6 +292,7 @@
 			// 
 			// numAlpha
 			// 
+			this.numAlpha.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.numAlpha.Location = new System.Drawing.Point(402, 236);
 			this.numAlpha.Maximum = new decimal(new int[] {
             255,
@@ -382,6 +391,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.CancelButton = this.buttonCancel;
 			this.ClientSize = new System.Drawing.Size(484, 312);
 			this.Controls.Add(this.labelValueUnit);
