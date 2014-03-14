@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+using Duality;
+using Duality.Serialization;
+
+namespace ROOTNAMESPACE.ErrorHandlers
+{
+	public class NewProjectErrorHandler : SerializeErrorHandler
+	{
+		public override void HandleError(SerializeError error)
+		{
+			ResolveTypeError resolveTypeError = error as ResolveTypeError;
+			if (resolveTypeError != null)
+			{
+				string fixedTypeId = resolveTypeError.TypeId;
+
+				if (fixedTypeId.StartsWith("OLDROOTNAMESPACE") && 
+					fixedTypeId.Length > "OLDROOTNAMESPACE".Length &&
+					(fixedTypeId["OLDROOTNAMESPACE".Length] == '.' || fixedTypeId["OLDROOTNAMESPACE".Length] == '+'))
+				{
+					fixedTypeId = "ROOTNAMESPACE" + fixedTypeId.Remove(0, "OLDROOTNAMESPACE".Length);
+					resolveTypeError.ResolvedType = ReflectionHelper.ResolveType(fixedTypeId, false);
+				}
+			}
+
+			return;
+		}
+	}
+}

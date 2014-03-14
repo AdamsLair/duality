@@ -217,17 +217,45 @@ namespace Duality.Editor.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die &lt;UserData&gt;
         ///  &lt;EditorApp backups=&quot;True&quot; autosaves=&quot;ThirtyMinutes&quot; /&gt;
-        ///  &lt;Plugin_EditorBase&gt;
-        ///    &lt;CamView_0 perspective=&quot;Parallax&quot; focusDist=&quot;500&quot; bgColorArgb=&quot;4210752&quot; activeState=&quot;Duality.Editor.Plugins.Base.CamViewStates.SceneEditorCamViewState&quot;&gt;
+        ///  &lt;Plugin_CamView&gt;
+        ///    &lt;CamView_0 perspective=&quot;Parallax&quot; focusDist=&quot;500&quot; bgColorArgb=&quot;4210752&quot; activeState=&quot;Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState&quot;&gt;
         ///      &lt;states&gt;
-        ///        &lt;Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState&gt;
+        ///        &lt;Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState&gt;
         ///          &lt;activeLayers /&gt;
-        ///        &lt;/Duality.Editor.Plugins.Base.CamViewStates.GameViewCamViewState&gt;
-        ///        &lt;Duality.Editor.Plugins.Base.CamViewStates.RigidBodyEditorCa [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///        &lt;/Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState&gt;
+        ///        &lt;Duality.Editor.Plugins.CamView.CamViewStates.RigidBod [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         public static string DefaultEditorUserData {
             get {
                 return ResourceManager.GetString("DefaultEditorUserData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die using System;
+        ///using System.Collections.Generic;
+        ///using System.Linq;
+        ///using System.Text;
+        ///
+        ///using Duality;
+        ///using Duality.Serialization;
+        ///
+        ///namespace ROOTNAMESPACE.ErrorHandlers
+        ///{
+        ///	public class NewProjectErrorHandler : SerializeErrorHandler
+        ///	{
+        ///		public override void HandleError(SerializeError error)
+        ///		{
+        ///			ResolveTypeError resolveTypeError = error as ResolveTypeError;
+        ///			if (resolveTypeError != null)
+        ///			{
+        ///				string fixedTypeId = resolveTypeError.TypeId;
+        ///
+        ///				if (typeString.StartsWith(&quot;OLDROOTNAM [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        public static string ErrorHandlersTemplate {
+            get {
+                return ResourceManager.GetString("ErrorHandlersTemplate", resourceCulture);
             }
         }
         

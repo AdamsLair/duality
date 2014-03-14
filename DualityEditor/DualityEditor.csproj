@@ -324,6 +324,7 @@
     <None Include="EmbeddedResources\clock.png" />
     <None Include="EmbeddedResources\editoruserdata.xml" />
     <None Include="EmbeddedResources\application_stopwatch.png" />
+    <EmbeddedResource Include="EmbeddedResources\ErrorHandlersTemplate.txt" />
     <Content Include="EmbeddedResources\namespace.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
     <None Include="EmbeddedResources\arrow_undo.png" />
