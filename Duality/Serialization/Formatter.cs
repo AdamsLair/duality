@@ -695,7 +695,7 @@ namespace Duality.Serialization
 					{
 						try
 						{
-							defaultMethod = XmlFormatterBase.IsXmlStream(stream) ? FormattingMethod.Xml : FormattingMethod.Binary;
+							defaultMethod = XmlFormatter.IsXmlStream(stream) ? FormattingMethod.Xml : FormattingMethod.Binary;
 							break;
 						}
 						catch (Exception) {}
@@ -723,7 +723,7 @@ namespace Duality.Serialization
 			{
 				if (stream.CanRead && stream.CanSeek && stream.Length > 0)
 				{
-					if (XmlFormatterBase.IsXmlStream(stream))
+					if (XmlFormatter.IsXmlStream(stream))
 						method = FormattingMethod.Xml;
 					else
 						method = FormattingMethod.Binary;

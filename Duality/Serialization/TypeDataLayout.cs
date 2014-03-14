@@ -5,9 +5,7 @@ namespace Duality.Serialization
 	/// <summary>
 	/// This class provides information about the data layout when de/serializing an object.
 	/// </summary>
-	/// <seealso cref="Duality.Serialization.BinaryFormatterBase"/>
 	/// <seealso cref="Duality.Serialization.BinaryFormatter"/>
-	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
 	public class TypeDataLayout
 	{
 		/// <summary>

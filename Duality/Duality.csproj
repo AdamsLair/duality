@@ -254,10 +254,8 @@
     <Compile Include="Serialization\SerializeErrorHandler.cs" />
     <Compile Include="Serialization\Surrogates\GuidSurrogate.cs" />
     <Compile Include="Serialization\XmlFormatter.cs" />
-    <Compile Include="Serialization\XmlFormatterBase.cs" />
     <Compile Include="Serialization\SerializeType.cs" />
     <Compile Include="Serialization\DataType.cs" />
-    <Compile Include="Serialization\BinaryFormatterBase.cs" />
     <Compile Include="Serialization\Surrogates\BitmapSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Serialization\TypeDataLayout.cs" />

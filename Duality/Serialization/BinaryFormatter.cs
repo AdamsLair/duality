@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.IO;
@@ -9,12 +10,192 @@ namespace Duality.Serialization
 	/// <summary>
 	/// De/Serializes object data.
 	/// </summary>
-	/// <seealso cref="Duality.Serialization.MetaFormat.BinaryMetaFormatter"/>
-	public class BinaryFormatter : BinaryFormatterBase
+	public class BinaryFormatter : Formatter
 	{
-		public BinaryFormatter(Stream stream) : base(stream) {}
+		private class CustomSerialIO : CustomSerialIOBase<BinaryFormatter>
+		{
+			public void Serialize(BinaryFormatter formatter)
+			{
+				formatter.WritePrimitive(this.data.Count);
+				foreach (var pair in this.data)
+				{
+					formatter.WriteString(pair.Key);
+					formatter.WriteObjectData(pair.Value);
+				}
+				this.Clear();
+			}
+			public void Deserialize(BinaryFormatter formatter)
+			{
+				this.Clear();
+				int count = (int)formatter.ReadPrimitive(DataType.Int);
+				for (int i = 0; i < count; i++)
+				{
+					string key = formatter.ReadString();
+					object value = formatter.ReadObjectData();
+					this.data.Add(key, value);
+				}
+			}
+		}
 
-		protected override void WriteObjectBody(object obj, ObjectHeader header)
+		
+		private	const	string	HeaderId	= "BinaryFormatterHeader";
+		private	const	ushort	Version		= 3;
+
+
+		private BinaryWriter	writer		= null;
+		private BinaryReader	reader		= null;
+		private ushort			dataVersion	= 0;
+
+		private Stack<long>							offsetStack			= new Stack<long>();
+		private Dictionary<string,TypeDataLayout>	typeDataLayout		= new Dictionary<string,TypeDataLayout>();
+		private Dictionary<string,long>				typeDataLayoutMap	= new Dictionary<string,long>();
+
+		
+		public override bool CanWrite
+		{
+			get { return this.writer != null; }
+		}
+		public override bool CanRead
+		{
+			get { return this.reader != null; }
+		}
+
+
+		public BinaryFormatter(Stream stream)
+		{
+			stream = stream.NonClosing();
+			this.writer = (stream != null && stream.CanWrite) ? new BinaryWriter(stream) : null;
+			this.reader = (stream != null && stream.CanRead) ? new BinaryReader(stream) : null;
+		}
+		protected override void OnDisposed(bool manually)
+		{
+			base.OnDisposed(manually);
+
+			if (this.writer != null)
+			{
+				this.writer.Flush();
+				this.writer.Dispose();
+				this.writer = null;
+			}
+
+			if (this.reader != null)
+			{
+				this.reader.Dispose();
+				this.reader = null;
+			}
+		}
+		
+		protected override void WriteObjectData(object obj)
+		{
+			// NotNull flag
+			if (object.Equals(obj, this.GetNullObject()))
+			{
+				this.writer.Write(false);
+				return;
+			}
+			else
+				this.writer.Write(true);
+			
+			// Retrieve type data
+			ObjectHeader header = this.PrepareWriteObject(obj);
+
+			// Write data type header
+			this.WriteDataType(header.DataType);
+			this.WritePushOffset();
+
+			if (header.IsObjectTypeRequired) this.writer.Write(header.TypeString);
+			if (header.IsObjectIdRequired) this.writer.Write(header.ObjectId);
+
+			try
+			{
+				// Write object
+				this.idManager.PushIdLevel();
+				this.WriteObjectBody(obj, header);
+			}
+			finally
+			{
+				// Write object footer
+				this.WritePopOffset();
+				this.idManager.PopIdLevel();
+			}
+		}
+		protected override object ReadObjectData()
+		{
+			if (this.reader.BaseStream.Position == this.reader.BaseStream.Length) throw new EndOfStreamException("No more data to read.");
+
+			// Not null flag
+			bool isNotNull = this.reader.ReadBoolean();
+			if (!isNotNull) return this.GetNullObject();
+
+			// Read data type header
+			DataType dataType = this.ReadDataType();
+			long lastPos = this.reader.BaseStream.Position;
+			long offset = this.reader.ReadInt64();
+			
+			string typeStr = null;
+			uint objId = 0;
+			if (dataType.HasTypeName()) typeStr = this.reader.ReadString();
+			if (dataType.HasObjectId()) objId = this.reader.ReadUInt32();
+
+			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
+			if (header.DataType == DataType.Unknown)
+			{
+				this.LocalLog.WriteError("Unable to process DataType: {0}.", typeStr);
+				return this.GetNullObject();
+			}
+
+			// Read object
+			object result = null;
+			try
+			{
+				// Read the objects body
+				result = this.ReadObjectBody(header);
+
+				// If we read the object properly and aren't where we're supposed to be, something went wrong
+				if (this.reader.BaseStream.Position != lastPos + offset) throw new ApplicationException(string.Format("Wrong dataset offset: '{0}' instead of expected value '{1}'.", this.reader.BaseStream.Position - lastPos, offset));
+			}
+			catch (Exception e)
+			{
+				// If anything goes wrong, assure the stream position is valid and points to the next data entry
+				this.reader.BaseStream.Seek(lastPos + offset, SeekOrigin.Begin);
+				// Log the error
+				this.LocalLog.WriteError("Error reading object at '{0:X8}'-'{1:X8}': {2}", 
+					lastPos,
+					lastPos + offset, 
+					e is ApplicationException ? e.Message : Log.Exception(e));
+			}
+
+			return result ?? this.GetNullObject();
+		}
+		
+		protected override void BeginReadOperation()
+		{
+			base.BeginReadOperation();
+			this.ReadFormatterHeader();
+		}
+		protected override void BeginWriteOperation()
+		{
+			base.BeginWriteOperation();
+			this.WriteFormatterHeader();
+		}
+		protected override void EndReadOperation()
+		{
+			base.EndReadOperation();
+			this.typeDataLayout.Clear();
+			this.typeDataLayoutMap.Clear();
+			this.offsetStack.Clear();
+		}
+		protected override void EndWriteOperation()
+		{
+			base.EndWriteOperation();
+			this.typeDataLayout.Clear();
+			this.typeDataLayoutMap.Clear();
+			this.offsetStack.Clear();
+			this.writer.Flush();
+		}
+
+		
+		private void WriteObjectBody(object obj, ObjectHeader header)
 		{
 			if (header.IsPrimitive)							this.WritePrimitive(obj);
 			else if (header.DataType == DataType.Enum)		this.WriteEnum(obj as Enum, header);
@@ -24,12 +205,7 @@ namespace Duality.Serialization
 			else if (header.DataType == DataType.Delegate)	this.WriteDelegate(obj, header);
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo(obj, header);
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Reflection.MemberInfo"/>, including references objects.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteMemberInfo(object obj, ObjectHeader header)
+		private void WriteMemberInfo(object obj, ObjectHeader header)
 		{
 			if (obj is Type)
 			{
@@ -49,13 +225,7 @@ namespace Duality.Serialization
 			else
 				throw new ArgumentException(string.Format("Type '{0}' is not a supported MemberInfo.", obj.GetType()));
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Array"/>, including references objects.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteArray(object obj, ObjectHeader header)
+		private void WriteArray(object obj, ObjectHeader header)
 		{
 			Array objAsArray = obj as Array;
 
@@ -85,13 +255,7 @@ namespace Duality.Serialization
 					this.WriteObjectData(objAsArray.GetValue(l));
 			}
 		}
-		/// <summary>
-		/// Writes the specified structural object, including references objects.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteStruct(object obj, ObjectHeader header)
+		private void WriteStruct(object obj, ObjectHeader header)
 		{
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
 			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
@@ -138,13 +302,7 @@ namespace Duality.Serialization
 				}
 			}
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Delegate"/>, including references objects.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteDelegate(object obj, ObjectHeader header)
+		private void WriteDelegate(object obj, ObjectHeader header)
 		{
 			bool multi = obj is MulticastDelegate;
 			this.writer.Write(multi);
@@ -164,18 +322,174 @@ namespace Duality.Serialization
 				this.WriteObjectData(invokeList);
 			}
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Enum"/>.
-		/// </summary>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		protected void WriteEnum(Enum obj, ObjectHeader header)
+		private void WriteEnum(Enum obj, ObjectHeader header)
 		{
 			this.writer.Write(obj.ToString());
 			this.writer.Write(Convert.ToInt64(obj));
 		}
+		
+		private void WriteFormatterHeader()
+		{
+			this.writer.Write(HeaderId);
+			this.writer.Write(Version);
+			this.WritePushOffset();
 
-		protected override object ReadObjectBody(ObjectHeader header)
+			// --[ Insert writing additional header data here ]--
+
+			this.WritePopOffset();
+		}
+		private void WriteTypeDataLayout(SerializeType objSerializeType)
+		{
+			if (this.typeDataLayout.ContainsKey(objSerializeType.TypeString))
+			{
+				long backRef = this.typeDataLayoutMap[objSerializeType.TypeString];
+				this.writer.Write(backRef);
+				return;
+			}
+
+			this.WriteTypeDataLayout(new TypeDataLayout(objSerializeType), objSerializeType.TypeString);
+		}
+		private void WriteTypeDataLayout(string typeString)
+		{
+			if (this.typeDataLayout.ContainsKey(typeString))
+			{
+				long backRef = this.typeDataLayoutMap[typeString];
+				this.writer.Write(backRef);
+				return;
+			}
+
+			Type resolved = this.ResolveType(typeString);
+			SerializeType cached = resolved != null ? resolved.GetSerializeType() : null;
+			TypeDataLayout layout = cached != null ? new TypeDataLayout(cached) : null;
+			this.WriteTypeDataLayout(layout, typeString);
+		}
+		private void WriteTypeDataLayout(TypeDataLayout layout, string typeString)
+		{
+			this.typeDataLayout[typeString] = layout;
+			this.writer.Write(-1L);
+			this.typeDataLayoutMap[typeString] = this.writer.BaseStream.Position;
+			layout.Write(this.writer);
+		}
+		private void WritePrimitive(object obj)
+		{
+			if		(obj is bool)		this.writer.Write((bool)obj);
+			else if (obj is byte)		this.writer.Write((byte)obj);
+			else if (obj is char)		this.writer.Write((char)obj);
+			else if (obj is string)		this.writer.Write((string)obj);
+			else if (obj is sbyte)		this.writer.Write((sbyte)obj);
+			else if (obj is short)		this.writer.Write((short)obj);
+			else if (obj is ushort)		this.writer.Write((ushort)obj);
+			else if (obj is int)		this.writer.Write((int)obj);
+			else if (obj is uint)		this.writer.Write((uint)obj);
+			else if (obj is long)		this.writer.Write((long)obj);
+			else if (obj is ulong)		this.writer.Write((ulong)obj);
+			else if (obj is float)		this.writer.Write((float)obj);
+			else if (obj is double)		this.writer.Write((double)obj);
+			else if (obj is decimal)	this.writer.Write((decimal)obj);
+			else if (obj == null)
+				throw new ArgumentNullException("obj");
+			else
+				throw new ArgumentException(string.Format("Type '{0}' is not a primitive.", obj.GetType()));
+		}
+		private void WriteString(string obj)
+		{
+			this.writer.Write(obj);
+		}
+
+		private void WriteArrayData(bool[] obj)
+		{
+			for (long l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(byte[] obj)
+		{
+			this.writer.Write(obj);
+		}
+		private void WriteArrayData(sbyte[] obj)
+		{
+			for (long l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(short[] obj)
+		{
+			for (long l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(ushort[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(int[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(uint[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(long[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(ulong[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(float[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(double[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(decimal[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(char[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) this.writer.Write(obj[l]);
+		}
+		private void WriteArrayData(string[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++)
+			{
+				if (obj[l] == null)
+					this.writer.Write(false);
+				else
+				{
+					this.writer.Write(true);
+					this.writer.Write(obj[l]);
+				}
+			}
+		}
+
+		private void WriteDataType(DataType dt)
+		{
+			this.writer.Write((ushort)dt);
+		}
+		private DataType ReadDataType()
+		{
+			DataType dataType = (DataType)this.reader.ReadUInt16();
+			if (dataType == (DataType)24) dataType = DataType.Struct; // Legacy support (Written 2014-03-10)
+			return dataType;
+		}
+		private void WritePushOffset()
+		{
+			this.offsetStack.Push(this.writer.BaseStream.Position);
+			this.writer.Write(0L);
+		}
+		private void WritePopOffset()
+		{
+			long curPos = this.writer.BaseStream.Position;
+			long lastPos = this.offsetStack.Pop();
+			long offset = curPos - lastPos;
+			
+			this.writer.BaseStream.Seek(lastPos, SeekOrigin.Begin);
+			this.writer.Write(offset);
+			this.writer.BaseStream.Seek(curPos, SeekOrigin.Begin);
+		}
+
+		
+		private object ReadObjectBody(ObjectHeader header)
 		{
 			object result = null;
 
@@ -189,11 +503,7 @@ namespace Duality.Serialization
 
 			return result;
 		}
-		/// <summary>
-		/// Reads an <see cref="System.Array"/>, including referenced objects.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		protected Array ReadArray(ObjectHeader header)
+		private Array ReadArray(ObjectHeader header)
 		{
 			int		arrRang			= this.reader.ReadInt32();
 			int		arrLength		= this.reader.ReadInt32();
@@ -228,11 +538,7 @@ namespace Duality.Serialization
 
 			return arrObj;
 		}
-		/// <summary>
-		/// Reads a structural object, including referenced objects.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		protected object ReadStruct(ObjectHeader header)
+		private object ReadStruct(ObjectHeader header)
 		{
 			// Read struct type
 			bool	custom			= this.reader.ReadBoolean();
@@ -329,11 +635,7 @@ namespace Duality.Serialization
 
 			return obj;
 		}
-		/// <summary>
-		/// Reads an object reference.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		protected object ReadObjectRef()
+		private object ReadObjectRef()
 		{
 			object obj;
 			uint objId = this.reader.ReadUInt32();
@@ -342,12 +644,7 @@ namespace Duality.Serialization
 
 			return obj;
 		}
-		/// <summary>
-		/// Reads a <see cref="System.Reflection.MemberInfo"/>, including referenced objects.
-		/// </summary>
-		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> of the object to read.</param>
-		/// <returns>The object that has been read.</returns>
-		protected MemberInfo ReadMemberInfo(ObjectHeader header)
+		private MemberInfo ReadMemberInfo(ObjectHeader header)
 		{
 			MemberInfo result = null;
 
@@ -480,11 +777,7 @@ namespace Duality.Serialization
 
 			return result;
 		}
-		/// <summary>
-		/// Reads a <see cref="System.Delegate"/>, including referenced objects.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		protected Delegate ReadDelegate(ObjectHeader header)
+		private Delegate ReadDelegate(ObjectHeader header)
 		{
 			bool multi = this.reader.ReadBoolean();
 
@@ -513,15 +806,159 @@ namespace Duality.Serialization
 
 			return del;
 		}
-		/// <summary>
-		/// Reads an <see cref="System.Enum"/>.
-		/// </summary>
-		/// <returns>The object that has been read.</returns>
-		protected Enum ReadEnum(ObjectHeader header)
+		private Enum ReadEnum(ObjectHeader header)
 		{
 			string name = this.reader.ReadString();
 			long val = this.reader.ReadInt64();
 			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType, name, val);
+		}
+		
+		private TypeDataLayout GetCachedTypeDataLayout(string t)
+		{
+			TypeDataLayout result;
+			if (!this.typeDataLayout.TryGetValue(t, out result)) return null;
+			return result;
+		}
+		private TypeDataLayout ReadTypeDataLayout(Type t)
+		{
+			return this.ReadTypeDataLayout(t.GetSerializeType().TypeString);
+		}
+		private TypeDataLayout ReadTypeDataLayout(string t)
+		{
+			long backRef = this.reader.ReadInt64();
+
+			TypeDataLayout result;
+			if (this.typeDataLayout.TryGetValue(t, out result) && backRef != -1L) return result;
+
+			long lastPos = this.reader.BaseStream.Position;
+			if (backRef != -1L) this.reader.BaseStream.Seek(backRef, SeekOrigin.Begin);
+			result = result ?? new TypeDataLayout(this.reader);
+			if (backRef != -1L) this.reader.BaseStream.Seek(lastPos, SeekOrigin.Begin);
+
+			this.typeDataLayout[t] = result;
+			return result;
+		}
+		private void ReadFormatterHeader()
+		{
+			long initialPos = this.reader.BaseStream.Position;
+			try
+			{
+				string headerId = this.reader.ReadString();
+				if (headerId != HeaderId) throw new ApplicationException("Header ID does not match.");
+				this.dataVersion = this.reader.ReadUInt16();
+
+				// Create "Safe zone" for additional data
+				long lastPos = this.reader.BaseStream.Position;
+				long offset = this.reader.ReadInt64();
+				try
+				{
+					// --[ Insert reading additional data here ]--
+
+					// If we read the object properly and aren't where we're supposed to be, something went wrong
+					if (this.reader.BaseStream.Position != lastPos + offset) throw new ApplicationException(string.Format("Wrong dataset offset: '{0}' instead of expected value '{1}'.", offset, this.reader.BaseStream.Position - lastPos));
+				}
+				catch (Exception e)
+				{
+					// If anything goes wrong, assure the stream position is valid and points to the next data entry
+					this.reader.BaseStream.Seek(lastPos + offset, SeekOrigin.Begin);
+					this.LocalLog.WriteError("Error reading header at '{0:X8}'-'{1:X8}': {2}", lastPos, lastPos + offset, Log.Exception(e));
+				}
+			}
+			catch (Exception e) 
+			{
+				this.reader.BaseStream.Seek(initialPos, SeekOrigin.Begin);
+				this.LocalLog.WriteError("Error reading header: {0}", Log.Exception(e));
+			}
+		}
+		private object ReadPrimitive(DataType dataType)
+		{
+			switch (dataType)
+			{
+				case DataType.Bool:			return this.reader.ReadBoolean();
+				case DataType.Byte:			return this.reader.ReadByte();
+				case DataType.SByte:		return this.reader.ReadSByte();
+				case DataType.Short:		return this.reader.ReadInt16();
+				case DataType.UShort:		return this.reader.ReadUInt16();
+				case DataType.Int:			return this.reader.ReadInt32();
+				case DataType.UInt:			return this.reader.ReadUInt32();
+				case DataType.Long:			return this.reader.ReadInt64();
+				case DataType.ULong:		return this.reader.ReadUInt64();
+				case DataType.Float:		return this.reader.ReadSingle();
+				case DataType.Double:		return this.reader.ReadDouble();
+				case DataType.Decimal:		return this.reader.ReadDecimal();
+				case DataType.Char:			return this.reader.ReadChar();
+				case DataType.String:		return this.reader.ReadString();
+				default:
+					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", dataType));
+			}
+		}
+		private string ReadString()
+		{
+			return this.reader.ReadString();
+		}
+
+		private void ReadArrayData(bool[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadBoolean();
+		}
+		private void ReadArrayData(byte[] obj)
+		{
+			this.reader.Read(obj, 0, obj.Length);
+		}
+		private void ReadArrayData(sbyte[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadSByte();
+		}
+		private void ReadArrayData(short[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadInt16();
+		}
+		private void ReadArrayData(ushort[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadUInt16();
+		}
+		private void ReadArrayData(int[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadInt32();
+		}
+		private void ReadArrayData(uint[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadUInt32();
+		}
+		private void ReadArrayData(long[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadInt64();
+		}
+		private void ReadArrayData(ulong[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadUInt64();
+		}
+		private void ReadArrayData(float[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadSingle();
+		}
+		private void ReadArrayData(double[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadDouble();
+		}
+		private void ReadArrayData(decimal[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadDecimal();
+		}
+		private void ReadArrayData(char[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++) obj[l] = this.reader.ReadChar();
+		}
+		private void ReadArrayData(string[] obj)
+		{
+			for (int l = 0; l < obj.Length; l++)
+			{
+				bool isNotNull = this.reader.ReadBoolean();
+				if (isNotNull)
+					obj[l] = this.reader.ReadString();
+				else
+					obj[l] = null;
+			}
 		}
 	}
 }

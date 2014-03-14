@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.IO;
@@ -11,12 +12,148 @@ namespace Duality.Serialization
 	/// <summary>
 	/// De/Serializes object data.
 	/// </summary>
-	/// <seealso cref="Duality.Serialization.MetaFormat.XmlMetaFormatter"/>
-	public class XmlFormatter : XmlFormatterBase
+	public class XmlFormatter : Formatter
 	{
-		public XmlFormatter(Stream stream) : base(stream) {}
+		private class CustomSerialIO : CustomSerialIOBase<XmlFormatter>
+		{
+			public const string HeaderElement = "header";
+			public const string BodyElement = "body";
 
-		protected override void WriteObjectBody(XElement element, object obj, ObjectHeader header)
+			public void Serialize(XmlFormatter formatter, XElement element)
+			{
+				foreach (var pair in this.data)
+				{
+					XElement fieldElement = new XElement(GetXmlElementName(pair.Key));
+					element.Add(fieldElement);
+					formatter.WriteObjectData(fieldElement, pair.Value);
+				}
+				this.Clear();
+			}
+			public void Deserialize(XmlFormatter formatter, XElement element)
+			{
+				this.Clear();
+				if (!element.IsEmpty)
+				{
+					object value;
+					foreach (XElement fieldElement in element.Elements())
+					{
+						value = formatter.ReadObjectData(fieldElement);
+						this.data.Add(GetCodeElementName(fieldElement.Name.LocalName), value);
+					}
+				}
+			}
+		}
+		
+		
+		private const string DocumentSeparator = "<!-- XmlFormatterBase Document Separator -->";
+
+		private	Stream		stream	= null;
+		private	XDocument	doc		= null;
+		
+
+		public override bool CanWrite
+		{
+			get { return this.stream != null && this.stream.CanWrite; }
+		}
+		public override bool CanRead
+		{
+			get { return this.stream != null && this.stream.CanRead; }
+		}
+
+
+		public XmlFormatter(Stream stream)
+		{
+			this.stream = stream;
+		}
+		
+
+		protected override void WriteObjectData(object obj)
+		{
+			this.WriteObjectData(this.doc.Root, obj);
+		}
+		protected override object ReadObjectData()
+		{
+			XElement objElement = this.doc.Root;
+			if (!objElement.HasAttributes) objElement = objElement.Elements().FirstOrDefault();
+			return this.ReadObjectData(objElement);
+		}
+
+		protected override void BeginReadOperation()
+		{
+			if (this.stream == null) throw new InvalidOperationException("Can't read data, because the Stream is unavailable.");
+			if (!this.stream.CanRead) throw new InvalidOperationException("Can't read data, because the Stream doesn't support it.");
+
+			base.BeginReadOperation();
+
+			using (XmlReader reader = XmlReader.Create(ReadSingleDocument(this.stream), GetReaderSettings()))
+			{
+				this.doc = XDocument.Load(reader);
+			}
+		}
+		protected override void EndReadOperation()
+		{
+			base.EndReadOperation();
+			this.doc = null;
+		}
+		protected override void BeginWriteOperation()
+		{
+			if (this.stream == null) throw new InvalidOperationException("Can't write data, because the Stream is unavailable.");
+			if (!this.stream.CanWrite) throw new InvalidOperationException("Can't write data, because the Stream doesn't support it.");
+
+			base.BeginWriteOperation();
+			this.doc = new XDocument(new XElement("root"));
+		}
+		protected override void EndWriteOperation()
+		{
+			base.EndWriteOperation();
+			using (XmlWriter writer = XmlWriter.Create(this.stream, GetWriterSettings()))
+			{
+				this.doc.Save(writer);
+			}
+
+			// Insert "stop token" separator, so reading Xml data won't screw up 
+			// the underlying streams position when reading it again later.
+			using (StreamWriter writer = new StreamWriter(this.stream.NonClosing()))
+			{
+				writer.WriteLine();
+				writer.WriteLine(DocumentSeparator);
+			}
+		}
+
+
+		private void WriteObjectData(XElement element, object obj)
+		{
+			// Null? Empty Element.
+			if (object.Equals(obj, this.GetNullObject()))
+			{
+				return;
+			}
+			
+			// Retrieve type data
+			ObjectHeader header = this.PrepareWriteObject(obj);
+
+			// Write data type header
+			if (header.DataType != DataType.Unknown) element.SetAttributeValue("dataType", header.DataType.ToString());
+			if (header.IsObjectTypeRequired && !string.IsNullOrEmpty(header.TypeString)) element.SetAttributeValue("type", header.TypeString);
+			if (header.IsObjectIdRequired && header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
+
+			// Write object
+			try 
+			{
+				this.idManager.PushIdLevel();
+				this.WriteObjectBody(element, obj, header);
+			}
+			catch (Exception e)
+			{
+				// Log the error
+				this.LocalLog.WriteError("Error writing object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
+			}
+			finally
+			{
+				this.idManager.PopIdLevel();
+			}
+		}
+		private void WriteObjectBody(XElement element, object obj, ObjectHeader header)
 		{
 			if (header.IsPrimitive)							this.WritePrimitive		(element, obj);
 			else if (header.DataType == DataType.Enum)		this.WriteEnum			(element, obj as Enum, header);
@@ -27,13 +164,28 @@ namespace Duality.Serialization
 			else if (header.DataType == DataType.Delegate)	this.WriteDelegate		(element, obj, header);
 			else if (header.DataType.IsMemberInfoType())	this.WriteMemberInfo	(element, obj, header);
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Reflection.MemberInfo"/>, including references objects.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteMemberInfo(XElement element, object obj, ObjectHeader header)
+		private void WritePrimitive(XElement element, object obj)
+		{
+			if		(obj is bool)		element.Value = XmlConvert.ToString((bool)obj);
+			else if (obj is byte)		element.Value = XmlConvert.ToString((byte)obj);
+			else if (obj is char)		element.Value = XmlConvert.ToString((char)obj);
+			else if (obj is string)		element.Value = (string)obj;
+			else if (obj is sbyte)		element.Value = XmlConvert.ToString((sbyte)obj);
+			else if (obj is short)		element.Value = XmlConvert.ToString((short)obj);
+			else if (obj is ushort)		element.Value = XmlConvert.ToString((ushort)obj);
+			else if (obj is int)		element.Value = XmlConvert.ToString((int)obj);
+			else if (obj is uint)		element.Value = XmlConvert.ToString((uint)obj);
+			else if (obj is long)		element.Value = XmlConvert.ToString((long)obj);
+			else if (obj is ulong)		element.Value = XmlConvert.ToString((decimal)(ulong)obj);
+			else if (obj is float)		element.Value = XmlConvert.ToString((float)obj);
+			else if (obj is double)		element.Value = XmlConvert.ToString((double)obj);
+			else if (obj is decimal)	element.Value = XmlConvert.ToString((decimal)obj);
+			else if (obj == null)
+				throw new ArgumentNullException("obj");
+			else
+				throw new ArgumentException(string.Format("Type '{0}' is not a primitive.", obj.GetType()));
+		}
+		private void WriteMemberInfo(XElement element, object obj, ObjectHeader header)
 		{
 			if (obj is Type)
 			{
@@ -51,14 +203,7 @@ namespace Duality.Serialization
 			else
 				throw new ArgumentException(string.Format("Type '{0}' is not a supported MemberInfo.", obj.GetType()));
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Array"/>, including references objects.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteArray(XElement element, object obj, ObjectHeader header)
+		private void WriteArray(XElement element, object obj, ObjectHeader header)
 		{
 			Array objAsArray = obj as Array;
 
@@ -89,14 +234,7 @@ namespace Duality.Serialization
 				}
 			}
 		}
-		/// <summary>
-		/// Writes the specified structural object, including references objects.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteStruct(XElement element, object obj, ObjectHeader header)
+		private void WriteStruct(XElement element, object obj, ObjectHeader header)
 		{
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
 			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
@@ -143,14 +281,7 @@ namespace Duality.Serialization
 				}
 			}
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Delegate"/>, including references objects.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		/// <param name="id">The objects id.</param>
-		protected void WriteDelegate(XElement element, object obj, ObjectHeader header)
+		private void WriteDelegate(XElement element, object obj, ObjectHeader header)
 		{
 			bool multi = obj is MulticastDelegate;
 
@@ -184,19 +315,56 @@ namespace Duality.Serialization
 				this.WriteObjectData(invocationListElement, invokeList);
 			}
 		}
-		/// <summary>
-		/// Writes the specified <see cref="System.Enum"/>.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="obj">The object to write.</param>
-		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
-		protected void WriteEnum(XElement element, Enum obj, ObjectHeader header)
+		private void WriteEnum(XElement element, Enum obj, ObjectHeader header)
 		{
 			element.SetAttributeValue("name", obj.ToString());
 			element.SetAttributeValue("value", XmlConvert.ToString(Convert.ToInt64(obj)));
 		}
+		
 
-		protected override object ReadObjectBody(XElement element, ObjectHeader header)
+		private object ReadObjectData(XElement element)
+		{
+			// Empty element without type data? Return null
+			if (element.IsEmpty && !element.HasAttributes)
+			{
+				return this.GetNullObject();
+			}
+
+			// Read data type header
+			string objIdString = element.GetAttributeValue("id");
+			string dataTypeStr = element.GetAttributeValue("dataType");
+			string typeStr = element.GetAttributeValue("type");
+			uint objId = objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
+			DataType dataType;
+			if (!Enum.TryParse<DataType>(dataTypeStr, out dataType))
+			{
+				if (dataTypeStr == "Class") // Legacy support (Written 2014-03-10)
+					dataType = DataType.Struct;
+				else 
+					dataType = DataType.Unknown;
+			}
+			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
+			if (header.DataType == DataType.Unknown)
+			{
+				this.LocalLog.WriteError("Unable to process DataType: {0}.", dataTypeStr);
+				return this.GetNullObject();
+			}
+
+			// Read object
+			object result = null;
+			try
+			{
+				// Read the objects body
+				result = this.ReadObjectBody(element, header);
+			}
+			catch (Exception e)
+			{
+				this.LocalLog.WriteError("Error reading object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
+			}
+
+			return result ?? this.GetNullObject();
+		}
+		private object ReadObjectBody(XElement element, ObjectHeader header)
 		{
 			object result = null;
 
@@ -211,12 +379,30 @@ namespace Duality.Serialization
 
 			return result;
 		}
-		/// <summary>
-		/// Reads an <see cref="System.Array"/>, including referenced objects.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns>The object that has been read.</returns>
-		protected Array ReadArray(XElement element, ObjectHeader header)
+		private object ReadPrimitive(XElement element, DataType dataType)
+		{
+			string val = element.Value;
+			switch (dataType)
+			{
+				case DataType.Bool:			return XmlConvert.ToBoolean(val);
+				case DataType.Byte:			return XmlConvert.ToByte(val);
+				case DataType.SByte:		return XmlConvert.ToSByte(val);
+				case DataType.Short:		return XmlConvert.ToInt16(val);
+				case DataType.UShort:		return XmlConvert.ToUInt16(val);
+				case DataType.Int:			return XmlConvert.ToInt32(val);
+				case DataType.UInt:			return XmlConvert.ToUInt32(val);
+				case DataType.Long:			return XmlConvert.ToInt64(val);
+				case DataType.ULong:		return XmlConvert.ToUInt64(val);
+				case DataType.Float:		return XmlConvert.ToSingle(val);
+				case DataType.Double:		return XmlConvert.ToDouble(val);
+				case DataType.Decimal:		return XmlConvert.ToDecimal(val);
+				case DataType.Char:			return XmlConvert.ToChar(val);
+				case DataType.String:		return val;
+				default:
+					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", dataType));
+			}
+		}
+		private Array ReadArray(XElement element, ObjectHeader header)
 		{
 			string arrLengthString = element.GetAttributeValue("length");
 			int arrLength = arrLengthString == null	? element.Elements().Count() : XmlConvert.ToInt32(arrLengthString);
@@ -250,12 +436,7 @@ namespace Duality.Serialization
 
 			return arrObj;
 		}
-		/// <summary>
-		/// Reads a structural object, including referenced objects.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns>The object that has been read.</returns>
-		protected object ReadStruct(XElement element, ObjectHeader header)
+		private object ReadStruct(XElement element, ObjectHeader header)
 		{
 			// Read struct type
 			string	customString	= element.GetAttributeValue("custom");
@@ -346,12 +527,7 @@ namespace Duality.Serialization
 
 			return obj;
 		}
-		/// <summary>
-		/// Reads an object reference.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns>The object that has been read.</returns>
-		protected object ReadObjectRef(XElement element)
+		private object ReadObjectRef(XElement element)
 		{
 			object obj;
 			uint objId = XmlConvert.ToUInt32(element.Value);
@@ -360,13 +536,7 @@ namespace Duality.Serialization
 
 			return obj;
 		}
-		/// <summary>
-		/// Reads a <see cref="System.Reflection.MemberInfo"/>, including referenced objects.
-		/// </summary>
-		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> of the object to read.</param>
-		/// <param name="element"></param>
-		/// <returns>The object that has been read.</returns>
-		protected MemberInfo ReadMemberInfo(XElement element, ObjectHeader header)
+		private MemberInfo ReadMemberInfo(XElement element, ObjectHeader header)
 		{
 			MemberInfo result;
 			try
@@ -397,12 +567,7 @@ namespace Duality.Serialization
 
 			return result;
 		}
-		/// <summary>
-		/// Reads a <see cref="System.Delegate"/>, including referenced objects.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns>The object that has been read.</returns>
-		protected Delegate ReadDelegate(XElement element, ObjectHeader header)
+		private Delegate ReadDelegate(XElement element, ObjectHeader header)
 		{
 			string multiString = element.GetAttributeValue("multi");
 			bool multi = multiString != null && XmlConvert.ToBoolean(multiString);
@@ -436,17 +601,173 @@ namespace Duality.Serialization
 
 			return del;
 		}
-		/// <summary>
-		/// Reads an <see cref="System.Enum"/>.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <returns>The object that has been read.</returns>
-		protected Enum ReadEnum(XElement element, ObjectHeader header)
+		private Enum ReadEnum(XElement element, ObjectHeader header)
 		{
 			string name = element.GetAttributeValue("name");
 			string valueString = element.GetAttributeValue("value");
 			long val = valueString == null ? 0 : XmlConvert.ToInt64(valueString);
 			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType, name, val);
+		}
+
+		
+		/// <summary>
+		/// Determines the length of the longest Array element sequence that contains
+		/// non-default values, beginning at index zero. It is the number of elements
+		/// that actually needs to be serialized.
+		/// </summary>
+		/// <param name="array"></param>
+		/// <param name="elementType"></param>
+		/// <returns></returns>
+		private int GetArrayNonDefaultElementCount(Array array, Type elementType)
+		{
+			if (array.Length == 0) return 0;
+
+			int omitElementCount = 0;
+			object defaultValue = elementType.GetDefaultInstanceOf();
+			while (object.Equals(array.GetValue(array.Length - omitElementCount - 1), defaultValue))
+			{
+				omitElementCount++;
+			}
+
+			return array.Length - omitElementCount;
+		}
+
+		/// <summary>
+		/// Returns whether the specified stream is an XML stream. The check requires a stream that is both readable and seekable.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns></returns>
+		[System.Diagnostics.DebuggerStepThrough]
+		public static bool IsXmlStream(Stream stream)
+		{
+			if (!stream.CanRead) throw new InvalidOperationException("The specified stream is not readable.");
+			if (!stream.CanSeek) throw new InvalidOperationException("The specified stream is not seekable. XML check aborted to maintain stream state.");
+			if (stream.Length == 0) throw new InvalidOperationException("The specified stream is empty.");
+			long oldPos = stream.Position;
+
+			bool isXml = true;
+			try
+			{
+				using (XmlReader xmlRead = XmlReader.Create(stream, GetReaderSettings()))
+				{
+					xmlRead.Read();
+				}
+			} catch (Exception) { isXml = false; }
+			stream.Seek(oldPos, SeekOrigin.Begin);
+
+			return isXml;
+		}
+		
+		/// <summary>
+		/// Wraps the specified <see cref="Stream"/> in a sub-stream that can only access the next available XML document section.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns></returns>
+		private static Stream ReadSingleDocument(Stream stream)
+		{
+			if (!stream.CanSeek) throw new InvalidOperationException("The specified stream needs to be seekable.");
+
+			long oldPos = stream.Position;
+
+			Encoding encoding = null;
+			StringBuilder docDataBuilder = new StringBuilder();
+			int byteOffset = 0;
+
+			using (StreamReader reader = new StreamReader(stream.NonClosing()))
+			{
+				// Determine Encoding and preamble length when at the beginning of the stream
+				encoding = reader.CurrentEncoding;
+				if (stream.Position == 0)
+				{
+					byte[] preamble = encoding.GetPreamble(); 
+					byte[] preambleRead = new byte[preamble.Length]; 
+					if (stream.Read(preambleRead, 0, preambleRead.Length) == preamble.Length)
+					{
+						if (preamble.SequenceEqual(preambleRead))
+						{
+							byteOffset += preamble.Length;
+						}
+					}
+					stream.Position = 0;
+				}
+
+				// Read the appropriate XML document portion of the stream.
+				bool firstContentLine = true;
+				while (!reader.EndOfStream)
+				{
+					string line = reader.ReadLine();
+					int indexOf = line.IndexOf(DocumentSeparator);
+
+					// Consume regular lines
+					if (indexOf == -1)
+					{
+						docDataBuilder.AppendLine(line);
+					}
+					// Consume the separator when it occurs first
+					else if (firstContentLine)
+					{
+						docDataBuilder.AppendLine(line.Remove(0, indexOf + DocumentSeparator.Length));
+						byteOffset += Encoding.Default.GetBytes(DocumentSeparator).Length;
+					}
+					// Stop at the separator when it occurs last
+					else
+					{
+						docDataBuilder.Append(line.Substring(0, indexOf));
+						byteOffset += Encoding.Default.GetBytes(DocumentSeparator + Environment.NewLine).Length;
+						break;
+					}
+
+					if (!string.IsNullOrWhiteSpace(line)) firstContentLine = false;
+				}
+			}
+
+			// Create a MemoryStream from the desired subsection of the original Stream
+			string reducedDoc = docDataBuilder.ToString();
+			byte[] reducedData = encoding.GetBytes(reducedDoc);
+			MemoryStream result = new MemoryStream(reducedData);
+
+			// Reset the original Stream to the expected position and return the substream
+			stream.Position = oldPos + byteOffset + reducedData.Length;
+			return result;
+		}
+
+		private static byte[] DecodeByteArray(string str)
+		{
+			return Convert.FromBase64String(str);
+		}
+		private static string EncodeByteArray(byte[] arr)
+		{
+			return Convert.ToBase64String(arr, Base64FormattingOptions.None);
+		}
+
+		private static string GetXmlElementName(string codeName)
+		{
+			return XmlConvert.EncodeName(codeName);
+		}
+		private static string GetCodeElementName(string xmlName)
+		{
+			// Legacy support. Remove later. (Written 2014-01-10)
+			xmlName = xmlName.Replace("__sbo__", "<").Replace("__sbc__", ">");
+			return XmlConvert.DecodeName(xmlName);
+		}
+
+		private static XmlReaderSettings GetReaderSettings()
+		{
+			XmlReaderSettings settings = new XmlReaderSettings();
+			settings.DtdProcessing = DtdProcessing.Ignore;
+			settings.IgnoreWhitespace = true;
+			settings.IgnoreComments = true;
+			settings.IgnoreProcessingInstructions = true;
+			settings.CloseInput = false;
+			return settings;
+		}
+		private static XmlWriterSettings GetWriterSettings()
+		{
+			XmlWriterSettings settings = new XmlWriterSettings();
+			settings.OmitXmlDeclaration = true;
+			settings.Indent = true;
+			settings.CloseOutput = false;
+			return settings;
 		}
 	}
 }
