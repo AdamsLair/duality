@@ -14,7 +14,6 @@ using Ionic.Zip;
 
 using Duality;
 using Duality.Serialization;
-using Duality.Serialization.MetaFormat;
 
 namespace Duality.Editor
 {

@@ -7,7 +7,6 @@ using System.Text;
 
 using Duality;
 using Duality.Serialization;
-using Duality.Serialization.MetaFormat;
 using Duality.Tests.Properties;
 
 using OpenTK;
@@ -36,45 +35,45 @@ namespace Duality.Tests.Serialization
 		}
 
 
-		[Test] public void SerializePlainOldData([Values(true, false)] bool meta)
+		[Test] public void SerializePlainOldData()
 		{
 			Random rnd = new Random();
 
-			this.TestWriteRead(rnd.NextBool(),			this.PrimaryFormat, meta);
-			this.TestWriteRead(rnd.NextByte(),			this.PrimaryFormat, meta);
-			this.TestWriteRead(rnd.Next(),				this.PrimaryFormat, meta);
-			this.TestWriteRead(rnd.NextFloat(),			this.PrimaryFormat, meta);
-			this.TestWriteRead(rnd.NextDouble(),		this.PrimaryFormat, meta);
-			this.TestWriteRead(rnd.Next().ToString(),	this.PrimaryFormat, meta);
-			this.TestWriteRead((SomeEnum)rnd.Next(10),	this.PrimaryFormat, meta);
+			this.TestWriteRead(rnd.NextBool(),			this.PrimaryFormat);
+			this.TestWriteRead(rnd.NextByte(),			this.PrimaryFormat);
+			this.TestWriteRead(rnd.Next(),				this.PrimaryFormat);
+			this.TestWriteRead(rnd.NextFloat(),			this.PrimaryFormat);
+			this.TestWriteRead(rnd.NextDouble(),		this.PrimaryFormat);
+			this.TestWriteRead(rnd.Next().ToString(),	this.PrimaryFormat);
+			this.TestWriteRead((SomeEnum)rnd.Next(10),	this.PrimaryFormat);
 		}
-		[Test] public void SerializeFlatStruct([Values(true, false)] bool meta)
+		[Test] public void SerializeFlatStruct()
 		{
 			Random rnd = new Random();
-			this.TestWriteRead(new TestData(rnd), this.PrimaryFormat, meta);
+			this.TestWriteRead(new TestData(rnd), this.PrimaryFormat);
 		}
-		[Test] public void SerializeObjectTree([Values(true, false)] bool meta)
+		[Test] public void SerializeObjectTree()
 		{
 			Random rnd = new Random();
-			this.TestWriteRead(new TestObject(rnd), this.PrimaryFormat, meta);
+			this.TestWriteRead(new TestObject(rnd), this.PrimaryFormat);
 		}
-		[Test] public void SequentialAccess([Values(true, false)] bool meta)
+		[Test] public void SequentialAccess()
 		{
 			Random rnd = new Random();
 			TestObject dataA = new TestObject(rnd);
 			TestObject dataB = new TestObject(rnd);
 
-			this.TestSequential(dataA, dataB, this.PrimaryFormat, meta);
+			this.TestSequential(dataA, dataB, this.PrimaryFormat);
 		}
-		[Test] public void RandomAccess([Values(true, false)] bool meta)
+		[Test] public void RandomAccess()
 		{
 			Random rnd = new Random();
 			TestObject dataA = new TestObject(rnd);
 			TestObject dataB = new TestObject(rnd);
 
-			this.TestRandomAccess(dataA, dataB, this.PrimaryFormat, meta);
+			this.TestRandomAccess(dataA, dataB, this.PrimaryFormat);
 		}
-		[Test] public void BlendInOtherData([Values(true, false)] bool meta)
+		[Test] public void BlendInOtherData()
 		{
 			Random rnd = new Random();
 
@@ -94,31 +93,6 @@ namespace Duality.Tests.Serialization
 					binWriter.Write(rawDataA);
 					formatter.WriteObject(data);
 					binWriter.Write(rawDataB);
-				}
-
-				if (meta)
-				{
-					using (Formatter metaFormatter = Formatter.CreateMeta(stream, this.PrimaryFormat))
-					{
-						DataNode metaNode;
-
-						stream.Position = 0;
-						using (BinaryReader binReader = new BinaryReader(stream.NonClosing()))
-						{
-							rawDataResultA = binReader.ReadString();
-							metaFormatter.ReadObject(out metaNode);
-							rawDataResultB = binReader.ReadInt64();
-						}
-
-						stream.Position = 0;
-						stream.SetLength(0);
-						using (BinaryWriter binWriter = new BinaryWriter(stream.NonClosing()))
-						{
-							binWriter.Write(rawDataA);
-							metaFormatter.WriteObject(metaNode);
-							binWriter.Write(rawDataB);
-						}
-					}
 				}
 
 				stream.Position = 0;
@@ -142,24 +116,23 @@ namespace Duality.Tests.Serialization
 
 			using (MemoryStream stream = new MemoryStream())
 			{
-				// Write
+				// Write old format
 				using (Formatter formatterWrite = Formatter.Create(stream, this.PrimaryFormat))
 				{
 					formatterWrite.WriteObject(data);
 				}
 
-				// Read-Write using MetaFormatter
+				// Read
 				stream.Position = 0;
-				DataNode metaNode = null;
-				using (Formatter formatterRead = Formatter.CreateMeta(stream))
+				using (Formatter formatterRead = Formatter.Create(stream))
 				{
-					formatterRead.ReadObject(out metaNode);
+					formatterRead.ReadObject(out dataResult);
 				}
-				stream.Position = 0;
-				stream.SetLength(0);
-				using (Formatter formatterWrite = Formatter.CreateMeta(stream, to))
+
+				// Write new format
+				using (Formatter formatterWrite = Formatter.Create(stream, to))
 				{
-					formatterWrite.WriteObject(metaNode);
+					formatterWrite.WriteObject(data);
 				}
 
 				// Read
@@ -208,7 +181,7 @@ namespace Duality.Tests.Serialization
 			}
 			Assert.IsTrue(writeObj.Equals(readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		private void TestWriteRead<T>(T writeObj, FormattingMethod format, bool testMeta)
+		private void TestWriteRead<T>(T writeObj, FormattingMethod format)
 		{
 			T readObj;
 			using (MemoryStream stream = new MemoryStream())
@@ -217,23 +190,6 @@ namespace Duality.Tests.Serialization
 				using (Formatter formatterWrite = Formatter.Create(stream, format))
 				{
 					formatterWrite.WriteObject(writeObj);
-				}
-
-				// Read-Write using MetaFormatter
-				if (testMeta)
-				{
-					DataNode metaNode = null;
-					stream.Position = 0;
-					using (Formatter formatterRead = Formatter.CreateMeta(stream))
-					{
-						metaNode = formatterRead.ReadObject<DataNode>();
-					}
-					stream.Position = 0;
-					stream.SetLength(0);
-					using (Formatter formatterWrite = Formatter.CreateMeta(stream, format))
-					{
-						formatterWrite.WriteObject(metaNode);
-					}
 				}
 
 				// Read
@@ -245,7 +201,7 @@ namespace Duality.Tests.Serialization
 			}
 			Assert.IsTrue(writeObj.Equals(readObj), "Failed single WriteRead of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		private void TestSequential<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
+		private void TestSequential<T>(T writeObjA, T writeObjB, FormattingMethod format)
 		{
 			T readObjA;
 			T readObjB;
@@ -269,23 +225,6 @@ namespace Duality.Tests.Serialization
 					formatter.WriteObject(writeObjB);
 				}
 
-				// Read-Write using MetaFormatter
-				if (testMeta)
-				{
-					DataNode metaNodeA = null;
-					DataNode metaNodeB = null;
-					using (Formatter formatter = Formatter.CreateMeta(stream, format))
-					{
-						stream.Position = beginPos;
-						metaNodeA = (DataNode)formatter.ReadObject();
-						metaNodeB = (DataNode)formatter.ReadObject();
-					
-						stream.Position = beginPos;
-						formatter.WriteObject(metaNodeA);
-						formatter.WriteObject(metaNodeB);
-					}
-				}
-
 				// Read
 				stream.Position = beginPos;
 				using (Formatter formatter = Formatter.Create(stream))
@@ -298,7 +237,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsTrue(writeObjA.Equals(readObjA), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
 			Assert.IsTrue(writeObjB.Equals(readObjB), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
 		}
-		private void TestRandomAccess<T>(T writeObjA, T writeObjB, FormattingMethod format, bool testMeta)
+		private void TestRandomAccess<T>(T writeObjA, T writeObjB, FormattingMethod format)
 		{
 			T readObjA;
 			T readObjB;
@@ -326,29 +265,6 @@ namespace Duality.Tests.Serialization
 					formatter.WriteObject(writeObjA);
 					stream.Position = posB;
 					formatter.WriteObject(writeObjB);
-				}
-
-				// Read-Write using MetaFormatter
-				if (testMeta)
-				{
-					DataNode metaNodeA = null;
-					DataNode metaNodeB = null;
-					using (Formatter formatter = Formatter.CreateMeta(stream, format))
-					{
-						stream.Position = posA;
-						metaNodeA = (DataNode)formatter.ReadObject();
-						stream.Position = posB;
-						metaNodeB = (DataNode)formatter.ReadObject();
-
-						stream.Position = posB;
-						formatter.WriteObject(metaNodeB);
-						formatter.WriteObject(metaNodeA);
-						formatter.WriteObject(metaNodeB);
-						stream.Position = posA;
-						formatter.WriteObject(metaNodeA);
-						stream.Position = posB;
-						formatter.WriteObject(metaNodeB);
-					}
 				}
 
 				// Read

@@ -244,14 +244,12 @@
     <Compile Include="Drawing\FormattedText.cs" />
     <Compile Include="Utility\Log\TextWriterLogOutput.cs" />
     <Compile Include="Serialization\BinaryFormatter.cs" />
-    <Compile Include="Serialization\MetaFormat\BinaryMetaFormatter.cs" />
     <Compile Include="Serialization\ISerializeExplicit.cs" />
     <Compile Include="Serialization\IDataWriter.cs" />
     <Compile Include="Serialization\IDataReader.cs" />
     <Compile Include="Serialization\ISerializeSurrogate.cs" />
     <Compile Include="Serialization\Formatter.cs" />
     <Compile Include="Serialization\IUniqueIdentifyable.cs" />
-    <Compile Include="Serialization\MetaFormat\MetaFormat.cs" />
     <Compile Include="Serialization\ObjectIdManager.cs" />
     <Compile Include="Serialization\SerializeErrorHandler.cs" />
     <Compile Include="Serialization\Surrogates\GuidSurrogate.cs" />
@@ -263,7 +261,6 @@
     <Compile Include="Serialization\Surrogates\BitmapSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Serialization\TypeDataLayout.cs" />
-    <Compile Include="Serialization\MetaFormat\XmlMetaFormatter.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Drawing\VertexFormat\IVertexData.cs" />
     <Compile Include="Drawing\VertexFormat\VertexC1P3T4A1.cs" />

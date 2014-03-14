@@ -12,7 +12,6 @@ using System.Text.RegularExpressions;
 using Duality;
 using Duality.Resources;
 using Duality.Serialization;
-using Duality.Serialization.MetaFormat;
 using Duality.Editor.Forms;
 
 using OpenTK;

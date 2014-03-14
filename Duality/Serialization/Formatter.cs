@@ -223,31 +223,6 @@ namespace Duality.Serialization
 				this.serializeType = null;
 				this.typeString = typeString;
 			}
-			public ObjectHeader(MetaFormat.DataNode node)
-			{
-				var enumNode = node as MetaFormat.EnumNode;
-				var objNode = node as MetaFormat.ObjectNode;
-				var refNode = node as MetaFormat.ObjectRefNode;
-
-				this.dataType = node.NodeType;
-				this.objectId = 0;
-				this.typeString = null;
-				this.serializeType = null;
-
-				if (objNode != null)
-				{
-					this.typeString = objNode.TypeString;
-					this.objectId = objNode.ObjId;
-				}
-				else if (refNode != null)
-				{
-					this.objectId = refNode.ObjRefId;
-				}
-				else if (enumNode != null)
-				{
-					this.typeString = enumNode.EnumType;
-				}
-			}
 		}
 
 
@@ -761,35 +736,6 @@ namespace Duality.Serialization
 				return new XmlFormatter(stream);
 			else
 				return new BinaryFormatter(stream);
-		}
-		/// <summary>
-		/// Creates a new MetaFormat Formatter using the specified stream for I/O.
-		/// </summary>
-		/// <param name="stream">The stream to use.</param>
-		/// <param name="method">
-		/// The formatting method to prefer. If <see cref="FormattingMethod.Unknown"/> is specified, if the stream
-		/// is read- and seekable, auto-detection is used. Otherwise, the <see cref="DefaultMethod">default formatting method</see> is used.
-		/// </param>
-		/// <returns>A newly created MetaFormat Formatter meeting the specified criteria.</returns>
-		public static Formatter CreateMeta(Stream stream, FormattingMethod method = FormattingMethod.Unknown)
-		{
-			if (method == FormattingMethod.Unknown)
-			{
-				if (stream.CanRead && stream.CanSeek && stream.Length > 0)
-				{
-					if (XmlFormatterBase.IsXmlStream(stream))
-						method = FormattingMethod.Xml;
-					else
-						method = FormattingMethod.Binary;
-				}
-				else
-					method = defaultMethod;
-			}
-
-			if (method == FormattingMethod.Xml)
-				return new MetaFormat.XmlMetaFormatter(stream);
-			else
-				return new MetaFormat.BinaryMetaFormatter(stream);
 		}
 		/// <summary>
 		/// Reads an object of the specified Type from an existing data file, expecting that it might fail.
