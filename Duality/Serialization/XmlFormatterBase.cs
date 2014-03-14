@@ -139,10 +139,10 @@ namespace Duality.Serialization
 		/// <param name="element"></param>
 		/// <param name="dataType"></param>
 		/// <returns></returns>
-		protected object ReadPrimitive(XElement element, ObjectHeader header)
+		protected object ReadPrimitive(XElement element, DataType dataType)
 		{
 			string val = element.Value;
-			switch (header.DataType)
+			switch (dataType)
 			{
 				case DataType.Bool:			return XmlConvert.ToBoolean(val);
 				case DataType.Byte:			return XmlConvert.ToByte(val);
@@ -159,7 +159,7 @@ namespace Duality.Serialization
 				case DataType.Char:			return XmlConvert.ToChar(val);
 				case DataType.String:		return val;
 				default:
-					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", header.DataType));
+					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", dataType));
 			}
 		}
 
@@ -179,9 +179,9 @@ namespace Duality.Serialization
 			ObjectHeader header = this.PrepareWriteObject(obj);
 
 			// Write data type header
-			element.SetAttributeValue("dataType", header.DataType.ToString());
-			if (header.IsObjectTypeRequired) element.SetAttributeValue("type", header.TypeString);
-			if (header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
+			if (header.DataType != DataType.Unknown) element.SetAttributeValue("dataType", header.DataType.ToString());
+			if (header.IsObjectTypeRequired && !string.IsNullOrEmpty(header.TypeString)) element.SetAttributeValue("type", header.TypeString);
+			if (header.IsObjectIdRequired && header.ObjectId != 0) element.SetAttributeValue("id", XmlConvert.ToString(header.ObjectId));
 
 			// Write object
 			try 

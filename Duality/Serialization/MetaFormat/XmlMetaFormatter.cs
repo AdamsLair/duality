@@ -206,7 +206,7 @@ namespace Duality.Serialization.MetaFormat
 		{
 			DataNode result = null;
 
-			if (header.IsPrimitive)							result = new PrimitiveNode(header.DataType, this.ReadPrimitive(element, header));
+			if (header.IsPrimitive)							result = new PrimitiveNode(header.DataType, this.ReadPrimitive(element, header.DataType));
 			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
 			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);
 			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef(element);

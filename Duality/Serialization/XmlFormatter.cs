@@ -200,7 +200,7 @@ namespace Duality.Serialization
 		{
 			object result = null;
 
-			if (header.IsPrimitive)							result = this.ReadPrimitive(element, header);
+			if (header.IsPrimitive)							result = this.ReadPrimitive(element, header.DataType);
 			else if (header.DataType == DataType.String)	result = element.Value;
 			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(element, header);
 			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(element, header);

@@ -35,9 +35,6 @@ namespace Duality.Serialization.MetaFormat
 		/// <param name="node"></param>
 		protected void WriteMemberInfo(MemberInfoNode node)
 		{
-			if (node == null) throw new ArgumentNullException("node");
-
-			this.writer.Write(node.ObjId);
 			this.writer.Write(node.TypeString);
 		}
 		/// <summary>
@@ -48,10 +45,7 @@ namespace Duality.Serialization.MetaFormat
 		{
 			if (node.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 
-			this.writer.Write(node.TypeString);
-			this.writer.Write(node.ObjId);
 			this.writer.Write(node.Rank);
-
 			
 			if (node.PrimitiveData != null)
 			{
@@ -85,9 +79,6 @@ namespace Duality.Serialization.MetaFormat
 		/// <param name="node"></param>
 		protected void WriteStruct(StructNode node)
 		{
-			// Write the structs data type
-			this.writer.Write(node.TypeString);
-			this.writer.Write(node.ObjId);
 			this.writer.Write(node.CustomSerialization);
 			this.writer.Write(node.SurrogateSerialization);
 
@@ -170,11 +161,7 @@ namespace Duality.Serialization.MetaFormat
 		/// <param name="node"></param>
 		protected void WriteDelegate(DelegateNode node)
 		{
-			// Write the delegates type
-			this.writer.Write(node.TypeString);
-			this.writer.Write(node.ObjId);
 			this.writer.Write(node.InvokeList != null);
-
 			this.WriteObjectData(node.Method);
 			this.WriteObjectData(node.Target);
 			if (node.InvokeList != null) this.WriteObjectData(node.InvokeList);
@@ -185,7 +172,6 @@ namespace Duality.Serialization.MetaFormat
 		/// <param name="node"></param>
 		protected void WriteEnum(EnumNode node)
 		{
-			this.writer.Write(node.EnumType);
 			this.writer.Write(node.ValueName);
 			this.writer.Write(node.Value);
 		}
@@ -198,17 +184,17 @@ namespace Duality.Serialization.MetaFormat
 		{
 			return new ObjectHeader(objId, dataType, typeString);
 		}
-		protected override object ReadObjectBody(DataType dataType)
+		protected override object ReadObjectBody(ObjectHeader header)
 		{
 			DataNode result = null;
 
-			if (dataType.IsPrimitiveType())				result = new PrimitiveNode(dataType, this.ReadPrimitive(dataType));
-			else if (dataType == DataType.Enum)			result = this.ReadEnum();
-			else if (dataType == DataType.Struct)		result = this.ReadStruct();
-			else if (dataType == DataType.ObjectRef)	result = this.ReadObjectRef();
-			else if (dataType == DataType.Array)		result = this.ReadArray();
-			else if (dataType == DataType.Delegate)		result = this.ReadDelegate();
-			else if (dataType.IsMemberInfoType())		result = this.ReadMemberInfo(dataType);
+			if (header.IsPrimitive)							result = new PrimitiveNode(header.DataType, this.ReadPrimitive(header.DataType));
+			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(header);
+			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(header);
+			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef();
+			else if (header.DataType == DataType.Array)		result = this.ReadArray(header);
+			else if (header.DataType == DataType.Delegate)	result = this.ReadDelegate(header);
+			else if (header.DataType.IsMemberInfoType())	result = this.ReadMemberInfo(header);
 
 			return result;
 		}
@@ -216,15 +202,13 @@ namespace Duality.Serialization.MetaFormat
 		/// Reads a <see cref="Duality.Serialization.MetaFormat.MemberInfoNode"/>, including possible child nodes.
 		/// </summary>
 		/// <param name="node"></param>
-		protected MemberInfoNode ReadMemberInfo(DataType dataType)
+		protected MemberInfoNode ReadMemberInfo(ObjectHeader header)
 		{
-			uint objId = this.reader.ReadUInt32();
-
 			string typeString = this.reader.ReadString();
-			MemberInfoNode result = new MemberInfoNode(dataType, typeString, objId);
+			MemberInfoNode result = new MemberInfoNode(header.DataType, typeString, header.ObjectId);
 			
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			return result;
 		}
@@ -232,18 +216,16 @@ namespace Duality.Serialization.MetaFormat
 		/// Reads an <see cref="Duality.Serialization.MetaFormat.ArrayNode"/>, including possible child nodes.
 		/// </summary>
 		/// <param name="node"></param>
-		protected ArrayNode ReadArray()
+		protected ArrayNode ReadArray(ObjectHeader header)
 		{
-			string	arrTypeString	= this.reader.ReadString();
-			uint	objId			= this.reader.ReadUInt32();
 			int		arrRank			= this.reader.ReadInt32();
 			int		arrLength		= this.reader.ReadInt32();
-			Type	arrType			= ReflectionHelper.ResolveType(arrTypeString, false);
+			Type	arrType			= ReflectionHelper.ResolveType(header.TypeString, false);
 
-			ArrayNode result = new ArrayNode(arrTypeString, objId, arrRank, arrLength);
+			ArrayNode result = new ArrayNode(header.TypeString, header.ObjectId, arrRank, arrLength);
 			
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			// Store primitive data block
 			bool nonPrimitive = false;
@@ -288,15 +270,13 @@ namespace Duality.Serialization.MetaFormat
 		/// Reads a <see cref="Duality.Serialization.MetaFormat.StructNode"/>, including possible child nodes.
 		/// </summary>
 		/// <param name="node"></param>
-		protected StructNode ReadStruct()
+		protected StructNode ReadStruct(ObjectHeader header)
 		{
 			// Read struct type
-			string	objTypeString	= this.reader.ReadString();
-			uint	objId			= this.reader.ReadUInt32();
-			bool	custom			= this.reader.ReadBoolean();
-			bool	surrogate		= this.reader.ReadBoolean();
+			bool	custom		= this.reader.ReadBoolean();
+			bool	surrogate	= this.reader.ReadBoolean();
 
-			StructNode result = new StructNode(objTypeString, objId, custom, surrogate);
+			StructNode result = new StructNode(header.TypeString, header.ObjectId, custom, surrogate);
 			
 			// Read surrogate constructor data
 			if (surrogate)
@@ -304,7 +284,7 @@ namespace Duality.Serialization.MetaFormat
 				custom = true;
 
 				// Set fake object reference for surrogate constructor: No self-references allowed here.
-				this.idManager.Inject(null, objId);
+				this.idManager.Inject(null, header.ObjectId);
 
 				CustomSerialIO customIO = new CustomSerialIO();
 				customIO.Deserialize(this);
@@ -323,7 +303,7 @@ namespace Duality.Serialization.MetaFormat
 			}
 
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			if (custom)
 			{
@@ -340,8 +320,8 @@ namespace Duality.Serialization.MetaFormat
 			else
 			{
 				// Determine data layout
-				bool wasThereBefore = this.GetCachedTypeDataLayout(objTypeString) != null;
-				TypeDataLayout layout = this.ReadTypeDataLayout(objTypeString);
+				bool wasThereBefore = this.GetCachedTypeDataLayout(header.TypeString) != null;
+				TypeDataLayout layout = this.ReadTypeDataLayout(header.TypeString);
 				if (!wasThereBefore)
 				{
 					TypeDataLayoutNode layoutNode = new TypeDataLayoutNode(new TypeDataLayout(layout));
@@ -379,20 +359,18 @@ namespace Duality.Serialization.MetaFormat
 		/// Reads a <see cref="Duality.Serialization.MetaFormat.DelegateNode"/>, including possible child nodes.
 		/// </summary>
 		/// <param name="node"></param>
-		protected DelegateNode ReadDelegate()
+		protected DelegateNode ReadDelegate(ObjectHeader header)
 		{
-			string		delegateTypeString	= this.reader.ReadString();
-			uint		objId				= this.reader.ReadUInt32();
-			bool		multi				= this.reader.ReadBoolean();
+			bool multi = this.reader.ReadBoolean();
 
 			DataNode method	= this.ReadObjectData() as DataNode;
 			DataNode target	= null;
 
 			// Create the delegate without target and fix it later, so we don't load its target object before setting this object id
-			DelegateNode result = new DelegateNode(delegateTypeString, objId, method, target, null);
+			DelegateNode result = new DelegateNode(header.TypeString, header.ObjectId, method, target, null);
 
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			// Load & fix the target object
 			target = this.ReadObjectData() as DataNode;
@@ -412,12 +390,11 @@ namespace Duality.Serialization.MetaFormat
 		/// Reads an <see cref="Duality.Serialization.MetaFormat.EnumNode"/>.
 		/// </summary>
 		/// <param name="node"></param>
-		protected EnumNode ReadEnum()
+		protected EnumNode ReadEnum(ObjectHeader header)
 		{
-			string typeName = this.reader.ReadString();
 			string name = this.reader.ReadString();
 			long val = this.reader.ReadInt64();
-			return new EnumNode(typeName, name, val);
+			return new EnumNode(header.TypeString, name, val);
 		}
 		/// <summary>
 		/// Reads an <see cref="Duality.Serialization.MetaFormat.ObjectRefNode"/>.

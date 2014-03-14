@@ -41,7 +41,7 @@ namespace Duality.Tests.Serialization
 			return MathF.CombineHashCode(
 				this.IntField.GetHashCode(),
 				this.FloatField.GetHashCode(),
-				this.StringField.GetHashCode(),
+				this.StringField != null ? this.StringField.GetHashCode() : 0,
 				this.EnumField.GetHashCode());
 		}
 		public override bool Equals(object obj)
@@ -116,9 +116,24 @@ namespace Duality.Tests.Serialization
 				other.TypeField == this.TypeField &&
 				other.DelegateField == this.DelegateField &&
 				other.DataField == this.DataField &&
-				other.ListField.SequenceEqual(this.ListField) &&
-				other.ListField2.SequenceEqual(this.ListField2) &&
-				other.DictField.SetEqual(this.DictField);
+				ListsEqual(other.ListField, this.ListField) &&
+				ListsEqual(other.ListField2, this.ListField2) &&
+				DictionariesEqual(other.DictField, this.DictField);
+		}
+
+		private static bool ListsEqual<T>(IList<T> first, IList<T> second)
+		{
+			if (object.ReferenceEquals(first, second)) return true;
+			if (object.ReferenceEquals(first, null)) return false;
+			if (object.ReferenceEquals(second, null)) return false;
+			return first.SequenceEqual(second);
+		}
+		private static bool DictionariesEqual<T,U>(IDictionary<T,U> first, IDictionary<T,U> second)
+		{
+			if (object.ReferenceEquals(first, second)) return true;
+			if (object.ReferenceEquals(first, null)) return false;
+			if (object.ReferenceEquals(second, null)) return false;
+			return first.SetEqual(second);
 		}
 	}
 }

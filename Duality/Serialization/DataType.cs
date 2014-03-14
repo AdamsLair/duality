@@ -143,6 +143,24 @@ namespace Duality.Serialization
 			return (ushort)dt >= (ushort)DataType.Type && (ushort)dt <= (ushort)DataType.EventInfo;
 		}
 		/// <summary>
+		/// Returns whether the specified <see cref="DataType"/> requires an explicit type name during serialization.
+		/// </summary>
+		/// <param name="dt"></param>
+		/// <returns></returns>
+		public static bool HasTypeName(this DataType dt)
+		{
+			return dt == DataType.Struct || dt == DataType.Array || dt == DataType.Delegate || dt == DataType.Enum;
+		}
+		/// <summary>
+		/// Returns whether the specified <see cref="DataType"/> requires a unique object id during serialization.
+		/// </summary>
+		/// <param name="dt"></param>
+		/// <returns></returns>
+		public static bool HasObjectId(this DataType dt)
+		{
+			return dt == DataType.Struct || dt == DataType.Array || dt == DataType.Delegate || dt.IsMemberInfoType();
+		}
+		/// <summary>
 		/// Returns the actual <see cref="System.Type"/> that is associated with the <see cref="Duality.Serialization.DataType"/>.
 		/// </summary>
 		/// <param name="dt"></param>

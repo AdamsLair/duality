@@ -31,7 +31,6 @@ namespace Duality.Serialization
 		/// <param name="id">The objects id.</param>
 		protected void WriteMemberInfo(object obj, ObjectHeader header)
 		{
-			this.writer.Write(header.ObjectId);
 			if (obj is Type)
 			{
 				Type type = obj as Type;
@@ -63,8 +62,6 @@ namespace Duality.Serialization
 			if (objAsArray.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new ArgumentException("Non zero-based arrays are not supported");
 
-			this.writer.Write(header.TypeString);
-			this.writer.Write(header.ObjectId);
 			this.writer.Write(objAsArray.Rank);
 			this.writer.Write(objAsArray.Length);
 
@@ -99,9 +96,6 @@ namespace Duality.Serialization
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
 			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
 
-			// Write the structs data type
-			this.writer.Write(header.TypeString);
-			this.writer.Write(header.ObjectId);
 			this.writer.Write(objAsCustom != null);
 			this.writer.Write(objSurrogate != null);
 
@@ -153,10 +147,6 @@ namespace Duality.Serialization
 		protected void WriteDelegate(object obj, ObjectHeader header)
 		{
 			bool multi = obj is MulticastDelegate;
-
-			// Write the delegates type
-			this.writer.Write(header.TypeString);
-			this.writer.Write(header.ObjectId);
 			this.writer.Write(multi);
 
 			if (!multi)
@@ -181,22 +171,21 @@ namespace Duality.Serialization
 		/// <param name="objSerializeType">The <see cref="Duality.Serialization.SerializeType"/> describing the object.</param>
 		protected void WriteEnum(Enum obj, ObjectHeader header)
 		{
-			this.writer.Write(header.TypeString);
 			this.writer.Write(obj.ToString());
 			this.writer.Write(Convert.ToInt64(obj));
 		}
 
-		protected override object ReadObjectBody(DataType dataType)
+		protected override object ReadObjectBody(ObjectHeader header)
 		{
 			object result = null;
 
-			if (dataType.IsPrimitiveType())				result = this.ReadPrimitive(dataType);
-			else if (dataType == DataType.Enum)			result = this.ReadEnum();
-			else if (dataType == DataType.Struct)		result = this.ReadStruct();
-			else if (dataType == DataType.ObjectRef)	result = this.ReadObjectRef();
-			else if (dataType == DataType.Array)		result = this.ReadArray();
-			else if (dataType == DataType.Delegate)		result = this.ReadDelegate();
-			else if (dataType.IsMemberInfoType())		result = this.ReadMemberInfo(dataType);
+			if (header.IsPrimitive)							result = this.ReadPrimitive(header.DataType);
+			else if (header.DataType == DataType.Enum)		result = this.ReadEnum(header);
+			else if (header.DataType == DataType.Struct)	result = this.ReadStruct(header);
+			else if (header.DataType == DataType.ObjectRef)	result = this.ReadObjectRef();
+			else if (header.DataType == DataType.Array)		result = this.ReadArray(header);
+			else if (header.DataType == DataType.Delegate)	result = this.ReadDelegate(header);
+			else if (header.DataType.IsMemberInfoType())	result = this.ReadMemberInfo(header);
 
 			return result;
 		}
@@ -204,18 +193,15 @@ namespace Duality.Serialization
 		/// Reads an <see cref="System.Array"/>, including referenced objects.
 		/// </summary>
 		/// <returns>The object that has been read.</returns>
-		protected Array ReadArray()
+		protected Array ReadArray(ObjectHeader header)
 		{
-			string	arrTypeString	= this.reader.ReadString();
-			uint	objId			= this.reader.ReadUInt32();
 			int		arrRang			= this.reader.ReadInt32();
 			int		arrLength		= this.reader.ReadInt32();
-			Type	arrType			= this.ResolveType(arrTypeString, objId);
 
-			Array arrObj = arrType != null ? Array.CreateInstance(arrType.GetElementType(), arrLength) : null;
+			Array arrObj = header.ObjectType != null ? Array.CreateInstance(header.ObjectType.GetElementType(), arrLength) : null;
 			
 			// Prepare object reference
-			this.idManager.Inject(arrObj, objId);
+			this.idManager.Inject(arrObj, header.ObjectId);
 
 			if		(arrObj is bool[])		this.ReadArrayData(arrObj as bool[]);
 			else if (arrObj is byte[])		this.ReadArrayData(arrObj as byte[]);
@@ -246,44 +232,38 @@ namespace Duality.Serialization
 		/// Reads a structural object, including referenced objects.
 		/// </summary>
 		/// <returns>The object that has been read.</returns>
-		protected object ReadStruct()
+		protected object ReadStruct(ObjectHeader header)
 		{
 			// Read struct type
-			string	objTypeString	= this.reader.ReadString();
-			uint	objId			= this.reader.ReadUInt32();
 			bool	custom			= this.reader.ReadBoolean();
 			bool	surrogate		= this.reader.ReadBoolean();
-			Type	objType			= this.ResolveType(objTypeString, objId);
 
-			SerializeType objSerializeType = null;
-			if (objType != null) objSerializeType = objType.GetSerializeType();
-			
 			// Retrieve surrogate if requested
 			ISerializeSurrogate objSurrogate = null;
-			if (surrogate && objType != null) objSurrogate = GetSurrogateFor(objType);
+			if (surrogate && header.ObjectType != null) objSurrogate = GetSurrogateFor(header.ObjectType);
 
 			// Construct object
 			object obj = null;
-			if (objType != null)
+			if (header.ObjectType != null)
 			{
 				if (objSurrogate != null)
 				{
 					custom = true;
 
 					// Set fake object reference for surrogate constructor: No self-references allowed here.
-					this.idManager.Inject(null, objId);
+					this.idManager.Inject(null, header.ObjectId);
 
 					CustomSerialIO customIO = new CustomSerialIO();
 					customIO.Deserialize(this);
-					try { obj = objSurrogate.ConstructObject(customIO, objType); }
-					catch (Exception e) { this.LogCustomDeserializationError(objId, objType, e); }
+					try { obj = objSurrogate.ConstructObject(customIO, header.ObjectType); }
+					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
-				if (obj == null) obj = objType.CreateInstanceOf();
-				if (obj == null) obj = objType.CreateInstanceOf(true);
+				if (obj == null) obj = header.ObjectType.CreateInstanceOf();
+				if (obj == null) obj = header.ObjectType.CreateInstanceOf(true);
 			}
 
 			// Prepare object reference
-			this.idManager.Inject(obj, objId);
+			this.idManager.Inject(obj, header.ObjectId);
 
 			// Read custom object data
 			if (custom)
@@ -303,18 +283,18 @@ namespace Duality.Serialization
 				if (objAsCustom != null)
 				{
 					try { objAsCustom.ReadData(customIO); }
-					catch (Exception e) { this.LogCustomDeserializationError(objId, objType, e); }
+					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
-				else if (obj != null && objType != null)
+				else if (obj != null && header.ObjectType != null)
 				{
 					this.LocalLog.WriteWarning(
 						"Object data (Id {0}) is flagged for custom deserialization, yet the objects Type ('{1}') does not support it. Guessing associated fields...",
-						objId,
-						Log.Type(objType));
+						header.ObjectId,
+						Log.Type(header.ObjectType));
 					this.LocalLog.PushIndent();
 					foreach (var pair in customIO.Data)
 					{
-						this.AssignValueToField(objSerializeType, obj, pair.Key, pair.Value);
+						this.AssignValueToField(header.SerializeType, obj, pair.Key, pair.Value);
 					}
 					this.LocalLog.PopIndent();
 				}
@@ -323,7 +303,7 @@ namespace Duality.Serialization
 			else
 			{
 				// Determine data layout
-				TypeDataLayout layout	= this.ReadTypeDataLayout(objTypeString);
+				TypeDataLayout layout	= this.ReadTypeDataLayout(header.TypeString);
 
 				// Read fields
 				if (this.dataVersion <= 2)
@@ -331,7 +311,7 @@ namespace Duality.Serialization
 					for (int i = 0; i < layout.Fields.Length; i++)
 					{
 						object fieldValue = this.ReadObjectData();
-						this.AssignValueToField(objSerializeType, obj, layout.Fields[i].name, fieldValue);
+						this.AssignValueToField(header.SerializeType, obj, layout.Fields[i].name, fieldValue);
 					}
 				}
 				else if (this.dataVersion >= 3)
@@ -342,7 +322,7 @@ namespace Duality.Serialization
 					{
 						if (fieldOmitted[i]) continue;
 						object fieldValue = this.ReadObjectData();
-						this.AssignValueToField(objSerializeType, obj, layout.Fields[i].name, fieldValue);
+						this.AssignValueToField(header.SerializeType, obj, layout.Fields[i].name, fieldValue);
 					}
 				}
 			}
@@ -367,9 +347,8 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> of the object to read.</param>
 		/// <returns>The object that has been read.</returns>
-		protected MemberInfo ReadMemberInfo(DataType dataType)
+		protected MemberInfo ReadMemberInfo(ObjectHeader header)
 		{
-			uint objId = this.reader.ReadUInt32();
 			MemberInfo result = null;
 
 			try
@@ -377,13 +356,13 @@ namespace Duality.Serialization
 				#region Version 1
 				if (this.dataVersion <= 1)
 				{
-					if (dataType == DataType.Type)
+					if (header.DataType == DataType.Type)
 					{
 						string typeString = this.reader.ReadString();
 						Type type = this.ResolveType(typeString);
 						result = type;
 					}
-					else if (dataType == DataType.FieldInfo)
+					else if (header.DataType == DataType.FieldInfo)
 					{
 						bool isStatic = this.reader.ReadBoolean();
 						string declaringTypeString = this.reader.ReadString();
@@ -393,7 +372,7 @@ namespace Duality.Serialization
 						FieldInfo field = declaringType.GetField(fieldName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll);
 						result = field;
 					}
-					else if (dataType == DataType.PropertyInfo)
+					else if (header.DataType == DataType.PropertyInfo)
 					{
 						bool isStatic = this.reader.ReadBoolean();
 						string declaringTypeString = this.reader.ReadString();
@@ -421,7 +400,7 @@ namespace Duality.Serialization
 
 						result = property;
 					}
-					else if (dataType == DataType.MethodInfo)
+					else if (header.DataType == DataType.MethodInfo)
 					{
 						bool isStatic = this.reader.ReadBoolean();
 						string declaringTypeString = this.reader.ReadString();
@@ -440,7 +419,7 @@ namespace Duality.Serialization
 						MethodInfo method = declaringType.GetMethod(methodName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll, null, paramTypes, null);
 						result = method;
 					}
-					else if (dataType == DataType.ConstructorInfo)
+					else if (header.DataType == DataType.ConstructorInfo)
 					{
 						bool isStatic = this.reader.ReadBoolean();
 						string declaringTypeString = this.reader.ReadString();
@@ -458,7 +437,7 @@ namespace Duality.Serialization
 						ConstructorInfo method = declaringType.GetConstructor(isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll, null, paramTypes, null);
 						result = method;
 					}
-					else if (dataType == DataType.EventInfo)
+					else if (header.DataType == DataType.EventInfo)
 					{
 						bool isStatic = this.reader.ReadBoolean();
 						string declaringTypeString = this.reader.ReadString();
@@ -469,20 +448,20 @@ namespace Duality.Serialization
 						result = e;
 					}
 					else
-						throw new ApplicationException(string.Format("Invalid DataType '{0}' in ReadMemberInfo method.", dataType));
+						throw new ApplicationException(string.Format("Invalid DataType '{0}' in ReadMemberInfo method.", header.DataType));
 				}
 				#endregion
 				else if (this.dataVersion >= 2)
 				{
-					if (dataType == DataType.Type)
+					if (header.DataType == DataType.Type)
 					{
 						string typeString = this.reader.ReadString();
-						result = this.ResolveType(typeString, objId);
+						result = this.ResolveType(typeString, header.ObjectId);
 					}
 					else
 					{
 						string memberString = this.reader.ReadString();
-						result = this.ResolveMember(memberString, objId);
+						result = this.ResolveMember(memberString, header.ObjectId);
 					}
 				}
 			}
@@ -491,13 +470,13 @@ namespace Duality.Serialization
 				result = null;
 				this.LocalLog.WriteError(
 					"An error occurred in deserializing MemberInfo object Id {0} of type '{1}': {2}",
-					objId,
-					Log.Type(dataType.ToActualType()),
+					header.ObjectId,
+					Log.Type(header.DataType.ToActualType()),
 					Log.Exception(e));
 			}
 			
 			// Prepare object reference
-			this.idManager.Inject(result, objId);
+			this.idManager.Inject(result, header.ObjectId);
 
 			return result;
 		}
@@ -505,26 +484,23 @@ namespace Duality.Serialization
 		/// Reads a <see cref="System.Delegate"/>, including referenced objects.
 		/// </summary>
 		/// <returns>The object that has been read.</returns>
-		protected Delegate ReadDelegate()
+		protected Delegate ReadDelegate(ObjectHeader header)
 		{
-			string		delegateTypeString	= this.reader.ReadString();
-			uint		objId				= this.reader.ReadUInt32();
-			bool		multi				= this.reader.ReadBoolean();
-			Type		delType				= this.ResolveType(delegateTypeString, objId);
+			bool multi = this.reader.ReadBoolean();
 
 			// Create the delegate without target and fix it later, so we can register its object id before loading its target object
 			MethodInfo	method	= this.ReadObjectData() as MethodInfo;
 			object		target	= null;
-			Delegate	del		= delType != null && method != null ? Delegate.CreateDelegate(delType, target, method) : null;
+			Delegate	del		= header.ObjectType != null && method != null ? Delegate.CreateDelegate(header.ObjectType, target, method) : null;
 
 			// Prepare object reference
-			this.idManager.Inject(del, objId);
+			this.idManager.Inject(del, header.ObjectId);
 
 			// Read the target object now and replace the dummy
 			target = this.ReadObjectData();
 			if (del != null && target != null)
 			{
-				FieldInfo targetField = delType.GetField("_target", ReflectionHelper.BindInstanceAll);
+				FieldInfo targetField = header.ObjectType.GetField("_target", ReflectionHelper.BindInstanceAll);
 				targetField.SetValue(del, target);
 			}
 
@@ -541,14 +517,11 @@ namespace Duality.Serialization
 		/// Reads an <see cref="System.Enum"/>.
 		/// </summary>
 		/// <returns>The object that has been read.</returns>
-		protected Enum ReadEnum()
+		protected Enum ReadEnum(ObjectHeader header)
 		{
-			string typeName = this.reader.ReadString();
 			string name = this.reader.ReadString();
 			long val = this.reader.ReadInt64();
-			Type enumType = this.ResolveType(typeName);
-
-			return (enumType == null) ? null : this.ResolveEnumValue(enumType, name, val);
+			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType, name, val);
 		}
 	}
 }

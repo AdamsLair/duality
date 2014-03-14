@@ -107,13 +107,25 @@ namespace Duality.Serialization
 			DataType dataType = this.ReadDataType();
 			long lastPos = this.reader.BaseStream.Position;
 			long offset = this.reader.ReadInt64();
+			
+			string typeStr = null;
+			uint objId = 0;
+			if (dataType.HasTypeName()) typeStr = this.reader.ReadString();
+			if (dataType.HasObjectId()) objId = this.reader.ReadUInt32();
+
+			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
+			if (header.DataType == DataType.Unknown)
+			{
+				this.LocalLog.WriteError("Unable to process DataType: {0}.", typeStr);
+				return this.GetNullObject();
+			}
 
 			// Read object
 			object result = null;
 			try
 			{
 				// Read the objects body
-				result = this.ReadObjectBody(dataType);
+				result = this.ReadObjectBody(header);
 
 				// If we read the object properly and aren't where we're supposed to be, something went wrong
 				if (this.reader.BaseStream.Position != lastPos + offset) throw new ApplicationException(string.Format("Wrong dataset offset: '{0}' instead of expected value '{1}'.", this.reader.BaseStream.Position - lastPos, offset));
@@ -136,7 +148,7 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="dataType">The <see cref="Duality.Serialization.DataType"/> that is assumed.</param>
 		/// <returns>The object that has been read.</returns>
-		protected abstract object ReadObjectBody(DataType dataType);
+		protected abstract object ReadObjectBody(ObjectHeader header);
 
 		/// <summary>
 		/// Returns the cached version of the specified typenames <see cref="Duality.Serialization.TypeDataLayout"/>.
@@ -387,6 +399,10 @@ namespace Duality.Serialization
 			// Write data type header
 			this.WriteDataType(header.DataType);
 			this.WritePushOffset();
+
+			if (header.IsObjectTypeRequired) this.writer.Write(header.TypeString);
+			if (header.IsObjectIdRequired) this.writer.Write(header.ObjectId);
+
 			try
 			{
 				// Write object

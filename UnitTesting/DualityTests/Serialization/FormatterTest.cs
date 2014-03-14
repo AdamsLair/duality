@@ -230,7 +230,7 @@ namespace Duality.Tests.Serialization
 					}
 					stream.Position = 0;
 					stream.SetLength(0);
-					using (Formatter formatterWrite = Formatter.CreateMeta(stream))
+					using (Formatter formatterWrite = Formatter.CreateMeta(stream, format))
 					{
 						formatterWrite.WriteObject(metaNode);
 					}

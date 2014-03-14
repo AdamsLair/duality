@@ -195,17 +195,18 @@ namespace Duality.Serialization
 				get { return this.dataType.IsPrimitiveType(); }
 			}
 			/// <summary>
-			/// [GET] Returns whether this kind of object requires an explicit <see cref="ObjectType"/> to be fully described.
+			/// [GET] Returns whether this kind of object requires an explicit <see cref="ObjectType"/> to be fully described described during serialization.
 			/// </summary>
 			public bool IsObjectTypeRequired
 			{
-				get 
-				{
-					return 
-						!this.IsPrimitive && 
-						!this.dataType.IsMemberInfoType() && 
-						this.dataType != DataType.ObjectRef;
-				}
+				get { return this.dataType.HasTypeName(); }
+			}
+			/// <summary>
+			/// [GET] Returns whether this kind of object requires an <see cref="ObjectId"/> to be fully described during serialization.
+			/// </summary>
+			public bool IsObjectIdRequired
+			{
+				get { return this.dataType.HasObjectId(); }
 			}
 
 			public ObjectHeader(uint id, DataType type, SerializeType serializeType)
