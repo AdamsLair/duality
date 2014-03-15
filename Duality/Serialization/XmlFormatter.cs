@@ -626,7 +626,7 @@ namespace Duality.Serialization
 
 			int omitElementCount = 0;
 			object defaultValue = elementType.GetDefaultInstanceOf();
-			while (object.Equals(array.GetValue(array.Length - omitElementCount - 1), defaultValue))
+			while (omitElementCount < array.Length && object.Equals(array.GetValue(array.Length - omitElementCount - 1), defaultValue))
 			{
 				omitElementCount++;
 			}

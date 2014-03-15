@@ -81,7 +81,6 @@ namespace Duality.Components
 		/// <summary>
 		/// [GET / SET] The objects velocity relative to its parent object.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector3 RelativeVel
 		{
 			get { return this.vel; }
@@ -103,7 +102,6 @@ namespace Duality.Components
 		/// <summary>
 		/// [GET / SET] The objects angle / rotation velocity relative to its parent object, in radians.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
 		public float RelativeAngleVel
 		{
 			get { return this.angleVel; }
@@ -140,7 +138,6 @@ namespace Duality.Components
 		/// [GET / SET] If false, this objects rotation values aren't relative to its parent.
 		/// However, its position, velocity, etc. still depend on parent rotation.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public bool DeriveAngle
 		{
 			get { return this.deriveAngle; }
@@ -209,7 +206,6 @@ namespace Duality.Components
 		/// <summary>
 		/// [GET] The objects velocity.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector3 Vel
 		{
 			get { return this.velAbs; }
@@ -237,7 +233,6 @@ namespace Duality.Components
 		/// <summary>
 		/// [GET] The objects angle / rotation velocity, in radians.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
 		public float AngleVel
 		{
 			get { return this.angleVelAbs; }

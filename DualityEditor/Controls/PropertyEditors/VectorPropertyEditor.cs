@@ -303,9 +303,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 
 			if (this.EditedMember != null)
 			{
-				var places = this.EditedMember.GetEditorHint<EditorHintDecimalPlacesAttribute>(hintOverride);
-				var increment = this.EditedMember.GetEditorHint<EditorHintIncrementAttribute>(hintOverride);
-				var range = this.EditedMember.GetEditorHint<EditorHintRangeAttribute>(hintOverride);
+				var range = EditorHintAttribute.Get<EditorHintRangeAttribute>(this.EditedMember, hintOverride);
+				var increment = EditorHintAttribute.Get<EditorHintIncrementAttribute>(this.EditedMember, hintOverride);
+				var places = EditorHintAttribute.Get<EditorHintDecimalPlacesAttribute>(this.EditedMember, hintOverride);
 				
 				foreach (NumericEditorTemplate t in this.editor)
 				{
@@ -313,8 +313,10 @@ namespace Duality.Editor.Controls.PropertyEditors
 					if (increment != null) t.Increment = increment.Increment;
 					if (range != null)
 					{
-						t.Minimum = range.Min;
-						t.Maximum = range.Max;
+						t.ValueBarMaximum = range.ReasonableMaximum;
+						t.ValueBarMinimum = range.ReasonableMinimum;
+						t.Minimum = range.LimitMinimum;
+						t.Maximum = range.LimitMaximum;
 					}
 				}
 			}

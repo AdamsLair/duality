@@ -87,8 +87,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.editorAngle.Getter = this.AngleGetter;
 				this.editorAngle.Setter = this.AngleSetter;
 				this.editorAngle.PropertyName = "Angle";
-				this.ParentGrid.ConfigureEditor(this.editorAngle, new EditorHintAttribute[] 
-				{ new EditorHintDecimalPlacesAttribute(1), new EditorHintIncrementAttribute(1) });
+				this.ParentGrid.ConfigureEditor(this.editorAngle, new EditorHintAttribute[] { 
+					new EditorHintDecimalPlacesAttribute(1), 
+					new EditorHintIncrementAttribute(1),
+					new EditorHintRangeAttribute(float.MinValue, float.MaxValue, 0.0f, 360.0f) });
 				this.AddPropertyEditor(this.editorAngle);
 				this.editorAngle.EndUpdate();
 			}

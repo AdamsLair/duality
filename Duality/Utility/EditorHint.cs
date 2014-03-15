@@ -43,7 +43,43 @@ namespace Duality.Editor
 	/// <summary>
 	/// An attribute that provides information about a Types or Members preferred editor behaviour.
 	/// </summary>
-	public abstract class EditorHintAttribute : Attribute {}
+	public abstract class EditorHintAttribute : Attribute
+	{
+		/// <summary>
+		/// Retrieves the specified editor hint attribute from a member, if existing.
+		/// </summary>
+		/// <typeparam name="T">The Type of editor hint to retrieve.</typeparam>
+		/// <param name="member">The member to extract the hint from. May be null.</param>
+		/// <param name="overrideHint">An optional override hint, that will be preferred, if applicable.</param>
+		/// <returns></returns>
+		public static T Get<T>(MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
+		{
+			T hint = member != null ? member.GetCustomAttributes<T>().FirstOrDefault() : null;
+			if (overrideHints == null)
+				return hint;
+			else if (hint == null)
+				return overrideHints.OfType<T>().FirstOrDefault();
+			else
+				return overrideHints.OfType<T>().Where(o => hint.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? hint;
+		}
+		/// <summary>
+		/// Retrieves the specified editor hint attributes from a member, if existing.
+		/// </summary>
+		/// <typeparam name="T">The Type of editor hints to retrieve.</typeparam>
+		/// <param name="member">The member to extract the hints from. May be null.</param>
+		/// <param name="overrideHints">An optional collection of override hints, that will be preferred, if applicable.</param>
+		/// <returns></returns>
+		public static IEnumerable<T> GetAll<T>(MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
+		{
+			IEnumerable<T> hints = member != null ? member.GetCustomAttributes<T>() : null;
+			if (overrideHints == null)
+				return hints;
+			else if (hints == null)
+				return overrideHints.OfType<T>();
+			else
+				return hints.Select(original => overrideHints.OfType<T>().Where(o => original.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? original);
+		}
+	}
 
 	/// <summary>
 	/// Provides general information about a members preferred editor behaviour.
@@ -71,31 +107,55 @@ namespace Duality.Editor
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
 	public class EditorHintRangeAttribute : EditorHintAttribute
 	{
-		private	decimal	min;
-		private	decimal	max;
+		private	decimal	limitMin;
+		private	decimal	limitMax;
+		private	decimal	reasonableMin;
+		private	decimal	reasonableMax;
+
 		/// <summary>
-		/// [GET] The members minimum value
+		/// [GET] The members limiting minimum value.
 		/// </summary>
-		public decimal Min
+		public decimal LimitMinimum
 		{
-			get { return this.min; }
+			get { return this.limitMin; }
 		}
 		/// <summary>
-		/// [GET] The members maximum value
+		/// [GET] The members limiting maximum value.
 		/// </summary>
-		public decimal Max
+		public decimal LimitMaximum
 		{
-			get { return this.max; }
+			get { return this.limitMax; }
 		}
-		public EditorHintRangeAttribute(int min, int max)
+		/// <summary>
+		/// [GET] The members reasonable (non-limiting) minimum value.
+		/// </summary>
+		public decimal ReasonableMinimum
 		{
-			this.min = min;
-			this.max = max;
+			get { return this.reasonableMin; }
 		}
-		public EditorHintRangeAttribute(float min, float max)
+		/// <summary>
+		/// [GET] The members reasonable (non-limiting) maximum value.
+		/// </summary>
+		public decimal ReasonableMaximum
 		{
-			this.min = MathF.SafeToDecimal(min);
-			this.max = MathF.SafeToDecimal(max);
+			get { return this.reasonableMax; }
+		}
+
+		public EditorHintRangeAttribute(int min, int max) : this(min, max, min, max) {}
+		public EditorHintRangeAttribute(int limitMin, int limitMax, int reasonableMin, int reasonableMax)
+		{
+			this.limitMin = limitMin;
+			this.limitMax = limitMax;
+			this.reasonableMin = Math.Max(reasonableMin, limitMin);
+			this.reasonableMax = Math.Min(reasonableMax, limitMax);
+		}
+		public EditorHintRangeAttribute(float min, float max) : this(min, max, min, max) {}
+		public EditorHintRangeAttribute(float limitMin, float limitMax, float reasonableMin, float reasonableMax)
+		{
+			this.limitMin = MathF.SafeToDecimal(limitMin);
+			this.limitMax = MathF.SafeToDecimal(limitMax);
+			this.reasonableMin = MathF.SafeToDecimal(Math.Max(reasonableMin, limitMin));
+			this.reasonableMax = MathF.SafeToDecimal(Math.Min(reasonableMax, limitMax));
 		}
 	}
 
@@ -262,41 +322,6 @@ namespace Duality.Editor
 				if (image != null) break;
 			}
 			return image;
-		}
-
-		/// <summary>
-		/// Retrieves the specified editor hint attribute from a member, if existing.
-		/// </summary>
-		/// <typeparam name="T">The Type of editor hint to retrieve.</typeparam>
-		/// <param name="member">The member to extract the hint from.</param>
-		/// <param name="overrideHint">An optional override hint, that will be preferred, if applicable.</param>
-		/// <returns></returns>
-		public static T GetEditorHint<T>(this MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
-		{
-			T hint = member.GetCustomAttributes<T>().FirstOrDefault();
-			if (overrideHints == null)
-				return hint;
-			else if (hint == null)
-				return overrideHints.OfType<T>().FirstOrDefault();
-			else
-				return overrideHints.OfType<T>().Where(o => hint.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? hint;
-		}
-		/// <summary>
-		/// Retrieves the specified editor hint attributes from a member, if existing.
-		/// </summary>
-		/// <typeparam name="T">The Type of editor hints to retrieve.</typeparam>
-		/// <param name="member">The member to extract the hints from.</param>
-		/// <param name="overrideHints">An optional collection of override hints, that will be preferred, if applicable.</param>
-		/// <returns></returns>
-		public static IEnumerable<T> GetEditorHints<T>(this MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
-		{
-			IEnumerable<T> hints = member.GetCustomAttributes<T>();
-			if (overrideHints == null)
-				return hints;
-			else if (hints == null)
-				return overrideHints.OfType<T>();
-			else
-				return hints.Select(original => overrideHints.OfType<T>().Where(o => original.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? original);
 		}
 	}
 }

@@ -91,7 +91,7 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET / SET] The damping that is applied to the bodies velocity.
 		/// </summary>
-		[EditorHintRange(0.0f, 100.0f)]
+		[EditorHintRange(0.0f, 10000.0f, 0.0f, 10.0f)]
 		public float LinearDamping
 		{
 			get { return this.linearDamp; }
@@ -104,7 +104,7 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET / SET] The damping that is applied to the bodies angular velocity.
 		/// </summary>
-		[EditorHintRange(0.0f, 100.0f)]
+		[EditorHintRange(0.0f, 10000.0f, 0.0f, 10.0f)]
 		public float AngularDamping
 		{
 			get { return this.angularDamp; }
@@ -181,7 +181,7 @@ namespace Duality.Components.Physics
 		/// [GET / SET] The bodies overall friction value. Usually a value between 0.0 and 1.0, but higher values can be used to indicate unusually strong friction.
 		/// </summary>
 		[EditorHintIncrement(0.05f)]
-		[EditorHintRange(0.0f, 10000.0f)]
+		[EditorHintRange(0.0f, 10000.0f, 0.0f, 1.0f)]
 		public float Friction
 		{
 			get { return this.shapes == null || this.shapes.Count == 0 ? 0.0f : this.shapes.Average(s => s.Friction); }

@@ -20,12 +20,18 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 		private	bool					isTextValid		= false;
 		private	bool					isValueClamped	= false;
 		private	decimal					value			= decimal.MinValue;
-		private	decimal					min;
-		private	decimal					max;
+		private	decimal					limitMin;
+		private	decimal					limitMax;
+		private	decimal					barMin			= decimal.MinValue;
+		private	decimal					barMax			= decimal.MaxValue;
 		private	decimal					increment;
 		private	int						decimalPlaces;
 		private	StringEditorTemplate	stringEditor	= null;
 		private	Rectangle				gripRect		= Rectangle.Empty;
+		private	Rectangle				minMaxRect		= Rectangle.Empty;
+		private	bool					showMinMax		= false;
+		private	bool					barHovered		= false;
+		private	bool					barPressed		= false;
 		private	bool					gripHovered		= false;
 		private	bool					gripPressed		= false;
 		private	Point					gripDragPos		= Point.Empty;
@@ -39,16 +45,7 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 				if (this.rect != value)
 				{
 					base.Rect = value;
-					this.gripRect = new Rectangle(
-						this.rect.Right - GripSize + 2,
-						this.rect.Y,
-						GripSize,
-						this.rect.Height);
-					this.stringEditor.Rect = new Rectangle(
-						this.rect.X, 
-						this.rect.Y, 
-						this.rect.Width - GripSize + 2, 
-						this.rect.Height);
+					this.UpdateGeometry();
 				}
 			}
 		}
@@ -59,6 +56,18 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 			{
 				base.ReadOnly = value;
 				this.stringEditor.ReadOnly = value;
+			}
+		}
+		public bool ShowMinMaxBar
+		{
+			get { return this.showMinMax; }
+			set
+			{
+				if (this.showMinMax != value)
+				{
+					this.showMinMax = value;
+					this.UpdateGeometry();
+				}
 			}
 		}
 		public int DecimalPlaces
@@ -76,25 +85,51 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 		}
 		public decimal Maximum
 		{
-			get { return this.max; }
+			get { return this.limitMax; }
 			set
 			{
-				if (this.max != value)
+				if (this.limitMax != value)
 				{
-					this.max = value;
-					if (this.value > this.max) this.Value = this.max;
+					this.limitMax = value;
+					if (this.barMax > this.limitMax) this.ValueBarMaximum = this.limitMax;
+					if (this.value > this.limitMax) this.Value = this.limitMax;
 				}
 			}
 		}
 		public decimal Minimum
 		{
-			get { return this.min; }
+			get { return this.limitMin; }
 			set
 			{
-				if (this.min != value)
+				if (this.limitMin != value)
 				{
-					this.min = value;
-					if (this.value > this.min) this.Value = this.min;
+					this.limitMin = value;
+					if (this.barMin < this.limitMin) this.ValueBarMinimum = this.limitMin;
+					if (this.value < this.limitMin) this.Value = this.limitMin;
+				}
+			}
+		}
+		public decimal ValueBarMaximum
+		{
+			get { return this.barMax; }
+			set
+			{
+				if (this.barMax != value)
+				{
+					this.barMax = value;
+					if (this.showMinMax) this.EmitInvalidate();
+				}
+			}
+		}
+		public decimal ValueBarMinimum
+		{
+			get { return this.barMin; }
+			set
+			{
+				if (this.barMin != value)
+				{
+					this.barMin = value;
+					if (this.showMinMax) this.EmitInvalidate();
 				}
 			}
 		}
@@ -109,7 +144,7 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 			set
 			{
 				if (this.stringEditor.Focused && !this.stringEditor.SelectedAll) return; // Don't override while the user is typing
-				value = Math.Max(Math.Min(value, this.max), this.min);
+				value = Math.Max(Math.Min(value, this.limitMax), this.limitMin);
 				if (this.value != value)
 				{
 					this.value = value;
@@ -133,8 +168,8 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 		
 		public void ResetProperties()
 		{
-			this.min = decimal.MinValue;
-			this.max = decimal.MaxValue;
+			this.limitMin = decimal.MinValue;
+			this.limitMax = decimal.MaxValue;
 			this.increment = 1;
 			this.decimalPlaces = 0;
 
@@ -159,6 +194,18 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 				gripState = ButtonState.Hot;
 			Rectangle gfxGripRect = new Rectangle(this.gripRect.X - 1, this.gripRect.Y, this.gripRect.Width, this.gripRect.Height);
 			this.parent.ControlRenderer.DrawButton(e.Graphics, gfxGripRect, gripState, null, (enabled && !this.ReadOnly) ? gripIcon.Normal : gripIcon.Disabled);
+
+			if (!this.minMaxRect.IsEmpty)
+			{
+				Color minMaxBarColor = this.parent.ControlRenderer.ColorHightlight;
+				if (multiple) minMaxBarColor = minMaxBarColor.MixWith(this.parent.ControlRenderer.ColorMultiple, 0.5f, true);
+				if (!this.barHovered && !this.barPressed) minMaxBarColor = Color.FromArgb(128, minMaxBarColor);
+				e.Graphics.FillRectangle(new SolidBrush(minMaxBarColor),
+					this.minMaxRect.X,
+					this.minMaxRect.Y,
+					this.minMaxRect.Width * Math.Min(Math.Max((float)((this.value - this.barMin) / (this.barMax - this.barMin)), 0.0f), 1.0f),
+					this.minMaxRect.Height);
+			}
 		}
 
 		public override void OnGotFocus(EventArgs e)
@@ -225,6 +272,17 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 				this.stringEditor.UpdateScroll();
 				this.EmitInvalidate();
 			}
+			else if (this.barHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			{
+				decimal lastVal = this.value;
+				this.Value = this.barMin + (decimal)Math.Min(Math.Max((float)(e.Location.X - this.minMaxRect.X) / (float)this.minMaxRect.Width, 0.0f), 1.0f) * (this.barMax - this.barMin);
+				if (lastVal != this.value) this.EmitEdited(this.value);
+
+				this.barPressed = true;
+				this.stringEditor.Select();
+				this.stringEditor.UpdateScroll();
+				this.EmitInvalidate();
+			}
 		}
 		public void OnMouseUp(MouseEventArgs e)
 		{
@@ -237,6 +295,12 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 				this.EmitInvalidate();
 				this.EmitEditingFinished(this.value, FinishReason.LeapValue);
 			}
+			else if (this.barPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			{
+				this.barPressed = false;
+				this.EmitInvalidate();
+				this.EmitEditingFinished(this.value, FinishReason.LeapValue);
+			}
 		}
 		public override void OnMouseMove(MouseEventArgs e)
 		{
@@ -244,15 +308,23 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 			this.stringEditor.OnMouseMove(e);
 
 			bool lastGripHovered = this.gripHovered;
+			bool lastBarHovered = this.barHovered;
 			this.gripHovered = !this.ReadOnly && this.gripRect.Contains(e.Location);
-			if (lastGripHovered != this.gripHovered) this.EmitInvalidate();
+			this.barHovered = !this.ReadOnly && this.minMaxRect.Contains(e.Location);
+
+			if (lastGripHovered != this.gripHovered || lastBarHovered != this.barHovered)
+				this.EmitInvalidate();
 
 			if (this.gripPressed)
 			{
 				decimal lastVal = this.value;
-
 				this.Value = this.gripDragVal - this.increment * Math.Round((e.Location.Y - this.gripDragPos.Y) / 3m);
-
+				if (lastVal != this.value) this.EmitEdited(this.value);
+			}
+			else if (this.barPressed)
+			{
+				decimal lastVal = this.value;
+				this.Value = this.barMin + (decimal)Math.Min(Math.Max((float)(e.Location.X - this.minMaxRect.X) / (float)this.minMaxRect.Width, 0.0f), 1.0f) * (this.barMax - this.barMin);
 				if (lastVal != this.value) this.EmitEdited(this.value);
 			}
 		}
@@ -261,10 +333,36 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 			base.OnMouseLeave(e);
 			this.stringEditor.OnMouseLeave(e);
 
-			if (this.gripHovered) this.EmitInvalidate();
+			if (this.gripHovered ||this.barHovered) this.EmitInvalidate();
 			this.gripHovered = false;
+			this.barHovered = false;
 		}
 
+		protected void UpdateGeometry()
+		{
+			if (this.ShowMinMaxBar)
+			{
+				this.minMaxRect = new Rectangle(
+					this.rect.X,
+					this.rect.Bottom - 3,
+					this.rect.Width,
+					3);
+			}
+			else
+			{
+				this.minMaxRect = Rectangle.Empty;
+			}
+			this.gripRect = new Rectangle(
+				this.rect.Right - GripSize + 2,
+				this.rect.Y,
+				GripSize,
+				this.rect.Height - this.minMaxRect.Height);
+			this.stringEditor.Rect = new Rectangle(
+				this.rect.X, 
+				this.rect.Y, 
+				this.rect.Width - GripSize + 2, 
+				this.rect.Height - this.minMaxRect.Height);
+		}
 		protected void SetTextFromValue()
 		{
 			if (this.decimalPlaces > 0)
@@ -300,7 +398,7 @@ namespace AdamsLair.PropertyGrid.EditorTemplates
 
 			if (this.isTextValid)
 			{
-				this.value = Math.Max(Math.Min(valResult, this.max), this.min);
+				this.value = Math.Max(Math.Min(valResult, this.limitMax), this.limitMin);
 				this.isValueClamped = this.value != valResult;
 			}
 			else

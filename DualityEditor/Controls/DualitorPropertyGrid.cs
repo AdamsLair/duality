@@ -36,7 +36,7 @@ namespace Duality.Editor.Controls
 			{
 				IEnumerable<EditorHintAttribute> parentHintOverride = editor.ParentEditor.ConfigureData as IEnumerable<EditorHintAttribute>;
 				if (editor.ParentEditor.EditedMember != null)
-					parentHint = editor.ParentEditor.EditedMember.GetEditorHints<EditorHintAttribute>(parentHintOverride);
+					parentHint = EditorHintAttribute.GetAll<EditorHintAttribute>(editor.ParentEditor.EditedMember, parentHintOverride);
 				else
 					parentHint = parentHintOverride;
 			}
@@ -77,30 +77,29 @@ namespace Duality.Editor.Controls
 				dictEditor.DictionaryKeySetter = this.EditorDictionaryKeySetter;
 			}
 
-			if (editor.EditedMember != null)
+			var flagsAttrib = EditorHintAttribute.Get<EditorHintFlagsAttribute>(editor.EditedMember, hintOverride);
+			if (flagsAttrib != null)
 			{
-				var flagsAttrib = editor.EditedMember.GetEditorHint<EditorHintFlagsAttribute>(hintOverride);
-				if (flagsAttrib != null)
-				{
-					editor.ForceWriteBack = (flagsAttrib.Flags & MemberFlags.ForceWriteback) == MemberFlags.ForceWriteback;
-					if ((flagsAttrib.Flags & MemberFlags.ReadOnly) == MemberFlags.ReadOnly)
-						editor.Setter = null;
-				}
+				editor.ForceWriteBack = (flagsAttrib.Flags & MemberFlags.ForceWriteback) == MemberFlags.ForceWriteback;
+				if ((flagsAttrib.Flags & MemberFlags.ReadOnly) == MemberFlags.ReadOnly)
+					editor.Setter = null;
+			}
 
-				if (editor is NumericPropertyEditor)
+			if (editor is NumericPropertyEditor)
+			{
+				var rangeAttrib = EditorHintAttribute.Get<EditorHintRangeAttribute>(editor.EditedMember, hintOverride);
+				var incAttrib = EditorHintAttribute.Get<EditorHintIncrementAttribute>(editor.EditedMember, hintOverride);
+				var placesAttrib = EditorHintAttribute.Get<EditorHintDecimalPlacesAttribute>(editor.EditedMember, hintOverride);
+				NumericPropertyEditor numEditor = editor as NumericPropertyEditor;
+				if (rangeAttrib != null)
 				{
-					var rangeAttrib = editor.EditedMember.GetEditorHint<EditorHintRangeAttribute>(hintOverride);
-					var incAttrib = editor.EditedMember.GetEditorHint<EditorHintIncrementAttribute>(hintOverride);
-					var placesAttrib = editor.EditedMember.GetEditorHint<EditorHintDecimalPlacesAttribute>(hintOverride);
-					NumericPropertyEditor numEditor = editor as NumericPropertyEditor;
-					if (rangeAttrib != null)
-					{
-						numEditor.Maximum = rangeAttrib.Max;
-						numEditor.Minimum = rangeAttrib.Min;
-					}
-					if (incAttrib != null) numEditor.Increment = incAttrib.Increment;
-					if (placesAttrib != null) numEditor.DecimalPlaces = placesAttrib.Places;
+					numEditor.ValueBarMaximum = rangeAttrib.ReasonableMaximum;
+					numEditor.ValueBarMinimum = rangeAttrib.ReasonableMinimum;
+					numEditor.Maximum = rangeAttrib.LimitMaximum;
+					numEditor.Minimum = rangeAttrib.LimitMinimum;
 				}
+				if (incAttrib != null) numEditor.Increment = incAttrib.Increment;
+				if (placesAttrib != null) numEditor.DecimalPlaces = placesAttrib.Places;
 			}
 		}
 		protected override void PrepareSetValue()
@@ -141,7 +140,7 @@ namespace Duality.Editor.Controls
 		{
 			PropertyInfo property = info as PropertyInfo;
 			FieldInfo field = info as FieldInfo;
-			EditorHintFlagsAttribute flagsAttrib = info.GetEditorHint<EditorHintFlagsAttribute>();
+			EditorHintFlagsAttribute flagsAttrib = info.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
 
 			// Accept all members in "Debug Mode", if not declared inside Duality itself
 			if (showNonPublic && info.DeclaringType.Assembly != typeof(DualityApp).Assembly) return true;
@@ -170,7 +169,7 @@ namespace Duality.Editor.Controls
 		}
 		private bool EditorMemberAffectsOthers(MemberInfo info)
 		{
-			EditorHintFlagsAttribute flagsAttrib = info.GetEditorHint<EditorHintFlagsAttribute>();
+			EditorHintFlagsAttribute flagsAttrib = info.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
 			return this.ShowNonPublic || (flagsAttrib != null && (flagsAttrib.Flags & MemberFlags.AffectsOthers) != MemberFlags.None);
 		}
 		private void EditorMemberPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values)

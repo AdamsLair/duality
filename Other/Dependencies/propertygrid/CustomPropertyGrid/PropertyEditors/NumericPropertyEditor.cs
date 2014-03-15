@@ -22,17 +22,39 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		public decimal Minimum
 		{
 			get { return this.numEditor.Minimum; }
-			set { this.numEditor.Minimum = value; }
+			set
+			{
+				this.numEditor.Minimum = value;
+				this.UpdateHeight();
+			}
 		}
 		public decimal Maximum
 		{
 			get { return this.numEditor.Maximum; }
-			set { this.numEditor.Maximum = value; }
+			set
+			{
+				this.numEditor.Maximum = value;
+				this.UpdateHeight();
+			}
+		}
+		public decimal ValueBarMinimum
+		{
+			get { return this.numEditor.ValueBarMinimum; }
+			set { this.numEditor.ValueBarMinimum = value; }
+		}
+		public decimal ValueBarMaximum
+		{
+			get { return this.numEditor.ValueBarMaximum; }
+			set { this.numEditor.ValueBarMaximum = value; }
 		}
 		public decimal Increment
 		{
 			get { return this.numEditor.Increment; }
-			set { this.numEditor.Increment = value; }
+			set
+			{
+				this.numEditor.Increment = value;
+				this.UpdateHeight();
+			}
 		}
 		public int DecimalPlaces
 		{
@@ -53,7 +75,7 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 		protected override void OnParentEditorChanged()
 		{
 			base.OnParentEditorChanged();
-			this.Height = 5 + (int)Math.Round((float)this.ControlRenderer.DefaultFont.Height);
+			this.UpdateHeight();
 		}
 
 
@@ -128,6 +150,21 @@ namespace AdamsLair.PropertyGrid.PropertyEditors
 			this.numEditor.OnMouseUp(e);
 		}
 
+		private void UpdateHeight()
+		{
+			if (this.ControlRenderer == null) return;
+
+			bool showMinMaxBar = false;
+			if (this.ValueBarMinimum > decimal.MinValue / 2 && this.ValueBarMaximum < decimal.MaxValue / 2)
+			{
+				showMinMaxBar = (float)((this.ValueBarMaximum - this.ValueBarMinimum) / this.Increment) < 10000.0f;
+			}
+
+			int prefHeight = 5 + (int)Math.Round((float)this.ControlRenderer.DefaultFont.Height);
+			if (showMinMaxBar) prefHeight += 3;
+			this.Height = prefHeight;
+			this.numEditor.ShowMinMaxBar = showMinMaxBar;
+		}
 		protected override void UpdateGeometry()
 		{
 			base.UpdateGeometry();

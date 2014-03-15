@@ -1362,7 +1362,7 @@ namespace Duality.Editor.Plugins.SceneView
 			{
 				// Omit abstract and invisible Component Types
 				if (cmpType.IsAbstract) continue;
-				EditorHintFlagsAttribute editorHintFlags = cmpType.GetEditorHint<EditorHintFlagsAttribute>();
+				EditorHintFlagsAttribute editorHintFlags = cmpType.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
 				if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
 
 				// Generate category item
