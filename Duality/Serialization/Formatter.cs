@@ -209,19 +209,12 @@ namespace Duality.Serialization
 				get { return this.dataType.HasObjectId(); }
 			}
 
-			public ObjectHeader(uint id, DataType type, SerializeType serializeType)
+			public ObjectHeader(uint id, DataType dataType, SerializeType serializeType)
 			{
 				this.objectId = id;
-				this.dataType = type;
+				this.dataType = dataType;
 				this.serializeType = serializeType;
 				this.typeString = serializeType != null ? serializeType.TypeString : null;
-			}
-			public ObjectHeader(uint id, DataType type, string typeString)
-			{
-				this.objectId = id;
-				this.dataType = type;
-				this.serializeType = null;
-				this.typeString = typeString;
 			}
 		}
 
@@ -423,18 +416,10 @@ namespace Duality.Serialization
 		}
 		
 		/// <summary>
-		/// Returns an object indicating a "null" value.
-		/// </summary>
-		/// <returns></returns>
-		protected virtual object GetNullObject() 
-		{
-			return null;
-		}
-		/// <summary>
 		/// Prepares an object for serialization and generates its header information.
 		/// </summary>
 		/// <param name="obj">The object to write</param>
-		protected virtual ObjectHeader PrepareWriteObject(object obj)
+		protected ObjectHeader PrepareWriteObject(object obj)
 		{
 			Type objType = obj.GetType();
 			SerializeType objSerializeType = objType.GetSerializeType();
@@ -462,23 +447,6 @@ namespace Duality.Serialization
 
 			// Generate object header information
 			return new ObjectHeader(objId, dataType, objSerializeType);
-		}
-		/// <summary>
-		/// Parses the available object header information in order to prepare deserializing an object.
-		/// </summary>
-		/// <param name="objId"></param>
-		/// <param name="dataType"></param>
-		/// <param name="typeString"></param>
-		/// <returns></returns>
-		protected virtual ObjectHeader ParseObjectHeader(uint objId, DataType dataType, string typeString)
-		{
-			Type type = null;
-			if (typeString != null)
-			{
-				type = this.ResolveType(typeString, objId);
-				if (type == null) return null;
-			}
-			return new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
 		}
 
 

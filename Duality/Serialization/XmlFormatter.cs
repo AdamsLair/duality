@@ -124,10 +124,8 @@ namespace Duality.Serialization
 		private void WriteObjectData(XElement element, object obj)
 		{
 			// Null? Empty Element.
-			if (object.Equals(obj, this.GetNullObject()))
-			{
+			if (obj == null)
 				return;
-			}
 			
 			// Retrieve type data
 			ObjectHeader header = this.PrepareWriteObject(obj);
@@ -326,16 +324,16 @@ namespace Duality.Serialization
 		{
 			// Empty element without type data? Return null
 			if (element.IsEmpty && !element.HasAttributes)
-			{
-				return this.GetNullObject();
-			}
+				return null;
 
 			// Read data type header
 			string objIdString = element.GetAttributeValue("id");
 			string dataTypeStr = element.GetAttributeValue("dataType");
 			string typeStr = element.GetAttributeValue("type");
+
 			uint objId = objIdString == null ? 0 : XmlConvert.ToUInt32(objIdString);
-			DataType dataType;
+
+			DataType dataType = DataType.Unknown;
 			if (!Enum.TryParse<DataType>(dataTypeStr, out dataType))
 			{
 				if (dataTypeStr == "Class") // Legacy support (Written 2014-03-10)
@@ -343,11 +341,15 @@ namespace Duality.Serialization
 				else 
 					dataType = DataType.Unknown;
 			}
-			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
+
+			Type type = null;
+			if (typeStr != null) type = this.ResolveType(typeStr, objId);
+
+			ObjectHeader header = new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
 			if (header.DataType == DataType.Unknown)
 			{
 				this.LocalLog.WriteError("Unable to process DataType: {0}.", dataTypeStr);
-				return this.GetNullObject();
+				return null;
 			}
 
 			// Read object
@@ -362,7 +364,7 @@ namespace Duality.Serialization
 				this.LocalLog.WriteError("Error reading object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
 			}
 
-			return result ?? this.GetNullObject();
+			return result;
 		}
 		private object ReadObjectBody(XElement element, ObjectHeader header)
 		{

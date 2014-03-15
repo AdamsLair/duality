@@ -88,7 +88,7 @@ namespace Duality.Serialization
 		protected override void WriteObjectData(object obj)
 		{
 			// NotNull flag
-			if (object.Equals(obj, this.GetNullObject()))
+			if (obj == null)
 			{
 				this.writer.Write(false);
 				return;
@@ -125,7 +125,7 @@ namespace Duality.Serialization
 
 			// Not null flag
 			bool isNotNull = this.reader.ReadBoolean();
-			if (!isNotNull) return this.GetNullObject();
+			if (!isNotNull) return null;
 
 			// Read data type header
 			DataType dataType = this.ReadDataType();
@@ -136,12 +136,14 @@ namespace Duality.Serialization
 			uint objId = 0;
 			if (dataType.HasTypeName()) typeStr = this.reader.ReadString();
 			if (dataType.HasObjectId()) objId = this.reader.ReadUInt32();
-
-			ObjectHeader header = this.ParseObjectHeader(objId, dataType, typeStr);
+			
+			Type type = null;
+			if (typeStr != null) type = this.ResolveType(typeStr, objId);
+			ObjectHeader header = new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
 			if (header.DataType == DataType.Unknown)
 			{
 				this.LocalLog.WriteError("Unable to process DataType: {0}.", typeStr);
-				return this.GetNullObject();
+				return null;
 			}
 
 			// Read object
@@ -165,7 +167,7 @@ namespace Duality.Serialization
 					e is ApplicationException ? e.Message : Log.Exception(e));
 			}
 
-			return result ?? this.GetNullObject();
+			return result;
 		}
 		
 		protected override void BeginReadOperation()
