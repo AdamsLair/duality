@@ -175,7 +175,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		private void EditorForm_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (!(e is PrefabAppliedEventArgs) && (sender is PropertyEditor) && (sender as PropertyEditor).ParentGrid == this.propertyGrid) return;
-			if (!(e is PrefabAppliedEventArgs) && sender is PropertyGrid) return;
+			if (!(e is PrefabAppliedEventArgs) && sender == this.propertyGrid) return;
 
 			// Update values if anything changed that relates to the grids current selection
 			if (e.Objects.Components.GameObject().Any(o => this.propertyGrid.Selection.Contains(o)) ||
