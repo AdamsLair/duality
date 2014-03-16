@@ -111,7 +111,8 @@ namespace Duality
 		public RawList(T[] wrapAround, int count)
 		{
 			this.data = wrapAround;
-			this.count = count;
+			this.count = Math.Max(count, 0);
+			this.Reserve(this.count);
 		}
 
 

@@ -55,6 +55,7 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
     <Compile Include="Utility\GenericOperatorTest.cs" />
+    <Compile Include="Utility\GridTest.cs" />
     <Compile Include="Utility\NonClosingStreamWrapperTest.cs" />
     <Compile Include="Utility\SubStreamWrapperTest.cs" />
     <Compile Include="Utility\RawListTest.cs" />
