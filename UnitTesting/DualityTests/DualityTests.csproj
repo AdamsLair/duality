@@ -47,13 +47,14 @@
   <ItemGroup>
     <Compile Include="Serialization\TestObjects.cs" />
     <Compile Include="TestHelper.cs" />
-    <Compile Include="Utility\Animation\AnimationTrackTest.cs" />
+    <Compile Include="Utility\AnimationTrackTest.cs" />
     <Compile Include="Cloning\CloneProviderTest.cs" />
     <Compile Include="Components\ICmpInitializableTest.cs" />
     <Compile Include="Components\InitializableEventReceiver.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
+    <Compile Include="Utility\GenericOperatorTest.cs" />
     <Compile Include="Utility\NonClosingStreamWrapperTest.cs" />
     <Compile Include="Utility\SubStreamWrapperTest.cs" />
     <Compile Include="Utility\RawListTest.cs" />
