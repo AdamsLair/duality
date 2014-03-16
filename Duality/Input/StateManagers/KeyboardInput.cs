@@ -44,6 +44,7 @@ namespace Duality
 		private	IKeyboardInputSource	source			= null;
 		private	State					currentState	= new State();
 		private	State					lastState		= new State();
+		private	bool					anyNewKeydown	= false;
 
 
 		/// <summary>
@@ -149,12 +150,12 @@ namespace Duality
 				if (this.NoLongerAvailable != null)
 					this.NoLongerAvailable(this, EventArgs.Empty);
 			}
-			bool anyKeyDown = false;
+			this.anyNewKeydown = false;
 			for (int i = 0; i < this.currentState.KeyPressed.Length; i++)
 			{
 				if (this.currentState.KeyPressed[i] && !this.lastState.KeyPressed[i])
 				{
-					anyKeyDown = true;
+					this.anyNewKeydown = true;
 					if (this.KeyDown != null)
 						this.KeyDown(this, new KeyboardKeyEventArgs((Key)i));
 				}
@@ -164,7 +165,7 @@ namespace Duality
 						this.KeyUp(this, new KeyboardKeyEventArgs((Key)i));
 				}
 			}
-			if (!anyKeyDown && this.currentState.KeyRepeatCount != this.lastState.KeyRepeatCount && this.currentState.KeyRepeat)
+			if (!this.anyNewKeydown && this.currentState.KeyRepeatCount != this.lastState.KeyRepeatCount && this.currentState.KeyRepeat)
 			{
 				for (int i = 0; i < this.currentState.KeyPressed.Length; i++)
 				{
@@ -197,7 +198,10 @@ namespace Duality
 		/// <returns></returns>
 		public bool KeyHit(Key key)
 		{
-			return this.currentState.KeyPressed[(int)key] && !this.lastState.KeyPressed[(int)key];
+			if (!this.currentState.KeyPressed[(int)key]) return false;
+			return 
+				(!this.lastState.KeyPressed[(int)key]) || 
+				(this.currentState.KeyRepeat && !this.anyNewKeydown && this.currentState.KeyRepeatCount != this.lastState.KeyRepeatCount);
 		}
 		/// <summary>
 		/// Returns whether the specified key was released this frame.
