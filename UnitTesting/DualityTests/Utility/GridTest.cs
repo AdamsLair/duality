@@ -161,5 +161,18 @@ namespace Duality.Tests.Utility
 				"0",	"7",	"7", "0",
 				"0",	"0",	"0", "0" }, targetGrid);
 		}
+		[Test] public void Find()
+		{
+			Grid<int> grid = new Grid<int>(2, 2);
+			grid[0, 0] = 0;
+			grid[1, 0] = 1;
+			grid[0, 1] = 2;
+			grid[1, 1] = 3;
+
+			Assert.AreEqual(new Point(1, 0), grid.FindIndex(i => i == 1));
+			Assert.AreEqual(1, grid.Find(i => i == 1));
+			CollectionAssert.AreEqual(new[] { new Point(0, 1), new Point(1, 1) }, grid.FindAllIndices(i => i > 1));
+			CollectionAssert.AreEqual(new[] { 2, 3 }, grid.FindAll(i => i > 1));
+		}
 	}
 }

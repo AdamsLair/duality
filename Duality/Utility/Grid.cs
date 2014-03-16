@@ -135,6 +135,26 @@ namespace Duality
 		}
 		
 		/// <summary>
+		/// Determines the two-dimensional grid index from the specified raw data index.
+		/// </summary>
+		/// <param name="dataIndex"></param>
+		/// <returns></returns>
+		public Point GetGridIndex(int dataIndex)
+		{
+			return new Point(dataIndex % this.width, dataIndex / this.width);
+		}
+		/// <summary>
+		/// Determines the raw data index from the specified two-dimensional grid index.
+		/// </summary>
+		/// <param name="gridX"></param>
+		/// <param name="gridY"></param>
+		/// <returns></returns>
+		public int GetDataIndex(int gridX, int gridY)
+		{
+			return gridX + gridY * this.width;
+		}
+
+		/// <summary>
 		/// Determines the index of the specified item.
 		/// </summary>
 		/// <param name="item"></param>
@@ -145,7 +165,79 @@ namespace Duality
 			if (index == -1)
 				return new Point(-1, -1);
 			else
-				return new Point(index % this.width, index / this.width);
+				return this.GetGridIndex(index);
+		}
+		/// <summary>
+		/// Finds an item that matches the specified predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public T Find(Predicate<T> predicate)
+		{
+			T[] data = this.sequence.Data;
+			int count = this.sequence.Count;
+			for (int i = 0; i < count; i++)
+			{
+				if (predicate(data[i]))
+				{
+					return data[i];
+				}
+			}
+			return default(T);
+		}
+		/// <summary>
+		/// Finds all items that match the specified predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public IEnumerable<T> FindAll(Predicate<T> predicate)
+		{
+			T[] data = this.sequence.Data;
+			int count = this.sequence.Count;
+			for (int i = 0; i < count; i++)
+			{
+				if (predicate(data[i]))
+				{
+					yield return data[i];
+				}
+			}
+			yield break;
+		}
+		/// <summary>
+		/// Finds the index of an item that matches the specified predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public Point FindIndex(Predicate<T> predicate)
+		{
+			T[] data = this.sequence.Data;
+			int count = this.sequence.Count;
+			for (int i = 0; i < count; i++)
+			{
+				if (predicate(data[i]))
+				{
+					return this.GetGridIndex(i);
+				}
+			}
+			return new Point(-1, -1);
+		}
+		/// <summary>
+		/// Finds all indices of items that match the specified predicate.
+		/// </summary>
+		/// <param name="predicate"></param>
+		/// <returns></returns>
+		public IEnumerable<Point> FindAllIndices(Predicate<T> predicate)
+		{
+			T[] data = this.sequence.Data;
+			int count = this.sequence.Count;
+			for (int i = 0; i < count; i++)
+			{
+				if (predicate(data[i]))
+				{
+					yield return this.GetGridIndex(i);
+				}
+			}
+			yield break;
 		}
 		/// <summary>
 		/// Determines whether the specified item is contained within this grid.
@@ -161,7 +253,7 @@ namespace Duality
 		/// Determines the boundaries of the grids non-null content.
 		/// </summary>
 		/// <returns></returns>
-		public Rectangle FindContentBoundaries()
+		public Rectangle GetContentBoundaries()
 		{
 			Rectangle bounds = new Rectangle(this.width, this.height, 0, 0);
 
@@ -328,7 +420,7 @@ namespace Duality
 		public void ShrinkToFit(ShrinkMode mode = ShrinkMode.Both)
 		{
 			if (mode == ShrinkMode.None) return;
-			Rectangle bounds = this.FindContentBoundaries();
+			Rectangle bounds = this.GetContentBoundaries();
 			this.AssumeRect(
 				mode.HasFlag(ShrinkMode.X) ? bounds.X : 0, 
 				mode.HasFlag(ShrinkMode.Y) ? bounds.Y : 0, 
