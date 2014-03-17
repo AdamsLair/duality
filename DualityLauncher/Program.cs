@@ -144,7 +144,7 @@ namespace Duality.Launcher
 
 				// Run the DualityApp
 				launcherWindow.CursorVisible = isDebugging || DualityApp.UserData.SystemCursorVisible;
-				launcherWindow.VSync = (isProfiling || isDebugging) ? VSyncMode.Off : VSyncMode.On; // Don't limit frame rate when debugging.
+				launcherWindow.VSync = (isProfiling || isDebugging || !DualityApp.UserData.VSync) ? VSyncMode.Off : VSyncMode.On;
 				launcherWindow.Run();
 
 				// Shut down the DualityApp

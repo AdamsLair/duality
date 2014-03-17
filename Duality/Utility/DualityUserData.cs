@@ -63,6 +63,7 @@ namespace Duality
 		private	int			gfxHeight			= 600;
 		private	ScreenMode	gfxMode				= ScreenMode.Window;
 		private	AAQuality	gfxAAQuality		= AAQuality.High;
+		private	bool		gfxVSync			= true;
 		private	float		sfxEffectVol		= 1.0f;
 		private	float		sfxSpeechVol		= 1.0f;
 		private	float		sfxMusicVol			= 1.0f;
@@ -103,12 +104,20 @@ namespace Duality
 			set { this.gfxMode = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Specified the quality of anti-aliasing used in rendering.
+		/// [GET / SET] Specifies the quality of anti-aliasing used in rendering.
 		/// </summary>
 		public AAQuality AntialiasingQuality
 		{
 			get { return this.gfxAAQuality; }
 			set { this.gfxAAQuality = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specifies whether or not VSync will be preferred.
+		/// </summary>
+		public bool VSync
+		{
+			get { return this.gfxVSync; }
+			set { this.gfxVSync = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Determines whether or not the system cursor should be visible in windowed mode.
