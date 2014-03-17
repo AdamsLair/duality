@@ -61,6 +61,7 @@ namespace Duality.Components.Physics
 		private	List<ShapeInfo>	shapes		= null;
 		private	List<JointInfo>	joints		= null;
 
+		[NonSerialized]	private	float			lastScale		= 1.0f;
 		[NonSerialized]	private	InitState		bodyInitState	= InitState.Disposed;
 		[NonSerialized]	private	bool			schedUpdateBody	= false;
 		[NonSerialized]	private	bool			isUpdatingBody	= false;
@@ -766,6 +767,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 			this.isUpdatingBody = true;
 
+			this.lastScale = this.gameobj.Transform.Scale;
 			if (this.shapes != null)
 			{
 				foreach (ShapeInfo info in this.shapes) info.UpdateFixture();
@@ -1039,7 +1041,24 @@ namespace Duality.Components.Physics
 			if ((e.Changes & Transform.DirtyFlags.Angle) != Transform.DirtyFlags.None)
 				this.body.Rotation = t.Angle;
 			if ((e.Changes & Transform.DirtyFlags.Scale) != Transform.DirtyFlags.None)
-				this.FlagBodyShape();
+			{
+				float scale = t.Scale;
+				if (scale == 0.0f || this.lastScale == 0.0f)
+				{
+					this.FlagBodyShape();
+				}
+				else
+				{
+					const float pixelLimit = 2;
+					float boundRadius = this.BoundRadius;
+					float upper = (boundRadius + pixelLimit) / boundRadius;
+					float lower = (boundRadius - pixelLimit) / boundRadius;
+					if (scale / this.lastScale >= upper || scale / this.lastScale <= lower)
+					{
+						this.FlagBodyShape();
+					}
+				}
+			}
 
 			if (e.Changes != Transform.DirtyFlags.None)
 				this.body.Awake = true;
