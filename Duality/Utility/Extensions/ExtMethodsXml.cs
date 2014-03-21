@@ -6,13 +6,10 @@ namespace Duality
 {
 	public static class ExtMethodsXml
 	{
-		public static string GetAttributeValue(this XElement element, XName name, string defaultValue = null)
+		public static string GetAttributeValue(this XElement element, XName name)
 		{
 			XAttribute attribute = element.Attribute(name);
-			if (attribute != null)
-				return attribute.Value;
-			else
-				return defaultValue;
+			return attribute != null ? attribute.Value : null;
 		}
 
 		public static IEnumerable<XElement> Descendants(this XContainer container, XName name, bool ignoreNamespace)
