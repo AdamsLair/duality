@@ -1,3 +1,6 @@
 [submodule "Other/Dependencies/DockPanelSuite"]
 	path = Other/Dependencies/DockPanelSuite
 	url = https://github.com/AdamsLair/dockpanelsuite.git
+[submodule "Other/Dependencies/OpenTK"]
+	path = Other/Dependencies/OpenTK
+	url = https://github.com/AdamsLair/opentk.git

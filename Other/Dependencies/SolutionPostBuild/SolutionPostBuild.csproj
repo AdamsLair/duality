@@ -50,7 +50,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(SolutionDir)bin\$(ConfigurationName)"
-xcopy "$(SolutionDir)DockPanelSuite\WinFormsUI\bin\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y</PostBuildEvent>
+xcopy "$(SolutionDir)DockPanelSuite\WinFormsUI\bin\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y
+xcopy "$(SolutionDir)OpenTK\Binaries\OpenTK\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
