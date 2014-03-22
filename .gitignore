@@ -91,3 +91,7 @@ DualityEditorPlugins/CamView/obj/
 DualityPlugins/Compatibility/bin/
 DualityPlugins/Compatibility/obj/
 DualityPlugins/Steering/Steering.core.xml
+Other/Dependencies/SolutionPostBuild/bin/
+Other/Dependencies/SolutionPostBuild/obj/
+Other/Dependencies/Dependencies.sdf
+Other/Dependencies/Dependencies.opensdf
