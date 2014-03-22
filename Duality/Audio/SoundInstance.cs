@@ -438,6 +438,7 @@ namespace Duality
 						if (!searchSimilar)
 							break;
 					}
+
 				}
 			}
 
@@ -511,6 +512,7 @@ namespace Duality
 		public void Update()
 		{
 			if (!DualityApp.Sound.IsAvailable) return;
+
 			lock (this.strLock)
 			{
 				// Check existence of attachTo object
@@ -594,8 +596,8 @@ namespace Duality
 					if (!audioDataRes.IsStreamed || this.strStopReq != StopRequest.None)
 					{
 						this.Dispose();
-						return;
 					}
+					return;
 				}
 				else if (stateTemp == ALSourceState.Initial && this.strStopReq == StopRequest.Immediately)
 				{
@@ -736,6 +738,7 @@ namespace Duality
 					this.fadeWaitEnd = 0.0f;
 
 			}
+
 		}
 
 
@@ -750,7 +753,8 @@ namespace Duality
 					if (!DualityApp.Sound.IsAvailable) return;
 
 					ALSourceState stateTemp = ALSourceState.Stopped;
-					if (sndInst.alSource > AlSource_NotAvailable) stateTemp = AL.GetSourceState(sndInst.alSource);
+					bool sourceAvailable = sndInst.alSource > AlSource_NotAvailable;
+					if (sourceAvailable) stateTemp = AL.GetSourceState(sndInst.alSource);
 
 					if (stateTemp == ALSourceState.Stopped && sndInst.strStopReq != StopRequest.None)
 					{
@@ -766,102 +770,117 @@ namespace Duality
 						return;
 					}
 
-					Sound soundRes = sndInst.sound.Res;
 					AudioData audioDataRes = sndInst.audioData.Res;
-					if (soundRes == null || audioDataRes == null)
+					if (!sndInst.sound.IsAvailable || audioDataRes == null)
 					{
 						sndInst.Dispose();
 						return;
 					}
-					if (stateTemp == ALSourceState.Initial)
+
+					if (sourceAvailable)
 					{
-						// Generate streaming buffers
-						sndInst.strAlBuffers = new int[3];
-						for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
+						if (stateTemp == ALSourceState.Initial)
 						{
-							AL.GenBuffers(1, out sndInst.strAlBuffers[i]);
+							// Initialize streaming
+							ThreadStreamBegin(sndInst, audioDataRes);
+
+							// Initially play source
+							AL.SourcePlay(sndInst.alSource);
+							stateTemp = AL.GetSourceState(sndInst.alSource);
 						}
-
-						// Begin streaming
-						OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
-
-						// Initially, completely fill all buffers
-						for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
+						else
 						{
-							PcmData pcm;
-							bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
-							if (pcm.dataLength > 0)
+							// Stream new data
+							ThreadStreamUpdate(sndInst, audioDataRes);
+
+							// If the source stopped unintentionally, restart it. (See above)
+							if (stateTemp == ALSourceState.Stopped && sndInst.strStopReq == StopRequest.None)
 							{
-								AL.BufferData(
-									sndInst.strAlBuffers[i], 
-									pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-									pcm.data, 
-									pcm.dataLength * PcmData.SizeOfDataElement, 
-									pcm.sampleRate);
-								AL.SourceQueueBuffer(sndInst.alSource, sndInst.strAlBuffers[i]);
-								if (eof) break;
-							}
-							else break;
-						}
-
-						// Initially play source
-						AL.SourcePlay(sndInst.alSource);
-						stateTemp = AL.GetSourceState(sndInst.alSource);
-					}
-					else
-					{
-						int num;
-						AL.GetSource(sndInst.alSource, ALGetSourcei.BuffersProcessed, out num);
-						while (num > 0)
-						{
-							num--;
-
-							int unqueued;
-							unqueued = AL.SourceUnqueueBuffer(sndInst.alSource);
-
-							if (OggVorbis.IsStreamValid(sndInst.strOvStr))
-							{
-								PcmData pcm;
-								bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
-								if (eof)
-								{
-									OggVorbis.EndStream(ref sndInst.strOvStr);
-									if (sndInst.looped)
-									{
-										OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
-										if (pcm.dataLength == 0)
-										{
-											eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
-										}
-									}
-								}
-								if (pcm.dataLength > 0)
-								{
-									AL.BufferData(
-										unqueued, 
-										pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-										pcm.data, 
-										pcm.dataLength * PcmData.SizeOfDataElement, 
-										pcm.sampleRate);
-									AL.SourceQueueBuffer(sndInst.alSource, unqueued);
-								}
-								if (pcm.dataLength == 0 || eof)
-								{
-									sndInst.strStopReq = StopRequest.EndOfStream;
-									break;
-								}
+								AL.SourcePlay(sndInst.alSource);
 							}
 						}
-					}
-
-					if (stateTemp == ALSourceState.Stopped && sndInst.strStopReq == StopRequest.None)
-					{
-						// If the source stopped unintentionally, restart it. (See above)
-						AL.SourcePlay(sndInst.alSource);
 					}
 				}
+
 				Thread.Sleep(16);
+			} // end while
+		}
+		private static void ThreadStreamBegin(SoundInstance sndInst, AudioData audioDataRes)
+		{
+			// Generate streaming buffers
+			sndInst.strAlBuffers = new int[3];
+			for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
+			{
+				AL.GenBuffers(1, out sndInst.strAlBuffers[i]);
+			}
+
+			// Begin streaming
+			OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
+
+			// Initially, completely fill all buffers
+			for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
+			{
+				PcmData pcm;
+				bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
+				if (pcm.dataLength > 0)
+				{
+					AL.BufferData(
+						sndInst.strAlBuffers[i], 
+						pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
+						pcm.data, 
+						pcm.dataLength * PcmData.SizeOfDataElement, 
+						pcm.sampleRate);
+					AL.SourceQueueBuffer(sndInst.alSource, sndInst.strAlBuffers[i]);
+					if (eof) break;
+				}
+				else break;
 			}
 		}
+		private static void ThreadStreamUpdate(SoundInstance sndInst, AudioData audioDataRes)
+		{
+			int num;
+			AL.GetSource(sndInst.alSource, ALGetSourcei.BuffersProcessed, out num);
+			while (num > 0)
+			{
+				num--;
+
+				int unqueued;
+				unqueued = AL.SourceUnqueueBuffer(sndInst.alSource);
+
+				if (OggVorbis.IsStreamValid(sndInst.strOvStr))
+				{
+					PcmData pcm;
+					bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
+					if (eof)
+					{
+						OggVorbis.EndStream(ref sndInst.strOvStr);
+						if (sndInst.looped)
+						{
+							OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
+							if (pcm.dataLength == 0)
+							{
+								eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
+							}
+						}
+					}
+					if (pcm.dataLength > 0)
+					{
+						AL.BufferData(
+							unqueued, 
+							pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
+							pcm.data, 
+							pcm.dataLength * PcmData.SizeOfDataElement, 
+							pcm.sampleRate);
+						AL.SourceQueueBuffer(sndInst.alSource, unqueued);
+					}
+					if (pcm.dataLength == 0 || eof)
+					{
+						sndInst.strStopReq = StopRequest.EndOfStream;
+						break;
+					}
+				}
+			}
+		}
+
 	}
 }
