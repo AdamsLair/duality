@@ -792,13 +792,16 @@ namespace Duality.Editor.Plugins.CamView
 			this.RemoveFocusHook();
 			this.inputMouseCapture = true;
 
-			if (this.activeState.EngineUserInput)
+			if (this.activeState != null)
 			{
-				this.inputKeyFocus = true;
-			}
+				if (this.activeState.EngineUserInput)
+				{
+					this.inputKeyFocus = true;
+				}
 
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
-				this.activeState.SelectObjects(this.activeState.SelectedObjects);
+				if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
+					this.activeState.SelectObjects(this.activeState.SelectedObjects);
+			}
 		}
 		private void glControl_LostFocus(object sender, EventArgs e)
 		{
