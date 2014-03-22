@@ -118,12 +118,6 @@
     <Compile Include="Controls\CueTextbox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\EnumFlagCheckedListBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\EnumComboBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Controls\DualitorPropertyGrid.cs">
       <SubType>UserControl</SubType>
     </Compile>
