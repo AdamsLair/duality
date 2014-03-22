@@ -4,3 +4,6 @@
 [submodule "Other/Dependencies/OpenTK"]
 	path = Other/Dependencies/OpenTK
 	url = https://github.com/AdamsLair/opentk.git
+[submodule "Other/Dependencies/NVorbis"]
+	path = Other/Dependencies/NVorbis
+	url = https://github.com/AdamsLair/nvorbis.git
