@@ -588,15 +588,13 @@ namespace Duality
 
 				// Determine source state, if available
 				ALSourceState stateTemp = ALSourceState.Stopped;
-				if (this.alSource > AlSource_NotAvailable) stateTemp = AL.GetSourceState(this.alSource);
+				bool sourceAvailable = this.alSource > AlSource_NotAvailable;
+				if (sourceAvailable) stateTemp = AL.GetSourceState(this.alSource);
 
 				// If the source is stopped / finished, dispose and return
-				if (stateTemp == ALSourceState.Stopped)
+				if (stateTemp == ALSourceState.Stopped && !audioDataRes.IsStreamed || this.strStopReq != StopRequest.None)
 				{
-					if (!audioDataRes.IsStreamed || this.strStopReq != StopRequest.None)
-					{
-						this.Dispose();
-					}
+					this.Dispose();
 					return;
 				}
 				else if (stateTemp == ALSourceState.Initial && this.strStopReq == StopRequest.Immediately)
@@ -654,44 +652,47 @@ namespace Duality
 				// Hack: Volume always dirty - just to be sure
 				this.dirtyState |= DirtyFlag.Vol;
 
-				if (this.is3D)
+				if (sourceAvailable)
 				{
-					// Hack: Relative always dirty to support switching listeners without establishing a notifier-event
-					this.dirtyState |= DirtyFlag.Relative;
-					if (this.attachedTo != null) this.dirtyState |= DirtyFlag.AttachedTo;
+					if (this.is3D)
+					{
+						// Hack: Relative always dirty to support switching listeners without establishing a notifier-event
+						this.dirtyState |= DirtyFlag.Relative;
+						if (this.attachedTo != null) this.dirtyState |= DirtyFlag.AttachedTo;
 
-					if ((this.dirtyState & DirtyFlag.Relative) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSourceb.SourceRelative, this.attachedTo == DualityApp.Sound.Listener);
-					if ((this.dirtyState & DirtyFlag.Pos) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSource3f.Position, posAbs.X, -posAbs.Y, -posAbs.Z * 0.5f);
-					if ((this.dirtyState & DirtyFlag.Vel) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSource3f.Velocity, velAbs.X, -velAbs.Y, -velAbs.Z);
-				}
-				else
-				{
-					if ((this.dirtyState & DirtyFlag.Relative) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSourceb.SourceRelative, true);
-					if ((this.dirtyState & DirtyFlag.Pos) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSource3f.Position, 0.0f, 0.0f, 0.0f);
-					if ((this.dirtyState & DirtyFlag.Vel) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSource3f.Velocity, 0.0f, 0.0f, 0.0f);
-				}
-				if ((this.dirtyState & DirtyFlag.MaxDist) != DirtyFlag.None)
-					AL.Source(this.alSource, ALSourcef.MaxDistance, maxDistTemp);
-				if ((this.dirtyState & DirtyFlag.RefDist) != DirtyFlag.None)
-					AL.Source(this.alSource, ALSourcef.ReferenceDistance, minDistTemp);
-				if ((this.dirtyState & DirtyFlag.Loop) != DirtyFlag.None)
-					AL.Source(this.alSource, ALSourceb.Looping, (this.looped && !audioDataRes.IsStreamed));
-				if ((this.dirtyState & DirtyFlag.Vol) != DirtyFlag.None)
-					AL.Source(this.alSource, ALSourcef.Gain, volTemp);
-				if ((this.dirtyState & DirtyFlag.Pitch) != DirtyFlag.None)
-					AL.Source(this.alSource, ALSourcef.Pitch, pitchTemp);
-				if ((this.dirtyState & DirtyFlag.Paused) != DirtyFlag.None)
-				{
-					if (this.paused && this.pauseFade == 0.0f && stateTemp == ALSourceState.Playing)
-						AL.SourcePause(this.alSource);
-					else if ((!this.paused || this.pauseFade > 0.0f) && stateTemp == ALSourceState.Paused)
-						AL.SourcePlay(this.alSource);
+						if ((this.dirtyState & DirtyFlag.Relative) != DirtyFlag.None)
+							AL.Source(this.alSource, ALSourceb.SourceRelative, this.attachedTo == DualityApp.Sound.Listener);
+						if ((this.dirtyState & DirtyFlag.Pos) != DirtyFlag.None)
+							AL.Source(this.alSource, ALSource3f.Position, posAbs.X, -posAbs.Y, -posAbs.Z * 0.5f);
+						if ((this.dirtyState & DirtyFlag.Vel) != DirtyFlag.None)
+							AL.Source(this.alSource, ALSource3f.Velocity, velAbs.X, -velAbs.Y, -velAbs.Z);
+					}
+					else
+					{
+						if ((this.dirtyState & DirtyFlag.Relative) != DirtyFlag.None)
+							AL.Source(this.alSource, ALSourceb.SourceRelative, true);
+						if ((this.dirtyState & DirtyFlag.Pos) != DirtyFlag.None)
+							AL.Source(this.alSource, ALSource3f.Position, 0.0f, 0.0f, 0.0f);
+						if ((this.dirtyState & DirtyFlag.Vel) != DirtyFlag.None)
+							AL.Source(this.alSource, ALSource3f.Velocity, 0.0f, 0.0f, 0.0f);
+					}
+					if ((this.dirtyState & DirtyFlag.MaxDist) != DirtyFlag.None)
+						AL.Source(this.alSource, ALSourcef.MaxDistance, maxDistTemp);
+					if ((this.dirtyState & DirtyFlag.RefDist) != DirtyFlag.None)
+						AL.Source(this.alSource, ALSourcef.ReferenceDistance, minDistTemp);
+					if ((this.dirtyState & DirtyFlag.Loop) != DirtyFlag.None)
+						AL.Source(this.alSource, ALSourceb.Looping, (this.looped && !audioDataRes.IsStreamed));
+					if ((this.dirtyState & DirtyFlag.Vol) != DirtyFlag.None)
+						AL.Source(this.alSource, ALSourcef.Gain, volTemp);
+					if ((this.dirtyState & DirtyFlag.Pitch) != DirtyFlag.None)
+						AL.Source(this.alSource, ALSourcef.Pitch, pitchTemp);
+					if ((this.dirtyState & DirtyFlag.Paused) != DirtyFlag.None)
+					{
+						if (this.paused && this.pauseFade == 0.0f && stateTemp == ALSourceState.Playing)
+							AL.SourcePause(this.alSource);
+						else if ((!this.paused || this.pauseFade > 0.0f) && stateTemp == ALSourceState.Paused)
+							AL.SourcePlay(this.alSource);
+					}
 				}
 				this.dirtyState = DirtyFlag.None;
 
