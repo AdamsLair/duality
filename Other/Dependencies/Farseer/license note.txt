@@ -1,1 +1,0 @@
-The included version of Farseer Physics has been altered to fit project needs.

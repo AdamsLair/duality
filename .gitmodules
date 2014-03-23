@@ -10,3 +10,6 @@
 [submodule "Other/Dependencies/TreeViewAdv"]
 	path = Other/Dependencies/TreeViewAdv
 	url = https://github.com/AdamsLair/treeviewadv.git
+[submodule "Other/Dependencies/FarseerDuality"]
+	path = Other/Dependencies/FarseerDuality
+	url = https://github.com/AdamsLair/farseerduality.git

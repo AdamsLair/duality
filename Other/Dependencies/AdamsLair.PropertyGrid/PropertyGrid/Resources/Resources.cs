@@ -9,7 +9,7 @@ namespace AdamsLair.PropertyGrid.EmbeddedResources
 {
 	public static class Resources
 	{
-		private const string Folder = "CustomPropertyGrid.Resources.";
+		private const string Folder = "AdamsLair.PropertyGrid.Resources.";
 		public readonly	static Bitmap ImageAdd					= new Bitmap(typeof(Resources).Assembly.GetManifestResourceStream(Folder + "add.png"));
 		public readonly	static Bitmap ImageDelete				= new Bitmap(typeof(Resources).Assembly.GetManifestResourceStream(Folder + "cross.png"));
 		public readonly	static Bitmap NumberGripIcon			= new Bitmap(typeof(Resources).Assembly.GetManifestResourceStream(Folder + "NumberGripIcon.png"));

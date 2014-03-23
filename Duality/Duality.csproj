@@ -48,8 +48,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerOpenTK">
-      <HintPath>.\FarseerOpenTK.dll</HintPath>
+    <Reference Include="FarseerDuality">
+      <HintPath>.\FarseerDuality.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis, Version=0.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
