@@ -13,3 +13,6 @@
 [submodule "Other/Dependencies/FarseerDuality"]
 	path = Other/Dependencies/FarseerDuality
 	url = https://github.com/AdamsLair/farseerduality.git
+[submodule "Other/Dependencies/PropertyGrid"]
+	path = Other/Dependencies/PropertyGrid
+	url = https://github.com/AdamsLair/propertygrid.git
