@@ -545,14 +545,15 @@ namespace Duality
 		public static void RunCleanup()
 		{
 			// Perform scheduled object disposals
-			foreach (object o in disposeSchedule)
+			object[] disposeScheduleArray = disposeSchedule.ToArray();
+			disposeSchedule.Clear();
+			foreach (object o in disposeScheduleArray)
 			{
 				IManageableObject m = o as IManageableObject;
 				if (m != null) { m.Dispose(); continue; }
 				IDisposable d = o as IDisposable;
 				if (d != null) { d.Dispose(); continue; }
 			}
-			disposeSchedule.Clear();
 
 			// Perform late finalization and remove disposed object references
 			Resource.RunCleanup();

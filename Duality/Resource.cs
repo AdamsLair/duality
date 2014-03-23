@@ -501,11 +501,14 @@ namespace Duality
 
 		internal static void RunCleanup()
 		{
-			while (finalizeSched.Count > 0)
+			if (finalizeSched.Count > 0)
 			{
-				if (finalizeSched[finalizeSched.Count - 1] != null)
-					finalizeSched[finalizeSched.Count - 1].Dispose(false);
-				finalizeSched.RemoveAt(finalizeSched.Count - 1);
+				Resource[] finalizeSchedArray = finalizeSched.NotNull().ToArray();
+				finalizeSched.Clear();
+				foreach (Resource res in finalizeSchedArray)
+				{
+					res.Dispose(false);
+				}
 			}
 		}
 	}
