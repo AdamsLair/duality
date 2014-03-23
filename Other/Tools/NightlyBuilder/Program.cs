@@ -257,7 +257,10 @@ namespace NightlyBuilder
 						Console.WriteLine("Copy   {0}", path);
 						return true;
 					});
-				CopyDirectory(config.AdditionalFileDir, config.IntermediateTargetDir, true);
+				if (!string.IsNullOrEmpty(config.AdditionalFileDir) && Directory.Exists(config.AdditionalFileDir))
+				{
+					CopyDirectory(config.AdditionalFileDir, config.IntermediateTargetDir, true);
+				}
 			}
 			Console.WriteLine("===============================================================================");
 			Console.WriteLine();
