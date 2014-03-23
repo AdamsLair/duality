@@ -20,9 +20,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PropertyGrid", "PropertyGri
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TreeViewAdv", "TreeViewAdv", "{264F1645-4568-49F9-98B4-C4D82D6624BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomPropertyGrid", "PropertyGrid\CustomPropertyGrid\CustomPropertyGrid.csproj", "{44E2FD11-C687-41ED-B72F-1A4C92479EDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdamsLair.PropertyGrid", "AdamsLair.PropertyGrid\PropertyGrid\AdamsLair.PropertyGrid.csproj", "{44E2FD11-C687-41ED-B72F-1A4C92479EDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "PropertyGrid\TestApp\TestApp\TestApp.csproj", "{B94AF907-0915-4430-BC49-05BA5091D2AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "AdamsLair.PropertyGrid\TestApp\TestApp\TestApp.csproj", "{B94AF907-0915-4430-BC49-05BA5091D2AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aga.Controls", "TreeViewAdv\Aga.Controls\Aga.Controls.csproj", "{E73BB233-D88B-44A7-A98F-D71EE158381D}"
 EndProject

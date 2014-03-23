@@ -96,3 +96,7 @@ Other/Dependencies/SolutionPostBuild/obj/
 Other/Dependencies/Dependencies.sdf
 Other/Dependencies/Dependencies.opensdf
 Other/Dependencies/PropertyGrid/CustomPropertyGrid/CustomPropertyGrid.xml
+Other/Dependencies/AdamsLair.PropertyGrid/PropertyGrid/obj/
+Other/Dependencies/AdamsLair.PropertyGrid/TestApp/TestApp/bin/
+Other/Dependencies/AdamsLair.PropertyGrid/TestApp/TestApp/obj/
+Other/Dependencies/AdamsLair.PropertyGrid/PropertyGrid/AdamsLair.PropertyGrid.xml

@@ -64,12 +64,12 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdamsLair.PropertyGrid">
+      <HintPath>.\AdamsLair.PropertyGrid.dll</HintPath>
+    </Reference>
     <Reference Include="Aga.Controls, Version=1.7.0.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\Aga.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="CustomPropertyGrid">
-      <HintPath>.\CustomPropertyGrid.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>.\Ionic.Zip.dll</HintPath>

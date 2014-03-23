@@ -1,1 +1,0 @@
-CustomPropertyGrid has been written by the Duality project team.
