@@ -7,3 +7,6 @@
 [submodule "Other/Dependencies/NVorbis"]
 	path = Other/Dependencies/NVorbis
 	url = https://github.com/AdamsLair/nvorbis.git
+[submodule "Other/Dependencies/TreeViewAdv"]
+	path = Other/Dependencies/TreeViewAdv
+	url = https://github.com/AdamsLair/treeviewadv.git
