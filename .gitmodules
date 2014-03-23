@@ -13,3 +13,6 @@
 [submodule "Other/Dependencies/FarseerDuality"]
 	path = Other/Dependencies/FarseerDuality
 	url = https://github.com/AdamsLair/farseerduality.git
+[submodule "Other/Dependencies/AdamsLair.WinForms"]
+	path = Other/Dependencies/AdamsLair.WinForms
+	url = https://github.com/AdamsLair/winforms.git

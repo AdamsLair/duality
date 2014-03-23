@@ -55,7 +55,7 @@ xcopy "$(SolutionDir)NVorbis\bin" "$(SolutionDir)bin\$(ConfigurationName)" /Y
 xcopy "$(SolutionDir)OpenTK\Binaries\OpenTK\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y
 xcopy "$(SolutionDir)TreeViewAdv\Aga.Controls\bin\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y
 xcopy "$(SolutionDir)FarseerDuality\bin\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y
-xcopy "$(SolutionDir)PropertyGrid\PropertyGrid\bin\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y</PostBuildEvent>
+xcopy "$(SolutionDir)AdamsLair.WinForms\WinForms\bin\$(ConfigurationName)" "$(SolutionDir)bin\$(ConfigurationName)" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
