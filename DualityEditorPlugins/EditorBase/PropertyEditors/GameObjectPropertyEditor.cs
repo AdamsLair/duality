@@ -4,9 +4,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using AdamsLair.PropertyGrid;
-using AdamsLair.PropertyGrid.Renderer;
-using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
+using AdamsLair.WinForms;
+using AdamsLair.WinForms.Renderer;
+using ButtonState = AdamsLair.WinForms.Renderer.ButtonState;
 
 using Duality;
 using Duality.Editor;
@@ -162,7 +162,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			ControlRenderer.DrawGroupHeaderBackground(e.Graphics, this.rectHeader, SystemColors.Control, GroupHeaderStyle.Emboss);
 			ControlRenderer.DrawGroupHeaderBackground(e.Graphics, this.rectPrefab, SystemColors.Control.ScaleBrightness(0.95f), GroupHeaderStyle.SmoothSunken);
 			if (this.Focused)
-				ControlRenderer.DrawBorder(e.Graphics, this.ClientRectangle, AdamsLair.PropertyGrid.Renderer.BorderStyle.Simple, BorderState.Normal);
+				ControlRenderer.DrawBorder(e.Graphics, this.ClientRectangle, AdamsLair.WinForms.Renderer.BorderStyle.Simple, BorderState.Normal);
 
 			CheckBoxState activeState = CheckBoxState.UncheckedDisabled;
 			if (!this.ReadOnly && this.Enabled)

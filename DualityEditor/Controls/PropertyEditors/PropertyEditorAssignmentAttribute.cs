@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using AdamsLair.PropertyGrid;
+using AdamsLair.WinForms;
 
 
 namespace Duality.Editor

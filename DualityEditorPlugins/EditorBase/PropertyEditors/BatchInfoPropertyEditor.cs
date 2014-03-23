@@ -5,8 +5,8 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.Drawing;
 
-using AdamsLair.PropertyGrid;
-using AdamsLair.PropertyGrid.PropertyEditors;
+using AdamsLair.WinForms;
+using AdamsLair.WinForms.PropertyEditors;
 
 using OpenTK;
 

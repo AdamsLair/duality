@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Linq;
 
-using AdamsLair.PropertyGrid;
+using AdamsLair.WinForms;
 
 using Duality;
 using Duality.Drawing;
@@ -31,7 +31,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			this.PropertyName = "Resource";
 			this.HeaderHeight = 20;
-			this.HeaderStyle = AdamsLair.PropertyGrid.Renderer.GroupHeaderStyle.Emboss;
+			this.HeaderStyle = AdamsLair.WinForms.Renderer.GroupHeaderStyle.Emboss;
 		}
 
 		protected override void OnUpdateFromObjects(object[] values)

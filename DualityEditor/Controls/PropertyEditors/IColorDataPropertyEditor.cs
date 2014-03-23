@@ -4,8 +4,8 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-using AdamsLair.PropertyGrid;
-using ButtonState = AdamsLair.PropertyGrid.Renderer.ButtonState;
+using AdamsLair.WinForms;
+using ButtonState = AdamsLair.WinForms.Renderer.ButtonState;
 
 using Duality;
 using Duality.Drawing;
@@ -17,7 +17,7 @@ namespace Duality.Editor.Controls.PropertyEditors
 	[PropertyEditorAssignment(typeof(IColorData))]
 	public class IColorDataPropertyEditor : PropertyEditor
 	{
-		protected	ColorPickerDialog	dialog	= new ColorPickerDialog();
+		protected	ColorPickerDialog	dialog	= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
 		protected	IColorData	value			= null;
 		protected	Rectangle	rectPanel		= Rectangle.Empty;
 		protected	Rectangle	rectButton		= Rectangle.Empty;

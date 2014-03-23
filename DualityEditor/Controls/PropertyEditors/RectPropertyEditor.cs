@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-using AdamsLair.PropertyGrid.EditorTemplates;
+using AdamsLair.WinForms.EditorTemplates;
 
 using Duality;
 

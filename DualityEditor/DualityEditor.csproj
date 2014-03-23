@@ -64,8 +64,8 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.PropertyGrid">
-      <HintPath>.\AdamsLair.PropertyGrid.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms">
+      <HintPath>.\AdamsLair.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.0.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -98,15 +98,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\ColorPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ColorShowBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\ColorSlider.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
     <Compile Include="Forms\CreateObjectDialog.cs">
@@ -167,12 +158,6 @@
     </Compile>
     <Compile Include="Forms\AboutBox.Designer.cs">
       <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\ColorPickerDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ColorPickerDialog.Designer.cs">
-      <DependentUpon>ColorPickerDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\AppRunningDialog.cs">
       <SubType>Form</SubType>
@@ -259,9 +244,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ColorPickerDialog.resx">
-      <DependentUpon>ColorPickerDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AppRunningDialog.resx">
       <DependentUpon>AppRunningDialog.cs</DependentUpon>

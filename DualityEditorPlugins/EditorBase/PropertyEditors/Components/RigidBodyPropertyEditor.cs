@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-using AdamsLair.PropertyGrid;
-using AdamsLair.PropertyGrid.PropertyEditors;
+using AdamsLair.WinForms;
+using AdamsLair.WinForms.PropertyEditors;
 
 using Duality;
 using Duality.Components.Physics;
@@ -164,7 +164,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public RigidBodyJointPropertyEditor()
 		{
 			this.EditedType = typeof(JointInfo);
-			this.HeaderStyle = AdamsLair.PropertyGrid.Renderer.GroupHeaderStyle.SmoothSunken;
+			this.HeaderStyle = AdamsLair.WinForms.Renderer.GroupHeaderStyle.SmoothSunken;
 			this.HeaderHeight = 30;
 		}
 
@@ -265,7 +265,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public RigidBodyJointAddNewPropertyEditor()
 		{
 			this.EditedType = typeof(Type);
-			this.ButtonIcon = AdamsLair.PropertyGrid.EmbeddedResources.Resources.ImageAdd;
+			this.ButtonIcon = AdamsLair.WinForms.Properties.ResourcesCache.ImageAdd;
 			this.Hints = HintFlags.Default | HintFlags.HasButton | HintFlags.ButtonEnabled;
 			this.PropertyName = Properties.EditorBaseRes.PropertyName_AddJoint;
 			this.PropertyDesc = Properties.EditorBaseRes.PropertyDesc_AddJoint;

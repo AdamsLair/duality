@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System;
 
-using AdamsLair.PropertyGrid;
+using AdamsLair.WinForms;
 using OpenTK;
 
 using Duality;

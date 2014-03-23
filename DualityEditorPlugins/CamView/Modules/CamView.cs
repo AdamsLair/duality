@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using BitArray = System.Collections.BitArray;
 
 using WeifenLuo.WinFormsUI.Docking;
+using AdamsLair.WinForms;
 
 using Duality;
 using Duality.Components;
@@ -139,7 +140,7 @@ namespace Duality.Editor.Plugins.CamView
 		private	CamViewState		activeState		= null;
 		private	List<CamViewLayer>	activeLayers	= null;
 		private	List<Type>			lockedLayers	= new List<Type>();
-		private	ColorPickerDialog	bgColorDialog	= new ColorPickerDialog();
+		private	ColorPickerDialog	bgColorDialog	= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
 		private	GameObject			nativeCamObj	= null;
 		private	string				loadTempState	= null;
 		private	string				loadTempPerspective	= null;

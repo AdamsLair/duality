@@ -4,8 +4,8 @@ using System.Reflection;
 using Duality;
 using Duality.Resources;
 
-using AdamsLair.PropertyGrid;
-using AdamsLair.PropertyGrid.PropertyEditors;
+using AdamsLair.WinForms;
+using AdamsLair.WinForms.PropertyEditors;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {

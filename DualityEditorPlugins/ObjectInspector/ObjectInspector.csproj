@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.PropertyGrid">
-      <HintPath>..\..\DualityEditor\AdamsLair.PropertyGrid.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms">
+      <HintPath>..\..\DualityEditor\AdamsLair.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

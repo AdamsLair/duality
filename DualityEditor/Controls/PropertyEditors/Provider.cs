@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
-using AdamsLair.PropertyGrid;
+using AdamsLair.WinForms;
 
 using OpenTK;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-using AdamsLair.PropertyGrid;
+using AdamsLair.WinForms;
 
 using Duality;
 using Duality.Components;
@@ -159,7 +159,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public SoundEmitterSourcePropertyEditor()
 		{
 			this.EditedType = typeof(SoundEmitter.Source);
-			this.HeaderStyle = AdamsLair.PropertyGrid.Renderer.GroupHeaderStyle.SmoothSunken;
+			this.HeaderStyle = AdamsLair.WinForms.Renderer.GroupHeaderStyle.SmoothSunken;
 			this.HeaderHeight = 30;
 		}
 

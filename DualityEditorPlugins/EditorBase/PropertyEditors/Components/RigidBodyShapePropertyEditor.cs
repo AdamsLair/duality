@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-using AdamsLair.PropertyGrid;
+using AdamsLair.WinForms;
 
 using Duality;
 using Duality.Components.Physics;
