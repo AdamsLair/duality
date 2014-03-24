@@ -113,13 +113,6 @@ namespace Duality
 		/// <param name="height"></param>
 		public Grid(int width, int height) : this(width, height, null) {}
 		/// <summary>
-		/// Creates a new grid of the specified size and content. It will be inserted from left to right, then top to bottom.
-		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="content"></param>
-		public Grid(int width, int height, IEnumerable<T> content) : this(width, height, content.ToArray()) {}
-		/// <summary>
 		/// Creates a new grid based on the specified raw data array. It will not be copied, but directly used.
 		/// </summary>
 		/// <param name="width"></param>
@@ -132,6 +125,16 @@ namespace Duality
 			this.width = width;
 			this.height = height;
 			this.sequence = new RawList<T>(wrapAround, width * height);
+		}
+		/// <summary>
+		/// Creates a copy of the specified grid.
+		/// </summary>
+		/// <param name="other"></param>
+		public Grid(Grid<T> other)
+		{
+			this.width = other.width;
+			this.height = other.height;
+			this.sequence = new RawList<T>(other.sequence.Data.ToArray(), other.sequence.Count);
 		}
 		
 		/// <summary>
@@ -370,10 +373,13 @@ namespace Duality
 		{
 			if (width < 0) throw new ArgumentException("Width needs to be greater than or equal to zero.", "width");
 			if (height < 0) throw new ArgumentException("Height needs to be greater than or equal to zero.", "height");
+			if (x == 0 && y == 0 && width == this.width && height == this.height) return;
 
+			// Create a new grid of the requried target size.
 			Grid<T> tempGrid = new Grid<T>(width, height);
 			this.CopyTo(tempGrid, -x, -y);
 
+			// Become the temporary grid
 			this.sequence = tempGrid.sequence;
 			this.width = tempGrid.width;
 			this.height = tempGrid.height;

@@ -114,6 +114,15 @@ namespace Duality.Tests.Utility
 			grid.ShrinkToFit();
 			CollectionAssert.AreEqual(new[] { 
 				3 }, grid);
+
+			Random rnd = new Random();
+			grid.Resize(4, 4);
+			for (int i = 0; i < grid.Capacity; i++) grid.RawData[i] = rnd.Next();
+			Grid<int> grid2 = new Grid<int>(6, 6);
+			grid.CopyTo(grid2, 1, 1);
+			Grid<int> grid3 = new Grid<int>(grid);
+			grid3.AssumeRect(-1, -1, 6, 6);
+			CollectionAssert.AreEqual(grid2, grid3);
 		}
 		[Test] public void Objects()
 		{
