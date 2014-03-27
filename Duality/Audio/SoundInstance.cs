@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Threading;
 
 using OpenTK;
@@ -94,10 +96,9 @@ namespace Duality
 		private	float			fadeWaitEnd		= 0.0f;
 
 		// Streaming
-		private	bool				strStreamed		= false;
+		private	bool				isStreamed		= false;
 		private	VorbisStreamHandle	strOvStr		= null;
 		private	int[]				strAlBuffers	= null;
-		private	Thread				strWorker		= null;
 		private	StopRequest			strStopReq		= StopRequest.None;
 		private	object				strLock			= new object();
 		
@@ -243,14 +244,14 @@ namespace Duality
 		{
 			if (manually)
 			{
-				if (this.strWorker != null && this.strWorker.IsAlive)
+				if (this.isStreamed)
 				{
 					lock (this.strLock)
 					{
 						OggVorbis.EndStream(ref this.strOvStr);
 					}
+					this.strStopReq = StopRequest.Immediately;
 				}
-				this.strWorker = null;
 
 				this.attachedTo = null;
 				this.curPriority = -1;
@@ -267,7 +268,7 @@ namespace Duality
 					{
 						for (int i = 0; i < this.strAlBuffers.Length; i++)
 						{
-							if (!AL.IsBuffer(this.strAlBuffers[i])) continue;
+							if (!AL.IsBuffer(this.strAlBuffers[i])) return;
 							AL.DeleteBuffer(this.strAlBuffers[i]);
 						}
 						this.strAlBuffers = null;
@@ -358,8 +359,8 @@ namespace Duality
 			if (this.alSource <= AlSource_NotAvailable) return;
 			lock (this.strLock)
 			{
-				// Do not reuse before-streamed sources OpenAL doesn't seem to like that.
-				if (this.strStreamed)
+				// Do not reuse before-streamed sources, since OpenAL doesn't seem to like that.
+				if (this.isStreamed)
 				{
 					AL.DeleteSource(this.alSource);
 					this.alSource = AL.GenSource();
@@ -367,22 +368,8 @@ namespace Duality
 				// Reuse other OpenAL sources
 				else
 				{
-					//int num = 0;
 					AL.SourceStop(this.alSource);
 					AL.Source(this.alSource, ALSourcei.Buffer, 0);
-					/*Al.alGetSourcei(this.alSource, Al.AL_BUFFERS_PROCESSED, out num);
-					if (num > 0)
-					{
-						unsafe
-						{
-							int[] buffers = new int[num];
-							fixed (int* result = &buffers[0])
-							{
-								Al.alSourceUnqueueBuffers(this.alSource, num, result);
-							}
-						}
-					}*/
-
 					AL.SourceRewind(this.alSource);
 				}
 
@@ -712,10 +699,8 @@ namespace Duality
 				{
 					if (audioDataRes.IsStreamed)
 					{
-						this.strStreamed = true;
-						this.strWorker = new Thread(ThreadStreamFunc);
-						this.strWorker.IsBackground = true;
-						this.strWorker.Start(this);
+						this.isStreamed = true;
+						DualityApp.Sound.EnqueueForStreaming(this);
 					}
 					else
 					{
@@ -743,123 +728,119 @@ namespace Duality
 		}
 
 
-		private static void ThreadStreamFunc(object param)
+		internal bool PerformStreaming()
 		{
-			SoundInstance sndInst = (SoundInstance)param;
-			while (true)
+			lock (this.strLock)
 			{
-				lock (sndInst.strLock)
+				if (this.Disposed) return false;
+				if (!DualityApp.Sound.IsAvailable) return false;
+
+				ALSourceState stateTemp = ALSourceState.Stopped;
+				bool sourceAvailable = this.alSource > AlSource_NotAvailable;
+				if (sourceAvailable) stateTemp = AL.GetSourceState(this.alSource);
+
+				if (stateTemp == ALSourceState.Stopped && this.strStopReq != StopRequest.None)
 				{
-					if (sndInst.Disposed) return;
-					if (!DualityApp.Sound.IsAvailable) return;
+					// Stopped due to regular EOF. If strStopReq is NOT set,
+					// the source stopped playing because it reached the end of the buffer
+					// but in fact only because we were too slow inserting new data.
+					return false;
+				}
+				else if (this.strStopReq == StopRequest.Immediately)
+				{
+					// Stopped intentionally due to Stop()
+					if (this.alSource > AlSource_NotAvailable) AL.SourceStop(this.alSource);
+					return false;
+				}
 
-					ALSourceState stateTemp = ALSourceState.Stopped;
-					bool sourceAvailable = sndInst.alSource > AlSource_NotAvailable;
-					if (sourceAvailable) stateTemp = AL.GetSourceState(sndInst.alSource);
+				AudioData audioDataRes = this.audioData.Res;
+				if (!this.sound.IsAvailable || audioDataRes == null)
+				{
+					this.Dispose();
+					return false;
+				}
 
-					if (stateTemp == ALSourceState.Stopped && sndInst.strStopReq != StopRequest.None)
+				if (sourceAvailable)
+				{
+					if (stateTemp == ALSourceState.Initial)
 					{
-						// Stopped due to regular EOF. If strStopReq is NOT set,
-						// the source stopped playing because it reached the end of the buffer
-						// but in fact only because we were too slow inserting new data.
-						return;
+						// Initialize streaming
+						PerformStreamingBegin(audioDataRes);
+
+						// Initially play source
+						AL.SourcePlay(this.alSource);
+						stateTemp = AL.GetSourceState(this.alSource);
 					}
-					else if (sndInst.strStopReq == StopRequest.Immediately)
+					else
 					{
-						// Stopped intentionally due to Stop()
-						if (sndInst.alSource > AlSource_NotAvailable) AL.SourceStop(sndInst.alSource);
-						return;
-					}
+						// Stream new data
+						PerformStreamingUpdate(audioDataRes);
 
-					AudioData audioDataRes = sndInst.audioData.Res;
-					if (!sndInst.sound.IsAvailable || audioDataRes == null)
-					{
-						sndInst.Dispose();
-						return;
-					}
-
-					if (sourceAvailable)
-					{
-						if (stateTemp == ALSourceState.Initial)
+						// If the source stopped unintentionally, restart it. (See above)
+						if (stateTemp == ALSourceState.Stopped && this.strStopReq == StopRequest.None)
 						{
-							// Initialize streaming
-							ThreadStreamBegin(sndInst, audioDataRes);
-
-							// Initially play source
-							AL.SourcePlay(sndInst.alSource);
-							stateTemp = AL.GetSourceState(sndInst.alSource);
-						}
-						else
-						{
-							// Stream new data
-							ThreadStreamUpdate(sndInst, audioDataRes);
-
-							// If the source stopped unintentionally, restart it. (See above)
-							if (stateTemp == ALSourceState.Stopped && sndInst.strStopReq == StopRequest.None)
-							{
-								AL.SourcePlay(sndInst.alSource);
-							}
+							AL.SourcePlay(this.alSource);
 						}
 					}
 				}
+			}
 
-				Thread.Sleep(16);
-			} // end while
+			return true;
 		}
-		private static void ThreadStreamBegin(SoundInstance sndInst, AudioData audioDataRes)
+		private void PerformStreamingBegin(AudioData audioDataRes)
 		{
 			// Generate streaming buffers
-			sndInst.strAlBuffers = new int[3];
-			for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
+			this.strAlBuffers = new int[3];
+			for (int i = 0; i < this.strAlBuffers.Length; ++i)
 			{
-				AL.GenBuffers(1, out sndInst.strAlBuffers[i]);
+				AL.GenBuffers(1, out this.strAlBuffers[i]);
 			}
 
 			// Begin streaming
-			OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
+			OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out this.strOvStr);
 
 			// Initially, completely fill all buffers
-			for (int i = 0; i < sndInst.strAlBuffers.Length; ++i)
+			for (int i = 0; i < this.strAlBuffers.Length; ++i)
 			{
 				PcmData pcm;
-				bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
+				bool eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
 				if (pcm.dataLength > 0)
 				{
 					AL.BufferData(
-						sndInst.strAlBuffers[i], 
+						this.strAlBuffers[i], 
 						pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
 						pcm.data, 
 						pcm.dataLength * PcmData.SizeOfDataElement, 
 						pcm.sampleRate);
-					AL.SourceQueueBuffer(sndInst.alSource, sndInst.strAlBuffers[i]);
+					AL.SourceQueueBuffer(this.alSource, this.strAlBuffers[i]);
 					if (eof) break;
 				}
 				else break;
 			}
 		}
-		private static void ThreadStreamUpdate(SoundInstance sndInst, AudioData audioDataRes)
+		private void PerformStreamingUpdate(AudioData audioDataRes)
 		{
 			int num;
-			AL.GetSource(sndInst.alSource, ALGetSourcei.BuffersProcessed, out num);
+			AL.GetSource(this.alSource, ALGetSourcei.BuffersProcessed, out num);
 			while (num > 0)
 			{
 				num--;
 
 				int unqueued;
-				unqueued = AL.SourceUnqueueBuffer(sndInst.alSource);
+				unqueued = AL.SourceUnqueueBuffer(this.alSource);
 
-				if (OggVorbis.IsStreamValid(sndInst.strOvStr))
+				if (OggVorbis.IsStreamValid(this.strOvStr))
 				{
 					PcmData pcm;
-					bool eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
+					bool eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
 					if (eof)
 					{
-						OggVorbis.EndStream(ref sndInst.strOvStr);
-						if (sndInst.looped)
+						OggVorbis.EndStream(ref this.strOvStr);
+						if (this.looped)
 						{
-							OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
+							OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out this.strOvStr);
 							if (pcm.dataLength == 0)
-								eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
+								eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
 							else
 								eof = false;
 						}
@@ -872,11 +853,11 @@ namespace Duality
 							pcm.data, 
 							pcm.dataLength * PcmData.SizeOfDataElement, 
 							pcm.sampleRate);
-						AL.SourceQueueBuffer(sndInst.alSource, unqueued);
+						AL.SourceQueueBuffer(this.alSource, unqueued);
 					}
 					if (pcm.dataLength == 0 || eof)
 					{
-						sndInst.strStopReq = StopRequest.EndOfStream;
+						this.strStopReq = StopRequest.EndOfStream;
 						break;
 					}
 				}

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Linq;
+using System.Diagnostics;
 
 using OpenTK;
 using AudioContext = OpenTK.Audio.AudioContext;
@@ -28,6 +30,11 @@ namespace Duality
 		private	int						numPlaying2D	= 0;
 		private	int						numPlaying3D	= 0;
 		private	bool					mute			= false;
+
+		private	Thread				streamWorker			= null;
+		private List<SoundInstance>	streamWorkerQueue		= null;
+		private AutoResetEvent		streamWorkerQueueEvent	= null;
+		private bool				streamWorkerEnd			= false;
 
 
 		/// <summary>
@@ -141,11 +148,11 @@ namespace Duality
 			get { return this.sounds; }
 		}
 
+
 		public SoundDevice()
 		{
 			Log.Core.Write("Initializing OpenAL...");
 			Log.Core.PushIndent();
-
 			try
 			{
 				AudioLibraryLoader.LoadAudioLibrary();
@@ -173,8 +180,15 @@ namespace Duality
 			{
 				Log.Core.WriteError("An error occured while initializing OpenAL: {0}", Log.Exception(e));
 			}
-
 			Log.Core.PopIndent();
+			
+			// Set up the streaming thread
+			this.streamWorkerEnd = false;
+			this.streamWorkerQueue = new List<SoundInstance>();
+			this.streamWorkerQueueEvent = new AutoResetEvent(false);
+			this.streamWorker = new Thread(ThreadStreamFunc);
+			this.streamWorker.IsBackground = true;
+			this.streamWorker.Start();
 
 			DualityApp.AppDataChanged += this.DualityApp_AppDataChanged;
 		}
@@ -193,6 +207,21 @@ namespace Duality
 			{
 				this.disposed = true;
 				DualityApp.AppDataChanged -= this.DualityApp_AppDataChanged;
+
+				// Shut down the streaming thread
+				if (this.streamWorker != null)
+				{
+					this.streamWorkerEnd = true;
+					if (!this.streamWorker.Join(1000))
+					{
+						this.streamWorker.Abort();
+					}
+					this.streamWorkerQueueEvent.Dispose();
+					this.streamWorkerEnd = false;
+					this.streamWorkerQueueEvent = null;
+					this.streamWorkerQueue = null;
+					this.streamWorker = null;
+				}
 
 				try
 				{
@@ -243,17 +272,25 @@ namespace Duality
 		/// Requests an OpenAL source handle.
 		/// </summary>
 		/// <returns>An OpenAL source handle. <see cref="SoundInstance.AlSource_NotAvailable"/> if no source is currently available.</returns>
-		public int RequestAlSource()
+		internal int RequestAlSource()
 		{
 			if (this.alSourcePool.Count == 0) return SoundInstance.AlSource_NotAvailable;
 			return this.alSourcePool.Pop();
+		}
+		/// <summary>
+		/// Frees a previously requested OpenAL source.
+		/// </summary>
+		/// <param name="alSource">The OpenAL handle of the source to free.</param>
+		internal void FreeAlSource(int alSource)
+		{
+			this.alSourcePool.Push(alSource);
 		}
 		/// <summary>
 		/// Registers a <see cref="Duality.Resources.Sound">Sounds</see> playing instance.
 		/// </summary>
 		/// <param name="snd">The Sound that is playing.</param>
 		/// <param name="is3D">Whether the instance is 3d or not.</param>
-		public void RegisterPlaying(ContentRef<Sound> snd, bool is3D)
+		internal void RegisterPlaying(ContentRef<Sound> snd, bool is3D)
 		{
 			if (is3D)	this.numPlaying3D++;
 			else		this.numPlaying2D++;
@@ -267,19 +304,11 @@ namespace Duality
 			}
 		}
 		/// <summary>
-		/// Frees a previously requested OpenAL source.
-		/// </summary>
-		/// <param name="alSource">The OpenAL handle of the source to free.</param>
-		public void FreeAlSource(int alSource)
-		{
-			this.alSourcePool.Push(alSource);
-		}
-		/// <summary>
 		/// Unregisters a <see cref="Duality.Resources.Sound">Sounds</see> playing instance.
 		/// </summary>
 		/// <param name="snd">The Sound that was playing.</param>
 		/// <param name="is3D">Whether the instance is 3d or not.</param>
-		public void UnregisterPlaying(ContentRef<Sound> snd, bool is3D)
+		internal void UnregisterPlaying(ContentRef<Sound> snd, bool is3D)
 		{
 			if (is3D)	this.numPlaying3D--;
 			else		this.numPlaying2D--;
@@ -287,11 +316,24 @@ namespace Duality
 			if (snd.IsAvailable && !snd.IsRuntimeResource)
 				this.resPlaying[snd.Path]--;
 		}
+		/// <summary>
+		/// Enqueues the specified <see cref="SoundInstance"/> in the streaming thread.
+		/// </summary>
+		/// <param name="instance"></param>
+		internal void EnqueueForStreaming(SoundInstance instance)
+		{
+			lock (this.streamWorkerQueue)
+			{
+				if (this.streamWorkerQueue.Contains(instance)) return;
+				this.streamWorkerQueue.Add(instance);
+			}
+			this.streamWorkerQueueEvent.Set();
+		}
 		
 		/// <summary>
 		/// Updates the SoundDevice.
 		/// </summary>
-		public void Update()
+		internal void Update()
 		{
 			if (this.context == null) return;
 			Profile.TimeUpdateAudio.BeginMeasure();
@@ -396,5 +438,63 @@ namespace Duality
 			AL.DopplerFactor(DualityApp.AppData.SoundDopplerFactor);
 			AL.SpeedOfSound(DualityApp.AppData.SpeedOfSound);
 		}
+
+
+		private void ThreadStreamFunc()
+		{
+			int queueIndex = 0;
+			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
+			watch.Restart();
+			while (!this.streamWorkerEnd)
+			{
+				// Determine which SoundInstance to update
+				SoundInstance sndInst;
+				lock (this.streamWorkerQueue)
+				{
+					if (this.streamWorkerQueue.Count > 0)
+					{
+						int count = this.streamWorkerQueue.Count;
+						queueIndex = (queueIndex + count) % count;
+						sndInst = this.streamWorkerQueue[queueIndex];
+						queueIndex = (queueIndex + count - 1) % count;
+					}
+					else
+					{
+						sndInst = null;
+						queueIndex = 0;
+					}
+				}
+
+				// If there is no SoundInstance available, wait for a signal of one being added.
+				if (sndInst == null)
+				{
+					// Timeout of 100 ms to check regularly for requesting the thread to end.
+					streamWorkerQueueEvent.WaitOne(100);
+					continue;
+				}
+
+				// Perform the necessary streaming operations on the SoundInstance, and remove it when requested
+				if (!sndInst.PerformStreaming())
+				{
+					lock (this.streamWorkerQueue)
+					{
+						this.streamWorkerQueue.Remove(sndInst);
+					}
+				}
+
+				// After each roundtrip, sleep a little, don't keep the processor busy for no reason
+				if (queueIndex == 0)
+				{
+					watch.Stop();
+					int roundtripTime = (int)watch.ElapsedMilliseconds;
+					if (roundtripTime <= 1)
+					{
+						streamWorkerQueueEvent.WaitOne(16);
+					}
+					watch.Restart();
+				}
+			}
+		}
+
 	}
 }
