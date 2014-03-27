@@ -286,10 +286,6 @@
     <EmbeddedResource Include="EmbeddedResources\SharpAlpha.frag" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EmbeddedResources\DroneLoop.ogg" />
-    <EmbeddedResource Include="EmbeddedResources\LogoJingle.ogg" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\Beep.ogg" />
   </ItemGroup>
   <ItemGroup>

@@ -32,29 +32,15 @@ namespace Duality.Resources
 		/// [GET] A simple beep AudioData.
 		/// </summary>
 		public static ContentRef<AudioData> Beep		{ get; private set; }
-		/// <summary>
-		/// [GET] A drone loop AudioData. This is stereo data.
-		/// </summary>
-		public static ContentRef<AudioData> DroneLoop	{ get; private set; }
-		/// <summary>
-		/// [GET] A logo jingle AudioData. This is stereo data.
-		/// </summary>
-		public static ContentRef<AudioData> LogoJingle	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
 			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "AudioData:";
 			const string ContentPath_Beep		= VirtualContentPath + "Beep";
-			const string ContentPath_DroneLoop	= VirtualContentPath + "DroneLoop";
-			const string ContentPath_LogoJingle	= VirtualContentPath + "LogoJingle";
 
 			ContentProvider.AddContent(ContentPath_Beep, new AudioData(DefaultContent.Beep));
-			ContentProvider.AddContent(ContentPath_DroneLoop, new AudioData(DefaultContent.DroneLoop));
-			ContentProvider.AddContent(ContentPath_LogoJingle, new AudioData(DefaultContent.LogoJingle));
 
-			Beep		= ContentProvider.RequestContent<AudioData>(ContentPath_Beep);
-			DroneLoop	= ContentProvider.RequestContent<AudioData>(ContentPath_DroneLoop);
-			LogoJingle	= ContentProvider.RequestContent<AudioData>(ContentPath_LogoJingle);
+			Beep = ContentProvider.RequestContent<AudioData>(ContentPath_Beep);
 		}
 		
 		
