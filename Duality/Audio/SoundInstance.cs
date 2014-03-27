@@ -592,7 +592,7 @@ namespace Duality
 				if (sourceAvailable) stateTemp = AL.GetSourceState(this.alSource);
 
 				// If the source is stopped / finished, dispose and return
-				if (stateTemp == ALSourceState.Stopped && !audioDataRes.IsStreamed || this.strStopReq != StopRequest.None)
+				if (stateTemp == ALSourceState.Stopped && (!audioDataRes.IsStreamed || this.strStopReq != StopRequest.None))
 				{
 					this.Dispose();
 					return;
@@ -859,9 +859,9 @@ namespace Duality
 						{
 							OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out sndInst.strOvStr);
 							if (pcm.dataLength == 0)
-							{
 								eof = !OggVorbis.StreamChunk(sndInst.strOvStr, out pcm);
-							}
+							else
+								eof = false;
 						}
 					}
 					if (pcm.dataLength > 0)
