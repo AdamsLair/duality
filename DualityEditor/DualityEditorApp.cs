@@ -216,6 +216,7 @@ namespace Duality.Editor
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
 			// Initialize Duality
+			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
 			DualityApp.PluginReady += DualityApp_PluginReady;
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, new[] {"logfile", "logfile_editor"});
 			InitMainGLContext();
@@ -315,6 +316,7 @@ namespace Duality.Editor
 				if (Terminating != null) Terminating(null, EventArgs.Empty);
 
 				// Unregister events
+				EditorHintImageAttribute.ImageResolvers -= EditorHintImageResolver;
 				DualityApp.PluginReady -= DualityApp_PluginReady;
 				mainForm.Activated -= mainForm_Activated;
 				mainForm.Deactivate -= mainForm_Deactivate;
@@ -1458,6 +1460,35 @@ namespace Duality.Editor
 				return plugin.PluginAssembly;
 			else
 				return null;
+		}
+		private static Image EditorHintImageResolver(string resourceClassName, string propertyName)
+		{
+			string shortClassName = resourceClassName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+			if (string.IsNullOrEmpty(shortClassName)) return null;
+
+			foreach (Assembly editorPlugin in GetDualityEditorAssemblies())
+			{
+				Type[] editorTypes;
+				try { editorTypes = editorPlugin.GetTypes(); }
+				catch (Exception) { continue; }
+
+				foreach (Type editorClass in editorTypes)
+				{
+					if (editorClass.Name == shortClassName)
+					{
+						try
+						{
+							PropertyInfo resourceProperty = editorClass.GetProperty(propertyName, ReflectionHelper.BindStaticAll);
+							if (resourceProperty != null && typeof(Image).IsAssignableFrom(resourceProperty.PropertyType))
+							{
+								return resourceProperty.GetValue(null, null) as Image;
+							}
+						}
+						catch (Exception) {}
+					}
+				}
+			}
+			return null;
 		}
 	}
 }
