@@ -271,6 +271,7 @@ namespace Duality.Editor
 		private	Image		iconImage		= null;
 		private	string		resourceTypeId	= null;
 		private	string		propertyName	= null;
+		private	bool		resolved		= false;
 
 		private static List<Resolver> registeredResolvers = new List<Resolver> { DefaultResolver };
 		public static event Resolver ImageResolvers
@@ -286,7 +287,7 @@ namespace Duality.Editor
 		{
 			get
 			{
-				if (this.iconImage == null) this.ResolveImage();
+				if (!this.resolved) this.ResolveImage();
 				return this.iconImage;
 			}
 		}
@@ -304,6 +305,7 @@ namespace Duality.Editor
 
 		private void ResolveImage()
 		{
+			this.resolved = true;
 			this.iconImage = null;
 			if (!string.IsNullOrEmpty(this.resourceTypeId) && !string.IsNullOrEmpty(this.propertyName))
 			{
