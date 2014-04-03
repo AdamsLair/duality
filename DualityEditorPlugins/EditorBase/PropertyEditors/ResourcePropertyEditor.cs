@@ -30,7 +30,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public ResourcePropertyEditor()
 		{
 			this.PropertyName = "Resource";
-			this.HeaderHeight = 20;
+			this.HeaderHeight = 24;
 			this.HeaderStyle = AdamsLair.WinForms.Renderer.GroupHeaderStyle.Emboss;
 		}
 

@@ -20,6 +20,7 @@ namespace Duality.Editor.Controls
 	{
 		public DualitorPropertyGrid()
 		{
+			//this.ControlRenderer.FocusBrightnessScale = 1.15f;
 			this.ControlRenderer.ColorMultiple = Color.FromArgb(242, 212, 170);
 			this.ControlRenderer.ColorGrayText = Color.FromArgb(96, 96, 96);
 			this.ControlRenderer.ColorVeryLightBackground = Color.FromArgb(224, 224, 224);

@@ -23,7 +23,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			this.Hints |= HintFlags.HasActiveCheck | HintFlags.ActiveEnabled;
 			this.PropertyName = "Component";
-			this.HeaderHeight = 20;
+			this.HeaderHeight = 24;
 			this.HeaderStyle = AdamsLair.WinForms.Renderer.GroupHeaderStyle.Emboss;
 		}
 
@@ -171,7 +171,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			// Create a ContextMenu
 			ContextMenuStrip contextMenu = new ContextMenuStrip();
 			Point menuPos = new Point(this.ButtonRectangle.Right, this.ButtonRectangle.Bottom);
-			Point thisLoc = this.ParentEditor.GetChildLocation(this);
+			Point thisLoc = this.ParentGrid.GetEditorLocation(this, true);
 			menuPos.X += thisLoc.X;
 			menuPos.Y += thisLoc.Y;
 
