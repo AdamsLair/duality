@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AdamsLair.WinForms;
+using AdamsLair.WinForms.PropertyEditing;
 
 using Duality;
 

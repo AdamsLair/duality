@@ -5,10 +5,10 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
-using AdamsLair.WinForms;
-using AdamsLair.WinForms.EditorTemplates;
-using AdamsLair.WinForms.Renderer;
-using BorderStyle = AdamsLair.WinForms.Renderer.BorderStyle;
+using AdamsLair.WinForms.PropertyEditing;
+using AdamsLair.WinForms.PropertyEditing.Templates;
+using AdamsLair.WinForms.Drawing;
+using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
 
 using Duality;
 using Duality.Resources;
@@ -144,19 +144,24 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				!this.Enabled ? BorderState.Disabled : BorderState.Normal);
 
 			bool focusBg = this.Focused || (this is IPopupControlHost && (this as IPopupControlHost).IsDropDownOpened);
-			ControlRenderer.DrawGroupHeaderBackground(
+			Color headerBgColor = this.ControlRenderer.ColorBackground;
+			if (focusBg)
+			{
+				headerBgColor = headerBgColor.ScaleBrightness(this.ControlRenderer.FocusBrightnessScale);
+			}
+			GroupedPropertyEditor.DrawGroupHeaderBackground(
 				e.Graphics, 
 				this.rectHeader, 
-				focusBg ? ControlRenderer.ColorBackground.ScaleBrightness(0.85f) : ControlRenderer.ColorBackground, 
-				GroupHeaderStyle.SmoothSunken);
+				headerBgColor, 
+				GroupedPropertyEditor.GroupHeaderStyle.SmoothSunken);
 			
 			if (this.subImageSelector.Rect.Width > 0)
 			{
-				ControlRenderer.DrawStringLine(e.Graphics, 
+				this.ControlRenderer.DrawStringLine(e.Graphics, 
 					"Frame Index", 
 					SystemFonts.DefaultFont, 
 					this.rectLabelName, 
-					!this.Enabled ? ControlRenderer.ColorGrayText : ControlRenderer.ColorText,
+					!this.Enabled ? this.ControlRenderer.ColorGrayText : this.ControlRenderer.ColorText,
 					StringAlignment.Far);
 				this.subImageSelector.OnPaint(e, this.Enabled && !this.subImageSelector.ReadOnly, false);
 			}

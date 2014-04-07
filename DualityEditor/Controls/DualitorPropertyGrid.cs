@@ -5,9 +5,9 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-using AdamsLair.WinForms;
-using AdamsLair.WinForms.PropertyEditors;
-using PropertyGrid = AdamsLair.WinForms.PropertyGrid;
+using AdamsLair.WinForms.PropertyEditing;
+using AdamsLair.WinForms.PropertyEditing.Editors;
+using PropertyGrid = AdamsLair.WinForms.PropertyEditing.PropertyGrid;
 
 using Duality;
 using Duality.Editor;

@@ -151,7 +151,7 @@
     <Compile Include="Helpers\EventArgs.cs" />
     <Compile Include="Helpers\ExtMethodsControl.cs" />
     <Compile Include="Helpers\ExtMethodsDataObject.cs" />
-    <Compile Include="Helpers\ExtMethodsSystemDrawingColor.cs" />
+    <Compile Include="Helpers\ExtMethodsColor.cs" />
     <Compile Include="CorePluginInterface\FileImportProvider.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>

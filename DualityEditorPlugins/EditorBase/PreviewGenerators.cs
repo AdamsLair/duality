@@ -73,7 +73,7 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 			const int samples = 10;
 			using (Graphics g = Graphics.FromImage(result))
 			{
-				Color baseColor = ExtMethodsSystemDrawingColor.ColorFromHSV(
+				Color baseColor = ExtMethodsColor.ColorFromHSV(
 					(float)(oggHash % 90) * (float)(oggLen % 4) / 360.0f, 
 					0.5f, 
 					1f);

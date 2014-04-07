@@ -4,8 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 
-using AdamsLair.WinForms;
-using AdamsLair.WinForms.PropertyEditors;
+using AdamsLair.WinForms.PropertyEditing;
+using AdamsLair.WinForms.PropertyEditing.Editors;
 
 using Duality;
 using Duality.Components.Physics;
@@ -164,7 +164,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public RigidBodyJointPropertyEditor()
 		{
 			this.EditedType = typeof(JointInfo);
-			this.HeaderStyle = AdamsLair.WinForms.Renderer.GroupHeaderStyle.SmoothSunken;
+			this.HeaderStyle = GroupHeaderStyle.SmoothSunken;
 			this.HeaderHeight = 30;
 		}
 

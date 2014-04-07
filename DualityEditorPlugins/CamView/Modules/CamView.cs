@@ -8,7 +8,7 @@ using System.Xml.Linq;
 using BitArray = System.Collections.BitArray;
 
 using WeifenLuo.WinFormsUI.Docking;
-using AdamsLair.WinForms;
+using AdamsLair.WinForms.ColorControls;
 
 using Duality;
 using Duality.Components;

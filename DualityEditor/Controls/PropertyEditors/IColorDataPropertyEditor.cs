@@ -4,8 +4,9 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-using AdamsLair.WinForms;
-using ButtonState = AdamsLair.WinForms.Renderer.ButtonState;
+using AdamsLair.WinForms.ColorControls;
+using AdamsLair.WinForms.PropertyEditing;
+using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 
 using Duality;
 using Duality.Drawing;

@@ -5,10 +5,10 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-using AdamsLair.WinForms;
-using AdamsLair.WinForms.Renderer;
-using ButtonState = AdamsLair.WinForms.Renderer.ButtonState;
-using BorderStyle = AdamsLair.WinForms.Renderer.BorderStyle;
+using AdamsLair.WinForms.PropertyEditing;
+using AdamsLair.WinForms.Drawing;
+using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
+using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
 
 using Duality;
 using Duality.Resources;

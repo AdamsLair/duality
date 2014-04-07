@@ -7,8 +7,8 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 
 using WeifenLuo.WinFormsUI.Docking;
-using AdamsLair.WinForms;
-using PropertyGrid = AdamsLair.WinForms.PropertyGrid;
+using AdamsLair.WinForms.PropertyEditing;
+using PropertyGrid = AdamsLair.WinForms.PropertyEditing;
 
 using Duality;
 using Duality.Resources;

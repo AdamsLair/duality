@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Reflection;
 
-using AdamsLair.WinForms;
-using AdamsLair.WinForms.PropertyEditors;
+using AdamsLair.WinForms.PropertyEditing;
+using AdamsLair.WinForms.PropertyEditing.Editors;
 
 using Duality;
 using Duality.Resources;

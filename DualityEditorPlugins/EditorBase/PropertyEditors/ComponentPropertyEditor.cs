@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing;
 
-using AdamsLair.WinForms;
+using AdamsLair.WinForms.PropertyEditing;
 
 using Duality;
 using Duality.Drawing;
@@ -24,7 +24,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.Hints |= HintFlags.HasActiveCheck | HintFlags.ActiveEnabled;
 			this.PropertyName = "Component";
 			this.HeaderHeight = 24;
-			this.HeaderStyle = AdamsLair.WinForms.Renderer.GroupHeaderStyle.Emboss;
+			this.HeaderStyle = GroupHeaderStyle.Emboss;
 		}
 
 		public void PerformSetActive(bool active)
@@ -133,7 +133,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			this.PropertyName = this.EditedType.GetTypeCSCodeName(true);
 			this.HeaderIcon = iconBitmap;
-			this.HeaderColor = ExtMethodsSystemDrawingColor.ColorFromHSV(avgClr.H, 0.2f, 0.8f);
+			this.HeaderColor = ExtMethodsColor.ColorFromHSV(avgClr.H, 0.2f, 0.8f);
 		}
 		protected override void OnEditorAdded(PropertyEditor editor)
 		{

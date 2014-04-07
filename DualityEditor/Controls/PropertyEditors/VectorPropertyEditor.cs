@@ -4,8 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 
-using AdamsLair.WinForms;
-using AdamsLair.WinForms.EditorTemplates;
+using AdamsLair.WinForms.PropertyEditing;
+using AdamsLair.WinForms.PropertyEditing.Templates;
 
 using Duality;
 using Duality.Editor;

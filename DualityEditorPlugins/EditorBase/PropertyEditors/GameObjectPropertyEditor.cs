@@ -4,9 +4,9 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using AdamsLair.WinForms;
-using AdamsLair.WinForms.Renderer;
-using ButtonState = AdamsLair.WinForms.Renderer.ButtonState;
+using AdamsLair.WinForms.PropertyEditing;
+using AdamsLair.WinForms.Drawing;
+using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 
 using Duality;
 using Duality.Editor;
@@ -158,11 +158,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
+			
+			Color headerBgColorUpper = ControlRenderer.ColorBackground;
+			Color headerBgColorLower = headerBgColorUpper.ScaleBrightness(0.95f);
 
-			ControlRenderer.DrawGroupHeaderBackground(e.Graphics, this.rectHeader, SystemColors.Control, GroupHeaderStyle.Emboss);
-			ControlRenderer.DrawGroupHeaderBackground(e.Graphics, this.rectPrefab, SystemColors.Control.ScaleBrightness(0.95f), GroupHeaderStyle.SmoothSunken);
+			GroupedPropertyEditor.DrawGroupHeaderBackground(e.Graphics, this.rectHeader, headerBgColorUpper, GroupedPropertyEditor.GroupHeaderStyle.Emboss);
+			GroupedPropertyEditor.DrawGroupHeaderBackground(e.Graphics, this.rectPrefab, headerBgColorLower, GroupedPropertyEditor.GroupHeaderStyle.SmoothSunken);
 			if (this.Focused)
-				ControlRenderer.DrawBorder(e.Graphics, this.ClientRectangle, AdamsLair.WinForms.Renderer.BorderStyle.Simple, BorderState.Normal);
+				ControlRenderer.DrawBorder(e.Graphics, this.ClientRectangle, AdamsLair.WinForms.Drawing.BorderStyle.Simple, BorderState.Normal);
 
 			CheckBoxState activeState = CheckBoxState.UncheckedDisabled;
 			if (!this.ReadOnly && this.Enabled)
