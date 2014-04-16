@@ -442,7 +442,8 @@ namespace Duality.Serialization
 				!typeof(ISerializeExplicit).IsAssignableFrom(objSerializeType.Type) &&
 				GetSurrogateFor(objSerializeType.Type) == null) 
 			{
-				this.LocalLog.WriteWarning("Serializing object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
+				this.LocalLog.WriteWarning("Ignoring object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
+				return null;
 			}
 
 			// Generate object header information

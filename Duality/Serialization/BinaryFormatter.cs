@@ -87,6 +87,14 @@ namespace Duality.Serialization
 		
 		protected override void WriteObjectData(object obj)
 		{
+			// Retrieve type data
+			ObjectHeader header = null;
+			if (obj != null)
+			{
+				header = this.PrepareWriteObject(obj);
+				if (header == null) obj = null;
+			}
+
 			// NotNull flag
 			if (obj == null)
 			{
@@ -95,9 +103,6 @@ namespace Duality.Serialization
 			}
 			else
 				this.writer.Write(true);
-			
-			// Retrieve type data
-			ObjectHeader header = this.PrepareWriteObject(obj);
 
 			// Write data type header
 			this.WriteDataType(header.DataType);

@@ -124,11 +124,11 @@ namespace Duality.Serialization
 		private void WriteObjectData(XElement element, object obj)
 		{
 			// Null? Empty Element.
-			if (obj == null)
-				return;
+			if (obj == null) return;
 			
 			// Retrieve type data
 			ObjectHeader header = this.PrepareWriteObject(obj);
+			if (header == null) return;
 
 			// Write data type header
 			if (header.DataType != DataType.Unknown) element.SetAttributeValue("dataType", header.DataType.ToString());
