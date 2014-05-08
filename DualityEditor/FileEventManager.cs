@@ -59,16 +59,20 @@ namespace Duality.Editor
 			pluginWatcherWorking.Created += corePluginWatcher_Changed;
 			pluginWatcherWorking.EnableRaisingEvents = true;
 
-			pluginWatcherExec = new FileSystemWatcher();
-			pluginWatcherExec.SynchronizingObject = DualityEditorApp.MainForm;
-			pluginWatcherExec.EnableRaisingEvents = false;
-			pluginWatcherExec.Filter = "*.dll";
-			pluginWatcherExec.IncludeSubdirectories = true;
-			pluginWatcherExec.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
-			pluginWatcherExec.Path = Path.Combine(PathHelper.ExecutingAssemblyDir, DualityApp.PluginDirectory);
-			pluginWatcherExec.Changed += corePluginWatcher_Changed;
-			pluginWatcherExec.Created += corePluginWatcher_Changed;
-			pluginWatcherExec.EnableRaisingEvents = true;
+			string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, DualityApp.PluginDirectory);
+			if (Path.GetFullPath(execPluginDir) != Path.GetFullPath(DualityApp.PluginDirectory) && Directory.Exists(execPluginDir))
+			{
+				pluginWatcherExec = new FileSystemWatcher();
+				pluginWatcherExec.SynchronizingObject = DualityEditorApp.MainForm;
+				pluginWatcherExec.EnableRaisingEvents = false;
+				pluginWatcherExec.Filter = "*.dll";
+				pluginWatcherExec.IncludeSubdirectories = true;
+				pluginWatcherExec.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+				pluginWatcherExec.Path = execPluginDir;
+				pluginWatcherExec.Changed += corePluginWatcher_Changed;
+				pluginWatcherExec.Created += corePluginWatcher_Changed;
+				pluginWatcherExec.EnableRaisingEvents = true;
+			}
 			
 			dataDirWatcher = new FileSystemWatcher();
 			dataDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;

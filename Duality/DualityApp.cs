@@ -795,19 +795,23 @@ namespace Duality
 			{
 				Log.Core.Write("{0}...", plugin.AssemblyName);
 				Log.Core.PushIndent();
-				try
-				{
-					plugin.InitPlugin();
-					OnPluginReady(plugin);
-				}
-				catch (Exception e)
-				{
-					Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
-					RemovePlugin(plugin);
-				}
+				InitPlugin(plugin);
 				Log.Core.PopIndent();
 			}
 			Log.Core.PopIndent();
+		}
+		internal static void InitPlugin(CorePlugin plugin)
+		{
+			try
+			{
+				plugin.InitPlugin();
+				OnPluginReady(plugin);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+				RemovePlugin(plugin);
+			}
 		}
 		private static void ClearPlugins()
 		{
@@ -830,12 +834,16 @@ namespace Duality
 			CleanupAfterPlugins(plugins.Values);
 			plugins.Clear();
 		}
-		internal static void ReloadPlugin(string pluginFilePath)
+		/// <summary>
+		/// Reloads the specified plugin. Does not initialize it.
+		/// </summary>
+		/// <param name="pluginFilePath"></param>
+		internal static CorePlugin ReloadPlugin(string pluginFilePath)
 		{
 			if (!pluginFilePath.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase))
 			{
 				Log.Core.Write("Skipping non-core plugin '{0}'...", pluginFilePath);
-				return;
+				return null;
 			}
 			Log.Core.Write("Reloading core plugin '{0}'...", pluginFilePath);
 			Log.Core.PushIndent();
@@ -862,13 +870,7 @@ namespace Duality
 			CleanupAfterPlugins(new[] { oldPlugin });
 
 			Log.Core.PopIndent();
-
-			// Init plugin
-			if (initialized)
-			{
-				plugin.InitPlugin();
-				OnPluginReady(plugin);
-			}
+			return plugin;
 		}
 		/// <summary>
 		/// Determines whether the plugin that is represented by the specified Assembly file is referenced by any of the
