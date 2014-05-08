@@ -213,7 +213,7 @@ namespace Duality
 		/// <returns>True, if the referenced Resource is of the specified Type or subclassing it.</returns>
 		public bool Is(Type resType)
 		{
-			return resType.IsAssignableFrom(this.ResType);
+			return resType.IsAssignableFrom(typeof(Resource)) || resType.IsAssignableFrom(this.ResType);
 		}
 		/// <summary>
 		/// Determines if the references Resource's Type is assignable to the specified Type.
@@ -222,9 +222,10 @@ namespace Duality
 		/// <returns>True, if the referenced Resource is of the specified Type or subclassing it.</returns>
 		public bool Is<U>() where U : Resource
 		{
-			return (this.contentInstance != null && !this.contentInstance.Disposed) ? 
-				this.contentInstance is U : 
-				typeof(U).IsAssignableFrom(this.ResType);
+			if (this.contentInstance != null && !this.contentInstance.Disposed)
+				return this.contentInstance is U;
+			else
+				return typeof(U).IsAssignableFrom(typeof(Resource)) || typeof(U).IsAssignableFrom(this.ResType);
 		}
 		/// <summary>
 		/// Creates a <see cref="ContentRef{T}"/> of the specified Type, referencing the same Resource.
