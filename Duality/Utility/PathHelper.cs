@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Reflection;
 
@@ -320,18 +321,13 @@ namespace Duality
 		public static int GetFileHash(string filePath)
 		{
 			if (!File.Exists(filePath)) return 0;
-			int hash = 17;
-			using (FileStream stream = File.OpenRead(filePath))
+
+			using (BufferedStream stream = new BufferedStream(File.OpenRead(filePath), 512000))
 			{
-				unchecked
-				{
-					while (stream.Position < stream.Length)
-					{
-						hash = hash * 23 + stream.ReadByte();
-					}
-				}
+				var sha = MD5.Create();
+				byte[] hash = sha.ComputeHash(stream);
+				return BitConverter.ToInt32(hash, 0);
 			}
-			return hash;
 		}
 	}
 }
