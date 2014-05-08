@@ -52,11 +52,15 @@ namespace Duality
 			this.disposed = true;
 		}
 		/// <summary>
-		/// Called when loading the plugin assembly. The state of other plugins is completely undefined at this point.
+		/// Called when loading the plugin assembly. The state of other plugins is completely undefined at this point, so
+		/// don't do anything that may require other plugins or trigger loading of Resources that may do so.
+		/// It's also the only method that is guaranteed to be called before any of the plugins classes are instantiated.
 		/// </summary>
 		internal protected virtual void LoadPlugin() {}
 		/// <summary>
-		/// Called when initializing the plugin. It is guaranteed that all plugins have been loaded at this point. It is NOT defined whether or not they have been initialized yet.
+		/// Called when initializing the plugin. It is guaranteed that all plugins have been loaded at this point, so
+		/// this is the ideal place to establish communication with other plugins or load Resources that may rely on them.
+		/// It is NOT defined whether or not other plugins have been initialized yet.
 		/// </summary>
 		internal protected virtual void InitPlugin() {}
 		/// <summary>
