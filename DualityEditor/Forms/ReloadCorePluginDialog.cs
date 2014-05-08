@@ -365,12 +365,7 @@ namespace Duality.Editor.Forms
 				// Reload things at runtime, if possible
 				else
 				{
-					Log.Editor.Write("Reloading core plugins...");
-					Log.Editor.PushIndent();
-					{
-						PerformRuntimeReload(workInterface);
-					}
-					Log.Editor.PopIndent();
+					PerformRuntimeReload(workInterface);
 					strScene.Seek(0, SeekOrigin.Begin);
 					strData.Seek(0, SeekOrigin.Begin);
 				}
@@ -430,14 +425,20 @@ namespace Duality.Editor.Forms
 		private static void PerformRuntimeReload(WorkerInterface workInterface)
 		{
 			List<CorePlugin> initSchedule = new List<CorePlugin>();
-
+			
+			Log.Editor.Write("Reloading core plugins...");
+			Log.Editor.PushIndent();
 			int count = workInterface.ReloadSchedule.Count;
 			while (workInterface.ReloadSchedule.Count > 0)
 			{
 				string curPath = workInterface.ReloadSchedule[0];
+				
+				Log.Editor.Write("{0}...", curPath);
+				Log.Editor.PushIndent();
 				CorePlugin plugin = workInterface.MainForm.Invoke((Func<string,CorePlugin>)DualityApp.ReloadPlugin, curPath) as CorePlugin;
 				if (plugin != null) initSchedule.Add(plugin);
 				workInterface.Progress += 0.10f / (float)count;
+				Log.Editor.PopIndent();
 				Thread.Sleep(20);
 
 				string xmlDocFile = curPath.Replace(".dll", ".xml");
@@ -449,12 +450,19 @@ namespace Duality.Editor.Forms
 				workInterface.ReloadDone.Add(curPath);
 				workInterface.Progress += 0.05f / (float)count;
 			}
+			Log.Editor.PopIndent();
 
+			Log.Editor.Write("Initializing reloaded core plugins...");
+			Log.Editor.PushIndent();
 			foreach (CorePlugin plugin in initSchedule)
 			{
+				Log.Editor.Write("{0}...", plugin.AssemblyName);
+				Log.Editor.PushIndent();
 				workInterface.MainForm.Invoke((Action<CorePlugin>)DualityApp.InitPlugin, plugin);
 				workInterface.Progress += 0.05f / (float)count;
+				Log.Editor.PopIndent();
 			}
+			Log.Editor.PopIndent();
 		}
 		private static void SaveTemporaryData(WorkerInterface workInterface, Stream strScene, Stream strData)
 		{
