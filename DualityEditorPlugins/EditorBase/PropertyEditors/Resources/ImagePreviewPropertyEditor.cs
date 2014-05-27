@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
+using AdamsLair.WinForms;
 using AdamsLair.WinForms.PropertyEditing;
 using AdamsLair.WinForms.PropertyEditing.Templates;
 using AdamsLair.WinForms.Drawing;

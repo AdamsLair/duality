@@ -83,6 +83,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Duality\OpenTK.GLControl.dll</HintPath>
     </Reference>
+    <Reference Include="PopupControl">
+      <HintPath>.\PopupControl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
