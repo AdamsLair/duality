@@ -10,13 +10,30 @@ namespace Duality.Serialization
 	/// </summary>
 	public class ObjectIdManager
 	{
+		/// <summary>
+		/// Compares two objects for equality strictly by reference. This is needed to build
+		/// the object id mapping, since some objects may expose some unfortunate equality behavior,
+		/// and we really want to distinguish different objects by reference, and not by "content" here.
+		/// </summary>
+		private class ReferenceEqualityComparer : IEqualityComparer<object>
+		{
+			bool IEqualityComparer<object>.Equals(object x, object y)
+			{
+				return object.ReferenceEquals(x, y);
+			}
+			int IEqualityComparer<object>.GetHashCode(object obj)
+			{
+				return obj != null ? obj.GetHashCode() : 0;
+			}
+		}
+
 		private const int BaseId = 129723834;
 
 		private	int							idLevel			= 0;
 		private	List<uint>					idGenSeed		= new List<uint> { 0 };
 		private	List<uint>					idStack			= new List<uint> { 0 };
 		private	int							idStackHash		= 0;
-		private	Dictionary<object,uint>		objRefIdMap		= new Dictionary<object,uint>();
+		private	Dictionary<object,uint>		objRefIdMap		= new Dictionary<object,uint>(new ReferenceEqualityComparer());
 		private	Dictionary<uint,object>		idObjRefMap		= new Dictionary<uint,object>();
 		private	Dictionary<Type,uint>		typeHashCache	= new Dictionary<Type,uint>();
 

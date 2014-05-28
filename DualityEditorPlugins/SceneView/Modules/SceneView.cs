@@ -1647,8 +1647,11 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		private void DualityEditorApp_ResourceCreated(object sender, ResourceEventArgs e)
 		{
-			if (!e.IsDirectory && !typeof(Prefab).IsAssignableFrom(e.ContentType)) return;
-			this.UpdatePrefabLinkStatus(true);
+			if (e.IsDirectory || typeof(Prefab).IsAssignableFrom(e.ContentType))
+			{
+				this.UpdatePrefabLinkStatus(true);
+			}
+			this.UpdateSceneLabel(); // In case we save the Scene for the first time
 		}
 		private void DualityEditorApp_ResourceDeleted(object sender, ResourceEventArgs e)
 		{
