@@ -75,6 +75,13 @@
     <Compile Include="CamViewStates\GameViewCamViewState.cs" />
     <Compile Include="CamViewStates\RigidBodyEditorCamViewState.cs" />
     <Compile Include="CamViewStates\SceneEditorCamViewState.cs" />
+    <Compile Include="Modules\EditingGuide.cs" />
+    <Compile Include="Modules\GridSizeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\GridSizeDialog.Designer.cs">
+      <DependentUpon>GridSizeDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\CamViewRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -111,6 +118,9 @@
       <DependentUpon>CamView.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Modules\GridSizeDialog.resx">
+      <DependentUpon>GridSizeDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\CamViewRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -124,6 +134,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="EmbeddedResources\SnapToGrid.png" />
     <None Include="EmbeddedResources\shape_perspective.png" />
     <None Include="EmbeddedResources\curArrowCreateCircle.png" />
     <None Include="EmbeddedResources\curArrowCreatePolygon.png" />

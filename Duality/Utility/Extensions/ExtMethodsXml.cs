@@ -11,6 +11,11 @@ namespace Duality
 			XAttribute attribute = element.Attribute(name);
 			return attribute != null ? attribute.Value : null;
 		}
+		public static string GetElementValue(this XElement element, XName name)
+		{
+			XElement childElement = element.Element(name);
+			return childElement != null ? childElement.Value : null;
+		}
 
 		public static IEnumerable<XElement> Descendants(this XContainer container, XName name, bool ignoreNamespace)
 		{

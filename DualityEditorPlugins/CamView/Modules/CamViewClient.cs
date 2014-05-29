@@ -45,6 +45,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.view.FgColor; }
 		}
+		public EditingGuide EditingUserGuide
+		{
+			get { return this.view.EditingUserGuides; }
+		}
 		internal GLControl LocalGLControl
 		{
 			get { return this.view == null ? null : this.view.LocalGLControl; }

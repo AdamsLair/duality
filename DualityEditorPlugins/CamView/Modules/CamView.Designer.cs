@@ -39,6 +39,13 @@
 			this.buttonResetZoom = new System.Windows.Forms.ToolStripButton();
 			this.perspectiveDropDown = new System.Windows.Forms.ToolStripDropDownButton();
 			this.showBgColorDialog = new System.Windows.Forms.ToolStripButton();
+			this.snapToGridSelector = new System.Windows.Forms.ToolStripDropDownButton();
+			this.snapToGridInactiveItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.snapToGrid16Item = new System.Windows.Forms.ToolStripMenuItem();
+			this.snapToGrid32Item = new System.Windows.Forms.ToolStripMenuItem();
+			this.snapToGrid64Item = new System.Windows.Forms.ToolStripMenuItem();
+			this.snapToGridPixelPerfectItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.snapToGridCustomItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbarCamera.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -113,7 +120,8 @@
             this.focusDist,
             this.toolStripSeparator2,
             this.showBgColorDialog,
-            this.camSelector});
+            this.camSelector,
+            this.snapToGridSelector});
 			this.toolbarCamera.Location = new System.Drawing.Point(0, 0);
 			this.toolbarCamera.Name = "toolbarCamera";
 			this.toolbarCamera.Size = new System.Drawing.Size(539, 25);
@@ -167,6 +175,61 @@
 			this.showBgColorDialog.Text = "Change Background Color";
 			this.showBgColorDialog.Click += new System.EventHandler(this.showBgColorDialog_Click);
 			// 
+			// snapToGridSelector
+			// 
+			this.snapToGridSelector.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.snapToGridSelector.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.snapToGridInactiveItem,
+            this.snapToGridPixelPerfectItem,
+            this.snapToGrid16Item,
+            this.snapToGrid32Item,
+            this.snapToGrid64Item,
+            this.snapToGridCustomItem});
+			this.snapToGridSelector.Image = global::Duality.Editor.Plugins.CamView.Properties.Resources.SnapToGrid;
+			this.snapToGridSelector.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.snapToGridSelector.Name = "snapToGridSelector";
+			this.snapToGridSelector.Size = new System.Drawing.Size(29, 22);
+			this.snapToGridSelector.Text = "Snap to Grid";
+			this.snapToGridSelector.DropDownOpening += new System.EventHandler(this.snapToGridSelector_DropDownOpening);
+			this.snapToGridSelector.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.snapToGridSelector_DropDownItemClicked);
+			// 
+			// snapToGridInactiveItem
+			// 
+			this.snapToGridInactiveItem.Name = "snapToGridInactiveItem";
+			this.snapToGridInactiveItem.Size = new System.Drawing.Size(152, 22);
+			this.snapToGridInactiveItem.Text = "Don\'t";
+			// 
+			// snapToGrid16Item
+			// 
+			this.snapToGrid16Item.Name = "snapToGrid16Item";
+			this.snapToGrid16Item.Size = new System.Drawing.Size(152, 22);
+			this.snapToGrid16Item.Tag = "";
+			this.snapToGrid16Item.Text = "16 x 16";
+			// 
+			// snapToGrid32Item
+			// 
+			this.snapToGrid32Item.Name = "snapToGrid32Item";
+			this.snapToGrid32Item.Size = new System.Drawing.Size(152, 22);
+			this.snapToGrid32Item.Text = "32 x 32";
+			// 
+			// snapToGrid64Item
+			// 
+			this.snapToGrid64Item.Name = "snapToGrid64Item";
+			this.snapToGrid64Item.Size = new System.Drawing.Size(152, 22);
+			this.snapToGrid64Item.Text = "64 x 64";
+			// 
+			// snapToGridPixelPerfectItem
+			// 
+			this.snapToGridPixelPerfectItem.Name = "snapToGridPixelPerfectItem";
+			this.snapToGridPixelPerfectItem.Size = new System.Drawing.Size(152, 22);
+			this.snapToGridPixelPerfectItem.Text = "Pixel-Perfect";
+			// 
+			// snapToGridCustomItem
+			// 
+			this.snapToGridCustomItem.Name = "snapToGridCustomItem";
+			this.snapToGridCustomItem.Size = new System.Drawing.Size(152, 22);
+			this.snapToGridCustomItem.Text = "Custom";
+			// 
 			// CamView
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -200,6 +263,13 @@
 		private System.Windows.Forms.ToolStripDropDownButton layerSelector;
 		private System.Windows.Forms.ToolStripButton buttonResetZoom;
 		private System.Windows.Forms.ToolStripDropDownButton perspectiveDropDown;
+		private System.Windows.Forms.ToolStripDropDownButton snapToGridSelector;
+		private System.Windows.Forms.ToolStripMenuItem snapToGridInactiveItem;
+		private System.Windows.Forms.ToolStripMenuItem snapToGrid16Item;
+		private System.Windows.Forms.ToolStripMenuItem snapToGrid32Item;
+		private System.Windows.Forms.ToolStripMenuItem snapToGridPixelPerfectItem;
+		private System.Windows.Forms.ToolStripMenuItem snapToGrid64Item;
+		private System.Windows.Forms.ToolStripMenuItem snapToGridCustomItem;
 
 	}
 }

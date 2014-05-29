@@ -22,6 +22,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
 	public abstract class CamViewState : CamViewClient, IHelpProvider
 	{
+		[Flags]
+		public enum UserGuideType
+		{
+			None		= 0x0,
+
+			Position	= 0x1,
+			Scale		= 0x2,
+
+			All			= Position | Scale
+		}
 		public enum LockedAxis
 		{
 			None,
@@ -150,6 +160,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private Vector3			actionBeginLocSpace	= Vector3.Zero;
 		private Vector3			actionLastLocSpace	= Vector3.Zero;
 		private	LockedAxis		actionLockedAxis	= LockedAxis.None;
+		private	UserGuideType	snapToUserGuides	= UserGuideType.All;
 		private ObjectAction	action				= ObjectAction.None;
 		private	bool			selectionStatsValid	= false;
 		private	Vector3			selectionCenter		= Vector3.Zero;
@@ -250,6 +261,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					(this.mouseoverAction != ObjectAction.RectSelect ? this.mouseoverAction :
 					ObjectAction.None)));
 			}
+		}
+		public UserGuideType SnapToUserGuides
+		{
+			get { return this.snapToUserGuides; }
+			protected set { this.snapToUserGuides = value; }
 		}
 		public string StatusText
 		{
@@ -362,7 +378,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			if (this.IsActive) this.SaveActiveLayers();
 
-			XElement activeLayersNode = new XElement("activeLayers");
+			XElement activeLayersNode = new XElement("ActiveLayers");
 			foreach (Type t in this.lastActiveLayers)
 			{
 				XElement typeEntry = new XElement(t.GetTypeId());
@@ -372,7 +388,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		internal protected virtual void LoadUserData(XElement node)
 		{
-			XElement activeLayersNode = node.Element("activeLayers");
+			XElement activeLayersNode = node.Element("ActiveLayers") ?? node.Element("activeLayers"); // Legacy support (written 2014-05-09)
 			if (activeLayersNode != null)
 			{
 				this.lastActiveLayers.Clear();
@@ -789,6 +805,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			Point mousePos = this.PointToClient(Cursor.Position);
 			Vector3 mouseSpaceCoord = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, this.selectionCenter.Z));
+
+			// Apply user guide snapping
+			if ((this.snapToUserGuides & UserGuideType.Position) != UserGuideType.None)
+			{
+				mouseSpaceCoord = this.EditingUserGuide.SnapPosition(mouseSpaceCoord);
+			}
+
 			this.MoveSelectionTo(mouseSpaceCoord);
 		}
 		public void RotateSelectionBy(float rotation)
@@ -1116,18 +1139,27 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.ValidateSelectionStats();
 
+			// Determine where to move the object
 			float zMovement = this.CameraObj.Transform.Pos.Z - this.actionLastLocSpace.Z;
-			Vector3 target = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z + zMovement));
-			Vector3 movLock = this.actionBeginLocSpace - this.actionLastLocSpace;
-			Vector3 mov = target - this.actionLastLocSpace;
-			mov.Z = zMovement;
-			target.Z = 0;
+			Vector3 mousePosSpace = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z + zMovement)); mousePosSpace.Z = 0;
+			Vector3 resetMovement = this.actionBeginLocSpace - this.actionLastLocSpace;
+			Vector3 targetMovement = mousePosSpace - this.actionLastLocSpace; targetMovement.Z = zMovement;
 
-			mov = this.ApplyAxisLock(mov, movLock, target + (Vector3.UnitZ * this.CameraObj.Transform.Pos.Z) - this.actionBeginLocSpace);
+			// Apply user guide snapping
+			if ((this.snapToUserGuides & UserGuideType.Position) != UserGuideType.None)
+			{
+				Vector3 targetPosSpace = this.selectionCenter + targetMovement;
+				targetPosSpace = this.EditingUserGuide.SnapPosition(targetPosSpace);
+				targetMovement = targetPosSpace - this.selectionCenter;
+			}
 
-			this.MoveSelectionBy(mov);
+			// Apply user axis locks
+			targetMovement = this.ApplyAxisLock(targetMovement, resetMovement, mousePosSpace - this.actionBeginLocSpace + new Vector3(0.0f, 0.0f, this.CameraObj.Transform.Pos.Z));
 
-			this.actionLastLocSpace += mov;
+			// Move the selected objects accordingly
+			this.MoveSelectionBy(targetMovement);
+
+			this.actionLastLocSpace += targetMovement;
 		}
 		private void UpdateObjRotate(Point mouseLoc)
 		{
@@ -1150,26 +1182,27 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
 			float lastRadius = this.selectionRadius;
 			float curRadius = (this.selectionCenter - spaceCoord).Length;
+
+			if ((this.snapToUserGuides & UserGuideType.Scale) != UserGuideType.None)
+			{
+				curRadius = this.EditingUserGuide.SnapSize(curRadius);
+			}
+
 			float scale = MathF.Clamp(curRadius / lastRadius, 0.0001f, 10000.0f);
-			
 			this.ScaleSelectionBy(scale);
 
 			this.actionLastLocSpace = spaceCoord;
 			this.Invalidate();
 		}
 
-		protected Vector2 ApplyAxisLock(Vector2 targetVec, Vector2 lockedVec)
-		{
-			return targetVec + this.ApplyAxisLock(Vector2.Zero, lockedVec - targetVec, lockedVec - targetVec);
-		}
-		protected Vector2 ApplyAxisLock(Vector2 baseVec, Vector2 lockedVec, Vector2 beginToTarget)
-		{
-			return this.ApplyAxisLock(new Vector3(baseVec), new Vector3(lockedVec), new Vector3(beginToTarget)).Xy;
-		}
-		protected Vector3 ApplyAxisLock(Vector3 targetVec, Vector3 lockedVec)
-		{
-			return targetVec + this.ApplyAxisLock(Vector3.Zero, lockedVec - targetVec, lockedVec - targetVec);
-		}
+		/// <summary>
+		/// Returns an axis-locked version of the specified vector, if requested by the user. Doesn't
+		/// do anything when no axis lock is in currently active.
+		/// </summary>
+		/// <param name="baseVec">The base vector without any locking in place.</param>
+		/// <param name="lockedVec">A reference vector that represents the base vector being locked to all axes at once.</param>
+		/// <param name="beginToTarget">The movement vector to evaluate in order to determine the axes to which the base vector will be locked.</param>
+		/// <returns></returns>
 		protected Vector3 ApplyAxisLock(Vector3 baseVec, Vector3 lockedVec, Vector3 beginToTarget)
 		{
 			bool shift = (Control.ModifierKeys & Keys.Shift) != Keys.None;
@@ -1201,6 +1234,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 				return lockedVec;
 			}
+		}
+		protected Vector2 ApplyAxisLock(Vector2 baseVec, Vector2 lockedVec, Vector2 beginToTarget)
+		{
+			return this.ApplyAxisLock(new Vector3(baseVec), new Vector3(lockedVec), new Vector3(beginToTarget)).Xy;
+		}
+		protected Vector3 ApplyAxisLock(Vector3 targetVec, Vector3 lockedVec)
+		{
+			return targetVec + this.ApplyAxisLock(Vector3.Zero, lockedVec - targetVec, lockedVec - targetVec);
+		}
+		protected Vector2 ApplyAxisLock(Vector2 targetVec, Vector2 lockedVec)
+		{
+			return targetVec + this.ApplyAxisLock(Vector2.Zero, lockedVec - targetVec, lockedVec - targetVec);
 		}
 		
 		protected void CollectLayerDrawcalls(Canvas canvas)

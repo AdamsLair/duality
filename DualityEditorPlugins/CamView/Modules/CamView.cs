@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 using System.Xml.Linq;
 using BitArray = System.Collections.BitArray;
 
@@ -131,39 +132,43 @@ namespace Duality.Editor.Plugins.CamView
 			}
 		}
 
+
 		public const float DefaultDisplayBoundRadius = 25.0f;
 
-		private	int					runtimeId		= 0;
-		private	GLControl			glControl		= null;
-		private	GameObject			camObj			= null;
-		private	Camera				camComp			= null;
-		private	CamViewState		activeState		= null;
-		private	List<CamViewLayer>	activeLayers	= null;
-		private	List<Type>			lockedLayers	= new List<Type>();
-		private	ColorPickerDialog	bgColorDialog	= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
-		private	GameObject			nativeCamObj	= null;
-		private	string				loadTempState	= null;
+
+		private	int					runtimeId			= 0;
+		private	GLControl			glControl			= null;
+		private	GameObject			camObj				= null;
+		private	Camera				camComp				= null;
+		private	CamViewState		activeState			= null;
+		private	List<CamViewLayer>	activeLayers		= null;
+		private	List<Type>			lockedLayers		= new List<Type>();
+		private	EditingGuide		editingUserGuides	= new EditingGuide();
+		private	ColorPickerDialog	bgColorDialog		= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
+		private	GameObject			nativeCamObj		= null;
+		private	string				loadTempState		= null;
 		private	string				loadTempPerspective	= null;
+		private	ToolStripItem		activeToolItem		= null;
 		private	InputEventMessageRedirector	waitForInputFilter	= null;
-		private	ToolStripItem		activeToolItem	= null;
 
 		private	Dictionary<Type,CamViewLayer>	availLayers	= new Dictionary<Type,CamViewLayer>();
 		private	Dictionary<Type,CamViewState>	availStates	= new Dictionary<Type,CamViewState>();
 
-		private	bool	inputMouseCapture	= false;
-		private	int		inputMouseX			= 0;
-		private	int		inputMouseY			= 0;
-		private	float	inputMouseWheel		= 0.0f;
-		private	int		inputMouseButtons	= 0;
-		private	bool	inputMouseInView	= false;
-
+		private	bool		inputMouseCapture	= false;
+		private	int			inputMouseX			= 0;
+		private	int			inputMouseY			= 0;
+		private	float		inputMouseWheel		= 0.0f;
+		private	int			inputMouseButtons	= 0;
+		private	bool		inputMouseInView	= false;
 		private	bool		inputKeyRepeat		= false;
 		private	bool		inputKeyFocus		= false;
 		private	int			inputKeyRepeatCount	= 0;
 		private	BitArray	inputKeyPressed		= new BitArray((int)Key.LastKey + 1, false);
 
+
 		public event EventHandler PerspectiveChanged	= null;
 		public event EventHandler<CameraChangedEventArgs> CurrentCameraChanged	= null;
+
 
 		public ColorRgba BgColor
 		{
@@ -222,6 +227,11 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.activeLayers; }
 		}
+		public EditingGuide EditingUserGuides
+		{
+			get { return this.editingUserGuides; }
+		}
+
 
 		public CamView(int runtimeId, string initStateTypeName = null)
 		{
@@ -255,6 +265,13 @@ namespace Duality.Editor.Plugins.CamView
 				layer.View = this;
 				this.availLayers.Add(t, layer);
 			}
+
+			this.snapToGridInactiveItem.Tag = Vector3.Zero;
+			this.snapToGridPixelPerfectItem.Tag = new Vector3(1, 1, 1);
+			this.snapToGrid16Item.Tag = new Vector3(16, 16, 16);
+			this.snapToGrid32Item.Tag = new Vector3(32, 32, 32);
+			this.snapToGrid64Item.Tag = new Vector3(64, 64, 64);
+			this.editingUserGuides.GridSize = Vector3.Zero;
 		}
 		protected override void OnShown(EventArgs e)
 		{
@@ -572,14 +589,20 @@ namespace Duality.Editor.Plugins.CamView
 
 		internal void SaveUserData(XElement node)
 		{
-			node.SetAttributeValue("perspective", this.nativeCamObj.Camera.Perspective.ToString());
-			node.SetAttributeValue("focusDist", this.nativeCamObj.Camera.FocusDist.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("bgColorArgb", this.nativeCamObj.Camera.ClearColor.ToIntArgb().ToString(CultureInfo.InvariantCulture));
+			node.SetElementValue("Perspective", this.nativeCamObj.Camera.Perspective.ToString());
+			node.SetElementValue("FocusDist", XmlConvert.ToString(this.nativeCamObj.Camera.FocusDist));
+			node.SetElementValue("BgColorArgb", XmlConvert.ToString(this.nativeCamObj.Camera.ClearColor.ToIntArgb()));
+
+			XElement snapToGridSizeElement = new XElement("SnapToGridSize");
+			node.Add(snapToGridSizeElement);
+			snapToGridSizeElement.SetElementValue("X", XmlConvert.ToString(this.editingUserGuides.GridSize.X));
+			snapToGridSizeElement.SetElementValue("Y", XmlConvert.ToString(this.editingUserGuides.GridSize.Y));
+			snapToGridSizeElement.SetElementValue("Z", XmlConvert.ToString(this.editingUserGuides.GridSize.Z));
 
 			if (this.activeState != null) 
-				node.SetAttributeValue("activeState", this.activeState.GetType().GetTypeId());
+				node.SetElementValue("ActiveState", this.activeState.GetType().GetTypeId());
 
-			XElement stateListNode = new XElement("states");
+			XElement stateListNode = new XElement("States");
 			foreach (var pair in this.availStates)
 			{
 				XElement stateNode = new XElement(pair.Key.GetTypeId());
@@ -588,7 +611,7 @@ namespace Duality.Editor.Plugins.CamView
 			}
 			node.Add(stateListNode);
 
-			XElement layerListNode = new XElement("layers");
+			XElement layerListNode = new XElement("Layers");
 			foreach (var pair in this.availLayers)
 			{
 				XElement layerNode = new XElement(pair.Key.GetTypeId());
@@ -602,18 +625,48 @@ namespace Duality.Editor.Plugins.CamView
 			decimal tryParseDecimal;
 			int tryParseInt;
 
-			if (decimal.TryParse(node.GetAttributeValue("focusDist"), out tryParseDecimal))
-				this.focusDist.Value = Math.Abs(tryParseDecimal);
-			if (int.TryParse(node.GetAttributeValue("bgColorArgb"), out tryParseInt))
+			// Legacy support for old XML layout (written 2014-05-29)
+			bool loadFromAttributes = node.Attribute("focusDist") != null;
+			if (loadFromAttributes)
 			{
-				this.bgColorDialog.OldColor = Color.FromArgb(tryParseInt);
-				this.bgColorDialog.SelectedColor = this.bgColorDialog.OldColor;
+				if (decimal.TryParse(node.GetAttributeValue("focusDist"), out tryParseDecimal))
+				{
+					this.focusDist.Value = Math.Abs(tryParseDecimal);
+				}
+				if (int.TryParse(node.GetAttributeValue("bgColorArgb"), out tryParseInt))
+				{
+					this.bgColorDialog.OldColor = Color.FromArgb(tryParseInt);
+					this.bgColorDialog.SelectedColor = this.bgColorDialog.OldColor;
+				}
+				this.loadTempPerspective = node.GetAttributeValue("perspective");
+				this.loadTempState = node.GetAttributeValue("activeState");
+			}
+			else
+			{
+				if (decimal.TryParse(node.GetElementValue("FocusDist"), out tryParseDecimal))
+				{
+					this.focusDist.Value = Math.Abs(tryParseDecimal);
+				}
+				if (int.TryParse(node.GetElementValue("BgColorArgb"), out tryParseInt))
+				{
+					this.bgColorDialog.OldColor = Color.FromArgb(tryParseInt);
+					this.bgColorDialog.SelectedColor = this.bgColorDialog.OldColor;
+				}
+				this.loadTempPerspective = node.GetElementValue("Perspective");
+				this.loadTempState = node.GetElementValue("ActiveState");
+
+				XElement snapToGridSizeElement = node.Element("SnapToGridSize");
+				if (snapToGridSizeElement != null)
+				{
+					Vector3 size;
+					size.X = XmlConvert.ToSingle(snapToGridSizeElement.GetElementValue("X") ?? "0");
+					size.Y = XmlConvert.ToSingle(snapToGridSizeElement.GetElementValue("Y") ?? "0");
+					size.Z = XmlConvert.ToSingle(snapToGridSizeElement.GetElementValue("Z") ?? "0");
+					this.editingUserGuides.GridSize = size;
+				}
 			}
 
-			this.loadTempPerspective = node.GetAttributeValue("perspective");
-			this.loadTempState = node.GetAttributeValue("activeState");
-
-			XElement stateListNode = node.Element("states");
+			XElement stateListNode = node.Element("States") ?? node.Element("states"); // Legacy support (written 2014-05-09)
 			if (stateListNode != null)
 			{
 				foreach (var pair in this.availStates)
@@ -624,7 +677,7 @@ namespace Duality.Editor.Plugins.CamView
 				}
 			}
 
-			XElement layerListNode = node.Element("layers");
+			XElement layerListNode = node.Element("Layers") ?? node.Element("layers"); // Legacy support (written 2014-05-09)
 			if (layerListNode != null)
 			{
 				foreach (var pair in this.availLayers)
@@ -648,6 +701,7 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		public void SetToolbarCamSettingsEnabled(bool value)
 		{
+			this.snapToGridSelector.Enabled = value;
 			this.perspectiveDropDown.Enabled = value;
 			this.focusDist.Enabled = value;
 			this.camSelector.Enabled = value;
@@ -1040,6 +1094,36 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (this.activeToolItem == this.layerSelector)
 				this.activeToolItem = null;
+		}
+		private void snapToGridSelector_DropDownOpening(object sender, EventArgs e)
+		{
+			bool anyChecked = false;
+			foreach (ToolStripMenuItem item in this.snapToGridSelector.DropDownItems)
+			{
+				item.Checked = this.editingUserGuides.GridSize.Equals(item.Tag);
+				if (item.Checked) anyChecked = true;
+			}
+			this.snapToGridCustomItem.Checked = !anyChecked;
+		}
+		private void snapToGridSelector_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			if (e.ClickedItem.Tag == null)
+			{
+				GridSizeDialog dialog = new GridSizeDialog();
+				dialog.GridSize = this.editingUserGuides.GridSize;
+
+				DialogResult result = dialog.ShowDialog();
+				if (result == DialogResult.OK)
+				{
+					this.editingUserGuides.GridSize = dialog.GridSize;
+				}
+			}
+			else
+			{
+				this.editingUserGuides.GridSize = (Vector3)e.ClickedItem.Tag;
+			}
+
+			this.LocalGLControl.Invalidate();
 		}
 		private void perspectiveDropDown_DropDownOpening(object sender, EventArgs e)
 		{

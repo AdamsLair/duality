@@ -89,5 +89,15 @@ namespace Duality.Editor.Plugins.CamView.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SnapToGrid {
+            get {
+                object obj = ResourceManager.GetObject("SnapToGrid", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

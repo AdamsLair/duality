@@ -102,10 +102,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 
+
 		private ObjectSelection selBeforeDrag			= null;
 		private	DateTime		dragTime				= DateTime.Now;
 		private	Point			dragLastLoc				= Point.Empty;
 		private Point			mousePosOnContextMenu	= Point.Empty;
+
 
 		public override string StateName
 		{
@@ -118,6 +120,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private float DragMustWaitProgress
 		{
 			get { return MathF.Clamp((float)(DateTime.Now - this.dragTime).TotalMilliseconds / 500.0f, 0.0f, 1.0f); }
+		}
+
+
+		public SceneEditorCamViewState()
+		{
+			this.SnapToUserGuides &= (~UserGuideType.Scale);
 		}
 
 		internal protected override void OnEnterState()
@@ -144,7 +152,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.InvalidateSelectionStats();
 		}
-
 		internal protected override void OnLeaveState()
 		{
 			base.OnLeaveState();
@@ -349,6 +356,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					mouseLoc.X, 
 					mouseLoc.Y, 
 					lockZ ? 0.0f : this.CameraObj.Transform.Pos.Z + MathF.Abs(this.CameraComponent.FocusDist)));
+				if ((this.SnapToUserGuides & UserGuideType.Position) != UserGuideType.None)
+				{
+					spaceCoord = this.EditingUserGuide.SnapPosition(spaceCoord);
+				}
 
 				// Setup GameObjects
 				CreateGameObjectAction createAction = new CreateGameObjectAction(null, dragObj);

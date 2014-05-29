@@ -520,6 +520,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(e.X, e.Y, selTransform.Pos.Z));
 			Vector2 localPos = selTransform.GetLocalPoint(spaceCoord).Xy;
+			
+			if ((this.SnapToUserGuides & UserGuideType.Position) != UserGuideType.None)
+			{
+				localPos = this.EditingUserGuide.SnapPosition(localPos);
+			}
 
 			if (this.mouseState == CursorState.CreateCircle)
 			{
@@ -765,6 +770,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Transform selTransform = this.selectedBody != null && this.selectedBody.GameObj != null ? this.selectedBody.GameObj.Transform : null;
 			Vector3 spaceCoord = selTransform != null ? this.GetSpaceCoord(new Vector3(e.X, e.Y, selTransform.Pos.Z)) : Vector3.Zero;
 			Vector2 localPos = selTransform != null ? selTransform.GetLocalPoint(spaceCoord).Xy : Vector2.Zero;
+			
+			if ((this.SnapToUserGuides & UserGuideType.Position) != UserGuideType.None)
+			{
+				localPos = this.EditingUserGuide.SnapPosition(localPos);
+			}
 
 			if (this.mouseState != CursorState.Normal) this.UpdateCursorImage();
 
@@ -826,7 +836,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			bool shapeAction = 
 				action != ObjectAction.RectSelect && 
 				action != ObjectAction.None;
-			if (this.selectedBody != null && shapeAction) this.selectedBody.BeginUpdateBodyShape();
+			if (this.selectedBody != null && shapeAction)
+			{
+				this.selectedBody.BeginUpdateBodyShape();
+				this.EditingUserGuide.SnapPosOrigin = this.selectedBody.GameObj.Transform.Pos;
+				this.EditingUserGuide.SnapScaleOrigin = Vector3.One * this.selectedBody.GameObj.Transform.Scale;
+			}
 		}
 		protected override void OnEndAction(CamViewState.ObjectAction action)
 		{
@@ -843,6 +858,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.createAction = false;
 				UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
 			}
+			this.EditingUserGuide.SnapPosOrigin = Vector3.Zero;
+			this.EditingUserGuide.SnapScaleOrigin = Vector3.One;
 		}
 		protected override void PostPerformAction(IEnumerable<CamViewState.SelObj> selObjEnum, CamViewState.ObjectAction action)
 		{
