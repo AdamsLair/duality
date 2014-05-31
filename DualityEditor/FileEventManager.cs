@@ -60,7 +60,7 @@ namespace Duality.Editor
 			pluginWatcherWorking.EnableRaisingEvents = true;
 
 			string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, DualityApp.PluginDirectory);
-			if (Path.GetFullPath(execPluginDir) != Path.GetFullPath(DualityApp.PluginDirectory) && Directory.Exists(execPluginDir))
+			if (Path.GetFullPath(execPluginDir).ToLower() != Path.GetFullPath(DualityApp.PluginDirectory).ToLower() && Directory.Exists(execPluginDir))
 			{
 				pluginWatcherExec = new FileSystemWatcher();
 				pluginWatcherExec.SynchronizingObject = DualityEditorApp.MainForm;
