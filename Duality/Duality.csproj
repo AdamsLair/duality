@@ -51,9 +51,8 @@
     <Reference Include="FarseerDuality">
       <HintPath>.\FarseerDuality.dll</HintPath>
     </Reference>
-    <Reference Include="NVorbis, Version=0.7.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\NVorbis.dll</HintPath>
+    <Reference Include="NVorbis">
+      <HintPath>..\packages\AdamsLair.NVorbis.0.7.4\lib\NVorbis.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK, Version=1.0.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -342,6 +341,7 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)"
 copy "$(TargetDir)Duality.xml" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)"</PostBuildEvent>
