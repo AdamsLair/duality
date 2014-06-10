@@ -506,6 +506,13 @@ namespace Duality.Editor
 				if (targetResTypes != null)
 				{
 					Type resType = Resource.GetTypeByFileName(file);
+
+					if (resType == null)
+					{
+						Log.Editor.WriteWarning("Could not find a resource type for file '{0}' while renaming content references.", file);
+						continue;
+					}
+
 					bool canReferenceRes = false;
 					foreach (Type targetType in targetResTypes)
 					{
