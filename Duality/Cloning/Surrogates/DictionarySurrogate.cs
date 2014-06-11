@@ -27,7 +27,32 @@ namespace Duality.Cloning.Surrogates
 		{
 			IDictionary<T,U> dict = this.RealObject as IDictionary<T,U>;
 			targetObj.Clear();
-			foreach (var pair in dict) targetObj.Add(pair.Key, pair.Value);
+
+			// Determine unwrapping behavior to provide faster / more optimized loops.
+			bool isReferenceTypeKey = !typeof(T).IsDeepByValueType();
+			bool isReferenceTypeValue = !typeof(U).IsDeepByValueType();
+
+			// Copy all pairs. Don't check each pair, if the Type won't be unwrapped anyway.
+			if (isReferenceTypeKey && isReferenceTypeValue)
+			{
+				foreach (var pair in dict)
+					targetObj.Add(provider.RequestObjectClone(pair.Key), provider.RequestObjectClone(pair.Value));
+			}
+			else if (isReferenceTypeKey)
+			{
+				foreach (var pair in dict)
+					targetObj.Add(provider.RequestObjectClone(pair.Key), pair.Value);
+			}
+			else if (isReferenceTypeValue)
+			{
+				foreach (var pair in dict)
+					targetObj.Add(pair.Key, provider.RequestObjectClone(pair.Value));
+			}
+			else
+			{
+				foreach (var pair in dict)
+					targetObj.Add(pair.Key, pair.Value);
+			}
 		}
 	}
 }
