@@ -15,7 +15,7 @@
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-	<RestorePackages>true</RestorePackages>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>DualityIconC.ico</ApplicationIcon>
@@ -78,6 +78,9 @@
       <HintPath>.\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Build" />
+    <Reference Include="NuGet.Core">
+      <HintPath>..\packages\NuGet.Core.2.8.2\lib\net40-Client\NuGet.Core.dll</HintPath>
+    </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <HintPath>..\packages\AdamsLair.OpenTK.1.1.0.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
@@ -143,6 +146,9 @@
     <Compile Include="CorePluginInterface\DesignTimeObjectData.cs" />
     <Compile Include="CorePluginInterface\PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
+    <Compile Include="PackageManagement\PackageInfo.cs" />
+    <Compile Include="PackageManagement\LocalPackage.cs" />
+    <Compile Include="PackageManagement\PackageManager.cs" />
     <Compile Include="Properties\GeneralRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -301,7 +307,7 @@
     <Content Include="DualityIconB.ico" />
     <Content Include="DualityIconC.ico" />
     <None Include="EmbeddedResources\clock.png" />
-    <None Include="EmbeddedResources\editoruserdata.xml" />
+    <None Include="EmbeddedResources\EditorUserData.xml" />
     <None Include="EmbeddedResources\application_stopwatch.png" />
     <EmbeddedResource Include="EmbeddedResources\ErrorHandlersTemplate.txt" />
     <Content Include="EmbeddedResources\namespace.png" />

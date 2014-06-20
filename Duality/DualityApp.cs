@@ -92,7 +92,6 @@ namespace Duality
 		private	static	ExecutionContext			execContext			= ExecutionContext.Terminated;
 		private	static	DualityAppData				appData				= null;
 		private	static	DualityUserData				userData			= null;
-		private	static	DualityMetaData				metaData			= null;
 		private	static	List<object>				disposeSchedule		= new List<object>();
 
 		private	static	Dictionary<string,CorePlugin>	plugins			= new Dictionary<string,CorePlugin>();
@@ -204,18 +203,11 @@ namespace Duality
 			}
 		}
 		/// <summary>
-		/// [GET] Provides access to Duality's current <see cref="DualityMetaData">meta data</see>. This is never null.
-		/// </summary>
-		public static DualityMetaData MetaData
-		{
-			get { return metaData; }
-		}
-		/// <summary>
 		/// [GET] Returns the path where this DualityApp's <see cref="DualityAppData">application data</see> is located at.
 		/// </summary>
 		public static string AppDataPath
 		{
-			get { return "appdata.dat"; }
+			get { return "AppData.dat"; }
 		}
 		/// <summary>
 		/// [GET] Returns the path where this DualityApp's <see cref="DualityUserData">user data</see> is located at.
@@ -226,7 +218,7 @@ namespace Duality
 			{
 				if (AppData.LocalUserData)
 				{
-					return "userdata.dat";
+					return "UserData.dat";
 				}
 				else
 				{
@@ -235,22 +227,8 @@ namespace Duality
 						"Duality", 
 						"AppData", 
 						PathHelper.GetValidFileName(appData.AppName), 
-						"userdata.dat");
+						"UserData.dat");
 				}
-			}
-		}
-		/// <summary>
-		/// [GET] Returns the path where this DualityApp's <see cref="DualityMetaData">meta data</see> is located at.
-		/// </summary>
-		public static string MetaDataPath
-		{
-			get
-			{
-				string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-				path = Path.Combine(path, "Duality");
-				path = Path.Combine(path, "AppData");
-				path = Path.Combine(path, "metadata.dat");
-				return path;
 			}
 		}
 		/// <summary>
@@ -378,7 +356,6 @@ namespace Duality
 			LoadPlugins();
 			LoadAppData();
 			LoadUserData();
-			LoadMetaData();
 			
 			// Determine available and default graphics modes
 			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
@@ -462,7 +439,6 @@ namespace Duality
 				{
 					OnTerminating();
 					SaveUserData();
-					SaveMetaData();
 				}
 				sound.Dispose();
 				sound = null;
@@ -613,7 +589,6 @@ namespace Duality
 		{
 			LoadAppData();
 			LoadUserData();
-			LoadMetaData();
 
 			ContentProvider.ClearContent();
 			string[] resFiles = Directory.GetFiles(DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
@@ -626,7 +601,6 @@ namespace Duality
 
 			SaveAppData();
 			SaveUserData();
-			SaveMetaData();
 		}
 
 		/// <summary>
@@ -646,13 +620,6 @@ namespace Duality
 			userData = Formatter.TryReadObject<DualityUserData>(path) ?? new DualityUserData();
 		}
 		/// <summary>
-		/// Triggers Duality to (re)load its <see cref="DualityMetaData"/>.
-		/// </summary>
-		public static void LoadMetaData()
-		{
-			metaData = Formatter.TryReadObject<DualityMetaData>(MetaDataPath) ?? new DualityMetaData();
-		}
-		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityAppData"/>.
 		/// </summary>
 		public static void SaveAppData()
@@ -670,13 +637,6 @@ namespace Duality
 			{
 				Formatter.WriteObject(userData, "defaultuserdata.dat", FormattingMethod.Xml);
 			}
-		}
-		/// <summary>
-		/// Triggers Duality to save its <see cref="DualityMetaData"/>.
-		/// </summary>
-		public static void SaveMetaData()
-		{
-			Formatter.WriteObject(metaData, MetaDataPath, FormattingMethod.Xml);
 		}
 
 		private static void LoadPlugins()

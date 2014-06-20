@@ -16,6 +16,7 @@ using Duality.Resources;
 using Duality.Drawing;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
+using Duality.Editor.PackageManagement;
 
 using OpenTK;
 using OpenTK.Platform;
@@ -60,8 +61,8 @@ namespace Duality.Editor
 
 	public static class DualityEditorApp
 	{
-		public	const	string	DesignTimeDataFile		= "designtimedata.dat";
-		public	const	string	UserDataFile			= "editoruserdata.xml";
+		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
+		public	const	string	UserDataFile			= "EditorUserData.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
 
 		public	const	string	ActionContextMenu		= "ContextMenu";
@@ -88,6 +89,7 @@ namespace Duality.Editor
 		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
+		private	static PackageManager				packageManager		= null;
 
 
 		public	static	event	EventHandler	Terminating			= null;
@@ -215,6 +217,9 @@ namespace Duality.Editor
 			// Register Assembly Resolve hook for inter-Plugin dependency handling
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
+			// Initialize the Package Management
+			//packageManager = new PackageManager();
+
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
 			DualityApp.PluginReady += DualityApp_PluginReady;
@@ -314,6 +319,10 @@ namespace Duality.Editor
 			if (!cancel)
 			{
 				if (Terminating != null) Terminating(null, EventArgs.Empty);
+				
+				// Save UserData
+				DualityEditorApp.SaveUserData();
+				DualityApp.SaveAppData();
 
 				// Unregister events
 				EditorHintImageAttribute.ImageResolvers -= EditorHintImageResolver;
@@ -341,8 +350,6 @@ namespace Duality.Editor
 				DesignTimeObjectData.Terminate();
 
 				// Terminate Duality
-				DualityEditorApp.SaveUserData();
-				DualityApp.SaveAppData();
 				DualityApp.Terminate();
 			}
 

@@ -555,12 +555,10 @@ namespace Duality.Editor.Forms
 			state.StateDesc = "DualityApp Data"; yield return null;
 			DualityApp.LoadAppData();
 			DualityApp.LoadUserData();
-			DualityApp.LoadMetaData();
 			state.Progress += 0.05f; yield return null;
 					
 			DualityApp.SaveAppData();
 			DualityApp.SaveUserData();
-			DualityApp.SaveMetaData();
 			state.Progress += 0.05f; yield return null;
 
 			// Special case: Current Scene in sandbox mode

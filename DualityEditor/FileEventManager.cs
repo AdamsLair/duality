@@ -462,17 +462,14 @@ namespace Duality.Editor
 			state.StateDesc = "DualityApp Data"; yield return null;
 			DualityApp.LoadAppData();
 			DualityApp.LoadUserData();
-			DualityApp.LoadMetaData();
 			state.Progress += 0.04f; yield return null;
 
 			totalCounter += async_RenameContentRefs_Perform(DualityApp.AppData, renameData);
 			totalCounter += async_RenameContentRefs_Perform(DualityApp.UserData, renameData);
-			totalCounter += async_RenameContentRefs_Perform(DualityApp.MetaData, renameData);
 			state.Progress += 0.02f; yield return null;
 
 			DualityApp.SaveAppData();
 			DualityApp.SaveUserData();
-			DualityApp.SaveMetaData();
 			state.Progress += 0.04f; yield return null;
 
 			// Special case: Current Scene in sandbox mode
