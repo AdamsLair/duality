@@ -103,3 +103,5 @@ Other/Dependencies/AdamsLair.PropertyGrid/PropertyGrid/AdamsLair.PropertyGrid.xm
 DualityPlugins/Steering/Testbed/defaultuserdata.dat
 Documentation/Help/DDoc.chm
 packages/
+DualityUpdater/bin/
+DualityUpdater/obj/

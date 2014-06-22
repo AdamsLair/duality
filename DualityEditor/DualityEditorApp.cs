@@ -219,6 +219,12 @@ namespace Duality.Editor
 
 			// Initialize the Package Management
 			//packageManager = new PackageManager();
+			//packageManager.VerifyPackages();
+			//if (packageManager.ApplyUpdate())
+			//{
+			//    Application.Exit();
+			//    return;
+			//}
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;

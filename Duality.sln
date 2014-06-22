@@ -48,6 +48,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamView", "DualityEditorPlu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{1F9CE5E4-5E97-4813-9299-33064673D393}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityUpdater", "DualityUpdater\DualityUpdater.csproj", "{7BED6319-022E-4B62-8F64-F51DE9A2D7EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -116,6 +118,10 @@ Global
 		{E67350ED-2676-492A-9FBE-A08B5FBF3726}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E67350ED-2676-492A-9FBE-A08B5FBF3726}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E67350ED-2676-492A-9FBE-A08B5FBF3726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BED6319-022E-4B62-8F64-F51DE9A2D7EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BED6319-022E-4B62-8F64-F51DE9A2D7EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BED6319-022E-4B62-8F64-F51DE9A2D7EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BED6319-022E-4B62-8F64-F51DE9A2D7EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

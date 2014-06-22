@@ -18,6 +18,7 @@ namespace Duality.Editor.PackageManagement
 		public Version Version
 		{
 			get { return this.version; }
+			internal set { this.version = value; }
 		}
 
 

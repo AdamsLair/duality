@@ -5,6 +5,8 @@ using System.Text;
 using System.IO;
 using System.Xml;
 using System.Xml.Linq;
+using System.Windows.Forms;
+using System.Diagnostics;
 
 using Duality;
 
@@ -14,7 +16,9 @@ namespace Duality.Editor.PackageManagement
 {
 	public sealed class PackageManager
 	{
+		private	const	string	UpdateConfigFile		= "ApplyUpdate.xml";
 		private	const	string	PackageConfigFile		= "PackageConfig.xml";
+		private const	string	LocalPackageDir			= EditorHelper.SourceDirectory + @"\Packages";
 		private	const	string	DefaultRepositoryUrl	= @"https://packages.nuget.org/api/v2";
 
 		private	Uri						repositoryUrl	= null;
@@ -35,6 +39,14 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.localPackages; }
 		}
+		private string PackageFilePath
+		{
+			get { return Path.Combine(this.rootPath, PackageConfigFile); }
+		}
+		private string UpdateFilePath
+		{
+			get { return Path.Combine(this.rootPath, UpdateConfigFile); }
+		}
 
 
 		internal PackageManager(string rootPath = null, string dataTargetDir = null, string pluginTargetDir = null)
@@ -49,7 +61,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Create internal package management objects
 			this.repository = NuGet.PackageRepositoryFactory.Default.CreateRepository(this.repositoryUrl.AbsoluteUri);
-			this.manager = new NuGet.PackageManager(this.repository, "Packages");
+			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 		}
@@ -64,21 +76,70 @@ namespace Duality.Editor.PackageManagement
 		}
 		public void VerifyPackages()
 		{
-			// Instruct NuGet to install all packages and see whether it does something
-			foreach (LocalPackage package in this.localPackages)
+			Log.Editor.Write("Verifying packages...");
+			Log.Editor.PushIndent();
+			try
 			{
-				this.manager.InstallPackage(package.Id, new SemanticVersion(package.Version));
-			}
+				bool packageConfigModified = false;
 
-			// Apply all the updates that may have been downloaded
-			this.ApplyUpdate();
+				// Instruct NuGet to install all packages and see whether it does something
+				foreach (LocalPackage package in this.localPackages)
+				{
+					// Determine the exact version that will be downloaded
+					Version version = package.Version;
+					bool explicitVersionRetrieved = false;
+					if (version == null)
+					{
+						PackageInfo info = this.QueryPackageInfo(package.Id);
+						if (info != null)
+						{
+							version = info.Version;
+							explicitVersionRetrieved = (version != null);
+						}
+					}
+					if (version == null)
+					{
+						Log.Editor.WriteError(
+							"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
+							package.Id);
+						continue;
+					}
+
+					// Install the package and prepare the update via event handlers
+					this.manager.InstallPackage(package.Id, new SemanticVersion(version));
+
+					// Update the package config version number, in case we've just retrieved an explicit version
+					if (explicitVersionRetrieved)
+					{
+						package.Version = version;
+						packageConfigModified = true;
+					}
+				}
+
+				// If the package configuration was changed due to verification, make sure to update it
+				if (packageConfigModified)
+				{
+					this.SaveConfig();
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Editor.WriteError(Log.Exception(e));
+			}
+			Log.Editor.PopIndent();
 		}
-		public void ApplyUpdate()
+		public bool ApplyUpdate(bool restartEditor = true)
 		{
-			// ToDo: Call on each editor startup
-			// ToDo: Early-out, if no update is scheduled
-			// ToDo: Shutdown Dualitor, launch an updater process, copy files, etc.
-			// ToDo: Implement an updater process
+			if (!File.Exists(this.UpdateFilePath)) return false;
+			
+			Process.Start("DualityUpdater.exe", string.Format("{0} {1} {2}",
+				UpdateConfigFile,
+				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
+				restartEditor ? Environment.CurrentDirectory : ""));
+
+			System.Threading.Thread.Sleep(3000);
+
+			return true;
 		}
 
 		public IEnumerable<PackageInfo> QueryAvailablePackages()
@@ -162,7 +223,7 @@ namespace Duality.Editor.PackageManagement
 			this.localPackages.Clear();
 
 			// Check whethere there is a config file to load
-			string configFilePath = Path.Combine(this.rootPath, PackageConfigFile);
+			string configFilePath = this.PackageFilePath;
 			if (!File.Exists(configFilePath)) return;
 
 			// If there is, load data from the config file
@@ -206,17 +267,110 @@ namespace Duality.Editor.PackageManagement
 						)
 					))
 				));
-			doc.Save(PackageConfigFile);
+			doc.Save(this.PackageFilePath);
 		}
 
-		
+		private XDocument PrepareUpdateFile()
+		{
+			// Load existing update file in order to update it
+			string updateFilePath = this.UpdateFilePath;
+			XDocument updateDoc = null;
+			if (File.Exists(updateFilePath))
+			{
+				try
+				{
+					updateDoc = XDocument.Load(updateFilePath);
+				}
+				catch (Exception exception)
+				{
+					updateDoc = null;
+					Log.Editor.WriteError("Can't update existing '{0}' file: {1}", 
+						Path.GetFileName(updateFilePath), 
+						Log.Exception(exception));
+				}
+			}
+
+			// If none existed yet, create an update file skeleton
+			if (updateDoc == null)
+			{
+				updateDoc = new XDocument(new XElement("UpdateConfig"));
+			}
+
+			return updateDoc;
+		}
+		private void AppendUpdateFileEntry(XDocument updateDoc, string copySource, string copyTarget)
+		{
+			updateDoc.Root.Add(new XElement("Update", 
+				new XAttribute("source", copySource), 
+				new XAttribute("target", copyTarget)));
+		}
+		private void AppendUpdateFileEntry(XDocument updateDoc, string deleteTarget)
+		{
+			updateDoc.Root.Add(new XElement("Remove", 
+				new XAttribute("target", deleteTarget)));
+		}
+		private Dictionary<string,string> CreateUpdateFileMapping(NuGet.IPackage package)
+		{
+			Dictionary<string,string> fileMapping = new Dictionary<string,string>();
+
+			bool isPluginPackage = 
+				package.Tags != null &&
+				package.Tags.Contains("Plugin") && 
+				package.Tags.Contains("Duality");
+			string binaryBaseDir = this.pluginTargetDir;
+			string contentBaseDir = this.dataTargetDir;
+			if (!isPluginPackage) binaryBaseDir = "";
+
+			foreach (var f in package.GetFiles()
+				.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)
+				.OrderByDescending(f => f.TargetFramework == null ? new Version() : f.TargetFramework.Version)
+				.OrderByDescending(f => f.TargetFramework == null))
+			{
+				// Determine where the file needs to go
+				string targetPath = f.EffectivePath;
+				string baseDir = f.Path;
+				while (baseDir.Contains(Path.DirectorySeparatorChar) || baseDir.Contains(Path.AltDirectorySeparatorChar))
+				{
+					baseDir = Path.GetDirectoryName(baseDir);
+				}
+				if (string.Equals(baseDir, "lib", StringComparison.InvariantCultureIgnoreCase))
+					targetPath = Path.Combine(binaryBaseDir, targetPath);
+				else if (string.Equals(baseDir, "content", StringComparison.InvariantCultureIgnoreCase))
+					targetPath = Path.Combine(contentBaseDir, targetPath);
+				else
+					continue;
+
+				// Add a file mapping entry linking target path to package path
+				if (fileMapping.ContainsKey(targetPath)) continue;
+				fileMapping[targetPath] = f.Path;
+			}
+
+			return fileMapping;
+		}
+
 		private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
 		{
-			// ToDo: Collect (and directly save) update data
+			Log.Editor.Write("Package removal scheduled: {0}, {1}", e.Package.Id, e.Package.Version);
+
+			XDocument updateDoc = this.PrepareUpdateFile();
+			Dictionary<string,string> fileMapping = this.CreateUpdateFileMapping(e.Package);
+			foreach (var pair in fileMapping)
+			{
+				this.AppendUpdateFileEntry(updateDoc, pair.Key);
+			}
+			updateDoc.Save(this.UpdateFilePath);
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
-			// ToDo: Collect (and directly save) update data
+			Log.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
+
+			XDocument updateDoc = this.PrepareUpdateFile();
+			Dictionary<string,string> fileMapping = this.CreateUpdateFileMapping(e.Package);
+			foreach (var pair in fileMapping)
+			{
+				this.AppendUpdateFileEntry(updateDoc, Path.Combine(e.InstallPath, pair.Value), pair.Key);
+			}
+			updateDoc.Save(this.UpdateFilePath);
 		}
 	}
 }
