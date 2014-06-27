@@ -16,19 +16,20 @@ namespace Duality.Editor.PackageManagement
 {
 	public sealed class PackageManager
 	{
-		private	const	string	UpdateConfigFile		= "ApplyUpdate.xml";
-		private	const	string	PackageConfigFile		= "PackageConfig.xml";
-		private const	string	LocalPackageDir			= EditorHelper.SourceDirectory + @"\Packages";
-		private	const	string	DefaultRepositoryUrl	= @"https://packages.nuget.org/api/v2";
+		private	const	string	UpdateConfigFile			= "ApplyUpdate.xml";
+		private	const	string	PackageConfigFile			= "PackageConfig.xml";
+		private const	string	LocalPackageDir				= EditorHelper.SourceDirectory + @"\Packages";
+		private	const	string	DefaultRepositoryUrl		= @"https://packages.nuget.org/api/v2";
 
-		private	Uri						repositoryUrl	= null;
-		private	string					dataTargetDir	= null;
-		private	string					pluginTargetDir	= null;
-		private	string					rootPath		= null;
-		private	List<LocalPackage>		localPackages	= new List<LocalPackage>();
+		private	string					repositoryOriginal	= null;
+		private	Uri						repositoryUrl		= null;
+		private	string					dataTargetDir		= null;
+		private	string					pluginTargetDir		= null;
+		private	string					rootPath			= null;
+		private	List<LocalPackage>		localPackages		= new List<LocalPackage>();
 
-		private NuGet.PackageManager		manager		= null;
-		private	NuGet.IPackageRepository	repository	= null;
+		private NuGet.PackageManager		manager			= null;
+		private	NuGet.IPackageRepository	repository		= null;
 
 
 		public Uri RepositoryUrl
@@ -64,10 +65,19 @@ namespace Duality.Editor.PackageManagement
 			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
+
+			// Update local repository file mappings
+			this.UpdateFileMappings();
 		}
 
 		public void InstallPackage(PackageInfo package)
 		{
+			// Update package entries from local config
+			this.localPackages.RemoveAll(p => package.Id == p.Id);
+			this.localPackages.Add(new LocalPackage(package.Id, package.Version));
+			this.SaveConfig();
+
+			// Request NuGet to install the package
 			this.manager.InstallPackage(package.Id, new SemanticVersion(package.Version));
 		}
 		public void UninstallPackage(LocalPackage package)
@@ -137,8 +147,6 @@ namespace Duality.Editor.PackageManagement
 				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
 				restartEditor ? Environment.CurrentDirectory : ""));
 
-			System.Threading.Thread.Sleep(3000);
-
 			return true;
 		}
 
@@ -199,23 +207,24 @@ namespace Duality.Editor.PackageManagement
 			// Nothing was found
 			return null;
 		}
-		private PackageInfo CreatePackageInfo(NuGet.IPackage package)
+		public IEnumerable<LocalPackage> QueryReferencedPackages(string filePath)
 		{
-			PackageInfo info = new PackageInfo(package.Id, package.Version.Version);
-
-			info.Title			= package.Title;
-			info.Summary		= package.Summary;
-			info.Description	= package.Description;
-			info.ProjectUrl		= package.ProjectUrl;
-			info.IconUrl		= package.IconUrl;
-			info.DownloadCount	= package.DownloadCount;
-			info.PublishDate	= package.Published.HasValue ? package.Published.Value.DateTime : DateTime.MinValue;
-			info.Authors		= package.Authors;
-			info.Tags			= package.Tags != null ? package.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : Enumerable.Empty<string>();
-
-			return info;
+			return this.localPackages.Where(p => p.Files.Any(path => PathHelper.ArePathsEqual(filePath, path)));
 		}
 
+		private void UpdateFileMappings()
+		{
+			foreach (LocalPackage package in this.localPackages)
+			{
+				if (package.Version == null) continue;
+
+				NuGet.IPackage localNuGet = this.manager.LocalRepository.FindPackage(package.Id, new SemanticVersion(package.Version));
+				if (localNuGet != null)
+				{
+					package.Files = this.CreateFileMapping(localNuGet).Select(p => p.Key );
+				}
+			}
+		}
 		private void LoadConfig()
 		{
 			// Reset to default data
@@ -224,14 +233,28 @@ namespace Duality.Editor.PackageManagement
 
 			// Check whethere there is a config file to load
 			string configFilePath = this.PackageFilePath;
-			if (!File.Exists(configFilePath)) return;
+			if (!File.Exists(configFilePath))
+			{
+				this.SaveConfig();
+				return;
+			}
 
 			// If there is, load data from the config file
 			try
 			{
 				XDocument doc = XDocument.Load(configFilePath);
 
-				this.repositoryUrl = new Uri(doc.Root.GetElementValue("RepositoryUrl") ?? DefaultRepositoryUrl);
+				string repoUrlString = doc.Root.GetElementValue("RepositoryUrl") ?? DefaultRepositoryUrl;
+				if (repoUrlString.Contains(Uri.SchemeDelimiter) && Uri.CheckSchemeName(repoUrlString.Split(new string[] { Uri.SchemeDelimiter }, StringSplitOptions.RemoveEmptyEntries)[0]))
+				{
+					this.repositoryUrl = new Uri(repoUrlString);
+					this.repositoryOriginal = null;
+				}
+				else
+				{
+					this.repositoryUrl = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.rootPath, repoUrlString)));
+					this.repositoryOriginal = repoUrlString;
+				}
 
 				XElement packagesElement = doc.Root.Element("Packages");
 				if (packagesElement != null)
@@ -239,9 +262,12 @@ namespace Duality.Editor.PackageManagement
 					foreach (XElement packageElement in packagesElement.Elements("Package"))
 					{
 						string versionString = packageElement.GetAttributeValue("version");
+						Version packageVersion = (versionString != null ? Version.Parse(versionString) : null);
+
+						// Create Package entry instance
 						LocalPackage package = new LocalPackage(
 							packageElement.GetAttributeValue("id"),
-							versionString != null ? Version.Parse(versionString) : null);
+							packageVersion);
 
 						this.localPackages.Add(package);
 					}
@@ -259,11 +285,11 @@ namespace Duality.Editor.PackageManagement
 		{
 			XDocument doc = new XDocument(
 				new XElement("PackageConfig",
-					new XElement("RepositoryUrl", this.repositoryUrl),
+					new XElement("RepositoryUrl", string.IsNullOrEmpty(this.repositoryOriginal) ? this.repositoryUrl.ToString() : this.repositoryOriginal),
 					new XElement("Packages", this.localPackages.Select(p => 
 						new XElement("Package",
 							new XAttribute("id", p.Id),
-							new XAttribute("version", p.Version)
+							p.Version != null ? new XAttribute("version", p.Version) : null
 						)
 					))
 				));
@@ -309,17 +335,20 @@ namespace Duality.Editor.PackageManagement
 			updateDoc.Root.Add(new XElement("Remove", 
 				new XAttribute("target", deleteTarget)));
 		}
-		private Dictionary<string,string> CreateUpdateFileMapping(NuGet.IPackage package)
+
+		private Dictionary<string,string> CreateFileMapping(NuGet.IPackage package)
 		{
 			Dictionary<string,string> fileMapping = new Dictionary<string,string>();
 
-			bool isPluginPackage = 
+			bool isDualityPackage = 
 				package.Tags != null &&
-				package.Tags.Contains("Plugin") && 
 				package.Tags.Contains("Duality");
+			bool isPluginPackage = 
+				isDualityPackage && 
+				package.Tags.Contains("Plugin");
 			string binaryBaseDir = this.pluginTargetDir;
 			string contentBaseDir = this.dataTargetDir;
-			if (!isPluginPackage) binaryBaseDir = "";
+			if (!isPluginPackage && isDualityPackage) binaryBaseDir = "";
 
 			foreach (var f in package.GetFiles()
 				.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)
@@ -347,27 +376,82 @@ namespace Duality.Editor.PackageManagement
 
 			return fileMapping;
 		}
+		private PackageInfo CreatePackageInfo(NuGet.IPackage package)
+		{
+			PackageInfo info = new PackageInfo(package.Id, package.Version.Version);
+
+			info.Title			= package.Title;
+			info.Summary		= package.Summary;
+			info.Description	= package.Description;
+			info.ProjectUrl		= package.ProjectUrl;
+			info.IconUrl		= package.IconUrl;
+			info.DownloadCount	= package.DownloadCount;
+			info.PublishDate	= package.Published.HasValue ? package.Published.Value.DateTime : DateTime.MinValue;
+			info.Authors		= package.Authors;
+			info.Tags			= package.Tags != null ? package.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : Enumerable.Empty<string>();
+
+			return info;
+		}
 
 		private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
 		{
 			Log.Editor.Write("Package removal scheduled: {0}, {1}", e.Package.Id, e.Package.Version);
 
+			// Determine all files that are referenced by a package, and the ones referenced by this one
+			LocalPackage localPackage = this.localPackages.FirstOrDefault(p => p.Id == e.Package.Id);
+			string[] referencedFiles = this.localPackages
+				.Where(p => p != localPackage)
+				.SelectMany(p => p.Files)
+				.Distinct()
+				.ToArray();
+			IEnumerable<string> localFiles = (localPackage != null) ? 
+				localPackage.Files : 
+				this.CreateFileMapping(e.Package).Select(p => p.Key);
+			
+			// If it's some unknown dependency, don't yet remove any files belonging to other local repositories with the same id
+			if (localPackage == null && this.manager.LocalRepository.GetPackages().Any(p => p.Id == e.Package.Id))
+				return;
+
+			// Schedule files for removal
 			XDocument updateDoc = this.PrepareUpdateFile();
-			Dictionary<string,string> fileMapping = this.CreateUpdateFileMapping(e.Package);
-			foreach (var pair in fileMapping)
+			foreach (var packageFile in localFiles)
 			{
-				this.AppendUpdateFileEntry(updateDoc, pair.Key);
+				// Don't remove any file that is still referenced by a local package
+				if (referencedFiles.Any(path => PathHelper.ArePathsEqual(packageFile, path)))
+					continue;
+
+				// Append the scheduled operation to the updater config file.
+				this.AppendUpdateFileEntry(updateDoc, packageFile);
 			}
 			updateDoc.Save(this.UpdateFilePath);
+
+			// Update local package configuration file
+			this.localPackages.RemoveAll(p => p.Id == e.Package.Id);
+			this.SaveConfig();
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
 			Log.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
 
+			// Schedule files for updating / copying
 			XDocument updateDoc = this.PrepareUpdateFile();
-			Dictionary<string,string> fileMapping = this.CreateUpdateFileMapping(e.Package);
+			Dictionary<string,string> fileMapping = this.CreateFileMapping(e.Package);
 			foreach (var pair in fileMapping)
 			{
+				// Don't overwrite files from a newer version of this package with their old one (OpenTK, Duality, etc.)
+				bool isOldVersion = false;
+				LocalPackage[] referencedPackages = this.QueryReferencedPackages(pair.Key).ToArray();
+				foreach (LocalPackage otherPackage in referencedPackages)
+				{
+					if (otherPackage.Id == e.Package.Id && otherPackage.Version > e.Package.Version.Version)
+					{
+						isOldVersion = true;
+						break;
+					}
+				}
+				if (isOldVersion) continue;
+
+				// Append the scheduled operation to the updater config file.
 				this.AppendUpdateFileEntry(updateDoc, Path.Combine(e.InstallPath, pair.Value), pair.Key);
 			}
 			updateDoc.Save(this.UpdateFilePath);

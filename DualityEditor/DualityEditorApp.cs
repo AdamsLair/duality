@@ -225,6 +225,7 @@ namespace Duality.Editor
 			//    Application.Exit();
 			//    return;
 			//}
+			//packageManager.UninstallPackage(packageManager.LocalPackages.First());
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;

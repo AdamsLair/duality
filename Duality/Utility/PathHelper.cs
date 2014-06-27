@@ -11,6 +11,19 @@ namespace Duality
 	public static class PathHelper
 	{
 		private static string executingBinDir;
+		private static bool pathsCaseSensitive;
+
+		static PathHelper()
+		{
+			Assembly entryAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityApp).Assembly;
+			executingBinDir = Path.GetFullPath(Path.GetDirectoryName(entryAssembly.Location));
+			pathsCaseSensitive = 
+				Environment.OSVersion.Platform != PlatformID.Win32NT &&
+				Environment.OSVersion.Platform != PlatformID.Win32S &&
+				Environment.OSVersion.Platform != PlatformID.Win32Windows &&
+				Environment.OSVersion.Platform != PlatformID.WinCE;
+		}
+
 		/// <summary>
 		/// Returns the directory
 		/// </summary>
@@ -50,6 +63,18 @@ namespace Duality
 			return path;
 		}
 
+		/// <summary>
+		/// Returns whether two paths are to be considered equal, because they are referring to the same physical location.
+		/// </summary>
+		/// <param name="firstPath"></param>
+		/// <param name="secondPath"></param>
+		/// <returns></returns>
+		public static bool ArePathsEqual(string firstPath, string secondPath)
+		{
+			firstPath = Path.GetFullPath(firstPath);
+			secondPath = Path.GetFullPath(secondPath);
+			return string.Equals(firstPath, secondPath, pathsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
+		}
 		/// <summary>
 		/// Returns whether one path is a sub-path of another.
 		/// </summary>

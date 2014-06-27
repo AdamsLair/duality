@@ -28,6 +28,7 @@ namespace Duality.Updater
 				anyFileLocked = false;
 				anyFileLocked = anyFileLocked || IsFileLocked("DualityEditor.exe");
 				anyFileLocked = anyFileLocked || IsFileLocked("Duality.dll");
+				if (anyFileLocked) Thread.Sleep(100);
 			} while (anyFileLocked);
 
 			Console.WriteLine();
