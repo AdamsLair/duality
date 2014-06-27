@@ -207,10 +207,6 @@ namespace Duality.Editor.PackageManagement
 			// Nothing was found
 			return null;
 		}
-		public IEnumerable<LocalPackage> QueryReferencedPackages(string filePath)
-		{
-			return this.localPackages.Where(p => p.Files.Any(path => PathHelper.ArePathsEqual(filePath, path)));
-		}
 
 		private void UpdateFileMappings()
 		{
@@ -398,27 +394,24 @@ namespace Duality.Editor.PackageManagement
 			Log.Editor.Write("Package removal scheduled: {0}, {1}", e.Package.Id, e.Package.Version);
 
 			// Determine all files that are referenced by a package, and the ones referenced by this one
-			LocalPackage localPackage = this.localPackages.FirstOrDefault(p => p.Id == e.Package.Id);
-			string[] referencedFiles = this.localPackages
-				.Where(p => p != localPackage)
-				.SelectMany(p => p.Files)
-				.Distinct()
-				.ToArray();
-			IEnumerable<string> localFiles = (localPackage != null) ? 
-				localPackage.Files : 
-				this.CreateFileMapping(e.Package).Select(p => p.Key);
-			
-			// If it's some unknown dependency, don't yet remove any files belonging to other local repositories with the same id
-			if (localPackage == null && this.manager.LocalRepository.GetPackages().Any(p => p.Id == e.Package.Id))
-				return;
+			IEnumerable<string> localFiles = this.CreateFileMapping(e.Package).Select(p => p.Key);
 
 			// Schedule files for removal
 			XDocument updateDoc = this.PrepareUpdateFile();
 			foreach (var packageFile in localFiles)
 			{
 				// Don't remove any file that is still referenced by a local package
-				if (referencedFiles.Any(path => PathHelper.ArePathsEqual(packageFile, path)))
-					continue;
+				bool stillInUse = false;
+				foreach (NuGet.IPackage localNugetPackage in this.manager.LocalRepository.GetPackages())
+				{
+					Dictionary<string,string> localMapping = this.CreateFileMapping(localNugetPackage);
+					if (localMapping.Any(p => PathHelper.Equals(p.Key, packageFile)))
+					{
+						stillInUse = true;
+						break;
+					}
+				}
+				if (stillInUse) continue;
 
 				// Append the scheduled operation to the updater config file.
 				this.AppendUpdateFileEntry(updateDoc, packageFile);
@@ -438,15 +431,20 @@ namespace Duality.Editor.PackageManagement
 			Dictionary<string,string> fileMapping = this.CreateFileMapping(e.Package);
 			foreach (var pair in fileMapping)
 			{
-				// Don't overwrite files from a newer version of this package with their old one (OpenTK, Duality, etc.)
+				// Don't overwrite files from a newer version of this package with their old one (think of dependencies)
 				bool isOldVersion = false;
-				LocalPackage[] referencedPackages = this.QueryReferencedPackages(pair.Key).ToArray();
-				foreach (LocalPackage otherPackage in referencedPackages)
+				foreach (NuGet.IPackage localNugetPackage in this.manager.LocalRepository.GetPackages())
 				{
-					if (otherPackage.Id == e.Package.Id && otherPackage.Version > e.Package.Version.Version)
+					if (localNugetPackage.Id != e.Package.Id) continue;
+
+					Dictionary<string,string> localMapping = this.CreateFileMapping(localNugetPackage);
+					if (localMapping.Any(p => PathHelper.Equals(p.Key, pair.Key)))
 					{
-						isOldVersion = true;
-						break;
+						if (localNugetPackage.Version > e.Package.Version)
+						{
+							isOldVersion = true;
+							break;
+						}
 					}
 				}
 				if (isOldVersion) continue;
