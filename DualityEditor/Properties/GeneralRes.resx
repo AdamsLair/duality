@@ -191,7 +191,7 @@
     <value>If you're using a professional version of Visual Studio, this action will run the Duality launcher and trigger a debug event that allows you to attach the debugger to your game before anything happens. You can achieve the same by clicking the "Run" button of your Core Plugin in Visual Studio itself.</value>
   </data>
   <data name="MenuItemInfo_NewProject" xml:space="preserve">
-    <value>Duality always works locally in a project folder. The New Project dialog will help you setting up a new one for your project.</value>
+    <value>Duality always works locally in a project folder. The New Project dialog will help you set up a new one.</value>
   </data>
   <data name="MenuItemInfo_OpenProjectSource" xml:space="preserve">
     <value>The project source code is where your game logic happens. To help you get started, Duality will create and open a suitable Visual Studio solution for you.</value>
@@ -218,7 +218,7 @@
     <value>When leaving the Sandbox mode, the current Scene will be reset to its original state.</value>
   </data>
   <data name="MenuItemInfo_SaveAll" xml:space="preserve">
-    <value>This will save all project data, i.e. all existing Resources. If you take a look at the Project View, you might notice that some Resources are written italic - these are the ones that have been changed without being saved yet.</value>
+    <value>This will save all project data, i.e. all existing Resources. If you take a look at the Project View, you might notice that some Resources are written in italics - these are the ones that have been changed without being saved yet.</value>
   </data>
   <data name="MenuItemName_About" xml:space="preserve">
     <value>About</value>
@@ -489,5 +489,11 @@
   </data>
   <data name="ErrorHandlersTemplate" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\ErrorHandlersTemplate.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="MenuItemInfo_PublishGame" xml:space="preserve">
+    <value>Creates a version of the game ready to distribute to others, with all necessary files</value>
+  </data>
+  <data name="MenuItemName_PublishGame" xml:space="preserve">
+    <value>Publish Game</value>
   </data>
 </root>

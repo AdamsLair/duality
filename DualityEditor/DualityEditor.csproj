@@ -146,6 +146,12 @@
     <Compile Include="CorePluginInterface\DesignTimeObjectData.cs" />
     <Compile Include="CorePluginInterface\PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
+    <Compile Include="Forms\PublishGameDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PublishGameDialog.Designer.cs">
+      <DependentUpon>PublishGameDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="PackageManagement\PackageInfo.cs" />
     <Compile Include="PackageManagement\LocalPackage.cs" />
     <Compile Include="PackageManagement\PackageManager.cs" />
@@ -248,6 +254,9 @@
     <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
       <DependentUpon>CreateObjectDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PublishGameDialog.resx">
+      <DependentUpon>PublishGameDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\GeneralRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
@@ -347,7 +356,6 @@
     <None Include="EmbeddedResources\CursorArrow.png" />
     <None Include="EmbeddedResources\cog.ico" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
