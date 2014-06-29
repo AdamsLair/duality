@@ -81,6 +81,9 @@
     </Target>
 
     <Target Name="RestorePackages" DependsOnTargets="CheckPrerequisites">
+        <!-- Make sure that package restore also works on machines without prior NuGet contact  -->
+		<SetEnvironmentVariable EnvKey="EnableNuGetPackageRestore" EnvValue="true" />
+		
         <Exec Command="$(RestoreCommand)"
               Condition="'$(OS)' != 'Windows_NT' And Exists('$(PackagesConfig)')" />
               
