@@ -88,20 +88,6 @@ namespace NightlyBuilder
 			FileVersionInfo versionEditor = null;
 			FileVersionInfo versionLauncher = null;
 
-			// Do an SVN Revert of the package
-			if (config.CommitSVN)
-			{
-				Console.WriteLine("================================== SVN Revert =================================");
-				{
-					ExecuteCommand(
-						string.Format("svn revert *"),
-						config.PackageDir);
-				}
-				Console.WriteLine("===============================================================================");
-				Console.WriteLine();
-				Console.WriteLine();
-			}
-
 			// Build the target Solution
 			Console.WriteLine("================================ Build Solution ===============================");
 			{
@@ -267,7 +253,7 @@ namespace NightlyBuilder
 			Console.WriteLine();
 
 			// Create the ZIP package
-			Console.WriteLine("================================ Create Package ===============================");
+			Console.WriteLine("============================== Create ZIP Package =============================");
 			{
 				Console.WriteLine("Package Path: {0}", packagePath);
 				if (!Directory.Exists(config.PackageDir))
@@ -293,39 +279,51 @@ namespace NightlyBuilder
 			Console.WriteLine();
 			Console.WriteLine();
 			
-			// Copy Package
+			// Build all NuGet Packages
+			Console.WriteLine("============================= Build NuGet Packages ============================");
+			{
+				bool nugetFound = File.Exists(config.NuGetPath);
+				bool nugetSpecsFound = Directory.Exists(config.NuGetPackageSpecsDir);
+				if (nugetFound && nugetSpecsFound)
+				{
+					if (!Directory.Exists(config.NuGetPackageTargetDir))
+						Directory.CreateDirectory(config.NuGetPackageTargetDir);
+
+					Console.WriteLine("Deleting old package files in '{0}'...", config.NuGetPackageTargetDir);
+					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageTargetDir, "*.nupkg", SearchOption.TopDirectoryOnly))
+					{
+						File.Delete(file);
+					}
+
+					Console.WriteLine("Creating packages from '{0}'...", config.NuGetPackageSpecsDir);
+					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageSpecsDir, "*.nuspec", SearchOption.AllDirectories))
+					{
+						string fileAbs = Path.GetFullPath(file);
+						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, false);
+					}
+				}
+				else if (!nugetFound)
+				{
+					throw new ApplicationException(string.Format("Can't find NuGet command line tool '{0}'.", config.NuGetPath));
+				}
+				else if (!nugetSpecsFound)
+				{
+					throw new ApplicationException(string.Format("Can't find NuGet package specs directory '{0}'.", config.NuGetPackageSpecsDir));
+				}
+			}
+			Console.WriteLine("===============================================================================");
+			Console.WriteLine();
+			Console.WriteLine();
+			
+			// Copy ZIP Package
 			if (!string.IsNullOrWhiteSpace(config.CopyPackageTo))
 			{
-				Console.WriteLine("================================= Copy Package ================================");
+				Console.WriteLine("=============================== Copy ZIP Package ==============================");
 				{
 					Console.WriteLine("Copying package to '{0}'", config.CopyPackageTo);
 					if (!Directory.Exists(config.CopyPackageTo))
 						Directory.CreateDirectory(config.CopyPackageTo);
 					File.Copy(packagePath, Path.Combine(config.CopyPackageTo, config.PackageName), true);
-				}
-				Console.WriteLine("===============================================================================");
-				Console.WriteLine();
-				Console.WriteLine();
-			}
-
-			// Do an SVN Commit of the package
-			if (config.CommitSVN)
-			{
-				Console.WriteLine("================================== SVN Commit =================================");
-				{
-					// "svn add --force * --auto-props --parents --depth infinity -q"
-				
-					string commitMessage = string.Format("Updated Binary Package{0}{1}",
-						Environment.NewLine,
-						versionCore.FileVersion,
-						versionEditor.FileVersion,
-						versionLauncher.FileVersion);
-					string commitMessageFile = Path.Combine(config.PackageDir, "CommitMsg.txt");
-					File.WriteAllText(commitMessageFile, commitMessage);
-					ExecuteCommand(
-						string.Format("svn commit -F CommitMsg.txt"),
-						config.PackageDir);
-					File.Delete(commitMessageFile);
 				}
 				Console.WriteLine("===============================================================================");
 				Console.WriteLine();

@@ -48,6 +48,10 @@ namespace Duality.Updater
 					Console.Write("Delete '{0}'... ", target);
 					try
 					{
+						while (IsFileLocked(target))
+						{
+							Thread.Sleep(100);
+						}
 						File.Delete(target);
 						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("success");
@@ -65,6 +69,10 @@ namespace Duality.Updater
 					Console.Write("Copy '{0}' to '{1}'... ", source, target);
 					try
 					{
+						while (IsFileLocked(target))
+						{
+							Thread.Sleep(100);
+						}
 						File.Copy(source, target, true);
 						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("success");

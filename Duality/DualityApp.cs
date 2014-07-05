@@ -616,7 +616,7 @@ namespace Duality
 		public static void LoadUserData()
 		{
 			string path = UserDataPath;
-			if (!File.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor) path = "defaultuserdata.dat";
+			if (!File.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor) path = "DefaultUserData.dat";
 			userData = Formatter.TryReadObject<DualityUserData>(path) ?? new DualityUserData();
 		}
 		/// <summary>
@@ -635,7 +635,7 @@ namespace Duality
 			Formatter.WriteObject(userData, UserDataPath, FormattingMethod.Xml);
 			if (execContext == ExecutionContext.Editor)
 			{
-				Formatter.WriteObject(userData, "defaultuserdata.dat", FormattingMethod.Xml);
+				Formatter.WriteObject(userData, "DefaultUserData.dat", FormattingMethod.Xml);
 			}
 		}
 

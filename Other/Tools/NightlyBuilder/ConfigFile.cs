@@ -21,8 +21,10 @@ namespace NightlyBuilder
 		public string PackageDir { get; set; }
 		public string PackageName { get; set; }
 		public string CopyPackageTo { get; set; }
+		public string NuGetPath { get; set; }
+		public string NuGetPackageSpecsDir { get; set; }
+		public string NuGetPackageTargetDir { get; set; }
 		public bool NoDocs { get; set; }
-		public bool CommitSVN { get; set; }
 		public List<string> FileCopyBlackList { get; set; }
 
 		public void Save(string filePath)

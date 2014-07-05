@@ -2,19 +2,22 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Steering</id>
-    <version>$version$</version>
+    <version>1.0.0</version>
 	<authors>Daniel Herb, Fedja Adam</authors>
 	<owners>Daniel Herb, Fedja Adam</owners>
-    <title>AdamsLair.Duality.Plugins.Steering</title>
+    <title>Steering Behaviours</title>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<summary>Introduces the Steering Agent Component that allows for objects to evade each other.</summary>
     <description>Introduces the Steering Agent Component that allows for objects to evade each other.</description>
 	<tags>Duality Core Plugin Steering Component AI</tags>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="1.0.0" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="bin\Release\Steering.core.dll" target="lib" />
-    <file src="bin\Release\Steering.core.pdb" target="lib" />
-    <file src="bin\Release\Steering.core.xml" target="lib" />
+    <file src="..\DualityPlugins\Steering\bin\Release\Steering.core.dll" target="lib" />
+    <file src="..\DualityPlugins\Steering\bin\Release\Steering.core.pdb" target="lib" />
+    <file src="..\DualityPlugins\Steering\bin\Release\Steering.core.xml" target="lib" />
   </files>
 </package>

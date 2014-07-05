@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Plugins.DynamicLighting</id>
+    <version>1.0.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>DynamicLighting Sample Implementation (Core)</title>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>Provides a sample implementation of dynamic lighting for rendering Components.</summary>
+    <description>Provides a sample implementation of dynamic lighting for rendering Components.</description>
+	<tags>Duality Core Plugin Rendering Lighting Component</tags>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="1.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\DynamicLighting.core.dll" target="lib" />
+    <file src="bin\Release\DynamicLighting.core.pdb" target="lib" />
+    <file src="bin\Release\DynamicLighting.core.xml" target="lib" />
+  </files>
+</package>
