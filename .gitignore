@@ -105,3 +105,4 @@ Documentation/Help/DDoc.chm
 packages/
 DualityUpdater/bin/
 DualityUpdater/obj/
+Other/NightlyBuild/NuGetPackages/

@@ -23,6 +23,9 @@
     <string>GamePlugin.*.dll</string>
     <string>DynamicLighting.*.dll</string>
     <string>Steering.*.dll</string>
+    <string>GamePlugin.*.xml</string>
+    <string>DynamicLighting.*.xml</string>
+    <string>Steering.*.xml</string>
     <string>*.vshost.*</string>
     <string>logfile*</string>
     <string>perflog*</string>
