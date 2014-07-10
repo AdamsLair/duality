@@ -79,7 +79,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			else
 			{
 				IContentRef first = values.NotNull().FirstOrDefault();
-				this.contentPath = first.Path;
+				this.contentPath = first != null ? first.Path : null;
 				this.multiple = (values.Any(o => o == null) || values.Any(o => o.Path != first.Path));
 
 				this.GeneratePreview();
