@@ -1,0 +1,91 @@
+
+/* Global Style Settings */
+
+body {
+	font-size: 18px;
+	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+	background-color: #ffd280; 
+}
+
+*::selection {
+	background-color: #f9b83f;
+	color: black;
+}
+
+/* Specify Document Bounds */
+
+header, main, footer  {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 900px;
+	padding: 0px 7% 0px 7%;
+}
+
+/* Align Sections in the Middle */
+
+main, footer > section {
+	display: block;
+}
+
+main > section {
+	margin-bottom: 50px;
+}
+
+/* Navigation Area */
+
+nav > ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+nav > ul > li {
+	display: inline-block;
+}
+
+nav > ul > li img {
+	height: 30px;
+	width: auto;
+}
+
+nav {
+	text-align: right;
+}
+
+/* Welcome Section */
+
+section#welcome  {
+	display: table;
+}
+
+section#welcome #logo {
+	display: table-cell;
+	max-height: 130px;
+	margin: 0px 2em 0px 0px;
+}
+
+section#welcome #text {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: justify;
+}
+
+@media only screen and (max-width: 700px) {
+	section#welcome  {
+		display: block;
+	}
+
+	section#welcome #logo {
+		display: block;
+		max-height: initial;
+		max-width: 400px;
+		width: 100%;
+		margin: 0px auto 1em auto;
+	}
+
+	section#welcome #text {
+		display: block;
+		vertical-align: top;
+	}
+}
