@@ -2,9 +2,12 @@
 /* Global Style Settings */
 
 body {
-	font-size: 18px;
+	font-size: 1.1em;
 	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+	color: #000000;
 	background-color: #ffd280; 
+	margin: 0;
+	padding: 0;
 }
 
 *::selection {
@@ -12,24 +15,53 @@ body {
 	color: black;
 }
 
-/* Specify Document Bounds */
+/* General Section Settings */
 
-header, main, footer  {
-	display: block;
+main {
+	padding-top: 1em;
+	padding-bottom: 1em;
+}
+
+footer {
+	color: #ffffff;
+	background-color: #2d2d2d;
+	min-height: 200px;
+}
+
+div.content {
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 900px;
+	max-width: 800px;
 	padding: 0px 7% 0px 7%;
 }
 
-/* Align Sections in the Middle */
-
-main, footer > section {
-	display: block;
+footer > div.content {
+	max-width: 900px;
 }
 
-main > section {
-	margin-bottom: 50px;
+main section {
+	display: block;
+	padding-bottom: 2.75em;
+	text-align: justify;
+}
+
+footer section {
+	display: inline-block;
+	width: 30%;
+	margin-left: 1.5%;
+	margin-right: 1.5%;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	vertical-align: top;
+	text-align: justify;
+}
+
+main section h2 {
+	margin: 0;
+}
+
+footer section h2 {
+	margin: 0;
 }
 
 /* Navigation Area */
@@ -68,7 +100,6 @@ section#welcome #logo {
 section#welcome #text {
 	display: table-cell;
 	vertical-align: middle;
-	text-align: justify;
 }
 
 @media only screen and (max-width: 700px) {
