@@ -48,12 +48,16 @@ main section {
 footer section {
 	display: inline-block;
 	width: 30%;
-	margin-left: 1.5%;
-	margin-right: 1.5%;
 	padding-top: 1em;
 	padding-bottom: 1em;
 	vertical-align: top;
 	text-align: justify;
+}
+
+footer hr {
+	display: inline-block;
+	border: 0;
+	width: 3.3%;
 }
 
 main section h2 {
@@ -109,8 +113,8 @@ section#welcome #text {
 
 	section#welcome #logo {
 		display: block;
-		max-height: initial;
 		max-width: 400px;
+		max-height: 100%;
 		width: 100%;
 		margin: 0px auto 1em auto;
 	}
