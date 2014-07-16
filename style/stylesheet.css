@@ -27,11 +27,14 @@ main {
 	display: block;
 	padding-top: 1em;
 	padding-bottom: 1em;
+	border-color: rgba(0, 0, 0, 0.2);
+	border-style: solid;
+	border-width: 0.3em 0 0.3em 0;
 }
 
 footer {
 	display: block;
-	color: #ffffff;
+	color: #cccccc;
 	background-color: #2d2d2d;
 	min-height: 200px;
 }
@@ -45,11 +48,13 @@ div.content {
 
 footer > div.content {
 	max-width: 900px;
+	padding-bottom: 1.5em;
 }
 
 main section {
 	display: block;
-	padding-bottom: 2.75em;
+	padding-top: 1.25em;
+	padding-bottom: 1.5em;
 	text-align: justify;
 }
 
@@ -60,6 +65,15 @@ footer section {
 	padding-bottom: 1em;
 	vertical-align: top;
 	text-align: justify;
+	font-size: 0.9em;
+}
+
+footer section h2 {
+	font-size: 120%;
+	font-weight: normal;
+	color: #ffffff;
+	margin-top: 0.75em;
+	margin-bottom: 0.75em;
 }
 
 footer hr {
@@ -70,10 +84,27 @@ footer hr {
 
 main section h2 {
 	margin: 0;
+	text-shadow: 0.075em 0.075em 0.2em rgba(0, 0, 0, 0.6);
+	border-color: #ff9632;
+	border-style: solid;
+	border-width: 0 0 2px;
 }
 
-footer section h2 {
-	margin: 0;
+@media only screen and (max-width: 700px) {
+	footer section {
+		display: block;
+		width: 100%;
+		padding-top: 1em;
+		padding-bottom: 1em;
+		vertical-align: baseline;
+		text-align: justify;
+	}
+	
+	footer hr {
+		display: block;
+		border: 1px solid rgba(255,255,255,0.1);
+		width: 100%;
+	}
 }
 
 /* Navigation Area */
