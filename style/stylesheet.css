@@ -2,6 +2,9 @@
 /* Global Style Settings */
 
 body {
+	-moz-text-size-adjust: none;
+	-webkit-text-size-adjust: none;
+	-ms-text-size-adjust: none;
 	font-size: 1.1em;
 	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 	color: #000000;
