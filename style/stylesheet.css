@@ -5,7 +5,7 @@ body {
 	font-size: 1.1em;
 	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 	color: #000000;
-	background-color: #ffd280; 
+	background-color: #e4e4e4; 
 	margin: 0;
 	padding: 0;
 }
@@ -17,12 +17,20 @@ body {
 
 /* General Section Settings */
 
+header {
+	display: block;
+	color: #ffffff;
+	background-color: #2d2d2d;
+}
+
 main {
+	display: block;
 	padding-top: 1em;
 	padding-bottom: 1em;
 }
 
 footer {
+	display: block;
 	color: #ffffff;
 	background-color: #2d2d2d;
 	min-height: 200px;
@@ -80,9 +88,19 @@ nav > ul > li {
 	display: inline-block;
 }
 
-nav > ul > li img {
-	height: 30px;
-	width: auto;
+nav > ul > li a {
+	display: inline-block;
+	padding: 0.1em 0.25em 0.1em 0.25em;
+	margin: 0.3em 0.0em 0.3em 0.0em;
+	text-decoration: none;
+	color: #dddddd;
+	border: 1px solid rgba(255,255,255,0.1);
+}
+
+nav > ul > li a:hover {
+	color: #ffffff;
+	background-color: rgba(255,255,255,0.15);
+	border: 1px solid rgba(255,255,255,0.3);
 }
 
 nav {
