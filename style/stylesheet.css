@@ -1,11 +1,20 @@
 
-/* Global Style Settings */
+/******************************* Global Style Settings *******************************/
 
 body {
-	font-size: 1.1em;
 	font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
 	color: #000000;
 	background-color: #e4e4e4; 
+	margin: 0;
+	padding: 0;
+}
+
+ht {
+	margin: 0;
+	padding: 0;
+}
+
+p {
 	margin: 0;
 	padding: 0;
 }
@@ -15,40 +24,63 @@ body {
 	color: black;
 }
 
-/* General Section Settings */
-
-header {
-	display: block;
-	color: #ffffff;
-	background-color: #2d2d2d;
-}
-
-main {
-	display: block;
-	padding-top: 1em;
-	padding-bottom: 1em;
-	border-color: rgba(0, 0, 0, 0.2);
-	border-style: solid;
-	border-width: 0.3em 0 0.3em 0;
-}
-
-footer {
-	display: block;
-	color: #cccccc;
-	background-color: #2d2d2d;
-	min-height: 200px;
-}
-
-div.content {
+div.documentContent {
 	margin-left: auto;
 	margin-right: auto;
 	max-width: 800px;
 	padding: 0px 7% 0px 7%;
 }
 
-footer > div.content {
-	max-width: 900px;
-	padding-bottom: 1.5em;
+/******************************* Header Area *******************************/
+
+header {
+	display: block;
+	color: #ffffff;
+	background-color: #2d2d2d;
+	font-size: 1.1em;
+}
+
+/* Navigation Bar */
+
+header nav > ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+header nav > ul > li {
+	display: inline-block;
+}
+
+header nav > ul > li a {
+	display: inline-block;
+	padding: 0.1em 0.25em 0.1em 0.25em;
+	margin: 0.3em 0.0em 0.3em 0.0em;
+	text-decoration: none;
+	color: #dddddd;
+	border: 1px solid rgba(255,255,255,0.1);
+}
+
+header nav > ul > li a:hover {
+	color: #ffffff;
+	background-color: rgba(255,255,255,0.15);
+	border: 1px solid rgba(255,255,255,0.3);
+}
+
+header nav {
+	text-align: right;
+}
+
+/******************************* Main Area *******************************/
+
+main {
+	font-size: 1.2em;
+	display: block;
+	padding-top: 1em;
+	padding-bottom: 1em;
+	border-color: rgba(0, 0, 0, 0.2);
+	border-style: solid;
+	border-width: 4pt 0 4pt 0;
 }
 
 main section {
@@ -58,14 +90,260 @@ main section {
 	text-align: justify;
 }
 
+main section h2 {
+	margin: 0 0 0.5em 0;
+	text-shadow: 0.075em 0.075em 0.2em rgba(0, 0, 0, 0.5);
+	border-color: #ff9632;
+	border-style: solid;
+	border-width: 0 0 2px;
+}
+
+/* Welcome Section */
+
+main section#welcome  {
+	display: table;
+}
+
+main section#welcome #logo {
+	display: table-cell;
+	max-height: 130px;
+	margin: 0px 2em 0px 0px;
+}
+
+main section#welcome #text {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: left;
+}
+
+@media only screen and (max-width: 700px) {
+	main section#welcome  {
+		display: block;
+	}
+
+	main section#welcome #logo {
+		display: block;
+		max-width: 400px;
+		max-height: 100%;
+		width: 100%;
+		margin: 0px auto 1em auto;
+	}
+
+	main section#welcome #text {
+		display: block;
+		vertical-align: top;
+		text-align: justify;
+	}
+}
+
+/* Quickstart Section */
+
+main section#quickstart  {
+	padding: 0;
+	text-align: left;
+	padding-bottom: 2.5em;
+}
+
+main section#quickstart #buttonContainer {
+	/* border: 1px solid rgba(0,0,0,0.03); */
+	padding: 0;
+	/* padding: 0.5em 0.5em 0.5em 0.5em; */
+}
+
+main section#quickstart #buttonStrip {
+	display: table;
+	width: 100%;
+}
+	
+main section#quickstart h2 {
+	display: none;
+}
+	
+main section#quickstart h3 {
+	text-shadow: none;
+	border: none;
+	margin: 0;
+}
+
+main section#quickstart hr {
+	display: table-cell;
+	border: none;
+	width: 1.5%;
+}
+
+main section#quickstart a img {
+	display: inline-block;
+	margin-right: 0.15%;
+	vertical-align: middle;
+}
+
+main section#quickstart a div {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+main section#quickstart a {
+	display: table-cell;
+	padding: 0.5em 0.5em 0.5em 0.5em;
+	text-decoration: none;
+	opacity: 0.6666;
+	color: #000000;
+	border: 1px solid rgba(0,0,0,0.1);
+	width: 30%;
+}
+
+main section#quickstart a:hover {
+	opacity: 1.0;
+	color: #000000;
+	background-color: rgba(0,0,0,0.15);
+	border: 1px solid rgba(0,0,0,0.3);
+}
+
+@media only screen and (max-width: 950px) {
+	main section#quickstart p {
+		font-size: 0.7em;
+	}
+}
+
+@media only screen and (max-width: 800px) {
+	main section#quickstart p {
+		display: none;
+	}
+}
+
+@media only screen and (max-width: 700px) {
+	main section#quickstart #buttonArea {
+		display: block;
+	}
+
+	main section#quickstart p {
+		display: inline;
+		font-size: 1em;
+	}
+	
+	main section#quickstart hr {
+		display: none;
+	}
+	
+	main section#quickstart a {
+		display: block;
+		width: auto;
+	}
+	
+	main section#quickstart a {
+		margin-top: 0.5em;
+	}
+	
+	main section#quickstart a:first-child {
+		margin-top: 0.0em;
+	}
+}
+
+@media only screen and (max-width: 330px) {
+	main section#quickstart p {
+		font-size: 0.7em;
+	}
+}
+
+/* Features Section */
+
+main section#features {
+	display: table;
+	width: 100%;
+	padding-top: 0;
+	padding-bottom: 0;
+}
+	
+main section#features > div {
+	display: table-cell;
+	width: 50%;
+	text-align: left;
+}
+
+@media only screen and (max-width: 700px) {
+	main section#features {
+		display: block;
+		width: 100%;
+	}
+		
+	main section#features > div {
+		display: block;
+		width: 100%;
+	}
+		
+	main section#features > div:first-child {
+		padding-bottom: 1.5em;
+	}
+}
+
+/* Examples Section */
+
+.hljs {
+	background-color: rgba(255, 255, 255, 0.35);
+	border: 1px solid rgba(0,0,0,0.1);
+	font-size: 0.9em;
+	font-family: Monaco, Consolas, "Lucida Console", monospace;
+}
+
+@media only screen and (max-width: 700px) {
+	.hljs {
+		font-size: 0.8em;
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	.hljs {
+		font-size: 0.7em;
+	}
+}
+
+/* Screenshots Section */
+
+main section#screenshots #imageArea {
+	margin-top: 1em;
+	margin-bottom: 0.5em;
+	text-align: left;
+}
+
+main section#screenshots #imageArea a {
+	display: inline-block;
+	width: 32.7%;
+}
+
+main section#screenshots #imageArea img {
+	width: 100%;
+}
+
+@media only screen and (max-width: 700px) {
+	main section#screenshots #imageArea a {
+		display: inline-block;
+		width: 49%;
+	}
+}
+
+@media only screen and (max-width: 500px) {
+	main section#screenshots #imageArea a {
+		display: inline-block;
+		width: 100%;
+	}
+}
+
+/******************************* Footer Area *******************************/
+
+footer {
+	font-size: 1.0em;
+	display: block;
+	color: #cccccc;
+	background-color: #2d2d2d;
+	min-height: 200px;
+}
+
 footer section {
 	display: inline-block;
 	width: 30%;
 	padding-top: 1em;
 	padding-bottom: 1em;
 	vertical-align: top;
-	text-align: justify;
-	font-size: 0.9em;
 }
 
 footer section h2 {
@@ -76,18 +354,27 @@ footer section h2 {
 	margin-bottom: 0.75em;
 }
 
+footer > div.documentContent {
+	max-width: 900px;
+	padding-bottom: 1.5em;
+}
+
 footer hr {
 	display: inline-block;
 	border: 0;
 	width: 3.3%;
 }
 
-main section h2 {
-	margin: 0;
-	text-shadow: 0.075em 0.075em 0.2em rgba(0, 0, 0, 0.6);
-	border-color: #ff9632;
-	border-style: solid;
-	border-width: 0 0 2px;
+footer p {
+	margin-bottom: 0.5em;
+}
+
+footer a {
+	color: #cccccc;
+}
+
+footer a:hover {
+	color: #ffffff;
 }
 
 @media only screen and (max-width: 700px) {
@@ -107,69 +394,13 @@ main section h2 {
 	}
 }
 
-/* Navigation Area */
+/* Donate Section */
 
-nav > ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-
-nav > ul > li {
+footer section#donate a {
+	width: 125px;
 	display: inline-block;
 }
 
-nav > ul > li a {
-	display: inline-block;
-	padding: 0.1em 0.25em 0.1em 0.25em;
-	margin: 0.3em 0.0em 0.3em 0.0em;
-	text-decoration: none;
-	color: #dddddd;
-	border: 1px solid rgba(255,255,255,0.1);
-}
-
-nav > ul > li a:hover {
-	color: #ffffff;
-	background-color: rgba(255,255,255,0.15);
-	border: 1px solid rgba(255,255,255,0.3);
-}
-
-nav {
-	text-align: right;
-}
-
-/* Welcome Section */
-
-section#welcome  {
-	display: table;
-}
-
-section#welcome #logo {
-	display: table-cell;
-	max-height: 130px;
-	margin: 0px 2em 0px 0px;
-}
-
-section#welcome #text {
-	display: table-cell;
-	vertical-align: middle;
-}
-
-@media only screen and (max-width: 700px) {
-	section#welcome  {
-		display: block;
-	}
-
-	section#welcome #logo {
-		display: block;
-		max-width: 400px;
-		max-height: 100%;
-		width: 100%;
-		margin: 0px auto 1em auto;
-	}
-
-	section#welcome #text {
-		display: block;
-		vertical-align: top;
-	}
+footer section#donate a img {
+	width: 100%;
 }
