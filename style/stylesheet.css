@@ -190,6 +190,7 @@ main section#quickstart a {
 	color: #000000;
 	border: 1px solid rgba(0,0,0,0.1);
 	width: 30%;
+	box-shadow: 0.15em 0.15em 0.3em rgba(0,0,0,0.07);
 }
 
 main section#quickstart a:hover {
@@ -245,6 +246,12 @@ main section#quickstart a:hover {
 	}
 }
 
+@media only screen and (max-width: 250px) {
+	main section#quickstart p {
+		display: none;
+	}
+}
+
 /* Features Section */
 
 main section#features {
@@ -253,7 +260,21 @@ main section#features {
 	padding-top: 0;
 	padding-bottom: 0;
 }
-	
+main section#features li {
+	margin-top: 0.5em;
+}
+
+main section#features li > h3 {
+	margin: 0;
+	font-size: 1em;
+	font-weight: normal;
+}
+
+main section#features li > p {
+	font-size: 0.9em;
+	color: #999999;
+}
+
 main section#features > div {
 	display: table-cell;
 	width: 50%;
