@@ -115,6 +115,7 @@ namespace Duality.Editor.Forms
 													this.RequestSeparator(GeneralRes.MenuName_File, "CodeSeparator");
 			ToolStripMenuItem openCodeItem =		this.RequestMenu(GeneralRes.MenuName_File, this.actionOpenCode.Text);
 													this.RequestSeparator(GeneralRes.MenuName_File, "EndSeparator");
+			ToolStripMenuItem publishGameItem = this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_PublishGame);
 			ToolStripMenuItem quitItem =			this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_Quit);
 			ToolStripMenuItem editItem =		this.RequestMenu(GeneralRes.MenuName_Edit);
 			this.menuEditUndo =						this.RequestMenu(GeneralRes.MenuName_Edit, GeneralRes.MenuItemName_Undo);
@@ -149,6 +150,9 @@ namespace Duality.Editor.Forms
 			openCodeItem.Image = this.actionOpenCode.Image;
 			openCodeItem.Click += this.actionOpenCode_Click;
 			openCodeItem.Tag = HelpInfo.FromText(openCodeItem.Text, GeneralRes.MenuItemInfo_OpenProjectSource);
+
+			publishGameItem.Click += this.actionPublishGame_Click;
+			publishGameItem.Tag = HelpInfo.FromText(publishGameItem.Text, GeneralRes.MenuItemInfo_PublishGame);
 
 			quitItem.Click += this.quitItem_Click;
 			quitItem.ShortcutKeys = Keys.Alt | Keys.F4;
@@ -431,6 +435,10 @@ namespace Duality.Editor.Forms
 		{
 			DualityEditorApp.UpdatePluginSourceCode();
 			System.Diagnostics.Process.Start(EditorHelper.SourceCodeSolutionFile);
+		}
+		private void actionPublishGame_Click(object sender, EventArgs e) {
+			PublishGameDialog dialog = new PublishGameDialog();
+			dialog.ShowDialog();
 		}
 		private void actionRunSandbox_Click(object sender, EventArgs e)
 		{
