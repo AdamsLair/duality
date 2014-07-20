@@ -116,7 +116,7 @@ main section#welcome #text {
 	text-align: left;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 525pt) {
 	main section#welcome  {
 		display: block;
 	}
@@ -198,19 +198,19 @@ main section#quickstart a:hover {
 	border: 1px solid rgba(0,0,0,0.3);
 }
 
-@media only screen and (max-width: 950px) {
+@media only screen and (max-width: 713pt) {
 	main section#quickstart p {
 		font-size: 0.7em;
 	}
 }
 
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 600pt) {
 	main section#quickstart p {
 		display: none;
 	}
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 525pt) {
 	main section#quickstart #buttonArea {
 		display: block;
 	}
@@ -238,13 +238,13 @@ main section#quickstart a:hover {
 	}
 }
 
-@media only screen and (max-width: 330px) {
+@media only screen and (max-width: 248pt) {
 	main section#quickstart p {
 		font-size: 0.7em;
 	}
 }
 
-@media only screen and (max-width: 250px) {
+@media only screen and (max-width: 188pt) {
 	main section#quickstart p {
 		display: none;
 	}
@@ -280,7 +280,7 @@ main section#features > div {
 	text-align: left;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 525pt) {
 	main section#features {
 		display: block;
 		width: 100%;
@@ -330,7 +330,7 @@ main section#examples ol > hr {
 	width: 1.5%;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 525pt) {
 	main section#examples ol {
 		display: block;
 	}
@@ -357,13 +357,13 @@ main section#examples ol > hr {
 	font-family: Monaco, Consolas, "Lucida Console", monospace;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 525pt) {
 	.hljs {
 		font-size: 0.8em;
 	}
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 450pt) {
 	.hljs {
 		font-size: 0.7em;
 	}
@@ -386,14 +386,14 @@ main section#screenshots #imageArea img {
 	width: 100%;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 525pt) {
 	main section#screenshots #imageArea a {
 		display: inline-block;
 		width: 49%;
 	}
 }
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 375pt) {
 	main section#screenshots #imageArea a {
 		display: inline-block;
 		width: 100%;
@@ -407,7 +407,7 @@ footer {
 	display: block;
 	color: #cccccc;
 	background-color: #2d2d2d;
-	min-height: 200px;
+	min-height: 150pt;
 }
 
 footer section {
@@ -427,7 +427,7 @@ footer section h2 {
 }
 
 footer > div.documentContent {
-	max-width: 900px;
+	max-width: 675pt;
 	padding-bottom: 1.5em;
 }
 
@@ -449,7 +449,7 @@ footer a:hover {
 	color: #ffffff;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 525pt) {
 	footer section {
 		display: block;
 		width: 100%;
@@ -469,7 +469,7 @@ footer a:hover {
 /* Donate Section */
 
 footer section#donate a {
-	width: 125px;
+	width: 93.75pt;
 	display: inline-block;
 }
 
