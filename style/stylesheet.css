@@ -27,8 +27,8 @@ p {
 div.documentContent {
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 800px;
-	padding: 0px 7% 0px 7%;
+	max-width: 600pt;
+	padding: 0 7% 0 7%;
 }
 
 /******************************* Header Area *******************************/
@@ -95,7 +95,7 @@ main section h2 {
 	text-shadow: 0.075em 0.075em 0.2em rgba(0, 0, 0, 0.5);
 	border-color: #ff9632;
 	border-style: solid;
-	border-width: 0 0 2px;
+	border-width: 0 0 1.5pt;
 }
 
 /* Welcome Section */
@@ -106,8 +106,8 @@ main section#welcome  {
 
 main section#welcome #logo {
 	display: table-cell;
-	max-height: 130px;
-	margin: 0px 2em 0px 0px;
+	max-height: 97.5pt;
+	margin: 0 2em 0 0;
 }
 
 main section#welcome #text {
@@ -123,10 +123,10 @@ main section#welcome #text {
 
 	main section#welcome #logo {
 		display: block;
-		max-width: 400px;
+		max-width: 300pt;
 		max-height: 100%;
 		width: 100%;
-		margin: 0px auto 1em auto;
+		margin: 0 auto 1em auto;
 	}
 
 	main section#welcome #text {
@@ -145,9 +145,7 @@ main section#quickstart  {
 }
 
 main section#quickstart #buttonContainer {
-	/* border: 1px solid rgba(0,0,0,0.03); */
 	padding: 0;
-	/* padding: 0.5em 0.5em 0.5em 0.5em; */
 }
 
 main section#quickstart #buttonStrip {
