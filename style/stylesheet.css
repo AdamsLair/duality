@@ -260,6 +260,7 @@ main section#features {
 	padding-top: 0;
 	padding-bottom: 0;
 }
+
 main section#features li {
 	margin-top: 0.5em;
 }
@@ -298,6 +299,58 @@ main section#features > div {
 }
 
 /* Examples Section */
+
+main section#examples ol {
+	display: table;
+	width: 100%;
+	margin: 1em 0 0 0;
+	padding: 0;
+}
+
+main section#examples ol > li {
+	display: table-cell;
+	width: 30%;
+	padding: 0.75em;
+	background: rgba(255, 255, 255, 0.35);
+	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+main section#examples ol > li h3 {
+	margin: 0 0 0.5em 0;
+	font-size: 1.0em;
+}
+
+main section#examples ol > li p {
+	margin: 0;
+	font-size: 0.9em;
+	text-align: left;
+}
+
+main section#examples ol > hr {
+	display: table-cell;
+	border: none;
+	width: 1.5%;
+}
+
+@media only screen and (max-width: 700px) {
+	main section#examples ol {
+		display: block;
+	}
+	
+	main section#examples ol > hr {
+		display: none;
+	}
+	
+	main section#examples ol > li {
+		display: block;
+		width: auto;
+		margin-top: 0.5em;
+	}
+	
+	main section#examples ol > li:first-child {
+		margin-top: 0.0em;
+	}
+}
 
 .hljs {
 	background-color: rgba(255, 255, 255, 0.35);
