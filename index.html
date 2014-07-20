@@ -3,11 +3,34 @@
   <head>
     <meta charset='utf-8'>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	
+	<!-- Add jQuery for fancyBox library -->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	
+    <!-- Add fancyBox -->
+    <link rel="stylesheet" href="fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+    <script type="text/javascript" src="fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script type="text/javascript" src="fancybox/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".fancybox").fancybox();
+        });
+		
+		$('.fancybox-noanim').fancybox({
+			openEffect  : 'none',
+			closeEffect : 'none',
+			prevEffect : 'none',
+			nextEffect : 'none'
+		});
+    </script>
+
+    <!-- Add highlight.js -->
     <link rel="stylesheet" href="highlight/styles/vs.css">
-    <link rel="stylesheet" type="text/css" href="style/stylesheet.css" media="screen" />
-    <link rel="icon" href="style/images/favicon.png" type="image/png">
     <script src="highlight/highlight.pack.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
+	
+    <link rel="stylesheet" type="text/css" href="style/stylesheet.css" media="screen" />
+    <link rel="icon" href="style/images/favicon.png" type="image/png">
     <title>Duality - a 2D Game Development Framework</title>
   </head>
   
@@ -99,12 +122,12 @@
           <h2>Screenshots</h2>
 		  <p>Duality is being constantly developed since 2011 - and it's just waiting for you to unleash its potential.</p>
 		  <div id="imageArea">
-		    <a href="screenshots/screenshot2.png"><img src="screenshots/screenshot2.png"></a>
-		    <a href="screenshots/screenshot4.jpg"><img src="screenshots/screenshot4.jpg"></a>
-		    <a href="screenshots/screenshot3.jpg"><img src="screenshots/screenshot3.jpg"></a>
-		    <a href="screenshots/screenshot6.jpg"><img src="screenshots/screenshot6.jpg"></a>
-		    <a href="screenshots/screenshot1.jpg"><img src="screenshots/screenshot1.jpg"></a>
-		    <a href="screenshots/screenshot5.jpg"><img src="screenshots/screenshot5.jpg"></a>
+		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot2.png"><img src="screenshots/screenshot2.png"></a>
+		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot4.jpg"><img src="screenshots/screenshot4.jpg"></a>
+		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot3.jpg"><img src="screenshots/screenshot3.jpg"></a>
+		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot6.jpg"><img src="screenshots/screenshot6.jpg"></a>
+		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot1.jpg"><img src="screenshots/screenshot1.jpg"></a>
+		    <a class="fancybox-noanim" rel="group" data-fancybox-group="gallery" href="screenshots/screenshot5.jpg"><img src="screenshots/screenshot5.jpg"></a>
 		  </div>
         </section>
 	  </div>
