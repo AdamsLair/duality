@@ -337,6 +337,12 @@ namespace Duality.Editor
 			return Path.Combine(projFolder, "DualityEditor.exe");
 		}
 
+		public static void ShowInExplorer(string filePath)
+		{
+			string fullPath = Path.GetFullPath(filePath);
+			string argument = @"/select, " + fullPath;
+			System.Diagnostics.Process.Start("explorer.exe", argument);
+		}
 		public static List<Form> GetZSortedAppWindows()
 		{
 			List<Form> result = new List<Form>();

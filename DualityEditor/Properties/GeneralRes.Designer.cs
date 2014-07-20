@@ -251,7 +251,7 @@ namespace Duality.Editor.Properties {
         ///			{
         ///				string fixedTypeId = resolveTypeError.TypeId;
         ///
-        ///				if (typeString.StartsWith(&quot;OLDROOTNAM [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///				if (fixedTypeId.StartsWith(&quot;OLDROOTNA [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         public static string ErrorHandlersTemplate {
             get {
@@ -393,7 +393,7 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Duality always works locally in a project folder. The New Project dialog will help you setting up a new one for your project. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die Duality always works locally in a project folder. The New Project dialog will help you set up a new one. ähnelt.
         /// </summary>
         public static string MenuItemInfo_NewProject {
             get {
@@ -416,6 +416,15 @@ namespace Duality.Editor.Properties {
         public static string MenuItemInfo_ProfileGame {
             get {
                 return ResourceManager.GetString("MenuItemInfo_ProfileGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Creates a version of the game ready to distribute to others, with all necessary files ähnelt.
+        /// </summary>
+        public static string MenuItemInfo_PublishGame {
+            get {
+                return ResourceManager.GetString("MenuItemInfo_PublishGame", resourceCulture);
             }
         }
         
@@ -483,7 +492,7 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die This will save all project data, i.e. all existing Resources. If you take a look at the Project View, you might notice that some Resources are written italic - these are the ones that have been changed without being saved yet. ähnelt.
+        ///   Sucht eine lokalisierte Zeichenfolge, die This will save all project data, i.e. all existing Resources. If you take a look at the Project View, you might notice that some Resources are written in italics - these are the ones that have been changed without being saved yet. ähnelt.
         /// </summary>
         public static string MenuItemInfo_SaveAll {
             get {
@@ -524,6 +533,15 @@ namespace Duality.Editor.Properties {
         public static string MenuItemName_ProfileGame {
             get {
                 return ResourceManager.GetString("MenuItemName_ProfileGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Publish Game ähnelt.
+        /// </summary>
+        public static string MenuItemName_PublishGame {
+            get {
+                return ResourceManager.GetString("MenuItemName_PublishGame", resourceCulture);
             }
         }
         
@@ -789,6 +807,24 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error ähnelt.
+        /// </summary>
+        public static string Msg_ErrorDirectoryNotFound_Caption {
+            get {
+                return ResourceManager.GetString("Msg_ErrorDirectoryNotFound_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The specified directory doesn&apos;t exist. ähnelt.
+        /// </summary>
+        public static string Msg_ErrorDirectoryNotFound_Desc {
+            get {
+                return ResourceManager.GetString("Msg_ErrorDirectoryNotFound_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Failed to perform task ähnelt.
         /// </summary>
         public static string Msg_ErrorPerformBigTask_Caption {
@@ -857,6 +893,24 @@ namespace Duality.Editor.Properties {
         public static string Msg_InstallNewTemplate_Desc {
             get {
                 return ResourceManager.GetString("Msg_InstallNewTemplate_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Confirm Delete ähnelt.
+        /// </summary>
+        public static string Msg_PublishConfirmDeleteTargetDir_Caption {
+            get {
+                return ResourceManager.GetString("Msg_PublishConfirmDeleteTargetDir_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The specified directory already contains a non-empty folder named &apos;{0}&apos;. Delete folder in order to proceed? ähnelt.
+        /// </summary>
+        public static string Msg_PublishConfirmDeleteTargetDir_Desc {
+            get {
+                return ResourceManager.GetString("Msg_PublishConfirmDeleteTargetDir_Desc", resourceCulture);
             }
         }
         

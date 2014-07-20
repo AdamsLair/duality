@@ -1418,9 +1418,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		private void showInExplorerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			string filePath = Path.GetFullPath((this.folderView.SelectedNode.Tag as NodeBase).NodePath);
-			string argument = @"/select, " + filePath;
-			System.Diagnostics.Process.Start("explorer.exe", argument);
+			EditorHelper.ShowInExplorer((this.folderView.SelectedNode.Tag as NodeBase).NodePath);
 		}
 
 		private void folderToolStripMenuItem_Click(object sender, EventArgs e)

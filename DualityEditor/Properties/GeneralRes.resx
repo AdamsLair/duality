@@ -496,4 +496,16 @@
   <data name="MenuItemName_PublishGame" xml:space="preserve">
     <value>Publish Game</value>
   </data>
+  <data name="Msg_ErrorDirectoryNotFound_Caption" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Msg_ErrorDirectoryNotFound_Desc" xml:space="preserve">
+    <value>The specified directory doesn't exist.</value>
+  </data>
+  <data name="Msg_PublishConfirmDeleteTargetDir_Caption" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="Msg_PublishConfirmDeleteTargetDir_Desc" xml:space="preserve">
+    <value>The specified directory already contains a non-empty folder named '{0}'. Delete folder in order to proceed?</value>
+  </data>
 </root>

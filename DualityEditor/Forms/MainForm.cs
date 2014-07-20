@@ -110,12 +110,12 @@ namespace Duality.Editor.Forms
 		{
 			ToolStripMenuItem fileItem =		this.RequestMenu(GeneralRes.MenuName_File);
 			ToolStripMenuItem newProjectItem =		this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_NewProject);
+			ToolStripMenuItem publishGameItem =		this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_PublishGame);
 													this.RequestSeparator(GeneralRes.MenuName_File, "SaveSeparator");
 			ToolStripMenuItem saveAllItem =			this.RequestMenu(GeneralRes.MenuName_File, this.actionSaveAll.Text);
 													this.RequestSeparator(GeneralRes.MenuName_File, "CodeSeparator");
 			ToolStripMenuItem openCodeItem =		this.RequestMenu(GeneralRes.MenuName_File, this.actionOpenCode.Text);
 													this.RequestSeparator(GeneralRes.MenuName_File, "EndSeparator");
-			ToolStripMenuItem publishGameItem = this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_PublishGame);
 			ToolStripMenuItem quitItem =			this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_Quit);
 			ToolStripMenuItem editItem =		this.RequestMenu(GeneralRes.MenuName_Edit);
 			this.menuEditUndo =						this.RequestMenu(GeneralRes.MenuName_Edit, GeneralRes.MenuItemName_Undo);
