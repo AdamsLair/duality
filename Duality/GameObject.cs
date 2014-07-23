@@ -61,8 +61,8 @@ namespace Duality
 					// Consistency checks. Do not allow closed parent-child loops.
 					if (value != null)
 					{
-						if (this == value) return;
-						if (value.IsChildOf(this)) return;
+						if (this == value) throw new ArgumentException("Can't parent a GameObject to itself.");
+						if (value.IsChildOf(this)) throw new ArgumentException("Can't parent a GameObject to one of its children.");
 					}
 
 					GameObject oldParent = this.parent;

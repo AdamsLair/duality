@@ -231,13 +231,13 @@ namespace Duality.Tests.Resources
 			scene.AddObject(obj);
 
 			// Attempt to create a closed parent loop. Expect the operation to be rejected.
-			obj.Parent = objChildChild;
+			Assert.Throws<ArgumentException>(() => obj.Parent = objChildChild);
 			Assert.AreEqual(null, obj.Parent);
 			Assert.AreEqual(obj, objChild.Parent);
 			Assert.AreEqual(objChild, objChildChild.Parent);
 
 			// Attempt to create a direct self-reference loop. Expect the operation to be rejected.
-			obj.Parent = obj;
+			Assert.Throws<ArgumentException>(() => obj.Parent = obj);
 			Assert.AreEqual(null, obj.Parent);
 			Assert.AreEqual(obj, objChild.Parent);
 			Assert.AreEqual(objChild, objChildChild.Parent);
