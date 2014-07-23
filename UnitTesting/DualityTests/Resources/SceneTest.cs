@@ -221,6 +221,30 @@ namespace Duality.Tests.Resources
 			// Clean up
 			scene.Dispose();
 		}
+		[Test] public void GameObjectParentLoop()
+		{
+			// Set up some objects
+			Scene scene = new Scene();
+			GameObject obj = new GameObject("TestObject");
+			GameObject objChild = new GameObject("TestObjectChild", obj);
+			GameObject objChildChild = new GameObject("TestObjectChildChild", objChild);
+			scene.AddObject(obj);
+
+			// Attempt to create a closed parent loop. Expect the operation to be rejected.
+			obj.Parent = objChildChild;
+			Assert.AreEqual(null, obj.Parent);
+			Assert.AreEqual(obj, objChild.Parent);
+			Assert.AreEqual(objChild, objChildChild.Parent);
+
+			// Attempt to create a direct self-reference loop. Expect the operation to be rejected.
+			obj.Parent = obj;
+			Assert.AreEqual(null, obj.Parent);
+			Assert.AreEqual(obj, objChild.Parent);
+			Assert.AreEqual(objChild, objChildChild.Parent);
+
+			// Clean up
+			scene.Dispose();
+		}
 
 		private class UpdateSwitchToSceneComponent : Component, ICmpUpdatable
 		{

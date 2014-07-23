@@ -58,6 +58,13 @@ namespace Duality
 			{
 				if (this.parent != value)
 				{
+					// Consistency checks. Do not allow closed parent-child loops.
+					if (value != null)
+					{
+						if (this == value) return;
+						if (value.IsChildOf(this)) return;
+					}
+
 					GameObject oldParent = this.parent;
 					Scene newScene = (value != null) ? value.scene : this.scene;
 
