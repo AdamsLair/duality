@@ -757,7 +757,9 @@ namespace Duality.Editor.Plugins.CamView
 			// Hook global message filter
 			if (this.waitForInputFilter == null)
 			{
-				this.waitForInputFilter = new InputEventMessageRedirector(this.glControl, this.FocusHookFilter,
+				this.waitForInputFilter = new InputEventMessageRedirector(
+					this.glControl, 
+					this.FocusHookFilter, 
 					InputEventMessageRedirector.MessageType.MouseWheel);
 				Application.AddMessageFilter(this.waitForInputFilter);
 			}
@@ -773,11 +775,8 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private bool FocusHookFilter(InputEventMessageRedirector.MessageType type, EventArgs e)
 		{
-			// Don't capture stuff in sandbox mode. Input is likely to be needed in the current Game View
-			if (Sandbox.State == SandboxState.Playing)
-				return false;
-			
-			return true;
+			// Capture the mouse wheel - except in sandbox mode. Input is likely to be needed in the current Game View
+			return Sandbox.State != SandboxState.Playing;
 		}
 		private void glControl_MouseLeave(object sender, EventArgs e)
 		{

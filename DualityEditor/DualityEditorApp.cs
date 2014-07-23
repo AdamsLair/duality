@@ -89,6 +89,7 @@ namespace Duality.Editor
 		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
+		private	static InputEventMessageFilter		menuKeyInterceptor	= null;
 		private	static PackageManager				packageManager		= null;
 
 
@@ -273,6 +274,14 @@ namespace Duality.Editor
 				if (action != null) editorActions.Add(action);
 			}
 
+			// Install a global message filter to intercept the menu key
+			if (menuKeyInterceptor == null)
+			{
+				menuKeyInterceptor = new InputEventMessageFilter();
+				menuKeyInterceptor.SystemKeyDown += menuKeyInterceptor_SystemKeyDown;
+			}
+			Application.AddMessageFilter(menuKeyInterceptor);
+
 			// If there are no Scenes in the current project, init the first one with some default objects.
 			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Scene.FileExt, SearchOption.AllDirectories).Any())
 			{
@@ -327,6 +336,12 @@ namespace Duality.Editor
 			{
 				if (Terminating != null) Terminating(null, EventArgs.Empty);
 				
+				// Unregister message hook
+				if (menuKeyInterceptor != null)
+				{
+					Application.RemoveMessageFilter(menuKeyInterceptor);
+				}
+
 				// Save UserData
 				DualityEditorApp.SaveUserData();
 				DualityApp.SaveAppData();
@@ -1425,6 +1440,14 @@ namespace Duality.Editor
 			// Update source code, in case the user is switching to his IDE without hitting the "open source code" button again
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 				DualityEditorApp.UpdatePluginSourceCode();
+		}
+		private static void menuKeyInterceptor_SystemKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Menu)
+			{
+				// Intercept the menu / Alt key, since it only causes problems (stealing the message loop in unfortunate situations, etc.)
+				e.Handled = true;
+			}
 		}
 
 		private static void editorObjects_Registered(object sender, GameObjectEventArgs e)
