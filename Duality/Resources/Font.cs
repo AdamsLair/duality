@@ -1244,7 +1244,11 @@ namespace Duality.Resources
 			{
 				foreach (FontFamily installedFamily in FontFamily.Families)
 				{
-					if (installedFamily.Name == name) return installedFamily;
+					if (installedFamily.Name == name)
+					{
+						loadedFontRegistry[name] = installedFamily;
+						return installedFamily;
+					}
 				}
 			}
 			return result;
@@ -1256,8 +1260,9 @@ namespace Duality.Resources
 		/// <returns>The FontFamily that has been loaded.</returns>
 		public static FontFamily LoadFontFamilyFromFile(string file)
 		{
+			FontFamily[] familiesBefore = fontManager.Families.ToArray();
 			fontManager.AddFontFile(file);
-			FontFamily result = fontManager.Families[fontManager.Families.Length - 1];
+			FontFamily result = fontManager.Families.Except(familiesBefore).FirstOrDefault();
 			loadedFontRegistry[result.Name] = result;
 			return result;
 		}
@@ -1269,13 +1274,14 @@ namespace Duality.Resources
 		public static FontFamily LoadFontFamilyFromMemory(byte[] memory)
 		{
 			FontFamily result = null;
+			FontFamily[] familiesBefore = fontManager.Families.ToArray();
 
 			GCHandle handle = GCHandle.Alloc(memory, GCHandleType.Pinned);
 			try
 			{
 				IntPtr fontMemPtr = handle.AddrOfPinnedObject();
 				fontManager.AddMemoryFont(fontMemPtr, memory.Length);
-				result = fontManager.Families[fontManager.Families.Length - 1];
+				result = fontManager.Families.Except(familiesBefore).FirstOrDefault();
 			}
 			finally
 			{
