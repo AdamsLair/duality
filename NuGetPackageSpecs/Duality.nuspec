@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality</id>
+    <version>1.0.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>Duality Core</title>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>The Duality engine core.</summary>
+    <description>The Duality engine core.</description>
+	<tags>Duality Core</tags>
+    <dependencies>
+      <dependency id="AdamsLair.NVorbis" version="0.7.4" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.0" />
+      <dependency id="AdamsLair.OpenTK.GLControl" version="1.1.0" />
+      <dependency id="AdamsLair.FarseerDuality" version="3.3.5" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Duality\bin\Release\Duality.dll" target="lib" />
+    <file src="..\Duality\bin\Release\Duality.pdb" target="lib" />
+    <file src="..\Duality\bin\Release\Duality.xml" target="lib" />
+    <file src="..\Duality\bin\Release\OpenALSoft32.dll" target="lib" />
+    <file src="..\Duality\bin\Release\OpenALSoft64.dll" target="lib" />
+  </files>
+</package>

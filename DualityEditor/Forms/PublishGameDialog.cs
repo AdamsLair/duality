@@ -17,6 +17,7 @@ namespace Duality.Editor.Forms
 		private static readonly string[] TemporaryProjectFiles = new string[] {
 			@".\Backup",
 			@".\Source\Media",
+			@".\Source\Packages",
 			@".\logfile*",
 			@".\perflog*",
 			@"*.vshost.*",

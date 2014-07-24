@@ -13,6 +13,7 @@ namespace Duality.Updater
 	{
 		public static void Main(string[] args)
 		{
+			string selfFileName = Path.GetFileName(typeof(Program).Assembly.CodeBase);
 			string updateFilePath = (args.Length >= 1) ? args[0] : null;
 			string runAfterFinishPath = (args.Length >= 2) ? args[1] : null;
 			string runAfterFinishWorkDir = (args.Length >= 3) ? args[2] : null;
@@ -42,6 +43,12 @@ namespace Duality.Updater
 				XAttribute attribSource = elem.Attribute("source");
 				string target = (attribTarget != null) ? attribTarget.Value : null;
 				string source = (attribSource != null) ? attribSource.Value : null;
+
+				if (string.Equals(Path.GetFileName(target), selfFileName, StringComparison.InvariantCultureIgnoreCase))
+				{
+					// Self Update is not supported. Skip it.
+					continue;
+				}
 
 				if (string.Equals(elem.Name.LocalName, "Remove", StringComparison.InvariantCultureIgnoreCase))
 				{

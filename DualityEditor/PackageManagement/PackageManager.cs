@@ -82,59 +82,50 @@ namespace Duality.Editor.PackageManagement
 		}
 		public void UninstallPackage(LocalPackage package)
 		{
+			// Verify the package first, since it might be there, but not synchronized with NuGet yet
+			this.VerifyPackage(package);
+
+			// Now that we obtained all the necessary information, uninstall the package
 			this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
+		}
+		public void VerifyPackage(LocalPackage package)
+		{
+			Version oldPackageVersion = package.Version;
+
+			// Determine the exact version that will be downloaded
+			PackageInfo packageInfo = this.QueryPackageInfo(package.Id, package.Version);
+			if (packageInfo == null)
+			{
+				throw new ApplicationException(string.Format(
+					"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
+					package.Id));
+			}
+
+			// Install the package. Won't do anything if the package is already installed.
+			this.InstallPackage(packageInfo);
+
+			// In case we've just retrieved an explicit version for the first time, save the config file.
+			if (oldPackageVersion == null)
+			{
+				this.SaveConfig();
+			}
 		}
 		public void VerifyPackages()
 		{
 			Log.Editor.Write("Verifying packages...");
 			Log.Editor.PushIndent();
-			try
+			LocalPackage[] packagesToVerify = this.localPackages.ToArray();
+			foreach (LocalPackage package in packagesToVerify)
 			{
-				bool packageConfigModified = false;
-
-				// Instruct NuGet to install all packages and see whether it does something
-				foreach (LocalPackage package in this.localPackages)
+				try
 				{
-					// Determine the exact version that will be downloaded
-					Version version = package.Version;
-					bool explicitVersionRetrieved = false;
-					if (version == null)
-					{
-						PackageInfo info = this.QueryPackageInfo(package.Id);
-						if (info != null)
-						{
-							version = info.Version;
-							explicitVersionRetrieved = (version != null);
-						}
-					}
-					if (version == null)
-					{
-						Log.Editor.WriteError(
-							"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
-							package.Id);
-						continue;
-					}
-
-					// Install the package and prepare the update via event handlers
-					this.manager.InstallPackage(package.Id, new SemanticVersion(version));
-
-					// Update the package config version number, in case we've just retrieved an explicit version
-					if (explicitVersionRetrieved)
-					{
-						package.Version = version;
-						packageConfigModified = true;
-					}
+					Log.Editor.Write("Verifying Package {0}, Version {1}", package.Id, package.Version != null ? package.Version.ToString() : "unknown");
+					this.VerifyPackage(package);
 				}
-
-				// If the package configuration was changed due to verification, make sure to update it
-				if (packageConfigModified)
+				catch (Exception e)
 				{
-					this.SaveConfig();
+					Log.Editor.WriteError(Log.Exception(e));
 				}
-			}
-			catch (Exception e)
-			{
-				Log.Editor.WriteError(Log.Exception(e));
 			}
 			Log.Editor.PopIndent();
 		}
@@ -179,14 +170,18 @@ namespace Duality.Editor.PackageManagement
 		}
 		public PackageInfo QueryPackageInfo(string packageId, Version packageVersion = null)
 		{
-			// Query all matching packages
-			IEnumerable<NuGet.IPackage> query = this.repository.FindPackagesById(packageId);
-			NuGet.IPackage[] data = query.ToArray();
-
 			// Find a direct version match
 			if (packageVersion != null)
 			{
-				foreach (NuGet.IPackage package in data)
+				// Query locally first, since we're looking for a specific version number anyway.
+				foreach (NuGet.IPackage package in this.manager.LocalRepository.FindPackagesById(packageId))
+				{
+					if (package.Version.Version == packageVersion)
+						return this.CreatePackageInfo(package);
+				}
+
+				// Nothing found? Query online then.
+				foreach (NuGet.IPackage package in this.repository.FindPackagesById(packageId))
 				{
 					if (package.Version.Version == packageVersion)
 						return this.CreatePackageInfo(package);
@@ -195,6 +190,9 @@ namespace Duality.Editor.PackageManagement
 			// Find the newest available version
 			else
 			{
+				IEnumerable<NuGet.IPackage> query = this.repository.FindPackagesById(packageId);
+
+				NuGet.IPackage[] data = query.ToArray();
 				NuGet.IPackage newestPackage = data
 					.Where(p => p.IsListed() && p.IsReleaseVersion() && p.IsLatestVersion)
 					.OrderByDescending(p => p.Version.Version)
@@ -344,7 +342,7 @@ namespace Duality.Editor.PackageManagement
 				package.Tags.Contains("Plugin");
 			string binaryBaseDir = this.pluginTargetDir;
 			string contentBaseDir = this.dataTargetDir;
-			if (!isPluginPackage && isDualityPackage) binaryBaseDir = "";
+			if (!isPluginPackage || !isDualityPackage) binaryBaseDir = "";
 
 			foreach (var f in package.GetFiles()
 				.Where(f => f.TargetFramework == null || f.TargetFramework.Version < Environment.Version)

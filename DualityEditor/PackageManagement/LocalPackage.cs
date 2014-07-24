@@ -37,5 +37,10 @@ namespace Duality.Editor.PackageManagement
 			this.id = id;
 			this.version = version;
 		}
+
+		public override string ToString()
+		{
+			return string.Format("Local Package '{0}' {1}", this.id, this.version);
+		}
 	}
 }

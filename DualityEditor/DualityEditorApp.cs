@@ -218,15 +218,8 @@ namespace Duality.Editor
 			// Register Assembly Resolve hook for inter-Plugin dependency handling
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			// Initialize the Package Management
+			// Initialize the Package Management system
 			//packageManager = new PackageManager();
-			//packageManager.VerifyPackages();
-			//if (packageManager.ApplyUpdate())
-			//{
-			//    Application.Exit();
-			//    return;
-			//}
-			//packageManager.UninstallPackage(packageManager.LocalPackages.First());
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
