@@ -16,6 +16,52 @@ namespace Duality
 		/// Clears a collection of objects from all disposed and null references. 
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
+		/// <param name="hashSet"></param>
+		public static void FlushDisposedObj<T>(this HashSet<T> hashSet) where T : IManageableObject
+		{
+			var toRemove = new List<T>();
+
+			foreach (var item in hashSet)
+			{
+				if(item == null || item.Disposed)
+					toRemove.Add(item);
+			}
+
+			foreach (var item in toRemove)
+			{
+				hashSet.Remove(item);
+			}
+		}
+
+		/// <summary>
+		/// Clears a collection of objects from all disposed and null references. 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="list"></param>
+		public static void FlushDisposedObj<T>(this HashSet<T> hashSet, out List<T> removedObj) where T : IManageableObject
+		{
+			var toRemove = new List<T>();
+			removedObj = new List<T>();
+			foreach (var item in hashSet)
+			{
+				if (item == null || item.Disposed)
+				{
+					if(item != null)
+						removedObj.Add(item);
+					toRemove.Add(item);
+				}
+			}
+
+			foreach (var item in toRemove)
+			{
+				hashSet.Remove(item);
+			}
+		}
+
+		/// <summary>
+		/// Clears a collection of objects from all disposed and null references. 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
 		/// <param name="list"></param>
 		public static void FlushDisposedObj<T>(this IList<T> list) where T : IManageableObject
 		{
