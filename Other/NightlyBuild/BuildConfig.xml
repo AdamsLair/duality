@@ -40,5 +40,24 @@
     <string>WeifenLuo.WinFormsUI.Docking.pdb</string>
     <string>Windows7.DesktopIntegration.xml</string>
     <string>OpenAL32.dll</string>
+	<!-- Since we have Package Management now, omit a lot more: -->
+    <string>Plugins</string>
+    <string>AdamsLair.WinForms.*</string>
+    <string>Aga.Controls.*</string>
+    <string>Duality.pdb</string>
+    <string>Duality.xml</string>
+    <string>DualityEditor.pdb</string>
+    <string>DualityEditor.xml</string>
+    <string>DualityLauncher.*</string>
+    <string>DualityUpdater.*</string>
+    <string>FarseerDuality.*</string>
+    <string>Ionic.Zip.*</string>
+    <string>NVorbis.*</string>
+    <string>OpenALSoft32.*</string>
+    <string>OpenALSoft64.*</string>
+    <string>OpenTK.*</string>
+    <string>OpenTK.GLControl.*</string>
+    <string>PopupControl.*</string>
+    <string>WeifenLuo.WinFormsUI.Docking.*</string>
   </FileCopyBlackList>
 </ConfigFile>

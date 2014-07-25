@@ -68,10 +68,11 @@ namespace Duality.Updater
 						Console.WriteLine("success");
 						Console.ResetColor();
 					}
-					catch (Exception)
+					catch (Exception e)
 					{
 						Console.ForegroundColor = ConsoleColor.Red;
 						Console.WriteLine("failed");
+						Console.WriteLine("Exception: {0}", e);
 						Console.ResetColor();
 						anyErrorOccurred = true;
 					}
@@ -96,30 +97,35 @@ namespace Duality.Updater
 						Console.WriteLine("success");
 						Console.ResetColor();
 					}
-					catch (Exception)
+					catch (Exception e)
 					{
 						Console.ForegroundColor = ConsoleColor.Red;
 						Console.WriteLine("failed");
+						Console.WriteLine("Exception: {0}", e);
 						Console.ResetColor();
 						anyErrorOccurred = true;
 					}
 				}
 			}
 
-			File.Delete(updateFilePath);
-			Console.WriteLine();
-			Console.WriteLine("Update applied.");
-			Console.WriteLine();
-
+			// If an error occurred, abort here
 			if (anyErrorOccurred)
 			{
-				Console.WriteLine("Some steps of the update process failed. The update may not have been successfull.");
+				Console.WriteLine();
+				Console.WriteLine("Some steps of the update process failed. The update was not successfull.");
+				Console.WriteLine();
 				for (int i = 0; i < 10; i++)
 				{
 					Thread.Sleep(1000);
 					Console.Write(".");
 				}
+				return;
 			}
+
+			File.Delete(updateFilePath);
+			Console.WriteLine();
+			Console.WriteLine("Update applied.");
+			Console.WriteLine();
 			
 			if (!string.IsNullOrEmpty(runAfterFinishPath) && File.Exists(runAfterFinishPath))
 			{
