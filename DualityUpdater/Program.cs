@@ -88,7 +88,7 @@ namespace Duality.Updater
 						}
 
 						string targetDir = Path.GetDirectoryName(target);
-						if (!Directory.Exists(targetDir))
+						if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir))
 							Directory.CreateDirectory(targetDir);
 
 						File.Copy(source, target, true);
