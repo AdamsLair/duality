@@ -18,6 +18,8 @@ namespace Duality.Updater
 			string runAfterFinishPath = (args.Length >= 2) ? args[1] : null;
 			string runAfterFinishWorkDir = (args.Length >= 3) ? args[2] : null;
 			if (string.IsNullOrEmpty(updateFilePath) || !File.Exists(updateFilePath)) return;
+
+			bool anyErrorOccurred = false;
 			
 			Console.WriteLine();
 			Console.WriteLine("Waiting for file locks to release...");
@@ -71,6 +73,7 @@ namespace Duality.Updater
 						Console.ForegroundColor = ConsoleColor.Red;
 						Console.WriteLine("failed");
 						Console.ResetColor();
+						anyErrorOccurred = true;
 					}
 				}
 				else if (string.Equals(elem.Name.LocalName, "Update", StringComparison.InvariantCultureIgnoreCase))
@@ -98,6 +101,7 @@ namespace Duality.Updater
 						Console.ForegroundColor = ConsoleColor.Red;
 						Console.WriteLine("failed");
 						Console.ResetColor();
+						anyErrorOccurred = true;
 					}
 				}
 			}
@@ -106,6 +110,16 @@ namespace Duality.Updater
 			Console.WriteLine();
 			Console.WriteLine("Update applied.");
 			Console.WriteLine();
+
+			if (anyErrorOccurred)
+			{
+				Console.WriteLine("Some steps of the update process failed. The update may not have been successfull.");
+				for (int i = 0; i < 10; i++)
+				{
+					Thread.Sleep(1000);
+					Console.Write(".");
+				}
+			}
 			
 			if (!string.IsNullOrEmpty(runAfterFinishPath) && File.Exists(runAfterFinishPath))
 			{
