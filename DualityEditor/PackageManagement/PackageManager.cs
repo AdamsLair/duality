@@ -202,18 +202,33 @@ namespace Duality.Editor.PackageManagement
 				}
 
 				// Nothing found? Query online then.
-				foreach (NuGet.IPackage package in this.repository.FindPackagesById(packageId))
+				try
 				{
-					if (package.Version.Version == packageVersion)
-						return package;
+					foreach (NuGet.IPackage package in this.repository.FindPackagesById(packageId))
+					{
+						if (package.Version.Version == packageVersion)
+							return package;
+					}
+				}
+				catch (Exception)
+				{
+					return null;
 				}
 			}
-			// Find the newest available version
+			// Find the newest available version online
 			else
 			{
-				IEnumerable<NuGet.IPackage> query = this.repository.FindPackagesById(packageId);
+				NuGet.IPackage[] data = null;
+				try
+				{
+					IEnumerable<NuGet.IPackage> query = this.repository.FindPackagesById(packageId);
+					data = query.ToArray();
+				}
+				catch (Exception)
+				{
+					return null;
+				}
 
-				NuGet.IPackage[] data = query.ToArray();
 				NuGet.IPackage newestPackage = data
 					.Where(p => p.IsListed() && p.IsReleaseVersion() && p.IsLatestVersion)
 					.OrderByDescending(p => p.Version.Version)
@@ -231,11 +246,14 @@ namespace Duality.Editor.PackageManagement
 			foreach (LocalPackage package in this.localPackages)
 			{
 				if (package.Version == null) continue;
-
-				NuGet.IPackage localNuGet = this.FindPackageInfo(package.Id, package.Version);
-				if (localNuGet != null)
+				
+				foreach (NuGet.IPackage localNuGet in this.manager.LocalRepository.FindPackagesById(package.Id))
 				{
-					package.Files = this.CreateFileMapping(localNuGet).Select(p => p.Key);
+					if (localNuGet.Version.Version == package.Version)
+					{
+						package.Files = this.CreateFileMapping(localNuGet).Select(p => p.Key);
+						break;
+					}
 				}
 			}
 		}
