@@ -508,4 +508,10 @@
   <data name="Msg_PublishConfirmDeleteTargetDir_Desc" xml:space="preserve">
     <value>The specified directory already contains a non-empty folder named '{0}'. Delete folder in order to proceed?</value>
   </data>
+  <data name="TaskInstallPackages_Caption" xml:space="preserve">
+    <value>Installing Packages...</value>
+  </data>
+  <data name="TaskInstallPackages_Desc" xml:space="preserve">
+    <value>Duality is installing some required packages. This may include downloading them from the central package repository.</value>
+  </data>
 </root>

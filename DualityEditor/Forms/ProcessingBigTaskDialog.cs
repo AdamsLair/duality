@@ -3,7 +3,6 @@ using System.Collections;
 using System.Windows.Forms;
 using System.Threading;
 
-using Duality;
 using Duality.Editor.Properties;
 
 namespace Duality.Editor.Forms
@@ -13,9 +12,9 @@ namespace Duality.Editor.Forms
 		public delegate IEnumerable TaskAction(WorkerInterface worker);
 		public class WorkerInterface
 		{
-			internal	ProcessingBigTaskDialog	owner	= null;
+			internal	ProcessingBigTaskDialog	parent	= null;
 			private	Exception	error		= null;
-			private	MainForm	mainForm	= null;
+			private	Form		targetForm	= null;
 			private	TaskAction	task		= null;
 			private float		progress	= 0.0f;
 			private string		stateDesc	= null;
@@ -36,10 +35,10 @@ namespace Duality.Editor.Forms
 				get { return this.error; }
 				set { this.error = value; }
 			}
-			public MainForm MainForm
+			public Form TargetForm
 			{
-				get { return this.mainForm; }
-				set { this.mainForm = value; }
+				get { return this.targetForm; }
+				set { this.targetForm = value; }
 			}
 			public TaskAction Task
 			{
@@ -56,7 +55,7 @@ namespace Duality.Editor.Forms
 
 		private	Thread			worker				= null;
 		private	WorkerInterface	workerInterface		= null;
-		private	MainForm		owner				= null;
+		private	Form			targetForm			= null;
 		private	TaskAction		task				= null;
 		private	object			data				= null;
 		private	string			taskCaption			= "Performing Task...";
@@ -68,21 +67,20 @@ namespace Duality.Editor.Forms
 			get { return this.mainThreadRequired; }
 			set
 			{
-				// May only change during init.
-				if (this.worker == null)
-				{
-					this.mainThreadRequired = value;
-				}
+				if (this.worker != null) throw new InvalidOperationException("The MainThreadRequired property may only change during initialization of the TaskDialog.");
+				this.mainThreadRequired = value;
 			}
 		}
 
 
-		public ProcessingBigTaskDialog(string caption, string desc, TaskAction task, object data) : this(DualityEditorApp.MainForm, caption, desc, task, data) {}
+		public ProcessingBigTaskDialog(string caption, string desc, TaskAction task, object data) : this(null, caption, desc, task, data) {}
 		public ProcessingBigTaskDialog(MainForm owner, string caption, string desc, TaskAction task, object data)
 		{
 			this.InitializeComponent();
 
-			this.owner = owner;
+			if (owner == null) this.StartPosition = FormStartPosition.CenterScreen;
+
+			this.targetForm = (Form)owner ?? this;
 			this.taskCaption = caption;
 			this.taskDesc = desc;
 			this.task = task;
@@ -97,11 +95,11 @@ namespace Duality.Editor.Forms
 		{
 			base.OnShown(e);
 
-			this.owner.SetTaskbarOverlayIcon(GeneralResCache.IconCog, this.taskCaption);
+			this.targetForm.SetTaskbarOverlayIcon(GeneralResCache.IconCog, this.taskCaption);
 
 			this.workerInterface = new WorkerInterface();
-			this.workerInterface.owner = this;
-			this.workerInterface.MainForm = this.owner;
+			this.workerInterface.parent = this;
+			this.workerInterface.TargetForm = this.targetForm;
 			this.workerInterface.Task = this.task;
 			this.workerInterface.Data = this.data;
 
@@ -114,23 +112,23 @@ namespace Duality.Editor.Forms
 		{
 			base.OnClosed(e);
 
-			this.owner.SetTaskbarProgress(0.0f);
-			this.owner.SetTaskbarProgressState(ThumbnailProgressState.NoProgress);
-			this.owner.SetTaskbarOverlayIcon(null, null);
+			this.targetForm.SetTaskbarProgress(0.0f);
+			this.targetForm.SetTaskbarProgressState(ThumbnailProgressState.NoProgress);
+			this.targetForm.SetTaskbarOverlayIcon(null, null);
 		}
 
 		private void progressTimer_Tick(object sender, EventArgs e)
 		{
 			this.stateDescLabel.Text = this.workerInterface.StateDesc;
 			this.progressBar.Value = (int)Math.Round(this.workerInterface.Progress * 100.0f);
-			this.owner.SetTaskbarProgressState(ThumbnailProgressState.Normal);
-			this.owner.SetTaskbarProgress(this.progressBar.Value);
+			this.targetForm.SetTaskbarProgressState(ThumbnailProgressState.Normal);
+			this.targetForm.SetTaskbarProgress(this.progressBar.Value);
 
 			if (this.workerInterface.Error != null)
 			{
 				this.progressTimer.Stop();
 
-				this.owner.SetTaskbarProgressState(ThumbnailProgressState.Error);
+				this.targetForm.SetTaskbarProgressState(ThumbnailProgressState.Error);
 				MessageBox.Show(this, 
 					String.Format(GeneralRes.Msg_ErrorPerformBigTask_Desc, this.taskCaption, "\n", Log.Exception(this.workerInterface.Error)), 
 					GeneralRes.Msg_ErrorPerformBigTask_Caption, 
@@ -154,7 +152,7 @@ namespace Duality.Editor.Forms
 			try 
 			{
 				// All work is performed here.
-				if (!workInterface.owner.MainThreadRequired)
+				if (!workInterface.parent.MainThreadRequired)
 				{
 					var taskEnumerator = workInterface.Task(workInterface).GetEnumerator();
 					while (taskEnumerator.MoveNext()) {}
@@ -169,7 +167,7 @@ namespace Duality.Editor.Forms
 					// In order to keep the GUI updated, the task is split into chunks. After each chunk, GUI events can be processed.
 					var taskEnumerator = workInterface.Task(workInterface).GetEnumerator();
 					DateTime lastCheck = DateTime.Now;
-					while ((bool)workInterface.MainForm.Invoke((Func<bool>)taskEnumerator.MoveNext))
+					while ((bool)workInterface.TargetForm.Invoke((Func<bool>)taskEnumerator.MoveNext))
 					{
 						TimeSpan lastTime = DateTime.Now - lastCheck;
 						// Wait a little so the main thread has time for drawing the GUI.

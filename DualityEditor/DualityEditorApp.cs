@@ -102,7 +102,11 @@ namespace Duality.Editor
 		public	static	event	EventHandler<SelectionChangedEventArgs>			SelectionChanged		= null;
 		public	static	event	EventHandler<ObjectPropertyChangedEventArgs>	ObjectPropertyChanged	= null;
 		
-
+		
+		public static PackageManager PackageManager
+		{
+			get { return packageManager; }
+		}
 		public static MainForm MainForm
 		{
 			get { return mainForm; }
@@ -218,8 +222,8 @@ namespace Duality.Editor
 			// Register Assembly Resolve hook for inter-Plugin dependency handling
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			// Initialize the Package Management system
-			//packageManager = new PackageManager();
+			// Initialize Package Management system
+			packageManager = new PackageManager();
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;

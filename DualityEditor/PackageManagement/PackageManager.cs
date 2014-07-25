@@ -8,8 +8,6 @@ using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-using Duality;
-
 using NuGet;
 
 namespace Duality.Editor.PackageManagement
@@ -39,6 +37,17 @@ namespace Duality.Editor.PackageManagement
 		public IEnumerable<LocalPackage> LocalPackages
 		{
 			get { return this.localPackages; }
+		}
+		public bool IsPackageUpdateRequired
+		{
+			get
+			{
+				return this.localPackages.Any(p => 
+					p.Version == null || 
+					!this.manager.LocalRepository.GetPackages().Any(n => 
+						n.Id == p.Id && 
+						n.Version == new SemanticVersion(p.Version)));
+			}
 		}
 		private string PackageFilePath
 		{
@@ -82,10 +91,6 @@ namespace Duality.Editor.PackageManagement
 		}
 		public void UninstallPackage(LocalPackage package)
 		{
-			// Verify the package first, since it might be there, but not synchronized with NuGet yet
-			this.VerifyPackage(package);
-
-			// Now that we obtained all the necessary information, uninstall the package
 			this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
 		}
 		public void VerifyPackage(LocalPackage package)
@@ -110,30 +115,40 @@ namespace Duality.Editor.PackageManagement
 				this.SaveConfig();
 			}
 		}
-		public void VerifyPackages()
-		{
-			Log.Editor.Write("Verifying packages...");
-			Log.Editor.PushIndent();
-			LocalPackage[] packagesToVerify = this.localPackages.ToArray();
-			foreach (LocalPackage package in packagesToVerify)
-			{
-				try
-				{
-					Log.Editor.Write("Verifying Package {0}, Version {1}", package.Id, package.Version != null ? package.Version.ToString() : "unknown");
-					this.VerifyPackage(package);
-				}
-				catch (Exception e)
-				{
-					Log.Editor.WriteError(Log.Exception(e));
-				}
-			}
-			Log.Editor.PopIndent();
-		}
 		public bool ApplyUpdate(bool restartEditor = true)
 		{
+			const string UpdaterFileName = "DualityUpdater.exe";
 			if (!File.Exists(this.UpdateFilePath)) return false;
 			
-			Process.Start("DualityUpdater.exe", string.Format("{0} {1} {2}",
+			// Manually perform update operations on the updater itself
+			try
+			{
+				XDocument updateDoc = this.PrepareUpdateFile();
+				foreach (XElement elem in updateDoc.Root.Elements())
+				{
+					XAttribute attribTarget = elem.Attribute("target");
+					XAttribute attribSource = elem.Attribute("source");
+					string target = (attribTarget != null) ? attribTarget.Value : null;
+					string source = (attribSource != null) ? attribSource.Value : null;
+
+					// Only Updater-updates
+					if (string.Equals(Path.GetFileName(target), UpdaterFileName, StringComparison.InvariantCultureIgnoreCase))
+					{
+						if (string.Equals(elem.Name.LocalName, "Remove", StringComparison.InvariantCultureIgnoreCase))
+							File.Delete(target);
+						else if (string.Equals(elem.Name.LocalName, "Update", StringComparison.InvariantCultureIgnoreCase))
+							File.Copy(source, target, true);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Editor.WriteError("Can't update {0}, because an error occurred: {1}", UpdaterFileName, Log.Exception(e));
+				return false;
+			}
+
+			// Run the updater application
+			Process.Start(UpdaterFileName, string.Format("{0} {1} {2}",
 				UpdateConfigFile,
 				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
 				restartEditor ? Environment.CurrentDirectory : ""));
@@ -170,6 +185,12 @@ namespace Duality.Editor.PackageManagement
 		}
 		public PackageInfo QueryPackageInfo(string packageId, Version packageVersion = null)
 		{
+			NuGet.IPackage package = this.FindPackageInfo(packageId, packageVersion);
+			return package != null ? this.CreatePackageInfo(package) : null;
+		}
+
+		private NuGet.IPackage FindPackageInfo(string packageId, Version packageVersion)
+		{
 			// Find a direct version match
 			if (packageVersion != null)
 			{
@@ -177,14 +198,14 @@ namespace Duality.Editor.PackageManagement
 				foreach (NuGet.IPackage package in this.manager.LocalRepository.FindPackagesById(packageId))
 				{
 					if (package.Version.Version == packageVersion)
-						return this.CreatePackageInfo(package);
+						return package;
 				}
 
 				// Nothing found? Query online then.
 				foreach (NuGet.IPackage package in this.repository.FindPackagesById(packageId))
 				{
 					if (package.Version.Version == packageVersion)
-						return this.CreatePackageInfo(package);
+						return package;
 				}
 			}
 			// Find the newest available version
@@ -199,23 +220,22 @@ namespace Duality.Editor.PackageManagement
 					.FirstOrDefault();
 
 				if (newestPackage != null)
-					return this.CreatePackageInfo(newestPackage);
+					return newestPackage;
 			}
 
 			// Nothing was found
 			return null;
 		}
-
 		private void UpdateFileMappings()
 		{
 			foreach (LocalPackage package in this.localPackages)
 			{
 				if (package.Version == null) continue;
 
-				NuGet.IPackage localNuGet = this.manager.LocalRepository.FindPackage(package.Id, new SemanticVersion(package.Version));
+				NuGet.IPackage localNuGet = this.FindPackageInfo(package.Id, package.Version);
 				if (localNuGet != null)
 				{
-					package.Files = this.CreateFileMapping(localNuGet).Select(p => p.Key );
+					package.Files = this.CreateFileMapping(localNuGet).Select(p => p.Key);
 				}
 			}
 		}

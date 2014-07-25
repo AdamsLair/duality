@@ -59,7 +59,9 @@ namespace Duality.Updater
 						{
 							Thread.Sleep(100);
 						}
+
 						File.Delete(target);
+
 						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("success");
 						Console.ResetColor();
@@ -80,7 +82,13 @@ namespace Duality.Updater
 						{
 							Thread.Sleep(100);
 						}
+
+						string targetDir = Path.GetDirectoryName(target);
+						if (!Directory.Exists(targetDir))
+							Directory.CreateDirectory(targetDir);
+
 						File.Copy(source, target, true);
+
 						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("success");
 						Console.ResetColor();
