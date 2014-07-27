@@ -106,3 +106,6 @@ packages/
 DualityUpdater/bin/
 DualityUpdater/obj/
 Other/NightlyBuild/NuGetPackages/
+DualityEditorPlugins/PackageManagerFrontend/bin/
+DualityEditorPlugins/PackageManagerFrontend/obj/
+DualityEditorPlugins/PackageManagerFrontend/PackageManagerFrontend.csproj.user
