@@ -40,7 +40,58 @@ header {
 	font-size: 1.1em;
 }
 
+header div#navContainer {
+	display: table;
+	width: 100%;
+}
+
+/* Social Media Bar */
+
+header div#social {
+	display: table-cell;
+	vertical-align: bottom;
+}
+
+header a.socialButton {
+	display: inline-block;
+	width: 1.5em;
+	height: 1.5em;
+	opacity: 0.5;
+	background-repeat: no-repeat;
+	background-position: center;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 0.25em;
+}
+
+header a.socialButton:hover {
+	opacity: 1.0;
+	background-color: rgba(255,255,255,0.15);
+	border: 1px solid rgba(255,255,255,0.3);
+}
+
+header a.socialButton#facebook {
+	background-image: url('images/facebook.png');
+}
+
+header a.socialButton#twitter {
+	background-image: url('images/twitter.png');
+}
+
+header a.socialButton#googleplus {
+	background-image: url('images/googleplus.png');
+}
+
+@media only screen and (max-width: 300pt) {
+	header div#social {
+		display: none;
+	}
+}
+
 /* Navigation Bar */
+
+header nav {
+	display: table-cell;
+}
 
 header nav > ul {
 	list-style-type: none;
@@ -59,6 +110,7 @@ header nav > ul > li a {
 	text-decoration: none;
 	color: #dddddd;
 	border: 1px solid rgba(255,255,255,0.1);
+	border-radius: 0.25em;
 }
 
 header nav > ul > li a:hover {
