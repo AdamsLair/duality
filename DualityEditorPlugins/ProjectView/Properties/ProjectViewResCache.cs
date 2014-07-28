@@ -10,7 +10,7 @@ namespace Duality.Editor.Plugins.ProjectView.Properties
 	/// Since directly accessing code generated from .resx files will result in a deserialization on
 	/// each Resource access, this class allows cached Resource access.
 	/// </summary>
-	public static class EditorBaseResCache
+	public static class ProjectViewResCache
 	{
 		public static readonly Icon		IconProjectView		= ProjectViewRes.IconProjectView;
 	}

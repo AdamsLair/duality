@@ -14,6 +14,8 @@ using Duality.Editor.Plugins.SceneView.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
+using AdamsLair.WinForms.ItemModels;
+
 
 namespace Duality.Editor.Plugins.SceneView
 {
@@ -21,8 +23,6 @@ namespace Duality.Editor.Plugins.SceneView
 	{
 		private	SceneView	sceneView	= null;
 		private	bool		isLoading	= false;
-
-		private	ToolStripMenuItem	menuItemSceneView	= null;
 
 
 		public override string Id
@@ -69,9 +69,13 @@ namespace Duality.Editor.Plugins.SceneView
 			base.InitPlugin(main);
 
 			// Request menu
-			this.menuItemSceneView = main.RequestMenu(GeneralRes.MenuName_View, SceneViewRes.MenuItemName_SceneView);
-			this.menuItemSceneView.Image = SceneViewResCache.IconSceneView.ToBitmap();
-			this.menuItemSceneView.Click += this.menuItemSceneView_Click;
+			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_View);
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = SceneViewRes.MenuItemName_SceneView,
+				Icon = SceneViewResCache.IconSceneView.ToBitmap(),
+				ActionHandler = this.menuItemSceneView_Click
+			});
 		}
 		
 		public SceneView RequestSceneView()

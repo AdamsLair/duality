@@ -8,10 +8,12 @@ using System.Reflection;
 
 using Duality;
 using Duality.Resources;
-
 using Duality.Editor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
+
+using AdamsLair.WinForms.ItemModels;
+using AdamsLair.WinForms.ItemViews;
 
 namespace Duality.Editor.Forms
 {
@@ -19,25 +21,30 @@ namespace Duality.Editor.Forms
 	{
 		private	bool				nonUserClosing	= false;
 		private	ToolStripMenuItem	activeMenu		= null;
-		private	Dictionary<string,ToolStripItem>	menuRegistry	= new Dictionary<string,ToolStripItem>();
+		private MenuModel			mainMenuModel	= new MenuModel();
+		private	MenuStripMenuView	mainMenuView	= null;
 
 		// Hardcoded main menu items
-		private ToolStripMenuItem	menuRunSandboxPlay		= null;
-		private ToolStripMenuItem	menuRunSandboxPause		= null;
-		private ToolStripMenuItem	menuRunSandboxStop		= null;
-		private ToolStripMenuItem	menuRunSandboxStep		= null;
-		private ToolStripMenuItem	menuRunSandboxFaster	= null;
-		private ToolStripMenuItem	menuRunSandboxSlower	= null;
-		private ToolStripMenuItem	menuEditUndo			= null;
-		private ToolStripMenuItem	menuEditRedo			= null;
-		private ToolStripMenuItem	menuRunApp				= null;
-		private ToolStripMenuItem	menuDebugApp			= null;
-		private ToolStripMenuItem	menuProfileApp			= null;
+		private MenuModelItem	menuRunSandboxPlay		= null;
+		private MenuModelItem	menuRunSandboxPause		= null;
+		private MenuModelItem	menuRunSandboxStop		= null;
+		private MenuModelItem	menuRunSandboxStep		= null;
+		private MenuModelItem	menuRunSandboxFaster	= null;
+		private MenuModelItem	menuRunSandboxSlower	= null;
+		private MenuModelItem	menuEditUndo			= null;
+		private MenuModelItem	menuEditRedo			= null;
+		private MenuModelItem	menuRunApp				= null;
+		private MenuModelItem	menuDebugApp			= null;
+		private MenuModelItem	menuProfileApp			= null;
 
 
 		public DockPanel MainDockPanel
 		{
 			get { return this.dockPanel; }
+		}
+		public MenuModel MainMenu
+		{
+			get { return this.mainMenuModel; }
 		}
 
 
@@ -108,113 +115,198 @@ namespace Duality.Editor.Forms
 		}
 		public void InitMenus()
 		{
-			ToolStripMenuItem fileItem =		this.RequestMenu(GeneralRes.MenuName_File);
-			ToolStripMenuItem newProjectItem =		this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_NewProject);
-			ToolStripMenuItem publishGameItem =		this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_PublishGame);
-													this.RequestSeparator(GeneralRes.MenuName_File, "SaveSeparator");
-			ToolStripMenuItem saveAllItem =			this.RequestMenu(GeneralRes.MenuName_File, this.actionSaveAll.Text);
-													this.RequestSeparator(GeneralRes.MenuName_File, "CodeSeparator");
-			ToolStripMenuItem openCodeItem =		this.RequestMenu(GeneralRes.MenuName_File, this.actionOpenCode.Text);
-													this.RequestSeparator(GeneralRes.MenuName_File, "EndSeparator");
-			ToolStripMenuItem quitItem =			this.RequestMenu(GeneralRes.MenuName_File, GeneralRes.MenuItemName_Quit);
-			ToolStripMenuItem editItem =		this.RequestMenu(GeneralRes.MenuName_Edit);
-			this.menuEditUndo =						this.RequestMenu(GeneralRes.MenuName_Edit, GeneralRes.MenuItemName_Undo);
-			this.menuEditRedo =						this.RequestMenu(GeneralRes.MenuName_Edit, GeneralRes.MenuItemName_Redo);
-			ToolStripMenuItem viewItem =		this.RequestMenu(GeneralRes.MenuName_View);
-			ToolStripMenuItem runItem =			this.RequestMenu(GeneralRes.MenuName_Run);
-			this.menuRunApp =						this.RequestMenu(GeneralRes.MenuName_Run, this.actionRunApp.Text);
-			this.menuDebugApp =						this.RequestMenu(GeneralRes.MenuName_Run, this.actionDebugApp.Text);
-			this.menuProfileApp =					this.RequestMenu(GeneralRes.MenuName_Run, GeneralRes.MenuItemName_ProfileGame);
-			ToolStripMenuItem configLauncherItem =	this.RequestMenu(GeneralRes.MenuName_Run, GeneralRes.MenuItemName_ConfigureLauncher);
-													this.RequestSeparator(GeneralRes.MenuName_Run, "SandboxSeparator");
-			this.menuRunSandboxPlay	=				this.RequestMenu(GeneralRes.MenuName_Run, this.actionRunSandbox.Text);
-			this.menuRunSandboxStep =				this.RequestMenu(GeneralRes.MenuName_Run, this.actionStepSandbox.Text);
-			this.menuRunSandboxPause =				this.RequestMenu(GeneralRes.MenuName_Run, this.actionPauseSandbox.Text);
-			this.menuRunSandboxStop =				this.RequestMenu(GeneralRes.MenuName_Run, this.actionStopSandbox.Text);
-													this.RequestSeparator(GeneralRes.MenuName_Run, "SandboxDebugSeparator");
-			this.menuRunSandboxSlower =				this.RequestMenu(GeneralRes.MenuName_Run, GeneralRes.MenuItemName_SandboxSlower);
-			this.menuRunSandboxFaster =				this.RequestMenu(GeneralRes.MenuName_Run, GeneralRes.MenuItemName_SandboxFaster);
-			ToolStripMenuItem helpItem =		this.RequestMenu(GeneralRes.MenuName_Help);
-			ToolStripMenuItem aboutItem =			this.RequestMenu(GeneralRes.MenuName_Help, GeneralRes.MenuItemName_About);
+			this.mainMenuView = new MenuStripMenuView(this.mainMenuStrip.Items);
+			this.mainMenuView.Model = this.mainMenuModel;
 
-			// ---------- File ----------
-			newProjectItem.Image = Properties.GeneralResCache.ImageAppCreate;
-			newProjectItem.Click += this.newProjectItem_Click;
-			newProjectItem.Tag = HelpInfo.FromText(newProjectItem.Text, GeneralRes.MenuItemInfo_NewProject);
+			MenuModelItem helpItem;
+			this.mainMenuModel.AddItems(new[]
+			{
+				new MenuModelItem(GeneralRes.MenuName_File, null, new[]
+				{
+					new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_NewProject,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Icon			= Properties.GeneralResCache.ImageAppCreate,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_NewProject),
+						ActionHandler	= this.newProjectItem_Click
+					},
+					new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_PublishGame,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_PublishGame),
+						ActionHandler	= this.actionPublishGame_Click
+					},
+					new MenuModelItem
+					{
+						Name			= "TopSeparator",
+						SortValue		= MenuModelItem.SortValue_Top,
+						TypeHint		= MenuItemTypeHint.Separator
+					},
+					new MenuModelItem
+					{
+						Name			= this.actionSaveAll.Text,
+						Icon			= this.actionSaveAll.Image,
+						ShortcutKeys	= Keys.Control | Keys.S,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SaveAll),
+						ActionHandler	= this.actionSaveAll_Click
+					},
+					new MenuModelItem
+					{
+						Name			= "CodeSeparator",
+						TypeHint		= MenuItemTypeHint.Separator
+					},
+					new MenuModelItem
+					{
+						Name			= this.actionOpenCode.Text,
+						Icon			= this.actionOpenCode.Image,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_OpenProjectSource),
+						ActionHandler	= this.actionOpenCode_Click
+					},
+					new MenuModelItem
+					{
+						Name			= "BottomSeparator",
+						SortValue		= MenuModelItem.SortValue_Bottom,
+						TypeHint		= MenuItemTypeHint.Separator
+					},
+					new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_Quit,
+						SortValue		= MenuModelItem.SortValue_Bottom,
+						ShortcutKeys	= Keys.Alt | Keys.F4,
+						ActionHandler	= this.quitItem_Click
+					}
+				}),
+				new MenuModelItem(GeneralRes.MenuName_Edit, null, new[]
+				{
+					this.menuEditUndo = new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_Undo,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Icon			= GeneralResCache.arrow_undo,
+						ShortcutKeys	= Keys.Z | Keys.Control,
+						ActionHandler	= this.menuEditUndo_Click
+					},
+					this.menuEditRedo = new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_Redo,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Icon			= GeneralResCache.arrow_redo,
+						ShortcutKeys	= Keys.Y | Keys.Control,
+						ActionHandler	= this.menuEditRedo_Click
+					}
+				}),
+				new MenuModelItem(GeneralRes.MenuName_View),
+				new MenuModelItem(GeneralRes.MenuName_Run, null, new[]
+				{
+					this.menuRunApp = new MenuModelItem
+					{
+						Name			= this.actionRunApp.Text,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Icon			= this.actionRunApp.Image,
+						ShortcutKeys	= Keys.Alt | Keys.F5,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_RunGame),
+						ActionHandler	= this.actionRunApp_Click
+					},
+					this.menuDebugApp = new MenuModelItem
+					{
+						Name			= this.actionDebugApp.Text,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Icon			= this.actionDebugApp.Image,
+						ShortcutKeys	= Keys.Alt | Keys.F6,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_DebugGame),
+						ActionHandler	= this.actionDebugApp_Click
+					},
+					this.menuProfileApp = new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_ProfileGame,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Icon			= Properties.Resources.application_stopwatch,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_ProfileGame),
+						ActionHandler	= this.actionProfileApp_Click
+					},
+					new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_ConfigureLauncher,
+						SortValue		= MenuModelItem.SortValue_Top,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_ConfigureLauncher),
+						ActionHandler	= this.actionConfigureLauncher_Click
+					},
+					new MenuModelItem
+					{
+						Name			= "TopSeparator",
+						SortValue		= MenuModelItem.SortValue_Top,
+						TypeHint		= MenuItemTypeHint.Separator
+					},
+					this.menuRunSandboxPlay = new MenuModelItem
+					{
+						Name			= this.actionRunSandbox.Text,
+						Icon			= this.actionRunSandbox.Image,
+						ShortcutKeys	= Keys.F5,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxPlay),
+						ActionHandler	= this.actionRunSandbox_Click
+					},
+					this.menuRunSandboxStep = new MenuModelItem
+					{
+						Name			= this.actionStepSandbox.Text,
+						Icon			= this.actionStepSandbox.Image,
+						ShortcutKeys	= Keys.F6,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxStep),
+						ActionHandler	= this.actionStepSandbox_Click
+					},
+					this.menuRunSandboxPause = new MenuModelItem
+					{
+						Name			= this.actionPauseSandbox.Text,
+						Icon			= this.actionPauseSandbox.Image,
+						ShortcutKeys	= Keys.F7,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxPause),
+						ActionHandler	= this.actionPauseSandbox_Click
+					},
+					this.menuRunSandboxStop = new MenuModelItem
+					{
+						Name			= this.actionStopSandbox.Text,
+						Icon			= this.actionStopSandbox.Image,
+						ShortcutKeys	= Keys.F8,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxStop),
+						ActionHandler	= this.actionStopSandbox_Click
+					},
+					new MenuModelItem
+					{
+						Name			= "BottomSeparator",
+						SortValue		= MenuModelItem.SortValue_Bottom,
+						TypeHint		= MenuItemTypeHint.Separator
+					},
+					this.menuRunSandboxSlower = new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_SandboxSlower,
+						ShortcutKeys	= Keys.F9,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxSlower),
+						ActionHandler	= this.menuRunSandboxSlower_Click
+					},
+					this.menuRunSandboxFaster = new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_SandboxFaster,
+						ShortcutKeys	= Keys.F10,
+						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxFaster),
+						ActionHandler	= this.menuRunSandboxFaster_Click
+					}
+				}),
+				new MenuModelItem(GeneralRes.MenuName_Settings),
+				helpItem = new MenuModelItem(GeneralRes.MenuName_Help, null, new[]
+				{
+					new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_About,
+						SortValue		= MenuModelItem.SortValue_Top,
+						ActionHandler	= this.aboutItem_Click
+					}
+				})
+			});
 
-			saveAllItem.Image = this.actionSaveAll.Image;
-			saveAllItem.ShortcutKeys = Keys.Control | Keys.S;
-			saveAllItem.Click += this.actionSaveAll_Click;
-			saveAllItem.Tag = HelpInfo.FromText(saveAllItem.Text, GeneralRes.MenuItemInfo_SaveAll);
-
-			openCodeItem.Image = this.actionOpenCode.Image;
-			openCodeItem.Click += this.actionOpenCode_Click;
-			openCodeItem.Tag = HelpInfo.FromText(openCodeItem.Text, GeneralRes.MenuItemInfo_OpenProjectSource);
-
-			publishGameItem.Click += this.actionPublishGame_Click;
-			publishGameItem.Tag = HelpInfo.FromText(publishGameItem.Text, GeneralRes.MenuItemInfo_PublishGame);
-
-			quitItem.Click += this.quitItem_Click;
-			quitItem.ShortcutKeys = Keys.Alt | Keys.F4;
-
-			// ---------- Edit ----------
-			this.menuEditUndo.ShortcutKeys = Keys.Z | Keys.Control;
-			this.menuEditUndo.Click += this.menuEditUndo_Click;
-			this.menuEditUndo.Image = GeneralResCache.arrow_undo;
-
-			this.menuEditRedo.ShortcutKeys = Keys.Y | Keys.Control;
-			this.menuEditRedo.Click += this.menuEditRedo_Click;
-			this.menuEditRedo.Image = GeneralResCache.arrow_redo;
-
-			// ---------- Run ----------
-			this.menuRunApp.Image = this.actionRunApp.Image;
-			this.menuRunApp.Click += this.actionRunApp_Click;
-			this.menuRunApp.ShortcutKeys = Keys.Alt | Keys.F5;
-			this.menuRunApp.Tag = HelpInfo.FromText(this.menuRunApp.Text, GeneralRes.MenuItemInfo_RunGame);
-
-			this.menuDebugApp.Image = this.actionDebugApp.Image;
-			this.menuDebugApp.Click += this.actionDebugApp_Click;
-			this.menuDebugApp.ShortcutKeys = Keys.Alt | Keys.F6;
-			this.menuDebugApp.Tag = HelpInfo.FromText(this.menuDebugApp.Text, GeneralRes.MenuItemInfo_DebugGame);
-
-			this.menuProfileApp.Image = Properties.Resources.application_stopwatch;
-			this.menuProfileApp.Click += this.actionProfileApp_Click;
-			this.menuProfileApp.Tag = HelpInfo.FromText(this.menuProfileApp.Text, GeneralRes.MenuItemInfo_ProfileGame);
-
-			configLauncherItem.Click += this.actionConfigureLauncher_Click;
-			configLauncherItem.Tag = HelpInfo.FromText(configLauncherItem.Text, GeneralRes.MenuItemInfo_ConfigureLauncher);
-
-			this.menuRunSandboxPlay.Image = this.actionRunSandbox.Image;
-			this.menuRunSandboxPlay.Click += this.actionRunSandbox_Click;
-			this.menuRunSandboxPlay.ShortcutKeys = Keys.F5;
-			this.menuRunSandboxPlay.Tag = HelpInfo.FromText(this.menuRunSandboxPlay.Text, GeneralRes.MenuItemInfo_SandboxPlay);
-
-			this.menuRunSandboxStep.Image = this.actionStepSandbox.Image;
-			this.menuRunSandboxStep.Click += this.actionStepSandbox_Click;
-			this.menuRunSandboxStep.ShortcutKeys = Keys.F6;
-			this.menuRunSandboxStep.Tag = HelpInfo.FromText(this.menuRunSandboxStep.Text, GeneralRes.MenuItemInfo_SandboxStep);
-
-			this.menuRunSandboxPause.Image = this.actionPauseSandbox.Image;
-			this.menuRunSandboxPause.Click += this.actionPauseSandbox_Click;
-			this.menuRunSandboxPause.ShortcutKeys = Keys.F7;
-			this.menuRunSandboxPause.Tag = HelpInfo.FromText(this.menuRunSandboxPause.Text, GeneralRes.MenuItemInfo_SandboxPause);
-
-			this.menuRunSandboxStop.Image = this.actionStopSandbox.Image;
-			this.menuRunSandboxStop.Click += this.actionStopSandbox_Click;
-			this.menuRunSandboxStop.ShortcutKeys = Keys.F8;
-			this.menuRunSandboxStop.Tag = HelpInfo.FromText(this.menuRunSandboxStop.Text, GeneralRes.MenuItemInfo_SandboxStop);
-
-			this.menuRunSandboxSlower.Click += this.menuRunSandboxSlower_Click;
-			this.menuRunSandboxSlower.ShortcutKeys = Keys.F9;
-			this.menuRunSandboxSlower.Tag = HelpInfo.FromText(this.menuRunSandboxSlower.Text, GeneralRes.MenuItemInfo_SandboxSlower);
-
-			this.menuRunSandboxFaster.Click += this.menuRunSandboxFaster_Click;
-			this.menuRunSandboxFaster.ShortcutKeys = Keys.F10;
-			this.menuRunSandboxFaster.Tag = HelpInfo.FromText(this.menuRunSandboxFaster.Text, GeneralRes.MenuItemInfo_SandboxFaster);
-			
-			// ---------- Help ----------
-			helpItem.Alignment = ToolStripItemAlignment.Right;
-			aboutItem.Click += this.aboutItem_Click;
+			// Set some view-specific properties
+			ToolStripItem helpViewItem = this.mainMenuView.GetViewItem(helpItem);
+			helpViewItem.Alignment = ToolStripItemAlignment.Right;
 
 			// Attach help data to toolstrip actions
 			this.actionOpenCode.Tag = HelpInfo.FromText(this.actionOpenCode.Text, GeneralRes.MenuItemInfo_OpenProjectSource);
@@ -227,86 +319,16 @@ namespace Duality.Editor.Forms
 			this.actionStopSandbox.Tag = HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop);
 			this.formatUpdateAll.Tag = HelpInfo.FromText(this.formatUpdateAll.Text, GeneralRes.MenuItemInfo_FormatUpdateAll);
 		}
-
-		public void RequestSeparator(params string[] menuNames)
+		public MenuModelItem RequestMainMenu(string mainMenuName)
 		{
-			this.RequestMenu<ToolStripSeparator>(menuNames);
+			MenuModelItem item = this.mainMenuModel.FindItem(mainMenuName);
+			if (item != null) return item;
+
+			item = new MenuModelItem(mainMenuName);
+			this.mainMenuModel.AddItem(item);
+			return item;
 		}
-		public ToolStripMenuItem RequestMenu(params string[] menuNames)
-		{
-			return this.RequestMenu<ToolStripMenuItem>(menuNames);
-		}
-		public T RequestMenu<T>(params string[] menuNames) where T : ToolStripItem, new()
-		{
-			if (menuNames == null || menuNames.Length < 1) throw new ArgumentException("You need to specify at least one menu name");
 
-			string menuPath = Path.Combine(menuNames).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);;
-			string menuId = menuPath.ToUpper();
-
-			int lastDirSeparator = menuPath.LastIndexOf(Path.DirectorySeparatorChar);
-			string menuLastName;
-			if (lastDirSeparator != -1)
-				menuLastName = menuPath.Substring(lastDirSeparator + 1, menuPath.Length - (lastDirSeparator + 1));
-			else
-				menuLastName = menuPath;
-
-			ToolStripItem item;
-			if (!this.menuRegistry.TryGetValue(menuId, out item))
-			{
-				var parent = this.RequestMenuParent(menuPath);
-
-				if (typeof(ToolStripSeparator).IsAssignableFrom(typeof(T)) &&
-					parent.Count > 1 && parent[parent.Count - 1] is ToolStripSeparator)
-				{
-					// Reuse existing separator items
-					item = parent[parent.Count - 1] as T;
-				}
-				else
-				{
-					// Create new item
-					item = new T();
-					item.Name = menuId;
-					item.Text = menuLastName;
-
-					// If its a separator, hide it by default because its not surrounded yet
-					if (item is ToolStripSeparator)
-						item.Visible = false;
-					// Is there a separator that we could show?
-					else if (parent.Count > 1 && parent[parent.Count - 1] is ToolStripSeparator)
-						parent[parent.Count - 1].Visible = true;
-					
-					// Register new item
-					parent.Add(item);
-					this.menuRegistry[menuId] = item;
-
-					// If its a main menu, register dropdown events
-					if (item is ToolStripMenuItem && parent == this.mainMenuStrip.Items)
-					{
-						ToolStripMenuItem mainMenuItem = item as ToolStripMenuItem;
-						mainMenuItem.DropDownOpened += mainMenuItem_DropDownOpened;
-						mainMenuItem.DropDownClosed += mainMenuItem_DropDownClosed;
-					}
-				}
-			}
-
-			return item as T;
-		}
-		private ToolStripItemCollection RequestMenuParent(string menuPath)
-		{
-			int lastDirSeparator = menuPath.LastIndexOf(Path.DirectorySeparatorChar);
-			if (lastDirSeparator != -1)
-			{
-				// Create parent menus
-				string parentPath = menuPath.Substring(0, lastDirSeparator);
-				ToolStripMenuItem parentItem = this.RequestMenu(parentPath);
-				return parentItem.DropDownItems;
-			}
-			else
-			{
-				// No parents? Return base collection
-				return this.mainMenuStrip.Items;
-			}
-		}
 		private void UpdateToolbar()
 		{
 			this.actionRunSandbox.Enabled	= Sandbox.State != SandboxState.Playing;
@@ -550,11 +572,11 @@ namespace Duality.Editor.Forms
 			IUndoRedoActionInfo nextInfo = UndoRedoManager.NextActionInfo;
 
 			this.menuEditUndo.Enabled = UndoRedoManager.CanUndo;
-			this.menuEditUndo.Text = prevInfo != null ? string.Format(GeneralRes.MenuItemName_Undo, prevInfo.Name) : GeneralRes.MenuItemName_UndoEmpty;
+			this.menuEditUndo.Name = prevInfo != null ? string.Format(GeneralRes.MenuItemName_Undo, prevInfo.Name) : GeneralRes.MenuItemName_UndoEmpty;
 			this.menuEditUndo.Tag = prevInfo != null ? prevInfo.Help : null;
 
 			this.menuEditRedo.Enabled = UndoRedoManager.CanRedo;
-			this.menuEditRedo.Text = nextInfo != null ? string.Format(GeneralRes.MenuItemName_Redo, nextInfo.Name) : GeneralRes.MenuItemName_RedoEmpty;
+			this.menuEditRedo.Name = nextInfo != null ? string.Format(GeneralRes.MenuItemName_Redo, nextInfo.Name) : GeneralRes.MenuItemName_RedoEmpty;
 			this.menuEditRedo.Tag = nextInfo != null ? nextInfo.Help : null;
 		}
 

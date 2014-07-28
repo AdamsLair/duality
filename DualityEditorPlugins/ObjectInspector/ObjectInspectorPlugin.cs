@@ -14,6 +14,8 @@ using Duality.Editor.Plugins.ObjectInspector.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
+using AdamsLair.WinForms.ItemModels;
+
 
 namespace Duality.Editor.Plugins.ObjectInspector
 {
@@ -28,8 +30,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 		private	List<ObjectInspector>	objViews		= new List<ObjectInspector>();
 		private	bool					isLoading		= false;
-
-		private	ToolStripMenuItem	menuItemObjView		= null;
 
 
 		public override string Id
@@ -80,11 +80,15 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		protected override void InitPlugin(MainForm main)
 		{
 			base.InitPlugin(main);
-
+			
 			// Request menu
-			this.menuItemObjView = main.RequestMenu(GeneralRes.MenuName_View, ObjectInspectorRes.MenuItemName_ObjView);
-			this.menuItemObjView.Image = ObjectInspectorResCache.IconObjView.ToBitmap();
-			this.menuItemObjView.Click += this.menuItemObjView_Click;
+			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_View);
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = ObjectInspectorRes.MenuItemName_ObjView,
+				Icon = ObjectInspectorResCache.IconObjView.ToBitmap(),
+				ActionHandler = this.menuItemObjView_Click
+			});
 		}
 		
 		public ObjectInspector RequestObjView(bool dontShow = false)

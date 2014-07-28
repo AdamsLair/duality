@@ -7,10 +7,11 @@ using System.Xml.Linq;
 
 using WeifenLuo.WinFormsUI.Docking;
 
+using AdamsLair.WinForms.ItemModels;
+
 using Duality.Editor;
 using Duality.Editor.Properties;
 using Duality.Editor.Forms;
-
 using Duality.Editor.Plugins.PackageManagerFrontend.Properties;
 
 namespace Duality.Editor.Plugins.PackageManagerFrontend
@@ -19,8 +20,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 	{
 		private	PackageView	packageView		= null;
 		private	bool		isLoading		= false;
-
-		private	ToolStripMenuItem	menuItemPackageView		= null;
 
 
 		public override string Id
@@ -67,9 +66,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			base.InitPlugin(main);
 
 			// Request menu
-			//this.menuItemPackageView = main.RequestMenu(GeneralRes.MenuName_File, PackageManagerFrontendRes.MenuItemName_PackageView);
-			//this.menuItemPackageView.Image = PackageManagerFrontendResCache.IconPackage.ToBitmap();
-			//this.menuItemPackageView.Click += this.menuItemLogView_Click;
+			//MenuModelItem fileItem = main.RequestMainMenu(GeneralRes.MenuName_File);
+			//fileItem.AddItem(new MenuModelItem
+			//{
+			//    Name = PackageManagerFrontendRes.MenuItemName_PackageView,
+			//    Icon = PackageManagerFrontendResCache.IconPackage.ToBitmap(),
+			//    ActionHandler = this.menuItemLogView_Click
+			//});
 		}
 		
 		public PackageView RequestPackageView()

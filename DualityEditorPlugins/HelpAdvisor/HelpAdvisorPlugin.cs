@@ -9,6 +9,8 @@ using Duality.Editor.Plugins.HelpAdvisor.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
+using AdamsLair.WinForms.ItemModels;
+
 namespace Duality.Editor.Plugins.HelpAdvisor
 {
 	public class HelpAdvisorPlugin : EditorPlugin
@@ -50,11 +52,13 @@ namespace Duality.Editor.Plugins.HelpAdvisor
 			base.InitPlugin(main);
 
 			// Request menus
-			this.menuItemHelpAdvisor = main.RequestMenu(Path.Combine(GeneralRes.MenuName_Help, HelpAdvisorRes.MenuItemName_Advisor));
-
-			// Configure menus
-			this.menuItemHelpAdvisor.Image = HelpAdvisorResCache.IconHelp;
-			this.menuItemHelpAdvisor.Click += new EventHandler(this.menuItemHelpAdvisor_Click);
+			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_Help);
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = HelpAdvisorRes.MenuItemName_Advisor,
+				Icon = HelpAdvisorResCache.IconHelp,
+				ActionHandler = this.menuItemHelpAdvisor_Click
+			});
 		}
 
 		public HelpAdvisor RequestHelpAdvisor()

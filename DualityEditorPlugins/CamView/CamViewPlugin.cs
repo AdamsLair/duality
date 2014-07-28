@@ -4,7 +4,10 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Windows.Forms;
 using System.IO;
+
 using WeifenLuo.WinFormsUI.Docking;
+
+using AdamsLair.WinForms.ItemModels;
 
 using Duality;
 using Duality.Editor;
@@ -66,9 +69,13 @@ namespace Duality.Editor.Plugins.CamView
 			base.InitPlugin(main);
 
 			// Request menu
-			this.menuItemCamView = main.RequestMenu(GeneralRes.MenuName_View, CamViewRes.MenuItemName_CamView);
-			this.menuItemCamView.Image = CamViewResCache.IconEye.ToBitmap();
-			this.menuItemCamView.Click += this.menuItemCamView_Click;
+			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_View);
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = CamViewRes.MenuItemName_CamView,
+				Icon = CamViewResCache.IconEye.ToBitmap(),
+				ActionHandler = this.menuItemCamView_Click
+			});
 
 			Sandbox.Entering += this.Sandbox_Entering;
 		}

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
+
 using WeifenLuo.WinFormsUI.Docking;
+
+using AdamsLair.WinForms.ItemModels;
 
 using Duality;
 using Duality.Components;
@@ -40,10 +43,20 @@ namespace Duality.Editor.Plugins.Base
 			base.InitPlugin(main);
 
 			// Request menus
-			this.menuItemAppData = main.RequestMenu(GeneralRes.MenuName_Settings, EditorBaseRes.MenuItemName_AppData);
-			this.menuItemUserData = main.RequestMenu(GeneralRes.MenuName_Settings, EditorBaseRes.MenuItemName_UserData);
-			this.menuItemAppData.Click += this.menuItemAppData_Click;
-			this.menuItemUserData.Click += this.menuItemUserData_Click;
+			MenuModelItem settingsItem = main.RequestMainMenu(GeneralRes.MenuName_Settings);
+			settingsItem.AddItems(new[]
+			{
+				new MenuModelItem
+				{
+					Name = EditorBaseRes.MenuItemName_AppData,
+					ActionHandler = this.menuItemAppData_Click
+				},
+				new MenuModelItem
+				{
+					Name = EditorBaseRes.MenuItemName_UserData,
+					ActionHandler = this.menuItemUserData_Click
+				}
+			});
 
 			FileEventManager.ResourceModified += this.FileEventManager_ResourceChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
+
 using WeifenLuo.WinFormsUI.Docking;
+
+using AdamsLair.WinForms.ItemModels;
 
 using Duality;
 using Duality.Editor;
@@ -19,8 +22,6 @@ namespace Duality.Editor.Plugins.ProjectView
 	{
 		private	ProjectFolderView	projectView		= null;
 		private	bool				isLoading		= false;
-
-		private	ToolStripMenuItem	menuItemProjectView	= null;
 
 
 		public override string Id
@@ -44,9 +45,13 @@ namespace Duality.Editor.Plugins.ProjectView
 			base.InitPlugin(main);
 
 			// Request menu
-			this.menuItemProjectView = main.RequestMenu(GeneralRes.MenuName_View, ProjectViewRes.MenuItemName_ProjectView);
-			this.menuItemProjectView.Image = EditorBaseResCache.IconProjectView.ToBitmap();
-			this.menuItemProjectView.Click += this.menuItemProjectView_Click;
+			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_View);
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = ProjectViewRes.MenuItemName_ProjectView,
+				Icon = ProjectViewResCache.IconProjectView.ToBitmap(),
+				ActionHandler = this.menuItemProjectView_Click
+			});
 		}
 		public ProjectFolderView RequestProjectView()
 		{

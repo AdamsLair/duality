@@ -13,6 +13,8 @@ using Duality.Editor.Plugins.LogView.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
+using AdamsLair.WinForms.ItemModels;
+
 
 namespace Duality.Editor.Plugins.LogView
 {
@@ -20,8 +22,6 @@ namespace Duality.Editor.Plugins.LogView
 	{
 		private	LogView	logView		= null;
 		private	bool	isLoading	= false;
-
-		private	ToolStripMenuItem	menuItemLogView		= null;
 
 
 		public override string Id
@@ -66,11 +66,15 @@ namespace Duality.Editor.Plugins.LogView
 		protected override void InitPlugin(MainForm main)
 		{
 			base.InitPlugin(main);
-
+			
 			// Request menu
-			this.menuItemLogView = main.RequestMenu(GeneralRes.MenuName_View, LogViewRes.MenuItemName_LogView);
-			this.menuItemLogView.Image = LogViewResCache.IconLogView.ToBitmap();
-			this.menuItemLogView.Click += this.menuItemLogView_Click;
+			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_View);
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = LogViewRes.MenuItemName_LogView,
+				Icon = LogViewResCache.IconLogView.ToBitmap(),
+				ActionHandler = this.menuItemLogView_Click
+			});
 		}
 		
 		public LogView RequestLogView()
