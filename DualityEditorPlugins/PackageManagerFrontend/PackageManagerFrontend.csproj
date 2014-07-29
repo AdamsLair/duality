@@ -55,11 +55,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\PackageManagerFrontendResCache.cs" />
-    <Compile Include="Modules\PackageView.cs">
+    <Compile Include="Modules\PackageViewDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Modules\PackageView.Designer.cs">
-      <DependentUpon>PackageView.cs</DependentUpon>
+    <Compile Include="Modules\PackageViewDialog.Designer.cs">
+      <DependentUpon>PackageViewDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManagerFrontendPlugin.cs" />
     <Compile Include="Properties\PackageManagerFrontendRes.Designer.cs">
@@ -68,6 +68,11 @@
       <DependentUpon>PackageManagerFrontendRes.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
@@ -85,11 +90,19 @@
   <ItemGroup>
     <Content Include="EmbeddedResources\package.ico" />
     <Content Include="EmbeddedResources\package.png" />
+    <Content Include="EmbeddedResources\packagebig.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Modules\PackageViewDialog.resx">
+      <DependentUpon>PackageViewDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\PackageManagerFrontendRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>PackageManagerFrontendRes.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

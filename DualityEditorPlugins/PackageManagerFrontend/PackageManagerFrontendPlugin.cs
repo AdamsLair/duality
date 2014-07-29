@@ -18,8 +18,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 {
 	public class PackageManagerFrontendPlugin : EditorPlugin
 	{
-		private	PackageView	packageView		= null;
-		private	bool		isLoading		= false;
+		private	PackageViewDialog	packageView		= null;
 
 
 		public override string Id
@@ -28,38 +27,25 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 
 
-		protected override IDockContent DeserializeDockContent(Type dockContentType)
-		{
-			this.isLoading = true;
-			IDockContent result;
-			if (dockContentType == typeof(PackageView))
-				result = this.RequestPackageView();
-			else
-				result = base.DeserializeDockContent(dockContentType);
-			this.isLoading = false;
-			return result;
-		}
 		protected override void SaveUserData(XElement node)
 		{
 			if (this.packageView != null)
 			{
-				XElement packageViewElem = new XElement("PackageView_0");
+				XElement packageViewElem = new XElement("PackageView");
 				node.Add(packageViewElem);
 				this.packageView.SaveUserData(packageViewElem);
 			}
 		}
 		protected override void LoadUserData(XElement node)
 		{
-			this.isLoading = true;
 			if (this.packageView != null)
 			{
-				XElement packageViewElem = node.Element("PackageView_0");
+				XElement packageViewElem = node.Element("PackageView");
 				if (packageViewElem != null)
 				{
 					this.packageView.LoadUserData(packageViewElem);
 				}
 			}
-			this.isLoading = false;
 		}
 		protected override void InitPlugin(MainForm main)
 		{
@@ -75,30 +61,20 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			//});
 		}
 		
-		public PackageView RequestPackageView()
+		public void ShowPackageViewDialog()
 		{
 			if (this.packageView == null || this.packageView.IsDisposed)
 			{
-				this.packageView = new PackageView();
+				this.packageView = new PackageViewDialog();
 				this.packageView.FormClosed += delegate(object sender, FormClosedEventArgs e) { this.packageView = null; };
 			}
 
-			if (!this.isLoading)
-			{
-				this.packageView.Show(DualityEditorApp.MainForm.MainDockPanel);
-				if (this.packageView.Pane != null)
-				{
-					this.packageView.Pane.Activate();
-					this.packageView.Focus();
-				}
-			}
-
-			return this.packageView;
+			DialogResult result = this.packageView.ShowDialog(DualityEditorApp.MainForm);
 		}
 
 		private void menuItemLogView_Click(object sender, EventArgs e)
 		{
-			this.RequestPackageView();
+			this.ShowPackageViewDialog();
 		}
 	}
 }
