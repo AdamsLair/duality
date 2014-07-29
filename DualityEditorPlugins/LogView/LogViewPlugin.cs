@@ -68,7 +68,7 @@ namespace Duality.Editor.Plugins.LogView
 			base.InitPlugin(main);
 			
 			// Request menu
-			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_View);
+			MenuModelItem viewItem = main.MainMenu.RequestItem(GeneralRes.MenuName_View);
 			viewItem.AddItem(new MenuModelItem
 			{
 				Name = LogViewRes.MenuItemName_LogView,

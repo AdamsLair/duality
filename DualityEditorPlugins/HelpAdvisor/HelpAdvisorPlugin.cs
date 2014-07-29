@@ -52,7 +52,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor
 			base.InitPlugin(main);
 
 			// Request menus
-			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_Help);
+			MenuModelItem viewItem = main.MainMenu.RequestItem(GeneralRes.MenuName_Help);
 			viewItem.AddItem(new MenuModelItem
 			{
 				Name = HelpAdvisorRes.MenuItemName_Advisor,

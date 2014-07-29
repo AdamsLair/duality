@@ -43,7 +43,8 @@ namespace Duality.Editor.Plugins.Base
 			base.InitPlugin(main);
 
 			// Request menus
-			MenuModelItem settingsItem = main.RequestMainMenu(GeneralRes.MenuName_Settings);
+			MenuModelItem settingsItem = main.MainMenu.RequestItem(GeneralRes.MenuName_Settings);
+			settingsItem.SortValue = MenuModelItem.SortValue_OverBottom;
 			settingsItem.AddItems(new[]
 			{
 				new MenuModelItem

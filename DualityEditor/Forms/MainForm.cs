@@ -121,7 +121,7 @@ namespace Duality.Editor.Forms
 			MenuModelItem helpItem;
 			this.mainMenuModel.AddItems(new[]
 			{
-				new MenuModelItem(GeneralRes.MenuName_File, null, new[]
+				new MenuModelItem { Name = GeneralRes.MenuName_File, SortValue = MenuModelItem.SortValue_Top, Items = new[]
 				{
 					new MenuModelItem
 					{
@@ -177,8 +177,8 @@ namespace Duality.Editor.Forms
 						ShortcutKeys	= Keys.Alt | Keys.F4,
 						ActionHandler	= this.quitItem_Click
 					}
-				}),
-				new MenuModelItem(GeneralRes.MenuName_Edit, null, new[]
+				}},
+				new MenuModelItem { Name = GeneralRes.MenuName_Edit, SortValue = MenuModelItem.SortValue_Top, Items = new[]
 				{
 					this.menuEditUndo = new MenuModelItem
 					{
@@ -196,9 +196,8 @@ namespace Duality.Editor.Forms
 						ShortcutKeys	= Keys.Y | Keys.Control,
 						ActionHandler	= this.menuEditRedo_Click
 					}
-				}),
-				new MenuModelItem(GeneralRes.MenuName_View),
-				new MenuModelItem(GeneralRes.MenuName_Run, null, new[]
+				}},
+				new MenuModelItem { Name = GeneralRes.MenuName_Run, SortValue = MenuModelItem.SortValue_OverBottom, Items = new[]
 				{
 					this.menuRunApp = new MenuModelItem
 					{
@@ -291,9 +290,8 @@ namespace Duality.Editor.Forms
 						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxFaster),
 						ActionHandler	= this.menuRunSandboxFaster_Click
 					}
-				}),
-				new MenuModelItem(GeneralRes.MenuName_Settings),
-				helpItem = new MenuModelItem(GeneralRes.MenuName_Help, null, new[]
+				}},
+				helpItem = new MenuModelItem { Name = GeneralRes.MenuName_Help, SortValue = MenuModelItem.SortValue_Bottom, Items = new[]
 				{
 					new MenuModelItem
 					{
@@ -301,7 +299,7 @@ namespace Duality.Editor.Forms
 						SortValue		= MenuModelItem.SortValue_Top,
 						ActionHandler	= this.aboutItem_Click
 					}
-				})
+				}}
 			});
 
 			// Set some view-specific properties
@@ -318,15 +316,6 @@ namespace Duality.Editor.Forms
 			this.actionPauseSandbox.Tag = HelpInfo.FromText(this.actionPauseSandbox.Text, GeneralRes.MenuItemInfo_SandboxPause);
 			this.actionStopSandbox.Tag = HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop);
 			this.formatUpdateAll.Tag = HelpInfo.FromText(this.formatUpdateAll.Text, GeneralRes.MenuItemInfo_FormatUpdateAll);
-		}
-		public MenuModelItem RequestMainMenu(string mainMenuName)
-		{
-			MenuModelItem item = this.mainMenuModel.FindItem(mainMenuName);
-			if (item != null) return item;
-
-			item = new MenuModelItem(mainMenuName);
-			this.mainMenuModel.AddItem(item);
-			return item;
 		}
 
 		private void UpdateToolbar()

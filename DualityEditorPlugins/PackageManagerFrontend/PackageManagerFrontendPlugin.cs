@@ -66,7 +66,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			base.InitPlugin(main);
 
 			// Request menu
-			//MenuModelItem fileItem = main.RequestMainMenu(GeneralRes.MenuName_File);
+			//MenuModelItem fileItem = main.MainMenu.RequestItem(GeneralRes.MenuName_File);
 			//fileItem.AddItem(new MenuModelItem
 			//{
 			//    Name = PackageManagerFrontendRes.MenuItemName_PackageView,

@@ -45,7 +45,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			base.InitPlugin(main);
 
 			// Request menu
-			MenuModelItem viewItem = main.RequestMainMenu(GeneralRes.MenuName_View);
+			MenuModelItem viewItem = main.MainMenu.RequestItem(GeneralRes.MenuName_View);
 			viewItem.AddItem(new MenuModelItem
 			{
 				Name = ProjectViewRes.MenuItemName_ProjectView,
