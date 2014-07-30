@@ -116,6 +116,8 @@ namespace Duality.Editor.Forms
 		public void InitMenus()
 		{
 			this.mainMenuView = new MenuStripMenuView(this.mainMenuStrip.Items);
+			this.mainMenuView.ItemInserted += this.mainMenuView_ItemInserted;
+			this.mainMenuView.ItemRemoved += this.mainMenuView_ItemRemoved;
 			this.mainMenuView.Model = this.mainMenuModel;
 
 			MenuModelItem helpItem;
@@ -128,14 +130,14 @@ namespace Duality.Editor.Forms
 						Name			= GeneralRes.MenuItemName_NewProject,
 						SortValue		= MenuModelItem.SortValue_Top,
 						Icon			= Properties.GeneralResCache.ImageAppCreate,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_NewProject),
+						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_NewProject, GeneralRes.MenuItemInfo_NewProject),
 						ActionHandler	= this.newProjectItem_Click
 					},
 					new MenuModelItem
 					{
 						Name			= GeneralRes.MenuItemName_PublishGame,
 						SortValue		= MenuModelItem.SortValue_Top,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_PublishGame),
+						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_PublishGame, GeneralRes.MenuItemInfo_PublishGame),
 						ActionHandler	= this.actionPublishGame_Click
 					},
 					new MenuModelItem
@@ -149,7 +151,7 @@ namespace Duality.Editor.Forms
 						Name			= this.actionSaveAll.Text,
 						Icon			= this.actionSaveAll.Image,
 						ShortcutKeys	= Keys.Control | Keys.S,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SaveAll),
+						Tag				= HelpInfo.FromText(this.actionSaveAll.Text, GeneralRes.MenuItemInfo_SaveAll),
 						ActionHandler	= this.actionSaveAll_Click
 					},
 					new MenuModelItem
@@ -161,7 +163,7 @@ namespace Duality.Editor.Forms
 					{
 						Name			= this.actionOpenCode.Text,
 						Icon			= this.actionOpenCode.Image,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_OpenProjectSource),
+						Tag				= HelpInfo.FromText(this.actionOpenCode.Text, GeneralRes.MenuItemInfo_OpenProjectSource),
 						ActionHandler	= this.actionOpenCode_Click
 					},
 					new MenuModelItem
@@ -205,7 +207,7 @@ namespace Duality.Editor.Forms
 						SortValue		= MenuModelItem.SortValue_Top,
 						Icon			= this.actionRunApp.Image,
 						ShortcutKeys	= Keys.Alt | Keys.F5,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_RunGame),
+						Tag				= HelpInfo.FromText(this.actionRunApp.Text, GeneralRes.MenuItemInfo_RunGame),
 						ActionHandler	= this.actionRunApp_Click
 					},
 					this.menuDebugApp = new MenuModelItem
@@ -214,7 +216,7 @@ namespace Duality.Editor.Forms
 						SortValue		= MenuModelItem.SortValue_Top,
 						Icon			= this.actionDebugApp.Image,
 						ShortcutKeys	= Keys.Alt | Keys.F6,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_DebugGame),
+						Tag				= HelpInfo.FromText(this.actionDebugApp.Text, GeneralRes.MenuItemInfo_DebugGame),
 						ActionHandler	= this.actionDebugApp_Click
 					},
 					this.menuProfileApp = new MenuModelItem
@@ -222,14 +224,14 @@ namespace Duality.Editor.Forms
 						Name			= GeneralRes.MenuItemName_ProfileGame,
 						SortValue		= MenuModelItem.SortValue_Top,
 						Icon			= Properties.Resources.application_stopwatch,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_ProfileGame),
+						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_ProfileGame, GeneralRes.MenuItemInfo_ProfileGame),
 						ActionHandler	= this.actionProfileApp_Click
 					},
 					new MenuModelItem
 					{
 						Name			= GeneralRes.MenuItemName_ConfigureLauncher,
 						SortValue		= MenuModelItem.SortValue_Top,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_ConfigureLauncher),
+						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_ConfigureLauncher, GeneralRes.MenuItemInfo_ConfigureLauncher),
 						ActionHandler	= this.actionConfigureLauncher_Click
 					},
 					new MenuModelItem
@@ -243,7 +245,7 @@ namespace Duality.Editor.Forms
 						Name			= this.actionRunSandbox.Text,
 						Icon			= this.actionRunSandbox.Image,
 						ShortcutKeys	= Keys.F5,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxPlay),
+						Tag				= HelpInfo.FromText(this.actionRunSandbox.Text, GeneralRes.MenuItemInfo_SandboxPlay),
 						ActionHandler	= this.actionRunSandbox_Click
 					},
 					this.menuRunSandboxStep = new MenuModelItem
@@ -251,7 +253,7 @@ namespace Duality.Editor.Forms
 						Name			= this.actionStepSandbox.Text,
 						Icon			= this.actionStepSandbox.Image,
 						ShortcutKeys	= Keys.F6,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxStep),
+						Tag				= HelpInfo.FromText(this.actionStepSandbox.Text, GeneralRes.MenuItemInfo_SandboxStep),
 						ActionHandler	= this.actionStepSandbox_Click
 					},
 					this.menuRunSandboxPause = new MenuModelItem
@@ -259,7 +261,7 @@ namespace Duality.Editor.Forms
 						Name			= this.actionPauseSandbox.Text,
 						Icon			= this.actionPauseSandbox.Image,
 						ShortcutKeys	= Keys.F7,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxPause),
+						Tag				= HelpInfo.FromText(this.actionPauseSandbox.Text, GeneralRes.MenuItemInfo_SandboxPause),
 						ActionHandler	= this.actionPauseSandbox_Click
 					},
 					this.menuRunSandboxStop = new MenuModelItem
@@ -267,7 +269,7 @@ namespace Duality.Editor.Forms
 						Name			= this.actionStopSandbox.Text,
 						Icon			= this.actionStopSandbox.Image,
 						ShortcutKeys	= Keys.F8,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxStop),
+						Tag				= HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop),
 						ActionHandler	= this.actionStopSandbox_Click
 					},
 					new MenuModelItem
@@ -280,14 +282,14 @@ namespace Duality.Editor.Forms
 					{
 						Name			= GeneralRes.MenuItemName_SandboxSlower,
 						ShortcutKeys	= Keys.F9,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxSlower),
+						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_SandboxSlower, GeneralRes.MenuItemInfo_SandboxSlower),
 						ActionHandler	= this.menuRunSandboxSlower_Click
 					},
 					this.menuRunSandboxFaster = new MenuModelItem
 					{
 						Name			= GeneralRes.MenuItemName_SandboxFaster,
 						ShortcutKeys	= Keys.F10,
-						Tag				= HelpInfo.FromText(Name, GeneralRes.MenuItemInfo_SandboxFaster),
+						Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_SandboxFaster, GeneralRes.MenuItemInfo_SandboxFaster),
 						ActionHandler	= this.menuRunSandboxFaster_Click
 					}
 				}},
@@ -317,7 +319,6 @@ namespace Duality.Editor.Forms
 			this.actionStopSandbox.Tag = HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop);
 			this.formatUpdateAll.Tag = HelpInfo.FromText(this.formatUpdateAll.Text, GeneralRes.MenuItemInfo_FormatUpdateAll);
 		}
-
 		private void UpdateToolbar()
 		{
 			this.actionRunSandbox.Enabled	= Sandbox.State != SandboxState.Playing;
@@ -671,6 +672,25 @@ namespace Duality.Editor.Forms
 		{
 			Application.Exit();
 		}
+
+		private void mainMenuView_ItemRemoved(object sender, MenuStripMenuViewItemEventArgs e)
+		{
+			if (e.ViewItem is ToolStripMenuItem && e.Modelitem.Parent == null)
+			{
+				ToolStripMenuItem mainMenuItem = e.ViewItem as ToolStripMenuItem;
+				mainMenuItem.DropDownOpened -= this.mainMenuItem_DropDownOpened;
+				mainMenuItem.DropDownClosed -= this.mainMenuItem_DropDownClosed;
+			}
+		}
+		private void mainMenuView_ItemInserted(object sender, MenuStripMenuViewItemEventArgs e)
+		{
+			if (e.ViewItem is ToolStripMenuItem && e.Modelitem.Parent == null)
+			{
+				ToolStripMenuItem mainMenuItem = e.ViewItem as ToolStripMenuItem;
+				mainMenuItem.DropDownOpened += this.mainMenuItem_DropDownOpened;
+				mainMenuItem.DropDownClosed += this.mainMenuItem_DropDownClosed;
+			}
+		}
 		private void mainMenuItem_DropDownClosed(object sender, EventArgs e)
 		{
 			this.activeMenu = null;
@@ -679,6 +699,7 @@ namespace Duality.Editor.Forms
 		{
 			this.activeMenu = sender as ToolStripMenuItem;
 		}
+
 		private void UpdateSplitButtonBackupSettings()
 		{
 			this.checkBackups.Checked = DualityEditorApp.BackupsEnabled;
@@ -687,7 +708,6 @@ namespace Duality.Editor.Forms
 			this.optionAutosaveThirtyMinutes.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.ThirtyMinutes;
 			this.optionAutoSaveOneHour.Checked = DualityEditorApp.Autosaves == AutosaveFrequency.OneHour;
 		}
-
 		private void UpdateLaunchAppActions()
 		{
 			bool launcherAvailable = File.Exists(DualityEditorApp.LauncherAppPath);
