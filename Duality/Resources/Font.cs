@@ -1235,7 +1235,7 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="name">The name of the FontFamily.</param>
 		/// <returns>The FontFamily that has been retrieved, or null if no matching family was found.</returns>
-		public static FontFamily GetFontFamily(string name)
+		private static FontFamily GetFontFamily(string name)
 		{
 			if (string.IsNullOrEmpty(name)) return null;
 
@@ -1254,24 +1254,11 @@ namespace Duality.Resources
 			return result;
 		}
 		/// <summary>
-		/// Loads a <see cref="System.Drawing.FontFamily"/> from file.
-		/// </summary>
-		/// <param name="file">The file to load the FontFamily from.</param>
-		/// <returns>The FontFamily that has been loaded.</returns>
-		public static FontFamily LoadFontFamilyFromFile(string file)
-		{
-			FontFamily[] familiesBefore = fontManager.Families.ToArray();
-			fontManager.AddFontFile(file);
-			FontFamily result = fontManager.Families.Except(familiesBefore).FirstOrDefault();
-			loadedFontRegistry[result.Name] = result;
-			return result;
-		}
-		/// <summary>
 		/// Loads a <see cref="System.Drawing.FontFamily"/> from memory.
 		/// </summary>
 		/// <param name="memory">The memory chunk to load the FontFamily from.</param>
 		/// <returns>The FontFamily that has been loaded.</returns>
-		public static FontFamily LoadFontFamilyFromMemory(byte[] memory)
+		private static FontFamily LoadFontFamilyFromMemory(byte[] memory)
 		{
 			FontFamily result = null;
 			FontFamily[] familiesBefore = fontManager.Families.ToArray();
@@ -1290,17 +1277,6 @@ namespace Duality.Resources
 			
 			loadedFontRegistry[result.Name] = result;
 			return result;
-		}
-		/// <summary>
-		/// Loads a <see cref="System.Drawing.FontFamily"/> from stream.
-		/// </summary>
-		/// <param name="stream">The stream to load the FontFamily from.</param>
-		/// <returns>The FontFamily that has been loaded.</returns>
-		public static FontFamily LoadFontFamilyFromStream(Stream stream)
-		{
-			byte[] buffer = new byte[stream.Length];
-			stream.Read(buffer, 0, buffer.Length);
-			return LoadFontFamilyFromMemory(buffer);
 		}
 	}
 }
