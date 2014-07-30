@@ -7,6 +7,10 @@ using System.Reflection;
 
 using Duality;
 using Duality.Cloning;
+using Duality.Drawing;
+using Duality.Resources;
+using Duality.Components;
+using Duality.Components.Renderers;
 
 using OpenTK;
 using NUnit.Framework;
@@ -106,6 +110,22 @@ namespace Duality.Tests.Cloning
 					other.DictField.SetEqual(this.DictField);
 			}
 		}
+		private class TestResource : Resource
+		{
+			public string TestProperty { get; set; }
+			public ReferencedObject TestReference { get; set; }
+			public List<ReferencedObject> TestReferenceList { get; set; }
+		}
+		private class TestComponent : Component
+		{
+			public string TestProperty { get; set; }
+			public ReferencedObject TestReference { get; set; }
+			public List<ReferencedObject> TestReferenceList { get; set; }
+		}
+		private class ReferencedObject
+		{
+			public string TestProperty { get; set; }
+		}
 		
 
 		[Test] public void ClonePlainOldData()
@@ -153,6 +173,115 @@ namespace Duality.Tests.Cloning
 				Assert.IsTrue(pair.Value.Equals(dataResult.DictField[pair.Key]));
 				Assert.IsTrue(object.ReferenceEquals(pair.Value, dataResult.DictField[pair.Key]));
 			}
+		}
+		[Test] public void CloneContentRef()
+		{
+			TestResource resource = new TestResource { TestProperty = "TestString" };
+			ContentRef<TestResource> reference = new ContentRef<TestResource>(resource, "SomeTestPath");
+
+			// Expect the Resource to be cloned
+			TestResource resourceClone = resource.DeepClone();
+			Assert.AreNotSame(resource, resourceClone);
+			Assert.AreEqual(resource.TestProperty, resourceClone.TestProperty);
+
+			// Expect only the reference to be cloned
+			ContentRef<TestResource> referenceClone = reference.DeepClone();
+			Assert.AreEqual(reference.Path, referenceClone.Path);
+			Assert.AreEqual(reference.ResWeak, referenceClone.ResWeak);
+		}
+		[Test] public void CloneResource()
+		{
+			TestResource resource = CreateTestResource();
+			TestResource resourceClone = resource.DeepClone();
+			TestResourceClone(resource, resourceClone);
+		}
+		[Test] public void CloneComponent()
+		{
+			TestComponent source = CreateTestComponent();
+			TestComponent target = source.DeepClone();
+			TestComponentClone(source, target);
+		}
+		[Test] public void CloneGameObject()
+		{
+			GameObject source = new GameObject("ObjectA");
+			source.AddComponent(CreateTestComponent());
+			GameObject target = source.DeepClone();
+			
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.Name, target.Name);
+			TestComponentClone(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
+		}
+		[Test] public void CloneScene()
+		{
+			Scene source = new Scene();
+			{
+				GameObject objA = new GameObject("ObjectA");
+				GameObject objB = new GameObject("ObjectB");
+				GameObject objC = new GameObject("ObjectC", objA);
+				objA.AddComponent(CreateTestComponent());
+				objB.AddComponent(CreateTestComponent());
+				objC.AddComponent(CreateTestComponent());
+				source.AddObject(objA);
+				source.AddObject(objB);
+				source.AddObject(objC);
+			}
+			Scene target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.AllObjects.Count(), target.AllObjects.Count());
+			foreach (GameObject sourceObj in source.AllObjects)
+			{
+				GameObject targetObj = target.FindGameObject(sourceObj.FullName);
+
+				Assert.AreNotSame(sourceObj, targetObj);
+				Assert.AreEqual(sourceObj.Name, targetObj.Name);
+				TestComponentClone(sourceObj.GetComponent<TestComponent>(), targetObj.GetComponent<TestComponent>());
+			}
+		}
+
+		private static TestResource CreateTestResource()
+		{
+			Random rnd = new Random();
+			return new TestResource
+			{
+				TestProperty = "TestStringA" + rnd.NextByte(), 
+				TestReference = new ReferencedObject { TestProperty = "TestStringB" + rnd.NextByte() },
+				TestReferenceList = new List<ReferencedObject>
+				{
+					new ReferencedObject { TestProperty = "TestStringC" + rnd.NextByte() },
+					new ReferencedObject { TestProperty = "TestStringD" + rnd.NextByte() }
+				}
+			};
+		}
+		private static TestComponent CreateTestComponent()
+		{
+			Random rnd = new Random();
+			return new TestComponent
+			{
+				TestProperty = "TestStringA" + rnd.NextByte(), 
+				TestReference = new ReferencedObject { TestProperty = "TestStringB" + rnd.NextByte() },
+				TestReferenceList = new List<ReferencedObject>
+				{
+					new ReferencedObject { TestProperty = "TestStringC" + rnd.NextByte() },
+					new ReferencedObject { TestProperty = "TestStringD" + rnd.NextByte() }
+				}
+			};
+		}
+		private void TestResourceClone(TestResource source, TestResource target)
+		{
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.TestProperty, target.TestProperty);
+			Assert.AreSame(source.TestReference, target.TestReference);
+			Assert.AreNotSame(source.TestReferenceList, target.TestReferenceList);
+			CollectionAssert.AreEqual(source.TestReferenceList, target.TestReferenceList);
+		}
+		private void TestComponentClone(TestComponent source, TestComponent target)
+		{
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.TestProperty, target.TestProperty);
+			Assert.AreSame(source.TestReference, target.TestReference);
+			Assert.AreNotSame(source.TestReferenceList, target.TestReferenceList);
+			CollectionAssert.AreEqual(source.TestReferenceList, target.TestReferenceList);
 		}
 	}
 }
