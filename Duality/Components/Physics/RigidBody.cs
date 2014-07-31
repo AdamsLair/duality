@@ -61,12 +61,13 @@ namespace Duality.Components.Physics
 		private	List<ShapeInfo>	shapes		= null;
 		private	List<JointInfo>	joints		= null;
 
-		[NonSerialized]	private	float			lastScale		= 1.0f;
-		[NonSerialized]	private	InitState		bodyInitState	= InitState.Disposed;
-		[NonSerialized]	private	bool			schedUpdateBody	= false;
-		[NonSerialized]	private	bool			isUpdatingBody	= false;
-		[NonSerialized]	private	Body			body			= null;
-		[NonSerialized]	private	List<ColEvent>	eventBuffer		= new List<ColEvent>();
+		[NonSerialized]	private	float			lastScale			= 1.0f;
+		[NonSerialized]	private	InitState		bodyInitState		= InitState.Disposed;
+		[NonSerialized]	private	bool			schedUpdateBody		= false;
+		[NonSerialized]	private	bool			isUpdatingBody		= false;
+		[NonSerialized]	private	bool			isProcessingEvents	= false;
+		[NonSerialized]	private	Body			body				= null;
+		[NonSerialized]	private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
 
 
 		internal Body PhysicsBody
@@ -932,10 +933,17 @@ namespace Duality.Components.Physics
 		}
 		private void ProcessCollisionEvents()
 		{
-			// Don't use foreach here in case someone decides to add something at the end while iterating..
-			for (int i = 0; i < this.eventBuffer.Count; i++)
-				this.ProcessSingleCollisionEvent(this.eventBuffer[i]);
-			this.eventBuffer.Clear();
+			if (this.isProcessingEvents) return;
+			this.isProcessingEvents = true;
+			{
+				// Don't use foreach here in case someone decides to add something at the end while iterating..
+				for (int i = 0; i < this.eventBuffer.Count; i++)
+				{
+					this.ProcessSingleCollisionEvent(this.eventBuffer[i]);
+				}
+				this.eventBuffer.Clear();
+			}
+			this.isProcessingEvents = false;
 		}
 		private void ProcessSingleCollisionEvent(ColEvent colEvent)
 		{

@@ -814,7 +814,18 @@ namespace Duality.Resources
 
 			// Copy objects
 			s.objectManager.Clear();
-			s.objectManager.AddObject(this.RootObjects.Select(o => provider.RequestObjectClone(o)));
+			foreach (GameObject obj in this.RootObjects)
+			{
+				GameObject clone = new GameObject();
+				provider.RegisterObjectClone(obj, clone);
+				obj.PrepassCopyData(clone, provider);
+			}
+			foreach (GameObject obj in this.RootObjects)
+			{
+				GameObject clone = provider.GetRegisteredObjectClone(obj);
+				provider.CopyObjectTo(obj, clone);
+				s.objectManager.AddObject(clone);
+			}
 		}
 		protected override void OnSaving(string saveAsPath)
 		{
