@@ -29,30 +29,31 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 		protected override void SaveUserData(XElement node)
 		{
-			if (this.packageView != null)
-			{
-				XElement packageViewElem = new XElement("PackageView");
-				node.Add(packageViewElem);
-				this.packageView.SaveUserData(packageViewElem);
-			}
+			XElement packageViewElem = new XElement("PackageView");
+			node.Add(packageViewElem);
+			this.packageView.SaveUserData(packageViewElem);
 		}
 		protected override void LoadUserData(XElement node)
 		{
-			if (this.packageView != null)
+			XElement packageViewElem = node.Element("PackageView");
+			if (packageViewElem != null)
 			{
-				XElement packageViewElem = node.Element("PackageView");
-				if (packageViewElem != null)
-				{
-					this.packageView.LoadUserData(packageViewElem);
-				}
+				this.packageView.LoadUserData(packageViewElem);
 			}
+		}
+		protected override void LoadPlugin()
+		{
+			base.LoadPlugin();
+
+			// Set up dialog instance
+			this.packageView = new PackageViewDialog();
 		}
 		protected override void InitPlugin(MainForm main)
 		{
 			base.InitPlugin(main);
 
 			// Request menu
-			//MenuModelItem fileItem = main.MainMenu.RequestItem(GeneralRes.MenuName_File);
+			MenuModelItem fileItem = main.MainMenu.RequestItem(GeneralRes.MenuName_File);
 			//fileItem.AddItem(new MenuModelItem
 			//{
 			//    Name = PackageManagerFrontendRes.MenuItemName_PackageView,
@@ -63,12 +64,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		
 		public void ShowPackageViewDialog()
 		{
-			if (this.packageView == null || this.packageView.IsDisposed)
-			{
-				this.packageView = new PackageViewDialog();
-				this.packageView.FormClosed += delegate(object sender, FormClosedEventArgs e) { this.packageView = null; };
-			}
-
 			DialogResult result = this.packageView.ShowDialog(DualityEditorApp.MainForm);
 		}
 
