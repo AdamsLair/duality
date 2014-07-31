@@ -816,6 +816,9 @@ namespace Duality.Resources
 			s.objectManager.Clear();
 			foreach (GameObject obj in this.RootObjects)
 			{
+				if (provider.GetRegisteredObjectClone(obj) != null)
+					continue;
+
 				GameObject clone = new GameObject();
 				provider.RegisterObjectClone(obj, clone);
 				obj.PrepassCopyData(clone, provider);
