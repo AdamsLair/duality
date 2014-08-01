@@ -71,7 +71,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			{
 				BaseItem item = this.itemsToRead[0];
 				this.itemsToRead.RemoveAt(0);
-				item.RetrieveIcon();
+				item.RetrieveOnlineData(this.packageManager);
 				this.itemLoader.ReportProgress(0, item);
 			}
 		}

@@ -127,9 +127,6 @@
   <data name="ItemName_OnlineRepository" xml:space="preserve">
     <value>Online Repository</value>
   </data>
-  <data name="ItemName_PackageUpdates" xml:space="preserve">
-    <value>Package Updates</value>
-  </data>
   <data name="MenuItemName_PackageView" xml:space="preserve">
     <value>Manage Packages...</value>
   </data>

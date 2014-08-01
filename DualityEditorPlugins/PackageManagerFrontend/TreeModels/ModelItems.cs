@@ -27,7 +27,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			this.parent = parent;
 		}
 
-		public abstract void RetrieveIcon();
+		public abstract void RetrieveOnlineData(PackageManager manager);
 		protected Image RetrieveIcon(Uri iconUrl)
 		{
 			if (iconUrl == null) return null;
@@ -67,12 +67,17 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 		}
 
-		private PackageInfo	packageInfo = null;
-		private Image		icon		= null;
+		private PackageInfo	packageInfo			= null;
+		private PackageInfo	newestPackageInfo	= null;
+		private Image		icon				= DefaultPackageIcon;
 		
 		public PackageInfo PackageInfo
 		{
 			get { return this.packageInfo; }
+		}
+		public PackageInfo NewestPackageInfo
+		{
+			get { return this.newestPackageInfo; }
 		}
 		public override Image Icon
 		{
@@ -99,11 +104,17 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			this.packageInfo = packageInfo;
 		}
-		public override void RetrieveIcon()
+		public override void RetrieveOnlineData(PackageManager manager)
 		{
-			this.icon = null;
-			if (this.packageInfo != null) this.icon = this.RetrieveIcon(this.packageInfo.IconUrl);
-			if (this.icon == null) this.icon = DefaultPackageIcon;
+			// Retrieve Icon
+			{
+				this.icon = null;
+				if (this.packageInfo != null) this.icon = this.RetrieveIcon(this.packageInfo.IconUrl);
+				if (this.icon == null) this.icon = DefaultPackageIcon;
+			}
+
+			// Retrieve info about newest online version
+			this.newestPackageInfo = manager.QueryPackageInfo(this.packageInfo.Id);
 		}
 	}
 	public class LocalPackageItem : PackageItem
@@ -119,5 +130,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			this.package = package;
 		}
+	}
+	public class OnlinePackageItem : PackageItem
+	{
+		public OnlinePackageItem(PackageInfo package, BaseItem parent) : base(package, parent) {}
 	}
 }

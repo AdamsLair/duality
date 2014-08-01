@@ -90,15 +90,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Package Updates ähnelt.
-        /// </summary>
-        public static string ItemName_PackageUpdates {
-            get {
-                return ResourceManager.GetString("ItemName_PackageUpdates", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Manage Packages... ähnelt.
         /// </summary>
         public static string MenuItemName_PackageView {

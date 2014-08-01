@@ -58,6 +58,7 @@
 			// 
 			// packageList
 			// 
+			this.packageList.AllowColumnReorder = true;
 			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -91,19 +92,18 @@
 			this.packageList.TabIndex = 0;
 			this.packageList.Text = "packageList";
 			this.packageList.UseColumns = true;
+			this.packageList.ColumnClicked += new System.EventHandler<Aga.Controls.Tree.TreeColumnEventArgs>(this.packageList_ColumnClicked);
 			// 
 			// treeColumnName
 			// 
 			this.treeColumnName.Header = "Name";
-			this.treeColumnName.Sortable = true;
-			this.treeColumnName.SortOrder = System.Windows.Forms.SortOrder.Ascending;
+			this.treeColumnName.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.treeColumnName.TooltipText = null;
 			this.treeColumnName.Width = 280;
 			// 
 			// treeColumnVersion
 			// 
 			this.treeColumnVersion.Header = "Version";
-			this.treeColumnVersion.Sortable = true;
 			this.treeColumnVersion.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.treeColumnVersion.TooltipText = null;
 			this.treeColumnVersion.Width = 80;
@@ -111,7 +111,6 @@
 			// treeColumnDownloads
 			// 
 			this.treeColumnDownloads.Header = "Downloads";
-			this.treeColumnDownloads.Sortable = true;
 			this.treeColumnDownloads.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.treeColumnDownloads.TooltipText = null;
 			this.treeColumnDownloads.Width = 65;

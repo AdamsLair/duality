@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 using Aga.Controls.Tree;
+using Aga.Controls.Tree.NodeControls;
 
 using Duality.Editor.PackageManagement;
 using Duality.Editor.Plugins.PackageManagerFrontend.Properties;
@@ -25,7 +26,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			None,
 
 			Installed,
-			Update,
 			Online
 		}
 		private class FilterBoxItem
@@ -54,10 +54,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			}
 		}
 
-		private	DisplayMode	display			= DisplayMode.None;
-		private ITreeModel	modelInstalled	= null;
-		private ITreeModel	modelUpdates	= null;
-		private ITreeModel	modelOnline		= null;
+		private	PackageManager	packageManager	= null;
+		private	DisplayMode		display			= DisplayMode.None;
+		private ITreeModel		modelInstalled	= null;
+		private ITreeModel		modelOnline		= null;
 
 		public DisplayMode Display
 		{
@@ -77,13 +77,15 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.InitializeComponent();
 
-			this.treeColumnName.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
-			this.treeColumnVersion.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
-			this.treeColumnDownloads.DrawColHeaderBg += this.treeColumn_DrawColHeaderBg;
+			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
+			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
+			this.treeColumnDownloads.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
+			this.nodeTextBoxName.DrawText				+= this.nodeTextBoxName_DrawText;
+			this.nodeTextBoxVersion.DrawText			+= this.nodeTextBoxVersion_DrawText;
+			this.nodeTextBoxDownloads.DrawText			+= this.nodeTextBoxDownloads_DrawText;
 			this.toolStripMain.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 
 			this.toolStripFilterBox.Items.Add(new FilterBoxItem(DisplayMode.Installed, PackageManagerFrontendRes.ItemName_InstalledPackages));
-			this.toolStripFilterBox.Items.Add(new FilterBoxItem(DisplayMode.Update, PackageManagerFrontendRes.ItemName_PackageUpdates));
 			this.toolStripFilterBox.Items.Add(new FilterBoxItem(DisplayMode.Online, PackageManagerFrontendRes.ItemName_OnlineRepository));
 			
 		}
@@ -95,9 +97,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			base.OnLoad(e);
 
-			PackageManager manager = DualityEditorApp.PackageManager;
-			this.modelInstalled	= new InstalledPackagesTreeModel(manager);
-			this.modelUpdates	= new TreeModel();
+			this.packageManager = DualityEditorApp.PackageManager;
+			this.modelInstalled	= new InstalledPackagesTreeModel(this.packageManager);
 			this.modelOnline	= new TreeModel();
 
 			this.Display = DisplayMode.Installed;
@@ -113,6 +114,35 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			FilterBoxItem selectedItem = this.toolStripFilterBox.SelectedItem as FilterBoxItem;
 			this.Display = selectedItem.Display;
 		}
+		private void packageList_ColumnClicked(object sender, TreeColumnEventArgs e)
+		{
+			// ToDo: Implement User Sorting
+			// May require SortedTreeModel wrapper or similar
+		}
+		private void nodeTextBoxName_DrawText(object sender, DrawTextEventArgs e)
+		{
+			e.TextColor = this.packageList.ForeColor;
+		}
+		private void nodeTextBoxVersion_DrawText(object sender, DrawTextEventArgs e)
+		{
+			PackageItem packageItem = e.Node.Tag as PackageItem;
+			if (packageItem != null && packageItem.PackageInfo != null&& packageItem.NewestPackageInfo != null)
+			{
+				if (packageItem.NewestPackageInfo.Version == packageItem.PackageInfo.Version)
+					e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 160, 255, 0));
+				else
+					e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 255, 160, 0));
+			}
+			else
+			{
+				e.BackgroundBrush = null;
+			}
+			e.TextColor = this.packageList.ForeColor;
+		}
+		private void nodeTextBoxDownloads_DrawText(object sender, DrawTextEventArgs e)
+		{
+			e.TextColor = this.packageList.ForeColor;
+		}
 
 		private void OnDisplayModeChanged(DisplayMode prev, DisplayMode next)
 		{
@@ -125,10 +155,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			if (next == DisplayMode.Installed)
 			{
 				this.packageList.Model = this.modelInstalled;
-			}
-			else if (next == DisplayMode.Update)
-			{
-				this.packageList.Model = this.modelUpdates;
 			}
 			else if (next == DisplayMode.Online)
 			{
