@@ -115,11 +115,18 @@ namespace Duality.Resources
 
 
 		private	BatchInfo	info	= new BatchInfo();
-
+		
+		/// <summary>
+		/// [GET] Returns a new <see cref="BatchInfo"/> object that mirrors the Materials current settings.
+		/// </summary>
+		public BatchInfo Info
+		{
+			get { return new BatchInfo(this.info); }
+		}
 		/// <summary>
 		/// [GET] Returns the Materials internal <see cref="BatchInfo"/> instance that is used for rendering and holds its actual data.
 		/// </summary>
-		public BatchInfo Info
+		internal BatchInfo InfoDirect
 		{
 			get { return this.info; }
 		}
@@ -384,7 +391,7 @@ namespace Duality.Resources
 		/// Creates a new BatchInfo based on an existing <see cref="Material"/>.
 		/// </summary>
 		/// <param name="source"></param>
-		public BatchInfo(Material source) : this(source.Info) {}
+		public BatchInfo(Material source) : this(source.InfoDirect) {}
 		/// <summary>
 		/// Creates a new BatchInfo based on an existing BatchInfo. This is essentially a copy constructor.
 		/// </summary>
