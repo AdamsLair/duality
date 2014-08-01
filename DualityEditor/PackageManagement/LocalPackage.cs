@@ -9,7 +9,7 @@ namespace Duality.Editor.PackageManagement
 	{
 		private	string		id		= null;
 		private	Version		version	= null;
-		private	string[]	files	= null;
+		private	PackageInfo	info	= null;
 
 
 		public string Id
@@ -19,23 +19,29 @@ namespace Duality.Editor.PackageManagement
 		public Version Version
 		{
 			get { return this.version; }
-			internal set { this.version = value; }
 		}
-		public IEnumerable<string> Files
+		public PackageInfo Info
 		{
-			get { return this.files ?? Enumerable.Empty<string>(); }
-			internal set { this.files = (value != null ? value.ToArray() : null); }
+			get { return this.info; }
+			internal set { this.info = value; }
 		}
 		public bool IsInstallationComplete
 		{
-			get { return this.files != null; }
+			get { return this.info != null; }
 		}
 
 
+		internal LocalPackage(PackageInfo info)
+		{
+			this.id = info.Id;
+			this.version = info.Version;
+			this.info = info;
+		}
 		internal LocalPackage(string id, Version version)
 		{
 			this.id = id;
 			this.version = version;
+			this.info = null;
 		}
 
 		public override string ToString()

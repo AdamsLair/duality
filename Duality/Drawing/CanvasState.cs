@@ -210,9 +210,9 @@ namespace Duality.Drawing
 			if (material.IsExplicitNull)
 				this.batchInfo = DefaultMaterial;
 			else if (material.IsAvailable)
-				this.batchInfo = material.Res.InfoDirect;
+				this.batchInfo = material.Res.Info;
 			else
-				this.batchInfo = Resources.Material.Checkerboard.Res.InfoDirect;
+				this.batchInfo = Resources.Material.Checkerboard.Res.Info;
 
 			if (this.batchInfo.MainTexture.IsAvailable)
 			{

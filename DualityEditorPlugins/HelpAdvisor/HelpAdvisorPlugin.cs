@@ -24,7 +24,6 @@ namespace Duality.Editor.Plugins.HelpAdvisor
 
 		private	bool				isLoading			= false;
 		private	HelpAdvisor			helpAdvisor			= null;
-		private	ToolStripMenuItem	menuItemHelpAdvisor	= null;
 
 		public override string Id
 		{

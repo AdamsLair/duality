@@ -33,7 +33,7 @@
 			this.treeColumnName = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnVersion = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnDownloads = new Aga.Controls.Tree.TreeColumn();
-			this.nodeStateIcon = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
+			this.nodeIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
 			this.nodeTextBoxName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodeTextBoxVersion = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodeTextBoxDownloads = new Aga.Controls.Tree.NodeControls.NodeTextBox();
@@ -61,6 +61,7 @@
 			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.packageList.AsyncExpanding = true;
 			this.packageList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.packageList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.packageList.Columns.Add(this.treeColumnName);
@@ -72,15 +73,16 @@
 			this.packageList.FullRowSelectActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.packageList.FullRowSelectInactiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.packageList.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
+			this.packageList.LoadOnDemand = true;
 			this.packageList.Location = new System.Drawing.Point(0, 29);
 			this.packageList.Model = null;
 			this.packageList.Name = "packageList";
-			this.packageList.NodeControls.Add(this.nodeStateIcon);
+			this.packageList.NodeControls.Add(this.nodeIcon);
 			this.packageList.NodeControls.Add(this.nodeTextBoxName);
 			this.packageList.NodeControls.Add(this.nodeTextBoxVersion);
 			this.packageList.NodeControls.Add(this.nodeTextBoxDownloads);
 			this.packageList.NodeFilter = null;
-			this.packageList.RowHeight = 32;
+			this.packageList.RowHeight = 48;
 			this.packageList.SelectedNode = null;
 			this.packageList.ShowLines = false;
 			this.packageList.ShowNodeToolTips = true;
@@ -114,20 +116,23 @@
 			this.treeColumnDownloads.TooltipText = null;
 			this.treeColumnDownloads.Width = 65;
 			// 
-			// nodeStateIcon
+			// nodeIcon
 			// 
-			this.nodeStateIcon.LeftMargin = 1;
-			this.nodeStateIcon.ParentColumn = this.treeColumnName;
-			this.nodeStateIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
+			this.nodeIcon.DataPropertyName = "Icon";
+			this.nodeIcon.LeftMargin = 1;
+			this.nodeIcon.ParentColumn = this.treeColumnName;
+			this.nodeIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
 			// 
 			// nodeTextBoxName
 			// 
+			this.nodeTextBoxName.DataPropertyName = "Title";
 			this.nodeTextBoxName.IncrementalSearchEnabled = true;
 			this.nodeTextBoxName.LeftMargin = 3;
 			this.nodeTextBoxName.ParentColumn = this.treeColumnName;
 			// 
 			// nodeTextBoxVersion
 			// 
+			this.nodeTextBoxVersion.DataPropertyName = "Version";
 			this.nodeTextBoxVersion.IncrementalSearchEnabled = true;
 			this.nodeTextBoxVersion.LeftMargin = 3;
 			this.nodeTextBoxVersion.ParentColumn = this.treeColumnVersion;
@@ -135,6 +140,7 @@
 			// 
 			// nodeTextBoxDownloads
 			// 
+			this.nodeTextBoxDownloads.DataPropertyName = "Downloads";
 			this.nodeTextBoxDownloads.IncrementalSearchEnabled = true;
 			this.nodeTextBoxDownloads.LeftMargin = 3;
 			this.nodeTextBoxDownloads.ParentColumn = this.treeColumnDownloads;
@@ -205,6 +211,7 @@
 			this.toolStripFilterBox.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
 			this.toolStripFilterBox.Name = "toolStripFilterBox";
 			this.toolStripFilterBox.Size = new System.Drawing.Size(121, 20);
+			this.toolStripFilterBox.SelectedIndexChanged += new System.EventHandler(this.toolStripFilterBox_SelectedIndexChanged);
 			// 
 			// buttonClose
 			// 
@@ -310,7 +317,6 @@
 		#endregion
 
 		private Aga.Controls.Tree.TreeViewAdv packageList;
-		private Aga.Controls.Tree.NodeControls.NodeStateIcon nodeStateIcon;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxName;
 		private System.Windows.Forms.SplitContainer splitMain;
 		private System.Windows.Forms.Button buttonClose;
@@ -329,5 +335,6 @@
 		private System.Windows.Forms.Label labelHeaderText;
 		private System.Windows.Forms.Label labelHeader;
 		private System.Windows.Forms.Panel panel1;
+		private Aga.Controls.Tree.NodeControls.NodeIcon nodeIcon;
 	}
 }

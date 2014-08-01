@@ -333,7 +333,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			{
 				if (convert.IsObjectHandled(mat)) continue;
 
-				convert.AddResult(mat.Info);
+				convert.AddResult(new BatchInfo(mat));
 				finishConvertOp = true;
 				convert.MarkObjectHandled(mat);
 			}

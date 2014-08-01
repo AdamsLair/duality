@@ -28,10 +28,6 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class EditorBasePlugin : EditorPlugin
 	{
-		private	ToolStripMenuItem	menuItemAppData		= null;
-		private	ToolStripMenuItem	menuItemUserData	= null;
-
-
 		public override string Id
 		{
 			get { return "EditorBase"; }

@@ -93,6 +93,7 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(
 				ColorRgba.Red == ColorRgba.Blue,
 				GenericOperator.Equal(ColorRgba.Red, ColorRgba.Blue));
+			#pragma warning disable 1718
 			Assert.AreEqual(
 				ColorRgba.Red == ColorRgba.Red,
 				GenericOperator.Equal(ColorRgba.Red, ColorRgba.Red));

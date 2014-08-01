@@ -24,8 +24,6 @@ namespace Duality.Editor.Plugins.CamView
 		private	List<CamView>			camViews		= new List<CamView>();
 		private	bool					isLoading		= false;
 
-		private	ToolStripMenuItem	menuItemCamView		= null;
-
 
 		public override string Id
 		{

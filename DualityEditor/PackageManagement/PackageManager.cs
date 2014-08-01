@@ -44,6 +44,7 @@ namespace Duality.Editor.PackageManagement
 			{
 				return this.localPackages.Any(p => 
 					p.Version == null || 
+					p.Info == null || 
 					!this.manager.LocalRepository.GetPackages().Any(n => 
 						n.Id == p.Id && 
 						n.Version == new SemanticVersion(p.Version)));
@@ -75,15 +76,15 @@ namespace Duality.Editor.PackageManagement
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 
-			// Update local repository file mappings
-			this.UpdateFileMappings();
+			// Retrieve information about local packages
+			this.RetrieveLocalPackageInfo();
 		}
 
 		public void InstallPackage(PackageInfo package)
 		{
 			// Update package entries from local config
 			this.localPackages.RemoveAll(p => package.Id == p.Id);
-			this.localPackages.Add(new LocalPackage(package.Id, package.Version));
+			this.localPackages.Add(new LocalPackage(package));
 			this.SaveConfig();
 
 			// Request NuGet to install the package
@@ -241,18 +242,19 @@ namespace Duality.Editor.PackageManagement
 			// Nothing was found
 			return null;
 		}
-		private void UpdateFileMappings()
+		private void RetrieveLocalPackageInfo()
 		{
-			foreach (LocalPackage package in this.localPackages)
+			foreach (LocalPackage localPackage in this.localPackages)
 			{
-				if (package.Version == null) continue;
-				
-				foreach (NuGet.IPackage localNuGet in this.manager.LocalRepository.FindPackagesById(package.Id))
+				if (localPackage.Version != null && !string.IsNullOrEmpty(localPackage.Id))
 				{
-					if (localNuGet.Version.Version == package.Version)
+					foreach (NuGet.IPackage repoPackage in this.manager.LocalRepository.FindPackagesById(localPackage.Id))
 					{
-						package.Files = this.CreateFileMapping(localNuGet).Select(p => p.Key);
-						break;
+						if (repoPackage.Version.Version == localPackage.Version)
+						{
+							localPackage.Info = this.CreatePackageInfo(repoPackage);
+							break;
+						}
 					}
 				}
 			}
@@ -293,15 +295,16 @@ namespace Duality.Editor.PackageManagement
 				{
 					foreach (XElement packageElement in packagesElement.Elements("Package"))
 					{
+						Version packageVersion = null;
+						string packageId = packageElement.GetAttributeValue("id");
 						string versionString = packageElement.GetAttributeValue("version");
-						Version packageVersion = (versionString != null ? Version.Parse(versionString) : null);
+						if (versionString != null) Version.TryParse(versionString, out packageVersion);
 
-						// Create Package entry instance
-						LocalPackage package = new LocalPackage(
-							packageElement.GetAttributeValue("id"),
-							packageVersion);
-
-						this.localPackages.Add(package);
+						// Skip invalid package references
+						if (string.IsNullOrWhiteSpace(packageId)) continue;
+						
+						// Create local package entry
+						this.localPackages.Add(new LocalPackage(packageId, packageVersion));
 					}
 				}
 			}

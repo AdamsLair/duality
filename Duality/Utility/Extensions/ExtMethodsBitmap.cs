@@ -116,6 +116,31 @@ namespace Duality
 			return result;
 		}
 		/// <summary>
+		/// Scales the Bitmap to fit entirely within the specified boundaries, while keeping its original aspect ratio.
+		/// </summary>
+		/// <param name="bm"></param>
+		/// <param name="w"></param>
+		/// <param name="h"></param>
+		/// <param name="mode"></param>
+		/// <returns></returns>
+		public static Bitmap ScaleToFit(this Bitmap bm, int w, int h, InterpolationMode mode = InterpolationMode.Bilinear)
+		{
+			Size imgSize = bm.Size;
+			Size targetSize = new Size(w, h);
+			float widthForHeight = (float)imgSize.Width / (float)imgSize.Height;
+			if (widthForHeight * (imgSize.Height - targetSize.Height) > imgSize.Width - targetSize.Width)
+			{
+				imgSize.Height = Math.Min(targetSize.Height, imgSize.Height);
+				imgSize.Width = MathF.RoundToInt(widthForHeight * imgSize.Height);
+			}
+			else
+			{
+				imgSize.Width = Math.Min(targetSize.Width, imgSize.Width);
+				imgSize.Height = MathF.RoundToInt(imgSize.Width / widthForHeight);
+			}
+			return bm.Rescale(imgSize.Width, imgSize.Height, mode);
+		}
+		/// <summary>
 		/// Creates a cropped version of the specified Bitmap, removing transparent / empty border areas.
 		/// </summary>
 		/// <param name="bm">The original Bitmap.</param>

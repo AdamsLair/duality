@@ -9,5 +9,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties
 	public static class PackageManagerFrontendResCache
 	{
 		public static readonly Icon IconPackage = PackageManagerFrontendRes.IconPackage;
+		public static readonly Image IconPackageBig = Resources.packagebig;
 	}
 }

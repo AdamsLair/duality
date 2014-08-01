@@ -131,6 +131,7 @@ namespace Duality.Editor.Controls.TreeModels.FileSystem
 			return treePath.LastNode is FileItem;
 		}
 
+		#pragma warning disable 67  // Event never used
 		public event EventHandler<TreeModelEventArgs> NodesChanged;
 		public event EventHandler<TreeModelEventArgs> NodesInserted;
 		public event EventHandler<TreeModelEventArgs> NodesRemoved;

@@ -132,6 +132,7 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 			return item != null && item.TypeInfo != null && (item.TypeInfo.IsSealed || item.TypeInfo.IsValueType);
 		}
 
+		#pragma warning disable 67  // Event never used
 		public event EventHandler<TreeModelEventArgs> NodesChanged;
 		public event EventHandler<TreeModelEventArgs> NodesInserted;
 		public event EventHandler<TreeModelEventArgs> NodesRemoved;

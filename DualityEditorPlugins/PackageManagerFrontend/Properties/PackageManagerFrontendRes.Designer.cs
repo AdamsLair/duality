@@ -72,6 +72,33 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Installed Packages ähnelt.
+        /// </summary>
+        public static string ItemName_InstalledPackages {
+            get {
+                return ResourceManager.GetString("ItemName_InstalledPackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Online Repository ähnelt.
+        /// </summary>
+        public static string ItemName_OnlineRepository {
+            get {
+                return ResourceManager.GetString("ItemName_OnlineRepository", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Package Updates ähnelt.
+        /// </summary>
+        public static string ItemName_PackageUpdates {
+            get {
+                return ResourceManager.GetString("ItemName_PackageUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Manage Packages... ähnelt.
         /// </summary>
         public static string MenuItemName_PackageView {

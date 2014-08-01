@@ -117,13 +117,9 @@ namespace Duality.Resources
 		private	BatchInfo	info	= new BatchInfo();
 
 		/// <summary>
-		/// [GET] Returns a newly created <see cref="BatchInfo"/> that visually equals this Material.
+		/// [GET] Returns the Materials internal <see cref="BatchInfo"/> instance that is used for rendering and holds its actual data.
 		/// </summary>
 		public BatchInfo Info
-		{
-			get { return new BatchInfo(this.info); }
-		}
-		internal BatchInfo InfoDirect
 		{
 			get { return this.info; }
 		}
@@ -134,6 +130,7 @@ namespace Duality.Resources
 		public ContentRef<DrawTechnique> Technique
 		{
 			get { return this.info.Technique; }
+			set { this.info.Technique = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The main color, typically used for coloring displayed vertices.
@@ -141,27 +138,31 @@ namespace Duality.Resources
 		public ColorRgba MainColor
 		{
 			get { return this.info.MainColor; }
+			set { this.info.MainColor = value; }
 		}
 		/// <summary>
-		/// [GET] The set of <see cref="Duality.Resources.Texture">Textures</see> to use.
+		/// [GET / SET] The set of <see cref="Duality.Resources.Texture">Textures</see> to use.
 		/// </summary>
 		public IEnumerable<KeyValuePair<string,ContentRef<Texture>>> Textures
 		{
 			get { return this.info.Textures; }
+			set { this.info.Textures = value; }
 		}
 		/// <summary>
-		/// [GET] Returns the main texture.
+		/// [GET / SET] The Materials main texture.
 		/// </summary>
 		public ContentRef<Texture> MainTexture
 		{
 			get { return this.info.MainTexture; }
+			set { this.info.MainTexture = value; }
 		}
 		/// <summary>
-		/// [GET] The set of <see cref="Duality.Resources.ShaderVarInfo">uniform values</see> to use.
+		/// [GET / SET] The set of <see cref="Duality.Resources.ShaderVarInfo">uniform values</see> to use.
 		/// </summary>
 		public IEnumerable<KeyValuePair<string,float[]>> Uniforms
 		{
 			get { return this.info.Uniforms; }
+			set { this.info.Uniforms = value; }
 		}
 
 		/// <summary>
@@ -211,6 +212,15 @@ namespace Duality.Resources
 			return this.info.GetTexture(name);
 		}
 		/// <summary>
+		/// Sets a texture within the Material.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="tex"></param>
+		public void SetTexture(string name, ContentRef<Texture> tex)
+		{
+			this.info.SetTexture(name, tex);
+		}
+		/// <summary>
 		/// Gets a uniform by name. Returns a null reference if the name doesn't exist.
 		/// </summary>
 		/// <param name="name"></param>
@@ -219,13 +229,32 @@ namespace Duality.Resources
 		{
 			return this.info.GetUniform(name);
 		}
+		/// <summary>
+		/// Sets a uniform value within the Material.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="uniform"></param>
+		public void SetUniform(string name, params float[] uniform)
+		{
+			this.info.SetUniform(name, uniform);
+		}
+		/// <summary>
+		/// Sets a uniform value within the Material.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="index"></param>
+		/// <param name="uniformVal"></param>
+		public void SetUniform(string name, int index, float uniformVal)
+		{
+			this.info.SetUniform(name, index, uniformVal);
+		}
 
 		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
 		{
 			base.OnCopyTo(r, provider);
 			Material c = r as Material;
 			c.info = new BatchInfo(this.info);
-			c.info.CleanDirty();
+			c.info.Detach();
 		}
 		protected override void OnLoaded()
 		{
@@ -258,7 +287,7 @@ namespace Duality.Resources
 		private	Dictionary<string,ContentRef<Texture>>	textures	= null;
 		private	Dictionary<string,float[]>				uniforms	= null;
 		private	DirtyFlag	dirtyFlag	= DirtyFlag.None;
-		private	int	hashCode = 0;
+		private	int			hashCode	= 0;
 		
 		/// <summary>
 		/// [GET / SET] The <see cref="Duality.Resources.DrawTechnique"/> that is used.
@@ -317,7 +346,7 @@ namespace Duality.Resources
 				if (this.textures == null)
 					this.textures = new Dictionary<string,ContentRef<Texture>>();
 				else
-					this.CleanDirty(DirtyFlag.Textures);
+					this.Detach(DirtyFlag.Textures);
 				this.textures[ShaderVarInfo.VarName_MainTex] = value;
 				this.InvalidateHashCode();
 			}
@@ -355,7 +384,7 @@ namespace Duality.Resources
 		/// Creates a new BatchInfo based on an existing <see cref="Material"/>.
 		/// </summary>
 		/// <param name="source"></param>
-		public BatchInfo(Material source) : this(source.InfoDirect) {}
+		public BatchInfo(Material source) : this(source.Info) {}
 		/// <summary>
 		/// Creates a new BatchInfo based on an existing BatchInfo. This is essentially a copy constructor.
 		/// </summary>
@@ -408,11 +437,11 @@ namespace Duality.Resources
 		/// <summary>
 		/// Assures that the current BatchInfo is not a temporarily shallow copy of an existing one.
 		/// </summary>
-		public void CleanDirty()
+		public void Detach()
 		{
-			this.CleanDirty(DirtyFlag.All);
+			this.Detach(DirtyFlag.All);
 		}
-		private void CleanDirty(DirtyFlag clean)
+		private void Detach(DirtyFlag clean)
 		{
 			if ((this.dirtyFlag & clean) == DirtyFlag.None) return;
 
@@ -497,7 +526,7 @@ namespace Duality.Resources
 			if (this.textures == null)
 				this.textures = new Dictionary<string,ContentRef<Texture>>();
 			else
-				this.CleanDirty(DirtyFlag.Textures);
+				this.Detach(DirtyFlag.Textures);
 
 			if (tex.IsExplicitNull)
 				this.textures.Remove(name);
@@ -528,7 +557,7 @@ namespace Duality.Resources
 			if (this.uniforms == null)
 				this.uniforms = new Dictionary<string,float[]>();
 			else
-				this.CleanDirty(DirtyFlag.Uniforms);
+				this.Detach(DirtyFlag.Uniforms);
 
 			if (uniform == null)
 				this.uniforms.Remove(name);
@@ -546,7 +575,7 @@ namespace Duality.Resources
 		public void SetUniform(string name, int index, float uniformVal)
 		{
 			if (this.uniforms != null)
-				this.CleanDirty(DirtyFlag.Uniforms);
+				this.Detach(DirtyFlag.Uniforms);
 
 			float[] uniformArr = this.GetUniform(name);
 			if (uniformArr == null)
