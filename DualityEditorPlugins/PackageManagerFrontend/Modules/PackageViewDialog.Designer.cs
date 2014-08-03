@@ -48,7 +48,7 @@
 			this.miniToolStrip = new System.Windows.Forms.ToolStrip();
 			this.labelHeaderText = new System.Windows.Forms.Label();
 			this.labelHeader = new System.Windows.Forms.Label();
-			this.panel1 = new System.Windows.Forms.Panel();
+			this.panelTitleImage = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.SuspendLayout();
@@ -59,9 +59,9 @@
 			// packageList
 			// 
 			this.packageList.AllowColumnReorder = true;
-			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.packageList.AsyncExpanding = true;
 			this.packageList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.packageList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -88,18 +88,19 @@
 			this.packageList.ShowLines = false;
 			this.packageList.ShowNodeToolTips = true;
 			this.packageList.ShowPlusMinus = false;
-			this.packageList.Size = new System.Drawing.Size(478, 357);
+			this.packageList.Size = new System.Drawing.Size(489, 363);
 			this.packageList.TabIndex = 0;
 			this.packageList.Text = "packageList";
 			this.packageList.UseColumns = true;
 			this.packageList.ColumnClicked += new System.EventHandler<Aga.Controls.Tree.TreeColumnEventArgs>(this.packageList_ColumnClicked);
+			this.packageList.Resize += new System.EventHandler(this.packageList_Resize);
 			// 
 			// treeColumnName
 			// 
 			this.treeColumnName.Header = "Name";
 			this.treeColumnName.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.treeColumnName.TooltipText = null;
-			this.treeColumnName.Width = 280;
+			this.treeColumnName.Width = 320;
 			// 
 			// treeColumnVersion
 			// 
@@ -126,8 +127,9 @@
 			// 
 			this.nodeTextBoxName.DataPropertyName = "Title";
 			this.nodeTextBoxName.IncrementalSearchEnabled = true;
-			this.nodeTextBoxName.LeftMargin = 3;
+			this.nodeTextBoxName.LeftMargin = 6;
 			this.nodeTextBoxName.ParentColumn = this.treeColumnName;
+			this.nodeTextBoxName.Trimming = System.Drawing.StringTrimming.EllipsisCharacter;
 			// 
 			// nodeTextBoxVersion
 			// 
@@ -135,7 +137,8 @@
 			this.nodeTextBoxVersion.IncrementalSearchEnabled = true;
 			this.nodeTextBoxVersion.LeftMargin = 3;
 			this.nodeTextBoxVersion.ParentColumn = this.treeColumnVersion;
-			this.nodeTextBoxVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.nodeTextBoxVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.nodeTextBoxVersion.Trimming = System.Drawing.StringTrimming.EllipsisCharacter;
 			// 
 			// nodeTextBoxDownloads
 			// 
@@ -143,13 +146,14 @@
 			this.nodeTextBoxDownloads.IncrementalSearchEnabled = true;
 			this.nodeTextBoxDownloads.LeftMargin = 3;
 			this.nodeTextBoxDownloads.ParentColumn = this.treeColumnDownloads;
-			this.nodeTextBoxDownloads.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			this.nodeTextBoxDownloads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this.nodeTextBoxDownloads.Trimming = System.Drawing.StringTrimming.EllipsisCharacter;
 			// 
 			// splitMain
 			// 
-			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
 			this.splitMain.Location = new System.Drawing.Point(3, 77);
 			this.splitMain.Margin = new System.Windows.Forms.Padding(0);
@@ -160,8 +164,8 @@
 			this.splitMain.Panel1.Controls.Add(this.packageList);
 			this.splitMain.Panel1.Controls.Add(this.toolStripMain);
 			this.splitMain.Panel2MinSize = 150;
-			this.splitMain.Size = new System.Drawing.Size(666, 386);
-			this.splitMain.SplitterDistance = 479;
+			this.splitMain.Size = new System.Drawing.Size(734, 392);
+			this.splitMain.SplitterDistance = 490;
 			this.splitMain.TabIndex = 0;
 			this.splitMain.TabStop = false;
 			// 
@@ -178,7 +182,7 @@
 			this.toolStripMain.Location = new System.Drawing.Point(0, 0);
 			this.toolStripMain.Name = "toolStripMain";
 			this.toolStripMain.Padding = new System.Windows.Forms.Padding(3, 3, 0, 3);
-			this.toolStripMain.Size = new System.Drawing.Size(479, 26);
+			this.toolStripMain.Size = new System.Drawing.Size(490, 26);
 			this.toolStripMain.TabIndex = 1;
 			// 
 			// toolStripSearchBox
@@ -216,7 +220,7 @@
 			// 
 			this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonClose.Location = new System.Drawing.Point(585, 7);
+			this.buttonClose.Location = new System.Drawing.Point(653, 7);
 			this.buttonClose.Name = "buttonClose";
 			this.buttonClose.Size = new System.Drawing.Size(75, 23);
 			this.buttonClose.TabIndex = 11;
@@ -225,14 +229,14 @@
 			// 
 			// panelLowerArea
 			// 
-			this.panelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelLowerArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.panelLowerArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelLowerArea.Controls.Add(this.buttonClose);
-			this.panelLowerArea.Location = new System.Drawing.Point(-3, 466);
+			this.panelLowerArea.Location = new System.Drawing.Point(-3, 472);
 			this.panelLowerArea.Name = "panelLowerArea";
-			this.panelLowerArea.Size = new System.Drawing.Size(672, 39);
+			this.panelLowerArea.Size = new System.Drawing.Size(740, 39);
 			this.panelLowerArea.TabIndex = 12;
 			// 
 			// miniToolStrip
@@ -250,38 +254,38 @@
 			// 
 			// labelHeaderText
 			// 
-			this.labelHeaderText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeaderText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeaderText.Location = new System.Drawing.Point(82, 35);
 			this.labelHeaderText.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.labelHeaderText.Name = "labelHeaderText";
-			this.labelHeaderText.Size = new System.Drawing.Size(574, 42);
+			this.labelHeaderText.Size = new System.Drawing.Size(642, 42);
 			this.labelHeaderText.TabIndex = 13;
 			this.labelHeaderText.Text = "Each Duality project consists of multiple Packages that can carry plugins and dat" +
-    "a. This dialog provides an overview of installed and available Packages and help" +
-    "s you manage them.";
+				"a. This dialog provides an overview of installed and available Packages and help" +
+				"s you manage them.";
 			// 
 			// labelHeader
 			// 
-			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(79, 7);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
 			this.labelHeader.Name = "labelHeader";
-			this.labelHeader.Size = new System.Drawing.Size(577, 22);
+			this.labelHeader.Size = new System.Drawing.Size(645, 22);
 			this.labelHeader.TabIndex = 17;
 			this.labelHeader.Text = "Manage Duality Packages";
 			this.labelHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// panel1
+			// panelTitleImage
 			// 
-			this.panel1.BackgroundImage = global::Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.packagebig;
-			this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-			this.panel1.Location = new System.Drawing.Point(8, 7);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(68, 67);
-			this.panel1.TabIndex = 18;
+			this.panelTitleImage.BackgroundImage = global::Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.packagebig;
+			this.panelTitleImage.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+			this.panelTitleImage.Location = new System.Drawing.Point(8, 7);
+			this.panelTitleImage.Name = "panelTitleImage";
+			this.panelTitleImage.Size = new System.Drawing.Size(68, 67);
+			this.panelTitleImage.TabIndex = 18;
 			// 
 			// PackageViewDialog
 			// 
@@ -289,8 +293,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
-			this.ClientSize = new System.Drawing.Size(668, 504);
-			this.Controls.Add(this.panel1);
+			this.ClientSize = new System.Drawing.Size(736, 510);
+			this.Controls.Add(this.panelTitleImage);
 			this.Controls.Add(this.labelHeader);
 			this.Controls.Add(this.labelHeaderText);
 			this.Controls.Add(this.splitMain);
@@ -333,7 +337,7 @@
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxDownloads;
 		private System.Windows.Forms.Label labelHeaderText;
 		private System.Windows.Forms.Label labelHeader;
-		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Panel panelTitleImage;
 		private Aga.Controls.Tree.NodeControls.NodeIcon nodeIcon;
 	}
 }

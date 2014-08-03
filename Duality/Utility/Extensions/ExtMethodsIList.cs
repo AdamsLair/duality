@@ -60,7 +60,7 @@ namespace Duality
 		/// <typeparam name="T">The lists object type.</typeparam>
 		/// <param name="list">List to perform the sort operation on.</param>
 		/// <param name="comparer">The comparer to use.</param>
-		public static void StableSort<T>(this IList<T> list, Comparer<T> comparer)
+		public static void StableSort<T>(this IList<T> list, IComparer<T> comparer)
 		{
 			StableSort<T>(list, comparer.Compare);
 		}
@@ -93,7 +93,7 @@ namespace Duality
 		/// <param name="index"></param>
 		/// <param name="count"></param>
 		/// <param name="comparer">The comparer to use.</param>
-		public static void StableSort<T>(this IList<T> list, int index, int count, Comparer<T> comparer)
+		public static void StableSort<T>(this IList<T> list, int index, int count, IComparer<T> comparer)
 		{
 			StableSort<T>(list, index, count, comparer.Compare);
 		}

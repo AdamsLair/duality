@@ -12,17 +12,17 @@ using Duality.Editor.PackageManagement;
 
 namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 {
-	public class InstalledPackagesTreeModel : PackageRepositoryTreeModel
+	public class OnlinePackagesTreeModel : PackageRepositoryTreeModel
 	{
-		public InstalledPackagesTreeModel(PackageManager manager) : base(manager) {}
+		public OnlinePackagesTreeModel(PackageManager manager) : base(manager) {}
 
 		protected override IEnumerable<object> EnumeratePackages()
 		{
-			return this.packageManager.LocalPackages;
+			return this.packageManager.QueryAvailablePackages();
 		}
 		protected override BaseItem CreatePackageItem(object package, BaseItem parentItem)
 		{
-			return new LocalPackageItem(package as LocalPackage, parentItem);
+			return new OnlinePackageItem(package as PackageInfo, parentItem);
 		}
 	}
 }

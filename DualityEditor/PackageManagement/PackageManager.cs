@@ -168,8 +168,7 @@ namespace Duality.Editor.PackageManagement
 			// Only look at NuGet packages tagged with "Duality" and "Plugin"
 			query = query.Where(p => 
 			    p.Tags != null && 
-			    p.Tags.Contains("Duality") && 
-			    p.Tags.Contains("Plugin"));
+			    p.Tags.Contains("Duality"));
 
 			// Transform results into Duality package representation
 			foreach (NuGet.IPackage package in query)

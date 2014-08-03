@@ -85,7 +85,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		}
 		public override string Title
 		{
-			get { return this.packageInfo.Title; }
+			get { return !string.IsNullOrWhiteSpace(this.packageInfo.Title) ? this.packageInfo.Title : this.packageInfo.Id; }
 		}
 		public Version Version
 		{
@@ -93,7 +93,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		}
 		public int Downloads
 		{
-			get { return this.packageInfo.DownloadCount; }
+			get
+			{
+				if (this.newestPackageInfo == null)
+					return this.packageInfo.DownloadCount;
+				else
+					return this.newestPackageInfo.DownloadCount;
+			}
 		}
 		public string Id
 		{

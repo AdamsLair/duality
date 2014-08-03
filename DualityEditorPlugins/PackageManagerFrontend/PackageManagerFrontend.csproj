@@ -74,6 +74,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TreeModels\InstalledPackagesTreeModel.cs" />
+    <Compile Include="TreeModels\OnlinePackagesTreeModel.cs" />
+    <Compile Include="TreeModels\PackageRepositoryTreeModel.cs" />
     <Compile Include="TreeModels\ModelItems.cs" />
   </ItemGroup>
   <ItemGroup>

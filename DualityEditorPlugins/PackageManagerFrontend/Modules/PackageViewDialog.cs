@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -53,11 +54,56 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				return this.name;
 			}
 		}
+		private class PackageListItemComparer : IComparer<BaseItem>
+		{
+			public enum SortMode
+			{
+				Name,
+				Version,
+				Downloads
+			}
 
-		private	PackageManager	packageManager	= null;
-		private	DisplayMode		display			= DisplayMode.None;
-		private ITreeModel		modelInstalled	= null;
-		private ITreeModel		modelOnline		= null;
+			private SortOrder sortOrder	= SortOrder.Ascending;
+			private SortMode sortMode = SortMode.Name;
+
+			public PackageListItemComparer(SortMode mode, SortOrder order)
+			{
+				this.sortMode = mode;
+				this.sortOrder = order;
+			}
+
+			public int Compare(BaseItem x, BaseItem y)
+			{
+				PackageItem itemA = x as PackageItem;
+				PackageItem itemB = y as PackageItem;
+
+				if (itemA == itemB) return 0;
+				if (itemA == null) return this.sortOrder == SortOrder.Ascending ? 1 : -1;
+				if (itemB == null) return this.sortOrder == SortOrder.Ascending ? -1 : 1;
+
+				int result = 0;
+				switch (this.sortMode)
+				{
+					case SortMode.Name:
+						result = string.Compare(itemA.Title, itemB.Title);
+						break;
+					case SortMode.Version:
+						result = (itemA.Version < itemB.Version) ? -1 : 1;
+						break;
+					case SortMode.Downloads:
+						result = (itemA.Downloads < itemB.Downloads) ? -1 : 1;
+						break;
+				}
+
+				return (this.sortOrder == SortOrder.Ascending) ? -result : result;
+			}
+		}
+
+		private	PackageManager					packageManager	= null;
+		private	DisplayMode						display			= DisplayMode.None;
+		private InstalledPackagesTreeModel		modelInstalled	= null;
+		private ITreeModel						modelOnline		= null;
+		private	Size							oldTreeViewSize	= Size.Empty;
 
 		public DisplayMode Display
 		{
@@ -97,9 +143,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			base.OnLoad(e);
 
+			this.oldTreeViewSize = this.packageList.Size;
+
 			this.packageManager = DualityEditorApp.PackageManager;
 			this.modelInstalled	= new InstalledPackagesTreeModel(this.packageManager);
-			this.modelOnline	= new TreeModel();
+			this.modelOnline	= new OnlinePackagesTreeModel(this.packageManager);
 
 			this.Display = DisplayMode.Installed;
 		}
@@ -116,8 +164,29 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void packageList_ColumnClicked(object sender, TreeColumnEventArgs e)
 		{
-			// ToDo: Implement User Sorting
-			// May require SortedTreeModel wrapper or similar
+			e.Column.SortOrder = (e.Column.SortOrder == SortOrder.Ascending) ? SortOrder.Descending : SortOrder.Ascending;
+
+			IComparer<BaseItem> comparer = null;
+			if (e.Column == this.treeColumnName)
+				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Name, e.Column.SortOrder);
+			else if (e.Column == this.treeColumnVersion)
+				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Version, e.Column.SortOrder);
+			else if (e.Column == this.treeColumnDownloads)
+				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Downloads, e.Column.SortOrder);
+
+			throw new NotImplementedException("Find a way to combine asynchronous models with up-to-date sorting");
+		}
+		private void packageList_Resize(object sender, EventArgs e)
+		{
+			Size sizeChange = new Size(
+				this.packageList.Width - this.oldTreeViewSize.Width,
+				this.packageList.Height - this.oldTreeViewSize.Height);
+			this.treeColumnName.Width += sizeChange.Width;
+			this.oldTreeViewSize = this.packageList.Size;
+		}
+		private int packageList_ItemComparer(object itemA, object itemB)
+		{
+			return 0;
 		}
 		private void nodeTextBoxName_DrawText(object sender, DrawTextEventArgs e)
 		{
