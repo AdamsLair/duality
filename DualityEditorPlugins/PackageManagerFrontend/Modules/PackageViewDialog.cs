@@ -82,17 +82,26 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				if (itemB == null) return this.sortOrder == SortOrder.Ascending ? -1 : 1;
 
 				int result = 0;
-				switch (this.sortMode)
+				if (result == 0 || this.sortMode == SortMode.Version)
 				{
-					case SortMode.Name:
-						result = string.Compare(itemA.Title, itemB.Title);
-						break;
-					case SortMode.Version:
-						result = (itemA.Version < itemB.Version) ? -1 : 1;
-						break;
-					case SortMode.Downloads:
-						result = (itemA.Downloads < itemB.Downloads) ? -1 : 1;
-						break;
+					if		(itemA.Version < itemB.Version)	result = -1;
+					else if (itemA.Version > itemB.Version)	result = 1;
+				}
+				if (result == 0 || this.sortMode == SortMode.Downloads)
+				{
+					if (itemA.Downloads.HasValue || itemB.Downloads.HasValue)
+					{
+						if		(!itemA.Downloads.HasValue || itemA.Downloads < itemB.Downloads)	result = -1;
+						else if (!itemB.Downloads.HasValue || itemA.Downloads > itemB.Downloads)	result = 1;
+					}
+				}
+				if (result == 0 || this.sortMode == SortMode.Name)
+				{
+					result = string.Compare(itemA.Title, itemB.Title);
+				}
+				if (result == 0)
+				{
+					result = itemA.GetHashCode() - itemB.GetHashCode();
 				}
 
 				return (this.sortOrder == SortOrder.Ascending) ? -result : result;
@@ -102,7 +111,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		private	PackageManager					packageManager	= null;
 		private	DisplayMode						display			= DisplayMode.None;
 		private InstalledPackagesTreeModel		modelInstalled	= null;
-		private ITreeModel						modelOnline		= null;
+		private OnlinePackagesTreeModel			modelOnline		= null;
 		private	Size							oldTreeViewSize	= Size.Empty;
 
 		public DisplayMode Display
@@ -164,7 +173,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void packageList_ColumnClicked(object sender, TreeColumnEventArgs e)
 		{
-			e.Column.SortOrder = (e.Column.SortOrder == SortOrder.Ascending) ? SortOrder.Descending : SortOrder.Ascending;
+			e.Column.SortOrder = (e.Column.SortOrder == SortOrder.Descending) ? SortOrder.Ascending : SortOrder.Descending;
 
 			IComparer<BaseItem> comparer = null;
 			if (e.Column == this.treeColumnName)
@@ -174,7 +183,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			else if (e.Column == this.treeColumnDownloads)
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Downloads, e.Column.SortOrder);
 
-			throw new NotImplementedException("Find a way to combine asynchronous models with up-to-date sorting");
+			this.modelInstalled.SortComparer = comparer;
+			this.modelOnline.SortComparer = comparer;
 		}
 		private void packageList_Resize(object sender, EventArgs e)
 		{
@@ -183,10 +193,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.packageList.Height - this.oldTreeViewSize.Height);
 			this.treeColumnName.Width += sizeChange.Width;
 			this.oldTreeViewSize = this.packageList.Size;
-		}
-		private int packageList_ItemComparer(object itemA, object itemB)
-		{
-			return 0;
 		}
 		private void nodeTextBoxName_DrawText(object sender, DrawTextEventArgs e)
 		{

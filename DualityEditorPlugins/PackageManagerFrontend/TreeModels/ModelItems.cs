@@ -70,6 +70,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		private PackageInfo	packageInfo			= null;
 		private PackageInfo	newestPackageInfo	= null;
 		private Image		icon				= DefaultPackageIcon;
+		private	object		asyncDataLock		= new object();
 		
 		public PackageInfo PackageInfo
 		{
@@ -77,28 +78,49 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		}
 		public PackageInfo NewestPackageInfo
 		{
-			get { return this.newestPackageInfo; }
+			get
+			{
+				lock (this.asyncDataLock)
+				{
+					return this.newestPackageInfo;
+				}
+			}
 		}
 		public override Image Icon
 		{
-			get { return this.icon; }
+			get
+			{
+				lock (this.asyncDataLock)
+				{
+					return this.icon;
+				}
+			}
 		}
 		public override string Title
 		{
-			get { return !string.IsNullOrWhiteSpace(this.packageInfo.Title) ? this.packageInfo.Title : this.packageInfo.Id; }
+			get
+			{
+				lock (this.asyncDataLock)
+				{
+					return !string.IsNullOrWhiteSpace(this.packageInfo.Title) ? this.packageInfo.Title : this.packageInfo.Id;
+				}
+			}
 		}
 		public Version Version
 		{
 			get { return this.packageInfo.Version; }
 		}
-		public int Downloads
+		public int? Downloads
 		{
 			get
 			{
-				if (this.newestPackageInfo == null)
-					return this.packageInfo.DownloadCount;
-				else
-					return this.newestPackageInfo.DownloadCount;
+				lock (this.asyncDataLock)
+				{
+					if (this.newestPackageInfo == null)
+						return null;
+					else
+						return this.newestPackageInfo.DownloadCount;
+				}
 			}
 		}
 		public string Id
@@ -113,14 +135,19 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		public override void RetrieveOnlineData(PackageManager manager)
 		{
 			// Retrieve Icon
-			{
-				this.icon = null;
-				if (this.packageInfo != null) this.icon = this.RetrieveIcon(this.packageInfo.IconUrl);
-				if (this.icon == null) this.icon = DefaultPackageIcon;
-			}
+			Image newIcon = null;
+			if (this.packageInfo != null) newIcon = this.RetrieveIcon(this.packageInfo.IconUrl);
+			if (newIcon == null) newIcon = DefaultPackageIcon;
 
 			// Retrieve info about newest online version
-			this.newestPackageInfo = manager.QueryPackageInfo(this.packageInfo.Id);
+			PackageInfo newestPackage = manager.QueryPackageInfo(this.packageInfo.Id);
+
+			// Apply data
+			lock (this.asyncDataLock)
+			{
+				this.icon = newIcon;
+				this.newestPackageInfo = newestPackage;
+			}
 		}
 	}
 	public class LocalPackageItem : PackageItem
