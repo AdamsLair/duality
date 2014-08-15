@@ -152,6 +152,7 @@
     <Compile Include="Forms\PublishGameDialog.Designer.cs">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="PackageManagement\PackageEventArgs.cs" />
     <Compile Include="PackageManagement\PackageInfo.cs" />
     <Compile Include="PackageManagement\LocalPackage.cs" />
     <Compile Include="PackageManagement\PackageManager.cs" />

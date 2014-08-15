@@ -14,6 +14,9 @@ namespace Duality.Editor.PackageManagement
 {
 	public sealed class PackageManager
 	{
+		internal const string DualityTag = "Duality";
+		internal const string PluginTag = "Plugin";
+
 		private	const	string	UpdateConfigFile			= "ApplyUpdate.xml";
 		private	const	string	PackageConfigFile			= "PackageConfig.xml";
 		private const	string	LocalPackageDir				= EditorHelper.SourceDirectory + @"\Packages";
@@ -25,9 +28,13 @@ namespace Duality.Editor.PackageManagement
 		private	string					pluginTargetDir		= null;
 		private	string					rootPath			= null;
 		private	List<LocalPackage>		localPackages		= new List<LocalPackage>();
+		private	List<LocalPackage>		uninstallQueue		= new List<LocalPackage>();
 
 		private NuGet.PackageManager		manager			= null;
 		private	NuGet.IPackageRepository	repository		= null;
+
+		public event EventHandler<PackageEventArgs> PackageInstalled = null;
+		public event EventHandler<PackageEventArgs> PackageUninstalled = null;
 
 
 		public Uri RepositoryUrl
@@ -75,6 +82,7 @@ namespace Duality.Editor.PackageManagement
 			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
+			this.manager.PackageUninstalling += this.manager_PackageUninstalling;
 
 			// Retrieve information about local packages
 			this.RetrieveLocalPackageInfo();
@@ -82,17 +90,28 @@ namespace Duality.Editor.PackageManagement
 
 		public void InstallPackage(PackageInfo package)
 		{
-			// Update package entries from local config
-			this.localPackages.RemoveAll(p => package.Id == p.Id);
-			this.localPackages.Add(new LocalPackage(package));
-			this.SaveConfig();
-
 			// Request NuGet to install the package
 			this.manager.InstallPackage(package.Id, new SemanticVersion(package.Version));
 		}
+		public void UninstallPackage(PackageInfo package)
+		{
+			this.UninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+		}
 		public void UninstallPackage(LocalPackage package)
 		{
+			this.uninstallQueue.Add(package);
 			this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
+			this.uninstallQueue.Clear();
+		}
+		public void UpdatePackage(PackageInfo package)
+		{
+			this.UpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+		}
+		public void UpdatePackage(LocalPackage package)
+		{
+			PackageInfo newVersion = this.QueryPackageInfo(package.Id);
+			this.UninstallPackage(package);
+			this.InstallPackage(newVersion);
 		}
 		public void VerifyPackage(LocalPackage package)
 		{
@@ -168,7 +187,7 @@ namespace Duality.Editor.PackageManagement
 			// Only look at NuGet packages tagged with "Duality" and "Plugin"
 			query = query.Where(p => 
 			    p.Tags != null && 
-			    p.Tags.Contains("Duality"));
+			    p.Tags.Contains(DualityTag));
 
 			// Transform results into Duality package representation
 			foreach (NuGet.IPackage package in query)
@@ -360,12 +379,26 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void AppendUpdateFileEntry(XDocument updateDoc, string copySource, string copyTarget)
 		{
+			foreach (XElement element in updateDoc.Root.Elements("Remove").ToArray())
+			{
+				if (element.Attribute("target") != null && PathHelper.ArePathsEqual(element.Attribute("target").Value, copyTarget))
+				{
+					element.Remove();
+				}
+			}
 			updateDoc.Root.Add(new XElement("Update", 
 				new XAttribute("source", copySource), 
 				new XAttribute("target", copyTarget)));
 		}
 		private void AppendUpdateFileEntry(XDocument updateDoc, string deleteTarget)
 		{
+			foreach (XElement element in updateDoc.Root.Elements("Update").ToArray())
+			{
+				if (element.Attribute("target") != null && PathHelper.ArePathsEqual(element.Attribute("target").Value, deleteTarget))
+				{
+					element.Remove();
+				}
+			}
 			updateDoc.Root.Add(new XElement("Remove", 
 				new XAttribute("target", deleteTarget)));
 		}
@@ -376,10 +409,10 @@ namespace Duality.Editor.PackageManagement
 
 			bool isDualityPackage = 
 				package.Tags != null &&
-				package.Tags.Contains("Duality");
+				package.Tags.Contains(DualityTag);
 			bool isPluginPackage = 
 				isDualityPackage && 
-				package.Tags.Contains("Plugin");
+				package.Tags.Contains(PluginTag);
 			string binaryBaseDir = this.pluginTargetDir;
 			string contentBaseDir = this.dataTargetDir;
 			if (!isPluginPackage || !isDualityPackage) binaryBaseDir = "";
@@ -427,6 +460,27 @@ namespace Duality.Editor.PackageManagement
 			return info;
 		}
 
+		private void OnPackageInstalled(PackageEventArgs args)
+		{
+			if (this.PackageInstalled != null)
+				this.PackageInstalled(this, args);
+		}
+		private void OnPackageUninstalled(PackageEventArgs args)
+		{
+			if (this.PackageUninstalled != null)
+				this.PackageUninstalled(this, args);
+		}
+		
+		private void manager_PackageUninstalling(object sender, PackageOperationEventArgs e)
+		{
+			// Prevent NuGet from uninstalling Duality dependencies that aren't scheduled for uninstall
+			PackageInfo packageInfo = this.QueryPackageInfo(e.Package.Id, e.Package.Version.Version);
+			if (packageInfo.IsDualityPackage)
+			{
+				if (!this.uninstallQueue.Any(p => p.Id == e.Package.Id && p.Version == e.Package.Version.Version))
+					e.Cancel = true;
+			}
+		}
 		private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
 		{
 			Log.Editor.Write("Package removal scheduled: {0}, {1}", e.Package.Id, e.Package.Version);
@@ -459,10 +513,21 @@ namespace Duality.Editor.PackageManagement
 			// Update local package configuration file
 			this.localPackages.RemoveAll(p => p.Id == e.Package.Id);
 			this.SaveConfig();
+
+			this.OnPackageUninstalled(new PackageEventArgs(e.Package.Id, e.Package.Version.Version));
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
 			Log.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
+			
+			// Update package entries from local config
+			PackageInfo packageInfo = this.QueryPackageInfo(e.Package.Id, e.Package.Version.Version);
+			if (packageInfo.IsDualityPackage)
+			{
+				this.localPackages.RemoveAll(p => p.Id == e.Package.Id);
+				this.localPackages.Add(new LocalPackage(packageInfo));
+				this.SaveConfig();
+			}
 
 			// Schedule files for updating / copying
 			XDocument updateDoc = this.PrepareUpdateFile();
@@ -491,6 +556,8 @@ namespace Duality.Editor.PackageManagement
 				this.AppendUpdateFileEntry(updateDoc, Path.Combine(e.InstallPath, pair.Value), pair.Key);
 			}
 			updateDoc.Save(this.UpdateFilePath);
+
+			this.OnPackageInstalled(new PackageEventArgs(e.Package.Id, e.Package.Version.Version));
 		}
 	}
 }

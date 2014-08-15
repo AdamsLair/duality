@@ -410,7 +410,7 @@ namespace Duality.Editor
 		{
 			Log.Editor.Write("Initializing editor plugins...");
 			Log.Editor.PushIndent();
-			foreach (EditorPlugin plugin in plugins)
+			foreach (EditorPlugin plugin in plugins.ToArray())
 			{
 				Log.Editor.Write("{0}...", plugin.Id);
 				Log.Editor.PushIndent();

@@ -130,4 +130,28 @@
   <data name="MenuItemName_PackageView" xml:space="preserve">
     <value>Manage Packages...</value>
   </data>
+  <data name="NoDescAvailable" xml:space="preserve">
+    <value>No description available</value>
+  </data>
+  <data name="NoPackageSelected" xml:space="preserve">
+    <value>No Package selected</value>
+  </data>
+  <data name="TaskInstallPackages_Caption" xml:space="preserve">
+    <value>Installing Packages...</value>
+  </data>
+  <data name="TaskInstallPackages_Desc" xml:space="preserve">
+    <value>Duality is installing packages. This may include downloading them from the central package repository.</value>
+  </data>
+  <data name="TaskUninstallPackages_Caption" xml:space="preserve">
+    <value>Uninstalling Packages...</value>
+  </data>
+  <data name="TaskUninstallPackages_Desc" xml:space="preserve">
+    <value>Duality is uninstalling packages.</value>
+  </data>
+  <data name="TaskUpdatePackages_Caption" xml:space="preserve">
+    <value>Updating Packages...</value>
+  </data>
+  <data name="TaskUpdatePackages_Desc" xml:space="preserve">
+    <value>Duality is updating packages. This may include downloading new versions from the central package repository.</value>
+  </data>
 </root>

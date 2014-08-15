@@ -367,7 +367,22 @@ namespace Duality.Editor.Forms
 		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
 			base.OnFormClosing(e);
-			e.Cancel = !DualityEditorApp.Terminate(!this.nonUserClosing && !DualityEditorApp.IsReloadingPlugins);
+			bool userCloseReason;
+			switch (e.CloseReason)
+			{
+				default:
+				case CloseReason.ApplicationExitCall:
+				case CloseReason.WindowsShutDown:
+				case CloseReason.TaskManagerClosing:
+					userCloseReason = false;
+					break;
+				case CloseReason.FormOwnerClosing:
+				case CloseReason.MdiFormClosing:
+				case CloseReason.UserClosing:
+					userCloseReason = true;
+					break;
+			}
+			e.Cancel = !DualityEditorApp.Terminate(userCloseReason && !this.nonUserClosing && !DualityEditorApp.IsReloadingPlugins);
 		}
 		protected override void OnFormClosed(FormClosedEventArgs e)
 		{

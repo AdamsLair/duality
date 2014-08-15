@@ -6,6 +6,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 using System.Xml.Linq;
 using System.Windows.Forms;
 
@@ -15,6 +16,7 @@ using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 
 using Duality.Editor.PackageManagement;
+using Duality.Editor.Forms;
 using Duality.Editor.Plugins.PackageManagerFrontend.Properties;
 using Duality.Editor.Plugins.PackageManagerFrontend.TreeModels;
 
@@ -107,11 +109,39 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				return (this.sortOrder == SortOrder.Ascending) ? -result : result;
 			}
 		}
+		private class PackageOperationData
+		{
+			private	PackageManager					manager;
+			private	PackageInfo						package;
+			private	Action<PackageOperationData>	operation;
+
+			public PackageManager Manager
+			{
+				get { return this.manager; }
+			}
+			public PackageInfo Package
+			{
+				get { return this.package; }
+			}
+			public Action<PackageOperationData> Operation
+			{
+				get { return this.operation; }
+			}
+
+			public PackageOperationData(PackageManager manager, PackageInfo package, Action<PackageOperationData> operation)
+			{
+				this.manager = manager;
+				this.package = package;
+				this.operation = operation;
+			}
+		}
 
 		private	PackageManager					packageManager	= null;
 		private	DisplayMode						display			= DisplayMode.None;
 		private InstalledPackagesTreeModel		modelInstalled	= null;
 		private OnlinePackagesTreeModel			modelOnline		= null;
+		private	PackageItem						selectedItem	= null;
+		private	bool							restartRequired	= false;
 		private	Size							oldTreeViewSize	= Size.Empty;
 
 		public DisplayMode Display
@@ -148,6 +178,98 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		internal void SaveUserData(XElement node) {}
 		internal void LoadUserData(XElement node) {}
 
+		private void UpdateBottomButtons()
+		{
+			bool isItemSelected = this.selectedItem != null;
+			bool isItemInstalled = isItemSelected && this.packageManager.LocalPackages.Any(p => p.Id == this.selectedItem.Id);
+			bool isItemUpdatable = isItemSelected && this.selectedItem.NewestPackageInfo != null && this.selectedItem.Version < this.selectedItem.NewestPackageInfo.Version;
+
+			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
+			this.buttonUninstall.Visible		= isItemSelected && isItemInstalled;
+			this.buttonUpdate.Visible			= isItemSelected && isItemInstalled && isItemUpdatable;
+			this.buttonApply.Visible			= this.restartRequired;
+			this.labelRequireRestart.Visible	= this.restartRequired;
+		}
+		private void UpdateInfoArea()
+		{
+			PackageInfo info = this.selectedItem != null ? this.selectedItem.PackageInfo : null;
+
+			if (info == null)
+			{
+				this.labelPackageTitle.Text			= PackageManagerFrontendRes.NoPackageSelected;
+				this.labelPackageId.Text			= null;
+				this.labelPackageDesc.Text			= PackageManagerFrontendRes.NoDescAvailable;
+				this.labelPackageAuthor.Text		= null;
+				this.labelPackageTags.Text			= null;
+				this.labelPackageVersion.Text		= null;
+				this.labelPackageUpdated.Text		= null;
+				this.labelPackageWebsite.Text		= null;
+			}
+			else
+			{
+				this.labelPackageTitle.Text			= !string.IsNullOrWhiteSpace(info.Title) ? info.Title : info.Id;
+				this.labelPackageId.Text			= info.Id;
+				this.labelPackageDesc.Text			= info.Description;
+				this.labelPackageAuthor.Text		= info.Authors.ToString(", ");
+				this.labelPackageTags.Text			= info.Tags.Except(new[] { "Duality" }).ToString(", ");
+				this.labelPackageVersion.Text		= info.Version.ToString();
+				this.labelPackageUpdated.Text		= info.PublishDate.ToString("yyyy-MM-dd, HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+				this.labelPackageWebsite.Text		= info.ProjectUrl != null ? info.ProjectUrl.ToString() : "";
+			}
+			
+			this.labelPackageAuthor.Visible			= !string.IsNullOrWhiteSpace(this.labelPackageAuthor.Text);
+			this.labelPackageTags.Visible			= !string.IsNullOrWhiteSpace(this.labelPackageTags.Text);
+			this.labelPackageVersion.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageVersion.Text);
+			this.labelPackageUpdated.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageUpdated.Text);
+			this.labelPackageWebsite.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageWebsite.Text);
+
+			this.labelPackageAuthorCaption.Visible	= this.labelPackageAuthor.Visible;
+			this.labelPackageTagsCaption.Visible	= this.labelPackageTags.Visible;
+			this.labelPackageVersionCaption.Visible	= this.labelPackageVersion.Visible;
+			this.labelPackageUpdatedCaption.Visible	= this.labelPackageUpdated.Visible;
+			this.labelPackageWebsiteCaption.Visible	= this.labelPackageWebsite.Visible;
+		}
+
+		private void InstallPackage(PackageInfo info)
+		{
+			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+				PackageManagerFrontendRes.TaskInstallPackages_Caption, 
+				PackageManagerFrontendRes.TaskInstallPackages_Desc, 
+				PackageOperationThread, 
+				new PackageOperationData(this.packageManager, info, d => d.Manager.InstallPackage(d.Package)));
+			setupDialog.MainThreadRequired = false;
+			setupDialog.ShowDialog();
+			this.modelInstalled.ApplyChanges();
+			this.restartRequired = true;
+			this.UpdateBottomButtons();
+		}
+		private void UninstallPackage(PackageInfo info)
+		{
+			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+				PackageManagerFrontendRes.TaskUninstallPackages_Caption, 
+				PackageManagerFrontendRes.TaskUninstallPackages_Desc, 
+				PackageOperationThread, 
+				new PackageOperationData(this.packageManager, info, d => d.Manager.UninstallPackage(d.Package)));
+			setupDialog.MainThreadRequired = false;
+			setupDialog.ShowDialog();
+			this.modelInstalled.ApplyChanges();
+			this.restartRequired = true;
+			this.UpdateBottomButtons();
+		}
+		private void UpdatePackage(PackageInfo info)
+		{
+			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+				PackageManagerFrontendRes.TaskUpdatePackages_Caption, 
+				PackageManagerFrontendRes.TaskUpdatePackages_Desc, 
+				PackageOperationThread, 
+				new PackageOperationData(this.packageManager, info, d => d.Manager.UpdatePackage(d.Package)));
+			setupDialog.MainThreadRequired = false;
+			setupDialog.ShowDialog();
+			this.modelInstalled.ApplyChanges();
+			this.restartRequired = true;
+			this.UpdateBottomButtons();
+		}
+
 		protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad(e);
@@ -159,6 +281,15 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.modelOnline	= new OnlinePackagesTreeModel(this.packageManager);
 
 			this.Display = DisplayMode.Installed;
+
+			this.UpdateBottomButtons();
+			this.UpdateInfoArea();
+		}
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			this.modelInstalled.Dispose();
+			this.modelOnline.Dispose();
 		}
 
 		private void treeColumn_DrawColHeaderBg(object sender, DrawColHeaderBgEventArgs e)
@@ -194,6 +325,17 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.treeColumnName.Width += sizeChange.Width;
 			this.oldTreeViewSize = this.packageList.Size;
 		}
+		private void packageList_SelectionChanged(object sender, EventArgs e)
+		{
+			this.selectedItem = this.packageList.SelectedNode != null ? this.packageList.SelectedNode.Tag as PackageItem : null;
+
+			this.UpdateBottomButtons();
+			this.UpdateInfoArea();
+		}
+		private void labelPackageWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			Process.Start(this.labelPackageWebsite.Text);
+		}
 		private void nodeTextBoxName_DrawText(object sender, DrawTextEventArgs e)
 		{
 			e.TextColor = this.packageList.ForeColor;
@@ -218,6 +360,51 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			e.TextColor = this.packageList.ForeColor;
 		}
+		private void toolStripSearchBox_TextChanged(object sender, EventArgs e)
+		{
+			string filterString = this.toolStripSearchBox.Text;
+			Predicate<BaseItem> itemFilter = null;
+
+			if (!string.IsNullOrWhiteSpace(filterString))
+			{
+				itemFilter = delegate(BaseItem item)
+				{
+					PackageItem packageItem = item as PackageItem;
+					if (packageItem != null)
+					{
+						return 
+							packageItem.Title.Contains(filterString) ||
+							packageItem.Id.Contains(filterString) ||
+							(packageItem.PackageInfo != null && packageItem.PackageInfo.Tags.Any(t => t != null && t.Contains(filterString)));
+					}
+					else
+					{
+						return true;
+					}
+				};
+			}
+
+			this.modelInstalled.ItemFilter = itemFilter;
+			this.modelOnline.ItemFilter = itemFilter;
+		}
+		private void buttonApply_Click(object sender, EventArgs e)
+		{
+			DualityEditorApp.SaveAllProjectData();
+			this.packageManager.ApplyUpdate();
+			Application.Exit();
+		}
+		private void buttonUninstall_Click(object sender, EventArgs e)
+		{
+			this.UninstallPackage(this.selectedItem.PackageInfo);
+		}
+		private void buttonInstall_Click(object sender, EventArgs e)
+		{
+			this.InstallPackage(this.selectedItem.PackageInfo);
+		}
+		private void buttonUpdate_Click(object sender, EventArgs e)
+		{
+
+		}
 
 		private void OnDisplayModeChanged(DisplayMode prev, DisplayMode next)
 		{
@@ -235,6 +422,34 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			{
 				this.packageList.Model = this.modelOnline;
 			}
+		}
+
+		private static System.Collections.IEnumerable PackageOperationThread(ProcessingBigTaskDialog.WorkerInterface workerInterface)
+		{
+			PackageOperationData data = workerInterface.Data as PackageOperationData;
+
+			if (data.Package.Version != null)
+				workerInterface.StateDesc = string.Format("Package '{0}', Version {1}...", data.Package.Id, data.Package.Version);
+			else
+				workerInterface.StateDesc = string.Format("Package '{0}'...", data.Package.Id);
+			workerInterface.Progress += 0.5f;
+			yield return null;
+
+			try
+			{
+				data.Operation(data);
+			}
+			catch (Exception e)
+			{
+				Log.Editor.WriteError("An error occurred while processing Package '{0}', Version {1}: {2}", 
+					data.Package.Id, 
+					data.Package.Version, 
+					Log.Exception(e));
+			}
+			workerInterface.Progress += 0.5f;
+			yield return null;
+
+			yield break;
 		}
 	}
 }

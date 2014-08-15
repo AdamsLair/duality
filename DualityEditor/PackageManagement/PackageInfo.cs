@@ -20,6 +20,10 @@ namespace Duality.Editor.PackageManagement
 		private	List<string>	tags			= new List<string>();
 
 
+		public bool IsDualityPackage
+		{
+			get { return this.tags.Contains(PackageManager.DualityTag); }
+		}
 		public string Id
 		{
 			get { return this.id; }

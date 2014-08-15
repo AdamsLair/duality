@@ -13,16 +13,18 @@ using Duality.Editor.PackageManagement;
 
 namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 {
-	public abstract class PackageRepositoryTreeModel : ITreeModel
+	public abstract class PackageRepositoryTreeModel : ITreeModel, IDisposable
 	{
-		protected	PackageManager				packageManager		= null;
-		private		List<BaseItem>				items				= new List<BaseItem>();
-		private		BackgroundWorker			itemRetriever		= null;
-		private		BackgroundWorker			itemInfoLoader		= null;
-		private		ConcurrentQueue<BaseItem>	itemsToRead			= new ConcurrentQueue<BaseItem>();
-		private		object						itemLock			= new object();
-		private		bool						requireFullSort		= false;
-		private		IComparer<BaseItem>			sortComparer		= null;
+		protected	PackageManager					packageManager		= null;
+		private		bool							disposed			= false;
+		private		List<BaseItem>					items				= new List<BaseItem>();
+		private		BackgroundWorker				itemRetriever		= null;
+		private		BackgroundWorker				itemInfoLoader		= null;
+		private		ConcurrentQueue<BaseItem>		itemsToRead			= new ConcurrentQueue<BaseItem>();
+		private		object							itemLock			= new object();
+		private		bool							requireFullSort		= false;
+		private		IComparer<BaseItem>				sortComparer		= null;
+		private		Predicate<BaseItem>				itemFilter			= null;
 
 		public IComparer<BaseItem> SortComparer
 		{
@@ -31,6 +33,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			{
 				this.sortComparer = value;
 				this.requireFullSort = true;
+				if (this.StructureChanged != null)
+					this.StructureChanged(this, new TreePathEventArgs());
+			}
+		}
+		public Predicate<BaseItem> ItemFilter
+		{
+			get { return this.itemFilter; }
+			set
+			{
+				this.itemFilter = value;
 				if (this.StructureChanged != null)
 					this.StructureChanged(this, new TreePathEventArgs());
 			}
@@ -60,6 +72,27 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			this.itemRetriever.DoWork += this.Worker_RetrieveItems;
 			this.itemRetriever.ProgressChanged += this.Worker_ItemsRetrieved;
 		}
+		~PackageRepositoryTreeModel()
+		{
+			this.Dispose(false);
+		}
+		public void Dispose()
+		{
+			this.Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+		private void Dispose(bool manually)
+		{
+			if (!this.disposed)
+			{
+				this.OnDisposing(manually);
+				this.disposed = true;
+			}
+		}
+		protected virtual void OnDisposing(bool manually)
+		{
+
+		}
 
 		public IEnumerable GetChildren(TreePath treePath)
 		{
@@ -83,6 +116,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 					}
 					foreach (BaseItem item in this.items)
 					{
+						if (itemFilter != null && !itemFilter(item)) continue;
 						displayedItems.Add(item);
 					}
 				}
@@ -96,9 +130,63 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			return true;
 		}
 
+		public virtual void Refresh()
+		{
+			while (!this.itemsToRead.IsEmpty)
+			{
+				BaseItem item;
+				this.itemsToRead.TryDequeue(out item);
+			}
+			lock (this.itemLock)
+			{
+				this.items.Clear();
+			}
+			if (this.StructureChanged != null)
+				this.StructureChanged(this, new TreePathEventArgs());
+		}
+
 		protected abstract IEnumerable<object> EnumeratePackages();
 		protected abstract BaseItem CreatePackageItem(object package, BaseItem parentItem);
 		
+		protected BaseItem GetItem(string packageId, Version packageVersion)
+		{
+			lock (this.itemLock)
+			{
+				return this.items.OfType<PackageItem>().FirstOrDefault(i => i.Id == packageId && i.Version == packageVersion);
+			}
+		}
+		protected void AddItem(BaseItem item)
+		{
+			this.SubmitItem(item);
+			this.itemsToRead.Enqueue(item);
+
+			if (this.NodesInserted != null)
+			{
+				int index = GetItemIndex(item);
+				if (index != -1)
+				{
+					this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
+				}
+			}
+
+			if (!this.itemInfoLoader.IsBusy)
+			{
+				this.itemInfoLoader.RunWorkerAsync();
+			}
+		}
+		protected void RemoveItem(BaseItem item)
+		{
+			int index = GetItemIndex(item);
+			lock (this.itemLock)
+			{
+				this.items.Remove(item);
+			}
+			if (this.NodesRemoved != null && index != -1)
+			{
+				this.NodesRemoved(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
+			}
+		}
+
 		private void SubmitItem(BaseItem item)
 		{
 			lock (this.itemLock)
@@ -139,6 +227,36 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 			return new TreePath(stack.ToArray());
 		}
+		private int GetItemIndex(BaseItem item)
+		{
+			if (this.itemFilter == null)
+			{
+				int index;
+				lock (this.itemLock)
+				{
+					index = this.items.IndexOf(item);
+				}
+				return index;
+			}
+			else if (this.itemFilter(item))
+			{
+				int index = 0;
+				lock (this.itemLock)
+				{
+					foreach (BaseItem i in this.items)
+					{
+						if (!this.itemFilter(i)) continue;
+						if (i == item) break;
+						++index;
+					}
+				}
+				return index;
+			}
+			else
+			{
+				return -1;
+			}
+		}
 
 		private void Worker_RetrieveItems(object sender, DoWorkEventArgs e)
 		{
@@ -160,12 +278,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			// Notify the model that we've got some new items
 			if (this.NodesInserted != null)
 			{
-				int index;
-				lock (this.items)
+				int index = GetItemIndex(item);
+				if (index != -1)
 				{
-					index = this.items.IndexOf(item);
+					this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
 				}
-				this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
 			}
 
 			// Wake info loader to read online item data
