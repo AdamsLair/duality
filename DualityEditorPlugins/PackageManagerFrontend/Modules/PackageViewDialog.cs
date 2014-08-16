@@ -343,7 +343,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		private void nodeTextBoxVersion_DrawText(object sender, DrawTextEventArgs e)
 		{
 			PackageItem packageItem = e.Node.Tag as PackageItem;
-			if (packageItem != null && packageItem.PackageInfo != null&& packageItem.NewestPackageInfo != null)
+			if (this.display == DisplayMode.Installed && packageItem != null && packageItem.PackageInfo != null && packageItem.NewestPackageInfo != null)
 			{
 				if (packageItem.NewestPackageInfo.Version == packageItem.PackageInfo.Version)
 					e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 160, 255, 0));
@@ -428,11 +428,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			PackageOperationData data = workerInterface.Data as PackageOperationData;
 
+			workerInterface.Progress = -1.0f;
 			if (data.Package.Version != null)
 				workerInterface.StateDesc = string.Format("Package '{0}', Version {1}...", data.Package.Id, data.Package.Version);
 			else
 				workerInterface.StateDesc = string.Format("Package '{0}'...", data.Package.Id);
-			workerInterface.Progress += 0.5f;
 			yield return null;
 
 			try
@@ -446,7 +446,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					data.Package.Version, 
 					Log.Exception(e));
 			}
-			workerInterface.Progress += 0.5f;
 			yield return null;
 
 			yield break;

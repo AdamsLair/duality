@@ -23,7 +23,7 @@ namespace Duality.Editor.Forms
 			public float Progress
 			{
 				get { return this.progress; }
-				set { this.progress = Math.Min(Math.Max(value, 0.0f), 1.0f); }
+				set { this.progress = value; }
 			}
 			public string StateDesc
 			{
@@ -120,7 +120,8 @@ namespace Duality.Editor.Forms
 		private void progressTimer_Tick(object sender, EventArgs e)
 		{
 			this.stateDescLabel.Text = this.workerInterface.StateDesc;
-			this.progressBar.Value = (int)Math.Round(this.workerInterface.Progress * 100.0f);
+			this.progressBar.Style = this.workerInterface.Progress < 0.0f ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+			this.progressBar.Value = (int)Math.Round(Math.Max(Math.Min(this.workerInterface.Progress, 1.0f), 0.0f) * 100.0f);
 			this.targetForm.SetTaskbarProgressState(ThumbnailProgressState.Normal);
 			this.targetForm.SetTaskbarProgress(this.progressBar.Value);
 

@@ -38,18 +38,20 @@
 			// 
 			// progressBar
 			// 
-			this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.progressBar.Location = new System.Drawing.Point(12, 95);
+			this.progressBar.MarqueeAnimationSpeed = 20;
 			this.progressBar.Name = "progressBar";
 			this.progressBar.Size = new System.Drawing.Size(308, 23);
+			this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
 			this.progressBar.TabIndex = 1;
 			this.progressBar.UseWaitCursor = true;
 			// 
 			// stateDescLabel
 			// 
-			this.stateDescLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.stateDescLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.stateDescLabel.AutoEllipsis = true;
 			this.stateDescLabel.ForeColor = System.Drawing.SystemColors.GrayText;
 			this.stateDescLabel.Location = new System.Drawing.Point(9, 52);
@@ -69,9 +71,9 @@
 			// 
 			// descLabel
 			// 
-			this.descLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.descLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.descLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.descLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.descLabel.Location = new System.Drawing.Point(-1, -1);
@@ -86,8 +88,8 @@
 			// 
 			// labelIcon
 			// 
-			this.labelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			this.labelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.labelIcon.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.labelIcon.Image = global::Duality.Editor.Properties.Resources.working_bigtask;
 			this.labelIcon.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;

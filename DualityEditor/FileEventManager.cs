@@ -331,8 +331,9 @@ namespace Duality.Editor
 						else					ContentProvider.RenameContent(args.OldPath, args.Path);
 
 						// Query skipped paths
-						bool isSkippedPath = false;
-						if (BeginGlobalRename != null)
+						bool isEmptyDir = args.IsDirectory && !Directory.EnumerateFileSystemEntries(args.Path).Any();
+						bool isSkippedPath = isEmptyDir;
+						if (!isSkippedPath && BeginGlobalRename != null)
 						{
 							BeginGlobalRenameEventArgs beginGlobalRenameArgs = new BeginGlobalRenameEventArgs(args.Path, args.OldPath);
 							BeginGlobalRename(null, beginGlobalRenameArgs);

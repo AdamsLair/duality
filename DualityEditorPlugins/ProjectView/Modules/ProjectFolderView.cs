@@ -1551,11 +1551,14 @@ namespace Duality.Editor.Plugins.ProjectView
 		private void FileEventManager_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
 		{
 			NodeBase node = this.NodeFromPath(e.OldPath);
-			bool registerRes = false;
+			bool scanResFile = false;
 
 			// Modify existing node
 			if (node != null)
 			{
+				string newDirectory = Path.GetDirectoryName(e.Path);
+				bool moved = !PathHelper.ArePathsEqual(Path.GetDirectoryName(e.OldPath), newDirectory);
+
 				// If its a file, remove and add it again
 				if (File.Exists(e.Path))
 				{
@@ -1564,12 +1567,18 @@ namespace Duality.Editor.Plugins.ProjectView
 					node.Parent.Nodes.Remove(node);
 
 					// Register it
-					registerRes = true;
+					scanResFile = true;
 				}
 				// Otherwise: Rename node according to file
 				else
 				{
 					this.UnregisterNodeTree(node);
+					if (moved)
+					{
+						node.Parent.Nodes.Remove(node);
+						Node newParent = this.NodeFromPath(newDirectory) ?? this.folderModel.Root;
+						this.InsertNodeSorted(node, newParent);
+					}
 					node.NodePath = e.Path;
 					node.ApplyPathToName();
 					this.RegisterNodeTree(node);
@@ -1578,11 +1587,11 @@ namespace Duality.Editor.Plugins.ProjectView
 			// Register newly detected ressource file
 			else if (this.NodeFromPath(e.Path) == null)
 			{
-				registerRes = true;
+				scanResFile = true;
 			}
 
 			// If neccessary, check if the file is a ressource file and add it, if yes
-			if (registerRes && Resource.IsResourceFile(e.Path))
+			if (scanResFile && Resource.IsResourceFile(e.Path))
 			{
 				node = this.ScanFile(e.Path);
 
