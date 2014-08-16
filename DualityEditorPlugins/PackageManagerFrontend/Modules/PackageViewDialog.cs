@@ -183,10 +183,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			bool isItemSelected = this.selectedItem != null;
 			bool isItemInstalled = isItemSelected && this.packageManager.LocalPackages.Any(p => p.Id == this.selectedItem.Id);
 			bool isItemUpdatable = isItemSelected && this.selectedItem.NewestPackageInfo != null && this.selectedItem.Version < this.selectedItem.NewestPackageInfo.Version;
+			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.PackageInfo);
 
 			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
-			this.buttonUninstall.Visible		= isItemSelected && isItemInstalled;
-			this.buttonUpdate.Visible			= isItemSelected && isItemInstalled && isItemUpdatable;
+			this.buttonUninstall.Visible		= isItemInstalled && canUninstall;
+			this.buttonUpdate.Visible			= isItemInstalled && isItemUpdatable;
 			this.buttonApply.Visible			= this.restartRequired;
 			this.labelRequireRestart.Visible	= this.restartRequired;
 		}
@@ -403,7 +404,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void buttonUpdate_Click(object sender, EventArgs e)
 		{
-
+			this.UpdatePackage(this.selectedItem.PackageInfo);
 		}
 
 		private void OnDisplayModeChanged(DisplayMode prev, DisplayMode next)

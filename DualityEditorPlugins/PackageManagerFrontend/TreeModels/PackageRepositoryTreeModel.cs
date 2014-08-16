@@ -315,6 +315,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				if (this.StructureChanged != null)
 					this.StructureChanged(this, new TreePathEventArgs());
 			}
+			else if (this.NodesChanged != null)
+			{
+				int index = GetItemIndex(item);
+				if (index != -1)
+				{
+					this.NodesChanged(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
+				}
+			}
 		}
 	}
 }

@@ -93,26 +93,6 @@ namespace Duality.Editor.PackageManagement
 			// Request NuGet to install the package
 			this.manager.InstallPackage(package.Id, new SemanticVersion(package.Version));
 		}
-		public void UninstallPackage(PackageInfo package)
-		{
-			this.UninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
-		}
-		public void UninstallPackage(LocalPackage package)
-		{
-			this.uninstallQueue.Add(package);
-			this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
-			this.uninstallQueue.Clear();
-		}
-		public void UpdatePackage(PackageInfo package)
-		{
-			this.UpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
-		}
-		public void UpdatePackage(LocalPackage package)
-		{
-			PackageInfo newVersion = this.QueryPackageInfo(package.Id);
-			this.UninstallPackage(package);
-			this.InstallPackage(newVersion);
-		}
 		public void VerifyPackage(LocalPackage package)
 		{
 			Version oldPackageVersion = package.Version;
@@ -135,6 +115,49 @@ namespace Duality.Editor.PackageManagement
 				this.SaveConfig();
 			}
 		}
+
+		public void UninstallPackage(PackageInfo package)
+		{
+			this.UninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+		}
+		public void UninstallPackage(LocalPackage package)
+		{
+			this.uninstallQueue.Add(package);
+			this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
+			this.uninstallQueue.Clear();
+		}
+		public bool CanUninstallPackage(PackageInfo package)
+		{
+			return this.CanUninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+		}
+		public bool CanUninstallPackage(LocalPackage package)
+		{
+			bool allowed = true;
+			this.manager.WhatIf = true;
+			try
+			{
+				this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
+			}
+			catch (Exception)
+			{
+				allowed = false;
+			}
+			this.manager.WhatIf = false;
+			return allowed;
+		}
+
+		public void UpdatePackage(PackageInfo package)
+		{
+			this.UpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+		}
+		public void UpdatePackage(LocalPackage package)
+		{
+			this.uninstallQueue = null;
+			PackageInfo newVersion = this.QueryPackageInfo(package.Id);
+			this.manager.UpdatePackage(newVersion.Id, new SemanticVersion(newVersion.Version), true, false);
+			this.uninstallQueue = new List<LocalPackage>();
+		}
+
 		public bool ApplyUpdate(bool restartEditor = true)
 		{
 			const string UpdaterFileName = "DualityUpdater.exe";
@@ -474,11 +497,14 @@ namespace Duality.Editor.PackageManagement
 		private void manager_PackageUninstalling(object sender, PackageOperationEventArgs e)
 		{
 			// Prevent NuGet from uninstalling Duality dependencies that aren't scheduled for uninstall
-			PackageInfo packageInfo = this.QueryPackageInfo(e.Package.Id, e.Package.Version.Version);
-			if (packageInfo.IsDualityPackage)
+			if (this.uninstallQueue != null)
 			{
-				if (!this.uninstallQueue.Any(p => p.Id == e.Package.Id && p.Version == e.Package.Version.Version))
-					e.Cancel = true;
+				PackageInfo packageInfo = this.QueryPackageInfo(e.Package.Id, e.Package.Version.Version);
+				if (packageInfo.IsDualityPackage)
+				{
+					if (!this.uninstallQueue.Any(p => p.Id == e.Package.Id && p.Version == e.Package.Version.Version))
+						e.Cancel = true;
+				}
 			}
 		}
 		private void manager_PackageUninstalled(object sender, PackageOperationEventArgs e)
