@@ -15,7 +15,7 @@ namespace Duality
 	{
 		private	string				appName					= "Duality Application";
 		private	string				authorName				= "Unknown";
-		private	string				websiteUrl				= "http://www.fetzenet.de";
+		private	string				websiteUrl				= "http://www.adamslair.net";
 		private	uint				version					= 0;
 		private	ContentRef<Scene>	startScene				= ContentRef<Scene>.Null;
 		private	float				speedOfSound			= 360.0f;

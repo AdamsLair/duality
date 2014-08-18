@@ -75,7 +75,7 @@
 			this.linkLabelDevWebsite.Size = new System.Drawing.Size(129, 17);
 			this.linkLabelDevWebsite.TabIndex = 6;
 			this.linkLabelDevWebsite.TabStop = true;
-			this.linkLabelDevWebsite.Text = "http://www.fetzenet.de";
+			this.linkLabelDevWebsite.Text = "http://www.adamslair.net";
 			this.linkLabelDevWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelDevWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelDevWebsite_LinkClicked);
 			// 
@@ -139,7 +139,7 @@
 			this.linkLabelWebsite.Size = new System.Drawing.Size(129, 17);
 			this.linkLabelWebsite.TabIndex = 5;
 			this.linkLabelWebsite.TabStop = true;
-			this.linkLabelWebsite.Text = "http://duality.fetzenet.de/";
+			this.linkLabelWebsite.Text = "http://duality.adamslair.net/";
 			this.linkLabelWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.linkLabelWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelWebsite_LinkClicked);
 			// 
