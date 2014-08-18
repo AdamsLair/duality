@@ -110,6 +110,19 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			get { return this.packageInfo != null ? this.packageInfo.Version : null; }
 		}
+		public string DisplayedVersion
+		{
+			get
+			{
+				Version version = this.Version;
+				if (version == null)
+					return string.Empty;
+				else if (version.Build == 0)
+					return string.Format("{0}.{1}", version.Major, version.Minor);
+				else
+					return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+			}
+		}
 		public int? Downloads
 		{
 			get

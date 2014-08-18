@@ -37,7 +37,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			// Calculate drawing layout and data
 			StringFormat headlineFormat = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap };
-			StringFormat summaryFormat = new StringFormat { Trimming = StringTrimming.EllipsisCharacter };
+			StringFormat summaryFormat = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.LineLimit };
 			Rectangle headlineRect;
 			Rectangle summaryRect;
 			{
