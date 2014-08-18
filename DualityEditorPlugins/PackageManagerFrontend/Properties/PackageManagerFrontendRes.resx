@@ -121,6 +121,9 @@
   <data name="IconPackage" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\package.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="IconPackageMedium" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\packagemed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="ItemName_InstalledPackages" xml:space="preserve">
     <value>Installed Packages</value>
   </data>

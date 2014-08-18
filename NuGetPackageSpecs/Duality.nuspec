@@ -2,10 +2,12 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Core</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<summary>The Duality engine core.</summary>

@@ -59,7 +59,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			{
 				if (defaultPackageIcon == null)
 				{
-					defaultPackageIcon = (PackageManagerFrontendResCache.IconPackageBig as Bitmap)
+					defaultPackageIcon = (PackageManagerFrontendResCache.IconPackageMedium as Bitmap)
 						.ScaleToFit(32, 32, 
 						System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic);
 				}

@@ -2,18 +2,20 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.HelpAdvisor</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Help Advisor</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Advisor.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<summary>The Help Advisor editor module provides mouseover information on documented topics.</summary>
     <description>The Help Advisor editor module provides mouseover information on documented topics.</description>
 	<tags>Duality Editor Plugin HelpAdvisor</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.0.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="1.0.0" />
+      <dependency id="AdamsLair.Duality" version="1.0.1" />
+      <dependency id="AdamsLair.Duality.Editor" version="1.0.1" />
     </dependencies>
   </metadata>
   <files>

@@ -54,12 +54,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			// Request menu
 			MenuModelItem fileItem = main.MainMenu.RequestItem(GeneralRes.MenuName_File);
-			//fileItem.AddItem(new MenuModelItem
-			//{
-			//    Name = PackageManagerFrontendRes.MenuItemName_PackageView,
-			//    Icon = PackageManagerFrontendResCache.IconPackage.ToBitmap(),
-			//    ActionHandler = this.menuItemLogView_Click
-			//});
+			fileItem.AddItem(new MenuModelItem
+			{
+			    Name = PackageManagerFrontendRes.MenuItemName_PackageView,
+			    Icon = PackageManagerFrontendResCache.IconPackage.ToBitmap(),
+			    ActionHandler = this.menuItemLogView_Click
+			});
 		}
 		
 		public void ShowPackageViewDialog()

@@ -2,17 +2,19 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
 	<tags>Duality Launcher</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.0.0" />
+      <dependency id="AdamsLair.Duality" version="1.0.1" />
     </dependencies>
   </metadata>
   <files>
