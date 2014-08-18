@@ -54,6 +54,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modules\DualityPackageNodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\PackageManagerFrontendResCache.cs" />
     <Compile Include="Modules\PackageViewDialog.cs">
       <SubType>Form</SubType>

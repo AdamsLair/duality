@@ -165,7 +165,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnDownloads.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
-			this.nodeTextBoxName.DrawText				+= this.nodeTextBoxName_DrawText;
 			this.nodeTextBoxVersion.DrawText			+= this.nodeTextBoxVersion_DrawText;
 			this.nodeTextBoxDownloads.DrawText			+= this.nodeTextBoxDownloads_DrawText;
 			this.toolStripMain.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
@@ -337,24 +336,42 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			Process.Start(this.labelPackageWebsite.Text);
 		}
-		private void nodeTextBoxName_DrawText(object sender, DrawTextEventArgs e)
-		{
-			e.TextColor = this.packageList.ForeColor;
-		}
 		private void nodeTextBoxVersion_DrawText(object sender, DrawTextEventArgs e)
 		{
 			PackageItem packageItem = e.Node.Tag as PackageItem;
-			if (this.display == DisplayMode.Installed && packageItem != null && packageItem.PackageInfo != null && packageItem.NewestPackageInfo != null)
+
+			// Determine the installed version of the package
+			Version installedVersion = null;
+			if (packageItem != null)
 			{
-				if (packageItem.NewestPackageInfo.Version == packageItem.PackageInfo.Version)
-					e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 160, 255, 0));
+				LocalPackage localPackage = this.packageManager.LocalPackages.FirstOrDefault(p => p.Id == packageItem.Id);
+				if (localPackage != null)
+				{
+					installedVersion = localPackage.Version;
+				}
+			}
+
+			// Display background color based on versioning
+			if (installedVersion != null)
+			{
+				if (packageItem != null && packageItem.NewestPackageInfo != null)
+				{
+					if (packageItem.NewestPackageInfo.Version == installedVersion)
+						e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 160, 255, 0));
+					else
+						e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 255, 160, 0));
+				}
 				else
-					e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 255, 160, 0));
+				{
+					e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 128, 128, 128));
+				}
 			}
 			else
 			{
 				e.BackgroundBrush = null;
 			}
+
+			// Make sure the text doesn't switch colors when selected
 			e.TextColor = this.packageList.ForeColor;
 		}
 		private void nodeTextBoxDownloads_DrawText(object sender, DrawTextEventArgs e)

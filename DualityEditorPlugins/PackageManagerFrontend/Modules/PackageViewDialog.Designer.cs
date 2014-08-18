@@ -34,7 +34,7 @@
 			this.treeColumnVersion = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnDownloads = new Aga.Controls.Tree.TreeColumn();
 			this.nodeIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
-			this.nodeTextBoxName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.nodeTextBoxName = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageNodeControl();
 			this.nodeTextBoxVersion = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodeTextBoxDownloads = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
@@ -150,11 +150,8 @@
 			// 
 			// nodeTextBoxName
 			// 
-			this.nodeTextBoxName.DataPropertyName = "Title";
-			this.nodeTextBoxName.IncrementalSearchEnabled = true;
 			this.nodeTextBoxName.LeftMargin = 6;
 			this.nodeTextBoxName.ParentColumn = this.treeColumnName;
-			this.nodeTextBoxName.Trimming = System.Drawing.StringTrimming.EllipsisCharacter;
 			// 
 			// nodeTextBoxVersion
 			// 
@@ -635,7 +632,7 @@
 		#endregion
 
 		private Aga.Controls.Tree.TreeViewAdv packageList;
-		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxName;
+		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageNodeControl nodeTextBoxName;
 		private System.Windows.Forms.SplitContainer splitMain;
 		private System.Windows.Forms.Button buttonClose;
 		private System.Windows.Forms.Panel panelLowerArea;
