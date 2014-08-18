@@ -13,5 +13,6 @@
     <Package id="AdamsLair.Duality.Editor.Plugins.ObjectInspector" />
     <Package id="AdamsLair.Duality.Editor.Plugins.ProjectView" />
     <Package id="AdamsLair.Duality.Editor.Plugins.SceneView" />
+    <Package id="AdamsLair.Duality.Editor.Plugins.PackageManagerFrontend" />
   </Packages>
 </PackageConfig>

@@ -106,8 +106,29 @@ namespace Duality.Editor.PackageManagement
 					package.Id));
 			}
 
+			// Prepare a listener to determine whether we actually installed something
+			EventHandler<PackageOperationEventArgs> installListener = null;
+			bool packageInstalled = false;
+			installListener = delegate(object sender, PackageOperationEventArgs args)
+			{
+				if (args.Package.Id == package.Id)
+				{
+					packageInstalled = true;
+				}
+			};
+
 			// Install the package. Won't do anything if the package is already installed.
+			this.manager.PackageInstalled += installListener;
 			this.InstallPackage(packageInfo);
+			this.manager.PackageInstalled -= installListener;
+
+			// If we didn't install anything, that package was already present in the local cache, but not in the PackageConfig file
+			if (!packageInstalled && oldPackageVersion == null)
+			{
+				// Add the explicit version to the PackageConfig file
+				this.localPackages.RemoveAll(p => p.Id == packageInfo.Id);
+				this.localPackages.Add(new LocalPackage(packageInfo));
+			}
 
 			// In case we've just retrieved an explicit version for the first time, save the config file.
 			if (oldPackageVersion == null)
@@ -191,7 +212,7 @@ namespace Duality.Editor.PackageManagement
 			}
 
 			// Run the updater application
-			Process.Start(UpdaterFileName, string.Format("{0} {1} {2}",
+			Process.Start(UpdaterFileName, string.Format("\"{0}\" \"{1}\" \"{2}\"",
 				UpdateConfigFile,
 				restartEditor ? typeof(DualityEditorApp).Assembly.Location : "",
 				restartEditor ? Environment.CurrentDirectory : ""));

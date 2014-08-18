@@ -102,13 +102,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			{
 				lock (this.asyncDataLock)
 				{
-					return !string.IsNullOrWhiteSpace(this.packageInfo.Title) ? this.packageInfo.Title : this.packageInfo.Id;
+					return this.packageInfo != null && !string.IsNullOrWhiteSpace(this.packageInfo.Title) ? this.packageInfo.Title : this.packageInfo.Id;
 				}
 			}
 		}
 		public Version Version
 		{
-			get { return this.packageInfo.Version; }
+			get { return this.packageInfo != null ? this.packageInfo.Version : null; }
 		}
 		public int? Downloads
 		{
@@ -125,7 +125,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		}
 		public string Id
 		{
-			get { return this.packageInfo.Id; }
+			get { return this.packageInfo != null ? this.packageInfo.Id : null; }
 		}
 
 		public PackageItem(PackageInfo packageInfo, BaseItem parent) : base(parent)
