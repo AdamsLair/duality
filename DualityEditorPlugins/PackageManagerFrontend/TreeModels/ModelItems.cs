@@ -178,11 +178,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		public override void RetrieveAsyncData(PackageManager manager)
 		{
 			base.RetrieveAsyncData(manager);
-
-			// Retrieve info about newest online version
-			LocalPackage installedPackage = manager.LocalPackages.FirstOrDefault(p => p.Id == this.itemPackageInfo.Id);
+			this.UpdateLocalPackageData(manager);
+		}
+		public void UpdateLocalPackageData(PackageManager manager)
+		{
 			lock (this.asyncDataLock)
 			{
+				LocalPackage installedPackage = manager.LocalPackages.FirstOrDefault(p => p.Id == this.itemPackageInfo.Id);
 				this.installedPackageInfo = (installedPackage != null) ? installedPackage.Info : null;
 			}
 		}

@@ -148,6 +148,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		protected abstract IEnumerable<object> EnumeratePackages();
 		protected abstract BaseItem CreatePackageItem(object package, BaseItem parentItem);
 		
+		protected void ReadItemData(BaseItem item)
+		{
+			this.itemsToRead.Enqueue(item);
+			if (!this.itemInfoLoader.IsBusy)
+			{
+				this.itemInfoLoader.RunWorkerAsync();
+			}
+		}
 		protected BaseItem GetItem(string packageId, Version packageVersion)
 		{
 			lock (this.itemLock)
@@ -158,7 +166,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		protected void AddItem(BaseItem item)
 		{
 			this.SubmitItem(item);
-			this.itemsToRead.Enqueue(item);
+			this.ReadItemData(item);
 
 			if (this.NodesInserted != null)
 			{
@@ -167,11 +175,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				{
 					this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
 				}
-			}
-
-			if (!this.itemInfoLoader.IsBusy)
-			{
-				this.itemInfoLoader.RunWorkerAsync();
 			}
 		}
 		protected void RemoveItem(BaseItem item)
@@ -267,7 +270,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				BaseItem item = null;
 				item = this.CreatePackageItem(package, null);
 				this.SubmitItem(item);
-				this.itemsToRead.Enqueue(item);
+				this.ReadItemData(item);
 				this.itemRetriever.ReportProgress(0, item);
 			}
 		}

@@ -91,7 +91,8 @@ namespace Duality.Editor.PackageManagement
 		public void InstallPackage(PackageInfo package)
 		{
 			// Request NuGet to install the package
-			this.manager.InstallPackage(package.Id, new SemanticVersion(package.Version));
+			NuGet.IPackage newPackage = this.FindPackageInfo(package.Id, package.Version);
+			this.manager.InstallPackage(newPackage, false, false);
 		}
 		public void VerifyPackage(LocalPackage package)
 		{
@@ -179,8 +180,8 @@ namespace Duality.Editor.PackageManagement
 
 			this.uninstallQueue = null;
 			bool isSpecific = specificVersion != null;
-			if (specificVersion == null) specificVersion = this.QueryPackageInfo(package.Id).Version;
-			this.manager.UpdatePackage(package.Id, new SemanticVersion(specificVersion), !isSpecific, false);
+			NuGet.IPackage newPackage = this.FindPackageInfo(package.Id, specificVersion);
+			this.manager.UpdatePackage(newPackage, !isSpecific, false);
 			this.uninstallQueue = new List<LocalPackage>();
 		}
 		public bool CanUpdatePackage(PackageInfo package, Version specificVersion = null)

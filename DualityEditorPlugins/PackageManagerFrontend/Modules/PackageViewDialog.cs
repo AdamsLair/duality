@@ -180,6 +180,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 		private void UpdateBottomButtons()
 		{
+			OnlinePackageItem onlineItem = this.selectedItem as OnlinePackageItem;
+			if (onlineItem != null) onlineItem.UpdateLocalPackageData(this.packageManager);
+
 			bool isItemSelected = this.selectedItem != null;
 			bool isItemInstalled = isItemSelected && this.selectedItem.InstalledPackageInfo != null;
 			bool isItemUpdatable = isItemInstalled && this.selectedItem.NewestPackageInfo != null && this.selectedItem.InstalledPackageInfo.Version < this.selectedItem.NewestPackageInfo.Version;
