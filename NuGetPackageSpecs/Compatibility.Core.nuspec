@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
 	<summary>Defines helper classes to retain backwards compatibility with older Duality versions.</summary>
     <description>Defines helper classes to retain backwards compatibility with older Duality versions.</description>
-	<tags>Duality Core Plugin Steering Component AI</tags>
+	<tags>Duality Core Plugin Compatibility</tags>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.0.1" />
     </dependencies>
