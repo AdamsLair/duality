@@ -28,14 +28,15 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PackageViewDialog));
 			this.packageList = new Aga.Controls.Tree.TreeViewAdv();
 			this.treeColumnName = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnVersion = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnDownloads = new Aga.Controls.Tree.TreeColumn();
 			this.nodeIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
-			this.nodeTextBoxName = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageNodeControl();
-			this.nodeTextBoxVersion = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.nodeTextBoxName = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageSummaryNodeControl();
+			this.nodeTextBoxVersion = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageVersionNodeControl();
 			this.nodeTextBoxDownloads = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.toolStripMain = new System.Windows.Forms.ToolStrip();
@@ -66,10 +67,13 @@
 			this.buttonUninstall = new System.Windows.Forms.Button();
 			this.buttonInstall = new System.Windows.Forms.Button();
 			this.buttonUpdate = new System.Windows.Forms.Button();
+			this.buttonChangeVersion = new System.Windows.Forms.Button();
+			this.checkBoxShowAdvanced = new System.Windows.Forms.CheckBox();
 			this.miniToolStrip = new System.Windows.Forms.ToolStrip();
 			this.labelHeaderText = new System.Windows.Forms.Label();
 			this.labelHeader = new System.Windows.Forms.Label();
 			this.panelTitleImage = new System.Windows.Forms.Panel();
+			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.Panel2.SuspendLayout();
@@ -112,7 +116,7 @@
 			this.packageList.ShowLines = false;
 			this.packageList.ShowNodeToolTips = true;
 			this.packageList.ShowPlusMinus = false;
-			this.packageList.Size = new System.Drawing.Size(494, 363);
+			this.packageList.Size = new System.Drawing.Size(493, 363);
 			this.packageList.TabIndex = 0;
 			this.packageList.Text = "packageList";
 			this.packageList.UseColumns = true;
@@ -155,12 +159,9 @@
 			// 
 			// nodeTextBoxVersion
 			// 
-			this.nodeTextBoxVersion.DataPropertyName = "DisplayedVersion";
-			this.nodeTextBoxVersion.IncrementalSearchEnabled = true;
 			this.nodeTextBoxVersion.LeftMargin = 3;
+			this.nodeTextBoxVersion.PackageManager = null;
 			this.nodeTextBoxVersion.ParentColumn = this.treeColumnVersion;
-			this.nodeTextBoxVersion.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this.nodeTextBoxVersion.Trimming = System.Drawing.StringTrimming.EllipsisCharacter;
 			// 
 			// nodeTextBoxDownloads
 			// 
@@ -190,8 +191,8 @@
 			// 
 			this.splitMain.Panel2.Controls.Add(this.tableLayoutPanelInfo);
 			this.splitMain.Panel2MinSize = 150;
-			this.splitMain.Size = new System.Drawing.Size(790, 392);
-			this.splitMain.SplitterDistance = 495;
+			this.splitMain.Size = new System.Drawing.Size(826, 392);
+			this.splitMain.SplitterDistance = 493;
 			this.splitMain.TabIndex = 0;
 			this.splitMain.TabStop = false;
 			// 
@@ -208,7 +209,7 @@
 			this.toolStripMain.Location = new System.Drawing.Point(0, 0);
 			this.toolStripMain.Name = "toolStripMain";
 			this.toolStripMain.Padding = new System.Windows.Forms.Padding(3, 3, 0, 3);
-			this.toolStripMain.Size = new System.Drawing.Size(495, 26);
+			this.toolStripMain.Size = new System.Drawing.Size(493, 26);
 			this.toolStripMain.TabIndex = 1;
 			// 
 			// toolStripSearchBox
@@ -274,7 +275,7 @@
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanelInfo.Size = new System.Drawing.Size(291, 392);
+			this.tableLayoutPanelInfo.Size = new System.Drawing.Size(329, 392);
 			this.tableLayoutPanelInfo.TabIndex = 0;
 			// 
 			// labelPackageVersion
@@ -284,7 +285,7 @@
 			this.labelPackageVersion.Location = new System.Drawing.Point(60, 356);
 			this.labelPackageVersion.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageVersion.Name = "labelPackageVersion";
-			this.labelPackageVersion.Size = new System.Drawing.Size(228, 13);
+			this.labelPackageVersion.Size = new System.Drawing.Size(266, 13);
 			this.labelPackageVersion.TabIndex = 12;
 			this.labelPackageVersion.Text = "1.0.0.0";
 			this.labelPackageVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -308,7 +309,7 @@
 			this.labelPackageUpdated.Location = new System.Drawing.Point(60, 375);
 			this.labelPackageUpdated.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageUpdated.Name = "labelPackageUpdated";
-			this.labelPackageUpdated.Size = new System.Drawing.Size(228, 14);
+			this.labelPackageUpdated.Size = new System.Drawing.Size(266, 14);
 			this.labelPackageUpdated.TabIndex = 10;
 			this.labelPackageUpdated.Text = "1900-01-01";
 			this.labelPackageUpdated.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -332,7 +333,7 @@
 			this.labelPackageTags.Location = new System.Drawing.Point(60, 337);
 			this.labelPackageTags.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageTags.Name = "labelPackageTags";
-			this.labelPackageTags.Size = new System.Drawing.Size(228, 13);
+			this.labelPackageTags.Size = new System.Drawing.Size(266, 13);
 			this.labelPackageTags.TabIndex = 8;
 			this.labelPackageTags.Text = "Tag1, Tag2, Tag3";
 			this.labelPackageTags.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -358,7 +359,7 @@
 			this.labelPackageTitle.Location = new System.Drawing.Point(3, 3);
 			this.labelPackageTitle.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageTitle.Name = "labelPackageTitle";
-			this.labelPackageTitle.Size = new System.Drawing.Size(285, 18);
+			this.labelPackageTitle.Size = new System.Drawing.Size(323, 18);
 			this.labelPackageTitle.TabIndex = 0;
 			this.labelPackageTitle.Text = "Package Title";
 			// 
@@ -372,7 +373,7 @@
 			this.labelPackageId.Location = new System.Drawing.Point(3, 25);
 			this.labelPackageId.Margin = new System.Windows.Forms.Padding(3, 1, 3, 12);
 			this.labelPackageId.Name = "labelPackageId";
-			this.labelPackageId.Size = new System.Drawing.Size(285, 13);
+			this.labelPackageId.Size = new System.Drawing.Size(323, 13);
 			this.labelPackageId.TabIndex = 1;
 			this.labelPackageId.Text = "Package Id";
 			// 
@@ -384,7 +385,7 @@
 			this.labelPackageDesc.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.labelPackageDesc.Location = new System.Drawing.Point(3, 50);
 			this.labelPackageDesc.Name = "labelPackageDesc";
-			this.labelPackageDesc.Size = new System.Drawing.Size(285, 246);
+			this.labelPackageDesc.Size = new System.Drawing.Size(323, 246);
 			this.labelPackageDesc.TabIndex = 2;
 			this.labelPackageDesc.Text = "This area contains the complete package description.";
 			// 
@@ -407,7 +408,7 @@
 			this.labelPackageWebsite.Location = new System.Drawing.Point(60, 299);
 			this.labelPackageWebsite.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageWebsite.Name = "labelPackageWebsite";
-			this.labelPackageWebsite.Size = new System.Drawing.Size(228, 13);
+			this.labelPackageWebsite.Size = new System.Drawing.Size(266, 13);
 			this.labelPackageWebsite.TabIndex = 4;
 			this.labelPackageWebsite.TabStop = true;
 			this.labelPackageWebsite.Text = "http://www.example.com";
@@ -433,7 +434,7 @@
 			this.labelPackageAuthor.Location = new System.Drawing.Point(60, 318);
 			this.labelPackageAuthor.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageAuthor.Name = "labelPackageAuthor";
-			this.labelPackageAuthor.Size = new System.Drawing.Size(228, 13);
+			this.labelPackageAuthor.Size = new System.Drawing.Size(266, 13);
 			this.labelPackageAuthor.TabIndex = 6;
 			this.labelPackageAuthor.Text = "Author1, Author2";
 			this.labelPackageAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -442,7 +443,7 @@
 			// 
 			this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonClose.Location = new System.Drawing.Point(323, 0);
+			this.buttonClose.Location = new System.Drawing.Point(330, 0);
 			this.buttonClose.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonClose.Name = "buttonClose";
 			this.buttonClose.Size = new System.Drawing.Size(75, 23);
@@ -458,9 +459,10 @@
 			this.panelLowerArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelLowerArea.Controls.Add(this.labelRequireRestart);
 			this.panelLowerArea.Controls.Add(this.flowLayoutBottom);
+			this.panelLowerArea.Controls.Add(this.checkBoxShowAdvanced);
 			this.panelLowerArea.Location = new System.Drawing.Point(-3, 472);
 			this.panelLowerArea.Name = "panelLowerArea";
-			this.panelLowerArea.Size = new System.Drawing.Size(796, 39);
+			this.panelLowerArea.Size = new System.Drawing.Size(832, 39);
 			this.panelLowerArea.TabIndex = 12;
 			// 
 			// labelRequireRestart
@@ -468,9 +470,9 @@
 			this.labelRequireRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelRequireRestart.ForeColor = System.Drawing.Color.Blue;
-			this.labelRequireRestart.Location = new System.Drawing.Point(14, 2);
+			this.labelRequireRestart.Location = new System.Drawing.Point(125, 2);
 			this.labelRequireRestart.Name = "labelRequireRestart";
-			this.labelRequireRestart.Size = new System.Drawing.Size(369, 32);
+			this.labelRequireRestart.Size = new System.Drawing.Size(297, 32);
 			this.labelRequireRestart.TabIndex = 16;
 			this.labelRequireRestart.Text = "Click Apply in order to restart Duality and finish the update.";
 			this.labelRequireRestart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -485,29 +487,31 @@
 			this.flowLayoutBottom.Controls.Add(this.buttonUninstall);
 			this.flowLayoutBottom.Controls.Add(this.buttonInstall);
 			this.flowLayoutBottom.Controls.Add(this.buttonUpdate);
+			this.flowLayoutBottom.Controls.Add(this.buttonChangeVersion);
 			this.flowLayoutBottom.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-			this.flowLayoutBottom.Location = new System.Drawing.Point(386, 7);
+			this.flowLayoutBottom.Location = new System.Drawing.Point(415, 7);
 			this.flowLayoutBottom.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutBottom.Name = "flowLayoutBottom";
-			this.flowLayoutBottom.Size = new System.Drawing.Size(398, 23);
+			this.flowLayoutBottom.Size = new System.Drawing.Size(405, 23);
 			this.flowLayoutBottom.TabIndex = 15;
 			// 
 			// buttonApply
 			// 
 			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonApply.Location = new System.Drawing.Point(248, 0);
+			this.buttonApply.Location = new System.Drawing.Point(255, 0);
 			this.buttonApply.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonApply.Name = "buttonApply";
 			this.buttonApply.Size = new System.Drawing.Size(75, 23);
 			this.buttonApply.TabIndex = 15;
 			this.buttonApply.Text = "Apply";
+			this.toolTip.SetToolTip(this.buttonApply, "Restart the editor to apply changes.");
 			this.buttonApply.UseVisualStyleBackColor = true;
 			this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
 			// 
 			// bottomFlowSpacer1
 			// 
-			this.bottomFlowSpacer1.Location = new System.Drawing.Point(238, 0);
+			this.bottomFlowSpacer1.Location = new System.Drawing.Point(245, 0);
 			this.bottomFlowSpacer1.Margin = new System.Windows.Forms.Padding(0);
 			this.bottomFlowSpacer1.Name = "bottomFlowSpacer1";
 			this.bottomFlowSpacer1.Size = new System.Drawing.Size(10, 15);
@@ -515,7 +519,7 @@
 			// 
 			// buttonUninstall
 			// 
-			this.buttonUninstall.Location = new System.Drawing.Point(163, 0);
+			this.buttonUninstall.Location = new System.Drawing.Point(170, 0);
 			this.buttonUninstall.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonUninstall.Name = "buttonUninstall";
 			this.buttonUninstall.Size = new System.Drawing.Size(75, 23);
@@ -526,7 +530,7 @@
 			// 
 			// buttonInstall
 			// 
-			this.buttonInstall.Location = new System.Drawing.Point(88, 0);
+			this.buttonInstall.Location = new System.Drawing.Point(95, 0);
 			this.buttonInstall.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonInstall.Name = "buttonInstall";
 			this.buttonInstall.Size = new System.Drawing.Size(75, 23);
@@ -537,14 +541,40 @@
 			// 
 			// buttonUpdate
 			// 
-			this.buttonUpdate.Location = new System.Drawing.Point(13, 0);
+			this.buttonUpdate.Location = new System.Drawing.Point(20, 0);
 			this.buttonUpdate.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonUpdate.Name = "buttonUpdate";
 			this.buttonUpdate.Size = new System.Drawing.Size(75, 23);
 			this.buttonUpdate.TabIndex = 13;
 			this.buttonUpdate.Text = "Update";
+			this.toolTip.SetToolTip(this.buttonUpdate, "Update the Package to the newest version");
 			this.buttonUpdate.UseVisualStyleBackColor = true;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
+			// 
+			// buttonChangeVersion
+			// 
+			this.buttonChangeVersion.Location = new System.Drawing.Point(330, 23);
+			this.buttonChangeVersion.Margin = new System.Windows.Forms.Padding(0);
+			this.buttonChangeVersion.Name = "buttonChangeVersion";
+			this.buttonChangeVersion.Size = new System.Drawing.Size(75, 23);
+			this.buttonChangeVersion.TabIndex = 17;
+			this.buttonChangeVersion.Text = "Change...";
+			this.toolTip.SetToolTip(this.buttonChangeVersion, "Update the Package to a specific version");
+			this.buttonChangeVersion.UseVisualStyleBackColor = true;
+			this.buttonChangeVersion.Click += new System.EventHandler(this.buttonChangeVersion_Click);
+			// 
+			// checkBoxShowAdvanced
+			// 
+			this.checkBoxShowAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+			this.checkBoxShowAdvanced.AutoSize = true;
+			this.checkBoxShowAdvanced.Location = new System.Drawing.Point(14, 11);
+			this.checkBoxShowAdvanced.Name = "checkBoxShowAdvanced";
+			this.checkBoxShowAdvanced.Size = new System.Drawing.Size(105, 17);
+			this.checkBoxShowAdvanced.TabIndex = 18;
+			this.checkBoxShowAdvanced.Text = "Show Advanced";
+			this.checkBoxShowAdvanced.UseVisualStyleBackColor = true;
+			this.checkBoxShowAdvanced.CheckedChanged += new System.EventHandler(this.checkBoxShowAdvanced_CheckedChanged);
 			// 
 			// miniToolStrip
 			// 
@@ -566,7 +596,7 @@
 			this.labelHeaderText.Location = new System.Drawing.Point(82, 35);
 			this.labelHeaderText.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.labelHeaderText.Name = "labelHeaderText";
-			this.labelHeaderText.Size = new System.Drawing.Size(698, 42);
+			this.labelHeaderText.Size = new System.Drawing.Size(734, 42);
 			this.labelHeaderText.TabIndex = 13;
 			this.labelHeaderText.Text = "Each Duality project consists of multiple Packages that can carry plugins and dat" +
     "a. This dialog provides an overview of installed and available Packages and help" +
@@ -580,7 +610,7 @@
 			this.labelHeader.Location = new System.Drawing.Point(79, 7);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
 			this.labelHeader.Name = "labelHeader";
-			this.labelHeader.Size = new System.Drawing.Size(701, 22);
+			this.labelHeader.Size = new System.Drawing.Size(737, 22);
 			this.labelHeader.TabIndex = 17;
 			this.labelHeader.Text = "Manage Duality Packages";
 			this.labelHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -601,7 +631,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.CancelButton = this.buttonClose;
-			this.ClientSize = new System.Drawing.Size(792, 510);
+			this.ClientSize = new System.Drawing.Size(828, 510);
 			this.Controls.Add(this.panelTitleImage);
 			this.Controls.Add(this.labelHeader);
 			this.Controls.Add(this.labelHeaderText);
@@ -624,6 +654,7 @@
 			this.tableLayoutPanelInfo.ResumeLayout(false);
 			this.tableLayoutPanelInfo.PerformLayout();
 			this.panelLowerArea.ResumeLayout(false);
+			this.panelLowerArea.PerformLayout();
 			this.flowLayoutBottom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -632,7 +663,7 @@
 		#endregion
 
 		private Aga.Controls.Tree.TreeViewAdv packageList;
-		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageNodeControl nodeTextBoxName;
+		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageSummaryNodeControl nodeTextBoxName;
 		private System.Windows.Forms.SplitContainer splitMain;
 		private System.Windows.Forms.Button buttonClose;
 		private System.Windows.Forms.Panel panelLowerArea;
@@ -645,7 +676,7 @@
 		private Aga.Controls.Tree.TreeColumn treeColumnName;
 		private Aga.Controls.Tree.TreeColumn treeColumnVersion;
 		private Aga.Controls.Tree.TreeColumn treeColumnDownloads;
-		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxVersion;
+		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageVersionNodeControl nodeTextBoxVersion;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxDownloads;
 		private System.Windows.Forms.Label labelHeaderText;
 		private System.Windows.Forms.Label labelHeader;
@@ -672,5 +703,8 @@
 		private System.Windows.Forms.Label labelPackageUpdatedCaption;
 		private System.Windows.Forms.Label labelPackageVersion;
 		private System.Windows.Forms.Label labelRequireRestart;
+		private System.Windows.Forms.Button buttonChangeVersion;
+		private System.Windows.Forms.ToolTip toolTip;
+		private System.Windows.Forms.CheckBox checkBoxShowAdvanced;
 	}
 }

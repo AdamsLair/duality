@@ -11,7 +11,7 @@ using Duality.Editor.Plugins.PackageManagerFrontend.TreeModels;
 
 namespace Duality.Editor.Plugins.PackageManagerFrontend
 {
-	public class DualityPackageNodeControl : NodeControl
+	public class DualityPackageSummaryNodeControl : NodeControl
 	{
 		public override void Draw(TreeNodeAdv node, DrawContext context)
 		{
@@ -29,9 +29,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			if (item != null)
 			{
 				headline = item.Title;
-				if (item.PackageInfo != null)
+				if (item.ItemPackageInfo != null)
 				{
-					summary = item.PackageInfo.Summary;
+					summary = item.ItemPackageInfo.Summary;
 				}
 			}
 
@@ -66,7 +66,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		public override Size MeasureSize(TreeNodeAdv node, DrawContext context)
 		{
-			return new Size(150, 48);
+			return new Size(250, 48);
 		}
 	}
 }

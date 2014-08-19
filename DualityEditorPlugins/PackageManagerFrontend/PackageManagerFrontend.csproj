@@ -32,9 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.0.1.2, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AdamsLair.WinForms, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\AdamsLair.WinForms.1.0.1.2\lib\net40-Client\AdamsLair.WinForms.dll</HintPath>
+      <HintPath>..\..\packages\AdamsLair.WinForms.1.0.2.0\lib\net40-Client\AdamsLair.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="Aga.Controls">
       <HintPath>..\..\packages\AdamsLair.TreeViewAdv.1.7.0.2\lib\net20\Aga.Controls.dll</HintPath>
@@ -54,7 +54,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Modules\DualityPackageNodeControl.cs">
+    <Compile Include="Modules\SelectTargetVersionDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\SelectTargetVersionDialog.Designer.cs">
+      <DependentUpon>SelectTargetVersionDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\DualityPackageSummaryNodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Modules\DualityPackageVersionNodeControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\PackageManagerFrontendResCache.cs" />
@@ -101,6 +110,9 @@
     <Content Include="EmbeddedResources\packagemed.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Modules\SelectTargetVersionDialog.resx">
+      <DependentUpon>SelectTargetVersionDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Modules\PackageViewDialog.resx">
       <DependentUpon>PackageViewDialog.cs</DependentUpon>
     </EmbeddedResource>

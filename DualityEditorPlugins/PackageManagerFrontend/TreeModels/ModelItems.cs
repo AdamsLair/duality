@@ -27,7 +27,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			this.parent = parent;
 		}
 
-		public abstract void RetrieveOnlineData(PackageManager manager);
+		public abstract void RetrieveAsyncData(PackageManager manager);
 		protected Image RetrieveIcon(Uri iconUrl)
 		{
 			if (iconUrl == null) return null;
@@ -67,24 +67,15 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 		}
 
-		private PackageInfo	packageInfo			= null;
-		private PackageInfo	newestPackageInfo	= null;
-		private Image		icon				= DefaultPackageIcon;
-		private	object		asyncDataLock		= new object();
+		protected	object		asyncDataLock		= new object();
+		protected	PackageInfo	itemPackageInfo		= null;
+		private		Image		icon				= DefaultPackageIcon;
 		
-		public PackageInfo PackageInfo
+		public abstract PackageInfo InstalledPackageInfo { get; }
+		public abstract PackageInfo NewestPackageInfo { get; }
+		public PackageInfo ItemPackageInfo
 		{
-			get { return this.packageInfo; }
-		}
-		public PackageInfo NewestPackageInfo
-		{
-			get
-			{
-				lock (this.asyncDataLock)
-				{
-					return this.newestPackageInfo;
-				}
-			}
+			get { return this.itemPackageInfo; }
 		}
 		public override Image Icon
 		{
@@ -102,26 +93,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			{
 				lock (this.asyncDataLock)
 				{
-					return this.packageInfo != null && !string.IsNullOrWhiteSpace(this.packageInfo.Title) ? this.packageInfo.Title : this.packageInfo.Id;
+					return this.itemPackageInfo != null && !string.IsNullOrWhiteSpace(this.itemPackageInfo.Title) ? this.itemPackageInfo.Title : this.itemPackageInfo.Id;
 				}
 			}
 		}
 		public Version Version
 		{
-			get { return this.packageInfo != null ? this.packageInfo.Version : null; }
-		}
-		public string DisplayedVersion
-		{
-			get
-			{
-				Version version = this.Version;
-				if (version == null)
-					return string.Empty;
-				else if (version.Build == 0)
-					return string.Format("{0}.{1}", version.Major, version.Minor);
-				else
-					return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
-			}
+			get { return this.itemPackageInfo != null ? this.itemPackageInfo.Version : null; }
 		}
 		public int? Downloads
 		{
@@ -129,56 +107,84 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			{
 				lock (this.asyncDataLock)
 				{
-					if (this.newestPackageInfo == null)
+					if (this.NewestPackageInfo == null)
 						return null;
 					else
-						return this.newestPackageInfo.DownloadCount;
+						return this.NewestPackageInfo.DownloadCount;
 				}
 			}
 		}
 		public string Id
 		{
-			get { return this.packageInfo != null ? this.packageInfo.Id : null; }
+			get { return this.itemPackageInfo != null ? this.itemPackageInfo.Id : null; }
 		}
 
 		public PackageItem(PackageInfo packageInfo, BaseItem parent) : base(parent)
 		{
-			this.packageInfo = packageInfo;
+			this.itemPackageInfo = packageInfo;
 		}
-		public override void RetrieveOnlineData(PackageManager manager)
+		public override void RetrieveAsyncData(PackageManager manager)
 		{
 			// Retrieve Icon
 			Image newIcon = null;
-			if (this.packageInfo != null) newIcon = this.RetrieveIcon(this.packageInfo.IconUrl);
+			if (this.itemPackageInfo != null) newIcon = this.RetrieveIcon(this.itemPackageInfo.IconUrl);
 			if (newIcon == null) newIcon = DefaultPackageIcon;
-
-			// Retrieve info about newest online version
-			PackageInfo newestPackage = manager.QueryPackageInfo(this.packageInfo.Id);
-
-			// Apply data
 			lock (this.asyncDataLock)
 			{
 				this.icon = newIcon;
-				this.newestPackageInfo = newestPackage;
 			}
 		}
 	}
 	public class LocalPackageItem : PackageItem
 	{
-		private LocalPackage	package		= null;
+		private	PackageInfo	newestPackageInfo	= null;
 		
-		public LocalPackage Package
+		public override PackageInfo InstalledPackageInfo
 		{
-			get { return this.package; }
+			get { return this.itemPackageInfo; }
+		}
+		public override PackageInfo NewestPackageInfo
+		{
+			get { return this.newestPackageInfo; }
 		}
 
-		public LocalPackageItem(LocalPackage package, BaseItem parent) : base(package.Info, parent)
+		public LocalPackageItem(LocalPackage package, BaseItem parent) : base(package.Info, parent) {}
+		public override void RetrieveAsyncData(PackageManager manager)
 		{
-			this.package = package;
+			base.RetrieveAsyncData(manager);
+
+			// Retrieve info about newest online version
+			PackageInfo newestPackage = manager.QueryPackageInfo(this.itemPackageInfo.Id);
+			lock (this.asyncDataLock)
+			{
+				this.newestPackageInfo = newestPackage;
+			}
 		}
 	}
 	public class OnlinePackageItem : PackageItem
 	{
+		private	PackageInfo	installedPackageInfo	= null;
+		
+		public override PackageInfo InstalledPackageInfo
+		{
+			get { return this.installedPackageInfo; }
+		}
+		public override PackageInfo NewestPackageInfo
+		{
+			get { return this.itemPackageInfo; }
+		}
+
 		public OnlinePackageItem(PackageInfo package, BaseItem parent) : base(package, parent) {}
+		public override void RetrieveAsyncData(PackageManager manager)
+		{
+			base.RetrieveAsyncData(manager);
+
+			// Retrieve info about newest online version
+			LocalPackage installedPackage = manager.LocalPackages.FirstOrDefault(p => p.Id == this.itemPackageInfo.Id);
+			lock (this.asyncDataLock)
+			{
+				this.installedPackageInfo = (installedPackage != null) ? installedPackage.Info : null;
+			}
+		}
 	}
 }

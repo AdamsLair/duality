@@ -109,6 +109,42 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t Update to Version ähnelt.
+        /// </summary>
+        public static string MsgTargetCantUpdate_Caption {
+            get {
+                return ResourceManager.GetString("MsgTargetCantUpdate_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t update package {1} to target version {0} due to an unknown error. ähnelt.
+        /// </summary>
+        public static string MsgTargetCantUpdate_Desc {
+            get {
+                return ResourceManager.GetString("MsgTargetCantUpdate_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Package Not Found ähnelt.
+        /// </summary>
+        public static string MsgTargetVersionNotFound_Caption {
+            get {
+                return ResourceManager.GetString("MsgTargetVersionNotFound_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The specified target version {0} of package {1} wasn&apos;t found in the online repository. ähnelt.
+        /// </summary>
+        public static string MsgTargetVersionNotFound_Desc {
+            get {
+                return ResourceManager.GetString("MsgTargetVersionNotFound_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die No description available ähnelt.
         /// </summary>
         public static string NoDescAvailable {

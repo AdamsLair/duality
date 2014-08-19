@@ -133,6 +133,18 @@
   <data name="MenuItemName_PackageView" xml:space="preserve">
     <value>Manage Packages...</value>
   </data>
+  <data name="MsgTargetCantUpdate_Caption" xml:space="preserve">
+    <value>Can't Update to Version</value>
+  </data>
+  <data name="MsgTargetCantUpdate_Desc" xml:space="preserve">
+    <value>Can't update package {1} to target version {0} due to an unknown error.</value>
+  </data>
+  <data name="MsgTargetVersionNotFound_Caption" xml:space="preserve">
+    <value>Package Not Found</value>
+  </data>
+  <data name="MsgTargetVersionNotFound_Desc" xml:space="preserve">
+    <value>The specified target version {0} of package {1} wasn't found in the online repository.</value>
+  </data>
   <data name="NoDescAvailable" xml:space="preserve">
     <value>No description available</value>
   </data>

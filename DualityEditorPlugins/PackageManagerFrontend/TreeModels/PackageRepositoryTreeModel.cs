@@ -300,7 +300,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 					continue;
 
 				// Read additional item data and report back
-				item.RetrieveOnlineData(this.packageManager);
+				item.RetrieveAsyncData(this.packageManager);
 				this.SubmitItem(item);
 				this.itemInfoLoader.ReportProgress(0, item);
 			}

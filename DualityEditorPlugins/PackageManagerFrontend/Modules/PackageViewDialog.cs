@@ -136,6 +136,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			}
 		}
 
+		private static readonly string[] InvisibleTags = new[] { "Duality", "Plugin", "Core", "Editor", "Launcher" };
+
 		private	PackageManager					packageManager	= null;
 		private	DisplayMode						display			= DisplayMode.None;
 		private InstalledPackagesTreeModel		modelInstalled	= null;
@@ -165,7 +167,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnDownloads.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
-			this.nodeTextBoxVersion.DrawText			+= this.nodeTextBoxVersion_DrawText;
 			this.nodeTextBoxDownloads.DrawText			+= this.nodeTextBoxDownloads_DrawText;
 			this.toolStripMain.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 
@@ -180,21 +181,24 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		private void UpdateBottomButtons()
 		{
 			bool isItemSelected = this.selectedItem != null;
-			bool isItemInstalled = isItemSelected && this.packageManager.LocalPackages.Any(p => p.Id == this.selectedItem.Id);
-			bool isItemUpdatable = isItemSelected && this.selectedItem.NewestPackageInfo != null && this.selectedItem.Version < this.selectedItem.NewestPackageInfo.Version;
-			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.PackageInfo);
+			bool isItemInstalled = isItemSelected && this.selectedItem.InstalledPackageInfo != null;
+			bool isItemUpdatable = isItemInstalled && this.selectedItem.NewestPackageInfo != null && this.selectedItem.InstalledPackageInfo.Version < this.selectedItem.NewestPackageInfo.Version;
+			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.ItemPackageInfo);
 
 			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
 			this.buttonUninstall.Visible		= isItemInstalled && canUninstall;
+			this.buttonChangeVersion.Visible	= isItemInstalled && this.checkBoxShowAdvanced.Checked;
 			this.buttonUpdate.Visible			= isItemInstalled && isItemUpdatable;
 			this.buttonApply.Visible			= this.restartRequired;
 			this.labelRequireRestart.Visible	= this.restartRequired;
 		}
 		private void UpdateInfoArea()
 		{
-			PackageInfo info = this.selectedItem != null ? this.selectedItem.PackageInfo : null;
+			PackageInfo itemInfo		= this.selectedItem != null ? this.selectedItem.ItemPackageInfo : null;
+			PackageInfo installedInfo	= this.selectedItem != null ? this.selectedItem.InstalledPackageInfo : null;
+			PackageInfo newestInfo		= this.selectedItem != null ? this.selectedItem.NewestPackageInfo : null;
 
-			if (info == null)
+			if (itemInfo == null)
 			{
 				this.labelPackageTitle.Text			= PackageManagerFrontendRes.NoPackageSelected;
 				this.labelPackageId.Text			= null;
@@ -207,14 +211,21 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			}
 			else
 			{
-				this.labelPackageTitle.Text			= !string.IsNullOrWhiteSpace(info.Title) ? info.Title : info.Id;
-				this.labelPackageId.Text			= info.Id;
-				this.labelPackageDesc.Text			= info.Description;
-				this.labelPackageAuthor.Text		= info.Authors.ToString(", ");
-				this.labelPackageTags.Text			= info.Tags.Except(new[] { "Duality" }).ToString(", ");
-				this.labelPackageVersion.Text		= info.Version.ToString();
-				this.labelPackageUpdated.Text		= info.PublishDate.ToString("yyyy-MM-dd, HH:mm", System.Globalization.CultureInfo.InvariantCulture);
-				this.labelPackageWebsite.Text		= info.ProjectUrl != null ? info.ProjectUrl.ToString() : "";
+				bool isItemInstalled = installedInfo != null;
+				bool isItemUpdatable = isItemInstalled && newestInfo != null && installedInfo.Version < newestInfo.Version;
+
+				this.labelPackageTitle.Text			= !string.IsNullOrWhiteSpace(itemInfo.Title) ? itemInfo.Title : itemInfo.Id;
+				this.labelPackageId.Text			= itemInfo.Id;
+				this.labelPackageDesc.Text			= (isItemUpdatable && !string.IsNullOrWhiteSpace(itemInfo.ReleaseNotes)) ? itemInfo.ReleaseNotes : itemInfo.Description;
+				this.labelPackageAuthor.Text		= itemInfo.Authors.ToString(", ");
+				this.labelPackageTags.Text			= itemInfo.Tags.Except(InvisibleTags).ToString(", ");
+				this.labelPackageUpdated.Text		= itemInfo.PublishDate.ToString("yyyy-MM-dd, HH:mm", System.Globalization.CultureInfo.InvariantCulture);
+				this.labelPackageWebsite.Text		= itemInfo.ProjectUrl != null ? itemInfo.ProjectUrl.ToString() : string.Empty;
+				this.labelPackageVersion.Text		= isItemUpdatable ? 
+					string.Format("{0} --> {1}", 
+						PackageManager.GetDisplayedVersion(installedInfo.Version), 
+						PackageManager.GetDisplayedVersion(newestInfo.Version)) : 
+					PackageManager.GetDisplayedVersion(itemInfo.Version);
 			}
 			
 			this.labelPackageAuthor.Visible			= !string.IsNullOrWhiteSpace(this.labelPackageAuthor.Text);
@@ -269,6 +280,58 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.restartRequired = true;
 			this.UpdateBottomButtons();
 		}
+		private void UpdatePackage(PackageInfo info, Version specificVersion)
+		{
+			bool success = false;
+			bool cantUpdate = false;
+			bool packageNotFound = false;
+			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+				PackageManagerFrontendRes.TaskUpdatePackages_Caption, 
+				PackageManagerFrontendRes.TaskUpdatePackages_Desc, 
+				PackageOperationThread, 
+				new PackageOperationData(this.packageManager, info, d => 
+				{
+					PackageInfo targetPackage = d.Manager.QueryPackageInfo(d.Package.Id, specificVersion);
+					if (targetPackage == null)
+					{
+						packageNotFound = true;
+						return;
+					}
+					if (d.Package.Version == specificVersion) return;
+					if (!d.Manager.CanUpdatePackage(d.Package, specificVersion))
+					{
+						cantUpdate = true;
+						return;
+					}
+
+					d.Manager.UpdatePackage(d.Package, specificVersion);
+					success = true;
+				}));
+			setupDialog.MainThreadRequired = false;
+			setupDialog.ShowDialog();
+			
+			if (packageNotFound)
+			{
+				MessageBox.Show(this, 
+					string.Format(PackageManagerFrontendRes.MsgTargetVersionNotFound_Desc, specificVersion, info.Id), 
+					PackageManagerFrontendRes.MsgTargetVersionNotFound_Caption, 
+					MessageBoxButtons.OK, 
+					MessageBoxIcon.Error);
+			}
+			if (cantUpdate)
+			{
+				MessageBox.Show(this, 
+					string.Format(PackageManagerFrontendRes.MsgTargetCantUpdate_Desc, specificVersion, info.Id), 
+					PackageManagerFrontendRes.MsgTargetCantUpdate_Caption, 
+					MessageBoxButtons.OK, 
+					MessageBoxIcon.Error);
+			}
+			if (!success) return;
+
+			this.modelInstalled.ApplyChanges();
+			this.restartRequired = true;
+			this.UpdateBottomButtons();
+		}
 
 		protected override void OnLoad(EventArgs e)
 		{
@@ -277,6 +340,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.oldTreeViewSize = this.packageList.Size;
 
 			this.packageManager = DualityEditorApp.PackageManager;
+			this.nodeTextBoxVersion.PackageManager = this.packageManager;
 			this.modelInstalled	= new InstalledPackagesTreeModel(this.packageManager);
 			this.modelOnline	= new OnlinePackagesTreeModel(this.packageManager);
 
@@ -336,44 +400,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			Process.Start(this.labelPackageWebsite.Text);
 		}
-		private void nodeTextBoxVersion_DrawText(object sender, DrawTextEventArgs e)
-		{
-			PackageItem packageItem = e.Node.Tag as PackageItem;
-
-			// Determine the installed version of the package
-			Version installedVersion = null;
-			if (packageItem != null)
-			{
-				LocalPackage localPackage = this.packageManager.LocalPackages.FirstOrDefault(p => p.Id == packageItem.Id);
-				if (localPackage != null)
-				{
-					installedVersion = localPackage.Version;
-				}
-			}
-
-			// Display background color based on versioning
-			if (installedVersion != null)
-			{
-				if (packageItem != null && packageItem.NewestPackageInfo != null)
-				{
-					if (packageItem.NewestPackageInfo.Version == installedVersion)
-						e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 160, 255, 0));
-					else
-						e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 255, 160, 0));
-				}
-				else
-				{
-					e.BackgroundBrush = new SolidBrush(Color.FromArgb(32, 128, 128, 128));
-				}
-			}
-			else
-			{
-				e.BackgroundBrush = null;
-			}
-
-			// Make sure the text doesn't switch colors when selected
-			e.TextColor = this.packageList.ForeColor;
-		}
 		private void nodeTextBoxDownloads_DrawText(object sender, DrawTextEventArgs e)
 		{
 			e.TextColor = this.packageList.ForeColor;
@@ -393,7 +419,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 						return 
 							packageItem.Title.Contains(filterString) ||
 							packageItem.Id.Contains(filterString) ||
-							(packageItem.PackageInfo != null && packageItem.PackageInfo.Tags.Any(t => t != null && t.Contains(filterString)));
+							(packageItem.ItemPackageInfo != null && packageItem.ItemPackageInfo.Tags.Any(t => t != null && t.Contains(filterString)));
 					}
 					else
 					{
@@ -407,21 +433,39 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void buttonApply_Click(object sender, EventArgs e)
 		{
+			this.DialogResult = DialogResult.OK;
 			DualityEditorApp.SaveAllProjectData();
 			this.packageManager.ApplyUpdate();
 			Application.Exit();
 		}
 		private void buttonUninstall_Click(object sender, EventArgs e)
 		{
-			this.UninstallPackage(this.selectedItem.PackageInfo);
+			this.UninstallPackage(this.selectedItem.InstalledPackageInfo);
 		}
 		private void buttonInstall_Click(object sender, EventArgs e)
 		{
-			this.InstallPackage(this.selectedItem.PackageInfo);
+			this.InstallPackage(this.selectedItem.NewestPackageInfo);
 		}
 		private void buttonUpdate_Click(object sender, EventArgs e)
 		{
-			this.UpdatePackage(this.selectedItem.PackageInfo);
+			this.UpdatePackage(this.selectedItem.InstalledPackageInfo);
+		}
+		private void buttonChangeVersion_Click(object sender, EventArgs e)
+		{
+			PackageInfo selectedPackage = this.selectedItem.InstalledPackageInfo;
+
+			SelectTargetVersionDialog dialog = new SelectTargetVersionDialog();
+			dialog.SelectedVersion = selectedPackage.Version;
+
+			DialogResult result = dialog.ShowDialog(this);
+			if (result == DialogResult.Cancel) return;
+			if (dialog.SelectedVersion == selectedPackage.Version) return;
+
+			this.UpdatePackage(selectedPackage, dialog.SelectedVersion);
+		}
+		private void checkBoxShowAdvanced_CheckedChanged(object sender, EventArgs e)
+		{
+			this.UpdateBottomButtons();
 		}
 
 		private void OnDisplayModeChanged(DisplayMode prev, DisplayMode next)

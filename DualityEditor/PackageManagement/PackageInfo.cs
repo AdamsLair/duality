@@ -12,6 +12,7 @@ namespace Duality.Editor.PackageManagement
 		private	string			title			= null;
 		private	string			summary			= null;
 		private	string			description		= null;
+		private	string			releaseNotes	= null;
 		private	Uri				projectUrl		= null;
 		private	Uri				iconUrl			= null;
 		private	int				downloadCount	= 0;
@@ -46,6 +47,11 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.description; }
 			internal set { this.description = value; }
+		}
+		public string ReleaseNotes
+		{
+			get { return this.releaseNotes; }
+			internal set { this.releaseNotes = value; }
 		}
 		public Uri ProjectUrl
 		{

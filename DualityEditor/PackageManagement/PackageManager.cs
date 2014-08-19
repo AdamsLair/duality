@@ -139,7 +139,7 @@ namespace Duality.Editor.PackageManagement
 
 		public void UninstallPackage(PackageInfo package)
 		{
-			this.UninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+			this.UninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id));
 		}
 		public void UninstallPackage(LocalPackage package)
 		{
@@ -149,7 +149,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		public bool CanUninstallPackage(PackageInfo package)
 		{
-			return this.CanUninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+			return this.CanUninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id));
 		}
 		public bool CanUninstallPackage(LocalPackage package)
 		{
@@ -167,16 +167,42 @@ namespace Duality.Editor.PackageManagement
 			return allowed;
 		}
 
-		public void UpdatePackage(PackageInfo package)
+		public void UpdatePackage(PackageInfo package, Version specificVersion = null)
 		{
-			this.UpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id && p.Version == package.Version));
+			this.UpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id), specificVersion);
 		}
-		public void UpdatePackage(LocalPackage package)
+		public void UpdatePackage(LocalPackage package, Version specificVersion = null)
 		{
+			// Due to a bug in NuGet 2.8.2, specific-version updates are limited to the package itself,
+			// without updating its dependencies. Otherwise, some of them might be uninstalled without
+			// being reinstalled properly.
+
 			this.uninstallQueue = null;
-			PackageInfo newVersion = this.QueryPackageInfo(package.Id);
-			this.manager.UpdatePackage(newVersion.Id, new SemanticVersion(newVersion.Version), true, false);
+			bool isSpecific = specificVersion != null;
+			if (specificVersion == null) specificVersion = this.QueryPackageInfo(package.Id).Version;
+			this.manager.UpdatePackage(package.Id, new SemanticVersion(specificVersion), !isSpecific, false);
 			this.uninstallQueue = new List<LocalPackage>();
+		}
+		public bool CanUpdatePackage(PackageInfo package, Version specificVersion = null)
+		{
+			return this.CanUpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id), specificVersion);
+		}
+		public bool CanUpdatePackage(LocalPackage package, Version specificVersion = null)
+		{
+			bool allowed = true;
+			this.manager.WhatIf = true;
+			try
+			{
+				bool isSpecific = specificVersion != null;
+				if (specificVersion == null) specificVersion = this.QueryPackageInfo(package.Id).Version;
+				this.manager.UpdatePackage(package.Id, new SemanticVersion(specificVersion), !isSpecific, false);
+			}
+			catch (Exception)
+			{
+				allowed = false;
+			}
+			this.manager.WhatIf = false;
+			return allowed;
 		}
 
 		public bool ApplyUpdate(bool restartEditor = true)
@@ -494,6 +520,7 @@ namespace Duality.Editor.PackageManagement
 			info.Title			= package.Title;
 			info.Summary		= package.Summary;
 			info.Description	= package.Description;
+			info.ReleaseNotes	= package.ReleaseNotes;
 			info.ProjectUrl		= package.ProjectUrl;
 			info.IconUrl		= package.IconUrl;
 			info.DownloadCount	= package.DownloadCount;
@@ -605,6 +632,16 @@ namespace Duality.Editor.PackageManagement
 			updateDoc.Save(this.UpdateFilePath);
 
 			this.OnPackageInstalled(new PackageEventArgs(e.Package.Id, e.Package.Version.Version));
+		}
+
+		public static string GetDisplayedVersion(Version version)
+		{
+			if (version == null)
+				return string.Empty;
+			else if (version.Build == 0)
+				return string.Format("{0}.{1}", version.Major, version.Minor);
+			else
+				return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
 		}
 	}
 }
