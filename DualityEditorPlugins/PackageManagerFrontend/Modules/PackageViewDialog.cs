@@ -178,20 +178,29 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		internal void SaveUserData(XElement node) {}
 		internal void LoadUserData(XElement node) {}
 
+		private void ScheduleLazyPackageInterfaceUpdate()
+		{
+			if (!this.timerPackageModelChanged.Enabled)
+			{
+				this.timerPackageModelChanged.Enabled = true;
+			}
+		}
 		private void UpdateBottomButtons()
 		{
 			OnlinePackageItem onlineItem = this.selectedItem as OnlinePackageItem;
 			if (onlineItem != null) onlineItem.UpdateLocalPackageData(this.packageManager);
 
 			bool isItemSelected = this.selectedItem != null;
-			bool isItemInstalled = isItemSelected && this.selectedItem.InstalledPackageInfo != null;
-			bool isItemUpdatable = isItemInstalled && this.selectedItem.NewestPackageInfo != null && this.selectedItem.InstalledPackageInfo.Version < this.selectedItem.NewestPackageInfo.Version;
+			bool isItemInstalled = isItemSelected && this.selectedItem.IsInstalled;
+			bool isItemUpdatable = isItemInstalled && this.selectedItem.IsUpdatable;
 			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.ItemPackageInfo);
 
 			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
 			this.buttonUninstall.Visible		= isItemInstalled && canUninstall;
 			this.buttonChangeVersion.Visible	= isItemInstalled && this.checkBoxShowAdvanced.Checked;
 			this.buttonUpdate.Visible			= isItemInstalled && isItemUpdatable;
+			this.bottomFlowSpacer2.Visible		= isItemSelected;
+			this.buttonUpdateAll.Visible		= this.packageList.Root.Children.Select(n => n.Tag as PackageItem).Any(n => n.IsUpdatable);
 			this.buttonApply.Visible			= this.restartRequired;
 			this.labelRequireRestart.Visible	= this.restartRequired;
 		}
@@ -335,6 +344,19 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.restartRequired = true;
 			this.UpdateBottomButtons();
 		}
+		private void UpdateAllPackages()
+		{
+			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+				PackageManagerFrontendRes.TaskUpdatePackages_Caption, 
+				PackageManagerFrontendRes.TaskUpdatePackages_Desc, 
+				PackageUpdateAllThread, 
+				this.packageManager);
+			setupDialog.MainThreadRequired = false;
+			setupDialog.ShowDialog();
+			this.modelInstalled.ApplyChanges();
+			this.restartRequired = true;
+			this.UpdateBottomButtons();
+		}
 
 		protected override void OnLoad(EventArgs e)
 		{
@@ -344,8 +366,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.packageManager = DualityEditorApp.PackageManager;
 			this.nodeTextBoxVersion.PackageManager = this.packageManager;
-			this.modelInstalled	= new InstalledPackagesTreeModel(this.packageManager);
-			this.modelOnline	= new OnlinePackagesTreeModel(this.packageManager);
+
+			this.modelInstalled = new InstalledPackagesTreeModel(this.packageManager);
+			this.modelOnline = new OnlinePackagesTreeModel(this.packageManager);
+
+			this.modelInstalled.NodesChanged += this.modelInstalled_NodesChanged;
+			this.modelOnline.NodesChanged += this.modelOnline_NodesChanged;
 
 			this.Display = DisplayMode.Installed;
 
@@ -355,10 +381,30 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
+			this.modelInstalled.NodesChanged -= this.modelInstalled_NodesChanged;
+			this.modelOnline.NodesChanged -= this.modelOnline_NodesChanged;
 			this.modelInstalled.Dispose();
 			this.modelOnline.Dispose();
 		}
-
+		
+		private void timerPackageModelChanged_Tick(object sender, EventArgs e)
+		{
+			this.UpdateInfoArea();
+			this.UpdateBottomButtons();
+			this.timerPackageModelChanged.Enabled = false;
+		}
+		private void modelOnline_NodesChanged(object sender, TreeModelEventArgs e)
+		{
+			this.InvokeEx(this.ScheduleLazyPackageInterfaceUpdate, false);
+		}
+		private void modelInstalled_NodesChanged(object sender, TreeModelEventArgs e)
+		{
+			this.InvokeEx(this.ScheduleLazyPackageInterfaceUpdate, false);
+		}
+		private void toolStripFilterBox_DropDownClosed(object sender, EventArgs e)
+		{
+			this.packageList.Focus();
+		}
 		private void treeColumn_DrawColHeaderBg(object sender, DrawColHeaderBgEventArgs e)
 		{
 			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 212, 212, 212)), e.Bounds);
@@ -453,6 +499,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.UpdatePackage(this.selectedItem.InstalledPackageInfo);
 		}
+		private void buttonUpdateAll_Click(object sender, EventArgs e)
+		{
+			this.UpdateAllPackages();
+		}
 		private void buttonChangeVersion_Click(object sender, EventArgs e)
 		{
 			PackageInfo selectedPackage = this.selectedItem.InstalledPackageInfo;
@@ -511,8 +561,38 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					data.Package.Version, 
 					Log.Exception(e));
 			}
+
+			yield break;
+		}
+		private static System.Collections.IEnumerable PackageUpdateAllThread(ProcessingBigTaskDialog.WorkerInterface workerInterface)
+		{
+			PackageManager manager = workerInterface.Data as PackageManager;
+
+			workerInterface.Progress = 0.0f;
+			workerInterface.StateDesc = string.Format("Preparing operation...");
 			yield return null;
 
+			LocalPackage[] localPackages = manager.LocalPackages.ToArray();
+			foreach (LocalPackage package in localPackages)
+			{
+				workerInterface.Progress += 1.0f / localPackages.Length;
+				workerInterface.StateDesc = string.Format("Package '{0}'...", package.Id);
+				yield return null;
+
+				try
+				{
+					manager.UpdatePackage(package);
+				}
+				catch (Exception e)
+				{
+					Log.Editor.WriteError("An error occurred while updating Package '{0}', Version {1}: {2}", 
+						package.Id, 
+						package.Version, 
+						Log.Exception(e));
+				}
+			}
+
+			workerInterface.Progress = 1.0f;
 			yield break;
 		}
 	}

@@ -152,6 +152,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			return this.CanUninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id));
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public bool CanUninstallPackage(LocalPackage package)
 		{
 			bool allowed = true;
@@ -188,6 +189,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			return this.CanUpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id), specificVersion);
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		public bool CanUpdatePackage(LocalPackage package, Version specificVersion = null)
 		{
 			bool allowed = true;

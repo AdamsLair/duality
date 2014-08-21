@@ -73,6 +73,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		
 		public abstract PackageInfo InstalledPackageInfo { get; }
 		public abstract PackageInfo NewestPackageInfo { get; }
+		public bool IsInstalled
+		{
+			get { return this.InstalledPackageInfo != null; }
+		}
+		public bool IsUpdatable
+		{
+			get { return this.IsInstalled && this.NewestPackageInfo != null && this.InstalledPackageInfo.Version < this.NewestPackageInfo.Version; }
+		}
 		public PackageInfo ItemPackageInfo
 		{
 			get { return this.itemPackageInfo; }
