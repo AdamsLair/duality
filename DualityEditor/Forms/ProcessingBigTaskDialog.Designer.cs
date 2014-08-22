@@ -29,6 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProcessingBigTaskDialog));
 			this.progressBar = new System.Windows.Forms.ProgressBar();
 			this.stateDescLabel = new System.Windows.Forms.Label();
 			this.progressTimer = new System.Windows.Forms.Timer(this.components);
@@ -113,10 +114,11 @@
 			this.Controls.Add(this.descLabel);
 			this.Cursor = System.Windows.Forms.Cursors.WaitCursor;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ProcessingBigTaskDialog";
-			this.ShowIcon = false;
+			this.ShowIcon = true;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Caption";

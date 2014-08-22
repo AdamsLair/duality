@@ -50,6 +50,7 @@ namespace Duality.Editor
 						GeneralRes.TaskInstallPackages_Desc, 
 						FirstTimeSetup, 
 						packageManager);
+					setupDialog.ShowInTaskbar = true;
 					setupDialog.MainThreadRequired = false;
 					setupDialog.ShowDialog();
 					Log.Editor.PopIndent();
