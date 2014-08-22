@@ -751,9 +751,7 @@ namespace Duality
 		/// <returns>A reference to a newly created deep copy of this GameObject.</returns>
 		public GameObject Clone()
 		{
-			GameObject target = CloneProvider.DeepClone(this);
-			target.Parent = this.Parent;
-			return target;
+			return CloneProvider.DeepClone(this);
 		}
 		/// <summary>
 		/// Deep-copies this GameObject's data to the specified target GameObject.

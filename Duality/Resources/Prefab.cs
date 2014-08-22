@@ -79,7 +79,6 @@ namespace Duality.Resources
 					this.objTree = obj.Clone();
 				obj.OnSaved(true);
 
-				this.objTree.Parent = null;
 				this.objTree.BreakPrefabLink();
 
 				// Prevent recursion
