@@ -14,7 +14,7 @@ namespace Duality.Cloning.Surrogates
 		}
 		public override Delegate CreateTargetObject(CloneProvider provider)
 		{
-			#pragma warning TODO CLONING
+			#warning TODO CLONING
 
 			Type delType = this.RealObject.GetType();
 			Delegate[] baseInvokeList = this.RealObject.GetInvocationList();

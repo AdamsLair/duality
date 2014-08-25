@@ -1114,7 +1114,7 @@ namespace Duality.Components.Physics
 
 			// Detach and copy Joints
 			c.joints = null;
-			#pragma warning TODO CLONING
+			#warning TODO CLONING
 			//if (this.joints != null) c.SetJoints(this.joints.Select(j => 
 			//{
 			//    // If there is a clone registered, just return the clone. Don't process a joint twice.

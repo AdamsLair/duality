@@ -786,7 +786,7 @@ namespace Duality
 			target.active		= this.active;
 			target.initState	= this.initState;
 
-			#pragma warning TODO CLONING
+			#warning TODO CLONING
 
 			// Copy component data, create missing components
 			//foreach (Component c in this.compList)

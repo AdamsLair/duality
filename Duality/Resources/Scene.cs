@@ -819,7 +819,7 @@ namespace Duality.Resources
 
 			// Copy objects
 			s.objectManager.Clear();
-			#pragma warning TODO CLONING
+			#warning TODO CLONING
 			//foreach (GameObject obj in this.RootObjects)
 			//{
 			//    if (provider.GetRegisteredObjectClone(obj) != null)
