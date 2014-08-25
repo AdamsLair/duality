@@ -109,6 +109,20 @@ namespace Duality.Tests.Cloning
 					other.ListField2.SequenceEqual(this.ListField2) &&
 					other.DictField.SetEqual(this.DictField);
 			}
+			public bool AnyReferenceEquals(TestObject other)
+			{
+				if (object.ReferenceEquals(this, other)) return true;
+				if (object.ReferenceEquals(this.ListField, other.ListField)) return true;
+				if (object.ReferenceEquals(this.ListField2, other.ListField2)) return true;
+				if (object.ReferenceEquals(this.DictField, other.DictField)) return true;
+				foreach (var key in this.DictField.Keys)
+				{
+					var a = this.DictField[key];
+					var b = other.DictField[key];
+					if (object.ReferenceEquals(a, b)) return true;
+				}
+				return false;
+			}
 		}
 		private interface ICloneTestObject
 		{
@@ -127,6 +141,8 @@ namespace Duality.Tests.Cloning
 			public string TestProperty { get; set; }
 			public ReferencedObject TestReference { get; set; }
 			public List<ReferencedObject> TestReferenceList { get; set; }
+			public GameObject GameObjectReference { get; set; }
+			public Component ComponentReference { get; set; }
 		}
 		private class ReferencedObject
 		{
@@ -152,33 +168,7 @@ namespace Duality.Tests.Cloning
 			TestObject dataResult = data.DeepClone();
 
 			Assert.IsTrue(data.Equals(dataResult));
-			Assert.IsTrue(!object.ReferenceEquals(data, dataResult));
-		}
-		[Test] public void CloneComplexObjectExplicitUnwrap()
-		{
-			Random rnd = new Random();
-			TestObject data = new TestObject(rnd);
-
-			CloneProvider provider = new CloneProvider();
-			provider.ExplicitUnwrap.Add(typeof(System.Collections.ICollection));
-
-			// Need to trick CloneProvider to deep-clone TestObject, because we just explicitly told it not to unwrap it.
-			TestObject dataResult = new TestObject(rnd, 0);
-			provider.CopyObjectTo(
-				data, 
-				dataResult,
-				data.GetType().GetAllFields(ReflectionHelper.BindInstanceAll));
-
-			// Now check whether the lower layers are shallow-copies, except for collections.
-			Assert.IsTrue(data.Equals(dataResult));
-			Assert.IsFalse(object.ReferenceEquals(data, dataResult));
-			Assert.IsFalse(object.ReferenceEquals(data.ListField, dataResult.ListField));
-			Assert.IsFalse(object.ReferenceEquals(data.DictField, dataResult.DictField));
-			foreach (var pair in data.DictField)
-			{
-				Assert.IsTrue(pair.Value.Equals(dataResult.DictField[pair.Key]));
-				Assert.IsTrue(object.ReferenceEquals(pair.Value, dataResult.DictField[pair.Key]));
-			}
+			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
 		[Test] public void CloneContentRef()
 		{
@@ -221,12 +211,25 @@ namespace Duality.Tests.Cloning
 		{
 			Scene source = new Scene();
 			{
+				// Create a basic object hierarchy
 				GameObject objA = new GameObject("ObjectA");
 				GameObject objB = new GameObject("ObjectB");
 				GameObject objC = new GameObject("ObjectC", objA);
+
+				// Create some Components containing data
 				objA.AddComponent(CreateTestSource<TestComponent>());
 				objB.AddComponent(CreateTestSource<TestComponent>());
 				objC.AddComponent(CreateTestSource<TestComponent>());
+
+				// Introduce some cross-object references
+				objA.GetComponent<TestComponent>().GameObjectReference = objC;
+				objA.GetComponent<TestComponent>().ComponentReference = objB.GetComponent<TestComponent>();
+				objB.GetComponent<TestComponent>().GameObjectReference = objA;
+				objB.GetComponent<TestComponent>().ComponentReference = objC.GetComponent<TestComponent>();
+				objC.GetComponent<TestComponent>().GameObjectReference = objB;
+				objC.GetComponent<TestComponent>().ComponentReference = objA.GetComponent<TestComponent>();
+
+				// Add it all to the Scene
 				source.AddObject(objA);
 				source.AddObject(objB);
 				source.AddObject(objC);
@@ -240,8 +243,16 @@ namespace Duality.Tests.Cloning
 				GameObject targetObj = target.FindGameObject(sourceObj.FullName);
 
 				Assert.AreNotSame(sourceObj, targetObj);
-				Assert.AreEqual(sourceObj.Name, targetObj.Name);
+				Assert.AreEqual(sourceObj.FullName, targetObj.FullName);
+
+				// See if the data Components are cloned and intact
 				TestClone(sourceObj.GetComponent<TestComponent>(), targetObj.GetComponent<TestComponent>());
+
+				// Check cross-object references
+				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().GameObjectReference, targetObj.GetComponent<TestComponent>().GameObjectReference);
+				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().GameObjectReference.FullName, targetObj.GetComponent<TestComponent>().GameObjectReference.FullName);
+				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().ComponentReference, targetObj.GetComponent<TestComponent>().ComponentReference);
+				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName, targetObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName);
 			}
 		}
 
