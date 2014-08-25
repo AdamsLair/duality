@@ -22,18 +22,23 @@ namespace Duality
 	/// <seealso cref="Duality.Resources.Scene"/>
 	/// <seealso cref="Duality.Resources.PrefabLink"/>
 	[Serializable]
+	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageGameObject)]
 	public sealed class GameObject : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
 	{
 		[NonSerialized] 
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		Scene						scene		= null;
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		GameObject					parent		= null;
 		private		PrefabLink					prefabLink	= null;
 		private		Guid						identifier	= Guid.NewGuid();
+		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
 		private		List<GameObject>			children	= null;
-		private		Dictionary<Type,Component>	compMap		= new Dictionary<Type,Component>();
+		[CloneBehavior(typeof(Component), CloneBehavior.ChildObject)]
 		private		List<Component>				compList	= new List<Component>();
+		private		Dictionary<Type,Component>	compMap		= new Dictionary<Type,Component>();
 		private		string						name		= string.Format("obj{0}", MathF.Rnd.Next());
 		private		bool						active		= true;
 		private		InitState					initState	= InitState.Initialized;
@@ -41,9 +46,15 @@ namespace Duality
 		// Built-in heavily used component lookup
 		private		Components.Transform		compTransform	= null;
 		
-		[NonSerialized] private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
-		[NonSerialized] private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
-		[NonSerialized] private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
+		[NonSerialized]
+		[CloneBehavior(CloneBehavior.WeakReference)]
+		private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
+		[NonSerialized]
+		[CloneBehavior(CloneBehavior.WeakReference)]
+		private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
+		[NonSerialized]
+		[CloneBehavior(CloneBehavior.WeakReference)]
+		private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
 
 
 		/// <summary>
@@ -759,7 +770,7 @@ namespace Duality
 		/// <param name="target">The target GameObject to copy to.</param>
 		public void CopyTo(GameObject target)
 		{
-			CloneProvider.DeepCopyTo(this, target);
+			CloneProvider.DeepCopy(this, target);
 		}
 
 		void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
@@ -775,51 +786,31 @@ namespace Duality
 			target.active		= this.active;
 			target.initState	= this.initState;
 
-			// Prepass: Create & Register all necessary GameObjects and Components
-			this.PrepassCopyData(target, provider);
+			#pragma warning TODO CLONING
 
 			// Copy component data, create missing components
-			foreach (Component c in this.compList)
-			{
-				provider.CopyObjectTo(c, provider.GetRegisteredObjectClone(c));
-			}
+			//foreach (Component c in this.compList)
+			//{
+			//    provider.CopyObjectTo(c, provider.GetRegisteredObjectClone(c));
+			//}
 
-			if (this.children != null)
-			{
-				// Copy child data, create missing children
-				for (int i = 0; i < this.children.Count; i++)
-				{
-					GameObject thisChild	= this.children[i];
-					GameObject targetChild	= provider.GetRegisteredObjectClone(thisChild);
-					targetChild.Parent = target;
-					provider.CopyObjectTo(thisChild, targetChild);
-				}
-			}
+			//if (this.children != null)
+			//{
+			//    // Copy child data, create missing children
+			//    for (int i = 0; i < this.children.Count; i++)
+			//    {
+			//        GameObject thisChild	= this.children[i];
+			//        GameObject targetChild	= provider.GetRegisteredObjectClone(thisChild);
+			//        targetChild.Parent = target;
+			//        provider.CopyObjectTo(thisChild, targetChild);
+			//    }
+			//}
 
 			// Copy & maintain PrefabLink. Don't replace an existing link with null.
 			if (this.PrefabLink != null)
 			{
 				target.prefabLink = this.prefabLink.Clone(target);
 				target.PrefabLink.UpdateChanges();
-			}
-		}
-		internal void PrepassCopyData(GameObject target, CloneProvider provider)
-		{
-			foreach (Component c in this.compList)
-			{
-				if (provider.GetRegisteredObjectClone(c) != null) return; // Don't prepass twice
-				provider.RegisterObjectClone(c, target.AddComponent(c.GetType()));
-			}
-			if (this.children != null)
-			{
-				for (int i = 0; i < this.children.Count; i++)
-				{
-					GameObject thisChild	= this.children[i];
-					GameObject targetChild	= (target.children != null && target.children.Count > i) ? target.children[i] : new GameObject();
-					if (provider.GetRegisteredObjectClone(thisChild) != null) return; // Don't prepass twice
-					provider.RegisterObjectClone(thisChild, targetChild);
-					thisChild.PrepassCopyData(targetChild, provider);
-				}
 			}
 		}
 

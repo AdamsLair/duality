@@ -1110,22 +1110,23 @@ namespace Duality.Components.Physics
 
 			// Detach and copy Shapes
 			c.shapes = null;
-			if (this.shapes != null) c.SetShapes(this.shapes.Select(s => provider.RequestObjectClone(s)));
+			if (this.shapes != null) c.SetShapes(this.shapes.Select(s => provider.CloneObject(s)));
 
 			// Detach and copy Joints
 			c.joints = null;
-			if (this.joints != null) c.SetJoints(this.joints.Select(j => 
-			{
-				// If there is a clone registered, just return the clone. Don't process a joint twice.
-				if (provider.IsOriginalObject(j)) return provider.GetRegisteredObjectClone(j);
+			#pragma warning TODO CLONING
+			//if (this.joints != null) c.SetJoints(this.joints.Select(j => 
+			//{
+			//    // If there is a clone registered, just return the clone. Don't process a joint twice.
+			//    if (provider.IsOriginalObject(j)) return provider.GetRegisteredObjectClone(j);
 
-				JointInfo j2 = j.Clone();
-				j2.BodyA = provider.GetRegisteredObjectClone(j.BodyA);
-				j2.BodyB = provider.GetRegisteredObjectClone(j.BodyB);
-				provider.RegisterObjectClone(j, j2);
+			//    JointInfo j2 = j.Clone();
+			//    j2.BodyA = provider.GetRegisteredObjectClone(j.BodyA);
+			//    j2.BodyB = provider.GetRegisteredObjectClone(j.BodyB);
+			//    provider.RegisterObjectClone(j, j2);
 
-				return j2;
-			}));
+			//    return j2;
+			//}));
 
 			if (wasInitialized) c.Initialize();
 		}

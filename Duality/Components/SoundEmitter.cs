@@ -191,7 +191,7 @@ namespace Duality.Components
 		{
 			base.OnCopyTo(target, provider);
 			SoundEmitter c = target as SoundEmitter;
-			c.sources = this.sources == null ? null : this.sources.Select(s => provider.RequestObjectClone(s)).ToList();
+			c.sources = this.sources == null ? null : this.sources.Select(s => provider.CloneObject(s)).ToList();
 		}
 
 		void ICmpUpdatable.OnUpdate()

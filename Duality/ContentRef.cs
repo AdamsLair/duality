@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 
 using Duality.Resources;
+using Duality.Cloning;
 
 namespace Duality
 {
@@ -40,7 +41,7 @@ namespace Duality
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public static readonly ContentRef<T> Null = new ContentRef<T>(null);
 
-		[NonSerialized]
+		[NonSerialized, CloneBehavior(CloneBehavior.Reference)]
 		private	T		contentInstance;
 		private	string	contentPath;
 		

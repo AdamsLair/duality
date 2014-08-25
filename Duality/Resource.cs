@@ -21,6 +21,7 @@ namespace Duality
 	/// <seealso cref="ContentRef{T}"/>
 	/// <seealso cref="ContentProvider"/>
 	[Serializable]
+	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
 	public abstract class Resource : IManageableObject, IDisposable, ICloneable
 	{
@@ -242,7 +243,7 @@ namespace Duality
 		/// <param name="r">The target Resource to copy this Resource's data to</param>
 		public void CopyTo(Resource r)
 		{
-			CloneProvider.DeepCopyTo(this, r);
+			CloneProvider.DeepCopy(this, r);
 		}
 		void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
 		{

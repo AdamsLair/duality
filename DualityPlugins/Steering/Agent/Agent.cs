@@ -303,9 +303,9 @@ namespace Duality.Plugins.Steering
 			Agent other = (Agent)target;
 			other.Radius			= this.radius;
 			other.toiHorizon		= this.toiHorizon;
-			other.Sampler			= provider.RequestObjectClone(this.sampler);
-			other.Characteristics	= provider.RequestObjectClone(this.characteristics);
-			other.target			= provider.RequestObjectClone(this.target);
+			other.Sampler			= provider.CloneObject(this.sampler);
+			other.Characteristics	= provider.CloneObject(this.characteristics);
+			other.target			= provider.CloneObject(this.target);
 			other.suggestedVel		= this.suggestedVel;
 		}
 		

@@ -17,13 +17,14 @@ namespace Duality
 	/// </summary>
 	public static class ReflectionHelper
 	{
-		private	static	Dictionary<Type,SerializeType>		serializeTypeCache		= new Dictionary<Type,SerializeType>();
-		private	static	Dictionary<string,Type>				typeResolveCache		= new Dictionary<string,Type>();
-		private	static	Dictionary<string,MemberInfo>		memberResolveCache		= new Dictionary<string,MemberInfo>();
-		private	static	Dictionary<Type,bool>				deepByValTypeCache		= new Dictionary<Type,bool>();
-		private	static	Dictionary<MemberInfo,Attribute[]>	customAttributeCache	= new Dictionary<MemberInfo,Attribute[]>();
-		private	static	List<SerializeErrorHandler>			serializeHandlerCache	= new List<SerializeErrorHandler>();
-		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache	= new Dictionary<KeyValuePair<Type,Type>,bool>();
+		private	static	Dictionary<Type,SerializeType>		serializeTypeCache			= new Dictionary<Type,SerializeType>();
+		private	static	Dictionary<string,Type>				typeResolveCache			= new Dictionary<string,Type>();
+		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
+		private	static	Dictionary<Type,bool>				plainOldDataTypeCache		= new Dictionary<Type,bool>();
+		private	static	Dictionary<MemberInfo,Attribute[]>	customMemberAttribCache		= new Dictionary<MemberInfo,Attribute[]>();
+		private	static	Attribute[]							customAssemblyAttribCache	= null;
+		private	static	List<SerializeErrorHandler>			serializeHandlerCache		= new List<SerializeErrorHandler>();
+		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache			= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
 		/// <summary>
 		/// Equals <c>BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic</c>.
@@ -176,7 +177,7 @@ namespace Duality
 		public static IEnumerable<T> GetCustomAttributes<T>(this MemberInfo member) where T : Attribute
 		{
 			Attribute[] result;
-			if (!customAttributeCache.TryGetValue(member, out result))
+			if (!customMemberAttribCache.TryGetValue(member, out result))
 			{
 				result = Attribute.GetCustomAttributes(member, true);
 				if (member.DeclaringType != null && !member.DeclaringType.IsInterface)
@@ -205,9 +206,26 @@ namespace Duality
 						}
 					}
 				}
-				customAttributeCache[member] = result;
+				customMemberAttribCache[member] = result;
 			}
 			return result.OfType<T>();
+		}
+		/// <summary>
+		/// Returns all custom attributes of the specified Type that are declared at Assembly-level
+		/// within any of the currently available Duality Assemblies.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public static IEnumerable<T> GetCustomAssemblyAttributes<T>() where T : Attribute
+		{
+			if (customAssemblyAttribCache == null)
+			{
+				customAssemblyAttribCache = 
+					DualityApp.GetDualityAssemblies()
+					.SelectMany(a => Attribute.GetCustomAttributes(a, true))
+					.ToArray();
+			}
+			return customAssemblyAttribCache.OfType<T>();
 		}
 
 		/// <summary>
@@ -271,7 +289,7 @@ namespace Duality
 				}
 			}
 			// Complex objects
-			else if (!objType.IsPrimitiveExt())
+			else
 			{
 				// Explore fields
 				var fields = objType.GetAllFields(BindInstanceAll);
@@ -289,8 +307,12 @@ namespace Duality
 		{
 			if (baseType.IsAssignableFrom(type)) return true;
 			if (type.IsPrimitiveExt()) return false;
-			if (visitedTypes == null) visitedTypes = new HashSet<Type>();
-			if (visitedTypes.Contains(type)) return false;
+			if (typeof(MemberInfo).IsAssignableFrom(type)) return false;
+
+			if (visitedTypes == null)
+				visitedTypes = new HashSet<Type>();
+			else if (visitedTypes.Contains(type))
+				return false;
 			visitedTypes.Add(type);
 
 			// Check element type
@@ -408,31 +430,35 @@ namespace Duality
 		/// </summary>
 		/// <param name="baseObj"></param>
 		/// <returns></returns>
-		public static bool IsDeepByValueType(this Type type)
+		public static bool IsPlainOldData(this Type type)
 		{
+			if (type.IsArray) return false;
 			if (type.IsPrimitiveExt()) return true;
 			if (type.IsClass) return false;
 
-			bool deepByValType;
-			if (deepByValTypeCache.TryGetValue(type, out deepByValType))
-				return deepByValType;
+			bool isPlainOldData;
+			if (plainOldDataTypeCache.TryGetValue(type, out isPlainOldData))
+			{
+				return isPlainOldData;
+			}
 			else
 			{
-				deepByValType = true;
+				isPlainOldData = true;
 				foreach (FieldInfo field in type.GetAllFields(ReflectionHelper.BindInstanceAll))
 				{
-					if (!IsDeepByValueType(field.FieldType))
+					if (!IsPlainOldData(field.FieldType))
 					{
-						deepByValType = false;
+						isPlainOldData = false;
 						break;
 					}
 				}
-				deepByValTypeCache[type] = deepByValType;
-				return deepByValType;
+				plainOldDataTypeCache[type] = isPlainOldData;
+				return isPlainOldData;
 			}
 		}
 		/// <summary>
-		/// Returns whether the specified type is primitive or similar (like enums, srtings, decimals, etc.).
+		/// Returns whether the specified Type acts as a primitive. Unline <see cref="System.Type.IsPrimitive"/>, this method
+		/// also returns true for Enums, Strings and Decimals.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -442,8 +468,6 @@ namespace Duality
 			if (type.IsEnum) return true;
 			if (type == typeof(string)) return true;
 			if (type == typeof(decimal)) return true;
-			if (typeof(MemberInfo).IsAssignableFrom(type)) return true;
-			if (typeof(IContentRef).IsAssignableFrom(type)) return true;
 
 			return false;
 		}
@@ -577,10 +601,11 @@ namespace Duality
 			serializeTypeCache.Clear();
 			typeResolveCache.Clear();
 			memberResolveCache.Clear();
-			deepByValTypeCache.Clear();
+			plainOldDataTypeCache.Clear();
 			serializeHandlerCache.Clear();
 			resRefCache.Clear();
-			customAttributeCache.Clear();
+			customMemberAttribCache.Clear();
+			customAssemblyAttribCache = null;
 		}
 		/// <summary>
 		/// Resolves a Type based on its <see cref="GetTypeId">type id</see>.

@@ -57,7 +57,7 @@ namespace Duality.Editor.UndoRedoActions
 
 				this.backupLink[i].Obj.LinkToPrefab(this.backupLink[i].Prefab);
 				PrefabLink link = this.backupLink[i].Obj.PrefabLink;
-				CloneProvider.DeepCopyTo(this.backupLink[i], link, BackupCloneContext);
+				CloneProvider.DeepCopy(this.backupLink[i], link, BackupCloneContext);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetObj), ReflectionInfo.Property_GameObject_PrefabLink);

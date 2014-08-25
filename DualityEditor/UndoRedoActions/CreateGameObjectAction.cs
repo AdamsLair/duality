@@ -48,7 +48,7 @@ namespace Duality.Editor.UndoRedoActions
 			else
 			{
 				for (int i = 0; i < this.sourceObj.Length; i++)
-					CloneProvider.DeepCopyTo(this.sourceObj[i], this.targetObj[i], BackupCloneContext);
+					CloneProvider.DeepCopy(this.sourceObj[i], this.targetObj[i], BackupCloneContext);
 			}
 
 			for (int i = 0; i < this.targetObj.Length; i++)

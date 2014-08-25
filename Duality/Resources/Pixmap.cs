@@ -227,7 +227,7 @@ namespace Duality.Resources
 			public void CopyTo(Layer target)
 			{
 				if (target == null) throw new ArgumentNullException("target");
-				Duality.Cloning.CloneProvider.DeepCopyTo(this, target);
+				Duality.Cloning.CloneProvider.DeepCopy(this, target);
 			}
 
 			/// <summary>

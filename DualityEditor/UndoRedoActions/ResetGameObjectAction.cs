@@ -58,13 +58,13 @@ namespace Duality.Editor.UndoRedoActions
 			List<PrefabLink> affectedLinks = new List<PrefabLink>();
 			for (int i = this.backupObj.Length - 1; i >= 0; i--)
 			{
-				CloneProvider.DeepCopyTo(this.backupObj[i], this.targetObj[i], BackupCloneContext);
+				CloneProvider.DeepCopy(this.backupObj[i], this.targetObj[i], BackupCloneContext);
 				if (this.backupLink[i] != null && 
 					this.backupLink[i].Obj != null && 
 					this.backupLink[i].Obj.PrefabLink != null)
 				{
 					PrefabLink link = this.backupLink[i].Obj.PrefabLink;
-					CloneProvider.DeepCopyTo(this.backupLink[i], link, BackupCloneContext);
+					CloneProvider.DeepCopy(this.backupLink[i], link, BackupCloneContext);
 					affectedLinks.Add(link);
 				}
 			}

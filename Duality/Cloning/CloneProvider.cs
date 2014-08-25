@@ -9,9 +9,20 @@ namespace Duality.Cloning
 {
 	public class CloneProvider
 	{
-		private Dictionary<object, object>	objToClone		= new Dictionary<object,object>();
-		private	List<Type>					explicitUnwrap	= new List<Type>();
-		private	CloneProviderContext		context			= CloneProviderContext.Default;
+		private struct LocalBehaviorLock
+		{
+			public int Index;
+			public CloneBehaviorAttribute LockedAttribute;
+		}
+
+		private	CloneProviderContext			context				= CloneProviderContext.Default;
+
+		private	object							sourceRoot			= null;
+		private	Dictionary<object,object>		objTargets			= new Dictionary<object,object>();
+		private	HashSet<object>					handledObjects		= new HashSet<object>();
+		private	HashSet<object>					dropWeakReferences	= new HashSet<object>();
+		private	List<CloneBehaviorAttribute>	localBehavior		= new List<CloneBehaviorAttribute>();
+		private	List<LocalBehaviorLock>			localBehaviorLocks	= new List<LocalBehaviorLock>();
 		
 
 		/// <summary>
@@ -21,14 +32,6 @@ namespace Duality.Cloning
 		{
 			get { return this.context; }
 		}
-		/// <summary>
-		/// [GET / SET] When set, this CloneProvider will not unwrap any value that isn't assignable to one of the 
-		/// specified Types, essentially shallow-copying all except them.
-		/// </summary>
-		public List<Type> ExplicitUnwrap
-		{
-			get { return this.explicitUnwrap; }
-		}
 		
 
 		public CloneProvider(CloneProviderContext context = null)
@@ -36,190 +39,293 @@ namespace Duality.Cloning
 			if (context != null) this.context = context;
 		}
 
-
-		/// <summary>
-		/// Clears all existing object mappings.
-		/// </summary>
-		public void ClearObjectMap()
+		public T CloneObject<T>(T source)
 		{
-			this.objToClone.Clear();
-		}
-		/// <summary>
-		/// Requests the clone(d) object mapped to the specified base object.
-		/// </summary>
-		/// <param name="baseObj"></param>
-		/// <returns></returns>
-		public T RequestObjectClone<T>(T baseObj)
-		{
-			if (baseObj == null) return default(T);
-
-			object clone;
-			if (this.objToClone.TryGetValue(baseObj, out clone)) return (T)clone;
-
-			return (T)this.CloneObject(baseObj);
-		}
-		/// <summary>
-		/// Returns an already registered clone object, if existing.
-		/// </summary>
-		/// <param name="baseObj"></param>
-		/// <returns></returns>
-		public T GetRegisteredObjectClone<T>(T baseObj)
-		{
-			if (baseObj == null) return default(T);
-
-			object clone;
-			if (this.objToClone.TryGetValue(baseObj, out clone)) return (T)clone;
-
-			return default(T);
-		}
-		/// <summary>
-		/// Returns whether the specified object is a registered original / base object.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		public bool IsOriginalObject(object obj)
-		{
-			return obj != null ? this.objToClone.ContainsKey(obj) : false;
-		}
-		/// <summary>
-		/// Returns whether the specified object is a registered clone object.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		public bool IsCloneObject(object obj)
-		{
-			return obj != null ? this.objToClone.ContainsValue(obj) : false;
-		}
-		/// <summary>
-		/// Copies the base objects data to the specified target object.
-		/// </summary>
-		/// <param name="baseObj"></param>
-		/// <param name="targetObj"></param>
-		/// <param name="fields"></param>
-		public void CopyObjectTo<T>(T baseObj, T targetObj, IEnumerable<FieldInfo> fields = null)
-		{
-			if (fields == null)
+			object target; // Don't use T, we'll need to make sure "target" is a reference Type
+			try
 			{
-				Type objType = baseObj.GetType();
-				if (!this.DoesUnwrapType(objType)) return;
-
-				// IClonables
-				if (baseObj is ICloneExplicit)
-				{
-					(baseObj as ICloneExplicit).CopyDataTo(targetObj, this);
-					return;
-				}
-
-				// ISurrogate
-				ICloneSurrogate surrogate = GetSurrogateFor(objType);
-				if (surrogate != null)
-				{
-					surrogate.RealObject = baseObj;
-					surrogate.CopyDataTo(targetObj, this);
-					return;
-				}
-
-				fields = objType.GetAllFields(ReflectionHelper.BindInstanceAll);
+				target = this.BeginCloneOperation(source);
+				this.PerformCopyTo(source, target);
 			}
-			foreach (FieldInfo f in fields)
-				f.SetValue(targetObj, this.RequestObjectClone(f.GetValue(baseObj)));
+			finally
+			{
+				this.EndCloneOperation();
+			}
+			return (T)target;
 		}
-		/// <summary>
-		/// Registers a new base-clone mapping.
-		/// </summary>
-		/// <param name="baseObj"></param>
-		/// <param name="clone"></param>
-		public void RegisterObjectClone<T>(T baseObj, T clone)
+		public void CopyObject<T>(T source, T target)
 		{
-			if (baseObj == null) throw new ArgumentNullException("baseObj");
-			if (clone == null) throw new ArgumentNullException("clone");
-			this.objToClone[baseObj] = clone;
+			try
+			{
+				this.BeginCloneOperation(source, target);
+				this.PerformCopyTo(source, target);
+			}
+			finally
+			{
+				this.EndCloneOperation();
+			}
 		}
 		
-		private bool DoesUnwrapType(Type type)
+		private object BeginCloneOperation(object source, object target = null)
 		{
-			bool unwrap = !type.IsDeepByValueType();
-			if (this.explicitUnwrap.Count > 0)
-			{
-				unwrap = unwrap && type.IsValueType;
-				if (!unwrap) unwrap = this.explicitUnwrap.Any(t => t.IsAssignableFrom(type));
-			}
-			return unwrap;
+			this.sourceRoot = source;
+			this.SetTargetOf(source, target);
+			this.PrepareCloneGraph();
+			this.GetTargetOf(source, out target);
+			return target;
 		}
-		private object CloneObject(object baseObj)
+		private void EndCloneOperation()
 		{
-			Type objType = baseObj.GetType();
-			if (!this.DoesUnwrapType(objType)) return baseObj;
+			this.sourceRoot = null;
+			this.objTargets.Clear();
+			this.localBehavior.Clear();
+			this.localBehaviorLocks.Clear();
+			this.handledObjects.Clear();
+			this.dropWeakReferences.Clear();
+		}
 
-			// IClonables
-			if (baseObj is ICloneExplicit)
+		private void SetTargetOf(object source, object target)
+		{
+			if (object.ReferenceEquals(source, null)) return;
+			if (object.ReferenceEquals(target, null)) return;
+			this.objTargets[source] = target;
+		}
+		private bool GetTargetOf(object source, out object target)
+		{
+			if (object.ReferenceEquals(source, null))
 			{
-				object copy = objType.CreateInstanceOf() ?? objType.CreateInstanceOf(true);
-				if (objType.IsClass) this.RegisterObjectClone(baseObj, copy);
-				(baseObj as ICloneExplicit).CopyDataTo(copy, this);
-				return copy;
+				target = null;
+				return true;
 			}
 
-			// ISurrogate
-			ICloneSurrogate surrogate = GetSurrogateFor(objType);
-			if (surrogate != null)
+			if (!this.objTargets.TryGetValue(source, out target))
 			{
-				surrogate.RealObject = baseObj;
-				object copy = surrogate.CreateTargetObject(this);
-				if (objType.IsClass) this.RegisterObjectClone(baseObj, copy);
-				surrogate.CopyDataTo(copy, this);
-				return copy;
-			}
-
-			// Shallow types, cloned by assignment
-			if (objType.IsDeepByValueType())
-			{
-				return baseObj;
-			}
-			// Arrays
-			else if (objType.IsArray)
-			{
-				Array baseArray = (Array)baseObj;
-				Type elemType = objType.GetElementType();
-				int length = baseArray.Length;
-				Array copy = Array.CreateInstance(elemType, length);
-				this.RegisterObjectClone(baseObj, copy);
-
-				bool unwrap = this.DoesUnwrapType(elemType);
-				if (unwrap)
+				if (this.dropWeakReferences.Contains(source))
 				{
-					for (int i = 0; i < length; ++i)
-						copy.SetValue(this.RequestObjectClone(baseArray.GetValue(i)), i);
+					target = null;
+					return false;
 				}
-				else if (!elemType.IsValueType)
+				target = source;
+			}
+			return true;
+		}
+		/// <summary>
+		/// Flags the specified object as being already handled during the current clone operation.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns>True, if the object is now handled for the first time, false if it has already been handled.</returns>
+		private bool HandleObject(object source)
+		{
+			if (this.handledObjects.Contains(source)) return false;
+			this.handledObjects.Add(source);
+			return true;
+		}
+
+		private void PrepareCloneGraph()
+		{
+			// Visit the object graph in order to determine which objects to clone
+			this.PrepareCloneGraph(this.sourceRoot);
+
+			// Determine which weak references to keep
+			if (this.dropWeakReferences.Count > 0)
+			{
+				foreach (object source in this.objTargets.Keys)
 				{
-					for (int i = 0; i < length; ++i)
+					this.dropWeakReferences.Remove(source);
+					if (this.dropWeakReferences.Count == 0) break;
+				}
+			}
+		}
+		private void PrepareCloneGraph(object source)
+		{
+			// Early-out for null values
+			if (object.ReferenceEquals(source, null)) return;
+			
+			// Determine the object Type and early-out if it's just plain old data
+			Type sourceType = source.GetType();
+			if (this.CanCloneByAssignment(sourceType)) return;
+
+			// Has a target object already been registered for this source? If this is the case, stop.
+			object target;
+			if (this.objTargets.TryGetValue(source, out target))
+				return;
+
+			// When cloning as reference, don't create a new instance or target entry, so it will be assigned later
+			if (!object.ReferenceEquals(source, this.sourceRoot))
+			{
+				CloneBehavior behavior = this.LockCloneBehavior(sourceType);
+				if (behavior != CloneBehavior.ChildObject)
+				{
+					if (behavior == CloneBehavior.WeakReference)
 					{
-						object obj = baseArray.GetValue(i);
-						copy.SetValue(this.GetRegisteredObjectClone(obj) ?? obj, i);
+						this.dropWeakReferences.Add(source);
+					}
+					this.UnlockCloneBehavior();
+					return;
+				}
+			}
+
+			// If it's an array, we'll need to traverse its elements
+			if (sourceType.IsArray)
+			{
+				Array sourceArray = source as Array;
+				Type sourceElementType = sourceType.GetElementType();
+
+				target = Array.CreateInstance(sourceElementType, sourceArray.Length);
+				this.SetTargetOf(source, target);
+
+				// Traverse the arrays elements
+				if (!this.CanCloneByAssignment(sourceElementType))
+				{
+					for (int i = 0; i < sourceArray.Length; i++)
+					{
+						this.PrepareCloneGraph(sourceArray.GetValue(i));
+					}
+				}
+			}
+			// If it's an object, we'll need to traverse its fields
+			else
+			{
+				target = sourceType.CreateInstanceOf() ?? sourceType.CreateInstanceOf(true);
+				this.SetTargetOf(source, target);
+
+				// Traverse the objects fields
+				IEnumerable<FieldInfo> fields = sourceType.GetAllFields(ReflectionHelper.BindInstanceAll);
+				foreach (FieldInfo field in fields)
+				{
+					// See if there are specific instructions on how to handle this
+					CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+					this.PushCloneBehavior(behaviorAttrib);
+					{
+						// Handle the fields value
+						this.PrepareCloneGraph(field.GetValue(source));
+					}
+					this.PopCloneBehavior(behaviorAttrib);
+				}
+			}
+
+			this.UnlockCloneBehavior();
+		}
+		private void PerformCopyTo(object source, object target)
+		{
+			// Early-out for null and same-instance values
+			if (object.ReferenceEquals(source, null)) return;
+			if (object.ReferenceEquals(source, target)) return;
+
+			// Determine the object Type in order to decide what's next
+			Type sourceType = source.GetType();
+
+			// Plain old (struct) data can be deep-copied by assignment
+			if (this.CanCloneByAssignment(sourceType))
+			{
+				target = source;
+			}
+			// Arrays will need to be traversed, unless consisting of plain old data
+			else if (sourceType.IsArray)
+			{
+				if (!this.HandleObject(source)) return;
+
+				Array sourceArray = source as Array;
+				Array targetArray = target as Array;
+				Type sourceElementType = sourceType.GetElementType();
+
+				if (!this.CanCloneByAssignment(sourceElementType))
+				{
+					for (int i = 0; i < sourceArray.Length; ++i)
+					{
+						object sourceElement = sourceArray.GetValue(i);
+						object targetElement;
+						if (this.GetTargetOf(sourceElement, out targetElement))
+						{
+							this.PerformCopyTo(sourceElement, targetElement);
+							targetArray.SetValue(targetElement, i);
+						}
 					}
 				}
 				else
 				{
-					baseArray.CopyTo(copy, 0);
+					sourceArray.CopyTo(targetArray, 0);
 				}
-
-				return copy;
 			}
-			// Reference types / complex objects
+			// Objects will need to be traversed field by field
 			else
 			{
-				object copy = objType.CreateInstanceOf() ?? objType.CreateInstanceOf(true);
-				if (objType.IsClass) this.RegisterObjectClone(baseObj, copy);
+				if (!this.HandleObject(source)) return;
 
-				this.CopyObjectTo(baseObj, copy, objType.GetAllFields(ReflectionHelper.BindInstanceAll));
-
-				return copy;
+				IEnumerable<FieldInfo> fields = sourceType.GetAllFields(ReflectionHelper.BindInstanceAll);
+				foreach (FieldInfo field in fields)
+				{
+					object sourceFieldValue = field.GetValue(source);
+					object targetFieldValue;
+					if (this.GetTargetOf(sourceFieldValue, out targetFieldValue))
+					{
+						this.PerformCopyTo(sourceFieldValue, targetFieldValue);
+						field.SetValue(target, targetFieldValue);
+					}
+				}
 			}
 		}
 
+		private void PushCloneBehavior(CloneBehaviorAttribute localBehavior)
+		{
+			if (localBehavior == null) return;
+			this.localBehavior.Add(localBehavior);
+		}
+		private void PopCloneBehavior(CloneBehaviorAttribute localBehavior)
+		{
+			if (localBehavior == null) return;
+			this.localBehavior.Remove(localBehavior);
+		}
+		private CloneBehavior LockCloneBehavior(Type sourceType)
+		{
+			// Local behavior rules
+			CloneBehaviorAttribute behaviorAttribute = null;
+			for (int i = this.localBehavior.Count - 1; i >= 0; i--)
+			{
+				if (this.localBehavior[i].TargetType == null || this.localBehavior[i].TargetType.IsAssignableFrom(sourceType))
+				{
+					behaviorAttribute = this.localBehavior[i];
+					this.localBehaviorLocks.Add(new LocalBehaviorLock
+					{
+						Index = i,
+						LockedAttribute = behaviorAttribute
+					});
+					this.localBehavior.RemoveAt(i);
+					break;
+				}
+			}
 
-		private	static List<ICloneSurrogate>	surrogates	= null;
+			// Global behavior rules
+			if (behaviorAttribute == null)
+			{
+				behaviorAttribute = GetCloneBehaviorAttribute(sourceType);
+			}
+
+			// Results
+			return behaviorAttribute != null ? behaviorAttribute.Behavior : CloneBehavior.ChildObject;
+		}
+		private void UnlockCloneBehavior()
+		{
+			if (this.localBehaviorLocks.Count == 0) return;
+
+			LocalBehaviorLock behaviorLock = this.localBehaviorLocks[this.localBehaviorLocks.Count - 1];
+			if (behaviorLock.Index < this.localBehavior.Count)
+				this.localBehavior.Insert(behaviorLock.Index, behaviorLock.LockedAttribute);
+			else
+				this.localBehavior.Add(behaviorLock.LockedAttribute);
+
+			this.localBehaviorLocks.RemoveAt(this.localBehaviorLocks.Count - 1);
+		}
+
+		private bool CanCloneByAssignment(Type type)
+		{
+			return type.IsPlainOldData();
+		}
+
+
+		private	static List<ICloneSurrogate> surrogates = null;
+		private static CloneBehaviorAttribute[] globalCloneBehavior = null;
+
 		private static ICloneSurrogate GetSurrogateFor(Type type)
 		{
 			if (surrogates == null)
@@ -234,18 +340,31 @@ namespace Duality.Cloning
 			}
 			return surrogates.FirstOrDefault(s => s.MatchesType(type));
 		}
+		private static CloneBehaviorAttribute GetCloneBehaviorAttribute(Type type)
+		{
+			if (globalCloneBehavior == null)
+			{
+				globalCloneBehavior = ReflectionHelper.GetCustomAssemblyAttributes<CloneBehaviorAttribute>().ToArray();
+			}
+			for (int i = 0; i < globalCloneBehavior.Length; i++)
+			{
+				CloneBehaviorAttribute globalAttrib = globalCloneBehavior[i];
+				if (globalAttrib.TargetType.IsAssignableFrom(type))
+					return globalAttrib;
+			}
+			CloneBehaviorAttribute directAttrib = type.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+			return directAttrib;
+		}
 
 		public static T DeepClone<T>(T baseObj, CloneProviderContext context = null)
 		{
 			CloneProvider provider = new CloneProvider(context);
-			return (T)provider.RequestObjectClone(baseObj);
+			return (T)provider.CloneObject(baseObj);
 		}
-		public static void DeepCopyTo<T>(T baseObj, T targetObj, CloneProviderContext context = null)
+		public static void DeepCopy<T>(T baseObj, T targetObj, CloneProviderContext context = null)
 		{
-			Type objType = baseObj.GetType();
 			CloneProvider provider = new CloneProvider(context);
-			if (objType.IsClass) provider.RegisterObjectClone(baseObj, targetObj);
-			provider.CopyObjectTo(baseObj, targetObj);
+			provider.CopyObject(baseObj, targetObj);
 		}
 
 		internal static void PerformReflectionFallback<T>(string copyMethodName, T baseObj, T targetObj, CloneProvider provider)
@@ -253,9 +372,6 @@ namespace Duality.Cloning
 			if (copyMethodName == null) throw new ArgumentNullException("copyMethodName");
 			if (baseObj == null) throw new ArgumentNullException("baseObj");
 			if (targetObj == null) throw new ArgumentNullException("targetObj");
-
-			// Use explicit unwrapping: Only unwrap (deep-copy) collection types, shallow-copy others.
-			provider.ExplicitUnwrap.Add(typeof(System.Collections.ICollection));
 
 			// Travel up the inheritance hierarchy
 			// Don't fallback for types from the Duality Assembly. Those are required to do explicit copying.
@@ -272,21 +388,19 @@ namespace Duality.Cloning
 				// Apply default behaviour to any class that doesn't have its own OnCopyTo override
 				if (localOnCopyTo == null)
 				{
-					provider.CopyObjectTo(
-						baseObj, 
-						targetObj, 
-						curType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
+					//provider.CopyObject(
+					//    baseObj, 
+					//    targetObj, 
+					//    curType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
 				}
 
 				curType = curType.BaseType;
 			}
-
-			// Deactivate explicit unwrapping again
-			provider.ExplicitUnwrap.Remove(typeof(System.Collections.ICollection));
 		}
 		internal static void ClearTypeCache()
 		{
 			surrogates = null;
+			globalCloneBehavior = null;
 		}
 	}
 
@@ -298,7 +412,7 @@ namespace Duality.Cloning
 		}
 		public static void DeepCopyTo<T>(this T baseObj, T targetObj, CloneProviderContext context = null)
 		{
-			CloneProvider.DeepCopyTo<T>(baseObj, targetObj, context);
+			CloneProvider.DeepCopy<T>(baseObj, targetObj, context);
 		}
 	}
 }

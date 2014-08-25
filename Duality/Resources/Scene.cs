@@ -9,6 +9,7 @@ using FarseerPhysics.Dynamics;
 using Duality.Editor;
 using Duality.Components;
 using Duality.Serialization;
+using Duality.Cloning;
 using Duality.Properties;
 using Duality.Drawing;
 
@@ -237,9 +238,13 @@ namespace Duality.Resources
 
 		private	Vector2			globalGravity	= Vector2.UnitY * 33.0f;
 		private	GameObject[]	serializeObj	= null;
-		[NonSerialized] private	GameObjectManager					objectManager		= new GameObjectManager();
-		[NonSerialized] private	List<Component>						renderers			= new List<Component>();
-		[NonSerialized] private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
+		[NonSerialized]
+		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
+		private	GameObjectManager					objectManager		= new GameObjectManager();
+		[NonSerialized]
+		private	List<Component>						renderers			= new List<Component>();
+		[NonSerialized]
+		private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
 
 
 		/// <summary>
@@ -814,21 +819,22 @@ namespace Duality.Resources
 
 			// Copy objects
 			s.objectManager.Clear();
-			foreach (GameObject obj in this.RootObjects)
-			{
-				if (provider.GetRegisteredObjectClone(obj) != null)
-					continue;
+			#pragma warning TODO CLONING
+			//foreach (GameObject obj in this.RootObjects)
+			//{
+			//    if (provider.GetRegisteredObjectClone(obj) != null)
+			//        continue;
 
-				GameObject clone = new GameObject();
-				provider.RegisterObjectClone(obj, clone);
-				obj.PrepassCopyData(clone, provider);
-			}
-			foreach (GameObject obj in this.RootObjects)
-			{
-				GameObject clone = provider.GetRegisteredObjectClone(obj);
-				provider.CopyObjectTo(obj, clone);
-				s.objectManager.AddObject(clone);
-			}
+			//    GameObject clone = new GameObject();
+			//    provider.RegisterObjectClone(obj, clone);
+			//    obj.PrepassCopyData(clone, provider);
+			//}
+			//foreach (GameObject obj in this.RootObjects)
+			//{
+			//    GameObject clone = provider.GetRegisteredObjectClone(obj);
+			//    provider.CopyObjectTo(obj, clone);
+			//    s.objectManager.AddObject(clone);
+			//}
 		}
 		protected override void OnSaving(string saveAsPath)
 		{

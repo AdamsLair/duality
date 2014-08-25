@@ -14,6 +14,8 @@ namespace Duality.Cloning.Surrogates
 		}
 		public override Delegate CreateTargetObject(CloneProvider provider)
 		{
+			#pragma warning TODO CLONING
+
 			Type delType = this.RealObject.GetType();
 			Delegate[] baseInvokeList = this.RealObject.GetInvocationList();
 			Delegate[] cloneInvokeList = new Delegate[baseInvokeList.Length];
@@ -24,18 +26,18 @@ namespace Duality.Cloning.Surrogates
 				cloneInvokeList[i] = baseInvokeList[i].Clone() as Delegate;
 
 				// Register the new delegate
-				provider.RegisterObjectClone(baseInvokeList[i], cloneInvokeList[i]);
+				//provider.RegisterObjectClone(baseInvokeList[i], cloneInvokeList[i]);
 
 				// Adjust target to reference a clone.
 				if (cloneInvokeList[i] != null)
 				{
 					FieldInfo targetField = delType.GetField("_target", ReflectionHelper.BindInstanceAll);
-					targetField.SetValue(cloneInvokeList[i], provider.RequestObjectClone(cloneInvokeList[i].Target));
+					targetField.SetValue(cloneInvokeList[i], provider.CloneObject(cloneInvokeList[i].Target));
 				}
 			}
 
 			Delegate result = Delegate.Combine(cloneInvokeList);
-			provider.RegisterObjectClone(this.RealObject, result);
+			//provider.RegisterObjectClone(this.RealObject, result);
 			return result;
 		}
 		public override void CopyDataTo(Delegate targetObj, CloneProvider provider)

@@ -72,6 +72,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
+    <Compile Include="Cloning\CloneBehavior.cs" />
+    <Compile Include="Cloning\DefaultCloneBehavior.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\Grid.cs" />

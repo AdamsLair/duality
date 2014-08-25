@@ -94,7 +94,7 @@ namespace Duality.Editor.UndoRedoActions
 
 				if (prefab == null) continue;
 
-				CloneProvider.DeepCopyTo(this.backupPrefab[i], prefab, BackupCloneContext);
+				CloneProvider.DeepCopy(this.backupPrefab[i], prefab, BackupCloneContext);
 				if (this.backupLink[i] == null)
 				{
 					this.targetObj[i].BreakPrefabLink();

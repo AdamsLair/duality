@@ -168,7 +168,7 @@ namespace Duality.Resources
 		{
 			base.OnCopyTo(r, provider);
 			Prefab c = r as Prefab;
-			c.objTree = provider.RequestObjectClone(this.objTree);
+			c.objTree = provider.CloneObject(this.objTree);
 		}
 	}
 
@@ -214,13 +214,6 @@ namespace Duality.Resources
 
 				return string.Format("VarMod: {0}.{1} = {2}", childStr, propStr, valueStr);
 			}
-		}
-
-		private static readonly CloneProvider changeListValueCloneProvider;
-		static PrefabLink()
-		{
-			changeListValueCloneProvider = new CloneProvider();
-			changeListValueCloneProvider.ExplicitUnwrap.Add(typeof(System.Collections.ICollection));
 		}
 
 
@@ -485,8 +478,7 @@ namespace Duality.Resources
 			object changeVal = prop.GetValue(target, null);
 
 			// Clone the changelist entry value
-			changeListValueCloneProvider.ClearObjectMap();
-			changeVal = changeListValueCloneProvider.RequestObjectClone(changeVal);
+			changeVal = changeVal.DeepClone();
 
 			this.PushChange(target, prop, changeVal);
 		}

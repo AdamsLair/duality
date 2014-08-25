@@ -54,6 +54,7 @@ namespace Duality
 	/// Also, a Component may not belong to multiple GameObjects at once.
 	/// </summary>
 	[Serializable]
+	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
 	public abstract class Component : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
 	{
@@ -103,6 +104,7 @@ namespace Duality
 		}
 
 
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		internal	GameObject		gameobj		= null;
 		private		InitState		initState	= InitState.Initialized;
 		private		bool			active		= true;
@@ -217,7 +219,7 @@ namespace Duality
 		/// <param name="target">The target Component to copy to.</param>
 		public void CopyTo(Component target)
 		{
-			CloneProvider.DeepCopyTo(this, target);
+			CloneProvider.DeepCopy(this, target);
 		}
 		/// <summary>
 		/// This method Performs the <see cref="CopyTo"/> operation for custom Component Types.

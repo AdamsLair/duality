@@ -170,7 +170,7 @@ namespace Duality.Components.Physics
 		}
 		public void CopyTo(ShapeInfo other)
 		{
-			Cloning.CloneProvider.DeepCopyTo(this, other);
+			Cloning.CloneProvider.DeepCopy(this, other);
 		}
 
 		void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)

@@ -52,7 +52,7 @@ namespace Duality.Editor.UndoRedoActions
 			if (this.backupObj == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");
 			for (int i = this.backupObj.Length - 1; i >= 0; i--)
 			{
-				CloneProvider.DeepCopyTo(this.backupObj[i], this.targetObj[i], BackupCloneContext);
+				CloneProvider.DeepCopy(this.backupObj[i], this.targetObj[i], BackupCloneContext);
 				this.targetObj[i].GameObj = this.backupParentObj[i];
 				DebugCheckParent(this.targetObj[i], this.backupParentObj[i]);
 			}
