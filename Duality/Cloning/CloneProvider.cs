@@ -48,8 +48,6 @@ namespace Duality.Cloning
 
 		public T CloneObject<T>(T source)
 		{
-			var w = System.Diagnostics.Stopwatch.StartNew();
-
 			object target; // Don't use T, we'll need to make sure "target" is a reference Type
 			try
 			{
@@ -60,16 +58,10 @@ namespace Duality.Cloning
 			{
 				this.EndCloneOperation();
 			}
-
-			w.Stop();
-			Log.Core.Write("CloneObject({0}): {1:F} ms", source, w.Elapsed.TotalMilliseconds);
-
 			return (T)target;
 		}
 		public void CopyObject<T>(T source, T target)
 		{
-			var w = System.Diagnostics.Stopwatch.StartNew();
-
 			try
 			{
 				this.BeginCloneOperation(source, target);
@@ -79,9 +71,6 @@ namespace Duality.Cloning
 			{
 				this.EndCloneOperation();
 			}
-
-			w.Stop();
-			Log.Core.Write("CopyObject({0}): {1:F} ms", source, w.Elapsed.TotalMilliseconds);
 		}
 		
 		private object BeginCloneOperation(object source, object target = null)
