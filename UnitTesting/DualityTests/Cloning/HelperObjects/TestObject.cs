@@ -27,6 +27,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public List<string> ListField2;
 		public Dictionary<string,TestObject> DictField;
 			
+		public TestObject() {}
 		public TestObject(int childCount)
 		{
 			this.StringField	= CloneProviderTest.SharedRandom.Next().ToString();
