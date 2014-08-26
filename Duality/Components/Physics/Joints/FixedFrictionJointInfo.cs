@@ -69,14 +69,5 @@ namespace Duality.Components.Physics
 			j.MaxForce = PhysicsConvert.ToPhysicalUnit(this.maxForce) / Time.SPFMult;
 			j.MaxTorque = PhysicsConvert.ToPhysicalUnit(this.maxTorque) / Time.SPFMult;
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			FixedFrictionJointInfo c = target as FixedFrictionJointInfo;
-			c.localAnchor = this.localAnchor;
-			c.maxForce = this.maxForce;
-			c.maxTorque = this.maxTorque;
-		}
 	}
 }

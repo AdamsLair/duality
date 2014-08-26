@@ -156,20 +156,5 @@ namespace Duality.Components.Physics
 			j.UpperLimit = -this.lowerLimit;
 			j.ReferenceAngle = -this.refAngle;
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			RevoluteJointInfo c = target as RevoluteJointInfo;
-			c.localAnchorB = this.localAnchorB;
-			c.localAnchorA = this.localAnchorA;
-			c.motorSpeed = this.motorSpeed;
-			c.maxMotorTorque = this.maxMotorTorque;
-			c.motorEnabled = this.motorEnabled;
-			c.limitEnabled = this.limitEnabled;
-			c.lowerLimit = this.lowerLimit;
-			c.upperLimit = this.upperLimit;
-			c.refAngle = this.refAngle;
-		}
 	}
 }

@@ -7,10 +7,9 @@ using OpenTK;
 
 using Duality.Resources;
 using Duality.Cloning;
+using Duality.Serialization;
 using Duality.Editor;
 using Duality.Properties;
-
-using ICloneable = Duality.Cloning.ICloneExplicit;
 
 namespace Duality
 {
@@ -54,9 +53,9 @@ namespace Duality
 	/// Also, a Component may not belong to multiple GameObjects at once.
 	/// </summary>
 	[Serializable]
-	[CloneBehavior(CloneBehavior.Reference)]
+	[CloneBehavior(CloneMode.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
-	public abstract class Component : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
+	public abstract class Component : IManageableObject, IUniqueIdentifyable
 	{
 		/// <summary>
 		/// Describes the kind of initialization that can be performed on a Component
@@ -104,7 +103,7 @@ namespace Duality
 		}
 
 
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneBehavior(CloneMode.WeakReference)]
 		internal	GameObject		gameobj		= null;
 		private		InitState		initState	= InitState.Initialized;
 		private		bool			active		= true;
@@ -210,7 +209,7 @@ namespace Duality
 		/// <returns>A reference to a newly created deep copy of this Component.</returns>
 		public Component Clone()
 		{
-			return CloneProvider.DeepClone(this);
+			return this.DeepClone();
 		}
 		/// <summary>
 		/// Deep-copies this Components data to the specified target Component. If source and 
@@ -241,10 +240,6 @@ namespace Duality
 
 			// If any derived Component type doesn't override OnCopyTo, use a reflection-driven default behavior.
 			CloneProvider.PerformReflectionFallback("OnCopyTo", this, target, provider);
-		}
-		void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
-		{
-			this.OnCopyTo(targetObj as Component, provider);
 		}
 
 		/// <summary>

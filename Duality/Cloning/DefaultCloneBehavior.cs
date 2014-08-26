@@ -6,4 +6,4 @@ using System.Reflection;
 
 using Duality.Cloning;
 
-[assembly: CloneBehavior(typeof(MemberInfo), CloneBehavior.Reference)]
+[assembly: CloneBehavior(typeof(MemberInfo), CloneMode.Reference)]

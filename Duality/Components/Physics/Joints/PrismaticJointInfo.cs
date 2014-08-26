@@ -166,21 +166,5 @@ namespace Duality.Components.Physics
 			j.MotorSpeed = -PhysicsConvert.ToPhysicalUnit(this.motorSpeed) / Time.SPFMult;
 			j.MaxMotorForce = PhysicsConvert.ToPhysicalUnit(this.maxMotorForce) / Time.SPFMult;
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			PrismaticJointInfo c = target as PrismaticJointInfo;
-			c.localAnchorA = this.localAnchorA;
-			c.localAnchorB = this.localAnchorB;
-			c.moveAxis = this.moveAxis;
-			c.refAngle = this.refAngle;
-			c.limitEnabled = this.limitEnabled;
-			c.lowerLimit = this.lowerLimit;
-			c.upperLimit = this.upperLimit;
-			c.motorEnabled = this.motorEnabled;
-			c.motorSpeed = this.motorSpeed;
-			c.maxMotorForce = this.maxMotorForce;
-		}
 	}
 }

@@ -10,6 +10,7 @@ using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Resources;
 using Duality.Drawing;
+using Duality.Cloning;
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
@@ -24,7 +25,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	{
 		public static readonly Cursor ArrowCreateCircle		= CursorHelper.CreateCursor(CamViewResCache.CursorArrowCreateCircle, 0, 0);
 		public static readonly Cursor ArrowCreatePolygon	= CursorHelper.CreateCursor(CamViewResCache.CursorArrowCreatePolygon, 0, 0);
-		public static readonly Cursor ArrowCreateEdge		= CursorHelper.CreateCursor(CamViewResCache.CursorArrowCreateEdge, 0, 0);
 		public static readonly Cursor ArrowCreateLoop		= CursorHelper.CreateCursor(CamViewResCache.CursorArrowCreateLoop, 0, 0);
 
 		private enum CursorState
@@ -32,7 +32,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Normal,
 			CreateCircle,
 			CreatePolygon,
-		//	CreateEdge,
 			CreateLoop
 		}
 
@@ -43,7 +42,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private	ToolStrip			toolstrip			= null;
 		private	ToolStripButton		toolCreateCircle	= null;
 		private	ToolStripButton		toolCreatePoly		= null;
-	//	private	ToolStripButton		toolCreateEdge		= null;
 		private	ToolStripButton		toolCreateLoop		= null;
 
 		public override string StateName
@@ -80,11 +78,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.toolCreatePoly.DisplayStyle = ToolStripItemDisplayStyle.Image;
 			this.toolCreatePoly.AutoToolTip = true;
 			this.toolstrip.Items.Add(this.toolCreatePoly);
-
-		//	this.toolCreateEdge = new ToolStripButton("Create Edge Shape (E)", Properties.CamViewResCache.IconCmpEdgeCollider, this.toolCreateEdge_Clicked);
-		//	this.toolCreateEdge.DisplayStyle = ToolStripItemDisplayStyle.Image;
-		//	this.toolCreateEdge.AutoToolTip = true;
-		//	this.toolstrip.Items.Add(this.toolCreateEdge);
 
 			this.toolCreateLoop = new ToolStripButton("Create Loop Shape (L)", Properties.CamViewResCache.IconCmpLoopCollider, this.toolCreateLoop_Clicked);
 			this.toolCreateLoop.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -132,7 +125,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.toolCreateCircle.Enabled = this.selectedBody != null && this.mouseState == CursorState.Normal;
 			this.toolCreatePoly.Enabled = this.toolCreateCircle.Enabled;
-		//	this.toolCreateEdge.Enabled = this.toolCreateCircle.Enabled;
 			this.toolCreateLoop.Enabled = this.toolCreateCircle.Enabled && this.selectedBody.BodyType == BodyType.Static;
 		}
 
@@ -213,15 +205,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private ShapeInfo PickShape(RigidBody body, Vector2 worldCoord)
 		{
-			// Special case for EdgeShapes, because they are by definition unpickable
-		//	foreach (EdgeShapeInfo edge in body.Shapes.OfType<EdgeShapeInfo>())
-		//	{
-		//		Vector2 worldV1 = body.GameObj.Transform.GetWorldPoint(edge.VertexStart);
-		//		Vector2 worldV2 = body.GameObj.Transform.GetWorldPoint(edge.VertexEnd);
-		//		float dist = MathF.PointLineDistance(worldCoord.X, worldCoord.Y, worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-		//		if (dist < 5.0f) return edge;
-		//	}
-
 			// Special case for LoopShapes, because they are by definition unpickable
 			foreach (LoopShapeInfo loop in body.Shapes.OfType<LoopShapeInfo>())
 			{
@@ -243,44 +226,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Do a physical picking operation
 			List<ShapeInfo> result = body.PickShapes(worldCoord, worldSize);
-
-			// Special case for EdgeShapes, because they are by definition unpickable
-			//foreach (EdgeShapeInfo edge in body.Shapes.OfType<EdgeShapeInfo>())
-			//{
-			//    Vector2 worldV1 = body.GameObj.Transform.GetWorldPoint(edge.VertexStart);
-			//    Vector2 worldV2 = body.GameObj.Transform.GetWorldPoint(edge.VertexEnd);
-			//    bool hit = false;
-			//    hit = hit || MathF.LinesCross(
-			//        worldRect.TopLeft.X, 
-			//        worldRect.TopLeft.Y, 
-			//        worldRect.TopRight.X, 
-			//        worldRect.TopRight.Y, 
-			//        worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-			//    hit = hit || MathF.LinesCross(
-			//        worldRect.TopLeft.X, 
-			//        worldRect.TopLeft.Y, 
-			//        worldRect.BottomLeft.X, 
-			//        worldRect.BottomLeft.Y, 
-			//        worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-			//    hit = hit || MathF.LinesCross(
-			//        worldRect.BottomRight.X, 
-			//        worldRect.BottomRight.Y, 
-			//        worldRect.TopRight.X, 
-			//        worldRect.TopRight.Y, 
-			//        worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-			//    hit = hit || MathF.LinesCross(
-			//        worldRect.BottomRight.X, 
-			//        worldRect.BottomRight.Y, 
-			//        worldRect.BottomLeft.X, 
-			//        worldRect.BottomLeft.Y, 
-			//        worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-			//    hit = hit || worldRect.Contains(worldV1) || worldRect.Contains(worldV2);
-			//    if (hit)
-			//    {
-			//        result.Add(edge);
-			//        continue;
-			//    }
-			//}
 
 			// Special case for LoopShapes, because they are by definition unpickable
 			foreach (LoopShapeInfo loop in body.Shapes.OfType<LoopShapeInfo>())
@@ -376,7 +321,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			List<SelObj> result = new List<SelObj>();
 			if (objEnum.OfType<SelShape>().Any())
 			{
-				ShapeInfo[] selShapes = objEnum.OfType<SelShape>().Select(s => (s.ActualObject as ShapeInfo).Clone()).ToArray();
+				ShapeInfo[] selShapes = objEnum.OfType<SelShape>().Select(s => (s.ActualObject as ShapeInfo).DeepClone()).ToArray();
 				CreateRigidBodyShapeAction cloneAction = new CreateRigidBodyShapeAction(this.selectedBody, selShapes);
 				UndoRedoManager.Do(cloneAction);
 				result.AddRange(cloneAction.Result.Select(s => SelShape.Create(s)));
@@ -701,67 +646,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 				#endregion
 			}
-			//else if (this.mouseState == CursorState.CreateEdge)
-			//{
-			//    #region CreateEdge
-			//    if (e.Button == MouseButtons.Left)
-			//    {
-			//        bool success = false;
-			//        if (!this.allObjSel.Any(sel => sel is SelEdgeShape))
-			//        {
-			//            EdgeShapeInfo newShape = new EdgeShapeInfo(localPos, localPos + Vector2.UnitX);
-
-			//            this.selectedCollider.AddShape(newShape);
-			//            this.SelectObjects(new[] { SelShape.Create(newShape) });
-			//            success = true;
-			//        }
-			//        else
-			//        {
-			//            SelEdgeShape selEdgeShape = this.allObjSel.OfType<SelEdgeShape>().First();
-			//            EdgeShapeInfo edgeShape = selEdgeShape.ActualObject as EdgeShapeInfo;
-						
-			//            switch (this.createPolyIndex)
-			//            {
-			//                case 0:	edgeShape.VertexStart = localPos;	break;
-			//                case 1:	edgeShape.VertexEnd = localPos;		break;
-			//            }
-
-			//            selEdgeShape.UpdateEdgeStats();
-			//            success = true;
-			//        }
-
-			//        if (success)
-			//        {
-			//            this.createPolyIndex++;
-			//            DualityEditorApp.NotifyObjPropChanged(this,
-			//                new ObjectSelection(this.selectedCollider),
-			//                ReflectionInfo.Property_RigidBody_Shapes);
-
-			//            if (this.createPolyIndex >= 2)
-			//                this.LeaveCursorState();
-			//        }
-			//    }
-			//    else if (e.Button == MouseButtons.Right)
-			//    {
-			//        if (this.allObjSel.Any(sel => sel is SelEdgeShape))
-			//        {
-			//            SelEdgeShape selEdgeShape = this.allObjSel.OfType<SelEdgeShape>().First();
-			//            EdgeShapeInfo edgeShape = selEdgeShape.ActualObject as EdgeShapeInfo;
-
-			//            if (this.createPolyIndex < 1)
-			//                this.DeleteObjects(new SelEdgeShape[] { selEdgeShape });
-			//            else
-			//                selEdgeShape.UpdateEdgeStats();
-
-			//            DualityEditorApp.NotifyObjPropChanged(this,
-			//                new ObjectSelection(this.selectedCollider),
-			//                ReflectionInfo.Property_RigidBody_Shapes);
-			//        }
-
-			//        this.LeaveCursorState();
-			//    }
-			//    #endregion
-			//}
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -944,7 +828,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				else
 				{
 					foreach (SelPolyShape sps in this.allObjSel.OfType<SelPolyShape>()) sps.UpdatePolyStats();
-				//	foreach (SelEdgeShape sps in this.allObjSel.OfType<SelEdgeShape>()) sps.UpdateEdgeStats();
 					foreach (SelLoopShape sps in this.allObjSel.OfType<SelLoopShape>()) sps.UpdateLoopStats();
 					this.InvalidateSelectionStats();
 					this.Invalidate();

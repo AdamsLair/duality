@@ -69,14 +69,5 @@ namespace Duality.Components.Physics
 			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
 			j.ReferenceAngle = this.refAngle;
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			WeldJointInfo c = target as WeldJointInfo;
-			c.localAnchorA = this.localAnchorA;
-			c.localAnchorB = this.localAnchorB;
-			c.refAngle = this.refAngle;
-		}
 	}
 }

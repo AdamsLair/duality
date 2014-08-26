@@ -147,19 +147,5 @@ namespace Duality.Components.Physics
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			LineJointInfo c = target as LineJointInfo;
-			c.localAnchorB = this.localAnchorB;
-			c.localAnchorA = this.localAnchorA;
-			c.motorSpeed = this.motorSpeed;
-			c.maxMotorTorque = this.maxMotorTorque;
-			c.moveAxis = this.moveAxis;
-			c.motorEnabled = this.motorEnabled;
-			c.dampingRatio = this.dampingRatio;
-			c.frequency = this.frequency;
-		}
 	}
 }

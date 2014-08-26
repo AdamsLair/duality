@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 
 using Duality.Editor;
+using Duality.Cloning;
 using Duality.Properties;
 
 using OpenTK.Audio.OpenAL;
@@ -56,7 +57,9 @@ namespace Duality.Resources
 
 		private	byte[]	data			= null;
 		private	bool	forceStream		= false;
-		[NonSerialized]	private	int	alBuffer	= AlBuffer_NotAvailable;
+		[NonSerialized]
+		[CloneBehavior(CloneFlags.Skip)]
+		private	int		alBuffer		= AlBuffer_NotAvailable;
 
 		/// <summary>
 		/// [GET / SET] A data chunk representing Ogg Vorbis compressed

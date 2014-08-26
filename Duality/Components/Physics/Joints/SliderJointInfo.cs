@@ -83,15 +83,5 @@ namespace Duality.Components.Physics
 			j.MaxLength = PhysicsConvert.ToPhysicalUnit(this.maxLength);
 			j.MinLength = PhysicsConvert.ToPhysicalUnit(this.minLength);
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			SliderJointInfo c = target as SliderJointInfo;
-			c.localAnchorB = this.localAnchorB;
-			c.localAnchorA = this.localAnchorA;
-			c.maxLength = this.maxLength;
-			c.minLength = this.minLength;
-		}
 	}
 }

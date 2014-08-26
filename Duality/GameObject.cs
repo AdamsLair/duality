@@ -6,8 +6,7 @@ using Duality.Resources;
 using Duality.Cloning;
 using Duality.Editor;
 using Duality.Properties;
-
-using ICloneable = Duality.Cloning.ICloneExplicit;
+using Duality.Serialization;
 
 namespace Duality
 {
@@ -22,21 +21,22 @@ namespace Duality
 	/// <seealso cref="Duality.Resources.Scene"/>
 	/// <seealso cref="Duality.Resources.PrefabLink"/>
 	[Serializable]
-	[CloneBehavior(CloneBehavior.Reference)]
+	[CloneBehavior(CloneMode.Reference)]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageGameObject)]
-	public sealed class GameObject : IManageableObject, ICloneable, Serialization.IUniqueIdentifyable
+	public sealed class GameObject : IManageableObject, IUniqueIdentifyable
 	{
 		[NonSerialized] 
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneBehavior(CloneMode.WeakReference)]
 		private		Scene						scene		= null;
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneBehavior(CloneMode.WeakReference)]
 		private		GameObject					parent		= null;
 		private		PrefabLink					prefabLink	= null;
+		[CloneBehavior(CloneFlags.IdentityRelevant)]
 		private		Guid						identifier	= Guid.NewGuid();
-		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
+		[CloneBehavior(typeof(GameObject), CloneMode.ChildObject)]
 		private		List<GameObject>			children	= null;
-		[CloneBehavior(typeof(Component), CloneBehavior.ChildObject)]
+		[CloneBehavior(typeof(Component), CloneMode.ChildObject)]
 		private		List<Component>				compList	= new List<Component>();
 		private		Dictionary<Type,Component>	compMap		= new Dictionary<Type,Component>();
 		private		string						name		= string.Format("obj{0}", MathF.Rnd.Next());
@@ -47,13 +47,13 @@ namespace Duality
 		private		Components.Transform		compTransform	= null;
 		
 		[NonSerialized]
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneBehavior(CloneMode.WeakReference)]
 		private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
 		[NonSerialized]
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneBehavior(CloneMode.WeakReference)]
 		private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
 		[NonSerialized]
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneBehavior(CloneMode.WeakReference)]
 		private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
 
 
@@ -762,7 +762,7 @@ namespace Duality
 		/// <returns>A reference to a newly created deep copy of this GameObject.</returns>
 		public GameObject Clone()
 		{
-			return CloneProvider.DeepClone(this);
+			return this.DeepClone();
 		}
 		/// <summary>
 		/// Deep-copies this GameObject's data to the specified target GameObject.
@@ -770,48 +770,7 @@ namespace Duality
 		/// <param name="target">The target GameObject to copy to.</param>
 		public void CopyTo(GameObject target)
 		{
-			CloneProvider.DeepCopy(this, target);
-		}
-
-		void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
-		{
-			GameObject target = targetObj as GameObject;
-
-			// Copy the identifier only when not caring about identity data.
-			if (!provider.Context.PreserveIdentity)
-				target.identifier = this.identifier;
-
-			// Copy "pure" data
-			target.name			= this.name;
-			target.active		= this.active;
-			target.initState	= this.initState;
-
-			#warning TODO CLONING
-
-			// Copy component data, create missing components
-			//foreach (Component c in this.compList)
-			//{
-			//    provider.CopyObjectTo(c, provider.GetRegisteredObjectClone(c));
-			//}
-
-			//if (this.children != null)
-			//{
-			//    // Copy child data, create missing children
-			//    for (int i = 0; i < this.children.Count; i++)
-			//    {
-			//        GameObject thisChild	= this.children[i];
-			//        GameObject targetChild	= provider.GetRegisteredObjectClone(thisChild);
-			//        targetChild.Parent = target;
-			//        provider.CopyObjectTo(thisChild, targetChild);
-			//    }
-			//}
-
-			// Copy & maintain PrefabLink. Don't replace an existing link with null.
-			if (this.PrefabLink != null)
-			{
-				target.prefabLink = this.prefabLink.Clone(target);
-				target.PrefabLink.UpdateChanges();
-			}
+			this.DeepCopyTo(target);
 		}
 
 		internal void Update()

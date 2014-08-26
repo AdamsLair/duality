@@ -14,6 +14,22 @@ namespace Duality.Cloning
 			public int Index;
 			public CloneBehaviorAttribute LockedAttribute;
 		}
+		private struct LocalCloneBehavior : ICloneBehavior
+		{
+			public static readonly LocalCloneBehavior Default = new LocalCloneBehavior { Mode = CloneMode.ChildObject, Flags = CloneFlags.None };
+
+			public CloneMode Mode;
+			public CloneFlags Flags;
+
+			CloneMode ICloneBehavior.Mode
+			{
+				get { return this.Mode; }
+			}
+			CloneFlags ICloneBehavior.Flags
+			{
+				get { return this.Flags; }
+			}
+		}
 
 		private	CloneProviderContext			context				= CloneProviderContext.Default;
 
@@ -45,7 +61,7 @@ namespace Duality.Cloning
 			try
 			{
 				target = this.BeginCloneOperation(source);
-				this.PerformCopyTo(source, target);
+				this.PerformCopyObject(source, target);
 			}
 			finally
 			{
@@ -58,7 +74,7 @@ namespace Duality.Cloning
 			try
 			{
 				this.BeginCloneOperation(source, target);
-				this.PerformCopyTo(source, target);
+				this.PerformCopyObject(source, target);
 			}
 			finally
 			{
@@ -135,6 +151,9 @@ namespace Duality.Cloning
 					if (this.dropWeakReferences.Count == 0) break;
 				}
 			}
+
+			this.localBehavior.Clear();
+			this.localBehaviorLocks.Clear();
 		}
 		private void PrepareCloneGraph(object source)
 		{
@@ -150,13 +169,13 @@ namespace Duality.Cloning
 			if (this.objTargets.TryGetValue(source, out target))
 				return;
 
-			// When cloning as reference, don't create a new instance or target entry, so it will be assigned later
+			// Fetch the currently active clone behavior and react accordingly
 			if (!object.ReferenceEquals(source, this.sourceRoot))
 			{
-				CloneBehavior behavior = this.LockCloneBehavior(sourceType);
-				if (behavior != CloneBehavior.ChildObject)
+				ICloneBehavior behavior = this.LockCloneBehavior(sourceType);
+				if (behavior.Mode != CloneMode.ChildObject)
 				{
-					if (behavior == CloneBehavior.WeakReference)
+					if (behavior.Mode == CloneMode.WeakReference)
 					{
 						this.dropWeakReferences.Add(source);
 					}
@@ -206,7 +225,7 @@ namespace Duality.Cloning
 
 			this.UnlockCloneBehavior();
 		}
-		private void PerformCopyTo(object source, object target)
+		private void PerformCopyObject(object source, object target)
 		{
 			// Early-out for null and same-instance values
 			if (object.ReferenceEquals(source, null)) return;
@@ -237,7 +256,7 @@ namespace Duality.Cloning
 						object targetElement;
 						if (this.GetTargetOf(sourceElement, out targetElement))
 						{
-							this.PerformCopyTo(sourceElement, targetElement);
+							this.PerformCopyObject(sourceElement, targetElement);
 							targetArray.SetValue(targetElement, i);
 						}
 					}
@@ -255,15 +274,25 @@ namespace Duality.Cloning
 				IEnumerable<FieldInfo> fields = sourceType.GetAllFields(ReflectionHelper.BindInstanceAll);
 				foreach (FieldInfo field in fields)
 				{
-					object sourceFieldValue = field.GetValue(source);
-					object targetFieldValue;
-					if (this.GetTargetOf(sourceFieldValue, out targetFieldValue))
-					{
-						this.PerformCopyTo(sourceFieldValue, targetFieldValue);
-						field.SetValue(target, targetFieldValue);
-					}
+					this.PerformCopyField(source, target, field);
 				}
 			}
+		}
+		private void PerformCopyField(object source, object target, FieldInfo field)
+		{
+			// See if there are specific instructions on how to handle this
+			CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+			this.PushCloneBehavior(behaviorAttrib);
+			{
+				object sourceFieldValue = field.GetValue(source);
+				object targetFieldValue;
+				if (this.GetTargetOf(sourceFieldValue, out targetFieldValue))
+				{
+					this.PerformCopyObject(sourceFieldValue, targetFieldValue);
+					field.SetValue(target, targetFieldValue);
+				}
+			}
+			this.PopCloneBehavior(behaviorAttrib);
 		}
 
 		private void PushCloneBehavior(CloneBehaviorAttribute localBehavior)
@@ -276,7 +305,7 @@ namespace Duality.Cloning
 			if (localBehavior == null) return;
 			this.localBehavior.Remove(localBehavior);
 		}
-		private CloneBehavior LockCloneBehavior(Type sourceType)
+		private ICloneBehavior LockCloneBehavior(Type sourceType)
 		{
 			// Local behavior rules
 			CloneBehaviorAttribute behaviorAttribute = null;
@@ -302,7 +331,13 @@ namespace Duality.Cloning
 			}
 
 			// Results
-			return behaviorAttribute != null ? behaviorAttribute.Behavior : CloneBehavior.ChildObject;
+			return behaviorAttribute != null ? 
+				new LocalCloneBehavior 
+				{
+					Mode = behaviorAttribute.Mode, 
+					Flags = behaviorAttribute.Flags
+				} : 
+				LocalCloneBehavior.Default;
 		}
 		private void UnlockCloneBehavior()
 		{

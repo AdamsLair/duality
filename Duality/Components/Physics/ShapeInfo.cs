@@ -16,10 +16,12 @@ namespace Duality.Components.Physics
 	/// Describes a <see cref="RigidBody">Colliders</see> primitive shape. A Colliders overall shape may be combined of any number of primitive shapes.
 	/// </summary>
 	[Serializable]
-	public abstract class ShapeInfo : Duality.Cloning.ICloneExplicit
+	public abstract class ShapeInfo
 	{
 		[NonSerialized]	
+		[CloneBehavior(CloneMode.WeakReference)]
 		protected	Fixture		fixture		= null;
+		[CloneBehavior(CloneMode.WeakReference)]
 		private		RigidBody	parent		= null;
 		private		float		density		= 1.0f;
 		private		float		friction	= 0.3f;
@@ -146,37 +148,6 @@ namespace Duality.Components.Physics
 			this.fixture.IsSensor = this.sensor;
 			this.fixture.Restitution = this.restitution;
 			this.fixture.Friction = this.friction;
-		}
-
-		/// <summary>
-		/// Copies this ShapeInfos data to another one. It is assumed that both are of the same type.
-		/// </summary>
-		/// <param name="target"></param>
-		protected virtual void OnCopyTo(ShapeInfo target)
-		{
-			// Don't copy the parent!
-			target.density = this.density;
-			target.sensor = this.sensor;
-			target.friction = this.friction;
-			target.restitution = this.restitution;
-		}
-		/// <summary>
-		/// Clones the ShapeInfo.
-		/// </summary>
-		/// <returns></returns>
-		public ShapeInfo Clone()
-		{
-			return Cloning.CloneProvider.DeepClone(this);
-		}
-		public void CopyTo(ShapeInfo other)
-		{
-			Cloning.CloneProvider.DeepCopy(this, other);
-		}
-
-		void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
-		{
-			ShapeInfo targetShape = targetObj as ShapeInfo;
-			this.OnCopyTo(targetShape);
 		}
 	}
 }

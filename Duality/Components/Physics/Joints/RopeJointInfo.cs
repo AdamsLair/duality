@@ -73,14 +73,5 @@ namespace Duality.Components.Physics
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
 			j.MaxLength = PhysicsConvert.ToPhysicalUnit(this.maxLength);
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			RopeJointInfo c = target as RopeJointInfo;
-			c.localAnchorB = this.localAnchorB;
-			c.localAnchorA = this.localAnchorA;
-			c.maxLength = this.maxLength;
-		}
 	}
 }

@@ -68,12 +68,5 @@ namespace Duality.Components.Physics
 			GearJoint j = this.joint as GearJoint;
 			// j.Ratio = this.ratio; Can only be assigned during construction.
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			GearJointInfo c = target as GearJointInfo;
-			c.ratio = this.ratio;
-		}
 	}
 }

@@ -92,16 +92,5 @@ namespace Duality.Components.Physics
 			j.Frequency = this.frequency;
 			j.Length = PhysicsConvert.ToPhysicalUnit(this.length);
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			DistanceJointInfo c = target as DistanceJointInfo;
-			c.localAnchorB = this.localAnchorB;
-			c.localAnchorA = this.localAnchorA;
-			c.dampingRatio = this.dampingRatio;
-			c.frequency = this.frequency;
-			c.length = this.length;
-		}
 	}
 }

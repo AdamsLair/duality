@@ -47,54 +47,6 @@ namespace Duality.Tests.Cloning
 			Assert.IsTrue(data.Equals(dataResult));
 			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
-		[Test] public void CloneOwnership()
-		{
-			Random rnd = new Random();
-			OwnershipTestObject data = new OwnershipTestObject(rnd);
-
-			OwnershipTestObject dataResult = data.DeepClone();
-
-			Assert.IsTrue(data.Equals(dataResult));
-			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
-		}
-		[Test] public void CloneWeakReference()
-		{
-			WeakReferenceTestObject data = new WeakReferenceTestObject(new[]
-			{
-				new WeakReferenceTestObject(),
-				new WeakReferenceTestObject(new[]
-				{
-					new WeakReferenceTestObject(),
-					new WeakReferenceTestObject()
-				})
-			});
-			WeakReferenceTestObject dataPart = data.Children[1];
-
-			// Clone the full graph and see if its complete
-			WeakReferenceTestObject dataResultFull = data.DeepClone();
-			Assert.AreSame(null, dataResultFull.Parent);
-			Assert.AreEqual(2, dataResultFull.Children.Count);
-			Assert.AreEqual(2, dataResultFull.Children[1].Children.Count);
-			Assert.IsTrue(dataResultFull.CheckChildIntegrity());
-			Assert.IsFalse(data.AnyReferenceEquals(dataResultFull));
-
-			// Clone part of the graph and see if the right parts are missing
-			WeakReferenceTestObject dataResultPart = dataPart.DeepClone();
-			Assert.AreSame(null, dataResultPart.Parent);
-			Assert.AreEqual(2, dataResultPart.Children.Count);
-			Assert.IsTrue(dataResultFull.CheckChildIntegrity());
-			Assert.IsFalse(dataPart.AnyReferenceEquals(dataResultPart));
-		}
-		[Test] public void CloneCircularOwnership()
-		{
-			OwnedObject data = new OwnedObject();
-			data.TestProperty = new OwnedObject();
-			data.TestProperty.TestProperty = data;
-
-			OwnedObject dataResult = data.DeepClone();
-
-			Assert.IsTrue(dataResult.TestProperty.TestProperty == dataResult);
-		}
 		[Test] public void CloneContentRef()
 		{
 			TestResource resource = new TestResource { TestProperty = "TestString" };
@@ -179,6 +131,109 @@ namespace Duality.Tests.Cloning
 				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().ComponentReference, targetObj.GetComponent<TestComponent>().ComponentReference);
 				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName, targetObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName);
 			}
+		}
+		[Test] public void IdentityPreservation()
+		{
+			Random rnd = new Random();
+			{
+				IdentityTestObjectA data = new IdentityTestObjectA(rnd);
+				IdentityTestObjectA dataResult = data.DeepClone();
+				IdentityTestObjectA dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
+
+				Assert.AreEqual(data.StringField, dataResult.StringField);
+				Assert.AreNotEqual(data.Identity, dataResult.Identity);
+				Assert.AreEqual(data.StringField, dataResultNoIdentity.StringField);
+				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
+			}
+			{
+				IdentityTestObjectB data = new IdentityTestObjectB(rnd);
+				IdentityTestObjectB dataResult = data.DeepClone();
+				IdentityTestObjectB dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
+
+				Assert.AreEqual(data.StringField, dataResult.StringField);
+				Assert.AreNotEqual(data.Identity, dataResult.Identity);
+				Assert.AreEqual(data.StringField, dataResultNoIdentity.StringField);
+				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
+			}
+			{
+				IdentityTestObjectC data = new IdentityTestObjectC(rnd);
+				IdentityTestObjectC dataResult = data.DeepClone();
+				IdentityTestObjectC dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
+
+				Assert.AreEqual(data.StringField, dataResult.StringField);
+				Assert.AreNotEqual(data.Identity, dataResult.Identity);
+				Assert.AreEqual(data.StringField, dataResultNoIdentity.StringField);
+				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
+			}
+			{
+				IdentityTestObjectD data = new IdentityTestObjectD(rnd);
+				IdentityTestObjectD dataResult = data.DeepClone();
+				IdentityTestObjectD dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
+
+				Assert.AreEqual(data.StringField, dataResult.StringField);
+				Assert.AreNotEqual(data.Identity, dataResult.Identity);
+				Assert.AreEqual(data.StringField, dataResultNoIdentity.StringField);
+				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
+			}
+		}
+		[Test] public void SkippedObjects()
+		{
+			Random rnd = new Random();
+
+			SkipFieldTestObject data = new SkipFieldTestObject(rnd);
+			SkipFieldTestObject dataResult = data.DeepClone();
+
+			Assert.AreEqual(data.StringField, dataResult.StringField);
+			Assert.AreNotEqual(data.SkipField, dataResult.SkipField);
+			Assert.AreNotEqual(data.SkippedObject, dataResult.SkippedObject);
+		}
+		[Test] public void OwnershipBehavior()
+		{
+			Random rnd = new Random();
+			OwnershipTestObject data = new OwnershipTestObject(rnd);
+
+			OwnershipTestObject dataResult = data.DeepClone();
+
+			Assert.IsTrue(data.Equals(dataResult));
+			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
+		}
+		[Test] public void WeakReferenceBehavior()
+		{
+			WeakReferenceTestObject data = new WeakReferenceTestObject(new[]
+			{
+				new WeakReferenceTestObject(),
+				new WeakReferenceTestObject(new[]
+				{
+					new WeakReferenceTestObject(),
+					new WeakReferenceTestObject()
+				})
+			});
+			WeakReferenceTestObject dataPart = data.Children[1];
+
+			// Clone the full graph and see if its complete
+			WeakReferenceTestObject dataResultFull = data.DeepClone();
+			Assert.AreSame(null, dataResultFull.Parent);
+			Assert.AreEqual(2, dataResultFull.Children.Count);
+			Assert.AreEqual(2, dataResultFull.Children[1].Children.Count);
+			Assert.IsTrue(dataResultFull.CheckChildIntegrity());
+			Assert.IsFalse(data.AnyReferenceEquals(dataResultFull));
+
+			// Clone part of the graph and see if the right parts are missing
+			WeakReferenceTestObject dataResultPart = dataPart.DeepClone();
+			Assert.AreSame(null, dataResultPart.Parent);
+			Assert.AreEqual(2, dataResultPart.Children.Count);
+			Assert.IsTrue(dataResultFull.CheckChildIntegrity());
+			Assert.IsFalse(dataPart.AnyReferenceEquals(dataResultPart));
+		}
+		[Test] public void CircularOwnership()
+		{
+			OwnedObject data = new OwnedObject();
+			data.TestProperty = new OwnedObject();
+			data.TestProperty.TestProperty = data;
+
+			OwnedObject dataResult = data.DeepClone();
+
+			Assert.IsTrue(dataResult.TestProperty.TestProperty == dataResult);
 		}
 
 		private static T CreateTestSource<T>() where T : ICloneTestObject, new()
@@ -300,11 +355,76 @@ namespace Duality.Tests.Cloning
 				return false;
 			}
 		}
+		private class SkipFieldTestObject
+		{
+			public string StringField;
+			[CloneBehavior(CloneFlags.Skip)]
+			public int SkipField;
+			public AlwaysSkippedObject SkippedObject;
+			
+			public SkipFieldTestObject(Random rnd)
+			{
+				this.StringField = rnd.Next().ToString();
+				this.SkipField = rnd.Next();
+				this.SkippedObject = new AlwaysSkippedObject();
+			}
+		}
+		[CloneBehavior(CloneFlags.Skip)]
+		private class AlwaysSkippedObject {}
+		private class IdentityTestObjectA
+		{
+			public string StringField;
+			[CloneBehavior(CloneFlags.IdentityRelevant)]
+			public Guid Identity;
+			
+			public IdentityTestObjectA(Random rnd)
+			{
+				this.StringField = rnd.Next().ToString();
+				this.Identity = Guid.NewGuid();
+			}
+		}
+		private class IdentityTestObjectB
+		{
+			public string StringField;
+			[CloneBehavior(CloneFlags.IdentityRelevant)]
+			public ReferencedObject Identity;
+			
+			public IdentityTestObjectB(Random rnd)
+			{
+				this.StringField = rnd.Next().ToString();
+				this.Identity = new ReferencedObject();
+			}
+		}
+		private class IdentityTestObjectC
+		{
+			public string StringField;
+			[CloneBehavior(CloneFlags.IdentityRelevant)]
+			public int Identity;
+			
+			public IdentityTestObjectC(Random rnd)
+			{
+				this.StringField = rnd.Next().ToString();
+				this.Identity = rnd.Next();
+			}
+		}
+		private class IdentityTestObjectD
+		{
+			public string StringField;
+			public IdentityRelevantObject Identity;
+			
+			public IdentityTestObjectD(Random rnd)
+			{
+				this.StringField = rnd.Next().ToString();
+				this.Identity = new IdentityRelevantObject();
+			}
+		}
+		[CloneBehavior(CloneFlags.IdentityRelevant)]
+		private class IdentityRelevantObject {}
 		private class OwnershipTestObject : IEquatable<OwnershipTestObject>
 		{
-			[CloneBehavior(CloneBehavior.ChildObject)]
+			[CloneBehavior(CloneMode.ChildObject)]
 			public ReferencedObject NestedObject;
-			[CloneBehavior(typeof(ReferencedObject), CloneBehavior.ChildObject)]
+			[CloneBehavior(typeof(ReferencedObject), CloneMode.ChildObject)]
 			public Dictionary<string,ReferencedObject> ObjectStore;
 			
 			public OwnershipTestObject(Random rnd)
@@ -363,9 +483,9 @@ namespace Duality.Tests.Cloning
 		}
 		private class WeakReferenceTestObject
 		{
-			[CloneBehavior(CloneBehavior.WeakReference)]
+			[CloneBehavior(CloneMode.WeakReference)]
 			public WeakReferenceTestObject Parent;
-			[CloneBehavior(typeof(WeakReferenceTestObject), CloneBehavior.ChildObject)]
+			[CloneBehavior(typeof(WeakReferenceTestObject), CloneMode.ChildObject)]
 			public List<WeakReferenceTestObject> Children;
 
 			public WeakReferenceTestObject() : this(new WeakReferenceTestObject[0]) {}
@@ -416,7 +536,7 @@ namespace Duality.Tests.Cloning
 			public GameObject GameObjectReference { get; set; }
 			public Component ComponentReference { get; set; }
 		}
-		[CloneBehavior(CloneBehavior.Reference)]
+		[CloneBehavior(CloneMode.Reference)]
 		private class ReferencedObject
 		{
 			public string TestProperty { get; set; }

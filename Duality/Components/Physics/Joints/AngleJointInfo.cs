@@ -81,15 +81,5 @@ namespace Duality.Components.Physics
 			j.Softness = this.softness;
 			j.MaxImpulse = this.maxImpulse < 0.0f ? float.MaxValue : PhysicsConvert.ToPhysicalUnit(this.maxImpulse);
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			AngleJointInfo c = target as AngleJointInfo;
-			c.angle = this.angle;
-			c.biasFactor = this.biasFactor;
-			c.softness = this.softness;
-			c.maxImpulse = this.maxImpulse;
-		}
 	}
 }

@@ -401,6 +401,8 @@ namespace Duality
 			bool result;
 			if (!resRefCache.TryGetValue(new KeyValuePair<Type,Type>(sourceResType, targetResType), out result))
 			{
+				resRefCache[new KeyValuePair<Type,Type>(sourceResType, targetResType)] = false;
+
 				bool foundIt = false;
 				bool foundAny = false;
 				foreach (ExplicitResourceReferenceAttribute refAttrib in GetCustomAttributes<ExplicitResourceReferenceAttribute>(sourceResType))
@@ -408,7 +410,7 @@ namespace Duality
 					foundAny = true;
 					foreach (Type refType in refAttrib.ReferencedTypes)
 					{
-						if (refType.IsAssignableFrom(targetResType))
+						if (refType.IsAssignableFrom(targetResType) || CanReferenceResource(refType, targetResType))
 						{
 							foundIt = true;
 							break;

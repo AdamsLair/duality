@@ -123,11 +123,12 @@ namespace Duality.Resources
 		/// <summary>
 		/// Represents a pixel data layer.
 		/// </summary>
-		public class Layer : ICloneExplicit, ISerializeExplicit
+		public class Layer : ISerializeExplicit
 		{
 			private	int	width;
 			private	int height;
 			private	ColorRgba[]	data;
+
 
 			/// <summary>
 			/// [GET] The layers width in pixels
@@ -218,7 +219,7 @@ namespace Duality.Resources
 			/// <returns></returns>
 			public Layer Clone()
 			{
-				return Duality.Cloning.CloneProvider.DeepClone(this);
+				return this.DeepClone();
 			}
 			/// <summary>
 			/// Copies all data contained in this pixel data layer to a target layer.
@@ -226,8 +227,7 @@ namespace Duality.Resources
 			/// <param name="target"></param>
 			public void CopyTo(Layer target)
 			{
-				if (target == null) throw new ArgumentNullException("target");
-				Duality.Cloning.CloneProvider.DeepCopy(this, target);
+				this.DeepCopyTo(target);
 			}
 
 			/// <summary>
@@ -1018,13 +1018,6 @@ namespace Duality.Resources
 				return tempDestData;
 			}
 
-			void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
-			{
-				Layer targetLayer = targetObj as Layer;
-				targetLayer.width = this.width;
-				targetLayer.height = this.height;
-				targetLayer.data = this.data == null ? null : this.data.Clone() as ColorRgba[];
-			}
 			void ISerializeExplicit.WriteData(IDataWriter writer)
 			{
 				writer.WriteValue("version", ResFormat_Version_LayerPng);

@@ -239,7 +239,7 @@ namespace Duality.Resources
 		private	Vector2			globalGravity	= Vector2.UnitY * 33.0f;
 		private	GameObject[]	serializeObj	= null;
 		[NonSerialized]
-		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
+		[CloneBehavior(typeof(GameObject), CloneMode.ChildObject)]
 		private	GameObjectManager					objectManager		= new GameObjectManager();
 		[NonSerialized]
 		private	List<Component>						renderers			= new List<Component>();

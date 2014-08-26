@@ -6,6 +6,7 @@
 	/// </summary>
 	public interface ICloneExplicit
 	{
-		void CopyDataTo(object targetObj, CloneProvider provider);
+		void SetupCloneTargets(ICloneTargetSetup setup);
+		void CopyDataTo(object target, ICloneOperation operation);
 	}
 }

@@ -10,8 +10,6 @@ using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
 
-using ICloneable = Duality.Cloning.ICloneExplicit;
-
 namespace Duality
 {
 	/// <summary>
@@ -21,9 +19,9 @@ namespace Duality
 	/// <seealso cref="ContentRef{T}"/>
 	/// <seealso cref="ContentProvider"/>
 	[Serializable]
-	[CloneBehavior(CloneBehavior.Reference)]
+	[CloneBehavior(CloneMode.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
-	public abstract class Resource : IManageableObject, IDisposable, ICloneable
+	public abstract class Resource : IManageableObject, IDisposable
 	{
 		/// <summary>
 		/// A Resource files extension.
@@ -40,12 +38,16 @@ namespace Duality
 		/// <summary>
 		/// The path of the file from which the Resource has been originally imported or initialized.
 		/// </summary>
-		protected	string	sourcePath	= null;
+		protected string sourcePath = null;
 		/// <summary>
 		/// The path of this Resource.
 		/// </summary>
-		[NonSerialized]	protected	string		path		= null;
-		[NonSerialized]	private		InitState	initState	= InitState.Initialized;
+		[NonSerialized]
+		[CloneBehavior(CloneFlags.IdentityRelevant)]
+		protected string path = null;
+		[NonSerialized]
+		[CloneBehavior(CloneFlags.IdentityRelevant)]
+		private InitState initState = InitState.Initialized;
 
 		/// <summary>
 		/// [GET] Returns whether the Resource has been disposed. 
@@ -244,11 +246,6 @@ namespace Duality
 		public void CopyTo(Resource r)
 		{
 			CloneProvider.DeepCopy(this, r);
-		}
-		void ICloneable.CopyDataTo(object targetObj, CloneProvider provider)
-		{
-			Resource target = targetObj as Resource;
-			this.OnCopyTo(target, provider);
 		}
 		
 		/// <summary>
@@ -523,9 +520,8 @@ namespace Duality
 	}
 
 	/// <summary>
-	/// Allows to explicitly specify what kinds of Resources a certain Resource Type is able to reference (both directly and indirectly).
-	/// This is an optional attribute that is used for certain runtime optimizations. Keep in mind that you'll need to specify both direct
-	/// and indirect references.
+	/// Allows to explicitly specify what kinds of Resources a certain Resource Type is able to reference.
+	/// This is an optional attribute that is used for certain runtime optimizations. 
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class)]
 	public class ExplicitResourceReferenceAttribute : Attribute

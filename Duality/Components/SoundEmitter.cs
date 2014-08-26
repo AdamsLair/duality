@@ -162,9 +162,10 @@ namespace Duality.Components
 				return true;
 			}
 
-			void ICloneExplicit.CopyDataTo(object targetObj, Cloning.CloneProvider provider)
+			void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup) {}
+			void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
 			{
-				Source newSrc = targetObj as Source;
+				Source newSrc = target as Source;
 				newSrc.sound			= this.sound;
 				newSrc.looped			= this.looped;
 				newSrc.paused			= this.paused;
@@ -176,7 +177,7 @@ namespace Duality.Components
 			}
 		}
 
-		private	List<Source>	sources	= new List<Source>();
+		private List<Source> sources = new List<Source>();
 
 		/// <summary>
 		/// [GET / SET] A list of sound sources this SoundEmitter maintains. Is never null.

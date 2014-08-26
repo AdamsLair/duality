@@ -114,7 +114,7 @@ namespace Duality.Resources
 		}
 
 
-		private	BatchInfo	info	= new BatchInfo();
+		private BatchInfo info = new BatchInfo();
 		
 		/// <summary>
 		/// [GET] Returns a new <see cref="BatchInfo"/> object that mirrors the Materials current settings.

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Duality.Cloning
 {
-	public enum CloneBehavior
+	public enum CloneMode
 	{
 		/// <summary>
 		/// The object will be assigned by-reference, because external ownership is assumed.
@@ -18,7 +18,7 @@ namespace Duality.Cloning
 		/// <summary>
 		/// If the referenced object is part of the cloned object graph, it will be assigned by-reference
 		/// similar to the <see cref="Reference"/> setting. Otherwise, it will be skipped without assigning
-		/// any value.
+		/// any value. A typical example are "parent"-backreferences from child objects.
 		/// </summary>
 		WeakReference
 	}

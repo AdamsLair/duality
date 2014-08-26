@@ -73,8 +73,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
-    <Compile Include="Cloning\CloneBehavior.cs" />
+    <Compile Include="Cloning\CloneMode.cs" />
     <Compile Include="Cloning\DefaultCloneBehavior.cs" />
+    <Compile Include="Cloning\ICloneTargetSetup.cs" />
+    <Compile Include="Cloning\ICloneOperation.cs" />
+    <Compile Include="Cloning\CloneFlags.cs" />
+    <Compile Include="Cloning\ICloneBehavior.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\Grid.cs" />

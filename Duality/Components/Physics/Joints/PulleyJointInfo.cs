@@ -154,19 +154,5 @@ namespace Duality.Components.Physics
 			j.TotalLength = PhysicsConvert.ToPhysicalUnit(this.totalLength);
 			j.Ratio = this.ratio;
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			PulleyJointInfo c = target as PulleyJointInfo;
-			c.localAnchorB = this.localAnchorB;
-			c.localAnchorA = this.localAnchorA;
-			c.worldAnchorB = this.worldAnchorB;
-			c.worldAnchorA = this.worldAnchorA;
-			c.maxLengthA = this.maxLengthA;
-			c.maxLengthB = this.maxLengthB;
-			c.totalLength = this.totalLength;
-			c.ratio = this.ratio;
-		}
 	}
 }

@@ -164,12 +164,6 @@ namespace Duality.Resources
 				this.objTree.OnLoaded(true);
 			}
 		}
-		protected override void OnCopyTo(Resource r, CloneProvider provider)
-		{
-			base.OnCopyTo(r, provider);
-			Prefab c = r as Prefab;
-			c.objTree = provider.CloneObject(this.objTree);
-		}
 	}
 
 	/// <summary>
@@ -178,7 +172,7 @@ namespace Duality.Resources
 	/// <seealso cref="Prefab"/>
 	/// <seealso cref="GameObject"/>
 	[Serializable]
-	public sealed class PrefabLink : ICloneExplicit
+	public sealed class PrefabLink
 	{
 		[Serializable]
 		private struct VarMod
@@ -339,7 +333,7 @@ namespace Duality.Resources
 		/// <returns>A cloned version of this PrefabLink</returns>
 		public PrefabLink Clone()
 		{
-			return Duality.Cloning.CloneProvider.DeepClone(this);
+			return this.DeepClone();
 		}
 		
 		/// <summary>
@@ -612,26 +606,6 @@ namespace Duality.Resources
 				}
 
 			return appliedLinks;
-		}
-
-		void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
-		{
-			PrefabLink castObj = targetObj as PrefabLink;
-
-			castObj.prefab = this.prefab;
-			castObj.obj = this.obj;
-			castObj.changes = null;
-
-			if (this.changes != null)
-			{
-				castObj.changes = new List<VarMod>(this.changes.Count);
-				for (int i = 0; i < this.changes.Count; i++)
-				{
-					VarMod newVarMod = this.changes[i];
-					newVarMod.childIndex = new List<int>(newVarMod.childIndex);
-					castObj.changes.Add(newVarMod);
-				}
-			}
 		}
 	}
 }

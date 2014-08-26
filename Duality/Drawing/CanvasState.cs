@@ -290,10 +290,11 @@ namespace Duality.Drawing
 				}
 			}
 		}
-			
-		void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
+		
+		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup) {}
+		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
 		{
-			this.CopyTo(targetObj as CanvasState);
+			this.CopyTo(target as CanvasState);
 		}
 	}
 }

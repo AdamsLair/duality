@@ -41,7 +41,7 @@ namespace Duality
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public static readonly ContentRef<T> Null = new ContentRef<T>(null);
 
-		[NonSerialized, CloneBehavior(CloneBehavior.Reference)]
+		[NonSerialized, CloneBehavior(CloneMode.Reference)]
 		private	T		contentInstance;
 		private	string	contentPath;
 		

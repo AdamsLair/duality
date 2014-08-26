@@ -107,12 +107,5 @@ namespace Duality.Components.Physics
 			}
 			return farseerVert;
 		}
-
-		protected override void OnCopyTo(ShapeInfo target)
-		{
-			base.OnCopyTo(target);
-			LoopShapeInfo c = target as LoopShapeInfo;
-			c.vertices = this.vertices != null ? (Vector2[])this.vertices.Clone() : null;
-		}
 	}
 }

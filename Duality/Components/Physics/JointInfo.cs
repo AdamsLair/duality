@@ -17,11 +17,14 @@ namespace Duality.Components.Physics
 	/// by connecting it to fixed world coordinates or other Colliders.
 	/// </summary>
 	[Serializable]
-	public abstract class JointInfo : ICloneExplicit
+	public abstract class JointInfo
 	{
 		[NonSerialized]	
+		[CloneBehavior(CloneMode.WeakReference)]
 		internal protected	Joint	joint	= null;
+		[CloneBehavior(CloneMode.WeakReference)]
 		private		RigidBody	colA		= null;
+		[CloneBehavior(CloneMode.WeakReference)]
 		private		RigidBody	colB		= null;
 		private		bool		collide		= false;
 		private		bool		enabled		= true;
@@ -112,34 +115,6 @@ namespace Duality.Components.Physics
 		private void joint_Broke(Joint arg1, float arg2)
 		{
 			this.enabled = false;
-		}
-
-		/// <summary>
-		/// Copies this JointInfos data to another one. It is assumed that both are of the same type.
-		/// </summary>
-		/// <param name="target"></param>
-		protected virtual void CopyTo(JointInfo target)
-		{
-			// Don't copy the parents!
-			target.collide = this.collide;
-			target.enabled = this.enabled;
-			target.breakPoint = this.breakPoint;
-		}
-		/// <summary>
-		/// Clones the JointInfo.
-		/// </summary>
-		/// <returns></returns>
-		public JointInfo Clone()
-		{
-			JointInfo newObj = this.GetType().CreateInstanceOf() as JointInfo;
-			this.CopyTo(newObj);
-			return newObj;
-		}
-
-		void ICloneExplicit.CopyDataTo(object targetObj, CloneProvider provider)
-		{
-			JointInfo targetJoint = targetObj as JointInfo;
-			this.CopyTo(targetJoint);
 		}
 
 		protected static Vector2 GetFarseerPoint(RigidBody c, Vector2 dualityPoint)

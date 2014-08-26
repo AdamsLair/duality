@@ -93,16 +93,5 @@ namespace Duality.Components.Physics
 			j.Frequency = this.frequency;
 			j.MaxForce = PhysicsConvert.ToPhysicalUnit(this.maxForce) / Time.SPFMult;
 		}
-
-		protected override void CopyTo(JointInfo target)
-		{
-			base.CopyTo(target);
-			FixedMouseJointInfo c = target as FixedMouseJointInfo;
-			c.worldAnchor = this.worldAnchor;
-			c.localAnchor = this.localAnchor;
-			c.dampingRatio = this.dampingRatio;
-			c.frequency = this.frequency;
-			c.maxForce = this.maxForce;
-		}
 	}
 }
