@@ -45,6 +45,17 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cloning\HelperObjects\ExplicitCloneTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\IdentityTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestComponent.cs" />
+    <Compile Include="Cloning\HelperObjects\OwnedObject.cs" />
+    <Compile Include="Cloning\HelperObjects\ReferencedObject.cs" />
+    <Compile Include="Cloning\HelperObjects\WeakReferenceTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\OwnershipTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\SkipFieldTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestData.cs" />
+    <Compile Include="Cloning\HelperObjects\TestResource.cs" />
     <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
     <Compile Include="Serialization\TestObjects.cs" />
     <Compile Include="TestHelper.cs" />

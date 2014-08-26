@@ -24,16 +24,19 @@ namespace Duality.Components
 		/// A single sound source.
 		/// </summary>
 		[Serializable]
-		public class Source : ICloneExplicit
+		public class Source
 		{
-			private	ContentRef<Sound>	sound		= ContentRef<Sound>.Null;
-			private	bool				looped		= true;
-			private	bool				paused		= false;
-			private	float				volume		= 1.0f;
-			private	float				pitch		= 1.0f;
-			private	Vector3				offset		= Vector3.Zero;
-			[NonSerializedResource]	private	bool			hasBeenPlayed	= false;
-			[NonSerialized]			private	SoundInstance	instance		= null;
+			private	ContentRef<Sound>	sound			= ContentRef<Sound>.Null;
+			private	bool				looped			= true;
+			private	bool				paused			= false;
+			private	float				volume			= 1.0f;
+			private	float				pitch			= 1.0f;
+			private	Vector3				offset			= Vector3.Zero;
+			[NonSerializedResource]
+			private	bool				hasBeenPlayed	= false;
+			[NonSerialized]
+			[CloneField(CloneFieldFlags.Skip)]
+			private	SoundInstance		instance		= null;
 
 			/// <summary>
 			/// [GET] The <see cref="SoundInstance"/> that is currently allocated to emit
@@ -160,20 +163,6 @@ namespace Duality.Components
 				}
 
 				return true;
-			}
-
-			void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup) {}
-			void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
-			{
-				Source newSrc = target as Source;
-				newSrc.sound			= this.sound;
-				newSrc.looped			= this.looped;
-				newSrc.paused			= this.paused;
-				newSrc.volume			= this.volume;
-				newSrc.pitch			= this.pitch;
-				newSrc.offset			= this.offset;
-				newSrc.hasBeenPlayed	= this.hasBeenPlayed;
-				newSrc.instance			= null;
 			}
 		}
 

@@ -7,7 +7,7 @@ using Duality.Cloning.Surrogates;
 
 namespace Duality.Cloning
 {
-	public class CloneProvider
+	public class CloneProvider : ICloneTargetSetup, ICloneOperation
 	{
 		private static readonly CloneBehaviorAttribute DefaultBehavior = new CloneBehaviorAttribute(CloneBehavior.ChildObject);
 		private struct CloneBehaviorEntry
@@ -25,6 +25,7 @@ namespace Duality.Cloning
 		private	CloneProviderContext		context				= CloneProviderContext.Default;
 
 		private	object						sourceRoot			= null;
+		private	object						currentObject		= null;
 		private	Dictionary<object,object>	objTargets			= new Dictionary<object,object>();
 		private	HashSet<object>				handledObjects		= new HashSet<object>();
 		private	HashSet<object>				dropWeakReferences	= new HashSet<object>();
@@ -94,6 +95,7 @@ namespace Duality.Cloning
 		private void EndCloneOperation()
 		{
 			this.sourceRoot = null;
+			this.currentObject = null;
 			this.objTargets.Clear();
 			this.localBehavior.Clear();
 			this.handledObjects.Clear();
@@ -167,6 +169,7 @@ namespace Duality.Cloning
 			object target;
 			if (this.objTargets.TryGetValue(source, out target))
 				return;
+			this.currentObject = source;
 
 			// Fetch the currently active clone behavior and react accordingly
 			CloneBehaviorAttribute behavior = null;
@@ -184,16 +187,41 @@ namespace Duality.Cloning
 				}
 			}
 
-			// If it's an array, we'll need to traverse its elements
+			// Create target objects
+			Type sourceElementType = null;
 			if (sourceType.IsArray)
 			{
 				Array sourceArray = source as Array;
-				Type sourceElementType = sourceType.GetElementType();
-
+				sourceElementType = sourceType.GetElementType();
 				target = Array.CreateInstance(sourceElementType, sourceArray.Length);
-				this.SetTargetOf(source, target);
+			}
+			else
+			{
+				target = sourceType.CreateInstanceOf() ?? sourceType.CreateInstanceOf(true);
+			}
+			this.SetTargetOf(source, target);
 
-				// Traverse the arrays elements
+			// If it implements custom cloning behavior, use that
+			if (source is ICloneExplicit)
+			{
+				ICloneExplicit customSource = source as ICloneExplicit;
+				customSource.SetupCloneTargets(this);
+			}
+			// Otherwise, traverse its child objects using default behavior
+			else
+			{
+				this.PrepareChildCloneGraph(source, sourceType);
+			}
+
+			this.UnlockCloneBehavior(behavior);
+		}
+		private void PrepareChildCloneGraph(object source, Type sourceType)
+		{
+			// If it's an array, we'll need to traverse its elements
+			if (sourceType.IsArray)
+			{
+				Type sourceElementType = sourceType.GetElementType();
+				Array sourceArray = source as Array;
 				if (!this.CanCloneByAssignment(sourceElementType))
 				{
 					for (int i = 0; i < sourceArray.Length; i++)
@@ -205,10 +233,6 @@ namespace Duality.Cloning
 			// If it's an object, we'll need to traverse its fields
 			else
 			{
-				target = sourceType.CreateInstanceOf() ?? sourceType.CreateInstanceOf(true);
-				this.SetTargetOf(source, target);
-
-				// Traverse the objects fields
 				IEnumerable<FieldInfo> fields = sourceType.GetAllFields(ReflectionHelper.BindInstanceAll);
 				foreach (FieldInfo field in fields)
 				{
@@ -222,9 +246,8 @@ namespace Duality.Cloning
 					if (behaviorAttrib != null) this.PopCloneBehavior();
 				}
 			}
-
-			this.UnlockCloneBehavior(behavior);
 		}
+
 		private void PerformCopyObject(object source, object target)
 		{
 			// Early-out for null and same-instance values
@@ -232,8 +255,24 @@ namespace Duality.Cloning
 			if (object.ReferenceEquals(source, target)) return;
 
 			// Determine the object Type in order to decide what's next
+			this.currentObject = source;
 			Type sourceType = source.GetType();
-
+			if (!sourceType.IsValueType && !this.HandleObject(source)) return;
+			
+			// If it implements custom cloning behavior, use that
+			if (source is ICloneExplicit)
+			{
+				ICloneExplicit customSource = source as ICloneExplicit;
+				customSource.CopyDataTo(target, this);
+			}
+			// Otherwise, traverse its child objects using default behavior
+			else
+			{
+				this.PerformCopyChildObject(source, target, sourceType);
+			}
+		}
+		private void PerformCopyChildObject(object source, object target, Type sourceType)
+		{
 			// Plain old (struct) data can be deep-copied by assignment
 			if (this.CanCloneByAssignment(sourceType))
 			{
@@ -242,8 +281,6 @@ namespace Duality.Cloning
 			// Arrays will need to be traversed, unless consisting of plain old data
 			else if (sourceType.IsArray)
 			{
-				if (!this.HandleObject(source)) return;
-
 				Array sourceArray = source as Array;
 				Array targetArray = target as Array;
 				Type sourceElementType = sourceType.GetElementType();
@@ -269,8 +306,6 @@ namespace Duality.Cloning
 			// Objects will need to be traversed field by field
 			else
 			{
-				if (!this.HandleObject(source)) return;
-
 				IEnumerable<FieldInfo> fields = sourceType.GetAllFields(ReflectionHelper.BindInstanceAll);
 				foreach (FieldInfo field in fields)
 				{
@@ -291,20 +326,13 @@ namespace Duality.Cloning
 		}
 		private void PerformCopyField(object source, object target, FieldInfo field)
 		{
-			// See if there are specific instructions on how to handle this
-			CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
-			if (behaviorAttrib != null) this.PushCloneBehavior(behaviorAttrib);
+			object sourceFieldValue = field.GetValue(source);
+			object targetFieldValue;
+			if (this.GetTargetOf(sourceFieldValue, out targetFieldValue))
 			{
-				// Copy the fields value
-				object sourceFieldValue = field.GetValue(source);
-				object targetFieldValue;
-				if (this.GetTargetOf(sourceFieldValue, out targetFieldValue))
-				{
-					this.PerformCopyObject(sourceFieldValue, targetFieldValue);
-					field.SetValue(target, targetFieldValue);
-				}
+				this.PerformCopyObject(sourceFieldValue, targetFieldValue);
+				field.SetValue(target, targetFieldValue);
 			}
-			if (behaviorAttrib != null) this.PopCloneBehavior();
 		}
 
 		private void PushCloneBehavior(CloneBehaviorAttribute attribute)
@@ -357,6 +385,47 @@ namespace Duality.Cloning
 		private bool CanCloneByAssignment(Type type)
 		{
 			return type.IsPlainOldData();
+		}
+		
+		bool ICloneTargetSetup.AddTarget<T>(T source, T target)
+		{
+			this.SetTargetOf(source, target);
+			return true;
+		}
+		void ICloneTargetSetup.AutoHandleObject(object source)
+		{
+			if (object.ReferenceEquals(source, null)) return;
+			if (source == this.currentObject)
+				this.PrepareChildCloneGraph(source, source.GetType());
+			else
+				this.PrepareCloneGraph(source);
+		}
+
+		bool ICloneOperation.GetTarget<T>(T source, out T target)
+		{
+			object targetObj;
+			if (!this.GetTargetOf(source, out targetObj))
+			{
+				target = default(T);
+				return false;
+			}
+			else
+			{
+				target = (T)targetObj;
+				return true;
+			}
+		}
+		void ICloneOperation.AutoHandleObject(object source, object target)
+		{
+			if (object.ReferenceEquals(source, null)) return;
+			if (source == this.currentObject)
+				this.PerformCopyChildObject(source, target, source.GetType());
+			else
+				this.PerformCopyObject(source, target);
+		}
+		void ICloneOperation.AutoHandleField(FieldInfo field, object source, object target)
+		{
+			this.PerformCopyField(source, target, field);
 		}
 
 

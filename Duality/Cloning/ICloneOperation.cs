@@ -7,32 +7,38 @@ namespace Duality.Cloning
 	{
 		CloneProviderContext Context { get; }
 
-		bool GetTarget(object source, out object target);
+		bool GetTarget<T>(T source, out T target) where T : class;
 
-		object AutoHandleObject(object source);
 		void AutoHandleObject(object source, object target);
-		void AutoHandleField(object source, object target, FieldInfo field);
+		void AutoHandleField(FieldInfo field, object source, object target);
 	}
 
 	public static class ExtMethodsICloneOperation
 	{
-		public static bool GetTarget<T>(this ICloneOperation operation, T source, out T target) where T : class
+		public static bool AutoHandleObject<T>(this ICloneOperation operation, T source, out T target) where T : class
 		{
-			object targetObj;
-			if (!operation.GetTarget(source, out targetObj))
+			if (operation.GetTarget(source, out target))
 			{
-				target = default(T);
-				return false;
+				operation.AutoHandleObject(source, target);
+				return true;
 			}
 			else
 			{
-				target = (T)targetObj;
-				return true;
+				return false;
 			}
 		}
-		public static T AutoHandleObject<T>(this ICloneOperation operation, T source)
+		public static bool AutoHandleObject(this ICloneOperation operation, object source)
 		{
-			return (T)operation.AutoHandleObject(source);
+			object target;
+			if (operation.GetTarget(source, out target))
+			{
+				operation.AutoHandleObject(source, target);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 }

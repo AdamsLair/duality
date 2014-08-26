@@ -4,7 +4,7 @@
 	{
 		CloneProviderContext Context { get; }
 
-		bool AddTarget(object source, object target);
+		bool AddTarget<T>(T source, T target) where T : class;
 
 		void AutoHandleObject(object source);
 	}
