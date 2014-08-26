@@ -22,6 +22,8 @@ namespace Duality.Tests.Cloning
 	{
 		#pragma warning disable 659  // GetHashCode not implemented
 
+		private static Random rnd = new Random();
+
 		public CloneProviderTest()
 		{
 			System.Diagnostics.Debugger.Launch();
@@ -29,8 +31,7 @@ namespace Duality.Tests.Cloning
 
 		[Test] public void ClonePlainOldData()
 		{
-			Random rnd = new Random();
-			TestData data = new TestData(rnd);
+			TestData data = new TestData(true);
 
 			TestData dataResult = data.DeepClone();
 
@@ -39,8 +40,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneComplexObject()
 		{
-			Random rnd = new Random();
-			TestObject data = new TestObject(rnd);
+			TestObject data = new TestObject();
 
 			TestObject dataResult = data.DeepClone();
 
@@ -134,9 +134,8 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void IdentityPreservation()
 		{
-			Random rnd = new Random();
 			{
-				IdentityTestObjectA data = new IdentityTestObjectA(rnd);
+				IdentityTestObjectA data = new IdentityTestObjectA();
 				IdentityTestObjectA dataResult = data.DeepClone();
 				IdentityTestObjectA dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
 
@@ -146,29 +145,19 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
 			}
 			{
-				IdentityTestObjectB data = new IdentityTestObjectB(rnd);
+				IdentityTestObjectB data = new IdentityTestObjectB();
 				IdentityTestObjectB dataResult = data.DeepClone();
 				IdentityTestObjectB dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
 
 				Assert.AreEqual(data.StringField, dataResult.StringField);
-				Assert.AreNotEqual(data.Identity, dataResult.Identity);
+				Assert.AreNotSame(data.Identity, dataResult.Identity);
 				Assert.AreEqual(data.StringField, dataResultNoIdentity.StringField);
-				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
+				Assert.AreSame(data.Identity, dataResultNoIdentity.Identity);
 			}
 			{
-				IdentityTestObjectC data = new IdentityTestObjectC(rnd);
+				IdentityTestObjectC data = new IdentityTestObjectC();
 				IdentityTestObjectC dataResult = data.DeepClone();
 				IdentityTestObjectC dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
-
-				Assert.AreEqual(data.StringField, dataResult.StringField);
-				Assert.AreNotEqual(data.Identity, dataResult.Identity);
-				Assert.AreEqual(data.StringField, dataResultNoIdentity.StringField);
-				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
-			}
-			{
-				IdentityTestObjectD data = new IdentityTestObjectD(rnd);
-				IdentityTestObjectD dataResult = data.DeepClone();
-				IdentityTestObjectD dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
 
 				Assert.AreEqual(data.StringField, dataResult.StringField);
 				Assert.AreNotEqual(data.Identity, dataResult.Identity);
@@ -178,9 +167,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void SkippedObjects()
 		{
-			Random rnd = new Random();
-
-			SkipFieldTestObject data = new SkipFieldTestObject(rnd);
+			SkipFieldTestObject data = new SkipFieldTestObject();
 			SkipFieldTestObject dataResult = data.DeepClone();
 
 			Assert.AreEqual(data.StringField, dataResult.StringField);
@@ -189,8 +176,7 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void OwnershipBehavior()
 		{
-			Random rnd = new Random();
-			OwnershipTestObject data = new OwnershipTestObject(rnd);
+			OwnershipTestObject data = new OwnershipTestObject();
 
 			OwnershipTestObject dataResult = data.DeepClone();
 
@@ -244,7 +230,6 @@ namespace Duality.Tests.Cloning
 		}
 		private static void InitSourceObject(ICloneTestObject source)
 		{
-			Random rnd = new Random();
 			source.TestProperty = "TestStringA" + rnd.NextByte();
 			source.TestReference = new ReferencedObject { TestProperty = "TestStringB" + rnd.NextByte() };
 			source.TestReferenceList = new List<ReferencedObject>
@@ -268,10 +253,18 @@ namespace Duality.Tests.Cloning
 			public int IntField;
 			public float FloatField;
 
-			public TestData(Random rnd)
+			public TestData(bool random)
 			{
-				this.IntField	= rnd.Next();
-				this.FloatField	= rnd.NextFloat();
+				if (random)
+				{
+					this.IntField	= rnd.Next();
+					this.FloatField	= rnd.NextFloat();
+				}
+				else
+				{
+					this.IntField = 0;
+					this.FloatField = 0.0f;
+				}
 			}
 
 			public static bool operator ==(TestData first, TestData second)
@@ -310,17 +303,17 @@ namespace Duality.Tests.Cloning
 			public List<string> ListField2;
 			public Dictionary<string,TestObject> DictField;
 			
-			public TestObject(Random rnd, int maxChildren = 5)
+			public TestObject(int maxChildren = 5)
 			{
 				this.StringField	= rnd.Next().ToString();
-				this.DataField		= new TestData(rnd);
+				this.DataField		= new TestData(true);
 				this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).ToList();
 				this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).Select(i => i.ToString()).ToList();
 				this.DictField		= new Dictionary<string,TestObject>();
 
 				for (int i = rnd.Next(0, maxChildren); i > 0; i--)
 				{
-					this.DictField.Add(rnd.Next().ToString(), new TestObject(rnd, maxChildren / 2));
+					this.DictField.Add(rnd.Next().ToString(), new TestObject(maxChildren / 2));
 				}
 			}
 
@@ -358,26 +351,26 @@ namespace Duality.Tests.Cloning
 		private class SkipFieldTestObject
 		{
 			public string StringField;
-			[CloneBehavior(CloneFlags.Skip)]
+			[CloneField(CloneFieldFlags.Skip)]
 			public int SkipField;
 			public AlwaysSkippedObject SkippedObject;
 			
-			public SkipFieldTestObject(Random rnd)
+			public SkipFieldTestObject()
 			{
 				this.StringField = rnd.Next().ToString();
 				this.SkipField = rnd.Next();
 				this.SkippedObject = new AlwaysSkippedObject();
 			}
 		}
-		[CloneBehavior(CloneFlags.Skip)]
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private class AlwaysSkippedObject {}
 		private class IdentityTestObjectA
 		{
 			public string StringField;
-			[CloneBehavior(CloneFlags.IdentityRelevant)]
+			[CloneField(CloneFieldFlags.IdentityRelevant)]
 			public Guid Identity;
 			
-			public IdentityTestObjectA(Random rnd)
+			public IdentityTestObjectA()
 			{
 				this.StringField = rnd.Next().ToString();
 				this.Identity = Guid.NewGuid();
@@ -386,10 +379,10 @@ namespace Duality.Tests.Cloning
 		private class IdentityTestObjectB
 		{
 			public string StringField;
-			[CloneBehavior(CloneFlags.IdentityRelevant)]
+			[CloneField(CloneFieldFlags.IdentityRelevant)]
 			public ReferencedObject Identity;
 			
-			public IdentityTestObjectB(Random rnd)
+			public IdentityTestObjectB()
 			{
 				this.StringField = rnd.Next().ToString();
 				this.Identity = new ReferencedObject();
@@ -398,36 +391,23 @@ namespace Duality.Tests.Cloning
 		private class IdentityTestObjectC
 		{
 			public string StringField;
-			[CloneBehavior(CloneFlags.IdentityRelevant)]
+			[CloneField(CloneFieldFlags.IdentityRelevant)]
 			public int Identity;
 			
-			public IdentityTestObjectC(Random rnd)
+			public IdentityTestObjectC()
 			{
 				this.StringField = rnd.Next().ToString();
 				this.Identity = rnd.Next();
 			}
 		}
-		private class IdentityTestObjectD
-		{
-			public string StringField;
-			public IdentityRelevantObject Identity;
-			
-			public IdentityTestObjectD(Random rnd)
-			{
-				this.StringField = rnd.Next().ToString();
-				this.Identity = new IdentityRelevantObject();
-			}
-		}
-		[CloneBehavior(CloneFlags.IdentityRelevant)]
-		private class IdentityRelevantObject {}
 		private class OwnershipTestObject : IEquatable<OwnershipTestObject>
 		{
-			[CloneBehavior(CloneMode.ChildObject)]
+			[CloneBehavior(CloneBehavior.ChildObject)]
 			public ReferencedObject NestedObject;
-			[CloneBehavior(typeof(ReferencedObject), CloneMode.ChildObject)]
+			[CloneBehavior(typeof(ReferencedObject), CloneBehavior.ChildObject)]
 			public Dictionary<string,ReferencedObject> ObjectStore;
 			
-			public OwnershipTestObject(Random rnd)
+			public OwnershipTestObject()
 			{
 				this.NestedObject = new ReferencedObject { TestProperty = rnd.Next().ToString() };
 				this.ObjectStore = new Dictionary<string,ReferencedObject>();
@@ -483,9 +463,9 @@ namespace Duality.Tests.Cloning
 		}
 		private class WeakReferenceTestObject
 		{
-			[CloneBehavior(CloneMode.WeakReference)]
+			[CloneBehavior(CloneBehavior.WeakReference)]
 			public WeakReferenceTestObject Parent;
-			[CloneBehavior(typeof(WeakReferenceTestObject), CloneMode.ChildObject)]
+			[CloneBehavior(typeof(WeakReferenceTestObject), CloneBehavior.ChildObject)]
 			public List<WeakReferenceTestObject> Children;
 
 			public WeakReferenceTestObject() : this(new WeakReferenceTestObject[0]) {}
@@ -536,7 +516,7 @@ namespace Duality.Tests.Cloning
 			public GameObject GameObjectReference { get; set; }
 			public Component ComponentReference { get; set; }
 		}
-		[CloneBehavior(CloneMode.Reference)]
+		[CloneBehavior(CloneBehavior.Reference)]
 		private class ReferencedObject
 		{
 			public string TestProperty { get; set; }

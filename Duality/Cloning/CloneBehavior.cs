@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Duality.Cloning
 {
-	public enum CloneMode
+	public enum CloneBehavior
 	{
 		/// <summary>
 		/// The object will be assigned by-reference, because external ownership is assumed.

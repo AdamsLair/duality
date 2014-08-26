@@ -19,7 +19,7 @@ namespace Duality
 	/// <seealso cref="ContentRef{T}"/>
 	/// <seealso cref="ContentProvider"/>
 	[Serializable]
-	[CloneBehavior(CloneMode.Reference)]
+	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
 	public abstract class Resource : IManageableObject, IDisposable
 	{
@@ -43,10 +43,10 @@ namespace Duality
 		/// The path of this Resource.
 		/// </summary>
 		[NonSerialized]
-		[CloneBehavior(CloneFlags.IdentityRelevant)]
+		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		protected string path = null;
 		[NonSerialized]
-		[CloneBehavior(CloneFlags.IdentityRelevant)]
+		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		private InitState initState = InitState.Initialized;
 
 		/// <summary>

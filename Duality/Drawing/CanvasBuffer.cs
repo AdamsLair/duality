@@ -14,7 +14,6 @@ namespace Duality.Drawing
 	/// This class handles buffering and reusing vertex arrays created by a <see cref="Duality.Drawing.Canvas"/> and is a measure of
 	/// performance and memory footprint improvement when using <see cref="Duality.Drawing.Canvas"/> on a regular basis.
 	/// </summary>
-	[CloneBehavior(CloneFlags.Skip)]
 	public class CanvasBuffer
 	{
 		private	bool							dummy				= false;

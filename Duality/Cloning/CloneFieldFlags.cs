@@ -6,7 +6,7 @@ using System.Text;
 namespace Duality.Cloning
 {
 	[Flags]
-	public enum CloneFlags
+	public enum CloneFieldFlags
 	{
 		/// <summary>
 		/// No flags are set at all.

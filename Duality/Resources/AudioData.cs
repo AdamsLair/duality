@@ -58,7 +58,7 @@ namespace Duality.Resources
 		private	byte[]	data			= null;
 		private	bool	forceStream		= false;
 		[NonSerialized]
-		[CloneBehavior(CloneFlags.Skip)]
+		[CloneField(CloneFieldFlags.Skip)]
 		private	int		alBuffer		= AlBuffer_NotAvailable;
 
 		/// <summary>

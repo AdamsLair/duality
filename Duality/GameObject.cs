@@ -21,22 +21,22 @@ namespace Duality
 	/// <seealso cref="Duality.Resources.Scene"/>
 	/// <seealso cref="Duality.Resources.PrefabLink"/>
 	[Serializable]
-	[CloneBehavior(CloneMode.Reference)]
+	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageGameObject)]
 	public sealed class GameObject : IManageableObject, IUniqueIdentifyable
 	{
 		[NonSerialized] 
-		[CloneBehavior(CloneMode.WeakReference)]
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		Scene						scene		= null;
-		[CloneBehavior(CloneMode.WeakReference)]
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		GameObject					parent		= null;
 		private		PrefabLink					prefabLink	= null;
-		[CloneBehavior(CloneFlags.IdentityRelevant)]
+		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		private		Guid						identifier	= Guid.NewGuid();
-		[CloneBehavior(typeof(GameObject), CloneMode.ChildObject)]
+		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
 		private		List<GameObject>			children	= null;
-		[CloneBehavior(typeof(Component), CloneMode.ChildObject)]
+		[CloneBehavior(typeof(Component), CloneBehavior.ChildObject)]
 		private		List<Component>				compList	= new List<Component>();
 		private		Dictionary<Type,Component>	compMap		= new Dictionary<Type,Component>();
 		private		string						name		= string.Format("obj{0}", MathF.Rnd.Next());
@@ -47,13 +47,13 @@ namespace Duality
 		private		Components.Transform		compTransform	= null;
 		
 		[NonSerialized]
-		[CloneBehavior(CloneMode.WeakReference)]
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
 		[NonSerialized]
-		[CloneBehavior(CloneMode.WeakReference)]
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
 		[NonSerialized]
-		[CloneBehavior(CloneMode.WeakReference)]
+		[CloneBehavior(CloneBehavior.WeakReference)]
 		private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
 
 
