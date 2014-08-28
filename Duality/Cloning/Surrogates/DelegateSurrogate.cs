@@ -15,44 +15,50 @@ namespace Duality.Cloning.Surrogates
 
 		public override void CreateTargetObject(Delegate source, out Delegate target, ICloneTargetSetup setup)
 		{
-			Delegate[] baseInvokeList = source.GetInvocationList();
-			Delegate[] cloneInvokeList = new Delegate[baseInvokeList.Length];
-
-			for (int i = 0; i < baseInvokeList.Length; i++)
-			{
-				// Shallow-copy the delegate first
-				cloneInvokeList[i] = baseInvokeList[i].Clone() as Delegate;
-
-				// Register the new delegate
-				setup.AddTarget(baseInvokeList[i], cloneInvokeList[i]);
-				setup.MakeWeakReference(cloneInvokeList[i].Target);
-			}
-
-			target = Delegate.Combine(cloneInvokeList);
+			// Because delegates are immutable, we'll need to defer their creation until we know exactly how the cloned object graph looks like.
+			target = null;
 		}
-		public override void SetupCloneTargets(Delegate source, ICloneTargetSetup setup) {}
-		public override void CopyDataTo(Delegate source, Delegate target, ICloneOperation operation)
+		public override void SetupCloneTargets(Delegate source, ICloneTargetSetup setup)
 		{
-			Type delType = source.GetType();
-
-			Delegate[] baseInvokeList = source.GetInvocationList();
-			for (int i = 0; i < baseInvokeList.Length; i++)
+			// Flag all invocation targets as weak references.
+			Delegate[] invokeList = source.GetInvocationList();
+			for (int i = 0; i < invokeList.Length; i++)
 			{
-				// Adjust previously shallow-copied target to reference actual target instances
-				Delegate targetInvoke;
-				if (operation.GetTarget(baseInvokeList[i], out targetInvoke) && targetInvoke != null)
+				setup.MakeWeakReference(invokeList[i].Target);
+			}
+		}
+		public override void CreateTargetObjectLate(Delegate source, out Delegate target, ICloneOperation operation)
+		{
+			Delegate[] sourceInvokeList = source.GetInvocationList();
+			RawList<Delegate> targetInvokeList = new RawList<Delegate>(sourceInvokeList.Length);
+
+			// Iterate over our sources invocation list and see which entries are part of the target object graph
+			for (int i = 0; i < sourceInvokeList.Length; i++)
+			{
+				object invokeTargetObject;
+				if (sourceInvokeList[i].Target == null)
 				{
-					FieldInfo targetField = delType.GetField("_target", ReflectionHelper.BindInstanceAll);
-					object targetInvokeTarget;
-					if (operation.GetTarget(targetInvoke.Target, out targetInvokeTarget))
-					{
-						targetField.SetValue(targetInvoke, targetInvokeTarget);
-					}
-					else
-					{
-					}
+					Delegate targetSubDelegate = Delegate.CreateDelegate(sourceInvokeList[i].GetType(), null, sourceInvokeList[i].Method);
+					targetInvokeList.Add(targetSubDelegate);
+				}
+				else if (operation.GetTarget(sourceInvokeList[i].Target, out invokeTargetObject))
+				{
+					Delegate targetSubDelegate = Delegate.CreateDelegate(sourceInvokeList[i].GetType(), invokeTargetObject, sourceInvokeList[i].Method);
+					targetInvokeList.Add(targetSubDelegate);
 				}
 			}
+
+			// Create a new delegate instance
+			Delegate[] targetInvokeArray = targetInvokeList.Data;
+			if (targetInvokeArray.Length != targetInvokeList.Count)
+			{
+				Array.Resize(ref targetInvokeArray, targetInvokeList.Count);
+			}
+			target = Delegate.Combine(targetInvokeArray);
+		}
+		public override void CopyDataTo(Delegate source, Delegate target, ICloneOperation operation)
+		{
+			// Delegates are immutable. Nothing to do here.
 		}
 	}
 }

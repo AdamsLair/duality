@@ -27,6 +27,7 @@ namespace Duality.Cloning
 		private	object						sourceRoot			= null;
 		private	object						currentObject		= null;
 		private	Dictionary<object,object>	objTargets			= new Dictionary<object,object>();
+		private	HashSet<object>				lateSetupObjects	= new HashSet<object>();
 		private	HashSet<object>				handledObjects		= new HashSet<object>();
 		private	HashSet<object>				dropWeakReferences	= new HashSet<object>();
 		private	RawList<CloneBehaviorEntry>	localBehavior		= new RawList<CloneBehaviorEntry>();
@@ -76,7 +77,10 @@ namespace Duality.Cloning
 		private object BeginCloneOperation(object source, object target = null)
 		{
 			this.sourceRoot = source;
-			this.SetTargetOf(source, target);
+			if (target != null)
+			{
+				this.SetTargetOf(source, target);
+			}
 			this.PrepareCloneGraph();
 			this.GetTargetOf(source, out target);
 			return target;
@@ -87,6 +91,7 @@ namespace Duality.Cloning
 			this.currentObject = null;
 			this.objTargets.Clear();
 			this.localBehavior.Clear();
+			this.lateSetupObjects.Clear();
 			this.handledObjects.Clear();
 			this.dropWeakReferences.Clear();
 		}
@@ -94,7 +99,6 @@ namespace Duality.Cloning
 		private void SetTargetOf(object source, object target)
 		{
 			if (object.ReferenceEquals(source, null)) return;
-			if (object.ReferenceEquals(target, null)) return;
 			this.objTargets[source] = target;
 		}
 		private bool GetTargetOf(object source, out object target)
@@ -132,6 +136,7 @@ namespace Duality.Cloning
 		{
 			// Visit the object graph in order to determine which objects to clone
 			this.PrepareCloneGraph(this.sourceRoot);
+			this.localBehavior.Clear();
 
 			// Determine which weak references to keep
 			if (this.dropWeakReferences.Count > 0)
@@ -143,7 +148,16 @@ namespace Duality.Cloning
 				}
 			}
 
-			this.localBehavior.Clear();
+			// Perform late setup for surrogate objects that required it
+			foreach (object lateSetupSource in this.lateSetupObjects)
+			{
+				Type sourceType = lateSetupSource.GetType();
+				ICloneSurrogate surrogate = GetSurrogateFor(sourceType);
+
+				object lateSetupTarget;
+				surrogate.LateSetup(lateSetupSource, out lateSetupTarget, this);
+				this.SetTargetOf(lateSetupSource, lateSetupTarget);
+			}
 		}
 		private void PrepareCloneGraph(object source)
 		{
@@ -180,7 +194,12 @@ namespace Duality.Cloning
 			ICloneSurrogate surrogate = GetSurrogateFor(sourceType);
 			if (surrogate != null)
 			{
-				surrogate.SetupCloneTargets(source, this);
+				bool requireLateSetup;
+				surrogate.SetupCloneTargets(source, out requireLateSetup, this);
+				if (requireLateSetup)
+				{
+					this.lateSetupObjects.Add(source);
+				}
 			}
 			// Otherwise, use the default algorithm
 			else
@@ -278,10 +297,10 @@ namespace Duality.Cloning
 		}
 		private void PerformCopyChildObject(object source, object target, Type sourceType)
 		{
-			// Plain old (struct) data can be deep-copied by assignment
+			// Plain old (struct) data can be deep-copied by assignment. Nothing to do here.
 			if (this.CanCloneByAssignment(sourceType))
 			{
-				target = source;
+				return;
 			}
 			// Arrays will need to be traversed, unless consisting of plain old data
 			else if (sourceType.IsArray)

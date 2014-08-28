@@ -21,7 +21,8 @@ namespace Duality.Cloning
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
 		bool MatchesType(Type t);
 
-		void SetupCloneTargets(object source, ICloneTargetSetup setup);
+		void SetupCloneTargets(object source, out bool requireLateSetup, ICloneTargetSetup setup);
+		void LateSetup(object source, out object target, ICloneOperation operation);
 		void CopyDataTo(object source, object target, ICloneOperation operation);
 	}
 	/// <summary>
@@ -58,18 +59,34 @@ namespace Duality.Cloning
 			Type objType = source.GetType();
 			target = (T)objType.CreateInstanceOf();
 		}
+		public virtual void CreateTargetObjectLate(T source, out T target, ICloneOperation operation)
+		{
+			Type objType = source.GetType();
+			target = (T)objType.CreateInstanceOf();
+		}
 		public abstract void SetupCloneTargets(T source, ICloneTargetSetup setup);
 		public abstract void CopyDataTo(T source, T target, ICloneOperation operation);
 		
-		void ICloneSurrogate.SetupCloneTargets(object source, ICloneTargetSetup setup)
+		void ICloneSurrogate.SetupCloneTargets(object source, out bool requireLateSetup, ICloneTargetSetup setup)
 		{
 			T target;
 			this.CreateTargetObject((T)source, out target, setup);
 			if (!typeof(T).IsValueType && target != null)
 			{
 				setup.AddTarget(source, (object)target);
+				requireLateSetup = false;
+			}
+			else
+			{
+				requireLateSetup = true;
 			}
 			this.SetupCloneTargets((T)source, setup);
+		}
+		void ICloneSurrogate.LateSetup(object source, out object target, ICloneOperation operation)
+		{
+			T targetObj;
+			this.CreateTargetObjectLate((T)source, out targetObj, operation);
+			target = targetObj;
 		}
 		void ICloneSurrogate.CopyDataTo(object source, object target, ICloneOperation operation)
 		{
