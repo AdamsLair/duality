@@ -392,7 +392,7 @@ namespace Duality.Editor
 		}
 		private static Type ResolveDocStyleType(string typeString, MethodInfo declaringMethod = null)
 		{
-			return ReflectionHelper.ResolveType(ConvertFromDocStyleType(typeString), false, declaringMethod);
+			return ReflectionHelper.ResolveType(ConvertFromDocStyleType(typeString), declaringMethod);
 		}
 		private static string ConvertFromDocStyleType(string typeString)
 		{

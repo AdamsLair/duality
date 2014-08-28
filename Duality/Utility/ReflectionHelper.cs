@@ -17,14 +17,25 @@ namespace Duality
 	/// </summary>
 	public static class ReflectionHelper
 	{
-		private	static	Dictionary<Type,SerializeType>		serializeTypeCache			= new Dictionary<Type,SerializeType>();
+		private delegate object ObjectActivator();
+
+		private	static	readonly	ObjectActivator			nullObjectActivator			= () => null;
+		private	static	Dictionary<Type,ObjectActivator>	createInstanceMethodCache	= new Dictionary<Type,ObjectActivator>();
 		private	static	Dictionary<string,Type>				typeResolveCache			= new Dictionary<string,Type>();
 		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
 		private	static	Dictionary<Type,bool>				plainOldDataTypeCache		= new Dictionary<Type,bool>();
 		private	static	Dictionary<MemberInfo,Attribute[]>	customMemberAttribCache		= new Dictionary<MemberInfo,Attribute[]>();
 		private	static	Attribute[]							customAssemblyAttribCache	= null;
-		private	static	List<SerializeErrorHandler>			serializeHandlerCache		= new List<SerializeErrorHandler>();
 		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache			= new Dictionary<KeyValuePair<Type,Type>,bool>();
+
+		/// <summary>
+		/// Fired when automatically resolving a certain Type has failed. Allows any subscriber to provide a suitable match.
+		/// </summary>
+		public static event EventHandler<ResolveMemberEventArgs> TypeResolve	= null;
+		/// <summary>
+		/// Fired when automatically resolving a certain Member has failed. Allows any subscriber to provide a suitable match.
+		/// </summary>
+		public static event EventHandler<ResolveMemberEventArgs> MemberResolve	= null;
 
 		/// <summary>
 		/// Equals <c>BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic</c>.
@@ -40,49 +51,68 @@ namespace Duality
 		public const BindingFlags BindAll = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
 		/// <summary>
-		/// Returns a Stream to an Assemblies embedded resource. You don't normally need to use this and should retrieve 
-		/// embedded Resources using .resx Resource Managers instead, if you want type safety and compile time error checking.
+		/// Creates an instance of a Type. Attempts to use the Types default empty constructor, but will
+		/// return an uninitialized object in case no constructor is available.
 		/// </summary>
-		/// <param name="asm">The Assembly that embeds the desired resource.</param>
-		/// <param name="fileName">The name of the desired file.</param>
-		/// <returns></returns>
-		public static Stream GetEmbeddedResourceStream(Assembly asm, string fileName)
-		{
-			if (String.IsNullOrEmpty(fileName)) return null;
-			string resName = asm.GetName().Name + '.' + fileName.
-				Replace(Path.DirectorySeparatorChar, '.').
-				Replace(Path.AltDirectorySeparatorChar, '.').
-				Trim('.');
-
-			ManifestResourceInfo info = asm.GetManifestResourceInfo(resName);
-			if (info == null) return null;
-
-			return asm.GetManifestResourceStream(resName);
-		}
-
-		/// <summary>
-		/// Creates an instance of a Type.
-		/// </summary>
-		/// <param name="instanceType">The Type to create an instance of.</param>
-		/// <param name="noConstructor">If true, the instance will be generated without invoking any constructor.</param>
+		/// <param name="type">The Type to create an instance of.</param>
 		/// <returns>An instance of the Type. Null, if instanciation wasn't possible.</returns>
 		[System.Diagnostics.DebuggerStepThrough]
-		public static object CreateInstanceOf(this Type instanceType, bool noConstructor = false)
+		public static object CreateInstanceOf(this Type type)
 		{
-			try
+			ObjectActivator activator;
+			if (createInstanceMethodCache.TryGetValue(type, out activator))
 			{
-				if (instanceType == typeof(string))
-					return "";
-				else if (typeof(Array).IsAssignableFrom(instanceType) && instanceType.GetArrayRank() == 1)
-					return Array.CreateInstance(instanceType.GetElementType(), 0);
-				else if (noConstructor)
-					return System.Runtime.Serialization.FormatterServices.GetUninitializedObject(instanceType);
-				else
-					return Activator.CreateInstance(instanceType, true);
+				return activator();
 			}
-			catch (Exception)
+			else
 			{
-				return null;
+				// If the caller wants a string, just return an empty one
+				if (type == typeof(string))
+				{
+					activator = () => "";
+				}
+				// If the caller wants an array, create an empty one
+				else if (typeof(Array).IsAssignableFrom(type) && type.GetArrayRank() == 1)
+				{
+					activator = () => Array.CreateInstance(type.GetElementType(), 0);
+				}
+				else
+				{
+					try
+					{
+						// Attempt to invoke the Type default empty constructor
+						ConstructorInfo emptyConstructor = type.GetConstructor(BindInstanceAll, null, Type.EmptyTypes, null);
+						if (emptyConstructor != null)
+						{
+							var constructorLambda = Expression.Lambda<ObjectActivator>(Expression.New(emptyConstructor));
+							activator = constructorLambda.Compile();
+						}
+						// If there is no such constructor available, provide an uninitialized object
+						else
+						{
+							activator = () => System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
+						}
+					}
+					catch (Exception)
+					{
+						activator = nullObjectActivator;
+					}
+				}
+
+				// Test whether our activation method really works, and mind it for later
+				object firstResult;
+				try
+				{
+					firstResult = activator();
+				}
+				catch (Exception)
+				{
+					activator = nullObjectActivator;
+					firstResult = null;
+				}
+				createInstanceMethodCache[type] = activator;
+
+				return firstResult;
 			}
 		}
 		/// <summary>
@@ -93,7 +123,7 @@ namespace Duality
 		public static object GetDefaultInstanceOf(this Type instanceType)
 		{
 			if (instanceType.IsValueType)
-				return Activator.CreateInstance(instanceType, true);
+				return instanceType.CreateInstanceOf();
 			else
 				return null;
 		}
@@ -600,11 +630,10 @@ namespace Duality
 		/// </summary>
 		internal static void ClearTypeCache()
 		{
-			serializeTypeCache.Clear();
+			createInstanceMethodCache.Clear();
 			typeResolveCache.Clear();
 			memberResolveCache.Clear();
 			plainOldDataTypeCache.Clear();
-			serializeHandlerCache.Clear();
 			resRefCache.Clear();
 			customMemberAttribCache.Clear();
 			customAssemblyAttribCache = null;
@@ -613,21 +642,23 @@ namespace Duality
 		/// Resolves a Type based on its <see cref="GetTypeId">type id</see>.
 		/// </summary>
 		/// <param name="typeString">The type string to resolve.</param>
-		/// <param name="throwOnError">If true, an Exception is thrown on failure.</param>
 		/// <param name="declaringMethod">The generic method that is declaring the Type. Only necessary when resolving a generic methods parameter Type.</param>
 		/// <returns></returns>
-		public static Type ResolveType(string typeString, bool throwOnError = true, MethodInfo declaringMethod = null)
+		public static Type ResolveType(string typeString, MethodInfo declaringMethod = null)
+		{
+			return ResolveType(typeString, null, declaringMethod);
+		}
+		private static Type ResolveType(string typeString, IEnumerable<Assembly> searchAsm, MethodInfo declaringMethod)
 		{
 			if (typeString == null) return null;
 
 			Type result;
 			if (typeResolveCache.TryGetValue(typeString, out result)) return result;
 
-			Assembly[] searchAsm = AppDomain.CurrentDomain.GetAssemblies().Except(DualityApp.DisposedPlugins).ToArray();
+			if (searchAsm == null) searchAsm = AppDomain.CurrentDomain.GetAssemblies().Except(DualityApp.DisposedPlugins).ToArray();
 			result = FindType(typeString, searchAsm, declaringMethod);
 			if (result != null && declaringMethod == null) typeResolveCache[typeString] = result;
 
-			if (result == null && throwOnError) throw new ApplicationException(string.Format("Can't resolve Type '{0}'. Type not found", typeString));
 			return result;
 		}
 		/// <summary>
@@ -636,7 +667,7 @@ namespace Duality
 		/// <param name="memberString">The <see cref="GetMemberId">member id</see> of the member.</param>
 		/// <param name="throwOnError">If true, an Exception is thrown on failure.</param>
 		/// <returns></returns>
-		public static MemberInfo ResolveMember(string memberString, bool throwOnError = true)
+		public static MemberInfo ResolveMember(string memberString)
 		{
 			MemberInfo result;
 			if (memberResolveCache.TryGetValue(memberString, out result)) return result;
@@ -645,111 +676,7 @@ namespace Duality
 			result = FindMember(memberString, searchAsm);
 			if (result != null) memberResolveCache[memberString] = result;
 
-			if (result == null && throwOnError) throw new ApplicationException(string.Format("Can't resolve MemberInfo '{0}'. Member not found", memberString));
 			return result;
-		}
-		/// <summary>
-		/// Returns the <see cref="SerializeType"/> of a Type.
-		/// </summary>
-		/// <param name="t"></param>
-		/// <returns></returns>
-		public static SerializeType GetSerializeType(this Type t)
-		{
-			SerializeType result;
-			if (serializeTypeCache.TryGetValue(t, out result)) return result;
-
-			result = new SerializeType(t);
-			serializeTypeCache[t] = result;
-			typeResolveCache[result.TypeString] = result.Type;
-			return result;
-		}
-		/// <summary>
-		/// Returns the <see cref="DataType"/> of a Type.
-		/// </summary>
-		/// <param name="t"></param>
-		/// <returns></returns>
-		public static DataType GetDataType(this Type t)
-		{
-			if (t.IsEnum)
-				return DataType.Enum;
-			else if (t.IsPrimitive)
-			{
-				if		(t == typeof(bool))		return DataType.Bool;
-				else if (t == typeof(byte))		return DataType.Byte;
-				else if (t == typeof(char))		return DataType.Char;
-				else if (t == typeof(sbyte))	return DataType.SByte;
-				else if (t == typeof(short))	return DataType.Short;
-				else if (t == typeof(ushort))	return DataType.UShort;
-				else if (t == typeof(int))		return DataType.Int;
-				else if (t == typeof(uint))		return DataType.UInt;
-				else if (t == typeof(long))		return DataType.Long;
-				else if (t == typeof(ulong))	return DataType.ULong;
-				else if (t == typeof(float))	return DataType.Float;
-				else if (t == typeof(double))	return DataType.Double;
-				else if (t == typeof(decimal))	return DataType.Decimal;
-			}
-			else if (typeof(MemberInfo).IsAssignableFrom(t))
-			{
-				if		(typeof(Type).IsAssignableFrom(t))				return DataType.Type;
-				else if (typeof(FieldInfo).IsAssignableFrom(t))			return DataType.FieldInfo;
-				else if (typeof(PropertyInfo).IsAssignableFrom(t))		return DataType.PropertyInfo;
-				else if (typeof(MethodInfo).IsAssignableFrom(t))		return DataType.MethodInfo;
-				else if (typeof(ConstructorInfo).IsAssignableFrom(t))	return DataType.ConstructorInfo;
-				else if (typeof(EventInfo).IsAssignableFrom(t))			return DataType.EventInfo;
-			}
-			else if (typeof(Delegate).IsAssignableFrom(t))
-				return DataType.Delegate;
-			else if (t == typeof(string))
-				return DataType.String;
-			else if (t.IsArray)
-				return DataType.Array;
-			else if (t.IsClass)
-				return DataType.Struct;
-			else if (t.IsValueType)
-				return DataType.Struct;
-
-			// Should never happen in theory
-			return DataType.Unknown;
-		}
-		/// <summary>
-		/// Attempts to handle a serialization error dynamically by invoking available <see cref="SerializeErrorHandler">SerializeErrorHandlers</see>.
-		/// </summary>
-		/// <param name="error"></param>
-		/// <returns>Returns true, if the error has been handled successfully.</returns>
-		public static bool HandleSerializeError(SerializeError error)
-		{
-			if (error.Handled) return true;
-			if (serializeHandlerCache.Count == 0)
-			{
-				IEnumerable<Type> handlerTypes = DualityApp.GetAvailDualityTypes(typeof(SerializeErrorHandler));
-				foreach (Type handlerType in handlerTypes)
-				{
-					if (handlerType.IsAbstract) continue;
-					try
-					{
-						SerializeErrorHandler handler = handlerType.CreateInstanceOf() as SerializeErrorHandler;
-						if (handler != null)
-						{
-							serializeHandlerCache.Add(handler);
-						}
-					}
-					catch (Exception) {}
-				}
-				serializeHandlerCache.StableSort((a, b) => b.Priority - a.Priority);
-			}
-			foreach (SerializeErrorHandler handler in serializeHandlerCache)
-			{
-				try
-				{
-					handler.HandleError(error);
-					if (error.Handled) return true;
-				}
-				catch (Exception e)
-				{
-					Log.Core.WriteError("An error occurred while trying to perform a serialization fallback: {0}", Log.Exception(e));
-				}
-			}
-			return false;
 		}
 		
 		/// <summary>
@@ -1076,7 +1003,7 @@ namespace Duality
 			// Handle Reference
 			if (token[token.Length - 1].LastOrDefault() == '&')
 			{
-				Type elementType = FindType(typeName.Substring(0, typeName.Length - 1), asmSearch, declaringMethod);
+				Type elementType = ResolveType(typeName.Substring(0, typeName.Length - 1), asmSearch, declaringMethod);
 				if (elementType == null) return null;
 				return elementType.MakeByRefType();
 			}
@@ -1094,7 +1021,7 @@ namespace Duality
 			// Handle Arrays
 			if (arrayRank > 0)
 			{
-				Type elementType = FindType(elementTypeName, asmSearch, declaringMethod);
+				Type elementType = ResolveType(elementTypeName, asmSearch, declaringMethod);
 				if (elementType == null) return null;
 				return arrayRank == 1 ? elementType.MakeArrayType() : elementType.MakeArrayType(arrayRank);
 			}
@@ -1144,9 +1071,9 @@ namespace Duality
 				// Failed anyway? Try explicit resolve
 				if (baseType == null)
 				{
-					ResolveTypeError resolveError = new ResolveTypeError(typeNameBase);
-					if (HandleSerializeError(resolveError))
-						baseType = resolveError.ResolvedType;
+					ResolveMemberEventArgs args = new ResolveMemberEventArgs(typeNameBase);
+					if (TypeResolve != null) TypeResolve(null, args);
+					baseType = args.ResolvedMember as Type;
 				}
 			}
 			
@@ -1161,7 +1088,7 @@ namespace Duality
 					if ((genericParams[i].Length > 0 && genericParams[i][0] == '`') && 
 						(genericParams[i].Length < 2 || genericParams[i][1] != '`')) return baseType;
 
-					genericParamTypes[i] = FindType(genericParams[i], asmSearch, declaringMethod);
+					genericParamTypes[i] = ResolveType(genericParams[i], asmSearch, declaringMethod);
 
 					// Can't find the generic type argument: Fail.
 					if (genericParamTypes[i] == null) return null;
@@ -1186,73 +1113,110 @@ namespace Duality
 		{
 			string[] token = memberString.Split(':');
 
-			MemberTypes memberType;
-			switch (token[0][0])
+			Type declaringType = token.Length > 1 ? ResolveType(token[1], asmSearch, null) : null;
+			MemberTypes memberType = MemberTypes.Custom;
+			if (token.Length > 0)
 			{
-				case 'T':	memberType = MemberTypes.TypeInfo;		break;
-				case 'M':	memberType = MemberTypes.Method;		break;
-				case 'F':	memberType = MemberTypes.Field;			break;
-				case 'E':	memberType = MemberTypes.Event;			break;
-				case 'C':	memberType = MemberTypes.Constructor;	break;
-				case 'P':	memberType = MemberTypes.Property;		break;
-				default:	throw new NotSupportedException(string.Format("Member Type '{0}' unknown or not supported", token[0][0]));
-			}
-
-			Type declaringType = FindType(token[1], asmSearch);
-			if (declaringType == null) return null;
-
-			if (memberType == MemberTypes.TypeInfo)
-			{
-				return declaringType;
-			}
-			else if (memberType == MemberTypes.Field)
-			{
-				MemberInfo member = declaringType.GetField(token[2], BindAll);
-				if (member != null) return member;
-			}
-			else if (memberType == MemberTypes.Event)
-			{
-				MemberInfo member = declaringType.GetEvent(token[2], BindAll);
-				if (member != null) return member;
-			}
-			else
-			{
-				int memberParamListStartIndex = token[2].IndexOf('(');
-				int memberParamListEndIndex = token[2].IndexOf(')');
-				string memberParamList = memberParamListStartIndex != -1 ? token[2].Substring(memberParamListStartIndex + 1, memberParamListEndIndex - memberParamListStartIndex - 1) : null;
-				string[] memberParams = SplitArgs(memberParamList, '[', ']', ',', 0);
-				string memberName = memberParamListStartIndex != -1 ? token[2].Substring(0, memberParamListStartIndex) : token[2];
-				Type[] memberParamTypes = memberParams.Select(p => FindType(p, asmSearch)).ToArray();
-
-				if (memberType == MemberTypes.Constructor)
+				switch (token[0][0])
 				{
-					ConstructorInfo[] availCtors = declaringType.GetConstructors(memberName == "s" ? BindStaticAll : BindInstanceAll).Where(
-						m => m.GetParameters().Length == memberParams.Length).ToArray();
-					foreach (ConstructorInfo ctor in availCtors)
-					{
-						bool possibleMatch = true;
-						ParameterInfo[] methodParams = ctor.GetParameters();
-						for (int i = 0; i < methodParams.Length; i++)
-						{
-							string methodParamTypeName = methodParams[i].ParameterType.Name;
-							if (methodParams[i].ParameterType != memberParamTypes[i] && methodParamTypeName != memberParams[i])
-							{
-								possibleMatch = false;
-								break;
-							}
-						}
-						if (possibleMatch) return ctor;
-					}
+					case 'T':	memberType = MemberTypes.TypeInfo;		break;
+					case 'M':	memberType = MemberTypes.Method;		break;
+					case 'F':	memberType = MemberTypes.Field;			break;
+					case 'E':	memberType = MemberTypes.Event;			break;
+					case 'C':	memberType = MemberTypes.Constructor;	break;
+					case 'P':	memberType = MemberTypes.Property;		break;
 				}
-				else if (memberType == MemberTypes.Property)
+			}
+
+			if (declaringType != null && memberType != MemberTypes.Custom)
+			{
+				if (memberType == MemberTypes.TypeInfo)
 				{
-					PropertyInfo[] availProps = declaringType.GetProperties(BindAll).Where(
+					return declaringType;
+				}
+				else if (memberType == MemberTypes.Field)
+				{
+					MemberInfo member = declaringType.GetField(token[2], BindAll);
+					if (member != null) return member;
+				}
+				else if (memberType == MemberTypes.Event)
+				{
+					MemberInfo member = declaringType.GetEvent(token[2], BindAll);
+					if (member != null) return member;
+				}
+				else
+				{
+					int memberParamListStartIndex = token[2].IndexOf('(');
+					int memberParamListEndIndex = token[2].IndexOf(')');
+					string memberParamList = memberParamListStartIndex != -1 ? token[2].Substring(memberParamListStartIndex + 1, memberParamListEndIndex - memberParamListStartIndex - 1) : null;
+					string[] memberParams = SplitArgs(memberParamList, '[', ']', ',', 0);
+					string memberName = memberParamListStartIndex != -1 ? token[2].Substring(0, memberParamListStartIndex) : token[2];
+					Type[] memberParamTypes = memberParams.Select(p => ResolveType(p, asmSearch, null)).ToArray();
+
+					if (memberType == MemberTypes.Constructor)
+					{
+						ConstructorInfo[] availCtors = declaringType.GetConstructors(memberName == "s" ? BindStaticAll : BindInstanceAll).Where(
+							m => m.GetParameters().Length == memberParams.Length).ToArray();
+						foreach (ConstructorInfo ctor in availCtors)
+						{
+							bool possibleMatch = true;
+							ParameterInfo[] methodParams = ctor.GetParameters();
+							for (int i = 0; i < methodParams.Length; i++)
+							{
+								string methodParamTypeName = methodParams[i].ParameterType.Name;
+								if (methodParams[i].ParameterType != memberParamTypes[i] && methodParamTypeName != memberParams[i])
+								{
+									possibleMatch = false;
+									break;
+								}
+							}
+							if (possibleMatch) return ctor;
+						}
+					}
+					else if (memberType == MemberTypes.Property)
+					{
+						PropertyInfo[] availProps = declaringType.GetProperties(BindAll).Where(
+							m => m.Name == memberName && 
+							m.GetIndexParameters().Length == memberParams.Length).ToArray();
+						foreach (PropertyInfo prop in availProps)
+						{
+							bool possibleMatch = true;
+							ParameterInfo[] methodParams = prop.GetIndexParameters();
+							for (int i = 0; i < methodParams.Length; i++)
+							{
+								string methodParamTypeName = methodParams[i].ParameterType.Name;
+								if (methodParams[i].ParameterType != memberParamTypes[i] && methodParamTypeName != memberParams[i])
+								{
+									possibleMatch = false;
+									break;
+								}
+							}
+							if (possibleMatch) return prop;
+						}
+					}
+
+					int genArgTokenStartIndex = token[2].IndexOf("``", StringComparison.Ordinal);
+					int genArgTokenEndIndex = memberParamListStartIndex != -1 ? memberParamListStartIndex : token[2].Length;
+					string genArgToken = genArgTokenStartIndex != -1 ? token[2].Substring(genArgTokenStartIndex + 2, genArgTokenEndIndex - genArgTokenStartIndex - 2) : "";
+					if (genArgTokenStartIndex != -1) memberName = token[2].Substring(0, genArgTokenStartIndex);			
+
+					int genArgListStartIndex = genArgToken.IndexOf('[');
+					int genArgListEndIndex = genArgToken.LastIndexOf(']');
+					string genArgList = genArgListStartIndex != -1 ? genArgToken.Substring(genArgListStartIndex + 1, genArgListEndIndex - genArgListStartIndex - 1) : null;
+					string[] genArgs = SplitArgs(genArgList, '[', ']', ',', 0);
+					for (int i = 0; i < genArgs.Length; i++) genArgs[i] = genArgs[i].Substring(1, genArgs[i].Length - 2);
+
+					int genArgCount = genArgToken.Length > 0 ? int.Parse(genArgToken.Substring(0, genArgListStartIndex != -1 ? genArgListStartIndex : genArgToken.Length)) : 0;
+
+					// Select the method that fits
+					MethodInfo[] availMethods = declaringType.GetMethods(BindAll).Where(
 						m => m.Name == memberName && 
-						m.GetIndexParameters().Length == memberParams.Length).ToArray();
-					foreach (PropertyInfo prop in availProps)
+						m.GetGenericArguments().Length == genArgCount &&
+						m.GetParameters().Length == memberParams.Length).ToArray();
+					foreach (MethodInfo method in availMethods)
 					{
 						bool possibleMatch = true;
-						ParameterInfo[] methodParams = prop.GetIndexParameters();
+						ParameterInfo[] methodParams = method.GetParameters();
 						for (int i = 0; i < methodParams.Length; i++)
 						{
 							string methodParamTypeName = methodParams[i].ParameterType.Name;
@@ -1262,51 +1226,15 @@ namespace Duality
 								break;
 							}
 						}
-						if (possibleMatch) return prop;
+						if (possibleMatch) return method;
 					}
-				}
-
-				int genArgTokenStartIndex = token[2].IndexOf("``", StringComparison.Ordinal);
-				int genArgTokenEndIndex = memberParamListStartIndex != -1 ? memberParamListStartIndex : token[2].Length;
-				string genArgToken = genArgTokenStartIndex != -1 ? token[2].Substring(genArgTokenStartIndex + 2, genArgTokenEndIndex - genArgTokenStartIndex - 2) : "";
-				if (genArgTokenStartIndex != -1) memberName = token[2].Substring(0, genArgTokenStartIndex);			
-
-				int genArgListStartIndex = genArgToken.IndexOf('[');
-				int genArgListEndIndex = genArgToken.LastIndexOf(']');
-				string genArgList = genArgListStartIndex != -1 ? genArgToken.Substring(genArgListStartIndex + 1, genArgListEndIndex - genArgListStartIndex - 1) : null;
-				string[] genArgs = SplitArgs(genArgList, '[', ']', ',', 0);
-				for (int i = 0; i < genArgs.Length; i++) genArgs[i] = genArgs[i].Substring(1, genArgs[i].Length - 2);
-
-				int genArgCount = genArgToken.Length > 0 ? int.Parse(genArgToken.Substring(0, genArgListStartIndex != -1 ? genArgListStartIndex : genArgToken.Length)) : 0;
-
-				// Select the method that fits
-				MethodInfo[] availMethods = declaringType.GetMethods(BindAll).Where(
-					m => m.Name == memberName && 
-					m.GetGenericArguments().Length == genArgCount &&
-					m.GetParameters().Length == memberParams.Length).ToArray();
-				foreach (MethodInfo method in availMethods)
-				{
-					bool possibleMatch = true;
-					ParameterInfo[] methodParams = method.GetParameters();
-					for (int i = 0; i < methodParams.Length; i++)
-					{
-						string methodParamTypeName = methodParams[i].ParameterType.Name;
-						if (methodParams[i].ParameterType != memberParamTypes[i] && methodParamTypeName != memberParams[i])
-						{
-							possibleMatch = false;
-							break;
-						}
-					}
-					if (possibleMatch) return method;
 				}
 			}
 			
 			// Failed? Try explicit resolve
-			ResolveMemberError resolveError = new ResolveMemberError(memberString);
-			if (HandleSerializeError(resolveError))
-				return resolveError.ResolvedMember;
-			else
-				return null;
+			ResolveMemberEventArgs args = new ResolveMemberEventArgs(memberString);
+			if (MemberResolve != null) MemberResolve(null, args);
+			return args.ResolvedMember;
 		}
 		/// <summary>
 		/// Compares two Type names for equality, ignoring the plus / dot difference.
@@ -1368,6 +1296,33 @@ namespace Duality
 			}
 			ptm.Add(argList.Substring(lastSplitIndex + 1, argList.Length - lastSplitIndex - 1));
 			return ptm.ToArray();
+		}
+	}
+
+	public class ResolveMemberEventArgs : EventArgs
+	{
+		private string memberId = null;
+		private MemberInfo resolvedMember = null;
+
+		/// <summary>
+		/// [GET] The Member id to resolve.
+		/// </summary>
+		public string MemberId
+		{
+			get { return this.memberId; }
+		}
+		/// <summary>
+		/// [GET / SET] The resolved Member.
+		/// </summary>
+		public MemberInfo ResolvedMember
+		{
+			get { return this.resolvedMember; }
+			set { this.resolvedMember = value; }
+		}
+
+		public ResolveMemberEventArgs(string memberId)
+		{
+			this.memberId = memberId;
 		}
 	}
 }

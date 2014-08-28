@@ -69,9 +69,53 @@ namespace Duality.Serialization
 			this.type = t;
 			this.fields = this.type.GetAllFields(ReflectionHelper.BindInstanceAll).Where(f => !f.IsNotSerialized).ToArray();
 			this.typeString = this.type.GetTypeId();
-			this.dataType = this.type.GetDataType();
+			this.dataType = GetDataType(this.type);
 
 			this.fields.StableSort((a, b) => string.Compare(a.Name, b.Name));
+		}
+
+		private static DataType GetDataType(Type t)
+		{
+			if (t.IsEnum)
+				return DataType.Enum;
+			else if (t.IsPrimitive)
+			{
+				if		(t == typeof(bool))		return DataType.Bool;
+				else if (t == typeof(byte))		return DataType.Byte;
+				else if (t == typeof(char))		return DataType.Char;
+				else if (t == typeof(sbyte))	return DataType.SByte;
+				else if (t == typeof(short))	return DataType.Short;
+				else if (t == typeof(ushort))	return DataType.UShort;
+				else if (t == typeof(int))		return DataType.Int;
+				else if (t == typeof(uint))		return DataType.UInt;
+				else if (t == typeof(long))		return DataType.Long;
+				else if (t == typeof(ulong))	return DataType.ULong;
+				else if (t == typeof(float))	return DataType.Float;
+				else if (t == typeof(double))	return DataType.Double;
+				else if (t == typeof(decimal))	return DataType.Decimal;
+			}
+			else if (typeof(MemberInfo).IsAssignableFrom(t))
+			{
+				if		(typeof(Type).IsAssignableFrom(t))				return DataType.Type;
+				else if (typeof(FieldInfo).IsAssignableFrom(t))			return DataType.FieldInfo;
+				else if (typeof(PropertyInfo).IsAssignableFrom(t))		return DataType.PropertyInfo;
+				else if (typeof(MethodInfo).IsAssignableFrom(t))		return DataType.MethodInfo;
+				else if (typeof(ConstructorInfo).IsAssignableFrom(t))	return DataType.ConstructorInfo;
+				else if (typeof(EventInfo).IsAssignableFrom(t))			return DataType.EventInfo;
+			}
+			else if (typeof(Delegate).IsAssignableFrom(t))
+				return DataType.Delegate;
+			else if (t == typeof(string))
+				return DataType.String;
+			else if (t.IsArray)
+				return DataType.Array;
+			else if (t.IsClass)
+				return DataType.Struct;
+			else if (t.IsValueType)
+				return DataType.Struct;
+
+			// Should never happen in theory
+			return DataType.Unknown;
 		}
 	}
 }

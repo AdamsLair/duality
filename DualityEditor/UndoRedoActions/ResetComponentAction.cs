@@ -54,7 +54,7 @@ namespace Duality.Editor.UndoRedoActions
 				}
 				else
 				{
-					Component resetBase = (cmpType.CreateInstanceOf() ?? cmpType.CreateInstanceOf(true)) as Component;
+					Component resetBase = cmpType.CreateInstanceOf() as Component;
 					resetBase.CopyTo(component);
 				}
 			}

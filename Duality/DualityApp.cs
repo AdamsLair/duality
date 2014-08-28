@@ -12,6 +12,7 @@ using OpenTK.Audio.OpenAL;
 
 using Duality.Resources;
 using Duality.Serialization;
+using Duality.Cloning;
 using Duality.Drawing;
 
 namespace Duality
@@ -993,7 +994,7 @@ namespace Duality
 			ReflectionHelper.ClearTypeCache();
 			Component.ClearTypeCache();
 			Formatter.ClearTypeCache();
-			Cloning.CloneProvider.ClearTypeCache();
+			CloneProvider.ClearTypeCache();
 			
 			// Clean input sources that a disposed Assembly forgot to unregister.
 			if (oldPlugins != null)

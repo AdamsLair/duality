@@ -47,7 +47,7 @@ namespace Duality.Drawing
 				if (typeof(T) == typeof(IColorData))
 					return (T)source;
 				else
-					clr = (T)typeof(T).CreateInstanceOf(true);
+					clr = (T)typeof(T).CreateInstanceOf();
 			}
 			clr.SetIntArgb(source.ToIntArgb());
 			return clr;
@@ -65,7 +65,7 @@ namespace Duality.Drawing
 			if (type == typeof(IColorData)) return source;
 
 			IColorData clr = type.GetDefaultInstanceOf() as IColorData;
-			if (clr == null) clr = type.CreateInstanceOf(true) as IColorData;
+			if (clr == null) clr = type.CreateInstanceOf() as IColorData;
 			clr.SetIntArgb(source.ToIntArgb());
 			return clr;
 		}

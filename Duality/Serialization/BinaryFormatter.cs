@@ -144,7 +144,7 @@ namespace Duality.Serialization
 			
 			Type type = null;
 			if (typeStr != null) type = this.ResolveType(typeStr, objId);
-			ObjectHeader header = new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
+			ObjectHeader header = new ObjectHeader(objId, dataType, GetSerializeType(type));
 			if (header.DataType == DataType.Unknown)
 			{
 				this.LocalLog.WriteError("Unable to process DataType: {0}.", typeStr);
@@ -217,7 +217,7 @@ namespace Duality.Serialization
 			if (obj is Type)
 			{
 				Type type = obj as Type;
-				SerializeType cachedType = type.GetSerializeType();
+				SerializeType cachedType = GetSerializeType(type);
 
 				this.writer.Write(cachedType.TypeString);
 			}
@@ -366,7 +366,7 @@ namespace Duality.Serialization
 			}
 
 			Type resolved = this.ResolveType(typeString);
-			SerializeType cached = resolved != null ? resolved.GetSerializeType() : null;
+			SerializeType cached = GetSerializeType(resolved);
 			TypeDataLayout layout = cached != null ? new TypeDataLayout(cached) : null;
 			this.WriteTypeDataLayout(layout, typeString);
 		}
@@ -572,7 +572,6 @@ namespace Duality.Serialization
 					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
 				if (obj == null) obj = header.ObjectType.CreateInstanceOf();
-				if (obj == null) obj = header.ObjectType.CreateInstanceOf(true);
 			}
 
 			// Prepare object reference
@@ -828,7 +827,7 @@ namespace Duality.Serialization
 		}
 		private TypeDataLayout ReadTypeDataLayout(Type t)
 		{
-			return this.ReadTypeDataLayout(t.GetSerializeType().TypeString);
+			return this.ReadTypeDataLayout(GetSerializeType(t).TypeString);
 		}
 		private TypeDataLayout ReadTypeDataLayout(string t)
 		{

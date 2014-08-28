@@ -296,7 +296,7 @@ namespace Duality.Editor.Plugins.CamView
 			// Initialize from loaded state id, if not done yet manually
 			if (this.activeState == null)
 			{
-				Type stateType = ReflectionHelper.ResolveType(this.loadTempState, false) ?? typeof(SceneEditorCamViewState);
+				Type stateType = ReflectionHelper.ResolveType(this.loadTempState) ?? typeof(SceneEditorCamViewState);
 				this.SetCurrentState(stateType);
 				this.loadTempState = null;
 			}

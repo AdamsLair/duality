@@ -76,7 +76,7 @@ namespace Duality.Cloning
 		public virtual T CreateTargetObject(CloneProvider provider)
 		{
 			Type objType = this.RealObject.GetType();
-			return (T)(objType.CreateInstanceOf() ?? objType.CreateInstanceOf(true));
+			return (T)objType.CreateInstanceOf();
 		}
 		public abstract void CopyDataTo(T targetObj, CloneProvider provider);
 

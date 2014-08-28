@@ -186,7 +186,7 @@ namespace Duality.Cloning
 			}
 			else
 			{
-				target = sourceType.CreateInstanceOf() ?? sourceType.CreateInstanceOf(true);
+				target = sourceType.CreateInstanceOf();
 			}
 			this.SetTargetOf(source, target);
 

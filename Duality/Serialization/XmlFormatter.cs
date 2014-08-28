@@ -188,7 +188,7 @@ namespace Duality.Serialization
 			if (obj is Type)
 			{
 				Type type = obj as Type;
-				SerializeType cachedType = type.GetSerializeType();
+				SerializeType cachedType = GetSerializeType(type);
 				element.SetAttributeValue("value", cachedType.TypeString);
 			}
 			else if (obj is MemberInfo)
@@ -345,7 +345,7 @@ namespace Duality.Serialization
 			Type type = null;
 			if (typeStr != null) type = this.ResolveType(typeStr, objId);
 
-			ObjectHeader header = new ObjectHeader(objId, dataType, type != null ? type.GetSerializeType() : null);
+			ObjectHeader header = new ObjectHeader(objId, dataType, GetSerializeType(type));
 			if (header.DataType == DataType.Unknown)
 			{
 				this.LocalLog.WriteError("Unable to process DataType: {0}.", dataTypeStr);
@@ -471,7 +471,6 @@ namespace Duality.Serialization
 					catch (Exception e) { this.LogCustomDeserializationError(header.ObjectId, header.ObjectType, e); }
 				}
 				if (obj == null) obj = header.ObjectType.CreateInstanceOf();
-				if (obj == null) obj = header.ObjectType.CreateInstanceOf(true);
 			}
 
 			// Prepare object reference

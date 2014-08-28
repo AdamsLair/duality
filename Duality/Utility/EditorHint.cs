@@ -319,7 +319,7 @@ namespace Duality.Editor
 
 		private static Image DefaultResolver(string resourceTypeId, string propertyName)
 		{
-			Type resourceClass = ReflectionHelper.ResolveType(resourceTypeId, false);
+			Type resourceClass = ReflectionHelper.ResolveType(resourceTypeId);
 			PropertyInfo resourceProperty = resourceClass != null ? resourceClass.GetProperty(propertyName, ReflectionHelper.BindStaticAll) : null;
 			if (resourceProperty != null && typeof(Image).IsAssignableFrom(resourceProperty.PropertyType))
 			{

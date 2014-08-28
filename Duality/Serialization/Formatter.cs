@@ -422,7 +422,7 @@ namespace Duality.Serialization
 		protected ObjectHeader PrepareWriteObject(object obj)
 		{
 			Type objType = obj.GetType();
-			SerializeType objSerializeType = objType.GetSerializeType();
+			SerializeType objSerializeType = GetSerializeType(objType);
 			DataType dataType = objSerializeType.DataType;
 			uint objId = 0;
 			
@@ -498,7 +498,7 @@ namespace Duality.Serialization
 				field = objSerializeType.Fields.FirstOrDefault(f => f.Name == fieldName);
 				if (field == null)
 				{
-					field = ReflectionHelper.ResolveMember("F:" + objSerializeType.TypeString + ":" + fieldName, false) as FieldInfo;
+					field = ReflectionHelper.ResolveMember("F:" + objSerializeType.TypeString + ":" + fieldName) as FieldInfo;
 				}
 			}
 
@@ -550,7 +550,7 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		protected Type ResolveType(string typeId, uint objId = uint.MaxValue)
 		{
-			Type result = ReflectionHelper.ResolveType(typeId, false);
+			Type result = ReflectionHelper.ResolveType(typeId);
 			if (result == null)
 			{
 				if (objId != uint.MaxValue)
@@ -568,7 +568,7 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		protected MemberInfo ResolveMember(string memberId, uint objId = uint.MaxValue)
 		{
-			MemberInfo result = ReflectionHelper.ResolveMember(memberId, false);
+			MemberInfo result = ReflectionHelper.ResolveMember(memberId);
 			if (result == null)
 			{
 				if (objId != uint.MaxValue)
@@ -595,7 +595,7 @@ namespace Duality.Serialization
 			catch (Exception) {}
 
 			string memberId = "F:" + enumType.GetTypeId() + ":" + enumField;
-			MemberInfo member = ReflectionHelper.ResolveMember(memberId, false);
+			MemberInfo member = ReflectionHelper.ResolveMember(memberId);
 			if (member != null)
 			{
 				try
@@ -613,11 +613,13 @@ namespace Duality.Serialization
 		private bool HandleAssignValueToField(SerializeType objSerializeType, object obj, string fieldName, object fieldValue)
 		{
 			AssignFieldError error = new AssignFieldError(objSerializeType, obj, fieldName, fieldValue);
-			return ReflectionHelper.HandleSerializeError(error);
+			return HandleSerializeError(error);
 		}
 
 
-		private	static List<ISerializeSurrogate>	surrogates		= null;
+		private	static	Dictionary<Type,SerializeType>	serializeTypeCache		= new Dictionary<Type,SerializeType>();
+		private	static	List<SerializeErrorHandler>		serializeHandlerCache	= new List<SerializeErrorHandler>();
+		private	static List<ISerializeSurrogate>		surrogates				= null;
 		private static FormattingMethod defaultMethod	= FormattingMethod.Xml;
 
 		/// <summary>
@@ -628,53 +630,11 @@ namespace Duality.Serialization
 			get { return defaultMethod; }
 			set { defaultMethod = value; }
 		}
-
-		/// <summary>
-		/// Retrieves a matching <see cref="Duality.Serialization.ISerializeSurrogate"/> for the specified <see cref="System.Type"/>.
-		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISerializeSurrogate"/> for.</param>
-		/// <returns></returns>
-		protected static ISerializeSurrogate GetSurrogateFor(Type type)
-		{
-			if (surrogates == null)
-			{
-				surrogates = 
-					DualityApp.GetAvailDualityTypes(typeof(ISerializeSurrogate))
-					.Select(t => t.CreateInstanceOf())
-					.OfType<ISerializeSurrogate>()
-					.NotNull()
-					.ToList();
-				surrogates.StableSort((s1, s2) => s1.Priority - s2.Priority);
-			}
-			return surrogates.FirstOrDefault(s => s.MatchesType(type));
-		}
 		
-		internal static void InitDefaultMethod()
+		static Formatter()
 		{
-			if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
-				defaultMethod = FormattingMethod.Xml;
-			else
-				defaultMethod = FormattingMethod.Binary;
-
-			if (Directory.Exists(DualityApp.DataDirectory))
-			{
-				foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories))
-				{
-					using (FileStream stream = File.OpenRead(anyResource))
-					{
-						try
-						{
-							defaultMethod = XmlFormatter.IsXmlStream(stream) ? FormattingMethod.Xml : FormattingMethod.Binary;
-							break;
-						}
-						catch (Exception) {}
-					}
-				}
-			}
-		}
-		internal static void ClearTypeCache()
-		{
-			surrogates = null;
+			ReflectionHelper.MemberResolve	+= new EventHandler<ResolveMemberEventArgs>(ReflectionHelper_MemberResolve);
+			ReflectionHelper.TypeResolve	+= new EventHandler<ResolveMemberEventArgs>(ReflectionHelper_TypeResolve);
 		}
 
 		/// <summary>
@@ -811,6 +771,125 @@ namespace Duality.Serialization
 			{
 				formatter.WriteObject(obj);
 			}
+		}
+
+		/// <summary>
+		/// Returns the <see cref="SerializeType"/> of a Type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		protected static SerializeType GetSerializeType(Type type)
+		{
+			if (type == null) return null;
+
+			SerializeType result;
+			if (serializeTypeCache.TryGetValue(type, out result)) return result;
+
+			result = new SerializeType(type);
+			serializeTypeCache[type] = result;
+			return result;
+		}
+		/// <summary>
+		/// Retrieves a matching <see cref="Duality.Serialization.ISerializeSurrogate"/> for the specified <see cref="System.Type"/>.
+		/// </summary>
+		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISerializeSurrogate"/> for.</param>
+		/// <returns></returns>
+		protected static ISerializeSurrogate GetSurrogateFor(Type type)
+		{
+			if (surrogates == null)
+			{
+				surrogates = 
+					DualityApp.GetAvailDualityTypes(typeof(ISerializeSurrogate))
+					.Select(t => t.CreateInstanceOf())
+					.OfType<ISerializeSurrogate>()
+					.NotNull()
+					.ToList();
+				surrogates.StableSort((s1, s2) => s1.Priority - s2.Priority);
+			}
+			return surrogates.FirstOrDefault(s => s.MatchesType(type));
+		}
+		/// <summary>
+		/// Attempts to handle a serialization error dynamically by invoking available <see cref="SerializeErrorHandler">SerializeErrorHandlers</see>.
+		/// </summary>
+		/// <param name="error"></param>
+		/// <returns>Returns true, if the error has been handled successfully.</returns>
+		protected static bool HandleSerializeError(SerializeError error)
+		{
+			if (error.Handled) return true;
+			if (serializeHandlerCache.Count == 0)
+			{
+				IEnumerable<Type> handlerTypes = DualityApp.GetAvailDualityTypes(typeof(SerializeErrorHandler));
+				foreach (Type handlerType in handlerTypes)
+				{
+					if (handlerType.IsAbstract) continue;
+					try
+					{
+						SerializeErrorHandler handler = handlerType.CreateInstanceOf() as SerializeErrorHandler;
+						if (handler != null)
+						{
+							serializeHandlerCache.Add(handler);
+						}
+					}
+					catch (Exception) {}
+				}
+				serializeHandlerCache.StableSort((a, b) => b.Priority - a.Priority);
+			}
+			foreach (SerializeErrorHandler handler in serializeHandlerCache)
+			{
+				try
+				{
+					handler.HandleError(error);
+					if (error.Handled) return true;
+				}
+				catch (Exception e)
+				{
+					Log.Core.WriteError("An error occurred while trying to perform a serialization fallback: {0}", Log.Exception(e));
+				}
+			}
+			return false;
+		}
+		
+		internal static void InitDefaultMethod()
+		{
+			if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
+				defaultMethod = FormattingMethod.Xml;
+			else
+				defaultMethod = FormattingMethod.Binary;
+
+			if (Directory.Exists(DualityApp.DataDirectory))
+			{
+				foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories))
+				{
+					using (FileStream stream = File.OpenRead(anyResource))
+					{
+						try
+						{
+							defaultMethod = XmlFormatter.IsXmlStream(stream) ? FormattingMethod.Xml : FormattingMethod.Binary;
+							break;
+						}
+						catch (Exception) {}
+					}
+				}
+			}
+		}
+		internal static void ClearTypeCache()
+		{
+			surrogates = null;
+			serializeTypeCache.Clear();
+			serializeHandlerCache.Clear();
+		}
+
+		private static void ReflectionHelper_MemberResolve(object sender, ResolveMemberEventArgs e)
+		{
+			ResolveMemberError error = new ResolveMemberError(e.MemberId);
+			if (HandleSerializeError(error))
+				e.ResolvedMember = error.ResolvedMember;
+		}
+		private static void ReflectionHelper_TypeResolve(object sender, ResolveMemberEventArgs e)
+		{
+			ResolveTypeError error = new ResolveTypeError(e.MemberId);
+			if (HandleSerializeError(error))
+				e.ResolvedMember = error.ResolvedType;
 		}
 	}
 }

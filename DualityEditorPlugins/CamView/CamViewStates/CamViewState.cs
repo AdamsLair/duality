@@ -394,7 +394,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.lastActiveLayers.Clear();
 				foreach (XElement layerNode in activeLayersNode.Elements())
 				{
-					Type layerType = ReflectionHelper.ResolveType(layerNode.Name.LocalName, false);
+					Type layerType = ReflectionHelper.ResolveType(layerNode.Name.LocalName);
 					if (layerType != null) this.lastActiveLayers.Add(layerType);
 				}
 			}

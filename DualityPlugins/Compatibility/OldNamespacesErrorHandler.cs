@@ -44,9 +44,7 @@ namespace Duality.Plugins.Compatibility
 				else if (fixedTypeId.EndsWith("Duality.Profiling.TimeCounter"))			resolveTypeError.ResolvedType = typeof(Duality.TimeCounter);
 				else if (fixedTypeId.Contains("Duality.FormattedText") && !fixedTypeId.Contains("Duality.Drawing.FormattedText"))
 				{
-					resolveTypeError.ResolvedType = ReflectionHelper.ResolveType(
-						fixedTypeId.Replace("Duality.FormattedText", "Duality.Drawing.FormattedText"), 
-						false);
+					resolveTypeError.ResolvedType = ReflectionHelper.ResolveType(fixedTypeId.Replace("Duality.FormattedText", "Duality.Drawing.FormattedText"));
 				}
 			}
 

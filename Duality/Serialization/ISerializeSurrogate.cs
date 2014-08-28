@@ -115,7 +115,7 @@ namespace Duality.Serialization
 		/// <returns>An instance of the specified <see cref="System.Type"/> that has been constructed using the provided data.</returns>
 		public virtual object ConstructObject(IDataReader reader, Type objType)
 		{
-			return objType.CreateInstanceOf() ?? objType.CreateInstanceOf(true);
+			return objType.CreateInstanceOf();
 		}
 		/// <summary>
 		/// Reads and applies the object data to the specified <see cref="IDataReader"/>.

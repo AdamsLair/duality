@@ -161,7 +161,7 @@ namespace Duality.Editor
 
 		public static bool DefaultPerformHelpAction(HelpInfo info)
 		{
-			MemberInfo member = !string.IsNullOrEmpty(info.Id) ? ReflectionHelper.ResolveMember(info.Id, false) : null;
+			MemberInfo member = !string.IsNullOrEmpty(info.Id) ? ReflectionHelper.ResolveMember(info.Id) : null;
 			if (member != null)
 			{
 				string memberHtmlName;

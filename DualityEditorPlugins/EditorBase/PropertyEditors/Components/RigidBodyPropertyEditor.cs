@@ -289,7 +289,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			Type jointType = this.DisplayedValue as Type;
 			if (jointType == null) return;
 
-			IEnumerable<JointInfo> newJoints = Enumerable.Repeat(jointType, this.targetArray.Length).Select(t => (t.CreateInstanceOf() ?? t.CreateInstanceOf(true)) as JointInfo);
+			IEnumerable<JointInfo> newJoints = Enumerable.Repeat(jointType, this.targetArray.Length).Select(t => t.CreateInstanceOf() as JointInfo);
 			UndoRedoManager.Do(new CreateRigidBodyJointAction(this.targetArray, newJoints));
 		}
 	}
