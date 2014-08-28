@@ -9,49 +9,90 @@ namespace Duality.Cloning.Surrogates
 {
 	public class DictionarySurrogate : Surrogate<IDictionary>
 	{
-		private static readonly MethodInfo copyMethodTemplate = typeof(DictionarySurrogate).GetMethod("CopyDataSpecific", ReflectionHelper.BindInstanceAll);
+		private static readonly MethodInfo setupMethodTemplate = typeof(DictionarySurrogate).GetMethod("SetupCloneTargetsGeneric", ReflectionHelper.BindInstanceAll);
+		private static readonly MethodInfo copyMethodTemplate = typeof(DictionarySurrogate).GetMethod("CopyDataGeneric", ReflectionHelper.BindInstanceAll);
 
 		public override bool MatchesType(Type t)
 		{
 			return typeof(IDictionary).IsAssignableFrom(t);
 		}
-		public override void CopyDataTo(IDictionary targetObj, CloneProvider provider)
+
+		public override void SetupCloneTargets(IDictionary source, ICloneTargetSetup setup)
 		{
-			Type dictType = this.RealObject.GetType();
+			Type dictType = source.GetType();
+			Type[] genArgs = dictType.GetGenericArguments();
+			MethodInfo cast = setupMethodTemplate.MakeGenericMethod(genArgs);
+			cast.Invoke(this, new object[] { source, setup });
+		}
+		public override void CopyDataTo(IDictionary source, IDictionary target, ICloneOperation operation)
+		{
+			Type dictType = source.GetType();
 			Type[] genArgs = dictType.GetGenericArguments();
 			MethodInfo cast = copyMethodTemplate.MakeGenericMethod(genArgs);
-			cast.Invoke(this, new object[] { targetObj, provider });
+			cast.Invoke(this, new object[] { source, target, operation });
 		}
 
-		private void CopyDataSpecific<T,U>(IDictionary<T,U> targetObj, CloneProvider provider)
+		private void SetupCloneTargetsGeneric<T,U>(IDictionary<T,U> source, ICloneTargetSetup setup)
 		{
-			IDictionary<T,U> dict = this.RealObject as IDictionary<T,U>;
-			targetObj.Clear();
+			// Handle all keys and values
+			if (!typeof(T).IsPlainOldData())
+			{
+				foreach (var key in source.Keys)
+					setup.AutoHandleObject(key);
+			}
+			if (!typeof(U).IsPlainOldData())
+			{
+				foreach (var val in source.Values)
+					setup.AutoHandleObject(val);
+			}
+		}
+		private void CopyDataGeneric<T,U>(IDictionary<T,U> source, IDictionary<T,U> target, ICloneOperation operation)
+		{
+			target.Clear();
 
 			// Determine unwrapping behavior to provide faster / more optimized loops.
-			bool isReferenceTypeKey = !typeof(T).IsPlainOldData();
-			bool isReferenceTypeValue = !typeof(U).IsPlainOldData();
+			bool isKeyPlainOld = typeof(T).IsPlainOldData();
+			bool isValuePlainOld = typeof(U).IsPlainOldData();
 
 			// Copy all pairs. Don't check each pair, if the Type won't be unwrapped anyway.
-			if (isReferenceTypeKey && isReferenceTypeValue)
+			if (!isKeyPlainOld && !isValuePlainOld)
 			{
-				foreach (var pair in dict)
-					targetObj.Add(provider.CloneObject(pair.Key), provider.CloneObject(pair.Value));
+				foreach (var pair in source)
+				{
+					object keyTarget;
+					object valueTarget;
+					if (!operation.AutoHandleObject(pair.Key, out keyTarget)) continue;
+					if (!operation.AutoHandleObject(pair.Value, out valueTarget)) continue;
+
+					target.Add((T)keyTarget, (U)valueTarget);
+				}
 			}
-			else if (isReferenceTypeKey)
+			else if (!isKeyPlainOld)
 			{
-				foreach (var pair in dict)
-					targetObj.Add(provider.CloneObject(pair.Key), pair.Value);
+				foreach (var pair in source)
+				{
+					object keyTarget;
+					if (!operation.AutoHandleObject(pair.Key, out keyTarget)) continue;
+
+					target.Add((T)keyTarget, pair.Value);
+				}
 			}
-			else if (isReferenceTypeValue)
+			else if (!isValuePlainOld)
 			{
-				foreach (var pair in dict)
-					targetObj.Add(pair.Key, provider.CloneObject(pair.Value));
+				foreach (var pair in source)
+				{
+					object valueTarget;
+					if (!operation.AutoHandleObject(pair.Value, out valueTarget)) continue;
+
+					target.Add(pair.Key, (U)valueTarget);
+				}
 			}
 			else
 			{
-				foreach (var pair in dict)
-					targetObj.Add(pair.Key, pair.Value);
+				foreach (var pair in source)
+				{
+					target.Add(pair.Key, pair.Value);
+				}
 			}
 		}
 	}

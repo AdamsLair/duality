@@ -8,14 +8,14 @@ namespace Duality.Cloning.Surrogates
 {
 	public class BitmapSurrogate : Surrogate<Bitmap>
 	{
-		public override Bitmap CreateTargetObject(CloneProvider provider)
+		public override void CreateTargetObject(Bitmap source, out Bitmap target, ICloneTargetSetup setup)
 		{
-			return new Bitmap(this.RealObject.Width, this.RealObject.Height);
+			target = new Bitmap(source.Width, source.Height);
 		}
-		public override void CopyDataTo(Bitmap targetObj, CloneProvider provider)
+		public override void SetupCloneTargets(Bitmap source, ICloneTargetSetup setup) {}
+		public override void CopyDataTo(Bitmap source, Bitmap target, ICloneOperation operation)
 		{
-			Bitmap target = targetObj as Bitmap;
-			target.SetPixelDataIntArgb(this.RealObject.GetPixelDataIntArgb());
+			target.SetPixelDataIntArgb(source.GetPixelDataIntArgb());
 		}
 	}
 }

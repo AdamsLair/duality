@@ -176,30 +176,40 @@ namespace Duality.Cloning
 				}
 			}
 
-			// Create target objects
-			Type sourceElementType = null;
-			if (sourceType.IsArray)
+			// Check whether there is a surrogare for this object
+			ICloneSurrogate surrogate = GetSurrogateFor(sourceType);
+			if (surrogate != null)
 			{
-				Array sourceArray = source as Array;
-				sourceElementType = sourceType.GetElementType();
-				target = Array.CreateInstance(sourceElementType, sourceArray.Length);
+				surrogate.SetupCloneTargets(source, this);
 			}
+			// Otherwise, use the default algorithm
 			else
 			{
-				target = sourceType.CreateInstanceOf();
-			}
-			this.SetTargetOf(source, target);
+				// Create target objects
+				Type sourceElementType = null;
+				if (sourceType.IsArray)
+				{
+					Array sourceArray = source as Array;
+					sourceElementType = sourceType.GetElementType();
+					target = Array.CreateInstance(sourceElementType, sourceArray.Length);
+				}
+				else
+				{
+					target = sourceType.CreateInstanceOf();
+				}
+				this.SetTargetOf(source, target);
 
-			// If it implements custom cloning behavior, use that
-			if (source is ICloneExplicit)
-			{
-				ICloneExplicit customSource = source as ICloneExplicit;
-				customSource.SetupCloneTargets(this);
-			}
-			// Otherwise, traverse its child objects using default behavior
-			else
-			{
-				this.PrepareChildCloneGraph(source, sourceType);
+				// If it implements custom cloning behavior, use that
+				if (source is ICloneExplicit)
+				{
+					ICloneExplicit customSource = source as ICloneExplicit;
+					customSource.SetupCloneTargets(this);
+				}
+				// Otherwise, traverse its child objects using default behavior
+				else
+				{
+					this.PrepareChildCloneGraph(source, sourceType);
+				}
 			}
 
 			this.UnlockCloneBehavior(behavior);
@@ -248,8 +258,14 @@ namespace Duality.Cloning
 			Type sourceType = source.GetType();
 			if (!sourceType.IsValueType && !this.HandleObject(source)) return;
 			
+			// Check whether there is a surrogare for this object
+			ICloneSurrogate surrogate = GetSurrogateFor(sourceType);
+			if (surrogate != null)
+			{
+				surrogate.CopyDataTo(source, target, this);
+			}
 			// If it implements custom cloning behavior, use that
-			if (source is ICloneExplicit)
+			else if (source is ICloneExplicit)
 			{
 				ICloneExplicit customSource = source as ICloneExplicit;
 				customSource.CopyDataTo(target, this);
@@ -380,6 +396,10 @@ namespace Duality.Cloning
 		{
 			this.SetTargetOf(source, target);
 			return true;
+		}
+		void ICloneTargetSetup.MakeWeakReference(object source)
+		{
+			this.dropWeakReferences.Add(source);
 		}
 		void ICloneTargetSetup.AutoHandleObject(object source)
 		{

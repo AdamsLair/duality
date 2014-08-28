@@ -66,8 +66,13 @@ namespace Duality
 			}
 			else
 			{
+				// Filter out non-instantiatable Types
+				if (type.IsAbstract || type.IsInterface || type.IsGenericTypeDefinition)
+				{
+					activator = nullObjectActivator;
+				}
 				// If the caller wants a string, just return an empty one
-				if (type == typeof(string))
+				else if (type == typeof(string))
 				{
 					activator = () => "";
 				}

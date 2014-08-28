@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Cloning\HelperObjects\ExplicitCloneTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\IdentityTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\DelegateTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\TestComponent.cs" />
     <Compile Include="Cloning\HelperObjects\OwnedObject.cs" />
     <Compile Include="Cloning\HelperObjects\ReferencedObject.cs" />

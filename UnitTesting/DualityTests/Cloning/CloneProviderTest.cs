@@ -23,6 +23,11 @@ namespace Duality.Tests.Cloning
 	{
 		public static readonly Random SharedRandom = new Random();
 
+		public CloneProviderTest()
+		{
+			System.Diagnostics.Debugger.Launch();
+		}
+
 		[Test] public void ClonePlainOldData()
 		{
 			TestData data = new TestData(true);
@@ -200,19 +205,94 @@ namespace Duality.Tests.Cloning
 			WeakReferenceTestObject dataPart = data.Children[1];
 
 			// Clone the full graph and see if its complete
-			WeakReferenceTestObject dataResultFull = data.DeepClone();
-			Assert.AreSame(null, dataResultFull.Parent);
-			Assert.AreEqual(2, dataResultFull.Children.Count);
-			Assert.AreEqual(2, dataResultFull.Children[1].Children.Count);
-			Assert.IsTrue(dataResultFull.CheckChildIntegrity());
-			Assert.IsFalse(data.AnyReferenceEquals(dataResultFull));
+			{
+				WeakReferenceTestObject dataResultFull = data.DeepClone();
+				Assert.AreSame(null, dataResultFull.Parent);
+				Assert.AreEqual(2, dataResultFull.Children.Count);
+				Assert.AreEqual(2, dataResultFull.Children[1].Children.Count);
+				Assert.IsTrue(dataResultFull.CheckChildIntegrity());
+				Assert.IsFalse(data.AnyReferenceEquals(dataResultFull));
+			}
 
 			// Clone part of the graph and see if the right parts are missing
-			WeakReferenceTestObject dataResultPart = dataPart.DeepClone();
-			Assert.AreSame(null, dataResultPart.Parent);
-			Assert.AreEqual(2, dataResultPart.Children.Count);
-			Assert.IsTrue(dataResultFull.CheckChildIntegrity());
-			Assert.IsFalse(dataPart.AnyReferenceEquals(dataResultPart));
+			{
+				WeakReferenceTestObject dataResultPart = dataPart.DeepClone();
+				Assert.AreSame(null, dataResultPart.Parent);
+				Assert.AreEqual(2, dataResultPart.Children.Count);
+				Assert.IsTrue(dataResultPart.CheckChildIntegrity());
+				Assert.IsFalse(dataPart.AnyReferenceEquals(dataResultPart));
+			}
+		}
+		[Test] public void Delegates()
+		{
+			DelegateTestObject data = new DelegateTestObject(new[]
+			{
+				new DelegateTestObject(),
+				new DelegateTestObject(new[]
+				{
+					new DelegateTestObject(),
+					new DelegateTestObject()
+				})
+			});
+			DelegateTestObject dataPart = data.Children[1] as DelegateTestObject;
+			DelegateTestObject fireChild;
+
+			// Make sure the event test setup works as expected under normal conditions
+			{
+				fireChild = data.GetBottomChild();
+
+				Assert.IsFalse(data.EventReceived);
+				fireChild.FireEvent();
+				Assert.IsTrue(data.EventReceived);
+
+				data.ResetAllEventsReceived();
+				Assert.IsFalse(data.EventReceived);
+			}
+
+			// See if everything works as expected in a regular clone
+			{
+				// Does the cloning itself work as expected?
+				DelegateTestObject dataResultFull = data.DeepClone();
+				Assert.AreSame(null, dataResultFull.Parent);
+				Assert.AreEqual(2, dataResultFull.Children.Count);
+				Assert.AreEqual(2, dataResultFull.Children[1].Children.Count);
+				Assert.IsTrue(dataResultFull.CheckChildIntegrity());
+				Assert.IsFalse(data.AnyReferenceEquals(dataResultFull));
+
+				// Does event handling work as expected?
+				fireChild = dataResultFull.GetBottomChild();
+
+				Assert.IsFalse(dataResultFull.EventReceived);
+				Assert.IsFalse(data.EventReceived);
+				fireChild.FireEvent();
+				Assert.IsTrue(dataResultFull.EventReceived);
+				Assert.IsFalse(data.EventReceived);
+
+				dataResultFull.ResetAllEventsReceived();
+				Assert.IsFalse(dataResultFull.EventReceived);
+			}
+
+			// See if everything works as expected in a partial clone
+			{
+				// Does the cloning itself work as expected?
+				DelegateTestObject dataResultPart = dataPart.DeepClone();
+				Assert.AreSame(null, dataResultPart.Parent);
+				Assert.AreEqual(2, dataResultPart.Children.Count);
+				Assert.IsTrue(dataResultPart.CheckChildIntegrity());
+				Assert.IsFalse(dataPart.AnyReferenceEquals(dataResultPart));
+
+				// Does event handling work as expected?
+				fireChild = dataResultPart.GetBottomChild();
+
+				Assert.IsFalse(dataResultPart.EventReceived);
+				Assert.IsFalse(data.EventReceived);
+				fireChild.FireEvent();
+				Assert.IsTrue(dataResultPart.EventReceived);
+				Assert.IsFalse(data.EventReceived);
+
+				dataResultPart.ResetAllEventsReceived();
+				Assert.IsFalse(dataResultPart.EventReceived);
+			}
 		}
 		[Test] public void CircularOwnership()
 		{

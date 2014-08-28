@@ -9,10 +9,6 @@ namespace Duality.Cloning
 	public interface ICloneSurrogate
 	{
 		/// <summary>
-		/// [GET / SET] The object that is cloned
-		/// </summary>
-		object RealObject { get; set; }
-		/// <summary>
 		/// [GET] If more than one registered ISurrogate is capable of cloning a given object type, the one
 		/// with the highest priority is picked.
 		/// </summary>
@@ -25,8 +21,8 @@ namespace Duality.Cloning
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
 		bool MatchesType(Type t);
 
-		object CreateTargetObject(CloneProvider provider);
-		void CopyDataTo(object targetObj, CloneProvider provider);
+		void SetupCloneTargets(object source, ICloneTargetSetup setup);
+		void CopyDataTo(object source, object target, ICloneOperation operation);
 	}
 	/// <summary>
 	/// Default base class for <see cref="ICloneSurrogate">Serialization Surrogates</see>. It implements both
@@ -38,21 +34,6 @@ namespace Duality.Cloning
 	/// </typeparam>
 	public abstract class Surrogate<T> : ICloneSurrogate
 	{
-		private T realObj;
-		
-		object ICloneSurrogate.RealObject
-		{
-			get { return this.realObj; }
-			set { this.realObj = (T)value; }
-		}
-		
-		/// <summary>
-		/// [GET / SET] The object that is cloned
-		/// </summary>
-		protected T RealObject
-		{
-			get { return this.realObj; }
-		}
 		/// <summary>
 		/// [GET] If more than one registered ISurrogate is capable of cloning a given object type, the one
 		/// with the highest priority is picked.
@@ -61,7 +42,6 @@ namespace Duality.Cloning
 		{
 			get { return 0; }
 		}
-
 		
 		/// <summary>
 		/// Checks whether this surrogate is able to clone the specified object type.
@@ -73,20 +53,27 @@ namespace Duality.Cloning
 			return typeof(T) == t;
 		}
 		
-		public virtual T CreateTargetObject(CloneProvider provider)
+		public virtual void CreateTargetObject(T source, out T target, ICloneTargetSetup setup)
 		{
-			Type objType = this.RealObject.GetType();
-			return (T)objType.CreateInstanceOf();
+			Type objType = source.GetType();
+			target = (T)objType.CreateInstanceOf();
 		}
-		public abstract void CopyDataTo(T targetObj, CloneProvider provider);
-
-		object ICloneSurrogate.CreateTargetObject(CloneProvider provider)
+		public abstract void SetupCloneTargets(T source, ICloneTargetSetup setup);
+		public abstract void CopyDataTo(T source, T target, ICloneOperation operation);
+		
+		void ICloneSurrogate.SetupCloneTargets(object source, ICloneTargetSetup setup)
 		{
-			return this.CreateTargetObject(provider);
+			T target;
+			this.CreateTargetObject((T)source, out target, setup);
+			if (!typeof(T).IsValueType && target != null)
+			{
+				setup.AddTarget(source, (object)target);
+			}
+			this.SetupCloneTargets((T)source, setup);
 		}
-		void ICloneSurrogate.CopyDataTo(object targetObj, CloneProvider provider)
+		void ICloneSurrogate.CopyDataTo(object source, object target, ICloneOperation operation)
 		{
-			this.CopyDataTo((T)targetObj, provider);
+			this.CopyDataTo((T)source, (T)target, operation);
 		}
 	}
 }
