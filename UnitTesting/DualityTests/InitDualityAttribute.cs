@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 
 using Duality;
+using Duality.Serialization;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -69,6 +70,9 @@ namespace Duality.Tests
 				ContentProvider.InitDefaultContent();
 			}
 
+			// Load local testing memory
+			TestHelper.LocalTestMemory = Formatter.TryReadObject<TestMemory>(TestHelper.LocalTestMemoryFilePath, FormattingMethod.Xml);
+
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
 		public void AfterTest(TestDetails details)
@@ -90,6 +94,9 @@ namespace Duality.Tests
 			}
 			DualityApp.Terminate();
 			Environment.CurrentDirectory = this.oldEnvDir;
+
+			// Save local testing memory
+			Formatter.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, FormattingMethod.Xml);
 
 			Console.WriteLine("----- Duality environment teardown complete -----");
 		}

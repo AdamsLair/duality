@@ -148,11 +148,50 @@ namespace Duality.Tests.Serialization
 		[Test] public void BackwardsCompatibility()
 		{
 			Random rnd = new Random(0);
-			TestObject obj = new TestObject(rnd);
+			TestObject obj = TestObject.CreateBackwardsCompatible(rnd);
 			this.TestDataEqual("Old", obj, this.PrimaryFormat);
 
 			// Test Data last updated 2014-03-11
 			// this.CreateReferenceFile("Old", obj, this.PrimaryFormat);
+		}
+		[Test] public void PerformanceTest()
+		{
+			var watch = new System.Diagnostics.Stopwatch();
+			
+			Random rnd = new Random();
+			TestObject data = new TestObject(rnd, 5);
+			TestObject[] results = new TestObject[50];
+
+			watch.Start();
+			long memUsage;
+			using (MemoryStream stream = new MemoryStream())
+			{
+				// Write
+				for (int i = 0; i < results.Length; i++)
+				{
+					using (Formatter formatterWrite = Formatter.Create(stream, format))
+					{
+						formatterWrite.WriteObject(data);
+					}
+				}
+
+				memUsage = stream.Length / 1024;
+				stream.Position = 0;
+
+				// Read
+				for (int i = 0; i < results.Length; i++)
+				{
+					using (Formatter formatterRead = Formatter.Create(stream))
+					{
+						results[i] = formatterRead.ReadObject<TestObject>();
+					}
+				}
+			}
+			watch.Stop();
+			TestHelper.LogNumericTestResult(this, "ReadWritePerformance" + this.format.ToString(), watch.Elapsed.TotalMilliseconds, "ms");
+			TestHelper.LogNumericTestResult(this, "MemoryUsage" + this.format.ToString(), memUsage, "Kb");
+
+			Assert.Pass();
 		}
 
 		

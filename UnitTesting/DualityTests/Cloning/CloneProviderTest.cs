@@ -23,11 +23,6 @@ namespace Duality.Tests.Cloning
 	{
 		public static readonly Random SharedRandom = new Random();
 
-		public CloneProviderTest()
-		{
-			System.Diagnostics.Debugger.Launch();
-		}
-
 		[Test] public void ClonePlainOldData()
 		{
 			TestData data = new TestData(true);
@@ -343,7 +338,7 @@ namespace Duality.Tests.Cloning
 				results[i] = data.DeepClone();
 			}
 			watch.Stop();
-			Console.WriteLine(string.Format("Cloning Performance ComplexObject: {0:F}", watch.Elapsed.TotalMilliseconds));
+			TestHelper.LogNumericTestResult(this, "PerformanceTest", watch.Elapsed.TotalMilliseconds, "ms");
 
 			Assert.Pass();
 		}

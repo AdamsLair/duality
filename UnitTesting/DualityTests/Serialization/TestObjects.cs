@@ -73,21 +73,41 @@ namespace Duality.Tests.Serialization
 		public List<int> ListField;
 		public List<string> ListField2;
 		public Dictionary<string,TestObject> DictField;
-			
-		public TestObject(Random rnd, int maxChildren = 5)
+		
+		private TestObject() {}
+		public TestObject(Random rnd, int childCount = 5)
 		{
 			this.StringField	= rnd.Next().ToString();
 			this.TypeField		= rnd.OneOf(new[] { typeof(int), typeof(Component), typeof(GenericOperator) });
 			this.DelegateField	= rnd.OneOf(new Func<int,bool>[] { DelegateA, DelegateB });
 			this.DataField		= new TestData(rnd);
-			this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).ToList();
-			this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).Select(i => i.ToString()).ToList();
+			this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), 50).ToList();
+			this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), 50).Select(i => i.ToString()).ToList();
 			this.DictField		= new Dictionary<string,TestObject>();
+
+			for (int i = childCount; i > 0; i--)
+			{
+				this.DictField.Add(rnd.Next().ToString(), new TestObject(rnd, childCount / 2));
+			}
+		}
+		public static TestObject CreateBackwardsCompatible(Random rnd, int maxChildren = 5)
+		{
+			TestObject obj = new TestObject();
+
+			obj.StringField	= rnd.Next().ToString();
+			obj.TypeField		= rnd.OneOf(new[] { typeof(int), typeof(Component), typeof(GenericOperator) });
+			obj.DelegateField	= rnd.OneOf(new Func<int,bool>[] { DelegateA, DelegateB });
+			obj.DataField		= new TestData(rnd);
+			obj.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).ToList();
+			obj.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), rnd.Next(0, 50)).Select(i => i.ToString()).ToList();
+			obj.DictField		= new Dictionary<string,TestObject>();
 
 			for (int i = rnd.Next(0, maxChildren); i > 0; i--)
 			{
-				this.DictField.Add(rnd.Next().ToString(), new TestObject(rnd, maxChildren / 2));
+				obj.DictField.Add(rnd.Next().ToString(), CreateBackwardsCompatible(rnd, maxChildren / 2));
 			}
+
+			return obj;
 		}
 
 		private static bool DelegateA(int v) { return false; } 
