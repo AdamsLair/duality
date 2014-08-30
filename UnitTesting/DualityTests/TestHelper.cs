@@ -44,40 +44,50 @@ namespace Duality.Tests
 		public static void LogNumericTestResult(object testFixture, string testName, long resultValue, string unit)
 		{
 			if (!string.IsNullOrEmpty(unit)) unit = " " + unit;
-
-			long lastValue;
-			if (!TestHelper.LocalTestMemory.SwitchValue(testFixture, testName, out lastValue, resultValue))
+			
+			List<long> lastValueList;
+			if (!TestHelper.LocalTestMemory.GetValue(testFixture, testName, out lastValueList))
 			{
-				lastValue = resultValue;
+				lastValueList = new List<long>();
 			}
+			lastValueList.Add(resultValue);
+			if (lastValueList.Count > 10) lastValueList.RemoveAt(0);
+			TestHelper.LocalTestMemory.SetValue(testFixture, testName, lastValueList);
+
+			long localAverage = (long)lastValueList.Average();
 
 			string nameStr = (testName + "." + testFixture.GetType().Name);
 			string newValueStr = string.Format("{0}{1}", resultValue, unit);
-			string lastValueStr = string.Format("{0}{1}", lastValue, unit);
+			string lastValueStr = string.Format("{0}{1}", localAverage, unit);
 
-			double relativeChange = ((double)resultValue - (double)lastValue) / (double)lastValue;
+			double relativeChange = ((double)resultValue - (double)localAverage) / (double)localAverage;
 			LogNumericTestResult(nameStr, newValueStr, lastValueStr, relativeChange);
 		}
 		public static void LogNumericTestResult(object testFixture, string testName, double resultValue, string unit)
 		{
 			if (!string.IsNullOrEmpty(unit)) unit = " " + unit;
 
-			double lastValue;
-			if (!TestHelper.LocalTestMemory.SwitchValue(testFixture, testName, out lastValue, resultValue))
+			List<double> lastValueList;
+			if (!TestHelper.LocalTestMemory.GetValue(testFixture, testName, out lastValueList))
 			{
-				lastValue = resultValue;
+				lastValueList = new List<double>();
 			}
+			lastValueList.Add(resultValue);
+			if (lastValueList.Count > 10) lastValueList.RemoveAt(0);
+			TestHelper.LocalTestMemory.SetValue(testFixture, testName, lastValueList);
+
+			double localAverage = lastValueList.Average();
 
 			string nameStr = (testName + "." + testFixture.GetType().Name);
 			string newValueStr = string.Format("{0:F}{1}", resultValue, unit);
-			string lastValueStr = string.Format("{0:F}{1}", lastValue, unit);
+			string lastValueStr = string.Format("{0:F}{1}", localAverage, unit);
 
-			double relativeChange = ((double)resultValue - (double)lastValue) / (double)lastValue;
+			double relativeChange = ((double)resultValue - (double)localAverage) / (double)localAverage;
 			LogNumericTestResult(nameStr, newValueStr, lastValueStr, relativeChange);
 		}
 		private static void LogNumericTestResult(string nameStr, string newValueStr, string lastValueStr, double relativeChange)
 		{
-			if (relativeChange > 0.03)
+			if (Math.Abs(relativeChange) > 0.03)
 			{
 				Console.WriteLine(string.Format("{0}: {2} --> {1} Changed by {3}%", 
 					nameStr.PadRight(50),
@@ -120,7 +130,7 @@ namespace Duality.Tests
 				key = testFixture.GetType().Name + "_" + key;
 			}
 			object valueObj;
-			if (this.data.TryGetValue(key, out valueObj))
+			if (this.data.TryGetValue(key, out valueObj) && valueObj is T)
 			{
 				value = (T)valueObj;
 				return true;

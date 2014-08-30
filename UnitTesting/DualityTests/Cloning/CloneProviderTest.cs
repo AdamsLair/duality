@@ -330,7 +330,7 @@ namespace Duality.Tests.Cloning
 			var watch = new System.Diagnostics.Stopwatch();
 
 			TestObject data = new TestObject(5);
-			TestObject[] results = new TestObject[100];
+			TestObject[] results = new TestObject[200];
 
 			watch.Start();
 			for (int i = 0; i < results.Length; i++)

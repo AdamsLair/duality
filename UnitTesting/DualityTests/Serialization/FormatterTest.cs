@@ -161,7 +161,7 @@ namespace Duality.Tests.Serialization
 			Random rnd = new Random();
 			TestObject data = new TestObject(rnd, 5);
 			TestObject[] results = new TestObject[50];
-
+			
 			watch.Start();
 			long memUsage;
 			using (MemoryStream stream = new MemoryStream())
