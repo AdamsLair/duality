@@ -291,20 +291,6 @@ namespace Duality.Resources
 			}
 		}
 
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(r, provider);
-			Sound c = r as Sound;
-			c.maxInstances = this.maxInstances;
-			c.minDistFactor = this.minDistFactor;
-			c.maxDistFactor = this.maxDistFactor;
-			c.volFactor = this.volFactor;
-			c.pitchFactor = this.pitchFactor;
-			c.fadeOutAt = this.fadeOutAt;
-			c.fadeOutTime = this.fadeOutTime;
-			c.audioData = this.audioData != null ? this.audioData.ToList() : null;
-			c.PreloadData();
-		}
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();

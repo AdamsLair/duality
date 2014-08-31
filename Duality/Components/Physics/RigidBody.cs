@@ -8,6 +8,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 
 using Duality.Editor;
+using Duality.Cloning;
 using Duality.Resources;
 using Duality.Properties;
 
@@ -20,7 +21,7 @@ namespace Duality.Components.Physics
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryPhysics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRigidBody)]
-	public partial class RigidBody : Component, ICmpInitializable, ICmpUpdatable, ICmpEditorUpdatable
+	public sealed class RigidBody : Component, ICmpInitializable, ICmpUpdatable, ICmpEditorUpdatable
 	{
 		private struct ColEvent
 		{
@@ -61,13 +62,27 @@ namespace Duality.Components.Physics
 		private	List<ShapeInfo>	shapes		= null;
 		private	List<JointInfo>	joints		= null;
 
-		[NonSerialized]	private	float			lastScale			= 1.0f;
-		[NonSerialized]	private	InitState		bodyInitState		= InitState.Disposed;
-		[NonSerialized]	private	bool			schedUpdateBody		= false;
-		[NonSerialized]	private	bool			isUpdatingBody		= false;
-		[NonSerialized]	private	bool			isProcessingEvents	= false;
-		[NonSerialized]	private	Body			body				= null;
-		[NonSerialized]	private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	float			lastScale			= 1.0f;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	InitState		bodyInitState		= InitState.Disposed;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	bool			schedUpdateBody		= false;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	bool			isUpdatingBody		= false;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	bool			isProcessingEvents	= false;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Body			body				= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
 
 
 		internal Body PhysicsBody
@@ -1086,51 +1101,18 @@ namespace Duality.Components.Physics
 				this.RemoveDisposedJoints();
 		}
 
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
-			base.OnCopyTo(target, provider);
-			RigidBody c = target as RigidBody;
+			base.OnCopyDataTo(target, operation);
+			RigidBody targetBody = target as RigidBody;
 
-			bool wasInitialized = c.bodyInitState == InitState.Initialized;
-			if (wasInitialized) c.Shutdown();
-
-			c.bodyType = this.bodyType;
-			c.linearDamp = this.linearDamp;
-			c.angularDamp = this.angularDamp;
-			c.fixedAngle = this.fixedAngle;
-			c.ignoreGravity = this.ignoreGravity;
-			c.continous = this.continous;
-			c.colCat = this.colCat;
-			c.colWith = this.colWith;
-			c.explicitMass = this.explicitMass;
-
-			c.linearVel = this.linearVel;
-			c.angularVel = this.angularVel;
-			c.revolutions = this.revolutions;
-
-			// Detach and copy Shapes
-			c.shapes = null;
-			if (this.shapes != null) c.SetShapes(this.shapes.Select(s => provider.CloneObject(s)));
-
-			// Detach and copy Joints
-			c.joints = null;
-			#warning TODO CLONING
-			//if (this.joints != null) c.SetJoints(this.joints.Select(j => 
-			//{
-			//    // If there is a clone registered, just return the clone. Don't process a joint twice.
-			//    if (provider.IsOriginalObject(j)) return provider.GetRegisteredObjectClone(j);
-
-			//    JointInfo j2 = j.Clone();
-			//    j2.BodyA = provider.GetRegisteredObjectClone(j.BodyA);
-			//    j2.BodyB = provider.GetRegisteredObjectClone(j.BodyB);
-			//    provider.RegisterObjectClone(j, j2);
-
-			//    return j2;
-			//}));
-
-			if (wasInitialized) c.Initialize();
+			bool wasInitialized = targetBody.bodyInitState == InitState.Initialized;
+			if (wasInitialized)
+			{
+				targetBody.Shutdown();
+				targetBody.Initialize();
+			}
 		}
-		
 
 		/// <summary>
 		/// Performs a 2d physical raycast in world coordinates.

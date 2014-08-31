@@ -226,12 +226,5 @@ namespace Duality.Resources
 			// Get rid of the big data blob, so the GC can collect it.
 			this.data = null;
 		}
-
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(r, provider);
-			AudioData c = r as AudioData;
-			c.data	= (byte[])this.data.Clone();
-		}
 	}
 }

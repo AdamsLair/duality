@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Resources;
+using Duality.Cloning;
 using Duality.Components.Physics;
 using Duality.Properties;
 
@@ -33,6 +34,7 @@ namespace Duality.Components.Diagnostics
 		private	bool					wrapTexture				= true;
 
 		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
 		private	CanvasBuffer			vertexBuffer			= new CanvasBuffer();
 
 
@@ -272,19 +274,6 @@ namespace Duality.Components.Diagnostics
 			canvas.State.TransformAngle = angle;
 			canvas.State.TransformScale = new Vector2(scale, scale);
 			canvas.FillPolygonOutline(shape.Vertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
-		}
-
-		protected override void OnCopyTo(Component target, Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			RigidBodyRenderer t = target as RigidBodyRenderer;
-			t.areaMaterial			= this.areaMaterial;
-			t.outlineMaterial		= this.outlineMaterial;
-			t.customAreaMaterial	= this.customAreaMaterial;
-			t.customOutlineMaterial	= this.customOutlineMaterial;
-			t.colorTint				= this.colorTint;
-			t.offset				= this.offset;
-			t.wrapTexture			= this.wrapTexture;
 		}
 	}
 }

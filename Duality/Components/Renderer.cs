@@ -51,12 +51,5 @@ namespace Duality.Components
 			if ((this.visibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return false;
 			return device.IsCoordInView(this.gameobj.Transform.Pos, this.BoundRadius);
 		}
-
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			Renderer t = target as Renderer;
-			t.visibilityGroup	= this.visibilityGroup;
-		}
 	}
 }

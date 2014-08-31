@@ -177,13 +177,6 @@ namespace Duality.Components
 			set { this.sources = value ?? new List<Source>(); }
 		}
 
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			SoundEmitter c = target as SoundEmitter;
-			c.sources = this.sources == null ? null : this.sources.Select(s => provider.CloneObject(s)).ToList();
-		}
-
 		void ICmpUpdatable.OnUpdate()
 		{
 			for (int i = this.sources.Count - 1; i >= 0; i--)

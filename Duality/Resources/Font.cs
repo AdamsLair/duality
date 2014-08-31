@@ -10,6 +10,7 @@ using SysDrawFont = System.Drawing.Font;
 
 using Duality.Drawing;
 using Duality.Editor;
+using Duality.Cloning;
 using Duality.Properties;
 
 using OpenTK;
@@ -218,18 +219,42 @@ namespace Duality.Resources
 		// Embedded custom font family
 		private	byte[]		customFamilyData	= null;
 		// Data that is automatically acquired while loading the font
-		[NonSerialized]	private SysDrawFont	internalFont	= null;
-		[NonSerialized]	private	GlyphData[]	glyphs			= null;
-		[NonSerialized]	private	Material	mat				= null;
-		[NonSerialized]	private	Pixmap		pixelData		= null;
-		[NonSerialized]	private	Texture		texture			= null;
-		[NonSerialized] private	bool		needsReload		= true;
-		[NonSerialized] private	int			maxGlyphWidth	= 0;
-		[NonSerialized] private	int			height			= 0;
-		[NonSerialized] private	int			ascent			= 0;
-		[NonSerialized]	private	int			bodyAscent		= 0;
-		[NonSerialized] private	int			descent			= 0;
-		[NonSerialized] private	int			baseLine		= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private SysDrawFont	internalFont	= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	GlyphData[]	glyphs			= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Material	mat				= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Pixmap		pixelData		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Texture		texture			= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	bool		needsReload		= true;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int			maxGlyphWidth	= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int			height			= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int			ascent			= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int			bodyAscent		= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int			descent			= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int			baseLine		= 0;
 
 
 		/// <summary>
@@ -1215,18 +1240,10 @@ namespace Duality.Resources
 			base.OnDisposing(manually);
 			this.ReleaseResources();
 		}
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
-			base.OnCopyTo(r, provider);
-			Font c = r as Font;
-			c.customFamilyData = this.customFamilyData != null ? (byte[])this.customFamilyData.Clone() : null;
-			c.familyName = this.familyName;
-			c.size = this.size;
-			c.style = this.style;
-			c.renderMode = this.renderMode;
-			c.monospace = this.monospace;
-			c.kerning = this.kerning;
-			c.spacing = this.spacing;
+			base.OnCopyDataTo(target, operation);
+			Font c = target as Font;
 			c.ReloadData();
 		}
 

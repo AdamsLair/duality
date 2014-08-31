@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Duality.Editor;
+using Duality.Cloning;
 using Duality.Resources;
 using Duality.Drawing;
 
@@ -16,7 +17,7 @@ namespace Duality.Drawing
 	/// Provides functionality for analyzing, handling and displaying formatted text.
 	/// </summary>
 	[Serializable]
-	public class FormattedText
+	public class FormattedText : ICloneExplicit
 	{
 		/// <summary>
 		/// Format string for displaying a slash (/) character.
@@ -637,11 +638,21 @@ namespace Duality.Drawing
 		private	int					iconCount		= 0;
 		private	Element[]			elements		= null;
 
-		[NonSerialized] private bool				updateVertexCache	= true;
-		[NonSerialized] private VertexC1P3T2[][]	vertTextCache		= null;
-		[NonSerialized] private VertexC1P3T2[]		vertIconsCache		= null;
-		[NonSerialized] private int[]				vertCountCache		= null;
-		[NonSerialized] private	Metrics				metricsCache		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private bool				updateVertexCache	= true;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private VertexC1P3T2[][]	vertTextCache		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private VertexC1P3T2[]		vertIconsCache		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private int[]				vertCountCache		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Metrics				metricsCache		= null;
 
 
 		/// <summary>
@@ -793,16 +804,7 @@ namespace Duality.Drawing
 		}
 		public FormattedText(FormattedText other)
 		{
-			this.sourceText = other.sourceText;
-			this.icons		= other.icons != null ? (Icon[])other.icons.Clone() : null;
-			this.flowAreas	= other.flowAreas != null ? (FlowArea[])other.flowAreas.Clone() : null;
-			this.fonts		= other.fonts != null ? (ContentRef<Font>[])other.fonts.Clone() : null;
-			this.maxWidth	= other.maxWidth;
-			this.maxHeight	= other.maxHeight;
-			this.wrapMode	= other.wrapMode;
-			this.lineAlign = other.lineAlign;
-
-			this.ApplySource(this.sourceText);
+			other.DeepCopyTo(this);
 		}
 		/// <summary>
 		/// Creates a deep copy of the FormattedText and returns it.
@@ -810,7 +812,16 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public FormattedText Clone()
 		{
-			return new FormattedText(this);
+			return this.DeepClone();
+		}
+		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup)
+		{
+			setup.AutoHandleObject(this);
+		}
+		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
+		{
+			operation.AutoHandleObject(this, target);
+			(target as FormattedText).ApplySource(this.sourceText);
 		}
 
 		/// <summary>

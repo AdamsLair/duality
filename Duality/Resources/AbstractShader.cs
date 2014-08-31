@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 
 using Duality.Editor;
+using Duality.Cloning;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -205,10 +206,16 @@ namespace Duality.Resources
 	[ExplicitResourceReference()]
 	public abstract class AbstractShader : Resource
 	{
-		private	string	source		= null;
-		[NonSerialized] private	int				glShaderId	= 0;
-		[NonSerialized] private	bool			compiled	= false;
-		[NonSerialized] private	ShaderVarInfo[]	varInfo		= null;
+		private	string			source		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int				glShaderId	= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	bool			compiled	= false;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	ShaderVarInfo[]	varInfo		= null;
 
 		/// <summary>
 		/// The type of OpenGL shader that is represented.
@@ -399,13 +406,11 @@ namespace Duality.Resources
 			}
 		}
 
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
-			base.OnCopyTo(r, provider);
-			AbstractShader c = r as AbstractShader;
-			c.source		= this.source;
-			c.sourcePath	= null;
-			if (this.compiled) c.Compile();
+			base.OnCopyDataTo(target, operation);
+			AbstractShader targetShader = target as AbstractShader;
+			if (this.compiled) targetShader.Compile();
 		}
 	}
 }

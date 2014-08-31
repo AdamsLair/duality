@@ -297,17 +297,6 @@ namespace Duality.Plugins.Steering
 			if (this.target == null)			this.target = new DirectionTarget();
 			if (this.characteristics == null)	this.characteristics = new DefaultAgentCharacteristics();
 		}
-		protected override void OnCopyTo(Component target, CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			Agent other = (Agent)target;
-			other.Radius			= this.radius;
-			other.toiHorizon		= this.toiHorizon;
-			other.Sampler			= provider.CloneObject(this.sampler);
-			other.Characteristics	= provider.CloneObject(this.characteristics);
-			other.target			= provider.CloneObject(this.target);
-			other.suggestedVel		= this.suggestedVel;
-		}
 		
 		// TODO: move me to a more general place
 		private static float RayRayIntersect(Vector2 start1, Vector2 dir1, Vector2 start2, Vector2 dir2)

@@ -4,6 +4,7 @@ using System.Linq;
 
 using Duality.Editor;
 using Duality.Properties;
+using Duality.Cloning;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -176,10 +177,19 @@ namespace Duality.Resources
 		
 		private	List<TargetInfo>	targetInfo		= new List<TargetInfo>();
 		private	AAQuality			multisampling	= AAQuality.Off;
-		[NonSerialized] private	int	samples	= 0;
-		[NonSerialized]	private	int	glFboId;
-		[NonSerialized] private	int	glRboIdDepth;
-		[NonSerialized] private	int	glFboIdMSAA;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int	samples	= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int	glFboId;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int	glRboIdDepth;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int	glFboIdMSAA;
+
 
 		/// <summary>
 		/// [GET / SET] Whether this RenderTarget is multisampled.
@@ -443,12 +453,10 @@ namespace Duality.Resources
 				this.FreeOpenGLRes();
 			}
 		}
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
-			base.OnCopyTo(r, provider);
-			RenderTarget c = r as RenderTarget;
-			c.multisampling	= this.multisampling;
-			c.targetInfo	= new List<TargetInfo>(this.targetInfo);
+			base.OnCopyDataTo(target, operation);
+			RenderTarget c = target as RenderTarget;
 			c.SetupOpenGLRes();
 		}
 	}

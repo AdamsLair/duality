@@ -36,7 +36,7 @@ namespace Duality.Editor.UndoRedoActions
 				for (int i = 0; i < this.backupLink.Length; i++)
 				{
 					PrefabLink link = this.targetObj[i].AffectedByPrefabLink;
-					this.backupLink[i] = CloneProvider.DeepClone(link, BackupCloneContext);
+					this.backupLink[i] = link.DeepClone(BackupCloneContext);
 				}
 			}
 			
@@ -57,7 +57,7 @@ namespace Duality.Editor.UndoRedoActions
 
 				this.backupLink[i].Obj.LinkToPrefab(this.backupLink[i].Prefab);
 				PrefabLink link = this.backupLink[i].Obj.PrefabLink;
-				CloneProvider.DeepCopy(this.backupLink[i], link, BackupCloneContext);
+				this.backupLink[i].DeepCopyTo(link, BackupCloneContext);
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetObj), ReflectionInfo.Property_GameObject_PrefabLink);

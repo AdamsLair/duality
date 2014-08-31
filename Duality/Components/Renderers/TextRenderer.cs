@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 
+using Duality.Cloning;
 using Duality.Drawing;
 using Duality.Resources;
 using Duality.Editor;
@@ -24,8 +25,13 @@ namespace Duality.Components.Renderers
 		protected	BatchInfo				customMat	= null;
 		protected	ColorRgba				colorTint	= ColorRgba.White;
 		protected	ContentRef<Material>	iconMat		= ContentRef<Material>.Null;
-		[NonSerialized] protected	VertexC1P3T2[][]	vertFont	= null;
-		[NonSerialized] protected	VertexC1P3T2[]		vertIcon	= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		protected	VertexC1P3T2[][]	vertFont	= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		protected	VertexC1P3T2[]		vertIcon	= null;
+
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override float BoundRadius
@@ -223,16 +229,5 @@ namespace Duality.Components.Renderers
 				this.text.ApplySource();
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context) {}
-
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			TextRenderer t = target as TextRenderer;
-			t.blockAlign		= this.blockAlign;
-			t.text		= this.text.Clone();
-			t.colorTint	= this.colorTint;
-			t.customMat	= this.customMat != null ? new BatchInfo(this.customMat) : null;
-			t.iconMat	= this.iconMat;
-		}
 	}
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Editor;
 using Duality.Drawing;
 using Duality.Resources;
+using Duality.Cloning;
 using Duality.Properties;
 
 using OpenTK;
@@ -63,11 +64,19 @@ namespace Duality.Components.Renderers
 		private	bool		animPaused			= false;
 		private	List<int>	customFrameSequence	= null;
 
-		[NonSerialized] private int		curAnimFrame		= 0;
-		[NonSerialized] private int		nextAnimFrame		= 0;
-		[NonSerialized] private float	curAnimFrameFade	= 0.0f;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private int		curAnimFrame		= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private int		nextAnimFrame		= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private float	curAnimFrameFade	= 0.0f;
 
-		[NonSerialized] private	VertexC1P3T4A1[]	verticesSmooth	= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	VertexC1P3T4A1[]	verticesSmooth	= null;
 
 
 		/// <summary>
@@ -492,17 +501,6 @@ namespace Duality.Components.Renderers
 				if (this.customMat != null)	device.AddVertices(this.customMat, VertexMode.Quads, this.verticesSmooth);
 				else						device.AddVertices(this.sharedMat, VertexMode.Quads, this.verticesSmooth);
 			}
-		}
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			AnimSpriteRenderer t = target as AnimSpriteRenderer;
-			t.animDuration = this.animDuration;
-			t.animFirstFrame = this.animFirstFrame;
-			t.animFrameCount = this.animFrameCount;
-			t.animLoopMode = this.animLoopMode;
-			t.animTime = this.animTime;
-			t.customFrameSequence = this.customFrameSequence != null ? this.customFrameSequence.ToList() : null;
 		}
 	}
 }

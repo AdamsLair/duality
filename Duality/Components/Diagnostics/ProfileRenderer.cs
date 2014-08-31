@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Resources;
+using Duality.Cloning;
 using Duality.Properties;
 
 using OpenTK;
@@ -40,11 +41,21 @@ namespace Duality.Components.Diagnostics
 		private	Key				keyToggleTextStat	= Key.F3;
 		private	Key				keyToggleGraph		= Key.F4;
 
-		[NonSerialized]	private	FormattedText		textReport			= null;
-		[NonSerialized]	private	VertexC1P3T2[]		textReportIconVert	= null;
-		[NonSerialized]	private	VertexC1P3T2[][]	textReportTextVert	= null;
-		[NonSerialized]	private	TimeSpan			textReportLast		= TimeSpan.Zero;
-		[NonSerialized] private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	FormattedText		textReport			= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	VertexC1P3T2[]		textReportIconVert	= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	VertexC1P3T2[][]	textReportTextVert	= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	TimeSpan			textReportLast		= TimeSpan.Zero;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
 
 
 		float ICmpRenderer.BoundRadius
@@ -270,22 +281,6 @@ namespace Duality.Components.Diagnostics
 				this.textReportStat = !this.textReportStat;
 			if (DualityApp.Keyboard.KeyHit(this.keyToggleGraph))
 				this.drawGraphs = !this.drawGraphs;
-		}
-
-		protected override void OnCopyTo(Component target, Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			ProfileRenderer t = target as ProfileRenderer;
-			t.textReportStat		= this.textReportStat;
-			t.textReportPerf		= this.textReportPerf;
-			t.textReportOptions		= this.textReportOptions;
-			t.drawGraphs			= this.drawGraphs;
-			t.counterGraphs			= this.counterGraphs;
-			t.textReportOptions		= this.textReportOptions;
-			t.updateInterval		= this.updateInterval;
-			t.keyToggleGraph		= this.keyToggleGraph;
-			t.keyToggleTextPerf		= this.keyToggleTextPerf;
-			t.keyToggleTextStat		= this.keyToggleTextStat;
 		}
 		
 		private void DrawHorizontalGraph(Canvas canvas, float[] values, ColorRgba[] colors, ref VertexC1P3[] vertices, float x, float y, float w, float h)

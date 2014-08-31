@@ -490,47 +490,6 @@ namespace Duality.Cloning
 			return directAttrib;
 		}
 
-		public static T DeepClone<T>(T baseObj, CloneProviderContext context = null)
-		{
-			CloneProvider provider = new CloneProvider(context);
-			return (T)provider.CloneObject(baseObj);
-		}
-		public static void DeepCopy<T>(T baseObj, T targetObj, CloneProviderContext context = null)
-		{
-			CloneProvider provider = new CloneProvider(context);
-			provider.CopyObject(baseObj, targetObj);
-		}
-
-		internal static void PerformReflectionFallback<T>(string copyMethodName, T baseObj, T targetObj, CloneProvider provider)
-		{
-			if (copyMethodName == null) throw new ArgumentNullException("copyMethodName");
-			if (baseObj == null) throw new ArgumentNullException("baseObj");
-			if (targetObj == null) throw new ArgumentNullException("targetObj");
-
-			// Travel up the inheritance hierarchy
-			// Don't fallback for types from the Duality Assembly. Those are required to do explicit copying.
-			Type curType = baseObj.GetType();
-			while (curType.Assembly != typeof(DualityApp).Assembly && typeof(T).IsAssignableFrom(curType))
-			{
-				// Retrieve OnCopyTo method, if declared in this specific class (local override)
-				MethodInfo localOnCopyTo = curType.GetMethod(
-					copyMethodName, 
-					BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly, 
-					null, 
-					new[] { typeof(T), typeof(CloneProvider) }, 
-					null);
-				// Apply default behaviour to any class that doesn't have its own OnCopyTo override
-				if (localOnCopyTo == null)
-				{
-					//provider.CopyObject(
-					//    baseObj, 
-					//    targetObj, 
-					//    curType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly));
-				}
-
-				curType = curType.BaseType;
-			}
-		}
 		internal static void ClearTypeCache()
 		{
 			surrogates = null;
@@ -542,11 +501,13 @@ namespace Duality.Cloning
 	{
 		public static T DeepClone<T>(this T baseObj, CloneProviderContext context = null)
 		{
-			return CloneProvider.DeepClone<T>(baseObj, context);
+			CloneProvider provider = new CloneProvider(context);
+			return (T)provider.CloneObject(baseObj);
 		}
 		public static void DeepCopyTo<T>(this T baseObj, T targetObj, CloneProviderContext context = null)
 		{
-			CloneProvider.DeepCopy<T>(baseObj, targetObj, context);
+			CloneProvider provider = new CloneProvider(context);
+			provider.CopyObject(baseObj, targetObj);
 		}
 	}
 }

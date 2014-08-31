@@ -55,8 +55,8 @@ namespace Duality.Editor.UndoRedoActions
 				{
 					PrefabLink link = this.targetObj[i].PrefabLink;
 					Prefab prefab = this.targetPrefab[i].Res;
-					this.backupPrefab[i] = CloneProvider.DeepClone(prefab, BackupCloneContext);
-					this.backupLink[i] = CloneProvider.DeepClone(link, BackupCloneContext);
+					this.backupPrefab[i] = prefab.DeepClone(BackupCloneContext);
+					this.backupLink[i] = link.DeepClone(BackupCloneContext);
 				}
 			}
 			
@@ -94,7 +94,7 @@ namespace Duality.Editor.UndoRedoActions
 
 				if (prefab == null) continue;
 
-				CloneProvider.DeepCopy(this.backupPrefab[i], prefab, BackupCloneContext);
+				this.backupPrefab[i].DeepCopyTo(prefab, BackupCloneContext);
 				if (this.backupLink[i] == null)
 				{
 					this.targetObj[i].BreakPrefabLink();

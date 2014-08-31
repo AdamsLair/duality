@@ -504,12 +504,5 @@ namespace Duality.Resources
 		/// <param name="device"></param>
 		/// <param name="material"></param>
 		protected virtual void PrepareRendering(IDrawDevice device, BatchInfo material) {}
-
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(r, provider);
-			DrawTechnique c = r as DrawTechnique;
-			c.blendType = this.blendType;
-		}
 	}
 }

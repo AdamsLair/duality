@@ -809,33 +809,6 @@ namespace Duality.Resources
 			if (this.IsCurrent) OnComponentRemoving(e);
 		}
 
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(r, provider);
-			Scene s = r as Scene;
-
-			// Apply general properties
-			s.globalGravity = this.globalGravity;
-
-			// Copy objects
-			s.objectManager.Clear();
-			#warning TODO CLONING
-			//foreach (GameObject obj in this.RootObjects)
-			//{
-			//    if (provider.GetRegisteredObjectClone(obj) != null)
-			//        continue;
-
-			//    GameObject clone = new GameObject();
-			//    provider.RegisterObjectClone(obj, clone);
-			//    obj.PrepassCopyData(clone, provider);
-			//}
-			//foreach (GameObject obj in this.RootObjects)
-			//{
-			//    GameObject clone = provider.GetRegisteredObjectClone(obj);
-			//    provider.CopyObjectTo(obj, clone);
-			//    s.objectManager.AddObject(clone);
-			//}
-		}
 		protected override void OnSaving(string saveAsPath)
 		{
 			base.OnSaving(saveAsPath);

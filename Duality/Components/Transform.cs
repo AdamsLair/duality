@@ -4,6 +4,7 @@ using OpenTK;
 
 using Duality.Editor;
 using Duality.Properties;
+using Duality.Cloning;
 
 namespace Duality.Components
 {
@@ -49,13 +50,24 @@ namespace Duality.Components
 		private	float		angleVel		= 0.0f;
 		private	float		angleVelAbs		= 0.0f;
 		// Temporary per-frame values
-		[NonSerialized] private	DirtyFlags	changes			= DirtyFlags.None;
-		[NonSerialized] private	Vector3		tempVel			= Vector3.Zero;
-		[NonSerialized] private	Vector3		tempVelAbs		= Vector3.Zero;
-		[NonSerialized] private	float		tempAngleVel	= 0.0f;
-		[NonSerialized] private	float		tempAngleVelAbs	= 0.0f;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	DirtyFlags	changes			= DirtyFlags.None;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Vector3		tempVel			= Vector3.Zero;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Vector3		tempVelAbs		= Vector3.Zero;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	float		tempAngleVel	= 0.0f;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	float		tempAngleVelAbs	= 0.0f;
 
 		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
 		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
 		public event EventHandler<TransformChangedEventArgs> EventTransformChanged
 		{
@@ -889,31 +901,10 @@ namespace Duality.Components
 			this.CheckValidTransform();
 		}
 
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
-			base.OnCopyTo(target, provider);
+			base.OnCopyDataTo(target, operation);
 			Transform t = target as Transform;
-
-			t.deriveAngle		= this.deriveAngle;
-			t.ignoreParent		= this.ignoreParent;
-
-			t.pos				= this.pos;
-			t.angle				= this.angle;
-			t.scale				= this.scale;
-
-			t.posAbs			= this.posAbs;
-			t.angleAbs			= this.angleAbs;
-			t.scaleAbs			= this.scaleAbs;
-
-			t.tempVel			= this.tempVel;
-			t.tempVelAbs		= this.tempVelAbs;
-			t.tempAngleVel		= this.tempAngleVel;
-			t.tempAngleVelAbs	= this.tempAngleVelAbs;
-
-			t.velAbs			= this.velAbs;
-			t.vel				= this.vel;
-			t.angleVel			= this.angleVel;
-			t.angleVelAbs		= this.angleVelAbs;
 
 			// Update absolute transformation. 
 			// Need to update parent transform, because this may happen 

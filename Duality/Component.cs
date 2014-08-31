@@ -55,7 +55,7 @@ namespace Duality
 	[Serializable]
 	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
-	public abstract class Component : IManageableObject, IUniqueIdentifyable
+	public abstract class Component : IManageableObject, IUniqueIdentifyable, ICloneExplicit
 	{
 		/// <summary>
 		/// Describes the kind of initialization that can be performed on a Component
@@ -168,7 +168,7 @@ namespace Duality
 			}
 		}
 		
-		uint Serialization.IUniqueIdentifyable.PreferredId
+		uint IUniqueIdentifyable.PreferredId
 		{
 			get 
 			{
@@ -218,29 +218,36 @@ namespace Duality
 		/// <param name="target">The target Component to copy to.</param>
 		public void CopyTo(Component target)
 		{
-			CloneProvider.DeepCopy(this, target);
+			this.DeepCopyTo(target);
+		}
+
+		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup)
+		{
+			setup.AutoHandleObject(this);
+			this.OnSetupCloneTargets(setup);
+		}
+		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
+		{
+			operation.AutoHandleObject(this, target);
+			this.OnCopyDataTo(target, operation);
 		}
 		/// <summary>
-		/// This method Performs the <see cref="CopyTo"/> operation for custom Component Types.
-		/// It uses reflection to copy each field that is declared inside a Duality plugin automatically.
-		/// However, you may override this method to specify your own behaviour or simply speed things
-		/// up a bit by not using Reflection.
+		/// This method prepares the <see cref="CopyTo"/> operation for custom Component Types.
+		/// It uses reflection to prepare the cloning operation automatically, but you can implement
+		/// this method in order to handle certain fields and cases manually. See <see cref="ICloneExplicit.SetupCloneTargets"/>
+		/// for a more thorough explanation.
 		/// </summary>
-		/// <remarks>
-		/// Note: Since PrefabLinks may contain references to object-local values,
-		/// all objects fields should either be overwritten or left untouched.
-		/// DO NOT modify any referenced objects. Instead, discard them and create new.
-		/// </remarks>
+		/// <param name="setup"></param>
+		protected virtual void OnSetupCloneTargets(ICloneTargetSetup setup) {}
+		/// <summary>
+		/// This method performs the <see cref="CopyTo"/> operation for custom Component Types.
+		/// It uses reflection to perform the cloning operation automatically, but you can implement
+		/// this method in order to handle certain fields and cases manually. See <see cref="ICloneExplicit.CopyDataTo"/>
+		/// for a more thorough explanation.
+		/// </summary>
 		/// <param name="target">The target Component where this Components data is copied to.</param>
-		protected virtual void OnCopyTo(Component target, CloneProvider provider)
-		{
-			// Copy "pure" data
-			target.active		= this.active;
-			target.initState	= this.initState;
-
-			// If any derived Component type doesn't override OnCopyTo, use a reflection-driven default behavior.
-			CloneProvider.PerformReflectionFallback("OnCopyTo", this, target, provider);
-		}
+		/// <param name="operation"></param>
+		protected virtual void OnCopyDataTo(object target, ICloneOperation operation) {}
 
 		/// <summary>
 		/// Returns whether this Component requires a Component of the specified Type.

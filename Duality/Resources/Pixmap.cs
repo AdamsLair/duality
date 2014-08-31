@@ -1299,15 +1299,5 @@ namespace Duality.Resources
 			// Get rid of the big data blob, so the GC can collect it.
 			this.layers.Clear();
 		}
-
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(r, provider);
-			Pixmap c = r as Pixmap;
-			c.layers = this.layers != null ? new List<Layer>(this.layers.Select(l => l.Clone())) : null;
-			c.atlas = this.atlas == null ? null : new List<Rect>(this.atlas);
-			c.animCols = this.animCols;
-			c.animRows = this.animRows;
-		}
 	}
 }

@@ -3,6 +3,7 @@ using System.Linq;
 
 using Duality.Editor;
 using Duality.Properties;
+using Duality.Cloning;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -111,9 +112,15 @@ namespace Duality.Resources
 
 		private	ContentRef<VertexShader>	vert	= VertexShader.Minimal;
 		private	ContentRef<FragmentShader>	frag	= FragmentShader.Minimal;
-		[NonSerialized] private	int				glProgramId	= 0;
-		[NonSerialized] private bool			compiled	= false;
-		[NonSerialized] private	ShaderVarInfo[]	varInfo		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int							glProgramId	= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private bool						compiled	= false;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	ShaderVarInfo[]				varInfo		= null;
 
 		/// <summary>
 		/// [GET] Returns whether this ShaderProgram has been compiled.
@@ -291,12 +298,12 @@ namespace Duality.Resources
 			}
 		}
 
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
-			base.OnCopyTo(r, provider);
-			ShaderProgram c = r as ShaderProgram;
-			c.AttachShaders(this.vert, this.frag);
-			if (this.compiled) c.Compile();
+			base.OnCopyDataTo(target, operation);
+			ShaderProgram targetShader = target as ShaderProgram;
+			targetShader.AttachShaders();
+			targetShader.Compile();
 		}
 	}
 }

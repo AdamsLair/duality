@@ -8,6 +8,7 @@ using BitmapPixelFormat = System.Drawing.Imaging.PixelFormat;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Drawing;
+using Duality.Cloning;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -256,24 +257,43 @@ namespace Duality.Resources
 		}
 
 		
-		private	ContentRef<Pixmap>		basePixmap	= ContentRef<Pixmap>.Null;
-		private	Vector2					size		= Vector2.Zero;
-		private	SizeMode				texSizeMode	= SizeMode.Default;
-		private	TextureMagFilter		filterMag	= TextureMagFilter.Linear;
-		private	TextureMinFilter		filterMin	= TextureMinFilter.LinearMipmapLinear;
-		private	TextureWrapMode			wrapX		= TextureWrapMode.ClampToEdge;
-		private	TextureWrapMode			wrapY		= TextureWrapMode.ClampToEdge;
-		private	PixelInternalFormat		pixelformat	= PixelInternalFormat.Rgba;
-		private	bool					anisoFilter		= false;
-		[NonSerialized]	private	int		pxWidth		= 0;
-		[NonSerialized]	private	int		pxHeight	= 0;
-		[NonSerialized]	private	int		glTexId		= 0;
-		[NonSerialized]	private	float	pxDiameter	= 0.0f;
-		[NonSerialized]	private	int		texWidth	= 0;
-		[NonSerialized]	private	int		texHeight	= 0;
-		[NonSerialized]	private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
-		[NonSerialized] private	bool	needsReload	= true;
-		[NonSerialized] private	Rect[]	atlas		= null;
+		private	ContentRef<Pixmap>	basePixmap	= ContentRef<Pixmap>.Null;
+		private	Vector2				size		= Vector2.Zero;
+		private	SizeMode			texSizeMode	= SizeMode.Default;
+		private	TextureMagFilter	filterMag	= TextureMagFilter.Linear;
+		private	TextureMinFilter	filterMin	= TextureMinFilter.LinearMipmapLinear;
+		private	TextureWrapMode		wrapX		= TextureWrapMode.ClampToEdge;
+		private	TextureWrapMode		wrapY		= TextureWrapMode.ClampToEdge;
+		private	PixelInternalFormat	pixelformat	= PixelInternalFormat.Rgba;
+		private	bool				anisoFilter		= false;
+
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int		pxWidth		= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int		pxHeight	= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int		glTexId		= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	float	pxDiameter	= 0.0f;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int		texWidth	= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int		texHeight	= 0;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	bool	needsReload	= true;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Rect[]	atlas		= null;
 
 
 		/// <summary>
@@ -734,17 +754,10 @@ namespace Duality.Resources
 			// Get rid of big data references, so the GC can collect them.
 			this.basePixmap.Detach();
 		}
-
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
+		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
-			base.OnCopyTo(r, provider);
-			Texture c = r as Texture;
-			c.size = this.size;
-			c.filterMag = this.filterMag;
-			c.filterMin = this.filterMin;
-			c.wrapX = this.wrapX;
-			c.wrapY = this.wrapY;
-			c.pixelformat = this.pixelformat;
+			base.OnCopyDataTo(target, operation);
+			Texture c = target as Texture;
 			c.LoadData(this.basePixmap, this.texSizeMode);
 		}
 	}

@@ -7,6 +7,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK;
 
 using Duality.Editor;
+using Duality.Cloning;
 using Duality.Drawing;
 using Duality.Resources;
 using Duality.Properties;
@@ -158,13 +159,27 @@ namespace Duality.Components
 		private	VisibilityFlag	visibilityMask	= VisibilityFlag.All;
 		private	List<Pass>	passes				= new List<Pass>();
 
-		[NonSerialized]	private	DrawDevice			drawDevice		= null;
-		[NonSerialized]	private	List<ICmpRenderer>	pickingMap		= null;
-		[NonSerialized]	private	RenderTarget		pickingRT		= null;
-		[NonSerialized]	private	Texture				pickingTex		= null;
-		[NonSerialized]	private	int					pickingLast		= -1;
-		[NonSerialized]	private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
-		[NonSerialized]	private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	DrawDevice			drawDevice		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	List<ICmpRenderer>	pickingMap		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	RenderTarget		pickingRT		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	Texture				pickingTex		= null;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	int					pickingLast		= -1;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
+		private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
 
 		
 		/// <summary>
@@ -260,16 +275,6 @@ namespace Duality.Components
 
 			this.passes.Add(worldPass);
 			this.passes.Add(overlayPass);
-		}
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			Camera t = target as Camera;
-			t.nearZ				= this.nearZ;
-			t.farZ				= this.farZ;
-			t.focusDist	= this.focusDist;
-			t.visibilityMask	= this.visibilityMask;
-			t.passes			= this.passes != null ? new List<Pass>(this.passes.Select(p => new Pass(p))) : null;
 		}
 		public void MakeAvailable()
 		{

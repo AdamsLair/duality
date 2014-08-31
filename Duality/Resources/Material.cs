@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Drawing;
 using Duality.Properties;
 using Duality.Editor;
+using Duality.Cloning;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -256,13 +257,6 @@ namespace Duality.Resources
 			this.info.SetUniform(name, index, uniformVal);
 		}
 
-		protected override void OnCopyTo(Resource r, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(r, provider);
-			Material c = r as Material;
-			c.info = new BatchInfo(this.info);
-			c.info.Detach();
-		}
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();

@@ -21,7 +21,7 @@ namespace Duality
 	[Serializable]
 	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
-	public abstract class Resource : IManageableObject, IDisposable
+	public abstract class Resource : IManageableObject, IDisposable, ICloneExplicit
 	{
 		/// <summary>
 		/// A Resource files extension.
@@ -236,33 +236,45 @@ namespace Duality
 		/// <returns></returns>
 		public Resource Clone()
 		{
-			return CloneProvider.DeepClone(this);
+			return this.DeepClone();
 		}
 		/// <summary>
 		/// Deep-copies this Resource to the specified target Resource. The target Resource's Type must
 		/// match this Resource's Type.
 		/// </summary>
-		/// <param name="r">The target Resource to copy this Resource's data to</param>
-		public void CopyTo(Resource r)
+		/// <param name="target">The target Resource to copy this Resource's data to</param>
+		public void CopyTo(Resource target)
 		{
-			CloneProvider.DeepCopy(this, r);
+			this.DeepCopyTo(target);
 		}
 		
+		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup)
+		{
+			setup.AutoHandleObject(this);
+			this.OnSetupCloneTargets(setup);
+		}
+		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
+		{
+			operation.AutoHandleObject(this, target);
+			this.OnCopyDataTo(target, operation);
+		}
 		/// <summary>
-		/// This method Performs the <see cref="CopyTo"/> operation for custom Resource Types.
-		/// It uses reflection to copy each field that is declared inside a Duality plugin automatically.
-		/// However, you may override this method to specify your own behaviour or simply speed things
-		/// up a bit by not using Reflection.
+		/// This method prepares the <see cref="CopyTo"/> operation for custom Resource Types.
+		/// It uses reflection to prepare the cloning operation automatically, but you can implement
+		/// this method in order to handle certain fields and cases manually. See <see cref="ICloneExplicit.SetupCloneTargets"/>
+		/// for a more thorough explanation.
+		/// </summary>
+		/// <param name="setup"></param>
+		protected virtual void OnSetupCloneTargets(ICloneTargetSetup setup) {}
+		/// <summary>
+		/// This method performs the <see cref="CopyTo"/> operation for custom Resource Types.
+		/// It uses reflection to perform the cloning operation automatically, but you can implement
+		/// this method in order to handle certain fields and cases manually. See <see cref="ICloneExplicit.CopyDataTo"/>
+		/// for a more thorough explanation.
 		/// </summary>
 		/// <param name="target">The target Resource where this Resources data is copied to.</param>
-		protected virtual void OnCopyTo(Resource target, CloneProvider provider)
-		{
-			target.path			= provider.Context.PreserveIdentity ? null : this.path;
-			target.sourcePath	= provider.Context.PreserveIdentity ? null : this.sourcePath;
-
-			// If any derived Resource type doesn't override OnCopyTo, use a reflection-driven default behavior.
-			CloneProvider.PerformReflectionFallback("OnCopyTo", this, target, provider);
-		}
+		/// <param name="operation"></param>
+		protected virtual void OnCopyDataTo(object target, ICloneOperation operation) {}
 		/// <summary>
 		/// Called when this Resource is now beginning to be saved.
 		/// </summary>

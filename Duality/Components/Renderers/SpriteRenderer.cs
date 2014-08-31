@@ -4,6 +4,7 @@ using Duality.Drawing;
 using Duality.Resources;
 using Duality.Editor;
 using Duality.Properties;
+using Duality.Cloning;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -52,6 +53,7 @@ namespace Duality.Components.Renderers
 		protected	bool					pixelGrid	= false;
 		protected	int						offset		= 0;
 		[NonSerialized]
+		[CloneField(CloneFieldFlags.Skip)]
 		protected	VertexC1P3T2[]			vertices	= null;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -268,17 +270,6 @@ namespace Duality.Components.Renderers
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
 			else
 				device.AddVertices(this.sharedMat, VertexMode.Quads, this.vertices);
-		}
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			SpriteRenderer t = target as SpriteRenderer;
-			t.sharedMat	= this.sharedMat;
-			t.customMat	= this.customMat != null ? new BatchInfo(this.customMat) : null;
-			t.rect		= this.rect;
-			t.colorTint	= this.colorTint;
-			t.rectMode	= this.rectMode;
-			t.offset	= this.offset;
 		}
 	}
 }

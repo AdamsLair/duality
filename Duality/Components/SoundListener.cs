@@ -14,12 +14,6 @@ namespace Duality.Components
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSoundListener)]
 	public sealed class SoundListener : Component, ICmpInitializable
 	{
-		protected override void OnCopyTo(Component target, Duality.Cloning.CloneProvider provider)
-		{
-			base.OnCopyTo(target, provider);
-			SoundListener c = target as SoundListener;
-		}
-
 		public void MakeCurrent()
 		{
 			if (!this.Active) return;

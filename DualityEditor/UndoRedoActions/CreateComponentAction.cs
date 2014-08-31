@@ -46,12 +46,12 @@ namespace Duality.Editor.UndoRedoActions
 		{
 			if (this.backupObj == null)
 			{
-				this.backupObj = this.targetObj.Select(o => CloneProvider.DeepClone(o, BackupCloneContext)).ToList();
+				this.backupObj = this.targetObj.Select(o => o.DeepClone(BackupCloneContext)).ToList();
 			}
 			else
 			{
 				for (int i = 0; i < this.backupObj.Count; i++)
-					CloneProvider.DeepCopy(this.backupObj[i], this.targetObj[i], BackupCloneContext);
+					this.backupObj[i].DeepCopyTo(this.targetObj[i], BackupCloneContext);
 			}
 
 			for (int i = 0; i < this.targetObj.Count; i++)
@@ -62,7 +62,7 @@ namespace Duality.Editor.UndoRedoActions
 				{
 					if (this.targetParentObj.GetComponent(required) != null) continue;
 					obj = required.CreateInstanceOf() as Component;
-					this.backupObj.Insert(i, CloneProvider.DeepClone(obj, BackupCloneContext));
+					this.backupObj.Insert(i, obj.DeepClone(BackupCloneContext));
 					this.targetObj.Insert(i, obj);
 				}
 
