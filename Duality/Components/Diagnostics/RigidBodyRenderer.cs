@@ -33,9 +33,7 @@ namespace Duality.Components.Diagnostics
 		private	int						offset					= 0;
 		private	bool					wrapTexture				= true;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	CanvasBuffer			vertexBuffer			= new CanvasBuffer();
+		[NonSerialized] private	CanvasBuffer	vertexBuffer	= new CanvasBuffer();
 
 
 		public override float BoundRadius

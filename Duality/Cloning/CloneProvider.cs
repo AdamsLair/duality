@@ -335,13 +335,18 @@ namespace Duality.Cloning
 				{
 					// Skip certain fields when requested
 					CloneFieldAttribute fieldAttrib = field.GetCustomAttributes<CloneFieldAttribute>().FirstOrDefault();
+					bool dontSkip = false;
 					if (fieldAttrib != null)
 					{
+						if ((fieldAttrib.Flags & CloneFieldFlags.DontSkip) != CloneFieldFlags.None)
+							dontSkip = true;
 						if ((fieldAttrib.Flags & CloneFieldFlags.Skip) != CloneFieldFlags.None)
 							continue;
 						if ((fieldAttrib.Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
 							continue;
 					}
+					if (field.IsNotSerialized && !dontSkip)
+						continue;
 
 					// Actually copy the current field
 					this.PerformCopyField(source, target, field);

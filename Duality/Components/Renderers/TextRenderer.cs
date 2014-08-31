@@ -25,12 +25,8 @@ namespace Duality.Components.Renderers
 		protected	BatchInfo				customMat	= null;
 		protected	ColorRgba				colorTint	= ColorRgba.White;
 		protected	ContentRef<Material>	iconMat		= ContentRef<Material>.Null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		protected	VertexC1P3T2[][]	vertFont	= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		protected	VertexC1P3T2[]		vertIcon	= null;
+		[NonSerialized] protected	VertexC1P3T2[][]	vertFont	= null;
+		[NonSerialized] protected	VertexC1P3T2[]		vertIcon	= null;
 
 
 		[EditorHintFlags(MemberFlags.Invisible)]

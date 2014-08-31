@@ -267,33 +267,15 @@ namespace Duality.Resources
 		private	PixelInternalFormat	pixelformat	= PixelInternalFormat.Rgba;
 		private	bool				anisoFilter		= false;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int		pxWidth		= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int		pxHeight	= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int		glTexId		= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	float	pxDiameter	= 0.0f;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int		texWidth	= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int		texHeight	= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	bool	needsReload	= true;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	Rect[]	atlas		= null;
+		[NonSerialized] private	int		pxWidth		= 0;
+		[NonSerialized] private	int		pxHeight	= 0;
+		[NonSerialized] private	int		glTexId		= 0;
+		[NonSerialized] private	float	pxDiameter	= 0.0f;
+		[NonSerialized] private	int		texWidth	= 0;
+		[NonSerialized] private	int		texHeight	= 0;
+		[NonSerialized] private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
+		[NonSerialized] private	bool	needsReload	= true;
+		[NonSerialized] private	Rect[]	atlas		= null;
 
 
 		/// <summary>

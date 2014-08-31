@@ -64,19 +64,10 @@ namespace Duality.Components.Renderers
 		private	bool		animPaused			= false;
 		private	List<int>	customFrameSequence	= null;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private int		curAnimFrame		= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private int		nextAnimFrame		= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private float	curAnimFrameFade	= 0.0f;
-
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	VertexC1P3T4A1[]	verticesSmooth	= null;
+		[NonSerialized] private int		curAnimFrame		= 0;
+		[NonSerialized] private int		nextAnimFrame		= 0;
+		[NonSerialized] private float	curAnimFrameFade	= 0.0f;
+		[NonSerialized] private	VertexC1P3T4A1[]	verticesSmooth	= null;
 
 
 		/// <summary>

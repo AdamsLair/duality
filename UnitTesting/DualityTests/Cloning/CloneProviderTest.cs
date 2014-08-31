@@ -175,6 +175,8 @@ namespace Duality.Tests.Cloning
 
 			Assert.AreEqual(data.StringField, dataResult.StringField);
 			Assert.AreNotEqual(data.SkipField, dataResult.SkipField);
+			Assert.AreNotEqual(data.NonSerializedSkipField, dataResult.NonSerializedSkipField);
+			Assert.AreEqual(data.NonSerializedField, dataResult.NonSerializedField);
 			Assert.AreNotEqual(data.SkippedObject, dataResult.SkippedObject);
 		}
 		[Test] public void OwnershipBehavior()

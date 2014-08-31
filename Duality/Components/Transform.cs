@@ -50,24 +50,13 @@ namespace Duality.Components
 		private	float		angleVel		= 0.0f;
 		private	float		angleVelAbs		= 0.0f;
 		// Temporary per-frame values
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	DirtyFlags	changes			= DirtyFlags.None;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	Vector3		tempVel			= Vector3.Zero;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	Vector3		tempVelAbs		= Vector3.Zero;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	float		tempAngleVel	= 0.0f;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	float		tempAngleVelAbs	= 0.0f;
+		[NonSerialized] private	DirtyFlags	changes			= DirtyFlags.None;
+		[NonSerialized] private	Vector3		tempVel			= Vector3.Zero;
+		[NonSerialized] private	Vector3		tempVelAbs		= Vector3.Zero;
+		[NonSerialized] private	float		tempAngleVel	= 0.0f;
+		[NonSerialized] private	float		tempAngleVelAbs	= 0.0f;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
+		[NonSerialized] 
 		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
 		public event EventHandler<TransformChangedEventArgs> EventTransformChanged
 		{

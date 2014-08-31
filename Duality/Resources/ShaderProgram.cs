@@ -112,15 +112,9 @@ namespace Duality.Resources
 
 		private	ContentRef<VertexShader>	vert	= VertexShader.Minimal;
 		private	ContentRef<FragmentShader>	frag	= FragmentShader.Minimal;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int							glProgramId	= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private bool						compiled	= false;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	ShaderVarInfo[]				varInfo		= null;
+		[NonSerialized] private	int							glProgramId	= 0;
+		[NonSerialized] private bool						compiled	= false;
+		[NonSerialized] private	ShaderVarInfo[]				varInfo		= null;
 
 		/// <summary>
 		/// [GET] Returns whether this ShaderProgram has been compiled.

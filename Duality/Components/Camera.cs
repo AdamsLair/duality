@@ -159,27 +159,13 @@ namespace Duality.Components
 		private	VisibilityFlag	visibilityMask	= VisibilityFlag.All;
 		private	List<Pass>	passes				= new List<Pass>();
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	DrawDevice			drawDevice		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	List<ICmpRenderer>	pickingMap		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	RenderTarget		pickingRT		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	Texture				pickingTex		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int					pickingLast		= -1;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
+		[NonSerialized] private	DrawDevice			drawDevice		= null;
+		[NonSerialized] private	List<ICmpRenderer>	pickingMap		= null;
+		[NonSerialized] private	RenderTarget		pickingRT		= null;
+		[NonSerialized] private	Texture				pickingTex		= null;
+		[NonSerialized] private	int					pickingLast		= -1;
+		[NonSerialized] private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
+		[NonSerialized] private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
 
 		
 		/// <summary>

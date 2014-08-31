@@ -638,21 +638,11 @@ namespace Duality.Drawing
 		private	int					iconCount		= 0;
 		private	Element[]			elements		= null;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private bool				updateVertexCache	= true;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private VertexC1P3T2[][]	vertTextCache		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private VertexC1P3T2[]		vertIconsCache		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private int[]				vertCountCache		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	Metrics				metricsCache		= null;
+		[NonSerialized] private bool				updateVertexCache	= true;
+		[NonSerialized] private VertexC1P3T2[][]	vertTextCache		= null;
+		[NonSerialized] private VertexC1P3T2[]		vertIconsCache		= null;
+		[NonSerialized] private int[]				vertCountCache		= null;
+		[NonSerialized] private	Metrics				metricsCache		= null;
 
 
 		/// <summary>

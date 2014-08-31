@@ -177,18 +177,10 @@ namespace Duality.Resources
 		
 		private	List<TargetInfo>	targetInfo		= new List<TargetInfo>();
 		private	AAQuality			multisampling	= AAQuality.Off;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int	samples	= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int	glFboId;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int	glRboIdDepth;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int	glFboIdMSAA;
+		[NonSerialized] private	int	samples	= 0;
+		[NonSerialized] private	int	glFboId;
+		[NonSerialized] private	int	glRboIdDepth;
+		[NonSerialized] private	int	glFboIdMSAA;
 
 
 		/// <summary>

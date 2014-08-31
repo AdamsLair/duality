@@ -22,12 +22,19 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public string StringField;
 		[CloneField(CloneFieldFlags.Skip)]
 		public int SkipField;
+		[NonSerialized]
+		public int NonSerializedSkipField;
+		[NonSerialized]
+		[CloneField(CloneFieldFlags.DontSkip)]
+		public int NonSerializedField;
 		public AlwaysSkippedObject SkippedObject;
 			
 		public SkipFieldTestObject()
 		{
 			this.StringField = CloneProviderTest.SharedRandom.Next().ToString();
 			this.SkipField = CloneProviderTest.SharedRandom.Next();
+			this.NonSerializedSkipField = CloneProviderTest.SharedRandom.Next();
+			this.NonSerializedField = CloneProviderTest.SharedRandom.Next();
 			this.SkippedObject = new AlwaysSkippedObject();
 		}
 	}

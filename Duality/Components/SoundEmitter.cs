@@ -34,9 +34,7 @@ namespace Duality.Components
 			private	Vector3				offset			= Vector3.Zero;
 			[NonSerializedResource]
 			private	bool				hasBeenPlayed	= false;
-			[NonSerialized]
-			[CloneField(CloneFieldFlags.Skip)]
-			private	SoundInstance		instance		= null;
+			[NonSerialized] private	SoundInstance	instance		= null;
 
 			/// <summary>
 			/// [GET] The <see cref="SoundInstance"/> that is currently allocated to emit

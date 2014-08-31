@@ -57,9 +57,7 @@ namespace Duality.Resources
 
 		private	byte[]	data			= null;
 		private	bool	forceStream		= false;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int		alBuffer		= AlBuffer_NotAvailable;
+		[NonSerialized] private	int	alBuffer	= AlBuffer_NotAvailable;
 
 		/// <summary>
 		/// [GET / SET] A data chunk representing Ogg Vorbis compressed

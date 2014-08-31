@@ -41,21 +41,11 @@ namespace Duality.Components.Diagnostics
 		private	Key				keyToggleTextStat	= Key.F3;
 		private	Key				keyToggleGraph		= Key.F4;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	FormattedText		textReport			= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	VertexC1P3T2[]		textReportIconVert	= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	VertexC1P3T2[][]	textReportTextVert	= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	TimeSpan			textReportLast		= TimeSpan.Zero;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
+		[NonSerialized] private	FormattedText		textReport			= null;
+		[NonSerialized] private	VertexC1P3T2[]		textReportIconVert	= null;
+		[NonSerialized] private	VertexC1P3T2[][]	textReportTextVert	= null;
+		[NonSerialized] private	TimeSpan			textReportLast		= TimeSpan.Zero;
+		[NonSerialized] private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
 
 
 		float ICmpRenderer.BoundRadius

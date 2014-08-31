@@ -206,16 +206,10 @@ namespace Duality.Resources
 	[ExplicitResourceReference()]
 	public abstract class AbstractShader : Resource
 	{
-		private	string			source		= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	int				glShaderId	= 0;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	bool			compiled	= false;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	ShaderVarInfo[]	varInfo		= null;
+		private	string	source	= null;
+		[NonSerialized] private	int				glShaderId	= 0;
+		[NonSerialized] private	bool			compiled	= false;
+		[NonSerialized] private	ShaderVarInfo[]	varInfo		= null;
 
 		/// <summary>
 		/// The type of OpenGL shader that is represented.

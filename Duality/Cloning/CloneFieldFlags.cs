@@ -21,6 +21,11 @@ namespace Duality.Cloning
 		/// The Field or Object in question will always be skipped during cloning. No value
 		/// will be assigned at all.
 		/// </summary>
-		Skip				= 0x2
+		Skip				= 0x2,
+		/// <summary>
+		/// The Field or Object in question won't be skipped during cloning due to secondary
+		/// hints such as a NonSerialized attribute on the same field.
+		/// </summary>
+		DontSkip			= 0x4
 	}
 }

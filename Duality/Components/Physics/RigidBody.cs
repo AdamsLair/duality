@@ -62,27 +62,13 @@ namespace Duality.Components.Physics
 		private	List<ShapeInfo>	shapes		= null;
 		private	List<JointInfo>	joints		= null;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	float			lastScale			= 1.0f;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	InitState		bodyInitState		= InitState.Disposed;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	bool			schedUpdateBody		= false;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	bool			isUpdatingBody		= false;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	bool			isProcessingEvents	= false;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	Body			body				= null;
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.Skip)]
-		private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
+		[NonSerialized] private	float			lastScale			= 1.0f;
+		[NonSerialized] private	InitState		bodyInitState		= InitState.Disposed;
+		[NonSerialized] private	bool			schedUpdateBody		= false;
+		[NonSerialized] private	bool			isUpdatingBody		= false;
+		[NonSerialized] private	bool			isProcessingEvents	= false;
+		[NonSerialized] private	Body			body				= null;
+		[NonSerialized] private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
 
 
 		internal Body PhysicsBody
