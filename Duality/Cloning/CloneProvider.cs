@@ -9,7 +9,6 @@ namespace Duality.Cloning
 {
 	public class CloneProvider : ICloneTargetSetup, ICloneOperation
 	{
-		private static readonly CloneBehaviorAttribute DefaultBehavior = new CloneBehaviorAttribute(CloneBehavior.ChildObject);
 		private struct CloneBehaviorEntry
 		{
 			public CloneBehaviorAttribute Behavior;
@@ -154,7 +153,7 @@ namespace Duality.Cloning
 			foreach (object lateSetupSource in this.lateSetupObjects)
 			{
 				CloneType sourceType = GetCloneType(lateSetupSource.GetType());
-				ICloneSurrogate surrogate = GetSurrogateFor(sourceType.Type);
+				ICloneSurrogate surrogate = sourceType.Surrogate;
 
 				object lateSetupTarget;
 				surrogate.LateSetup(lateSetupSource, out lateSetupTarget, this);
@@ -179,27 +178,26 @@ namespace Duality.Cloning
 			this.currentCloneType = sourceType;
 
 			// Fetch the currently active clone behavior and react accordingly
-			CloneBehaviorAttribute behavior = null;
+			object behaviorLock = null;
 			if (!object.ReferenceEquals(source, this.sourceRoot))
 			{
-				behavior = this.GetCloneBehavior(sourceType.Type, true);
-				if (behavior.Behavior != CloneBehavior.ChildObject)
+				CloneBehavior behavior = this.GetCloneBehavior(sourceType, true, out behaviorLock);
+				if (behavior != CloneBehavior.ChildObject)
 				{
-					if (behavior.Behavior == CloneBehavior.WeakReference)
+					if (behavior == CloneBehavior.WeakReference)
 					{
 						this.dropWeakReferences.Add(source);
 					}
-					this.UnlockCloneBehavior(behavior);
+					this.UnlockCloneBehavior(behaviorLock);
 					return;
 				}
 			}
 
 			// Check whether there is a surrogare for this object
-			ICloneSurrogate surrogate = GetSurrogateFor(sourceType.Type);
-			if (surrogate != null)
+			if (sourceType.Surrogate != null)
 			{
 				bool requireLateSetup;
-				surrogate.SetupCloneTargets(source, out requireLateSetup, this);
+				sourceType.Surrogate.SetupCloneTargets(source, out requireLateSetup, this);
 				if (requireLateSetup)
 				{
 					this.lateSetupObjects.Add(source);
@@ -208,7 +206,6 @@ namespace Duality.Cloning
 			// Otherwise, use the default algorithm
 			else
 			{
-				ICloneExplicit customSource = source as ICloneExplicit;
 
 				// Create target objects
 				CloneType sourceElementType = null;
@@ -225,7 +222,8 @@ namespace Duality.Cloning
 				this.SetTargetOf(source, target);
 
 				// If it implements custom cloning behavior, use that
-				if (customSource != null)
+				ICloneExplicit customSource;
+				if ((customSource = source as ICloneExplicit) != null)
 				{
 					customSource.SetupCloneTargets(this);
 				}
@@ -236,7 +234,7 @@ namespace Duality.Cloning
 				}
 			}
 
-			this.UnlockCloneBehavior(behavior);
+			this.UnlockCloneBehavior(behaviorLock);
 		}
 		private void PrepareChildCloneGraph(object source, CloneType sourceType)
 		{
@@ -286,15 +284,14 @@ namespace Duality.Cloning
 			this.currentCloneType = sourceType;
 			
 			// Check whether there is a surrogare for this object
-			ICloneSurrogate surrogate = GetSurrogateFor(sourceType.Type);
-			if (surrogate != null)
+			ICloneExplicit customSource;
+			if (sourceType.Surrogate != null)
 			{
-				surrogate.CopyDataTo(source, target, this);
+				sourceType.Surrogate.CopyDataTo(source, target, this);
 			}
 			// If it implements custom cloning behavior, use that
-			else if (source is ICloneExplicit)
+			else if ((customSource = source as ICloneExplicit) != null)
 			{
-				ICloneExplicit customSource = source as ICloneExplicit;
 				customSource.CopyDataTo(target, this);
 			}
 			// Otherwise, traverse its child objects using default behavior
@@ -377,39 +374,33 @@ namespace Duality.Cloning
 		{
 			this.localBehavior.RemoveAt(this.localBehavior.Count - 1);
 		}
-		private CloneBehaviorAttribute GetCloneBehavior(Type sourceType, bool lockBehavior)
+		private CloneBehavior GetCloneBehavior(CloneType sourceType, bool lockBehavior, out object acquiredLock)
 		{
 			// Local behavior rules
-			CloneBehaviorAttribute behavior = null;
+			acquiredLock = null;
 			var localBehaviorData = this.localBehavior.Data;
 			for (int i = this.localBehavior.Count - 1; i >= 0; i--)
 			{
 				if (localBehaviorData[i].Locked) continue;
-				if (localBehaviorData[i].Behavior.TargetType == null || (sourceType != null && localBehaviorData[i].Behavior.TargetType.IsAssignableFrom(sourceType)))
+				if (localBehaviorData[i].Behavior.TargetType == null || (sourceType != null && localBehaviorData[i].Behavior.TargetType.IsAssignableFrom(sourceType.Type)))
 				{
-					behavior = localBehaviorData[i].Behavior;
+					acquiredLock = localBehaviorData[i].Behavior;
 					localBehaviorData[i].Locked = lockBehavior;
-					break;
+					return localBehaviorData[i].Behavior.Behavior;
 				}
 			}
 
 			// Global behavior rules
-			if (behavior == null && sourceType != null)
-			{
-				behavior = GetCloneBehaviorAttribute(sourceType);
-			}
-
-			// Results
-			return behavior ?? DefaultBehavior;
+			return (sourceType != null) ? sourceType.DefaultCloneBehavior : CloneBehavior.ChildObject;
 		}
-		private void UnlockCloneBehavior(CloneBehaviorAttribute behavior)
+		private void UnlockCloneBehavior(object behaviorLock)
 		{
-			if (behavior == null) return;
+			if (behaviorLock == null) return;
 
 			var localBehaviorData = this.localBehavior.Data;
 			for (int i = this.localBehavior.Count - 1; i >= 0; i--)
 			{
-				if (localBehaviorData[i].Locked && localBehaviorData[i].Behavior == behavior)
+				if (localBehaviorData[i].Locked && localBehaviorData[i].Behavior == behaviorLock)
 				{
 					localBehaviorData[i].Locked = false;
 				}
@@ -462,9 +453,10 @@ namespace Duality.Cloning
 		}
 
 
-		private	static List<ICloneSurrogate>		surrogates			= null;
-		private	static Dictionary<Type,CloneType>	cloneTypeCache		= new Dictionary<Type,CloneType>();
-		private static CloneBehaviorAttribute[]		globalCloneBehavior = null;
+		private	static List<ICloneSurrogate>					surrogates			= null;
+		private	static Dictionary<Type,CloneType>				cloneTypeCache		= new Dictionary<Type,CloneType>();
+		private	static Dictionary<Type,CloneBehaviorAttribute>	cloneBehaviorCache	= new Dictionary<Type,CloneBehaviorAttribute>();
+		private static CloneBehaviorAttribute[]					globalCloneBehavior = null;
 
 		/// <summary>
 		/// Returns the <see cref="CloneType"/> of a Type.
@@ -482,7 +474,7 @@ namespace Duality.Cloning
 			cloneTypeCache[type] = result;
 			return result;
 		}
-		private static ICloneSurrogate GetSurrogateFor(Type type)
+		internal static ICloneSurrogate GetSurrogateFor(Type type)
 		{
 			if (surrogates == null)
 			{
@@ -494,10 +486,16 @@ namespace Duality.Cloning
 					.ToList();
 				surrogates.StableSort((s1, s2) => s1.Priority - s2.Priority);
 			}
-			return surrogates.FirstOrDefault(s => s.MatchesType(type));
+			for (int i = 0; i < surrogates.Count; i++)
+			{
+				if (surrogates[i].MatchesType(type))
+					return surrogates[i];
+			}
+			return null;
 		}
-		private static CloneBehaviorAttribute GetCloneBehaviorAttribute(Type type)
+		internal static CloneBehaviorAttribute GetCloneBehaviorAttribute(Type type)
 		{
+			// Assembly-level attributes pointing to this Type
 			if (globalCloneBehavior == null)
 			{
 				globalCloneBehavior = ReflectionHelper.GetCustomAssemblyAttributes<CloneBehaviorAttribute>().ToArray();
@@ -508,7 +506,14 @@ namespace Duality.Cloning
 				if (globalAttrib.TargetType.IsAssignableFrom(type))
 					return globalAttrib;
 			}
-			CloneBehaviorAttribute directAttrib = type.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+
+			// Attributes attached directly to this Type
+			CloneBehaviorAttribute directAttrib;
+			if (!cloneBehaviorCache.TryGetValue(type, out directAttrib))
+			{
+				directAttrib = type.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+				cloneBehaviorCache[type] = directAttrib;
+			}
 			return directAttrib;
 		}
 

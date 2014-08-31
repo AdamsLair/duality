@@ -49,6 +49,8 @@ namespace Duality.Cloning
 		private	CloneType		elementType;
 		private	CloneField[]	fieldData;
 		private	bool			plainOldData;
+		private	CloneBehavior	behavior;
+		private	ICloneSurrogate	surrogate;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Type"/> that is described.
@@ -92,6 +94,20 @@ namespace Duality.Cloning
 		{
 			get { return !this.type.IsValueType && !this.type.IsSealed; }
 		}
+		/// <summary>
+		/// [GET] Returns the default <see cref="CloneBehavior"/> exposed by this type.
+		/// </summary>
+		public CloneBehavior DefaultCloneBehavior
+		{
+			get { return this.behavior; }
+		}
+		/// <summary>
+		/// [GET] The surrogate that will handle this types cloning operations.
+		/// </summary>
+		public ICloneSurrogate Surrogate
+		{
+			get { return this.surrogate; }
+		}
 
 		/// <summary>
 		/// Creates a new CloneType based on a <see cref="System.Type"/>, gathering all the information that is necessary for cloning.
@@ -100,28 +116,38 @@ namespace Duality.Cloning
 		public CloneType(Type type)
 		{
 			this.type = type;
-
-			List<CloneField> fieldData = new List<CloneField>();
-			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
-			{
-				CloneFieldFlags flags = CloneFieldFlags.None;
-				CloneFieldAttribute fieldAttrib = field.GetCustomAttributes<CloneFieldAttribute>().FirstOrDefault();
-				if (fieldAttrib != null) flags = fieldAttrib.Flags;
-
-				if (field.IsNotSerialized && !flags.HasFlag(CloneFieldFlags.DontSkip))
-					continue;
-				if (flags.HasFlag(CloneFieldFlags.Skip))
-					continue;
-
-				CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
-				bool isPlainOld = field.FieldType.IsPlainOldData();
-
-				fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld));
-			}
-			this.fieldData = fieldData.ToArray();
 			this.plainOldData = this.type.IsPlainOldData();
-
+			this.surrogate = CloneProvider.GetSurrogateFor(this.type);
 			if (this.type.IsArray) this.elementType = CloneProvider.GetCloneType(this.type.GetElementType());
+
+			if (!this.type.IsArray && !this.plainOldData)
+			{
+				List<CloneField> fieldData = new List<CloneField>();
+				foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
+				{
+					CloneFieldFlags flags = CloneFieldFlags.None;
+					CloneFieldAttribute fieldAttrib = field.GetCustomAttributes<CloneFieldAttribute>().FirstOrDefault();
+					if (fieldAttrib != null) flags = fieldAttrib.Flags;
+
+					if (field.IsNotSerialized && !flags.HasFlag(CloneFieldFlags.DontSkip))
+						continue;
+					if (flags.HasFlag(CloneFieldFlags.Skip))
+						continue;
+
+					CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+					bool isPlainOld = field.FieldType.IsPlainOldData();
+
+					fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld));
+				}
+				this.fieldData = fieldData.ToArray();
+			}
+			else
+			{
+				this.fieldData = null;
+			}
+
+			CloneBehaviorAttribute defaultBehaviorAttrib = CloneProvider.GetCloneBehaviorAttribute(this.type);
+			this.behavior = (defaultBehaviorAttrib != null) ? defaultBehaviorAttrib.Behavior : CloneBehavior.ChildObject;
 		}
 	}
 }
