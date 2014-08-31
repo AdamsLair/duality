@@ -47,13 +47,10 @@ namespace Duality
 		private		Components.Transform		compTransform	= null;
 		
 		[NonSerialized]
-		[CloneBehavior(CloneBehavior.WeakReference)]
 		private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
 		[NonSerialized]
-		[CloneBehavior(CloneBehavior.WeakReference)]
 		private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
 		[NonSerialized]
-		[CloneBehavior(CloneBehavior.WeakReference)]
 		private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
 
 

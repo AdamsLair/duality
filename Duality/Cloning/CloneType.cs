@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Linq.Expressions;
 
 namespace Duality.Cloning
 {
@@ -11,6 +12,7 @@ namespace Duality.Cloning
 	/// </summary>
 	public sealed class CloneType
 	{
+		public delegate void AssignPodFunc(object source, object target);
 
 		public struct CloneField
 		{
@@ -18,6 +20,7 @@ namespace Duality.Cloning
 			private CloneFieldFlags flags;
 			private	CloneBehaviorAttribute behavior;
 			private bool isPlainOldData;
+			private bool allowPodShortcut;
 
 			public FieldInfo Field
 			{
@@ -35,13 +38,18 @@ namespace Duality.Cloning
 			{
 				get { return this.isPlainOldData; }
 			}
+			public bool AllowPlainOldDataShortcut
+			{
+				get { return this.allowPodShortcut; }
+			}
 
-			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld)
+			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld, bool shortcut)
 			{
 				this.field = field;
 				this.flags = flags;
 				this.behavior = behavior;
 				this.isPlainOldData = isPlainOld;
+				this.allowPodShortcut = shortcut;
 			}
 		}
 
@@ -51,6 +59,7 @@ namespace Duality.Cloning
 		private	bool			plainOldData;
 		private	CloneBehavior	behavior;
 		private	ICloneSurrogate	surrogate;
+		private	AssignPodFunc	assignPodFunc;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Type"/> that is described.
@@ -108,6 +117,13 @@ namespace Duality.Cloning
 		{
 			get { return this.surrogate; }
 		}
+		/// <summary>
+		/// [GET] When available, this property returns a compiled lambda function that assigns all plain old data fields of this Type
+		/// </summary>
+		public AssignPodFunc AssignPlainOldDataFunc
+		{
+			get { return this.assignPodFunc; }
+		}
 
 		/// <summary>
 		/// Creates a new CloneType based on a <see cref="System.Type"/>, gathering all the information that is necessary for cloning.
@@ -123,6 +139,7 @@ namespace Duality.Cloning
 			if (!this.type.IsArray && !this.plainOldData)
 			{
 				List<CloneField> fieldData = new List<CloneField>();
+				int podFieldCount = 0;
 				foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
 				{
 					CloneFieldFlags flags = CloneFieldFlags.None;
@@ -136,10 +153,34 @@ namespace Duality.Cloning
 
 					CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
 					bool isPlainOld = field.FieldType.IsPlainOldData();
+					bool allowShortcut = isPlainOld && (flags & ~CloneFieldFlags.DontSkip) == CloneFieldFlags.None;
 
-					fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld));
+					fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld, allowShortcut));
+					if (allowShortcut) ++podFieldCount;
 				}
 				this.fieldData = fieldData.ToArray();
+
+				if (podFieldCount > 1 && this.surrogate == null && !this.type.IsValueType)
+				{
+					List<Expression> mainBlock = new List<Expression>();
+					ParameterExpression sourceParameter = Expression.Parameter(typeof(object), "source");
+					ParameterExpression targetParameter = Expression.Parameter(typeof(object), "target");
+					ParameterExpression sourceCastVar = Expression.Variable(type, "sourceCast");
+					ParameterExpression targetCastVar = Expression.Variable(type, "targetCast");
+					mainBlock.Add(Expression.Assign(sourceCastVar, type.IsValueType ? Expression.Convert(sourceParameter, type) : Expression.TypeAs(sourceParameter, type)));
+					mainBlock.Add(Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, type) : Expression.TypeAs(targetParameter, type)));
+					for (int i = 0; i < this.fieldData.Length; i++)
+					{
+						if (!this.fieldData[i].IsPlainOldData) continue;
+						if (!this.fieldData[i].AllowPlainOldDataShortcut) continue;
+
+						FieldInfo field = this.fieldData[i].Field;
+						Expression assignment = Expression.Assign(Expression.Field(targetCastVar, field), Expression.Field(sourceCastVar, field));
+						mainBlock.Add(assignment);
+					}
+					Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
+					this.assignPodFunc = Expression.Lambda<AssignPodFunc>(mainBlockExpression, sourceParameter, targetParameter).Compile();
+				}
 			}
 			else
 			{

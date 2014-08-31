@@ -128,9 +128,7 @@ namespace Duality.Cloning
 		/// <returns>True, if the object is now handled for the first time, false if it has already been handled.</returns>
 		private bool HandleObject(object source)
 		{
-			if (this.handledObjects.Contains(source)) return false;
-			this.handledObjects.Add(source);
-			return true;
+			return this.handledObjects.Add(source);
 		}
 
 		private void PrepareCloneGraph()
@@ -335,10 +333,20 @@ namespace Duality.Cloning
 			// Objects will need to be traversed field by field
 			else
 			{
+				// When available, take the shortcut for assigning all POD fields
+				bool shortcutActive = false;
+				if (sourceType.AssignPlainOldDataFunc != null)
+				{
+					shortcutActive = true;
+					sourceType.AssignPlainOldDataFunc(source, target);
+				}
 				for (int i = 0; i < sourceType.FieldData.Length; i++)
 				{
 					// Skip certain fields when requested
 					if ((sourceType.FieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
+						continue;
+					// Skip fields that were assigned using the above shortcut method
+					if (shortcutActive && sourceType.FieldData[i].AllowPlainOldDataShortcut)
 						continue;
 
 					// Actually copy the current field
