@@ -151,8 +151,8 @@ namespace Duality.Cloning
 			// Perform late setup for surrogate objects that required it
 			foreach (object lateSetupSource in this.lateSetupObjects)
 			{
-				Type sourceType = lateSetupSource.GetType();
-				ICloneSurrogate surrogate = GetSurrogateFor(sourceType);
+				CloneType sourceType = GetCloneType(lateSetupSource.GetType());
+				ICloneSurrogate surrogate = GetSurrogateFor(sourceType.Type);
 
 				object lateSetupTarget;
 				surrogate.LateSetup(lateSetupSource, out lateSetupTarget, this);
@@ -165,8 +165,8 @@ namespace Duality.Cloning
 			if (object.ReferenceEquals(source, null)) return;
 			
 			// Determine the object Type and early-out if it's just plain old data
-			Type sourceType = source.GetType();
-			if (this.CanCloneByAssignment(sourceType)) return;
+			CloneType sourceType = GetCloneType(source.GetType());
+			if (sourceType.IsPlainOldData) return;
 
 			// Has a target object already been registered for this source? If this is the case, stop.
 			object target;
@@ -178,7 +178,7 @@ namespace Duality.Cloning
 			CloneBehaviorAttribute behavior = null;
 			if (!object.ReferenceEquals(source, this.sourceRoot))
 			{
-				behavior = this.GetCloneBehavior(sourceType, true);
+				behavior = this.GetCloneBehavior(sourceType.Type, true);
 				if (behavior.Behavior != CloneBehavior.ChildObject)
 				{
 					if (behavior.Behavior == CloneBehavior.WeakReference)
@@ -191,7 +191,7 @@ namespace Duality.Cloning
 			}
 
 			// Check whether there is a surrogare for this object
-			ICloneSurrogate surrogate = GetSurrogateFor(sourceType);
+			ICloneSurrogate surrogate = GetSurrogateFor(sourceType.Type);
 			if (surrogate != null)
 			{
 				bool requireLateSetup;
@@ -206,15 +206,15 @@ namespace Duality.Cloning
 			{
 				// Create target objects
 				Type sourceElementType = null;
-				if (sourceType.IsArray)
+				if (sourceType.Type.IsArray)
 				{
 					Array sourceArray = source as Array;
-					sourceElementType = sourceType.GetElementType();
+					sourceElementType = sourceType.Type.GetElementType();
 					target = Array.CreateInstance(sourceElementType, sourceArray.Length);
 				}
 				else
 				{
-					target = sourceType.CreateInstanceOf();
+					target = sourceType.Type.CreateInstanceOf();
 				}
 				this.SetTargetOf(source, target);
 
@@ -233,14 +233,14 @@ namespace Duality.Cloning
 
 			this.UnlockCloneBehavior(behavior);
 		}
-		private void PrepareChildCloneGraph(object source, Type sourceType)
+		private void PrepareChildCloneGraph(object source, CloneType sourceType)
 		{
 			// If it's an array, we'll need to traverse its elements
-			if (sourceType.IsArray)
+			if (sourceType.Type.IsArray)
 			{
-				Type sourceElementType = sourceType.GetElementType();
+				Type sourceElementType = sourceType.Type.GetElementType();
 				Array sourceArray = source as Array;
-				if (!this.CanCloneByAssignment(sourceElementType))
+				if (!sourceElementType.IsPlainOldData())
 				{
 					for (int i = 0; i < sourceArray.Length; i++)
 					{
@@ -251,17 +251,18 @@ namespace Duality.Cloning
 			// If it's an object, we'll need to traverse its fields
 			else
 			{
-				IEnumerable<FieldInfo> fields = sourceType.GetAllFields(ReflectionHelper.BindInstanceAll);
-				foreach (FieldInfo field in fields)
+				for (int i = 0; i < sourceType.FieldData.Length; i++)
 				{
+					FieldInfo field = sourceType.FieldData[i].Field;
+					CloneBehaviorAttribute behavior = sourceType.FieldData[i].Behavior;
+
 					// See if there are specific instructions on how to handle this
-					CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
-					if (behaviorAttrib != null) this.PushCloneBehavior(behaviorAttrib);
+					if (behavior != null) this.PushCloneBehavior(behavior);
 					{
 						// Handle the fields value
 						this.PrepareCloneGraph(field.GetValue(source));
 					}
-					if (behaviorAttrib != null) this.PopCloneBehavior();
+					if (behavior != null) this.PopCloneBehavior();
 				}
 			}
 		}
@@ -274,11 +275,11 @@ namespace Duality.Cloning
 
 			// Determine the object Type in order to decide what's next
 			this.currentObject = source;
-			Type sourceType = source.GetType();
-			if (!sourceType.IsValueType && !this.HandleObject(source)) return;
+			CloneType sourceType = GetCloneType(source.GetType());
+			if (!sourceType.Type.IsValueType && !this.HandleObject(source)) return;
 			
 			// Check whether there is a surrogare for this object
-			ICloneSurrogate surrogate = GetSurrogateFor(sourceType);
+			ICloneSurrogate surrogate = GetSurrogateFor(sourceType.Type);
 			if (surrogate != null)
 			{
 				surrogate.CopyDataTo(source, target, this);
@@ -295,21 +296,21 @@ namespace Duality.Cloning
 				this.PerformCopyChildObject(source, target, sourceType);
 			}
 		}
-		private void PerformCopyChildObject(object source, object target, Type sourceType)
+		private void PerformCopyChildObject(object source, object target, CloneType sourceType)
 		{
 			// Plain old (struct) data can be deep-copied by assignment. Nothing to do here.
-			if (this.CanCloneByAssignment(sourceType))
+			if (sourceType.IsPlainOldData)
 			{
 				return;
 			}
 			// Arrays will need to be traversed, unless consisting of plain old data
-			else if (sourceType.IsArray)
+			else if (sourceType.Type.IsArray)
 			{
 				Array sourceArray = source as Array;
 				Array targetArray = target as Array;
-				Type sourceElementType = sourceType.GetElementType();
+				Type sourceElementType = sourceType.Type.GetElementType();
 
-				if (!this.CanCloneByAssignment(sourceElementType))
+				if (!sourceElementType.IsPlainOldData())
 				{
 					for (int i = 0; i < sourceArray.Length; ++i)
 					{
@@ -330,22 +331,12 @@ namespace Duality.Cloning
 			// Objects will need to be traversed field by field
 			else
 			{
-				IEnumerable<FieldInfo> fields = sourceType.GetAllFields(ReflectionHelper.BindInstanceAll);
-				foreach (FieldInfo field in fields)
+				for (int i = 0; i < sourceType.FieldData.Length; i++)
 				{
+					FieldInfo field = sourceType.FieldData[i].Field;
+
 					// Skip certain fields when requested
-					CloneFieldAttribute fieldAttrib = field.GetCustomAttributes<CloneFieldAttribute>().FirstOrDefault();
-					bool dontSkip = false;
-					if (fieldAttrib != null)
-					{
-						if ((fieldAttrib.Flags & CloneFieldFlags.DontSkip) != CloneFieldFlags.None)
-							dontSkip = true;
-						if ((fieldAttrib.Flags & CloneFieldFlags.Skip) != CloneFieldFlags.None)
-							continue;
-						if ((fieldAttrib.Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
-							continue;
-					}
-					if (field.IsNotSerialized && !dontSkip)
+					if ((sourceType.FieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
 						continue;
 
 					// Actually copy the current field
@@ -410,11 +401,6 @@ namespace Duality.Cloning
 				}
 			}
 		}
-
-		private bool CanCloneByAssignment(Type type)
-		{
-			return type.IsPlainOldData();
-		}
 		
 		bool ICloneTargetSetup.AddTarget<T>(T source, T target)
 		{
@@ -429,7 +415,7 @@ namespace Duality.Cloning
 		{
 			if (object.ReferenceEquals(source, null)) return;
 			if (source == this.currentObject)
-				this.PrepareChildCloneGraph(source, source.GetType());
+				this.PrepareChildCloneGraph(source, GetCloneType(source.GetType()));
 			else
 				this.PrepareCloneGraph(source);
 		}
@@ -452,7 +438,7 @@ namespace Duality.Cloning
 		{
 			if (object.ReferenceEquals(source, null)) return;
 			if (source == this.currentObject)
-				this.PerformCopyChildObject(source, target, source.GetType());
+				this.PerformCopyChildObject(source, target, GetCloneType(source.GetType()));
 			else
 				this.PerformCopyObject(source, target);
 		}
@@ -462,9 +448,26 @@ namespace Duality.Cloning
 		}
 
 
-		private	static List<ICloneSurrogate> surrogates = null;
-		private static CloneBehaviorAttribute[] globalCloneBehavior = null;
+		private	static List<ICloneSurrogate>		surrogates			= null;
+		private	static	Dictionary<Type,CloneType>	cloneTypeCache		= new Dictionary<Type,CloneType>();
+		private static CloneBehaviorAttribute[]		globalCloneBehavior = null;
+		
+		/// <summary>
+		/// Returns the <see cref="CloneType"/> of a Type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		protected static CloneType GetCloneType(Type type)
+		{
+			if (type == null) return null;
 
+			CloneType result;
+			if (cloneTypeCache.TryGetValue(type, out result)) return result;
+
+			result = new CloneType(type);
+			cloneTypeCache[type] = result;
+			return result;
+		}
 		private static ICloneSurrogate GetSurrogateFor(Type type)
 		{
 			if (surrogates == null)

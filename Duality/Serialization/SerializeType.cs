@@ -6,8 +6,7 @@ namespace Duality.Serialization
 {
 	/// <summary>
 	/// The SerializeType class is essentially caching serialization-relevant information
-	/// that has been generated basing on a <see cref="System.Type"/>. It is cached in the
-	/// <see cref="ReflectionHelper"/> to avoid redundant information gathering.
+	/// that has been generated basing on a <see cref="System.Type"/>.
 	/// </summary>
 	public sealed class SerializeType
 	{

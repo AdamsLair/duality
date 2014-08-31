@@ -79,6 +79,7 @@
     <Compile Include="Cloning\CloneFieldFlags.cs" />
     <Compile Include="Cloning\CloneFieldAttribute.cs" />
     <Compile Include="Cloning\ICloneTargetSetup.cs" />
+    <Compile Include="Cloning\CloneType.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\Grid.cs" />
