@@ -11,11 +11,13 @@ namespace Duality.Cloning
 	/// </summary>
 	public sealed class CloneType
 	{
+
 		public struct CloneField
 		{
 			private FieldInfo field;
 			private CloneFieldFlags flags;
 			private	CloneBehaviorAttribute behavior;
+			private bool isPlainOldData;
 
 			public FieldInfo Field
 			{
@@ -29,16 +31,22 @@ namespace Duality.Cloning
 			{
 				get { return this.behavior; }
 			}
+			public bool IsPlainOldData
+			{
+				get { return this.isPlainOldData; }
+			}
 
-			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior)
+			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld)
 			{
 				this.field = field;
 				this.flags = flags;
 				this.behavior = behavior;
+				this.isPlainOldData = isPlainOld;
 			}
 		}
 
 		private	Type			type;
+		private	CloneType		elementType;
 		private	CloneField[]	fieldData;
 		private	bool			plainOldData;
 
@@ -63,14 +71,35 @@ namespace Duality.Cloning
 		{
 			get { return this.plainOldData; }
 		}
+		/// <summary>
+		/// [GET] Returns whether the encapsulated Type is an array.
+		/// </summary>
+		public bool IsArray
+		{
+			get { return this.type.IsArray; }
+		}
+		/// <summary>
+		/// [GET] Returns the elements <see cref="CloneType"/>, if this one is an array.
+		/// </summary>
+		public CloneType ElementType
+		{
+			get { return this.elementType; }
+		}
+		/// <summary>
+		/// [GET] Returns whether the cached Type could be derived by others.
+		/// </summary>
+		public bool CouldBeDerived
+		{
+			get { return !this.type.IsValueType && !this.type.IsSealed; }
+		}
 
 		/// <summary>
 		/// Creates a new CloneType based on a <see cref="System.Type"/>, gathering all the information that is necessary for cloning.
 		/// </summary>
-		/// <param name="t"></param>
-		public CloneType(Type t)
+		/// <param name="type"></param>
+		public CloneType(Type type)
 		{
-			this.type = t;
+			this.type = type;
 
 			List<CloneField> fieldData = new List<CloneField>();
 			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
@@ -85,11 +114,14 @@ namespace Duality.Cloning
 					continue;
 
 				CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+				bool isPlainOld = field.FieldType.IsPlainOldData();
 
-				fieldData.Add(new CloneField(field, flags, behaviorAttrib));
+				fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld));
 			}
 			this.fieldData = fieldData.ToArray();
 			this.plainOldData = this.type.IsPlainOldData();
+
+			if (this.type.IsArray) this.elementType = CloneProvider.GetCloneType(this.type.GetElementType());
 		}
 	}
 }

@@ -26,6 +26,7 @@ namespace Duality.Cloning
 
 		private	object						sourceRoot			= null;
 		private	object						currentObject		= null;
+		private	CloneType					currentCloneType	= null;
 		private	Dictionary<object,object>	objTargets			= new Dictionary<object,object>();
 		private	HashSet<object>				lateSetupObjects	= new HashSet<object>();
 		private	HashSet<object>				handledObjects		= new HashSet<object>();
@@ -53,7 +54,7 @@ namespace Duality.Cloning
 			try
 			{
 				target = this.BeginCloneOperation(source);
-				this.PerformCopyObject(source, target);
+				this.PerformCopyObject(source, target, null);
 			}
 			finally
 			{
@@ -66,7 +67,7 @@ namespace Duality.Cloning
 			try
 			{
 				this.BeginCloneOperation(source, target);
-				this.PerformCopyObject(source, target);
+				this.PerformCopyObject(source, target, null);
 			}
 			finally
 			{
@@ -89,6 +90,7 @@ namespace Duality.Cloning
 		{
 			this.sourceRoot = null;
 			this.currentObject = null;
+			this.currentCloneType = null;
 			this.objTargets.Clear();
 			this.localBehavior.Clear();
 			this.lateSetupObjects.Clear();
@@ -135,7 +137,7 @@ namespace Duality.Cloning
 		private void PrepareCloneGraph()
 		{
 			// Visit the object graph in order to determine which objects to clone
-			this.PrepareCloneGraph(this.sourceRoot);
+			this.PrepareCloneGraph(this.sourceRoot, null);
 			this.localBehavior.Clear();
 
 			// Determine which weak references to keep
@@ -159,20 +161,22 @@ namespace Duality.Cloning
 				this.SetTargetOf(lateSetupSource, lateSetupTarget);
 			}
 		}
-		private void PrepareCloneGraph(object source)
+		private void PrepareCloneGraph(object source, CloneType sourceType)
 		{
 			// Early-out for null values
 			if (object.ReferenceEquals(source, null)) return;
 			
 			// Determine the object Type and early-out if it's just plain old data
-			CloneType sourceType = GetCloneType(source.GetType());
+			if (sourceType == null) sourceType = GetCloneType(source.GetType());
 			if (sourceType.IsPlainOldData) return;
 
 			// Has a target object already been registered for this source? If this is the case, stop.
 			object target;
 			if (this.objTargets.TryGetValue(source, out target))
 				return;
+
 			this.currentObject = source;
+			this.currentCloneType = sourceType;
 
 			// Fetch the currently active clone behavior and react accordingly
 			CloneBehaviorAttribute behavior = null;
@@ -204,13 +208,15 @@ namespace Duality.Cloning
 			// Otherwise, use the default algorithm
 			else
 			{
+				ICloneExplicit customSource = source as ICloneExplicit;
+
 				// Create target objects
-				Type sourceElementType = null;
-				if (sourceType.Type.IsArray)
+				CloneType sourceElementType = null;
+				if (sourceType.IsArray)
 				{
 					Array sourceArray = source as Array;
-					sourceElementType = sourceType.Type.GetElementType();
-					target = Array.CreateInstance(sourceElementType, sourceArray.Length);
+					sourceElementType = sourceType.ElementType;
+					target = Array.CreateInstance(sourceElementType.Type, sourceArray.Length);
 				}
 				else
 				{
@@ -219,9 +225,8 @@ namespace Duality.Cloning
 				this.SetTargetOf(source, target);
 
 				// If it implements custom cloning behavior, use that
-				if (source is ICloneExplicit)
+				if (customSource != null)
 				{
-					ICloneExplicit customSource = source as ICloneExplicit;
 					customSource.SetupCloneTargets(this);
 				}
 				// Otherwise, traverse its child objects using default behavior
@@ -236,15 +241,14 @@ namespace Duality.Cloning
 		private void PrepareChildCloneGraph(object source, CloneType sourceType)
 		{
 			// If it's an array, we'll need to traverse its elements
-			if (sourceType.Type.IsArray)
+			if (sourceType.IsArray)
 			{
-				Type sourceElementType = sourceType.Type.GetElementType();
 				Array sourceArray = source as Array;
-				if (!sourceElementType.IsPlainOldData())
+				if (!sourceType.ElementType.IsPlainOldData)
 				{
 					for (int i = 0; i < sourceArray.Length; i++)
 					{
-						this.PrepareCloneGraph(sourceArray.GetValue(i));
+						this.PrepareCloneGraph(sourceArray.GetValue(i), sourceType.ElementType.CouldBeDerived ? null : sourceType.ElementType);
 					}
 				}
 			}
@@ -253,30 +257,33 @@ namespace Duality.Cloning
 			{
 				for (int i = 0; i < sourceType.FieldData.Length; i++)
 				{
-					FieldInfo field = sourceType.FieldData[i].Field;
-					CloneBehaviorAttribute behavior = sourceType.FieldData[i].Behavior;
+					// Don't need to scan "plain old data" fields
+					if (sourceType.FieldData[i].IsPlainOldData) continue;
 
 					// See if there are specific instructions on how to handle this
+					CloneBehaviorAttribute behavior = sourceType.FieldData[i].Behavior;
 					if (behavior != null) this.PushCloneBehavior(behavior);
 					{
 						// Handle the fields value
-						this.PrepareCloneGraph(field.GetValue(source));
+						this.PrepareCloneGraph(sourceType.FieldData[i].Field.GetValue(source), null);
 					}
 					if (behavior != null) this.PopCloneBehavior();
 				}
 			}
 		}
 
-		private void PerformCopyObject(object source, object target)
+		private void PerformCopyObject(object source, object target, CloneType sourceType)
 		{
 			// Early-out for null and same-instance values
 			if (object.ReferenceEquals(source, null)) return;
 			if (object.ReferenceEquals(source, target)) return;
 
-			// Determine the object Type in order to decide what's next
-			this.currentObject = source;
-			CloneType sourceType = GetCloneType(source.GetType());
+			// If we already handled this object, back out to avoid loops.
+			if (sourceType == null) sourceType = GetCloneType(source.GetType());
 			if (!sourceType.Type.IsValueType && !this.HandleObject(source)) return;
+
+			this.currentObject = source;
+			this.currentCloneType = sourceType;
 			
 			// Check whether there is a surrogare for this object
 			ICloneSurrogate surrogate = GetSurrogateFor(sourceType.Type);
@@ -304,13 +311,13 @@ namespace Duality.Cloning
 				return;
 			}
 			// Arrays will need to be traversed, unless consisting of plain old data
-			else if (sourceType.Type.IsArray)
+			else if (sourceType.IsArray)
 			{
 				Array sourceArray = source as Array;
 				Array targetArray = target as Array;
-				Type sourceElementType = sourceType.Type.GetElementType();
+				CloneType sourceElementType = sourceType.ElementType;
 
-				if (!sourceElementType.IsPlainOldData())
+				if (!sourceElementType.IsPlainOldData)
 				{
 					for (int i = 0; i < sourceArray.Length; ++i)
 					{
@@ -318,7 +325,7 @@ namespace Duality.Cloning
 						object targetElement;
 						if (this.GetTargetOf(sourceElement, out targetElement))
 						{
-							this.PerformCopyObject(sourceElement, targetElement);
+							this.PerformCopyObject(sourceElement, targetElement, sourceElementType.CouldBeDerived ? null : sourceElementType);
 							targetArray.SetValue(targetElement, i);
 						}
 					}
@@ -333,25 +340,32 @@ namespace Duality.Cloning
 			{
 				for (int i = 0; i < sourceType.FieldData.Length; i++)
 				{
-					FieldInfo field = sourceType.FieldData[i].Field;
-
 					// Skip certain fields when requested
 					if ((sourceType.FieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
 						continue;
 
 					// Actually copy the current field
-					this.PerformCopyField(source, target, field);
+					this.PerformCopyField(source, target, sourceType.FieldData[i].Field, sourceType.FieldData[i].IsPlainOldData);
 				}
 			}
 		}
-		private void PerformCopyField(object source, object target, FieldInfo field)
+		private void PerformCopyField(object source, object target, FieldInfo field, bool isPlainOldData)
 		{
-			object sourceFieldValue = field.GetValue(source);
-			object targetFieldValue;
-			if (this.GetTargetOf(sourceFieldValue, out targetFieldValue))
+			// Perform the quick version for plain old data
+			if (isPlainOldData)
 			{
-				this.PerformCopyObject(sourceFieldValue, targetFieldValue);
-				field.SetValue(target, targetFieldValue);
+				field.SetValue(target, field.GetValue(source));
+			}
+			// Perform the "always-correct" version for all else
+			else
+			{
+				object sourceFieldValue = field.GetValue(source);
+				object targetFieldValue;
+				if (this.GetTargetOf(sourceFieldValue, out targetFieldValue))
+				{
+					this.PerformCopyObject(sourceFieldValue, targetFieldValue, null);
+					field.SetValue(target, targetFieldValue);
+				}
 			}
 		}
 
@@ -415,9 +429,9 @@ namespace Duality.Cloning
 		{
 			if (object.ReferenceEquals(source, null)) return;
 			if (source == this.currentObject)
-				this.PrepareChildCloneGraph(source, GetCloneType(source.GetType()));
+				this.PrepareChildCloneGraph(source, this.currentCloneType);
 			else
-				this.PrepareCloneGraph(source);
+				this.PrepareCloneGraph(source, null);
 		}
 
 		bool ICloneOperation.GetTarget<T>(T source, out T target)
@@ -438,26 +452,26 @@ namespace Duality.Cloning
 		{
 			if (object.ReferenceEquals(source, null)) return;
 			if (source == this.currentObject)
-				this.PerformCopyChildObject(source, target, GetCloneType(source.GetType()));
+				this.PerformCopyChildObject(source, target, this.currentCloneType);
 			else
-				this.PerformCopyObject(source, target);
+				this.PerformCopyObject(source, target, null);
 		}
 		void ICloneOperation.AutoHandleField(FieldInfo field, object source, object target)
 		{
-			this.PerformCopyField(source, target, field);
+			this.PerformCopyField(source, target, field, false);
 		}
 
 
 		private	static List<ICloneSurrogate>		surrogates			= null;
-		private	static	Dictionary<Type,CloneType>	cloneTypeCache		= new Dictionary<Type,CloneType>();
+		private	static Dictionary<Type,CloneType>	cloneTypeCache		= new Dictionary<Type,CloneType>();
 		private static CloneBehaviorAttribute[]		globalCloneBehavior = null;
-		
+
 		/// <summary>
 		/// Returns the <see cref="CloneType"/> of a Type.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		protected static CloneType GetCloneType(Type type)
+		protected internal static CloneType GetCloneType(Type type)
 		{
 			if (type == null) return null;
 
