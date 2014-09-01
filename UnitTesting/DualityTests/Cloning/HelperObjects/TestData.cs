@@ -24,18 +24,10 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public int IntField;
 		public float FloatField;
 
-		public TestData(bool random)
+		public TestData(Random rnd)
 		{
-			if (random)
-			{
-				this.IntField	= CloneProviderTest.SharedRandom.Next();
-				this.FloatField	= CloneProviderTest.SharedRandom.NextFloat();
-			}
-			else
-			{
-				this.IntField = 0;
-				this.FloatField = 0.0f;
-			}
+			this.IntField	= rnd.Next();
+			this.FloatField	= rnd.NextFloat();
 		}
 
 		public override bool Equals(object obj)

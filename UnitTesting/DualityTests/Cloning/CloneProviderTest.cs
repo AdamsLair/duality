@@ -21,12 +21,10 @@ namespace Duality.Tests.Cloning
 	[TestFixture]
 	public class CloneProviderTest
 	{
-		public static readonly Random SharedRandom = new Random();
-
 		[Test] public void ClonePlainOldData()
 		{
-			TestData data = new TestData(true);
-
+			Random rnd = new Random();
+			TestData data = new TestData(rnd);
 			TestData dataResult = data.DeepClone();
 
 			Assert.IsTrue(data.Equals(dataResult));
@@ -34,111 +32,28 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void CloneComplexObject()
 		{
-			TestObject data = new TestObject(5);
+			Random rnd = new Random();
+			TestObject data = new TestObject(rnd, 5);
 			TestObject dataResult = data.DeepClone();
 
 			Assert.IsTrue(data.Equals(dataResult));
 			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
-		[Test] public void CloneContentRef()
+		[Test] public void CopyToTarget()
 		{
-			TestResource resource = new TestResource { TestProperty = "TestString" };
-			ContentRef<TestResource> reference = new ContentRef<TestResource>(resource, "SomeTestPath");
+			Random rnd = new Random();
+			TestObject data = new TestObject(rnd, 5);
+			TestObject dataResult = new TestObject();
+			data.DeepCopyTo(dataResult);
 
-			// Expect the Resource to be cloned
-			TestResource resourceClone = resource.DeepClone();
-			Assert.AreNotSame(resource, resourceClone);
-			Assert.AreEqual(resource.TestProperty, resourceClone.TestProperty);
-
-			// Expect only the reference to be cloned
-			ContentRef<TestResource> referenceClone = reference.DeepClone();
-			Assert.AreEqual(reference.Path, referenceClone.Path);
-			Assert.AreEqual(reference.ResWeak, referenceClone.ResWeak);
-		}
-		[Test] public void CloneResource()
-		{
-			TestResource source = new TestResource();
-			TestResource target = source.DeepClone();
-
-			Assert.AreEqual(source, target);
-			Assert.AreNotSame(source, target);
-			Assert.AreNotSame(source.TestReferenceList, target.TestReferenceList);
-		}
-		[Test] public void CloneComponent()
-		{
-			TestComponent source = new TestComponent();
-			TestComponent target = source.DeepClone();
-
-			Assert.AreEqual(source, target);
-			Assert.AreNotSame(source, target);
-			Assert.AreNotSame(source.TestReferenceList, target.TestReferenceList);
-		}
-		[Test] public void CloneGameObject()
-		{
-			GameObject source = new GameObject("ObjectA");
-			source.AddComponent<TestComponent>();
-			GameObject target = source.DeepClone();
-			
-			Assert.AreNotSame(source, target);
-			Assert.AreEqual(source.Name, target.Name);
-			Assert.AreEqual(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
-			Assert.AreNotSame(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
-			Assert.AreNotSame(source.GetComponent<TestComponent>().TestReferenceList, target.GetComponent<TestComponent>().TestReferenceList);
-		}
-		[Test] public void CloneScene()
-		{
-			Scene source = new Scene();
-			{
-				// Create a basic object hierarchy
-				GameObject objA = new GameObject("ObjectA");
-				GameObject objB = new GameObject("ObjectB");
-				GameObject objC = new GameObject("ObjectC", objA);
-
-				// Create some Components containing data
-				objA.AddComponent<TestComponent>();
-				objB.AddComponent<TestComponent>();
-				objC.AddComponent<TestComponent>();
-
-				// Introduce some cross-object references
-				objA.GetComponent<TestComponent>().GameObjectReference = objC;
-				objA.GetComponent<TestComponent>().ComponentReference = objB.GetComponent<TestComponent>();
-				objB.GetComponent<TestComponent>().GameObjectReference = objA;
-				objB.GetComponent<TestComponent>().ComponentReference = objC.GetComponent<TestComponent>();
-				objC.GetComponent<TestComponent>().GameObjectReference = objB;
-				objC.GetComponent<TestComponent>().ComponentReference = objA.GetComponent<TestComponent>();
-
-				// Add it all to the Scene
-				source.AddObject(objA);
-				source.AddObject(objB);
-				source.AddObject(objC);
-			}
-			Scene target = source.DeepClone();
-
-			Assert.AreNotSame(source, target);
-			Assert.AreEqual(source.AllObjects.Count(), target.AllObjects.Count());
-			foreach (GameObject sourceObj in source.AllObjects)
-			{
-				GameObject targetObj = target.FindGameObject(sourceObj.FullName);
-
-				Assert.AreNotSame(sourceObj, targetObj);
-				Assert.AreEqual(sourceObj.FullName, targetObj.FullName);
-
-				// See if the data Components are cloned and intact
-				Assert.AreEqual(sourceObj.GetComponent<TestComponent>(), targetObj.GetComponent<TestComponent>());
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>(), targetObj.GetComponent<TestComponent>());
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().TestReferenceList, targetObj.GetComponent<TestComponent>().TestReferenceList);
-
-				// Check cross-object references
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().GameObjectReference, targetObj.GetComponent<TestComponent>().GameObjectReference);
-				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().GameObjectReference.FullName, targetObj.GetComponent<TestComponent>().GameObjectReference.FullName);
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().ComponentReference, targetObj.GetComponent<TestComponent>().ComponentReference);
-				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName, targetObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName);
-			}
+			Assert.IsTrue(data.Equals(dataResult));
+			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
 		[Test] public void IdentityPreservation()
 		{
+			Random rnd = new Random();
 			{
-				IdentityTestObjectA data = new IdentityTestObjectA();
+				IdentityTestObjectA data = new IdentityTestObjectA(rnd);
 				IdentityTestObjectA dataResult = data.DeepClone();
 				IdentityTestObjectA dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
 
@@ -148,7 +63,7 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(data.Identity, dataResultNoIdentity.Identity);
 			}
 			{
-				IdentityTestObjectB data = new IdentityTestObjectB();
+				IdentityTestObjectB data = new IdentityTestObjectB(rnd);
 				IdentityTestObjectB dataResult = data.DeepClone();
 				IdentityTestObjectB dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
 
@@ -158,7 +73,7 @@ namespace Duality.Tests.Cloning
 				Assert.AreSame(data.Identity, dataResultNoIdentity.Identity);
 			}
 			{
-				IdentityTestObjectC data = new IdentityTestObjectC();
+				IdentityTestObjectC data = new IdentityTestObjectC(rnd);
 				IdentityTestObjectC dataResult = data.DeepClone();
 				IdentityTestObjectC dataResultNoIdentity = data.DeepClone(new CloneProviderContext(false));
 
@@ -170,7 +85,8 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void SkippedObjects()
 		{
-			SkipFieldTestObject data = new SkipFieldTestObject();
+			Random rnd = new Random();
+			SkipFieldTestObject data = new SkipFieldTestObject(rnd);
 			SkipFieldTestObject dataResult = data.DeepClone();
 
 			Assert.AreEqual(data.StringField, dataResult.StringField);
@@ -181,8 +97,8 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void OwnershipBehavior()
 		{
-			OwnershipTestObject data = new OwnershipTestObject();
-
+			Random rnd = new Random();
+			OwnershipTestObject data = new OwnershipTestObject(rnd);
 			OwnershipTestObject dataResult = data.DeepClone();
 
 			Assert.IsTrue(data.Equals(dataResult));
@@ -303,15 +219,16 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void ExplicitCloning()
 		{
+			Random rnd = new Random();
 			{
-				ExplicitCloneTestObjectA data = new ExplicitCloneTestObjectA(5);
+				ExplicitCloneTestObjectA data = new ExplicitCloneTestObjectA(rnd, 5);
 				ExplicitCloneTestObjectA dataResult = data.DeepClone();
 				
 				Assert.IsTrue(data.Equals(dataResult));
 				Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 			}
 			{
-				ExplicitCloneTestObjectB data = new ExplicitCloneTestObjectB(5);
+				ExplicitCloneTestObjectB data = new ExplicitCloneTestObjectB(rnd, 5);
 				ExplicitCloneTestObjectB dataResult = data.DeepClone();
 				
 				Assert.IsTrue(data.Equals(dataResult));
@@ -320,7 +237,7 @@ namespace Duality.Tests.Cloning
 				Assert.IsTrue(dataResult.SpecialSetupDone);
 			}
 			{
-				ExplicitCloneTestObjectC data = new ExplicitCloneTestObjectC(5);
+				ExplicitCloneTestObjectC data = new ExplicitCloneTestObjectC(rnd, 5);
 				ExplicitCloneTestObjectC dataResult = data.DeepClone();
 				
 				Assert.IsFalse(data.Equals(dataResult));
@@ -331,7 +248,8 @@ namespace Duality.Tests.Cloning
 		{
 			var watch = new System.Diagnostics.Stopwatch();
 
-			TestObject data = new TestObject(5);
+			Random rnd = new Random(0);
+			TestObject data = new TestObject(rnd, 5);
 			TestObject[] results = new TestObject[200];
 
 			watch.Start();

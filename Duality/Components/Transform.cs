@@ -669,7 +669,19 @@ namespace Duality.Components
 			if (context == InitContext.AddToGameObject ||
 				context == InitContext.Loaded)
 			{
-				this.InitializeParentState();
+				this.parentTransform = null;
+				if (this.gameobj != null)
+				{
+					this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
+					if (this.gameobj.Parent != null)
+					{
+						this.parentTransform = this.gameobj.Parent.Transform;
+						if (this.parentTransform == null)
+							this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
+						else
+							this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
+					}
+				}
 				this.UpdateRel();
 			}
 		}
@@ -677,40 +689,20 @@ namespace Duality.Components
 		{
 			if (context == ShutdownContext.RemovingFromGameObject)
 			{
-				this.ShutdownParentState();
+				if (this.gameobj != null)
+				{
+					this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
+					if (this.gameobj.Parent != null)
+					{
+						if (this.parentTransform == null)
+							this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
+						else
+							this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
+					}
+				}
+				this.parentTransform = null;
 				this.UpdateRel();
 			}
-		}
-		private void InitializeParentState()
-		{
-			this.parentTransform = null;
-			if (this.gameobj != null)
-			{
-				this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
-				if (this.gameobj.Parent != null)
-				{
-					this.parentTransform = this.gameobj.Parent.Transform;
-					if (this.parentTransform == null)
-						this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
-					else
-						this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
-				}
-			}
-		}
-		private void ShutdownParentState()
-		{
-			if (this.gameobj != null)
-			{
-				this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
-				if (this.gameobj.Parent != null)
-				{
-					if (this.parentTransform == null)
-						this.gameobj.Parent.EventComponentAdded -= this.Parent_EventComponentAdded;
-					else
-						this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
-				}
-			}
-			this.parentTransform = null;
 		}
 		private void gameobj_EventParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
@@ -902,17 +894,29 @@ namespace Duality.Components
 			this.CheckValidTransform();
 		}
 
-		protected override void OnCopyDataTo(object target, ICloneOperation operation)
+		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
 		{
-			base.OnCopyDataTo(target, operation);
-			Transform targetTransform = target as Transform;
+			base.OnCopyDataTo(targetObj, operation);
+			Transform target = targetObj as Transform;
 
 			// Make sure our target connects to parent events, etc. as it would normally
 			// do when being added to its GameObject for the first time.
-			targetTransform.InitializeParentState();
+			if (target.gameobj != null)
+			{
+				target.gameobj.EventParentChanged += target.gameobj_EventParentChanged;
+				GameObject targetParent;
+				operation.GetTarget(this.gameobj.Parent, out targetParent);
+				if (targetParent != null)
+				{
+					if (target.parentTransform == null)
+						targetParent.EventComponentAdded += target.Parent_EventComponentAdded;
+					else
+						targetParent.EventComponentRemoving += target.Parent_EventComponentRemoving;
+				}
+			}
 
 			// Update absolute transformation data, because the target is relative to a different parent.
-			targetTransform.UpdateAbs();
+			target.UpdateAbs();
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]

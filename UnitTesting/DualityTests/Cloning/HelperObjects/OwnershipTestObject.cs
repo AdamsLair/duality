@@ -26,14 +26,14 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneBehavior(typeof(ReferencedObject), CloneBehavior.ChildObject)]
 		public Dictionary<string,ReferencedObject> ObjectStore;
 			
-		public OwnershipTestObject()
+		public OwnershipTestObject(Random rnd)
 		{
-			this.NestedObject = new ReferencedObject { TestProperty = CloneProviderTest.SharedRandom.Next().ToString() };
+			this.NestedObject = new ReferencedObject { TestProperty = rnd.Next().ToString() };
 			this.ObjectStore = new Dictionary<string,ReferencedObject>();
 
-			for (int i = CloneProviderTest.SharedRandom.Next(0, 3); i > 0; i--)
+			for (int i = rnd.Next(0, 3); i > 0; i--)
 			{
-				string name = CloneProviderTest.SharedRandom.Next().ToString();
+				string name = rnd.Next().ToString();
 				this.ObjectStore.Add(name, new ReferencedObject { TestProperty = name });
 			}
 		}

@@ -23,9 +23,9 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		public Guid Identity;
 			
-		public IdentityTestObjectA()
+		public IdentityTestObjectA(Random rnd)
 		{
-			this.StringField = CloneProviderTest.SharedRandom.Next().ToString();
+			this.StringField = rnd.Next().ToString();
 			this.Identity = Guid.NewGuid();
 		}
 	}
@@ -35,9 +35,9 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		public ReferencedObject Identity;
 			
-		public IdentityTestObjectB()
+		public IdentityTestObjectB(Random rnd)
 		{
-			this.StringField = CloneProviderTest.SharedRandom.Next().ToString();
+			this.StringField = rnd.Next().ToString();
 			this.Identity = new ReferencedObject();
 		}
 	}
@@ -47,10 +47,10 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		public int Identity;
 			
-		public IdentityTestObjectC()
+		public IdentityTestObjectC(Random rnd)
 		{
-			this.StringField = CloneProviderTest.SharedRandom.Next().ToString();
-			this.Identity = CloneProviderTest.SharedRandom.Next();
+			this.StringField = rnd.Next().ToString();
+			this.Identity = rnd.Next();
 		}
 	}
 }

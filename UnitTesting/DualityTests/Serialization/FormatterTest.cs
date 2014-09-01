@@ -158,7 +158,7 @@ namespace Duality.Tests.Serialization
 		{
 			var watch = new System.Diagnostics.Stopwatch();
 			
-			Random rnd = new Random();
+			Random rnd = new Random(0);
 			TestObject data = new TestObject(rnd, 5);
 			TestObject[] results = new TestObject[50];
 			

@@ -25,14 +25,14 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public ReferencedObject TestReference { get; set; }
 		public List<ReferencedObject> TestReferenceList { get; set; }
 		
-		public TestResource()
+		public TestResource(Random rnd)
 		{
-			this.TestProperty = "TestStringA" + CloneProviderTest.SharedRandom.NextByte();
-			this.TestReference = new ReferencedObject { TestProperty = "TestStringB" + CloneProviderTest.SharedRandom.NextByte() };
+			this.TestProperty = "TestStringA" + rnd.NextByte();
+			this.TestReference = new ReferencedObject { TestProperty = "TestStringB" + rnd.NextByte() };
 			this.TestReferenceList = new List<ReferencedObject>
 			{
-				new ReferencedObject { TestProperty = "TestStringC" + CloneProviderTest.SharedRandom.NextByte() },
-				new ReferencedObject { TestProperty = "TestStringD" + CloneProviderTest.SharedRandom.NextByte() }
+				new ReferencedObject { TestProperty = "TestStringC" + rnd.NextByte() },
+				new ReferencedObject { TestProperty = "TestStringD" + rnd.NextByte() }
 			};
 		}
 

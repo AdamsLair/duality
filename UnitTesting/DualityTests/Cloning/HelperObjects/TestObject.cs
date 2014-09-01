@@ -28,17 +28,17 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public Dictionary<string,TestObject> DictField;
 			
 		public TestObject() {}
-		public TestObject(int childCount)
+		public TestObject(Random rnd, int childCount)
 		{
-			this.StringField	= CloneProviderTest.SharedRandom.Next().ToString();
-			this.DataField		= new TestData(true);
-			this.ListField		= Enumerable.Range(CloneProviderTest.SharedRandom.Next(-1000, 1000), 50).ToList();
-			this.ListField2		= Enumerable.Range(CloneProviderTest.SharedRandom.Next(-1000, 1000), 50).Select(i => i.ToString()).ToList();
+			this.StringField	= rnd.Next().ToString();
+			this.DataField		= new TestData(rnd);
+			this.ListField		= Enumerable.Range(rnd.Next(-1000, 1000), 50).ToList();
+			this.ListField2		= Enumerable.Range(rnd.Next(-1000, 1000), 50).Select(i => i.ToString()).ToList();
 			this.DictField		= new Dictionary<string,TestObject>();
 
 			for (int i = childCount; i > 0; i--)
 			{
-				this.DictField.Add(CloneProviderTest.SharedRandom.Next().ToString(), new TestObject(childCount / 2));
+				this.DictField.Add(rnd.Next().ToString(), new TestObject(rnd, childCount / 2));
 			}
 		}
 
