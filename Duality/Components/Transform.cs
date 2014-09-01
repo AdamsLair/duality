@@ -669,6 +669,23 @@ namespace Duality.Components
 			if (context == InitContext.AddToGameObject ||
 				context == InitContext.Loaded)
 			{
+				this.InitializeParentState();
+				this.UpdateRel();
+			}
+		}
+		void ICmpInitializable.OnShutdown(ShutdownContext context)
+		{
+			if (context == ShutdownContext.RemovingFromGameObject)
+			{
+				this.ShutdownParentState();
+				this.UpdateRel();
+			}
+		}
+		private void InitializeParentState()
+		{
+			this.parentTransform = null;
+			if (this.gameobj != null)
+			{
 				this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
 				if (this.gameobj.Parent != null)
 				{
@@ -678,14 +695,11 @@ namespace Duality.Components
 					else
 						this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
 				}
-				else
-					this.parentTransform = null;
-				this.UpdateRel();
 			}
 		}
-		void ICmpInitializable.OnShutdown(ShutdownContext context)
+		private void ShutdownParentState()
 		{
-			if (context == ShutdownContext.RemovingFromGameObject)
+			if (this.gameobj != null)
 			{
 				this.gameobj.EventParentChanged -= this.gameobj_EventParentChanged;
 				if (this.gameobj.Parent != null)
@@ -695,10 +709,8 @@ namespace Duality.Components
 					else
 						this.gameobj.Parent.EventComponentRemoving -= this.Parent_EventComponentRemoving;
 				}
-
-				this.parentTransform = null;
-				this.UpdateRel();
 			}
+			this.parentTransform = null;
 		}
 		private void gameobj_EventParentChanged(object sender, GameObjectParentChangedEventArgs e)
 		{
@@ -893,13 +905,14 @@ namespace Duality.Components
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(target, operation);
-			Transform t = target as Transform;
+			Transform targetTransform = target as Transform;
 
-			// Update absolute transformation. 
-			// Need to update parent transform, because this may happen 
-			// during Prefab.Apply, which occurs before OnLoaded. 
-			t.parentTransform	= (t.gameobj != null && t.gameobj.Parent != null) ? t.gameobj.Parent.Transform : null;
-			t.UpdateAbs();
+			// Make sure our target connects to parent events, etc. as it would normally
+			// do when being added to its GameObject for the first time.
+			targetTransform.InitializeParentState();
+
+			// Update absolute transformation data, because the target is relative to a different parent.
+			targetTransform.UpdateAbs();
 		}
 
 		[System.Diagnostics.Conditional("DEBUG")]

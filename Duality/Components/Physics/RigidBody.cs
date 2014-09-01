@@ -885,9 +885,11 @@ namespace Duality.Components.Physics
 			if (this.bodyInitState != InitState.Disposed) return;
 			this.bodyInitState = InitState.Initializing;
 
+			// Register for tranformation changes to keep the RigidBody in sync.
 			this.GameObj.Transform.EventTransformChanged += this.OnTransformChanged;
+
+			// Initialize body and joints
 			this.InitBody();
-			// Initialize joints
 			if (this.joints != null)
 			{
 				foreach (JointInfo info in this.joints) info.UpdateJoint();
@@ -900,9 +902,14 @@ namespace Duality.Components.Physics
 			if (this.bodyInitState != InitState.Initialized) return;
 			this.bodyInitState = InitState.Disposing;
 			
+			// Clean up body and joints
 			this.CleanupJoints();
 			this.CleanupBody();
+
+			// Unregister for transformation change events.
 			this.GameObj.Transform.EventTransformChanged -= this.OnTransformChanged;
+
+			// Finally process all collision events we didn't get around to yet.
 			this.ProcessCollisionEvents();
 
 			this.bodyInitState = InitState.Disposed;
