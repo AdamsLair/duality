@@ -57,6 +57,7 @@ namespace Duality.Components
 		[NonSerialized] private	float		tempAngleVelAbs	= 0.0f;
 
 		[NonSerialized] 
+		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
 		public event EventHandler<TransformChangedEventArgs> EventTransformChanged
 		{
@@ -899,20 +900,11 @@ namespace Duality.Components
 			base.OnCopyDataTo(targetObj, operation);
 			Transform target = targetObj as Transform;
 
-			// Make sure our target connects to parent events, etc. as it would normally
-			// do when being added to its GameObject for the first time.
-			if (target.gameobj != null)
+			// Need to update parent transform, because this may happen 
+			// during Prefab.Apply, which occurs before the Scenes OnLoaded event.
+			if (this.gameobj != null && this.gameobj.Parent != null)
 			{
-				target.gameobj.EventParentChanged += target.gameobj_EventParentChanged;
-				GameObject targetParent;
-				operation.GetTarget(this.gameobj.Parent, out targetParent);
-				if (targetParent != null)
-				{
-					if (target.parentTransform == null)
-						targetParent.EventComponentAdded += target.Parent_EventComponentAdded;
-					else
-						targetParent.EventComponentRemoving += target.Parent_EventComponentRemoving;
-				}
+				operation.GetTarget(this.gameobj.Parent.Transform, out target.parentTransform);
 			}
 
 			// Update absolute transformation data, because the target is relative to a different parent.

@@ -5,6 +5,8 @@ using System.Linq;
 using Duality.Resources;
 using Duality.Cloning;
 using Duality.Editor;
+using Duality.Components;
+using Duality.Components.Physics;
 using Duality.Properties;
 using Duality.Serialization;
 
@@ -44,13 +46,16 @@ namespace Duality
 		private		InitState					initState	= InitState.Initialized;
 
 		// Built-in heavily used component lookup
-		private		Components.Transform		compTransform	= null;
+		private		Transform					compTransform	= null;
 		
 		[NonSerialized]
+		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
 		[NonSerialized]
+		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
 		[NonSerialized]
+		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
 
 
@@ -261,7 +266,7 @@ namespace Duality
 		/// [GET] The GameObject's <see cref="Duality.Components.Transform"/> Component, if existing.
 		/// </summary>
 		/// <seealso cref="Duality.Components.Transform"/>
-		public Components.Transform Transform
+		public Transform Transform
 		{
 			get { return this.compTransform; }
 		}
@@ -269,7 +274,7 @@ namespace Duality
 		/// [GET] The GameObject's <see cref="Duality.Components.Camera"/> Component, if existing.
 		/// </summary>
 		/// <seealso cref="Duality.Components.Camera"/>
-		public Components.Camera Camera
+		public Camera Camera
 		{
 			get { return this.GetComponent<Components.Camera>(); }
 		}
@@ -287,12 +292,12 @@ namespace Duality
 		/// </summary>
 		/// <remarks>Note that a GameObject may contain multiple Colliders in which case the return value of this property may be any of them.</remarks>
 		/// <seealso cref="Duality.Components.Physics.RigidBody"/>
-		public Components.Physics.RigidBody RigidBody
+		public RigidBody RigidBody
 		{
 			get { return this.GetComponent<Components.Physics.RigidBody>(); }
 		}
 
-		uint Serialization.IUniqueIdentifyable.PreferredId
+		uint IUniqueIdentifyable.PreferredId
 		{
 			get { unchecked { return (uint)this.identifier.GetHashCode(); } }
 		}

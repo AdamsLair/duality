@@ -885,7 +885,8 @@ namespace Duality.Components.Physics
 			if (this.bodyInitState != InitState.Disposed) return;
 			this.bodyInitState = InitState.Initializing;
 
-			// Register for tranformation changes to keep the RigidBody in sync.
+			// Register for tranformation changes to keep the RigidBody in sync. Make sure to register only once.
+			this.GameObj.Transform.EventTransformChanged -= this.OnTransformChanged;
 			this.GameObj.Transform.EventTransformChanged += this.OnTransformChanged;
 
 			// Initialize body and joints
@@ -1048,14 +1049,20 @@ namespace Duality.Components.Physics
 
 		private void OnTransformChanged(object sender, TransformChangedEventArgs e)
 		{
+			// Don't react to events triggered by this Component, or while no physics body is available
 			if (sender == this) return;
 			if (this.body == null) return;
-			Transform t = e.Component as Transform;
 
+			// Apply transform changes to the physics body
+			Transform t = e.Component as Transform;
 			if ((e.Changes & Transform.DirtyFlags.Pos) != Transform.DirtyFlags.None)
+			{
 				this.body.Position = PhysicsConvert.ToPhysicalUnit(t.Pos.Xy);
+			}
 			if ((e.Changes & Transform.DirtyFlags.Angle) != Transform.DirtyFlags.None)
+			{
 				this.body.Rotation = t.Angle;
+			}
 			if ((e.Changes & Transform.DirtyFlags.Scale) != Transform.DirtyFlags.None)
 			{
 				float scale = t.Scale;
@@ -1076,8 +1083,11 @@ namespace Duality.Components.Physics
 				}
 			}
 
+			// Make sure we're simulating this body, if something has changed
 			if (e.Changes != Transform.DirtyFlags.None)
+			{
 				this.body.Awake = true;
+			}
 		}
 		void ICmpInitializable.OnInit(InitContext context)
 		{
@@ -1099,6 +1109,7 @@ namespace Duality.Components.Physics
 			base.OnCopyDataTo(target, operation);
 			RigidBody targetBody = target as RigidBody;
 
+			// If we're cloning an initialized RigidBody, make sure to update the targets physics body.
 			bool wasInitialized = targetBody.bodyInitState == InitState.Initialized;
 			if (wasInitialized)
 			{
