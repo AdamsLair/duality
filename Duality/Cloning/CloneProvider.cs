@@ -134,7 +134,7 @@ namespace Duality.Cloning
 		private void PrepareCloneGraph()
 		{
 			// Visit the object graph in order to determine which objects to clone
-			this.PrepareCloneGraph(this.sourceRoot, null);
+			this.PrepareCloneGraph(this.sourceRoot, true, null);
 			this.localBehavior.Clear();
 
 			// Determine which weak references to keep
@@ -158,7 +158,7 @@ namespace Duality.Cloning
 				this.SetTargetOf(lateSetupSource, lateSetupTarget);
 			}
 		}
-		private void PrepareCloneGraph(object source, CloneType sourceType)
+		private void PrepareCloneGraph(object source, bool forceRoot, CloneType sourceType)
 		{
 			// Early-out for null values
 			if (object.ReferenceEquals(source, null)) return;
@@ -169,8 +169,15 @@ namespace Duality.Cloning
 
 			// Has a target object already been registered for this source? If this is the case, stop.
 			object target;
+			bool rootTargetSkip = false;
 			if (this.objTargets.TryGetValue(source, out target))
-				return;
+			{
+				// Because of CopyTo, where the target root is already specified, but all else is not, we'll need to handle this as a special case.
+				if (forceRoot)
+					rootTargetSkip = true;
+				else
+					return;
+			}
 
 			this.currentObject = source;
 			this.currentCloneType = sourceType;
@@ -191,11 +198,11 @@ namespace Duality.Cloning
 				}
 			}
 
-			// Check whether there is a surrogare for this object
+			// Check whether there is a surrogate for this object
 			if (sourceType.Surrogate != null)
 			{
 				bool requireLateSetup;
-				sourceType.Surrogate.SetupCloneTargets(source, out requireLateSetup, this);
+				sourceType.Surrogate.SetupCloneTargets(source, rootTargetSkip, out requireLateSetup, this);
 				if (requireLateSetup)
 				{
 					this.lateSetupObjects.Add(source);
@@ -204,20 +211,22 @@ namespace Duality.Cloning
 			// Otherwise, use the default algorithm
 			else
 			{
-
 				// Create target objects
-				CloneType sourceElementType = null;
-				if (sourceType.IsArray)
+				if (!rootTargetSkip)
 				{
-					Array sourceArray = source as Array;
-					sourceElementType = sourceType.ElementType;
-					target = Array.CreateInstance(sourceElementType.Type, sourceArray.Length);
+					CloneType sourceElementType = null;
+					if (sourceType.IsArray)
+					{
+						Array sourceArray = source as Array;
+						sourceElementType = sourceType.ElementType;
+						target = Array.CreateInstance(sourceElementType.Type, sourceArray.Length);
+					}
+					else
+					{
+						target = sourceType.Type.CreateInstanceOf();
+					}
+					this.SetTargetOf(source, target);
 				}
-				else
-				{
-					target = sourceType.Type.CreateInstanceOf();
-				}
-				this.SetTargetOf(source, target);
 
 				// If it implements custom cloning behavior, use that
 				ICloneExplicit customSource;
@@ -244,7 +253,7 @@ namespace Duality.Cloning
 				{
 					for (int i = 0; i < sourceArray.Length; i++)
 					{
-						this.PrepareCloneGraph(sourceArray.GetValue(i), sourceType.ElementType.CouldBeDerived ? null : sourceType.ElementType);
+						this.PrepareCloneGraph(sourceArray.GetValue(i), false, sourceType.ElementType.CouldBeDerived ? null : sourceType.ElementType);
 					}
 				}
 			}
@@ -261,7 +270,7 @@ namespace Duality.Cloning
 					if (behavior != null) this.PushCloneBehavior(behavior);
 					{
 						// Handle the fields value
-						this.PrepareCloneGraph(sourceType.FieldData[i].Field.GetValue(source), null);
+						this.PrepareCloneGraph(sourceType.FieldData[i].Field.GetValue(source), false, null);
 					}
 					if (behavior != null) this.PopCloneBehavior();
 				}
@@ -430,7 +439,7 @@ namespace Duality.Cloning
 			if (source == this.currentObject)
 				this.PrepareChildCloneGraph(source, this.currentCloneType);
 			else
-				this.PrepareCloneGraph(source, null);
+				this.PrepareCloneGraph(source, false, null);
 		}
 
 		bool ICloneOperation.GetTarget<T>(T source, out T target)

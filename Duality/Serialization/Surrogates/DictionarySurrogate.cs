@@ -9,7 +9,7 @@ namespace Duality.Serialization.Surrogates
 	/// <summary>
 	/// De/Serializes a <see cref="System.Collections.Generic.Dictionary{T,U}"/>.
 	/// </summary>
-	public class DictionarySurrogate : Surrogate<IDictionary>
+	public class DictionarySurrogate : SerializeSurrogate<IDictionary>
 	{
 		public override bool MatchesType(Type t)
 		{

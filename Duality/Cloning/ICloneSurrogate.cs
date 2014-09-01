@@ -5,7 +5,7 @@ namespace Duality.Cloning
 	/// <summary>
 	/// Clones an object instead of letting it clone itsself or using a Reflection-driven approach.
 	/// </summary>
-	/// <seealso cref="Duality.Cloning.Surrogate{T}"/>
+	/// <seealso cref="Duality.Cloning.CloneSurrogate{T}"/>
 	public interface ICloneSurrogate
 	{
 		/// <summary>
@@ -21,7 +21,7 @@ namespace Duality.Cloning
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
 		bool MatchesType(Type t);
 
-		void SetupCloneTargets(object source, out bool requireLateSetup, ICloneTargetSetup setup);
+		void SetupCloneTargets(object source, bool skipCreateRoot, out bool requireLateSetup, ICloneTargetSetup setup);
 		void LateSetup(object source, out object target, ICloneOperation operation);
 		void CopyDataTo(object source, object target, ICloneOperation operation);
 	}
@@ -33,7 +33,7 @@ namespace Duality.Cloning
 	/// <typeparam name="T">
 	/// The base <see cref="System.Type"/> of objects this surrogate can replace.
 	/// </typeparam>
-	public abstract class Surrogate<T> : ICloneSurrogate
+	public abstract class CloneSurrogate<T> : ICloneSurrogate
 	{
 		/// <summary>
 		/// [GET] If more than one registered ISurrogate is capable of cloning a given object type, the one
@@ -67,18 +67,25 @@ namespace Duality.Cloning
 		public abstract void SetupCloneTargets(T source, ICloneTargetSetup setup);
 		public abstract void CopyDataTo(T source, T target, ICloneOperation operation);
 		
-		void ICloneSurrogate.SetupCloneTargets(object source, out bool requireLateSetup, ICloneTargetSetup setup)
+		void ICloneSurrogate.SetupCloneTargets(object source, bool skipCreateRoot, out bool requireLateSetup, ICloneTargetSetup setup)
 		{
 			T target;
-			this.CreateTargetObject((T)source, out target, setup);
-			if (!typeof(T).IsValueType && target != null)
+			if (skipCreateRoot)
 			{
-				setup.AddTarget(source, (object)target);
 				requireLateSetup = false;
 			}
 			else
 			{
-				requireLateSetup = true;
+				this.CreateTargetObject((T)source, out target, setup);
+				if (!typeof(T).IsValueType && target != null)
+				{
+					setup.AddTarget(source, (object)target);
+					requireLateSetup = false;
+				}
+				else
+				{
+					requireLateSetup = true;
+				}
 			}
 			this.SetupCloneTargets((T)source, setup);
 		}

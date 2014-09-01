@@ -5,7 +5,7 @@ namespace Duality.Serialization
 	/// <summary>
 	/// De/Serializes an object instead of letting it de/serialize itsself or using a Reflection-driven approach.
 	/// </summary>
-	/// <seealso cref="Duality.Serialization.Surrogate{T}"/>
+	/// <seealso cref="Duality.Serialization.SerializeSurrogate{T}"/>
 	public interface ISerializeSurrogate
 	{
 		/// <summary>
@@ -52,7 +52,7 @@ namespace Duality.Serialization
 	/// <typeparam name="T">
 	/// The base <see cref="System.Type"/> of objects this surrogate can replace.
 	/// </typeparam>
-	public abstract class Surrogate<T> : ISerializeSurrogate, ISerializeExplicit
+	public abstract class SerializeSurrogate<T> : ISerializeSurrogate, ISerializeExplicit
 	{
 		private T realObj;
 		

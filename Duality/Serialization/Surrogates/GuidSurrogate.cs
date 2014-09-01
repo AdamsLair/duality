@@ -6,7 +6,7 @@ namespace Duality.Serialization.Surrogates
 	/// <summary>
 	/// De/Serializes a <see cref="System.Guid"/>.
 	/// </summary>
-	public class GuidSurrogate : Surrogate<Guid>
+	public class GuidSurrogate : SerializeSurrogate<Guid>
 	{
 		public override void WriteConstructorData(IDataWriter writer)
 		{
@@ -24,7 +24,7 @@ namespace Duality.Serialization.Surrogates
 	/// <summary>
 	/// De/Serializes an array of <see cref="System.Guid"/> objects.
 	/// </summary>
-	public class GuidArraySurrogate : Surrogate<Guid[]>
+	public class GuidArraySurrogate : SerializeSurrogate<Guid[]>
 	{
 		private static readonly int GuidByteLength = Guid.Empty.ToByteArray().Length;
 

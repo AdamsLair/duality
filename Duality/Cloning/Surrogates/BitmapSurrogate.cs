@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace Duality.Cloning.Surrogates
 {
-	public class BitmapSurrogate : Surrogate<Bitmap>
+	public class BitmapSurrogate : CloneSurrogate<Bitmap>
 	{
 		public override void CreateTargetObject(Bitmap source, out Bitmap target, ICloneTargetSetup setup)
 		{

@@ -6,7 +6,7 @@ namespace Duality.Serialization.Surrogates
 	/// <summary>
 	/// De/Serializes a <see cref="System.Drawing.Bitmap"/>.
 	/// </summary>
-	public class BitmapSurrogate : Surrogate<Bitmap>
+	public class BitmapSurrogate : SerializeSurrogate<Bitmap>
 	{
 		public override void WriteConstructorData(IDataWriter writer)
 		{

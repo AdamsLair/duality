@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Duality.Cloning.Surrogates
 {
-	public class DelegateSurrogate : Surrogate<Delegate>
+	public class DelegateSurrogate : CloneSurrogate<Delegate>
 	{
 		public override bool MatchesType(Type t)
 		{

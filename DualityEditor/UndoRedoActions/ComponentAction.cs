@@ -39,7 +39,9 @@ namespace Duality.Editor.UndoRedoActions
 		{
 			if (cmp.GameObj != parent)
 			{
-				// Suspecting bug here. Hooking Debugger...
+				// Suspecting bug here. Better hit a breakpoint...
+				if (System.Diagnostics.Debugger.IsAttached)
+					System.Diagnostics.Debugger.Break();
 			}
 		}
 	}

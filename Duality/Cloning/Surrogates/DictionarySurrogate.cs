@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Duality.Cloning.Surrogates
 {
-	public class DictionarySurrogate : Surrogate<IDictionary>
+	public class DictionarySurrogate : CloneSurrogate<IDictionary>
 	{
 		public override bool MatchesType(Type t)
 		{
