@@ -79,10 +79,6 @@ namespace Duality.Cloning
 		{
 			this.sourceRoot = source;
 			this.targetRoot = target;
-			if (target != null)
-			{
-				this.SetTargetOf(source, target);
-			}
 			this.PrepareCloneGraph();
 			this.GetTargetOf(source, out target);
 			this.targetRoot = target;

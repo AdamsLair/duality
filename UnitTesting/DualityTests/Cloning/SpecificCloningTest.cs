@@ -131,14 +131,62 @@ namespace Duality.Tests.Cloning
 
 			source.DeepCopyTo(target);
 			
-			Assert.AreNotSame(source, target);
-			Assert.AreEqual(source.Name, target.Name);
-			Assert.AreEqual(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
-			Assert.AreNotSame(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
-			Assert.AreNotSame(source.GetComponent<TestComponent>().TestReferenceList, target.GetComponent<TestComponent>().TestReferenceList);
-
 			// Make sure that the target Component has been updated, but not re-created.
 			Assert.AreSame(targetComponent, target.GetComponent<TestComponent>());
+		}
+		[Test] public void CopyToGameObjectAddComponentEvent()
+		{
+			Random rnd = new Random();
+			bool componentAddedEventReceived = false;
+			GameObject source = new GameObject("ObjectA");
+			source.AddComponent(new TestComponent(rnd));
+			GameObject target = new GameObject("ObjectB");
+			target.EventComponentAdded += delegate (object sender, ComponentEventArgs e)
+			{
+				componentAddedEventReceived = true;
+			};
+
+			source.DeepCopyTo(target);
+			
+			// Make sure that events are fired properly when adding completely new Components
+			Assert.IsTrue(componentAddedEventReceived);
+
+			componentAddedEventReceived = false;
+			source.DeepCopyTo(target);
+
+			// Don't fire the event when the Component was already there
+			Assert.IsFalse(componentAddedEventReceived);
+		}
+		[Test] public void CopyToGameObjectAddGameObjectEvent()
+		{
+			Random rnd = new Random();
+			bool gameObjectAddedEventReceived = false;
+
+			// Prepare a test Scene
+			Scene testScene = new Scene();
+			GameObject source = new GameObject("ObjectA");
+			GameObject sourceChild = new GameObject("Child", source);
+			testScene.AddObject(source);
+			GameObject target = new GameObject("ObjectB");
+			testScene.AddObject(target);
+			
+			// Listen to object added events
+			Scene.GameObjectAdded += delegate (object sender, GameObjectEventArgs e)
+			{
+				gameObjectAddedEventReceived = true;
+			};
+
+			// Copy source object to target object
+			source.DeepCopyTo(target);
+			
+			// Make sure that events are fired properly when adding completely new Components
+			Assert.IsTrue(gameObjectAddedEventReceived);
+
+			gameObjectAddedEventReceived = false;
+			source.DeepCopyTo(target);
+
+			// Don't fire the event when the Component was already there
+			Assert.IsFalse(gameObjectAddedEventReceived);
 		}
 		[Test] public void TransformHierarchyInitialized()
 		{
