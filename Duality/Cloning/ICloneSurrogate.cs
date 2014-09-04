@@ -21,7 +21,7 @@ namespace Duality.Cloning
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
 		bool MatchesType(Type t);
 
-		void SetupCloneTargets(object source, bool skipCreateRoot, out bool requireLateSetup, ICloneTargetSetup setup);
+		void SetupCloneTargets(object source, object target, out bool requireLateSetup, ICloneTargetSetup setup);
 		void LateSetup(object source, out object target, ICloneOperation operation);
 		void CopyDataTo(object source, object target, ICloneOperation operation);
 	}
@@ -64,30 +64,31 @@ namespace Duality.Cloning
 			Type objType = source.GetType();
 			target = (T)objType.CreateInstanceOf();
 		}
-		public abstract void SetupCloneTargets(T source, ICloneTargetSetup setup);
+		public abstract void SetupCloneTargets(T source, T target, ICloneTargetSetup setup);
 		public abstract void CopyDataTo(T source, T target, ICloneOperation operation);
 		
-		void ICloneSurrogate.SetupCloneTargets(object source, bool skipCreateRoot, out bool requireLateSetup, ICloneTargetSetup setup)
+		void ICloneSurrogate.SetupCloneTargets(object source, object target, out bool requireLateSetup, ICloneTargetSetup setup)
 		{
-			T target;
-			if (skipCreateRoot)
+			requireLateSetup = false;
+
+			T targetCast;
+			if (object.ReferenceEquals(target, null))
 			{
-				requireLateSetup = false;
-			}
-			else
-			{
-				this.CreateTargetObject((T)source, out target, setup);
-				if (!typeof(T).IsValueType && target != null)
+				this.CreateTargetObject((T)source, out targetCast, setup);
+				if (!typeof(T).IsValueType && targetCast != null)
 				{
-					setup.AddTarget(source, (object)target);
-					requireLateSetup = false;
+					setup.AddTarget(source, (object)targetCast);
 				}
 				else
 				{
 					requireLateSetup = true;
 				}
 			}
-			this.SetupCloneTargets((T)source, setup);
+			else
+			{
+				targetCast = (T)target;
+			}
+			this.SetupCloneTargets((T)source, targetCast, setup);
 		}
 		void ICloneSurrogate.LateSetup(object source, out object target, ICloneOperation operation)
 		{

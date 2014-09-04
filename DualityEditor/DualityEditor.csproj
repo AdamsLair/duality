@@ -70,9 +70,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AdamsLair.WinForms.1.0.2.0\lib\net40-Client\AdamsLair.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Aga.Controls, Version=1.7.0.2, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
+    <Reference Include="Aga.Controls, Version=1.7.1.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AdamsLair.TreeViewAdv.1.7.0.2\lib\net20\Aga.Controls.dll</HintPath>
+      <HintPath>..\packages\AdamsLair.TreeViewAdv.1.7.1.0\lib\net20\Aga.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>.\Ionic.Zip.dll</HintPath>

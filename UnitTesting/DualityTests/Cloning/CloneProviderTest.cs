@@ -49,6 +49,22 @@ namespace Duality.Tests.Cloning
 			Assert.IsTrue(data.Equals(dataResult));
 			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
+		[Test] public void CopyToTargetPreservation()
+		{
+			// Create two identical test objects, then change one field
+			TestObject source = new TestObject(new Random(0), 5);
+			TestObject target = new TestObject(new Random(0), 5);
+			TestObject targetFirstChild = target.DictField.First().Value;
+			source.StringField = "NewValue";
+
+			// Copy data from source to target
+			source.DeepCopyTo(target);
+
+			// Make sure the data is equal and old object instances have been preserved
+			Assert.IsTrue(source.Equals(target));
+			Assert.IsFalse(source.AnyReferenceEquals(target));
+			Assert.AreSame(targetFirstChild, target.DictField.First().Value);
+		}
 		[Test] public void IdentityPreservation()
 		{
 			Random rnd = new Random();

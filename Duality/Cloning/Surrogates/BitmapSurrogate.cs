@@ -12,7 +12,7 @@ namespace Duality.Cloning.Surrogates
 		{
 			target = new Bitmap(source.Width, source.Height);
 		}
-		public override void SetupCloneTargets(Bitmap source, ICloneTargetSetup setup) {}
+		public override void SetupCloneTargets(Bitmap source, Bitmap target, ICloneTargetSetup setup) {}
 		public override void CopyDataTo(Bitmap source, Bitmap target, ICloneOperation operation)
 		{
 			target.SetPixelDataIntArgb(source.GetPixelDataIntArgb());

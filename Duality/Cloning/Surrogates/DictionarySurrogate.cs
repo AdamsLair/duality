@@ -14,21 +14,37 @@ namespace Duality.Cloning.Surrogates
 			return typeof(IDictionary).IsAssignableFrom(t) && t.IsGenericType && t.GetGenericArguments().Length >= 2;
 		}
 
-		public override void SetupCloneTargets(IDictionary source, ICloneTargetSetup setup)
+		public override void SetupCloneTargets(IDictionary source, IDictionary target, ICloneTargetSetup setup)
 		{
 			Type dictType = source.GetType();
 			Type[] genArgs = dictType.GetGenericArguments();
 
-			// Handle all keys and values
+			// Handle all keys and values. Reuse existing objects wherever possible.
 			if (!genArgs[0].IsPlainOldData())
 			{
-				foreach (var key in source.Keys)
-					setup.AutoHandleObject(key);
+				if (source == target)
+				{
+					foreach (object key in source.Keys)
+						setup.AutoHandleObject(key, key);
+				}
+				else
+				{
+					foreach (var key in source.Keys)
+						setup.AutoHandleObject(key, null);
+				}
 			}
 			if (!genArgs[1].IsPlainOldData())
 			{
-				foreach (var val in source.Values)
-					setup.AutoHandleObject(val);
+				if (source == target)
+				{
+					foreach (object val in source.Values)
+						setup.AutoHandleObject(val, val);
+				}
+				else
+				{
+					foreach (DictionaryEntry entry in source)
+						setup.AutoHandleObject(entry.Value, target[entry.Key]);
+				}
 			}
 		}
 		public override void CopyDataTo(IDictionary source, IDictionary target, ICloneOperation operation)

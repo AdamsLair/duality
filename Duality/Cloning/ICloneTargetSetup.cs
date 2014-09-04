@@ -6,6 +6,6 @@
 
 		bool AddTarget<T>(T source, T target) where T : class;
 		void MakeWeakReference(object source);
-		void AutoHandleObject(object source);
+		void AutoHandleObject(object source, object target);
 	}
 }

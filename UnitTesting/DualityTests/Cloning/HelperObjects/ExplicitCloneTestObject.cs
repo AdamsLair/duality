@@ -21,15 +21,13 @@ namespace Duality.Tests.Cloning.HelperObjects
 	{
 		public ExplicitCloneTestObjectA(Random rnd, int maxChildren) : base(rnd, maxChildren) {}
 			
-		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup)
+		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
 		{
-			setup.AutoHandleObject(this.ListField);
-			setup.AutoHandleObject(this.ListField2);
-			setup.AddTarget(this.DictField, new Dictionary<string,TestObject>());
-			foreach (var pair in this.DictField)
-			{
-				setup.AutoHandleObject(pair.Value);
-			}
+			ExplicitCloneTestObjectA targetCast = target as ExplicitCloneTestObjectA;
+
+			setup.AutoHandleObject(this.ListField, targetCast.ListField);
+			setup.AutoHandleObject(this.ListField2, targetCast.ListField2);
+			setup.AutoHandleObject(this.DictField, targetCast.DictField);
 		}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
@@ -58,9 +56,9 @@ namespace Duality.Tests.Cloning.HelperObjects
 
 		public ExplicitCloneTestObjectB(Random rnd, int maxChildren) : base(rnd, maxChildren) {}
 
-		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup)
+		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{
-			setup.AutoHandleObject(this);
+			setup.AutoHandleObject(this, targetObj);
 		}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
@@ -72,7 +70,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 	{
 		public ExplicitCloneTestObjectC(Random rnd, int maxChildren) : base(rnd, maxChildren) {}
 
-		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup) {}
+		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup) {}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation) {}
 	}
 }

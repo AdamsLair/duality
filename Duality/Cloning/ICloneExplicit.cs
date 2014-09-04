@@ -11,8 +11,9 @@
 		/// graph are generated. Not specifying a target instance for a source instance will result in
 		/// handling it as a reference or weak reference, depending on the concrete case.
 		/// </summary>
+		/// <param name="target"></param>
 		/// <param name="setup">The setup environment for the cloning operation.</param>
-		void SetupCloneTargets(ICloneTargetSetup setup);
+		void SetupCloneTargets(object target, ICloneTargetSetup setup);
 		/// <summary>
 		/// Performs the cloning copy step. In this step, all data is copied from source instances to
 		/// target instances. No reference-type object instances should be created in this step, as this

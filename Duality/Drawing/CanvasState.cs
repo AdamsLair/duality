@@ -291,7 +291,7 @@ namespace Duality.Drawing
 			}
 		}
 		
-		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup) {}
+		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup) {}
 		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
 		{
 			this.CopyTo(target as CanvasState);

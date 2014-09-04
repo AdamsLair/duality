@@ -248,10 +248,10 @@ namespace Duality
 			this.DeepCopyTo(target);
 		}
 		
-		void ICloneExplicit.SetupCloneTargets(ICloneTargetSetup setup)
+		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
 		{
-			setup.AutoHandleObject(this);
-			this.OnSetupCloneTargets(setup);
+			setup.AutoHandleObject(this, target);
+			this.OnSetupCloneTargets(target, setup);
 		}
 		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
 		{
@@ -265,7 +265,7 @@ namespace Duality
 		/// for a more thorough explanation.
 		/// </summary>
 		/// <param name="setup"></param>
-		protected virtual void OnSetupCloneTargets(ICloneTargetSetup setup) {}
+		protected virtual void OnSetupCloneTargets(object target, ICloneTargetSetup setup) {}
 		/// <summary>
 		/// This method performs the <see cref="CopyTo"/> operation for custom Resource Types.
 		/// It uses reflection to perform the cloning operation automatically, but you can implement

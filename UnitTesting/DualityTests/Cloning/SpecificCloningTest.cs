@@ -121,6 +121,25 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName, targetObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName);
 			}
 		}
+		[Test] public void CopyToGameObjectPreservation()
+		{
+			Random rnd = new Random();
+			GameObject source = new GameObject("ObjectA");
+			source.AddComponent(new TestComponent(rnd));
+			GameObject target = new GameObject("ObjectB");
+			TestComponent targetComponent = target.AddComponent(new TestComponent(rnd));
+
+			source.DeepCopyTo(target);
+			
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source.Name, target.Name);
+			Assert.AreEqual(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
+			Assert.AreNotSame(source.GetComponent<TestComponent>(), target.GetComponent<TestComponent>());
+			Assert.AreNotSame(source.GetComponent<TestComponent>().TestReferenceList, target.GetComponent<TestComponent>().TestReferenceList);
+
+			// Make sure that the target Component has been updated, but not re-created.
+			Assert.AreSame(targetComponent, target.GetComponent<TestComponent>());
+		}
 		[Test] public void TransformHierarchyInitialized()
 		{
 			Random rnd = new Random();
