@@ -87,6 +87,10 @@ namespace Duality.Cloning
 			else
 			{
 				targetCast = (T)target;
+				if (!typeof(T).IsValueType && targetCast != null)
+				{
+					setup.AddTarget(source, target);
+				}
 			}
 			this.SetupCloneTargets((T)source, targetCast, setup);
 		}
