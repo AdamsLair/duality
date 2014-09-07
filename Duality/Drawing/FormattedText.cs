@@ -810,7 +810,7 @@ namespace Duality.Drawing
 		}
 		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
 		{
-			operation.AutoHandleObject(this, target);
+			operation.HandleObject(this, target);
 			(target as FormattedText).ApplySource(this.sourceText);
 		}
 

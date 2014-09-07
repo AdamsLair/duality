@@ -34,14 +34,14 @@ namespace Duality.Tests.Cloning.HelperObjects
 			ExplicitCloneTestObjectA target = targetObj as ExplicitCloneTestObjectA;
 			target.StringField = this.StringField;
 			target.DataField = this.DataField;
-			operation.AutoHandleObject(this.ListField, out target.ListField);
-			operation.AutoHandleObject(this.ListField2, out target.ListField2);
+			operation.HandleObject(this.ListField, out target.ListField);
+			operation.HandleObject(this.ListField2, out target.ListField2);
 			if (operation.GetTarget(this.DictField, out target.DictField))
 			{
 				foreach (var pair in this.DictField)
 				{
 					TestObject newObj;
-					if (operation.AutoHandleObject(pair.Value, out newObj))
+					if (operation.HandleObject(pair.Value, out newObj))
 					{
 						target.DictField[pair.Key] = newObj;
 					}
@@ -62,7 +62,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
-			operation.AutoHandleObject(this, targetObj as ExplicitCloneTestObjectB);
+			operation.HandleObject(this, targetObj as ExplicitCloneTestObjectB);
 			(targetObj as ExplicitCloneTestObjectB).SpecialSetupDone = true;
 		}
 	}

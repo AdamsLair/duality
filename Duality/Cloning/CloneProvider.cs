@@ -477,17 +477,13 @@ namespace Duality.Cloning
 				return true;
 			}
 		}
-		void ICloneOperation.AutoHandleObject(object source, object target)
+		void ICloneOperation.HandleObject(object source, object target)
 		{
 			if (object.ReferenceEquals(source, null)) return;
 			if (source == this.currentObject)
 				this.PerformCopyChildObject(source, target, this.currentCloneType);
 			else
 				this.PerformCopyObject(source, target, null);
-		}
-		void ICloneOperation.AutoHandleField(FieldInfo field, object source, object target)
-		{
-			this.PerformCopyField(source, target, field, false);
 		}
 
 

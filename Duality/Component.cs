@@ -228,7 +228,7 @@ namespace Duality
 		}
 		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
 		{
-			operation.AutoHandleObject(this, target);
+			operation.HandleObject(this, target);
 			this.OnCopyDataTo(target, operation);
 		}
 		/// <summary>

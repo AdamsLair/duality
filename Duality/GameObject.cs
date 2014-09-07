@@ -843,7 +843,7 @@ namespace Duality
 			// Copy Components from source to target
 			foreach (var pair in this.compMap)
 			{
-				operation.AutoHandleObject(pair.Value, target.compMap[pair.Key]);
+				operation.HandleObject(pair.Value, target.compMap[pair.Key]);
 			}
 
 			// Copy child objects from source to target
@@ -851,19 +851,19 @@ namespace Duality
 			{
 				for (int i = 0; i < this.children.Count; i++)
 				{
-					operation.AutoHandleObject(this.children[i], target.children[i]);
+					operation.HandleObject(this.children[i], target.children[i]);
 				}
 			}
 
 			// Copy referenced and child objects
-			operation.AutoHandleObject(this.scene, out target.scene);
-			operation.AutoHandleObject(this.parent, out target.parent);
-			operation.AutoHandleObject(this.prefabLink, out target.prefabLink);
+			operation.HandleObject(this.scene, out target.scene);
+			operation.HandleObject(this.parent, out target.parent);
+			operation.HandleObject(this.prefabLink, out target.prefabLink);
 
 			// Copy event subscriptions
-			operation.AutoHandleObject(this.eventParentChanged, out target.eventParentChanged);
-			operation.AutoHandleObject(this.eventComponentAdded, out target.eventComponentAdded);
-			operation.AutoHandleObject(this.eventComponentRemoving, out target.eventComponentRemoving);
+			operation.HandleObject(this.eventParentChanged, out target.eventParentChanged);
+			operation.HandleObject(this.eventComponentAdded, out target.eventComponentAdded);
+			operation.HandleObject(this.eventComponentRemoving, out target.eventComponentRemoving);
 		}
 
 		internal void Update()
