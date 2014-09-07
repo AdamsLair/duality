@@ -109,16 +109,19 @@ namespace Duality.Tests.Cloning
 				Assert.AreNotSame(sourceObj, targetObj);
 				Assert.AreEqual(sourceObj.FullName, targetObj.FullName);
 
+				TestComponent sourceCmp = sourceObj.GetComponent<TestComponent>();
+				TestComponent targetCmp = targetObj.GetComponent<TestComponent>();
+
 				// See if the data Components are cloned and intact
-				Assert.AreEqual(sourceObj.GetComponent<TestComponent>(), targetObj.GetComponent<TestComponent>());
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>(), targetObj.GetComponent<TestComponent>());
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().TestReferenceList, targetObj.GetComponent<TestComponent>().TestReferenceList);
+				Assert.AreEqual(sourceCmp, targetCmp);
+				Assert.AreNotSame(sourceCmp, targetCmp);
+				Assert.AreNotSame(sourceCmp.TestReferenceList, targetCmp.TestReferenceList);
 
 				// Check cross-object references
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().GameObjectReference, targetObj.GetComponent<TestComponent>().GameObjectReference);
-				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().GameObjectReference.FullName, targetObj.GetComponent<TestComponent>().GameObjectReference.FullName);
-				Assert.AreNotSame(sourceObj.GetComponent<TestComponent>().ComponentReference, targetObj.GetComponent<TestComponent>().ComponentReference);
-				Assert.AreEqual(sourceObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName, targetObj.GetComponent<TestComponent>().ComponentReference.GameObj.FullName);
+				Assert.AreNotSame(sourceCmp.GameObjectReference, targetCmp.GameObjectReference);
+				Assert.AreEqual(sourceCmp.GameObjectReference.FullName, targetCmp.GameObjectReference.FullName);
+				Assert.AreNotSame(sourceCmp.ComponentReference, targetCmp.ComponentReference);
+				Assert.AreEqual(sourceCmp.ComponentReference.GameObj.FullName, targetCmp.ComponentReference.GameObj.FullName);
 			}
 		}
 		[Test] public void CopyToGameObjectPreservation()
@@ -176,17 +179,26 @@ namespace Duality.Tests.Cloning
 				gameObjectAddedEventReceived = true;
 			};
 
-			// Copy source object to target object
-			source.DeepCopyTo(target);
+			// Enter the test Scene, so global Scene events will be fired
+			Scene.SwitchTo(testScene);
+			try
+			{
+				// Copy source object to target object
+				source.DeepCopyTo(target);
 			
-			// Make sure that events are fired properly when adding completely new Components
-			Assert.IsTrue(gameObjectAddedEventReceived);
+				// Make sure that events are fired properly when adding completely new Components
+				Assert.IsTrue(gameObjectAddedEventReceived);
 
-			gameObjectAddedEventReceived = false;
-			source.DeepCopyTo(target);
+				gameObjectAddedEventReceived = false;
+				source.DeepCopyTo(target);
 
-			// Don't fire the event when the Component was already there
-			Assert.IsFalse(gameObjectAddedEventReceived);
+				// Don't fire the event when the Component was already there
+				Assert.IsFalse(gameObjectAddedEventReceived);
+			}
+			finally
+			{
+				Scene.SwitchTo(null);
+			}
 		}
 		[Test] public void TransformHierarchyInitialized()
 		{

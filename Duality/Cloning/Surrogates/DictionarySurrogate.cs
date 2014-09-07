@@ -25,12 +25,12 @@ namespace Duality.Cloning.Surrogates
 				if (source == target)
 				{
 					foreach (object key in source.Keys)
-						setup.AutoHandleObject(key, key);
+						setup.HandleObject(key, key);
 				}
 				else
 				{
 					foreach (var key in source.Keys)
-						setup.AutoHandleObject(key, null);
+						setup.HandleObject(key, null);
 				}
 			}
 			if (!genArgs[1].IsPlainOldData())
@@ -38,12 +38,12 @@ namespace Duality.Cloning.Surrogates
 				if (source == target)
 				{
 					foreach (object val in source.Values)
-						setup.AutoHandleObject(val, val);
+						setup.HandleObject(val, val);
 				}
 				else
 				{
 					foreach (DictionaryEntry entry in source)
-						setup.AutoHandleObject(entry.Value, target[entry.Key]);
+						setup.HandleObject(entry.Value, target[entry.Key]);
 				}
 			}
 		}

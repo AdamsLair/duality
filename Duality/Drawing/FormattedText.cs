@@ -806,7 +806,7 @@ namespace Duality.Drawing
 		}
 		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
 		{
-			setup.AutoHandleObject(this, target);
+			setup.HandleObject(this, target);
 		}
 		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
 		{

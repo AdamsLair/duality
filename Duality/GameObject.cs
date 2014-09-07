@@ -26,19 +26,14 @@ namespace Duality
 	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageGameObject)]
-	public sealed class GameObject : IManageableObject, IUniqueIdentifyable
+	public sealed class GameObject : IManageableObject, IUniqueIdentifyable, ICloneExplicit
 	{
 		[NonSerialized] 
-		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		Scene						scene		= null;
-		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		GameObject					parent		= null;
 		private		PrefabLink					prefabLink	= null;
-		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		private		Guid						identifier	= Guid.NewGuid();
-		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
 		private		List<GameObject>			children	= null;
-		[CloneBehavior(typeof(Component), CloneBehavior.ChildObject)]
 		private		List<Component>				compList	= new List<Component>();
 		private		Dictionary<Type,Component>	compMap		= new Dictionary<Type,Component>();
 		private		string						name		= string.Format("obj{0}", MathF.Rnd.Next());
@@ -49,13 +44,10 @@ namespace Duality
 		private		Transform					compTransform	= null;
 		
 		[NonSerialized]
-		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
 		[NonSerialized]
-		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
 		[NonSerialized]
-		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
 
 
@@ -773,6 +765,105 @@ namespace Duality
 		public void CopyTo(GameObject target)
 		{
 			this.DeepCopyTo(target);
+		}
+		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
+		{
+			GameObject target = targetObj as GameObject;
+
+			// Destroy additional Components in the target GameObject
+			if (target.compMap.Count > 0)
+			{
+				List<Type> removeComponentTypes = null;
+				foreach (var pair in target.compMap)
+				{
+					if (!this.compMap.ContainsKey(pair.Key))
+					{
+						if (removeComponentTypes == null) removeComponentTypes = new List<Type>();
+						removeComponentTypes.Add(pair.Key);
+					}
+				}
+				if (removeComponentTypes != null)
+				{
+					foreach (Type type in removeComponentTypes)
+					{
+						target.RemoveComponent(type);
+					}
+				}
+			}
+			// Destroy additional child objects in the target GameObject
+			if (target.children != null)
+			{
+				for (int i = target.children.Count - 1; i >= this.children.Count; i--)
+				{
+					target.children[i].Dispose();
+				}
+			}
+
+			// Create missing Components in the target GameObject
+			foreach (var pair in this.compMap)
+			{
+				setup.HandleObject(pair.Value, target.AddComponent(pair.Key), CloneBehavior.ChildObject);
+			}
+			// Create missing child objects in the target GameObject
+			if (this.children != null)
+			{
+				for (int i = 0; i < this.children.Count; i++)
+				{
+					GameObject targetChild;
+					if (target.children != null && target.children.Count > i)
+						targetChild = target.children[i];
+					else
+						targetChild = new GameObject(string.Empty, target);
+
+					setup.HandleObject(this.children[i], targetChild, CloneBehavior.ChildObject);
+				}
+			}
+
+			// Handle referenced and child objects
+			setup.HandleObject(this.scene, CloneBehavior.WeakReference);
+			setup.HandleObject(this.parent, CloneBehavior.WeakReference);
+			setup.HandleObject(this.prefabLink, target.prefabLink);
+
+			// Handle event subscriptions
+			setup.HandleObject(this.eventParentChanged, target.eventParentChanged);
+			setup.HandleObject(this.eventComponentAdded, target.eventComponentAdded);
+			setup.HandleObject(this.eventComponentRemoving, target.eventComponentRemoving);
+		}
+		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
+		{
+			GameObject target = targetObj as GameObject;
+
+			// Copy plain old data
+			target.name = this.name;
+			target.active = this.active;
+			target.initState = this.initState;
+			if (!operation.Context.PreserveIdentity)
+				target.identifier = this.identifier;
+
+			// Copy Components from source to target
+			foreach (var pair in this.compMap)
+			{
+				operation.AutoHandleObject(pair.Value, target.compMap[pair.Key]);
+			}
+
+			// Copy child objects from source to target
+			if (this.children != null)
+			{
+				for (int i = 0; i < this.children.Count; i++)
+				{
+					operation.AutoHandleObject(this.children[i], target.children[i]);
+				}
+			}
+
+			// Copy referenced and child objects
+			operation.AutoHandleObject(this.scene, out target.scene);
+			operation.AutoHandleObject(this.parent, out target.parent);
+			operation.AutoHandleObject(this.prefabLink, out target.prefabLink);
+
+			// Copy event subscriptions
+			operation.AutoHandleObject(this.eventParentChanged, out target.eventParentChanged);
+			operation.AutoHandleObject(this.eventComponentAdded, out target.eventComponentAdded);
+			operation.AutoHandleObject(this.eventComponentRemoving, out target.eventComponentRemoving);
 		}
 
 		internal void Update()

@@ -223,7 +223,7 @@ namespace Duality
 
 		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
 		{
-			setup.AutoHandleObject(this, target);
+			setup.HandleObject(this, target);
 			this.OnSetupCloneTargets(target, setup);
 		}
 		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)

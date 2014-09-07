@@ -188,7 +188,10 @@ namespace Duality.Cloning
 			}
 
 			CloneBehaviorAttribute defaultBehaviorAttrib = CloneProvider.GetCloneBehaviorAttribute(this.type);
-			this.behavior = (defaultBehaviorAttrib != null) ? defaultBehaviorAttrib.Behavior : CloneBehavior.ChildObject;
+			if (defaultBehaviorAttrib != null && defaultBehaviorAttrib.Behavior != CloneBehavior.Default)
+				this.behavior = defaultBehaviorAttrib.Behavior;
+			else
+				this.behavior = CloneBehavior.ChildObject;
 		}
 	}
 }

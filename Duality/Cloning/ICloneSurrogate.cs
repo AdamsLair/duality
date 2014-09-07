@@ -43,6 +43,10 @@ namespace Duality.Cloning
 		{
 			get { return 0; }
 		}
+		protected virtual bool IsImmutableTarget
+		{
+			get { return false; }
+		}
 		
 		/// <summary>
 		/// Checks whether this surrogate is able to clone the specified object type.
@@ -72,7 +76,7 @@ namespace Duality.Cloning
 			requireLateSetup = false;
 
 			T targetCast;
-			if (object.ReferenceEquals(target, null))
+			if (object.ReferenceEquals(target, null) || this.IsImmutableTarget)
 			{
 				this.CreateTargetObject((T)source, out targetCast, setup);
 				if (!typeof(T).IsValueType && targetCast != null)

@@ -60,6 +60,7 @@ namespace Duality
 				return false;
 			}
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		private static void InstallSoftwareFallback()
 		{
 			Log.Core.Write("OpenAL Drivers not found. Using {0} software fallback.", Environment.Is64BitProcess ? "64 Bit" : "32 Bit");
@@ -82,6 +83,7 @@ namespace Duality
 				catch (Exception) {}
 			}
 		}
+		[System.Diagnostics.DebuggerNonUserCode]
 		private static void UninstallSoftwareFallback()
 		{
 			try

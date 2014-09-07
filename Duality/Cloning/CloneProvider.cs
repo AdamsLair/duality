@@ -157,13 +157,10 @@ namespace Duality.Cloning
 				this.SetTargetOf(lateSetupSource, lateSetupTarget);
 			}
 		}
-		private void PrepareCloneGraph(object source, object target, CloneType sourceType)
+		private void PrepareCloneGraph(object source, object target, CloneType sourceType, CloneBehavior behavior = CloneBehavior.Default)
 		{
 			// Early-out for null values
 			if (object.ReferenceEquals(source, null)) return;
-
-			// If this is a Clone operation and not a CopyTo operation, don't bother with explicit targets
-			if (this.targetRoot == null) target = null;
 			
 			// Determine the object Type and early-out if it's just plain old data
 			if (sourceType == null) sourceType = GetCloneType(source.GetType());
@@ -177,7 +174,12 @@ namespace Duality.Cloning
 			object behaviorLock = null;
 			if (!object.ReferenceEquals(source, this.sourceRoot))
 			{
-				CloneBehavior behavior = this.GetCloneBehavior(sourceType, true, out behaviorLock);
+				// If no specific behavior was specified, fetch the default one set by class and field attributes
+				if (behavior == CloneBehavior.Default)
+				{
+					behavior = this.GetCloneBehavior(sourceType, true, out behaviorLock);
+				}
+				// Apply the current behavior
 				if (behavior != CloneBehavior.ChildObject)
 				{
 					if (behavior == CloneBehavior.WeakReference)
@@ -403,6 +405,8 @@ namespace Duality.Cloning
 		}
 		private CloneBehavior GetCloneBehavior(CloneType sourceType, bool lockBehavior, out object acquiredLock)
 		{
+			CloneBehavior defaultBehavior = (sourceType != null) ? sourceType.DefaultCloneBehavior : CloneBehavior.ChildObject;
+
 			// Local behavior rules
 			acquiredLock = null;
 			var localBehaviorData = this.localBehavior.Data;
@@ -413,12 +417,13 @@ namespace Duality.Cloning
 				{
 					acquiredLock = localBehaviorData[i].Behavior;
 					localBehaviorData[i].Locked = lockBehavior;
-					return localBehaviorData[i].Behavior.Behavior;
+					CloneBehavior behavior = localBehaviorData[i].Behavior.Behavior;
+					return (behavior != CloneBehavior.Default) ? behavior : defaultBehavior;
 				}
 			}
 
 			// Global behavior rules
-			return (sourceType != null) ? sourceType.DefaultCloneBehavior : CloneBehavior.ChildObject;
+			return defaultBehavior;
 		}
 		private void UnlockCloneBehavior(object behaviorLock)
 		{
@@ -434,22 +439,28 @@ namespace Duality.Cloning
 			}
 		}
 		
-		bool ICloneTargetSetup.AddTarget<T>(T source, T target)
+		void ICloneTargetSetup.AddTarget(object source, object target)
 		{
 			this.SetTargetOf(source, target);
-			return true;
 		}
-		void ICloneTargetSetup.MakeWeakReference(object source)
-		{
-			this.dropWeakReferences.Add(source);
-		}
-		void ICloneTargetSetup.AutoHandleObject(object source, object target)
+		void ICloneTargetSetup.HandleObject(object source, object target, CloneBehavior behavior)
 		{
 			if (object.ReferenceEquals(source, null)) return;
-			if (source == this.currentObject)
-				this.PrepareChildCloneGraph(source, target, this.currentCloneType);
-			else
-				this.PrepareCloneGraph(source, target, null);
+			switch (behavior)
+			{
+				case CloneBehavior.WeakReference:
+					this.dropWeakReferences.Add(source);
+					break;
+				case CloneBehavior.Reference:
+					break;
+				case CloneBehavior.Default:
+				case CloneBehavior.ChildObject:
+					if (source == this.currentObject)
+						this.PrepareChildCloneGraph(source, target, this.currentCloneType);
+					else
+						this.PrepareCloneGraph(source, target, null, behavior);
+					break;
+			}
 		}
 
 		bool ICloneOperation.GetTarget<T>(T source, out T target)

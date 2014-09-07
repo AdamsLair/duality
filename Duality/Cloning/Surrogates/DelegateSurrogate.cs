@@ -8,6 +8,10 @@ namespace Duality.Cloning.Surrogates
 {
 	public class DelegateSurrogate : CloneSurrogate<Delegate>
 	{
+		protected override bool IsImmutableTarget
+		{
+			get { return true; }
+		}
 		public override bool MatchesType(Type t)
 		{
 			return typeof(Delegate).IsAssignableFrom(t);
@@ -24,7 +28,7 @@ namespace Duality.Cloning.Surrogates
 			Delegate[] invokeList = source.GetInvocationList();
 			for (int i = 0; i < invokeList.Length; i++)
 			{
-				setup.MakeWeakReference(invokeList[i].Target);
+				setup.HandleObject(invokeList[i].Target, CloneBehavior.WeakReference);
 			}
 		}
 		public override void CreateTargetObjectLate(Delegate source, out Delegate target, ICloneOperation operation)
