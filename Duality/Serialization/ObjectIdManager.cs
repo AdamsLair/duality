@@ -23,7 +23,7 @@ namespace Duality.Serialization
 			}
 			int IEqualityComparer<object>.GetHashCode(object obj)
 			{
-				return obj != null ? obj.GetHashCode() : 0;
+				return obj != null ? System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj) : 0;
 			}
 		}
 

@@ -9,6 +9,22 @@ namespace Duality.Cloning
 {
 	public class CloneProvider : ICloneTargetSetup, ICloneOperation
 	{
+		/// <summary>
+		/// Compares two objects for equality strictly by reference. This is needed to build
+		/// the object id mapping, since some objects may expose some unfortunate equality behavior,
+		/// and we really want to distinguish different objects by reference, and not by "content" here.
+		/// </summary>
+		private class ReferenceEqualityComparer : IEqualityComparer<object>
+		{
+			bool IEqualityComparer<object>.Equals(object x, object y)
+			{
+				return object.ReferenceEquals(x, y);
+			}
+			int IEqualityComparer<object>.GetHashCode(object obj)
+			{
+				return obj != null ? System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj) : 0;
+			}
+		}
 		private struct CloneBehaviorEntry
 		{
 			public CloneBehaviorAttribute Behavior;
@@ -27,10 +43,10 @@ namespace Duality.Cloning
 		private	object						targetRoot			= null;
 		private	object						currentObject		= null;
 		private	CloneType					currentCloneType	= null;
-		private	Dictionary<object,object>	objTargets			= new Dictionary<object,object>();
-		private	HashSet<object>				lateSetupObjects	= new HashSet<object>();
-		private	HashSet<object>				handledObjects		= new HashSet<object>();
-		private	HashSet<object>				dropWeakReferences	= new HashSet<object>();
+		private	Dictionary<object,object>	objTargets			= new Dictionary<object,object>(new ReferenceEqualityComparer());
+		private	HashSet<object>				lateSetupObjects	= new HashSet<object>(new ReferenceEqualityComparer());
+		private	HashSet<object>				handledObjects		= new HashSet<object>(new ReferenceEqualityComparer());
+		private	HashSet<object>				dropWeakReferences	= new HashSet<object>(new ReferenceEqualityComparer());
 		private	RawList<CloneBehaviorEntry>	localBehavior		= new RawList<CloneBehaviorEntry>();
 		
 

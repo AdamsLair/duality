@@ -8,6 +8,11 @@ namespace Duality.Cloning.Surrogates
 {
 	public class BitmapSurrogate : CloneSurrogate<Bitmap>
 	{
+		protected override bool IsImmutableTarget
+		{
+			get { return true; }
+		}
+
 		public override void CreateTargetObject(Bitmap source, out Bitmap target, ICloneTargetSetup setup)
 		{
 			target = new Bitmap(source.Width, source.Height);
