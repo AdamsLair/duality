@@ -13,7 +13,7 @@ namespace Duality.Cloning.Surrogates
 			get { return true; }
 		}
 
-		public override void CreateTargetObject(Bitmap source, out Bitmap target, ICloneTargetSetup setup)
+		public override void CreateTargetObject(Bitmap source, ref Bitmap target, ICloneTargetSetup setup)
 		{
 			target = new Bitmap(source.Width, source.Height);
 		}

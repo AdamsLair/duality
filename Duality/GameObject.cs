@@ -793,7 +793,8 @@ namespace Duality
 			// Destroy additional child objects in the target GameObject
 			if (target.children != null)
 			{
-				for (int i = target.children.Count - 1; i >= this.children.Count; i--)
+				int thisChildCount = this.children != null ? this.children.Count : 0;
+				for (int i = target.children.Count - 1; i >= thisChildCount; i--)
 				{
 					target.children[i].Dispose();
 				}
@@ -856,14 +857,14 @@ namespace Duality
 			}
 
 			// Copy referenced and child objects
-			operation.HandleObject(this.scene, out target.scene);
-			operation.HandleObject(this.parent, out target.parent);
-			operation.HandleObject(this.prefabLink, out target.prefabLink);
+			operation.HandleObject(this.scene, ref target.scene);
+			operation.HandleObject(this.parent, ref target.parent);
+			operation.HandleObject(this.prefabLink, ref target.prefabLink);
 
 			// Copy event subscriptions
-			operation.HandleObject(this.eventParentChanged, out target.eventParentChanged);
-			operation.HandleObject(this.eventComponentAdded, out target.eventComponentAdded);
-			operation.HandleObject(this.eventComponentRemoving, out target.eventComponentRemoving);
+			operation.HandleObject(this.eventParentChanged, ref target.eventParentChanged);
+			operation.HandleObject(this.eventComponentAdded, ref target.eventComponentAdded);
+			operation.HandleObject(this.eventComponentRemoving, ref target.eventComponentRemoving);
 		}
 
 		internal void Update()

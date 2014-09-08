@@ -17,22 +17,22 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Cloning.HelperObjects
 {
-	internal class DelegateTestObject : WeakReferenceTestObject
+	internal class ComplexDelegateTestObject : WeakReferenceTestObject
 	{
 		[CloneField(CloneFieldFlags.Skip)]
 		public bool EventReceived = false;
 		public event EventHandler SomeEvent = null;
 
-		public DelegateTestObject() : this(new DelegateTestObject[0]) {}
-		public DelegateTestObject(IEnumerable<DelegateTestObject> children) : base(children)
+		public ComplexDelegateTestObject() : this(new ComplexDelegateTestObject[0]) {}
+		public ComplexDelegateTestObject(IEnumerable<ComplexDelegateTestObject> children) : base(children)
 		{
 			foreach (var child in children)
 			{
-				this.ConnectTo(child);
+				this.ListenTo(child);
 			}
 		}
 
-		public DelegateTestObject GetBottomChild()
+		public ComplexDelegateTestObject GetBottomChild()
 		{
 			if (this.Children == null || this.Children.Count == 0)
 			{
@@ -40,7 +40,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 			}
 			else
 			{
-				DelegateTestObject childWithMostChildren = this.Children.OrderByDescending(c => c.Children != null ? c.Children.Count : 0).First() as DelegateTestObject;
+				ComplexDelegateTestObject childWithMostChildren = this.Children.OrderByDescending(c => c.Children != null ? c.Children.Count : 0).First() as ComplexDelegateTestObject;
 				return childWithMostChildren.GetBottomChild();
 			}
 		}
@@ -49,14 +49,14 @@ namespace Duality.Tests.Cloning.HelperObjects
 			if (this.SomeEvent != null)
 				this.SomeEvent(this, EventArgs.Empty);
 		}
-		public void ConnectTo(DelegateTestObject other)
+		public void ListenTo(ComplexDelegateTestObject other)
 		{
 			other.SomeEvent += this.ReceiveEvent;
 		}
 		public bool AnyEventsReceived()
 		{
 			if (this.EventReceived) return true;
-			foreach (DelegateTestObject child in this.Children)
+			foreach (ComplexDelegateTestObject child in this.Children)
 			{
 				if (child.AnyEventsReceived()) return true;
 			}
@@ -65,7 +65,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public void ResetAllEventsReceived()
 		{
 			this.EventReceived = false;
-			foreach (DelegateTestObject child in this.Children)
+			foreach (ComplexDelegateTestObject child in this.Children)
 			{
 				child.ResetAllEventsReceived();
 			}

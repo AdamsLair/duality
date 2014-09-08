@@ -12,18 +12,20 @@ namespace Duality.Cloning.Surrogates
 		{
 			get { return true; }
 		}
-		public override bool MatchesType(Type t)
+		public override bool RequireMerge
 		{
-			return typeof(Delegate).IsAssignableFrom(t);
+			get { return true; }
 		}
 
-		public override void CreateTargetObject(Delegate source, out Delegate target, ICloneTargetSetup setup)
+		public override void CreateTargetObject(Delegate source, ref Delegate target, ICloneTargetSetup setup)
 		{
 			// Because delegates are immutable, we'll need to defer their creation until we know exactly how the cloned object graph looks like.
 			target = null;
 		}
 		public override void SetupCloneTargets(Delegate source, Delegate target, ICloneTargetSetup setup)
 		{
+			if (source == null) return;
+
 			// Flag all invocation targets as weak references.
 			Delegate[] invokeList = source.GetInvocationList();
 			for (int i = 0; i < invokeList.Length; i++)
@@ -31,34 +33,52 @@ namespace Duality.Cloning.Surrogates
 				setup.HandleObject(invokeList[i].Target, CloneBehavior.WeakReference);
 			}
 		}
-		public override void CreateTargetObjectLate(Delegate source, out Delegate target, ICloneOperation operation)
+		public override void CreateTargetObjectLate(Delegate source, ref Delegate target, ICloneOperation operation)
 		{
-			Delegate[] sourceInvokeList = source.GetInvocationList();
-			RawList<Delegate> targetInvokeList = new RawList<Delegate>(sourceInvokeList.Length);
+			Delegate[] sourceInvokeList = (source != null) ? source.GetInvocationList() : null;
+			Delegate[] targetInvokeList = (target != null) ? target.GetInvocationList() : null;
+			RawList<Delegate> mergedInvokeList = new RawList<Delegate>(
+				((sourceInvokeList != null) ? sourceInvokeList.Length : 0) + 
+				((targetInvokeList != null) ? targetInvokeList.Length : 0));
 
-			// Iterate over our sources invocation list and see which entries are part of the target object graph
-			for (int i = 0; i < sourceInvokeList.Length; i++)
+			// Iterate over our sources invocation list and copy entries are part of the target object graph
+			if (sourceInvokeList != null)
 			{
-				object invokeTargetObject;
-				if (sourceInvokeList[i].Target == null)
+				for (int i = 0; i < sourceInvokeList.Length; i++)
 				{
-					Delegate targetSubDelegate = Delegate.CreateDelegate(sourceInvokeList[i].GetType(), null, sourceInvokeList[i].Method);
-					targetInvokeList.Add(targetSubDelegate);
+					if (sourceInvokeList[i].Target == null) continue;
+
+					object invokeTargetObject;
+					if (operation.GetTarget(sourceInvokeList[i].Target, out invokeTargetObject))
+					{
+						Delegate targetSubDelegate = Delegate.CreateDelegate(sourceInvokeList[i].GetType(), invokeTargetObject, sourceInvokeList[i].Method);
+						mergedInvokeList.Add(targetSubDelegate);
+					}
 				}
-				else if (operation.GetTarget(sourceInvokeList[i].Target, out invokeTargetObject))
+			}
+
+			// Iterate over our targets invocation list and keep entries that are NOT part of the target object graph
+			if (targetInvokeList != null)
+			{
+				for (int i = 0; i < targetInvokeList.Length; i++)
 				{
-					Delegate targetSubDelegate = Delegate.CreateDelegate(sourceInvokeList[i].GetType(), invokeTargetObject, sourceInvokeList[i].Method);
-					targetInvokeList.Add(targetSubDelegate);
+					if (targetInvokeList[i].Target == null) continue;
+
+					if (!operation.IsTarget(targetInvokeList[i].Target))
+					{
+						Delegate targetSubDelegate = Delegate.CreateDelegate(targetInvokeList[i].GetType(), targetInvokeList[i].Target, targetInvokeList[i].Method);
+						mergedInvokeList.Add(targetSubDelegate);
+					}
 				}
 			}
 
 			// Create a new delegate instance
-			Delegate[] targetInvokeArray = targetInvokeList.Data;
-			if (targetInvokeArray.Length != targetInvokeList.Count)
+			Delegate[] mergedInvokeArray = mergedInvokeList.Data;
+			if (mergedInvokeArray.Length != mergedInvokeList.Count)
 			{
-				Array.Resize(ref targetInvokeArray, targetInvokeList.Count);
+				Array.Resize(ref mergedInvokeArray, mergedInvokeList.Count);
 			}
-			target = Delegate.Combine(targetInvokeArray);
+			target = Delegate.Combine(mergedInvokeArray);
 		}
 		public override void CopyDataTo(Delegate source, Delegate target, ICloneOperation operation)
 		{

@@ -104,6 +104,13 @@ namespace Duality.Cloning
 			get { return !this.type.IsValueType && !this.type.IsSealed; }
 		}
 		/// <summary>
+		/// [GET] Returns whether the cached type is handled by a <see cref="ICloneSurrogate.RequireMerge">merge surrogate</see>.
+		/// </summary>
+		public bool IsMergeSurrogate
+		{
+			get { return this.surrogate != null && this.surrogate.RequireMerge; }
+		}
+		/// <summary>
 		/// [GET] Returns the default <see cref="CloneBehavior"/> exposed by this type.
 		/// </summary>
 		public CloneBehavior DefaultCloneBehavior

@@ -152,19 +152,100 @@ namespace Duality.Tests.Cloning
 				Assert.IsFalse(dataPart.AnyReferenceEquals(dataResultPart));
 			}
 		}
-		[Test] public void Delegates()
+		[Test] public void SimpleDelegates()
 		{
-			DelegateTestObject data = new DelegateTestObject(new[]
+			SimpleDelegateTestObject source = new SimpleDelegateTestObject();
+			SimpleDelegateTestObject target;
+			source.ListenTo(source);
+				
+			// Does the event work as expected?
+			source.FireEvent();
+			Assert.IsTrue(source.PopEventReceived());
+
+			target = source.DeepClone();
+
+			// Does the cloned event work the same?
+			target.FireEvent();
+			Assert.IsFalse(source.PopEventReceived());
+			Assert.IsTrue(target.PopEventReceived());
+		}
+		[Test] public void StaticDelegates()
+		{
+			SimpleDelegateTestObject source = new SimpleDelegateTestObject();
+			SimpleDelegateTestObject target;
+
+			bool staticEventReceived = false;
+			source.SomeEvent += delegate (object sender, EventArgs e)
 			{
-				new DelegateTestObject(),
-				new DelegateTestObject(new[]
+				staticEventReceived = true;
+			};
+				
+			// Does the static event work as expected?
+			source.FireEvent();
+			Assert.IsTrue(staticEventReceived);
+			staticEventReceived = false;
+
+			target = source.DeepClone();
+
+			// We expect static events to not be cloned due to conceptual ownership inversion in delegates
+			target.FireEvent();
+			Assert.IsFalse(staticEventReceived);
+
+			// The source should still trigger it though.
+			source.FireEvent();
+			Assert.IsTrue(staticEventReceived);
+		}
+		[Test] public void AdditiveDelegates()
+		{
+			SimpleDelegateTestObject source = new SimpleDelegateTestObject();
+			SimpleDelegateTestObject target = new SimpleDelegateTestObject();
+			SimpleDelegateTestObject neutral = new SimpleDelegateTestObject();
+			neutral.ListenTo(target);
+			
+			{
+				// Does the neutral object receive events?
+				target.FireEvent();
+				Assert.IsTrue(neutral.PopEventReceived());
+
+				source.DeepCopyTo(target);
+
+				// Does it still receive them after copying the source onto it?
+				target.FireEvent();
+				Assert.IsTrue(neutral.PopEventReceived());
+			}
+			
+			{
+				source.ListenTo(source);
+
+				// Does the source receive its own events?
+				source.FireEvent();
+				Assert.IsTrue(source.PopEventReceived());
+				Assert.IsFalse(source.PopEventReceived());
+
+				source.DeepCopyTo(target);
+
+				// Do both neutral object and target itself receive both target events?
+				target.FireEvent();
+				Assert.IsTrue(neutral.PopEventReceived());
+				Assert.IsFalse(neutral.PopEventReceived());
+				Assert.IsTrue(target.PopEventReceived());
+				Assert.IsFalse(target.PopEventReceived());
+				Assert.IsFalse(source.PopEventReceived());
+			}
+		}
+		[Test] public void ComplexDelegates()
+		{
+			ComplexDelegateTestObject data = new ComplexDelegateTestObject(new[]
+			{
+				new ComplexDelegateTestObject(),
+				new ComplexDelegateTestObject(new[]
 				{
-					new DelegateTestObject(),
-					new DelegateTestObject()
+					new ComplexDelegateTestObject(),
+					new ComplexDelegateTestObject()
 				})
 			});
-			DelegateTestObject dataPart = data.Children[1] as DelegateTestObject;
-			DelegateTestObject fireChild;
+			ComplexDelegateTestObject dataPart = data.Children[1] as ComplexDelegateTestObject;
+			ComplexDelegateTestObject fireChild;
 
 			// Make sure the event test setup works as expected under normal conditions
 			{
@@ -181,7 +262,7 @@ namespace Duality.Tests.Cloning
 			// See if everything works as expected in a regular clone
 			{
 				// Does the cloning itself work as expected?
-				DelegateTestObject dataResultFull = data.DeepClone();
+				ComplexDelegateTestObject dataResultFull = data.DeepClone();
 				Assert.AreSame(null, dataResultFull.Parent);
 				Assert.AreEqual(2, dataResultFull.Children.Count);
 				Assert.AreEqual(2, dataResultFull.Children[1].Children.Count);
@@ -204,7 +285,7 @@ namespace Duality.Tests.Cloning
 			// See if everything works as expected in a partial clone
 			{
 				// Does the cloning itself work as expected?
-				DelegateTestObject dataResultPart = dataPart.DeepClone();
+				ComplexDelegateTestObject dataResultPart = dataPart.DeepClone();
 				Assert.AreSame(null, dataResultPart.Parent);
 				Assert.AreEqual(2, dataResultPart.Children.Count);
 				Assert.IsTrue(dataResultPart.CheckChildIntegrity());
@@ -222,6 +303,19 @@ namespace Duality.Tests.Cloning
 				dataResultPart.ResetAllEventsReceived();
 				Assert.IsFalse(dataResultPart.EventReceived);
 			}
+		}
+		[Test] public void OverwriteWithNull()
+		{
+			TestObject source = new TestObject();
+			TestObject target = new TestObject(new Random(0), 0);
+
+			Assert.IsNull(source.ListField);
+			Assert.IsNotNull(target.ListField);
+
+			source.DeepCopyTo(target);
+			
+			Assert.IsNull(source.ListField);
+			Assert.IsNull(target.ListField);
 		}
 		[Test] public void CircularOwnership()
 		{

@@ -13,6 +13,11 @@ namespace Duality.Cloning
 		/// with the highest priority is picked.
 		/// </summary>
 		int Priority { get; }
+		/// <summary>
+		/// [GET] Specifies whether the surrogates client object requires a manual merge between source and target
+		/// objects, e.g. whether its manual object handling methods will be called even when the source object is null.
+		/// </summary>
+		bool RequireMerge { get; }
 
 		/// <summary>
 		/// Checks whether this surrogate is able to clone the specified object type.
@@ -22,7 +27,7 @@ namespace Duality.Cloning
 		bool MatchesType(Type t);
 
 		void SetupCloneTargets(object source, object target, out bool requireLateSetup, ICloneTargetSetup setup);
-		void LateSetup(object source, out object target, ICloneOperation operation);
+		void LateSetup(object source, ref object target, ICloneOperation operation);
 		void CopyDataTo(object source, object target, ICloneOperation operation);
 	}
 	/// <summary>
@@ -33,7 +38,7 @@ namespace Duality.Cloning
 	/// <typeparam name="T">
 	/// The base <see cref="System.Type"/> of objects this surrogate can replace.
 	/// </typeparam>
-	public abstract class CloneSurrogate<T> : ICloneSurrogate
+	public abstract class CloneSurrogate<T> : ICloneSurrogate where T : class
 	{
 		/// <summary>
 		/// [GET] If more than one registered ISurrogate is capable of cloning a given object type, the one
@@ -43,7 +48,20 @@ namespace Duality.Cloning
 		{
 			get { return 0; }
 		}
+		/// <summary>
+		/// [GET] Returns whether the surrogates client object is considered to be immutable, e.g. whether
+		/// it will always be required to create a target object, even if an existing one is provided by the
+		/// target object graph.
+		/// </summary>
 		protected virtual bool IsImmutableTarget
+		{
+			get { return false; }
+		}
+		/// <summary>
+		/// [GET] Specifies whether the surrogates client object requires a manual merge between source and target
+		/// objects, e.g. whether its manual object handling methods will be called even when the source object is null.
+		/// </summary>
+		public virtual bool RequireMerge
 		{
 			get { return false; }
 		}
@@ -55,18 +73,18 @@ namespace Duality.Cloning
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
 		public virtual bool MatchesType(Type t)
 		{
-			return typeof(T) == t;
+			return typeof(T).IsAssignableFrom(t);
 		}
 		
-		public virtual void CreateTargetObject(T source, out T target, ICloneTargetSetup setup)
+		public virtual void CreateTargetObject(T source, ref T target, ICloneTargetSetup setup)
 		{
 			Type objType = source.GetType();
-			target = (T)objType.CreateInstanceOf();
+			target = objType.CreateInstanceOf() as T;
 		}
-		public virtual void CreateTargetObjectLate(T source, out T target, ICloneOperation operation)
+		public virtual void CreateTargetObjectLate(T source, ref T target, ICloneOperation operation)
 		{
 			Type objType = source.GetType();
-			target = (T)objType.CreateInstanceOf();
+			target = objType.CreateInstanceOf() as T;
 		}
 		public abstract void SetupCloneTargets(T source, T target, ICloneTargetSetup setup);
 		public abstract void CopyDataTo(T source, T target, ICloneOperation operation);
@@ -75,38 +93,36 @@ namespace Duality.Cloning
 		{
 			requireLateSetup = false;
 
-			T targetCast;
-			if (object.ReferenceEquals(target, null) || this.IsImmutableTarget)
+			T targetCast = target as T;
+			if (object.ReferenceEquals(targetCast, null) || this.IsImmutableTarget)
 			{
-				this.CreateTargetObject((T)source, out targetCast, setup);
-				if (!typeof(T).IsValueType && targetCast != null)
+				this.CreateTargetObject(source as T, ref targetCast, setup);
+				if (!object.ReferenceEquals(targetCast, null))
 				{
-					setup.AddTarget(source, (object)targetCast);
+					// If the source is null, map the old target to the new
+					setup.AddTarget(source ?? target, targetCast);
 				}
 				else
 				{
 					requireLateSetup = true;
 				}
 			}
-			else
+			else if (!object.ReferenceEquals(targetCast, null))
 			{
-				targetCast = (T)target;
-				if (!typeof(T).IsValueType && targetCast != null)
-				{
-					setup.AddTarget(source, target);
-				}
+				// If the source is null, map the old target to the new
+				setup.AddTarget(source ?? target, target);
 			}
-			this.SetupCloneTargets((T)source, targetCast, setup);
+			this.SetupCloneTargets(source as T, targetCast, setup);
 		}
-		void ICloneSurrogate.LateSetup(object source, out object target, ICloneOperation operation)
+		void ICloneSurrogate.LateSetup(object source, ref object target, ICloneOperation operation)
 		{
-			T targetObj;
-			this.CreateTargetObjectLate((T)source, out targetObj, operation);
+			T targetObj = target as T;
+			this.CreateTargetObjectLate(source as T, ref targetObj, operation);
 			target = targetObj;
 		}
 		void ICloneSurrogate.CopyDataTo(object source, object target, ICloneOperation operation)
 		{
-			this.CopyDataTo((T)source, (T)target, operation);
+			this.CopyDataTo(source as T, target as T, operation);
 		}
 	}
 }

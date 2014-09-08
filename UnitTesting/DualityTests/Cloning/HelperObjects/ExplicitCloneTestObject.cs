@@ -34,19 +34,9 @@ namespace Duality.Tests.Cloning.HelperObjects
 			ExplicitCloneTestObjectA target = targetObj as ExplicitCloneTestObjectA;
 			target.StringField = this.StringField;
 			target.DataField = this.DataField;
-			operation.HandleObject(this.ListField, out target.ListField);
-			operation.HandleObject(this.ListField2, out target.ListField2);
-			if (operation.GetTarget(this.DictField, out target.DictField))
-			{
-				foreach (var pair in this.DictField)
-				{
-					TestObject newObj;
-					if (operation.HandleObject(pair.Value, out newObj))
-					{
-						target.DictField[pair.Key] = newObj;
-					}
-				}
-			}
+			operation.HandleObject(this.ListField, ref target.ListField);
+			operation.HandleObject(this.ListField2, ref target.ListField2);
+			operation.HandleObject(this.DictField, ref target.DictField);
 		}
 	}
 	internal class ExplicitCloneTestObjectB : TestObject, ICloneExplicit
