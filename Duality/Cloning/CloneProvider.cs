@@ -243,6 +243,8 @@ namespace Duality.Cloning
 					target = null;
 			}
 
+			object lastObject = this.currentObject;
+			CloneType lastCloneType = this.currentCloneType;
 			this.currentObject = source;
 			this.currentCloneType = typeData;
 
@@ -290,7 +292,9 @@ namespace Duality.Cloning
 					this.PrepareChildCloneGraph(source, target, typeData);
 				}
 			}
-
+			
+			this.currentObject = lastObject;
+			this.currentCloneType = lastCloneType;
 			this.UnlockCloneBehavior(behaviorLock);
 		}
 		private void PrepareChildCloneGraph(object source, object target, CloneType typeData)
@@ -354,7 +358,9 @@ namespace Duality.Cloning
 				if (typeData == null) typeData = GetCloneType(source.GetType());
 				if (!typeData.Type.IsValueType && !this.HandleObject(source)) return;
 			}
-
+			
+			object lastObject = this.currentObject;
+			CloneType lastCloneType = this.currentCloneType;
 			this.currentObject = source;
 			this.currentCloneType = typeData;
 			
@@ -374,6 +380,9 @@ namespace Duality.Cloning
 			{
 				this.PerformCopyChildObject(source, target, typeData);
 			}
+
+			this.currentObject = lastObject;
+			this.currentCloneType = lastCloneType;
 		}
 		private void PerformCopyChildObject(object source, object target, CloneType sourceType)
 		{
@@ -541,17 +550,19 @@ namespace Duality.Cloning
 		}
 		void ICloneTargetSetup.HandleObject(object source, object target, CloneBehavior behavior)
 		{
-			if (object.ReferenceEquals(source, null)) return;
 			switch (behavior)
 			{
 				case CloneBehavior.WeakReference:
-					this.dropWeakReferences.Add(source);
+					if (!object.ReferenceEquals(source, null))
+					{
+						this.dropWeakReferences.Add(source);
+					}
 					break;
 				case CloneBehavior.Reference:
 					break;
 				case CloneBehavior.Default:
 				case CloneBehavior.ChildObject:
-					if (source == this.currentObject)
+					if (object.ReferenceEquals(source, this.currentObject))
 						this.PrepareChildCloneGraph(source, target, this.currentCloneType);
 					else
 						this.PrepareCloneGraph(source, target, null, behavior);
@@ -577,13 +588,43 @@ namespace Duality.Cloning
 				return true;
 			}
 		}
-		void ICloneOperation.HandleObject(object source, object target)
+		bool ICloneOperation.HandleObject(object source, ref object target)
 		{
-			if (object.ReferenceEquals(source, null)) return;
-			if (source == this.currentObject)
+			// If we're just handling ourselfs, don't bother doing anything else.
+			if (object.ReferenceEquals(source, this.currentObject))
+			{
 				this.PerformCopyChildObject(source, target, this.currentCloneType);
+				return true;
+			}
+
+			// If there is no source value, check if we're dealing with a merge surrogate and get the old target value when necessary.
+			bool sourceNullMerge = false;
+			CloneType typeData = null;
+			if (object.ReferenceEquals(source, null))
+			{
+				source = target;
+				if (!object.ReferenceEquals(source, null))
+				{
+					typeData = GetCloneType(source.GetType());
+					if (typeData.IsMergeSurrogate)
+						sourceNullMerge = true;
+					else
+						source = null;
+				}
+			}
+			
+			// Perform target mapping and assign the copied value to the target field
+			object registeredTarget;
+			if (this.GetTargetOf(source, out registeredTarget))
+			{
+				target = registeredTarget;
+				this.PerformCopyObject(sourceNullMerge ? null : source, target, typeData);
+				return true;
+			}
 			else
-				this.PerformCopyObject(source, target, null);
+			{
+				return false;
+			}
 		}
 
 
