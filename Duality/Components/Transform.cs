@@ -40,6 +40,7 @@ namespace Duality.Components
 		private	bool	ignoreParent	= false;
 
 		// Cached values, recalc on change
+		[CloneField(CloneFieldFlags.Skip)]
 		private	Transform	parentTransform	= null;
 		private	Vector3		posAbs			= Vector3.Zero;
 		private	float		angleAbs		= 0.0f;
@@ -903,10 +904,24 @@ namespace Duality.Components
 			this.CheckValidTransform();
 		}
 
+		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
+		{
+			base.OnSetupCloneTargets(targetObj, setup);
+			Transform target = targetObj as Transform;
+
+			setup.HandleObject(this.parentTransform, CloneBehavior.WeakReference);
+		}
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(targetObj, operation);
 			Transform target = targetObj as Transform;
+
+			// Initialize parentTransform, because it's required for UpdateAbs but is null until OnLoaded, which will be called after applying prefabs.
+			if (target.gameobj != null && target.gameobj.Parent != null)
+				target.parentTransform = target.gameobj.Parent.Transform;
+
+			// Handle parentTransform manually to prevent null-overwrites
+			operation.HandleObject(this.parentTransform, ref target.parentTransform, true);
 
 			// Update absolute transformation data, because the target is relative to a different parent.
 			target.UpdateAbs();

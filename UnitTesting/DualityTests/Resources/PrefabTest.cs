@@ -110,7 +110,9 @@ namespace Duality.Tests.Resources
 			Assert.IsNotNull(obj.GetComponent<TestComponent>());
 			Assert.IsTrue(obj.Children.Any());
 		}
-		[Test] public void TransformHierarchyPrefabSceneBug()
+		[TestCase(false)]
+		[TestCase(true)]
+		[Test] public void TransformHierarchyPrefabSceneBug(bool childPrefab)
 		{
 			// Tests for https://github.com/AdamsLair/duality/issues/53
 
@@ -131,9 +133,9 @@ namespace Duality.Tests.Resources
 			scene.AddObject(parent);
 
 			// Create a Prefab from this hierarchy, make it available and link to it
-			Prefab prefab = new Prefab(parent);
+			Prefab prefab = new Prefab(childPrefab ? child : parent);
 			ContentProvider.AddContent(prefabName, prefab);
-			parent.LinkToPrefab(prefab);
+			(childPrefab ? child : parent).LinkToPrefab(prefab);
 
 			// Save the Scene and reload it
 			using (MemoryStream stream = new MemoryStream())
