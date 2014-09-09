@@ -37,6 +37,14 @@ namespace Duality.Tests.Cloning
 			ContentRef<TestResource> targetRef = sourceRef.DeepClone();
 			Assert.AreEqual(sourceRef.Path, targetRef.Path);
 			Assert.AreEqual(sourceRef.ResWeak, targetRef.ResWeak);
+
+			// Let the source reference itself
+			source.TestContentRef = source;
+			Assert.AreSame(source, source.TestContentRef.ResWeak);
+
+			// Expect the Resource to be cloned and holding a ContentRef to itself
+			TestResource targetWithSelfRef = source.DeepClone();
+			Assert.AreSame(targetWithSelfRef, targetWithSelfRef.TestContentRef.ResWeak);
 		}
 		[Test] public void CloneResource()
 		{

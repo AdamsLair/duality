@@ -22,6 +22,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 	internal class TestResource : Resource, IEquatable<TestResource>
 	{
 		public string TestProperty { get; set; }
+		public ContentRef<Resource> TestContentRef { get; set; }
 		public ReferencedObject TestReference { get; set; }
 		public List<ReferencedObject> TestReferenceList { get; set; }
 		
@@ -47,6 +48,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		{
 			return 
 				this.TestProperty == other.TestProperty &&
+				this.TestContentRef == other.TestContentRef &&
 				this.TestReference == other.TestReference &&
 				this.TestReferenceList.SequenceEqual(other.TestReferenceList);
 		}

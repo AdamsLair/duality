@@ -7,7 +7,7 @@ namespace Duality.Cloning
 	{
 		CloneProviderContext Context { get; }
 
-		bool GetTarget<T>(T source, out T target) where T : class;
+		bool GetTarget<T>(T source, ref T target) where T : class;
 		bool IsTarget<T>(T target) where T : class;
 
 		bool HandleObject<T>(T source, ref T target) where T : class;

@@ -48,8 +48,8 @@ namespace Duality.Cloning.Surrogates
 				{
 					if (sourceInvokeList[i].Target == null) continue;
 
-					object invokeTargetObject;
-					if (operation.GetTarget(sourceInvokeList[i].Target, out invokeTargetObject))
+					object invokeTargetObject = null;
+					if (operation.GetTarget(sourceInvokeList[i].Target, ref invokeTargetObject))
 					{
 						Delegate targetSubDelegate = Delegate.CreateDelegate(sourceInvokeList[i].GetType(), invokeTargetObject, sourceInvokeList[i].Method);
 						mergedInvokeList.Add(targetSubDelegate);

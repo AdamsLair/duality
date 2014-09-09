@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 using Duality.Cloning.Surrogates;
 
@@ -123,7 +124,15 @@ namespace Duality.Cloning
 			this.sourceRoot = source;
 			this.targetRoot = target;
 			this.PrepareCloneGraph();
-			this.GetTargetOf(source, out target);
+			if (source.GetType().IsValueType)
+			{
+				target = source;
+				this.SetTargetOf(source, target);
+			}
+			else
+			{
+				this.GetTargetOf(source, out target);
+			}
 			this.targetRoot = target;
 			return target;
 		}
@@ -213,13 +222,13 @@ namespace Duality.Cloning
 				sourceNullMerge = true;
 			}
 			
+			// Determine the object Type and early-out if it's just plain old data
+			if (typeData == null) typeData = GetCloneType(source.GetType());
+			if (typeData.IsPlainOldData) return;
+
 			object behaviorLock = null;
 			if (!sourceNullMerge)
 			{
-				// Determine the object Type and early-out if it's just plain old data
-				if (typeData == null) typeData = GetCloneType(source.GetType());
-				if (typeData.IsPlainOldData) return;
-
 				// If we already registered a target for that source, stop right here.
 				if (this.targetMapping.ContainsKey(source))
 					return;
@@ -277,7 +286,12 @@ namespace Duality.Cloning
 				{
 					target = typeData.Type.CreateInstanceOf();
 				}
-				this.SetTargetOf(source, target);
+
+				// If it's not a reference type, create a mapping from the source object to the target object
+				if (!typeData.Type.IsValueType)
+				{
+					this.SetTargetOf(source, target);
+				}
 
 				// If we are dealing with an array, use the original one for object reuse mapping
 				if (originalTargetArray != null) target = originalTargetArray;
@@ -373,7 +387,7 @@ namespace Duality.Cloning
 				customSource.CopyDataTo(target, this);
 			}
 			// Otherwise, traverse its child objects using default behavior
-			else
+			else if (!typeData.IsPlainOldData)
 			{
 				this.PerformCopyChildObject(source, target, typeData);
 			}
@@ -384,28 +398,45 @@ namespace Duality.Cloning
 		}
 		private void PerformCopyChildObject(object source, object target, CloneType sourceType)
 		{
-			// Plain old (struct) data can be deep-copied by assignment. Nothing to do here.
-			if (sourceType.IsPlainOldData)
-			{
-				return;
-			}
 			// Arrays will need to be traversed, unless consisting of plain old data
-			else if (sourceType.IsArray)
+			if (sourceType.IsArray)
 			{
 				Array sourceArray = source as Array;
 				Array targetArray = target as Array;
 				CloneType sourceElementType = sourceType.ElementType;
 
-				if (!sourceElementType.IsPlainOldData)
+				// If the array contains plain old data, no further handling is required
+				if (sourceElementType.IsPlainOldData)
+				{
+					sourceArray.CopyTo(targetArray, 0);
+				}
+				// If the array contains a value type, copy it and then handle each element
+				else if (sourceElementType.Type.IsValueType)
+				{
+					CloneType typeData = sourceElementType.CouldBeDerived ? null : sourceElementType;
+					for (int i = 0; i < sourceArray.Length; ++i)
+					{
+						object sourceElement = sourceArray.GetValue(i);
+						object targetElement = targetArray.GetValue(i);
+						this.PerformCopyObject(
+							sourceElement, 
+							targetElement, 
+							typeData);
+						targetArray.SetValue(targetElement, i);
+					}
+				}
+				// If it contains reference types, a mapping is necessary, as well as complex value handling
+				else
 				{
 					bool couldRequrieMerge = sourceElementType.CouldBeDerived || sourceElementType.IsMergeSurrogate;
 					for (int i = 0; i < sourceArray.Length; ++i)
 					{
+						CloneType typeData = sourceElementType.CouldBeDerived ? null : sourceElementType;
+
 						object sourceElement = sourceArray.GetValue(i);
 						object targetElement;
 
 						// If there is no source value, check if we're dealing with a merge surrogate and get the old target value when necessary.
-						CloneType typeData = sourceElementType.CouldBeDerived ? null : sourceElementType;
 						bool sourceNullMerge = false;
 						if (couldRequrieMerge && object.ReferenceEquals(sourceElement, null))
 						{
@@ -430,10 +461,6 @@ namespace Duality.Cloning
 							targetArray.SetValue(targetElement, i);
 						}
 					}
-				}
-				else
-				{
-					sourceArray.CopyTo(targetArray, 0);
 				}
 			}
 			// Objects will need to be traversed field by field
@@ -467,7 +494,18 @@ namespace Duality.Cloning
 			{
 				field.SetValue(target, field.GetValue(source));
 			}
-			// Perform the "always-correct" version for all else
+			// If this field stores a value type, no assignment or mapping is necessary. Just handle the struct.
+			else if (field.FieldType.IsValueType)
+			{
+				object sourceFieldValue = field.GetValue(source);
+				object targetFieldValue = field.GetValue(target);
+				this.PerformCopyObject(
+					sourceFieldValue, 
+					targetFieldValue, 
+					GetCloneType(field.FieldType));
+				field.SetValue(target, targetFieldValue);
+			}
+			// If it's a reference type, the value needs to be mapped from source to target
 			else
 			{
 				object sourceFieldValue = field.GetValue(source);
@@ -572,12 +610,11 @@ namespace Duality.Cloning
 		{
 			return this.targetSet.Contains(target);
 		}
-		bool ICloneOperation.GetTarget<T>(T source, out T target)
+		bool ICloneOperation.GetTarget<T>(T source, ref T target)
 		{
 			object targetObj;
 			if (!this.GetTargetOf(source, out targetObj))
 			{
-				target = default(T);
 				return false;
 			}
 			else
@@ -591,7 +628,10 @@ namespace Duality.Cloning
 			// If we're just handling ourselfs, don't bother doing anything else.
 			if (object.ReferenceEquals(source, this.currentObject))
 			{
-				this.PerformCopyChildObject(source, target, this.currentCloneType);
+				if (!this.currentCloneType.IsPlainOldData)
+				{
+					this.PerformCopyChildObject(source, target, this.currentCloneType);
+				}
 				return true;
 			}
 
