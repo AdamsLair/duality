@@ -20,8 +20,11 @@ namespace Duality.Cloning
 			T targetObj = target;
 			return operation.HandleObject(source, ref targetObj);
 		}
-		public static bool HandleObject<T>(this ICloneOperation operation, T source, ref T target) where T : class
+		public static bool HandleObject<T>(this ICloneOperation operation, T source, ref T target, bool dontNullifyExternal = false) where T : class
 		{
+			if (object.ReferenceEquals(source, null) && dontNullifyExternal && !operation.IsTarget(target))
+				return false;
+
 			object targetObj = target;
 			bool result = operation.HandleObject((object)source, ref targetObj);
 			if (result) target = targetObj as T;

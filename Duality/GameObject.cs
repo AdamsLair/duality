@@ -861,9 +861,9 @@ namespace Duality
 			}
 
 			// Copy referenced and child objects
-			operation.HandleObject(this.scene, ref target.scene);
-			operation.HandleObject(this.parent, ref target.parent);
-			operation.HandleObject(this.prefabLink, ref target.prefabLink);
+			operation.HandleObject(this.scene, ref target.scene, true);
+			operation.HandleObject(this.parent, ref target.parent, true);
+			operation.HandleObject(this.prefabLink, ref target.prefabLink, true);
 
 			// Copy event subscriptions
 			operation.HandleObject(this.eventParentChanged, ref target.eventParentChanged);

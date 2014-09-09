@@ -110,11 +110,7 @@ namespace Duality.Resources
 		public void CopyTo(GameObject obj)
 		{
 			if (this.objTree == null) return;
-
-			// Rescue and re-assign the objects PrefabLink, because it will be overwritten with the Prefabs null-link
-			PrefabLink link = obj.PrefabLink;
 			this.objTree.DeepCopyTo(obj, PrefabContext);
-			obj.PrefabLink = link;
 		}
 		/// <summary>
 		/// Copies a subset of this Prefabs data to a specific Component.
