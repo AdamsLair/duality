@@ -293,7 +293,31 @@ namespace Duality
 			get { return disposedPlugins; }
 		}
 
+		public static void RealWorldPerformanceTest()
+		{
+			return;
+			var watch = new System.Diagnostics.Stopwatch();
 
+			Random rnd = new Random(0);
+			GameObject data = new GameObject("CloneRoot");
+			for (int i = 0; i < 1000; i++)
+			{
+				GameObject child = new GameObject("Child", data);
+				child.AddComponent<Duality.Components.Transform>();
+				if (i % 3 != 0) child.AddComponent<Duality.Components.Renderers.SpriteRenderer>();
+				if (i % 3 == 0) child.AddComponent<Duality.Components.Physics.RigidBody>();
+				if (i % 7 == 0) child.AddComponent<Duality.Components.Renderers.TextRenderer>();
+			}
+			GameObject[] results = new GameObject[100];
+
+			watch.Start();
+			for (int i = 0; i < results.Length; i++)
+			{
+				results[i] = data.DeepClone();
+			}
+			watch.Stop();
+			Log.Core.Write("{0:F}", watch.Elapsed.TotalMilliseconds);
+		}
 		/// <summary>
 		/// Initializes this DualityApp. Should be called before performing any operations withing Duality.
 		/// </summary>
@@ -403,6 +427,8 @@ namespace Duality
 
 			initialized = true;
 			InitPlugins();
+
+			RealWorldPerformanceTest();
 		}
 		/// <summary>
 		/// Terminates this DualityApp. This does not end the current Process, but will instruct the engine to

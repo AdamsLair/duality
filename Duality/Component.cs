@@ -103,9 +103,11 @@ namespace Duality
 		}
 
 
-		[CloneBehavior(CloneBehavior.WeakReference)]
+		[CloneField(CloneFieldFlags.Skip)]
 		internal	GameObject		gameobj		= null;
+		[CloneField(CloneFieldFlags.Skip)]
 		private		InitState		initState	= InitState.Initialized;
+		[CloneField(CloneFieldFlags.Skip)]
 		private		bool			active		= true;
 
 		
@@ -221,15 +223,17 @@ namespace Duality
 			this.DeepCopyTo(target);
 		}
 
-		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
+		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{
-			setup.HandleObject(this, target);
-			this.OnSetupCloneTargets(target, setup);
+			Component target = targetObj as Component;
+			this.OnSetupCloneTargets(targetObj, setup);
 		}
-		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
+		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
-			operation.HandleObject(this, target);
-			this.OnCopyDataTo(target, operation);
+			Component target = targetObj as Component;
+			target.initState = this.initState;
+			target.active = this.active;
+			this.OnCopyDataTo(targetObj, operation);
 		}
 		/// <summary>
 		/// This method prepares the <see cref="CopyTo"/> operation for custom Component Types.
@@ -238,7 +242,10 @@ namespace Duality
 		/// for a more thorough explanation.
 		/// </summary>
 		/// <param name="setup"></param>
-		protected virtual void OnSetupCloneTargets(object target, ICloneTargetSetup setup) {}
+		protected virtual void OnSetupCloneTargets(object target, ICloneTargetSetup setup)
+		{
+			setup.HandleObject(this, target);
+		}
 		/// <summary>
 		/// This method performs the <see cref="CopyTo"/> operation for custom Component Types.
 		/// It uses reflection to perform the cloning operation automatically, but you can implement
@@ -247,7 +254,10 @@ namespace Duality
 		/// </summary>
 		/// <param name="target">The target Component where this Components data is copied to.</param>
 		/// <param name="operation"></param>
-		protected virtual void OnCopyDataTo(object target, ICloneOperation operation) {}
+		protected virtual void OnCopyDataTo(object target, ICloneOperation operation)
+		{
+			operation.HandleObject(this, target);
+		}
 
 		/// <summary>
 		/// Returns whether this Component requires a Component of the specified Type.

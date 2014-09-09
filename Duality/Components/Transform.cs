@@ -57,12 +57,7 @@ namespace Duality.Components
 		[NonSerialized] private	float		tempAngleVel	= 0.0f;
 		[NonSerialized] private	float		tempAngleVelAbs	= 0.0f;
 
-		[NonSerialized]
-		[CloneField(CloneFieldFlags.DontSkip)] 
-		private	bool parentInit = false; // Makes sure we don't double-initialize in InitContext.AddToGameObject due to cloning.
-
 		[NonSerialized] 
-		[CloneField(CloneFieldFlags.DontSkip)] 
 		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
 		public event EventHandler<TransformChangedEventArgs> EventTransformChanged
 		{
@@ -675,21 +670,17 @@ namespace Duality.Components
 			if (context == InitContext.AddToGameObject ||
 				context == InitContext.Loaded)
 			{
-				if (!this.parentInit)
+				this.parentTransform = null;
+				if (this.gameobj != null)
 				{
-					this.parentInit = true;
-					this.parentTransform = null;
-					if (this.gameobj != null)
+					this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
+					if (this.gameobj.Parent != null)
 					{
-						this.gameobj.EventParentChanged += this.gameobj_EventParentChanged;
-						if (this.gameobj.Parent != null)
-						{
-							this.parentTransform = this.gameobj.Parent.Transform;
-							if (this.parentTransform == null)
-								this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
-							else
-								this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
-						}
+						this.parentTransform = this.gameobj.Parent.Transform;
+						if (this.parentTransform == null)
+							this.gameobj.Parent.EventComponentAdded += this.Parent_EventComponentAdded;
+						else
+							this.gameobj.Parent.EventComponentRemoving += this.Parent_EventComponentRemoving;
 					}
 				}
 				this.UpdateRel();

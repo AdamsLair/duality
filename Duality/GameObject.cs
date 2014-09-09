@@ -36,7 +36,7 @@ namespace Duality
 		private		List<GameObject>			children	= null;
 		private		List<Component>				compList	= new List<Component>();
 		private		Dictionary<Type,Component>	compMap		= new Dictionary<Type,Component>();
-		private		string						name		= string.Format("obj{0}", MathF.Rnd.Next());
+		private		string						name		= string.Empty;
 		private		bool						active		= true;
 		private		InitState					initState	= InitState.Initialized;
 
@@ -826,13 +826,7 @@ namespace Duality
 
 			// Handle referenced and child objects
 			setup.HandleObject(this.scene, CloneBehavior.WeakReference);
-			setup.HandleObject(this.parent, CloneBehavior.WeakReference);
 			setup.HandleObject(this.prefabLink, target.prefabLink);
-
-			// Handle event subscriptions
-			setup.HandleObject(this.eventParentChanged, target.eventParentChanged);
-			setup.HandleObject(this.eventComponentAdded, target.eventComponentAdded);
-			setup.HandleObject(this.eventComponentRemoving, target.eventComponentRemoving);
 		}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
@@ -862,13 +856,7 @@ namespace Duality
 
 			// Copy referenced and child objects
 			operation.HandleObject(this.scene, ref target.scene, true);
-			operation.HandleObject(this.parent, ref target.parent, true);
 			operation.HandleObject(this.prefabLink, ref target.prefabLink, true);
-
-			// Copy event subscriptions
-			operation.HandleObject(this.eventParentChanged, ref target.eventParentChanged);
-			operation.HandleObject(this.eventComponentAdded, ref target.eventComponentAdded);
-			operation.HandleObject(this.eventComponentRemoving, ref target.eventComponentRemoving);
 		}
 
 		internal void Update()

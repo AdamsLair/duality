@@ -11,6 +11,7 @@ using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Renderers;
+using Duality.Components.Physics;
 using Duality.Tests.Cloning.HelperObjects;
 
 using OpenTK;
@@ -284,6 +285,33 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(parentPosAbs.Y + childPosRel.Y, child.Pos.Y, 0.000001f);
 				Assert.AreEqual(parentPosAbs.Z + childPosRel.Z, child.Pos.Z, 0.000001f);
 			}
+		}
+		[Test] public void RealWorldPerformanceTest()
+		{
+			var watch = new System.Diagnostics.Stopwatch();
+
+			Random rnd = new Random(0);
+			GameObject data = new GameObject("CloneRoot");
+			for (int i = 0; i < 1000; i++)
+			{
+				GameObject child = new GameObject("Child", data);
+				child.AddComponent<Transform>();
+				if (i % 3 != 0) child.AddComponent<SpriteRenderer>();
+				if (i % 3 == 0) child.AddComponent<RigidBody>();
+				if (i % 7 == 0) child.AddComponent<TextRenderer>();
+			}
+			GameObject[] results = new GameObject[25];
+
+			watch.Start();
+			for (int i = 0; i < results.Length; i++)
+			{
+				results[i] = data.DeepClone();
+			}
+			watch.Stop();
+			TestHelper.LogNumericTestResult(this, "RealWorldPerformanceTest", watch.Elapsed.TotalMilliseconds, "ms");
+			// Target: 250
+
+			Assert.Pass();
 		}
 	}
 }
