@@ -20,7 +20,6 @@ namespace Duality.Cloning
 			private CloneFieldFlags flags;
 			private	CloneBehaviorAttribute behavior;
 			private bool isPlainOldData;
-			private bool isReference;
 			private bool allowPodShortcut;
 
 			public FieldInfo Field
@@ -39,22 +38,17 @@ namespace Duality.Cloning
 			{
 				get { return this.isPlainOldData; }
 			}
-			public bool IsReference
-			{
-				get { return this.isReference; }
-			}
 			public bool AllowPlainOldDataShortcut
 			{
 				get { return this.allowPodShortcut; }
 			}
 
-			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld, bool shortcut, bool isReference)
+			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld, bool shortcut)
 			{
 				this.field = field;
 				this.flags = flags;
 				this.behavior = behavior;
 				this.isPlainOldData = isPlainOld;
-				this.isReference = isReference;
 				this.allowPodShortcut = shortcut;
 			}
 		}
@@ -63,7 +57,6 @@ namespace Duality.Cloning
 		private	CloneType		elementType;
 		private	CloneField[]	fieldData;
 		private	bool			plainOldData;
-		private	bool			canContainChildren;
 		private	CloneBehavior	behavior;
 		private	ICloneSurrogate	surrogate;
 		private	AssignPodFunc	assignPodFunc;
@@ -111,13 +104,6 @@ namespace Duality.Cloning
 			get { return !this.type.IsValueType && !this.type.IsSealed; }
 		}
 		/// <summary>
-		/// [GET] Returns whether the cached Type could contain child objects that need to be investiaged building the ownership graph.
-		/// </summary>
-		public bool CanContainChildren
-		{
-			get { return this.canContainChildren; }
-		}
-		/// <summary>
 		/// [GET] Returns whether the cached type is handled by a <see cref="ICloneSurrogate.RequireMerge">merge surrogate</see>.
 		/// </summary>
 		public bool IsMergeSurrogate
@@ -152,7 +138,6 @@ namespace Duality.Cloning
 		/// <param name="type"></param>
 		public CloneType(Type type)
 		{
-			this.canContainChildren = true;
 			this.type = type;
 			this.plainOldData = this.type.IsPlainOldData();
 			this.surrogate = CloneProvider.GetSurrogateFor(this.type);
@@ -173,7 +158,6 @@ namespace Duality.Cloning
 			// Retrieve field data
 			List<CloneField> fieldData = new List<CloneField>();
 			int shortcutFieldCount = 0;
-			this.canContainChildren = false;
 			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
 			{
 				CloneFieldFlags flags = CloneFieldFlags.None;
@@ -195,9 +179,7 @@ namespace Duality.Cloning
 				bool isReference = (fieldType.DefaultCloneBehavior == CloneBehavior.Reference) && !affectedByLocalBehavior;
 				bool allowShortcut = isPlainOld && (flags & ~CloneFieldFlags.DontSkip) == CloneFieldFlags.None;
 
-				if (!isPlainOld && !isReference) this.canContainChildren = true;
-
-				fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld, allowShortcut, isReference));
+				fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld, allowShortcut));
 				if (allowShortcut) ++shortcutFieldCount;
 			}
 			this.fieldData = fieldData.ToArray();

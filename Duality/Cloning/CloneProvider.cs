@@ -301,8 +301,6 @@ namespace Duality.Cloning
 		}
 		private void PrepareChildCloneGraph(object source, object target, CloneType typeData)
 		{
-			if (!typeData.CanContainChildren) return;
-
 			// If it's an array, we'll need to traverse its elements
 			if (typeData.IsArray)
 			{
@@ -324,7 +322,7 @@ namespace Duality.Cloning
 			{
 				for (int i = 0; i < typeData.FieldData.Length; i++)
 				{
-					// Don't need to scan "plain old data" fields
+					// Don't need to scan "plain old data" and reference fields
 					if (typeData.FieldData[i].IsPlainOldData) continue;
 
 					// See if there are specific instructions on how to handle this
