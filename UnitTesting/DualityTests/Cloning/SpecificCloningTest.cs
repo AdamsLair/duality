@@ -309,7 +309,6 @@ namespace Duality.Tests.Cloning
 			}
 			watch.Stop();
 			TestHelper.LogNumericTestResult(this, "RealWorldPerformanceTest", watch.Elapsed.TotalMilliseconds, "ms");
-			// Target: 250
 
 			Assert.Pass();
 		}
