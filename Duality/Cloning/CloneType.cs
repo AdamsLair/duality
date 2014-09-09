@@ -20,6 +20,7 @@ namespace Duality.Cloning
 			private CloneFieldFlags flags;
 			private	CloneBehaviorAttribute behavior;
 			private bool isPlainOldData;
+			private bool isReference;
 			private bool allowPodShortcut;
 
 			public FieldInfo Field
@@ -38,17 +39,22 @@ namespace Duality.Cloning
 			{
 				get { return this.isPlainOldData; }
 			}
+			public bool IsReference
+			{
+				get { return this.isReference; }
+			}
 			public bool AllowPlainOldDataShortcut
 			{
 				get { return this.allowPodShortcut; }
 			}
 
-			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld, bool shortcut)
+			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld, bool shortcut, bool isReference)
 			{
 				this.field = field;
 				this.flags = flags;
 				this.behavior = behavior;
 				this.isPlainOldData = isPlainOld;
+				this.isReference = isReference;
 				this.allowPodShortcut = shortcut;
 			}
 		}
@@ -57,6 +63,7 @@ namespace Duality.Cloning
 		private	CloneType		elementType;
 		private	CloneField[]	fieldData;
 		private	bool			plainOldData;
+		private	bool			canContainChildren;
 		private	CloneBehavior	behavior;
 		private	ICloneSurrogate	surrogate;
 		private	AssignPodFunc	assignPodFunc;
@@ -104,6 +111,13 @@ namespace Duality.Cloning
 			get { return !this.type.IsValueType && !this.type.IsSealed; }
 		}
 		/// <summary>
+		/// [GET] Returns whether the cached Type could contain child objects that need to be investiaged building the ownership graph.
+		/// </summary>
+		public bool CanContainChildren
+		{
+			get { return this.canContainChildren; }
+		}
+		/// <summary>
 		/// [GET] Returns whether the cached type is handled by a <see cref="ICloneSurrogate.RequireMerge">merge surrogate</see>.
 		/// </summary>
 		public bool IsMergeSurrogate
@@ -138,69 +152,78 @@ namespace Duality.Cloning
 		/// <param name="type"></param>
 		public CloneType(Type type)
 		{
+			this.canContainChildren = true;
 			this.type = type;
 			this.plainOldData = this.type.IsPlainOldData();
 			this.surrogate = CloneProvider.GetSurrogateFor(this.type);
 			if (this.type.IsArray) this.elementType = CloneProvider.GetCloneType(this.type.GetElementType());
-
-			if (!this.type.IsArray && !this.plainOldData)
-			{
-				// Retrieve field data
-				List<CloneField> fieldData = new List<CloneField>();
-				int podFieldCount = 0;
-				foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
-				{
-					CloneFieldFlags flags = CloneFieldFlags.None;
-					CloneFieldAttribute fieldAttrib = field.GetCustomAttributes<CloneFieldAttribute>().FirstOrDefault();
-					if (fieldAttrib != null) flags = fieldAttrib.Flags;
-
-					if (field.IsNotSerialized && !flags.HasFlag(CloneFieldFlags.DontSkip))
-						continue;
-					if (flags.HasFlag(CloneFieldFlags.Skip))
-						continue;
-
-					CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
-					bool isPlainOld = field.FieldType.IsPlainOldData();
-					bool allowShortcut = isPlainOld && (flags & ~CloneFieldFlags.DontSkip) == CloneFieldFlags.None;
-
-					fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld, allowShortcut));
-					if (allowShortcut) ++podFieldCount;
-				}
-				this.fieldData = fieldData.ToArray();
-
-				// Build a shortcut expression to copy all the plain old data fields without reflection
-				if (podFieldCount > 1 && this.surrogate == null && !this.type.IsValueType)
-				{
-					List<Expression> mainBlock = new List<Expression>();
-					ParameterExpression sourceParameter = Expression.Parameter(typeof(object), "source");
-					ParameterExpression targetParameter = Expression.Parameter(typeof(object), "target");
-					ParameterExpression sourceCastVar = Expression.Variable(type, "sourceCast");
-					ParameterExpression targetCastVar = Expression.Variable(type, "targetCast");
-					mainBlock.Add(Expression.Assign(sourceCastVar, type.IsValueType ? Expression.Convert(sourceParameter, type) : Expression.TypeAs(sourceParameter, type)));
-					mainBlock.Add(Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, type) : Expression.TypeAs(targetParameter, type)));
-					for (int i = 0; i < this.fieldData.Length; i++)
-					{
-						if (!this.fieldData[i].IsPlainOldData) continue;
-						if (!this.fieldData[i].AllowPlainOldDataShortcut) continue;
-
-						FieldInfo field = this.fieldData[i].Field;
-						Expression assignment = Expression.Assign(Expression.Field(targetCastVar, field), Expression.Field(sourceCastVar, field));
-						mainBlock.Add(assignment);
-					}
-					Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
-					this.assignPodFunc = Expression.Lambda<AssignPodFunc>(mainBlockExpression, sourceParameter, targetParameter).Compile();
-				}
-			}
-			else
-			{
-				this.fieldData = null;
-			}
 
 			CloneBehaviorAttribute defaultBehaviorAttrib = CloneProvider.GetCloneBehaviorAttribute(this.type);
 			if (defaultBehaviorAttrib != null && defaultBehaviorAttrib.Behavior != CloneBehavior.Default)
 				this.behavior = defaultBehaviorAttrib.Behavior;
 			else
 				this.behavior = CloneBehavior.ChildObject;
+		}
+
+		public void InitFields()
+		{
+			if (this.type.IsArray) return;
+			if (this.plainOldData) return;
+
+			// Retrieve field data
+			List<CloneField> fieldData = new List<CloneField>();
+			int shortcutFieldCount = 0;
+			this.canContainChildren = false;
+			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
+			{
+				CloneFieldFlags flags = CloneFieldFlags.None;
+				CloneFieldAttribute fieldAttrib = field.GetCustomAttributes<CloneFieldAttribute>().FirstOrDefault();
+				if (fieldAttrib != null) flags = fieldAttrib.Flags;
+
+				if (field.IsNotSerialized && !flags.HasFlag(CloneFieldFlags.DontSkip))
+					continue;
+				if (flags.HasFlag(CloneFieldFlags.Skip))
+					continue;
+
+				CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+				CloneType fieldType = CloneProvider.GetCloneType(field.FieldType);
+				bool affectedByLocalBehavior = 
+					(behaviorAttrib != null) && 
+					(behaviorAttrib.TargetType == null || field.FieldType.IsAssignableFrom(behaviorAttrib.TargetType)) && 
+					behaviorAttrib.Behavior != fieldType.DefaultCloneBehavior;
+				bool isPlainOld = field.FieldType.IsPlainOldData();
+				bool isReference = (fieldType.DefaultCloneBehavior == CloneBehavior.Reference) && !affectedByLocalBehavior;
+				bool allowShortcut = isPlainOld && (flags & ~CloneFieldFlags.DontSkip) == CloneFieldFlags.None;
+
+				if (!isPlainOld && !isReference) this.canContainChildren = true;
+
+				fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld, allowShortcut, isReference));
+				if (allowShortcut) ++shortcutFieldCount;
+			}
+			this.fieldData = fieldData.ToArray();
+
+			// Build a shortcut expression to copy all the plain old data fields without reflection
+			if (shortcutFieldCount > 1 && this.surrogate == null && !this.type.IsValueType)
+			{
+				List<Expression> mainBlock = new List<Expression>();
+				ParameterExpression sourceParameter = Expression.Parameter(typeof(object), "source");
+				ParameterExpression targetParameter = Expression.Parameter(typeof(object), "target");
+				ParameterExpression sourceCastVar = Expression.Variable(type, "sourceCast");
+				ParameterExpression targetCastVar = Expression.Variable(type, "targetCast");
+				mainBlock.Add(Expression.Assign(sourceCastVar, type.IsValueType ? Expression.Convert(sourceParameter, type) : Expression.TypeAs(sourceParameter, type)));
+				mainBlock.Add(Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, type) : Expression.TypeAs(targetParameter, type)));
+				for (int i = 0; i < this.fieldData.Length; i++)
+				{
+					if (!this.fieldData[i].IsPlainOldData) continue;
+					if (!this.fieldData[i].AllowPlainOldDataShortcut) continue;
+
+					FieldInfo field = this.fieldData[i].Field;
+					Expression assignment = Expression.Assign(Expression.Field(targetCastVar, field), Expression.Field(sourceCastVar, field));
+					mainBlock.Add(assignment);
+				}
+				Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
+				this.assignPodFunc = Expression.Lambda<AssignPodFunc>(mainBlockExpression, sourceParameter, targetParameter).Compile();
+			}
 		}
 	}
 }

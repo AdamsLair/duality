@@ -96,7 +96,10 @@ namespace Duality.Tests
 			Environment.CurrentDirectory = this.oldEnvDir;
 
 			// Save local testing memory
-			Formatter.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, FormattingMethod.Xml);
+			if (TestContext.CurrentContext.Result.Status == TestStatus.Passed)
+			{
+				Formatter.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, FormattingMethod.Xml);
+			}
 
 			Console.WriteLine("----- Duality environment teardown complete -----");
 		}

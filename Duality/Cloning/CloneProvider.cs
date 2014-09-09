@@ -645,6 +645,7 @@ namespace Duality.Cloning
 
 			result = new CloneType(type);
 			cloneTypeCache[type] = result;
+			result.InitFields();
 			return result;
 		}
 		internal static ICloneSurrogate GetSurrogateFor(Type type)
