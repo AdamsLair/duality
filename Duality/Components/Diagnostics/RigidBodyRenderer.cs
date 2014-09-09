@@ -126,7 +126,10 @@ namespace Duality.Components.Diagnostics
 
 			// Draw Shape Areas
 			canvas.State.ZOffset = this.offset;
-			canvas.State.SetMaterial(this.areaMaterial);
+			if (this.customAreaMaterial != null)
+				canvas.State.SetMaterial(this.customAreaMaterial);
+			else
+				canvas.State.SetMaterial(this.areaMaterial);
 			foreach (ShapeInfo shape in body.Shapes)
 			{
 				if (!shape.IsValid)
@@ -142,7 +145,10 @@ namespace Duality.Components.Diagnostics
 			if (this.outlineWidth > 0.0f)
 			{
 				canvas.State.ZOffset = this.offset - 1;
-				canvas.State.SetMaterial(this.outlineMaterial);
+				if (this.customAreaMaterial != null)
+					canvas.State.SetMaterial(this.customOutlineMaterial);
+				else
+					canvas.State.SetMaterial(this.outlineMaterial);
 				foreach (ShapeInfo shape in body.Shapes)
 				{
 					if (!shape.IsValid)

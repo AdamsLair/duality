@@ -330,7 +330,8 @@ namespace Duality
 					Type reqType = a.RequiredComponentType;
 					if (reqType == this.Component) continue; // Don't require itself
 					this.Requirements.AddRange(GetRequiredComponents(reqType).Where(t => !this.Requirements.Contains(t)));
-					this.Requirements.Add(reqType);
+					if (!this.Requirements.Contains(reqType))
+						this.Requirements.Add(reqType);
 				}
 			}
 			public void InitRequiredBy()
