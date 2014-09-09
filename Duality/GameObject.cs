@@ -769,34 +769,38 @@ namespace Duality
 		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{
 			GameObject target = targetObj as GameObject;
+			bool isPrefabApply = setup.Context is ApplyPrefabContext;
 
-			// Destroy additional Components in the target GameObject
-			if (target.compMap.Count > 0)
+			if (!isPrefabApply)
 			{
-				List<Type> removeComponentTypes = null;
-				foreach (var pair in target.compMap)
+				// Destroy additional Components in the target GameObject
+				if (target.compMap.Count > 0)
 				{
-					if (!this.compMap.ContainsKey(pair.Key))
+					List<Type> removeComponentTypes = null;
+					foreach (var pair in target.compMap)
 					{
-						if (removeComponentTypes == null) removeComponentTypes = new List<Type>();
-						removeComponentTypes.Add(pair.Key);
+						if (!this.compMap.ContainsKey(pair.Key))
+						{
+							if (removeComponentTypes == null) removeComponentTypes = new List<Type>();
+							removeComponentTypes.Add(pair.Key);
+						}
+					}
+					if (removeComponentTypes != null)
+					{
+						foreach (Type type in removeComponentTypes)
+						{
+							target.RemoveComponent(type);
+						}
 					}
 				}
-				if (removeComponentTypes != null)
+				// Destroy additional child objects in the target GameObject
+				if (target.children != null)
 				{
-					foreach (Type type in removeComponentTypes)
+					int thisChildCount = this.children != null ? this.children.Count : 0;
+					for (int i = target.children.Count - 1; i >= thisChildCount; i--)
 					{
-						target.RemoveComponent(type);
+						target.children[i].Dispose();
 					}
-				}
-			}
-			// Destroy additional child objects in the target GameObject
-			if (target.children != null)
-			{
-				int thisChildCount = this.children != null ? this.children.Count : 0;
-				for (int i = target.children.Count - 1; i >= thisChildCount; i--)
-				{
-					target.children[i].Dispose();
 				}
 			}
 

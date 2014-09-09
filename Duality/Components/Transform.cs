@@ -908,13 +908,6 @@ namespace Duality.Components
 			base.OnCopyDataTo(targetObj, operation);
 			Transform target = targetObj as Transform;
 
-			// Need to update parent transform, because this may happen 
-			// during Prefab.Apply, which occurs before the Scenes OnLoaded event.
-			if (this.gameobj != null && this.gameobj.Parent != null)
-			{
-				operation.GetTarget(this.gameobj.Parent.Transform, out target.parentTransform);
-			}
-
 			// Update absolute transformation data, because the target is relative to a different parent.
 			target.UpdateAbs();
 		}
