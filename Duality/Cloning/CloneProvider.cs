@@ -301,6 +301,8 @@ namespace Duality.Cloning
 		}
 		private void PrepareChildCloneGraph(object source, object target, CloneType typeData)
 		{
+			if (!typeData.CanContainChildren) return;
+
 			// If it's an array, we'll need to traverse its elements
 			if (typeData.IsArray)
 			{
