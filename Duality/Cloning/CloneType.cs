@@ -145,6 +145,7 @@ namespace Duality.Cloning
 
 			if (!this.type.IsArray && !this.plainOldData)
 			{
+				// Retrieve field data
 				List<CloneField> fieldData = new List<CloneField>();
 				int podFieldCount = 0;
 				foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
@@ -167,6 +168,7 @@ namespace Duality.Cloning
 				}
 				this.fieldData = fieldData.ToArray();
 
+				// Build a shortcut expression to copy all the plain old data fields without reflection
 				if (podFieldCount > 1 && this.surrogate == null && !this.type.IsValueType)
 				{
 					List<Expression> mainBlock = new List<Expression>();

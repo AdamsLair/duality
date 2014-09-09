@@ -825,7 +825,7 @@ namespace Duality
 			}
 
 			// Handle referenced and child objects
-			setup.HandleObject(this.scene, CloneBehavior.WeakReference);
+			setup.HandleObject(this.scene, target.scene, CloneBehavior.WeakReference);
 			setup.HandleObject(this.prefabLink, target.prefabLink);
 		}
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)

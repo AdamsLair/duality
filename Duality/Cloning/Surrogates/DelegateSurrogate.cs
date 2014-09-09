@@ -30,7 +30,7 @@ namespace Duality.Cloning.Surrogates
 			Delegate[] invokeList = source.GetInvocationList();
 			for (int i = 0; i < invokeList.Length; i++)
 			{
-				setup.HandleObject(invokeList[i].Target, CloneBehavior.WeakReference);
+				setup.HandleObject(invokeList[i].Target, null, CloneBehavior.WeakReference);
 			}
 		}
 		public override void CreateTargetObjectLate(Delegate source, ref Delegate target, ICloneOperation operation)

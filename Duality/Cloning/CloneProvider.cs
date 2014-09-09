@@ -542,11 +542,11 @@ namespace Duality.Cloning
 			}
 		}
 		
-		void ICloneTargetSetup.AddTarget(object source, object target)
+		void ICloneTargetSetup.AddTarget<T>(T source, T target)
 		{
 			this.SetTargetOf(source, target);
 		}
-		void ICloneTargetSetup.HandleObject(object source, object target, CloneBehavior behavior)
+		void ICloneTargetSetup.HandleObject<T>(T source, T target, CloneBehavior behavior)
 		{
 			switch (behavior)
 			{
@@ -586,7 +586,7 @@ namespace Duality.Cloning
 				return true;
 			}
 		}
-		bool ICloneOperation.HandleObject(object source, ref object target)
+		bool ICloneOperation.HandleObject<T>(T source, ref T target)
 		{
 			// If we're just handling ourselfs, don't bother doing anything else.
 			if (object.ReferenceEquals(source, this.currentObject))
@@ -615,7 +615,7 @@ namespace Duality.Cloning
 			object registeredTarget;
 			if (this.GetTargetOf(source, out registeredTarget))
 			{
-				target = registeredTarget;
+				target = registeredTarget as T;
 				this.PerformCopyObject(sourceNullMerge ? null : source, target, typeData);
 				return true;
 			}

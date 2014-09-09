@@ -900,7 +900,7 @@ namespace Duality.Components
 			base.OnSetupCloneTargets(targetObj, setup);
 			Transform target = targetObj as Transform;
 
-			setup.HandleObject(this.parentTransform, CloneBehavior.WeakReference);
+			setup.HandleObject(this.parentTransform, target.parentTransform, CloneBehavior.WeakReference);
 		}
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
 		{

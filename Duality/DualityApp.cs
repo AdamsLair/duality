@@ -308,7 +308,7 @@ namespace Duality
 				if (i % 3 == 0) child.AddComponent<Duality.Components.Physics.RigidBody>();
 				if (i % 7 == 0) child.AddComponent<Duality.Components.Renderers.TextRenderer>();
 			}
-			GameObject[] results = new GameObject[100];
+			GameObject[] results = new GameObject[400];
 
 			watch.Start();
 			for (int i = 0; i < results.Length; i++)
