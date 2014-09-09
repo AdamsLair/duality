@@ -16,7 +16,6 @@ namespace Duality.Resources
 	/// have been deliberately modified in the editor and restores them after re-applying the original Prefabs data.
 	/// </summary>
 	[Serializable]
-	[ExplicitResourceReference()]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePrefab)]
 	public class Prefab : Resource
