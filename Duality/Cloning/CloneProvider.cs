@@ -647,6 +647,15 @@ namespace Duality.Cloning
 		}
 		bool ICloneOperation.HandleObject<T>(T source, ref T target)
 		{
+			// If we're working by-value, skip some checks and re-assign the target
+			if (typeof(T).IsValueType)
+			{
+				object boxedTarget = target;
+				this.PerformCopyObject(source, boxedTarget, null);
+				target = (T)boxedTarget;
+				return true;
+			}
+
 			// If we're just handling ourselfs, don't bother doing anything else.
 			if (object.ReferenceEquals(source, this.currentObject))
 			{
@@ -669,7 +678,7 @@ namespace Duality.Cloning
 					if (typeData.IsMergeSurrogate)
 						sourceNullMerge = true;
 					else
-						source = null;
+						source = default(T);
 				}
 			}
 			
@@ -677,8 +686,8 @@ namespace Duality.Cloning
 			object registeredTarget;
 			if (this.GetTargetOf(source, out registeredTarget))
 			{
-				target = registeredTarget as T;
-				this.PerformCopyObject(sourceNullMerge ? null : source, target, typeData);
+				target = (T)registeredTarget;
+				this.PerformCopyObject(sourceNullMerge ? default(T) : source, target, typeData);
 				return true;
 			}
 			else

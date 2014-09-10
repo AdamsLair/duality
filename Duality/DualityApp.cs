@@ -295,11 +295,11 @@ namespace Duality
 
 		public static void RealWorldPerformanceTest()
 		{
-			//return;
+			return;
 			var watch = new System.Diagnostics.Stopwatch();
 
 			Random rnd = new Random(0);
-			GameObject[] results = new GameObject[25];
+			GameObject[] results = new GameObject[400];
 			GameObject data = new GameObject("CloneRoot");
 			for (int i = 0; i < 1000; i++)
 			{

@@ -53,6 +53,7 @@ namespace Duality
 	/// Also, a Component may not belong to multiple GameObjects at once.
 	/// </summary>
 	[Serializable]
+	[ManuallyCloned]
 	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
 	public abstract class Component : IManageableObject, IUniqueIdentifyable, ICloneExplicit
@@ -103,11 +104,8 @@ namespace Duality
 		}
 
 
-		[CloneField(CloneFieldFlags.Skip)]
 		internal	GameObject		gameobj		= null;
-		[CloneField(CloneFieldFlags.Skip)]
 		private		InitState		initState	= InitState.Initialized;
-		[CloneField(CloneFieldFlags.Skip)]
 		private		bool			active		= true;
 
 		

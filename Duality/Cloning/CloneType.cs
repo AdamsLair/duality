@@ -62,7 +62,6 @@ namespace Duality.Cloning
 		private	Type			type;
 		private	CloneType		elementType;
 		private	CloneField[]	fieldData;
-		private	int[]			ownershipFields;
 		private	bool			plainOldData;
 		private	bool			investigateOwnership;
 		private	CloneBehavior	behavior;
@@ -82,10 +81,6 @@ namespace Duality.Cloning
 		public CloneField[] FieldData
 		{
 			get { return this.fieldData; }
-		}
-		public int[] OwnershipFieldIndices
-		{
-			get { return this.ownershipFields; }
 		}
 		/// <summary>
 		/// [GET] Specifies whether this Type can be considered plain old data, i.e. can be cloned by assignment.
@@ -182,6 +177,9 @@ namespace Duality.Cloning
 			int precompiledAssignFieldCount = 0;
 			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
 			{
+				if (field.GetCustomAttributes<ManuallyClonedAttribute>().Any()) continue;
+				if (field.DeclaringType.GetCustomAttributes<ManuallyClonedAttribute>().Any()) continue;
+
 				CloneFieldFlags flags = CloneFieldFlags.None;
 				CloneFieldAttribute fieldAttrib = field.GetCustomAttributes<CloneFieldAttribute>().FirstOrDefault();
 				if (fieldAttrib != null) flags = fieldAttrib.Flags;
@@ -219,7 +217,6 @@ namespace Duality.Cloning
 				if (fieldEntry.AllowPrecompiledAssign) ++precompiledAssignFieldCount;
 			}
 			this.fieldData = fieldData.ToArray();
-			this.ownershipFields = Enumerable.Range(0, this.fieldData.Length).Where(i => !this.fieldData[i].IsAlwaysReference && !this.fieldData[i].FieldType.IsPlainOldData).ToArray();
 
 			// Build a shortcut expression to copy all the plain old data fields without reflection
 			if (precompiledAssignFieldCount > 0 && this.surrogate == null && !this.type.IsValueType)

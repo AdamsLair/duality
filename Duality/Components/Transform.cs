@@ -12,6 +12,7 @@ namespace Duality.Components
 	/// Represents a <see cref="GameObject">GameObjects</see> physical location in the world, relative to its <see cref="GameObject.Parent"/>.
 	/// </summary>
 	[Serializable]
+	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageTransform)]
 	public sealed class Transform : Component, ICmpUpdatable, ICmpEditorUpdatable, ICmpInitializable
@@ -40,7 +41,6 @@ namespace Duality.Components
 		private	bool	ignoreParent	= false;
 
 		// Cached values, recalc on change
-		[CloneField(CloneFieldFlags.Skip)]
 		private	Transform	parentTransform	= null;
 		private	Vector3		posAbs			= Vector3.Zero;
 		private	float		angleAbs		= 0.0f;
@@ -906,6 +906,27 @@ namespace Duality.Components
 		{
 			base.OnCopyDataTo(targetObj, operation);
 			Transform target = targetObj as Transform;
+
+			target.deriveAngle		= this.deriveAngle;
+			target.ignoreParent		= this.ignoreParent;
+
+			target.pos				= this.pos;
+			target.angle			= this.angle;
+			target.scale			= this.scale;
+
+			target.posAbs			= this.posAbs;
+			target.angleAbs			= this.angleAbs;
+			target.scaleAbs			= this.scaleAbs;
+
+			target.tempVel			= this.tempVel;
+			target.tempVelAbs		= this.tempVelAbs;
+			target.tempAngleVel		= this.tempAngleVel;
+			target.tempAngleVelAbs	= this.tempAngleVelAbs;
+
+			target.velAbs			= this.velAbs;
+			target.vel				= this.vel;
+			target.angleVel			= this.angleVel;
+			target.angleVelAbs		= this.angleVelAbs;
 
 			// Initialize parentTransform, because it's required for UpdateAbs but is null until OnLoaded, which will be called after applying prefabs.
 			if (target.gameobj != null && target.gameobj.Parent != null)
