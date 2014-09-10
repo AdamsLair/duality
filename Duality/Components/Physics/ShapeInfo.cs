@@ -19,7 +19,6 @@ namespace Duality.Components.Physics
 	public abstract class ShapeInfo
 	{
 		[NonSerialized]	
-		[CloneBehavior(CloneBehavior.WeakReference)]
 		protected	Fixture		fixture		= null;
 		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		RigidBody	parent		= null;

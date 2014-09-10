@@ -12,19 +12,24 @@ namespace Duality.Cloning
 	/// </summary>
 	public sealed class CloneType
 	{
-		public delegate void AssignPodFunc(object source, object target);
+		public delegate void AssignmentFunc(object source, object target);
 
 		public struct CloneField
 		{
 			private FieldInfo field;
+			private CloneType typeInfo;
 			private CloneFieldFlags flags;
 			private	CloneBehaviorAttribute behavior;
-			private bool isPlainOldData;
+			private bool isAlwaysReference;
 			private bool allowPodShortcut;
 
 			public FieldInfo Field
 			{
 				get { return this.field; }
+			}
+			public CloneType FieldType
+			{
+				get { return this.typeInfo; }
 			}
 			public CloneFieldFlags Flags
 			{
@@ -34,21 +39,22 @@ namespace Duality.Cloning
 			{
 				get { return this.behavior; }
 			}
-			public bool IsPlainOldData
+			public bool IsAlwaysReference
 			{
-				get { return this.isPlainOldData; }
+				get { return this.isAlwaysReference; }
 			}
-			public bool AllowPlainOldDataShortcut
+			public bool AllowPrecompiledAssign
 			{
 				get { return this.allowPodShortcut; }
 			}
 
-			public CloneField(FieldInfo field, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isPlainOld, bool shortcut)
+			public CloneField(FieldInfo field, CloneType typeInfo, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isAlwaysReference, bool shortcut)
 			{
 				this.field = field;
+				this.typeInfo = typeInfo;
 				this.flags = flags;
 				this.behavior = behavior;
-				this.isPlainOldData = isPlainOld;
+				this.isAlwaysReference = isAlwaysReference;
 				this.allowPodShortcut = shortcut;
 			}
 		}
@@ -56,10 +62,12 @@ namespace Duality.Cloning
 		private	Type			type;
 		private	CloneType		elementType;
 		private	CloneField[]	fieldData;
+		private	int[]			ownershipFields;
 		private	bool			plainOldData;
+		private	bool			investigateOwnership;
 		private	CloneBehavior	behavior;
 		private	ICloneSurrogate	surrogate;
-		private	AssignPodFunc	assignPodFunc;
+		private	AssignmentFunc	assignPodFunc;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Type"/> that is described.
@@ -74,6 +82,10 @@ namespace Duality.Cloning
 		public CloneField[] FieldData
 		{
 			get { return this.fieldData; }
+		}
+		public int[] OwnershipFieldIndices
+		{
+			get { return this.ownershipFields; }
 		}
 		/// <summary>
 		/// [GET] Specifies whether this Type can be considered plain old data, i.e. can be cloned by assignment.
@@ -104,6 +116,13 @@ namespace Duality.Cloning
 			get { return !this.type.IsValueType && !this.type.IsSealed; }
 		}
 		/// <summary>
+		/// [GET] Specifies whether this Type requires any ownership handling, i.e. contains children or weak references.
+		/// </summary>
+		public bool InvestigateOwnership
+		{
+			get { return this.investigateOwnership; }
+		}
+		/// <summary>
 		/// [GET] Returns whether the cached type is handled by a <see cref="ICloneSurrogate.RequireMerge">merge surrogate</see>.
 		/// </summary>
 		public bool IsMergeSurrogate
@@ -127,7 +146,7 @@ namespace Duality.Cloning
 		/// <summary>
 		/// [GET] When available, this property returns a compiled lambda function that assigns all plain old data fields of this Type
 		/// </summary>
-		public AssignPodFunc AssignPlainOldDataFunc
+		public AssignmentFunc PrecompiledAssignmentFunc
 		{
 			get { return this.assignPodFunc; }
 		}
@@ -140,6 +159,7 @@ namespace Duality.Cloning
 		{
 			this.type = type;
 			this.plainOldData = this.type.IsPlainOldData();
+			this.investigateOwnership = true;
 			this.surrogate = CloneProvider.GetSurrogateFor(this.type);
 			if (this.type.IsArray) this.elementType = CloneProvider.GetCloneType(this.type.GetElementType());
 
@@ -155,9 +175,11 @@ namespace Duality.Cloning
 			if (this.type.IsArray) return;
 			if (this.plainOldData) return;
 
+			this.investigateOwnership = typeof(ICloneExplicit).IsAssignableFrom(this.type) || this.surrogate != null;
+
 			// Retrieve field data
 			List<CloneField> fieldData = new List<CloneField>();
-			int shortcutFieldCount = 0;
+			int precompiledAssignFieldCount = 0;
 			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
 			{
 				CloneFieldFlags flags = CloneFieldFlags.None;
@@ -171,21 +193,36 @@ namespace Duality.Cloning
 
 				CloneBehaviorAttribute behaviorAttrib = field.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
 				CloneType fieldType = CloneProvider.GetCloneType(field.FieldType);
-				bool affectedByLocalBehavior = 
+				bool isAlwaysReference = 
 					(behaviorAttrib != null) && 
-					(behaviorAttrib.TargetType == null || field.FieldType.IsAssignableFrom(behaviorAttrib.TargetType)) && 
-					behaviorAttrib.Behavior != fieldType.DefaultCloneBehavior;
-				bool isPlainOld = field.FieldType.IsPlainOldData();
-				bool isReference = (fieldType.DefaultCloneBehavior == CloneBehavior.Reference) && !affectedByLocalBehavior;
-				bool allowShortcut = isPlainOld && (flags & ~CloneFieldFlags.DontSkip) == CloneFieldFlags.None;
+					(behaviorAttrib.TargetType == null || field.FieldType.IsAssignableFrom(behaviorAttrib.TargetType)) &&
+					(behaviorAttrib.Behavior == CloneBehavior.Reference);
+				bool allowShortcut = fieldType.IsPlainOldData && (flags & ~CloneFieldFlags.DontSkip) == CloneFieldFlags.None;
 
-				fieldData.Add(new CloneField(field, flags, behaviorAttrib, isPlainOld, allowShortcut));
-				if (allowShortcut) ++shortcutFieldCount;
+				// Can this field own any objects itself?
+				if (!this.investigateOwnership)
+				{
+					bool fieldCanOwnObjects = true;
+					if (fieldType.IsPlainOldData)
+						fieldCanOwnObjects = false;
+					if (isAlwaysReference)
+						fieldCanOwnObjects = false;
+					if (fieldType.Type.IsValueType && !fieldType.InvestigateOwnership)
+						fieldCanOwnObjects = false;
+
+					if (fieldCanOwnObjects)
+						this.investigateOwnership = true;
+				}
+
+				CloneField fieldEntry = new CloneField(field, fieldType, flags, behaviorAttrib, isAlwaysReference, allowShortcut);
+				fieldData.Add(fieldEntry);
+				if (fieldEntry.AllowPrecompiledAssign) ++precompiledAssignFieldCount;
 			}
 			this.fieldData = fieldData.ToArray();
+			this.ownershipFields = Enumerable.Range(0, this.fieldData.Length).Where(i => !this.fieldData[i].IsAlwaysReference && !this.fieldData[i].FieldType.IsPlainOldData).ToArray();
 
 			// Build a shortcut expression to copy all the plain old data fields without reflection
-			if (shortcutFieldCount > 1 && this.surrogate == null && !this.type.IsValueType)
+			if (precompiledAssignFieldCount > 0 && this.surrogate == null && !this.type.IsValueType)
 			{
 				List<Expression> mainBlock = new List<Expression>();
 				ParameterExpression sourceParameter = Expression.Parameter(typeof(object), "source");
@@ -196,15 +233,15 @@ namespace Duality.Cloning
 				mainBlock.Add(Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, type) : Expression.TypeAs(targetParameter, type)));
 				for (int i = 0; i < this.fieldData.Length; i++)
 				{
-					if (!this.fieldData[i].IsPlainOldData) continue;
-					if (!this.fieldData[i].AllowPlainOldDataShortcut) continue;
+					if (!this.fieldData[i].FieldType.IsPlainOldData) continue;
+					if (!this.fieldData[i].AllowPrecompiledAssign) continue;
 
 					FieldInfo field = this.fieldData[i].Field;
 					Expression assignment = Expression.Assign(Expression.Field(targetCastVar, field), Expression.Field(sourceCastVar, field));
 					mainBlock.Add(assignment);
 				}
 				Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
-				this.assignPodFunc = Expression.Lambda<AssignPodFunc>(mainBlockExpression, sourceParameter, targetParameter).Compile();
+				this.assignPodFunc = Expression.Lambda<AssignmentFunc>(mainBlockExpression, sourceParameter, targetParameter).Compile();
 			}
 		}
 	}

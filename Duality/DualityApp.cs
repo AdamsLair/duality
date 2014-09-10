@@ -295,10 +295,11 @@ namespace Duality
 
 		public static void RealWorldPerformanceTest()
 		{
-			return;
+			//return;
 			var watch = new System.Diagnostics.Stopwatch();
 
 			Random rnd = new Random(0);
+			GameObject[] results = new GameObject[25];
 			GameObject data = new GameObject("CloneRoot");
 			for (int i = 0; i < 1000; i++)
 			{
@@ -308,15 +309,18 @@ namespace Duality
 				if (i % 3 == 0) child.AddComponent<Duality.Components.Physics.RigidBody>();
 				if (i % 7 == 0) child.AddComponent<Duality.Components.Renderers.TextRenderer>();
 			}
-			GameObject[] results = new GameObject[400];
 
-			watch.Start();
+			watch.Restart();
 			for (int i = 0; i < results.Length; i++)
 			{
 				results[i] = data.DeepClone();
 			}
 			watch.Stop();
-			Log.Core.Write("{0:F}", watch.Elapsed.TotalMilliseconds);
+			Log.Core.Write("Cloning cost: {0:F}", watch.Elapsed.TotalMilliseconds);
+			foreach (var p in CloneProvider.test.OrderByDescending(p => p.Value.Elapsed.TotalMilliseconds))
+			{
+				Log.Core.Write("{0}: {1:F}", Log.Type(p.Key), p.Value.Elapsed.TotalMilliseconds);
+			}
 		}
 		/// <summary>
 		/// Initializes this DualityApp. Should be called before performing any operations withing Duality.

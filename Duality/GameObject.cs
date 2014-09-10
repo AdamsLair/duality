@@ -807,7 +807,8 @@ namespace Duality
 			// Create missing Components in the target GameObject
 			foreach (var pair in this.compMap)
 			{
-				setup.HandleObject(pair.Value, target.AddComponent(pair.Key), CloneBehavior.ChildObject);
+				Component targetComponent = target.AddComponent(pair.Key);
+				setup.HandleObject(pair.Value, targetComponent, CloneBehavior.ChildObject);
 			}
 			// Create missing child objects in the target GameObject
 			if (this.children != null)
@@ -840,9 +841,9 @@ namespace Duality
 				target.identifier = this.identifier;
 
 			// Copy Components from source to target
-			foreach (var pair in this.compMap)
+			for (int i = 0; i < this.compList.Count; i++)
 			{
-				operation.HandleObject(pair.Value, target.compMap[pair.Key]);
+				operation.HandleObject(this.compList[i]);
 			}
 
 			// Copy child objects from source to target
@@ -850,7 +851,7 @@ namespace Duality
 			{
 				for (int i = 0; i < this.children.Count; i++)
 				{
-					operation.HandleObject(this.children[i], target.children[i]);
+					operation.HandleObject(this.children[i]);
 				}
 			}
 

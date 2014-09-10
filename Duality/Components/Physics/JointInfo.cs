@@ -20,7 +20,6 @@ namespace Duality.Components.Physics
 	public abstract class JointInfo
 	{
 		[NonSerialized]	
-		[CloneBehavior(CloneBehavior.WeakReference)]
 		internal protected	Joint	joint	= null;
 		[CloneBehavior(CloneBehavior.WeakReference)]
 		private		RigidBody	colA		= null;

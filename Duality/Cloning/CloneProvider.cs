@@ -183,6 +183,7 @@ namespace Duality.Cloning
 			return typeData.Type.IsValueType || object.ReferenceEquals(source, null) || this.handledObjects.Remove(source);
 		}
 
+		public static Dictionary<Type,System.Diagnostics.Stopwatch> test = new Dictionary<Type,System.Diagnostics.Stopwatch>();
 		private void PrepareCloneGraph()
 		{
 			// Visit the object graph in order to determine which objects to clone
@@ -225,6 +226,16 @@ namespace Duality.Cloning
 			// Determine the object Type and early-out if it's just plain old data
 			if (typeData == null) typeData = GetCloneType(source.GetType());
 			if (typeData.IsPlainOldData) return;
+
+			System.Diagnostics.Stopwatch w;
+			if (!test.TryGetValue(typeData.Type, out w))
+			{
+				w = new System.Diagnostics.Stopwatch();
+				test[typeData.Type] = w;
+			}
+			w.Start();
+			try
+			{
 
 			object behaviorLock = null;
 			if (!sourceNullMerge)
@@ -312,41 +323,52 @@ namespace Duality.Cloning
 			this.currentObject = lastObject;
 			this.currentCloneType = lastCloneType;
 			this.UnlockCloneBehavior(behaviorLock);
+			}
+			finally
+			{
+				w.Stop();
+			}
 		}
 		private void PrepareChildCloneGraph(object source, object target, CloneType typeData)
 		{
+			// If the object is a simple and shallow type, there's nothing to investigate.
+			if (!typeData.InvestigateOwnership) return;
+
 			// If it's an array, we'll need to traverse its elements
 			if (typeData.IsArray)
 			{
+				if (typeData.ElementType.IsPlainOldData) return;
+				if (typeData.ElementType.Type.IsValueType && !typeData.InvestigateOwnership) return;
+
 				Array sourceArray = source as Array;
 				Array targetArray = target as Array;
-				if (!typeData.ElementType.IsPlainOldData)
+				for (int i = 0; i < sourceArray.Length; i++)
 				{
-					for (int i = 0; i < sourceArray.Length; i++)
-					{
-						this.PrepareCloneGraph(
-							sourceArray.GetValue(i), 
-							targetArray.Length > i ? targetArray.GetValue(i) : null, 
-							typeData.ElementType.CouldBeDerived ? null : typeData.ElementType);
-					}
+					this.PrepareCloneGraph(
+						sourceArray.GetValue(i), 
+						targetArray.Length > i ? targetArray.GetValue(i) : null, 
+						typeData.ElementType.CouldBeDerived ? null : typeData.ElementType);
 				}
 			}
 			// If it's an object, we'll need to traverse its fields
 			else
 			{
-				for (int i = 0; i < typeData.FieldData.Length; i++)
+				var fieldData = typeData.FieldData;
+				for (int i = 0; i < fieldData.Length; i++)
 				{
 					// Don't need to scan "plain old data" and reference fields
-					if (typeData.FieldData[i].IsPlainOldData) continue;
+					if (fieldData[i].FieldType.IsPlainOldData) continue;
+					if (fieldData[i].IsAlwaysReference) continue;
 
 					// See if there are specific instructions on how to handle this
-					CloneBehaviorAttribute behavior = typeData.FieldData[i].Behavior;
+					CloneBehaviorAttribute behavior = fieldData[i].Behavior;
 					if (behavior != null) this.PushCloneBehavior(behavior);
 					{
 						// Handle the fields value
+						FieldInfo field = fieldData[i].Field;
 						this.PrepareCloneGraph(
-							typeData.FieldData[i].Field.GetValue(source), 
-							typeData.FieldData[i].Field.GetValue(target),
+							field.GetValue(source), 
+							field.GetValue(target),
 							null);
 					}
 					if (behavior != null) this.PopCloneBehavior();
@@ -468,22 +490,22 @@ namespace Duality.Cloning
 			{
 				// When available, take the shortcut for assigning all POD fields
 				bool shortcutActive = false;
-				if (sourceType.AssignPlainOldDataFunc != null)
+				if (sourceType.PrecompiledAssignmentFunc != null)
 				{
 					shortcutActive = true;
-					sourceType.AssignPlainOldDataFunc(source, target);
+					sourceType.PrecompiledAssignmentFunc(source, target);
 				}
 				for (int i = 0; i < sourceType.FieldData.Length; i++)
 				{
 					// Skip fields that were assigned using the above shortcut method
-					if (shortcutActive && sourceType.FieldData[i].AllowPlainOldDataShortcut)
+					if (shortcutActive && sourceType.FieldData[i].AllowPrecompiledAssign)
 						continue;
 					// Skip certain fields when requested
 					if ((sourceType.FieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
 						continue;
 
 					// Actually copy the current field
-					this.PerformCopyField(source, target, sourceType.FieldData[i].Field, sourceType.FieldData[i].IsPlainOldData);
+					this.PerformCopyField(source, target, sourceType.FieldData[i].Field, sourceType.FieldData[i].FieldType.IsPlainOldData);
 				}
 			}
 		}
