@@ -228,7 +228,6 @@ namespace Duality.Cloning
 		private void PrepareCloneGraph(object source, object target, CloneType typeData, CloneBehavior behavior = CloneBehavior.Default)
 		{
 			// Early-out for null values
-			bool sourceNullMerge = false;
 			if (object.ReferenceEquals(source, null))
 			{
 				if (object.ReferenceEquals(target, null)) return;
