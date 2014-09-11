@@ -174,6 +174,37 @@ namespace Duality.Tests.Resources
 
 			Assert.AreEqual(ColorRgba.Green, childSprite.ColorTint);
 		}
+		[Test] public void InstantiatePerformance()
+		{
+			Prefab prefab = new Prefab(this.CreateSimpleGameObject());
+			GameObject[] results = new GameObject[1000];
+
+			GC.Collect();
+			
+			var watch = new System.Diagnostics.Stopwatch();
+			watch.Restart();
+			for (int i = 0; i < results.Length; i++)
+			{
+				results[i] = prefab.Instantiate();
+			}
+			watch.Stop();
+			TestHelper.LogNumericTestResult(this, "Instantiate", watch.Elapsed.TotalMilliseconds, "ms");
+
+			GC.Collect();
+
+			var watch2 = new System.Diagnostics.Stopwatch();
+			watch2.Restart();
+			for (int i = 0; i < results.Length; i++)
+			{
+				results[i] = this.CreateSimpleGameObject();
+			}
+			watch2.Stop();
+			TestHelper.LogNumericTestResult(this, "CreateWithoutPrefabs", watch2.Elapsed.TotalMilliseconds, "ms");
+			TestHelper.LogNumericTestResult(this, "PrefabVersusRaw", watch.Elapsed.TotalMilliseconds / watch2.Elapsed.TotalMilliseconds, null);
+
+			GC.Collect();
+			Assert.Pass();
+		}
 
 		private GameObject CreateSimpleGameObject(GameObject parent = null)
 		{

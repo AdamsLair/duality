@@ -296,7 +296,6 @@ namespace Duality.Tests.Cloning
 		}
 		[Test] public void RealWorldPerformanceTest()
 		{
-			var watch = new System.Diagnostics.Stopwatch();
 
 			Random rnd = new Random(0);
 			GameObject data = new GameObject("CloneRoot");
@@ -310,14 +309,39 @@ namespace Duality.Tests.Cloning
 			}
 			GameObject[] results = new GameObject[25];
 
+			GC.Collect();
+
+			var watch = new System.Diagnostics.Stopwatch();
 			watch.Start();
 			for (int i = 0; i < results.Length; i++)
 			{
 				results[i] = data.DeepClone();
 			}
 			watch.Stop();
-			TestHelper.LogNumericTestResult(this, "RealWorldPerformanceTest", watch.Elapsed.TotalMilliseconds, "ms");
+			TestHelper.LogNumericTestResult(this, "CloneGameObjectGraph", watch.Elapsed.TotalMilliseconds, "ms");
 
+			GC.Collect();
+
+			var watch2 = new System.Diagnostics.Stopwatch();
+			watch2.Start();
+			for (int j = 0; j < results.Length; j++)
+			{
+				GameObject obj = new GameObject("CloneRoot");
+				for (int i = 0; i < 1000; i++)
+				{
+					GameObject child = new GameObject("Child", data);
+					child.AddComponent<Transform>();
+					if (i % 3 != 0) child.AddComponent<SpriteRenderer>();
+					if (i % 3 == 0) child.AddComponent<RigidBody>();
+					if (i % 7 == 0) child.AddComponent<TextRenderer>();
+				}
+				results[j] = data;
+			}
+			watch2.Stop();
+			TestHelper.LogNumericTestResult(this, "CreateWithoutClone", watch2.Elapsed.TotalMilliseconds, "ms");
+			TestHelper.LogNumericTestResult(this, "CloneVersusRaw", watch.Elapsed.TotalMilliseconds / watch2.Elapsed.TotalMilliseconds, null);
+
+			GC.Collect();
 			Assert.Pass();
 		}
 	}

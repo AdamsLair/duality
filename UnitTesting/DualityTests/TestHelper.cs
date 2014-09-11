@@ -56,7 +56,7 @@ namespace Duality.Tests
 
 			long localAverage = (long)lastValueList.Average();
 
-			string nameStr = (testName + "." + testFixture.GetType().Name);
+			string nameStr = (testFixture.GetType().Name + "." + testName);
 			string newValueStr = string.Format("{0}{1}", resultValue, unit);
 			string lastValueStr = string.Format("{0}{1}", localAverage, unit);
 
@@ -78,7 +78,7 @@ namespace Duality.Tests
 
 			double localAverage = lastValueList.Average();
 
-			string nameStr = (testName + "." + testFixture.GetType().Name);
+			string nameStr = (testFixture.GetType().Name + "." + testName);
 			string newValueStr = string.Format("{0:F}{1}", resultValue, unit);
 			string lastValueStr = string.Format("{0:F}{1}", localAverage, unit);
 
