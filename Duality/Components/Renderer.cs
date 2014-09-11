@@ -2,6 +2,7 @@
 
 using Duality.Editor;
 using Duality.Drawing;
+using Duality.Cloning;
 
 using OpenTK;
 
@@ -12,6 +13,7 @@ namespace Duality.Components
 	/// However, in general it may render anything and isn't bound by any conceptual restrictions.
 	/// </summary>
 	[Serializable]
+	[ManuallyCloned]
 	[RequiredComponent(typeof(Transform))]
 	public abstract class Renderer : Component, ICmpRenderer
 	{
@@ -38,7 +40,6 @@ namespace Duality.Components
 		/// </summary>
 		/// <param name="device"></param>
 		public abstract void Draw(IDrawDevice device);
-
 		/// <summary>
 		/// Determines if the Renderer is visible to the specified <see cref="IDrawDevice"/>.
 		/// This is usually the case if they share at least one mutual <see cref="VisibilityGroup">visibility group</see>.
@@ -50,6 +51,14 @@ namespace Duality.Components
 			if ((device.VisibilityMask & VisibilityFlag.ScreenOverlay) != (this.visibilityGroup & VisibilityFlag.ScreenOverlay)) return false;
 			if ((this.visibilityGroup & device.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return false;
 			return device.IsCoordInView(this.gameobj.Transform.Pos, this.BoundRadius);
+		}
+
+		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
+		{
+			base.OnCopyDataTo(targetObj, operation);
+			Renderer target = targetObj as Renderer;
+
+			target.visibilityGroup = this.visibilityGroup;
 		}
 	}
 }

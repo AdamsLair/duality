@@ -390,7 +390,12 @@ namespace Duality.Resources
 				{
 					try
 					{
-						this.changes[i].prop.SetValue(target, this.changes[i].val, null);
+						object applyVal = null;
+						if (this.changes[i].prop.PropertyType.IsValueType)
+							applyVal = this.changes[i].val;
+						else
+							applyVal = this.changes[i].val.DeepClone();
+						this.changes[i].prop.SetValue(target, applyVal, null);
 					}
 					catch (Exception e)
 					{
@@ -472,7 +477,10 @@ namespace Duality.Resources
 			object changeVal = prop.GetValue(target, null);
 
 			// Clone the changelist entry value
-			changeVal = changeVal.DeepClone();
+			if (changeVal != null && !changeVal.GetType().IsValueType)
+			{
+				changeVal = changeVal.DeepClone();
+			}
 
 			this.PushChange(target, prop, changeVal);
 		}
@@ -587,10 +595,10 @@ namespace Duality.Resources
 		/// <param name="objEnum">An enumeration of all GameObjects containing PrefabLinks that are to <see cref="Apply()">apply</see>.</param>
 		/// <param name="predicate">An optional predicate. If set, only PrefabLinks meeting its requirements are applied.</param>
 		/// <returns>A List of all PrefabLinks that have been applied.</returns>
-		public static List<PrefabLink> ApplyAllLinks(IEnumerable<GameObject> objEnum, Predicate<PrefabLink> predicate = null)
+		public static HashSet<PrefabLink> ApplyAllLinks(IEnumerable<GameObject> objEnum, Predicate<PrefabLink> predicate = null)
 		{
 			if (predicate == null) predicate = p => true;
-			List<PrefabLink> appliedLinks = new List<PrefabLink>();
+			HashSet<PrefabLink> appliedLinks = new HashSet<PrefabLink>();
 
 			var sortedQuery = from obj in objEnum
 							  where obj.PrefabLink != null && predicate(obj.PrefabLink)

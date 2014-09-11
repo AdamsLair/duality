@@ -31,15 +31,15 @@ namespace Duality.Components.Diagnostics
 			public VertexC1P3T2[][] VertText;
 		}
 
-		private	bool			textReportPerf		= true;
-		private	bool			textReportStat		= true;
-		private	bool			drawGraphs			= true;
-		private	List<string>	counterGraphs		= new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
+		private	bool					textReportPerf		= true;
+		private	bool					textReportStat		= true;
+		private	bool					drawGraphs			= true;
+		private	List<string>			counterGraphs		= new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
 		private	ProfileReportOptions	textReportOptions	= ProfileReportOptions.LastValue;
-		private	int				updateInterval		= 250;
-		private	Key				keyToggleTextPerf	= Key.F2;
-		private	Key				keyToggleTextStat	= Key.F3;
-		private	Key				keyToggleGraph		= Key.F4;
+		private	int						updateInterval		= 250;
+		private	Key						keyToggleTextPerf	= Key.F2;
+		private	Key						keyToggleTextStat	= Key.F3;
+		private	Key						keyToggleGraph		= Key.F4;
 
 		[NonSerialized] private	FormattedText		textReport			= null;
 		[NonSerialized] private	VertexC1P3T2[]		textReportIconVert	= null;

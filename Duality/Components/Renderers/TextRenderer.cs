@@ -16,6 +16,7 @@ namespace Duality.Components.Renderers
 	/// Renders a text to represent the <see cref="GameObject"/>.
 	/// </summary>
 	[Serializable]
+	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
 	public class TextRenderer : Renderer, ICmpInitializable
@@ -218,12 +219,33 @@ namespace Duality.Components.Renderers
 			}
 		}
 
-		
 		void ICmpInitializable.OnInit(InitContext context)
 		{
 			if (context == InitContext.Loaded)
 				this.text.ApplySource();
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context) {}
+		
+		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
+		{
+			base.OnSetupCloneTargets(targetObj, setup);
+			TextRenderer target = targetObj as TextRenderer;
+
+			setup.HandleObject(this.text, target.text);
+			setup.HandleObject(this.iconMat, target.iconMat);
+			setup.HandleObject(this.customMat, target.customMat);
+		}
+		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
+		{
+			base.OnCopyDataTo(targetObj, operation);
+			TextRenderer target = targetObj as TextRenderer;
+
+			target.blockAlign	= this.blockAlign;
+			target.colorTint	= this.colorTint;
+
+			operation.HandleObject(this.text, ref target.text);
+			operation.HandleObject(this.iconMat, ref target.iconMat);
+			operation.HandleObject(this.customMat, ref target.customMat);
+		}
 	}
 }

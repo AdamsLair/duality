@@ -92,6 +92,5 @@ namespace Duality.Components.Diagnostics
 				this.GameObj.Dispose();
 			}
 		}
-
 	}
 }

@@ -17,6 +17,7 @@ namespace Duality.Components.Renderers
 	/// Renders an animated sprite to represent the <see cref="GameObject"/>.
 	/// </summary>
 	[Serializable]
+	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageAnimSpriteRenderer)]
 	public class AnimSpriteRenderer : SpriteRenderer, ICmpUpdatable, ICmpInitializable
@@ -492,6 +493,28 @@ namespace Duality.Components.Renderers
 				if (this.customMat != null)	device.AddVertices(this.customMat, VertexMode.Quads, this.verticesSmooth);
 				else						device.AddVertices(this.sharedMat, VertexMode.Quads, this.verticesSmooth);
 			}
+		}
+
+		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
+		{
+			base.OnSetupCloneTargets(targetObj, setup);
+			AnimSpriteRenderer target = targetObj as AnimSpriteRenderer;
+
+			setup.HandleObject(this.customFrameSequence, target.customFrameSequence);
+		}
+		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
+		{
+			base.OnCopyDataTo(targetObj, operation);
+			AnimSpriteRenderer target = targetObj as AnimSpriteRenderer;
+
+			target.animFirstFrame		= this.animFirstFrame;
+			target.animFrameCount		= this.animFrameCount;
+			target.animDuration			= this.animDuration;
+			target.animLoopMode			= this.animLoopMode;
+			target.animTime				= this.animTime;
+			target.animPaused			= this.animPaused;
+
+			operation.HandleObject(this.customFrameSequence, ref target.customFrameSequence);
 		}
 	}
 }

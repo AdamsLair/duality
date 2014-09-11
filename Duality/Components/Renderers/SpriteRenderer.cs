@@ -15,6 +15,7 @@ namespace Duality.Components.Renderers
 	/// Renders a sprite to represent the <see cref="GameObject"/>.
 	/// </summary>
 	[Serializable]
+	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSpriteRenderer)]
 	public class SpriteRenderer : Renderer
@@ -268,6 +269,28 @@ namespace Duality.Components.Renderers
 				device.AddVertices(this.customMat, VertexMode.Quads, this.vertices);
 			else
 				device.AddVertices(this.sharedMat, VertexMode.Quads, this.vertices);
+		}
+
+		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
+		{
+			base.OnSetupCloneTargets(targetObj, setup);
+			SpriteRenderer target = targetObj as SpriteRenderer;
+
+			setup.HandleObject(this.sharedMat, target.sharedMat);
+			setup.HandleObject(this.customMat, target.customMat);
+		}
+		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
+		{
+			base.OnCopyDataTo(targetObj, operation);
+			SpriteRenderer target = targetObj as SpriteRenderer;
+			
+			target.rect			= this.rect;
+			target.colorTint	= this.colorTint;
+			target.rectMode		= this.rectMode;
+			target.offset		= this.offset;
+
+			operation.HandleObject(this.sharedMat, ref target.sharedMat);
+			operation.HandleObject(this.customMat, ref target.customMat);
 		}
 	}
 }

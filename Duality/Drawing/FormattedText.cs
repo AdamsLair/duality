@@ -17,7 +17,7 @@ namespace Duality.Drawing
 	/// Provides functionality for analyzing, handling and displaying formatted text.
 	/// </summary>
 	[Serializable]
-	public class FormattedText : ICloneExplicit
+	public sealed class FormattedText : ICloneExplicit
 	{
 		/// <summary>
 		/// Format string for displaying a slash (/) character.
@@ -804,14 +804,32 @@ namespace Duality.Drawing
 		{
 			return this.DeepClone();
 		}
-		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
+		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{
-			setup.HandleObject(this, target);
+			FormattedText target = targetObj as FormattedText;
+
+			setup.HandleObject(this.icons, target.icons);
+			setup.HandleObject(this.flowAreas, target.flowAreas);
+			setup.HandleObject(this.fonts, target.fonts);
 		}
-		void ICloneExplicit.CopyDataTo(object target, ICloneOperation operation)
+		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
-			operation.HandleObject(this, target);
-			(target as FormattedText).ApplySource(this.sourceText);
+			FormattedText target = targetObj as FormattedText;
+
+			operation.HandleObject(this.icons, ref target.icons);
+			operation.HandleObject(this.flowAreas, ref target.flowAreas);
+			operation.HandleObject(this.fonts, ref target.fonts);
+
+			target.icons		= this.icons != null ? this.icons.Clone() as Icon[] : null;
+			target.flowAreas	= this.flowAreas != null ? this.flowAreas.Clone() as FlowArea[] : null;
+			target.fonts		= this.fonts != null ? this.fonts.Clone() as ContentRef<Font>[] : null;
+			target.sourceText	= this.sourceText;
+			target.maxWidth		= this.maxWidth;
+			target.maxHeight	= this.maxHeight;
+			target.wrapMode		= this.wrapMode;
+			target.lineAlign	= this.lineAlign;
+
+			target.ApplySource(target.sourceText);
 		}
 
 		/// <summary>

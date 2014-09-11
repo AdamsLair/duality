@@ -1224,7 +1224,7 @@ namespace Duality.Editor
 				{
 					foreach (Prefab prefab in args.Objects.Resources.OfType<Prefab>())
 					{
-						List<PrefabLink> appliedLinks = PrefabLink.ApplyAllLinks(Scene.Current.AllObjects, p => p.Prefab == prefab);
+						HashSet<PrefabLink> appliedLinks = PrefabLink.ApplyAllLinks(Scene.Current.AllObjects, p => p.Prefab == prefab);
 						List<GameObject> changedObjects = new List<GameObject>(appliedLinks.Select(p => p.Obj));
 						NotifyObjPrefabApplied(null, new ObjectSelection(changedObjects));
 					}

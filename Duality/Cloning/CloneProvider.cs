@@ -52,15 +52,30 @@ namespace Duality.Cloning
 				return hash;
 			}
 		}
-		private struct CloneBehaviorEntry
+		private class LocalCloneBehavior
 		{
-			public CloneBehaviorAttribute Behavior;
-			public bool Locked;
+			private Type			targetType;
+			private CloneBehavior	behavior;
+			private bool			locked;
 
-			public CloneBehaviorEntry(CloneBehaviorAttribute attribute)
+			public Type TargetType
 			{
-				this.Behavior = attribute;
-				this.Locked = false;
+				get { return this.targetType; }
+			}
+			public CloneBehavior Behavior
+			{
+				get { return this.behavior; }
+			}
+			public bool Locked
+			{
+				get { return this.locked; }
+				set { this.locked = value; }
+			}
+
+			public LocalCloneBehavior(Type targetType, CloneBehavior behavior)
+			{
+				this.targetType = targetType;
+				this.behavior = behavior;
 			}
 		}
 
@@ -75,7 +90,7 @@ namespace Duality.Cloning
 		private	HashSet<LateSetupEntry>		lateSetupSchedule	= new HashSet<LateSetupEntry>();
 		private	HashSet<object>				handledObjects		= new HashSet<object>(new ReferenceEqualityComparer());
 		private	HashSet<object>				dropWeakReferences	= new HashSet<object>(new ReferenceEqualityComparer());
-		private	RawList<CloneBehaviorEntry>	localBehavior		= new RawList<CloneBehaviorEntry>();
+		private	RawList<LocalCloneBehavior>	localBehavior		= new RawList<LocalCloneBehavior>();
 		
 
 		/// <summary>
@@ -183,7 +198,6 @@ namespace Duality.Cloning
 			return typeData.Type.IsValueType || object.ReferenceEquals(source, null) || this.handledObjects.Remove(source);
 		}
 
-		public static Dictionary<Type,System.Diagnostics.Stopwatch> test = new Dictionary<Type,System.Diagnostics.Stopwatch>();
 		private void PrepareCloneGraph()
 		{
 			// Visit the object graph in order to determine which objects to clone
@@ -220,25 +234,16 @@ namespace Duality.Cloning
 				if (object.ReferenceEquals(target, null)) return;
 				if (typeData == null) typeData = GetCloneType(target.GetType());
 				if (!typeData.IsMergeSurrogate) return;
-				sourceNullMerge = true;
 			}
 			
 			// Determine the object Type and early-out if it's just plain old data
 			if (typeData == null) typeData = GetCloneType(source.GetType());
 			if (typeData.IsPlainOldData) return;
-
-			System.Diagnostics.Stopwatch w;
-			if (!test.TryGetValue(typeData.Type, out w))
-			{
-				w = new System.Diagnostics.Stopwatch();
-				test[typeData.Type] = w;
-			}
-			w.Start();
-			try
-			{
-
+			ICloneExplicit customSource = source as ICloneExplicit;
+			if (typeData.Surrogate == null && customSource == null && typeData.Type.IsValueType && !typeData.InvestigateOwnership) return;
+			
 			object behaviorLock = null;
-			if (!sourceNullMerge)
+			if (!object.ReferenceEquals(source, null) && !typeData.Type.IsValueType)
 			{
 				// If we already registered a target for that source, stop right here.
 				if (this.targetMapping.ContainsKey(source))
@@ -283,9 +288,8 @@ namespace Duality.Cloning
 			// Otherwise, use the default algorithm
 			else
 			{
-				Array originalTargetArray = null;
-
 				// Create a new target array. Always necessary due to their immutable size.
+				Array originalTargetArray = null;
 				if (typeData.IsArray)
 				{
 					Array sourceArray = source as Array;
@@ -303,13 +307,12 @@ namespace Duality.Cloning
 				{
 					this.SetTargetOf(source, target);
 				}
-
+				
 				// If we are dealing with an array, use the original one for object reuse mapping
 				if (originalTargetArray != null) target = originalTargetArray;
 
 				// If it implements custom cloning behavior, use that
-				ICloneExplicit customSource;
-				if ((customSource = source as ICloneExplicit) != null)
+				if (customSource != null)
 				{
 					customSource.SetupCloneTargets(target, this);
 				}
@@ -323,11 +326,6 @@ namespace Duality.Cloning
 			this.currentObject = lastObject;
 			this.currentCloneType = lastCloneType;
 			this.UnlockCloneBehavior(behaviorLock);
-			}
-			finally
-			{
-				w.Stop();
-			}
 		}
 		private void PrepareChildCloneGraph(object source, object target, CloneType typeData)
 		{
@@ -337,42 +335,23 @@ namespace Duality.Cloning
 			// If it's an array, we'll need to traverse its elements
 			if (typeData.IsArray)
 			{
-				if (typeData.ElementType.IsPlainOldData) return;
-				if (typeData.ElementType.Type.IsValueType && !typeData.InvestigateOwnership) return;
-
+				CloneType elementTypeData = typeData.ElementType.CouldBeDerived ? null : typeData.ElementType;
 				Array sourceArray = source as Array;
 				Array targetArray = target as Array;
 				for (int i = 0; i < sourceArray.Length; i++)
 				{
+					object sourceElementValue = sourceArray.GetValue(i);
+					object targetElementValue = targetArray.Length > i ? targetArray.GetValue(i) : null;
 					this.PrepareCloneGraph(
-						sourceArray.GetValue(i), 
-						targetArray.Length > i ? targetArray.GetValue(i) : null, 
-						typeData.ElementType.CouldBeDerived ? null : typeData.ElementType);
+						sourceElementValue, 
+						targetElementValue, 
+						elementTypeData);
 				}
 			}
 			// If it's an object, we'll need to traverse its fields
-			else
+			else if (typeData.PrecompiledSetupFunc != null)
 			{
-				var fieldData = typeData.FieldData;
-				for (int i = 0; i < fieldData.Length; i++)
-				{
-					// Don't need to scan "plain old data" and reference fields
-					if (fieldData[i].FieldType.IsPlainOldData) continue;
-					if (fieldData[i].IsAlwaysReference) continue;
-
-					// See if there are specific instructions on how to handle this
-					CloneBehaviorAttribute behavior = fieldData[i].Behavior;
-					if (behavior != null) this.PushCloneBehavior(behavior);
-					{
-						// Handle the fields value
-						FieldInfo field = fieldData[i].Field;
-						this.PrepareCloneGraph(
-							field.GetValue(source), 
-							field.GetValue(target),
-							null);
-					}
-					if (behavior != null) this.PopCloneBehavior();
-				}
+				typeData.PrecompiledSetupFunc(source, target, this);
 			}
 		}
 
@@ -558,9 +537,9 @@ namespace Duality.Cloning
 			}
 		}
 
-		private void PushCloneBehavior(CloneBehaviorAttribute attribute)
+		private void PushCloneBehavior(LocalCloneBehavior behavior)
 		{
-			this.localBehavior.Add(new CloneBehaviorEntry(attribute));
+			this.localBehavior.Add(behavior);
 		}
 		private void PopCloneBehavior()
 		{
@@ -576,11 +555,11 @@ namespace Duality.Cloning
 			for (int i = this.localBehavior.Count - 1; i >= 0; i--)
 			{
 				if (localBehaviorData[i].Locked) continue;
-				if (localBehaviorData[i].Behavior.TargetType == null || (sourceType != null && localBehaviorData[i].Behavior.TargetType.IsAssignableFrom(sourceType.Type)))
+				if (localBehaviorData[i].TargetType == null || (sourceType != null && localBehaviorData[i].TargetType.IsAssignableFrom(sourceType.Type)))
 				{
-					acquiredLock = localBehaviorData[i].Behavior;
+					acquiredLock = localBehaviorData[i];
 					localBehaviorData[i].Locked = lockBehavior;
-					CloneBehavior behavior = localBehaviorData[i].Behavior.Behavior;
+					CloneBehavior behavior = localBehaviorData[i].Behavior;
 					return (behavior != CloneBehavior.Default) ? behavior : defaultBehavior;
 				}
 			}
@@ -595,7 +574,7 @@ namespace Duality.Cloning
 			var localBehaviorData = this.localBehavior.Data;
 			for (int i = this.localBehavior.Count - 1; i >= 0; i--)
 			{
-				if (localBehaviorData[i].Locked && localBehaviorData[i].Behavior == behaviorLock)
+				if (localBehaviorData[i].Locked && localBehaviorData[i] == behaviorLock)
 				{
 					localBehaviorData[i].Locked = false;
 				}
@@ -606,25 +585,30 @@ namespace Duality.Cloning
 		{
 			this.SetTargetOf(source, target);
 		}
-		void ICloneTargetSetup.HandleObject<T>(T source, T target, CloneBehavior behavior)
+		void ICloneTargetSetup.HandleObject<T>(T source, T target, CloneBehavior behavior, Type behaviorTarget)
 		{
-			switch (behavior)
+			if (object.ReferenceEquals(source, this.currentObject))
 			{
-				case CloneBehavior.WeakReference:
-					if (!object.ReferenceEquals(source, null))
-					{
-						this.dropWeakReferences.Add(source);
-					}
-					break;
-				case CloneBehavior.Reference:
-					break;
-				case CloneBehavior.Default:
-				case CloneBehavior.ChildObject:
-					if (object.ReferenceEquals(source, this.currentObject))
-						this.PrepareChildCloneGraph(source, target, this.currentCloneType);
-					else
-						this.PrepareCloneGraph(source, target, null, behavior);
-					break;
+				this.PrepareChildCloneGraph(this.currentObject, target, this.currentCloneType);
+			}
+			else if (behaviorTarget != null)
+			{
+				this.PushCloneBehavior(new LocalCloneBehavior(behaviorTarget, behavior));
+				this.PrepareCloneGraph(source, target, null);
+				this.PopCloneBehavior();
+			}
+			else if (behavior == CloneBehavior.Reference)
+			{
+				return;
+			}
+			else if (behavior == CloneBehavior.WeakReference)
+			{
+				if (!object.ReferenceEquals(source, null))
+					this.dropWeakReferences.Add(source);
+			}
+			else
+			{
+				this.PrepareCloneGraph(source, target, null, behavior);
 			}
 		}
 
@@ -716,7 +700,7 @@ namespace Duality.Cloning
 
 			result = new CloneType(type);
 			cloneTypeCache[type] = result;
-			result.InitFields();
+			result.Init();
 			return result;
 		}
 		internal static ICloneSurrogate GetSurrogateFor(Type type)

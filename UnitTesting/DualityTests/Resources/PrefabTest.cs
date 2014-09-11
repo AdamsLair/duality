@@ -110,8 +110,7 @@ namespace Duality.Tests.Resources
 			Assert.IsNotNull(obj.GetComponent<TestComponent>());
 			Assert.IsTrue(obj.Children.Any());
 		}
-		[TestCase(false)]
-		[TestCase(true)]
+		[TestCase(true), TestCase(false)]
 		[Test] public void TransformHierarchyPrefabSceneBug(bool childPrefab)
 		{
 			// Tests for https://github.com/AdamsLair/duality/issues/53
@@ -152,6 +151,28 @@ namespace Duality.Tests.Resources
 			// Check if positions are correct
 			Assert.AreEqual(parentPos, parent.Transform.Pos);
 			Assert.AreEqual(childPos, child.Transform.Pos);
+		}
+		[Test] public void NestedPrefabChangeListPreservation()
+		{
+			GameObject parentObj = this.CreateSimpleGameObject();
+			GameObject childObj = this.CreateSimpleGameObject(parentObj);
+			Prefab childPrefab = new Prefab(childObj);
+			childObj.LinkToPrefab(childPrefab);
+			Prefab parentPrefab = new Prefab(parentObj);
+			parentObj.LinkToPrefab(parentPrefab);
+
+			SpriteRenderer childSprite = childObj.GetComponent<SpriteRenderer>();
+			childSprite.ColorTint = ColorRgba.Green;
+
+			childObj.PrefabLink.PushChange(childSprite, PropertyOf(() => childSprite.ColorTint));
+			parentObj.PrefabLink.PushChange(childObj, PropertyOf(() => childObj.PrefabLink));
+
+			// Apply the parent Prefab. In an error case, this could overwrite the childs PrefabLink
+			parentObj.PrefabLink.Apply();
+			// Apply it again. If the childs PrefabLink was overwritten, this will change the child sprites color
+			parentObj.PrefabLink.Apply();
+
+			Assert.AreEqual(ColorRgba.Green, childSprite.ColorTint);
 		}
 
 		private GameObject CreateSimpleGameObject(GameObject parent = null)

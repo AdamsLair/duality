@@ -24,7 +24,7 @@ namespace Duality.Components
 		/// A single sound source.
 		/// </summary>
 		[Serializable]
-		public class Source
+		public class Source : ICloneExplicit
 		{
 			private	ContentRef<Sound>	sound			= ContentRef<Sound>.Null;
 			private	bool				looped			= true;
@@ -161,6 +161,26 @@ namespace Duality.Components
 				}
 
 				return true;
+			}
+
+			void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
+			{
+				Source target = targetObj as Source;
+
+				setup.HandleObject(this.sound, target.sound);
+			}
+			void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
+			{
+				Source target = targetObj as Source;
+
+				target.looped			= this.looped;
+				target.paused			= this.paused;
+				target.volume			= this.volume;
+				target.pitch			= this.pitch;
+				target.offset			= this.offset;
+				target.hasBeenPlayed	= this.hasBeenPlayed;
+
+				operation.HandleObject(this.sound, ref target.sound);
 			}
 		}
 

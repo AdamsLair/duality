@@ -18,6 +18,7 @@ namespace Duality.Components.Physics
 	/// Represents a body instance for physical simulation, collision detection and response.
 	/// </summary>
 	[Serializable]
+	[ManuallyCloned]
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryPhysics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRigidBody)]
@@ -1104,18 +1105,92 @@ namespace Duality.Components.Physics
 				this.RemoveDisposedJoints();
 		}
 
-		protected override void OnCopyDataTo(object target, ICloneOperation operation)
+		protected override void OnSetupCloneTargets(object targetObj, ICloneTargetSetup setup)
 		{
-			base.OnCopyDataTo(target, operation);
-			RigidBody targetBody = target as RigidBody;
+			base.OnSetupCloneTargets(targetObj, setup);
+			RigidBody target = targetObj as RigidBody;
 
-			// If we're cloning an initialized RigidBody, make sure to update the targets physics body.
-			bool wasInitialized = targetBody.bodyInitState == InitState.Initialized;
-			if (wasInitialized)
+			// Handle ownership of shapes and joints
+			if (this.shapes != null)
 			{
-				targetBody.Shutdown();
-				targetBody.Initialize();
+				for (int i = 0; i < this.shapes.Count; i++)
+				{
+					ShapeInfo sourceShape = this.shapes[i];
+					ShapeInfo targetShape = (target.shapes != null && target.shapes.Count > i) ? target.shapes[i] : null;
+					setup.HandleObject(sourceShape, targetShape, CloneBehavior.ChildObject);
+				}
 			}
+			if (this.joints != null)
+			{
+				for (int i = 0; i < this.joints.Count; i++)
+				{
+					JointInfo sourceJoint = this.joints[i];
+					JointInfo targetJoint = (target.joints != null && target.joints.Count > i) ? target.joints[i] : null;
+					setup.HandleObject(sourceJoint, targetJoint, CloneBehavior.ChildObject);
+				}
+			}
+		}
+		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)
+		{
+			base.OnCopyDataTo(targetObj, operation);
+			RigidBody target = targetObj as RigidBody;
+			
+			// If we're cloning an initialized RigidBody, shut down the targets physics body.
+			bool wasInitialized = target.bodyInitState == InitState.Initialized;
+			if (wasInitialized) target.Shutdown();
+
+			target.bodyType			= this.bodyType;
+			target.linearDamp		= this.linearDamp;
+			target.angularDamp		= this.angularDamp;
+			target.fixedAngle		= this.fixedAngle;
+			target.ignoreGravity	= this.ignoreGravity;
+			target.continous		= this.continous;
+			target.linearVel		= this.linearVel;
+			target.angularVel		= this.angularVel;
+			target.revolutions		= this.revolutions;
+			target.explicitMass		= this.explicitMass;
+			target.colCat			= this.colCat;
+			target.colWith			= this.colWith;
+
+			// Handle shapes and joints
+			if (this.shapes != null)
+			{
+				if (target.shapes == null) target.shapes = new List<ShapeInfo>(this.shapes.Count);
+				for (int i = 0; i < this.shapes.Count; i++)
+				{
+					bool isNew = (target.shapes.Count <= i);
+					ShapeInfo sourceShape = this.shapes[i];
+					ShapeInfo targetShape = !isNew ? target.shapes[i] : null;
+					if (operation.HandleObject(sourceShape, ref targetShape))
+					{
+						if (isNew)
+							target.shapes.Add(targetShape);
+						else
+							target.shapes[i] = targetShape;
+					}
+				}
+			}
+			if (this.joints != null)
+			{
+				if (target.joints == null) target.joints = new List<JointInfo>(this.joints.Count);
+				for (int i = 0; i < this.joints.Count; i++)
+				{
+					bool isNew = (target.joints.Count <= i);
+					JointInfo sourceJoint = this.joints[i];
+					JointInfo targetJoint = !isNew ? target.joints[i] : null;
+					operation.HandleObject(sourceJoint, targetJoint);
+					if (operation.HandleObject(sourceJoint, ref targetJoint))
+					{
+						if (isNew)
+							target.joints.Add(targetJoint);
+						else
+							target.joints[i] = targetJoint;
+					}
+				}
+			}
+
+			// Make sure to re-initialize the targets body, if it was shut down
+			if (wasInitialized) target.Initialize();
 		}
 
 		/// <summary>

@@ -31,7 +31,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 			this.NestedObject = new ReferencedObject { TestProperty = rnd.Next().ToString() };
 			this.ObjectStore = new Dictionary<string,ReferencedObject>();
 
-			for (int i = rnd.Next(0, 3); i > 0; i--)
+			for (int i = rnd.Next(2, 4); i > 0; i--)
 			{
 				string name = rnd.Next().ToString();
 				this.ObjectStore.Add(name, new ReferencedObject { TestProperty = name });
