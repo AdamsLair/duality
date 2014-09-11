@@ -139,7 +139,7 @@ namespace Duality.Cloning
 			this.sourceRoot = source;
 			this.targetRoot = target;
 			this.PrepareCloneGraph();
-			if (source.GetType().IsValueType)
+			if (!object.ReferenceEquals(source, null) && source.GetType().IsValueType)
 			{
 				target = source;
 				this.SetTargetOf(source, target);
