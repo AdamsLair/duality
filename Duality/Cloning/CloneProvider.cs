@@ -745,6 +745,12 @@ namespace Duality.Cloning
 				return false;
 			}
 		}
+		void ICloneOperation.HandleValue<T>(ref T source, ref T target)
+		{
+			object boxedTarget = target;
+			this.PerformCopyObject(source, boxedTarget, null);
+			target = (T)boxedTarget;
+		}
 
 
 		private	static List<ICloneSurrogate>					surrogates			= null;

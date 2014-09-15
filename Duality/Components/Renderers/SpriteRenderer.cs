@@ -288,7 +288,7 @@ namespace Duality.Components.Renderers
 			target.rectMode		= this.rectMode;
 			target.offset		= this.offset;
 
-			operation.HandleObject(this.sharedMat, ref target.sharedMat);
+			operation.HandleValue(ref this.sharedMat, ref target.sharedMat);
 			operation.HandleObject(this.customMat, ref target.customMat);
 		}
 	}

@@ -10,7 +10,8 @@ namespace Duality.Cloning
 		bool GetTarget<T>(T source, ref T target) where T : class;
 		bool IsTarget<T>(T target) where T : class;
 
-		bool HandleObject<T>(T source, ref T target);
+		bool HandleObject<T>(T source, ref T target) where T : class;
+		void HandleValue<T>(ref T source, ref T target) where T : struct;
 	}
 
 	public static class ExtMethodsICloneOperation

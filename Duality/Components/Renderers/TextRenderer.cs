@@ -242,8 +242,8 @@ namespace Duality.Components.Renderers
 			target.blockAlign	= this.blockAlign;
 			target.colorTint	= this.colorTint;
 
+			operation.HandleValue(ref this.iconMat, ref target.iconMat);
 			operation.HandleObject(this.text, ref target.text);
-			operation.HandleObject(this.iconMat, ref target.iconMat);
 			operation.HandleObject(this.customMat, ref target.customMat);
 		}
 	}

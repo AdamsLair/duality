@@ -175,7 +175,7 @@ namespace Duality.Components
 				target.offset			= this.offset;
 				target.hasBeenPlayed	= this.hasBeenPlayed;
 
-				operation.HandleObject(this.sound, ref target.sound);
+				operation.HandleValue(ref this.sound, ref target.sound);
 			}
 		}
 
