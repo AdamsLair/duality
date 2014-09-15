@@ -225,6 +225,7 @@ namespace Duality.Cloning
 				this.SetTargetOf(lateSetup.Source ?? lateSetup.Target, lateSetupTarget);
 			}
 		}
+
 		private void PrepareObjectCloneGraph(object source, object target, CloneType typeData, CloneBehavior behavior = CloneBehavior.Default)
 		{
 			// Early-out for null values
@@ -238,11 +239,11 @@ namespace Duality.Cloning
 			// Determine the object Type and early-out if it's just plain old data
 			if (typeData == null) typeData = GetCloneType(source.GetType());
 			if (typeData.IsPlainOldData) return;
-			ICloneExplicit customSource = source as ICloneExplicit;
-			if (typeData.Surrogate == null && customSource == null && typeData.Type.IsValueType && !typeData.InvestigateOwnership) return;
+			if (typeData.Type.IsValueType && !typeData.InvestigateOwnership) return;
 			
+			// Determine cloning behavior for this object
 			object behaviorLock = null;
-			if (!object.ReferenceEquals(source, null) && !typeData.Type.IsValueType)
+			if (!typeData.Type.IsValueType && !object.ReferenceEquals(source, null))
 			{
 				// If we already registered a target for that source, stop right here.
 				if (this.targetMapping.ContainsKey(source))
@@ -274,8 +275,17 @@ namespace Duality.Cloning
 			this.currentObject = source;
 			this.currentCloneType = typeData;
 
+			// If it's a value type, use the fast lane without surrogate and custom checks
+			if (typeData.Type.IsValueType)
+			{
+				if (object.ReferenceEquals(target, null))
+				{
+					target = typeData.Type.CreateInstanceOf();
+				}
+				this.PrepareObjectChildCloneGraph(source, target, typeData);
+			}
 			// Check whether there is a surrogate for this object
-			if (typeData.Surrogate != null)
+			else if (typeData.Surrogate != null)
 			{
 				bool requireLateSetup;
 				typeData.Surrogate.SetupCloneTargets(source, target, out requireLateSetup, this);
@@ -301,16 +311,14 @@ namespace Duality.Cloning
 					target = typeData.Type.CreateInstanceOf();
 				}
 
-				// If it's not a reference type, create a mapping from the source object to the target object
-				if (!typeData.Type.IsValueType)
-				{
-					this.SetTargetOf(source, target);
-				}
+				// Create a mapping from the source object to the target object
+				this.SetTargetOf(source, target);
 				
 				// If we are dealing with an array, use the original one for object reuse mapping
 				if (originalTargetArray != null) target = originalTargetArray;
 
 				// If it implements custom cloning behavior, use that
+				ICloneExplicit customSource = source as ICloneExplicit;
 				if (customSource != null)
 				{
 					customSource.SetupCloneTargets(target, this);
@@ -353,43 +361,20 @@ namespace Duality.Cloning
 				typeData.PrecompiledSetupFunc(source, target, this);
 			}
 		}
-		private void PrepareValueCloneGraph<T>(ref T source, ref T target, CloneType typeData, CloneBehavior behavior = CloneBehavior.Default) where T : struct
+
+		private void PrepareValueCloneGraph<T>(ref T source, ref T target, CloneType typeData) where T : struct
 		{
 			// Determine the object Type and early-out if it's just plain old data
 			if (typeData == null) typeData = GetCloneType(typeof(T));
 			if (typeData.IsPlainOldData) return;
-			ICloneExplicit customSource = source as ICloneExplicit;
-			if (typeData.Surrogate == null && customSource == null && !typeData.InvestigateOwnership) return;
+			if (!typeData.InvestigateOwnership) return;
 
 			object lastObject = this.currentObject;
 			CloneType lastCloneType = this.currentCloneType;
 			this.currentObject = source;
 			this.currentCloneType = typeData;
 
-			// Check whether there is a surrogate for this object
-			if (typeData.Surrogate != null)
-			{
-				bool requireLateSetup;
-				typeData.Surrogate.SetupCloneTargets(source, target, out requireLateSetup, this);
-				if (requireLateSetup)
-				{
-					this.lateSetupSchedule.Add(new LateSetupEntry(source, target));
-				}
-			}
-			// Otherwise, use the default algorithm
-			else
-			{
-				// If it implements custom cloning behavior, use that
-				if (customSource != null)
-				{
-					customSource.SetupCloneTargets(target, this);
-				}
-				// Otherwise, traverse its child objects using default behavior
-				else
-				{
-					this.PrepareValueChildCloneGraph<T>(ref source, ref target, typeData);
-				}
-			}
+			this.PrepareValueChildCloneGraph<T>(ref source, ref target, typeData);
 			
 			this.currentObject = lastObject;
 			this.currentCloneType = lastCloneType;
@@ -669,7 +654,7 @@ namespace Duality.Cloning
 			}
 			else
 			{
-				this.PrepareValueCloneGraph<T>(ref source, ref target, null, behavior);
+				this.PrepareValueCloneGraph<T>(ref source, ref target, null);
 			}
 		}
 
