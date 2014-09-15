@@ -584,14 +584,21 @@ namespace Duality
 		/// Adds a <see cref="Component"/> of the specified <see cref="System.Type"/> to this GameObject, if not existing yet.
 		/// Simply uses the existing Component otherwise.
 		/// </summary>
-		/// <param name="t">The Type of which to request a Component instance.</param>
+		/// <param name="type">The Type of which to request a Component instance.</param>
 		/// <returns>A reference to a Component of the specified Type.</returns>
 		/// <seealso cref="AddComponent{T}()"/>
-		public Component AddComponent(Type t)
+		public Component AddComponent(Type type)
 		{
-			if (this.compMap.ContainsKey(t)) return this.compMap[t];
-			Component newComp = t.CreateInstanceOf() as Component;
-			return this.AddComponent<Component>(newComp);
+			Component existing;
+			if (this.compMap.TryGetValue(type, out existing))
+			{
+				return existing;
+			}
+
+			Component newComp = type.CreateInstanceOf() as Component;
+			this.AddComponent(newComp, type);
+
+			return newComp;
 		}
 		/// <summary>
 		/// Adds the specified <see cref="Component"/> to this GameObject, if no Component of that Type is already part of this GameObject.
@@ -608,17 +615,26 @@ namespace Duality
 				Log.Type(newComp.GetType()),
 				newComp.gameobj.FullName));
 			
-			Type cType = newComp.GetType();
-			if (this.compMap.ContainsKey(cType)) return this.compMap[cType] as T;
+			Type type = newComp.GetType();
+			Component existing;
+			if (this.compMap.TryGetValue(type, out existing))
+			{
+				return existing as T;
+			}
 
+			this.AddComponent(newComp, type);
+
+			return newComp;
+		}
+		private void AddComponent(Component newComp, Type type)
+		{
 			newComp.gameobj = this;
-			this.compMap.Add(cType, newComp);
+			this.compMap.Add(type, newComp);
 			this.compList.Add(newComp);
 
 			if (newComp is Components.Transform) this.compTransform = (Components.Transform)(Component)newComp;
 
 			this.OnComponentAdded(newComp);
-			return newComp;
 		}
 		/// <summary>
 		/// Removes a <see cref="Component"/> of the specified <see cref="System.Type"/> from this GameObject, if existing.
