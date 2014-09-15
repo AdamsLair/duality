@@ -96,7 +96,7 @@ namespace Duality.Tests
 			Environment.CurrentDirectory = this.oldEnvDir;
 
 			// Save local testing memory
-			if (TestContext.CurrentContext.Result.Status == TestStatus.Passed)
+			if (TestContext.CurrentContext.Result.Status == TestStatus.Passed && !System.Diagnostics.Debugger.IsAttached)
 			{
 				Formatter.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, FormattingMethod.Xml);
 			}

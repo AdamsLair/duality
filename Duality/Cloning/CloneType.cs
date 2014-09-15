@@ -14,6 +14,7 @@ namespace Duality.Cloning
 	{
 		public delegate void AssignmentFunc(object source, object target, ICloneOperation operation);
 		public delegate void SetupFunc(object source, object target, ICloneTargetSetup setup);
+		public delegate void ValueAssignmentFunc<T>(ref T source, ref T target, ICloneOperation operation) where T : struct;
 		public delegate void ValueSetupFunc<T>(ref T source, ref T target, ICloneTargetSetup setup) where T : struct;
 
 		public struct CloneField
@@ -66,9 +67,10 @@ namespace Duality.Cloning
 		private	bool				investigateOwnership;
 		private	CloneBehavior		behavior;
 		private	ICloneSurrogate		surrogate;
-		private	AssignmentFunc		assignPodFunc;
+		private	AssignmentFunc		assignFunc;
 		private	SetupFunc			setupFunc;
 		private	Delegate			valueSetupFunc;
+		private	Delegate			valueAssignFunc;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Type"/> that is described.
@@ -145,11 +147,15 @@ namespace Duality.Cloning
 		/// </summary>
 		public AssignmentFunc PrecompiledAssignmentFunc
 		{
-			get { return this.assignPodFunc; }
+			get { return this.assignFunc; }
 		}
 		public SetupFunc PrecompiledSetupFunc
 		{
 			get { return this.setupFunc; }
+		}
+		public Delegate PrecompiledValueAssignmentFunc
+		{
+			get { return this.valueAssignFunc; }
 		}
 		public Delegate PrecompiledValueSetupFunc
 		{
@@ -238,6 +244,7 @@ namespace Duality.Cloning
 			// Build precompile functions for setup and (partially) assignment
 			this.CompileAssignmentFunc();
 			this.CompileSetupFunc();
+			this.CompileValueAssignmentFunc();
 			this.CompileValueSetupFunc();
 		}
 		private void CompileAssignmentFunc()
@@ -246,51 +253,19 @@ namespace Duality.Cloning
 			if (this.type.IsValueType) return;
 			if (this.fieldData.Length == 0) return;
 
-			List<Expression> mainBlock = new List<Expression>();
 			ParameterExpression sourceParameter = Expression.Parameter(typeof(object), "source");
 			ParameterExpression targetParameter = Expression.Parameter(typeof(object), "target");
 			ParameterExpression operationParameter = Expression.Parameter(typeof(ICloneOperation), "operation");
 			ParameterExpression sourceCastVar = Expression.Variable(type, "sourceCast");
 			ParameterExpression targetCastVar = Expression.Variable(type, "targetCast");
-			mainBlock.Add(Expression.Assign(sourceCastVar, type.IsValueType ? Expression.Convert(sourceParameter, this.type) : Expression.TypeAs(sourceParameter, this.type)));
-			mainBlock.Add(Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, this.type) : Expression.TypeAs(targetParameter, this.type)));
-			for (int i = 0; i < this.fieldData.Length; i++)
-			{
-				FieldInfo field = this.fieldData[i].Field;
-				Expression assignment;
 
-				if (this.fieldData[i].FieldType.IsPlainOldData)
-				{
-					assignment = Expression.Assign(
-						Expression.Field(targetCastVar, field), 
-						Expression.Field(sourceCastVar, field));
-				}
-				else if (this.fieldData[i].FieldType.Type.IsValueType)
-				{
-					assignment = Expression.Call(operationParameter, 
-						CopyHandleValue.MakeGenericMethod(field.FieldType), 
-						Expression.Field(sourceCastVar, field), 
-						Expression.Field(targetCastVar, field));
-				}
-				else
-				{
-					assignment = Expression.Call(operationParameter, 
-						CopyHandleObject.MakeGenericMethod(field.FieldType), 
-						Expression.Field(sourceCastVar, field), 
-						Expression.Field(targetCastVar, field));
-				}
+			List<Expression> mainBlock = this.CreateAssignmentFuncContent(operationParameter, sourceCastVar, targetCastVar);
 
-				if ((this.fieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None)
-				{
-					assignment = Expression.IfThen(
-						Expression.Not(Expression.Property(Expression.Property(operationParameter, "Context"), "PreserveIdentity")),
-						assignment);
-				}
-				mainBlock.Add(assignment);
-			}
+			mainBlock.Insert(0, Expression.Assign(sourceCastVar, Expression.TypeAs(sourceParameter, this.type)));
+			mainBlock.Insert(1, Expression.Assign(targetCastVar, Expression.TypeAs(targetParameter, this.type)));
 
 			Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
-			this.assignPodFunc = Expression.Lambda<AssignmentFunc>(mainBlockExpression, sourceParameter, targetParameter, operationParameter).Compile();
+			this.assignFunc = Expression.Lambda<AssignmentFunc>(mainBlockExpression, sourceParameter, targetParameter, operationParameter).Compile();
 		}
 		private void CompileSetupFunc()
 		{
@@ -313,6 +288,21 @@ namespace Duality.Cloning
 			Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
 			this.setupFunc = Expression.Lambda<SetupFunc>(mainBlockExpression, sourceParameter, targetParameter, setupParameter).Compile();
 		}
+		private void CompileValueAssignmentFunc()
+		{
+			if (this.surrogate != null) return;
+			if (!this.type.IsValueType) return;
+			if (this.fieldData.Length == 0) return;
+
+			ParameterExpression sourceParameter = Expression.Parameter(this.type.MakeByRefType(), "source");
+			ParameterExpression targetParameter = Expression.Parameter(this.type.MakeByRefType(), "target");
+			ParameterExpression operationParameter = Expression.Parameter(typeof(ICloneOperation), "operation");
+
+			List<Expression> mainBlock = this.CreateAssignmentFuncContent(operationParameter, sourceParameter, targetParameter);
+
+			Expression mainBlockExpression = Expression.Block(mainBlock);
+			this.valueAssignFunc = Expression.Lambda(typeof(ValueAssignmentFunc<>).MakeGenericType(this.type), mainBlockExpression, sourceParameter, targetParameter, operationParameter).Compile();
+		}
 		private void CompileValueSetupFunc()
 		{
 			if (!this.type.IsValueType) return;
@@ -329,6 +319,47 @@ namespace Duality.Cloning
 
 			Expression mainBlockExpression = Expression.Block(mainBlock);
 			this.valueSetupFunc = Expression.Lambda(typeof(ValueSetupFunc<>).MakeGenericType(this.type), mainBlockExpression, sourceParameter, targetParameter, setupParameter).Compile();
+		}
+		private List<Expression> CreateAssignmentFuncContent(Expression operation, Expression source, Expression target)
+		{
+			List<Expression> mainBlock = new List<Expression>();
+
+			for (int i = 0; i < this.fieldData.Length; i++)
+			{
+				FieldInfo field = this.fieldData[i].Field;
+				Expression assignment;
+
+				if (this.fieldData[i].FieldType.IsPlainOldData)
+				{
+					assignment = Expression.Assign(
+						Expression.Field(target, field), 
+						Expression.Field(source, field));
+				}
+				else if (this.fieldData[i].FieldType.Type.IsValueType)
+				{
+					assignment = Expression.Call(operation, 
+						CopyHandleValue.MakeGenericMethod(field.FieldType), 
+						Expression.Field(source, field), 
+						Expression.Field(target, field));
+				}
+				else
+				{
+					assignment = Expression.Call(operation, 
+						CopyHandleObject.MakeGenericMethod(field.FieldType), 
+						Expression.Field(source, field), 
+						Expression.Field(target, field));
+				}
+
+				if ((this.fieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None)
+				{
+					assignment = Expression.IfThen(
+						Expression.Not(Expression.Property(Expression.Property(operation, "Context"), "PreserveIdentity")),
+						assignment);
+				}
+				mainBlock.Add(assignment);
+			}
+
+			return mainBlock;
 		}
 		private List<Expression> CreateSetupFuncContent(Expression setup, Expression source, Expression target)
 		{
