@@ -294,6 +294,34 @@ namespace Duality.Tests.Cloning
 				Assert.AreEqual(parentPosAbs.Z + childPosRel.Z, child.Pos.Z, 0.000001f);
 			}
 		}
+		[Test] public void CloneJointRigidBodies()
+		{
+			// Create two joint bodies
+			GameObject sourceA = new GameObject("ObjectA");
+			GameObject sourceB = new GameObject("ObjectB", sourceA);
+			sourceA.AddComponent<Transform>();
+			sourceB.AddComponent<Transform>();
+			RigidBody sourceBodyA = sourceA.AddComponent<RigidBody>();
+			RigidBody sourceBodyB = sourceB.AddComponent<RigidBody>();
+			sourceBodyA.AddJoint(new DistanceJointInfo(), sourceBodyB);
+
+			// Are the two bodies joint together as expected?
+			Assert.AreEqual(1, sourceBodyA.Joints.Count());
+			Assert.AreEqual(1, sourceBodyB.Joints.Count());
+			Assert.AreSame(sourceBodyA.Joints.First(), sourceBodyB.Joints.First());
+
+			// Clone the object hierarchy
+			GameObject targetA = sourceA.DeepClone();
+			GameObject targetB = targetA.ChildAtIndex(0);
+			RigidBody targetBodyA = targetA.GetComponent<RigidBody>();
+			RigidBody targetBodyB = targetB.GetComponent<RigidBody>();
+
+			// Is the cloned hierarchy joint together as expected?
+			Assert.AreEqual(1, targetBodyA.Joints.Count());
+			Assert.AreEqual(1, targetBodyB.Joints.Count());
+			Assert.AreSame(targetBodyA.Joints.First(), targetBodyB.Joints.First());
+			Assert.AreNotSame(sourceBodyA.Joints.First(), targetBodyA.Joints.First());
+		}
 		[Test] public void RealWorldPerformanceTest()
 		{
 
