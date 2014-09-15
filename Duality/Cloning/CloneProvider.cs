@@ -446,7 +446,7 @@ namespace Duality.Cloning
 		}
 		private void PerformCopyChildObject(object source, object target, CloneType typeData)
 		{
-			// Arrays will need to be traversed, unless consisting of plain old data
+			// Handle array data
 			if (typeData.IsArray)
 			{
 				Array sourceArray = source as Array;
@@ -458,7 +458,7 @@ namespace Duality.Cloning
 				{
 					sourceArray.CopyTo(targetArray, 0);
 				}
-				// If the array contains a value type, copy it and then handle each element
+				// If the array contains a value type, handle each element in order to allow them to perform a mapping
 				else if (sourceElementType.Type.IsValueType)
 				{
 					for (int i = 0; i < sourceArray.Length; ++i)
@@ -472,10 +472,10 @@ namespace Duality.Cloning
 						targetArray.SetValue(targetElement, i);
 					}
 				}
-				// If it contains reference types, a mapping is necessary, as well as complex value handling
+				// If it contains reference types, a direct element mapping is necessary, as well as complex value handling
 				else
 				{
-					bool couldRequrieMerge = sourceElementType.CouldBeDerived || sourceElementType.IsMergeSurrogate;
+					bool couldRequireMerge = sourceElementType.CouldBeDerived || sourceElementType.IsMergeSurrogate;
 					for (int i = 0; i < sourceArray.Length; ++i)
 					{
 						CloneType elementTypeData = sourceElementType.CouldBeDerived ? null : sourceElementType;
@@ -485,7 +485,7 @@ namespace Duality.Cloning
 
 						// If there is no source value, check if we're dealing with a merge surrogate and get the old target value when necessary.
 						bool sourceNullMerge = false;
-						if (couldRequrieMerge && object.ReferenceEquals(sourceElement, null))
+						if (couldRequireMerge && object.ReferenceEquals(sourceElement, null))
 						{
 							if (elementTypeData == null || elementTypeData.IsMergeSurrogate)
 							{
@@ -510,7 +510,7 @@ namespace Duality.Cloning
 					}
 				}
 			}
-			// Objects will need to be traversed field by field
+			// Handle structural data
 			else
 			{
 				// When available, take the shortcut for assigning all POD fields

@@ -24,7 +24,9 @@ namespace Duality.Resources
 		/// A Prefab resources file extension.
 		/// </summary>
 		public new const string FileExt = ".Prefab" + Resource.FileExt;
+
 		private static readonly ApplyPrefabContext PrefabContext = new ApplyPrefabContext();
+		private static readonly CloneProvider SharedPrefabProvider = new CloneProvider(PrefabContext);
 
 		private	GameObject	objTree	= null;
 
@@ -109,7 +111,7 @@ namespace Duality.Resources
 		public void CopyTo(GameObject obj)
 		{
 			if (this.objTree == null) return;
-			this.objTree.DeepCopyTo(obj, PrefabContext);
+			SharedPrefabProvider.CopyObject(this.objTree, obj);
 		}
 		/// <summary>
 		/// Copies a subset of this Prefabs data to a specific Component.
@@ -126,7 +128,7 @@ namespace Duality.Resources
 			Component baseCmp = baseObj.GetComponent(target.GetType());
 			if (baseCmp == null) return;
 
-			baseCmp.DeepCopyTo(target, PrefabContext);
+			SharedPrefabProvider.CopyObject(baseCmp, target);
 		}
 
 		/// <summary>
