@@ -19,6 +19,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 {
 	internal class OwnedObject
 	{
+		public int TestData { get; set; }
 		public OwnedObject TestProperty { get; set; }
 	}
 }

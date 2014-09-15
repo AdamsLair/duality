@@ -163,12 +163,7 @@ namespace Duality.Components
 				return true;
 			}
 
-			void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
-			{
-				Source target = targetObj as Source;
-
-				setup.HandleObject(this.sound, target.sound);
-			}
+			void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup) {}
 			void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 			{
 				Source target = targetObj as Source;

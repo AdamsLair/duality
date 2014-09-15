@@ -276,7 +276,6 @@ namespace Duality.Components.Renderers
 			base.OnSetupCloneTargets(targetObj, setup);
 			SpriteRenderer target = targetObj as SpriteRenderer;
 
-			setup.HandleObject(this.sharedMat, target.sharedMat);
 			setup.HandleObject(this.customMat, target.customMat);
 		}
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)

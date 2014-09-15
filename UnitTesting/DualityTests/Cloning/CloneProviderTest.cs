@@ -354,6 +354,15 @@ namespace Duality.Tests.Cloning
 				Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 			}
 		}
+		[Test] public void StructInvestigate()
+		{
+			Random rnd = new Random();
+			TestStructInvestigate source = new TestStructInvestigate(rnd);
+			TestStructInvestigate target = source.DeepClone();
+
+			Assert.AreNotSame(source, target);
+			Assert.AreEqual(source, target);
+		}
 		[Test] public void PerformanceTest()
 		{
 			Random rnd = new Random(0);

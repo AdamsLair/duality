@@ -232,7 +232,6 @@ namespace Duality.Components.Renderers
 			TextRenderer target = targetObj as TextRenderer;
 
 			setup.HandleObject(this.text, target.text);
-			setup.HandleObject(this.iconMat, target.iconMat);
 			setup.HandleObject(this.customMat, target.customMat);
 		}
 		protected override void OnCopyDataTo(object targetObj, ICloneOperation operation)

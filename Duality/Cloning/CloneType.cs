@@ -14,6 +14,7 @@ namespace Duality.Cloning
 	{
 		public delegate void AssignmentFunc(object source, object target);
 		public delegate void SetupFunc(object source, object target, ICloneTargetSetup setup);
+		public delegate void ValueSetupFunc<T>(ref T source, ref T target, ICloneTargetSetup setup) where T : struct;
 
 		public struct CloneField
 		{
@@ -58,17 +59,22 @@ namespace Duality.Cloning
 				this.isAlwaysReference = isAlwaysReference;
 				this.allowPodShortcut = shortcut;
 			}
+			public override string ToString()
+			{
+				return string.Format("Field {0}", Log.FieldInfo(this.field, false));
+			}
 		}
 
-		private	Type			type;
-		private	CloneType		elementType;
-		private	CloneField[]	fieldData;
-		private	bool			plainOldData;
-		private	bool			investigateOwnership;
-		private	CloneBehavior	behavior;
-		private	ICloneSurrogate	surrogate;
-		private	AssignmentFunc	assignPodFunc;
-		private	SetupFunc		setupFunc;
+		private	Type				type;
+		private	CloneType			elementType;
+		private	CloneField[]		fieldData;
+		private	bool				plainOldData;
+		private	bool				investigateOwnership;
+		private	CloneBehavior		behavior;
+		private	ICloneSurrogate		surrogate;
+		private	AssignmentFunc		assignPodFunc;
+		private	SetupFunc			setupFunc;
+		private	Delegate			valueSetupFunc;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Type"/> that is described.
@@ -150,6 +156,10 @@ namespace Duality.Cloning
 		public SetupFunc PrecompiledSetupFunc
 		{
 			get { return this.setupFunc; }
+		}
+		public Delegate PrecompiledValueSetupFunc
+		{
+			get { return this.valueSetupFunc; }
 		}
 
 		/// <summary>
@@ -235,6 +245,7 @@ namespace Duality.Cloning
 			// Build precompile functions for setup and (partially) assignment
 			this.CompileAssignmentFunc();
 			this.CompileSetupFunc();
+			this.CompileValueSetupFunc();
 		}
 		private void CompileAssignmentFunc()
 		{
@@ -271,17 +282,41 @@ namespace Duality.Cloning
 			if (this.fieldData.Length == 0) return;
 			if (!this.investigateOwnership) return;
 
-			List<Expression> mainBlock = new List<Expression>();
-
 			ParameterExpression sourceParameter = Expression.Parameter(typeof(object), "source");
 			ParameterExpression targetParameter = Expression.Parameter(typeof(object), "target");
 			ParameterExpression setupParameter = Expression.Parameter(typeof(ICloneTargetSetup), "setup");
 
 			ParameterExpression sourceCastVar = Expression.Variable(type, "sourceCast");
 			ParameterExpression targetCastVar = Expression.Variable(type, "targetCast");
-			mainBlock.Add(Expression.Assign(sourceCastVar, type.IsValueType ? Expression.Convert(sourceParameter, this.type) : Expression.TypeAs(sourceParameter, this.type)));
-			mainBlock.Add(Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, this.type) : Expression.TypeAs(targetParameter, this.type)));
 
+			List<Expression> mainBlock = this.CreateSetupFuncContent(setupParameter, sourceCastVar, targetCastVar);
+			if (mainBlock == null) return;
+
+			mainBlock.Insert(0, Expression.Assign(sourceCastVar, type.IsValueType ? Expression.Convert(sourceParameter, this.type) : Expression.TypeAs(sourceParameter, this.type)));
+			mainBlock.Insert(1, Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, this.type) : Expression.TypeAs(targetParameter, this.type)));
+			Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
+			this.setupFunc = Expression.Lambda<SetupFunc>(mainBlockExpression, sourceParameter, targetParameter, setupParameter).Compile();
+		}
+		private void CompileValueSetupFunc()
+		{
+			if (!this.type.IsValueType) return;
+			if (this.surrogate != null) return;
+			if (this.fieldData.Length == 0) return;
+			if (!this.investigateOwnership) return;
+
+			ParameterExpression sourceParameter = Expression.Parameter(this.type.MakeByRefType(), "source");
+			ParameterExpression targetParameter = Expression.Parameter(this.type.MakeByRefType(), "target");
+			ParameterExpression setupParameter = Expression.Parameter(typeof(ICloneTargetSetup), "setup");
+
+			List<Expression> mainBlock = this.CreateSetupFuncContent(setupParameter, sourceParameter, targetParameter);
+			if (mainBlock == null) return;
+
+			Expression mainBlockExpression = Expression.Block(mainBlock);
+			this.valueSetupFunc = Expression.Lambda(typeof(ValueSetupFunc<>).MakeGenericType(this.type), mainBlockExpression, sourceParameter, targetParameter, setupParameter).Compile();
+		}
+		private List<Expression> CreateSetupFuncContent(Expression setup, Expression source, Expression target)
+		{
+			List<Expression> mainBlock = new List<Expression>();
 			bool anyContent = false;
 			for (int i = 0; i < this.fieldData.Length; i++)
 			{
@@ -295,41 +330,69 @@ namespace Duality.Cloning
 				CloneBehaviorAttribute behaviorAttribute = this.fieldData[i].Behavior;
 				FieldInfo field = this.fieldData[i].Field;
 				Expression handleObjectExpression;
-				if (behaviorAttribute == null)
+				if (this.fieldData[i].FieldType.Type.IsValueType)
 				{
-					handleObjectExpression = Expression.Call(setupParameter, 
-						SetupHandleObject.MakeGenericMethod(field.FieldType), 
-						Expression.Field(sourceCastVar, field), 
-						Expression.Field(targetCastVar, field),
-						Expression.Constant(CloneBehavior.Default),
-						Expression.Constant(null, typeof(Type)));
-				}
-				else if (behaviorAttribute.TargetType == null || field.FieldType.IsAssignableFrom(behaviorAttribute.TargetType))
-				{
-					handleObjectExpression = Expression.Call(setupParameter, 
-						SetupHandleObject.MakeGenericMethod(field.FieldType), 
-						Expression.Field(sourceCastVar, field), 
-						Expression.Field(targetCastVar, field), 
-						Expression.Constant(behaviorAttribute.Behavior),
-						Expression.Constant(null, typeof(Type)));
+					if (behaviorAttribute == null)
+					{
+						handleObjectExpression = Expression.Call(setup, 
+							SetupHandleValue.MakeGenericMethod(field.FieldType), 
+							Expression.Field(source, field), 
+							Expression.Field(target, field),
+							Expression.Constant(CloneBehavior.Default),
+							Expression.Constant(null, typeof(Type)));
+					}
+					else
+					{
+						handleObjectExpression = Expression.Call(setup, 
+							SetupHandleValue.MakeGenericMethod(field.FieldType), 
+							Expression.Field(source, field), 
+							Expression.Field(target, field), 
+							Expression.Constant(behaviorAttribute.Behavior), 
+							Expression.Constant(behaviorAttribute.TargetType));
+					}
 				}
 				else
 				{
-					handleObjectExpression = Expression.Call(setupParameter, 
-						SetupHandleObject.MakeGenericMethod(field.FieldType), 
-						Expression.Field(sourceCastVar, field), 
-						Expression.Field(targetCastVar, field), 
-						Expression.Constant(behaviorAttribute.Behavior), 
-						Expression.Constant(behaviorAttribute.TargetType));
+					if (behaviorAttribute == null)
+					{
+						handleObjectExpression = Expression.Call(setup, 
+							SetupHandleObject.MakeGenericMethod(field.FieldType), 
+							Expression.Field(source, field), 
+							Expression.Field(target, field),
+							Expression.Constant(CloneBehavior.Default),
+							Expression.Constant(null, typeof(Type)));
+					}
+					else if (behaviorAttribute.TargetType == null || field.FieldType.IsAssignableFrom(behaviorAttribute.TargetType))
+					{
+						handleObjectExpression = Expression.Call(setup, 
+							SetupHandleObject.MakeGenericMethod(field.FieldType), 
+							Expression.Field(source, field), 
+							Expression.Field(target, field), 
+							Expression.Constant(behaviorAttribute.Behavior),
+							Expression.Constant(null, typeof(Type)));
+					}
+					else
+					{
+						handleObjectExpression = Expression.Call(setup, 
+							SetupHandleObject.MakeGenericMethod(field.FieldType), 
+							Expression.Field(source, field), 
+							Expression.Field(target, field), 
+							Expression.Constant(behaviorAttribute.Behavior), 
+							Expression.Constant(behaviorAttribute.TargetType));
+					}
 				}
 				mainBlock.Add(handleObjectExpression);
 			}
-			if (!anyContent) return;
+			if (!anyContent) return null;
+			return mainBlock;
+		}
 
-			Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
-			this.setupFunc = Expression.Lambda<SetupFunc>(mainBlockExpression, sourceParameter, targetParameter, setupParameter).Compile();
+		public override string ToString()
+		{
+			return string.Format("CloneType {0}", Log.Type(this.type));
 		}
 
 		private static readonly MethodInfo SetupHandleObject = typeof(ICloneTargetSetup).GetMethod("HandleObject");
+		private static readonly MethodInfo SetupHandleValue = typeof(ICloneTargetSetup).GetMethod("HandleValue");
 	}
 }
