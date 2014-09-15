@@ -462,7 +462,6 @@ namespace Duality.Cloning
 				// If the array contains a value type, copy it and then handle each element
 				else if (sourceElementType.Type.IsValueType)
 				{
-					CloneType typeData = sourceElementType.CouldBeDerived ? null : sourceElementType;
 					for (int i = 0; i < sourceArray.Length; ++i)
 					{
 						object sourceElement = sourceArray.GetValue(i);
@@ -470,7 +469,7 @@ namespace Duality.Cloning
 						this.PerformCopyObject(
 							sourceElement, 
 							targetElement, 
-							typeData);
+							sourceElementType);
 						targetArray.SetValue(targetElement, i);
 					}
 				}
@@ -516,23 +515,19 @@ namespace Duality.Cloning
 			else
 			{
 				// When available, take the shortcut for assigning all POD fields
-				bool shortcutActive = false;
 				if (sourceType.PrecompiledAssignmentFunc != null)
 				{
-					shortcutActive = true;
-					sourceType.PrecompiledAssignmentFunc(source, target);
+					sourceType.PrecompiledAssignmentFunc(source, target, this);
 				}
-				for (int i = 0; i < sourceType.FieldData.Length; i++)
+				// Otherwise, fall back to reflection. This is currently necessary for value types.
+				else
 				{
-					// Skip fields that were assigned using the above shortcut method
-					if (shortcutActive && sourceType.FieldData[i].AllowPrecompiledAssign)
-						continue;
-					// Skip certain fields when requested
-					if ((sourceType.FieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
-						continue;
-
-					// Actually copy the current field
-					this.PerformCopyField(source, target, sourceType.FieldData[i].Field, sourceType.FieldData[i].FieldType.IsPlainOldData);
+					for (int i = 0; i < sourceType.FieldData.Length; i++)
+					{
+						if ((sourceType.FieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None && this.context.PreserveIdentity)
+							continue;
+						this.PerformCopyField(source, target, sourceType.FieldData[i].Field, sourceType.FieldData[i].FieldType.IsPlainOldData);
+					}
 				}
 			}
 		}

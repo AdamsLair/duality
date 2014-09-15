@@ -12,7 +12,7 @@ namespace Duality.Cloning
 	/// </summary>
 	public sealed class CloneType
 	{
-		public delegate void AssignmentFunc(object source, object target);
+		public delegate void AssignmentFunc(object source, object target, ICloneOperation operation);
 		public delegate void SetupFunc(object source, object target, ICloneTargetSetup setup);
 		public delegate void ValueSetupFunc<T>(ref T source, ref T target, ICloneTargetSetup setup) where T : struct;
 
@@ -23,7 +23,6 @@ namespace Duality.Cloning
 			private CloneFieldFlags flags;
 			private	CloneBehaviorAttribute behavior;
 			private bool isAlwaysReference;
-			private bool allowPodShortcut;
 
 			public FieldInfo Field
 			{
@@ -45,19 +44,14 @@ namespace Duality.Cloning
 			{
 				get { return this.isAlwaysReference; }
 			}
-			public bool AllowPrecompiledAssign
-			{
-				get { return this.allowPodShortcut; }
-			}
 
-			public CloneField(FieldInfo field, CloneType typeInfo, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isAlwaysReference, bool shortcut)
+			public CloneField(FieldInfo field, CloneType typeInfo, CloneFieldFlags flags, CloneBehaviorAttribute behavior, bool isAlwaysReference)
 			{
 				this.field = field;
 				this.typeInfo = typeInfo;
 				this.flags = flags;
 				this.behavior = behavior;
 				this.isAlwaysReference = isAlwaysReference;
-				this.allowPodShortcut = shortcut;
 			}
 			public override string ToString()
 			{
@@ -220,7 +214,6 @@ namespace Duality.Cloning
 					(behaviorAttrib != null) && 
 					(behaviorAttrib.TargetType == null || field.FieldType.IsAssignableFrom(behaviorAttrib.TargetType)) &&
 					(behaviorAttrib.Behavior == CloneBehavior.Reference);
-				bool allowShortcut = fieldType.IsPlainOldData && (flags & ~CloneFieldFlags.DontSkip) == CloneFieldFlags.None;
 
 				// Can this field own any objects itself?
 				if (!this.investigateOwnership)
@@ -237,7 +230,7 @@ namespace Duality.Cloning
 						this.investigateOwnership = true;
 				}
 
-				CloneField fieldEntry = new CloneField(field, fieldType, flags, behaviorAttrib, isAlwaysReference, allowShortcut);
+				CloneField fieldEntry = new CloneField(field, fieldType, flags, behaviorAttrib, isAlwaysReference);
 				fieldData.Add(fieldEntry);
 			}
 			this.fieldData = fieldData.ToArray();
@@ -256,25 +249,48 @@ namespace Duality.Cloning
 			List<Expression> mainBlock = new List<Expression>();
 			ParameterExpression sourceParameter = Expression.Parameter(typeof(object), "source");
 			ParameterExpression targetParameter = Expression.Parameter(typeof(object), "target");
+			ParameterExpression operationParameter = Expression.Parameter(typeof(ICloneOperation), "operation");
 			ParameterExpression sourceCastVar = Expression.Variable(type, "sourceCast");
 			ParameterExpression targetCastVar = Expression.Variable(type, "targetCast");
 			mainBlock.Add(Expression.Assign(sourceCastVar, type.IsValueType ? Expression.Convert(sourceParameter, this.type) : Expression.TypeAs(sourceParameter, this.type)));
 			mainBlock.Add(Expression.Assign(targetCastVar, type.IsValueType ? Expression.Convert(targetParameter, this.type) : Expression.TypeAs(targetParameter, this.type)));
-			bool anyContent = false;
 			for (int i = 0; i < this.fieldData.Length; i++)
 			{
-				if (!this.fieldData[i].FieldType.IsPlainOldData) continue;
-				if (!this.fieldData[i].AllowPrecompiledAssign) continue;
-				anyContent = true;
-
 				FieldInfo field = this.fieldData[i].Field;
-				Expression assignment = Expression.Assign(Expression.Field(targetCastVar, field), Expression.Field(sourceCastVar, field));
+				Expression assignment;
+
+				if (this.fieldData[i].FieldType.IsPlainOldData)
+				{
+					assignment = Expression.Assign(
+						Expression.Field(targetCastVar, field), 
+						Expression.Field(sourceCastVar, field));
+				}
+				else if (this.fieldData[i].FieldType.Type.IsValueType)
+				{
+					assignment = Expression.Call(operationParameter, 
+						CopyHandleValue.MakeGenericMethod(field.FieldType), 
+						Expression.Field(sourceCastVar, field), 
+						Expression.Field(targetCastVar, field));
+				}
+				else
+				{
+					assignment = Expression.Call(operationParameter, 
+						CopyHandleObject.MakeGenericMethod(field.FieldType), 
+						Expression.Field(sourceCastVar, field), 
+						Expression.Field(targetCastVar, field));
+				}
+
+				if ((this.fieldData[i].Flags & CloneFieldFlags.IdentityRelevant) != CloneFieldFlags.None)
+				{
+					assignment = Expression.IfThen(
+						Expression.Not(Expression.Property(Expression.Property(operationParameter, "Context"), "PreserveIdentity")),
+						assignment);
+				}
 				mainBlock.Add(assignment);
 			}
-			if (!anyContent) return;
 
 			Expression mainBlockExpression = Expression.Block(new[] { sourceCastVar, targetCastVar }, mainBlock);
-			this.assignPodFunc = Expression.Lambda<AssignmentFunc>(mainBlockExpression, sourceParameter, targetParameter).Compile();
+			this.assignPodFunc = Expression.Lambda<AssignmentFunc>(mainBlockExpression, sourceParameter, targetParameter, operationParameter).Compile();
 		}
 		private void CompileSetupFunc()
 		{
@@ -394,5 +410,7 @@ namespace Duality.Cloning
 
 		private static readonly MethodInfo SetupHandleObject = typeof(ICloneTargetSetup).GetMethod("HandleObject");
 		private static readonly MethodInfo SetupHandleValue = typeof(ICloneTargetSetup).GetMethod("HandleValue");
+		private static readonly MethodInfo CopyHandleObject = typeof(ICloneOperation).GetMethod("HandleObject");
+		private static readonly MethodInfo CopyHandleValue = typeof(ICloneOperation).GetMethod("HandleValue");
 	}
 }
