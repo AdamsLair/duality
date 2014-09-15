@@ -107,7 +107,7 @@ namespace Duality.Cloning
 			if (context != null) this.context = context;
 		}
 
-		public T CloneObject<T>(T source)
+		public T CloneObject<T>(T source, bool preserveCache = false)
 		{
 			object target; // Don't use T, we'll need to make sure "target" is a reference Type
 			try
@@ -117,11 +117,11 @@ namespace Duality.Cloning
 			}
 			finally
 			{
-				this.EndCloneOperation();
+				this.EndCloneOperation(preserveCache);
 			}
 			return (T)target;
 		}
-		public void CopyObject<T>(T source, T target)
+		public void CopyObject<T>(T source, T target, bool preserveCache = false)
 		{
 			try
 			{
@@ -130,12 +130,22 @@ namespace Duality.Cloning
 			}
 			finally
 			{
-				this.EndCloneOperation();
+				this.EndCloneOperation(preserveCache);
 			}
+		}
+		public void ClearCachedMapping()
+		{
+			this.targetMapping.Clear();
+			this.targetSet.Clear();
 		}
 		
 		private object BeginCloneOperation(object source, object target = null)
 		{
+			if (this.targetSet.Contains(source))
+			{
+				throw new InvalidOperationException("You may not use a CloneProvider for cloning its own clone results after preserving the internal cache.");
+			}
+
 			this.sourceRoot = source;
 			this.targetRoot = target;
 			this.PrepareCloneGraph();
@@ -151,15 +161,19 @@ namespace Duality.Cloning
 			this.targetRoot = target;
 			return target;
 		}
-		private void EndCloneOperation()
+		private void EndCloneOperation(bool preserveMapping)
 		{
 			this.sourceRoot = null;
 			this.currentObject = null;
 			this.currentCloneType = null;
-			this.targetMapping.Clear();
+
 			this.localBehavior.Clear();
 			this.lateSetupSchedule.Clear();
 			this.dropWeakReferences.Clear();
+			this.handledObjects.Clear();
+
+			if (!preserveMapping)
+				this.ClearCachedMapping();
 		}
 
 		private void SetTargetOf(object source, object target)

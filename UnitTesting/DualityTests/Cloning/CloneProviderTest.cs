@@ -363,6 +363,51 @@ namespace Duality.Tests.Cloning
 			Assert.AreNotSame(source, target);
 			Assert.AreEqual(source, target);
 		}
+		[Test] public void PartialCloning()
+		{
+			Random rnd = new Random();
+			TestObject sourceStatic = new TestObject { DictField = new Dictionary<string,TestObject>
+			{
+				{ "A", new TestObject() },
+				{ "B", new TestObject() },
+				{ "C", new TestObject() },
+			}};
+			TestObject sourceDynamic = new TestObject { DictField = new Dictionary<string,TestObject>
+			{
+				{ "A", sourceStatic.DictField["A"] },
+				{ "B", sourceStatic.DictField["B"] },
+				{ "C", sourceStatic.DictField["C"] },
+				{ "Root", sourceStatic },
+				{ "Local", new TestObject() },
+			}};
+
+			// Copy only the static source objects
+			CloneProvider provider = new CloneProvider();
+			TestObject targetStatic = provider.CloneObject(sourceStatic, true);
+
+			// When copying them again, they shouldn't actually be copied because they're still in the cache
+			TestObject targetStatic2 = provider.CloneObject(sourceStatic, true);
+			Assert.AreSame(targetStatic, targetStatic2);
+
+			// Now copy the dynamic source objects and expect all static references to be resolved correctly
+			TestObject targetDynamic = provider.CloneObject(sourceDynamic, true);
+			Assert.AreSame(targetStatic, targetDynamic.DictField["Root"]);
+			Assert.AreSame(targetStatic.DictField["A"], targetDynamic.DictField["A"]);
+			Assert.AreSame(targetStatic.DictField["B"], targetDynamic.DictField["B"]);
+			Assert.AreSame(targetStatic.DictField["C"], targetDynamic.DictField["C"]);
+
+			// Now clear the cache and expect new objects from clone operations
+			provider.ClearCachedMapping();
+			TestObject targetStatic3 = provider.CloneObject(sourceStatic, true);
+			Assert.AreNotSame(targetStatic, targetStatic3);
+
+			// Expect an exception when attempting to clone the old results without clearing the cache
+			Assert.Throws<InvalidOperationException>(() => provider.CloneObject(targetStatic3, true));
+
+			// It should work fine after clearing the cache though.
+			provider.ClearCachedMapping();
+			Assert.DoesNotThrow(() => provider.CloneObject(targetStatic3, true));
+		}
 		[Test] public void PerformanceTest()
 		{
 			Random rnd = new Random(0);
