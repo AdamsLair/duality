@@ -32,7 +32,6 @@ namespace Duality.Editor.PackageManagement
 
 		private	object cacheLock = new object();
 		private	Dictionary<PackageNamePair,PackageCompatibility> forwardCompatibilityCache = new Dictionary<PackageNamePair,PackageCompatibility>();
-		private	Dictionary<PackageName,int> dependencyScoreCache = new Dictionary<PackageName,int>();
 		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
 
 		private NuGet.PackageManager		manager			= null;
@@ -234,14 +233,12 @@ namespace Duality.Editor.PackageManagement
 		public IEnumerable<PackageInfo> GetSafeUpdateConfig(IEnumerable<PackageInfo> packages, PackageCompatibility minCompatibility)
 		{
 			List<PackageInfo> safeUpdateList = new List<PackageInfo>();
-			PackageInfo[] targetPackages = packages.OrderByDescending(p => this.GetDependencyScore(p.PackageName)).ToArray();
+			PackageInfo[] targetPackages = packages.ToArray();
 
 			for (int i = 0; i < targetPackages.Length; i++)
 			{
 				PackageInfo package = targetPackages[i];
-				Version maxVersion = null;
-
-				PackageInfo update = this.QueryPackageInfo(new PackageName(package.Id, maxVersion), true);
+				PackageInfo update = this.QueryPackageInfo(package.PackageName.VersionInvariant);
 				if (update.Version <= package.Version) continue;
 
 				// ToDo: Implement this
@@ -403,37 +400,6 @@ namespace Duality.Editor.PackageManagement
 				this.forwardCompatibilityCache[key] = compatibility;
 			}
 			return compatibility;
-		}
-		private int GetDependencyScore(PackageName packageName)
-		{
-			int depth;
-			lock (this.cacheLock)
-			{
-				if (!this.dependencyScoreCache.TryGetValue(packageName, out depth))
-				{
-					this.dependencyScoreCache[packageName] = 0;
-
-					depth = 1;
-					PackageInfo package = this.QueryPackageInfo(packageName);
-					if (package != null)
-					{
-						if (package.IsDualityPackage)
-						{
-							foreach (PackageName dependency in package.Dependencies)
-							{
-								depth += this.GetDependencyScore(dependency);
-							}
-						}
-						else
-						{
-							depth = 0;
-						}
-					}
-
-					this.dependencyScoreCache[packageName] = depth;
-				}
-			}
-			return depth;
 		}
 		private NuGet.IPackage FindPackageInfo(PackageName packageRef, bool findMaxVersionBelow)
 		{
