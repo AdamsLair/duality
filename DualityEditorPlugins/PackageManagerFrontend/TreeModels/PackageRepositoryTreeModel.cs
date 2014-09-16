@@ -312,13 +312,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			BaseItem item = e.UserState as BaseItem;
 
-			// Notify the model that we'll need to re-retrieve the whole item list
-			if (this.sortComparer != null)
-			{
-				if (this.StructureChanged != null)
-					this.StructureChanged(this, new TreePathEventArgs());
-			}
-			else if (this.NodesChanged != null)
+			// Notify the model that we've changed some items
+			if (this.NodesChanged != null)
 			{
 				int index = GetItemIndex(item);
 				if (index != -1)

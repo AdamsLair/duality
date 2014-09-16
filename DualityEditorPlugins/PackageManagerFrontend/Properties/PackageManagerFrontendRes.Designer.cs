@@ -62,6 +62,36 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconIncompatibleUpdate {
+            get {
+                object obj = ResourceManager.GetObject("IconIncompatibleUpdate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconLikelySafeUpdate {
+            get {
+                object obj = ResourceManager.GetObject("IconLikelySafeUpdate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconLikelyUnsafeUpdate {
+            get {
+                object obj = ResourceManager.GetObject("IconLikelyUnsafeUpdate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
         /// </summary>
         public static System.Drawing.Icon IconPackage {
@@ -77,6 +107,26 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         public static System.Drawing.Bitmap IconPackageMedium {
             get {
                 object obj = ResourceManager.GetObject("IconPackageMedium", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSafeUpdate {
+            get {
+                object obj = ResourceManager.GetObject("IconSafeUpdate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconUpToDate {
+            get {
+                object obj = ResourceManager.GetObject("IconUpToDate", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

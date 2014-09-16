@@ -105,10 +105,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="EmbeddedResources\IncompatibleUpdate.png" />
+    <Content Include="EmbeddedResources\LikelySafeUpdate.png" />
+    <Content Include="EmbeddedResources\LikelyUnsafeUpdate.png" />
     <Content Include="EmbeddedResources\package.ico" />
     <Content Include="EmbeddedResources\package.png" />
     <Content Include="EmbeddedResources\packagebig.png" />
     <Content Include="EmbeddedResources\packagemed.png" />
+    <Content Include="EmbeddedResources\SafeUpdate.png" />
+    <Content Include="EmbeddedResources\UpToDate.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Modules\SelectTargetVersionDialog.resx">

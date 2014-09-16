@@ -30,6 +30,11 @@ namespace Duality.Editor.PackageManagement
 		private	List<LocalPackage>		localPackages		= new List<LocalPackage>();
 		private	List<LocalPackage>		uninstallQueue		= new List<LocalPackage>();
 
+		private	object cacheLock = new object();
+		private	Dictionary<PackageNamePair,PackageCompatibility> forwardCompatibilityCache = new Dictionary<PackageNamePair,PackageCompatibility>();
+		private	Dictionary<PackageName,int> dependencyScoreCache = new Dictionary<PackageName,int>();
+		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
+
 		private NuGet.PackageManager		manager			= null;
 		private	NuGet.IPackageRepository	repository		= null;
 
@@ -91,7 +96,7 @@ namespace Duality.Editor.PackageManagement
 		public void InstallPackage(PackageInfo package)
 		{
 			// Request NuGet to install the package
-			NuGet.IPackage newPackage = this.FindPackageInfo(package.Id, package.Version);
+			NuGet.IPackage newPackage = this.FindPackageInfo(package.PackageName, false);
 			this.manager.InstallPackage(newPackage, false, false);
 		}
 		public void VerifyPackage(LocalPackage package)
@@ -99,7 +104,7 @@ namespace Duality.Editor.PackageManagement
 			Version oldPackageVersion = package.Version;
 
 			// Determine the exact version that will be downloaded
-			PackageInfo packageInfo = this.QueryPackageInfo(package.Id, package.Version);
+			PackageInfo packageInfo = this.QueryPackageInfo(package.PackageName);
 			if (packageInfo == null)
 			{
 				throw new ApplicationException(string.Format(
@@ -175,14 +180,14 @@ namespace Duality.Editor.PackageManagement
 		}
 		public void UpdatePackage(LocalPackage package, Version specificVersion = null)
 		{
-			// Due to a bug in NuGet 2.8.2, specific-version updates are limited to the package itself,
+			// Due to a bug in NuGet 2.8.2, specific-version downgrades are limited to the package itself,
 			// without updating its dependencies. Otherwise, some of them might be uninstalled without
 			// being reinstalled properly.
 
 			this.uninstallQueue = null;
-			bool isSpecific = specificVersion != null;
-			NuGet.IPackage newPackage = this.FindPackageInfo(package.Id, specificVersion);
-			this.manager.UpdatePackage(newPackage, !isSpecific, false);
+			bool isDowngrade = specificVersion != null && specificVersion < package.Version;
+			NuGet.IPackage newPackage = this.FindPackageInfo(new PackageName(package.Id, specificVersion), false);
+			this.manager.UpdatePackage(newPackage, !isDowngrade, false);
 			this.uninstallQueue = new List<LocalPackage>();
 		}
 		public bool CanUpdatePackage(PackageInfo package, Version specificVersion = null)
@@ -197,7 +202,7 @@ namespace Duality.Editor.PackageManagement
 			try
 			{
 				bool isSpecific = specificVersion != null;
-				if (specificVersion == null) specificVersion = this.QueryPackageInfo(package.Id).Version;
+				if (specificVersion == null) specificVersion = this.QueryPackageInfo(package.PackageName.VersionInvariant).Version;
 				this.manager.UpdatePackage(package.Id, new SemanticVersion(specificVersion), !isSpecific, false);
 			}
 			catch (Exception)
@@ -206,6 +211,187 @@ namespace Duality.Editor.PackageManagement
 			}
 			this.manager.WhatIf = false;
 			return allowed;
+		}
+
+		/// <summary>
+		/// Determines whether a <paramref name="package"/> is forward compatible to <paramref name="target"/>.
+		/// </summary>
+		/// <param name="package"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public PackageCompatibility GetForwardCompatibility(PackageInfo package, PackageInfo target)
+		{
+			if (package.Id == target.Id) return PackageCompatibility.Definite;
+
+			PackageCompatibility compatibility;
+			PackageNamePair key = new PackageNamePair { First = package.PackageName, Second = target.PackageName };
+			lock (this.cacheLock)
+			{
+				if (this.forwardCompatibilityCache.TryGetValue(key, out compatibility))
+				{
+					return compatibility;
+				}
+			}
+
+			compatibility = PackageCompatibility.Definite;
+
+			foreach (PackageName dependecy in package.Dependencies)
+			{
+				if (dependecy.Id == target.Id)
+				{
+					// If the package depends on a newer or similar version, it's okay
+					if (dependecy.Version >= target.Version) continue;
+
+					// Retrieve more thorough information about the dependency. If it fails, we know nothing
+					PackageInfo dependencyInfo = this.QueryPackageInfo(dependecy);
+					if (dependencyInfo == null)
+					{
+						compatibility = PackageCompatibility.None;
+						break;
+					}
+
+					// If the package depends on something that was released after the target, it should be okay
+					if (dependencyInfo.PublishDate > target.PublishDate)
+					{
+						compatibility = compatibility.Combine(PackageCompatibility.Likely);
+						continue;
+					}
+
+					// If the target is equal in major and minor, it should be okay
+					if (dependecy.Version.Major == target.Version.Major && dependecy.Version.Minor == target.Version.Minor)
+					{
+						compatibility = compatibility.Combine(PackageCompatibility.Likely);
+						continue;
+					}
+
+					// If the target is equal in major, it could be okay but doesn't have to be
+					if (dependecy.Version.Major == target.Version.Major)
+					{
+						compatibility = compatibility.Combine(PackageCompatibility.Unlikely);
+						continue;
+					}
+
+					// Otherwise, no compatibility can be assumed
+					compatibility = compatibility.Combine(PackageCompatibility.None);
+				}
+				else
+				{
+					// If the package depends on something that was released after the target, it should be okay
+					PackageInfo dependencyInfo = this.QueryPackageInfo(dependecy);
+					if (dependencyInfo == null)
+					{
+						compatibility = PackageCompatibility.None;
+						break;
+					}
+
+					// The compatibility of a package can only be as good as its dependencies compatibility
+					PackageCompatibility dependencyCompatibility = this.GetForwardCompatibility(dependencyInfo, target);
+					compatibility = compatibility.Combine(dependencyCompatibility);
+				}
+			}
+
+			lock (this.cacheLock)
+			{
+				this.forwardCompatibilityCache[key] = compatibility;
+			}
+			return compatibility;
+		}
+		/// <summary>
+		/// Determines whether all <paramref name="packages"/> are forward compatible to <paramref name="target"/>.
+		/// </summary>
+		/// <param name="packages"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public PackageCompatibility GetForwardCompatibility(IEnumerable<PackageInfo> packages, PackageInfo target)
+		{
+			PackageCompatibility compatibility = PackageCompatibility.Definite;
+
+			foreach (PackageInfo package in packages)
+			{
+				PackageCompatibility localCompatibility = this.GetForwardCompatibility(package, target);
+				compatibility = compatibility.Combine(localCompatibility);
+			}
+
+			return compatibility;
+		}
+		/// <summary>
+		/// Determines whether all <paramref name="packages"/> are forward compatible to <paramref name="target"/>.
+		/// </summary>
+		/// <param name="packages"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public PackageCompatibility GetForwardCompatibility(IEnumerable<LocalPackage> packages, PackageInfo target)
+		{
+			var localInfo = packages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
+			return this.GetForwardCompatibility(localInfo, target);
+		}
+		/// <summary>
+		/// Determines whether all installed pacakges are forward compatible to <paramref name="target"/>.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		public PackageCompatibility GetForwardCompatibility(PackageInfo target)
+		{
+			return this.GetForwardCompatibility(this.localPackages, target);
+		}
+		/// <summary>
+		/// Given the specified set of packages, this method returns a new set of the same packages where each version is the newest one
+		/// that can be safely updated to, given the specified minimum forward compatibility level. If a package cannot be updated at all,
+		/// it will be omitted in the resulting list.
+		/// </summary>
+		/// <param name="packages"></param>
+		/// <param name="minCompatibility"></param>
+		/// <returns></returns>
+		public IEnumerable<PackageInfo> GetSafeUpdateConfig(IEnumerable<PackageInfo> packages, PackageCompatibility minCompatibility)
+		{
+			List<PackageInfo> safeUpdateList = new List<PackageInfo>();
+			PackageInfo[] targetPackages = packages.OrderByDescending(p => this.GetDependencyScore(p.PackageName)).ToArray();
+			PackageInfo[] installedPackages = this.localPackages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
+			PackageInfo[] installedOthers = installedPackages.Where(i => !targetPackages.Any(p => p.Id == i.Id)).ToArray();
+
+			for (int i = 0; i < targetPackages.Length; i++)
+			{
+				PackageInfo package = targetPackages[i];
+				Version maxVersion = null;
+				while (maxVersion == null || maxVersion > package.Version)
+				{
+					PackageInfo update = this.QueryPackageInfo(new PackageName(package.Id, maxVersion), true);
+					if (update.Version <= package.Version) break;
+
+					bool isMinCompatible = true;
+					if (minCompatibility != PackageCompatibility.None)
+					{
+						PackageCompatibility compatibility = this.GetForwardCompatibility(targetPackages.Concat(installedOthers), update);
+						isMinCompatible = compatibility.Satisfies(minCompatibility);
+					}
+
+					if (isMinCompatible)
+					{
+						targetPackages[i] = update;
+						safeUpdateList.Add(update);
+						break;
+					}
+					else
+					{
+						maxVersion = update.Version;
+					}
+				}
+			}
+
+			return safeUpdateList;
+		}
+		/// <summary>
+		/// Given the specified set of packages, this method returns a new set of the same packages where each version is the newest one
+		/// that can be safely updated to, given the specified minimum forward compatibility level. If a package cannot be updated at all,
+		/// it will be omitted in the resulting list.
+		/// </summary>
+		/// <param name="packages"></param>
+		/// <param name="minCompatibility"></param>
+		/// <returns></returns>
+		public IEnumerable<PackageInfo> GetSafeUpdateConfig(IEnumerable<LocalPackage> packages, PackageCompatibility minCompatibility = PackageCompatibility.Likely)
+		{
+			var localInfo = packages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
+			return this.GetSafeUpdateConfig(localInfo, minCompatibility);
 		}
 
 		public bool ApplyUpdate(bool restartEditor = true)
@@ -275,30 +461,55 @@ namespace Duality.Editor.PackageManagement
 				yield return info;
 			}
 		}
-		public PackageInfo QueryPackageInfo(string packageId, Version packageVersion = null)
+		public PackageInfo QueryPackageInfo(PackageName packageRef)
 		{
-			NuGet.IPackage package = this.FindPackageInfo(packageId, packageVersion);
+			return this.QueryPackageInfo(packageRef, false);
+		}
+		private PackageInfo QueryPackageInfo(PackageName packageRef, bool findMaxVersionBelow)
+		{
+			NuGet.IPackage package = this.FindPackageInfo(packageRef, findMaxVersionBelow);
 			return package != null ? this.CreatePackageInfo(package) : null;
 		}
-
-		private NuGet.IPackage FindPackageInfo(string packageId, Version packageVersion)
+		
+		private int GetDependencyScore(PackageName packageName)
+		{
+			int depth;
+			lock (this.cacheLock)
+			{
+				if (!this.dependencyScoreCache.TryGetValue(packageName, out depth))
+				{
+					depth = 1;
+					PackageInfo package = this.QueryPackageInfo(packageName);
+					if (package != null)
+					{
+						foreach (PackageName dependency in package.Dependencies)
+						{
+							depth += this.GetDependencyScore(dependency);
+						}
+					}
+					this.dependencyScoreCache[packageName] = depth;
+				}
+			}
+			return depth;
+		}
+		private NuGet.IPackage FindPackageInfo(PackageName packageRef, bool findMaxVersionBelow)
 		{
 			// Find a direct version match
-			if (packageVersion != null)
+			if (packageRef.Version != null && !findMaxVersionBelow)
 			{
 				// Query locally first, since we're looking for a specific version number anyway.
-				foreach (NuGet.IPackage package in this.manager.LocalRepository.FindPackagesById(packageId))
+				foreach (NuGet.IPackage package in this.manager.LocalRepository.FindPackagesById(packageRef.Id))
 				{
-					if (package.Version.Version == packageVersion)
+					if (package.Version.Version == packageRef.Version)
 						return package;
 				}
 
 				// Nothing found? Query online then.
 				try
 				{
-					foreach (NuGet.IPackage package in this.repository.FindPackagesById(packageId))
+					foreach (NuGet.IPackage package in this.GetRepositoryPackages(packageRef.Id))
 					{
-						if (package.Version.Version == packageVersion)
+						if (package.Version.Version == packageRef.Version)
 							return package;
 					}
 				}
@@ -313,7 +524,7 @@ namespace Duality.Editor.PackageManagement
 				NuGet.IPackage[] data = null;
 				try
 				{
-					IEnumerable<NuGet.IPackage> query = this.repository.FindPackagesById(packageId);
+					IEnumerable<NuGet.IPackage> query = this.GetRepositoryPackages(packageRef.Id);
 					data = query.ToArray();
 				}
 				catch (Exception)
@@ -321,8 +532,11 @@ namespace Duality.Editor.PackageManagement
 					return null;
 				}
 
-				NuGet.IPackage newestPackage = data
-					.Where(p => p.IsListed() && p.IsReleaseVersion() && p.IsLatestVersion)
+				var packageQuery = data.Where(p => p.IsListed() && p.IsReleaseVersion());
+				if (findMaxVersionBelow && packageRef.Version != null)
+					packageQuery = packageQuery.Where(p => p.Version.Version < packageRef.Version);
+
+				NuGet.IPackage newestPackage = packageQuery
 					.OrderByDescending(p => p.Version.Version)
 					.FirstOrDefault();
 
@@ -332,6 +546,19 @@ namespace Duality.Editor.PackageManagement
 
 			// Nothing was found
 			return null;
+		}
+		private IEnumerable<NuGet.IPackage> GetRepositoryPackages(string id)
+		{
+			NuGet.IPackage[] result;
+			lock (this.cacheLock)
+			{
+				if (!this.repositoryPackageCache.TryGetValue(id, out result))
+				{
+					result = this.repository.FindPackagesById(id).ToArray();
+					this.repositoryPackageCache[id] = result;
+				}
+			}
+			return result;
 		}
 		private void RetrieveLocalPackageInfo()
 		{
@@ -386,16 +613,16 @@ namespace Duality.Editor.PackageManagement
 				{
 					foreach (XElement packageElement in packagesElement.Elements("Package"))
 					{
-						Version packageVersion = null;
-						string packageId = packageElement.GetAttributeValue("id");
+						PackageName package = PackageName.None;
+						package.Id = packageElement.GetAttributeValue("id");
 						string versionString = packageElement.GetAttributeValue("version");
-						if (versionString != null) Version.TryParse(versionString, out packageVersion);
+						if (versionString != null) Version.TryParse(versionString, out package.Version);
 
 						// Skip invalid package references
-						if (string.IsNullOrWhiteSpace(packageId)) continue;
+						if (string.IsNullOrWhiteSpace(package.Id)) continue;
 						
 						// Create local package entry
-						this.localPackages.Add(new LocalPackage(packageId, packageVersion));
+						this.localPackages.Add(new LocalPackage(package));
 					}
 				}
 			}
@@ -518,8 +745,9 @@ namespace Duality.Editor.PackageManagement
 		}
 		private PackageInfo CreatePackageInfo(NuGet.IPackage package)
 		{
-			PackageInfo info = new PackageInfo(package.Id, package.Version.Version);
+			PackageInfo info = new PackageInfo(new PackageName(package.Id, package.Version.Version));
 
+			// Retrieve package data
 			info.Title			= package.Title;
 			info.Summary		= package.Summary;
 			info.Description	= package.Description;
@@ -530,6 +758,13 @@ namespace Duality.Editor.PackageManagement
 			info.PublishDate	= package.Published.HasValue ? package.Published.Value.DateTime : DateTime.MinValue;
 			info.Authors		= package.Authors;
 			info.Tags			= package.Tags != null ? package.Tags.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) : Enumerable.Empty<string>();
+
+			// Retrieve the matching set of dependencies. For now, don't support different sets and just pick the first one.
+			var matchingDependencySet = package.DependencySets.FirstOrDefault();
+			if (matchingDependencySet != null)
+			{
+				info.Dependencies = matchingDependencySet.Dependencies.Select(d => new PackageName(d.Id, (d.VersionSpec != null && d.VersionSpec.MinVersion != null) ? d.VersionSpec.MinVersion.Version : null));
+			}
 
 			return info;
 		}
@@ -550,7 +785,7 @@ namespace Duality.Editor.PackageManagement
 			// Prevent NuGet from uninstalling Duality dependencies that aren't scheduled for uninstall
 			if (this.uninstallQueue != null)
 			{
-				PackageInfo packageInfo = this.QueryPackageInfo(e.Package.Id, e.Package.Version.Version);
+				PackageInfo packageInfo = this.QueryPackageInfo(new PackageName(e.Package.Id, e.Package.Version.Version));
 				if (packageInfo.IsDualityPackage)
 				{
 					if (!this.uninstallQueue.Any(p => p.Id == e.Package.Id && p.Version == e.Package.Version.Version))
@@ -591,14 +826,14 @@ namespace Duality.Editor.PackageManagement
 			this.localPackages.RemoveAll(p => p.Id == e.Package.Id);
 			this.SaveConfig();
 
-			this.OnPackageUninstalled(new PackageEventArgs(e.Package.Id, e.Package.Version.Version));
+			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
 			Log.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
 			
 			// Update package entries from local config
-			PackageInfo packageInfo = this.QueryPackageInfo(e.Package.Id, e.Package.Version.Version);
+			PackageInfo packageInfo = this.QueryPackageInfo(new PackageName(e.Package.Id, e.Package.Version.Version));
 			if (packageInfo.IsDualityPackage)
 			{
 				this.localPackages.RemoveAll(p => p.Id == e.Package.Id);
@@ -634,7 +869,7 @@ namespace Duality.Editor.PackageManagement
 			}
 			updateDoc.Save(this.UpdateFilePath);
 
-			this.OnPackageInstalled(new PackageEventArgs(e.Package.Id, e.Package.Version.Version));
+			this.OnPackageInstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}
 
 		public static string GetDisplayedVersion(Version version)
@@ -645,6 +880,17 @@ namespace Duality.Editor.PackageManagement
 				return string.Format("{0}.{1}", version.Major, version.Minor);
 			else
 				return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
+		}
+
+		private struct PackageNamePair
+		{
+			public PackageName First;
+			public PackageName Second;
+
+			public override string ToString()
+			{
+				return string.Format("{0} => {1}", this.First, this.Second);
+			}
 		}
 	}
 }

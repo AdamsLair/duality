@@ -7,18 +7,21 @@ namespace Duality.Editor.PackageManagement
 {
 	public sealed class LocalPackage
 	{
-		private	string		id		= null;
-		private	Version		version	= null;
-		private	PackageInfo	info	= null;
+		private	PackageName	packageName	= PackageName.None;
+		private	PackageInfo	info		= null;
 
-
+		
+		public PackageName PackageName
+		{
+			get { return this.packageName; }
+		}
 		public string Id
 		{
-			get { return this.id; }
+			get { return this.packageName.Id; }
 		}
 		public Version Version
 		{
-			get { return this.version; }
+			get { return this.packageName.Version; }
 		}
 		public PackageInfo Info
 		{
@@ -33,20 +36,18 @@ namespace Duality.Editor.PackageManagement
 
 		internal LocalPackage(PackageInfo info)
 		{
-			this.id = info.Id;
-			this.version = info.Version;
+			this.packageName = info.PackageName;
 			this.info = info;
 		}
-		internal LocalPackage(string id, Version version)
+		internal LocalPackage(PackageName package)
 		{
-			this.id = id;
-			this.version = version;
+			this.packageName = package;
 			this.info = null;
 		}
 
 		public override string ToString()
 		{
-			return string.Format("Local Package '{0}' {1}", this.id, this.version);
+			return string.Format("Local Package '{0}'", this.packageName);
 		}
 	}
 }

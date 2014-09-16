@@ -7,31 +7,35 @@ namespace Duality.Editor.PackageManagement
 {
 	public class PackageInfo
 	{
-		private	string			id				= null;
-		private	Version			version			= null;
-		private	string			title			= null;
-		private	string			summary			= null;
-		private	string			description		= null;
-		private	string			releaseNotes	= null;
-		private	Uri				projectUrl		= null;
-		private	Uri				iconUrl			= null;
-		private	int				downloadCount	= 0;
-		private	DateTime		publishDate		= DateTime.MinValue;
-		private	List<string>	authors			= new List<string>();
-		private	List<string>	tags			= new List<string>();
+		private	PackageName			packageName		= PackageName.None;
+		private	string				title			= null;
+		private	string				summary			= null;
+		private	string				description		= null;
+		private	string				releaseNotes	= null;
+		private	Uri					projectUrl		= null;
+		private	Uri					iconUrl			= null;
+		private	int					downloadCount	= 0;
+		private	DateTime			publishDate		= DateTime.MinValue;
+		private	List<string>		authors			= new List<string>();
+		private	List<string>		tags			= new List<string>();
+		private	List<PackageName>	dependencies	= new List<PackageName>();
 
 
 		public bool IsDualityPackage
 		{
 			get { return this.tags.Contains(PackageManager.DualityTag); }
 		}
+		public PackageName PackageName
+		{
+			get { return this.packageName; }
+		}
 		public string Id
 		{
-			get { return this.id; }
+			get { return this.packageName.Id; }
 		}
 		public Version Version
 		{
-			get { return this.version; }
+			get { return this.packageName.Version; }
 		}
 		public string Title
 		{
@@ -83,17 +87,21 @@ namespace Duality.Editor.PackageManagement
 			get { return this.tags; }
 			internal set { this.tags = (value ?? Enumerable.Empty<string>()).ToList(); }
 		}
-
-
-		internal PackageInfo(string id, Version version)
+		public IEnumerable<PackageName> Dependencies
 		{
-			this.id = id;
-			this.version = version;
+			get { return this.dependencies; }
+			internal set { this.dependencies = (value ?? Enumerable.Empty<PackageName>()).ToList(); }
+		}
+
+
+		internal PackageInfo(PackageName package)
+		{
+			this.packageName = package;
 		}
 
 		public override string ToString()
 		{
-			return string.Format("Package Info '{0}' {1}", this.id, this.version);
+			return string.Format("Package Info '{0}'", this.packageName);
 		}
 	}
 }

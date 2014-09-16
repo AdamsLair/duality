@@ -35,12 +35,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			PackageItem item = node.Tag as PackageItem;
 			Version itemVersion = null;
 			Version newVersion = null;
+			PackageCompatibility updateCompatibility = PackageCompatibility.None;
 			bool highlightItemVersion = item is LocalPackageItem;
 			bool isInstalled = false;
 			bool isUpToDate = false;
 			if (item != null)
 			{
 				isInstalled = item.InstalledPackageInfo != null;
+				updateCompatibility = item.UpdateCompatibility;
 
 				if (item.InstalledPackageInfo != null)
 					itemVersion = item.InstalledPackageInfo.Version;
@@ -56,45 +58,62 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			string itemVersionText = PackageManager.GetDisplayedVersion(itemVersion);
 			string newVersionText = isInstalled && !isUpToDate ? PackageManager.GetDisplayedVersion(newVersion) : string.Empty;
 
-			// Determine background color based on versioning
+			// Determine background color and icon based on versioning
 			Brush backgroundBrush = null;
-			if (isInstalled)
+			Image icon = null;
+			if (isInstalled) backgroundBrush = new SolidBrush(Color.FromArgb(32, 128, 128, 128));
+			if (isInstalled && newVersion != null && itemVersion != null)
 			{
-				if (newVersion != null)
-				{
-					if (itemVersion >= newVersion)
-						backgroundBrush = new SolidBrush(Color.FromArgb(32, 160, 255, 0));
-					else
-						backgroundBrush = new SolidBrush(Color.FromArgb(32, 255, 160, 0));
-				}
+				if (newVersion <= itemVersion)
+					icon = Properties.PackageManagerFrontendResCache.IconUpToDate;
+				else if (updateCompatibility == PackageCompatibility.Definite)
+					icon = Properties.PackageManagerFrontendResCache.IconSafeUpdate;
+				else if (updateCompatibility == PackageCompatibility.Likely)
+					icon = Properties.PackageManagerFrontendResCache.IconLikelySafeUpdate;
+				else if (updateCompatibility == PackageCompatibility.Unlikely)
+					icon = Properties.PackageManagerFrontendResCache.IconLikelyUnsafeUpdate;
 				else
-				{
-					backgroundBrush = new SolidBrush(Color.FromArgb(32, 128, 128, 128));
-				}
+					icon = Properties.PackageManagerFrontendResCache.IconIncompatibleUpdate;
 			}
 
 			// Calculate drawing layout and data
-			StringFormat stringFormat = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, Alignment = StringAlignment.Center, FormatFlags = StringFormatFlags.NoWrap };
+			StringFormat stringFormat = new StringFormat { Trimming = StringTrimming.EllipsisCharacter, Alignment = StringAlignment.Near, FormatFlags = StringFormatFlags.NoWrap };
 			Rectangle currentVersionRect;
 			Rectangle newestVersionRect;
+			Rectangle iconRect;
 			{
 				SizeF currentVersionSize;
 				SizeF newestVersionSize;
+				Size iconSize;
 				// Base info
 				{
-					currentVersionSize = g.MeasureString(itemVersionText, context.Font, targetRect.Width, stringFormat);
 					newestVersionSize = g.MeasureString(newVersionText, context.Font, targetRect.Width, stringFormat);
-					currentVersionRect = new Rectangle(targetRect.X, targetRect.Y, targetRect.Width, (int)currentVersionSize.Height);
-					newestVersionRect = new Rectangle(targetRect.X, targetRect.Y + currentVersionRect.Height, targetRect.Width, targetRect.Height - currentVersionRect.Height);
+					currentVersionSize = g.MeasureString(itemVersionText, context.Font, targetRect.Width, stringFormat);
+					iconSize = icon != null ? icon.Size : Size.Empty;
 				}
 				// Alignment info
 				{
-					Size totelContentSize = new Size(Math.Max(currentVersionRect.Width, newestVersionRect.Width), currentVersionRect.Height + (int)newestVersionSize.Height);
-					Point alignAdjust = new Point(0, Math.Max((targetRect.Height - totelContentSize.Height) / 2, 0));
-					currentVersionRect.X += alignAdjust.X;
-					currentVersionRect.Y += alignAdjust.Y;
-					newestVersionRect.X += alignAdjust.X;
-					newestVersionRect.Y += alignAdjust.Y;
+					Size totalTextSize = new Size(
+						(int)Math.Max(currentVersionSize.Width, newestVersionSize.Width), 
+						(int)(currentVersionSize.Height + newestVersionSize.Height));
+					int leftSpacing = (targetRect.Width - totalTextSize.Width - iconSize.Width - 4) / 2;
+					int iconIndent = iconSize.Width + 4 + leftSpacing;
+
+					iconRect = new Rectangle(
+						targetRect.X + leftSpacing,
+						targetRect.Y + targetRect.Height / 2 - iconSize.Height / 2,
+						iconSize.Width,
+						iconSize.Height);
+					newestVersionRect = new Rectangle(
+						targetRect.X + iconIndent, 
+						targetRect.Y + Math.Max((targetRect.Height - totalTextSize.Height) / 2, 0), 
+						targetRect.Width - iconIndent, 
+						(int)newestVersionSize.Height);
+					currentVersionRect = new Rectangle(
+						targetRect.X + iconIndent, 
+						targetRect.Y + (int)newestVersionSize.Height + Math.Max((targetRect.Height - totalTextSize.Height) / 2, 0), 
+						targetRect.Width - iconIndent, 
+						targetRect.Height - (int)newestVersionSize.Height);
 				}
 			}
 
@@ -103,11 +122,15 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			{
 				g.FillRectangle(backgroundBrush, targetRect);
 			}
+			if (icon != null)
+			{
+				g.DrawImageUnscaledAndClipped(icon, iconRect);
+			}
 			{
 				bool bothVisible = !string.IsNullOrWhiteSpace(itemVersionText) && !string.IsNullOrWhiteSpace(newVersionText);
 				highlightItemVersion = highlightItemVersion || !bothVisible;
-				g.DrawString(itemVersionText, context.Font, new SolidBrush(Color.FromArgb((highlightItemVersion ? 255 : 128) / (context.Enabled ? 1 : 2), this.Parent.ForeColor)), currentVersionRect, stringFormat);
 				g.DrawString(newVersionText, context.Font, new SolidBrush(Color.FromArgb((highlightItemVersion ? 128 : 255) / (context.Enabled ? 1 : 2), this.Parent.ForeColor)), newestVersionRect, stringFormat);
+				g.DrawString(itemVersionText, context.Font, new SolidBrush(Color.FromArgb((highlightItemVersion ? 255 : 128) / (context.Enabled ? 1 : 2), this.Parent.ForeColor)), currentVersionRect, stringFormat);
 			}
 		}
 		public override Size MeasureSize(TreeNodeAdv node, DrawContext context)

@@ -194,12 +194,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			bool isItemInstalled = isItemSelected && this.selectedItem.IsInstalled;
 			bool isItemUpdatable = isItemInstalled && this.selectedItem.IsUpdatable;
 			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.ItemPackageInfo);
+			bool canUpdate = isItemUpdatable && (this.checkBoxShowAdvanced.Checked || this.selectedItem.UpdateCompatibility.Satisfies(PackageCompatibility.Likely));
 
 			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
 			this.buttonUninstall.Visible		= isItemInstalled && canUninstall;
 			this.buttonChangeVersion.Visible	= isItemInstalled && this.checkBoxShowAdvanced.Checked;
-			this.buttonUpdate.Visible			= isItemInstalled && isItemUpdatable;
-			this.bottomFlowSpacer2.Visible		= isItemSelected;
+			this.buttonUpdate.Visible			= isItemInstalled && canUpdate;
+			this.bottomFlowSpacer2.Visible		= this.buttonInstall.Visible || this.buttonUninstall.Visible || this.buttonChangeVersion.Visible || this.buttonUpdate.Visible;
 			this.buttonUpdateAll.Visible		= this.packageList.Root.Children.Select(n => n.Tag as PackageItem).Any(n => n.IsUpdatable);
 			this.buttonApply.Visible			= this.restartRequired;
 			this.labelRequireRestart.Visible	= this.restartRequired;
@@ -303,7 +304,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				PackageOperationThread, 
 				new PackageOperationData(this.packageManager, info, d => 
 				{
-					PackageInfo targetPackage = d.Manager.QueryPackageInfo(d.Package.Id, specificVersion);
+					PackageInfo targetPackage = d.Manager.QueryPackageInfo(new PackageName(d.Package.Id, specificVersion));
 					if (targetPackage == null)
 					{
 						packageNotFound = true;
@@ -572,16 +573,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			workerInterface.StateDesc = string.Format("Preparing operation...");
 			yield return null;
 
-			LocalPackage[] localPackages = manager.LocalPackages.ToArray();
-			foreach (LocalPackage package in localPackages)
+			PackageInfo[] updatePackages = manager.GetSafeUpdateConfig(manager.LocalPackages).ToArray();
+			foreach (PackageInfo package in updatePackages)
 			{
-				workerInterface.Progress += 1.0f / localPackages.Length;
+				workerInterface.Progress += 1.0f / updatePackages.Length;
 				workerInterface.StateDesc = string.Format("Package '{0}'...", package.Id);
 				yield return null;
 
 				try
 				{
-					manager.UpdatePackage(package);
+					manager.UpdatePackage(package, package.Version);
 				}
 				catch (Exception e)
 				{

@@ -7,22 +7,24 @@ namespace Duality.Editor.PackageManagement
 {
 	public class PackageEventArgs : EventArgs
 	{
-		private	string		id		= null;
-		private	Version		version	= null;
-
+		private	PackageName	packageName	= PackageName.None;
+		
+		public PackageName PackageName
+		{
+			get { return this.packageName; }
+		}
 		public string Id
 		{
-			get { return this.id; }
+			get { return this.packageName.Id; }
 		}
 		public Version Version
 		{
-			get { return this.version; }
+			get { return this.packageName.Version; }
 		}
 
-		public PackageEventArgs(string id, Version version)
+		public PackageEventArgs(PackageName package)
 		{
-			this.id = id;
-			this.version = version;
+			this.packageName = package;
 		}
 	}
 }

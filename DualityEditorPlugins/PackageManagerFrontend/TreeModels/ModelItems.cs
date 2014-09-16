@@ -67,12 +67,17 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 		}
 
-		protected	object		asyncDataLock		= new object();
-		protected	PackageInfo	itemPackageInfo		= null;
-		private		Image		icon				= DefaultPackageIcon;
+		protected	object					asyncDataLock		= new object();
+		protected	PackageInfo				itemPackageInfo		= null;
+		private		Image					icon				= DefaultPackageIcon;
+		private		PackageCompatibility	updateCompatibility	= PackageCompatibility.None;
 		
 		public abstract PackageInfo InstalledPackageInfo { get; }
 		public abstract PackageInfo NewestPackageInfo { get; }
+		public PackageCompatibility UpdateCompatibility
+		{
+			get { return this.updateCompatibility; }
+		}
 		public bool IsInstalled
 		{
 			get { return this.InstalledPackageInfo != null; }
@@ -142,6 +147,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				this.icon = newIcon;
 			}
 		}
+		protected void GetUpdateCompatibility(PackageManager manager)
+		{
+			PackageCompatibility compatibility = manager.GetForwardCompatibility(this.NewestPackageInfo);
+			lock (this.asyncDataLock)
+			{
+				this.updateCompatibility = compatibility;
+			}
+		}
 	}
 	public class LocalPackageItem : PackageItem
 	{
@@ -162,11 +175,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			base.RetrieveAsyncData(manager);
 
 			// Retrieve info about newest online version
-			PackageInfo newestPackage = manager.QueryPackageInfo(this.itemPackageInfo.Id);
+			PackageInfo newestPackage = manager.QueryPackageInfo(this.itemPackageInfo.PackageName.VersionInvariant);
 			lock (this.asyncDataLock)
 			{
 				this.newestPackageInfo = newestPackage;
 			}
+			this.GetUpdateCompatibility(manager);
 		}
 	}
 	public class OnlinePackageItem : PackageItem
@@ -187,6 +201,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			base.RetrieveAsyncData(manager);
 			this.UpdateLocalPackageData(manager);
+			this.GetUpdateCompatibility(manager);
 		}
 		public void UpdateLocalPackageData(PackageManager manager)
 		{
