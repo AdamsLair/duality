@@ -214,125 +214,14 @@ namespace Duality.Editor.PackageManagement
 		}
 
 		/// <summary>
-		/// Determines whether a <paramref name="package"/> is forward compatible to <paramref name="target"/>.
-		/// </summary>
-		/// <param name="package"></param>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		public PackageCompatibility GetForwardCompatibility(PackageInfo package, PackageInfo target)
-		{
-			if (package.Id == target.Id) return PackageCompatibility.Definite;
-
-			PackageCompatibility compatibility;
-			PackageNamePair key = new PackageNamePair { First = package.PackageName, Second = target.PackageName };
-			lock (this.cacheLock)
-			{
-				if (this.forwardCompatibilityCache.TryGetValue(key, out compatibility))
-				{
-					return compatibility;
-				}
-			}
-
-			compatibility = PackageCompatibility.Definite;
-
-			foreach (PackageName dependecy in package.Dependencies)
-			{
-				if (dependecy.Id == target.Id)
-				{
-					// If the package depends on a newer or similar version, it's okay
-					if (dependecy.Version >= target.Version) continue;
-
-					// Retrieve more thorough information about the dependency. If it fails, we know nothing
-					PackageInfo dependencyInfo = this.QueryPackageInfo(dependecy);
-					if (dependencyInfo == null)
-					{
-						compatibility = PackageCompatibility.None;
-						break;
-					}
-
-					// If the package depends on something that was released after the target, it should be okay
-					if (dependencyInfo.PublishDate > target.PublishDate)
-					{
-						compatibility = compatibility.Combine(PackageCompatibility.Likely);
-						continue;
-					}
-
-					// If the target is equal in major and minor, it should be okay
-					if (dependecy.Version.Major == target.Version.Major && dependecy.Version.Minor == target.Version.Minor)
-					{
-						compatibility = compatibility.Combine(PackageCompatibility.Likely);
-						continue;
-					}
-
-					// If the target is equal in major, it could be okay but doesn't have to be
-					if (dependecy.Version.Major == target.Version.Major)
-					{
-						compatibility = compatibility.Combine(PackageCompatibility.Unlikely);
-						continue;
-					}
-
-					// Otherwise, no compatibility can be assumed
-					compatibility = compatibility.Combine(PackageCompatibility.None);
-				}
-				else
-				{
-					// If the package depends on something that was released after the target, it should be okay
-					PackageInfo dependencyInfo = this.QueryPackageInfo(dependecy);
-					if (dependencyInfo == null)
-					{
-						compatibility = PackageCompatibility.None;
-						break;
-					}
-
-					// The compatibility of a package can only be as good as its dependencies compatibility
-					PackageCompatibility dependencyCompatibility = this.GetForwardCompatibility(dependencyInfo, target);
-					compatibility = compatibility.Combine(dependencyCompatibility);
-				}
-			}
-
-			lock (this.cacheLock)
-			{
-				this.forwardCompatibilityCache[key] = compatibility;
-			}
-			return compatibility;
-		}
-		/// <summary>
-		/// Determines whether all <paramref name="packages"/> are forward compatible to <paramref name="target"/>.
-		/// </summary>
-		/// <param name="packages"></param>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		public PackageCompatibility GetForwardCompatibility(IEnumerable<PackageInfo> packages, PackageInfo target)
-		{
-			PackageCompatibility compatibility = PackageCompatibility.Definite;
-
-			foreach (PackageInfo package in packages)
-			{
-				PackageCompatibility localCompatibility = this.GetForwardCompatibility(package, target);
-				compatibility = compatibility.Combine(localCompatibility);
-			}
-
-			return compatibility;
-		}
-		/// <summary>
-		/// Determines whether all <paramref name="packages"/> are forward compatible to <paramref name="target"/>.
-		/// </summary>
-		/// <param name="packages"></param>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		public PackageCompatibility GetForwardCompatibility(IEnumerable<LocalPackage> packages, PackageInfo target)
-		{
-			var localInfo = packages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
-			return this.GetForwardCompatibility(localInfo, target);
-		}
-		/// <summary>
 		/// Determines whether all installed pacakges are forward compatible to <paramref name="target"/>.
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
 		public PackageCompatibility GetForwardCompatibility(PackageInfo target)
 		{
-			return this.GetForwardCompatibility(this.localPackages, target);
+			// ToDo: Implement this
+			return PackageCompatibility.Definite;
 		}
 		/// <summary>
 		/// Given the specified set of packages, this method returns a new set of the same packages where each version is the newest one
@@ -346,36 +235,18 @@ namespace Duality.Editor.PackageManagement
 		{
 			List<PackageInfo> safeUpdateList = new List<PackageInfo>();
 			PackageInfo[] targetPackages = packages.OrderByDescending(p => this.GetDependencyScore(p.PackageName)).ToArray();
-			PackageInfo[] installedPackages = this.localPackages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
-			PackageInfo[] installedOthers = installedPackages.Where(i => !targetPackages.Any(p => p.Id == i.Id)).ToArray();
 
 			for (int i = 0; i < targetPackages.Length; i++)
 			{
 				PackageInfo package = targetPackages[i];
 				Version maxVersion = null;
-				while (maxVersion == null || maxVersion > package.Version)
-				{
-					PackageInfo update = this.QueryPackageInfo(new PackageName(package.Id, maxVersion), true);
-					if (update.Version <= package.Version) break;
 
-					bool isMinCompatible = true;
-					if (minCompatibility != PackageCompatibility.None)
-					{
-						PackageCompatibility compatibility = this.GetForwardCompatibility(targetPackages.Concat(installedOthers), update);
-						isMinCompatible = compatibility.Satisfies(minCompatibility);
-					}
+				PackageInfo update = this.QueryPackageInfo(new PackageName(package.Id, maxVersion), true);
+				if (update.Version <= package.Version) continue;
 
-					if (isMinCompatible)
-					{
-						targetPackages[i] = update;
-						safeUpdateList.Add(update);
-						break;
-					}
-					else
-					{
-						maxVersion = update.Version;
-					}
-				}
+				// ToDo: Implement this
+
+				safeUpdateList.Add(update);
 			}
 
 			return safeUpdateList;
@@ -471,6 +342,68 @@ namespace Duality.Editor.PackageManagement
 			return package != null ? this.CreatePackageInfo(package) : null;
 		}
 		
+		private PackageCompatibility GetIndividualForwardCompatibility(PackageInfo package, PackageInfo target)
+		{
+			if (package.Id == target.Id) return PackageCompatibility.Definite;
+
+			PackageNamePair key = new PackageNamePair { First = package.PackageName, Second = target.PackageName };
+			PackageCompatibility compatibility;
+			lock (this.cacheLock)
+			{
+				if (this.forwardCompatibilityCache.TryGetValue(key, out compatibility))
+					return compatibility;
+			}
+
+			compatibility = PackageCompatibility.Definite;
+
+			// Evaluate how the package depends on the target.
+			PackageName dependecy = package.Dependencies.FirstOrDefault(d => d.Id == target.Id);
+			if (!string.IsNullOrWhiteSpace(dependecy.Id))
+			{
+				PackageInfo dependencyInfo = this.QueryPackageInfo(dependecy);
+				if (dependencyInfo == null)
+				{
+					// If no information is available on this dependency, don't assume compatibility
+					compatibility = PackageCompatibility.None;
+				}
+				else if (!dependencyInfo.IsDualityPackage)
+				{
+					// If it is not a Duality package, ignore this
+					compatibility = PackageCompatibility.Definite;
+				}
+				else if (dependecy.Version >= target.Version)
+				{
+					// If the package depends on a newer or similar version, it's okay
+					compatibility = PackageCompatibility.Definite;
+				}
+				else if (dependecy.Version.Major == target.Version.Major && dependecy.Version.Minor == target.Version.Minor)
+				{
+					// If the target is equal in major and minor, it should be okay
+					compatibility = PackageCompatibility.Likely;
+				}
+				else if (dependencyInfo.PublishDate > target.PublishDate)
+				{
+					// If the package depends on something that was released after the target, it should be okay
+					compatibility = PackageCompatibility.Likely;
+				}
+				else if (dependecy.Version.Major == target.Version.Major)
+				{
+					// If the target is equal in major, it could be okay but doesn't have to be
+					compatibility = PackageCompatibility.Unlikely;
+				}
+				else 
+				{
+					// Otherwise, no compatibility can be assumed
+					compatibility = PackageCompatibility.None;
+				}
+			}
+			
+			lock (this.cacheLock)
+			{
+				this.forwardCompatibilityCache[key] = compatibility;
+			}
+			return compatibility;
+		}
 		private int GetDependencyScore(PackageName packageName)
 		{
 			int depth;
@@ -478,15 +411,25 @@ namespace Duality.Editor.PackageManagement
 			{
 				if (!this.dependencyScoreCache.TryGetValue(packageName, out depth))
 				{
+					this.dependencyScoreCache[packageName] = 0;
+
 					depth = 1;
 					PackageInfo package = this.QueryPackageInfo(packageName);
 					if (package != null)
 					{
-						foreach (PackageName dependency in package.Dependencies)
+						if (package.IsDualityPackage)
 						{
-							depth += this.GetDependencyScore(dependency);
+							foreach (PackageName dependency in package.Dependencies)
+							{
+								depth += this.GetDependencyScore(dependency);
+							}
+						}
+						else
+						{
+							depth = 0;
 						}
 					}
+
 					this.dependencyScoreCache[packageName] = depth;
 				}
 			}
@@ -560,6 +503,7 @@ namespace Duality.Editor.PackageManagement
 			}
 			return result;
 		}
+
 		private void RetrieveLocalPackageInfo()
 		{
 			foreach (LocalPackage localPackage in this.localPackages)

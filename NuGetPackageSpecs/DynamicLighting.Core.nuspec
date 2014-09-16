@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.DynamicLighting</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>DynamicLighting Sample Implementation (Core)</title>
@@ -14,7 +14,7 @@
     <description>Provides a sample implementation of dynamic lighting for rendering Components.</description>
 	<tags>Duality Core Plugin Rendering Lighting Component</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.0.1" />
+      <dependency id="AdamsLair.Duality" version="1.2.0" />
     </dependencies>
   </metadata>
   <files>

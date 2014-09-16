@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
@@ -14,7 +14,7 @@
     <description>The default launcher application for Duality games.</description>
 	<tags>Duality Launcher</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.0.1" />
+      <dependency id="AdamsLair.Duality" version="1.2.0" />
     </dependencies>
   </metadata>
   <files>
