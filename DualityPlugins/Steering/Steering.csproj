@@ -49,8 +49,9 @@
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK">
-      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.0.0\lib\net20\OpenTK.dll</HintPath>
+    <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -86,15 +87,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CmpIconAgent.png" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\SteeringRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SteeringRes.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

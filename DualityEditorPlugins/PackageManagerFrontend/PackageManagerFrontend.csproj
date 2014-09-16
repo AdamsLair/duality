@@ -36,9 +36,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\AdamsLair.WinForms.1.0.2.0\lib\net40-Client\AdamsLair.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Aga.Controls, Version=1.7.1.0, Culture=neutral, PublicKeyToken=fcc90fbf924463a3, processorArchitecture=MSIL">
+    <Reference Include="Aga.Controls, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\AdamsLair.TreeViewAdv.1.7.1.0\lib\net20\Aga.Controls.dll</HintPath>
+      <HintPath>..\..\packages\AdamsLair.TreeViewAdv.1.7.2.0\lib\net20\Aga.Controls.dll</HintPath>
     </Reference>
     <Reference Include="PopupControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AdamsLair.WinForms.PopupControl.1.0.0.0\lib\net40\PopupControl.dll</HintPath>
@@ -50,8 +50,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking">
-      <HintPath>..\..\packages\AdamsLair.DockPanelSuite.2.8.0.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=2.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\AdamsLair.DockPanelSuite.2.8.1.0\lib\net20\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

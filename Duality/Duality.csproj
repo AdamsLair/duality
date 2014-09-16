@@ -50,20 +50,20 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerDuality, Version=3.3.5195.26194, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="FarseerDuality, Version=3.3.6.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AdamsLair.FarseerDuality.3.3.5.0\lib\FarseerDuality.dll</HintPath>
+      <HintPath>..\packages\AdamsLair.FarseerDuality.3.3.6.0\lib\net40\FarseerDuality.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis">
       <HintPath>..\packages\AdamsLair.NVorbis.0.7.4\lib\NVorbis.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+    <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AdamsLair.OpenTK.1.1.0.0\lib\OpenTK.dll</HintPath>
+      <HintPath>..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.GLControl, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+    <Reference Include="OpenTK.GLControl, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AdamsLair.OpenTK.GLControl.1.1.0.0\lib\OpenTK.GLControl.dll</HintPath>
+      <HintPath>..\packages\AdamsLair.OpenTK.GLControl.1.1.1.0\lib\net20\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -294,6 +294,7 @@
     <EmbeddedResource Include="EmbeddedResources\DualityIcon.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityIconB.png" />
     <EmbeddedResource Include="EmbeddedResources\SharpAlpha.frag" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\Beep.ogg" />
