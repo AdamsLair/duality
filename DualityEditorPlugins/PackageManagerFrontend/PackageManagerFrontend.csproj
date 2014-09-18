@@ -56,6 +56,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modules\DualityPackageTypeNodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Modules\SelectTargetVersionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -106,6 +109,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="EmbeddedResources\core.png" />
+    <Content Include="EmbeddedResources\editor.png" />
     <Content Include="EmbeddedResources\IncompatibleUpdate.png" />
     <Content Include="EmbeddedResources\LikelySafeUpdate.png" />
     <Content Include="EmbeddedResources\LikelyUnsafeUpdate.png" />
@@ -114,6 +119,7 @@
     <Content Include="EmbeddedResources\packagebig.png" />
     <Content Include="EmbeddedResources\packagemed.png" />
     <Content Include="EmbeddedResources\SafeUpdate.png" />
+    <Content Include="EmbeddedResources\sample.png" />
     <Content Include="EmbeddedResources\SampleOverlay.png" />
     <Content Include="EmbeddedResources\UpToDate.png" />
   </ItemGroup>

@@ -46,6 +46,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 		}
 
+		public enum PackageType
+		{
+			Core,
+			Editor,
+			Sample,
+			Other
+		}
+
 		protected	object					asyncDataLock		= new object();
 		protected	PackageInfo				itemPackageInfo		= null;
 		private		Image					icon				= DefaultPackageIcon;
@@ -68,6 +76,20 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		public PackageInfo ItemPackageInfo
 		{
 			get { return this.itemPackageInfo; }
+		}
+		public PackageType Type
+		{
+			get
+			{
+				if (this.itemPackageInfo.IsSamplePackage)
+					return PackageType.Sample;
+				else if (this.itemPackageInfo.IsEditorPackage)
+					return PackageType.Editor;
+				else if (this.itemPackageInfo.IsCorePackage)
+					return PackageType.Core;
+				else
+					return PackageType.Other;
+			}
 		}
 		public override Image Icon
 		{
@@ -146,14 +168,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 					}
 				}
 				catch (Exception) {}
-			}
-
-			if (info.IsSamplePackage)
-			{
-				using (Graphics g = Graphics.FromImage(icon))
-				{
-					g.DrawImageUnscaled(PackageManagerFrontendResCache.IconSampleOverlay, 0, 0);
-				}
 			}
 
 			return icon;

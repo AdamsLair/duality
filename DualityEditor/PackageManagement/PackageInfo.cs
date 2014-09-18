@@ -29,6 +29,14 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.tags.Contains(PackageManager.SampleTag); }
 		}
+		public bool IsEditorPackage
+		{
+			get { return this.tags.Contains(PackageManager.EditorTag); }
+		}
+		public bool IsCorePackage
+		{
+			get { return this.tags.Contains(PackageManager.CoreTag); }
+		}
 		public PackageName PackageName
 		{
 			get { return this.packageName; }

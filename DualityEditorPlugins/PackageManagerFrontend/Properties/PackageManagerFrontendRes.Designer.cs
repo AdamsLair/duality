@@ -64,6 +64,26 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconCore {
+            get {
+                object obj = ResourceManager.GetObject("IconCore", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconEditor {
+            get {
+                object obj = ResourceManager.GetObject("IconEditor", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconIncompatibleUpdate {
             get {
                 object obj = ResourceManager.GetObject("IconIncompatibleUpdate", resourceCulture);
@@ -124,9 +144,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap IconSampleOverlay {
+        public static System.Drawing.Bitmap IconSample {
             get {
-                object obj = ResourceManager.GetObject("IconSampleOverlay", resourceCulture);
+                object obj = ResourceManager.GetObject("IconSample", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -62,7 +62,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			{
 				Name,
 				Version,
-				Downloads
+				Downloads,
+				PackageType
 			}
 
 			private SortOrder sortOrder	= SortOrder.Ascending;
@@ -91,15 +92,17 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				}
 				if (result == 0 || this.sortMode == SortMode.Downloads)
 				{
-					if (itemA.Downloads.HasValue || itemB.Downloads.HasValue)
-					{
-						if		(!itemA.Downloads.HasValue || itemA.Downloads < itemB.Downloads)	result = -1;
-						else if (!itemB.Downloads.HasValue || itemA.Downloads > itemB.Downloads)	result = 1;
-					}
+					int itemANum = itemA.Downloads.HasValue ? itemA.Downloads.Value : 0;
+					int itemBNum = itemB.Downloads.HasValue ? itemB.Downloads.Value : 0;
+					result = itemANum - itemBNum;
 				}
 				if (result == 0 || this.sortMode == SortMode.Name)
 				{
 					result = string.Compare(itemA.Title, itemB.Title);
+				}
+				if (result == 0 || this.sortMode == SortMode.PackageType)
+				{
+					result = (int)itemA.Type - (int)itemB.Type;
 				}
 				if (result == 0)
 				{
@@ -136,7 +139,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			}
 		}
 
-		private static readonly string[] InvisibleTags = new[] { "Duality", "Plugin", "Core", "Editor", "Launcher" };
+		private static readonly string[] InvisibleTags = new[] { 
+			PackageManager.DualityTag, 
+			PackageManager.PluginTag, 
+			PackageManager.CoreTag, 
+			PackageManager.EditorTag, 
+			PackageManager.LauncherTag, 
+			PackageManager.SampleTag };
 
 		private	PackageManager					packageManager	= null;
 		private	DisplayMode						display			= DisplayMode.None;
@@ -167,6 +176,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnDownloads.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
+			this.treeColumnPackageType.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
 			this.nodeTextBoxDownloads.DrawText			+= this.nodeTextBoxDownloads_DrawText;
 			this.toolStripMain.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 
@@ -427,6 +437,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Version, e.Column.SortOrder);
 			else if (e.Column == this.treeColumnDownloads)
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Downloads, e.Column.SortOrder);
+			else if (e.Column == this.treeColumnPackageType)
+				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.PackageType, e.Column.SortOrder);
 
 			this.modelInstalled.SortComparer = comparer;
 			this.modelOnline.SortComparer = comparer;
@@ -533,10 +545,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			if (next == DisplayMode.Installed)
 			{
 				this.packageList.Model = this.modelInstalled;
+				this.treeColumnDownloads.IsVisible = false;
+				this.treeColumnName.Width += this.treeColumnDownloads.Width;
 			}
 			else if (next == DisplayMode.Online)
 			{
 				this.packageList.Model = this.modelOnline;
+				this.treeColumnName.Width -= this.treeColumnDownloads.Width;
+				this.treeColumnDownloads.IsVisible = true;
 			}
 		}
 

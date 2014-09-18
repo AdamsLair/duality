@@ -61,8 +61,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				}
 			}
 
-			g.DrawString(headline, context.Font, new SolidBrush(Color.FromArgb(context.Enabled ? 255 : 128, this.Parent.ForeColor)), headlineRect, headlineFormat);
-			g.DrawString(summary, context.Font, new SolidBrush(Color.FromArgb(context.Enabled ? 128 : 64, this.Parent.ForeColor)), summaryRect, summaryFormat);
+			Color textColor = this.Parent.ForeColor;
+
+			g.DrawString(headline, context.Font, new SolidBrush(Color.FromArgb(context.Enabled ? 255 : 128, textColor)), headlineRect, headlineFormat);
+			g.DrawString(summary, context.Font, new SolidBrush(Color.FromArgb(context.Enabled ? 128 : 64, textColor)), summaryRect, summaryFormat);
 		}
 		public override Size MeasureSize(TreeNodeAdv node, DrawContext context)
 		{
