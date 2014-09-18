@@ -4,5 +4,12 @@
         <name>SteeringTestbed.core</name>
     </assembly>
     <members>
+        <member name="T:Duality.Plugins.Steering.Testbed.AgentAttributeTranslator">
+            <summary>
+            This Component assigns the objects RigidBody radius (taken from its first circle shape) directly to its
+            Agent radius, and applies the Agents suggested velocity back to the RigidBody. The sole purpose if this
+            Component is to visualize Agent behavior.
+            </summary>
+        </member>
     </members>
 </doc>

@@ -11,6 +11,11 @@ using Duality.Properties;
 
 namespace Duality.Plugins.Steering.Testbed
 {
+	/// <summary>
+	/// This Component assigns the objects RigidBody radius (taken from its first circle shape) directly to its
+	/// Agent radius, and applies the Agents suggested velocity back to the RigidBody. The sole purpose if this
+	/// Component is to visualize Agent behavior.
+	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(Agent))]
 	[RequiredComponent(typeof(Transform))]
@@ -22,7 +27,7 @@ namespace Duality.Plugins.Steering.Testbed
 		{
 			RigidBody		rigidBody	= this.GameObj.RigidBody;
 			Agent			agent		= GameObj.GetComponent<Agent>();
-			CircleShapeInfo shapeInfo	= rigidBody.Shapes.ElementAtOrDefault(0) as CircleShapeInfo;
+			CircleShapeInfo shapeInfo	= rigidBody.Shapes.OfType<CircleShapeInfo>().FirstOrDefault();
 			if (shapeInfo != null)
 			{
 				agent.Radius = shapeInfo.Radius;

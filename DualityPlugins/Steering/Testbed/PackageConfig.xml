@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageConfig>
+  <RepositoryUrl>https://packages.nuget.org/api/v2</RepositoryUrl>
+  <Packages />
+</PackageConfig>
