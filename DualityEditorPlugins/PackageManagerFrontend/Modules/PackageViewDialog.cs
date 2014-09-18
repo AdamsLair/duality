@@ -264,7 +264,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			setupDialog.MainThreadRequired = false;
 			setupDialog.ShowDialog();
 			this.modelInstalled.ApplyChanges();
-			this.restartRequired = true;
+			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
 			this.UpdateBottomButtons();
 		}
 		private void UninstallPackage(PackageInfo info)
@@ -277,7 +277,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			setupDialog.MainThreadRequired = false;
 			setupDialog.ShowDialog();
 			this.modelInstalled.ApplyChanges();
-			this.restartRequired = true;
+			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
 			this.UpdateBottomButtons();
 		}
 		private void UpdatePackage(PackageInfo info)
@@ -290,7 +290,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			setupDialog.MainThreadRequired = false;
 			setupDialog.ShowDialog();
 			this.modelInstalled.ApplyChanges();
-			this.restartRequired = true;
+			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
 			this.UpdateBottomButtons();
 		}
 		private void UpdatePackage(PackageInfo info, Version specificVersion)
@@ -561,6 +561,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					data.Package.Id, 
 					data.Package.Version, 
 					Log.Exception(e));
+				workerInterface.Error = e;
 			}
 
 			yield break;
@@ -590,6 +591,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 						package.Id, 
 						package.Version, 
 						Log.Exception(e));
+					workerInterface.Error = e;
 				}
 			}
 

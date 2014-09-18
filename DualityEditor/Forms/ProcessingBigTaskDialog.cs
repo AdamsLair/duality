@@ -19,6 +19,7 @@ namespace Duality.Editor.Forms
 			private float		progress	= 0.0f;
 			private string		stateDesc	= null;
 			private	object		data		= null;
+			private	string		errorDesc	= null;
 
 			public float Progress
 			{
@@ -33,7 +34,19 @@ namespace Duality.Editor.Forms
 			public Exception Error
 			{
 				get { return this.error; }
-				set { this.error = value; }
+				set
+				{
+					if (this.error == null && value != null)
+					{
+						this.errorDesc = string.Format(GeneralRes.Msg_ErrorPerformBigTask_Desc, this.stateDesc, "\n", Log.Exception(value));
+					}
+					this.error = value;
+				}
+			}
+			public string ErrorDesc
+			{
+				get { return this.errorDesc; }
+				set { this.errorDesc = value; }
 			}
 			public Form TargetForm
 			{
@@ -130,16 +143,21 @@ namespace Duality.Editor.Forms
 				this.progressTimer.Stop();
 
 				this.targetForm.SetTaskbarProgressState(ThumbnailProgressState.Error);
-				MessageBox.Show(this, 
-					String.Format(GeneralRes.Msg_ErrorPerformBigTask_Desc, this.taskCaption, "\n", Log.Exception(this.workerInterface.Error)), 
-					GeneralRes.Msg_ErrorPerformBigTask_Caption, 
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+				if (!string.IsNullOrEmpty(this.workerInterface.ErrorDesc))
+				{
+					MessageBox.Show(this, 
+						this.workerInterface.ErrorDesc, 
+						GeneralRes.Msg_ErrorPerformBigTask_Caption, 
+						MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
 
+				this.DialogResult = DialogResult.Abort;
 				this.Close();
 			}
 			else if (!this.worker.IsAlive)
 			{
 				this.progressTimer.Stop();
+				this.DialogResult = DialogResult.OK;
 				this.Close();
 			}
 		}
