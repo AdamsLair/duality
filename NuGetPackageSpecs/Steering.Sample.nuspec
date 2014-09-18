@@ -6,7 +6,7 @@
 	<authors>Daniel Herb, Fedja Adam</authors>
 	<owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours Sample</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/SteeringExample.png</iconUrl>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/SteeringSample.png</iconUrl>
 	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

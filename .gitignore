@@ -119,3 +119,13 @@ DualityPlugins/Steering/Sample/Testbed/DesignTimeData.dat
 DualityPlugins/Steering/Sample/Testbed/Data/WorkingFolderIcon.ico
 DualityPlugins/Steering/Sample/Testbed/PackageConfig.xml
 DualityPlugins/Steering/Sample/Testbed/Source/
+DualityPlugins/DynamicLighting/Sample/bin/
+DualityPlugins/DynamicLighting/Sample/Testbed/Source/
+DualityPlugins/DynamicLighting/Sample/Testbed/Data/WorkingFolderIcon.ico
+DualityPlugins/DynamicLighting/Sample/Testbed/DefaultUserData.dat
+DualityPlugins/DynamicLighting/Sample/obj/
+DualityPlugins/DynamicLighting/Sample/Testbed/Backup/
+DualityPlugins/DynamicLighting/Sample/Testbed/AppData.dat
+DualityPlugins/DynamicLighting/Sample/DynamicLighting.Sample.core.xml
+DualityPlugins/DynamicLighting/Sample/Testbed/PackageConfig.xml
+DualityPlugins/DynamicLighting/Sample/Testbed/DesignTimeData.dat

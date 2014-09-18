@@ -5,13 +5,13 @@
     <version>1.0.2</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
-    <title>DynamicLighting Sample Implementation (Core)</title>
+    <title>DynamicLighting (Core)</title>
 	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/DynamicLighting.png</iconUrl>
 	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>Provides a sample implementation of dynamic lighting for rendering Components.</summary>
-    <description>Provides a sample implementation of dynamic lighting for rendering Components.</description>
+	<summary>Introduces a naiive implementation of dynamic lighting Components.</summary>
+    <description>Introduces a naiive implementation of dynamic lighting Components. Although this can be used in an actual game, this package mainly serves as an example on how to implement dynamic lighting functionality in a custom Duality plugin. You can find the full source code online.</description>
 	<tags>Duality Core Plugin Rendering Lighting Component</tags>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.2.0" />

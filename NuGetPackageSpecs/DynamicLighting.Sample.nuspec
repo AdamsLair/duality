@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Plugins.DynamicLighting.Sample</id>
+    <version>1.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>DynamicLighting Sample</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/DynamicLightingSample.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>A sample project to show how to use Dynamic Lighting.</summary>
+    <description>A sample project to show how to use Dynamic Lighting.</description>
+	<tags>Duality Sample Plugin Rendering Lighting Component</tags>
+    <dependencies>
+      <dependency id="AdamsLair.Duality.Plugins.DynamicLighting" version="1.0.2" />
+      <dependency id="AdamsLair.Duality.Editor.Plugins.DynamicLighting" version="1.0.2" />
+      <dependency id="AdamsLair.Duality" version="1.2.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\DualityPlugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.dll" target="lib" />
+    <file src="..\DualityPlugins\DynamicLighting\Sample\bin\Release\DynamicLighting.Sample.core.xml" target="lib" />
+    <file src="..\DualityPlugins\DynamicLighting\Sample\Testbed\Data\**\*.res" target="content" />
+  </files>
+</package>
