@@ -66,7 +66,7 @@
             </fontGlyphCount>
             <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1609707806">
               <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                <contentPath dataType="String">Data\SteeringTestbed\Data\InfoTextFont.Font.res</contentPath>
+                <contentPath dataType="String">Data\SteeringSample\Data\InfoTextFont.Font.res</contentPath>
               </item>
             </fonts>
             <iconCount dataType="Int">0</iconCount>

@@ -1,7 +1,7 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Texture" id="129723834">
   <anisoFilter dataType="Bool">false</anisoFilter>
   <basePixmap dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Pixmap]]">
-    <contentPath dataType="String">Data\SteeringTestbed\Textures\Agent.Pixmap.res</contentPath>
+    <contentPath dataType="String">Data\SteeringSample\Textures\Agent.Pixmap.res</contentPath>
   </basePixmap>
   <filterMag dataType="Enum" type="OpenTK.Graphics.OpenGL.TextureMagFilter" name="Linear" value="9729" />
   <filterMin dataType="Enum" type="OpenTK.Graphics.OpenGL.TextureMinFilter" name="LinearMipmapLinear" value="9987" />

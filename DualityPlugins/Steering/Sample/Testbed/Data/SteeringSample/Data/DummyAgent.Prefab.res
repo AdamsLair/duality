@@ -80,7 +80,7 @@
         <item dataType="Struct" type="Duality.Components.Diagnostics.RigidBodyRenderer" id="1714998165">
           <active dataType="Bool">true</active>
           <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-            <contentPath dataType="String">Data\SteeringTestbed\Textures\Agent.Material.res</contentPath>
+            <contentPath dataType="String">Data\SteeringSample\Textures\Agent.Material.res</contentPath>
           </areaMaterial>
           <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
             <A dataType="Byte">255</A>
@@ -121,7 +121,7 @@
           </target>
           <toiHorizon dataType="Float">240</toiHorizon>
         </item>
-        <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="3618709670">
+        <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="3665341711">
           <active dataType="Bool">true</active>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
           <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -138,14 +138,14 @@
           <item dataType="Type" id="3213052814" value="Duality.Components.Physics.RigidBody" />
           <item dataType="Type" id="440111868" value="Duality.Components.Diagnostics.RigidBodyRenderer" />
           <item dataType="Type" id="2060713746" value="Duality.Plugins.Steering.Agent" />
-          <item dataType="Type" id="2856434328" value="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" />
+          <item dataType="Type" id="2856434328" value="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" />
         </keys>
         <values dataType="Array" type="Duality.Component[]" id="3442451738">
           <item dataType="ObjectRef">3918088395</item>
           <item dataType="ObjectRef">325582691</item>
           <item dataType="ObjectRef">1714998165</item>
           <item dataType="ObjectRef">2639804075</item>
-          <item dataType="ObjectRef">3618709670</item>
+          <item dataType="ObjectRef">3665341711</item>
         </values>
       </body>
     </compMap>

@@ -9,7 +9,7 @@ using Duality.Components.Physics;
 using Duality.Editor;
 using Duality.Properties;
 
-namespace Duality.Plugins.Steering.Testbed
+namespace Duality.Plugins.Steering.Sample
 {
 	/// <summary>
 	/// This Component assigns the objects RigidBody radius (taken from its first circle shape) directly to its

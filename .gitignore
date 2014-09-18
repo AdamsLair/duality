@@ -109,3 +109,13 @@ Other/NightlyBuild/NuGetPackages/
 DualityEditorPlugins/PackageManagerFrontend/bin/
 DualityEditorPlugins/PackageManagerFrontend/obj/
 DualityEditorPlugins/PackageManagerFrontend/PackageManagerFrontend.csproj.user
+DualityPlugins/Steering/Sample/bin/
+DualityPlugins/Steering/Sample/obj/
+DualityPlugins/Steering/Sample/Testbed/AppData.dat
+DualityPlugins/Steering/Sample/SteeringTestbed.core.xml
+Plugins/
+DualityPlugins/Steering/Sample/Testbed/DefaultUserData.dat
+DualityPlugins/Steering/Sample/Testbed/DesignTimeData.dat
+DualityPlugins/Steering/Sample/Testbed/Data/WorkingFolderIcon.ico
+DualityPlugins/Steering/Sample/Testbed/PackageConfig.xml
+DualityPlugins/Steering/Sample/Testbed/Source/

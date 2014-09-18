@@ -29,7 +29,7 @@
             <gameobj dataType="ObjectRef">3959643605</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="1725612516">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="1772244557">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -46,14 +46,14 @@
             <item dataType="Type" id="439788218" value="Duality.Components.Physics.RigidBody" />
             <item dataType="Type" id="2771621414" value="Duality.Components.Diagnostics.RigidBodyRenderer" />
             <item dataType="Type" id="2144167866" value="Duality.Plugins.Steering.Agent" />
-            <item dataType="Type" id="2730200870" value="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" />
+            <item dataType="Type" id="2730200870" value="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" />
           </keys>
           <values dataType="Array" type="Duality.Component[]" id="225485752">
             <item dataType="ObjectRef">2024991241</item>
             <item dataType="ObjectRef">2727452833</item>
             <item dataType="ObjectRef">4116868307</item>
             <item dataType="ObjectRef">746706921</item>
-            <item dataType="ObjectRef">1725612516</item>
+            <item dataType="ObjectRef">1772244557</item>
           </values>
         </body>
       </compMap>
@@ -152,7 +152,7 @@
         </changes>
         <obj dataType="ObjectRef">3959643605</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -181,7 +181,7 @@
             <gameobj dataType="ObjectRef">1396203244</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="3457139451">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="3503771492">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -205,7 +205,7 @@
             <item dataType="ObjectRef">164012472</item>
             <item dataType="ObjectRef">1553427946</item>
             <item dataType="ObjectRef">2478233856</item>
-            <item dataType="ObjectRef">3457139451</item>
+            <item dataType="ObjectRef">3503771492</item>
           </values>
         </body>
       </compMap>
@@ -304,7 +304,7 @@
         </changes>
         <obj dataType="ObjectRef">1396203244</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -333,7 +333,7 @@
             <gameobj dataType="ObjectRef">2587165737</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="353134648">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="399766689">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2587165737</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -357,7 +357,7 @@
             <item dataType="ObjectRef">1354974965</item>
             <item dataType="ObjectRef">2744390439</item>
             <item dataType="ObjectRef">3669196349</item>
-            <item dataType="ObjectRef">353134648</item>
+            <item dataType="ObjectRef">399766689</item>
           </values>
         </body>
       </compMap>
@@ -456,7 +456,7 @@
         </changes>
         <obj dataType="ObjectRef">2587165737</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -485,7 +485,7 @@
             <gameobj dataType="ObjectRef">354782310</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="2415718517">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="2462350558">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">354782310</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -509,7 +509,7 @@
             <item dataType="ObjectRef">3417558834</item>
             <item dataType="ObjectRef">512007012</item>
             <item dataType="ObjectRef">1436812922</item>
-            <item dataType="ObjectRef">2415718517</item>
+            <item dataType="ObjectRef">2462350558</item>
           </values>
         </body>
       </compMap>
@@ -608,7 +608,7 @@
         </changes>
         <obj dataType="ObjectRef">354782310</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -637,7 +637,7 @@
             <gameobj dataType="ObjectRef">1770758309</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="3831694516">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="3878326557">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1770758309</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -661,7 +661,7 @@
             <item dataType="ObjectRef">538567537</item>
             <item dataType="ObjectRef">1927983011</item>
             <item dataType="ObjectRef">2852788921</item>
-            <item dataType="ObjectRef">3831694516</item>
+            <item dataType="ObjectRef">3878326557</item>
           </values>
         </body>
       </compMap>
@@ -760,7 +760,7 @@
         </changes>
         <obj dataType="ObjectRef">1770758309</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -789,7 +789,7 @@
             <gameobj dataType="ObjectRef">4011406579</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="1777375490">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="1824007531">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">4011406579</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -813,7 +813,7 @@
             <item dataType="ObjectRef">2779215807</item>
             <item dataType="ObjectRef">4168631281</item>
             <item dataType="ObjectRef">798469895</item>
-            <item dataType="ObjectRef">1777375490</item>
+            <item dataType="ObjectRef">1824007531</item>
           </values>
         </body>
       </compMap>
@@ -912,7 +912,7 @@
         </changes>
         <obj dataType="ObjectRef">4011406579</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -941,7 +941,7 @@
             <gameobj dataType="ObjectRef">3103949419</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="869918330">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="916550371">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3103949419</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -965,7 +965,7 @@
             <item dataType="ObjectRef">1871758647</item>
             <item dataType="ObjectRef">3261174121</item>
             <item dataType="ObjectRef">4185980031</item>
-            <item dataType="ObjectRef">869918330</item>
+            <item dataType="ObjectRef">916550371</item>
           </values>
         </body>
       </compMap>
@@ -1064,7 +1064,7 @@
         </changes>
         <obj dataType="ObjectRef">3103949419</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -1093,7 +1093,7 @@
             <gameobj dataType="ObjectRef">2048440334</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="4109376541">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="4156008582">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">2048440334</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -1117,7 +1117,7 @@
             <item dataType="ObjectRef">816249562</item>
             <item dataType="ObjectRef">2205665036</item>
             <item dataType="ObjectRef">3130470946</item>
-            <item dataType="ObjectRef">4109376541</item>
+            <item dataType="ObjectRef">4156008582</item>
           </values>
         </body>
       </compMap>
@@ -1216,7 +1216,7 @@
         </changes>
         <obj dataType="ObjectRef">2048440334</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -1287,7 +1287,7 @@
               </fontGlyphCount>
               <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="267689854">
                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                  <contentPath dataType="String">Data\SteeringTestbed\Data\InfoTextFont.Font.res</contentPath>
+                  <contentPath dataType="String">Data\SteeringSample\Data\InfoTextFont.Font.res</contentPath>
                 </item>
               </fonts>
               <iconCount dataType="Int">0</iconCount>

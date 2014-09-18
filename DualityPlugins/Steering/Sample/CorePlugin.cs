@@ -5,7 +5,7 @@ using System.Text;
 
 using Duality;
 
-namespace Duality.Plugins.Steering.Testbed
+namespace Duality.Plugins.Steering.Sample
 {
     public class NavigationTestbedCorePlugin : CorePlugin {}
 }

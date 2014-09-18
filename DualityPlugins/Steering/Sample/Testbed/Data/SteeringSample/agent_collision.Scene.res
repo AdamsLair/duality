@@ -29,7 +29,7 @@
             <gameobj dataType="ObjectRef">3959643605</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="1725612516">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="1772244557">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -46,14 +46,14 @@
             <item dataType="Type" id="439788218" value="Duality.Components.Physics.RigidBody" />
             <item dataType="Type" id="2771621414" value="Duality.Components.Diagnostics.RigidBodyRenderer" />
             <item dataType="Type" id="2144167866" value="Duality.Plugins.Steering.Agent" />
-            <item dataType="Type" id="2730200870" value="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" />
+            <item dataType="Type" id="2730200870" value="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" />
           </keys>
           <values dataType="Array" type="Duality.Component[]" id="225485752">
             <item dataType="ObjectRef">2024991241</item>
             <item dataType="ObjectRef">2727452833</item>
             <item dataType="ObjectRef">4116868307</item>
             <item dataType="ObjectRef">746706921</item>
-            <item dataType="ObjectRef">1725612516</item>
+            <item dataType="ObjectRef">1772244557</item>
           </values>
         </body>
       </compMap>
@@ -132,7 +132,7 @@
         </changes>
         <obj dataType="ObjectRef">3959643605</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -161,7 +161,7 @@
             <gameobj dataType="ObjectRef">1396203244</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Plugins.Steering.Testbed.AgentAttributeTranslator" id="3457139451">
+          <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="3503771492">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
             <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
@@ -185,7 +185,7 @@
             <item dataType="ObjectRef">164012472</item>
             <item dataType="ObjectRef">1553427946</item>
             <item dataType="ObjectRef">2478233856</item>
-            <item dataType="ObjectRef">3457139451</item>
+            <item dataType="ObjectRef">3503771492</item>
           </values>
         </body>
       </compMap>
@@ -264,7 +264,7 @@
         </changes>
         <obj dataType="ObjectRef">1396203244</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-          <contentPath dataType="String">Data\SteeringTestbed\Data\DummyAgent.Prefab.res</contentPath>
+          <contentPath dataType="String">Data\SteeringSample\Data\DummyAgent.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
     </item>
@@ -335,7 +335,7 @@
               </fontGlyphCount>
               <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1032945920">
                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                  <contentPath dataType="String">Data\SteeringTestbed\Data\InfoTextFont.Font.res</contentPath>
+                  <contentPath dataType="String">Data\SteeringSample\Data\InfoTextFont.Font.res</contentPath>
                 </item>
               </fonts>
               <iconCount dataType="Int">0</iconCount>
