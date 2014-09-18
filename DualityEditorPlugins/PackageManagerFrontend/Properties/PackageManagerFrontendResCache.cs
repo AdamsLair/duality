@@ -16,5 +16,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties
 		public static readonly Image IconLikelySafeUpdate = PackageManagerFrontendRes.IconLikelySafeUpdate;
 		public static readonly Image IconLikelyUnsafeUpdate = PackageManagerFrontendRes.IconLikelyUnsafeUpdate;
 		public static readonly Image IconIncompatibleUpdate = PackageManagerFrontendRes.IconIncompatibleUpdate;
+		public static readonly Image IconSampleOverlay = PackageManagerFrontendRes.IconSampleOverlay;
 	}
 }

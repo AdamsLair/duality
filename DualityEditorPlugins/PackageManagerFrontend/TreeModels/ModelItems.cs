@@ -28,27 +28,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		}
 
 		public abstract void RetrieveAsyncData(PackageManager manager);
-		protected Image RetrieveIcon(Uri iconUrl)
-		{
-			if (iconUrl == null) return null;
-
-			try
-			{
-				HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(iconUrl);
-				httpWebRequest.Timeout = 1000;
-				using (HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
-				{
-					using (Stream stream = httpWebReponse.GetResponseStream())
-					{
-						Bitmap rawIcon = Bitmap.FromStream(stream) as Bitmap;
-						return rawIcon.ScaleToFit(32, 32, System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic);
-					}
-				}
-			}
-			catch (Exception) {}
-
-			return null;
-		}
 	}
 	public abstract class PackageItem : BaseItem
 	{
@@ -140,12 +119,44 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			// Retrieve Icon
 			Image newIcon = null;
-			if (this.itemPackageInfo != null) newIcon = this.RetrieveIcon(this.itemPackageInfo.IconUrl);
-			if (newIcon == null) newIcon = DefaultPackageIcon;
+			if (this.itemPackageInfo != null) newIcon = this.RetrieveIcon(this.itemPackageInfo);
 			lock (this.asyncDataLock)
 			{
 				this.icon = newIcon;
 			}
+		}
+		protected Image RetrieveIcon(PackageInfo info)
+		{
+			if (info == null) return DefaultPackageIcon;
+
+			Image icon = DefaultPackageIcon;
+			if (info.IconUrl != null)
+			{
+				try
+				{
+					HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(info.IconUrl);
+					httpWebRequest.Timeout = 1000;
+					using (HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
+					{
+						using (Stream stream = httpWebReponse.GetResponseStream())
+						{
+							Bitmap rawIcon = Bitmap.FromStream(stream) as Bitmap;
+							icon = rawIcon.ScaleToFit(32, 32, System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic);
+						}
+					}
+				}
+				catch (Exception) {}
+			}
+
+			if (info.IsSamplePackage)
+			{
+				using (Graphics g = Graphics.FromImage(icon))
+				{
+					g.DrawImageUnscaled(PackageManagerFrontendResCache.IconSampleOverlay, 0, 0);
+				}
+			}
+
+			return icon;
 		}
 		protected void GetUpdateCompatibility(PackageManager manager)
 		{

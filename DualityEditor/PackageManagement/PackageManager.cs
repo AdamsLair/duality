@@ -16,6 +16,7 @@ namespace Duality.Editor.PackageManagement
 	{
 		internal const string DualityTag = "Duality";
 		internal const string PluginTag = "Plugin";
+		internal const string SampleTag = "Sample";
 
 		private	const	string	UpdateConfigFile			= "ApplyUpdate.xml";
 		private	const	string	PackageConfigFile			= "PackageConfig.xml";

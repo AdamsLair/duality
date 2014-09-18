@@ -25,6 +25,10 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.tags.Contains(PackageManager.DualityTag); }
 		}
+		public bool IsSamplePackage
+		{
+			get { return this.tags.Contains(PackageManager.SampleTag); }
+		}
 		public PackageName PackageName
 		{
 			get { return this.packageName; }

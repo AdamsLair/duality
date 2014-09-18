@@ -124,6 +124,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap IconSampleOverlay {
+            get {
+                object obj = ResourceManager.GetObject("IconSampleOverlay", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap IconUpToDate {
             get {
                 object obj = ResourceManager.GetObject("IconUpToDate", resourceCulture);
