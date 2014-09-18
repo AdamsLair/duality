@@ -56,6 +56,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering.Sample", "DualityP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Sample", "DualityPlugins\DynamicLighting\Sample\DynamicLighting.Sample.csproj", "{4F4C0027-A152-4D0F-ACD7-F39986EDCD6D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SampleProjects", "SampleProjects", "{7D750FD2-316E-4EB5-830B-773545442211}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualStickSpaceShooter", "SampleProjects\DualStickSpaceShooter\DualStickSpaceShooter.csproj", "{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -146,6 +150,10 @@ Global
 		{4F4C0027-A152-4D0F-ACD7-F39986EDCD6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F4C0027-A152-4D0F-ACD7-F39986EDCD6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F4C0027-A152-4D0F-ACD7-F39986EDCD6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,5 +177,6 @@ Global
 		{238DDEBC-D828-4FF8-92EC-7B29315D4EC3} = {39A2C120-2152-433D-B245-345540A0B882}
 		{7FA1C4E4-626E-476A-84A5-DEB9A7D83377} = {39A2C120-2152-433D-B245-345540A0B882}
 		{0C1B88A8-4FF3-43D3-9BC6-E71DBB561075} = {25E5F85E-2B49-4959-A7F4-45E7C492F345}
+		{54376712-DBFA-4EF3-A8BA-B1D44A2DA97E} = {7D750FD2-316E-4EB5-830B-773545442211}
 	EndGlobalSection
 EndGlobal

@@ -129,3 +129,12 @@ DualityPlugins/DynamicLighting/Sample/Testbed/AppData.dat
 DualityPlugins/DynamicLighting/Sample/DynamicLighting.Sample.core.xml
 DualityPlugins/DynamicLighting/Sample/Testbed/PackageConfig.xml
 DualityPlugins/DynamicLighting/Sample/Testbed/DesignTimeData.dat
+SampleProjects/DualStickSpaceShooter/Content/AppData.dat
+SampleProjects/DualStickSpaceShooter/Content/Data/WorkingFolderIcon.ico
+SampleProjects/DualStickSpaceShooter/Content/Data/desktop.ini
+SampleProjects/DualStickSpaceShooter/Content/DesignTimeData.dat
+SampleProjects/DualStickSpaceShooter/Content/PackageConfig.xml
+SampleProjects/DualStickSpaceShooter/Content/Source/
+SampleProjects/DualStickSpaceShooter/DualStickSpaceShooter.core.xml
+SampleProjects/DualStickSpaceShooter/bin/
+SampleProjects/DualStickSpaceShooter/obj/
