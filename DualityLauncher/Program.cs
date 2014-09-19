@@ -117,8 +117,11 @@ namespace Duality.Launcher
 				(DualityApp.UserData.GfxMode == ScreenMode.Fullscreen && !isDebugging) ? GameWindowFlags.Fullscreen : GameWindowFlags.Default))
 			{
 				// Retrieve icon from executable file and set it as window icon
-				string executablePath = System.IO.Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
-				launcherWindow.Icon = System.Drawing.Icon.ExtractAssociatedIcon(executablePath);
+				string executablePath = System.IO.Path.GetFullPath(System.Reflection.Assembly.GetExecutingAssembly().Location);
+				if (System.IO.File.Exists(executablePath))
+				{
+					launcherWindow.Icon = System.Drawing.Icon.ExtractAssociatedIcon(executablePath);
+				}
 
 				// Go into native fullscreen mode
 				if (DualityApp.UserData.GfxMode == ScreenMode.Native && !isDebugging)

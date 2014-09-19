@@ -396,9 +396,9 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFileName(DualityEditorApp.LauncherAppPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
 			startInfo.Arguments = DualityApp.CmdArgEditor;
-			startInfo.WorkingDirectory = Path.GetDirectoryName(DualityEditorApp.LauncherAppPath);
+			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
 
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);
@@ -410,9 +410,9 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFileName(DualityEditorApp.LauncherAppPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
 			startInfo.Arguments = DualityApp.CmdArgEditor + " " + DualityApp.CmdArgDebug;
-			startInfo.WorkingDirectory = Path.GetDirectoryName(DualityEditorApp.LauncherAppPath);
+			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
 
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);
@@ -424,9 +424,9 @@ namespace Duality.Editor.Forms
 			this.VerifyStartScene();
 
 			System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-			startInfo.FileName = Path.GetFileName(DualityEditorApp.LauncherAppPath);
+			startInfo.FileName = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
 			startInfo.Arguments = DualityApp.CmdArgEditor + " " + DualityApp.CmdArgProfiling;
-			startInfo.WorkingDirectory = Path.GetDirectoryName(DualityEditorApp.LauncherAppPath);
+			startInfo.WorkingDirectory = Environment.CurrentDirectory;
 			System.Diagnostics.Process appProc = System.Diagnostics.Process.Start(startInfo);
 
 			AppRunningDialog runningDialog = new AppRunningDialog(appProc);

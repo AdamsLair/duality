@@ -158,9 +158,16 @@ namespace Duality.Editor
 		{
 			get
 			{
-				if (string.IsNullOrWhiteSpace(launcherApp)) return EditorHelper.DualityLauncherExecFile;
-				if (!File.Exists(launcherApp)) return EditorHelper.DualityLauncherExecFile;
-				return launcherApp;
+				string launcherPath = string.IsNullOrWhiteSpace(launcherApp) ? EditorHelper.DualityLauncherExecFile : launcherApp;
+				if (File.Exists(launcherPath)) return launcherPath;
+
+				if (!Path.IsPathRooted(launcherPath))
+				{
+					string appDirLauncherApp = Path.Combine(PathHelper.ExecutingAssemblyDir, launcherPath);
+					if (File.Exists(appDirLauncherApp)) return appDirLauncherApp;
+				}
+
+				return EditorHelper.DualityLauncherExecFile;
 			}
 			set
 			{

@@ -117,7 +117,7 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 					foreach (Type exportedType in assembly.GetExportedTypes())
 					{
 						if (this.showNamespaces && exportedType.Namespace != parentName) continue;
-						if (exportedType.BaseType != parentType && (!parentType.IsInterface || !exportedType.GetInterfaces().Contains(parentType))) continue;
+						if (!parentType.IsAssignableFrom(exportedType)) continue;
 						if (this.filter != null && !this.filter(exportedType)) continue;
 						items.Add(new TypeItem(exportedType, parentItem));
 					}

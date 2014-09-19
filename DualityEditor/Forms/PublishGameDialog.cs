@@ -156,7 +156,7 @@ namespace Duality.Editor.Forms
 				string shortcutFilePath = Path.Combine(archiveBaseDir, gameDirName + ".bat");
 				File.WriteAllText(
 					shortcutFilePath,
-					"cd GameData && start " + DualityEditorApp.LauncherAppPath);
+					"cd GameData && start " + PathHelper.MakeFilePathRelative(DualityEditorApp.LauncherAppPath));
 
 				// Create a shortcut to the editor
 				if (includeEditor)
@@ -173,7 +173,7 @@ namespace Duality.Editor.Forms
 				string archivePath = Path.Combine(targetDir, gameDirName + ".zip");
 				using (ZipFile archive = new ZipFile())
 				{
-					archive.AddDirectory(targetGameDir);
+					archive.AddDirectory(archiveBaseDir);
 					archive.Save(archivePath);
 				}
 				Directory.Delete(archiveBaseDir, true);

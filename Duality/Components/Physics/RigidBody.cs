@@ -852,15 +852,6 @@ namespace Duality.Components.Physics
 			this.body.Collision += this.body_OnCollision;
 			this.body.Separation += this.body_OnSeparation;
 			this.body.PostSolve += this.body_PostSolve;
-
-			//var testJoint = JointFactory.CreateFixedAngleJoint(Scene.CurrentPhysics, this.body);
-			//var testJoint = JointFactory.CreateFixedDistanceJoint(Scene.CurrentPhysics, this.body, Vector2.Zero, Vector2.Zero);
-			//var testJoint = JointFactory.CreateFixedFrictionJoint(Scene.CurrentPhysics, this.body, Vector2.Zero);
-			//var testJoint = JointFactory.CreateFixedPrismaticJoint(Scene.CurrentPhysics, this.body, Vector2.Zero, Vector2.UnitX);
-			//var testJoint = JointFactory.CreateFixedRevoluteJoint(Scene.CurrentPhysics, this.body, Vector2.Zero, Vector2.Zero);
-			
-			// etc.
-			//var testJoint = JointFactory.CreateAngleJoint(
 		}
 
 		private void CleanupJoints()
