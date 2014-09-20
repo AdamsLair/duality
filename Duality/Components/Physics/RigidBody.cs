@@ -48,20 +48,20 @@ namespace Duality.Components.Physics
 		}
 
 
-		private	BodyType	bodyType		= BodyType.Dynamic;
-		private	float		linearDamp		= 0.3f;
-		private	float		angularDamp		= 0.3f;
-		private	bool		fixedAngle		= false;
-		private	bool		ignoreGravity	= false;
-		private	bool		continous		= false;
-		private	Vector2		linearVel		= Vector2.Zero;
-		private	float		angularVel		= 0.0f;
-		private	float		revolutions		= 0.0f;
-		private	float		explicitMass	= 0.0f;
-		private	Category	colCat			= Category.Cat1;
-		private	Category	colWith			= Category.All;
-		private	List<ShapeInfo>	shapes		= null;
-		private	List<JointInfo>	joints		= null;
+		private	BodyType			bodyType		= BodyType.Dynamic;
+		private	float				linearDamp		= 0.3f;
+		private	float				angularDamp		= 0.3f;
+		private	bool				fixedAngle		= false;
+		private	bool				ignoreGravity	= false;
+		private	bool				continous		= false;
+		private	Vector2				linearVel		= Vector2.Zero;
+		private	float				angularVel		= 0.0f;
+		private	float				revolutions		= 0.0f;
+		private	float				explicitMass	= 0.0f;
+		private	CollisionCategory	colCat			= CollisionCategory.Cat1;
+		private	CollisionCategory	colWith			= CollisionCategory.All;
+		private	List<ShapeInfo>		shapes			= null;
+		private	List<JointInfo>		joints			= null;
 
 		[NonSerialized] private	float			lastScale			= 1.0f;
 		[NonSerialized] private	InitState		bodyInitState		= InitState.Disposed;
@@ -238,25 +238,25 @@ namespace Duality.Components.Physics
 		/// <summary>
 		/// [GET / SET] A bitmask that specifies the collision categories to which this Collider belongs.
 		/// </summary>
-		public Category CollisionCategory
+		public CollisionCategory CollisionCategory
 		{
 			get { return this.colCat; }
 			set
 			{
 				this.colCat = value;
-				if (this.body != null) this.body.CollisionCategories = value;
+				if (this.body != null) this.body.CollisionCategories = (Category)value;
 			}
 		}
 		/// <summary>
 		/// [GET / SET] A bitmask that specifies which collision categories this Collider interacts with.
 		/// </summary>
-		public Category CollidesWith
+		public CollisionCategory CollidesWith
 		{
 			get { return this.colWith; }
 			set
 			{
 				this.colWith = value;
-				if (this.body != null) this.body.CollidesWith = value;
+				if (this.body != null) this.body.CollidesWith = (Category)value;
 			}
 		}
 		/// <summary>
@@ -775,8 +775,8 @@ namespace Duality.Components.Physics
 			{
 				foreach (ShapeInfo info in this.shapes) info.UpdateFixture();
 			}
-			this.body.CollisionCategories = this.colCat;
-			this.body.CollidesWith = this.colWith;
+			this.body.CollisionCategories = (Category)this.colCat;
+			this.body.CollidesWith = (Category)this.colWith;
 			this.UpdateBodyMass();
 
 			this.AwakeBody();
@@ -837,8 +837,8 @@ namespace Duality.Components.Physics
 			this.body.FixedRotation = this.fixedAngle;
 			this.body.IgnoreGravity = this.ignoreGravity;
 			this.body.IsBullet = this.continous;
-			this.body.CollisionCategories = this.colCat;
-			this.body.CollidesWith = this.colWith;
+			this.body.CollisionCategories = (Category)this.colCat;
+			this.body.CollidesWith = (Category)this.colWith;
 
 			this.UpdateBodyShape();
 

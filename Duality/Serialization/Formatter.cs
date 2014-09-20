@@ -526,7 +526,15 @@ namespace Duality.Serialization
 					object castVal;
 					try
 					{
-						castVal = Convert.ChangeType(fieldValue, field.FieldType, System.Globalization.CultureInfo.InvariantCulture);
+						if (field.FieldType.IsEnum)
+						{
+							castVal = Convert.ChangeType(fieldValue, Enum.GetUnderlyingType(field.FieldType), System.Globalization.CultureInfo.InvariantCulture);
+							castVal = Enum.ToObject(field.FieldType, castVal);
+						}
+						else
+						{
+							castVal = Convert.ChangeType(fieldValue, field.FieldType, System.Globalization.CultureInfo.InvariantCulture);
+						}
 						this.LocalLog.Write("...succeeded! Assigning value '{0}'", castVal);
 						field.SetValue(obj, castVal);
 					}

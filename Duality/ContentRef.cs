@@ -18,16 +18,6 @@ namespace Duality
 	/// instead use a ContentRef to it. However, you may retrieve and store a direct Resource reference
 	/// temporarily, although this is only recommended at method-local scope.
 	/// </summary>
-	/// <example>
-	/// The following example retrieves a ContentRef:
-	/// <code>
-	/// ContentRef<Pixmap> pixmapRef = ContentProvider.RequestResource<Pixmap>(@"Data\Test.Pixmap.res");
-	/// // Accessing the Pixmap
-	/// pixmapRef.Res.DoSomething();
-	/// // Temporarily obtaining a direct Pixmap reference (Never store it)
-	/// Pixmap tempRef = pixmapRef.Res;
-	/// </code>
-	/// </example>
 	/// <seealso cref="Resource"/>
 	/// <seealso cref="ContentProvider"/>
 	/// <seealso cref="IContentRef"/>
