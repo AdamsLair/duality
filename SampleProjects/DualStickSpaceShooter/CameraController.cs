@@ -19,6 +19,8 @@ namespace DualStickSpaceShooter
 	{
 		private	List<Transform>	followObjects	= null;
 		private	float			softness		= 1.0f;
+		private	float			zoomOutScale	= 1.0f;
+		private	float			maxZoomOutDist	= 350.0f;
 
 		public List<Transform> FollowObjects
 		{
@@ -30,6 +32,16 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.softness; }
 			set { this.softness = value; }
+		}
+		public float MaxZoomOutDist
+		{
+			get { return this.maxZoomOutDist; }
+			set { this.maxZoomOutDist = value; }
+		}
+		public float ZoomOutScale
+		{
+			get { return this.zoomOutScale; }
+			set { this.zoomOutScale = value; }
 		}
 
 		void ICmpUpdatable.OnUpdate()
@@ -46,8 +58,16 @@ namespace DualStickSpaceShooter
 				focusPos += obj.Pos;
 			}
 			focusPos /= this.followObjects.Count;
+			float maxDistFromCenter = 0.0f;
+			foreach (Transform obj in this.followObjects)
+			{
+				maxDistFromCenter = MathF.Max((obj.Pos - focusPos).Length, maxDistFromCenter);
+			}
 
-			Vector3 targetPos = focusPos - new Vector3(0.0f, 0.0f, camera.FocusDist);
+			float screenSizeThreshold = MathF.Min(DualityApp.TargetResolution.X, DualityApp.TargetResolution.Y) * 0.25f;
+			float zoomOutDistance = this.zoomOutScale * MathF.Max(0, maxDistFromCenter - screenSizeThreshold);
+			zoomOutDistance = MathF.Min(this.maxZoomOutDist, zoomOutDistance);
+			Vector3 targetPos = focusPos - new Vector3(0.0f, 0.0f, camera.FocusDist + zoomOutDistance);
 			transform.MoveByAbs((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
 		}
 	}
