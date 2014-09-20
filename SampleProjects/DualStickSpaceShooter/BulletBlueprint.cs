@@ -59,11 +59,15 @@ namespace DualStickSpaceShooter
 
 			Material spriteMaterial = this.spriteMaterial.Res ?? Material.SolidWhite.Res;
 			Vector2 spriteSize = spriteMaterial.MainTexture.IsAvailable ? spriteMaterial.MainTexture.Res.Size : new Vector2(5, 5);
-			float spriteRadius = MathF.Max(spriteSize.X, spriteSize.Y) * 0.5f;
+			float spriteRadius = MathF.Max(spriteSize.X, spriteSize.Y) * 0.25f;
 
 			body.ClearShapes();
-			body.AddShape(new CircleShapeInfo(spriteRadius, Vector2.Zero, 1.0f));
+			CircleShapeInfo circleShape = new CircleShapeInfo(spriteRadius, Vector2.Zero, 1.0f);
+			circleShape.IsSensor = true;
+			body.AddShape(circleShape);
+			body.CollisionCategory = CollisionCategory.Cat3;
 			body.CollidesWith &= ~CollisionCategory.Cat2;
+			body.CollidesWith &= ~CollisionCategory.Cat3;
 
 			sprite.SharedMaterial = this.spriteMaterial;
 			sprite.Rect = Rect.AlignCenter(0.0f, 0.0f, spriteSize.X * 0.5f, spriteSize.Y * 0.5f);

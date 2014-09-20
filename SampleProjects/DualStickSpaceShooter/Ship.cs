@@ -77,8 +77,9 @@ namespace DualStickSpaceShooter
 			Bullet bullet = this.bulletType.Res.CreateBullet();
 			Scene.Current.AddObject(bullet.GameObj);
 
+			Vector2 worldPos = transform.GetWorldPoint(localPos);
 			Vector2 recoilImpulse;
-			bullet.Fire(body.LinearVelocity, transform.GetWorldPoint(localPos), transform.Angle + localAngle, out recoilImpulse);
+			bullet.Fire(body.LinearVelocity, worldPos, transform.Angle + localAngle, out recoilImpulse);
 			body.ApplyWorldImpulse(recoilImpulse);
 		}
 	}
