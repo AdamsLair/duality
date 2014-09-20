@@ -145,7 +145,7 @@
                           <angularDamp dataType="Float">0.3</angularDamp>
                           <angularVel dataType="Float">0</angularVel>
                           <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
-                          <colCat dataType="Enum" type="FarseerPhysics.Dynamics.Category" name="Cat1" value="1" />
+                          <colCat dataType="Enum" type="FarseerPhysics.Dynamics.Category" name="Cat2" value="2" />
                           <colWith dataType="Enum" type="FarseerPhysics.Dynamics.Category" name="All" value="2147483647" />
                           <continous dataType="Bool">false</continous>
                           <explicitMass dataType="Float">0</explicitMass>
@@ -215,6 +215,9 @@
                         </item>
                         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="1328494310">
                           <active dataType="Bool">true</active>
+                          <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
+                            <contentPath dataType="String">Data\RegularBullet.BulletBlueprint.res</contentPath>
+                          </bulletType>
                           <gameobj dataType="ObjectRef">105982944</gameobj>
                           <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                           <targetAngle dataType="Float">0</targetAngle>
@@ -222,6 +225,8 @@
                             <X dataType="Float">0</X>
                             <Y dataType="Float">0</Y>
                           </targetThrust>
+                          <weaponDelay dataType="Float">200</weaponDelay>
+                          <weaponTimer dataType="Float">0</weaponTimer>
                         </item>
                       </_items>
                       <_size dataType="Int">4</_size>

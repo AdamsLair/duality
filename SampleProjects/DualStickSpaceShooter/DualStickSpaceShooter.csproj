@@ -57,6 +57,8 @@
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
     <Compile Include="CameraController.cs" />
+    <Compile Include="Bullet.cs" />
+    <Compile Include="BulletBlueprint.cs" />
     <Compile Include="Ship.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,10 +67,6 @@
     <ProjectReference Include="..\..\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\DualityPlugins\Steering\Steering.csproj">
-      <Project>{0130132B-C38D-463E-90AC-5D389E934FAE}</Project>
-      <Name>Steering</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

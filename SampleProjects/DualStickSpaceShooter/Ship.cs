@@ -7,6 +7,7 @@ using OpenTK;
 
 using Duality;
 using Duality.Editor;
+using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Physics;
 
@@ -17,8 +18,11 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(RigidBody))]
 	public class Ship : Component, ICmpUpdatable
 	{
-		private	Vector2	targetThrust	= Vector2.Zero;
-		private	float	targetAngle		= 0.0f;
+		private	Vector2						targetThrust	= Vector2.Zero;
+		private	float						targetAngle		= 0.0f;
+		private	ContentRef<BulletBlueprint>	bulletType		= null;
+		private	float						weaponTimer		= 0.0f;
+		private	float						weaponDelay		= 200.0f;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector2 TargetThrust
@@ -31,6 +35,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.targetAngle; }
 			set { this.targetAngle = value; }
+		}
+		public ContentRef<BulletBlueprint> BulletType
+		{
+			get { return this.bulletType; }
+			set { this.bulletType = value; }
 		}
 
 		public virtual void OnUpdate()
@@ -46,6 +55,31 @@ namespace DualStickSpaceShooter
 
 			// Apply force according to the desired thrust
 			body.ApplyWorldForce(this.targetThrust * 0.5f);
+
+			// Weapon cooldown
+			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
+		}
+
+		public void FireWeapon()
+		{
+			if (!this.bulletType.IsAvailable) return;
+
+			if (this.weaponTimer > 0.0f) return;
+			this.weaponTimer += this.weaponDelay;
+
+			Transform transform = this.GameObj.Transform;
+			RigidBody body = this.GameObj.RigidBody;
+
+			this.FireBullet(body, transform, Vector2.Zero, 0.0f);
+		}
+		private void FireBullet(RigidBody body, Transform transform, Vector2 localPos, float localAngle)
+		{
+			Bullet bullet = this.bulletType.Res.CreateBullet();
+			Scene.Current.AddObject(bullet.GameObj);
+
+			Vector2 recoilImpulse;
+			bullet.Fire(body.LinearVelocity, transform.GetWorldPoint(localPos), transform.Angle + localAngle, out recoilImpulse);
+			body.ApplyWorldImpulse(recoilImpulse);
 		}
 	}
 }

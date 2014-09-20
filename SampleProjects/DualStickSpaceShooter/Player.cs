@@ -42,6 +42,9 @@ namespace DualStickSpaceShooter
 				if (DualityApp.Keyboard[Key.D])
 					thrust += new Vector2(1.0f, 0.0f);
 
+				if (DualityApp.Mouse[MouseButton.Left])
+					this.controlObj.FireWeapon();
+
 				this.controlObj.TargetAngle = mouseAngle;
 				this.controlObj.TargetThrust = thrust;
 			}

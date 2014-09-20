@@ -13,7 +13,7 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">2</_version>
+    <_version dataType="Int">3</_version>
   </layers>
   <sourcePath dataType="String">Source\Media\Player.png</sourcePath>
 </root>
