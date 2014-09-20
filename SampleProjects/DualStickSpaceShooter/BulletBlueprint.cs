@@ -66,7 +66,6 @@ namespace DualStickSpaceShooter
 			circleShape.IsSensor = true;
 			body.AddShape(circleShape);
 			body.CollisionCategory = CollisionCategory.Cat3;
-			body.CollidesWith &= ~CollisionCategory.Cat2;
 			body.CollidesWith &= ~CollisionCategory.Cat3;
 
 			sprite.SharedMaterial = this.spriteMaterial;

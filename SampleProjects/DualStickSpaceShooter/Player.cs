@@ -9,18 +9,35 @@ using OpenTK.Input;
 using Duality;
 using Duality.Components;
 using Duality.Resources;
+using Duality.Drawing;
 
 namespace DualStickSpaceShooter
 {
 	[Serializable]
 	public class Player : Component, ICmpUpdatable
 	{
-		private	Ship	controlObj	= null;
+		private	Ship		controlObj	= null;
+		private	ColorRgba	color		= ColorRgba.White;
 
 		public Ship ControlObject
 		{
 			get { return this.controlObj; }
-			set { this.controlObj = value; }
+			set
+			{
+				this.controlObj = value;
+				if (this.controlObj != null)
+					this.controlObj.UpdatePlayerColor();
+			}
+		}
+		public ColorRgba Color
+		{
+			get { return this.color; }
+			set
+			{
+				this.color = value;
+				if (this.controlObj != null)
+					this.controlObj.UpdatePlayerColor();
+			}
 		}
 
 		void ICmpUpdatable.OnUpdate()

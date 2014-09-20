@@ -8,6 +8,7 @@ using OpenTK;
 using Duality;
 using Duality.Editor;
 using Duality.Components;
+using Duality.Components.Renderers;
 using Duality.Components.Physics;
 
 namespace DualStickSpaceShooter
@@ -21,16 +22,18 @@ namespace DualStickSpaceShooter
 
 		private float						lifetime	= 8000.0f;
 		private	ContentRef<BulletBlueprint> blueprint	= null;
+		private	Player						owner		= null;
 
 		public void InitFrom(BulletBlueprint blueprint)
 		{
 			this.lifetime = blueprint.Lifetime;
 			this.blueprint = blueprint;
 		}
-		public void Fire(Vector2 sourceDragVel, Vector2 position, float angle, out Vector2 recoilImpulse)
+		public void Fire(Player owner, Vector2 sourceDragVel, Vector2 position, float angle, out Vector2 recoilImpulse)
 		{
 			Transform		transform	= this.GameObj.Transform;
 			RigidBody		body		= this.GameObj.RigidBody;
+			SpriteRenderer	sprite		= this.GameObj.GetComponent<SpriteRenderer>();
 			BulletBlueprint	blueprint	= this.blueprint.Res;
 
 			Vector2 direction = Vector2.FromAngleLength(angle, 1.0f);
@@ -38,6 +41,12 @@ namespace DualStickSpaceShooter
 			transform.Pos = new Vector3(position, 0.0f);
 			transform.Angle = angle;
 			body.LinearVelocity = direction * blueprint.LaunchSpeed + sourceDragVel;
+
+			if (owner != null)
+			{
+				sprite.ColorTint = owner.Color;
+				this.owner = owner;
+			}
 
 			recoilImpulse = -direction * blueprint.LaunchSpeed * blueprint.RecoilForce * ForceFactor;
 		}
@@ -49,9 +58,12 @@ namespace DualStickSpaceShooter
 		}
 		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
 		{
+			Ship otherShip = args.CollideWith.GetComponent<Ship>();
+			if (otherShip != null && otherShip.Owner == this.owner) return;
+
+			RigidBody		otherBody	= args.CollideWith.RigidBody;
 			Transform		transform	= this.GameObj.Transform;
 			RigidBody		body		= this.GameObj.RigidBody;
-			RigidBody		otherBody	= args.CollideWith.RigidBody;
 			BulletBlueprint	blueprint	= this.blueprint.Res;
 
 			otherBody.ApplyWorldImpulse(body.LinearVelocity * blueprint.ImpactForce * ForceFactor, transform.Pos.Xy);
