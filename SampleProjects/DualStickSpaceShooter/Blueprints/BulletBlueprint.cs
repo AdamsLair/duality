@@ -18,7 +18,6 @@ namespace DualStickSpaceShooter
 	public class BulletBlueprint : Resource
 	{
 		private	float					lifetime		= 8000.0f;
-		private	float					recoilForce		= 1.0f;
 		private	float					impactForce		= 5.0f;
 		private	float					launchSpeed		= 10.0f;
 		private	ContentRef<Material>	spriteMaterial	= null;
@@ -27,11 +26,6 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.lifetime; }
 			set { this.lifetime = value; }
-		}
-		public float RecoilForce
-		{
-			get { return this.recoilForce; }
-			set { this.recoilForce = value; }
 		}
 		public float ImpactForce
 		{

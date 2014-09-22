@@ -48,7 +48,7 @@ namespace DualStickSpaceShooter
 				this.owner = owner;
 			}
 
-			recoilImpulse = -direction * blueprint.LaunchSpeed * blueprint.RecoilForce * ForceFactor;
+			recoilImpulse = -direction * blueprint.LaunchSpeed * blueprint.ImpactForce * ForceFactor;
 		}
 		
 		void ICmpUpdatable.OnUpdate()

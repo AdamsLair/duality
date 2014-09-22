@@ -56,11 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="CameraController.cs" />
-    <Compile Include="Bullet.cs" />
-    <Compile Include="BulletBlueprint.cs" />
-    <Compile Include="Ship.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Components\CameraController.cs" />
+    <Compile Include="Components\Bullet.cs" />
+    <Compile Include="Blueprints\BulletBlueprint.cs" />
+    <Compile Include="Components\Ship.cs" />
+    <Compile Include="Components\Player.cs" />
+    <Compile Include="General\InputMapping.cs" />
+    <Compile Include="General\InputMethod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
