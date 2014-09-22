@@ -62,6 +62,7 @@ namespace DualStickSpaceShooter
 				this.input.Update(this.controlObj.GameObj.Transform);
 				
 				this.controlObj.TargetAngle = this.input.ControlLookAngle;
+				this.controlObj.TargetAngleRatio = this.input.ControlLookSpeed;
 				this.controlObj.TargetThrust = this.input.ControlMovement;
 				if (this.input.ControlFireWeapon)
 					this.controlObj.FireWeapon();

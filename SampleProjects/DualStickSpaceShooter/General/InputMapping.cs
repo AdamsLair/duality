@@ -17,6 +17,7 @@ namespace DualStickSpaceShooter
 		private	InputMethod	method				= InputMethod.Unknown;
 		private	int			creationFrame		= Time.FrameCount;
 		private	Vector2		controlMovement		= Vector2.Zero;
+		private	float		controlLookSpeed	= 0.0f;
 		private	float		controlLookAngle	= 0.0f;
 		private	bool		controlFireWeapon	= false;
 
@@ -28,6 +29,10 @@ namespace DualStickSpaceShooter
 		public Vector2 ControlMovement
 		{
 			get { return this.controlMovement; }
+		}
+		public float ControlLookSpeed
+		{
+			get { return this.controlLookSpeed; }
 		}
 		public float ControlLookAngle
 		{
@@ -111,6 +116,7 @@ namespace DualStickSpaceShooter
 			Vector3 objPos = referenceObj.Pos;
 			Vector2 objPosOnScreen = mainCamera.GetScreenCoord(objPos).Xy;
 			this.controlLookAngle = (mouse.Pos - objPosOnScreen).Angle;
+			this.controlLookSpeed = MathF.Clamp((mouse.Pos - objPosOnScreen).Length / 100.0f, 0.0f, 1.0f);
 
 			this.controlMovement = Vector2.Zero;
 			{
@@ -139,10 +145,12 @@ namespace DualStickSpaceShooter
 			if (gamepad.RightThumbstick.Length > 0.5f)
 			{
 				this.controlLookAngle = gamepad.RightThumbstick.Angle;
+				this.controlLookSpeed = (gamepad.RightThumbstick.Length - 0.5f) / 0.5f;
 			}
-			else if (gamepad.LeftThumbstick.Length > 0.5f)
+			else if (gamepad.LeftThumbstick.Length > 0.25f)
 			{
 				this.controlLookAngle = gamepad.LeftThumbstick.Angle;
+				this.controlLookSpeed = (gamepad.LeftThumbstick.Length - 0.25f) / 0.75f;
 			}
 
 			bool targetAimed = MathF.CircularDist(referenceObj.Angle, this.controlLookAngle) < MathF.RadAngle1 * 10;
