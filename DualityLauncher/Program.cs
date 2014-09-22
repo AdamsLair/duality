@@ -109,12 +109,21 @@ namespace Duality.Launcher
 
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game, args);
 
+			int windowWidth = DualityApp.UserData.GfxWidth;
+			int windowHeight = DualityApp.UserData.GfxHeight;
+			bool isFullscreen = (DualityApp.UserData.GfxMode == ScreenMode.Fullscreen || DualityApp.UserData.GfxMode == ScreenMode.Native) && !isDebugging;
+			if (DualityApp.UserData.GfxMode == ScreenMode.Native && !isDebugging)
+			{
+				windowWidth = DisplayDevice.Default.Width;
+				windowHeight = DisplayDevice.Default.Height;
+			}
+
 			using (DualityLauncher launcherWindow = new DualityLauncher(
-				DualityApp.UserData.GfxWidth, 
-				DualityApp.UserData.GfxHeight, 
+				windowWidth, 
+				windowHeight, 
 				DualityApp.DefaultMode, 
 				DualityApp.AppData.AppName,
-				(DualityApp.UserData.GfxMode == ScreenMode.Fullscreen && !isDebugging) ? GameWindowFlags.Fullscreen : GameWindowFlags.Default))
+				isFullscreen ? GameWindowFlags.Fullscreen : GameWindowFlags.Default))
 			{
 				// Retrieve icon from executable file and set it as window icon
 				string executablePath = System.IO.Path.GetFullPath(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -124,7 +133,7 @@ namespace Duality.Launcher
 				}
 
 				// Go into native fullscreen mode
-				if (DualityApp.UserData.GfxMode == ScreenMode.Native && !isDebugging)
+				if (DualityApp.UserData.GfxMode == ScreenMode.FullWindow && !isDebugging)
 					launcherWindow.WindowState = WindowState.Fullscreen;
 
 				if (DualityApp.UserData.GfxMode == ScreenMode.FixedWindow)

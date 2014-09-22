@@ -19,6 +19,10 @@ namespace Duality
 		/// </summary>
 		FixedWindow,
 		/// <summary>
+		/// Duality runs in windowed mode. The window is borderless and covers the whole screen.
+		/// </summary>
+		FullWindow,
+		/// <summary>
 		/// Duality runs in fullscreen mode, using whatever screen resolution is currently active on the users desktop.
 		/// </summary>
 		Native,
