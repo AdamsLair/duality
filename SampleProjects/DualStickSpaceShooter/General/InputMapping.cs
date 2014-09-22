@@ -140,6 +140,10 @@ namespace DualStickSpaceShooter
 			{
 				this.controlLookAngle = gamepad.RightThumbstick.Angle;
 			}
+			else if (gamepad.LeftThumbstick.Length > 0.5f)
+			{
+				this.controlLookAngle = gamepad.LeftThumbstick.Angle;
+			}
 
 			bool targetAimed = MathF.CircularDist(referenceObj.Angle, this.controlLookAngle) < MathF.RadAngle1 * 10;
 			this.controlFireWeapon = 

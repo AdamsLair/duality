@@ -21,14 +21,14 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(RigidBody))]
 	public class Ship : Component, ICmpUpdatable
 	{
-		private	Vector2						targetThrust	= Vector2.Zero;
-		private	float						targetAngle		= 0.0f;
-		private	float						maxTurnSpeed	= 0.5f;
-		private	float						thrusterPower	= 5.0f;
-		private	ContentRef<BulletBlueprint>	bulletType		= null;
-		private	float						weaponTimer		= 0.0f;
-		private	float						weaponDelay		= 200.0f;
-		private	Player						owner			= null;
+		private	Vector2						targetThrust;
+		private	float						targetAngle;
+		private	float						maxTurnSpeed;
+		private	float						thrusterPower;
+		private	ContentRef<BulletBlueprint>	bulletType;
+		private	float						weaponTimer;
+		private	float						weaponDelay;
+		private	Player						owner;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector2 TargetThrust
@@ -62,14 +62,27 @@ namespace DualStickSpaceShooter
 			Transform transform		= this.GameObj.Transform;
 			RigidBody body			= this.GameObj.RigidBody;
 
-			// Turn to the desired fire angle
-			float turnDirection		= MathF.TurnDir(transform.Angle, this.targetAngle);
-			float turnLength		= MathF.CircularDist(transform.Angle, this.targetAngle);
-			float turnVelocity		= MathF.Min(turnLength, MathF.RadAngle30) * this.maxTurnSpeed * turnDirection;
-			body.AngularVelocity	= turnVelocity;
-
 			// Apply force according to the desired thrust
 			body.ApplyWorldForce(this.targetThrust * this.thrusterPower);
+
+			// Turn to the desired fire angle
+			float shortestTurnDirection	= MathF.TurnDir(transform.Angle, this.targetAngle);
+			float shortestTurnLength	= MathF.CircularDist(transform.Angle, this.targetAngle);
+			float turnDirection;
+			float turnLength;
+			if (MathF.Abs(body.AngularVelocity) > this.maxTurnSpeed * 0.25f)
+			{
+				turnDirection	= MathF.Sign(body.AngularVelocity);
+				turnLength		= (turnDirection == shortestTurnDirection) ? shortestTurnLength : (MathF.RadAngle360 - shortestTurnLength);
+			}
+			else
+			{
+				turnDirection	= shortestTurnDirection;
+				turnLength		= shortestTurnLength;
+			}
+			float turnSpeedRatio	= MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
+			float turnVelocity		= turnSpeedRatio * this.maxTurnSpeed * turnDirection;
+			body.AngularVelocity	= turnVelocity;
 
 			// Weapon cooldown
 			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
@@ -94,7 +107,7 @@ namespace DualStickSpaceShooter
 			Transform transform = this.GameObj.Transform;
 			RigidBody body = this.GameObj.RigidBody;
 
-			this.FireBullet(body, transform, Vector2.Zero, 0.0f);
+			this.FireBullet(body, transform, new Vector2(0.0f, -15.0f), 0.0f);
 		}
 		private void FireBullet(RigidBody body, Transform transform, Vector2 localPos, float localAngle)
 		{

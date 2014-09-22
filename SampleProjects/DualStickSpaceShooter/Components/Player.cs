@@ -66,6 +66,9 @@ namespace DualStickSpaceShooter
 				if (this.input.ControlFireWeapon)
 					this.controlObj.FireWeapon();
 			}
+
+			if (DualityApp.Keyboard[Key.Escape])
+				DualityApp.Terminate();
 		}
 	}
 }

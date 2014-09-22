@@ -52,6 +52,11 @@ namespace DualStickSpaceShooter
 			Camera camera = this.GameObj.Camera;
 			Transform transform = this.GameObj.Transform;
 
+			const float ReferenceFocusDist = 500.0f;
+			const float ReferenceScreenDiameter = 1000.0f;
+			Vector2 screenSize = DualityApp.TargetResolution;
+			camera.FocusDist = ReferenceFocusDist * screenSize.Length / ReferenceScreenDiameter;
+
 			Vector3 focusPos = Vector3.Zero;
 			foreach (Transform obj in this.followObjects)
 			{
@@ -64,10 +69,10 @@ namespace DualStickSpaceShooter
 				maxDistFromCenter = MathF.Max((obj.Pos - focusPos).Length, maxDistFromCenter);
 			}
 
-			float screenSizeThreshold = MathF.Min(DualityApp.TargetResolution.X, DualityApp.TargetResolution.Y) * 0.25f;
-			float zoomOutDistance = this.zoomOutScale * MathF.Max(0, maxDistFromCenter - screenSizeThreshold);
+			float zoomThreshold = 200.0f;
+			float zoomOutDistance = this.zoomOutScale * MathF.Max(0, maxDistFromCenter - zoomThreshold);
 			zoomOutDistance = MathF.Min(this.maxZoomOutDist, zoomOutDistance);
-			Vector3 targetPos = focusPos - new Vector3(0.0f, 0.0f, camera.FocusDist + zoomOutDistance);
+			Vector3 targetPos = focusPos - new Vector3(0.0f, 0.0f, ReferenceFocusDist + zoomOutDistance);
 			transform.MoveByAbs((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
 		}
 	}

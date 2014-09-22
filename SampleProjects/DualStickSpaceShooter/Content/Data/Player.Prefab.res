@@ -73,8 +73,8 @@
                 <angularVel dataType="Float">0</angularVel>
                 <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                 <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat2" value="2" />
-                <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
-                <continous dataType="Bool">false</continous>
+                <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1, Cat3, Cat4, Cat5, Cat6, Cat7, Cat8, Cat9, Cat10, Cat11, Cat12, Cat13, Cat14, Cat15, Cat16, Cat17, Cat18, Cat19, Cat20, Cat21, Cat22, Cat23, Cat24, Cat25, Cat26, Cat27, Cat28, Cat29, Cat30, Cat31" value="2147483645" />
+                <continous dataType="Bool">true</continous>
                 <explicitMass dataType="Float">20</explicitMass>
                 <fixedAngle dataType="Bool">false</fixedAngle>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
@@ -137,7 +137,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">5</_version>
+                  <_version dataType="Int">9</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">

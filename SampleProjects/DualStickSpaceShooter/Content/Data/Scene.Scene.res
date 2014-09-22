@@ -1670,6 +1670,61 @@
       <prefabLink />
     </item>
     <item dataType="ObjectRef">3691642060</item>
+    <item dataType="Struct" type="Duality.GameObject" id="4022368584">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="879246926">
+        <_items dataType="Array" type="Duality.Component[]" id="916348624" length="4">
+          <item dataType="Struct" type="Duality.Components.Diagnostics.ProfileRenderer" id="4289203476">
+            <active dataType="Bool">true</active>
+            <counterGraphs dataType="Struct" type="System.Collections.Generic.List`1[[System.String]]" id="4051744604">
+              <_items dataType="Array" type="System.String[]" id="3679289540">
+                <item dataType="String">Duality\Frame</item>
+                <item dataType="String">Duality\Frame\Render</item>
+                <item dataType="String">Duality\Frame\Update</item>
+                <item dataType="String">Duality\Stats\Memory\TotalUsage</item>
+              </_items>
+              <_size dataType="Int">4</_size>
+              <_version dataType="Int">4</_version>
+            </counterGraphs>
+            <drawGraphs dataType="Bool">false</drawGraphs>
+            <gameobj dataType="ObjectRef">4022368584</gameobj>
+            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+            <keyToggleGraph dataType="Enum" type="OpenTK.Input.Key" name="F4" value="13" />
+            <keyToggleTextPerf dataType="Enum" type="OpenTK.Input.Key" name="F2" value="11" />
+            <keyToggleTextStat dataType="Enum" type="OpenTK.Input.Key" name="F3" value="12" />
+            <textReportOptions dataType="Enum" type="Duality.ProfileReportOptions" name="LastValue" value="1" />
+            <textReportPerf dataType="Bool">false</textReportPerf>
+            <textReportStat dataType="Bool">false</textReportStat>
+            <updateInterval dataType="Int">250</updateInterval>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+        <_version dataType="Int">1</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4268345930" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Type[]" id="3953058060">
+            <item dataType="Type" id="315054244" value="Duality.Components.Diagnostics.ProfileRenderer" />
+          </keys>
+          <values dataType="Array" type="Duality.Component[]" id="1301632758">
+            <item dataType="ObjectRef">4289203476</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="2895640472">mDjM+AzTvUG5scSFR7ZRbQ==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">ProfileRenderer</name>
+      <parent />
+      <prefabLink />
+    </item>
     <item dataType="ObjectRef">4184273295</item>
     <item dataType="ObjectRef">1479744303</item>
     <item dataType="ObjectRef">151522024</item>
