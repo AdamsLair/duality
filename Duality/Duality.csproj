@@ -50,9 +50,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerDuality, Version=3.3.6.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="FarseerDuality, Version=3.3.7.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AdamsLair.FarseerDuality.3.3.6.0\lib\net40\FarseerDuality.dll</HintPath>
+      <HintPath>..\packages\AdamsLair.FarseerDuality.3.3.7.0\lib\net40\FarseerDuality.dll</HintPath>
     </Reference>
     <Reference Include="NVorbis">
       <HintPath>..\packages\AdamsLair.NVorbis.0.7.4\lib\NVorbis.dll</HintPath>

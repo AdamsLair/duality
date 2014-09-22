@@ -503,6 +503,7 @@ namespace Duality.Components.Physics
 		{
 			MathF.CheckValidValue(angularImpulse);
 			if (this.body == null) return;
+
 			this.body.ApplyAngularImpulse(angularImpulse / Time.SPFMult);
 		}
 		/// <summary>
@@ -511,10 +512,12 @@ namespace Duality.Components.Physics
 		/// <param name="impulse"></param>
 		public void ApplyLocalImpulse(Vector2 impulse)
 		{
+			MathF.CheckValidValue(impulse);
 			if (this.body == null) return;
-			this.ApplyWorldImpulse(
-				this.gameobj.Transform.GetWorldVector(new Vector3(impulse)).Xy, 
-				this.gameobj.Transform.GetWorldPoint(this.LocalMassCenter));
+
+			impulse = this.gameobj.Transform.GetWorldVector(impulse);
+
+			this.body.ApplyLinearImpulse(PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult);
 		}
 		/// <summary>
 		/// Applies a Transform-local impulse to the specified point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -523,9 +526,16 @@ namespace Duality.Components.Physics
 		/// <param name="applyAt"></param>
 		public void ApplyLocalImpulse(Vector2 impulse, Vector2 applyAt)
 		{
-			this.ApplyWorldImpulse(
-				this.gameobj.Transform.GetWorldVector(new Vector3(impulse)).Xy,
-				this.gameobj.Transform.GetWorldPoint(new Vector3(applyAt)).Xy);
+			MathF.CheckValidValue(impulse);
+			MathF.CheckValidValue(applyAt);
+			if (this.body == null) return;
+
+			impulse = this.gameobj.Transform.GetWorldVector(impulse);
+			applyAt = this.gameobj.Transform.GetWorldPoint(applyAt);
+
+			this.body.ApplyLinearImpulse(
+				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult, 
+				PhysicsConvert.ToPhysicalUnit(applyAt));
 		}
 		/// <summary>
 		/// Applies a world impulse to the objects mass center. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -535,6 +545,7 @@ namespace Duality.Components.Physics
 		{
 			MathF.CheckValidValue(impulse);
 			if (this.body == null) return;
+
 			this.body.ApplyLinearImpulse(
 				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult);
 		}
@@ -548,6 +559,7 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(impulse);
 			MathF.CheckValidValue(applyAt);
 			if (this.body == null) return;
+
 			this.body.ApplyLinearImpulse(
 				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult, 
 				PhysicsConvert.ToPhysicalUnit(applyAt));
@@ -561,6 +573,7 @@ namespace Duality.Components.Physics
 		{
 			MathF.CheckValidValue(angularForce);
 			if (this.body == null) return;
+
 			if (Scene.PhysicsFixedTime) angularForce *= Time.TimeMult;
 			this.body.ApplyTorque(angularForce / Time.SPFMult);
 		}
@@ -570,10 +583,12 @@ namespace Duality.Components.Physics
 		/// <param name="force"></param>
 		public void ApplyLocalForce(Vector2 force)
 		{
+			MathF.CheckValidValue(force);
 			if (this.body == null) return;
-			this.ApplyWorldForce(
-				this.gameobj.Transform.GetWorldVector(force), 
-				this.gameobj.Transform.GetWorldPoint(this.LocalMassCenter));
+
+			force = this.gameobj.Transform.GetWorldVector(force);
+			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			this.body.ApplyForce(PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult);
 		}
 		/// <summary>
 		/// Applies a Transform-local force to the specified local point. You don't need to apply <see cref="Time.TimeMult"/> here, the physics simulation takes care of this.
@@ -582,10 +597,16 @@ namespace Duality.Components.Physics
 		/// <param name="applyAt"></param>
 		public void ApplyLocalForce(Vector2 force, Vector2 applyAt)
 		{
+			MathF.CheckValidValue(force);
+			MathF.CheckValidValue(applyAt);
 			if (this.body == null) return;
-			this.ApplyWorldForce(
-				this.gameobj.Transform.GetWorldVector(force), 
-				this.gameobj.Transform.GetWorldPoint(applyAt));
+
+			force = this.gameobj.Transform.GetWorldVector(force);
+			applyAt = this.gameobj.Transform.GetWorldPoint(applyAt);
+			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			this.body.ApplyForce(
+				PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult, 
+				PhysicsConvert.ToPhysicalUnit(applyAt));
 		}
 		/// <summary>
 		/// Applies a world force to the objects mass center. You don't need to apply <see cref="Time.TimeMult"/> here, the physics simulation takes care of this.
@@ -593,10 +614,11 @@ namespace Duality.Components.Physics
 		/// <param name="force"></param>
 		public void ApplyWorldForce(Vector2 force)
 		{
+			MathF.CheckValidValue(force);
 			if (this.body == null) return;
-			this.ApplyWorldForce(
-				force, 
-				this.gameobj.Transform.GetWorldPoint(this.LocalMassCenter));
+
+			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
+			this.body.ApplyForce(PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult);
 		}
 		/// <summary>
 		/// Applies a world force to the specified world point. You don't need to apply <see cref="Time.TimeMult"/> here, the physics simulation takes care of this.
@@ -608,6 +630,7 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(force);
 			MathF.CheckValidValue(applyAt);
 			if (this.body == null) return;
+
 			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
 			this.body.ApplyForce(
 				PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult, 
