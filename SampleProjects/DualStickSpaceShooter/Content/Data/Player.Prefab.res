@@ -137,7 +137,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">9</_version>
+                  <_version dataType="Int">17</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -147,6 +147,7 @@
                 </bulletType>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
                 <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+                <maxSpeed dataType="Float">6.5</maxSpeed>
                 <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
                 <owner dataType="Struct" type="DualStickSpaceShooter.Player" id="2034914690">
                   <active dataType="Bool">true</active>
@@ -161,11 +162,12 @@
                   <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </owner>
                 <targetAngle dataType="Float">0</targetAngle>
+                <targetAngleRatio dataType="Float">0</targetAngleRatio>
                 <targetThrust dataType="Struct" type="OpenTK.Vector2">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                 </targetThrust>
-                <thrusterPower dataType="Float">5</thrusterPower>
+                <thrusterPower dataType="Float">3.5</thrusterPower>
                 <weaponDelay dataType="Float">200</weaponDelay>
                 <weaponTimer dataType="Float">0</weaponTimer>
               </item>

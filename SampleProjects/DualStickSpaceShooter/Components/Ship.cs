@@ -25,6 +25,7 @@ namespace DualStickSpaceShooter
 		private	float						targetAngle;
 		private	float						targetAngleRatio;
 		private	float						thrusterPower;
+		private	float						maxSpeed;
 		private	float						maxTurnSpeed;
 		private	ContentRef<BulletBlueprint>	bulletType;
 		private	float						weaponTimer;
@@ -49,6 +50,26 @@ namespace DualStickSpaceShooter
 			get { return this.targetAngleRatio; }
 			set { this.targetAngleRatio = value; }
 		}
+		public float ThrusterPower
+		{
+			get { return this.thrusterPower; }
+			set { this.thrusterPower = value; }
+		}
+		public float MaxSpeed
+		{
+			get { return this.maxSpeed; }
+			set { this.maxSpeed = value; }
+		}
+		public float MaxTurnSpeed
+		{
+			get { return this.maxTurnSpeed; }
+			set { this.maxTurnSpeed = value; }
+		}
+		public float WeaponDelay
+		{
+			get { return this.weaponDelay; }
+			set { this.weaponDelay = value; }
+		}
 		public ContentRef<BulletBlueprint> BulletType
 		{
 			get { return this.bulletType; }
@@ -70,7 +91,14 @@ namespace DualStickSpaceShooter
 			RigidBody body			= this.GameObj.RigidBody;
 
 			// Apply force according to the desired thrust
-			body.ApplyWorldForce(this.targetThrust * this.thrusterPower);
+			Vector2 actualVelocity = body.LinearVelocity;
+			Vector2 targetVelocity = this.targetThrust * this.maxSpeed;
+			Vector2 velocityDiff = (targetVelocity - actualVelocity);
+			float sameDirectionFactor = Vector2.Dot(
+				velocityDiff / MathF.Max(0.001f, velocityDiff.Length), 
+				this.targetThrust / MathF.Max(0.001f, this.targetThrust.Length));
+			Vector2 thrusterActivity = this.targetThrust.Length * MathF.Max(sameDirectionFactor, 0.0f) * velocityDiff / MathF.Max(velocityDiff.Length, 1.0f);
+			body.ApplyWorldForce(thrusterActivity * this.thrusterPower);
 
 			// Turn to the desired fire angle
 			float shortestTurnDirection	= MathF.TurnDir(transform.Angle, this.targetAngle);

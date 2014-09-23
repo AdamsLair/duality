@@ -2,7 +2,7 @@
   <customData />
   <gfxAAQuality dataType="Enum" type="Duality.AAQuality" name="High" value="0" />
   <gfxHeight dataType="Int">600</gfxHeight>
-  <gfxMode dataType="Enum" type="Duality.ScreenMode" name="Native" value="3" />
+  <gfxMode dataType="Enum" type="Duality.ScreenMode" name="Window" value="0" />
   <gfxVSync dataType="Bool">true</gfxVSync>
   <gfxWidth dataType="Int">800</gfxWidth>
   <sfxEffectVol dataType="Float">1</sfxEffectVol>
