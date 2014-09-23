@@ -4,7 +4,7 @@
   <lifetime dataType="Float">8000</lifetime>
   <sourcePath />
   <spriteMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-    <contentPath dataType="String">Data\Bullet.Material.res</contentPath>
+    <contentPath dataType="String">Data\Materials\Bullet.Material.res</contentPath>
   </spriteMaterial>
 </root>
 <!-- XmlFormatterBase Document Separator -->

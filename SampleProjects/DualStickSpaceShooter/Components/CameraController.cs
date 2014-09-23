@@ -53,7 +53,7 @@ namespace DualStickSpaceShooter
 			Transform transform = this.GameObj.Transform;
 
 			const float ReferenceFocusDist = 500.0f;
-			const float ReferenceScreenDiameter = 1000.0f;
+			const float ReferenceScreenDiameter = 1500.0f;
 			Vector2 screenSize = DualityApp.TargetResolution;
 			camera.FocusDist = ReferenceFocusDist * screenSize.Length / ReferenceScreenDiameter;
 

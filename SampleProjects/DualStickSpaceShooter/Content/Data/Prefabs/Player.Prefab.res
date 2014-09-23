@@ -63,7 +63,7 @@
                 </rect>
                 <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                  <contentPath dataType="String">Data\Player.Material.res</contentPath>
+                  <contentPath dataType="String">Data\Materials\Player.Material.res</contentPath>
                 </sharedMat>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </item>
@@ -143,7 +143,7 @@
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
                 <active dataType="Bool">true</active>
                 <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
-                  <contentPath dataType="String">Data\RegularBullet.BulletBlueprint.res</contentPath>
+                  <contentPath dataType="String">Data\Blueprints\RegularBullet.BulletBlueprint.res</contentPath>
                 </bulletType>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
                 <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
