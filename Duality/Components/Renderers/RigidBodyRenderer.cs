@@ -13,14 +13,14 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-namespace Duality.Components.Diagnostics
+namespace Duality.Components.Renderers
 {
 	/// <summary>
-	/// A diagnostic <see cref="Duality.Component"/> that renders a RigidBodies shape for debugging purposes.
+	/// A <see cref="Duality.Component"/> that renders a RigidBodies shape and outline.
 	/// </summary>
 	[Serializable]
 	[RequiredComponent(typeof(RigidBody))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryDiagnostics)]
+	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRigidBodyRenderer)]
 	public class RigidBodyRenderer : Renderer
 	{
