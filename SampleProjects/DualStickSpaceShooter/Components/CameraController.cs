@@ -18,6 +18,7 @@ namespace DualStickSpaceShooter
 	public class CameraController : Component, ICmpUpdatable
 	{
 		private	List<Transform>	followObjects	= null;
+		private	float			zoomFactor		= 1.0f;
 		private	float			softness		= 1.0f;
 		private	float			zoomOutScale	= 1.0f;
 		private	float			maxZoomOutDist	= 350.0f;
@@ -38,6 +39,12 @@ namespace DualStickSpaceShooter
 			get { return this.maxZoomOutDist; }
 			set { this.maxZoomOutDist = value; }
 		}
+		[EditorHintRange(0.1f, 2.0f)]
+		public float ZoomFactor
+		{
+			get { return this.zoomFactor; }
+			set { this.zoomFactor = value; }
+		}
 		public float ZoomOutScale
 		{
 			get { return this.zoomOutScale; }
@@ -55,7 +62,7 @@ namespace DualStickSpaceShooter
 			const float ReferenceFocusDist = 500.0f;
 			const float ReferenceScreenDiameter = 1500.0f;
 			Vector2 screenSize = DualityApp.TargetResolution;
-			camera.FocusDist = ReferenceFocusDist * screenSize.Length / ReferenceScreenDiameter;
+			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
 
 			Vector3 focusPos = Vector3.Zero;
 			foreach (Transform obj in this.followObjects)

@@ -55,6 +55,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\EnemyClaymore.cs" />
     <Compile Include="Components\SpriteDepthColor.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Components\CameraController.cs" />

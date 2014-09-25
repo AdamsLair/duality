@@ -18,8 +18,6 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(RigidBody))]
 	public class Bullet : Component, ICmpCollisionListener, ICmpUpdatable
 	{
-		private const float ForceFactor = 0.005f;
-
 		private float						lifetime	= 8000.0f;
 		private	ContentRef<BulletBlueprint> blueprint	= null;
 		private	Player						owner		= null;
@@ -50,7 +48,7 @@ namespace DualStickSpaceShooter
 				this.owner = owner;
 			}
 
-			recoilImpulse = -direction * blueprint.LaunchSpeed * blueprint.ImpactForce * ForceFactor;
+			recoilImpulse = -direction * blueprint.LaunchSpeed * blueprint.ImpactMass;
 		}
 		
 		void ICmpUpdatable.OnUpdate()
@@ -68,7 +66,7 @@ namespace DualStickSpaceShooter
 			RigidBody		body		= this.GameObj.RigidBody;
 			BulletBlueprint	blueprint	= this.blueprint.Res;
 
-			otherBody.ApplyWorldImpulse(body.LinearVelocity * blueprint.ImpactForce * ForceFactor, transform.Pos.Xy);
+			otherBody.ApplyWorldImpulse(body.LinearVelocity * MathF.Min(otherBody.Mass, blueprint.ImpactMass), transform.Pos.Xy);
 
 			this.GameObj.DisposeLater();
 		}

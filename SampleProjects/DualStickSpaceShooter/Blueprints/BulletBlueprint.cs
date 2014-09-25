@@ -18,7 +18,7 @@ namespace DualStickSpaceShooter
 	public class BulletBlueprint : Resource
 	{
 		private	float					lifetime		= 8000.0f;
-		private	float					impactForce		= 5.0f;
+		private	float					impactMass		= 1.5f;
 		private	float					launchSpeed		= 10.0f;
 		private	ContentRef<Material>	spriteMaterial	= null;
 
@@ -27,10 +27,10 @@ namespace DualStickSpaceShooter
 			get { return this.lifetime; }
 			set { this.lifetime = value; }
 		}
-		public float ImpactForce
+		public float ImpactMass
 		{
-			get { return this.impactForce; }
-			set { this.impactForce = value; }
+			get { return this.impactMass; }
+			set { this.impactMass = value; }
 		}
 		public float LaunchSpeed
 		{
