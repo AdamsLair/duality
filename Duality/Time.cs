@@ -11,13 +11,17 @@ namespace Duality
 	public static class Time
 	{
 		/// <summary>
+		/// The amount of frame per second at the desired refresh rate of 60 FPS.
+		/// </summary>
+		public const	float	FPSMult		= 60.0f;
+		/// <summary>
 		/// Milliseconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	MsPFMult	= 1000.0f / 60.0f;
+		public const	float	MsPFMult	= 1000.0f / FPSMult;
 		/// <summary>
 		/// Seconds a frame takes at the desired refresh rate of 60 FPS
 		/// </summary>
-		public const	float	SPFMult		= 1.0f / 60.0f;
+		public const	float	SPFMult		= 1.0f / FPSMult;
 
 		private	static	DateTime	startup		= DateTime.Now;
 		private	static	Stopwatch	watch		= new Stopwatch();

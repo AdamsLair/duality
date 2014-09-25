@@ -86,11 +86,11 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			FixedDistanceJoint j = this.joint as FixedDistanceJoint;
-			j.WorldAnchorB = PhysicsConvert.ToPhysicalUnit(this.worldAnchor);
+			j.WorldAnchorB = PhysicsUnit.LengthToPhysical * this.worldAnchor;
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchor);
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
-			j.Length = PhysicsConvert.ToPhysicalUnit(this.length);
+			j.Length = PhysicsUnit.LengthToPhysical * this.length;
 		}
 	}
 }

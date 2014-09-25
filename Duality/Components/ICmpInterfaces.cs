@@ -183,21 +183,21 @@ namespace Duality
 		{
 			if (localBody == impulse.BodyA)
 			{
-				this.pos = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].rA + impulse.BodyA.Position);
+				this.pos = PhysicsUnit.LengthToDuality * (impulse.Points[pointIndex].rA + impulse.BodyA.Position);
 				this.normal = impulse.Normal;
-				this.normalImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].NormalImpulse * Time.SPFMult));
-				this.tangentImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].TangentImpulse * Time.SPFMult));
-				this.normalMass = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].NormalMass);
-				this.tangentMass = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].TangentMass);
+				this.normalImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].NormalImpulse;
+				this.tangentImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].TangentImpulse;
+				this.normalMass = PhysicsUnit.MassToDuality * impulse.Points[pointIndex].NormalMass;
+				this.tangentMass = PhysicsUnit.MassToDuality * impulse.Points[pointIndex].TangentMass;
 			}
 			else if (localBody == impulse.BodyB)
 			{
-				this.pos = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].rB + impulse.BodyB.Position);
+				this.pos = PhysicsUnit.LengthToDuality * (impulse.Points[pointIndex].rB + impulse.BodyB.Position);
 				this.normal = -impulse.Normal;
-				this.normalImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].NormalImpulse * Time.SPFMult));
-				this.tangentImpulse = PhysicsConvert.ToDualityUnit(PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].TangentImpulse * Time.SPFMult));
-				this.normalMass = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].NormalMass);
-				this.tangentMass = PhysicsConvert.ToDualityUnit(impulse.Points[pointIndex].TangentMass);
+				this.normalImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].NormalImpulse;
+				this.tangentImpulse = PhysicsUnit.ImpulseToDuality * impulse.Points[pointIndex].TangentImpulse;
+				this.normalMass = PhysicsUnit.MassToDuality * impulse.Points[pointIndex].NormalMass;
+				this.tangentMass = PhysicsUnit.MassToDuality * impulse.Points[pointIndex].TangentMass;
 			}
 			else
 				throw new ArgumentException("Local body is not part of the collision", "localBody");

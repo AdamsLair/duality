@@ -87,11 +87,11 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			FixedMouseJoint j = this.joint as FixedMouseJoint;
-			j.WorldAnchorB = PhysicsConvert.ToPhysicalUnit(this.worldAnchor);
+			j.WorldAnchorB = PhysicsUnit.LengthToPhysical * this.worldAnchor;
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchor);
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
-			j.MaxForce = PhysicsConvert.ToPhysicalUnit(this.maxForce) / Time.SPFMult;
+			j.MaxForce = PhysicsUnit.ForceToPhysical * this.maxForce;
 		}
 	}
 }

@@ -147,9 +147,7 @@ namespace Duality.Components.Physics
 			FarseerPhysics.Common.Vertices v = new FarseerPhysics.Common.Vertices(sortedVertices.Length);
 			for (int i = 0; i < sortedVertices.Length; i++)
 			{
-				v.Add(new Vector2(
-					PhysicsConvert.ToPhysicalUnit(sortedVertices[i].X * scale), 
-					PhysicsConvert.ToPhysicalUnit(sortedVertices[i].Y * scale)));
+				v.Add(PhysicsUnit.LengthToPhysical * sortedVertices[i] * scale);
 			}
 			return v;
 		}

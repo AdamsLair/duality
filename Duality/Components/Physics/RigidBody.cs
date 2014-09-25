@@ -163,7 +163,7 @@ namespace Duality.Components.Physics
 			get { return this.linearVel; }
 			set
 			{
-				if (this.body != null) this.body.LinearVelocity = PhysicsConvert.ToPhysicalUnit(value) / Time.SPFMult;
+				if (this.body != null) this.body.LinearVelocity = PhysicsUnit.VelocityToPhysical * value;
 				this.linearVel = value;
 			}
 		}
@@ -177,7 +177,7 @@ namespace Duality.Components.Physics
 			get { return this.angularVel; }
 			set
 			{
-				if (this.body != null) this.body.AngularVelocity = value / Time.SPFMult;
+				if (this.body != null) this.body.AngularVelocity = PhysicsUnit.AngularVelocityToPhysical * value;
 				this.angularVel = value;
 			}
 		}
@@ -225,7 +225,7 @@ namespace Duality.Components.Physics
 			get 
 			{
 				if (this.explicitMass <= 0.0f && this.body != null)
-					return PhysicsConvert.ToDualityUnit(this.body.Mass);
+					return PhysicsUnit.MassToDuality * this.body.Mass;
 				else
 					return this.explicitMass;
 			}
@@ -276,7 +276,7 @@ namespace Duality.Components.Physics
 			get
 			{
 				return this.body != null ? 
-					PhysicsConvert.ToDualityUnit(this.body.WorldCenter) : 
+					PhysicsUnit.LengthToDuality * this.body.WorldCenter : 
 					this.GameObj.Transform.Pos.Xy;
 			}
 		}
@@ -290,7 +290,7 @@ namespace Duality.Components.Physics
 				// Need to apply scale to make it actual Transform-local coordinates
 				// instead of RigidBody-local coordinates.
 				return (this.body != null ? 
-					PhysicsConvert.ToDualityUnit(this.body.LocalCenter) : 
+					PhysicsUnit.LengthToDuality * this.body.LocalCenter : 
 					Vector2.Zero) / this.gameobj.Transform.Scale;
 			}
 		}
@@ -504,7 +504,7 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(angularImpulse);
 			if (this.body == null) return;
 
-			this.body.ApplyAngularImpulse(angularImpulse / Time.SPFMult);
+			this.body.ApplyAngularImpulse(PhysicsUnit.AngularImpulseToPhysical * angularImpulse);
 		}
 		/// <summary>
 		/// Applies a Transform-local impulse to the objects mass center. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -517,7 +517,7 @@ namespace Duality.Components.Physics
 
 			impulse = this.gameobj.Transform.GetWorldVector(impulse);
 
-			this.body.ApplyLinearImpulse(PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult);
+			this.body.ApplyLinearImpulse(PhysicsUnit.ImpulseToPhysical * impulse);
 		}
 		/// <summary>
 		/// Applies a Transform-local impulse to the specified point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -534,8 +534,8 @@ namespace Duality.Components.Physics
 			applyAt = this.gameobj.Transform.GetWorldPoint(applyAt);
 
 			this.body.ApplyLinearImpulse(
-				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult, 
-				PhysicsConvert.ToPhysicalUnit(applyAt));
+				PhysicsUnit.ImpulseToPhysical * impulse, 
+				PhysicsUnit.LengthToPhysical * applyAt);
 		}
 		/// <summary>
 		/// Applies a world impulse to the objects mass center. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -546,8 +546,7 @@ namespace Duality.Components.Physics
 			MathF.CheckValidValue(impulse);
 			if (this.body == null) return;
 
-			this.body.ApplyLinearImpulse(
-				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult);
+			this.body.ApplyLinearImpulse(PhysicsUnit.ImpulseToPhysical * impulse);
 		}
 		/// <summary>
 		/// Applies a world impulse to the specified world point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -561,8 +560,8 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			this.body.ApplyLinearImpulse(
-				PhysicsConvert.ToPhysicalUnit(impulse) / Time.SPFMult, 
-				PhysicsConvert.ToPhysicalUnit(applyAt));
+				PhysicsUnit.ImpulseToPhysical * impulse, 
+				PhysicsUnit.LengthToPhysical * applyAt);
 		}
 		
 		/// <summary>
@@ -575,7 +574,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			if (Scene.PhysicsFixedTime) angularForce *= Time.TimeMult;
-			this.body.ApplyTorque(angularForce / Time.SPFMult);
+			this.body.ApplyTorque(PhysicsUnit.TorqueToPhysical * angularForce);
 		}
 		/// <summary>
 		/// Applies a Transform-local force to the objects mass center. You don't need to apply <see cref="Time.TimeMult"/> here, the physics simulation takes care of this.
@@ -588,7 +587,7 @@ namespace Duality.Components.Physics
 
 			force = this.gameobj.Transform.GetWorldVector(force);
 			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
-			this.body.ApplyForce(PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult);
+			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
 		/// Applies a Transform-local force to the specified local point. You don't need to apply <see cref="Time.TimeMult"/> here, the physics simulation takes care of this.
@@ -605,8 +604,8 @@ namespace Duality.Components.Physics
 			applyAt = this.gameobj.Transform.GetWorldPoint(applyAt);
 			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
 			this.body.ApplyForce(
-				PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult, 
-				PhysicsConvert.ToPhysicalUnit(applyAt));
+				PhysicsUnit.ForceToPhysical * force, 
+				PhysicsUnit.LengthToPhysical * applyAt);
 		}
 		/// <summary>
 		/// Applies a world force to the objects mass center. You don't need to apply <see cref="Time.TimeMult"/> here, the physics simulation takes care of this.
@@ -618,7 +617,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
-			this.body.ApplyForce(PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult);
+			this.body.ApplyForce(PhysicsUnit.ForceToPhysical * force);
 		}
 		/// <summary>
 		/// Applies a world force to the specified world point. You don't need to apply <see cref="Time.TimeMult"/> here, the physics simulation takes care of this.
@@ -633,8 +632,8 @@ namespace Duality.Components.Physics
 
 			if (Scene.PhysicsFixedTime) force *= Time.TimeMult;
 			this.body.ApplyForce(
-				PhysicsConvert.ToPhysicalUnit(force) / Time.SPFMult, 
-				PhysicsConvert.ToPhysicalUnit(applyAt));
+				PhysicsUnit.ForceToPhysical * force, 
+				PhysicsUnit.LengthToPhysical * applyAt);
 		}
 
 		/// <summary>
@@ -656,7 +655,7 @@ namespace Duality.Components.Physics
 		{
 			if (this.body == null) return null;
 
-			Vector2 fsWorldCoord = PhysicsConvert.ToPhysicalUnit(worldCoord);
+			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 
 			for (int i = 0; i < this.body.FixtureList.Count; i++)
 			{
@@ -676,7 +675,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return new List<ShapeInfo>();
 
 			List<ShapeInfo> picked = new List<ShapeInfo>();
-			Vector2 fsWorldCoord = PhysicsConvert.ToPhysicalUnit(worldCoord);
+			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 
 			for (int i = 0; i < this.body.FixtureList.Count; i++)
 			{
@@ -697,8 +696,8 @@ namespace Duality.Components.Physics
 		{
 			if (this.body == null) return new List<ShapeInfo>();
 
-			Vector2 fsWorldCoord = PhysicsConvert.ToPhysicalUnit(worldCoord);
-			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsConvert.ToPhysicalUnit(worldCoord + size));
+			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
+			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
 
 			List<ShapeInfo> picked = new List<ShapeInfo>();
 			for (int i = 0; i < this.body.FixtureList.Count; i++)
@@ -723,7 +722,7 @@ namespace Duality.Components.Physics
 				fAABBIntersect.LowerBound = Vector2.Max(fAABB.LowerBound, fsWorldAABB.LowerBound);
 				fAABBIntersect.UpperBound = Vector2.Min(fAABB.UpperBound, fsWorldAABB.UpperBound);
 
-				Vector2 fsWorldCoordStep = PhysicsConvert.ToPhysicalUnit(new Vector2(MathF.Max(s.AABB.W, 1.0f), MathF.Max(s.AABB.H, 1.0f)) * 0.05f);
+				Vector2 fsWorldCoordStep = PhysicsUnit.LengthToPhysical * (new Vector2(MathF.Max(s.AABB.W, 1.0f), MathF.Max(s.AABB.H, 1.0f)) * 0.05f);
 				Vector2 fsTemp = fAABBIntersect.LowerBound;
 				do
 				{
@@ -811,7 +810,7 @@ namespace Duality.Components.Physics
 
 			this.body.ResetMassData();
 			if (this.explicitMass > 0.0f)
-				this.body.Mass = PhysicsConvert.ToPhysicalUnit(this.explicitMass);
+				this.body.Mass = PhysicsUnit.MassToPhysical * this.explicitMass;
 		}
 
 		private void CleanupBody()
@@ -867,9 +866,9 @@ namespace Duality.Components.Physics
 
 			if (t != null)
 			{
-				this.body.SetTransform(PhysicsConvert.ToPhysicalUnit(t.Pos.Xy), t.Angle);
-				this.body.LinearVelocity = PhysicsConvert.ToPhysicalUnit(this.linearVel) / Time.SPFMult;
-				this.body.AngularVelocity = this.angularVel / Time.SPFMult;
+				this.body.SetTransform(PhysicsUnit.LengthToPhysical * t.Pos.Xy, PhysicsUnit.AngleToPhysical * t.Angle);
+				this.body.LinearVelocity = PhysicsUnit.VelocityToPhysical * this.linearVel;
+				this.body.AngularVelocity = PhysicsUnit.AngularVelocityToPhysical * this.angularVel;
 			}
 
 			this.body.Collision += this.body_OnCollision;
@@ -1022,7 +1021,7 @@ namespace Duality.Components.Physics
 			// Update velocity and transform values
 			if (this.body != null)
 			{
-				this.linearVel = PhysicsConvert.ToDualityUnit(this.body.LinearVelocity) * Time.SPFMult;
+				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 				this.angularVel = this.body.AngularVelocity * Time.SPFMult;
 				this.revolutions = this.body.Revolutions;
 				Transform t = this.gameobj.Transform;
@@ -1038,8 +1037,8 @@ namespace Duality.Components.Physics
 					float bodyAngle = this.body.Rotation - bodyAngleVel * (1.0f - Scene.PhysicsAlpha) * Time.SPFMult;
 					t.IgnoreParent = true; // Force ignore parent!
 					t.MoveToAbs(new Vector3(
-						PhysicsConvert.ToDualityUnit(bodyPos.X), 
-						PhysicsConvert.ToDualityUnit(bodyPos.Y), 
+						PhysicsUnit.LengthToDuality * bodyPos.X, 
+						PhysicsUnit.LengthToDuality * bodyPos.Y, 
 						t.Pos.Z));
 					t.TurnToAbs(bodyAngle);
 					t.CommitChanges(this);
@@ -1072,7 +1071,7 @@ namespace Duality.Components.Physics
 			Transform t = e.Component as Transform;
 			if ((e.Changes & Transform.DirtyFlags.Pos) != Transform.DirtyFlags.None)
 			{
-				this.body.Position = PhysicsConvert.ToPhysicalUnit(t.Pos.Xy);
+				this.body.Position = PhysicsUnit.LengthToPhysical * t.Pos.Xy;
 			}
 			if ((e.Changes & Transform.DirtyFlags.Angle) != Transform.DirtyFlags.None)
 			{
@@ -1220,14 +1219,14 @@ namespace Duality.Components.Physics
 		public static List<RayCastData> RayCast(Vector2 worldCoordA, Vector2 worldCoordB, RayCastCallback callback = null)
 		{
 			if (callback == null) callback = Raycast_DefaultCallback;
-			Vector2 fsWorldCoordA = PhysicsConvert.ToPhysicalUnit(worldCoordA);
-			Vector2 fsWorldCoordB = PhysicsConvert.ToPhysicalUnit(worldCoordB);
+			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * worldCoordA;
+			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * worldCoordB;
 			List<RayCastData> hitData = new List<RayCastData>();
 			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
 			{
 				RayCastData data = new RayCastData(
 					fixture.UserData as ShapeInfo, 
-					PhysicsConvert.ToDualityUnit(pos), 
+					PhysicsUnit.LengthToDuality * pos, 
 					normal, 
 					fraction);
 				float result = callback(data);
@@ -1249,7 +1248,7 @@ namespace Duality.Components.Physics
 		/// <returns></returns>
 		public static ShapeInfo PickShapeGlobal(Vector2 worldCoord)
 		{
-			Vector2 fsWorldCoord = PhysicsConvert.ToPhysicalUnit(worldCoord);
+			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 			Fixture f = Scene.PhysicsWorld.TestPoint(fsWorldCoord);
 
 			return f != null && f.UserData is ShapeInfo ? (f.UserData as ShapeInfo) : null;
@@ -1262,7 +1261,7 @@ namespace Duality.Components.Physics
 		/// <returns></returns>
 		public static List<ShapeInfo> PickShapesGlobal(Vector2 worldCoord)
 		{
-			Vector2 fsWorldCoord = PhysicsConvert.ToPhysicalUnit(worldCoord);
+			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
 			List<Fixture> fixtureList = Scene.PhysicsWorld.TestPointAll(fsWorldCoord);
 			return new List<ShapeInfo>(fixtureList.Where(f => f != null && f.UserData is ShapeInfo).Select(f => f.UserData as ShapeInfo));
 		}
@@ -1294,8 +1293,8 @@ namespace Duality.Components.Physics
 		{
 			List<RigidBody> bodies = new List<RigidBody>();
 			
-			Vector2 fsWorldCoord = PhysicsConvert.ToPhysicalUnit(worldCoord);
-			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsConvert.ToPhysicalUnit(worldCoord + size));
+			Vector2 fsWorldCoord = PhysicsUnit.LengthToPhysical * worldCoord;
+			FarseerPhysics.Collision.AABB fsWorldAABB = new FarseerPhysics.Collision.AABB(fsWorldCoord, PhysicsUnit.LengthToPhysical * (worldCoord + size));
 			Scene.PhysicsWorld.QueryAABB(fixture =>
 				{
 					ShapeInfo shape = fixture.UserData as ShapeInfo;

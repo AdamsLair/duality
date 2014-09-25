@@ -77,8 +77,8 @@ namespace Duality.Components.Physics
 			FrictionJoint j = this.joint as FrictionJoint;
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
 			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
-			j.MaxForce = PhysicsConvert.ToPhysicalUnit(this.maxForce) / Time.SPFMult;
-			j.MaxTorque = PhysicsConvert.ToPhysicalUnit(this.maxTorque) / Time.SPFMult;
+			j.MaxForce = PhysicsUnit.ForceToPhysical * this.maxForce / Time.SPFMult;
+			j.MaxTorque = PhysicsUnit.TorqueToPhysical * this.maxTorque / Time.SPFMult;
 		}
 	}
 }

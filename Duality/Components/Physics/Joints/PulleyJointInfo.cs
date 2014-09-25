@@ -147,11 +147,11 @@ namespace Duality.Components.Physics
 			PulleyJoint j = this.joint as PulleyJoint;
 			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
-			j.GroundAnchorB = PhysicsConvert.ToPhysicalUnit(this.worldAnchorB);
-			j.GroundAnchorA = PhysicsConvert.ToPhysicalUnit(this.worldAnchorA);
-			j.MaxLengthA = PhysicsConvert.ToPhysicalUnit(this.maxLengthA);
-			j.MaxLengthB = PhysicsConvert.ToPhysicalUnit(this.maxLengthB);
-			j.TotalLength = PhysicsConvert.ToPhysicalUnit(this.totalLength);
+			j.GroundAnchorB = PhysicsUnit.LengthToPhysical * this.worldAnchorB;
+			j.GroundAnchorA = PhysicsUnit.LengthToPhysical * this.worldAnchorA;
+			j.MaxLengthA = PhysicsUnit.LengthToPhysical * this.maxLengthA;
+			j.MaxLengthB = PhysicsUnit.LengthToPhysical * this.maxLengthB;
+			j.TotalLength = PhysicsUnit.LengthToPhysical * this.totalLength;
 			j.Ratio = this.ratio;
 		}
 	}

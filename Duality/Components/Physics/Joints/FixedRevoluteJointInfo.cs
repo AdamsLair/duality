@@ -116,7 +116,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float JointSpeed
 		{
-			get { return this.joint == null ? 0.0f : (this.joint as FixedRevoluteJoint).JointSpeed * Time.SPFMult; }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.AngularVelocityToDuality * (this.joint as FixedRevoluteJoint).JointSpeed); }
 		}
 		/// <summary>
 		/// [GET] The current joint angle in radians.
@@ -124,7 +124,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float JointAngle
 		{
-			get { return this.joint == null ? 0.0f : (this.joint as FixedRevoluteJoint).JointAngle; }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.AngleToDuality * (this.joint as FixedRevoluteJoint).JointAngle); }
 		}
 		/// <summary>
 		/// [GET] The current joint motor torque.
@@ -132,7 +132,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float MotorTorque
 		{
-			get { return this.joint == null ? 0.0f : PhysicsConvert.ToDualityUnit((this.joint as FixedRevoluteJoint).MotorTorque) * MathF.RadAngle360 * Time.SPFMult; }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.TorqueToDuality * (this.joint as FixedRevoluteJoint).MotorTorque); }
 		}
 
 
@@ -146,11 +146,11 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			FixedRevoluteJoint j = this.joint as FixedRevoluteJoint;
-			j.WorldAnchorB = PhysicsConvert.ToPhysicalUnit(this.worldAnchor);
+			j.WorldAnchorB = PhysicsUnit.LengthToPhysical * this.worldAnchor;
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchor);
 			j.MotorEnabled = this.motorEnabled;
 			j.MotorSpeed = -this.motorSpeed / Time.SPFMult;
-			j.MaxMotorTorque = PhysicsConvert.ToPhysicalUnit(this.maxMotorTorque) / Time.SPFMult;
+			j.MaxMotorTorque = PhysicsUnit.TorqueToPhysical * this.maxMotorTorque;
 			j.LimitEnabled = this.limitEnabled;
 			j.LowerLimit = -this.upperLimit;
 			j.UpperLimit = -this.lowerLimit;

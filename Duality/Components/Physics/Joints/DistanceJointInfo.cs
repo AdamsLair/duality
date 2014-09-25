@@ -90,7 +90,7 @@ namespace Duality.Components.Physics
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
-			j.Length = PhysicsConvert.ToPhysicalUnit(this.length);
+			j.Length = PhysicsUnit.LengthToPhysical * this.length;
 		}
 	}
 }

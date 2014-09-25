@@ -184,7 +184,7 @@ namespace Duality.Resources
 			{
 				// Apply physical properties
 				ResetPhysics();
-				physicsWorld.Gravity = PhysicsConvert.ToPhysicalUnit(current.ResWeak.GlobalGravity / Time.SPFMult);
+				physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * current.ResWeak.GlobalGravity;
 
 				// When in the editor, apply prefab links
 				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
@@ -293,7 +293,7 @@ namespace Duality.Resources
 				this.globalGravity = value;
 				if (this.IsCurrent)
 				{
-					physicsWorld.Gravity = PhysicsConvert.ToPhysicalUnit(value / Time.SPFMult);
+					physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
 					foreach (Body b in physicsWorld.BodyList)
 					{
 						if (b.IgnoreGravity || b.BodyType != BodyType.Dynamic) continue;
@@ -367,7 +367,7 @@ namespace Duality.Resources
 					while (physicsAcc >= Time.MsPFMult)
 					{
 						// Catch up on updating progress
-						FarseerPhysics.Settings.VelocityThreshold = PhysicsConvert.ToPhysicalUnit(DualityApp.AppData.PhysicsVelocityThreshold / Time.SPFMult);
+						FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.PhysicsVelocityThreshold;
 						physicsWorld.Step(Time.SPFMult);
 						physicsAcc -= Time.MsPFMult;
 						iterations++;
@@ -382,7 +382,7 @@ namespace Duality.Resources
 			else
 			{
 				Profile.TimeUpdatePhysics.BeginMeasure();
-				FarseerPhysics.Settings.VelocityThreshold = PhysicsConvert.ToPhysicalUnit(Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold / Time.SPFMult);
+				FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold;
 				physicsWorld.Step(Time.TimeMult * Time.SPFMult);
 				if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
 				physicsAcc = PhysicsAccStart;

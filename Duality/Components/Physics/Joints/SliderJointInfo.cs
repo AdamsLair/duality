@@ -80,8 +80,8 @@ namespace Duality.Components.Physics
 			SliderJoint j = this.joint as SliderJoint;
 			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
-			j.MaxLength = PhysicsConvert.ToPhysicalUnit(this.maxLength);
-			j.MinLength = PhysicsConvert.ToPhysicalUnit(this.minLength);
+			j.MaxLength = PhysicsUnit.LengthToPhysical * this.maxLength;
+			j.MinLength = PhysicsUnit.LengthToPhysical * this.minLength;
 		}
 	}
 }

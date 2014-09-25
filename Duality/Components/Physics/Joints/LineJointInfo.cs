@@ -108,7 +108,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float JointSpeed
 		{
-			get { return this.joint == null ? 0.0f : (this.joint as LineJoint).JointSpeed * Time.SPFMult; }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.AngularVelocityToDuality * (this.joint as LineJoint).JointSpeed); }
 		}
 		/// <summary>
 		/// [GET] The current joint translation.
@@ -116,7 +116,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float JointTranslation
 		{
-			get { return this.joint == null ? 0.0f : PhysicsConvert.ToDualityUnit((this.joint as LineJoint).JointTranslation); }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.LengthToDuality * (this.joint as LineJoint).JointTranslation); }
 		}
 		/// <summary>
 		/// [GET] The current joint motor torque.
@@ -124,7 +124,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float MotorTorque
 		{
-			get { return this.joint == null ? 0.0f : (this.joint as LineJoint).GetMotorTorque(1.0f) * Time.SPFMult; }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.TorqueToDuality * (this.joint as LineJoint).GetMotorTorque(1.0f)); }
 		}
 
 
@@ -143,7 +143,7 @@ namespace Duality.Components.Physics
 			j.LocalXAxis = this.moveAxis;
 			j.MotorEnabled = this.motorEnabled;
 			j.MotorSpeed = this.motorSpeed / Time.SPFMult;
-			j.MaxMotorTorque = PhysicsConvert.ToPhysicalUnit(this.maxMotorTorque / Time.SPFMult);
+			j.MaxMotorTorque = PhysicsUnit.TimeToPhysical * this.maxMotorTorque;
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
 		}

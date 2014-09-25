@@ -116,7 +116,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float JointSpeed
 		{
-			get { return this.joint == null ? 0.0f : PhysicsConvert.ToDualityUnit((this.joint as PrismaticJoint).JointSpeed * Time.SPFMult); }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.VelocityToDuality * (this.joint as PrismaticJoint).JointSpeed); }
 		}
 		/// <summary>
 		/// [GET] The current joint translation.
@@ -124,7 +124,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float JointTranslation
 		{
-			get { return this.joint == null ? 0.0f : PhysicsConvert.ToDualityUnit((this.joint as PrismaticJoint).JointTranslation); }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.LengthToDuality * (this.joint as PrismaticJoint).JointTranslation); }
 		}
 		/// <summary>
 		/// [GET] The current joint motor force.
@@ -132,7 +132,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public float MotorForce
 		{
-			get { return this.joint == null ? 0.0f : PhysicsConvert.ToDualityUnit((this.joint as PrismaticJoint).MotorForce * Time.SPFMult); }
+			get { return this.joint == null ? 0.0f : (PhysicsUnit.ForceToDuality * (this.joint as PrismaticJoint).MotorForce * Time.SPFMult); }
 		}
 		/// <summary>
 		/// [GET / SET] The reference angle that is used to constrain the bodies angle.
@@ -160,11 +160,11 @@ namespace Duality.Components.Physics
 			j.ReferenceAngle = this.refAngle;
 			j.LocalXAxis1 = this.BodyA.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
 			j.LimitEnabled = this.limitEnabled;
-			j.LowerLimit = -PhysicsConvert.ToPhysicalUnit(this.upperLimit);
-			j.UpperLimit = -PhysicsConvert.ToPhysicalUnit(this.lowerLimit);
+			j.LowerLimit = -PhysicsUnit.LengthToPhysical * this.upperLimit;
+			j.UpperLimit = -PhysicsUnit.LengthToPhysical * this.lowerLimit;
 			j.MotorEnabled = this.motorEnabled;
-			j.MotorSpeed = -PhysicsConvert.ToPhysicalUnit(this.motorSpeed) / Time.SPFMult;
-			j.MaxMotorForce = PhysicsConvert.ToPhysicalUnit(this.maxMotorForce) / Time.SPFMult;
+			j.MotorSpeed = -PhysicsUnit.VelocityToPhysical * this.motorSpeed;
+			j.MaxMotorForce = PhysicsUnit.ForceToPhysical * this.maxMotorForce;
 		}
 	}
 }

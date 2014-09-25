@@ -20,7 +20,7 @@ namespace Duality
 		private	ContentRef<Scene>	startScene				= ContentRef<Scene>.Null;
 		private	float				speedOfSound			= 360.0f;
 		private	float				soundDopplerFactor		= 1.0f;
-		private	float				physicsVelThreshold		= PhysicsConvert.ToDualityUnit(0.5f * Time.SPFMult);
+		private	float				physicsVelThreshold		= 0.5f * PhysicsUnit.VelocityToDuality;
 		private	bool				physicsFixedTime		= false;
 		private	bool				localUserData			= false;
 		private	bool				multisampleBackBuffer	= true;

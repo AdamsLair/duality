@@ -68,8 +68,8 @@ namespace Duality.Components.Physics
 				scale = this.Parent.GameObj.Transform.Scale;
 
 			CircleShape circle = this.fixture.Shape as CircleShape;
-			circle.Radius = PhysicsConvert.ToPhysicalUnit(this.radius * scale);
-			circle.Position = PhysicsConvert.ToPhysicalUnit(new Vector2(this.position.X * scale, this.position.Y * scale));
+			circle.Radius = PhysicsUnit.LengthToPhysical * this.radius * scale;
+			circle.Position = PhysicsUnit.LengthToPhysical * this.position * scale;
 		}
 	}
 }

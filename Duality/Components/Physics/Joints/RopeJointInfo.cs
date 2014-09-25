@@ -71,7 +71,7 @@ namespace Duality.Components.Physics
 			RopeJoint j = this.joint as RopeJoint;
 			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
 			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
-			j.MaxLength = PhysicsConvert.ToPhysicalUnit(this.maxLength);
+			j.MaxLength = PhysicsUnit.LengthToPhysical * this.maxLength;
 		}
 	}
 }
