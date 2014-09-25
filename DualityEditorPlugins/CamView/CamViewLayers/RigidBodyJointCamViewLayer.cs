@@ -544,11 +544,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			float baseAngle = body.GameObj.Transform.Angle;
 			float speedAngle = baseAngle + speed;
-			float maxTorqueAngle = baseAngle + MathF.Sign(speed) * maxTorque * 0.01f;
+			float maxTorqueAngle = baseAngle + MathF.Sign(speed) * maxTorque * PhysicsUnit.TorqueToPhysical * 0.01f;
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(anchor);
 			Vector2 arrowBase = anchorToWorld + Vector2.FromAngleLength(speedAngle, radius);
-			Vector2 arrorA = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45, MathF.Sign(speed) * radius * 0.05f);
-			Vector2 arrorB = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45 + MathF.RadAngle270, MathF.Sign(speed) * radius * 0.05f);
+			Vector2 arrowA = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45, MathF.Sign(speed) * radius * 0.05f);
+			Vector2 arrowB = Vector2.FromAngleLength(speedAngle - MathF.RadAngle45 + MathF.RadAngle270, MathF.Sign(speed) * radius * 0.05f);
 
 			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr));
 			canvas.DrawCircleSegment(
@@ -576,15 +576,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
 				bodyPos.Z,
-				bodyPos.X + arrowBase.X + arrorA.X,
-				bodyPos.Y + arrowBase.Y + arrorA.Y,
+				bodyPos.X + arrowBase.X + arrowA.X,
+				bodyPos.Y + arrowBase.Y + arrowA.Y,
 				bodyPos.Z);
 			canvas.DrawLine(
 				bodyPos.X + arrowBase.X,
 				bodyPos.Y + arrowBase.Y,
 				bodyPos.Z,
-				bodyPos.X + arrowBase.X + arrorB.X,
-				bodyPos.Y + arrowBase.Y + arrorB.Y,
+				bodyPos.X + arrowBase.X + arrowB.X,
+				bodyPos.Y + arrowBase.Y + arrowB.Y,
 				bodyPos.Z);
 		}
 		private void DrawLocalPosConstraint(Canvas canvas, RigidBody bodyA, RigidBody bodyB, Vector2 anchorA, Vector2 anchorB)
@@ -914,7 +914,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			Vector2 anchorToWorld = body.GameObj.Transform.GetWorldVector(localAnchor);
 			float axisAngle = worldAxis.Angle;
-			float maxForceTemp = MathF.Sign(speed) * maxForce * 0.1f;
+			float maxForceTemp = MathF.Sign(speed) * maxForce * PhysicsUnit.ForceToPhysical * 10.0f;
 			Vector2 arrowBegin = bodyPos.Xy + worldAxis.PerpendicularRight * offset;
 			Vector2 arrowBase = arrowBegin + worldAxis * speed * 10.0f;
 			Vector2 arrowA = Vector2.FromAngleLength(axisAngle + MathF.RadAngle45 + MathF.RadAngle180, MathF.Sign(speed) * MathF.Max(offset * 0.05f, 5.0f));

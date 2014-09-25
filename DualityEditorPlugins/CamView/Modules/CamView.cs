@@ -1164,6 +1164,7 @@ namespace Duality.Editor.Plugins.CamView
 			// Hovering the viewport
 			else
 			{
+				captured = false;
 				Point glLocalPos = this.glControl.PointToClient(globalPos);
 				if (this.glControl.ClientRectangle.Contains(glLocalPos))
 				{

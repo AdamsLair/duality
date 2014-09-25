@@ -102,13 +102,13 @@ namespace Duality.Components.Physics
 			set { this.maxMotorTorque = value; this.UpdateJoint(); }
 		}
 		/// <summary>
-		/// [GET / SET] The desired motor speed in radians per frame.
+		/// [GET / SET] The desired motor speed in degree per frame.
 		/// </summary>
 		[EditorHintIncrement(MathF.RadAngle1)]
 		public float MotorSpeed
 		{
-			get { return this.motorSpeed; }
-			set { this.motorSpeed = value; this.UpdateJoint(); }
+			get { return MathF.RadToDeg(this.motorSpeed); }
+			set { this.motorSpeed = MathF.DegToRad(value); this.UpdateJoint(); }
 		}
 		/// <summary>
 		/// [GET] The current joint angle speed in radians per frame.
