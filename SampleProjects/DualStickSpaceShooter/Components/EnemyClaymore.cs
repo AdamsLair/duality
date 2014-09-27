@@ -31,7 +31,6 @@ namespace DualStickSpaceShooter
 			public float OpenValue;
 			public float OpenTarget;
 			public float Speed;
-			public bool Blinking;
 		}
 
 		private	MindState		state			= MindState.Asleep;
@@ -98,6 +97,8 @@ namespace DualStickSpaceShooter
 
 		void ICmpUpdatable.OnUpdate()
 		{
+			Transform transform = this.GameObj.Transform;
+			RigidBody body = this.GameObj.RigidBody;
 			Ship ship = this.GameObj.GetComponent<Ship>();
 
 			// Udpate the eyes visual appearance
@@ -111,8 +112,35 @@ namespace DualStickSpaceShooter
 			// Update the spikes visual appearance
 			for (int i = 0; i < this.spikeState.Length; i++)
 			{
-				this.spikeState[i].OpenValue = MathF.Clamp(this.spikeState[i].OpenValue + MathF.Sign(this.spikeState[i].OpenTarget - this.spikeState[i].OpenValue) * this.spikeState[i].Speed * Time.TimeMult, 0.0f, 1.0f);
-				if (this.spikeState[i].Blinking && this.spikeState[i].OpenValue == 0.0f) this.spikeState[i].OpenTarget = 1.0f;
+				float actualTarget = this.spikeState[i].OpenTarget;
+				if (actualTarget > this.spikeState[i].OpenValue)
+				{
+					Vector2 spikeDir;
+					switch (i)
+					{
+						default:
+						case 0: spikeDir = new Vector2(1, -1); break;
+						case 1: spikeDir = new Vector2(1, 1); break;
+						case 2: spikeDir = new Vector2(-1, 1); break;
+						case 3: spikeDir = new Vector2(-1, -1); break;
+					}
+
+					Vector2 spikeBeginWorld = transform.GetWorldPoint(spikeDir * 4);
+					Vector2 spikeEndWorld = transform.GetWorldPoint(spikeDir * 11);
+					List<RayCastData> raycast = RigidBody.RayCast(spikeBeginWorld, spikeEndWorld, data => 
+					{
+						if (data.Body == body) return -1;
+						return data.Fraction;
+					});
+
+					if (raycast.Count > 0 && raycast[0].Fraction < 1.0f)
+					{
+						actualTarget = 0.0f;
+					}
+				}
+
+				float spikeMoveDir = MathF.Sign(actualTarget - this.spikeState[i].OpenValue);
+				this.spikeState[i].OpenValue = MathF.Clamp(this.spikeState[i].OpenValue + spikeMoveDir * this.spikeState[i].Speed * Time.TimeMult, 0.0f, 1.0f);
 			}
 			if (this.spikes != null)
 			{
@@ -218,11 +246,6 @@ namespace DualStickSpaceShooter
 				if (this.spikeState[spikeIndex].OpenValue > 0.75f)
 				{
 					this.GameObj.DisposeLater();
-				}
-				else
-				{
-					this.spikeState[spikeIndex].OpenTarget = 0.0f;
-					this.spikeState[spikeIndex].Blinking = true;
 				}
 			}
 			else

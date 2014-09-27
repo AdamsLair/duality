@@ -186,7 +186,7 @@
                 <customMat />
                 <gameobj dataType="ObjectRef">4070850922</gameobj>
                 <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-                <offset dataType="Int">0</offset>
+                <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
                   <H dataType="Float">9</H>
@@ -279,7 +279,7 @@
                 <customMat />
                 <gameobj dataType="ObjectRef">2286597987</gameobj>
                 <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-                <offset dataType="Int">0</offset>
+                <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
                   <H dataType="Float">9</H>
@@ -372,7 +372,7 @@
                 <customMat />
                 <gameobj dataType="ObjectRef">1526931573</gameobj>
                 <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-                <offset dataType="Int">0</offset>
+                <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
                   <H dataType="Float">9</H>
@@ -465,7 +465,7 @@
                 <customMat />
                 <gameobj dataType="ObjectRef">2781767734</gameobj>
                 <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-                <offset dataType="Int">0</offset>
+                <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
                   <H dataType="Float">9</H>
@@ -664,7 +664,7 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">26</_version>
+            <_version dataType="Int">41</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
@@ -696,6 +696,7 @@
           <eyeSpeed dataType="Float">0</eyeSpeed>
           <gameobj dataType="ObjectRef">3054164894</gameobj>
           <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+          <spikeState dataType="Array" type="DualStickSpaceShooter.EnemyClaymore+SpikeState[]" id="3219443732" length="4" />
           <state dataType="Enum" type="DualStickSpaceShooter.EnemyClaymore+MindState" name="Asleep" value="0" />
         </item>
       </_items>
