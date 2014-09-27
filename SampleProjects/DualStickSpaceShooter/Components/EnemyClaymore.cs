@@ -7,6 +7,7 @@ using OpenTK;
 
 using Duality;
 using Duality.Components;
+using Duality.Components.Physics;
 using Duality.Components.Renderers;
 using Duality.Resources;
 using Duality.Drawing;
@@ -15,7 +16,7 @@ namespace DualStickSpaceShooter
 {
 	[Serializable]
 	[RequiredComponent(typeof(Ship))]
-	public class EnemyClaymore : Component, ICmpUpdatable, ICmpInitializable
+	public class EnemyClaymore : Component, ICmpUpdatable, ICmpInitializable, ICmpCollisionListener
 	{
 		private enum MindState
 		{
@@ -25,14 +26,24 @@ namespace DualStickSpaceShooter
 			Idle
 		}
 
-		private	MindState	state			= MindState.Asleep;
-		private	float		blinkTimer		= 0.0f;
-		private	float		eyeOpenValue	= 0.0f;
-		private	float		eyeOpenTarget	= 0.0f;
-		private	float		eyeSpeed		= 0.0f;
-		private	bool		eyeBlinking		= false;
+		private struct SpikeState
+		{
+			public float OpenValue;
+			public float OpenTarget;
+			public float Speed;
+			public bool Blinking;
+		}
 
-		[NonSerialized] private AnimSpriteRenderer	eye	= null;
+		private	MindState		state			= MindState.Asleep;
+		private	float			blinkTimer		= 0.0f;
+		private	float			eyeOpenValue	= 0.0f;
+		private	float			eyeOpenTarget	= 0.0f;
+		private	float			eyeSpeed		= 0.0f;
+		private	bool			eyeBlinking		= false;
+		private	SpikeState[]	spikeState		= new SpikeState[4];
+
+		[NonSerialized] private AnimSpriteRenderer	eye		= null;
+		[NonSerialized] private SpriteRenderer[]	spikes	= null;
 		
 		private void Sleep()
 		{
@@ -42,7 +53,8 @@ namespace DualStickSpaceShooter
 			this.state = MindState.FallingAsleep;
 			this.eyeOpenTarget = 0.0f;
 			this.eyeBlinking = false;
-			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(2.5f, 3.5f);
+			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(1.5f, 3.5f);
+			this.DeactivateSpikes();
 		}
 		private void Awake()
 		{
@@ -67,6 +79,22 @@ namespace DualStickSpaceShooter
 			this.eyeOpenTarget = 0.0f;
 			this.eyeSpeed = Time.SPFMult / MathF.Rnd.NextFloat(0.05f, 0.25f);
 		}
+		private void DeactivateSpikes()
+		{
+			for (int i = 0; i < this.spikeState.Length; i++)
+			{
+				this.spikeState[i].OpenTarget = 0.0f;
+				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(1.0f, 2.0f);
+			}
+		}
+		private void ActivateSpikes()
+		{
+			for (int i = 0; i < this.spikeState.Length; i++)
+			{
+				this.spikeState[i].OpenTarget = 1.0f;
+				this.spikeState[i].Speed = Time.SPFMult / MathF.Rnd.NextFloat(0.25f, 1.0f);
+			}
+		}
 
 		void ICmpUpdatable.OnUpdate()
 		{
@@ -78,6 +106,25 @@ namespace DualStickSpaceShooter
 			if (this.eye != null)
 			{
 				this.eye.AnimTime = this.eyeOpenValue;
+			}
+
+			// Update the spikes visual appearance
+			for (int i = 0; i < this.spikeState.Length; i++)
+			{
+				this.spikeState[i].OpenValue = MathF.Clamp(this.spikeState[i].OpenValue + MathF.Sign(this.spikeState[i].OpenTarget - this.spikeState[i].OpenValue) * this.spikeState[i].Speed * Time.TimeMult, 0.0f, 1.0f);
+				if (this.spikeState[i].Blinking && this.spikeState[i].OpenValue == 0.0f) this.spikeState[i].OpenTarget = 1.0f;
+			}
+			if (this.spikes != null)
+			{
+				for (int i = 0; i < this.spikes.Length; i++)
+				{
+					if (this.spikes[i] == null) continue;
+					Rect spikeRect = this.spikes[i].Rect;
+
+					spikeRect.Y = MathF.Lerp(3.5f, -4.5f, this.spikeState[i].OpenValue);
+
+					this.spikes[i].Rect = spikeRect;
+				}
 			}
 
 			// Do AI state handling stuff
@@ -97,7 +144,10 @@ namespace DualStickSpaceShooter
 				case MindState.Awaking:
 				{
 					if (this.eyeOpenValue == 1.0f)
+					{
 						this.state = MindState.Idle;
+						this.ActivateSpikes();
+					}
 					break;
 				}
 				case MindState.Idle:
@@ -127,9 +177,63 @@ namespace DualStickSpaceShooter
 					this.eye.AnimDuration = 1.0f;
 					this.eye.AnimTime = this.eyeOpenValue;
 				}
+
+				// Retrieve spike references
+				GameObject[] spikeObj = new GameObject[4];
+				spikeObj[0] = this.GameObj.ChildByName("SpikeTopRight");
+				spikeObj[1] = this.GameObj.ChildByName("SpikeBottomRight");
+				spikeObj[2] = this.GameObj.ChildByName("SpikeBottomLeft");
+				spikeObj[3] = this.GameObj.ChildByName("SpikeTopLeft");
+				this.spikes = new SpriteRenderer[spikeObj.Length];
+				for (int i = 0; i < spikeObj.Length; i++)
+				{
+					this.spikes[i] = spikeObj[i] != null ? spikeObj[i].GetComponent<SpriteRenderer>() : null;
+				}
 			}
 		}
-
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
+
+		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
+		{
+			RigidBodyCollisionEventArgs bodyArgs = args as RigidBodyCollisionEventArgs;
+			if (bodyArgs == null) return;
+
+			RigidBody body = bodyArgs.MyShape.Parent;
+			int spikeIndex = -1;
+			{
+				int i = 0;
+				foreach (ShapeInfo shape in body.Shapes.Skip(1))
+				{
+					if (bodyArgs.MyShape == shape)
+					{
+						spikeIndex = i;
+						break;
+					}
+					i++;
+				}
+			}
+
+			if (spikeIndex != -1)
+			{
+				if (this.spikeState[spikeIndex].OpenValue > 0.75f)
+				{
+					this.GameObj.DisposeLater();
+				}
+				else
+				{
+					this.spikeState[spikeIndex].OpenTarget = 0.0f;
+					this.spikeState[spikeIndex].Blinking = true;
+				}
+			}
+			else
+			{
+			}
+		}
+		void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args)
+		{
+		}
+		void ICmpCollisionListener.OnCollisionSolve(Component sender, CollisionEventArgs args)
+		{
+		}
 	}
 }

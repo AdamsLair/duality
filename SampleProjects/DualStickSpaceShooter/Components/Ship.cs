@@ -101,23 +101,26 @@ namespace DualStickSpaceShooter
 			body.ApplyWorldForce(thrusterActivity * this.thrusterPower);
 
 			// Turn to the desired fire angle
-			float shortestTurnDirection	= MathF.TurnDir(transform.Angle, this.targetAngle);
-			float shortestTurnLength	= MathF.CircularDist(transform.Angle, this.targetAngle);
-			float turnDirection;
-			float turnLength;
-			if (MathF.Abs(body.AngularVelocity) > this.maxTurnSpeed * 0.25f)
+			if (this.targetAngleRatio > 0.0f)
 			{
-				turnDirection	= MathF.Sign(body.AngularVelocity);
-				turnLength		= (turnDirection == shortestTurnDirection) ? shortestTurnLength : (MathF.RadAngle360 - shortestTurnLength);
+				float shortestTurnDirection	= MathF.TurnDir(transform.Angle, this.targetAngle);
+				float shortestTurnLength	= MathF.CircularDist(transform.Angle, this.targetAngle);
+				float turnDirection;
+				float turnLength;
+				if (MathF.Abs(body.AngularVelocity) > this.maxTurnSpeed * 0.25f)
+				{
+					turnDirection	= MathF.Sign(body.AngularVelocity);
+					turnLength		= (turnDirection == shortestTurnDirection) ? shortestTurnLength : (MathF.RadAngle360 - shortestTurnLength);
+				}
+				else
+				{
+					turnDirection	= shortestTurnDirection;
+					turnLength		= shortestTurnLength;
+				}
+				float turnSpeedRatio	= MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
+				float turnVelocity		= turnSpeedRatio * this.maxTurnSpeed * this.targetAngleRatio * turnDirection;
+				body.AngularVelocity	= turnVelocity;
 			}
-			else
-			{
-				turnDirection	= shortestTurnDirection;
-				turnLength		= shortestTurnLength;
-			}
-			float turnSpeedRatio	= MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
-			float turnVelocity		= turnSpeedRatio * this.maxTurnSpeed * this.targetAngleRatio * turnDirection;
-			body.AngularVelocity	= turnVelocity;
 
 			// Weapon cooldown
 			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
