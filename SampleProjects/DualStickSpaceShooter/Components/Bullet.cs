@@ -58,6 +58,10 @@ namespace DualStickSpaceShooter
 		}
 		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
 		{
+			RigidBodyCollisionEventArgs bodyArgs = args as RigidBodyCollisionEventArgs;
+			if (bodyArgs == null) return;
+			if (bodyArgs.OtherShape.IsSensor) return;
+
 			Ship otherShip = args.CollideWith.GetComponent<Ship>();
 			if (otherShip != null && otherShip.Owner == this.owner) return;
 

@@ -64,23 +64,27 @@ namespace DualStickSpaceShooter
 			Vector2 screenSize = DualityApp.TargetResolution;
 			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
 
-			Vector3 focusPos = Vector3.Zero;
-			foreach (Transform obj in this.followObjects)
+			Transform[] activeFollowObjects = this.followObjects.Where(obj => obj.Active).ToArray();
+			if (activeFollowObjects.Length > 0)
 			{
-				focusPos += obj.Pos;
-			}
-			focusPos /= this.followObjects.Count;
-			float maxDistFromCenter = 0.0f;
-			foreach (Transform obj in this.followObjects)
-			{
-				maxDistFromCenter = MathF.Max((obj.Pos - focusPos).Length, maxDistFromCenter);
-			}
+				Vector3 focusPos = Vector3.Zero;
+				foreach (Transform obj in activeFollowObjects)
+				{
+					focusPos += obj.Pos;
+				}
+				focusPos /= activeFollowObjects.Length;
+				float maxDistFromCenter = 0.0f;
+				foreach (Transform obj in activeFollowObjects)
+				{
+					maxDistFromCenter = MathF.Max((obj.Pos - focusPos).Length, maxDistFromCenter);
+				}
 
-			float zoomThreshold = 200.0f;
-			float zoomOutDistance = this.zoomOutScale * MathF.Max(0, maxDistFromCenter - zoomThreshold);
-			zoomOutDistance = MathF.Min(this.maxZoomOutDist, zoomOutDistance);
-			Vector3 targetPos = focusPos - new Vector3(0.0f, 0.0f, ReferenceFocusDist + zoomOutDistance);
-			transform.MoveByAbs((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
+				float zoomThreshold = 200.0f;
+				float zoomOutDistance = this.zoomOutScale * MathF.Max(0, maxDistFromCenter - zoomThreshold);
+				zoomOutDistance = MathF.Min(this.maxZoomOutDist, zoomOutDistance);
+				Vector3 targetPos = focusPos - new Vector3(0.0f, 0.0f, ReferenceFocusDist + zoomOutDistance);
+				transform.MoveByAbs((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
+			}
 		}
 	}
 }

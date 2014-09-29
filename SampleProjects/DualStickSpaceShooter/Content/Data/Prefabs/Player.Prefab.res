@@ -137,7 +137,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">19</_version>
+                  <_version dataType="Int">21</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -168,6 +168,7 @@
                   <Y dataType="Float">0</Y>
                 </targetThrust>
                 <thrusterPower dataType="Float">5</thrusterPower>
+                <turnPower dataType="Float">1</turnPower>
                 <weaponDelay dataType="Float">200</weaponDelay>
                 <weaponTimer dataType="Float">0</weaponTimer>
               </item>

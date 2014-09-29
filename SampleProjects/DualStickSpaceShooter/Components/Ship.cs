@@ -25,6 +25,7 @@ namespace DualStickSpaceShooter
 		private	float						targetAngle;
 		private	float						targetAngleRatio;
 		private	float						thrusterPower;
+		private	float						turnPower;
 		private	float						maxSpeed;
 		private	float						maxTurnSpeed;
 		private	ContentRef<BulletBlueprint>	bulletType;
@@ -54,6 +55,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.thrusterPower; }
 			set { this.thrusterPower = value; }
+		}
+		public float TurnPower
+		{
+			get { return this.turnPower; }
+			set { this.turnPower = value; }
 		}
 		public float MaxSpeed
 		{
@@ -119,7 +125,7 @@ namespace DualStickSpaceShooter
 				}
 				float turnSpeedRatio	= MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
 				float turnVelocity		= turnSpeedRatio * this.maxTurnSpeed * this.targetAngleRatio * turnDirection;
-				body.AngularVelocity	= turnVelocity;
+				body.AngularVelocity	+= (turnVelocity - body.AngularVelocity) * this.turnPower * Time.TimeMult;
 			}
 
 			// Weapon cooldown
