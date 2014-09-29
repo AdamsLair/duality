@@ -1297,16 +1297,14 @@ namespace Duality.Drawing
 					{
 						TextElement textElem = elem as TextElement;
 						elemSize = state.Font.MeasureText(state.CurrentElemText);
-						elemOffset = new Vector2(state.CurrentElemOffset.X, state.CurrentElemOffset.Y/* + state.LineBaseLine - state.Font.Ascent*/);
-						//if (elemSize.Y != 0.0f) elemSize.Y -= state.LineBaseLine - state.Font.Ascent;
+						elemOffset = new Vector2(state.CurrentElemOffset.X, state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.BaseLine);
 					}
 					else if (elem is IconElement && this.icons != null)
 					{
 						IconElement iconElem = elem as IconElement;
 						bool iconValid = iconElem.IconIndex > 0 && iconElem.IconIndex < this.icons.Length;
 						elemSize = iconValid ? this.icons[iconElem.IconIndex].size : Vector2.Zero;
-						elemOffset = new Vector2(state.CurrentElemOffset.X, state.CurrentElemOffset.Y/* + state.LineBaseLine - elemSize.Y*/);
-						//if (elemSize.Y != 0.0f) elemSize.Y -= state.LineBaseLine - elemSize.Y;
+						elemOffset = new Vector2(state.CurrentElemOffset.X, state.CurrentElemOffset.Y + state.LineBaseLine - elemSize.Y);
 					}
 					else
 					{

@@ -136,16 +136,16 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 
 			Bitmap resultBitmap = textLayer.ToBitmap();
 
-			//// Debug Font metrics
-			//const bool drawDebugFontMetrics = false;
+			// Debug Font metrics
+			//const bool drawDebugFontMetrics = true;
 			//if (drawDebugFontMetrics)
 			//{
-			//    bool brightFg = font.GlyphColor.GetLuminance() > 0.5f;
-			//    Color fgColor = Color.FromArgb(font.GlyphColor.R, font.GlyphColor.G, font.GlyphColor.B);
-			//    Color baseLineColor = brightFg ? Color.FromArgb(255, 0, 0) : Color.FromArgb(128, 0, 0);
-			//    Color bodyAscentColor = brightFg ? Color.FromArgb(0, 192, 0) : Color.FromArgb(0, 64, 0);
-			//    Color ascentColor = brightFg ? Color.FromArgb(64, 64, 255) : Color.FromArgb(0, 0, 128);
-			//    Color descentColor = brightFg ? Color.FromArgb(255, 0, 255) : Color.FromArgb(128, 0, 128);
+			//    var metrics = formatText.TextMetrics;
+			//    Color fgColor = Color.White;
+			//    Color baseLineColor = Color.FromArgb(255, 0, 0);
+			//    Color bodyAscentColor = Color.FromArgb(0, 192, 0);
+			//    Color ascentColor = Color.FromArgb(64, 64, 255);
+			//    Color descentColor = Color.FromArgb(255, 0, 255);
 			//    using (Graphics g = Graphics.FromImage(resultBitmap))
 			//    {
 			//        for (int i = 0; i < metrics.LineCount; i++)

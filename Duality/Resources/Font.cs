@@ -115,8 +115,10 @@ namespace Duality.Resources
 		/// <summary>
 		/// A string containing all characters that are supported by Duality.
 		/// </summary>
-		public static readonly string			SupportedChars	= "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß";
-		private const string					BodyAscentRef = "acehmnorsuvwxz";
+		public static readonly string			SupportedChars		= "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß";
+		private const string					CharBaseLineRef		= "acemnorsuvwxz";
+		private const string					CharDescentRef		= "pqgjy";
+		private const string					CharBodyAscentRef	= "acemnorsuvwxz";
 		private static readonly int[]			CharLookup;
 
 		private	static	PrivateFontCollection			fontManager			= new PrivateFontCollection();
@@ -678,8 +680,13 @@ namespace Duality.Resources
 					{
 						Rectangle glyphTempBounds = glyphTemp.OpaqueBounds();
 						glyphTemp.SubImage(glyphTempBounds.X, 0, glyphTempBounds.Width, glyphTemp.Height);
-						if (BodyAscentRef.Contains(SupportedChars[i]))
+
+						if (CharBodyAscentRef.Contains(SupportedChars[i]))
 							this.bodyAscent += glyphTempBounds.Height;
+						if (CharBaseLineRef.Contains(SupportedChars[i]))
+							this.baseLine += glyphTempBounds.Bottom;
+						if (CharDescentRef.Contains(SupportedChars[i]))
+							this.descent += glyphTempBounds.Bottom;
 						
 						bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), this.internalFont.Height + 1);
 						using (Graphics glyphGraphics = Graphics.FromImage(bm))
@@ -734,11 +741,21 @@ namespace Duality.Resources
 			}
 
 			// Determine Font properties
-			this.height = this.internalFont.Height;
-			this.ascent = (int)Math.Round(this.internalFont.FontFamily.GetCellAscent(this.internalFont.Style) * this.internalFont.Size / this.internalFont.FontFamily.GetEmHeight(this.internalFont.Style));
-			this.bodyAscent /= BodyAscentRef.Length;
-			this.descent = (int)Math.Round(this.internalFont.FontFamily.GetCellDescent(this.internalFont.Style) * this.internalFont.GetHeight() / this.internalFont.FontFamily.GetLineSpacing(this.internalFont.Style));
-			this.baseLine = (int)Math.Round(this.internalFont.FontFamily.GetCellAscent(this.internalFont.Style) * this.internalFont.GetHeight() / this.internalFont.FontFamily.GetLineSpacing(this.internalFont.Style));
+			{
+				float lineSpacing = this.internalFont.FontFamily.GetLineSpacing(this.internalFont.Style);
+				float emHeight = this.internalFont.FontFamily.GetEmHeight(this.internalFont.Style);
+				float cellAscent = this.internalFont.FontFamily.GetCellAscent(this.internalFont.Style);
+				float cellDescent = this.internalFont.FontFamily.GetCellDescent(this.internalFont.Style);
+				float height = this.internalFont.GetHeight();
+
+				this.height = this.internalFont.Height;
+				this.ascent = (int)Math.Round(cellAscent * this.internalFont.Size / emHeight);
+				this.bodyAscent /= CharBodyAscentRef.Length;
+				this.baseLine /= CharBaseLineRef.Length;
+				this.descent = (int)Math.Round(((float)this.descent / CharDescentRef.Length) - (float)this.baseLine);
+				//this.descent = (int)Math.Round(cellDescent * height / lineSpacing);
+				//this.baseLine = (int)Math.Round(cellAscent * height / lineSpacing);
+			}
 
 			// Create internal Pixmap and Texture Resources
 			this.pixelData = new Pixmap(pixelLayer);
