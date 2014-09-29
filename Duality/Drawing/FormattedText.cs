@@ -175,16 +175,22 @@ namespace Duality.Drawing
 			/// <summary>
 			/// The icons UV-Coordinates on the icon texture that will be used for rendering icons.
 			/// </summary>
+			[EditorHintDecimalPlaces(2)]
 			public	Rect	uvRect;
 			/// <summary>
 			/// The icons display size.
 			/// </summary>
 			public	Vector2	size;
+			/// <summary>
+			/// An optional pixel offset that is applied to the icon when drawing it
+			/// </summary>
+			public	Vector2	offset;
 
-			public Icon(Rect uvRect, Vector2 size)
+			public Icon(Rect uvRect, Vector2 size, Vector2 offset)
 			{
 				this.uvRect = uvRect;
 				this.size = size;
+				this.offset = offset;
 			}
 		}
 		/// <summary>
@@ -1233,29 +1239,30 @@ namespace Duality.Drawing
 					{
 						IconElement iconElem = elem as IconElement;
 						Icon icon = iconElem.IconIndex >= 0 && iconElem.IconIndex < this.icons.Length ? this.icons[iconElem.IconIndex] : new Icon();
+						Vector2 iconOffset = icon.offset;
 						Vector2 iconSize = icon.size;
 						Rect iconUvRect = icon.uvRect;
 
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 0].Pos.X = state.CurrentElemOffset.X;
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 0].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 0].Pos.X = state.CurrentElemOffset.X + iconOffset.X;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 0].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y + iconOffset.Y;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 0].Pos.Z = 0;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 0].Color = state.Color;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 0].TexCoord = iconUvRect.TopLeft;
 
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 1].Pos.X = state.CurrentElemOffset.X + iconSize.X;
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 1].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 1].Pos.X = state.CurrentElemOffset.X + iconSize.X + iconOffset.X;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 1].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y + iconOffset.Y;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 1].Pos.Z = 0;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 1].Color = state.Color;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 1].TexCoord = iconUvRect.TopRight;
 
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 2].Pos.X = state.CurrentElemOffset.X + iconSize.X;
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 2].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 2].Pos.X = state.CurrentElemOffset.X + iconSize.X + iconOffset.X;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 2].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine + iconOffset.Y;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 2].Pos.Z = 0;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 2].Color = state.Color;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 2].TexCoord = iconUvRect.BottomRight;
 
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 3].Pos.X = state.CurrentElemOffset.X;
-						this.vertIconsCache[state.CurrentElemIconVertexIndex + 3].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 3].Pos.X = state.CurrentElemOffset.X + iconOffset.X;
+						this.vertIconsCache[state.CurrentElemIconVertexIndex + 3].Pos.Y = state.CurrentElemOffset.Y + state.LineBaseLine + iconOffset.Y;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 3].Pos.Z = 0;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 3].Color = state.Color;
 						this.vertIconsCache[state.CurrentElemIconVertexIndex + 3].TexCoord = iconUvRect.BottomLeft;
@@ -1366,6 +1373,7 @@ namespace Duality.Drawing
 						IconElement iconElem = elem as IconElement;
 						Icon icon = iconElem.IconIndex >= 0 && iconElem.IconIndex < this.icons.Length ? this.icons[iconElem.IconIndex] : new Icon();
 						Vector2 iconSize = icon.size;
+						Vector2 iconOffset = icon.offset;
 						Rect iconUvRect = icon.uvRect;
 						Vector2 dataCoord = iconUvRect.Pos * new Vector2(icons.Width, icons.Height);
 						Vector2 dataSize = iconUvRect.Size * new Vector2(icons.Width, icons.Height);
@@ -1378,8 +1386,8 @@ namespace Duality.Drawing
 							new[] {0, 0, 0, state.Color.A / 255.0f} }));
 						g.DrawImage(icons,
 							new System.Drawing.Rectangle(
-								MathF.RoundToInt(x + state.CurrentElemOffset.X), 
-								MathF.RoundToInt(y + state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y), 
+								MathF.RoundToInt(x + state.CurrentElemOffset.X + iconOffset.X), 
+								MathF.RoundToInt(y + state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y + iconOffset.Y), 
 								MathF.RoundToInt(iconSize.X), 
 								MathF.RoundToInt(iconSize.Y)),
 							dataCoord.X, dataCoord.Y, dataSize.X, dataSize.Y,
@@ -1417,6 +1425,7 @@ namespace Duality.Drawing
 					IconElement iconElem = elem as IconElement;
 					Icon icon = iconElem.IconIndex >= 0 && iconElem.IconIndex < this.icons.Length ? this.icons[iconElem.IconIndex] : new Icon();
 					Vector2 iconSize = icon.size;
+					Vector2 iconOffset = icon.offset;
 					Rect iconUvRect = icon.uvRect;
 					Vector2 dataCoord = iconUvRect.Pos * new Vector2(icons.Width, icons.Height);
 					Vector2 dataSize = iconUvRect.Size * new Vector2(icons.Width, icons.Height);
@@ -1431,8 +1440,8 @@ namespace Duality.Drawing
 						MathF.RoundToInt(iconSize.Y));
 					iconLayer.DrawOnto(target,
 						BlendMode.Alpha,
-						MathF.RoundToInt(x + state.CurrentElemOffset.X), 
-						MathF.RoundToInt(y + state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y), 
+						MathF.RoundToInt(x + state.CurrentElemOffset.X + iconOffset.X), 
+						MathF.RoundToInt(y + state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y + iconOffset.Y), 
 						iconLayer.Width, 
 						iconLayer.Height,
 						0, 
