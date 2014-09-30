@@ -63,6 +63,7 @@ namespace Duality.Updater
 						}
 
 						File.Delete(target);
+						RemoveEmptyDirectory(Path.GetDirectoryName(target));
 
 						Console.ForegroundColor = ConsoleColor.Green;
 						Console.WriteLine("success");
@@ -142,6 +143,31 @@ namespace Duality.Updater
 			}
 		}
 
+		private static void RemoveEmptyDirectory(string path)
+		{
+			if (string.IsNullOrWhiteSpace(path)) return;
+			if (File.Exists(path)) path = Path.GetDirectoryName(path);
+			if (!Directory.Exists(path)) return;
+
+			if (Directory.EnumerateFiles(path).Any()) return;
+			if (Directory.EnumerateDirectories(path).Any()) return;
+			Directory.Delete(path);
+
+			string parent;
+			try
+			{
+				parent = Path.GetDirectoryName(path);
+			}
+			catch (Exception)
+			{
+				parent = null;
+			}
+
+			if (parent != null)
+			{
+				RemoveEmptyDirectory(parent);
+			}
+		}
 		private static bool IsFileLocked(string filePath)
 		{
 			return IsFileLocked(new FileInfo(filePath));
