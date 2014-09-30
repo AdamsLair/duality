@@ -1160,14 +1160,17 @@ namespace Duality.Drawing
 		{
 			if (text == null || text.IsEmpty) return;
 
+			Vector2 textSize = text.Size;
+			if (text.MaxWidth > 0) textSize.X = text.MaxWidth;
+
 			if (blockAlign != Alignment.TopLeft)
 			{
 				Vector2 blockAlignVec = Vector2.Zero;
 				blockAlign.ApplyTo(
 					ref blockAlignVec.X, 
 					ref blockAlignVec.Y, 
-					text.Size.X * this.State.TransformScale.X, 
-					text.Size.Y * this.State.TransformScale.Y);
+					textSize.X * this.State.TransformScale.X, 
+					textSize.Y * this.State.TransformScale.Y);
 				MathF.TransformCoord(ref blockAlignVec.X, ref blockAlignVec.Y, this.State.TransformAngle);
 				x += blockAlignVec.X;
 				y += blockAlignVec.Y;
@@ -1195,8 +1198,8 @@ namespace Duality.Drawing
 					x - padding.X, 
 					y - padding.Y, 
 					z,
-					text.Size.X + padding.W, 
-					text.Size.Y + padding.H);
+					textSize.X + padding.W, 
+					textSize.Y + padding.H);
 				this.PopState();
 			}
 
