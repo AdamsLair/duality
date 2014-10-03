@@ -250,7 +250,7 @@ namespace Duality
 			}
 			else
 			{
-				this.Move(index + count, count, -count);
+				this.Move(index + count, this.count - (index + count), -count);
 				this.count -= count;
 			}
 		}

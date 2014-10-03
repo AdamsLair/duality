@@ -22,7 +22,7 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(intList.Contains(42));
 			Assert.AreEqual(2, intList.IndexOf(42));
 			CollectionAssert.AreEqual(new int[] { 10, 17, 42, 94 }, intList);
-			CollectionAssert.AreEqual(new int[] { 10, 17, 42, 94 }, intList.Data.Take(4));
+			CollectionAssert.AreEqual(new int[] { 10, 17, 42, 94 }, intList.Data.Take(intList.Count));
 
 			intList.ShrinkToFit();
 			Assert.AreEqual(intList.Count, intList.Capacity);
@@ -32,15 +32,19 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(!intList.Contains(42));
 			Assert.AreEqual(-1, intList.IndexOf(42));
 			CollectionAssert.AreEqual(new int[] { 10, 17, 94 }, intList);
-			CollectionAssert.AreEqual(new int[] { 10, 17, 94 }, intList.Data.Take(3));
+			CollectionAssert.AreEqual(new int[] { 10, 17, 94 }, intList.Data.Take(intList.Count));
 
 			intList.Insert(1, 100);
 			CollectionAssert.AreEqual(new int[] { 10, 100, 17, 94 }, intList);
-			CollectionAssert.AreEqual(new int[] { 10, 100, 17, 94 }, intList.Data.Take(4));
+			CollectionAssert.AreEqual(new int[] { 10, 100, 17, 94 }, intList.Data.Take(intList.Count));
 
 			intList.InsertRange(2, new int[] { 150, 200, 250, 300 });
 			CollectionAssert.AreEqual(new int[] { 10, 100, 150, 200, 250, 300, 17, 94 }, intList);
-			CollectionAssert.AreEqual(new int[] { 10, 100, 150, 200, 250, 300, 17, 94 }, intList.Data.Take(8));
+			CollectionAssert.AreEqual(new int[] { 10, 100, 150, 200, 250, 300, 17, 94 }, intList.Data.Take(intList.Count));
+
+			intList.RemoveAt(1);
+			CollectionAssert.AreEqual(new int[] { 10, 150, 200, 250, 300, 17, 94 }, intList);
+			CollectionAssert.AreEqual(new int[] { 10, 150, 200, 250, 300, 17, 94 }, intList.Data.Take(intList.Count));
 
 			intList.Clear();
 			Assert.AreEqual(0, intList.Count);
