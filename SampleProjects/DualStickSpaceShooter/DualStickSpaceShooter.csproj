@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\EnemyClaymore.cs" />
+    <Compile Include="Components\ParticleEffect.cs" />
     <Compile Include="Components\SpriteDepthColor.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Components\CameraController.cs" />
