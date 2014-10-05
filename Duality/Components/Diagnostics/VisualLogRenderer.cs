@@ -34,6 +34,7 @@ namespace Duality.Components.Diagnostics
 			if (device.VisibilityMask.HasFlag(VisibilityFlag.ScreenOverlay))
 			{
 				Canvas target = new Canvas(device, this.vertexBufferScreen);
+				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
 				foreach (VisualLog log in VisualLog.All)
 				{
 					if (!log.Visible) continue;
@@ -57,6 +58,7 @@ namespace Duality.Components.Diagnostics
 			else
 			{
 				Canvas target = new Canvas(device, this.vertexBufferWorld);
+				target.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
 				target.State.ZOffset = -1;
 				foreach (VisualLog log in VisualLog.All)
 				{

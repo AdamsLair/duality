@@ -1299,7 +1299,10 @@ namespace Duality.Components.Physics
 				{
 					ShapeInfo shape = fixture.UserData as ShapeInfo;
 					if (shape != null && shape.Parent != null && shape.Parent.Active)
-						bodies.Add(shape.Parent);
+					{
+						if (!bodies.Contains(shape.Parent))
+							bodies.Add(shape.Parent);
+					}
 					return true;
 				},
 				ref fsWorldAABB);
