@@ -66,6 +66,7 @@
     <Compile Include="Components\Player.cs" />
     <Compile Include="General\InputMapping.cs" />
     <Compile Include="General\InputMethod.cs" />
+    <Compile Include="General\PhysicsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

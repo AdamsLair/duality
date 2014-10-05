@@ -137,6 +137,10 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.boundRadius * this.GameObj.Transform.Scale; }
 		}
+		protected bool IsEmpty
+		{
+			get { return this.particles == null || this.particles.Count == 0; }
+		}
 
 
 		public void AddParticles(int count)
@@ -314,7 +318,7 @@ namespace DualStickSpaceShooter
 			}
 
 			// Dispose when empty
-			if (this.disposeWhenEmpty && (this.particles == null || this.particles.Count == 0))
+			if (this.disposeWhenEmpty && this.IsEmpty)
 			{
 				this.GameObj.DisposeLater();
 			}

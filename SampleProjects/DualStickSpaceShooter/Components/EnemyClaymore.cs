@@ -34,6 +34,7 @@ namespace DualStickSpaceShooter
 			Idle
 		}
 
+		[Serializable]
 		private struct SpikeState
 		{
 			public float OpenValue;
@@ -47,16 +48,17 @@ namespace DualStickSpaceShooter
 		private const float SpikeAttackMoveDist = 100.0f;
 		private const float SleepTime = 3000.0f;
 
-		private	MindState		state			= MindState.Asleep;
-		private	BehaviorFlags	behavior		= BehaviorFlags.Chase;
-		private	float			idleTimer		= 0.0f;
-		private	float			blinkTimer		= 0.0f;
-		private	float			eyeOpenValue	= 0.0f;
-		private	float			eyeOpenTarget	= 0.0f;
-		private	float			eyeSpeed		= 0.0f;
-		private	bool			eyeBlinking		= false;
-		private	bool			spikesActive	= false;
-		private	SpikeState[]	spikeState		= new SpikeState[4];
+		private	MindState				state			= MindState.Asleep;
+		private	BehaviorFlags			behavior		= BehaviorFlags.Chase;
+		private	float					idleTimer		= 0.0f;
+		private	float					blinkTimer		= 0.0f;
+		private	float					eyeOpenValue	= 0.0f;
+		private	float					eyeOpenTarget	= 0.0f;
+		private	float					eyeSpeed		= 0.0f;
+		private	bool					eyeBlinking		= false;
+		private	bool					spikesActive	= false;
+		private	SpikeState[]			spikeState		= new SpikeState[4];
+		private	ContentRef<Prefab>[]	exploEffects	= null;
 
 		[NonSerialized] private AnimSpriteRenderer	eye		= null;
 		[NonSerialized] private SpriteRenderer[]	spikes	= null;
@@ -65,6 +67,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.behavior; }
 			set { this.behavior = value; }
+		}
+		public ContentRef<Prefab>[] ExplosionEffects
+		{
+			get { return this.exploEffects; }
+			set { this.exploEffects = value; }
 		}
 
 		private void Sleep()
@@ -136,7 +143,23 @@ namespace DualStickSpaceShooter
 
 		private void FireExplosives()
 		{
+			PhysicsHelper.Shockwave(
+				this.GameObj.Transform.Pos.Xy, 
+				200.0f, 
+				25.0f,
+				5.0f,
+				b => b.GameObj != this.GameObj);
+
 			this.GameObj.DisposeLater();
+			if (this.exploEffects != null)
+			{
+				Transform transform = this.GameObj.Transform;
+				for (int i = 0; i < this.exploEffects.Length; i++)
+				{
+					GameObject effectObj = this.exploEffects[i].Res.Instantiate(transform.Pos);
+					Scene.Current.AddObject(effectObj);
+				}
+			}
 		}
 
 		private bool HasLineOfSight(GameObject obj, bool passThroughShips)

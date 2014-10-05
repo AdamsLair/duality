@@ -664,7 +664,7 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">81</_version>
+            <_version dataType="Int">86</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
@@ -690,8 +690,16 @@
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="4130272826">
           <active dataType="Bool">true</active>
+          <behavior dataType="Enum" type="DualStickSpaceShooter.EnemyClaymore+BehaviorFlags" name="Chase" value="1" />
           <blinkTimer dataType="Float">0</blinkTimer>
-          <damageDistress dataType="Float">0</damageDistress>
+          <exploEffects dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Prefab]][]" id="3219443732">
+            <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+              <contentPath dataType="String">Data\Prefabs\ExplosionClaymoreGlow.Prefab.res</contentPath>
+            </item>
+            <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+              <contentPath dataType="String">Data\Prefabs\ExplosionClaymoreSmoke.Prefab.res</contentPath>
+            </item>
+          </exploEffects>
           <eyeBlinking dataType="Bool">false</eyeBlinking>
           <eyeOpenTarget dataType="Float">0</eyeOpenTarget>
           <eyeOpenValue dataType="Float">0</eyeOpenValue>
@@ -699,7 +707,8 @@
           <gameobj dataType="ObjectRef">3054164894</gameobj>
           <idleTimer dataType="Float">0</idleTimer>
           <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-          <spikeState dataType="Array" type="DualStickSpaceShooter.EnemyClaymore+SpikeState[]" id="3219443732" length="4" />
+          <spikesActive dataType="Bool">false</spikesActive>
+          <spikeState dataType="Array" type="DualStickSpaceShooter.EnemyClaymore+SpikeState[]" id="2841410358" length="4" />
           <state dataType="Enum" type="DualStickSpaceShooter.EnemyClaymore+MindState" name="Asleep" value="0" />
         </item>
       </_items>
