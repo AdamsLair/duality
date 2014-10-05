@@ -171,7 +171,17 @@ namespace Duality.Resources
 			isSwitching = true;
 			if (current.ResWeak != null)
 			{
-				foreach (GameObject o in current.ResWeak.ActiveObjects.ToArray()) o.OnDeactivate();
+				// Deactivate GameObjects
+				DualityApp.EditorGuard(() =>
+				{
+					GameObject[] activeObj = current.ResWeak.ActiveObjects.ToArray();
+					foreach (GameObject o in activeObj)
+					{
+						o.OnDeactivate();
+					}
+				});
+
+				// Clear the physics world of all contents
 				physicsWorld.Clear();
 				ResetPhysics();
 			}
@@ -195,8 +205,14 @@ namespace Duality.Resources
 					current.ResWeak.BreakPrefabLinks();
 
 				// Activate GameObjects
-				foreach (GameObject o in current.ResWeak.ActiveObjects.ToArray())
-					o.OnActivate();
+				DualityApp.EditorGuard(() =>
+				{
+					GameObject[] activeObj = current.ResWeak.ActiveObjects.ToArray();
+					foreach (GameObject o in activeObj)
+					{
+						o.OnActivate();
+					}
+				});
 			}
 			isSwitching = false;
 			if (Entered != null) Entered(current, null);
@@ -408,12 +424,13 @@ namespace Duality.Resources
 				physicsLowFps = !(Time.LastDelta < Time.MsPFMult * 0.9f || physTime < Time.LastDelta * 0.6f);
 
 			Profile.TimeUpdateScene.BeginMeasure();
+			DualityApp.EditorGuard(() =>
 			{
 				// Update all GameObjects
 				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.Update();
-			}
+			});
 			Profile.TimeUpdateScene.EndMeasure();
 
 			// Perform a scheduled Scene switch
@@ -435,12 +452,13 @@ namespace Duality.Resources
 			switchLock++;
 
 			Profile.TimeUpdateScene.BeginMeasure();
+			DualityApp.EditorGuard(() =>
 			{
 				// Update all GameObjects
 				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.EditorUpdate();
-			}
+			});
 			Profile.TimeUpdateScene.EndMeasure();
 
 			switchLock--;

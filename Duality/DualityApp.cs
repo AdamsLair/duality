@@ -1198,6 +1198,30 @@ namespace Duality
 		{
 			action();
 		}
+		/// <summary>
+		/// When executed from within the editor environment, this method wraps the specified
+		/// action in a safe try-catch block in order to be able to recover gracefully. In regular
+		/// game execution, it will simply invoke the action without safety measures.
+		/// </summary>
+		/// <param name="action"></param>
+		public static void EditorGuard(Action action)
+		{
+			if (ExecEnvironment == ExecutionEnvironment.Editor)
+			{
+				try
+				{
+					action();
+				}
+				catch (Exception e)
+				{
+					Log.Editor.WriteError("An error occurred: {0}", Log.Exception(e));
+				}
+			}
+			else
+			{
+				action();
+			}
+		}
 
 		/// <summary>
 		/// Guards the calling method agains being called from a thread that is not the main thread.
