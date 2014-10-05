@@ -28,7 +28,7 @@ namespace DualStickSpaceShooter
 				List<RayCastData> hitData = RigidBody.RayCast(at, maxRadiusPos, d =>
 				{
 					if (d.Body == body)
-						return 0.0f;
+						return d.Fraction;
 					else if (d.Shape.IsSensor || !affectsBody(d.Body))
 						return -1.0f;
 					else
@@ -40,7 +40,7 @@ namespace DualStickSpaceShooter
 					RayCastData firstHit = hitData[0];
 					if (firstHit.Body == body)
 					{
-						float distanceFactor = 1.0f - hitData[0].Fraction;
+						float distanceFactor = MathF.Pow(1.0f - hitData[0].Fraction, 1.5f);
 						float maxImpulse = body.Mass * maxVelocity;
 						body.ApplyWorldImpulse(bodyDir * MathF.Min(distanceFactor * impulse, maxImpulse), hitData[0].Pos);
 					}

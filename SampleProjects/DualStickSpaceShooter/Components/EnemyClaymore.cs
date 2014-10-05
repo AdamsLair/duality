@@ -145,8 +145,8 @@ namespace DualStickSpaceShooter
 		{
 			PhysicsHelper.Shockwave(
 				this.GameObj.Transform.Pos.Xy, 
-				200.0f, 
-				25.0f,
+				100.0f, 
+				50.0f,
 				5.0f,
 				b => b.GameObj != this.GameObj);
 
