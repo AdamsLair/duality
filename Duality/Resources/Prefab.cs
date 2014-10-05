@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+using OpenTK;
+
+using Duality.Components;
 using Duality.Cloning;
 using Duality.Properties;
 using Duality.Editor;
@@ -94,15 +97,36 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// Instantiates the Prefab.
+		/// Creates a new instance of the Prefab. You will need to add it to a Scene in most cases.
 		/// </summary>
-		/// <returns>A new GameObject instance of this Prefab.</returns>
+		/// <returns></returns>
 		public GameObject Instantiate()
 		{
 			if (this.objTree == null)
 				return new GameObject();
 			else
 				return new GameObject(new ContentRef<Prefab>(this));
+		}
+		/// <summary>
+		/// Creates a new instance of the Prefab with specified world space transform values. 
+		/// This is a convenience method that calls <see cref="Instantiate()"/> and modifies the resulting
+		/// object, in case it contains a Transform Component.
+		/// </summary>
+		/// <param name="position"></param>
+		/// <param name="angle"></param>
+		/// <param name="scale"></param>
+		/// <returns></returns>
+		public GameObject Instantiate(Vector3 position, float angle = 0.0f, float scale = 1.0f)
+		{
+			GameObject obj = this.Instantiate();
+			Transform transform = obj.Transform;
+			if (transform != null)
+			{
+				transform.Pos = position;
+				transform.Angle = angle;
+				transform.Scale = scale;
+			}
+			return obj;
 		}
 		/// <summary>
 		/// Copies this Prefabs data to a GameObject without linking itsself to it.

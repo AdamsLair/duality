@@ -779,6 +779,15 @@ namespace Duality.Resources
 							target.data[targetN].B = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(targetColor.B * (1.0f - alphaTemp) + this.data[sourceN].B * alphaTemp)));
 							target.data[targetN].A = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(targetColor.A * (1.0f - alphaTemp) + this.data[sourceN].A)));
 						}
+						else if (blend == BlendMode.AlphaPre)
+						{
+							ColorRgba targetColor	= target.data[targetN];
+							float alphaTemp = (float)this.data[sourceN].A / 255.0f;
+							target.data[targetN].R = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(targetColor.R * (1.0f - alphaTemp) + this.data[sourceN].R)));
+							target.data[targetN].G = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(targetColor.G * (1.0f - alphaTemp) + this.data[sourceN].G)));
+							target.data[targetN].B = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(targetColor.B * (1.0f - alphaTemp) + this.data[sourceN].B)));
+							target.data[targetN].A = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(targetColor.A * (1.0f - alphaTemp) + this.data[sourceN].A)));
+						}
 						else if (blend == BlendMode.Multiply)
 						{
 							ColorRgba targetColor	= target.data[targetN];
@@ -887,6 +896,15 @@ namespace Duality.Resources
 							target.data[targetN].R = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.R * (1.0f - alphaTemp) + clrSource.R * alphaTemp)));
 							target.data[targetN].G = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.G * (1.0f - alphaTemp) + clrSource.G * alphaTemp)));
 							target.data[targetN].B = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.B * (1.0f - alphaTemp) + clrSource.B * alphaTemp)));
+							target.data[targetN].A = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.A * (1.0f - alphaTemp) + clrSource.A)));
+						}
+						else if (blend == BlendMode.AlphaPre)
+						{
+							clrTarget	= target.data[targetN];
+							float alphaTemp = (float)clrSource.A / 255.0f;
+							target.data[targetN].R = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.R * (1.0f - alphaTemp) + clrSource.R)));
+							target.data[targetN].G = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.G * (1.0f - alphaTemp) + clrSource.G)));
+							target.data[targetN].B = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.B * (1.0f - alphaTemp) + clrSource.B)));
 							target.data[targetN].A = (byte)Math.Min(255, Math.Max(0, (int)Math.Round(clrTarget.A * (1.0f - alphaTemp) + clrSource.A)));
 						}
 						else if (blend == BlendMode.Multiply)

@@ -273,6 +273,7 @@ namespace Duality.Resources
 			{ 
 				return 
 					this.blendType == BlendMode.Alpha ||
+					this.blendType == BlendMode.AlphaPre ||
 					this.blendType == BlendMode.Add ||
 					this.blendType == BlendMode.Invert ||
 					this.blendType == BlendMode.Multiply ||
@@ -459,6 +460,13 @@ namespace Duality.Resources
 					GL.Disable(EnableCap.AlphaTest);
 					GL.Disable(EnableCap.SampleAlphaToCoverage);
 					GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+					break;
+				case BlendMode.AlphaPre:
+					GL.DepthMask(false);
+					GL.Enable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
 					break;
 				case BlendMode.Add:
 					GL.DepthMask(false);
