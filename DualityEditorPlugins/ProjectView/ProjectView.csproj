@@ -33,9 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AdamsLair.WinForms, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\AdamsLair.WinForms.1.0.3.0\lib\net40-Client\AdamsLair.WinForms.dll</HintPath>
+      <HintPath>..\..\packages\AdamsLair.WinForms.1.0.4.0\lib\net40-Client\AdamsLair.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -192,30 +192,52 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Returns a random <see cref="ColorRgba"/>.
+		/// Returns a random <see cref="ColorRgba"/> with full saturation and maximum brightness.
 		/// </summary>
-		/// <param name="r">A random number generator.</param>
+		/// <param name="r"></param>
 		/// <returns></returns>
-		public static ColorRgba NextColorRGBA(this Random r)
+		public static ColorRgba NextColorRgba(this Random r)
 		{
-			return new ColorRgba(
-				r.NextByte(),
-				r.NextByte(),
-				r.NextByte(),
-				255);
+			return NextColorHsva(r).ToRgba();
 		}
 		/// <summary>
-		/// Returns a random <see cref="ColorHsva"/>.
+		/// Returns a component-wise random <see cref="ColorRgba"/>.
 		/// </summary>
-		/// <param name="r">A random number generator.</param>
+		/// <param name="r"></param>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
 		/// <returns></returns>
-		public static ColorHsva NextColorHSVA(this Random r)
+		public static ColorRgba NextColorRgba(this Random r, ColorRgba min, ColorRgba max)
+		{
+			return new ColorRgba(
+				r.NextByte(min.R, max.R),
+				r.NextByte(min.G, max.G),
+				r.NextByte(min.B, max.B),
+				r.NextByte(min.A, max.A));
+		}
+		/// <summary>
+		/// Returns a random <see cref="ColorHsva"/> with full saturation and maximum brightness.
+		/// </summary>
+		/// <param name="r"></param>
+		/// <returns></returns>
+		public static ColorHsva NextColorHsva(this Random r)
+		{
+			return new ColorHsva(r.NextFloat(), 1.0f, 1.0f, 1.0f);
+		}
+		/// <summary>
+		/// Returns a component-wise random <see cref="ColorHsva"/>.
+		/// </summary>
+		/// <param name="r"></param>
+		/// <param name="min"></param>
+		/// <param name="max"></param>
+		/// <returns></returns>
+		public static ColorHsva NextColorHsva(this Random r, ColorHsva min, ColorHsva max)
 		{
 			return new ColorHsva(
-				r.NextFloat(),
-				r.NextFloat(),
-				r.NextFloat(),
-				1.0f);
+				r.NextFloat(min.H, max.H),
+				r.NextFloat(min.S, max.S),
+				r.NextFloat(min.V, max.V),
+				r.NextFloat(min.A, max.A));
 		}
 
 		/// <summary>
