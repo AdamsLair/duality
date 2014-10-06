@@ -53,7 +53,9 @@ namespace DualStickSpaceShooter
 				MaxBurstCount	= -1
 			};
 
+			[EditorHintDecimalPlaces(0)]
 			public Range	Delay;
+			[EditorHintDecimalPlaces(0)]
 			public Range	Count;
 			public int		MaxBurstCount;
 		}
