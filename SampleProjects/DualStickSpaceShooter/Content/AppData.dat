@@ -11,7 +11,7 @@
   <startScene dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Scene]]">
     <contentPath dataType="String">Data\Scenes\Scene.Scene.res</contentPath>
   </startScene>
-  <version dataType="UInt">296</version>
+  <version dataType="UInt">340</version>
   <websiteUrl dataType="String">http://www.adamslair.net</websiteUrl>
 </root>
 <!-- XmlFormatterBase Document Separator -->

@@ -17,7 +17,6 @@
                 <deriveAngle dataType="Bool">true</deriveAngle>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
                 <ignoreParent dataType="Bool">false</ignoreParent>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <parentTransform />
                 <pos dataType="Struct" type="OpenTK.Vector3">
                   <X dataType="Float">0</X>
@@ -52,7 +51,6 @@
                 </colorTint>
                 <customMat />
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <offset dataType="Int">0</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
@@ -79,7 +77,6 @@
                 <fixedAngle dataType="Bool">false</fixedAngle>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
                 <ignoreGravity dataType="Bool">false</ignoreGravity>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <joints dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.JointInfo]]" id="254245605">
                   <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="2636970134" />
                   <_size dataType="Int">0</_size>
@@ -137,7 +134,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">27</_version>
+                  <_version dataType="Int">29</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -145,10 +142,15 @@
                 <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
                   <contentPath dataType="String">Data\Blueprints\RegularBullet.BulletBlueprint.res</contentPath>
                 </bulletType>
+                <deathEffects dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Prefab]][]" id="2169343919">
+                  <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+                    <contentPath dataType="String">Data\Prefabs\ShipDebris.Prefab.res</contentPath>
+                  </item>
+                </deathEffects>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
                 <healRate dataType="Float">10</healRate>
                 <hitpoints dataType="Float">100</hitpoints>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+                <isDead dataType="Bool">false</isDead>
                 <maxHitpoints dataType="Float">100</maxHitpoints>
                 <maxSpeed dataType="Float">6.5</maxSpeed>
                 <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
@@ -162,7 +164,6 @@
                   </color>
                   <controlObj dataType="ObjectRef">402578415</controlObj>
                   <gameobj dataType="ObjectRef">1121329689</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </owner>
                 <targetAngle dataType="Float">0</targetAngle>
                 <targetAngleRatio dataType="Float">0</targetAngleRatio>

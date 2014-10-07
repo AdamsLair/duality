@@ -77,6 +77,7 @@ namespace DualStickSpaceShooter
 		private float					linearDrag			= 0.3f;
 		private float					angularDrag			= 0.3f;
 		private float					fadeOutAt			= 0.75f;
+		private bool					worldSpace			= false;
 		private bool					disposeWhenEmpty	= true;
 		private EmissionData			emitData			= EmissionData.Default;
 		private EmissionPattern			emitPattern			= EmissionPattern.Default;
@@ -120,10 +121,15 @@ namespace DualStickSpaceShooter
 			get { return this.fadeOutAt; }
 			set { this.fadeOutAt = value; }
 		}
+		public bool WorldSpace
+		{
+			get { return this.worldSpace; }
+			set { this.worldSpace = value; }
+		}
 		public bool DisposeWhenEmpty
 		{
 			get { return this.disposeWhenEmpty; }
-			set { this.disposeWhenEmpty = true; }
+			set { this.disposeWhenEmpty = value; }
 		}
 		public EmissionData EmitData
 		{
@@ -147,21 +153,38 @@ namespace DualStickSpaceShooter
 
 		public void AddParticles(int count)
 		{
+			// Lookup what sprite sheet we're using to get the number of available frames
 			Texture tex = this.RetrieveTexture();
 			if (tex == null) return;
 			Pixmap img = tex.BasePixmap.Res;
 			if (img == null) return;
-
+			
+			// Gather data for emitting particles
+			Vector3 effectPos = this.GameObj.Transform.Pos;
+			float effectAngle = this.GameObj.Transform.Angle;
+			float effectScale = this.GameObj.Transform.Scale;
 			int spriteFrameCount = img.AnimFrames;
 
+			// Reserve memory for storing the new particles we're spawning
 			if (this.particles == null) this.particles = new RawList<Particle>(count);
 			int oldCount = this.particles.Count;
 			this.particles.Count = this.particles.Count + count;
 
+			// Initialize all those new particles
 			Particle[] particleData = this.particles.Data;
 			for (int i = oldCount; i < this.particles.Count; i++)
 			{
+				// Initialize the current particle.
 				this.InitParticle(ref particleData[i], spriteFrameCount);
+
+				// So far, the particle is in local coordinates. Transform to world coordinates when required.
+				if (this.worldSpace)
+				{
+					MathF.TransformCoord(ref particleData[i].Velocity.X, ref particleData[i].Velocity.Y, effectAngle, effectScale);
+					MathF.TransformCoord(ref particleData[i].Position.X, ref particleData[i].Position.Y, effectAngle, effectScale);
+					particleData[i].Position += effectPos;
+					particleData[i].Angle += effectAngle;
+				}
 			}
 		}
 
@@ -197,10 +220,22 @@ namespace DualStickSpaceShooter
 			Texture tex = this.RetrieveTexture();
 			if (tex == null) return;
 
-			float objAngle = this.GameObj.Transform.Angle;
-			float objScale = this.GameObj.Transform.Scale;
-			Vector3 objPos = this.GameObj.Transform.Pos;
 			Vector2 particleHalfSize = this.particleSize * 0.5f;
+			float objAngle;
+			float objScale;
+			Vector3 objPos;
+			if (this.worldSpace)
+			{
+				objAngle = 0.0f;
+				objScale = 1.0f;
+				objPos = Vector3.Zero;
+			}
+			else
+			{
+				objAngle = this.GameObj.Transform.Angle;
+				objScale = this.GameObj.Transform.Scale;
+				objPos = this.GameObj.Transform.Pos;
+			}
 			
 			Vector2 objXDot, objYDot;
 			MathF.GetTransformDotVec(objAngle, objScale, out objXDot, out objYDot);
@@ -285,6 +320,8 @@ namespace DualStickSpaceShooter
 			{
 				float timeMult = Time.TimeMult;
 				float timePassed = Time.MsPFMult * timeMult;
+				
+				Vector3 boundRadiusOrigin = this.worldSpace ? this.GameObj.Transform.Pos : Vector3.Zero;
 
 				Particle[] particleData = this.particles.Data;
 				int particleCount = this.particles.Count;
@@ -298,12 +335,14 @@ namespace DualStickSpaceShooter
 					if (particleData[i].AgeFactor > 1.0f)
 						this.RemoveParticle(i);
 
-					boundMax.X = MathF.Max(boundMax.X, MathF.Abs(particleData[i].Position.X));
-					boundMax.Y = MathF.Max(boundMax.Y, MathF.Abs(particleData[i].Position.Y));
-					boundMax.Z = MathF.Max(boundMax.Z, MathF.Abs(particleData[i].Position.Z));
+					boundMax.X = MathF.Max(boundMax.X, MathF.Abs(particleData[i].Position.X - boundRadiusOrigin.X));
+					boundMax.Y = MathF.Max(boundMax.Y, MathF.Abs(particleData[i].Position.Y - boundRadiusOrigin.Y));
+					boundMax.Z = MathF.Max(boundMax.Z, MathF.Abs(particleData[i].Position.Z - boundRadiusOrigin.Z));
 				}
 			}
-			this.boundRadius = boundMax.Length + this.particleSize.Length;
+			this.boundRadius = boundMax.Length;
+			if (this.worldSpace) this.boundRadius /= this.GameObj.Transform.Scale;
+			this.boundRadius += this.particleSize.Length;
 
 			// Update particle emission
 			if (this.burstCount < this.emitPattern.MaxBurstCount || this.emitPattern.MaxBurstCount < 0)

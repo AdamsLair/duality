@@ -18,7 +18,6 @@
             <deriveAngle dataType="Bool">true</deriveAngle>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             <parentTransform />
             <pos dataType="Struct" type="OpenTK.Vector3">
               <X dataType="Float">0</X>
@@ -48,7 +47,6 @@
             <farZ dataType="Float">10000</farZ>
             <focusDist dataType="Float">500</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="290342936">
               <_items dataType="Array" type="Duality.Components.Camera+Pass[]" id="1201734700" length="4">
@@ -96,7 +94,6 @@
           <item dataType="Struct" type="Duality.Components.SoundListener" id="1816758408">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
           <item dataType="Struct" type="DualStickSpaceShooter.CameraController" id="1908534968">
             <active dataType="Bool">true</active>
@@ -113,17 +110,14 @@
                         <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1748149512">
                           <active dataType="Bool">true</active>
                           <gameobj dataType="ObjectRef">105982944</gameobj>
-                          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                         </item>
                         <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3168759468">
                           <active dataType="Bool">true</active>
                           <gameobj dataType="ObjectRef">105982944</gameobj>
-                          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                         </item>
                         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="1328494310">
                           <active dataType="Bool">true</active>
                           <gameobj dataType="ObjectRef">105982944</gameobj>
-                          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                         </item>
                       </_items>
                       <_size dataType="Int">4</_size>
@@ -169,7 +163,6 @@
                           <item dataType="Struct" type="DualStickSpaceShooter.Player" id="2837740131">
                             <active dataType="Bool">true</active>
                             <gameobj dataType="ObjectRef">1924155130</gameobj>
-                            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
@@ -198,24 +191,9 @@
                       <parent />
                       <prefabLink dataType="Struct" type="Duality.Resources.PrefabLink" id="2368315834">
                         <changes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.PrefabLink+VarMod]]" id="3562856628">
-                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="1485000100" length="4">
-                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3618755528">
-                                <_items dataType="Array" type="System.Int32[]" id="110627436" length="4" />
-                                <_size dataType="Int">1</_size>
-                                <_version dataType="Int">2</_version>
-                              </childIndex>
-                              <componentType dataType="ObjectRef">3622757632</componentType>
-                              <prop dataType="PropertyInfo" id="286888670" value="P:Duality.Components.Transform:RelativePos" />
-                              <val dataType="Struct" type="OpenTK.Vector3">
-                                <X dataType="Float">0</X>
-                                <Y dataType="Float">0</Y>
-                                <Z dataType="Float">0</Z>
-                              </val>
-                            </item>
-                          </_items>
-                          <_size dataType="Int">1</_size>
-                          <_version dataType="Int">117</_version>
+                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="1485000100" length="4" />
+                          <_size dataType="Int">0</_size>
+                          <_version dataType="Int">125</_version>
                         </changes>
                         <obj dataType="ObjectRef">1924155130</obj>
                         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -225,7 +203,6 @@
                     </parent>
                     <prefabLink />
                   </gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Transform" id="1966433478">
                   <active dataType="Bool">true</active>
@@ -238,17 +215,14 @@
                         <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1248285114">
                           <active dataType="Bool">true</active>
                           <gameobj dataType="ObjectRef">3901085842</gameobj>
-                          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                         </item>
                         <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="2668895070">
                           <active dataType="Bool">true</active>
                           <gameobj dataType="ObjectRef">3901085842</gameobj>
-                          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                         </item>
                         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="828629912">
                           <active dataType="Bool">true</active>
                           <gameobj dataType="ObjectRef">3901085842</gameobj>
-                          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                         </item>
                       </_items>
                       <_size dataType="Int">4</_size>
@@ -294,7 +268,6 @@
                           <item dataType="Struct" type="DualStickSpaceShooter.Player" id="310259765">
                             <active dataType="Bool">true</active>
                             <gameobj dataType="ObjectRef">3691642060</gameobj>
-                            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
@@ -341,7 +314,7 @@
                                 <_version dataType="Int">2</_version>
                               </childIndex>
                               <componentType dataType="ObjectRef">3622757632</componentType>
-                              <prop dataType="ObjectRef">286888670</prop>
+                              <prop dataType="PropertyInfo" id="3616504338" value="P:Duality.Components.Transform:RelativePos" />
                               <val dataType="Struct" type="OpenTK.Vector3">
                                 <X dataType="Float">-97</X>
                                 <Y dataType="Float">66</Y>
@@ -349,13 +322,13 @@
                               </val>
                             </item>
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3616504338">
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3331740040">
                                 <_items dataType="ObjectRef">984640188</_items>
                                 <_size dataType="Int">0</_size>
                                 <_version dataType="Int">1</_version>
                               </childIndex>
                               <componentType dataType="ObjectRef">820797596</componentType>
-                              <prop dataType="PropertyInfo" id="3331740040" value="P:DualStickSpaceShooter.Player:Color" />
+                              <prop dataType="PropertyInfo" id="3630076774" value="P:DualStickSpaceShooter.Player:Color" />
                               <val dataType="Struct" type="Duality.Drawing.ColorRgba">
                                 <A dataType="Byte">255</A>
                                 <B dataType="Byte">89</B>
@@ -364,13 +337,13 @@
                               </val>
                             </item>
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3630076774">
-                                <_items dataType="Array" type="System.Int32[]" id="1015731162" />
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3298246980">
+                                <_items dataType="Array" type="System.Int32[]" id="4265563152" />
                                 <_size dataType="Int">0</_size>
                                 <_version dataType="Int">1</_version>
                               </childIndex>
                               <componentType />
-                              <prop dataType="PropertyInfo" id="3298246980" value="P:Duality.GameObject:ActiveSingle" />
+                              <prop dataType="PropertyInfo" id="1272399882" value="P:Duality.GameObject:ActiveSingle" />
                               <val dataType="Bool">false</val>
                             </item>
                           </_items>
@@ -385,14 +358,12 @@
                     </parent>
                     <prefabLink />
                   </gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">2</_size>
               <_version dataType="Int">5</_version>
             </followObjects>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             <maxZoomOutDist dataType="Float">350</maxZoomOutDist>
             <softness dataType="Float">1</softness>
             <zoomFactor dataType="Float">1</zoomFactor>
@@ -449,7 +420,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">2383024647</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">1209.74658</X>
@@ -484,7 +454,6 @@
                   </colorTint>
                   <customMat />
                   <gameobj dataType="ObjectRef">2383024647</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -508,7 +477,6 @@
                     <R dataType="Byte">128</R>
                   </baseColor>
                   <gameobj dataType="ObjectRef">2383024647</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -555,7 +523,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">3003406700</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">-1818.75928</X>
@@ -590,7 +557,6 @@
                   </colorTint>
                   <customMat />
                   <gameobj dataType="ObjectRef">3003406700</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -614,7 +580,6 @@
                     <R dataType="Byte">128</R>
                   </baseColor>
                   <gameobj dataType="ObjectRef">3003406700</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -661,7 +626,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">283960702</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">658.1311</X>
@@ -696,7 +660,6 @@
                   </colorTint>
                   <customMat />
                   <gameobj dataType="ObjectRef">283960702</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -720,7 +683,6 @@
                     <R dataType="Byte">128</R>
                   </baseColor>
                   <gameobj dataType="ObjectRef">283960702</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -767,7 +729,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">2198381846</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">310.66925</X>
@@ -802,7 +763,6 @@
                   </colorTint>
                   <customMat />
                   <gameobj dataType="ObjectRef">2198381846</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <pixelGrid dataType="Bool">false</pixelGrid>
                   <rect dataType="Struct" type="Duality.Rect">
@@ -826,7 +786,6 @@
                     <R dataType="Byte">128</R>
                   </baseColor>
                   <gameobj dataType="ObjectRef">2198381846</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">3</_size>
@@ -906,7 +865,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">367989753</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">36</X>
@@ -943,7 +901,6 @@
                   <fixedAngle dataType="Bool">false</fixedAngle>
                   <gameobj dataType="ObjectRef">367989753</gameobj>
                   <ignoreGravity dataType="Bool">false</ignoreGravity>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <joints />
                   <linearDamp dataType="Float">0.3</linearDamp>
                   <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -984,7 +941,6 @@
                   <customAreaMaterial />
                   <customOutlineMaterial />
                   <gameobj dataType="ObjectRef">367989753</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
@@ -1038,7 +994,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">3837180042</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">-236.999</X>
@@ -1075,7 +1030,6 @@
                   <fixedAngle dataType="Bool">false</fixedAngle>
                   <gameobj dataType="ObjectRef">3837180042</gameobj>
                   <ignoreGravity dataType="Bool">false</ignoreGravity>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <joints />
                   <linearDamp dataType="Float">0.3</linearDamp>
                   <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -1116,7 +1070,6 @@
                   <customAreaMaterial />
                   <customOutlineMaterial />
                   <gameobj dataType="ObjectRef">3837180042</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
@@ -1170,7 +1123,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">3508990515</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">182.001</X>
@@ -1207,7 +1159,6 @@
                   <fixedAngle dataType="Bool">false</fixedAngle>
                   <gameobj dataType="ObjectRef">3508990515</gameobj>
                   <ignoreGravity dataType="Bool">false</ignoreGravity>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <joints />
                   <linearDamp dataType="Float">0.3</linearDamp>
                   <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -1261,7 +1212,6 @@
                   <customAreaMaterial />
                   <customOutlineMaterial />
                   <gameobj dataType="ObjectRef">3508990515</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
@@ -1315,7 +1265,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">2373794822</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">270.002</X>
@@ -1352,7 +1301,6 @@
                   <fixedAngle dataType="Bool">false</fixedAngle>
                   <gameobj dataType="ObjectRef">2373794822</gameobj>
                   <ignoreGravity dataType="Bool">false</ignoreGravity>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <joints />
                   <linearDamp dataType="Float">0.3</linearDamp>
                   <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -1406,7 +1354,6 @@
                   <customAreaMaterial />
                   <customOutlineMaterial />
                   <gameobj dataType="ObjectRef">2373794822</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
@@ -1460,7 +1407,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">196886364</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">-323.998</X>
@@ -1497,7 +1443,6 @@
                   <fixedAngle dataType="Bool">false</fixedAngle>
                   <gameobj dataType="ObjectRef">196886364</gameobj>
                   <ignoreGravity dataType="Bool">false</ignoreGravity>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <joints />
                   <linearDamp dataType="Float">0.3</linearDamp>
                   <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -1551,7 +1496,6 @@
                   <customAreaMaterial />
                   <customOutlineMaterial />
                   <gameobj dataType="ObjectRef">196886364</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
@@ -1605,7 +1549,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">4124357391</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">-31.9979858</X>
@@ -1642,7 +1585,6 @@
                   <fixedAngle dataType="Bool">false</fixedAngle>
                   <gameobj dataType="ObjectRef">4124357391</gameobj>
                   <ignoreGravity dataType="Bool">false</ignoreGravity>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <joints />
                   <linearDamp dataType="Float">0.3</linearDamp>
                   <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -1683,7 +1625,6 @@
                   <customAreaMaterial />
                   <customOutlineMaterial />
                   <gameobj dataType="ObjectRef">4124357391</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
@@ -1771,7 +1712,6 @@
             </counterGraphs>
             <drawGraphs dataType="Bool">false</drawGraphs>
             <gameobj dataType="ObjectRef">4022368584</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             <keyToggleGraph dataType="Enum" type="OpenTK.Input.Key" name="F4" value="13" />
             <keyToggleTextPerf dataType="Enum" type="OpenTK.Input.Key" name="F2" value="11" />
             <keyToggleTextStat dataType="Enum" type="OpenTK.Input.Key" name="F3" value="12" />
@@ -1823,12 +1763,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3403935676">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1043620744</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="751056125">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1043620744</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -1867,12 +1805,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1951015585">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3885667949</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1232867221">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3885667949</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -1911,12 +1847,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3201104054">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">840789122</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2482955690">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">840789122</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -1955,12 +1889,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1861001338">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3795653702</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1142852974">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3795653702</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -1999,12 +1931,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="611928589">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2546580953</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4188747521">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2546580953</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2044,27 +1974,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="1099826731">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3034479095</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="381678367">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3034479095</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1802288323">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3034479095</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4256990461">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3034479095</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="4110587027">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3034479095</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -2109,7 +2034,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">152.897186</X>
                       <Y dataType="Float">22.8858814</Y>
@@ -2138,12 +2063,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1078718294">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3013370658</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="2720806039">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3013370658</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2182,12 +2105,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2873167487">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">512852555</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2155019123">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">512852555</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2226,12 +2147,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2740395915">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">380080983</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2022247551">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">380080983</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2270,12 +2189,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2764675813">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">404360881</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2046527449">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">404360881</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2314,12 +2231,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1264893102">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3199545466</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="546744738">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3199545466</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2359,27 +2274,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="2503745672">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">143430740</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1785597308">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">143430740</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3206207264">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">143430740</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="1365942106">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">143430740</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="1219538672">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">143430740</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -2424,7 +2334,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">167.01825</X>
                       <Y dataType="Float">101.769142</Y>
@@ -2453,12 +2363,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3674932549">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1314617617</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="1022052998">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1314617617</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2497,12 +2405,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2334139038">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4268791402</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1615990674">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4268791402</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2541,12 +2447,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2781880062">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">421565130</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2063731698">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">421565130</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2585,12 +2489,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2202139802">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4136792166</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1483991438">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4136792166</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2629,12 +2531,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="138498037">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2073150401</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3715316969">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2073150401</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2674,27 +2574,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="284732085">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2219384449</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3861551017">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2219384449</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="987193677">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2219384449</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="3441895815">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2219384449</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="3295492381">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2219384449</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -2739,7 +2634,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">184.060928</X>
                       <Y dataType="Float">-9.738673</Y>
@@ -2768,12 +2663,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2398650168">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">38335236</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="4040737913">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">38335236</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2812,12 +2705,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1952583475">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3887235839</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1234435111">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3887235839</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2856,12 +2747,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3934097025">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1573782093</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3215948661">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1573782093</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2900,12 +2789,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4085229547">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1724914615</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3367081183">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1724914615</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2944,12 +2831,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="780153902">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2714806266</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="62005538">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2714806266</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -2989,27 +2874,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="711112001">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2645764365</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4287930933">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2645764365</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1413573593">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2645764365</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="3868275731">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2645764365</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="3721872297">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2645764365</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -3054,7 +2934,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">141.519073</X>
                       <Y dataType="Float">-120.812485</Y>
@@ -3083,12 +2963,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1324311771">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3258964135</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="2966399516">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3258964135</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3127,12 +3005,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="456875178">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2391527542</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4033694110">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2391527542</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3171,12 +3047,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1195355732">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3130008096</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="477207368">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3130008096</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3215,12 +3089,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1808237399">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3742889763</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1090089035">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3742889763</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3259,12 +3131,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2138996206">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4073648570</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1420847842">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4073648570</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3304,27 +3174,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="334575177">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2269227541</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3911394109">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2269227541</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1037036769">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2269227541</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="3491738907">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2269227541</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="3345335473">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2269227541</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -3369,7 +3234,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">-121.998993</X>
                       <Y dataType="Float">-121.5</Y>
@@ -3398,12 +3263,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="794261137">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2728913501</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="2436348882">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2728913501</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3442,12 +3305,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2302034231">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4236686595</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1583885867">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4236686595</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3486,12 +3347,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2825564543">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">465249611</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2107416179">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">465249611</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3530,12 +3389,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2697082234">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">336767302</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1978933870">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">336767302</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3574,12 +3431,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2727344196">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">367029264</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2009195832">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">367029264</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3619,27 +3474,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="2603247046">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">242932114</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1885098682">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">242932114</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3305708638">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">242932114</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="1465443480">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">242932114</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="1319040046">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">242932114</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -3684,7 +3534,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">322.002</X>
                       <Y dataType="Float">-93.5</Y>
@@ -3713,12 +3563,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1976651387">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3911303751</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="3618739132">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3911303751</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3757,12 +3605,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1983502244">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3918154608</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1265353880">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3918154608</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3801,12 +3647,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2752699830">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">392384898</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2034551466">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">392384898</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3845,12 +3689,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4004059319">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1643744387</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3285910955">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1643744387</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3889,12 +3731,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="402302606">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2336954970</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3979121538">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2336954970</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -3934,27 +3774,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="454410467">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2389062831</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4031229399">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2389062831</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1156872059">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2389062831</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="3611574197">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2389062831</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="3465170763">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2389062831</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -3999,7 +3834,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">241.906387</X>
                       <Y dataType="Float">-116.698242</Y>
@@ -4028,12 +3863,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2038498572">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3973150936</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="3680586317">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3973150936</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4072,12 +3905,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3389653612">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1029338680</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2671505248">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1029338680</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4116,12 +3947,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2350243709">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4284896073</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1632095345">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4284896073</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4160,12 +3989,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4246116699">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1885801767</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3527968335">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1885801767</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4204,12 +4031,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2053231470">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3987883834</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1335083106">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3987883834</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4249,27 +4074,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="2707417416">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">347102484</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1989269052">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">347102484</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3409879008">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">347102484</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="1569613850">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">347102484</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="1423210416">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">347102484</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -4314,7 +4134,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">170.001</X>
                       <Y dataType="Float">-21.5</Y>
@@ -4343,12 +4163,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2840143601">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">479828669</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="187264050">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">479828669</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4387,12 +4205,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1825359408">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3760011772</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1107211044">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3760011772</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4431,12 +4247,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="166921961">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2101574325</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3743740893">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2101574325</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4475,12 +4289,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3088161436">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">727846504</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2370013072">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">727846504</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4519,12 +4331,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3872968022">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1512653090</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3154819658">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1512653090</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4564,27 +4374,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="3436909031">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1076594099</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2718760667">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1076594099</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="4139370623">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1076594099</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="2299105465">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1076594099</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="2152702031">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1076594099</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -4629,7 +4434,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">184.001</X>
                       <Y dataType="Float">-333.5</Y>
@@ -4658,12 +4463,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="41983347">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1976635711</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="1684071092">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1976635711</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4702,12 +4505,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="143996495">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2078648859</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3720815427">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2078648859</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4746,12 +4547,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="65109451">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1999761815</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3641928383">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1999761815</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4790,12 +4589,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3982619780">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1622304848</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3264471416">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1622304848</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4834,12 +4631,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="728548899">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2663201263</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="10400535">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2663201263</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -4879,27 +4674,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="279090450">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2213742814</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3855909382">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2213742814</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="981552042">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2213742814</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="3436254180">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2213742814</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="3289850746">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2213742814</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -4944,7 +4734,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">9.002014</X>
                       <Y dataType="Float">410.5</Y>
@@ -4973,12 +4763,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4078318831">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1718003899</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="1425439280">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1718003899</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5017,12 +4805,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="690413320">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2625065684</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4267232252">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2625065684</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5061,12 +4847,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3376884043">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1016569111</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2658735679">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1016569111</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5105,12 +4889,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2295322497">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4229974861</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1577174133">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">4229974861</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5149,12 +4931,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2481165392">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">120850460</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1763017028">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">120850460</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5194,27 +4974,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="971212756">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2905865120</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="253064392">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2905865120</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="1673674348">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2905865120</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4128376486">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2905865120</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="3981973052">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">2905865120</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -5259,7 +5034,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">-48.9969826</X>
                       <Y dataType="Float">448.5</Y>
@@ -5288,12 +5063,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1637858586">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3572510950</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="3279946331">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3572510950</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5332,12 +5105,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1356995456">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3291647820</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="638847092">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3291647820</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5376,12 +5147,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4105932736">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1745617804</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3387784372">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1745617804</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5420,12 +5189,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1862075511">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3796727875</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1143927147">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3796727875</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5464,12 +5231,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4153832744">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1793517812</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3435684380">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1793517812</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5509,27 +5274,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="1640440501">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3575092865</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="922292137">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3575092865</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="2342902093">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3575092865</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="502636935">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3575092865</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="356233501">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">3575092865</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -5574,7 +5334,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">-405.995972</X>
                       <Y dataType="Float">267.5</Y>
@@ -5603,12 +5363,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="2510055531">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">149740599</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="4152143276">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">149740599</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5647,12 +5405,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3474749874">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1114434942</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="2756601510">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1114434942</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5691,12 +5447,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="478246511">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2412898875</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4055065443">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2412898875</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5735,12 +5489,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1867149767">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3801802131</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1149001403">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3801802131</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5779,12 +5531,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="3975608313">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1615293381</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3257459949">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1615293381</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5824,27 +5574,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="3953344116">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1593029184</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3235195752">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1593029184</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="360838412">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1593029184</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="2815540550">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1593029184</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="2669137116">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">1593029184</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -5889,7 +5634,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">-331.998</X>
                       <Y dataType="Float">-104.5</Y>
@@ -5918,12 +5663,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="1686016644">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3620669008</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.AnimSpriteRenderer" id="3328104389">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">3620669008</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -5962,12 +5705,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4170465954">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1810151022</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3452317590">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1810151022</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -6006,12 +5747,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="631029752">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2565682116</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4207848684">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2565682116</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -6050,12 +5789,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="4023630272">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1663315340</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3305481908">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">1663315340</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -6094,12 +5831,10 @@
                       <item dataType="Struct" type="Duality.Components.Transform" id="815897683">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2750550047</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                       <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="97749319">
                         <active dataType="Bool">true</active>
                         <gameobj dataType="ObjectRef">2750550047</gameobj>
-                        <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                       </item>
                     </_items>
                     <_size dataType="Int">2</_size>
@@ -6139,27 +5874,22 @@
                 <item dataType="Struct" type="Duality.Components.Transform" id="2478141960">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">117827028</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1759993596">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">117827028</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3180603552">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">117827028</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="1340338394">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">117827028</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
                 <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="1193934960">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">117827028</gameobj>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 </item>
               </_items>
               <_size dataType="Int">5</_size>
@@ -6204,7 +5934,7 @@
                       <_version dataType="Int">1</_version>
                     </childIndex>
                     <componentType dataType="ObjectRef">3622757632</componentType>
-                    <prop dataType="ObjectRef">286888670</prop>
+                    <prop dataType="ObjectRef">3616504338</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
                       <X dataType="Float">-18.9370422</X>
                       <Y dataType="Float">459.261322</Y>

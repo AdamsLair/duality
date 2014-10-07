@@ -17,7 +17,6 @@
                 <deriveAngle dataType="Bool">true</deriveAngle>
                 <gameobj dataType="ObjectRef">1216619707</gameobj>
                 <ignoreParent dataType="Bool">false</ignoreParent>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <parentTransform dataType="Struct" type="Duality.Components.Transform" id="1119512530">
                   <active dataType="Bool">true</active>
                   <angle dataType="Float">0</angle>
@@ -27,7 +26,6 @@
                   <deriveAngle dataType="Bool">true</deriveAngle>
                   <gameobj dataType="ObjectRef">3054164894</gameobj>
                   <ignoreParent dataType="Bool">true</ignoreParent>
-                  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                   <parentTransform />
                   <pos dataType="Struct" type="OpenTK.Vector3">
                     <X dataType="Float">0</X>
@@ -92,7 +90,6 @@
                 <customFrameSequence />
                 <customMat />
                 <gameobj dataType="ObjectRef">1216619707</gameobj>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <offset dataType="Int">-1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
@@ -150,7 +147,6 @@
                 <deriveAngle dataType="Bool">true</deriveAngle>
                 <gameobj dataType="ObjectRef">4070850922</gameobj>
                 <ignoreParent dataType="Bool">false</ignoreParent>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <parentTransform dataType="ObjectRef">1119512530</parentTransform>
                 <pos dataType="Struct" type="OpenTK.Vector3">
                   <X dataType="Float">8.499023</X>
@@ -185,7 +181,6 @@
                 </colorTint>
                 <customMat />
                 <gameobj dataType="ObjectRef">4070850922</gameobj>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
@@ -243,7 +238,6 @@
                 <deriveAngle dataType="Bool">true</deriveAngle>
                 <gameobj dataType="ObjectRef">2286597987</gameobj>
                 <ignoreParent dataType="Bool">false</ignoreParent>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <parentTransform dataType="ObjectRef">1119512530</parentTransform>
                 <pos dataType="Struct" type="OpenTK.Vector3">
                   <X dataType="Float">-8</X>
@@ -278,7 +272,6 @@
                 </colorTint>
                 <customMat />
                 <gameobj dataType="ObjectRef">2286597987</gameobj>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
@@ -336,7 +329,6 @@
                 <deriveAngle dataType="Bool">true</deriveAngle>
                 <gameobj dataType="ObjectRef">1526931573</gameobj>
                 <ignoreParent dataType="Bool">false</ignoreParent>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <parentTransform dataType="ObjectRef">1119512530</parentTransform>
                 <pos dataType="Struct" type="OpenTK.Vector3">
                   <X dataType="Float">-8</X>
@@ -371,7 +363,6 @@
                 </colorTint>
                 <customMat />
                 <gameobj dataType="ObjectRef">1526931573</gameobj>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
@@ -429,7 +420,6 @@
                 <deriveAngle dataType="Bool">true</deriveAngle>
                 <gameobj dataType="ObjectRef">2781767734</gameobj>
                 <ignoreParent dataType="Bool">false</ignoreParent>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <parentTransform dataType="ObjectRef">1119512530</parentTransform>
                 <pos dataType="Struct" type="OpenTK.Vector3">
                   <X dataType="Float">8.499023</X>
@@ -464,7 +454,6 @@
                 </colorTint>
                 <customMat />
                 <gameobj dataType="ObjectRef">2781767734</gameobj>
-                <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
                 <offset dataType="Int">1</offset>
                 <pixelGrid dataType="Bool">false</pixelGrid>
                 <rect dataType="Struct" type="Duality.Rect">
@@ -525,7 +514,6 @@
           </colorTint>
           <customMat />
           <gameobj dataType="ObjectRef">3054164894</gameobj>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <offset dataType="Int">0</offset>
           <pixelGrid dataType="Bool">false</pixelGrid>
           <rect dataType="Struct" type="Duality.Rect">
@@ -552,7 +540,6 @@
           <fixedAngle dataType="Bool">false</fixedAngle>
           <gameobj dataType="ObjectRef">3054164894</gameobj>
           <ignoreGravity dataType="Bool">false</ignoreGravity>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <joints dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.JointInfo]]" id="2311246660">
             <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="1655711300" />
             <_size dataType="Int">0</_size>
@@ -664,7 +651,7 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">101</_version>
+            <_version dataType="Int">126</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
@@ -674,9 +661,9 @@
           </bulletType>
           <gameobj dataType="ObjectRef">3054164894</gameobj>
           <healRate dataType="Float">25</healRate>
-          <hitpoints dataType="Float">200</hitpoints>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-          <maxHitpoints dataType="Float">200</maxHitpoints>
+          <hitpoints dataType="Float">500</hitpoints>
+          <isDead dataType="Bool">false</isDead>
+          <maxHitpoints dataType="Float">500</maxHitpoints>
           <maxSpeed dataType="Float">3</maxSpeed>
           <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
           <owner />
@@ -695,6 +682,7 @@
           <active dataType="Bool">true</active>
           <behavior dataType="Enum" type="DualStickSpaceShooter.EnemyClaymore+BehaviorFlags" name="Chase" value="1" />
           <blinkTimer dataType="Float">0</blinkTimer>
+          <exploDamage dataType="Float">150</exploDamage>
           <exploEffects dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Prefab]][]" id="3219443732">
             <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
               <contentPath dataType="String">Data\Prefabs\ExplosionClaymoreGlow.Prefab.res</contentPath>
@@ -703,13 +691,15 @@
               <contentPath dataType="String">Data\Prefabs\ExplosionClaymoreSmoke.Prefab.res</contentPath>
             </item>
           </exploEffects>
+          <exploForce dataType="Float">50</exploForce>
+          <exploMaxVel dataType="Float">5</exploMaxVel>
+          <exploRadius dataType="Float">100</exploRadius>
           <eyeBlinking dataType="Bool">false</eyeBlinking>
           <eyeOpenTarget dataType="Float">0</eyeOpenTarget>
           <eyeOpenValue dataType="Float">0</eyeOpenValue>
           <eyeSpeed dataType="Float">0</eyeSpeed>
           <gameobj dataType="ObjectRef">3054164894</gameobj>
           <idleTimer dataType="Float">0</idleTimer>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <spikesActive dataType="Bool">false</spikesActive>
           <spikeState dataType="Array" type="DualStickSpaceShooter.EnemyClaymore+SpikeState[]" id="2841410358" length="4" />
           <state dataType="Enum" type="DualStickSpaceShooter.EnemyClaymore+MindState" name="Asleep" value="0" />

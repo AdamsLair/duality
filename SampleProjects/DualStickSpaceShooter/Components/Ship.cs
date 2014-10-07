@@ -26,11 +26,13 @@ namespace DualStickSpaceShooter
 		private	float						targetAngleRatio;
 		private	float						thrusterPower;
 		private	float						turnPower;
+		private	bool						isDead;
 		private	float						hitpoints;
 		private	float						healRate;
 		private	float						maxHitpoints;
 		private	float						maxSpeed;
 		private	float						maxTurnSpeed;
+		private	ContentRef<Prefab>[]		deathEffects;
 		private	ContentRef<BulletBlueprint>	bulletType;
 		private	float						weaponTimer;
 		private	float						weaponDelay;
@@ -64,17 +66,21 @@ namespace DualStickSpaceShooter
 			get { return this.turnPower; }
 			set { this.turnPower = value; }
 		}
-		[EditorHintDecimalPlaces(0)]
-		public float HealRate
+		public bool IsDead
 		{
-			get { return this.healRate; }
-			set { this.healRate = value; }
+			get { return this.isDead; }
 		}
 		[EditorHintDecimalPlaces(0)]
 		public float Hitpoints
 		{
 			get { return this.hitpoints; }
 			set { this.hitpoints = value; }
+		}
+		[EditorHintDecimalPlaces(0)]
+		public float HealRate
+		{
+			get { return this.healRate; }
+			set { this.healRate = value; }
 		}
 		[EditorHintDecimalPlaces(0)]
 		public float MaxHitpoints
@@ -92,15 +98,20 @@ namespace DualStickSpaceShooter
 			get { return this.maxTurnSpeed; }
 			set { this.maxTurnSpeed = value; }
 		}
-		public float WeaponDelay
+		public ContentRef<Prefab>[] DeathEffects
 		{
-			get { return this.weaponDelay; }
-			set { this.weaponDelay = value; }
+			get { return this.deathEffects; }
+			set { this.deathEffects = value; }
 		}
 		public ContentRef<BulletBlueprint> BulletType
 		{
 			get { return this.bulletType; }
 			set { this.bulletType = value; }
+		}
+		public float WeaponDelay
+		{
+			get { return this.weaponDelay; }
+			set { this.weaponDelay = value; }
 		}
 		public Player Owner
 		{
@@ -119,6 +130,34 @@ namespace DualStickSpaceShooter
 		}
 		public void Die()
 		{
+			// Ignore, if already dead
+			if (this.isDead) return;
+			this.isDead = true;
+
+			// Notify everyone who is interested that we're dead
+			this.SendMessage(new ShipDeathMessage());
+			
+			// Spawn death effects
+			if (this.deathEffects != null)
+			{
+				Transform transform = this.GameObj.Transform;
+				RigidBody body = this.GameObj.RigidBody;
+				for (int i = 0; i < this.deathEffects.Length; i++)
+				{
+					GameObject effectObj = this.deathEffects[i].Res.Instantiate(transform.Pos);
+					ParticleEffect effect = effectObj.GetComponent<ParticleEffect>();
+					if (effect != null && this.owner != null)
+					{
+						ParticleEffect.EmissionData emitData = effect.EmitData;
+						emitData.MaxColor = this.owner.Color.ToHsva().WithValue(emitData.MaxColor.V);
+						emitData.MinColor = this.owner.Color.ToHsva().WithValue(emitData.MinColor.V);
+						emitData.BaseVel += new Vector3(body.LinearVelocity);
+						effect.EmitData = emitData;
+					}
+					Scene.Current.AddObject(effectObj);
+				}
+			}
+
 			// Safely dispose the ships GameObject and set hitpoints to zero
 			this.hitpoints = 0.0f;
 			this.GameObj.DisposeLater();

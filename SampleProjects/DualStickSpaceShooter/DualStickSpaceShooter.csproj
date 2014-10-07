@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\EnemyClaymore.cs" />
+    <Compile Include="General\ICmpMessageListener.cs" />
     <Compile Include="Components\ParticleEffect.cs" />
     <Compile Include="Components\SpriteDepthColor.cs" />
     <Compile Include="CorePlugin.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="General\InputMapping.cs" />
     <Compile Include="General\InputMethod.cs" />
     <Compile Include="General\GameplayHelper.cs" />
+    <Compile Include="General\GameMessages.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

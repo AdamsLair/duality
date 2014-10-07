@@ -17,7 +17,6 @@
           <deriveAngle dataType="Bool">true</deriveAngle>
           <gameobj dataType="ObjectRef">3771240307</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <parentTransform />
           <pos dataType="Struct" type="OpenTK.Vector3">
             <X dataType="Float">0</X>
@@ -105,16 +104,16 @@
           </emitPattern>
           <fadeOutAt dataType="Float">0.75</fadeOutAt>
           <gameobj dataType="ObjectRef">3771240307</gameobj>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <linearDrag dataType="Float">0.3</linearDrag>
           <material dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-            <contentPath dataType="String">Data\Materials\GlowParticles.Material.res</contentPath>
+            <contentPath dataType="String">Data\Materials\GlowShards.Material.res</contentPath>
           </material>
           <particleSize dataType="Struct" type="OpenTK.Vector2">
             <X dataType="Float">16</X>
             <Y dataType="Float">16</Y>
           </particleSize>
           <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
+          <worldSpace dataType="Bool">false</worldSpace>
         </item>
       </_items>
       <_size dataType="Int">2</_size>

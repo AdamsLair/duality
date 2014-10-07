@@ -17,7 +17,7 @@ namespace DualStickSpaceShooter
 {
 	[Serializable]
 	[RequiredComponent(typeof(Ship))]
-	public class EnemyClaymore : Component, ICmpUpdatable, ICmpInitializable, ICmpCollisionListener
+	public class EnemyClaymore : Component, ICmpUpdatable, ICmpInitializable, ICmpCollisionListener, ICmpMessageListener
 	{
 		[Flags]
 		public enum BehaviorFlags
@@ -63,7 +63,7 @@ namespace DualStickSpaceShooter
 		private	float					exploDamage		= 200.0f;
 		private	float					exploRadius		= 100.0f;
 		private	float					exploForce		= 50.0f;
-		private	float					exploMaxVel		= 50.0f;
+		private	float					exploMaxVel		= 5.0f;
 
 		[NonSerialized] private AnimSpriteRenderer	eye		= null;
 		[NonSerialized] private SpriteRenderer[]	spikes	= null;
@@ -176,13 +176,6 @@ namespace DualStickSpaceShooter
 			Ship ship = this.GameObj.GetComponent<Ship>();
 			Vector2 pos = this.GameObj.Transform.Pos.Xy;
 
-			// Damage other objects
-			GameplayHelper.SplashDamage(
-				pos, 
-				this.exploRadius,
-				this.exploDamage,
-				obj => obj != ship);
-
 			// Push other objects away
 			GameplayHelper.Shockwave(
 				pos, 
@@ -190,6 +183,13 @@ namespace DualStickSpaceShooter
 				this.exploForce,
 				this.exploMaxVel,
 				obj => obj.GameObj != this.GameObj);
+
+			// Damage other objects
+			GameplayHelper.SplashDamage(
+				pos, 
+				this.exploRadius,
+				this.exploDamage,
+				obj => obj != ship);
 
 			// Die instantly
 			ship.Die();
@@ -280,7 +280,6 @@ namespace DualStickSpaceShooter
 				float desiredDirectionFactor = Vector2.Dot(actualVelocityDir, desiredVelocityDir);
 				moveDistress = MathF.Clamp(1.0f - desiredDirectionFactor, 0.0f, 1.0f) * MathF.Clamp(body.LinearVelocity.Length - 0.5f, 0.0f, 1.0f);
 			}
-			
 
 			// Do AI state handling stuff
 			switch (this.state)
@@ -447,6 +446,15 @@ namespace DualStickSpaceShooter
 
 					this.spikes[i].Rect = spikeRect;
 				}
+			}
+		}
+
+		void ICmpMessageListener.OnMessage(GameMessage msg)
+		{
+			// We're dead? Damnit! Blow up at least.
+			if (msg is ShipDeathMessage)
+			{
+				this.FireExplosives();
 			}
 		}
 
