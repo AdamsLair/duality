@@ -104,9 +104,8 @@ namespace Duality
 		}
 
 
-		internal	GameObject		gameobj		= null;
-		private		InitState		initState	= InitState.Initialized;
-		private		bool			active		= true;
+		internal	GameObject	gameobj	= null;
+		private		bool		active	= true;
 
 		
 		/// <summary>
@@ -127,7 +126,7 @@ namespace Duality
 		/// <seealso cref="Active"/>
 		public bool ActiveSingle
 		{
-			get { return this.active && this.initState.IsActive(); }
+			get { return this.active; }
 			set 
 			{
 				if (this.active != value)
@@ -153,7 +152,7 @@ namespace Duality
 		/// </summary>
 		public bool Disposed
 		{
-			get { return this.initState == InitState.Disposed || (this.gameobj != null && this.gameobj.Disposed); }
+			get { return this.gameobj != null && this.gameobj.Disposed; }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="GameObject"/> to which this Component belongs.
@@ -191,16 +190,9 @@ namespace Duality
 		/// <seealso cref="ExtMethodsIManageableObject.DisposeLater"/>
 		public void Dispose()
 		{
-			if (this.initState == InitState.Initialized)
-			{
-				this.initState = InitState.Disposing;
-
-				// Remove from GameObject
-				if (this.gameobj != null)
-					this.gameobj.RemoveComponent(this);
-
-				this.initState = InitState.Disposed;
-			}
+			// Remove from GameObject
+			if (this.gameobj != null)
+				this.gameobj.RemoveComponent(this);
 		}
 		
 		/// <summary>
@@ -229,7 +221,6 @@ namespace Duality
 		void ICloneExplicit.CopyDataTo(object targetObj, ICloneOperation operation)
 		{
 			Component target = targetObj as Component;
-			target.initState = this.initState;
 			target.active = this.active;
 			this.OnCopyDataTo(targetObj, operation);
 		}
