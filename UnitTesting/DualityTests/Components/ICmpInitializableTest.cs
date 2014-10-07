@@ -87,6 +87,15 @@ namespace Duality.Tests.Resources
 			DualityApp.RunCleanup(); // Need to run cleanup, so disposed GameObjects will be processed.
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
 		}
+		[Test] public void DeactivateDeepGameObjectDispose()
+		{
+			GameObject childObj = new GameObject("ChildObject", this.obj);
+			InitializableEventReceiver initTester = childObj.AddComponent<InitializableEventReceiver>();
+			Scene.SwitchTo(this.scene, true);
+			this.obj.Dispose();
+			DualityApp.RunCleanup(); // Need to run cleanup, so disposed GameObjects will be processed.
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
+		}
 		[Test] public void DeactivateComponentDispose()
 		{
 			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();

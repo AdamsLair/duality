@@ -756,12 +756,30 @@ namespace Duality
 			{
 				this.initState = InitState.Disposing;
 
-				// Delete Components
-				//for (int i = this.compList.Count - 1; i >= 0; i--) this.compList[i].Dispose();
-				// Delete child objects
-				if (this.children != null) for (int i = this.children.Count - 1; i >= 0; i--) this.children[i].Dispose();
-				// Remove from parent
-				if (this.parent != null) this.Parent = null;
+				// Don't bother disposing Components - they inherit the Disposed state 
+				// from their GameObject and receive a Deactivate event due to the objects
+				// removel from Scene anyway.
+				/*
+				for (int i = this.compList.Count - 1; i >= 0; i--)
+				{
+					this.compList[i].Dispose(false);
+				}
+				*/
+
+				// Dispose child objects
+				if (this.children != null)
+				{
+					for (int i = this.children.Count - 1; i >= 0; i--)
+					{
+						this.children[i].Dispose();
+					}
+				}
+
+				// Remove from parent, if that's still alive
+				if (this.parent != null && this.parent.initState != InitState.Disposing && this.parent.initState != InitState.Disposed)
+				{
+					this.Parent = null;
+				}
 
 				this.initState = InitState.Disposed;
 			}

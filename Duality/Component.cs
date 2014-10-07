@@ -153,7 +153,7 @@ namespace Duality
 		/// </summary>
 		public bool Disposed
 		{
-			get { return this.initState == InitState.Disposed; }
+			get { return this.initState == InitState.Disposed || (this.gameobj != null && this.gameobj.Disposed); }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="GameObject"/> to which this Component belongs.
@@ -196,7 +196,7 @@ namespace Duality
 				this.initState = InitState.Disposing;
 
 				// Remove from GameObject
-				if (this.gameobj != null) 
+				if (this.gameobj != null)
 					this.gameobj.RemoveComponent(this);
 
 				this.initState = InitState.Disposed;
