@@ -505,6 +505,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			this.body.ApplyAngularImpulse(PhysicsUnit.AngularImpulseToPhysical * angularImpulse);
+			this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 		}
 		/// <summary>
 		/// Applies a Transform-local impulse to the objects mass center. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -518,6 +519,7 @@ namespace Duality.Components.Physics
 			impulse = this.gameobj.Transform.GetWorldVector(impulse);
 
 			this.body.ApplyLinearImpulse(PhysicsUnit.ImpulseToPhysical * impulse);
+			this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 		}
 		/// <summary>
 		/// Applies a Transform-local impulse to the specified point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -536,6 +538,8 @@ namespace Duality.Components.Physics
 			this.body.ApplyLinearImpulse(
 				PhysicsUnit.ImpulseToPhysical * impulse, 
 				PhysicsUnit.LengthToPhysical * applyAt);
+			this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
+			this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 		}
 		/// <summary>
 		/// Applies a world impulse to the objects mass center. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -547,6 +551,7 @@ namespace Duality.Components.Physics
 			if (this.body == null) return;
 
 			this.body.ApplyLinearImpulse(PhysicsUnit.ImpulseToPhysical * impulse);
+			this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 		}
 		/// <summary>
 		/// Applies a world impulse to the specified world point. You don't usually need to apply <see cref="Time.TimeMult"/> here because it is inteded to be a one-time force impact.
@@ -562,6 +567,8 @@ namespace Duality.Components.Physics
 			this.body.ApplyLinearImpulse(
 				PhysicsUnit.ImpulseToPhysical * impulse, 
 				PhysicsUnit.LengthToPhysical * applyAt);
+			this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
+			this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 		}
 		
 		/// <summary>
@@ -1022,7 +1029,7 @@ namespace Duality.Components.Physics
 			if (this.body != null)
 			{
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
-				this.angularVel = this.body.AngularVelocity * Time.SPFMult;
+				this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 				this.revolutions = this.body.Revolutions;
 				Transform t = this.gameobj.Transform;
 				if (this.bodyType == BodyType.Dynamic)
