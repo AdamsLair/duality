@@ -26,6 +26,9 @@ namespace DualStickSpaceShooter
 		private	float						targetAngleRatio;
 		private	float						thrusterPower;
 		private	float						turnPower;
+		private	float						hitpoints;
+		private	float						healRate;
+		private	float						maxHitpoints;
 		private	float						maxSpeed;
 		private	float						maxTurnSpeed;
 		private	ContentRef<BulletBlueprint>	bulletType;
@@ -61,6 +64,24 @@ namespace DualStickSpaceShooter
 			get { return this.turnPower; }
 			set { this.turnPower = value; }
 		}
+		[EditorHintDecimalPlaces(0)]
+		public float HealRate
+		{
+			get { return this.healRate; }
+			set { this.healRate = value; }
+		}
+		[EditorHintDecimalPlaces(0)]
+		public float Hitpoints
+		{
+			get { return this.hitpoints; }
+			set { this.hitpoints = value; }
+		}
+		[EditorHintDecimalPlaces(0)]
+		public float MaxHitpoints
+		{
+			get { return this.maxHitpoints; }
+			set { this.maxHitpoints = value; }
+		}
 		public float MaxSpeed
 		{
 			get { return this.maxSpeed; }
@@ -91,10 +112,48 @@ namespace DualStickSpaceShooter
 			}
 		}
 
+		public void DoDamage(float damage)
+		{
+			this.hitpoints -= damage;
+			if (this.hitpoints < 0.0f) this.Die();
+		}
+		public void Die()
+		{
+			// Safely dispose the ships GameObject and set hitpoints to zero
+			this.hitpoints = 0.0f;
+			this.GameObj.DisposeLater();
+		}
+
+		public void UpdatePlayerColor()
+		{
+			SpriteRenderer sprite = this.GameObj.GetComponent<SpriteRenderer>();
+			if (sprite != null)
+			{
+				if (this.owner != null)
+					sprite.ColorTint = this.owner.Color;
+				else
+					sprite.ColorTint = ColorRgba.White;
+			}
+		}
+		public void FireWeapon()
+		{
+			if (this.weaponTimer > 0.0f) return;
+			this.weaponTimer += this.weaponDelay;
+
+			Transform transform = this.GameObj.Transform;
+			RigidBody body = this.GameObj.RigidBody;
+
+			this.FireBullet(body, transform, new Vector2(0.0f, -15.0f), 0.0f);
+		}
+
 		public virtual void OnUpdate()
 		{
 			Transform transform		= this.GameObj.Transform;
 			RigidBody body			= this.GameObj.RigidBody;
+
+			// Heal when damaged
+			this.hitpoints = MathF.Clamp(this.hitpoints + this.healRate * Time.SPFMult * Time.TimeMult, 0.0f, this.maxHitpoints);
+			VisualLog.Default.DrawText(transform.Pos.X + 15.0f, transform.Pos.Y, transform.Pos.Z, string.Format("{0}", (int)this.hitpoints)).Align(Alignment.Left);
 
 			// Apply force according to the desired thrust
 			Vector2 actualVelocity = body.LinearVelocity;
@@ -132,27 +191,6 @@ namespace DualStickSpaceShooter
 			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
 		}
 
-		public void UpdatePlayerColor()
-		{
-			SpriteRenderer sprite = this.GameObj.GetComponent<SpriteRenderer>();
-			if (sprite != null)
-			{
-				if (this.owner != null)
-					sprite.ColorTint = this.owner.Color;
-				else
-					sprite.ColorTint = ColorRgba.White;
-			}
-		}
-		public void FireWeapon()
-		{
-			if (this.weaponTimer > 0.0f) return;
-			this.weaponTimer += this.weaponDelay;
-
-			Transform transform = this.GameObj.Transform;
-			RigidBody body = this.GameObj.RigidBody;
-
-			this.FireBullet(body, transform, new Vector2(0.0f, -15.0f), 0.0f);
-		}
 		private void FireBullet(RigidBody body, Transform transform, Vector2 localPos, float localAngle)
 		{
 			if (!this.bulletType.IsAvailable) return;

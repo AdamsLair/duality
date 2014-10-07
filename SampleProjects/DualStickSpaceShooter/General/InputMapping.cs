@@ -20,6 +20,7 @@ namespace DualStickSpaceShooter
 		private	float		controlLookSpeed	= 0.0f;
 		private	float		controlLookAngle	= 0.0f;
 		private	bool		controlFireWeapon	= false;
+		private	bool		controlQuit			= false;
 
 		public InputMethod Method
 		{
@@ -41,6 +42,10 @@ namespace DualStickSpaceShooter
 		public bool ControlFireWeapon
 		{
 			get { return this.controlFireWeapon; }
+		}
+		public bool ControlQuit
+		{
+			get { return this.controlQuit; }
 		}
 
 		public void Update(Transform referenceObj)
@@ -113,7 +118,7 @@ namespace DualStickSpaceShooter
 		private void UpdateFromMouseAndKeyboard(Transform referenceObj, MouseInput mouse, KeyboardInput keyboard)
 		{
 			Camera mainCamera = Scene.Current.FindComponent<Camera>();
-			Vector3 objPos = referenceObj.Pos;
+			Vector3 objPos = (referenceObj != null) ? referenceObj.Pos : Vector3.Zero;
 			Vector2 objPosOnScreen = mainCamera.GetScreenCoord(objPos).Xy;
 			this.controlLookAngle = (mouse.Pos - objPosOnScreen).Angle;
 			this.controlLookSpeed = MathF.Clamp((mouse.Pos - objPosOnScreen).Length / 100.0f, 0.0f, 1.0f);
@@ -129,9 +134,12 @@ namespace DualStickSpaceShooter
 				this.controlMovement.Normalize();
 
 			this.controlFireWeapon = mouse[MouseButton.Left];
+			this.controlQuit = keyboard.KeyHit(Key.Escape);
 		}
 		private void UpdateFromGamepad(Transform referenceObj, GamepadInput gamepad)
 		{
+			float referenceAngle = (referenceObj != null) ? referenceObj.Angle : 0.0f;
+
 			if (gamepad.LeftThumbstick.Length > 0.25f)
 			{
 				float mappedLength = (gamepad.LeftThumbstick.Length - 0.25f) / 0.75f;
@@ -153,11 +161,12 @@ namespace DualStickSpaceShooter
 				this.controlLookSpeed = (gamepad.LeftThumbstick.Length - 0.25f) / 0.75f;
 			}
 
-			bool targetAimed = MathF.CircularDist(referenceObj.Angle, this.controlLookAngle) < MathF.RadAngle1 * 10;
+			bool targetAimed = MathF.CircularDist(referenceAngle, this.controlLookAngle) < MathF.RadAngle1 * 10;
 			this.controlFireWeapon = 
 				(targetAimed && gamepad.RightThumbstick.Length > 0.9f) ||
 				gamepad[GamepadAxis.RightTrigger] > 0.5f ||
 				gamepad[GamepadButton.RightShoulder];
+			this.controlQuit = gamepad.ButtonHit(GamepadButton.Back);
 		}
 	}
 }

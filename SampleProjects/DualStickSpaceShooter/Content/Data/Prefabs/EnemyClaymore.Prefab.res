@@ -664,7 +664,7 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">86</_version>
+            <_version dataType="Int">101</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
@@ -673,7 +673,10 @@
             <contentPath />
           </bulletType>
           <gameobj dataType="ObjectRef">3054164894</gameobj>
+          <healRate dataType="Float">25</healRate>
+          <hitpoints dataType="Float">200</hitpoints>
           <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+          <maxHitpoints dataType="Float">200</maxHitpoints>
           <maxSpeed dataType="Float">3</maxSpeed>
           <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
           <owner />

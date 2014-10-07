@@ -6,6 +6,7 @@ using System.Text;
 using OpenTK;
 
 using Duality;
+using Duality.Editor;
 using Duality.Components;
 using Duality.Components.Physics;
 using Duality.Components.Renderers;
@@ -59,6 +60,10 @@ namespace DualStickSpaceShooter
 		private	bool					spikesActive	= false;
 		private	SpikeState[]			spikeState		= new SpikeState[4];
 		private	ContentRef<Prefab>[]	exploEffects	= null;
+		private	float					exploDamage		= 200.0f;
+		private	float					exploRadius		= 100.0f;
+		private	float					exploForce		= 50.0f;
+		private	float					exploMaxVel		= 50.0f;
 
 		[NonSerialized] private AnimSpriteRenderer	eye		= null;
 		[NonSerialized] private SpriteRenderer[]	spikes	= null;
@@ -72,6 +77,30 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.exploEffects; }
 			set { this.exploEffects = value; }
+		}
+		[EditorHintDecimalPlaces(0)]
+		public float ExplosionDamage
+		{
+			get { return this.exploDamage; }
+			set { this.exploDamage = value; }
+		}
+		[EditorHintDecimalPlaces(0)]
+		public float ExplosionRadius
+		{
+			get { return this.exploRadius; }
+			set { this.exploRadius = value; }
+		}
+		[EditorHintDecimalPlaces(1)]
+		public float ExplosionForce
+		{
+			get { return this.exploForce; }
+			set { this.exploForce = value; }
+		}
+		[EditorHintDecimalPlaces(1)]
+		public float ExplosionMaxVelocity
+		{
+			get { return this.exploMaxVel; }
+			set { this.exploMaxVel = value; }
 		}
 
 		private void Sleep()
@@ -143,14 +172,29 @@ namespace DualStickSpaceShooter
 
 		private void FireExplosives()
 		{
-			PhysicsHelper.Shockwave(
-				this.GameObj.Transform.Pos.Xy, 
-				100.0f, 
-				50.0f,
-				5.0f,
-				b => b.GameObj != this.GameObj);
+			// Set up working data
+			Ship ship = this.GameObj.GetComponent<Ship>();
+			Vector2 pos = this.GameObj.Transform.Pos.Xy;
 
-			this.GameObj.DisposeLater();
+			// Damage other objects
+			GameplayHelper.SplashDamage(
+				pos, 
+				this.exploRadius,
+				this.exploDamage,
+				obj => obj != ship);
+
+			// Push other objects away
+			GameplayHelper.Shockwave(
+				pos, 
+				this.exploRadius, 
+				this.exploForce,
+				this.exploMaxVel,
+				obj => obj.GameObj != this.GameObj);
+
+			// Die instantly
+			ship.Die();
+
+			// Spawn explosion effects
 			if (this.exploEffects != null)
 			{
 				Transform transform = this.GameObj.Transform;
@@ -246,7 +290,7 @@ namespace DualStickSpaceShooter
 					// Wake up, if there is a player near
 					float nearestDist;
 					GameObject nearestObj = this.GetNearestPlayerObj(out nearestDist);
-					if (nearestDist <= WakeupDist && this.HasLineOfSight(nearestObj, true))
+					if (nearestObj != null && nearestDist <= WakeupDist && this.HasLineOfSight(nearestObj, true))
 					{
 						this.Awake();
 					}
@@ -274,7 +318,7 @@ namespace DualStickSpaceShooter
 					// Follow, if there is a player near
 					float nearestDist;
 					GameObject nearestObj = this.GetNearestPlayerObj(out nearestDist);
-					if (this.HasLineOfSight(nearestObj, false))
+					if (nearestObj != null && this.HasLineOfSight(nearestObj, false))
 					{
 						if (behavior.HasFlag(BehaviorFlags.Chase))
 						{

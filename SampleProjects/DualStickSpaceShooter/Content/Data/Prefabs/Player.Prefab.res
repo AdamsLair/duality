@@ -137,7 +137,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">21</_version>
+                  <_version dataType="Int">27</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -146,7 +146,10 @@
                   <contentPath dataType="String">Data\Blueprints\RegularBullet.BulletBlueprint.res</contentPath>
                 </bulletType>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
+                <healRate dataType="Float">10</healRate>
+                <hitpoints dataType="Float">100</hitpoints>
                 <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+                <maxHitpoints dataType="Float">100</maxHitpoints>
                 <maxSpeed dataType="Float">6.5</maxSpeed>
                 <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
                 <owner dataType="Struct" type="DualStickSpaceShooter.Player" id="2034914690">

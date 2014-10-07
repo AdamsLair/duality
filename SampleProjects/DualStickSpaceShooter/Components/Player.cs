@@ -55,12 +55,25 @@ namespace DualStickSpaceShooter
 
 		void ICmpUpdatable.OnUpdate()
 		{
+			// If the object we're controlling has been destroyed, forget about it
+			if (this.controlObj != null && this.controlObj.Disposed)
+				this.controlObj = null;
+			
+			// See what player inputs there are to handle
+			if (this.input == null) this.input = new InputMapping();
 			if (this.controlObj != null)
 			{
-				if (this.input == null) this.input = new InputMapping();
-
 				this.input.Update(this.controlObj.GameObj.Transform);
-				
+			}
+			else
+			{
+				this.input.Update(null);
+			}
+
+			// Control the object this player is supposed to
+			if (this.controlObj != null)
+			{
+				// Apply control inputs to the controlled object
 				this.controlObj.TargetAngle = this.input.ControlLookAngle;
 				this.controlObj.TargetAngleRatio = this.input.ControlLookSpeed;
 				this.controlObj.TargetThrust = this.input.ControlMovement;
@@ -68,7 +81,8 @@ namespace DualStickSpaceShooter
 					this.controlObj.FireWeapon();
 			}
 
-			if (DualityApp.Keyboard[Key.Escape])
+			// Quit the game when requested
+			if (this.input.ControlQuit)
 				DualityApp.Terminate();
 		}
 	}
