@@ -21,22 +21,22 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(RigidBody))]
 	public class Ship : Component, ICmpUpdatable
 	{
-		private	Vector2						targetThrust;
-		private	float						targetAngle;
-		private	float						targetAngleRatio;
-		private	float						thrusterPower;
-		private	float						turnPower;
-		private	bool						isDead;
-		private	float						hitpoints;
-		private	float						healRate;
-		private	float						maxHitpoints;
-		private	float						maxSpeed;
-		private	float						maxTurnSpeed;
-		private	ContentRef<Prefab>[]		deathEffects;
-		private	ContentRef<BulletBlueprint>	bulletType;
-		private	float						weaponTimer;
-		private	float						weaponDelay;
-		private	Player						owner;
+		private	Vector2						targetThrust		= Vector2.Zero;
+		private	float						targetAngle			= 0.0f;
+		private	float						targetAngleRatio	= 0.0f;
+		private	float						thrusterPower		= 0.0f;
+		private	float						turnPower			= 0.0f;
+		private	bool						isDead				= false;
+		private	float						hitpoints			= 100.0f;
+		private	float						healRate			= 0.0f;
+		private	float						maxHitpoints		= 100.0f;
+		private	float						maxSpeed			= 0.0f;
+		private	float						maxTurnSpeed		= 0.0f;
+		private	ContentRef<Prefab>[]		deathEffects		= null;
+		private	ContentRef<BulletBlueprint>	bulletType			= null;
+		private	float						weaponTimer			= 0.0f;
+		private	float						weaponDelay			= 0.0f;
+		private	Player						owner				= null;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector2 TargetThrust
@@ -127,6 +127,12 @@ namespace DualStickSpaceShooter
 		{
 			this.hitpoints -= damage;
 			if (this.hitpoints < 0.0f) this.Die();
+
+			if (this.owner != null)
+			{
+				CameraController camControl = Scene.Current.FindComponent<CameraController>();
+				camControl.ShakeScreen(MathF.Pow(damage, 0.75f));
+			}
 		}
 		public void Die()
 		{
@@ -160,7 +166,25 @@ namespace DualStickSpaceShooter
 
 			// Safely dispose the ships GameObject and set hitpoints to zero
 			this.hitpoints = 0.0f;
-			this.GameObj.DisposeLater();
+			if (this.owner != null)
+				this.GameObj.Active = false;
+			else
+				this.GameObj.DisposeLater();
+		}
+		public void Revive()
+		{
+			// Ignore, if not dead
+			if (!this.isDead) return;
+			this.isDead = false;
+
+			// Make sure to reset the rigidbodies movement state
+			RigidBody body = this.GameObj.RigidBody;
+			body.LinearVelocity = Vector2.Zero;
+			body.AngularVelocity = 0.0f;
+
+			// Activate the ship again and give it back all of its hitpoints
+			this.hitpoints = this.maxHitpoints;
+			this.GameObj.Active = true;
 		}
 
 		public void UpdatePlayerColor()
@@ -192,7 +216,6 @@ namespace DualStickSpaceShooter
 
 			// Heal when damaged
 			this.hitpoints = MathF.Clamp(this.hitpoints + this.healRate * Time.SPFMult * Time.TimeMult, 0.0f, this.maxHitpoints);
-			VisualLog.Default.DrawText(transform.Pos.X + 15.0f, transform.Pos.Y, transform.Pos.Z, string.Format("{0}", (int)this.hitpoints)).Align(Alignment.Left);
 
 			// Apply force according to the desired thrust
 			Vector2 actualVelocity = body.LinearVelocity;

@@ -651,7 +651,7 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">126</_version>
+            <_version dataType="Int">136</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
@@ -659,6 +659,7 @@
           <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
             <contentPath />
           </bulletType>
+          <deathEffects />
           <gameobj dataType="ObjectRef">3054164894</gameobj>
           <healRate dataType="Float">25</healRate>
           <hitpoints dataType="Float">500</hitpoints>

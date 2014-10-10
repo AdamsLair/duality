@@ -16,13 +16,32 @@ namespace DualStickSpaceShooter
 	[Serializable]
 	public class Player : Component, ICmpUpdatable
 	{
+		public const float RespawnDelay = 10000.0f;
+
+		public static bool IsAnyPlayerAlive
+		{
+			get { return Scene.Current.FindComponents<Player>().Any(p => p.Active && p.ControlObject != null && p.ControlObject.Active); }
+		}
+		public static IEnumerable<Player> AlivePlayers
+		{
+			get { return Scene.Current.FindComponents<Player>().Where(p => p.Active && p.ControlObject != null && p.ControlObject.Active); }
+		}
+
+
+		private PlayerId		id			= PlayerId.Unknown;
 		private	Ship			controlObj	= null;
 		private	ColorRgba		color		= ColorRgba.White;
+		private	float			respawnTime	= 0.0f;
 
 		[NonSerialized]
 		private	InputMapping	input		= null;
 
 
+		public PlayerId Id
+		{
+			get { return this.id; }
+			set { this.id = value; }
+		}
 		public InputMethod InputMethod
 		{
 			get { return this.input != null ? this.input.Method : InputMethod.Unknown; }
@@ -31,6 +50,10 @@ namespace DualStickSpaceShooter
 				if (this.input == null) this.input = new InputMapping();
 				this.input.Method = value;
 			}
+		}
+		public bool IsPlaying
+		{
+			get { return this.InputMethod != InputMethod.Unknown; }
 		}
 		public Ship ControlObject
 		{
@@ -52,6 +75,10 @@ namespace DualStickSpaceShooter
 					this.controlObj.UpdatePlayerColor();
 			}
 		}
+		public float RespawnTime
+		{
+			get { return this.respawnTime; }
+		}
 
 		void ICmpUpdatable.OnUpdate()
 		{
@@ -61,6 +88,7 @@ namespace DualStickSpaceShooter
 			
 			// See what player inputs there are to handle
 			if (this.input == null) this.input = new InputMapping();
+			bool hasInputMethod = this.input.Method != InputMethod.Unknown;
 			if (this.controlObj != null)
 			{
 				this.input.Update(this.controlObj.GameObj.Transform);
@@ -70,15 +98,49 @@ namespace DualStickSpaceShooter
 				this.input.Update(null);
 			}
 
-			// Control the object this player is supposed to
+			// Spawn the player object for the first time when input is detected
+			if (this.controlObj != null && this.input.Method != InputMethod.Unknown && !hasInputMethod)
+			{
+				// Move near already alive player
+				Player alivePlayer = Player.AlivePlayers.FirstOrDefault();
+				if (alivePlayer != null)
+				{
+					Vector3 alivePlayerPos = alivePlayer.controlObj.GameObj.Transform.Pos;
+					this.controlObj.GameObj.Transform.Pos = alivePlayerPos;
+				}
+
+				// Spawn for the first time / enter the game
+				this.controlObj.GameObj.Active = true;
+			}
+
+			// Manage the object this player is supposed to control
 			if (this.controlObj != null)
 			{
-				// Apply control inputs to the controlled object
-				this.controlObj.TargetAngle = this.input.ControlLookAngle;
-				this.controlObj.TargetAngleRatio = this.input.ControlLookSpeed;
-				this.controlObj.TargetThrust = this.input.ControlMovement;
-				if (this.input.ControlFireWeapon)
-					this.controlObj.FireWeapon();
+				if (this.controlObj.Active)
+				{
+					// Apply control inputs to the controlled object
+					this.controlObj.TargetAngle = this.input.ControlLookAngle;
+					this.controlObj.TargetAngleRatio = this.input.ControlLookSpeed;
+					this.controlObj.TargetThrust = this.input.ControlMovement;
+					if (this.input.ControlFireWeapon)
+						this.controlObj.FireWeapon();
+				}
+				else if (hasInputMethod && Player.IsAnyPlayerAlive)
+				{
+					// Respawn when possible
+					this.respawnTime += Time.MsPFMult * Time.TimeMult;
+					if (this.respawnTime > RespawnDelay)
+					{
+						// Move near alive player
+						Player alivePlayer = Player.AlivePlayers.FirstOrDefault(); 
+						Vector3 alivePlayerPos = alivePlayer.controlObj.GameObj.Transform.Pos;
+						this.controlObj.GameObj.Transform.Pos = alivePlayerPos;
+
+						// Respawn
+						this.respawnTime = 0.0f;
+						this.controlObj.Revive();
+					}
+				}
 			}
 
 			// Quit the game when requested

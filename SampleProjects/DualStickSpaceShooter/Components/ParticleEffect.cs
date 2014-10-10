@@ -329,8 +329,8 @@ namespace DualStickSpaceShooter
 				{
 					particleData[i].Position		+= particleData[i].Velocity * timeMult;
 					particleData[i].Angle			+= particleData[i].AngleVelocity * timeMult;
-					particleData[i].Velocity		-= particleData[i].Velocity * this.linearDrag * 0.1f * timeMult;
-					particleData[i].AngleVelocity	-= particleData[i].AngleVelocity * this.angularDrag * 0.1f * timeMult;
+					particleData[i].Velocity		*= MathF.Pow(1.0f - (this.linearDrag * 0.1f), timeMult);
+					particleData[i].AngleVelocity	*= MathF.Pow(1.0f - (this.angularDrag * 0.1f), timeMult);
 					particleData[i].AgeFactor		+= timePassed / particleData[i].TimeToLive;
 					if (particleData[i].AgeFactor > 1.0f)
 						this.RemoveParticle(i);
