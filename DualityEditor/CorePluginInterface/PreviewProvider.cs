@@ -36,6 +36,9 @@ namespace Duality.Editor
 
 		public static Bitmap GetPreviewImage(object obj, int desiredWidth, int desiredHeight, PreviewSizeMode mode = PreviewSizeMode.FixedNone)
 		{
+			if (desiredWidth <= 0) return null;
+			if (desiredHeight <= 0) return null;
+
 			PreviewImageQuery query = new PreviewImageQuery(obj, desiredWidth, desiredHeight, mode);
 			GetPreview(query);
 			return query.Result;
