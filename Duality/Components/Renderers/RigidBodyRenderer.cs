@@ -134,8 +134,6 @@ namespace Duality.Components.Renderers
 			{
 				if (!shape.IsValid)
 					canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
-				else if (shape.IsSensor)
-					canvas.State.ColorTint = this.colorTint.WithAlpha(0.25f);
 				else
 					canvas.State.ColorTint = this.colorTint;
 				this.DrawShapeArea(canvas, tranform, shape);
@@ -153,8 +151,6 @@ namespace Duality.Components.Renderers
 				{
 					if (!shape.IsValid)
 						canvas.State.ColorTint = this.colorTint * ColorRgba.Red;
-					else if (shape.IsSensor)
-						canvas.State.ColorTint = this.colorTint.WithAlpha(0.4f);
 					else
 						canvas.State.ColorTint = this.colorTint;
 					this.DrawShapeOutline(canvas, tranform, shape);
