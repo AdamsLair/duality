@@ -13,8 +13,8 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">1</_version>
+    <_version dataType="Int">3</_version>
   </layers>
-  <sourcePath dataType="String">Source\Media\Backdrop4.png</sourcePath>
+  <sourcePath dataType="String">Source\Media\Materials\Background\Backdrop4.png</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->

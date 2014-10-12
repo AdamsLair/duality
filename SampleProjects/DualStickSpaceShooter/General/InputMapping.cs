@@ -21,6 +21,7 @@ namespace DualStickSpaceShooter
 		private	float		controlLookAngle	= 0.0f;
 		private	bool		controlFireWeapon	= false;
 		private	bool		controlQuit			= false;
+		private	bool		controlStart		= false;
 
 		public InputMethod Method
 		{
@@ -46,6 +47,10 @@ namespace DualStickSpaceShooter
 		public bool ControlQuit
 		{
 			get { return this.controlQuit; }
+		}
+		public bool ControlStart
+		{
+			get { return this.controlStart; }
 		}
 
 		public void Update(Transform referenceObj)
@@ -119,7 +124,7 @@ namespace DualStickSpaceShooter
 		{
 			Camera mainCamera = Scene.Current.FindComponent<Camera>();
 			Vector3 objPos = (referenceObj != null) ? referenceObj.Pos : Vector3.Zero;
-			Vector2 objPosOnScreen = mainCamera.GetScreenCoord(objPos).Xy;
+			Vector2 objPosOnScreen = (mainCamera != null) ? mainCamera.GetScreenCoord(objPos).Xy : Vector2.Zero;
 			this.controlLookAngle = (mouse.Pos - objPosOnScreen).Angle;
 			this.controlLookSpeed = MathF.Clamp((mouse.Pos - objPosOnScreen).Length / 100.0f, 0.0f, 1.0f);
 
@@ -135,6 +140,7 @@ namespace DualStickSpaceShooter
 
 			this.controlFireWeapon = mouse[MouseButton.Left];
 			this.controlQuit = keyboard.KeyHit(Key.Escape);
+			this.controlStart = keyboard.KeyHit(Key.Enter) || mouse.ButtonHit(MouseButton.Left);
 		}
 		private void UpdateFromGamepad(Transform referenceObj, GamepadInput gamepad)
 		{
@@ -165,8 +171,13 @@ namespace DualStickSpaceShooter
 			this.controlFireWeapon = 
 				(targetAimed && gamepad.RightThumbstick.Length > 0.9f) ||
 				gamepad[GamepadAxis.RightTrigger] > 0.5f ||
-				gamepad[GamepadButton.RightShoulder];
+				gamepad[GamepadButton.RightShoulder] ||
+				gamepad[GamepadButton.A];
 			this.controlQuit = gamepad.ButtonHit(GamepadButton.Back);
+			this.controlStart = 
+				gamepad.ButtonHit(GamepadButton.Start) || 
+				gamepad.ButtonHit(GamepadButton.RightShoulder) || 
+				gamepad.ButtonHit(GamepadButton.A);
 		}
 	}
 }

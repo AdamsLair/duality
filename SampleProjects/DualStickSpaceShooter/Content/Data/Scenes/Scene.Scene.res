@@ -6145,6 +6145,75 @@
       <parent />
       <prefabLink />
     </item>
+    <item dataType="Struct" type="Duality.GameObject" id="1064452476">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4143745810">
+        <_items dataType="Array" type="Duality.Component[]" id="2382386256" length="4">
+          <item dataType="Struct" type="DualStickSpaceShooter.GameOverScreen" id="1153684968">
+            <active dataType="Bool">true</active>
+            <blendMaterial dataType="Struct" type="Duality.Resources.BatchInfo" id="972466776">
+              <dirtyFlag dataType="Enum" type="Duality.Resources.BatchInfo+DirtyFlag" name="None" value="0" />
+              <hashCode dataType="Int">0</hashCode>
+              <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
+                <A dataType="Byte">215</A>
+                <B dataType="Byte">0</B>
+                <G dataType="Byte">0</G>
+                <R dataType="Byte">0</R>
+              </mainColor>
+              <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
+                <contentPath dataType="String">Data\Materials\AlphaThreshold.DrawTechnique.res</contentPath>
+              </technique>
+              <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="3776988844" surrogate="true">
+                <header />
+                <body>
+                  <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
+                    <contentPath dataType="String">Data\Materials\Mosaic.Texture.res</contentPath>
+                  </mainTex>
+                </body>
+              </textures>
+              <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="283169206" surrogate="true">
+                <header />
+                <body>
+                  <threshold dataType="Array" type="System.Single[]" id="1154518758" length="1" />
+                </body>
+              </uniforms>
+            </blendMaterial>
+            <font dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
+              <contentPath dataType="String">Data\Materials\HudFont.Font.res</contentPath>
+            </font>
+            <gameobj dataType="ObjectRef">1064452476</gameobj>
+            <gameOver dataType="Bool">false</gameOver>
+            <gameStarted dataType="Bool">false</gameStarted>
+            <lastTimeAnyAlive dataType="Float">0</lastTimeAnyAlive>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+        <_version dataType="Int">1</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="115548618" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Type[]" id="1112601416">
+            <item dataType="Type" id="92602476" value="DualStickSpaceShooter.GameOverScreen" />
+          </keys>
+          <values dataType="Array" type="Duality.Component[]" id="1321770206">
+            <item dataType="ObjectRef">1153684968</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="1784394676">FQYRJmOyT0efXKs0n5J4Jg==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">GameOverScreen</name>
+      <parent />
+      <prefabLink />
+    </item>
     <item dataType="ObjectRef">687383225</item>
     <item dataType="ObjectRef">2383024647</item>
     <item dataType="ObjectRef">3003406700</item>

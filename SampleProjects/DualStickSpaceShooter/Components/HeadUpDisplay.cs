@@ -14,9 +14,9 @@ namespace DualStickSpaceShooter
 	public class HeadUpDisplay : Component, ICmpRenderer
 	{
 		private ContentRef<Font>	font	= null;
-		[NonSerialized] private Player			playerOne	= null;
-		[NonSerialized] private Player			playerTwo	= null;
-		[NonSerialized] private CanvasBuffer	buffer		= null;
+		[NonSerialized] private Player			playerOne			= null;
+		[NonSerialized] private Player			playerTwo			= null;
+		[NonSerialized] private CanvasBuffer	buffer				= null;
 
 		public ContentRef<Font> Font
 		{
@@ -42,6 +42,7 @@ namespace DualStickSpaceShooter
 
 			// Create a Canvas to auto-generate vertices from high-level drawing commands.
 			Canvas canvas = new Canvas(device, this.buffer);
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
 			canvas.State.TextFont = this.font;
 
 			// Retrieve players
@@ -49,6 +50,9 @@ namespace DualStickSpaceShooter
 				this.playerOne = Scene.Current.FindComponents<Player>().Where(p => p.Id == PlayerId.PlayerOne).FirstOrDefault();
 			if (this.playerTwo == null)
 				this.playerTwo = Scene.Current.FindComponents<Player>().Where(p => p.Id == PlayerId.PlayerTwo).FirstOrDefault();
+
+			// Is any player alive? Keep that value in mind, won't change here anyway.
+			bool isAnyPlayerAlive = Player.IsAnyPlayerAlive;
 
 			// Draw health and info of player one
 			if (this.IsPlayerActive(this.playerOne))
@@ -60,7 +64,7 @@ namespace DualStickSpaceShooter
 					canvas.DrawRect(10, device.TargetSize.Y - 10 - 200, 20, 200);
 					canvas.FillRect(12, device.TargetSize.Y - 10 - healthPercentage * 198.0f, 16, healthPercentage * 196.0f);
 				}
-				else if (Player.IsAnyPlayerAlive)
+				else if (isAnyPlayerAlive)
 				{
 					float respawnPercentage = this.playerOne.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("Respawn in {0:F1}", (Player.RespawnDelay - this.playerOne.RespawnTime) / 1000.0f);
@@ -81,7 +85,7 @@ namespace DualStickSpaceShooter
 					canvas.DrawRect(device.TargetSize.X - 10 - 20, device.TargetSize.Y - 10 - 200, 20, 200);
 					canvas.FillRect(device.TargetSize.X - 12 - 16, device.TargetSize.Y - 10 - healthPercentage * 198.0f, 16, healthPercentage * 196.0f);
 				}
-				else if (Player.IsAnyPlayerAlive)
+				else if (isAnyPlayerAlive)
 				{
 					float respawnPercentage = this.playerTwo.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("{0:F1} to Respawn", (Player.RespawnDelay - this.playerTwo.RespawnTime) / 1000.0f);

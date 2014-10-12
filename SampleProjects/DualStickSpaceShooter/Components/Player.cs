@@ -22,6 +22,10 @@ namespace DualStickSpaceShooter
 		{
 			get { return Scene.Current.FindComponents<Player>().Any(p => p.Active && p.ControlObject != null && p.ControlObject.Active); }
 		}
+		public static IEnumerable<Player> AllPlayers
+		{
+			get { return Scene.Current.FindComponents<Player>(); }
+		}
 		public static IEnumerable<Player> AlivePlayers
 		{
 			get { return Scene.Current.FindComponents<Player>().Where(p => p.Active && p.ControlObject != null && p.ControlObject.Active); }
@@ -101,16 +105,25 @@ namespace DualStickSpaceShooter
 			// Spawn the player object for the first time when input is detected
 			if (this.controlObj != null && this.input.Method != InputMethod.Unknown && !hasInputMethod)
 			{
-				// Move near already alive player
+				// Find an alive player or determine that no one has started playing yet
+				bool gameAlreadyOver = false;
 				Player alivePlayer = Player.AlivePlayers.FirstOrDefault();
 				if (alivePlayer != null)
 				{
+					// Move near already alive player
 					Vector3 alivePlayerPos = alivePlayer.controlObj.GameObj.Transform.Pos;
 					this.controlObj.GameObj.Transform.Pos = alivePlayerPos;
 				}
+				else if (Player.AllPlayers.Any(p => p != this && p.IsPlaying))
+				{
+					gameAlreadyOver = true;
+				}
 
 				// Spawn for the first time / enter the game
-				this.controlObj.GameObj.Active = true;
+				if (!gameAlreadyOver)
+				{
+					this.controlObj.GameObj.Active = true;
+				}
 			}
 
 			// Manage the object this player is supposed to control
@@ -146,6 +159,19 @@ namespace DualStickSpaceShooter
 			// Quit the game when requested
 			if (this.input.ControlQuit)
 				DualityApp.Terminate();
+
+			// If it's game over, allow to restart the game
+			GameOverScreen gameOverScreen = Scene.Current.FindComponent<GameOverScreen>();
+			if (gameOverScreen != null && gameOverScreen.IsGameOver)
+			{
+				if (this.input.ControlStart)
+				{
+					// Force the game to reload the current level by disposing it.
+					ContentRef<Scene> currentLevel = Scene.Current;
+					Scene.Current.Dispose();
+					Scene.SwitchTo(currentLevel);
+				}
+			}
 		}
 	}
 }

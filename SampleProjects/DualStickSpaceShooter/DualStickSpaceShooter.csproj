@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Components\EnemyClaymore.cs" />
     <Compile Include="Components\HeadUpDisplay.cs" />
+    <Compile Include="Components\GameOverScreen.cs" />
     <Compile Include="Components\PlayerId.cs" />
     <Compile Include="General\ICmpMessageListener.cs" />
     <Compile Include="Components\ParticleEffect.cs" />

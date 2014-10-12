@@ -164,6 +164,8 @@
                   </color>
                   <controlObj dataType="ObjectRef">402578415</controlObj>
                   <gameobj dataType="ObjectRef">1121329689</gameobj>
+                  <id dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="Unknown" value="0" />
+                  <respawnTime dataType="Float">0</respawnTime>
                 </owner>
                 <targetAngle dataType="Float">0</targetAngle>
                 <targetAngleRatio dataType="Float">0</targetAngleRatio>
