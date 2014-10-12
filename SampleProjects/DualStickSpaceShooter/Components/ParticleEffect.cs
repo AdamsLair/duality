@@ -30,7 +30,8 @@ namespace DualStickSpaceShooter
 				RandomVel		= new Range(0.0f, 3.0f),
 				RandomAngleVel	= new Range(-0.05f, 0.05f),
 				MinColor		= ColorHsva.White,
-				MaxColor		= ColorHsva.White
+				MaxColor		= ColorHsva.White,
+				SpriteIndex		= 0
 			};
 
 			public Range		Lifetime;
@@ -42,6 +43,8 @@ namespace DualStickSpaceShooter
 			public Range		RandomAngleVel;
 			public ColorHsva	MinColor;
 			public ColorHsva	MaxColor;
+			[EditorHintDecimalPlaces(0)]
+			public Range		SpriteIndex;
 		}
 		[Serializable]
 		public struct EmissionPattern
@@ -74,8 +77,10 @@ namespace DualStickSpaceShooter
 
 		private ContentRef<Material>	material			= null;
 		private Vector2					particleSize		= new Vector2(16, 16);
+		private Vector3					constantForce		= Vector3.Zero;
 		private float					linearDrag			= 0.3f;
 		private float					angularDrag			= 0.3f;
+		private float					fadeInAt			= 0.0f;
 		private float					fadeOutAt			= 0.75f;
 		private bool					worldSpace			= false;
 		private bool					disposeWhenEmpty	= true;
@@ -103,6 +108,11 @@ namespace DualStickSpaceShooter
 			get { return this.particleSize; }
 			set { this.particleSize = value; }
 		}
+		public Vector3 ConstantForce
+		{
+			get { return this.constantForce; }
+			set { this.constantForce = value; }
+		}
 		[EditorHintRange(0.0f, 1.0f)]
 		public float LinearDrag
 		{
@@ -114,6 +124,12 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.angularDrag; }
 			set { this.angularDrag = value; }
+		}
+		[EditorHintRange(0.0f, 1.0f)]
+		public float FadeInAt
+		{
+			get { return this.fadeInAt; }
+			set { this.fadeInAt = value; }
 		}
 		[EditorHintRange(0.0f, 1.0f)]
 		public float FadeOutAt
@@ -163,7 +179,6 @@ namespace DualStickSpaceShooter
 			Vector3 effectPos = this.GameObj.Transform.Pos;
 			float effectAngle = this.GameObj.Transform.Angle;
 			float effectScale = this.GameObj.Transform.Scale;
-			int spriteFrameCount = img.AnimFrames;
 
 			// Reserve memory for storing the new particles we're spawning
 			if (this.particles == null) this.particles = new RawList<Particle>(count);
@@ -175,7 +190,7 @@ namespace DualStickSpaceShooter
 			for (int i = oldCount; i < this.particles.Count; i++)
 			{
 				// Initialize the current particle.
-				this.InitParticle(ref particleData[i], spriteFrameCount);
+				this.InitParticle(ref particleData[i]);
 
 				// So far, the particle is in local coordinates. Transform to world coordinates when required.
 				if (this.worldSpace)
@@ -188,7 +203,7 @@ namespace DualStickSpaceShooter
 			}
 		}
 
-		private void InitParticle(ref Particle particle, int frameCount)
+		private void InitParticle(ref Particle particle)
 		{
 			Random random = MathF.Rnd;
 
@@ -198,7 +213,7 @@ namespace DualStickSpaceShooter
 			particle.Angle			= random.NextFloat(this.emitData.RandomAngle.MinValue, this.emitData.RandomAngle.MaxValue);
 			particle.AngleVelocity	= random.NextFloat(this.emitData.RandomAngleVel.MinValue, this.emitData.RandomAngleVel.MaxValue);
 			particle.TimeToLive		= random.NextFloat(this.emitData.Lifetime.MinValue, this.emitData.Lifetime.MaxValue);
-			particle.SpriteIndex	= random.Next(frameCount);
+			particle.SpriteIndex	= random.Next((int)this.emitData.SpriteIndex.MinValue, (int)this.emitData.SpriteIndex.MaxValue);
 			particle.Color			= random.NextColorHsva(this.emitData.MinColor, this.emitData.MaxColor).ToRgba();
 		}
 		private void RemoveParticle(int index)
@@ -249,11 +264,10 @@ namespace DualStickSpaceShooter
 			for (int i = 0; i < particleCount; i++)
 			{
 				ColorRgba color = particleData[i].Color;
-				if (this.fadeOutAt < 1.0f)
-				{
-					float alpha = MathF.Clamp((1.0f - particleData[i].AgeFactor) / this.fadeOutAt, 0.0f, 1.0f);
-					color.A = (byte)(alpha * 255.0f);
-				}
+				float alpha = (float)color.A / 255.0f;
+				if (this.fadeOutAt < 1.0f) alpha *= MathF.Clamp((1.0f - particleData[i].AgeFactor) / this.fadeOutAt, 0.0f, 1.0f);
+				if (this.fadeInAt > 0.0f) alpha *= MathF.Clamp(particleData[i].AgeFactor / this.fadeInAt, 0.0f, 1.0f);
+				color.A = (byte)(alpha * 255.0f);
 
 				Rect uvRect;
 				tex.LookupAtlas(particleData[i].SpriteIndex, out uvRect);
@@ -329,6 +343,7 @@ namespace DualStickSpaceShooter
 				{
 					particleData[i].Position		+= particleData[i].Velocity * timeMult;
 					particleData[i].Angle			+= particleData[i].AngleVelocity * timeMult;
+					particleData[i].Velocity		+= this.constantForce * 0.01f * timeMult;
 					particleData[i].Velocity		*= MathF.Pow(1.0f - (this.linearDrag * 0.1f), timeMult);
 					particleData[i].AngleVelocity	*= MathF.Pow(1.0f - (this.angularDrag * 0.1f), timeMult);
 					particleData[i].AgeFactor		+= timePassed / particleData[i].TimeToLive;

@@ -9,13 +9,13 @@
       <R dataType="Byte">255</R>
     </mainColor>
     <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-      <contentPath dataType="String">Data\Materials\SharpMask.DrawTechnique.res</contentPath>
+      <contentPath dataType="String">Default:DrawTechnique:SharpAlpha</contentPath>
     </technique>
     <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="1100841590" surrogate="true">
       <header />
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
-          <contentPath dataType="String">Data\Materials\Player.Texture.res</contentPath>
+          <contentPath dataType="String">Data\Materials\Bubbles.Texture.res</contentPath>
         </mainTex>
       </body>
     </textures>
@@ -23,7 +23,7 @@
       <header />
       <body>
         <smoothness dataType="Array" type="System.Single[]" id="411997508">
-          <item dataType="Float">25</item>
+          <item dataType="Float">50</item>
         </smoothness>
       </body>
     </uniforms>

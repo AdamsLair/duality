@@ -20,6 +20,7 @@ namespace DualStickSpaceShooter
 		private	float					lifetime		= 8000.0f;
 		private	float					impactMass		= 1.5f;
 		private	float					launchSpeed		= 10.0f;
+		private	float					damage			= 5.0f;
 		private	ContentRef<Material>	spriteMaterial	= null;
 
 		public float Lifetime
@@ -36,6 +37,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.launchSpeed; }
 			set { this.launchSpeed = value; }
+		}
+		public float Damage
+		{
+			get { return this.damage; }
+			set { this.damage = value; }
 		}
 		public ContentRef<Material> SpriteMaterial
 		{

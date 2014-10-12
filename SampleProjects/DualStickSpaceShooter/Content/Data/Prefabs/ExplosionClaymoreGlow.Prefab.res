@@ -90,6 +90,10 @@
               <MaxValue dataType="Float">5</MaxValue>
               <MinValue dataType="Float">2.5</MinValue>
             </RandomVel>
+            <SpriteIndex dataType="Struct" type="Duality.Range">
+              <MaxValue dataType="Float">15</MaxValue>
+              <MinValue dataType="Float">0</MinValue>
+            </SpriteIndex>
           </emitData>
           <emitPattern dataType="Struct" type="DualStickSpaceShooter.ParticleEffect+EmissionPattern">
             <Count dataType="Struct" type="Duality.Range">

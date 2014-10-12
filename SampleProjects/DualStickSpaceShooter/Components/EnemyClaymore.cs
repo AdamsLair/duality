@@ -409,6 +409,7 @@ namespace DualStickSpaceShooter
 					Vector2 spikeEndWorld = transform.GetWorldPoint(spikeDir * 11);
 					List<RayCastData> raycast = RigidBody.RayCast(spikeBeginWorld, spikeEndWorld, data => 
 					{
+						if (data.Shape.IsSensor) return -1;
 						if (data.Body == body) return -1;
 
 						Ship otherShip = data.GameObj.GetComponent<Ship>();
@@ -491,6 +492,7 @@ namespace DualStickSpaceShooter
 		{
 			RigidBodyCollisionEventArgs bodyArgs = args as RigidBodyCollisionEventArgs;
 			if (bodyArgs == null) return;
+			if (bodyArgs.OtherShape.IsSensor) return;
 
 			Bullet otherBullet = bodyArgs.CollideWith.GetComponent<Bullet>();
 			int spikeIndex = this.GetSpikeIndex(bodyArgs.MyShape);
@@ -520,6 +522,7 @@ namespace DualStickSpaceShooter
 		{
 			RigidBodyCollisionEventArgs bodyArgs = args as RigidBodyCollisionEventArgs;
 			if (bodyArgs == null) return;
+			if (bodyArgs.OtherShape.IsSensor) return;
 			
 			Bullet otherBullet = bodyArgs.CollideWith.GetComponent<Bullet>();
 			int spikeIndex = this.GetSpikeIndex(bodyArgs.MyShape);

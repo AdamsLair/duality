@@ -71,6 +71,7 @@ namespace DualStickSpaceShooter
 			BulletBlueprint	blueprint	= this.blueprint.Res;
 
 			otherBody.ApplyWorldImpulse(body.LinearVelocity * MathF.Min(otherBody.Mass, blueprint.ImpactMass), transform.Pos.Xy);
+			if (otherShip != null) otherShip.DoDamage(blueprint.Damage);
 
 			this.GameObj.DisposeLater();
 		}

@@ -114,8 +114,8 @@
       </item>
     </_items>
     <_size dataType="Int">1</_size>
-    <_version dataType="Int">1</_version>
+    <_version dataType="Int">2</_version>
   </layers>
-  <sourcePath dataType="String">Source\Media\Shards.png</sourcePath>
+  <sourcePath dataType="String">Source\Media\Materials\Shards.png</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->
