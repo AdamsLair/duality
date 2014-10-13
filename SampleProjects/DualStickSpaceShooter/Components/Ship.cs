@@ -21,22 +21,24 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(RigidBody))]
 	public class Ship : Component, ICmpUpdatable
 	{
-		private	Vector2						targetThrust		= Vector2.Zero;
-		private	float						targetAngle			= 0.0f;
-		private	float						targetAngleRatio	= 0.0f;
-		private	float						thrusterPower		= 0.0f;
-		private	float						turnPower			= 0.0f;
-		private	bool						isDead				= false;
-		private	float						hitpoints			= 100.0f;
-		private	float						healRate			= 0.0f;
-		private	float						maxHitpoints		= 100.0f;
-		private	float						maxSpeed			= 0.0f;
-		private	float						maxTurnSpeed		= 0.0f;
-		private	ContentRef<Prefab>[]		deathEffects		= null;
-		private	ContentRef<BulletBlueprint>	bulletType			= null;
-		private	float						weaponTimer			= 0.0f;
-		private	float						weaponDelay			= 0.0f;
-		private	Player						owner				= null;
+		private	Vector2						targetThrust			= Vector2.Zero;
+		private	float						targetAngle				= 0.0f;
+		private	float						targetAngleRatio		= 0.0f;
+		private	float						thrusterPower			= 0.0f;
+		private	float						turnPower				= 0.0f;
+		private	bool						isDead					= false;
+		private	float						hitpoints				= 100.0f;
+		private	float						healRate				= 0.0f;
+		private	float						maxHitpoints			= 100.0f;
+		private	float						maxSpeed				= 0.0f;
+		private	float						maxTurnSpeed			= 0.0f;
+		private	ContentRef<Prefab>			damageEffect			= null;
+		private	ContentRef<Prefab>[]		deathEffects			= null;
+		private	ContentRef<BulletBlueprint>	bulletType				= null;
+		private	float						weaponTimer				= 0.0f;
+		private	float						weaponDelay				= 0.0f;
+		private	Player						owner					= null;
+		private	ParticleEffect				damageEffectInstance	= null;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector2 TargetThrust
@@ -97,6 +99,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.maxTurnSpeed; }
 			set { this.maxTurnSpeed = value; }
+		}
+		public ContentRef<Prefab> DamageEffect
+		{
+			get { return this.damageEffect; }
+			set { this.damageEffect = value; }
 		}
 		public ContentRef<Prefab>[] DeathEffects
 		{
@@ -251,6 +258,46 @@ namespace DualStickSpaceShooter
 
 			// Weapon cooldown
 			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
+
+			// Display the damage effect when damaged
+			float hpFactor = this.hitpoints / this.maxHitpoints;
+			if (hpFactor < 0.85f && this.damageEffect != null)
+			{
+				// Create a new damage effect instance, if not present yet
+				if (this.damageEffectInstance == null)
+				{
+					GameObject damageObj = this.damageEffect.Res.Instantiate(transform.Pos);
+					damageObj.Parent = this.GameObj;
+
+					this.damageEffectInstance = damageObj.GetComponent<ParticleEffect>();
+					if (this.damageEffectInstance == null) throw new NullReferenceException();
+				}
+
+				// Configure the damage effect
+				ParticleEffect.EmissionPattern pattern = this.damageEffectInstance.EmitPattern;
+				ParticleEffect.EmissionData data = this.damageEffectInstance.EmitData;
+
+				pattern.Delay = new Range(50.0f + hpFactor * 150.0f, 100.0f + hpFactor * 600.0f);
+				if (this.owner != null)
+				{
+					ColorHsva targetColor = this.owner.Color.ToHsva();
+					data.MinColor = data.MinColor.WithSaturation(targetColor.S).WithHue(targetColor.H);
+					data.MaxColor = data.MaxColor.WithSaturation(targetColor.S).WithHue(targetColor.H);
+				}
+
+				this.damageEffectInstance.EmitData = data;
+				this.damageEffectInstance.EmitPattern = pattern;
+			}
+			// Get rid of existing damage effects, if no longer needed
+			else if (this.damageEffectInstance != null)
+			{
+				// Stop emitting and dispose when empty
+				ParticleEffect.EmissionPattern pattern = this.damageEffectInstance.EmitPattern;
+				pattern.Delay = float.MaxValue;
+				this.damageEffectInstance.EmitPattern = pattern;
+				this.damageEffectInstance.DisposeWhenEmpty = true;
+				this.damageEffectInstance = null;
+			}
 		}
 
 		private void FireBullet(RigidBody body, Transform transform, Vector2 localPos, float localAngle)

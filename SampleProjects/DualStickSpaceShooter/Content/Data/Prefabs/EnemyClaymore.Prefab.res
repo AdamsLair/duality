@@ -651,7 +651,7 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">136</_version>
+            <_version dataType="Int">141</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
@@ -659,6 +659,10 @@
           <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
             <contentPath />
           </bulletType>
+          <damageEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+            <contentPath dataType="String">Data\Prefabs\DamageSmoke.Prefab.res</contentPath>
+          </damageEffect>
+          <damageEffectInstance />
           <deathEffects />
           <gameobj dataType="ObjectRef">3054164894</gameobj>
           <healRate dataType="Float">25</healRate>

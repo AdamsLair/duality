@@ -134,7 +134,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">29</_version>
+                  <_version dataType="Int">31</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -142,6 +142,10 @@
                 <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
                   <contentPath dataType="String">Data\Blueprints\RegularBullet.BulletBlueprint.res</contentPath>
                 </bulletType>
+                <damageEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+                  <contentPath dataType="String">Data\Prefabs\DamageSmoke.Prefab.res</contentPath>
+                </damageEffect>
+                <damageEffectInstance />
                 <deathEffects dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Prefab]][]" id="2169343919">
                   <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
                     <contentPath dataType="String">Data\Prefabs\ShipDebris.Prefab.res</contentPath>

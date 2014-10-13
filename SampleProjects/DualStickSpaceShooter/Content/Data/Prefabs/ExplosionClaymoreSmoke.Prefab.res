@@ -42,6 +42,11 @@
           <angularDrag dataType="Float">0.1</angularDrag>
           <burstCount dataType="Int">0</burstCount>
           <burstTimer dataType="Float">0</burstTimer>
+          <constantForce dataType="Struct" type="OpenTK.Vector3">
+            <X dataType="Float">0</X>
+            <Y dataType="Float">0</Y>
+            <Z dataType="Float">0</Z>
+          </constantForce>
           <disposeWhenEmpty dataType="Bool">true</disposeWhenEmpty>
           <emitData dataType="Struct" type="DualStickSpaceShooter.ParticleEffect+EmissionData">
             <BasePos dataType="Struct" type="OpenTK.Vector3">
@@ -102,11 +107,12 @@
             </Delay>
             <MaxBurstCount dataType="Int">1</MaxBurstCount>
           </emitPattern>
+          <fadeInAt dataType="Float">0</fadeInAt>
           <fadeOutAt dataType="Float">0.75</fadeOutAt>
           <gameobj dataType="ObjectRef">2747808710</gameobj>
           <linearDrag dataType="Float">0.3</linearDrag>
           <material dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-            <contentPath dataType="String">Data\Materials\SolidShards.Material.res</contentPath>
+            <contentPath dataType="String">Data\Materials\AlphaShards.Material.res</contentPath>
           </material>
           <particleSize dataType="Struct" type="OpenTK.Vector2">
             <X dataType="Float">16</X>
