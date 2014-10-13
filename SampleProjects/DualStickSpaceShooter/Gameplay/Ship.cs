@@ -21,25 +21,21 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(RigidBody))]
 	public class Ship : Component, ICmpUpdatable
 	{
+		private	ContentRef<ShipBlueprint>	blueprint				= null;
 		private	Vector2						targetThrust			= Vector2.Zero;
 		private	float						targetAngle				= 0.0f;
 		private	float						targetAngleRatio		= 0.0f;
-		private	float						thrusterPower			= 0.0f;
-		private	float						turnPower				= 0.0f;
 		private	bool						isDead					= false;
-		private	float						hitpoints				= 100.0f;
-		private	float						healRate				= 0.0f;
-		private	float						maxHitpoints			= 100.0f;
-		private	float						maxSpeed				= 0.0f;
-		private	float						maxTurnSpeed			= 0.0f;
-		private	ContentRef<Prefab>			damageEffect			= null;
-		private	ContentRef<Prefab>[]		deathEffects			= null;
-		private	ContentRef<BulletBlueprint>	bulletType				= null;
+		private	float						hitpoints				= 1.0f;
 		private	float						weaponTimer				= 0.0f;
-		private	float						weaponDelay				= 0.0f;
 		private	Player						owner					= null;
-		private	ParticleEffect				damageEffectInstance	= null;
+		private	ParticleEffect				damageEffect			= null;
 
+		public ContentRef<ShipBlueprint> Blueprint
+		{
+			get { return this.blueprint; }
+			set { this.blueprint = value; }
+		}
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Vector2 TargetThrust
 		{
@@ -58,67 +54,14 @@ namespace DualStickSpaceShooter
 			get { return this.targetAngleRatio; }
 			set { this.targetAngleRatio = value; }
 		}
-		public float ThrusterPower
-		{
-			get { return this.thrusterPower; }
-			set { this.thrusterPower = value; }
-		}
-		public float TurnPower
-		{
-			get { return this.turnPower; }
-			set { this.turnPower = value; }
-		}
 		public bool IsDead
 		{
 			get { return this.isDead; }
 		}
-		[EditorHintDecimalPlaces(0)]
 		public float Hitpoints
 		{
 			get { return this.hitpoints; }
 			set { this.hitpoints = value; }
-		}
-		[EditorHintDecimalPlaces(0)]
-		public float HealRate
-		{
-			get { return this.healRate; }
-			set { this.healRate = value; }
-		}
-		[EditorHintDecimalPlaces(0)]
-		public float MaxHitpoints
-		{
-			get { return this.maxHitpoints; }
-			set { this.maxHitpoints = value; }
-		}
-		public float MaxSpeed
-		{
-			get { return this.maxSpeed; }
-			set { this.maxSpeed = value; }
-		}
-		public float MaxTurnSpeed
-		{
-			get { return this.maxTurnSpeed; }
-			set { this.maxTurnSpeed = value; }
-		}
-		public ContentRef<Prefab> DamageEffect
-		{
-			get { return this.damageEffect; }
-			set { this.damageEffect = value; }
-		}
-		public ContentRef<Prefab>[] DeathEffects
-		{
-			get { return this.deathEffects; }
-			set { this.deathEffects = value; }
-		}
-		public ContentRef<BulletBlueprint> BulletType
-		{
-			get { return this.bulletType; }
-			set { this.bulletType = value; }
-		}
-		public float WeaponDelay
-		{
-			get { return this.weaponDelay; }
-			set { this.weaponDelay = value; }
 		}
 		public Player Owner
 		{
@@ -132,7 +75,7 @@ namespace DualStickSpaceShooter
 
 		public void DoDamage(float damage)
 		{
-			this.hitpoints -= damage;
+			this.hitpoints -= damage / this.blueprint.Res.MaxHitpoints;
 			if (this.hitpoints < 0.0f) this.Die();
 
 			if (this.owner != null)
@@ -151,13 +94,15 @@ namespace DualStickSpaceShooter
 			this.SendMessage(new ShipDeathMessage());
 			
 			// Spawn death effects
-			if (this.deathEffects != null)
+			ShipBlueprint blueprint = this.blueprint.Res;
+			if (blueprint.DeathEffects != null)
 			{
 				Transform transform = this.GameObj.Transform;
 				RigidBody body = this.GameObj.RigidBody;
-				for (int i = 0; i < this.deathEffects.Length; i++)
+				for (int i = 0; i < blueprint.DeathEffects.Length; i++)
 				{
-					GameObject effectObj = this.deathEffects[i].Res.Instantiate(transform.Pos);
+					Prefab deathEffectPrefab = blueprint.DeathEffects[i].Res;
+					GameObject effectObj = deathEffectPrefab.Instantiate(transform.Pos);
 					ParticleEffect effect = effectObj.GetComponent<ParticleEffect>();
 					if (effect != null && this.owner != null)
 					{
@@ -192,7 +137,7 @@ namespace DualStickSpaceShooter
 			body.AngularVelocity = 0.0f;
 
 			// Activate the ship again and give it back all of its hitpoints
-			this.hitpoints = this.maxHitpoints;
+			this.hitpoints = 1.0f;
 			this.GameObj.Active = true;
 		}
 
@@ -210,7 +155,7 @@ namespace DualStickSpaceShooter
 		public void FireWeapon()
 		{
 			if (this.weaponTimer > 0.0f) return;
-			this.weaponTimer += this.weaponDelay;
+			this.weaponTimer += this.blueprint.Res.WeaponDelay;
 
 			Transform transform = this.GameObj.Transform;
 			RigidBody body = this.GameObj.RigidBody;
@@ -220,21 +165,22 @@ namespace DualStickSpaceShooter
 
 		public virtual void OnUpdate()
 		{
-			Transform transform		= this.GameObj.Transform;
-			RigidBody body			= this.GameObj.RigidBody;
+			Transform		transform	= this.GameObj.Transform;
+			RigidBody		body		= this.GameObj.RigidBody;
+			ShipBlueprint	blueprint	= this.blueprint.Res;
 
 			// Heal when damaged
-			this.hitpoints = MathF.Clamp(this.hitpoints + this.healRate * Time.SPFMult * Time.TimeMult, 0.0f, this.maxHitpoints);
+			this.hitpoints = MathF.Clamp(this.hitpoints + blueprint.HealRate * Time.SPFMult * Time.TimeMult / blueprint.MaxHitpoints, 0.0f, 1.0f);
 
 			// Apply force according to the desired thrust
 			Vector2 actualVelocity = body.LinearVelocity;
-			Vector2 targetVelocity = this.targetThrust * this.maxSpeed;
+			Vector2 targetVelocity = this.targetThrust * blueprint.MaxSpeed;
 			Vector2 velocityDiff = (targetVelocity - actualVelocity);
 			float sameDirectionFactor = Vector2.Dot(
 				velocityDiff / MathF.Max(0.001f, velocityDiff.Length), 
 				this.targetThrust / MathF.Max(0.001f, this.targetThrust.Length));
 			Vector2 thrusterActivity = this.targetThrust.Length * MathF.Max(sameDirectionFactor, 0.0f) * velocityDiff / MathF.Max(velocityDiff.Length, 1.0f);
-			body.ApplyWorldForce(thrusterActivity * this.thrusterPower);
+			body.ApplyWorldForce(thrusterActivity * blueprint.ThrusterPower);
 
 			// Turn to the desired fire angle
 			if (this.targetAngleRatio > 0.0f)
@@ -243,7 +189,7 @@ namespace DualStickSpaceShooter
 				float shortestTurnLength	= MathF.CircularDist(transform.Angle, this.targetAngle);
 				float turnDirection;
 				float turnLength;
-				if (MathF.Abs(body.AngularVelocity) > this.maxTurnSpeed * 0.25f)
+				if (MathF.Abs(body.AngularVelocity) > blueprint.MaxTurnSpeed * 0.25f)
 				{
 					turnDirection	= MathF.Sign(body.AngularVelocity);
 					turnLength		= (turnDirection == shortestTurnDirection) ? shortestTurnLength : (MathF.RadAngle360 - shortestTurnLength);
@@ -254,32 +200,31 @@ namespace DualStickSpaceShooter
 					turnLength		= shortestTurnLength;
 				}
 				float turnSpeedRatio	= MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
-				float turnVelocity		= turnSpeedRatio * this.maxTurnSpeed * this.targetAngleRatio * turnDirection;
-				body.AngularVelocity	+= (turnVelocity - body.AngularVelocity) * this.turnPower * Time.TimeMult;
+				float turnVelocity		= turnSpeedRatio * blueprint.MaxTurnSpeed * this.targetAngleRatio * turnDirection;
+				body.AngularVelocity	+= (turnVelocity - body.AngularVelocity) * blueprint.TurnPower * Time.TimeMult;
 			}
 
 			// Weapon cooldown
 			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
 
 			// Display the damage effect when damaged
-			float hpFactor = this.hitpoints / this.maxHitpoints;
-			if (hpFactor < 0.85f && this.damageEffect != null)
+			if (this.hitpoints < 0.85f && blueprint.DamageEffect != null)
 			{
 				// Create a new damage effect instance, if not present yet
-				if (this.damageEffectInstance == null)
+				if (this.damageEffect == null)
 				{
-					GameObject damageObj = this.damageEffect.Res.Instantiate(transform.Pos);
+					GameObject damageObj = blueprint.DamageEffect.Res.Instantiate(transform.Pos);
 					damageObj.Parent = this.GameObj;
 
-					this.damageEffectInstance = damageObj.GetComponent<ParticleEffect>();
-					if (this.damageEffectInstance == null) throw new NullReferenceException();
+					this.damageEffect = damageObj.GetComponent<ParticleEffect>();
+					if (this.damageEffect == null) throw new NullReferenceException();
 				}
 
 				// Configure the damage effect
-				foreach (ParticleEmitter emitter in this.damageEffectInstance.Emitters)
+				foreach (ParticleEmitter emitter in this.damageEffect.Emitters)
 				{
 					if (emitter == null) continue;
-					emitter.BurstDelay = new Range(50.0f + hpFactor * 100.0f, 100.0f + hpFactor * 300.0f);
+					emitter.BurstDelay = new Range(50.0f + this.hitpoints * 50.0f, 100.0f + this.hitpoints * 300.0f);
 					if (this.owner != null)
 					{
 						ColorHsva targetColor = this.owner.Color.ToHsva();
@@ -289,24 +234,25 @@ namespace DualStickSpaceShooter
 				}
 			}
 			// Get rid of existing damage effects, if no longer needed
-			else if (this.damageEffectInstance != null)
+			else if (this.damageEffect != null)
 			{
 				// Stop emitting and dispose when empty
-				foreach (ParticleEmitter emitter in this.damageEffectInstance.Emitters)
+				foreach (ParticleEmitter emitter in this.damageEffect.Emitters)
 				{
 					if (emitter == null) continue;
 					emitter.BurstDelay = float.MaxValue;
 				}
-				this.damageEffectInstance.DisposeWhenEmpty = true;
-				this.damageEffectInstance = null;
+				this.damageEffect.DisposeWhenEmpty = true;
+				this.damageEffect = null;
 			}
 		}
 
 		private void FireBullet(RigidBody body, Transform transform, Vector2 localPos, float localAngle)
 		{
-			if (!this.bulletType.IsAvailable) return;
+			ShipBlueprint blueprint = this.blueprint.Res;
+			if (blueprint.BulletType == null) return;
 
-			Bullet bullet = this.bulletType.Res.CreateBullet();
+			Bullet bullet = blueprint.BulletType.Res.CreateBullet();
 
 			Vector2 recoilImpulse;
 			Vector2 worldPos = transform.GetWorldPoint(localPos);

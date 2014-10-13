@@ -57,7 +57,7 @@
                 <baseVel dataType="Struct" type="OpenTK.Vector3">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
-                  <Z dataType="Float">0</Z>
+                  <Z dataType="Float">-0.1</Z>
                 </baseVel>
                 <burstCount dataType="Int">159</burstCount>
                 <burstDelay dataType="Struct" type="Duality.Range">
@@ -71,20 +71,20 @@
                 <burstTimer dataType="Float">43.51428</burstTimer>
                 <maxBurstCount dataType="Int">-1</maxBurstCount>
                 <maxColor dataType="Struct" type="Duality.Drawing.ColorHsva">
-                  <A dataType="Float">0.5019608</A>
+                  <A dataType="Float">0.627451</A>
                   <H dataType="Float">0</H>
                   <S dataType="Float">0</S>
                   <V dataType="Float">0.65882355</V>
                 </maxColor>
                 <minColor dataType="Struct" type="Duality.Drawing.ColorHsva">
-                  <A dataType="Float">0.5019608</A>
+                  <A dataType="Float">0.627451</A>
                   <H dataType="Float">0</H>
                   <S dataType="Float">0</S>
-                  <V dataType="Float">0.23137255</V>
+                  <V dataType="Float">0.149019614</V>
                 </minColor>
                 <particleLifetime dataType="Struct" type="Duality.Range">
-                  <MaxValue dataType="Float">2000</MaxValue>
-                  <MinValue dataType="Float">1000</MinValue>
+                  <MaxValue dataType="Float">1000</MaxValue>
+                  <MinValue dataType="Float">500</MinValue>
                 </particleLifetime>
                 <randomAngle dataType="Struct" type="Duality.Range">
                   <MaxValue dataType="Float">6.28318548</MaxValue>
@@ -99,7 +99,7 @@
                   <MinValue dataType="Float">0</MinValue>
                 </randomPos>
                 <randomVel dataType="Struct" type="Duality.Range">
-                  <MaxValue dataType="Float">0.1</MaxValue>
+                  <MaxValue dataType="Float">0.2</MaxValue>
                   <MinValue dataType="Float">0</MinValue>
                 </randomVel>
                 <spriteIndex dataType="Struct" type="Duality.Range">
@@ -112,7 +112,7 @@
             <_version dataType="Int">2</_version>
           </emitters>
           <fadeInAt dataType="Float">0.1</fadeInAt>
-          <fadeOutAt dataType="Float">0.5</fadeOutAt>
+          <fadeOutAt dataType="Float">0.6</fadeOutAt>
           <gameobj dataType="ObjectRef">581423063</gameobj>
           <linearDrag dataType="Float">0.3</linearDrag>
           <material dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">

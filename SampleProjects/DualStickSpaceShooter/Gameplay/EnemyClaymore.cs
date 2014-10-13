@@ -349,7 +349,7 @@ namespace DualStickSpaceShooter
 					// Try to stay in place otherwise
 					else
 					{
-						ship.TargetThrust = -body.LinearVelocity / MathF.Max(body.LinearVelocity.Length, ship.MaxSpeed);
+						ship.TargetThrust = -body.LinearVelocity / MathF.Max(body.LinearVelocity.Length, ship.Blueprint.Res.MaxSpeed);
 						ship.TargetAngleRatio = 0.1f;
 						this.idleTimer += Time.MsPFMult * Time.TimeMult;
 						

@@ -651,26 +651,18 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">141</_version>
+            <_version dataType="Int">151</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
           <active dataType="Bool">true</active>
-          <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
-            <contentPath />
-          </bulletType>
-          <damageEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-            <contentPath dataType="String">Data\Prefabs\DamageSmoke.Prefab.res</contentPath>
-          </damageEffect>
-          <damageEffectInstance />
-          <deathEffects />
+          <blueprint dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.ShipBlueprint]]">
+            <contentPath dataType="String">Data\Blueprints\ClaymoreShip.ShipBlueprint.res</contentPath>
+          </blueprint>
+          <damageEffect />
           <gameobj dataType="ObjectRef">3054164894</gameobj>
-          <healRate dataType="Float">25</healRate>
-          <hitpoints dataType="Float">500</hitpoints>
+          <hitpoints dataType="Float">1</hitpoints>
           <isDead dataType="Bool">false</isDead>
-          <maxHitpoints dataType="Float">500</maxHitpoints>
-          <maxSpeed dataType="Float">3</maxSpeed>
-          <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
           <owner />
           <targetAngle dataType="Float">0</targetAngle>
           <targetAngleRatio dataType="Float">0.1</targetAngleRatio>
@@ -678,9 +670,6 @@
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
           </targetThrust>
-          <thrusterPower dataType="Float">0.1</thrusterPower>
-          <turnPower dataType="Float">0.1</turnPower>
-          <weaponDelay dataType="Float">0</weaponDelay>
           <weaponTimer dataType="Float">0</weaponTimer>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.EnemyClaymore" id="4130272826">

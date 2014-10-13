@@ -4,7 +4,7 @@
     <children dataType="Struct" type="System.Collections.Generic.List`1[[Duality.GameObject]]" id="4151978834">
       <_items dataType="Array" type="Duality.GameObject[]" id="361734480" length="4">
         <item dataType="Struct" type="Duality.GameObject" id="3475034345">
-          <active dataType="Bool">true</active>
+          <active dataType="Bool">false</active>
           <children />
           <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3154984749">
             <_items dataType="Array" type="Duality.Component[]" id="191170150">
@@ -134,30 +134,18 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">31</_version>
+                  <_version dataType="Int">35</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
                 <active dataType="Bool">true</active>
-                <bulletType dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.BulletBlueprint]]">
-                  <contentPath dataType="String">Data\Blueprints\RegularBullet.BulletBlueprint.res</contentPath>
-                </bulletType>
-                <damageEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-                  <contentPath dataType="String">Data\Prefabs\DamageSmoke.Prefab.res</contentPath>
-                </damageEffect>
-                <damageEffectInstance />
-                <deathEffects dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Prefab]][]" id="2169343919">
-                  <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-                    <contentPath dataType="String">Data\Prefabs\ShipDebris.Prefab.res</contentPath>
-                  </item>
-                </deathEffects>
+                <blueprint dataType="Struct" type="Duality.ContentRef`1[[DualStickSpaceShooter.ShipBlueprint]]">
+                  <contentPath dataType="String">Data\Blueprints\PlayerShip.ShipBlueprint.res</contentPath>
+                </blueprint>
+                <damageEffect />
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
-                <healRate dataType="Float">10</healRate>
-                <hitpoints dataType="Float">100</hitpoints>
+                <hitpoints dataType="Float">1</hitpoints>
                 <isDead dataType="Bool">false</isDead>
-                <maxHitpoints dataType="Float">100</maxHitpoints>
-                <maxSpeed dataType="Float">6.5</maxSpeed>
-                <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
                 <owner dataType="Struct" type="DualStickSpaceShooter.Player" id="2034914690">
                   <active dataType="Bool">true</active>
                   <color dataType="Struct" type="Duality.Drawing.ColorRgba">
@@ -168,7 +156,7 @@
                   </color>
                   <controlObj dataType="ObjectRef">402578415</controlObj>
                   <gameobj dataType="ObjectRef">1121329689</gameobj>
-                  <id dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="Unknown" value="0" />
+                  <id dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="PlayerOne" value="1" />
                   <respawnTime dataType="Float">0</respawnTime>
                 </owner>
                 <targetAngle dataType="Float">0</targetAngle>
@@ -177,9 +165,6 @@
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                 </targetThrust>
-                <thrusterPower dataType="Float">5</thrusterPower>
-                <turnPower dataType="Float">1</turnPower>
-                <weaponDelay dataType="Float">200</weaponDelay>
                 <weaponTimer dataType="Float">0</weaponTimer>
               </item>
             </_items>

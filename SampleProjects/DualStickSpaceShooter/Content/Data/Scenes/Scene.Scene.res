@@ -263,40 +263,9 @@
                       <parent />
                       <prefabLink dataType="Struct" type="Duality.Resources.PrefabLink" id="1723137498">
                         <changes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.PrefabLink+VarMod]]" id="2338173868">
-                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2165640420" length="4">
-                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="771872968">
-                                <_items dataType="Array" type="System.Int32[]" id="1197357676" />
-                                <_size dataType="Int">0</_size>
-                                <_version dataType="Int">1</_version>
-                              </childIndex>
-                              <componentType />
-                              <prop dataType="PropertyInfo" id="886661854" value="P:Duality.GameObject:ActiveSingle" />
-                              <val dataType="Bool">true</val>
-                            </item>
-                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3272666420">
-                                <_items dataType="Array" type="System.Int32[]" id="1313105224" />
-                                <_size dataType="Int">0</_size>
-                                <_version dataType="Int">1</_version>
-                              </childIndex>
-                              <componentType dataType="ObjectRef">2425790428</componentType>
-                              <prop dataType="PropertyInfo" id="696983330" value="P:DualStickSpaceShooter.Player:Id" />
-                              <val dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="PlayerOne" value="1" />
-                            </item>
-                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="2629284480">
-                                <_items dataType="Array" type="System.Int32[]" id="3291407476" length="4" />
-                                <_size dataType="Int">1</_size>
-                                <_version dataType="Int">2</_version>
-                              </childIndex>
-                              <componentType />
-                              <prop dataType="ObjectRef">886661854</prop>
-                              <val dataType="Bool">false</val>
-                            </item>
-                          </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">130</_version>
+                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2165640420" length="4" />
+                          <_size dataType="Int">0</_size>
+                          <_version dataType="Int">132</_version>
                         </changes>
                         <obj dataType="ObjectRef">1924155130</obj>
                         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -446,27 +415,27 @@
                                 <_version dataType="Int">1</_version>
                               </childIndex>
                               <componentType />
-                              <prop dataType="ObjectRef">886661854</prop>
+                              <prop dataType="PropertyInfo" id="3043999498" value="P:Duality.GameObject:ActiveSingle" />
                               <val dataType="Bool">true</val>
                             </item>
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3043999498">
-                                <_items dataType="ObjectRef">1313105224</_items>
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3964229984">
+                                <_items dataType="Array" type="System.Int32[]" id="3266911372" />
                                 <_size dataType="Int">0</_size>
                                 <_version dataType="Int">1</_version>
                               </childIndex>
                               <componentType dataType="ObjectRef">2425790428</componentType>
-                              <prop dataType="ObjectRef">696983330</prop>
+                              <prop dataType="PropertyInfo" id="1967265150" value="P:DualStickSpaceShooter.Player:Id" />
                               <val dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="PlayerTwo" value="2" />
                             </item>
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3964229984">
-                                <_items dataType="Array" type="System.Int32[]" id="3266911372" length="4" />
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3039303996">
+                                <_items dataType="Array" type="System.Int32[]" id="392056776" length="4" />
                                 <_size dataType="Int">1</_size>
                                 <_version dataType="Int">2</_version>
                               </childIndex>
                               <componentType />
-                              <prop dataType="ObjectRef">886661854</prop>
+                              <prop dataType="ObjectRef">3043999498</prop>
                               <val dataType="Bool">false</val>
                             </item>
                           </_items>

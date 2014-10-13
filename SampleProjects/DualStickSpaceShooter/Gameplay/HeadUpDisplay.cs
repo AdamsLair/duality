@@ -57,12 +57,14 @@ namespace DualStickSpaceShooter
 			// Draw health and info of player one
 			if (this.IsPlayerActive(this.playerOne))
 			{
+				Ship playerShip = this.playerOne.ControlObject;
+
 				canvas.State.ColorTint = this.playerOne.Color.WithAlpha(0.5f);
-				if (this.playerOne.ControlObject.Active)
+				if (playerShip.Active)
 				{
-					float healthPercentage = this.playerOne.ControlObject.Hitpoints / this.playerOne.ControlObject.MaxHitpoints;
+					float health = playerShip.Hitpoints;
 					canvas.DrawRect(10, device.TargetSize.Y - 10 - 200, 20, 200);
-					canvas.FillRect(12, device.TargetSize.Y - 10 - healthPercentage * 198.0f, 16, healthPercentage * 196.0f);
+					canvas.FillRect(12, device.TargetSize.Y - 10 - health * 198.0f, 16, health * 196.0f);
 				}
 				else if (isAnyPlayerAlive)
 				{
@@ -78,12 +80,14 @@ namespace DualStickSpaceShooter
 			// Draw health and info of player two
 			if (this.IsPlayerActive(this.playerTwo))
 			{
+				Ship playerShip = this.playerTwo.ControlObject;
+
 				canvas.State.ColorTint = this.playerTwo.Color.WithAlpha(0.5f);
-				if (this.playerTwo.ControlObject.Active)
+				if (playerShip.Active)
 				{
-					float healthPercentage = this.playerTwo.ControlObject.Hitpoints / this.playerTwo.ControlObject.MaxHitpoints;
+					float health = playerShip.Hitpoints;
 					canvas.DrawRect(device.TargetSize.X - 10 - 20, device.TargetSize.Y - 10 - 200, 20, 200);
-					canvas.FillRect(device.TargetSize.X - 12 - 16, device.TargetSize.Y - 10 - healthPercentage * 198.0f, 16, healthPercentage * 196.0f);
+					canvas.FillRect(device.TargetSize.X - 12 - 16, device.TargetSize.Y - 10 - health * 198.0f, 16, health * 196.0f);
 				}
 				else if (isAnyPlayerAlive)
 				{
