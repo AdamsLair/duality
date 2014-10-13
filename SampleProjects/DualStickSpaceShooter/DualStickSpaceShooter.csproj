@@ -56,19 +56,21 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\EnemyClaymore.cs" />
-    <Compile Include="Components\HeadUpDisplay.cs" />
-    <Compile Include="Components\GameOverScreen.cs" />
-    <Compile Include="Components\PlayerId.cs" />
+    <Compile Include="Gameplay\EnemyClaymore.cs" />
+    <Compile Include="Gameplay\HeadUpDisplay.cs" />
+    <Compile Include="Gameplay\GameOverScreen.cs" />
+    <Compile Include="Visuals\Particle.cs" />
+    <Compile Include="Visuals\ParticleEmitter.cs" />
+    <Compile Include="Gameplay\PlayerId.cs" />
     <Compile Include="General\ICmpMessageListener.cs" />
-    <Compile Include="Components\ParticleEffect.cs" />
-    <Compile Include="Components\SpriteDepthColor.cs" />
+    <Compile Include="Visuals\ParticleEffect.cs" />
+    <Compile Include="Visuals\SpriteDepthColor.cs" />
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="Components\CameraController.cs" />
-    <Compile Include="Components\Bullet.cs" />
+    <Compile Include="Gameplay\CameraController.cs" />
+    <Compile Include="Gameplay\Bullet.cs" />
     <Compile Include="Blueprints\BulletBlueprint.cs" />
-    <Compile Include="Components\Ship.cs" />
-    <Compile Include="Components\Player.cs" />
+    <Compile Include="Gameplay\Ship.cs" />
+    <Compile Include="Gameplay\Player.cs" />
     <Compile Include="General\InputMapping.cs" />
     <Compile Include="General\InputMethod.cs" />
     <Compile Include="General\GameplayHelper.cs" />

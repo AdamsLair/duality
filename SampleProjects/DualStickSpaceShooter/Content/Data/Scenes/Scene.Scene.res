@@ -6332,9 +6332,23 @@
               <prop dataType="PropertyInfo" id="849483678" value="P:DualStickSpaceShooter.ParticleEffect:WorldSpace" />
               <val dataType="Bool">false</val>
             </item>
+            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1422911380">
+                <_items dataType="Array" type="System.Int32[]" id="3476940872" />
+                <_size dataType="Int">0</_size>
+                <_version dataType="Int">1</_version>
+              </childIndex>
+              <componentType dataType="ObjectRef">4020116262</componentType>
+              <prop dataType="ObjectRef">3402294738</prop>
+              <val dataType="Struct" type="OpenTK.Vector3">
+                <X dataType="Float">396</X>
+                <Y dataType="Float">74</Y>
+                <Z dataType="Float">0</Z>
+              </val>
+            </item>
           </_items>
-          <_size dataType="Int">1</_size>
-          <_version dataType="Int">1326</_version>
+          <_size dataType="Int">2</_size>
+          <_version dataType="Int">1409</_version>
         </changes>
         <obj dataType="ObjectRef">3900738636</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">

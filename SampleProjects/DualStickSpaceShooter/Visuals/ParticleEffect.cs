@@ -17,64 +17,6 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(Transform))]
 	public class ParticleEffect : Renderer, ICmpUpdatable
 	{
-		[Serializable]
-		public struct EmissionData
-		{
-			public static readonly EmissionData Default = new EmissionData
-			{
-				Lifetime		= new Range(1000.0f, 3000.0f),
-				BasePos			= Vector3.Zero,
-				RandomPos		= 0.0f,
-				RandomAngle		= new Range(0.0f, MathF.RadAngle360),
-				BaseVel			= Vector3.Zero,
-				RandomVel		= new Range(0.0f, 3.0f),
-				RandomAngleVel	= new Range(-0.05f, 0.05f),
-				MinColor		= ColorHsva.White,
-				MaxColor		= ColorHsva.White,
-				SpriteIndex		= 0
-			};
-
-			public Range		Lifetime;
-			public Vector3		BasePos;
-			public Range		RandomPos;
-			public Range		RandomAngle; 
-			public Vector3		BaseVel;
-			public Range		RandomVel;
-			public Range		RandomAngleVel;
-			public ColorHsva	MinColor;
-			public ColorHsva	MaxColor;
-			[EditorHintDecimalPlaces(0)]
-			public Range		SpriteIndex;
-		}
-		[Serializable]
-		public struct EmissionPattern
-		{
-			public static readonly EmissionPattern Default = new EmissionPattern
-			{
-				Delay			= 100.0f,
-				Count			= 1,
-				MaxBurstCount	= -1
-			};
-
-			[EditorHintDecimalPlaces(0)]
-			public Range	Delay;
-			[EditorHintDecimalPlaces(0)]
-			public Range	Count;
-			public int		MaxBurstCount;
-		}
-		private struct Particle
-		{
-			public Vector3		Position;
-			public Vector3		Velocity;
-			public float		Angle;
-			public float		AngleVelocity;
-			public float		TimeToLive;
-			public float		AgeFactor;
-			public int			SpriteIndex;
-			public ColorRgba	Color;
-		}
-
-
 		private ContentRef<Material>	material			= null;
 		private Vector2					particleSize		= new Vector2(16, 16);
 		private Vector3					constantForce		= Vector3.Zero;
@@ -84,11 +26,7 @@ namespace DualStickSpaceShooter
 		private float					fadeOutAt			= 0.75f;
 		private bool					worldSpace			= false;
 		private bool					disposeWhenEmpty	= true;
-		private EmissionData			emitData			= EmissionData.Default;
-		private EmissionPattern			emitPattern			= EmissionPattern.Default;
-
-		private int						burstCount			= 0;
-		private	float					burstTimer			= 0.0f;
+		private	List<ParticleEmitter>	emitters			= new List<ParticleEmitter>();
 
 		[NonSerialized]
 		private float					boundRadius			= 0.0f;
@@ -147,15 +85,10 @@ namespace DualStickSpaceShooter
 			get { return this.disposeWhenEmpty; }
 			set { this.disposeWhenEmpty = value; }
 		}
-		public EmissionData EmitData
+		public List<ParticleEmitter> Emitters
 		{
-			get { return this.emitData; }
-			set { this.emitData = value; }
-		}
-		public EmissionPattern EmitPattern
-		{
-			get { return this.emitPattern; }
-			set { this.emitPattern = value; }
+			get { return this.emitters; }
+			set { this.emitters = value ?? new List<ParticleEmitter>(); }
 		}
 		public override float BoundRadius
 		{
@@ -167,7 +100,7 @@ namespace DualStickSpaceShooter
 		}
 
 
-		public void AddParticles(int count)
+		public void AddParticles(ParticleEmitter emitter, int count)
 		{
 			// Lookup what sprite sheet we're using to get the number of available frames
 			Texture tex = this.RetrieveTexture();
@@ -190,7 +123,7 @@ namespace DualStickSpaceShooter
 			for (int i = oldCount; i < this.particles.Count; i++)
 			{
 				// Initialize the current particle.
-				this.InitParticle(ref particleData[i]);
+				emitter.InitParticle(ref particleData[i]);
 
 				// So far, the particle is in local coordinates. Transform to world coordinates when required.
 				if (this.worldSpace)
@@ -203,19 +136,6 @@ namespace DualStickSpaceShooter
 			}
 		}
 
-		private void InitParticle(ref Particle particle)
-		{
-			Random random = MathF.Rnd;
-
-			particle.AgeFactor		= 0.0f;
-			particle.Position		= this.emitData.BasePos + random.NextVector3(this.emitData.RandomPos.MinValue, this.emitData.RandomPos.MaxValue);
-			particle.Velocity		= this.emitData.BaseVel + random.NextVector3(this.emitData.RandomVel.MinValue, this.emitData.RandomVel.MaxValue);
-			particle.Angle			= random.NextFloat(this.emitData.RandomAngle.MinValue, this.emitData.RandomAngle.MaxValue);
-			particle.AngleVelocity	= random.NextFloat(this.emitData.RandomAngleVel.MinValue, this.emitData.RandomAngleVel.MaxValue);
-			particle.TimeToLive		= random.NextFloat(this.emitData.Lifetime.MinValue, this.emitData.Lifetime.MaxValue);
-			particle.SpriteIndex	= random.Next((int)this.emitData.SpriteIndex.MinValue, (int)this.emitData.SpriteIndex.MaxValue);
-			particle.Color			= random.NextColorHsva(this.emitData.MinColor, this.emitData.MaxColor).ToRgba();
-		}
 		private void RemoveParticle(int index)
 		{
 			this.particles.RemoveAt(index);
@@ -360,17 +280,10 @@ namespace DualStickSpaceShooter
 			this.boundRadius += this.particleSize.Length;
 
 			// Update particle emission
-			if (this.burstCount < this.emitPattern.MaxBurstCount || this.emitPattern.MaxBurstCount < 0)
+			for (int i = this.emitters.Count - 1; i >= 0; i--)
 			{
-				this.burstTimer -= Time.MsPFMult * Time.TimeMult;
-				if (this.burstTimer <= 0.0f)
-				{
-					this.burstTimer += MathF.Rnd.NextFloat(this.emitPattern.Delay.MinValue, this.emitPattern.Delay.MaxValue);
-					this.burstCount++;
-
-					int count = MathF.Rnd.Next((int)this.emitPattern.Count.MinValue, (int)this.emitPattern.Count.MaxValue);
-					this.AddParticles(count);
-				}
+				if (this.emitters[i] == null) continue;
+				this.emitters[i].Update(this);
 			}
 
 			// Dispose when empty

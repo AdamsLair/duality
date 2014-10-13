@@ -161,11 +161,13 @@ namespace DualStickSpaceShooter
 					ParticleEffect effect = effectObj.GetComponent<ParticleEffect>();
 					if (effect != null && this.owner != null)
 					{
-						ParticleEffect.EmissionData emitData = effect.EmitData;
-						emitData.MaxColor = this.owner.Color.ToHsva().WithValue(emitData.MaxColor.V);
-						emitData.MinColor = this.owner.Color.ToHsva().WithValue(emitData.MinColor.V);
-						emitData.BaseVel += new Vector3(body.LinearVelocity);
-						effect.EmitData = emitData;
+						foreach (ParticleEmitter emitter in effect.Emitters)
+						{
+							if (emitter == null) continue;
+							emitter.MaxColor = this.owner.Color.ToHsva().WithValue(emitter.MaxColor.V);
+							emitter.MinColor = this.owner.Color.ToHsva().WithValue(emitter.MinColor.V);
+							emitter.BaseVel += new Vector3(body.LinearVelocity);
+						}
 					}
 					Scene.Current.AddObject(effectObj);
 				}
@@ -274,27 +276,27 @@ namespace DualStickSpaceShooter
 				}
 
 				// Configure the damage effect
-				ParticleEffect.EmissionPattern pattern = this.damageEffectInstance.EmitPattern;
-				ParticleEffect.EmissionData data = this.damageEffectInstance.EmitData;
-
-				pattern.Delay = new Range(50.0f + hpFactor * 150.0f, 100.0f + hpFactor * 600.0f);
-				if (this.owner != null)
+				foreach (ParticleEmitter emitter in this.damageEffectInstance.Emitters)
 				{
-					ColorHsva targetColor = this.owner.Color.ToHsva();
-					data.MinColor = data.MinColor.WithSaturation(targetColor.S).WithHue(targetColor.H);
-					data.MaxColor = data.MaxColor.WithSaturation(targetColor.S).WithHue(targetColor.H);
+					if (emitter == null) continue;
+					emitter.BurstDelay = new Range(50.0f + hpFactor * 100.0f, 100.0f + hpFactor * 300.0f);
+					if (this.owner != null)
+					{
+						ColorHsva targetColor = this.owner.Color.ToHsva();
+						emitter.MinColor = new ColorHsva(targetColor.H, targetColor.S, emitter.MinColor.V, emitter.MinColor.A);
+						emitter.MaxColor = new ColorHsva(targetColor.H, targetColor.S, emitter.MaxColor.V, emitter.MaxColor.A);
+					}
 				}
-
-				this.damageEffectInstance.EmitData = data;
-				this.damageEffectInstance.EmitPattern = pattern;
 			}
 			// Get rid of existing damage effects, if no longer needed
 			else if (this.damageEffectInstance != null)
 			{
 				// Stop emitting and dispose when empty
-				ParticleEffect.EmissionPattern pattern = this.damageEffectInstance.EmitPattern;
-				pattern.Delay = float.MaxValue;
-				this.damageEffectInstance.EmitPattern = pattern;
+				foreach (ParticleEmitter emitter in this.damageEffectInstance.Emitters)
+				{
+					if (emitter == null) continue;
+					emitter.BurstDelay = float.MaxValue;
+				}
 				this.damageEffectInstance.DisposeWhenEmpty = true;
 				this.damageEffectInstance = null;
 			}
