@@ -44,6 +44,13 @@ namespace Duality.Drawing
 			get { return new BatchInfo(this.batchInfo); }
 		}
 		/// <summary>
+		/// [GET] Returns whether the currently active material is the default one.
+		/// </summary>
+		public bool IsDefaultMaterial
+		{
+			get { return this.batchInfo == DefaultMaterial; }
+		}
+		/// <summary>
 		/// [GET / SET] The <see cref="Duality.Resources.Font"/> to use for text rendering.
 		/// </summary>
 		public ContentRef<Font> TextFont
