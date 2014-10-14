@@ -6152,10 +6152,6 @@
               <contentPath dataType="String">Data\Materials\HudFont.Font.res</contentPath>
             </font>
             <gameobj dataType="ObjectRef">1064452476</gameobj>
-            <gameOver dataType="Bool">false</gameOver>
-            <gameStarted dataType="Bool">false</gameStarted>
-            <gameWin dataType="Bool">false</gameWin>
-            <lastTimeAnyAlive dataType="Float">0</lastTimeAnyAlive>
           </item>
         </_items>
         <_size dataType="Int">1</_size>

@@ -15,8 +15,11 @@ namespace DualStickSpaceShooter
 {
 	[Serializable]
 	[RequiredComponent(typeof(Camera))]
-	public class CameraController : Component, ICmpUpdatable
+	public class CameraController : Component, ICmpUpdatable, ICmpInitializable
 	{
+		private const float ReferenceFocusDist		= 500.0f;
+		private const float ReferenceScreenDiameter	= 1500.0f;
+
 		private Transform		microphone			= null;
 		private List<Transform>	followObjects		= null;
 		private float			zoomFactor			= 1.0f;
@@ -64,6 +67,12 @@ namespace DualStickSpaceShooter
 			this.screenShakeStrength += strength;
 		}
 
+		private void AdjustToScreenSize()
+		{
+			Vector2 screenSize = DualityApp.TargetResolution;
+			Camera camera = this.GameObj.Camera;
+			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
+		}
 		void ICmpUpdatable.OnUpdate()
 		{
 			if (this.followObjects == null) return;
@@ -90,12 +99,6 @@ namespace DualStickSpaceShooter
 
 			// Remove old screen shake offset
 			transform.Pos -= new Vector3(lastScreenShakeOffset);
-
-			// Adjust camera zoom based on how big the screen / window is.
-			const float ReferenceFocusDist = 500.0f;
-			const float ReferenceScreenDiameter = 1500.0f;
-			Vector2 screenSize = DualityApp.TargetResolution;
-			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
 
 			// Let the camera follow its objects.
 			Transform[] activeFollowObjects = this.followObjects.Where(obj => obj.Active).ToArray();
@@ -133,5 +136,13 @@ namespace DualStickSpaceShooter
 				this.microphone.Pos = new Vector3(this.microphone.Pos.Xy, 0.0f);
 			}
 		}
+		void ICmpInitializable.OnInit(Component.InitContext context)
+		{
+			if (context == InitContext.Activate)
+			{
+				this.AdjustToScreenSize();
+			}
+		}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
 	}
 }

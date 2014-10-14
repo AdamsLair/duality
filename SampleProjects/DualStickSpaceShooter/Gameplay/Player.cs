@@ -224,7 +224,7 @@ namespace DualStickSpaceShooter
 
 			// If it's game over, allow to restart the game
 			GameOverScreen gameOverScreen = Scene.Current.FindComponent<GameOverScreen>();
-			if (gameOverScreen != null && gameOverScreen.IsGameOver)
+			if (gameOverScreen != null && gameOverScreen.HasGameEnded)
 			{
 				if (this.input.ControlStart)
 				{

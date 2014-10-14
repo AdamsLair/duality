@@ -70,14 +70,14 @@
                 <maxBurstCount dataType="Int">250</maxBurstCount>
                 <maxColor dataType="Struct" type="Duality.Drawing.ColorHsva">
                   <A dataType="Float">1</A>
-                  <H dataType="Float">0</H>
-                  <S dataType="Float">0</S>
+                  <H dataType="Float">0.234640524</H>
+                  <S dataType="Float">1</S>
                   <V dataType="Float">1</V>
                 </maxColor>
                 <minColor dataType="Struct" type="Duality.Drawing.ColorHsva">
                   <A dataType="Float">0.5019608</A>
-                  <H dataType="Float">0</H>
-                  <S dataType="Float">0</S>
+                  <H dataType="Float">0.206944451</H>
+                  <S dataType="Float">0.470588237</S>
                   <V dataType="Float">1</V>
                 </minColor>
                 <particleLifetime dataType="Struct" type="Duality.Range">
@@ -127,14 +127,14 @@
                 <maxBurstCount dataType="Int">100</maxBurstCount>
                 <maxColor dataType="Struct" type="Duality.Drawing.ColorHsva">
                   <A dataType="Float">1</A>
-                  <H dataType="Float">0</H>
-                  <S dataType="Float">0</S>
+                  <H dataType="Float">0.233986944</H>
+                  <S dataType="Float">1</S>
                   <V dataType="Float">1</V>
                 </maxColor>
                 <minColor dataType="Struct" type="Duality.Drawing.ColorHsva">
-                  <A dataType="Float">1</A>
-                  <H dataType="Float">0</H>
-                  <S dataType="Float">0</S>
+                  <A dataType="Float">0.5019608</A>
+                  <H dataType="Float">0.206944451</H>
+                  <S dataType="Float">0.470588237</S>
                   <V dataType="Float">1</V>
                 </minColor>
                 <particleLifetime dataType="Struct" type="Duality.Range">
@@ -150,11 +150,11 @@
                   <MinValue dataType="Float">-0.01</MinValue>
                 </randomAngleVel>
                 <randomPos dataType="Struct" type="Duality.Range">
-                  <MaxValue dataType="Float">40</MaxValue>
+                  <MaxValue dataType="Float">30</MaxValue>
                   <MinValue dataType="Float">5</MinValue>
                 </randomPos>
                 <randomVel dataType="Struct" type="Duality.Range">
-                  <MaxValue dataType="Float">0.06</MaxValue>
+                  <MaxValue dataType="Float">0.04</MaxValue>
                   <MinValue dataType="Float">0</MinValue>
                 </randomVel>
                 <spriteIndex dataType="Struct" type="Duality.Range">

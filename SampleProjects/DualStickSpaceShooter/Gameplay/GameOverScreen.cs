@@ -37,9 +37,9 @@ namespace DualStickSpaceShooter
 			get { return this.blendMaterial; }
 			set { this.blendMaterial = value; }
 		}
-		public bool IsGameOver
+		public bool HasGameEnded
 		{
-			get { return this.gameOver; }
+			get { return this.gameOver || this.gameWin; }
 		}
 		
 
