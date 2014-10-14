@@ -134,7 +134,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">2</_size>
-                  <_version dataType="Int">35</_version>
+                  <_version dataType="Int">37</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -156,6 +156,10 @@
                   </color>
                   <controlObj dataType="ObjectRef">402578415</controlObj>
                   <gameobj dataType="ObjectRef">1121329689</gameobj>
+                  <goalEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
+                    <contentPath dataType="String">Data\Prefabs\GoalEffect.Prefab.res</contentPath>
+                  </goalEffect>
+                  <hasReachedGoal dataType="Bool">false</hasReachedGoal>
                   <id dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="PlayerOne" value="1" />
                   <respawnTime dataType="Float">0</respawnTime>
                 </owner>

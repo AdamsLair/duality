@@ -62,12 +62,14 @@ namespace DualStickSpaceShooter
 				canvas.State.ColorTint = this.playerOne.Color.WithAlpha(0.5f);
 				if (playerShip.Active)
 				{
+					// Draw a health bar when alive
 					float health = playerShip.Hitpoints;
 					canvas.DrawRect(10, device.TargetSize.Y - 10 - 200, 20, 200);
 					canvas.FillRect(12, device.TargetSize.Y - 10 - health * 198.0f, 16, health * 196.0f);
 				}
-				else if (isAnyPlayerAlive)
+				else if (isAnyPlayerAlive && !this.playerOne.HasReachedGoal)
 				{
+					// Draw a respawn timer when dead
 					float respawnPercentage = this.playerOne.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("Respawn in {0:F1}", (Player.RespawnDelay - this.playerOne.RespawnTime) / 1000.0f);
 					Vector2 textSize = canvas.MeasureText(string.Format("Respawn in {0:F1}", 0.0f));
@@ -85,12 +87,14 @@ namespace DualStickSpaceShooter
 				canvas.State.ColorTint = this.playerTwo.Color.WithAlpha(0.5f);
 				if (playerShip.Active)
 				{
+					// Draw a health bar when alive
 					float health = playerShip.Hitpoints;
 					canvas.DrawRect(device.TargetSize.X - 10 - 20, device.TargetSize.Y - 10 - 200, 20, 200);
 					canvas.FillRect(device.TargetSize.X - 12 - 16, device.TargetSize.Y - 10 - health * 198.0f, 16, health * 196.0f);
 				}
-				else if (isAnyPlayerAlive)
+				else if (isAnyPlayerAlive && !this.playerTwo.HasReachedGoal)
 				{
+					// Draw a respawn timer when dead
 					float respawnPercentage = this.playerTwo.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("{0:F1} to Respawn", (Player.RespawnDelay - this.playerTwo.RespawnTime) / 1000.0f);
 					Vector2 textSize = canvas.MeasureText(string.Format("{0:F1} to Respawn", 0.0f));

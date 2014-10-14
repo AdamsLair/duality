@@ -60,6 +60,8 @@
     <Compile Include="Gameplay\EnemyClaymore.cs" />
     <Compile Include="Gameplay\HeadUpDisplay.cs" />
     <Compile Include="Gameplay\GameOverScreen.cs" />
+    <Compile Include="Gameplay\LevelGoal.cs" />
+    <Compile Include="Gameplay\Trigger.cs" />
     <Compile Include="Visuals\Particle.cs" />
     <Compile Include="Visuals\ParticleEmitter.cs" />
     <Compile Include="Gameplay\PlayerId.cs" />

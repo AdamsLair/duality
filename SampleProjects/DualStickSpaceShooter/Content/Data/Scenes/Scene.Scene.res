@@ -6123,12 +6123,12 @@
             <active dataType="Bool">true</active>
             <blendMaterial dataType="Struct" type="Duality.Resources.BatchInfo" id="972466776">
               <dirtyFlag dataType="Enum" type="Duality.Resources.BatchInfo+DirtyFlag" name="None" value="0" />
-              <hashCode dataType="Int">343952833</hashCode>
+              <hashCode dataType="Int">0</hashCode>
               <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
                 <A dataType="Byte">215</A>
-                <B dataType="Byte">0</B>
-                <G dataType="Byte">0</G>
-                <R dataType="Byte">0</R>
+                <B dataType="Byte">255</B>
+                <G dataType="Byte">255</G>
+                <R dataType="Byte">255</R>
               </mainColor>
               <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
                 <contentPath dataType="String">Data\Materials\AlphaThreshold.DrawTechnique.res</contentPath>
@@ -6154,6 +6154,7 @@
             <gameobj dataType="ObjectRef">1064452476</gameobj>
             <gameOver dataType="Bool">false</gameOver>
             <gameStarted dataType="Bool">false</gameStarted>
+            <gameWin dataType="Bool">false</gameWin>
             <lastTimeAnyAlive dataType="Float">0</lastTimeAnyAlive>
           </item>
         </_items>
@@ -6255,9 +6256,17 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3900738636</gameobj>
           </item>
+          <item dataType="Struct" type="DualStickSpaceShooter.Trigger" id="2406545340">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">3900738636</gameobj>
+          </item>
+          <item dataType="Struct" type="DualStickSpaceShooter.LevelGoal" id="2536165913">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">3900738636</gameobj>
+          </item>
         </_items>
-        <_size dataType="Int">5</_size>
-        <_version dataType="Int">5</_version>
+        <_size dataType="Int">7</_size>
+        <_version dataType="Int">7</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3769695922" surrogate="true">
         <header />
@@ -6268,6 +6277,8 @@
             <item dataType="ObjectRef">4016316454</item>
             <item dataType="ObjectRef">2987759726</item>
             <item dataType="Type" id="1248098524" value="Duality.Components.Renderers.TextRenderer" />
+            <item dataType="Type" id="4164327702" value="DualStickSpaceShooter.Trigger" />
+            <item dataType="Type" id="891042376" value="DualStickSpaceShooter.LevelGoal" />
           </keys>
           <values dataType="Array" type="Duality.Component[]" id="3947163790">
             <item dataType="ObjectRef">1966086272</item>
@@ -6275,6 +6286,8 @@
             <item dataType="ObjectRef">204464530</item>
             <item dataType="ObjectRef">632404433</item>
             <item dataType="ObjectRef">1348400162</item>
+            <item dataType="ObjectRef">2406545340</item>
+            <item dataType="ObjectRef">2536165913</item>
           </values>
         </body>
       </compMap>
@@ -6293,31 +6306,21 @@
           <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2198170732" length="4">
             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3078935976">
-                <_items dataType="Array" type="System.Int32[]" id="3139126956" length="4" />
-                <_size dataType="Int">1</_size>
-                <_version dataType="Int">2</_version>
-              </childIndex>
-              <componentType dataType="ObjectRef">2987759726</componentType>
-              <prop dataType="PropertyInfo" id="849483678" value="P:DualStickSpaceShooter.ParticleEffect:WorldSpace" />
-              <val dataType="Bool">false</val>
-            </item>
-            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
-              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1422911380">
-                <_items dataType="Array" type="System.Int32[]" id="3476940872" />
+                <_items dataType="Array" type="System.Int32[]" id="3139126956" />
                 <_size dataType="Int">0</_size>
                 <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">4020116262</componentType>
               <prop dataType="ObjectRef">3402294738</prop>
               <val dataType="Struct" type="OpenTK.Vector3">
-                <X dataType="Float">396</X>
-                <Y dataType="Float">74</Y>
+                <X dataType="Float">426</X>
+                <Y dataType="Float">111</Y>
                 <Z dataType="Float">0</Z>
               </val>
             </item>
           </_items>
-          <_size dataType="Int">2</_size>
-          <_version dataType="Int">1409</_version>
+          <_size dataType="Int">1</_size>
+          <_version dataType="Int">1547</_version>
         </changes>
         <obj dataType="ObjectRef">3900738636</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">

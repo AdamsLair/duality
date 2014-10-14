@@ -30,7 +30,9 @@ namespace DualStickSpaceShooter
 		private ColorHsva	maxColor			= ColorHsva.White;
 		private Range		spriteIndex			= 0;
 
+		[NonSerialized]
 		private int			burstCount			= 0;
+		[NonSerialized]
 		private	float		burstTimer			= 0.0f;
 
 		[EditorHintDecimalPlaces(0)]
@@ -105,17 +107,14 @@ namespace DualStickSpaceShooter
 
 		public void Update(ParticleEffect effect)
 		{
-			if (this.burstCount < this.maxBurstCount || this.maxBurstCount < 0)
+			this.burstTimer -= Time.MsPFMult * Time.TimeMult;
+			while (this.burstTimer <= 0.0f && (this.burstCount < this.maxBurstCount || this.maxBurstCount < 0))
 			{
-				this.burstTimer -= Time.MsPFMult * Time.TimeMult;
-				if (this.burstTimer <= 0.0f)
-				{
-					this.burstTimer += MathF.Rnd.NextFloat(this.burstDelay.MinValue, this.burstDelay.MaxValue);
-					this.burstCount++;
+				this.burstTimer += MathF.Rnd.NextFloat(this.burstDelay.MinValue, this.burstDelay.MaxValue);
+				this.burstCount++;
 
-					int count = MathF.Rnd.Next((int)this.burstParticleNum.MinValue, (int)this.burstParticleNum.MaxValue);
-					effect.AddParticles(this, count);
-				}
+				int count = MathF.Rnd.Next((int)this.burstParticleNum.MinValue, (int)this.burstParticleNum.MaxValue);
+				effect.AddParticles(this, count);
 			}
 		}
 		public void InitParticle(ref Particle particle)

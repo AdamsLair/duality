@@ -42,4 +42,25 @@ namespace DualStickSpaceShooter
 	}
 
 	public class ShipDeathMessage : GameMessage {}
+	public abstract class GameObjectMessage : GameMessage
+	{
+		private GameObject gameObj;
+		public GameObject GameObj
+		{
+			get { return this.gameObj; }
+		}
+
+		public GameObjectMessage(GameObject gameObj)
+		{
+			this.gameObj = gameObj;
+		}
+	}
+	public class TriggerEnteredMessage : GameObjectMessage
+	{
+		public TriggerEnteredMessage(GameObject enteredBy) : base(enteredBy) {}
+	}
+	public class TriggerLeftMessage : GameObjectMessage
+	{
+		public TriggerLeftMessage(GameObject leftBy) : base(leftBy) {}
+	}
 }

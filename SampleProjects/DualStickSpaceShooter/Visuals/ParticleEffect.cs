@@ -15,7 +15,7 @@ namespace DualStickSpaceShooter
 {
 	[Serializable]
 	[RequiredComponent(typeof(Transform))]
-	public class ParticleEffect : Renderer, ICmpUpdatable
+	public class ParticleEffect : Renderer, ICmpUpdatable, ICmpInitializable
 	{
 		private ContentRef<Material>	material			= null;
 		private Vector2					particleSize		= new Vector2(16, 16);
@@ -146,6 +146,15 @@ namespace DualStickSpaceShooter
 				return material.Res.MainTexture.Res;
 			else
 				return null;
+		}
+
+		private void UpdateEmitters()
+		{
+			for (int i = this.emitters.Count - 1; i >= 0; i--)
+			{
+				if (this.emitters[i] == null) continue;
+				this.emitters[i].Update(this);
+			}
 		}
 
 		public override void Draw(IDrawDevice device)
@@ -280,11 +289,7 @@ namespace DualStickSpaceShooter
 			this.boundRadius += this.particleSize.Length;
 
 			// Update particle emission
-			for (int i = this.emitters.Count - 1; i >= 0; i--)
-			{
-				if (this.emitters[i] == null) continue;
-				this.emitters[i].Update(this);
-			}
+			this.UpdateEmitters();
 
 			// Dispose when empty
 			if (this.disposeWhenEmpty && this.IsEmpty)
@@ -292,5 +297,14 @@ namespace DualStickSpaceShooter
 				this.GameObj.DisposeLater();
 			}
 		}
+		void ICmpInitializable.OnInit(Component.InitContext context)
+		{
+			if (context == InitContext.Activate)
+			{
+				// When activating, directly update particle emitters once, so there is already something to see.
+				this.UpdateEmitters();
+			}
+		}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
 	}
 }

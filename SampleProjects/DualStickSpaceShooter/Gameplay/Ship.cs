@@ -170,7 +170,10 @@ namespace DualStickSpaceShooter
 			ShipBlueprint	blueprint	= this.blueprint.Res;
 
 			// Heal when damaged
-			this.hitpoints = MathF.Clamp(this.hitpoints + blueprint.HealRate * Time.SPFMult * Time.TimeMult / blueprint.MaxHitpoints, 0.0f, 1.0f);
+			if (this.hitpoints < 1.0f)
+			{
+				this.hitpoints = MathF.Clamp(this.hitpoints + blueprint.HealRate * Time.SPFMult * Time.TimeMult / blueprint.MaxHitpoints, 0.0f, 1.0f);
+			}
 
 			// Apply force according to the desired thrust
 			Vector2 actualVelocity = body.LinearVelocity;

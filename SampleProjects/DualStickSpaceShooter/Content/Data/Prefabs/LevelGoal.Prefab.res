@@ -159,7 +159,7 @@
                   <Y dataType="Float">256</Y>
                 </particleSize>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                <worldSpace dataType="Bool">true</worldSpace>
+                <worldSpace dataType="Bool">false</worldSpace>
               </item>
             </_items>
             <_size dataType="Int">2</_size>
@@ -232,7 +232,7 @@
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">21</_version>
+            <_version dataType="Int">23</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2513083469">
@@ -413,9 +413,17 @@
           </text>
           <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
         </item>
+        <item dataType="Struct" type="DualStickSpaceShooter.Trigger" id="420196983">
+          <active dataType="Bool">true</active>
+          <gameobj dataType="ObjectRef">1914390279</gameobj>
+        </item>
+        <item dataType="Struct" type="DualStickSpaceShooter.LevelGoal" id="549817556">
+          <active dataType="Bool">true</active>
+          <gameobj dataType="ObjectRef">1914390279</gameobj>
+        </item>
       </_items>
-      <_size dataType="Int">5</_size>
-      <_version dataType="Int">5</_version>
+      <_size dataType="Int">7</_size>
+      <_version dataType="Int">7</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="682266808" surrogate="true">
       <header />
@@ -426,6 +434,8 @@
           <item dataType="Type" id="1753121846" value="Duality.Components.Renderers.RigidBodyRenderer" />
           <item dataType="ObjectRef">3391360986</item>
           <item dataType="Type" id="3872205368" value="Duality.Components.Renderers.TextRenderer" />
+          <item dataType="Type" id="3634707730" value="DualStickSpaceShooter.Trigger" />
+          <item dataType="Type" id="2123244324" value="DualStickSpaceShooter.LevelGoal" />
         </keys>
         <values dataType="Array" type="Duality.Component[]" id="3891391454">
           <item dataType="ObjectRef">4274705211</item>
@@ -433,6 +443,8 @@
           <item dataType="ObjectRef">2513083469</item>
           <item dataType="ObjectRef">2941023372</item>
           <item dataType="ObjectRef">3657019101</item>
+          <item dataType="ObjectRef">420196983</item>
+          <item dataType="ObjectRef">549817556</item>
         </values>
       </body>
     </compMap>

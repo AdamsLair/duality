@@ -8,6 +8,8 @@ using OpenTK.Input;
 
 using Duality;
 using Duality.Components;
+using Duality.Components.Renderers;
+using Duality.Components.Physics;
 using Duality.Resources;
 using Duality.Drawing;
 
@@ -32,13 +34,18 @@ namespace DualStickSpaceShooter
 		}
 
 
-		private PlayerId		id			= PlayerId.Unknown;
-		private	Ship			controlObj	= null;
-		private	ColorRgba		color		= ColorRgba.White;
-		private	float			respawnTime	= 0.0f;
+		private PlayerId			id					= PlayerId.Unknown;
+		private	Ship				controlObj			= null;
+		private	ColorRgba			color				= ColorRgba.White;
+		private	float				respawnTime			= 0.0f;
+		private	bool				hasReachedGoal		= false;
+		private	float				goalReachTime		= 0.0f;
+		private	ContentRef<Prefab>	goalEffect			= null;
 
 		[NonSerialized]
-		private	InputMapping	input		= null;
+		private	InputMapping	input				= null;
+		[NonSerialized]
+		private	GameObject		goalEffectInstance	= null;
 
 
 		public PlayerId Id
@@ -83,9 +90,33 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.respawnTime; }
 		}
+		public bool HasReachedGoal
+		{
+			get { return this.hasReachedGoal; }
+		}
+		public ContentRef<Prefab> GoalEffect
+		{
+			get { return this.goalEffect; }
+			set { this.goalEffect = value; }
+		}
 
+
+		public void NotifyGoalReached()
+		{
+			if (this.hasReachedGoal) return;
+			this.hasReachedGoal = true;
+			this.goalReachTime = (float)Time.GameTimer.TotalMilliseconds;
+
+			// Become a ghost
+			RigidBody body = this.controlObj.GameObj.RigidBody;
+			body.CollidesWith = CollisionCategory.None;
+
+			// Become invincible
+			this.controlObj.Hitpoints = 10000.0f;
+		}
 		void ICmpUpdatable.OnUpdate()
 		{
+
 			// If the object we're controlling has been destroyed, forget about it
 			if (this.controlObj != null && this.controlObj.Disposed)
 				this.controlObj = null;
@@ -125,11 +156,42 @@ namespace DualStickSpaceShooter
 					this.controlObj.GameObj.Active = true;
 				}
 			}
-
+			
 			// Manage the object this player is supposed to control
 			if (this.controlObj != null)
 			{
-				if (this.controlObj.Active)
+				if (this.hasReachedGoal)
+				{
+					RigidBody body = this.controlObj.GameObj.RigidBody;
+					SpriteRenderer sprite = this.controlObj.GameObj.GetComponent<SpriteRenderer>();
+
+					// If we've reached the goal, update the final animation and do nothing else
+					float goalAnim = MathF.Clamp(((float)Time.GameTimer.TotalMilliseconds - this.goalReachTime) / 2000.0f, 0.0f, 1.0f);
+
+					// Don't move
+					body.LinearVelocity *= MathF.Pow(0.9f, Time.TimeMult);
+					this.controlObj.TargetAngleRatio = 0.1f;
+					this.controlObj.TargetThrust = Vector2.Zero;
+
+					// Fade out
+					if (sprite.CustomMaterial == null) sprite.CustomMaterial = new BatchInfo(sprite.SharedMaterial.Res);
+					sprite.CustomMaterial.Technique = DrawTechnique.SharpAlpha;
+					sprite.ColorTint = sprite.ColorTint.WithAlpha(1.0f - goalAnim);
+					
+					// Spawn a goal reached effect
+					if (goalAnim > 0.2f && this.goalEffect != null && this.goalEffectInstance == null)
+					{
+						this.goalEffectInstance = this.goalEffect.Res.Instantiate(this.controlObj.GameObj.Transform.Pos);
+						Scene.Current.AddObject(this.goalEffectInstance);
+					}
+
+					// Let the ship disappear
+					if (goalAnim >= 1.0f)
+					{
+						this.controlObj.GameObj.Active = false;
+					}
+				}
+				else if (this.controlObj.Active)
 				{
 					// Apply control inputs to the controlled object
 					this.controlObj.TargetAngle = this.input.ControlLookAngle;
@@ -138,7 +200,7 @@ namespace DualStickSpaceShooter
 					if (this.input.ControlFireWeapon)
 						this.controlObj.FireWeapon();
 				}
-				else if (hasInputMethod && Player.IsAnyPlayerAlive)
+				else if (hasInputMethod && Player.IsAnyPlayerAlive && !this.hasReachedGoal)
 				{
 					// Respawn when possible
 					this.respawnTime += Time.MsPFMult * Time.TimeMult;
