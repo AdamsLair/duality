@@ -31,6 +31,7 @@ namespace Duality.Components.Renderers
 		private	ColorRgba				colorTint				= ColorRgba.White;
 		private	float					outlineWidth			= 3.0f;
 		private	int						offset					= 0;
+		private	bool					fillHollowShapes		= false;
 		private	bool					wrapTexture				= true;
 
 		[NonSerialized] private	CanvasBuffer	vertexBuffer	= new CanvasBuffer();
@@ -98,6 +99,14 @@ namespace Duality.Components.Renderers
 		{
 			get { return this.outlineWidth; }
 			set { this.outlineWidth = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Whether or not hollow shapes like the <see cref="LoopShapeInfo"/> will be filled as if they were in fact solid.
+		/// </summary>
+		public bool FillHollowShapes
+		{
+			get { return this.fillHollowShapes; }
+			set { this.fillHollowShapes = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Specifies, whether or not texture wrapping will be active when rendering the RigidBody area and outline.
@@ -206,7 +215,23 @@ namespace Duality.Components.Renderers
 		}
 		private void DrawShapeArea(Canvas canvas, Transform transform, LoopShapeInfo shape)
 		{
-			// LoopShapes don't have an area. Do nothing here.
+			// LoopShapes don't have an area. Do nothing here, unless explicitly specified
+			if (!this.fillHollowShapes) return;
+
+			Vector3 pos = transform.Pos;
+			float angle = transform.Angle;
+			float scale = transform.Scale;
+
+			if (this.wrapTexture)
+			{
+				Rect pointBoundingRect = shape.Vertices.BoundingBox();
+				canvas.State.TextureCoordinateRect = new Rect(
+					pointBoundingRect.W / canvas.State.TextureBaseSize.X,
+					pointBoundingRect.H / canvas.State.TextureBaseSize.Y);
+			}
+			canvas.State.TransformAngle = angle;
+			canvas.State.TransformScale = new Vector2(scale, scale);
+			canvas.FillPolygon(shape.Vertices, pos.X, pos.Y, pos.Z);
 		}
 
 		private void DrawShapeOutline(Canvas canvas, Transform transform, ShapeInfo shape)
