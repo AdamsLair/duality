@@ -95,16 +95,14 @@
                         <Y dataType="Float">0</Y>
                         <Z dataType="Float">0</Z>
                       </baseVel>
-                      <burstCount dataType="Int">0</burstCount>
                       <burstDelay dataType="Struct" type="Duality.Range">
-                        <MaxValue dataType="Float">10000</MaxValue>
-                        <MinValue dataType="Float">6000</MinValue>
+                        <MaxValue dataType="Float">6000</MaxValue>
+                        <MinValue dataType="Float">4000</MinValue>
                       </burstDelay>
                       <burstParticleNum dataType="Struct" type="Duality.Range">
                         <MaxValue dataType="Float">1</MaxValue>
                         <MinValue dataType="Float">1</MinValue>
                       </burstParticleNum>
-                      <burstTimer dataType="Float">0</burstTimer>
                       <maxBurstCount dataType="Int">-1</maxBurstCount>
                       <maxColor dataType="Struct" type="Duality.Drawing.ColorHsva">
                         <A dataType="Float">0.549019635</A>
@@ -232,30 +230,8 @@
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">23</_version>
+            <_version dataType="Int">24</_version>
           </shapes>
-        </item>
-        <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2513083469">
-          <active dataType="Bool">true</active>
-          <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-            <contentPath dataType="String">Data\Materials\AddWhite.Material.res</contentPath>
-          </areaMaterial>
-          <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-            <A dataType="Byte">16</A>
-            <B dataType="Byte">0</B>
-            <G dataType="Byte">255</G>
-            <R dataType="Byte">121</R>
-          </colorTint>
-          <customAreaMaterial />
-          <customOutlineMaterial />
-          <gameobj dataType="ObjectRef">1914390279</gameobj>
-          <offset dataType="Int">0</offset>
-          <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-            <contentPath dataType="String">Data\Materials\AddWhite.Material.res</contentPath>
-          </outlineMaterial>
-          <outlineWidth dataType="Float">3</outlineWidth>
-          <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          <wrapTexture dataType="Bool">true</wrapTexture>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.ParticleEffect" id="2941023372">
           <active dataType="Bool">true</active>
@@ -279,7 +255,6 @@
                   <Y dataType="Float">0</Y>
                   <Z dataType="Float">-0.1</Z>
                 </baseVel>
-                <burstCount dataType="Int">0</burstCount>
                 <burstDelay dataType="Struct" type="Duality.Range">
                   <MaxValue dataType="Float">300</MaxValue>
                   <MinValue dataType="Float">50</MinValue>
@@ -288,7 +263,6 @@
                   <MaxValue dataType="Float">1</MaxValue>
                   <MinValue dataType="Float">1</MinValue>
                 </burstParticleNum>
-                <burstTimer dataType="Float">0</burstTimer>
                 <maxBurstCount dataType="Int">-1</maxBurstCount>
                 <maxColor dataType="Struct" type="Duality.Drawing.ColorHsva">
                   <A dataType="Float">0.5019608</A>
@@ -421,9 +395,33 @@
           <active dataType="Bool">true</active>
           <gameobj dataType="ObjectRef">1914390279</gameobj>
         </item>
+        <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="3556556847">
+          <active dataType="Bool">true</active>
+          <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+            <A dataType="Byte">64</A>
+            <B dataType="Byte">0</B>
+            <G dataType="Byte">255</G>
+            <R dataType="Byte">152</R>
+          </colorTint>
+          <customMat />
+          <gameobj dataType="ObjectRef">1914390279</gameobj>
+          <offset dataType="Int">-1</offset>
+          <pixelGrid dataType="Bool">false</pixelGrid>
+          <rect dataType="Struct" type="Duality.Rect">
+            <H dataType="Float">256</H>
+            <W dataType="Float">256</W>
+            <X dataType="Float">-128</X>
+            <Y dataType="Float">-128</Y>
+          </rect>
+          <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
+          <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+            <contentPath dataType="String">Data\Materials\Glow.Material.res</contentPath>
+          </sharedMat>
+          <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
+        </item>
       </_items>
       <_size dataType="Int">7</_size>
-      <_version dataType="Int">7</_version>
+      <_version dataType="Int">9</_version>
     </compList>
     <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="682266808" surrogate="true">
       <header />
@@ -431,7 +429,7 @@
         <keys dataType="Array" type="System.Type[]" id="4041440632">
           <item dataType="ObjectRef">3579095766</item>
           <item dataType="Type" id="2035388268" value="Duality.Components.Physics.RigidBody" />
-          <item dataType="Type" id="1753121846" value="Duality.Components.Renderers.RigidBodyRenderer" />
+          <item dataType="Type" id="1753121846" value="Duality.Components.Renderers.SpriteRenderer" />
           <item dataType="ObjectRef">3391360986</item>
           <item dataType="Type" id="3872205368" value="Duality.Components.Renderers.TextRenderer" />
           <item dataType="Type" id="3634707730" value="DualStickSpaceShooter.Trigger" />
@@ -440,7 +438,7 @@
         <values dataType="Array" type="Duality.Component[]" id="3891391454">
           <item dataType="ObjectRef">4274705211</item>
           <item dataType="ObjectRef">682199507</item>
-          <item dataType="ObjectRef">2513083469</item>
+          <item dataType="ObjectRef">3556556847</item>
           <item dataType="ObjectRef">2941023372</item>
           <item dataType="ObjectRef">3657019101</item>
           <item dataType="ObjectRef">420196983</item>

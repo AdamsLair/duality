@@ -121,7 +121,7 @@
           <item dataType="Struct" type="Duality.Components.Camera" id="1700552844">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
-            <focusDist dataType="Float">500</focusDist>
+            <focusDist dataType="Float">492.094055</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3349398274">
@@ -1036,6 +1036,7 @@
                   </colorTint>
                   <customAreaMaterial />
                   <customOutlineMaterial />
+                  <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">367989753</gameobj>
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
@@ -1165,6 +1166,7 @@
                   </colorTint>
                   <customAreaMaterial />
                   <customOutlineMaterial />
+                  <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">3837180042</gameobj>
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
@@ -1307,6 +1309,7 @@
                   </colorTint>
                   <customAreaMaterial />
                   <customOutlineMaterial />
+                  <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">3508990515</gameobj>
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
@@ -1449,6 +1452,7 @@
                   </colorTint>
                   <customAreaMaterial />
                   <customOutlineMaterial />
+                  <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">2373794822</gameobj>
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
@@ -1591,6 +1595,7 @@
                   </colorTint>
                   <customAreaMaterial />
                   <customOutlineMaterial />
+                  <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">196886364</gameobj>
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
@@ -1720,6 +1725,7 @@
                   </colorTint>
                   <customAreaMaterial />
                   <customOutlineMaterial />
+                  <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                   <gameobj dataType="ObjectRef">4124357391</gameobj>
                   <offset dataType="Int">0</offset>
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
@@ -6240,10 +6246,6 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3900738636</gameobj>
           </item>
-          <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="204464530">
-            <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">3900738636</gameobj>
-          </item>
           <item dataType="Struct" type="DualStickSpaceShooter.ParticleEffect" id="632404433">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3900738636</gameobj>
@@ -6260,9 +6262,13 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3900738636</gameobj>
           </item>
+          <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1247937908">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">3900738636</gameobj>
+          </item>
         </_items>
         <_size dataType="Int">7</_size>
-        <_version dataType="Int">7</_version>
+        <_version dataType="Int">9</_version>
       </compList>
       <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3769695922" surrogate="true">
         <header />
@@ -6270,7 +6276,7 @@
           <keys dataType="Array" type="System.Type[]" id="3710994592">
             <item dataType="ObjectRef">4020116262</item>
             <item dataType="ObjectRef">2826137326</item>
-            <item dataType="ObjectRef">4016316454</item>
+            <item dataType="ObjectRef">2838274704</item>
             <item dataType="ObjectRef">2987759726</item>
             <item dataType="Type" id="1248098524" value="Duality.Components.Renderers.TextRenderer" />
             <item dataType="Type" id="4164327702" value="DualStickSpaceShooter.Trigger" />
@@ -6279,7 +6285,7 @@
           <values dataType="Array" type="Duality.Component[]" id="3947163790">
             <item dataType="ObjectRef">1966086272</item>
             <item dataType="ObjectRef">2668547864</item>
-            <item dataType="ObjectRef">204464530</item>
+            <item dataType="ObjectRef">1247937908</item>
             <item dataType="ObjectRef">632404433</item>
             <item dataType="ObjectRef">1348400162</item>
             <item dataType="ObjectRef">2406545340</item>
@@ -6309,20 +6315,47 @@
               <componentType dataType="ObjectRef">4020116262</componentType>
               <prop dataType="ObjectRef">3402294738</prop>
               <val dataType="Struct" type="OpenTK.Vector3">
-                <X dataType="Float">426</X>
-                <Y dataType="Float">111</Y>
+                <X dataType="Float">570.3484</X>
+                <Y dataType="Float">54.5278053</Y>
                 <Z dataType="Float">0</Z>
               </val>
             </item>
           </_items>
           <_size dataType="Int">1</_size>
-          <_version dataType="Int">1547</_version>
+          <_version dataType="Int">169</_version>
         </changes>
         <obj dataType="ObjectRef">3900738636</obj>
         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
           <contentPath dataType="String">Data\Prefabs\LevelGoal.Prefab.res</contentPath>
         </prefab>
       </prefabLink>
+    </item>
+    <item dataType="Struct" type="Duality.GameObject" id="1570220165">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="199420407">
+        <_items dataType="Array" type="Duality.Component[]" id="1702249102" />
+        <_size dataType="Int">0</_size>
+        <_version dataType="Int">0</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3412815424" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Type[]" id="502959933" />
+          <values dataType="Array" type="Duality.Component[]" id="1148141752" />
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="760722711">Gu8svLuSwUep2XNIaCSRXg==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">Level</name>
+      <parent />
+      <prefabLink />
     </item>
     <item dataType="ObjectRef">687383225</item>
     <item dataType="ObjectRef">2383024647</item>
