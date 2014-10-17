@@ -390,6 +390,7 @@
         <item dataType="Struct" type="DualStickSpaceShooter.Trigger" id="420196983">
           <active dataType="Bool">true</active>
           <gameobj dataType="ObjectRef">1914390279</gameobj>
+          <targets />
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.LevelGoal" id="549817556">
           <active dataType="Bool">true</active>

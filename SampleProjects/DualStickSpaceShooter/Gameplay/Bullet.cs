@@ -6,7 +6,9 @@ using System.Text;
 using OpenTK;
 
 using Duality;
+using Duality.Drawing;
 using Duality.Editor;
+using Duality.Resources;
 using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Components.Physics;
@@ -62,17 +64,71 @@ namespace DualStickSpaceShooter
 			if (bodyArgs == null) return;
 			if (bodyArgs.OtherShape.IsSensor) return;
 
+			// Did we collide with a ship? If it's the same that fired the bullet, ignore this
 			Ship otherShip = args.CollideWith.GetComponent<Ship>();
 			if (otherShip != null && otherShip.Owner == this.owner) return;
 
+			// Get all the objet references we'll need
 			RigidBody		otherBody	= args.CollideWith.RigidBody;
 			Transform		transform	= this.GameObj.Transform;
 			RigidBody		body		= this.GameObj.RigidBody;
 			BulletBlueprint	blueprint	= this.blueprint.Res;
 
-			otherBody.ApplyWorldImpulse(body.LinearVelocity * MathF.Min(otherBody.Mass, blueprint.ImpactMass), transform.Pos.Xy);
-			if (otherShip != null) otherShip.DoDamage(blueprint.Damage);
+			// Okay, let's determine where *exactly* our bullet hit
+			RayCastData firstHit;
+			bool hitAnything = RigidBody.RayCast(transform.Pos.Xy - body.LinearVelocity, transform.Pos.Xy + body.LinearVelocity, data =>
+			{
+				if (data.Shape.IsSensor) return -1.0f;
+				return data.Fraction;
+			}, out firstHit);
 
+			Vector3 hitPos;
+			float hitAngle;
+			if (hitAnything)
+			{
+				hitPos = new Vector3(firstHit.Pos, 0.0f);
+				hitAngle = (-firstHit.Normal).Angle;
+			}
+			else
+			{
+				// Note that it is possible for the raycast to not hit anything, 
+				// because it is essentially a line, while our bullet is wider than zero.
+				hitPos = transform.Pos;
+				hitAngle = transform.Angle;
+			}
+
+			// Push around whatever we've just hit and do damage, if it was a ship
+			otherBody.ApplyWorldImpulse(body.LinearVelocity * MathF.Min(otherBody.Mass, blueprint.ImpactMass), transform.Pos.Xy);
+			if (otherShip != null)
+			{
+				otherShip.DoDamage(blueprint.Damage);
+			}
+
+			// If we hit a part of the world, spawn the world hit effect
+			if (otherShip == null && blueprint.HitWorldEffect != null)
+			{
+				GameObject effectObj = blueprint.HitWorldEffect.Res.Instantiate(hitPos, hitAngle);
+				Scene.Current.AddObject(effectObj);
+			}
+
+			// Also spawn a generic hit effect in the color of the bullet
+			if (blueprint.HitEffect != null)
+			{
+				GameObject effectObj = blueprint.HitEffect.Res.Instantiate(hitPos, hitAngle);
+				ParticleEffect effect = effectObj.GetComponent<ParticleEffect>();
+				if (effect != null && this.owner != null)
+				{
+					ColorHsva color = this.owner.Color.ToHsva();
+					foreach (ParticleEmitter emitter in effect.Emitters)
+					{
+						emitter.MaxColor = emitter.MaxColor.WithSaturation(color.S).WithHue(color.H);
+						emitter.MinColor = emitter.MinColor.WithSaturation(color.S).WithHue(color.H);
+					}
+				}
+				Scene.Current.AddObject(effectObj);
+			}
+
+			// Delete the bullet
 			this.GameObj.DisposeLater();
 		}
 		void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args) {}

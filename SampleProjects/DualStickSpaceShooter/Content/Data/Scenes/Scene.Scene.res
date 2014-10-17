@@ -121,7 +121,7 @@
           <item dataType="Struct" type="Duality.Components.Camera" id="1700552844">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
-            <focusDist dataType="Float">492.094055</focusDist>
+            <focusDist dataType="Float">470.941376</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3349398274">
@@ -4238,14 +4238,14 @@
                     <componentType dataType="ObjectRef">4020116262</componentType>
                     <prop dataType="ObjectRef">3402294738</prop>
                     <val dataType="Struct" type="OpenTK.Vector3">
-                      <X dataType="Float">170.001</X>
-                      <Y dataType="Float">-21.5</Y>
+                      <X dataType="Float">170</X>
+                      <Y dataType="Float">-21</Y>
                       <Z dataType="Float">0</Z>
                     </val>
                   </item>
                 </_items>
                 <_size dataType="Int">1</_size>
-                <_version dataType="Int">85</_version>
+                <_version dataType="Int">87</_version>
               </changes>
               <obj dataType="ObjectRef">347102484</obj>
               <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">

@@ -22,6 +22,8 @@ namespace DualStickSpaceShooter
 		private	float					launchSpeed		= 10.0f;
 		private	float					damage			= 5.0f;
 		private	ContentRef<Material>	spriteMaterial	= null;
+		private ContentRef<Prefab>		hitEffect		= null;
+		private ContentRef<Prefab>		hitWorldEffect	= null;
 
 		public float Lifetime
 		{
@@ -47,6 +49,16 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.spriteMaterial; }
 			set { this.spriteMaterial = value; }
+		}
+		public ContentRef<Prefab> HitEffect
+		{
+			get { return this.hitEffect; }
+			set { this.hitEffect = value; }
+		}
+		public ContentRef<Prefab> HitWorldEffect
+		{
+			get { return this.hitWorldEffect; }
+			set { this.hitWorldEffect = value; }
 		}
 
 		public Bullet CreateBullet()

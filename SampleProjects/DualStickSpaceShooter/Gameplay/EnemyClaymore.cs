@@ -185,11 +185,11 @@ namespace DualStickSpaceShooter
 				obj => obj.GameObj != this.GameObj);
 
 			// Damage other objects
-			GameplayHelper.SplashDamage(
+			GameplayHelper.ExplosionDamage(
 				pos, 
 				this.exploRadius,
 				this.exploDamage,
-				obj => obj != ship);
+				body => body.GameObj.GetComponent<Ship>() != null && body.GameObj != ship.GameObj);
 
 			// Die instantly
 			ship.Die();
@@ -211,7 +211,8 @@ namespace DualStickSpaceShooter
 			Transform otherTransform = obj.Transform;
 			Transform transform = this.GameObj.Transform;
 
-			List<RayCastData> raycast = RigidBody.RayCast(transform.Pos.Xy, otherTransform.Pos.Xy, data => 
+			RayCastData firstHit;
+			bool hitAnything = RigidBody.RayCast(transform.Pos.Xy, otherTransform.Pos.Xy, data => 
 			{
 				if (data.GameObj == this.GameObj) return -1;
 				if (data.Shape.IsSensor) return -1;
@@ -223,10 +224,9 @@ namespace DualStickSpaceShooter
 				}
 
 				return data.Fraction;
-			});
+			}, out firstHit);
 
-			bool hitTarget = raycast.Count > 0 && raycast[0].GameObj == obj;
-			return hitTarget;
+			return hitAnything && firstHit.GameObj == obj;
 		}
 		private GameObject GetNearestPlayerObj(out float nearestDist)
 		{
@@ -407,7 +407,8 @@ namespace DualStickSpaceShooter
 
 					Vector2 spikeBeginWorld = transform.GetWorldPoint(spikeDir * 4);
 					Vector2 spikeEndWorld = transform.GetWorldPoint(spikeDir * 11);
-					List<RayCastData> raycast = RigidBody.RayCast(spikeBeginWorld, spikeEndWorld, data => 
+					bool hitAnything = false;
+					RigidBody.RayCast(spikeBeginWorld, spikeEndWorld, data => 
 					{
 						if (data.Shape.IsSensor) return -1;
 						if (data.Body == body) return -1;
@@ -415,10 +416,11 @@ namespace DualStickSpaceShooter
 						Ship otherShip = data.GameObj.GetComponent<Ship>();
 						if (otherShip != null && otherShip.Owner != null) return -1;
 
-						return data.Fraction;
+						hitAnything = true;
+						return 0;
 					});
 
-					if (raycast.Count > 0 && raycast[0].Fraction < 1.0f)
+					if (hitAnything)
 					{
 						actualTarget = 0.0f;
 					}

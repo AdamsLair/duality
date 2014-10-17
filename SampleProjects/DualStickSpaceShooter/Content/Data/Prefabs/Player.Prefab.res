@@ -159,6 +159,7 @@
                   <goalEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
                     <contentPath dataType="String">Data\Prefabs\GoalEffect.Prefab.res</contentPath>
                   </goalEffect>
+                  <goalReachTime dataType="Float">0</goalReachTime>
                   <hasReachedGoal dataType="Bool">false</hasReachedGoal>
                   <id dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="PlayerOne" value="1" />
                   <respawnTime dataType="Float">0</respawnTime>

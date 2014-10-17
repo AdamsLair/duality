@@ -45,7 +45,7 @@
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
           </constantForce>
-          <disposeWhenEmpty dataType="Bool">false</disposeWhenEmpty>
+          <disposeWhenEmpty dataType="Bool">true</disposeWhenEmpty>
           <emitters dataType="Struct" type="System.Collections.Generic.List`1[[DualStickSpaceShooter.ParticleEmitter]]" id="3243969495">
             <_items dataType="Array" type="DualStickSpaceShooter.ParticleEmitter[]" id="2888306190" length="4">
               <item dataType="Struct" type="DualStickSpaceShooter.ParticleEmitter" id="1221275600">
@@ -67,7 +67,7 @@
                   <MaxValue dataType="Float">10</MaxValue>
                   <MinValue dataType="Float">5</MinValue>
                 </burstParticleNum>
-                <maxBurstCount dataType="Int">-1</maxBurstCount>
+                <maxBurstCount dataType="Int">1</maxBurstCount>
                 <maxColor dataType="Struct" type="Duality.Drawing.ColorHsva">
                   <A dataType="Float">1</A>
                   <H dataType="Float">0</H>

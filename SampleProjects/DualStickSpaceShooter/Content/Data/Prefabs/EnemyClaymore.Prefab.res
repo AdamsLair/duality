@@ -651,7 +651,7 @@
               </item>
             </_items>
             <_size dataType="Int">5</_size>
-            <_version dataType="Int">151</_version>
+            <_version dataType="Int">186</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="4276676260">
@@ -676,7 +676,7 @@
           <active dataType="Bool">true</active>
           <behavior dataType="Enum" type="DualStickSpaceShooter.EnemyClaymore+BehaviorFlags" name="Chase" value="1" />
           <blinkTimer dataType="Float">0</blinkTimer>
-          <exploDamage dataType="Float">150</exploDamage>
+          <exploDamage dataType="Float">125</exploDamage>
           <exploEffects dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Prefab]][]" id="3219443732">
             <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
               <contentPath dataType="String">Data\Prefabs\ExplosionClaymoreGlow.Prefab.res</contentPath>
@@ -687,7 +687,7 @@
           </exploEffects>
           <exploForce dataType="Float">50</exploForce>
           <exploMaxVel dataType="Float">5</exploMaxVel>
-          <exploRadius dataType="Float">100</exploRadius>
+          <exploRadius dataType="Float">150</exploRadius>
           <eyeBlinking dataType="Bool">false</eyeBlinking>
           <eyeOpenTarget dataType="Float">0</eyeOpenTarget>
           <eyeOpenValue dataType="Float">0</eyeOpenValue>

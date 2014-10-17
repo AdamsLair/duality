@@ -15,6 +15,31 @@ namespace DualStickSpaceShooter
 	{
 		public static void Shockwave(Vector2 at, float radius, float impulse, float maxVelocity, Predicate<RigidBody> affectsObject)
 		{
+			// Iterate over all RigidBodies with a line-of-sight to the shockwave center and push them away
+			IterateLineOfSightBodies(at, radius, affectsObject, (body, hitData) =>
+			{
+				float distanceFactor = MathF.Pow(1.0f - hitData.Fraction, 1.5f);
+				float maxImpulse = body.Mass * maxVelocity;
+				body.ApplyWorldImpulse(-hitData.Normal * MathF.Min(distanceFactor * impulse, maxImpulse), hitData.Pos);
+			});
+		}
+		public static void ExplosionDamage(Vector2 at, float radius, float damage, Predicate<RigidBody> affectsObject)
+		{
+			// Iterate over all RigidBodies with a line-of-sight to the explosion center and damage them
+			IterateLineOfSightBodies(at, radius, affectsObject, (body, hitData) =>
+			{
+				Ship ship = body.GameObj.GetComponent<Ship>();
+				if (ship == null) return;
+
+				float distanceFactor = MathF.Pow(1.0f - hitData.Fraction, 1.5f);
+				ship.DoDamage(distanceFactor * damage);
+			});
+		}
+
+		private delegate void LineOfSightCallback(RigidBody body, RayCastData hitData);
+		private static void IterateLineOfSightBodies(Vector2 at, float radius, Predicate<RigidBody> affectsObject, LineOfSightCallback callback)
+		{
+			// Iterate over all RigidBodies in the area
 			List<RigidBody> nearBodies = RigidBody.QueryRectGlobal(at - new Vector2(radius, radius), new Vector2(radius, radius) * 2);
 			foreach (RigidBody body in nearBodies)
 			{
@@ -25,43 +50,24 @@ namespace DualStickSpaceShooter
 				Vector2 bodyDir = (bodyPos - at).Normalized;
 				Vector2 maxRadiusPos = at + bodyDir * radius;
 
-				List<RayCastData> hitData = RigidBody.RayCast(at, maxRadiusPos, d =>
+				// Perform a raycast to find out whether the current body has a direct line of sight to the center
+				RayCastData firstHit;
+				bool hitAnything = RigidBody.RayCast(at, maxRadiusPos, d =>
 				{
+					// Clip the cast ray
 					if (d.Body == body)
 						return d.Fraction;
 					else if (d.Shape.IsSensor || !affectsObject(d.Body))
 						return -1.0f;
 					else
 						return d.Fraction;
-				});
+				}, out firstHit);
 
-				if (hitData.Count > 0)
+				// If the current body is really the first one to be hit, push it away
+				if (hitAnything && firstHit.Body == body)
 				{
-					RayCastData firstHit = hitData[0];
-					if (firstHit.Body == body)
-					{
-						float distanceFactor = MathF.Pow(1.0f - hitData[0].Fraction, 1.5f);
-						float maxImpulse = body.Mass * maxVelocity;
-						body.ApplyWorldImpulse(bodyDir * MathF.Min(distanceFactor * impulse, maxImpulse), hitData[0].Pos);
-					}
+					callback(body, firstHit);
 				}
-			}
-		}
-		public static void SplashDamage(Vector2 at, float radius, float damage, Predicate<Ship> affectsObject)
-		{
-			List<RigidBody> nearBodies = RigidBody.QueryRectGlobal(at - new Vector2(radius, radius), new Vector2(radius, radius) * 2);
-			foreach (RigidBody body in nearBodies)
-			{
-				Ship ship = body.GameObj.GetComponent<Ship>();
-				if (ship == null) continue;
-				if (!affectsObject(ship)) continue;
-
-				Vector2 bodyPos = body.WorldMassCenter;
-				float distance = (bodyPos - at).Length;
-				if (distance > radius) continue;
-
-				float distanceFactor = 1.0f - MathF.Clamp(distance / radius, 0.0f, 1.0f);
-				ship.DoDamage(distanceFactor * damage);
 			}
 		}
 	}

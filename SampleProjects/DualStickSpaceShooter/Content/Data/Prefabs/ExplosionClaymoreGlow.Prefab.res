@@ -63,7 +63,6 @@
                   <Y dataType="Float">0</Y>
                   <Z dataType="Float">0</Z>
                 </baseVel>
-                <burstCount dataType="Int">0</burstCount>
                 <burstDelay dataType="Struct" type="Duality.Range">
                   <MaxValue dataType="Float">2000</MaxValue>
                   <MinValue dataType="Float">2000</MinValue>
@@ -72,7 +71,6 @@
                   <MaxValue dataType="Float">50</MaxValue>
                   <MinValue dataType="Float">50</MinValue>
                 </burstParticleNum>
-                <burstTimer dataType="Float">0</burstTimer>
                 <maxBurstCount dataType="Int">1</maxBurstCount>
                 <maxColor dataType="Struct" type="Duality.Drawing.ColorHsva">
                   <A dataType="Float">1</A>
