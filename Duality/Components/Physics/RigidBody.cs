@@ -1212,23 +1212,92 @@ namespace Duality.Components.Physics
 			// Make sure to re-initialize the targets body, if it was shut down
 			if (wasInitialized) target.Initialize();
 		}
-
+		
 		/// <summary>
 		/// Performs a 2d physical raycast in world coordinates.
 		/// </summary>
-		/// <param name="worldCoordA">The starting point.</param>
-		/// <param name="worldCoordB">The desired end point.</param>
+		/// <param name="start">The starting point in world coordinates.</param>
+		/// <param name="end">The desired end point in world coordinates.</param>
 		/// <param name="callback">
 		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
 		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
 		/// </param>
-		/// <returns>Returns a list of all occurred hits, ordered by their Fraction value.</returns>
-		public static List<RayCastData> RayCast(Vector2 worldCoordA, Vector2 worldCoordB, RayCastCallback callback = null)
+		public static void RayCast(Vector2 start, Vector2 end, RayCastCallback callback)
 		{
 			if (callback == null) callback = Raycast_DefaultCallback;
-			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * worldCoordA;
-			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * worldCoordB;
-			List<RayCastData> hitData = new List<RayCastData>();
+
+			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
+			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
+
+			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
+			{
+				return callback(new RayCastData(
+					fixture.UserData as ShapeInfo, 
+					PhysicsUnit.LengthToDuality * pos, 
+					normal, 
+					fraction));
+			}, fsWorldCoordA, fsWorldCoordB);
+		}
+		/// <summary>
+		/// Performs a 2d physical raycast in world coordinates.
+		/// </summary>
+		/// <param name="start">The starting point in world coordinates.</param>
+		/// <param name="end">The desired end point in world coordinates.</param>
+		/// <param name="callback">
+		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
+		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
+		/// </param>
+		/// <param name="hits">Returns a list of all occurred hits, ordered by their Fraction value.</param>
+		public static void RayCast(Vector2 start, Vector2 end, RayCastCallback callback, out RawList<RayCastData> hits)
+		{
+			if (callback == null) callback = Raycast_DefaultCallback;
+
+			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
+			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
+
+			RawList<RayCastData> localHits = new RawList<RayCastData>();
+			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
+			{
+				int oldCount = localHits.Count++;
+				RayCastData[] data = localHits.Data;
+
+				data[oldCount] = new RayCastData(
+					fixture.UserData as ShapeInfo, 
+					PhysicsUnit.LengthToDuality * pos, 
+					normal, 
+					fraction);
+
+				float result = callback(data[oldCount]);
+				if (result < 0.0f)
+					localHits.Count--;
+
+				return result;
+			}, fsWorldCoordA, fsWorldCoordB);
+			localHits.Data.StableSort(0, localHits.Count, (d1, d2) => (int)(1000000.0f * (d1.Fraction - d2.Fraction)));
+
+			hits = localHits;
+		}
+		/// <summary>
+		/// Performs a 2d physical raycast in world coordinates.
+		/// </summary>
+		/// <param name="start">The starting point in world coordinates.</param>
+		/// <param name="end">The desired end point in world coordinates.</param>
+		/// <param name="callback">
+		/// The callback that is invoked for each hit on the raycast. Note that the order in which each hit occurs isn't deterministic
+		/// and may appear random. Return -1 to ignore the curret shape, 0 to terminate the raycast, data.Fraction to clip the ray for current hit, or 1 to continue.
+		/// </param>
+		/// <param name="firstHit">Returns the first hit that occurs, i.e. the one with the highest proximity to the starting point.</param>
+		/// <returns>Returns whether anything has been hit.</returns>
+		public static bool RayCast(Vector2 start, Vector2 end, RayCastCallback callback, out RayCastData firstHit)
+		{
+			if (callback == null) callback = Raycast_DefaultCallback;
+
+			Vector2 fsWorldCoordA = PhysicsUnit.LengthToPhysical * start;
+			Vector2 fsWorldCoordB = PhysicsUnit.LengthToPhysical * end;
+
+			float firstHitFraction = float.MaxValue;
+			RayCastData firstHitLocal = default(RayCastData);
+
 			Scene.PhysicsWorld.RayCast(delegate(Fixture fixture, Vector2 pos, Vector2 normal, float fraction)
 			{
 				RayCastData data = new RayCastData(
@@ -1236,17 +1305,25 @@ namespace Duality.Components.Physics
 					PhysicsUnit.LengthToDuality * pos, 
 					normal, 
 					fraction);
+
 				float result = callback(data);
-				if (result >= 0.0f) hitData.Add(data);
+				if (result >= 0.0f && data.Fraction < firstHitFraction)
+				{
+					firstHitLocal = data;
+					firstHitFraction = data.Fraction;
+				}
+
 				return result;
 			}, fsWorldCoordA, fsWorldCoordB);
-			hitData.StableSort((d1, d2) => (int)(1000000.0f * (d1.Fraction - d2.Fraction)));
-			return hitData;
+
+			firstHit = firstHitLocal;
+			return firstHitFraction != float.MaxValue;
 		}
 		private static float Raycast_DefaultCallback(RayCastData data)
 		{
 			return 1.0f;
 		}
+
 		/// <summary>
 		/// Performs a global physical picking operation and returns the <see cref="ShapeInfo">shape</see> in which
 		/// the specified world coordinate is located in.
@@ -1364,7 +1441,7 @@ namespace Duality.Components.Physics
 	/// <summary>
 	///  Provides data about a <see cref="RigidBody.RayCast"/>.
 	/// </summary>
-	public class RayCastData
+	public struct RayCastData
 	{
 		private ShapeInfo	shape;
 		private Vector2		pos;
