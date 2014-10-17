@@ -121,7 +121,7 @@
           <item dataType="Struct" type="Duality.Components.Camera" id="1700552844">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
-            <focusDist dataType="Float">470.941376</focusDist>
+            <focusDist dataType="Float">0.01</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3349398274">
@@ -1042,7 +1042,7 @@
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
-                  <outlineWidth dataType="Float">3</outlineWidth>
+                  <outlineWidth dataType="Float">0</outlineWidth>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   <wrapTexture dataType="Bool">true</wrapTexture>
                 </item>
@@ -1172,7 +1172,7 @@
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
-                  <outlineWidth dataType="Float">3</outlineWidth>
+                  <outlineWidth dataType="Float">0</outlineWidth>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   <wrapTexture dataType="Bool">true</wrapTexture>
                 </item>
@@ -1315,7 +1315,7 @@
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
-                  <outlineWidth dataType="Float">3</outlineWidth>
+                  <outlineWidth dataType="Float">0</outlineWidth>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   <wrapTexture dataType="Bool">true</wrapTexture>
                 </item>
@@ -1458,7 +1458,7 @@
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
-                  <outlineWidth dataType="Float">3</outlineWidth>
+                  <outlineWidth dataType="Float">0</outlineWidth>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   <wrapTexture dataType="Bool">true</wrapTexture>
                 </item>
@@ -1601,7 +1601,7 @@
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
-                  <outlineWidth dataType="Float">3</outlineWidth>
+                  <outlineWidth dataType="Float">0</outlineWidth>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   <wrapTexture dataType="Bool">true</wrapTexture>
                 </item>
@@ -1731,7 +1731,7 @@
                   <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                     <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                   </outlineMaterial>
-                  <outlineWidth dataType="Float">3</outlineWidth>
+                  <outlineWidth dataType="Float">0</outlineWidth>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   <wrapTexture dataType="Bool">true</wrapTexture>
                 </item>
