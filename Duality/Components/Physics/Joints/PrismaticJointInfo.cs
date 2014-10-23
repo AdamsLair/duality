@@ -29,10 +29,6 @@ namespace Duality.Components.Physics
 		private	float		refAngle		= 0.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The local anchor point on the first RigidBody.
 		/// </summary>
@@ -155,10 +151,10 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			PrismaticJoint j = this.joint as PrismaticJoint;
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.ReferenceAngle = this.refAngle;
-			j.LocalXAxis1 = this.BodyA.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
+			j.LocalXAxis1 = this.ParentBody.GameObj.Transform.GetWorldVector(this.moveAxis).Normalized;
 			j.LimitEnabled = this.limitEnabled;
 			j.LowerLimit = -PhysicsUnit.LengthToPhysical * this.upperLimit;
 			j.UpperLimit = -PhysicsUnit.LengthToPhysical * this.lowerLimit;

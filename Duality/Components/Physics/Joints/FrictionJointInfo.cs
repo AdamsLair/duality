@@ -23,10 +23,6 @@ namespace Duality.Components.Physics
 		private	float	maxTorque		= 100.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The first RigidBodys local anchor point.
 		/// </summary>
@@ -75,8 +71,8 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			FrictionJoint j = this.joint as FrictionJoint;
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.MaxForce = PhysicsUnit.ForceToPhysical * this.maxForce / Time.SPFMult;
 			j.MaxTorque = PhysicsUnit.TorqueToPhysical * this.maxTorque / Time.SPFMult;
 		}

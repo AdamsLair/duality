@@ -15,10 +15,10 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 {
 	public class ReparentRigidBodyJointAction : RigidBodyJointAction
 	{
-		private	RigidBody[]	targetParentObjA	= null;
-		private	RigidBody[]	targetParentObjB	= null;
-		private	RigidBody[]	backupParentObjA	= null;
-		private	RigidBody[]	backupParentObjB	= null;
+		private	RigidBody[]	targetParentBody	= null;
+		private	RigidBody[]	targetOtherBody		= null;
+		private	RigidBody[]	backupParentBody	= null;
+		private	RigidBody[]	backupOtherBody		= null;
 
 		protected override string NameBase
 		{
@@ -29,60 +29,60 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 			get { return EditorBaseRes.UndoRedo_ReparentRigidBodyJointMulti; }
 		}
 
-		public ReparentRigidBodyJointAction(IEnumerable<JointInfo> obj, IEnumerable<RigidBody> parentA, IEnumerable<RigidBody> parentB) : base(obj)
+		public ReparentRigidBodyJointAction(IEnumerable<JointInfo> joints, IEnumerable<RigidBody> parentBodies, IEnumerable<RigidBody> otherBodies) : base(joints)
 		{
-			RigidBody[] parentAArray = parentA.ToArray();
-			RigidBody[] parentBArray = parentB.ToArray();
-			this.targetParentObjA = new RigidBody[this.targetObj.Length];
-			this.targetParentObjB = new RigidBody[this.targetObj.Length];
+			RigidBody[] parentBodyArray = parentBodies.ToArray();
+			RigidBody[] otherBodyArray = otherBodies.ToArray();
+			this.targetParentBody = new RigidBody[this.targetObj.Length];
+			this.targetOtherBody = new RigidBody[this.targetObj.Length];
 			for (int i = 0; i < this.targetObj.Length; i++)
 			{
-				this.targetParentObjA[i] = parentAArray[Math.Min(i, parentAArray.Length - 1)];
-				this.targetParentObjB[i] = parentBArray[Math.Min(i, parentBArray.Length - 1)];
+				this.targetParentBody[i] = parentBodyArray[Math.Min(i, parentBodyArray.Length - 1)];
+				this.targetOtherBody[i] = otherBodyArray[Math.Min(i, otherBodyArray.Length - 1)];
 			}
 		}
 
 		public override void Do()
 		{
-			if (this.backupParentObjA == null)
+			if (this.backupParentBody == null)
 			{
-				this.backupParentObjA = new RigidBody[this.targetObj.Length];
-				this.backupParentObjB = new RigidBody[this.targetObj.Length];
-				for (int i = 0; i < this.backupParentObjA.Length; i++)
+				this.backupParentBody = new RigidBody[this.targetObj.Length];
+				this.backupOtherBody = new RigidBody[this.targetObj.Length];
+				for (int i = 0; i < this.backupParentBody.Length; i++)
 				{
-					this.backupParentObjA[i] = this.targetObj[i].BodyA;
-					this.backupParentObjB[i] = this.targetObj[i].BodyB;
+					this.backupParentBody[i] = this.targetObj[i].ParentBody;
+					this.backupOtherBody[i] = this.targetObj[i].OtherBody;
 				}
 			}
 
 			for (int i = 0; i < this.targetObj.Length; i++)
 			{
 				JointInfo joint = this.targetObj[i];
-				RigidBody parentA = this.targetParentObjA[i];
-				RigidBody parentB = this.targetParentObjB[i];
+				RigidBody parentBody = this.targetParentBody[i];
+				RigidBody otherBody = this.targetOtherBody[i];
 				if (joint == null) continue;
 
-				if (parentA != null)
-					parentA.AddJoint(joint, parentB);
-				else if (parentB != null)
-					parentB.AddJoint(joint, parentA);
+				if (parentBody != null)
+					parentBody.AddJoint(joint, otherBody);
+				else if (otherBody != null)
+					otherBody.AddJoint(joint, parentBody);
 			}
 
-			var affectedBodies = this.targetParentObjA
-				.Concat(this.targetParentObjB)
-				.Concat(this.backupParentObjA)
-				.Concat(this.backupParentObjB)
+			var affectedBodies = this.targetParentBody
+				.Concat(this.targetOtherBody)
+				.Concat(this.backupParentBody)
+				.Concat(this.backupOtherBody)
 				.Distinct();
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(affectedBodies), ReflectionInfo.Property_RigidBody_Joints);
 		}
 		public override void Undo()
 		{
-			if (this.backupParentObjA == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");
+			if (this.backupParentBody == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");
 			for (int i = 0; i < this.targetObj.Length; i++)
 			{
 				JointInfo joint = this.targetObj[i];
-				RigidBody parentA = this.backupParentObjA[i];
-				RigidBody parentB = this.backupParentObjB[i];
+				RigidBody parentA = this.backupParentBody[i];
+				RigidBody parentB = this.backupOtherBody[i];
 				if (joint == null) continue;
 
 				if (parentA != null)
@@ -90,10 +90,10 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 				else if (parentB != null)
 					parentB.AddJoint(joint, parentA);
 			}
-			var affectedBodies = this.targetParentObjA
-				.Concat(this.targetParentObjB)
-				.Concat(this.backupParentObjA)
-				.Concat(this.backupParentObjB)
+			var affectedBodies = this.targetParentBody
+				.Concat(this.targetOtherBody)
+				.Concat(this.backupParentBody)
+				.Concat(this.backupOtherBody)
 				.Distinct();
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(affectedBodies), ReflectionInfo.Property_RigidBody_Joints);
 		}

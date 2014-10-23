@@ -153,7 +153,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	public class RigidBodyJointPropertyEditor : MemberwisePropertyEditor
 	{
 		private Func<IEnumerable<object>> parentGetter = null;
-		private PropertyEditor otherColEditor = null;
+		private PropertyEditor otherBodyEditor = null;
 
 		internal Func<IEnumerable<object>> ParentGetter
 		{
@@ -171,30 +171,30 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		public override void ClearContent()
 		{
 			base.ClearContent();
-			this.otherColEditor = null;
+			this.otherBodyEditor = null;
 		}
 		protected override void BeforeAutoCreateEditors()
 		{
 			base.BeforeAutoCreateEditors();
 			JointInfo joint = this.GetValue().Cast<JointInfo>().FirstOrDefault();
 
-			if (joint != null && joint.DualJoint)
+			if (joint != null)
 			{
-				if (this.otherColEditor == null)
+				if (this.otherBodyEditor == null)
 				{
-					this.otherColEditor = this.ParentGrid.CreateEditor(typeof(RigidBody), this);
-					this.otherColEditor.Getter = this.CreateOtherColValueGetter();
-					this.otherColEditor.Setter = this.CreateOtherColValueSetter();
-					this.otherColEditor.PropertyName = Properties.EditorBaseRes.PropertyName_OtherCollider;
-					this.otherColEditor.PropertyDesc = Properties.EditorBaseRes.PropertyDesc_OtherCollider;
-					this.ParentGrid.ConfigureEditor(this.otherColEditor);
-					this.AddPropertyEditor(this.otherColEditor);
+					this.otherBodyEditor = this.ParentGrid.CreateEditor(typeof(RigidBody), this);
+					this.otherBodyEditor.Getter = this.CreateOtherColValueGetter();
+					this.otherBodyEditor.Setter = this.CreateOtherColValueSetter();
+					this.otherBodyEditor.PropertyName = Properties.EditorBaseRes.PropertyName_OtherCollider;
+					this.otherBodyEditor.PropertyDesc = Properties.EditorBaseRes.PropertyDesc_OtherCollider;
+					this.ParentGrid.ConfigureEditor(this.otherBodyEditor);
+					this.AddPropertyEditor(this.otherBodyEditor);
 				}
 			}
-			else if (this.otherColEditor != null)
+			else if (this.otherBodyEditor != null)
 			{
-				this.RemovePropertyEditor(this.otherColEditor);
-				this.otherColEditor = null;
+				this.RemovePropertyEditor(this.otherBodyEditor);
+				this.otherBodyEditor = null;
 			}
 		}
 		protected override void OnUpdateFromObjects(object[] values)
@@ -212,15 +212,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			base.OnPropertySet(property, targets);
 
-			var colJoints = targets.OfType<JointInfo>().ToArray();
-			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, property, colJoints, null));
+			var joints = targets.OfType<JointInfo>().ToArray();
+			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, property, joints, null));
 
-			var colliders = 
-				colJoints.Select(c => c.BodyA).Concat(
-				colJoints.Select(c => c.BodyB))
+			var bodies = 
+				joints.Select(c => c.ParentBody).Concat(
+				joints.Select(c => c.OtherBody))
 				.Distinct().NotNull().ToArray();
-			foreach (var c in colliders) c.AwakeBody();
-			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, ReflectionInfo.Property_RigidBody_Joints, colliders, null));
+			foreach (var c in bodies) c.AwakeBody();
+			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, ReflectionInfo.Property_RigidBody_Joints, bodies, null));
 		}
 
 		protected Func<IEnumerable<object>> CreateOtherColValueGetter()
@@ -228,16 +228,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			return () => 
 			{
 				JointInfo[] targetArray = this.GetValue().Cast<JointInfo>().ToArray();
-				RigidBody[] otherCollider = new RigidBody[targetArray.Length];
-				RigidBody[] parentCollider = this.parentGetter().Cast<RigidBody>().ToArray();
+				RigidBody[] otherBody = new RigidBody[targetArray.Length];
+				RigidBody[] parentBody = this.parentGetter().Cast<RigidBody>().ToArray();
 				for (int i = 0; i < targetArray.Length; i++)
 				{
-					if (targetArray[i] != null)
-						otherCollider[i] = targetArray[i].BodyA == parentCollider[i] ? targetArray[i].BodyB : targetArray[i].BodyA;
-					else
-						otherCollider[i] = null;
+					otherBody[i] = targetArray[i] != null ? targetArray[i].OtherBody : null;
 				}
-				return otherCollider;
+				return otherBody;
 			};
 		}
 		protected Action<IEnumerable<object>> CreateOtherColValueSetter()

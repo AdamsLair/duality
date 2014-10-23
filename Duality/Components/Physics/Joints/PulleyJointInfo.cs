@@ -28,10 +28,6 @@ namespace Duality.Components.Physics
 		private	float		ratio			= 1.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The first bodies local anchor point.
 		/// </summary>
@@ -95,8 +91,8 @@ namespace Duality.Components.Physics
 		{
 			get
 			{
-				if (this.BodyA == null || this.BodyA.GameObj == null || this.BodyA.GameObj.Transform == null) return 0.0f;
-				Vector2 v = this.BodyA.GameObj.Transform.GetWorldPoint(this.localAnchorA);
+				if (this.ParentBody == null || this.ParentBody.GameObj == null || this.ParentBody.GameObj.Transform == null) return 0.0f;
+				Vector2 v = this.ParentBody.GameObj.Transform.GetWorldPoint(this.localAnchorA);
 				return (v - this.worldAnchorA).Length;
 			}
 		}
@@ -107,8 +103,8 @@ namespace Duality.Components.Physics
 		{
 			get
 			{
-				if (this.BodyB == null || this.BodyB.GameObj == null || this.BodyB.GameObj.Transform == null) return 0.0f;
-				Vector2 v = this.BodyB.GameObj.Transform.GetWorldPoint(this.localAnchorB);
+				if (this.OtherBody == null || this.OtherBody.GameObj == null || this.OtherBody.GameObj.Transform == null) return 0.0f;
+				Vector2 v = this.OtherBody.GameObj.Transform.GetWorldPoint(this.localAnchorB);
 				return (v - this.worldAnchorB).Length;
 			}
 		}
@@ -145,8 +141,8 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			PulleyJoint j = this.joint as PulleyJoint;
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.GroundAnchorB = PhysicsUnit.LengthToPhysical * this.worldAnchorB;
 			j.GroundAnchorA = PhysicsUnit.LengthToPhysical * this.worldAnchorA;
 			j.MaxLengthA = PhysicsUnit.LengthToPhysical * this.maxLengthA;

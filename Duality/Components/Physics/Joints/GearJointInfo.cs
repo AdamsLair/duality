@@ -23,10 +23,6 @@ namespace Duality.Components.Physics
 		private	float	ratio	= 1.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The gear ratio by which body movement is connected.
 		/// </summary>

@@ -22,10 +22,6 @@ namespace Duality.Components.Physics
 		private	float	refAngle		= 0.0f;
 			
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The welding point, locally to the first object.
 		/// </summary>
@@ -65,8 +61,8 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			WeldJoint j = this.joint as WeldJoint;
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
 			j.ReferenceAngle = this.refAngle;
 		}
 	}

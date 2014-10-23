@@ -37,17 +37,17 @@ namespace Duality.Editor.Plugins.Base.UndoRedoActions
 				this.backupParentObjB = new RigidBody[this.targetObj.Length];
 				for (int i = 0; i < this.backupParentObjA.Length; i++)
 				{
-					this.backupParentObjA[i] = this.targetObj[i].BodyA;
-					this.backupParentObjB[i] = this.targetObj[i].BodyB;
+					this.backupParentObjA[i] = this.targetObj[i].ParentBody;
+					this.backupParentObjB[i] = this.targetObj[i].OtherBody;
 				}
 			}
 			
 			foreach (JointInfo obj in this.targetObj)
 			{
-				if (obj.BodyA != null)
-					obj.BodyA.RemoveJoint(obj);
-				if (obj.BodyB != null)
-					obj.BodyB.RemoveJoint(obj);
+				if (obj.ParentBody != null)
+					obj.ParentBody.RemoveJoint(obj);
+				if (obj.OtherBody != null)
+					obj.OtherBody.RemoveJoint(obj);
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.backupParentObjA.Concat(this.backupParentObjB).Distinct()), ReflectionInfo.Property_RigidBody_Joints);
 		}

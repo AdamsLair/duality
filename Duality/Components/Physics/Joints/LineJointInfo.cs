@@ -29,10 +29,6 @@ namespace Duality.Components.Physics
 		private	float		frequency		= 5.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The car RigidBodies local anchor point.
 		/// </summary>
@@ -138,8 +134,8 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			LineJoint j = this.joint as LineJoint;
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.LocalXAxis = this.moveAxis;
 			j.MotorEnabled = this.motorEnabled;
 			j.MotorSpeed = this.motorSpeed / Time.SPFMult;

@@ -412,21 +412,16 @@ namespace Duality.Components.Physics
 		public void RemoveJoint(JointInfo joint)
 		{
 			if (joint == null) throw new ArgumentNullException("joint");
-			if (joint.BodyA != this && joint.BodyB != this) return;
+			if (joint.ParentBody != this) return;
 
-			if (joint.BodyA != null)
-			{
-				if (joint.BodyA.joints != null) joint.BodyA.joints.Remove(joint);
-				joint.BodyA.AwakeBody();
-				joint.BodyA = null;
-			}
-			if (joint.BodyB != null)
-			{
-				if (joint.BodyB.joints != null) joint.BodyB.joints.Remove(joint);
-				joint.BodyB.AwakeBody();
-				joint.BodyB = null;
-			}
+			this.joints.Remove(joint);
+			this.AwakeBody();
 
+			if (joint.OtherBody != null)
+				joint.OtherBody.AwakeBody();
+
+			joint.ParentBody = null;
+			joint.OtherBody = null;
 			joint.DestroyJoint();
 		}
 		/// <summary>
@@ -437,24 +432,18 @@ namespace Duality.Components.Physics
 		{
 			if (joint == null) throw new ArgumentNullException("joint");
 
-			if (joint.BodyA != null)		joint.BodyA.RemoveJoint(joint);
-			else if (joint.BodyB != null)	joint.BodyB.RemoveJoint(joint);
+			if (joint.ParentBody != null)
+				joint.ParentBody.RemoveJoint(joint);
 
-			joint.BodyA = this;
-			joint.BodyB = other;
+			joint.ParentBody = this;
+			joint.OtherBody = other;
 
-			if (joint.BodyA != null)
-			{
-				if (joint.BodyA.joints == null) joint.BodyA.joints = new List<JointInfo>();
-				joint.BodyA.joints.Add(joint);
-				joint.BodyA.AwakeBody();
-			}
-			if (joint.BodyB != null)
-			{
-				if (joint.BodyB.joints == null) joint.BodyB.joints = new List<JointInfo>();
-				joint.BodyB.joints.Add(joint);
-				joint.BodyB.AwakeBody();
-			}
+			if (this.joints == null) this.joints = new List<JointInfo>();
+			this.joints.Add(joint);
+			this.AwakeBody();
+
+			if (joint.OtherBody != null)
+				joint.OtherBody.AwakeBody();
 
 			joint.UpdateJoint();
 		}
@@ -466,31 +455,29 @@ namespace Duality.Components.Physics
 			if (this.joints == null) return;
 			while (this.joints.Count > 0) this.RemoveJoint(this.joints[0]);
 		}
-		private void SetJoints(IEnumerable<JointInfo> joints)
+		private void SetJoints(IEnumerable<JointInfo> targetJoints)
 		{
-			JointInfo[] jointArray = joints != null ? joints.ToArray() : null;
+			JointInfo[] targetArray = targetJoints != null ? targetJoints.ToArray() : null;
 	
 			// Remove joints that are not in the new collection
 			if (this.joints != null)
 			{
 				for (int i = this.joints.Count - 1; i >= 0; i--)
 				{
-					if (jointArray != null && jointArray.Contains(this.joints[i])) continue;
+					if (targetArray != null && targetArray.Contains(this.joints[i])) continue;
 					this.RemoveJoint(this.joints[i]);
 				}
 			}
 
 			// Add joints that are not in the old collection
-			if (jointArray != null)
+			if (targetArray != null)
 			{
-				for (int i = 0; i < jointArray.Length; i++)
+				for (int i = 0; i < targetArray.Length; i++)
 				{
-					if (this.joints != null && this.joints.Contains(jointArray[i])) continue;
-					JointInfo joint = jointArray[i];
-					if (joint.BodyA != null)
-						joint.BodyA.AddJoint(joint, joint.BodyB); // Allow reverse-add.
-					else
-						this.AddJoint(joint, null);
+					if (this.joints != null && this.joints.Contains(targetArray[i])) continue;
+					JointInfo joint = targetArray[i];
+					if (joint.ParentBody != this)
+						this.AddJoint(joint, joint.OtherBody);
 				}
 			}
 		}
@@ -895,12 +882,15 @@ namespace Duality.Components.Physics
 			for (int i = this.joints.Count - 1; i >= 0; i--)
 			{
 				JointInfo joint = this.joints[i];
-				if ((joint.BodyA != null && (joint.BodyA.Disposed || joint.BodyA.GameObj.Disposed)) || 
-					(joint.BodyB != null && (joint.BodyB.Disposed || joint.BodyB.GameObj.Disposed)))
+				if (this.Disposed || (joint.OtherBody != null && (joint.OtherBody.Disposed || joint.OtherBody.GameObj.Disposed)))
 					this.RemoveJoint(joint);
 			}
 		}
 
+		internal void PrepareForJoint()
+		{
+			this.Initialize();
+		}
 		private void Initialize()
 		{
 			if (this.bodyInitState != InitState.Disposed) return;

@@ -22,43 +22,33 @@ namespace Duality.Components.Physics
 		[NonSerialized]	
 		internal protected	Joint	joint	= null;
 		[CloneBehavior(CloneBehavior.WeakReference)]
-		private		RigidBody	colA		= null;
+		private		RigidBody	parentBody	= null;
 		[CloneBehavior(CloneBehavior.WeakReference)]
-		private		RigidBody	colB		= null;
+		private		RigidBody	otherBody	= null;
 		private		bool		collide		= false;
 		private		bool		enabled		= true;
 		private		float		breakPoint	= -1.0f;
 
 
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public bool IsInitialized
-		{
-			get { return this.joint != null; }
-		}
-		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool Disposed
 		{
-			get { return (this.colA != null && this.colA.Disposed) || (this.colB != null && this.colB.Disposed); }
+			get { return (this.parentBody != null && this.parentBody.Disposed) || (this.otherBody != null && this.otherBody.Disposed); }
 		}
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public RigidBody BodyA
+		public RigidBody ParentBody
 		{
 			// Return null, if disposed - someone might access it before cleanup.
-			get { return this.colA != null && !this.colA.Disposed ? this.colA : null; }
-			internal set { this.colA = value; }
+			get { return this.parentBody != null && !this.parentBody.Disposed ? this.parentBody : null; }
+			internal set { this.parentBody = value; }
 		}
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public RigidBody BodyB
+		public RigidBody OtherBody
 		{
 			// Return null, if disposed - someone might access it before cleanup.
-			get { return this.colB != null && !this.colB.Disposed ? this.colB : null; }
-			internal set { this.colB = value; }
+			get { return this.otherBody != null && !this.otherBody.Disposed ? this.otherBody : null; }
+			internal set { this.otherBody = value; }
 		}
-		/// <summary>
-		/// [GET] Returns whether the joint is connecting two Colliders (instead of connecting one to the world)
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public abstract bool DualJoint { get; }
 		/// <summary>
 		/// [GET / SET] Specifies whether the connected Colliders will collide with each other.
 		/// </summary>
@@ -88,7 +78,7 @@ namespace Duality.Components.Physics
 		}
 
 			
-		protected abstract Joint CreateJoint(Body bodyA, Body bodyB);
+		protected abstract Joint CreateJoint(Body parentBody, Body otherBody);
 		internal void DestroyJoint()
 		{
 			if (this.joint == null) return;
@@ -100,8 +90,13 @@ namespace Duality.Components.Physics
 		{
 			if (this.joint == null)
 			{
-				this.joint = this.CreateJoint(this.colA != null ? this.colA.PhysicsBody : null, this.colB != null ? this.colB.PhysicsBody : null);
-				if (this.joint == null) return; // Failed to create the joint? Return.
+				if (this.parentBody != null && this.otherBody != null)
+				{
+					this.parentBody.PrepareForJoint();
+					this.otherBody.PrepareForJoint();
+					this.joint = this.CreateJoint(this.parentBody.PhysicsBody, this.otherBody.PhysicsBody);
+				}
+				if (this.joint == null) return;
 
 				this.joint.UserData = this;
 				this.joint.Broke += this.joint_Broke;

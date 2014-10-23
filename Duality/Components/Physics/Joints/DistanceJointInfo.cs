@@ -24,10 +24,6 @@ namespace Duality.Components.Physics
 		private	float		length			= 200.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The first bodies local anchor point.
 		/// </summary>
@@ -86,8 +82,8 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			DistanceJoint j = this.joint as DistanceJoint;
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.DampingRatio = this.dampingRatio;
 			j.Frequency = this.frequency;
 			j.Length = PhysicsUnit.LengthToPhysical * this.length;

@@ -76,20 +76,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			}
 			foreach (JointInfo j in visibleJoints)
 			{
-				float jointAlpha = selectedBody != null && (j.BodyA == selectedBody || j.BodyB == selectedBody) ? 1.0f : 0.5f;
+				float jointAlpha = selectedBody != null && (j.ParentBody == selectedBody || j.OtherBody == selectedBody) ? 1.0f : 0.5f;
 				if (!j.Enabled) jointAlpha *= 0.25f;
 				canvas.State.ColorTint = canvas.State.ColorTint.WithAlpha(jointAlpha);
 
-				if (j.BodyA == null) continue;
-				if (j.DualJoint && j.BodyB == null) continue;
+				if (j.ParentBody == null) continue;
+				if (j.OtherBody == null) continue;
 				this.DrawJoint(canvas, j);
 			}
 		}
 
 		private void DrawJoint(Canvas canvas, JointInfo joint)
 		{
-			if (joint.BodyA == null) return;
-			if (joint.DualJoint && joint.BodyB == null) return;
+			if (joint.ParentBody == null) return;
+			if (joint.OtherBody == null) return;
 
 			if (joint is AngleJointInfo)				this.DrawJoint(canvas, joint as AngleJointInfo);
 			else if (joint is DistanceJointInfo)		this.DrawJoint(canvas, joint as DistanceJointInfo);
@@ -106,158 +106,158 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		private void DrawJoint(Canvas canvas, AngleJointInfo joint)
 		{
 			this.DrawLocalAngleConstraint(canvas, 
-				joint.BodyA, 
+				joint.ParentBody, 
 				Vector2.Zero, 
-				joint.BodyB.GameObj.Transform.Angle - joint.TargetAngle, 
-				joint.BodyA.GameObj.Transform.Angle, 
-				joint.BodyA.BoundRadius);
+				joint.OtherBody.GameObj.Transform.Angle - joint.TargetAngle, 
+				joint.ParentBody.GameObj.Transform.Angle, 
+				joint.ParentBody.BoundRadius);
 			this.DrawLocalAngleConstraint(canvas, 
-				joint.BodyB, 
+				joint.OtherBody, 
 				Vector2.Zero, 
-				joint.BodyA.GameObj.Transform.Angle + joint.TargetAngle, 
-				joint.BodyB.GameObj.Transform.Angle, 
-				joint.BodyB.BoundRadius);
-			this.DrawLocalLooseConstraint(canvas, joint.BodyA, joint.BodyB, Vector2.Zero, Vector2.Zero);
+				joint.ParentBody.GameObj.Transform.Angle + joint.TargetAngle, 
+				joint.OtherBody.GameObj.Transform.Angle, 
+				joint.OtherBody.BoundRadius);
+			this.DrawLocalLooseConstraint(canvas, joint.ParentBody, joint.OtherBody, Vector2.Zero, Vector2.Zero);
 		}
 		private void DrawJoint(Canvas canvas, DistanceJointInfo joint)
 		{
-			this.DrawLocalDistConstraint(canvas, joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB, joint.TargetDistance, joint.TargetDistance);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.LocalAnchorB);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchorA);
+			this.DrawLocalDistConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB, joint.TargetDistance, joint.TargetDistance);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
 		}
 		private void DrawJoint(Canvas canvas, FrictionJointInfo joint)
 		{
-			this.DrawLocalFrictionMarker(canvas, joint.BodyA, joint.LocalAnchorA);
-			this.DrawLocalFrictionMarker(canvas, joint.BodyB, joint.LocalAnchorB);
-			this.DrawLocalLooseConstraint(canvas, joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB);
+			this.DrawLocalFrictionMarker(canvas, joint.ParentBody, joint.LocalAnchorA);
+			this.DrawLocalFrictionMarker(canvas, joint.OtherBody, joint.LocalAnchorB);
+			this.DrawLocalLooseConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 		}
 		private void DrawJoint(Canvas canvas, RevoluteJointInfo joint)
 		{
-			float angularCircleRadA = joint.BodyA.BoundRadius * 0.25f;
-			float angularCircleRadB = joint.BodyB.BoundRadius * 0.25f;
+			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
+			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
 
-			float anchorDist = this.GetAnchorDist(joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB);
+			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 			bool displaySecondCollider = anchorDist >= angularCircleRadA + angularCircleRadB;
 
-			this.DrawLocalPosConstraint(canvas, joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB);
+			this.DrawLocalPosConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 			
 			if (joint.LimitEnabled)
 			{
 				this.DrawLocalAngleConstraint(canvas, 
-					joint.BodyA, 
+					joint.ParentBody, 
 					joint.LocalAnchorA, 
-					joint.BodyB.GameObj.Transform.Angle - joint.ReferenceAngle, 
-					joint.BodyA.GameObj.Transform.Angle, 
+					joint.OtherBody.GameObj.Transform.Angle - joint.ReferenceAngle, 
+					joint.ParentBody.GameObj.Transform.Angle, 
 					angularCircleRadA);
 				if (displaySecondCollider)
 				{
 					this.DrawLocalAngleConstraint(canvas, 
-						joint.BodyB, 
+						joint.OtherBody, 
 						joint.LocalAnchorB, 
-						joint.BodyA.GameObj.Transform.Angle + joint.ReferenceAngle,
-						joint.BodyB.GameObj.Transform.Angle, 
+						joint.ParentBody.GameObj.Transform.Angle + joint.ReferenceAngle,
+						joint.OtherBody.GameObj.Transform.Angle, 
 						angularCircleRadB);
 				}
 			}
 
 			if (joint.MotorEnabled)
 			{
-				this.DrawLocalAngleMotor(canvas, joint.BodyA, Vector2.Zero, joint.MotorSpeed, joint.MaxMotorTorque, joint.BodyA.BoundRadius * 1.15f);
+				this.DrawLocalAngleMotor(canvas, joint.ParentBody, Vector2.Zero, joint.MotorSpeed, joint.MaxMotorTorque, joint.ParentBody.BoundRadius * 1.15f);
 			}
 
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchorA);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.LocalAnchorB);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
 		}
 		private void DrawJoint(Canvas canvas, PrismaticJointInfo joint)
 		{
-			float angularCircleRadA = joint.BodyA.BoundRadius * 0.25f;
-			float angularCircleRadB = joint.BodyB.BoundRadius * 0.25f;
-			bool displaySecondCollider = (joint.BodyA.GameObj.Transform.Pos - joint.BodyB.GameObj.Transform.Pos).Length >= angularCircleRadA + angularCircleRadB;
+			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
+			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
+			bool displaySecondCollider = (joint.ParentBody.GameObj.Transform.Pos - joint.OtherBody.GameObj.Transform.Pos).Length >= angularCircleRadA + angularCircleRadB;
 
 			if (joint.LimitEnabled)
-			    this.DrawLocalAxisConstraint(canvas, joint.BodyA, joint.BodyB, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.LowerLimit, joint.UpperLimit);
+			    this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.LowerLimit, joint.UpperLimit);
 			else
-			    this.DrawLocalAxisConstraint(canvas, joint.BodyA, joint.BodyB, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB);
+			    this.DrawLocalAxisConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB);
 
 			this.DrawLocalAngleConstraint(canvas, 
-				joint.BodyA, 
+				joint.ParentBody, 
 				joint.LocalAnchorA, 
-				joint.BodyB.GameObj.Transform.Angle - joint.ReferenceAngle, 
-				joint.BodyA.GameObj.Transform.Angle, 
+				joint.OtherBody.GameObj.Transform.Angle - joint.ReferenceAngle, 
+				joint.ParentBody.GameObj.Transform.Angle, 
 				angularCircleRadA);
 			if (displaySecondCollider)
 			{
 				this.DrawLocalAngleConstraint(canvas, 
-					joint.BodyB, 
+					joint.OtherBody, 
 					joint.LocalAnchorB, 
-					joint.BodyA.GameObj.Transform.Angle + joint.ReferenceAngle,
-					joint.BodyB.GameObj.Transform.Angle, 
+					joint.ParentBody.GameObj.Transform.Angle + joint.ReferenceAngle,
+					joint.OtherBody.GameObj.Transform.Angle, 
 					angularCircleRadB);
 			}
 
 			if (joint.MotorEnabled)
-			    this.DrawLocalAxisMotor(canvas, joint.BodyA, joint.BodyB, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.MotorSpeed, joint.MaxMotorForce, joint.BodyA.BoundRadius * 1.15f);
+			    this.DrawLocalAxisMotor(canvas, joint.ParentBody, joint.OtherBody, joint.MovementAxis, joint.LocalAnchorA, joint.LocalAnchorB, joint.MotorSpeed, joint.MaxMotorForce, joint.ParentBody.BoundRadius * 1.15f);
 
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchorA);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.LocalAnchorB);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
 		}
 		private void DrawJoint(Canvas canvas, WeldJointInfo joint)
 		{
-			float angularCircleRadA = joint.BodyA.BoundRadius * 0.25f;
-			float angularCircleRadB = joint.BodyB.BoundRadius * 0.25f;
+			float angularCircleRadA = joint.ParentBody.BoundRadius * 0.25f;
+			float angularCircleRadB = joint.OtherBody.BoundRadius * 0.25f;
 
-			float anchorDist = this.GetAnchorDist(joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB);
+			float anchorDist = this.GetAnchorDist(joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 			bool displaySecondCollider = anchorDist >= angularCircleRadA + angularCircleRadB;
 
-			this.DrawLocalPosConstraint(canvas, joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB);
+			this.DrawLocalPosConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB);
 
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchorA);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.LocalAnchorB);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
 
 			this.DrawLocalAngleConstraint(canvas, 
-				joint.BodyA, 
+				joint.ParentBody, 
 				joint.LocalAnchorA, 
-				joint.BodyB.GameObj.Transform.Angle - joint.RefAngle, 
-				joint.BodyA.GameObj.Transform.Angle, 
+				joint.OtherBody.GameObj.Transform.Angle - joint.RefAngle, 
+				joint.ParentBody.GameObj.Transform.Angle, 
 				angularCircleRadA);
 			if (displaySecondCollider)
 			{
 				this.DrawLocalAngleConstraint(canvas, 
-					joint.BodyB, 
+					joint.OtherBody, 
 					joint.LocalAnchorB, 
-					joint.BodyA.GameObj.Transform.Angle + joint.RefAngle,
-					joint.BodyB.GameObj.Transform.Angle, 
+					joint.ParentBody.GameObj.Transform.Angle + joint.RefAngle,
+					joint.OtherBody.GameObj.Transform.Angle, 
 					angularCircleRadB);
 			}
 		}
 		private void DrawJoint(Canvas canvas, RopeJointInfo joint)
 		{
-			this.DrawLocalDistConstraint(canvas, joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB, 0.0f, joint.MaxLength);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.LocalAnchorB);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchorA);
+			this.DrawLocalDistConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB, 0.0f, joint.MaxLength);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
 		}
 		private void DrawJoint(Canvas canvas, SliderJointInfo joint)
 		{
-			this.DrawLocalDistConstraint(canvas, joint.BodyA, joint.BodyB, joint.LocalAnchorA, joint.LocalAnchorB, joint.MinLength, joint.MaxLength);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.LocalAnchorB);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchorA);
+			this.DrawLocalDistConstraint(canvas, joint.ParentBody, joint.OtherBody, joint.LocalAnchorA, joint.LocalAnchorB, joint.MinLength, joint.MaxLength);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
 		}
 		private void DrawJoint(Canvas canvas, LineJointInfo joint)
 		{
-			Vector2 anchorAToWorld = joint.BodyA.GameObj.Transform.GetWorldPoint(joint.CarAnchor);
+			Vector2 anchorAToWorld = joint.ParentBody.GameObj.Transform.GetWorldPoint(joint.CarAnchor);
 
-			this.DrawWorldPosConstraint(canvas, joint.BodyA, joint.CarAnchor, anchorAToWorld);
-			this.DrawLocalAxisConstraint(canvas, joint.BodyB, joint.BodyA, joint.MovementAxis, joint.WheelAnchor, joint.CarAnchor, -joint.BodyB.BoundRadius * 0.25f, joint.BodyB.BoundRadius * 0.25f);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.CarAnchor);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.WheelAnchor);
+			this.DrawWorldPosConstraint(canvas, joint.ParentBody, joint.CarAnchor, anchorAToWorld);
+			this.DrawLocalAxisConstraint(canvas, joint.OtherBody, joint.ParentBody, joint.MovementAxis, joint.WheelAnchor, joint.CarAnchor, -joint.OtherBody.BoundRadius * 0.25f, joint.OtherBody.BoundRadius * 0.25f);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.CarAnchor);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.WheelAnchor);
 			
 			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.JointColor));
-			this.DrawLocalText(canvas, joint.BodyA, "Car", Vector2.Zero, 0.0f);
-			this.DrawLocalText(canvas, joint.BodyB, "Wheel", Vector2.Zero, 0.0f);
+			this.DrawLocalText(canvas, joint.ParentBody, "Car", Vector2.Zero, 0.0f);
+			this.DrawLocalText(canvas, joint.OtherBody, "Wheel", Vector2.Zero, 0.0f);
 
 			if (joint.MotorEnabled)
 			{
-				this.DrawLocalAngleMotor(canvas, joint.BodyB, Vector2.Zero, joint.MotorSpeed, joint.MaxMotorTorque, joint.BodyB.BoundRadius * 1.15f);
+				this.DrawLocalAngleMotor(canvas, joint.OtherBody, Vector2.Zero, joint.MotorSpeed, joint.MaxMotorTorque, joint.OtherBody.BoundRadius * 1.15f);
 			}
 		}
 		private void DrawJoint(Canvas canvas, PulleyJointInfo joint)
@@ -265,15 +265,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			float maxLenA = MathF.Min(joint.MaxLengthA, joint.TotalLength - (joint.Ratio * joint.LengthB));
 			float maxLenB = MathF.Min(joint.MaxLengthB, joint.Ratio * (joint.TotalLength - joint.LengthA));
 
-			this.DrawWorldDistConstraint(canvas, joint.BodyA, joint.LocalAnchorA, joint.WorldAnchorA, 0.0f, maxLenA);
-			this.DrawWorldDistConstraint(canvas, joint.BodyB, joint.LocalAnchorB, joint.WorldAnchorB, 0.0f, maxLenB);
-			this.DrawWorldLooseConstraint(canvas, joint.BodyA, joint.WorldAnchorA, joint.WorldAnchorB);
-			this.DrawLocalAnchor(canvas, joint.BodyB, joint.LocalAnchorB);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchorA);
+			this.DrawWorldDistConstraint(canvas, joint.ParentBody, joint.LocalAnchorA, joint.WorldAnchorA, 0.0f, maxLenA);
+			this.DrawWorldDistConstraint(canvas, joint.OtherBody, joint.LocalAnchorB, joint.WorldAnchorB, 0.0f, maxLenB);
+			this.DrawWorldLooseConstraint(canvas, joint.ParentBody, joint.WorldAnchorA, joint.WorldAnchorB);
+			this.DrawLocalAnchor(canvas, joint.OtherBody, joint.LocalAnchorB);
+			this.DrawLocalAnchor(canvas, joint.ParentBody, joint.LocalAnchorA);
 		}
 		private void DrawJoint(Canvas canvas, GearJointInfo joint)
 		{
-			this.DrawLocalLooseConstraint(canvas, joint.BodyA, joint.BodyB, Vector2.Zero, Vector2.Zero);
+			this.DrawLocalLooseConstraint(canvas, joint.ParentBody, joint.OtherBody, Vector2.Zero, Vector2.Zero);
 		}
 		
 		private void DrawLocalText(Canvas canvas, RigidBody body, string text, Vector2 pos, float baseAngle)

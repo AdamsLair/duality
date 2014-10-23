@@ -23,10 +23,6 @@ namespace Duality.Components.Physics
 		private	float	maxImpulse	= -1.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The Colliders target angle.
 		/// </summary>

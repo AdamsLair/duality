@@ -28,10 +28,6 @@ namespace Duality.Components.Physics
 		private float		motorSpeed		= 0.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The first RigidBodies local anchor point.
 		/// </summary>
@@ -146,8 +142,8 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			RevoluteJoint j = this.joint as RevoluteJoint;
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.MotorEnabled = this.motorEnabled;
 			j.MotorSpeed = -this.motorSpeed / Time.SPFMult;
 			j.MaxMotorTorque = PhysicsUnit.TorqueToPhysical * this.maxMotorTorque;

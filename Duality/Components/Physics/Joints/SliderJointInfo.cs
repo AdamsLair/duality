@@ -24,10 +24,6 @@ namespace Duality.Components.Physics
 		private	float		minLength		= 500.0f;
 
 
-		public override bool DualJoint
-		{
-			get { return true; }
-		}
 		/// <summary>
 		/// [GET / SET] The first bodies local anchor point.
 		/// </summary>
@@ -78,8 +74,8 @@ namespace Duality.Components.Physics
 			if (this.joint == null) return;
 
 			SliderJoint j = this.joint as SliderJoint;
-			j.LocalAnchorB = GetFarseerPoint(this.BodyB, this.localAnchorB);
-			j.LocalAnchorA = GetFarseerPoint(this.BodyA, this.localAnchorA);
+			j.LocalAnchorB = GetFarseerPoint(this.OtherBody, this.localAnchorB);
+			j.LocalAnchorA = GetFarseerPoint(this.ParentBody, this.localAnchorA);
 			j.MaxLength = PhysicsUnit.LengthToPhysical * this.maxLength;
 			j.MinLength = PhysicsUnit.LengthToPhysical * this.minLength;
 		}
