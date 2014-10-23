@@ -152,7 +152,7 @@ namespace Duality.Components.Renderers
 			if (this.outlineWidth > 0.0f)
 			{
 				canvas.State.ZOffset = this.offset - 1;
-				if (this.customAreaMaterial != null)
+				if (this.customOutlineMaterial != null)
 					canvas.State.SetMaterial(this.customOutlineMaterial);
 				else
 					canvas.State.SetMaterial(this.outlineMaterial);
