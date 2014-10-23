@@ -379,18 +379,21 @@ namespace Duality.Resources
 				if (physicsAcc >= Time.MsPFMult)
 				{
 					Profile.TimeUpdatePhysics.BeginMeasure();
-					double timeUpdateBegin = Time.MainTimer.TotalMilliseconds;
-					while (physicsAcc >= Time.MsPFMult)
+					DualityApp.EditorGuard(() =>
 					{
-						// Catch up on updating progress
-						FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.PhysicsVelocityThreshold;
-						physicsWorld.Step(Time.SPFMult);
-						physicsAcc -= Time.MsPFMult;
-						iterations++;
+						double timeUpdateBegin = Time.MainTimer.TotalMilliseconds;
+						while (physicsAcc >= Time.MsPFMult)
+						{
+							// Catch up on updating progress
+							FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * DualityApp.AppData.PhysicsVelocityThreshold;
+							physicsWorld.Step(Time.SPFMult);
+							physicsAcc -= Time.MsPFMult;
+							iterations++;
 							
-						double timeSpent = Time.MainTimer.TotalMilliseconds - timeUpdateBegin;
-						if (timeSpent >= Time.MsPFMult * 10.0f) break; // Emergency exit
-					}
+							double timeSpent = Time.MainTimer.TotalMilliseconds - timeUpdateBegin;
+							if (timeSpent >= Time.MsPFMult * 10.0f) break; // Emergency exit
+						}
+					});
 					physUpdate = true;
 					Profile.TimeUpdatePhysics.EndMeasure();
 				}
@@ -398,10 +401,13 @@ namespace Duality.Resources
 			else
 			{
 				Profile.TimeUpdatePhysics.BeginMeasure();
+				DualityApp.EditorGuard(() =>
+				{
 				FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold;
 				physicsWorld.Step(Time.TimeMult * Time.SPFMult);
 				if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
 				physicsAcc = PhysicsAccStart;
+				});
 				physUpdate = true;
 				Profile.TimeUpdatePhysics.EndMeasure();
 			}
