@@ -50,8 +50,8 @@ namespace Duality.Components.Physics
 			RigidBody bodyCmpB = bodyB.UserData as RigidBody;
 			if (bodyCmpA == null || bodyCmpB == null) return null;
 
-			JointInfo jointA = bodyCmpA.Joints.FirstOrDefault(j => j is FixedPrismaticJointInfo || j is FixedRevoluteJointInfo || j is PrismaticJointInfo || j is RevoluteJointInfo);
-			JointInfo jointB = bodyCmpB.Joints.FirstOrDefault(j => j is FixedPrismaticJointInfo || j is FixedRevoluteJointInfo || j is PrismaticJointInfo || j is RevoluteJointInfo);
+			JointInfo jointA = bodyCmpA.Joints.FirstOrDefault(j => j is PrismaticJointInfo || j is RevoluteJointInfo);
+			JointInfo jointB = bodyCmpB.Joints.FirstOrDefault(j => j is PrismaticJointInfo || j is RevoluteJointInfo);
 			if (jointA == null || jointB == null) return null;
 
 			if (jointA.joint == null) jointA.UpdateJoint();

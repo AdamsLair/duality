@@ -91,13 +91,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			if (joint.BodyA == null) return;
 			if (joint.DualJoint && joint.BodyB == null) return;
 
-			if (joint is FixedAngleJointInfo)			this.DrawJoint(canvas, joint as FixedAngleJointInfo);
-			else if (joint is FixedDistanceJointInfo)	this.DrawJoint(canvas, joint as FixedDistanceJointInfo);
-			else if (joint is FixedMouseJointInfo)		this.DrawJoint(canvas, joint as FixedMouseJointInfo);
-			else if (joint is FixedFrictionJointInfo)	this.DrawJoint(canvas, joint as FixedFrictionJointInfo);
-			else if (joint is FixedRevoluteJointInfo)	this.DrawJoint(canvas, joint as FixedRevoluteJointInfo);
-			else if (joint is FixedPrismaticJointInfo)	this.DrawJoint(canvas, joint as FixedPrismaticJointInfo);
-			else if (joint is AngleJointInfo)			this.DrawJoint(canvas, joint as AngleJointInfo);
+			if (joint is AngleJointInfo)				this.DrawJoint(canvas, joint as AngleJointInfo);
 			else if (joint is DistanceJointInfo)		this.DrawJoint(canvas, joint as DistanceJointInfo);
 			else if (joint is FrictionJointInfo)		this.DrawJoint(canvas, joint as FrictionJointInfo);
 			else if (joint is RevoluteJointInfo)		this.DrawJoint(canvas, joint as RevoluteJointInfo);
@@ -108,63 +102,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			else if (joint is LineJointInfo)			this.DrawJoint(canvas, joint as LineJointInfo);
 			else if (joint is PulleyJointInfo)			this.DrawJoint(canvas, joint as PulleyJointInfo);
 			else if (joint is GearJointInfo)			this.DrawJoint(canvas, joint as GearJointInfo);
-		}
-		private void DrawJoint(Canvas canvas, FixedAngleJointInfo joint)
-		{
-			this.DrawLocalAngleConstraint(canvas, joint.BodyA, Vector2.Zero, joint.TargetAngle, joint.BodyA.GameObj.Transform.Angle, joint.BodyA.BoundRadius);
-		}
-		private void DrawJoint(Canvas canvas, FixedDistanceJointInfo joint)
-		{
-			this.DrawWorldDistConstraint(canvas, joint.BodyA, joint.LocalAnchor, joint.WorldAnchor, joint.TargetDistance, joint.TargetDistance);
-			this.DrawWorldAnchor(canvas, joint.BodyA, joint.WorldAnchor);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchor);
-		}
-		private void DrawJoint(Canvas canvas, FixedMouseJointInfo joint)
-		{
-			this.DrawWorldPosConstraint(canvas, joint.BodyA, joint.LocalAnchor, joint.WorldAnchor);
-			this.DrawWorldAnchor(canvas, joint.BodyA, joint.WorldAnchor);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchor);
-		}
-		private void DrawJoint(Canvas canvas, FixedFrictionJointInfo joint)
-		{
-			this.DrawLocalFrictionMarker(canvas, joint.BodyA, joint.LocalAnchor);
-		}
-		private void DrawJoint(Canvas canvas, FixedRevoluteJointInfo joint)
-		{
-			float angularCircleRad = joint.BodyA.BoundRadius * 0.25f;
-
-			this.DrawWorldPosConstraint(canvas, joint.BodyA, joint.LocalAnchor, joint.WorldAnchor);
-			if (joint.LimitEnabled)
-			{
-				this.DrawLocalAngleConstraint(
-					canvas, joint.BodyA, joint.LocalAnchor, 
-					joint.LowerLimit + joint.ReferenceAngle, joint.UpperLimit + joint.ReferenceAngle, joint.BodyA.GameObj.Transform.Angle, 
-					angularCircleRad);
-			}
-
-			if (joint.MotorEnabled)
-			{
-				this.DrawLocalAngleMotor(canvas, joint.BodyA, Vector2.Zero, joint.MotorSpeed, joint.MaxMotorTorque, joint.BodyA.BoundRadius * 1.15f);
-			}
-
-			this.DrawWorldAnchor(canvas, joint.BodyA, joint.WorldAnchor);
-			this.DrawLocalAnchor(canvas, joint.BodyA, joint.LocalAnchor);
-		}
-		private void DrawJoint(Canvas canvas, FixedPrismaticJointInfo joint)
-		{
-			float angularCircleRad = joint.BodyA.BoundRadius * 0.25f;
-
-			if (joint.LimitEnabled)
-				this.DrawWorldAxisConstraint(canvas, joint.BodyA, joint.MovementAxis, Vector2.Zero, joint.WorldAnchor, joint.LowerLimit, joint.UpperLimit);
-			else
-				this.DrawWorldAxisConstraint(canvas, joint.BodyA, joint.MovementAxis, Vector2.Zero, joint.WorldAnchor);
-
-			this.DrawLocalAngleConstraint(canvas, joint.BodyA, Vector2.Zero, joint.ReferenceAngle, joint.BodyA.GameObj.Transform.Angle, joint.BodyA.BoundRadius);
-
-			if (joint.MotorEnabled)
-				this.DrawWorldAxisMotor(canvas, joint.BodyA, joint.MovementAxis, Vector2.Zero, joint.WorldAnchor, joint.MotorSpeed, joint.MaxMotorForce, joint.BodyA.BoundRadius * 1.15f);
-
-			this.DrawWorldAnchor(canvas, joint.BodyA, joint.WorldAnchor);
 		}
 		private void DrawJoint(Canvas canvas, AngleJointInfo joint)
 		{

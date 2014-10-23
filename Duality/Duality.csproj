@@ -99,16 +99,12 @@
     <Compile Include="Cloning\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Components\Diagnostics\VisualLogRenderer.cs" />
     <Compile Include="Components\ICmpInterfaces.cs" />
-    <Compile Include="Components\Physics\Joints\FixedMouseJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\GearJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\PulleyJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\LineJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\SliderJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\RopeJointInfo.cs" />
     <Compile Include="Components\Physics\Shapes\CircleShapeInfo.cs" />
-    <Compile Include="Components\Physics\Joints\FixedFrictionJointInfo.cs" />
-    <Compile Include="Components\Physics\Joints\FixedRevoluteJointInfo.cs" />
-    <Compile Include="Components\Physics\Joints\FixedPrismaticJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\AngleJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\DistanceJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\FrictionJointInfo.cs" />
@@ -119,8 +115,6 @@
     <Compile Include="Components\Physics\RigidBody.cs" />
     <Compile Include="Components\Physics\ShapeInfo.cs" />
     <Compile Include="Components\Physics\JointInfo.cs" />
-    <Compile Include="Components\Physics\Joints\FixedAngleJointInfo.cs" />
-    <Compile Include="Components\Physics\Joints\FixedDistanceJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\WeldJointInfo.cs" />
     <Compile Include="Components\Renderers\RigidBodyRenderer.cs" />
     <Compile Include="Components\Diagnostics\ProfileRenderer.cs" />
