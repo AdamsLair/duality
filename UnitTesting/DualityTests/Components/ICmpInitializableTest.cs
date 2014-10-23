@@ -110,6 +110,30 @@ namespace Duality.Tests.Resources
 			this.scene.Dispose();
 			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
 		}
+		[Test] public void IgnoreActiveStateInNonCurrentScene()
+		{
+			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();
+
+			// Deactivate by GameObject.Active
+			this.obj.Active = false;
+			Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
+			initTester.Reset();
+
+			// Activate by GameObject.Active
+			this.obj.Active = true;
+			Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate));
+			initTester.Reset();
+
+			// Deactivate by Component.Active
+			initTester.Active = false;
+			Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
+			initTester.Reset();
+
+			// Activate by Component.Active
+			initTester.Active = true;
+			Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate));
+			initTester.Reset();
+		}
 		[Test] public void Serialize()
 		{
 			InitializableEventReceiver initTester = this.obj.AddComponent<InitializableEventReceiver>();

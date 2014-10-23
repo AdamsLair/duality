@@ -131,15 +131,18 @@ namespace Duality
 			{
 				if (this.active != value)
 				{
-					if (value)
+					if (this.gameobj != null && this.gameobj.ParentScene != null && this.gameobj.ParentScene.IsCurrent)
 					{
-						ICmpInitializable cInit = this as ICmpInitializable;
-						if (cInit != null) cInit.OnInit(InitContext.Activate);
-					}
-					else
-					{
-						ICmpInitializable cInit = this as ICmpInitializable;
-						if (cInit != null) cInit.OnShutdown(ShutdownContext.Deactivate);
+						if (value)
+						{
+							ICmpInitializable cInit = this as ICmpInitializable;
+							if (cInit != null) cInit.OnInit(InitContext.Activate);
+						}
+						else
+						{
+							ICmpInitializable cInit = this as ICmpInitializable;
+							if (cInit != null) cInit.OnShutdown(ShutdownContext.Deactivate);
+						}
 					}
 
 					this.active = value;
