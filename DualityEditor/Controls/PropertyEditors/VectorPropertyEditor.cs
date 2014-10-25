@@ -274,9 +274,10 @@ namespace Duality.Editor.Controls.PropertyEditors
 			int curY = this.ClientRectangle.Y + 1;
 			for (int i = 0; i < this.editor.Length; i++)
 			{
-				this.editor[i].Rect = new Rectangle(curX, curY, subEditWidth, subEditHeight);
+				bool lastOneInLine = ((i + 1) % horNum) == 0;
+				this.editor[i].Rect = new Rectangle(curX, curY, lastOneInLine ? (this.ClientRectangle.Right - 1 - curX) : subEditWidth, subEditHeight);
 				curX += subEditWidth + subEditSpace;
-				if (i == horNum - 1)
+				if (lastOneInLine)
 				{
 					curX = this.ClientRectangle.X + 1;
 					curY += subEditHeight + subEditSpace;
