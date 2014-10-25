@@ -205,7 +205,9 @@ namespace Duality.Editor.Controls
 				if (dropdownEdit is IHelpProvider)
 				{
 					captured = true;
-					Point dropdownEditorPos = this.GetEditorLocation(dropdownEdit as PropertyEditor, true);
+					Point dropdownEditorPos = (dropdownEdit as PropertyEditor).Location;
+					dropdownEditorPos.X += this.AutoScrollPosition.X;
+					dropdownEditorPos.Y += this.AutoScrollPosition.Y;
 					return (dropdownEdit as IHelpProvider).ProvideHoverHelp(new Point(localPos.X - dropdownEditorPos.X, localPos.Y - dropdownEditorPos.Y), ref captured);
 				}
 				// Special case: Its a known basic dropdown.
@@ -250,7 +252,9 @@ namespace Duality.Editor.Controls
 			PropertyEditor helpEditor = pickedEditor;
 			while (helpEditor != null)
 			{
-				Point helpEditorPos = this.GetEditorLocation(helpEditor, true);
+				Point helpEditorPos = helpEditor.Location;
+				helpEditorPos.X += this.AutoScrollPosition.X;
+				helpEditorPos.Y += this.AutoScrollPosition.Y;
 				if (helpEditor is IHelpProvider)
 				{
 					IHelpProvider localProvider = helpEditor as IHelpProvider;

@@ -171,9 +171,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			// Create a ContextMenu
 			ContextMenuStrip contextMenu = new ContextMenuStrip();
 			Point menuPos = new Point(this.ButtonRectangle.Right, this.ButtonRectangle.Bottom);
-			Point thisLoc = this.ParentGrid.GetEditorLocation(this, true);
-			menuPos.X += thisLoc.X;
-			menuPos.Y += thisLoc.Y;
+			menuPos.X += this.ParentGrid.AutoScrollPosition.X;
+			menuPos.Y += this.ParentGrid.AutoScrollPosition.Y;
 
 			// Default items
 			ToolStripItem itemReset = contextMenu.Items.Add(Properties.EditorBaseRes.MenuItemName_ResetComponent, null, this.contextMenu_ResetComponent);
