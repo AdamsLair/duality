@@ -307,8 +307,8 @@ namespace Duality.Tests.Cloning
 
 			// Are the two bodies joint together as expected?
 			Assert.AreEqual(1, sourceBodyA.Joints.Count());
-			Assert.AreEqual(1, sourceBodyB.Joints.Count());
-			Assert.AreSame(sourceBodyA.Joints.First(), sourceBodyB.Joints.First());
+			Assert.AreSame(sourceBodyA.Joints.First().OtherBody, sourceBodyB);
+			Assert.IsTrue(sourceBodyB.Joints == null || !sourceBodyB.Joints.Any());
 
 			// Clone the object hierarchy
 			GameObject targetA = sourceA.DeepClone();
@@ -318,8 +318,8 @@ namespace Duality.Tests.Cloning
 
 			// Is the cloned hierarchy joint together as expected?
 			Assert.AreEqual(1, targetBodyA.Joints.Count());
-			Assert.AreEqual(1, targetBodyB.Joints.Count());
-			Assert.AreSame(targetBodyA.Joints.First(), targetBodyB.Joints.First());
+			Assert.IsTrue(targetBodyB.Joints == null || !targetBodyB.Joints.Any());
+			Assert.AreSame(targetBodyA.Joints.First().OtherBody, targetBodyB);
 			Assert.AreNotSame(sourceBodyA.Joints.First(), targetBodyA.Joints.First());
 		}
 		[Test] public void RealWorldPerformanceTest()

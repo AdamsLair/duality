@@ -489,7 +489,7 @@ namespace Duality.Resources
 			change.prop				= prop;
 			change.val				= value;
 
-			this.PopChange(change.childIndex, prop);
+			this.PopChange(change.childIndex, prop, change.componentType);
 			this.changes.Add(change);
 		}
 		/// <summary>
@@ -526,13 +526,16 @@ namespace Duality.Resources
 
 			this.PopChange(this.obj.IndexPathOfChild(targetObj), prop);
 		}
-		private void PopChange(IEnumerable<int> indexPath, PropertyInfo prop)
+		private void PopChange(IEnumerable<int> indexPath, PropertyInfo prop, Type componentType = null)
 		{
 			if (this.changes == null || this.changes.Count == 0) return;
 			for (int i = this.changes.Count - 1; i >= 0; i--)
 			{
 				if (this.changes[i].prop == prop && this.changes[i].childIndex.SequenceEqual(indexPath))
 				{
+					if (componentType != null && this.changes[i].componentType != componentType)
+						continue;
+
 					this.changes.RemoveAt(i);
 					break;
 				}

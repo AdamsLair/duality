@@ -205,6 +205,22 @@ namespace Duality.Tests.Resources
 			GC.Collect();
 			Assert.Pass();
 		}
+		[Test] public void SameNamePropertyChanges()
+		{
+			var gameObj = this.CreateSimpleGameObject();
+			var prefab = new Prefab(gameObj);
+			gameObj.LinkToPrefab(prefab);
+
+			var transform = gameObj.GetComponent<Transform>();
+			var spriteRenderer = gameObj.GetComponent<SpriteRenderer>();
+			gameObj.PrefabLink.PushChange(transform, PropertyOf(() => transform.ActiveSingle), false);
+			gameObj.PrefabLink.PushChange(spriteRenderer, PropertyOf(() => spriteRenderer.ActiveSingle), false);
+
+			gameObj.PrefabLink.ApplyChanges();
+
+			Assert.IsFalse(gameObj.GetComponent<SpriteRenderer>().ActiveSingle);
+			Assert.IsFalse(gameObj.GetComponent<Transform>().ActiveSingle);
+		}
 
 		private GameObject CreateSimpleGameObject(GameObject parent = null)
 		{
