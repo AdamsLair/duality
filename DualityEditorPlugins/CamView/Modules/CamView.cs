@@ -9,7 +9,10 @@ using System.Xml.Linq;
 using BitArray = System.Collections.BitArray;
 
 using WeifenLuo.WinFormsUI.Docking;
+
 using AdamsLair.WinForms.ColorControls;
+using AdamsLair.WinForms.ItemModels;
+using AdamsLair.WinForms.ItemViews;
 
 using Duality;
 using Duality.Components;
@@ -131,24 +134,50 @@ namespace Duality.Editor.Plugins.CamView
 				return this.LayerName;
 			}
 		}
+		private class ObjectVisibilityEntry
+		{
+			private Type componentType;
+
+			public Type ComponentType
+			{
+				get { return this.componentType; }
+			}
+			public string ComponentName
+			{
+				get { return this.componentType != null ? this.componentType.GetTypeCSCodeName(true) : "null"; }
+			}
+
+			public ObjectVisibilityEntry(Type componentType)
+			{
+				this.componentType = componentType;
+			}
+
+			public override string ToString()
+			{
+				return this.ComponentName;
+			}
+		}
 
 
 		public const float DefaultDisplayBoundRadius = 25.0f;
 
 
-		private	int					runtimeId			= 0;
-		private	GLControl			glControl			= null;
-		private	GameObject			camObj				= null;
-		private	Camera				camComp				= null;
-		private	CamViewState		activeState			= null;
-		private	List<CamViewLayer>	activeLayers		= null;
-		private	List<Type>			lockedLayers		= new List<Type>();
-		private	EditingGuide		editingUserGuides	= new EditingGuide();
-		private	ColorPickerDialog	bgColorDialog		= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
-		private	GameObject			nativeCamObj		= null;
-		private	string				loadTempState		= null;
-		private	string				loadTempPerspective	= null;
-		private	ToolStripItem		activeToolItem		= null;
+		private	int						runtimeId					= 0;
+		private	GLControl				glControl					= null;
+		private	GameObject				camObj						= null;
+		private	Camera					camComp						= null;
+		private	CamViewState			activeState					= null;
+		private	List<CamViewLayer>		activeLayers				= null;
+		private	HashSet<Type>			lockedLayers				= new HashSet<Type>();
+		private	HashSet<Type>			objectVisibility			= null;
+		private MenuModel				objectVisibilityMenuModel	= new MenuModel();
+		private MenuStripMenuView		objectVisibilityMenuView	= null;
+		private	EditingGuide			editingUserGuides			= new EditingGuide();
+		private	ColorPickerDialog		bgColorDialog				= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
+		private	GameObject				nativeCamObj				= null;
+		private	string					loadTempState				= null;
+		private	string					loadTempPerspective			= null;
+		private	ToolStripItem			activeToolItem				= null;
 		private	InputEventMessageRedirector	waitForInputFilter	= null;
 
 		private	Dictionary<Type,CamViewLayer>	availLayers	= new Dictionary<Type,CamViewLayer>();
@@ -227,6 +256,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.activeLayers; }
 		}
+		public IEnumerable<Type> ObjectVisibility
+		{
+			get { return this.objectVisibility; }
+		}
 		public EditingGuide EditingUserGuides
 		{
 			get { return this.editingUserGuides; }
@@ -279,9 +312,10 @@ namespace Duality.Editor.Plugins.CamView
 
 			this.InitGLControl();
 			this.InitNativeCamera();
-			if (this.camSelector.Items.Count == 0)				this.InitCameraSelector();
-			if (this.stateSelector.Items.Count == 0)			this.InitStateSelector();
-			if (this.layerSelector.DropDownItems.Count == 0)	this.InitLayerSelector();
+			if (this.camSelector.Items.Count == 0)						this.InitCameraSelector();
+			if (this.stateSelector.Items.Count == 0)					this.InitStateSelector();
+			if (this.layerSelector.DropDownItems.Count == 0)			this.InitLayerSelector();
+			if (this.objectVisibilitySelector.DropDownItems.Count == 0)	this.InitObjectVisibilitySelector();
 			this.SetCurrentCamera(null);
 
 			// Initialize PerspectiveMode Selector
@@ -430,6 +464,75 @@ namespace Duality.Editor.Plugins.CamView
 			}
 			this.layerSelector.DropDown.Closing += this.layerSelector_Closing;
 		}
+		private void InitObjectVisibilitySelector()
+		{
+			this.objectVisibilitySelector.DropDown.Closing -= this.objectVisibilitySelector_Closing;
+			
+			var typesWithCount = (
+				from componentType in DualityApp.GetAvailDualityTypes(typeof(Component))
+				where !componentType.IsAbstract && !componentType.GetCustomAttributes<EditorHintFlagsAttribute>().Any(attrib => attrib.Flags.HasFlag(MemberFlags.Invisible))
+				select new { Type = componentType, Count = Scene.Current.FindComponents(componentType).Count() }
+				).ToArray();
+
+			typesWithCount = (
+				from typeInfo in typesWithCount
+				where typeInfo.Count > 0
+				orderby typeInfo.Count descending
+				select typeInfo
+				).ToArray();
+			
+			// Remove old items
+			this.objectVisibilityMenuModel.ClearItems();
+
+			// Add new items
+			bool hierarchial = typesWithCount.Length > 8;
+			int index = 0;
+			foreach (var typeInfo in typesWithCount)
+			{
+				ObjectVisibilityEntry entry = new ObjectVisibilityEntry(typeInfo.Type);
+
+				string itemPath;
+				int sortVal = 0;
+				if (hierarchial && index >= 5)
+				{
+					itemPath = typeInfo.Type.GetEditorCategory().Concat(new [] { entry.ComponentName }).ToString("/");
+					sortVal = -typeInfo.Count;
+				}
+				else
+				{
+					itemPath = entry.ComponentName;
+					sortVal = MenuModelItem.SortValue_Top - typeInfo.Count;
+				}
+				
+				MenuModelItem typeItem = this.objectVisibilityMenuModel.RequestItem(itemPath);
+				typeItem.Name = entry.ComponentName;
+				typeItem.Icon = typeInfo.Type.GetEditorImage();
+				typeItem.SortValue = sortVal;
+				typeItem.Tag = entry;
+				typeItem.Checkable = true;
+				typeItem.Checked = this.objectVisibility != null && this.objectVisibility.Contains(typeInfo.Type);
+				typeItem.ActionHandler = this.objectVisibilitySelector_ItemPerformAction;
+
+				index++;
+			}
+			if (hierarchial)
+			{
+				this.objectVisibilityMenuModel.AddItem(new MenuModelItem
+				{
+					Name		= "TopSeparator",
+					TypeHint	= MenuItemTypeHint.Separator,
+					SortValue	= MenuModelItem.SortValue_Top + 1
+				});
+			}
+			
+			if (this.objectVisibilityMenuView == null)
+			{
+				this.objectVisibilityMenuView = new MenuStripMenuView(this.objectVisibilitySelector.DropDownItems);
+				this.objectVisibilityMenuView.Model = this.objectVisibilityMenuModel;
+			}
+
+			this.objectVisibilitySelector.DropDown.Closing += this.objectVisibilitySelector_Closing;
+		}
 		private void InitCameraSelector()
 		{
 			this.camSelector.Items.Clear();
@@ -515,10 +618,6 @@ namespace Duality.Editor.Plugins.CamView
 			}
 		}
 
-		public void SetActiveLayers(params Type[] layerTypes)
-		{
-			this.SetActiveLayers((IEnumerable<Type>)layerTypes);
-		}
 		public void SetActiveLayers(IEnumerable<Type> layerTypes)
 		{
 			if (this.activeLayers == null) this.activeLayers = new List<CamViewLayer>();
@@ -585,6 +684,42 @@ namespace Duality.Editor.Plugins.CamView
 		public void UnlockLayer(Type layerType)
 		{
 			this.lockedLayers.Remove(layerType);
+		}
+
+		public void SetObjectVisibility(IEnumerable<Type> visibleObjectTypes)
+		{
+			if (this.objectVisibility == null) this.objectVisibility = new HashSet<Type>();
+
+			// Deactivate unused layers
+			foreach (Type visibleType in this.objectVisibility.ToArray())
+			{
+				if (!visibleObjectTypes.Contains(visibleType))
+					this.SetObjectVisibility(visibleType, false);
+			}
+
+			// Activate not-yet-active layers
+			foreach (Type objectType in visibleObjectTypes)
+				this.SetObjectVisibility(objectType, true);
+		}
+		public void SetObjectVisibility(Type objectType, bool visible)
+		{
+			if (visible)
+			{
+				if (this.objectVisibility == null) this.objectVisibility = new HashSet<Type>();
+				if (!this.objectVisibility.Contains(objectType))
+				{
+					this.objectVisibility.Add(objectType);
+					this.glControl.Invalidate();
+				}
+			}
+			else
+			{
+				if (this.objectVisibility != null && this.objectVisibility.Contains(objectType))
+				{
+					this.objectVisibility.Remove(objectType);
+					this.glControl.Invalidate();
+				}
+			}
 		}
 
 		internal void SaveUserData(XElement node)
@@ -707,6 +842,7 @@ namespace Duality.Editor.Plugins.CamView
 			this.camSelector.Enabled = value;
 			this.showBgColorDialog.Enabled = value;
 			this.layerSelector.Enabled = value;
+			this.objectVisibilitySelector.Enabled = value;
 			this.buttonResetZoom.Enabled = value;
 		}
 
@@ -747,8 +883,32 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (this.CurrentCameraChanged != null)
 				this.CurrentCameraChanged(this, new CameraChangedEventArgs(prev, next));
+			
+			if (prev != null) prev.RemoveEditorRendererFilter(this.RendererFilter);
+			if (next != null) next.AddEditorRendererFilter(this.RendererFilter);
 		}
 		
+		private bool RendererFilter(ICmpRenderer r)
+		{
+			GameObject obj = (r as Component).GameObj;
+
+			if (this.objectVisibility != null && this.objectVisibility.Count > 0)
+			{
+				bool match = false;
+				foreach (Type type in this.objectVisibility)
+				{
+					if (obj.GetComponent(type) != null)
+					{
+						match = true;
+						break;
+					}
+				}
+				if (!match) return false;
+			}
+
+			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
+			return !data.IsHidden;
+		}
 		
 		private void InstallFocusHook()
 		{
@@ -1092,6 +1252,26 @@ namespace Duality.Editor.Plugins.CamView
 		private void layerSelector_DropDownClosed(object sender, EventArgs e)
 		{
 			if (this.activeToolItem == this.layerSelector)
+				this.activeToolItem = null;
+		}
+		private void objectVisibilitySelector_DropDownOpening(object sender, EventArgs e)
+		{
+			this.activeToolItem = this.objectVisibilitySelector;
+			this.InitObjectVisibilitySelector();
+		}
+		private void objectVisibilitySelector_ItemPerformAction(object sender, EventArgs e)
+		{
+			MenuModelItem item = sender as MenuModelItem;
+			ObjectVisibilityEntry entry = item.Tag as ObjectVisibilityEntry;
+			this.SetObjectVisibility(entry.ComponentType, item.Checked);
+		}
+		private void objectVisibilitySelector_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+		{
+			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked) e.Cancel = true;
+		}
+		private void objectVisibilitySelector_DropDownClosed(object sender, EventArgs e)
+		{
+			if (this.activeToolItem == this.objectVisibilitySelector)
 				this.activeToolItem = null;
 		}
 		private void snapToGridSelector_DropDownOpening(object sender, EventArgs e)

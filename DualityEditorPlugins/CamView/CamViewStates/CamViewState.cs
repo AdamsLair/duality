@@ -175,6 +175,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private	FormattedText	statusText			= new FormattedText();
 		private	FormattedText	actionText			= new FormattedText();
 		private	List<Type>		lastActiveLayers	= new List<Type>();
+		private	List<Type>		lastObjVisibility	= new List<Type>();
 		protected	List<SelObj>	actionObjSel	= new List<SelObj>();
 		protected	List<SelObj>	allObjSel		= new List<SelObj>();
 		protected	List<SelObj>	indirectObjSel	= new List<SelObj>();
@@ -285,6 +286,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		internal protected virtual void OnEnterState()
 		{
 			this.RestoreActiveLayers();
+			this.RestoreObjectVisibility();
 
 			// Create re-usable render passes for editor gizmos
 			this.camPassBg = new Camera.Pass();
@@ -369,6 +371,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Scene.ComponentRemoving -= this.Scene_Changed;
 
 			this.SaveActiveLayers();
+			this.SaveObjectVisibility();
 
 			// Final Camera cleanup
 			this.OnCurrentCameraChanged(new CamView.CameraChangedEventArgs(this.CameraComponent, null));
@@ -377,6 +380,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		internal protected virtual void SaveUserData(XElement node)
 		{
 			if (this.IsActive) this.SaveActiveLayers();
+			if (this.IsActive) this.SaveObjectVisibility();
 
 			XElement activeLayersNode = new XElement("ActiveLayers");
 			foreach (Type t in this.lastActiveLayers)
@@ -385,6 +389,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				activeLayersNode.Add(typeEntry);
 			}
 			node.Add(activeLayersNode);
+
+			XElement objVisibilityNode = new XElement("ObjectVisibility");
+			foreach (Type t in this.lastObjVisibility)
+			{
+				XElement typeEntry = new XElement(t.GetTypeId());
+				objVisibilityNode.Add(typeEntry);
+			}
+			node.Add(objVisibilityNode);
 		}
 		internal protected virtual void LoadUserData(XElement node)
 		{
@@ -398,8 +410,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					if (layerType != null) this.lastActiveLayers.Add(layerType);
 				}
 			}
+			
+			XElement objVisibilityNode = node.Element("ObjectVisibility");
+			if (objVisibilityNode != null)
+			{
+				this.lastObjVisibility.Clear();
+				foreach (XElement typeNode in objVisibilityNode.Elements())
+				{
+					Type type = ReflectionHelper.ResolveType(typeNode.Name.LocalName);
+					if (type != null) this.lastObjVisibility.Add(type);
+				}
+			}
 
 			if (this.IsActive) this.RestoreActiveLayers();
+			if (this.IsActive) this.RestoreObjectVisibility();
 		}
 
 		protected virtual void OnCollectStateDrawcalls(Canvas canvas)
@@ -853,6 +877,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected void RestoreActiveLayers()
 		{
 			this.View.SetActiveLayers(this.lastActiveLayers);
+		}
+		protected void SetDefaultObjectVisibility(params Type[] activeLayers)
+		{
+			this.lastObjVisibility = activeLayers.ToList();
+		}
+		protected void SaveObjectVisibility()
+		{
+			this.lastObjVisibility = this.View.ObjectVisibility.ToList();
+		}
+		protected void RestoreObjectVisibility()
+		{
+			this.View.SetObjectVisibility(this.lastObjVisibility);
 		}
 
 		protected void DrawSelectionMarkers(Canvas canvas, IEnumerable<SelObj> obj)

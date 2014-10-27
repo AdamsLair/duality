@@ -594,7 +594,17 @@ namespace Duality.Components
 
 			// Query renderers
 			IEnumerable<ICmpRenderer> rendererQuery = Scene.Current.QueryVisibleRenderers(this.drawDevice);
-			foreach (Predicate<ICmpRenderer> p in this.editorRenderFilter) rendererQuery = rendererQuery.Where(r => p(r));
+			if (this.editorRenderFilter.Count > 0)
+			{
+				rendererQuery = rendererQuery.Where(r => 
+				{
+					for (int i = 0; i < this.editorRenderFilter.Count; i++)
+					{
+						if (!this.editorRenderFilter[i](r)) return false;
+					}
+					return true;
+				});
+			}
 
 			// Collect drawcalls
 			if (this.drawDevice.IsPicking)

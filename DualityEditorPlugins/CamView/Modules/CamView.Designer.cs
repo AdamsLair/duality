@@ -36,15 +36,16 @@
 			this.camSelector = new System.Windows.Forms.ToolStripComboBox();
 			this.toolbarCamera = new System.Windows.Forms.ToolStrip();
 			this.layerSelector = new System.Windows.Forms.ToolStripDropDownButton();
+			this.objectVisibilitySelector = new System.Windows.Forms.ToolStripDropDownButton();
 			this.buttonResetZoom = new System.Windows.Forms.ToolStripButton();
 			this.perspectiveDropDown = new System.Windows.Forms.ToolStripDropDownButton();
 			this.showBgColorDialog = new System.Windows.Forms.ToolStripButton();
 			this.snapToGridSelector = new System.Windows.Forms.ToolStripDropDownButton();
 			this.snapToGridInactiveItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.snapToGridPixelPerfectItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.snapToGrid16Item = new System.Windows.Forms.ToolStripMenuItem();
 			this.snapToGrid32Item = new System.Windows.Forms.ToolStripMenuItem();
 			this.snapToGrid64Item = new System.Windows.Forms.ToolStripMenuItem();
-			this.snapToGridPixelPerfectItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.snapToGridCustomItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbarCamera.SuspendLayout();
 			this.SuspendLayout();
@@ -114,6 +115,7 @@
 			this.toolbarCamera.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stateSelector,
             this.layerSelector,
+            this.objectVisibilitySelector,
             this.toolStripSeparator1,
             this.buttonResetZoom,
             this.perspectiveDropDown,
@@ -124,7 +126,7 @@
             this.snapToGridSelector});
 			this.toolbarCamera.Location = new System.Drawing.Point(0, 0);
 			this.toolbarCamera.Name = "toolbarCamera";
-			this.toolbarCamera.Size = new System.Drawing.Size(539, 25);
+			this.toolbarCamera.Size = new System.Drawing.Size(651, 25);
 			this.toolbarCamera.TabIndex = 1;
 			this.toolbarCamera.Text = "toolStrip";
 			// 
@@ -139,6 +141,17 @@
 			this.layerSelector.DropDownClosed += new System.EventHandler(this.layerSelector_DropDownClosed);
 			this.layerSelector.DropDownOpening += new System.EventHandler(this.layerSelector_DropDownOpening);
 			this.layerSelector.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.layerSelector_DropDownItemClicked);
+			// 
+			// objectVisibilitySelector
+			// 
+			this.objectVisibilitySelector.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.objectVisibilitySelector.Image = global::Duality.Editor.Plugins.CamView.Properties.Resources.ObjectVisibility;
+			this.objectVisibilitySelector.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.objectVisibilitySelector.Name = "objectVisibilitySelector";
+			this.objectVisibilitySelector.Size = new System.Drawing.Size(29, 22);
+			this.objectVisibilitySelector.Text = "Select visible Objects";
+			this.objectVisibilitySelector.DropDownClosed += new System.EventHandler(this.objectVisibilitySelector_DropDownClosed);
+			this.objectVisibilitySelector.DropDownOpening += new System.EventHandler(this.objectVisibilitySelector_DropDownOpening);
 			// 
 			// buttonResetZoom
 			// 
@@ -196,38 +209,38 @@
 			// snapToGridInactiveItem
 			// 
 			this.snapToGridInactiveItem.Name = "snapToGridInactiveItem";
-			this.snapToGridInactiveItem.Size = new System.Drawing.Size(152, 22);
+			this.snapToGridInactiveItem.Size = new System.Drawing.Size(140, 22);
 			this.snapToGridInactiveItem.Text = "Don\'t";
+			// 
+			// snapToGridPixelPerfectItem
+			// 
+			this.snapToGridPixelPerfectItem.Name = "snapToGridPixelPerfectItem";
+			this.snapToGridPixelPerfectItem.Size = new System.Drawing.Size(140, 22);
+			this.snapToGridPixelPerfectItem.Text = "Pixel-Perfect";
 			// 
 			// snapToGrid16Item
 			// 
 			this.snapToGrid16Item.Name = "snapToGrid16Item";
-			this.snapToGrid16Item.Size = new System.Drawing.Size(152, 22);
+			this.snapToGrid16Item.Size = new System.Drawing.Size(140, 22);
 			this.snapToGrid16Item.Tag = "";
 			this.snapToGrid16Item.Text = "16 x 16";
 			// 
 			// snapToGrid32Item
 			// 
 			this.snapToGrid32Item.Name = "snapToGrid32Item";
-			this.snapToGrid32Item.Size = new System.Drawing.Size(152, 22);
+			this.snapToGrid32Item.Size = new System.Drawing.Size(140, 22);
 			this.snapToGrid32Item.Text = "32 x 32";
 			// 
 			// snapToGrid64Item
 			// 
 			this.snapToGrid64Item.Name = "snapToGrid64Item";
-			this.snapToGrid64Item.Size = new System.Drawing.Size(152, 22);
+			this.snapToGrid64Item.Size = new System.Drawing.Size(140, 22);
 			this.snapToGrid64Item.Text = "64 x 64";
-			// 
-			// snapToGridPixelPerfectItem
-			// 
-			this.snapToGridPixelPerfectItem.Name = "snapToGridPixelPerfectItem";
-			this.snapToGridPixelPerfectItem.Size = new System.Drawing.Size(152, 22);
-			this.snapToGridPixelPerfectItem.Text = "Pixel-Perfect";
 			// 
 			// snapToGridCustomItem
 			// 
 			this.snapToGridCustomItem.Name = "snapToGridCustomItem";
-			this.snapToGridCustomItem.Size = new System.Drawing.Size(152, 22);
+			this.snapToGridCustomItem.Size = new System.Drawing.Size(140, 22);
 			this.snapToGridCustomItem.Text = "Custom";
 			// 
 			// CamView
@@ -235,7 +248,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(162)))), ((int)(((byte)(162)))), ((int)(((byte)(162)))));
-			this.ClientSize = new System.Drawing.Size(539, 397);
+			this.ClientSize = new System.Drawing.Size(651, 438);
 			this.Controls.Add(this.toolbarCamera);
 			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
@@ -270,6 +283,7 @@
 		private System.Windows.Forms.ToolStripMenuItem snapToGridPixelPerfectItem;
 		private System.Windows.Forms.ToolStripMenuItem snapToGrid64Item;
 		private System.Windows.Forms.ToolStripMenuItem snapToGridCustomItem;
+		private System.Windows.Forms.ToolStripDropDownButton objectVisibilitySelector;
 
 	}
 }

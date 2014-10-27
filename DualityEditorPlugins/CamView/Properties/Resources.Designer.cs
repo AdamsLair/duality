@@ -83,6 +83,16 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ObjectVisibility {
+            get {
+                object obj = ResourceManager.GetObject("ObjectVisibility", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap shape_perspective {
             get {
                 object obj = ResourceManager.GetObject("shape_perspective", resourceCulture);

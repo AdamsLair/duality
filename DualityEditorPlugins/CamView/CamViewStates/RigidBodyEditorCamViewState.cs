@@ -54,6 +54,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.SetDefaultActiveLayers(
 				typeof(CamViewLayers.RigidBodyJointCamViewLayer),
 				typeof(CamViewLayers.RigidBodyShapeCamViewLayer));
+			this.SetDefaultObjectVisibility(
+				typeof(RigidBody));
 		}
 
 		protected internal override void OnEnterState()
@@ -382,14 +384,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				DualityEditorApp.Selection.Components.OfType<RigidBody>().FirstOrDefault() ?? 
 				DualityEditorApp.Selection.GameObjects.GetComponents<RigidBody>().FirstOrDefault();
 		}
-		protected bool RendererFilter(ICmpRenderer r)
-		{
-			GameObject obj = (r as Component).GameObj;
-			if (obj.RigidBody == null || !(r as Component).Active) return false;
-
-			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
-			return !data.IsHidden;
-		}
 
 		protected override void OnCollectStateDrawcalls(Canvas canvas)
 		{
@@ -421,13 +415,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.DrawLockedAxes(canvas, lockedPosWorld.X, lockedPosWorld.Y, lockedPosWorld.Z, loopShape.AABB.BoundingRadius * 4);
 				}
 			}
-		}
-		protected override void OnCurrentCameraChanged(CamView.CameraChangedEventArgs e)
-		{
-			base.OnCurrentCameraChanged(e);
-
-			if (e.PreviousCamera != null) e.PreviousCamera.RemoveEditorRendererFilter(this.RendererFilter);
-			if (e.NextCamera != null) e.NextCamera.AddEditorRendererFilter(this.RendererFilter);
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{

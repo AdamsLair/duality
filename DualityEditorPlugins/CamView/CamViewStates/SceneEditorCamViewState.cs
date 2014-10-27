@@ -335,13 +335,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			UndoRedoManager.EndMacro();
 		}
-		protected override void OnCurrentCameraChanged(CamView.CameraChangedEventArgs e)
-		{
-			base.OnCurrentCameraChanged(e);
-
-			if (e.PreviousCamera != null) e.PreviousCamera.RemoveEditorRendererFilter(this.RendererFilter);
-			if (e.NextCamera != null) e.NextCamera.AddEditorRendererFilter(this.RendererFilter);
-		}
 		private void DragBeginAction(DragEventArgs e)
 		{
 			DataObject data = e.Data as DataObject;
@@ -425,12 +418,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private bool IsAffectedByParent(GameObject child, GameObject parent)
 		{
 			return child.IsChildOf(parent) && child.Transform != null && parent.Transform != null && !child.Transform.IgnoreParent;
-		}
-		private bool RendererFilter(ICmpRenderer r)
-		{
-			GameObject obj = (r as Component).GameObj;
-			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
-			return !data.IsHidden;
 		}
 		private void ClearContextMenu()
 		{
