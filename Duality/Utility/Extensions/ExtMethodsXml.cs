@@ -16,6 +16,12 @@ namespace Duality
 			XElement childElement = element.Element(name);
 			return childElement != null ? childElement.Value : null;
 		}
+		public static string GetInnerXml(this XElement element)
+		{
+			var reader = element.CreateReader();
+			reader.MoveToContent();
+			return reader.ReadInnerXml();
+		}
 
 		public static IEnumerable<XElement> Descendants(this XContainer container, XName name, bool ignoreNamespace)
 		{

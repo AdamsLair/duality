@@ -154,7 +154,7 @@ namespace Duality.Editor
 					
 					if (summaryNode != null)
 					{
-						string summary = summaryNode.Value;
+						string summary = summaryNode.GetInnerXml();
 						summary = Regex.Replace(summary, "[\n\r\t\\s]+", " ", RegexOptions.Multiline);
 						summary = Regex.Replace(summary, "<c>(.*?)<\\/c>", m => m.Groups[1].Value.Trim('"'));
 						summary = Regex.Replace(summary, "<code>(.*?)<\\/code>", m => m.Groups[1].Value.Trim('"'));
@@ -169,7 +169,7 @@ namespace Duality.Editor
 					}
 					if (remarksNode != null)
 					{
-						string remarks = remarksNode.Value;
+						string remarks = remarksNode.GetInnerXml();
 						remarks = Regex.Replace(remarks, "[\n\r\t\\s]+", " ", RegexOptions.Multiline);
 						remarks = Regex.Replace(remarks, "<c>(.*?)<\\/c>", m => m.Groups[1].Value.Trim('"'));
 						remarks = Regex.Replace(remarks, "<code>(.*?)<\\/code>", m => m.Groups[1].Value.Trim('"'));
