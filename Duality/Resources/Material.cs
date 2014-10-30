@@ -28,7 +28,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A Material resources file extension.
 		/// </summary>
-		public new const string FileExt = ".Material" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Material));
 
 		/// <summary>
 		/// A solid, white Material.

@@ -19,7 +19,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A VertexShader resources file extension.
 		/// </summary>
-		public new const string FileExt = ".VertexShader" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(VertexShader));
 
 		/// <summary>
 		/// [GET] A minimal VertexShader. It performs OpenGLs default transformation

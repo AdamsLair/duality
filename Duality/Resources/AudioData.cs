@@ -27,7 +27,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// An AudioData resources file extension.
 		/// </summary>
-		public new const string FileExt = ".AudioData" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(AudioData));
 		
 		/// <summary>
 		/// [GET] A simple beep AudioData.

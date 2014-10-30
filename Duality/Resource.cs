@@ -26,7 +26,7 @@ namespace Duality
 		/// <summary>
 		/// A Resource files extension.
 		/// </summary>
-		public const string FileExt = ".res";
+		public static readonly string FileExt = ".res";
 
 		private	static	List<Resource>	finalizeSched	= new List<Resource>();
 

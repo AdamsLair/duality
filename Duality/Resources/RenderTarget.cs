@@ -27,7 +27,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A RenderTarget resources file extension.
 		/// </summary>
-		public new const string FileExt = ".RenderTarget" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(RenderTarget));
 		
 		/// <summary>
 		/// Refers to a null reference RenderTarget.

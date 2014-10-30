@@ -27,7 +27,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A Sound resources file extension.
 		/// </summary>
-		public new const string FileExt = ".Sound" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Sound));
 		
 		/// <summary>
 		/// [GET] A simple beep Sound.

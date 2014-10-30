@@ -29,7 +29,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A Scene resources file extension.
 		/// </summary>
-		public new const string FileExt = ".Scene" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Scene));
 		private const float PhysicsAccStart = Time.MsPFMult;
 
 

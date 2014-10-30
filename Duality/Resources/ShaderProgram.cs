@@ -24,7 +24,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A ShaderProgram resources file extension.
 		/// </summary>
-		public new const string FileExt = ".ShaderProgram" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(ShaderProgram));
 
 		/// <summary>
 		/// A minimal ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and

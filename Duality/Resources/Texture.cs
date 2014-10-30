@@ -29,7 +29,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A Texture resources file extension.
 		/// </summary>
-		public new const string FileExt = ".Texture" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Texture));
 		
 		/// <summary>
 		/// [GET] A Texture showing the Duality icon.

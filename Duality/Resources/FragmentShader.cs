@@ -19,7 +19,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A FragmentShader resources file extension.
 		/// </summary>
-		public new const string FileExt = ".FragmentShader" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(FragmentShader));
 		
 		/// <summary>
 		/// [GET] A minimal FragmentShader. It performs a texture lookup

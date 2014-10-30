@@ -31,7 +31,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A Font resources file extension.
 		/// </summary>
-		public new const string FileExt = ".Font" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Font));
 		
 		/// <summary>
 		/// A generic <see cref="MonoSpace">monospace</see> Font (Size 8) that has been loaded from your systems font library.

@@ -26,7 +26,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A Prefab resources file extension.
 		/// </summary>
-		public new const string FileExt = ".Prefab" + Resource.FileExt;
+		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Prefab));
 
 		private static readonly ApplyPrefabContext PrefabContext = new ApplyPrefabContext();
 		private static readonly CloneProvider SharedPrefabProvider = new CloneProvider(PrefabContext);
