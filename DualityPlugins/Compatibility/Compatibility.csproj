@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="RigidBodyJointErrorHandler.cs" />
     <Compile Include="RigidBodyRendererErrorHandler.cs" />
     <Compile Include="OldNamespacesErrorHandler.cs" />
     <Compile Include="ProfileRendererErrorHandler.cs" />
