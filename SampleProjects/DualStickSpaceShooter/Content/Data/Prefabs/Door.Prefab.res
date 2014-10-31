@@ -125,8 +125,26 @@
                         <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="1463964716">
                           <item dataType="Struct" type="Duality.Components.Physics.PrismaticJointInfo" id="1877038308">
                             <breakPoint dataType="Float">-1</breakPoint>
-                            <colA dataType="ObjectRef">3007646032</colA>
-                            <colB dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3279300250">
+                            <collide dataType="Bool">false</collide>
+                            <enabled dataType="Bool">true</enabled>
+                            <limitEnabled dataType="Bool">true</limitEnabled>
+                            <localAnchorA dataType="Struct" type="OpenTK.Vector2">
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">0</Y>
+                            </localAnchorA>
+                            <localAnchorB dataType="Struct" type="OpenTK.Vector2">
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">0</Y>
+                            </localAnchorB>
+                            <lowerLimit dataType="Float">0</lowerLimit>
+                            <maxMotorForce dataType="Float">5</maxMotorForce>
+                            <motorEnabled dataType="Bool">true</motorEnabled>
+                            <motorSpeed dataType="Float">0</motorSpeed>
+                            <moveAxis dataType="Struct" type="OpenTK.Vector2">
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">0.99999994</Y>
+                            </moveAxis>
+                            <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3279300250">
                               <active dataType="Bool">true</active>
                               <angularDamp dataType="Float">0.3</angularDamp>
                               <angularVel dataType="Float">0</angularVel>
@@ -139,11 +157,9 @@
                               <gameobj dataType="ObjectRef">216523726</gameobj>
                               <ignoreGravity dataType="Bool">false</ignoreGravity>
                               <joints dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.JointInfo]]" id="56453242">
-                                <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="3156771712">
-                                  <item dataType="ObjectRef">1877038308</item>
-                                </_items>
-                                <_size dataType="Int">1</_size>
-                                <_version dataType="Int">10</_version>
+                                <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="3156771712" length="1" />
+                                <_size dataType="Int">0</_size>
+                                <_version dataType="Int">11</_version>
                               </joints>
                               <linearDamp dataType="Float">0.3</linearDamp>
                               <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -167,34 +183,16 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">11</_version>
+                                <_version dataType="Int">16</_version>
                               </shapes>
-                            </colB>
-                            <collide dataType="Bool">false</collide>
-                            <enabled dataType="Bool">true</enabled>
-                            <limitEnabled dataType="Bool">true</limitEnabled>
-                            <localAnchorA dataType="Struct" type="OpenTK.Vector2">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                            </localAnchorA>
-                            <localAnchorB dataType="Struct" type="OpenTK.Vector2">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                            </localAnchorB>
-                            <lowerLimit dataType="Float">0</lowerLimit>
-                            <maxMotorForce dataType="Float">5</maxMotorForce>
-                            <motorEnabled dataType="Bool">true</motorEnabled>
-                            <motorSpeed dataType="Float">0</motorSpeed>
-                            <moveAxis dataType="Struct" type="OpenTK.Vector2">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0.99999994</Y>
-                            </moveAxis>
+                            </otherBody>
+                            <parentBody dataType="ObjectRef">3007646032</parentBody>
                             <refAngle dataType="Float">0</refAngle>
                             <upperLimit dataType="Float">100</upperLimit>
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">8</_version>
+                        <_version dataType="Int">10</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -231,7 +229,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">9</_version>
+                        <_version dataType="Int">11</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="543562698">
@@ -253,7 +251,7 @@
                       <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                         <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                       </outlineMaterial>
-                      <outlineWidth dataType="Float">0</outlineWidth>
+                      <outlineWidth dataType="Float">1</outlineWidth>
                       <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                       <wrapTexture dataType="Bool">true</wrapTexture>
                     </item>
@@ -424,8 +422,26 @@
                         <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="229647182">
                           <item dataType="Struct" type="Duality.Components.Physics.PrismaticJointInfo" id="1410665168">
                             <breakPoint dataType="Float">-1</breakPoint>
-                            <colA dataType="ObjectRef">630862631</colA>
-                            <colB dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3636820257">
+                            <collide dataType="Bool">false</collide>
+                            <enabled dataType="Bool">true</enabled>
+                            <limitEnabled dataType="Bool">true</limitEnabled>
+                            <localAnchorA dataType="Struct" type="OpenTK.Vector2">
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">0</Y>
+                            </localAnchorA>
+                            <localAnchorB dataType="Struct" type="OpenTK.Vector2">
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">0</Y>
+                            </localAnchorB>
+                            <lowerLimit dataType="Float">-100</lowerLimit>
+                            <maxMotorForce dataType="Float">5</maxMotorForce>
+                            <motorEnabled dataType="Bool">true</motorEnabled>
+                            <motorSpeed dataType="Float">0</motorSpeed>
+                            <moveAxis dataType="Struct" type="OpenTK.Vector2">
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">0.99999994</Y>
+                            </moveAxis>
+                            <otherBody dataType="Struct" type="Duality.Components.Physics.RigidBody" id="3636820257">
                               <active dataType="Bool">true</active>
                               <angularDamp dataType="Float">0.3</angularDamp>
                               <angularVel dataType="Float">0</angularVel>
@@ -438,11 +454,9 @@
                               <gameobj dataType="ObjectRef">574043733</gameobj>
                               <ignoreGravity dataType="Bool">false</ignoreGravity>
                               <joints dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.JointInfo]]" id="1801078693">
-                                <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="2772345238">
-                                  <item dataType="ObjectRef">1410665168</item>
-                                </_items>
-                                <_size dataType="Int">1</_size>
-                                <_version dataType="Int">10</_version>
+                                <_items dataType="Array" type="Duality.Components.Physics.JointInfo[]" id="2772345238" length="1" />
+                                <_size dataType="Int">0</_size>
+                                <_version dataType="Int">11</_version>
                               </joints>
                               <linearDamp dataType="Float">0.3</linearDamp>
                               <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -466,34 +480,16 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">11</_version>
+                                <_version dataType="Int">16</_version>
                               </shapes>
-                            </colB>
-                            <collide dataType="Bool">false</collide>
-                            <enabled dataType="Bool">true</enabled>
-                            <limitEnabled dataType="Bool">true</limitEnabled>
-                            <localAnchorA dataType="Struct" type="OpenTK.Vector2">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                            </localAnchorA>
-                            <localAnchorB dataType="Struct" type="OpenTK.Vector2">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0</Y>
-                            </localAnchorB>
-                            <lowerLimit dataType="Float">-100</lowerLimit>
-                            <maxMotorForce dataType="Float">5</maxMotorForce>
-                            <motorEnabled dataType="Bool">true</motorEnabled>
-                            <motorSpeed dataType="Float">0</motorSpeed>
-                            <moveAxis dataType="Struct" type="OpenTK.Vector2">
-                              <X dataType="Float">0</X>
-                              <Y dataType="Float">0.99999994</Y>
-                            </moveAxis>
+                            </otherBody>
+                            <parentBody dataType="ObjectRef">630862631</parentBody>
                             <refAngle dataType="Float">0</refAngle>
                             <upperLimit dataType="Float">0</upperLimit>
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">8</_version>
+                        <_version dataType="Int">10</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -530,7 +526,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">9</_version>
+                        <_version dataType="Int">11</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2461746593">
@@ -552,7 +548,7 @@
                       <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                         <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                       </outlineMaterial>
-                      <outlineWidth dataType="Float">0</outlineWidth>
+                      <outlineWidth dataType="Float">1</outlineWidth>
                       <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                       <wrapTexture dataType="Bool">true</wrapTexture>
                     </item>

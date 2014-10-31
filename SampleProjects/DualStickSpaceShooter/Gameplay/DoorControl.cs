@@ -9,7 +9,7 @@ using Duality.Components.Physics;
 namespace DualStickSpaceShooter
 {
 	[Serializable]
-	public class DoorControl : Component, ICmpMessageListener
+	public class DoorControl : Component, ICmpMessageListener, ICmpUpdatable
 	{
 		private RigidBody	doorPanel	= null;
 		private	float		openSpeed	= 0.0f;
@@ -42,13 +42,21 @@ namespace DualStickSpaceShooter
 
 		private void OpenDoor()
 		{
-			if (this.DoorJoint == null) return;
-			this.DoorJoint.MotorSpeed = this.openSpeed;
+			PrismaticJointInfo joint = this.DoorJoint;
+			if (joint == null) return;
+
+			this.doorPanel.BodyType = BodyType.Dynamic;
+			joint.MotorSpeed = this.openSpeed;
+			joint.MotorEnabled = true;
 		}
 		private void CloseDoor()
 		{
-			if (this.DoorJoint == null) return;
-			this.DoorJoint.MotorSpeed = this.closeSpeed;
+			PrismaticJointInfo joint = this.DoorJoint;
+			if (joint == null) return;
+
+			this.doorPanel.BodyType = BodyType.Dynamic;
+			joint.MotorSpeed = this.closeSpeed;
+			joint.MotorEnabled = true;
 		}
 
 		private void AddSignal()
@@ -70,6 +78,27 @@ namespace DualStickSpaceShooter
 			else if (msg is TriggerLeftMessage)
 			{
 				this.RemoveSignal();
+			}
+		}
+		void ICmpUpdatable.OnUpdate()
+		{
+			PrismaticJointInfo joint = this.DoorJoint;
+			if (joint == null) return;
+
+			if (joint.MotorEnabled)
+			{
+				bool isPanelInTargetArea = false;
+				if (joint.MotorSpeed > 0.0f)
+					isPanelInTargetArea = -joint.JointTranslation >= joint.UpperLimit;
+				else
+					isPanelInTargetArea = -joint.JointTranslation <= joint.LowerLimit;
+
+				if (isPanelInTargetArea && joint.JointSpeed <= 0.1f)
+				{
+					joint.MotorEnabled = false;
+					joint.MotorSpeed = 0.0f;
+					this.doorPanel.BodyType = BodyType.Static;
+				}
 			}
 		}
 	}
