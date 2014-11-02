@@ -3,7 +3,7 @@
   <gfxAAQuality dataType="Enum" type="Duality.AAQuality" name="High" value="0" />
   <gfxHeight dataType="Int">600</gfxHeight>
   <gfxMode dataType="Enum" type="Duality.ScreenMode" name="Native" value="3" />
-  <gfxVSync dataType="Bool">true</gfxVSync>
+  <gfxRefreshMode dataType="Enum" type="Duality.RefreshMode" name="VSync" value="2" />
   <gfxWidth dataType="Int">800</gfxWidth>
   <sfxEffectVol dataType="Float">1</sfxEffectVol>
   <sfxMasterVol dataType="Float">1</sfxMasterVol>
