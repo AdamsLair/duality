@@ -152,7 +152,7 @@
                               <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <continous dataType="Bool">false</continous>
-                              <explicitMass dataType="Float">1000</explicitMass>
+                              <explicitMass dataType="Float">100000</explicitMass>
                               <fixedAngle dataType="Bool">false</fixedAngle>
                               <gameobj dataType="ObjectRef">216523726</gameobj>
                               <ignoreGravity dataType="Bool">false</ignoreGravity>
@@ -183,7 +183,7 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">31</_version>
+                                <_version dataType="Int">36</_version>
                               </shapes>
                             </otherBody>
                             <parentBody dataType="ObjectRef">3007646032</parentBody>
@@ -192,7 +192,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">16</_version>
+                        <_version dataType="Int">20</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -229,7 +229,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">17</_version>
+                        <_version dataType="Int">21</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="543562698">
@@ -449,7 +449,7 @@
                               <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <continous dataType="Bool">false</continous>
-                              <explicitMass dataType="Float">1000</explicitMass>
+                              <explicitMass dataType="Float">100000</explicitMass>
                               <fixedAngle dataType="Bool">false</fixedAngle>
                               <gameobj dataType="ObjectRef">574043733</gameobj>
                               <ignoreGravity dataType="Bool">false</ignoreGravity>
@@ -480,7 +480,7 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">31</_version>
+                                <_version dataType="Int">36</_version>
                               </shapes>
                             </otherBody>
                             <parentBody dataType="ObjectRef">630862631</parentBody>
@@ -489,7 +489,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">16</_version>
+                        <_version dataType="Int">20</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -526,7 +526,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">17</_version>
+                        <_version dataType="Int">21</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2461746593">
