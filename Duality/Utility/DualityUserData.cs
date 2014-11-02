@@ -56,6 +56,26 @@ namespace Duality
 	}
 
 	/// <summary>
+	/// Specifies intervals and modes to refresh the screen and update the game.
+	/// </summary>
+	public enum RefreshMode
+	{
+		/// <summary>
+		/// Refreshes occur as fast as possible with no wait inbetween.
+		/// </summary>
+		NoSync,
+		/// <summary>
+		/// Refreshes target 60 FPS and will use wait for each frame to use its entire available time.
+		/// Doesn't use hardware / driver VSync, but prevents 100% CPU usage.
+		/// </summary>
+		ManualSync,
+		/// <summary>
+		/// Refreshes wait for the hardware / driver VSync.
+		/// </summary>
+		VSync
+	}
+
+	/// <summary>
 	/// Provides information about user settings for this Duality application / game.
 	/// It is persistent beyond installing or deleting this Duality game.
 	/// </summary>
@@ -67,7 +87,7 @@ namespace Duality
 		private	int			gfxHeight			= 600;
 		private	ScreenMode	gfxMode				= ScreenMode.Window;
 		private	AAQuality	gfxAAQuality		= AAQuality.High;
-		private	bool		gfxVSync			= true;
+		private	RefreshMode	gfxRefreshMode		= RefreshMode.VSync;
 		private	float		sfxEffectVol		= 1.0f;
 		private	float		sfxSpeechVol		= 1.0f;
 		private	float		sfxMusicVol			= 1.0f;
@@ -116,12 +136,12 @@ namespace Duality
 			set { this.gfxAAQuality = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Specifies whether or not VSync will be preferred.
+		/// [GET / SET] Specifies the way in which Duality switches and refreshes visual and update frames.
 		/// </summary>
-		public bool VSync
+		public RefreshMode RefreshMode
 		{
-			get { return this.gfxVSync; }
-			set { this.gfxVSync = value; }
+			get { return this.gfxRefreshMode; }
+			set { this.gfxRefreshMode = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Determines whether or not the system cursor should be visible in windowed mode.

@@ -52,7 +52,7 @@ namespace Duality.Launcher
 				//}
 
 				// Give the processor a rest if we have the time, don't use 100% CPU even without VSync
-				if (this.frameLimiterWatch.IsRunning && this.VSync == VSyncMode.Off)
+				if (this.frameLimiterWatch.IsRunning && DualityApp.UserData.RefreshMode == RefreshMode.ManualSync)
 				{
 					while (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult)
 					{
@@ -141,8 +141,10 @@ namespace Duality.Launcher
 				else if (DualityApp.UserData.GfxMode == ScreenMode.Window)
 					launcherWindow.WindowBorder = WindowBorder.Resizable;
 
-				// Initialize default content
+				// Specify additional window settings and initialize default content
 				launcherWindow.MakeCurrent();
+				launcherWindow.CursorVisible = isDebugging || DualityApp.UserData.SystemCursorVisible;
+				launcherWindow.VSync = (isProfiling || isDebugging || DualityApp.UserData.RefreshMode != RefreshMode.VSync) ? VSyncMode.Off : VSyncMode.On;
 				DualityApp.TargetResolution = new Vector2(launcherWindow.ClientSize.Width, launcherWindow.ClientSize.Height);
 				DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
 				ContentProvider.InitDefaultContent();
@@ -151,12 +153,18 @@ namespace Duality.Launcher
 				DualityApp.Mouse.Source = new GameWindowMouseInputSource(launcherWindow.Mouse, launcherWindow.SetMouseDeviceX, launcherWindow.SetMouseDeviceY);
 				DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(launcherWindow.Keyboard);
 
+				// Debug Logs
+				Log.Core.Write("Graphics window initialized: {0}Mode: {1}{0}VSync: {2}{0}SwapInterval: {3}{0}Flags: {4}{0}", 
+					Environment.NewLine,
+					launcherWindow.Context.GraphicsMode,
+					launcherWindow.VSync,
+					launcherWindow.Context.SwapInterval,
+					new[] { isDebugging ? "Debugging" : null, isProfiling ? "Profiling" : null, isRunFromEditor ? "RunFromEditor" : null }.NotNull().ToString(", "));
+
 				// Load the starting Scene
 				Scene.SwitchTo(DualityApp.AppData.StartScene);
 
 				// Run the DualityApp
-				launcherWindow.CursorVisible = isDebugging || DualityApp.UserData.SystemCursorVisible;
-				launcherWindow.VSync = (isProfiling || isDebugging || !DualityApp.UserData.VSync) ? VSyncMode.Off : VSyncMode.On;
 				launcherWindow.Run();
 
 				// Shut down the DualityApp
