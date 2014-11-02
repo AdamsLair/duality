@@ -116,8 +116,8 @@
                       <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                       <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat5" value="16" />
                       <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1, Cat2, Cat3, Cat4, Cat6, Cat7, Cat8, Cat9, Cat10, Cat11, Cat12, Cat13, Cat14, Cat15, Cat16, Cat17, Cat18, Cat19, Cat20, Cat21, Cat22, Cat23, Cat24, Cat25, Cat26, Cat27, Cat28, Cat29, Cat30, Cat31" value="2147483631" />
-                      <continous dataType="Bool">false</continous>
-                      <explicitMass dataType="Float">0</explicitMass>
+                      <continous dataType="Bool">true</continous>
+                      <explicitMass dataType="Float">200</explicitMass>
                       <fixedAngle dataType="Bool">false</fixedAngle>
                       <gameobj dataType="ObjectRef">4239836804</gameobj>
                       <ignoreGravity dataType="Bool">false</ignoreGravity>
@@ -152,7 +152,7 @@
                               <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <continous dataType="Bool">false</continous>
-                              <explicitMass dataType="Float">0</explicitMass>
+                              <explicitMass dataType="Float">1000</explicitMass>
                               <fixedAngle dataType="Bool">false</fixedAngle>
                               <gameobj dataType="ObjectRef">216523726</gameobj>
                               <ignoreGravity dataType="Bool">false</ignoreGravity>
@@ -183,7 +183,7 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">16</_version>
+                                <_version dataType="Int">31</_version>
                               </shapes>
                             </otherBody>
                             <parentBody dataType="ObjectRef">3007646032</parentBody>
@@ -192,7 +192,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">10</_version>
+                        <_version dataType="Int">16</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -229,7 +229,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">11</_version>
+                        <_version dataType="Int">17</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="543562698">
@@ -247,7 +247,7 @@
                       <customOutlineMaterial />
                       <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                       <gameobj dataType="ObjectRef">4239836804</gameobj>
-                      <offset dataType="Int">0</offset>
+                      <offset dataType="Int">-1</offset>
                       <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                         <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                       </outlineMaterial>
@@ -413,8 +413,8 @@
                       <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
                       <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat5" value="16" />
                       <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1, Cat2, Cat3, Cat4, Cat6, Cat7, Cat8, Cat9, Cat10, Cat11, Cat12, Cat13, Cat14, Cat15, Cat16, Cat17, Cat18, Cat19, Cat20, Cat21, Cat22, Cat23, Cat24, Cat25, Cat26, Cat27, Cat28, Cat29, Cat30, Cat31" value="2147483631" />
-                      <continous dataType="Bool">false</continous>
-                      <explicitMass dataType="Float">0</explicitMass>
+                      <continous dataType="Bool">true</continous>
+                      <explicitMass dataType="Float">200</explicitMass>
                       <fixedAngle dataType="Bool">false</fixedAngle>
                       <gameobj dataType="ObjectRef">1863053403</gameobj>
                       <ignoreGravity dataType="Bool">false</ignoreGravity>
@@ -449,7 +449,7 @@
                               <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
                               <continous dataType="Bool">false</continous>
-                              <explicitMass dataType="Float">0</explicitMass>
+                              <explicitMass dataType="Float">1000</explicitMass>
                               <fixedAngle dataType="Bool">false</fixedAngle>
                               <gameobj dataType="ObjectRef">574043733</gameobj>
                               <ignoreGravity dataType="Bool">false</ignoreGravity>
@@ -480,7 +480,7 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">16</_version>
+                                <_version dataType="Int">31</_version>
                               </shapes>
                             </otherBody>
                             <parentBody dataType="ObjectRef">630862631</parentBody>
@@ -489,7 +489,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">10</_version>
+                        <_version dataType="Int">16</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -526,7 +526,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">11</_version>
+                        <_version dataType="Int">17</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2461746593">
@@ -544,7 +544,7 @@
                       <customOutlineMaterial />
                       <fillHollowShapes dataType="Bool">false</fillHollowShapes>
                       <gameobj dataType="ObjectRef">1863053403</gameobj>
-                      <offset dataType="Int">0</offset>
+                      <offset dataType="Int">-1</offset>
                       <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                         <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                       </outlineMaterial>
