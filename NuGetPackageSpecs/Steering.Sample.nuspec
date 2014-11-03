@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Steering.Sample</id>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 	<authors>Daniel Herb, Fedja Adam</authors>
 	<owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours Sample</title>
