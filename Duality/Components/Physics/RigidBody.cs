@@ -343,11 +343,6 @@ namespace Duality.Components.Physics
 			get { return this.schedUpdateBody; }
 		}
 
-		public RigidBody()
-		{
-			// Default shape
-			this.AddShape(new CircleShapeInfo(128.0f, Vector2.Zero, 1.0f));
-		}
 
 		/// <summary>
 		/// Adds a new shape to the Collider
@@ -1103,9 +1098,20 @@ namespace Duality.Components.Physics
 		void ICmpInitializable.OnInit(InitContext context)
 		{
 			if (context == InitContext.Activate)
+			{
+				// Initialize the backing Farseer objects upon activation
 				this.Initialize();
+			}
 			else if (context == InitContext.Loaded)
+			{
+				// Do some cleanup after loading
 				this.RemoveDisposedJoints();
+			}
+			else if (context == InitContext.AddToGameObject && DualityApp.ExecContext == DualityApp.ExecutionContext.Editor)
+			{
+				// Add a default shape when creating a new RigidBody in the editor
+				this.AddShape(new CircleShapeInfo(128.0f, Vector2.Zero, 1.0f));
+			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
 		{
