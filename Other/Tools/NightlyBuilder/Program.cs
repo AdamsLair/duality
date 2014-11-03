@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using System.Xml.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -77,7 +78,7 @@ namespace NightlyBuilder
 				Console.WriteLine("ERROR: {0}", e);
 				Console.ForegroundColor = ConsoleColor.Gray;
 				Console.WriteLine();
-				System.Threading.Thread.Sleep(5000);
+				System.Threading.Thread.Sleep(10000);
 			}
 		}
 
@@ -298,8 +299,24 @@ namespace NightlyBuilder
 					Console.WriteLine("Creating packages from '{0}'...", config.NuGetPackageSpecsDir);
 					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageSpecsDir, "*.nuspec", SearchOption.AllDirectories))
 					{
+						Console.Write("  {0}... ", Path.GetFileName(file));
+
 						string fileAbs = Path.GetFullPath(file);
-						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, true);
+						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, false);
+
+						XDocument doc = XDocument.Load(fileAbs);
+						XElement elemId = doc.Descendants("id").FirstOrDefault();
+						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
+						string targetFileName = string.Format("{0}.{1}.nupkg", elemId.Value.Trim(), elemVersion.Value.Trim());
+
+						if (!File.Exists(Path.Combine(config.NuGetPackageTargetDir, targetFileName)))
+						{
+							throw new ApplicationException(string.Format("Failed to create NuGet Package {0}", Path.GetFileName(file)));
+						}
+						else
+						{
+							Console.WriteLine("done");
+						}
 					}
 				}
 				else if (!nugetFound)
