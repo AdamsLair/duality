@@ -320,6 +320,22 @@ namespace Duality.Editor.PackageManagement
 			    p.Tags != null && 
 			    p.Tags.Contains(DualityTag));
 
+			// If it's a local package repository, IsLatest isn't set. Need to emulate this
+			if (this.repository is LocalPackageRepository)
+			{
+				List<IPackage> packages = query.ToList();
+				for (int i = packages.Count - 1; i >= 0; i--)
+				{
+					IPackage current = packages[i];
+					bool isLatest = !packages.Any(p => p.Id == current.Id && p.Version > current.Version);
+					if (!isLatest)
+					{
+						packages.RemoveAt(i);
+					}
+				}
+				query = packages.AsQueryable<IPackage>();
+			}
+
 			// Transform results into Duality package representation
 			foreach (NuGet.IPackage package in query)
 			{
