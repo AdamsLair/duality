@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.DynamicLighting.Sample</id>
-    <version>1.0</version>
+    <version>1.0.1</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>DynamicLighting Sample</title>
@@ -14,9 +14,9 @@
     <description>A sample project to show how to use Dynamic Lighting.</description>
 	<tags>Duality Sample Plugin Rendering Lighting Component</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.DynamicLighting" version="1.0.2" />
-      <dependency id="AdamsLair.Duality.Editor.Plugins.DynamicLighting" version="1.0.2" />
-      <dependency id="AdamsLair.Duality" version="1.2.0" />
+      <dependency id="AdamsLair.Duality.Plugins.DynamicLighting" version="1.0.3" />
+      <dependency id="AdamsLair.Duality.Editor.Plugins.DynamicLighting" version="1.0.3" />
+      <dependency id="AdamsLair.Duality" version="1.3.0" />
     </dependencies>
   </metadata>
   <files>
