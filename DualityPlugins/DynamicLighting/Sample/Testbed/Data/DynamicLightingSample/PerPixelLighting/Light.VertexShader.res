@@ -1,7 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<root>
-  <object dataType="Class" type="Duality.Resources.VertexShader" id="1">
-    <source dataType="String">uniform float _camRefDist;
+﻿<root dataType="Struct" type="Duality.Resources.VertexShader" id="129723834">
+  <source dataType="String">uniform float _camRefDist;
 uniform vec3 _camWorldPos;
 
 varying vec3 worldSpacePos;
@@ -20,6 +18,6 @@ void main()
 	
 	objTransform = mat2(objTrAttrib.x, objTrAttrib.y, objTrAttrib.z, objTrAttrib.w);
 }</source>
-    <sourcePath dataType="String">Source\Media\Light.vert</sourcePath>
-  </object>
+  <sourcePath dataType="String">Source\Media\Light.vert</sourcePath>
 </root>
+<!-- XmlFormatterBase Document Separator -->
