@@ -13,7 +13,6 @@
           <deriveAngle dataType="Bool">true</deriveAngle>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <parentTransform />
           <pos dataType="Struct" type="OpenTK.Vector3">
             <X dataType="Float">-377</X>
@@ -43,14 +42,13 @@
           <angularDamp dataType="Float">0.3</angularDamp>
           <angularVel dataType="Float">0</angularVel>
           <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
-          <colCat dataType="Enum" type="FarseerPhysics.Dynamics.Category" name="Cat1" value="1" />
-          <colWith dataType="Enum" type="FarseerPhysics.Dynamics.Category" name="None" value="0" />
+          <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
+          <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="None" value="0" />
           <continous dataType="Bool">false</continous>
           <explicitMass dataType="Float">0</explicitMass>
           <fixedAngle dataType="Bool">false</fixedAngle>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
           <ignoreGravity dataType="Bool">true</ignoreGravity>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <joints />
           <linearDamp dataType="Float">0.3</linearDamp>
           <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -77,7 +75,7 @@
             <_version dataType="Int">1</_version>
           </shapes>
         </item>
-        <item dataType="Struct" type="Duality.Components.Diagnostics.RigidBodyRenderer" id="1714998165">
+        <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2156466653">
           <active dataType="Bool">true</active>
           <areaMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
             <contentPath dataType="String">Data\SteeringSample\Textures\Agent.Material.res</contentPath>
@@ -90,8 +88,8 @@
           </colorTint>
           <customAreaMaterial />
           <customOutlineMaterial />
+          <fillHollowShapes dataType="Bool">false</fillHollowShapes>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <offset dataType="Int">0</offset>
           <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
             <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
@@ -105,9 +103,7 @@
           <characteristics dataType="Struct" type="Duality.Plugins.Steering.DefaultAgentCharacteristics" id="3619690375">
             <aggressiveness dataType="Float">0.5</aggressiveness>
           </characteristics>
-          <debugVisualizationMode dataType="Enum" type="Duality.Plugins.Steering.Agent+VisualLoggingMode" name="None" value="0" />
           <gameobj dataType="ObjectRef">1557773463</gameobj>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <radius dataType="Float">0</radius>
           <sampler dataType="Struct" type="Duality.Plugins.Steering.AdaptiveVelocitySampler" id="3936545152">
             <layerCount dataType="Int">3</layerCount>
@@ -124,7 +120,6 @@
         <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="3665341711">
           <active dataType="Bool">true</active>
           <gameobj dataType="ObjectRef">1557773463</gameobj>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
         </item>
       </_items>
       <_size dataType="Int">5</_size>
@@ -136,14 +131,14 @@
         <keys dataType="Array" type="System.Type[]" id="921189750">
           <item dataType="Type" id="2285360096" value="Duality.Components.Transform" />
           <item dataType="Type" id="3213052814" value="Duality.Components.Physics.RigidBody" />
-          <item dataType="Type" id="440111868" value="Duality.Components.Diagnostics.RigidBodyRenderer" />
+          <item dataType="Type" id="440111868" value="Duality.Components.Renderers.RigidBodyRenderer" />
           <item dataType="Type" id="2060713746" value="Duality.Plugins.Steering.Agent" />
           <item dataType="Type" id="2856434328" value="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" />
         </keys>
         <values dataType="Array" type="Duality.Component[]" id="3442451738">
           <item dataType="ObjectRef">3918088395</item>
           <item dataType="ObjectRef">325582691</item>
-          <item dataType="ObjectRef">1714998165</item>
+          <item dataType="ObjectRef">2156466653</item>
           <item dataType="ObjectRef">2639804075</item>
           <item dataType="ObjectRef">3665341711</item>
         </values>

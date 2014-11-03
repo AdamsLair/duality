@@ -13,7 +13,6 @@
           <deriveAngle dataType="Bool">true</deriveAngle>
           <gameobj dataType="ObjectRef">422295141</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <parentTransform />
           <pos dataType="Struct" type="OpenTK.Vector3">
             <X dataType="Float">0</X>
@@ -52,7 +51,6 @@
           <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
             <contentPath />
           </iconMat>
-          <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3727897359">
             <displayedText dataType="String">The RigidBodies used in this sample do not collide. All interaction is based solely on Agent decisions.</displayedText>
             <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="216848302">

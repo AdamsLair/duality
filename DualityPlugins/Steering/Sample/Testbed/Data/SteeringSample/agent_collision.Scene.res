@@ -12,27 +12,22 @@
           <item dataType="Struct" type="Duality.Components.Transform" id="2024991241">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="2727452833">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Components.Diagnostics.RigidBodyRenderer" id="4116868307">
+          <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="263369499">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
           <item dataType="Struct" type="Duality.Plugins.Steering.Agent" id="746706921">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
           <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="1772244557">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3959643605</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
         </_items>
         <_size dataType="Int">5</_size>
@@ -44,14 +39,14 @@
           <keys dataType="Array" type="System.Type[]" id="2905685645">
             <item dataType="Type" id="13978918" value="Duality.Components.Transform" />
             <item dataType="Type" id="439788218" value="Duality.Components.Physics.RigidBody" />
-            <item dataType="Type" id="2771621414" value="Duality.Components.Diagnostics.RigidBodyRenderer" />
+            <item dataType="Type" id="2771621414" value="Duality.Components.Renderers.RigidBodyRenderer" />
             <item dataType="Type" id="2144167866" value="Duality.Plugins.Steering.Agent" />
             <item dataType="Type" id="2730200870" value="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" />
           </keys>
           <values dataType="Array" type="Duality.Component[]" id="225485752">
             <item dataType="ObjectRef">2024991241</item>
             <item dataType="ObjectRef">2727452833</item>
-            <item dataType="ObjectRef">4116868307</item>
+            <item dataType="ObjectRef">263369499</item>
             <item dataType="ObjectRef">746706921</item>
             <item dataType="ObjectRef">1772244557</item>
           </values>
@@ -118,7 +113,7 @@
                 <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2771621414</componentType>
-              <prop dataType="PropertyInfo" id="1291869230" value="P:Duality.Components.Diagnostics.RigidBodyRenderer:ColorTint" />
+              <prop dataType="PropertyInfo" id="1291869230" value="P:Duality.Components.Renderers.RigidBodyRenderer:ColorTint" />
               <val dataType="Struct" type="Duality.Drawing.ColorRgba">
                 <A dataType="Byte">255</A>
                 <B dataType="Byte">224</B>
@@ -144,27 +139,22 @@
           <item dataType="Struct" type="Duality.Components.Transform" id="3756518176">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
           <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="164012472">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
-          <item dataType="Struct" type="Duality.Components.Diagnostics.RigidBodyRenderer" id="1553427946">
+          <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="1994896434">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
           <item dataType="Struct" type="Duality.Plugins.Steering.Agent" id="2478233856">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
           <item dataType="Struct" type="Duality.Plugins.Steering.Sample.AgentAttributeTranslator" id="3503771492">
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1396203244</gameobj>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
           </item>
         </_items>
         <_size dataType="Int">5</_size>
@@ -183,7 +173,7 @@
           <values dataType="Array" type="Duality.Component[]" id="1714155230">
             <item dataType="ObjectRef">3756518176</item>
             <item dataType="ObjectRef">164012472</item>
-            <item dataType="ObjectRef">1553427946</item>
+            <item dataType="ObjectRef">1994896434</item>
             <item dataType="ObjectRef">2478233856</item>
             <item dataType="ObjectRef">3503771492</item>
           </values>
@@ -282,7 +272,6 @@
             <deriveAngle dataType="Bool">true</deriveAngle>
             <gameobj dataType="ObjectRef">1499379278</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             <parentTransform />
             <pos dataType="Struct" type="OpenTK.Vector3">
               <X dataType="Float">0</X>
@@ -321,7 +310,6 @@
             <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
               <contentPath />
             </iconMat>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3586881284">
               <displayedText dataType="String">The RigidBodies used in this sample do not collide. All interaction is based solely on Agent decisions.</displayedText>
               <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="1193496900">
