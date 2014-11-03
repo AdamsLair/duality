@@ -299,7 +299,7 @@ namespace NightlyBuilder
 					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageSpecsDir, "*.nuspec", SearchOption.AllDirectories))
 					{
 						string fileAbs = Path.GetFullPath(file);
-						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, false);
+						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, true);
 					}
 				}
 				else if (!nugetFound)

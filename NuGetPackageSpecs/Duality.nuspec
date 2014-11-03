@@ -19,6 +19,9 @@
       <dependency id="AdamsLair.OpenTK.GLControl" version="1.1.1" />
       <dependency id="AdamsLair.FarseerDuality" version="3.3.7" />
     </dependencies>
+    <references>
+      <reference file="Duality.dll" />
+    </references>
   </metadata>
   <files>
     <file src="..\Duality\bin\Release\Duality.dll" target="lib" />
@@ -27,7 +30,4 @@
     <file src="..\Duality\bin\Release\OpenALSoft32.dll" target="lib" />
     <file src="..\Duality\bin\Release\OpenALSoft64.dll" target="lib" />
   </files>
-  <references>
-	<reference file="Duality.dll" />
-  </references>
 </package>
