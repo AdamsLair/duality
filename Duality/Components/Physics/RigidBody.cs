@@ -345,7 +345,7 @@ namespace Duality.Components.Physics
 
 
 		/// <summary>
-		/// Adds a new shape to the Collider
+		/// Adds a new shape to the body.
 		/// </summary>
 		/// <param name="shape"></param>
 		public void AddShape(ShapeInfo shape)
@@ -363,7 +363,7 @@ namespace Duality.Components.Physics
 			this.FlagBodyShape();
 		}
 		/// <summary>
-		/// Removes an existing shape from the Collider.
+		/// Removes an existing shape from the body.
 		/// </summary>
 		/// <param name="shape"></param>
 		public void RemoveShape(ShapeInfo shape)
@@ -378,7 +378,7 @@ namespace Duality.Components.Physics
 			if (this.body != null) shape.DestroyFixture(this.body, false);
 		}
 		/// <summary>
-		/// Removes all existing shapes from the Collider.
+		/// Removes all existing shapes from the body.
 		/// </summary>
 		public void ClearShapes()
 		{
@@ -401,7 +401,7 @@ namespace Duality.Components.Physics
 		}
 		
 		/// <summary>
-		/// Removes an existing joint from the Collider.
+		/// Removes an existing joint from the body.
 		/// </summary>
 		/// <param name="joint"></param>
 		public void RemoveJoint(JointInfo joint)
@@ -420,7 +420,7 @@ namespace Duality.Components.Physics
 			joint.DestroyJoint();
 		}
 		/// <summary>
-		/// Adds a new joint to the Collider
+		/// Adds a new joint to the body.
 		/// </summary>
 		/// <param name="joint"></param>
 		public void AddJoint(JointInfo joint, RigidBody other = null)
@@ -443,7 +443,7 @@ namespace Duality.Components.Physics
 			joint.UpdateJoint();
 		}
 		/// <summary>
-		/// Removes all existing joints from the Collider.
+		/// Removes all existing joints from the body.
 		/// </summary>
 		public void ClearJoints()
 		{
@@ -1168,10 +1168,22 @@ namespace Duality.Components.Physics
 			target.colCat			= this.colCat;
 			target.colWith			= this.colWith;
 
-			// Handle shapes and joints
 			if (this.shapes != null)
 			{
-				if (target.shapes == null) target.shapes = new List<ShapeInfo>(this.shapes.Count);
+				if (target.shapes == null)
+				{
+					target.shapes = new List<ShapeInfo>(this.shapes.Count);
+				}
+				else if (target.shapes.Count > this.shapes.Count)
+				{
+					// Remove exceeding shapes
+					for (int i = target.shapes.Count - 1; i >= this.shapes.Count; i--)
+					{
+						target.RemoveShape(target.shapes[i]);
+					}
+				}
+
+				// Synchronize existing shapes
 				for (int i = 0; i < this.shapes.Count; i++)
 				{
 					bool isNew = (target.shapes.Count <= i);
@@ -1186,15 +1198,32 @@ namespace Duality.Components.Physics
 					}
 				}
 			}
+			else
+			{
+				target.ClearShapes();
+			}
+
 			if (this.joints != null)
 			{
-				if (target.joints == null) target.joints = new List<JointInfo>(this.joints.Count);
+				if (target.joints == null)
+				{
+					target.joints = new List<JointInfo>(this.joints.Count);
+				}
+				else if (target.joints.Count > this.joints.Count)
+				{
+					// Remove exceeding joints
+					for (int i = target.joints.Count - 1; i >= this.joints.Count; i--)
+					{
+						target.RemoveJoint(target.joints[i]);
+					}
+				}
+
+				// Synchronize existing joints
 				for (int i = 0; i < this.joints.Count; i++)
 				{
 					bool isNew = (target.joints.Count <= i);
 					JointInfo sourceJoint = this.joints[i];
 					JointInfo targetJoint = !isNew ? target.joints[i] : null;
-					operation.HandleObject(sourceJoint, targetJoint);
 					if (operation.HandleObject(sourceJoint, ref targetJoint))
 					{
 						if (isNew)
@@ -1203,6 +1232,10 @@ namespace Duality.Components.Physics
 							target.joints[i] = targetJoint;
 					}
 				}
+			}
+			else
+			{
+				target.ClearJoints();
 			}
 
 			// Make sure to re-initialize the targets body, if it was shut down
