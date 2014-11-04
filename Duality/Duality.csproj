@@ -82,6 +82,7 @@
     <Compile Include="Cloning\CloneType.cs" />
     <Compile Include="Cloning\ManuallyClonedAttribute.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
+    <Compile Include="Drawing\ScreenResolution.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\Grid.cs" />

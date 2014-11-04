@@ -21,10 +21,7 @@ namespace Duality.Launcher
 		private	static bool	isRunFromEditor		= false;
 		private Stopwatch	frameLimiterWatch	= new Stopwatch();
 
-		public DualityLauncher(int w, int h, GraphicsMode mode, string title, GameWindowFlags flags)
-			: base(w, h, mode, title, flags)
-		{
-		}
+		public DualityLauncher(int w, int h, GraphicsMode mode, string title, GameWindowFlags flags) : base(w, h, mode, title, flags) {}
 
 		protected override void OnResize(EventArgs e)
 		{
@@ -77,6 +74,35 @@ namespace Duality.Launcher
 			Profile.TimeRender.EndMeasure();
 		}
 		
+		private void OnUserDataChanged(object sender, EventArgs eventArgs)
+		{
+			switch (DualityApp.UserData.GfxMode)
+			{
+				case ScreenMode.Window:
+				case ScreenMode.FixedWindow:
+					this.WindowState = WindowState.Normal;
+					this.WindowBorder = WindowBorder.Fixed;
+					this.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
+					DisplayDevice.Default.RestoreResolution();
+					break;
+
+				case ScreenMode.Native:
+				case ScreenMode.FullWindow:
+				case ScreenMode.Fullscreen:
+					this.WindowState = WindowState.Fullscreen;
+					this.WindowBorder = WindowBorder.Hidden;
+					this.ClientSize = new Size(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight);
+					DisplayDevice.Default.ChangeResolution(DualityApp.UserData.GfxWidth, DualityApp.UserData.GfxHeight, DisplayDevice.Default.BitsPerPixel, DisplayDevice.Default.RefreshRate);
+					break;
+
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+
+			DualityApp.TargetResolution = new Vector2(ClientSize.Width, ClientSize.Height);
+			DualityApp.TargetMode = Context.GraphicsMode;
+		}
+
 		private void SetMouseDeviceX(int x)
 		{
 			if (!this.Focused) return;
@@ -108,7 +134,7 @@ namespace Duality.Launcher
 			if (isDebugging || isRunFromEditor) ShowConsole();
 
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game, args);
-
+			
 			int windowWidth = DualityApp.UserData.GfxWidth;
 			int windowHeight = DualityApp.UserData.GfxHeight;
 			bool isFullscreen = (DualityApp.UserData.GfxMode == ScreenMode.Fullscreen || DualityApp.UserData.GfxMode == ScreenMode.Native) && !isDebugging;
@@ -125,6 +151,8 @@ namespace Duality.Launcher
 				DualityApp.AppData.AppName,
 				isFullscreen ? GameWindowFlags.Fullscreen : GameWindowFlags.Default))
 			{
+				DualityApp.UserDataChanged += launcherWindow.OnUserDataChanged;
+
 				// Retrieve icon from executable file and set it as window icon
 				string executablePath = System.IO.Path.GetFullPath(System.Reflection.Assembly.GetExecutingAssembly().Location);
 				if (System.IO.File.Exists(executablePath))
@@ -169,6 +197,7 @@ namespace Duality.Launcher
 
 				// Shut down the DualityApp
 				DualityApp.Terminate();
+				DisplayDevice.Default.RestoreResolution();
 			}
 		}
 

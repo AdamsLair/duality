@@ -431,6 +431,37 @@ namespace Duality
 			initialized = true;
 			InitPlugins();
 		}
+
+		/// <summary>
+		/// Applies the specified screen resolution to both game and display device. This is a shorthand for
+		/// assigning a modified version of <see cref="DualityUserData"/> to <see cref="UserData"/>.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="fullscreen"></param>
+		public static void ApplyResolution(int width, int height, bool fullscreen)
+		{
+			userData.GfxWidth = width;
+			userData.GfxHeight = height;
+			userData.GfxMode = fullscreen ? ScreenMode.Fullscreen : ScreenMode.Window;
+			OnUserDataChanged();
+		}
+		/// <summary>
+		/// Enumerates all available screen resolutions on the default display device.
+		/// </summary>
+		/// <returns></returns>
+		public static IEnumerable<ScreenResolution> GetAvailableResolutions()
+		{
+			return DisplayDevice.Default.AvailableResolutions
+				.Select(resolution => new ScreenResolution
+				{
+					Width = resolution.Width, 
+					Height = resolution.Height, 
+					RefreshRate = resolution.RefreshRate
+				})
+				.Distinct();
+		}
+
 		/// <summary>
 		/// Terminates this DualityApp. This does not end the current Process, but will instruct the engine to
 		/// leave main loop and message processing as soon as possible.
