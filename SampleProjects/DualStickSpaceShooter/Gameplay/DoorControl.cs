@@ -11,9 +11,10 @@ namespace DualStickSpaceShooter
 	[Serializable]
 	public class DoorControl : Component, ICmpMessageListener, ICmpUpdatable
 	{
-		private RigidBody	doorPanel	= null;
-		private	float		openSpeed	= 0.0f;
-		private	float		closeSpeed	= 0.0f;
+		private RigidBody	doorPanel		= null;
+		private	float		openSpeed		= 0.0f;
+		private	float		closeSpeed		= 0.0f;
+		private	int			minTriggerCount	= 1;
 		[NonSerialized] private	int triggerCount = 0;
 
 		public float OpenSpeed
@@ -30,6 +31,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.doorPanel; }
 			set { this.doorPanel = value; }
+		}
+		public int MinTriggerCount
+		{
+			get { return this.minTriggerCount; }
+			set { this.minTriggerCount = value; }
 		}
 		private PrismaticJointInfo DoorJoint
 		{
@@ -62,12 +68,12 @@ namespace DualStickSpaceShooter
 		private void AddSignal()
 		{
 			this.triggerCount++;
-			if (this.triggerCount > 0) this.OpenDoor();
+			if (this.triggerCount >= this.minTriggerCount) this.OpenDoor();
 		}
 		private void RemoveSignal()
 		{
 			this.triggerCount--;
-			if (this.triggerCount == 0) this.CloseDoor();
+			if (this.triggerCount < this.minTriggerCount) this.CloseDoor();
 		}
 		void ICmpMessageListener.OnMessage(GameMessage msg)
 		{
