@@ -73,7 +73,16 @@ namespace Duality.Editor
 				} catch (Exception) { return false; }
 
 				// Import it
-				importer.ImportFile(srcFilePath, targetName, targetDir);
+				try
+				{
+					importer.ImportFile(srcFilePath, targetName, targetDir);
+				}
+				catch (Exception ex)
+				{
+					Log.Editor.WriteError("A {0} occurred while trying to import file {1}.", ex.GetType().Name, srcFilePath);
+					return false;
+				}
+
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
 				return true;
