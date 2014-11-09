@@ -12,10 +12,10 @@
   </deathEffects>
   <healRate dataType="Float">10</healRate>
   <maxHitpoints dataType="Float">100</maxHitpoints>
-  <maxSpeed dataType="Float">6.5</maxSpeed>
+  <maxSpeed dataType="Float">5</maxSpeed>
   <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>
   <sourcePath />
-  <thrusterPower dataType="Float">5</thrusterPower>
+  <thrusterPower dataType="Float">2</thrusterPower>
   <turnPower dataType="Float">1</turnPower>
   <weaponDelay dataType="Float">200</weaponDelay>
 </root>

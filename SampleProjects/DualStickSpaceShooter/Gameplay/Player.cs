@@ -230,7 +230,7 @@ namespace DualStickSpaceShooter
 				{
 					// Force the game to reload the current level by disposing it.
 					ContentRef<Scene> currentLevel = Scene.Current;
-					Scene.Current.Dispose();
+					Scene.Current.DisposeLater();
 					Scene.SwitchTo(currentLevel);
 				}
 			}

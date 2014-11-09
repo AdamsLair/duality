@@ -12,40 +12,66 @@ namespace DualStickSpaceShooter
 	public class Trigger : Component, ICmpCollisionListener
 	{
 		private List<GameObject> targets = null;
+		private bool fireOnce = true;
+		private int collisionCounter = 0;
 
 		public List<GameObject> Targets
 		{
 			get { return this.targets; }
 			set { this.targets = value; }
 		}
-
-		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
+		public bool FireOnce
 		{
-			if (this.targets != null)
+			get { return this.fireOnce; }
+			set { this.fireOnce = value; }
+		}
+
+		private void AddCollision(GameObject with)
+		{
+			int oldCounter = this.collisionCounter;
+			this.collisionCounter++;
+			if (this.collisionCounter > 0 && (oldCounter <= 0 || !this.fireOnce))
 			{
-				foreach (GameObject target in this.targets)
+				if (this.targets != null)
 				{
-					this.SendMessage(target, new TriggerEnteredMessage(args.CollideWith));
+					foreach (GameObject target in this.targets)
+					{
+						this.SendMessage(target, new TriggerEnteredMessage(with));
+					}
+				}
+				else
+				{
+					this.SendMessage(new TriggerEnteredMessage(with));
 				}
 			}
-			else
+		}
+		private void RemoveCollision(GameObject with)
+		{
+			int oldCounter = this.collisionCounter;
+			this.collisionCounter--;
+			if (this.collisionCounter <= 0 && (oldCounter > 0 || !this.fireOnce))
 			{
-				this.SendMessage(new TriggerEnteredMessage(args.CollideWith));
+				
+				if (this.targets != null)
+				{
+					foreach (GameObject target in this.targets)
+					{
+						this.SendMessage(target, new TriggerLeftMessage(with));
+					}
+				}
+				else
+				{
+					this.SendMessage(new TriggerLeftMessage(with));
+				}
 			}
+		}
+		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
+		{
+			this.AddCollision(args.CollideWith);
 		}
 		void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args)
 		{
-			if (this.targets != null)
-			{
-				foreach (GameObject target in this.targets)
-				{
-					this.SendMessage(target, new TriggerLeftMessage(args.CollideWith));
-				}
-			}
-			else
-			{
-				this.SendMessage(new TriggerLeftMessage(args.CollideWith));
-			}
+			this.RemoveCollision(args.CollideWith);
 		}
 		void ICmpCollisionListener.OnCollisionSolve(Component sender, CollisionEventArgs args) {}
 	}

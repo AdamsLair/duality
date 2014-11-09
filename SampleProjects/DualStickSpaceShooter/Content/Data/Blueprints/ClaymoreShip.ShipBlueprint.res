@@ -6,7 +6,7 @@
     <contentPath dataType="String">Data\Prefabs\DamageSmoke.Prefab.res</contentPath>
   </damageEffect>
   <deathEffects />
-  <healRate dataType="Float">25</healRate>
+  <healRate dataType="Float">0</healRate>
   <maxHitpoints dataType="Float">500</maxHitpoints>
   <maxSpeed dataType="Float">3</maxSpeed>
   <maxTurnSpeed dataType="Float">0.5</maxTurnSpeed>

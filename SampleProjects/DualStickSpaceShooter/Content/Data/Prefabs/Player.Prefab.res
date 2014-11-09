@@ -73,8 +73,8 @@
                 <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat2" value="2" />
                 <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1, Cat3, Cat4, Cat5, Cat6, Cat7, Cat8, Cat9, Cat10, Cat11, Cat12, Cat13, Cat14, Cat15, Cat16, Cat17, Cat18, Cat19, Cat20, Cat21, Cat22, Cat23, Cat24, Cat25, Cat26, Cat27, Cat28, Cat29, Cat30, Cat31" value="2147483645" />
                 <continous dataType="Bool">true</continous>
-                <explicitMass dataType="Float">20</explicitMass>
-                <fixedAngle dataType="Bool">false</fixedAngle>
+                <explicitMass dataType="Float">10</explicitMass>
+                <fixedAngle dataType="Bool">true</fixedAngle>
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
                 <ignoreGravity dataType="Bool">false</ignoreGravity>
                 <joints dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.JointInfo]]" id="254245605">
@@ -132,9 +132,21 @@
                         </item>
                       </vertices>
                     </item>
+                    <item dataType="Struct" type="Duality.Components.Physics.CircleShapeInfo" id="2183457310">
+                      <density dataType="Float">1</density>
+                      <friction dataType="Float">0.3</friction>
+                      <parent dataType="ObjectRef">2242843573</parent>
+                      <position dataType="Struct" type="OpenTK.Vector2">
+                        <X dataType="Float">0</X>
+                        <Y dataType="Float">1.5</Y>
+                      </position>
+                      <radius dataType="Float">6.5</radius>
+                      <restitution dataType="Float">0.3</restitution>
+                      <sensor dataType="Bool">false</sensor>
+                    </item>
                   </_items>
-                  <_size dataType="Int">2</_size>
-                  <_version dataType="Int">37</_version>
+                  <_size dataType="Int">3</_size>
+                  <_version dataType="Int">46</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
