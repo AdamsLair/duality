@@ -293,7 +293,7 @@ namespace Duality
 			finalizeSched.Add(this);
 		}
 		/// <summary>
-		/// Disposes the Resource.
+		/// Disposes the Resource. Please don't do something silly, like disposing a Scene while it is updated.. use <see cref="ExtMethodsIManageableObject.DisposeLater"/> instead!
 		/// </summary>
 		public void Dispose()
 		{

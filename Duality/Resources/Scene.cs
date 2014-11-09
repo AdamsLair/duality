@@ -369,6 +369,14 @@ namespace Duality.Resources
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
 			switchLock++;
 
+			// Perform a scheduled Scene switch
+			if (switchToScheduled)
+			{
+				Scene.Current = switchToTarget.Res;
+				switchToTarget = null;
+				switchToScheduled = false;
+			}
+
 			// Update physics
 			bool physUpdate = false;
 			double physBegin = Time.MainTimer.TotalMilliseconds;
@@ -403,10 +411,10 @@ namespace Duality.Resources
 				Profile.TimeUpdatePhysics.BeginMeasure();
 				DualityApp.EditorGuard(() =>
 				{
-				FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold;
-				physicsWorld.Step(Time.TimeMult * Time.SPFMult);
-				if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
-				physicsAcc = PhysicsAccStart;
+					FarseerPhysics.Settings.VelocityThreshold = PhysicsUnit.VelocityToPhysical * Time.TimeMult * DualityApp.AppData.PhysicsVelocityThreshold;
+					physicsWorld.Step(Time.TimeMult * Time.SPFMult);
+					if (Time.TimeMult == 0.0f) physicsWorld.ClearForces(); // Complete freeze? Clear forces, so they don't accumulate.
+					physicsAcc = PhysicsAccStart;
 				});
 				physUpdate = true;
 				Profile.TimeUpdatePhysics.EndMeasure();
@@ -438,14 +446,6 @@ namespace Duality.Resources
 					obj.Update();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
-
-			// Perform a scheduled Scene switch
-			if (switchToScheduled)
-			{
-				Scene.Current = switchToTarget.Res;
-				switchToTarget = null;
-				switchToScheduled = false;
-			}
 
 			switchLock--;
 		}
