@@ -79,7 +79,7 @@ namespace Duality.Editor
 				}
 				catch (Exception ex)
 				{
-					Log.Editor.WriteError("A {0} occurred while trying to import file {1}.", ex.GetType().Name, srcFilePath);
+					Log.Editor.WriteError("An error occurred while trying to import file {1}: {0}", Log.Exception(ex), srcFilePath);
 					return false;
 				}
 
