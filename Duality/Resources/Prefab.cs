@@ -412,7 +412,7 @@ namespace Duality.Resources
 				else
 					target = targetObj;
 
-				if (this.changes[i].prop != null) 
+				if (this.changes[i].prop != null && target != null) 
 				{
 					try
 					{
@@ -431,6 +431,12 @@ namespace Duality.Resources
 							this.changes[i].prop.Name,
 							Log.Exception(e));
 					}
+				}
+				else
+				{
+					this.changes.RemoveAt(i);
+					i--;
+					continue;
 				}
 			}
 		}
