@@ -73,6 +73,14 @@ namespace DualStickSpaceShooter
 			Camera camera = this.GameObj.Camera;
 			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
 		}
+		private Vector3 GetTargetOffset(float maxDistFromCenter)
+		{
+			float zoomThreshold = 200.0f;
+			float zoomOutDistance = this.zoomOutScale * MathF.Max(0, maxDistFromCenter - zoomThreshold);
+			zoomOutDistance = MathF.Min(this.maxZoomOutDist, zoomOutDistance);
+			return -new Vector3(0.0f, 0.0f, ReferenceFocusDist + zoomOutDistance);
+		}
+
 		void ICmpUpdatable.OnUpdate()
 		{
 			if (this.followObjects == null) return;
@@ -120,10 +128,7 @@ namespace DualStickSpaceShooter
 				}
 
 				// Move the camera so it can most likely see all of the required objects
-				float zoomThreshold = 200.0f;
-				float zoomOutDistance = this.zoomOutScale * MathF.Max(0, maxDistFromCenter - zoomThreshold);
-				zoomOutDistance = MathF.Min(this.maxZoomOutDist, zoomOutDistance);
-				Vector3 targetPos = focusPos - new Vector3(0.0f, 0.0f, ReferenceFocusDist + zoomOutDistance);
+				Vector3 targetPos = focusPos + this.GetTargetOffset(maxDistFromCenter);
 				transform.MoveByAbs((targetPos - transform.Pos) * MathF.Pow(10.0f, -this.softness) * Time.TimeMult);
 			}
 
@@ -141,6 +146,10 @@ namespace DualStickSpaceShooter
 			if (context == InitContext.Activate)
 			{
 				this.AdjustToScreenSize();
+
+				// Move near initial spawn point
+				Transform transform = this.GameObj.Transform;
+				transform.MoveToAbs(SpawnPoint.SpawnPos + this.GetTargetOffset(0.0f));
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}

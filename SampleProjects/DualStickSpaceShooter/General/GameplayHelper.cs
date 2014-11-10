@@ -57,7 +57,7 @@ namespace DualStickSpaceShooter
 					// Clip the cast ray
 					if (d.Body == body)
 						return d.Fraction;
-					else if (d.Shape.IsSensor || !affectsObject(d.Body))
+					else if (d.Body.BodyType != BodyType.Static || d.Shape.IsSensor || !affectsObject(d.Body))
 						return -1.0f;
 					else
 						return d.Fraction;

@@ -140,7 +140,7 @@ namespace DualStickSpaceShooter
 
 			this.controlFireWeapon = mouse[MouseButton.Left];
 			this.controlQuit = keyboard.KeyHit(Key.Escape);
-			this.controlStart = keyboard.KeyHit(Key.Enter) || mouse.ButtonHit(MouseButton.Left);
+			this.controlStart = keyboard.KeyHit(Key.Enter);
 		}
 		private void UpdateFromGamepad(Transform referenceObj, GamepadInput gamepad)
 		{
@@ -174,10 +174,7 @@ namespace DualStickSpaceShooter
 				gamepad[GamepadButton.RightShoulder] ||
 				gamepad[GamepadButton.A];
 			this.controlQuit = gamepad.ButtonHit(GamepadButton.Back);
-			this.controlStart = 
-				gamepad.ButtonHit(GamepadButton.Start) || 
-				gamepad.ButtonHit(GamepadButton.RightShoulder) || 
-				gamepad.ButtonHit(GamepadButton.A);
+			this.controlStart = gamepad.ButtonHit(GamepadButton.Start);
 		}
 	}
 }

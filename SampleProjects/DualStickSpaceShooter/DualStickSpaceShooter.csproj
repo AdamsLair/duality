@@ -61,6 +61,7 @@
     <Compile Include="Gameplay\HeadUpDisplay.cs" />
     <Compile Include="Gameplay\GameOverScreen.cs" />
     <Compile Include="Gameplay\DoorControl.cs" />
+    <Compile Include="Gameplay\SpawnPoint.cs" />
     <Compile Include="Gameplay\LevelGoal.cs" />
     <Compile Include="Gameplay\Trigger.cs" />
     <Compile Include="Visuals\Particle.cs" />

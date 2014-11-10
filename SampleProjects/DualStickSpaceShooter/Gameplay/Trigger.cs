@@ -9,9 +9,10 @@ namespace DualStickSpaceShooter
 {
 	[Serializable]
 	[RequiredComponent(typeof(RigidBody))]
-	public class Trigger : Component, ICmpCollisionListener
+	public class Trigger : Component, ICmpCollisionListener, ICmpUpdatable
 	{
 		private List<GameObject> targets = null;
+		private ParticleEffect triggerEffect = null;
 		private bool fireOnce = true;
 		private int collisionCounter = 0;
 
@@ -19,6 +20,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.targets; }
 			set { this.targets = value; }
+		}
+		public ParticleEffect TriggerEffect
+		{
+			get { return this.triggerEffect; }
+			set { this.triggerEffect = value; }
 		}
 		public bool FireOnce
 		{
@@ -65,6 +71,40 @@ namespace DualStickSpaceShooter
 				}
 			}
 		}
+
+		void ICmpUpdatable.OnUpdate()
+		{
+			if (this.triggerEffect != null)
+			{
+				float radius = 100.0f;
+
+				CircleShapeInfo triggerCircle = this.GameObj.RigidBody.Shapes.OfType<CircleShapeInfo>().FirstOrDefault();
+				if (triggerCircle != null)
+					radius = triggerCircle.Radius;
+				else
+					radius = this.GameObj.RigidBody.BoundRadius;
+
+				if (this.collisionCounter > 0)
+				{
+					foreach (ParticleEmitter emitter in this.triggerEffect.Emitters)
+					{
+						emitter.RandomPos = new Range(
+							emitter.RandomPos.MinValue + ((0.0f - emitter.RandomPos.MinValue) * MathF.Pow(0.01f, Time.TimeMult)), 
+							radius);
+					}
+				}
+				else
+				{
+					foreach (ParticleEmitter emitter in this.triggerEffect.Emitters)
+					{
+						emitter.RandomPos = new Range(
+							emitter.RandomPos.MinValue + ((radius - emitter.RandomPos.MinValue) * MathF.Pow(0.01f, Time.TimeMult)), 
+							radius);
+					}
+				}
+			}
+		}
+
 		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
 		{
 			this.AddCollision(args.CollideWith);

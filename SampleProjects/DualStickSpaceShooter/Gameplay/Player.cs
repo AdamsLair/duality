@@ -147,7 +147,13 @@ namespace DualStickSpaceShooter
 				}
 				else if (Player.AllPlayers.Any(p => p != this && p.IsPlaying))
 				{
+					// If we don't have an alive player, but do have playing players, the game must be already over.
 					gameAlreadyOver = true;
+				}
+				else
+				{
+					// Move near initial spawn point
+					this.controlObj.GameObj.Transform.Pos = SpawnPoint.SpawnPos;
 				}
 
 				// Spawn for the first time / enter the game

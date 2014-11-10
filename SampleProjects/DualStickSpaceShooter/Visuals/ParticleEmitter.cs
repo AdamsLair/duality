@@ -29,6 +29,7 @@ namespace DualStickSpaceShooter
 		private ColorHsva	minColor			= ColorHsva.White;
 		private ColorHsva	maxColor			= ColorHsva.White;
 		private Range		spriteIndex			= 0;
+		private	float		depthMult			= 1.0f;
 
 		[NonSerialized]
 		private int			burstCount			= 0;
@@ -104,6 +105,11 @@ namespace DualStickSpaceShooter
 			get { return this.spriteIndex; }
 			set { this.spriteIndex = value; }
 		}
+		public float DepthMultiplier
+		{
+			get { return this.depthMult; }
+			set { this.depthMult = value; }
+		}
 
 		public void Update(ParticleEffect effect)
 		{
@@ -121,14 +127,23 @@ namespace DualStickSpaceShooter
 		{
 			Random random = MathF.Rnd;
 
-			particle.AgeFactor		= 0.0f;
-			particle.Position		= this.basePos + random.NextVector3(this.randomPos.MinValue, this.randomPos.MaxValue);
-			particle.Velocity		= this.baseVel + random.NextVector3(this.randomVel.MinValue, this.randomVel.MaxValue);
+			if (this.depthMult != 0.0f)
+			{
+				particle.Position	= this.basePos + random.NextVector3(this.randomPos.MinValue, this.randomPos.MaxValue) * new Vector3(1.0f, 1.0f, this.depthMult);
+				particle.Velocity	= this.baseVel + random.NextVector3(this.randomVel.MinValue, this.randomVel.MaxValue) * new Vector3(1.0f, 1.0f, this.depthMult);
+			}
+			else
+			{
+				particle.Position	= this.basePos + new Vector3(random.NextVector2(this.randomPos.MinValue, this.randomPos.MaxValue));
+				particle.Velocity	= this.baseVel + new Vector3(random.NextVector2(this.randomVel.MinValue, this.randomVel.MaxValue));
+			}
+
 			particle.Angle			= random.NextFloat(this.randomAngle.MinValue, this.randomAngle.MaxValue);
 			particle.AngleVelocity	= random.NextFloat(this.randomAngleVel.MinValue, this.randomAngleVel.MaxValue);
 			particle.TimeToLive		= random.NextFloat(this.particleLifetime.MinValue, this.particleLifetime.MaxValue);
 			particle.SpriteIndex	= random.Next((int)this.spriteIndex.MinValue, (int)this.spriteIndex.MaxValue);
 			particle.Color			= random.NextColorHsva(this.minColor, this.maxColor).ToRgba();
+			particle.AgeFactor		= 0.0f;
 		}
 	}
 }

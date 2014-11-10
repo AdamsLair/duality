@@ -58,9 +58,14 @@ namespace DualStickSpaceShooter
 			if (this.gameStarted)
 			{
 				if (Player.AllPlayers.All(p => !p.Active || !p.IsPlaying || p.HasReachedGoal))
+				{
 					this.gameWin = true;
+					SpawnPoint.LastVisitedIndex = -1;
+				}
 				if (!Player.IsAnyPlayerAlive)
+				{
 					this.gameOver = true;
+				}
 			}
 		}
 		bool ICmpRenderer.IsVisible(IDrawDevice device)
