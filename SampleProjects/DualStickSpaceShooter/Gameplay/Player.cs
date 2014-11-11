@@ -233,12 +233,7 @@ namespace DualStickSpaceShooter
 			if (gameOverScreen != null && gameOverScreen.HasGameEnded)
 			{
 				if (this.input.ControlStart)
-				{
-					// Force the game to reload the current level by disposing it.
-					ContentRef<Scene> currentLevel = Scene.Current;
-					Scene.Current.DisposeLater();
-					Scene.SwitchTo(currentLevel);
-				}
+					Scene.Reload();
 			}
 		}
 	}

@@ -163,6 +163,22 @@ namespace Duality.Resources
 				switchToScheduled = true;
 			}
 		}
+		/// <summary>
+		/// Reloads the <see cref="Current">current Scene</see> or schedules it for reload at the end of the
+		/// frame, depending on whether it is considered safe to do so immediately. Similar to <see cref="SwitchTo"/> with
+		/// regard to execution planning.
+		/// </summary>
+		public static void Reload()
+		{
+			ContentRef<Scene> target = Scene.Current;
+
+			if (switchLock == 0)
+				Scene.Current.Dispose();
+			else
+				Scene.Current.DisposeLater();
+
+			Scene.SwitchTo(target);
+		}
 
 		private static void OnLeaving()
 		{
@@ -369,14 +385,6 @@ namespace Duality.Resources
 			if (!this.IsCurrent) throw new InvalidOperationException("Can't update non-current Scene!");
 			switchLock++;
 
-			// Perform a scheduled Scene switch
-			if (switchToScheduled)
-			{
-				Scene.Current = switchToTarget.Res;
-				switchToTarget = null;
-				switchToScheduled = false;
-			}
-
 			// Update physics
 			bool physUpdate = false;
 			double physBegin = Time.MainTimer.TotalMilliseconds;
@@ -437,15 +445,26 @@ namespace Duality.Resources
 			else
 				physicsLowFps = !(Time.LastDelta < Time.MsPFMult * 0.9f || physTime < Time.LastDelta * 0.6f);
 
+			// Update all GameObjects
 			Profile.TimeUpdateScene.BeginMeasure();
 			DualityApp.EditorGuard(() =>
 			{
-				// Update all GameObjects
 				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.Update();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
+
+			// Perform a cleanup step to catch all DisposeLater calls from within the Scene update
+			DualityApp.RunCleanup();
+			
+			// Perform a scheduled Scene switch
+			if (switchToScheduled)
+			{
+				Scene.Current = switchToTarget.Res;
+				switchToTarget = null;
+				switchToScheduled = false;
+			}
 
 			switchLock--;
 		}

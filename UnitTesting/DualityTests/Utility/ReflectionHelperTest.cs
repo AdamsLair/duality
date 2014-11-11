@@ -31,8 +31,8 @@ namespace Duality.Tests.Utility
 		}
 		[Test] public void CustomTypeResolve()
 		{
-			Assert.AreEqual(ReflectionHelper.ResolveType(TestErrorHandler.TestResolveTypeId), TestErrorHandler.TestResolveType);
-			Assert.AreEqual(ReflectionHelper.ResolveMember(TestErrorHandler.TestResolveMemberId), TestErrorHandler.TestResolveMember);
+			Assert.AreEqual(TestErrorHandler.TestResolveType, ReflectionHelper.ResolveType(TestErrorHandler.TestResolveTypeId));
+			Assert.AreEqual(TestErrorHandler.TestResolveMember, ReflectionHelper.ResolveMember(TestErrorHandler.TestResolveMemberId));
 		}
 
 		public class TestMemberClass

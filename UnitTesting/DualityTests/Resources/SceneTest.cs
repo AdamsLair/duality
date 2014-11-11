@@ -18,7 +18,7 @@ namespace Duality.Tests.Resources
 	[TestFixture]
 	public class SceneTest
 	{
-		[Test] public void SwitchTo()
+		[Test] public void SwitchToRegular()
 		{
 			// Set up some objects
 			Scene scene = new Scene();
@@ -29,7 +29,23 @@ namespace Duality.Tests.Resources
 				Scene.SwitchTo(scene);
 				Assert.AreEqual(Scene.Current, scene);
 			}
+
+			// Clean up
+			scene.Dispose();
+			scene2.Dispose();
+		}
+		[Test] public void SwitchToDuringUpdate()
+		{
+			// Set up some objects
+			Scene scene = new Scene();
+			Scene scene2 = new Scene();
 			
+			// Switch to the first Scene regularly
+			{
+				Scene.SwitchTo(scene);
+				Assert.AreEqual(Scene.Current, scene);
+			}
+
 			// Switch to the second during update
 			{
 				GameObject obj = new GameObject("SwitchObject");
@@ -41,6 +57,22 @@ namespace Duality.Tests.Resources
 				Assert.False(switchComponent.Switched);
 				Assert.AreEqual(Scene.Current, scene2);
 
+				Scene.SwitchTo(scene);
+				Assert.AreEqual(Scene.Current, scene);
+			}
+
+			// Clean up
+			scene.Dispose();
+			scene2.Dispose();
+		}
+		[Test] public void SwitchToDuringEnter()
+		{
+			// Set up some objects
+			Scene scene = new Scene();
+			Scene scene2 = new Scene();
+
+			// Switch to the first Scene regularly
+			{
 				Scene.SwitchTo(scene);
 				Assert.AreEqual(Scene.Current, scene);
 			}
@@ -58,32 +90,85 @@ namespace Duality.Tests.Resources
 				DualityApp.Update();
 				Assert.False(switchComponent.Switched);
 				Assert.AreEqual(Scene.Current, scene2);
+			}
 
+			// Clean up
+			scene.Dispose();
+			scene2.Dispose();
+		}
+		[Test] public void SwitchToDuringLeave()
+		{
+			// Set up some objects
+			Scene scene = new Scene();
+			Scene scene2 = new Scene();
+
+			// Switch to the first Scene regularly
+			{
 				Scene.SwitchTo(scene);
 				Assert.AreEqual(Scene.Current, scene);
 			}
-			
+
 			// Switch to the second while leaving
 			{
-				Scene.SwitchTo(null);
+				Scene.SwitchTo(scene);
 
 				GameObject obj = new GameObject("SwitchObject");
 				var switchComponent = new ShutdownSwitchToSceneComponent { Target = scene2 };
 				obj.AddComponent(switchComponent);
 				scene.AddObject(obj);
 
-				Scene.SwitchTo(scene);
+				Scene.SwitchTo(null);
 				DualityApp.Update();
 				Assert.False(switchComponent.Switched);
 				Assert.AreEqual(Scene.Current, scene2);
-
-				Scene.SwitchTo(scene);
-				Assert.AreEqual(Scene.Current, scene);
 			}
 
 			// Clean up
 			scene.Dispose();
 			scene2.Dispose();
+		}
+		[Test] public void SwitchReloadDeferredDispose()
+		{
+			// Inject some pseudo loading code for our Scene.
+			const string TestSceneName = "TestScene";
+			EventHandler<ResourceResolveEventArgs> resolveHandler = delegate(object sender, ResourceResolveEventArgs e)
+			{
+				if (e.RequestedContent == TestSceneName)
+				{
+					e.Resolve(new Scene());
+				}
+			};
+			ContentProvider.ResourceResolve += resolveHandler;
+
+			// Retrieve the Scene and make sure it's always the same
+			Scene scene = ContentProvider.RequestContent<Scene>(TestSceneName).Res;
+			Assert.IsNotNull(scene);
+			{
+				Scene scene2 = ContentProvider.RequestContent<Scene>(TestSceneName).Res;
+				Assert.AreSame(scene, scene2);
+			}
+			
+			// Switch to the Scene regularly
+			{
+				Scene.SwitchTo(scene);
+				Assert.AreSame(Scene.Current, scene);
+			}
+
+			// Reload the Scene during update while using deferred disposal
+			{
+				GameObject obj = new GameObject("SwitchObject");
+				obj.AddComponent<UpdateReloadSceneComponent>();
+				scene.AddObject(obj);
+
+				Assert.AreSame(Scene.Current, scene);
+				DualityApp.Update();
+				Assert.AreNotSame(Scene.Current, scene);
+				Assert.AreEqual(TestSceneName, Scene.Current.Path);
+			}
+
+			// Clean up
+			ContentProvider.ResourceResolve -= resolveHandler;
+			scene.Dispose();
 		}
 		[Test] public void AddRemoveGameObjects()
 		{
@@ -255,6 +340,13 @@ namespace Duality.Tests.Resources
 				Scene last = Scene.Current;
 				Scene.SwitchTo(Target);
 				this.Switched = (last != Scene.Current && Scene.Current == Target);
+			}
+		}
+		private class UpdateReloadSceneComponent : Component, ICmpUpdatable
+		{
+			void ICmpUpdatable.OnUpdate()
+			{
+				Scene.Reload();
 			}
 		}
 		private class InitSwitchToSceneComponent : Component, ICmpInitializable
