@@ -13,8 +13,10 @@ namespace DualStickSpaceShooter
 	[Serializable]
 	public class GameOverScreen : Component, ICmpRenderer, ICmpUpdatable
 	{
-		private ContentRef<Font>	font				= null;
-		private	BatchInfo			blendMaterial		= null;
+		private ContentRef<Font>		font						= null;
+		private	BatchInfo				blendMaterial				= null;
+		private ContentRef<Material>	controlInfoMouseKeyboard	= null;
+		private ContentRef<Material>	controlInfoGamepad			= null;
 		
 		[NonSerialized] private	bool			gameStarted			= false;
 		[NonSerialized] private	bool			gameOver			= false;
@@ -36,6 +38,16 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.blendMaterial; }
 			set { this.blendMaterial = value; }
+		}
+		public ContentRef<Material> ControlsMouseKeyboard
+		{
+			get { return this.controlInfoMouseKeyboard; }
+			set { this.controlInfoMouseKeyboard = value; }
+		}
+		public ContentRef<Material> ControlsGamepad
+		{
+			get { return this.controlInfoGamepad; }
+			set { this.controlInfoGamepad = value; }
 		}
 		public bool HasGameEnded
 		{
@@ -95,6 +107,7 @@ namespace DualStickSpaceShooter
 
 				float timeSinceGameOver = (float)Time.MainTimer.TotalMilliseconds - this.lastTimeAnyAlive;
 				float gameOverAnimProgress = MathF.Clamp((timeSinceGameOver - animOffset) / animTime, 0.0f, 1.0f);
+				float controlInfoAnimProgress = MathF.Clamp(((timeSinceGameOver - animOffset) - animTime - 2000.0f) / 2000.0f, 0.0f, 1.0f);
 				float blendAnimProgress = MathF.Clamp(gameOverAnimProgress / blendDurationRatio, 0.0f, 1.0f);
 				float textAnimProgress = MathF.Clamp((gameOverAnimProgress - blendDurationRatio - textOffsetRatio) / (1.0f - blendDurationRatio - textOffsetRatio), 0.0f, 1.0f);
 
@@ -153,6 +166,43 @@ namespace DualStickSpaceShooter
 					canvas.DrawText(gameOverText, textPos.X, textPos.Y);
 
 					canvas.PopState();
+				}
+
+				if (controlInfoAnimProgress > 0.0f)
+				{
+					Vector2 infoBasePos = device.TargetSize * 0.5f + new Vector2(0.0f, device.TargetSize.Y * 0.25f);
+					if (this.controlInfoMouseKeyboard != null)
+					{
+						canvas.PushState();
+
+						Vector2 texSize = this.controlInfoMouseKeyboard.Res.MainTexture.Res.Size * 0.5f;
+
+						canvas.State.SetMaterial(this.controlInfoMouseKeyboard);
+						canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);
+						canvas.FillRect(
+							infoBasePos.X - texSize.X * 0.5f,
+							infoBasePos.Y - texSize.Y - 10,
+							texSize.X,
+							texSize.Y);
+
+						canvas.PopState();
+					}
+					if (this.controlInfoGamepad != null)
+					{
+						canvas.PushState();
+
+						Vector2 texSize = this.controlInfoGamepad.Res.MainTexture.Res.Size * 0.5f;
+
+						canvas.State.SetMaterial(this.controlInfoGamepad);
+						canvas.State.ColorTint = ColorRgba.White.WithAlpha(controlInfoAnimProgress);
+						canvas.FillRect(
+							infoBasePos.X - texSize.X * 0.5f,
+							infoBasePos.Y + 10,
+							texSize.X,
+							texSize.Y);
+
+						canvas.PopState();
+					}
 				}
 			}
 		}
