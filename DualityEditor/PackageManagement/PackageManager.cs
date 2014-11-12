@@ -26,8 +26,7 @@ namespace Duality.Editor.PackageManagement
 		private const	string	LocalPackageDir				= EditorHelper.SourceDirectory + @"\Packages";
 		private	const	string	DefaultRepositoryUrl		= @"https://packages.nuget.org/api/v2";
 
-		private	string					repositoryOriginal	= null;
-		private	Uri						repositoryUrl		= null;
+        private List<string>            repositoryUrls      = new List<string>(new[] { DefaultRepositoryUrl });
 		private	string					dataTargetDir		= null;
 		private	string					pluginTargetDir		= null;
 		private	string					rootPath			= null;
@@ -45,9 +44,9 @@ namespace Duality.Editor.PackageManagement
 		public event EventHandler<PackageEventArgs> PackageUninstalled = null;
 
 
-		public Uri RepositoryUrl
+        public List<string> RepositoryUrls
 		{
-			get { return this.repositoryUrl; }
+			get { return this.repositoryUrls; }
 		}
 		public IEnumerable<LocalPackage> LocalPackages
 		{
@@ -86,7 +85,7 @@ namespace Duality.Editor.PackageManagement
 			this.LoadConfig();
 
 			// Create internal package management objects
-			this.repository = NuGet.PackageRepositoryFactory.Default.CreateRepository(this.repositoryUrl.AbsoluteUri);
+            this.repository = new AggregateRepository(this.repositoryUrls.Select(x => CreateRepository(x)).Where(x => x != null));
 			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
@@ -507,77 +506,100 @@ namespace Duality.Editor.PackageManagement
 				}
 			}
 		}
-		private void LoadConfig()
-		{
-			// Reset to default data
-			this.repositoryUrl = new Uri(DefaultRepositoryUrl);
-			this.localPackages.Clear();
 
-			// Check whethere there is a config file to load
-			string configFilePath = this.PackageFilePath;
-			if (!File.Exists(configFilePath))
-			{
-				this.SaveConfig();
-				return;
-			}
+        private IPackageRepository CreateRepository(string repoUrlString)
+        {
+            if (string.IsNullOrWhiteSpace(repoUrlString))
+            {
+                return null;
+            }
 
-			// If there is, load data from the config file
-			try
-			{
-				XDocument doc = XDocument.Load(configFilePath);
+            try
+            {
+                if (repoUrlString.Contains(Uri.SchemeDelimiter) && Uri.CheckSchemeName(repoUrlString.Split(new string[] { Uri.SchemeDelimiter }, StringSplitOptions.RemoveEmptyEntries)[0]))
+                {
+                    repoUrlString = new Uri(repoUrlString).AbsoluteUri;
+                }
+                else
+                {
+                    repoUrlString = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.rootPath, repoUrlString))).AbsolutePath;
+                }
+            }
+            catch (UriFormatException)
+            {
+                Log.Editor.WriteError("NuGet repository uri '{0}' is in incorrect format and will be skipped.", repoUrlString);
+                return null;
+            }
 
-				string repoUrlString = doc.Root.GetElementValue("RepositoryUrl") ?? DefaultRepositoryUrl;
-				if (repoUrlString.Contains(Uri.SchemeDelimiter) && Uri.CheckSchemeName(repoUrlString.Split(new string[] { Uri.SchemeDelimiter }, StringSplitOptions.RemoveEmptyEntries)[0]))
-				{
-					this.repositoryUrl = new Uri(repoUrlString);
-					this.repositoryOriginal = null;
-				}
-				else
-				{
-					this.repositoryUrl = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.rootPath, repoUrlString)));
-					this.repositoryOriginal = repoUrlString;
-				}
+            return PackageRepositoryFactory.Default.CreateRepository(repoUrlString);
+        }
 
-				XElement packagesElement = doc.Root.Element("Packages");
-				if (packagesElement != null)
-				{
-					foreach (XElement packageElement in packagesElement.Elements("Package"))
-					{
-						PackageName package = PackageName.None;
-						package.Id = packageElement.GetAttributeValue("id");
-						string versionString = packageElement.GetAttributeValue("version");
-						if (versionString != null) Version.TryParse(versionString, out package.Version);
+        private void LoadConfig()
+        {
+            // Reset to default data
+            this.localPackages.Clear();
 
-						// Skip invalid package references
-						if (string.IsNullOrWhiteSpace(package.Id)) continue;
-						
-						// Create local package entry
-						this.localPackages.Add(new LocalPackage(package));
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				Log.Editor.WriteError(
-					"Failed to load PackageManager config file '{0}': {1}", 
-					configFilePath, 
-					Log.Exception(e));
-			}
-		}
-		private void SaveConfig()
-		{
-			XDocument doc = new XDocument(
-				new XElement("PackageConfig",
-					new XElement("RepositoryUrl", string.IsNullOrEmpty(this.repositoryOriginal) ? this.repositoryUrl.ToString() : this.repositoryOriginal),
-					new XElement("Packages", this.localPackages.Select(p => 
-						new XElement("Package",
-							new XAttribute("id", p.Id),
-							p.Version != null ? new XAttribute("version", p.Version) : null
-						)
-					))
-				));
-			doc.Save(this.PackageFilePath);
-		}
+            // Check whethere there is a config file to load
+            string configFilePath = this.PackageFilePath;
+            if (!File.Exists(configFilePath))
+            {
+                this.SaveConfig();
+                return;
+            }
+
+            // If there is, load data from the config file
+            try
+            {
+                XDocument doc = XDocument.Load(configFilePath);
+
+                this.repositoryUrls.Clear();
+                this.repositoryUrls.AddRange(doc.Root.Elements("RepositoryUrl").Select(x => x.Value));
+                if (this.repositoryUrls.Count == 0)
+                {
+                    this.repositoryUrls.Add(DefaultRepositoryUrl);
+                }
+
+                XElement packagesElement = doc.Root.Element("Packages");
+                if (packagesElement != null)
+                {
+                    foreach (XElement packageElement in packagesElement.Elements("Package"))
+                    {
+                        PackageName package = PackageName.None;
+                        package.Id = packageElement.GetAttributeValue("id");
+                        string versionString = packageElement.GetAttributeValue("version");
+                        if (versionString != null) Version.TryParse(versionString, out package.Version);
+
+                        // Skip invalid package references
+                        if (string.IsNullOrWhiteSpace(package.Id)) continue;
+
+                        // Create local package entry
+                        this.localPackages.Add(new LocalPackage(package));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Editor.WriteError(
+                    "Failed to load PackageManager config file '{0}': {1}",
+                    configFilePath,
+                    Log.Exception(e));
+            }
+        }
+
+        private void SaveConfig()
+        {
+            XDocument doc = new XDocument(
+                new XElement("PackageConfig",
+                    this.repositoryUrls.Select(x => new XElement("RepositoryUrl", x)),
+                    new XElement("Packages", this.localPackages.Select(p =>
+                        new XElement("Package",
+                            new XAttribute("id", p.Id),
+                            p.Version != null ? new XAttribute("version", p.Version) : null
+                        )
+                    ))
+                ));
+            doc.Save(this.PackageFilePath);
+        }
 
 		private XDocument PrepareUpdateFile()
 		{
