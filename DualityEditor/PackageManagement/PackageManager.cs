@@ -26,7 +26,7 @@ namespace Duality.Editor.PackageManagement
 		private const	string	LocalPackageDir				= EditorHelper.SourceDirectory + @"\Packages";
 		private	const	string	DefaultRepositoryUrl		= @"https://packages.nuget.org/api/v2";
 
-        private List<string>            repositoryUrls      = new List<string>(new[] { DefaultRepositoryUrl });
+		private List<string>            repositoryUrls      = new List<string>{ DefaultRepositoryUrl };
 		private	string					dataTargetDir		= null;
 		private	string					pluginTargetDir		= null;
 		private	string					rootPath			= null;
@@ -34,7 +34,6 @@ namespace Duality.Editor.PackageManagement
 		private	List<LocalPackage>		uninstallQueue		= new List<LocalPackage>();
 
 		private	object cacheLock = new object();
-		private	Dictionary<PackageNamePair,PackageCompatibility> forwardCompatibilityCache = new Dictionary<PackageNamePair,PackageCompatibility>();
 		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
 
 		private NuGet.PackageManager		manager			= null;
@@ -44,10 +43,6 @@ namespace Duality.Editor.PackageManagement
 		public event EventHandler<PackageEventArgs> PackageUninstalled = null;
 
 
-        public List<string> RepositoryUrls
-		{
-			get { return this.repositoryUrls; }
-		}
 		public IEnumerable<LocalPackage> LocalPackages
 		{
 			get { return this.localPackages; }
@@ -85,7 +80,7 @@ namespace Duality.Editor.PackageManagement
 			this.LoadConfig();
 
 			// Create internal package management objects
-            this.repository = new AggregateRepository(this.repositoryUrls.Select(x => CreateRepository(x)).Where(x => x != null));
+			this.repository = new AggregateRepository(this.repositoryUrls.Select(x => this.CreateRepository(x)).Where(x => x != null));
 			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
@@ -316,8 +311,8 @@ namespace Duality.Editor.PackageManagement
 
 			// Only look at NuGet packages tagged with "Duality" and "Plugin"
 			query = query.Where(p => 
-			    p.Tags != null && 
-			    p.Tags.Contains(DualityTag));
+				p.Tags != null && 
+				p.Tags.Contains(DualityTag));
 
 			// If it's a local package repository, IsLatest isn't set. Need to emulate this
 			if (this.repository is LocalPackageRepository)
@@ -358,68 +353,6 @@ namespace Duality.Editor.PackageManagement
 			return package != null ? this.CreatePackageInfo(package) : null;
 		}
 		
-		private PackageCompatibility GetIndividualForwardCompatibility(PackageInfo package, PackageInfo target)
-		{
-			if (package.Id == target.Id) return PackageCompatibility.Definite;
-
-			PackageNamePair key = new PackageNamePair { First = package.PackageName, Second = target.PackageName };
-			PackageCompatibility compatibility;
-			lock (this.cacheLock)
-			{
-				if (this.forwardCompatibilityCache.TryGetValue(key, out compatibility))
-					return compatibility;
-			}
-
-			compatibility = PackageCompatibility.Definite;
-
-			// Evaluate how the package depends on the target.
-			PackageName dependecy = package.Dependencies.FirstOrDefault(d => d.Id == target.Id);
-			if (!string.IsNullOrWhiteSpace(dependecy.Id))
-			{
-				PackageInfo dependencyInfo = this.QueryPackageInfo(dependecy);
-				if (dependencyInfo == null)
-				{
-					// If no information is available on this dependency, don't assume compatibility
-					compatibility = PackageCompatibility.None;
-				}
-				else if (!dependencyInfo.IsDualityPackage)
-				{
-					// If it is not a Duality package, ignore this
-					compatibility = PackageCompatibility.Definite;
-				}
-				else if (dependecy.Version >= target.Version)
-				{
-					// If the package depends on a newer or similar version, it's okay
-					compatibility = PackageCompatibility.Definite;
-				}
-				else if (dependecy.Version.Major == target.Version.Major && dependecy.Version.Minor == target.Version.Minor)
-				{
-					// If the target is equal in major and minor, it should be okay
-					compatibility = PackageCompatibility.Likely;
-				}
-				else if (dependencyInfo.PublishDate > target.PublishDate)
-				{
-					// If the package depends on something that was released after the target, it should be okay
-					compatibility = PackageCompatibility.Likely;
-				}
-				else if (dependecy.Version.Major == target.Version.Major)
-				{
-					// If the target is equal in major, it could be okay but doesn't have to be
-					compatibility = PackageCompatibility.Unlikely;
-				}
-				else 
-				{
-					// Otherwise, no compatibility can be assumed
-					compatibility = PackageCompatibility.None;
-				}
-			}
-			
-			lock (this.cacheLock)
-			{
-				this.forwardCompatibilityCache[key] = compatibility;
-			}
-			return compatibility;
-		}
 		private NuGet.IPackage FindPackageInfo(PackageName packageRef, bool findMaxVersionBelow)
 		{
 			// Find a direct version match
@@ -506,100 +439,98 @@ namespace Duality.Editor.PackageManagement
 				}
 			}
 		}
+		private IPackageRepository CreateRepository(string repositoryUrl)
+		{
+			if (string.IsNullOrWhiteSpace(repositoryUrl))
+				return null;
 
-        private IPackageRepository CreateRepository(string repoUrlString)
-        {
-            if (string.IsNullOrWhiteSpace(repoUrlString))
-            {
-                return null;
-            }
+			try
+			{
+				string schemeName = null;
+				if (repositoryUrl.Contains(Uri.SchemeDelimiter))
+				{
+					schemeName = repositoryUrl.Split(new[] { Uri.SchemeDelimiter }, StringSplitOptions.RemoveEmptyEntries)[0];
+				}
 
-            try
-            {
-                if (repoUrlString.Contains(Uri.SchemeDelimiter) && Uri.CheckSchemeName(repoUrlString.Split(new string[] { Uri.SchemeDelimiter }, StringSplitOptions.RemoveEmptyEntries)[0]))
-                {
-                    repoUrlString = new Uri(repoUrlString).AbsoluteUri;
-                }
-                else
-                {
-                    repoUrlString = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.rootPath, repoUrlString))).AbsolutePath;
-                }
-            }
-            catch (UriFormatException)
-            {
-                Log.Editor.WriteError("NuGet repository uri '{0}' is in incorrect format and will be skipped.", repoUrlString);
-                return null;
-            }
+				if (schemeName != null && Uri.CheckSchemeName(schemeName))
+					repositoryUrl = new Uri(repositoryUrl).AbsoluteUri;
+				else
+					repositoryUrl = new Uri("file:///" + Path.GetFullPath(Path.Combine(this.rootPath, repositoryUrl))).AbsolutePath;
+			}
+			catch (UriFormatException)
+			{
+				Log.Editor.WriteError("NuGet repository URI '{0}' has an incorrect format and will be skipped.", repositoryUrl);
+				return null;
+			}
 
-            return PackageRepositoryFactory.Default.CreateRepository(repoUrlString);
-        }
+			return PackageRepositoryFactory.Default.CreateRepository(repositoryUrl);
+		}
 
-        private void LoadConfig()
-        {
-            // Reset to default data
-            this.localPackages.Clear();
+		private void LoadConfig()
+		{
+			// Reset to default data
+			this.localPackages.Clear();
 
-            // Check whethere there is a config file to load
-            string configFilePath = this.PackageFilePath;
-            if (!File.Exists(configFilePath))
-            {
-                this.SaveConfig();
-                return;
-            }
+			// Check whethere there is a config file to load
+			string configFilePath = this.PackageFilePath;
+			if (!File.Exists(configFilePath))
+			{
+				this.SaveConfig();
+				return;
+			}
 
-            // If there is, load data from the config file
-            try
-            {
-                XDocument doc = XDocument.Load(configFilePath);
+			// If there is, load data from the config file
+			try
+			{
+				XDocument doc = XDocument.Load(configFilePath);
 
-                this.repositoryUrls.Clear();
-                this.repositoryUrls.AddRange(doc.Root.Elements("RepositoryUrl").Select(x => x.Value));
-                if (this.repositoryUrls.Count == 0)
-                {
-                    this.repositoryUrls.Add(DefaultRepositoryUrl);
-                }
+				this.repositoryUrls.Clear();
+				this.repositoryUrls.AddRange(doc.Root.Elements("RepositoryUrl").Select(x => x.Value));
+				if (this.repositoryUrls.Count == 0)
+				{
+					this.repositoryUrls.Add(DefaultRepositoryUrl);
+				}
 
-                XElement packagesElement = doc.Root.Element("Packages");
-                if (packagesElement != null)
-                {
-                    foreach (XElement packageElement in packagesElement.Elements("Package"))
-                    {
-                        PackageName package = PackageName.None;
-                        package.Id = packageElement.GetAttributeValue("id");
-                        string versionString = packageElement.GetAttributeValue("version");
-                        if (versionString != null) Version.TryParse(versionString, out package.Version);
+				XElement packagesElement = doc.Root.Element("Packages");
+				if (packagesElement != null)
+				{
+					foreach (XElement packageElement in packagesElement.Elements("Package"))
+					{
+						PackageName package = PackageName.None;
+						package.Id = packageElement.GetAttributeValue("id");
+						string versionString = packageElement.GetAttributeValue("version");
+						if (versionString != null) Version.TryParse(versionString, out package.Version);
 
-                        // Skip invalid package references
-                        if (string.IsNullOrWhiteSpace(package.Id)) continue;
+						// Skip invalid package references
+						if (string.IsNullOrWhiteSpace(package.Id)) continue;
 
-                        // Create local package entry
-                        this.localPackages.Add(new LocalPackage(package));
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Editor.WriteError(
-                    "Failed to load PackageManager config file '{0}': {1}",
-                    configFilePath,
-                    Log.Exception(e));
-            }
-        }
-
-        private void SaveConfig()
-        {
-            XDocument doc = new XDocument(
-                new XElement("PackageConfig",
-                    this.repositoryUrls.Select(x => new XElement("RepositoryUrl", x)),
-                    new XElement("Packages", this.localPackages.Select(p =>
-                        new XElement("Package",
-                            new XAttribute("id", p.Id),
-                            p.Version != null ? new XAttribute("version", p.Version) : null
-                        )
-                    ))
-                ));
-            doc.Save(this.PackageFilePath);
-        }
+						// Create local package entry
+						this.localPackages.Add(new LocalPackage(package));
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Editor.WriteError(
+					"Failed to load PackageManager config file '{0}': {1}",
+					configFilePath,
+					Log.Exception(e));
+			}
+		}
+		private void SaveConfig()
+		{
+			XDocument doc = new XDocument(
+				new XElement("PackageConfig",
+					this.repositoryUrls.Select(x => new XElement("RepositoryUrl", x)),
+					new XElement("Packages", this.localPackages.Select(p =>
+						new XElement("Package",
+							new XAttribute("id", p.Id),
+							p.Version != null ? new XAttribute("version", p.Version) : null
+						)
+					))
+				));
+			doc.Save(this.PackageFilePath);
+		}
 
 		private XDocument PrepareUpdateFile()
 		{
@@ -832,17 +763,6 @@ namespace Duality.Editor.PackageManagement
 				return string.Format("{0}.{1}", version.Major, version.Minor);
 			else
 				return string.Format("{0}.{1}.{2}", version.Major, version.Minor, version.Build);
-		}
-
-		private struct PackageNamePair
-		{
-			public PackageName First;
-			public PackageName Second;
-
-			public override string ToString()
-			{
-				return string.Format("{0} => {1}", this.First, this.Second);
-			}
 		}
 	}
 }
