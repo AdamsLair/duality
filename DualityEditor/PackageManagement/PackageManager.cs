@@ -27,6 +27,7 @@ namespace Duality.Editor.PackageManagement
 		private	const	string	DefaultRepositoryUrl		= @"https://packages.nuget.org/api/v2";
 
 		private List<string>            repositoryUrls      = new List<string>{ DefaultRepositoryUrl };
+		private	bool					hasLocalRepo		= false;
 		private	string					dataTargetDir		= null;
 		private	string					pluginTargetDir		= null;
 		private	string					rootPath			= null;
@@ -80,7 +81,9 @@ namespace Duality.Editor.PackageManagement
 			this.LoadConfig();
 
 			// Create internal package management objects
-			this.repository = new AggregateRepository(this.repositoryUrls.Select(x => this.CreateRepository(x)).Where(x => x != null));
+			IPackageRepository[] repositories = this.repositoryUrls.Select(x => this.CreateRepository(x)).Where(x => x != null).ToArray();
+			this.hasLocalRepo = repositories.OfType<LocalPackageRepository>().Any();
+			this.repository = new AggregateRepository(repositories);
 			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
@@ -314,8 +317,8 @@ namespace Duality.Editor.PackageManagement
 				p.Tags != null && 
 				p.Tags.Contains(DualityTag));
 
-			// If it's a local package repository, IsLatest isn't set. Need to emulate this
-			if (this.repository is LocalPackageRepository)
+			// If there is a local package repository, IsLatest isn't set. Need to emulate this
+			if (this.hasLocalRepo)
 			{
 				List<IPackage> packages = query.ToList();
 				for (int i = packages.Count - 1; i >= 0; i--)
