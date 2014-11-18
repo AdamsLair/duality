@@ -26,6 +26,7 @@ namespace DualStickSpaceShooter
 		private	ContentRef<Prefab>			damageEffect			= null;
 		private	ContentRef<Prefab>[]		deathEffects			= null;
 		private	ContentRef<BulletBlueprint>	bulletType				= null;
+		private	ContentRef<Sound>			weaponSound				= null;
 		private	float						weaponDelay				= 0.0f;
 
 		
@@ -75,6 +76,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.bulletType; }
 			set { this.bulletType = value; }
+		}
+		public ContentRef<Sound> WeaponSound
+		{
+			get { return this.weaponSound; }
+			set { this.weaponSound = value; }
 		}
 		public float WeaponDelay
 		{

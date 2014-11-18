@@ -18,5 +18,8 @@
   <thrusterPower dataType="Float">2</thrusterPower>
   <turnPower dataType="Float">1</turnPower>
   <weaponDelay dataType="Float">200</weaponDelay>
+  <weaponSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+    <contentPath dataType="String">Data\Audio\FireWeapon.Sound.res</contentPath>
+  </weaponSound>
 </root>
 <!-- XmlFormatterBase Document Separator -->

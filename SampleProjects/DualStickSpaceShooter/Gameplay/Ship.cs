@@ -263,6 +263,11 @@ namespace DualStickSpaceShooter
 			body.ApplyWorldImpulse(recoilImpulse);
 
 			Scene.Current.AddObject(bullet.GameObj);
+
+			if (Player.AlivePlayers.Count() > 1)
+				DualityApp.Sound.PlaySound3D(blueprint.WeaponSound, new Vector3(worldPos));
+			else
+				DualityApp.Sound.PlaySound(blueprint.WeaponSound);
 		}
 	}
 }
