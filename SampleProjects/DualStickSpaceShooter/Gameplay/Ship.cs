@@ -204,7 +204,7 @@ namespace DualStickSpaceShooter
 				}
 				float turnSpeedRatio	= MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
 				float turnVelocity		= turnSpeedRatio * turnDirection * blueprint.MaxTurnSpeed * this.targetAngleRatio;
-				body.AngularVelocity	+= (turnVelocity - body.AngularVelocity) * MathF.Pow(blueprint.TurnPower, Time.TimeMult);
+				body.AngularVelocity	+= (turnVelocity - body.AngularVelocity) * blueprint.TurnPower * Time.TimeMult;
 			}
 
 			// Weapon cooldown
