@@ -121,7 +121,7 @@
           <item dataType="Struct" type="Duality.Components.Camera" id="1700552844">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
-            <focusDist dataType="Float">470.309265</focusDist>
+            <focusDist dataType="Float">360.476837</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3349398274">
@@ -271,9 +271,9 @@
                                 <_version dataType="Int">1</_version>
                               </childIndex>
                               <componentType dataType="ObjectRef">2425790428</componentType>
-                              <prop dataType="PropertyInfo" id="886661854" value="P:DualStickSpaceShooter.Player:WeaponSound" />
+                              <prop dataType="PropertyInfo" id="886661854" value="P:DualStickSpaceShooter.Player:FlightLoop" />
                               <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-                                <contentPath dataType="String">Data\Audio\FireWeapon1.Sound.res</contentPath>
+                                <contentPath dataType="String">Data\Audio\FlightLoop1.Sound.res</contentPath>
                               </val>
                             </item>
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -283,14 +283,14 @@
                                 <_version dataType="Int">1</_version>
                               </childIndex>
                               <componentType dataType="ObjectRef">2425790428</componentType>
-                              <prop dataType="PropertyInfo" id="696983330" value="P:DualStickSpaceShooter.Player:FlightLoop" />
+                              <prop dataType="PropertyInfo" id="696983330" value="P:DualStickSpaceShooter.Player:WeaponSound" />
                               <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-                                <contentPath dataType="String">Data\Audio\FlightLoop1.Sound.res</contentPath>
+                                <contentPath dataType="String">Data\Audio\FireWeapon1.Sound.res</contentPath>
                               </val>
                             </item>
                           </_items>
                           <_size dataType="Int">2</_size>
-                          <_version dataType="Int">147</_version>
+                          <_version dataType="Int">153</_version>
                         </changes>
                         <obj dataType="ObjectRef">1924155130</obj>
                         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -465,14 +465,14 @@
                             </item>
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1049625506">
-                                <_items dataType="Array" type="System.Int32[]" id="2870946566" />
+                                <_items dataType="ObjectRef">1197357676</_items>
                                 <_size dataType="Int">0</_size>
                                 <_version dataType="Int">1</_version>
                               </childIndex>
                               <componentType dataType="ObjectRef">2425790428</componentType>
                               <prop dataType="ObjectRef">886661854</prop>
                               <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-                                <contentPath dataType="String">Data\Audio\FireWeapon3.Sound.res</contentPath>
+                                <contentPath dataType="String">Data\Audio\FlightLoop2.Sound.res</contentPath>
                               </val>
                             </item>
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
@@ -484,12 +484,12 @@
                               <componentType dataType="ObjectRef">2425790428</componentType>
                               <prop dataType="ObjectRef">696983330</prop>
                               <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-                                <contentPath dataType="String">Data\Audio\FlightLoop2.Sound.res</contentPath>
+                                <contentPath dataType="String">Data\Audio\FireWeapon2.Sound.res</contentPath>
                               </val>
                             </item>
                           </_items>
                           <_size dataType="Int">8</_size>
-                          <_version dataType="Int">128</_version>
+                          <_version dataType="Int">134</_version>
                         </changes>
                         <obj dataType="ObjectRef">3691642060</obj>
                         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">

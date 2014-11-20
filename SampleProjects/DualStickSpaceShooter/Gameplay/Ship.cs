@@ -30,7 +30,7 @@ namespace DualStickSpaceShooter
 		private	float						weaponTimer				= 0.0f;
 		private	Player						owner					= null;
 		private	ParticleEffect				damageEffect			= null;
-		private	SoundInstance				flightLoop				= null;
+		[NonSerialized] private	SoundInstance flightLoop			= null;
 
 		public ContentRef<ShipBlueprint> Blueprint
 		{
@@ -164,7 +164,30 @@ namespace DualStickSpaceShooter
 			this.FireBullet(body, transform, new Vector2(0.0f, -15.0f), 0.0f);
 		}
 
-		public virtual void OnUpdate()
+		private void FireBullet(RigidBody body, Transform transform, Vector2 localPos, float localAngle)
+		{
+			ShipBlueprint blueprint = this.blueprint.Res;
+			if (blueprint.BulletType == null) return;
+
+			Bullet bullet = blueprint.BulletType.Res.CreateBullet();
+
+			Vector2 recoilImpulse;
+			Vector2 worldPos = transform.GetWorldPoint(localPos);
+			bullet.Fire(this.owner, body.LinearVelocity, worldPos, transform.Angle + localAngle, out recoilImpulse);
+			body.ApplyWorldImpulse(recoilImpulse);
+
+			Scene.Current.AddObject(bullet.GameObj);
+
+			SoundInstance inst = null;
+			if (Player.AlivePlayers.Count() > 1)
+				inst = DualityApp.Sound.PlaySound3D(this.owner.WeaponSound, new Vector3(worldPos));
+			else
+				inst = DualityApp.Sound.PlaySound(this.owner.WeaponSound);
+			inst.Volume = MathF.Rnd.NextFloat(0.6f, 1.0f);
+			inst.Pitch = MathF.Rnd.NextFloat(0.9f, 1.11f);
+		}
+		
+		void ICmpUpdatable.OnUpdate()
 		{
 			Transform		transform	= this.GameObj.Transform;
 			RigidBody		body		= this.GameObj.RigidBody;
@@ -214,22 +237,31 @@ namespace DualStickSpaceShooter
 			// Play the flight sound, when available
 			if (this.owner != null && this.owner.FlightLoop != null)
 			{
+				SoundListener listener = Scene.Current.FindComponent<SoundListener>();
+				Vector3 listenerPos = listener.GameObj.Transform.Pos;
+
+				// Determine the target panning manually, because we don't want a true 3D sound here (doppler, falloff, ...)
+				float targetPanning;
+				if (listenerPos.Xy == transform.Pos.Xy)
+					targetPanning = 0.0f;
+				else
+					targetPanning = -Vector2.Dot(Vector2.UnitX, (listenerPos - transform.Pos).Xy.Normalized);
+
+				// Determine the target volume
 				float targetVolume = 0.0f;
 				float actualSpeedRatio = (body.LinearVelocity.Length / blueprint.MaxSpeed);
-				targetVolume = MathF.Clamp(actualSpeedRatio * actualSpeedRatio * actualSpeedRatio, 0.0f, 1.0f);
+				targetVolume = MathF.Clamp(this.targetThrust.Length, 0.0f, 1.0f);
 
 				// Clean up disposed flight loop
-				if (this.flightLoop != null && this.flightLoop.Disposed) this.flightLoop = null;
+				if (this.flightLoop != null && this.flightLoop.Disposed)
+					this.flightLoop = null;
 
 				// Start the flight loop when requested
 				if (targetVolume > 0.0f && this.flightLoop == null)
 				{
 					if ((int)Time.MainTimer.TotalMilliseconds % 2976 <= (int)Time.MsPFMult)
 					{
-						if (Player.AlivePlayers.Count() > 1)
-							this.flightLoop = DualityApp.Sound.PlaySound3D(this.owner.FlightLoop, this.GameObj);
-						else
-							this.flightLoop = DualityApp.Sound.PlaySound(this.owner.FlightLoop);
+						this.flightLoop = DualityApp.Sound.PlaySound(this.owner.FlightLoop);
 						this.flightLoop.Looped = true;
 					}
 				}
@@ -237,12 +269,8 @@ namespace DualStickSpaceShooter
 				// Configure and dispose of existing flight loop
 				if (this.flightLoop != null)
 				{
-					this.flightLoop.Volume = targetVolume;
-					if (targetVolume <= 0.0f)
-					{
-						this.flightLoop.Dispose();
-						this.flightLoop = null;
-					}
+					this.flightLoop.Volume += (targetVolume - this.flightLoop.Volume) * 0.05f * Time.TimeMult;
+					this.flightLoop.Panning += (targetPanning - this.flightLoop.Panning) * 0.1f * Time.TimeMult;
 				}
 			}
 
@@ -285,29 +313,6 @@ namespace DualStickSpaceShooter
 				this.damageEffect = null;
 			}
 		}
-
-		private void FireBullet(RigidBody body, Transform transform, Vector2 localPos, float localAngle)
-		{
-			ShipBlueprint blueprint = this.blueprint.Res;
-			if (blueprint.BulletType == null) return;
-
-			Bullet bullet = blueprint.BulletType.Res.CreateBullet();
-
-			Vector2 recoilImpulse;
-			Vector2 worldPos = transform.GetWorldPoint(localPos);
-			bullet.Fire(this.owner, body.LinearVelocity, worldPos, transform.Angle + localAngle, out recoilImpulse);
-			body.ApplyWorldImpulse(recoilImpulse);
-
-			Scene.Current.AddObject(bullet.GameObj);
-
-			SoundInstance inst = null;
-			if (Player.AlivePlayers.Count() > 1)
-				inst = DualityApp.Sound.PlaySound3D(this.owner.WeaponSound, new Vector3(worldPos));
-			else
-				inst = DualityApp.Sound.PlaySound(this.owner.WeaponSound);
-			inst.Volume = MathF.Rnd.NextFloat(0.6f, 1.0f);
-		}
-
 		void ICmpInitializable.OnInit(Component.InitContext context) {}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
 		{

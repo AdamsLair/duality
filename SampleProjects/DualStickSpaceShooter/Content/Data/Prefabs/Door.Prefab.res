@@ -183,7 +183,7 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">36</_version>
+                                <_version dataType="Int">39</_version>
                               </shapes>
                             </otherBody>
                             <parentBody dataType="ObjectRef">3007646032</parentBody>
@@ -192,7 +192,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">20</_version>
+                        <_version dataType="Int">22</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -229,7 +229,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">21</_version>
+                        <_version dataType="Int">23</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="543562698">
@@ -299,6 +299,10 @@
                 <closeSpeed dataType="Float">-1</closeSpeed>
                 <doorPanel dataType="ObjectRef">3007646032</doorPanel>
                 <gameobj dataType="ObjectRef">216523726</gameobj>
+                <minTriggerCount dataType="Int">1</minTriggerCount>
+                <moveSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                  <contentPath dataType="String">Data\Audio\DoorLoop.Sound.res</contentPath>
+                </moveSound>
                 <openSpeed dataType="Float">1</openSpeed>
               </item>
             </_items>
@@ -480,7 +484,7 @@
                                   </item>
                                 </_items>
                                 <_size dataType="Int">1</_size>
-                                <_version dataType="Int">36</_version>
+                                <_version dataType="Int">39</_version>
                               </shapes>
                             </otherBody>
                             <parentBody dataType="ObjectRef">630862631</parentBody>
@@ -489,7 +493,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">20</_version>
+                        <_version dataType="Int">22</_version>
                       </joints>
                       <linearDamp dataType="Float">0.3</linearDamp>
                       <linearVel dataType="Struct" type="OpenTK.Vector2">
@@ -526,7 +530,7 @@
                           </item>
                         </_items>
                         <_size dataType="Int">1</_size>
-                        <_version dataType="Int">21</_version>
+                        <_version dataType="Int">23</_version>
                       </shapes>
                     </item>
                     <item dataType="Struct" type="Duality.Components.Renderers.RigidBodyRenderer" id="2461746593">
@@ -596,6 +600,10 @@
                 <closeSpeed dataType="Float">1</closeSpeed>
                 <doorPanel dataType="ObjectRef">630862631</doorPanel>
                 <gameobj dataType="ObjectRef">574043733</gameobj>
+                <minTriggerCount dataType="Int">1</minTriggerCount>
+                <moveSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                  <contentPath dataType="String">Data\Audio\DoorLoop.Sound.res</contentPath>
+                </moveSound>
                 <openSpeed dataType="Float">-1</openSpeed>
               </item>
             </_items>

@@ -146,7 +146,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">3</_size>
-                  <_version dataType="Int">49</_version>
+                  <_version dataType="Int">52</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -155,6 +155,7 @@
                   <contentPath dataType="String">Data\Blueprints\PlayerShip.ShipBlueprint.res</contentPath>
                 </blueprint>
                 <damageEffect />
+                <flightLoop />
                 <gameobj dataType="ObjectRef">3475034345</gameobj>
                 <hitpoints dataType="Float">1</hitpoints>
                 <isDead dataType="Bool">false</isDead>
@@ -167,6 +168,9 @@
                     <R dataType="Byte">89</R>
                   </color>
                   <controlObj dataType="ObjectRef">402578415</controlObj>
+                  <flightLoop dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                    <contentPath />
+                  </flightLoop>
                   <gameobj dataType="ObjectRef">1121329689</gameobj>
                   <goalEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
                     <contentPath dataType="String">Data\Prefabs\GoalEffect.Prefab.res</contentPath>

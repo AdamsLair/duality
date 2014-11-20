@@ -9,12 +9,14 @@ using Duality.Components.Physics;
 namespace DualStickSpaceShooter
 {
 	[Serializable]
-	public class DoorControl : Component, ICmpMessageListener, ICmpUpdatable
+	public class DoorControl : Component, ICmpMessageListener, ICmpUpdatable, ICmpInitializable
 	{
-		private RigidBody	doorPanel		= null;
-		private	float		openSpeed		= 0.0f;
-		private	float		closeSpeed		= 0.0f;
-		private	int			minTriggerCount	= 1;
+		private RigidBody			doorPanel		= null;
+		private	float				openSpeed		= 0.0f;
+		private	float				closeSpeed		= 0.0f;
+		private	int					minTriggerCount	= 1;
+		private	ContentRef<Sound>	moveSound		= null;
+		[NonSerialized] private SoundInstance moveSoundInst	= null;
 		[NonSerialized] private	int triggerCount = 0;
 
 		public float OpenSpeed
@@ -36,6 +38,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.minTriggerCount; }
 			set { this.minTriggerCount = value; }
+		}
+		public ContentRef<Sound> MoveSound
+		{
+			get { return this.moveSound; }
+			set { this.moveSound = value; }
 		}
 		private PrismaticJointInfo DoorJoint
 		{
@@ -93,17 +100,48 @@ namespace DualStickSpaceShooter
 
 			if (joint.MotorEnabled)
 			{
+				if (this.moveSoundInst != null && this.moveSoundInst.Disposed) this.moveSoundInst = null;
+
 				bool isPanelInTargetArea = false;
 				if (joint.MotorSpeed > 0.0f)
 					isPanelInTargetArea = -joint.JointTranslation >= joint.UpperLimit;
 				else
 					isPanelInTargetArea = -joint.JointTranslation <= joint.LowerLimit;
 
-				if (isPanelInTargetArea && joint.JointSpeed <= 0.1f)
+				if (joint.JointSpeed <= 0.1f)
 				{
-					joint.MotorEnabled = false;
-					joint.MotorSpeed = 0.0f;
-					this.doorPanel.BodyType = BodyType.Static;
+					if (isPanelInTargetArea)
+					{
+						joint.MotorEnabled = false;
+						joint.MotorSpeed = 0.0f;
+						this.doorPanel.BodyType = BodyType.Static;
+						if (this.moveSoundInst != null)
+						{
+							this.moveSoundInst.FadeOut(0.5f);
+							this.moveSoundInst = null;
+						}
+					}
+				}
+				else
+				{
+					if (this.moveSoundInst == null)
+					{
+						this.moveSoundInst = DualityApp.Sound.PlaySound3D(this.moveSound, this.GameObj);
+						this.moveSoundInst.FadeIn(0.5f);
+						this.moveSoundInst.Looped = true;
+					}
+				}
+			}
+		}
+		void ICmpInitializable.OnInit(Component.InitContext context) {}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		{
+			if (context == ShutdownContext.Deactivate)
+			{
+				if (this.moveSoundInst != null)
+				{
+					this.moveSoundInst.Dispose();
+					this.moveSoundInst = null;
 				}
 			}
 		}

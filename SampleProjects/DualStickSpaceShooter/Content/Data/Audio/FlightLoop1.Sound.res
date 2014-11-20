@@ -16,6 +16,6 @@
   <pitchFactor dataType="Float">1</pitchFactor>
   <sourcePath />
   <type dataType="Enum" type="Duality.SoundType" name="EffectWorld" value="0" />
-  <volFactor dataType="Float">1</volFactor>
+  <volFactor dataType="Float">0.5</volFactor>
 </root>
 <!-- XmlFormatterBase Document Separator -->

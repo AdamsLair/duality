@@ -17,6 +17,6 @@
   <sourcePath />
   <thrusterPower dataType="Float">2</thrusterPower>
   <turnPower dataType="Float">1</turnPower>
-  <weaponDelay dataType="Float">300</weaponDelay>
+  <weaponDelay dataType="Float">248</weaponDelay>
 </root>
 <!-- XmlFormatterBase Document Separator -->
