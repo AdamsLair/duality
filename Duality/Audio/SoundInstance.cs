@@ -80,6 +80,7 @@ namespace Duality
 		private	Vector3			vel				= Vector3.Zero;
 		private	float			vol				= 1.0f;
 		private	float			pitch			= 1.0f;
+		private	float			panning			= 0.0f;
 		private	bool			is3D			= false;
 		private	bool			looped			= false;
 		private	bool			paused			= false;
@@ -186,6 +187,15 @@ namespace Duality
 		{
 			get { return this.pitch; }
 			set { this.pitch = value; this.dirtyState |= DirtyFlag.Pitch; }
+		}
+		/// <summary>
+		/// [GET / SET] The sounds local stereo panning, ranging from -1.0f (left) to 1.0f (right).
+		/// Only available for 2D sounds.
+		/// </summary>
+		public float Panning
+		{
+			get { return this.panning; }
+			set { this.panning = value; this.dirtyState |= DirtyFlag.Pos; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether the sound is played in a loop.
@@ -622,20 +632,6 @@ namespace Duality
 					this.dirtyState |= DirtyFlag.Paused | DirtyFlag.Vol;
 				}
 
-				// SlowMotion
-				//if (this.type == SoundType.EffectWorld)
-				//{
-				//    pitchTemp *= (float)Math.Max(0.5d, SteApp.Current.SlowMotion);
-				//    volTemp *= 2.0f * (float)Math.Min(0.5d, SteApp.Current.SlowMotion);
-						
-				//    // Hack: Pitch always dirty
-				//    this.dirtyState |= DirtyFlag.Pitch;
-				//}
-				//else if (this.type == SoundType.Speech)
-				//{
-				//    volTemp *= (float)Math.Sqrt(SteApp.Current.SlowMotion);
-				//}
-
 				// Hack: Volume always dirty - just to be sure
 				this.dirtyState |= DirtyFlag.Vol;
 
@@ -659,7 +655,7 @@ namespace Duality
 						if ((this.dirtyState & DirtyFlag.Relative) != DirtyFlag.None)
 							AL.Source(this.alSource, ALSourceb.SourceRelative, true);
 						if ((this.dirtyState & DirtyFlag.Pos) != DirtyFlag.None)
-							AL.Source(this.alSource, ALSource3f.Position, 0.0f, 0.0f, 0.0f);
+							AL.Source(this.alSource, ALSource3f.Position, this.panning, 0.0f, 0.0f);
 						if ((this.dirtyState & DirtyFlag.Vel) != DirtyFlag.None)
 							AL.Source(this.alSource, ALSource3f.Velocity, 0.0f, 0.0f, 0.0f);
 					}
