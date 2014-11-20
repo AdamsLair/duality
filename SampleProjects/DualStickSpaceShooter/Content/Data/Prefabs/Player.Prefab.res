@@ -146,7 +146,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">3</_size>
-                  <_version dataType="Int">46</_version>
+                  <_version dataType="Int">49</_version>
                 </shapes>
               </item>
               <item dataType="Struct" type="DualStickSpaceShooter.Ship" id="402578415">
@@ -175,6 +175,9 @@
                   <hasReachedGoal dataType="Bool">false</hasReachedGoal>
                   <id dataType="Enum" type="DualStickSpaceShooter.PlayerId" name="PlayerOne" value="1" />
                   <respawnTime dataType="Float">0</respawnTime>
+                  <weaponSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                    <contentPath dataType="String">Data\Audio\FireWeapon1.Sound.res</contentPath>
+                  </weaponSound>
                 </owner>
                 <targetAngle dataType="Float">0</targetAngle>
                 <targetAngleRatio dataType="Float">0</targetAngleRatio>

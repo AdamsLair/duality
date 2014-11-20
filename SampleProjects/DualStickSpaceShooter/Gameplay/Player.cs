@@ -41,6 +41,8 @@ namespace DualStickSpaceShooter
 		private	bool				hasReachedGoal		= false;
 		private	float				goalReachTime		= 0.0f;
 		private	ContentRef<Prefab>	goalEffect			= null;
+		private	ContentRef<Sound>	weaponSound			= null;
+		private	ContentRef<Sound>	flightLoop			= null;
 
 		[NonSerialized]
 		private	InputMapping	input				= null;
@@ -98,6 +100,16 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.goalEffect; }
 			set { this.goalEffect = value; }
+		}
+		public ContentRef<Sound> WeaponSound
+		{
+			get { return this.weaponSound; }
+			set { this.weaponSound = value; }
+		}
+		public ContentRef<Sound> FlightLoop
+		{
+			get { return this.flightLoop; }
+			set { this.flightLoop = value; }
 		}
 
 

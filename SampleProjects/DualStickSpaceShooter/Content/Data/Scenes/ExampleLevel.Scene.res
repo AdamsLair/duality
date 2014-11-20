@@ -121,7 +121,7 @@
           <item dataType="Struct" type="Duality.Components.Camera" id="1700552844">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
-            <focusDist dataType="Float">491.635956</focusDist>
+            <focusDist dataType="Float">470.309265</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3349398274">
@@ -263,9 +263,34 @@
                       <parent />
                       <prefabLink dataType="Struct" type="Duality.Resources.PrefabLink" id="1723137498">
                         <changes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.PrefabLink+VarMod]]" id="2338173868">
-                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2165640420" length="4" />
-                          <_size dataType="Int">0</_size>
-                          <_version dataType="Int">145</_version>
+                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2165640420" length="4">
+                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="771872968">
+                                <_items dataType="Array" type="System.Int32[]" id="1197357676" />
+                                <_size dataType="Int">0</_size>
+                                <_version dataType="Int">1</_version>
+                              </childIndex>
+                              <componentType dataType="ObjectRef">2425790428</componentType>
+                              <prop dataType="PropertyInfo" id="886661854" value="P:DualStickSpaceShooter.Player:WeaponSound" />
+                              <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\FireWeapon1.Sound.res</contentPath>
+                              </val>
+                            </item>
+                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="3272666420">
+                                <_items dataType="Array" type="System.Int32[]" id="1313105224" />
+                                <_size dataType="Int">0</_size>
+                                <_version dataType="Int">1</_version>
+                              </childIndex>
+                              <componentType dataType="ObjectRef">2425790428</componentType>
+                              <prop dataType="PropertyInfo" id="696983330" value="P:DualStickSpaceShooter.Player:FlightLoop" />
+                              <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\FlightLoop1.Sound.res</contentPath>
+                              </val>
+                            </item>
+                          </_items>
+                          <_size dataType="Int">2</_size>
+                          <_version dataType="Int">147</_version>
                         </changes>
                         <obj dataType="ObjectRef">1924155130</obj>
                         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -368,7 +393,7 @@
                       <parent />
                       <prefabLink dataType="Struct" type="Duality.Resources.PrefabLink" id="4277560482">
                         <changes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Resources.PrefabLink+VarMod]]" id="2460083282">
-                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2514385232" length="8">
+                          <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="2514385232">
                             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
                               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="871579568">
                                 <_items dataType="Array" type="System.Int32[]" id="2697357756" />
@@ -438,9 +463,33 @@
                                 <Z dataType="Float">0</Z>
                               </val>
                             </item>
+                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1049625506">
+                                <_items dataType="Array" type="System.Int32[]" id="2870946566" />
+                                <_size dataType="Int">0</_size>
+                                <_version dataType="Int">1</_version>
+                              </childIndex>
+                              <componentType dataType="ObjectRef">2425790428</componentType>
+                              <prop dataType="ObjectRef">886661854</prop>
+                              <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\FireWeapon3.Sound.res</contentPath>
+                              </val>
+                            </item>
+                            <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
+                              <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1599064344">
+                                <_items dataType="ObjectRef">1313105224</_items>
+                                <_size dataType="Int">0</_size>
+                                <_version dataType="Int">1</_version>
+                              </childIndex>
+                              <componentType dataType="ObjectRef">2425790428</componentType>
+                              <prop dataType="ObjectRef">696983330</prop>
+                              <val dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\FlightLoop2.Sound.res</contentPath>
+                              </val>
+                            </item>
                           </_items>
-                          <_size dataType="Int">6</_size>
-                          <_version dataType="Int">124</_version>
+                          <_size dataType="Int">8</_size>
+                          <_version dataType="Int">128</_version>
                         </changes>
                         <obj dataType="ObjectRef">3691642060</obj>
                         <prefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
@@ -48879,25 +48928,25 @@
     <item dataType="ObjectRef">3069815738</item>
     <item dataType="ObjectRef">3136673715</item>
     <item dataType="ObjectRef">4076432192</item>
+    <item dataType="ObjectRef">2440384689</item>
     <item dataType="ObjectRef">904119494</item>
     <item dataType="ObjectRef">326400557</item>
     <item dataType="ObjectRef">721231523</item>
     <item dataType="ObjectRef">1507477189</item>
+    <item dataType="ObjectRef">3013311565</item>
     <item dataType="ObjectRef">709000710</item>
     <item dataType="ObjectRef">1871409288</item>
     <item dataType="ObjectRef">3413807356</item>
     <item dataType="ObjectRef">2249292741</item>
+    <item dataType="ObjectRef">3790030121</item>
     <item dataType="ObjectRef">732700506</item>
     <item dataType="ObjectRef">3225641180</item>
     <item dataType="ObjectRef">3207323240</item>
     <item dataType="ObjectRef">4028524720</item>
+    <item dataType="ObjectRef">1103069105</item>
     <item dataType="ObjectRef">4040947436</item>
     <item dataType="ObjectRef">3007684526</item>
     <item dataType="ObjectRef">4282840459</item>
-    <item dataType="ObjectRef">2440384689</item>
-    <item dataType="ObjectRef">3013311565</item>
-    <item dataType="ObjectRef">3790030121</item>
-    <item dataType="ObjectRef">1103069105</item>
     <item dataType="ObjectRef">2456157597</item>
     <item dataType="ObjectRef">1696349013</item>
     <item dataType="ObjectRef">2491661213</item>
@@ -48915,6 +48964,23 @@
     <item dataType="ObjectRef">825093077</item>
     <item dataType="ObjectRef">454883916</item>
     <item dataType="ObjectRef">2608259004</item>
+    <item dataType="ObjectRef">2155468586</item>
+    <item dataType="ObjectRef">29807177</item>
+    <item dataType="ObjectRef">2292925198</item>
+    <item dataType="ObjectRef">1562566697</item>
+    <item dataType="ObjectRef">631543787</item>
+    <item dataType="ObjectRef">498872785</item>
+    <item dataType="ObjectRef">3877830794</item>
+    <item dataType="ObjectRef">6286458</item>
+    <item dataType="ObjectRef">3762790537</item>
+    <item dataType="ObjectRef">2623495833</item>
+    <item dataType="ObjectRef">1322107825</item>
+    <item dataType="ObjectRef">264893755</item>
+    <item dataType="ObjectRef">3255030676</item>
+    <item dataType="ObjectRef">3531103031</item>
+    <item dataType="ObjectRef">419047056</item>
+    <item dataType="ObjectRef">3467532851</item>
+    <item dataType="ObjectRef">2459600346</item>
     <item dataType="ObjectRef">1705981593</item>
     <item dataType="ObjectRef">2855081974</item>
     <item dataType="ObjectRef">2692816630</item>
@@ -48934,6 +49000,9 @@
     <item dataType="ObjectRef">1240509649</item>
     <item dataType="ObjectRef">220938653</item>
     <item dataType="ObjectRef">2661641179</item>
+    <item dataType="ObjectRef">3113104267</item>
+    <item dataType="ObjectRef">30310471</item>
+    <item dataType="ObjectRef">788804512</item>
     <item dataType="ObjectRef">1111347750</item>
     <item dataType="ObjectRef">1285082419</item>
     <item dataType="ObjectRef">3945357275</item>
@@ -48945,6 +49014,20 @@
     <item dataType="ObjectRef">3057518001</item>
     <item dataType="ObjectRef">1670524411</item>
     <item dataType="ObjectRef">867352524</item>
+    <item dataType="ObjectRef">2144568838</item>
+    <item dataType="ObjectRef">1499987579</item>
+    <item dataType="ObjectRef">510866685</item>
+    <item dataType="ObjectRef">2487287601</item>
+    <item dataType="ObjectRef">748276919</item>
+    <item dataType="ObjectRef">2999370956</item>
+    <item dataType="ObjectRef">599421746</item>
+    <item dataType="ObjectRef">1692960072</item>
+    <item dataType="ObjectRef">3504600525</item>
+    <item dataType="ObjectRef">2841991785</item>
+    <item dataType="ObjectRef">2418798991</item>
+    <item dataType="ObjectRef">1656928168</item>
+    <item dataType="ObjectRef">4019883300</item>
+    <item dataType="ObjectRef">2967608873</item>
     <item dataType="ObjectRef">3375225520</item>
     <item dataType="ObjectRef">3097611851</item>
     <item dataType="ObjectRef">2763751515</item>
@@ -48985,6 +49068,18 @@
     <item dataType="ObjectRef">2730396690</item>
     <item dataType="ObjectRef">1592123358</item>
     <item dataType="ObjectRef">1781003953</item>
+    <item dataType="ObjectRef">3624613503</item>
+    <item dataType="ObjectRef">3067048661</item>
+    <item dataType="ObjectRef">1465845760</item>
+    <item dataType="ObjectRef">1892822123</item>
+    <item dataType="ObjectRef">2970506491</item>
+    <item dataType="ObjectRef">3099312408</item>
+    <item dataType="ObjectRef">2640641694</item>
+    <item dataType="ObjectRef">404368507</item>
+    <item dataType="ObjectRef">1331233496</item>
+    <item dataType="ObjectRef">4085902242</item>
+    <item dataType="ObjectRef">4158759401</item>
+    <item dataType="ObjectRef">1429273318</item>
     <item dataType="ObjectRef">666490705</item>
     <item dataType="ObjectRef">4128882063</item>
     <item dataType="ObjectRef">1414346184</item>
@@ -49065,67 +49160,6 @@
     <item dataType="ObjectRef">895337109</item>
     <item dataType="ObjectRef">3554941309</item>
     <item dataType="ObjectRef">1388746637</item>
-    <item dataType="ObjectRef">3137339496</item>
-    <item dataType="ObjectRef">125576582</item>
-    <item dataType="ObjectRef">4291611045</item>
-    <item dataType="ObjectRef">3065200080</item>
-    <item dataType="ObjectRef">845034007</item>
-    <item dataType="ObjectRef">156939300</item>
-    <item dataType="ObjectRef">2489016386</item>
-    <item dataType="ObjectRef">3360714865</item>
-    <item dataType="ObjectRef">146147048</item>
-    <item dataType="ObjectRef">4042274532</item>
-    <item dataType="ObjectRef">2266086373</item>
-    <item dataType="ObjectRef">460692788</item>
-    <item dataType="ObjectRef">751666700</item>
-    <item dataType="ObjectRef">2151104869</item>
-    <item dataType="ObjectRef">3672954905</item>
-    <item dataType="ObjectRef">2155468586</item>
-    <item dataType="ObjectRef">29807177</item>
-    <item dataType="ObjectRef">2292925198</item>
-    <item dataType="ObjectRef">1562566697</item>
-    <item dataType="ObjectRef">631543787</item>
-    <item dataType="ObjectRef">498872785</item>
-    <item dataType="ObjectRef">3877830794</item>
-    <item dataType="ObjectRef">6286458</item>
-    <item dataType="ObjectRef">3762790537</item>
-    <item dataType="ObjectRef">2623495833</item>
-    <item dataType="ObjectRef">1322107825</item>
-    <item dataType="ObjectRef">264893755</item>
-    <item dataType="ObjectRef">3255030676</item>
-    <item dataType="ObjectRef">3531103031</item>
-    <item dataType="ObjectRef">419047056</item>
-    <item dataType="ObjectRef">3467532851</item>
-    <item dataType="ObjectRef">2459600346</item>
-    <item dataType="ObjectRef">2144568838</item>
-    <item dataType="ObjectRef">1499987579</item>
-    <item dataType="ObjectRef">510866685</item>
-    <item dataType="ObjectRef">2487287601</item>
-    <item dataType="ObjectRef">30310471</item>
-    <item dataType="ObjectRef">3113104267</item>
-    <item dataType="ObjectRef">788804512</item>
-    <item dataType="ObjectRef">748276919</item>
-    <item dataType="ObjectRef">2999370956</item>
-    <item dataType="ObjectRef">599421746</item>
-    <item dataType="ObjectRef">1692960072</item>
-    <item dataType="ObjectRef">3504600525</item>
-    <item dataType="ObjectRef">2841991785</item>
-    <item dataType="ObjectRef">2418798991</item>
-    <item dataType="ObjectRef">1656928168</item>
-    <item dataType="ObjectRef">4019883300</item>
-    <item dataType="ObjectRef">2967608873</item>
-    <item dataType="ObjectRef">3624613503</item>
-    <item dataType="ObjectRef">3067048661</item>
-    <item dataType="ObjectRef">1465845760</item>
-    <item dataType="ObjectRef">1892822123</item>
-    <item dataType="ObjectRef">2970506491</item>
-    <item dataType="ObjectRef">3099312408</item>
-    <item dataType="ObjectRef">2640641694</item>
-    <item dataType="ObjectRef">404368507</item>
-    <item dataType="ObjectRef">1331233496</item>
-    <item dataType="ObjectRef">4085902242</item>
-    <item dataType="ObjectRef">4158759401</item>
-    <item dataType="ObjectRef">1429273318</item>
     <item dataType="ObjectRef">794197567</item>
     <item dataType="ObjectRef">3894176302</item>
     <item dataType="ObjectRef">1971770095</item>
@@ -49152,6 +49186,21 @@
     <item dataType="ObjectRef">2956322364</item>
     <item dataType="ObjectRef">2319860484</item>
     <item dataType="ObjectRef">427564366</item>
+    <item dataType="ObjectRef">3137339496</item>
+    <item dataType="ObjectRef">125576582</item>
+    <item dataType="ObjectRef">4291611045</item>
+    <item dataType="ObjectRef">3065200080</item>
+    <item dataType="ObjectRef">845034007</item>
+    <item dataType="ObjectRef">156939300</item>
+    <item dataType="ObjectRef">2489016386</item>
+    <item dataType="ObjectRef">3360714865</item>
+    <item dataType="ObjectRef">146147048</item>
+    <item dataType="ObjectRef">4042274532</item>
+    <item dataType="ObjectRef">2266086373</item>
+    <item dataType="ObjectRef">460692788</item>
+    <item dataType="ObjectRef">751666700</item>
+    <item dataType="ObjectRef">2151104869</item>
+    <item dataType="ObjectRef">3672954905</item>
     <item dataType="ObjectRef">1450769588</item>
     <item dataType="ObjectRef">2242729622</item>
     <item dataType="ObjectRef">3357155017</item>

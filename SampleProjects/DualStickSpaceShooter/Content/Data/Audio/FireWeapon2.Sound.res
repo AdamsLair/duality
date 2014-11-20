@@ -2,7 +2,7 @@
   <audioData dataType="Struct" type="System.Collections.Generic.List`1[[Duality.ContentRef`1[[Duality.Resources.AudioData]]]]" id="427169525">
     <_items dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.AudioData]][]" id="1100841590">
       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.AudioData]]">
-        <contentPath dataType="String">Data\Audio\Data\FireWeapon.AudioData.res</contentPath>
+        <contentPath dataType="String">Data\Audio\Data\FireWeapon2.AudioData.res</contentPath>
       </item>
     </_items>
     <_size dataType="Int">1</_size>

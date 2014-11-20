@@ -19,7 +19,7 @@ namespace DualStickSpaceShooter
 	[RequiredComponent(typeof(Transform))]
 	[RequiredComponent(typeof(SpriteRenderer))]
 	[RequiredComponent(typeof(RigidBody))]
-	public class Ship : Component, ICmpUpdatable
+	public class Ship : Component, ICmpUpdatable, ICmpInitializable
 	{
 		private	ContentRef<ShipBlueprint>	blueprint				= null;
 		private	Vector2						targetThrust			= Vector2.Zero;
@@ -30,6 +30,7 @@ namespace DualStickSpaceShooter
 		private	float						weaponTimer				= 0.0f;
 		private	Player						owner					= null;
 		private	ParticleEffect				damageEffect			= null;
+		private	SoundInstance				flightLoop				= null;
 
 		public ContentRef<ShipBlueprint> Blueprint
 		{
@@ -210,6 +211,41 @@ namespace DualStickSpaceShooter
 			// Weapon cooldown
 			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
 
+			// Play the flight sound, when available
+			if (this.owner != null && this.owner.FlightLoop != null)
+			{
+				float targetVolume = 0.0f;
+				float actualSpeedRatio = (body.LinearVelocity.Length / blueprint.MaxSpeed);
+				targetVolume = MathF.Clamp(actualSpeedRatio * actualSpeedRatio * actualSpeedRatio, 0.0f, 1.0f);
+
+				// Clean up disposed flight loop
+				if (this.flightLoop != null && this.flightLoop.Disposed) this.flightLoop = null;
+
+				// Start the flight loop when requested
+				if (targetVolume > 0.0f && this.flightLoop == null)
+				{
+					if ((int)Time.MainTimer.TotalMilliseconds % 2976 <= (int)Time.MsPFMult)
+					{
+						if (Player.AlivePlayers.Count() > 1)
+							this.flightLoop = DualityApp.Sound.PlaySound3D(this.owner.FlightLoop, this.GameObj);
+						else
+							this.flightLoop = DualityApp.Sound.PlaySound(this.owner.FlightLoop);
+						this.flightLoop.Looped = true;
+					}
+				}
+
+				// Configure and dispose of existing flight loop
+				if (this.flightLoop != null)
+				{
+					this.flightLoop.Volume = targetVolume;
+					if (targetVolume <= 0.0f)
+					{
+						this.flightLoop.Dispose();
+						this.flightLoop = null;
+					}
+				}
+			}
+
 			// Display the damage effect when damaged
 			if (this.hitpoints < 0.85f && blueprint.DamageEffect != null)
 			{
@@ -264,10 +300,25 @@ namespace DualStickSpaceShooter
 
 			Scene.Current.AddObject(bullet.GameObj);
 
+			SoundInstance inst = null;
 			if (Player.AlivePlayers.Count() > 1)
-				DualityApp.Sound.PlaySound3D(blueprint.WeaponSound, new Vector3(worldPos));
+				inst = DualityApp.Sound.PlaySound3D(this.owner.WeaponSound, new Vector3(worldPos));
 			else
-				DualityApp.Sound.PlaySound(blueprint.WeaponSound);
+				inst = DualityApp.Sound.PlaySound(this.owner.WeaponSound);
+			inst.Volume = MathF.Rnd.NextFloat(0.6f, 1.0f);
+		}
+
+		void ICmpInitializable.OnInit(Component.InitContext context) {}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		{
+			if (context == ShutdownContext.Deactivate)
+			{
+				if (this.flightLoop != null)
+				{
+					this.flightLoop.Dispose();
+					this.flightLoop = null;
+				}
+			}
 		}
 	}
 }
