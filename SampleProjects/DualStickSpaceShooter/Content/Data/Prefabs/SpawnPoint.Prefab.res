@@ -209,15 +209,16 @@
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">16</_version>
+            <_version dataType="Int">18</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="DualStickSpaceShooter.Trigger" id="1223525211">
           <active dataType="Bool">true</active>
           <collisionCounter dataType="Int">0</collisionCounter>
-          <fireOnce dataType="Bool">true</fireOnce>
+          <fireOnce dataType="Bool">false</fireOnce>
           <gameobj dataType="ObjectRef">2717718507</gameobj>
           <targets />
+          <triggerEffect />
         </item>
       </_items>
       <_size dataType="Int">6</_size>
