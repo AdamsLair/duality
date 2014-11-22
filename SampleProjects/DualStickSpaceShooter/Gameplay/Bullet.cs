@@ -129,15 +129,15 @@ namespace DualStickSpaceShooter
 			}
 
 			// Play hit sounds
-			if (otherShip != null && blueprint.HitObjectSound != null)
-			{
-				SoundInstance inst = DualityApp.Sound.PlaySound3D(blueprint.HitObjectSound, hitPos);
-				inst.Pitch = MathF.Rnd.NextFloat(0.95f, 1.05f);
-			}
 			if (blueprint.HitSound != null)
 			{
 				SoundInstance inst = DualityApp.Sound.PlaySound3D(blueprint.HitSound, hitPos);
 				inst.Pitch = MathF.Rnd.NextFloat(0.95f, 1.05f);
+			}
+			HitSoundController otherHitSound = otherBody.GameObj.GetComponent<HitSoundController>();
+			if (otherHitSound != null)
+			{
+				otherHitSound.NotifyHit(MathF.Rnd.NextFloat(0.75f, 1.0f));
 			}
 
 			// Delete the bullet

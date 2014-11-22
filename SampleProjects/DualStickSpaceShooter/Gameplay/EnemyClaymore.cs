@@ -49,21 +49,17 @@ namespace DualStickSpaceShooter
 		private const float SpikeAttackMoveDist = 100.0f;
 		private const float SleepTime = 3000.0f;
 
-		private	MindState				state			= MindState.Asleep;
-		private	BehaviorFlags			behavior		= BehaviorFlags.Chase;
-		private	float					idleTimer		= 0.0f;
-		private	float					blinkTimer		= 0.0f;
-		private	float					eyeOpenValue	= 0.0f;
-		private	float					eyeOpenTarget	= 0.0f;
-		private	float					eyeSpeed		= 0.0f;
-		private	bool					eyeBlinking		= false;
-		private	bool					spikesActive	= false;
-		private	SpikeState[]			spikeState		= new SpikeState[4];
-		private	ContentRef<Prefab>[]	exploEffects	= null;
-		private	float					exploDamage		= 200.0f;
-		private	float					exploRadius		= 100.0f;
-		private	float					exploForce		= 50.0f;
-		private	float					exploMaxVel		= 5.0f;
+		private	MindState					state			= MindState.Asleep;
+		private	BehaviorFlags				behavior		= BehaviorFlags.Chase;
+		private	float						idleTimer		= 0.0f;
+		private	float						blinkTimer		= 0.0f;
+		private	float						eyeOpenValue	= 0.0f;
+		private	float						eyeOpenTarget	= 0.0f;
+		private	float						eyeSpeed		= 0.0f;
+		private	bool						eyeBlinking		= false;
+		private	bool						spikesActive	= false;
+		private	SpikeState[]				spikeState		= new SpikeState[4];
+		private	ContentRef<EnemyBlueprint>	blueprint		= null;
 
 		[NonSerialized] private AnimSpriteRenderer	eye		= null;
 		[NonSerialized] private SpriteRenderer[]	spikes	= null;
@@ -73,34 +69,10 @@ namespace DualStickSpaceShooter
 			get { return this.behavior; }
 			set { this.behavior = value; }
 		}
-		public ContentRef<Prefab>[] ExplosionEffects
+		public ContentRef<EnemyBlueprint> Blueprint
 		{
-			get { return this.exploEffects; }
-			set { this.exploEffects = value; }
-		}
-		[EditorHintDecimalPlaces(0)]
-		public float ExplosionDamage
-		{
-			get { return this.exploDamage; }
-			set { this.exploDamage = value; }
-		}
-		[EditorHintDecimalPlaces(0)]
-		public float ExplosionRadius
-		{
-			get { return this.exploRadius; }
-			set { this.exploRadius = value; }
-		}
-		[EditorHintDecimalPlaces(1)]
-		public float ExplosionForce
-		{
-			get { return this.exploForce; }
-			set { this.exploForce = value; }
-		}
-		[EditorHintDecimalPlaces(1)]
-		public float ExplosionMaxVelocity
-		{
-			get { return this.exploMaxVel; }
-			set { this.exploMaxVel = value; }
+			get { return this.blueprint; }
+			set { this.blueprint = value; }
 		}
 
 		private void Sleep()
@@ -173,36 +145,44 @@ namespace DualStickSpaceShooter
 		private void FireExplosives()
 		{
 			// Set up working data
+			EnemyBlueprint blueprint = this.blueprint.Res;
 			Ship ship = this.GameObj.GetComponent<Ship>();
 			Vector2 pos = this.GameObj.Transform.Pos.Xy;
 
 			// Push other objects away
 			GameplayHelper.Shockwave(
 				pos, 
-				this.exploRadius, 
-				this.exploForce,
-				this.exploMaxVel,
+				blueprint.ExplosionRadius, 
+				blueprint.ExplosionForce,
+				blueprint.ExplosionMaxVelocity,
 				obj => obj.GameObj != this.GameObj);
 
 			// Damage other objects
 			GameplayHelper.ExplosionDamage(
 				pos, 
-				this.exploRadius,
-				this.exploDamage,
+				blueprint.ExplosionRadius,
+				blueprint.ExplosionDamage,
 				body => body.GameObj.GetComponent<Ship>() != null && body.GameObj != ship.GameObj);
 
 			// Die instantly
 			ship.Die();
 
 			// Spawn explosion effects
-			if (this.exploEffects != null)
+			if (blueprint.ExplosionEffects != null)
 			{
 				Transform transform = this.GameObj.Transform;
-				for (int i = 0; i < this.exploEffects.Length; i++)
+				for (int i = 0; i < blueprint.ExplosionEffects.Length; i++)
 				{
-					GameObject effectObj = this.exploEffects[i].Res.Instantiate(transform.Pos);
+					GameObject effectObj = blueprint.ExplosionEffects[i].Res.Instantiate(transform.Pos);
 					Scene.Current.AddObject(effectObj);
 				}
+			}
+
+			// Play explosion sound
+			if (blueprint.ExplosionSound != null)
+			{
+				SoundInstance inst = DualityApp.Sound.PlaySound3D(blueprint.ExplosionSound, new Vector3(pos));
+				inst.Pitch = MathF.Rnd.NextFloat(0.8f, 1.25f);
 			}
 		}
 

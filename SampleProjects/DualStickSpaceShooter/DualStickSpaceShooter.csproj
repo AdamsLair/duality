@@ -56,11 +56,13 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blueprints\EnemyBlueprint.cs" />
     <Compile Include="Blueprints\ShipBlueprint.cs" />
     <Compile Include="Gameplay\EnemyClaymore.cs" />
     <Compile Include="Gameplay\HeadUpDisplay.cs" />
     <Compile Include="Gameplay\GameOverScreen.cs" />
     <Compile Include="Gameplay\DoorControl.cs" />
+    <Compile Include="Gameplay\HitSoundController.cs" />
     <Compile Include="Gameplay\SpawnPoint.cs" />
     <Compile Include="Gameplay\LevelGoal.cs" />
     <Compile Include="Gameplay\Trigger.cs" />

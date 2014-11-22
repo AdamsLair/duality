@@ -7,7 +7,7 @@
     <contentPath dataType="String">Data\Audio\HitObject.Sound.res</contentPath>
   </hitObjectSound>
   <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-    <contentPath dataType="String">Data\Audio\HitBasic.Sound.res</contentPath>
+    <contentPath dataType="String">Data\Audio\BulletHit.Sound.res</contentPath>
   </hitSound>
   <hitWorldEffect dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
     <contentPath dataType="String">Data\Prefabs\BulletHitWorld.Prefab.res</contentPath>

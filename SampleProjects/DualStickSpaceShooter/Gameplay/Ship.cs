@@ -234,7 +234,7 @@ namespace DualStickSpaceShooter
 			// Weapon cooldown
 			this.weaponTimer = MathF.Max(0.0f, this.weaponTimer - Time.MsPFMult * Time.TimeMult);
 
-			// Play the flight sound, when available
+			// Play the owners special flight sound, when available
 			if (this.owner != null && this.owner.FlightLoop != null)
 			{
 				SoundListener listener = Scene.Current.FindComponent<SoundListener>();
@@ -270,7 +270,7 @@ namespace DualStickSpaceShooter
 				if (this.flightLoop != null)
 				{
 					this.flightLoop.Volume += (targetVolume - this.flightLoop.Volume) * 0.05f * Time.TimeMult;
-					this.flightLoop.Panning += (targetPanning - this.flightLoop.Panning) * 0.1f * Time.TimeMult;
+					this.flightLoop.Panning += (targetPanning - this.flightLoop.Panning) * 0.05f * Time.TimeMult;
 				}
 			}
 

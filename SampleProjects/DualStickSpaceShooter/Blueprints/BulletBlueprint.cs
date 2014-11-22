@@ -25,7 +25,6 @@ namespace DualStickSpaceShooter
 		private ContentRef<Prefab>		hitEffect		= null;
 		private ContentRef<Prefab>		hitWorldEffect	= null;
 		private ContentRef<Sound>		hitSound		= null;
-		private ContentRef<Sound>		hitObjectSound	= null;
 
 		public float Lifetime
 		{
@@ -66,11 +65,6 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.hitSound; }
 			set { this.hitSound = value; }
-		}
-		public ContentRef<Sound> HitObjectSound
-		{
-			get { return this.hitObjectSound; }
-			set { this.hitObjectSound = value; }
 		}
 
 		public Bullet CreateBullet()
