@@ -33,13 +33,13 @@
                     <ignoreParent dataType="Bool">false</ignoreParent>
                     <parentTransform />
                     <pos dataType="Struct" type="OpenTK.Vector3">
-                      <X dataType="Float">0</X>
-                      <Y dataType="Float">0</Y>
+                      <X dataType="Float">3801.09741</X>
+                      <Y dataType="Float">-1444.50439</Y>
                       <Z dataType="Float">-500</Z>
                     </pos>
                     <posAbs dataType="Struct" type="OpenTK.Vector3">
-                      <X dataType="Float">0</X>
-                      <Y dataType="Float">0</Y>
+                      <X dataType="Float">3801.09741</X>
+                      <Y dataType="Float">-1444.50439</Y>
                       <Z dataType="Float">-500</Z>
                     </posAbs>
                     <scale dataType="Float">1</scale>
@@ -61,8 +61,8 @@
                     <Z dataType="Float">500</Z>
                   </pos>
                   <posAbs dataType="Struct" type="OpenTK.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
+                    <X dataType="Float">3801.09741</X>
+                    <Y dataType="Float">-1444.50439</Y>
                     <Z dataType="Float">0</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
@@ -8108,9 +8108,10 @@
                               <active dataType="Bool">true</active>
                               <gameobj dataType="ObjectRef">4049780043</gameobj>
                               <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-                                <contentPath dataType="String">Data\Audio\FloatingRockHit2.Sound.res</contentPath>
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
                               </hitSound>
-                              <pitch dataType="Float">1</pitch>
+                              <pitch dataType="Float">0.9</pitch>
+                              <volume dataType="Float">1</volume>
                             </item>
                           </_items>
                           <_size dataType="Int">4</_size>
@@ -8442,9 +8443,10 @@
                               <active dataType="Bool">true</active>
                               <gameobj dataType="ObjectRef">1165589083</gameobj>
                               <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-                                <contentPath dataType="String">Data\Audio\FloatingRockHit3.Sound.res</contentPath>
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
                               </hitSound>
-                              <pitch dataType="Float">1.5</pitch>
+                              <pitch dataType="Float">1.15</pitch>
+                              <volume dataType="Float">1</volume>
                             </item>
                           </_items>
                           <_size dataType="Int">4</_size>
@@ -16081,7 +16083,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3785542539">
-                          <_items dataType="Array" type="Duality.Component[]" id="3567890550" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3567890550">
                             <item dataType="Struct" type="Duality.Components.Transform" id="4106485067">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -16176,9 +16178,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3427462863">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">1746170135</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">0.9</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3426632392" surrogate="true">
                           <header />
@@ -16187,11 +16198,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3165659424">
                               <item dataType="ObjectRef">4106485067</item>
                               <item dataType="ObjectRef">513979363</item>
                               <item dataType="ObjectRef">2344863325</item>
+                              <item dataType="ObjectRef">3427462863</item>
                             </values>
                           </body>
                         </compMap>
@@ -16211,7 +16224,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="699906642">
-                          <_items dataType="Array" type="Duality.Component[]" id="1502913872" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1502913872">
                             <item dataType="Struct" type="Duality.Components.Transform" id="792251158">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -16306,9 +16319,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="113228954">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2726903522</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.25</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="34749130" surrogate="true">
                           <header />
@@ -16317,11 +16339,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2779642334">
                               <item dataType="ObjectRef">792251158</item>
                               <item dataType="ObjectRef">1494712750</item>
                               <item dataType="ObjectRef">3325596712</item>
+                              <item dataType="ObjectRef">113228954</item>
                             </values>
                           </body>
                         </compMap>
@@ -16341,7 +16365,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1933647385">
-                          <_items dataType="Array" type="Duality.Component[]" id="482596174" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="482596174">
                             <item dataType="Struct" type="Duality.Components.Transform" id="848559337">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -16436,9 +16460,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="169537133">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2783211701</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.35</pitch>
+                              <volume dataType="Float">0.75</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2541335424" surrogate="true">
                           <header />
@@ -16447,11 +16480,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2968510136">
                               <item dataType="ObjectRef">848559337</item>
                               <item dataType="ObjectRef">1551020929</item>
                               <item dataType="ObjectRef">3381904891</item>
+                              <item dataType="ObjectRef">169537133</item>
                             </values>
                           </body>
                         </compMap>
@@ -16471,7 +16506,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1993524103">
-                          <_items dataType="Array" type="Duality.Component[]" id="400480078" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="400480078">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2145013087">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -16566,9 +16601,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1465990883">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">4079665451</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.8</pitch>
+                              <volume dataType="Float">0.45</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4179523968" surrogate="true">
                           <header />
@@ -16577,11 +16621,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="236187256">
                               <item dataType="ObjectRef">2145013087</item>
                               <item dataType="ObjectRef">2847474679</item>
                               <item dataType="ObjectRef">383391345</item>
+                              <item dataType="ObjectRef">1465990883</item>
                             </values>
                           </body>
                         </compMap>
@@ -16601,7 +16647,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4101463514">
-                          <_items dataType="Array" type="Duality.Component[]" id="3904585984" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3904585984">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1636242030">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -16696,9 +16742,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="957219826">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3570894394</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.3</pitch>
+                              <volume dataType="Float">0.2</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1159673530" surrogate="true">
                           <header />
@@ -16707,11 +16762,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2940300174">
                               <item dataType="ObjectRef">1636242030</item>
                               <item dataType="ObjectRef">2338703622</item>
                               <item dataType="ObjectRef">4169587584</item>
+                              <item dataType="ObjectRef">957219826</item>
                             </values>
                           </body>
                         </compMap>
@@ -16731,7 +16788,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2785258709">
-                          <_items dataType="Array" type="Duality.Component[]" id="1448673782" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1448673782">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1913161149">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -16826,9 +16883,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1234138945">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3847813513</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="199944776" surrogate="true">
                           <header />
@@ -16837,11 +16903,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="746400096">
                               <item dataType="ObjectRef">1913161149</item>
                               <item dataType="ObjectRef">2615622741</item>
                               <item dataType="ObjectRef">151539407</item>
+                              <item dataType="ObjectRef">1234138945</item>
                             </values>
                           </body>
                         </compMap>
@@ -16861,7 +16929,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3954852745">
-                          <_items dataType="Array" type="Duality.Component[]" id="163972494" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="163972494">
                             <item dataType="Struct" type="Duality.Components.Transform" id="721332825">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -16956,9 +17024,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="42310621">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2655985189</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.8</pitch>
+                              <volume dataType="Float">0.4</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1264351552" surrogate="true">
                           <header />
@@ -16967,11 +17044,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2762957496">
                               <item dataType="ObjectRef">721332825</item>
                               <item dataType="ObjectRef">1423794417</item>
                               <item dataType="ObjectRef">3254678379</item>
+                              <item dataType="ObjectRef">42310621</item>
                             </values>
                           </body>
                         </compMap>
@@ -16991,7 +17070,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1205168256">
-                          <_items dataType="Array" type="Duality.Component[]" id="860643740" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="860643740">
                             <item dataType="Struct" type="Duality.Components.Transform" id="797355836">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -17086,9 +17165,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="118333632">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2732008200</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.5</pitch>
+                              <volume dataType="Float">0.5</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="663217358" surrogate="true">
                           <header />
@@ -17097,11 +17185,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2723428042">
                               <item dataType="ObjectRef">797355836</item>
                               <item dataType="ObjectRef">1499817428</item>
                               <item dataType="ObjectRef">3330701390</item>
+                              <item dataType="ObjectRef">118333632</item>
                             </values>
                           </body>
                         </compMap>
@@ -17121,7 +17211,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="855216541">
-                          <_items dataType="Array" type="Duality.Component[]" id="611218150" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="611218150">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2623377077">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -17216,9 +17306,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1944354873">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">263062145</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.3</pitch>
+                              <volume dataType="Float">0.8</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3654904" surrogate="true">
                           <header />
@@ -17227,11 +17326,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3925923392">
                               <item dataType="ObjectRef">2623377077</item>
                               <item dataType="ObjectRef">3325838669</item>
                               <item dataType="ObjectRef">861755335</item>
+                              <item dataType="ObjectRef">1944354873</item>
                             </values>
                           </body>
                         </compMap>
@@ -17251,7 +17352,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3379802637">
-                          <_items dataType="Array" type="Duality.Component[]" id="3479016230" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3479016230">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1096868197">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">6.237606</angle>
@@ -17367,9 +17468,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="417845993">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3031520561</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4133313976" surrogate="true">
                           <header />
@@ -17378,11 +17488,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2285414528">
                               <item dataType="ObjectRef">1096868197</item>
                               <item dataType="ObjectRef">1799329789</item>
                               <item dataType="ObjectRef">3630213751</item>
+                              <item dataType="ObjectRef">417845993</item>
                             </values>
                           </body>
                         </compMap>
@@ -17402,7 +17514,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3781492302">
-                          <_items dataType="Array" type="Duality.Component[]" id="1125277392" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1125277392">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1812262346">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">3.24289513</angle>
@@ -17514,9 +17626,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1133240142">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3746914710</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.2</pitch>
+                              <volume dataType="Float">0.8</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1404422730" surrogate="true">
                           <header />
@@ -17525,11 +17646,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="42522358">
                               <item dataType="ObjectRef">1812262346</item>
                               <item dataType="ObjectRef">2514723938</item>
                               <item dataType="ObjectRef">50640604</item>
+                              <item dataType="ObjectRef">1133240142</item>
                             </values>
                           </body>
                         </compMap>
@@ -17549,7 +17672,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3006237349">
-                          <_items dataType="Array" type="Duality.Component[]" id="172621206" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="172621206">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1935397005">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">5.65691662</angle>
@@ -17653,9 +17776,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1256374801">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3870049369</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.3</pitch>
+                              <volume dataType="Float">0.7</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1881869416" surrogate="true">
                           <header />
@@ -17664,11 +17796,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="836067424">
                               <item dataType="ObjectRef">1935397005</item>
                               <item dataType="ObjectRef">2637858597</item>
                               <item dataType="ObjectRef">173775263</item>
+                              <item dataType="ObjectRef">1256374801</item>
                             </values>
                           </body>
                         </compMap>
@@ -17688,7 +17822,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="99785584">
-                          <_items dataType="Array" type="Duality.Component[]" id="269694268" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="269694268">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1451360108">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0.26898253</angle>
@@ -17800,9 +17934,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="772337904">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3386012472</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.25</pitch>
+                              <volume dataType="Float">0.75</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3052291822" surrogate="true">
                           <header />
@@ -17811,11 +17954,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="4232025610">
                               <item dataType="ObjectRef">1451360108</item>
                               <item dataType="ObjectRef">2153821700</item>
                               <item dataType="ObjectRef">3984705662</item>
+                              <item dataType="ObjectRef">772337904</item>
                             </values>
                           </body>
                         </compMap>
@@ -17835,7 +17980,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1018732122">
-                          <_items dataType="Array" type="Duality.Component[]" id="344546304" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="344546304">
                             <item dataType="Struct" type="Duality.Components.Transform" id="894376430">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">2.63687086</angle>
@@ -17943,9 +18088,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="215354226">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2829028794</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.2</pitch>
+                              <volume dataType="Float">0.8</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4230076858" surrogate="true">
                           <header />
@@ -17954,11 +18108,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3035743886">
                               <item dataType="ObjectRef">894376430</item>
                               <item dataType="ObjectRef">1596838022</item>
                               <item dataType="ObjectRef">3427721984</item>
+                              <item dataType="ObjectRef">215354226</item>
                             </values>
                           </body>
                         </compMap>
@@ -17978,7 +18134,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="535269958">
-                          <_items dataType="Array" type="Duality.Component[]" id="1187774464" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1187774464">
                             <item dataType="Struct" type="Duality.Components.Transform" id="3758020114">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">5.65691662</angle>
@@ -18082,9 +18238,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3078997910">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">1397705182</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.2</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="171929018" surrogate="true">
                           <header />
@@ -18093,11 +18258,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2189749750">
                               <item dataType="ObjectRef">3758020114</item>
                               <item dataType="ObjectRef">165514410</item>
                               <item dataType="ObjectRef">1996398372</item>
+                              <item dataType="ObjectRef">3078997910</item>
                             </values>
                           </body>
                         </compMap>
@@ -18117,7 +18284,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1695190355">
-                          <_items dataType="Array" type="Duality.Component[]" id="1219114854" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1219114854">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2003894307">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">1.2306087</angle>
@@ -18221,9 +18388,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1324872103">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3938546671</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.7</pitch>
+                              <volume dataType="Float">0.21</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="307613560" surrogate="true">
                           <header />
@@ -18232,11 +18408,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3133690112">
                               <item dataType="ObjectRef">2003894307</item>
                               <item dataType="ObjectRef">2706355899</item>
                               <item dataType="ObjectRef">242272565</item>
+                              <item dataType="ObjectRef">1324872103</item>
                             </values>
                           </body>
                         </compMap>
@@ -18256,7 +18434,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3808041431">
-                          <_items dataType="Array" type="Duality.Component[]" id="3589626382" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3589626382">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2141980591">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.13315868</angle>
@@ -18364,9 +18542,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1462958387">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">4076632955</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.6</pitch>
+                              <volume dataType="Float">0.2</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2042254272" surrogate="true">
                           <header />
@@ -18375,11 +18562,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3292408696">
                               <item dataType="ObjectRef">2141980591</item>
                               <item dataType="ObjectRef">2844442183</item>
                               <item dataType="ObjectRef">380358849</item>
+                              <item dataType="ObjectRef">1462958387</item>
                             </values>
                           </body>
                         </compMap>
@@ -26702,7 +26891,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3672752675">
-                          <_items dataType="Array" type="Duality.Component[]" id="3027982438" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3027982438">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2807763571">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -26797,9 +26986,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2128741367">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">447448639</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="32174200" surrogate="true">
                           <header />
@@ -26808,11 +27006,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3919113024">
                               <item dataType="ObjectRef">2807763571</item>
                               <item dataType="ObjectRef">3510225163</item>
                               <item dataType="ObjectRef">1046141829</item>
+                              <item dataType="ObjectRef">2128741367</item>
                             </values>
                           </body>
                         </compMap>
@@ -27026,7 +27226,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1307365621">
-                          <_items dataType="Array" type="Duality.Component[]" id="3404324470" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3404324470">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2964786845">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -27121,9 +27321,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2285764641">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">604471913</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.2</pitch>
+                              <volume dataType="Float">0.8</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4280444104" surrogate="true">
                           <header />
@@ -27132,11 +27341,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2229848864">
                               <item dataType="ObjectRef">2964786845</item>
                               <item dataType="ObjectRef">3667248437</item>
                               <item dataType="ObjectRef">1203165103</item>
+                              <item dataType="ObjectRef">2285764641</item>
                             </values>
                           </body>
                         </compMap>
@@ -27156,7 +27367,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4113951128">
-                          <_items dataType="Array" type="Duality.Component[]" id="1114872876" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1114872876">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2875334148">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -27272,9 +27483,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2196311944">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">515019216</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1072714526" surrogate="true">
                           <header />
@@ -27283,11 +27503,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3836160442">
                               <item dataType="ObjectRef">2875334148</item>
                               <item dataType="ObjectRef">3577795740</item>
                               <item dataType="ObjectRef">1113712406</item>
+                              <item dataType="ObjectRef">2196311944</item>
                             </values>
                           </body>
                         </compMap>
@@ -27307,7 +27529,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3499070664">
-                          <_items dataType="Array" type="Duality.Component[]" id="2553643628" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2553643628">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2490725940">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">6.04577446</angle>
@@ -27423,9 +27645,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1811703736">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">130411008</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.7</pitch>
+                              <volume dataType="Float">0.5</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="862046942" surrogate="true">
                           <header />
@@ -27434,11 +27665,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2605609242">
                               <item dataType="ObjectRef">2490725940</item>
                               <item dataType="ObjectRef">3193187532</item>
                               <item dataType="ObjectRef">729104198</item>
+                              <item dataType="ObjectRef">1811703736</item>
                             </values>
                           </body>
                         </compMap>
@@ -27458,7 +27691,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4288619521">
-                          <_items dataType="Array" type="Duality.Component[]" id="2901260078" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2901260078">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1187015457">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">3.72711325</angle>
@@ -27570,9 +27803,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="507993253">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3121667821</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.8</pitch>
+                              <volume dataType="Float">0.5</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4179971424" surrogate="true">
                           <header />
@@ -27581,11 +27823,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1346357832">
                               <item dataType="ObjectRef">1187015457</item>
                               <item dataType="ObjectRef">1889477049</item>
                               <item dataType="ObjectRef">3720361011</item>
+                              <item dataType="ObjectRef">507993253</item>
                             </values>
                           </body>
                         </compMap>
@@ -27605,7 +27849,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2849749710">
-                          <_items dataType="Array" type="Duality.Component[]" id="627196880" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="627196880">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2975893834">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">1.43480611</angle>
@@ -27717,9 +27961,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2296871630">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">615578902</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.1</pitch>
+                              <volume dataType="Float">0.35</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="418980682" surrogate="true">
                           <header />
@@ -27728,11 +27981,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2765708790">
                               <item dataType="ObjectRef">2975893834</item>
                               <item dataType="ObjectRef">3678355426</item>
                               <item dataType="ObjectRef">1214272092</item>
+                              <item dataType="ObjectRef">2296871630</item>
                             </values>
                           </body>
                         </compMap>
@@ -27752,7 +28007,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4046579951">
-                          <_items dataType="Array" type="Duality.Component[]" id="2561860334" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2561860334">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1344326711">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">5.65691662</angle>
@@ -27856,9 +28111,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="665304507">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3278979075</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2149970848" surrogate="true">
                           <header />
@@ -27867,11 +28131,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2253835304">
                               <item dataType="ObjectRef">1344326711</item>
                               <item dataType="ObjectRef">2046788303</item>
                               <item dataType="ObjectRef">3877672265</item>
+                              <item dataType="ObjectRef">665304507</item>
                             </values>
                           </body>
                         </compMap>
@@ -27891,7 +28157,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2861950908">
-                          <_items dataType="Array" type="Duality.Component[]" id="1764087364" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1764087364">
                             <item dataType="Struct" type="Duality.Components.Transform" id="867790784">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.14889431</angle>
@@ -27999,9 +28265,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="188768580">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2802443148</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.1</pitch>
+                              <volume dataType="Float">0.35</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1543087766" surrogate="true">
                           <header />
@@ -28010,11 +28285,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="393295066">
                               <item dataType="ObjectRef">867790784</item>
                               <item dataType="ObjectRef">1570252376</item>
                               <item dataType="ObjectRef">3401136338</item>
+                              <item dataType="ObjectRef">188768580</item>
                             </values>
                           </body>
                         </compMap>
@@ -28034,7 +28311,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3498783261">
-                          <_items dataType="Array" type="Duality.Component[]" id="3995507942" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3995507942">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2532260405">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.656751</angle>
@@ -28146,9 +28423,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1853238201">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">171945473</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.75</pitch>
+                              <volume dataType="Float">0.5</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2861398776" surrogate="true">
                           <header />
@@ -28157,11 +28443,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1432930112">
                               <item dataType="ObjectRef">2532260405</item>
                               <item dataType="ObjectRef">3234721997</item>
                               <item dataType="ObjectRef">770638663</item>
+                              <item dataType="ObjectRef">1853238201</item>
                             </values>
                           </body>
                         </compMap>
@@ -28181,7 +28469,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2482167712">
-                          <_items dataType="Array" type="Duality.Component[]" id="2306292444" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2306292444">
                             <item dataType="Struct" type="Duality.Components.Transform" id="415349404">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">2.966453</angle>
@@ -28297,9 +28585,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="4031294496">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2350001768</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1465417358" surrogate="true">
                           <header />
@@ -28308,11 +28605,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3720479818">
                               <item dataType="ObjectRef">415349404</item>
                               <item dataType="ObjectRef">1117810996</item>
                               <item dataType="ObjectRef">2948694958</item>
+                              <item dataType="ObjectRef">4031294496</item>
                             </values>
                           </body>
                         </compMap>
@@ -28332,7 +28631,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2903346843">
-                          <_items dataType="Array" type="Duality.Component[]" id="2404768662" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2404768662">
                             <item dataType="Struct" type="Duality.Components.Transform" id="3065611803">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">3.52023315</angle>
@@ -28436,9 +28735,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2386589599">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">705296871</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.9</pitch>
+                              <volume dataType="Float">0.2</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1930208872" surrogate="true">
                           <header />
@@ -28447,11 +28755,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1362540512">
                               <item dataType="ObjectRef">3065611803</item>
                               <item dataType="ObjectRef">3768073395</item>
                               <item dataType="ObjectRef">1303990061</item>
+                              <item dataType="ObjectRef">2386589599</item>
                             </values>
                           </body>
                         </compMap>
@@ -28471,7 +28781,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3333182378">
-                          <_items dataType="Array" type="Duality.Component[]" id="772793376" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="772793376">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1853639934">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">1.66335416</angle>
@@ -28575,9 +28885,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1174617730">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3788292298</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.8</pitch>
+                              <volume dataType="Float">0.2</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3087856346" surrogate="true">
                           <header />
@@ -28586,11 +28905,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2262360814">
                               <item dataType="ObjectRef">1853639934</item>
                               <item dataType="ObjectRef">2556101526</item>
                               <item dataType="ObjectRef">92018192</item>
+                              <item dataType="ObjectRef">1174617730</item>
                             </values>
                           </body>
                         </compMap>
@@ -28610,7 +28931,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3946598039">
-                          <_items dataType="Array" type="Duality.Component[]" id="1334883598" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1334883598">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1782453871">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0.139598012</angle>
@@ -28718,9 +29039,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1103431667">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3717106235</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.9</pitch>
+                              <volume dataType="Float">0.2</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3498457792" surrogate="true">
                           <header />
@@ -28729,11 +29059,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="71482104">
                               <item dataType="ObjectRef">1782453871</item>
                               <item dataType="ObjectRef">2484915463</item>
                               <item dataType="ObjectRef">20832129</item>
+                              <item dataType="ObjectRef">1103431667</item>
                             </values>
                           </body>
                         </compMap>
@@ -28753,7 +29085,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3331061067">
-                          <_items dataType="Array" type="Duality.Component[]" id="584841974" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="584841974">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1768935179">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">3.419084</angle>
@@ -28857,9 +29189,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1089912975">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3703587543</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1652107080" surrogate="true">
                           <header />
@@ -28868,11 +29209,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="303647264">
                               <item dataType="ObjectRef">1768935179</item>
                               <item dataType="ObjectRef">2471396771</item>
                               <item dataType="ObjectRef">7313437</item>
+                              <item dataType="ObjectRef">1089912975</item>
                             </values>
                           </body>
                         </compMap>
@@ -28892,7 +29235,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2986597598">
-                          <_items dataType="Array" type="Duality.Component[]" id="3025410832" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3025410832">
                             <item dataType="Struct" type="Duality.Components.Transform" id="475539226">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -28987,9 +29330,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="4091484318">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2410191590</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.5</pitch>
+                              <volume dataType="Float">0.65</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1416089354" surrogate="true">
                           <header />
@@ -28998,11 +29350,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="106634646">
                               <item dataType="ObjectRef">475539226</item>
                               <item dataType="ObjectRef">1178000818</item>
                               <item dataType="ObjectRef">3008884780</item>
+                              <item dataType="ObjectRef">4091484318</item>
                             </values>
                           </body>
                         </compMap>
@@ -29022,7 +29376,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1440548084">
-                          <_items dataType="Array" type="Duality.Component[]" id="1973162148" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1973162148">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2801694184">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -29034,13 +29388,13 @@
                               <ignoreParent dataType="Bool">false</ignoreParent>
                               <parentTransform />
                               <pos dataType="Struct" type="OpenTK.Vector3">
-                                <X dataType="Float">4421.72852</X>
-                                <Y dataType="Float">-561.175842</Y>
+                                <X dataType="Float">4461.72852</X>
+                                <Y dataType="Float">-584.175842</Y>
                                 <Z dataType="Float">0</Z>
                               </pos>
                               <posAbs dataType="Struct" type="OpenTK.Vector3">
-                                <X dataType="Float">4421.72852</X>
-                                <Y dataType="Float">-561.175842</Y>
+                                <X dataType="Float">4461.72852</X>
+                                <Y dataType="Float">-584.175842</Y>
                                 <Z dataType="Float">0</Z>
                               </posAbs>
                               <scale dataType="Float">0.22288239</scale>
@@ -29082,8 +29436,8 @@
                                     <friction dataType="Float">0.3</friction>
                                     <parent dataType="ObjectRef">3504155776</parent>
                                     <position dataType="Struct" type="OpenTK.Vector2">
-                                      <X dataType="Float">154.864639</X>
-                                      <Y dataType="Float">-120.451393</Y>
+                                      <X dataType="Float">0</X>
+                                      <Y dataType="Float">0</Y>
                                     </position>
                                     <radius dataType="Float">296.207367</radius>
                                     <restitution dataType="Float">0.3</restitution>
@@ -29117,9 +29471,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2122671980">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">441379252</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">0.75</pitch>
+                              <volume dataType="Float">1.5</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3328364278" surrogate="true">
                           <header />
@@ -29128,11 +29491,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2459125514">
                               <item dataType="ObjectRef">2801694184</item>
                               <item dataType="ObjectRef">3504155776</item>
                               <item dataType="ObjectRef">1040072442</item>
+                              <item dataType="ObjectRef">2122671980</item>
                             </values>
                           </body>
                         </compMap>
@@ -29152,7 +29517,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="226049567">
-                          <_items dataType="Array" type="Duality.Component[]" id="4177711470" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="4177711470">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1521243175">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -29247,9 +29612,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="842220971">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3455895539</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4008011808" surrogate="true">
                           <header />
@@ -29258,11 +29632,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2746950856">
                               <item dataType="ObjectRef">1521243175</item>
                               <item dataType="ObjectRef">2223704767</item>
                               <item dataType="ObjectRef">4054588729</item>
+                              <item dataType="ObjectRef">842220971</item>
                             </values>
                           </body>
                         </compMap>
@@ -29282,7 +29658,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3867275494">
-                          <_items dataType="Array" type="Duality.Component[]" id="3901859200" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3901859200">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2913993842">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.650658</angle>
@@ -29398,9 +29774,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2234971638">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">553678910</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.7</pitch>
+                              <volume dataType="Float">0.4</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3718142266" surrogate="true">
                           <header />
@@ -29409,11 +29794,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3834422710">
                               <item dataType="ObjectRef">2913993842</item>
                               <item dataType="ObjectRef">3616455434</item>
                               <item dataType="ObjectRef">1152372100</item>
+                              <item dataType="ObjectRef">2234971638</item>
                             </values>
                           </body>
                         </compMap>
@@ -29433,7 +29820,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="210649378">
-                          <_items dataType="Array" type="Duality.Component[]" id="1465213712" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1465213712">
                             <item dataType="Struct" type="Duality.Components.Transform" id="4072299750">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">1.27862465</angle>
@@ -29545,9 +29932,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3393277546">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">1711984818</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.6</pitch>
+                              <volume dataType="Float">0.5</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="997742346" surrogate="true">
                           <header />
@@ -29556,11 +29952,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3575237854">
                               <item dataType="ObjectRef">4072299750</item>
                               <item dataType="ObjectRef">479794046</item>
                               <item dataType="ObjectRef">2310678008</item>
+                              <item dataType="ObjectRef">3393277546</item>
                             </values>
                           </body>
                         </compMap>
@@ -29580,7 +29978,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2059009882">
-                          <_items dataType="Array" type="Duality.Component[]" id="3389383168" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3389383168">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1355449582">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0</angle>
@@ -29696,9 +30094,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="676427378">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3290101946</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2653731770" surrogate="true">
                           <header />
@@ -29707,11 +30114,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1137438862">
                               <item dataType="ObjectRef">1355449582</item>
                               <item dataType="ObjectRef">2057911174</item>
                               <item dataType="ObjectRef">3888795136</item>
+                              <item dataType="ObjectRef">676427378</item>
                             </values>
                           </body>
                         </compMap>
@@ -29731,7 +30140,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="272259353">
-                          <_items dataType="Array" type="Duality.Component[]" id="1203790158" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1203790158">
                             <item dataType="Struct" type="Duality.Components.Transform" id="115027433">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">5.30968428</angle>
@@ -29847,9 +30256,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3730972525">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2049679797</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4217425792" surrogate="true">
                           <header />
@@ -29858,11 +30276,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1670955192">
                               <item dataType="ObjectRef">115027433</item>
                               <item dataType="ObjectRef">817489025</item>
                               <item dataType="ObjectRef">2648372987</item>
+                              <item dataType="ObjectRef">3730972525</item>
                             </values>
                           </body>
                         </compMap>
@@ -29882,7 +30302,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2851605729">
-                          <_items dataType="Array" type="Duality.Component[]" id="238200686" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="238200686">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1087841601">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.47159958</angle>
@@ -29998,9 +30418,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="408819397">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3022493965</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3717724704" surrogate="true">
                           <header />
@@ -30009,11 +30438,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2835302088">
                               <item dataType="ObjectRef">1087841601</item>
                               <item dataType="ObjectRef">1790303193</item>
                               <item dataType="ObjectRef">3621187155</item>
+                              <item dataType="ObjectRef">408819397</item>
                             </values>
                           </body>
                         </compMap>
@@ -30033,7 +30464,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3539009630">
-                          <_items dataType="Array" type="Duality.Component[]" id="1271350544" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1271350544">
                             <item dataType="Struct" type="Duality.Components.Transform" id="3277222810">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">3.274406</angle>
@@ -30149,9 +30580,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2598200606">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">916907878</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="839154954" surrogate="true">
                           <header />
@@ -30160,11 +30600,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="690667670">
                               <item dataType="ObjectRef">3277222810</item>
                               <item dataType="ObjectRef">3979684402</item>
                               <item dataType="ObjectRef">1515601068</item>
+                              <item dataType="ObjectRef">2598200606</item>
                             </values>
                           </body>
                         </compMap>
@@ -30184,7 +30626,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3684452859">
-                          <_items dataType="Array" type="Duality.Component[]" id="3747924566" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3747924566">
                             <item dataType="Struct" type="Duality.Components.Transform" id="167354811">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">2.111206</angle>
@@ -30300,9 +30742,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3783299903">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2102007175</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="630601640" surrogate="true">
                           <header />
@@ -30311,11 +30762,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1800401312">
                               <item dataType="ObjectRef">167354811</item>
                               <item dataType="ObjectRef">869816403</item>
                               <item dataType="ObjectRef">2700700365</item>
+                              <item dataType="ObjectRef">3783299903</item>
                             </values>
                           </body>
                         </compMap>
@@ -30335,7 +30788,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3076947497">
-                          <_items dataType="Array" type="Duality.Component[]" id="2789980686" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2789980686">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1047003321">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">1.07304442</angle>
@@ -30451,9 +30904,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="367981117">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2981655685</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="343290816" surrogate="true">
                           <header />
@@ -30462,11 +30924,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="647089016">
                               <item dataType="ObjectRef">1047003321</item>
                               <item dataType="ObjectRef">1749464913</item>
                               <item dataType="ObjectRef">3580348875</item>
+                              <item dataType="ObjectRef">367981117</item>
                             </values>
                           </body>
                         </compMap>
@@ -30486,7 +30950,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="764937644">
-                          <_items dataType="Array" type="Duality.Component[]" id="976116964" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="976116964">
                             <item dataType="Struct" type="Duality.Components.Transform" id="5804528">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">1.23811591</angle>
@@ -30598,9 +31062,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3621749620">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">1940456892</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">0.95</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1578476470" surrogate="true">
                           <header />
@@ -30609,11 +31082,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="391548218">
                               <item dataType="ObjectRef">5804528</item>
                               <item dataType="ObjectRef">708266120</item>
                               <item dataType="ObjectRef">2539150082</item>
+                              <item dataType="ObjectRef">3621749620</item>
                             </values>
                           </body>
                         </compMap>
@@ -30633,7 +31108,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3230378687">
-                          <_items dataType="Array" type="Duality.Component[]" id="2185599406" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2185599406">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2767442695">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">1.4948163</angle>
@@ -30741,9 +31216,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2088420491">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">407127763</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.4</pitch>
+                              <volume dataType="Float">0.7</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="256190944" surrogate="true">
                           <header />
@@ -30752,11 +31236,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2609762504">
                               <item dataType="ObjectRef">2767442695</item>
                               <item dataType="ObjectRef">3469904287</item>
                               <item dataType="ObjectRef">1005820953</item>
+                              <item dataType="ObjectRef">2088420491</item>
                             </values>
                           </body>
                         </compMap>
@@ -30776,7 +31262,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4078704858">
-                          <_items dataType="Array" type="Duality.Component[]" id="1956218112" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1956218112">
                             <item dataType="Struct" type="Duality.Components.Transform" id="427181934">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.120485</angle>
@@ -30892,9 +31378,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="4043127026">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">2361834298</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1811737274" surrogate="true">
                           <header />
@@ -30903,11 +31398,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="2037141390">
                               <item dataType="ObjectRef">427181934</item>
                               <item dataType="ObjectRef">1129643526</item>
                               <item dataType="ObjectRef">2960527488</item>
+                              <item dataType="ObjectRef">4043127026</item>
                             </values>
                           </body>
                         </compMap>
@@ -30927,7 +31424,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3022305898">
-                          <_items dataType="Array" type="Duality.Component[]" id="1331102752" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1331102752">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2078389950">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">5.17871952</angle>
@@ -31039,9 +31536,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1399367746">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">4013042314</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.3</pitch>
+                              <volume dataType="Float">0.7</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1308398298" surrogate="true">
                           <header />
@@ -31050,11 +31556,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1391356270">
                               <item dataType="ObjectRef">2078389950</item>
                               <item dataType="ObjectRef">2780851542</item>
                               <item dataType="ObjectRef">316768208</item>
+                              <item dataType="ObjectRef">1399367746</item>
                             </values>
                           </body>
                         </compMap>
@@ -31074,7 +31582,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2909688164">
-                          <_items dataType="Array" type="Duality.Component[]" id="1506335684" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1506335684">
                             <item dataType="Struct" type="Duality.Components.Transform" id="4227652312">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">5.278206</angle>
@@ -31186,9 +31694,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3548630108">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">1867337380</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.25</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="836137494" surrogate="true">
                           <header />
@@ -31197,11 +31714,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1829387466">
                               <item dataType="ObjectRef">4227652312</item>
                               <item dataType="ObjectRef">635146608</item>
                               <item dataType="ObjectRef">2466030570</item>
+                              <item dataType="ObjectRef">3548630108</item>
                             </values>
                           </body>
                         </compMap>
@@ -31221,7 +31740,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2672839691">
-                          <_items dataType="Array" type="Duality.Component[]" id="1155631222" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="1155631222">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1147090123">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0.803902864</angle>
@@ -31337,9 +31856,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="468067919">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3081742487</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.15</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="890215112" surrogate="true">
                           <header />
@@ -31348,11 +31876,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1722752800">
                               <item dataType="ObjectRef">1147090123</item>
                               <item dataType="ObjectRef">1849551715</item>
                               <item dataType="ObjectRef">3680435677</item>
+                              <item dataType="ObjectRef">468067919</item>
                             </values>
                           </body>
                         </compMap>
@@ -31372,7 +31902,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2560921909">
-                          <_items dataType="Array" type="Duality.Component[]" id="4135820278" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="4135820278">
                             <item dataType="Struct" type="Duality.Components.Transform" id="3319801565">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.18580627</angle>
@@ -31484,9 +32014,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2640779361">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">959486633</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.1</pitch>
+                              <volume dataType="Float">1</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="683649096" surrogate="true">
                           <header />
@@ -31495,11 +32034,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1898768928">
                               <item dataType="ObjectRef">3319801565</item>
                               <item dataType="ObjectRef">4022263157</item>
                               <item dataType="ObjectRef">1558179823</item>
+                              <item dataType="ObjectRef">2640779361</item>
                             </values>
                           </body>
                         </compMap>
@@ -31519,7 +32060,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="99568615">
-                          <_items dataType="Array" type="Duality.Component[]" id="2138139982" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="2138139982">
                             <item dataType="Struct" type="Duality.Components.Transform" id="1872321919">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">5.847162</angle>
@@ -31635,9 +32176,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1193299715">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">3806974283</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">2.5</pitch>
+                              <volume dataType="Float">0.3</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="193366912" surrogate="true">
                           <header />
@@ -31646,11 +32196,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="3855944376">
                               <item dataType="ObjectRef">1872321919</item>
                               <item dataType="ObjectRef">2574783511</item>
                               <item dataType="ObjectRef">110700177</item>
+                              <item dataType="ObjectRef">1193299715</item>
                             </values>
                           </body>
                         </compMap>
@@ -31670,7 +32222,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1952832506">
-                          <_items dataType="Array" type="Duality.Component[]" id="311813504" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="311813504">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2769270094">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">3.03419042</angle>
@@ -31778,9 +32330,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="2090247890">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">408955162</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.35</pitch>
+                              <volume dataType="Float">0.7</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1812764986" surrogate="true">
                           <header />
@@ -31789,11 +32350,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1421632590">
                               <item dataType="ObjectRef">2769270094</item>
                               <item dataType="ObjectRef">3471731686</item>
                               <item dataType="ObjectRef">1007648352</item>
+                              <item dataType="ObjectRef">2090247890</item>
                             </values>
                           </body>
                         </compMap>
@@ -31813,7 +32376,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4150152705">
-                          <_items dataType="Array" type="Duality.Component[]" id="3108270894" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="3108270894">
                             <item dataType="Struct" type="Duality.Components.Transform" id="4057304353">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">4.975113</angle>
@@ -31925,9 +32488,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="3378282149">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">1696989421</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.3</pitch>
+                              <volume dataType="Float">0.7</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="380279136" surrogate="true">
                           <header />
@@ -31936,11 +32508,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1744549448">
                               <item dataType="ObjectRef">4057304353</item>
                               <item dataType="ObjectRef">464798649</item>
                               <item dataType="ObjectRef">2295682611</item>
+                              <item dataType="ObjectRef">3378282149</item>
                             </values>
                           </body>
                         </compMap>
@@ -31960,7 +32534,7 @@
                         <active dataType="Bool">true</active>
                         <children />
                         <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="350981940">
-                          <_items dataType="Array" type="Duality.Component[]" id="4234039460" length="4">
+                          <_items dataType="Array" type="Duality.Component[]" id="4234039460">
                             <item dataType="Struct" type="Duality.Components.Transform" id="2340161320">
                               <active dataType="Bool">true</active>
                               <angle dataType="Float">0.5915477</angle>
@@ -32076,9 +32650,18 @@
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
+                            <item dataType="Struct" type="DualStickSpaceShooter.HitSoundController" id="1661139116">
+                              <active dataType="Bool">true</active>
+                              <gameobj dataType="ObjectRef">4274813684</gameobj>
+                              <hitSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\ObjectHit.Sound.res</contentPath>
+                              </hitSound>
+                              <pitch dataType="Float">1.7</pitch>
+                              <volume dataType="Float">0.6</volume>
+                            </item>
                           </_items>
-                          <_size dataType="Int">3</_size>
-                          <_version dataType="Int">3</_version>
+                          <_size dataType="Int">4</_size>
+                          <_version dataType="Int">4</_version>
                         </compList>
                         <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4123856630" surrogate="true">
                           <header />
@@ -32087,11 +32670,13 @@
                               <item dataType="ObjectRef">4020116262</item>
                               <item dataType="ObjectRef">2826137326</item>
                               <item dataType="ObjectRef">2845262956</item>
+                              <item dataType="ObjectRef">4025566966</item>
                             </keys>
                             <values dataType="Array" type="Duality.Component[]" id="1749662346">
                               <item dataType="ObjectRef">2340161320</item>
                               <item dataType="ObjectRef">3042622912</item>
                               <item dataType="ObjectRef">578539578</item>
+                              <item dataType="ObjectRef">1661139116</item>
                             </values>
                           </body>
                         </compMap>
