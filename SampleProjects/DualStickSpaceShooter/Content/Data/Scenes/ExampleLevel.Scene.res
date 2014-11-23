@@ -33,13 +33,13 @@
                     <ignoreParent dataType="Bool">false</ignoreParent>
                     <parentTransform />
                     <pos dataType="Struct" type="OpenTK.Vector3">
-                      <X dataType="Float">3801.09741</X>
-                      <Y dataType="Float">-1444.50439</Y>
+                      <X dataType="Float">0</X>
+                      <Y dataType="Float">0</Y>
                       <Z dataType="Float">-500</Z>
                     </pos>
                     <posAbs dataType="Struct" type="OpenTK.Vector3">
-                      <X dataType="Float">3801.09741</X>
-                      <Y dataType="Float">-1444.50439</Y>
+                      <X dataType="Float">0</X>
+                      <Y dataType="Float">0</Y>
                       <Z dataType="Float">-500</Z>
                     </posAbs>
                     <scale dataType="Float">1</scale>
@@ -61,8 +61,8 @@
                     <Z dataType="Float">500</Z>
                   </pos>
                   <posAbs dataType="Struct" type="OpenTK.Vector3">
-                    <X dataType="Float">3801.09741</X>
-                    <Y dataType="Float">-1444.50439</Y>
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
@@ -121,7 +121,7 @@
           <item dataType="Struct" type="Duality.Components.Camera" id="1700552844">
             <active dataType="Bool">true</active>
             <farZ dataType="Float">10000</farZ>
-            <focusDist dataType="Float">470.941376</focusDist>
+            <focusDist dataType="Float">0.01</focusDist>
             <gameobj dataType="ObjectRef">1163277037</gameobj>
             <nearZ dataType="Float">0</nearZ>
             <passes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Camera+Pass]]" id="3349398274">
@@ -1560,6 +1560,9 @@
                                 <_version dataType="Int">4</_version>
                               </targets>
                               <triggerEffect />
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath />
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -7973,6 +7976,9 @@
                                 <_version dataType="Int">8</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">3096490534</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -8308,6 +8314,9 @@
                                 <_version dataType="Int">10</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">315986319</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -15853,6 +15862,9 @@
                                 <_version dataType="Int">10</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">1744686430</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -16047,6 +16059,9 @@
                                 <_version dataType="Int">10</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">1014699446</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -26273,6 +26288,9 @@
                                 <_version dataType="Int">12</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">2047238689</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -26467,6 +26485,9 @@
                                 <_version dataType="Int">12</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">1908016920</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -26661,6 +26682,9 @@
                                 <_version dataType="Int">12</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">2735421859</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -26855,6 +26879,9 @@
                                 <_version dataType="Int">12</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">2288227799</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -27190,6 +27217,9 @@
                                 <_version dataType="Int">12</_version>
                               </targets>
                               <triggerEffect dataType="ObjectRef">3589887731</triggerEffect>
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath dataType="String">Data\Audio\TriggerActivate.Sound.res</contentPath>
+                              </triggerSound>
                             </item>
                           </_items>
                           <_size dataType="Int">3</_size>
@@ -45799,6 +45829,9 @@
                               <gameobj dataType="ObjectRef">156939300</gameobj>
                               <targets />
                               <triggerEffect />
+                              <triggerSound dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
+                                <contentPath />
+                              </triggerSound>
                             </item>
                             <item dataType="Struct" type="DualStickSpaceShooter.LevelGoal" id="3087333873">
                               <active dataType="Bool">true</active>

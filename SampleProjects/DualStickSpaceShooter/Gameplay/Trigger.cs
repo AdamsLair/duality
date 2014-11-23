@@ -4,6 +4,7 @@ using System.Linq;
 
 using Duality;
 using Duality.Components.Physics;
+using Duality.Resources;
 
 namespace DualStickSpaceShooter
 {
@@ -12,6 +13,7 @@ namespace DualStickSpaceShooter
 	public class Trigger : Component, ICmpCollisionListener, ICmpUpdatable
 	{
 		private List<GameObject> targets = null;
+		private	ContentRef<Sound> triggerSound = null;
 		private ParticleEffect triggerEffect = null;
 		private bool fireOnce = true;
 		private int collisionCounter = 0;
@@ -20,6 +22,11 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.targets; }
 			set { this.targets = value; }
+		}
+		public ContentRef<Sound> TriggerSound
+		{
+			get { return this.triggerSound; }
+			set { this.triggerSound = value; }
 		}
 		public ParticleEffect TriggerEffect
 		{
@@ -38,6 +45,10 @@ namespace DualStickSpaceShooter
 			this.collisionCounter++;
 			if (this.collisionCounter > 0 && (oldCounter <= 0 || !this.fireOnce))
 			{
+				if (this.triggerSound != null)
+				{
+					DualityApp.Sound.PlaySound3D(this.triggerSound, this.GameObj);
+				}
 				if (this.targets != null)
 				{
 					foreach (GameObject target in this.targets)

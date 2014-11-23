@@ -23,6 +23,8 @@ namespace DualStickSpaceShooter
 		private	float					exploRadius		= 100.0f;
 		private	float					exploForce		= 50.0f;
 		private	float					exploMaxVel		= 5.0f;
+		private	ContentRef<Sound>		moveSound		= null;
+		private	ContentRef<Sound>		attackSound		= null;
 
 
 		public ContentRef<Prefab>[] ExplosionEffects
@@ -58,6 +60,16 @@ namespace DualStickSpaceShooter
 		{
 			get { return this.exploMaxVel; }
 			set { this.exploMaxVel = value; }
+		}
+		public ContentRef<Sound> MoveSound
+		{
+			get { return this.moveSound; }
+			set { this.moveSound = value; }
+		}
+		public ContentRef<Sound> AttackSound
+		{
+			get { return this.attackSound; }
+			set { this.attackSound = value; }
 		}
 	}
 }

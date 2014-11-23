@@ -61,8 +61,10 @@ namespace DualStickSpaceShooter
 		private	SpikeState[]				spikeState		= new SpikeState[4];
 		private	ContentRef<EnemyBlueprint>	blueprint		= null;
 
-		[NonSerialized] private AnimSpriteRenderer	eye		= null;
-		[NonSerialized] private SpriteRenderer[]	spikes	= null;
+		[NonSerialized] private AnimSpriteRenderer	eye				= null;
+		[NonSerialized] private SpriteRenderer[]	spikes			= null;
+		[NonSerialized] private SoundInstance		moveSoundLoop	= null;
+		[NonSerialized] private SoundInstance		dangerSoundLoop	= null;
 		
 		public BehaviorFlags Behavior
 		{
@@ -247,6 +249,7 @@ namespace DualStickSpaceShooter
 
 		void ICmpUpdatable.OnUpdate()
 		{
+			EnemyBlueprint blueprint = this.blueprint.Res;
 			Transform transform = this.GameObj.Transform;
 			RigidBody body = this.GameObj.RigidBody;
 			Ship ship = this.GameObj.GetComponent<Ship>();
@@ -262,6 +265,7 @@ namespace DualStickSpaceShooter
 			}
 
 			// Do AI state handling stuff
+			float moveTowardsEnemyRatio = 0.0f;
 			switch (this.state)
 			{
 				case MindState.Asleep:
@@ -304,6 +308,7 @@ namespace DualStickSpaceShooter
 							Transform nearestObjTransform = nearestObj.Transform;
 							Vector2 targetDiff = nearestObjTransform.Pos.Xy - transform.Pos.Xy;
 							ship.TargetThrust = targetDiff / MathF.Max(targetDiff.Length, 25.0f);
+							moveTowardsEnemyRatio = ship.TargetThrust.Length;
 						}
 						else
 						{
@@ -430,6 +435,64 @@ namespace DualStickSpaceShooter
 					this.spikes[i].Rect = spikeRect;
 				}
 			}
+
+			// Make a sound while moving
+			if (blueprint.MoveSound != null)
+			{
+				// Determine the target volume
+				float targetVolume = MathF.Clamp(moveTowardsEnemyRatio, 0.0f, 1.0f);
+
+				// Clean up disposed loop
+				if (this.moveSoundLoop != null && this.moveSoundLoop.Disposed)
+					this.moveSoundLoop = null;
+
+				// Start the loop when requested
+				if (targetVolume > 0.0f && this.moveSoundLoop == null)
+				{
+					this.moveSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.MoveSound, this.GameObj);
+					this.moveSoundLoop.Looped = true;
+				}
+
+				// Configure existing loop and dispose it when no longer needed
+				if (this.moveSoundLoop != null)
+				{
+					this.moveSoundLoop.Volume += (targetVolume - this.moveSoundLoop.Volume) * 0.05f * Time.TimeMult;
+					if (this.moveSoundLoop.Volume <= 0.05f)
+					{
+						this.moveSoundLoop.FadeOut(0.1f);
+						this.moveSoundLoop = null;
+					}
+				}
+			}
+
+			// Make a danger sound while moving with spikes out
+			if (blueprint.AttackSound != null)
+			{
+				// Determine the target volume
+				float targetVolume = this.spikesActive ? MathF.Clamp(moveTowardsEnemyRatio, 0.25f, 1.0f) : 0.0f;
+
+				// Clean up disposed loop
+				if (this.dangerSoundLoop != null && this.dangerSoundLoop.Disposed)
+					this.dangerSoundLoop = null;
+
+				// Start the loop when requested
+				if (targetVolume > 0.0f && this.dangerSoundLoop == null)
+				{
+					this.dangerSoundLoop = DualityApp.Sound.PlaySound3D(blueprint.AttackSound, this.GameObj);
+					this.dangerSoundLoop.Looped = true;
+				}
+
+				// Configure existing loop and dispose it when no longer needed
+				if (this.dangerSoundLoop != null)
+				{
+					this.dangerSoundLoop.Volume += (targetVolume - this.dangerSoundLoop.Volume) * 0.1f * Time.TimeMult;
+					if (this.dangerSoundLoop.Volume <= 0.05f)
+					{
+						this.dangerSoundLoop.FadeOut(0.1f);
+						this.dangerSoundLoop = null;
+					}
+				}
+			}
 		}
 
 		void ICmpMessageListener.OnMessage(GameMessage msg)
@@ -468,7 +531,23 @@ namespace DualStickSpaceShooter
 				}
 			}
 		}
-		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) {}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+		{
+			if (context == ShutdownContext.Deactivate)
+			{
+				// Fade out playing loop sounds, if there are any. Clean up!
+				if (this.moveSoundLoop != null)
+				{
+					this.moveSoundLoop.FadeOut(0.5f);
+					this.moveSoundLoop = null;
+				}
+				if (this.dangerSoundLoop != null)
+				{
+					this.dangerSoundLoop.FadeOut(0.5f);
+					this.dangerSoundLoop = null;
+				}
+			}
+		}
 
 		void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
 		{

@@ -242,15 +242,13 @@ namespace DualStickSpaceShooter
 
 				// Determine the target panning manually, because we don't want a true 3D sound here (doppler, falloff, ...)
 				float targetPanning;
-				if (listenerPos.Xy == transform.Pos.Xy)
+				if (listenerPos.Xy == transform.Pos.Xy || Player.AlivePlayers.Count() <= 1)
 					targetPanning = 0.0f;
 				else
 					targetPanning = -Vector2.Dot(Vector2.UnitX, (listenerPos - transform.Pos).Xy.Normalized);
 
 				// Determine the target volume
-				float targetVolume = 0.0f;
-				float actualSpeedRatio = (body.LinearVelocity.Length / blueprint.MaxSpeed);
-				targetVolume = MathF.Clamp(this.targetThrust.Length, 0.0f, 1.0f);
+				float targetVolume = MathF.Clamp(this.targetThrust.Length, 0.0f, 1.0f);
 
 				// Clean up disposed flight loop
 				if (this.flightLoop != null && this.flightLoop.Disposed)
@@ -266,7 +264,7 @@ namespace DualStickSpaceShooter
 					}
 				}
 
-				// Configure and dispose of existing flight loop
+				// Configure existing flight loop
 				if (this.flightLoop != null)
 				{
 					this.flightLoop.Volume += (targetVolume - this.flightLoop.Volume) * 0.05f * Time.TimeMult;
