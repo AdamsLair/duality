@@ -246,7 +246,13 @@ namespace Duality.Tests.Resources
 			scene.Dispose();
 		}
 
-		private class UpdateSwitchToSceneComponent : Component, ICmpUpdatable
+        [Test] public void ResourceFileExtensionTest()
+	    {
+            //Assure that the Static ResourceFileExtension contains the right FileExtension value
+            Assert.AreEqual(".Scene.res", Scene.FileExt);
+	    }
+
+	    private class UpdateSwitchToSceneComponent : Component, ICmpUpdatable
 		{
 			public ContentRef<Scene> Target { get; set; }
 			public bool Switched { get; private set; }
