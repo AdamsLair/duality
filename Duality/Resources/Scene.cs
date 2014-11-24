@@ -24,14 +24,15 @@ namespace Duality.Resources
 	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageScene)]
-	public sealed class Scene : Resource
+	public sealed class Scene : Resource, IGameObjectManager
 	{
 	    /// <summary>
 	    /// A Scene resources file extension.
 	    /// </summary>
 	    public new const string FileExt = ResourceFileExtension.SceneFileExtension;
 		private const float PhysicsAccStart = Time.MsPFMult;
-
+        
+        private List<GameObject> allObj = new List<GameObject>();
 
 		private	static	World				physicsWorld		= new World(Vector2.Zero);
 		private	static	float				physicsAcc			= 0.0f;
@@ -122,27 +123,48 @@ namespace Duality.Resources
 		/// Fired right after entering the (now) current Scene.
 		/// </summary>
 		public static event EventHandler Entered;
-		/// <summary>
-		/// Fired when a <see cref="GameObject">GameObjects</see> parent object has been changed in the current Scene.
-		/// </summary>
-		public static event EventHandler<GameObjectParentChangedEventArgs> GameObjectParentChanged;
-		/// <summary>
-		/// Fired when a <see cref="GameObject"/> has been registered in the current Scene.
-		/// </summary>
-		public static event EventHandler<GameObjectEventArgs> GameObjectAdded;
-		/// <summary>
-		/// Fired when a <see cref="GameObject"/> has been unregistered from the current Scene.
-		/// </summary>
-		public static event EventHandler<GameObjectEventArgs> GameObjectRemoved;
-		/// <summary>
-		/// Fired when a <see cref="Component"/> has been added to a <see cref="GameObject"/> that is registered in the current Scene.
-		/// </summary>
-		public static event EventHandler<ComponentEventArgs> ComponentAdded;
-		/// <summary>
-		/// Fired when a <see cref="Component"/> has been removed from a <see cref="GameObject"/> that is registered in the current Scene.
-		/// </summary>
-		public static event EventHandler<ComponentEventArgs> ComponentRemoving;
 
+
+        /// <summary>
+        /// Fired when a <see cref="GameObject"/> has been unregistered from the current Scene.
+        /// </summary>
+	    event EventHandler<GameObjectEventArgs> IGameObjectManager.GameObjectRemoved
+	    {
+	        add { throw new NotImplementedException(); }
+	        remove { throw new NotImplementedException(); }
+	    }
+
+        /// <summary>
+        /// Fired when a <see cref="GameObject"/> has been registered in the current Scene.
+        /// </summary>
+        event EventHandler<GameObjectEventArgs> IGameObjectManager.GameObjectAdded
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        /// <summary>
+        /// Fired when a <see cref="GameObject">GameObjects</see> parent object has been changed in the current Scene.
+        /// </summary>
+	    public event EventHandler<GameObjectParentChangedEventArgs> ParentChanged;
+
+        /// <summary>
+        /// Fired when a <see cref="Component"/> has been added to a <see cref="GameObject"/> that is registered in the current Scene.
+        /// </summary>
+	    event EventHandler<ComponentEventArgs> IGameObjectManager.ComponentAdded
+	    {
+	        add { throw new NotImplementedException(); }
+	        remove { throw new NotImplementedException(); }
+	    }
+
+        /// <summary>
+        /// Fired when a <see cref="Component"/> has been removed from a <see cref="GameObject"/> that is registered in the current Scene.
+        /// </summary>
+	    event EventHandler<ComponentEventArgs> IGameObjectManager.ComponentRemoving
+	    {
+	        add { throw new NotImplementedException(); }
+	        remove { throw new NotImplementedException(); }
+	    }
 
 		/// <summary>
 		/// Switches to the specified <see cref="Scene"/>, which will become the new <see cref="Current">current one</see>.
@@ -202,37 +224,47 @@ namespace Duality.Resources
 			if (Entered != null) Entered(current, null);
 			switchLock--;
 		}
+
+        //TO BE REMOVED
 		private static void OnGameObjectParentChanged(GameObjectParentChangedEventArgs args)
 		{
-			if (GameObjectParentChanged != null) GameObjectParentChanged(current, args);
+            //if (GameObjectParentChanged != null) GameObjectParentChanged(current, args);
 		}
+
+        //TO BE REMOVED
 		private static void OnGameObjectAdded(GameObjectEventArgs args)
 		{
-			args.Object.OnActivate();
-			if (GameObjectAdded != null) GameObjectAdded(current, args);
+            //args.Object.OnActivate();
+            //if (GameObjectAdded != null) GameObjectAdded(current, args);
 		}
+
+        //TO BE REMOVED
 		private static void OnGameObjectRemoved(GameObjectEventArgs args)
 		{
-			if (GameObjectRemoved != null) GameObjectRemoved(current, args);
-			args.Object.OnDeactivate();
+            //if (GameObjectRemoved != null) GameObjectRemoved(current, args);
+            //args.Object.OnDeactivate();
 		}
+
+        //TO BE REMOVED
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{
-			if (args.Component.Active)
-			{
-				ICmpInitializable cInit = args.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnInit(Component.InitContext.Activate);
-			}
-			if (ComponentAdded != null) ComponentAdded(current, args);
+            //if (args.Component.Active)
+            //{
+            //    ICmpInitializable cInit = args.Component as ICmpInitializable;
+            //    if (cInit != null) cInit.OnInit(Component.InitContext.Activate);
+            //}
+            //if (ComponentAdded != null) ComponentAdded(current, args);
 		}
+
+        //TO BE REMOVED
 		private static void OnComponentRemoving(ComponentEventArgs args)
 		{
-			if (args.Component.Active)
-			{
-				ICmpInitializable cInit = args.Component as ICmpInitializable;
-				if (cInit != null) cInit.OnShutdown(Component.ShutdownContext.Deactivate);
-			}
-			if (ComponentRemoving != null) ComponentRemoving(current, args);
+            //if (args.Component.Active)
+            //{
+            //    ICmpInitializable cInit = args.Component as ICmpInitializable;
+            //    if (cInit != null) cInit.OnShutdown(Component.ShutdownContext.Deactivate);
+            //}
+            //if (ComponentRemoving != null) ComponentRemoving(current, args);
 		}
 
 
@@ -250,7 +282,9 @@ namespace Duality.Resources
 		private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
 
 
-		/// <summary>
+	    public int Count { get; private set; }
+
+	    /// <summary>
 		/// [GET] Enumerates all registered objects.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -282,7 +316,8 @@ namespace Duality.Resources
 		{
 			get { return this.objectManager.ActiveRootObjects; }
 		}
-		/// <summary>
+
+	    /// <summary>
 		/// [GET / SET] Global gravity force that is applied to all objects that obey the laws of physics.
 		/// </summary>
 		public Vector2 GlobalGravity
@@ -481,7 +516,58 @@ namespace Duality.Resources
 		{
 			this.objectManager.Clear();
 		}
-		/// <summary>
+
+	    public void Flush()
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public bool AddObjectDeep(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public bool RemoveObjectDeep(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void RegisterEvents(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void UnregisterEvents(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void OnObjectAdded(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void OnObjectRemoved(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void OnParentChanged(object sender, GameObjectParentChangedEventArgs e)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void OnComponentAdded(object sender, ComponentEventArgs e)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    public void OnComponentRemoving(object sender, ComponentEventArgs e)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Appends a cloned version of the specified Scenes contents to this Scene.
 		/// </summary>
 		/// <param name="scene">The source Scene.</param>
@@ -513,7 +599,13 @@ namespace Duality.Resources
 			if (obj.ParentScene != null && obj.ParentScene != this) obj.ParentScene.RemoveObject(obj);
 			this.objectManager.AddObject(obj);
 		}
-		/// <summary>
+
+	    bool IGameObjectManager.AddObject(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Registers a set of GameObjects and all of their children.
 		/// </summary>
 		/// <param name="objEnum"></param>
@@ -526,7 +618,13 @@ namespace Duality.Resources
 			}
 			this.objectManager.AddObject(objEnum);
 		}
-		/// <summary>
+
+	    bool IGameObjectManager.RemoveObject(GameObject obj)
+	    {
+	        throw new NotImplementedException();
+	    }
+
+	    /// <summary>
 		/// Unregisters a GameObject and all of its children
 		/// </summary>
 		/// <param name="obj"></param>
