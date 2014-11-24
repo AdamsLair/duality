@@ -6,6 +6,7 @@ using System.IO;
 using System.Diagnostics;
 
 using Duality.Resources;
+using Duality.Utility;
 
 namespace Duality
 {
@@ -150,7 +151,7 @@ namespace Duality
 		public static List<ContentRef<T>> GetAvailableContent<T>(string baseDirectory = null) where T : Resource
 		{
 			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
-			IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
+            IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + ResourceFileExtension.FileExt, SearchOption.AllDirectories);
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p))
 				.Where(r => r.Is<T>())
@@ -167,7 +168,7 @@ namespace Duality
 		public static List<IContentRef> GetAvailableContent(Type t, string baseDirectory = null)
 		{
 			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
-			IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
+            IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + ResourceFileExtension.FileExt, SearchOption.AllDirectories);
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p) as IContentRef)
 				.Where(r => r.Is(t))

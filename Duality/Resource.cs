@@ -9,6 +9,7 @@ using Duality.Serialization;
 using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
+using Duality.Utility;
 
 namespace Duality
 {
@@ -23,11 +24,6 @@ namespace Duality
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
 	public abstract class Resource : IManageableObject, IDisposable, ICloneExplicit
 	{
-		/// <summary>
-		/// A Resource files extension.
-		/// </summary>
-		public const string FileExt = ".res";
-
 		private	static	List<Resource>	finalizeSched	= new List<Resource>();
 
 		public static event EventHandler<ResourceEventArgs>	ResourceDisposing = null;
@@ -444,7 +440,7 @@ namespace Duality
 		/// <returns></returns>
 		public static bool IsResourceFile(string filePath)
 		{
-			return System.IO.Path.GetExtension(filePath).ToLower() == FileExt;
+            return System.IO.Path.GetExtension(filePath).ToLower() == ResourceFileExtension.FileExt;
 		}
 		/// <summary>
 		/// Returns all Resource files that are located in the specified directory. This doesn't affect
@@ -455,7 +451,7 @@ namespace Duality
 		public static List<string> GetResourceFiles(string folderPath = null)
 		{
 			if (string.IsNullOrEmpty(folderPath)) folderPath = DualityApp.DataDirectory;
-			return Directory.EnumerateFiles(folderPath, "*" + Resource.FileExt, SearchOption.AllDirectories).ToList();
+            return Directory.EnumerateFiles(folderPath, "*" + ResourceFileExtension.FileExt, SearchOption.AllDirectories).ToList();
 		}
 		/// <summary>
 		/// Returns the Resource file extension for a specific Resource Type.
@@ -464,7 +460,7 @@ namespace Duality
 		/// <returns>The specified Resource Type's file extension.</returns>
 		public static string GetFileExtByType(Type resType)
 		{
-			return "." + resType.Name + FileExt;
+            return "." + resType.Name + ResourceFileExtension.FileExt;
 		}
 		/// <summary>
 		/// Returns the Resource Type that is associated with the specified file, based on its extension.

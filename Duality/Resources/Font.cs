@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
 using System.Runtime.InteropServices;
+using Duality.Utility;
 using SysDrawFont = System.Drawing.Font;
 
 using Duality.Drawing;
@@ -28,10 +29,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
 	public class Font : Resource
 	{
-		/// <summary>
-		/// A Font resources file extension.
-		/// </summary>
-		public new const string FileExt = ".Font" + Resource.FileExt;
+	    /// <summary>
+	    /// A Font resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.FontFileExtension;
 		
 		/// <summary>
 		/// A generic <see cref="MonoSpace">monospace</see> Font (Size 8) that has been loaded from your systems font library.

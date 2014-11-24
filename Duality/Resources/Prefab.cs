@@ -6,6 +6,7 @@ using System.Reflection;
 using Duality.Cloning;
 using Duality.Properties;
 using Duality.Editor;
+using Duality.Utility;
 
 namespace Duality.Resources
 {
@@ -20,10 +21,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePrefab)]
 	public class Prefab : Resource
 	{
-		/// <summary>
-		/// A Prefab resources file extension.
-		/// </summary>
-		public new const string FileExt = ".Prefab" + Resource.FileExt;
+	    /// <summary>
+	    /// A Prefab resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.PrefabFileExtension;
 
 		private static readonly ApplyPrefabContext PrefabContext = new ApplyPrefabContext();
 		private static readonly CloneProvider SharedPrefabProvider = new CloneProvider(PrefabContext);

@@ -4,7 +4,7 @@ using System.Linq;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Cloning;
-
+using Duality.Utility;
 using OpenTK.Graphics.OpenGL;
 
 namespace Duality.Resources
@@ -21,10 +21,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageShaderProgram)]
 	public class ShaderProgram : Resource
 	{
-		/// <summary>
-		/// A ShaderProgram resources file extension.
-		/// </summary>
-		public new const string FileExt = ".ShaderProgram" + Resource.FileExt;
+	    /// <summary>
+	    /// A ShaderProgram resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.ShaderProgramFileExtension;
 
 		/// <summary>
 		/// A minimal ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and

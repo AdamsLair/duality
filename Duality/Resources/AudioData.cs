@@ -6,7 +6,7 @@ using System.Reflection;
 using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
-
+using Duality.Utility;
 using OpenTK.Audio.OpenAL;
 
 
@@ -24,10 +24,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageAudioData)]
 	public class AudioData : Resource
 	{
-		/// <summary>
-		/// An AudioData resources file extension.
-		/// </summary>
-		public new const string FileExt = ".AudioData" + Resource.FileExt;
+	    /// <summary>
+	    /// An AudioData resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.AudioDataFileExtension;
 		
 		/// <summary>
 		/// [GET] A simple beep AudioData.

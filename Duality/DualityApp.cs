@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.IO;
 using System.Threading;
-
+using Duality.Utility;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -591,7 +591,7 @@ namespace Duality
 			LoadUserData();
 
 			ContentProvider.ClearContent();
-			string[] resFiles = Directory.GetFiles(DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
+            string[] resFiles = Directory.GetFiles(DataDirectory, "*" + ResourceFileExtension.FileExt, SearchOption.AllDirectories);
 			foreach (string file in resFiles)
 			{
 				var cr = ContentProvider.RequestContent(file);

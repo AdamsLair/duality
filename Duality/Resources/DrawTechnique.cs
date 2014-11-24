@@ -5,7 +5,7 @@ using System.Linq;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Properties;
-
+using Duality.Utility;
 using OpenTK.Graphics.OpenGL;
 
 namespace Duality.Resources
@@ -25,7 +25,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// A DrawTechnique resources file extension.
 		/// </summary>
-		public new const string FileExt = ".DrawTechnique" + Resource.FileExt;
+        public new const string FileExt = ResourceFileExtension.DrawTechniqueFileExtension;
 		
 		/// <summary>
 		/// Renders solid geometry without utilizing the alpha channel. This is the fastest default DrawTechnique.

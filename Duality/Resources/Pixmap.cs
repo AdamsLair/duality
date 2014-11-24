@@ -11,7 +11,7 @@ using Duality.Editor;
 using Duality.Serialization;
 using Duality.Cloning;
 using Duality.Properties;
-
+using Duality.Utility;
 using OpenTK;
 
 namespace Duality.Resources
@@ -26,10 +26,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePixmap)]
 	public class Pixmap : Resource
 	{
-		/// <summary>
-		/// A Pixmap resources file extension.
-		/// </summary>
-		public new const string FileExt = ".Pixmap" + Resource.FileExt;
+	    /// <summary>
+	    /// A Pixmap resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.PixmapFileExtension;
 
 		/// <summary>
 		/// Represents an unknown Pixmap version.

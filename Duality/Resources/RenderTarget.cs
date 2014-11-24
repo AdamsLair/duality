@@ -5,7 +5,7 @@ using System.Linq;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Cloning;
-
+using Duality.Utility;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
@@ -24,10 +24,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRenderTarget)]
 	public class RenderTarget : Resource
 	{
-		/// <summary>
-		/// A RenderTarget resources file extension.
-		/// </summary>
-		public new const string FileExt = ".RenderTarget" + Resource.FileExt;
+	    /// <summary>
+	    /// A RenderTarget resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.RenderTargetFileExtension;
 		
 		/// <summary>
 		/// Refers to a null reference RenderTarget.

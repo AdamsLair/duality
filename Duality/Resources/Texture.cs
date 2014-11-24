@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using Duality.Utility;
 using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 using BitmapPixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -26,10 +27,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageTexture)]
 	public class Texture : Resource
 	{
-		/// <summary>
-		/// A Texture resources file extension.
-		/// </summary>
-		public new const string FileExt = ".Texture" + Resource.FileExt;
+	    /// <summary>
+	    /// A Texture resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.TextureFileExtension;
 		
 		/// <summary>
 		/// [GET] A Texture showing the Duality icon.

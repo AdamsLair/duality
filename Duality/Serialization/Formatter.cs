@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using Duality.Utility;
 
 namespace Duality.Serialization
 {
@@ -858,7 +859,7 @@ namespace Duality.Serialization
 
 			if (Directory.Exists(DualityApp.DataDirectory))
 			{
-				foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories))
+                foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + ResourceFileExtension.FileExt, SearchOption.AllDirectories))
 				{
 					using (FileStream stream = File.OpenRead(anyResource))
 					{

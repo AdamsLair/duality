@@ -4,6 +4,7 @@ using System.Linq;
 
 using Duality.Editor;
 using Duality.Properties;
+using Duality.Utility;
 
 
 namespace Duality.Resources
@@ -24,10 +25,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSound)]
 	public class Sound : Resource
 	{
-		/// <summary>
-		/// A Sound resources file extension.
-		/// </summary>
-		public new const string FileExt = ".Sound" + Resource.FileExt;
+	    /// <summary>
+	    /// A Sound resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.SoundFileExtension;
 		
 		/// <summary>
 		/// [GET] A simple beep Sound.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Duality.Utility;
 using OpenTK;
 using FarseerPhysics.Dynamics;
 
@@ -26,10 +26,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
-		/// <summary>
-		/// A Scene resources file extension.
-		/// </summary>
-		public new const string FileExt = ".Scene" + Resource.FileExt;
+	    /// <summary>
+	    /// A Scene resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.SceneFileExtension;
 		private const float PhysicsAccStart = Time.MsPFMult;
 
 

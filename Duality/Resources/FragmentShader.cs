@@ -2,7 +2,7 @@
 
 using Duality.Properties;
 using Duality.Editor;
-
+using Duality.Utility;
 using OpenTK.Graphics.OpenGL;
 
 
@@ -16,10 +16,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFragmentShader)]
 	public class FragmentShader : AbstractShader
 	{
-		/// <summary>
-		/// A FragmentShader resources file extension.
-		/// </summary>
-		public new const string FileExt = ".FragmentShader" + Resource.FileExt;
+	    /// <summary>
+	    /// A FragmentShader resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.FragmentShaderFileExtension;
 		
 		/// <summary>
 		/// [GET] A minimal FragmentShader. It performs a texture lookup

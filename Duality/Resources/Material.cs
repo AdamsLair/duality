@@ -6,7 +6,7 @@ using Duality.Drawing;
 using Duality.Properties;
 using Duality.Editor;
 using Duality.Cloning;
-
+using Duality.Utility;
 using OpenTK.Graphics.OpenGL;
 
 namespace Duality.Resources
@@ -25,10 +25,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageMaterial)]
 	public class Material : Resource
 	{
-		/// <summary>
-		/// A Material resources file extension.
-		/// </summary>
-		public new const string FileExt = ".Material" + Resource.FileExt;
+	    /// <summary>
+	    /// A Material resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.MaterialFileExtension;
 
 		/// <summary>
 		/// A solid, white Material.

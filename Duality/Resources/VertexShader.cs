@@ -2,7 +2,7 @@
 
 using Duality.Properties;
 using Duality.Editor;
-
+using Duality.Utility;
 using OpenTK.Graphics.OpenGL;
 
 
@@ -16,10 +16,10 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageVertexShader)]
 	public class VertexShader : AbstractShader
 	{
-		/// <summary>
-		/// A VertexShader resources file extension.
-		/// </summary>
-		public new const string FileExt = ".VertexShader" + Resource.FileExt;
+	    /// <summary>
+	    /// A VertexShader resources file extension.
+	    /// </summary>
+	    public new const string FileExt = ResourceFileExtension.VertexShaderFileExtension;
 
 		/// <summary>
 		/// [GET] A minimal VertexShader. It performs OpenGLs default transformation
