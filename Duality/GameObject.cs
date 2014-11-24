@@ -63,34 +63,53 @@ namespace Duality
 			{
 				if (this.parent != value)
 				{
-					// Consistency checks. Do not allow closed parent-child loops.
-					if (value != null)
-					{
-						if (this == value) throw new ArgumentException("Can't parent a GameObject to itself.");
-						if (value.IsChildOf(this)) throw new ArgumentException("Can't parent a GameObject to one of its children.");
-					}
-
+					CheckClosedParentChildLoops(value);
 					GameObject oldParent = this.parent;
 					Scene newScene = (value != null) ? value.scene : this.scene;
 
-					if (this.parent != null) this.parent.children.Remove(this);
-					if (newScene != this.scene)
-					{
-						if (this.scene != null) this.scene.RemoveObject(this);
-						if (newScene != null) newScene.AddObject(this);
-					}
-					this.parent = value;
-					if (this.parent != null)
-					{
-						if (this.parent.children == null) this.parent.children = new List<GameObject>();
-						this.parent.children.Add(this);
-					}
+					RemoveOldParentFromChild();
+					AdjustToProperScene(newScene);
+					AddNewParentToChild(value);
 
-					this.OnParentChanged(oldParent, this.parent);
+				    this.OnParentChanged(oldParent, this.parent);
 				}
 			}
 		}
-		/// <summary>
+
+	    private void AddNewParentToChild(GameObject value)
+	    {
+	        this.parent = value;
+	        if (this.parent != null)
+	        {
+	            if (this.parent.children == null) this.parent.children = new List<GameObject>();
+	            this.parent.children.Add(this);
+	        }
+	    }
+
+	    private void AdjustToProperScene(Scene newScene)
+	    {
+	        if (newScene != this.scene)
+	        {
+	            if (this.scene != null) this.scene.RemoveObject(this);
+	            if (newScene != null) newScene.AddObject(this);
+	        }
+	    }
+
+	    private void RemoveOldParentFromChild()
+	    {
+	        if (this.parent != null) this.parent.children.Remove(this);
+	    }
+
+	    private void CheckClosedParentChildLoops(GameObject value)
+	    {
+	        if (value != null)
+	        {
+	            if (this == value) throw new ArgumentException("Can't parent a GameObject to itself.");
+	            if (value.IsChildOf(this)) throw new ArgumentException("Can't parent a GameObject to one of its children.");
+	        }
+	    }
+
+	    /// <summary>
 		/// [GET] The GameObjects parent <see cref="Duality.Resources.Scene"/>. Each GameObject can belong to
 		/// exactly one Scene, or no Scene at all. To add or remove GameObjects to / from a Scene, use the <see cref="Duality.Resources.Scene.AddObject"/> and
 		/// <see cref="Duality.Resources.Scene.RemoveObject"/> methods.
