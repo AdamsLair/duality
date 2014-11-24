@@ -282,7 +282,10 @@ namespace Duality.Resources
 		private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
 
 
-	    public int Count { get; private set; }
+	    public int Count
+	    {
+	        get { return this.allObj.Count; }
+	    }
 
 	    /// <summary>
 		/// [GET] Enumerates all registered objects.
@@ -290,7 +293,10 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<GameObject> AllObjects
 		{
-			get { return this.objectManager.AllObjects; }
+            get
+            {
+                return this.allObj.Where(o => !o.Disposed);
+            }
 		}
 		/// <summary>
 		/// [GET] Enumerates all registered objects that are currently active.
@@ -298,7 +304,10 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<GameObject> ActiveObjects
 		{
-			get { return this.objectManager.ActiveObjects; }
+            get
+            {
+                return this.allObj.Where(o => o.Active);
+            }
 		}
 		/// <summary>
 		/// [GET] Enumerates all root GameObjects, i.e. all GameObjects without a parent object.
@@ -306,7 +315,10 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<GameObject> RootObjects
 		{
-			get { return this.objectManager.RootObjects; }
+            get
+            {
+                return this.allObj.Where(o => !o.Disposed && o.Parent == null);
+            }
 		}
 		/// <summary>
 		/// [GET] Enumerates all <see cref="RootObjects"/> that are currently active.
@@ -314,7 +326,10 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<GameObject> ActiveRootObjects
 		{
-			get { return this.objectManager.ActiveRootObjects; }
+            get
+            {
+                return this.allObj.Where(o => o.Parent == null && o.Active);
+            }
 		}
 
 	    /// <summary>
@@ -351,7 +366,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool IsEmpty
 		{
-			get { return !this.objectManager.AllObjects.Any(); }
+			get { return !this.AllObjects.Any(); }
 		}
 
 
@@ -445,7 +460,7 @@ namespace Duality.Resources
 			Profile.TimeUpdateScene.BeginMeasure();
 			{
 				// Update all GameObjects
-				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
+				GameObject[] activeObj = this.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.Update();
 			}
@@ -472,7 +487,7 @@ namespace Duality.Resources
 			Profile.TimeUpdateScene.BeginMeasure();
 			{
 				// Update all GameObjects
-				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
+				GameObject[] activeObj = this.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.EditorUpdate();
 			}
@@ -485,7 +500,7 @@ namespace Duality.Resources
 		/// </summary>
 		new internal void RunCleanup()
 		{
-			this.objectManager.Flush();
+			this.Flush();
 			this.renderers.FlushDisposedObj();
 			foreach (var cmpList in this.componentyByType.Values)
 				cmpList.FlushDisposedObj();
@@ -497,7 +512,7 @@ namespace Duality.Resources
 		/// </summary>
 		public void ApplyPrefabLinks()
 		{
-			PrefabLink.ApplyAllLinks(this.objectManager.AllObjects);
+			PrefabLink.ApplyAllLinks(this.AllObjects);
 		}
 		/// <summary>
 		/// Breaks all <see cref="Duality.Resources.PrefabLink">PrefabLinks</see> contained withing this
@@ -505,7 +520,7 @@ namespace Duality.Resources
 		/// </summary>
 		public void BreakPrefabLinks()
 		{
-			foreach (GameObject obj in this.objectManager.AllObjects)
+			foreach (GameObject obj in this.AllObjects)
 				obj.BreakPrefabLink();
 		}
 
@@ -514,32 +529,56 @@ namespace Duality.Resources
 		/// </summary>
 		public void Clear()
 		{
-			this.objectManager.Clear();
+			this.Clear();
 		}
 
 	    public void Flush()
 	    {
-	        throw new NotImplementedException();
+            List<GameObject> removed;
+            this.allObj.FlushDisposedObj(out removed);
+            foreach (GameObject obj in removed)
+                this.OnObjectRemoved(obj);
 	    }
 
 	    public bool AddObjectDeep(GameObject obj)
 	    {
-	        throw new NotImplementedException();
+            bool added = false;
+            if (!this.allObj.Contains(obj))
+            {
+                this.allObj.Add(obj);
+                this.OnObjectAdded(obj);
+                added = true;
+            }
+            foreach (GameObject child in obj.Children)
+            {
+                this.AddObjectDeep(child);
+            }
+            return added;
 	    }
 
 	    public bool RemoveObjectDeep(GameObject obj)
 	    {
-	        throw new NotImplementedException();
+            foreach (GameObject child in obj.Children)
+            {
+                this.RemoveObjectDeep(child);
+            }
+            bool removed = this.allObj.Remove(obj);
+            if (removed) this.OnObjectRemoved(obj);
+            return removed;
 	    }
 
 	    public void RegisterEvents(GameObject obj)
 	    {
-	        throw new NotImplementedException();
+            obj.EventParentChanged += this.OnParentChanged;
+            obj.EventComponentAdded += this.OnComponentAdded;
+            obj.EventComponentRemoving += this.OnComponentRemoving;
 	    }
 
 	    public void UnregisterEvents(GameObject obj)
 	    {
-	        throw new NotImplementedException();
+            obj.EventParentChanged -= this.OnParentChanged;
+            obj.EventComponentAdded -= this.OnComponentAdded;
+            obj.EventComponentRemoving -= this.OnComponentRemoving;
 	    }
 
 	    public void OnObjectAdded(GameObject obj)
@@ -574,7 +613,7 @@ namespace Duality.Resources
 		public void Append(ContentRef<Scene> scene)
 		{
 			if (!scene.IsAvailable) return;
-			this.objectManager.AddObject(scene.Res.RootObjects.Select(o => o.Clone()));
+			this.AddObject(scene.Res.RootObjects.Select(o => o.Clone()));
 		}
 		/// <summary>
 		/// Appends the specified Scene's contents to this Scene and consumes the specified Scene.
@@ -586,7 +625,7 @@ namespace Duality.Resources
 			Scene otherScene = scene.Res;
 			var otherObj = otherScene.RootObjects.ToArray();
 			otherScene.Clear();
-			this.objectManager.AddObject(otherObj);
+			this.AddObject(otherObj);
 			otherScene.Dispose();
 		}
 
@@ -597,12 +636,12 @@ namespace Duality.Resources
 		public void AddObject(GameObject obj)
 		{
 			if (obj.ParentScene != null && obj.ParentScene != this) obj.ParentScene.RemoveObject(obj);
-			this.objectManager.AddObject(obj);
+			this.AddObject(obj);
 		}
 
 	    bool IGameObjectManager.AddObject(GameObject obj)
 	    {
-	        throw new NotImplementedException();
+            return this.AddObjectDeep(obj);
 	    }
 
 	    /// <summary>
@@ -616,12 +655,14 @@ namespace Duality.Resources
 				if (obj.ParentScene == null || obj.ParentScene == this) continue;
 				obj.ParentScene.RemoveObject(obj);
 			}
-			this.objectManager.AddObject(objEnum);
+			this.AddObject(objEnum);
 		}
 
 	    bool IGameObjectManager.RemoveObject(GameObject obj)
 	    {
-	        throw new NotImplementedException();
+            bool removed = this.RemoveObjectDeep(obj);
+            this.Flush();
+            return removed;
 	    }
 
 	    /// <summary>
@@ -635,7 +676,7 @@ namespace Duality.Resources
 			{
 				obj.Parent = null;
 			}
-			this.objectManager.RemoveObject(obj);
+			this.RemoveObject(obj);
 		}
 		/// <summary>
 		/// Unregisters a set of GameObjects and all of their children.
@@ -650,7 +691,7 @@ namespace Duality.Resources
 				if (obj.Parent.ParentScene != this) continue;
 				obj.Parent = null;
 			}
-			this.objectManager.RemoveObject(objEnum);
+			this.RemoveObject(objEnum);
 		}
 
 		/// <summary>
@@ -913,10 +954,10 @@ namespace Duality.Resources
 		protected override void OnSaving(string saveAsPath)
 		{
 			base.OnSaving(saveAsPath);
-			foreach (GameObject obj in this.objectManager.AllObjects)
+			foreach (GameObject obj in this.AllObjects)
 				obj.OnSaving();
 
-			this.serializeObj = this.objectManager.AllObjects.ToArray();
+			this.serializeObj = this.AllObjects.ToArray();
 			this.serializeObj.StableSort(SerializeGameObjectComparison);
 		}
 		protected override void OnSaved(string saveAsPath)
@@ -925,7 +966,7 @@ namespace Duality.Resources
 				this.serializeObj = null;
 
 			base.OnSaved(saveAsPath);
-			foreach (GameObject obj in this.objectManager.AllObjects)
+			foreach (GameObject obj in this.AllObjects)
 				obj.OnSaved();
 
 			// If this Scene is the current one, but it wasn't saved before, update the current Scenes internal ContentRef
@@ -941,7 +982,7 @@ namespace Duality.Resources
 				foreach (GameObject obj in this.serializeObj)
 				{
 					obj.ParentScene = this;
-					this.objectManager.AddObject(obj);
+					this.AddObject(obj);
 					this.AddToManagers(obj);
 				}
 				this.RegisterManagerEvents();
@@ -952,7 +993,7 @@ namespace Duality.Resources
 
 			this.ApplyPrefabLinks();
 
-			foreach (GameObject obj in this.objectManager.AllObjects)
+			foreach (GameObject obj in this.AllObjects)
 				obj.OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)
@@ -961,8 +1002,8 @@ namespace Duality.Resources
 
 			if (current.ResWeak == this) Current = null;
 
-			GameObject[] obj = this.objectManager.AllObjects.ToArray();
-			this.objectManager.Clear();
+			GameObject[] obj = this.AllObjects.ToArray();
+			this.Clear();
 			foreach (GameObject g in obj) g.DisposeLater();
 		}
 
