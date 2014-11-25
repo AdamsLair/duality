@@ -36,23 +36,23 @@ namespace Duality.Utility
 		/// <summary>
 		/// Fired when a GameObject is registered
 		/// </summary>
-		event EventHandler<GameObjectEventArgs>	GameObjectAdded;
+		event EventHandler<GameObjectEventArgs>	ObjectManagerGameObjectAdded;
 		/// <summary>
 		/// Fired when a GameObject is unregistered
 		/// </summary>
-		event EventHandler<GameObjectEventArgs>	GameObjectRemoved;
+        event EventHandler<GameObjectEventArgs> ObjectManagerGameObjectRemoved;
 		/// <summary>
 		/// Fired when a registered GameObjects parent has changed
 		/// </summary>
-		event EventHandler<GameObjectParentChangedEventArgs>	ParentChanged;
+        event EventHandler<GameObjectParentChangedEventArgs> ObjectManagerParentChanged;
 		/// <summary>
 		/// Fired when a <see cref="Duality.Component"/> is added to an already registered GameObject.
 		/// </summary>
-		event EventHandler<ComponentEventArgs> ComponentAdded;
+        event EventHandler<ComponentEventArgs> ObjectManagerComponentAdded;
 		/// <summary>
 		/// Fired when a <see cref="Duality.Component"/> is removed from an already registered GameObject.
 		/// </summary>
-		event EventHandler<ComponentEventArgs> ComponentRemoving;
+        event EventHandler<ComponentEventArgs> ObjectManagerComponentRemoving;
 
         /// <summary>
         /// Registers a GameObject and all of its children.
