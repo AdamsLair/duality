@@ -95,6 +95,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
+    <!-- PackageExcludeNextElement -->
     <PostBuildEvent>mkdir "$(ProjectDir)Content\Plugins"
 copy "$(TargetPath)" "$(ProjectDir)Content\Plugins"
 copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Content\Plugins"</PostBuildEvent>
@@ -106,11 +107,4 @@ copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Content\Plugins"</PostBuildEv
     </PropertyGroup>
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

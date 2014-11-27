@@ -51,6 +51,12 @@ namespace DualStickSpaceShooter
 			if (this.playerTwo == null)
 				this.playerTwo = Scene.Current.FindComponents<Player>().Where(p => p.Id == PlayerId.PlayerTwo).FirstOrDefault();
 
+			// Is someone playing using mouse / keyboard? Display a mouse cursor then
+			if (Player.AlivePlayers.Any(p => p.InputMethod == InputMethod.MouseAndKeyboard))
+			{
+				canvas.FillCircle(DualityApp.Mouse.X, DualityApp.Mouse.Y, 2.0f);
+			}
+
 			// Is any player alive? Keep that value in mind, won't change here anyway.
 			bool isAnyPlayerAlive = Player.IsAnyPlayerAlive;
 
@@ -59,11 +65,15 @@ namespace DualStickSpaceShooter
 			{
 				Ship playerShip = this.playerOne.ControlObject;
 
-				canvas.State.ColorTint = this.playerOne.Color.WithAlpha(0.5f);
 				if (playerShip.Active)
 				{
 					// Draw a health bar when alive
 					float health = playerShip.Hitpoints;
+
+					canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
+					canvas.FillRect(12 - 1, device.TargetSize.Y - 10 - 198 - 1, 16 + 2, 196 + 2);
+
+					canvas.State.ColorTint = this.playerOne.Color;
 					canvas.DrawRect(10, device.TargetSize.Y - 10 - 200, 20, 200);
 					canvas.FillRect(12, device.TargetSize.Y - 10 - health * 198.0f, 16, health * 196.0f);
 				}
@@ -73,6 +83,11 @@ namespace DualStickSpaceShooter
 					float respawnPercentage = this.playerOne.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("Respawn in {0:F1}", (Player.RespawnDelay - this.playerOne.RespawnTime) / 1000.0f);
 					Vector2 textSize = canvas.MeasureText(string.Format("Respawn in {0:F1}", 0.0f));
+
+					canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
+					canvas.FillRect(10 - 1, device.TargetSize.Y - 10 - textSize.Y - 2, textSize.X + 5, textSize.Y + 8);
+
+					canvas.State.ColorTint = this.playerOne.Color;
 					canvas.DrawText(respawnText, 10, device.TargetSize.Y - 10, 0.0f, Alignment.BottomLeft);
 					canvas.FillRect(10, device.TargetSize.Y - 10 - textSize.Y, textSize.X * respawnPercentage, 3);
 					canvas.FillRect(10, device.TargetSize.Y - 10, textSize.X * respawnPercentage, 3);
@@ -84,11 +99,15 @@ namespace DualStickSpaceShooter
 			{
 				Ship playerShip = this.playerTwo.ControlObject;
 
-				canvas.State.ColorTint = this.playerTwo.Color.WithAlpha(0.5f);
 				if (playerShip.Active)
 				{
 					// Draw a health bar when alive
 					float health = playerShip.Hitpoints;
+
+					canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
+					canvas.FillRect(device.TargetSize.X - 12 - 16 - 1, device.TargetSize.Y - 10 - 198 - 1, 16 + 2, 196 + 2);
+
+					canvas.State.ColorTint = this.playerTwo.Color;
 					canvas.DrawRect(device.TargetSize.X - 10 - 20, device.TargetSize.Y - 10 - 200, 20, 200);
 					canvas.FillRect(device.TargetSize.X - 12 - 16, device.TargetSize.Y - 10 - health * 198.0f, 16, health * 196.0f);
 				}
@@ -98,6 +117,11 @@ namespace DualStickSpaceShooter
 					float respawnPercentage = this.playerTwo.RespawnTime / Player.RespawnDelay;
 					string respawnText = string.Format("{0:F1} to Respawn", (Player.RespawnDelay - this.playerTwo.RespawnTime) / 1000.0f);
 					Vector2 textSize = canvas.MeasureText(string.Format("{0:F1} to Respawn", 0.0f));
+
+					canvas.State.ColorTint = ColorRgba.Black.WithAlpha(0.5f);
+					canvas.FillRect(device.TargetSize.X - 10 - textSize.X - 3, device.TargetSize.Y - 10 - textSize.Y - 2, textSize.X + 2, textSize.Y + 10);
+
+					canvas.State.ColorTint = this.playerTwo.Color;
 					canvas.DrawText(respawnText, device.TargetSize.X - 10, device.TargetSize.Y - 10, 0.0f, Alignment.BottomRight);
 					canvas.FillRect(device.TargetSize.X - 10 - textSize.X * respawnPercentage, device.TargetSize.Y - 10 - textSize.Y, textSize.X * respawnPercentage, 3);
 					canvas.FillRect(device.TargetSize.X - 10 - textSize.X * respawnPercentage, device.TargetSize.Y - 10, textSize.X * respawnPercentage, 3);
