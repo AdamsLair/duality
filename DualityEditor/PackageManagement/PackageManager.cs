@@ -29,6 +29,7 @@ namespace Duality.Editor.PackageManagement
 		private List<string>            repositoryUrls      = new List<string>{ DefaultRepositoryUrl };
 		private	bool					hasLocalRepo		= false;
 		private	string					dataTargetDir		= null;
+		private	string					sourceTargetDir		= null;
 		private	string					pluginTargetDir		= null;
 		private	string					rootPath			= null;
 		private	List<LocalPackage>		localPackages		= new List<LocalPackage>();
@@ -70,11 +71,12 @@ namespace Duality.Editor.PackageManagement
 		}
 
 
-		internal PackageManager(string rootPath = null, string dataTargetDir = null, string pluginTargetDir = null)
+		internal PackageManager(string rootPath = null, string dataTargetDir = null, string sourceTargetDir = null, string pluginTargetDir = null)
 		{
 			// Setup base parameters
 			this.rootPath			= rootPath			?? Environment.CurrentDirectory;
 			this.dataTargetDir		= dataTargetDir		?? DualityApp.DataDirectory;
+			this.sourceTargetDir	= sourceTargetDir	?? EditorHelper.SourceCodeDirectory;
 			this.pluginTargetDir	= pluginTargetDir	?? DualityApp.PluginDirectory;
 
 			// Load additional config parameters
@@ -576,30 +578,59 @@ namespace Duality.Editor.PackageManagement
 
 			return updateDoc;
 		}
-		private void AppendUpdateFileEntry(XDocument updateDoc, string copySource, string copyTarget)
+		private void AppendCopyUpdateFileEntry(XDocument updateDoc, string copySource, string copyTarget)
 		{
-			foreach (XElement element in updateDoc.Root.Elements("Remove").ToArray())
-			{
-				if (element.Attribute("target") != null && PathHelper.ArePathsEqual(element.Attribute("target").Value, copyTarget))
-				{
-					element.Remove();
-				}
-			}
+			// Remove previous deletion schedules referring to the copy target
+			this.RemoveUpdateFileEntries(updateDoc, "Remove", copyTarget);
+
+			// Append the copy entry
 			updateDoc.Root.Add(new XElement("Update", 
 				new XAttribute("source", copySource), 
 				new XAttribute("target", copyTarget)));
 		}
-		private void AppendUpdateFileEntry(XDocument updateDoc, string deleteTarget)
+		private void AppendDeleteUpdateFileEntry(XDocument updateDoc, string deleteTarget)
 		{
-			foreach (XElement element in updateDoc.Root.Elements("Update").ToArray())
+			// Remove previous elements referring to the yet-to-delete file
+			this.RemoveUpdateFileEntries(updateDoc, null, deleteTarget);
+
+			// Append the delete entry
+			updateDoc.Root.Add(new XElement("Remove", 
+				new XAttribute("target", deleteTarget)));
+		}
+		private void AppendIntegrateProjectUpdateFileEntry(XDocument updateDoc, string projectFile, string solutionFile)
+		{
+			// Remove previous deletion schedules referring to the copy target
+			this.RemoveUpdateFileEntries(updateDoc, "Remove", projectFile);
+			this.RemoveUpdateFileEntries(updateDoc, "Remove", solutionFile);
+
+			// Append the integrate entry
+			updateDoc.Root.Add(new XElement("IntegrateProject", 
+				new XAttribute("project", projectFile), 
+				new XAttribute("solution", solutionFile)));
+		}
+		private void RemoveUpdateFileEntries(XDocument updateDoc, string elementName, string referringTo)
+		{
+			var query = string.IsNullOrEmpty(elementName) ? updateDoc.Root.Elements() : updateDoc.Root.Elements(elementName);
+			foreach (XElement element in query.ToArray())
 			{
-				if (element.Attribute("target") != null && PathHelper.ArePathsEqual(element.Attribute("target").Value, deleteTarget))
+				bool anyReference = false;
+				foreach (XAttribute attribute in element.Attributes())
+				{
+					try
+					{
+						if (PathHelper.ArePathsEqual(attribute.Value, referringTo))
+						{
+							anyReference = true;
+							break;
+						}
+					}
+					catch (Exception) {}
+				}
+				if (anyReference)
 				{
 					element.Remove();
 				}
 			}
-			updateDoc.Root.Add(new XElement("Remove", 
-				new XAttribute("target", deleteTarget)));
 		}
 
 		private Dictionary<string,string> CreateFileMapping(NuGet.IPackage package)
@@ -612,8 +643,11 @@ namespace Duality.Editor.PackageManagement
 			bool isPluginPackage = 
 				isDualityPackage && 
 				package.Tags.Contains(PluginTag);
+
+			string folderFriendlyPackageName = package.Id;
 			string binaryBaseDir = this.pluginTargetDir;
 			string contentBaseDir = this.dataTargetDir;
+			string sourceBaseDir = Path.Combine(this.sourceTargetDir, folderFriendlyPackageName);
 			if (!isPluginPackage || !isDualityPackage) binaryBaseDir = "";
 
 			foreach (var f in package.GetFiles()
@@ -632,6 +666,12 @@ namespace Duality.Editor.PackageManagement
 					targetPath = Path.Combine(binaryBaseDir, targetPath);
 				else if (string.Equals(baseDir, "content", StringComparison.InvariantCultureIgnoreCase))
 					targetPath = Path.Combine(contentBaseDir, targetPath);
+				else if (string.Equals(baseDir, "source", StringComparison.InvariantCultureIgnoreCase))
+				{
+					if (targetPath.StartsWith("source") && targetPath.Length > "source".Length)
+						targetPath = targetPath.Remove(0, "source".Length + 1);
+					targetPath = Path.Combine(sourceBaseDir, targetPath);
+				}
 				else
 					continue;
 
@@ -717,7 +757,7 @@ namespace Duality.Editor.PackageManagement
 				if (stillInUse) continue;
 
 				// Append the scheduled operation to the updater config file.
-				this.AppendUpdateFileEntry(updateDoc, packageFile);
+				this.AppendDeleteUpdateFileEntry(updateDoc, packageFile);
 			}
 			updateDoc.Save(this.UpdateFilePath);
 
@@ -764,7 +804,9 @@ namespace Duality.Editor.PackageManagement
 				if (isOldVersion) continue;
 
 				// Append the scheduled operation to the updater config file.
-				this.AppendUpdateFileEntry(updateDoc, Path.Combine(e.InstallPath, pair.Value), pair.Key);
+				this.AppendCopyUpdateFileEntry(updateDoc, Path.Combine(e.InstallPath, pair.Value), pair.Key);
+				if (Path.GetExtension(pair.Key) == ".csproj")
+					this.AppendIntegrateProjectUpdateFileEntry(updateDoc, pair.Key, EditorHelper.SourceCodeSolutionFile);
 			}
 			updateDoc.Save(this.UpdateFilePath);
 

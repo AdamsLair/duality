@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Samples.DualStickSpaceShooter</id>
+    <version>1.0.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>Dual Stick Space Shooter Sample</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/DynamicLighting.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>A small dual stick space shooter made with Duality.</summary>
+    <description>This package contains a small coop game for one to two players, controlled with mouse / keyboard and gamepads. Recommended to play with stereo audio at full volume.</description>
+	<tags>Duality Sample Plugin Game Multiplayer Coop Shooter Topdown Minimalistic</tags>
+    <dependencies>
+      <!--<dependency id="AdamsLair.Duality" version="1.3.1" />-->
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\SampleProjects\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.dll" target="lib" />
+    <file src="..\SampleProjects\DualStickSpaceShooter\Content\Plugins\DualStickSpaceShooter.core.xml" target="lib" />
+    <file src="..\SampleProjects\DualStickSpaceShooter\Content\Data\**\*.res" target="content" />
+    <file src="..\SampleProjects\DualStickSpaceShooter\**\*.cs" target="source" exclude="..\SampleProjects\DualStickSpaceShooter\Content\**\*.*" />
+    <file src="..\SampleProjects\DualStickSpaceShooter\DualStickSpaceShooter.csproj" target="source" />
+  </files>
+</package>

@@ -71,8 +71,15 @@ namespace Duality
 		/// <returns></returns>
 		public static bool ArePathsEqual(string firstPath, string secondPath)
 		{
+			// Early-out for null or empty cases
+			if (string.IsNullOrEmpty(firstPath) && string.IsNullOrEmpty(secondPath)) return true;
+			if (string.IsNullOrEmpty(firstPath) || string.IsNullOrEmpty(secondPath)) return false;
+
+			// Obtain absolute paths
 			firstPath = Path.GetFullPath(firstPath);
 			secondPath = Path.GetFullPath(secondPath);
+
+			// Compare absolute paths
 			return string.Equals(firstPath, secondPath, pathsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
 		}
 		/// <summary>
