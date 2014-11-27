@@ -34,6 +34,47 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(TestErrorHandler.TestResolveType, ReflectionHelper.ResolveType(TestErrorHandler.TestResolveTypeId));
 			Assert.AreEqual(TestErrorHandler.TestResolveMember, ReflectionHelper.ResolveMember(TestErrorHandler.TestResolveMemberId));
 		}
+		[Test] public void VisitorContentRef()
+		{
+			TestVisitorClass visitedRoot = new TestVisitorClass
+			{
+				StringField = "Hello World",
+				ByteField = 42,
+				ShortListField = new List<short> { 0, 1, 2 },
+				ContentRefField = new ContentRef<Resource>(null, "ResourceReference"),
+				ObjectField = "Hidden"
+			};
+			int visitedCount;
+
+			// None. We do not have a bool here.
+			visitedCount = 0;
+			ReflectionHelper.VisitObjectsDeep<bool>(visitedRoot, s => { visitedCount++; return s; });
+			Assert.AreEqual(0, visitedCount);
+
+			// Only the byte field
+			visitedCount = 0;
+			ReflectionHelper.VisitObjectsDeep<byte>(visitedRoot, s => { visitedCount++; return s; });
+			Assert.AreEqual(1, visitedCount);
+
+			// At least the three list elements. Probably more due to internal array allocations
+			visitedCount = 0;
+			ReflectionHelper.VisitObjectsDeep<short>(visitedRoot, s => { visitedCount++; return s; });
+			Assert.GreaterOrEqual(visitedCount, 3);
+
+			// Expecting StringField, (hidden) ObjectField and ContentRefField's internal path.
+			visitedCount = 0;
+			ReflectionHelper.VisitObjectsDeep<string>(visitedRoot, s => { visitedCount++; return s; });
+			Assert.AreEqual(3, visitedCount);
+		}
+
+		private class TestVisitorClass
+		{
+			public string StringField;
+			public byte ByteField;
+			public List<short> ShortListField;
+			public ContentRef<Resource> ContentRefField;
+			public object ObjectField;
+		}
 
 		public class TestMemberClass
 		{

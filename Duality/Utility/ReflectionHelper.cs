@@ -292,7 +292,7 @@ namespace Duality
 			bool explore = false;
 			if (!exploreTypeCache.TryGetValue(objType, out explore))
 			{
-				explore = VisitObjectsDeep_ExploreType(typeof(T), objType);
+				explore = VisitObjectsDeep_ExploreType(typeof(T), objType, exploreTypeCache);
 				exploreTypeCache[objType] = explore;
 			}
 			if (!explore) return obj;
@@ -338,23 +338,52 @@ namespace Duality
 
 			return obj;
 		}
-		private static bool VisitObjectsDeep_ExploreType(Type baseType, Type type, HashSet<Type> visitedTypes = null)
+		private static bool VisitObjectsDeep_ExploreType(Type searchForType, Type variableType, Dictionary<Type,bool> exploreTypeCache)
 		{
-			if (baseType.IsAssignableFrom(type)) return true;
-			if (type.IsPrimitiveExt()) return false;
-			if (typeof(MemberInfo).IsAssignableFrom(type)) return false;
+			// Check the cache and calculate the value, if we missed
+			bool explore = false;
+			if (!exploreTypeCache.TryGetValue(variableType, out explore))
+			{
+				// Found a variable of the searched type? Done.
+				if (searchForType.IsAssignableFrom(variableType))
+					explore = true;
 
-			if (visitedTypes == null)
-				visitedTypes = new HashSet<Type>();
-			else if (visitedTypes.Contains(type))
-				return false;
-			visitedTypes.Add(type);
+				// Don't explore primitives
+				else if (variableType.IsPrimitiveExt())
+					explore = false;
 
-			// Check element type
-			if (type.IsArray) return VisitObjectsDeep_ExploreType(baseType, type.GetElementType(), visitedTypes);
+				// Some hardcoded early-outs for well known types
+				else if (typeof(MemberInfo).IsAssignableFrom(variableType))
+					explore = false;
+				else if (typeof(Delegate).IsAssignableFrom(variableType))
+					explore = false;
 
-			// Check referred fields
-			return type.GetAllFields(BindInstanceAll).Any(f => VisitObjectsDeep_ExploreType(baseType, f.FieldType, visitedTypes));
+				// We also need to explore (for example) all "object" variables, because they could contain anything
+				else if (variableType.IsAssignableFrom(searchForType))
+					explore = true;
+
+				// Perform a deep check unless trivially true
+				else
+				{
+					// Don't get trapped in circles: Assume false, until we found out otherwise
+					exploreTypeCache[variableType] = explore;
+				
+					// Check element type
+					if (variableType.IsArray)
+					{
+						explore = VisitObjectsDeep_ExploreType(searchForType, variableType.GetElementType(), exploreTypeCache);
+					}
+					// Check referred fields
+					else
+					{
+						explore = variableType.GetAllFields(BindInstanceAll).Any(f => 
+							!string.Equals(f.Name, "_syncRoot", StringComparison.InvariantCultureIgnoreCase) && 
+							VisitObjectsDeep_ExploreType(searchForType, f.FieldType, exploreTypeCache));
+					}
+				}
+				exploreTypeCache[variableType] = explore;
+			}
+			return explore;
 		}
 
 		/// <summary>
