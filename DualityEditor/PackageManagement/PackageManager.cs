@@ -157,7 +157,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			return this.CanUninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id));
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
+		[DebuggerNonUserCode]
 		public bool CanUninstallPackage(LocalPackage package)
 		{
 			bool allowed = true;
@@ -194,7 +194,7 @@ namespace Duality.Editor.PackageManagement
 		{
 			return this.CanUpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id), specificVersion);
 		}
-		[System.Diagnostics.DebuggerNonUserCode]
+		[DebuggerNonUserCode]
 		public bool CanUpdatePackage(LocalPackage package, Version specificVersion = null)
 		{
 			bool allowed = true;
@@ -220,8 +220,21 @@ namespace Duality.Editor.PackageManagement
 		/// <returns></returns>
 		public PackageCompatibility GetForwardCompatibility(PackageInfo target)
 		{
-			// ToDo: Implement this
-			return PackageCompatibility.Definite;
+			LocalPackage current = this.localPackages.FirstOrDefault(p => p.Id == target.Id);
+			if (current == null)
+				return PackageCompatibility.Definite;
+
+			Version currentVersion = current.Version;
+			Version targetVersion = target.Version;
+
+			// ToDo: Implement a more sophisticated algorithm
+
+			if (currentVersion.Major != targetVersion.Major)
+				return PackageCompatibility.Unlikely;
+			else if (currentVersion.Minor != targetVersion.Minor)
+				return PackageCompatibility.Likely;
+			else
+				return PackageCompatibility.Definite;
 		}
 		/// <summary>
 		/// Given the specified set of packages, this method returns a new set of the same packages where each version is the newest one
