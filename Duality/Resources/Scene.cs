@@ -562,7 +562,8 @@ namespace Duality.Resources
             {
                 obj.Parent = null;
             }
-            this.ObjectManagerRemoveObject(obj);
+            bool removed = this.RemoveObjectDeep(obj);
+            this.Flush();
         }
         /// <summary>
         /// Unregisters a set of GameObjects and all of their children.
@@ -577,11 +578,6 @@ namespace Duality.Resources
                 if (obj.Parent.ParentScene != this) continue;
                 obj.Parent = null;
             }
-            this.ObjectManagerRemoveObject(objEnum);
-        }
-
-        public void ObjectManagerRemoveObject(IEnumerable<GameObject> objEnum)
-        {
             foreach (GameObject obj in objEnum.ToArray())
             {
                 this.RemoveObjectDeep(obj);
@@ -937,13 +933,6 @@ namespace Duality.Resources
         public bool ObjectManagerAddObject(GameObject obj)
         {
             return this.AddObjectDeep(obj);
-        }
-
-        public bool ObjectManagerRemoveObject(GameObject obj)
-        {
-            bool removed = this.RemoveObjectDeep(obj);
-            this.Flush();
-            return removed;
         }
 
         public void Flush()

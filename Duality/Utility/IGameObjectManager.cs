@@ -64,18 +64,6 @@ namespace Duality.Utility
 		/// </summary>
 		/// <param name="objEnum"></param>
         void ObjectManagerAddObject(IEnumerable<GameObject> objEnum);
-		
-        /// <summary>
-        /// Unregisters a GameObject and all of its children
-        /// </summary>
-        /// <param name="obj"></param>
-        bool ObjectManagerRemoveObject(GameObject obj);
-
-        /// <summary>
-        /// Unregisters a set of GameObjects
-        /// </summary>
-        /// <param name="objEnum"></param>
-        void ObjectManagerRemoveObject(IEnumerable<GameObject> objEnum);
 
         /// <summary>
         /// Unregisters all GameObjects.
