@@ -31,6 +31,10 @@ namespace Duality.Resources
         /// </summary>
         public new const string FileExt = ResourceFileExtension.SceneFileExtension;
         private const float PhysicsAccStart = Time.MsPFMult;
+
+        [NonSerialized]
+        [CloneField(CloneFieldFlags.DontSkip)]
+        [CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
         private List<GameObject> allObj = new List<GameObject>();
 
 
@@ -503,7 +507,7 @@ namespace Duality.Resources
         public void Append(ContentRef<Scene> scene)
         {
             if (!scene.IsAvailable) return;
-            this.AddObject(scene.Res.RootObjects.Select(o => o.Clone()));
+            this.ObjectManagerAddObject(scene.Res.RootObjects.Select(o => o.Clone()));
         }
         /// <summary>
         /// Appends the specified Scene's contents to this Scene and consumes the specified Scene.
@@ -515,7 +519,7 @@ namespace Duality.Resources
             Scene otherScene = scene.Res;
             var otherObj = otherScene.RootObjects.ToArray();
             otherScene.Clear();
-            this.AddObject(otherObj);
+            this.ObjectManagerAddObject(otherObj);
             otherScene.Dispose();
         }
 
@@ -542,7 +546,7 @@ namespace Duality.Resources
             this.ObjectManagerAddObject(objEnum);
         }
 
-        private void ObjectManagerAddObject(IEnumerable<GameObject> objEnum)
+        public void ObjectManagerAddObject(IEnumerable<GameObject> objEnum)
         {
             foreach (GameObject obj in objEnum.ToArray())
                 this.AddObjectDeep(obj);
@@ -576,7 +580,7 @@ namespace Duality.Resources
             this.ObjectManagerRemoveObject(objEnum);
         }
 
-        private void ObjectManagerRemoveObject(IEnumerable<GameObject> objEnum)
+        public void ObjectManagerRemoveObject(IEnumerable<GameObject> objEnum)
         {
             foreach (GameObject obj in objEnum.ToArray())
             {
@@ -873,7 +877,7 @@ namespace Duality.Resources
                 foreach (GameObject obj in this.serializeObj)
                 {
                     obj.ParentScene = this;
-                    this.AddObject(obj);
+                    this.ObjectManagerAddObject(obj);
                     this.AddToManagers(obj);
                 }
                 this.RegisterManagerEvents();
@@ -930,12 +934,12 @@ namespace Duality.Resources
 
         public event EventHandler<ComponentEventArgs> ObjectManagerComponentRemoving;
 
-        bool ObjectManagerAddObject(GameObject obj)
+        public bool ObjectManagerAddObject(GameObject obj)
         {
             return this.AddObjectDeep(obj);
         }
 
-        bool ObjectManagerRemoveObject(GameObject obj)
+        public bool ObjectManagerRemoveObject(GameObject obj)
         {
             bool removed = this.RemoveObjectDeep(obj);
             this.Flush();
