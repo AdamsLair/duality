@@ -526,7 +526,7 @@ namespace Duality.Resources
         public void AddObject(GameObject obj)
         {
             if (obj.ParentScene != null && obj.ParentScene != this) obj.ParentScene.RemoveObject(obj);
-            this.AddObjectDeep(obj);
+            this.ObjectManagerAddObject(obj);
         }
         /// <summary>
         /// Registers a set of GameObjects and all of their children.
@@ -539,6 +539,11 @@ namespace Duality.Resources
                 if (obj.ParentScene == null || obj.ParentScene == this) continue;
                 obj.ParentScene.RemoveObject(obj);
             }
+            this.ObjectManagerAddObject(objEnum);
+        }
+
+        private void ObjectManagerAddObject(IEnumerable<GameObject> objEnum)
+        {
             foreach (GameObject obj in objEnum.ToArray())
                 this.AddObjectDeep(obj);
         }
@@ -553,8 +558,7 @@ namespace Duality.Resources
             {
                 obj.Parent = null;
             }
-            bool removed = this.RemoveObjectDeep(obj);
-            this.Flush();
+            this.ObjectManagerRemoveObject(obj);
         }
         /// <summary>
         /// Unregisters a set of GameObjects and all of their children.
@@ -569,6 +573,11 @@ namespace Duality.Resources
                 if (obj.Parent.ParentScene != this) continue;
                 obj.Parent = null;
             }
+            this.ObjectManagerRemoveObject(objEnum);
+        }
+
+        private void ObjectManagerRemoveObject(IEnumerable<GameObject> objEnum)
+        {
             foreach (GameObject obj in objEnum.ToArray())
             {
                 this.RemoveObjectDeep(obj);
@@ -921,12 +930,12 @@ namespace Duality.Resources
 
         public event EventHandler<ComponentEventArgs> ObjectManagerComponentRemoving;
 
-        bool IGameObjectManager.AddObject(GameObject obj)
+        bool ObjectManagerAddObject(GameObject obj)
         {
             return this.AddObjectDeep(obj);
         }
 
-        bool IGameObjectManager.RemoveObject(GameObject obj)
+        bool ObjectManagerRemoveObject(GameObject obj)
         {
             bool removed = this.RemoveObjectDeep(obj);
             this.Flush();
