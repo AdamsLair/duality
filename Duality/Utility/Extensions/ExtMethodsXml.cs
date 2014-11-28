@@ -30,7 +30,21 @@ namespace Duality
 			else
 				return container.Descendants(name);
 		}
+		public static IEnumerable<XElement> Descendants(this IEnumerable<XContainer> container, XName name, bool ignoreNamespace)
+		{
+			if (ignoreNamespace)
+				return container.Descendants().Where(e => e.Name.LocalName == name.LocalName);
+			else
+				return container.Descendants(name);
+		}
 		public static IEnumerable<XElement> Elements(this XContainer node, XName name, bool ignoreNamespace)
+		{
+			if (ignoreNamespace)
+				return node.Elements().Where(e => e.Name.LocalName == name.LocalName);
+			else
+				return node.Elements(name);
+		}
+		public static IEnumerable<XElement> Elements(this IEnumerable<XContainer> node, XName name, bool ignoreNamespace)
 		{
 			if (ignoreNamespace)
 				return node.Elements().Where(e => e.Name.LocalName == name.LocalName);
@@ -65,6 +79,28 @@ namespace Duality
 				return node.Ancestors().Where(e => e.Name.LocalName == name.LocalName);
 			else
 				return node.Ancestors(name);
+		}
+		public static IEnumerable<XElement> Ancestors(this IEnumerable<XContainer> nodes, XName name, bool ignoreNamespace)
+		{
+			if (ignoreNamespace)
+				return nodes.Ancestors().Where(e => e.Name.LocalName == name.LocalName);
+			else
+				return nodes.Ancestors(name);
+		}
+
+		public static IEnumerable<XAttribute> Attributes(this XElement element, XName name, bool ignoreNamespace)
+		{
+			if (ignoreNamespace)
+				return element.Attributes().Where(a => a.Name.LocalName == name.LocalName);
+			else
+				return element.Attributes(name);
+		}
+		public static IEnumerable<XAttribute> Attributes(this IEnumerable<XElement> elements, XName name, bool ignoreNamespace)
+		{
+			if (ignoreNamespace)
+				return elements.Attributes().Where(a => a.Name.LocalName == name.LocalName);
+			else
+				return elements.Attributes(name);
 		}
 	}
 }

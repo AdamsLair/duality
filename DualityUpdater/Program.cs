@@ -26,72 +26,50 @@ namespace Duality.Updater
 			Console.WriteLine("Waiting for file locks to release...");
 			Console.WriteLine();
 
-			WaitForLockRelease("DualityEditor.exe", "Duality.dll");
+			IOHelper.WaitForLockRelease("DualityEditor.exe", "Duality.dll");
 
 			Console.WriteLine();
 			Console.WriteLine("Begin applying update");
 			Console.WriteLine();
 
 			XDocument updateDoc = XDocument.Load(updateFilePath);
+			string lastCommandName = null;
 			foreach (XElement elem in updateDoc.Root.Elements())
 			{
-				if (string.Equals(elem.Name.LocalName, "Remove", StringComparison.InvariantCultureIgnoreCase))
+				string commandName = elem.Name.LocalName;
+
+				if (!string.Equals(commandName, lastCommandName, StringComparison.InvariantCultureIgnoreCase))
 				{
-					try
-					{
+					Console.WriteLine();
+				}
+
+				try
+				{
+					if (string.Equals(commandName, "Remove", StringComparison.InvariantCultureIgnoreCase))
 						PerformRemove(elem);
-
-						Console.ForegroundColor = ConsoleColor.Green;
-						Console.WriteLine("success");
-						Console.ResetColor();
-					}
-					catch (Exception e)
-					{
-						Console.ForegroundColor = ConsoleColor.Red;
-						Console.WriteLine("failed");
-						Console.WriteLine("Exception: {0}", e);
-						Console.ResetColor();
-						anyErrorOccurred = true;
-					}
-				}
-				else if (string.Equals(elem.Name.LocalName, "Update", StringComparison.InvariantCultureIgnoreCase))
-				{
-					try
-					{
+					else if (string.Equals(commandName, "Update", StringComparison.InvariantCultureIgnoreCase))
 						PerformUpdate(elem);
-
-						Console.ForegroundColor = ConsoleColor.Green;
-						Console.WriteLine("success");
-						Console.ResetColor();
-					}
-					catch (Exception e)
-					{
-						Console.ForegroundColor = ConsoleColor.Red;
-						Console.WriteLine("failed");
-						Console.WriteLine("Exception: {0}", e);
-						Console.ResetColor();
-						anyErrorOccurred = true;
-					}
-				}
-				else if (string.Equals(elem.Name.LocalName, "IntegrateProject", StringComparison.InvariantCultureIgnoreCase))
-				{
-					try
-					{
+					else if (string.Equals(commandName, "IntegrateProject", StringComparison.InvariantCultureIgnoreCase))
 						PerformIntegrateProject(elem);
+					else
+						throw new InvalidOperationException(string.Format("Unknown command: {0}", commandName));
 
-						Console.ForegroundColor = ConsoleColor.Green;
-						Console.WriteLine("success");
-						Console.ResetColor();
-					}
-					catch (Exception e)
-					{
-						Console.ForegroundColor = ConsoleColor.Red;
-						Console.WriteLine("failed");
-						Console.WriteLine("Exception: {0}", e);
-						Console.ResetColor();
-						anyErrorOccurred = true;
-					}
+					Console.ForegroundColor = ConsoleColor.Green;
+					Console.WriteLine("success");
+					Console.ResetColor();
 				}
+				catch (Exception e)
+				{
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.WriteLine("failed");
+					Console.WriteLine();
+					Console.WriteLine("Exception: {0}", e);
+					Console.WriteLine();
+					Console.ResetColor();
+					IOHelper.WaitForUserRead();
+					anyErrorOccurred = true;
+				}
+				lastCommandName = commandName;
 			}
 
 			// If an error occurred, abort here
@@ -100,11 +78,7 @@ namespace Duality.Updater
 				Console.WriteLine();
 				Console.WriteLine("Some steps of the update process failed. The update was not successfull.");
 				Console.WriteLine();
-				for (int i = 0; i < 10; i++)
-				{
-					Thread.Sleep(1000);
-					Console.Write(".");
-				}
+				IOHelper.WaitForUserRead();
 				return;
 			}
 
@@ -128,109 +102,36 @@ namespace Duality.Updater
 			}
 		}
 
-		private static void RemoveEmptyDirectory(string path)
+		private static void PerformRemove(XElement commandElement)
 		{
-			if (string.IsNullOrWhiteSpace(path)) return;
-			if (File.Exists(path)) path = Path.GetDirectoryName(path);
-			if (!Directory.Exists(path)) return;
-
-			if (Directory.EnumerateFiles(path).Any()) return;
-			if (Directory.EnumerateDirectories(path).Any()) return;
-			Directory.Delete(path);
-
-			string parent;
-			try
-			{
-				parent = Path.GetDirectoryName(path);
-			}
-			catch (Exception)
-			{
-				parent = null;
-			}
-
-			if (parent != null)
-			{
-				RemoveEmptyDirectory(parent);
-			}
-		}
-		private static bool IsFileLocked(string filePath)
-		{
-			return IsFileLocked(new FileInfo(filePath));
-		}
-		private static bool IsFileLocked(FileInfo file)
-		{
-			if (!file.Exists) return false;
-
-			FileStream stream = null;
-			try
-			{
-				stream = file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-			}
-			catch (IOException)
-			{
-				return true;
-			}
-			finally
-			{
-				if (stream != null)
-					stream.Close();
-			}
-
-			return false;
-		}
-		private static void WaitForLockRelease(params string[] files)
-		{
-			bool anyFileLocked;
-			int iterations = 0;
-			do
-			{
-				anyFileLocked = false;
-				for (int i = 0; i < files.Length; i++)
-				{
-					if (IsFileLocked(files[i]))
-					{
-						anyFileLocked = true;
-						break;
-					}
-				}
-				if (anyFileLocked)
-				{
-					iterations++;
-					if (iterations > 0 && (iterations % 30) == 0)
-					{
-						Console.ForegroundColor = ConsoleColor.DarkGray;
-						Console.WriteLine("(waiting for file access) ");
-						Console.ResetColor();
-					}
-					Thread.Sleep(100);
-				}
-			} while (anyFileLocked);
-		}
-
-		private static void PerformRemove(XElement element)
-		{
-			XAttribute attribTarget = element.Attribute("target");
+			XAttribute attribTarget = commandElement.Attribute("target");
 			string target = (attribTarget != null) ? attribTarget.Value : null;
 
 			// Self Update is not supported. Skip it.
 			if (string.Equals(Path.GetFileName(target), selfFileName, StringComparison.InvariantCultureIgnoreCase))
 				return;
-
-			Console.Write("Delete '{0}'... ", target);
-			WaitForLockRelease(target);
+			
+			PrettyPrint.PrintCommand(
+				new PrettyPrint.Element("Delete", PrettyPrint.ElementType.Command),
+				new PrettyPrint.Element(target, PrettyPrint.ElementType.FilePathArgument));
+			IOHelper.WaitForLockRelease(target);
 
 			File.Delete(target);
-			RemoveEmptyDirectory(Path.GetDirectoryName(target));
+			IOHelper.RemoveEmptyDirectory(Path.GetDirectoryName(target));
 		}
-		private static void PerformUpdate(XElement element)
+		private static void PerformUpdate(XElement commandElement)
 		{
-			XAttribute attribSource = element.Attribute("source");
-			XAttribute attribTarget = element.Attribute("target");
+			XAttribute attribSource = commandElement.Attribute("source");
+			XAttribute attribTarget = commandElement.Attribute("target");
 			string source = (attribSource != null) ? attribSource.Value : null;
 			string target = (attribTarget != null) ? attribTarget.Value : null;
-
-			Console.Write("Copy '{0}' to '{1}'... ", source, target);
-			WaitForLockRelease(source, target);
+			
+			PrettyPrint.PrintCommand(
+				new PrettyPrint.Element("Copy", PrettyPrint.ElementType.Command),
+				new PrettyPrint.Element(source, PrettyPrint.ElementType.FilePathArgument),
+				new PrettyPrint.Element("to", PrettyPrint.ElementType.Command),
+				new PrettyPrint.Element(Path.GetDirectoryName(target), PrettyPrint.ElementType.FilePathArgument));
+			IOHelper.WaitForLockRelease(source, target);
 
 			string targetDir = Path.GetDirectoryName(target);
 			if (!string.IsNullOrEmpty(targetDir) && !Directory.Exists(targetDir))
@@ -238,17 +139,73 @@ namespace Duality.Updater
 
 			File.Copy(source, target, true);
 		}
-		private static void PerformIntegrateProject(XElement element)
+		private static void PerformIntegrateProject(XElement commandElement)
 		{
-			XAttribute attribProject = element.Attribute("project");
-			XAttribute attribSolution = element.Attribute("solution");
-			string project = (attribProject != null) ? attribProject.Value : null;
-			string solution = (attribSolution != null) ? attribSolution.Value : null;
+			XAttribute attribProject = commandElement.Attribute("project");
+			XAttribute attribSolution = commandElement.Attribute("solution");
+			string projectFile = (attribProject != null) ? attribProject.Value : null;
+			string solutionFile = (attribSolution != null) ? attribSolution.Value : null;
+			
+			PrettyPrint.PrintCommand(
+				new PrettyPrint.Element("Integrating", PrettyPrint.ElementType.Command),
+				new PrettyPrint.Element(projectFile, PrettyPrint.ElementType.FilePathArgument),
+				new PrettyPrint.Element("into", PrettyPrint.ElementType.Command),
+				new PrettyPrint.Element(solutionFile, PrettyPrint.ElementType.FilePathArgument));
+			IOHelper.WaitForLockRelease(projectFile, solutionFile);
 
-			Console.Write("Integrating '{0}' into '{1}'... ", project, solution);
-			WaitForLockRelease(project, solution);
+			// Read the project file
+			XDocument csproj = XDocument.Load(projectFile);
 
-			// ToDo
+			// Set up schedule for elements to remove
+			List<XElement> removeElements = new List<XElement>();
+
+			// Remove all elements that have been flagged to not be included in Duality packages
+			foreach (var element in csproj.Descendants("DualityPackageExcludeParentElement", true))
+			{
+				removeElements.Add(element.Parent);
+			}
+
+			// Remove all traces of NuGet. Dependencies are handled by Duality Package Management!
+			{
+				// Get rid of packages.config items
+				foreach (var attribute in csproj.Descendants("ItemGroup", true).Elements().Attributes("Include", true))
+				{
+					if (string.Equals(attribute.Value, "packages.config", StringComparison.InvariantCultureIgnoreCase))
+					{
+						removeElements.Add(attribute.Parent);
+					}
+				}
+
+				// Get rid of NuGet imports
+				foreach (var attribute in csproj.Descendants("Import", true).Attributes("Project", true))
+				{
+					string lowerAttrib = attribute.Value.ToLower();
+					if (lowerAttrib.Contains(".nuget") || lowerAttrib.Contains("nuget.targets"))
+					{
+						removeElements.Add(attribute.Parent);
+					}
+				}
+
+				// Get rid of NuGet target data
+				foreach (var attribute in csproj.Descendants("Target", true).Attributes("Name", true))
+				{
+					string lowerAttrib = attribute.Value.ToLower();
+					if (lowerAttrib.Contains("EnsureNuGetPackageBuildImports".ToLower()))
+					{
+						removeElements.Add(attribute.Parent);
+					}
+				}
+			}
+
+			// Remove all elements that were scheduled for removal
+			foreach (var element in removeElements)
+			{
+				element.RemoveUpwards();
+			}
+
+			// ToDo: Remove all NuGet-related data, as Duality handles it via dependencies
+			// ToDo: Transform all References and Project References
+			// ToDo: Add PropertyGroups for debugging the code (StartProgram stuff)
 		}
 	}
 }
