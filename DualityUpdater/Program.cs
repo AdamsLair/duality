@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
@@ -32,27 +33,48 @@ namespace Duality.Updater
 			Console.WriteLine("Begin applying update");
 			Console.WriteLine();
 
+			// Retrieve elements and order them
 			XDocument updateDoc = XDocument.Load(updateFilePath);
-			string lastCommandName = null;
-			foreach (XElement elem in updateDoc.Root.Elements())
+			List<CommandInfo> commands = new List<CommandInfo>();
 			{
-				string commandName = elem.Name.LocalName;
+				int elementIndex = 0;
+				foreach (XElement element in updateDoc.Root.Elements())
+				{
+					commands.Add(new CommandInfo(element, elementIndex));
+					elementIndex++;
+				}
+				commands.Sort((a, b) => Comparer<int>.Default.Compare(a.SortValue, b.SortValue));
+			}
 
-				if (!string.Equals(commandName, lastCommandName, StringComparison.InvariantCultureIgnoreCase))
+			// Perform operations in order
+			CommandType lastCommandType = CommandType.Unknown;
+			for (int i = 0; i < commands.Count; i++)
+			{
+				CommandInfo command = commands[i];
+				if (command.Type != lastCommandType)
 				{
 					Console.WriteLine();
 				}
 
 				try
 				{
-					if (string.Equals(commandName, "Remove", StringComparison.InvariantCultureIgnoreCase))
-						PerformRemove(elem);
-					else if (string.Equals(commandName, "Update", StringComparison.InvariantCultureIgnoreCase))
-						PerformUpdate(elem);
-					else if (string.Equals(commandName, "IntegrateProject", StringComparison.InvariantCultureIgnoreCase))
-						PerformIntegrateProject(elem);
-					else
-						throw new InvalidOperationException(string.Format("Unknown command: {0}", commandName));
+					switch (command.Type)
+					{
+						case CommandType.Remove:
+							PerformRemove(command.Element);
+							break;
+						case CommandType.Update:
+							PerformUpdate(command.Element);
+							break;
+						case CommandType.IntegrateProject:
+							PerformIntegrateProject(command.Element);
+							break;
+						case CommandType.SeparateProject:
+							PerformSeparateProject(command.Element);
+							break;
+						default:
+							throw new InvalidOperationException(string.Format("Unknown command: {0}", command.Element.Name));
+					}
 
 					Console.ForegroundColor = ConsoleColor.Green;
 					Console.WriteLine("success");
@@ -69,7 +91,7 @@ namespace Duality.Updater
 					IOHelper.WaitForUserRead();
 					anyErrorOccurred = true;
 				}
-				lastCommandName = commandName;
+				lastCommandType = command.Type;
 			}
 
 			// If an error occurred, abort here
@@ -143,69 +165,279 @@ namespace Duality.Updater
 		{
 			XAttribute attribProject = commandElement.Attribute("project");
 			XAttribute attribSolution = commandElement.Attribute("solution");
+			XAttribute attribPluginDir = commandElement.Attribute("pluginDirectory");
 			string projectFile = (attribProject != null) ? attribProject.Value : null;
 			string solutionFile = (attribSolution != null) ? attribSolution.Value : null;
-			
+			string pluginDirectory = (attribPluginDir != null) ? attribPluginDir.Value : null;
+			string projectRelativeBaseDir = IOHelper.MakePathRelative(".", Path.GetDirectoryName(projectFile));
+			string solutionRelativeProjectPath = IOHelper.MakePathRelative(projectFile, Path.GetDirectoryName(solutionFile));
+			Guid projectGuid = Guid.NewGuid();
+
 			PrettyPrint.PrintCommand(
 				new PrettyPrint.Element("Integrating", PrettyPrint.ElementType.Command),
 				new PrettyPrint.Element(projectFile, PrettyPrint.ElementType.FilePathArgument),
 				new PrettyPrint.Element("into", PrettyPrint.ElementType.Command),
 				new PrettyPrint.Element(solutionFile, PrettyPrint.ElementType.FilePathArgument));
+
+			if (!File.Exists(solutionFile))
+			{
+				Console.Write("(skip) ");
+				return;
+			}
+
 			IOHelper.WaitForLockRelease(projectFile, solutionFile);
 
-			// Read the project file
-			XDocument csproj = XDocument.Load(projectFile);
-
-			// Set up schedule for elements to remove
-			List<XElement> removeElements = new List<XElement>();
-
-			// Remove all elements that have been flagged to not be included in Duality packages
-			foreach (var element in csproj.Descendants("DualityPackageExcludeParentElement", true))
 			{
-				removeElements.Add(element.Parent);
-			}
-
-			// Remove all traces of NuGet. Dependencies are handled by Duality Package Management!
-			{
-				// Get rid of packages.config items
-				foreach (var attribute in csproj.Descendants("ItemGroup", true).Elements().Attributes("Include", true))
+				// Read the project file
+				XDocument csproj = XDocument.Load(projectFile);
+				XElement guidElement = csproj.Root.Descendants("ProjectGuid", true).FirstOrDefault();
+				if (guidElement != null)
 				{
-					if (string.Equals(attribute.Value, "packages.config", StringComparison.InvariantCultureIgnoreCase))
+					Guid guid;
+					if (Guid.TryParse(guidElement.Value, out guid))
 					{
-						removeElements.Add(attribute.Parent);
+						projectGuid = guid;
 					}
 				}
 
-				// Get rid of NuGet imports
-				foreach (var attribute in csproj.Descendants("Import", true).Attributes("Project", true))
+				// Set up schedule for elements to remove
+				List<XElement> removeElements = new List<XElement>();
+
+				// Remove all elements that have been flagged to not be included in Duality packages
+				foreach (var element in csproj.Descendants("DualityPackageExcludeParentElement", true))
 				{
-					string lowerAttrib = attribute.Value.ToLower();
-					if (lowerAttrib.Contains(".nuget") || lowerAttrib.Contains("nuget.targets"))
+					removeElements.Add(element.Parent);
+				}
+
+				// Remove all traces of NuGet. Dependencies are handled by Duality Package Management!
+				{
+					// Get rid of packages.config items
+					foreach (var attribute in csproj.Descendants("ItemGroup", true).Elements().Attributes("Include", true))
 					{
-						removeElements.Add(attribute.Parent);
+						if (string.Equals(attribute.Value, "packages.config", StringComparison.InvariantCultureIgnoreCase))
+						{
+							removeElements.Add(attribute.Parent);
+						}
+					}
+
+					// Get rid of NuGet imports
+					foreach (var attribute in csproj.Descendants("Import", true).Attributes("Project", true))
+					{
+						string lowerAttrib = attribute.Value.ToLower();
+						if (lowerAttrib.Contains(".nuget") || lowerAttrib.Contains("nuget.targets"))
+						{
+							removeElements.Add(attribute.Parent);
+						}
+					}
+
+					// Get rid of NuGet target data
+					foreach (var attribute in csproj.Descendants("Target", true).Attributes("Name", true))
+					{
+						string lowerAttrib = attribute.Value.ToLower();
+						if (lowerAttrib.Contains("EnsureNuGetPackageBuildImports".ToLower()))
+						{
+							removeElements.Add(attribute.Parent);
+						}
 					}
 				}
 
-				// Get rid of NuGet target data
-				foreach (var attribute in csproj.Descendants("Target", true).Attributes("Name", true))
+				// Transform reference HintPaths to local relative paths
+				foreach (var element in csproj.Descendants("Reference", true).Elements("HintPath", true))
 				{
-					string lowerAttrib = attribute.Value.ToLower();
-					if (lowerAttrib.Contains("EnsureNuGetPackageBuildImports".ToLower()))
+					string assemblyPath = element.Value;
+					string assemblyFileName = Path.GetFileName(assemblyPath);
+					if (File.Exists(assemblyFileName))
 					{
-						removeElements.Add(attribute.Parent);
+						element.Value = Path.Combine(projectRelativeBaseDir, assemblyFileName);
+					}
+					else
+					{
+						foreach (string file in Directory.EnumerateFiles(pluginDirectory, assemblyFileName, SearchOption.AllDirectories))
+						{
+							element.Value = Path.Combine(projectRelativeBaseDir, file);
+							break;
+						}
 					}
 				}
+
+				// Transform project references to local relative paths
+				XElement referenceGroup = csproj.Descendants("Reference", true).First().Parent;
+				foreach (var element in csproj.Descendants("ProjectReference", true))
+				{
+					string projectPath = element.Attribute("Include", true).Value;
+					string assemblyFileName = Path.GetFileNameWithoutExtension(projectPath) + ".dll";
+					string assemblyPath = null;
+					if (File.Exists(assemblyFileName))
+					{
+						assemblyPath = assemblyFileName;
+					}
+					else
+					{
+						foreach (string file in Directory.EnumerateFiles(pluginDirectory, assemblyFileName, SearchOption.AllDirectories))
+						{
+							assemblyPath = file;
+							break;
+						}
+					}
+					if (!string.IsNullOrEmpty(assemblyPath) && File.Exists(assemblyPath))
+					{
+						XNamespace defaultNs = referenceGroup.Name.Namespace;
+						AssemblyName name = AssemblyName.GetAssemblyName(assemblyPath);
+						referenceGroup.Add(new XElement(defaultNs + "Reference",
+							new XAttribute("Include", name.ToString()),
+							new XElement(defaultNs + "HintPath", Path.Combine(projectRelativeBaseDir, assemblyPath))));
+						removeElements.Add(element);
+					}
+				}
+
+				// Remove all elements that were scheduled for removal
+				foreach (var element in removeElements)
+				{
+					element.RemoveUpwards();
+				}
+
+				// Add a new post-build step that copies the files
+				string postBuildCommand =
+					"mkdir \"$(SolutionDir)../../Plugins\"" + Environment.NewLine +
+					"copy \"$(TargetPath)\" \"$(SolutionDir)../../Plugins\"" + Environment.NewLine +
+					"xcopy /Y \"$(TargetDir)*.xml\" \"$(SolutionDir)../../Plugins\"";
+				XElement postBuildElement = csproj.Descendants("PostBuildEvent", true).FirstOrDefault();
+				if (postBuildElement == null)
+				{
+					XNamespace defaultNs = referenceGroup.Name.Namespace;
+					csproj.Root.Add(new XElement(defaultNs + "PropertyGroup", postBuildElement = new XElement(defaultNs + "PostBuildEvent")));
+				}
+				postBuildElement.Value = (postBuildElement.Value ?? "") + Environment.NewLine + postBuildCommand;
+
+				// Save the project file and be done with it
+				csproj.Save(projectFile);
 			}
 
-			// Remove all elements that were scheduled for removal
-			foreach (var element in removeElements)
+			// Add the project to the existing solution
 			{
-				element.RemoveUpwards();
+				List<string> solutionLines = File.ReadAllLines(solutionFile).ToList();
+				Guid projectTypeGuid = Guid.Parse("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}");
+
+				// Just to be sure, see if we can extract the project type Guid from existing C# project references.
+				foreach (string line in solutionLines)
+				{
+					string trimmedLine = line.Trim();
+					if (line.StartsWith("Project(") && line.Contains(".csproj"))
+					{
+						string[] token = line.Split('"');
+						if (token.Length > 1)
+						{
+							string csprojGuidString = token[1];
+							Guid guidFromFile;
+							if (Guid.TryParse(csprojGuidString, out guidFromFile))
+							{
+								projectTypeGuid = guidFromFile;
+							}
+						}
+					}
+				}
+
+				// Add a new project reference to the solution
+				int projectIndex = solutionLines.LastIndexOf("EndProject");
+				if (projectIndex == -1) projectIndex = solutionLines.Count - 1;
+				solutionLines.Insert(projectIndex + 1, string.Format("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"", 
+					projectTypeGuid, 
+					Path.GetFileNameWithoutExtension(projectFile), 
+					solutionRelativeProjectPath, 
+					projectGuid));
+				solutionLines.Insert(projectIndex + 2, "EndProject");
+
+				File.WriteAllLines(solutionFile, solutionLines);
+			}
+		}
+		private static void PerformSeparateProject(XElement commandElement)
+		{
+			XAttribute attribProject = commandElement.Attribute("project");
+			XAttribute attribSolution = commandElement.Attribute("solution");
+			string projectFile = (attribProject != null) ? attribProject.Value : null;
+			string solutionFile = (attribSolution != null) ? attribSolution.Value : null;
+			string projectRelativeBaseDir = IOHelper.MakePathRelative(".", Path.GetDirectoryName(projectFile));
+			string solutionRelativeProjectPath = IOHelper.MakePathRelative(projectFile, Path.GetDirectoryName(solutionFile));
+			
+			PrettyPrint.PrintCommand(
+				new PrettyPrint.Element("Separating", PrettyPrint.ElementType.Command),
+				new PrettyPrint.Element(projectFile, PrettyPrint.ElementType.FilePathArgument),
+				new PrettyPrint.Element("from", PrettyPrint.ElementType.Command),
+				new PrettyPrint.Element(solutionFile, PrettyPrint.ElementType.FilePathArgument));
+
+			if (!File.Exists(solutionFile))
+			{
+				Console.Write("(skip) ");
+				return;
 			}
 
-			// ToDo: Remove all NuGet-related data, as Duality handles it via dependencies
-			// ToDo: Transform all References and Project References
-			// ToDo: Add PropertyGroups for debugging the code (StartProgram stuff)
+			IOHelper.WaitForLockRelease(projectFile, solutionFile);
+
+			// Remove the project from the existing solution
+			{
+				List<string> solutionLines = File.ReadAllLines(solutionFile).ToList();
+
+				// Find the line where this project is referenced
+				string projectFileName = Path.GetFileName(projectFile);
+				int startIndex = -1;
+				int endIndex = -1;
+				for (int i = 0; i < solutionLines.Count; i++)
+				{
+					string line = solutionLines[i];
+					if (startIndex == -1 && line.Contains(projectFileName))
+					{
+						startIndex = i;
+					}
+					if (startIndex != -1 && line.Contains("EndProject"))
+					{
+						endIndex = i;
+						break;
+					}
+				}
+				solutionLines.RemoveRange(startIndex, 1 + endIndex - startIndex);
+
+				File.WriteAllLines(solutionFile, solutionLines);
+			}
+		}
+
+		private enum CommandType
+		{
+			Unknown,
+			Remove,
+			Update,
+			IntegrateProject,
+			SeparateProject
+		}
+		private struct CommandInfo
+		{
+			public XElement Element;
+			public int SortValue;
+			public CommandType Type;
+
+			public CommandInfo(XElement element, int sortOffset)
+			{
+				this.Element = element;
+				if (!Enum.TryParse(element.Name.LocalName, true, out this.Type))
+				{
+					this.Type = Program.CommandType.Unknown;
+				}
+				switch (this.Type)
+				{
+					default:
+						this.SortValue = sortOffset + 0;
+						break;
+					case Program.CommandType.IntegrateProject:
+						this.SortValue = sortOffset + 100000;
+						break;
+					case Program.CommandType.SeparateProject:
+						this.SortValue = sortOffset - 100000;
+						break;
+				}
+			}
+			public override string ToString()
+			{
+				return string.Format("{0}: {1}", this.Type, this.Element.Attributes().ToString(a => a.ToString(), ", "));
+			}
 		}
 	}
 }

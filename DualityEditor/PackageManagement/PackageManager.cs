@@ -591,7 +591,8 @@ namespace Duality.Editor.PackageManagement
 		private void AppendDeleteUpdateFileEntry(XDocument updateDoc, string deleteTarget)
 		{
 			// Remove previous elements referring to the yet-to-delete file
-			this.RemoveUpdateFileEntries(updateDoc, null, deleteTarget);
+			this.RemoveUpdateFileEntries(updateDoc, "Update", deleteTarget);
+			this.RemoveUpdateFileEntries(updateDoc, "IntegrateProject", deleteTarget);
 
 			// Append the delete entry
 			updateDoc.Root.Add(new XElement("Remove", 
@@ -602,9 +603,20 @@ namespace Duality.Editor.PackageManagement
 			// Remove previous deletion schedules referring to the copy target
 			this.RemoveUpdateFileEntries(updateDoc, "Remove", projectFile);
 			this.RemoveUpdateFileEntries(updateDoc, "Remove", solutionFile);
+			this.RemoveUpdateFileEntries(updateDoc, "SeparateProject", solutionFile);
 
 			// Append the integrate entry
 			updateDoc.Root.Add(new XElement("IntegrateProject", 
+				new XAttribute("project", projectFile), 
+				new XAttribute("solution", solutionFile), 
+				new XAttribute("pluginDirectory", DualityApp.PluginDirectory)));
+		}
+		private void AppendSeparateProjectUpdateFileEntry(XDocument updateDoc, string projectFile, string solutionFile)
+		{
+			this.RemoveUpdateFileEntries(updateDoc, "IntegrateProject", projectFile);
+
+			// Append the integrate entry
+			updateDoc.Root.Add(new XElement("SeparateProject", 
 				new XAttribute("project", projectFile), 
 				new XAttribute("solution", solutionFile)));
 		}
@@ -758,6 +770,8 @@ namespace Duality.Editor.PackageManagement
 
 				// Append the scheduled operation to the updater config file.
 				this.AppendDeleteUpdateFileEntry(updateDoc, packageFile);
+				if (Path.GetExtension(packageFile) == ".csproj")
+					this.AppendSeparateProjectUpdateFileEntry(updateDoc, packageFile, EditorHelper.SourceCodeSolutionFile);
 			}
 			updateDoc.Save(this.UpdateFilePath);
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -37,6 +38,13 @@ namespace Duality.Updater
 			else
 				return container.Elements(name);
 		}
+		public static XAttribute Attribute(this XElement element, XName name, bool ignoreNamespace)
+		{
+			if (ignoreNamespace)
+				return element.Attributes().Where(a => a.Name.LocalName == name.LocalName).FirstOrDefault();
+			else
+				return element.Attribute(name);
+		}
 		public static IEnumerable<XAttribute> Attributes(this XElement element, XName name, bool ignoreNamespace)
 		{
 			if (ignoreNamespace)
@@ -58,6 +66,17 @@ namespace Duality.Updater
 			element.Remove();
 			if (parent != null && !parent.Nodes().Any())
 				parent.RemoveUpwards();
+		}
+
+		public static string ToString<T>(this IEnumerable<T> collection, Func<T, string> toString, string separator)
+		{
+			StringBuilder sb = new StringBuilder();
+			foreach (var item in collection)
+			{
+				sb.Append(toString(item));
+				sb.Append(separator);
+			}
+			return sb.ToString(0, Math.Max(0, sb.Length - separator.Length));  // Remove at the end is faster
 		}
 	}
 }
