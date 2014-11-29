@@ -148,6 +148,10 @@ namespace Duality.Updater
 			string source = (attribSource != null) ? attribSource.Value : null;
 			string target = (attribTarget != null) ? attribTarget.Value : null;
 			
+			// Self Update is not supported. Skip it.
+			if (string.Equals(Path.GetFileName(target), selfFileName, StringComparison.InvariantCultureIgnoreCase))
+				return;
+
 			PrettyPrint.PrintCommand(
 				new PrettyPrint.Element("Copy", PrettyPrint.ElementType.Command),
 				new PrettyPrint.Element(source, PrettyPrint.ElementType.FilePathArgument),
