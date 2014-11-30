@@ -281,59 +281,63 @@ namespace Duality.Editor
 				});
 			}
 
-			// Adjust current directory for further operations
+			// Adjust current directory and perform init operations in the new project folder
 			string oldPath = Environment.CurrentDirectory;
 			Environment.CurrentDirectory = projFolder;
-
-			// Initialize AppData
-			DualityAppData data;
-			data = Formatter.TryReadObject<DualityAppData>(DualityApp.AppDataPath) ?? new DualityAppData();
-			data.AppName = projName;
-			data.AuthorName = Environment.UserName;
-			data.Version = 0;
-			Formatter.WriteObject(data, DualityApp.AppDataPath, FormattingMethod.Xml);
-			
-			// Read content source code data (needed to rename classes / namespaces)
-			string oldRootNamespaceNameCore;
-			string newRootNamespaceNameCore;
-			DualityEditorApp.ReadPluginSourceCodeContentData(out oldRootNamespaceNameCore, out newRootNamespaceNameCore);
-
-			// Initialize source code
-			DualityEditorApp.InitPluginSourceCode(); // Force re-init to update namespaces, etc.
-			DualityEditorApp.UpdatePluginSourceCode();
-
-			// Add SerializeErrorHandler class to handle renamed Types
-			if (Directory.Exists(DualityApp.DataDirectory))
+			try
 			{
-				// Add error handler source file to project
-				XDocument coreProject = XDocument.Load(SourceCodeProjectCorePluginFile);
-				string relErrorHandlerPath = PathHelper.MakeFilePathRelative(
-					SourceCodeErrorHandlerFile, 
-					Path.GetDirectoryName(SourceCodeProjectCorePluginFile));
-				if (!coreProject.Descendants("Compile", true).Any(c => string.Equals(c.GetAttributeValue("Include"), relErrorHandlerPath)))
+				// Initialize AppData
+				DualityAppData data;
+				data = Formatter.TryReadObject<DualityAppData>(DualityApp.AppDataPath) ?? new DualityAppData();
+				data.AppName = projName;
+				data.AuthorName = Environment.UserName;
+				data.Version = 0;
+				Formatter.WriteObject(data, DualityApp.AppDataPath, FormattingMethod.Xml);
+			
+				// Read content source code data (needed to rename classes / namespaces)
+				string oldRootNamespaceNameCore;
+				string newRootNamespaceNameCore;
+				DualityEditorApp.ReadPluginSourceCodeContentData(out oldRootNamespaceNameCore, out newRootNamespaceNameCore);
+
+				// Initialize source code
+				DualityEditorApp.InitPluginSourceCode(); // Force re-init to update namespaces, etc.
+				DualityEditorApp.UpdatePluginSourceCode();
+
+				// Add SerializeErrorHandler class to handle renamed Types
+				if (Directory.Exists(DualityApp.DataDirectory))
 				{
-					XElement compileElement = coreProject.Descendants("Compile", true).FirstOrDefault();
-					XElement newCompileElement = new XElement(
-						XName.Get("Compile", compileElement.Name.NamespaceName), 
-						new XAttribute("Include", relErrorHandlerPath));
-					compileElement.AddAfterSelf(newCompileElement);
+					// Add error handler source file to project
+					XDocument coreProject = XDocument.Load(SourceCodeProjectCorePluginFile);
+					string relErrorHandlerPath = PathHelper.MakeFilePathRelative(
+						SourceCodeErrorHandlerFile, 
+						Path.GetDirectoryName(SourceCodeProjectCorePluginFile));
+					if (!coreProject.Descendants("Compile", true).Any(c => string.Equals(c.GetAttributeValue("Include"), relErrorHandlerPath)))
+					{
+						XElement compileElement = coreProject.Descendants("Compile", true).FirstOrDefault();
+						XElement newCompileElement = new XElement(
+							XName.Get("Compile", compileElement.Name.NamespaceName), 
+							new XAttribute("Include", relErrorHandlerPath));
+						compileElement.AddAfterSelf(newCompileElement);
+					}
+					coreProject.Save(SourceCodeProjectCorePluginFile);
+
+					// Generate and save error handler source code
+					File.WriteAllText(
+						EditorHelper.SourceCodeErrorHandlerFile, 
+						EditorHelper.GenerateErrorHandlersSrcFile(oldRootNamespaceNameCore, newRootNamespaceNameCore));
 				}
-				coreProject.Save(SourceCodeProjectCorePluginFile);
 
-				// Generate and save error handler source code
-				File.WriteAllText(
-					EditorHelper.SourceCodeErrorHandlerFile, 
-					EditorHelper.GenerateErrorHandlersSrcFile(oldRootNamespaceNameCore, newRootNamespaceNameCore));
+				// Compile plugins
+				var buildProperties = new Dictionary<string, string>();
+				buildProperties["Configuration"] = "Release";
+				var buildRequest = new BuildRequestData(EditorHelper.SourceCodeSolutionFile, buildProperties, null, new string[] { "Build" }, null);
+				var buildParameters = new BuildParameters();
+				var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
 			}
-
-			// Compile plugins
-			var buildProperties = new Dictionary<string, string>();
-			buildProperties["Configuration"] = "Release";
-			var buildRequest = new BuildRequestData(EditorHelper.SourceCodeSolutionFile, buildProperties, null, new string[] { "Build" }, null);
-			var buildParameters = new BuildParameters();
-			var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
-
-			Environment.CurrentDirectory = oldPath;
+			finally
+			{
+				Environment.CurrentDirectory = oldPath;
+			}
 			return Path.Combine(projFolder, "DualityEditor.exe");
 		}
 

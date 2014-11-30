@@ -514,4 +514,10 @@
   <data name="TaskInstallPackages_Desc" xml:space="preserve">
     <value>Duality is installing some required packages. This may include downloading them from the central package repository.</value>
   </data>
+  <data name="Msg_ErrorCantCreateProject_Caption" xml:space="preserve">
+    <value>Error Creating Project</value>
+  </data>
+  <data name="Msg_ErrorCantCreateProject_Desc" xml:space="preserve">
+    <value>Can't create a new project, because a error occurred : {1}{0}</value>
+  </data>
 </root>

@@ -807,6 +807,24 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Error Creating Project ähnelt.
+        /// </summary>
+        public static string Msg_ErrorCantCreateProject_Caption {
+            get {
+                return ResourceManager.GetString("Msg_ErrorCantCreateProject_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Can&apos;t create a new project, because a error occurred : {1}{0} ähnelt.
+        /// </summary>
+        public static string Msg_ErrorCantCreateProject_Desc {
+            get {
+                return ResourceManager.GetString("Msg_ErrorCantCreateProject_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Error ähnelt.
         /// </summary>
         public static string Msg_ErrorDirectoryNotFound_Caption {

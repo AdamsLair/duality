@@ -182,7 +182,18 @@ namespace Duality.Editor.Forms
 			}
 
 			// Create a new project
-			this.resultEditorBinary = EditorHelper.CreateNewProject(this.textBoxName.Text, this.textBoxFolder.Text, this.selectedTemplate);
+			try
+			{
+				this.resultEditorBinary = EditorHelper.CreateNewProject(this.textBoxName.Text, this.textBoxFolder.Text, this.selectedTemplate);
+			}
+			catch (Exception exception)
+			{
+				this.resultEditorBinary = null;
+				MessageBox.Show(
+					string.Format(Properties.GeneralRes.Msg_ErrorCantCreateProject_Desc, Log.Exception(exception), Environment.NewLine),
+					Properties.GeneralRes.Msg_ErrorCantCreateProject_Caption, 
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
 
 			// Close successfully
 			this.DialogResult = this.resultEditorBinary != null ? DialogResult.OK : DialogResult.Cancel;
