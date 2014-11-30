@@ -67,7 +67,7 @@ namespace Duality.Tests
 				this.dummyWindow.ProcessEvents();
 				DualityApp.TargetResolution = new Vector2(this.dummyWindow.Width, this.dummyWindow.Height);
 				DualityApp.TargetMode = this.dummyWindow.Context.GraphicsMode;
-				ContentProvider.InitDefaultContent();
+				DualityApp.InitGraphics();
 			}
 
 			// Load local testing memory

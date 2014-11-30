@@ -294,7 +294,7 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Initializes this DualityApp. Should be called before performing any operations withing Duality.
+		/// Initializes this DualityApp. Should be called before performing any operations within Duality.
 		/// </summary>
 		/// <param name="context">The <see cref="ExecutionContext"/> in which Duality runs.</param>
 		/// <param name="args">
@@ -351,6 +351,34 @@ namespace Duality
 			AppDomain.CurrentDomain.UnhandledException	+= CurrentDomain_UnhandledException;
 			AppDomain.CurrentDomain.AssemblyResolve		+= CurrentDomain_AssemblyResolve;
 			AppDomain.CurrentDomain.AssemblyLoad		+= CurrentDomain_AssemblyLoad;
+
+			// Write systems specs as debug log
+			{
+				string osFriendlyName = null;
+				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+				{
+					if (Environment.OSVersion.Version >= new Version(6, 3, 0))
+						osFriendlyName = "Windows 8.1";
+					else if (Environment.OSVersion.Version >= new Version(6, 2, 0))
+						osFriendlyName = "Windows 8";
+					else if (Environment.OSVersion.Version >= new Version(6, 1, 0))
+						osFriendlyName = "Windows 7";
+					else if (Environment.OSVersion.Version >= new Version(6, 0, 0))
+						osFriendlyName = "Windows Vista";
+					else if (Environment.OSVersion.Version >= new Version(5, 2, 0))
+						osFriendlyName = "Windows XP 64 Bit Edition";
+					else if (Environment.OSVersion.Version >= new Version(5, 1, 0))
+						osFriendlyName = "Windows XP";
+					else if (Environment.OSVersion.Version >= new Version(5, 0, 0))
+						osFriendlyName = "Windows 2000";
+				}
+				Log.Core.Write("Initializing Duality...{0}Operating System: {1}{0}64 Bit Process: {2}{0}CLR Version: {3}{0}Processor Count: {4}", 
+					Environment.NewLine,
+					Environment.OSVersion + (osFriendlyName != null ? (" (" + osFriendlyName + ")") : ""),
+					Environment.Is64BitProcess,
+					Environment.Version,
+					Environment.ProcessorCount);
+			}
 
 			sound = new SoundDevice();
 			LoadPlugins();
@@ -461,6 +489,34 @@ namespace Duality
 
 			initialized = false;
 			execContext = ExecutionContext.Terminated;
+		}
+		/// <summary>
+		/// Initializes the part of Duality that requires a valid rendering context. Should be called before
+		/// performing any rendering related operations with Dualit.
+		/// </summary>
+		public static void InitGraphics()
+		{
+			if (!initialized) throw new InvalidOperationException("Can't initialize graphics / rendering because Duality itself isn't initialized yet.");
+
+			// Determine OpenGL capabilities and log them
+			try
+			{
+				CheckOpenGLErrors();
+				Log.Core.Write("Initializing Graphics{0}OpenGL Version: {1}{0}Vendor: {2}{0}Renderer: {3}{0}Shading Language Version: {4}",
+					Environment.NewLine,
+					GL.GetString(StringName.Version),
+					GL.GetString(StringName.Vendor),
+					GL.GetString(StringName.Renderer),
+					GL.GetString(StringName.ShadingLanguageVersion));
+				CheckOpenGLErrors();
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", Log.Exception(e));
+			}
+
+			// Initialize default content
+			ContentProvider.InitDefaultContent();
 		}
 
 		/// <summary>

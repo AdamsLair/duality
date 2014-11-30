@@ -147,7 +147,7 @@ namespace Duality.Launcher
 				launcherWindow.VSync = (isProfiling || isDebugging || DualityApp.UserData.RefreshMode != RefreshMode.VSync) ? VSyncMode.Off : VSyncMode.On;
 				DualityApp.TargetResolution = new Vector2(launcherWindow.ClientSize.Width, launcherWindow.ClientSize.Height);
 				DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
-				ContentProvider.InitDefaultContent();
+				DualityApp.InitGraphics();
 
 				// Input setup
 				DualityApp.Mouse.Source = new GameWindowMouseInputSource(launcherWindow.Mouse, launcherWindow.SetMouseDeviceX, launcherWindow.SetMouseDeviceY);

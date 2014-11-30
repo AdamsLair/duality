@@ -237,7 +237,7 @@ namespace Duality.Editor
 			DualityApp.PluginReady += DualityApp_PluginReady;
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, new[] {"logfile", "logfile_editor"});
 			InitMainGLContext();
-			ContentProvider.InitDefaultContent();
+			DualityApp.InitGraphics();
 			LoadPlugins();
 			LoadUserData();
 			InitPlugins();

@@ -31,7 +31,7 @@ namespace Duality.VisualStudio
 				launcherWindow.MakeCurrent();
 				DualityApp.TargetResolution = new Vector2(launcherWindow.Width, launcherWindow.Height);
 				DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
-				ContentProvider.InitDefaultContent();
+				DualityApp.InitGraphics();
 
 				// Run tests
 				BitmapDebuggerVisualizer.TestShow(Pixmap.DualityIcon.Res);
