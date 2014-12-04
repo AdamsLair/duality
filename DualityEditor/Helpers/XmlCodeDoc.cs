@@ -249,13 +249,12 @@ namespace Duality.Editor
 			if (memberType == null) return null;
 
 			// Determine the member info
-			MemberInfo member = null;
 			if (memberEntryType == EntryType.Type)
-				member = memberType;
+				return memberType;
 			else if (memberEntryType == EntryType.Field)
-				member = memberType.GetField(memberName, ReflectionHelper.BindAll);
+				return memberType.GetField(memberName, ReflectionHelper.BindAll);
 			else if (memberEntryType == EntryType.Event)
-				member = memberType.GetEvent(memberName, ReflectionHelper.BindAll);
+				return memberType.GetEvent(memberName, ReflectionHelper.BindAll);
 			else if (memberEntryType == EntryType.Property)
 			{
 				string methodName;
@@ -287,7 +286,12 @@ namespace Duality.Editor
 					methodName = memberName;
 					paramTypes = Type.EmptyTypes;
 				}
-				member = memberType.GetProperty(methodName, ReflectionHelper.BindAll, null, null, paramTypes, null);
+
+				// If we can't resolve one of our parameter names, don't try to retrieve the member
+				if (paramTypes.Any(p => p == null))
+					return null;
+
+				return memberType.GetProperty(methodName, ReflectionHelper.BindAll, null, null, paramTypes, null);
 			}
 			else if (memberEntryType == EntryType.Method)
 			{
@@ -332,11 +336,15 @@ namespace Duality.Editor
 
 					if (paramTypeByRef[i] && paramTypes[i] != null) paramTypes[i] = paramTypes[i].MakeByRefType();
 				}
-
+				
 				if (methodName == "#ctor") memberEntryType = EntryType.Constructor;
 				if (memberEntryType == EntryType.Constructor)
 				{
-					member = memberType.GetConstructor(paramTypes);
+					// If we can't resolve one of our parameter names, don't try to retrieve the member
+					if (paramTypes.Any(p => p == null))
+						return null;
+
+					return memberType.GetConstructor(paramTypes);
 				}
 				else
 				{
@@ -380,15 +388,12 @@ namespace Duality.Editor
 							}
 						}
 						if (possibleMatch)
-						{
-							member = method;
-							break;
-						}
+							return method;
 					}
 				}
 			}
 
-			return member;
+			return null;
 		}
 		private static Type ResolveDocStyleType(string typeString, MethodInfo declaringMethod = null)
 		{
