@@ -494,9 +494,9 @@ namespace Duality.Resources
 		new internal void RunCleanup()
 		{
 			this.objectManager.Flush();
-			this.renderers.FlushDisposedObj();
+			this.renderers.RemoveAll(i => i == null || i.Disposed);
 			foreach (var cmpList in this.componentyByType.Values)
-				cmpList.FlushDisposedObj();
+				cmpList.RemoveAll(i => i == null || i.Disposed);
 		}
 
 		/// <summary>

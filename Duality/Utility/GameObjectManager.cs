@@ -138,8 +138,18 @@ namespace Duality
 		/// </summary>
 		public void Flush()
 		{
-			List<GameObject> removed;
-			this.allObj.FlushDisposedObj(out removed);
+			// Determine which objects will be removed due to being disposed
+			List<GameObject> removed = new List<GameObject>();
+			foreach (GameObject obj in this.allObj)
+			{
+				if (obj.Disposed)
+					removed.Add(obj);
+			}
+
+			// Remove disposed objects
+			this.allObj.RemoveWhere(obj => obj.Disposed);
+
+			// Notify removed objects
 			foreach (GameObject obj in removed)
 				this.OnObjectRemoved(obj);
 		}
