@@ -10,7 +10,7 @@ namespace Duality
 	/// </summary>
 	public class GameObjectManager
 	{
-		private	HashSet<GameObject>	allObj	= new HashSet<GameObject>(new GameObjectComparer());
+		private	HashSet<GameObject>	allObj	= new HashSet<GameObject>();
 
 
 		/// <summary>
@@ -210,19 +210,6 @@ namespace Duality
 		{
 			if (this.ComponentRemoving != null)
 				this.ComponentRemoving(sender, e);
-		}
-	}
-
-	internal class GameObjectComparer : IEqualityComparer<GameObject>
-	{
-		public bool Equals(GameObject x, GameObject y)
-		{
-			return x.Id == y.Id;
-		}
-
-		public int GetHashCode(GameObject obj)
-		{
-			return obj.Id.GetHashCode();
 		}
 	}
 }
