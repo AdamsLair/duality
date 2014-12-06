@@ -5197,7 +5197,7 @@
                               </colorTint>
                               <customMat />
                               <gameobj dataType="ObjectRef">454883916</gameobj>
-                              <offset dataType="Int">0</offset>
+                              <offset dataType="Int">1</offset>
                               <pixelGrid dataType="Bool">false</pixelGrid>
                               <rect dataType="Struct" type="Duality.Rect">
                                 <H dataType="Float">264</H>
@@ -5288,7 +5288,7 @@
                               </colorTint>
                               <customMat />
                               <gameobj dataType="ObjectRef">2608259004</gameobj>
-                              <offset dataType="Int">0</offset>
+                              <offset dataType="Int">1</offset>
                               <pixelGrid dataType="Bool">false</pixelGrid>
                               <rect dataType="Struct" type="Duality.Rect">
                                 <H dataType="Float">149</H>
