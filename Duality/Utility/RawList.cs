@@ -261,16 +261,41 @@ namespace Duality
 		/// <returns></returns>
 		public int RemoveAll(Predicate<T> predicate)
 		{
-			int matchCount = 0;
-			for (int i = this.count - 1; i >= 0; i--)
+			int source = -1;
+			int count = -1;
+			for (int target = 0; target < this.count; target++)
 			{
-				if (predicate(this.data[i]))
+				// Search for the index we want to copy from
+				do
 				{
-					this.RemoveAt(i);
-					matchCount++;
+					source++;
+					if (source >= this.count)
+					{
+						count = target;
+						break;
+					}
+				}
+				while (predicate(this.data[source]));
+
+				// If we reached the end, stop
+				if (count != -1) break;
+
+				// Copy objects to their new indices
+				if (target != source)
+				{
+					this.data[target] = this.data[source];
 				}
 			}
-			return matchCount;
+
+			// Shrink the list accordingly.
+			if (count != this.count && count != -1)
+			{
+				int removedCount = this.count - count;
+				this.count -= removedCount;
+				return removedCount;
+			}
+
+			return 0;
 		}
 		/// <summary>
 		/// Clears the entire list of its contents and resets its size to zero.

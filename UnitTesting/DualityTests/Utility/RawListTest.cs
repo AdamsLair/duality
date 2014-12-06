@@ -112,5 +112,28 @@ namespace Duality.Tests.Utility
 			intList.Sort();
 			CollectionAssert.AreEqual(testArray, intList);
 		}
+		[Test] public void RemoveAll()
+		{
+			// Remove nothing
+			{
+				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
+				list.RemoveAll(i => false);
+				CollectionAssert.AreEqual(Enumerable.Range(0, 10), list);
+			}
+
+			// Remove everything
+			{
+				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
+				list.RemoveAll(i => true);
+				CollectionAssert.AreEqual(new int[0], list);
+			}
+
+			// Remove all even numbers
+			{
+				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
+				list.RemoveAll(i => i % 2 == 0);
+				CollectionAssert.AreEqual(new int[] { 1, 3, 5, 7, 9 }, list);
+			}
+		}
 	}
 }
