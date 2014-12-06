@@ -86,8 +86,14 @@ namespace Duality.Launcher
 					DisplayDevice.Default.RestoreResolution();
 					break;
 
-				case ScreenMode.Native:
 				case ScreenMode.FullWindow:
+					this.ClientSize = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
+					this.WindowState = WindowState.Fullscreen;
+					this.WindowBorder = WindowBorder.Hidden;
+					DisplayDevice.Default.RestoreResolution();
+					break;
+
+				case ScreenMode.Native:
 				case ScreenMode.Fullscreen:
 					this.WindowState = WindowState.Fullscreen;
 					this.WindowBorder = WindowBorder.Hidden;
