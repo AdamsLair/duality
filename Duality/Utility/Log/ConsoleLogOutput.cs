@@ -20,7 +20,8 @@ namespace Duality
 		/// <param name="source">The <see cref="Log"/> from which the message originates.</param>
 		/// <param name="type">The type of the log message.</param>
 		/// <param name="msg">The message to write.</param>
-		public override void Write(Log source, LogMessageType type, string msg)
+		/// <param name="context">The context in which this log was written. Usually the primary object the log entry is associated with.</param>
+		public override void Write(Log source, LogMessageType type, string msg, object context)
 		{
 			ConsoleColor clrBg = Console.BackgroundColor;
 			ConsoleColor clrFg = Console.ForegroundColor;
@@ -30,7 +31,7 @@ namespace Duality
 			else if (type == LogMessageType.Error)	Console.ForegroundColor = ConsoleColor.Red;
 			else									Console.ForegroundColor = ConsoleColor.Gray;
 
-			base.Write(source, type, msg);
+			base.Write(source, type, msg, context);
 
 			Console.ForegroundColor = clrFg;
 			Console.BackgroundColor = clrBg;

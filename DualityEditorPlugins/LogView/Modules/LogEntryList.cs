@@ -581,6 +581,15 @@ namespace Duality.Editor.Plugins.LogView
 			if (this.SelectedEntry != null)
 			{
 				this.entryMenu_CopyItem_Click(this, EventArgs.Empty);
+				if (this.selectedEntry.LogEntry.Context != null)
+				{
+					object contextObj = this.selectedEntry.LogEntry.Context;
+					if (contextObj is IContentRef)
+					{
+						contextObj = (contextObj as IContentRef).Res;
+					}
+					DualityEditorApp.Highlight(this, new ObjectSelection(new[] { contextObj }), HighlightMode.All);
+				}
 			}
 		}
 		protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)

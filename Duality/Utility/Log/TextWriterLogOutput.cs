@@ -21,7 +21,8 @@ namespace Duality
 		/// <param name="source">The <see cref="Log"/> from which the message originates.</param>
 		/// <param name="type">The type of the log message.</param>
 		/// <param name="msg">The message to write.</param>
-		public virtual void Write(Log source, LogMessageType type, string msg)
+		/// <param name="context">The context in which this log was written. Usually the primary object the log entry is associated with.</param>
+		public virtual void Write(Log source, LogMessageType type, string msg, object context)
 		{
 			int indent = source.Indent;
 			string[] lines = msg.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);

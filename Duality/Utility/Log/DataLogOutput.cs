@@ -34,6 +34,7 @@ namespace Duality
 			private	Log				source;
 			private	LogMessageType	type;
 			private	string			msg;
+			private	object			context;
 			private	int				indent;
 			private	DateTime		timestamp;
 			private	int				frameIndex;
@@ -60,6 +61,13 @@ namespace Duality
 				get { return this.msg; }
 			}
 			/// <summary>
+			/// The context in which this log was written. Usually the primary object the log entry is associated with.
+			/// </summary>
+			public object Context
+			{
+				get { return this.context; }
+			}
+			/// <summary>
 			/// [GET] The message's indent value.
 			/// </summary>
 			public int Indent
@@ -81,11 +89,12 @@ namespace Duality
 				get { return this.frameIndex; }
 			}
 
-			public LogEntry(Log source, LogMessageType type, string msg)
+			public LogEntry(Log source, LogMessageType type, string msg, object context)
 			{
 				this.source = source;
 				this.type = type;
 				this.msg = msg;
+				this.context = context;
 				this.indent = source.Indent;
 				this.timestamp = DateTime.Now;
 				this.frameIndex = Time.FrameCount;
@@ -110,10 +119,11 @@ namespace Duality
 		/// <param name="source">The <see cref="Log"/> from which the message originates.</param>
 		/// <param name="type">The type of the log message.</param>
 		/// <param name="msg">The message to write.</param>
-		public void Write(Log source, LogMessageType type, string msg)
+		/// <param name="context">The context in which this log was written. Usually the primary object the log entry is associated with.</param>
+		public void Write(Log source, LogMessageType type, string msg, object context)
 		{
 			LogEntry entry;
-			entry = new LogEntry(source, type, msg);
+			entry = new LogEntry(source, type, msg, context);
 			data.Add(entry);
 			this.OnNewEntry(entry);
 		}
