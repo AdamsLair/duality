@@ -37,10 +37,17 @@ namespace Duality.Components
 			private	BatchInfo					input			= null;
 			private	ContentRef<RenderTarget>	output			= ContentRef<RenderTarget>.Null;
 
+			[NonSerialized]
+			private EventHandler<CollectDrawcallEventArgs> collectDrawcalls	= null;
+
 			/// <summary>
 			/// Fired when collecting drawcalls for this pass. Note that not all passes do collect drawcalls (see <see cref="Input"/>)
 			/// </summary>
-			public event EventHandler<CollectDrawcallEventArgs> CollectDrawcalls	= null;
+			public event EventHandler<CollectDrawcallEventArgs> CollectDrawcalls
+			{
+				add { this.collectDrawcalls += value; }
+				remove { this.collectDrawcalls -= value; }
+			}
 			
 			/// <summary>
 			/// The input to use for rendering. This can for example be a <see cref="Duality.Resources.Texture"/> that
@@ -135,8 +142,8 @@ namespace Duality.Components
 			{
 				Profile.TimeCollectDrawcalls.BeginMeasure();
 
-				if (this.CollectDrawcalls != null)
-					this.CollectDrawcalls(this, new CollectDrawcallEventArgs(device));
+				if (this.collectDrawcalls != null)
+					this.collectDrawcalls(this, new CollectDrawcallEventArgs(device));
 
 				Profile.TimeCollectDrawcalls.EndMeasure();
 			}
