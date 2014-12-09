@@ -268,8 +268,9 @@ namespace Duality.Resources
 		}
 
 
-		private	Vector2			globalGravity	= Vector2.UnitY * 33.0f;
-		private	GameObject[]	serializeObj	= null;
+		private	Vector2						globalGravity		= Vector2.UnitY * 33.0f;
+		private IRendererVisibilityStrategy	visibilityStrategy	= new DefaultRendererVisibilityStrategy();
+		private	GameObject[]				serializeObj		= null;
 		[NonSerialized]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
@@ -281,7 +282,35 @@ namespace Duality.Resources
 		[CloneField(CloneFieldFlags.DontSkip)]
 		private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
 
-
+		
+		/// <summary>
+		/// [GET / SET] The strategy that is used to determine which <see cref="ICmpRenderer">renderers</see> are visible.
+		/// </summary>
+		public IRendererVisibilityStrategy VisibilityStrategy
+		{
+			get { return this.visibilityStrategy; }
+			set { this.visibilityStrategy = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Global gravity force that is applied to all objects that obey the laws of physics.
+		/// </summary>
+		public Vector2 GlobalGravity
+		{
+			get { return this.globalGravity; }
+			set
+			{
+				this.globalGravity = value;
+				if (this.IsCurrent)
+				{
+					physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
+					foreach (Body b in physicsWorld.BodyList)
+					{
+						if (b.IgnoreGravity || b.BodyType != BodyType.Dynamic) continue;
+						b.Awake = true;
+					}
+				}
+			}
+		}
 		/// <summary>
 		/// [GET] Enumerates all registered objects.
 		/// </summary>
@@ -313,26 +342,6 @@ namespace Duality.Resources
 		public IEnumerable<GameObject> ActiveRootObjects
 		{
 			get { return this.objectManager.ActiveRootObjects; }
-		}
-		/// <summary>
-		/// [GET / SET] Global gravity force that is applied to all objects that obey the laws of physics.
-		/// </summary>
-		public Vector2 GlobalGravity
-		{
-			get { return this.globalGravity; }
-			set
-			{
-				this.globalGravity = value;
-				if (this.IsCurrent)
-				{
-					physicsWorld.Gravity = PhysicsUnit.ForceToPhysical * value;
-					foreach (Body b in physicsWorld.BodyList)
-					{
-						if (b.IgnoreGravity || b.BodyType != BodyType.Dynamic) continue;
-						b.Awake = true;
-					}
-				}
-			}
 		}
 		/// <summary>
 		/// [GET] Returns whether this Scene is <see cref="Scene.Current"/>.
@@ -452,6 +461,8 @@ namespace Duality.Resources
 				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.Update();
+
+				this.UpdateVisibilityStrategy();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
 
@@ -483,10 +494,18 @@ namespace Duality.Resources
 				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
 				foreach (GameObject obj in activeObj)
 					obj.EditorUpdate();
+
+				this.UpdateVisibilityStrategy();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
 
 			switchLock--;
+		}
+		private void UpdateVisibilityStrategy()
+		{
+			if (this.visibilityStrategy == null)
+				this.visibilityStrategy = new DefaultRendererVisibilityStrategy();
+			this.visibilityStrategy.Update(this.renderers.Cast<ICmpRenderer>());
 		}
 		/// <summary>
 		/// Cleanes up disposed Scene objects.
@@ -596,17 +615,6 @@ namespace Duality.Resources
 				obj.Parent = null;
 			}
 			this.objectManager.RemoveObject(objEnum);
-		}
-
-		/// <summary>
-		/// Enumerates all <see cref="Duality.Components.Renderer">Renderers</see> that are visible to
-		/// the specified <see cref="IDrawDevice"/>.
-		/// </summary>
-		/// <param name="device"></param>
-		/// <returns></returns>
-		public IEnumerable<ICmpRenderer> QueryVisibleRenderers(IDrawDevice device)
-		{
-			return this.renderers.Where(r => r.Active && (r as ICmpRenderer).IsVisible(device)).OfType<ICmpRenderer>();
 		}
 
 		/// <summary>

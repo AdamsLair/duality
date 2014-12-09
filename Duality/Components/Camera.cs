@@ -600,7 +600,9 @@ namespace Duality.Components
 			if ((this.drawDevice.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return;
 
 			// Query renderers
-			IEnumerable<ICmpRenderer> rendererQuery = Scene.Current.QueryVisibleRenderers(this.drawDevice);
+			IRendererVisibilityStrategy visibilityStrategy = Scene.Current.VisibilityStrategy;
+			if (visibilityStrategy == null) return;
+			IEnumerable<ICmpRenderer> rendererQuery = visibilityStrategy.QueryVisibleRenderers(this.drawDevice);
 			if (this.editorRenderFilter.Count > 0)
 			{
 				rendererQuery = rendererQuery.Where(r => 
