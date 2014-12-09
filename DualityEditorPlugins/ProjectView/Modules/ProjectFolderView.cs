@@ -1010,6 +1010,10 @@ namespace Duality.Editor.Plugins.ProjectView
 				select t;
 			foreach (Type resType in resourceTypeQuery)
 			{
+				// Skip invisible Types
+			    EditorHintFlagsAttribute editorHintFlags = resType.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
+			    if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
+
 				// Create an item tree for the current Type
 				string[] categoryTree = resType.GetEditorCategory();
 				string[] fullNameTree = categoryTree.Concat(new[] { resType.Name }).ToArray();
