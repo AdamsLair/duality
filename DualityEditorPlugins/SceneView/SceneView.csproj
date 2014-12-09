@@ -74,6 +74,7 @@
       <DependentUpon>SceneView.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TreeModels\ModelItems.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">

@@ -74,6 +74,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TreeModels\ModelItems.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
