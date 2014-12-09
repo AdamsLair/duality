@@ -44,6 +44,11 @@ namespace Duality.Editor.Plugins.SceneView
 				return String.Format(Properties.SceneViewRes.SceneView_PrefabLink, objNode.Obj.PrefabLink.Prefab.Path);
 			}
 		}
+		private class CreateContextEntryTag
+		{
+			public string TypeId;
+			public bool IsDualityType;
+		}
 
 
 		private	Dictionary<object,NodeBase>	objToNode			= new Dictionary<object,NodeBase>();
@@ -836,12 +841,12 @@ namespace Duality.Editor.Plugins.SceneView
 					{
 						newItem.Name = cmpType.Name;
 						newItem.Icon = ComponentNode.GetTypeImage(cmpType);
-						newItem.Tag = cmpType;
+						newItem.Tag = new CreateContextEntryTag { TypeId = cmpType.GetTypeId(), IsDualityType = cmpType.Assembly == typeof(DualityApp).Assembly };
 						newItem.ActionHandler = this.newToolStripMenuItem_ItemClicked;
 					}
 					else
 					{
-						newItem.Tag = cmpType.Assembly;
+						newItem.Tag = new CreateContextEntryTag { TypeId = null, IsDualityType = cmpType.Assembly == typeof(DualityApp).Assembly };
 					}
 				});
 
@@ -1470,10 +1475,12 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			MenuModelItem clickedItem = sender as MenuModelItem;
 			if (clickedItem == null) return;
-			if (!(clickedItem.Tag is Type)) return;
+			if (!(clickedItem.Tag is CreateContextEntryTag)) return;
 
 			// Create the Component
-			Type clickedType = clickedItem.Tag as Type;
+			CreateContextEntryTag clickedEntry = clickedItem.Tag as CreateContextEntryTag;
+			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
+			if (clickedType == null) return;
 			Component cmp = this.CreateComponent(this.objectView.SelectedNode, clickedType);
 
 			NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
@@ -1824,18 +1831,19 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 			if (!isInNewMenu) return 0;
 
+			CreateContextEntryTag createEntryA = itemA.Tag as CreateContextEntryTag;
+			CreateContextEntryTag createEntryB = itemB.Tag as CreateContextEntryTag;
+
 			// Duality-internal Types first
-			Assembly assemblyA = itemA.Tag is Type ? (itemA.Tag as Type).Assembly : itemA.Tag as Assembly;
-			Assembly assemblyB = itemB.Tag is Type ? (itemB.Tag as Type).Assembly : itemB.Tag as Assembly;
 			result = 
-				(assemblyB == typeof(DualityApp).Assembly ? 1 : 0) - 
-				(assemblyA == typeof(DualityApp).Assembly ? 1 : 0);
+				((createEntryB != null && createEntryB.IsDualityType) ? 1 : 0) -
+				((createEntryA != null && createEntryA.IsDualityType) ? 1 : 0);
 			if (result != 0) return result;
 
 			// Type entries first
 			result = 
-				(itemB.Tag is Type ? 1 : 0) - 
-				(itemA.Tag is Type ? 1 : 0);
+				((createEntryB != null && createEntryB.TypeId != null) ? 1 : 0) - 
+				((createEntryA != null && createEntryA.TypeId != null) ? 1 : 0);
 			if (result != 0) return result;
 
 			// Sort by Item Name
