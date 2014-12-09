@@ -907,6 +907,8 @@ namespace Duality.Resources
 
 			foreach (GameObject obj in this.objectManager.AllObjects)
 				obj.OnLoaded();
+
+			this.UpdateVisibilityStrategy();
 		}
 		protected override void OnDisposing(bool manually)
 		{
