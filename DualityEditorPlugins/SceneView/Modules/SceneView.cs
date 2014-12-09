@@ -1767,8 +1767,8 @@ namespace Duality.Editor.Plugins.SceneView
 				if (item != null)
 				{
 					// "Create Object"
-					if (item.Tag is Type)
-						result = HelpInfo.FromMember(item.Tag as Type);
+					if (item.Tag is CreateContextEntryTag)
+						result = HelpInfo.FromMember(ReflectionHelper.ResolveType((item.Tag as CreateContextEntryTag).TypeId));
 					// Editor Actions
 					else if (item.Tag is IEditorAction && !string.IsNullOrEmpty((item.Tag as IEditorAction).Description))
 						result = HelpInfo.FromText(item.Text, (item.Tag as IEditorAction).Description);
