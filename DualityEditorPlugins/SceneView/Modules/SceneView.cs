@@ -5,12 +5,15 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Globalization;
+using System.Reflection;
 using System.Xml.Linq;
 using CancelEventHandler = System.ComponentModel.CancelEventHandler;
 using CancelEventArgs = System.ComponentModel.CancelEventArgs;
 
 using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
+using AdamsLair.WinForms.ItemModels;
+using AdamsLair.WinForms.ItemViews;
 
 using Duality;
 using Duality.Resources;
@@ -209,9 +212,11 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 
 
-		private	Dictionary<object,NodeBase>	objToNode		= new Dictionary<object,NodeBase>();
-		private	TreeModel					objectModel		= null;
-		private	NodeBase					lastEditedNode	= null;
+		private	Dictionary<object,NodeBase>	objToNode			= new Dictionary<object,NodeBase>();
+		private	TreeModel					objectModel			= null;
+		private	MenuModel					nodeContextModel	= null;
+		private	MenuStripMenuView			nodeContextView		= null;
+		private	NodeBase					lastEditedNode		= null;
 
 		private	NodeBase	flashNode		= null;
 		private	float		flashDuration	= 0.0f;
@@ -225,6 +230,12 @@ namespace Duality.Editor.Plugins.SceneView
 		private bool		tempIsInitializingObjects	= false;
 		private bool		tempIsClearingObjects		= false;
 		private	System.Drawing.Imaging.ColorMatrix	inactiveIconMatrix;
+		
+		private MenuModelItem	nodeContextItemNew		= null;
+		private MenuModelItem	nodeContextItemClone	= null;
+		private MenuModelItem	nodeContextItemDelete	= null;
+		private MenuModelItem	nodeContextItemRename	= null;
+		private MenuModelItem	nodeContextItemLockHide	= null;
 
 		
 		public IEnumerable<NodeBase> SelectedNodes
@@ -261,6 +272,7 @@ namespace Duality.Editor.Plugins.SceneView
 		public SceneView()
 		{
 			this.InitializeComponent();
+			this.InitContextMenu();
 
 			this.inactiveIconMatrix = new System.Drawing.Imaging.ColorMatrix(new[] {
 				new float[] {	0.30f,	0.30f,	0.30f,	0.0f,	0.0f	},
@@ -795,6 +807,222 @@ namespace Duality.Editor.Plugins.SceneView
 			this.toolStripButtonSaveScene.Enabled = !Sandbox.IsActive;
 		}
 		
+		protected void InitContextMenu()
+		{
+			this.nodeContextModel = new MenuModel();
+			this.nodeContextView = new MenuStripMenuView(this.contextMenuNode.Items);
+			this.nodeContextView.ItemSortComparison = this.ContextMenuItemComparison;
+			this.nodeContextView.Model = this.nodeContextModel;
+
+			this.nodeContextModel.AddItems(new MenuModelItem[]
+			{
+				new MenuModelItem
+				{
+					Name			= "TopSeparator",
+					SortValue		= MenuModelItem.SortValue_UnderTop - 1,
+					TypeHint		= MenuItemTypeHint.Separator
+				},
+				this.nodeContextItemNew = new MenuModelItem 
+				{
+					Name			= Properties.SceneViewRes.SceneView_ContextItemName_New,
+					SortValue		= MenuModelItem.SortValue_UnderTop,
+					Items			= new MenuModelItem[]
+					{
+						new MenuModelItem
+						{
+							Name			= typeof(GameObject).Name,
+							Icon			= typeof(GameObject).GetEditorImage(),
+							SortValue		= MenuModelItem.SortValue_Top,
+							ActionHandler	= this.gameObjectToolStripMenuItem_Click
+						},
+						new MenuModelItem
+						{
+							Name			= "TopSeparator",
+							SortValue		= MenuModelItem.SortValue_Top,
+							TypeHint		= MenuItemTypeHint.Separator
+						}
+					}
+				},
+				new MenuModelItem
+				{
+					Name			= "UnderTopSeparator",
+					SortValue		= MenuModelItem.SortValue_UnderTop,
+					TypeHint		= MenuItemTypeHint.Separator
+				},
+				this.nodeContextItemClone = new MenuModelItem 
+				{
+					Name			= Properties.SceneViewRes.SceneView_ContextItemName_Clone,
+					Icon			= Properties.Resources.page_copy,
+					ShortcutKeys	= Keys.Control | Keys.C,
+					ActionHandler	= this.cloneToolStripMenuItem_Click
+				},
+				this.nodeContextItemDelete = new MenuModelItem 
+				{
+					Name			= Properties.SceneViewRes.SceneView_ContextItemName_Delete,
+					Icon			= Properties.Resources.cross,
+					ShortcutKeys	= Keys.Delete,
+					ActionHandler	= this.deleteToolStripMenuItem_Click
+				},
+				this.nodeContextItemRename = new MenuModelItem 
+				{
+					Name			= Properties.SceneViewRes.SceneView_ContextItemName_Rename,
+					ActionHandler	= this.renameToolStripMenuItem_Click
+				},
+				new MenuModelItem
+				{
+					Name			= "BottomSeparator",
+					SortValue		= MenuModelItem.SortValue_Bottom,
+					TypeHint		= MenuItemTypeHint.Separator
+				},
+				this.nodeContextItemLockHide = new MenuModelItem 
+				{
+					Name			= Properties.SceneViewRes.SceneView_ContextItemName_LockHide,
+					SortValue		= MenuModelItem.SortValue_Bottom,
+					ActionHandler	= this.lockedToolStripMenuItem_Click
+				}
+			});
+		}
+		protected void UpdateContextMenu()
+		{
+			// Update main actions
+			this.UpdateContextMenuCommonActions();
+
+			// Provide custom actions
+			this.UpdateContextMenuCustomActions();
+
+			// Populate the "New" menu with Component Types
+			this.UpdateContextMenuCreationActions();
+		}
+		private void UpdateContextMenuCommonActions()
+		{
+			List<NodeBase> selNodeData = new List<NodeBase>(
+				from vn in this.objectView.SelectedNodes
+				where vn.Tag is NodeBase
+				select vn.Tag as NodeBase);
+			List<object> selObjData = 
+				selNodeData.OfType<ComponentNode>().Select(n => n.Component).AsEnumerable<object>().Concat(
+				selNodeData.OfType<GameObjectNode>().Select(n => n.Obj)).ToList();
+
+			bool noSelect = selNodeData.Count == 0;
+			bool singleSelect = selNodeData.Count == 1;
+			bool multiSelect = selNodeData.Count > 1;
+			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
+
+			this.nodeContextItemNew.Visible = (singleSelect && gameObjSelect) || noSelect;
+
+			this.nodeContextItemClone.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemDelete.Visible = !noSelect;
+			this.nodeContextItemRename.Visible = !noSelect && gameObjSelect;
+			this.nodeContextItemRename.Enabled = singleSelect;
+			this.nodeContextItemLockHide.Visible = gameObjSelect;
+
+			this.contextMenuNode_UpdateLockHideItem();
+		}
+		private void UpdateContextMenuCustomActions()
+		{
+			List<NodeBase> selNodeData = new List<NodeBase>(
+				from vn in this.objectView.SelectedNodes
+				where vn.Tag is NodeBase
+				select vn.Tag as NodeBase);
+			List<object> selObjData = 
+				selNodeData.OfType<ComponentNode>().Select(n => n.Component).AsEnumerable<object>().Concat(
+				selNodeData.OfType<GameObjectNode>().Select(n => n.Obj)).ToList();
+
+			// Determine the mutual Type of all selected items
+			Type mainResType = null;
+			if (selObjData.Any())
+			{
+			    mainResType = selObjData.First().GetType();
+			    foreach (var obj in selObjData)
+			    {
+			        Type resType = obj.GetType();
+			        while (mainResType != null && !mainResType.IsAssignableFrom(resType))
+			            mainResType = mainResType.BaseType;
+			    }
+			}
+			
+			// Prepare old entries for removal
+			HashSet<MenuModelItem> oldItems = new HashSet<MenuModelItem>();
+			foreach (MenuModelItem item in this.nodeContextModel.Items)
+			{
+				if (item.Tag is IEditorAction)
+					oldItems.Add(item);
+			}
+
+			// Add items for the currently available actions
+			if (mainResType != null)
+			{
+				var customActions = DualityEditorApp.GetEditorActions(mainResType, selObjData).ToArray();
+				foreach (IEditorAction actionEntry in customActions)
+				{
+					// Create an item for the current action
+					MenuModelItem item = this.nodeContextModel.RequestItem(actionEntry.Name, newItem =>
+					{
+						newItem.Icon = actionEntry.Icon;
+						newItem.ActionHandler = this.customObjectActionItem_Click;
+						newItem.Tag = actionEntry;
+						newItem.SortValue = MenuModelItem.SortValue_Top;
+					});
+
+					// Flag item as still in use
+					oldItems.Remove(item);
+				}
+			}
+
+			// Remove old entries that are not used anymore
+			this.nodeContextModel.RemoveItems(oldItems);
+		}
+		private void UpdateContextMenuCreationActions()
+		{
+			// Prepare old entries for removal
+			HashSet<MenuModelItem> oldItems = new HashSet<MenuModelItem>();
+			foreach (MenuModelItem item in this.nodeContextItemNew.Items)
+			{
+				if (item.Tag is Type || item.Tag is Assembly)
+					oldItems.Add(item);
+			}
+			
+			// Add items for the currently available types
+			var componentTypeQuery =
+				from t in DualityApp.GetAvailDualityTypes(typeof(Component))
+				where !t.IsAbstract
+				select t;
+			foreach (Type cmpType in componentTypeQuery)
+			{
+				// Skip invisible Types
+			    EditorHintFlagsAttribute editorHintFlags = cmpType.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
+			    if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
+
+				// Create an item tree for the current Type
+				string[] categoryTree = cmpType.GetEditorCategory();
+				string[] fullNameTree = categoryTree.Concat(new[] { cmpType.Name }).ToArray();
+				MenuModelItem item = this.nodeContextItemNew.RequestItem(fullNameTree, newItem =>
+				{
+					if (newItem.Name == cmpType.Name)
+					{
+						newItem.Name = cmpType.Name;
+						newItem.Icon = ComponentNode.GetTypeImage(cmpType);
+						newItem.Tag = cmpType;
+						newItem.ActionHandler = this.newToolStripMenuItem_ItemClicked;
+					}
+					else
+					{
+						newItem.Tag = cmpType.Assembly;
+					}
+				});
+
+				// Flag item as still in use
+				while (item != null)
+				{
+					oldItems.Remove(item);
+					item = item.Parent;
+				}
+			}
+
+			// Remove old entries that are not used anymore
+			this.nodeContextItemNew.RemoveItems(oldItems);
+		}
+		
 		private void textBoxFilter_TextChanged(object sender, EventArgs e)
 		{
 			this.ApplyNodeFilter();
@@ -1287,123 +1515,12 @@ namespace Duality.Editor.Plugins.SceneView
 
 		private void contextMenuNode_Opening(object sender, CancelEventArgs e)
 		{
-			List<NodeBase> selNodeData = new List<NodeBase>(
-				from vn in this.objectView.SelectedNodes
-				where vn.Tag is NodeBase
-				select vn.Tag as NodeBase);
-			List<object> selObjData = 
-				selNodeData.OfType<ComponentNode>().Select(n => n.Component).AsEnumerable<object>().Concat(
-				selNodeData.OfType<GameObjectNode>().Select(n => n.Obj)).ToList();
-
-			bool noSelect = selNodeData.Count == 0;
-			bool singleSelect = selNodeData.Count == 1;
-			bool multiSelect = selNodeData.Count > 1;
-			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
-
-			this.newToolStripMenuItem.Visible = (singleSelect && gameObjSelect) || noSelect;
-			this.toolStripSeparatorNew.Visible = !multiSelect && gameObjSelect && !noSelect;
-
-			this.renameToolStripMenuItem.Visible = !noSelect && gameObjSelect;
-			this.cloneToolStripMenuItem.Visible = !noSelect && gameObjSelect;
-			this.deleteToolStripMenuItem.Visible = !noSelect;
-			this.toolStripSeparatorGameObject.Visible = gameObjSelect;
-			this.lockedToolStripMenuItem.Visible = gameObjSelect;
-			this.contextMenuNode_UpdateLockHideItem();
-
-			this.renameToolStripMenuItem.Enabled = singleSelect;
-
-			// Provide custom actions
-			Type mainResType = null;
-			if (selObjData.Any())
-			{
-				mainResType = selObjData.First().GetType();
-				// Find mutual type
-				foreach (var obj in selObjData)
-				{
-					Type resType = obj.GetType();
-					while (mainResType != null && !mainResType.IsAssignableFrom(resType))
-						mainResType = mainResType.BaseType;
-				}
-			}
-			for (int i = this.contextMenuNode.Items.Count - 1; i >= 0; i--)
-			{
-				if (this.contextMenuNode.Items[i].Tag is IEditorAction)
-					this.contextMenuNode.Items.RemoveAt(i);
-			}
-			if (mainResType != null)
-			{
-				this.toolStripSeparatorCustomActions.Visible = true;
-				int baseIndex = this.contextMenuNode.Items.IndexOf(this.toolStripSeparatorCustomActions);
-				var customActions = DualityEditorApp.GetEditorActions(mainResType, selObjData).ToArray();
-				foreach (var actionEntry in customActions)
-				{
-					ToolStripMenuItem actionItem = new ToolStripMenuItem(actionEntry.Name, actionEntry.Icon);
-					actionItem.Click += this.customObjectActionItem_Click;
-					actionItem.Tag = actionEntry;
-					actionItem.ToolTipText = actionEntry.Description;
-					this.contextMenuNode.Items.Insert(baseIndex, actionItem);
-					baseIndex++;
-				}
-				if (customActions.Length == 0) this.toolStripSeparatorCustomActions.Visible = false;
-			}
-			else
-				this.toolStripSeparatorCustomActions.Visible = false;
-
-			// Reset "New" menu to original state
-			this.gameObjectToolStripMenuItem.Image = typeof(GameObject).GetEditorImage();
-			List<ToolStripItem> oldItems = new List<ToolStripItem>(this.newToolStripMenuItem.DropDownItems.OfType<ToolStripItem>());
-			this.newToolStripMenuItem.DropDownItems.Clear();
-			foreach (ToolStripItem item in oldItems.Skip(2)) item.Dispose();
-			this.newToolStripMenuItem.DropDownItems.AddRange(oldItems.Take(2).ToArray());
-
-			// Populate the "New" menu
-			List<ToolStripItem> newItems = new List<ToolStripItem>();
-			foreach (Type cmpType in DualityApp.GetAvailDualityTypes(typeof(Component)))
-			{
-				// Omit abstract and invisible Component Types
-				if (cmpType.IsAbstract) continue;
-				EditorHintFlagsAttribute editorHintFlags = cmpType.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
-				if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
-
-				// Generate category item
-				string[] category = cmpType.GetEditorCategory();
-				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;
-				for (int i = 0; i < category.Length; i++)
-				{
-					ToolStripMenuItem subCatItem;
-					if (categoryItem == this.newToolStripMenuItem)
-						subCatItem = newItems.FirstOrDefault(item => item.Name == category[i]) as ToolStripMenuItem;
-					else
-						subCatItem = categoryItem.DropDownItems.Find(category[i], false).FirstOrDefault() as ToolStripMenuItem;
-
-					if (subCatItem == null)
-					{
-						subCatItem = new ToolStripMenuItem(category[i]);
-						subCatItem.Name = category[i];
-						subCatItem.Tag = cmpType.Assembly;
-						subCatItem.DropDownItemClicked += this.newToolStripMenuItem_DropDownItemClicked;
-						if (categoryItem == this.newToolStripMenuItem)
-							InsertToolStripTypeItem(newItems, subCatItem);
-						else
-							InsertToolStripTypeItem(categoryItem.DropDownItems, subCatItem);
-					}
-					categoryItem = subCatItem;
-				}
-
-				ToolStripMenuItem cmpTypeItem = new ToolStripMenuItem(cmpType.Name, ComponentNode.GetTypeImage(cmpType));
-				cmpTypeItem.Tag = cmpType;
-				if (categoryItem == this.newToolStripMenuItem)
-					InsertToolStripTypeItem(newItems, cmpTypeItem);
-				else
-					InsertToolStripTypeItem(categoryItem.DropDownItems, cmpTypeItem);
-			}
-
-			this.newToolStripMenuItem.DropDownItems.AddRange(newItems.ToArray());
+			this.UpdateContextMenu();
 		}
 		private void contextMenuNode_Closing(object sender, ToolStripDropDownClosingEventArgs e)
 		{
 			var hoverItem = this.contextMenuNode.GetItemAt(this.contextMenuNode.PointToClient(Cursor.Position));
-			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked && hoverItem == this.lockedToolStripMenuItem)
+			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked && this.nodeContextView.GetModelItem(hoverItem) == this.nodeContextItemLockHide)
 				e.Cancel = true;
 		}
 		private void contextMenuNode_UpdateLockHideItem()
@@ -1423,21 +1540,21 @@ namespace Duality.Editor.Plugins.SceneView
 
 			if (hidden)
 			{
-				this.lockedToolStripMenuItem.Text = Properties.SceneViewRes.SceneView_Item_Hidden;
-				this.lockedToolStripMenuItem.ToolTipText = Properties.SceneViewRes.SceneView_Item_Hidden_Tooltip;
-				this.lockedToolStripMenuItem.Image = Properties.SceneViewResCache.IconEyeCross;
+				this.nodeContextItemLockHide.Name = Properties.SceneViewRes.SceneView_Item_Hidden;
+				this.nodeContextItemLockHide.Tag = HelpInfo.FromText(this.nodeContextItemLockHide.Name, Properties.SceneViewRes.SceneView_Item_Hidden_Tooltip);
+				this.nodeContextItemLockHide.Icon = Properties.SceneViewResCache.IconEyeCross;
 			}
 			else if (locked)
 			{
-				this.lockedToolStripMenuItem.Text = Properties.SceneViewRes.SceneView_Item_Locked;
-				this.lockedToolStripMenuItem.ToolTipText = Properties.SceneViewRes.SceneView_Item_Locked_Tooltip;
-				this.lockedToolStripMenuItem.Image = Properties.SceneViewResCache.IconLock;
+				this.nodeContextItemLockHide.Name = Properties.SceneViewRes.SceneView_Item_Locked;
+				this.nodeContextItemLockHide.Tag = HelpInfo.FromText(this.nodeContextItemLockHide.Name, Properties.SceneViewRes.SceneView_Item_Locked_Tooltip);
+				this.nodeContextItemLockHide.Icon = Properties.SceneViewResCache.IconLock;
 			}
 			else
 			{
-				this.lockedToolStripMenuItem.Text = Properties.SceneViewRes.SceneView_Item_LockHide;
-				this.lockedToolStripMenuItem.ToolTipText = Properties.SceneViewRes.SceneView_Item_LockHide_Tooltip;
-				this.lockedToolStripMenuItem.Image = null;
+				this.nodeContextItemLockHide.Name = Properties.SceneViewRes.SceneView_Item_LockHide;
+				this.nodeContextItemLockHide.Tag = HelpInfo.FromText(this.nodeContextItemLockHide.Name, Properties.SceneViewRes.SceneView_Item_LockHide_Tooltip);
+				this.nodeContextItemLockHide.Icon = null;
 			}
 		}
 
@@ -1515,13 +1632,14 @@ namespace Duality.Editor.Plugins.SceneView
 				}
 			}
 		}
-		private void newToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		private void newToolStripMenuItem_ItemClicked(object sender, EventArgs e)
 		{
-			if (e.ClickedItem == this.gameObjectToolStripMenuItem) return;
-			if (e.ClickedItem.Tag as Type == null) return;
+			MenuModelItem clickedItem = sender as MenuModelItem;
+			if (clickedItem == null) return;
+			if (!(clickedItem.Tag is Type)) return;
 
 			// Create the Component
-			Type clickedType = e.ClickedItem.Tag as Type;
+			Type clickedType = clickedItem.Tag as Type;
 			Component cmp = this.CreateComponent(this.objectView.SelectedNode, clickedType);
 
 			NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
@@ -1801,15 +1919,24 @@ namespace Duality.Editor.Plugins.SceneView
 			HelpInfo result = null;
 			Point globalPos = this.PointToScreen(localPos);
 
-			// Hovering "Create Object" menu
+			// Hovering node context menu
 			if (this.contextMenuNode.Visible)
 			{
-				ToolStripItem item = this.newToolStripMenuItem.DropDown.GetItemAtDeep(globalPos);
-				Type itemType = item != null ? item.Tag as Type : null;
-				if (item == this.gameObjectToolStripMenuItem) itemType = typeof(GameObject);
-				if (itemType != null)
+				ToolStripItem item = this.contextMenuNode.GetItemAtDeep(globalPos);
+				if (item != null)
 				{
-					result = HelpInfo.FromMember(itemType);
+					// "Create Object"
+					if (item.Tag is Type)
+						result = HelpInfo.FromMember(item.Tag as Type);
+					// Editor Actions
+					else if (item.Tag is IEditorAction && !string.IsNullOrEmpty((item.Tag as IEditorAction).Description))
+						result = HelpInfo.FromText(item.Text, (item.Tag as IEditorAction).Description);
+					// A HelpInfo attached to the item
+					else if (item.Tag is HelpInfo)
+						result = item.Tag as HelpInfo;
+					// An ordinary items Tooltip
+					else if (item.ToolTipText != null)
+						result = HelpInfo.FromText(item.Text, item.ToolTipText);
 				}
 				captured = true;
 			}
@@ -1841,51 +1968,45 @@ namespace Duality.Editor.Plugins.SceneView
 			else return null;
 		}
 		
-		private static void InsertToolStripTypeItem(System.Collections.IList items, ToolStripItem newItem)
+		private int ContextMenuItemComparison(IMenuModelItem itemA, IMenuModelItem itemB)
 		{
-			ToolStripItem item2 = newItem;
-			ToolStripMenuItem menuItem2 = item2 as ToolStripMenuItem;
-			for (int i = 0; i < items.Count; i++)
+			int result;
+
+			// SortValue overrides all
+			result = itemA.SortValue - itemB.SortValue;
+			if (result != 0) return result;
+
+			// Don't sort any further unless within the new menu
+			bool isInNewMenu = false;
+			IMenuModelItem item = itemA;
+			while (item != null)
 			{
-				ToolStripItem item1 = items[i] as ToolStripItem;
-				ToolStripMenuItem menuItem1 = item1 as ToolStripMenuItem;
-				if (item1 == null)
-					continue;
-
-				bool item1IsType = item1.Tag is Type;
-				bool item2IsType = item2.Tag is Type;
-				System.Reflection.Assembly assembly1 = item1.Tag is Type ? (item1.Tag as Type).Assembly : item1.Tag as System.Reflection.Assembly;
-				System.Reflection.Assembly assembly2 = item2.Tag is Type ? (item2.Tag as Type).Assembly : item2.Tag as System.Reflection.Assembly;
-				int result = 
-					(assembly2 == typeof(DualityApp).Assembly ? 1 : 0) - 
-					(assembly1 == typeof(DualityApp).Assembly ? 1 : 0);
-				if (result > 0)
+				if (item == this.nodeContextItemNew)
 				{
-					items.Insert(i, newItem);
-					return;
+					isInNewMenu = true;
+					break;
 				}
-				else if (result != 0) continue;
-
-				result = 
-					(item2IsType ? 1 : 0) - 
-					(item1IsType ? 1 : 0);
-				if (result > 0)
-				{
-					items.Insert(i, newItem);
-					return;
-				}
-				else if (result != 0) continue;
-
-				result = string.Compare(item1.Text, item2.Text);
-				if (result > 0)
-				{
-					items.Insert(i, newItem);
-					return;
-				}
-				else if (result != 0) continue;
+				item = item.Parent;
 			}
+			if (!isInNewMenu) return 0;
 
-			items.Add(newItem);
+			// Duality-internal Types first
+			Assembly assemblyA = itemA.Tag is Type ? (itemA.Tag as Type).Assembly : itemA.Tag as Assembly;
+			Assembly assemblyB = itemB.Tag is Type ? (itemB.Tag as Type).Assembly : itemB.Tag as Assembly;
+			result = 
+				(assemblyB == typeof(DualityApp).Assembly ? 1 : 0) - 
+				(assemblyA == typeof(DualityApp).Assembly ? 1 : 0);
+			if (result != 0) return result;
+
+			// Type entries first
+			result = 
+				(itemB.Tag is Type ? 1 : 0) - 
+				(itemA.Tag is Type ? 1 : 0);
+			if (result != 0) return result;
+
+			// Sort by Item Name
+			result = string.Compare(itemA.Name, itemB.Name);
+			return result;
 		}
 	}
 }

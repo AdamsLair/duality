@@ -37,16 +37,6 @@
 			this.toolStripButtonSaveScene = new System.Windows.Forms.ToolStripButton();
 			this.toolStripLabelSceneName = new System.Windows.Forms.ToolStripLabel();
 			this.contextMenuNode = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.toolStripSeparatorCustomActions = new System.Windows.Forms.ToolStripSeparator();
-			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.gameObjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.newGameObjectSeparator = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparatorNew = new System.Windows.Forms.ToolStripSeparator();
-			this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparatorGameObject = new System.Windows.Forms.ToolStripSeparator();
-			this.lockedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerFlashItem = new System.Windows.Forms.Timer(this.components);
 			this.contextMenuDragMoveCopy = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.copyHereToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,7 +50,6 @@
 			this.nodeStateIcon = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
 			this.nodeTextBoxName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.toolStrip.SuspendLayout();
-			this.contextMenuNode.SuspendLayout();
 			this.contextMenuDragMoveCopy.SuspendLayout();
 			this.panelBottom.SuspendLayout();
 			this.SuspendLayout();
@@ -131,90 +120,10 @@
 			// 
 			// contextMenuNode
 			// 
-			this.contextMenuNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparatorCustomActions,
-            this.newToolStripMenuItem,
-            this.toolStripSeparatorNew,
-            this.cloneToolStripMenuItem,
-            this.deleteToolStripMenuItem,
-            this.renameToolStripMenuItem,
-            this.toolStripSeparatorGameObject,
-            this.lockedToolStripMenuItem});
 			this.contextMenuNode.Name = "contextMenuNode";
-			this.contextMenuNode.Size = new System.Drawing.Size(153, 154);
+			this.contextMenuNode.Size = new System.Drawing.Size(153, 26);
 			this.contextMenuNode.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.contextMenuNode_Closing);
 			this.contextMenuNode.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuNode_Opening);
-			// 
-			// toolStripSeparatorCustomActions
-			// 
-			this.toolStripSeparatorCustomActions.Name = "toolStripSeparatorCustomActions";
-			this.toolStripSeparatorCustomActions.Size = new System.Drawing.Size(149, 6);
-			this.toolStripSeparatorCustomActions.Visible = false;
-			// 
-			// newToolStripMenuItem
-			// 
-			this.newToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.gameObjectToolStripMenuItem,
-            this.newGameObjectSeparator});
-			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.newToolStripMenuItem.Text = "New";
-			this.newToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.newToolStripMenuItem_DropDownItemClicked);
-			// 
-			// gameObjectToolStripMenuItem
-			// 
-			this.gameObjectToolStripMenuItem.Name = "gameObjectToolStripMenuItem";
-			this.gameObjectToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
-			this.gameObjectToolStripMenuItem.Text = "GameObject";
-			this.gameObjectToolStripMenuItem.Click += new System.EventHandler(this.gameObjectToolStripMenuItem_Click);
-			// 
-			// newGameObjectSeparator
-			// 
-			this.newGameObjectSeparator.Name = "newGameObjectSeparator";
-			this.newGameObjectSeparator.Size = new System.Drawing.Size(137, 6);
-			// 
-			// toolStripSeparatorNew
-			// 
-			this.toolStripSeparatorNew.Name = "toolStripSeparatorNew";
-			this.toolStripSeparatorNew.Size = new System.Drawing.Size(149, 6);
-			// 
-			// cloneToolStripMenuItem
-			// 
-			this.cloneToolStripMenuItem.Image = global::Duality.Editor.Plugins.SceneView.Properties.Resources.page_copy;
-			this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
-			this.cloneToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.cloneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.cloneToolStripMenuItem.Text = "Clone";
-			this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-			// 
-			// deleteToolStripMenuItem
-			// 
-			this.deleteToolStripMenuItem.Image = global::Duality.Editor.Plugins.SceneView.Properties.Resources.cross;
-			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.deleteToolStripMenuItem.Text = "Delete";
-			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-			// 
-			// renameToolStripMenuItem
-			// 
-			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-			this.renameToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.renameToolStripMenuItem.Text = "Rename";
-			this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
-			// 
-			// toolStripSeparatorGameObject
-			// 
-			this.toolStripSeparatorGameObject.Name = "toolStripSeparatorGameObject";
-			this.toolStripSeparatorGameObject.Size = new System.Drawing.Size(149, 6);
-			// 
-			// lockedToolStripMenuItem
-			// 
-			this.lockedToolStripMenuItem.Name = "lockedToolStripMenuItem";
-			this.lockedToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.lockedToolStripMenuItem.Text = "Lock / Hide";
-			this.lockedToolStripMenuItem.ToolTipText = "Locks or hides the object in the editor";
-			this.lockedToolStripMenuItem.Click += new System.EventHandler(this.lockedToolStripMenuItem_Click);
 			// 
 			// timerFlashItem
 			// 
@@ -298,8 +207,8 @@
 			this.objectView.AllowDrop = true;
 			this.objectView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.objectView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.objectView.ColumnHeaderHeight = 20;
 			this.objectView.ContextMenuStrip = this.contextMenuNode;
-			this.objectView.DefaultToolTipProvider = null;
 			this.objectView.DisplayDraggingNodes = true;
 			this.objectView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.objectView.DragDropMarkColor = System.Drawing.Color.Black;
@@ -308,12 +217,9 @@
 			this.objectView.FullRowSelectInactiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.objectView.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
 			this.objectView.Location = new System.Drawing.Point(0, 25);
-			this.objectView.Model = null;
 			this.objectView.Name = "objectView";
 			this.objectView.NodeControls.Add(this.nodeStateIcon);
 			this.objectView.NodeControls.Add(this.nodeTextBoxName);
-			this.objectView.NodeFilter = null;
-			this.objectView.SelectedNode = null;
 			this.objectView.SelectionMode = Aga.Controls.Tree.TreeSelectionMode.Multi;
 			this.objectView.ShowNodeToolTips = true;
 			this.objectView.Size = new System.Drawing.Size(206, 496);
@@ -352,10 +258,10 @@
 			this.Controls.Add(this.objectView);
 			this.Controls.Add(this.panelBottom);
 			this.Controls.Add(this.toolStrip);
-			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft)
-						| WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight)
-						| WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop)
-						| WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
+			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)(((((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.DockLeft) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
+            | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -364,7 +270,6 @@
 			this.Text = "Scene View";
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
-			this.contextMenuNode.ResumeLayout(false);
 			this.contextMenuDragMoveCopy.ResumeLayout(false);
 			this.panelBottom.ResumeLayout(false);
 			this.panelBottom.PerformLayout();
@@ -386,22 +291,12 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem cancelToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuNode;
-		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorNew;
-		private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButtonCreateScene;
 		private System.Windows.Forms.ToolStripLabel toolStripLabelSceneName;
 		private System.Windows.Forms.Panel panelBottom;
 		private System.Windows.Forms.TextBox textBoxFilter;
 		private System.Windows.Forms.Label labelFilter;
-		private System.Windows.Forms.ToolStripMenuItem gameObjectToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator newGameObjectSeparator;
 		private System.Windows.Forms.ToolStripButton toolStripButtonSaveScene;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorCustomActions;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorGameObject;
-		private System.Windows.Forms.ToolStripMenuItem lockedToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton buttonShowComponents;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 	}

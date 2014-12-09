@@ -165,6 +165,51 @@ namespace Duality.Editor.Plugins.SceneView.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Clone ähnelt.
+        /// </summary>
+        public static string SceneView_ContextItemName_Clone {
+            get {
+                return ResourceManager.GetString("SceneView_ContextItemName_Clone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
+        /// </summary>
+        public static string SceneView_ContextItemName_Delete {
+            get {
+                return ResourceManager.GetString("SceneView_ContextItemName_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Lock / Hide ähnelt.
+        /// </summary>
+        public static string SceneView_ContextItemName_LockHide {
+            get {
+                return ResourceManager.GetString("SceneView_ContextItemName_LockHide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die New ähnelt.
+        /// </summary>
+        public static string SceneView_ContextItemName_New {
+            get {
+                return ResourceManager.GetString("SceneView_ContextItemName_New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rename ähnelt.
+        /// </summary>
+        public static string SceneView_ContextItemName_Rename {
+            get {
+                return ResourceManager.GetString("SceneView_ContextItemName_Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Doubleclick: {0} ähnelt.
         /// </summary>
         public static string SceneView_Help_Doubleclick {
