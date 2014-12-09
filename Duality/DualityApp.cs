@@ -98,7 +98,23 @@ namespace Duality
 		private	static	Dictionary<string,CorePlugin>	plugins			= new Dictionary<string,CorePlugin>();
 		private	static	List<Assembly>					disposedPlugins	= new List<Assembly>();
 		private static	Dictionary<Type,List<Type>>		availTypeDict	= new Dictionary<Type,List<Type>>();
-
+		
+		/// <summary>
+		/// Called when the game becomes focused or loses focus.
+		/// </summary>
+		public static event EventHandler FocusChanged
+		{
+			add
+			{
+				keyboard.BecomesAvailable += value;
+				keyboard.NoLongerAvailable += value;
+			}
+			remove
+			{
+				keyboard.BecomesAvailable -= value;
+				keyboard.NoLongerAvailable -= value;
+			}
+		}
 		/// <summary>
 		/// Called when the games UserData changes
 		/// </summary>
@@ -139,6 +155,21 @@ namespace Duality
 		{
 			get { return targetMode; }
 			set { targetMode = value; }
+		}
+		/// <summary>
+		/// [GET] Returns the <see cref="GraphicsMode"/> that Duality intends to use by default.
+		/// </summary>
+		public static GraphicsMode DefaultMode
+		{
+			get { return defaultMode; }
+		}
+		/// <summary>
+		/// [GET] Returns whether the Duality application is currently focused, i.e. can be considered
+		/// to be the users main activity right now.
+		/// </summary>
+		public static bool IsFocused
+		{
+			get { return keyboard.IsAvailable; }
 		}
 		/// <summary>
 		/// [GET] Provides access to mouse user input.
@@ -240,13 +271,6 @@ namespace Duality
 			get { return logfilePath; }
 		}
 		/// <summary>
-		/// [GET] Returns the <see cref="GraphicsMode"/> that Duality intends to use by default.
-		/// </summary>
-		public static GraphicsMode DefaultMode
-		{
-			get { return defaultMode; }
-		}
-		/// <summary>
 		/// [GET] Enumerates all available <see cref="GraphicsMode">GraphicsModes</see>.
 		/// </summary>
 		public static IEnumerable<GraphicsMode> AvailableModes
@@ -292,6 +316,7 @@ namespace Duality
 		{
 			get { return disposedPlugins; }
 		}
+
 
 		/// <summary>
 		/// Initializes this DualityApp. Should be called before performing any operations within Duality.
