@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Reflection;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -9,6 +10,8 @@ using System.IO;
 
 using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
+using AdamsLair.WinForms.ItemModels;
+using AdamsLair.WinForms.ItemViews;
 
 using Duality;
 using Duality.Resources;
@@ -290,10 +293,12 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 
 
-		private	Dictionary<string,NodeBase>	pathIdToNode	= new Dictionary<string,NodeBase>();
-		private	TreeModel					folderModel		= null;
-		private	NodeBase					lastEditedNode	= null;
-		private System.Drawing.Font			treeFontItalic	= null;
+		private	Dictionary<string,NodeBase>	pathIdToNode		= new Dictionary<string,NodeBase>();
+		private	TreeModel					folderModel			= null;
+		private	MenuModel					nodeContextModel	= null;
+		private	MenuStripMenuView			nodeContextView		= null;
+		private	NodeBase					lastEditedNode		= null;
+		private System.Drawing.Font			treeFontItalic		= null;
 
 		private	NodeBase	flashNode		= null;
 		private	float		flashDuration	= 0.0f;
@@ -302,16 +307,25 @@ namespace Duality.Editor.Plugins.ProjectView
 		private	List<ScheduleSelectEntry>	scheduleSelectPath		= new List<ScheduleSelectEntry>();
 		private	List<string>				skipGlobalRenamePath	= new List<string>();
 
-		private	Dictionary<Node,bool>	tempNodeVisibilityCache	= new Dictionary<Node,bool>();
-		private	string					tempUpperFilter			= null;
-		private	string					tempDropBasePath		= null;
-		private	StringCollection		tempFileDropList		= null;
-		private bool	tempScheduleSelectionChange	= false;
+		private	Dictionary<Node,bool>	tempNodeVisibilityCache		= new Dictionary<Node,bool>();
+		private	string					tempUpperFilter				= null;
+		private	string					tempDropBasePath			= null;
+		private	StringCollection		tempFileDropList			= null;
+		private bool					tempScheduleSelectionChange	= false;
+
+		private MenuModelItem			nodeContextItemNew				= null;
+		private MenuModelItem			nodeContextItemCut				= null;
+		private MenuModelItem			nodeContextItemCopy				= null;
+		private MenuModelItem			nodeContextItemPaste			= null;
+		private MenuModelItem			nodeContextItemDelete			= null;
+		private MenuModelItem			nodeContextItemRename			= null;
+		private MenuModelItem			nodeContextItemShowInExplorer	= null;
 
 
 		public ProjectFolderView()
 		{
 			this.InitializeComponent();
+			this.InitContextMenu();
 
 			this.treeFontItalic = new System.Drawing.Font(this.folderView.Font, FontStyle.Italic);
 
@@ -419,14 +433,6 @@ namespace Duality.Editor.Plugins.ProjectView
 			this.tempUpperFilter = String.IsNullOrEmpty(this.textBoxFilter.Text) ? null : this.textBoxFilter.Text.ToUpper();
 			this.tempNodeVisibilityCache.Clear();
 			this.folderView.NodeFilter = this.tempUpperFilter != null ? this.folderModel_IsNodeVisible : (Predicate<object>)null;
-		}
-
-		protected IEnumerable<Type> QueryResourceTypes()
-		{
-			return 
-				from t in DualityApp.GetAvailDualityTypes(typeof(Resource))
-				where !t.IsAbstract
-				select t;
 		}
 
 		protected void InitRessources()
@@ -807,8 +813,108 @@ namespace Duality.Editor.Plugins.ProjectView
 
 			return baseTargetPath;
 		}
+		
+		protected void InitContextMenu()
+		{
+			this.nodeContextModel = new MenuModel();
+			this.nodeContextView = new MenuStripMenuView(this.contextMenuNode.Items);
+			this.nodeContextView.ItemSortComparison = this.ContextMenuItemComparison;
+			this.nodeContextView.Model = this.nodeContextModel;
 
-		protected void UpdateContextMenuActions()
+			this.nodeContextModel.AddItems(new MenuModelItem[]
+			{
+				new MenuModelItem
+				{
+					Name			= "TopSeparator",
+					SortValue		= MenuModelItem.SortValue_UnderTop - 1,
+					TypeHint		= MenuItemTypeHint.Separator
+				},
+				this.nodeContextItemNew = new MenuModelItem 
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_New,
+					SortValue		= MenuModelItem.SortValue_UnderTop,
+					Items			= new MenuModelItem[]
+					{
+						new MenuModelItem
+						{
+							Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Folder,
+							Icon			= Properties.Resources.folder,
+							SortValue		= MenuModelItem.SortValue_Top,
+							ActionHandler	= this.folderToolStripMenuItem_Click
+						},
+						new MenuModelItem
+						{
+							Name			= "TopSeparator",
+							SortValue		= MenuModelItem.SortValue_Top,
+							TypeHint		= MenuItemTypeHint.Separator
+						}
+					}
+				},
+				new MenuModelItem
+				{
+					Name			= "UnderTopSeparator",
+					SortValue		= MenuModelItem.SortValue_UnderTop,
+					TypeHint		= MenuItemTypeHint.Separator
+				},
+				this.nodeContextItemCut = new MenuModelItem 
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Cut,
+					Icon			= Properties.Resources.cut,
+					ShortcutKeys	= Keys.Control | Keys.X,
+					ActionHandler	= this.cutToolStripMenuItem_Click
+				},
+				this.nodeContextItemCopy = new MenuModelItem 
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Copy,
+					Icon			= Properties.Resources.page_copy,
+					ShortcutKeys	= Keys.Control | Keys.C,
+					ActionHandler	= this.copyToolStripMenuItem_Click
+				},
+				this.nodeContextItemPaste = new MenuModelItem 
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Paste,
+					Icon			= Properties.Resources.page_paste,
+					ShortcutKeys	= Keys.Control | Keys.V,
+					ActionHandler	= this.pasteToolStripMenuItem_Click
+				},
+				this.nodeContextItemDelete = new MenuModelItem 
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Delete,
+					Icon			= Properties.Resources.cross,
+					ShortcutKeys	= Keys.Delete,
+					ActionHandler	= this.deleteToolStripMenuItem_Click
+				},
+				this.nodeContextItemRename = new MenuModelItem 
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_Rename,
+					ActionHandler	= this.renameToolStripMenuItem_Click
+				},
+				new MenuModelItem
+				{
+					Name			= "BottomSeparator",
+					SortValue		= MenuModelItem.SortValue_Bottom,
+					TypeHint		= MenuItemTypeHint.Separator
+				},
+				this.nodeContextItemShowInExplorer = new MenuModelItem 
+				{
+					Name			= Properties.ProjectViewRes.ProjectFolderView_ContextItemName_ShowInExplorer,
+					SortValue		= MenuModelItem.SortValue_Bottom,
+					ActionHandler	= this.showInExplorerToolStripMenuItem_Click
+				}
+			});
+		}
+		protected void UpdateContextMenu()
+		{
+			// Update main actions
+			this.UpdateContextMenuCommonActions();
+
+			// Provide custom actions
+			this.UpdateContextMenuCustomActions();
+
+			// Populate the "New" menu with Resource Types
+			this.UpdateContextMenuCreationActions();
+		}
+		private void UpdateContextMenuCommonActions()
 		{
 			List<NodeBase> selNodeData = new List<NodeBase>(
 				from vn in this.folderView.SelectedNodes
@@ -820,21 +926,118 @@ namespace Duality.Editor.Plugins.ProjectView
 			bool multiSelect = selNodeData.Count > 1;
 			bool anyReadOnly = this.folderView.SelectedNodes.Any(viewNode => (viewNode.Tag as NodeBase).ReadOnly);
 
-			this.newToolStripMenuItem.Visible = !anyReadOnly && !multiSelect;
-			this.toolStripSeparatorNew.Visible = !anyReadOnly && !multiSelect;
+			this.nodeContextItemNew.Visible = !anyReadOnly && !multiSelect;
 
-			this.renameToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
-			this.cutToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
-			this.copyToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
-			this.deleteToolStripMenuItem.Visible = !noSelect && !anyReadOnly;
+			this.nodeContextItemCut.Visible = !noSelect && !anyReadOnly;
+			this.nodeContextItemCopy.Visible = !noSelect && !anyReadOnly;
+			this.nodeContextItemPaste.Visible = !anyReadOnly;
+			this.nodeContextItemPaste.Enabled = this.ClipboardCanPasteNodes(this.folderView.SelectedNode);
+			this.nodeContextItemDelete.Visible = !noSelect && !anyReadOnly;
+			this.nodeContextItemRename.Visible = !noSelect && !anyReadOnly;
+			this.nodeContextItemRename.Enabled = singleSelect;
 
-			this.pasteToolStripMenuItem.Visible = !anyReadOnly;
+			this.nodeContextItemShowInExplorer.Visible = singleSelect && !anyReadOnly;
+		}
+		private void UpdateContextMenuCustomActions()
+		{
+			List<NodeBase> selNodeData = new List<NodeBase>(
+				from vn in this.folderView.SelectedNodes
+				where vn.Tag is NodeBase
+				select vn.Tag as NodeBase);
+			List<IContentRef> selResData = (
+				from n in selNodeData
+				where n is ResourceNode
+				select (n as ResourceNode).ResLink).ToList();
 
-			this.pasteToolStripMenuItem.Enabled = this.ClipboardCanPasteNodes(this.folderView.SelectedNode);
-			this.renameToolStripMenuItem.Enabled = singleSelect;
+			// Determine the mutual Type of all selected items
+			Type mainResType = null;
+			if (selResData.Any())
+			{
+				mainResType = selResData.First().ResType;
+				foreach (var resRef in selResData)
+				{
+					Type resType = resRef.ResType;
+					while (mainResType != null && !mainResType.IsAssignableFrom(resType))
+						mainResType = mainResType.BaseType;
+				}
+			}
+				
+			// Prepare old entries for removal
+			HashSet<MenuModelItem> oldItems = new HashSet<MenuModelItem>();
+			foreach (MenuModelItem item in this.nodeContextModel.Items)
+			{
+				if (item.Tag is IEditorAction)
+					oldItems.Add(item);
+			}
 
-			this.showInExplorerToolStripMenuItem.Visible = singleSelect && !anyReadOnly;
-			this.toolStripSeparatorShowInExplorer.Visible = singleSelect && !anyReadOnly;
+			// Add items for the currently available actions
+			if (mainResType != null)
+			{
+				var customActions = DualityEditorApp.GetEditorActions(mainResType, selResData.Res()).ToArray();
+				foreach (IEditorAction actionEntry in customActions)
+				{
+					// Create an item for the current action
+					MenuModelItem item = this.nodeContextModel.RequestItem(actionEntry.Name, newItem =>
+					{
+						newItem.Icon = actionEntry.Icon;
+						newItem.ActionHandler = this.customResourceActionItem_Click;
+						newItem.Tag = actionEntry;
+						newItem.SortValue = MenuModelItem.SortValue_Top;
+					});
+
+					// Flag item as still in use
+					oldItems.Remove(item);
+				}
+			}
+
+			// Remove old entries that are not used anymore
+			this.nodeContextModel.RemoveItems(oldItems);
+		}
+		private void UpdateContextMenuCreationActions()
+		{
+			// Prepare old entries for removal
+			HashSet<MenuModelItem> oldItems = new HashSet<MenuModelItem>();
+			foreach (MenuModelItem item in this.nodeContextItemNew.Items)
+			{
+				if (item.Tag is Type || item.Tag is Assembly)
+					oldItems.Add(item);
+			}
+			
+			// Add items for the currently available types
+			var resourceTypeQuery =
+				from t in DualityApp.GetAvailDualityTypes(typeof(Resource))
+				where !t.IsAbstract
+				select t;
+			foreach (Type resType in resourceTypeQuery)
+			{
+				// Create an item tree for the current Type
+				string[] categoryTree = resType.GetEditorCategory();
+				string[] fullNameTree = categoryTree.Concat(new[] { resType.Name }).ToArray();
+				MenuModelItem item = this.nodeContextItemNew.RequestItem(fullNameTree, newItem =>
+				{
+					if (newItem.Name == resType.Name)
+					{
+						newItem.Name = resType.Name;
+						newItem.Icon = ResourceNode.GetTypeImage(resType);
+						newItem.Tag = resType;
+						newItem.ActionHandler = this.newToolStripMenuItem_ItemClicked;
+					}
+					else
+					{
+						newItem.Tag = resType.Assembly;
+					}
+				});
+
+				// Flag item as still in use
+				while (item != null)
+				{
+					oldItems.Remove(item);
+					item = item.Parent;
+				}
+			}
+
+			// Remove old entries that are not used anymore
+			this.nodeContextItemNew.RemoveItems(oldItems);
 		}
 
 		private void textBoxFilter_TextChanged(object sender, EventArgs e)
@@ -882,7 +1085,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				).ToArray();
 
 			// Update context menu
-			this.UpdateContextMenuActions();
+			this.UpdateContextMenuCommonActions();
 
 			// Adjust editor-wide selection
 			if (!DualityEditorApp.IsSelectionChanging)
@@ -1295,15 +1498,6 @@ namespace Duality.Editor.Plugins.ProjectView
 
 		private void contextMenuNode_Opening(object sender, CancelEventArgs e)
 		{
-			List<NodeBase> selNodeData = new List<NodeBase>(
-				from vn in this.folderView.SelectedNodes
-				where vn.Tag is NodeBase
-				select vn.Tag as NodeBase);
-			List<IContentRef> selResData = (
-				from n in selNodeData
-				where n is ResourceNode
-				select (n as ResourceNode).ResLink).ToList();
-
 			bool anyReadOnly = this.folderView.SelectedNodes.Any(viewNode => (viewNode.Tag as NodeBase).ReadOnly);
 			if (anyReadOnly) 
 			{ 
@@ -1311,89 +1505,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				return;
 			}
 
-			// Update main actions
-			this.UpdateContextMenuActions();
-
-			// Provide custom actions
-			Type mainResType = null;
-			if (selResData.Any())
-			{
-				mainResType = selResData.First().ResType;
-				// Find mutual type
-				foreach (var resRef in selResData)
-				{
-					Type resType = resRef.ResType;
-					while (mainResType != null && !mainResType.IsAssignableFrom(resType))
-						mainResType = mainResType.BaseType;
-				}
-			}
-			for (int i = this.contextMenuNode.Items.Count - 1; i >= 0; i--)
-			{
-				if (this.contextMenuNode.Items[i].Tag is IEditorAction)
-					this.contextMenuNode.Items.RemoveAt(i);
-			}
-			if (mainResType != null)
-			{
-				this.toolStripSeparatorCustomActions.Visible = true;
-				int baseIndex = this.contextMenuNode.Items.IndexOf(this.toolStripSeparatorCustomActions);
-				var customActions = DualityEditorApp.GetEditorActions(mainResType, selResData.Res()).ToArray();
-				foreach (var actionEntry in customActions)
-				{
-					ToolStripMenuItem actionItem = new ToolStripMenuItem(actionEntry.Name, actionEntry.Icon);
-					actionItem.Click += this.customResourceActionItem_Click;
-					actionItem.Tag = actionEntry;
-					actionItem.ToolTipText = actionEntry.Description;
-					this.contextMenuNode.Items.Insert(baseIndex, actionItem);
-					baseIndex++;
-				}
-				if (customActions.Length == 0) this.toolStripSeparatorCustomActions.Visible = false;
-			}
-			else
-				this.toolStripSeparatorCustomActions.Visible = false;
-
-			// Reset "New" menu to original state
-			List<ToolStripItem> oldItems = new List<ToolStripItem>(this.newToolStripMenuItem.DropDownItems.OfType<ToolStripItem>());
-			this.newToolStripMenuItem.DropDownItems.Clear();
-			foreach (ToolStripItem item in oldItems.Skip(2)) item.Dispose();
-			this.newToolStripMenuItem.DropDownItems.AddRange(oldItems.Take(2).ToArray());
-			
-			// Create dynamic entries
-			List<ToolStripItem> newItems = new List<ToolStripItem>();
-			foreach (Type resType in this.QueryResourceTypes())
-			{
-				// Generate category item
-				string[] category = resType.GetEditorCategory();
-				ToolStripMenuItem categoryItem = this.newToolStripMenuItem;
-				for (int i = 0; i < category.Length; i++)
-				{
-					ToolStripMenuItem subCatItem;
-					if (categoryItem == this.newToolStripMenuItem)
-						subCatItem = newItems.FirstOrDefault(item => item.Name == category[i]) as ToolStripMenuItem;
-					else
-						subCatItem = categoryItem.DropDownItems.Find(category[i], false).FirstOrDefault() as ToolStripMenuItem;
-
-					if (subCatItem == null)
-					{
-						subCatItem = new ToolStripMenuItem(category[i]);
-						subCatItem.Name = category[i];
-						subCatItem.Tag = resType.Assembly;
-						subCatItem.DropDownItemClicked += this.newToolStripMenuItem_DropDownItemClicked;
-						if (categoryItem == this.newToolStripMenuItem)
-							InsertToolStripTypeItem(newItems, subCatItem);
-						else
-							InsertToolStripTypeItem(categoryItem.DropDownItems, subCatItem);
-					}
-					categoryItem = subCatItem;
-				}
-
-				ToolStripMenuItem resTypeItem = new ToolStripMenuItem(resType.Name, ResourceNode.GetTypeImage(resType));
-				resTypeItem.Tag = resType;
-				if (categoryItem == this.newToolStripMenuItem)
-					InsertToolStripTypeItem(newItems, resTypeItem);
-				else
-					InsertToolStripTypeItem(categoryItem.DropDownItems, resTypeItem);
-			}
-			this.newToolStripMenuItem.DropDownItems.AddRange(newItems.ToArray());
+			this.UpdateContextMenu();
 		}
 
 		private void cutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1425,12 +1537,13 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			this.CreateFolder(this.folderView.SelectedNode);
 		}
-		private void newToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		private void newToolStripMenuItem_ItemClicked(object sender, EventArgs e)
 		{
-			if (e.ClickedItem == this.folderToolStripMenuItem) return;
-			if (e.ClickedItem.Tag as Type == null) return;
-			Type clickedType = e.ClickedItem.Tag as Type;
-			this.CreateResource(clickedType, this.folderView.SelectedNode);
+			MenuModelItem clickedItem = sender as MenuModelItem;
+			if (clickedItem == null) return;
+			if (!(clickedItem.Tag is Type)) return;
+
+			this.CreateResource(clickedItem.Tag as Type, this.folderView.SelectedNode);
 		}
 		private void customResourceActionItem_Click(object sender, EventArgs e)
 		{
@@ -1443,7 +1556,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				where n is ResourceNode
 				select (n as ResourceNode).ResLink).ToList();
 
-			ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
+			MenuModelItem clickedItem = sender as MenuModelItem;
 			IEditorAction action = clickedItem.Tag as IEditorAction;
 			action.Perform(selResData.Select(resRef => resRef.Res));
 		}
@@ -1625,21 +1738,21 @@ namespace Duality.Editor.Plugins.ProjectView
 			// Hovering context menu
 			if (this.contextMenuNode.Visible)
 			{
-				ToolStripItem item = this.newToolStripMenuItem.DropDown.GetItemAtDeep(globalPos);
-				Type itemType = item != null ? item.Tag as Type : null;
-				if (itemType != null)
+				ToolStripItem item = this.contextMenuNode.GetItemAtDeep(globalPos);
+				if (item != null)
 				{
 					// "Create Resource"
-					result = HelpInfo.FromMember(itemType);
-				}
-				else 
-				{
+					if (item.Tag is Type)
+						result = HelpInfo.FromMember(item.Tag as Type);
+					// Editor Actions
+					else if (item.Tag is IEditorAction && !string.IsNullOrEmpty((item.Tag as IEditorAction).Description))
+						result = HelpInfo.FromText(item.Text, (item.Tag as IEditorAction).Description);
+					// A HelpInfo attached to the item
+					else if (item.Tag is HelpInfo)
+						result = item.Tag as HelpInfo;
 					// An ordinary items Tooltip
-					item = this.contextMenuNode.GetItemAtDeep(globalPos);
-					if (item != null && item.ToolTipText != null)
-					{
+					else if (item.ToolTipText != null)
 						result = HelpInfo.FromText(item.Text, item.ToolTipText);
-					}
 				}
 				captured = true;
 			}
@@ -1680,51 +1793,45 @@ namespace Duality.Editor.Plugins.ProjectView
 			else return null;
 		}
 
-		private static void InsertToolStripTypeItem(System.Collections.IList items, ToolStripItem newItem)
+		private int ContextMenuItemComparison(IMenuModelItem itemA, IMenuModelItem itemB)
 		{
-			ToolStripItem item2 = newItem;
-			ToolStripMenuItem menuItem2 = item2 as ToolStripMenuItem;
-			for (int i = 0; i < items.Count; i++)
+			int result;
+
+			// SortValue overrides all
+			result = itemA.SortValue - itemB.SortValue;
+			if (result != 0) return result;
+
+			// Don't sort any further unless within the new menu
+			bool isInNewMenu = false;
+			IMenuModelItem item = itemA;
+			while (item != null)
 			{
-				ToolStripItem item1 = items[i] as ToolStripItem;
-				ToolStripMenuItem menuItem1 = item1 as ToolStripMenuItem;
-				if (item1 == null)
-					continue;
-
-				bool item1IsType = item1.Tag is Type;
-				bool item2IsType = item2.Tag is Type;
-				System.Reflection.Assembly assembly1 = item1.Tag is Type ? (item1.Tag as Type).Assembly : item1.Tag as System.Reflection.Assembly;
-				System.Reflection.Assembly assembly2 = item2.Tag is Type ? (item2.Tag as Type).Assembly : item2.Tag as System.Reflection.Assembly;
-				int result = 
-					(assembly2 == typeof(DualityApp).Assembly ? 1 : 0) - 
-					(assembly1 == typeof(DualityApp).Assembly ? 1 : 0);
-				if (result > 0)
+				if (item == this.nodeContextItemNew)
 				{
-					items.Insert(i, newItem);
-					return;
+					isInNewMenu = true;
+					break;
 				}
-				else if (result != 0) continue;
-
-				result = 
-					(item2IsType ? 1 : 0) - 
-					(item1IsType ? 1 : 0);
-				if (result > 0)
-				{
-					items.Insert(i, newItem);
-					return;
-				}
-				else if (result != 0) continue;
-
-				result = string.Compare(item1.Text, item2.Text);
-				if (result > 0)
-				{
-					items.Insert(i, newItem);
-					return;
-				}
-				else if (result != 0) continue;
+				item = item.Parent;
 			}
+			if (!isInNewMenu) return 0;
 
-			items.Add(newItem);
+			// Duality-internal Types first
+			Assembly assemblyA = itemA.Tag is Type ? (itemA.Tag as Type).Assembly : itemA.Tag as Assembly;
+			Assembly assemblyB = itemB.Tag is Type ? (itemB.Tag as Type).Assembly : itemB.Tag as Assembly;
+			result = 
+				(assemblyB == typeof(DualityApp).Assembly ? 1 : 0) - 
+				(assemblyA == typeof(DualityApp).Assembly ? 1 : 0);
+			if (result != 0) return result;
+
+			// Type entries first
+			result = 
+				(itemB.Tag is Type ? 1 : 0) - 
+				(itemA.Tag is Type ? 1 : 0);
+			if (result != 0) return result;
+
+			// Sort by Item Name
+			result = string.Compare(itemA.Name, itemB.Name);
+			return result;
 		}
 	}
 }

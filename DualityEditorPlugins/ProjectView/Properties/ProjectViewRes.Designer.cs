@@ -89,6 +89,78 @@ namespace Duality.Editor.Plugins.ProjectView.Properties {
         }
         
         /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Copy ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_Copy {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Cut ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_Cut {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_Cut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Delete ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_Delete {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Folder ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_Folder {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die New ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_New {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_New", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Paste ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_Paste {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_Paste", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Rename ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_Rename {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Show in Explorer ähnelt.
+        /// </summary>
+        public static string ProjectFolderView_ContextItemName_ShowInExplorer {
+            get {
+                return ResourceManager.GetString("ProjectFolderView_ContextItemName_ShowInExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Doubleclick: {0} ähnelt.
         /// </summary>
         public static string ProjectFolderView_Help_Doubleclick {

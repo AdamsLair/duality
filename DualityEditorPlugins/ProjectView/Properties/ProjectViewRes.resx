@@ -127,6 +127,30 @@
   <data name="NewFolderName" xml:space="preserve">
     <value>New Folder</value>
   </data>
+  <data name="ProjectFolderView_ContextItemName_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="ProjectFolderView_ContextItemName_Cut" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="ProjectFolderView_ContextItemName_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="ProjectFolderView_ContextItemName_Folder" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="ProjectFolderView_ContextItemName_New" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="ProjectFolderView_ContextItemName_Paste" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="ProjectFolderView_ContextItemName_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="ProjectFolderView_ContextItemName_ShowInExplorer" xml:space="preserve">
+    <value>Show in Explorer</value>
+  </data>
   <data name="ProjectFolderView_Help_Doubleclick" xml:space="preserve">
     <value>Doubleclick: {0}</value>
   </data>

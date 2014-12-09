@@ -37,18 +37,6 @@
 			this.treeColumnName = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnType = new Aga.Controls.Tree.TreeColumn();
 			this.contextMenuNode = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.toolStripSeparatorCustomActions = new System.Windows.Forms.ToolStripSeparator();
-			this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.folderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.toolStripSeparatorNew = new System.Windows.Forms.ToolStripSeparator();
-			this.cutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.renameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparatorShowInExplorer = new System.Windows.Forms.ToolStripSeparator();
-			this.showInExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.nodeStateIcon = new Aga.Controls.Tree.NodeControls.NodeStateIcon();
 			this.nodeTextBoxName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.nodeTextBoxType = new Aga.Controls.Tree.NodeControls.NodeTextBox();
@@ -62,7 +50,6 @@
 			this.textBoxFilter = new System.Windows.Forms.TextBox();
 			this.labelFilter = new System.Windows.Forms.Label();
 			this.toolStrip.SuspendLayout();
-			this.contextMenuNode.SuspendLayout();
 			this.contextMenuDragMoveCopy.SuspendLayout();
 			this.panelBottom.SuspendLayout();
 			this.SuspendLayout();
@@ -152,108 +139,9 @@
 			// 
 			// contextMenuNode
 			// 
-			this.contextMenuNode.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripSeparatorCustomActions,
-            this.newToolStripMenuItem,
-            this.toolStripSeparatorNew,
-            this.cutToolStripMenuItem,
-            this.copyToolStripMenuItem,
-            this.pasteToolStripMenuItem,
-            this.deleteToolStripMenuItem,
-            this.renameToolStripMenuItem,
-            this.toolStripSeparatorShowInExplorer,
-            this.showInExplorerToolStripMenuItem});
 			this.contextMenuNode.Name = "contextMenuNode";
-			this.contextMenuNode.Size = new System.Drawing.Size(162, 176);
+			this.contextMenuNode.Size = new System.Drawing.Size(61, 4);
 			this.contextMenuNode.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuNode_Opening);
-			// 
-			// toolStripSeparatorCustomActions
-			// 
-			this.toolStripSeparatorCustomActions.Name = "toolStripSeparatorCustomActions";
-			this.toolStripSeparatorCustomActions.Size = new System.Drawing.Size(158, 6);
-			// 
-			// newToolStripMenuItem
-			// 
-			this.newToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.folderToolStripMenuItem,
-            this.toolStripSeparator4});
-			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.newToolStripMenuItem.Text = "New";
-			this.newToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.newToolStripMenuItem_DropDownItemClicked);
-			// 
-			// folderToolStripMenuItem
-			// 
-			this.folderToolStripMenuItem.Image = global::Duality.Editor.Plugins.ProjectView.Properties.Resources.folder;
-			this.folderToolStripMenuItem.Name = "folderToolStripMenuItem";
-			this.folderToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-			this.folderToolStripMenuItem.Text = "Folder";
-			this.folderToolStripMenuItem.Click += new System.EventHandler(this.folderToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(104, 6);
-			// 
-			// toolStripSeparatorNew
-			// 
-			this.toolStripSeparatorNew.Name = "toolStripSeparatorNew";
-			this.toolStripSeparatorNew.Size = new System.Drawing.Size(158, 6);
-			// 
-			// cutToolStripMenuItem
-			// 
-			this.cutToolStripMenuItem.Image = global::Duality.Editor.Plugins.ProjectView.Properties.Resources.cut;
-			this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-			this.cutToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.cutToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.cutToolStripMenuItem.Text = "Cut";
-			this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
-			// 
-			// copyToolStripMenuItem
-			// 
-			this.copyToolStripMenuItem.Image = global::Duality.Editor.Plugins.ProjectView.Properties.Resources.page_copy;
-			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.copyToolStripMenuItem.Text = "Copy";
-			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
-			// 
-			// pasteToolStripMenuItem
-			// 
-			this.pasteToolStripMenuItem.Image = global::Duality.Editor.Plugins.ProjectView.Properties.Resources.page_paste;
-			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-			this.pasteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.pasteToolStripMenuItem.Text = "Paste";
-			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
-			// 
-			// deleteToolStripMenuItem
-			// 
-			this.deleteToolStripMenuItem.Image = global::Duality.Editor.Plugins.ProjectView.Properties.Resources.cross;
-			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.deleteToolStripMenuItem.Text = "Delete";
-			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-			// 
-			// renameToolStripMenuItem
-			// 
-			this.renameToolStripMenuItem.Name = "renameToolStripMenuItem";
-			this.renameToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.renameToolStripMenuItem.Text = "Rename";
-			this.renameToolStripMenuItem.Click += new System.EventHandler(this.renameToolStripMenuItem_Click);
-			// 
-			// toolStripSeparatorShowInExplorer
-			// 
-			this.toolStripSeparatorShowInExplorer.Name = "toolStripSeparatorShowInExplorer";
-			this.toolStripSeparatorShowInExplorer.Size = new System.Drawing.Size(158, 6);
-			// 
-			// showInExplorerToolStripMenuItem
-			// 
-			this.showInExplorerToolStripMenuItem.Name = "showInExplorerToolStripMenuItem";
-			this.showInExplorerToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
-			this.showInExplorerToolStripMenuItem.Text = "Show in Explorer";
-			this.showInExplorerToolStripMenuItem.Click += new System.EventHandler(this.showInExplorerToolStripMenuItem_Click);
 			// 
 			// nodeStateIcon
 			// 
@@ -374,7 +262,6 @@
 			this.Text = "Project View";
 			this.toolStrip.ResumeLayout(false);
 			this.toolStrip.PerformLayout();
-			this.contextMenuNode.ResumeLayout(false);
 			this.contextMenuDragMoveCopy.ResumeLayout(false);
 			this.panelBottom.ResumeLayout(false);
 			this.panelBottom.PerformLayout();
@@ -396,23 +283,11 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripMenuItem cancelToolStripMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuNode;
-		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem folderToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorNew;
-		private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem renameToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorShowInExplorer;
-		private System.Windows.Forms.ToolStripMenuItem showInExplorerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripButton toolStripButtonWorkDir;
 		private System.Windows.Forms.ToolStripLabel toolStripLabelProjectName;
 		private System.Windows.Forms.Panel panelBottom;
 		private System.Windows.Forms.TextBox textBoxFilter;
 		private System.Windows.Forms.Label labelFilter;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparatorCustomActions;
 		private Aga.Controls.Tree.TreeColumn treeColumnName;
 		private Aga.Controls.Tree.TreeColumn treeColumnType;
 		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeTextBoxType;
