@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Base</id>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Editor Base Infrastructure</title>
@@ -14,8 +14,8 @@
     <description>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</description>
 	<tags>Duality Editor Plugin PropertyEditor Importer Preview EditorAction DataConverter</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.3.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="1.1.0" />
+      <dependency id="AdamsLair.Duality" version="1.4.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="1.2.0" />
     </dependencies>
   </metadata>
   <files>
