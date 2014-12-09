@@ -118,6 +118,7 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 					{
 						if (this.showNamespaces && exportedType.Namespace != parentName) continue;
 						if (!parentType.IsAssignableFrom(exportedType)) continue;
+						if (parentType == exportedType) continue;
 						if (this.filter != null && !this.filter(exportedType)) continue;
 						items.Add(new TypeItem(exportedType, parentItem));
 					}

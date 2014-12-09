@@ -42,9 +42,13 @@ namespace Duality.Editor.Forms
 
 			this.model.ShowNamespaces = false;
 			this.model.Filter = (t => !t.IsGenericTypeDefinition);
-			this.objectTypeView.Model = this.model;
 
 			this.treeNodeName.DrawText += this.treeNodeName_DrawText;
+		}
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+			this.objectTypeView.Model = this.model;
 		}
 
 		private bool CanInstantiateType(Type type)
