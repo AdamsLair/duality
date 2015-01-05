@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
@@ -286,6 +287,15 @@ namespace Duality
 
 			return true;
 		}
+		/// <summary>
+		/// Checks whether the specified directory is empty and deletes it, if it is.
+		/// </summary>
+		/// <param name="path"></param>
+		public static void DeleteEmptyDirectory(string path)
+		{
+			if (Directory.Exists(path) && !Directory.EnumerateFileSystemEntries(path).Any())
+				Directory.Delete(path);
+		}
 
 		/// <summary>
 		/// Determines whether the contents of two files are completely equal.
@@ -306,9 +316,18 @@ namespace Duality
 			using (FileStream streamB = File.OpenRead(filePathB))
 			{
 				if (streamA.Length != streamB.Length) return false;
+				byte[] bufferA = new byte[1024];
+				byte[] bufferB = new byte[1024];
 				while (streamA.Position < streamA.Length)
 				{
-					if (streamA.ReadByte() != streamB.ReadByte()) return false;
+					int readBytesA = streamA.Read(bufferA, 0, bufferA.Length);
+					int readBytesB = streamB.Read(bufferB, 0, readBytesA);
+
+					for (int i = 0; i < readBytesA; i++)
+					{
+						if (bufferA[i] != bufferB[i])
+							return false;
+					}
 				}
 			}
 			return true;
