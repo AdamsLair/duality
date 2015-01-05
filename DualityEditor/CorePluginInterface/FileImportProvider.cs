@@ -35,13 +35,17 @@ namespace Duality.Editor
 			importers.Clear();
 		}
 
-		public static bool IsImportFileExisting(string filePath)
+		public static bool DoesImportOverwriteData(string filePath)
 		{
 			string srcFilePath, targetName, targetDir;
 			PrepareImportFilePaths(filePath, out srcFilePath, out targetName, out targetDir);
 
 			// Does the source file already exist?
-			if (File.Exists(srcFilePath)) return true;
+			if (File.Exists(srcFilePath))
+			{
+				// If they're not the same file, this would overwrite existing data.
+				return !PathHelper.FilesEqual(filePath, srcFilePath);
+			}
 
 			// Find an importer and check if one of its output files already exist
 			IFileImporter importer = importers.FirstOrDefault(i => i.CanImportFile(srcFilePath));
@@ -62,19 +66,14 @@ namespace Duality.Editor
 					// Assure the directory exists
 					Directory.CreateDirectory(Path.GetDirectoryName(srcFilePath));
 
-					// Move file from data directory to source directory
+					// If there already is a similarly named file in the source directory, delete it.
 					if (File.Exists(srcFilePath))
-					{
-						File.Copy(filePath, srcFilePath, true);
-						File.Delete(filePath);
-					}
-					else
-						File.Move(filePath, srcFilePath);
-				} catch (Exception) { return false; }
+						File.Delete(srcFilePath);
 
-				// Import it
-				try
-				{
+					// Move file from data directory to source directory
+					File.Move(filePath, srcFilePath);
+
+					// Import it from there
 					importer.ImportFile(srcFilePath, targetName, targetDir);
 				}
 				catch (Exception ex)
@@ -97,12 +96,12 @@ namespace Duality.Editor
 			if (importer == null) return;
 
 			// Guess which Resources are affected and check them first
-			string fileBaseName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(filePath));
+			string resourceName = ContentProvider.GetNameFromPath(filePath);
 			List<ContentRef<Resource>> checkContent = ContentProvider.GetAvailableContent<Resource>();
 			for (int i = 0; i < checkContent.Count; ++i)
 			{
 				ContentRef<Resource> resRef = checkContent[i];
-				if (resRef.Name == fileBaseName)
+				if (resRef.Name == resourceName)
 				{
 					checkContent.RemoveAt(i);
 					checkContent.Insert(0, resRef);
@@ -139,58 +138,6 @@ namespace Duality.Editor
 				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection((IEnumerable<object>)touchedResources));
 			}
 		}
-		public static void NotifyFileRenamed(string filePathOld, string filePathNew)
-		{
-			if (string.IsNullOrEmpty(filePathOld)) return;
-
-			// Find an importer to handle the file rename
-			IFileImporter importer = importers.FirstOrDefault(i => i.CanImportFile(filePathOld));
-			if (importer == null) return;
-			
-			// Guess which Resources are affected and check them first
-			string fileBaseName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(filePathOld));
-			List<ContentRef<Resource>> checkContent = ContentProvider.GetAvailableContent<Resource>();
-			for (int i = 0; i < checkContent.Count; ++i)
-			{
-				ContentRef<Resource> resRef = checkContent[i];
-				if (resRef.Name == fileBaseName)
-				{
-					checkContent.RemoveAt(i);
-					checkContent.Insert(0, resRef);
-				}
-			}
-
-			// Iterate over all existing Resources to find out which one to modify.
-			List<Resource> touchedResources = null;
-			foreach (ContentRef<Resource> resRef in checkContent)
-			{
-				if (resRef.IsDefaultContent) continue;
-				if (!importer.IsUsingSrcFile(resRef, filePathOld)) continue;
-				try
-				{
-					Resource res = resRef.Res;
-					if (res.SourcePath == filePathOld)
-					{
-						res.SourcePath = filePathNew;
-						if (touchedResources == null) touchedResources = new List<Resource>();
-						touchedResources.Add(res);
-						// Multiple Resources referring to a single source file shouldn't happen
-						// in the current implementation of FileImport and Resource system.
-						// Might change later.
-						break; 
-					}
-				}
-				catch (Exception) 
-				{
-					Log.Editor.WriteError("There was an error internally renaming a source file '{0}' to '{1}'", filePathOld, filePathNew);
-				}
-			}
-
-			if (touchedResources != null)
-			{
-				DualityEditorApp.FlagResourceUnsaved(touchedResources);
-			}
-		}
 		
 		public static void OpenSourceFile(ContentRef<Resource> resourceRef, string srcFileExt, Action<string> saveSrcToAction)
 		{
@@ -198,6 +145,7 @@ namespace Duality.Editor
 			if (resourceRef.IsDefaultContent)
 			{
 				string tmpLoc = Path.Combine(Path.GetTempPath(), resourceRef.Path.Replace(':', '_')) + srcFileExt;
+				Directory.CreateDirectory(Path.GetDirectoryName(tmpLoc));
 				saveSrcToAction(tmpLoc);
 				System.Diagnostics.Process.Start(tmpLoc);
 			}
@@ -206,21 +154,35 @@ namespace Duality.Editor
 			{
 				Resource resource = resourceRef.Res;
 				string srcFilePath = resource.SourcePath;
+
+				// If the Resource to open doesn't know where its source file is, search or create it
 				if (String.IsNullOrEmpty(srcFilePath) || !File.Exists(srcFilePath))
 				{
-					srcFilePath = GenerateSourceFilePath(resourceRef, srcFileExt);
-					Directory.CreateDirectory(Path.GetDirectoryName(srcFilePath));
+					// Determine the desired source file path
+					srcFilePath = SelectSourceFilePath(resourceRef, srcFileExt);
+
+					// If there already is a matching file in the desired path, it's probably been relocated there
+					if (File.Exists(srcFilePath))
+					{
+						// Do nothing and simply use the existing file.
+					}
+					// Otherwise, export the Resource to the desired path
+					else
+					{
+						Directory.CreateDirectory(Path.GetDirectoryName(srcFilePath));
+						saveSrcToAction(srcFilePath);
+					}
+
+					// Keep in mind where we left the source file
 					resource.SourcePath = srcFilePath;
+					DualityEditorApp.FlagResourceUnsaved(resource);
 				}
 
-				if (srcFilePath != null)
-				{
-					saveSrcToAction(srcFilePath);
-					System.Diagnostics.Process.Start(srcFilePath);
-				}
+				// Open the source file
+				System.Diagnostics.Process.Start(srcFilePath);
 			}
 		}
-		public static string GenerateSourceFilePath(ContentRef<Resource> r, string srcFileExt)
+		public static string SelectSourceFilePath(ContentRef<Resource> r, string srcFileExt)
 		{
 			string filePath = PathHelper.MakeFilePathRelative(r.Path, DualityApp.DataDirectory);
 			string fileDir = Path.GetDirectoryName(filePath);
@@ -229,7 +191,8 @@ namespace Duality.Editor
 				filePath = Path.GetFileName(filePath);
 				fileDir = ".";
 			}
-			return PathHelper.GetFreePath(Path.Combine(Path.Combine(EditorHelper.SourceMediaDirectory, fileDir), r.Name), srcFileExt);
+			string targetPathWithoutExt = Path.Combine(Path.Combine(EditorHelper.SourceMediaDirectory, fileDir), r.Name);
+			return targetPathWithoutExt + srcFileExt;
 		}
 
 		private static void PrepareImportFilePaths(string filePath, out string srcFilePath, out string targetName, out string targetDir)
@@ -240,9 +203,7 @@ namespace Duality.Editor
 			targetDir = Path.GetDirectoryName(Path.Combine(DualityApp.DataDirectory, srcFilePath));
 			targetName = Path.GetFileNameWithoutExtension(filePath);
 
-			srcFilePath = PathHelper.GetFreePath(
-				Path.Combine(EditorHelper.SourceMediaDirectory, Path.GetFileNameWithoutExtension(srcFilePath)), 
-				Path.GetExtension(srcFilePath));
+			srcFilePath = Path.Combine(EditorHelper.SourceMediaDirectory, srcFilePath);
 		}
 	}
 }
