@@ -37,6 +37,29 @@ namespace Duality
 		public static event EventHandler<ResourceResolveEventArgs>	ResourceResolve = null;
 
 		/// <summary>
+		/// Determines the name of a Resource based on its path.
+		/// </summary>
+		/// <param name="resPath"></param>
+		/// <returns></returns>
+		public static string GetNameFromPath(string resPath)
+		{
+			if (string.IsNullOrEmpty(resPath)) return "null";
+			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', Path.DirectorySeparatorChar);
+			return Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(resPath));
+		}
+		/// <summary>
+		/// Determines the full (hierarchical) name of a Resource based on its path.
+		/// </summary>
+		/// <param name="resPath"></param>
+		/// <returns></returns>
+		public static string GetFullNameFromPath(string resPath)
+		{
+			if (string.IsNullOrEmpty(resPath)) return "null";
+			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', Path.DirectorySeparatorChar);
+			return Path.Combine(Path.GetDirectoryName(resPath), GetNameFromPath(resPath));
+		}
+
+		/// <summary>
 		/// Initializes Dualitys embedded default content.
 		/// </summary>
 		public static void InitDefaultContent()

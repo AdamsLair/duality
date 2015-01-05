@@ -86,10 +86,10 @@ namespace Duality
 		{
 			get
 			{
-				if (this.IsRuntimeResource) return this.GetHashCode().ToString(CultureInfo.InvariantCulture);
-				string nameTemp = this.path;
-				if (this.IsDefaultContent) nameTemp = nameTemp.Replace(':', '/');
-				return System.IO.Path.GetFileNameWithoutExtension(System.IO.Path.GetFileNameWithoutExtension(nameTemp));
+				if (this.IsRuntimeResource)
+					return this.GetHashCode().ToString(CultureInfo.InvariantCulture);
+				else
+					return ContentProvider.GetNameFromPath(this.path);
 			}
 		}
 		/// <summary>
@@ -100,10 +100,10 @@ namespace Duality
 		{
 			get
 			{
-				if (this.IsRuntimeResource) return this.GetHashCode().ToString(CultureInfo.InvariantCulture);
-				string nameTemp = this.path;
-				if (this.IsDefaultContent) nameTemp = nameTemp.Replace(':', '/');
-				return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(nameTemp), this.Name);
+				if (this.IsRuntimeResource)
+					return this.GetHashCode().ToString(CultureInfo.InvariantCulture);
+				else
+					return ContentProvider.GetFullNameFromPath(this.path);
 			}
 		}
 		/// <summary>
