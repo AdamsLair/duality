@@ -238,7 +238,27 @@ namespace Duality.Resources
 			/// <param name="imagePath"></param>
 			public void SavePixelData(string imagePath)
 			{
-				this.ToBitmap().Save(imagePath);
+				using (Bitmap bmp = this.ToBitmap())
+				using (MemoryStream stream = new MemoryStream())
+				{
+					string ext = System.IO.Path.GetExtension(imagePath);
+					ImageFormat format = bmp.RawFormat;
+					if (string.Equals(ext, ".png", StringComparison.InvariantCultureIgnoreCase))
+						format = ImageFormat.Png;
+					else if (string.Equals(ext, ".jpg", StringComparison.InvariantCultureIgnoreCase))
+						format = ImageFormat.Jpeg;
+					else if (string.Equals(ext, ".jpeg", StringComparison.InvariantCultureIgnoreCase))
+						format = ImageFormat.Jpeg;
+					else if (string.Equals(ext, ".tif", StringComparison.InvariantCultureIgnoreCase))
+						format = ImageFormat.Tiff;
+					else if (string.Equals(ext, ".tiff", StringComparison.InvariantCultureIgnoreCase))
+						format = ImageFormat.Tiff;
+					else if (string.Equals(ext, ".bmp", StringComparison.InvariantCultureIgnoreCase))
+						format = ImageFormat.Bmp;
+
+					bmp.Save(stream, format);
+					File.WriteAllBytes(imagePath, stream.ToArray());
+				}
 			}
 			/// <summary>
 			/// Loads the pixel data in this layer from the specified file.
@@ -246,7 +266,10 @@ namespace Duality.Resources
 			/// <param name="imagePath"></param>
 			public void LoadPixelData(string imagePath)
 			{
-				this.FromBitmap(new Bitmap(imagePath));
+				using (Bitmap bmp = new Bitmap(imagePath))
+				{
+					this.FromBitmap(bmp);
+				}
 			}
 			/// <summary>
 			/// Discards all pixel data in this Layer.

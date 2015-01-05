@@ -1097,8 +1097,8 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		private void nodeTextBoxName_EditorShowing(object sender, CancelEventArgs e)
 		{
-			NodeBase node = this.folderView.SelectedNode.Tag as NodeBase;
-			if (node.ReadOnly) e.Cancel = true;
+			NodeBase node = this.folderView.SelectedNode != null ? this.folderView.SelectedNode.Tag as NodeBase : null;
+			if (node == null || node.ReadOnly) e.Cancel = true;
 			if (!e.Cancel)
 			{
 				this.lastEditedNode = node;

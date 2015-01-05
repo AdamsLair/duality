@@ -795,11 +795,11 @@ namespace Duality.Editor
 			// We don't want to screw anything up by trying to backup stuff, so just catch and log everything.
 			try
 			{
-				string pathName = Path.GetFileName(path);
-				string pathNameWithoutExt = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(pathName));
-				string pathExt = pathName.Remove(0, pathNameWithoutExt.Length);
+				string fileName = Path.GetFileName(path);
+				string resourceName = ContentProvider.GetNameFromPath(path);
+				string pathCompleteExt = fileName.Remove(0, resourceName.Length);
 				string fileBackupDir = Path.Combine(EditorHelper.BackupDirectory, PathHelper.MakeFilePathRelative(path, DualityApp.DataDirectory));
-				string fileBackupName = DateTime.Now.ToString("yyyy-MM-dd T HH-mm", System.Globalization.CultureInfo.InvariantCulture) + pathExt;
+				string fileBackupName = DateTime.Now.ToString("yyyy-MM-dd T HH-mm", System.Globalization.CultureInfo.InvariantCulture) + pathCompleteExt;
 
 				// Copy the file to the backup directory
 				if (!Directory.Exists(fileBackupDir)) Directory.CreateDirectory(fileBackupDir);
