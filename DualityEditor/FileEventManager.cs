@@ -352,8 +352,11 @@ namespace Duality.Editor
 						if (ResourceRenamed != null)
 							ResourceRenamed(null, args);
 
-						// Organize the Source/Media directory accordingly
-						MoveSourceMediaFile(args);
+						if (!isSkippedPath)
+						{
+							// Organize the Source/Media directory accordingly
+							MoveSourceMediaFile(args);
+						}
 					}
 				}
 			}
@@ -430,7 +433,7 @@ namespace Duality.Editor
 				if (File.Exists(mediaPath))
 				{
 					RecycleBin.SendSilent(mediaPath);
-					PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPath));
+					PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPath), true);
 				}
 			}
 			else if (deleteEvent.IsDirectory)
@@ -438,7 +441,7 @@ namespace Duality.Editor
 				if (Directory.Exists(mediaPath))
 				{
 					RecycleBin.SendSilent(mediaPath);
-					PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPath));
+					PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPath), true);
 				}
 			}
 		}
@@ -495,11 +498,11 @@ namespace Duality.Editor
 				// Move the media file to mirror the data files movement
 				if (!PathHelper.ArePathsEqual(mediaPath, oldMediaPath))
 				{
-					if (!File.Exists(mediaPath))
+					if (File.Exists(oldMediaPath) && !File.Exists(mediaPath))
 					{
 						Directory.CreateDirectory(Path.GetDirectoryName(mediaPath));
 						File.Move(oldMediaPath, mediaPath);
-						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldMediaPath));
+						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldMediaPath), true);
 					}
 				}
 			}
@@ -508,11 +511,11 @@ namespace Duality.Editor
 				// Move the media directory to mirror the data files movement
 				if (!PathHelper.ArePathsEqual(mediaPath, oldMediaPath))
 				{
-					if (!Directory.Exists(mediaPath))
+					if (Directory.Exists(oldMediaPath) && !Directory.Exists(mediaPath))
 					{
 						Directory.CreateDirectory(Path.GetDirectoryName(mediaPath));
 						Directory.Move(oldMediaPath, mediaPath);
-						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldMediaPath));
+						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldMediaPath), true);
 					}
 				}
 			}

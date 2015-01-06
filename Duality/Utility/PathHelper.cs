@@ -291,10 +291,18 @@ namespace Duality
 		/// Checks whether the specified directory is empty and deletes it, if it is.
 		/// </summary>
 		/// <param name="path"></param>
-		public static void DeleteEmptyDirectory(string path)
+		/// <param name="recursive">If true, each deleted directories parent directory will be evaluated as well.</param>
+		public static void DeleteEmptyDirectory(string path, bool recursive = false)
 		{
 			if (Directory.Exists(path) && !Directory.EnumerateFileSystemEntries(path).Any())
+			{
 				Directory.Delete(path);
+				if (recursive)
+				{
+					string parentDir = Path.GetDirectoryName(path);
+					DeleteEmptyDirectory(parentDir, true);
+				}
+			}
 		}
 
 		/// <summary>
