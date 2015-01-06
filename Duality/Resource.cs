@@ -138,7 +138,7 @@ namespace Duality
 		/// </param>
 		public void Save(string saveAsPath = null, bool makePermanent = true)
 		{
-			if (this.Disposed) throw new ApplicationException("Can't save a Ressource that has been disposed.");
+			if (this.Disposed) throw new ApplicationException("Can't save a Resource that has been disposed.");
 			if (string.IsNullOrWhiteSpace(saveAsPath))
 			{
 				saveAsPath = this.path;
@@ -148,7 +148,7 @@ namespace Duality
 
 			this.CheckedOnSaving(saveAsPath);
 
-			// We're saving a new Ressource for the first time: Register it in the library
+			// We're saving a new Resource for the first time: Register it in the library
 			if (makePermanent && string.IsNullOrWhiteSpace(this.path))
 			{
 				this.path = saveAsPath;
@@ -170,7 +170,7 @@ namespace Duality
 		/// <param name="str"></param>
 		public void Save(Stream str)
 		{
-			if (this.Disposed) throw new ApplicationException("Can't save a Ressource that has been disposed.");
+			if (this.Disposed) throw new ApplicationException("Can't save a Resource that has been disposed.");
 
 			string streamName;
 

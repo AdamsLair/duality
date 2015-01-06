@@ -437,7 +437,7 @@ namespace Duality
 		{
 			if (string.IsNullOrEmpty(path) || !File.Exists(path)) return null;
 
-			Log.Core.Write("Loading Ressource '{0}'...", path);
+			Log.Core.Write("Loading Resource '{0}'...", path);
 			Log.Core.PushIndent();
 
 			// Load the Resource and register it

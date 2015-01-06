@@ -261,13 +261,13 @@ namespace Duality.Editor
 				{
 					if (File.Exists(e.FullPath))
 					{
-						// Register newly detected ressource file
+						// Register newly detected Resource file
 						if (Resource.IsResourceFile(e.FullPath))
 						{
 							if (ResourceCreated != null)
 								ResourceCreated(null, new ResourceEventArgs(e.FullPath));
 						}
-						// Import non-ressource file
+						// Import non-Resource file
 						else
 						{
 							bool abort = false;
@@ -299,7 +299,7 @@ namespace Duality.Editor
 					}
 					else if (Directory.Exists(e.FullPath))
 					{
-						// Register newly detected ressource directory
+						// Register newly detected Resource directory
 						if (ResourceCreated != null)
 							ResourceCreated(null, new ResourceEventArgs(e.FullPath));
 					}
