@@ -96,7 +96,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
-			this.InitRessources();
+			this.InitResources();
 			DualityEditorApp.HighlightObject		+= this.DualityEditorApp_HighlightObject;
 			DualityEditorApp.SelectionChanged		+= this.EditorForm_SelectionChanged;
 			FileEventManager.ResourceCreated		+= this.FileEventManager_ResourceCreated;
@@ -183,7 +183,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			this.folderView.NodeFilter = this.tempUpperFilter != null ? this.folderModel_IsNodeVisible : (Predicate<object>)null;
 		}
 
-		protected void InitRessources()
+		protected void InitResources()
 		{
 			this.toolStripLabelProjectName.Text = String.Format("{0}: {1}",
 				Properties.ProjectViewRes.ProjectNameLabel,
@@ -193,7 +193,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			nodeTree.Nodes.Insert(0, this.ScanDefaultContent());
 
 			this.folderView.BeginUpdate();
-			this.ClearRessources();
+			this.ClearResources();
 			while (nodeTree.Nodes.Count > 0)
 			{
 				Node n = nodeTree.Nodes[0];
@@ -204,7 +204,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			}
 			this.folderView.EndUpdate();
 		}
-		protected void ClearRessources()
+		protected void ClearResources()
 		{
 			this.folderModel.Nodes.Clear();
 			this.pathIdToNode.Clear();
@@ -272,7 +272,7 @@ namespace Duality.Editor.Plugins.ProjectView
 
 			return thisNode;
 		}
-		protected NodeBase ScanDefaultRessource(ContentRef<Resource> resRef)
+		protected NodeBase ScanDefaultResource(ContentRef<Resource> resRef)
 		{
 			if (!resRef.IsAvailable) return null;
 			return new ResourceNode(resRef);
@@ -306,8 +306,8 @@ namespace Duality.Editor.Plugins.ProjectView
 					curDirNode = subNode;
 				}
 
-				// Generate virtual ressource node
-				NodeBase res = this.ScanDefaultRessource(resRef);
+				// Generate virtual Resource node
+				NodeBase res = this.ScanDefaultResource(resRef);
 				if (res != null) this.InsertNodeSorted(res, curDirNode);
 			}
 
@@ -1367,7 +1367,7 @@ namespace Duality.Editor.Plugins.ProjectView
 
 			if (!alreadyAdded)
 			{
-				// Register newly detected ressource file
+				// Register newly detected Resource file
 				if (File.Exists(e.Path) && Resource.IsResourceFile(e.Path))
 				{
 					NodeBase newNode = this.ScanFile(e.Path);
@@ -1400,7 +1400,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		private void FileEventManager_ResourceDeleted(object sender, ResourceEventArgs e)
 		{
-			// Remove lost ressource file
+			// Remove lost Resource file
 			NodeBase node = this.NodeFromPath(e.Path);
 			if (node != null)
 			{
@@ -1453,13 +1453,13 @@ namespace Duality.Editor.Plugins.ProjectView
 					this.RegisterNodeTree(node);
 				}
 			}
-			// Register newly detected ressource file
+			// Register newly detected Resource file
 			else if (this.NodeFromPath(e.Path) == null)
 			{
 				scanResFile = true;
 			}
 
-			// If neccessary, check if the file is a ressource file and add it, if yes
+			// If neccessary, check if the file is a Resource file and add it, if yes
 			if (scanResFile && Resource.IsResourceFile(e.Path))
 			{
 				node = this.ScanFile(e.Path);
