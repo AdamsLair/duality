@@ -137,7 +137,7 @@ namespace Duality
 			if (timeFreeze == 0)
 			{
 				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-					gameTimer += TimeSpan.FromMilliseconds(lastDelta * timeScale);
+					gameTimer += TimeSpan.FromTicks((long)(lastDelta * timeScale * TimeSpan.TicksPerMillisecond));
 				timeMult = timeScale * lastDelta / MsPFMult;
 			}
 			else
