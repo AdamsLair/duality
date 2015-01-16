@@ -8,8 +8,8 @@ void main()
 	gl_Position = ftransform();
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_FrontColor = gl_Color;
-	lightIntensity = lightAttrib;
+	lightIntensity = lightAttrib.xyz;
 }</source>
-  <sourcePath dataType="String">Source\Media\PerVertexLighting\Light (2).vert</sourcePath>
+  <sourcePath dataType="String">Source\Media\DynamicLightingSample\PerVertexLighting\VertexLight.vert</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->
