@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.DynamicLighting.Sample</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>DynamicLighting Sample</title>
