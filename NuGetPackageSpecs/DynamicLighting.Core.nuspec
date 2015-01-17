@@ -14,7 +14,7 @@
     <description>Introduces a naiive implementation of dynamic lighting Components. Although this can be used in an actual game, this package mainly serves as an example on how to implement dynamic lighting functionality in a custom Duality plugin. You can find the full source code online.</description>
 	<tags>Duality Core Plugin Rendering Lighting Component</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.3.0" />
+      <dependency id="AdamsLair.Duality" version="1.5.3" />
     </dependencies>
   </metadata>
   <files>

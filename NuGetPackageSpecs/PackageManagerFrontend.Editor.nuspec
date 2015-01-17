@@ -14,8 +14,8 @@
     <description>A user interface for conveniently managing Duality packages.</description>
 	<tags>Duality Editor Plugin PackageManagerFrontend</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.4.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="1.2.0" />
+      <dependency id="AdamsLair.Duality" version="1.5.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="1.2.3" />
     </dependencies>
   </metadata>
   <files>

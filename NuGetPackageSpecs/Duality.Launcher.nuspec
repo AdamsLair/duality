@@ -14,7 +14,7 @@
     <description>The default launcher application for Duality games.</description>
 	<tags>Duality Launcher</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.4.0" />
+      <dependency id="AdamsLair.Duality" version="1.5.3" />
     </dependencies>
   </metadata>
   <files>

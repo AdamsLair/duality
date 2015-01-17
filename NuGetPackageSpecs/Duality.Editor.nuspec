@@ -14,7 +14,7 @@
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.5.2" />
+      <dependency id="AdamsLair.Duality" version="1.5.3" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.2" />
       <dependency id="AdamsLair.WinForms" version="1.0.16" />
