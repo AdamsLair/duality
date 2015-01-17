@@ -296,18 +296,61 @@ namespace NightlyBuilder
 						File.Delete(file);
 					}
 
+					Console.WriteLine("Determining package data from '{0}'...", config.NuGetPackageSpecsDir);
+					Dictionary<string,Version> packageVersions = new Dictionary<string,Version>();
+					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageSpecsDir, "*.nuspec", SearchOption.AllDirectories))
+					{
+						Console.Write("  {0}: ", Path.GetFileName(file));
+
+						string fileAbs = Path.GetFullPath(file);
+						XDocument doc = XDocument.Load(fileAbs);
+						XElement elemId = doc.Descendants("id").FirstOrDefault();
+						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
+
+						string id = elemId.Value.Trim();
+						Version version = Version.Parse(elemVersion.Value.Trim());
+						packageVersions[id] = version;
+
+						Console.WriteLine("{0}", version);
+					}
+
+					Console.WriteLine();
 					Console.WriteLine("Creating packages from '{0}'...", config.NuGetPackageSpecsDir);
 					foreach (string file in Directory.EnumerateFiles(config.NuGetPackageSpecsDir, "*.nuspec", SearchOption.AllDirectories))
 					{
 						Console.Write("  {0}... ", Path.GetFileName(file));
 
 						string fileAbs = Path.GetFullPath(file);
-						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, false);
-
 						XDocument doc = XDocument.Load(fileAbs);
+
+						bool skip = false;
+						foreach (XElement elemDependency in doc.Descendants("dependency"))
+						{
+							string id = elemDependency.Attribute("id").Value.Trim();
+							Version version = Version.Parse(elemDependency.Attribute("version").Value.Trim());
+							Version developedAgainstVersion;
+							if (packageVersions.TryGetValue(id, out developedAgainstVersion))
+							{
+								if (version != developedAgainstVersion)
+								{
+									skip = true;
+									break;
+								}
+							}
+						}
+
+						if (skip)
+						{
+							Console.ForegroundColor = ConsoleColor.Yellow;
+							Console.WriteLine("dependency mismatch (skip)");
+							Console.ResetColor();
+							continue;
+						}
+						
 						XElement elemId = doc.Descendants("id").FirstOrDefault();
 						XElement elemVersion = doc.Descendants("version").FirstOrDefault();
 						string targetFileName = string.Format("{0}.{1}.nupkg", elemId.Value.Trim(), elemVersion.Value.Trim());
+						ExecuteCommand(Path.GetFullPath(config.NuGetPath) + " pack " + fileAbs, config.NuGetPackageTargetDir, false);
 
 						if (!File.Exists(Path.Combine(config.NuGetPackageTargetDir, targetFileName)))
 						{
@@ -346,6 +389,9 @@ namespace NightlyBuilder
 				Console.WriteLine();
 				Console.WriteLine();
 			}
+
+			Console.WriteLine("Finished Build.");
+			Console.ReadLine();
 		}
 
 		public static string WildcardToRegex(string pattern)
