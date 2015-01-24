@@ -14,32 +14,33 @@ namespace Duality.Editor.PackageManagement
 {
 	public sealed class PackageManager
 	{
-		public const string DualityTag = "Duality";
-		public const string PluginTag = "Plugin";
-		public const string SampleTag = "Sample";
-		public const string CoreTag = "Core";
-		public const string EditorTag = "Editor";
-		public const string LauncherTag = "Launcher";
+		public const string DualityTag	= "Duality";
+		public const string PluginTag	= "Plugin";
+		public const string SampleTag	= "Sample";
+		public const string CoreTag		= "Core";
+		public const string EditorTag	= "Editor";
+		public const string LauncherTag	= "Launcher";
 
-		private	const	string	UpdateConfigFile			= "ApplyUpdate.xml";
-		private	const	string	PackageConfigFile			= "PackageConfig.xml";
-		private const	string	LocalPackageDir				= EditorHelper.SourceDirectory + @"\Packages";
-		private	const	string	DefaultRepositoryUrl		= @"https://packages.nuget.org/api/v2";
+		private const string UpdateConfigFile		= "ApplyUpdate.xml";
+		private const string PackageConfigFile		= "PackageConfig.xml";
+		private const string LocalPackageDir		= EditorHelper.SourceDirectory + @"\Packages";
+		private const string DefaultRepositoryUrl	= @"https://packages.nuget.org/api/v2";
 
-		private List<string>            repositoryUrls      = new List<string>{ DefaultRepositoryUrl };
-		private	bool					hasLocalRepo		= false;
-		private	string					dataTargetDir		= null;
-		private	string					sourceTargetDir		= null;
-		private	string					pluginTargetDir		= null;
-		private	string					rootPath			= null;
-		private	List<LocalPackage>		localPackages		= new List<LocalPackage>();
-		private	List<LocalPackage>		uninstallQueue		= new List<LocalPackage>();
+
+		private List<string>		repositoryUrls	= new List<string>{ DefaultRepositoryUrl };
+		private	bool				hasLocalRepo	= false;
+		private	string				dataTargetDir	= null;
+		private	string				sourceTargetDir	= null;
+		private	string				pluginTargetDir	= null;
+		private	string				rootPath		= null;
+		private	List<LocalPackage>	localPackages	= new List<LocalPackage>();
+		private	List<LocalPackage>	uninstallQueue	= new List<LocalPackage>();
 
 		private	object cacheLock = new object();
 		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
 
-		private NuGet.PackageManager		manager			= null;
-		private	NuGet.IPackageRepository	repository		= null;
+		private NuGet.PackageManager		manager		= null;
+		private	NuGet.IPackageRepository	repository	= null;
 
 		public event EventHandler<PackageEventArgs> PackageInstalled = null;
 		public event EventHandler<PackageEventArgs> PackageUninstalled = null;
@@ -60,6 +61,13 @@ namespace Duality.Editor.PackageManagement
 						n.Id == p.Id && 
 						n.Version == new SemanticVersion(p.Version)));
 			}
+		}
+		/// <summary>
+		/// [GET] The local directory where packages are installed and stored prior to applying the update.
+		/// </summary>
+		public string LocalPackageStoreDirectory
+		{
+			get { return LocalPackageDir; }
 		}
 		private string PackageFilePath
 		{

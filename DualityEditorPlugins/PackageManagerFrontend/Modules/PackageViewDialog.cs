@@ -180,8 +180,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.nodeTextBoxDownloads.DrawText			+= this.nodeTextBoxDownloads_DrawText;
 			this.toolStripMain.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 
-			this.toolStripFilterBox.Items.Add(new FilterBoxItem(DisplayMode.Installed, PackageManagerFrontendRes.ItemName_InstalledPackages));
-			this.toolStripFilterBox.Items.Add(new FilterBoxItem(DisplayMode.Online, PackageManagerFrontendRes.ItemName_OnlineRepository));
+			this.toolStripViewBox.Items.Add(new FilterBoxItem(DisplayMode.Installed, PackageManagerFrontendRes.ItemName_InstalledPackages));
+			this.toolStripViewBox.Items.Add(new FilterBoxItem(DisplayMode.Online, PackageManagerFrontendRes.ItemName_OnlineRepository));
 			
 		}
 
@@ -220,6 +220,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			PackageInfo itemInfo		= this.selectedItem != null ? this.selectedItem.ItemPackageInfo : null;
 			PackageInfo installedInfo	= this.selectedItem != null ? this.selectedItem.InstalledPackageInfo : null;
 			PackageInfo newestInfo		= this.selectedItem != null ? this.selectedItem.NewestPackageInfo : null;
+
+			this.SuspendLayout();
 
 			if (itemInfo == null)
 			{
@@ -262,6 +264,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.labelPackageVersionCaption.Visible	= this.labelPackageVersion.Visible;
 			this.labelPackageUpdatedCaption.Visible	= this.labelPackageUpdated.Visible;
 			this.labelPackageWebsiteCaption.Visible	= this.labelPackageWebsite.Visible;
+
+			this.ResumeLayout();
 		}
 
 		private void InstallPackage(PackageInfo info)
@@ -412,7 +416,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.InvokeEx(this.ScheduleLazyPackageInterfaceUpdate, false);
 		}
-		private void toolStripFilterBox_DropDownClosed(object sender, EventArgs e)
+		private void toolStripViewBox_DropDownClosed(object sender, EventArgs e)
 		{
 			this.packageList.Focus();
 		}
@@ -421,9 +425,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 212, 212, 212)), e.Bounds);
 			e.Handled = true;
 		}
-		private void toolStripFilterBox_SelectedIndexChanged(object sender, EventArgs e)
+		private void toolStripViewBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			FilterBoxItem selectedItem = this.toolStripFilterBox.SelectedItem as FilterBoxItem;
+			FilterBoxItem selectedItem = this.toolStripViewBox.SelectedItem as FilterBoxItem;
 			this.Display = selectedItem.Display;
 		}
 		private void packageList_ColumnClicked(object sender, TreeColumnEventArgs e)
@@ -536,10 +540,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 		private void OnDisplayModeChanged(DisplayMode prev, DisplayMode next)
 		{
-			FilterBoxItem selectedItem = this.toolStripFilterBox.SelectedItem as FilterBoxItem;
+			FilterBoxItem selectedItem = this.toolStripViewBox.SelectedItem as FilterBoxItem;
 			if (selectedItem == null || next != selectedItem.Display)
 			{
-				this.toolStripFilterBox.SelectedItem = this.toolStripFilterBox.Items.OfType<FilterBoxItem>().FirstOrDefault(i => i.Display == next);
+				this.toolStripViewBox.SelectedItem = this.toolStripViewBox.Items.OfType<FilterBoxItem>().FirstOrDefault(i => i.Display == next);
 			}
 
 			if (next == DisplayMode.Installed)

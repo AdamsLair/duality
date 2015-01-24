@@ -111,6 +111,7 @@
   <ItemGroup>
     <Content Include="EmbeddedResources\core.png" />
     <Content Include="EmbeddedResources\editor.png" />
+    <None Include="EmbeddedResources\filter.png" />
     <Content Include="EmbeddedResources\IncompatibleUpdate.png" />
     <Content Include="EmbeddedResources\LikelySafeUpdate.png" />
     <Content Include="EmbeddedResources\LikelyUnsafeUpdate.png" />

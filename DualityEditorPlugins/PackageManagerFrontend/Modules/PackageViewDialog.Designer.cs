@@ -36,16 +36,13 @@
 			this.treeColumnDownloads = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnPackageType = new Aga.Controls.Tree.TreeColumn();
 			this.nodeIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
-			this.nodeTextBoxName = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageSummaryNodeControl();
-			this.nodeTextBoxVersion = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageVersionNodeControl();
 			this.nodeTextBoxDownloads = new Aga.Controls.Tree.NodeControls.NodeTextBox();
-			this.nodeIconPackageType = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageTypeNodeControl();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.toolStripMain = new System.Windows.Forms.ToolStrip();
 			this.toolStripSearchBox = new System.Windows.Forms.ToolStripTextBox();
 			this.toolStripLabelSearch = new System.Windows.Forms.ToolStripLabel();
-			this.toolStripLabelFilter = new System.Windows.Forms.ToolStripLabel();
-			this.toolStripFilterBox = new System.Windows.Forms.ToolStripComboBox();
+			this.toolStripLabelView = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripViewBox = new System.Windows.Forms.ToolStripComboBox();
 			this.tableLayoutPanelInfo = new System.Windows.Forms.TableLayoutPanel();
 			this.labelPackageVersion = new System.Windows.Forms.Label();
 			this.labelPackageUpdatedCaption = new System.Windows.Forms.Label();
@@ -76,9 +73,12 @@
 			this.miniToolStrip = new System.Windows.Forms.ToolStrip();
 			this.labelHeaderText = new System.Windows.Forms.Label();
 			this.labelHeader = new System.Windows.Forms.Label();
-			this.panelTitleImage = new System.Windows.Forms.Panel();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.timerPackageModelChanged = new System.Windows.Forms.Timer(this.components);
+			this.nodeTextBoxName = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageSummaryNodeControl();
+			this.nodeTextBoxVersion = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageVersionNodeControl();
+			this.nodeIconPackageType = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageTypeNodeControl();
+			this.panelTitleImage = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.Panel2.SuspendLayout();
@@ -92,9 +92,9 @@
 			// packageList
 			// 
 			this.packageList.AllowColumnReorder = true;
-			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.packageList.AsyncExpanding = true;
 			this.packageList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.packageList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -167,17 +167,6 @@
 			this.nodeIcon.ParentColumn = this.treeColumnName;
 			this.nodeIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
 			// 
-			// nodeTextBoxName
-			// 
-			this.nodeTextBoxName.LeftMargin = 6;
-			this.nodeTextBoxName.ParentColumn = this.treeColumnName;
-			// 
-			// nodeTextBoxVersion
-			// 
-			this.nodeTextBoxVersion.LeftMargin = 3;
-			this.nodeTextBoxVersion.PackageManager = null;
-			this.nodeTextBoxVersion.ParentColumn = this.treeColumnVersion;
-			// 
 			// nodeTextBoxDownloads
 			// 
 			this.nodeTextBoxDownloads.DataPropertyName = "Downloads";
@@ -187,16 +176,11 @@
 			this.nodeTextBoxDownloads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.nodeTextBoxDownloads.Trimming = System.Drawing.StringTrimming.EllipsisCharacter;
 			// 
-			// nodeIconPackageType
-			// 
-			this.nodeIconPackageType.LeftMargin = 0;
-			this.nodeIconPackageType.ParentColumn = this.treeColumnPackageType;
-			// 
 			// splitMain
 			// 
-			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
 			this.splitMain.Location = new System.Drawing.Point(3, 77);
 			this.splitMain.Margin = new System.Windows.Forms.Padding(0);
@@ -218,18 +202,17 @@
 			// 
 			// toolStripMain
 			// 
-			this.toolStripMain.AutoSize = false;
 			this.toolStripMain.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.toolStripMain.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSearchBox,
             this.toolStripLabelSearch,
-            this.toolStripLabelFilter,
-            this.toolStripFilterBox});
+            this.toolStripLabelView,
+            this.toolStripViewBox});
 			this.toolStripMain.Location = new System.Drawing.Point(0, 0);
 			this.toolStripMain.Name = "toolStripMain";
 			this.toolStripMain.Padding = new System.Windows.Forms.Padding(3, 3, 0, 3);
-			this.toolStripMain.Size = new System.Drawing.Size(533, 26);
+			this.toolStripMain.Size = new System.Drawing.Size(533, 29);
 			this.toolStripMain.TabIndex = 1;
 			// 
 			// toolStripSearchBox
@@ -246,24 +229,24 @@
 			// 
 			this.toolStripLabelSearch.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.toolStripLabelSearch.Name = "toolStripLabelSearch";
-			this.toolStripLabelSearch.Size = new System.Drawing.Size(45, 17);
+			this.toolStripLabelSearch.Size = new System.Drawing.Size(45, 20);
 			this.toolStripLabelSearch.Text = "Search:";
 			// 
-			// toolStripLabelFilter
+			// toolStripLabelView
 			// 
-			this.toolStripLabelFilter.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
-			this.toolStripLabelFilter.Name = "toolStripLabelFilter";
-			this.toolStripLabelFilter.Size = new System.Drawing.Size(52, 17);
-			this.toolStripLabelFilter.Text = "Filter by:";
+			this.toolStripLabelView.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
+			this.toolStripLabelView.Name = "toolStripLabelView";
+			this.toolStripLabelView.Size = new System.Drawing.Size(35, 20);
+			this.toolStripLabelView.Text = "View:";
 			// 
-			// toolStripFilterBox
+			// toolStripViewBox
 			// 
-			this.toolStripFilterBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.toolStripFilterBox.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
-			this.toolStripFilterBox.Name = "toolStripFilterBox";
-			this.toolStripFilterBox.Size = new System.Drawing.Size(121, 20);
-			this.toolStripFilterBox.DropDownClosed += new System.EventHandler(this.toolStripFilterBox_DropDownClosed);
-			this.toolStripFilterBox.SelectedIndexChanged += new System.EventHandler(this.toolStripFilterBox_SelectedIndexChanged);
+			this.toolStripViewBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.toolStripViewBox.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
+			this.toolStripViewBox.Name = "toolStripViewBox";
+			this.toolStripViewBox.Size = new System.Drawing.Size(121, 23);
+			this.toolStripViewBox.DropDownClosed += new System.EventHandler(this.toolStripViewBox_DropDownClosed);
+			this.toolStripViewBox.SelectedIndexChanged += new System.EventHandler(this.toolStripViewBox_SelectedIndexChanged);
 			// 
 			// tableLayoutPanelInfo
 			// 
@@ -474,8 +457,8 @@
 			// 
 			// panelLowerArea
 			// 
-			this.panelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.panelLowerArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.panelLowerArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelLowerArea.Controls.Add(this.labelRequireRestart);
@@ -488,8 +471,8 @@
 			// 
 			// labelRequireRestart
 			// 
-			this.labelRequireRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelRequireRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelRequireRestart.ForeColor = System.Drawing.Color.Blue;
 			this.labelRequireRestart.Location = new System.Drawing.Point(125, 2);
 			this.labelRequireRestart.Name = "labelRequireRestart";
@@ -500,8 +483,8 @@
 			// 
 			// flowLayoutBottom
 			// 
-			this.flowLayoutBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.flowLayoutBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.flowLayoutBottom.Controls.Add(this.buttonClose);
 			this.flowLayoutBottom.Controls.Add(this.buttonApply);
 			this.flowLayoutBottom.Controls.Add(this.bottomFlowSpacer1);
@@ -608,8 +591,8 @@
 			// 
 			// checkBoxShowAdvanced
 			// 
-			this.checkBoxShowAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left)));
+			this.checkBoxShowAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.checkBoxShowAdvanced.AutoSize = true;
 			this.checkBoxShowAdvanced.Location = new System.Drawing.Point(14, 11);
 			this.checkBoxShowAdvanced.Name = "checkBoxShowAdvanced";
@@ -634,21 +617,21 @@
 			// 
 			// labelHeaderText
 			// 
-			this.labelHeaderText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeaderText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeaderText.Location = new System.Drawing.Point(82, 35);
 			this.labelHeaderText.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.labelHeaderText.Name = "labelHeaderText";
 			this.labelHeaderText.Size = new System.Drawing.Size(734, 42);
 			this.labelHeaderText.TabIndex = 13;
 			this.labelHeaderText.Text = "Each Duality project consists of multiple Packages that can carry plugins and dat" +
-    "a. This dialog provides an overview of installed and available Packages and help" +
-    "s you manage them.";
+				"a. This dialog provides an overview of installed and available Packages and help" +
+				"s you manage them.";
 			// 
 			// labelHeader
 			// 
-			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(79, 7);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
@@ -658,6 +641,26 @@
 			this.labelHeader.Text = "Manage Duality Packages";
 			this.labelHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// timerPackageModelChanged
+			// 
+			this.timerPackageModelChanged.Tick += new System.EventHandler(this.timerPackageModelChanged_Tick);
+			// 
+			// nodeTextBoxName
+			// 
+			this.nodeTextBoxName.LeftMargin = 6;
+			this.nodeTextBoxName.ParentColumn = this.treeColumnName;
+			// 
+			// nodeTextBoxVersion
+			// 
+			this.nodeTextBoxVersion.LeftMargin = 3;
+			this.nodeTextBoxVersion.PackageManager = null;
+			this.nodeTextBoxVersion.ParentColumn = this.treeColumnVersion;
+			// 
+			// nodeIconPackageType
+			// 
+			this.nodeIconPackageType.LeftMargin = 0;
+			this.nodeIconPackageType.ParentColumn = this.treeColumnPackageType;
+			// 
 			// panelTitleImage
 			// 
 			this.panelTitleImage.BackgroundImage = global::Duality.Editor.Plugins.PackageManagerFrontend.Properties.Resources.packagebig;
@@ -666,10 +669,6 @@
 			this.panelTitleImage.Name = "panelTitleImage";
 			this.panelTitleImage.Size = new System.Drawing.Size(68, 67);
 			this.panelTitleImage.TabIndex = 18;
-			// 
-			// timerPackageModelChanged
-			// 
-			this.timerPackageModelChanged.Tick += new System.EventHandler(this.timerPackageModelChanged_Tick);
 			// 
 			// PackageViewDialog
 			// 
@@ -693,6 +692,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Package Management";
 			this.splitMain.Panel1.ResumeLayout(false);
+			this.splitMain.Panel1.PerformLayout();
 			this.splitMain.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
 			this.splitMain.ResumeLayout(false);
@@ -718,8 +718,8 @@
 		private System.Windows.Forms.ToolStripTextBox toolStripSearchBox;
 		private System.Windows.Forms.ToolStripLabel toolStripLabelSearch;
 		private System.Windows.Forms.ToolStrip toolStripMain;
-		private System.Windows.Forms.ToolStripLabel toolStripLabelFilter;
-		private System.Windows.Forms.ToolStripComboBox toolStripFilterBox;
+		private System.Windows.Forms.ToolStripLabel toolStripLabelView;
+		private System.Windows.Forms.ToolStripComboBox toolStripViewBox;
 		private Aga.Controls.Tree.TreeColumn treeColumnName;
 		private Aga.Controls.Tree.TreeColumn treeColumnVersion;
 		private Aga.Controls.Tree.TreeColumn treeColumnDownloads;
