@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.PackageManagerFrontend</id>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Package Manager Frontend</title>
@@ -15,7 +15,7 @@
 	<tags>Duality Editor Plugin PackageManagerFrontend</tags>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.5.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="1.2.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="1.2.4" />
     </dependencies>
   </metadata>
   <files>
