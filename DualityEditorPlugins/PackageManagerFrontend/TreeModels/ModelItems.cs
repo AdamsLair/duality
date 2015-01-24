@@ -264,6 +264,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 			this.GetUpdateCompatibility(manager);
 		}
+
+		public override string ToString()
+		{
+			return string.Format("LocalPackage {0} {1}, {2}", this.itemPackageInfo.Id, this.itemPackageInfo.Version, this.itemPackageInfo.PublishDate);
+		}
 	}
 	public class OnlinePackageItem : PackageItem
 	{
@@ -292,6 +297,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				LocalPackage installedPackage = manager.LocalPackages.FirstOrDefault(p => p.Id == this.itemPackageInfo.Id);
 				this.installedPackageInfo = (installedPackage != null) ? installedPackage.Info : null;
 			}
+		}
+
+		public override string ToString()
+		{
+			return string.Format("OnlinePackage {0} {1}, {2}", this.itemPackageInfo.Id, this.itemPackageInfo.Version, this.itemPackageInfo.PublishDate);
 		}
 	}
 }

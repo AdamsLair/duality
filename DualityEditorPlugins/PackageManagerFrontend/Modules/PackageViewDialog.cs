@@ -62,8 +62,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			{
 				Name,
 				Version,
+				Date,
 				Downloads,
-				PackageType
+				PackageType,
+				CombinedScore
 			}
 
 			private SortOrder sortOrder	= SortOrder.Ascending;
@@ -90,6 +92,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					if		(itemA.Version < itemB.Version)	result = -1;
 					else if (itemA.Version > itemB.Version)	result = 1;
 				}
+				if (result == 0 || this.sortMode == SortMode.Date)
+				{
+					if		(itemA.ItemPackageInfo.PublishDate < itemB.ItemPackageInfo.PublishDate)	result = -1;
+					else if (itemA.ItemPackageInfo.PublishDate > itemB.ItemPackageInfo.PublishDate)	result = 1;
+				}
 				if (result == 0 || this.sortMode == SortMode.Downloads)
 				{
 					int itemANum = itemA.Downloads.HasValue ? itemA.Downloads.Value : 0;
@@ -103,6 +110,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				if (result == 0 || this.sortMode == SortMode.PackageType)
 				{
 					result = (int)itemA.Type - (int)itemB.Type;
+				}
+				if (result == 0 || this.sortMode == SortMode.CombinedScore)
+				{
+					float scoreA = (float)itemA.ItemPackageInfo.DownloadCount * (1.0f - MathF.Clamp((float)(DateTime.Now - itemA.ItemPackageInfo.PublishDate).TotalDays / 360.0f, 0.001f, 1.0f));
+					float scoreB = (float)itemB.ItemPackageInfo.DownloadCount * (1.0f - MathF.Clamp((float)(DateTime.Now - itemB.ItemPackageInfo.PublishDate).TotalDays / 360.0f, 0.001f, 1.0f));
+					if		(scoreA < scoreB)	result = -1;
+					else if (scoreA > scoreB)	result = 1;
 				}
 				if (result == 0)
 				{
@@ -175,6 +189,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
+			this.treeColumnDate.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnDownloads.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnPackageType.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
 			this.nodeTextBoxDownloads.DrawText			+= this.nodeTextBoxDownloads_DrawText;
@@ -385,6 +400,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.modelInstalled = new InstalledPackagesTreeModel(this.packageManager);
 			this.modelOnline = new OnlinePackagesTreeModel(this.packageManager);
 
+			this.modelOnline.SortComparer = new PackageListItemComparer(PackageListItemComparer.SortMode.CombinedScore, SortOrder.Ascending);
+
 			this.modelInstalled.NodesChanged += this.modelInstalled_NodesChanged;
 			this.modelOnline.NodesChanged += this.modelOnline_NodesChanged;
 
@@ -432,7 +449,21 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void packageList_ColumnClicked(object sender, TreeColumnEventArgs e)
 		{
-			e.Column.SortOrder = (e.Column.SortOrder == SortOrder.Descending) ? SortOrder.Ascending : SortOrder.Descending;
+			if (e.Column.SortOrder == SortOrder.None)
+			{
+				if (e.Column == this.treeColumnVersion)
+					e.Column.SortOrder = SortOrder.Ascending;
+				else if (e.Column == this.treeColumnDownloads)
+					e.Column.SortOrder = SortOrder.Ascending;
+				else if (e.Column == this.treeColumnDate)
+					e.Column.SortOrder = SortOrder.Ascending;
+				else
+					e.Column.SortOrder = SortOrder.Descending;
+			}
+			else
+			{
+				e.Column.SortOrder = (e.Column.SortOrder == SortOrder.Descending) ? SortOrder.Ascending : SortOrder.Descending;
+			}
 
 			IComparer<BaseItem> comparer = null;
 			if (e.Column == this.treeColumnName)
@@ -441,6 +472,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Version, e.Column.SortOrder);
 			else if (e.Column == this.treeColumnDownloads)
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Downloads, e.Column.SortOrder);
+			else if (e.Column == this.treeColumnDate)
+				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Date, e.Column.SortOrder);
 			else if (e.Column == this.treeColumnPackageType)
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.PackageType, e.Column.SortOrder);
 
@@ -452,7 +485,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			Size sizeChange = new Size(
 				this.packageList.Width - this.oldTreeViewSize.Width,
 				this.packageList.Height - this.oldTreeViewSize.Height);
+
 			this.treeColumnName.Width += sizeChange.Width;
+			this.UpdateColumnVisibility();
+
 			this.oldTreeViewSize = this.packageList.Size;
 		}
 		private void packageList_SelectionChanged(object sender, EventArgs e)
@@ -549,15 +585,50 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			if (next == DisplayMode.Installed)
 			{
 				this.packageList.Model = this.modelInstalled;
-				this.treeColumnDownloads.IsVisible = false;
-				this.treeColumnName.Width += this.treeColumnDownloads.Width;
 			}
 			else if (next == DisplayMode.Online)
 			{
 				this.packageList.Model = this.modelOnline;
-				this.treeColumnName.Width -= this.treeColumnDownloads.Width;
-				this.treeColumnDownloads.IsVisible = true;
 			}
+			this.UpdateColumnVisibility();
+		}
+
+		private void UpdateColumnVisibility()
+		{
+			int colRefWidth = this.GetPackageListMainColumnWidth(c => 
+				c != this.treeColumnDate && 
+				c != this.treeColumnDownloads && 
+				c != this.treeColumnName);
+
+			this.UpdateColumnVisibility(this.treeColumnDate, ref colRefWidth);
+			this.UpdateColumnVisibility(this.treeColumnDownloads, ref colRefWidth, () => this.display == DisplayMode.Online);
+		}
+		private void UpdateColumnVisibility(TreeColumn column, ref int colRefWidth, Func<bool> visibilityFunc = null)
+		{
+			bool displayColumn = colRefWidth > 400 && (visibilityFunc == null || visibilityFunc());
+			if (displayColumn && !column.IsVisible)
+			{
+				column.IsVisible = true;
+				this.treeColumnName.Width -= column.Width;
+			}
+			else if (!displayColumn && column.IsVisible)
+			{
+				column.IsVisible = false;
+				this.treeColumnName.Width += column.Width;
+			}
+			if (column.IsVisible)
+				colRefWidth -= this.treeColumnDownloads.Width;
+		}
+		private int GetPackageListMainColumnWidth(Predicate<TreeColumn> columnPredicate)
+		{
+			int availWidth = this.packageList.ClientSize.Width;
+			foreach (TreeColumn column in this.packageList.Columns)
+			{
+				if (!column.IsVisible) continue;
+				if (!columnPredicate(column)) continue;
+				availWidth -= column.Width;
+			}
+			return availWidth;
 		}
 
 		private static System.Collections.IEnumerable PackageOperationThread(ProcessingBigTaskDialog.WorkerInterface workerInterface)

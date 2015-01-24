@@ -59,6 +59,9 @@
     <Compile Include="Modules\DualityPackageTypeNodeControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Modules\DualityPackageDateNodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Modules\SelectTargetVersionDialog.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -33,10 +33,15 @@
 			this.packageList = new Aga.Controls.Tree.TreeViewAdv();
 			this.treeColumnName = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnVersion = new Aga.Controls.Tree.TreeColumn();
+			this.treeColumnDate = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnDownloads = new Aga.Controls.Tree.TreeColumn();
 			this.treeColumnPackageType = new Aga.Controls.Tree.TreeColumn();
 			this.nodeIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
+			this.nodeTextBoxName = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageSummaryNodeControl();
+			this.nodeTextBoxVersion = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageVersionNodeControl();
+			this.nodeTextBoxDate = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageDateNodeControl();
 			this.nodeTextBoxDownloads = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.nodeIconPackageType = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageTypeNodeControl();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.toolStripMain = new System.Windows.Forms.ToolStrip();
 			this.toolStripSearchBox = new System.Windows.Forms.ToolStripTextBox();
@@ -75,9 +80,6 @@
 			this.labelHeader = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.timerPackageModelChanged = new System.Windows.Forms.Timer(this.components);
-			this.nodeTextBoxName = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageSummaryNodeControl();
-			this.nodeTextBoxVersion = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageVersionNodeControl();
-			this.nodeIconPackageType = new Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageTypeNodeControl();
 			this.panelTitleImage = new System.Windows.Forms.Panel();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
@@ -100,6 +102,7 @@
 			this.packageList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.packageList.Columns.Add(this.treeColumnName);
 			this.packageList.Columns.Add(this.treeColumnVersion);
+			this.packageList.Columns.Add(this.treeColumnDate);
 			this.packageList.Columns.Add(this.treeColumnDownloads);
 			this.packageList.Columns.Add(this.treeColumnPackageType);
 			this.packageList.DefaultToolTipProvider = null;
@@ -115,6 +118,7 @@
 			this.packageList.NodeControls.Add(this.nodeIcon);
 			this.packageList.NodeControls.Add(this.nodeTextBoxName);
 			this.packageList.NodeControls.Add(this.nodeTextBoxVersion);
+			this.packageList.NodeControls.Add(this.nodeTextBoxDate);
 			this.packageList.NodeControls.Add(this.nodeTextBoxDownloads);
 			this.packageList.NodeControls.Add(this.nodeIconPackageType);
 			this.packageList.NodeFilter = null;
@@ -123,7 +127,7 @@
 			this.packageList.ShowLines = false;
 			this.packageList.ShowNodeToolTips = true;
 			this.packageList.ShowPlusMinus = false;
-			this.packageList.Size = new System.Drawing.Size(533, 363);
+			this.packageList.Size = new System.Drawing.Size(602, 363);
 			this.packageList.TabIndex = 0;
 			this.packageList.Text = "packageList";
 			this.packageList.UseColumns = true;
@@ -136,7 +140,7 @@
 			this.treeColumnName.Header = "Name";
 			this.treeColumnName.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.treeColumnName.TooltipText = null;
-			this.treeColumnName.Width = 320;
+			this.treeColumnName.Width = 455;
 			// 
 			// treeColumnVersion
 			// 
@@ -145,9 +149,18 @@
 			this.treeColumnVersion.TooltipText = null;
 			this.treeColumnVersion.Width = 80;
 			// 
+			// treeColumnDate
+			// 
+			this.treeColumnDate.Header = "Date";
+			this.treeColumnDate.IsVisible = false;
+			this.treeColumnDate.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.treeColumnDate.TooltipText = null;
+			this.treeColumnDate.Width = 80;
+			// 
 			// treeColumnDownloads
 			// 
 			this.treeColumnDownloads.Header = "Downloads";
+			this.treeColumnDownloads.IsVisible = false;
 			this.treeColumnDownloads.SortOrder = System.Windows.Forms.SortOrder.None;
 			this.treeColumnDownloads.TooltipText = null;
 			this.treeColumnDownloads.Width = 65;
@@ -167,6 +180,23 @@
 			this.nodeIcon.ParentColumn = this.treeColumnName;
 			this.nodeIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
 			// 
+			// nodeTextBoxName
+			// 
+			this.nodeTextBoxName.LeftMargin = 6;
+			this.nodeTextBoxName.ParentColumn = this.treeColumnName;
+			// 
+			// nodeTextBoxVersion
+			// 
+			this.nodeTextBoxVersion.LeftMargin = 3;
+			this.nodeTextBoxVersion.PackageManager = null;
+			this.nodeTextBoxVersion.ParentColumn = this.treeColumnVersion;
+			// 
+			// nodeTextBoxDate
+			// 
+			this.nodeTextBoxDate.LeftMargin = 3;
+			this.nodeTextBoxDate.PackageManager = null;
+			this.nodeTextBoxDate.ParentColumn = this.treeColumnDate;
+			// 
 			// nodeTextBoxDownloads
 			// 
 			this.nodeTextBoxDownloads.DataPropertyName = "Downloads";
@@ -175,6 +205,11 @@
 			this.nodeTextBoxDownloads.ParentColumn = this.treeColumnDownloads;
 			this.nodeTextBoxDownloads.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.nodeTextBoxDownloads.Trimming = System.Drawing.StringTrimming.EllipsisCharacter;
+			// 
+			// nodeIconPackageType
+			// 
+			this.nodeIconPackageType.LeftMargin = 0;
+			this.nodeIconPackageType.ParentColumn = this.treeColumnPackageType;
 			// 
 			// splitMain
 			// 
@@ -195,8 +230,8 @@
 			// 
 			this.splitMain.Panel2.Controls.Add(this.tableLayoutPanelInfo);
 			this.splitMain.Panel2MinSize = 150;
-			this.splitMain.Size = new System.Drawing.Size(826, 392);
-			this.splitMain.SplitterDistance = 533;
+			this.splitMain.Size = new System.Drawing.Size(895, 392);
+			this.splitMain.SplitterDistance = 602;
 			this.splitMain.TabIndex = 0;
 			this.splitMain.TabStop = false;
 			// 
@@ -212,7 +247,7 @@
 			this.toolStripMain.Location = new System.Drawing.Point(0, 0);
 			this.toolStripMain.Name = "toolStripMain";
 			this.toolStripMain.Padding = new System.Windows.Forms.Padding(3, 3, 0, 3);
-			this.toolStripMain.Size = new System.Drawing.Size(533, 29);
+			this.toolStripMain.Size = new System.Drawing.Size(602, 29);
 			this.toolStripMain.TabIndex = 1;
 			// 
 			// toolStripSearchBox
@@ -447,7 +482,7 @@
 			// 
 			this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonClose.Location = new System.Drawing.Point(330, 0);
+			this.buttonClose.Location = new System.Drawing.Point(399, 0);
 			this.buttonClose.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonClose.Name = "buttonClose";
 			this.buttonClose.Size = new System.Drawing.Size(75, 23);
@@ -466,7 +501,7 @@
 			this.panelLowerArea.Controls.Add(this.checkBoxShowAdvanced);
 			this.panelLowerArea.Location = new System.Drawing.Point(-3, 472);
 			this.panelLowerArea.Name = "panelLowerArea";
-			this.panelLowerArea.Size = new System.Drawing.Size(832, 39);
+			this.panelLowerArea.Size = new System.Drawing.Size(901, 39);
 			this.panelLowerArea.TabIndex = 12;
 			// 
 			// labelRequireRestart
@@ -476,7 +511,7 @@
 			this.labelRequireRestart.ForeColor = System.Drawing.Color.Blue;
 			this.labelRequireRestart.Location = new System.Drawing.Point(125, 2);
 			this.labelRequireRestart.Name = "labelRequireRestart";
-			this.labelRequireRestart.Size = new System.Drawing.Size(297, 32);
+			this.labelRequireRestart.Size = new System.Drawing.Size(366, 32);
 			this.labelRequireRestart.TabIndex = 16;
 			this.labelRequireRestart.Text = "Click Apply in order to restart Duality and finish the update.";
 			this.labelRequireRestart.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -498,14 +533,14 @@
 			this.flowLayoutBottom.Location = new System.Drawing.Point(415, 7);
 			this.flowLayoutBottom.Margin = new System.Windows.Forms.Padding(0);
 			this.flowLayoutBottom.Name = "flowLayoutBottom";
-			this.flowLayoutBottom.Size = new System.Drawing.Size(405, 23);
+			this.flowLayoutBottom.Size = new System.Drawing.Size(474, 23);
 			this.flowLayoutBottom.TabIndex = 15;
 			// 
 			// buttonApply
 			// 
 			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.buttonApply.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.buttonApply.Location = new System.Drawing.Point(255, 0);
+			this.buttonApply.Location = new System.Drawing.Point(324, 0);
 			this.buttonApply.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonApply.Name = "buttonApply";
 			this.buttonApply.Size = new System.Drawing.Size(75, 23);
@@ -517,7 +552,7 @@
 			// 
 			// bottomFlowSpacer1
 			// 
-			this.bottomFlowSpacer1.Location = new System.Drawing.Point(245, 0);
+			this.bottomFlowSpacer1.Location = new System.Drawing.Point(314, 0);
 			this.bottomFlowSpacer1.Margin = new System.Windows.Forms.Padding(0);
 			this.bottomFlowSpacer1.Name = "bottomFlowSpacer1";
 			this.bottomFlowSpacer1.Size = new System.Drawing.Size(10, 15);
@@ -525,7 +560,7 @@
 			// 
 			// buttonUninstall
 			// 
-			this.buttonUninstall.Location = new System.Drawing.Point(170, 0);
+			this.buttonUninstall.Location = new System.Drawing.Point(239, 0);
 			this.buttonUninstall.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonUninstall.Name = "buttonUninstall";
 			this.buttonUninstall.Size = new System.Drawing.Size(75, 23);
@@ -536,7 +571,7 @@
 			// 
 			// buttonInstall
 			// 
-			this.buttonInstall.Location = new System.Drawing.Point(95, 0);
+			this.buttonInstall.Location = new System.Drawing.Point(164, 0);
 			this.buttonInstall.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonInstall.Name = "buttonInstall";
 			this.buttonInstall.Size = new System.Drawing.Size(75, 23);
@@ -547,7 +582,7 @@
 			// 
 			// buttonUpdate
 			// 
-			this.buttonUpdate.Location = new System.Drawing.Point(20, 0);
+			this.buttonUpdate.Location = new System.Drawing.Point(89, 0);
 			this.buttonUpdate.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonUpdate.Name = "buttonUpdate";
 			this.buttonUpdate.Size = new System.Drawing.Size(75, 23);
@@ -559,7 +594,7 @@
 			// 
 			// buttonChangeVersion
 			// 
-			this.buttonChangeVersion.Location = new System.Drawing.Point(330, 23);
+			this.buttonChangeVersion.Location = new System.Drawing.Point(14, 0);
 			this.buttonChangeVersion.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonChangeVersion.Name = "buttonChangeVersion";
 			this.buttonChangeVersion.Size = new System.Drawing.Size(75, 23);
@@ -571,7 +606,7 @@
 			// 
 			// bottomFlowSpacer2
 			// 
-			this.bottomFlowSpacer2.Location = new System.Drawing.Point(320, 23);
+			this.bottomFlowSpacer2.Location = new System.Drawing.Point(4, 0);
 			this.bottomFlowSpacer2.Margin = new System.Windows.Forms.Padding(0);
 			this.bottomFlowSpacer2.Name = "bottomFlowSpacer2";
 			this.bottomFlowSpacer2.Size = new System.Drawing.Size(10, 15);
@@ -579,7 +614,7 @@
 			// 
 			// buttonUpdateAll
 			// 
-			this.buttonUpdateAll.Location = new System.Drawing.Point(245, 23);
+			this.buttonUpdateAll.Location = new System.Drawing.Point(399, 23);
 			this.buttonUpdateAll.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonUpdateAll.Name = "buttonUpdateAll";
 			this.buttonUpdateAll.Size = new System.Drawing.Size(75, 23);
@@ -622,7 +657,7 @@
 			this.labelHeaderText.Location = new System.Drawing.Point(82, 35);
 			this.labelHeaderText.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.labelHeaderText.Name = "labelHeaderText";
-			this.labelHeaderText.Size = new System.Drawing.Size(734, 42);
+			this.labelHeaderText.Size = new System.Drawing.Size(803, 42);
 			this.labelHeaderText.TabIndex = 13;
 			this.labelHeaderText.Text = "Each Duality project consists of multiple Packages that can carry plugins and dat" +
 				"a. This dialog provides an overview of installed and available Packages and help" +
@@ -636,7 +671,7 @@
 			this.labelHeader.Location = new System.Drawing.Point(79, 7);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
 			this.labelHeader.Name = "labelHeader";
-			this.labelHeader.Size = new System.Drawing.Size(737, 22);
+			this.labelHeader.Size = new System.Drawing.Size(806, 22);
 			this.labelHeader.TabIndex = 17;
 			this.labelHeader.Text = "Manage Duality Packages";
 			this.labelHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -644,22 +679,6 @@
 			// timerPackageModelChanged
 			// 
 			this.timerPackageModelChanged.Tick += new System.EventHandler(this.timerPackageModelChanged_Tick);
-			// 
-			// nodeTextBoxName
-			// 
-			this.nodeTextBoxName.LeftMargin = 6;
-			this.nodeTextBoxName.ParentColumn = this.treeColumnName;
-			// 
-			// nodeTextBoxVersion
-			// 
-			this.nodeTextBoxVersion.LeftMargin = 3;
-			this.nodeTextBoxVersion.PackageManager = null;
-			this.nodeTextBoxVersion.ParentColumn = this.treeColumnVersion;
-			// 
-			// nodeIconPackageType
-			// 
-			this.nodeIconPackageType.LeftMargin = 0;
-			this.nodeIconPackageType.ParentColumn = this.treeColumnPackageType;
 			// 
 			// panelTitleImage
 			// 
@@ -677,7 +696,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.CancelButton = this.buttonClose;
-			this.ClientSize = new System.Drawing.Size(828, 510);
+			this.ClientSize = new System.Drawing.Size(897, 510);
 			this.Controls.Add(this.panelTitleImage);
 			this.Controls.Add(this.labelHeader);
 			this.Controls.Add(this.labelHeaderText);
@@ -758,5 +777,7 @@
 		private System.Windows.Forms.Timer timerPackageModelChanged;
 		private Aga.Controls.Tree.TreeColumn treeColumnPackageType;
 		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageTypeNodeControl nodeIconPackageType;
+		private Aga.Controls.Tree.TreeColumn treeColumnDate;
+		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageDateNodeControl nodeTextBoxDate;
 	}
 }
