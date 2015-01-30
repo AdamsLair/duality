@@ -286,6 +286,46 @@ namespace Duality.Editor.PackageManagement
 			return this.GetSafeUpdateConfig(localInfo, minCompatibility);
 		}
 
+		/// <summary>
+		/// Sorts the specified list of packages according to their dependencies, guaranteeing that no package
+		/// is listed before its dependencies. Use this to determine the order of batch updates and installs
+		/// to prevent conflicts from having different versions of the same packages.
+		/// </summary>
+		public void OrderByDependencies(IList<PackageInfo> packages)
+		{
+			if (packages.Count < 2) return;
+
+			// Determine the number of deep dependencies for each package
+			Dictionary<PackageInfo,int> deepDependencyCount = this.GetDeepDependencyCount(packages);
+
+			// Sort packages according to their deep dependency counts
+			packages.StableSort((a, b) =>
+			{
+				int countA;
+				int countB;
+				deepDependencyCount.TryGetValue(a, out countA);
+				deepDependencyCount.TryGetValue(b, out countB);
+				return countA - countB;
+			});
+		}
+		public void OrderByDependencies(IList<LocalPackage> packages)
+		{
+			// Map each list entry to its PackageInfo
+			PackageInfo[] localInfo = packages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
+
+			// Sort the mapped list
+			this.OrderByDependencies(localInfo);
+
+			// Now sort the original list to match the sorted mapped list
+			LocalPackage[] originalPackages = packages.ToArray();
+			for (int i = 0; i < originalPackages.Length; i++)
+			{
+				LocalPackage localPackage = originalPackages[i];
+				int newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id && p.Version == localPackage.Version);
+				packages[newIndex] = localPackage;
+			}
+		}
+
 		public bool ApplyUpdate(bool restartEditor = true)
 		{
 			const string UpdaterFileName = "DualityUpdater.exe";
@@ -325,6 +365,91 @@ namespace Duality.Editor.PackageManagement
 				restartEditor ? Environment.CurrentDirectory : ""));
 
 			return true;
+		}
+		
+		/// <summary>
+		/// Determines the number of deep dependencies for each package in the specified collection.
+		/// </summary>
+		/// <param name="packages"></param>
+		/// <returns></returns>
+		private Dictionary<PackageInfo,int> GetDeepDependencyCount(IEnumerable<PackageInfo> packages)
+		{
+			// Build a lookup for the packages we already know
+			Dictionary<PackageName,PackageInfo> resolveCache = new Dictionary<PackageName,PackageInfo>();
+			foreach (PackageInfo package in packages)
+			{
+				resolveCache[package.PackageName] = package;
+			}
+
+			// Determine the dependency count of each package
+			Dictionary<PackageInfo,int> result = new Dictionary<PackageInfo,int>();
+			foreach (PackageInfo package in packages)
+			{
+				GetDeepDependencyCount(package, result, resolveCache);
+			}
+
+			return result;
+		}
+		/// <summary>
+		/// Determines the number of deep dependencies for the specified package.
+		/// </summary>
+		/// <param name="package"></param>
+		/// <param name="deepCount"></param>
+		/// <param name="resolver"></param>
+		/// <returns></returns>
+		private int GetDeepDependencyCount(PackageInfo package, Dictionary<PackageInfo,int> deepCount, Dictionary<PackageName,PackageInfo> resolveCache)
+		{
+			int count;
+			if (!deepCount.TryGetValue(package, out count))
+			{
+				// Use the count of direct dependencies as starting value
+				count = package.Dependencies.Count();
+
+				// Prevent endless recursion on cyclic dependency graphs by registering early
+				deepCount[package] = count;
+
+				// Iterate over dependencies and count theirs as well
+				foreach (PackageName dependencyName in package.Dependencies)
+				{
+					// Try to resolve the dependency name to get a hold on the actual info
+					PackageInfo dependency;
+					if (!resolveCache.TryGetValue(dependencyName, out dependency))
+					{
+						// Try the exact name locally and online
+						dependency = this.QueryPackageInfo(dependencyName);
+
+						// If nothing turns up, see if we have a similar package locally and try that as well
+						if (dependency == null)
+						{
+							LocalPackage localDependency = this.localPackages.FirstOrDefault(p => p.Id == dependencyName.Id);
+							if (localDependency != null)
+							{
+								if (localDependency.Info != null)
+									dependency = localDependency.Info;
+								else
+									dependency = this.QueryPackageInfo(localDependency.PackageName);
+							}
+						}
+
+						// If we still have nothing, try a general search for the newest package with that Id
+						if (dependency == null)
+						{
+							dependency = this.QueryPackageInfo(dependencyName.VersionInvariant);
+						}
+
+						// Cache the results for later
+						resolveCache[dependencyName] = dependency;
+					}
+					if (dependency == null) continue;
+
+					// Add secondary dependencies
+					count += GetDeepDependencyCount(dependency, deepCount, resolveCache);
+				}
+
+				// Update the registered value
+				deepCount[package] = count;
+			}
+			return count;
 		}
 
 		public IEnumerable<PackageInfo> QueryAvailablePackages()

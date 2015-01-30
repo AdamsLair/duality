@@ -520,4 +520,7 @@
   <data name="Msg_ErrorCantCreateProject_Desc" xml:space="preserve">
     <value>Can't create a new project, because a error occurred : {1}{0}</value>
   </data>
+  <data name="TaskPrepareInfo" xml:space="preserve">
+    <value>Preparing operation...</value>
+  </data>
 </root>

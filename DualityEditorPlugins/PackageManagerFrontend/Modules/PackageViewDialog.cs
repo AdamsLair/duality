@@ -15,6 +15,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 
+using Duality.Editor.Properties;
 using Duality.Editor.PackageManagement;
 using Duality.Editor.Forms;
 using Duality.Editor.Plugins.PackageManagerFrontend.Properties;
@@ -662,10 +663,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			PackageManager manager = workerInterface.Data as PackageManager;
 
 			workerInterface.Progress = 0.0f;
-			workerInterface.StateDesc = string.Format("Preparing operation...");
+			workerInterface.StateDesc = GeneralRes.TaskPrepareInfo;
 			yield return null;
 
 			PackageInfo[] updatePackages = manager.GetSafeUpdateConfig(manager.LocalPackages).ToArray();
+			manager.OrderByDependencies(updatePackages);
 			foreach (PackageInfo package in updatePackages)
 			{
 				workerInterface.Progress += 1.0f / updatePackages.Length;

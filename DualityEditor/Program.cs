@@ -78,7 +78,13 @@ namespace Duality.Editor
 		private static System.Collections.IEnumerable FirstTimeSetup(ProcessingBigTaskDialog.WorkerInterface workerInterface)
 		{
 			PackageManager manager = workerInterface.Data as PackageManager;
+
+			workerInterface.Progress = 0.0f;
+			workerInterface.StateDesc = GeneralRes.TaskPrepareInfo;
+			yield return null;
+
 			LocalPackage[] packagesToVerify = manager.LocalPackages.ToArray();
+			manager.OrderByDependencies(packagesToVerify);
 
 			foreach (LocalPackage package in packagesToVerify)
 			{
