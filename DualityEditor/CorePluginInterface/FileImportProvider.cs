@@ -11,10 +11,12 @@ namespace Duality.Editor
 	{
 		bool CanImportFile(string srcFile);
 		void ImportFile(string srcFile, string targetName, string targetDir);
-		string[] GetOutputFiles(string srcFile, string targetName, string targetDir);
+
+		bool CanReImportFile(ContentRef<Resource> r, string srcFile);
+		void ReImportFile(ContentRef<Resource> r, string srcFile);
 
 		bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile);
-		void ReimportFile(ContentRef<Resource> r, string srcFile);
+		string[] GetOutputFiles(string srcFile, string targetName, string targetDir);
 	}
 
 	public static class FileImportProvider
@@ -109,15 +111,18 @@ namespace Duality.Editor
 					ContentRef<Resource> resourceRef = new ContentRef<Resource>(null, resourcePath);
 					string resourceName = ContentProvider.GetNameFromPath(resourcePath);
 
-					// Do we have a match?
-					if (string.Equals(resourceName, guessedResourceName, StringComparison.InvariantCultureIgnoreCase))
-					{
-						if (IsUsingSourceFile(importer, resourceRef, filePath, fileExt))
-						{
-							affectedResource = resourceRef;
-							break; 
-						}
-					}
+					// If the name doesn't match, skip
+					if (!string.Equals(resourceName, guessedResourceName, StringComparison.InvariantCultureIgnoreCase))
+						continue;
+					// If there is no association between source fil and Resource, skip it
+					if (!IsUsingSourceFile(importer, resourceRef, filePath, fileExt) && importer.CanReImportFile(resourceRef, filePath))
+						continue;
+					// If the importer can't handle that Resource with that file, skip it
+					if (!importer.CanReImportFile(resourceRef, filePath))
+						continue;
+
+					affectedResource = resourceRef;
+					break; 
 				}
 			}
 
@@ -126,12 +131,18 @@ namespace Duality.Editor
 			{
 				foreach (ContentRef<Resource> resRef in ContentProvider.GetAvailableContent<Resource>())
 				{
-					if (resRef.IsDefaultContent) continue;
-					if (IsUsingSourceFile(importer, resRef, filePath, fileExt))
-					{
-						affectedResource = resRef;
-						break; 
-					}
+					// If this is default content, skip it
+					if (resRef.IsDefaultContent)
+						continue;
+					// If there is no association between source fil and Resource, skip it
+					if (!IsUsingSourceFile(importer, resRef, filePath, fileExt) && importer.CanReImportFile(resRef, filePath))
+						continue;
+					// If the importer can't handle that Resource with that file, skip it
+					if (!importer.CanReImportFile(resRef, filePath))
+						continue;
+
+					affectedResource = resRef;
+					break; 
 				}
 			}
 
@@ -141,7 +152,7 @@ namespace Duality.Editor
 			{
 				try
 				{
-					importer.ReimportFile(affectedResource, filePath);
+					importer.ReImportFile(affectedResource, filePath);
 					if (affectedResource.IsLoaded)
 					{
 						if (touchedResources == null) touchedResources = new List<Resource>();
