@@ -193,4 +193,16 @@
   <data name="TaskUpdatePackages_Desc" xml:space="preserve">
     <value>Duality is updating packages. This may include downloading new versions from the central package repository.</value>
   </data>
+  <data name="TooltipUpdateDefiniteCompatibility" xml:space="preserve">
+    <value>Updating this package shouldn't cause any compatibility issues.</value>
+  </data>
+  <data name="TooltipUpdateLikelyCompatibility" xml:space="preserve">
+    <value>Updating this package is usually fine, but certain older plugins may not be compatible with the new version.</value>
+  </data>
+  <data name="TooltipUpdateNoCompatibility" xml:space="preserve">
+    <value>Updating this package will likely break older plugins depending on it.</value>
+  </data>
+  <data name="TooltipUpdateUnlikelyCompatibility" xml:space="preserve">
+    <value>Updating this package can cause compatibility problems with older plugins.</value>
+  </data>
 </root>

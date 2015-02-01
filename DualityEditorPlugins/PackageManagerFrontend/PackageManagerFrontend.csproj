@@ -62,12 +62,6 @@
     <Compile Include="Modules\DualityPackageDateNodeControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Modules\SelectTargetVersionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modules\SelectTargetVersionDialog.Designer.cs">
-      <DependentUpon>SelectTargetVersionDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Modules\DualityPackageSummaryNodeControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -128,9 +122,6 @@
     <Content Include="EmbeddedResources\UpToDate.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Modules\SelectTargetVersionDialog.resx">
-      <DependentUpon>SelectTargetVersionDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Modules\PackageViewDialog.resx">
       <DependentUpon>PackageViewDialog.cs</DependentUpon>
     </EmbeddedResource>

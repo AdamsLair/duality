@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Xml.Linq;
@@ -23,7 +24,7 @@ using Duality.Editor.Plugins.PackageManagerFrontend.TreeModels;
 
 namespace Duality.Editor.Plugins.PackageManagerFrontend
 {
-	public partial class PackageViewDialog : Form
+	public partial class PackageViewDialog : Form, IToolTipProvider
 	{
 		public enum DisplayMode
 		{
@@ -188,6 +189,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.InitializeComponent();
 
+			this.packageList.DefaultToolTipProvider = this;
+			this.packageList.ShowNodeToolTips = true;
+
 			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnDate.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
@@ -220,13 +224,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			bool isItemInstalled = isItemSelected && this.selectedItem.IsInstalled;
 			bool isItemUpdatable = isItemInstalled && this.selectedItem.IsUpdatable;
 			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.ItemPackageInfo);
-			bool canUpdate = isItemUpdatable && (this.checkBoxShowAdvanced.Checked || this.selectedItem.UpdateCompatibility.Satisfies(PackageCompatibility.Likely));
+			bool canUpdate = isItemUpdatable;
 
 			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
 			this.buttonUninstall.Visible		= isItemInstalled && canUninstall;
-			this.buttonChangeVersion.Visible	= isItemInstalled && this.checkBoxShowAdvanced.Checked;
 			this.buttonUpdate.Visible			= isItemInstalled && canUpdate;
-			this.bottomFlowSpacer2.Visible		= this.buttonInstall.Visible || this.buttonUninstall.Visible || this.buttonChangeVersion.Visible || this.buttonUpdate.Visible;
+			this.bottomFlowSpacer2.Visible		= this.buttonInstall.Visible || this.buttonUninstall.Visible || this.buttonUpdate.Visible;
 			this.buttonUpdateAll.Visible		= this.packageList.Root.Children.Select(n => n.Tag as PackageItem).Any(n => n.IsUpdatable);
 			this.buttonApply.Visible			= this.restartRequired;
 			this.labelRequireRestart.Visible	= this.restartRequired;
@@ -534,6 +537,19 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.modelInstalled.ItemFilter = itemFilter;
 			this.modelOnline.ItemFilter = itemFilter;
 		}
+		private void buttonAdvanced_Click(object sender, EventArgs e)
+		{
+			Point screenPoint = this.buttonAdvanced.PointToScreen(new Point(this.buttonAdvanced.Left, this.buttonAdvanced.Bottom));
+			Screen screen = Screen.FromControl(this.buttonAdvanced);
+			if (screenPoint.Y + this.contextMenuAdvanced.Size.Height > screen.WorkingArea.Height)
+			{
+				this.contextMenuAdvanced.Show(this.buttonAdvanced, new Point(0, -this.contextMenuAdvanced.Size.Height));
+			}
+			else
+			{
+				this.contextMenuAdvanced.Show(this.buttonAdvanced, new Point(0, this.buttonAdvanced.Height));
+			}   
+		}
 		private void buttonApply_Click(object sender, EventArgs e)
 		{
 			this.DialogResult = DialogResult.OK;
@@ -557,22 +573,27 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.UpdateAllPackages();
 		}
-		private void buttonChangeVersion_Click(object sender, EventArgs e)
+		private void itemReInstallAll_Click(object sender, EventArgs e)
 		{
-			PackageInfo selectedPackage = this.selectedItem.InstalledPackageInfo;
+			// Shut down the editor
+			CancelEventArgs cancelArgs = new CancelEventArgs();
+			Application.Exit(cancelArgs);
+			if (cancelArgs.Cancel) return;
 
-			SelectTargetVersionDialog dialog = new SelectTargetVersionDialog();
-			dialog.SelectedVersion = selectedPackage.Version;
+			// Delete all files and directories in the local package store, except the icon cache
+			foreach (string dir in Directory.EnumerateDirectories(this.packageManager.LocalPackageStoreDirectory))
+			{
+				if (PathHelper.ArePathsEqual(PackageItem.PackageIconCacheDir, dir))
+					continue;
+				Directory.Delete(dir, true);
+			}
+			foreach (string file in Directory.EnumerateFiles(this.packageManager.LocalPackageStoreDirectory))
+			{
+				File.Delete(file);
+			}
 
-			DialogResult result = dialog.ShowDialog(this);
-			if (result == DialogResult.Cancel) return;
-			if (dialog.SelectedVersion == selectedPackage.Version) return;
-
-			this.UpdatePackage(selectedPackage, dialog.SelectedVersion);
-		}
-		private void checkBoxShowAdvanced_CheckedChanged(object sender, EventArgs e)
-		{
-			this.UpdateBottomButtons();
+			// Start the editor again
+			Process.Start(Application.ExecutablePath);
 		}
 
 		private void OnDisplayModeChanged(DisplayMode prev, DisplayMode next)
@@ -690,6 +711,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			workerInterface.Progress = 1.0f;
 			yield break;
+		}
+
+		string IToolTipProvider.GetToolTip(TreeNodeAdv node, NodeControl nodeControl)
+		{
+			if (nodeControl is IToolTipProvider)
+			{
+				IToolTipProvider controlProvider = nodeControl as IToolTipProvider;
+				return controlProvider.GetToolTip(node, nodeControl);
+			}
+			return null;
 		}
 	}
 }

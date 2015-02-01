@@ -64,6 +64,7 @@
 			this.labelPackageAuthor = new System.Windows.Forms.Label();
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.panelLowerArea = new System.Windows.Forms.Panel();
+			this.buttonAdvanced = new System.Windows.Forms.Button();
 			this.labelRequireRestart = new System.Windows.Forms.Label();
 			this.flowLayoutBottom = new System.Windows.Forms.FlowLayoutPanel();
 			this.buttonApply = new System.Windows.Forms.Button();
@@ -71,16 +72,16 @@
 			this.buttonUninstall = new System.Windows.Forms.Button();
 			this.buttonInstall = new System.Windows.Forms.Button();
 			this.buttonUpdate = new System.Windows.Forms.Button();
-			this.buttonChangeVersion = new System.Windows.Forms.Button();
 			this.bottomFlowSpacer2 = new System.Windows.Forms.Label();
 			this.buttonUpdateAll = new System.Windows.Forms.Button();
-			this.checkBoxShowAdvanced = new System.Windows.Forms.CheckBox();
 			this.miniToolStrip = new System.Windows.Forms.ToolStrip();
 			this.labelHeaderText = new System.Windows.Forms.Label();
 			this.labelHeader = new System.Windows.Forms.Label();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
 			this.timerPackageModelChanged = new System.Windows.Forms.Timer(this.components);
 			this.panelTitleImage = new System.Windows.Forms.Panel();
+			this.contextMenuAdvanced = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.itemReInstallAll = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.Panel2.SuspendLayout();
@@ -89,14 +90,15 @@
 			this.tableLayoutPanelInfo.SuspendLayout();
 			this.panelLowerArea.SuspendLayout();
 			this.flowLayoutBottom.SuspendLayout();
+			this.contextMenuAdvanced.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// packageList
 			// 
 			this.packageList.AllowColumnReorder = true;
-			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.packageList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.packageList.AsyncExpanding = true;
 			this.packageList.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.packageList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -213,9 +215,9 @@
 			// 
 			// splitMain
 			// 
-			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
 			this.splitMain.Location = new System.Drawing.Point(3, 77);
 			this.splitMain.Margin = new System.Windows.Forms.Padding(0);
@@ -492,24 +494,34 @@
 			// 
 			// panelLowerArea
 			// 
-			this.panelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelLowerArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.panelLowerArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.panelLowerArea.Controls.Add(this.buttonAdvanced);
 			this.panelLowerArea.Controls.Add(this.labelRequireRestart);
 			this.panelLowerArea.Controls.Add(this.flowLayoutBottom);
-			this.panelLowerArea.Controls.Add(this.checkBoxShowAdvanced);
 			this.panelLowerArea.Location = new System.Drawing.Point(-3, 472);
 			this.panelLowerArea.Name = "panelLowerArea";
 			this.panelLowerArea.Size = new System.Drawing.Size(901, 39);
 			this.panelLowerArea.TabIndex = 12;
 			// 
+			// buttonAdvanced
+			// 
+			this.buttonAdvanced.Location = new System.Drawing.Point(14, 7);
+			this.buttonAdvanced.Name = "buttonAdvanced";
+			this.buttonAdvanced.Size = new System.Drawing.Size(85, 23);
+			this.buttonAdvanced.TabIndex = 17;
+			this.buttonAdvanced.Text = "Advanced...";
+			this.buttonAdvanced.UseVisualStyleBackColor = true;
+			this.buttonAdvanced.Click += new System.EventHandler(this.buttonAdvanced_Click);
+			// 
 			// labelRequireRestart
 			// 
-			this.labelRequireRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.labelRequireRestart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelRequireRestart.ForeColor = System.Drawing.Color.Blue;
-			this.labelRequireRestart.Location = new System.Drawing.Point(125, 2);
+			this.labelRequireRestart.Location = new System.Drawing.Point(114, 2);
 			this.labelRequireRestart.Name = "labelRequireRestart";
 			this.labelRequireRestart.Size = new System.Drawing.Size(366, 32);
 			this.labelRequireRestart.TabIndex = 16;
@@ -518,15 +530,14 @@
 			// 
 			// flowLayoutBottom
 			// 
-			this.flowLayoutBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.flowLayoutBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.flowLayoutBottom.Controls.Add(this.buttonClose);
 			this.flowLayoutBottom.Controls.Add(this.buttonApply);
 			this.flowLayoutBottom.Controls.Add(this.bottomFlowSpacer1);
 			this.flowLayoutBottom.Controls.Add(this.buttonUninstall);
 			this.flowLayoutBottom.Controls.Add(this.buttonInstall);
 			this.flowLayoutBottom.Controls.Add(this.buttonUpdate);
-			this.flowLayoutBottom.Controls.Add(this.buttonChangeVersion);
 			this.flowLayoutBottom.Controls.Add(this.bottomFlowSpacer2);
 			this.flowLayoutBottom.Controls.Add(this.buttonUpdateAll);
 			this.flowLayoutBottom.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
@@ -592,21 +603,9 @@
 			this.buttonUpdate.UseVisualStyleBackColor = true;
 			this.buttonUpdate.Click += new System.EventHandler(this.buttonUpdate_Click);
 			// 
-			// buttonChangeVersion
-			// 
-			this.buttonChangeVersion.Location = new System.Drawing.Point(14, 0);
-			this.buttonChangeVersion.Margin = new System.Windows.Forms.Padding(0);
-			this.buttonChangeVersion.Name = "buttonChangeVersion";
-			this.buttonChangeVersion.Size = new System.Drawing.Size(75, 23);
-			this.buttonChangeVersion.TabIndex = 17;
-			this.buttonChangeVersion.Text = "Change...";
-			this.toolTip.SetToolTip(this.buttonChangeVersion, "Update the Package to a specific version");
-			this.buttonChangeVersion.UseVisualStyleBackColor = true;
-			this.buttonChangeVersion.Click += new System.EventHandler(this.buttonChangeVersion_Click);
-			// 
 			// bottomFlowSpacer2
 			// 
-			this.bottomFlowSpacer2.Location = new System.Drawing.Point(4, 0);
+			this.bottomFlowSpacer2.Location = new System.Drawing.Point(79, 0);
 			this.bottomFlowSpacer2.Margin = new System.Windows.Forms.Padding(0);
 			this.bottomFlowSpacer2.Name = "bottomFlowSpacer2";
 			this.bottomFlowSpacer2.Size = new System.Drawing.Size(10, 15);
@@ -614,7 +613,7 @@
 			// 
 			// buttonUpdateAll
 			// 
-			this.buttonUpdateAll.Location = new System.Drawing.Point(399, 23);
+			this.buttonUpdateAll.Location = new System.Drawing.Point(4, 0);
 			this.buttonUpdateAll.Margin = new System.Windows.Forms.Padding(0);
 			this.buttonUpdateAll.Name = "buttonUpdateAll";
 			this.buttonUpdateAll.Size = new System.Drawing.Size(75, 23);
@@ -623,19 +622,6 @@
 			this.toolTip.SetToolTip(this.buttonUpdateAll, "Update all packages to their newest version");
 			this.buttonUpdateAll.UseVisualStyleBackColor = true;
 			this.buttonUpdateAll.Click += new System.EventHandler(this.buttonUpdateAll_Click);
-			// 
-			// checkBoxShowAdvanced
-			// 
-			this.checkBoxShowAdvanced.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
-			this.checkBoxShowAdvanced.AutoSize = true;
-			this.checkBoxShowAdvanced.Location = new System.Drawing.Point(14, 11);
-			this.checkBoxShowAdvanced.Name = "checkBoxShowAdvanced";
-			this.checkBoxShowAdvanced.Size = new System.Drawing.Size(105, 17);
-			this.checkBoxShowAdvanced.TabIndex = 18;
-			this.checkBoxShowAdvanced.Text = "Show Advanced";
-			this.checkBoxShowAdvanced.UseVisualStyleBackColor = true;
-			this.checkBoxShowAdvanced.CheckedChanged += new System.EventHandler(this.checkBoxShowAdvanced_CheckedChanged);
 			// 
 			// miniToolStrip
 			// 
@@ -652,21 +638,21 @@
 			// 
 			// labelHeaderText
 			// 
-			this.labelHeaderText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeaderText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeaderText.Location = new System.Drawing.Point(82, 35);
 			this.labelHeaderText.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
 			this.labelHeaderText.Name = "labelHeaderText";
 			this.labelHeaderText.Size = new System.Drawing.Size(803, 42);
 			this.labelHeaderText.TabIndex = 13;
 			this.labelHeaderText.Text = "Each Duality project consists of multiple Packages that can carry plugins and dat" +
-				"a. This dialog provides an overview of installed and available Packages and help" +
-				"s you manage them.";
+    "a. This dialog provides an overview of installed and available Packages and help" +
+    "s you manage them.";
 			// 
 			// labelHeader
 			// 
-			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(79, 7);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
@@ -688,6 +674,20 @@
 			this.panelTitleImage.Name = "panelTitleImage";
 			this.panelTitleImage.Size = new System.Drawing.Size(68, 67);
 			this.panelTitleImage.TabIndex = 18;
+			// 
+			// contextMenuAdvanced
+			// 
+			this.contextMenuAdvanced.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemReInstallAll});
+			this.contextMenuAdvanced.Name = "contextMenuAdvanced";
+			this.contextMenuAdvanced.Size = new System.Drawing.Size(191, 48);
+			// 
+			// itemReInstallAll
+			// 
+			this.itemReInstallAll.Name = "itemReInstallAll";
+			this.itemReInstallAll.Size = new System.Drawing.Size(190, 22);
+			this.itemReInstallAll.Text = "Re-Install all Packages";
+			this.itemReInstallAll.Click += new System.EventHandler(this.itemReInstallAll_Click);
 			// 
 			// PackageViewDialog
 			// 
@@ -720,8 +720,8 @@
 			this.tableLayoutPanelInfo.ResumeLayout(false);
 			this.tableLayoutPanelInfo.PerformLayout();
 			this.panelLowerArea.ResumeLayout(false);
-			this.panelLowerArea.PerformLayout();
 			this.flowLayoutBottom.ResumeLayout(false);
+			this.contextMenuAdvanced.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -769,9 +769,7 @@
 		private System.Windows.Forms.Label labelPackageUpdatedCaption;
 		private System.Windows.Forms.Label labelPackageVersion;
 		private System.Windows.Forms.Label labelRequireRestart;
-		private System.Windows.Forms.Button buttonChangeVersion;
 		private System.Windows.Forms.ToolTip toolTip;
-		private System.Windows.Forms.CheckBox checkBoxShowAdvanced;
 		private System.Windows.Forms.Label bottomFlowSpacer2;
 		private System.Windows.Forms.Button buttonUpdateAll;
 		private System.Windows.Forms.Timer timerPackageModelChanged;
@@ -779,5 +777,8 @@
 		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageTypeNodeControl nodeIconPackageType;
 		private Aga.Controls.Tree.TreeColumn treeColumnDate;
 		private Duality.Editor.Plugins.PackageManagerFrontend.DualityPackageDateNodeControl nodeTextBoxDate;
+		private System.Windows.Forms.Button buttonAdvanced;
+		private System.Windows.Forms.ContextMenuStrip contextMenuAdvanced;
+		private System.Windows.Forms.ToolStripMenuItem itemReInstallAll;
 	}
 }

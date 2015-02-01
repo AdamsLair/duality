@@ -8,11 +8,12 @@ using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 
 using Duality.Editor.PackageManagement;
+using Duality.Editor.Plugins.PackageManagerFrontend.Properties;
 using Duality.Editor.Plugins.PackageManagerFrontend.TreeModels;
 
 namespace Duality.Editor.Plugins.PackageManagerFrontend
 {
-	public class DualityPackageVersionNodeControl : NodeControl
+	public class DualityPackageVersionNodeControl : NodeControl, IToolTipProvider
 	{
 		private PackageManager manager = null;
 
@@ -136,6 +137,29 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		public override Size MeasureSize(TreeNodeAdv node, DrawContext context)
 		{
 			return new Size(60, 48);
+		}
+
+		string IToolTipProvider.GetToolTip(TreeNodeAdv node, NodeControl nodeControl)
+		{
+			PackageItem item = node.Tag as PackageItem;
+			if (item == null) return null;
+
+			if (item.IsUpdatable)
+			{
+				switch (item.UpdateCompatibility)
+				{
+					case PackageCompatibility.Definite:
+						return Properties.PackageManagerFrontendRes.TooltipUpdateDefiniteCompatibility;
+					case PackageCompatibility.Likely:
+						return Properties.PackageManagerFrontendRes.TooltipUpdateLikelyCompatibility;
+					case PackageCompatibility.Unlikely:
+						return Properties.PackageManagerFrontendRes.TooltipUpdateUnlikelyCompatibility;
+					case PackageCompatibility.None:
+						return Properties.PackageManagerFrontendRes.TooltipUpdateNoCompatibility;
+				}
+			}
+
+			return null;
 		}
 	}
 }
