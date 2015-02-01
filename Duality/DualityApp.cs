@@ -760,15 +760,40 @@ namespace Duality
 
 			foreach (string dllPath in GetPluginLibPaths("*.core.dll"))
 			{
+				Log.Core.Write("{0}...", dllPath);
+				Log.Core.PushIndent();
 				LoadPlugin(dllPath);
+				Log.Core.PopIndent();
 			}
 
 			Log.Core.PopIndent();
 		}
+		private static Assembly LoadPluginAssembly(string pluginFilePath)
+		{
+			// When in the launcher, there will be no dynamic plugin reload, so load them by their file name.
+			if (environment == ExecutionEnvironment.Launcher)
+			{
+				return Assembly.LoadFrom(pluginFilePath);
+			}
+			// When in the editor, we cannot lock those files or identify them due to reload, so load them anonymously
+			else
+			{
+				// Guess the path of the symbol file
+				string pluginDebugInfoPath = Path.Combine(
+					Path.GetDirectoryName(pluginFilePath), 
+					Path.GetFileNameWithoutExtension(pluginFilePath)) + ".pdb";
+				if (!File.Exists(pluginDebugInfoPath))
+					pluginDebugInfoPath = null;
+
+				// Load the assembly - and its symbols, if provided
+				if (pluginDebugInfoPath != null)
+					return Assembly.Load(File.ReadAllBytes(pluginFilePath), File.ReadAllBytes(pluginDebugInfoPath));
+				else
+					return Assembly.Load(File.ReadAllBytes(pluginFilePath));
+			}
+		}
 		private static CorePlugin LoadPlugin(string pluginFilePath)
 		{
-			Log.Core.Write("{0}...", pluginFilePath);
-			Log.Core.PushIndent();
 
 			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);
 			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
@@ -777,10 +802,7 @@ namespace Duality
 			Assembly pluginAssembly = null;
 			try
 			{
-				if (environment == ExecutionEnvironment.Launcher)
-					pluginAssembly = Assembly.LoadFrom(pluginFilePath);
-				else
-					pluginAssembly = Assembly.Load(File.ReadAllBytes(pluginFilePath));
+				pluginAssembly = LoadPluginAssembly(pluginFilePath);
 			}
 			catch (Exception e)
 			{
@@ -793,7 +815,6 @@ namespace Duality
 				plugin = LoadPlugin(pluginAssembly, pluginFilePath);
 			}
 
-			Log.Core.PopIndent();
 			return plugin;
 		}
 		/// <summary>
@@ -925,25 +946,32 @@ namespace Duality
 		{
 			if (!pluginFilePath.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase))
 				return null;
-
-			// Load new plugin
-			Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(pluginFilePath));
-			Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(CorePlugin).IsAssignableFrom(t));
-			CorePlugin plugin = (CorePlugin)pluginType.CreateInstanceOf();
-			plugin.FilePath = pluginFilePath;
-			plugin.LoadPlugin();
+			
+			// Load the updated plugin Assembly
+			Assembly pluginAssembly = null;
+			try
+			{
+				pluginAssembly = LoadPluginAssembly(pluginFilePath);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
+				return null;
+			}
 
 			// If we're overwriting an old plugin here, add the old version to the "disposed" blacklist
+			string assemblyName = pluginAssembly.GetShortAssemblyName();
 			CorePlugin oldPlugin;
-			if (plugins.TryGetValue(plugin.AssemblyName, out oldPlugin))
+			if (plugins.TryGetValue(assemblyName, out oldPlugin))
 			{
+				plugins.Remove(assemblyName);
 				disposedPlugins.Add(oldPlugin.PluginAssembly);
 				OnDiscardPluginData();
 				oldPlugin.Dispose();
 			}
 
-			// Register newly loaded plugin
-			plugins[plugin.AssemblyName] = plugin;
+			// Load the new plugin from the updated Assembly
+			CorePlugin plugin = LoadPlugin(pluginAssembly, pluginFilePath);
 			
 			// Discard temporary plugin-related data (cached Types, etc.)
 			CleanupAfterPlugins(new[] { oldPlugin });
