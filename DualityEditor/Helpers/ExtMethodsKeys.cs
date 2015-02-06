@@ -56,6 +56,19 @@ namespace Duality.Editor
 			keysNames[Keys.Subtract] = Key.KeypadSubtract.ToString();
 			keysNames[Keys.Divide] = Key.KeypadDivide.ToString();
 			keysNames[Keys.Decimal] = Key.KeypadDecimal.ToString();
+			keysNames[Keys.Oemcomma] = Key.Comma.ToString();
+			keysNames[Keys.OemPeriod] = Key.Period.ToString();
+			keysNames[Keys.OemMinus] = Key.Slash.ToString();
+			keysNames[Keys.OemQuestion] = Key.BackSlash.ToString();
+			keysNames[Keys.Oemplus] = Key.BracketRight.ToString();
+			keysNames[Keys.OemCloseBrackets] = Key.Plus.ToString();
+			keysNames[Keys.OemOpenBrackets] = Key.Minus.ToString();
+			keysNames[Keys.OemSemicolon] = Key.BracketLeft.ToString();
+			keysNames[Keys.Oemtilde] = Key.Semicolon.ToString();
+			keysNames[Keys.OemQuotes] = Key.Quote.ToString();
+			keysNames[Keys.OemBackslash] = Key.NonUSBackSlash.ToString();
+			keysNames[Keys.OemPipe] = Key.Grave.ToString();
+			keysNames[Keys.PageDown] = Key.PageDown.ToString();
 
 			// Generate mapping
 			foreach (var pair in keysNames)
