@@ -1,5 +1,5 @@
-<NUnitProject>
-  <Settings appbase="."/>
+﻿<NUnitProject>
+  <Settings appbase="." processModel="Default" domainUsage="Default" />
   <Config name="Default" binpath="lib;tests;framework" runtimeFramework="v3.5">
     <assembly path="tests/nunit.framework.tests.dll" />
     <assembly path="tests/nunit.core.tests.dll" />
