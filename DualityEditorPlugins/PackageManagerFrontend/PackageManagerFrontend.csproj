@@ -40,12 +40,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\AdamsLair.TreeViewAdv.1.7.2.0\lib\net20\Aga.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="PopupControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AdamsLair.WinForms.PopupControl.1.0.0.0\lib\net40\PopupControl.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -59,11 +54,8 @@
     <Compile Include="Modules\DualityPackageTypeNodeControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Modules\SelectTargetVersionDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Modules\SelectTargetVersionDialog.Designer.cs">
-      <DependentUpon>SelectTargetVersionDialog.cs</DependentUpon>
+    <Compile Include="Modules\DualityPackageDateNodeControl.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Modules\DualityPackageSummaryNodeControl.cs">
       <SubType>Component</SubType>
@@ -111,6 +103,7 @@
   <ItemGroup>
     <Content Include="EmbeddedResources\core.png" />
     <Content Include="EmbeddedResources\editor.png" />
+    <None Include="EmbeddedResources\filter.png" />
     <Content Include="EmbeddedResources\IncompatibleUpdate.png" />
     <Content Include="EmbeddedResources\LikelySafeUpdate.png" />
     <Content Include="EmbeddedResources\LikelyUnsafeUpdate.png" />
@@ -124,9 +117,6 @@
     <Content Include="EmbeddedResources\UpToDate.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Modules\SelectTargetVersionDialog.resx">
-      <DependentUpon>SelectTargetVersionDialog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Modules\PackageViewDialog.resx">
       <DependentUpon>PackageViewDialog.cs</DependentUpon>
     </EmbeddedResource>

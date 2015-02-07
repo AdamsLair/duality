@@ -658,6 +658,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			GameObject camObj = this.CameraObj;
 			Point cursorPos = this.PointToClient(Cursor.Position);
 
+			float unscaledTimeMult = Time.TimeMult / Time.TimeScale;
+
 			this.camTransformChanged = false;
 			
 			if (this.camAction == CameraAction.DragScene)
@@ -673,10 +675,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					refZ = camObj.Transform.Pos.Z + MathF.Abs(cam.FocusDist);
 
 				Vector2 targetOff = (-(curPos - lastPos) / this.GetScaleAtZ(refZ));
-				Vector2 targetVel = targetOff / Time.TimeMult;
+				Vector2 targetVel = targetOff / unscaledTimeMult;
 				MathF.TransformCoord(ref targetVel.X, ref targetVel.Y, camObj.Transform.Angle);
-				this.camVel.Z *= MathF.Pow(0.9f, Time.TimeMult);
-				this.camVel += (new Vector3(targetVel, this.camVel.Z) - this.camVel) * Time.TimeMult;
+				this.camVel.Z *= MathF.Pow(0.9f, unscaledTimeMult);
+				this.camVel += (new Vector3(targetVel, this.camVel.Z) - this.camVel) * unscaledTimeMult;
 				this.camTransformChanged = true;
 			}
 			else if (this.camAction == CameraAction.Move)
@@ -706,7 +708,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			else if (this.camVel.Length > 0.01f)
 			{
-				this.camVel *= MathF.Pow(0.9f, Time.TimeMult);
+				this.camVel *= MathF.Pow(0.9f, unscaledTimeMult);
 				this.camTransformChanged = true;
 			}
 			else
@@ -725,7 +727,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				float targetVel = (curPos - lastPos).X * MathF.RadAngle360 / 250.0f;
 				targetVel *= (curPos.Y - center.Y) / center.Y;
 
-				this.camAngleVel += (targetVel - this.camAngleVel) * Time.TimeMult;
+				this.camAngleVel += (targetVel - this.camAngleVel) * unscaledTimeMult;
 				this.camTransformChanged = true;
 			}
 			else if (this.camAction == CameraAction.Rotate)
@@ -739,7 +741,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			else if (Math.Abs(this.camAngleVel) > 0.001f)
 			{
-				this.camAngleVel *= MathF.Pow(0.9f, Time.TimeMult);
+				this.camAngleVel *= MathF.Pow(0.9f, unscaledTimeMult);
 				this.camTransformChanged = true;
 			}
 			else
@@ -751,8 +753,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			if (this.camTransformChanged)
 			{
-				camObj.Transform.MoveBy(this.camVel * Time.TimeMult);
-				camObj.Transform.TurnBy(this.camAngleVel * Time.TimeMult);
+				camObj.Transform.MoveBy(this.camVel * unscaledTimeMult);
+				camObj.Transform.TurnBy(this.camAngleVel * unscaledTimeMult);
 
 				this.View.OnCamTransformChanged();
 				this.Invalidate();

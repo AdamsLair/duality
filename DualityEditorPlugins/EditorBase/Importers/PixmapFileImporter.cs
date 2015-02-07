@@ -19,22 +19,26 @@ namespace Duality.Editor.Plugins.Base
 			Pixmap res = new Pixmap(srcFile);
 			res.Save(output[0]);
 		}
-		public string[] GetOutputFiles(string srcFile, string targetName, string targetDir)
-		{
-			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Pixmap.FileExt);
-			return new string[] { targetResPath };
-		}
 
+		public bool CanReImportFile(ContentRef<Resource> r, string srcFile)
+		{
+			return r.Is<Pixmap>();
+		}
+		public void ReImportFile(ContentRef<Resource> r, string srcFile)
+		{
+			Pixmap p = r.Res as Pixmap;
+			p.LoadPixelData(srcFile);
+		}
 
 		public bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile)
 		{
 			ContentRef<Pixmap> p = r.As<Pixmap>();
 			return p != null && p.Res.SourcePath == srcFile;
 		}
-		public void ReimportFile(ContentRef<Resource> r, string srcFile)
+		public string[] GetOutputFiles(string srcFile, string targetName, string targetDir)
 		{
-			Pixmap p = r.Res as Pixmap;
-			p.LoadPixelData(srcFile);
+			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Pixmap.FileExt);
+			return new string[] { targetResPath };
 		}
 	}
 }

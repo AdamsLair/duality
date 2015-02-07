@@ -31,7 +31,22 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 	}
 	public abstract class PackageItem : BaseItem
 	{
+		private static string packageIconCacheDir = null;
 		private static Image defaultPackageIcon = null;
+
+		public static string PackageIconCacheDir
+		{
+			get
+			{
+				if (packageIconCacheDir == null)
+				{
+					packageIconCacheDir = Path.Combine(
+						DualityEditorApp.PackageManager.LocalPackageStoreDirectory, 
+						"IconCache");
+				}
+				return packageIconCacheDir;
+			}
+		}
 		public static Image DefaultPackageIcon
 		{
 			get
@@ -151,26 +166,51 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			if (info == null) return DefaultPackageIcon;
 
-			Image icon = DefaultPackageIcon;
+			Image icon = null;
 			if (info.IconUrl != null)
 			{
-				try
+				// Determine the local cache name of the icon.
+				string cacheFileName = GetLocalUrlCacheFileName(info.IconUrl);
+				string cacheFilePath = Path.Combine(PackageIconCacheDir, cacheFileName);
+
+				// Attempt to load the icon from the local cache.
+				if (icon == null)
 				{
-					HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(info.IconUrl);
-					httpWebRequest.Timeout = 1000;
-					using (HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
+					try
 					{
-						using (Stream stream = httpWebReponse.GetResponseStream())
+						if (File.Exists(cacheFilePath))
 						{
-							Bitmap rawIcon = Bitmap.FromStream(stream) as Bitmap;
-							icon = rawIcon.ScaleToFit(32, 32, System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic);
+							icon = Bitmap.FromFile(cacheFilePath) as Bitmap;
 						}
 					}
+					catch (Exception) {}
 				}
-				catch (Exception) {}
+
+				// Download the image from the specified URL and save it.
+				if (icon == null)
+				{
+					try
+					{
+						HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(info.IconUrl);
+						httpWebRequest.Timeout = 1000;
+						using (HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
+						{
+							using (Stream stream = httpWebReponse.GetResponseStream())
+							{
+								Bitmap rawIcon = Bitmap.FromStream(stream) as Bitmap;
+								icon = rawIcon.ScaleToFit(32, 32, System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic);
+
+								// Save the scaled image to the cache
+								Directory.CreateDirectory(PackageIconCacheDir);
+								icon.Save(cacheFilePath);
+							}
+						}
+					}
+					catch (Exception) {}
+				}
 			}
 
-			return icon;
+			return icon ?? DefaultPackageIcon;
 		}
 		protected void GetUpdateCompatibility(PackageManager manager)
 		{
@@ -179,6 +219,23 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			{
 				this.updateCompatibility = compatibility;
 			}
+		}
+
+		private static string GetLocalUrlCacheFileName(Uri url)
+		{
+			string extension;
+			try { extension = Path.GetExtension(url.AbsolutePath); }
+			catch (Exception) { extension = ""; }
+
+			string absoluteUri = url.AbsoluteUri;
+			ulong hashedValue = 3074457345618258791ul;
+			for(int i = 0; i < absoluteUri.Length; i++)
+			{
+				hashedValue += absoluteUri[i];
+				hashedValue *= 3074457345618258799ul;
+			}
+			string hashedUrl = Convert.ToBase64String(BitConverter.GetBytes(hashedValue));
+			return PathHelper.GetValidFileName(hashedUrl) + extension;
 		}
 	}
 	public class LocalPackageItem : PackageItem
@@ -206,6 +263,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				this.newestPackageInfo = newestPackage;
 			}
 			this.GetUpdateCompatibility(manager);
+		}
+
+		public override string ToString()
+		{
+			return string.Format("LocalPackage {0} {1}, {2}", this.itemPackageInfo.Id, this.itemPackageInfo.Version, this.itemPackageInfo.PublishDate);
 		}
 	}
 	public class OnlinePackageItem : PackageItem
@@ -235,6 +297,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				LocalPackage installedPackage = manager.LocalPackages.FirstOrDefault(p => p.Id == this.itemPackageInfo.Id);
 				this.installedPackageInfo = (installedPackage != null) ? installedPackage.Info : null;
 			}
+		}
+
+		public override string ToString()
+		{
+			return string.Format("OnlinePackage {0} {1}, {2}", this.itemPackageInfo.Id, this.itemPackageInfo.Version, this.itemPackageInfo.PublishDate);
 		}
 	}
 }

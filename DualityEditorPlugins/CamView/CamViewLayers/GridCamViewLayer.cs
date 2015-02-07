@@ -16,7 +16,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
 	public class GridCamViewLayer : CamViewLayer
 	{
-	    private float gridSize	= 100.0f;
+		private RawList<VertexC1P3> vertexBuffer = null;
 
 	    public override string LayerName
 	    {
@@ -48,24 +48,42 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	        float alphaTemp = 0.5f;
 	        alphaTemp *= (float)Math.Min(1.0d, ((posTemp.Z - device.NearZ) / (device.NearZ * 5.0f)));
 	        if (alphaTemp <= 0.005f) return;
-
-	        float stepTemp = 4.0f * this.gridSize * MathF.Max(0.25f, MathF.Pow(2.0f, -MathF.Round(1.0f - MathF.Log(1.0f / scaleTemp, 2.0f))));
-	        float scaledStep = stepTemp * scaleTemp;
-	        float viewBoundRad = device.TargetSize.Length * 0.5f;
-	        int lineCount = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep)) * 4;
-
 	        ColorRgba gridColor = this.FgColor.WithAlpha(alphaTemp);
-	        VertexC1P3[] vertices = new VertexC1P3[lineCount * 4];
-			
+
+			float gridVisualMinSize = 50.0f;
+			Vector2 gridBaseSize = this.View.EditingUserGuides.GridSize.Xy;
+			if (gridBaseSize.X <= 0.0f) gridBaseSize.X = 100.0f;
+			if (gridBaseSize.Y <= 0.0f) gridBaseSize.Y = 100.0f;
+
+			Vector2 adjustedGridBaseSize;
+			adjustedGridBaseSize.X = gridBaseSize.X * MathF.NextPowerOfTwo((int)MathF.Ceiling(gridVisualMinSize / gridBaseSize.X));
+			adjustedGridBaseSize.Y = gridBaseSize.Y * MathF.NextPowerOfTwo((int)MathF.Ceiling(gridVisualMinSize / gridBaseSize.Y));
+
+			float scaleAdjustmentFactor = 4.0f * MathF.Pow(2.0f, -MathF.Round(1.0f - MathF.Log(1.0f / scaleTemp, 2.0f)));
+			Vector2 adjustedGridSize;
+			adjustedGridSize.X = MathF.Max(adjustedGridBaseSize.X * scaleAdjustmentFactor, gridBaseSize.X);
+			adjustedGridSize.Y = MathF.Max(adjustedGridBaseSize.Y * scaleAdjustmentFactor, gridBaseSize.Y);
+
+	        Vector2 stepTemp = adjustedGridSize;
+	        Vector2 scaledStep = stepTemp * scaleTemp;
+	        float viewBoundRad = device.TargetSize.Length * 0.5f;
+	        int lineCountX = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.X)) * 4;
+	        int lineCountY = (2 + (int)MathF.Ceiling(viewBoundRad * 2 / scaledStep.Y)) * 4;
+			int vertexCount = (lineCountX * 2 + lineCountY * 2);
+
+			if (this.vertexBuffer == null) this.vertexBuffer = new RawList<VertexC1P3>(vertexCount);
+			this.vertexBuffer.Count = vertexCount;
+
+	        VertexC1P3[] vertices = this.vertexBuffer.Data;
 	        float beginPos;
 			float pos;
 			int lineIndex;
 			int vertOff = 0;
 
-	        beginPos = posTemp.X % scaledStep - (lineCount / 8) * scaledStep;
+	        beginPos = posTemp.X % scaledStep.X - (lineCountX / 8) * scaledStep.X;
 			pos = beginPos;
 			lineIndex = 0;
-	        for (int x = 0; x < lineCount; x++)
+	        for (int x = 0; x < lineCountX; x++)
 	        {
 	            bool primaryLine = lineIndex % 4 == 0;
 	            bool secondaryLine = lineIndex % 4 == 2;
@@ -79,15 +97,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	            vertices[vertOff + x * 2 + 1] = vertices[vertOff + x * 2 + 0];
 	            vertices[vertOff + x * 2 + 1].Pos.Y = viewBoundRad;
 
-				pos += scaledStep / 4;
+				pos += scaledStep.X / 4;
 				lineIndex++;
 	        }
-			vertOff += lineCount * 2;
+			vertOff += lineCountX * 2;
 
-	        beginPos = posTemp.Y % scaledStep - (lineCount / 8) * scaledStep;
+	        beginPos = posTemp.Y % scaledStep.Y - (lineCountY / 8) * scaledStep.Y;
 			pos = beginPos;
 			lineIndex = 0;
-	        for (int y = 0; y < lineCount; y++)
+	        for (int y = 0; y < lineCountY; y++)
 	        {
 	            bool primaryLine = lineIndex % 4 == 0;
 	            bool secondaryLine = lineIndex % 4 == 2;
@@ -101,12 +119,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 	            vertices[vertOff + y * 2 + 1] = vertices[vertOff + y * 2 + 0];
 	            vertices[vertOff + y * 2 + 1].Pos.X = viewBoundRad;
 
-				pos += scaledStep / 4;
+				pos += scaledStep.Y / 4;
 				lineIndex++;
 	        }
-			vertOff += lineCount * 2;
+			vertOff += lineCountY * 2;
 
-	        device.AddVertices(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White), VertexMode.Lines, vertices);
+	        device.AddVertices(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White), VertexMode.Lines, vertices, this.vertexBuffer.Count);
 	    }
 		protected internal override void OnCollectOverlayDrawcalls(Canvas canvas)
 		{

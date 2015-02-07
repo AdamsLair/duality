@@ -51,7 +51,8 @@ namespace Duality
 			get { return watch.Elapsed; }
 		}		//	G
 		/// <summary>
-		/// [GET] Time in milliseconds the last frame took
+		/// [GET] Time in milliseconds the last frame took. Do not use this for frame-independent calculations. Use
+		/// <see cref="TimeMult"/> instead.
 		/// </summary>
 		public static float LastDelta
 		{

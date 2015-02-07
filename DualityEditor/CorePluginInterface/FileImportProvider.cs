@@ -11,10 +11,12 @@ namespace Duality.Editor
 	{
 		bool CanImportFile(string srcFile);
 		void ImportFile(string srcFile, string targetName, string targetDir);
-		string[] GetOutputFiles(string srcFile, string targetName, string targetDir);
+
+		bool CanReImportFile(ContentRef<Resource> r, string srcFile);
+		void ReImportFile(ContentRef<Resource> r, string srcFile);
 
 		bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile);
-		void ReimportFile(ContentRef<Resource> r, string srcFile);
+		string[] GetOutputFiles(string srcFile, string targetName, string targetDir);
 	}
 
 	public static class FileImportProvider
@@ -91,48 +93,79 @@ namespace Duality.Editor
 		}
 		public static void ReimportFile(string filePath)
 		{
+			string fileExt = Path.GetExtension(filePath);
+
 			// Find an importer to handle the file import
 			IFileImporter importer = importers.FirstOrDefault(i => i.CanImportFile(filePath));
 			if (importer == null) return;
 
-			// Guess which Resources are affected and check them first
-			string resourceName = ContentProvider.GetNameFromPath(filePath);
-			List<ContentRef<Resource>> checkContent = ContentProvider.GetAvailableContent<Resource>();
-			for (int i = 0; i < checkContent.Count; ++i)
-			{
-				ContentRef<Resource> resRef = checkContent[i];
-				if (resRef.Name == resourceName)
-				{
-					checkContent.RemoveAt(i);
-					checkContent.Insert(0, resRef);
-				}
-			}
+			// Determine which Resources are affected
+			ContentRef<Resource> affectedResource = null;
 
-			// Iterate over all existing Resources to find out which one to ReImport.
-			List<Resource> touchedResources = null;
-			foreach (ContentRef<Resource> resRef in checkContent)
+			// First, try to guess which Resource is affected using the file name
 			{
-				if (resRef.IsDefaultContent) continue;
-				if (!importer.IsUsingSrcFile(resRef, filePath)) continue;
-				try
+				string guessedResourceName = ContentProvider.GetNameFromPath(filePath);
+				string resourceSearchPattern = "*" + guessedResourceName + "*" + Resource.FileExt;
+				foreach (string resourcePath in Directory.EnumerateFiles(DualityApp.DataDirectory, resourceSearchPattern, SearchOption.AllDirectories))
 				{
-					importer.ReimportFile(resRef, filePath);
-					if (resRef.IsLoaded)
-					{
-						if (touchedResources == null) touchedResources = new List<Resource>();
-						touchedResources.Add(resRef.Res);
-					}
-					// Multiple Resources referring to a single source file shouldn't happen
-					// in the current implementation of FileImport and Resource system.
-					// Might change later.
+					ContentRef<Resource> resourceRef = new ContentRef<Resource>(null, resourcePath);
+					string resourceName = ContentProvider.GetNameFromPath(resourcePath);
+
+					// If the name doesn't match, skip
+					if (!string.Equals(resourceName, guessedResourceName, StringComparison.InvariantCultureIgnoreCase))
+						continue;
+					// If there is no association between source fil and Resource, skip it
+					if (!IsUsingSourceFile(importer, resourceRef, filePath, fileExt) && importer.CanReImportFile(resourceRef, filePath))
+						continue;
+					// If the importer can't handle that Resource with that file, skip it
+					if (!importer.CanReImportFile(resourceRef, filePath))
+						continue;
+
+					affectedResource = resourceRef;
 					break; 
 				}
-				catch (Exception) 
+			}
+
+			// No idea yet? Try brute force and check all the available Resources
+			if (affectedResource == null)
+			{
+				foreach (ContentRef<Resource> resRef in ContentProvider.GetAvailableContent<Resource>())
 				{
-					Log.Editor.WriteError("Can't re-import file '{0}'", filePath);
+					// If this is default content, skip it
+					if (resRef.IsDefaultContent)
+						continue;
+					// If there is no association between source fil and Resource, skip it
+					if (!IsUsingSourceFile(importer, resRef, filePath, fileExt) && importer.CanReImportFile(resRef, filePath))
+						continue;
+					// If the importer can't handle that Resource with that file, skip it
+					if (!importer.CanReImportFile(resRef, filePath))
+						continue;
+
+					affectedResource = resRef;
+					break; 
 				}
 			}
 
+			// Re-Import the affected Resources
+			List<Resource> touchedResources = null;
+			if (affectedResource != null)
+			{
+				try
+				{
+					importer.ReImportFile(affectedResource, filePath);
+					if (affectedResource.IsLoaded)
+					{
+						if (touchedResources == null) touchedResources = new List<Resource>();
+						touchedResources.Add(affectedResource.Res);
+					}
+				}
+				catch (Exception e) 
+				{
+					Log.Editor.WriteError("Can't re-import file '{0}': {1}", filePath, Log.Exception(e));
+				}
+			}
+
+			// Notify the editor that we have modified some Resources
 			if (touchedResources != null)
 			{
 				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection((IEnumerable<object>)touchedResources));
@@ -195,6 +228,20 @@ namespace Duality.Editor
 			return targetPathWithoutExt + srcFileExt;
 		}
 
+		private static bool IsUsingSourceFile(IFileImporter importer, ContentRef<Resource> resourceRef, string srcFilePath, string srcFileExt)
+		{
+			// Does the Resource or Importer recall to use this file?
+			if (importer.IsUsingSrcFile(resourceRef, srcFilePath))
+				return true;
+
+			// Does the system suggest that the Resource would use that file if it was opened for editing?
+			string resourceSourcePath = SelectSourceFilePath(resourceRef, srcFileExt);
+			if (PathHelper.ArePathsEqual(resourceSourcePath, srcFilePath))
+				return true;
+
+			// Nope.
+			return false;
+		}
 		private static void PrepareImportFilePaths(string filePath, out string srcFilePath, out string targetName, out string targetDir)
 		{
 			srcFilePath = PathHelper.MakeFilePathRelative(filePath, DualityApp.DataDirectory);

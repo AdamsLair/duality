@@ -295,5 +295,41 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
                 return ResourceManager.GetString("TaskUpdatePackages_Desc", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Updating this package shouldn&apos;t cause any compatibility issues. ähnelt.
+        /// </summary>
+        public static string TooltipUpdateDefiniteCompatibility {
+            get {
+                return ResourceManager.GetString("TooltipUpdateDefiniteCompatibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Updating this package is usually fine, but certain older plugins may not be compatible with the new version. ähnelt.
+        /// </summary>
+        public static string TooltipUpdateLikelyCompatibility {
+            get {
+                return ResourceManager.GetString("TooltipUpdateLikelyCompatibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Updating this package will likely break older plugins depending on it. ähnelt.
+        /// </summary>
+        public static string TooltipUpdateNoCompatibility {
+            get {
+                return ResourceManager.GetString("TooltipUpdateNoCompatibility", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die Updating this package can cause compatibility problems with older plugins. ähnelt.
+        /// </summary>
+        public static string TooltipUpdateUnlikelyCompatibility {
+            get {
+                return ResourceManager.GetString("TooltipUpdateUnlikelyCompatibility", resourceCulture);
+            }
+        }
     }
 }

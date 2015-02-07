@@ -15,6 +15,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 {
 	public abstract class PackageRepositoryTreeModel : ITreeModel, IDisposable
 	{
+		private class NewItemRetrievedReport
+		{
+			public BaseItem Item { get; set; }
+			public int InsertAtIndex { get; set; }
+		}
+		
 		protected	PackageManager					packageManager		= null;
 		private		bool							disposed			= false;
 		private		List<BaseItem>					items				= new List<BaseItem>();
@@ -271,20 +277,25 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				item = this.CreatePackageItem(package, null);
 				this.SubmitItem(item);
 				this.ReadItemData(item);
-				this.itemRetriever.ReportProgress(0, item);
+				this.itemRetriever.ReportProgress(0, new NewItemRetrievedReport
+				{
+					Item = item,
+					InsertAtIndex = this.GetItemIndex(item)
+				});
 			}
 		}
 		private void Worker_ItemsRetrieved(object sender, ProgressChangedEventArgs e)
 		{
-			BaseItem item = e.UserState as BaseItem;
+			NewItemRetrievedReport report = e.UserState as NewItemRetrievedReport;
 
 			// Notify the model that we've got some new items
 			if (this.NodesInserted != null)
 			{
-				int index = GetItemIndex(item);
-				if (index != -1)
+				int newIndex = this.GetItemIndex(report.Item);
+				bool stillInList = newIndex != -1;
+				if (stillInList)
 				{
-					this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
+					this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(report.Item.Parent), new int[] { report.InsertAtIndex }, new[] { report.Item }));
 				}
 			}
 

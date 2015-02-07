@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Diagnostics;
 using System.Xml.Linq;
@@ -15,6 +15,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 
+using Duality.Editor.Properties;
 using Duality.Editor.PackageManagement;
 using Duality.Editor.Forms;
 using Duality.Editor.Plugins.PackageManagerFrontend.Properties;
@@ -22,7 +23,7 @@ using Duality.Editor.Plugins.PackageManagerFrontend.TreeModels;
 
 namespace Duality.Editor.Plugins.PackageManagerFrontend
 {
-	public partial class PackageViewDialog : Form
+	public partial class PackageViewDialog : Form, IToolTipProvider
 	{
 		public enum DisplayMode
 		{
@@ -62,8 +63,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			{
 				Name,
 				Version,
+				Date,
 				Downloads,
-				PackageType
+				PackageType,
+				CombinedScore
 			}
 
 			private SortOrder sortOrder	= SortOrder.Ascending;
@@ -90,6 +93,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					if		(itemA.Version < itemB.Version)	result = -1;
 					else if (itemA.Version > itemB.Version)	result = 1;
 				}
+				if (result == 0 || this.sortMode == SortMode.Date)
+				{
+					if		(itemA.ItemPackageInfo.PublishDate < itemB.ItemPackageInfo.PublishDate)	result = -1;
+					else if (itemA.ItemPackageInfo.PublishDate > itemB.ItemPackageInfo.PublishDate)	result = 1;
+				}
 				if (result == 0 || this.sortMode == SortMode.Downloads)
 				{
 					int itemANum = itemA.Downloads.HasValue ? itemA.Downloads.Value : 0;
@@ -103,6 +111,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				if (result == 0 || this.sortMode == SortMode.PackageType)
 				{
 					result = (int)itemA.Type - (int)itemB.Type;
+				}
+				if (result == 0 || this.sortMode == SortMode.CombinedScore)
+				{
+					float scoreA = (float)itemA.ItemPackageInfo.DownloadCount * (1.0f - MathF.Clamp((float)(DateTime.Now - itemA.ItemPackageInfo.PublishDate).TotalDays / 360.0f, 0.001f, 1.0f));
+					float scoreB = (float)itemB.ItemPackageInfo.DownloadCount * (1.0f - MathF.Clamp((float)(DateTime.Now - itemB.ItemPackageInfo.PublishDate).TotalDays / 360.0f, 0.001f, 1.0f));
+					if		(scoreA < scoreB)	result = -1;
+					else if (scoreA > scoreB)	result = 1;
 				}
 				if (result == 0)
 				{
@@ -173,15 +188,19 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.InitializeComponent();
 
+			this.packageList.DefaultToolTipProvider = this;
+			this.packageList.ShowNodeToolTips = true;
+
 			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
+			this.treeColumnDate.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnDownloads.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnPackageType.DrawColHeaderBg	+= this.treeColumn_DrawColHeaderBg;
 			this.nodeTextBoxDownloads.DrawText			+= this.nodeTextBoxDownloads_DrawText;
 			this.toolStripMain.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 
-			this.toolStripFilterBox.Items.Add(new FilterBoxItem(DisplayMode.Installed, PackageManagerFrontendRes.ItemName_InstalledPackages));
-			this.toolStripFilterBox.Items.Add(new FilterBoxItem(DisplayMode.Online, PackageManagerFrontendRes.ItemName_OnlineRepository));
+			this.toolStripViewBox.Items.Add(new FilterBoxItem(DisplayMode.Installed, PackageManagerFrontendRes.ItemName_InstalledPackages));
+			this.toolStripViewBox.Items.Add(new FilterBoxItem(DisplayMode.Online, PackageManagerFrontendRes.ItemName_OnlineRepository));
 			
 		}
 
@@ -204,13 +223,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			bool isItemInstalled = isItemSelected && this.selectedItem.IsInstalled;
 			bool isItemUpdatable = isItemInstalled && this.selectedItem.IsUpdatable;
 			bool canUninstall = isItemInstalled && this.packageManager.CanUninstallPackage(this.selectedItem.ItemPackageInfo);
-			bool canUpdate = isItemUpdatable && (this.checkBoxShowAdvanced.Checked || this.selectedItem.UpdateCompatibility.Satisfies(PackageCompatibility.Likely));
+			bool canUpdate = isItemUpdatable;
 
 			this.buttonInstall.Visible			= isItemSelected && !isItemInstalled;
 			this.buttonUninstall.Visible		= isItemInstalled && canUninstall;
-			this.buttonChangeVersion.Visible	= isItemInstalled && this.checkBoxShowAdvanced.Checked;
 			this.buttonUpdate.Visible			= isItemInstalled && canUpdate;
-			this.bottomFlowSpacer2.Visible		= this.buttonInstall.Visible || this.buttonUninstall.Visible || this.buttonChangeVersion.Visible || this.buttonUpdate.Visible;
+			this.bottomFlowSpacer2.Visible		= this.buttonInstall.Visible || this.buttonUninstall.Visible || this.buttonUpdate.Visible;
 			this.buttonUpdateAll.Visible		= this.packageList.Root.Children.Select(n => n.Tag as PackageItem).Any(n => n.IsUpdatable);
 			this.buttonApply.Visible			= this.restartRequired;
 			this.labelRequireRestart.Visible	= this.restartRequired;
@@ -220,6 +238,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			PackageInfo itemInfo		= this.selectedItem != null ? this.selectedItem.ItemPackageInfo : null;
 			PackageInfo installedInfo	= this.selectedItem != null ? this.selectedItem.InstalledPackageInfo : null;
 			PackageInfo newestInfo		= this.selectedItem != null ? this.selectedItem.NewestPackageInfo : null;
+
+			this.SuspendLayout();
 
 			if (itemInfo == null)
 			{
@@ -262,6 +282,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.labelPackageVersionCaption.Visible	= this.labelPackageVersion.Visible;
 			this.labelPackageUpdatedCaption.Visible	= this.labelPackageUpdated.Visible;
 			this.labelPackageWebsiteCaption.Visible	= this.labelPackageWebsite.Visible;
+
+			this.ResumeLayout();
 		}
 
 		private void InstallPackage(PackageInfo info)
@@ -381,6 +403,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.modelInstalled = new InstalledPackagesTreeModel(this.packageManager);
 			this.modelOnline = new OnlinePackagesTreeModel(this.packageManager);
 
+			this.modelOnline.SortComparer = new PackageListItemComparer(PackageListItemComparer.SortMode.CombinedScore, SortOrder.Ascending);
+
 			this.modelInstalled.NodesChanged += this.modelInstalled_NodesChanged;
 			this.modelOnline.NodesChanged += this.modelOnline_NodesChanged;
 
@@ -412,7 +436,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.InvokeEx(this.ScheduleLazyPackageInterfaceUpdate, false);
 		}
-		private void toolStripFilterBox_DropDownClosed(object sender, EventArgs e)
+		private void toolStripViewBox_DropDownClosed(object sender, EventArgs e)
 		{
 			this.packageList.Focus();
 		}
@@ -421,14 +445,28 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(255, 212, 212, 212)), e.Bounds);
 			e.Handled = true;
 		}
-		private void toolStripFilterBox_SelectedIndexChanged(object sender, EventArgs e)
+		private void toolStripViewBox_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			FilterBoxItem selectedItem = this.toolStripFilterBox.SelectedItem as FilterBoxItem;
+			FilterBoxItem selectedItem = this.toolStripViewBox.SelectedItem as FilterBoxItem;
 			this.Display = selectedItem.Display;
 		}
 		private void packageList_ColumnClicked(object sender, TreeColumnEventArgs e)
 		{
-			e.Column.SortOrder = (e.Column.SortOrder == SortOrder.Descending) ? SortOrder.Ascending : SortOrder.Descending;
+			if (e.Column.SortOrder == SortOrder.None)
+			{
+				if (e.Column == this.treeColumnVersion)
+					e.Column.SortOrder = SortOrder.Ascending;
+				else if (e.Column == this.treeColumnDownloads)
+					e.Column.SortOrder = SortOrder.Ascending;
+				else if (e.Column == this.treeColumnDate)
+					e.Column.SortOrder = SortOrder.Ascending;
+				else
+					e.Column.SortOrder = SortOrder.Descending;
+			}
+			else
+			{
+				e.Column.SortOrder = (e.Column.SortOrder == SortOrder.Descending) ? SortOrder.Ascending : SortOrder.Descending;
+			}
 
 			IComparer<BaseItem> comparer = null;
 			if (e.Column == this.treeColumnName)
@@ -437,6 +475,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Version, e.Column.SortOrder);
 			else if (e.Column == this.treeColumnDownloads)
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Downloads, e.Column.SortOrder);
+			else if (e.Column == this.treeColumnDate)
+				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.Date, e.Column.SortOrder);
 			else if (e.Column == this.treeColumnPackageType)
 				comparer = new PackageListItemComparer(PackageListItemComparer.SortMode.PackageType, e.Column.SortOrder);
 
@@ -448,7 +488,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			Size sizeChange = new Size(
 				this.packageList.Width - this.oldTreeViewSize.Width,
 				this.packageList.Height - this.oldTreeViewSize.Height);
+
 			this.treeColumnName.Width += sizeChange.Width;
+			this.UpdateColumnVisibility();
+
 			this.oldTreeViewSize = this.packageList.Size;
 		}
 		private void packageList_SelectionChanged(object sender, EventArgs e)
@@ -493,6 +536,19 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.modelInstalled.ItemFilter = itemFilter;
 			this.modelOnline.ItemFilter = itemFilter;
 		}
+		private void buttonAdvanced_Click(object sender, EventArgs e)
+		{
+			Point screenPoint = this.buttonAdvanced.PointToScreen(new Point(this.buttonAdvanced.Left, this.buttonAdvanced.Bottom));
+			Screen screen = Screen.FromControl(this.buttonAdvanced);
+			if (screenPoint.Y + this.contextMenuAdvanced.Size.Height > screen.WorkingArea.Height)
+			{
+				this.contextMenuAdvanced.Show(this.buttonAdvanced, new Point(0, -this.contextMenuAdvanced.Size.Height));
+			}
+			else
+			{
+				this.contextMenuAdvanced.Show(this.buttonAdvanced, new Point(0, this.buttonAdvanced.Height));
+			}   
+		}
 		private void buttonApply_Click(object sender, EventArgs e)
 		{
 			this.DialogResult = DialogResult.OK;
@@ -516,44 +572,84 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.UpdateAllPackages();
 		}
-		private void buttonChangeVersion_Click(object sender, EventArgs e)
+		private void itemReInstallAll_Click(object sender, EventArgs e)
 		{
-			PackageInfo selectedPackage = this.selectedItem.InstalledPackageInfo;
+			// Shut down the editor
+			CancelEventArgs cancelArgs = new CancelEventArgs();
+			Application.Exit(cancelArgs);
+			if (cancelArgs.Cancel) return;
 
-			SelectTargetVersionDialog dialog = new SelectTargetVersionDialog();
-			dialog.SelectedVersion = selectedPackage.Version;
+			// Delete all files and directories in the local package store, except the icon cache
+			foreach (string dir in Directory.EnumerateDirectories(this.packageManager.LocalPackageStoreDirectory))
+			{
+				if (PathHelper.ArePathsEqual(PackageItem.PackageIconCacheDir, dir))
+					continue;
+				Directory.Delete(dir, true);
+			}
+			foreach (string file in Directory.EnumerateFiles(this.packageManager.LocalPackageStoreDirectory))
+			{
+				File.Delete(file);
+			}
 
-			DialogResult result = dialog.ShowDialog(this);
-			if (result == DialogResult.Cancel) return;
-			if (dialog.SelectedVersion == selectedPackage.Version) return;
-
-			this.UpdatePackage(selectedPackage, dialog.SelectedVersion);
-		}
-		private void checkBoxShowAdvanced_CheckedChanged(object sender, EventArgs e)
-		{
-			this.UpdateBottomButtons();
+			// Start the editor again
+			Process.Start(Application.ExecutablePath);
 		}
 
 		private void OnDisplayModeChanged(DisplayMode prev, DisplayMode next)
 		{
-			FilterBoxItem selectedItem = this.toolStripFilterBox.SelectedItem as FilterBoxItem;
+			FilterBoxItem selectedItem = this.toolStripViewBox.SelectedItem as FilterBoxItem;
 			if (selectedItem == null || next != selectedItem.Display)
 			{
-				this.toolStripFilterBox.SelectedItem = this.toolStripFilterBox.Items.OfType<FilterBoxItem>().FirstOrDefault(i => i.Display == next);
+				this.toolStripViewBox.SelectedItem = this.toolStripViewBox.Items.OfType<FilterBoxItem>().FirstOrDefault(i => i.Display == next);
 			}
 
 			if (next == DisplayMode.Installed)
 			{
 				this.packageList.Model = this.modelInstalled;
-				this.treeColumnDownloads.IsVisible = false;
-				this.treeColumnName.Width += this.treeColumnDownloads.Width;
 			}
 			else if (next == DisplayMode.Online)
 			{
 				this.packageList.Model = this.modelOnline;
-				this.treeColumnName.Width -= this.treeColumnDownloads.Width;
-				this.treeColumnDownloads.IsVisible = true;
 			}
+			this.UpdateColumnVisibility();
+		}
+
+		private void UpdateColumnVisibility()
+		{
+			int colRefWidth = this.GetPackageListMainColumnWidth(c => 
+				c != this.treeColumnDate && 
+				c != this.treeColumnDownloads && 
+				c != this.treeColumnName);
+
+			this.UpdateColumnVisibility(this.treeColumnDate, ref colRefWidth);
+			this.UpdateColumnVisibility(this.treeColumnDownloads, ref colRefWidth, () => this.display == DisplayMode.Online);
+		}
+		private void UpdateColumnVisibility(TreeColumn column, ref int colRefWidth, Func<bool> visibilityFunc = null)
+		{
+			bool displayColumn = colRefWidth > 400 && (visibilityFunc == null || visibilityFunc());
+			if (displayColumn && !column.IsVisible)
+			{
+				column.IsVisible = true;
+				this.treeColumnName.Width -= column.Width;
+			}
+			else if (!displayColumn && column.IsVisible)
+			{
+				column.IsVisible = false;
+				this.treeColumnName.Width += column.Width;
+			}
+			if (column.IsVisible)
+				colRefWidth -= this.treeColumnDownloads.Width;
+		}
+		private int GetPackageListMainColumnWidth(Predicate<TreeColumn> columnPredicate)
+		{
+			int availWidth = this.packageList.ClientSize.Width;
+			foreach (TreeColumn column in this.packageList.Columns)
+			{
+				if (!column.IsVisible) continue;
+				if (!columnPredicate(column)) continue;
+				availWidth -= column.Width;
+			}
+			return availWidth;
 		}
 
 		private static System.Collections.IEnumerable PackageOperationThread(ProcessingBigTaskDialog.WorkerInterface workerInterface)
@@ -587,10 +683,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			PackageManager manager = workerInterface.Data as PackageManager;
 
 			workerInterface.Progress = 0.0f;
-			workerInterface.StateDesc = string.Format("Preparing operation...");
+			workerInterface.StateDesc = GeneralRes.TaskPrepareInfo;
 			yield return null;
 
 			PackageInfo[] updatePackages = manager.GetSafeUpdateConfig(manager.LocalPackages).ToArray();
+			manager.OrderByDependencies(updatePackages);
 			foreach (PackageInfo package in updatePackages)
 			{
 				workerInterface.Progress += 1.0f / updatePackages.Length;
@@ -613,6 +710,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			workerInterface.Progress = 1.0f;
 			yield break;
+		}
+
+		string IToolTipProvider.GetToolTip(TreeNodeAdv node, NodeControl nodeControl)
+		{
+			if (nodeControl is IToolTipProvider)
+			{
+				IToolTipProvider controlProvider = nodeControl as IToolTipProvider;
+				return controlProvider.GetToolTip(node, nodeControl);
+			}
+			return null;
 		}
 	}
 }
