@@ -25,7 +25,8 @@ namespace Duality
 		public virtual void Write(Log source, LogMessageType type, string msg, object context)
 		{
 			int indent = source.Indent;
-			string[] lines = msg.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+			string prefix = source.Prefix ?? "";
+			string[] lines = msg.Split(new[] { '\n', '\r', '\0' }, StringSplitOptions.RemoveEmptyEntries);
 			for (int i = 0; i < lines.Length; i++)
 			{
 				if (i == 0)
@@ -33,19 +34,19 @@ namespace Duality
 					switch (type)
 					{
 						case LogMessageType.Message:
-							lines[i] = source.Prefix + "Info:    " + new string(' ', indent * 4) + lines[i];
+							lines[i] = prefix + "Info:    " + new string(' ', indent * 4) + lines[i];
 							break;
 						case LogMessageType.Warning:
-							lines[i] = source.Prefix + "Warning: " + new string(' ', indent * 4) + lines[i];
+							lines[i] = prefix + "Warning: " + new string(' ', indent * 4) + lines[i];
 							break;
 						case LogMessageType.Error:
-							lines[i] = source.Prefix + "ERROR:   " + new string(' ', indent * 4) + lines[i];
+							lines[i] = prefix + "ERROR:   " + new string(' ', indent * 4) + lines[i];
 							break;
 					}
 				}
 				else
 				{
-					lines[i] = source.Prefix + "         " + new string(' ', indent * 4) + lines[i];
+					lines[i] = new string(' ', prefix.Length + 9 + indent * 4) + lines[i];
 				}
 
 				this.writer.WriteLine(lines[i]);
