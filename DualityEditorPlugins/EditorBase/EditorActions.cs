@@ -139,9 +139,13 @@ namespace Duality.Editor.Plugins.Base
 			Pixmap			pixmap		= obj as Pixmap;
 			AudioData		audioData	= obj as AudioData;
 			AbstractShader	shader		= obj as AbstractShader;
-			if (pixmap		!= null)		FileImportProvider.OpenSourceFile(pixmap, ".png", pixmap.SavePixelData);
-			else if (audioData	!= null)	FileImportProvider.OpenSourceFile(audioData, ".ogg", audioData.SaveOggVorbisData);
-			else if (shader		!= null)	FileImportProvider.OpenSourceFile(shader, shader is FragmentShader ? ".frag" : ".vert", shader.SaveSource);
+
+			if (pixmap != null)
+				FileImportProvider.OpenSourceFile(pixmap, PixmapFileImporter.SourceFileExtPrimary, pixmap.SavePixelData);
+			else if (audioData != null)
+				FileImportProvider.OpenSourceFile(audioData, AudioDataFileImporter.SourceFileExtPrimary, audioData.SaveOggVorbisData);
+			else if (shader != null)
+				FileImportProvider.OpenSourceFile(shader, shader is FragmentShader ? ShaderFileImporter.SourceFileExtFragment : ShaderFileImporter.SourceFileExtVertex, shader.SaveSource);
 		}
 		public override bool CanPerformOn(Resource obj)
 		{

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 
 using Duality;
 using Duality.Resources;
@@ -8,10 +10,13 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class AudioDataFileImporter : IFileImporter
 	{
+		public static readonly string SourceFileExtPrimary = ".ogg";
+		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary };
+
 		public bool CanImportFile(string srcFile)
 		{
-			string ext = Path.GetExtension(srcFile).ToLower();
-			return ext == ".ogg";
+			string ext = Path.GetExtension(srcFile);
+			return SourceFileExts.Any(e => string.Equals(ext, e, StringComparison.InvariantCultureIgnoreCase));
 		}
 		public void ImportFile(string srcFile, string targetName, string targetDir)
 		{

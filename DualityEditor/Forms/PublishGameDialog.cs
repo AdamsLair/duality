@@ -15,7 +15,10 @@ namespace Duality.Editor.Forms
 	public partial class PublishGameDialog : Form
 	{
 		private static readonly string[] TemporaryProjectFiles = new string[] {
+			@"*\.git",
+			@"*\.svn",
 			@".\Backup",
+			@".\Temp",
 			@".\Source\Media",
 			@".\Source\Packages",
 			@".\logfile*",
@@ -48,6 +51,9 @@ namespace Duality.Editor.Forms
 			@".\Ionic.Zip.*",
 			@".\OpenTK.GLControl.*",
 			@".\PackageConfig.xml" };
+		private static readonly Regex[] RegExTemporaryProjectFiles = TemporaryProjectFiles.Select(w => PathWildcardToRegex(w)).ToArray();
+		private static readonly Regex[] RegExSourcePathBlacklist = TemporaryProjectFiles.Select(w => PathWildcardToRegex(w)).ToArray();
+		private static readonly Regex[] RegExEditorPathBlacklist = TemporaryProjectFiles.Select(w => PathWildcardToRegex(w)).ToArray();
 
 
 		public PublishGameDialog()
@@ -132,16 +138,27 @@ namespace Duality.Editor.Forms
 			{
 				string matchPath = Path.Combine(".", PathHelper.MakeFilePathRelative(path));
 
+				// Exclude hidden files and folders
+				if (!PathHelper.IsPathVisible(path))
+				{
+					string fileName = Path.GetFileName(path);
+					if (!string.Equals(fileName, "desktop.ini", StringComparison.InvariantCultureIgnoreCase) &&
+						!string.Equals(fileName, "WorkingFolderIcon.ico", StringComparison.InvariantCultureIgnoreCase))
+					{
+						return false;
+					}
+				}
+
 				// Exclude temporary files
-				if (TemporaryProjectFiles.Any(entry => Regex.IsMatch(matchPath, PathWildcardToRegex(entry), RegexOptions.IgnoreCase)))
+				if (RegExTemporaryProjectFiles.Any(entry => entry.IsMatch(matchPath)))
 				{
 					return false;
 				}
-				else if (!includeSource && SourcePathBlacklist.Any(entry => Regex.IsMatch(matchPath, PathWildcardToRegex(entry), RegexOptions.IgnoreCase)))
+				else if (!includeSource && RegExSourcePathBlacklist.Any(entry => entry.IsMatch(matchPath)))
 				{
 					return false;
 				}
-				else if (!includeEditor && EditorPathBlacklist.Any(entry => Regex.IsMatch(matchPath, PathWildcardToRegex(entry), RegexOptions.IgnoreCase)))
+				else if (!includeEditor && RegExEditorPathBlacklist.Any(entry => entry.IsMatch(matchPath)))
 				{
 					return false;
 				}
@@ -189,12 +206,13 @@ namespace Duality.Editor.Forms
 
 			return;
 		}
-		private static string PathWildcardToRegex(string pattern)
+		private static Regex PathWildcardToRegex(string pattern)
 		{
-			string regEx = "^" + Regex.Escape(pattern) + "$";
-			regEx = Regex.Replace(regEx, @"(\\\\|/)", @"[\\/]");
-			regEx = regEx.Replace(@"\*", @".*");
-			regEx = regEx.Replace(@"\?", @".");
+			string regExString = "^" + Regex.Escape(pattern) + "$";
+			regExString = Regex.Replace(regExString, @"(\\\\|/)", @"[\\/]");
+			regExString = regExString.Replace(@"\*", @".*");
+			regExString = regExString.Replace(@"\?", @".");
+			Regex regEx = new Regex(regExString, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			return regEx;
 		}
 	}
