@@ -26,6 +26,7 @@ namespace Duality.Components.Renderers
 		protected	BatchInfo				customMat	= null;
 		protected	ColorRgba				colorTint	= ColorRgba.White;
 		protected	ContentRef<Material>	iconMat		= ContentRef<Material>.Null;
+		protected	int						offset		= 0;
 		[NonSerialized] protected	VertexC1P3T2[][]	vertFont	= null;
 		[NonSerialized] protected	VertexC1P3T2[]		vertIcon	= null;
 
@@ -91,6 +92,23 @@ namespace Duality.Components.Renderers
 		{
 			get { return this.customMat; }
 			set { this.customMat = value; }
+		}
+		/// <summary>
+		/// [GET / SET] A virtual Z offset that affects the order in which objects are drawn. If you want to assure an object is drawn after another one,
+		/// just assign a higher Offset value to the background object.
+		/// </summary>
+		public int Offset
+		{
+			get { return this.offset; }
+			set { this.offset = value; }
+		}
+		/// <summary>
+		/// [GET] The internal Z-Offset added to the renderers vertices based on its <see cref="Offset"/> value.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public float VertexZOffset
+		{
+			get { return this.offset * 0.01f; }
 		}
 
 
@@ -193,7 +211,7 @@ namespace Duality.Components.Renderers
 			}
 
 			ColorRgba matColor = this.customMat != null ? this.customMat.MainColor : ColorRgba.White;
-			int[] vertLen = this.text.EmitVertices(ref this.vertFont, ref this.vertIcon, posTemp.X, posTemp.Y, posTemp.Z, this.colorTint * matColor, xDot, yDot);
+			int[] vertLen = this.text.EmitVertices(ref this.vertFont, ref this.vertIcon, posTemp.X, posTemp.Y, posTemp.Z + this.VertexZOffset, this.colorTint * matColor, xDot, yDot);
 			if (this.text.Fonts != null)
 			{
 				for (int i = 0; i < this.text.Fonts.Length; i++)
