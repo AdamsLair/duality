@@ -52,8 +52,8 @@ namespace Duality.Editor.Forms
 			@".\OpenTK.GLControl.*",
 			@".\PackageConfig.xml" };
 		private static readonly Regex[] RegExTemporaryProjectFiles = TemporaryProjectFiles.Select(w => PathWildcardToRegex(w)).ToArray();
-		private static readonly Regex[] RegExSourcePathBlacklist = TemporaryProjectFiles.Select(w => PathWildcardToRegex(w)).ToArray();
-		private static readonly Regex[] RegExEditorPathBlacklist = TemporaryProjectFiles.Select(w => PathWildcardToRegex(w)).ToArray();
+		private static readonly Regex[] RegExSourcePathBlacklist = SourcePathBlacklist.Select(w => PathWildcardToRegex(w)).ToArray();
+		private static readonly Regex[] RegExEditorPathBlacklist = EditorPathBlacklist.Select(w => PathWildcardToRegex(w)).ToArray();
 
 
 		public PublishGameDialog()

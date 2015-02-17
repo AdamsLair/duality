@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,8 +13,11 @@
 	<summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
+	<releaseNotes>TextRenderer Tweaks
+#FIX: Fixed TextRenderer offset not being cloned correctly.
+	</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.5.4" />
+      <dependency id="AdamsLair.Duality" version="1.5.6" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.2" />
       <dependency id="AdamsLair.WinForms" version="1.0.16" />
