@@ -13,8 +13,8 @@
 	<summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
-	<releaseNotes>TextRenderer Tweaks
-#FIX: Fixed TextRenderer offset not being cloned correctly.
+	<releaseNotes>Publish Game Bugfixes
+#FIX: Fixed a newly introduced "Publish Game" dialog bug that caused it to copy more files to the target directory than intended.
 	</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.5.6" />
