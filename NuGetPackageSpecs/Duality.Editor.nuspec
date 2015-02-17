@@ -17,7 +17,7 @@
 #FIX: Fixed a newly introduced "Publish Game" dialog bug that caused it to copy more files to the target directory than intended.
 	</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.5.6" />
+      <dependency id="AdamsLair.Duality" version="1.5.7" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.2" />
       <dependency id="AdamsLair.WinForms" version="1.0.16" />
