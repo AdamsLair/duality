@@ -65,87 +65,123 @@ namespace Duality.Tests.Utility
             Assert.AreNotSame(rect.Perimeter, 22.0);
         }
 
-        [Test] public void Resize()
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                   5.0f, 6.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                  -5.0f, -6.0f)]
+        public void Resize(float x, float y, float w, float h, 
+                           float scaleX, float scaleY)
         {
-            int x = 4;
-            int y = 5;
-            int w = 5;
-            int h = 6;
             Rect rect = new Rect(x, y, w, h);
-
-            Rect resized = rect.Scale(5, 6);
-            Assert.AreNotEqual(rect, resized);
-            checkRect(resized, x, y, 25.0f, 36.0f);
-
-            Vector2 size = new Vector2(5, 6);
-            resized = rect.Scale(size);
-            checkRect(resized, x, y, 25.0f, 36.0f);
-
-            size = new Vector2(-5, -6);
-            resized = rect.Scale(size);
-            checkRect(resized, x, y, -25.0f, -36.0f);
+            Rect resized = rect.Scale(scaleX, scaleY);
+            Assert.AreNotSame(rect, resized);
+            checkRect(resized, x, y, w*scaleX, h * scaleY);
         }
 
-        [Test] public void Transform()
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                   5.0f, 6.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                  -5.0f, -6.0f)]
+        public void ResizeVector(float x, float y, float w, float h, 
+                                 float scaleX, float scaleY)
         {
-            Rect rect = new Rect(4, 5, 6, 7);
-
-            Rect moved = rect.Transform(5, 6);
-            Assert.AreNotEqual(rect, moved);
-
-            checkRect(moved, 20.0f, 30.0f, 30.0f, 42.0f);
-
-            Vector2 size = new Vector2(5, 6);
-            moved = rect.Transform(size);
-
-            checkRect(moved, 20.0f, 30.0f, 30.0f, 42.0f);
-
-            size = new Vector2(-5, -6);
-            moved = rect.Transform(size);
-            checkRect(moved, -20.0f, -30.0f, -30.0f, -42.0f);
+            Rect rect = new Rect(x, y, w, h);
+            Rect resized = rect.Scale(new Vector2(scaleX, scaleY));
+            Assert.AreNotSame(rect, resized);
+            checkRect(resized, x, y, w * scaleX, h * scaleY);
         }
 
-        [Test] public void Move()
+
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                  5.0f, 6.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                  -5.0f, -6.0f)]
+        public void Transform(float x, float y, float w, float h, 
+                              float transformX, float transformY)
         {
-            int x = 4;
-            int y = 5;
-            int w = 5;
-            int h = 5;
             Rect rect = new Rect(x, y, w, h);
-           
-            Rect moved = rect.Offset(-4, -5);
+            Rect moved = rect.Transform(transformX, transformY);
             Assert.AreNotSame(rect, moved);
-            checkRect(moved, 0.0f, 0.0f, w, h);
-
-            moved = rect.Offset(-8, -10);
-            checkRect(moved, -4.0f, -5.0f, w, h);
-
-            moved = rect.Offset(1020, 1024);
-            checkRect(moved, 1024.0f, 1029.0f, w, h);
+            checkRect(moved, x * transformX, y * transformY, w * transformX, h * transformY);
         }
 
-        [Test] public void Expanding()
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                 5.0f, 6.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 6.0f,
+                  -5.0f, -6.0f)]
+        public void TransformVector(float x, float y, float w, float h, 
+                                    float transformX, float transformY)
         {
-            Rect rect = new Rect(20, 25, 30, 40);
+            Rect rect = new Rect(x, y, w, h);
+            Rect moved = rect.Transform(new Vector2(transformX, transformY));
+            Assert.AreNotSame(rect, moved);
+            checkRect(moved, x * transformX, y * transformY, w * transformX, h * transformY);
+        }
 
-            Rect expanded = rect.ExpandToContain(1, 1);
+        [TestCase(4.0f, 5.0f, 5.0f, 5.0f,
+                  -4.0f, -5.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 5.0f,
+                  -8.0f, -10.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 5.0f,
+                  1020.0f, 1029.0f)]
+        public void Move(float x, float y, float w, float h, 
+                         float moveX, float moveY)
+        {
+            Rect rect = new Rect(x, y, w, h);
+            Rect moved = rect.Offset(moveX, moveY);
+            Assert.AreNotSame(rect, moved);
+            checkRect(moved, x + moveX, y + moveY, w, h);
+        }
+
+        [TestCase(4.0f, 5.0f, 5.0f, 5.0f,
+                  -4.0f, -5.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 5.0f,
+                  -8.0f, -10.0f)]
+        [TestCase(4.0f, 5.0f, 5.0f, 5.0f,
+                  1020.0f, 1029.0f)]
+        public void MoveVector(float x, float y, float w, float h, 
+                               float moveX, float moveY)
+        {
+            Rect rect = new Rect(x, y, w, h);
+            Rect moved = rect.Offset(new Vector2(moveX, moveY));
+            Assert.AreNotSame(rect, moved);
+            checkRect(moved, x + moveX, y + moveY, w, h);
+        }
+
+        [TestCase(20.0f, 25.0f, 30.0f, 40.0f,
+                   1.0f, 19.0f,
+                   1.0f, 1.0f, 49.0f, 64.0f)]
+        [TestCase(20.0f, 25.0f, 30.0f, 40.0f,
+                  21.0f, 26.0f,
+                  20.0f, 25.0f, 30.0f, 40.0f)]
+        [TestCase(20.0f, 25.0f, 30.0f, 40.0f,
+                  55.0f, 70.0f,
+                  20.0f, 25.0f, 35.0f, 45.0f)]
+        public void Expanding(float x, float y, float w, float h, 
+                              float expandToX, float expandToY,
+                              float resultX, float resultY, float resultW, float resultH)
+        {
+            Rect rect = new Rect(x, y, w, h);
+            Rect expanded = rect.ExpandToContain(expandToX, expandToY);
             Assert.AreNotSame(rect, expanded);
-            checkRect(expanded, 1.0f, 1.0f, 49.0f, 64.0f);
+            checkRect(expanded, resultX, resultY, resultW, resultH);
+        }
 
-            expanded = rect.ExpandToContain(21, 26);
-            checkRect(expanded, 20.0f, 25.0f, 30.0f, 40.0f);
-
-            expanded = rect.ExpandToContain(55, 70);
-            checkRect(expanded, 20.0f, 25.0f, 35.0f, 45.0f);
-            
-            expanded = rect.ExpandToContain(0, 0, 5, 5);
+        [TestCase(20.0f, 25.0f, 30.0f, 40.0f,
+                    0.0f, 0.0f, 5.0f, 5.0f,
+                    0.0f, 0.0f, 50.0f, 65.0f)]
+        public void ExpandingRect(float x, float y, float w, float h,
+                                  float expandToX, float expandToY, float expandToW, float expandToH,
+                                  float resultX, float resultY, float resultW, float resultH)
+        {
+            Rect rect = new Rect(x, y, w, h);
+            Rect expanded = rect.ExpandToContain(expandToX, expandToY, expandToW, expandToH);
             Assert.AreNotSame(rect, expanded);
-            checkRect(expanded, 0.0f, 0.0f, 50.0f, 65.0f);
+            checkRect(expanded, resultX, resultY, resultW, resultH);
 
-            Rect testRect = new Rect(0, 0, 5, 5);
-            expanded = rect.ExpandToContain(testRect);
+            expanded = rect.ExpandToContain(new Rect(expandToX, expandToY, expandToW, expandToH));
             Assert.AreNotSame(rect, expanded);
-            checkRect(expanded, 0.0f, 0.0f, 50.0f, 65.0f);
+            checkRect(expanded, resultX, resultY, resultW, resultH);
         }
 
         [Test] public void Round()
@@ -179,28 +215,54 @@ namespace Duality.Tests.Utility
             checkRect(result, testResult.X, testResult.Y, testResult.W, testResult.H);
         }
 
-        [Test] public void Contains()
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  10.0f, 10.0f, 10.0f, 10.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  0.0f, 0.0f, 10.0f, 10.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  40.0f, 40.0f, 10.0f, 10.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  50.0f, 50.0f, 10.0f, 10.0f, Result = false)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  -5.0f, -5.0f, 10.0f, 10.0f, Result = false)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  -10.0f, -10.0f, 10.0f, 10.0f, Result = false)]
+        public bool ContainsRect(float x, float y, float w, float h, float resultX, float resultY, float resultW, float resultH)
         {
-            Rect rect = new Rect(0.0f, 0.0f, 50.0f, 50.0f);
+            Rect rect = new Rect(x, y, w, h);
+            return rect.Contains(new Rect(resultX, resultY, resultW, resultH));
+        }
 
-            Assert.IsTrue(rect.Contains(10.0f, 10.0f));
-            Assert.IsTrue(rect.Contains(0.0f, 0.0f));
-            Assert.IsTrue(rect.Contains(50.0f, 50.0f));
-            Assert.IsTrue(!rect.Contains(50.0001f, 50.0001f));
-            Assert.IsTrue(!rect.Contains(-0.001f, -0.001f));
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  10.0f, 10.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  0.0f, 0.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  50.0f, 50.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  50.0001f, 50.0001f, Result = false)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  -0.001f, -0.001f, Result = false)]
+        public bool Contains(float x, float y, float w, float h, float resultX, float resultY)
+        {
+            Rect rect = new Rect(x, y, w, h);
+            return rect.Contains(resultX, resultY);
+        }
 
-            Assert.IsTrue(rect.Contains(new Vector2(10.0f, 10.0f)));
-            Assert.IsTrue(rect.Contains(new Vector2(0.0f, 0.0f)));
-            Assert.IsTrue(rect.Contains(new Vector2(50.0f, 50.0f)));
-            Assert.IsTrue(!rect.Contains(new Vector2(50.0001f, 50.0001f)));
-            Assert.IsTrue(!rect.Contains(new Vector2(-0.001f, -0.001f)));
-
-            Assert.IsTrue(rect.Contains(new Rect(10.0f, 10.0f, 10.0f, 10.0f)));
-            Assert.IsTrue(rect.Contains(new Rect(0.0f, 0.0f, 10.0f, 10.0f)));
-            Assert.IsTrue(rect.Contains(new Rect(40.0f, 40.0f, 10.0f, 10.0f)));
-            Assert.IsTrue(!rect.Contains(new Rect(50.0f, 50.0f, 10.0f, 10.0f)));
-            Assert.IsTrue(!rect.Contains(new Rect(-5.0f, -5.0f, 10.0f, 10.0f)));
-            Assert.IsTrue(!rect.Contains(new Rect(-10.0f, -10.0f, 10.0f, 10.0f)));
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  10.0f, 10.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  0.0f, 0.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  50.0f, 50.0f, Result = true)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  50.0001f, 50.0001f, Result = false)]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f,
+                  -0.001f, -0.001f, Result = false)]
+        public bool ContainsVector(float x, float y, float w, float h, float resultX, float resultY)
+        {
+            Rect rect = new Rect(x, y, w, h);
+            return rect.Contains(new Vector2(resultX, resultY));
         }
 
         //        x     y       w       h       iX      iY      iW      iH   
@@ -275,16 +337,26 @@ namespace Duality.Tests.Utility
             return rect == equals;
         }
 
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 0.0f, 0.0f, 50.0f, 50.0f, Result = false, Description = "equals")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 1.0f, 0.0f, 50.0f, 50.0f, Result = true, Description = "X greater")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 0.0f, 1.0f, 50.0f, 50.0f, Result = true, Description = "Y greater")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 1.0f, 0.0f, 6.0f, 50.0f, Result = true, Description = "W greater")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 1.0f, 0.0f, 50.0f, 60.0f, Result = true, Description = "H greater")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, -1.0f, 0.0f, 50.0f, 50.0f, Result = true, Description = "X smaller")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 0.0f, -1.0f, 50.0f, 50.0f, Result = true, Description = "Y smaller")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 1.0f, 0.0f, -6.0f, 50.0f, Result = true, Description = "W smaller")]
-        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 1.0f, 0.0f, 50.0f, -60.0f, Result = true, Description = "H smaller")]
-        public bool NotEqualsOperator(float x, float y, float w, float h, float equalsX, float equalsY, float equalsW, float equalsH)
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  0.0f, 0.0f, 50.0f, 50.0f, Result = false, Description = "equals")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  1.0f, 0.0f, 50.0f, 50.0f, Result = true, Description = "X greater")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  0.0f, 1.0f, 50.0f, 50.0f, Result = true, Description = "Y greater")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  1.0f, 0.0f, 6.0f, 50.0f, Result = true, Description = "W greater")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  1.0f, 0.0f, 50.0f, 60.0f, Result = true, Description = "H greater")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  -1.0f, 0.0f, 50.0f, 50.0f, Result = true, Description = "X smaller")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  0.0f, -1.0f, 50.0f, 50.0f, Result = true, Description = "Y smaller")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  1.0f, 0.0f, -6.0f, 50.0f, Result = true, Description = "W smaller")]
+        [TestCase(0.0f, 0.0f, 50.0f, 50.0f, 
+                  1.0f, 0.0f, 50.0f, -60.0f, Result = true, Description = "H smaller")]
+        public bool NotEqualsOperator(float x, float y, float w, float h, 
+                                      float equalsX, float equalsY, float equalsW, float equalsH)
         {
             Rect rect = new Rect(x, y, w, h);
             Rect equals = new Rect(equalsX, equalsY, equalsW, equalsH);
@@ -314,149 +386,140 @@ namespace Duality.Tests.Utility
             }
         }
 
-        [Test]
-        public void AlignCenter()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f, 
+                  40.0f, 40.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -60.0f, -40.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  60.0f, 40.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -40.0f, -60.0f, -20.0f, -20.0f)]
+        public void AlignCenter(float x, float y, float w, float h, 
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignCenter(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 40.0f, 40.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignCenter(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -60.0f, -40.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignCenter(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 60.0f, 40.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignCenter(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -40.0f, -60.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignCenter(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-        [Test]
-        public void AlignTop()
+
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  40.0f, 50.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -40.0f, -50.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  60.0f, 30.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -40.0f, -70.0f, -20.0f, -20.0f)]
+        public void AlignTop(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignTop(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 40.0f, 50.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignTop(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -40.0f, -50.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignTop(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 60.0f, 30.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignTop(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -40.0f, -70.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignTop(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-        [Test]
-        public void AlignBottom()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  40.0f, 30.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -60.0f, -70.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  60.0f, 50.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -40.0f, -50.0f, -20.0f, -20.0f)]
+        public void AlignBottom(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignBottom(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 40.0f, 30.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignBottom(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -60.0f, -30.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignBottom(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 40.0f, 50.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignBottom(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -40.0f, -50.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignBottom(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-        [Test]
-        public void AlignLeft()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  50.0f, 40.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -50.0f, -60.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  70.0f, 40.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -50.0f, -30.0f, -20.0f, -20.0f)]
+        public void AlignLeft(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignLeft(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 50.0f, 40.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignLeft(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -50.0f, -60.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignLeft(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 70.0f, 40.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignLeft(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -50.0f, -30.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignLeft(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-        [Test]
-        public void AlignRight()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  30.0f, 40.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -70.0f, -60.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  70.0f, 40.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -30.0f, -40.0f, -20.0f, -20.0f)]
+        public void AlignRight(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignRight(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 30.0f, 40.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignRight(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -70.0f, -60.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignRight(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 50.0f, 40.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignRight(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -30.0f, -40.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignRight(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-        [Test]
-        public void AlignTopLeft()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  50.0f, 50.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -50.0f, -50.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  30.0f, 30.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -30.0f, -70.0f, -20.0f, -20.0f)]
+        public void AlignTopLeft(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignTopLeft(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 50.0f, 50.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignTopLeft(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -50.0f, -50.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignTopLeft(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 30.0f, 30.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignTopLeft(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -30.0f, -70.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignTopLeft(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-        [Test]
-        public void AlignTopRight()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  30.0f, 70.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -70.0f, -50.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  50.0f, 30.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -50.0f, -70.0f, -20.0f, -20.0f)]
+        public void AlignTopRight(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignTopRight(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 30.0f, 50.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignTopRight(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -70.0f, -50.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignTopRight(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 50.0f, 30.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignTopRight(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -50.0f, -70.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignTopRight(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-     
-        [Test]
-        public void AlignBottomLeft()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  50.0f, 30.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -50.0f, -70.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  70.0f, 50.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -30.0f, -50.0f, -20.0f, -20.0f)]
+        public void AlignBottomLeft(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignBottomLeft(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 30.0f, 70.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignBottomLeft(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -50.0f, -30.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignBottomLeft(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 50.0f, 70.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignBottomLeft(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -30.0f, -70.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignBottomLeft(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
-        [Test]
-        public void AlignBottomRight()
+        [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
+                  30.0f, 70.0f, 20.0f, 20.0f)]
+        [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
+                  -50.0f, -30.0f, 20.0f, 20.0f)]
+        [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
+                  30.0f, 70.0f, -20.0f, -20.0f)]
+        [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
+                  -50.0f, -50.0f, -20.0f, -20.0f)]
+        public void AlignBottomRight(float x, float y, float w, float h,
+                                 float equalsX, float equalsY, float equalsW, float equalsH)
         {
-            Rect rect = Rect.AlignBottomRight(50.0f, 50.0f, 20.0f, 20.0f);
-            checkRect(rect, 30.0f, 70.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignBottomRight(-50.0f, -50.0f, 20.0f, 20.0f);
-            checkRect(rect, -50.0f, -30.0f, 20.0f, 20.0f);
-
-            rect = Rect.AlignBottomRight(50.0f, 50.0f, -20.0f, -20.0f);
-            checkRect(rect, 30.0f, 70.0f, -20.0f, -20.0f);
-
-            rect = Rect.AlignBottomRight(-50.0f, -50.0f, -20.0f, -20.0f);
-            checkRect(rect, -50.0f, -50.0f, -20.0f, -20.0f);
+            Rect rect = Rect.AlignBottomRight(x, y, w, h);
+            checkRect(rect, equalsX, equalsY, equalsW, equalsH);
         }
 
         public void checkRect(Rect rect, float x, float y, float w, float h)
