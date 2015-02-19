@@ -150,7 +150,7 @@ namespace Duality.Tests.Utility
 
         [TestCase(20.0f, 25.0f, 30.0f, 40.0f,
                    1.0f, 19.0f,
-                   1.0f, 1.0f, 49.0f, 64.0f)]
+                   1.0f, 19.0f, 49.0f, 46.0f)]
         [TestCase(20.0f, 25.0f, 30.0f, 40.0f,
                   21.0f, 26.0f,
                   20.0f, 25.0f, 30.0f, 40.0f)]
@@ -268,8 +268,8 @@ namespace Duality.Tests.Utility
         //        x     y       w       h       iX      iY      iW      iH   
         [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  10.0f,  10.0f,  10.0f,  10.0f,  Result = true)]
         [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  -10.0f, -10.0f, 20.0f,  20.0f,  Result = true)]
-        [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  40.0f,  0.0f,   20.0f,  -20.0f, Result = true)]
-        [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  0.0f,   40.0f,  -20.0f, 20.0f,  Result = true)]
+        [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  40.0f,  1.0f,   20.0f,  -20.0f, Result = true)]
+        [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  1.0f,   40.0f,  -20.0f, 20.0f,  Result = true)]
         [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  45.0f,  45.0f,  20.0f,  20.0f,  Result = true)]
         [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  50.0f,  50.0f,  20.0f,  20.0f,  Result = true)]
         [TestCase(0.0f, 0.0f,   50.0f,  50.0f,  -10.0f, -10.0f, 10.0f,  10.0f,  Result = true)]
@@ -389,11 +389,11 @@ namespace Duality.Tests.Utility
         [TestCase(50.0f, 50.0f, 20.0f, 20.0f, 
                   40.0f, 40.0f, 20.0f, 20.0f)]
         [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
-                  -60.0f, -40.0f, 20.0f, 20.0f)]
+                  -60.0f, -60.0f, 20.0f, 20.0f)]
         [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
-                  60.0f, 40.0f, -20.0f, -20.0f)]
+                  60.0f, 60.0f, -20.0f, -20.0f)]
         [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
-                  -40.0f, -60.0f, -20.0f, -20.0f)]
+                  -40.0f, -40.0f, -20.0f, -20.0f)]
         public void AlignCenter(float x, float y, float w, float h, 
                                  float equalsX, float equalsY, float equalsW, float equalsH)
         {
@@ -405,11 +405,11 @@ namespace Duality.Tests.Utility
         [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
                   40.0f, 50.0f, 20.0f, 20.0f)]
         [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
-                  -40.0f, -50.0f, 20.0f, 20.0f)]
+                  -60.0f, -50.0f, 20.0f, 20.0f)]
         [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
-                  60.0f, 30.0f, -20.0f, -20.0f)]
+                  60.0f, 70.0f, -20.0f, -20.0f)]
         [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
-                  -40.0f, -70.0f, -20.0f, -20.0f)]
+                  -40.0f, -30.0f, -20.0f, -20.0f)]
         public void AlignTop(float x, float y, float w, float h,
                                  float equalsX, float equalsY, float equalsW, float equalsH)
         {
@@ -437,9 +437,9 @@ namespace Duality.Tests.Utility
         [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
                   -50.0f, -60.0f, 20.0f, 20.0f)]
         [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
-                  70.0f, 40.0f, -20.0f, -20.0f)]
+                  70.0f, 60.0f, -20.0f, -20.0f)]
         [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
-                  -50.0f, -30.0f, -20.0f, -20.0f)]
+                  -40.0f, -30.0f, -20.0f, -20.0f)]
         public void AlignLeft(float x, float y, float w, float h,
                                  float equalsX, float equalsY, float equalsW, float equalsH)
         {
@@ -452,9 +452,9 @@ namespace Duality.Tests.Utility
         [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
                   -70.0f, -60.0f, 20.0f, 20.0f)]
         [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
-                  70.0f, 40.0f, -20.0f, -20.0f)]
+                  50.0f, 60.0f, -20.0f, -20.0f)]
         [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
-                  -30.0f, -40.0f, -20.0f, -20.0f)]
+                  -50.0f, -40.0f, -20.0f, -20.0f)]
         public void AlignRight(float x, float y, float w, float h,
                                  float equalsX, float equalsY, float equalsW, float equalsH)
         {
@@ -467,9 +467,9 @@ namespace Duality.Tests.Utility
         [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
                   -50.0f, -50.0f, 20.0f, 20.0f)]
         [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
-                  30.0f, 30.0f, -20.0f, -20.0f)]
+                  70.0f, 70.0f, -20.0f, -20.0f)]
         [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
-                  -30.0f, -70.0f, -20.0f, -20.0f)]
+                  -30.0f, -30.0f, -20.0f, -20.0f)]
         public void AlignTopLeft(float x, float y, float w, float h,
                                  float equalsX, float equalsY, float equalsW, float equalsH)
         {
@@ -478,13 +478,13 @@ namespace Duality.Tests.Utility
         }
 
         [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
-                  30.0f, 70.0f, 20.0f, 20.0f)]
+                  30.0f, 50.0f, 20.0f, 20.0f)]
         [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
                   -70.0f, -50.0f, 20.0f, 20.0f)]
         [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
-                  50.0f, 30.0f, -20.0f, -20.0f)]
+                  50.0f, 70.0f, -20.0f, -20.0f)]
         [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
-                  -50.0f, -70.0f, -20.0f, -20.0f)]
+                  -50.0f, -30.0f, -20.0f, -20.0f)]
         public void AlignTopRight(float x, float y, float w, float h,
                                  float equalsX, float equalsY, float equalsW, float equalsH)
         {
@@ -508,11 +508,11 @@ namespace Duality.Tests.Utility
         }
 
         [TestCase(50.0f, 50.0f, 20.0f, 20.0f,
-                  30.0f, 70.0f, 20.0f, 20.0f)]
+                  30.0f, 30.0f, 20.0f, 20.0f)]
         [TestCase(-50.0f, -50.0f, 20.0f, 20.0f,
-                  -50.0f, -30.0f, 20.0f, 20.0f)]
+                  -70.0f, -70.0f, 20.0f, 20.0f)]
         [TestCase(50.0f, 50.0f, -20.0f, -20.0f,
-                  30.0f, 70.0f, -20.0f, -20.0f)]
+                  50.0f, 50.0f, -20.0f, -20.0f)]
         [TestCase(-50.0f, -50.0f, -20.0f, -20.0f,
                   -50.0f, -50.0f, -20.0f, -20.0f)]
         public void AlignBottomRight(float x, float y, float w, float h,
