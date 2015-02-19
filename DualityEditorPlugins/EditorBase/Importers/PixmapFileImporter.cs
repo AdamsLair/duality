@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 
 using Duality;
 using Duality.Resources;
@@ -8,10 +10,13 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class PixmapFileImporter : IFileImporter
 	{
+		public static readonly string SourceFileExtPrimary = ".png";
+		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary, ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
+
 		public bool CanImportFile(string srcFile)
 		{
-			string ext = Path.GetExtension(srcFile).ToLower();
-			return ext == ".png" || ext == ".bmp" || ext == ".jpg";
+			string ext = Path.GetExtension(srcFile);
+			return SourceFileExts.Any(e => string.Equals(ext, e, StringComparison.InvariantCultureIgnoreCase));
 		}
 		public void ImportFile(string srcFile, string targetName, string targetDir)
 		{

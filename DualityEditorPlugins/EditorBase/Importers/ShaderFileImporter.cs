@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 using Duality;
 using Duality.Resources;
@@ -8,16 +9,21 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class ShaderFileImporter : IFileImporter
 	{
+		public static readonly string SourceFileExtVertex = ".vert";
+		public static readonly string SourceFileExtFragment = ".frag";
+
 		public bool CanImportFile(string srcFile)
 		{
-			string ext = Path.GetExtension(srcFile).ToLower();
-			return ext == ".vert" || ext == ".frag";
+			string ext = Path.GetExtension(srcFile);
+			return 
+				string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase) || 
+				string.Equals(ext, SourceFileExtFragment, StringComparison.InvariantCultureIgnoreCase); 
 		}
 		public void ImportFile(string srcFile, string targetName, string targetDir)
 		{
-			string ext = Path.GetExtension(srcFile).ToLower();
+			string ext = Path.GetExtension(srcFile);
 			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
-			if (ext == ".vert")
+			if (string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
 			{
 				VertexShader res = new VertexShader();
 				res.LoadSource(srcFile);
@@ -35,7 +41,13 @@ namespace Duality.Editor.Plugins.Base
 
 		public bool CanReImportFile(ContentRef<Resource> r, string srcFile)
 		{
-			return r.Is<AbstractShader>();
+			string ext = Path.GetExtension(srcFile);
+			if (r.Is<VertexShader>() && string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
+				return true;
+			else if (r.Is<FragmentShader>() && string.Equals(ext, SourceFileExtFragment, StringComparison.InvariantCultureIgnoreCase))
+				return true;
+			else
+				return false;
 		}
 		public void ReImportFile(ContentRef<Resource> r, string srcFile)
 		{
@@ -53,7 +65,7 @@ namespace Duality.Editor.Plugins.Base
 		{
 			string ext = Path.GetExtension(srcFile).ToLower();
 			string targetResPath;
-			if (ext == ".vert")
+			if (ext == SourceFileExtVertex)
 				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), VertexShader.FileExt);
 			else
 				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), FragmentShader.FileExt);

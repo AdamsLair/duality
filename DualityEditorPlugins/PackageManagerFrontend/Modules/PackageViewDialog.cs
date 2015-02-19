@@ -259,7 +259,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 				this.labelPackageTitle.Text			= !string.IsNullOrWhiteSpace(itemInfo.Title) ? itemInfo.Title : itemInfo.Id;
 				this.labelPackageId.Text			= itemInfo.Id;
-				this.labelPackageDesc.Text			= (isItemUpdatable && !string.IsNullOrWhiteSpace(itemInfo.ReleaseNotes)) ? itemInfo.ReleaseNotes : itemInfo.Description;
+				this.labelPackageDesc.Text			= (isItemUpdatable && !string.IsNullOrWhiteSpace(newestInfo.ReleaseNotes)) ? newestInfo.ReleaseNotes : itemInfo.Description;
 				this.labelPackageAuthor.Text		= itemInfo.Authors.ToString(", ");
 				this.labelPackageTags.Text			= itemInfo.Tags.Except(InvisibleTags).ToString(", ");
 				this.labelPackageUpdated.Text		= itemInfo.PublishDate.ToString("yyyy-MM-dd, HH:mm", System.Globalization.CultureInfo.InvariantCulture);
