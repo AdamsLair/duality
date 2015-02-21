@@ -319,7 +319,7 @@ namespace Duality
 		/// <returns>A new Rect with the specified adjustments.</returns>
 		public Rect ExpandToContain(float x, float y, float w, float h)
 		{
-			return this.ExpandToContain(x, y).ExpandToContain(x + w - 1, y + h - 1);
+			return this.ExpandToContain(x, y).ExpandToContain(x + w, y + h);
 		}
 		/// <summary>
 		/// Returns a new version of this Rect that has been expanded to contain
@@ -329,7 +329,7 @@ namespace Duality
 		/// <returns>A new Rect with the specified adjustments.</returns>
 		public Rect ExpandToContain(Rect other)
 		{
-			return this.ExpandToContain(other.X, other.Y).ExpandToContain(other.X + other.W - 1, other.Y + other.H - 1);
+			return this.ExpandToContain(other.X, other.Y).ExpandToContain(other.X + other.W, other.Y + other.H);
 		}
 		/// <summary>
 		/// Returns a new version of this Rect that has been expanded to contain
@@ -393,6 +393,25 @@ namespace Duality
 		{
 			return new Rect(MathF.Floor(X), MathF.Floor(Y), MathF.Floor(W), MathF.Floor(H));
 		}
+		/// <summary>
+		/// Returns a normalized version of the rect, i.e. one with a positive width and height.
+		/// </summary>
+		/// <returns></returns>
+		public Rect Normalize()
+		{
+			Rect normalized = this;
+			if (normalized.W < 0)
+			{
+				normalized.X += normalized.W;
+				normalized.W = -normalized.W;
+			}
+			if (normalized.H < 0)
+			{
+				normalized.Y += normalized.H;
+				normalized.H = -normalized.H;
+			}
+			return normalized;
+		}
 
 		/// <summary>
 		/// Returns whether this Rect contains a given point.
@@ -445,9 +464,7 @@ namespace Duality
 		/// <returns>True, if the Rect intersects the other Rect, false if not.</returns>
 		public bool Intersects(float x, float y, float w, float h)
 		{
-			if (this.X > (x + w) || (this.X + this.W) < x) return false;
-			if (this.Y > (y + h) || (this.Y + this.H) < y) return false;
-			return true;
+			return this.Intersects(new Rect(x, y, w, h));
 		}
 		/// <summary>
 		/// Returns whether this Rect intersects a given rectangular area.
@@ -456,8 +473,10 @@ namespace Duality
 		/// <returns>True, if the Rect intersects the other Rect, false if not.</returns>
 		public bool Intersects(Rect rect)
 		{
-			if (this.X > (rect.X + rect.W) || (this.X + this.W) < rect.X) return false;
-			if (this.Y > (rect.Y + rect.H) || (this.Y + this.H) < rect.Y) return false;
+			rect = rect.Normalize();
+			Rect norm = this.Normalize();
+			if (norm.X > (rect.X + rect.W) || (norm.X + norm.W) < rect.X) return false;
+			if (norm.Y > (rect.Y + rect.H) || (norm.Y + norm.H) < rect.Y) return false;
 			return true;
 		}
 		/// <summary>
@@ -479,16 +498,19 @@ namespace Duality
 		/// <returns>A new Rect that describes both Rects intersection area.</returns>
 		public Rect Intersection(Rect rect)
 		{
-			float tempWidth = Math.Min(rect.W, this.W - (rect.X - this.X));
-			float tempHeight = Math.Min(rect.H, this.H - (rect.Y - this.Y));
-			if ((this.X - rect.X) > 0.0f) tempWidth -= (this.X - rect.X);
-			if ((this.Y - rect.Y) > 0.0f) tempHeight -= (this.Y - rect.Y);
+			rect = rect.Normalize();
+			Rect norm = this.Normalize();
+
+			float tempWidth = Math.Min(rect.W, norm.W - (rect.X - norm.X));
+			float tempHeight = Math.Min(rect.H, norm.H - (rect.Y - norm.Y));
+			if ((norm.X - rect.X) > 0.0f) tempWidth -= (norm.X - rect.X);
+			if ((norm.Y - rect.Y) > 0.0f) tempHeight -= (norm.Y - rect.Y);
 
 			return new Rect(
-				Math.Max(this.X, rect.X),
-				Math.Max(this.Y, rect.Y),
-				Math.Min(this.W, tempWidth),
-				Math.Min(this.H, tempHeight));
+				Math.Max(norm.X, rect.X),
+				Math.Max(norm.Y, rect.Y),
+				Math.Min(norm.W, tempWidth),
+				Math.Min(norm.H, tempHeight));
 		}
 
 		/// <summary>
