@@ -75,11 +75,19 @@ namespace Duality.Editor.UndoRedoActions
 				{
 					this.backupValue = new object[this.targetObj.Length];
 					for (int i = 0; i < this.targetObj.Length; i++)
-						this.backupValue[i] = this.targetProperty.GetValue(this.targetObj[i], this.targetIndices);
+					{
+						this.backupValue[i] = null;
+						this.TryGetValue(this.targetObj[i], this.targetIndices, out this.backupValue[i]);
+					}
 				}
 
 				for (int i = 0; i < this.targetObj.Length; i++)
-					this.targetProperty.SetValue(this.targetObj[i], this.targetValue[Math.Min(i, this.targetValue.Length - 1)], this.targetIndices);
+				{
+					this.TrySetValue(
+						this.targetObj[i], 
+						this.targetValue[Math.Min(i, this.targetValue.Length - 1)], 
+						this.targetIndices);
+				}
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this.parent, new ObjectSelection(this.targetObj), this.targetProperty);
@@ -94,11 +102,80 @@ namespace Duality.Editor.UndoRedoActions
 				if (this.backupValue == null) throw new InvalidOperationException("Can't undo what hasn't been done yet");
 
 				for (int i = 0; i < this.targetObj.Length; i++)
-					this.targetProperty.SetValue(this.targetObj[i], this.backupValue[i], this.targetIndices);
+				{
+					this.TrySetValue(
+						this.targetObj[i], 
+						this.backupValue[i], 
+						this.targetIndices);
+				}
 			}
 
 			DualityEditorApp.NotifyObjPropChanged(this.parent, new ObjectSelection(this.targetObj), this.targetProperty);
 			if (this.parent != null) this.parent.UpdateFromObjects();
+		}
+
+		private bool TrySetValue(object obj, object value, object[] indices)
+		{
+			try
+			{
+				this.targetProperty.SetValue(obj, value, indices);
+				return true;
+			}
+			catch (Exception e)
+			{
+				if (e is TargetInvocationException) e = e.InnerException;
+				if (indices != null && indices.Length > 0)
+				{
+					Log.Editor.WriteError(
+						"An error occurred trying to set property {0}.{1}[{2}] with value '{3}': {4}", 
+						Log.Type(this.targetProperty.DeclaringType),
+						this.targetProperty.Name, 
+						indices.ToString(", "),
+						value,
+						Log.Exception(e));
+				}
+				else
+				{
+					Log.Editor.WriteError(
+						"An error occurred trying to set property {0}.{1} with value '{2}': {3}", 
+						Log.Type(this.targetProperty.DeclaringType),
+						this.targetProperty.Name, 
+						value,
+						Log.Exception(e));
+				}
+				return false;
+			}
+		}
+		private bool TryGetValue(object obj, object[] indices, out object value)
+		{
+			try
+			{
+				value = this.targetProperty.GetValue(obj, indices);
+				return true;
+			}
+			catch (Exception e)
+			{
+				if (e is TargetInvocationException) e = e.InnerException;
+				if (indices != null && indices.Length > 0)
+				{
+					Log.Editor.WriteError(
+						"An error occurred trying to get property {0}.{1}[{2}]: {3}", 
+						Log.Type(this.targetProperty.DeclaringType),
+						this.targetProperty.Name, 
+						indices.ToString(", "),
+						Log.Exception(e));
+				}
+				else
+				{
+					Log.Editor.WriteError(
+						"An error occurred trying to get property {0}.{1}: {2}", 
+						Log.Type(this.targetProperty.DeclaringType),
+						this.targetProperty.Name, 
+						Log.Exception(e));
+				}
+				value = null;
+				return false;
+			}
 		}
 	}
 }
