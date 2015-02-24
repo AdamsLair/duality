@@ -98,7 +98,7 @@ namespace Duality
 							activator = () => System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
 						}
 					}
-					catch (Exception)
+					catch (Exception e)
 					{
 						activator = nullObjectActivator;
 					}
@@ -110,8 +110,16 @@ namespace Duality
 				{
 					firstResult = activator();
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
+					// If we fail to initialize the Type due to a problem in its static constructor, it's likely a user problem. Let him know.
+					if (e is TypeInitializationException)
+					{
+						Log.Editor.WriteError("Failed to initialize Type {0}: {1}",
+							Log.Type(type),
+							Log.Exception(e.InnerException));
+					}
+
 					activator = nullObjectActivator;
 					firstResult = null;
 				}
