@@ -1186,9 +1186,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Apply user guide snapping
 			if ((this.snapToUserGuides & UserGuideType.Position) != UserGuideType.None)
 			{
-				Vector3 targetPosSpace = this.selectionCenter + targetMovement;
+				Vector3 snappedCenter = this.selectionCenter;
+				Vector3 targetPosSpace = snappedCenter + targetMovement;
+
+				// When moving multiple objects, snap only relative to the original selection center, so individual grid alignment is retained
+				if (this.actionObjSel.Count > 1)
+					snappedCenter = this.EditingUserGuide.SnapPosition(this.selectionCenter);
+
 				targetPosSpace = this.EditingUserGuide.SnapPosition(targetPosSpace);
-				targetMovement = targetPosSpace - this.selectionCenter;
+				targetMovement = targetPosSpace - snappedCenter;
 			}
 
 			// Apply user axis locks
