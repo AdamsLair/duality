@@ -1,4 +1,5 @@
 ﻿using System;
+using OpenTK;
 using OpenTK.Input;
 
 namespace Duality
@@ -7,10 +8,10 @@ namespace Duality
 	{
 		public delegate void CursorPosSetter(int v);
 
-		private	MouseDevice	device;
+		private	GameWindow		window;
 		private CursorPosSetter cursorPosSetterX;
 		private CursorPosSetter cursorPosSetterY;
-		private bool cursorInView;
+		private bool			cursorInView;
 
 		public string Description
 		{
@@ -18,35 +19,35 @@ namespace Duality
 		}
 		public bool IsAvailable
 		{
-			get { return this.device != null && this.cursorInView; }
+			get { return this.window != null && this.window.Mouse != null && this.cursorInView; }
 		}
 		public int X
 		{
-			get { return this.device.X; }
+			get { return this.window.Mouse.X; }
 			set { if (this.cursorPosSetterX != null) this.cursorPosSetterX(value); }
 		}
 		public int Y
 		{
-			get { return this.device.Y; }
+			get { return this.window.Mouse.Y; }
 			set { if (this.cursorPosSetterY != null) this.cursorPosSetterY(value); }
 		}
 		public float Wheel
 		{
-			get { return this.device.WheelPrecise; }
+			get { return this.window.Mouse.WheelPrecise; }
 		}
 		public bool this[MouseButton key]
 		{
-			get { return this.device[key]; }
+			get { return this.window.Mouse[key]; }
 		}
 		
-		public GameWindowMouseInputSource(MouseDevice device, CursorPosSetter cursorPosSetterX, CursorPosSetter cursorPosSetterY)
+		public GameWindowMouseInputSource(GameWindow window, CursorPosSetter cursorPosSetterX, CursorPosSetter cursorPosSetterY)
 		{
-			this.device = device;
+			this.window = window;
 			this.cursorPosSetterX = cursorPosSetterX;
 			this.cursorPosSetterY = cursorPosSetterY;
 
-			this.device.Enter += this.device_Enter;
-			this.device.Leave += this.device_Leave;
+			this.window.Mouse.Enter += this.device_Enter;
+			this.window.Mouse.Leave += this.device_Leave;
 		}
 
 		private void device_Enter(object sender, EventArgs e)

@@ -14,6 +14,7 @@ namespace Duality
 			public bool		KeyRepeat		= true;
 			public int		KeyRepeatCount	= 0;
 			public bool[]	KeyPressed		= new bool[(int)Key.LastKey + 1];
+			public string	CharInput		= string.Empty;
 
 			public State() {}
 			public State(State baseState)
@@ -25,6 +26,7 @@ namespace Duality
 				other.IsAvailable		= this.IsAvailable;
 				other.KeyRepeat			= this.KeyRepeat;
 				other.KeyRepeatCount	= this.KeyRepeatCount;
+				other.CharInput			= this.CharInput;
 				this.KeyPressed.CopyTo(other.KeyPressed, 0);
 			}
 			public void UpdateFromSource(IKeyboardInputSource source)
@@ -34,6 +36,7 @@ namespace Duality
 
 				this.KeyRepeat = source.KeyRepeat;
 				this.KeyRepeatCount = source.KeyRepeatCounter;
+				this.CharInput = source.CharInput ?? string.Empty;
 				for (int i = 0; i < this.KeyPressed.Length; i++)
 				{
 					this.KeyPressed[i] = source[(Key)i];
@@ -96,6 +99,13 @@ namespace Duality
 				this.currentState.KeyRepeat = value;
 				if (this.source != null) this.source.KeyRepeat = this.currentState.KeyRepeat;
 			}
+		}
+		/// <summary>
+		/// [GET] Returns the concatenated character input that was typed since the last input update.
+		/// </summary>
+		public string CharInput
+		{
+			get { return this.currentState.CharInput; }
 		}
 		/// <summary>
 		/// [GET] Returns whether a specific key is currently pressed.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -185,16 +186,18 @@ namespace Duality.Editor.Plugins.CamView
 		private	Dictionary<Type,CamViewLayer>	availLayers	= new Dictionary<Type,CamViewLayer>();
 		private	Dictionary<Type,CamViewState>	availStates	= new Dictionary<Type,CamViewState>();
 
-		private	bool		inputMouseCapture	= false;
-		private	int			inputMouseX			= 0;
-		private	int			inputMouseY			= 0;
-		private	float		inputMouseWheel		= 0.0f;
-		private	int			inputMouseButtons	= 0;
-		private	bool		inputMouseInView	= false;
-		private	bool		inputKeyRepeat		= false;
-		private	bool		inputKeyFocus		= false;
-		private	int			inputKeyRepeatCount	= 0;
-		private	BitArray	inputKeyPressed		= new BitArray((int)Key.LastKey + 1, false);
+		private	bool			inputMouseCapture		= false;
+		private	int				inputMouseX				= 0;
+		private	int				inputMouseY				= 0;
+		private	float			inputMouseWheel			= 0.0f;
+		private	int				inputMouseButtons		= 0;
+		private	bool			inputMouseInView		= false;
+		private	bool			inputKeyRepeat			= false;
+		private	bool			inputKeyFocus			= false;
+		private	int				inputKeyRepeatCount		= 0;
+		private	BitArray		inputKeyPressed			= new BitArray((int)Key.LastKey + 1, false);
+		private	string			inputCharInput			= null;
+		private	StringBuilder	inputCharInputBuffer	= new StringBuilder();
 
 
 		public event EventHandler PerspectiveChanged	= null;
@@ -406,6 +409,7 @@ namespace Duality.Editor.Plugins.CamView
 				this.glControl.PreviewKeyDown -= glControl_PreviewKeyDown;
 				this.glControl.KeyDown -= this.glControl_KeyDown;
 				this.glControl.KeyUp -= this.glControl_KeyUp;
+				this.glControl.KeyPress -= this.glControl_KeyPress;
 				this.glControl.Resize -= this.glControl_Resize;
 
 				this.glControl.Dispose();
@@ -430,6 +434,7 @@ namespace Duality.Editor.Plugins.CamView
 			this.glControl.PreviewKeyDown += glControl_PreviewKeyDown;
 			this.glControl.KeyDown += this.glControl_KeyDown;
 			this.glControl.KeyUp += this.glControl_KeyUp;
+			this.glControl.KeyPress += this.glControl_KeyPress;
 			this.glControl.Resize += this.glControl_Resize;
 			this.Controls.Add(this.glControl);
 			this.Controls.SetChildIndex(this.glControl, 0);
@@ -1081,6 +1086,13 @@ namespace Duality.Editor.Plugins.CamView
 					this.stateSelector.SelectedIndex = e.KeyCode - Keys.D1;
 			}
 		}
+		private void glControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		{
+			if (this.activeState.EngineUserInput)
+			{
+				this.inputCharInputBuffer.Append(e.KeyChar);
+			}
+		}
 		private void glControl_Resize(object sender, EventArgs e)
 		{
 			this.glControl.Invalidate();
@@ -1413,6 +1425,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.inputKeyRepeatCount; }
 		}
+		string IKeyboardInputSource.CharInput
+		{
+			get { return this.inputCharInput ?? string.Empty; }
+		}
 		bool IKeyboardInputSource.this[Key key]
 		{
 			get { return this.inputKeyPressed[(int)key]; }
@@ -1427,6 +1443,10 @@ namespace Duality.Editor.Plugins.CamView
 			// These should be separated.. but C# doesn't allow to implement IsAvailable for both sources separately.
 			get { return this.inputKeyFocus && this.inputMouseInView; }
 		}
-		void IUserInputSource.UpdateState() {}
+		void IUserInputSource.UpdateState()
+		{
+			this.inputCharInput = this.inputCharInputBuffer.ToString();
+			this.inputCharInputBuffer.Clear();
+		}
 	}
 }
