@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Camera View</title>
@@ -13,8 +13,8 @@
 	<summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
 	<tags>Duality Editor Plugin CamView</tags>
-	<releaseNotes>CamView SnapToGrid Tweaks
-#CHANGE: When SnapToGrid is active in the CamView and multiple objects are moved at once, their grid-snap is now relative to their movement origin. This prevents groups from snapping to their center, which can move individual objects off grid.
+	<releaseNotes>Keyboard Char Input Bugfixes
+#FIX: Fixed Keyboard character input not working when running in the Camera View in the editor.
 	</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.6.0" />

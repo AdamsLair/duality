@@ -186,6 +186,7 @@ namespace Duality.Editor.Plugins.CamView
 		private	Dictionary<Type,CamViewLayer>	availLayers	= new Dictionary<Type,CamViewLayer>();
 		private	Dictionary<Type,CamViewState>	availStates	= new Dictionary<Type,CamViewState>();
 
+		private	int				inputLastUpdateFrame	= -1;
 		private	bool			inputMouseCapture		= false;
 		private	int				inputMouseX				= 0;
 		private	int				inputMouseY				= 0;
@@ -1445,6 +1446,9 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		void IUserInputSource.UpdateState()
 		{
+			if (this.inputLastUpdateFrame == Time.FrameCount) return;
+			this.inputLastUpdateFrame = Time.FrameCount;
+
 			this.inputCharInput = this.inputCharInputBuffer.ToString();
 			this.inputCharInputBuffer.Clear();
 		}
