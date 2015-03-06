@@ -119,7 +119,7 @@ namespace Duality.Editor.PackageManagement
 			NuGet.IPackage newPackage = this.FindPackageInfo(package.PackageName, false);
 
 			// Check license terms
-			if (!this.CheckLicenseAgreement(newPackage))
+			if (!this.CheckDeepLicenseAgreements(newPackage))
 			{
 				return;
 			}
@@ -214,9 +214,9 @@ namespace Duality.Editor.PackageManagement
 
 			bool isDowngrade = specificVersion != null && specificVersion < package.Version;
 			NuGet.IPackage newPackage = this.FindPackageInfo(new PackageName(package.Id, specificVersion), false);
-
+			
 			// Check license terms
-			if (!this.CheckLicenseAgreement(newPackage))
+			if (!this.CheckDeepLicenseAgreements(newPackage))
 			{
 				return;
 			}
@@ -646,6 +646,19 @@ namespace Duality.Editor.PackageManagement
 			return PackageRepositoryFactory.Default.CreateRepository(repositoryUrl);
 		}
 
+		private bool CheckDeepLicenseAgreements(NuGet.IPackage package)
+		{
+			var deepDependencyCountDict = this.GetDeepDependencyCount(new[] { this.CreatePackageInfo(package) });
+			NuGet.IPackage[] deepPackages = deepDependencyCountDict.Keys.Select(i => this.FindPackageInfo(i.PackageName, false)).ToArray();
+
+			foreach (NuGet.IPackage p in deepPackages)
+			{
+				if (!this.CheckLicenseAgreement(p))
+					return false;
+			}
+
+			return true;
+		}
 		private bool CheckLicenseAgreement(NuGet.IPackage package)
 		{
 			if (package.RequireLicenseAcceptance)
@@ -1047,7 +1060,7 @@ namespace Duality.Editor.PackageManagement
 				DescriptionText = string.Format(GeneralRes.LicenseAcceptDialog_PackageDesc, args.PackageName),
 				LicenseUrl = args.LicenseUrl
 			};
-			DialogResult result = licenseDialog.ShowDialog();
+			DialogResult result = DualityEditorApp.MainForm.InvokeEx(main => licenseDialog.ShowDialog());
 			if (result == DialogResult.OK)
 			{
 				args.AcceptLicense();
