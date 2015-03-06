@@ -116,10 +116,24 @@ namespace Duality.Editor.Forms
 			if (!string.IsNullOrWhiteSpace(licenseTranscript))
 			{
 				this.textBoxLicenseText.Text = licenseTranscript;
+				if (!this.textBoxLicenseText.Enabled)
+				{
+					this.labelTranscriptInfo.Visible = true;
+					this.textBoxLicenseText.Visible = true;
+					this.Height += this.labelTranscriptInfo.Height + this.textBoxLicenseText.Height;
+				}
+				this.textBoxLicenseText.Enabled = true;
 			}
 			else
 			{ 
 				this.textBoxLicenseText.Text = GeneralRes.LicenseAcceptDialog_TranscriptUnavailable;
+				if (this.textBoxLicenseText.Enabled)
+				{
+					this.Height -= this.labelTranscriptInfo.Height + this.textBoxLicenseText.Height;
+					this.labelTranscriptInfo.Visible = false;
+					this.textBoxLicenseText.Visible = false;
+				}
+				this.textBoxLicenseText.Enabled = false;
 			}
 		}
 		private Uri GetRawLicenseTextUrl(Uri url)

@@ -649,7 +649,7 @@ namespace Duality.Editor.PackageManagement
 		private bool CheckDeepLicenseAgreements(NuGet.IPackage package)
 		{
 			var deepDependencyCountDict = this.GetDeepDependencyCount(new[] { this.CreatePackageInfo(package) });
-			NuGet.IPackage[] deepPackages = deepDependencyCountDict.Keys.Select(i => this.FindPackageInfo(i.PackageName, false)).ToArray();
+			NuGet.IPackage[] deepPackages = deepDependencyCountDict.Keys.Select(i => this.FindPackageInfo(i.PackageName.VersionInvariant, false)).ToArray();
 
 			foreach (NuGet.IPackage p in deepPackages)
 			{
