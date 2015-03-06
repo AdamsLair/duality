@@ -654,7 +654,7 @@ namespace Duality.Editor.PackageManagement
 			foreach (NuGet.IPackage p in deepPackages)
 			{
 				// Skip the ones that are already installed
-				if (this.localPackages.Any(l => l.Id == p.Id && l.Version == p.Version.Version))
+				if (this.manager.LocalRepository.GetPackages().Any(l => l.Id == p.Id && l.Version == p.Version))
 					continue;
 
 				if (!this.CheckLicenseAgreement(p))
