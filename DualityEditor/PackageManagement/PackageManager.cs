@@ -673,7 +673,7 @@ namespace Duality.Editor.PackageManagement
 					return true;
 
 				bool agreed;
-				if (!this.licenseAcceptedCache.TryGetValue(package, out agreed))
+				if (!this.licenseAcceptedCache.TryGetValue(package, out agreed) || !agreed)
 				{
 					PackageLicenseAgreementEventArgs args = new PackageLicenseAgreementEventArgs(
 						new PackageName(package.Id, package.Version.Version),
