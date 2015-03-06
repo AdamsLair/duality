@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.PackageManagerFrontend</id>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Package Manager Frontend</title>
@@ -13,12 +13,12 @@
 	<summary>A user interface for conveniently managing Duality packages.</summary>
     <description>A user interface for conveniently managing Duality packages.</description>
 	<tags>Duality Editor Plugin PackageManagerFrontend</tags>
-	<releaseNotes>PackageManager Dialog
-#FIX: Fixed Package View not displaying release notes in "Installed Packages" view.
+	<releaseNotes>PackageManager License Agreements
+#ADD: Whenever required by the NuGet package, Duality will display a license agreement dialog before proceeding to install the package.
 	</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.5.6" />
-      <dependency id="AdamsLair.Duality.Editor" version="1.3.3" />
+      <dependency id="AdamsLair.Duality" version="1.6.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="1.3.6" />
     </dependencies>
   </metadata>
   <files>

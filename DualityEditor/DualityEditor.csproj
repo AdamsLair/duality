@@ -151,6 +151,12 @@
     <Compile Include="CorePluginInterface\DesignTimeObjectData.cs" />
     <Compile Include="CorePluginInterface\PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
+    <Compile Include="Forms\LicenseAcceptDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\LicenseAcceptDialog.Designer.cs">
+      <DependentUpon>LicenseAcceptDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PublishGameDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,6 +164,7 @@
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="PackageManagement\PackageCompatibility.cs" />
+    <Compile Include="PackageManagement\PackageLicenseAgreementEventArgs.cs" />
     <Compile Include="PackageManagement\PackageName.cs" />
     <Compile Include="PackageManagement\PackageEventArgs.cs" />
     <Compile Include="PackageManagement\PackageInfo.cs" />
@@ -261,6 +268,9 @@
     </Compile>
     <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
       <DependentUpon>CreateObjectDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\LicenseAcceptDialog.resx">
+      <DependentUpon>LicenseAcceptDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PublishGameDialog.resx">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>

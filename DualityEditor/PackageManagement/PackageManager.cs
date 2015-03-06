@@ -10,6 +10,9 @@ using System.Diagnostics;
 
 using NuGet;
 
+using Duality.Editor.Properties;
+using Duality.Editor.Forms;
+
 namespace Duality.Editor.PackageManagement
 {
 	public sealed class PackageManager
@@ -38,10 +41,12 @@ namespace Duality.Editor.PackageManagement
 
 		private	object cacheLock = new object();
 		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
+		private	Dictionary<NuGet.IPackage,bool> licenseAcceptedCache = new Dictionary<NuGet.IPackage,bool>();
 
 		private NuGet.PackageManager		manager		= null;
 		private	NuGet.IPackageRepository	repository	= null;
 
+		public event EventHandler<PackageLicenseAgreementEventArgs> PackageLicenseAcceptRequired = null;
 		public event EventHandler<PackageEventArgs> PackageInstalled = null;
 		public event EventHandler<PackageEventArgs> PackageUninstalled = null;
 
@@ -95,6 +100,7 @@ namespace Duality.Editor.PackageManagement
 			this.hasLocalRepo = repositories.OfType<LocalPackageRepository>().Any();
 			this.repository = new AggregateRepository(repositories);
 			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
+			this.manager.PackageInstalling += this.manager_PackageInstalling;
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.manager.PackageUninstalling += this.manager_PackageUninstalling;
@@ -105,8 +111,15 @@ namespace Duality.Editor.PackageManagement
 
 		public void InstallPackage(PackageInfo package)
 		{
-			// Request NuGet to install the package
 			NuGet.IPackage newPackage = this.FindPackageInfo(package.PackageName, false);
+
+			// Check license terms
+			if (!this.CheckLicenseAgreement(newPackage))
+			{
+				return;
+			}
+
+			// Request NuGet to install the package
 			this.manager.InstallPackage(newPackage, false, false);
 		}
 		public void VerifyPackage(LocalPackage package)
@@ -194,9 +207,16 @@ namespace Duality.Editor.PackageManagement
 			// without updating its dependencies. Otherwise, some of them might be uninstalled without
 			// being reinstalled properly.
 
-			this.uninstallQueue = null;
 			bool isDowngrade = specificVersion != null && specificVersion < package.Version;
 			NuGet.IPackage newPackage = this.FindPackageInfo(new PackageName(package.Id, specificVersion), false);
+
+			// Check license terms
+			if (!this.CheckLicenseAgreement(newPackage))
+			{
+				return;
+			}
+
+			this.uninstallQueue = null;
 			this.manager.UpdatePackage(newPackage, !isDowngrade, false);
 			this.uninstallQueue = new List<LocalPackage>();
 		}
@@ -617,6 +637,35 @@ namespace Duality.Editor.PackageManagement
 			return PackageRepositoryFactory.Default.CreateRepository(repositoryUrl);
 		}
 
+		private bool CheckLicenseAgreement(NuGet.IPackage package)
+		{
+			if (package.RequireLicenseAcceptance)
+			{
+				bool agreed;
+				if (!this.licenseAcceptedCache.TryGetValue(package, out agreed) || !agreed)
+				{
+					PackageLicenseAgreementEventArgs args = new PackageLicenseAgreementEventArgs(
+						new PackageName(package.Id, package.Version.Version),
+						package.LicenseUrl,
+						package.RequireLicenseAcceptance);
+
+					if (this.PackageLicenseAcceptRequired != null)
+						this.PackageLicenseAcceptRequired(this, args);
+					else
+						DisplayDefaultLicenseAcceptDialog(args);
+
+					agreed = args.IsLicenseAccepted;
+					this.licenseAcceptedCache[package] = agreed;
+				}
+
+				if (!agreed)
+				{ 
+					return false;
+				}
+			}
+
+			return true;
+		}
 		private void LoadConfig()
 		{
 			// Reset to default data
@@ -914,6 +963,18 @@ namespace Duality.Editor.PackageManagement
 
 			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}
+		private void manager_PackageInstalling(object sender, PackageOperationEventArgs e)
+		{
+			if (!this.CheckLicenseAgreement(e.Package))
+			{
+				e.Cancel = true;
+				MessageBox.Show(
+					GeneralRes.MsgLicenseNotAgreedAbort_Desc,
+					GeneralRes.MsgLicenseNotAgreedAbort_Caption,
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Warning);
+			}
+		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{
 			Log.Editor.Write("Package downloaded: {0}, {1}", e.Package.Id, e.Package.Version);
@@ -960,6 +1021,19 @@ namespace Duality.Editor.PackageManagement
 			this.OnPackageInstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}
 
+		private static void DisplayDefaultLicenseAcceptDialog(PackageLicenseAgreementEventArgs args)
+		{
+			LicenseAcceptDialog licenseDialog = new LicenseAcceptDialog
+			{
+				DescriptionText = string.Format(GeneralRes.LicenseAcceptDialog_PackageDesc, args.PackageName),
+				LicenseUrl = args.LicenseUrl
+			};
+			DialogResult result = licenseDialog.ShowDialog();
+			if (result == DialogResult.OK)
+			{
+				args.AcceptLicense();
+			}
+		}
 		public static string GetDisplayedVersion(Version version)
 		{
 			if (version == null)

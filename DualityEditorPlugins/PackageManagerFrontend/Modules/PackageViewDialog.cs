@@ -288,29 +288,65 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 		private void InstallPackage(PackageInfo info)
 		{
-			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
-				PackageManagerFrontendRes.TaskInstallPackages_Caption, 
-				PackageManagerFrontendRes.TaskInstallPackages_Desc, 
-				PackageOperationThread, 
-				new PackageOperationData(this.packageManager, info, d => d.Manager.InstallPackage(d.Package)));
-			setupDialog.MainThreadRequired = false;
-			setupDialog.ShowDialog();
-			this.modelInstalled.ApplyChanges();
-			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
-			this.UpdateBottomButtons();
+			bool anythingChanged = false;
+			EventHandler<PackageEventArgs> listener = delegate (object sender, PackageEventArgs e)
+			{
+				anythingChanged = true;
+			};
+
+			bool operationSuccessful = false;
+			this.packageManager.PackageInstalled += listener;
+			this.packageManager.PackageUninstalled += listener;
+			{ 
+				ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+					PackageManagerFrontendRes.TaskInstallPackages_Caption, 
+					PackageManagerFrontendRes.TaskInstallPackages_Desc, 
+					PackageOperationThread, 
+					new PackageOperationData(this.packageManager, info, d => d.Manager.InstallPackage(d.Package)));
+				setupDialog.MainThreadRequired = false;
+				setupDialog.ShowDialog();
+				operationSuccessful = setupDialog.DialogResult == DialogResult.OK;
+			}
+			this.packageManager.PackageUninstalled -= listener;
+			this.packageManager.PackageInstalled -= listener;
+
+			if (anythingChanged)
+			{
+				this.modelInstalled.ApplyChanges();
+				this.restartRequired = operationSuccessful;
+				this.UpdateBottomButtons();
+			}
 		}
 		private void UninstallPackage(PackageInfo info)
 		{
-			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
-				PackageManagerFrontendRes.TaskUninstallPackages_Caption, 
-				PackageManagerFrontendRes.TaskUninstallPackages_Desc, 
-				PackageOperationThread, 
-				new PackageOperationData(this.packageManager, info, d => d.Manager.UninstallPackage(d.Package)));
-			setupDialog.MainThreadRequired = false;
-			setupDialog.ShowDialog();
-			this.modelInstalled.ApplyChanges();
-			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
-			this.UpdateBottomButtons();
+			bool anythingChanged = false;
+			EventHandler<PackageEventArgs> listener = delegate (object sender, PackageEventArgs e)
+			{
+				anythingChanged = true;
+			};
+
+			bool operationSuccessful = false;
+			this.packageManager.PackageInstalled += listener;
+			this.packageManager.PackageUninstalled += listener;
+			{
+				ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
+					PackageManagerFrontendRes.TaskUninstallPackages_Caption, 
+					PackageManagerFrontendRes.TaskUninstallPackages_Desc, 
+					PackageOperationThread, 
+					new PackageOperationData(this.packageManager, info, d => d.Manager.UninstallPackage(d.Package)));
+				setupDialog.MainThreadRequired = false;
+				setupDialog.ShowDialog();
+				operationSuccessful = setupDialog.DialogResult == DialogResult.OK;
+			}
+			this.packageManager.PackageUninstalled -= listener;
+			this.packageManager.PackageInstalled -= listener;
+			
+			if (anythingChanged)
+			{
+				this.modelInstalled.ApplyChanges();
+				this.restartRequired = operationSuccessful;
+				this.UpdateBottomButtons();
+			}
 		}
 		private void UpdatePackage(PackageInfo info)
 		{

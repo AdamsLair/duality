@@ -523,4 +523,16 @@
   <data name="TaskPrepareInfo" xml:space="preserve">
     <value>Preparing operation...</value>
   </data>
+  <data name="MsgLicenseNotAgreedAbort_Caption" xml:space="preserve">
+    <value>Package Install Canceled</value>
+  </data>
+  <data name="MsgLicenseNotAgreedAbort_Desc" xml:space="preserve">
+    <value>The install operation was canceled. You can only install this package when agreeing to its license terms.</value>
+  </data>
+  <data name="LicenseAcceptDialog_TranscriptUnavailable" xml:space="preserve">
+    <value>License text transcript unavailable. Check the License Url link below for the original license text source.</value>
+  </data>
+  <data name="LicenseAcceptDialog_PackageDesc" xml:space="preserve">
+    <value>Installing package {0} requires a license agreement.</value>
+  </data>
 </root>
