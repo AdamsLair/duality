@@ -105,7 +105,6 @@ namespace Duality.Editor.PackageManagement
 			this.hasLocalRepo = repositories.OfType<LocalPackageRepository>().Any();
 			this.repository = new AggregateRepository(repositories);
 			this.manager = new NuGet.PackageManager(this.repository, LocalPackageDir);
-			this.manager.PackageInstalling += this.manager_PackageInstalling;
 			this.manager.PackageInstalled += this.manager_PackageInstalled;
 			this.manager.PackageUninstalled += this.manager_PackageUninstalled;
 			this.manager.PackageUninstalling += this.manager_PackageUninstalling;
@@ -116,10 +115,14 @@ namespace Duality.Editor.PackageManagement
 
 		public void InstallPackage(PackageInfo package)
 		{
+			this.InstallPackage(package, false);
+		}
+		private void InstallPackage(PackageInfo package, bool skipLicense)
+		{
 			NuGet.IPackage newPackage = this.FindPackageInfo(package.PackageName, false);
 
 			// Check license terms
-			if (!this.CheckDeepLicenseAgreements(newPackage))
+			if (!skipLicense && !this.CheckDeepLicenseAgreements(newPackage))
 			{
 				return;
 			}
@@ -127,6 +130,7 @@ namespace Duality.Editor.PackageManagement
 			// Request NuGet to install the package
 			this.manager.InstallPackage(newPackage, false, false);
 		}
+
 		public void VerifyPackage(LocalPackage package)
 		{
 			Version oldPackageVersion = package.Version;
@@ -153,7 +157,7 @@ namespace Duality.Editor.PackageManagement
 
 			// Install the package. Won't do anything if the package is already installed.
 			this.manager.PackageInstalled += installListener;
-			this.InstallPackage(packageInfo);
+			this.InstallPackage(packageInfo, true);
 			this.manager.PackageInstalled -= installListener;
 
 			// If we didn't install anything, that package was already present in the local cache, but not in the PackageConfig file
@@ -202,18 +206,13 @@ namespace Duality.Editor.PackageManagement
 			return allowed;
 		}
 
-		public void UpdatePackage(PackageInfo package, Version specificVersion = null)
+		public void UpdatePackage(PackageInfo package)
 		{
-			this.UpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id), specificVersion);
+			this.UpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id));
 		}
-		public void UpdatePackage(LocalPackage package, Version specificVersion = null)
+		public void UpdatePackage(LocalPackage package)
 		{
-			// Due to a bug in NuGet 2.8.2, specific-version downgrades are limited to the package itself,
-			// without updating its dependencies. Otherwise, some of them might be uninstalled without
-			// being reinstalled properly.
-
-			bool isDowngrade = specificVersion != null && specificVersion < package.Version;
-			NuGet.IPackage newPackage = this.FindPackageInfo(new PackageName(package.Id, specificVersion), false);
+			NuGet.IPackage newPackage = this.FindPackageInfo(new PackageName(package.Id), false);
 			
 			// Check license terms
 			if (!this.CheckDeepLicenseAgreements(newPackage))
@@ -222,23 +221,22 @@ namespace Duality.Editor.PackageManagement
 			}
 
 			this.uninstallQueue = null;
-			this.manager.UpdatePackage(newPackage, !isDowngrade, false);
+			this.manager.UpdatePackage(newPackage, true, false);
 			this.uninstallQueue = new List<LocalPackage>();
 		}
-		public bool CanUpdatePackage(PackageInfo package, Version specificVersion = null)
+		public bool CanUpdatePackage(PackageInfo package)
 		{
-			return this.CanUpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id), specificVersion);
+			return this.CanUpdatePackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id));
 		}
 		[DebuggerNonUserCode]
-		public bool CanUpdatePackage(LocalPackage package, Version specificVersion = null)
+		public bool CanUpdatePackage(LocalPackage package)
 		{
 			bool allowed = true;
 			this.manager.WhatIf = true;
 			try
 			{
-				bool isSpecific = specificVersion != null;
-				if (specificVersion == null) specificVersion = this.QueryPackageInfo(package.PackageName.VersionInvariant).Version;
-				this.manager.UpdatePackage(package.Id, new SemanticVersion(specificVersion), !isSpecific, false);
+				Version version = this.QueryPackageInfo(package.PackageName.VersionInvariant).Version;
+				this.manager.UpdatePackage(package.Id, new SemanticVersion(version), true, false);
 			}
 			catch (Exception)
 			{
@@ -998,18 +996,6 @@ namespace Duality.Editor.PackageManagement
 			this.SaveConfig();
 
 			this.OnPackageUninstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
-		}
-		private void manager_PackageInstalling(object sender, PackageOperationEventArgs e)
-		{
-			if (!this.CheckLicenseAgreement(e.Package))
-			{
-				e.Cancel = true;
-				MessageBox.Show(
-					GeneralRes.MsgLicenseNotAgreedAbort_Desc,
-					GeneralRes.MsgLicenseNotAgreedAbort_Caption,
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Warning);
-			}
 		}
 		private void manager_PackageInstalled(object sender, PackageOperationEventArgs e)
 		{

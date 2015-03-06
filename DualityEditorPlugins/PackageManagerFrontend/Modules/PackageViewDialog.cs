@@ -361,58 +361,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
 			this.UpdateBottomButtons();
 		}
-		private void UpdatePackage(PackageInfo info, Version specificVersion)
-		{
-			bool success = false;
-			bool cantUpdate = false;
-			bool packageNotFound = false;
-			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
-				PackageManagerFrontendRes.TaskUpdatePackages_Caption, 
-				PackageManagerFrontendRes.TaskUpdatePackages_Desc, 
-				PackageOperationThread, 
-				new PackageOperationData(this.packageManager, info, d => 
-				{
-					PackageInfo targetPackage = d.Manager.QueryPackageInfo(new PackageName(d.Package.Id, specificVersion));
-					if (targetPackage == null)
-					{
-						packageNotFound = true;
-						return;
-					}
-					if (d.Package.Version == specificVersion) return;
-					if (!d.Manager.CanUpdatePackage(d.Package, specificVersion))
-					{
-						cantUpdate = true;
-						return;
-					}
-
-					d.Manager.UpdatePackage(d.Package, specificVersion);
-					success = true;
-				}));
-			setupDialog.MainThreadRequired = false;
-			setupDialog.ShowDialog();
-			
-			if (packageNotFound)
-			{
-				MessageBox.Show(this, 
-					string.Format(PackageManagerFrontendRes.MsgTargetVersionNotFound_Desc, specificVersion, info.Id), 
-					PackageManagerFrontendRes.MsgTargetVersionNotFound_Caption, 
-					MessageBoxButtons.OK, 
-					MessageBoxIcon.Error);
-			}
-			if (cantUpdate)
-			{
-				MessageBox.Show(this, 
-					string.Format(PackageManagerFrontendRes.MsgTargetCantUpdate_Desc, specificVersion, info.Id), 
-					PackageManagerFrontendRes.MsgTargetCantUpdate_Caption, 
-					MessageBoxButtons.OK, 
-					MessageBoxIcon.Error);
-			}
-			if (!success) return;
-
-			this.modelInstalled.ApplyChanges();
-			this.restartRequired = true;
-			this.UpdateBottomButtons();
-		}
 		private void UpdateAllPackages()
 		{
 			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
@@ -732,7 +680,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 				try
 				{
-					manager.UpdatePackage(package, package.Version);
+					manager.UpdatePackage(package);
 				}
 				catch (Exception e)
 				{
