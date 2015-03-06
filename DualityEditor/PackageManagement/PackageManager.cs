@@ -346,7 +346,11 @@ namespace Duality.Editor.PackageManagement
 			for (int i = 0; i < originalPackages.Length; i++)
 			{
 				LocalPackage localPackage = originalPackages[i];
+
 				int newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id && p.Version == localPackage.Version);
+				if (newIndex == -1)
+					newIndex = localInfo.IndexOfFirst(p => p.Id == localPackage.Id);
+
 				packages[newIndex] = localPackage;
 			}
 		}
