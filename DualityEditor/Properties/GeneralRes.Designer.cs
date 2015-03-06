@@ -366,6 +366,15 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This is the first time you are starting Duality. By using it, you are agreeing to its license terms, as linked below..
+        /// </summary>
+        public static string LicenseAcceptDialog_FirstStartGeneric {
+            get {
+                return ResourceManager.GetString("LicenseAcceptDialog_FirstStartGeneric", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Installing package {0} requires a license agreement..
         /// </summary>
         public static string LicenseAcceptDialog_PackageDesc {

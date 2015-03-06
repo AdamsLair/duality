@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="labelTranscriptInfo.Text" xml:space="preserve">
-    <value>The above text is an automatically retrieved transcript of the license url, which may yield wrong results due to technical limitations. By clicking the "I Agree" button, you are agreeing to the original license linked below, not the transcript above.
+    <value>The above text is an automatically retrieved transcript of the license url, which may yield wrong results due to technical limitations. By clicking the "I Accept" button, you are agreeing to the original license linked below, not the transcript above.
 </value>
   </data>
 </root>

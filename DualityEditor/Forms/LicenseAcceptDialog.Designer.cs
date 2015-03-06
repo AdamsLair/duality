@@ -57,8 +57,8 @@
 			this.textBoxLicenseText.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.textBoxLicenseText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.textBoxLicenseText.Location = new System.Drawing.Point(15, 55);
-			this.textBoxLicenseText.Name = "textBoxLicenseText";
 			this.textBoxLicenseText.Multiline = true;
+			this.textBoxLicenseText.Name = "textBoxLicenseText";
 			this.textBoxLicenseText.ReadOnly = true;
 			this.textBoxLicenseText.Size = new System.Drawing.Size(394, 183);
 			this.textBoxLicenseText.TabIndex = 4;
@@ -87,7 +87,7 @@
 			this.buttonDecline.Name = "buttonDecline";
 			this.buttonDecline.Size = new System.Drawing.Size(75, 23);
 			this.buttonDecline.TabIndex = 2;
-			this.buttonDecline.Text = "Cancel";
+			this.buttonDecline.Text = "I Decline";
 			this.buttonDecline.UseVisualStyleBackColor = true;
 			this.buttonDecline.Click += new System.EventHandler(this.buttonDecline_Click);
 			// 
@@ -98,7 +98,7 @@
 			this.buttonAgree.Name = "buttonAgree";
 			this.buttonAgree.Size = new System.Drawing.Size(75, 23);
 			this.buttonAgree.TabIndex = 3;
-			this.buttonAgree.Text = "I Agree";
+			this.buttonAgree.Text = "I Accept";
 			this.buttonAgree.UseVisualStyleBackColor = true;
 			this.buttonAgree.Click += new System.EventHandler(this.buttonAgree_Click);
 			// 
@@ -129,11 +129,9 @@
 			// 
 			// LicenseAcceptDialog
 			// 
-			this.AcceptButton = this.buttonAgree;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
-			this.CancelButton = this.buttonDecline;
 			this.ClientSize = new System.Drawing.Size(421, 392);
 			this.ControlBox = false;
 			this.Controls.Add(this.labelTranscriptInfo);
@@ -149,6 +147,7 @@
 			this.Text = "License Agreement";
 			this.panelBottomBack.ResumeLayout(false);
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 

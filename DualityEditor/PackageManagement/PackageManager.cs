@@ -31,6 +31,7 @@ namespace Duality.Editor.PackageManagement
 
 
 		private List<string>		repositoryUrls	= new List<string>{ DefaultRepositoryUrl };
+		private	bool				firstInstall	= false;
 		private	bool				hasLocalRepo	= false;
 		private	string				dataTargetDir	= null;
 		private	string				sourceTargetDir	= null;
@@ -54,6 +55,10 @@ namespace Duality.Editor.PackageManagement
 		public IEnumerable<LocalPackage> LocalPackages
 		{
 			get { return this.localPackages; }
+		}
+		public bool IsFirstInstall
+		{
+			get { return this.firstInstall; }
 		}
 		public bool IsPackageUpdateRequired
 		{
@@ -641,6 +646,11 @@ namespace Duality.Editor.PackageManagement
 		{
 			if (package.RequireLicenseAcceptance)
 			{
+				// On the very first install, do not display additional license agreement dialogs
+				// because all the packages being installed are the default ones.
+				if (this.firstInstall)
+					return true;
+
 				bool agreed;
 				if (!this.licenseAcceptedCache.TryGetValue(package, out agreed) || !agreed)
 				{
@@ -683,6 +693,11 @@ namespace Duality.Editor.PackageManagement
 			try
 			{
 				XDocument doc = XDocument.Load(configFilePath);
+
+				string firstInstallString = doc.Root.GetElementValue("FirstDualityInstall");
+				bool firstInstallValue;
+				if (!string.IsNullOrWhiteSpace(firstInstallString) && bool.TryParse(firstInstallString, out firstInstallValue))
+					this.firstInstall = firstInstallValue;
 
 				this.repositoryUrls.Clear();
 				this.repositoryUrls.AddRange(doc.Root.Elements("RepositoryUrl").Select(x => x.Value));

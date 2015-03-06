@@ -535,4 +535,7 @@
   <data name="LicenseAcceptDialog_PackageDesc" xml:space="preserve">
     <value>Installing package {0} requires a license agreement.</value>
   </data>
+  <data name="LicenseAcceptDialog_FirstStartGeneric" xml:space="preserve">
+    <value>This is the first time you are starting Duality. By using it, you are agreeing to its license terms, as linked below.</value>
+  </data>
 </root>

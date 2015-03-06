@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>1.3.6</version>
+    <version>1.3.7</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,8 +13,8 @@
 	<summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
-	<releaseNotes>PackageManager License Agreements
-#ADD: Whenever required by the NuGet package, Duality will display a license agreement dialog before proceeding to install the package.
+	<releaseNotes>Duality License Agreement
+#ADD: When starting Duality for the first time, its license is displayed for agreement.
 	</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.6.0" />

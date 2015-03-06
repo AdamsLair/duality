@@ -13,9 +13,8 @@ namespace Duality.Editor
 {
 	static class Program
 	{
-		/// <summary>
-		/// Der Haupteinstiegspunkt für die Anwendung.
-		/// </summary>
+		private const string DualityMainLicenseUrl = @"https://github.com/AdamsLair/duality/raw/master/LICENSE";
+
 		[STAThread]
 		private static void Main(string[] args)
 		{
@@ -37,10 +36,27 @@ namespace Duality.Editor
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.ThreadException += Application_ThreadException;
-
-			// Perform the initial package update - even before initializing the editor
+			
 			{
 				PackageManager packageManager = new PackageManager();
+
+				// On the first install startup, display a generic license agreement for Duality
+				if (packageManager.IsFirstInstall)
+				{
+					LicenseAcceptDialog licenseDialog = new LicenseAcceptDialog
+					{
+						DescriptionText = GeneralRes.LicenseAcceptDialog_FirstStartGeneric,
+						LicenseUrl = new Uri(DualityMainLicenseUrl)
+					};
+					DialogResult result = licenseDialog.ShowDialog();
+					if (result != DialogResult.OK)
+					{
+						Application.Exit();
+						return;
+					}
+				}
+
+				// Perform the initial package update - even before initializing the editor
 				if (packageManager.IsPackageUpdateRequired)
 				{
 					Log.Editor.Write("Updating Packages...");
