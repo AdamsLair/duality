@@ -1064,7 +1064,9 @@ namespace Duality.Editor.PackageManagement
 				DescriptionText = string.Format(GeneralRes.LicenseAcceptDialog_PackageDesc, args.PackageName),
 				LicenseUrl = args.LicenseUrl
 			};
-			DialogResult result = DualityEditorApp.MainForm.InvokeEx(main => licenseDialog.ShowDialog());
+
+			Form invokeForm = DualityEditorApp.MainForm ?? Application.OpenForms.OfType<Form>().FirstOrDefault();
+			DialogResult result = invokeForm.InvokeEx(main => licenseDialog.ShowDialog());
 			if (result == DialogResult.OK)
 			{
 				args.AcceptLicense();
