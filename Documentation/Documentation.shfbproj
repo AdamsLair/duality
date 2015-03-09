@@ -50,35 +50,13 @@
     <VisibleItems>InheritedMembers, Protected, SealedProtected</VisibleItems>
     <ComponentConfigurations>
       <ComponentConfig id="Code Block Component" enabled="True">
-        <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
-          <!-- Base path for relative filenames in source attributes (optional) -->
-          <basePath value="{@HtmlEncProjectFolder}" />
-          <!-- Base output paths for the files (required).  These should match the parent folder of the output path
-					 of the HTML files (see each of the SaveComponent instances in the configuration files). -->
-          <outputPaths>
-				{@HelpFormatOutputPaths}
-			</outputPaths>
-          <!-- Allow missing source files (Optional).  If omitted, it will generate errors if referenced source files
-				 are missing. -->
-          <allowMissingSource value="false" />
-          <!-- Remove region markers from imported code blocks.  If omitted, region markers in imported code blocks
-					 are left alone. -->
-          <removeRegionMarkers value="false" />
-          <!-- Code colorizer options (required).
-					 Attributes:
-							Language syntax configuration file (required)
-							XSLT stylesheet file (required)
-							CSS stylesheet file (required)
-							Script file (required)
-							Disabled (optional, leading whitespace normalization only)
-							Default language (optional)
-							Enable line numbering (optional)
-							Enable outlining (optional)
-							Keep XML comment "see" tags within the code (optional)
-							Tab size override (optional, 0 = Use syntax file setting)
-							Use language name as default title (optional) -->
-          <colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}Colorizer\highlight.css" scriptFile="{@SHFBFolder}Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" numberLines="false" outlining="false" keepSeeTags="false" tabSize="0" defaultTitle="true" />
-        </component>
+        <component id="Code Block Component">
+  <basePath value="{@HtmlEncProjectFolder}" />
+  <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
+  <allowMissingSource value="false" />
+  <removeRegionMarkers value="false" />
+  <colorizer syntaxFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xml" styleFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.xsl" stylesheet="{@SHFBFolder}PresentationStyles\Colorizer\highlight.css" scriptFile="{@SHFBFolder}PresentationStyles\Colorizer\highlight.js" disabled="{@DisableCodeBlockComponent}" language="cs" tabSize="0" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" />
+</component>
       </ComponentConfig>
     </ComponentConfigurations>
     <NamingMethod>MemberName</NamingMethod>
