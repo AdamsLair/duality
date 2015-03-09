@@ -3,8 +3,6 @@
   <SolutionPath>..\..\Duality.sln</SolutionPath>
   <BuildResultDir>..\..\DualityEditor\bin\Release</BuildResultDir>
   <DocSolutionPath>..\..\Documentation\Documentation.shfbproj</DocSolutionPath>
-  <DocBuildResultDir>..\..\Documentation\Help</DocBuildResultDir>
-  <DocBuildResultFile>DDoc.chm</DocBuildResultFile>
   <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
   <NUnitBinDir>..\..\UnitTesting\NUnit</NUnitBinDir>
   <UnitTestProjectDir>..\..\UnitTesting\</UnitTestProjectDir>
@@ -20,6 +18,7 @@
     <string>Backup</string>
     <string>Source</string>
     <string>Data</string>
+    <string>DDoc.chm</string>
     <string>GamePlugin.*.dll</string>
     <string>DynamicLighting.*.dll</string>
     <string>Steering.*.dll</string>
