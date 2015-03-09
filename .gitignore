@@ -23,6 +23,8 @@ DualityEditorPlugins/DynamicLighting/bin/
 DualityPlugins/DynamicLighting/bin/
 Documentation/Help/LastBuild.log
 Other/NightlyBuild/NightlyBuilder.vshost.exe.manifest
+Other/NightlyBuild/NightlyBuilder.vshost.exe
+Other/NightlyBuild/NightlyBuilder.pdb
 Other/NightlyBuild/Package/
 Other/Tools/NightlyBuilder/obj/
 Other/Dependencies/Farseer/FarseerOpenTK/obj/
