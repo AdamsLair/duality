@@ -163,6 +163,7 @@
     <Compile Include="Forms\PublishGameDialog.Designer.cs">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BuildHelper.cs" />
     <Compile Include="PackageManagement\PackageCompatibility.cs" />
     <Compile Include="PackageManagement\PackageLicenseAgreementEventArgs.cs" />
     <Compile Include="PackageManagement\PackageName.cs" />

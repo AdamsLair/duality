@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using Microsoft.Win32;
-using Microsoft.Build.Execution;
 
 using Ionic.Zip;
 
@@ -328,11 +327,7 @@ namespace Duality.Editor
 				}
 
 				// Compile plugins
-				var buildProperties = new Dictionary<string, string>();
-				buildProperties["Configuration"] = "Release";
-				var buildRequest = new BuildRequestData(EditorHelper.SourceCodeSolutionFile, buildProperties, null, new string[] { "Build" }, null);
-				var buildParameters = new BuildParameters();
-				var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
+				BuildHelper.BuildSolutionFile(EditorHelper.SourceCodeSolutionFile, "Release");
 			}
 			finally
 			{
