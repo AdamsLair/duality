@@ -78,7 +78,7 @@ namespace NightlyBuilder
 				Console.WriteLine("ERROR: {0}", e);
 				Console.ForegroundColor = ConsoleColor.Gray;
 				Console.WriteLine();
-				System.Threading.Thread.Sleep(10000);
+				Console.ReadLine();
 			}
 		}
 
@@ -183,6 +183,9 @@ namespace NightlyBuilder
 			Console.WriteLine();
 
 			// Build the documentation
+			bool includeDocs =
+				!string.IsNullOrWhiteSpace(config.DocBuildResultDir) &&
+				!string.IsNullOrWhiteSpace(config.DocBuildResultFile);
 			if (!config.NoDocs)
 			{
 				Console.WriteLine("================================== Build Docs =================================");
@@ -193,8 +196,7 @@ namespace NightlyBuilder
 
 					Console.WriteLine("Documentation Build Successful");
 
-					if (!string.IsNullOrWhiteSpace(config.DocBuildResultDir) &&
-						!string.IsNullOrWhiteSpace(config.DocBuildResultFile))
+					if (includeDocs)
 					{
 						File.Copy(
 							Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile), 
@@ -207,7 +209,7 @@ namespace NightlyBuilder
 				Console.WriteLine();
 				Console.WriteLine();
 			}
-			else if (File.Exists(Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile)))
+			else if (includeDocs && File.Exists(Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile)))
 			{
 				Console.WriteLine("============================== Copy existing Docs =============================");
 				{

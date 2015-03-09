@@ -145,3 +145,5 @@ SampleProjects/DualStickSpaceShooter/Content/perflog.txt
 SampleProjects/DualStickSpaceShooter/Content/UserData.dat
 DualityEditorPlugins/CamView/CamView.csproj.user
 DualityPlugins/Steering/Sample/Testbed/Backup/
+Other/NightlyBuild/NightlyBuilder.exe.config
+Other/NightlyBuild/NightlyBuilder.vshost.exe.config
