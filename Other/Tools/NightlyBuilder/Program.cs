@@ -198,11 +198,18 @@ namespace NightlyBuilder
 					var buildResult = BuildManager.DefaultBuildManager.Build(buildParameters, buildRequest);
 					if (buildResult.OverallResult != BuildResultCode.Success)
 						throw new ApplicationException("Documentation Build Failure");
-					File.Copy(
-						Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile), 
-						Path.Combine(config.BuildResultDir, config.DocBuildResultFile),
-						true);
+
 					Console.WriteLine("Documentation Build Successful");
+
+					if (!string.IsNullOrWhiteSpace(config.DocBuildResultDir) &&
+						!string.IsNullOrWhiteSpace(config.DocBuildResultFile))
+					{
+						File.Copy(
+							Path.Combine(config.DocBuildResultDir, config.DocBuildResultFile), 
+							Path.Combine(config.BuildResultDir, config.DocBuildResultFile),
+							true);
+						Console.WriteLine("Documentation copied to build directory");
+					}
 				}
 				Console.WriteLine("===============================================================================");
 				Console.WriteLine();
