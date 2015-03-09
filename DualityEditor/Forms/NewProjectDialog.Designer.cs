@@ -35,6 +35,9 @@
 			this.folderViewControlName = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.imageListTemplateView = new System.Windows.Forms.ImageList(this.components);
 			this.splitFolderTemplate = new System.Windows.Forms.SplitContainer();
+			this.templateView = new Duality.Editor.Controls.ExplorerListView();
+			this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.columnDesc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.buttonOk = new System.Windows.Forms.Button();
 			this.labelProjectName = new System.Windows.Forms.Label();
@@ -49,9 +52,6 @@
 			this.textBoxTemplate = new Duality.Editor.Controls.CueTextBox();
 			this.textBoxName = new Duality.Editor.Controls.CueTextBox();
 			this.textBoxFolder = new Duality.Editor.Controls.CueTextBox();
-			this.templateView = new Duality.Editor.Controls.ExplorerListView();
-			this.columnName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.columnDesc = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			((System.ComponentModel.ISupportInitialize)(this.splitFolderTemplate)).BeginInit();
 			this.splitFolderTemplate.Panel1.SuspendLayout();
 			this.splitFolderTemplate.Panel2.SuspendLayout();
@@ -105,9 +105,9 @@
 			// 
 			// splitFolderTemplate
 			// 
-			this.splitFolderTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.splitFolderTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.splitFolderTemplate.Location = new System.Drawing.Point(-1, 60);
 			this.splitFolderTemplate.Name = "splitFolderTemplate";
 			// 
@@ -124,6 +124,39 @@
 			this.splitFolderTemplate.SplitterDistance = 158;
 			this.splitFolderTemplate.TabIndex = 2;
 			// 
+			// templateView
+			// 
+			this.templateView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
+			this.templateView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.templateView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnName,
+            this.columnDesc});
+			this.templateView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.templateView.FullRowSelect = true;
+			this.templateView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.templateView.LargeImageList = this.imageListTemplateView;
+			this.templateView.Location = new System.Drawing.Point(0, 0);
+			this.templateView.MultiSelect = false;
+			this.templateView.Name = "templateView";
+			this.templateView.ShowItemToolTips = true;
+			this.templateView.Size = new System.Drawing.Size(324, 176);
+			this.templateView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+			this.templateView.StateImageList = this.imageListTemplateView;
+			this.templateView.TabIndex = 1;
+			this.templateView.TileSize = new System.Drawing.Size(100, 48);
+			this.templateView.UseCompatibleStateImageBehavior = false;
+			this.templateView.View = System.Windows.Forms.View.Tile;
+			this.templateView.SelectedIndexChanged += new System.EventHandler(this.templateView_SelectedIndexChanged);
+			this.templateView.Resize += new System.EventHandler(this.templateView_Resize);
+			// 
+			// columnName
+			// 
+			this.columnName.Text = "Name";
+			// 
+			// columnDesc
+			// 
+			this.columnDesc.Text = "Description";
+			// 
 			// buttonCancel
 			// 
 			this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -139,7 +172,6 @@
 			// buttonOk
 			// 
 			this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.buttonOk.Enabled = false;
 			this.buttonOk.Location = new System.Drawing.Point(317, 332);
 			this.buttonOk.Name = "buttonOk";
 			this.buttonOk.Size = new System.Drawing.Size(75, 23);
@@ -181,8 +213,8 @@
 			// 
 			// labelLowerArea
 			// 
-			this.labelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.labelLowerArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelLowerArea.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.labelLowerArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.labelLowerArea.Location = new System.Drawing.Point(-1, 324);
@@ -193,15 +225,15 @@
 			// 
 			// labelDialogDesc
 			// 
-			this.labelDialogDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.labelDialogDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelDialogDesc.Location = new System.Drawing.Point(68, 24);
 			this.labelDialogDesc.Margin = new System.Windows.Forms.Padding(3, 5, 3, 3);
 			this.labelDialogDesc.Name = "labelDialogDesc";
 			this.labelDialogDesc.Size = new System.Drawing.Size(407, 30);
 			this.labelDialogDesc.TabIndex = 11;
 			this.labelDialogDesc.Text = "After selecting a suitable project template, destination and name, a new project " +
-				"folder will be automatically created.";
+    "folder will be automatically created.";
 			this.labelDialogDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// labelProjectTemplate
@@ -238,8 +270,8 @@
 			// 
 			// labelHeader
 			// 
-			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.labelHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelHeader.Location = new System.Drawing.Point(68, 3);
 			this.labelHeader.Margin = new System.Windows.Forms.Padding(0);
@@ -251,8 +283,8 @@
 			// 
 			// textBoxTemplate
 			// 
-			this.textBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxTemplate.CueText = "Select project template";
 			this.textBoxTemplate.Location = new System.Drawing.Point(105, 244);
 			this.textBoxTemplate.Name = "textBoxTemplate";
@@ -262,58 +294,23 @@
 			// 
 			// textBoxName
 			// 
-			this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxName.CueText = "Enter project name here";
 			this.textBoxName.Location = new System.Drawing.Point(105, 270);
 			this.textBoxName.Name = "textBoxName";
 			this.textBoxName.Size = new System.Drawing.Size(291, 20);
 			this.textBoxName.TabIndex = 10;
-			this.textBoxName.TextChanged += new System.EventHandler(this.textBoxName_TextChanged);
 			// 
 			// textBoxFolder
 			// 
-			this.textBoxFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.textBoxFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.textBoxFolder.CueText = "Select a project folder";
 			this.textBoxFolder.Location = new System.Drawing.Point(105, 296);
 			this.textBoxFolder.Name = "textBoxFolder";
 			this.textBoxFolder.Size = new System.Drawing.Size(291, 20);
 			this.textBoxFolder.TabIndex = 8;
-			this.textBoxFolder.TextChanged += new System.EventHandler(this.textBoxFolder_TextChanged);
-			// 
-			// templateView
-			// 
-			this.templateView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
-			this.templateView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.templateView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnName,
-            this.columnDesc});
-			this.templateView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.templateView.FullRowSelect = true;
-			this.templateView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-			this.templateView.LargeImageList = this.imageListTemplateView;
-			this.templateView.Location = new System.Drawing.Point(0, 0);
-			this.templateView.MultiSelect = false;
-			this.templateView.Name = "templateView";
-			this.templateView.ShowItemToolTips = true;
-			this.templateView.Size = new System.Drawing.Size(324, 176);
-			this.templateView.Sorting = System.Windows.Forms.SortOrder.Ascending;
-			this.templateView.StateImageList = this.imageListTemplateView;
-			this.templateView.TabIndex = 1;
-			this.templateView.TileSize = new System.Drawing.Size(100, 48);
-			this.templateView.UseCompatibleStateImageBehavior = false;
-			this.templateView.View = System.Windows.Forms.View.Tile;
-			this.templateView.SelectedIndexChanged += new System.EventHandler(this.templateView_SelectedIndexChanged);
-			this.templateView.Resize += new System.EventHandler(this.templateView_Resize);
-			// 
-			// columnName
-			// 
-			this.columnName.Text = "Name";
-			// 
-			// columnDesc
-			// 
-			this.columnDesc.Text = "Description";
 			// 
 			// NewProjectDialog
 			// 

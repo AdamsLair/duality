@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -55,12 +56,41 @@ namespace Duality.Editor.Forms
 		private static readonly Regex[] RegExSourcePathBlacklist = SourcePathBlacklist.Select(w => PathWildcardToRegex(w)).ToArray();
 		private static readonly Regex[] RegExEditorPathBlacklist = EditorPathBlacklist.Select(w => PathWildcardToRegex(w)).ToArray();
 
+		private	Color	defaultTextBoxBackColor;
 
 		public PublishGameDialog()
 		{
 			this.InitializeComponent();
+			this.defaultTextBoxBackColor = this.textboxFolderPath.BackColor;
 		}
 		
+		protected bool CheckInputValid()
+		{
+			Color errorColor = this.defaultTextBoxBackColor.MixWith(Color.Red, 0.25f, true);
+
+			this.textboxFolderPath.BackColor = this.defaultTextBoxBackColor;
+			
+			if (string.IsNullOrWhiteSpace(this.textboxFolderPath.Text) || !PathHelper.IsPathValid(this.textboxFolderPath.Text))
+			{
+				this.textboxFolderPath.BackColor = errorColor;
+				return false;
+			}
+
+			if (PathHelper.ArePathsEqual(this.textboxFolderPath.Text, Environment.CurrentDirectory) ||
+				PathHelper.IsPathLocatedIn(this.textboxFolderPath.Text, Environment.CurrentDirectory))
+			{
+				this.textboxFolderPath.BackColor = errorColor;
+				MessageBox.Show(
+					GeneralRes.Msg_PublishProjectErrorNestedFolder_Desc,
+					GeneralRes.Msg_PublishProjectErrorNestedFolder_Caption,
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Warning);
+				return false;
+			}
+
+			return true;
+		}
+
 		private void buttonBrowse_Click(object sender, EventArgs e)
 		{
 			publishFolder.SelectedPath = Environment.CurrentDirectory;
@@ -75,11 +105,11 @@ namespace Duality.Editor.Forms
 		}
 		private void buttonPublish_Click(object sender, EventArgs e)
 		{
+			// Make sure the input is valid and display an error if not
+			if (!this.CheckInputValid()) return;
+
 			if (!Directory.Exists(textboxFolderPath.Text))
-			{
-				MessageBox.Show(GeneralRes.Msg_ErrorDirectoryNotFound_Desc, GeneralRes.Msg_ErrorDirectoryNotFound_Caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
+				Directory.CreateDirectory(textboxFolderPath.Text);
 
 			PublishProject(
 				textboxFolderPath.Text, 

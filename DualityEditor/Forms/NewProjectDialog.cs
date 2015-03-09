@@ -27,6 +27,7 @@ namespace Duality.Editor.Forms
 		private	ProjectTemplateInfo		templateEmpty			= null;
 		private	ProjectTemplateInfo		templateCurrent			= null;
 		private	string					resultEditorBinary		= null;
+		private	Color					defaultTextBoxBackColor;
 
 		public string ResultEditorBinary
 		{
@@ -37,6 +38,8 @@ namespace Duality.Editor.Forms
 		{
 			this.InitializeComponent();
 			this.templateView_Resize(this, EventArgs.Empty); // Trigger update tile size
+
+			this.defaultTextBoxBackColor = this.textBoxFolder.BackColor;
 
 			this.folderModel = new FolderBrowserTreeModel(EditorHelper.GlobalProjectTemplateDirectory);
 			this.folderModel.Filter = s => Directory.Exists(s); // Only show directories
@@ -117,21 +120,53 @@ namespace Duality.Editor.Forms
 			this.templateView.Sort();
 			this.templateView.EndUpdate();
 		}
-		protected void UpdateInputValid()
+		protected bool CheckInputValid()
 		{
-			bool validInput = true;
+			Color errorColor = this.defaultTextBoxBackColor.MixWith(Color.Red, 0.25f, true);
 
-			validInput = validInput && !string.IsNullOrWhiteSpace(this.textBoxName.Text) && PathHelper.IsPathValid(this.textBoxFolder.Text);
-			validInput = validInput && this.selectedTemplate != null;
-			validInput = validInput && !string.IsNullOrWhiteSpace(this.textBoxName.Text) && PathHelper.IsPathValid(this.textBoxName.Text);
+			this.textBoxFolder.BackColor = this.defaultTextBoxBackColor;
+			this.textBoxTemplate.BackColor = this.defaultTextBoxBackColor;
+			this.textBoxName.BackColor = this.defaultTextBoxBackColor;
 
-			if (validInput)
+			if (this.selectedTemplate == null)
 			{
-				string targetDir = Path.Combine(this.textBoxFolder.Text, this.textBoxName.Text);
-				validInput = validInput && !Directory.Exists(targetDir) && !File.Exists(targetDir);
+				this.textBoxTemplate.BackColor = errorColor;
+				return false;
+			}
+			if (string.IsNullOrWhiteSpace(this.textBoxName.Text) || !PathHelper.IsPathValid(this.textBoxName.Text))
+			{
+				this.textBoxName.BackColor = errorColor;
+				return false;
+			}
+			if (string.IsNullOrWhiteSpace(this.textBoxFolder.Text) || !PathHelper.IsPathValid(this.textBoxFolder.Text))
+			{
+				this.textBoxFolder.BackColor = errorColor;
+				return false;
+			}
+			
+			string targetDir = Path.Combine(this.textBoxFolder.Text, this.textBoxName.Text);
+			if (Directory.Exists(targetDir) || File.Exists(targetDir))
+			{
+				this.textBoxFolder.BackColor = errorColor;
+				MessageBox.Show(
+					GeneralRes.Msg_CreateProjectErrorTargetExists_Desc,
+					GeneralRes.Msg_CreateProjectErrorTargetExists_Caption,
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Warning);
+				return false;
+			}
+			if (PathHelper.IsPathLocatedIn(targetDir, Environment.CurrentDirectory))
+			{
+				this.textBoxFolder.BackColor = errorColor;
+				MessageBox.Show(
+					GeneralRes.Msg_CreateProjectErrorNestedFolder_Desc,
+					GeneralRes.Msg_CreateProjectErrorNestedFolder_Caption,
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Warning);
+				return false;
 			}
 
-			this.buttonOk.Enabled = validInput;
+			return true;
 		}
 
 		private void folderViewControlName_DrawText(object sender, DrawTextEventArgs e)
@@ -160,6 +195,9 @@ namespace Duality.Editor.Forms
 		}
 		private void buttonOk_Click(object sender, EventArgs e)
 		{
+			// Make sure the input is valid and display an error if not
+			if (!this.CheckInputValid()) return;
+
 			// Ask if the selected template should be copied to the template directory, if not located there (auto-install)
 			if (this.selectedTemplate.SpecialTag == ProjectTemplateInfo.SpecialInfo.None && 
 				!PathHelper.IsPathLocatedIn(this.selectedTemplate.FilePath, EditorHelper.GlobalProjectTemplateDirectory))
@@ -242,15 +280,6 @@ namespace Duality.Editor.Forms
 				try { this.selectedTemplate = new ProjectTemplateInfo(this.textBoxTemplate.Text); } 
 				catch (Exception) { this.selectedTemplate = null; }
 			}
-			this.UpdateInputValid();
-		}
-		private void textBoxName_TextChanged(object sender, EventArgs e)
-		{
-			this.UpdateInputValid();
-		}
-		private void textBoxFolder_TextChanged(object sender, EventArgs e)
-		{
-			this.UpdateInputValid();
 		}
 
 		private void folderView_SelectionChanged(object sender, EventArgs e)

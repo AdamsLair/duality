@@ -816,6 +816,42 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Target Directory.
+        /// </summary>
+        public static string Msg_CreateProjectErrorNestedFolder_Caption {
+            get {
+                return ResourceManager.GetString("Msg_CreateProjectErrorNestedFolder_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified target folder is located within the current working directory. Please select one that is located elsewhere..
+        /// </summary>
+        public static string Msg_CreateProjectErrorNestedFolder_Desc {
+            get {
+                return ResourceManager.GetString("Msg_CreateProjectErrorNestedFolder_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Target Directory.
+        /// </summary>
+        public static string Msg_CreateProjectErrorTargetExists_Caption {
+            get {
+                return ResourceManager.GetString("Msg_CreateProjectErrorTargetExists_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The new projects target directory already exists. Please select a different one..
+        /// </summary>
+        public static string Msg_CreateProjectErrorTargetExists_Desc {
+            get {
+                return ResourceManager.GetString("Msg_CreateProjectErrorTargetExists_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save current Scene?.
         /// </summary>
         public static string Msg_EnterSandboxUnsavedScene_Caption {
@@ -848,24 +884,6 @@ namespace Duality.Editor.Properties {
         public static string Msg_ErrorCantCreateProject_Desc {
             get {
                 return ResourceManager.GetString("Msg_ErrorCantCreateProject_Desc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error.
-        /// </summary>
-        public static string Msg_ErrorDirectoryNotFound_Caption {
-            get {
-                return ResourceManager.GetString("Msg_ErrorDirectoryNotFound_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The specified directory doesn&apos;t exist..
-        /// </summary>
-        public static string Msg_ErrorDirectoryNotFound_Desc {
-            get {
-                return ResourceManager.GetString("Msg_ErrorDirectoryNotFound_Desc", resourceCulture);
             }
         }
         
@@ -956,6 +974,24 @@ namespace Duality.Editor.Properties {
         public static string Msg_PublishConfirmDeleteTargetDir_Desc {
             get {
                 return ResourceManager.GetString("Msg_PublishConfirmDeleteTargetDir_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Target Directory.
+        /// </summary>
+        public static string Msg_PublishProjectErrorNestedFolder_Caption {
+            get {
+                return ResourceManager.GetString("Msg_PublishProjectErrorNestedFolder_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The specified target folder is located within the current working directory. Please select one that is located elsewhere..
+        /// </summary>
+        public static string Msg_PublishProjectErrorNestedFolder_Desc {
+            get {
+                return ResourceManager.GetString("Msg_PublishProjectErrorNestedFolder_Desc", resourceCulture);
             }
         }
         

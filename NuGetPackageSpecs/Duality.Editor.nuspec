@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>1.3.10</version>
+    <version>1.3.11</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,9 +13,9 @@
 	<summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
-	<releaseNotes>PackageManager Tweaks
-#CHANGE: License agreements for installing packages no longer pop up when re-installing or verifying packages that have been already installed before.
-#CHANGE: Cleaned up some old code.
+	<releaseNotes>User Dialog Error Messages
+#ADD: Added more detailed error messages in "Publish Game" and "New Project" dialogs.
+#CHANGE: "New Project" dialog now automatically creates the target directory tree when necessary.
 	</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.6.0" />
