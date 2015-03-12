@@ -26,14 +26,18 @@ namespace Duality
 
 		public void AddGlobalDevices()
 		{
+			const int MinDeviceCheckCount = 8;
 			int deviceIndex = 0;
 			while (true)
 			{
 				GlobalJoystickInputSource joystick = new GlobalJoystickInputSource(deviceIndex);
 				joystick.UpdateState();
-				if (!joystick.IsAvailable) break;
 
-				this.AddSource(joystick);
+				if (joystick.IsAvailable)
+					this.AddSource(joystick);
+				else if (deviceIndex >= MinDeviceCheckCount)
+					break;
+
 				deviceIndex++;
 			}
 		}
