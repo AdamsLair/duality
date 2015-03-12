@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>1.6.0</version>
+    <version>1.6.1</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,8 +13,8 @@
 	<summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
 	<tags>Duality Core</tags>
-	<releaseNotes>ReflectionHelper Tweaks
-#CHANGE: When attempting to create an object via Reflection and the static constructor fails, the resulting Exception is logged as error.
+	<releaseNotes>Bugfixes
+#FIX: Fixed z sorting being broken in certain ScreenOverlay rendering cases due to rogue batching.
 	</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.NVorbis" version="0.7.4" />

@@ -166,7 +166,7 @@ namespace Duality.Drawing
 			}
 			public bool CanAppendJIT<U>(float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode) where U : struct, IVertexData
 			{
-				if (invZSortAccuracy > 0.0f && this.material.Technique.Res.NeedsZSort)
+				if (invZSortAccuracy > 0.0f)
 				{
 					if (Math.Abs(zSortIndex - this.ZSortIndex) > invZSortAccuracy) return false;
 				}

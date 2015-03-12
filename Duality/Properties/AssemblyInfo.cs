@@ -33,6 +33,6 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.0")]
-[assembly: AssemblyVersion("1.6.0")]
+[assembly: AssemblyVersion("1.6.1")]
 [assembly: InternalsVisibleTo("DualityEditor")]
 [assembly: NeutralResourcesLanguageAttribute("en-US", UltimateResourceFallbackLocation.MainAssembly)]
