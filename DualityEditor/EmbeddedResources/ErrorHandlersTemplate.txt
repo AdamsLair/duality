@@ -22,7 +22,7 @@ namespace ROOTNAMESPACE.ErrorHandlers
 					(fixedTypeId["OLDROOTNAMESPACE".Length] == '.' || fixedTypeId["OLDROOTNAMESPACE".Length] == '+'))
 				{
 					fixedTypeId = "ROOTNAMESPACE" + fixedTypeId.Remove(0, "OLDROOTNAMESPACE".Length);
-					resolveTypeError.ResolvedType = ReflectionHelper.ResolveType(fixedTypeId, false);
+					resolveTypeError.ResolvedType = ReflectionHelper.ResolveType(fixedTypeId);
 				}
 			}
 
