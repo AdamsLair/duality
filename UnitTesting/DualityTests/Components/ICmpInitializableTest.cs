@@ -51,32 +51,86 @@ namespace Duality.Tests.Resources
 
 			// Activate by Scene.Current
 			Scene.SwitchTo(this.scene, true);
-			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate));
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by Scene.Current");
 			initTester.Reset();
 
 			// Deactivate by GameObject.Active
 			this.obj.Active = false;
-			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by GameObject.Active");
 			initTester.Reset();
+
+			{
+				// Removing inactive object shouldn't trigger events
+				this.scene.RemoveObject(this.obj);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Removing inactive object shouldn't trigger events");
+				initTester.Reset();
+
+				// Adding inactive object shouldn't trigger events
+				this.scene.AddObject(this.obj);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Adding inactive object shouldn't trigger events");
+				initTester.Reset();
+
+				// Removing inactive objects Component shouldn't trigger events
+				this.obj.RemoveComponent(initTester);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Removing inactive objects Component shouldn't trigger events");
+				initTester.Reset();
+
+				// Adding inactive objects Component shouldn't trigger events
+				this.obj.AddComponent(initTester);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Adding inactive objects Component shouldn't trigger events");
+				initTester.Reset();
+			}
 
 			// Activate by GameObject.Active
 			this.obj.Active = true;
-			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate));
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by GameObject.Active");
 			initTester.Reset();
 
 			// Deactivate by Component.Active
 			initTester.Active = false;
-			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by Component.Active");
 			initTester.Reset();
+			
+			{
+				// Removing inactive Components object shouldn't trigger events
+				this.scene.RemoveObject(this.obj);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Removing inactive Components object shouldn't trigger events");
+				initTester.Reset();
+
+				// Adding inactive Components object shouldn't trigger events
+				this.scene.AddObject(this.obj);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Adding inactive Components object shouldn't trigger events");
+				initTester.Reset();
+
+				// Removing inactive Component shouldn't trigger events
+				this.obj.RemoveComponent(initTester);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Removing inactive Component shouldn't trigger events");
+				initTester.Reset();
+
+				// Adding inactive Component shouldn't trigger events
+				this.obj.AddComponent(initTester);
+				Assert.IsFalse(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Adding inactive Component shouldn't trigger events");
+				initTester.Reset();
+			}
 
 			// Activate by Component.Active
 			initTester.Active = true;
-			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate));
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by Component.Active");
+			initTester.Reset();
+
+			// Deactivate by removing from Scene
+			this.scene.RemoveObject(this.obj);
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by removing from Scene");
+			initTester.Reset();
+
+			// Activate by adding to Scene
+			this.scene.AddObject(this.obj);
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Activate), "Activate by adding to Scene");
 			initTester.Reset();
 
 			// Deactivate by Scene.Current
 			Scene.SwitchTo(null, true);
-			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate));
+			Assert.IsTrue(initTester.HasReceived(InitializableEventReceiver.EventFlag.Deactivate), "Deactivate by Scene.Current");
 			initTester.Reset();
 		}
 		[Test] public void DeactivateGameObjectDispose()

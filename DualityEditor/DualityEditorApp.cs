@@ -1447,11 +1447,13 @@ namespace Duality.Editor
 
 		private static void editorObjects_Registered(object sender, GameObjectEventArgs e)
 		{
-			e.Object.OnActivate();
+			if (e.Object.Active)
+				e.Object.OnActivate();
 		}
 		private static void editorObjects_Unregistered(object sender, GameObjectEventArgs e)
 		{
-			e.Object.OnDeactivate();
+			if (e.Object.Active || e.Object.Disposed)
+				e.Object.OnDeactivate();
 		}
 		private static void editorObjects_ComponentAdded(object sender, ComponentEventArgs e)
 		{

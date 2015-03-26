@@ -240,13 +240,13 @@ namespace Duality.Resources
 		}
 		private static void OnGameObjectAdded(GameObjectEventArgs args)
 		{
-			args.Object.OnActivate();
+			if (args.Object.Active) args.Object.OnActivate();
 			if (GameObjectAdded != null) GameObjectAdded(current, args);
 		}
 		private static void OnGameObjectRemoved(GameObjectEventArgs args)
 		{
 			if (GameObjectRemoved != null) GameObjectRemoved(current, args);
-			args.Object.OnDeactivate();
+			if (args.Object.Active || args.Object.Disposed) args.Object.OnDeactivate();
 		}
 		private static void OnComponentAdded(ComponentEventArgs args)
 		{

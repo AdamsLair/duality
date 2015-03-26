@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>1.3.13</version>
+    <version>1.3.14</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -14,10 +14,10 @@
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
 	<releaseNotes>Bugfixes
-#FIX: Fixed compile errors in new plugin solutions when creating a new Duality project from the current one using the "New Project" dialog.
+#FIX: Fixed OnActivate and OnDeactivate events being called twice when adding / removing inactive GameObjects to / from a Scene and then changing their state.
 	</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.6.2" />
+      <dependency id="AdamsLair.Duality" version="1.6.3" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.2" />
       <dependency id="AdamsLair.WinForms" version="1.0.16" />
