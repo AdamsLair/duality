@@ -537,7 +537,6 @@ namespace Duality.Resources
 						kerningY[ascentSamples + bodySamples + k] = this.BaseLine + (k + 1) * this.Descent / descentSamples;
 				}
 
-				int[] c = new int[3];
 				for (int i = 0; i < SupportedChars.Length; ++i)
 				{
 					Pixmap.Layer glyphTemp = this.GetGlyphBitmap(SupportedChars[i]);
@@ -547,37 +546,57 @@ namespace Duality.Resources
 
 					if (SupportedChars[i] != ' ')
 					{
-						int pxIndex;
 						// Left side samples
-						for (int sampleIndex = 0; sampleIndex < this.glyphs[i].kerningSamplesLeft.Length; sampleIndex++)
 						{
-							this.glyphs[i].kerningSamplesLeft[sampleIndex] = glyphTemp.Width / 2;
-							for (int off = 0; off <= 2; off++)
+							int[] leftData = this.glyphs[i].kerningSamplesLeft;
+							int leftMid = glyphTemp.Width / 2;
+							int lastSampleY = 0;
+							for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
 							{
-								pxIndex = MathF.Clamp(kerningY[sampleIndex] + off - 1, 0, glyphTemp.Height - 1) * glyphTemp.Width;
-								c[off] = 0;
-								while (glyphTemp.Data[pxIndex + c[off]].A == 0)
+								leftData[sampleIndex] = leftMid;
+
+								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
+								int endY = MathF.Clamp(kerningY[sampleIndex], 0, glyphTemp.Height);
+								if (sampleIndex == leftData.Length - 1) endY = glyphTemp.Height;
+								lastSampleY = endY;
+
+								for (int y = beginY; y < endY; y++)
 								{
-									c[off]++;
-									if (c[off] >= glyphTemp.Width / 2) break;
+									int x = 0;
+									while (glyphTemp[x, y].A <= 64)
+									{
+										x++;
+										if (x >= leftMid) break;
+									}
+									leftData[sampleIndex] = Math.Min(leftData[sampleIndex], x);
 								}
-								this.glyphs[i].kerningSamplesLeft[sampleIndex] = Math.Min(this.glyphs[i].kerningSamplesLeft[sampleIndex], c[off]);
 							}
 						}
+
 						// Right side samples
-						for (int sampleIndex = 0; sampleIndex < this.glyphs[i].kerningSamplesRight.Length; sampleIndex++)
 						{
-							this.glyphs[i].kerningSamplesRight[sampleIndex] = glyphTemp.Width / 2;
-							for (int off = 0; off <= 2; off++)
+							int[] rightData = this.glyphs[i].kerningSamplesRight;
+							int rightMid = (glyphTemp.Width + 1) / 2;
+							int lastSampleY = 0;
+							for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
 							{
-								pxIndex = MathF.Clamp(kerningY[sampleIndex] + off - 1, 0, glyphTemp.Height - 1) * glyphTemp.Width + glyphTemp.Width - 1;
-								c[off] = 0;
-								while (glyphTemp.Data[pxIndex - c[off]].A == 0)
+								rightData[sampleIndex] = rightMid;
+
+								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
+								int endY = MathF.Clamp(kerningY[sampleIndex], 0, glyphTemp.Height);
+								if (sampleIndex == rightData.Length - 1) endY = glyphTemp.Height;
+								lastSampleY = endY;
+
+								for (int y = beginY; y < endY; y++)
 								{
-									c[off]++;
-									if (c[off] >= glyphTemp.Width / 2) break;
+									int x = glyphTemp.Width - 1;
+									while (glyphTemp[x, y].A <= 64)
+									{
+										x--;
+										if (x <= rightMid) break;
+									}
+									rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphTemp.Width - 1 - x);
 								}
-								this.glyphs[i].kerningSamplesRight[sampleIndex] = Math.Min(this.glyphs[i].kerningSamplesRight[sampleIndex], c[off]);
 							}
 						}
 					}

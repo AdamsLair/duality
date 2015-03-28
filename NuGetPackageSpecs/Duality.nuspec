@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>1.6.3</version>
+    <version>1.6.4</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,8 +13,8 @@
 	<summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
 	<tags>Duality Core</tags>
-	<releaseNotes>Bugfixes
-#FIX: Fixed OnActivate and OnDeactivate events being called twice when adding / removing inactive GameObjects to / from a Scene and then changing their state.
+	<releaseNotes>Font Kerning Tweaks
+#CHANGE: Tweaked the algorithm that determine kerning values for imported Fonts to be more robust.
 	</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.NVorbis" version="0.7.4" />
