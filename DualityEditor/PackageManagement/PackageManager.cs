@@ -246,6 +246,29 @@ namespace Duality.Editor.PackageManagement
 			return allowed;
 		}
 
+		/// <summary>
+		/// Enumerates all target packages for local installs that could be updated.
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerable<PackageInfo> GetUpdatablePackages()
+		{
+			List<PackageInfo> updatePackages = new List<PackageInfo>();
+			LocalPackage[] targetPackages = this.localPackages.ToArray();
+			for (int i = 0; i < targetPackages.Length; i++)
+			{
+				PackageInfo update = this.QueryPackageInfo(targetPackages[i].PackageName.VersionInvariant);
+				if (update.Version <= targetPackages[i].Version) continue;
+				updatePackages.Add(update);
+			}
+			return updatePackages;
+		}
+
+		/// <summary>
+		/// Determines compatibility between the current package installs and the specified target package.
+		/// Works for both updates and new installs.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
 		public PackageCompatibility GetCompatibilityLevel(PackageInfo target)
 		{
 			// If the target package is already installed in the matching version, assume compatibility

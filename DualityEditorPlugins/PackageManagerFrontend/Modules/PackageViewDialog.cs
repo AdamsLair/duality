@@ -288,6 +288,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 		private void InstallPackage(PackageInfo info)
 		{
+			if (!this.ConfirmCompatibility(info))
+				return;
+
 			bool anythingChanged = false;
 			EventHandler<PackageEventArgs> listener = delegate (object sender, PackageEventArgs e)
 			{
@@ -352,6 +355,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void UpdatePackage(PackageInfo info)
 		{
+			if (!this.ConfirmCompatibility(info))
+				return;
+
 			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
 				PackageManagerFrontendRes.TaskUpdatePackages_Caption, 
 				PackageManagerFrontendRes.TaskUpdatePackages_Desc, 
@@ -367,6 +373,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void UpdateAllPackages()
 		{
+			if (!this.ConfirmCompatibility(this.packageManager.GetUpdatablePackages()))
+				return;
+
 			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
 				PackageManagerFrontendRes.TaskUpdatePackages_Caption, 
 				PackageManagerFrontendRes.TaskUpdatePackages_Desc, 
@@ -379,6 +388,34 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.modelInstalled.ApplyChanges();
 			this.restartRequired = true;
 			this.UpdateBottomButtons();
+		}
+		
+		private bool ConfirmCompatibility(PackageInfo package)
+		{
+			return this.ConfirmCompatibility(this.packageManager.GetCompatibilityLevel(package));
+		}
+		private bool ConfirmCompatibility(IEnumerable<PackageInfo> packages)
+		{
+			PackageCompatibility compatibility = PackageCompatibility.Definite;
+			foreach (PackageInfo package in packages)
+			{
+				PackageCompatibility otherCompat = this.packageManager.GetCompatibilityLevel(package);
+				compatibility = compatibility.Combine(otherCompat);
+			}
+			return this.ConfirmCompatibility(compatibility);
+		}
+		private bool ConfirmCompatibility(PackageCompatibility compatibility)
+		{
+			if (compatibility.IsAtLeast(PackageCompatibility.Likely)) return true;
+
+			DialogResult result = MessageBox.Show(this,
+				PackageManagerFrontendRes.MsgConfirmIncompatibleOperation_Desc,
+				PackageManagerFrontendRes.MsgConfirmIncompatibleOperation_Caption,
+				MessageBoxButtons.YesNo,
+				MessageBoxIcon.Warning,
+				MessageBoxDefaultButton.Button2);
+
+			return result == DialogResult.Yes;
 		}
 
 		protected override void OnLoad(EventArgs e)
@@ -677,21 +714,15 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			yield return null;
 			
 			// Determine which packages need to be updated
-			List<PackageInfo> updatePackages = new List<PackageInfo>();
-			{
-				LocalPackage[] targetPackages = manager.LocalPackages.ToArray();
-				for (int i = 0; i < targetPackages.Length; i++)
-				{
-					PackageInfo update = manager.QueryPackageInfo(targetPackages[i].PackageName.VersionInvariant);
-					if (update.Version <= targetPackages[i].Version) continue;
-					updatePackages.Add(update);
-				}
-			}
+			PackageInfo[] updatePackages = manager.GetUpdatablePackages().ToArray();
 
+			// Sort packages by their dependencies so we don't accidentally install multiple versions
 			manager.OrderByDependencies(updatePackages);
+
+			// Start the updating process
 			foreach (PackageInfo package in updatePackages)
 			{
-				workerInterface.Progress += 1.0f / updatePackages.Count;
+				workerInterface.Progress += 1.0f / updatePackages.Length;
 				workerInterface.StateDesc = string.Format("Package '{0}'...", package.Id);
 				yield return null;
 

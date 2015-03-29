@@ -209,6 +209,24 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Compatibility.
+        /// </summary>
+        public static string MsgConfirmIncompatibleOperation_Caption {
+            get {
+                return ResourceManager.GetString("MsgConfirmIncompatibleOperation_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is a major version difference between some of the new target packages and local package versions. Compatibility cannot be guaranteed. Continue anyway?.
+        /// </summary>
+        public static string MsgConfirmIncompatibleOperation_Desc {
+            get {
+                return ResourceManager.GetString("MsgConfirmIncompatibleOperation_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No description available.
         /// </summary>
         public static string NoDescAvailable {
@@ -281,7 +299,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package is not supported by your Duality version..
+        ///   Looks up a localized string similar to This package is not supported by your Duality installation..
         /// </summary>
         public static string TooltipInstallNoCompatibility {
             get {
@@ -290,7 +308,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package is potentially incompatible with already installed packages..
+        ///   Looks up a localized string similar to This package is likely incompatible with other packages in your project..
         /// </summary>
         public static string TooltipInstallUnlikelyCompatibility {
             get {

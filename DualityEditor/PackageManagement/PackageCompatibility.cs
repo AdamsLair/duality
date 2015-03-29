@@ -19,5 +19,9 @@
 			else
 				return (PackageCompatibility)MathF.Min((int)self, (int)other);
 		}
+		public static bool IsAtLeast(this PackageCompatibility self, PackageCompatibility other)
+		{
+			return (int)self >= (int)other;
+		}
 	}
 }
