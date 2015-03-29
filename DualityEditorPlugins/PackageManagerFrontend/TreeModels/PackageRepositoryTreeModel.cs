@@ -106,6 +106,37 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 
 		}
+		
+		/// <summary>
+		/// Rebuilds the entire model.
+		/// </summary>
+		public virtual void Refresh()
+		{
+			while (!this.itemsToRead.IsEmpty)
+			{
+				BaseItem item;
+				this.itemsToRead.TryDequeue(out item);
+			}
+			while (!this.itemsToGetIcon.IsEmpty)
+			{
+				BaseItem item;
+				this.itemsToGetIcon.TryDequeue(out item);
+			}
+			lock (this.itemLock)
+			{
+				this.items.Clear();
+			}
+			if (this.StructureChanged != null)
+				this.StructureChanged(this, new TreePathEventArgs());
+		}
+		/// <summary>
+		/// Performs a main-thread update on the item model to process
+		/// update operations that were scheduled from worker threads.
+		/// </summary>
+		public virtual void ApplyChanges()
+		{
+			this.RunBackgroundWorkers();
+		}
 
 		public IEnumerable GetChildren(TreePath treePath)
 		{
@@ -143,26 +174,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			return true;
 		}
 
-		public virtual void Refresh()
-		{
-			while (!this.itemsToRead.IsEmpty)
-			{
-				BaseItem item;
-				this.itemsToRead.TryDequeue(out item);
-			}
-			while (!this.itemsToGetIcon.IsEmpty)
-			{
-				BaseItem item;
-				this.itemsToGetIcon.TryDequeue(out item);
-			}
-			lock (this.itemLock)
-			{
-				this.items.Clear();
-			}
-			if (this.StructureChanged != null)
-				this.StructureChanged(this, new TreePathEventArgs());
-		}
-
 		protected abstract IEnumerable<object> EnumeratePackages();
 		protected abstract BaseItem CreatePackageItem(object package, BaseItem parentItem);
 		
@@ -170,6 +181,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			this.itemsToRead.Enqueue(item);
 			this.itemsToGetIcon.Enqueue(item);
+		}
+		/// <summary>
+		/// Wakes info and icon loaders to read online item data.
+		/// </summary>
+		protected void RunBackgroundWorkers()
+		{
+			if (!this.itemInfoLoader.IsBusy && !this.itemsToRead.IsEmpty)
+				this.itemInfoLoader.RunWorkerAsync();
+			if (!this.itemIconLoader.IsBusy && !this.itemsToGetIcon.IsEmpty)
+				this.itemIconLoader.RunWorkerAsync();
 		}
 		protected BaseItem GetItem(string packageId, Version packageVersion)
 		{
@@ -191,6 +212,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 					this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
 				}
 			}
+
+			// Wake info and icon loaders to read online item data
+			this.RunBackgroundWorkers();
 		}
 		protected void RemoveItem(BaseItem item)
 		{
@@ -308,14 +332,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 
 			// Wake info and icon loaders to read online item data
-			if (!this.itemInfoLoader.IsBusy && !this.itemsToRead.IsEmpty)
-			{
-				this.itemInfoLoader.RunWorkerAsync();
-			}
-			if (!this.itemIconLoader.IsBusy && !this.itemsToGetIcon.IsEmpty)
-			{
-				this.itemIconLoader.RunWorkerAsync();
-			}
+			this.RunBackgroundWorkers();
 		}
 		private void Worker_ReadItemData(object sender, DoWorkEventArgs e)
 		{

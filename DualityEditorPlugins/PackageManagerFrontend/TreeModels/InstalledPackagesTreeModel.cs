@@ -64,8 +64,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				this.changeQueue.TryDequeue(out change);
 			}
 		}
-		public void ApplyChanges()
+		public override void ApplyChanges()
 		{
+			base.ApplyChanges();
 			while (!this.changeQueue.IsEmpty)
 			{
 				ChangeEvent change;

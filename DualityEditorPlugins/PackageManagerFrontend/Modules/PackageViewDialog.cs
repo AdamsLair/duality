@@ -331,6 +331,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			{
 				this.packageList.Invalidate();
 				this.modelInstalled.ApplyChanges();
+				this.modelOnline.ApplyChanges();
 				this.restartRequired = operationSuccessful;
 				this.UpdateBottomButtons();
 			}
@@ -363,6 +364,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			{
 				this.packageList.Invalidate();
 				this.modelInstalled.ApplyChanges();
+				this.modelOnline.ApplyChanges();
 				this.restartRequired = operationSuccessful;
 				this.UpdateBottomButtons();
 			}
@@ -382,6 +384,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.packageList.Invalidate();
 			this.modelInstalled.ApplyChanges();
+			this.modelOnline.ApplyChanges();
 			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
 			this.UpdateBottomButtons();
 		}
@@ -400,6 +403,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.packageList.Invalidate();
 			this.modelInstalled.ApplyChanges();
+			this.modelOnline.ApplyChanges();
 			this.restartRequired = true;
 			this.UpdateBottomButtons();
 		}
@@ -467,6 +471,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.UpdateInfoArea();
 			this.UpdateBottomButtons();
+			this.packageList.Invalidate();
 			this.timerPackageModelChanged.Enabled = false;
 		}
 		private void modelOnline_NodesChanged(object sender, TreeModelEventArgs e)
