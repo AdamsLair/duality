@@ -58,26 +58,40 @@ namespace Duality.Updater
 
 				try
 				{
+					CommandResult result = CommandResult.Failure;
+
 					switch (command.Type)
 					{
 						case CommandType.Remove:
-							PerformRemove(command.Element);
+							result = PerformRemove(command.Element);
 							break;
 						case CommandType.Update:
-							PerformUpdate(command.Element);
+							result = PerformUpdate(command.Element);
 							break;
 						case CommandType.IntegrateProject:
-							PerformIntegrateProject(command.Element);
+							result = PerformIntegrateProject(command.Element);
 							break;
 						case CommandType.SeparateProject:
-							PerformSeparateProject(command.Element);
+							result = PerformSeparateProject(command.Element);
 							break;
 						default:
 							throw new InvalidOperationException(string.Format("Unknown command: {0}", command.Element.Name));
 					}
 
-					Console.ForegroundColor = ConsoleColor.Green;
-					Console.WriteLine("success");
+					if (result == CommandResult.Skip)
+					{
+						Console.ForegroundColor = ConsoleColor.Cyan;
+						Console.WriteLine("skip");
+					}
+					else if (result == CommandResult.Success)
+					{
+						Console.ForegroundColor = ConsoleColor.Green;
+						Console.WriteLine("success");
+					}
+					else
+					{
+						throw new InvalidOperationException("Operation failed due to unknown reason.");
+					}
 					Console.ResetColor();
 				}
 				catch (Exception e)
@@ -124,24 +138,30 @@ namespace Duality.Updater
 			}
 		}
 
-		private static void PerformRemove(XElement commandElement)
+		private static CommandResult PerformRemove(XElement commandElement)
 		{
 			XAttribute attribTarget = commandElement.Attribute("target");
 			string target = (attribTarget != null) ? attribTarget.Value : null;
 
 			// Self Update is not supported. Skip it.
 			if (string.Equals(Path.GetFileName(target), selfFileName, StringComparison.InvariantCultureIgnoreCase))
-				return;
+				return CommandResult.Skip;
 			
 			PrettyPrint.PrintCommand(
 				new PrettyPrint.Element("Delete", PrettyPrint.ElementType.Command),
 				new PrettyPrint.Element(target, PrettyPrint.ElementType.FilePathArgument));
 			IOHelper.WaitForLockRelease(target);
 
-			File.Delete(target);
+			if (File.Exists(target))
+				File.Delete(target);
+			else
+				return CommandResult.Skip;
+
 			IOHelper.RemoveEmptyDirectory(Path.GetDirectoryName(target));
+
+			return CommandResult.Success;
 		}
-		private static void PerformUpdate(XElement commandElement)
+		private static CommandResult PerformUpdate(XElement commandElement)
 		{
 			XAttribute attribSource = commandElement.Attribute("source");
 			XAttribute attribTarget = commandElement.Attribute("target");
@@ -150,7 +170,7 @@ namespace Duality.Updater
 			
 			// Self Update is not supported. Skip it.
 			if (string.Equals(Path.GetFileName(target), selfFileName, StringComparison.InvariantCultureIgnoreCase))
-				return;
+				return CommandResult.Skip;
 
 			PrettyPrint.PrintCommand(
 				new PrettyPrint.Element("Copy", PrettyPrint.ElementType.Command),
@@ -164,8 +184,10 @@ namespace Duality.Updater
 				Directory.CreateDirectory(targetDir);
 
 			File.Copy(source, target, true);
+
+			return CommandResult.Success;
 		}
-		private static void PerformIntegrateProject(XElement commandElement)
+		private static CommandResult PerformIntegrateProject(XElement commandElement)
 		{
 			XAttribute attribProject = commandElement.Attribute("project");
 			XAttribute attribSolution = commandElement.Attribute("solution");
@@ -185,8 +207,7 @@ namespace Duality.Updater
 
 			if (!File.Exists(solutionFile))
 			{
-				Console.Write("(skip) ");
-				return;
+				return CommandResult.Skip;
 			}
 
 			IOHelper.WaitForLockRelease(projectFile, solutionFile);
@@ -353,8 +374,10 @@ namespace Duality.Updater
 
 				File.WriteAllLines(solutionFile, solutionLines);
 			}
+
+			return CommandResult.Success;
 		}
-		private static void PerformSeparateProject(XElement commandElement)
+		private static CommandResult PerformSeparateProject(XElement commandElement)
 		{
 			XAttribute attribProject = commandElement.Attribute("project");
 			XAttribute attribSolution = commandElement.Attribute("solution");
@@ -371,8 +394,7 @@ namespace Duality.Updater
 
 			if (!File.Exists(solutionFile))
 			{
-				Console.Write("(skip) ");
-				return;
+				return CommandResult.Skip;
 			}
 
 			IOHelper.WaitForLockRelease(projectFile, solutionFile);
@@ -402,6 +424,8 @@ namespace Duality.Updater
 
 				File.WriteAllLines(solutionFile, solutionLines);
 			}
+
+			return CommandResult.Success;
 		}
 
 		private enum CommandType
@@ -411,6 +435,12 @@ namespace Duality.Updater
 			Update,
 			IntegrateProject,
 			SeparateProject
+		}
+		private enum CommandResult
+		{
+			Success,
+			Failure,
+			Skip
 		}
 		private struct CommandInfo
 		{
