@@ -312,6 +312,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			if (anythingChanged)
 			{
+				this.packageList.Invalidate();
 				this.modelInstalled.ApplyChanges();
 				this.restartRequired = operationSuccessful;
 				this.UpdateBottomButtons();
@@ -343,6 +344,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			
 			if (anythingChanged)
 			{
+				this.packageList.Invalidate();
 				this.modelInstalled.ApplyChanges();
 				this.restartRequired = operationSuccessful;
 				this.UpdateBottomButtons();
@@ -357,6 +359,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				new PackageOperationData(this.packageManager, info, d => d.Manager.UpdatePackage(d.Package)));
 			setupDialog.MainThreadRequired = false;
 			setupDialog.ShowDialog();
+
+			this.packageList.Invalidate();
 			this.modelInstalled.ApplyChanges();
 			this.restartRequired = (setupDialog.DialogResult == DialogResult.OK);
 			this.UpdateBottomButtons();
@@ -370,6 +374,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.packageManager);
 			setupDialog.MainThreadRequired = false;
 			setupDialog.ShowDialog();
+
+			this.packageList.Invalidate();
 			this.modelInstalled.ApplyChanges();
 			this.restartRequired = true;
 			this.UpdateBottomButtons();
