@@ -669,12 +669,23 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			workerInterface.Progress = 0.0f;
 			workerInterface.StateDesc = GeneralRes.TaskPrepareInfo;
 			yield return null;
+			
+			// Determine which packages need to be updated
+			List<PackageInfo> updatePackages = new List<PackageInfo>();
+			{
+				LocalPackage[] targetPackages = manager.LocalPackages.ToArray();
+				for (int i = 0; i < targetPackages.Length; i++)
+				{
+					PackageInfo update = manager.QueryPackageInfo(targetPackages[i].PackageName.VersionInvariant);
+					if (update.Version <= targetPackages[i].Version) continue;
+					updatePackages.Add(update);
+				}
+			}
 
-			PackageInfo[] updatePackages = manager.GetSafeUpdateConfig(manager.LocalPackages).ToArray();
 			manager.OrderByDependencies(updatePackages);
 			foreach (PackageInfo package in updatePackages)
 			{
-				workerInterface.Progress += 1.0f / updatePackages.Length;
+				workerInterface.Progress += 1.0f / updatePackages.Count;
 				workerInterface.StateDesc = string.Format("Package '{0}'...", package.Id);
 				yield return null;
 

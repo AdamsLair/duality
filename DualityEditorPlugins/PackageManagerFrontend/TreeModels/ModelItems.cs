@@ -28,6 +28,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		}
 
 		public abstract void RetrieveAsyncData(PackageManager manager);
+		public abstract void RetrieveIcon();
 	}
 	public abstract class PackageItem : BaseItem
 	{
@@ -72,13 +73,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		protected	object					asyncDataLock		= new object();
 		protected	PackageInfo				itemPackageInfo		= null;
 		private		Image					icon				= DefaultPackageIcon;
-		private		PackageCompatibility	updateCompatibility	= PackageCompatibility.None;
+		private		PackageCompatibility	compatibility		= PackageCompatibility.Unknown;
 		
 		public abstract PackageInfo InstalledPackageInfo { get; }
 		public abstract PackageInfo NewestPackageInfo { get; }
-		public PackageCompatibility UpdateCompatibility
+		public PackageCompatibility Compatibility
 		{
-			get { return this.updateCompatibility; }
+			get { return this.compatibility; }
 		}
 		public bool IsInstalled
 		{
@@ -152,57 +153,47 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		{
 			this.itemPackageInfo = packageInfo;
 		}
-		public override void RetrieveAsyncData(PackageManager manager)
+		public override void RetrieveIcon()
 		{
-			// Retrieve Icon
+			PackageInfo info = this.itemPackageInfo;
 			Image newIcon = null;
-			if (this.itemPackageInfo != null) newIcon = this.RetrieveIcon(this.itemPackageInfo);
-			lock (this.asyncDataLock)
-			{
-				this.icon = newIcon;
-			}
-		}
-		protected Image RetrieveIcon(PackageInfo info)
-		{
-			if (info == null) return DefaultPackageIcon;
 
-			Image icon = null;
-			if (info.IconUrl != null)
+			if (info != null && info.IconUrl != null)
 			{
 				// Determine the local cache name of the icon.
 				string cacheFileName = GetLocalUrlCacheFileName(info.IconUrl);
 				string cacheFilePath = Path.Combine(PackageIconCacheDir, cacheFileName);
 
 				// Attempt to load the icon from the local cache.
-				if (icon == null)
+				if (newIcon == null)
 				{
 					try
 					{
 						if (File.Exists(cacheFilePath))
 						{
-							icon = Bitmap.FromFile(cacheFilePath) as Bitmap;
+							newIcon = Bitmap.FromFile(cacheFilePath) as Bitmap;
 						}
 					}
 					catch (Exception) {}
 				}
 
 				// Download the image from the specified URL and save it.
-				if (icon == null)
+				if (newIcon == null)
 				{
 					try
 					{
 						HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(info.IconUrl);
-						httpWebRequest.Timeout = 1000;
+						httpWebRequest.Timeout = 3000;
 						using (HttpWebResponse httpWebReponse = (HttpWebResponse)httpWebRequest.GetResponse())
 						{
 							using (Stream stream = httpWebReponse.GetResponseStream())
 							{
 								Bitmap rawIcon = Bitmap.FromStream(stream) as Bitmap;
-								icon = rawIcon.ScaleToFit(32, 32, System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic);
+								newIcon = rawIcon.ScaleToFit(32, 32, System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic);
 
 								// Save the scaled image to the cache
 								Directory.CreateDirectory(PackageIconCacheDir);
-								icon.Save(cacheFilePath);
+								newIcon.Save(cacheFilePath);
 							}
 						}
 					}
@@ -210,14 +201,21 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				}
 			}
 
-			return icon ?? DefaultPackageIcon;
+			// Fall back to the default icon
+			newIcon = newIcon ?? DefaultPackageIcon;
+
+			// Apply the icon image back to the model item
+			lock (this.asyncDataLock)
+			{
+				this.icon = newIcon;
+			}
 		}
 		protected void GetUpdateCompatibility(PackageManager manager)
 		{
-			PackageCompatibility compatibility = manager.GetForwardCompatibility(this.NewestPackageInfo);
+			PackageCompatibility compatibility = manager.GetCompatibilityLevel(this.NewestPackageInfo);
 			lock (this.asyncDataLock)
 			{
-				this.updateCompatibility = compatibility;
+				this.compatibility = compatibility;
 			}
 		}
 
@@ -254,8 +252,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		public LocalPackageItem(LocalPackage package, BaseItem parent) : base(package.Info, parent) {}
 		public override void RetrieveAsyncData(PackageManager manager)
 		{
-			base.RetrieveAsyncData(manager);
-
 			// Retrieve info about newest online version
 			PackageInfo newestPackage = manager.QueryPackageInfo(this.itemPackageInfo.PackageName.VersionInvariant);
 			lock (this.asyncDataLock)
@@ -286,7 +282,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		public OnlinePackageItem(PackageInfo package, BaseItem parent) : base(package, parent) {}
 		public override void RetrieveAsyncData(PackageManager manager)
 		{
-			base.RetrieveAsyncData(manager);
 			this.UpdateLocalPackageData(manager);
 			this.GetUpdateCompatibility(manager);
 		}

@@ -119,7 +119,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		private void InstallPackage(PackageInfo package, bool skipLicense)
 		{
-			NuGet.IPackage newPackage = this.FindPackageInfo(package.PackageName, false);
+			NuGet.IPackage newPackage = this.FindPackageInfo(package.PackageName);
 
 			// Check license terms
 			if (!skipLicense && !this.CheckDeepLicenseAgreements(newPackage))
@@ -212,7 +212,7 @@ namespace Duality.Editor.PackageManagement
 		}
 		public void UpdatePackage(LocalPackage package)
 		{
-			NuGet.IPackage newPackage = this.FindPackageInfo(new PackageName(package.Id), false);
+			NuGet.IPackage newPackage = this.FindPackageInfo(new PackageName(package.Id));
 			
 			// Check license terms
 			if (!this.CheckDeepLicenseAgreements(newPackage))
@@ -246,67 +246,39 @@ namespace Duality.Editor.PackageManagement
 			return allowed;
 		}
 
-		/// <summary>
-		/// Determines whether all installed pacakges are forward compatible to <paramref name="target"/>.
-		/// </summary>
-		/// <param name="target"></param>
-		/// <returns></returns>
-		public PackageCompatibility GetForwardCompatibility(PackageInfo target)
+		public PackageCompatibility GetCompatibilityLevel(PackageInfo target)
 		{
-			LocalPackage current = this.localPackages.FirstOrDefault(p => p.Id == target.Id);
-			if (current == null)
+			// If the target package is already installed in the matching version, assume compatibility
+			if (this.localPackages.Any(local => local.Id == target.Id && local.Version == target.Version))
 				return PackageCompatibility.Definite;
 
-			Version currentVersion = current.Version;
-			Version targetVersion = target.Version;
+			// Determine all packages that might be updated or installed
+			PackageInfo[] touchedPackages = this.GetDeepDependencies(new[] { target }).ToArray();
 
-			// ToDo: Implement a more sophisticated algorithm
-
-			if (currentVersion.Major != targetVersion.Major)
-				return PackageCompatibility.Unlikely;
-			else if (currentVersion.Minor != targetVersion.Minor)
-				return PackageCompatibility.Likely;
-			else
-				return PackageCompatibility.Definite;
-		}
-		/// <summary>
-		/// Given the specified set of packages, this method returns a new set of the same packages where each version is the newest one
-		/// that can be safely updated to, given the specified minimum forward compatibility level. If a package cannot be updated at all,
-		/// it will be omitted in the resulting list.
-		/// </summary>
-		/// <param name="packages"></param>
-		/// <param name="minCompatibility"></param>
-		/// <returns></returns>
-		public IEnumerable<PackageInfo> GetSafeUpdateConfig(IEnumerable<PackageInfo> packages, PackageCompatibility minCompatibility)
-		{
-			List<PackageInfo> safeUpdateList = new List<PackageInfo>();
-			PackageInfo[] targetPackages = packages.ToArray();
-
-			for (int i = 0; i < targetPackages.Length; i++)
+			// Generate a mapping to already installed packages
+			Dictionary<PackageInfo,LocalPackage> localMap = new Dictionary<PackageInfo,LocalPackage>();
+			foreach (PackageInfo package in touchedPackages)
 			{
-				PackageInfo package = targetPackages[i];
-				PackageInfo update = this.QueryPackageInfo(package.PackageName.VersionInvariant);
-				if (update.Version <= package.Version) continue;
+				LocalPackage local = this.localPackages.FirstOrDefault(p => p.Id == package.Id);
+				if (local == null) continue;
 
-				// ToDo: Implement this
-
-				safeUpdateList.Add(update);
+				localMap.Add(package, local);
 			}
 
-			return safeUpdateList;
-		}
-		/// <summary>
-		/// Given the specified set of packages, this method returns a new set of the same packages where each version is the newest one
-		/// that can be safely updated to, given the specified minimum forward compatibility level. If a package cannot be updated at all,
-		/// it will be omitted in the resulting list.
-		/// </summary>
-		/// <param name="packages"></param>
-		/// <param name="minCompatibility"></param>
-		/// <returns></returns>
-		public IEnumerable<PackageInfo> GetSafeUpdateConfig(IEnumerable<LocalPackage> packages, PackageCompatibility minCompatibility = PackageCompatibility.Likely)
-		{
-			var localInfo = packages.Select(p => p.Info ?? this.QueryPackageInfo(p.PackageName)).ToArray();
-			return this.GetSafeUpdateConfig(localInfo, minCompatibility);
+			// Determine the maximum version difference between target and installed
+			PackageCompatibility compatibility = PackageCompatibility.Definite;
+			foreach (var pair in localMap)
+			{
+				Version targetVersion = pair.Key.Version;
+				Version localVersion = pair.Value.Version;
+				
+				if (localVersion.Major != targetVersion.Major)
+					compatibility = compatibility.Combine(PackageCompatibility.Unlikely);
+				else if (localVersion.Minor != targetVersion.Minor)
+					compatibility = compatibility.Combine(PackageCompatibility.Likely);
+			}
+
+			return compatibility;
 		}
 
 		/// <summary>
@@ -394,6 +366,16 @@ namespace Duality.Editor.PackageManagement
 			return true;
 		}
 		
+		/// <summary>
+		/// Enumerates the complete dependency tree of the specified packages.
+		/// </summary>
+		/// <param name="package"></param>
+		/// <returns></returns>
+		private IEnumerable<PackageInfo> GetDeepDependencies(IEnumerable<PackageInfo> packages)
+		{
+			Dictionary<PackageInfo,int> deepDependencyCount = this.GetDeepDependencyCount(packages);
+			return deepDependencyCount.Keys;
+		}
 		/// <summary>
 		/// Determines the number of deep dependencies for each package in the specified collection.
 		/// </summary>
@@ -523,18 +505,14 @@ namespace Duality.Editor.PackageManagement
 		}
 		public PackageInfo QueryPackageInfo(PackageName packageRef)
 		{
-			return this.QueryPackageInfo(packageRef, false);
-		}
-		private PackageInfo QueryPackageInfo(PackageName packageRef, bool findMaxVersionBelow)
-		{
-			NuGet.IPackage package = this.FindPackageInfo(packageRef, findMaxVersionBelow);
+			NuGet.IPackage package = this.FindPackageInfo(packageRef);
 			return package != null ? this.CreatePackageInfo(package) : null;
 		}
 		
-		private NuGet.IPackage FindPackageInfo(PackageName packageRef, bool findMaxVersionBelow)
+		private NuGet.IPackage FindPackageInfo(PackageName packageRef)
 		{
 			// Find a direct version match
-			if (packageRef.Version != null && !findMaxVersionBelow)
+			if (packageRef.Version != null)
 			{
 				// Query locally first, since we're looking for a specific version number anyway.
 				foreach (NuGet.IPackage package in this.manager.LocalRepository.FindPackagesById(packageRef.Id))
@@ -572,8 +550,6 @@ namespace Duality.Editor.PackageManagement
 				}
 
 				var packageQuery = data.Where(p => p.IsListed() && p.IsReleaseVersion());
-				if (findMaxVersionBelow && packageRef.Version != null)
-					packageQuery = packageQuery.Where(p => p.Version.Version < packageRef.Version);
 
 				NuGet.IPackage newestPackage = packageQuery
 					.OrderByDescending(p => p.Version.Version)
@@ -647,7 +623,7 @@ namespace Duality.Editor.PackageManagement
 		private bool CheckDeepLicenseAgreements(NuGet.IPackage package)
 		{
 			var deepDependencyCountDict = this.GetDeepDependencyCount(new[] { this.CreatePackageInfo(package) });
-			NuGet.IPackage[] deepPackages = deepDependencyCountDict.Keys.Select(i => this.FindPackageInfo(i.PackageName.VersionInvariant, false)).ToArray();
+			NuGet.IPackage[] deepPackages = deepDependencyCountDict.Keys.Select(i => this.FindPackageInfo(i.PackageName.VersionInvariant)).ToArray();
 
 			foreach (NuGet.IPackage p in deepPackages)
 			{

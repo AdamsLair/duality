@@ -36,14 +36,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			PackageItem item = node.Tag as PackageItem;
 			Version itemVersion = null;
 			Version newVersion = null;
-			PackageCompatibility updateCompatibility = PackageCompatibility.None;
+			PackageCompatibility compatibility = PackageCompatibility.None;
 			bool highlightItemVersion = item is LocalPackageItem;
 			bool isInstalled = false;
 			bool isUpToDate = false;
 			if (item != null)
 			{
 				isInstalled = item.InstalledPackageInfo != null;
-				updateCompatibility = item.UpdateCompatibility;
+				compatibility = item.Compatibility;
 
 				if (item.InstalledPackageInfo != null)
 					itemVersion = item.InstalledPackageInfo.Version;
@@ -63,18 +63,25 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			Brush backgroundBrush = null;
 			Image icon = null;
 			if (isInstalled) backgroundBrush = new SolidBrush(Color.FromArgb(32, 128, 128, 128));
-			if (isInstalled && newVersion != null && itemVersion != null)
+			if (newVersion != null && itemVersion != null)
 			{
-				if (newVersion <= itemVersion)
-					icon = Properties.PackageManagerFrontendResCache.IconUpToDate;
-				else if (updateCompatibility == PackageCompatibility.Definite)
-					icon = Properties.PackageManagerFrontendResCache.IconSafeUpdate;
-				else if (updateCompatibility == PackageCompatibility.Likely)
-					icon = Properties.PackageManagerFrontendResCache.IconLikelySafeUpdate;
-				else if (updateCompatibility == PackageCompatibility.Unlikely)
-					icon = Properties.PackageManagerFrontendResCache.IconLikelyUnsafeUpdate;
+				if (isInstalled)
+				{
+					if (newVersion <= itemVersion)
+						icon = Properties.PackageManagerFrontendResCache.IconUpToDate;
+					else if (compatibility == PackageCompatibility.Definite)
+						icon = Properties.PackageManagerFrontendResCache.IconSafeUpdate;
+					else if (compatibility == PackageCompatibility.Likely)
+						icon = Properties.PackageManagerFrontendResCache.IconLikelySafeUpdate;
+					else if (compatibility == PackageCompatibility.Unlikely)
+						icon = Properties.PackageManagerFrontendResCache.IconLikelyUnsafeUpdate;
+					else if (compatibility == PackageCompatibility.None)
+						icon = Properties.PackageManagerFrontendResCache.IconIncompatibleUpdate;
+				}
 				else
-					icon = Properties.PackageManagerFrontendResCache.IconIncompatibleUpdate;
+				{
+
+				}
 			}
 
 			// Calculate drawing layout and data
@@ -146,7 +153,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			if (item.IsUpdatable)
 			{
-				switch (item.UpdateCompatibility)
+				switch (item.Compatibility)
 				{
 					case PackageCompatibility.Definite:
 						return Properties.PackageManagerFrontendRes.TooltipUpdateDefiniteCompatibility;

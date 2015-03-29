@@ -26,7 +26,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		private		List<BaseItem>					items				= new List<BaseItem>();
 		private		BackgroundWorker				itemRetriever		= null;
 		private		BackgroundWorker				itemInfoLoader		= null;
+		private		BackgroundWorker				itemIconLoader		= null;
 		private		ConcurrentQueue<BaseItem>		itemsToRead			= new ConcurrentQueue<BaseItem>();
+		private		ConcurrentQueue<BaseItem>		itemsToGetIcon		= new ConcurrentQueue<BaseItem>();
 		private		object							itemLock			= new object();
 		private		bool							requireFullSort		= false;
 		private		IComparer<BaseItem>				sortComparer		= null;
@@ -72,6 +74,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			this.itemInfoLoader.WorkerReportsProgress = true;
 			this.itemInfoLoader.DoWork += this.Worker_ReadItemData;
 			this.itemInfoLoader.ProgressChanged += this.Worker_ProgressChanged;
+
+			this.itemIconLoader = new BackgroundWorker();
+			this.itemIconLoader.WorkerReportsProgress = true;
+			this.itemIconLoader.DoWork += this.Worker_ReadItemIcon;
+			this.itemIconLoader.ProgressChanged += this.Worker_IconChanged;
 			
 			this.itemRetriever = new BackgroundWorker();
 			this.itemRetriever.WorkerReportsProgress = true;
@@ -143,6 +150,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				BaseItem item;
 				this.itemsToRead.TryDequeue(out item);
 			}
+			while (!this.itemsToGetIcon.IsEmpty)
+			{
+				BaseItem item;
+				this.itemsToGetIcon.TryDequeue(out item);
+			}
 			lock (this.itemLock)
 			{
 				this.items.Clear();
@@ -157,10 +169,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		protected void ReadItemData(BaseItem item)
 		{
 			this.itemsToRead.Enqueue(item);
-			if (!this.itemInfoLoader.IsBusy)
-			{
-				this.itemInfoLoader.RunWorkerAsync();
-			}
+			this.itemsToGetIcon.Enqueue(item);
 		}
 		protected BaseItem GetItem(string packageId, Version packageVersion)
 		{
@@ -292,17 +301,20 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			if (this.NodesInserted != null)
 			{
 				int newIndex = this.GetItemIndex(report.Item);
-				bool stillInList = newIndex != -1;
-				if (stillInList)
+				if (newIndex != -1)
 				{
 					this.NodesInserted(this, new TreeModelEventArgs(this.GetPath(report.Item.Parent), new int[] { report.InsertAtIndex }, new[] { report.Item }));
 				}
 			}
 
-			// Wake info loader to read online item data
-			if (!this.itemInfoLoader.IsBusy)
+			// Wake info and icon loaders to read online item data
+			if (!this.itemInfoLoader.IsBusy && !this.itemsToRead.IsEmpty)
 			{
 				this.itemInfoLoader.RunWorkerAsync();
+			}
+			if (!this.itemIconLoader.IsBusy && !this.itemsToGetIcon.IsEmpty)
+			{
+				this.itemIconLoader.RunWorkerAsync();
 			}
 		}
 		private void Worker_ReadItemData(object sender, DoWorkEventArgs e)
@@ -326,10 +338,37 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			// Notify the model that we've changed some items
 			if (this.NodesChanged != null)
 			{
-				int index = GetItemIndex(item);
+				int index = this.GetItemIndex(item);
 				if (index != -1)
 				{
-					this.NodesChanged(this, new TreeModelEventArgs(this.GetPath(item.Parent), new int[] { index }, new[] { item }));
+					this.NodesChanged(this, new TreeModelEventArgs(this.GetPath(item.Parent), new[] { item }));
+				}
+			}
+		}
+		private void Worker_ReadItemIcon(object sender, DoWorkEventArgs e)
+		{
+			while (!this.itemsToGetIcon.IsEmpty)
+			{
+				BaseItem item;
+				if (!this.itemsToGetIcon.TryDequeue(out item))
+					continue;
+
+				// Read the item icon and update the view. Doesn't affect sorting, so no Submit here
+				item.RetrieveIcon();
+				this.itemIconLoader.ReportProgress(0, item);
+			}
+		}
+		private void Worker_IconChanged(object sender, ProgressChangedEventArgs e)
+		{
+			BaseItem item = e.UserState as BaseItem;
+
+			// Notify the model that we've changed some items
+			if (this.NodesChanged != null)
+			{
+				int index = this.GetItemIndex(item);
+				if (index != -1)
+				{
+					this.NodesChanged(this, new TreeModelEventArgs(this.GetPath(item.Parent), new[] { item }));
 				}
 			}
 		}
