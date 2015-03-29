@@ -62,6 +62,10 @@
 			this.labelPackageWebsite = new System.Windows.Forms.LinkLabel();
 			this.labelPackageAuthorCaption = new System.Windows.Forms.Label();
 			this.labelPackageAuthor = new System.Windows.Forms.Label();
+			this.labelPackageLicenseCaption = new System.Windows.Forms.Label();
+			this.labelPackageLicense = new System.Windows.Forms.LinkLabel();
+			this.textBoxReleaseNotes = new System.Windows.Forms.TextBox();
+			this.labelReleaseNotesCaption = new System.Windows.Forms.Label();
 			this.buttonClose = new System.Windows.Forms.Button();
 			this.panelLowerArea = new System.Windows.Forms.Panel();
 			this.buttonAdvanced = new System.Windows.Forms.Button();
@@ -82,8 +86,6 @@
 			this.panelTitleImage = new System.Windows.Forms.Panel();
 			this.contextMenuAdvanced = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.itemReInstallAll = new System.Windows.Forms.ToolStripMenuItem();
-			this.labelPackageLicenseCaption = new System.Windows.Forms.Label();
-			this.labelPackageLicense = new System.Windows.Forms.LinkLabel();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.Panel2.SuspendLayout();
@@ -292,28 +294,32 @@
 			this.tableLayoutPanelInfo.ColumnCount = 2;
 			this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersion, 1, 7);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdatedCaption, 0, 8);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdated, 1, 8);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersionCaption, 0, 7);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTags, 1, 6);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTagsCaption, 0, 6);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersion, 1, 9);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdatedCaption, 0, 10);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdated, 1, 10);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersionCaption, 0, 9);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTags, 1, 8);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTagsCaption, 0, 8);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTitle, 0, 0);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageId, 0, 1);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageDesc, 0, 2);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageWebsiteCaption, 0, 3);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageWebsite, 1, 3);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthorCaption, 0, 5);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthor, 1, 5);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageLicenseCaption, 0, 4);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageLicense, 1, 4);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageWebsiteCaption, 0, 5);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageWebsite, 1, 5);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthorCaption, 0, 7);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthor, 1, 7);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageLicenseCaption, 0, 6);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageLicense, 1, 6);
+			this.tableLayoutPanelInfo.Controls.Add(this.textBoxReleaseNotes, 0, 4);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelReleaseNotesCaption, 0, 3);
 			this.tableLayoutPanelInfo.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanelInfo.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanelInfo.Name = "tableLayoutPanelInfo";
-			this.tableLayoutPanelInfo.RowCount = 9;
+			this.tableLayoutPanelInfo.RowCount = 11;
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -430,7 +436,7 @@
 			this.labelPackageDesc.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.labelPackageDesc.Location = new System.Drawing.Point(3, 50);
 			this.labelPackageDesc.Name = "labelPackageDesc";
-			this.labelPackageDesc.Size = new System.Drawing.Size(283, 228);
+			this.labelPackageDesc.Size = new System.Drawing.Size(283, 102);
 			this.labelPackageDesc.TabIndex = 2;
 			this.labelPackageDesc.Text = "This area contains the complete package description.";
 			// 
@@ -483,6 +489,60 @@
 			this.labelPackageAuthor.TabIndex = 6;
 			this.labelPackageAuthor.Text = "Author1, Author2";
 			this.labelPackageAuthor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
+			// labelPackageLicenseCaption
+			// 
+			this.labelPackageLicenseCaption.AutoSize = true;
+			this.labelPackageLicenseCaption.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelPackageLicenseCaption.Location = new System.Drawing.Point(3, 297);
+			this.labelPackageLicenseCaption.Name = "labelPackageLicenseCaption";
+			this.labelPackageLicenseCaption.Size = new System.Drawing.Size(51, 19);
+			this.labelPackageLicenseCaption.TabIndex = 13;
+			this.labelPackageLicenseCaption.Text = "License:";
+			this.labelPackageLicenseCaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// labelPackageLicense
+			// 
+			this.labelPackageLicense.AutoSize = true;
+			this.labelPackageLicense.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelPackageLicense.Location = new System.Drawing.Point(60, 300);
+			this.labelPackageLicense.Margin = new System.Windows.Forms.Padding(3);
+			this.labelPackageLicense.Name = "labelPackageLicense";
+			this.labelPackageLicense.Size = new System.Drawing.Size(226, 13);
+			this.labelPackageLicense.TabIndex = 14;
+			this.labelPackageLicense.TabStop = true;
+			this.labelPackageLicense.Text = "http://www.license.com";
+			this.labelPackageLicense.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelPackageLicense.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelPackageLicense_LinkClicked);
+			// 
+			// textBoxReleaseNotes
+			// 
+			this.textBoxReleaseNotes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
+			this.textBoxReleaseNotes.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.tableLayoutPanelInfo.SetColumnSpan(this.textBoxReleaseNotes, 2);
+			this.textBoxReleaseNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.textBoxReleaseNotes.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.textBoxReleaseNotes.Location = new System.Drawing.Point(3, 177);
+			this.textBoxReleaseNotes.Multiline = true;
+			this.textBoxReleaseNotes.Name = "textBoxReleaseNotes";
+			this.textBoxReleaseNotes.ReadOnly = true;
+			this.textBoxReleaseNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.textBoxReleaseNotes.Size = new System.Drawing.Size(283, 98);
+			this.textBoxReleaseNotes.TabIndex = 15;
+			this.textBoxReleaseNotes.Text = "Release Notes:\r\n--------------";
+			// 
+			// labelReleaseNotesCaption
+			// 
+			this.labelReleaseNotesCaption.AutoSize = true;
+			this.tableLayoutPanelInfo.SetColumnSpan(this.labelReleaseNotesCaption, 2);
+			this.labelReleaseNotesCaption.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelReleaseNotesCaption.Location = new System.Drawing.Point(3, 158);
+			this.labelReleaseNotesCaption.Margin = new System.Windows.Forms.Padding(3, 6, 3, 3);
+			this.labelReleaseNotesCaption.Name = "labelReleaseNotesCaption";
+			this.labelReleaseNotesCaption.Size = new System.Drawing.Size(283, 13);
+			this.labelReleaseNotesCaption.TabIndex = 16;
+			this.labelReleaseNotesCaption.Text = "Release Notes:";
+			this.labelReleaseNotesCaption.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
 			// buttonClose
 			// 
@@ -693,31 +753,6 @@
 			this.itemReInstallAll.Text = "Re-Install all Packages";
 			this.itemReInstallAll.Click += new System.EventHandler(this.itemReInstallAll_Click);
 			// 
-			// labelPackageLicenseCaption
-			// 
-			this.labelPackageLicenseCaption.AutoSize = true;
-			this.labelPackageLicenseCaption.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageLicenseCaption.Location = new System.Drawing.Point(3, 297);
-			this.labelPackageLicenseCaption.Name = "labelPackageLicenseCaption";
-			this.labelPackageLicenseCaption.Size = new System.Drawing.Size(51, 19);
-			this.labelPackageLicenseCaption.TabIndex = 13;
-			this.labelPackageLicenseCaption.Text = "License:";
-			this.labelPackageLicenseCaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// labelPackageLicense
-			// 
-			this.labelPackageLicense.AutoSize = true;
-			this.labelPackageLicense.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageLicense.Location = new System.Drawing.Point(60, 300);
-			this.labelPackageLicense.Margin = new System.Windows.Forms.Padding(3);
-			this.labelPackageLicense.Name = "labelPackageLicense";
-			this.labelPackageLicense.Size = new System.Drawing.Size(226, 13);
-			this.labelPackageLicense.TabIndex = 14;
-			this.labelPackageLicense.TabStop = true;
-			this.labelPackageLicense.Text = "http://www.license.com";
-			this.labelPackageLicense.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.labelPackageLicense.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelPackageLicense_LinkClicked);
-			// 
 			// PackageViewDialog
 			// 
 			this.AcceptButton = this.buttonApply;
@@ -811,5 +846,7 @@
 		private System.Windows.Forms.ToolStripMenuItem itemReInstallAll;
 		private System.Windows.Forms.Label labelPackageLicenseCaption;
 		private System.Windows.Forms.LinkLabel labelPackageLicense;
+		private System.Windows.Forms.TextBox textBoxReleaseNotes;
+		private System.Windows.Forms.Label labelReleaseNotesCaption;
 	}
 }

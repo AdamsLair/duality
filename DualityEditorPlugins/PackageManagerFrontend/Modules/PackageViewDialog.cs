@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Windows.Forms;
@@ -252,11 +253,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.labelPackageUpdated.Text		= null;
 				this.labelPackageWebsite.Text		= null;
 				this.labelPackageLicense.Text		= null;
+				this.textBoxReleaseNotes.Text		= null;
 			}
 			else
 			{
 				bool isItemInstalled = installedInfo != null;
 				bool isItemUpdatable = isItemInstalled && newestInfo != null && installedInfo.Version < newestInfo.Version;
+
+				string releaseNoteText = (isItemUpdatable && !string.IsNullOrWhiteSpace(newestInfo.ReleaseNotes)) ? newestInfo.ReleaseNotes : string.Empty;
+				if (!string.IsNullOrWhiteSpace(releaseNoteText))
+					releaseNoteText = Regex.Replace(releaseNoteText, @"\r\n?|\n", Environment.NewLine);
 
 				string websiteLinkCaption = itemInfo.ProjectUrl != null ? itemInfo.ProjectUrl.Host : string.Empty;
 				string licenseLinkCaption = itemInfo.LicenseUrl != null ? itemInfo.LicenseUrl.Host : string.Empty;
@@ -268,7 +274,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 				this.labelPackageTitle.Text			= !string.IsNullOrWhiteSpace(itemInfo.Title) ? itemInfo.Title : itemInfo.Id;
 				this.labelPackageId.Text			= itemInfo.Id;
-				this.labelPackageDesc.Text			= (isItemUpdatable && !string.IsNullOrWhiteSpace(newestInfo.ReleaseNotes)) ? newestInfo.ReleaseNotes : itemInfo.Description;
+				this.labelPackageDesc.Text			= itemInfo.Description;
 				this.labelPackageAuthor.Text		= itemInfo.Authors.ToString(", ");
 				this.labelPackageTags.Text			= itemInfo.Tags.Except(InvisibleTags).ToString(", ");
 				this.labelPackageUpdated.Text		= itemInfo.PublishDate.ToString("yyyy-MM-dd, HH:mm", System.Globalization.CultureInfo.InvariantCulture);
@@ -276,6 +282,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.labelPackageWebsite.Tag		= itemInfo.ProjectUrl;
 				this.labelPackageLicense.Text		= licenseLinkCaption;
 				this.labelPackageLicense.Tag		= itemInfo.LicenseUrl;
+				this.textBoxReleaseNotes.Text		= releaseNoteText;
 				this.labelPackageVersion.Text		= isItemUpdatable ? 
 					string.Format("{0} --> {1}", 
 						PackageManager.GetDisplayedVersion(installedInfo.Version), 
@@ -289,6 +296,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.labelPackageUpdated.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageUpdated.Text);
 			this.labelPackageWebsite.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageWebsite.Text);
 			this.labelPackageLicense.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageLicense.Text);
+			this.textBoxReleaseNotes.Visible		= !string.IsNullOrWhiteSpace(this.textBoxReleaseNotes.Text);
 
 			this.labelPackageAuthorCaption.Visible	= this.labelPackageAuthor.Visible;
 			this.labelPackageTagsCaption.Visible	= this.labelPackageTags.Visible;
@@ -296,6 +304,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.labelPackageUpdatedCaption.Visible	= this.labelPackageUpdated.Visible;
 			this.labelPackageWebsiteCaption.Visible	= this.labelPackageWebsite.Visible;
 			this.labelPackageLicenseCaption.Visible	= this.labelPackageLicense.Visible;
+			this.labelReleaseNotesCaption.Visible	= this.textBoxReleaseNotes.Visible;
 
 			this.ResumeLayout();
 		}
