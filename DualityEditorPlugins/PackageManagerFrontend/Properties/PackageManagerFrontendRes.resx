@@ -193,4 +193,19 @@
   <data name="TooltipUpdateUnlikelyCompatibility" xml:space="preserve">
     <value>Updating this package can cause compatibility problems with older plugins.</value>
   </data>
+  <data name="IconIncompatibleInstall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IncompatibleInstall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconLikelyUnsafeInstall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\LikelyUnsafeinstall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TooltipInstallNoCompatibility" xml:space="preserve">
+    <value>This package is not supported by your Duality version.</value>
+  </data>
+  <data name="TooltipInstallUnlikelyCompatibility" xml:space="preserve">
+    <value>This package is potentially incompatible with already installed packages.</value>
+  </data>
+  <data name="TooltipUpdateUpToDate" xml:space="preserve">
+    <value>This package is up-to-date.</value>
+  </data>
 </root>

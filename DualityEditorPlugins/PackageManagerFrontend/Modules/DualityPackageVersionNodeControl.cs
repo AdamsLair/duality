@@ -80,7 +80,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				}
 				else
 				{
-
+					if (compatibility == PackageCompatibility.Unlikely)
+						icon = Properties.PackageManagerFrontendResCache.IconLikelyUnsafeInstall;
+					else if (compatibility == PackageCompatibility.None)
+						icon = Properties.PackageManagerFrontendResCache.IconIncompatibleInstall;
 				}
 			}
 
@@ -151,18 +154,35 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			PackageItem item = node.Tag as PackageItem;
 			if (item == null) return null;
 
-			if (item.IsUpdatable)
+			if (item.IsInstalled)
+			{
+				if (item.IsUpdatable)
+				{
+					switch (item.Compatibility)
+					{
+						case PackageCompatibility.Definite:
+							return Properties.PackageManagerFrontendRes.TooltipUpdateDefiniteCompatibility;
+						case PackageCompatibility.Likely:
+							return Properties.PackageManagerFrontendRes.TooltipUpdateLikelyCompatibility;
+						case PackageCompatibility.Unlikely:
+							return Properties.PackageManagerFrontendRes.TooltipUpdateUnlikelyCompatibility;
+						case PackageCompatibility.None:
+							return Properties.PackageManagerFrontendRes.TooltipUpdateNoCompatibility;
+					}
+				}
+				else
+				{
+					return Properties.PackageManagerFrontendRes.TooltipUpdateUpToDate;
+				}
+			}
+			else
 			{
 				switch (item.Compatibility)
 				{
-					case PackageCompatibility.Definite:
-						return Properties.PackageManagerFrontendRes.TooltipUpdateDefiniteCompatibility;
-					case PackageCompatibility.Likely:
-						return Properties.PackageManagerFrontendRes.TooltipUpdateLikelyCompatibility;
 					case PackageCompatibility.Unlikely:
-						return Properties.PackageManagerFrontendRes.TooltipUpdateUnlikelyCompatibility;
+						return Properties.PackageManagerFrontendRes.TooltipInstallUnlikelyCompatibility;
 					case PackageCompatibility.None:
-						return Properties.PackageManagerFrontendRes.TooltipUpdateNoCompatibility;
+						return Properties.PackageManagerFrontendRes.TooltipInstallNoCompatibility;
 				}
 			}
 

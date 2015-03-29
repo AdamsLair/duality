@@ -104,8 +104,10 @@
     <Content Include="EmbeddedResources\core.png" />
     <Content Include="EmbeddedResources\editor.png" />
     <None Include="EmbeddedResources\filter.png" />
+    <Content Include="EmbeddedResources\IncompatibleInstall.png" />
     <Content Include="EmbeddedResources\IncompatibleUpdate.png" />
     <Content Include="EmbeddedResources\LikelySafeUpdate.png" />
+    <Content Include="EmbeddedResources\LikelyUnsafeinstall.png" />
     <Content Include="EmbeddedResources\LikelyUnsafeUpdate.png" />
     <Content Include="EmbeddedResources\package.ico" />
     <Content Include="EmbeddedResources\package.png" />
