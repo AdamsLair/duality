@@ -12,7 +12,9 @@ namespace Duality.Editor.PackageManagement
 		private	string				summary			= null;
 		private	string				description		= null;
 		private	string				releaseNotes	= null;
+		private	bool				requireLicense	= false;
 		private	Uri					projectUrl		= null;
+		private	Uri					licenseUrl		= null;
 		private	Uri					iconUrl			= null;
 		private	int					downloadCount	= 0;
 		private	DateTime			publishDate		= DateTime.MinValue;
@@ -69,10 +71,20 @@ namespace Duality.Editor.PackageManagement
 			get { return this.releaseNotes; }
 			internal set { this.releaseNotes = value; }
 		}
+		public bool RequireLicenseAcceptance
+		{
+			get { return this.requireLicense; }
+			internal set { this.requireLicense = value; }
+		}
 		public Uri ProjectUrl
 		{
 			get { return this.projectUrl; }
 			internal set { this.projectUrl = value; }
+		}
+		public Uri LicenseUrl
+		{
+			get { return this.licenseUrl; }
+			internal set { this.licenseUrl = value; }
 		}
 		public Uri IconUrl
 		{

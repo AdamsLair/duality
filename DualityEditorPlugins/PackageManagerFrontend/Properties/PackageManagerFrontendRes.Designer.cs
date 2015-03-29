@@ -200,6 +200,15 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View on {0}.
+        /// </summary>
+        public static string ItemName_VisitLinkUrl {
+            get {
+                return ResourceManager.GetString("ItemName_VisitLinkUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manage Packages....
         /// </summary>
         public static string MenuItemName_PackageView {

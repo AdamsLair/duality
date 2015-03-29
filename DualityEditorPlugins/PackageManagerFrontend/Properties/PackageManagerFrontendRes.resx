@@ -214,4 +214,7 @@
   <data name="MsgConfirmIncompatibleOperation_Desc" xml:space="preserve">
     <value>There is a major version difference between some of the new target packages and local package versions. Compatibility cannot be guaranteed. Continue anyway?</value>
   </data>
+  <data name="ItemName_VisitLinkUrl" xml:space="preserve">
+    <value>View on {0}</value>
+  </data>
 </root>

@@ -251,11 +251,20 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.labelPackageVersion.Text		= null;
 				this.labelPackageUpdated.Text		= null;
 				this.labelPackageWebsite.Text		= null;
+				this.labelPackageLicense.Text		= null;
 			}
 			else
 			{
 				bool isItemInstalled = installedInfo != null;
 				bool isItemUpdatable = isItemInstalled && newestInfo != null && installedInfo.Version < newestInfo.Version;
+
+				string websiteLinkCaption = itemInfo.ProjectUrl != null ? itemInfo.ProjectUrl.Host : string.Empty;
+				string licenseLinkCaption = itemInfo.LicenseUrl != null ? itemInfo.LicenseUrl.Host : string.Empty;
+
+				if (!string.IsNullOrWhiteSpace(websiteLinkCaption))
+					websiteLinkCaption = string.Format(PackageManagerFrontendRes.ItemName_VisitLinkUrl, websiteLinkCaption);
+				if (!string.IsNullOrWhiteSpace(licenseLinkCaption))
+					licenseLinkCaption = string.Format(PackageManagerFrontendRes.ItemName_VisitLinkUrl, licenseLinkCaption);
 
 				this.labelPackageTitle.Text			= !string.IsNullOrWhiteSpace(itemInfo.Title) ? itemInfo.Title : itemInfo.Id;
 				this.labelPackageId.Text			= itemInfo.Id;
@@ -263,7 +272,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.labelPackageAuthor.Text		= itemInfo.Authors.ToString(", ");
 				this.labelPackageTags.Text			= itemInfo.Tags.Except(InvisibleTags).ToString(", ");
 				this.labelPackageUpdated.Text		= itemInfo.PublishDate.ToString("yyyy-MM-dd, HH:mm", System.Globalization.CultureInfo.InvariantCulture);
-				this.labelPackageWebsite.Text		= itemInfo.ProjectUrl != null ? itemInfo.ProjectUrl.ToString() : string.Empty;
+				this.labelPackageWebsite.Text		= websiteLinkCaption;
+				this.labelPackageWebsite.Tag		= itemInfo.ProjectUrl;
+				this.labelPackageLicense.Text		= licenseLinkCaption;
+				this.labelPackageLicense.Tag		= itemInfo.LicenseUrl;
 				this.labelPackageVersion.Text		= isItemUpdatable ? 
 					string.Format("{0} --> {1}", 
 						PackageManager.GetDisplayedVersion(installedInfo.Version), 
@@ -276,12 +288,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.labelPackageVersion.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageVersion.Text);
 			this.labelPackageUpdated.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageUpdated.Text);
 			this.labelPackageWebsite.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageWebsite.Text);
+			this.labelPackageLicense.Visible		= !string.IsNullOrWhiteSpace(this.labelPackageLicense.Text);
 
 			this.labelPackageAuthorCaption.Visible	= this.labelPackageAuthor.Visible;
 			this.labelPackageTagsCaption.Visible	= this.labelPackageTags.Visible;
 			this.labelPackageVersionCaption.Visible	= this.labelPackageVersion.Visible;
 			this.labelPackageUpdatedCaption.Visible	= this.labelPackageUpdated.Visible;
 			this.labelPackageWebsiteCaption.Visible	= this.labelPackageWebsite.Visible;
+			this.labelPackageLicenseCaption.Visible	= this.labelPackageLicense.Visible;
 
 			this.ResumeLayout();
 		}
@@ -530,7 +544,13 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void labelPackageWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			Process.Start(this.labelPackageWebsite.Text);
+			if (this.labelPackageWebsite.Tag is Uri)
+				Process.Start((this.labelPackageWebsite.Tag as Uri).AbsoluteUri);
+		}
+		private void labelPackageLicense_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			if (this.labelPackageLicense.Tag is Uri)
+				Process.Start((this.labelPackageLicense.Tag as Uri).AbsoluteUri);
 		}
 		private void nodeTextBoxDownloads_DrawText(object sender, DrawTextEventArgs e)
 		{

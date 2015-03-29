@@ -918,7 +918,9 @@ namespace Duality.Editor.PackageManagement
 			info.Summary		= package.Summary;
 			info.Description	= package.Description;
 			info.ReleaseNotes	= package.ReleaseNotes;
+			info.RequireLicenseAcceptance = package.RequireLicenseAcceptance;
 			info.ProjectUrl		= package.ProjectUrl;
+			info.LicenseUrl		= package.LicenseUrl;
 			info.IconUrl		= package.IconUrl;
 			info.DownloadCount	= package.DownloadCount;
 			info.PublishDate	= package.Published.HasValue ? package.Published.Value.DateTime : DateTime.MinValue;

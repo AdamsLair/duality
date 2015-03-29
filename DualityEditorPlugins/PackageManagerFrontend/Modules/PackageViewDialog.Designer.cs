@@ -82,6 +82,8 @@
 			this.panelTitleImage = new System.Windows.Forms.Panel();
 			this.contextMenuAdvanced = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.itemReInstallAll = new System.Windows.Forms.ToolStripMenuItem();
+			this.labelPackageLicenseCaption = new System.Windows.Forms.Label();
+			this.labelPackageLicense = new System.Windows.Forms.LinkLabel();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.Panel2.SuspendLayout();
@@ -290,23 +292,25 @@
 			this.tableLayoutPanelInfo.ColumnCount = 2;
 			this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
 			this.tableLayoutPanelInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersion, 1, 6);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdatedCaption, 0, 7);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdated, 1, 7);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersionCaption, 0, 6);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTags, 1, 5);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTagsCaption, 0, 5);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersion, 1, 7);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdatedCaption, 0, 8);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageUpdated, 1, 8);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageVersionCaption, 0, 7);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTags, 1, 6);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTagsCaption, 0, 6);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageTitle, 0, 0);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageId, 0, 1);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageDesc, 0, 2);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageWebsiteCaption, 0, 3);
 			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageWebsite, 1, 3);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthorCaption, 0, 4);
-			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthor, 1, 4);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthorCaption, 0, 5);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageAuthor, 1, 5);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageLicenseCaption, 0, 4);
+			this.tableLayoutPanelInfo.Controls.Add(this.labelPackageLicense, 1, 4);
 			this.tableLayoutPanelInfo.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tableLayoutPanelInfo.Location = new System.Drawing.Point(0, 0);
 			this.tableLayoutPanelInfo.Name = "tableLayoutPanelInfo";
-			this.tableLayoutPanelInfo.RowCount = 8;
+			this.tableLayoutPanelInfo.RowCount = 9;
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -314,8 +318,8 @@
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutPanelInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
 			this.tableLayoutPanelInfo.Size = new System.Drawing.Size(289, 392);
 			this.tableLayoutPanelInfo.TabIndex = 0;
 			// 
@@ -323,7 +327,7 @@
 			// 
 			this.labelPackageVersion.AutoSize = true;
 			this.labelPackageVersion.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageVersion.Location = new System.Drawing.Point(60, 356);
+			this.labelPackageVersion.Location = new System.Drawing.Point(60, 357);
 			this.labelPackageVersion.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageVersion.Name = "labelPackageVersion";
 			this.labelPackageVersion.Size = new System.Drawing.Size(226, 13);
@@ -335,10 +339,10 @@
 			// 
 			this.labelPackageUpdatedCaption.AutoSize = true;
 			this.labelPackageUpdatedCaption.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageUpdatedCaption.Location = new System.Drawing.Point(3, 375);
+			this.labelPackageUpdatedCaption.Location = new System.Drawing.Point(3, 376);
 			this.labelPackageUpdatedCaption.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageUpdatedCaption.Name = "labelPackageUpdatedCaption";
-			this.labelPackageUpdatedCaption.Size = new System.Drawing.Size(51, 14);
+			this.labelPackageUpdatedCaption.Size = new System.Drawing.Size(51, 13);
 			this.labelPackageUpdatedCaption.TabIndex = 11;
 			this.labelPackageUpdatedCaption.Text = "Updated:";
 			this.labelPackageUpdatedCaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -347,10 +351,10 @@
 			// 
 			this.labelPackageUpdated.AutoSize = true;
 			this.labelPackageUpdated.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageUpdated.Location = new System.Drawing.Point(60, 375);
+			this.labelPackageUpdated.Location = new System.Drawing.Point(60, 376);
 			this.labelPackageUpdated.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageUpdated.Name = "labelPackageUpdated";
-			this.labelPackageUpdated.Size = new System.Drawing.Size(226, 14);
+			this.labelPackageUpdated.Size = new System.Drawing.Size(226, 13);
 			this.labelPackageUpdated.TabIndex = 10;
 			this.labelPackageUpdated.Text = "1900-01-01";
 			this.labelPackageUpdated.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -359,7 +363,7 @@
 			// 
 			this.labelPackageVersionCaption.AutoSize = true;
 			this.labelPackageVersionCaption.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageVersionCaption.Location = new System.Drawing.Point(3, 356);
+			this.labelPackageVersionCaption.Location = new System.Drawing.Point(3, 357);
 			this.labelPackageVersionCaption.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageVersionCaption.Name = "labelPackageVersionCaption";
 			this.labelPackageVersionCaption.Size = new System.Drawing.Size(51, 13);
@@ -371,7 +375,7 @@
 			// 
 			this.labelPackageTags.AutoSize = true;
 			this.labelPackageTags.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageTags.Location = new System.Drawing.Point(60, 337);
+			this.labelPackageTags.Location = new System.Drawing.Point(60, 338);
 			this.labelPackageTags.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageTags.Name = "labelPackageTags";
 			this.labelPackageTags.Size = new System.Drawing.Size(226, 13);
@@ -383,7 +387,7 @@
 			// 
 			this.labelPackageTagsCaption.AutoSize = true;
 			this.labelPackageTagsCaption.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageTagsCaption.Location = new System.Drawing.Point(3, 337);
+			this.labelPackageTagsCaption.Location = new System.Drawing.Point(3, 338);
 			this.labelPackageTagsCaption.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageTagsCaption.Name = "labelPackageTagsCaption";
 			this.labelPackageTagsCaption.Size = new System.Drawing.Size(51, 13);
@@ -426,7 +430,7 @@
 			this.labelPackageDesc.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.labelPackageDesc.Location = new System.Drawing.Point(3, 50);
 			this.labelPackageDesc.Name = "labelPackageDesc";
-			this.labelPackageDesc.Size = new System.Drawing.Size(283, 246);
+			this.labelPackageDesc.Size = new System.Drawing.Size(283, 228);
 			this.labelPackageDesc.TabIndex = 2;
 			this.labelPackageDesc.Text = "This area contains the complete package description.";
 			// 
@@ -434,7 +438,7 @@
 			// 
 			this.labelPackageWebsiteCaption.AutoSize = true;
 			this.labelPackageWebsiteCaption.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageWebsiteCaption.Location = new System.Drawing.Point(3, 299);
+			this.labelPackageWebsiteCaption.Location = new System.Drawing.Point(3, 281);
 			this.labelPackageWebsiteCaption.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageWebsiteCaption.Name = "labelPackageWebsiteCaption";
 			this.labelPackageWebsiteCaption.Size = new System.Drawing.Size(51, 13);
@@ -446,7 +450,7 @@
 			// 
 			this.labelPackageWebsite.AutoSize = true;
 			this.labelPackageWebsite.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageWebsite.Location = new System.Drawing.Point(60, 299);
+			this.labelPackageWebsite.Location = new System.Drawing.Point(60, 281);
 			this.labelPackageWebsite.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageWebsite.Name = "labelPackageWebsite";
 			this.labelPackageWebsite.Size = new System.Drawing.Size(226, 13);
@@ -460,7 +464,7 @@
 			// 
 			this.labelPackageAuthorCaption.AutoSize = true;
 			this.labelPackageAuthorCaption.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageAuthorCaption.Location = new System.Drawing.Point(3, 318);
+			this.labelPackageAuthorCaption.Location = new System.Drawing.Point(3, 319);
 			this.labelPackageAuthorCaption.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageAuthorCaption.Name = "labelPackageAuthorCaption";
 			this.labelPackageAuthorCaption.Size = new System.Drawing.Size(51, 13);
@@ -472,7 +476,7 @@
 			// 
 			this.labelPackageAuthor.AutoSize = true;
 			this.labelPackageAuthor.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelPackageAuthor.Location = new System.Drawing.Point(60, 318);
+			this.labelPackageAuthor.Location = new System.Drawing.Point(60, 319);
 			this.labelPackageAuthor.Margin = new System.Windows.Forms.Padding(3);
 			this.labelPackageAuthor.Name = "labelPackageAuthor";
 			this.labelPackageAuthor.Size = new System.Drawing.Size(226, 13);
@@ -680,7 +684,7 @@
 			this.contextMenuAdvanced.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemReInstallAll});
 			this.contextMenuAdvanced.Name = "contextMenuAdvanced";
-			this.contextMenuAdvanced.Size = new System.Drawing.Size(191, 48);
+			this.contextMenuAdvanced.Size = new System.Drawing.Size(191, 26);
 			// 
 			// itemReInstallAll
 			// 
@@ -688,6 +692,31 @@
 			this.itemReInstallAll.Size = new System.Drawing.Size(190, 22);
 			this.itemReInstallAll.Text = "Re-Install all Packages";
 			this.itemReInstallAll.Click += new System.EventHandler(this.itemReInstallAll_Click);
+			// 
+			// labelPackageLicenseCaption
+			// 
+			this.labelPackageLicenseCaption.AutoSize = true;
+			this.labelPackageLicenseCaption.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelPackageLicenseCaption.Location = new System.Drawing.Point(3, 297);
+			this.labelPackageLicenseCaption.Name = "labelPackageLicenseCaption";
+			this.labelPackageLicenseCaption.Size = new System.Drawing.Size(51, 19);
+			this.labelPackageLicenseCaption.TabIndex = 13;
+			this.labelPackageLicenseCaption.Text = "License:";
+			this.labelPackageLicenseCaption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// labelPackageLicense
+			// 
+			this.labelPackageLicense.AutoSize = true;
+			this.labelPackageLicense.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelPackageLicense.Location = new System.Drawing.Point(60, 300);
+			this.labelPackageLicense.Margin = new System.Windows.Forms.Padding(3);
+			this.labelPackageLicense.Name = "labelPackageLicense";
+			this.labelPackageLicense.Size = new System.Drawing.Size(226, 13);
+			this.labelPackageLicense.TabIndex = 14;
+			this.labelPackageLicense.TabStop = true;
+			this.labelPackageLicense.Text = "http://www.license.com";
+			this.labelPackageLicense.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelPackageLicense.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelPackageLicense_LinkClicked);
 			// 
 			// PackageViewDialog
 			// 
@@ -780,5 +809,7 @@
 		private System.Windows.Forms.Button buttonAdvanced;
 		private System.Windows.Forms.ContextMenuStrip contextMenuAdvanced;
 		private System.Windows.Forms.ToolStripMenuItem itemReInstallAll;
+		private System.Windows.Forms.Label labelPackageLicenseCaption;
+		private System.Windows.Forms.LinkLabel labelPackageLicense;
 	}
 }
