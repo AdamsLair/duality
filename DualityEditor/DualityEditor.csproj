@@ -79,9 +79,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AdamsLair.TreeViewAdv.1.7.2.0\lib\net20\Aga.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="Ionic.Zip">
-      <HintPath>.\Ionic.Zip.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Build" />
     <Reference Include="NuGet.Core, Version=2.8.50926.602, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -100,6 +97,7 @@
       <HintPath>..\packages\AdamsLair.WinForms.PopupControl.1.0.0.0\lib\net40\PopupControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
@@ -166,6 +164,7 @@
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BuildHelper.cs" />
+    <Compile Include="Helpers\ExtMethodsZipArchive.cs" />
     <Compile Include="PackageManagement\PackageCompatibility.cs" />
     <Compile Include="PackageManagement\PackageLicenseAgreementEventArgs.cs" />
     <Compile Include="PackageManagement\PackageName.cs" />

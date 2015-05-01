@@ -7,8 +7,8 @@ using System.Linq;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.IO.Compression;
 
-using Ionic.Zip;
 using Duality.Editor.Properties;
 
 namespace Duality.Editor.Forms
@@ -218,10 +218,10 @@ namespace Duality.Editor.Forms
 			if (compress)
 			{
 				string archivePath = Path.Combine(targetDir, gameDirName + ".zip");
-				using (ZipFile archive = new ZipFile())
+				using (FileStream archiveStream = File.Open(archivePath, FileMode.Create))
+				using (ZipArchive archive = new ZipArchive(archiveStream, ZipArchiveMode.Create))
 				{
 					archive.AddDirectory(archiveBaseDir);
-					archive.Save(archivePath);
 				}
 				Directory.Delete(archiveBaseDir, true);
 

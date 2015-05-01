@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Drawing;
 using Microsoft.Win32;
-
-using Ionic.Zip;
 
 using Duality;
 using Duality.Serialization;
@@ -479,9 +478,10 @@ namespace Duality.Editor
 			if (string.IsNullOrWhiteSpace(this.file) || !File.Exists(this.file)) 
 				throw new InvalidOperationException("Can't extract Project Template, because the template file is missing");
 
-			using (ZipFile templateZip = ZipFile.Read(this.file))
+			using (FileStream stream = File.OpenRead(this.file))
+			using (ZipArchive templateZip = new ZipArchive(stream))
 			{
-				templateZip.ExtractAll(dir, ExtractExistingFileAction.OverwriteSilently);
+				templateZip.ExtractAll(dir, true);
 			}
 			if (File.Exists(Path.Combine(dir, "TemplateIcon.png"))) File.Delete(Path.Combine(dir, "TemplateIcon.png"));
 			if (File.Exists(Path.Combine(dir, "TemplateInfo.xml"))) File.Delete(Path.Combine(dir, "TemplateInfo.xml"));
@@ -494,10 +494,10 @@ namespace Duality.Editor
 			this.name = "Unknown";
 			this.specialTag = SpecialInfo.None;
 
-			using (ZipFile templateZip = ZipFile.Read(templateStream))
+			using (ZipArchive templateZip = new ZipArchive(templateStream))
 			{
-				ZipEntry entryInfo = templateZip.FirstOrDefault(z => !z.IsDirectory && z.FileName == "TemplateInfo.xml");
-				ZipEntry entryIcon = templateZip.FirstOrDefault(z => !z.IsDirectory && z.FileName == "TemplateIcon.png");
+				ZipArchiveEntry entryInfo = templateZip.Entries.FirstOrDefault(z => z.Name == "TemplateInfo.xml");
+				ZipArchiveEntry entryIcon = templateZip.Entries.FirstOrDefault(z => z.Name == "TemplateIcon.png");
 
 				if (entryIcon != null)
 				{

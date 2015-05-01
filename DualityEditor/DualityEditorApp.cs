@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing;
@@ -22,7 +23,6 @@ using OpenTK;
 using OpenTK.Platform;
 using OpenTK.Platform.Windows;
 
-using Ionic.Zip;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Duality.Editor
@@ -821,18 +821,19 @@ namespace Duality.Editor
 				XDocument userDoc;
 				const string userFileCore = EditorHelper.SourceCodeProjectCorePluginFile + ".user";
 				const string userFileEditor = EditorHelper.SourceCodeProjectEditorPluginFile + ".user";
-				ZipFile gamePluginZip = null;
 
 				if (!File.Exists(userFileCore))
 				{
-					if (gamePluginZip == null)
-						gamePluginZip = ZipFile.Read(Properties.GeneralRes.GamePluginTemplate);
-					foreach (var e in gamePluginZip.Entries)
+					using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
+					using (ZipArchive gamePluginZip = null)
 					{
-						if (string.Equals(Path.GetFileName(e.FileName), Path.GetFileName(userFileCore), StringComparison.InvariantCultureIgnoreCase))
+						foreach (var e in gamePluginZip.Entries)
 						{
-							e.Extract(EditorHelper.SourceCodeDirectory);
-							break;
+							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(userFileCore), StringComparison.InvariantCultureIgnoreCase))
+							{
+								e.Extract(EditorHelper.SourceCodeDirectory, true);
+								break;
+							}
 						}
 					}
 				}
@@ -848,14 +849,16 @@ namespace Duality.Editor
 				
 				if (!File.Exists(userFileEditor))
 				{
-					if (gamePluginZip == null)
-						gamePluginZip = ZipFile.Read(Properties.GeneralRes.GamePluginTemplate);
-					foreach (var e in gamePluginZip.Entries)
+					using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
+					using (ZipArchive gamePluginZip = null)
 					{
-						if (string.Equals(Path.GetFileName(e.FileName), Path.GetFileName(userFileEditor), StringComparison.InvariantCultureIgnoreCase))
+						foreach (var e in gamePluginZip.Entries)
 						{
-							e.Extract(EditorHelper.SourceCodeDirectory);
-							break;
+							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(userFileEditor), StringComparison.InvariantCultureIgnoreCase))
+							{
+								e.Extract(EditorHelper.SourceCodeDirectory, true);
+								break;
+							}
 						}
 					}
 				}
@@ -867,12 +870,6 @@ namespace Duality.Editor
 					foreach (XElement element in userDoc.Descendants("StartWorkingDirectory", true))
 						element.Value = Path.GetFullPath(".");
 					userDoc.Save(userFileEditor);
-				}
-
-				if (gamePluginZip != null)
-				{
-					gamePluginZip.Dispose();
-					gamePluginZip = null;
 				}
 			}
 
@@ -899,9 +896,10 @@ namespace Duality.Editor
 			// Create solution file if not existing yet
 			if (!File.Exists(EditorHelper.SourceCodeSolutionFile))
 			{
-				using (ZipFile gamePluginZip = ZipFile.Read(Properties.GeneralRes.GamePluginTemplate))
+				using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
+				using (ZipArchive gamePluginZip = new ZipArchive(gamePluginStream))
 				{
-					gamePluginZip.ExtractAll(EditorHelper.SourceCodeDirectory, ExtractExistingFileAction.DoNotOverwrite);
+					gamePluginZip.ExtractAll(EditorHelper.SourceCodeDirectory, false);
 				}
 			}
 

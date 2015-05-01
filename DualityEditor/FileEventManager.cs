@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing;
@@ -16,7 +17,6 @@ using Duality.Editor.Forms;
 
 using OpenTK;
 
-using Ionic.Zip;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Duality.Editor
