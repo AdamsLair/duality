@@ -24,6 +24,18 @@ namespace Duality.Editor.PackageManagement
 		public const string EditorTag	= "Editor";
 		public const string LauncherTag	= "Launcher";
 
+		/// <summary>
+		/// A list of package names that are considered "core" Duality packages.
+		/// If none of these show up anywhere in the deep dependency graph of a Duality package,
+		/// it will be assumed that dependencies are simply not specified properly.
+		/// </summary>
+		private readonly string[] DualityPackageNames = new string[] 
+		{
+			"AdamsLair.Duality",
+			"AdamsLair.Duality.Editor",
+			"AdamsLair.Duality.Launcher"
+		};
+
 		private const string UpdateConfigFile		= "ApplyUpdate.xml";
 		private const string PackageConfigFile		= "PackageConfig.xml";
 		private const string LocalPackageDir		= EditorHelper.SourceDirectory + @"\Packages";
@@ -277,6 +289,23 @@ namespace Duality.Editor.PackageManagement
 
 			// Determine all packages that might be updated or installed
 			PackageInfo[] touchedPackages = this.GetDeepDependencies(new[] { target }).ToArray();
+
+			// Verify properly specified dependencies for Duality packages
+			if (target.IsDualityPackage)
+			{
+				// If none of the targets deep dependencies is anyhow related to Duality, assume they're incomplete and potentially incompatible
+				bool anyDualityDependency = false;
+				foreach (PackageInfo package in touchedPackages)
+				{
+					if (DualityPackageNames.Any(name => string.Equals(name, package.Id)))
+					{
+						anyDualityDependency = true;
+						break;
+					}
+				}
+				if (!anyDualityDependency)
+					return PackageCompatibility.None;
+			}
 
 			// Generate a mapping to already installed packages
 			Dictionary<PackageInfo,LocalPackage> localMap = new Dictionary<PackageInfo,LocalPackage>();

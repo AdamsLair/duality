@@ -191,6 +191,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.packageList.DefaultToolTipProvider = this;
 			this.packageList.ShowNodeToolTips = true;
+			this.packageList.NodeFilter = this.PackageListNodeFilter;
 
 			this.treeColumnName.DrawColHeaderBg			+= this.treeColumn_DrawColHeaderBg;
 			this.treeColumnVersion.DrawColHeaderBg		+= this.treeColumn_DrawColHeaderBg;
@@ -202,7 +203,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			this.toolStripViewBox.Items.Add(new FilterBoxItem(DisplayMode.Installed, PackageManagerFrontendRes.ItemName_InstalledPackages));
 			this.toolStripViewBox.Items.Add(new FilterBoxItem(DisplayMode.Online, PackageManagerFrontendRes.ItemName_OnlineRepository));
-			
 		}
 
 		internal void SaveUserData(XElement node) {}
@@ -454,13 +454,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.packageManager = DualityEditorApp.PackageManager;
 			this.nodeTextBoxVersion.PackageManager = this.packageManager;
 
-			this.modelInstalled = new InstalledPackagesTreeModel(this.packageManager);
 			this.modelOnline = new OnlinePackagesTreeModel(this.packageManager);
-
 			this.modelOnline.SortComparer = new PackageListItemComparer(PackageListItemComparer.SortMode.CombinedScore, SortOrder.Ascending);
-
-			this.modelInstalled.NodesChanged += this.modelInstalled_NodesChanged;
 			this.modelOnline.NodesChanged += this.modelOnline_NodesChanged;
+
+			this.modelInstalled = new InstalledPackagesTreeModel(this.packageManager);
+			this.modelInstalled.NodesChanged += this.modelInstalled_NodesChanged;
 
 			this.Display = DisplayMode.Installed;
 
@@ -480,6 +479,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			this.UpdateInfoArea();
 			this.UpdateBottomButtons();
+			this.packageList.UpdateNodeFilter();
 			this.packageList.Invalidate();
 			this.timerPackageModelChanged.Enabled = false;
 		}
@@ -673,6 +673,14 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				this.packageList.Model = this.modelOnline;
 			}
 			this.UpdateColumnVisibility();
+		}
+
+		private bool PackageListNodeFilter(TreeNodeAdv node)
+		{
+			PackageItem item = node.Tag as PackageItem;
+			if (item == null) return true;
+
+			return item.IsInstalled || item.Compatibility == PackageCompatibility.Unknown || item.Compatibility.IsAtLeast(PackageCompatibility.Likely);
 		}
 
 		private void UpdateColumnVisibility()

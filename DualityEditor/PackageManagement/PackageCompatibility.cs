@@ -21,6 +21,7 @@
 		}
 		public static bool IsAtLeast(this PackageCompatibility self, PackageCompatibility other)
 		{
+			if (self == PackageCompatibility.Unknown) return false;
 			return (int)self >= (int)other;
 		}
 	}

@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -14,7 +14,7 @@
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
 	<releaseNotes>PackageManager Tweaks
-#CHANGE: Improved package compatibility checks to include all dependencies of a package.
+#CHANGE: Packages that are tagged with Duality, yet do not have a single Duality package in their deep dependency graph will now be considered incompatible, because they apparently have not specified their dependencies properly.
 	</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="1.6.4" />
