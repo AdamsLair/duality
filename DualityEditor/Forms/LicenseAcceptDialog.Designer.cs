@@ -87,7 +87,7 @@
 			this.buttonDecline.Name = "buttonDecline";
 			this.buttonDecline.Size = new System.Drawing.Size(75, 23);
 			this.buttonDecline.TabIndex = 2;
-			this.buttonDecline.Text = "I Decline";
+			this.buttonDecline.Text = "Cancel";
 			this.buttonDecline.UseVisualStyleBackColor = true;
 			this.buttonDecline.Click += new System.EventHandler(this.buttonDecline_Click);
 			// 
