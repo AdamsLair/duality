@@ -360,8 +360,8 @@ namespace Duality.Components
 		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
 		public ICmpRenderer PickRendererAt(Rect viewportRect, int x, int y)
 		{
-			if (x < viewportRect.MinimumX || x >= viewportRect.MaximumX) return null;
-			if (y < viewportRect.MinimumY || y >= viewportRect.MaximumY) return null;
+			if (x < viewportRect.MinX || x >= viewportRect.MaxX) return null;
+			if (y < viewportRect.MinY || y >= viewportRect.MaxY) return null;
 			
 			this.RenderPickingMap(viewportRect.Size);
 
@@ -585,10 +585,10 @@ namespace Duality.Components
 
 				IDrawDevice device = this.drawDevice;
 				device.AddVertices(p.Input, VertexMode.Quads,
-					new VertexC1P3T2(targetRect.MinimumX,	targetRect.MinimumY,	0.0f,	0.0f,		0.0f),
-					new VertexC1P3T2(targetRect.MaximumX,	targetRect.MinimumY,	0.0f,	uvRatio.X,	0.0f),
-					new VertexC1P3T2(targetRect.MaximumX,	targetRect.MaximumY,	0.0f,	uvRatio.X,	uvRatio.Y),
-					new VertexC1P3T2(targetRect.MinimumX,	targetRect.MaximumY,	0.0f,	0.0f,		uvRatio.Y));
+					new VertexC1P3T2(targetRect.MinX,	targetRect.MinY,	0.0f,	0.0f,		0.0f),
+					new VertexC1P3T2(targetRect.MaxX,	targetRect.MinY,	0.0f,	uvRatio.X,	0.0f),
+					new VertexC1P3T2(targetRect.MaxX,	targetRect.MaxY,	0.0f,	uvRatio.X,	uvRatio.Y),
+					new VertexC1P3T2(targetRect.MinX,	targetRect.MaxY,	0.0f,	0.0f,		uvRatio.Y));
 
 				this.drawDevice.EndRendering();
 				Profile.TimePostProcessing.EndMeasure();

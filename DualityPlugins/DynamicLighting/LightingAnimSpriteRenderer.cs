@@ -100,9 +100,9 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.MaximumY;
+			vertices[1].TexCoord.Y = uvRect.MaxY;
 			vertices[1].TexCoord.Z = uvRectNext.X;
-			vertices[1].TexCoord.W = uvRectNext.MaximumY;
+			vertices[1].TexCoord.W = uvRectNext.MaxY;
 			vertices[1].Color = mainClr;
 			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
 			vertices[1].Attrib2 = curAnimFrameFade;
@@ -110,10 +110,10 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.MaximumX;
-			vertices[2].TexCoord.Y = uvRect.MaximumY;
-			vertices[2].TexCoord.Z = uvRectNext.MaximumX;
-			vertices[2].TexCoord.W = uvRectNext.MaximumY;
+			vertices[2].TexCoord.X = uvRect.MaxX;
+			vertices[2].TexCoord.Y = uvRect.MaxY;
+			vertices[2].TexCoord.Z = uvRectNext.MaxX;
+			vertices[2].TexCoord.W = uvRectNext.MaxY;
 			vertices[2].Color = mainClr;
 			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
 			vertices[2].Attrib2 = curAnimFrameFade;
@@ -121,9 +121,9 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.MaximumX;
+			vertices[3].TexCoord.X = uvRect.MaxX;
 			vertices[3].TexCoord.Y = uvRect.Y;
-			vertices[3].TexCoord.Z = uvRectNext.MaximumX;
+			vertices[3].TexCoord.Z = uvRectNext.MaxX;
 			vertices[3].TexCoord.W = uvRectNext.Y;
 			vertices[3].Color = mainClr;
 			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];
@@ -217,22 +217,22 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
 			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.MaximumY;
+			vertices[1].TexCoord.Y = uvRect.MaxY;
 			vertices[1].Color = mainClr;
 			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.MaximumX;
-			vertices[2].TexCoord.Y = uvRect.MaximumY;
+			vertices[2].TexCoord.X = uvRect.MaxX;
+			vertices[2].TexCoord.Y = uvRect.MaxY;
 			vertices[2].Color = mainClr;
 			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.MaximumX;
+			vertices[3].TexCoord.X = uvRect.MaxX;
 			vertices[3].TexCoord.Y = uvRect.Y;
 			vertices[3].Color = mainClr;
 			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];

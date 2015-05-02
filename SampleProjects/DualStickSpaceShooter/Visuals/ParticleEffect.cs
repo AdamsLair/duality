@@ -235,20 +235,20 @@ namespace DualStickSpaceShooter
 				vertexData[vertexBaseIndex + 1].Pos.Y = particlePos.Y + edgeBottomLeft.Y;
 				vertexData[vertexBaseIndex + 1].Pos.Z = particlePos.Z;
 				vertexData[vertexBaseIndex + 1].TexCoord.X = uvRect.X;
-				vertexData[vertexBaseIndex + 1].TexCoord.Y = uvRect.MaximumY;
+				vertexData[vertexBaseIndex + 1].TexCoord.Y = uvRect.MaxY;
 				vertexData[vertexBaseIndex + 1].Color = color;
 
 				vertexData[vertexBaseIndex + 2].Pos.X = particlePos.X + edgeBottomRight.X;
 				vertexData[vertexBaseIndex + 2].Pos.Y = particlePos.Y + edgeBottomRight.Y;
 				vertexData[vertexBaseIndex + 2].Pos.Z = particlePos.Z;
-				vertexData[vertexBaseIndex + 2].TexCoord.X = uvRect.MaximumX;
-				vertexData[vertexBaseIndex + 2].TexCoord.Y = uvRect.MaximumY;
+				vertexData[vertexBaseIndex + 2].TexCoord.X = uvRect.MaxX;
+				vertexData[vertexBaseIndex + 2].TexCoord.Y = uvRect.MaxY;
 				vertexData[vertexBaseIndex + 2].Color = color;
 				
 				vertexData[vertexBaseIndex + 3].Pos.X = particlePos.X + edgeTopRight.X;
 				vertexData[vertexBaseIndex + 3].Pos.Y = particlePos.Y + edgeTopRight.Y;
 				vertexData[vertexBaseIndex + 3].Pos.Z = particlePos.Z;
-				vertexData[vertexBaseIndex + 3].TexCoord.X = uvRect.MaximumX;
+				vertexData[vertexBaseIndex + 3].TexCoord.X = uvRect.MaxX;
 				vertexData[vertexBaseIndex + 3].TexCoord.Y = uvRect.Y;
 				vertexData[vertexBaseIndex + 3].Color = color;
 			}

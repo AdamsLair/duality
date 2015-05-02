@@ -62,23 +62,23 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(3 * 4, rect.Area);
 			Assert.AreEqual(2 * (3 + 4), rect.Perimeter);
 			Assert.AreEqual(MathF.Distance(1 + 3, 2 + 4), rect.BoundingRadius);
-			Assert.AreEqual(1, rect.MinimumX);
-			Assert.AreEqual(2, rect.MinimumY);
-			Assert.AreEqual(4, rect.MaximumX);
-			Assert.AreEqual(6, rect.MaximumY);
+			Assert.AreEqual(1, rect.MinX);
+			Assert.AreEqual(2, rect.MinY);
+			Assert.AreEqual(4, rect.MaxX);
+			Assert.AreEqual(6, rect.MaxY);
 			Assert.AreEqual(1 + 3 / 2.0f, rect.CenterX);
 			Assert.AreEqual(2 + 4 / 2.0f, rect.CenterY);
 
 			// Since we checked all min/max/center values above, we can safely rely on them here
-			Assert.AreEqual(new Vector2(rect.MinimumX, rect.MinimumY), rect.TopLeft);
-			Assert.AreEqual(new Vector2(rect.CenterX, rect.MinimumY), rect.Top);
-			Assert.AreEqual(new Vector2(rect.MaximumX, rect.MinimumY), rect.TopRight);
-			Assert.AreEqual(new Vector2(rect.MinimumX, rect.CenterY), rect.Left);
+			Assert.AreEqual(new Vector2(rect.MinX, rect.MinY), rect.TopLeft);
+			Assert.AreEqual(new Vector2(rect.CenterX, rect.MinY), rect.Top);
+			Assert.AreEqual(new Vector2(rect.MaxX, rect.MinY), rect.TopRight);
+			Assert.AreEqual(new Vector2(rect.MinX, rect.CenterY), rect.Left);
 			Assert.AreEqual(new Vector2(rect.CenterX, rect.CenterY), rect.Center);
-			Assert.AreEqual(new Vector2(rect.MaximumX, rect.CenterY), rect.Right);
-			Assert.AreEqual(new Vector2(rect.MinimumX, rect.MaximumY), rect.BottomLeft);
-			Assert.AreEqual(new Vector2(rect.CenterX, rect.MaximumY), rect.Bottom);
-			Assert.AreEqual(new Vector2(rect.MaximumX, rect.MaximumY), rect.BottomRight);
+			Assert.AreEqual(new Vector2(rect.MaxX, rect.CenterY), rect.Right);
+			Assert.AreEqual(new Vector2(rect.MinX, rect.MaxY), rect.BottomLeft);
+			Assert.AreEqual(new Vector2(rect.CenterX, rect.MaxY), rect.Bottom);
+			Assert.AreEqual(new Vector2(rect.MaxX, rect.MaxY), rect.BottomRight);
 
 			// Test some assignment operations
 			rect.Pos = new Vector2(2, 1);
@@ -193,14 +193,14 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(rect.Intersects(rect.Offset(0, -1)));
 
 			// Intersection with crossing rect: Horizontal
-			Assert.IsTrue(rect.Intersects(rect.MinimumX - 1, rect.MinimumY, rect.MaximumX - rect.MinimumX + 2, rect.MaximumY - rect.MinimumY));
-			Assert.IsTrue(rect.Intersects(rect.MinimumX - 1, rect.MinimumY - 1, rect.MaximumX - rect.MinimumX + 2, 2));
-			Assert.IsTrue(rect.Intersects(rect.MinimumX - 1, rect.MaximumY - 1, rect.MaximumX - rect.MinimumX + 2, 2));
+			Assert.IsTrue(rect.Intersects(rect.MinX - 1, rect.MinY, rect.MaxX - rect.MinX + 2, rect.MaxY - rect.MinY));
+			Assert.IsTrue(rect.Intersects(rect.MinX - 1, rect.MinY - 1, rect.MaxX - rect.MinX + 2, 2));
+			Assert.IsTrue(rect.Intersects(rect.MinX - 1, rect.MaxY - 1, rect.MaxX - rect.MinX + 2, 2));
 
 			// Intersection with crossing rect: Vertical
-			Assert.IsTrue(rect.Intersects(rect.MinimumX, rect.MinimumY - 1, rect.MaximumX - rect.MinimumX, rect.MaximumY - rect.MinimumY + 2));
-			Assert.IsTrue(rect.Intersects(rect.MinimumX - 1, rect.MinimumY - 1, 2, rect.MaximumY - rect.MinimumY + 2));
-			Assert.IsTrue(rect.Intersects(rect.MaximumX - 1, rect.MinimumY - 1, 2, rect.MaximumY - rect.MinimumY + 2));
+			Assert.IsTrue(rect.Intersects(rect.MinX, rect.MinY - 1, rect.MaxX - rect.MinX, rect.MaxY - rect.MinY + 2));
+			Assert.IsTrue(rect.Intersects(rect.MinX - 1, rect.MinY - 1, 2, rect.MaxY - rect.MinY + 2));
+			Assert.IsTrue(rect.Intersects(rect.MaxX - 1, rect.MinY - 1, 2, rect.MaxY - rect.MinY + 2));
 
 			// Intersection with corners
 			Assert.IsTrue(rect.Intersects(rect.TopLeft.X - 1, rect.TopLeft.Y - 1, 2, 2));
@@ -209,10 +209,10 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(rect.Intersects(rect.BottomRight.X - 1, rect.BottomRight.Y - 1, 2, 2));
 
 			// Non-intersection
-			Assert.IsFalse(rect.Intersects(rect.MinimumX - 2, rect.MinimumY, 1, rect.MaximumY - rect.MinimumY));
-			Assert.IsFalse(rect.Intersects(rect.MaximumX + 2, rect.MinimumY, 1, rect.MaximumY - rect.MinimumY));
-			Assert.IsFalse(rect.Intersects(rect.MinimumX, rect.MinimumY - 2, rect.MaximumX - rect.MinimumX, 1));
-			Assert.IsFalse(rect.Intersects(rect.MinimumX, rect.MaximumY + 2, rect.MaximumX - rect.MinimumX, 1));
+			Assert.IsFalse(rect.Intersects(rect.MinX - 2, rect.MinY, 1, rect.MaxY - rect.MinY));
+			Assert.IsFalse(rect.Intersects(rect.MaxX + 2, rect.MinY, 1, rect.MaxY - rect.MinY));
+			Assert.IsFalse(rect.Intersects(rect.MinX, rect.MinY - 2, rect.MaxX - rect.MinX, 1));
+			Assert.IsFalse(rect.Intersects(rect.MinX, rect.MaxY + 2, rect.MaxX - rect.MinX, 1));
 
 			// Non-intersection with corners
 			Assert.IsFalse(rect.Intersects(rect.TopLeft.X - 2, rect.TopLeft.Y - 2, 1, 1));

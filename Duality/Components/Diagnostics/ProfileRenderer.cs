@@ -152,7 +152,7 @@ namespace Duality.Components.Diagnostics
 				anyTextReport ? areaWidth : 0, 
 				(int)device.TargetSize.Y - 20);
 			Rect graphRect = new Rect(
-				anyTextReport ? (textReportRect.MaximumX + 10) : 10, 
+				anyTextReport ? (textReportRect.MaxX + 10) : 10, 
 				10, 
 				anyGraph ? areaWidth : 0, 
 				(int)device.TargetSize.Y - 20);
