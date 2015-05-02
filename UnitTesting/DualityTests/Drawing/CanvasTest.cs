@@ -9,7 +9,6 @@ using System.Diagnostics;
 
 using Duality;
 using Duality.Resources;
-using Duality.Animation;
 using Duality.Drawing;
 using Duality.Tests.Properties;
 

@@ -93,7 +93,6 @@
     <Compile Include="Utility\Streams\SubStreamWrapper.cs" />
     <Compile Include="Utility\Streams\StreamWrapper.cs" />
     <Compile Include="Utility\Streams\NonClosingStreamWrapper.cs" />
-    <Compile Include="Utility\Animation\AnimationGroup.cs" />
     <Compile Include="Audio\AudioLibraryLoader.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />
     <Compile Include="Cloning\CloneProviderContext.cs" />
@@ -134,12 +133,6 @@
     <Compile Include="Drawing\DrawDevice.cs" />
     <Compile Include="Drawing\IDrawDevice.cs" />
     <Compile Include="Drawing\DrawDeviceEnums.cs" />
-    <Compile Include="Utility\Animation\Animation.cs" />
-    <Compile Include="Utility\Animation\FieldAnimation.cs" />
-    <Compile Include="Utility\Animation\IAnimation.cs" />
-    <Compile Include="Utility\Animation\IPropertyAnimation.cs" />
-    <Compile Include="Utility\Animation\IFieldAnimation.cs" />
-    <Compile Include="Utility\Animation\PropertyAnimation.cs" />
     <Compile Include="Drawing\CanvasBuffer.cs" />
     <Compile Include="Drawing\DashPattern.cs" />
     <Compile Include="Drawing\CanvasState.cs" />
@@ -155,11 +148,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
     <Compile Include="Utility\IManageableObject.cs" />
     <Compile Include="Utility\InitState.cs" />
-    <Compile Include="Utility\Animation\AnimationKeyFrame.cs" />
-    <Compile Include="Utility\Animation\AnimationTrack.cs" />
     <Compile Include="Utility\Math\GenericOperator.cs" />
-    <Compile Include="Utility\Animation\IAnimationKeyFrame.cs" />
-    <Compile Include="Utility\Animation\IAnimationTrack.cs" />
     <Compile Include="Utility\Math\PhysicsConvert.cs" />
     <Compile Include="Utility\EditorHint.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIEnumerable.cs" />
