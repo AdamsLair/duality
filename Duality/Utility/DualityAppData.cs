@@ -10,7 +10,6 @@ namespace Duality
 	/// <summary>
 	/// Provides general information about this Duality application / game.
 	/// </summary>
-	[Serializable]
 	public class DualityAppData
 	{
 		private	string				appName					= "Duality Application";

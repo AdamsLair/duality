@@ -6,7 +6,6 @@ namespace Duality.Drawing
 	/// <summary>
 	/// Represents a 4-byte Rgba color value.
 	/// </summary>
-	[Serializable]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct ColorRgba : IColorData, IEquatable<ColorRgba>
 	{

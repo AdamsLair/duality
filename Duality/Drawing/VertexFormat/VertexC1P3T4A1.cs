@@ -10,7 +10,6 @@ namespace Duality.Drawing
 	/// Vertex data providing each vertex a position (3x4 byte), color (1x4 byte), two texture coordinates (4x4 byte)
 	/// and a custom float vertex attribute (1x4 byte).
 	/// </summary>
-	[Serializable]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexC1P3T4A1 : IVertexData
 	{

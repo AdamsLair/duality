@@ -18,7 +18,6 @@ namespace Duality.Resources
 	/// noticable on higher distance than others.
 	/// </example>
 	/// <seealso cref="Duality.Resources.AudioData"/>
-	[Serializable]
 	[ExplicitResourceReference(typeof(AudioData))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSound)]

@@ -15,7 +15,6 @@ using Duality.Drawing;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	public class Player : Component, ICmpUpdatable
 	{
 		public const float RespawnDelay = 10000.0f;
@@ -44,9 +43,9 @@ namespace DualStickSpaceShooter
 		private	ContentRef<Sound>	weaponSound			= null;
 		private	ContentRef<Sound>	flightLoop			= null;
 
-		[NonSerialized]
+		[DontSerialize]
 		private	InputMapping	input				= null;
-		[NonSerialized]
+		[DontSerialize]
 		private	GameObject		goalEffectInstance	= null;
 
 

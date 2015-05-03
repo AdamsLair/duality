@@ -15,7 +15,6 @@ namespace Duality.Components.Physics
 	/// Constrains two RigidBodies to keep their distance to each other in a certain range.
 	/// You can view this as a massless, rigid rod.
 	/// </summary>
-	[Serializable]
 	public sealed class SliderJointInfo : JointInfo
 	{
 		private	Vector2		localAnchorA	= Vector2.Zero;

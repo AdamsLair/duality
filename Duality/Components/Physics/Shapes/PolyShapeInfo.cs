@@ -14,7 +14,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Describes a <see cref="RigidBody">Colliders</see> polygon shape.
 	/// </summary>
-	[Serializable]
 	public sealed class PolyShapeInfo : ShapeInfo
 	{
 		public const int MaxVertices = FarseerPhysics.Settings.MaxPolygonVertices;

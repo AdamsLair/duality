@@ -14,7 +14,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Constrains two RigidBodies to obtain a fixed distance to each other
 	/// </summary>
-	[Serializable]
 	public sealed class DistanceJointInfo : JointInfo
 	{
 		private	Vector2		localAnchorA	= Vector2.Zero;

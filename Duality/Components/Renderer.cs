@@ -12,7 +12,6 @@ namespace Duality.Components
 	/// A Renderer usually gives its <see cref="GameObject"/> a visual appearance in space.
 	/// However, in general it may render anything and isn't bound by any conceptual restrictions.
 	/// </summary>
-	[Serializable]
 	[ManuallyCloned]
 	[RequiredComponent(typeof(Transform))]
 	public abstract class Renderer : Component, ICmpRenderer

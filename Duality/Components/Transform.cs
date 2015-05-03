@@ -11,7 +11,6 @@ namespace Duality.Components
 	/// <summary>
 	/// Represents a <see cref="GameObject">GameObjects</see> physical location in the world, relative to its <see cref="GameObject.Parent"/>.
 	/// </summary>
-	[Serializable]
 	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageTransform)]
@@ -51,13 +50,13 @@ namespace Duality.Components
 		private	float		angleVel		= 0.0f;
 		private	float		angleVelAbs		= 0.0f;
 		// Temporary per-frame values
-		[NonSerialized] private	DirtyFlags	changes			= DirtyFlags.None;
-		[NonSerialized] private	Vector3		tempVel			= Vector3.Zero;
-		[NonSerialized] private	Vector3		tempVelAbs		= Vector3.Zero;
-		[NonSerialized] private	float		tempAngleVel	= 0.0f;
-		[NonSerialized] private	float		tempAngleVelAbs	= 0.0f;
+		[DontSerialize] private	DirtyFlags	changes			= DirtyFlags.None;
+		[DontSerialize] private	Vector3		tempVel			= Vector3.Zero;
+		[DontSerialize] private	Vector3		tempVelAbs		= Vector3.Zero;
+		[DontSerialize] private	float		tempAngleVel	= 0.0f;
+		[DontSerialize] private	float		tempAngleVelAbs	= 0.0f;
 
-		[NonSerialized] 
+		[DontSerialize] 
 		private EventHandler<TransformChangedEventArgs> eventTransformChanged = null;
 		public event EventHandler<TransformChangedEventArgs> EventTransformChanged
 		{

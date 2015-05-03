@@ -15,7 +15,6 @@ using Duality.Components.Physics;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(Transform))]
 	[RequiredComponent(typeof(RigidBody))]
 	public class Bullet : Component, ICmpCollisionListener, ICmpUpdatable

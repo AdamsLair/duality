@@ -13,7 +13,6 @@ using Duality.Resources;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(Camera))]
 	public class CameraController : Component, ICmpUpdatable, ICmpInitializable
 	{

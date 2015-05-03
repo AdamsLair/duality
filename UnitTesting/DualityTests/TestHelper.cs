@@ -104,7 +104,6 @@ namespace Duality.Tests
 		}
 	}
 
-	[Serializable]
 	public class TestMemory
 	{
 		private Dictionary<string,object> data = new Dictionary<string,object>();

@@ -812,7 +812,7 @@ namespace Duality.Cloning
 			// Assembly-level attributes pointing to this Type
 			if (globalCloneBehavior == null)
 			{
-				globalCloneBehavior = ReflectionHelper.GetCustomAssemblyAttributes<CloneBehaviorAttribute>().ToArray();
+				globalCloneBehavior = ReflectionHelper.GetAssemblyAttributesCached<CloneBehaviorAttribute>().ToArray();
 			}
 			for (int i = 0; i < globalCloneBehavior.Length; i++)
 			{
@@ -825,7 +825,7 @@ namespace Duality.Cloning
 			CloneBehaviorAttribute directAttrib;
 			if (!cloneBehaviorCache.TryGetValue(type, out directAttrib))
 			{
-				directAttrib = type.GetCustomAttributes<CloneBehaviorAttribute>().FirstOrDefault();
+				directAttrib = type.GetAttributesCached<CloneBehaviorAttribute>().FirstOrDefault();
 				cloneBehaviorCache[type] = directAttrib;
 			}
 			return directAttrib;

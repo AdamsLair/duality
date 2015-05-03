@@ -8,7 +8,6 @@ using Duality.Components.Physics;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	public class DoorControl : Component, ICmpMessageListener, ICmpUpdatable, ICmpInitializable
 	{
 		private RigidBody			doorPanel		= null;
@@ -16,8 +15,8 @@ namespace DualStickSpaceShooter
 		private	float				closeSpeed		= 0.0f;
 		private	int					minTriggerCount	= 1;
 		private	ContentRef<Sound>	moveSound		= null;
-		[NonSerialized] private SoundInstance moveSoundInst	= null;
-		[NonSerialized] private	int triggerCount = 0;
+		[DontSerialize] private SoundInstance moveSoundInst	= null;
+		[DontSerialize] private	int triggerCount = 0;
 
 		public float OpenSpeed
 		{

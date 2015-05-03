@@ -22,7 +22,6 @@ namespace Duality.Resources
 	/// Represents a font. While any system font or imported TrueType font can be used, they are internally
 	/// pre-rasterized and stored in a <see cref="Duality.Resources.Texture"/> with an <see cref="Duality.Resources.Pixmap.Atlas"/>.
 	/// </summary>
-	[Serializable]
 	[ExplicitResourceReference()]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
@@ -221,18 +220,18 @@ namespace Duality.Resources
 		// Embedded custom font family
 		private	byte[]		customFamilyData	= null;
 		// Data that is automatically acquired while loading the font
-		[NonSerialized] private SysDrawFont	internalFont	= null;
-		[NonSerialized] private	GlyphData[]	glyphs			= null;
-		[NonSerialized] private	Material	mat				= null;
-		[NonSerialized] private	Pixmap		pixelData		= null;
-		[NonSerialized] private	Texture		texture			= null;
-		[NonSerialized] private	bool		needsReload		= true;
-		[NonSerialized] private	int			maxGlyphWidth	= 0;
-		[NonSerialized] private	int			height			= 0;
-		[NonSerialized] private	int			ascent			= 0;
-		[NonSerialized] private	int			bodyAscent		= 0;
-		[NonSerialized] private	int			descent			= 0;
-		[NonSerialized] private	int			baseLine		= 0;
+		[DontSerialize] private SysDrawFont	internalFont	= null;
+		[DontSerialize] private	GlyphData[]	glyphs			= null;
+		[DontSerialize] private	Material	mat				= null;
+		[DontSerialize] private	Pixmap		pixelData		= null;
+		[DontSerialize] private	Texture		texture			= null;
+		[DontSerialize] private	bool		needsReload		= true;
+		[DontSerialize] private	int			maxGlyphWidth	= 0;
+		[DontSerialize] private	int			height			= 0;
+		[DontSerialize] private	int			ascent			= 0;
+		[DontSerialize] private	int			bodyAscent		= 0;
+		[DontSerialize] private	int			descent			= 0;
+		[DontSerialize] private	int			baseLine		= 0;
 
 
 		/// <summary>

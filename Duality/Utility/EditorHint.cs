@@ -54,7 +54,7 @@ namespace Duality.Editor
 		/// <returns></returns>
 		public static T Get<T>(MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
 		{
-			T hint = member != null ? member.GetCustomAttributes<T>().FirstOrDefault() : null;
+			T hint = member != null ? member.GetAttributesCached<T>().FirstOrDefault() : null;
 			if (overrideHints == null)
 				return hint;
 			else if (hint == null)
@@ -71,7 +71,7 @@ namespace Duality.Editor
 		/// <returns></returns>
 		public static IEnumerable<T> GetAll<T>(MemberInfo member, IEnumerable<EditorHintAttribute> overrideHints = null) where T : EditorHintAttribute
 		{
-			IEnumerable<T> hints = member != null ? member.GetCustomAttributes<T>() : null;
+			IEnumerable<T> hints = member != null ? member.GetAttributesCached<T>() : null;
 			if (overrideHints == null)
 				return hints;
 			else if (hints == null)
@@ -344,7 +344,7 @@ namespace Duality.Editor
 		public static string[] GetEditorCategory(this Type type)
 		{
 			string[] tree = null;
-			foreach (var attrib in type.GetCustomAttributes<EditorHintCategoryAttribute>())
+			foreach (var attrib in type.GetAttributesCached<EditorHintCategoryAttribute>())
 			{
 				tree = attrib.CategoryTree;
 				if (tree != null) break;
@@ -360,7 +360,7 @@ namespace Duality.Editor
 		public static Image GetEditorImage(this Type type)
 		{
 			Image image = null;
-			foreach (var attrib in type.GetCustomAttributes<EditorHintImageAttribute>())
+			foreach (var attrib in type.GetAttributesCached<EditorHintImageAttribute>())
 			{
 				image = attrib.IconImage;
 				if (image != null) break;

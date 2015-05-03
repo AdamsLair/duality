@@ -16,7 +16,6 @@ namespace Duality.Components.Renderers
 	/// <summary>
 	/// Renders an animated sprite to represent the <see cref="GameObject"/>.
 	/// </summary>
-	[Serializable]
 	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageAnimSpriteRenderer)]
@@ -65,10 +64,10 @@ namespace Duality.Components.Renderers
 		private	bool		animPaused			= false;
 		private	List<int>	customFrameSequence	= null;
 
-		[NonSerialized] private int		curAnimFrame		= 0;
-		[NonSerialized] private int		nextAnimFrame		= 0;
-		[NonSerialized] private float	curAnimFrameFade	= 0.0f;
-		[NonSerialized] private	VertexC1P3T4A1[]	verticesSmooth	= null;
+		[DontSerialize] private int		curAnimFrame		= 0;
+		[DontSerialize] private int		nextAnimFrame		= 0;
+		[DontSerialize] private float	curAnimFrameFade	= 0.0f;
+		[DontSerialize] private	VertexC1P3T4A1[]	verticesSmooth	= null;
 
 
 		/// <summary>

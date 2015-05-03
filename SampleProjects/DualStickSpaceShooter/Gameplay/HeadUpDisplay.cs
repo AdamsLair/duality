@@ -10,13 +10,12 @@ using Duality.Drawing;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	public class HeadUpDisplay : Component, ICmpRenderer
 	{
 		private ContentRef<Font>		font						= null;
-		[NonSerialized] private Player			playerOne			= null;
-		[NonSerialized] private Player			playerTwo			= null;
-		[NonSerialized] private CanvasBuffer	buffer				= null;
+		[DontSerialize] private Player			playerOne			= null;
+		[DontSerialize] private Player			playerTwo			= null;
+		[DontSerialize] private CanvasBuffer	buffer				= null;
 
 		public ContentRef<Font> Font
 		{

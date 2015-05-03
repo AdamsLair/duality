@@ -21,6 +21,7 @@
       <dependency id="AdamsLair.OpenTK" version="1.1.1" />
       <dependency id="AdamsLair.OpenTK.GLControl" version="1.1.1" />
       <dependency id="AdamsLair.FarseerDuality" version="3.3.9" />
+      <dependency id="AdamsLair.Duality.Primitives" version="1.0.0" />
     </dependencies>
     <references>
       <reference file="Duality.dll" />

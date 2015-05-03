@@ -10,7 +10,6 @@ using Duality.Drawing;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	public class GameOverScreen : Component, ICmpRenderer, ICmpUpdatable
 	{
 		private ContentRef<Font>		font						= null;
@@ -18,11 +17,11 @@ namespace DualStickSpaceShooter
 		private ContentRef<Material>	controlInfoMouseKeyboard	= null;
 		private ContentRef<Material>	controlInfoGamepad			= null;
 		
-		[NonSerialized] private	bool			gameStarted			= false;
-		[NonSerialized] private	bool			gameOver			= false;
-		[NonSerialized] private	bool			gameWin				= false;
-		[NonSerialized] private float			lastTimeAnyAlive	= 0.0f;
-		[NonSerialized] private CanvasBuffer	buffer				= null;
+		[DontSerialize] private	bool			gameStarted			= false;
+		[DontSerialize] private	bool			gameOver			= false;
+		[DontSerialize] private	bool			gameWin				= false;
+		[DontSerialize] private float			lastTimeAnyAlive	= 0.0f;
+		[DontSerialize] private CanvasBuffer	buffer				= null;
 
 
 		float ICmpRenderer.BoundRadius

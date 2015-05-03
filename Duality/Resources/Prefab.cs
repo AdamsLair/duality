@@ -18,7 +18,6 @@ namespace Duality.Resources
 	/// ensures that changes made to the Prefab propagate to all of its instances as well. It also keeps track of Properties that
 	/// have been deliberately modified in the editor and restores them after re-applying the original Prefabs data.
 	/// </summary>
-	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePrefab)]
 	public class Prefab : Resource
@@ -197,10 +196,8 @@ namespace Duality.Resources
 	/// </summary>
 	/// <seealso cref="Prefab"/>
 	/// <seealso cref="GameObject"/>
-	[Serializable]
 	public sealed class PrefabLink
 	{
-		[Serializable]
 		private struct VarMod
 		{
 			public	PropertyInfo	prop;

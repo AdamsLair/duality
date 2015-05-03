@@ -16,7 +16,6 @@ namespace Duality.Components.Physics
 	/// A body is only allowed to travel on a specific world axis relative to the other one but can rotate
 	/// freely or accelerated by a motor.
 	/// </summary>
-	[Serializable]
 	public sealed class LineJointInfo : JointInfo
 	{
 		private	Vector2		localAnchorA	= Vector2.Zero;

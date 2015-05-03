@@ -79,7 +79,6 @@ namespace Duality
 	/// Provides information about user settings for this Duality application / game.
 	/// It is persistent beyond installing or deleting this Duality game.
 	/// </summary>
-	[Serializable]
 	public class DualityUserData
 	{
 		private	string		userName			= "Unknown";

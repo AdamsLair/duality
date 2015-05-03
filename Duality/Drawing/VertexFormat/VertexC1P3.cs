@@ -9,7 +9,6 @@ namespace Duality.Drawing
 	/// <summary>
 	/// Vertex data providing each vertex a position (3x4 byte) and color (1x4 byte).
 	/// </summary>
-	[Serializable]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexC1P3 : IVertexData
 	{

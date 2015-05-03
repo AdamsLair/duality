@@ -14,7 +14,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Constrains two RigidBodies to not exceed a maximum distance to each other.
 	/// </summary>
-	[Serializable]
 	public sealed class RopeJointInfo : JointInfo
 	{
 		private	Vector2		localAnchorA	= Vector2.Zero;

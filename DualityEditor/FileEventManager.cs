@@ -415,7 +415,7 @@ namespace Duality.Editor
 			if (deleteEvent.IsResource)
 			{
 				Resource res = deleteEvent.Content.Res;
-				if (res.SourcePath != null) mediaPath = res.SourcePath;
+				if (res != null && res.SourcePath != null) mediaPath = res.SourcePath;
 				if (!File.Exists(mediaPath)) mediaPath = FileImportProvider.SelectSourceFilePath(deleteEvent.Content, Path.GetExtension(mediaPath));
 				if (!File.Exists(mediaPath)) return;
 			}

@@ -14,7 +14,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// "Welds" two Colliders together so they share a common point and relative angle.
 	/// </summary>
-	[Serializable]
 	public sealed class WeldJointInfo : JointInfo
 	{
 		private Vector2 localAnchorA	= Vector2.Zero;

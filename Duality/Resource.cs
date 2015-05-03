@@ -18,7 +18,6 @@ namespace Duality
 	/// </summary>
 	/// <seealso cref="ContentRef{T}"/>
 	/// <seealso cref="ContentProvider"/>
-	[Serializable]
 	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
 	public abstract class Resource : IManageableObject, IDisposable, ICloneExplicit
@@ -42,10 +41,10 @@ namespace Duality
 		/// <summary>
 		/// The path of this Resource.
 		/// </summary>
-		[NonSerialized]
+		[DontSerialize]
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		protected string path = null;
-		[NonSerialized]
+		[DontSerialize]
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		private InitState initState = InitState.Initialized;
 
@@ -193,7 +192,7 @@ namespace Duality
 
 			using (var formatter = Formatter.Create(str))
 			{
-				formatter.AddFieldBlocker(Resource.NonSerializedResourceBlocker);
+				formatter.AddFieldBlocker(Resource.DontSerializeResourceBlocker);
 				if (this is Duality.Resources.Scene) // This is an unfortunate hack. Refactor when necessary.
 					formatter.AddFieldBlocker(Resource.PrefabLinkedFieldBlocker);
 				formatter.WriteObject(this);
@@ -290,7 +289,10 @@ namespace Duality
 
 		~Resource()
 		{
-			finalizeSched.Add(this);
+			lock (finalizeSched)
+			{
+				finalizeSched.Add(this);
+			}
 		}
 		/// <summary>
 		/// Disposes the Resource. Please don't do something silly, like disposing a Scene while it is updated.. use <see cref="ExtMethodsIManageableObject.DisposeLater"/> instead!
@@ -482,14 +484,14 @@ namespace Duality
 
 		/// <summary>
 		/// A <see cref="Duality.Serialization.Formatter.FieldBlockers">FieldBlocker</see> to prevent
-		/// fields flagged with a <see cref="NonSerializedResourceAttribute"/> from being serialized.
+		/// fields flagged with a <see cref="DontSerializeResourceAttribute"/> from being serialized.
 		/// </summary>
 		/// <param name="field"></param>
 		/// <param name="obj"></param>
 		/// <returns></returns>
-		public static bool NonSerializedResourceBlocker(FieldInfo field, object obj)
+		public static bool DontSerializeResourceBlocker(FieldInfo field, object obj)
 		{
-			return field.GetCustomAttributes(typeof(NonSerializedResourceAttribute), true).Any();
+			return field.HasAttributeCached<DontSerializeResourceAttribute>();
 		}
 		/// <summary>
 		/// A <see cref="Duality.Serialization.Formatter.FieldBlockers">FieldBlocker</see> to prevent
@@ -511,14 +513,18 @@ namespace Duality
 
 		internal static void RunCleanup()
 		{
-			if (finalizeSched.Count > 0)
+			Resource[] finalizeSchedArray;
+			lock (finalizeSched)
 			{
-				Resource[] finalizeSchedArray = finalizeSched.NotNull().ToArray();
+				if (finalizeSched.Count == 0) return;
+				finalizeSchedArray = finalizeSched.ToArray();
 				finalizeSched.Clear();
-				foreach (Resource res in finalizeSchedArray)
-				{
-					res.Dispose(false);
-				}
+			}
+
+			foreach (Resource res in finalizeSchedArray)
+			{
+				if (res == null) continue;
+				res.Dispose(false);
 			}
 		}
 	}
@@ -527,9 +533,7 @@ namespace Duality
 	/// Indicates that a field will be assumed null when serializing it as part of a Resource serialization.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Field)]
-	public class NonSerializedResourceAttribute : Attribute
-	{
-	}
+	public class DontSerializeResourceAttribute : Attribute { }
 
 	/// <summary>
 	/// Allows to explicitly specify what kinds of Resources a certain Resource Type is able to reference.

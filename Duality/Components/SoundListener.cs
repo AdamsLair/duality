@@ -8,7 +8,6 @@ namespace Duality.Components
 	/// <summary>
 	/// Makes this <see cref="GameObject"/> the 3d sound listener.
 	/// </summary>
-	[Serializable]
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSoundListener)]

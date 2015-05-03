@@ -17,7 +17,6 @@ namespace Duality.Components
 	/// <summary>
 	/// A Camera is responsible for rendering the current <see cref="Duality.Resources.Scene"/>.
 	/// </summary>
-	[Serializable]
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageCamera)]
@@ -26,7 +25,6 @@ namespace Duality.Components
 		/// <summary>
 		/// Describes a single pass in the overall rendering process.
 		/// </summary>
-		[Serializable]
 		public class Pass
 		{
 			private ColorRgba					clearColor		= ColorRgba.TransparentBlack;
@@ -37,7 +35,7 @@ namespace Duality.Components
 			private	BatchInfo					input			= null;
 			private	ContentRef<RenderTarget>	output			= ContentRef<RenderTarget>.Null;
 
-			[NonSerialized]
+			[DontSerialize]
 			private EventHandler<CollectDrawcallEventArgs> collectDrawcalls	= null;
 
 			/// <summary>
@@ -166,13 +164,13 @@ namespace Duality.Components
 		private	VisibilityFlag	visibilityMask	= VisibilityFlag.All;
 		private	List<Pass>	passes				= new List<Pass>();
 
-		[NonSerialized] private	DrawDevice			drawDevice		= null;
-		[NonSerialized] private	List<ICmpRenderer>	pickingMap		= null;
-		[NonSerialized] private	RenderTarget		pickingRT		= null;
-		[NonSerialized] private	Texture				pickingTex		= null;
-		[NonSerialized] private	int					pickingLast		= -1;
-		[NonSerialized] private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
-		[NonSerialized] private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
+		[DontSerialize] private	DrawDevice			drawDevice		= null;
+		[DontSerialize] private	List<ICmpRenderer>	pickingMap		= null;
+		[DontSerialize] private	RenderTarget		pickingRT		= null;
+		[DontSerialize] private	Texture				pickingTex		= null;
+		[DontSerialize] private	int					pickingLast		= -1;
+		[DontSerialize] private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
+		[DontSerialize] private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
 
 		
 		/// <summary>

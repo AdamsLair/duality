@@ -11,7 +11,6 @@ using Duality.Drawing;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(Transform))]
 	public class SpawnPoint : Component, ICmpMessageListener, ICmpInitializable
 	{

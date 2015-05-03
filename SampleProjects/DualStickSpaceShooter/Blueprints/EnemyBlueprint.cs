@@ -14,7 +14,6 @@ using Duality.Components.Renderers;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	public class EnemyBlueprint : Resource
 	{
 		private	ContentRef<Prefab>[]	exploEffects	= null;

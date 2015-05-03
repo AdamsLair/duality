@@ -14,7 +14,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Describes a <see cref="RigidBody">Colliders</see> circle shape.
 	/// </summary>
-	[Serializable]
 	public sealed class CircleShapeInfo : ShapeInfo
 	{
 		private	float	radius;

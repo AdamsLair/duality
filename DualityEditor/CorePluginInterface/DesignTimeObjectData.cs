@@ -12,7 +12,6 @@ namespace Duality.Editor
 {
 	public class DesignTimeObjectData
 	{
-		[Serializable]
 		internal class DataContainer : IEquatable<DataContainer>
 		{
 			public	bool	hidden	= false;
@@ -232,7 +231,6 @@ namespace Duality.Editor
 		}
 	}
 
-	[Serializable]
 	internal class DesignTimeObjectDataManager : ISerializeExplicit
 	{
 		private static readonly int GuidByteLength = Guid.Empty.ToByteArray().Length;

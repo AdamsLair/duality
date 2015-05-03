@@ -217,7 +217,7 @@ namespace Duality
 		/// <typeparam name="T"></typeparam>
 		/// <param name="member"></param>
 		/// <returns></returns>
-		public static IEnumerable<T> GetCustomAttributes<T>(this MemberInfo member) where T : Attribute
+		public static IEnumerable<T> GetAttributesCached<T>(this MemberInfo member) where T : Attribute
 		{
 			Attribute[] result;
 			if (!customMemberAttribCache.TryGetValue(member, out result))
@@ -235,7 +235,7 @@ namespace Duality
 							MemberInfo[] interfaceMembers = interfaceType.GetMember(member.Name, member.MemberType, ReflectionHelper.BindInstanceAll);
 							foreach (MemberInfo interfaceMemberInfo in interfaceMembers)
 							{
-								IEnumerable<Attribute> subQuery = GetCustomAttributes<Attribute>(interfaceMemberInfo);
+								IEnumerable<Attribute> subQuery = GetAttributesCached<Attribute>(interfaceMemberInfo);
 								if (subQuery.Any())
 								{
 									query = query.Concat(subQuery);
@@ -251,7 +251,11 @@ namespace Duality
 				}
 				customMemberAttribCache[member] = result;
 			}
-			return result.OfType<T>();
+
+			if (typeof(T) == typeof(Attribute))
+				return result as IEnumerable<T>;
+			else
+				return result.OfType<T>();
 		}
 		/// <summary>
 		/// Returns all custom attributes of the specified Type that are declared at Assembly-level
@@ -259,7 +263,7 @@ namespace Duality
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public static IEnumerable<T> GetCustomAssemblyAttributes<T>() where T : Attribute
+		public static IEnumerable<T> GetAssemblyAttributesCached<T>() where T : Attribute
 		{
 			if (customAssemblyAttribCache == null)
 			{
@@ -268,7 +272,22 @@ namespace Duality
 					.SelectMany(a => Attribute.GetCustomAttributes(a, true))
 					.ToArray();
 			}
-			return customAssemblyAttribCache.OfType<T>();
+			if (typeof(T) == typeof(Attribute))
+				return customAssemblyAttribCache as IEnumerable<T>;
+			else
+				return customAssemblyAttribCache.OfType<T>();
+		}
+		/// <summary>
+		/// Returns all custom attributes of the specified Type that are attached to the specified member.
+		/// Inherites attributes are returned as well. This method is usually faster than <see cref="Attribute.GetCustomAttributes"/>
+		/// and similar .Net methods, because it caches previous results internally.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="member"></param>
+		/// <returns></returns>
+		public static bool HasAttributeCached<T>(this MemberInfo member) where T : Attribute
+		{
+			return GetAttributesCached<T>(member).Any();
 		}
 
 		/// <summary>
@@ -477,7 +496,7 @@ namespace Duality
 
 				bool foundIt = false;
 				bool foundAny = false;
-				foreach (ExplicitResourceReferenceAttribute refAttrib in GetCustomAttributes<ExplicitResourceReferenceAttribute>(sourceResType))
+				foreach (ExplicitResourceReferenceAttribute refAttrib in GetAttributesCached<ExplicitResourceReferenceAttribute>(sourceResType))
 				{
 					foundAny = true;
 					foreach (Type refType in refAttrib.ReferencedTypes)

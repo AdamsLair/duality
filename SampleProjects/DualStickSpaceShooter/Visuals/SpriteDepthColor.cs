@@ -12,7 +12,6 @@ using Duality.Components.Renderers;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(SpriteRenderer))]
 	public class SpriteDepthColor : Component, ICmpEditorUpdatable
 	{

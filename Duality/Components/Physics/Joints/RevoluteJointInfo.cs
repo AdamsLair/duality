@@ -14,7 +14,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Pins two locally anchored RigidBodies together without constraining rotation.
 	/// </summary>
-	[Serializable]
 	public sealed class RevoluteJointInfo : JointInfo
 	{
 		private	Vector2		localAnchorA	= Vector2.Zero;

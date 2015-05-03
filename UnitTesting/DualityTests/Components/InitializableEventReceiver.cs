@@ -12,7 +12,6 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Components
 {
-	[Serializable]
 	public class InitializableEventReceiver : Component, ICmpInitializable
 	{
 		[Flags]

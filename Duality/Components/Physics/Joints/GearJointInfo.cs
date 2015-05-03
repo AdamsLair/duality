@@ -17,7 +17,6 @@ namespace Duality.Components.Physics
 	/// each body. Supported joint types are (Fixed)Prismatic- and (Fixed)Revolutejoints. Those joints
 	/// are required to be either fixed or attached to a static body.
 	/// </summary>
-	[Serializable]
 	public sealed class GearJointInfo : JointInfo
 	{
 		private	float	ratio	= 1.0f;

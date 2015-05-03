@@ -477,7 +477,7 @@ namespace Duality.Editor.Plugins.CamView
 			
 			var typesWithCount = (
 				from componentType in DualityApp.GetAvailDualityTypes(typeof(Component))
-				where !componentType.IsAbstract && !componentType.GetCustomAttributes<EditorHintFlagsAttribute>().Any(attrib => attrib.Flags.HasFlag(MemberFlags.Invisible))
+				where !componentType.IsAbstract && !componentType.GetAttributesCached<EditorHintFlagsAttribute>().Any(attrib => attrib.Flags.HasFlag(MemberFlags.Invisible))
 				select new { Type = componentType, Count = Scene.Current.FindComponents(componentType).Count() }
 				).ToArray();
 

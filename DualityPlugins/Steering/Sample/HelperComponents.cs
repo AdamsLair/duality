@@ -16,7 +16,6 @@ namespace Duality.Plugins.Steering.Sample
 	/// Agent radius, and applies the Agents suggested velocity back to the RigidBody. The sole purpose if this
 	/// Component is to visualize Agent behavior.
 	/// </summary>
-	[Serializable]
 	[RequiredComponent(typeof(Agent))]
 	[RequiredComponent(typeof(Transform))]
 	[RequiredComponent(typeof(RigidBody))]

@@ -15,7 +15,6 @@ namespace Duality.Components.Renderers
 	/// <summary>
 	/// Renders a text to represent the <see cref="GameObject"/>.
 	/// </summary>
-	[Serializable]
 	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
@@ -27,8 +26,8 @@ namespace Duality.Components.Renderers
 		protected	ColorRgba				colorTint	= ColorRgba.White;
 		protected	ContentRef<Material>	iconMat		= ContentRef<Material>.Null;
 		protected	int						offset		= 0;
-		[NonSerialized] protected	VertexC1P3T2[][]	vertFont	= null;
-		[NonSerialized] protected	VertexC1P3T2[]		vertIcon	= null;
+		[DontSerialize] protected	VertexC1P3T2[][]	vertFont	= null;
+		[DontSerialize] protected	VertexC1P3T2[]		vertIcon	= null;
 
 
 		[EditorHintFlags(MemberFlags.Invisible)]

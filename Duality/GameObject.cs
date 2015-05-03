@@ -22,13 +22,12 @@ namespace Duality
 	/// <seealso cref="Component"/>
 	/// <seealso cref="Duality.Resources.Scene"/>
 	/// <seealso cref="Duality.Resources.PrefabLink"/>
-	[Serializable]
 	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageGameObject)]
 	public sealed class GameObject : IManageableObject, IUniqueIdentifyable, ICloneExplicit
 	{
-		[NonSerialized] 
+		[DontSerialize] 
 		private		Scene						scene		= null;
 		private		GameObject					parent		= null;
 		private		PrefabLink					prefabLink	= null;
@@ -43,11 +42,11 @@ namespace Duality
 		// Built-in heavily used component lookup
 		private		Transform					compTransform	= null;
 		
-		[NonSerialized]
+		[DontSerialize]
 		private EventHandler<GameObjectParentChangedEventArgs>	eventParentChanged		= null;
-		[NonSerialized]
+		[DontSerialize]
 		private EventHandler<ComponentEventArgs>				eventComponentAdded		= null;
-		[NonSerialized]
+		[DontSerialize]
 		private EventHandler<ComponentEventArgs>				eventComponentRemoving	= null;
 
 

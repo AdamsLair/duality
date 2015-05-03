@@ -142,7 +142,7 @@ namespace Duality.Editor.Controls
 		{
 			PropertyInfo property = info as PropertyInfo;
 			FieldInfo field = info as FieldInfo;
-			EditorHintFlagsAttribute flagsAttrib = info.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
+			EditorHintFlagsAttribute flagsAttrib = info.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
 
 			// Accept all members in "Debug Mode", if not declared inside Duality itself
 			if (showNonPublic && info.DeclaringType.Assembly != typeof(DualityApp).Assembly) return true;
@@ -171,7 +171,7 @@ namespace Duality.Editor.Controls
 		}
 		private bool EditorMemberAffectsOthers(MemberInfo info)
 		{
-			EditorHintFlagsAttribute flagsAttrib = info.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
+			EditorHintFlagsAttribute flagsAttrib = info.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
 			return this.ShowNonPublic || (flagsAttrib != null && (flagsAttrib.Flags & MemberFlags.AffectsOthers) != MemberFlags.None);
 		}
 		private void EditorMemberPropertySetter(PropertyInfo property, IEnumerable<object> targetObjects, IEnumerable<object> values)

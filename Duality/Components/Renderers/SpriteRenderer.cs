@@ -14,7 +14,6 @@ namespace Duality.Components.Renderers
 	/// <summary>
 	/// Renders a sprite to represent the <see cref="GameObject"/>.
 	/// </summary>
-	[Serializable]
 	[ManuallyCloned]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSpriteRenderer)]
@@ -53,7 +52,7 @@ namespace Duality.Components.Renderers
 		protected	UVMode					rectMode	= UVMode.Stretch;
 		protected	bool					pixelGrid	= false;
 		protected	int						offset		= 0;
-		[NonSerialized] protected	VertexC1P3T2[]	vertices	= null;
+		[DontSerialize] protected	VertexC1P3T2[]	vertices	= null;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override float BoundRadius

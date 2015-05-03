@@ -17,7 +17,6 @@ namespace Duality.Components.Diagnostics
 	/// <summary>
 	/// A diagnostic <see cref="Duality.Component"/> that displays current performance measurements and other profiling stats.
 	/// </summary>
-	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryDiagnostics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageProfileRenderer)]
 	public class ProfileRenderer : Component, ICmpRenderer, ICmpUpdatable
@@ -41,11 +40,11 @@ namespace Duality.Components.Diagnostics
 		private	Key						keyToggleTextStat	= Key.F3;
 		private	Key						keyToggleGraph		= Key.F4;
 
-		[NonSerialized] private	FormattedText		textReport			= null;
-		[NonSerialized] private	VertexC1P3T2[]		textReportIconVert	= null;
-		[NonSerialized] private	VertexC1P3T2[][]	textReportTextVert	= null;
-		[NonSerialized] private	TimeSpan			textReportLast		= TimeSpan.Zero;
-		[NonSerialized] private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
+		[DontSerialize] private	FormattedText		textReport			= null;
+		[DontSerialize] private	VertexC1P3T2[]		textReportIconVert	= null;
+		[DontSerialize] private	VertexC1P3T2[][]	textReportTextVert	= null;
+		[DontSerialize] private	TimeSpan			textReportLast		= TimeSpan.Zero;
+		[DontSerialize] private Dictionary<string,GraphCacheEntry> graphCache = new Dictionary<string,GraphCacheEntry>();
 
 
 		float ICmpRenderer.BoundRadius

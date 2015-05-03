@@ -8,7 +8,6 @@ using Duality.Resources;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(RigidBody))]
 	public class Trigger : Component, ICmpCollisionListener, ICmpUpdatable
 	{

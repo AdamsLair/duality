@@ -22,7 +22,6 @@ namespace Duality.Resources
 	/// A Pixmap stores pixel data in system memory. 
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Texture"/>
-	[Serializable]
 	[ExplicitResourceReference()]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePixmap)]

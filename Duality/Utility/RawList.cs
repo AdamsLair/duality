@@ -17,7 +17,6 @@ namespace Duality
 	/// You should only use this class when you know how to use it.
 	/// </remarks>
 	/// <typeparam name="T"></typeparam>
-	[Serializable]
 	[DebuggerTypeProxy(typeof(RawList<>.DebuggerTypeProxy))]
 	[DebuggerDisplay("Count = {Count}, Capacity = {Capacity}")]
 	public class RawList<T> : IList<T>, IList

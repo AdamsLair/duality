@@ -341,6 +341,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>

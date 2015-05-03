@@ -15,7 +15,6 @@ namespace Duality.Tests.Serialization
 		Second,
 		Third
 	}
-	[Serializable]
 	public struct TestData : IEquatable<TestData>
 	{
 		public int IntField;
@@ -63,7 +62,6 @@ namespace Duality.Tests.Serialization
 				other.EnumField == this.EnumField;
 		}
 	}
-	[Serializable]
 	public class TestObject : IEquatable<TestObject>
 	{
 		public string StringField;

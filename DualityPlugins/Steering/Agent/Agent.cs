@@ -20,7 +20,6 @@ namespace Duality.Plugins.Steering
 	/// possible that the agent get stuck in local minima. For more complex navigation you
 	/// need a high-level pathfinding layer on top of the local avoidance.
 	/// </summary>
-	[Serializable]
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryAI)]
 	[EditorHintImage(typeof(SteeringRes), SteeringResNames.ImageAgent)]
@@ -31,7 +30,7 @@ namespace Duality.Plugins.Steering
 		private ISteeringTarget			target			= null;
 		private float					radius			= 64.0f;
 		private float					toiHorizon		= 240.0f;
-		[NonSerialized] private Vector2 suggestedVel	= Vector2.Zero;
+		[DontSerialize] private Vector2 suggestedVel	= Vector2.Zero;
 
 
 		public IVelocitySampler Sampler

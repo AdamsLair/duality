@@ -759,7 +759,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			foreach (Type resType in resourceTypeQuery)
 			{
 				// Skip invisible Types
-			    EditorHintFlagsAttribute editorHintFlags = resType.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
+			    EditorHintFlagsAttribute editorHintFlags = resType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
 			    if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
 
 				// Create an item tree for the current Type

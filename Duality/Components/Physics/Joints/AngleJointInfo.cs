@@ -14,7 +14,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Constrains two RigidBodies to a fixed relative angle
 	/// </summary>
-	[Serializable]
 	public sealed class AngleJointInfo : JointInfo
 	{
 		private	float	angle		= 0.0f;

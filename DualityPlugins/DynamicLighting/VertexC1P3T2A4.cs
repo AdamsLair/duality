@@ -8,7 +8,6 @@ using Duality.Resources;
 
 namespace Duality.Plugins.DynamicLighting
 {
-	[Serializable]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexC1P3T2A4 : IVertexData
 	{

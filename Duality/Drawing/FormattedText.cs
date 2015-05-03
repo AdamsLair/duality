@@ -16,7 +16,6 @@ namespace Duality.Drawing
 	/// <summary>
 	/// Provides functionality for analyzing, handling and displaying formatted text.
 	/// </summary>
-	[Serializable]
 	public sealed class FormattedText : ICloneExplicit
 	{
 		/// <summary>
@@ -69,11 +68,11 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Represents an element of a formatted text.
 		/// </summary>
-		[Serializable] public abstract class Element {}
+		public abstract class Element {}
 		/// <summary>
 		/// Contains a text string.
 		/// </summary>
-		[Serializable] public class TextElement : Element
+		public class TextElement : Element
 		{
 			private	string	text;
 			/// <summary>
@@ -91,7 +90,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Contains an icon.
 		/// </summary>
-		[Serializable] public class IconElement : Element
+		public class IconElement : Element
 		{
 			private	int	iconIndex;
 			/// <summary>
@@ -109,13 +108,11 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Forces a line break at this position.
 		/// </summary>
-		[Serializable] public class NewLineElement : Element
-		{
-		}
+		public class NewLineElement : Element { }
 		/// <summary>
 		/// Changes the currently used <see cref="Duality.Resources.Font"/>.
 		/// </summary>
-		[Serializable] public class FontChangeElement : Element
+		public class FontChangeElement : Element
 		{
 			private	int	fontIndex;
 			/// <summary>
@@ -133,7 +130,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Changes the currently used <see cref="Duality.Drawing.ColorRgba"/>.
 		/// </summary>
-		[Serializable] public class ColorChangeElement : Element
+		public class ColorChangeElement : Element
 		{
 			private ColorRgba color;
 			/// <summary>
@@ -151,7 +148,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Changes the current lines' alignment. May be <see cref="Alignment.Left"/>, <see cref="Alignment.Right"/> or <see cref="Alignment.Center"/>.
 		/// </summary>
-		[Serializable] public class AlignChangeElement : Element
+		public class AlignChangeElement : Element
 		{
 			private	Alignment align;
 			/// <summary>
@@ -170,7 +167,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// An icon that can be displayed inside the formatted text.
 		/// </summary>
-		[Serializable] public struct Icon
+		public struct Icon
 		{
 			/// <summary>
 			/// The icons UV-Coordinates on the icon texture that will be used for rendering icons.
@@ -196,7 +193,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// An rectangular area that will be avoided by the text flow.
 		/// </summary>
-		[Serializable] public struct FlowArea
+		public struct FlowArea
 		{
 			/// <summary>
 			/// The areas width.
@@ -644,11 +641,11 @@ namespace Duality.Drawing
 		private	int					iconCount		= 0;
 		private	Element[]			elements		= null;
 
-		[NonSerialized] private bool				updateVertexCache	= true;
-		[NonSerialized] private VertexC1P3T2[][]	vertTextCache		= null;
-		[NonSerialized] private VertexC1P3T2[]		vertIconsCache		= null;
-		[NonSerialized] private int[]				vertCountCache		= null;
-		[NonSerialized] private	Metrics				metricsCache		= null;
+		[DontSerialize] private bool				updateVertexCache	= true;
+		[DontSerialize] private VertexC1P3T2[][]	vertTextCache		= null;
+		[DontSerialize] private VertexC1P3T2[]		vertIconsCache		= null;
+		[DontSerialize] private int[]				vertCountCache		= null;
+		[DontSerialize] private	Metrics				metricsCache		= null;
 
 
 		/// <summary>

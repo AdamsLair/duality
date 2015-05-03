@@ -19,7 +19,6 @@ namespace Duality.Resources
 	/// This is a typical <see cref="BatchInfo"/> case.
 	/// </summary>
 	/// <seealso cref="BatchInfo"/>
-	[Serializable]
 	[ExplicitResourceReference(typeof(Texture))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageMaterial)]
@@ -269,7 +268,6 @@ namespace Duality.Resources
 	/// BatchInfos describe how an object, represented by a set of vertices, looks like.
 	/// </summary>
 	/// <seealso cref="Material"/>
-	[Serializable]
 	public class BatchInfo : IEquatable<BatchInfo>
 	{
 		[Flags]

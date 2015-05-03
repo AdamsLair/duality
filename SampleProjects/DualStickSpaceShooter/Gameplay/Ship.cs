@@ -15,7 +15,6 @@ using Duality.Components.Physics;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(Transform))]
 	[RequiredComponent(typeof(SpriteRenderer))]
 	[RequiredComponent(typeof(RigidBody))]
@@ -30,7 +29,7 @@ namespace DualStickSpaceShooter
 		private	float						weaponTimer				= 0.0f;
 		private	Player						owner					= null;
 		private	ParticleEffect				damageEffect			= null;
-		[NonSerialized] private	SoundInstance flightLoop			= null;
+		[DontSerialize] private	SoundInstance flightLoop			= null;
 
 		public ContentRef<ShipBlueprint> Blueprint
 		{

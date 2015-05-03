@@ -17,7 +17,6 @@ namespace Duality.Components.Physics
 	/// <summary>
 	/// Represents a body instance for physical simulation, collision detection and response.
 	/// </summary>
-	[Serializable]
 	[ManuallyCloned]
 	[RequiredComponent(typeof(Transform))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryPhysics)]
@@ -63,13 +62,13 @@ namespace Duality.Components.Physics
 		private	List<ShapeInfo>		shapes			= null;
 		private	List<JointInfo>		joints			= null;
 
-		[NonSerialized] private	float			lastScale			= 1.0f;
-		[NonSerialized] private	InitState		bodyInitState		= InitState.Disposed;
-		[NonSerialized] private	bool			schedUpdateBody		= false;
-		[NonSerialized] private	bool			isUpdatingBody		= false;
-		[NonSerialized] private	bool			isProcessingEvents	= false;
-		[NonSerialized] private	Body			body				= null;
-		[NonSerialized] private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
+		[DontSerialize] private	float			lastScale			= 1.0f;
+		[DontSerialize] private	InitState		bodyInitState		= InitState.Disposed;
+		[DontSerialize] private	bool			schedUpdateBody		= false;
+		[DontSerialize] private	bool			isUpdatingBody		= false;
+		[DontSerialize] private	bool			isProcessingEvents	= false;
+		[DontSerialize] private	Body			body				= null;
+		[DontSerialize] private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
 
 
 		internal Body PhysicsBody

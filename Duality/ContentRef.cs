@@ -21,7 +21,6 @@ namespace Duality
 	/// <seealso cref="Resource"/>
 	/// <seealso cref="ContentProvider"/>
 	/// <seealso cref="IContentRef"/>
-	[Serializable]
 	[DebuggerTypeProxy(typeof(ContentRef<>.DebuggerTypeProxy))]
 	public struct ContentRef<T> : IEquatable<ContentRef<T>>, IContentRef where T : Resource
 	{
@@ -31,7 +30,7 @@ namespace Duality
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
 		public static readonly ContentRef<T> Null = new ContentRef<T>(null);
 
-		[NonSerialized, CloneBehavior(CloneBehavior.Reference), CloneField(CloneFieldFlags.DontSkip)]
+		[DontSerialize, CloneBehavior(CloneBehavior.Reference), CloneField(CloneFieldFlags.DontSkip)]
 		private	T		contentInstance;
 		private	string	contentPath;
 		

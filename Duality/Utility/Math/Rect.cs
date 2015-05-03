@@ -6,7 +6,6 @@ namespace Duality
 	/// <summary>
 	/// Describes a rectangular area.
 	/// </summary>
-	[Serializable]
 	public struct Rect : IEquatable<Rect>
 	{
 		/// <summary>

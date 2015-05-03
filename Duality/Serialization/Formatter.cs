@@ -438,11 +438,13 @@ namespace Duality.Serialization
 
 			// Check whether the object is expected to be serialized
 			if (dataType != DataType.ObjectRef &&
-				!objSerializeType.Type.IsSerializable && 
+				objSerializeType.Type.HasAttributeCached<DontSerializeAttribute>() && 
 				!typeof(ISerializeExplicit).IsAssignableFrom(objSerializeType.Type) &&
 				GetSurrogateFor(objSerializeType.Type) == null) 
 			{
-				this.LocalLog.WriteWarning("Ignoring object of Type '{0}' which isn't [Serializable]", Log.Type(objSerializeType.Type));
+				this.LocalLog.WriteWarning("Ignoring object of Type '{0}' which is flagged with the {1}.", 
+					Log.Type(objSerializeType.Type),
+					typeof(DontSerializeAttribute).Name);
 				return null;
 			}
 
@@ -508,7 +510,7 @@ namespace Duality.Serialization
 				return;
 			}
 
-			if (field.IsNotSerialized)
+			if (field.HasAttributeCached<DontSerializeAttribute>())
 			{
 				this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue);
 				return;
@@ -625,10 +627,10 @@ namespace Duality.Serialization
 		}
 
 
-		private	static	Dictionary<Type,SerializeType>	serializeTypeCache		= new Dictionary<Type,SerializeType>();
-		private	static	List<SerializeErrorHandler>		serializeHandlerCache	= new List<SerializeErrorHandler>();
+		private	static Dictionary<Type,SerializeType>	serializeTypeCache		= new Dictionary<Type,SerializeType>();
+		private	static List<SerializeErrorHandler>		serializeHandlerCache	= new List<SerializeErrorHandler>();
 		private	static List<ISerializeSurrogate>		surrogates				= null;
-		private static FormattingMethod defaultMethod	= FormattingMethod.Xml;
+		private static FormattingMethod					defaultMethod			= FormattingMethod.Xml;
 
 		/// <summary>
 		/// [GET / SET] The default formatting method to use, if no other is specified.

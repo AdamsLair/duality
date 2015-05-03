@@ -23,7 +23,6 @@ namespace Duality.Plugins.DynamicLighting
 	/// A source of light. Supported light types are directional, ambient, point and spot.
 	/// To create directional or ambient lights, add this Component to a GameObject without Transform.
 	/// </summary>
-	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(DynLightRes), DynLightResNames.IconResourceLight)]
     public class Light : Component

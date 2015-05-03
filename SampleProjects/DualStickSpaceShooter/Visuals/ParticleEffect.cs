@@ -13,7 +13,6 @@ using Duality.Drawing;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(Transform))]
 	public class ParticleEffect : Renderer, ICmpUpdatable, ICmpInitializable
 	{
@@ -28,11 +27,11 @@ namespace DualStickSpaceShooter
 		private bool					disposeWhenEmpty	= true;
 		private	List<ParticleEmitter>	emitters			= new List<ParticleEmitter>();
 
-		[NonSerialized]
+		[DontSerialize]
 		private float					boundRadius			= 0.0f;
-		[NonSerialized]
+		[DontSerialize]
 		private RawList<Particle>		particles			= null;
-		[NonSerialized]
+		[DontSerialize]
 		private RawList<VertexC1P3T2>	vertexBuffer		= null;
 
 		

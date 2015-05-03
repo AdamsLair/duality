@@ -52,7 +52,6 @@ namespace Duality
 	/// Each Component has a distinct purpose, thus it is not possible to add multiple Components of the same Type to one GameObject.
 	/// Also, a Component may not belong to multiple GameObjects at once.
 	/// </summary>
-	[Serializable]
 	[ManuallyCloned]
 	[CloneBehavior(CloneBehavior.Reference)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
@@ -324,9 +323,7 @@ namespace Duality
 			{
 				if (this.Requirements != null) return;
 				this.Requirements = new List<Type>();
-				IEnumerable<RequiredComponentAttribute> attribs = 
-					this.Component.GetCustomAttributes(typeof(RequiredComponentAttribute), true).
-					Cast<RequiredComponentAttribute>();
+				IEnumerable<RequiredComponentAttribute> attribs = this.Component.GetAttributesCached<RequiredComponentAttribute>();
 				foreach (RequiredComponentAttribute a in attribs)
 				{
 					Type reqType = a.RequiredComponentType;

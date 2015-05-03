@@ -20,7 +20,6 @@ namespace Duality.Resources
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Pixmap"/>
 	/// <seealso cref="Duality.Resources.RenderTarget"/>
-	[Serializable]
 	[ExplicitResourceReference(typeof(Pixmap))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageTexture)]
@@ -267,15 +266,15 @@ namespace Duality.Resources
 		private	PixelInternalFormat	pixelformat	= PixelInternalFormat.Rgba;
 		private	bool				anisoFilter		= false;
 
-		[NonSerialized] private	int		pxWidth		= 0;
-		[NonSerialized] private	int		pxHeight	= 0;
-		[NonSerialized] private	int		glTexId		= 0;
-		[NonSerialized] private	float	pxDiameter	= 0.0f;
-		[NonSerialized] private	int		texWidth	= 0;
-		[NonSerialized] private	int		texHeight	= 0;
-		[NonSerialized] private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
-		[NonSerialized] private	bool	needsReload	= true;
-		[NonSerialized] private	Rect[]	atlas		= null;
+		[DontSerialize] private	int		pxWidth		= 0;
+		[DontSerialize] private	int		pxHeight	= 0;
+		[DontSerialize] private	int		glTexId		= 0;
+		[DontSerialize] private	float	pxDiameter	= 0.0f;
+		[DontSerialize] private	int		texWidth	= 0;
+		[DontSerialize] private	int		texHeight	= 0;
+		[DontSerialize] private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
+		[DontSerialize] private	bool	needsReload	= true;
+		[DontSerialize] private	Rect[]	atlas		= null;
 
 
 		/// <summary>

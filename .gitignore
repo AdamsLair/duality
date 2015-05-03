@@ -147,3 +147,5 @@ DualityEditorPlugins/CamView/CamView.csproj.user
 DualityPlugins/Steering/Sample/Testbed/Backup/
 Other/NightlyBuild/NightlyBuilder.exe.config
 Other/NightlyBuild/NightlyBuilder.vshost.exe.config
+DualityPrimitives/bin/
+DualityPrimitives/obj/

@@ -18,7 +18,6 @@ namespace Duality.Resources
 	/// i.e. as soon as demanded by accessing the AlBuffer property or calling SetupAlBuffer.
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Sound"/>
-	[Serializable]
 	[ExplicitResourceReference()]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageAudioData)]
@@ -57,7 +56,7 @@ namespace Duality.Resources
 
 		private	byte[]	data			= null;
 		private	bool	forceStream		= false;
-		[NonSerialized] private	int	alBuffer	= AlBuffer_NotAvailable;
+		[DontSerialize] private	int	alBuffer	= AlBuffer_NotAvailable;
 
 		/// <summary>
 		/// [GET / SET] A data chunk representing Ogg Vorbis compressed

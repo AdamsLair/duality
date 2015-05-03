@@ -829,7 +829,7 @@ namespace Duality.Editor.Plugins.SceneView
 			foreach (Type cmpType in componentTypeQuery)
 			{
 				// Skip invisible Types
-			    EditorHintFlagsAttribute editorHintFlags = cmpType.GetCustomAttributes<EditorHintFlagsAttribute>().FirstOrDefault();
+			    EditorHintFlagsAttribute editorHintFlags = cmpType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();
 			    if (editorHintFlags != null && editorHintFlags.Flags.HasFlag(MemberFlags.Invisible)) continue;
 
 				// Create an item tree for the current Type

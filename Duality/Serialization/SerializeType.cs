@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -66,10 +67,31 @@ namespace Duality.Serialization
 		public SerializeType(Type t)
 		{
 			this.type = t;
-			this.fields = this.type.GetAllFields(ReflectionHelper.BindInstanceAll).Where(f => !f.IsNotSerialized).ToArray();
-			this.typeString = this.type.GetTypeId();
 			this.dataType = GetDataType(this.type);
+			if (this.dataType == DataType.Struct)
+			{
+				// Retrieve all fields that are not flagged not to be serialized
+				IEnumerable<FieldInfo> filteredFields = this.type
+					.GetAllFields(ReflectionHelper.BindInstanceAll)
+					.Where(f => !f.HasAttributeCached<DontSerializeAttribute>());
 
+				// Ugly hack to skip .Net collection _syncRoot fields. 
+				// Can't use field.IsNonSerialized, because that doesn't exist in the PCL profile,
+				// and implementing a whole filtering system just for this would be overkill.
+				filteredFields = filteredFields
+					.Where(f => !(
+						f.FieldType == typeof(object) && 
+						f.Name == "_syncRoot" && 
+						typeof(System.Collections.ICollection).IsAssignableFrom(f.DeclaringType)));
+
+				// Store the filtered fields in a fixed form
+				this.fields = filteredFields.ToArray();
+			}
+			else
+			{
+				this.fields = new FieldInfo[0];
+			}
+			this.typeString = this.type.GetTypeId();
 			this.fields.StableSort((a, b) => string.Compare(a.Name, b.Name));
 		}
 

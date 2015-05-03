@@ -269,7 +269,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			this.Items = 
 				from t in DualityApp.GetAvailDualityTypes(typeof(JointInfo))
-				where !t.IsAbstract && !t.GetCustomAttributes<EditorHintFlagsAttribute>().Any(f => f.Flags.HasFlag(MemberFlags.Invisible))
+				where !t.IsAbstract && !t.GetAttributesCached<EditorHintFlagsAttribute>().Any(f => f.Flags.HasFlag(MemberFlags.Invisible))
 				select new ObjectItem(t, t.Name.Replace("JointInfo", "Joint"));
 		}
 		protected override void OnReadOnlyChanged()

@@ -18,7 +18,6 @@ namespace Duality.Resources
 	/// information.
 	/// </summary>
 	/// <seealso cref="Duality.Resources.Texture"/>
-	[Serializable]
 	[ExplicitResourceReference(typeof(Texture))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRenderTarget)]
@@ -161,10 +160,9 @@ namespace Duality.Resources
 		}
 
 
-		[Serializable]
 		private struct TargetInfo
 		{
-			[NonSerialized]	public	int	glRboIdColorMSAA;
+			[DontSerialize]	public	int	glRboIdColorMSAA;
 			public	ContentRef<Texture>	target;
 
 			public TargetInfo(ContentRef<Texture> target)
@@ -177,10 +175,10 @@ namespace Duality.Resources
 		
 		private	List<TargetInfo>	targetInfo		= new List<TargetInfo>();
 		private	AAQuality			multisampling	= AAQuality.Off;
-		[NonSerialized] private	int	samples	= 0;
-		[NonSerialized] private	int	glFboId;
-		[NonSerialized] private	int	glRboIdDepth;
-		[NonSerialized] private	int	glFboIdMSAA;
+		[DontSerialize] private	int	samples	= 0;
+		[DontSerialize] private	int	glFboId;
+		[DontSerialize] private	int	glRboIdDepth;
+		[DontSerialize] private	int	glFboIdMSAA;
 
 
 		/// <summary>

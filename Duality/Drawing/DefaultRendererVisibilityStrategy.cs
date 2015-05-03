@@ -8,10 +8,9 @@ namespace Duality.Drawing
 	/// Represents the default strategy to determine which <see cref="ICmpRenderer">renderers</see> are currently visible
 	/// to a certain drawing device.
 	/// </summary>
-	[Serializable]
 	public class DefaultRendererVisibilityStrategy : IRendererVisibilityStrategy
 	{
-		[NonSerialized]
+		[DontSerialize]
 		private IEnumerable<ICmpRenderer> renderers;
 
 		public IEnumerable<ICmpRenderer> QueryVisibleRenderers(IDrawDevice device)

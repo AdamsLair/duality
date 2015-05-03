@@ -14,7 +14,6 @@ using Duality.Components.Renderers;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	public class ShipBlueprint : Resource
 	{
 		private	float						thrusterPower			= 0.0f;

@@ -21,7 +21,6 @@ namespace Duality.Resources
 	/// <see cref="Scene.Current"/> which represents a level, gamestate or a combination of both, depending
 	/// on you own design.
 	/// </summary>
-	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
@@ -271,14 +270,14 @@ namespace Duality.Resources
 		private	Vector2						globalGravity		= Vector2.UnitY * 33.0f;
 		private IRendererVisibilityStrategy	visibilityStrategy	= new DefaultRendererVisibilityStrategy();
 		private	GameObject[]				serializeObj		= null;
-		[NonSerialized]
+		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
 		private	GameObjectManager					objectManager		= new GameObjectManager();
-		[NonSerialized]
+		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		private	List<Component>						renderers			= new List<Component>();
-		[NonSerialized]
+		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
 

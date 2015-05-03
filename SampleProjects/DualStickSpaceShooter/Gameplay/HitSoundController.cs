@@ -8,7 +8,6 @@ using Duality.Components.Physics;
 
 namespace DualStickSpaceShooter
 {
-	[Serializable]
 	[RequiredComponent(typeof(RigidBody))]
 	public class HitSoundController : Component, ICmpCollisionListener
 	{

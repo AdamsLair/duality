@@ -12,7 +12,6 @@ namespace Duality
 	/// Represents two-dimensional grid-aligned data.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	[Serializable]
 	[DebuggerTypeProxy(typeof(Grid<>.DebuggerTypeProxy))]
 	[DebuggerDisplay("Width = {Width}, Height = {Height}")]
 	public class Grid<T> : IEnumerable<T>

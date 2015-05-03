@@ -15,7 +15,6 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.AbstractShader"/>
 	/// <seealso cref="Duality.Resources.VertexShader"/>
 	/// <seealso cref="Duality.Resources.FragmentShader"/>
-	[Serializable]
 	[ExplicitResourceReference(typeof(AbstractShader))]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageShaderProgram)]
@@ -112,9 +111,9 @@ namespace Duality.Resources
 
 		private	ContentRef<VertexShader>	vert	= VertexShader.Minimal;
 		private	ContentRef<FragmentShader>	frag	= FragmentShader.Minimal;
-		[NonSerialized] private	int							glProgramId	= 0;
-		[NonSerialized] private bool						compiled	= false;
-		[NonSerialized] private	ShaderVarInfo[]				varInfo		= null;
+		[DontSerialize] private	int							glProgramId	= 0;
+		[DontSerialize] private bool						compiled	= false;
+		[DontSerialize] private	ShaderVarInfo[]				varInfo		= null;
 
 		/// <summary>
 		/// [GET] Returns whether this ShaderProgram has been compiled.

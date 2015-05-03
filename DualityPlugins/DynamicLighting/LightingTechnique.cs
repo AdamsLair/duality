@@ -11,7 +11,6 @@ using OpenTK;
 
 namespace Duality.Plugins.DynamicLighting
 {
-	[Serializable]
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
 	[EditorHintImage(typeof(DynLightRes), DynLightResNames.IconResourceLightingTechnique)]
 	public class LightingTechnique : DrawTechnique

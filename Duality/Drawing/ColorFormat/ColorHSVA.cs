@@ -6,7 +6,6 @@ namespace Duality.Drawing
 	/// <summary>
 	/// Represents a 16-byte Hsva color value.
 	/// </summary>
-	[Serializable]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct ColorHsva : IColorData, IEquatable<ColorHsva>
 	{
