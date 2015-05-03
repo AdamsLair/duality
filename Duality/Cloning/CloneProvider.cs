@@ -766,10 +766,10 @@ namespace Duality.Cloning
 		}
 
 
-		private	static List<ICloneSurrogate>					surrogates			= null;
-		private	static Dictionary<Type,CloneType>				cloneTypeCache		= new Dictionary<Type,CloneType>();
-		private	static Dictionary<Type,CloneBehaviorAttribute>	cloneBehaviorCache	= new Dictionary<Type,CloneBehaviorAttribute>();
-		private static CloneBehaviorAttribute[]					globalCloneBehavior = null;
+		private	static List<ICloneSurrogate>					surrogates				= null;
+		private	static Dictionary<Type,CloneType>				cloneTypeCache			= new Dictionary<Type,CloneType>();
+		private	static Dictionary<Type,CloneBehaviorAttribute>	cloneBehaviorCache		= new Dictionary<Type,CloneBehaviorAttribute>();
+		private static CloneBehaviorAttribute					memberInfoCloneBehavior = new CloneBehaviorAttribute(typeof(MemberInfo), CloneBehavior.Reference);
 
 		/// <summary>
 		/// Returns the <see cref="CloneType"/> of a Type.
@@ -809,16 +809,10 @@ namespace Duality.Cloning
 		}
 		internal static CloneBehaviorAttribute GetCloneBehaviorAttribute(Type type)
 		{
-			// Assembly-level attributes pointing to this Type
-			if (globalCloneBehavior == null)
+			// Hardcoded cloning behavior for MemberInfo metadata classes
+			if (typeof(MemberInfo).IsAssignableFrom(type))
 			{
-				globalCloneBehavior = ReflectionHelper.GetAssemblyAttributesCached<CloneBehaviorAttribute>().ToArray();
-			}
-			for (int i = 0; i < globalCloneBehavior.Length; i++)
-			{
-				CloneBehaviorAttribute globalAttrib = globalCloneBehavior[i];
-				if (globalAttrib.TargetType.IsAssignableFrom(type))
-					return globalAttrib;
+				return memberInfoCloneBehavior;
 			}
 
 			// Attributes attached directly to this Type
@@ -834,7 +828,6 @@ namespace Duality.Cloning
 		internal static void ClearTypeCache()
 		{
 			surrogates = null;
-			globalCloneBehavior = null;
 		}
 	}
 

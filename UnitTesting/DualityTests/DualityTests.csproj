@@ -51,6 +51,7 @@
     <Compile Include="Cloning\HelperObjects\ExplicitCloneTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\IdentityTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\ComplexDelegateTestObject.cs" />
+    <Compile Include="Cloning\HelperObjects\TestMemberInfoData.cs" />
     <Compile Include="Cloning\HelperObjects\TestStructInvestigate.cs" />
     <Compile Include="Cloning\HelperObjects\SimpleDelegateTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\TestComponent.cs" />

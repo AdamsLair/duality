@@ -25,7 +25,6 @@ namespace Duality
 		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
 		private	static	Dictionary<Type,bool>				plainOldDataTypeCache		= new Dictionary<Type,bool>();
 		private	static	Dictionary<MemberInfo,Attribute[]>	customMemberAttribCache		= new Dictionary<MemberInfo,Attribute[]>();
-		private	static	Attribute[]							customAssemblyAttribCache	= null;
 		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache			= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
 		/// <summary>
@@ -256,26 +255,6 @@ namespace Duality
 				return result as IEnumerable<T>;
 			else
 				return result.OfType<T>();
-		}
-		/// <summary>
-		/// Returns all custom attributes of the specified Type that are declared at Assembly-level
-		/// within any of the currently available Duality Assemblies.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		public static IEnumerable<T> GetAssemblyAttributesCached<T>() where T : Attribute
-		{
-			if (customAssemblyAttribCache == null)
-			{
-				customAssemblyAttribCache = 
-					DualityApp.GetDualityAssemblies()
-					.SelectMany(a => Attribute.GetCustomAttributes(a, true))
-					.ToArray();
-			}
-			if (typeof(T) == typeof(Attribute))
-				return customAssemblyAttribCache as IEnumerable<T>;
-			else
-				return customAssemblyAttribCache.OfType<T>();
 		}
 		/// <summary>
 		/// Returns all custom attributes of the specified Type that are attached to the specified member.
@@ -697,7 +676,6 @@ namespace Duality
 			plainOldDataTypeCache.Clear();
 			resRefCache.Clear();
 			customMemberAttribCache.Clear();
-			customAssemblyAttribCache = null;
 		}
 		/// <summary>
 		/// Resolves a Type based on its <see cref="GetTypeId">type id</see>.

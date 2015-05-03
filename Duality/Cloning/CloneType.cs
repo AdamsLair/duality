@@ -202,8 +202,9 @@ namespace Duality.Cloning
 			List<CloneField> fieldData = new List<CloneField>();
 			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
 			{
-				if (field.GetAttributesCached<ManuallyClonedAttribute>().Any()) continue;
-				if (field.DeclaringType.GetAttributesCached<ManuallyClonedAttribute>().Any()) continue;
+				if (field.IsInitOnly) continue;
+				if (field.HasAttributeCached<ManuallyClonedAttribute>()) continue;
+				if (field.DeclaringType.HasAttributeCached<ManuallyClonedAttribute>()) continue;
 
 				CloneFieldFlags flags = CloneFieldFlags.None;
 				CloneFieldAttribute fieldAttrib = field.GetAttributesCached<CloneFieldAttribute>().FirstOrDefault();

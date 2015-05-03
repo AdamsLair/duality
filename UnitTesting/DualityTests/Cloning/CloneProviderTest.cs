@@ -39,6 +39,15 @@ namespace Duality.Tests.Cloning
 			Assert.IsTrue(data.Equals(dataResult));
 			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
+		[Test] public void CloneMemberInfo()
+		{
+			Random rnd = new Random();
+			TestMemberInfoData data = new TestMemberInfoData(rnd);
+			TestMemberInfoData dataResult = data.DeepClone();
+
+			Assert.AreNotSame(data, dataResult);
+			Assert.AreEqual(data, dataResult);
+		}
 		[Test] public void CopyToTarget()
 		{
 			Random rnd = new Random();

@@ -76,7 +76,6 @@
   <ItemGroup>
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
-    <Compile Include="Cloning\DefaultCloneBehavior.cs" />
     <Compile Include="Cloning\ICloneOperation.cs" />
     <Compile Include="Cloning\CloneFieldFlags.cs" />
     <Compile Include="Cloning\CloneFieldAttribute.cs" />
