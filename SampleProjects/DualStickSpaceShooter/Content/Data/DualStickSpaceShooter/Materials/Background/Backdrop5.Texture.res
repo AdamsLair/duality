@@ -6,7 +6,7 @@
   <filterMag dataType="Enum" type="OpenTK.Graphics.OpenGL.TextureMagFilter" name="Linear" value="9729" />
   <filterMin dataType="Enum" type="OpenTK.Graphics.OpenGL.TextureMinFilter" name="LinearMipmapLinear" value="9987" />
   <pixelformat dataType="Enum" type="OpenTK.Graphics.OpenGL.PixelInternalFormat" name="Rgba" value="6408" />
-  <size dataType="Struct" type="OpenTK.Vector2">
+  <size dataType="Struct" type="Duality.Vector2">
     <X dataType="Float">243</X>
     <Y dataType="Float">229</Y>
   </size>

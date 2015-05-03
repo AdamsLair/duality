@@ -14,24 +14,24 @@
           <gameobj dataType="ObjectRef">3336803357</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
           <parentTransform />
-          <pos dataType="Struct" type="OpenTK.Vector3">
+          <pos dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
           </pos>
-          <posAbs dataType="Struct" type="OpenTK.Vector3">
+          <posAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
           </posAbs>
           <scale dataType="Float">1</scale>
           <scaleAbs dataType="Float">1</scaleAbs>
-          <vel dataType="Struct" type="OpenTK.Vector3">
+          <vel dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
           </vel>
-          <velAbs dataType="Struct" type="OpenTK.Vector3">
+          <velAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
@@ -40,7 +40,7 @@
         <item dataType="Struct" type="DualStickSpaceShooter.ParticleEffect" id="68469154">
           <active dataType="Bool">true</active>
           <angularDrag dataType="Float">0.3</angularDrag>
-          <constantForce dataType="Struct" type="OpenTK.Vector3">
+          <constantForce dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
@@ -49,12 +49,12 @@
           <emitters dataType="Struct" type="System.Collections.Generic.List`1[[DualStickSpaceShooter.ParticleEmitter]]" id="391074874">
             <_items dataType="Array" type="DualStickSpaceShooter.ParticleEmitter[]" id="1697926400" length="4">
               <item dataType="Struct" type="DualStickSpaceShooter.ParticleEmitter" id="532261532">
-                <basePos dataType="Struct" type="OpenTK.Vector3">
+                <basePos dataType="Struct" type="Duality.Vector3">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                   <Z dataType="Float">0</Z>
                 </basePos>
-                <baseVel dataType="Struct" type="OpenTK.Vector3">
+                <baseVel dataType="Struct" type="Duality.Vector3">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                   <Z dataType="Float">0</Z>
@@ -117,7 +117,7 @@
           <material dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
             <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\GlowBubbles.Material.res</contentPath>
           </material>
-          <particleSize dataType="Struct" type="OpenTK.Vector2">
+          <particleSize dataType="Struct" type="Duality.Vector2">
             <X dataType="Float">8</X>
             <Y dataType="Float">8</Y>
           </particleSize>

@@ -14,24 +14,24 @@
           <gameobj dataType="ObjectRef">2717718507</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
           <parentTransform />
-          <pos dataType="Struct" type="OpenTK.Vector3">
+          <pos dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">2369.00513</X>
             <Y dataType="Float">-86.11029</Y>
             <Z dataType="Float">1</Z>
           </pos>
-          <posAbs dataType="Struct" type="OpenTK.Vector3">
+          <posAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">2369.00513</X>
             <Y dataType="Float">-86.11029</Y>
             <Z dataType="Float">1</Z>
           </posAbs>
           <scale dataType="Float">0.75</scale>
           <scaleAbs dataType="Float">0.75</scaleAbs>
-          <vel dataType="Struct" type="OpenTK.Vector3">
+          <vel dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
           </vel>
-          <velAbs dataType="Struct" type="OpenTK.Vector3">
+          <velAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
@@ -46,7 +46,7 @@
         <item dataType="Struct" type="DualStickSpaceShooter.ParticleEffect" id="3744351600">
           <active dataType="Bool">true</active>
           <angularDrag dataType="Float">0</angularDrag>
-          <constantForce dataType="Struct" type="OpenTK.Vector3">
+          <constantForce dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">-0.01</Y>
             <Z dataType="Float">0</Z>
@@ -55,12 +55,12 @@
           <emitters dataType="Struct" type="System.Collections.Generic.List`1[[DualStickSpaceShooter.ParticleEmitter]]" id="4213506200">
             <_items dataType="Array" type="DualStickSpaceShooter.ParticleEmitter[]" id="2872375852" length="4">
               <item dataType="Struct" type="DualStickSpaceShooter.ParticleEmitter" id="2819175652">
-                <basePos dataType="Struct" type="OpenTK.Vector3">
+                <basePos dataType="Struct" type="Duality.Vector3">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                   <Z dataType="Float">-10</Z>
                 </basePos>
-                <baseVel dataType="Struct" type="OpenTK.Vector3">
+                <baseVel dataType="Struct" type="Duality.Vector3">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                   <Z dataType="Float">0</Z>
@@ -123,7 +123,7 @@
           <material dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
             <contentPath dataType="String">Data\DualStickSpaceShooter\Materials\AlphaBubbles.Material.res</contentPath>
           </material>
-          <particleSize dataType="Struct" type="OpenTK.Vector2">
+          <particleSize dataType="Struct" type="Duality.Vector2">
             <X dataType="Float">16</X>
             <Y dataType="Float">16</Y>
           </particleSize>
@@ -144,6 +144,7 @@
           <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
             <contentPath />
           </iconMat>
+          <offset dataType="Int">0</offset>
           <text dataType="Struct" type="Duality.Drawing.FormattedText" id="639194685">
             <displayedText dataType="String">A WarmPlace</displayedText>
             <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="3328578598">
@@ -188,7 +189,7 @@
           <ignoreGravity dataType="Bool">false</ignoreGravity>
           <joints />
           <linearDamp dataType="Float">0.3</linearDamp>
-          <linearVel dataType="Struct" type="OpenTK.Vector2">
+          <linearVel dataType="Struct" type="Duality.Vector2">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
           </linearVel>
@@ -199,7 +200,7 @@
                 <density dataType="Float">1</density>
                 <friction dataType="Float">0.3</friction>
                 <parent dataType="ObjectRef">1485527735</parent>
-                <position dataType="Struct" type="OpenTK.Vector2">
+                <position dataType="Struct" type="Duality.Vector2">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                 </position>

@@ -1,7 +1,7 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Material" id="129723834">
   <info dataType="Struct" type="Duality.Resources.BatchInfo" id="427169525">
     <dirtyFlag dataType="Enum" type="Duality.Resources.BatchInfo+DirtyFlag" name="None" value="0" />
-    <hashCode dataType="Int">668372604</hashCode>
+    <hashCode dataType="Int">871886286</hashCode>
     <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
       <A dataType="Byte">255</A>
       <B dataType="Byte">255</B>
