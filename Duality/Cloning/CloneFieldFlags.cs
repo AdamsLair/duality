@@ -24,7 +24,7 @@ namespace Duality.Cloning
 		Skip				= 0x2,
 		/// <summary>
 		/// The Field or Object in question won't be skipped during cloning due to secondary
-		/// hints such as a <see cref="DontSerialize"/> attribute on the same field.
+		/// hints such as a <see cref="Duality.DontSerializeAttribute"/> attribute on the same field.
 		/// </summary>
 		DontSkip			= 0x4
 	}

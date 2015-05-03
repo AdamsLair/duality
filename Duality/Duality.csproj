@@ -86,6 +86,7 @@
     <Compile Include="Drawing\IRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\DefaultRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\ScreenResolution.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\Grid.cs" />
@@ -136,7 +137,6 @@
     <Compile Include="Drawing\DashPattern.cs" />
     <Compile Include="Drawing\CanvasState.cs" />
     <Compile Include="Utility\Math\Alignment.cs" />
-    <Compile Include="Drawing\ColorFormat\ColorHsva.cs" />
     <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
     <Compile Include="Components\Renderers\TextRenderer.cs" />
     <Compile Include="Components\SoundEmitter.cs" />
@@ -202,8 +202,6 @@
     <Compile Include="Audio\OggVorbis\OggVorbis.cs" />
     <Compile Include="Utility\PathHelper.cs" />
     <Compile Include="Utility\ReflectionHelper.cs" />
-    <Compile Include="Drawing\ColorFormat\ColorRgba.cs" />
-    <Compile Include="Drawing\ColorFormat\IColorData.cs" />
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="Components\Renderer.cs" />

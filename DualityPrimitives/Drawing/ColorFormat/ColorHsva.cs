@@ -200,23 +200,23 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public ColorRgba ToRgba()
 		{
-			float hTemp = MathF.NormalizeVar(this.H * 360.0f, 0.0f, 360.0f) / 60.0f;
-			int hi = (int)MathF.Floor(hTemp) % 6;
-			float f = hTemp - MathF.Floor(hTemp);
+			float hTemp = NormalizeHue(this.H) * 360.0f / 60.0f;
+			int hi = (int)Math.Floor(hTemp) % 6;
+			float f = hTemp - (float)Math.Floor(hTemp);
 
-			float vTemp = MathF.Clamp(this.V, 0.0f, 1.0f) * 255.0f;
-			float sTemp = MathF.Clamp(this.S, 0.0f, 1.0f);
+			float vTemp = ClampToUnit(this.V) * 255.0f;
+			float sTemp = ClampToUnit(this.S);
 			byte v = (byte)vTemp;
 			byte p = (byte)(vTemp * (1.0f - sTemp));
 			byte q = (byte)(vTemp * (1.0f - f * sTemp));
 			byte t = (byte)(vTemp * (1.0f - (1.0f - f) * sTemp));
 
-			if (hi == 0)		return new ColorRgba(v, t, p, (byte)(int)MathF.Clamp(this.A * 255.0f, 0.0f, 255.0f));
-			else if (hi == 1)	return new ColorRgba(q, v, p, (byte)(int)MathF.Clamp(this.A * 255.0f, 0.0f, 255.0f));
-			else if (hi == 2)	return new ColorRgba(p, v, t, (byte)(int)MathF.Clamp(this.A * 255.0f, 0.0f, 255.0f));
-			else if (hi == 3)	return new ColorRgba(p, q, v, (byte)(int)MathF.Clamp(this.A * 255.0f, 0.0f, 255.0f));
-			else if (hi == 4)	return new ColorRgba(t, p, v, (byte)(int)MathF.Clamp(this.A * 255.0f, 0.0f, 255.0f));
-			else				return new ColorRgba(v, p, q, (byte)(int)MathF.Clamp(this.A * 255.0f, 0.0f, 255.0f));
+			if (hi == 0)		return new ColorRgba(v, t, p, ColorRgba.ClampToByte(this.A * 255.0f));
+			else if (hi == 1)	return new ColorRgba(q, v, p, ColorRgba.ClampToByte(this.A * 255.0f));
+			else if (hi == 2)	return new ColorRgba(p, v, t, ColorRgba.ClampToByte(this.A * 255.0f));
+			else if (hi == 3)	return new ColorRgba(p, q, v, ColorRgba.ClampToByte(this.A * 255.0f));
+			else if (hi == 4)	return new ColorRgba(t, p, v, ColorRgba.ClampToByte(this.A * 255.0f));
+			else				return new ColorRgba(v, p, q, ColorRgba.ClampToByte(this.A * 255.0f));
 		}
 		
 		/// <summary>
@@ -250,14 +250,14 @@ namespace Duality.Drawing
 				this.S = delta / max;
 				this.V = max / 255.0f;
 
-				int maxInt = MathF.RoundToInt(max);
+				int maxInt = (int)Math.Round(max);
 				if (delta != 0.0f)
 				{
-					if (MathF.RoundToInt((float)rgba.R) == maxInt)
+					if ((int)Math.Round((float)rgba.R) == maxInt)
 					{
 						this.H = (float)(rgba.G - rgba.B) / delta;
 					}
-					else if (MathF.RoundToInt((float)rgba.G) == maxInt)
+					else if ((int)Math.Round((float)rgba.G) == maxInt)
 					{
 						this.H = 2.0f + (float)(rgba.B - rgba.R) / delta;
 					}
@@ -372,14 +372,6 @@ namespace Duality.Drawing
 		{
 			return FromRgba(c);
 		}
-		public static explicit operator ColorHsva(OpenTK.Graphics.Color4 c)
-		{
-			return FromRgba(new ColorRgba(
-				(byte)Math.Max(0, Math.Min(255, 255 * c.R)),
-				(byte)Math.Max(0, Math.Min(255, 255 * c.G)),
-				(byte)Math.Max(0, Math.Min(255, 255 * c.B)),
-				(byte)Math.Max(0, Math.Min(255, 255 * c.A))));
-		}
 		public static explicit operator int(ColorHsva c)
 		{
 			return c.ToIntRgba();
@@ -388,14 +380,21 @@ namespace Duality.Drawing
 		{
 			return c.ToRgba();
 		}
-		public static explicit operator OpenTK.Graphics.Color4(ColorHsva c)
+
+		internal static float ClampToUnit(float value)
 		{
-			ColorRgba temp = c.ToRgba();
-			return new OpenTK.Graphics.Color4(
-				temp.R,
-				temp.G,
-				temp.B,
-				temp.A);
+			return (float)Math.Min(Math.Max(value, 0.0f), 1.0f);
+		}
+		private static float NormalizeHue(float var)
+		{
+			if (var >= 0.0f && var < 1.0f) return var;
+
+			if (var < 0.0f)
+				var = 1.0f + (var % 1.0f);
+			else
+				var = var % 1.0f;
+
+			return var;
 		}
 	}
 }

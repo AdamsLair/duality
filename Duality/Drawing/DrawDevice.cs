@@ -669,7 +669,7 @@ namespace Duality.Drawing
 			ClearBufferMask glClearMask = 0;
 			if ((clearFlags & ClearFlag.Color) != ClearFlag.None) glClearMask |= ClearBufferMask.ColorBufferBit;
 			if ((clearFlags & ClearFlag.Depth) != ClearFlag.None) glClearMask |= ClearBufferMask.DepthBufferBit;
-			GL.ClearColor((OpenTK.Graphics.Color4)clearColor);
+			GL.ClearColor(clearColor.R / 255.0f, clearColor.G / 255.0f, clearColor.B / 255.0f, clearColor.A / 255.0f);
 			GL.ClearDepth((double)clearDepth); // The "float version" is from OpenGL 4.1..
 			GL.Clear(glClearMask);
 
@@ -891,7 +891,7 @@ namespace Duality.Drawing
 			GL.Scissor((int)viewportRect.X, (int)viewportRect.Y, (int)viewportRect.W, (int)viewportRect.H);
 
 			GL.ClearDepth(1.0d);
-			GL.ClearColor((OpenTK.Graphics.Color4)ColorRgba.TransparentBlack);
+			GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 		}
 	}

@@ -162,10 +162,10 @@ namespace Duality.Drawing
 		/// <param name="a">The alpha component as float [0.0f - 1.0f].</param>
 		public ColorRgba(float r, float g, float b, float a = 1.0f)
 		{
-			this.R = (byte)MathF.Clamp((int)(r * 255.0f), 0, 255);
-			this.G = (byte)MathF.Clamp((int)(g * 255.0f), 0, 255);
-			this.B = (byte)MathF.Clamp((int)(b * 255.0f), 0, 255);
-			this.A = (byte)MathF.Clamp((int)(a * 255.0f), 0, 255);
+			this.R = ClampToByte(r * 255.0f);
+			this.G = ClampToByte(g * 255.0f);
+			this.B = ClampToByte(b * 255.0f);
+			this.A = ClampToByte(a * 255.0f);
 		}
 		/// <summary>
 		/// Creates a new color based on value (brightness) and alpha.
@@ -174,10 +174,10 @@ namespace Duality.Drawing
 		/// <param name="a">The colors alpha value as float [0.0f - 1.0f].</param>
 		public ColorRgba(float value, float a = 1.0f)
 		{
-			this.R = (byte)MathF.Clamp((int)(value * 255.0f), 0, 255);
+			this.R = ClampToByte(value * 255.0f);
 			this.G = this.R;
 			this.B = this.R;
-			this.A = (byte)MathF.Clamp((int)(a * 255.0f), 0, 255);
+			this.A = ClampToByte(a * 255.0f);
 		}
 		
 		/// <summary>
@@ -223,7 +223,7 @@ namespace Duality.Drawing
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorRgba WithRed(float r)
 		{
-			return new ColorRgba((byte)MathF.Clamp((int)(r * 255.0f), 0, 255), this.G, this.B, this.A);
+			return new ColorRgba(ClampToByte(r * 255.0f), this.G, this.B, this.A);
 		}
 		/// <summary>
 		/// Returns a new version of the color with an adjusted green component.
@@ -232,7 +232,7 @@ namespace Duality.Drawing
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorRgba WithGreen(float g)
 		{
-			return new ColorRgba(this.R, (byte)MathF.Clamp((int)(g * 255.0f), 0, 255), this.B, this.A);
+			return new ColorRgba(this.R, ClampToByte(g * 255.0f), this.B, this.A);
 		}
 		/// <summary>
 		/// Returns a new version of the color with an adjusted blue component.
@@ -241,7 +241,7 @@ namespace Duality.Drawing
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorRgba WithBlue(float b)
 		{
-			return new ColorRgba(this.R, this.G, (byte)MathF.Clamp((int)(b * 255.0f), 0, 255), this.A);
+			return new ColorRgba(this.R, this.G, ClampToByte(b * 255.0f), this.A);
 		}
 		/// <summary>
 		/// Returns a new version of the color with an adjusted alpha component.
@@ -250,7 +250,7 @@ namespace Duality.Drawing
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorRgba WithAlpha(float a)
 		{
-			return new ColorRgba(this.R, this.G, this.B, (byte)MathF.Clamp((int)(a * 255.0f), 0, 255));
+			return new ColorRgba(this.R, this.G, this.B, ClampToByte(a * 255.0f));
 		}
 
 		/// <summary>
@@ -387,10 +387,10 @@ namespace Duality.Drawing
 		{
 			float invFactor = 1.0f - factor;
 			return new ColorRgba(
-				(byte)MathF.Clamp(MathF.Round(first.R * invFactor + second.R * factor), 0.0f, 255.0f),
-				(byte)MathF.Clamp(MathF.Round(first.G * invFactor + second.G * factor), 0.0f, 255.0f),
-				(byte)MathF.Clamp(MathF.Round(first.B * invFactor + second.B * factor), 0.0f, 255.0f),
-				(byte)MathF.Clamp(MathF.Round(first.A * invFactor + second.A * factor), 0.0f, 255.0f));
+				ClampToByte((float)Math.Round(first.R * invFactor + second.R * factor)),
+				ClampToByte((float)Math.Round(first.G * invFactor + second.G * factor)),
+				ClampToByte((float)Math.Round(first.B * invFactor + second.B * factor)),
+				ClampToByte((float)Math.Round(first.A * invFactor + second.A * factor)));
 		}
 
 		/// <summary>
@@ -450,10 +450,10 @@ namespace Duality.Drawing
 		public static ColorRgba operator *(ColorRgba left, ColorRgba right)
 		{
 			return new ColorRgba(
-				(byte)MathF.Clamp(MathF.Round(left.R * right.R / 255), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.G * right.G / 255), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.B * right.B / 255), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.A * right.A / 255), 0.0f, 255.0f));
+				ClampToByte((float)Math.Round((float)left.R * right.R / 255.0f)), 
+				ClampToByte((float)Math.Round((float)left.G * right.G / 255.0f)), 
+				ClampToByte((float)Math.Round((float)left.B * right.B / 255.0f)), 
+				ClampToByte((float)Math.Round((float)left.A * right.A / 255.0f)));
 		}
 		/// <summary>
 		/// Scales a color by the specified factor. This affects color and alpha equally.
@@ -464,10 +464,10 @@ namespace Duality.Drawing
 		public static ColorRgba operator *(ColorRgba left, float right)
 		{
 			return new ColorRgba(
-				(byte)MathF.Clamp(MathF.Round(left.R * right), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.G * right), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.B * right), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.A * right), 0.0f, 255.0f));
+				ClampToByte((float)Math.Round(left.R * right)), 
+				ClampToByte((float)Math.Round(left.G * right)), 
+				ClampToByte((float)Math.Round(left.B * right)), 
+				ClampToByte((float)Math.Round(left.A * right)));
 		}
 		
 		/// <summary>
@@ -507,10 +507,10 @@ namespace Duality.Drawing
 		public static void Multiply(ref ColorRgba left, ref ColorRgba right, out ColorRgba result)
 		{
 			result = new ColorRgba(
-				(byte)MathF.Clamp(MathF.Round(left.R * right.R / 255), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.G * right.G / 255), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.B * right.B / 255), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.A * right.A / 255), 0.0f, 255.0f));
+				ClampToByte((float)Math.Round((float)left.R * right.R / 255.0f)), 
+				ClampToByte((float)Math.Round((float)left.G * right.G / 255.0f)), 
+				ClampToByte((float)Math.Round((float)left.B * right.B / 255.0f)), 
+				ClampToByte((float)Math.Round((float)left.A * right.A / 255.0f)));
 		}
 		/// <summary>
 		/// Scales a color by the specified factor. This affects color and alpha equally.
@@ -521,10 +521,10 @@ namespace Duality.Drawing
 		public static void Scale(ref ColorRgba left, float right, out ColorRgba result)
 		{
 			result = new ColorRgba(
-				(byte)MathF.Clamp(MathF.Round(left.R * right), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.G * right), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.B * right), 0.0f, 255.0f), 
-				(byte)MathF.Clamp(MathF.Round(left.A * right), 0.0f, 255.0f));
+				ClampToByte((float)Math.Round(left.R * right)), 
+				ClampToByte((float)Math.Round(left.G * right)), 
+				ClampToByte((float)Math.Round(left.B * right)), 
+				ClampToByte((float)Math.Round(left.A * right)));
 		}
 		
 		public static explicit operator ColorRgba(int c)
@@ -535,14 +535,6 @@ namespace Duality.Drawing
 		{
 			return c.ToRgba();
 		}
-		public static explicit operator ColorRgba(OpenTK.Graphics.Color4 c)
-		{
-			return new ColorRgba(
-				(byte)Math.Max(0, Math.Min(255, 255 * c.R)),
-				(byte)Math.Max(0, Math.Min(255, 255 * c.G)),
-				(byte)Math.Max(0, Math.Min(255, 255 * c.B)),
-				(byte)Math.Max(0, Math.Min(255, 255 * c.A)));
-		}
 		public static explicit operator int(ColorRgba c)
 		{
 			return c.ToIntRgba();
@@ -551,13 +543,14 @@ namespace Duality.Drawing
 		{
 			return ColorHsva.FromRgba(c);
 		}
-		public static explicit operator OpenTK.Graphics.Color4(ColorRgba c)
+
+		internal static byte ClampToByte(int value)
 		{
-			return new OpenTK.Graphics.Color4(
-				c.R,
-				c.G,
-				c.B,
-				c.A);
+			return (byte)Math.Min(Math.Max(value, 0), 255);
+		}
+		internal static byte ClampToByte(float value)
+		{
+			return (byte)Math.Min(Math.Max((int)value, 0), 255);
 		}
 	}
 }
