@@ -14,24 +14,24 @@
           <gameobj dataType="ObjectRef">422295141</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
           <parentTransform />
-          <pos dataType="Struct" type="OpenTK.Vector3">
+          <pos dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0.01</Z>
           </pos>
-          <posAbs dataType="Struct" type="OpenTK.Vector3">
+          <posAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0.01</Z>
           </posAbs>
           <scale dataType="Float">1</scale>
           <scaleAbs dataType="Float">1</scaleAbs>
-          <vel dataType="Struct" type="OpenTK.Vector3">
+          <vel dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
           </vel>
-          <velAbs dataType="Struct" type="OpenTK.Vector3">
+          <velAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>

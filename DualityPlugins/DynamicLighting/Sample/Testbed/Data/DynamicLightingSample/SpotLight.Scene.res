@@ -1,5 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Scene" id="129723834">
-  <globalGravity dataType="Struct" type="OpenTK.Vector2">
+  <globalGravity dataType="Struct" type="Duality.Vector2">
     <X dataType="Float">0</X>
     <Y dataType="Float">33</Y>
   </globalGravity>
@@ -19,24 +19,24 @@
             <gameobj dataType="ObjectRef">3717380010</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
             <parentTransform />
-            <pos dataType="Struct" type="OpenTK.Vector3">
+            <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">-500</Z>
             </pos>
-            <posAbs dataType="Struct" type="OpenTK.Vector3">
+            <posAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">-500</Z>
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="OpenTK.Vector3">
+            <vel dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">0</Z>
             </vel>
-            <velAbs dataType="Struct" type="OpenTK.Vector3">
+            <velAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">0</Z>
@@ -145,24 +145,24 @@
                   <gameobj dataType="ObjectRef">433881654</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -237,24 +237,24 @@
                   <gameobj dataType="ObjectRef">4168391940</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">382.066223</X>
                     <Y dataType="Float">-86.70662</Y>
                     <Z dataType="Float">255.312622</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">382.066223</X>
                     <Y dataType="Float">-86.70662</Y>
                     <Z dataType="Float">255.312622</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -329,24 +329,24 @@
                   <gameobj dataType="ObjectRef">692464725</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">121.429626</X>
                     <Y dataType="Float">278.038269</Y>
                     <Z dataType="Float">284.434967</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">121.429626</X>
                     <Y dataType="Float">278.038269</Y>
                     <Z dataType="Float">284.434967</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -421,24 +421,24 @@
                   <gameobj dataType="ObjectRef">3925922120</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-237.4337</X>
                     <Y dataType="Float">533.737854</Y>
                     <Z dataType="Float">166.036377</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-237.4337</X>
                     <Y dataType="Float">533.737854</Y>
                     <Z dataType="Float">166.036377</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -513,24 +513,24 @@
                   <gameobj dataType="ObjectRef">1727034772</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">101.21965</X>
                     <Y dataType="Float">652.844543</Y>
                     <Z dataType="Float">71.8888245</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">101.21965</X>
                     <Y dataType="Float">652.844543</Y>
                     <Z dataType="Float">71.8888245</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -605,24 +605,24 @@
                   <gameobj dataType="ObjectRef">119094592</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">508.088074</X>
                     <Y dataType="Float">452.933716</Y>
                     <Z dataType="Float">1241.081</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">508.088074</X>
                     <Y dataType="Float">452.933716</Y>
                     <Z dataType="Float">1241.081</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -729,24 +729,24 @@
                   <gameobj dataType="ObjectRef">2346786567</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-74.5494</X>
                     <Y dataType="Float">673.1811</Y>
                     <Z dataType="Float">62.6235962</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-74.5494</X>
                     <Y dataType="Float">673.1811</Y>
                     <Z dataType="Float">62.6235962</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -767,7 +767,7 @@
                     <G dataType="Byte">255</G>
                     <R dataType="Byte">0</R>
                   </color>
-                  <dir dataType="Struct" type="OpenTK.Vector3">
+                  <dir dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">-1</Y>
                     <Z dataType="Float">0</Z>
@@ -821,24 +821,24 @@
                   <gameobj dataType="ObjectRef">604315623</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">13.2804222</X>
                     <Y dataType="Float">48.09619</Y>
                     <Z dataType="Float">237.662048</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">13.2804222</X>
                     <Y dataType="Float">48.09619</Y>
                     <Z dataType="Float">237.662048</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
                   <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -859,7 +859,7 @@
                     <G dataType="Byte">0</G>
                     <R dataType="Byte">255</R>
                   </color>
-                  <dir dataType="Struct" type="OpenTK.Vector3">
+                  <dir dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">-1</Y>
                     <Z dataType="Float">0</Z>
@@ -945,24 +945,24 @@
                   <gameobj dataType="ObjectRef">4097311016</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-13.6297</X>
                     <Y dataType="Float">542.386536</Y>
                     <Z dataType="Float">114.599152</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-13.6297</X>
                     <Y dataType="Float">542.386536</Y>
                     <Z dataType="Float">114.599152</Z>
                   </posAbs>
                   <scale dataType="Float">1.94464064</scale>
                   <scaleAbs dataType="Float">1.94464064</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -1037,24 +1037,24 @@
                   <gameobj dataType="ObjectRef">2650353870</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">190.9804</X>
                     <Y dataType="Float">458.597534</Y>
                     <Z dataType="Float">283.355927</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">190.9804</X>
                     <Y dataType="Float">458.597534</Y>
                     <Z dataType="Float">283.355927</Z>
                   </posAbs>
                   <scale dataType="Float">1.94464064</scale>
                   <scaleAbs dataType="Float">1.94464064</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
@@ -1129,24 +1129,24 @@
                   <gameobj dataType="ObjectRef">4081292518</gameobj>
                   <ignoreParent dataType="Bool">false</ignoreParent>
                   <parentTransform />
-                  <pos dataType="Struct" type="OpenTK.Vector3">
+                  <pos dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-37.8626862</X>
                     <Y dataType="Float">319.671631</Y>
                     <Z dataType="Float">150.466522</Z>
                   </pos>
-                  <posAbs dataType="Struct" type="OpenTK.Vector3">
+                  <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">-37.8626862</X>
                     <Y dataType="Float">319.671631</Y>
                     <Z dataType="Float">150.466522</Z>
                   </posAbs>
                   <scale dataType="Float">1.94464064</scale>
                   <scaleAbs dataType="Float">1.94464064</scaleAbs>
-                  <vel dataType="Struct" type="OpenTK.Vector3">
+                  <vel dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>
                   </vel>
-                  <velAbs dataType="Struct" type="OpenTK.Vector3">
+                  <velAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">0</X>
                     <Y dataType="Float">0</Y>
                     <Z dataType="Float">0</Z>

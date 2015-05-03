@@ -14,24 +14,24 @@
           <gameobj dataType="ObjectRef">1557773463</gameobj>
           <ignoreParent dataType="Bool">false</ignoreParent>
           <parentTransform />
-          <pos dataType="Struct" type="OpenTK.Vector3">
+          <pos dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">-377</X>
             <Y dataType="Float">-224</Y>
             <Z dataType="Float">0</Z>
           </pos>
-          <posAbs dataType="Struct" type="OpenTK.Vector3">
+          <posAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">-377</X>
             <Y dataType="Float">-224</Y>
             <Z dataType="Float">0</Z>
           </posAbs>
           <scale dataType="Float">1</scale>
           <scaleAbs dataType="Float">1</scaleAbs>
-          <vel dataType="Struct" type="OpenTK.Vector3">
+          <vel dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
           </vel>
-          <velAbs dataType="Struct" type="OpenTK.Vector3">
+          <velAbs dataType="Struct" type="Duality.Vector3">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
             <Z dataType="Float">0</Z>
@@ -51,7 +51,7 @@
           <ignoreGravity dataType="Bool">true</ignoreGravity>
           <joints />
           <linearDamp dataType="Float">0.3</linearDamp>
-          <linearVel dataType="Struct" type="OpenTK.Vector2">
+          <linearVel dataType="Struct" type="Duality.Vector2">
             <X dataType="Float">0</X>
             <Y dataType="Float">0</Y>
           </linearVel>
@@ -62,7 +62,7 @@
                 <density dataType="Float">1</density>
                 <friction dataType="Float">0.3</friction>
                 <parent dataType="ObjectRef">325582691</parent>
-                <position dataType="Struct" type="OpenTK.Vector2">
+                <position dataType="Struct" type="Duality.Vector2">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">0</Y>
                 </position>
@@ -110,7 +110,7 @@
             <outerLayerSampleCount dataType="Int">11</outerLayerSampleCount>
           </sampler>
           <target dataType="Struct" type="Duality.Plugins.Steering.PointTarget" id="1854574213">
-            <location dataType="Struct" type="OpenTK.Vector2">
+            <location dataType="Struct" type="Duality.Vector2">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
             </location>

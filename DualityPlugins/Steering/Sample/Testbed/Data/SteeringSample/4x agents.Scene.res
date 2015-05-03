@@ -1,5 +1,5 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Scene" id="129723834">
-  <globalGravity dataType="Struct" type="OpenTK.Vector2">
+  <globalGravity dataType="Struct" type="Duality.Vector2">
     <X dataType="Float">0</X>
     <Y dataType="Float">33</Y>
   </globalGravity>
@@ -73,7 +73,7 @@
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="PropertyInfo" id="771728094" value="P:Duality.Components.Transform:RelativePos" />
-              <val dataType="Struct" type="OpenTK.Vector3">
+              <val dataType="Struct" type="Duality.Vector3">
                 <X dataType="Float">-200</X>
                 <Y dataType="Float">0</Y>
                 <Z dataType="Float">0</Z>
@@ -88,7 +88,7 @@
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="PropertyInfo" id="3301130018" value="P:Duality.Plugins.Steering.Agent:Target" />
               <val dataType="Struct" type="Duality.Plugins.Steering.PointTarget" id="111936128">
-                <location dataType="Struct" type="OpenTK.Vector2">
+                <location dataType="Struct" type="Duality.Vector2">
                   <X dataType="Float">200</X>
                   <Y dataType="Float">0</Y>
                 </location>
@@ -210,7 +210,7 @@
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="ObjectRef">771728094</prop>
-              <val dataType="Struct" type="OpenTK.Vector3">
+              <val dataType="Struct" type="Duality.Vector3">
                 <X dataType="Float">200</X>
                 <Y dataType="Float">0</Y>
                 <Z dataType="Float">0</Z>
@@ -225,7 +225,7 @@
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">3301130018</prop>
               <val dataType="Struct" type="Duality.Plugins.Steering.PointTarget" id="414026804">
-                <location dataType="Struct" type="OpenTK.Vector2">
+                <location dataType="Struct" type="Duality.Vector2">
                   <X dataType="Float">-200</X>
                   <Y dataType="Float">0</Y>
                 </location>
@@ -347,7 +347,7 @@
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="ObjectRef">771728094</prop>
-              <val dataType="Struct" type="OpenTK.Vector3">
+              <val dataType="Struct" type="Duality.Vector3">
                 <X dataType="Float">0</X>
                 <Y dataType="Float">200</Y>
                 <Z dataType="Float">0</Z>
@@ -362,7 +362,7 @@
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">3301130018</prop>
               <val dataType="Struct" type="Duality.Plugins.Steering.PointTarget" id="2744184500">
-                <location dataType="Struct" type="OpenTK.Vector2">
+                <location dataType="Struct" type="Duality.Vector2">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">-200</Y>
                 </location>
@@ -484,7 +484,7 @@
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
               <prop dataType="ObjectRef">771728094</prop>
-              <val dataType="Struct" type="OpenTK.Vector3">
+              <val dataType="Struct" type="Duality.Vector3">
                 <X dataType="Float">0</X>
                 <Y dataType="Float">-200</Y>
                 <Z dataType="Float">0</Z>
@@ -499,7 +499,7 @@
               <componentType dataType="ObjectRef">2144167866</componentType>
               <prop dataType="ObjectRef">3301130018</prop>
               <val dataType="Struct" type="Duality.Plugins.Steering.PointTarget" id="891667348">
-                <location dataType="Struct" type="OpenTK.Vector2">
+                <location dataType="Struct" type="Duality.Vector2">
                   <X dataType="Float">0</X>
                   <Y dataType="Float">200</Y>
                 </location>
@@ -567,24 +567,24 @@
             <gameobj dataType="ObjectRef">2299002789</gameobj>
             <ignoreParent dataType="Bool">false</ignoreParent>
             <parentTransform />
-            <pos dataType="Struct" type="OpenTK.Vector3">
+            <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">0.01</Z>
             </pos>
-            <posAbs dataType="Struct" type="OpenTK.Vector3">
+            <posAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">0.01</Z>
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="OpenTK.Vector3">
+            <vel dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">0</Z>
             </vel>
-            <velAbs dataType="Struct" type="OpenTK.Vector3">
+            <velAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
               <Z dataType="Float">0</Z>
