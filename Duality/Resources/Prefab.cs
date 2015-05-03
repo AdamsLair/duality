@@ -411,13 +411,15 @@ namespace Duality.Resources
 
 				if (this.changes[i].prop != null && target != null) 
 				{
+					object applyVal = null;
 					try
 					{
-						object applyVal = null;
+
 						if (this.changes[i].prop.PropertyType.IsValueType)
 							applyVal = this.changes[i].val;
 						else
 							applyVal = this.changes[i].val.DeepClone();
+
 						this.changes[i].prop.SetValue(target, applyVal, null);
 					}
 					catch (Exception e)

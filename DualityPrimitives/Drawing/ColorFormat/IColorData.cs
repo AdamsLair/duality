@@ -26,7 +26,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Sets the color base ond a <see cref="System.UInt32"/>-Argb value.
 		/// </summary>
-		/// <param name="rgba"></param>
+		/// <param name="argb"></param>
 		void SetIntArgb(int argb);
 	}
 }

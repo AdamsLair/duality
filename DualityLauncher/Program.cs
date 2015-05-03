@@ -7,7 +7,13 @@ using System.Drawing;
 using Duality;
 using Duality.Resources;
 
-using OpenTK;
+using GameWindow = OpenTK.GameWindow;
+using GameWindowFlags = OpenTK.GameWindowFlags;
+using FrameEventArgs = OpenTK.FrameEventArgs;
+using WindowState = OpenTK.WindowState;
+using WindowBorder = OpenTK.WindowBorder;
+using VSyncMode = OpenTK.VSyncMode;
+using DisplayDevice = OpenTK.DisplayDevice;
 using OpenTK.Input;
 using OpenTK.Graphics;
 using OpenTK.Platform.Windows;

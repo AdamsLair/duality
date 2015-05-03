@@ -10,31 +10,6 @@ namespace Duality.Drawing
 	public struct ColorRgba : IColorData, IEquatable<ColorRgba>
 	{
 		/// <summary>
-		/// Size of a single color component in bytes.
-		/// </summary>
-		public const int CompSize	= sizeof(byte);
-		/// <summary>
-		/// Byte offset of the red value.
-		/// </summary>
-		public const int OffsetR	= 0;
-		/// <summary>
-		/// Byte offset of the green value.
-		/// </summary>
-		public const int OffsetG	= OffsetR + CompSize;
-		/// <summary>
-		/// Byte offset of the blue value.
-		/// </summary>
-		public const int OffsetB	= OffsetG + CompSize;
-		/// <summary>
-		/// Byte offset of the alpha value.
-		/// </summary>
-		public const int OffsetA	= OffsetB + CompSize;
-		/// <summary>
-		/// Total size of the struct in bytes.
-		/// </summary>
-		public const int Size		= OffsetA + CompSize;
-
-		/// <summary>
 		/// White.
 		/// </summary>
 		public static readonly ColorRgba White				= new ColorRgba(255,	255,	255);

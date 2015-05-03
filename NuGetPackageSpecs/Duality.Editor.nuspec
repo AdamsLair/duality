@@ -34,7 +34,6 @@
     <file src="..\DualityEditor\bin\Release\DualityEditor.pdb" target="lib" />
     <file src="..\DualityEditor\bin\Release\DualityEditor.xml" target="lib" />
     <file src="..\DualityEditor\bin\Release\DualityUpdater.exe" target="lib" />
-    <file src="..\DualityEditor\bin\Release\Ionic.Zip.dll" target="lib" />
     <file src="..\DualityEditor\bin\Release\VistaBridgeLibrary.dll" target="lib" />
     <file src="..\DualityEditor\bin\Release\Windows7.DesktopIntegration.dll" target="lib" />
   </files>

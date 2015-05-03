@@ -55,10 +55,9 @@
     </Reference>
     <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>
+      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.1.0\lib\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Drawing" />
@@ -91,6 +90,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\DualityPrimitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>

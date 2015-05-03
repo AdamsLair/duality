@@ -131,7 +131,7 @@ namespace Duality.Serialization
 			get { return this.fieldValue; }
 		}
 		/// <summary>
-		/// [GET / SET] Whether or not the assignment was a success. Set this field to true, if you handled the error successfully.
+		/// [GET / SET] Whether or not the assignment was a success. Set this property to true, if you handled the error successfully.
 		/// </summary>
 		public bool AssignSuccess
 		{

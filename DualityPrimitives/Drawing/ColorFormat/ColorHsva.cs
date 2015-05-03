@@ -10,31 +10,6 @@ namespace Duality.Drawing
 	public struct ColorHsva : IColorData, IEquatable<ColorHsva>
 	{
 		/// <summary>
-		/// Size of a single color component in bytes.
-		/// </summary>
-		public const int CompSize	= sizeof(float);
-		/// <summary>
-		/// Byte offset of the hue value.
-		/// </summary>
-		public const int OffsetH	= 0;
-		/// <summary>
-		/// Byte offset of the saturation value.
-		/// </summary>
-		public const int OffsetS	= OffsetH + CompSize;
-		/// <summary>
-		/// Byte offset of the value / brightness value.
-		/// </summary>
-		public const int OffsetV	= OffsetS + CompSize;
-		/// <summary>
-		/// Byte offset of the alpha value.
-		/// </summary>
-		public const int OffsetA	= OffsetV + CompSize;
-		/// <summary>
-		/// Total size of the struct in bytes.
-		/// </summary>
-		public const int Size		= OffsetA + CompSize;
-
-		/// <summary>
 		/// White.
 		/// </summary>
 		public static readonly ColorHsva White				= ColorRgba.White.ToHsva();
@@ -144,7 +119,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Returns a new version of the color with an adjusted hue component.
 		/// </summary>
-		/// <param name="r">The new hue component as float [0.0f - 1.0f].</param>
+		/// <param name="h">The new hue component as float [0.0f - 1.0f].</param>
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorHsva WithHue(float h)
 		{
@@ -153,7 +128,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Returns a new version of the color with an adjusted saturation component.
 		/// </summary>
-		/// <param name="r">The new saturation component as float [0.0f - 1.0f].</param>
+		/// <param name="s">The new saturation component as float [0.0f - 1.0f].</param>
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorHsva WithSaturation(float s)
 		{
@@ -162,7 +137,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Returns a new version of the color with an adjusted value component.
 		/// </summary>
-		/// <param name="r">The new value component as float [0.0f - 1.0f].</param>
+		/// <param name="v">The new value component as float [0.0f - 1.0f].</param>
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorHsva WithValue(float v)
 		{
@@ -171,7 +146,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Returns a new version of the color with an adjusted alpha component.
 		/// </summary>
-		/// <param name="r">The new alpha component as float [0.0f - 1.0f].</param>
+		/// <param name="a">The new alpha component as float [0.0f - 1.0f].</param>
 		/// <returns>A new color with the specified adjustments.</returns>
 		public ColorHsva WithAlpha(float a)
 		{
@@ -334,7 +309,7 @@ namespace Duality.Drawing
 		/// <summary>
 		/// Creates a new color based on a Rgba value.
 		/// </summary>
-		/// <param name="hsva"></param>
+		/// <param name="rgba"></param>
 		/// <returns></returns>
 		public static ColorHsva FromRgba(ColorRgba rgba)
 		{

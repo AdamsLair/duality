@@ -53,9 +53,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerDuality, Version=3.3.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AdamsLair.FarseerDuality.3.3.9.0\lib\net40\FarseerDuality.dll</HintPath>
+    <Reference Include="FarseerDuality, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.FarseerDuality.4.0.1\lib\portable-net45+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\FarseerDuality.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="NVorbis">
       <HintPath>..\packages\AdamsLair.NVorbis.0.7.4\lib\NVorbis.dll</HintPath>

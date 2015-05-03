@@ -689,10 +689,25 @@ namespace Duality.Drawing
 
 			// Upload and adjust matrices
 			this.UpdateMatrices();
+
 			GL.MatrixMode(MatrixMode.Modelview);
-			GL.LoadMatrix(ref this.matModelView);
+			OpenTK.Matrix4 openTkModelView;
+			openTkModelView = new OpenTK.Matrix4(
+				this.matModelView.M11, this.matModelView.M12, this.matModelView.M13, this.matModelView.M14,
+				this.matModelView.M21, this.matModelView.M22, this.matModelView.M23, this.matModelView.M24,
+				this.matModelView.M31, this.matModelView.M32, this.matModelView.M33, this.matModelView.M34,
+				this.matModelView.M41, this.matModelView.M42, this.matModelView.M43, this.matModelView.M44);
+			GL.LoadMatrix(ref openTkModelView);
+
 			GL.MatrixMode(MatrixMode.Projection);
-			GL.LoadMatrix(ref this.matProjection);
+			OpenTK.Matrix4 openTkProjection;
+			openTkProjection = new OpenTK.Matrix4(
+				this.matProjection.M11, this.matProjection.M12, this.matProjection.M13, this.matProjection.M14,
+				this.matProjection.M21, this.matProjection.M22, this.matProjection.M23, this.matProjection.M24,
+				this.matProjection.M31, this.matProjection.M32, this.matProjection.M33, this.matProjection.M34,
+				this.matProjection.M41, this.matProjection.M42, this.matProjection.M43, this.matProjection.M44);
+			GL.LoadMatrix(ref openTkProjection);
+
 			if (this.renderTarget.IsAvailable)
 			{
 				if (this.renderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, RenderTarget.BoundRT.Res.Height * 0.5f, 0.0f);

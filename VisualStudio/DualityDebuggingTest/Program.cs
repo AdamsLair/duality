@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using OpenTK;
+using GameWindow = OpenTK.GameWindow;
+using GameWindowFlags = OpenTK.GameWindowFlags;
 using OpenTK.Graphics;
 
 using Duality;
