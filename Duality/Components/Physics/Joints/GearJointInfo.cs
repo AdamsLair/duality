@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using OpenTK;
-
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using FarseerPhysics.Dynamics.Joints;

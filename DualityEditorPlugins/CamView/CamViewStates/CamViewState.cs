@@ -15,9 +15,6 @@ using Duality.Editor.Forms;
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
 	public abstract class CamViewState : CamViewClient, IHelpProvider

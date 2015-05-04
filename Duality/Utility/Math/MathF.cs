@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using OpenTK;
 
 namespace Duality
 {

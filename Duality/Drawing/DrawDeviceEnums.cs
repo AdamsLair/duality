@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OpenTK.Graphics.OpenGL;
-using OpenTK;
-
 using Duality.Editor;
 using Duality.Resources;
 
@@ -15,16 +12,16 @@ namespace Duality.Drawing
 	/// </summary>
 	public enum VertexMode
 	{
-		Points = PrimitiveType.Points,
-		Lines = PrimitiveType.Lines,
-		LineStrip = PrimitiveType.LineStrip,
-		LineLoop = PrimitiveType.LineLoop,
-		Triangles = PrimitiveType.Triangles,
-		TriangleStrip = PrimitiveType.TriangleStrip,
-		TriangleFan = PrimitiveType.TriangleFan,
-		Quads = PrimitiveType.Quads,
-		QuadStrip = PrimitiveType.QuadStrip,
-		Polygon = PrimitiveType.Polygon
+		Points,
+		Lines,
+		LineStrip,
+		LineLoop,
+		Triangles,
+		TriangleStrip,
+		TriangleFan,
+		Quads,
+		QuadStrip,
+		Polygon
 	}
 
 	/// <summary>

@@ -1,7 +1,5 @@
 ﻿using System;
 
-using OpenTK;
-
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using FarseerPhysics.Dynamics.Joints;

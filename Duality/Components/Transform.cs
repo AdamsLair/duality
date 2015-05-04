@@ -1,7 +1,5 @@
 ﻿using System;
 
-using OpenTK;
-
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Cloning;

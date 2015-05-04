@@ -1,5 +1,4 @@
 ﻿using Duality;
-using OpenTK;
 using System;
 
 namespace Duality.Plugins.Steering

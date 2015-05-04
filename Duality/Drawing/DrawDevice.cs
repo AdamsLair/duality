@@ -150,7 +150,7 @@ namespace Duality.Drawing
 				if (lastBatchRendered == null || lastBatchRendered.Material != this.material)
 					this.material.SetupForRendering(device, lastBatchRendered == null ? null : lastBatchRendered.Material);
 
-				GL.DrawArrays((PrimitiveType)this.vertexMode, vertexOffset, this.vertexCount);
+				GL.DrawArrays(GetOpenTKVertexMode(this.vertexMode), vertexOffset, this.vertexCount);
 
 				vertexOffset += this.vertexCount;
 				lastBatchRendered = this;
@@ -236,6 +236,23 @@ namespace Duality.Drawing
 					zSortIndex += vertices[i].Pos.Z;
 				}
 				return zSortIndex / count;
+			}
+
+			private static PrimitiveType GetOpenTKVertexMode(VertexMode mode)
+			{
+				switch (mode)
+				{
+					default:
+					case VertexMode.Points:			return PrimitiveType.Points;
+					case VertexMode.Lines:			return PrimitiveType.Lines;
+					case VertexMode.LineStrip:		return PrimitiveType.LineStrip;
+					case VertexMode.LineLoop:		return PrimitiveType.LineLoop;
+					case VertexMode.TriangleStrip:	return PrimitiveType.TriangleStrip;
+					case VertexMode.TriangleFan:	return PrimitiveType.TriangleFan;
+					case VertexMode.Quads:			return PrimitiveType.Quads;
+					case VertexMode.QuadStrip:		return PrimitiveType.QuadStrip;
+					case VertexMode.Polygon:		return PrimitiveType.Polygon;
+				}
 			}
 		}
 		

@@ -10,9 +10,6 @@ using Duality.Components.Physics;
 using Duality.Editor;
 using Duality.Editor.Forms;
 
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-
 namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
 	public class RigidBodyShapeCamViewLayer : CamViewLayer

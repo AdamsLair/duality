@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-using OpenTK;
-
 namespace Duality.Editor.Plugins.CamView
 {
 	public partial class GridSizeDialog : Form

@@ -2,8 +2,6 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
-using OpenTK;
-
 using Duality;
 using Duality.Resources;
 using Duality.Drawing;

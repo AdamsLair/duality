@@ -8,7 +8,6 @@ using Duality;
 using Duality.Drawing;
 
 using NUnit.Framework;
-using OpenTK;
 
 namespace Duality.Tests.Utility
 {

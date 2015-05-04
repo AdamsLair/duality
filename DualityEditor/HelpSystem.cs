@@ -9,8 +9,6 @@ using System.Reflection;
 
 using Duality;
 
-using OpenTK;
-
 namespace Duality.Editor
 {
 	public static class HelpSystem

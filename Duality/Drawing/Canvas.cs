@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using OpenTK.Graphics.OpenGL;
-using OpenTK;
 
 using Duality.Resources;
 using Duality.Cloning;

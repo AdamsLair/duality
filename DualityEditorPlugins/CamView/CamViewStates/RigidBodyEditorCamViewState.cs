@@ -17,8 +17,6 @@ using Duality.Editor.Plugins.CamView.UndoRedoActions;
 using Duality.Editor.Plugins.CamView.Properties;
 using Font = Duality.Resources.Font;
 
-using OpenTK;
-
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
 	public partial class RigidBodyEditorCamViewState : CamViewState

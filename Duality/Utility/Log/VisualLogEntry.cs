@@ -5,8 +5,6 @@ using System.Text;
 
 using Duality.Drawing;
 
-using OpenTK;
-
 namespace Duality
 {
 	/// <summary>

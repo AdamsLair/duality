@@ -2,10 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OpenTK;
-using OpenTK.Input;
-
-
 namespace Duality.Input
 {
 	/// <summary>

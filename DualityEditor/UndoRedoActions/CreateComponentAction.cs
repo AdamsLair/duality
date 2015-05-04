@@ -9,8 +9,6 @@ using Duality.Resources;
 
 using Duality.Editor.Properties;
 
-using OpenTK;
-
 namespace Duality.Editor.UndoRedoActions
 {
 	public class CreateComponentAction : ComponentAction

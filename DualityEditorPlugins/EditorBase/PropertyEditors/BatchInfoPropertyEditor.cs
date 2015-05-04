@@ -8,8 +8,6 @@ using System.Drawing;
 using AdamsLair.WinForms.PropertyEditing;
 using AdamsLair.WinForms.PropertyEditing.Editors;
 
-using OpenTK;
-
 using Duality;
 using Duality.Resources;
 using Duality.Editor;

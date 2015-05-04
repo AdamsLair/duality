@@ -10,7 +10,6 @@ using Duality.Properties;
 using Duality.Drawing;
 using Duality.Cloning;
 
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace Duality.Resources

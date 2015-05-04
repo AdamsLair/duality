@@ -13,7 +13,6 @@ using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Tests.Cloning.HelperObjects;
 
-using OpenTK;
 using NUnit.Framework;
 
 namespace Duality.Tests.Cloning

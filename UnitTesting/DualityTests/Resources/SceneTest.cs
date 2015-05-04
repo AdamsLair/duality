@@ -9,7 +9,6 @@ using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Tests.Components;
 
-using OpenTK;
 using NUnit.Framework;
 
 

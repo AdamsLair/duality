@@ -14,8 +14,6 @@ using Duality.Serialization;
 using Duality.Cloning;
 using Duality.Properties;
 
-using OpenTK;
-
 namespace Duality.Resources
 {
 	/// <summary>

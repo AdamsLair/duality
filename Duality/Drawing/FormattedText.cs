@@ -8,8 +8,6 @@ using Duality.Cloning;
 using Duality.Resources;
 using Duality.Drawing;
 
-using OpenTK;
-
 
 namespace Duality.Drawing
 {

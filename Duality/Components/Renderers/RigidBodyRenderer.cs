@@ -9,10 +9,6 @@ using Duality.Cloning;
 using Duality.Components.Physics;
 using Duality.Properties;
 
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
-
 namespace Duality.Components.Renderers
 {
 	/// <summary>

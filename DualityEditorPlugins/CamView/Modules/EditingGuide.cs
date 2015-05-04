@@ -4,8 +4,6 @@ using System.Linq;
 
 using Duality;
 
-using OpenTK;
-
 namespace Duality.Editor.Plugins.CamView
 {
 	public class EditingGuide

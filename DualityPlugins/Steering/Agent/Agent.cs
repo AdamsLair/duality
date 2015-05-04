@@ -9,8 +9,6 @@ using Duality.Editor;
 using Duality.Properties;
 using Duality.Plugins.Steering.Properties;
 
-using OpenTK;
-
 namespace Duality.Plugins.Steering
 {
 	/// <summary>

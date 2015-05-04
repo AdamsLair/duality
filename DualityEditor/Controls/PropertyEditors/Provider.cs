@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 
 using AdamsLair.WinForms.PropertyEditing;
-using OpenTK;
 
 using Duality.Drawing;
 

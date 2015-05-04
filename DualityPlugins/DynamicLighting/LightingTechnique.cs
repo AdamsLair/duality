@@ -7,8 +7,6 @@ using Duality.Properties;
 using Duality.Drawing;
 using Duality.Plugins.DynamicLighting.Properties;
 
-using OpenTK;
-
 namespace Duality.Plugins.DynamicLighting
 {
 	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]

@@ -6,10 +6,6 @@ using Duality.Drawing;
 using Duality.Editor;
 using Duality.Resources;
 
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
-
 namespace Duality.Components.Diagnostics
 {
 	[EditorHintFlags(MemberFlags.Invisible)]

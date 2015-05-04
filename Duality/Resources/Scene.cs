@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using OpenTK;
 using FarseerPhysics.Dynamics;
 
 using Duality.Editor;

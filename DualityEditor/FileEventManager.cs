@@ -15,8 +15,6 @@ using Duality.Resources;
 using Duality.Serialization;
 using Duality.Editor.Forms;
 
-using OpenTK;
-
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Duality.Editor

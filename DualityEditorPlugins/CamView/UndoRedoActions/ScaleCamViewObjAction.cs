@@ -10,8 +10,6 @@ using Duality.Editor;
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.CamViewStates;
 
-using OpenTK;
-
 namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 {
 	public class ScaleCamViewObjAction : CamViewObjAction

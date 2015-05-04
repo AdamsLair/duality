@@ -3,7 +3,6 @@
 using Duality;
 using Duality.Editor;
 
-using OpenTK;
 
 namespace Duality.Plugins.Steering
 {

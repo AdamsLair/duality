@@ -4,8 +4,6 @@ using Duality.Editor;
 using Duality.Drawing;
 using Duality.Cloning;
 
-using OpenTK;
-
 namespace Duality.Components
 {
 	/// <summary>

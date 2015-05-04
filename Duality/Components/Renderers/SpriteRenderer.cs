@@ -6,9 +6,6 @@ using Duality.Editor;
 using Duality.Properties;
 using Duality.Cloning;
 
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-
 namespace Duality.Components.Renderers
 {
 	/// <summary>

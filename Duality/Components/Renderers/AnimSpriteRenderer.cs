@@ -8,9 +8,6 @@ using Duality.Resources;
 using Duality.Cloning;
 using Duality.Properties;
 
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-
 namespace Duality.Components.Renderers
 {
 	/// <summary>

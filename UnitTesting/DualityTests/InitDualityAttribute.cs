@@ -8,8 +8,6 @@ using Duality;
 using Duality.Serialization;
 
 using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
 
 using NUnit.Framework;
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
 
 using Duality;
 using Duality.Editor;

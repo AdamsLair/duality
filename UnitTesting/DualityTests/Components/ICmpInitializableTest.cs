@@ -10,7 +10,6 @@ using Duality.Components;
 using Duality.Serialization;
 using Duality.Tests.Components;
 
-using OpenTK;
 using NUnit.Framework;
 
 

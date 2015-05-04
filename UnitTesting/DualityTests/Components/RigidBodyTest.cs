@@ -9,7 +9,6 @@ using Duality.Cloning;
 using Duality.Components;
 using Duality.Components.Physics;
 
-using OpenTK;
 using NUnit.Framework;
 
 namespace Duality.Tests.Components

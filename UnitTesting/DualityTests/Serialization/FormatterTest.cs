@@ -9,7 +9,6 @@ using Duality;
 using Duality.Serialization;
 using Duality.Tests.Properties;
 
-using OpenTK;
 using NUnit.Framework;
 
 namespace Duality.Tests.Serialization

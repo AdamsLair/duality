@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using OpenTK;
-
 using Duality.Components;
 using Duality.Cloning;
 using Duality.Properties;

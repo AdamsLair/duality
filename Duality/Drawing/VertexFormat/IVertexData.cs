@@ -1,6 +1,4 @@
-﻿using OpenTK;
-
-namespace Duality.Drawing
+﻿namespace Duality.Drawing
 {
 	/// <summary>
 	/// A general interface for different types of vertex data.

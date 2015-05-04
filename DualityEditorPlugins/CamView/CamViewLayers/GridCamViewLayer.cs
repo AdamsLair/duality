@@ -8,8 +8,6 @@ using Duality;
 using Duality.Drawing;
 using Duality.Resources;
 
-using OpenTK;
-
 using Duality.Editor.Plugins.CamView.CamViewStates;
 
 namespace Duality.Editor.Plugins.CamView.CamViewLayers

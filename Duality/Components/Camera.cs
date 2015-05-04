@@ -4,7 +4,6 @@ using System.Linq;
 using System.IO;
 
 using OpenTK.Graphics.OpenGL;
-using OpenTK;
 
 using Duality.Editor;
 using Duality.Cloning;

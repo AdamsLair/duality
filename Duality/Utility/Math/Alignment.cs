@@ -1,6 +1,4 @@
-﻿using OpenTK;
-
-namespace Duality
+﻿namespace Duality
 {
 	/// <summary>
 	/// Represents a 2D spatial alignment.

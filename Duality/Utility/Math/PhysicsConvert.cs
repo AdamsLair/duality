@@ -1,6 +1,4 @@
-﻿using OpenTK;
-
-namespace Duality
+﻿namespace Duality
 {
 	public static class PhysicsUnit
 	{

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OpenTK;
-
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 

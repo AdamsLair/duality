@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OpenTK;
-
 using Duality.Editor;
 using Duality.Resources;
 using Duality.Properties;

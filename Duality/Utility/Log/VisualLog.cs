@@ -8,8 +8,6 @@ using Duality.Resources;
 using Duality.Drawing;
 using Duality.Components.Diagnostics;
 
-using OpenTK;
-
 namespace Duality
 {
 	/// <summary>

@@ -12,8 +12,6 @@ using Duality.Resources;
 using Duality.Drawing;
 using Duality.Tests.Properties;
 
-using OpenTK;
-
 using NUnit.Framework;
 
 namespace Duality.Tests.Drawing

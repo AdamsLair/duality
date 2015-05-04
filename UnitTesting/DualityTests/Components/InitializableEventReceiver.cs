@@ -6,8 +6,6 @@ using System.Text;
 using Duality;
 using Duality.Components;
 
-using OpenTK;
-
 using NUnit.Framework;
 
 namespace Duality.Tests.Components

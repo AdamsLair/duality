@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace Duality.Drawing

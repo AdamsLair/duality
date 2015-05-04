@@ -4,7 +4,6 @@ using System.Reflection;
 using System;
 
 using AdamsLair.WinForms.PropertyEditing;
-using OpenTK;
 
 using Duality;
 using Duality.Editor;

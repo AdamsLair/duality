@@ -5,8 +5,6 @@ using System.IO;
 using System.Text;
 using System;
 
-using OpenTK;
-
 using Duality.Resources;
 using Duality.Drawing;
 
