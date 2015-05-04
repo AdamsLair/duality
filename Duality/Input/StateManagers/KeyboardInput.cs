@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Provides access to user keyboard input.

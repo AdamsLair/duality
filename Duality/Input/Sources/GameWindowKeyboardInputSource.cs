@@ -4,7 +4,7 @@ using System.Text;
 using OpenTK;
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	public class GameWindowKeyboardInputSource : IKeyboardInputSource
 	{

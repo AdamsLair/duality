@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Describes a source of gamepad user input. This is usually an input device.

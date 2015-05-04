@@ -1,7 +1,6 @@
 ﻿using System;
-using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Describes a source of user mouse input. This is usually an input device.

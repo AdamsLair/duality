@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	public class GlobalJoystickInputSource : IJoystickInputSource
 	{

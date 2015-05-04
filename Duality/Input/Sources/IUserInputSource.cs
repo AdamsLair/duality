@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Base interface for describing a source of user input.

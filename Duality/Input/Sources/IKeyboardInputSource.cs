@@ -2,7 +2,7 @@
 using System.Text;
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Describes a source of user keyboard input. This is usually an input device.

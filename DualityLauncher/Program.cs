@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 
 using Duality;
+using Duality.Input;
 using Duality.Resources;
 
 using GameWindow = OpenTK.GameWindow;
@@ -14,7 +15,6 @@ using WindowState = OpenTK.WindowState;
 using WindowBorder = OpenTK.WindowBorder;
 using VSyncMode = OpenTK.VSyncMode;
 using DisplayDevice = OpenTK.DisplayDevice;
-using OpenTK.Input;
 using OpenTK.Graphics;
 using OpenTK.Platform.Windows;
 

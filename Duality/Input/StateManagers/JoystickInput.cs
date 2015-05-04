@@ -5,7 +5,7 @@ using System.Linq;
 using OpenTK.Input;
 
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Provides access to extended user input such as joysticks or gamepads.

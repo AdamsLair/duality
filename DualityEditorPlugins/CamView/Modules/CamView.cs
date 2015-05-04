@@ -16,6 +16,7 @@ using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
 using Duality;
+using Duality.Input;
 using Duality.Components;
 using Duality.Drawing;
 using Duality.Resources;
@@ -28,11 +29,9 @@ using Duality.Editor.Plugins.CamView.CamViewLayers;
 
 using OpenTK;
 using Key = OpenTK.Input.Key;
-using MouseButton = OpenTK.Input.MouseButton;
-using MouseButtonEventArgs = OpenTK.Input.MouseButtonEventArgs;
-using KeyboardKeyEventArgs = OpenTK.Input.KeyboardKeyEventArgs;
-using MouseMoveEventArgs = OpenTK.Input.MouseMoveEventArgs;
-using MouseWheelEventArgs = OpenTK.Input.MouseWheelEventArgs;
+using MouseButton = Duality.Input.MouseButton;
+using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
+
 
 namespace Duality.Editor.Plugins.CamView
 {
@@ -974,16 +973,16 @@ namespace Duality.Editor.Plugins.CamView
 			this.inputMouseCapture = true;
 			if (this.activeState.EngineUserInput)
 			{
-				MouseButton inputButton = e.Button.ToOpenTKSingle();
-				this.inputMouseButtons |= e.Button.ToOpenTK();
+				MouseButton inputButton = e.Button.ToDualitySingle();
+				this.inputMouseButtons |= e.Button.ToDuality();
 			}
 		}
 		private void glControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
-				MouseButton inputButton = e.Button.ToOpenTKSingle();
-				this.inputMouseButtons &= ~e.Button.ToOpenTK();
+				MouseButton inputButton = e.Button.ToDualitySingle();
+				this.inputMouseButtons &= ~e.Button.ToDuality();
 			}
 		}
 		private void glControl_MouseWheel(object sender, MouseEventArgs e)

@@ -4,7 +4,7 @@ using System.Collections.Specialized;
 using OpenTK;
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Provides access to user mouse input.
@@ -17,7 +17,7 @@ namespace Duality
 			public int X				= -1;
 			public int Y				= -1;
 			public float Wheel			= 0.0f;
-			public bool[] ButtonPressed	= new bool[(int)MouseButton.LastButton + 1];
+			public bool[] ButtonPressed	= new bool[(int)MouseButton.Last + 1];
 
 			public State() {}
 			public State(State baseState)

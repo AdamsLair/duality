@@ -14,6 +14,7 @@ using Duality.Resources;
 using Duality.Serialization;
 using Duality.Drawing;
 using Duality.Cloning;
+using Duality.Input;
 
 namespace Duality
 {

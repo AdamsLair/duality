@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 using OpenTK.Input;
 
-namespace Duality
+namespace Duality.Input
 {
 	/// <summary>
 	/// Provides access to a named set of <see cref="IUserInput">user input devices</see>.
