@@ -4,18 +4,17 @@ using System.Linq;
 using System.Windows.Forms;
 using BitArray = System.Collections.BitArray;
 
-using OpenTK.Input;
-
 using Duality;
+using Duality.Input;
 
 namespace Duality.Editor
 {
 	public static class ExtMethodsKeys
 	{
-		private	static Dictionary<int,int>	mapToOpenTK;
+		private	static Dictionary<int,int>	mapToDuality;
 		static ExtMethodsKeys()
 		{
-			mapToOpenTK = new Dictionary<int,int>();
+			mapToDuality = new Dictionary<int,int>();
 			Dictionary<Keys,string> keysNames = new Dictionary<Keys,string>();
 			foreach (Keys k in Enum.GetValues(typeof(Keys)).Cast<Keys>())
 			{
@@ -67,30 +66,30 @@ namespace Duality.Editor
 			keysNames[Keys.Oemtilde] = Key.Semicolon.ToString();
 			keysNames[Keys.OemQuotes] = Key.Quote.ToString();
 			keysNames[Keys.OemBackslash] = Key.NonUSBackSlash.ToString();
-			keysNames[Keys.OemPipe] = Key.Grave.ToString();
+			keysNames[Keys.OemPipe] = Key.Tilde.ToString();
 			keysNames[Keys.PageDown] = Key.PageDown.ToString();
 
 			// Generate mapping
 			foreach (var pair in keysNames)
 			{
 				Key keyVal;
-				if (Enum.TryParse<Key>(pair.Value, out keyVal)) mapToOpenTK[(int)pair.Key] = (int)keyVal;
+				if (Enum.TryParse<Key>(pair.Value, out keyVal)) mapToDuality[(int)pair.Key] = (int)keyVal;
 			}
 		}
 
-		public static Key ToOpenTKSingle(this Keys buttons)
+		public static Key ToDualitySingle(this Keys buttons)
 		{
 			int k;
-			if (mapToOpenTK.TryGetValue((int)(buttons & ~Keys.Modifiers), out k))
+			if (mapToDuality.TryGetValue((int)(buttons & ~Keys.Modifiers), out k))
 				return (Key)k;
 			else
 				return Key.Unknown;
 		}
-		public static BitArray ToOpenTK(this Keys buttons)
+		public static BitArray ToDuality(this Keys buttons)
 		{
-			BitArray result = new BitArray((int)Key.LastKey + 1, false);
+			BitArray result = new BitArray((int)Key.Last + 1, false);
 			int k;
-			if (mapToOpenTK.TryGetValue((int)(buttons & ~Keys.Modifiers), out k))
+			if (mapToDuality.TryGetValue((int)(buttons & ~Keys.Modifiers), out k))
 				result[k] = true;
 			return result;
 		}

@@ -49518,9 +49518,9 @@
             </counterGraphs>
             <drawGraphs dataType="Bool">false</drawGraphs>
             <gameobj dataType="ObjectRef">3709783311</gameobj>
-            <keyToggleGraph dataType="Enum" type="OpenTK.Input.Key" name="F4" value="13" />
-            <keyToggleTextPerf dataType="Enum" type="OpenTK.Input.Key" name="F2" value="11" />
-            <keyToggleTextStat dataType="Enum" type="OpenTK.Input.Key" name="F3" value="12" />
+            <keyToggleGraph dataType="Enum" type="Duality.Input.Key" name="F4" value="13" />
+            <keyToggleTextPerf dataType="Enum" type="Duality.Input.Key" name="F2" value="11" />
+            <keyToggleTextStat dataType="Enum" type="Duality.Input.Key" name="F3" value="12" />
             <textReportOptions dataType="Enum" type="Duality.ProfileReportOptions" name="LastValue" value="1" />
             <textReportPerf dataType="Bool">false</textReportPerf>
             <textReportStat dataType="Bool">false</textReportStat>

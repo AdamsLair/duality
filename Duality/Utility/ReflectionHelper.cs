@@ -97,7 +97,7 @@ namespace Duality
 							activator = () => System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
 						}
 					}
-					catch (Exception e)
+					catch (Exception)
 					{
 						activator = nullObjectActivator;
 					}

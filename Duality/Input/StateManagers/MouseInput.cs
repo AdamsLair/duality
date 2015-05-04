@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
 
-using OpenTK;
-using OpenTK.Input;
-
 namespace Duality.Input
 {
 	/// <summary>

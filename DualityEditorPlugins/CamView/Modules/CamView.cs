@@ -28,7 +28,7 @@ using Duality.Editor.Plugins.CamView.CamViewStates;
 using Duality.Editor.Plugins.CamView.CamViewLayers;
 
 using OpenTK;
-using Key = OpenTK.Input.Key;
+using Key = Duality.Input.Key;
 using MouseButton = Duality.Input.MouseButton;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
 
@@ -195,7 +195,7 @@ namespace Duality.Editor.Plugins.CamView
 		private	bool			inputKeyRepeat			= false;
 		private	bool			inputKeyFocus			= false;
 		private	int				inputKeyRepeatCount		= 0;
-		private	BitArray		inputKeyPressed			= new BitArray((int)Key.LastKey + 1, false);
+		private	BitArray		inputKeyPressed			= new BitArray((int)Key.Last + 1, false);
 		private	string			inputCharInput			= null;
 		private	StringBuilder	inputCharInputBuffer	= new StringBuilder();
 
@@ -1064,9 +1064,9 @@ namespace Duality.Editor.Plugins.CamView
 
 			if (this.activeState.EngineUserInput)
 			{
-				Key inputKey = e.KeyCode.ToOpenTKSingle();
+				Key inputKey = e.KeyCode.ToDualitySingle();
 				bool wasPressed = this.inputKeyPressed[(int)inputKey];
-				this.inputKeyPressed = this.inputKeyPressed.Or(e.KeyCode.ToOpenTK());
+				this.inputKeyPressed = this.inputKeyPressed.Or(e.KeyCode.ToDuality());
 				this.inputKeyRepeatCount++;
 			}
 		}
@@ -1074,8 +1074,8 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (this.activeState.EngineUserInput)
 			{
-				Key inputKey = e.KeyCode.ToOpenTKSingle();
-				this.inputKeyPressed = this.inputKeyPressed.And(e.KeyCode.ToOpenTK().Not());
+				Key inputKey = e.KeyCode.ToDualitySingle();
+				this.inputKeyPressed = this.inputKeyPressed.And(e.KeyCode.ToDuality().Not());
 			}
 
 			// Use the number keys for a quick-select of states - but only when not consumed by the game

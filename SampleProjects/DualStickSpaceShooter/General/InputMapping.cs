@@ -8,8 +8,6 @@ using Duality.Components;
 using Duality.Resources;
 using Duality.Input;
 
-using Key = OpenTK.Input.Key;
-
 namespace DualStickSpaceShooter
 {
 	public class InputMapping

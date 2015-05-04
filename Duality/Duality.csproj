@@ -86,6 +86,8 @@
     <Compile Include="Drawing\IRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\DefaultRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\ScreenResolution.cs" />
+    <Compile Include="Input\KeyboardKeyEventArgs.cs" />
+    <Compile Include="Input\Key.cs" />
     <Compile Include="Input\MouseEventArgs.cs" />
     <Compile Include="Input\MouseButton.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />

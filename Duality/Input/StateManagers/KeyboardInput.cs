@@ -1,5 +1,4 @@
 ﻿using System;
-using OpenTK.Input;
 
 namespace Duality.Input
 {
@@ -13,7 +12,7 @@ namespace Duality.Input
 			public bool		IsAvailable		= false;
 			public bool		KeyRepeat		= true;
 			public int		KeyRepeatCount	= 0;
-			public bool[]	KeyPressed		= new bool[(int)Key.LastKey + 1];
+			public bool[]	KeyPressed		= new bool[(int)Key.Last + 1];
 			public string	CharInput		= string.Empty;
 
 			public State() {}
@@ -167,12 +166,12 @@ namespace Duality.Input
 				{
 					this.anyNewKeydown = true;
 					if (this.KeyDown != null)
-						this.KeyDown(this, new KeyboardKeyEventArgs((Key)i));
+						this.KeyDown(this, new KeyboardKeyEventArgs((Key)i, this.currentState.KeyPressed[i]));
 				}
 				if (!this.currentState.KeyPressed[i] && this.lastState.KeyPressed[i])
 				{
 					if (this.KeyUp != null)
-						this.KeyUp(this, new KeyboardKeyEventArgs((Key)i));
+						this.KeyUp(this, new KeyboardKeyEventArgs((Key)i, this.currentState.KeyPressed[i]));
 				}
 			}
 			if (!this.anyNewKeydown && this.currentState.KeyRepeatCount != this.lastState.KeyRepeatCount && this.currentState.KeyRepeat)
@@ -182,7 +181,7 @@ namespace Duality.Input
 					if (this.currentState.KeyPressed[i])
 					{
 						if (this.KeyDown != null)
-							this.KeyDown(this, new KeyboardKeyEventArgs((Key)i));
+							this.KeyDown(this, new KeyboardKeyEventArgs((Key)i, this.currentState.KeyPressed[i]));
 					}
 				}
 			}
