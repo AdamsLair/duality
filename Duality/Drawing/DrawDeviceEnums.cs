@@ -19,9 +19,9 @@ namespace Duality.Drawing
 		Triangles,
 		TriangleStrip,
 		TriangleFan,
-		Quads,
-		QuadStrip,
-		Polygon
+		Quads,			// deprecated in modern opengl
+		QuadStrip,		// deprecated in modern opengl
+		Polygon			// deprecated in modern opengl
 	}
 
 	/// <summary>

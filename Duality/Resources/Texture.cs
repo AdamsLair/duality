@@ -77,7 +77,7 @@ namespace Duality.Resources
 			ContentProvider.AddContent(ContentPath_White, new Texture(Pixmap.White));
 			ContentProvider.AddContent(ContentPath_Checkerboard, new Texture(
 				Pixmap.Checkerboard, 
-				SizeMode.Default,
+				TextureSizeMode.Default,
 				TextureMagFilter.Nearest,
 				TextureMinFilter.Nearest,
 				TextureWrapMode.Repeat,
@@ -90,37 +90,6 @@ namespace Duality.Resources
 			DualityLogoSmall	= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoSmall);
 			White				= ContentProvider.RequestContent<Texture>(ContentPath_White);
 			Checkerboard		= ContentProvider.RequestContent<Texture>(ContentPath_Checkerboard);
-		}
-
-
-		/// <summary>
-		/// Defines how to handle pixel data without power-of-two dimensions.
-		/// </summary>
-		public enum SizeMode
-		{
-			/// <summary>
-			/// Enlarges the images dimensions without scaling the image, leaving
-			/// the new space empty. Texture coordinates are automatically adjusted in
-			/// order to display the image correctly. This preserves the images full
-			/// quality but prevents tiling, if not power-of-two anyway.
-			/// </summary>
-			Enlarge,
-			/// <summary>
-			/// Stretches the image to fit power-of-two dimensions and downscales it
-			/// again when displaying. This might blur the image slightly but allows
-			/// tiling it.
-			/// </summary>
-			Stretch,
-			/// <summary>
-			/// The images dimensions are not affected, as OpenGL uses an actual 
-			/// non-power-of-two texture. However, this might be unsupported on older hardware.
-			/// </summary>
-			NonPowerOfTwo,
-
-			/// <summary>
-			/// The default behaviour. Equals <see cref="Enlarge"/>.
-			/// </summary>
-			Default = Enlarge
 		}
 
 
@@ -257,7 +226,7 @@ namespace Duality.Resources
 		
 		private	ContentRef<Pixmap>	basePixmap	= ContentRef<Pixmap>.Null;
 		private	Vector2				size		= Vector2.Zero;
-		private	SizeMode			texSizeMode	= SizeMode.Default;
+		private	TextureSizeMode			texSizeMode	= TextureSizeMode.Default;
 		private	TextureMagFilter	filterMag	= TextureMagFilter.Linear;
 		private	TextureMinFilter	filterMin	= TextureMinFilter.LinearMipmapLinear;
 		private	TextureWrapMode		wrapX		= TextureWrapMode.ClampToEdge;
@@ -415,7 +384,7 @@ namespace Duality.Resources
 		/// [GET / SET] Handles how the Textures base Pixmap is adjusted in order to fit GPU texture size requirements (Power of Two dimensions)
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		public SizeMode TexSizeMode
+		public TextureSizeMode TexSizeMode
 		{
 			get { return this.texSizeMode; }
 			set 
@@ -454,7 +423,7 @@ namespace Duality.Resources
 		/// <param name="wrapY">The OpenGL wrap mode on the texel y axis.</param>
 		/// <param name="format">The format in which OpenGL stores the pixel data.</param>
 		public Texture(ContentRef<Pixmap> basePixmap, 
-			SizeMode sizeMode			= SizeMode.Default, 
+			TextureSizeMode sizeMode			= TextureSizeMode.Default, 
 			TextureMagFilter filterMag	= TextureMagFilter.Linear, 
 			TextureMinFilter filterMin	= TextureMinFilter.LinearMipmapLinear,
 			TextureWrapMode wrapX		= TextureWrapMode.ClampToEdge,
@@ -480,7 +449,7 @@ namespace Duality.Resources
 		/// <param name="wrapY">The OpenGL wrap mode on the texel y axis.</param>
 		/// <param name="format">The format in which OpenGL stores the pixel data.</param>
 		public Texture(int width, int height, 
-			SizeMode sizeMode			= SizeMode.Default, 
+			TextureSizeMode sizeMode			= TextureSizeMode.Default, 
 			TextureMagFilter filterMag	= TextureMagFilter.Linear, 
 			TextureMinFilter filterMin	= TextureMinFilter.LinearMipmapLinear,
 			TextureWrapMode wrapX		= TextureWrapMode.ClampToEdge,
@@ -518,7 +487,7 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="basePixmap">The <see cref="Duality.Resources.Pixmap"/> that is used as pixel data source.</param>
 		/// <param name="sizeMode">Specifies behaviour in case the source data has non-power-of-two dimensions.</param>
-		public void LoadData(ContentRef<Pixmap> basePixmap, SizeMode sizeMode)
+		public void LoadData(ContentRef<Pixmap> basePixmap, TextureSizeMode sizeMode)
 		{
 			DualityApp.GuardSingleThreadState();
 			if (this.glTexId == 0) this.glTexId = GL.GenTexture();
@@ -545,10 +514,10 @@ namespace Duality.Resources
 
 				this.AdjustSize(pixelData.Width, pixelData.Height);
 				this.SetupOpenGLRes();
-				if (this.texSizeMode != SizeMode.NonPowerOfTwo &&
+				if (this.texSizeMode != TextureSizeMode.NonPowerOfTwo &&
 					(this.pxWidth != this.texWidth || this.pxHeight != this.texHeight))
 				{
-					if (this.texSizeMode == SizeMode.Enlarge)
+					if (this.texSizeMode == TextureSizeMode.Enlarge)
 					{
 						Pixmap.Layer oldData = pixelData;
 						pixelData = oldData.CloneResize(this.texWidth, this.texHeight);
@@ -645,7 +614,7 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Processes the specified size based on the Textures <see cref="SizeMode"/>.
+		/// Processes the specified size based on the Textures <see cref="TextureSizeMode"/>.
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
@@ -656,7 +625,7 @@ namespace Duality.Resources
 			this.pxHeight = MathF.RoundToInt(this.size.Y);
 			this.pxDiameter = MathF.Distance(this.pxWidth, this.pxHeight);
 
-			if (this.texSizeMode == SizeMode.NonPowerOfTwo)
+			if (this.texSizeMode == TextureSizeMode.NonPowerOfTwo)
 			{
 				this.texWidth = this.pxWidth;
 				this.texHeight = this.pxHeight;
@@ -668,7 +637,7 @@ namespace Duality.Resources
 				this.texHeight = MathF.NextPowerOfTwo(this.pxHeight);
 				if (this.pxWidth != this.texWidth || this.pxHeight != this.texHeight)
 				{
-					if (this.texSizeMode == SizeMode.Enlarge)
+					if (this.texSizeMode == TextureSizeMode.Enlarge)
 					{
 						this.uvRatio.X = (float)this.pxWidth / (float)this.texWidth;
 						this.uvRatio.Y = (float)this.pxHeight / (float)this.texHeight;

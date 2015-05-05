@@ -778,7 +778,7 @@ namespace Duality.Resources
 			this.pixelData = new Pixmap(pixelLayer);
 			this.pixelData.Atlas = new List<Rect>(atlas);
 			this.texture = new Texture(this.pixelData, 
-				Texture.SizeMode.Enlarge, 
+				TextureSizeMode.Enlarge, 
 				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
 				this.IsPixelGridAligned ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
 

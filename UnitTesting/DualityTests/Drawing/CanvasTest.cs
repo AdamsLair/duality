@@ -254,7 +254,7 @@ namespace Duality.Tests.Drawing
 		{
 			Pixmap.Layer pixelData;
 
-			using (Texture texture = new Texture(width, height, Texture.SizeMode.NonPowerOfTwo))
+			using (Texture texture = new Texture(width, height, TextureSizeMode.NonPowerOfTwo))
 			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, texture))
 			using (DrawDevice device = new DrawDevice())
 			{

@@ -11,7 +11,7 @@
     <Y dataType="Float">256</Y>
   </size>
   <sourcePath />
-  <texSizeMode dataType="Enum" type="Duality.Resources.Texture+SizeMode" name="Enlarge" value="0" />
+  <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="Enlarge" value="0" />
   <wrapX dataType="Enum" type="OpenTK.Graphics.OpenGL.TextureWrapMode" name="Repeat" value="10497" />
   <wrapY dataType="Enum" type="OpenTK.Graphics.OpenGL.TextureWrapMode" name="Repeat" value="10497" />
 </root>

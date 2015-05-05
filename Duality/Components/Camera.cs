@@ -641,7 +641,7 @@ namespace Duality.Components
 				if (this.pickingTex != null) this.pickingTex.Dispose();
 				if (this.pickingRT != null) this.pickingRT.Dispose();
 				this.pickingTex = new Texture(
-					MathF.RoundToInt(size.X), MathF.RoundToInt(size.Y), Texture.SizeMode.Default, 
+					MathF.RoundToInt(size.X), MathF.RoundToInt(size.Y), TextureSizeMode.Default, 
 					TextureMagFilter.Nearest, TextureMinFilter.Nearest);
 				this.pickingRT = new RenderTarget(AAQuality.Off, this.pickingTex);
 			}

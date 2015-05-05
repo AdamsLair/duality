@@ -290,7 +290,7 @@ namespace Duality.Drawing
 				Pixmap.Layer pxLayerDash = new Pixmap.Layer(32, 1);
 				for (int i = 31; i >= 0; i--) pxLayerDash[i, 0] = ((patternBits & (1U << i)) != 0) ? ColorRgba.White : ColorRgba.TransparentWhite;
 				Pixmap pxDash = new Pixmap(pxLayerDash);
-				Texture texDash = new Texture(pxDash, Texture.SizeMode.Stretch, TextureMagFilter.Nearest, TextureMinFilter.Nearest, TextureWrapMode.Repeat);
+				Texture texDash = new Texture(pxDash, TextureSizeMode.Stretch, TextureMagFilter.Nearest, TextureMinFilter.Nearest, TextureWrapMode.Repeat);
 				ContentProvider.AddContent(dashTextPath, texDash);
 			}
 
