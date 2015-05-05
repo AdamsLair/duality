@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Cloning;
+using Duality.Drawing;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -125,37 +126,27 @@ namespace Duality.Resources
 				GL.DrawBuffers(curBound.targetInfo.Count, buffers);
 			}
 		}
-		internal static RenderbufferStorage TexFormatToRboFormat(PixelInternalFormat format)
+		internal static RenderbufferStorage TexFormatToRboFormat(TexturePixelFormat format)
 		{
 			switch (format)
 			{
-				case PixelInternalFormat.Alpha:
-				case PixelInternalFormat.Alpha8:
-					return RenderbufferStorage.Alpha8;
+				case TexturePixelFormat.Single:				return RenderbufferStorage.R8;
+				case TexturePixelFormat.Dual:				return RenderbufferStorage.Rg8;
+				case TexturePixelFormat.Rgb:				return RenderbufferStorage.Rgb8;
+				case TexturePixelFormat.Rgba:				return RenderbufferStorage.Rgba8;
 
-				case PixelInternalFormat.R8:
-				case PixelInternalFormat.Luminance:
-					return RenderbufferStorage.R8;
+				case TexturePixelFormat.FloatSingle:		return RenderbufferStorage.R16f;
+				case TexturePixelFormat.FloatDual:			return RenderbufferStorage.Rg16f;
+				case TexturePixelFormat.FloatRgb:			return RenderbufferStorage.Rgb16f;
+				case TexturePixelFormat.FloatRgba:			return RenderbufferStorage.Rgba16f;
 
-				case PixelInternalFormat.Rg8:
-				case PixelInternalFormat.LuminanceAlpha:
-					return RenderbufferStorage.Rg8;
-
-				case PixelInternalFormat.Rgb:
-				case PixelInternalFormat.Rgb8:
-					return RenderbufferStorage.Rgb8;
-
-				default:
-				case PixelInternalFormat.Rgba:
-				case PixelInternalFormat.Rgba8:
-					return RenderbufferStorage.Rgba8;
-
-				case PixelInternalFormat.Rgba16f:
-					return RenderbufferStorage.Rgba16f;
-
-				case PixelInternalFormat.Rgba16:
-					return RenderbufferStorage.Rgba16;
+				case TexturePixelFormat.CompressedSingle:	return RenderbufferStorage.R8;
+				case TexturePixelFormat.CompressedDual:		return RenderbufferStorage.Rg8;
+				case TexturePixelFormat.CompressedRgb:		return RenderbufferStorage.Rgb8;
+				case TexturePixelFormat.CompressedRgba:		return RenderbufferStorage.Rgba8;
 			}
+
+			return RenderbufferStorage.Rgba8;
 		}
 
 

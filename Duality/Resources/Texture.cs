@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
-using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
-using BitmapPixelFormat = System.Drawing.Imaging.PixelFormat;
 
 using Duality.Editor;
 using Duality.Properties;
@@ -11,6 +7,13 @@ using Duality.Drawing;
 using Duality.Cloning;
 
 using OpenTK.Graphics.OpenGL;
+using GLTexMagFilter = OpenTK.Graphics.OpenGL.TextureMagFilter;
+using GLTexMinFilter = OpenTK.Graphics.OpenGL.TextureMinFilter;
+using GLTexWrapMode = OpenTK.Graphics.OpenGL.TextureWrapMode;
+using GLPixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
+using TextureMagFilter = Duality.Drawing.TextureMagFilter;
+using TextureMinFilter = Duality.Drawing.TextureMinFilter;
+using TextureWrapMode = Duality.Drawing.TextureWrapMode;
 
 namespace Duality.Resources
 {
@@ -226,13 +229,13 @@ namespace Duality.Resources
 		
 		private	ContentRef<Pixmap>	basePixmap	= ContentRef<Pixmap>.Null;
 		private	Vector2				size		= Vector2.Zero;
-		private	TextureSizeMode			texSizeMode	= TextureSizeMode.Default;
+		private	TextureSizeMode		texSizeMode	= TextureSizeMode.Default;
 		private	TextureMagFilter	filterMag	= TextureMagFilter.Linear;
 		private	TextureMinFilter	filterMin	= TextureMinFilter.LinearMipmapLinear;
-		private	TextureWrapMode		wrapX		= TextureWrapMode.ClampToEdge;
-		private	TextureWrapMode		wrapY		= TextureWrapMode.ClampToEdge;
-		private	PixelInternalFormat	pixelformat	= PixelInternalFormat.Rgba;
-		private	bool				anisoFilter		= false;
+		private	TextureWrapMode		wrapX		= TextureWrapMode.Clamp;
+		private	TextureWrapMode		wrapY		= TextureWrapMode.Clamp;
+		private	TexturePixelFormat	pixelformat	= TexturePixelFormat.Rgba;
+		private	bool				anisoFilter	= false;
 
 		[DontSerialize] private	int		pxWidth		= 0;
 		[DontSerialize] private	int		pxHeight	= 0;
@@ -252,7 +255,7 @@ namespace Duality.Resources
 		public int TexelWidth
 		{
 			get { return this.texWidth; }
-		}	//	G
+		}
 		/// <summary>
 		/// [GET] The Textures internal texel height
 		/// </summary>
@@ -260,7 +263,7 @@ namespace Duality.Resources
 		public int TexelHeight
 		{
 			get { return this.texHeight; }
-		}	//	G
+		}
 		/// <summary>
 		/// [GET] The Textures original pixel width
 		/// </summary>
@@ -268,7 +271,7 @@ namespace Duality.Resources
 		public int PixelWidth
 		{
 			get { return this.pxWidth; }
-		}	//	G
+		}
 		/// <summary>
 		/// [GET] The Textures original pixel height
 		/// </summary>
@@ -276,14 +279,14 @@ namespace Duality.Resources
 		public int PixelHeight
 		{
 			get { return this.pxHeight; }
-		}	//	G
+		}
 		/// <summary>
 		/// [GET] The Textures internal id value. You shouldn't need to use this value normally.
 		/// </summary>
 		internal int OglTexId
 		{
 			get { return this.glTexId; }
-		}	//	G
+		}
 		/// <summary>
 		/// [GET] UV (Texture) coordinates for the Textures lower right
 		/// </summary>
@@ -291,7 +294,7 @@ namespace Duality.Resources
 		public Vector2 UVRatio
 		{
 			get { return this.uvRatio; }
-		}	//	G
+		}
 		/// <summary>
 		/// [GET] Returns whether or not the texture uses mipmaps.
 		/// </summary>
@@ -303,7 +306,7 @@ namespace Duality.Resources
 				this.filterMin == TextureMinFilter.LinearMipmapNearest ||
 				this.filterMin == TextureMinFilter.NearestMipmapLinear ||
 				this.filterMin == TextureMinFilter.NearestMipmapNearest; }
-		}	//	G
+		}
 		/// <summary>
 		/// Indicates that the textures parameters have been changed in a way that will make it
 		/// necessary to reload its data before using it next time.
@@ -312,7 +315,7 @@ namespace Duality.Resources
 		public bool NeedsReload
 		{
 			get { return this.needsReload; }
-		}  //  G
+		} 
 		/// <summary>
 		/// [GET / SET] The Textures size. Readonly, when created from a <see cref="BasePixmap"/>.
 		/// </summary>
@@ -331,7 +334,7 @@ namespace Duality.Resources
 					this.needsReload = true;
 				}
 			}
-		}						//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The Textures magnifying filter
 		/// </summary>
@@ -339,7 +342,7 @@ namespace Duality.Resources
 		{
 			get { return this.filterMag; }
 			set { if (this.filterMag != value) { this.filterMag = value; this.needsReload = true; } }
-		}		//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The Textures minifying filter
 		/// </summary>
@@ -347,7 +350,7 @@ namespace Duality.Resources
 		{
 			get { return this.filterMin; }
 			set { if (this.filterMin != value) { this.filterMin = value; this.needsReload = true; } }
-		}		//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Specifies whether this texture uses anisotropic filtering.
 		/// </summary>
@@ -355,7 +358,7 @@ namespace Duality.Resources
 		{
 			get { return this.anisoFilter; }
 			set { if (this.anisoFilter != value) { this.anisoFilter = value; this.needsReload = true; } }
-		}			//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The Textures horizontal wrap mode
 		/// </summary>
@@ -363,7 +366,7 @@ namespace Duality.Resources
 		{
 			get { return this.wrapX; }
 			set { if (this.wrapX != value) { this.wrapX = value; this.needsReload = true; } }
-		}				//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The Textures vertical wrap mode
 		/// </summary>
@@ -371,15 +374,15 @@ namespace Duality.Resources
 		{
 			get { return this.wrapY; }
 			set { if (this.wrapY != value) { this.wrapY = value; this.needsReload = true; } }
-		}				//	GS
+		}
 		/// <summary>
 		/// [GET / SET] The Textures pixel format
 		/// </summary>
-		public PixelInternalFormat PixelFormat
+		public TexturePixelFormat PixelFormat
 		{
 			get { return this.pixelformat; }
 			set { if (this.pixelformat != value) { this.pixelformat = value; this.needsReload = true; } }
-		}	//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Handles how the Textures base Pixmap is adjusted in order to fit GPU texture size requirements (Power of Two dimensions)
 		/// </summary>
@@ -396,7 +399,7 @@ namespace Duality.Resources
 					this.needsReload = true;
 				}
 			}
-		}				//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Reference to a Pixmap that contains the pixel data that is or has been uploaded to the Texture
 		/// </summary>
@@ -405,7 +408,7 @@ namespace Duality.Resources
 		{
 			get { return this.basePixmap; }
 			set { if (this.basePixmap.Res != value.Res) { this.basePixmap = value; this.needsReload = true; } }
-		}		//	GS
+		}
 
 
 		/// <summary>
@@ -423,12 +426,12 @@ namespace Duality.Resources
 		/// <param name="wrapY">The OpenGL wrap mode on the texel y axis.</param>
 		/// <param name="format">The format in which OpenGL stores the pixel data.</param>
 		public Texture(ContentRef<Pixmap> basePixmap, 
-			TextureSizeMode sizeMode			= TextureSizeMode.Default, 
+			TextureSizeMode sizeMode	= TextureSizeMode.Default, 
 			TextureMagFilter filterMag	= TextureMagFilter.Linear, 
 			TextureMinFilter filterMin	= TextureMinFilter.LinearMipmapLinear,
-			TextureWrapMode wrapX		= TextureWrapMode.ClampToEdge,
-			TextureWrapMode wrapY		= TextureWrapMode.ClampToEdge,
-			PixelInternalFormat format	= PixelInternalFormat.Rgba)
+			TextureWrapMode wrapX		= TextureWrapMode.Clamp,
+			TextureWrapMode wrapY		= TextureWrapMode.Clamp,
+			TexturePixelFormat format	= TexturePixelFormat.Rgba)
 		{
 			this.filterMag = filterMag;
 			this.filterMin = filterMin;
@@ -449,12 +452,12 @@ namespace Duality.Resources
 		/// <param name="wrapY">The OpenGL wrap mode on the texel y axis.</param>
 		/// <param name="format">The format in which OpenGL stores the pixel data.</param>
 		public Texture(int width, int height, 
-			TextureSizeMode sizeMode			= TextureSizeMode.Default, 
+			TextureSizeMode sizeMode	= TextureSizeMode.Default, 
 			TextureMagFilter filterMag	= TextureMagFilter.Linear, 
 			TextureMinFilter filterMin	= TextureMinFilter.LinearMipmapLinear,
-			TextureWrapMode wrapX		= TextureWrapMode.ClampToEdge,
-			TextureWrapMode wrapY		= TextureWrapMode.ClampToEdge,
-			PixelInternalFormat format	= PixelInternalFormat.Rgba)
+			TextureWrapMode wrapX		= TextureWrapMode.Clamp,
+			TextureWrapMode wrapY		= TextureWrapMode.Clamp,
+			TexturePixelFormat format	= TexturePixelFormat.Rgba)
 		{
 			this.filterMag = filterMag;
 			this.filterMin = filterMin;
@@ -531,7 +534,7 @@ namespace Duality.Resources
 
 				// Load pixel data to video memory
 				GL.TexImage2D(TextureTarget.Texture2D, 0, 
-					this.pixelformat, pixelData.Width, pixelData.Height, 0, 
+					ToOpenTKPixelFormat(this.pixelformat), pixelData.Width, pixelData.Height, 0, 
 					GLPixelFormat.Rgba, PixelType.UnsignedByte, 
 					pixelData.Data);
 					
@@ -663,10 +666,10 @@ namespace Duality.Resources
 			if (lastTexId != this.glTexId) GL.BindTexture(TextureTarget.Texture2D, this.glTexId);
 
 			// Set texture parameters
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)this.filterMin);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)this.filterMag);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)this.wrapX);
-			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)this.wrapY);
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)ToOpenTKTextureMinFilter(this.filterMin));
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)ToOpenTKTextureMagFilter(this.filterMag));
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)ToOpenTKTextureWrapMode(this.wrapX));
+			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)ToOpenTKTextureWrapMode(this.wrapY));
 
 			// Anisotropic filtering
 			GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName) ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, this.anisoFilter ? maxAnisoLevel : 1.0f);
@@ -676,7 +679,7 @@ namespace Duality.Resources
 
 			// Setup pixel format
 			GL.TexImage2D(TextureTarget.Texture2D, 0,
-				this.pixelformat, this.texWidth, this.texHeight, 0,
+				ToOpenTKPixelFormat(this.pixelformat), this.texWidth, this.texHeight, 0,
 				GLPixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
 
 			if (lastTexId != this.glTexId) GL.BindTexture(TextureTarget.Texture2D, lastTexId);
@@ -708,6 +711,64 @@ namespace Duality.Resources
 			base.OnCopyDataTo(target, operation);
 			Texture c = target as Texture;
 			c.LoadData(this.basePixmap, this.texSizeMode);
+		}
+
+		private PixelInternalFormat ToOpenTKPixelFormat(TexturePixelFormat format)
+		{
+			switch (format)
+			{
+				case TexturePixelFormat.Single:				return PixelInternalFormat.R8;
+				case TexturePixelFormat.Dual:				return PixelInternalFormat.Rg8;
+				case TexturePixelFormat.Rgb:				return PixelInternalFormat.Rgb;
+				case TexturePixelFormat.Rgba:				return PixelInternalFormat.Rgba;
+
+				case TexturePixelFormat.FloatSingle:		return PixelInternalFormat.R16f;
+				case TexturePixelFormat.FloatDual:			return PixelInternalFormat.Rg16f;
+				case TexturePixelFormat.FloatRgb:			return PixelInternalFormat.Rgb16f;
+				case TexturePixelFormat.FloatRgba:			return PixelInternalFormat.Rgba16f;
+
+				case TexturePixelFormat.CompressedSingle:	return PixelInternalFormat.CompressedRed;
+				case TexturePixelFormat.CompressedDual:		return PixelInternalFormat.CompressedRg;
+				case TexturePixelFormat.CompressedRgb:		return PixelInternalFormat.CompressedRgb;
+				case TexturePixelFormat.CompressedRgba:		return PixelInternalFormat.CompressedRgba;
+			}
+
+			return PixelInternalFormat.Rgba;
+		}
+		private GLTexMagFilter ToOpenTKTextureMagFilter(TextureMagFilter value)
+		{
+			switch (value)
+			{
+				case TextureMagFilter.Nearest:	return GLTexMagFilter.Nearest;
+				case TextureMagFilter.Linear:	return GLTexMagFilter.Linear;
+			}
+
+			return GLTexMagFilter.Nearest;
+		}
+		private GLTexMinFilter ToOpenTKTextureMinFilter(TextureMinFilter value)
+		{
+			switch (value)
+			{
+				case TextureMinFilter.Nearest:				return GLTexMinFilter.Nearest;
+				case TextureMinFilter.Linear:				return GLTexMinFilter.Linear;
+				case TextureMinFilter.NearestMipmapNearest:	return GLTexMinFilter.NearestMipmapNearest;
+				case TextureMinFilter.LinearMipmapNearest:	return GLTexMinFilter.LinearMipmapNearest;
+				case TextureMinFilter.NearestMipmapLinear:	return GLTexMinFilter.NearestMipmapLinear;
+				case TextureMinFilter.LinearMipmapLinear:	return GLTexMinFilter.LinearMipmapLinear;
+			}
+
+			return GLTexMinFilter.Nearest;
+		}
+		private GLTexWrapMode ToOpenTKTextureWrapMode(TextureWrapMode value)
+		{
+			switch (value)
+			{
+				case TextureWrapMode.Clamp:				return GLTexWrapMode.ClampToEdge;
+				case TextureWrapMode.Repeat:			return GLTexWrapMode.Repeat;
+				case TextureWrapMode.MirroredRepeat:	return GLTexWrapMode.MirroredRepeat;
+			}
+
+			return GLTexWrapMode.Clamp;
 		}
 	}
 }

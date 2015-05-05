@@ -13,8 +13,6 @@ using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
 
-using OpenTK.Graphics.OpenGL;
-
 namespace Duality.Resources
 {
 	/// <summary>

@@ -9,8 +9,6 @@ using Duality.Cloning;
 using Duality.Input;
 using Duality.Properties;
 
-using OpenTK.Graphics.OpenGL;
-
 namespace Duality.Components.Diagnostics
 {
 	/// <summary>

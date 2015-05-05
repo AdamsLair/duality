@@ -36,4 +36,81 @@ namespace Duality.Drawing
 		/// </summary>
 		Default = Enlarge
 	}
+
+	/// <summary>
+	/// Defines which filtering algorithm will be used when displaying the Texture larger than it is.
+	/// </summary>
+	public enum TextureMagFilter
+	{
+		/// <summary>
+		/// Point filtering with sharp edges.
+		/// </summary>
+		Nearest,
+		/// <summary>
+		/// Linear interpolation.
+		/// </summary>
+		Linear
+	}
+
+	/// <summary>
+	/// Defines which filtering algorithm will be used when displaying the Texture smaller than it is.
+	/// </summary>
+	public enum TextureMinFilter
+	{
+		/// <summary>
+		/// Point filtering with sharp edges.
+		/// </summary>
+		Nearest,
+		/// <summary>
+		/// Linear interpolation.
+		/// </summary>
+		Linear,
+		/// <summary>
+		/// Point filtering with sharp edges. Mipmaps will be used, but switch from one to the next instantly.
+		/// </summary>
+		NearestMipmapNearest,
+		/// <summary>
+		/// Linear interpolation. Mipmaps will be used, but switch from one to the next instantly.
+		/// </summary>
+		LinearMipmapNearest,
+		/// <summary>
+		/// Point filtering with sharp edges. Mipmaps will be used and smoothly blend over from one to the next.
+		/// </summary>
+		NearestMipmapLinear,
+		/// <summary>
+		/// Linear interpolation. Mipmaps will be used and smoothly blend over from one to the next.
+		/// </summary>
+		LinearMipmapLinear,
+	}
+
+	/// <summary>
+	/// Defines how Texture coordinates outside the regular [0 - 1] range will be handled.
+	/// </summary>
+	public enum TextureWrapMode
+	{
+		Clamp,
+		Repeat,
+		MirroredRepeat,
+	}
+
+	/// <summary>
+	/// Defines the format that is used to store the Textures pixel data.
+	/// </summary>
+	public enum TexturePixelFormat
+	{
+		Single,
+		Dual,
+		Rgb,
+		Rgba,
+
+		FloatSingle,
+		FloatDual,
+		FloatRgb,
+		FloatRgba,
+
+		CompressedSingle,
+		CompressedDual,
+		CompressedRgb,
+		CompressedRgba
+	}
 }

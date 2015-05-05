@@ -4,6 +4,12 @@ using System.Linq;
 using System.IO;
 
 using OpenTK.Graphics.OpenGL;
+using GLTexMagFilter = OpenTK.Graphics.OpenGL.TextureMagFilter;
+using GLTexMinFilter = OpenTK.Graphics.OpenGL.TextureMinFilter;
+using GLTexWrapMode = OpenTK.Graphics.OpenGL.TextureWrapMode;
+using TextureMagFilter = Duality.Drawing.TextureMagFilter;
+using TextureMinFilter = Duality.Drawing.TextureMinFilter;
+using TextureWrapMode = Duality.Drawing.TextureWrapMode;
 
 using Duality.Editor;
 using Duality.Cloning;
