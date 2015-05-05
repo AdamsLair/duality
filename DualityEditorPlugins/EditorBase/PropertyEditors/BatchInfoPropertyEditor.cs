@@ -407,13 +407,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected Func<IEnumerable<object>> CreateUniformVec2ValueGetter(string name)
 		{
 			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)
-				new OpenTK.Vector2(o.GetUniform(name)[0], o.GetUniform(name)[1])
+				new Vector2(o.GetUniform(name)[0], o.GetUniform(name)[1])
 				: null);
 		}
 		protected Func<IEnumerable<object>> CreateUniformVec3ValueGetter(string name)
 		{
 			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)
-				new OpenTK.Vector3(o.GetUniform(name)[0], o.GetUniform(name)[1], o.GetUniform(name)[2])
+				new Vector3(o.GetUniform(name)[0], o.GetUniform(name)[1], o.GetUniform(name)[2])
 				: null);
 		}
 
@@ -559,10 +559,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			return delegate(IEnumerable<object> values)
 			{
-				IEnumerator<OpenTK.Vector2> valuesEnum = values.Cast<OpenTK.Vector2>().GetEnumerator();
+				IEnumerator<Vector2> valuesEnum = values.Cast<Vector2>().GetEnumerator();
 				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
 
-				OpenTK.Vector2 curValue = OpenTK.Vector2.Zero;
+				Vector2 curValue = Vector2.Zero;
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
@@ -580,10 +580,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			return delegate(IEnumerable<object> values)
 			{
-				IEnumerator<OpenTK.Vector3> valuesEnum = values.Cast<OpenTK.Vector3>().GetEnumerator();
+				IEnumerator<Vector3> valuesEnum = values.Cast<Vector3>().GetEnumerator();
 				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
 
-				OpenTK.Vector3 curValue = OpenTK.Vector3.Zero;
+				Vector3 curValue = Vector3.Zero;
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{
