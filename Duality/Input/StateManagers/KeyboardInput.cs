@@ -166,12 +166,12 @@ namespace Duality.Input
 				{
 					this.anyNewKeydown = true;
 					if (this.KeyDown != null)
-						this.KeyDown(this, new KeyboardKeyEventArgs((Key)i, this.currentState.KeyPressed[i]));
+						this.KeyDown(this, new KeyboardKeyEventArgs(this, (Key)i, this.currentState.KeyPressed[i]));
 				}
 				if (!this.currentState.KeyPressed[i] && this.lastState.KeyPressed[i])
 				{
 					if (this.KeyUp != null)
-						this.KeyUp(this, new KeyboardKeyEventArgs((Key)i, this.currentState.KeyPressed[i]));
+						this.KeyUp(this, new KeyboardKeyEventArgs(this, (Key)i, this.currentState.KeyPressed[i]));
 				}
 			}
 			if (!this.anyNewKeydown && this.currentState.KeyRepeatCount != this.lastState.KeyRepeatCount && this.currentState.KeyRepeat)
@@ -181,7 +181,7 @@ namespace Duality.Input
 					if (this.currentState.KeyPressed[i])
 					{
 						if (this.KeyDown != null)
-							this.KeyDown(this, new KeyboardKeyEventArgs((Key)i, this.currentState.KeyPressed[i]));
+							this.KeyDown(this, new KeyboardKeyEventArgs(this, (Key)i, this.currentState.KeyPressed[i]));
 					}
 				}
 			}

@@ -17,10 +17,6 @@ namespace Duality.Input
 		{
 			get { return this.caps.IsConnected; }
 		}
-		public GamePadType GamepadType
-		{
-			get { return this.caps.GamePadType; }
-		}
 		public bool this[GamepadButton button]
 		{
 			get 
@@ -58,11 +54,11 @@ namespace Duality.Input
 				{
 					case GamepadAxis.LeftTrigger:		return MathF.Clamp(this.state.Triggers.Left, 0.0f, 1.0f);
 					case GamepadAxis.LeftThumbstickX:	return MathF.Clamp(this.state.ThumbSticks.Left.X, -1.0f, 1.0f);
-					case GamepadAxis.LeftThumbstickY:	return MathF.Clamp(-this.state.ThumbSticks.Left.Y, -1.0f, 1.0f);
+					case GamepadAxis.LeftThumbstickY:	return MathF.Clamp(this.state.ThumbSticks.Left.Y, -1.0f, 1.0f);
 
 					case GamepadAxis.RightTrigger:		return MathF.Clamp(this.state.Triggers.Right, 0.0f, 1.0f);
 					case GamepadAxis.RightThumbstickX:	return MathF.Clamp(this.state.ThumbSticks.Right.X, -1.0f, 1.0f);
-					case GamepadAxis.RightThumbstickY:	return MathF.Clamp(-this.state.ThumbSticks.Right.Y, -1.0f, 1.0f);
+					case GamepadAxis.RightThumbstickY:	return MathF.Clamp(this.state.ThumbSticks.Right.Y, -1.0f, 1.0f);
 
 					default: return 0.0f;
 				}

@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace Duality.Input
 {
-	public class GamepadAxisEventArgs : UserInputEventArgs
+	public class JoystickAxisEventArgs : UserInputEventArgs
 	{
-		private GamepadAxis axis;
+		private JoystickAxis axis;
 		private float axisValue;
 		private float axisDelta;
 
-		public GamepadAxis Axis
+		public JoystickAxis Axis
 		{
 			get { return this.axis; }
 		}
@@ -24,7 +24,7 @@ namespace Duality.Input
 			get { return this.axisDelta; }
 		}
 
-		public GamepadAxisEventArgs(GamepadInput inputChannel, GamepadAxis axis, float axisValue, float axisDelta) : base(inputChannel)
+		public JoystickAxisEventArgs(JoystickInput inputChannel, JoystickAxis axis, float axisValue, float axisDelta) : base(inputChannel)
 		{
 			this.axis = axis;
 			this.axisValue = axisValue;

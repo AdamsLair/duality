@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using OpenTK.Input;
 
 namespace Duality.Input
 {

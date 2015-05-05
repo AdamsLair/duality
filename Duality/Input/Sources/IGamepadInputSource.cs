@@ -1,5 +1,4 @@
 ﻿using System;
-using OpenTK.Input;
 
 namespace Duality.Input
 {
@@ -8,11 +7,6 @@ namespace Duality.Input
 	/// </summary>
 	public interface IGamepadInputSource : IUserInputSource
 	{
-		/// <summary>
-		/// [GET] The type of gamepad that is represented by this source.
-		/// </summary>
-		GamePadType GamepadType { get; }
-
 		/// <summary>
 		/// [GET] Returns whether the specified gamepad button is currently pressed.
 		/// </summary>

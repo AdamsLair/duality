@@ -82,6 +82,11 @@
     <Compile Include="Drawing\IRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\DefaultRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\ScreenResolution.cs" />
+    <Compile Include="Input\UserInputEventArgs.cs" />
+    <Compile Include="Input\JoystickButtonEventArgs.cs" />
+    <Compile Include="Input\JoystickAxisEventArgs.cs" />
+    <Compile Include="Input\JoystickButton.cs" />
+    <Compile Include="Input\JoystickAxis.cs" />
     <Compile Include="Input\KeyboardKeyEventArgs.cs" />
     <Compile Include="Input\Key.cs" />
     <Compile Include="Input\MouseEventArgs.cs" />

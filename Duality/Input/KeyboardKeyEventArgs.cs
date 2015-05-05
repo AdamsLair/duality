@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Duality.Input
 {
-	public class KeyboardKeyEventArgs : EventArgs
+	public class KeyboardKeyEventArgs : UserInputEventArgs
 	{
 		private Key key;
 		private bool pressed;
@@ -19,7 +19,7 @@ namespace Duality.Input
 			get { return this.pressed; }
 		}
 
-		public KeyboardKeyEventArgs(Key key, bool pressed)
+		public KeyboardKeyEventArgs(KeyboardInput inputChannel, Key key, bool pressed) : base(inputChannel)
 		{
 			this.key = key;
 			this.pressed = pressed;

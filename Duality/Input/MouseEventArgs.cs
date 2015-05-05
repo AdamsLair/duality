@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Duality.Input
 {
-	public class MouseEventArgs : EventArgs
+	public class MouseEventArgs : UserInputEventArgs
 	{
 		private int x;
 		private int y;
@@ -23,7 +23,7 @@ namespace Duality.Input
 			get { return new Vector2(this.x, this.y); }
 		}
 
-		public MouseEventArgs(int x, int y)
+		public MouseEventArgs(MouseInput inputChannel, int x, int y) : base(inputChannel)
 		{
 			this.x = x;
 			this.y = y;
@@ -48,7 +48,7 @@ namespace Duality.Input
 			get { return new Vector2(this.deltaX, this.deltaY); }
 		}
 
-		public MouseMoveEventArgs(int x, int y, int deltaX, int deltaY) : base(x, y)
+		public MouseMoveEventArgs(MouseInput inputChannel, int x, int y, int deltaX, int deltaY) : base(inputChannel, x, y)
 		{
 			this.deltaX = deltaX;
 			this.deltaY = deltaY;
@@ -69,7 +69,7 @@ namespace Duality.Input
 			get { return this.pressed; }
 		}
 
-		public MouseButtonEventArgs(int x, int y, MouseButton button, bool pressed) : base(x, y)
+		public MouseButtonEventArgs(MouseInput inputChannel, int x, int y, MouseButton button, bool pressed) : base(inputChannel, x, y)
 		{
 			this.button = button;
 			this.pressed = pressed;
@@ -90,7 +90,7 @@ namespace Duality.Input
 			get { return this.wheelDelta; }
 		}
 
-		public MouseWheelEventArgs(int x, int y, int value, int delta) : base(x, y)
+		public MouseWheelEventArgs(MouseInput inputChannel, int x, int y, int value, int delta) : base(inputChannel, x, y)
 		{
 			this.wheelValue = value;
 			this.wheelDelta = delta;

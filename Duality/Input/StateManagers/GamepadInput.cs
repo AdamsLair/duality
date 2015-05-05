@@ -233,6 +233,7 @@ namespace Duality.Input
 					if (this.ButtonDown != null)
 					{
 						this.ButtonDown(this, new GamepadButtonEventArgs(
+							this,
 							(GamepadButton)i, 
 							this.currentState.ButtonPressed[i]));
 					}
@@ -242,6 +243,7 @@ namespace Duality.Input
 					if (this.ButtonUp != null)
 					{
 						this.ButtonUp(this, new GamepadButtonEventArgs(
+							this,
 							(GamepadButton)i, 
 							this.currentState.ButtonPressed[i]));
 					}
@@ -254,6 +256,7 @@ namespace Duality.Input
 					if (this.Move != null)
 					{
 						this.Move(this, new GamepadAxisEventArgs(
+							this,
 							(GamepadAxis)i,
 							this.currentState.AxisValue[i],
 							this.currentState.AxisValue[i] - this.lastState.AxisValue[i]));

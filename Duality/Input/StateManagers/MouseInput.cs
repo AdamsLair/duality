@@ -218,6 +218,7 @@ namespace Duality.Input
 					if (this.Move != null)
 					{
 						this.Move(this, new MouseMoveEventArgs(
+							this,
 							this.currentState.X, 
 							this.currentState.Y, 
 							this.currentState.X - this.lastState.X, 
@@ -229,6 +230,7 @@ namespace Duality.Input
 					if (this.WheelChanged != null)
 					{
 						this.WheelChanged(this, new MouseWheelEventArgs(
+							this,
 							this.currentState.X,
 							this.currentState.Y,
 							MathF.RoundToInt(this.currentState.Wheel),
@@ -242,6 +244,7 @@ namespace Duality.Input
 						if (this.ButtonDown != null)
 						{
 							this.ButtonDown(this, new MouseButtonEventArgs(
+								this,
 								this.currentState.X, 
 								this.currentState.Y, 
 								(MouseButton)i, 
@@ -253,6 +256,7 @@ namespace Duality.Input
 						if (this.ButtonUp != null)
 						{
 							this.ButtonUp(this, new MouseButtonEventArgs(
+								this,
 								this.currentState.X, 
 								this.currentState.Y, 
 								(MouseButton)i, 

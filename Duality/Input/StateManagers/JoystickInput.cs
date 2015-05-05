@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OpenTK.Input;
-
-
 namespace Duality.Input
 {
 	/// <summary>
@@ -138,7 +135,7 @@ namespace Duality.Input
 		/// <summary>
 		/// Fired whenever a device axis changes its value.
 		/// </summary>
-		public event EventHandler<JoystickMoveEventArgs> Move;
+		public event EventHandler<JoystickAxisEventArgs> Move;
 		/// <summary>
 		/// Fired when the joystick is no longer available to Duality.
 		/// </summary>
@@ -184,6 +181,7 @@ namespace Duality.Input
 					if (this.ButtonDown != null)
 					{
 						this.ButtonDown(this, new JoystickButtonEventArgs(
+							this,
 							(JoystickButton)i, 
 							this.currentState.ButtonPressed[i]));
 					}
@@ -193,6 +191,7 @@ namespace Duality.Input
 					if (this.ButtonUp != null)
 					{
 						this.ButtonUp(this, new JoystickButtonEventArgs(
+							this,
 							(JoystickButton)i, 
 							this.currentState.ButtonPressed[i]));
 					}
@@ -204,7 +203,8 @@ namespace Duality.Input
 				{
 					if (this.Move != null)
 					{
-						this.Move(this, new JoystickMoveEventArgs(
+						this.Move(this, new JoystickAxisEventArgs(
+							this,
 							(JoystickAxis)i,
 							this.currentState.AxisValue[i],
 							this.currentState.AxisValue[i] - this.lastState.AxisValue[i]));
