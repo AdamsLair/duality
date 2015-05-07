@@ -53,12 +53,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FarseerDuality, Version=4.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.FarseerDuality.4.0.2\lib\portable-net45+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10\FarseerDuality.dll</HintPath>
+    <Reference Include="FarseerDuality, Version=4.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.FarseerDuality.4.0.3\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\FarseerDuality.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="NVorbis">
-      <HintPath>..\packages\AdamsLair.NVorbis.0.7.4\lib\NVorbis.dll</HintPath>
+    <Reference Include="NVorbis, Version=0.7.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>

@@ -35,10 +35,6 @@ namespace Duality.Resources
 		{
 			this.ovStream = new VorbisReader(new MemoryStream(memory), true);
 		}
-		internal VorbisStreamHandle(string fileName)
-		{
-			this.ovStream = new VorbisReader(fileName);
-		}
 
 		~VorbisStreamHandle()
 		{
@@ -68,17 +64,6 @@ namespace Duality.Resources
 		private const int DefaultBufferSize = 1024 * 16;
 		private static object readMutex = new object();
 
-		public static PcmData LoadFromFile(string filename)
-		{
-			PcmData pcm;
-			VorbisStreamHandle handle;
-
-			BeginStreamFromFile(filename, out handle);
-			ReadAll(handle, out pcm);
-			EndStream(ref handle);
-
-			return pcm;
-		}
 		public static PcmData LoadFromMemory(byte[] memory)
 		{
 			PcmData pcm;
@@ -102,10 +87,6 @@ namespace Duality.Resources
 			return pcm;
 		}
 
-		public static void BeginStreamFromFile(string filename, out VorbisStreamHandle handle)
-		{
-			handle = new VorbisStreamHandle(filename);
-		}
 		public static void BeginStreamFromMemory(byte[] memory, out VorbisStreamHandle handle)
 		{
 			handle = new VorbisStreamHandle(memory);
