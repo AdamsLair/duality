@@ -636,16 +636,6 @@ namespace Duality.Drawing
 				material = new BatchInfo(material);
 				material.Technique = DrawTechnique.Solid;
 			}
-			else if (material.Technique.Res.NeedsPreprocess)
-			{
-				material = new BatchInfo(material);
-				material.Technique.Res.PreprocessBatch<T>(this, material, ref vertexMode, ref vertexBuffer, ref vertexCount);
-				if (vertexCount == 0) return;
-				if (vertexBuffer == null || vertexBuffer.Length == 0) return;
-				if (vertexCount > vertexBuffer.Length) vertexCount = vertexBuffer.Length;
-				if (material.Technique == null || !material.Technique.IsAvailable)
-					material.Technique = DrawTechnique.Solid;
-			}
 			
 			// When rendering without depth writing, use z sorting everywhere - there's no real depth buffering!
 			bool zSort = !this.DepthWrite || material.Technique.Res.NeedsZSort;

@@ -280,14 +280,6 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET] Returns whether this DrawTechnique requires <see cref="PreprocessBatch{T}">vertex preprocessing</see>.
-		/// This is false for all standard DrawTechniques, but may return true when deriving custom DrawTechniques.
-		/// </summary>
-		public virtual bool NeedsPreprocess
-		{
-			get { return false; }
-		}
-		/// <summary>
 		/// [GET] Returns whether this DrawTechnique requires any <see cref="PrepareRendering">rendering preparation</see>.
 		/// This is false for all standard DrawTechniques, but may return true when deriving custom DrawTechniques.
 		/// </summary>
@@ -343,8 +335,7 @@ namespace Duality.Resources
 			// Prepare Rendering
 			if (this.NeedsPreparation)
 			{
-				// Clone the material, if not done yet due to vertex preprocessing
-				if (!this.NeedsPreprocess) material = new BatchInfo(material);
+				material = new BatchInfo(material);
 				this.PrepareRendering(device, material);
 			}
 			
