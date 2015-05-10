@@ -10,22 +10,22 @@ namespace Duality.Drawing
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexC1P3T4A1 : IVertexData
 	{
-		public static readonly VertexFormatDefinition FormatDefinition = new VertexFormatDefinition(typeof(VertexC1P3T4A1));
+		public static readonly VertexDeclaration Declaration = VertexDeclaration.Get<VertexC1P3T4A1>();
 
 		/// <summary>
 		/// The vertices color.
 		/// </summary>
-		[VertexField(VertexFieldRole.Color)]
+		[VertexElement(VertexElementRole.Color)]
 		public ColorRgba Color;
 		/// <summary>
 		/// The vertices position.
 		/// </summary>
-		[VertexField(VertexFieldRole.Position)]
+		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
 		/// <summary>
 		/// The vertices texture coordinates (two of them).
 		/// </summary>
-		[VertexField(VertexFieldRole.TexCoord)]
+		[VertexElement(VertexElementRole.TexCoord)]
 		public Vector4 TexCoord;
 		/// <summary>
 		/// The vertices custom attribute.
@@ -42,9 +42,9 @@ namespace Duality.Drawing
 			get { return this.Color; }
 			set { this.Color = value; }
 		}
-		VertexFormatDefinition IVertexData.Format
+		VertexDeclaration IVertexData.Declaration
 		{
-			get { return FormatDefinition; }
+			get { return Declaration; }
 		}
 	}
 }

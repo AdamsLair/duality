@@ -9,17 +9,17 @@ namespace Duality.Drawing
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexC1P3 : IVertexData
 	{
-		public static readonly VertexFormatDefinition FormatDefinition = new VertexFormatDefinition(typeof(VertexC1P3));
+		public static readonly VertexDeclaration Declaration = VertexDeclaration.Get<VertexC1P3>();
 
 		/// <summary>
 		/// The vertices position.
 		/// </summary>
-		[VertexField(VertexFieldRole.Position)]
+		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
 		/// <summary>
 		/// The vertices color.
 		/// </summary>
-		[VertexField(VertexFieldRole.Color)]
+		[VertexElement(VertexElementRole.Color)]
 		public ColorRgba Color;
 
 		Vector3 IVertexData.Pos
@@ -32,9 +32,9 @@ namespace Duality.Drawing
 			get { return this.Color; }
 			set { this.Color = value; }
 		}
-		VertexFormatDefinition IVertexData.Format
+		VertexDeclaration IVertexData.Declaration
 		{
-			get { return FormatDefinition; }
+			get { return Declaration; }
 		}
 	}
 }

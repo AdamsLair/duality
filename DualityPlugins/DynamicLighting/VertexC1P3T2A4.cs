@@ -9,13 +9,13 @@ namespace Duality.Plugins.DynamicLighting
 	[StructLayout(LayoutKind.Sequential)]
 	public struct VertexC1P3T2A4 : IVertexData
 	{
-		public static readonly VertexFormatDefinition FormatDefinition = new VertexFormatDefinition(typeof(VertexC1P3T2A4));
+		public static readonly VertexDeclaration Declaration = VertexDeclaration.Get<VertexC1P3T2A4>();
 
-		[VertexField(VertexFieldRole.Color)]
+		[VertexElement(VertexElementRole.Color)]
 		public ColorRgba Color;
-		[VertexField(VertexFieldRole.Position)]
+		[VertexElement(VertexElementRole.Position)]
 		public Vector3 Pos;
-		[VertexField(VertexFieldRole.TexCoord)]
+		[VertexElement(VertexElementRole.TexCoord)]
 		public Vector2 TexCoord;
 		public Vector4 Attrib;
 		// Add Vector3 for lighting world position, see note in Light.cs
@@ -30,9 +30,9 @@ namespace Duality.Plugins.DynamicLighting
 			get { return this.Color; }
 			set { this.Color = value; }
 		}
-		VertexFormatDefinition IVertexData.Format
+		VertexDeclaration IVertexData.Declaration
 		{
-			get { return FormatDefinition; }
+			get { return Declaration; }
 		}
 	}
 }

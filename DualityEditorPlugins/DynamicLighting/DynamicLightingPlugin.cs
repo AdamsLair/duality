@@ -50,8 +50,8 @@ namespace Duality.Editor.Plugins.DynamicLighting
 				if (tech == null) continue;
 
 				bool isDynamicLighting = lightTech != null ||
-					tech.PreferredVertexFormat == VertexC1P3T2A4.FormatDefinition ||
-					tech.PreferredVertexFormat == VertexC1P3T4A4A1.FormatDefinition;
+					tech.PreferredVertexFormat == VertexC1P3T2A4.Declaration ||
+					tech.PreferredVertexFormat == VertexC1P3T4A4A1.Declaration;
 				if (!isDynamicLighting) continue;
 
 				Texture mainTex = mat.MainTexture.Res;

@@ -39,9 +39,9 @@ namespace Duality.Drawing
 			{
 				get { return this.vertexMode; }
 			}
-			public VertexFormatDefinition VertexFormat
+			public VertexDeclaration VertexDeclaration
 			{
-				get { return this.vertices[0].Format; }
+				get { return this.vertices[0].Declaration; }
 			}
 			public BatchInfo Material
 			{
@@ -62,7 +62,7 @@ namespace Duality.Drawing
 				// Determine sorting index for non-Z-Sort materials
 				if (!this.material.Technique.Res.NeedsZSort)
 				{
-					int vTypeSI = vertices[0].Format.TypeIndex;
+					int vTypeSI = vertices[0].Declaration.TypeIndex;
 					int matHash = this.material.GetHashCode() % (1 << 23);
 
 					// Bit significancy is used to achieve sorting by multiple traits at once.
@@ -112,7 +112,7 @@ namespace Duality.Drawing
 				}
 
 				// Submit vertex data to the GPU
-				target.UploadBatchVertices<T>(this.vertices[0].Format, vertexData, vertexCount);
+				target.UploadBatchVertices<T>(this.vertices[0].Declaration, vertexData, vertexCount);
 			}
 
 			public bool SameVertexType(IDrawBatch other)
@@ -845,48 +845,48 @@ namespace Duality.Drawing
 			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
 			ShaderProgram program = technique.Shader.Res;
 
-			VertexFormatDefinition vertexFormat = renderBatch.VertexFormat;
+			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
 
-			VertexField[] elements = vertexFormat.Elements;
+			VertexElement[] elements = vertexDeclaration.Elements;
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
 				switch (elements[elementIndex].Role)
 				{
-					case VertexFieldRole.Position:
+					case VertexElementRole.Position:
 					{
 						GL.EnableClientState(ArrayCap.VertexArray);
 						GL.VertexPointer(
 							elements[elementIndex].Count, 
 							VertexPointerType.Float, 
-							vertexFormat.Size, 
+							vertexDeclaration.Size, 
 							elements[elementIndex].Offset);
 						break;
 					}
-					case VertexFieldRole.TexCoord:
+					case VertexElementRole.TexCoord:
 					{
 						GL.EnableClientState(ArrayCap.TextureCoordArray);
 						GL.TexCoordPointer(
 							elements[elementIndex].Count, 
 							TexCoordPointerType.Float, 
-							vertexFormat.Size, 
+							vertexDeclaration.Size, 
 							elements[elementIndex].Offset);
 						break;
 					}
-					case VertexFieldRole.Color:
+					case VertexElementRole.Color:
 					{
 						ColorPointerType attribType;
 						switch (elements[elementIndex].Type)
 						{
 							default:
-							case VertexFieldType.Float: attribType = ColorPointerType.Float; break;
-							case VertexFieldType.Byte: attribType = ColorPointerType.UnsignedByte; break;
+							case VertexElementType.Float: attribType = ColorPointerType.Float; break;
+							case VertexElementType.Byte: attribType = ColorPointerType.UnsignedByte; break;
 						}
 
 						GL.EnableClientState(ArrayCap.ColorArray);
 						GL.ColorPointer(
 							elements[elementIndex].Count, 
 							attribType, 
-							vertexFormat.Size, 
+							vertexDeclaration.Size, 
 							elements[elementIndex].Offset);
 						break;
 					}
@@ -913,8 +913,8 @@ namespace Duality.Drawing
 							switch (elements[elementIndex].Type)
 							{
 								default:
-								case VertexFieldType.Float: attribType = VertexAttribPointerType.Float; break;
-								case VertexFieldType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
+								case VertexElementType.Float: attribType = VertexAttribPointerType.Float; break;
+								case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
 							}
 
 							GL.EnableVertexAttribArray(varInfo[selectedVar].glVarLoc);
@@ -923,7 +923,7 @@ namespace Duality.Drawing
 								elements[elementIndex].Count, 
 								attribType, 
 								false, 
-								vertexFormat.Size, 
+								vertexDeclaration.Size, 
 								elements[elementIndex].Offset);
 						}
 						break;
@@ -940,7 +940,7 @@ namespace Duality.Drawing
 
 			lastBatchRendered = renderBatch;
 		}
-		void IVertexUploader.UploadBatchVertices<T>(VertexFormatDefinition format, T[] vertices, int vertexCount)
+		void IVertexUploader.UploadBatchVertices<T>(VertexDeclaration format, T[] vertices, int vertexCount)
 		{
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(format.Size * vertexCount), IntPtr.Zero, BufferUsageHint.StreamDraw);
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(format.Size * vertexCount), vertices, BufferUsageHint.StreamDraw);
@@ -950,24 +950,24 @@ namespace Duality.Drawing
 			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
 			ShaderProgram program = technique.Shader.Res;
 
-			VertexFormatDefinition vertexFormat = renderBatch.VertexFormat;
+			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
 
-			VertexField[] elements = vertexFormat.Elements;
+			VertexElement[] elements = vertexDeclaration.Elements;
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
 				switch (elements[elementIndex].Role)
 				{
-					case VertexFieldRole.Position:
+					case VertexElementRole.Position:
 					{
 						GL.DisableClientState(ArrayCap.VertexArray);
 						break;
 					}
-					case VertexFieldRole.TexCoord:
+					case VertexElementRole.TexCoord:
 					{
 						GL.DisableClientState(ArrayCap.TextureCoordArray);
 						break;
 					}
-					case VertexFieldRole.Color:
+					case VertexElementRole.Color:
 					{
 						GL.DisableClientState(ArrayCap.ColorArray);
 						break;

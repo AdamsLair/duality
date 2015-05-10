@@ -474,7 +474,7 @@ namespace Duality.Components.Renderers
 
 			Rect uvRect;
 			Rect uvRectNext;
-			bool smoothShaderInput = tech != null && tech.PreferredVertexFormat == VertexC1P3T4A1.FormatDefinition;
+			bool smoothShaderInput = tech != null && tech.PreferredVertexFormat == VertexC1P3T4A1.Declaration;
 			this.GetAnimData(mainTex, tech, smoothShaderInput, out uvRect, out uvRectNext);
 			
 			if (!smoothShaderInput)

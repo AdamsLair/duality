@@ -19,8 +19,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			if (ReflectionHelper.MemberInfoEquals(info, ReflectionInfo.Property_DrawTechnique_PreferredVertexFormat))
 			{
-				List<VertexFormatDefinition> formats = new List<VertexFormatDefinition>();
-				formats.Add(null);
+				List<VertexDeclaration> vertexTypes = new List<VertexDeclaration>();
+				vertexTypes.Add(null);
 				foreach (Type vertexType in DualityApp.GetAvailDualityTypes(typeof(IVertexData)))
 				{
 					if (vertexType.IsClass) continue;
@@ -28,12 +28,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 					if (vertexType.IsInterface) continue;
 
 					IVertexData vertex = vertexType.CreateInstanceOf() as IVertexData;
-					formats.Add(vertex.Format);
+					vertexTypes.Add(vertex.Declaration);
 				}
 
 				ObjectSelectorPropertyEditor e = new ObjectSelectorPropertyEditor();
 				e.EditedType = (info as PropertyInfo).PropertyType;
-				e.Items = formats.Select(format => new ObjectItem(format, format != null ? format.DataType.Name : "None"));
+				e.Items = vertexTypes.Select(decl => new ObjectItem(decl, decl != null ? decl.DataType.Name : "None"));
 				this.ParentGrid.ConfigureEditor(e);
 				return e;
 			}

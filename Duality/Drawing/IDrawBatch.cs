@@ -17,7 +17,7 @@ namespace Duality.Drawing
 		int VertexCount { get; }
 		VertexMode VertexMode { get; }
 		BatchInfo Material { get; }
-		VertexFormatDefinition VertexFormat { get; }
+		VertexDeclaration VertexDeclaration { get; }
 
 		void UploadVertices(IVertexUploader target, List<IDrawBatch> uploadBatches);
 
@@ -30,6 +30,6 @@ namespace Duality.Drawing
 
 	public interface IVertexUploader
 	{
-		void UploadBatchVertices<T>(VertexFormatDefinition format, T[] vertices, int vertexCount) where T : struct, IVertexData;
+		void UploadBatchVertices<T>(VertexDeclaration declaration, T[] vertices, int vertexCount) where T : struct, IVertexData;
 	}
 }

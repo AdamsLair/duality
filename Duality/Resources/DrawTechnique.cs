@@ -146,13 +146,13 @@ namespace Duality.Resources
 			ContentProvider.AddContent(ContentPath_Picking,		new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
 			ContentProvider.AddContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha));
 			
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Solid,	new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Add,		new DrawTechnique(BlendMode.Add,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Alpha,	new DrawTechnique(BlendMode.Alpha,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Multiply,	new DrawTechnique(BlendMode.Multiply,	ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Light,	new DrawTechnique(BlendMode.Light,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Invert,	new DrawTechnique(BlendMode.Invert,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Solid,	new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Add,		new DrawTechnique(BlendMode.Add,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Alpha,	new DrawTechnique(BlendMode.Alpha,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Multiply,	new DrawTechnique(BlendMode.Multiply,	ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Light,	new DrawTechnique(BlendMode.Light,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Invert,	new DrawTechnique(BlendMode.Invert,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
 
 			Solid		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Solid);
 			Mask		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Mask);
@@ -178,7 +178,7 @@ namespace Duality.Resources
 		private	ContentRef<ShaderProgram>	shader		= ContentRef<ShaderProgram>.Null;
 		private	Type						prefType	= null;
 		[DontSerialize]
-		private	VertexFormatDefinition		prefFormat	= null;
+		private	VertexDeclaration		prefFormat	= null;
 
 		/// <summary>
 		/// [GET / SET] Specifies how incoming color values interact with the existing background color.
@@ -201,7 +201,7 @@ namespace Duality.Resources
 		/// [GET / SET] The vertex format that is preferred by this DrawTechnique. If there is no specific preference,
 		/// null is returned.
 		/// </summary>
-		public VertexFormatDefinition PreferredVertexFormat
+		public VertexDeclaration PreferredVertexFormat
 		{
 			get { return this.prefFormat; }
 			set
@@ -253,7 +253,7 @@ namespace Duality.Resources
 		/// <param name="blendType"></param>
 		/// <param name="shader"></param>
 		/// <param name="formatPref"></param>
-		public DrawTechnique(BlendMode blendType, ContentRef<ShaderProgram> shader, VertexFormatDefinition formatPref = null) 
+		public DrawTechnique(BlendMode blendType, ContentRef<ShaderProgram> shader, VertexDeclaration formatPref = null) 
 		{
 			this.blendType = blendType;
 			this.shader = shader;
@@ -450,5 +450,11 @@ namespace Duality.Resources
 		/// <param name="device"></param>
 		/// <param name="material"></param>
 		protected virtual void PrepareRendering(IDrawDevice device, BatchInfo material) {}
+
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			this.prefFormat = VertexDeclaration.Get(this.prefType);
+		}
 	}
 }

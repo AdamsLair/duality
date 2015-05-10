@@ -7,8 +7,12 @@ using System.Linq;
 namespace Duality.Drawing
 {
 	[DontSerialize]
-	public class VertexFormatDefinition
+	public class VertexDeclaration
 	{
+		private static class Cache<T> where T : struct, IVertexData
+		{
+			public static readonly VertexDeclaration Instance = new VertexDeclaration(typeof(T));
+		}
 		private static Dictionary<string,int> vertexTypeIndexMap = new Dictionary<string,int>();
 		private static int GetVertexTypeIndex(Type dataType)
 		{
@@ -26,10 +30,20 @@ namespace Duality.Drawing
 			return index;
 		}
 
+		public static VertexDeclaration Get<T>() where T : struct, IVertexData
+		{
+			return Cache<T>.Instance;
+		}
+		public static VertexDeclaration Get(Type vertexType)
+		{
+			IVertexData dummyVertex = vertexType.CreateInstanceOf() as IVertexData;
+			return dummyVertex != null ? dummyVertex.Declaration : null;
+		}
+
 		private Type dataType;
 		private int typeIndex;
 		private int size;
-		private VertexField[] elements;
+		private VertexElement[] elements;
 
 		public Type DataType
 		{
@@ -43,12 +57,12 @@ namespace Duality.Drawing
 		{
 			get { return this.size; }
 		}
-		public VertexField[] Elements
+		public VertexElement[] Elements
 		{
 			get { return this.elements; }
 		}
 
-		public VertexFormatDefinition(Type dataType)
+		private VertexDeclaration(Type dataType)
 		{
 			if (dataType.IsClass) throw new InvalidOperationException("Vertex formats need to be structs. Classes are not supported.");
 
@@ -57,15 +71,15 @@ namespace Duality.Drawing
 			this.dataType = dataType;
 			this.typeIndex = GetVertexTypeIndex(dataType);
 			this.size = Marshal.SizeOf(dataType);
-			this.elements = new VertexField[fields.Length];
+			this.elements = new VertexElement[fields.Length];
 
 			for (int i = 0; i < fields.Length; i++)
 			{
-				VertexFieldRole role = VertexFieldRole.Unknown;
-				VertexFieldType type = VertexFieldType.Unknown;
+				VertexElementRole role = VertexElementRole.Unknown;
+				VertexElementType type = VertexElementType.Unknown;
 				int count = 0;
 
-				VertexFieldAttribute attrib = fields[i].GetAttributesCached<VertexFieldAttribute>().FirstOrDefault();
+				VertexElementAttribute attrib = fields[i].GetAttributesCached<VertexElementAttribute>().FirstOrDefault();
 				if (attrib != null)
 				{
 					role = attrib.Role;
@@ -73,50 +87,50 @@ namespace Duality.Drawing
 					count = attrib.Count;
 				}
 
-				if (type == VertexFieldType.Unknown || count == 0)
+				if (type == VertexElementType.Unknown || count == 0)
 				{
 					DetermineElement(fields[i].FieldType, out type, out count);
 				}
-				if (type == VertexFieldType.Unknown || count == 0)
+				if (type == VertexElementType.Unknown || count == 0)
 				{
 					throw new InvalidOperationException(string.Format("Unable to determine type of field {2}, vertex format {1}. Add a {0} to specify it explicitly",
-						typeof(VertexFieldAttribute).Name,
+						typeof(VertexElementAttribute).Name,
 						dataType.Name,
 						fields[i].Name));
 				}
 
-				this.elements[i] = new VertexField(Marshal.OffsetOf(dataType, fields[i].Name), type, count, role);
+				this.elements[i] = new VertexElement(Marshal.OffsetOf(dataType, fields[i].Name), type, count, role);
 			}
 		}
 
-		private static bool DetermineElement(Type dataType, out VertexFieldType type, out int count)
+		private static bool DetermineElement(Type dataType, out VertexElementType type, out int count)
 		{
 			if (dataType == typeof(float))
 			{
-				type = VertexFieldType.Float;
+				type = VertexElementType.Float;
 				count = 1;
 				return true;
 			}
 			else if (dataType == typeof(byte))
 			{
-				type = VertexFieldType.Byte;
+				type = VertexElementType.Byte;
 				count = 1;
 				return true;
 			}
 			else if (!dataType.IsClass && !dataType.IsEnum && !dataType.IsPrimitive)
 			{
-				type = VertexFieldType.Unknown;
+				type = VertexElementType.Unknown;
 				count = 0;
 
 				FieldInfo[] fields = dataType.GetFields(ReflectionHelper.BindInstanceAll);
 				for (int i = 0; i < fields.Length; i++)
 				{
-					VertexFieldType fieldType;
+					VertexElementType fieldType;
 					int fieldCount;
 					if (!DetermineElement(fields[i].FieldType, out fieldType, out fieldCount))
 						return false;
 
-					if (type == VertexFieldType.Unknown)
+					if (type == VertexElementType.Unknown)
 						type = fieldType;
 					else if (fieldType != type)
 						return false;
@@ -127,24 +141,24 @@ namespace Duality.Drawing
 				return true;
 			}
 			
-			type = VertexFieldType.Unknown;
+			type = VertexElementType.Unknown;
 			count = 0;
 			return false;
 		}
 	}
 
-	public struct VertexField
+	public struct VertexElement
 	{
 		private IntPtr offset;
-		private VertexFieldType type;
+		private VertexElementType type;
 		private int count;
-		private VertexFieldRole role;
+		private VertexElementRole role;
 
 		public IntPtr Offset
 		{
 			get { return this.offset; }
 		}
-		public VertexFieldType Type
+		public VertexElementType Type
 		{
 			get { return this.type; }
 		}
@@ -152,12 +166,12 @@ namespace Duality.Drawing
 		{
 			get { return this.count; }
 		}
-		public VertexFieldRole Role
+		public VertexElementRole Role
 		{
 			get { return this.role; }
 		}
 
-		internal VertexField(IntPtr offset, VertexFieldType type, int count, VertexFieldRole role)
+		internal VertexElement(IntPtr offset, VertexElementType type, int count, VertexElementRole role)
 		{
 			this.offset = offset;
 			this.type = type;
@@ -171,7 +185,7 @@ namespace Duality.Drawing
 		}
 	}
 
-	public enum VertexFieldType
+	public enum VertexElementType
 	{
 		Unknown,
 
@@ -179,7 +193,7 @@ namespace Duality.Drawing
 		Float
 	}
 
-	public enum VertexFieldRole
+	public enum VertexElementRole
 	{
 		Unknown,
 
@@ -189,17 +203,17 @@ namespace Duality.Drawing
 	}
 
 	[AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-	public class VertexFieldAttribute : Attribute
+	public class VertexElementAttribute : Attribute
 	{
-		private VertexFieldType type;
-		private VertexFieldRole role;
+		private VertexElementType type;
+		private VertexElementRole role;
 		private int count;
 
-		public VertexFieldType Type
+		public VertexElementType Type
 		{
 			get { return this.type; }
 		}
-		public VertexFieldRole Role
+		public VertexElementRole Role
 		{
 			get { return this.role; }
 		}
@@ -208,8 +222,8 @@ namespace Duality.Drawing
 			get { return this.count; }
 		}
 
-		public VertexFieldAttribute(VertexFieldRole role) : this(VertexFieldType.Unknown, 0, role) { }
-		public VertexFieldAttribute(VertexFieldType type, int count, VertexFieldRole role = VertexFieldRole.Unknown)
+		public VertexElementAttribute(VertexElementRole role) : this(VertexElementType.Unknown, 0, role) { }
+		public VertexElementAttribute(VertexElementType type, int count, VertexElementRole role = VertexElementRole.Unknown)
 		{
 			this.type = type;
 			this.count = count;

@@ -7,10 +7,10 @@
 	{
 		#region Static Members
 		/// <summary>
-		/// [GET] The <see cref="VertexFormatDefinition"/> that specifies size, layout and roles of the vertex fields.
+		/// [GET] The <see cref="VertexDeclaration"/> that specifies size, layout and roles of the vertex fields.
 		/// This member is static by design.
 		/// </summary>
-		VertexFormatDefinition Format { get; }
+		VertexDeclaration Declaration { get; }
 		#endregion
 
 		/// <summary>
