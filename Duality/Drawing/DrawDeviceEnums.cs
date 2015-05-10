@@ -19,7 +19,7 @@ namespace Duality.Drawing
 		Triangles,
 		TriangleStrip,
 		TriangleFan,
-		Quads,			// deprecated in modern opengl
+		Quads,
 	}
 
 	public static class ExtMethodsVertexMode
