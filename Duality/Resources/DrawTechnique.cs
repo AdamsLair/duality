@@ -137,22 +137,22 @@ namespace Duality.Resources
 
 			ContentProvider.AddContent(ContentPath_Solid,		new DrawTechnique(BlendMode.Solid));
 			ContentProvider.AddContent(ContentPath_Mask,		new DrawTechnique(BlendMode.Mask));
-			ContentProvider.AddContent(ContentPath_Add,		new DrawTechnique(BlendMode.Add));
+			ContentProvider.AddContent(ContentPath_Add,			new DrawTechnique(BlendMode.Add));
 			ContentProvider.AddContent(ContentPath_Alpha,		new DrawTechnique(BlendMode.Alpha));
 			ContentProvider.AddContent(ContentPath_Multiply,	new DrawTechnique(BlendMode.Multiply));
 			ContentProvider.AddContent(ContentPath_Light,		new DrawTechnique(BlendMode.Light));
 			ContentProvider.AddContent(ContentPath_Invert,		new DrawTechnique(BlendMode.Invert));
 
-			ContentProvider.AddContent(ContentPath_Picking,	new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
+			ContentProvider.AddContent(ContentPath_Picking,		new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
 			ContentProvider.AddContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha));
 			
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Solid,		new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Add,			new DrawTechnique(BlendMode.Add,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Alpha,		new DrawTechnique(BlendMode.Alpha,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Multiply,	new DrawTechnique(BlendMode.Multiply,	ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Light,		new DrawTechnique(BlendMode.Light,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Invert,		new DrawTechnique(BlendMode.Invert,		ShaderProgram.SmoothAnim, VertexType_C1P3T4A1));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Solid,	new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Add,		new DrawTechnique(BlendMode.Add,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Alpha,	new DrawTechnique(BlendMode.Alpha,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Multiply,	new DrawTechnique(BlendMode.Multiply,	ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Light,	new DrawTechnique(BlendMode.Light,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
+			ContentProvider.AddContent(ContentPath_SmoothAnim_Invert,	new DrawTechnique(BlendMode.Invert,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.FormatDefinition));
 
 			Solid		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Solid);
 			Mask		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Mask);
@@ -172,70 +172,13 @@ namespace Duality.Resources
 			SmoothAnim_Light	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Light);
 			SmoothAnim_Invert	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Invert);
 		}
-		static DrawTechnique()
-		{
-			InitVertexTypeIndices();
-		}
-		
-		/// <summary>
-		/// The maximum number of vertex types.
-		/// </summary>
-		public	const	int		MaxVertexTypes		= 16;
-		/// <summary>
-		/// Unknown format.
-		/// </summary>
-		public	const	int		VertexType_Unknown	= -1;
-		/// <summary>
-		/// <see cref="Duality.Drawing.VertexC1P3"/> format.
-		/// </summary>
-		public	const	int		VertexType_C1P3		= 1;
-		/// <summary>
-		/// <see cref="Duality.Drawing.VertexC1P3T2"/> format.
-		/// </summary>
-		public	const	int		VertexType_C1P3T2	= 2;
-		/// <summary>
-		/// <see cref="Duality.Drawing.VertexC1P3T4A1"/> format.
-		/// </summary>
-		public	const	int		VertexType_C1P3T4A1	= 3;
-
-		private static Dictionary<string,int>	vertexTypeIndexMap	= new Dictionary<string,int>();
-		public static IEnumerable<KeyValuePair<string,int>> VertexTypeIndices
-		{
-			get { return vertexTypeIndexMap; }
-		}
-
-		private static void InitVertexTypeIndices()
-		{
-			vertexTypeIndexMap.Clear();
-			vertexTypeIndexMap["Unknown"]					= VertexType_Unknown;
-			vertexTypeIndexMap[typeof(VertexC1P3).Name]		= VertexType_C1P3;
-			vertexTypeIndexMap[typeof(VertexC1P3T2).Name]	= VertexType_C1P3T2;
-			vertexTypeIndexMap[typeof(VertexC1P3T4A1).Name] = VertexType_C1P3T4A1;
-		}
-		public static int RequestVertexTypeIndex(string name)
-		{
-			int index;
-			if (vertexTypeIndexMap.TryGetValue(name, out index)) return index;
-			for (int i = 0; i < MaxVertexTypes; i++)
-			{
-				if (!vertexTypeIndexMap.Values.Contains(i))
-				{
-					vertexTypeIndexMap[name] = i;
-					return i;
-				}
-			}
-			throw new InvalidOperationException("Maximum number of vertex formats reached");
-		}
-		public static void ReleaseVertexTypeIndex(string name)
-		{
-			if (name == "Unknown") return;
-			vertexTypeIndexMap.Remove(name);
-		}
 
 
 		private	BlendMode					blendType	= BlendMode.Solid;
 		private	ContentRef<ShaderProgram>	shader		= ContentRef<ShaderProgram>.Null;
-		private	int							formatPref	= VertexType_Unknown;
+		private	Type						prefType	= null;
+		[DontSerialize]
+		private	VertexFormatDefinition		prefFormat	= null;
 
 		/// <summary>
 		/// [GET / SET] Specifies how incoming color values interact with the existing background color.
@@ -256,12 +199,16 @@ namespace Duality.Resources
 		}
 		/// <summary>
 		/// [GET / SET] The vertex format that is preferred by this DrawTechnique. If there is no specific preference,
-		/// <see cref="VertexType_Unknown"/> is returned.
+		/// null is returned.
 		/// </summary>
-		public int PreferredVertexFormat
+		public VertexFormatDefinition PreferredVertexFormat
 		{
-			get { return this.formatPref; }
-			set { this.formatPref = value; }
+			get { return this.prefFormat; }
+			set
+			{
+				this.prefFormat = value;
+				this.prefType = value != null ? value.DataType : null;
+			}
 		}
 		/// <summary>
 		/// [GET] Returns whether this DrawTechnique requires z sorting. It is derived from its <see cref="Blending"/>.
@@ -306,11 +253,12 @@ namespace Duality.Resources
 		/// <param name="blendType"></param>
 		/// <param name="shader"></param>
 		/// <param name="formatPref"></param>
-		public DrawTechnique(BlendMode blendType, ContentRef<ShaderProgram> shader, int formatPref = VertexType_Unknown) 
+		public DrawTechnique(BlendMode blendType, ContentRef<ShaderProgram> shader, VertexFormatDefinition formatPref = null) 
 		{
 			this.blendType = blendType;
 			this.shader = shader;
-			this.formatPref = formatPref;
+			this.prefFormat = formatPref;
+			this.prefType = formatPref != null ? formatPref.DataType : null;
 		}
 		
 		/// <summary>

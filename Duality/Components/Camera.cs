@@ -587,11 +587,18 @@ namespace Duality.Components
 					targetRect = new Rect(this.drawDevice.TargetSize);
 
 				IDrawDevice device = this.drawDevice;
-				device.AddVertices(p.Input, VertexMode.Quads,
-					new VertexC1P3T2(targetRect.MinX,	targetRect.MinY,	0.0f,	0.0f,		0.0f),
-					new VertexC1P3T2(targetRect.MaxX,	targetRect.MinY,	0.0f,	uvRatio.X,	0.0f),
-					new VertexC1P3T2(targetRect.MaxX,	targetRect.MaxY,	0.0f,	uvRatio.X,	uvRatio.Y),
-					new VertexC1P3T2(targetRect.MinX,	targetRect.MaxY,	0.0f,	0.0f,		uvRatio.Y));
+				{
+					VertexC1P3T2[] vertices = new VertexC1P3T2[4];
+					vertices[0].Pos = new Vector3(targetRect.MinX, targetRect.MinY, 0.0f);
+					vertices[1].Pos = new Vector3(targetRect.MaxX, targetRect.MinY, 0.0f);
+					vertices[2].Pos = new Vector3(targetRect.MaxX, targetRect.MaxY, 0.0f);
+					vertices[3].Pos = new Vector3(targetRect.MinX, targetRect.MaxY, 0.0f);
+					vertices[0].TexCoord = new Vector2(0.0f, 0.0f);
+					vertices[1].TexCoord = new Vector2(uvRatio.X, 0.0f);
+					vertices[2].TexCoord = new Vector2(uvRatio.X, uvRatio.Y);
+					vertices[3].TexCoord = new Vector2(0.0f, uvRatio.Y);
+					device.AddVertices(p.Input, VertexMode.Quads, vertices);
+				}
 
 				this.drawDevice.EndRendering();
 				Profile.TimePostProcessing.EndMeasure();

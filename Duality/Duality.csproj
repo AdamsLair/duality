@@ -80,6 +80,7 @@
     <Compile Include="Cloning\CloneType.cs" />
     <Compile Include="Cloning\ManuallyClonedAttribute.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition.cs" />
     <Compile Include="Drawing\TextureEnums.cs" />
     <Compile Include="Drawing\IRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\DefaultRendererVisibilityStrategy.cs" />

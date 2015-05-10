@@ -916,11 +916,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				{
 					canvas.DrawDevice.PreprocessCoords(ref posTemp, ref scaleTemp);
 					posTemp.Z = 0.0f;
-					canvas.DrawDevice.AddVertices(canvas.State.Material, VertexMode.Lines,
-						new VertexC1P3(posTemp - right * 10.0f),
-						new VertexC1P3(posTemp + right * 10.0f),
-						new VertexC1P3(posTemp - down * 10.0f),
-						new VertexC1P3(posTemp + down * 10.0f));
+					{
+						VertexC1P3[] vertices = new VertexC1P3[4];
+						vertices[0].Pos = posTemp - right * 10.0f;
+						vertices[1].Pos = posTemp + right * 10.0f;
+						vertices[2].Pos = posTemp - down * 10.0f;
+						vertices[3].Pos = posTemp + down * 10.0f;
+						canvas.DrawDevice.AddVertices(canvas.State.Material, VertexMode.Lines, vertices);
+					}
 				}
 
 				// Draw angle marker

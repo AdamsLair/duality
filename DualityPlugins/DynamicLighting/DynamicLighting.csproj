@@ -40,10 +40,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
@@ -76,7 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\iconCmpLightingSpriteRenderer.png" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\iconResLightingTechnique.png" />

@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Text.RegularExpressions;
 
+using Duality.Drawing;
 using Duality.Editor;
 using Duality.Cloning;
 
@@ -124,6 +125,30 @@ namespace Duality.Resources
 			get { return !string.IsNullOrEmpty(this.name) && this.name[0] != '_'; }
 		}
 
+		public bool MatchesVertexElement(VertexFieldType type, int count)
+		{
+			if (this.scope != ShaderVarScope.Attribute) return false;
+			switch (this.type)
+			{
+				case ShaderVarType.Int:
+					return false;
+				case ShaderVarType.Float:
+					return type == VertexFieldType.Float && count == 1 * arraySize;
+				case ShaderVarType.Vec2:
+					return type == VertexFieldType.Float && count == 2 * arraySize;
+				case ShaderVarType.Vec3:
+					return type == VertexFieldType.Float && count == 3 * arraySize;
+				case ShaderVarType.Vec4:
+					return type == VertexFieldType.Float && count == 4 * arraySize;
+				case ShaderVarType.Mat2:
+					return type == VertexFieldType.Float && count == 4 * arraySize;
+				case ShaderVarType.Mat3:
+					return type == VertexFieldType.Float && count == 9 * arraySize;
+				case ShaderVarType.Mat4:
+					return type == VertexFieldType.Float && count == 16 * arraySize;
+			}
+			return false;
+		}
 		/// <summary>
 		/// Assigns the specified data to the OpenGL uniform represented by this <see cref="ShaderVarInfo"/>.
 		/// </summary>
