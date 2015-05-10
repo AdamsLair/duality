@@ -20,8 +20,18 @@ namespace Duality.Drawing
 		TriangleStrip,
 		TriangleFan,
 		Quads,			// deprecated in modern opengl
-		QuadStrip,		// deprecated in modern opengl
-		Polygon			// deprecated in modern opengl
+	}
+
+	public static class ExtMethodsVertexMode
+	{
+		public static bool IsBatchableMode(this VertexMode mode)
+		{
+			return 
+				mode == VertexMode.Lines || 
+				mode == VertexMode.Points || 
+				mode == VertexMode.Quads || 
+				mode == VertexMode.Triangles;
+		}
 	}
 
 	/// <summary>

@@ -642,7 +642,7 @@ namespace Duality.Drawing
 			}
 
 			this.State.TransformVertices(vertices, pos.Xy, scale);
-			this.device.AddVertices(this.State.MaterialDirect, VertexMode.Polygon, vertices, points.Length);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.TriangleFan, vertices, points.Length);
 		}
 		/// <summary>
 		/// Fills a polygons outline. All vertices share the same Z value.

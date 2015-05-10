@@ -10,29 +10,8 @@ using Duality.Resources;
 
 namespace Duality.Drawing
 {
-	public class DrawDevice : IDrawDevice, IDisposable
+	public class DrawDevice : IDrawDevice, IVertexUploader, IDisposable
 	{
-		private interface IDrawBatch
-		{
-			int SortIndex { get; }
-			float ZSortIndex { get; }
-			int VertexCount { get; }
-			VertexMode VertexMode { get; }
-			BatchInfo Material { get; }
-			VertexFormatDefinition VertexFormat { get; }
-
-			void UploadToVBO(List<IDrawBatch> batches);
-			void SetupVBO();
-			void FinishVBO();
-			void Render(IDrawDevice device, ref int vertexOffset, ref IDrawBatch lastBatchRendered);
-			void FinishRendering();
-
-			bool CanShareVBO(IDrawBatch other);
-			bool CanAppendJIT<T>(float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode) where T : struct, IVertexData;
-			void AppendJIT(object vertexData, int length);
-			bool CanAppend(IDrawBatch other);
-			void Append(IDrawBatch other);
-		}
 		private class DrawBatch<T> : IDrawBatch where T : struct, IVertexData
 		{
 			private static T[] uploadBuffer = null;
@@ -98,113 +77,22 @@ namespace Duality.Drawing
 				}
 			}
 
-			public void SetupVBO()
-			{
-				DrawTechnique technique = this.material.Technique.Res ?? DrawTechnique.Solid.Res;
-				ShaderProgram program = technique.Shader.Res;
-
-				VertexFormatDefinition vertexFormat = this.vertices[0].Format;
-
-				VertexField[] elements = vertexFormat.Elements;
-				for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
-				{
-					switch (elements[elementIndex].Role)
-					{
-						case VertexFieldRole.Position:
-						{
-							GL.EnableClientState(ArrayCap.VertexArray);
-							GL.VertexPointer(
-								elements[elementIndex].Count, 
-								VertexPointerType.Float, 
-								vertexFormat.Size, 
-								elements[elementIndex].Offset);
-							break;
-						}
-						case VertexFieldRole.TexCoord:
-						{
-							GL.EnableClientState(ArrayCap.TextureCoordArray);
-							GL.TexCoordPointer(
-								elements[elementIndex].Count, 
-								TexCoordPointerType.Float, 
-								vertexFormat.Size, 
-								elements[elementIndex].Offset);
-							break;
-						}
-						case VertexFieldRole.Color:
-						{
-							ColorPointerType attribType;
-							switch (elements[elementIndex].Type)
-							{
-								default:
-								case VertexFieldType.Float: attribType = ColorPointerType.Float; break;
-								case VertexFieldType.Byte: attribType = ColorPointerType.UnsignedByte; break;
-							}
-
-							GL.EnableClientState(ArrayCap.ColorArray);
-							GL.ColorPointer(
-								elements[elementIndex].Count, 
-								attribType, 
-								vertexFormat.Size, 
-								elements[elementIndex].Offset);
-							break;
-						}
-						default:
-						{
-							ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
-							if (varInfo != null)
-							{
-								int selectedVar = -1;
-								for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
-								{
-									if (varInfo[varIndex].glVarLoc == -1) continue;
-									if (!varInfo[varIndex].MatchesVertexElement(
-										elements[elementIndex].Type, 
-										elements[elementIndex].Count))
-										continue;
-								
-									selectedVar = varIndex;
-									break;
-								}
-								if (selectedVar == -1) break;
-
-								VertexAttribPointerType attribType;
-								switch (elements[elementIndex].Type)
-								{
-									default:
-									case VertexFieldType.Float: attribType = VertexAttribPointerType.Float; break;
-									case VertexFieldType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
-								}
-
-								GL.EnableVertexAttribArray(varInfo[selectedVar].glVarLoc);
-								GL.VertexAttribPointer(
-									varInfo[selectedVar].glVarLoc, 
-									elements[elementIndex].Count, 
-									attribType, 
-									false, 
-									vertexFormat.Size, 
-									elements[elementIndex].Offset);
-							}
-							break;
-						}
-					}
-				}
-			}
-			public void UploadToVBO(List<IDrawBatch> batches)
+			public void UploadVertices(IVertexUploader target, List<IDrawBatch> uploadBatches)
 			{
 				int vertexCount = 0;
 				T[] vertexData = null;
 
-				if (batches.Count == 1)
+				if (uploadBatches.Count == 1)
 				{
 					// Only one batch? Don't bother copying data
-					DrawBatch<T> b = batches[0] as DrawBatch<T>;
+					DrawBatch<T> b = uploadBatches[0] as DrawBatch<T>;
 					vertexData = b.vertices;
 					vertexCount = b.vertices.Length;
 				}
 				else
 				{
 					// Check how many vertices we got
-					vertexCount = batches.Sum(t => t.VertexCount);
+					vertexCount = uploadBatches.Sum(t => t.VertexCount);
 					
 					// Allocate a static / shared buffer for uploading vertices
 					if (uploadBuffer == null)
@@ -215,88 +103,19 @@ namespace Duality.Drawing
 					// Collect vertex data in one array
 					int curVertexPos = 0;
 					vertexData = uploadBuffer;
-					for (int i = 0; i < batches.Count; i++)
+					for (int i = 0; i < uploadBatches.Count; i++)
 					{
-						DrawBatch<T> b = batches[i] as DrawBatch<T>;
+						DrawBatch<T> b = uploadBatches[i] as DrawBatch<T>;
 						Array.Copy(b.vertices, 0, vertexData, curVertexPos, b.vertexCount);
 						curVertexPos += b.vertexCount;
 					}
 				}
 
-				// Submit vertex data to GPU
-				VertexFormatDefinition vertexFormat = this.vertices[0].Format;
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexFormat.Size * vertexCount), IntPtr.Zero, BufferUsageHint.StreamDraw);
-				GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vertexFormat.Size * vertexCount), vertexData, BufferUsageHint.StreamDraw);
-			}
-			public void FinishVBO()
-			{
-				DrawTechnique technique = this.material.Technique.Res ?? DrawTechnique.Solid.Res;
-				ShaderProgram program = technique.Shader.Res;
-
-				VertexFormatDefinition vertexFormat = this.vertices[0].Format;
-
-				VertexField[] elements = vertexFormat.Elements;
-				for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
-				{
-					switch (elements[elementIndex].Role)
-					{
-						case VertexFieldRole.Position:
-						{
-							GL.DisableClientState(ArrayCap.VertexArray);
-							break;
-						}
-						case VertexFieldRole.TexCoord:
-						{
-							GL.DisableClientState(ArrayCap.TextureCoordArray);
-							break;
-						}
-						case VertexFieldRole.Color:
-						{
-							GL.DisableClientState(ArrayCap.ColorArray);
-							break;
-						}
-						default:
-						{
-							ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
-							if (varInfo != null)
-							{
-								int selectedVar = -1;
-								for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
-								{
-									if (varInfo[varIndex].glVarLoc == -1) continue;
-									if (!varInfo[varIndex].MatchesVertexElement(
-										elements[elementIndex].Type, 
-										elements[elementIndex].Count))
-										continue;
-								
-									selectedVar = varIndex;
-									break;
-								}
-								if (selectedVar == -1) break;
-
-								GL.DisableVertexAttribArray(varInfo[selectedVar].glVarLoc);
-							}
-							break;
-						}
-					}
-				}
-			}
-			public void Render(IDrawDevice device, ref int vertexOffset, ref IDrawBatch lastBatchRendered)
-			{
-				if (lastBatchRendered == null || lastBatchRendered.Material != this.material)
-					this.material.SetupForRendering(device, lastBatchRendered == null ? null : lastBatchRendered.Material);
-
-				GL.DrawArrays(GetOpenTKVertexMode(this.vertexMode), vertexOffset, this.vertexCount);
-
-				vertexOffset += this.vertexCount;
-				lastBatchRendered = this;
-			}
-			public void FinishRendering()
-			{
-				this.material.FinishRendering();
+				// Submit vertex data to the GPU
+				target.UploadBatchVertices<T>(this.vertices[0].Format, vertexData, vertexCount);
 			}
 
-			public bool CanShareVBO(IDrawBatch other)
+			public bool SameVertexType(IDrawBatch other)
 			{
 				return other is DrawBatch<T>;
 			}
@@ -309,7 +128,7 @@ namespace Duality.Drawing
 				return 
 					vertexMode == this.vertexMode && 
 					this is DrawBatch<U> &&
-					IsVertexModeAppendable(this.VertexMode) &&
+					this.vertexMode.IsBatchableMode() &&
 					material == this.material;
 			}
 			public void AppendJIT(object vertexData, int length)
@@ -334,7 +153,7 @@ namespace Duality.Drawing
 				return
 					other.VertexMode == this.vertexMode && 
 					other is DrawBatch<T> &&
-					IsVertexModeAppendable(this.VertexMode) &&
+					this.vertexMode.IsBatchableMode() &&
 					other.Material == this.material;
 			}
 			public void Append(IDrawBatch other)
@@ -355,14 +174,6 @@ namespace Duality.Drawing
 					this.zSortIndex = CalcZSortIndex(this.vertices, this.vertexCount);
 			}
 
-			public static bool IsVertexModeAppendable(VertexMode mode)
-			{
-				return 
-					mode == VertexMode.Lines || 
-					mode == VertexMode.Points || 
-					mode == VertexMode.Quads || 
-					mode == VertexMode.Triangles;
-			}
 			public static float CalcZSortIndex(T[] vertices, int count = -1)
 			{
 				if (count < 0) count = vertices.Length;
@@ -372,23 +183,6 @@ namespace Duality.Drawing
 					zSortIndex += vertices[i].Pos.Z;
 				}
 				return zSortIndex / count;
-			}
-
-			private static PrimitiveType GetOpenTKVertexMode(VertexMode mode)
-			{
-				switch (mode)
-				{
-					default:
-					case VertexMode.Points:			return PrimitiveType.Points;
-					case VertexMode.Lines:			return PrimitiveType.Lines;
-					case VertexMode.LineStrip:		return PrimitiveType.LineStrip;
-					case VertexMode.LineLoop:		return PrimitiveType.LineLoop;
-					case VertexMode.TriangleStrip:	return PrimitiveType.TriangleStrip;
-					case VertexMode.TriangleFan:	return PrimitiveType.TriangleFan;
-					case VertexMode.Quads:			return PrimitiveType.Quads;
-					case VertexMode.QuadStrip:		return PrimitiveType.QuadStrip;
-					case VertexMode.Polygon:		return PrimitiveType.Polygon;
-				}
 			}
 		}
 		
@@ -1004,22 +798,25 @@ namespace Duality.Drawing
 				IDrawBatch currentBatch = buffer[i];
 				IDrawBatch nextBatch = (i < buffer.Count - 1) ? buffer[i + 1] : null;
 
-				if (lastBatch == null || lastBatch.CanShareVBO(currentBatch))
+				if (lastBatch == null || lastBatch.SameVertexType(currentBatch))
 				{
 					batchesSharingVBO.Add(currentBatch);
 				}
 
-				if (batchesSharingVBO.Count > 0 && (nextBatch == null || !currentBatch.CanShareVBO(nextBatch)))
+				if (batchesSharingVBO.Count > 0 && (nextBatch == null || !currentBatch.SameVertexType(nextBatch)))
 				{
 					int vertexOffset = 0;
-					batchesSharingVBO[0].UploadToVBO(batchesSharingVBO);
+					batchesSharingVBO[0].UploadVertices(this, batchesSharingVBO);
 					drawCalls++;
 
-					foreach (IDrawBatch renderBatch in batchesSharingVBO)
+					foreach (IDrawBatch batch in batchesSharingVBO)
 					{
-						renderBatch.SetupVBO();
-						renderBatch.Render(this, ref vertexOffset, ref lastBatchRendered);
-						renderBatch.FinishVBO();
+						PrepareRenderBatch(batch);
+						RenderBatch(batch, vertexOffset, lastBatchRendered);
+						FinishRenderBatch(batch);
+
+						vertexOffset += batch.VertexCount;
+						lastBatchRendered = batch;
 						drawCalls++;
 					}
 
@@ -1031,7 +828,9 @@ namespace Duality.Drawing
 			}
 
 			if (lastBatchRendered != null)
-				lastBatchRendered.FinishRendering();
+			{
+				lastBatchRendered.Material.FinishRendering();
+			}
 
 			if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.EndMeasure();
 			return drawCalls;
@@ -1039,6 +838,165 @@ namespace Duality.Drawing
 		private void FinishBatchRendering()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+		}
+
+		private void PrepareRenderBatch(IDrawBatch renderBatch)
+		{
+			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
+			ShaderProgram program = technique.Shader.Res;
+
+			VertexFormatDefinition vertexFormat = renderBatch.VertexFormat;
+
+			VertexField[] elements = vertexFormat.Elements;
+			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+			{
+				switch (elements[elementIndex].Role)
+				{
+					case VertexFieldRole.Position:
+					{
+						GL.EnableClientState(ArrayCap.VertexArray);
+						GL.VertexPointer(
+							elements[elementIndex].Count, 
+							VertexPointerType.Float, 
+							vertexFormat.Size, 
+							elements[elementIndex].Offset);
+						break;
+					}
+					case VertexFieldRole.TexCoord:
+					{
+						GL.EnableClientState(ArrayCap.TextureCoordArray);
+						GL.TexCoordPointer(
+							elements[elementIndex].Count, 
+							TexCoordPointerType.Float, 
+							vertexFormat.Size, 
+							elements[elementIndex].Offset);
+						break;
+					}
+					case VertexFieldRole.Color:
+					{
+						ColorPointerType attribType;
+						switch (elements[elementIndex].Type)
+						{
+							default:
+							case VertexFieldType.Float: attribType = ColorPointerType.Float; break;
+							case VertexFieldType.Byte: attribType = ColorPointerType.UnsignedByte; break;
+						}
+
+						GL.EnableClientState(ArrayCap.ColorArray);
+						GL.ColorPointer(
+							elements[elementIndex].Count, 
+							attribType, 
+							vertexFormat.Size, 
+							elements[elementIndex].Offset);
+						break;
+					}
+					default:
+					{
+						ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
+						if (varInfo != null)
+						{
+							int selectedVar = -1;
+							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
+							{
+								if (varInfo[varIndex].glVarLoc == -1) continue;
+								if (!varInfo[varIndex].MatchesVertexElement(
+									elements[elementIndex].Type, 
+									elements[elementIndex].Count))
+									continue;
+								
+								selectedVar = varIndex;
+								break;
+							}
+							if (selectedVar == -1) break;
+
+							VertexAttribPointerType attribType;
+							switch (elements[elementIndex].Type)
+							{
+								default:
+								case VertexFieldType.Float: attribType = VertexAttribPointerType.Float; break;
+								case VertexFieldType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
+							}
+
+							GL.EnableVertexAttribArray(varInfo[selectedVar].glVarLoc);
+							GL.VertexAttribPointer(
+								varInfo[selectedVar].glVarLoc, 
+								elements[elementIndex].Count, 
+								attribType, 
+								false, 
+								vertexFormat.Size, 
+								elements[elementIndex].Offset);
+						}
+						break;
+					}
+				}
+			}
+		}
+		private void RenderBatch(IDrawBatch renderBatch, int vertexOffset, IDrawBatch lastBatchRendered)
+		{
+			if (lastBatchRendered == null || lastBatchRendered.Material != renderBatch.Material)
+				renderBatch.Material.SetupForRendering(this, lastBatchRendered == null ? null : lastBatchRendered.Material);
+
+			GL.DrawArrays(GetOpenTKVertexMode(renderBatch.VertexMode), vertexOffset, renderBatch.VertexCount);
+
+			lastBatchRendered = renderBatch;
+		}
+		void IVertexUploader.UploadBatchVertices<T>(VertexFormatDefinition format, T[] vertices, int vertexCount)
+		{
+			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(format.Size * vertexCount), IntPtr.Zero, BufferUsageHint.StreamDraw);
+			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(format.Size * vertexCount), vertices, BufferUsageHint.StreamDraw);
+		}
+		private void FinishRenderBatch(IDrawBatch renderBatch)
+		{
+			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
+			ShaderProgram program = technique.Shader.Res;
+
+			VertexFormatDefinition vertexFormat = renderBatch.VertexFormat;
+
+			VertexField[] elements = vertexFormat.Elements;
+			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+			{
+				switch (elements[elementIndex].Role)
+				{
+					case VertexFieldRole.Position:
+					{
+						GL.DisableClientState(ArrayCap.VertexArray);
+						break;
+					}
+					case VertexFieldRole.TexCoord:
+					{
+						GL.DisableClientState(ArrayCap.TextureCoordArray);
+						break;
+					}
+					case VertexFieldRole.Color:
+					{
+						GL.DisableClientState(ArrayCap.ColorArray);
+						break;
+					}
+					default:
+					{
+						ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
+						if (varInfo != null)
+						{
+							int selectedVar = -1;
+							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
+							{
+								if (varInfo[varIndex].glVarLoc == -1) continue;
+								if (!varInfo[varIndex].MatchesVertexElement(
+									elements[elementIndex].Type, 
+									elements[elementIndex].Count))
+									continue;
+								
+								selectedVar = varIndex;
+								break;
+							}
+							if (selectedVar == -1) break;
+
+							GL.DisableVertexAttribArray(varInfo[selectedVar].glVarLoc);
+						}
+						break;
+					}
+				}
+			}
 		}
 
 		public static void RenderVoid(Rect viewportRect)
@@ -1051,6 +1009,21 @@ namespace Duality.Drawing
 			GL.ClearDepth(1.0d);
 			GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+		}
+
+		private static PrimitiveType GetOpenTKVertexMode(VertexMode mode)
+		{
+			switch (mode)
+			{
+				default:
+				case VertexMode.Points:			return PrimitiveType.Points;
+				case VertexMode.Lines:			return PrimitiveType.Lines;
+				case VertexMode.LineStrip:		return PrimitiveType.LineStrip;
+				case VertexMode.LineLoop:		return PrimitiveType.LineLoop;
+				case VertexMode.TriangleStrip:	return PrimitiveType.TriangleStrip;
+				case VertexMode.TriangleFan:	return PrimitiveType.TriangleFan;
+				case VertexMode.Quads:			return PrimitiveType.Quads;
+			}
 		}
 	}
 }
