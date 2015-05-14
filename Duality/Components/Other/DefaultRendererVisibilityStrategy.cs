@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Duality.Drawing
+using Duality.Drawing;
+
+namespace Duality.Components
 {
 	/// <summary>
 	/// Represents the default strategy to determine which <see cref="ICmpRenderer">renderers</see> are currently visible
