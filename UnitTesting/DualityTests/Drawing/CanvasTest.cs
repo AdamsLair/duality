@@ -270,8 +270,6 @@ namespace Duality.Tests.Drawing
 					renderMethod(canvas);
 				}
 				device.Render(ClearFlag.All, ColorRgba.TransparentBlack, 1.0f);
-				
-				RenderTarget.Bind(null);
 
 				pixelData = texture.GetPixelData();
 			}

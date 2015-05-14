@@ -588,9 +588,6 @@ namespace Duality.Drawing
 		}
 		public void Render(ClearFlag clearFlags, ColorRgba clearColor, float clearDepth)
 		{
-			// Prepare the target surface for rendering
-			RenderTarget.Bind(this.renderTarget);
-
 			// Process drawcalls
 			this.OptimizeBatches();
 			RenderOptions options = new RenderOptions
@@ -601,7 +598,8 @@ namespace Duality.Drawing
 				Viewport = this.viewportRect,
 				RenderMode = this.renderMode,
 				ModelViewMatrix = this.matModelView,
-				ProjectionMatrix = this.matProjection
+				ProjectionMatrix = this.matProjection,
+				Target = this.renderTarget
 			};
 			RenderStats stats = new RenderStats();
 			DualityApp.GraphicsBackend.BeginRendering(this, options, stats);
@@ -733,7 +731,6 @@ namespace Duality.Drawing
 
 		public static void RenderVoid(Rect viewportRect)
 		{
-			RenderTarget.Bind(null);
 			RenderOptions options = new RenderOptions
 			{
 				ClearFlags = ClearFlag.All,

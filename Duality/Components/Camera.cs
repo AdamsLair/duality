@@ -287,7 +287,6 @@ namespace Duality.Components
 			{
 				this.RenderSinglePass(viewportRect, t);
 			}
-			RenderTarget.Bind(null);
 			this.drawDevice.VisibilityMask = this.visibilityMask;
 			this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
 			this.drawDevice.UpdateMatrices(); // Reset matrices for projection calculations during update
@@ -326,8 +325,6 @@ namespace Duality.Components
 				this.CollectDrawcalls();
 				this.drawDevice.Render(ClearFlag.All, ColorRgba.Black, 1.0f);
 				this.drawDevice.PickingIndex = 0;
-
-				RenderTarget.Bind(null);
 			}
 
 			// Move data to local buffer

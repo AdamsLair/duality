@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality.Drawing;
+using Duality.Resources;
 
 namespace Duality.Backend
 {
 	public class RenderOptions
 	{
+		private ContentRef<RenderTarget>	target	= null;
 		private ClearFlag		clearFlags			= ClearFlag.All;
 		private ColorRgba		clearColor			= ColorRgba.TransparentBlack;
 		private float			clearDepth			= 1.0f;
@@ -15,7 +17,12 @@ namespace Duality.Backend
 		private	RenderMatrix	renderMode			= RenderMatrix.OrthoScreen;
 		private	Matrix4			modelViewMatrix		= Matrix4.Identity;
 		private	Matrix4			projectionMatrix	= Matrix4.Identity;
-
+		
+		public ContentRef<RenderTarget> Target
+		{
+			get { return this.target; }
+			set { this.target = value; }
+		}
 		public ClearFlag ClearFlags
 		{
 			get { return this.clearFlags; }
