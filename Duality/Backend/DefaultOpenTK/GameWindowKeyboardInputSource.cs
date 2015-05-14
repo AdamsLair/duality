@@ -1,9 +1,10 @@
 ﻿using System;
+using Duality.Input;
 using System.Text;
 
 using OpenTK;
 
-namespace Duality.Input
+namespace Duality.Backend.DefaultOpenTK
 {
 	public class GameWindowKeyboardInputSource : IKeyboardInputSource
 	{

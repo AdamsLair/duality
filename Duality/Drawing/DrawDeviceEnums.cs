@@ -141,6 +141,12 @@ namespace Duality.Drawing
 		All		= Color | Depth
 	}
 
+	public enum ShaderType
+	{
+		Vertex,
+		Fragment
+	}
+
 	[Flags]
 	public enum VisibilityFlag : uint
 	{

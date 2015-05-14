@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+
+using Duality.Input;
+
 using OpenTK.Input;
 
-namespace Duality.Input
+namespace Duality.Backend.DefaultOpenTK
 {
 	public class GlobalGamepadInputSource : IGamepadInputSource
 	{
@@ -78,6 +82,41 @@ namespace Duality.Input
 		public void SetVibration(float left, float right)
 		{
 			GamePad.SetVibration(this.deviceIndex, left, right);
+		}
+		
+		public static void UpdateAvailableDecives(GamepadInputCollection inputManager)
+		{
+			const int MinDeviceCheckCount = 8;
+
+			// Determine which devices are currently active already, so we can skip their indices
+			List<int> skipIndices = null;
+			foreach (GamepadInput input in inputManager)
+			{
+				GlobalGamepadInputSource existingDevice = input.Source as GlobalGamepadInputSource;
+				if (existingDevice != null)
+				{
+					if (skipIndices == null) skipIndices = new List<int>();
+					skipIndices.Add(existingDevice.deviceIndex);
+				}
+			}
+
+			// Iterate over device indices and see what responds
+			int deviceIndex = -1;
+			while (true)
+			{
+				deviceIndex++;
+
+				if (skipIndices != null && skipIndices.Contains(deviceIndex))
+					continue;
+
+				GlobalGamepadInputSource gamepad = new GlobalGamepadInputSource(deviceIndex);
+				gamepad.UpdateState();
+
+				if (gamepad.IsAvailable)
+					inputManager.AddSource(gamepad);
+				else if (deviceIndex >= MinDeviceCheckCount)
+					break;
+			}
 		}
 	}
 }

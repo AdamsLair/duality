@@ -1,13 +1,15 @@
 ﻿using System;
-using OpenTK.Input;
+using System.Collections.Generic;
 
-namespace Duality.Input
+using Duality.Input;
+
+namespace Duality.Backend.DefaultOpenTK
 {
 	public class GlobalJoystickInputSource : IJoystickInputSource
 	{
 		private	int	deviceIndex;
-		private	JoystickState state;
-		private	JoystickCapabilities caps;
+		private	OpenTK.Input.JoystickState state;
+		private	OpenTK.Input.JoystickCapabilities caps;
 		
 		public string Description
 		{
@@ -53,8 +55,43 @@ namespace Duality.Input
 
 		public void UpdateState()
 		{
-			this.caps = Joystick.GetCapabilities(this.deviceIndex);
-			this.state = Joystick.GetState(this.deviceIndex);
+			this.caps = OpenTK.Input.Joystick.GetCapabilities(this.deviceIndex);
+			this.state = OpenTK.Input.Joystick.GetState(this.deviceIndex);
+		}
+
+		public static void UpdateAvailableDecives(JoystickInputCollection inputManager)
+		{
+			const int MinDeviceCheckCount = 8;
+
+			// Determine which devices are currently active already, so we can skip their indices
+			List<int> skipIndices = null;
+			foreach (JoystickInput input in inputManager)
+			{
+				GlobalJoystickInputSource existingDevice = input.Source as GlobalJoystickInputSource;
+				if (existingDevice != null)
+				{
+					if (skipIndices == null) skipIndices = new List<int>();
+					skipIndices.Add(existingDevice.deviceIndex);
+				}
+			}
+
+			// Iterate over device indices and see what responds
+			int deviceIndex = -1;
+			while (true)
+			{
+				deviceIndex++;
+
+				if (skipIndices != null && skipIndices.Contains(deviceIndex))
+					continue;
+
+				GlobalJoystickInputSource joystick = new GlobalJoystickInputSource(deviceIndex);
+				joystick.UpdateState();
+
+				if (joystick.IsAvailable)
+					inputManager.AddSource(joystick);
+				else if (deviceIndex >= MinDeviceCheckCount)
+					break;
+			}
 		}
 
 		private static OpenTK.Input.JoystickButton GetOpenTKJoystickButton(JoystickButton button)

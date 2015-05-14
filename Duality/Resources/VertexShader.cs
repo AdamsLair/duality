@@ -4,6 +4,7 @@ using Duality.Properties;
 using Duality.Editor;
 
 using OpenTK.Graphics.OpenGL;
+using ShaderType = Duality.Drawing.ShaderType;
 
 
 namespace Duality.Resources
@@ -45,9 +46,9 @@ namespace Duality.Resources
 		}
 
 
-		protected override ShaderType OglShaderType
+		protected override ShaderType Type
 		{
-			get { return ShaderType.VertexShader; }
+			get { return ShaderType.Vertex; }
 		}
 
 		public VertexShader() : base(DefaultContent.MinimalVert) {}

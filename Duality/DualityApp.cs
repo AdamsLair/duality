@@ -419,7 +419,7 @@ namespace Duality
 			LoadAppData();
 			LoadUserData();
 
-			graphicsBack = new Duality.Backend.DefaultOpenTK.DefaultOpenTKBackend();
+			graphicsBack = new Backend.DefaultOpenTK.DefaultOpenTKBackend();
 			graphicsBack.Init();
 
 			sound = new SoundDevice();
@@ -455,8 +455,6 @@ namespace Duality
 			OnUserDataChanged();
 
 			Formatter.InitDefaultMethod();
-			joysticks.AddGlobalDevices();
-			gamepads.AddGlobalDevices();
 
 			Log.Core.Write(
 				"DualityApp initialized" + Environment.NewLine +
@@ -468,7 +466,10 @@ namespace Duality
 				Environment.Is64BitProcess);
 
 			initialized = true;
+
 			InitPlugins();
+			Backend.DefaultOpenTK.GlobalJoystickInputSource.UpdateAvailableDecives(joysticks);
+			Backend.DefaultOpenTK.GlobalGamepadInputSource.UpdateAvailableDecives(gamepads);
 		}
 
 		/// <summary>

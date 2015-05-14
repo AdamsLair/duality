@@ -190,8 +190,8 @@ namespace Duality.Launcher
 				DualityApp.InitGraphics();
 
 				// Input setup
-				DualityApp.Mouse.Source = new GameWindowMouseInputSource(launcherWindow, launcherWindow.SetMouseDeviceX, launcherWindow.SetMouseDeviceY);
-				DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(launcherWindow);
+				DualityApp.Mouse.Source = new Duality.Backend.DefaultOpenTK.GameWindowMouseInputSource(launcherWindow, launcherWindow.SetMouseDeviceX, launcherWindow.SetMouseDeviceY);
+				DualityApp.Keyboard.Source = new Duality.Backend.DefaultOpenTK.GameWindowKeyboardInputSource(launcherWindow);
 
 				// Debug Logs
 				Log.Core.Write("Graphics window initialized: {0}Mode: {1}{0}VSync: {2}{0}SwapInterval: {3}{0}Flags: {4}{0}", 

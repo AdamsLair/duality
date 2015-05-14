@@ -4,6 +4,7 @@ using Duality.Properties;
 using Duality.Editor;
 
 using OpenTK.Graphics.OpenGL;
+using ShaderType = Duality.Drawing.ShaderType;
 
 
 namespace Duality.Resources
@@ -60,9 +61,9 @@ namespace Duality.Resources
 		}
 
 
-		protected override ShaderType OglShaderType
+		protected override ShaderType Type
 		{
-			get { return ShaderType.FragmentShader; }
+			get { return ShaderType.Fragment; }
 		}
 		
 		public FragmentShader() : base(DefaultContent.MinimalFrag) {}

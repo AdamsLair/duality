@@ -1,7 +1,8 @@
 ﻿using System;
+using Duality.Input;
 using OpenTK;
 
-namespace Duality.Input
+namespace Duality.Backend.DefaultOpenTK
 {
 	public class GameWindowMouseInputSource : IMouseInputSource
 	{

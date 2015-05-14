@@ -9,6 +9,7 @@ using Duality.Editor;
 using Duality.Cloning;
 
 using OpenTK.Graphics.OpenGL;
+using ShaderType = Duality.Drawing.ShaderType;
 
 namespace Duality.Resources
 {
@@ -238,7 +239,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// The type of OpenGL shader that is represented.
 		/// </summary>
-		protected abstract ShaderType OglShaderType { get; }
+		protected abstract ShaderType Type { get; }
 		/// <summary>
 		/// [GET] The shaders OpenGL id.
 		/// </summary>
@@ -337,7 +338,7 @@ namespace Duality.Resources
 
 			if (this.compiled) return;
 			if (String.IsNullOrEmpty(this.source)) return;
-			if (this.glShaderId == 0) this.glShaderId = GL.CreateShader(this.OglShaderType);
+			if (this.glShaderId == 0) this.glShaderId = GL.CreateShader(GetOpenTKShaderType(this.Type));
 			GL.ShaderSource(this.glShaderId, this.source);
 			GL.CompileShader(this.glShaderId);
 
@@ -346,7 +347,7 @@ namespace Duality.Resources
 			if (result == 0)
 			{
 				string infoLog = GL.GetShaderInfoLog(this.glShaderId);
-				Log.Core.WriteError("Error compiling {0}. InfoLog:\n{1}", this.OglShaderType, infoLog);
+				Log.Core.WriteError("Error compiling {0}. InfoLog:\n{1}", this.Type, infoLog);
 				return;
 			}
 			this.compiled = true;
@@ -423,12 +424,21 @@ namespace Duality.Resources
 				this.glShaderId = 0;
 			}
 		}
-
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(target, operation);
 			AbstractShader targetShader = target as AbstractShader;
 			if (this.compiled) targetShader.Compile();
+		}
+
+		private static OpenTK.Graphics.OpenGL.ShaderType GetOpenTKShaderType(ShaderType type)
+		{
+			switch (type)
+			{
+				case ShaderType.Vertex:		return OpenTK.Graphics.OpenGL.ShaderType.VertexShader;
+				case ShaderType.Fragment:	return OpenTK.Graphics.OpenGL.ShaderType.FragmentShader;
+			}
+			return OpenTK.Graphics.OpenGL.ShaderType.VertexShader;
 		}
 	}
 }

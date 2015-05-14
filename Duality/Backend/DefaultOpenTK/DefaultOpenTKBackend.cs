@@ -27,7 +27,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats = null)
+		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats)
 		{
 			this.currentDevice = device;
 			this.renderStats = stats;
