@@ -78,9 +78,9 @@ namespace Duality.Drawing
 		{
 			get
 			{
-				if (this.textures == null || this.textures.Count == 0) return ContentRef<Texture>.Null;
+				if (this.textures == null || this.textures.Count == 0) return null;
 				ContentRef<Texture> mainTexRef;
-				if (!this.textures.TryGetValue(ShaderVarInfo.VarName_MainTex, out mainTexRef)) return ContentRef<Texture>.Null;
+				if (!this.textures.TryGetValue(ShaderVarInfo.VarName_MainTex, out mainTexRef)) return null;
 				return mainTexRef;
 			}
 			set
@@ -251,10 +251,10 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public ContentRef<Texture> GetTexture(string name)
 		{
-			if (this.textures == null) return ContentRef<Texture>.Null;
+			if (this.textures == null) return null;
 			ContentRef<Texture> result;
 			if (!this.textures.TryGetValue(name, out result))
-				return ContentRef<Texture>.Null;
+				return null;
 			else
 				return result;
 		}

@@ -120,7 +120,7 @@ namespace Duality
 		}
 		public ContentRef<Resource> Content
 		{
-			get { return this.isDirectory ? ContentRef<Resource>.Null : this.content; }
+			get { return this.isDirectory ? null : this.content; }
 		}
 
 		public ResourceEventArgs(string path) : this(new ContentRef<Resource>(null, path)) {}

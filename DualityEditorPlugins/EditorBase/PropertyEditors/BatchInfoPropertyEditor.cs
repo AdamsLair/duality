@@ -98,7 +98,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						}
 						if (texRemoveSched != null)
 						{
-							foreach (string name in texRemoveSched) info.SetTexture(name, ContentRef<Texture>.Null);
+							foreach (string name in texRemoveSched) info.SetTexture(name, null);
 							invokeSetter = true;
 						}
 						if (uniRemoveSched != null)
@@ -495,7 +495,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				IEnumerator<ContentRef<Texture>> valuesEnum = values.Cast<ContentRef<Texture>>().GetEnumerator();
 				BatchInfo[] batchInfoArray = this.GetValue().Cast<BatchInfo>().ToArray();
 
-				ContentRef<Texture> curValue = ContentRef<Texture>.Null;
+				ContentRef<Texture> curValue = null;
 				if (valuesEnum.MoveNext()) curValue = valuesEnum.Current;
 				foreach (BatchInfo info in batchInfoArray)
 				{

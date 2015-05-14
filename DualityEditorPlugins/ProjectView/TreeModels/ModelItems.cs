@@ -167,7 +167,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 	}
 	public class ResourceNode : NodeBase
 	{
-		private	IContentRef	res		= ContentRef<Resource>.Null;
+		private	IContentRef	res		= null;
 		private	Type		resType	= null;
 
 		public IContentRef ResLink

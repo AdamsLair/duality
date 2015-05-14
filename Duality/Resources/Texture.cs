@@ -216,7 +216,7 @@ namespace Duality.Resources
 		}
 
 		
-		private	ContentRef<Pixmap>	basePixmap	= ContentRef<Pixmap>.Null;
+		private	ContentRef<Pixmap>	basePixmap	= null;
 		private	Vector2				size		= Vector2.Zero;
 		private	TextureSizeMode		texSizeMode	= TextureSizeMode.Default;
 		private	TextureMagFilter	filterMag	= TextureMagFilter.Linear;

@@ -170,7 +170,7 @@ namespace Duality.Resources
 
 
 		private	BlendMode					blendType	= BlendMode.Solid;
-		private	ContentRef<ShaderProgram>	shader		= ContentRef<ShaderProgram>.Null;
+		private	ContentRef<ShaderProgram>	shader		= null;
 		private	Type						prefType	= null;
 		[DontSerialize]
 		private	VertexDeclaration		prefFormat	= null;
@@ -352,7 +352,7 @@ namespace Duality.Resources
 		public void FinishRendering()
 		{
 			this.SetupBlendType(BlendMode.Reset);
-			ShaderProgram.Bind(ContentRef<ShaderProgram>.Null);
+			ShaderProgram.Bind(null);
 			Texture.ResetBinding();
 		}
 

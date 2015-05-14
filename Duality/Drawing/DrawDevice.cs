@@ -733,7 +733,7 @@ namespace Duality.Drawing
 
 		public static void RenderVoid(Rect viewportRect)
 		{
-			RenderTarget.Bind(ContentRef<RenderTarget>.Null);
+			RenderTarget.Bind(null);
 			RenderOptions options = new RenderOptions
 			{
 				ClearFlags = ClearFlag.All,

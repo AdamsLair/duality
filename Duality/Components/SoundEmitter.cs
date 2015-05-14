@@ -22,7 +22,7 @@ namespace Duality.Components
 		/// </summary>
 		public class Source : ICloneExplicit
 		{
-			private	ContentRef<Sound>	sound			= ContentRef<Sound>.Null;
+			private	ContentRef<Sound>	sound			= null;
 			private	bool				looped			= true;
 			private	bool				paused			= false;
 			private	float				volume			= 1.0f;

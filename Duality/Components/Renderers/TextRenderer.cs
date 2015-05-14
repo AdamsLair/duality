@@ -21,7 +21,7 @@ namespace Duality.Components.Renderers
 		protected	FormattedText			text		= new FormattedText("Hello World");
 		protected	BatchInfo				customMat	= null;
 		protected	ColorRgba				colorTint	= ColorRgba.White;
-		protected	ContentRef<Material>	iconMat		= ContentRef<Material>.Null;
+		protected	ContentRef<Material>	iconMat		= null;
 		protected	int						offset		= 0;
 		[DontSerialize] protected	VertexC1P3T2[][]	vertFont	= null;
 		[DontSerialize] protected	VertexC1P3T2[]		vertIcon	= null;

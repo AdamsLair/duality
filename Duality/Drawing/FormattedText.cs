@@ -511,7 +511,7 @@ namespace Duality.Drawing
 					this.fontIndex = fontChangeElem.FontIndex;
 
 					bool fontValid = this.parent.fonts != null && this.fontIndex >= 0 && this.fontIndex < this.parent.fonts.Length;
-					ContentRef<Font> font = fontValid ? this.parent.fonts[this.fontIndex] : ContentRef<Font>.Null;
+					ContentRef<Font> font = fontValid ? this.parent.fonts[this.fontIndex] : null;
 					this.font = font.Res;
 					this.elemIndex++;
 				}

@@ -30,7 +30,7 @@ namespace Duality.Components
 			private RenderMatrix				matrixMode		= RenderMatrix.PerspectiveWorld;
 			private	VisibilityFlag				visibilityMask	= VisibilityFlag.AllGroups;
 			private	BatchInfo					input			= null;
-			private	ContentRef<RenderTarget>	output			= ContentRef<RenderTarget>.Null;
+			private	ContentRef<RenderTarget>	output			= null;
 
 			[DontSerialize]
 			private EventHandler<CollectDrawcallEventArgs> collectDrawcalls	= null;
@@ -145,7 +145,7 @@ namespace Duality.Components
 
 			public override string ToString()
 			{
-				ContentRef<Texture> inputTex = input == null ? ContentRef<Texture>.Null : input.MainTexture;
+				ContentRef<Texture> inputTex = input == null ? null : input.MainTexture;
 				return string.Format("{0} => {1}{2}",
 					inputTex.IsExplicitNull ? (input == null ? "Camera" : "Undefined") : inputTex.Name,
 					output.IsExplicitNull ? "Screen" : output.Name,

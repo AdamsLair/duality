@@ -261,7 +261,7 @@ namespace Duality.Resources
 		}
 
 
-		private PrefabLink() : this(null, ContentRef<Prefab>.Null) {}
+		private PrefabLink() : this(null, null) {}
 		/// <summary>
 		/// Creates a new PrefabLink, connecting a GameObject to a Prefab.
 		/// </summary>
