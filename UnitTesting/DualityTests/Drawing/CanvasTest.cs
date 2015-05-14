@@ -264,12 +264,12 @@ namespace Duality.Tests.Drawing
 				device.Target = renderTarget;
 				device.ViewportRect = new Rect(renderTarget.Width, renderTarget.Height);
 
-				device.BeginRendering(ClearFlag.All, ColorRgba.TransparentBlack, 1.0f);
+				device.PrepareForDrawcalls();
 				{
 					Canvas canvas = new Canvas(device);
 					renderMethod(canvas);
 				}
-				device.Render();
+				device.Render(ClearFlag.All, ColorRgba.TransparentBlack, 1.0f);
 				
 				RenderTarget.Bind(RenderTarget.None);
 
