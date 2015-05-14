@@ -85,12 +85,13 @@ namespace Duality.Resources
 						int lastTexId;
 						GL.GetInteger(GetPName.TextureBinding2D, out lastTexId);
 
-						if (lastTexId != curBound.targetInfo[i].target.Res.OglTexId) 
-							GL.BindTexture(TextureTarget.Texture2D, curBound.targetInfo[i].target.Res.OglTexId);
+						int texId = (curBound.targetInfo[i].target.Res.Native as Backend.DefaultOpenTK.NativeTexture).Handle;
+						if (lastTexId != texId) 
+							GL.BindTexture(TextureTarget.Texture2D, texId);
 
 						GL.Ext.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
-						if (lastTexId != curBound.targetInfo[i].target.Res.OglTexId) 
+						if (lastTexId != texId) 
 							GL.BindTexture(TextureTarget.Texture2D, lastTexId);
 					}
 				}
@@ -385,12 +386,13 @@ namespace Duality.Resources
 				for (int i = 0; i < this.targetInfo.Count; i++)
 				{
 					if (!this.targetInfo[i].target.IsAvailable) continue;
+					int texId = (this.targetInfo[i].target.Res.Native as Backend.DefaultOpenTK.NativeTexture).Handle;
 					FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
 					GL.Ext.FramebufferTexture2D(
 						FramebufferTarget.FramebufferExt, 
 						attachment, 
 						TextureTarget.Texture2D, 
-						this.targetInfo[i].target.Res.OglTexId, 
+						texId, 
 						0);
 					oglWidth = this.targetInfo[i].target.Res.TexelWidth;
 					oglHeight = this.targetInfo[i].target.Res.TexelHeight;
@@ -427,12 +429,13 @@ namespace Duality.Resources
 				for (int i = 0; i < this.targetInfo.Count; i++)
 				{
 					if (!this.targetInfo[i].target.IsAvailable) continue;
+					int texId = (this.targetInfo[i].target.Res.Native as Backend.DefaultOpenTK.NativeTexture).Handle;
 					FramebufferAttachment attachment = (FramebufferAttachment)((int)FramebufferAttachment.ColorAttachment0Ext + i);
 					GL.Ext.FramebufferTexture2D(
 						FramebufferTarget.FramebufferExt, 
 						attachment, 
 						TextureTarget.Texture2D, 
-						this.targetInfo[i].target.Res.OglTexId, 
+						texId, 
 						0);
 					oglWidth = this.targetInfo[i].target.Res.TexelWidth;
 					oglHeight = this.targetInfo[i].target.Res.TexelHeight;

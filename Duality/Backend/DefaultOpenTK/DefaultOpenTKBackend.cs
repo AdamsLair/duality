@@ -151,6 +151,11 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(declaration.Size * vertexCount), vertices, BufferUsageHint.StreamDraw);
 		}
 		
+		INativeTexture IGraphicsBackend.CreateTexture()
+		{
+			return new NativeTexture();
+		}
+
 		private void PrepareRenderBatch(IDrawBatch renderBatch)
 		{
 			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
@@ -327,5 +332,6 @@ namespace Duality.Backend.DefaultOpenTK
 				source.M31, source.M32, source.M33, source.M34,
 				source.M41, source.M42, source.M43, source.M44);
 		}
+
 	}
 }

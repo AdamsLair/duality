@@ -72,6 +72,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\DefaultOpenTK\NativeTexture.cs" />
+    <Compile Include="Backend\Graphics\INativeTexture.cs" />
     <Compile Include="Backend\Graphics\RenderStats.cs" />
     <Compile Include="Backend\IDualiyBackend.cs" />
     <Compile Include="Backend\Graphics\RenderOptions.cs" />

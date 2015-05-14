@@ -169,6 +169,115 @@ namespace Duality.Resources
 		}
 
 
+		private	static	bool			texInit			= false;
+		private	static	int				activeTexUnit	= 0;
+		private	static	Texture[]		curBound		= null;
+		private	static	TextureUnit[]	texUnits		= null;
+
+		/// <summary>
+		/// [GET] The currently bound primary Texture.
+		/// </summary>
+		public static ContentRef<Texture> BoundTexPrimary
+		{
+			get { return new ContentRef<Texture>(curBound[0]); }
+		}
+		/// <summary>
+		/// [GET] The currently bound secondary Texture
+		/// </summary>
+		public static ContentRef<Texture> BoundTexSecondary
+		{
+			get { return new ContentRef<Texture>(curBound[1]); }
+		}
+		/// <summary>
+		/// [GET] The currently bound tertiary Texture
+		/// </summary>
+		public static ContentRef<Texture> BoundTexTertiary
+		{
+			get { return new ContentRef<Texture>(curBound[2]); }
+		}
+		/// <summary>
+		/// [GET] The currently bound quartary Texture
+		/// </summary>
+		public static ContentRef<Texture> BoundTexQuartary
+		{
+			get { return new ContentRef<Texture>(curBound[3]); }
+		}
+		/// <summary>
+		/// [GET] All Textures that are currently bound
+		/// </summary>
+		public static ContentRef<Texture>[] BoundTex
+		{
+			get 
+			{ 
+				ContentRef<Texture>[] result = new ContentRef<Texture>[curBound.Length];
+				for (int i = 0; i < result.Length; i++)
+				{
+					result[i] = new ContentRef<Texture>(curBound[i]);
+				}
+				return result;
+			}
+		}
+
+		private static void InitTextureFields()
+		{
+			if (texInit) return;
+			
+			int numTexUnits;
+			GL.GetInteger(GetPName.MaxTextureImageUnits, out numTexUnits);
+			texUnits = new TextureUnit[numTexUnits];
+			curBound = new Texture[numTexUnits];
+
+			for (int i = 0; i < numTexUnits; i++)
+			{
+				texUnits[i] = (TextureUnit)((int)TextureUnit.Texture0 + i);
+			}
+
+			texInit = true;
+		}
+		/// <summary>
+		/// Binds the given Texture to a texture unit in order to use it for rendering.
+		/// </summary>
+		/// <param name="tex">The Texture to bind.</param>
+		/// <param name="texUnit">The texture unit where the Texture will be bound to.</param>
+		public static void BindTexture(ContentRef<Texture> tex, int texUnit = 0)
+		{
+			if (!texInit) InitTextureFields();
+
+			Texture texRes = tex.IsExplicitNull ? null : (tex.Res ?? Texture.Checkerboard.Res);
+			if (curBound[texUnit] == texRes) return;
+			if (activeTexUnit != texUnit) GL.ActiveTexture(texUnits[texUnit]);
+			activeTexUnit = texUnit;
+
+			if (texRes == null)
+			{
+				GL.BindTexture(TextureTarget.Texture2D, 0);
+				GL.Disable(EnableCap.Texture2D);
+				curBound[texUnit] = null;
+			}
+			else
+			{
+				if (texRes.Native == null)	throw new ArgumentException(string.Format("Specified texture '{0}' has no valid native texture! Maybe it hasn't been loaded / initialized properly?", texRes.Path), "tex");
+				if (texRes.Disposed)		throw new ArgumentException(string.Format("Specified texture '{0}' has already been deleted!", texRes.Path), "tex");
+					
+				GL.Enable(EnableCap.Texture2D);
+				GL.BindTexture(TextureTarget.Texture2D, (texRes.Native as Backend.DefaultOpenTK.NativeTexture).Handle);
+				curBound[texUnit] = texRes;
+			}
+		}
+		/// <summary>
+		/// Resets all Texture bindings to texture units beginning at a certain index.
+		/// </summary>
+		/// <param name="beginAtIndex">The first texture unit index from which on all bindings will be cleared.</param>
+		public static void ResetTextureBinding(int beginAtIndex = 0)
+		{
+			if (!texInit) InitTextureFields();
+			for (int i = beginAtIndex; i < texUnits.Length; i++)
+			{
+				BindTexture(null, i);
+			}
+		}
+
+
 		private	BlendMode					blendType	= BlendMode.Solid;
 		private	ContentRef<ShaderProgram>	shader		= null;
 		private	Type						prefType	= null;
@@ -257,16 +366,6 @@ namespace Duality.Resources
 		}
 		
 		/// <summary>
-		/// Performs a preprocessing operation for incoming vertices. Does nothing by default but may be overloaded, if needed.
-		/// </summary>
-		/// <typeparam name="T">The incoming vertex type</typeparam>
-		/// <param name="device"></param>
-		/// <param name="material"><see cref="Duality.Resources.Material"/> information for the current batch.</param>
-		/// <param name="vertexMode">The mode of incoming vertex data.</param>
-		/// <param name="vertexBuffer">A buffer storing incoming vertex data.</param>
-		/// <param name="vertexCount">The number of vertices to preprocess, beginning at the start of the specified buffer.</param>
-		public virtual void PreprocessBatch<T>(IDrawDevice device, BatchInfo material, ref VertexMode vertexMode, ref T[] vertexBuffer, ref int vertexCount) {}
-		/// <summary>
 		/// Sets up the appropriate OpenGL rendering state for this DrawTechnique.
 		/// </summary>
 		/// <param name="lastTechnique">The last DrawTechnique that has been set up. This parameter is optional, but
@@ -307,13 +406,13 @@ namespace Duality.Resources
 
 						// Bind Texture
 						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].name);
-						Texture.Bind(texRef, curSamplerIndex);
+						BindTexture(texRef, curSamplerIndex);
 						GL.Uniform1(varInfo[i].glVarLoc, curSamplerIndex);
 
 						curSamplerIndex++;
 					}
 				}
-				Texture.ResetBinding(curSamplerIndex);
+				ResetTextureBinding(curSamplerIndex);
 
 				// Transfer uniform data from material to actual shader
 				if (material.Uniforms != null)
@@ -336,13 +435,13 @@ namespace Duality.Resources
 					int samplerIndex = 0;
 					foreach (var pair in material.Textures)
 					{
-						Texture.Bind(pair.Value, samplerIndex);
+						BindTexture(pair.Value, samplerIndex);
 						samplerIndex++;
 					}
-					Texture.ResetBinding(samplerIndex);
+					ResetTextureBinding(samplerIndex);
 				}
 				else
-					Texture.ResetBinding();
+					ResetTextureBinding();
 			}
 		}
 		/// <summary>
@@ -353,7 +452,7 @@ namespace Duality.Resources
 		{
 			this.SetupBlendType(BlendMode.Reset);
 			ShaderProgram.Bind(null);
-			Texture.ResetBinding();
+			ResetTextureBinding();
 		}
 
 		/// <summary>
