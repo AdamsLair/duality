@@ -134,7 +134,7 @@ namespace Duality.Editor.Plugins.Base
 					if (!rt.IsAvailable) continue;
 					if (rt.Res.Targets.Contains(texRef))
 					{
-						rt.Res.SetupOpenGLRes();
+						rt.Res.SetupTarget();
 
 						if (changedObj == null) changedObj = new List<object>();
 						changedObj.Add(rt.Res);

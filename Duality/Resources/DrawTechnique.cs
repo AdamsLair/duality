@@ -100,10 +100,10 @@ namespace Duality.Resources
 		{ 
 			get 
 			{
-				if (RenderTarget.BoundRT.IsExplicitNull)
+				if (Backend.DefaultOpenTK.NativeRenderTarget.BoundRT == null)
 					return DualityApp.TargetMode.Samples > 0; 
 				else
-					return RenderTarget.BoundRT.Res.Samples > 0;
+					return Backend.DefaultOpenTK.NativeRenderTarget.BoundRT.Samples > 0;
 			}
 		}
 
@@ -173,50 +173,6 @@ namespace Duality.Resources
 		private	static	int				activeTexUnit	= 0;
 		private	static	Texture[]		curBound		= null;
 		private	static	TextureUnit[]	texUnits		= null;
-
-		/// <summary>
-		/// [GET] The currently bound primary Texture.
-		/// </summary>
-		public static ContentRef<Texture> BoundTexPrimary
-		{
-			get { return new ContentRef<Texture>(curBound[0]); }
-		}
-		/// <summary>
-		/// [GET] The currently bound secondary Texture
-		/// </summary>
-		public static ContentRef<Texture> BoundTexSecondary
-		{
-			get { return new ContentRef<Texture>(curBound[1]); }
-		}
-		/// <summary>
-		/// [GET] The currently bound tertiary Texture
-		/// </summary>
-		public static ContentRef<Texture> BoundTexTertiary
-		{
-			get { return new ContentRef<Texture>(curBound[2]); }
-		}
-		/// <summary>
-		/// [GET] The currently bound quartary Texture
-		/// </summary>
-		public static ContentRef<Texture> BoundTexQuartary
-		{
-			get { return new ContentRef<Texture>(curBound[3]); }
-		}
-		/// <summary>
-		/// [GET] All Textures that are currently bound
-		/// </summary>
-		public static ContentRef<Texture>[] BoundTex
-		{
-			get 
-			{ 
-				ContentRef<Texture>[] result = new ContentRef<Texture>[curBound.Length];
-				for (int i = 0; i < result.Length; i++)
-				{
-					result[i] = new ContentRef<Texture>(curBound[i]);
-				}
-				return result;
-			}
-		}
 
 		private static void InitTextureFields()
 		{

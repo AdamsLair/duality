@@ -33,7 +33,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.renderStats = stats;
 
 			// Prepare the target surface for rendering
-			RenderTarget.Bind(options.Target);
+			NativeRenderTarget.Bind(options.Target);
 
 			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);
@@ -80,11 +80,11 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadMatrix(ref openTkProjection);
 
-			if (RenderTarget.BoundRT.IsAvailable)
+			if (NativeRenderTarget.BoundRT != null)
 			{
-				if (options.RenderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, RenderTarget.BoundRT.Res.Height * 0.5f, 0.0f);
+				if (options.RenderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, NativeRenderTarget.BoundRT.Height * 0.5f, 0.0f);
 				GL.Scale(1.0f, -1.0f, 1.0f);
-				if (options.RenderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, -RenderTarget.BoundRT.Res.Height * 0.5f, 0.0f);
+				if (options.RenderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, -NativeRenderTarget.BoundRT.Height * 0.5f, 0.0f);
 			}
 		}
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)
@@ -154,6 +154,10 @@ namespace Duality.Backend.DefaultOpenTK
 		INativeTexture IGraphicsBackend.CreateTexture()
 		{
 			return new NativeTexture();
+		}
+		INativeRenderTarget IGraphicsBackend.CreateRenderTarget()
+		{
+			return new NativeRenderTarget();
 		}
 
 		private void PrepareRenderBatch(IDrawBatch renderBatch)

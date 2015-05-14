@@ -545,7 +545,7 @@ namespace Duality.Resources
 		{
 			if (this.nativeTex == null) this.nativeTex = DualityApp.GraphicsBackend.CreateTexture();
 
-			this.nativeTex.InitEmpty(
+			this.nativeTex.SetupEmpty(
 				this.pixelformat,
 				this.texWidth, this.texHeight,
 				this.filterMin, this.filterMag,

@@ -16,13 +16,34 @@ using TextureWrapMode = Duality.Drawing.TextureWrapMode;
 
 namespace Duality.Backend.DefaultOpenTK
 {
+	[DontSerialize]
 	public class NativeTexture : INativeTexture
 	{
-		private int handle = 0;
+		private int		handle	= 0;
+		private int		width	= 0;
+		private int		height	= 0;
+		private bool	mipmaps	= false;
+		private TexturePixelFormat format	= TexturePixelFormat.Rgba;
 
 		public int Handle
 		{
 			get { return this.handle; }
+		}
+		public int Width
+		{
+			get { return this.width; }
+		}
+		public int Height
+		{
+			get { return this.height; }
+		}
+		public bool HasMipmaps
+		{
+			get { return this.mipmaps; }
+		}
+		public TexturePixelFormat Format
+		{
+			get { return this.format; }
 		}
 
 		public NativeTexture()
@@ -30,7 +51,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.handle = GL.GenTexture();
 		}
 
-		void INativeTexture.InitEmpty(TexturePixelFormat format, int width, int height, TextureMinFilter minFilter, TextureMagFilter magFilter, TextureWrapMode wrapX, TextureWrapMode wrapY, int anisoLevel, bool mipmaps)
+		void INativeTexture.SetupEmpty(TexturePixelFormat format, int width, int height, TextureMinFilter minFilter, TextureMagFilter magFilter, TextureWrapMode wrapX, TextureWrapMode wrapY, int anisoLevel, bool mipmaps)
 		{
 			DualityApp.GuardSingleThreadState();
 
@@ -55,6 +76,11 @@ namespace Duality.Backend.DefaultOpenTK
 				ToOpenTKPixelFormat(format), width, height, 0,
 				GLPixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
 
+			this.width = width;
+			this.height = height;
+			this.format = format;
+			this.mipmaps = mipmaps;
+
 			if (lastTexId != this.handle) GL.BindTexture(TextureTarget.Texture2D, lastTexId);
 		}
 		void INativeTexture.LoadData(TexturePixelFormat format, int width, int height, ColorRgba[] data)
@@ -70,6 +96,10 @@ namespace Duality.Backend.DefaultOpenTK
 				ToOpenTKPixelFormat(format), width, height, 0, 
 				GLPixelFormat.Rgba, PixelType.UnsignedByte, 
 				data);
+
+			this.width = width;
+			this.height = height;
+			this.format = format;
 
 			GL.BindTexture(TextureTarget.Texture2D, lastTexId);
 		}

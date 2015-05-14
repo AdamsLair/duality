@@ -13,5 +13,6 @@ namespace Duality.Backend
 		void EndRendering();
 
 		INativeTexture CreateTexture();
+		INativeRenderTarget CreateRenderTarget();
 	}
 }

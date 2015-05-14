@@ -20,7 +20,7 @@ namespace Duality.Backend
 		/// <param name="wrapY"></param>
 		/// <param name="anisoLevel"></param>
 		/// <param name="mipmaps"></param>
-		void InitEmpty(
+		void SetupEmpty(
 			TexturePixelFormat format, 
 			int width, int height, 
 			TextureMinFilter minFilter, 
@@ -31,7 +31,7 @@ namespace Duality.Backend
 			bool mipmaps);
 
 		/// <summary>
-		/// Uploads the specified pixel data to video memory. A call to <see cref="InitEmpty"/>
+		/// Uploads the specified pixel data to video memory. A call to <see cref="SetupEmpty"/>
 		/// is to be considered required for this.
 		/// </summary>
 		/// <param name="format"></param>
