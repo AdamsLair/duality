@@ -539,10 +539,10 @@ namespace Duality
 					OnTerminating();
 					SaveUserData();
 				}
-				graphicsBack.Shutdown();
-				graphicsBack = null;
 				sound.Dispose();
 				sound = null;
+				graphicsBack.Shutdown();
+				graphicsBack = null;
 				ClearPlugins();
 				Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 				Log.Core.Write("DualityApp terminated");
