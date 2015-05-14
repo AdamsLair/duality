@@ -12,6 +12,7 @@ namespace Duality.Backend.DefaultOpenTK
 	public class DefaultOpenTKBackend : IGraphicsBackend, IVertexUploader
 	{
 		private	IDrawDevice		currentDevice	= null;
+		private RenderStats		renderStats		= null;
 		private	uint			primaryVBO		= 0;
 
 		void IDualityBackend.Init() { }
@@ -26,9 +27,10 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options)
+		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats = null)
 		{
 			this.currentDevice = device;
+			this.renderStats = stats;
 
 			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);
@@ -86,8 +88,9 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			List<IDrawBatch> batchesSharingVBO = new List<IDrawBatch>();
 			IDrawBatch lastBatchRendered = null;
-
 			IDrawBatch lastBatch = null;
+			int drawCalls = 0;
+
 			for (int i = 0; i < batches.Count; i++)
 			{
 				IDrawBatch currentBatch = batches[i];
@@ -102,9 +105,12 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					int vertexOffset = 0;
 					batchesSharingVBO[0].UploadVertices(this, batchesSharingVBO);
+					drawCalls++;
 
 					foreach (IDrawBatch batch in batchesSharingVBO)
 					{
+						drawCalls++;
+
 						this.PrepareRenderBatch(batch);
 						this.RenderBatch(batch, vertexOffset, lastBatchRendered);
 						this.FinishRenderBatch(batch);
@@ -123,6 +129,11 @@ namespace Duality.Backend.DefaultOpenTK
 			if (lastBatchRendered != null)
 			{
 				lastBatchRendered.Material.FinishRendering();
+			}
+
+			if (this.renderStats != null)
+			{
+				this.renderStats.DrawCalls += drawCalls;
 			}
 		}
 		void IGraphicsBackend.EndRendering()

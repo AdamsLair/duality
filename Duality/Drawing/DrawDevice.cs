@@ -7,6 +7,7 @@ using Duality.Backend;
 
 namespace Duality.Drawing
 {
+	[DontSerialize]
 	public class DrawDevice : IDrawDevice, IDisposable
 	{
 		private class DrawBatch<T> : IDrawBatch where T : struct, IVertexData
@@ -602,7 +603,8 @@ namespace Duality.Drawing
 				ModelViewMatrix = this.matModelView,
 				ProjectionMatrix = this.matProjection
 			};
-			DualityApp.GraphicsBackend.BeginRendering(this, options);
+			RenderStats stats = new RenderStats();
+			DualityApp.GraphicsBackend.BeginRendering(this, options, stats);
 
 			{
 				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.BeginMeasure();
@@ -615,7 +617,7 @@ namespace Duality.Drawing
 
 				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.EndMeasure();
 			}
-			Profile.StatNumDrawcalls.Add(-1);
+			Profile.StatNumDrawcalls.Add(stats.DrawCalls);
 
 			DualityApp.GraphicsBackend.EndRendering();
 			this.drawBuffer.Clear();
