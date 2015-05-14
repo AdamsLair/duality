@@ -322,9 +322,9 @@ namespace Duality.Components
 				this.drawDevice.ViewportRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
 
 				// Render Scene
-				this.drawDevice.BeginRendering(ClearFlag.All, ColorRgba.Black, 1.0f);
+				this.drawDevice.PrepareForDrawcalls();
 				this.CollectDrawcalls();
-				this.drawDevice.EndRendering();
+				this.drawDevice.Render(ClearFlag.All, ColorRgba.Black, 1.0f);
 				this.drawDevice.PickingIndex = 0;
 
 				RenderTarget.Bind(RenderTarget.None);
@@ -544,7 +544,7 @@ namespace Duality.Components
 			if (p.Input == null)
 			{
 				// Render Scene
-				this.drawDevice.BeginRendering(p.ClearFlags, p.ClearColor, p.ClearDepth);
+				this.drawDevice.PrepareForDrawcalls();
 				try
 				{
 					this.CollectDrawcalls();
@@ -554,12 +554,12 @@ namespace Duality.Components
 				{
 					Log.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), Log.Exception(e));
 				}
-				this.drawDevice.EndRendering();
+				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
 			}
 			else
 			{
 				Profile.TimePostProcessing.BeginMeasure();
-				this.drawDevice.BeginRendering(p.ClearFlags, p.ClearColor, p.ClearDepth);
+				this.drawDevice.PrepareForDrawcalls();
 
 				Texture mainTex = p.Input.MainTexture.Res;
 				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
@@ -585,7 +585,7 @@ namespace Duality.Components
 					device.AddVertices(p.Input, VertexMode.Quads, vertices);
 				}
 
-				this.drawDevice.EndRendering();
+				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
 				Profile.TimePostProcessing.EndMeasure();
 			}
 		}

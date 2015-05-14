@@ -269,7 +269,7 @@ namespace Duality.Tests.Drawing
 					Canvas canvas = new Canvas(device);
 					renderMethod(canvas);
 				}
-				device.EndRendering();
+				device.Render();
 				
 				RenderTarget.Bind(RenderTarget.None);
 

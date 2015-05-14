@@ -153,7 +153,7 @@ namespace Duality.Resources
 		/// Assigns the specified data to the OpenGL uniform represented by this <see cref="ShaderVarInfo"/>.
 		/// </summary>
 		/// <param name="data">Incoming uniform data.</param>
-		public void SetupUniform(float[] data)
+		public void SetUniform(float[] data)
 		{
 			if (this.scope != ShaderVarScope.Uniform) return;
 			if (this.glVarLoc == -1) return;

@@ -10,6 +10,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Audio.OpenAL;
 
+using Duality.Backend;
 using Duality.Resources;
 using Duality.Serialization;
 using Duality.Drawing;
@@ -81,6 +82,7 @@ namespace Duality
 		private	static	string						logfilePath			= "logfile.txt";
 		private	static	StreamWriter				logfile				= null;
 		private	static	TextWriterLogOutput			logfileOutput		= null;
+		private	static	IGraphicsBackend			graphicsBack		= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
 		private	static	GraphicsMode				targetMode			= null;
 		private	static	HashSet<GraphicsMode>		availModes			= new HashSet<GraphicsMode>(new GraphicsModeComparer());
@@ -138,7 +140,14 @@ namespace Duality
 		/// </summary>
 		public static event EventHandler<CorePluginEventArgs> PluginReady	= null;
 
-
+		
+		/// <summary>
+		/// [GET] The graphics backend that is used by Duality.
+		/// </summary>
+		public static IGraphicsBackend GraphicsBackend
+		{
+			get { return graphicsBack; }
+		}
 		/// <summary>
 		/// [GET / SET] The size of the current rendering surface (full screen, a single window, etc.) in pixels. Setting this will not actually change
 		/// Duality's state - this is a pure "for your information" property.
@@ -406,10 +415,14 @@ namespace Duality
 					Environment.ProcessorCount);
 			}
 
-			sound = new SoundDevice();
 			LoadPlugins();
 			LoadAppData();
 			LoadUserData();
+
+			graphicsBack = new Duality.Backend.DefaultOpenTK.DefaultOpenTKBackend();
+			graphicsBack.Init();
+
+			sound = new SoundDevice();
 			
 			// Determine available and default graphics modes
 			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
@@ -525,6 +538,8 @@ namespace Duality
 					OnTerminating();
 					SaveUserData();
 				}
+				graphicsBack.Shutdown();
+				graphicsBack = null;
 				sound.Dispose();
 				sound = null;
 				ClearPlugins();

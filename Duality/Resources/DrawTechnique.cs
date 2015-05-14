@@ -328,7 +328,7 @@ namespace Duality.Resources
 						if (varInfo[i].glVarLoc == -1) continue;
 						float[] data = material.GetUniform(varInfo[i].name);
 						if (data == null) continue;
-						varInfo[i].SetupUniform(data);
+						varInfo[i].SetUniform(data);
 					}
 				}
 			}
