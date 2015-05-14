@@ -248,6 +248,81 @@ namespace Duality.Resources
 			if (targets != null) foreach (var t in targets) this.targetInfo.Add(new TargetInfo(t));
 			this.SetupOpenGLRes();
 		}
+		
+		/// <summary>
+		/// Retrieves the pixel data that is currently stored in video memory.
+		/// </summary>
+		/// <param name="targetIndex">The <see cref="Targets"/> index to read from.</param>
+		/// <param name="x">The x position of the rectangular area to read.</param>
+		/// <param name="y">The y position of the rectangular area to read.</param>
+		/// <param name="width">The width of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Width"/>.</param>
+		/// <param name="height">The height of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Height"/>.</param>
+		public Pixmap.Layer GetPixelData(int targetIndex = 0, int x = 0, int y = 0, int width = -1, int height = -1)
+		{
+			Pixmap.Layer target = new Pixmap.Layer();
+			this.GetPixelData(target, targetIndex, x, y, width, height);
+			return target;
+		}
+		/// <summary>
+		/// Retrieves the pixel data that is currently stored in video memory.
+		/// </summary>
+		/// <param name="target">The target image to store the retrieved pixel data in.</param>
+		/// <param name="targetIndex">The <see cref="Targets"/> index to read from.</param>
+		/// <param name="x">The x position of the rectangular area to read.</param>
+		/// <param name="y">The y position of the rectangular area to read.</param>
+		/// <param name="width">The width of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Width"/>.</param>
+		/// <param name="height">The height of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Height"/>.</param>
+		public void GetPixelData(Pixmap.Layer target, int targetIndex = 0, int x = 0, int y = 0, int width = -1, int height = -1)
+		{
+			NormalizeReadRect(ref x, ref y, ref width, ref height, this.Width, this.Height);
+
+			ColorRgba[] data = new ColorRgba[width * height];
+
+			this.GetPixelDataInternal(data, targetIndex, x, y, width, height);
+			target.SetPixelDataRgba(data, width, height);
+		}
+		/// <summary>
+		/// Retrieves the pixel data that is currently stored in video memory.
+		/// </summary>
+		/// <param name="buffer">The buffer (RGBA format) to store all the pixel data in. Its byte length needs to be at least width * height * 4.</param>
+		/// <param name="targetIndex">The <see cref="Targets"/> index to read from.</param>
+		/// <param name="x">The x position of the rectangular area to read.</param>
+		/// <param name="y">The y position of the rectangular area to read.</param>
+		/// <param name="width">The width of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Width"/>.</param>
+		/// <param name="height">The height of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Height"/>.</param>
+		/// <returns>The number of bytes that were read.</returns>
+		public int GetPixelData<T>(T[] buffer, int targetIndex = 0, int x = 0, int y = 0, int width = -1, int height = -1) where T : struct
+		{
+			NormalizeReadRect(ref x, ref y, ref width, ref height, this.Width, this.Height);
+			return this.GetPixelDataInternal(buffer, targetIndex, x, y, width, height);
+		}
+
+		private int GetPixelDataInternal<T>(T[] buffer, int targetIndex, int x, int y, int width, int height) where T : struct
+		{
+			DualityApp.GuardSingleThreadState();
+
+			int readBytes = width * height * 4;
+			if (readBytes == 0) return 0;
+
+			int readElements = readBytes / System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+			if (buffer.Length < readElements)
+			{
+				throw new ArgumentException(
+					string.Format("The target buffer is too small. Its length needs to be at least {0}.", readElements), 
+					"targetBuffer");
+			}
+			
+			ContentRef<RenderTarget> lastRt = RenderTarget.BoundRT;
+			RenderTarget.Bind(this);
+			{
+				GL.ReadBuffer((ReadBufferMode)((int)ReadBufferMode.ColorAttachment0 + targetIndex));
+				GL.ReadPixels(x, y, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, buffer);
+				GL.ReadBuffer(ReadBufferMode.Back);
+			}
+			RenderTarget.Bind(lastRt);
+
+			return readElements;
+		}
 
 		/// <summary>
 		/// Frees up any OpenGL resources that this RenderTarget might have occupied.
@@ -438,6 +513,17 @@ namespace Duality.Resources
 			base.OnCopyDataTo(target, operation);
 			RenderTarget c = target as RenderTarget;
 			c.SetupOpenGLRes();
+		}
+
+		private static void NormalizeReadRect(ref int x, ref int y, ref int width, ref int height, int realWidth, int realHeight)
+		{
+			if (width == -1) width = realWidth;
+			if (height == -1) height = realHeight;
+
+			x = Math.Max(x, 0);
+			y = Math.Max(y, 0);
+			width = MathF.Clamp(width, 0, realWidth - x);
+			height = MathF.Clamp(height, 0, realHeight - x);
 		}
 	}
 }

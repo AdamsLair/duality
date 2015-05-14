@@ -3,14 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-using OpenTK.Graphics.OpenGL;
-using GLTexMagFilter = OpenTK.Graphics.OpenGL.TextureMagFilter;
-using GLTexMinFilter = OpenTK.Graphics.OpenGL.TextureMinFilter;
-using GLTexWrapMode = OpenTK.Graphics.OpenGL.TextureWrapMode;
-using TextureMagFilter = Duality.Drawing.TextureMagFilter;
-using TextureMinFilter = Duality.Drawing.TextureMinFilter;
-using TextureWrapMode = Duality.Drawing.TextureWrapMode;
-
 using Duality.Editor;
 using Duality.Cloning;
 using Duality.Drawing;
@@ -335,7 +327,6 @@ namespace Duality.Components
 				this.drawDevice.EndRendering();
 				this.drawDevice.PickingIndex = 0;
 
-				GL.Finish();
 				RenderTarget.Bind(RenderTarget.None);
 			}
 
@@ -343,13 +334,7 @@ namespace Duality.Components
 			int pxNum = this.pickingTex.PixelWidth * this.pickingTex.PixelHeight;
 			int pxByteNum = pxNum * 4;
 			if (pxByteNum > this.pickingBuffer.Length) Array.Resize(ref this.pickingBuffer, Math.Max(this.pickingBuffer.Length * 2, pxByteNum));
-
-			ContentRef<RenderTarget> lastTex = RenderTarget.BoundRT;
-			RenderTarget.Bind(this.pickingRT);
-			GL.ReadBuffer(ReadBufferMode.ColorAttachment0);
-			GL.ReadPixels(0, 0, this.pickingTex.PixelWidth, this.pickingTex.PixelHeight, PixelFormat.Rgba, PixelType.UnsignedByte, this.pickingBuffer);
-			RenderTarget.Bind(lastTex);
-			GL.ReadBuffer(ReadBufferMode.Back);
+			this.pickingRT.GetPixelData(this.pickingBuffer);
 
 			Profile.TimeVisualPicking.EndMeasure();
 			return true;

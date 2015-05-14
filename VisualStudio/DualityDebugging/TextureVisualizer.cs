@@ -21,7 +21,7 @@ namespace Duality.VisualStudio
 		public override void GetData(object target, Stream outgoingData)
 		{
 			Texture texture = target as Texture;
-			Pixmap.Layer layer = texture.RetrievePixelData();
+			Pixmap.Layer layer = texture.GetPixelData();
 			Bitmap bitmap = layer.ToBitmap();
 
 			BinaryFormatter formatter = new BinaryFormatter();

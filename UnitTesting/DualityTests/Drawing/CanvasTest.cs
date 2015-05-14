@@ -273,7 +273,7 @@ namespace Duality.Tests.Drawing
 				
 				RenderTarget.Bind(RenderTarget.None);
 
-				pixelData = texture.RetrievePixelData();
+				pixelData = texture.GetPixelData();
 			}
 
 			return pixelData;

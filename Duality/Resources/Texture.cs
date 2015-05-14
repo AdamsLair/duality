@@ -567,24 +567,58 @@ namespace Duality.Resources
 		/// Retrieves the pixel data that is currently stored in video memory.
 		/// </summary>
 		/// <returns></returns>
-		public Pixmap.Layer RetrievePixelData()
+		public Pixmap.Layer GetPixelData()
+		{
+			Pixmap.Layer result = new Pixmap.Layer();
+			this.GetPixelData(result);
+			return result;
+		}
+		/// <summary>
+		/// Retrieves the pixel data that is currently stored in video memory.
+		/// </summary>
+		/// <param name="target">The target image to store the retrieved pixel data in.</param>
+		public void GetPixelData(Pixmap.Layer target)
+		{
+			ColorRgba[] data = new ColorRgba[this.texWidth * this.texHeight];
+			this.GetPixelDataInternal(data);
+			target.SetPixelDataRgba(data, this.texWidth, this.texHeight);
+		}
+		/// <summary>
+		/// Retrieves the pixel data that is currently stored in video memory.
+		/// </summary>
+		/// <param name="targetBuffer">The buffer (RGBA format) to store all the pixel data in. 
+		/// Its byte length should be at least <see cref="TexelWidth"/> * <see cref="TexelHeight"/> * 4.</param>
+		/// <returns>The number of bytes that were read.</returns>
+		public int GetPixelData<T>(T[] targetBuffer) where T : struct
+		{
+			return this.GetPixelDataInternal(targetBuffer);
+		}
+
+		private int GetPixelDataInternal<T>(T[] buffer) where T : struct
 		{
 			DualityApp.GuardSingleThreadState();
 
-			int lastTexId;
-			GL.GetInteger(GetPName.TextureBinding2D, out lastTexId);
-			GL.BindTexture(TextureTarget.Texture2D, this.glTexId);
+			int readBytes = this.texWidth * this.texHeight * 4;
+			if (readBytes == 0) return 0;
+
+			int readElements = readBytes / System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+			if (buffer.Length < readElements)
+			{
+				throw new ArgumentException(
+					string.Format("The target buffer is too small. Its length needs to be at least {0}.", readBytes), 
+					"targetBuffer");
+			}
+
+			ContentRef<Texture> lastTex = Texture.BoundTexPrimary;
+			Texture.Bind(this);
 			
-			byte[] data = new byte[this.texWidth * this.texHeight * 4];
 			GL.GetTexImage(TextureTarget.Texture2D, 0, 
 				GLPixelFormat.Rgba, PixelType.UnsignedByte, 
-				data);
+				buffer);
 
-			GL.BindTexture(TextureTarget.Texture2D, lastTexId);
+			Texture.Bind(lastTex);
 
-			Pixmap.Layer result = new Pixmap.Layer();
-			result.SetPixelDataRgba(data, this.texWidth, this.texHeight);
-			return result;
+			return readElements;
 		}
 
 		/// <summary>

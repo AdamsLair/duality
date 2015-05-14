@@ -393,7 +393,7 @@ namespace Duality.Resources
 				this.height = height;
 				if (this.data == null || this.data.Length != this.width * this.height)
 					this.data = new ColorRgba[this.width * this.height];
-				
+
 				Parallel.ForEach(Partitioner.Create(0, this.data.Length), range =>
 				{
 					for (int i = range.Item1; i < range.Item2; i++)
