@@ -215,10 +215,7 @@ namespace Duality.Resources
 		protected override void OnDisposing(bool manually)
 		{
 			base.OnDisposing(manually);
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
-			{
-				this.FreeNativeRes();
-			}
+			this.FreeNativeRes();
 		}
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{

@@ -294,6 +294,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IDisposable.Dispose()
 		{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 			DualityApp.GuardSingleThreadState();
 
 			if (this.handleMainFBO != 0)
