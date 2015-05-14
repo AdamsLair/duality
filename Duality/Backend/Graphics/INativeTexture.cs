@@ -8,7 +8,19 @@ namespace Duality.Backend
 {
 	public interface INativeTexture : IDisposable
 	{
-		void SetupEmpty(
+		/// <summary>
+		/// Initializes the texture without data and configures it.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="minFilter"></param>
+		/// <param name="magFilter"></param>
+		/// <param name="wrapX"></param>
+		/// <param name="wrapY"></param>
+		/// <param name="anisoLevel"></param>
+		/// <param name="mipmaps"></param>
+		void InitEmpty(
 			TexturePixelFormat format, 
 			int width, int height, 
 			TextureMinFilter minFilter, 
@@ -17,10 +29,26 @@ namespace Duality.Backend
 			TextureWrapMode wrapY, 
 			int anisoLevel, 
 			bool mipmaps);
+
+		/// <summary>
+		/// Uploads the specified pixel data to video memory. A call to <see cref="InitEmpty"/>
+		/// is to be considered required for this.
+		/// </summary>
+		/// <param name="format"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="data"></param>
 		void LoadData(
 			TexturePixelFormat format, 
 			int width, int height, 
 			ColorRgba[] data);
+
+		/// <summary>
+		/// Retrieves the textures pixel data from video memory in the Rgba8 format.
+		/// As a storage array type, either byte or <see cref="ColorRgba"/> is recommended.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="target"></param>
 		void GetData<T>(T[] target) where T : struct;
 	}
 }

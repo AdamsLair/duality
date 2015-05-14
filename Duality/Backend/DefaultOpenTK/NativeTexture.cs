@@ -30,7 +30,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.handle = GL.GenTexture();
 		}
 
-		void INativeTexture.SetupEmpty(TexturePixelFormat format, int width, int height, TextureMinFilter minFilter, TextureMagFilter magFilter, TextureWrapMode wrapX, TextureWrapMode wrapY, int anisoLevel, bool mipmaps)
+		void INativeTexture.InitEmpty(TexturePixelFormat format, int width, int height, TextureMinFilter minFilter, TextureMagFilter magFilter, TextureWrapMode wrapX, TextureWrapMode wrapY, int anisoLevel, bool mipmaps)
 		{
 			DualityApp.GuardSingleThreadState();
 
@@ -53,7 +53,7 @@ namespace Duality.Backend.DefaultOpenTK
 			// Setup pixel format
 			GL.TexImage2D(TextureTarget.Texture2D, 0,
 				ToOpenTKPixelFormat(format), width, height, 0,
-				GLPixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+				GLPixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
 
 			if (lastTexId != this.handle) GL.BindTexture(TextureTarget.Texture2D, lastTexId);
 		}
