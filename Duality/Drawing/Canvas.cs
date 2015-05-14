@@ -1076,7 +1076,7 @@ namespace Duality.Drawing
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.State.SetMaterial(new Resources.BatchInfo(
+				this.State.SetMaterial(new BatchInfo(
 					Resources.DrawTechnique.Alpha, 
 					(baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
 				this.State.ColorTint = ColorRgba.White;
@@ -1195,7 +1195,7 @@ namespace Duality.Drawing
 				float baseLuminance = baseColor.GetLuminance();
 
 				this.PushState();
-				this.State.SetMaterial(new Resources.BatchInfo(
+				this.State.SetMaterial(new BatchInfo(
 					Resources.DrawTechnique.Alpha, 
 					(baseLuminance > 0.5f ? ColorRgba.Black : ColorRgba.White).WithAlpha(baseAlpha * backAlpha)));
 				this.State.ColorTint = ColorRgba.White;

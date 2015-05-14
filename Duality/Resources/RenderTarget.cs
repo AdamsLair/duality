@@ -23,17 +23,6 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRenderTarget)]
 	public class RenderTarget : Resource
 	{
-		/// <summary>
-		/// A RenderTarget resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(RenderTarget));
-		
-		/// <summary>
-		/// Refers to a null reference RenderTarget.
-		/// </summary>
-		/// <seealso cref="ContentRef{T}.Null"/>
-		public static readonly ContentRef<RenderTarget> None = ContentRef<RenderTarget>.Null;
-
 		private static int			maxFboSamples	= -1;
 		private	static RenderTarget curBound		= null;
 

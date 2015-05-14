@@ -22,11 +22,6 @@ namespace Duality.Resources
 	public class DrawTechnique : Resource
 	{
 		/// <summary>
-		/// A DrawTechnique resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(DrawTechnique));
-		
-		/// <summary>
 		/// Renders solid geometry without utilizing the alpha channel. This is the fastest default DrawTechnique.
 		/// </summary>
 		public static ContentRef<DrawTechnique> Solid		{ get; private set; }

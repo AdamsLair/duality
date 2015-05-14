@@ -17,11 +17,6 @@ namespace Duality.Resources
 	public class FragmentShader : AbstractShader
 	{
 		/// <summary>
-		/// A FragmentShader resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(FragmentShader));
-		
-		/// <summary>
 		/// [GET] A minimal FragmentShader. It performs a texture lookup
 		/// and applies vertex-coloring.
 		/// </summary>

@@ -80,7 +80,7 @@ namespace Duality.Components.Renderers
 			get { return this.text.TextMetrics; }
 		}
 		/// <summary>
-		/// [GET / SET] A custom, local <see cref="Duality.Resources.BatchInfo"/> overriding the texts own <see cref="Duality.Resources.Font.Material">
+		/// [GET / SET] A custom, local <see cref="Duality.Drawing.BatchInfo"/> overriding the texts own <see cref="Duality.Resources.Font.Material">
 		/// Materials</see>. Note that it does not override each <see cref="Duality.Resources.Font">Fonts</see> Texture, but their DrawTechniques and
 		/// main colors.
 		/// </summary>

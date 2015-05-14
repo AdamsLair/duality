@@ -24,11 +24,6 @@ namespace Duality.Resources
 	public class AudioData : Resource
 	{
 		/// <summary>
-		/// An AudioData resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(AudioData));
-		
-		/// <summary>
 		/// [GET] A simple beep AudioData.
 		/// </summary>
 		public static ContentRef<AudioData> Beep		{ get; private set; }

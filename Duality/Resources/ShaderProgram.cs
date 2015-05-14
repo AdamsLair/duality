@@ -21,11 +21,6 @@ namespace Duality.Resources
 	public class ShaderProgram : Resource
 	{
 		/// <summary>
-		/// A ShaderProgram resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(ShaderProgram));
-
-		/// <summary>
 		/// A minimal ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and
 		/// a <see cref="Duality.Resources.FragmentShader.Minimal"/> FragmentShader.
 		/// </summary>
@@ -68,11 +63,6 @@ namespace Duality.Resources
 			SharpAlpha	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SharpMask);
 		}
 		
-		/// <summary>
-		/// Refers to a null reference ShaderProgram.
-		/// </summary>
-		/// <seealso cref="ContentRef{T}.Null"/>
-		public static readonly ContentRef<ShaderProgram> None	= ContentRef<ShaderProgram>.Null;
 		private	static	ShaderProgram	curBound	= null;
 		/// <summary>
 		/// [GET] Returns the currently bound ShaderProgram.

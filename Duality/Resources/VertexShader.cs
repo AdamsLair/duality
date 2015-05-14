@@ -17,11 +17,6 @@ namespace Duality.Resources
 	public class VertexShader : AbstractShader
 	{
 		/// <summary>
-		/// A VertexShader resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(VertexShader));
-
-		/// <summary>
 		/// [GET] A minimal VertexShader. It performs OpenGLs default transformation
 		/// and forwards a single texture coordinate and color to the fragment stage.
 		/// </summary>

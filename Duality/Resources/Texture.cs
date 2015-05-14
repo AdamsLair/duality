@@ -28,11 +28,6 @@ namespace Duality.Resources
 	public class Texture : Resource
 	{
 		/// <summary>
-		/// A Texture resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Texture));
-		
-		/// <summary>
 		/// [GET] A Texture showing the Duality icon.
 		/// </summary>
 		public static ContentRef<Texture> DualityIcon		{ get; private set; }
@@ -95,12 +90,6 @@ namespace Duality.Resources
 			Checkerboard		= ContentProvider.RequestContent<Texture>(ContentPath_Checkerboard);
 		}
 
-
-		/// <summary>
-		/// Refers to a null reference Texture.
-		/// </summary>
-		/// <seealso cref="ContentRef{T}.Null"/>
-		public static readonly ContentRef<Texture> None	= ContentRef<Texture>.Null;
 
 		private	static	bool			initialized		= false;
 		private	static	int				activeTexUnit	= 0;
@@ -209,7 +198,7 @@ namespace Duality.Resources
 			if (!initialized) Init();
 			for (int i = beginAtIndex; i < texUnits.Length; i++)
 			{
-				Bind(None, i);
+				Bind(null, i);
 			}
 		}
 

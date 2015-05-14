@@ -76,7 +76,7 @@ namespace Duality.Resources
 
 		/// <summary>
 		/// It is a uniform variable, i.e. constant during all rendering stages
-		/// and set once per <see cref="Duality.Resources.BatchInfo">draw batch</see>.
+		/// and set once per <see cref="Duality.Drawing.BatchInfo">draw batch</see>.
 		/// </summary>
 		Uniform,
 		/// <summary>

@@ -74,7 +74,7 @@ namespace Duality.Components.Renderers
 			set { this.sharedMat = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A custom, local <see cref="Duality.Resources.BatchInfo"/> overriding the <see cref="SharedMaterial"/>,
+		/// [GET / SET] A custom, local <see cref="Duality.Drawing.BatchInfo"/> overriding the <see cref="SharedMaterial"/>,
 		/// allowing this sprite to look unique without having to create its own <see cref="Duality.Resources.Material"/> Resource.
 		/// However, this feature should be used with caution: Performance is better using <see cref="SharedMaterial">shared Materials</see>.
 		/// </summary>

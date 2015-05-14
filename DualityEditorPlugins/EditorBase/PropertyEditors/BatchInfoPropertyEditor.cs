@@ -9,6 +9,7 @@ using AdamsLair.WinForms.PropertyEditing;
 using AdamsLair.WinForms.PropertyEditing.Editors;
 
 using Duality;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Editor;
 

@@ -24,11 +24,6 @@ namespace Duality.Resources
 	public class Sound : Resource
 	{
 		/// <summary>
-		/// A Sound resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Sound));
-		
-		/// <summary>
 		/// [GET] A simple beep Sound.
 		/// </summary>
 		public static ContentRef<Sound> Beep		{ get; private set; }
@@ -50,7 +45,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public static ContentRef<Sound> CreateFromAudioData(ContentRef<AudioData> baseRes)
 		{
-			string resPath = PathHelper.GetFreePath(baseRes.FullName, FileExt);
+			string resPath = PathHelper.GetFreePath(baseRes.FullName, Resource.GetFileExtByType(typeof(Sound)));
 			Sound res = new Sound(baseRes);
 			res.Save(resPath);
 			return res;
@@ -68,7 +63,7 @@ namespace Duality.Resources
 			string basePath = baseRes.FirstOrDefault().FullName;
 			if (name != null) basePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(basePath), name);
 
-			string resPath = PathHelper.GetFreePath(basePath, FileExt);
+			string resPath = PathHelper.GetFreePath(basePath, Resource.GetFileExtByType(typeof(Sound)));
 			Sound res = new Sound(baseRes);
 			res.Save(resPath);
 			return res;

@@ -97,6 +97,7 @@
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />
     <Compile Include="Drawing\Enums\VertexMode.cs" />
+    <Compile Include="Drawing\BatchInfo.cs" />
     <Compile Include="Drawing\IDrawBatch.cs" />
     <Compile Include="Drawing\Enums\TextureSizeMode.cs" />
     <Compile Include="Drawing\Enums\TextureMagFilter.cs" />
