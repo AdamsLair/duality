@@ -20,25 +20,25 @@ namespace Duality.Resources
 		/// <summary>
 		/// The <see cref="ShaderVarScope">scope</see> of the variable
 		/// </summary>
-		public	ShaderVarScope	Scope;
+		public ShaderVarScope Scope;
 		/// <summary>
 		/// The <see cref="ShaderVarType">type</see> of the variable
 		/// </summary>
-		public	ShaderVarType	Type;
+		public ShaderVarType Type;
 		/// <summary>
 		/// If the variable is an array, this is its length. Arrays
 		/// are only supported for <see cref="ShaderVarType.Int"/> and
 		/// <see cref="ShaderVarType.Float"/>.
 		/// </summary>
-		public	int				ArrayLength;
+		public int ArrayLength;
 		/// <summary>
 		/// The name of the variable, as declared in the shader.
 		/// </summary>
-		public	string			Name;
+		public string Name;
 		/// <summary>
 		/// OpenGL handle of the variables memory location.
 		/// </summary>
-		public	int				Handle;
+		public int Handle;
 
 		/// <summary>
 		/// [GET] Returns whether the shader variable should be considered private.

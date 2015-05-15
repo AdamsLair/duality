@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Duality.Drawing
+namespace Duality.Resources
 {
 	public enum ShaderType
 	{

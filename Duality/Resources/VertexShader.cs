@@ -4,7 +4,6 @@ using Duality.Properties;
 using Duality.Editor;
 
 using OpenTK.Graphics.OpenGL;
-using ShaderType = Duality.Drawing.ShaderType;
 
 
 namespace Duality.Resources

@@ -73,14 +73,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\DefaultOpenTK\NativeRenderTarget.cs" />
+    <Compile Include="Backend\DefaultOpenTK\NativeShaderPart.cs" />
     <Compile Include="Backend\DefaultOpenTK\NativeTexture.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
+    <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
     <Compile Include="Backend\Graphics\INativeTexture.cs" />
     <Compile Include="Backend\Graphics\RenderStats.cs" />
     <Compile Include="Backend\IDualiyBackend.cs" />
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
     <Compile Include="Backend\IGraphicsBackend.cs" />
-    <Compile Include="Backend\DefaultOpenTK\DefaultOpenTKBackend.cs" />
+    <Compile Include="Backend\DefaultOpenTK\GraphicsBackend.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
     <Compile Include="Cloning\ICloneOperation.cs" />
@@ -97,7 +99,7 @@
     <Compile Include="Components\Physics\CollisionCategory.cs" />
     <Compile Include="Drawing\Enums\BlendMode.cs" />
     <Compile Include="Drawing\Enums\ClearFlag.cs" />
-    <Compile Include="Drawing\Enums\ShaderType.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />
     <Compile Include="Drawing\Enums\VertexMode.cs" />

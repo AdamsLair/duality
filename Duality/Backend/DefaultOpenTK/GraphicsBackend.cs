@@ -9,7 +9,7 @@ using Duality.Resources;
 
 namespace Duality.Backend.DefaultOpenTK
 {
-	public class DefaultOpenTKBackend : IGraphicsBackend, IVertexUploader
+	public class GraphicsBackend : IGraphicsBackend, IVertexUploader
 	{
 		private	IDrawDevice		currentDevice	= null;
 		private RenderStats		renderStats		= null;
@@ -158,6 +158,10 @@ namespace Duality.Backend.DefaultOpenTK
 		INativeRenderTarget IGraphicsBackend.CreateRenderTarget()
 		{
 			return new NativeRenderTarget();
+		}
+		INativeShaderPart IGraphicsBackend.CreateShaderPart()
+		{
+			return new NativeShaderPart();
 		}
 
 		private void PrepareRenderBatch(IDrawBatch renderBatch)

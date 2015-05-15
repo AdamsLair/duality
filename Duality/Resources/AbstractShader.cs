@@ -7,9 +7,8 @@ using System.Text.RegularExpressions;
 using Duality.Drawing;
 using Duality.Editor;
 using Duality.Cloning;
+using Duality.Backend;
 
-using OpenTK.Graphics.OpenGL;
-using ShaderType = Duality.Drawing.ShaderType;
 
 namespace Duality.Resources
 {
@@ -19,22 +18,22 @@ namespace Duality.Resources
 	[ExplicitResourceReference()]
 	public abstract class AbstractShader : Resource
 	{
-		private	string	source	= null;
-		[DontSerialize] private	int				glShaderId	= 0;
-		[DontSerialize] private	bool			compiled	= false;
-		[DontSerialize] private	ShaderVarInfo[]	varInfo		= null;
+		private	string source = null;
+		[DontSerialize] private	INativeShaderPart	native		= null;
+		[DontSerialize] private	bool				compiled	= false;
+		[DontSerialize] private	ShaderVarInfo[]		varInfo		= null;
 
+		/// <summary>
+		/// [GET] The shaders native backend. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public INativeShaderPart Native
+		{
+			get { return this.native; }
+		}
 		/// <summary>
 		/// The type of OpenGL shader that is represented.
 		/// </summary>
 		protected abstract ShaderType Type { get; }
-		/// <summary>
-		/// [GET] The shaders OpenGL id.
-		/// </summary>
-		internal protected int OglShaderId
-		{
-			get { return this.glShaderId; }
-		}
 		/// <summary>
 		/// [GET] Whether this shader has been compiled yet or not.
 		/// </summary>
@@ -126,75 +125,12 @@ namespace Duality.Resources
 
 			if (this.compiled) return;
 			if (String.IsNullOrEmpty(this.source)) return;
-			if (this.glShaderId == 0) this.glShaderId = GL.CreateShader(GetOpenTKShaderType(this.Type));
-			GL.ShaderSource(this.glShaderId, this.source);
-			GL.CompileShader(this.glShaderId);
 
-			int result;
-			GL.GetShader(this.glShaderId, ShaderParameter.CompileStatus, out result);
-			if (result == 0)
-			{
-				string infoLog = GL.GetShaderInfoLog(this.glShaderId);
-				Log.Core.WriteError("Error compiling {0}. InfoLog:\n{1}", this.Type, infoLog);
-				return;
-			}
+			if (this.native == null) this.native = DualityApp.GraphicsBackend.CreateShaderPart();
+			this.native.LoadSource(this.source, this.Type);
+
 			this.compiled = true;
-
-			// Remove comments from source code before extracting variables
-			string sourceWithoutComments;
-			{
-				const string blockComments = @"/\*(.*?)\*/";
-				const string lineComments = @"//(.*?)\r?\n";
-				const string strings = @"""((\\[^\n]|[^""\n])*)""";
-				const string verbatimStrings = @"@(""[^""]*"")+";
-				sourceWithoutComments = Regex.Replace(this.source,
-					blockComments + "|" + lineComments + "|" + strings + "|" + verbatimStrings,
-					me => {
-						if (me.Value.StartsWith("/*") || me.Value.StartsWith("//"))
-							return me.Value.StartsWith("//") ? Environment.NewLine : "";
-						// Keep the literal strings
-						return me.Value;
-					},
-					RegexOptions.Singleline);
-			}
-
-			// Scan remaining code chunk for variable declarations
-			List<ShaderVarInfo> varInfoList = new List<ShaderVarInfo>();
-			string[] lines = sourceWithoutComments.Split(new[] {';','\n'}, StringSplitOptions.RemoveEmptyEntries);
-			ShaderVarInfo varInfo = new ShaderVarInfo();
-			foreach (string t in lines)
-			{
-				string curLine = t.TrimStart();
-
-				if (curLine.StartsWith("uniform"))
-					varInfo.Scope = ShaderVarScope.Uniform;
-				else if (curLine.StartsWith("attribute"))
-					varInfo.Scope = ShaderVarScope.Attribute;
-				else continue;
-
-				string[] curLineSplit = curLine.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-				switch (curLineSplit[1].ToUpper())
-				{
-					case "FLOAT":		varInfo.Type = ShaderVarType.Float; break;
-					case "VEC2":		varInfo.Type = ShaderVarType.Vec2; break;
-					case "VEC3":		varInfo.Type = ShaderVarType.Vec3; break;
-					case "VEC4":		varInfo.Type = ShaderVarType.Vec4; break;
-					case "MAT2":		varInfo.Type = ShaderVarType.Mat2; break;
-					case "MAT3":		varInfo.Type = ShaderVarType.Mat3; break;
-					case "MAT4":		varInfo.Type = ShaderVarType.Mat4; break;
-					case "INT":			varInfo.Type = ShaderVarType.Int; break;
-					case "SAMPLER2D":	varInfo.Type = ShaderVarType.Sampler2D; break;
-				}
-
-				curLineSplit = curLineSplit[2].Split(new char[] {'[', ']'}, StringSplitOptions.RemoveEmptyEntries);
-				varInfo.Name = curLineSplit[0];
-				varInfo.ArrayLength = (curLineSplit.Length > 1) ? int.Parse(curLineSplit[1]) : 1;
-				varInfo.Handle = -1;
-
-				varInfoList.Add(varInfo);
-			}
-
-			this.varInfo = varInfoList.ToArray();
+			this.varInfo = this.native.GetFields();
 		}
 
 		protected override void OnLoaded()
@@ -205,11 +141,10 @@ namespace Duality.Resources
 		protected override void OnDisposing(bool manually)
 		{
 			base.OnDisposing(manually);
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
-				this.glShaderId != 0)
+			if (this.native != null)
 			{
-				GL.DeleteShader(this.glShaderId);
-				this.glShaderId = 0;
+				this.native.Dispose();
+				this.native = null;
 			}
 		}
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
@@ -217,16 +152,6 @@ namespace Duality.Resources
 			base.OnCopyDataTo(target, operation);
 			AbstractShader targetShader = target as AbstractShader;
 			if (this.compiled) targetShader.Compile();
-		}
-
-		private static OpenTK.Graphics.OpenGL.ShaderType GetOpenTKShaderType(ShaderType type)
-		{
-			switch (type)
-			{
-				case ShaderType.Vertex:		return OpenTK.Graphics.OpenGL.ShaderType.VertexShader;
-				case ShaderType.Fragment:	return OpenTK.Graphics.OpenGL.ShaderType.FragmentShader;
-			}
-			return OpenTK.Graphics.OpenGL.ShaderType.VertexShader;
 		}
 	}
 }

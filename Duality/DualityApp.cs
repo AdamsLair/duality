@@ -419,7 +419,7 @@ namespace Duality
 			LoadAppData();
 			LoadUserData();
 
-			graphicsBack = new Backend.DefaultOpenTK.DefaultOpenTKBackend();
+			graphicsBack = new Backend.DefaultOpenTK.GraphicsBackend();
 			graphicsBack.Init();
 
 			sound = new SoundDevice();

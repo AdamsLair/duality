@@ -198,8 +198,8 @@ namespace Duality.Resources
 			if (this.frag.IsAvailable) this.frag.Res.Compile();
 			
 			// Attach both shaders
-			if (this.vert.IsAvailable) GL.AttachShader(this.glProgramId, this.vert.Res.OglShaderId);
-			if (this.frag.IsAvailable) GL.AttachShader(this.glProgramId, this.frag.Res.OglShaderId);
+			if (this.vert.IsAvailable) GL.AttachShader(this.glProgramId, (this.vert.Res.Native as Backend.DefaultOpenTK.NativeShaderPart).Handle);
+			if (this.frag.IsAvailable) GL.AttachShader(this.glProgramId, (this.frag.Res.Native as Backend.DefaultOpenTK.NativeShaderPart).Handle);
 		}
 		/// <summary>
 		/// Detaches <see cref="VertexShader">Vertex-</see> and <see cref="FragmentShader"/> from the ShaderProgram.
