@@ -26,6 +26,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] The shaders native backend. Don't use this unless you know exactly what you're doing.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public INativeShaderPart Native
 		{
 			get { return this.native; }

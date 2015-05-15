@@ -149,12 +149,9 @@ namespace Duality.Editor.Plugins.Base
 				foreach (ContentRef<ShaderProgram> sp in ContentProvider.GetLoadedContent<ShaderProgram>())
 				{
 					if (!sp.IsAvailable) continue;
-					if (sp.Res.Fragment == fragRef ||
-						sp.Res.Vertex == vertRef)
+					if (sp.Res.Fragment == fragRef || sp.Res.Vertex == vertRef)
 					{
-						bool wasCompiled = sp.Res.Compiled;
-						sp.Res.AttachShaders();
-						if (wasCompiled) sp.Res.Compile();
+						if (sp.Res.Compiled) sp.Res.Compile(true);
 
 						if (changedObj == null) changedObj = new List<object>();
 						changedObj.Add(sp.Res);

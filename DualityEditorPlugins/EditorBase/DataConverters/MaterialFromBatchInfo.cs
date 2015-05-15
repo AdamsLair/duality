@@ -39,7 +39,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				// Auto-Generate Material
 				string matName = "Material";
 				if (!info.MainTexture.IsExplicitNull) matName = info.MainTexture.FullName;
-				string matPath = PathHelper.GetFreePath(matName, Material.FileExt);
+				string matPath = PathHelper.GetFreePath(matName, Resource.GetFileExtByType<Material>());
 				Material mat = new Material(info);
 				mat.Save(matPath);
 

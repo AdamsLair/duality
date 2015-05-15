@@ -91,19 +91,20 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			else
 			{
 				// First try a direct approach
-				string targetPath = baseRes.FullName + Sound.FileExt;
+				string fileExt = Resource.GetFileExtByType<Sound>();
+				string targetPath = baseRes.FullName + fileExt;
 				Sound match = ContentProvider.RequestContent<Sound>(targetPath).Res;
 				if (match != null) return match;
 
 				// If that fails, search for other matches
-				string targetName = baseRes.Name + Sound.FileExt;
+				string targetName = baseRes.Name + fileExt;
 				List<string> resFilePaths = Resource.GetResourceFiles();
 				var resNameMatch = resFilePaths.Where(p => Path.GetFileName(p) == targetName);
 				var resQuery = resNameMatch.Concat(resFilePaths).Distinct();
 				List<Sound> matchCandidates = new List<Sound>();
 				foreach (string resFile in resQuery)
 				{
-					if (!resFile.EndsWith(Sound.FileExt)) continue;
+					if (!resFile.EndsWith(fileExt)) continue;
 					match = ContentProvider.RequestContent<Sound>(resFile).Res;
 					if (match != null && match.Data != null && match.Data.Contains(baseRes)) matchCandidates.Add(match);
 				}

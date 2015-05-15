@@ -25,7 +25,7 @@ namespace Duality
 		/// <summary>
 		/// A Resource files extension.
 		/// </summary>
-		public static readonly string FileExt = ".res";
+		internal static readonly string FileExt = ".res";
 
 		private	static	List<Resource>	finalizeSched	= new List<Resource>();
 
@@ -466,7 +466,22 @@ namespace Duality
 		/// <returns>The specified Resource Type's file extension.</returns>
 		public static string GetFileExtByType(Type resType)
 		{
-			return "." + resType.Name + FileExt;
+			if (resType == null || resType == typeof(Resource))
+				return FileExt;
+			else
+				return "." + resType.Name + FileExt;
+		}
+		/// <summary>
+		/// Returns the Resource file extension for a specific Resource Type.
+		/// </summary>
+		/// <param name="resType">The Resource Type to return the file extension from.</param>
+		/// <returns>The specified Resource Type's file extension.</returns>
+		public static string GetFileExtByType<T>() where T : Resource
+		{
+			if (typeof(T) == typeof(Resource))
+				return FileExt;
+			else
+				return "." + typeof(T).Name + FileExt;
 		}
 		/// <summary>
 		/// Returns the Resource Type that is associated with the specified file, based on its extension.

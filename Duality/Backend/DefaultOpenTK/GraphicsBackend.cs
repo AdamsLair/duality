@@ -163,6 +163,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			return new NativeShaderPart();
 		}
+		INativeShaderProgram IGraphicsBackend.CreateShaderProgram()
+		{
+			return new NativeShaderProgram();
+		}
 
 		private void PrepareRenderBatch(IDrawBatch renderBatch)
 		{
@@ -216,7 +220,7 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						ShaderFieldInfo[] varInfo = program != null ? program.VarInfo : null;
+						ShaderFieldInfo[] varInfo = program != null ? program.Fields : null;
 						if (varInfo != null)
 						{
 							int selectedVar = -1;
@@ -294,7 +298,7 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						ShaderFieldInfo[] varInfo = program != null ? program.VarInfo : null;
+						ShaderFieldInfo[] varInfo = program != null ? program.Fields : null;
 						if (varInfo != null)
 						{
 							int selectedVar = -1;

@@ -73,9 +73,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\DefaultOpenTK\NativeRenderTarget.cs" />
+    <Compile Include="Backend\DefaultOpenTK\NativeShaderProgram.cs" />
     <Compile Include="Backend\DefaultOpenTK\NativeShaderPart.cs" />
     <Compile Include="Backend\DefaultOpenTK\NativeTexture.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
+    <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
     <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
     <Compile Include="Backend\Graphics\INativeTexture.cs" />
     <Compile Include="Backend\Graphics\RenderStats.cs" />

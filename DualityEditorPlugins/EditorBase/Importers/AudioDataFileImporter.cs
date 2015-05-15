@@ -42,7 +42,7 @@ namespace Duality.Editor.Plugins.Base
 		}
 		public string[] GetOutputFiles(string srcFile, string targetName, string targetDir)
 		{
-			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), AudioData.FileExt);
+			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Resource.GetFileExtByType<AudioData>());
 			return new string[] { targetResPath };
 		}
 	}

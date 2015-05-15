@@ -169,10 +169,11 @@ namespace Duality.Resources
 		}
 
 
-		private	static	bool			texInit			= false;
-		private	static	int				activeTexUnit	= 0;
-		private	static	Texture[]		curBound		= null;
-		private	static	TextureUnit[]	texUnits		= null;
+		private	static	bool			texInit				= false;
+		private	static	int				activeTexUnit		= 0;
+		private	static	TextureUnit[]	texUnits			= null;
+		private	static	Texture[]		boundTextures		= null;
+		private	static	ShaderProgram	boundShaderProgram	= null;
 
 		private static void InitTextureFields()
 		{
@@ -181,7 +182,7 @@ namespace Duality.Resources
 			int numTexUnits;
 			GL.GetInteger(GetPName.MaxTextureImageUnits, out numTexUnits);
 			texUnits = new TextureUnit[numTexUnits];
-			curBound = new Texture[numTexUnits];
+			boundTextures = new Texture[numTexUnits];
 
 			for (int i = 0; i < numTexUnits; i++)
 			{
@@ -200,7 +201,7 @@ namespace Duality.Resources
 			if (!texInit) InitTextureFields();
 
 			Texture texRes = tex.IsExplicitNull ? null : (tex.Res ?? Texture.Checkerboard.Res);
-			if (curBound[texUnit] == texRes) return;
+			if (boundTextures[texUnit] == texRes) return;
 			if (activeTexUnit != texUnit) GL.ActiveTexture(texUnits[texUnit]);
 			activeTexUnit = texUnit;
 
@@ -208,7 +209,7 @@ namespace Duality.Resources
 			{
 				GL.BindTexture(TextureTarget.Texture2D, 0);
 				GL.Disable(EnableCap.Texture2D);
-				curBound[texUnit] = null;
+				boundTextures[texUnit] = null;
 			}
 			else
 			{
@@ -217,7 +218,7 @@ namespace Duality.Resources
 					
 				GL.Enable(EnableCap.Texture2D);
 				GL.BindTexture(TextureTarget.Texture2D, (texRes.Native as Backend.DefaultOpenTK.NativeTexture).Handle);
-				curBound[texUnit] = texRes;
+				boundTextures[texUnit] = texRes;
 			}
 		}
 		/// <summary>
@@ -232,7 +233,31 @@ namespace Duality.Resources
 				BindTexture(null, i);
 			}
 		}
+		/// <summary>
+		/// Binds a ShaderProgram in order to use it.
+		/// </summary>
+		/// <param name="prog">The ShaderProgram to be bound.</param>
+		private static void BindShader(ContentRef<ShaderProgram> prog)
+		{
+			ShaderProgram progRes = prog.IsExplicitNull ? null : prog.Res;
+			if (boundShaderProgram == progRes) return;
 
+			if (progRes == null)
+			{
+				GL.UseProgram(0);
+				boundShaderProgram = null;
+			}
+			else
+			{
+				if (!progRes.Compiled) progRes.Compile();
+
+				if (progRes.Native == null)	throw new ArgumentException("Specified shader program has no valid native program! Maybe it hasn't been loaded / initialized properly?", "prog");
+				if (progRes.Disposed)		throw new ArgumentException("Specified shader program has already been deleted!", "prog");
+					
+				GL.UseProgram((progRes.Native as Backend.DefaultOpenTK.NativeShaderProgram).Handle);
+				boundShaderProgram = progRes;
+			}
+		}
 		/// <summary>
 		/// Assigns the specified data to the OpenGL uniform represented by this <see cref="ShaderFieldInfo"/>.
 		/// </summary>
@@ -271,7 +296,7 @@ namespace Duality.Resources
 					break;
 			}
 		}
-
+		
 
 		private	BlendMode					blendType	= BlendMode.Solid;
 		private	ContentRef<ShaderProgram>	shader		= null;
@@ -383,12 +408,12 @@ namespace Duality.Resources
 			// Bind Shader
 			ContentRef<ShaderProgram> selShader = this.SelectShader();
 			if (lastTechnique == null || selShader.Res != lastTechnique.shader.Res)
-				ShaderProgram.Bind(selShader);
+				BindShader(selShader);
 
 			// Setup shader data
 			if (selShader.IsAvailable)
 			{
-				ShaderFieldInfo[] varInfo = selShader.Res.VarInfo;
+				ShaderFieldInfo[] varInfo = selShader.Res.Fields;
 
 				// Setup sampler bindings automatically
 				int curSamplerIndex = 0;
@@ -446,7 +471,7 @@ namespace Duality.Resources
 		public void FinishRendering()
 		{
 			this.SetupBlendType(BlendMode.Reset);
-			ShaderProgram.Bind(null);
+			BindShader(null);
 			ResetTextureBinding();
 		}
 

@@ -36,7 +36,7 @@ namespace Duality.Resources
 		/// </summary>
 		public string Name;
 		/// <summary>
-		/// OpenGL handle of the variables memory location.
+		/// Native location handle of the variable, which can be used to set its value.
 		/// </summary>
 		public int Handle;
 

@@ -15,5 +15,6 @@ namespace Duality.Backend
 		INativeTexture CreateTexture();
 		INativeRenderTarget CreateRenderTarget();
 		INativeShaderPart CreateShaderPart();
+		INativeShaderProgram CreateShaderProgram();
 	}
 }

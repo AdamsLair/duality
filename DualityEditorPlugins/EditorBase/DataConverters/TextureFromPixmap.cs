@@ -74,18 +74,19 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			else
 			{
 				// First try a direct approach
-				string targetPath = baseRes.FullName + Texture.FileExt;
+				string fileExt = Resource.GetFileExtByType<Texture>();
+				string targetPath = baseRes.FullName + fileExt;
 				Texture match = ContentProvider.RequestContent<Texture>(targetPath).Res;
 				if (match != null) return match;
 
 				// If that fails, search for other matches
-				string targetName = baseRes.Name + Texture.FileExt;
+				string targetName = baseRes.Name + fileExt;
 				List<string> resFilePaths = Resource.GetResourceFiles();
 				var resNameMatch = resFilePaths.Where(p => Path.GetFileName(p) == targetName);
 				var resQuery = resNameMatch.Concat(resFilePaths).Distinct();
 				foreach (string resFile in resQuery)
 				{
-					if (!resFile.EndsWith(Texture.FileExt)) continue;
+					if (!resFile.EndsWith(fileExt)) continue;
 					match = ContentProvider.RequestContent<Texture>(resFile).Res;
 					if (match != null && match.BasePixmap == baseRes) return match;
 				}

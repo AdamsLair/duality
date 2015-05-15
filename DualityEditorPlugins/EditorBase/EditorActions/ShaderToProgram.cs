@@ -62,7 +62,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			else
 				nameTemp += "Program";
 
-			string programPath = PathHelper.GetFreePath(Path.Combine(dirTemp, nameTemp), ShaderProgram.FileExt);
+			string programPath = PathHelper.GetFreePath(Path.Combine(dirTemp, nameTemp), Resource.GetFileExtByType<ShaderProgram>());
 			ShaderProgram program = new ShaderProgram(vert, frag);
 			program.Save(programPath);
 		}
