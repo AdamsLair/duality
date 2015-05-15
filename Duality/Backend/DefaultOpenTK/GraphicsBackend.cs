@@ -33,7 +33,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.renderStats = stats;
 
 			// Prepare the target surface for rendering
-			NativeRenderTarget.Bind(options.Target);
+			NativeRenderTarget.Bind(options.Target as NativeRenderTarget);
 
 			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);

@@ -27,10 +27,6 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return curBound; }
 		}
-		public static void Bind(ContentRef<Duality.Resources.RenderTarget> target)
-		{
-			Bind((target.Res != null ? target.Res.Native : null) as NativeRenderTarget);
-		}
 		public static void Bind(NativeRenderTarget nextBound)
 		{
 			if (curBound == nextBound) return;

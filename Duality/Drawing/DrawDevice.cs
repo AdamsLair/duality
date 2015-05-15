@@ -599,7 +599,7 @@ namespace Duality.Drawing
 				RenderMode = this.renderMode,
 				ModelViewMatrix = this.matModelView,
 				ProjectionMatrix = this.matProjection,
-				Target = this.renderTarget
+				Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null
 			};
 			RenderStats stats = new RenderStats();
 			DualityApp.GraphicsBackend.BeginRendering(this, options, stats);

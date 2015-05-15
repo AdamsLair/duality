@@ -9,7 +9,7 @@ namespace Duality.Backend
 {
 	public class RenderOptions
 	{
-		private ContentRef<RenderTarget>	target	= null;
+		private INativeRenderTarget	target			= null;
 		private ClearFlag		clearFlags			= ClearFlag.All;
 		private ColorRgba		clearColor			= ColorRgba.TransparentBlack;
 		private float			clearDepth			= 1.0f;
@@ -18,7 +18,7 @@ namespace Duality.Backend
 		private	Matrix4			modelViewMatrix		= Matrix4.Identity;
 		private	Matrix4			projectionMatrix	= Matrix4.Identity;
 		
-		public ContentRef<RenderTarget> Target
+		public INativeRenderTarget Target
 		{
 			get { return this.target; }
 			set { this.target = value; }
