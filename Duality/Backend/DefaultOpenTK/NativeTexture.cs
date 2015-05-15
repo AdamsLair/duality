@@ -19,6 +19,62 @@ namespace Duality.Backend.DefaultOpenTK
 	[DontSerialize]
 	public class NativeTexture : INativeTexture
 	{
+		private	static	bool			texInit			= false;
+		private	static	int				activeTexUnit	= 0;
+		private	static	TextureUnit[]	texUnits		= null;
+		private	static	NativeTexture[]	curBound		= null;
+
+		private static void InitTextureFields()
+		{
+			if (texInit) return;
+			
+			int numTexUnits;
+			GL.GetInteger(GetPName.MaxTextureImageUnits, out numTexUnits);
+			texUnits = new TextureUnit[numTexUnits];
+			curBound = new NativeTexture[numTexUnits];
+
+			for (int i = 0; i < numTexUnits; i++)
+			{
+				texUnits[i] = (TextureUnit)((int)TextureUnit.Texture0 + i);
+			}
+
+			texInit = true;
+		}
+		public static void Bind(ContentRef<Duality.Resources.Texture> target, int texUnit = 0)
+		{
+			Bind((target.Res != null ? target.Res.Native : null) as NativeTexture);
+		}
+		public static void Bind(NativeTexture tex, int texUnit = 0)
+		{
+			if (!texInit) InitTextureFields();
+
+			if (curBound[texUnit] == tex) return;
+			if (activeTexUnit != texUnit) GL.ActiveTexture(texUnits[texUnit]);
+			activeTexUnit = texUnit;
+
+			if (tex == null)
+			{
+				GL.BindTexture(TextureTarget.Texture2D, 0);
+				GL.Disable(EnableCap.Texture2D);
+				curBound[texUnit] = null;
+			}
+			else
+			{
+				GL.Enable(EnableCap.Texture2D);
+				GL.BindTexture(TextureTarget.Texture2D, tex.Handle);
+				curBound[texUnit] = tex;
+			}
+		}
+		public static void ResetBinding(int beginAtIndex = 0)
+		{
+			if (!texInit) InitTextureFields();
+			for (int i = beginAtIndex; i < texUnits.Length; i++)
+			{
+				Bind(null as NativeTexture, i);
+			}
+		}
+
+
 		private int		handle	= 0;
 		private int		width	= 0;
 		private int		height	= 0;

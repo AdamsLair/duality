@@ -222,29 +222,6 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
-		/// Sets up the appropriate OpenGL rendering state to render vertices using this BatchInfo.
-		/// </summary>
-		/// <param name="lastInfo">
-		/// The BatchInfo that has been used to set up the current OpenGL state. This parameter is
-		/// optional but supplying it will improve rendering performance by reducing redundant
-		/// state changes.
-		/// </param>
-		public void SetupForRendering(IDrawDevice device, BatchInfo lastInfo)
-		{
-			if (object.ReferenceEquals(this, lastInfo)) return;
-			this.technique.Res.SetupForRendering(device, this, (lastInfo == null) ? null : lastInfo.technique.Res);
-		}
-		/// <summary>
-		/// Resets the OpenGL rendering state. This should only be called if there are no more
-		/// BatchInfos to be set up directy after this one, i.e. if this is the last BatchInfo
-		/// that has been rendered so far.
-		/// </summary>
-		public void FinishRendering()
-		{
-			this.technique.Res.FinishRendering();
-		}
-
-		/// <summary>
 		/// Gets a texture by name. Returns a null reference if the name doesn't exist.
 		/// </summary>
 		/// <param name="name"></param>

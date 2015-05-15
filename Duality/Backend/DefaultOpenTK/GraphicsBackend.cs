@@ -131,7 +131,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 			if (lastBatchRendered != null)
 			{
-				lastBatchRendered.Material.FinishRendering();
+				this.FinishMaterial(lastBatchRendered.Material);
 			}
 
 			if (this.renderStats != null)
@@ -263,7 +263,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private void RenderBatch(IDrawBatch renderBatch, int vertexOffset, IDrawBatch lastBatchRendered)
 		{
 			if (lastBatchRendered == null || lastBatchRendered.Material != renderBatch.Material)
-				renderBatch.Material.SetupForRendering(this.currentDevice, lastBatchRendered == null ? null : lastBatchRendered.Material);
+				this.SetupMaterial(renderBatch.Material, lastBatchRendered == null ? null : lastBatchRendered.Material);
 
 			GL.DrawArrays(GetOpenTKVertexMode(renderBatch.VertexMode), vertexOffset, renderBatch.VertexCount);
 
@@ -322,6 +322,167 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 				}
 			}
+		}
+
+		private void SetupMaterial(BatchInfo material, BatchInfo lastMaterial)
+		{
+			if (material == lastMaterial) return;
+			DrawTechnique tech = material.Technique.Res ?? DrawTechnique.Solid.Res;
+			DrawTechnique lastTech = lastMaterial != null ? lastMaterial.Technique.Res : null;
+			
+			// Prepare Rendering
+			if (tech.NeedsPreparation)
+			{
+				material = new BatchInfo(material);
+				tech.PrepareRendering(this.currentDevice, material);
+			}
+			
+			// Setup BlendType
+			if (lastTech == null || tech.Blending != lastTech.Blending)
+				this.SetupBlendType(tech.Blending, this.currentDevice.DepthWrite);
+
+			// Bind Shader
+			ContentRef<ShaderProgram> selShader = tech.Shader;
+			if (lastTech == null || selShader.Res != lastTech.Shader.Res)
+				NativeShaderProgram.Bind(selShader);
+
+			// Setup shader data
+			if (selShader.IsAvailable)
+			{
+				ShaderFieldInfo[] varInfo = selShader.Res.Fields;
+
+				// Setup sampler bindings automatically
+				int curSamplerIndex = 0;
+				if (material.Textures != null)
+				{
+					for (int i = 0; i < varInfo.Length; i++)
+					{
+						if (varInfo[i].Handle == -1) continue;
+						if (varInfo[i].Type != ShaderVarType.Sampler2D) continue;
+
+						// Bind Texture
+						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].Name);
+						NativeTexture.Bind(texRef, curSamplerIndex);
+						GL.Uniform1(varInfo[i].Handle, curSamplerIndex);
+
+						curSamplerIndex++;
+					}
+				}
+				NativeTexture.ResetBinding(curSamplerIndex);
+
+				// Transfer uniform data from material to actual shader
+				if (material.Uniforms != null)
+				{
+					for (int i = 0; i < varInfo.Length; i++)
+					{
+						if (varInfo[i].Handle == -1) continue;
+						float[] data = material.GetUniform(varInfo[i].Name);
+						if (data == null) continue;
+						NativeShaderProgram.SetUniform(ref varInfo[i], data);
+					}
+				}
+			}
+			// Setup fixed function data
+			else
+			{
+				// Fixed function texture binding
+				if (material.Textures != null)
+				{
+					int samplerIndex = 0;
+					foreach (var pair in material.Textures)
+					{
+						NativeTexture.Bind(pair.Value, samplerIndex);
+						samplerIndex++;
+					}
+					NativeTexture.ResetBinding(samplerIndex);
+				}
+				else
+					NativeTexture.ResetBinding();
+			}
+		}
+		private void SetupBlendType(BlendMode mode, bool depthWrite = true)
+		{
+			switch (mode)
+			{
+				default:
+				case BlendMode.Reset:
+				case BlendMode.Solid:
+					GL.DepthMask(depthWrite);
+					GL.Disable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					break;
+				case BlendMode.Mask:
+					GL.DepthMask(depthWrite);
+					GL.Disable(EnableCap.Blend);
+
+					bool useAlphaToCoverage = false;
+					if (NativeRenderTarget.BoundRT != null)
+						useAlphaToCoverage = NativeRenderTarget.BoundRT.Samples > 0;
+					else
+						useAlphaToCoverage = DualityApp.TargetMode.Samples > 0; 
+
+					if (useAlphaToCoverage)
+					{
+						GL.Disable(EnableCap.AlphaTest);
+						GL.Enable(EnableCap.SampleAlphaToCoverage);
+					}
+					else
+					{
+						GL.Enable(EnableCap.AlphaTest);
+						GL.AlphaFunc(AlphaFunction.Gequal, 0.5f);
+					}
+					break;
+				case BlendMode.Alpha:
+					GL.DepthMask(false);
+					GL.Enable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+					break;
+				case BlendMode.AlphaPre:
+					GL.DepthMask(false);
+					GL.Enable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					GL.BlendFuncSeparate(BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha, BlendingFactorSrc.One, BlendingFactorDest.OneMinusSrcAlpha);
+					break;
+				case BlendMode.Add:
+					GL.DepthMask(false);
+					GL.Enable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					GL.BlendFuncSeparate(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One, BlendingFactorSrc.One, BlendingFactorDest.One);
+					break;
+				case BlendMode.Light:
+					GL.DepthMask(false);
+					GL.Enable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					GL.BlendFuncSeparate(BlendingFactorSrc.DstColor, BlendingFactorDest.One, BlendingFactorSrc.Zero, BlendingFactorDest.One);
+					break;
+				case BlendMode.Multiply:
+					GL.DepthMask(false);
+					GL.Enable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					GL.BlendFunc(BlendingFactorSrc.DstColor, BlendingFactorDest.Zero);
+					break;
+				case BlendMode.Invert:
+					GL.DepthMask(false);
+					GL.Enable(EnableCap.Blend);
+					GL.Disable(EnableCap.AlphaTest);
+					GL.Disable(EnableCap.SampleAlphaToCoverage);
+					GL.BlendFunc(BlendingFactorSrc.OneMinusDstColor, BlendingFactorDest.OneMinusSrcColor);
+					break;
+			}
+		}
+		private void FinishMaterial(BatchInfo material)
+		{
+			DrawTechnique tech = material.Technique.Res;
+			this.SetupBlendType(BlendMode.Reset);
+			NativeShaderProgram.Bind(null as NativeShaderProgram);
+			NativeTexture.ResetBinding();
 		}
 		
 		private static PrimitiveType GetOpenTKVertexMode(VertexMode mode)
