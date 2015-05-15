@@ -42,30 +42,30 @@ namespace Duality.Backend.DefaultOpenTK
 			if (field.Handle == -1) return;
 			switch (field.Type)
 			{
-				case ShaderVarType.Int:
+				case ShaderFieldType.Int:
 					int[] arrI = new int[field.ArrayLength];
 					for (int j = 0; j < arrI.Length; j++) arrI[j] = (int)data[j];
 					GL.Uniform1(field.Handle, arrI.Length, arrI);
 					break;
-				case ShaderVarType.Float:
+				case ShaderFieldType.Float:
 					GL.Uniform1(field.Handle, data.Length, data);
 					break;
-				case ShaderVarType.Vec2:
+				case ShaderFieldType.Vec2:
 					GL.Uniform2(field.Handle, data.Length / 2, data);
 					break;
-				case ShaderVarType.Vec3:
+				case ShaderFieldType.Vec3:
 					GL.Uniform3(field.Handle, data.Length / 3, data);
 					break;
-				case ShaderVarType.Vec4:
+				case ShaderFieldType.Vec4:
 					GL.Uniform4(field.Handle, data.Length / 4, data);
 					break;
-				case ShaderVarType.Mat2:
+				case ShaderFieldType.Mat2:
 					GL.UniformMatrix2(field.Handle, data.Length / 4, false, data);
 					break;
-				case ShaderVarType.Mat3:
+				case ShaderFieldType.Mat3:
 					GL.UniformMatrix3(field.Handle, data.Length / 9, false, data);
 					break;
-				case ShaderVarType.Mat4:
+				case ShaderFieldType.Mat4:
 					GL.UniformMatrix4(field.Handle, data.Length / 16, false, data);
 					break;
 			}
@@ -109,9 +109,9 @@ namespace Duality.Backend.DefaultOpenTK
 			for (int i = 0; i < fields.Length; i++)
 			{
 				if (fields[i].Scope == ShaderFieldScope.Uniform)
-					fields[i].Handle = GL.GetUniformLocation(this.handle, fields[i].Name);
+					fields[i] = fields[i].WithHandle(GL.GetUniformLocation(this.handle, fields[i].Name));
 				else
-					fields[i].Handle = GL.GetAttribLocation(this.handle, fields[i].Name);
+					fields[i] = fields[i].WithHandle(GL.GetAttribLocation(this.handle, fields[i].Name));
 			}
 		}
 		void IDisposable.Dispose()

@@ -170,8 +170,8 @@ namespace Duality.Resources
 			this.native.LoadProgram(nativeVert, nativeFrag);
 
 			// Collect variable infos from sub programs
-			ShaderFieldInfo[] fragVarArray = this.frag.IsAvailable ? this.frag.Res.VarInfo : null;
-			ShaderFieldInfo[] vertVarArray = this.vert.IsAvailable ? this.vert.Res.VarInfo : null;
+			ShaderFieldInfo[] fragVarArray = this.frag.IsAvailable ? this.frag.Res.Fields : null;
+			ShaderFieldInfo[] vertVarArray = this.vert.IsAvailable ? this.vert.Res.Fields : null;
 			if (fragVarArray != null && vertVarArray != null)
 				this.fields = vertVarArray.Union(fragVarArray).ToArray();
 			else if (vertVarArray != null)

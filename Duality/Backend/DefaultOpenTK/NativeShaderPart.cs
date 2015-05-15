@@ -67,32 +67,34 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				string curLine = t.TrimStart();
 
+				ShaderFieldScope scope;
+				int arrayLength;
+
 				if (curLine.StartsWith("uniform"))
-					varInfo.Scope = ShaderFieldScope.Uniform;
+					scope = ShaderFieldScope.Uniform;
 				else if (curLine.StartsWith("attribute"))
-					varInfo.Scope = ShaderFieldScope.Attribute;
+					scope = ShaderFieldScope.Attribute;
 				else continue;
 
 				string[] curLineSplit = curLine.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+				ShaderFieldType varType = ShaderFieldType.Unknown;
 				switch (curLineSplit[1].ToUpper())
 				{
-					case "FLOAT":		varInfo.Type = ShaderVarType.Float; break;
-					case "VEC2":		varInfo.Type = ShaderVarType.Vec2; break;
-					case "VEC3":		varInfo.Type = ShaderVarType.Vec3; break;
-					case "VEC4":		varInfo.Type = ShaderVarType.Vec4; break;
-					case "MAT2":		varInfo.Type = ShaderVarType.Mat2; break;
-					case "MAT3":		varInfo.Type = ShaderVarType.Mat3; break;
-					case "MAT4":		varInfo.Type = ShaderVarType.Mat4; break;
-					case "INT":			varInfo.Type = ShaderVarType.Int; break;
-					case "SAMPLER2D":	varInfo.Type = ShaderVarType.Sampler2D; break;
+					case "FLOAT":		varType = ShaderFieldType.Float; break;
+					case "VEC2":		varType = ShaderFieldType.Vec2; break;
+					case "VEC3":		varType = ShaderFieldType.Vec3; break;
+					case "VEC4":		varType = ShaderFieldType.Vec4; break;
+					case "MAT2":		varType = ShaderFieldType.Mat2; break;
+					case "MAT3":		varType = ShaderFieldType.Mat3; break;
+					case "MAT4":		varType = ShaderFieldType.Mat4; break;
+					case "INT":			varType = ShaderFieldType.Int; break;
+					case "SAMPLER2D":	varType = ShaderFieldType.Sampler2D; break;
 				}
 
 				curLineSplit = curLineSplit[2].Split(new char[] {'[', ']'}, StringSplitOptions.RemoveEmptyEntries);
-				varInfo.Name = curLineSplit[0];
-				varInfo.ArrayLength = (curLineSplit.Length > 1) ? int.Parse(curLineSplit[1]) : 1;
-				varInfo.Handle = -1;
+				arrayLength = (curLineSplit.Length > 1) ? int.Parse(curLineSplit[1]) : 1;
 
-				varInfoList.Add(varInfo);
+				varInfoList.Add(new ShaderFieldInfo(curLineSplit[0], varType, scope, arrayLength));
 			}
 
 			this.fields = varInfoList.ToArray();

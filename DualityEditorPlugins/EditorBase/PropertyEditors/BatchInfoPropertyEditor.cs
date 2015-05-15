@@ -59,12 +59,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				}
 				else
 				{
-					varInfoArray = new ShaderFieldInfo[] { new ShaderFieldInfo() };
-					varInfoArray[0].ArrayLength = 1;
-					varInfoArray[0].Handle = -1;
-					varInfoArray[0].Name = ShaderFieldInfo.VarName_MainTex;
-					varInfoArray[0].Scope = ShaderFieldScope.Uniform;
-					varInfoArray[0].Type = ShaderVarType.Sampler2D;
+					varInfoArray = new ShaderFieldInfo[] { new ShaderFieldInfo(
+						ShaderFieldInfo.VarName_MainTex,
+						ShaderFieldType.Sampler2D,
+						ShaderFieldScope.Uniform) };
 				}
 
 				// Get rid of unused variables (This changes actual Resource data!)
@@ -78,7 +76,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						{
 							foreach (var pair in info.Textures)
 							{
-								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type == ShaderVarType.Sampler2D && v.Name == pair.Key))
+								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type == ShaderFieldType.Sampler2D && v.Name == pair.Key))
 								{
 									if (texRemoveSched == null) texRemoveSched = new List<string>();
 									texRemoveSched.Add(pair.Key);
@@ -89,7 +87,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						{
 							foreach (var pair in info.Uniforms)
 							{
-								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type != ShaderVarType.Sampler2D && v.Name == pair.Key))
+								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type != ShaderFieldType.Sampler2D && v.Name == pair.Key))
 								{
 									if (uniRemoveSched == null) uniRemoveSched = new List<string>();
 									uniRemoveSched.Add(pair.Key);
@@ -117,7 +115,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						if (varInfo.Scope != ShaderFieldScope.Uniform) continue;
 
 						// Set Texture variables
-						if (varInfo.Type == ShaderVarType.Sampler2D)
+						if (varInfo.Type == ShaderFieldType.Sampler2D)
 						{
 							foreach (BatchInfo info in batchInfos.NotNull())
 							{
@@ -234,17 +232,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 			if (varInfo.ArrayLength == 1)
 			{
-				if (varInfo.Type == ShaderVarType.Float || varInfo.Type == ShaderVarType.Int)
+				if (varInfo.Type == ShaderFieldType.Float || varInfo.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
-					if (varInfo.Type == ShaderVarType.Int) editType = typeof(int);
+					if (varInfo.Type == ShaderFieldType.Int) editType = typeof(int);
 
 					if (oldEditor != null && oldEditor.EditedType == editType)
 						return oldEditor;
 					else
 					{
 						PropertyEditor e = this.ParentGrid.CreateEditor(editType, this);
-						if (varInfo.Type == ShaderVarType.Int)
+						if (varInfo.Type == ShaderFieldType.Int)
 						{
 							e.Getter = this.CreateUniformIntValueGetter(varInfo.Name);
 							e.Setter = !this.ReadOnly ? this.CreateUniformIntValueSetter(varInfo.Name) : null;
@@ -259,7 +257,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						return e;
 					}
 				}
-				else if (varInfo.Type == ShaderVarType.Vec2)
+				else if (varInfo.Type == ShaderFieldType.Vec2)
 				{
 					if (oldEditor != null && oldEditor.EditedType == typeof(Vector2))
 						return oldEditor;
@@ -273,7 +271,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						return e;
 					}
 				}
-				else if (varInfo.Type == ShaderVarType.Vec3)
+				else if (varInfo.Type == ShaderFieldType.Vec3)
 				{
 					if (oldEditor != null && oldEditor.EditedType == typeof(Vector3))
 						return oldEditor;
@@ -311,10 +309,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				Type oldElementType = oldValue != null ? oldValue.GetType().GetElementType() : null;
 				int oldLen = oldValue != null ? oldValue.Length : -1;
 
-				if (varInfo.Type == ShaderVarType.Float || varInfo.Type == ShaderVarType.Int)
+				if (varInfo.Type == ShaderFieldType.Float || varInfo.Type == ShaderFieldType.Int)
 				{
 					Type editType = typeof(float);
-					if (varInfo.Type == ShaderVarType.Int) editType = typeof(int);
+					if (varInfo.Type == ShaderFieldType.Int) editType = typeof(int);
 
 					if (oldLen == varInfo.ArrayLength && oldElementType == editType)
 						return oldEditor;
@@ -326,13 +324,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						e.ForceWriteBack = true;
 						if (e is GroupedPropertyEditor)
 						{
-							if (varInfo.Type == ShaderVarType.Float) (e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
+							if (varInfo.Type == ShaderFieldType.Float) (e as GroupedPropertyEditor).EditorAdded += this.UniformList_EditorAdded;
 						}
 						this.ParentGrid.ConfigureEditor(e, configData);
 						return e;
 					}
 				}
-				else if (varInfo.Type == ShaderVarType.Vec2)
+				else if (varInfo.Type == ShaderFieldType.Vec2)
 				{
 					if (oldLen == varInfo.ArrayLength && oldElementType == typeof(Vector2))
 						return oldEditor;
@@ -350,7 +348,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						return e;
 					}
 				}
-				else if (varInfo.Type == ShaderVarType.Vec3)
+				else if (varInfo.Type == ShaderFieldType.Vec3)
 				{
 					if (oldLen == varInfo.ArrayLength && oldElementType == typeof(Vector3))
 						return oldEditor;

@@ -8,7 +8,7 @@ namespace Duality.Resources
 	/// <summary>
 	/// The type of a <see cref="AbstractShader">shader</see> variable.
 	/// </summary>
-	public enum ShaderVarType
+	public enum ShaderFieldType
 	{
 		/// <summary>
 		/// Unknown type.
@@ -58,33 +58,33 @@ namespace Duality.Resources
 
 	public static class ExtMethodsShaderVarType
 	{
-		public static Type GetElementPrimitive(this ShaderVarType type)
+		public static Type GetElementPrimitive(this ShaderFieldType type)
 		{
 			switch (type)
 			{
 				default:
 					return typeof(float);
-				case ShaderVarType.Int:
+				case ShaderFieldType.Int:
 					return typeof(int);
 			}
 		}
-		public static int GetElementCount(this ShaderVarType type)
+		public static int GetElementCount(this ShaderFieldType type)
 		{
 			switch (type)
 			{
 				default:
 					return 1;
-				case ShaderVarType.Vec2:
+				case ShaderFieldType.Vec2:
 					return 2;
-				case ShaderVarType.Vec3:
+				case ShaderFieldType.Vec3:
 					return 3;
-				case ShaderVarType.Vec4:
+				case ShaderFieldType.Vec4:
 					return 4;
-				case ShaderVarType.Mat2:
+				case ShaderFieldType.Mat2:
 					return 4;
-				case ShaderVarType.Mat3:
+				case ShaderFieldType.Mat3:
 					return 9;
-				case ShaderVarType.Mat4:
+				case ShaderFieldType.Mat4:
 					return 16;
 			}
 		}

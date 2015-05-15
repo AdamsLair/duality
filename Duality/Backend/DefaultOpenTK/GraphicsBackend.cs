@@ -358,7 +358,7 @@ namespace Duality.Backend.DefaultOpenTK
 					for (int i = 0; i < varInfo.Length; i++)
 					{
 						if (varInfo[i].Handle == -1) continue;
-						if (varInfo[i].Type != ShaderVarType.Sampler2D) continue;
+						if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
 
 						// Bind Texture
 						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].Name);

@@ -16,30 +16,50 @@ namespace Duality.Resources
 		/// The default variable name for a materials main texture.
 		/// </summary>
 		public const string VarName_MainTex = "mainTex";
+		
+		private ShaderFieldScope scope;
+		private ShaderFieldType type;
+		private int arrayLength;
+		private string name;
+		private int handle;
 
 		/// <summary>
-		/// The <see cref="ShaderFieldScope">scope</see> of the variable
+		/// [GET] The <see cref="ShaderFieldScope">scope</see> of the variable
 		/// </summary>
-		public ShaderFieldScope Scope;
+		public ShaderFieldScope Scope
+		{
+			get { return this.scope; }
+		}
 		/// <summary>
-		/// The <see cref="ShaderVarType">type</see> of the variable
+		/// [GET] The <see cref="ShaderFieldType">type</see> of the variable
 		/// </summary>
-		public ShaderVarType Type;
+		public ShaderFieldType Type
+		{
+			get { return this.type; }
+		}
 		/// <summary>
-		/// If the variable is an array, this is its length. Arrays
-		/// are only supported for <see cref="ShaderVarType.Int"/> and
-		/// <see cref="ShaderVarType.Float"/>.
+		/// [GET] If the variable is an array, this is its length. Arrays
+		/// are only supported for <see cref="ShaderFieldType.Int"/> and
+		/// <see cref="ShaderFieldType.Float"/>.
 		/// </summary>
-		public int ArrayLength;
+		public int ArrayLength
+		{
+			get { return this.arrayLength; }
+		}
 		/// <summary>
-		/// The name of the variable, as declared in the shader.
+		/// [GET] The name of the variable, as declared in the shader.
 		/// </summary>
-		public string Name;
+		public string Name
+		{
+			get { return this.name; }
+		}
 		/// <summary>
-		/// Native location handle of the variable, which can be used to set its value.
+		/// [GET] Native location handle of the variable, which can be used to set its value.
 		/// </summary>
-		public int Handle;
-
+		public int Handle
+		{
+			get { return this.handle;}
+		}
 		/// <summary>
 		/// [GET] Returns whether the shader variable should be considered private.
 		/// </summary>
@@ -48,12 +68,26 @@ namespace Duality.Resources
 			get { return string.IsNullOrEmpty(this.Name) || this.Name[0] == '_'; }
 		}
 
+		public ShaderFieldInfo(string name, ShaderFieldType type, ShaderFieldScope scope, int arrayLength = 1, int handle = -1)
+		{
+			this.name = name;
+			this.type = type;
+			this.scope = scope;
+			this.arrayLength = arrayLength;
+			this.handle = handle;
+		}
+
+		public ShaderFieldInfo WithHandle(int handle)
+		{
+			return new ShaderFieldInfo(this.name, this.type, this.scope, this.arrayLength, handle);
+		}
+
 		public override string ToString()
 		{
 			return string.Format("{1} {0}{2}", 
-				this.Name, 
-				this.Type, 
-				this.ArrayLength > 1 ? string.Format("[{0}]", this.ArrayLength) : "");
+				this.name, 
+				this.type, 
+				this.arrayLength > 1 ? string.Format("[{0}]", this.arrayLength) : "");
 		}
 	}
 }
