@@ -8,7 +8,7 @@ namespace Duality.Resources
 	/// <summary>
 	/// The scope of a <see cref="AbstractShader">shader</see> variable
 	/// </summary>
-	public enum ShaderVarScope
+	public enum ShaderFieldScope
 	{
 		/// <summary>
 		/// Unknown scope

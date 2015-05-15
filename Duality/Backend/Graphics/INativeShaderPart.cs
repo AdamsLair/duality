@@ -20,6 +20,6 @@ namespace Duality.Backend
 		/// Retrieves reflection data on the shaders fields.
 		/// </summary>
 		/// <returns></returns>
-		ShaderVarInfo[] GetFields();
+		ShaderFieldInfo[] GetFields();
 	}
 }

@@ -16,7 +16,7 @@ namespace Duality.Backend.DefaultOpenTK
 	public class NativeShaderPart : INativeShaderPart
 	{
 		private int handle;
-		private ShaderVarInfo[] fields;
+		private ShaderFieldInfo[] fields;
 
 		public int Handle
 		{
@@ -60,17 +60,17 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 
 			// Scan remaining code chunk for variable declarations
-			List<ShaderVarInfo> varInfoList = new List<ShaderVarInfo>();
+			List<ShaderFieldInfo> varInfoList = new List<ShaderFieldInfo>();
 			string[] lines = sourceWithoutComments.Split(new[] {';','\n'}, StringSplitOptions.RemoveEmptyEntries);
-			ShaderVarInfo varInfo = new ShaderVarInfo();
+			ShaderFieldInfo varInfo = new ShaderFieldInfo();
 			foreach (string t in lines)
 			{
 				string curLine = t.TrimStart();
 
 				if (curLine.StartsWith("uniform"))
-					varInfo.Scope = ShaderVarScope.Uniform;
+					varInfo.Scope = ShaderFieldScope.Uniform;
 				else if (curLine.StartsWith("attribute"))
-					varInfo.Scope = ShaderVarScope.Attribute;
+					varInfo.Scope = ShaderFieldScope.Attribute;
 				else continue;
 
 				string[] curLineSplit = curLine.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
@@ -97,9 +97,9 @@ namespace Duality.Backend.DefaultOpenTK
 
 			this.fields = varInfoList.ToArray();
 		}
-		ShaderVarInfo[] INativeShaderPart.GetFields()
+		ShaderFieldInfo[] INativeShaderPart.GetFields()
 		{
-			return this.fields.Clone() as ShaderVarInfo[];
+			return this.fields.Clone() as ShaderFieldInfo[];
 		}
 		void IDisposable.Dispose()
 		{

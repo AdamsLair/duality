@@ -157,7 +157,7 @@ namespace Duality.Resources
 			set { this.info.MainTexture = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The set of <see cref="Duality.Resources.ShaderVarInfo">uniform values</see> to use.
+		/// [GET / SET] The set of <see cref="Duality.Resources.ShaderFieldInfo">uniform values</see> to use.
 		/// </summary>
 		public IEnumerable<KeyValuePair<string,float[]>> Uniforms
 		{
@@ -188,7 +188,7 @@ namespace Duality.Resources
 		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
 		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
 		/// <param name="textures">A set of <see cref="Duality.Resources.Texture">Textures</see> to use.</param>
-		/// <param name="uniforms">A set of <see cref="Duality.Resources.ShaderVarInfo">uniform values</see> to use.</param>
+		/// <param name="uniforms">A set of <see cref="Duality.Resources.ShaderFieldInfo">uniform values</see> to use.</param>
 		public Material(ContentRef<DrawTechnique> technique, ColorRgba mainColor, Dictionary<string,ContentRef<Texture>> textures = null, Dictionary<string,float[]> uniforms = null)
 		{
 			this.info = new BatchInfo(technique, mainColor, textures, uniforms);

@@ -128,7 +128,7 @@
     <Compile Include="Input\MouseEventArgs.cs" />
     <Compile Include="Input\MouseButton.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderVarScope.cs" />
-    <Compile Include="Resources\ShaderInfo\ShaderVarInfo.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderVarType.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />

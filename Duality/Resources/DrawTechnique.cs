@@ -234,12 +234,12 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Assigns the specified data to the OpenGL uniform represented by this <see cref="ShaderVarInfo"/>.
+		/// Assigns the specified data to the OpenGL uniform represented by this <see cref="ShaderFieldInfo"/>.
 		/// </summary>
 		/// <param name="data">Incoming uniform data.</param>
-		private static void SetUniform(ref ShaderVarInfo varInfo, float[] data)
+		private static void SetUniform(ref ShaderFieldInfo varInfo, float[] data)
 		{
-			if (varInfo.Scope != ShaderVarScope.Uniform) return;
+			if (varInfo.Scope != ShaderFieldScope.Uniform) return;
 			if (varInfo.Handle == -1) return;
 			switch (varInfo.Type)
 			{
@@ -366,7 +366,7 @@ namespace Duality.Resources
 		/// <param name="lastTechnique">The last DrawTechnique that has been set up. This parameter is optional, but
 		/// specifying it will increase performance by reducing redundant state changes.</param>
 		/// <param name="textures">A set of <see cref="Duality.Resources.Texture">Textures</see> to use.</param>
-		/// <param name="uniforms">A set of <see cref="Duality.Resources.ShaderVarInfo">uniform values</see> to apply.</param>
+		/// <param name="uniforms">A set of <see cref="Duality.Resources.ShaderFieldInfo">uniform values</see> to apply.</param>
 		public void SetupForRendering(IDrawDevice device, BatchInfo material, DrawTechnique lastTechnique)
 		{
 			// Prepare Rendering
@@ -388,7 +388,7 @@ namespace Duality.Resources
 			// Setup shader data
 			if (selShader.IsAvailable)
 			{
-				ShaderVarInfo[] varInfo = selShader.Res.VarInfo;
+				ShaderFieldInfo[] varInfo = selShader.Res.VarInfo;
 
 				// Setup sampler bindings automatically
 				int curSamplerIndex = 0;

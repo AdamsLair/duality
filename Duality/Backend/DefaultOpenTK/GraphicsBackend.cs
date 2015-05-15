@@ -216,7 +216,7 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
+						ShaderFieldInfo[] varInfo = program != null ? program.VarInfo : null;
 						if (varInfo != null)
 						{
 							int selectedVar = -1;
@@ -294,7 +294,7 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
+						ShaderFieldInfo[] varInfo = program != null ? program.VarInfo : null;
 						if (varInfo != null)
 						{
 							int selectedVar = -1;
@@ -342,9 +342,9 @@ namespace Duality.Backend.DefaultOpenTK
 				source.M31, source.M32, source.M33, source.M34,
 				source.M41, source.M42, source.M43, source.M44);
 		}
-		private static bool ShaderVarMatches(ref ShaderVarInfo varInfo, VertexElementType type, int count)
+		private static bool ShaderVarMatches(ref ShaderFieldInfo varInfo, VertexElementType type, int count)
 		{
-			if (varInfo.Scope != ShaderVarScope.Attribute) return false;
+			if (varInfo.Scope != ShaderFieldScope.Attribute) return false;
 
 			Type elementPrimitive = varInfo.Type.GetElementPrimitive();
 			Type requiredPrimitive = null;

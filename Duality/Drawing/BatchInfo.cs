@@ -80,7 +80,7 @@ namespace Duality.Drawing
 			{
 				if (this.textures == null || this.textures.Count == 0) return null;
 				ContentRef<Texture> mainTexRef;
-				if (!this.textures.TryGetValue(ShaderVarInfo.VarName_MainTex, out mainTexRef)) return null;
+				if (!this.textures.TryGetValue(ShaderFieldInfo.VarName_MainTex, out mainTexRef)) return null;
 				return mainTexRef;
 			}
 			set
@@ -89,12 +89,12 @@ namespace Duality.Drawing
 					this.textures = new Dictionary<string,ContentRef<Texture>>();
 				else
 					this.Detach(DirtyFlag.Textures);
-				this.textures[ShaderVarInfo.VarName_MainTex] = value;
+				this.textures[ShaderFieldInfo.VarName_MainTex] = value;
 				this.InvalidateHashCode();
 			}
 		}
 		/// <summary>
-		/// [GET / SET] The set of <see cref="Duality.Resources.ShaderVarInfo">uniform values</see> to use.
+		/// [GET / SET] The set of <see cref="Duality.Resources.ShaderFieldInfo">uniform values</see> to use.
 		/// </summary>
 		public IEnumerable<KeyValuePair<string,float[]>> Uniforms
 		{
@@ -144,7 +144,7 @@ namespace Duality.Drawing
 		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor, ContentRef<Texture> mainTex) : this(technique, mainColor, null, null) 
 		{
 			this.textures = new Dictionary<string,ContentRef<Texture>>();
-			this.textures.Add(ShaderVarInfo.VarName_MainTex, mainTex);
+			this.textures.Add(ShaderFieldInfo.VarName_MainTex, mainTex);
 			this.InvalidateHashCode();
 		}
 		/// <summary>
@@ -153,7 +153,7 @@ namespace Duality.Drawing
 		/// <param name="technique">The <see cref="Duality.Resources.DrawTechnique"/> to use.</param>
 		/// <param name="mainColor">The <see cref="MainColor"/> to use.</param>
 		/// <param name="textures">A set of <see cref="Duality.Resources.Texture">Textures</see> to use.</param>
-		/// <param name="uniforms">A set of <see cref="Duality.Resources.ShaderVarInfo">uniform values</see> to use.</param>
+		/// <param name="uniforms">A set of <see cref="Duality.Resources.ShaderFieldInfo">uniform values</see> to use.</param>
 		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor, IEnumerable<KeyValuePair<string,ContentRef<Texture>>> textures = null, IEnumerable<KeyValuePair<string,float[]>> uniforms = null)
 		{
 			this.technique = technique;

@@ -10,7 +10,7 @@ namespace Duality.Resources
 	/// <summary>
 	/// Provides information about a <see cref="AbstractShader">shader</see> variable.
 	/// </summary>
-	public struct ShaderVarInfo
+	public struct ShaderFieldInfo
 	{
 		/// <summary>
 		/// The default variable name for a materials main texture.
@@ -18,9 +18,9 @@ namespace Duality.Resources
 		public const string VarName_MainTex = "mainTex";
 
 		/// <summary>
-		/// The <see cref="ShaderVarScope">scope</see> of the variable
+		/// The <see cref="ShaderFieldScope">scope</see> of the variable
 		/// </summary>
-		public ShaderVarScope Scope;
+		public ShaderFieldScope Scope;
 		/// <summary>
 		/// The <see cref="ShaderVarType">type</see> of the variable
 		/// </summary>

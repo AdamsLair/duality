@@ -103,7 +103,7 @@ namespace Duality.Resources
 		private	ContentRef<FragmentShader>	frag	= FragmentShader.Minimal;
 		[DontSerialize] private	int							glProgramId	= 0;
 		[DontSerialize] private bool						compiled	= false;
-		[DontSerialize] private	ShaderVarInfo[]				varInfo		= null;
+		[DontSerialize] private	ShaderFieldInfo[]				varInfo		= null;
 
 		/// <summary>
 		/// [GET] Returns whether this ShaderProgram has been compiled.
@@ -116,7 +116,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] Returns an array containing information about the variables that have been declared in shader source code.
 		/// </summary>
-		public ShaderVarInfo[] VarInfo
+		public ShaderFieldInfo[] VarInfo
 		{
 			get { return this.varInfo; }
 		}
@@ -126,7 +126,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int AttribCount
 		{
-			get { return this.varInfo != null ? this.varInfo.Count(v => v.Scope == ShaderVarScope.Attribute) : 0; }
+			get { return this.varInfo != null ? this.varInfo.Count(v => v.Scope == ShaderFieldScope.Attribute) : 0; }
 		}
 		/// <summary>
 		/// [GET] Returns the number of uniform variables that have been declared.
@@ -134,7 +134,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int UniformCount
 		{
-			get { return this.varInfo != null ? this.varInfo.Count(v => v.Scope == ShaderVarScope.Uniform) : 0; }
+			get { return this.varInfo != null ? this.varInfo.Count(v => v.Scope == ShaderFieldScope.Uniform) : 0; }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="VertexShader"/> that is used by this ShaderProgram.
@@ -245,8 +245,8 @@ namespace Duality.Resources
 			this.compiled = true;
 
 			// Collect variable infos from sub programs
-			ShaderVarInfo[] fragVarArray = this.frag.IsAvailable ? this.frag.Res.VarInfo : null;
-			ShaderVarInfo[] vertVarArray = this.vert.IsAvailable ? this.vert.Res.VarInfo : null;
+			ShaderFieldInfo[] fragVarArray = this.frag.IsAvailable ? this.frag.Res.VarInfo : null;
+			ShaderFieldInfo[] vertVarArray = this.vert.IsAvailable ? this.vert.Res.VarInfo : null;
 			if (fragVarArray != null && vertVarArray != null)
 				this.varInfo = vertVarArray.Union(fragVarArray).ToArray();
 			else if (vertVarArray != null)
@@ -256,7 +256,7 @@ namespace Duality.Resources
 			// Determine actual variable locations
 			for (int i = 0; i < this.varInfo.Length; i++)
 			{
-				if (this.varInfo[i].Scope == ShaderVarScope.Uniform)
+				if (this.varInfo[i].Scope == ShaderFieldScope.Uniform)
 					this.varInfo[i].Handle = GL.GetUniformLocation(this.glProgramId, this.varInfo[i].Name);
 				else
 					this.varInfo[i].Handle = GL.GetAttribLocation(this.glProgramId, this.varInfo[i].Name);

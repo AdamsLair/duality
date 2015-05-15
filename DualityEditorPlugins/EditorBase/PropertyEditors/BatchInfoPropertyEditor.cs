@@ -52,18 +52,18 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				refTech = batchInfos.NotNull().First().Technique.Res;
 
 				// Retrieve data about shader variables
-				ShaderVarInfo[] varInfoArray = null;
+				ShaderFieldInfo[] varInfoArray = null;
 				if (refTech != null && refTech.Shader.IsAvailable)
 				{
 					varInfoArray = refTech.Shader.Res.VarInfo;
 				}
 				else
 				{
-					varInfoArray = new ShaderVarInfo[] { new ShaderVarInfo() };
+					varInfoArray = new ShaderFieldInfo[] { new ShaderFieldInfo() };
 					varInfoArray[0].ArrayLength = 1;
 					varInfoArray[0].Handle = -1;
-					varInfoArray[0].Name = ShaderVarInfo.VarName_MainTex;
-					varInfoArray[0].Scope = ShaderVarScope.Uniform;
+					varInfoArray[0].Name = ShaderFieldInfo.VarName_MainTex;
+					varInfoArray[0].Scope = ShaderFieldScope.Uniform;
 					varInfoArray[0].Type = ShaderVarType.Sampler2D;
 				}
 
@@ -78,7 +78,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						{
 							foreach (var pair in info.Textures)
 							{
-								if (!varInfoArray.Any(v => v.Scope == ShaderVarScope.Uniform && v.Type == ShaderVarType.Sampler2D && v.Name == pair.Key))
+								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type == ShaderVarType.Sampler2D && v.Name == pair.Key))
 								{
 									if (texRemoveSched == null) texRemoveSched = new List<string>();
 									texRemoveSched.Add(pair.Key);
@@ -89,7 +89,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 						{
 							foreach (var pair in info.Uniforms)
 							{
-								if (!varInfoArray.Any(v => v.Scope == ShaderVarScope.Uniform && v.Type != ShaderVarType.Sampler2D && v.Name == pair.Key))
+								if (!varInfoArray.Any(v => v.Scope == ShaderFieldScope.Uniform && v.Type != ShaderVarType.Sampler2D && v.Name == pair.Key))
 								{
 									if (uniRemoveSched == null) uniRemoveSched = new List<string>();
 									uniRemoveSched.Add(pair.Key);
@@ -112,9 +112,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				// Create BatchInfo variables according to Shader uniforms, if not existing yet
 				if (!this.ReadOnly)
 				{
-					foreach (ShaderVarInfo varInfo in varInfoArray)
+					foreach (ShaderFieldInfo varInfo in varInfoArray)
 					{
-						if (varInfo.Scope != ShaderVarScope.Uniform) continue;
+						if (varInfo.Scope != ShaderFieldScope.Uniform) continue;
 
 						// Set Texture variables
 						if (varInfo.Type == ShaderVarType.Sampler2D)
@@ -162,7 +162,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				{
 					foreach (var tex in texDict)
 					{
-						ShaderVarInfo varInfo = varInfoArray.FirstOrDefault(v => v.Scope == ShaderVarScope.Uniform && v.Name == tex.Key);
+						ShaderFieldInfo varInfo = varInfoArray.FirstOrDefault(v => v.Scope == ShaderFieldScope.Uniform && v.Name == tex.Key);
 						if (varInfo.IsPrivate) continue;
 
 						string texName = varInfo.Name;
@@ -184,7 +184,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				{
 					foreach (var uniform in uniformDict)
 					{
-						ShaderVarInfo varInfo = varInfoArray.FirstOrDefault(v => v.Scope == ShaderVarScope.Uniform && v.Name == uniform.Key);
+						ShaderFieldInfo varInfo = varInfoArray.FirstOrDefault(v => v.Scope == ShaderFieldScope.Uniform && v.Name == uniform.Key);
 						if (varInfo.IsPrivate) continue;
 
 						PropertyEditor e = this.CreateUniformEditor(varInfo);
@@ -226,7 +226,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			// Run a GetValue-pass to make sure automatic changes are applied if necessary.
 			this.PerformGetValue();
 		}
-		protected PropertyEditor CreateUniformEditor(ShaderVarInfo varInfo)
+		protected PropertyEditor CreateUniformEditor(ShaderFieldInfo varInfo)
 		{
 			PropertyEditor oldEditor;
 			this.shaderVarEditors.TryGetValue(varInfo.Name, out oldEditor);
