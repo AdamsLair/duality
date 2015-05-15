@@ -36,8 +36,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (result == 0)
 			{
 				string infoLog = GL.GetShaderInfoLog(this.handle);
-				Log.Core.WriteError("Error compiling {0} shader. InfoLog:\n{1}", type, infoLog);
-				return;
+				throw new BackendException(string.Format("{0} Compiler error:{2}{1}", type, infoLog, Environment.NewLine));
 			}
 
 			// Remove comments from source code before extracting variables
@@ -62,7 +61,6 @@ namespace Duality.Backend.DefaultOpenTK
 			// Scan remaining code chunk for variable declarations
 			List<ShaderFieldInfo> varInfoList = new List<ShaderFieldInfo>();
 			string[] lines = sourceWithoutComments.Split(new[] {';','\n'}, StringSplitOptions.RemoveEmptyEntries);
-			ShaderFieldInfo varInfo = new ShaderFieldInfo();
 			foreach (string t in lines)
 			{
 				string curLine = t.TrimStart();

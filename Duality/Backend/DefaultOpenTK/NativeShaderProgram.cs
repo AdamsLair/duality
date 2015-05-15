@@ -100,8 +100,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (result == 0)
 			{
 				string infoLog = GL.GetProgramInfoLog(this.handle);
-				Log.Core.WriteError("Error linking shader program. InfoLog:{1}{0}", infoLog, Environment.NewLine);
-				return;
+				throw new BackendException(string.Format("Linker error:{1}{0}", infoLog, Environment.NewLine));
 			}
 		}
 		void INativeShaderProgram.GetFieldLocations(ShaderFieldInfo[] fields)

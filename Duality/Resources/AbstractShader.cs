@@ -128,7 +128,14 @@ namespace Duality.Resources
 			if (String.IsNullOrEmpty(this.source)) return;
 
 			if (this.native == null) this.native = DualityApp.GraphicsBackend.CreateShaderPart();
-			this.native.LoadSource(this.source, this.Type);
+			try
+			{
+				this.native.LoadSource(this.source, this.Type);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error loading Shader {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
+			}
 
 			this.compiled = true;
 			this.fields = this.native.GetFields();

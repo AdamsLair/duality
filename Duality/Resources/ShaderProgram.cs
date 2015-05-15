@@ -167,7 +167,14 @@ namespace Duality.Resources
 			// Load the program with both shaders attached
 			INativeShaderPart nativeVert = this.vert.Res != null ? this.vert.Res.Native : null;
 			INativeShaderPart nativeFrag = this.frag.Res != null ? this.frag.Res.Native : null;
-			this.native.LoadProgram(nativeVert, nativeFrag);
+			try
+			{
+				this.native.LoadProgram(nativeVert, nativeFrag);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
+			}
 
 			// Collect variable infos from sub programs
 			ShaderFieldInfo[] fragVarArray = this.frag.IsAvailable ? this.frag.Res.Fields : null;

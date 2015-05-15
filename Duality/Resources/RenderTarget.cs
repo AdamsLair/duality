@@ -204,7 +204,15 @@ namespace Duality.Resources
 			INativeTexture[] targets = this.targets
 				.Select(t => t.Res != null ? t.Res.Native : null)
 				.ToArray();
-			this.native.Setup(targets, this.multisampling);
+
+			try
+			{
+				this.native.Setup(targets, this.multisampling);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error initializing RenderTarget {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
+			}
 		}
 
 		protected override void OnLoaded()

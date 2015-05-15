@@ -200,7 +200,7 @@ namespace Duality.Backend.DefaultOpenTK
 				FramebufferErrorCode status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
 				if (status != FramebufferErrorCode.FramebufferCompleteExt)
 				{
-					Log.Core.WriteError("Can't create native RenderTarget. Incomplete Framebuffer: {0}", status);
+					throw new BackendException(string.Format("Incomplete Framebuffer: {0}", status));
 				}
 
 				GL.Ext.BindRenderbuffer(RenderbufferTarget.RenderbufferExt, 0);
@@ -237,7 +237,7 @@ namespace Duality.Backend.DefaultOpenTK
 				FramebufferErrorCode status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
 				if (status != FramebufferErrorCode.FramebufferCompleteExt)
 				{
-					Log.Core.WriteError("Can't create native RenderTarget. Incomplete Texture Framebuffer: {0}", status);
+					throw new BackendException(string.Format("Incomplete Framebuffer: {0}", status));
 				}
 
 				// Generate rendering FBO
@@ -272,7 +272,7 @@ namespace Duality.Backend.DefaultOpenTK
 				status = GL.Ext.CheckFramebufferStatus(FramebufferTarget.FramebufferExt);
 				if (status != FramebufferErrorCode.FramebufferCompleteExt)
 				{
-					Log.Core.WriteError("Can't create native RenderTarget. Incomplete Multisample Framebuffer: {0}", status);
+					throw new BackendException(string.Format("Incomplete Multisample Framebuffer: {0}", status));
 				}
 				
 				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
