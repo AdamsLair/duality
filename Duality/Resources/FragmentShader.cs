@@ -3,8 +3,6 @@
 using Duality.Properties;
 using Duality.Editor;
 
-using OpenTK.Graphics.OpenGL;
-
 
 namespace Duality.Resources
 {
