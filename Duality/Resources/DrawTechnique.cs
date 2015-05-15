@@ -195,7 +195,7 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="tex">The Texture to bind.</param>
 		/// <param name="texUnit">The texture unit where the Texture will be bound to.</param>
-		public static void BindTexture(ContentRef<Texture> tex, int texUnit = 0)
+		private static void BindTexture(ContentRef<Texture> tex, int texUnit = 0)
 		{
 			if (!texInit) InitTextureFields();
 
@@ -224,12 +224,51 @@ namespace Duality.Resources
 		/// Resets all Texture bindings to texture units beginning at a certain index.
 		/// </summary>
 		/// <param name="beginAtIndex">The first texture unit index from which on all bindings will be cleared.</param>
-		public static void ResetTextureBinding(int beginAtIndex = 0)
+		private static void ResetTextureBinding(int beginAtIndex = 0)
 		{
 			if (!texInit) InitTextureFields();
 			for (int i = beginAtIndex; i < texUnits.Length; i++)
 			{
 				BindTexture(null, i);
+			}
+		}
+
+		/// <summary>
+		/// Assigns the specified data to the OpenGL uniform represented by this <see cref="ShaderVarInfo"/>.
+		/// </summary>
+		/// <param name="data">Incoming uniform data.</param>
+		private static void SetUniform(ref ShaderVarInfo varInfo, float[] data)
+		{
+			if (varInfo.Scope != ShaderVarScope.Uniform) return;
+			if (varInfo.Handle == -1) return;
+			switch (varInfo.Type)
+			{
+				case ShaderVarType.Int:
+					int[] arrI = new int[varInfo.ArrayLength];
+					for (int j = 0; j < arrI.Length; j++) arrI[j] = (int)data[j];
+					GL.Uniform1(varInfo.Handle, arrI.Length, arrI);
+					break;
+				case ShaderVarType.Float:
+					GL.Uniform1(varInfo.Handle, data.Length, data);
+					break;
+				case ShaderVarType.Vec2:
+					GL.Uniform2(varInfo.Handle, data.Length / 2, data);
+					break;
+				case ShaderVarType.Vec3:
+					GL.Uniform3(varInfo.Handle, data.Length / 3, data);
+					break;
+				case ShaderVarType.Vec4:
+					GL.Uniform4(varInfo.Handle, data.Length / 4, data);
+					break;
+				case ShaderVarType.Mat2:
+					GL.UniformMatrix2(varInfo.Handle, data.Length / 4, false, data);
+					break;
+				case ShaderVarType.Mat3:
+					GL.UniformMatrix3(varInfo.Handle, data.Length / 9, false, data);
+					break;
+				case ShaderVarType.Mat4:
+					GL.UniformMatrix4(varInfo.Handle, data.Length / 16, false, data);
+					break;
 			}
 		}
 
@@ -357,13 +396,13 @@ namespace Duality.Resources
 				{
 					for (int i = 0; i < varInfo.Length; i++)
 					{
-						if (varInfo[i].glVarLoc == -1) continue;
-						if (varInfo[i].type != ShaderVarType.Sampler2D) continue;
+						if (varInfo[i].Handle == -1) continue;
+						if (varInfo[i].Type != ShaderVarType.Sampler2D) continue;
 
 						// Bind Texture
-						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].name);
+						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].Name);
 						BindTexture(texRef, curSamplerIndex);
-						GL.Uniform1(varInfo[i].glVarLoc, curSamplerIndex);
+						GL.Uniform1(varInfo[i].Handle, curSamplerIndex);
 
 						curSamplerIndex++;
 					}
@@ -375,10 +414,10 @@ namespace Duality.Resources
 				{
 					for (int i = 0; i < varInfo.Length; i++)
 					{
-						if (varInfo[i].glVarLoc == -1) continue;
-						float[] data = material.GetUniform(varInfo[i].name);
+						if (varInfo[i].Handle == -1) continue;
+						float[] data = material.GetUniform(varInfo[i].Name);
 						if (data == null) continue;
-						varInfo[i].SetUniform(data);
+						SetUniform(ref varInfo[i], data);
 					}
 				}
 			}

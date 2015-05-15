@@ -218,8 +218,9 @@ namespace Duality.Backend.DefaultOpenTK
 							int selectedVar = -1;
 							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
 							{
-								if (varInfo[varIndex].glVarLoc == -1) continue;
-								if (!varInfo[varIndex].MatchesVertexElement(
+								if (varInfo[varIndex].Handle == -1) continue;
+								if (!ShaderVarMatches(
+									ref varInfo[varIndex],
 									elements[elementIndex].Type, 
 									elements[elementIndex].Count))
 									continue;
@@ -237,9 +238,9 @@ namespace Duality.Backend.DefaultOpenTK
 								case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
 							}
 
-							GL.EnableVertexAttribArray(varInfo[selectedVar].glVarLoc);
+							GL.EnableVertexAttribArray(varInfo[selectedVar].Handle);
 							GL.VertexAttribPointer(
-								varInfo[selectedVar].glVarLoc, 
+								varInfo[selectedVar].Handle, 
 								elements[elementIndex].Count, 
 								attribType, 
 								false, 
@@ -295,8 +296,9 @@ namespace Duality.Backend.DefaultOpenTK
 							int selectedVar = -1;
 							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
 							{
-								if (varInfo[varIndex].glVarLoc == -1) continue;
-								if (!varInfo[varIndex].MatchesVertexElement(
+								if (varInfo[varIndex].Handle == -1) continue;
+								if (!ShaderVarMatches(
+									ref varInfo[varIndex],
 									elements[elementIndex].Type, 
 									elements[elementIndex].Count))
 									continue;
@@ -306,7 +308,7 @@ namespace Duality.Backend.DefaultOpenTK
 							}
 							if (selectedVar == -1) break;
 
-							GL.DisableVertexAttribArray(varInfo[selectedVar].glVarLoc);
+							GL.DisableVertexAttribArray(varInfo[selectedVar].Handle);
 						}
 						break;
 					}
@@ -336,6 +338,29 @@ namespace Duality.Backend.DefaultOpenTK
 				source.M31, source.M32, source.M33, source.M34,
 				source.M41, source.M42, source.M43, source.M44);
 		}
+		private static bool ShaderVarMatches(ref ShaderVarInfo varInfo, VertexElementType type, int count)
+		{
+			if (varInfo.Scope != ShaderVarScope.Attribute) return false;
 
+			Type elementPrimitive = varInfo.Type.GetElementPrimitive();
+			Type requiredPrimitive = null;
+			switch (type)
+			{
+				case VertexElementType.Byte:
+					requiredPrimitive = typeof(byte);
+					break;
+				case VertexElementType.Float:
+					requiredPrimitive = typeof(float);
+					break;
+			}
+			if (elementPrimitive != requiredPrimitive)
+				return false;
+
+			int elementCount = varInfo.Type.GetElementCount();
+			if (count != elementCount * varInfo.ArrayLength)
+				return false;
+
+			return true;
+		}
 	}
 }

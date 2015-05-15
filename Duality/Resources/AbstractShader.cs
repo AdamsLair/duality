@@ -14,218 +14,6 @@ using ShaderType = Duality.Drawing.ShaderType;
 namespace Duality.Resources
 {
 	/// <summary>
-	/// The type of a <see cref="AbstractShader">shader</see> variable.
-	/// </summary>
-	public enum ShaderVarType
-	{
-		/// <summary>
-		/// Unknown type.
-		/// </summary>
-		Unknown = -1,
-
-		/// <summary>
-		/// A <see cref="System.Int32"/> variable.
-		/// </summary>
-		Int,
-		/// <summary>
-		/// A <see cref="System.Single"/> variable.
-		/// </summary>
-		Float,
-
-		/// <summary>
-		/// A two-dimensional vector with <see cref="System.Single"/> precision.
-		/// </summary>
-		Vec2,
-		/// <summary>
-		/// A three-dimensional vector with <see cref="System.Single"/> precision.
-		/// </summary>
-		Vec3,
-		/// <summary>
-		/// A four-dimensional vector with <see cref="System.Single"/> precision.
-		/// </summary>
-		Vec4,
-		
-		/// <summary>
-		/// A 2x2 matrix with <see cref="System.Single"/> precision.
-		/// </summary>
-		Mat2,
-		/// <summary>
-		/// A 3x3 matrix with <see cref="System.Single"/> precision.
-		/// </summary>
-		Mat3,
-		/// <summary>
-		/// A 4x4 matrix with <see cref="System.Single"/> precision.
-		/// </summary>
-		Mat4,
-		
-		/// <summary>
-		/// Represents a texture binding and provides lookups.
-		/// </summary>
-		Sampler2D
-	}
-
-	/// <summary>
-	/// The scope of a <see cref="AbstractShader">shader</see> variable
-	/// </summary>
-	public enum ShaderVarScope
-	{
-		/// <summary>
-		/// Unknown scope
-		/// </summary>
-		Unknown = -1,
-
-		/// <summary>
-		/// It is a uniform variable, i.e. constant during all rendering stages
-		/// and set once per <see cref="Duality.Drawing.BatchInfo">draw batch</see>.
-		/// </summary>
-		Uniform,
-		/// <summary>
-		/// It is a vertex attribute, i.e. defined for each vertex separately.
-		/// </summary>
-		Attribute
-	}
-	
-	/// <summary>
-	/// Provides information about a <see cref="AbstractShader">shader</see> variable.
-	/// </summary>
-	public struct ShaderVarInfo
-	{
-		/// <summary>
-		/// The default variable name for a materials main texture.
-		/// </summary>
-		public const string VarName_MainTex = "mainTex";
-
-		/// <summary>
-		/// The <see cref="ShaderVarScope">scope</see> of the variable
-		/// </summary>
-		public	ShaderVarScope	scope;
-		/// <summary>
-		/// The <see cref="ShaderVarType">type</see> of the variable
-		/// </summary>
-		public	ShaderVarType	type;
-		/// <summary>
-		/// If the variable is an array, this is its length. Arrays
-		/// are only supported for <see cref="ShaderVarType.Int"/> and
-		/// <see cref="ShaderVarType.Float"/>.
-		/// </summary>
-		public	int				arraySize;
-		/// <summary>
-		/// The name of the variable, as declared in the shader.
-		/// </summary>
-		public	string			name;
-		/// <summary>
-		/// OpenGL handle of the variables memory location.
-		/// </summary>
-		public	int				glVarLoc;
-
-		/// <summary>
-		/// [GET] Returns whether the shader variable will be visible in the editor.
-		/// </summary>
-		public bool IsEditorVisible
-		{
-			get { return !string.IsNullOrEmpty(this.name) && this.name[0] != '_'; }
-		}
-
-		public bool MatchesVertexElement(VertexElementType type, int count)
-		{
-			if (this.scope != ShaderVarScope.Attribute) return false;
-			switch (this.type)
-			{
-				case ShaderVarType.Int:
-					return false;
-				case ShaderVarType.Float:
-					return type == VertexElementType.Float && count == 1 * arraySize;
-				case ShaderVarType.Vec2:
-					return type == VertexElementType.Float && count == 2 * arraySize;
-				case ShaderVarType.Vec3:
-					return type == VertexElementType.Float && count == 3 * arraySize;
-				case ShaderVarType.Vec4:
-					return type == VertexElementType.Float && count == 4 * arraySize;
-				case ShaderVarType.Mat2:
-					return type == VertexElementType.Float && count == 4 * arraySize;
-				case ShaderVarType.Mat3:
-					return type == VertexElementType.Float && count == 9 * arraySize;
-				case ShaderVarType.Mat4:
-					return type == VertexElementType.Float && count == 16 * arraySize;
-			}
-			return false;
-		}
-		/// <summary>
-		/// Assigns the specified data to the OpenGL uniform represented by this <see cref="ShaderVarInfo"/>.
-		/// </summary>
-		/// <param name="data">Incoming uniform data.</param>
-		public void SetUniform(float[] data)
-		{
-			if (this.scope != ShaderVarScope.Uniform) return;
-			if (this.glVarLoc == -1) return;
-			switch (this.type)
-			{
-				case ShaderVarType.Int:
-					int[] arrI = new int[this.arraySize];
-					for (int j = 0; j < arrI.Length; j++) arrI[j] = (int)data[j];
-					GL.Uniform1(this.glVarLoc, arrI.Length, arrI);
-					break;
-				case ShaderVarType.Float:
-					GL.Uniform1(this.glVarLoc, data.Length, data);
-					break;
-				case ShaderVarType.Vec2:
-					GL.Uniform2(this.glVarLoc, data.Length / 2, data);
-					break;
-				case ShaderVarType.Vec3:
-					GL.Uniform3(this.glVarLoc, data.Length / 3, data);
-					break;
-				case ShaderVarType.Vec4:
-					GL.Uniform4(this.glVarLoc, data.Length / 4, data);
-					break;
-				case ShaderVarType.Mat2:
-					GL.UniformMatrix2(this.glVarLoc, data.Length / 4, false, data);
-					break;
-				case ShaderVarType.Mat3:
-					GL.UniformMatrix3(this.glVarLoc, data.Length / 9, false, data);
-					break;
-				case ShaderVarType.Mat4:
-					GL.UniformMatrix4(this.glVarLoc, data.Length / 16, false, data);
-					break;
-			}
-		}
-		/// <summary>
-		/// Initializes a uniform dataset based on the type of the represented variable.
-		/// </summary>
-		/// <returns>A new uniform dataset</returns>
-		public float[] InitUniformData()
-		{
-			switch (this.type)
-			{
-				case ShaderVarType.Int:
-					return new float[this.arraySize];
-				case ShaderVarType.Float:
-					return new float[this.arraySize];
-				case ShaderVarType.Vec2:
-					return new float[2 * this.arraySize];
-				case ShaderVarType.Vec3:
-					return new float[3 * this.arraySize];
-				case ShaderVarType.Vec4:
-					return new float[4 * this.arraySize];
-				case ShaderVarType.Mat2:
-					return new float[4 * this.arraySize];
-				case ShaderVarType.Mat3:
-					return new float[9 * this.arraySize];
-				case ShaderVarType.Mat4:
-					return new float[16 * this.arraySize];
-			}
-			return null;
-		}
-
-		public override string ToString()
-		{
-			return string.Format("{1} {0}{2}", 
-				this.name, 
-				this.type, 
-				this.arraySize > 1 ? string.Format("[{0}]", this.arraySize) : "");
-		}
-	}
-
-	/// <summary>
 	/// Represents an OpenGL Shader in an abstract form.
 	/// </summary>
 	[ExplicitResourceReference()]
@@ -379,29 +167,29 @@ namespace Duality.Resources
 				string curLine = t.TrimStart();
 
 				if (curLine.StartsWith("uniform"))
-					varInfo.scope = ShaderVarScope.Uniform;
+					varInfo.Scope = ShaderVarScope.Uniform;
 				else if (curLine.StartsWith("attribute"))
-					varInfo.scope = ShaderVarScope.Attribute;
+					varInfo.Scope = ShaderVarScope.Attribute;
 				else continue;
 
 				string[] curLineSplit = curLine.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
 				switch (curLineSplit[1].ToUpper())
 				{
-					case "FLOAT":		varInfo.type = ShaderVarType.Float; break;
-					case "VEC2":		varInfo.type = ShaderVarType.Vec2; break;
-					case "VEC3":		varInfo.type = ShaderVarType.Vec3; break;
-					case "VEC4":		varInfo.type = ShaderVarType.Vec4; break;
-					case "MAT2":		varInfo.type = ShaderVarType.Mat2; break;
-					case "MAT3":		varInfo.type = ShaderVarType.Mat3; break;
-					case "MAT4":		varInfo.type = ShaderVarType.Mat4; break;
-					case "INT":			varInfo.type = ShaderVarType.Int; break;
-					case "SAMPLER2D":	varInfo.type = ShaderVarType.Sampler2D; break;
+					case "FLOAT":		varInfo.Type = ShaderVarType.Float; break;
+					case "VEC2":		varInfo.Type = ShaderVarType.Vec2; break;
+					case "VEC3":		varInfo.Type = ShaderVarType.Vec3; break;
+					case "VEC4":		varInfo.Type = ShaderVarType.Vec4; break;
+					case "MAT2":		varInfo.Type = ShaderVarType.Mat2; break;
+					case "MAT3":		varInfo.Type = ShaderVarType.Mat3; break;
+					case "MAT4":		varInfo.Type = ShaderVarType.Mat4; break;
+					case "INT":			varInfo.Type = ShaderVarType.Int; break;
+					case "SAMPLER2D":	varInfo.Type = ShaderVarType.Sampler2D; break;
 				}
 
 				curLineSplit = curLineSplit[2].Split(new char[] {'[', ']'}, StringSplitOptions.RemoveEmptyEntries);
-				varInfo.name = curLineSplit[0];
-				varInfo.arraySize = (curLineSplit.Length > 1) ? int.Parse(curLineSplit[1]) : 1;
-				varInfo.glVarLoc = -1;
+				varInfo.Name = curLineSplit[0];
+				varInfo.ArrayLength = (curLineSplit.Length > 1) ? int.Parse(curLineSplit[1]) : 1;
+				varInfo.Handle = -1;
 
 				varInfoList.Add(varInfo);
 			}

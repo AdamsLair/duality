@@ -126,7 +126,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int AttribCount
 		{
-			get { return this.varInfo != null ? this.varInfo.Count(v => v.scope == ShaderVarScope.Attribute) : 0; }
+			get { return this.varInfo != null ? this.varInfo.Count(v => v.Scope == ShaderVarScope.Attribute) : 0; }
 		}
 		/// <summary>
 		/// [GET] Returns the number of uniform variables that have been declared.
@@ -134,7 +134,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int UniformCount
 		{
-			get { return this.varInfo != null ? this.varInfo.Count(v => v.scope == ShaderVarScope.Uniform) : 0; }
+			get { return this.varInfo != null ? this.varInfo.Count(v => v.Scope == ShaderVarScope.Uniform) : 0; }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="VertexShader"/> that is used by this ShaderProgram.
@@ -256,10 +256,10 @@ namespace Duality.Resources
 			// Determine actual variable locations
 			for (int i = 0; i < this.varInfo.Length; i++)
 			{
-				if (this.varInfo[i].scope == ShaderVarScope.Uniform)
-					this.varInfo[i].glVarLoc = GL.GetUniformLocation(this.glProgramId, this.varInfo[i].name);
+				if (this.varInfo[i].Scope == ShaderVarScope.Uniform)
+					this.varInfo[i].Handle = GL.GetUniformLocation(this.glProgramId, this.varInfo[i].Name);
 				else
-					this.varInfo[i].glVarLoc = GL.GetAttribLocation(this.glProgramId, this.varInfo[i].name);
+					this.varInfo[i].Handle = GL.GetAttribLocation(this.glProgramId, this.varInfo[i].Name);
 			}
 		}
 

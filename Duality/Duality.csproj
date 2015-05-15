@@ -107,7 +107,11 @@
     <Compile Include="Drawing\Enums\TextureMagFilter.cs" />
     <Compile Include="Drawing\Enums\TextureMinFilter.cs" />
     <Compile Include="Drawing\Enums\TextureWrapMode.cs" />
-    <Compile Include="Drawing\VertexFormatDefinition.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexDeclaration.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElement.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElementType.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElementRole.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElementAttribute.cs" />
     <Compile Include="Drawing\Enums\TexturePixelFormat.cs" />
     <Compile Include="Components\Other\IRendererVisibilityStrategy.cs" />
     <Compile Include="Components\Other\DefaultRendererVisibilityStrategy.cs" />
@@ -121,6 +125,9 @@
     <Compile Include="Input\Key.cs" />
     <Compile Include="Input\MouseEventArgs.cs" />
     <Compile Include="Input\MouseButton.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderVarScope.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderVarInfo.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderVarType.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
@@ -292,10 +299,10 @@
     <Compile Include="Serialization\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Serialization\TypeDataLayout.cs" />
     <Compile Include="Time.cs" />
-    <Compile Include="Drawing\VertexFormat\IVertexData.cs" />
-    <Compile Include="Drawing\VertexFormat\VertexC1P3T4A1.cs" />
-    <Compile Include="Drawing\VertexFormat\VertexC1P3T2.cs" />
-    <Compile Include="Drawing\VertexFormat\VertexC1P3.cs" />
+    <Compile Include="Drawing\VertexData\IVertexData.cs" />
+    <Compile Include="Drawing\VertexData\VertexC1P3T4A1.cs" />
+    <Compile Include="Drawing\VertexData\VertexC1P3T2.cs" />
+    <Compile Include="Drawing\VertexData\VertexC1P3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\Checkerboard.png" />
