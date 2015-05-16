@@ -33,10 +33,6 @@ namespace Duality.Editor
 			this.asmName = this.assembly.GetShortAssemblyName();
 		}
 		/// <summary>
-		/// This method is called as soon as the plugins assembly is loaded. Initializes the plugins internal data.
-		/// </summary>
-		internal protected virtual void LoadPlugin() {}
-		/// <summary>
 		/// This method is called when all plugins and the editors user data and layout are loaded. May initialize GUI.
 		/// </summary>
 		/// <param name="main"></param>

@@ -234,13 +234,17 @@ namespace Duality.Editor
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
 			DualityApp.PluginReady += DualityApp_PluginReady;
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, new[] {"logfile", "logfile_editor"});
-
+			
+			// Need to load editor plugins before initializing the graphics context, so the backend is available
 			LoadPlugins();
+
+			// Need to initialize graphics context and default content before instantiating anything that could require any of them
+			InitMainGraphicsContext();
+			DualityApp.InitPostWindow();
+
 			LoadUserData();
 			InitPlugins();
 
-			InitMainGraphicsContext();
-			DualityApp.InitPostWindow();
 
 			// Set up core plugin reloader
 			corePluginReloader = new ReloadCorePluginDialog(mainForm);
@@ -395,7 +399,6 @@ namespace Duality.Editor
 						continue;
 					}
 					EditorPlugin plugin = (EditorPlugin)pluginType.CreateInstanceOf();
-					plugin.LoadPlugin();
 					plugins.Add(plugin);
 				}
 				catch (Exception e)

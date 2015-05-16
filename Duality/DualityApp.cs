@@ -792,7 +792,6 @@ namespace Duality
 				{
 					plugin = (CorePlugin)pluginType.CreateInstanceOf();
 					plugin.FilePath = pluginFilePath;
-					plugin.LoadPlugin();
 					plugins.Add(plugin.AssemblyName, plugin);
 				}
 				catch (Exception e)
