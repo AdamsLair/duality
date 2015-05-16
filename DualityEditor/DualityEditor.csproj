@@ -165,6 +165,7 @@
     </Compile>
     <Compile Include="Helpers\BuildHelper.cs" />
     <Compile Include="Helpers\ExtMethodsZipArchive.cs" />
+    <Compile Include="Helpers\GraphicsModeComparer.cs" />
     <Compile Include="PackageManagement\PackageCompatibility.cs" />
     <Compile Include="PackageManagement\PackageLicenseAgreementEventArgs.cs" />
     <Compile Include="PackageManagement\PackageName.cs" />

@@ -39,10 +39,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\NUnit\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
@@ -114,7 +110,6 @@
     <None Include="EmbeddedResources\CanvasTestNothing.png" />
     <None Include="EmbeddedResources\FormatterTestOldBinaryData.dat" />
     <None Include="EmbeddedResources\FormatterTestOldXmlData.dat" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CanvasTestRedSquare.png" />

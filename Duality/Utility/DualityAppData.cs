@@ -121,7 +121,7 @@ namespace Duality
 			set { this.multisampleBackBuffer = value; }
 		}
 		/// <summary>
-		/// [GET / SET] An optional list of backend <see cref="IDualityBackend.Id"/> values to skip when loading.
+		/// [GET / SET] An optional list of backend <see cref="Duality.Backend.IDualityBackend.Id"/> values to skip when loading.
 		/// </summary>
 		public string[] SkipBackends
 		{

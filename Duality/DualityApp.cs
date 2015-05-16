@@ -5,9 +5,6 @@ using System.Reflection;
 using System.IO;
 using System.Threading;
 
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Audio.OpenAL;
 
 using Duality.Backend;
@@ -84,9 +81,6 @@ namespace Duality
 		private	static	TextWriterLogOutput			logfileOutput		= null;
 		private	static	IGraphicsBackend			graphicsBack		= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
-		private	static	GraphicsMode				targetMode			= null;
-		private	static	HashSet<GraphicsMode>		availModes			= new HashSet<GraphicsMode>(new GraphicsModeComparer());
-		private	static	GraphicsMode				defaultMode			= null;
 		private	static	MouseInput					mouse				= new MouseInput();
 		private	static	KeyboardInput				keyboard			= new KeyboardInput();
 		private	static	JoystickInputCollection		joysticks			= new JoystickInputCollection();
@@ -157,22 +151,6 @@ namespace Duality
 		{
 			get { return targetResolution; }
 			set { targetResolution = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The <see cref="GraphicsMode"/> in which rendering takes place. Setting this will not actually change
-		/// Duality's state - this is a pure "for your information" property.
-		/// </summary>
-		public static GraphicsMode TargetMode
-		{
-			get { return targetMode; }
-			set { targetMode = value; }
-		}
-		/// <summary>
-		/// [GET] Returns the <see cref="GraphicsMode"/> that Duality intends to use by default.
-		/// </summary>
-		public static GraphicsMode DefaultMode
-		{
-			get { return defaultMode; }
 		}
 		/// <summary>
 		/// [GET] Returns whether the Duality application is currently focused, i.e. can be considered
@@ -280,13 +258,6 @@ namespace Duality
 		public static string LogfilePath
 		{
 			get { return logfilePath; }
-		}
-		/// <summary>
-		/// [GET] Enumerates all available <see cref="GraphicsMode">GraphicsModes</see>.
-		/// </summary>
-		public static IEnumerable<GraphicsMode> AvailableModes
-		{
-			get { return availModes; }
 		}
 		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionContext"/> in which this DualityApp is currently running.
@@ -421,32 +392,6 @@ namespace Duality
 			LoadUserData();
 
 			sound = new SoundDevice();
-			
-			// Determine available and default graphics modes
-			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
-			foreach (int samplecount in aaLevels)
-			{
-				GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
-				if (!availModes.Contains(mode)) availModes.Add(mode);
-			}
-			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(availModes.Max(m => m.Samples), 1.0f), 2.0f));
-			int targetAALevel = highestAALevel;
-			if (appData.MultisampleBackBuffer)
-			{
-				switch (userData.AntialiasingQuality)
-				{
-					case AAQuality.High:	targetAALevel = highestAALevel;		break;
-					case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;
-					case AAQuality.Low:		targetAALevel = highestAALevel / 4; break;
-					case AAQuality.Off:		targetAALevel = 0;					break;
-				}
-			}
-			else
-			{
-				targetAALevel = 0;
-			}
-			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
-			defaultMode = availModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? availModes.Last();
 
 			// Initial changed event
 			OnAppDataChanged();
@@ -467,37 +412,34 @@ namespace Duality
 
 			InitPlugins();
 		}
-
 		/// <summary>
-		/// Applies the specified screen resolution to both game and display device. This is a shorthand for
-		/// assigning a modified version of <see cref="DualityUserData"/> to <see cref="UserData"/>.
+		/// Opens up a window for Duality to render into. This also initializes the part of Duality that requires a 
+		/// valid rendering context. Should be called before performing any rendering related operations with Duality.
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="fullscreen"></param>
-		public static void ApplyResolution(int width, int height, bool fullscreen)
+		public static INativeWindow OpenWindow(WindowOptions options)
 		{
-			userData.GfxWidth = width;
-			userData.GfxHeight = height;
-			userData.GfxMode = fullscreen ? ScreenMode.Fullscreen : ScreenMode.Window;
-			OnUserDataChanged();
+			if (!initialized) throw new InvalidOperationException("Can't initialize graphics / rendering because Duality itself isn't initialized yet.");
+
+			if (graphicsBack == null) InitBackend(out graphicsBack);
+
+			Log.Core.Write("Opening Window...");
+			Log.Core.PushIndent();
+			INativeWindow window = graphicsBack.CreateWindow(options);
+			Log.Core.PopIndent();
+
+			InitPostWindow();
+
+			return window;
 		}
 		/// <summary>
-		/// Enumerates all available screen resolutions on the default display device.
+		/// Initializes the part of Duality that requires a valid rendering context. 
+		/// Should be called before performing any rendering related operations with Duality.
 		/// </summary>
-		/// <returns></returns>
-		public static IEnumerable<ScreenResolution> GetAvailableResolutions()
+		public static void InitPostWindow()
 		{
-			return DisplayDevice.Default.AvailableResolutions
-				.Select(resolution => new ScreenResolution
-				{
-					Width = resolution.Width, 
-					Height = resolution.Height, 
-					RefreshRate = resolution.RefreshRate
-				})
-				.Distinct();
+			if (graphicsBack == null) InitBackend(out graphicsBack);
+			ContentProvider.InitDefaultContent();
 		}
-
 		/// <summary>
 		/// Terminates this DualityApp. This does not end the current Process, but will instruct the engine to
 		/// leave main loop and message processing as soon as possible.
@@ -558,19 +500,20 @@ namespace Duality
 			initialized = false;
 			execContext = ExecutionContext.Terminated;
 		}
+
 		/// <summary>
-		/// Initializes the part of Duality that requires a valid rendering context. Should be called before
-		/// performing any rendering related operations with Dualit.
+		/// Applies the specified screen resolution to both game and display device. This is a shorthand for
+		/// assigning a modified version of <see cref="DualityUserData"/> to <see cref="UserData"/>.
 		/// </summary>
-		public static void InitGraphics()
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="fullscreen"></param>
+		public static void ApplyResolution(int width, int height, bool fullscreen)
 		{
-			if (!initialized) throw new InvalidOperationException("Can't initialize graphics / rendering because Duality itself isn't initialized yet.");
-
-			// Initialize the graphics backend
-			InitBackend(out graphicsBack);
-
-			// Initialize default content
-			ContentProvider.InitDefaultContent();
+			userData.GfxWidth = width;
+			userData.GfxHeight = height;
+			userData.GfxMode = fullscreen ? ScreenMode.Fullscreen : ScreenMode.Window;
+			OnUserDataChanged();
 		}
 
 		/// <summary>

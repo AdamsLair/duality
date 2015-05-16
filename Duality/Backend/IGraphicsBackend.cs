@@ -16,5 +16,8 @@ namespace Duality.Backend
 		INativeRenderTarget CreateRenderTarget();
 		INativeShaderPart CreateShaderPart();
 		INativeShaderProgram CreateShaderProgram();
+		INativeWindow CreateWindow(WindowOptions options);
+
+		IEnumerable<ScreenResolution> GetScreenResolutions();
 	}
 }

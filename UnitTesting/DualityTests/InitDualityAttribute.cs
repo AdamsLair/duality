@@ -6,8 +6,7 @@ using System.IO;
 
 using Duality;
 using Duality.Serialization;
-
-using OpenTK;
+using Duality.Backend;
 
 using NUnit.Framework;
 
@@ -19,7 +18,7 @@ namespace Duality.Tests
 	{
 		private	string				oldEnvDir			= null;
 		private	CorePlugin			unitTestPlugin		= null;
-		private	GameWindow			dummyWindow			= null;
+		private	INativeWindow		dummyWindow			= null;
 		private	ConsoleLogOutput	consoleLogOutput	= null;
 
 		public ActionTargets Targets
@@ -57,15 +56,12 @@ namespace Duality.Tests
 			// Create a dummy window, to get access to all the device contexts
 			if (this.dummyWindow == null)
 			{
-				this.dummyWindow = new GameWindow(800, 600);
-				this.dummyWindow.Context.LoadAll();
-				this.dummyWindow.Visible = true;
-				this.dummyWindow.Context.Update(this.dummyWindow.WindowInfo);
-				this.dummyWindow.MakeCurrent();
-				this.dummyWindow.ProcessEvents();
-				DualityApp.TargetResolution = new Vector2(this.dummyWindow.Width, this.dummyWindow.Height);
-				DualityApp.TargetMode = this.dummyWindow.Context.GraphicsMode;
-				DualityApp.InitGraphics();
+				WindowOptions options = new WindowOptions
+				{
+					Width = 800,
+					Height = 600
+				};
+				this.dummyWindow = DualityApp.OpenWindow(options);
 			}
 
 			// Load local testing memory

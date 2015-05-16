@@ -75,12 +75,15 @@
     <Compile Include="Backend\Dummy\DummyNativeShaderProgram.cs" />
     <Compile Include="Backend\Dummy\DummyNativeShaderPart.cs" />
     <Compile Include="Backend\Dummy\DummyNativeRenderTarget.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeWindow.cs" />
     <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
     <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
     <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
+    <Compile Include="Backend\Graphics\INativeWindow.cs" />
     <Compile Include="Backend\Graphics\INativeTexture.cs" />
+    <Compile Include="Backend\Graphics\WindowOptions.cs" />
     <Compile Include="Backend\Graphics\RenderStats.cs" />
     <Compile Include="Backend\BackendException.cs" />
     <Compile Include="Backend\IDualiyBackend.cs" />
@@ -240,7 +243,6 @@
     <Compile Include="Utility\Extensions\ExtMethodsIList.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsRandom.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsString.cs" />
-    <Compile Include="Drawing\GraphicsModeComparer.cs" />
     <Compile Include="Utility\ReflectionInfo.cs" />
     <Compile Include="Audio\OggVorbis\OggVorbis.cs" />
     <Compile Include="Utility\PathHelper.cs" />

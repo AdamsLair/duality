@@ -48,5 +48,14 @@ namespace Duality.Backend.Dummy
 		{
 			return new DummyNativeShaderProgram();
 		}
+		INativeWindow IGraphicsBackend.CreateWindow(WindowOptions options)
+		{
+			return new DummyNativeWindow();
+		}
+
+		IEnumerable<ScreenResolution> IGraphicsBackend.GetScreenResolutions()
+		{
+			return new ScreenResolution[] { new ScreenResolution(640, 480, 60) };
+		}
 	}
 }

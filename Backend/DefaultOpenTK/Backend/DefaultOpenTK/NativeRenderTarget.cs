@@ -142,8 +142,8 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
 			GraphicsMode sampleMode = 
-				DualityApp.AvailableModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? 
-				DualityApp.AvailableModes.Last();
+				GraphicsBackend.ActiveInstance.AvailableGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? 
+				GraphicsBackend.ActiveInstance.AvailableGraphicsModes.Last();
 			this.samples = sampleMode.Samples;
 
 			// Synchronize target information

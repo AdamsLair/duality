@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenTK.Graphics;
 
-namespace Duality.Drawing
+namespace Duality.Editor
 {
 	/// <summary>
 	/// Compares two <see cref="GraphicsMode">GraphicsModes</see>.
