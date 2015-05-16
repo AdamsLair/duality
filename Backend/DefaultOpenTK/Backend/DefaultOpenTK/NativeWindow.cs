@@ -92,6 +92,8 @@ namespace Duality.Backend.DefaultOpenTK
 
 			DualityApp.TargetResolution = new Vector2(this.internalWindow.ClientSize.Width, this.internalWindow.ClientSize.Height);
 
+			DualityApp.Mouse.Source = new GameWindowMouseInputSource(this.internalWindow);
+			DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(this.internalWindow);
 			DualityApp.UserDataChanged += this.OnUserDataChanged;
 			
 			// Determine OpenGL capabilities and log them
@@ -103,7 +105,12 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IDisposable.Dispose()
 		{
+			if (DualityApp.Mouse.Source is GameWindowMouseInputSource)
+				DualityApp.Mouse.Source = null;
+			if (DualityApp.Keyboard.Source is GameWindowKeyboardInputSource)
+				DualityApp.Keyboard.Source = null;
 			DualityApp.UserDataChanged -= this.OnUserDataChanged;
+
 			if (this.internalWindow != null)
 			{
 				DisplayDevice.Default.RestoreResolution();

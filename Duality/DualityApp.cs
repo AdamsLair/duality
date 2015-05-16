@@ -1245,28 +1245,28 @@ namespace Duality
 
 			if (mouse.Source != null && mouse.Source.GetType().Assembly == invalidAssembly)
 			{
-				mouse.Source = null;
 				Log.Core.WriteWarning(warningText, Log.Type(mouse.Source.GetType()));
+				mouse.Source = null;
 			}
 			if (keyboard.Source != null && keyboard.Source.GetType().Assembly == invalidAssembly)
 			{
-				keyboard.Source = null;
 				Log.Core.WriteWarning(warningText, Log.Type(keyboard.Source.GetType()));
+				keyboard.Source = null;
 			}
 			foreach (JoystickInput joystick in joysticks.ToArray())
 			{
 				if (joystick.Source != null && joystick.Source.GetType().Assembly == invalidAssembly)
 				{
-					joysticks.RemoveSource(joystick.Source);
 					Log.Core.WriteWarning(warningText, Log.Type(joystick.Source.GetType()));
+					joysticks.RemoveSource(joystick.Source);
 				}
 			}
 			foreach (GamepadInput gamepad in gamepads.ToArray())
 			{
 				if (gamepad.Source != null && gamepad.Source.GetType().Assembly == invalidAssembly)
 				{
-					gamepads.RemoveSource(gamepad.Source);
 					Log.Core.WriteWarning(warningText, Log.Type(gamepad.Source.GetType()));
+					gamepads.RemoveSource(gamepad.Source);
 				}
 			}
 		}

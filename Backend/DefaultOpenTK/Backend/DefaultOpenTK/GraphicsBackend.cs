@@ -85,21 +85,6 @@ namespace Duality.Backend.DefaultOpenTK
 				this.defaultGraphicsMode = this.availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? this.availGraphicsModes.Last();
 			}
 
-			// Temporary ugly hack to get the GameWindow:
-			OpenTK.GameWindow gameWindow = null;
-			{
-				Assembly launcherAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetShortAssemblyName() == "DualityLauncher");
-				Type launcherType = launcherAssembly != null ? launcherAssembly.GetTypes().FirstOrDefault(t => t.Name == "DualityLauncher") : null;
-				FieldInfo hackField = launcherType != null ? launcherType.GetField("gameWindowUglyHack", BindingFlags.NonPublic | BindingFlags.Static) : null;
-				gameWindow = (hackField != null ? hackField.GetValue(null) : null) as OpenTK.GameWindow;
-			}
-
-			if (gameWindow != null)
-			{
-				DualityApp.Mouse.Source = new GameWindowMouseInputSource(gameWindow);
-				DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(gameWindow);
-			}
-
 			activeInstance = this;
 		}
 		void IDualityBackend.Shutdown()
