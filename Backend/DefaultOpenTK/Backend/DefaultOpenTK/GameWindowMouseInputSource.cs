@@ -9,8 +9,6 @@ namespace Duality.Backend.DefaultOpenTK
 		public delegate void CursorPosSetter(int v);
 
 		private	GameWindow		window;
-		private CursorPosSetter cursorPosSetterX;
-		private CursorPosSetter cursorPosSetterY;
 		private bool			cursorInView;
 
 		public string Description
@@ -24,12 +22,12 @@ namespace Duality.Backend.DefaultOpenTK
 		public int X
 		{
 			get { return this.window.Mouse.X; }
-			set { if (this.cursorPosSetterX != null) this.cursorPosSetterX(value); }
+			set { }
 		}
 		public int Y
 		{
 			get { return this.window.Mouse.Y; }
-			set { if (this.cursorPosSetterY != null) this.cursorPosSetterY(value); }
+			set { }
 		}
 		public float Wheel
 		{
@@ -40,12 +38,9 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return this.window.Mouse[GetOpenTKMouseButton(key)]; }
 		}
 		
-		public GameWindowMouseInputSource(GameWindow window, CursorPosSetter cursorPosSetterX, CursorPosSetter cursorPosSetterY)
+		public GameWindowMouseInputSource(GameWindow window)
 		{
 			this.window = window;
-			this.cursorPosSetterX = cursorPosSetterX;
-			this.cursorPosSetterY = cursorPosSetterY;
-
 			this.window.Mouse.Enter += this.device_Enter;
 			this.window.Mouse.Leave += this.device_Leave;
 		}
@@ -59,7 +54,7 @@ namespace Duality.Backend.DefaultOpenTK
 			this.cursorInView = false;
 		}
 
-		public void UpdateState() {}
+		public void UpdateState() { }
 
 		private static OpenTK.Input.MouseButton GetOpenTKMouseButton(MouseButton button)
 		{

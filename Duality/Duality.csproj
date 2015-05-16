@@ -72,10 +72,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\DefaultOpenTK\NativeRenderTarget.cs" />
-    <Compile Include="Backend\DefaultOpenTK\NativeShaderProgram.cs" />
-    <Compile Include="Backend\DefaultOpenTK\NativeShaderPart.cs" />
-    <Compile Include="Backend\DefaultOpenTK\NativeTexture.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
     <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
@@ -85,7 +81,6 @@
     <Compile Include="Backend\IDualiyBackend.cs" />
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
     <Compile Include="Backend\IGraphicsBackend.cs" />
-    <Compile Include="Backend\DefaultOpenTK\GraphicsBackend.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
     <Compile Include="Cloning\ICloneOperation.cs" />
@@ -210,18 +205,14 @@
     <Compile Include="Input\GamepadAxis.cs" />
     <Compile Include="Input\StateManagers\GamepadInput.cs" />
     <Compile Include="Input\Sources\IGamepadInputSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\GlobalGamepadInputSource.cs" />
     <Compile Include="Input\Collections\UserInputCollection.cs" />
     <Compile Include="Input\Sources\IKeyboardInputSource.cs" />
     <Compile Include="Input\Sources\IMouseInputSource.cs" />
     <Compile Include="Input\Sources\IJoystickInputSource.cs" />
     <Compile Include="Input\StateManagers\JoystickInput.cs" />
     <Compile Include="Input\Sources\IUserInputSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\GlobalJoystickInputSource.cs" />
     <Compile Include="Input\StateManagers\MouseInput.cs" />
     <Compile Include="Input\StateManagers\KeyboardInput.cs" />
-    <Compile Include="Backend\DefaultOpenTK\GameWindowMouseInputSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\GameWindowKeyboardInputSource.cs" />
     <Compile Include="Utility\Log\ExtMethodsVisualLogEntry.cs" />
     <Compile Include="Utility\Log\VisualLogAnchor.cs" />
     <Compile Include="Utility\Log\VisualLog.cs" />

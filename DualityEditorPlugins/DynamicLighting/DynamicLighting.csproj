@@ -53,7 +53,7 @@
     </ProjectReference>
     <ProjectReference Include="..\..\DualityPlugins\DynamicLighting\DynamicLighting.csproj">
       <Project>{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}</Project>
-      <Name>DynamicLighting %28DualityPlugins\DynamicLighting%29</Name>
+      <Name>DynamicLighting</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DualityPrimitives\DualityPrimitives.csproj">
       <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>

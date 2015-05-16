@@ -22,6 +22,10 @@ namespace Duality.Launcher
 {
 	public class DualityLauncher : GameWindow
 	{
+		/// <summary>
+		/// Temporary ugly hack to allow the backend plugin to access the current GameWindow via reflection.
+		/// </summary>
+		private static GameWindow gameWindowUglyHack = null;
 		private	static bool	isDebugging			= false;
 		private	static bool	isProfiling			= false;
 		private	static bool	isRunFromEditor		= false;
@@ -115,25 +119,6 @@ namespace Duality.Launcher
 			DualityApp.TargetMode = Context.GraphicsMode;
 		}
 
-		private void SetMouseDeviceX(int x)
-		{
-			if (!this.Focused) return;
-			Point curPos;
-			NativeMethods.GetCursorPos(out curPos);
-			Point targetPos = this.PointToScreen(new Point(x, this.PointToClient(curPos).Y));
-			NativeMethods.SetCursorPos(targetPos.X, targetPos.Y);
-			return;
-		}
-		private void SetMouseDeviceY(int y)
-		{
-			if (!this.Focused) return;
-			Point curPos;
-			NativeMethods.GetCursorPos(out curPos);
-			Point targetPos = this.PointToScreen(new Point(this.PointToClient(curPos).X, y));
-			NativeMethods.SetCursorPos(targetPos.X, targetPos.Y);
-			return;
-		}
-
 		[STAThread]
 		public static void Main(string[] args)
 		{
@@ -163,6 +148,8 @@ namespace Duality.Launcher
 				DualityApp.AppData.AppName,
 				isFullscreen ? GameWindowFlags.Fullscreen : GameWindowFlags.Default))
 			{
+				gameWindowUglyHack = launcherWindow;
+
 				DualityApp.UserDataChanged += launcherWindow.OnUserDataChanged;
 
 				// Retrieve icon from executable file and set it as window icon
@@ -189,10 +176,6 @@ namespace Duality.Launcher
 				DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
 				DualityApp.InitGraphics();
 
-				// Input setup
-				DualityApp.Mouse.Source = new Duality.Backend.DefaultOpenTK.GameWindowMouseInputSource(launcherWindow, launcherWindow.SetMouseDeviceX, launcherWindow.SetMouseDeviceY);
-				DualityApp.Keyboard.Source = new Duality.Backend.DefaultOpenTK.GameWindowKeyboardInputSource(launcherWindow);
-
 				// Debug Logs
 				Log.Core.Write("Graphics window initialized: {0}Mode: {1}{0}VSync: {2}{0}SwapInterval: {3}{0}Flags: {4}{0}", 
 					Environment.NewLine,
@@ -210,6 +193,8 @@ namespace Duality.Launcher
 				// Shut down the DualityApp
 				DualityApp.Terminate();
 				DisplayDevice.Default.RestoreResolution();
+
+				gameWindowUglyHack = null;
 			}
 		}
 
@@ -217,7 +202,7 @@ namespace Duality.Launcher
 		public static void ShowConsole()
 		{
 			if (hasConsole) return;
-			NativeMethods.AllocConsole();
+			SafeNativeMethods.AllocConsole();
 			hasConsole = true;
 		}
 	}

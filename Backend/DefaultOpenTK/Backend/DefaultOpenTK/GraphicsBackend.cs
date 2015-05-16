@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using OpenTK.Graphics.OpenGL;
 
@@ -14,8 +15,71 @@ namespace Duality.Backend.DefaultOpenTK
 		private	IDrawDevice		currentDevice	= null;
 		private RenderStats		renderStats		= null;
 		private	uint			primaryVBO		= 0;
+		
+		string IDualityBackend.Name
+		{
+			get { return "OpenGL 2.1 (OpenTK)"; }
+		}
+		int IDualityBackend.Priority
+		{
+			get { return 0; }
+		}
+		
+		bool IDualityBackend.CheckAvailable()
+		{
+			// Since this is the default backend, it will always try to work.
+			return true;
+		}
+		void IDualityBackend.Init()
+		{
+			// Determine OpenGL capabilities and log them
+			try
+			{
+				CheckOpenGLErrors();
+				string versionString = GL.GetString(StringName.Version);
+				Log.Core.Write("OpenGL Version: {1}{0}Vendor: {2}{0}Renderer: {3}{0}Shading Language Version: {4}",
+					Environment.NewLine,
+					versionString,
+					GL.GetString(StringName.Vendor),
+					GL.GetString(StringName.Renderer),
+					GL.GetString(StringName.ShadingLanguageVersion));
+				CheckOpenGLErrors();
 
-		void IDualityBackend.Init() { }
+				// Parse the OpenGL version string in order to determine if it's sufficient
+				string[] token = versionString.Split(' ');
+				for (int i = 0; i < token.Length; i++)
+				{
+					Version version;
+					if (Version.TryParse(token[i], out version))
+					{
+						if (version.Major < 2 && version.Minor < 1)
+						{
+							Log.Core.WriteWarning("The detected OpenGL version {0} appears to be lower than the required minimum. OpenGL 2.1 or higher is required to run Duality applications.");
+						}
+						break;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", Log.Exception(e));
+			}
+
+			// Temporary ugly hack to get the GameWindow:
+			OpenTK.GameWindow gameWindow = null;
+			{
+				Assembly launcherAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetShortAssemblyName() == "DualityLauncher");
+				Type launcherType = launcherAssembly != null ? launcherAssembly.GetTypes().FirstOrDefault(t => t.Name == "DualityLauncher") : null;
+				FieldInfo hackField = launcherType != null ? launcherType.GetField("gameWindowUglyHack", BindingFlags.NonPublic | BindingFlags.Static) : null;
+				gameWindow = (hackField != null ? hackField.GetValue(null) : null) as OpenTK.GameWindow;
+			}
+
+			if (gameWindow != null)
+			{
+				DualityApp.Mouse.Source = new GameWindowMouseInputSource(gameWindow);
+				DualityApp.Keyboard.Source = new GameWindowKeyboardInputSource(gameWindow);
+			}
+		}
 		void IDualityBackend.Shutdown()
 		{
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
@@ -535,6 +599,31 @@ namespace Duality.Backend.DefaultOpenTK
 				return false;
 
 			return true;
+		}
+
+		/// <summary>
+		/// Checks for errors that might have occurred during video processing. You should avoid calling this method due to performance reasons.
+		/// Only use it on suspect.
+		/// </summary>
+		/// <param name="silent">If true, errors aren't logged.</param>
+		/// <returns>True, if an error occurred, false if not.</returns>
+		public static bool CheckOpenGLErrors(bool silent = false)
+		{
+			ErrorCode error;
+			bool found = false;
+			while ((error = GL.GetError()) != ErrorCode.NoError)
+			{
+				if (!silent)
+				{
+					Log.Core.WriteError(
+						"Internal OpenGL error, code {0} at {1}", 
+						error,
+						Log.CurrentMethod(1));
+				}
+				found = true;
+			}
+			if (found && !silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
+			return found;
 		}
 	}
 }
