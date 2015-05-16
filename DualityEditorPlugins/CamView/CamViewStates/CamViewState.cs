@@ -302,21 +302,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.camPassEdWorld.CollectDrawcalls	+= this.camPassEdWorld_CollectDrawcalls;
 			this.camPassEdScreen.CollectDrawcalls	+= this.camPassEdScreen_CollectDrawcalls;
 
-			this.LocalGLControl.Paint		+= this.LocalGLControl_Paint;
-			this.LocalGLControl.MouseDown	+= this.LocalGLControl_MouseDown;
-			this.LocalGLControl.MouseUp		+= this.LocalGLControl_MouseUp;
-			this.LocalGLControl.MouseMove	+= this.LocalGLControl_MouseMove;
-			this.LocalGLControl.MouseWheel	+= this.LocalGLControl_MouseWheel;
-			this.LocalGLControl.MouseLeave	+= this.LocalGLControl_MouseLeave;
-			this.LocalGLControl.KeyDown		+= this.LocalGLControl_KeyDown;
-			this.LocalGLControl.KeyUp		+= this.LocalGLControl_KeyUp;
-			this.LocalGLControl.GotFocus	+= this.LocalGLControl_GotFocus;
-			this.LocalGLControl.LostFocus	+= this.LocalGLControl_LostFocus;
-			this.LocalGLControl.DragDrop	+= this.LocalGLControl_DragDrop;
-			this.LocalGLControl.DragEnter	+= this.LocalGLControl_DragEnter;
-			this.LocalGLControl.DragLeave	+= this.LocalGLControl_DragLeave;
-			this.LocalGLControl.DragOver	+= this.LocalGLControl_DragOver;
-			this.LocalGLControl.Resize		+= this.LocalGLControl_Resize;
+			Control control = this.RenderableSite.Control;
+			control.Paint		+= this.RenderableControl_Paint;
+			control.MouseDown	+= this.RenderableControl_MouseDown;
+			control.MouseUp		+= this.RenderableControl_MouseUp;
+			control.MouseMove	+= this.RenderableControl_MouseMove;
+			control.MouseWheel	+= this.RenderableControl_MouseWheel;
+			control.MouseLeave	+= this.RenderableControl_MouseLeave;
+			control.KeyDown		+= this.RenderableControl_KeyDown;
+			control.KeyUp		+= this.RenderableControl_KeyUp;
+			control.GotFocus	+= this.RenderableControl_GotFocus;
+			control.LostFocus	+= this.RenderableControl_LostFocus;
+			control.DragDrop	+= this.RenderableControl_DragDrop;
+			control.DragEnter	+= this.RenderableControl_DragEnter;
+			control.DragLeave	+= this.RenderableControl_DragLeave;
+			control.DragOver	+= this.RenderableControl_DragOver;
+			control.Resize		+= this.RenderableControl_Resize;
 			this.View.PerspectiveChanged	+= this.View_FocusDistChanged;
 			this.View.CurrentCameraChanged	+= this.View_CurrentCameraChanged;
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
@@ -340,20 +341,21 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.Cursor = CursorHelper.Arrow;
 
-			this.LocalGLControl.Paint		-= this.LocalGLControl_Paint;
-			this.LocalGLControl.MouseDown	-= this.LocalGLControl_MouseDown;
-			this.LocalGLControl.MouseUp		-= this.LocalGLControl_MouseUp;
-			this.LocalGLControl.MouseMove	-= this.LocalGLControl_MouseMove;
-			this.LocalGLControl.MouseWheel	-= this.LocalGLControl_MouseWheel;
-			this.LocalGLControl.MouseLeave	-= this.LocalGLControl_MouseLeave;
-			this.LocalGLControl.KeyDown		-= this.LocalGLControl_KeyDown;
-			this.LocalGLControl.KeyUp		-= this.LocalGLControl_KeyUp;
-			this.LocalGLControl.LostFocus	-= this.LocalGLControl_LostFocus;
-			this.LocalGLControl.DragDrop	-= this.LocalGLControl_DragDrop;
-			this.LocalGLControl.DragEnter	-= this.LocalGLControl_DragEnter;
-			this.LocalGLControl.DragLeave	-= this.LocalGLControl_DragLeave;
-			this.LocalGLControl.DragOver	-= this.LocalGLControl_DragOver;
-			this.LocalGLControl.Resize		-= this.LocalGLControl_Resize;
+			Control control = this.RenderableSite.Control;
+			control.Paint		-= this.RenderableControl_Paint;
+			control.MouseDown	-= this.RenderableControl_MouseDown;
+			control.MouseUp		-= this.RenderableControl_MouseUp;
+			control.MouseMove	-= this.RenderableControl_MouseMove;
+			control.MouseWheel	-= this.RenderableControl_MouseWheel;
+			control.MouseLeave	-= this.RenderableControl_MouseLeave;
+			control.KeyDown		-= this.RenderableControl_KeyDown;
+			control.KeyUp		-= this.RenderableControl_KeyUp;
+			control.LostFocus	-= this.RenderableControl_LostFocus;
+			control.DragDrop	-= this.RenderableControl_DragDrop;
+			control.DragEnter	-= this.RenderableControl_DragEnter;
+			control.DragLeave	-= this.RenderableControl_DragLeave;
+			control.DragOver	-= this.RenderableControl_DragOver;
+			control.Resize		-= this.RenderableControl_Resize;
 			this.View.PerspectiveChanged			-= this.View_FocusDistChanged;
 			this.View.CurrentCameraChanged			-= this.View_CurrentCameraChanged;
 			DualityEditorApp.UpdatingEngine			-= this.DualityEditorApp_UpdatingEngine;
@@ -1336,12 +1338,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.actionText.Fonts = new [] { OverlayFont };
 		}
 
-		private void LocalGLControl_Paint(object sender, PaintEventArgs e)
+		private void RenderableControl_Paint(object sender, PaintEventArgs e)
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 
 			// Retrieve OpenGL context
- 			try { DualityEditorApp.GLMakeCurrent(this.LocalGLControl); } catch (Exception) { return; }
+ 			try { this.RenderableSite.MakeCurrent(); } catch (Exception) { return; }
 
 			try
 			{
@@ -1360,15 +1362,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				Log.Editor.WriteError("An error occurred during CamView {1} rendering. The current DrawDevice state may be compromised. Exception: {0}", Log.Exception(exception), this.CameraComponent.ToString());
 			}
 			
-			DualityEditorApp.GLSwapBuffers(this.LocalGLControl);
+			this.RenderableSite.SwapBuffers();
 		}
-		private void LocalGLControl_MouseMove(object sender, MouseEventArgs e)
+		private void RenderableControl_MouseMove(object sender, MouseEventArgs e)
 		{
 			this.mouseover = true;
 			this.UpdateAction();
 			if (!this.camBeginDragScene) this.OnMouseMove(e);
 		}
-		private void LocalGLControl_MouseUp(object sender, MouseEventArgs e)
+		private void RenderableControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			this.drawCamGizmoState = CameraAction.None;
 			this.drawSelGizmoState = ObjectAction.None;
@@ -1396,7 +1398,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.Invalidate();
 		}
-		private void LocalGLControl_MouseDown(object sender, MouseEventArgs e)
+		private void RenderableControl_MouseDown(object sender, MouseEventArgs e)
 		{
 			bool alt = (Control.ModifierKeys & Keys.Alt) != Keys.None;
 
@@ -1464,7 +1466,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.OnMouseDown(e);
 			}
 		}
-		private void LocalGLControl_MouseWheel(object sender, MouseEventArgs e)
+		private void RenderableControl_MouseWheel(object sender, MouseEventArgs e)
 		{
 			if (!this.mouseover) return;
 
@@ -1502,7 +1504,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 			}
 		}
-		private void LocalGLControl_MouseLeave(object sender, EventArgs e)
+		private void RenderableControl_MouseLeave(object sender, EventArgs e)
 		{
 			this.UpdateAction();
 			if (!this.camBeginDragScene) this.OnMouseMove();
@@ -1514,7 +1516,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.Invalidate();
 		}
-		private void LocalGLControl_KeyDown(object sender, KeyEventArgs e)
+		private void RenderableControl_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (this.actionAllowed)
 			{
@@ -1615,7 +1617,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.OnKeyDown(e);
 		}
-		private void LocalGLControl_KeyUp(object sender, KeyEventArgs e)
+		private void RenderableControl_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Space && this.camBeginDragScene)
 			{
@@ -1634,12 +1636,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			this.OnKeyUp(e);
 		}
-		private void LocalGLControl_GotFocus(object sender, EventArgs e)
+		private void RenderableControl_GotFocus(object sender, EventArgs e)
 		{
 			this.MakeDualityTarget();
 			this.OnGotFocus();
 		}
-		private void LocalGLControl_LostFocus(object sender, EventArgs e)
+		private void RenderableControl_LostFocus(object sender, EventArgs e)
 		{
 			if (DualityEditorApp.MainForm == null) return;
 
@@ -1648,25 +1650,25 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.OnLostFocus();
 			this.Invalidate();
 		}
-		private void LocalGLControl_DragOver(object sender, DragEventArgs e)
+		private void RenderableControl_DragOver(object sender, DragEventArgs e)
 		{
 			this.OnDragOver(e);
 			// Force immediate buffer swap, because there is no event loop while dragging.
-			DualityEditorApp.GLUpdateBufferSwap();
+			DualityEditorApp.PerformBufferSwap();
 		}
-		private void LocalGLControl_DragLeave(object sender, EventArgs e)
+		private void RenderableControl_DragLeave(object sender, EventArgs e)
 		{
 			this.OnDragLeave(e);
 		}
-		private void LocalGLControl_DragEnter(object sender, DragEventArgs e)
+		private void RenderableControl_DragEnter(object sender, DragEventArgs e)
 		{
 			this.OnDragEnter(e);
 		}
-		private void LocalGLControl_DragDrop(object sender, DragEventArgs e)
+		private void RenderableControl_DragDrop(object sender, DragEventArgs e)
 		{
 			this.OnDragDrop(e);
 		}
-		private void LocalGLControl_Resize(object sender, EventArgs e)
+		private void RenderableControl_Resize(object sender, EventArgs e)
 		{
 			this.UpdateFormattedTextRenderers();
 		}

@@ -6,7 +6,7 @@ namespace Duality.Backend.DefaultOpenTK
 	/// <summary>
 	/// Compares two <see cref="GraphicsMode">GraphicsModes</see>.
 	/// </summary>
-	public class GraphicsModeComparer : IEqualityComparer<GraphicsMode>
+	internal class GraphicsModeComparer : IEqualityComparer<GraphicsMode>
 	{
 		/// <summary>
 		/// Returns whether two GraphicsModes are equal.

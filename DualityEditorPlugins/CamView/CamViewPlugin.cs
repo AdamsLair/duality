@@ -90,8 +90,8 @@ namespace Duality.Editor.Plugins.CamView
 				if (cam.Pane != null)
 				{
 					cam.Pane.Activate();
-					if (cam.LocalGLControl != null)
-						cam.LocalGLControl.Focus();
+					if (cam.RenderableControl != null)
+						cam.RenderableControl.Focus();
 					else
 						cam.Focus();
 				}
@@ -110,7 +110,7 @@ namespace Duality.Editor.Plugins.CamView
 			else
 			{
 				gameView = this.camViews.FirstOrDefault(v => v.ActiveState.GetType() == typeof(CamViewStates.GameViewCamViewState));
-				if (gameView != null && gameView.LocalGLControl != null) gameView.LocalGLControl.Focus();
+				if (gameView != null && gameView.RenderableControl != null) gameView.RenderableControl.Focus();
 			}
 		}
 		private void menuItemCamView_Click(object sender, EventArgs e)

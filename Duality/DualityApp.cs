@@ -1031,14 +1031,16 @@ namespace Duality
 			return availTypes;
 		}
 
-		internal static void InitBackend<T>(out T target) where T : class, IDualityBackend
+		internal static void InitBackend<T>(out T target, Func<Type,IEnumerable<Type>> typeFinder = null) where T : class, IDualityBackend
 		{
+			if (typeFinder == null) typeFinder = GetAvailDualityTypes;
+
 			Log.Core.Write("Initializing {0}...", Log.Type(typeof(T)));
 			Log.Core.PushIndent();
 
 			// Generate a list of available backends for evaluation
 			List<IDualityBackend> backends = new List<IDualityBackend>();
-			foreach (Type backendType in GetAvailDualityTypes(typeof(IDualityBackend)))
+			foreach (Type backendType in typeFinder(typeof(IDualityBackend)))
 			{
 				if (backendType.IsInterface) continue;
 				if (backendType.IsAbstract) continue;
@@ -1117,6 +1119,8 @@ namespace Duality
 		}
 		internal static void ShutdownBackend<T>(ref T backend) where T : class, IDualityBackend
 		{
+			if (backend == null) return;
+
 			Log.Core.Write("Shutting down {0}...", backend.Name);
 			Log.Core.PushIndent();
 			{

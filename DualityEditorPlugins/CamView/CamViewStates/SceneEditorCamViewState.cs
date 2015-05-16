@@ -419,10 +419,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void ClearContextMenu()
 		{
-			if (this.LocalGLControl == null || this.LocalGLControl.ContextMenu == null)
+			if (this.RenderableSite == null || this.RenderableControl.ContextMenu == null)
 				return;
 
-			this.LocalGLControl.ContextMenu.MenuItems.Clear();
+			this.RenderableControl.ContextMenu.MenuItems.Clear();
 		}
 	}
 }

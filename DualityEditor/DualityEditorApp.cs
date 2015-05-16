@@ -15,14 +15,11 @@ using Duality.Components;
 using Duality.Serialization;
 using Duality.Resources;
 using Duality.Drawing;
+using Duality.Backend;
+using Duality.Editor.Backend;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.PackageManagement;
-
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Platform;
-using OpenTK.Platform.Windows;
 
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -70,7 +67,8 @@ namespace Duality.Editor
 		public	const	string	ActionContextOpenRes	= "OpenRes";
 		
 		private	static MainForm						mainForm			= null;
-		private	static GLControl					mainContextControl	= null;
+		private	static IEditorGraphicsBackend		graphicsBack		= null;
+		private	static INativeEditorGraphicsContext			mainGraphicsContext	= null;
 		private	static List<EditorPlugin>			plugins				= new List<EditorPlugin>();
 		private	static Dictionary<Type,List<Type>>	availTypeDict		= new Dictionary<Type,List<Type>>();
 		private	static List<IEditorAction>			editorActions		= new List<IEditorAction>();
@@ -79,7 +77,6 @@ namespace Duality.Editor
 		private	static GameObjectManager			editorObjects		= new GameObjectManager();
 		private	static HashSet<GameObject>			updateObjects		= new HashSet<GameObject>();
 		private	static bool							dualityAppSuspended	= true;
-		private	static HashSet<IWindowInfo>			glSwapBuffers		= new HashSet<IWindowInfo>();
 		private	static List<Resource>				unsavedResources	= new List<Resource>();
 		private	static ObjectSelection				selectionCurrent	= ObjectSelection.Null;
 		private	static ObjectSelection				selectionPrevious	= ObjectSelection.Null;
@@ -237,11 +234,13 @@ namespace Duality.Editor
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
 			DualityApp.PluginReady += DualityApp_PluginReady;
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, new[] {"logfile", "logfile_editor"});
-			InitMainGLContext();
-			DualityApp.InitPostWindow();
+
 			LoadPlugins();
 			LoadUserData();
 			InitPlugins();
+
+			InitMainGraphicsContext();
+			DualityApp.InitPostWindow();
 
 			// Set up core plugin reloader
 			corePluginReloader = new ReloadCorePluginDialog(mainForm);
@@ -366,6 +365,9 @@ namespace Duality.Editor
 				ConvertOperation.Terminate();
 				FileImportProvider.Terminate();
 				DesignTimeObjectData.Terminate();
+
+				// Shut down the editor backend
+				DualityApp.ShutdownBackend(ref graphicsBack);
 
 				// Terminate Duality
 				DualityApp.Terminate();
@@ -611,82 +613,32 @@ namespace Duality.Editor
 			}
 		}
 
-		public static void InitMainGLContext()
+		private static void InitMainGraphicsContext()
 		{
-			if (mainContextControl != null) return;
+			if (mainGraphicsContext != null) return;
 
-			// Since we'll be using only one context, we don't need sharing
-			OpenTK.Graphics.GraphicsContext.ShareContexts = false;
-			
-			// Determine the graphics mode to use. This should be done by the backend, once in place in the editor.
-			GraphicsMode defaultGraphicsMode = null;
+			if (graphicsBack == null)
+				DualityApp.InitBackend(out graphicsBack, GetAvailDualityEditorTypes);
+
+			try
 			{
-				int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
-				HashSet<GraphicsMode> availGraphicsModes = new HashSet<GraphicsMode>(new GraphicsModeComparer());
-				foreach (int samplecount in aaLevels)
-				{
-					GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
-					if (!availGraphicsModes.Contains(mode)) availGraphicsModes.Add(mode);
-				}
-				int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(availGraphicsModes.Max(m => m.Samples), 1.0f), 2.0f));
-				int targetAALevel = highestAALevel;
-				if (DualityApp.AppData.MultisampleBackBuffer)
-				{
-					switch (DualityApp.UserData.AntialiasingQuality)
-					{
-						case AAQuality.High:	targetAALevel = highestAALevel;		break;
-						case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;
-						case AAQuality.Low:		targetAALevel = highestAALevel / 4; break;
-						case AAQuality.Off:		targetAALevel = 0;					break;
-					}
-				}
-				else
-				{
-					targetAALevel = 0;
-				}
-				int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
-				defaultGraphicsMode = availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? availGraphicsModes.Last();
+				mainGraphicsContext = graphicsBack.CreateContext();
 			}
-
-			mainContextControl = new GLControl(defaultGraphicsMode);
-			mainContextControl.VSync = false;
-			mainContextControl.MakeCurrent();
-		}
-		public static void GLMakeCurrent(GLControl control)
-		{
-			mainContextControl.Context.MakeCurrent(control.WindowInfo);
-		}
-		public static void GLSwapBuffers(GLControl control)
-		{
-			glSwapBuffers.Add(control.WindowInfo);
-		}
-		public static void GLUpdateBufferSwap()
-		{
-			// Perform a buffer swap
-			if (glSwapBuffers.Count > 0)
+			catch (Exception e)
 			{
-				Profile.TimeRender.BeginMeasure();
-				Profile.TimeSwapBuffers.BeginMeasure();
-				foreach (IWindowInfo window in glSwapBuffers)
-				{
-					// Wrap actual buffer swapping in a try-catch block, since
-					// it is possible that the window has been disposed, but we have
-					// no way of checking its disposal state... so let's try it the hard way.
-					try
-					{
-						mainContextControl.Context.MakeCurrent(window);
-						mainContextControl.SwapBuffers();
-					}
-					catch (Exception) {}
-				}
-				Profile.TimeSwapBuffers.EndMeasure();
-				Profile.TimeRender.EndMeasure();
-				glSwapBuffers.Clear();
+				mainGraphicsContext = null;
+				Log.Editor.WriteError("Can't create editor graphics context, because an error occurred: {0}", Log.Exception(e));
 			}
 		}
-		public static GLControl GLCreateControl()
+		public static void PerformBufferSwap()
 		{
-			return new GLControl(mainContextControl.GraphicsMode);
+			if (mainGraphicsContext == null) return;
+			mainGraphicsContext.PerformBufferSwap();
+		}
+		public static INativeRenderableSite CreateRenderableSite()
+		{
+			if (mainGraphicsContext == null) return null;
+			return mainGraphicsContext.CreateRenderableSite();
 		}
 
 		public static void UpdateGameObject(GameObject obj)
@@ -1368,7 +1320,7 @@ namespace Duality.Editor
 				}
 				
 				// Perform a buffer swap
-				GLUpdateBufferSwap();
+				PerformBufferSwap();
 
 				// Give the processor a rest if we have the time, don't use 100% CPU
 				while (watch.Elapsed.TotalSeconds < 0.01d)

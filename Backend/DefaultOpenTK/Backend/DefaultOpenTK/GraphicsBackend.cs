@@ -57,34 +57,7 @@ namespace Duality.Backend.DefaultOpenTK
 		void IDualityBackend.Init()
 		{
 			// Determine available and default graphics modes
-			{
-				int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
-				this.availGraphicsModes = new HashSet<GraphicsMode>(new GraphicsModeComparer());
-				foreach (int samplecount in aaLevels)
-				{
-					GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
-					if (!this.availGraphicsModes.Contains(mode)) this.availGraphicsModes.Add(mode);
-				}
-				int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(this.availGraphicsModes.Max(m => m.Samples), 1.0f), 2.0f));
-				int targetAALevel = highestAALevel;
-				if (DualityApp.AppData.MultisampleBackBuffer)
-				{
-					switch (DualityApp.UserData.AntialiasingQuality)
-					{
-						case AAQuality.High:	targetAALevel = highestAALevel;		break;
-						case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;
-						case AAQuality.Low:		targetAALevel = highestAALevel / 4; break;
-						case AAQuality.Off:		targetAALevel = 0;					break;
-					}
-				}
-				else
-				{
-					targetAALevel = 0;
-				}
-				int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
-				this.defaultGraphicsMode = this.availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? this.availGraphicsModes.Last();
-			}
-
+			this.QueryGraphicsModes();
 			activeInstance = this;
 		}
 		void IDualityBackend.Shutdown()
@@ -253,6 +226,34 @@ namespace Duality.Backend.DefaultOpenTK
 				.Distinct();
 		}
 
+		private void QueryGraphicsModes()
+		{
+			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
+			this.availGraphicsModes = new HashSet<GraphicsMode>(new GraphicsModeComparer());
+			foreach (int samplecount in aaLevels)
+			{
+				GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
+				if (!this.availGraphicsModes.Contains(mode)) this.availGraphicsModes.Add(mode);
+			}
+			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(this.availGraphicsModes.Max(m => m.Samples), 1.0f), 2.0f));
+			int targetAALevel = highestAALevel;
+			if (DualityApp.AppData.MultisampleBackBuffer)
+			{
+				switch (DualityApp.UserData.AntialiasingQuality)
+				{
+					case AAQuality.High:	targetAALevel = highestAALevel;		break;
+					case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;
+					case AAQuality.Low:		targetAALevel = highestAALevel / 4; break;
+					case AAQuality.Off:		targetAALevel = 0;					break;
+				}
+			}
+			else
+			{
+				targetAALevel = 0;
+			}
+			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
+			this.defaultGraphicsMode = this.availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? this.availGraphicsModes.Last();
+		}
 
 		private void PrepareRenderBatch(IDrawBatch renderBatch)
 		{

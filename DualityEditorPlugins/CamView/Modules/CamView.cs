@@ -22,12 +22,12 @@ using Duality.Drawing;
 using Duality.Resources;
 
 using Duality.Editor;
+using Duality.Editor.Backend;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.CamView.CamViewStates;
 using Duality.Editor.Plugins.CamView.CamViewLayers;
 
-using OpenTK;
 using Key = Duality.Input.Key;
 using MouseButton = Duality.Input.MouseButton;
 using MouseEventArgs = System.Windows.Forms.MouseEventArgs;
@@ -163,7 +163,7 @@ namespace Duality.Editor.Plugins.CamView
 
 
 		private	int						runtimeId					= 0;
-		private	GLControl				glControl					= null;
+		private	INativeRenderableSite	graphicsControl			= null;
 		private	GameObject				camObj						= null;
 		private	Camera					camComp						= null;
 		private	CamViewState			activeState					= null;
@@ -245,9 +245,13 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.camObj; }
 		}
-		public GLControl LocalGLControl
+		public INativeRenderableSite RenderableSite
 		{
-			get { return this.glControl; }
+			get { return this.graphicsControl; }
+		}
+		public Control RenderableControl
+		{
+			get { return this.graphicsControl.Control; }
 		}
 		public ToolStrip ToolbarCamera
 		{
@@ -396,48 +400,51 @@ namespace Duality.Editor.Plugins.CamView
 			this.SuspendLayout();
 
 			// Get rid of a possibly existing old glControl
-			if (this.glControl != null)
+			if (this.graphicsControl != null)
 			{
-				this.glControl.MouseEnter -= this.glControl_MouseEnter;
-				this.glControl.MouseLeave -= this.glControl_MouseLeave;
-				this.glControl.MouseDown -= this.glControl_MouseDown;
-				this.glControl.MouseUp -= this.glControl_MouseUp;
-				this.glControl.MouseWheel -= this.glControl_MouseWheel;
-				this.glControl.MouseMove -= this.glControl_MouseMove;
-				this.glControl.GotFocus -= this.glControl_GotFocus;
-				this.glControl.LostFocus -= this.glControl_LostFocus;
-				this.glControl.PreviewKeyDown -= glControl_PreviewKeyDown;
-				this.glControl.KeyDown -= this.glControl_KeyDown;
-				this.glControl.KeyUp -= this.glControl_KeyUp;
-				this.glControl.KeyPress -= this.glControl_KeyPress;
-				this.glControl.Resize -= this.glControl_Resize;
+				Control oldControl = this.graphicsControl.Control;
 
-				this.glControl.Dispose();
-				this.Controls.Remove(this.glControl);
+				oldControl.MouseEnter		-= this.graphicsControl_MouseEnter;
+				oldControl.MouseLeave		-= this.graphicsControl_MouseLeave;
+				oldControl.MouseDown		-= this.graphicsControl_MouseDown;
+				oldControl.MouseUp			-= this.graphicsControl_MouseUp;
+				oldControl.MouseWheel		-= this.graphicsControl_MouseWheel;
+				oldControl.MouseMove		-= this.graphicsControl_MouseMove;
+				oldControl.GotFocus			-= this.graphicsControl_GotFocus;
+				oldControl.LostFocus		-= this.graphicsControl_LostFocus;
+				oldControl.PreviewKeyDown	-= this.graphicsControl_PreviewKeyDown;
+				oldControl.KeyDown			-= this.graphicsControl_KeyDown;
+				oldControl.KeyUp			-= this.graphicsControl_KeyUp;
+				oldControl.KeyPress			-= this.graphicsControl_KeyPress;
+				oldControl.Resize			-= this.graphicsControl_Resize;
+
+				this.graphicsControl.Dispose();
+				this.Controls.Remove(oldControl);
 			}
 
 			// Create a new glControl
-			this.glControl = DualityEditorApp.GLCreateControl();
-			this.glControl.BackColor = Color.Black;
-			this.glControl.Dock = DockStyle.Fill;
-			this.glControl.Name = "glControl";
-			this.glControl.VSync = false;
-			this.glControl.AllowDrop = true;
-			this.glControl.MouseEnter += this.glControl_MouseEnter;
-			this.glControl.MouseLeave += this.glControl_MouseLeave;
-			this.glControl.MouseDown += this.glControl_MouseDown;
-			this.glControl.MouseUp += this.glControl_MouseUp;
-			this.glControl.MouseWheel += this.glControl_MouseWheel;
-			this.glControl.MouseMove += this.glControl_MouseMove;
-			this.glControl.GotFocus += this.glControl_GotFocus;
-			this.glControl.LostFocus += this.glControl_LostFocus;
-			this.glControl.PreviewKeyDown += glControl_PreviewKeyDown;
-			this.glControl.KeyDown += this.glControl_KeyDown;
-			this.glControl.KeyUp += this.glControl_KeyUp;
-			this.glControl.KeyPress += this.glControl_KeyPress;
-			this.glControl.Resize += this.glControl_Resize;
-			this.Controls.Add(this.glControl);
-			this.Controls.SetChildIndex(this.glControl, 0);
+			this.graphicsControl = DualityEditorApp.CreateRenderableSite();
+			Control control = this.graphicsControl.Control;
+
+			control.BackColor = Color.Black;
+			control.Dock = DockStyle.Fill;
+			control.Name = "graphicsControl";
+			control.AllowDrop = true;
+			control.MouseEnter		+= this.graphicsControl_MouseEnter;
+			control.MouseLeave		+= this.graphicsControl_MouseLeave;
+			control.MouseDown		+= this.graphicsControl_MouseDown;
+			control.MouseUp			+= this.graphicsControl_MouseUp;
+			control.MouseWheel		+= this.graphicsControl_MouseWheel;
+			control.MouseMove		+= this.graphicsControl_MouseMove;
+			control.GotFocus		+= this.graphicsControl_GotFocus;
+			control.LostFocus		+= this.graphicsControl_LostFocus;
+			control.PreviewKeyDown	+= this.graphicsControl_PreviewKeyDown;
+			control.KeyDown			+= this.graphicsControl_KeyDown;
+			control.KeyUp			+= this.graphicsControl_KeyUp;
+			control.KeyPress		+= this.graphicsControl_KeyPress;
+			control.Resize			+= this.graphicsControl_Resize;
+			this.Controls.Add(control);
+			this.Controls.SetChildIndex(control, 0);
 
 			this.ResumeLayout(true);
 		}
@@ -593,7 +600,7 @@ namespace Duality.Editor.Plugins.CamView
 			}
 
 			this.OnCurrentCameraChanged(prev, this.camComp);
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		public void SetCurrentState(Type stateType)
 		{
@@ -617,10 +624,10 @@ namespace Duality.Editor.Plugins.CamView
 				this.stateSelector.SelectedIndex = -1;
 
 			// No glControl yet? We're not initialized properly and this is the initial state. Enter the state later.
-			if (this.glControl != null)
+			if (this.graphicsControl != null)
 			{
 				if (this.activeState != null) this.activeState.OnEnterState();
-				this.glControl.Invalidate();
+				this.RenderableControl.Invalidate();
 			}
 		}
 
@@ -649,10 +656,10 @@ namespace Duality.Editor.Plugins.CamView
 			this.activeLayers.Add(layer);
 			layer.View = this;
 			// No glControl yet? We're not initialized properly and this is the initial state. Enter the state later.
-			if (this.glControl != null)
+			if (this.graphicsControl != null)
 			{
 				layer.OnActivateLayer();
-				this.glControl.Invalidate();
+				this.RenderableControl.Invalidate();
 			}
 		}
 		public void ActivateLayer(Type layerType)
@@ -668,7 +675,7 @@ namespace Duality.Editor.Plugins.CamView
 			layer.OnDeactivateLayer();
 			layer.View = null;
 			this.activeLayers.Remove(layer);
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		public void DeactivateLayer(Type layerType)
 		{
@@ -715,7 +722,7 @@ namespace Duality.Editor.Plugins.CamView
 				if (!this.objectVisibility.Contains(objectType))
 				{
 					this.objectVisibility.Add(objectType);
-					this.glControl.Invalidate();
+					this.RenderableControl.Invalidate();
 				}
 			}
 			else
@@ -723,7 +730,7 @@ namespace Duality.Editor.Plugins.CamView
 				if (this.objectVisibility != null && this.objectVisibility.Contains(objectType))
 				{
 					this.objectVisibility.Remove(objectType);
-					this.glControl.Invalidate();
+					this.RenderableControl.Invalidate();
 				}
 			}
 		}
@@ -864,7 +871,7 @@ namespace Duality.Editor.Plugins.CamView
 			//targetPos.Z = MathF.Min(this.camObj.Transform.Pos.Z, targetPos.Z);
 			this.camObj.Transform.Pos = targetPos;
 			this.OnCamTransformChanged();
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		public void FocusOnObject(GameObject obj)
 		{
@@ -880,7 +887,7 @@ namespace Duality.Editor.Plugins.CamView
 					this, new ObjectSelection(this.camComp),
 					ReflectionInfo.Property_Camera_FocusDist);
 			}
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 
 			if (this.PerspectiveChanged != null)
 				this.PerspectiveChanged(this, EventArgs.Empty);
@@ -918,13 +925,13 @@ namespace Duality.Editor.Plugins.CamView
 		
 		private void InstallFocusHook()
 		{
-			if (this.glControl.Focused) return;
+			if (this.graphicsControl.Control.Focused) return;
 
 			// Hook global message filter
 			if (this.waitForInputFilter == null)
 			{
 				this.waitForInputFilter = new InputEventMessageRedirector(
-					this.glControl, 
+					this.graphicsControl.Control, 
 					this.FocusHookFilter, 
 					InputEventMessageRedirector.MessageType.MouseWheel);
 				Application.AddMessageFilter(this.waitForInputFilter);
@@ -944,7 +951,7 @@ namespace Duality.Editor.Plugins.CamView
 			// Capture the mouse wheel - except in sandbox mode. Input is likely to be needed in the current Game View
 			return Sandbox.State != SandboxState.Playing;
 		}
-		private void glControl_MouseLeave(object sender, EventArgs e)
+		private void graphicsControl_MouseLeave(object sender, EventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
@@ -954,9 +961,9 @@ namespace Duality.Editor.Plugins.CamView
 			this.RemoveFocusHook();
 
 			if (this.activeLayers.Any(l => l.MouseTracking))
-				this.glControl.Invalidate();
+				this.RenderableControl.Invalidate();
 		}
-		private void glControl_MouseEnter(object sender, EventArgs e)
+		private void graphicsControl_MouseEnter(object sender, EventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
@@ -966,9 +973,9 @@ namespace Duality.Editor.Plugins.CamView
 			this.InstallFocusHook();
 
 			if (this.activeLayers.Any(l => l.MouseTracking))
-				this.glControl.Invalidate();
+				this.RenderableControl.Invalidate();
 		}
-		private void glControl_MouseDown(object sender, MouseEventArgs e)
+		private void graphicsControl_MouseDown(object sender, MouseEventArgs e)
 		{
 			this.inputMouseCapture = true;
 			if (this.activeState.EngineUserInput)
@@ -977,7 +984,7 @@ namespace Duality.Editor.Plugins.CamView
 				this.inputMouseButtons |= e.Button.ToDuality();
 			}
 		}
-		private void glControl_MouseUp(object sender, MouseEventArgs e)
+		private void graphicsControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
@@ -985,16 +992,16 @@ namespace Duality.Editor.Plugins.CamView
 				this.inputMouseButtons &= ~e.Button.ToDuality();
 			}
 		}
-		private void glControl_MouseWheel(object sender, MouseEventArgs e)
+		private void graphicsControl_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if (!this.glControl.Focused) this.glControl.Focus();
+			if (!this.RenderableControl.Focused) this.RenderableControl.Focus();
 
 			if (this.activeState.EngineUserInput)
 			{
 				this.inputMouseWheel += e.Delta / 120.0f;
 			}
 		}
-		private void glControl_MouseMove(object sender, MouseEventArgs e)
+		private void graphicsControl_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
@@ -1005,9 +1012,9 @@ namespace Duality.Editor.Plugins.CamView
 			}
 
 			if (this.activeLayers.Any(l => l.MouseTracking))
-				this.glControl.Invalidate();
+				this.RenderableControl.Invalidate();
 		}
-		private void glControl_GotFocus(object sender, EventArgs e)
+		private void graphicsControl_GotFocus(object sender, EventArgs e)
 		{
 			this.RemoveFocusHook();
 			this.inputMouseCapture = true;
@@ -1023,14 +1030,14 @@ namespace Duality.Editor.Plugins.CamView
 					this.activeState.SelectObjects(this.activeState.SelectedObjects);
 			}
 		}
-		private void glControl_LostFocus(object sender, EventArgs e)
+		private void graphicsControl_LostFocus(object sender, EventArgs e)
 		{
 			if (this.activeState != null && this.activeState.EngineUserInput)
 			{
 				this.inputKeyFocus = false;
 			}
 		}
-		private void glControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		private void graphicsControl_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
 		{
 			if (this.activeState.EngineUserInput) 
 				e.IsInputKey = // Special key blacklist: Do not forward to game
@@ -1053,9 +1060,9 @@ namespace Duality.Editor.Plugins.CamView
 					e.KeyCode == Keys.Up || 
 					e.KeyCode == Keys.Down;
 		}
-		private void glControl_KeyDown(object sender, KeyEventArgs e)
+		private void graphicsControl_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (!this.glControl.Focused) this.glControl.Focus();
+			if (!this.RenderableControl.Focused) this.RenderableControl.Focus();
 
 			if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Tab || e.KeyCode == Keys.Alt)
 			{
@@ -1070,7 +1077,7 @@ namespace Duality.Editor.Plugins.CamView
 				this.inputKeyRepeatCount++;
 			}
 		}
-		private void glControl_KeyUp(object sender, KeyEventArgs e)
+		private void graphicsControl_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
@@ -1086,16 +1093,16 @@ namespace Duality.Editor.Plugins.CamView
 					this.stateSelector.SelectedIndex = e.KeyCode - Keys.D1;
 			}
 		}
-		private void glControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+		private void graphicsControl_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
 				this.inputCharInputBuffer.Append(e.KeyChar);
 			}
 		}
-		private void glControl_Resize(object sender, EventArgs e)
+		private void graphicsControl_Resize(object sender, EventArgs e)
 		{
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 
 		private void focusDist_ValueChanged(object sender, EventArgs e)
@@ -1163,19 +1170,19 @@ namespace Duality.Editor.Plugins.CamView
 			{
 				this.camComp.ClearColor = this.bgColorDialog.SelectedColor.ToDualityRgba().WithAlpha(0);
 			}
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 
 		private void buttonResetZoom_Click(object sender, EventArgs e)
 		{
 			this.camObj.Transform.Pos = new Vector3(this.camObj.Transform.Pos.Xy, -MathF.Abs(this.camComp.FocusDist));
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		
 		private void FileEventManager_ResourceModified(object sender, ResourceEventArgs e)
 		{
 			if (!e.IsResource) return;
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		private void DualityEditorApp_HighlightObject(object sender, HighlightObjectEventArgs e)
 		{
@@ -1191,7 +1198,7 @@ namespace Duality.Editor.Plugins.CamView
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (!e.Objects.Resources.Any() && !e.Objects.OfType<DesignTimeObjectData>().Any()) return;
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)
 		{
@@ -1202,12 +1209,12 @@ namespace Duality.Editor.Plugins.CamView
 		private void Scene_Entered(object sender, EventArgs e)
 		{
 			if (!Sandbox.IsActive && !Sandbox.IsChangingState) this.ResetCamera();
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		private void Scene_Leaving(object sender, EventArgs e)
 		{
 			if (this.camObj != this.nativeCamObj) this.SetCurrentCamera(null);
-			this.glControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		private void Scene_ComponentRemoving(object sender, ComponentEventArgs e)
 		{
@@ -1331,7 +1338,7 @@ namespace Duality.Editor.Plugins.CamView
 				this.editingUserGuides.GridSize = (Vector3)e.ClickedItem.Tag;
 			}
 
-			this.LocalGLControl.Invalidate();
+			this.RenderableControl.Invalidate();
 		}
 		private void perspectiveDropDown_DropDownOpening(object sender, EventArgs e)
 		{
@@ -1374,8 +1381,8 @@ namespace Duality.Editor.Plugins.CamView
 			else
 			{
 				captured = false;
-				Point glLocalPos = this.glControl.PointToClient(globalPos);
-				if (this.glControl.ClientRectangle.Contains(glLocalPos))
+				Point glLocalPos = this.RenderableControl.PointToClient(globalPos);
+				if (this.RenderableControl.ClientRectangle.Contains(glLocalPos))
 				{
 					if (this.activeState != null)
 						result = this.activeState.ProvideHoverHelp(glLocalPos, ref captured);
@@ -1390,9 +1397,9 @@ namespace Duality.Editor.Plugins.CamView
 			get { return this.inputMouseX; }
 			set
 			{
-				if (this.activeState.EngineUserInput && this.glControl.Focused && this.inputMouseCapture)
+				if (this.activeState.EngineUserInput && this.RenderableControl.Focused && this.inputMouseCapture)
 				{
-					Cursor.Position = this.glControl.PointToScreen(new Point(value, this.glControl.PointToClient(Cursor.Position).Y));
+					Cursor.Position = this.RenderableControl.PointToScreen(new Point(value, this.RenderableControl.PointToClient(Cursor.Position).Y));
 				}
 			}
 		}
@@ -1401,9 +1408,9 @@ namespace Duality.Editor.Plugins.CamView
 			get { return this.inputMouseY; }
 			set
 			{
-				if (this.activeState.EngineUserInput && this.glControl.Focused && this.inputMouseCapture)
+				if (this.activeState.EngineUserInput && this.RenderableControl.Focused && this.inputMouseCapture)
 				{
-					Cursor.Position = this.glControl.PointToScreen(new Point(this.glControl.PointToClient(Cursor.Position).X, value));
+					Cursor.Position = this.RenderableControl.PointToScreen(new Point(this.RenderableControl.PointToClient(Cursor.Position).X, value));
 				}
 			}
 		}
