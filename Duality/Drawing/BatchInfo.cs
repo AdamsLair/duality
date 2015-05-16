@@ -80,7 +80,7 @@ namespace Duality.Drawing
 			{
 				if (this.textures == null || this.textures.Count == 0) return null;
 				ContentRef<Texture> mainTexRef;
-				if (!this.textures.TryGetValue(ShaderFieldInfo.VarName_MainTex, out mainTexRef)) return null;
+				if (!this.textures.TryGetValue(ShaderFieldInfo.DefaultNameMainTex, out mainTexRef)) return null;
 				return mainTexRef;
 			}
 			set
@@ -89,7 +89,7 @@ namespace Duality.Drawing
 					this.textures = new Dictionary<string,ContentRef<Texture>>();
 				else
 					this.Detach(DirtyFlag.Textures);
-				this.textures[ShaderFieldInfo.VarName_MainTex] = value;
+				this.textures[ShaderFieldInfo.DefaultNameMainTex] = value;
 				this.InvalidateHashCode();
 			}
 		}
@@ -144,7 +144,7 @@ namespace Duality.Drawing
 		public BatchInfo(ContentRef<DrawTechnique> technique, ColorRgba mainColor, ContentRef<Texture> mainTex) : this(technique, mainColor, null, null) 
 		{
 			this.textures = new Dictionary<string,ContentRef<Texture>>();
-			this.textures.Add(ShaderFieldInfo.VarName_MainTex, mainTex);
+			this.textures.Add(ShaderFieldInfo.DefaultNameMainTex, mainTex);
 			this.InvalidateHashCode();
 		}
 		/// <summary>

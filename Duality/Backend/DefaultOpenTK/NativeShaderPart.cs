@@ -22,6 +22,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return this.handle; }
 		}
+		public ShaderFieldInfo[] Fields
+		{
+			get { return this.fields; }
+		}
 
 		void INativeShaderPart.LoadSource(string sourceCode, ShaderType type)
 		{
@@ -96,10 +100,6 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 
 			this.fields = varInfoList.ToArray();
-		}
-		ShaderFieldInfo[] INativeShaderPart.GetFields()
-		{
-			return this.fields.Clone() as ShaderFieldInfo[];
 		}
 		void IDisposable.Dispose()
 		{

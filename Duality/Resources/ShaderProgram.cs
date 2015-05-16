@@ -75,7 +75,12 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public INativeShaderProgram Native
 		{
-			get { return this.native; }
+			get
+			{
+				if (!this.compiled)
+					this.Compile();
+				return this.native;
+			}
 		}
 		/// <summary>
 		/// [GET] Returns whether this ShaderProgram has been compiled.
@@ -176,18 +181,8 @@ namespace Duality.Resources
 				Log.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
 			}
 
-			// Collect variable infos from sub programs
-			ShaderFieldInfo[] fragVarArray = this.frag.IsAvailable ? this.frag.Res.Fields : null;
-			ShaderFieldInfo[] vertVarArray = this.vert.IsAvailable ? this.vert.Res.Fields : null;
-			if (fragVarArray != null && vertVarArray != null)
-				this.fields = vertVarArray.Union(fragVarArray).ToArray();
-			else if (vertVarArray != null)
-				this.fields = vertVarArray.ToArray();
-			else
-				this.fields = fragVarArray.ToArray();
-
 			// Determine actual variable locations
-			this.native.GetFieldLocations(this.fields);
+			this.fields = this.native.GetFields();
 
 			this.compiled = true;
 		}

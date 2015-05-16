@@ -60,7 +60,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				else
 				{
 					varInfoArray = new ShaderFieldInfo[] { new ShaderFieldInfo(
-						ShaderFieldInfo.VarName_MainTex,
+						ShaderFieldInfo.DefaultNameMainTex,
 						ShaderFieldType.Sampler2D,
 						ShaderFieldScope.Uniform) };
 				}

@@ -13,14 +13,6 @@ namespace Duality.Backend.DefaultOpenTK
 	public class NativeShaderProgram : INativeShaderProgram
 	{
 		private	static NativeShaderProgram curBound = null;
-		public static void Bind(ContentRef<Duality.Resources.ShaderProgram> target)
-		{
-			Duality.Resources.ShaderProgram targetRes = target.Res;
-			if (targetRes != null && !targetRes.Compiled)
-				targetRes.Compile();
-
-			Bind((targetRes != null ? targetRes.Native : null) as NativeShaderProgram);
-		}
 		public static void Bind(NativeShaderProgram prog)
 		{
 			if (curBound == prog) return;
@@ -36,45 +28,56 @@ namespace Duality.Backend.DefaultOpenTK
 				curBound = prog;
 			}
 		}
-		public static void SetUniform(ref ShaderFieldInfo field, float[] data)
+		public static void SetUniform(ref ShaderFieldInfo field, int location, float[] data)
 		{
 			if (field.Scope != ShaderFieldScope.Uniform) return;
-			if (field.Handle == -1) return;
+			if (location == -1) return;
 			switch (field.Type)
 			{
 				case ShaderFieldType.Int:
 					int[] arrI = new int[field.ArrayLength];
 					for (int j = 0; j < arrI.Length; j++) arrI[j] = (int)data[j];
-					GL.Uniform1(field.Handle, arrI.Length, arrI);
+					GL.Uniform1(location, arrI.Length, arrI);
 					break;
 				case ShaderFieldType.Float:
-					GL.Uniform1(field.Handle, data.Length, data);
+					GL.Uniform1(location, data.Length, data);
 					break;
 				case ShaderFieldType.Vec2:
-					GL.Uniform2(field.Handle, data.Length / 2, data);
+					GL.Uniform2(location, data.Length / 2, data);
 					break;
 				case ShaderFieldType.Vec3:
-					GL.Uniform3(field.Handle, data.Length / 3, data);
+					GL.Uniform3(location, data.Length / 3, data);
 					break;
 				case ShaderFieldType.Vec4:
-					GL.Uniform4(field.Handle, data.Length / 4, data);
+					GL.Uniform4(location, data.Length / 4, data);
 					break;
 				case ShaderFieldType.Mat2:
-					GL.UniformMatrix2(field.Handle, data.Length / 4, false, data);
+					GL.UniformMatrix2(location, data.Length / 4, false, data);
 					break;
 				case ShaderFieldType.Mat3:
-					GL.UniformMatrix3(field.Handle, data.Length / 9, false, data);
+					GL.UniformMatrix3(location, data.Length / 9, false, data);
 					break;
 				case ShaderFieldType.Mat4:
-					GL.UniformMatrix4(field.Handle, data.Length / 16, false, data);
+					GL.UniformMatrix4(location, data.Length / 16, false, data);
 					break;
 			}
 		}
 
 		private int handle;
+		private ShaderFieldInfo[] fields;
+		private int[] fieldLocations;
+
 		public int Handle
 		{
 			get { return this.handle; }
+		}
+		public ShaderFieldInfo[] Fields
+		{
+			get { return this.fields; }
+		}
+		public int[] FieldLocations
+		{
+			get { return this.fieldLocations; }
 		}
 
 		void INativeShaderProgram.LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment)
@@ -102,16 +105,37 @@ namespace Duality.Backend.DefaultOpenTK
 				string infoLog = GL.GetProgramInfoLog(this.handle);
 				throw new BackendException(string.Format("Linker error:{1}{0}", infoLog, Environment.NewLine));
 			}
-		}
-		void INativeShaderProgram.GetFieldLocations(ShaderFieldInfo[] fields)
-		{
-			for (int i = 0; i < fields.Length; i++)
+			
+			// Collect variable infos from sub programs
 			{
-				if (fields[i].Scope == ShaderFieldScope.Uniform)
-					fields[i] = fields[i].WithHandle(GL.GetUniformLocation(this.handle, fields[i].Name));
+				NativeShaderPart vert = vertex as NativeShaderPart;
+				NativeShaderPart frag = fragment as NativeShaderPart;
+
+				ShaderFieldInfo[] fragVarArray = frag != null ? frag.Fields : null;
+				ShaderFieldInfo[] vertVarArray = vert != null ? vert.Fields : null;
+
+				if (fragVarArray != null && vertVarArray != null)
+					this.fields = vertVarArray.Union(fragVarArray).ToArray();
+				else if (vertVarArray != null)
+					this.fields = vertVarArray.ToArray();
 				else
-					fields[i] = fields[i].WithHandle(GL.GetAttribLocation(this.handle, fields[i].Name));
+					this.fields = fragVarArray.ToArray();
+				
 			}
+
+			// Determine each variables location
+			this.fieldLocations = new int[this.fields.Length];
+			for (int i = 0; i < this.fields.Length; i++)
+			{
+				if (this.fields[i].Scope == ShaderFieldScope.Uniform)
+					this.fieldLocations[i] = GL.GetUniformLocation(this.handle, this.fields[i].Name);
+				else
+					this.fieldLocations[i] = GL.GetAttribLocation(this.handle, this.fields[i].Name);
+			}
+		}
+		ShaderFieldInfo[] INativeShaderProgram.GetFields()
+		{
+			return this.fields.Clone() as ShaderFieldInfo[];
 		}
 		void IDisposable.Dispose()
 		{

@@ -17,10 +17,9 @@ namespace Duality.Backend
 		void LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment);
 
 		/// <summary>
-		/// Updates reflection data on the shaders fields to include a location handle
-		/// that can be used to set variable values.
+		/// Retrieves reflection data on the shaders fields.
 		/// </summary>
 		/// <returns></returns>
-		void GetFieldLocations(ShaderFieldInfo[] fields);
+		ShaderFieldInfo[] GetFields();
 	}
 }

@@ -171,11 +171,11 @@ namespace Duality.Backend.DefaultOpenTK
 		private void PrepareRenderBatch(IDrawBatch renderBatch)
 		{
 			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
-			ShaderProgram program = technique.Shader.Res;
+			NativeShaderProgram program = (technique.Shader.Res != null ? technique.Shader.Res.Native : null) as NativeShaderProgram;
 
 			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
-
 			VertexElement[] elements = vertexDeclaration.Elements;
+
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
 				switch (elements[elementIndex].Role)
@@ -220,13 +220,15 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						ShaderFieldInfo[] varInfo = program != null ? program.Fields : null;
-						if (varInfo != null)
+						if (program != null)
 						{
+							ShaderFieldInfo[] varInfo = program.Fields;
+							int[] locations = program.FieldLocations;
+
 							int selectedVar = -1;
 							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
 							{
-								if (varInfo[varIndex].Handle == -1) continue;
+								if (locations[varIndex] == -1) continue;
 								if (!ShaderVarMatches(
 									ref varInfo[varIndex],
 									elements[elementIndex].Type, 
@@ -246,9 +248,9 @@ namespace Duality.Backend.DefaultOpenTK
 								case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
 							}
 
-							GL.EnableVertexAttribArray(varInfo[selectedVar].Handle);
+							GL.EnableVertexAttribArray(locations[selectedVar]);
 							GL.VertexAttribPointer(
-								varInfo[selectedVar].Handle, 
+								locations[selectedVar], 
 								elements[elementIndex].Count, 
 								attribType, 
 								false, 
@@ -272,11 +274,11 @@ namespace Duality.Backend.DefaultOpenTK
 		private void FinishRenderBatch(IDrawBatch renderBatch)
 		{
 			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
-			ShaderProgram program = technique.Shader.Res;
+			NativeShaderProgram program = (technique.Shader.Res != null ? technique.Shader.Res.Native : null) as NativeShaderProgram;
 
 			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
-
 			VertexElement[] elements = vertexDeclaration.Elements;
+
 			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
 			{
 				switch (elements[elementIndex].Role)
@@ -298,13 +300,15 @@ namespace Duality.Backend.DefaultOpenTK
 					}
 					default:
 					{
-						ShaderFieldInfo[] varInfo = program != null ? program.Fields : null;
-						if (varInfo != null)
+						if (program != null)
 						{
+							ShaderFieldInfo[] varInfo = program.Fields;
+							int[] locations = program.FieldLocations;
+
 							int selectedVar = -1;
 							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
 							{
-								if (varInfo[varIndex].Handle == -1) continue;
+								if (locations[varIndex] == -1) continue;
 								if (!ShaderVarMatches(
 									ref varInfo[varIndex],
 									elements[elementIndex].Type, 
@@ -316,7 +320,7 @@ namespace Duality.Backend.DefaultOpenTK
 							}
 							if (selectedVar == -1) break;
 
-							GL.DisableVertexAttribArray(varInfo[selectedVar].Handle);
+							GL.DisableVertexAttribArray(locations[selectedVar]);
 						}
 						break;
 					}
@@ -342,14 +346,14 @@ namespace Duality.Backend.DefaultOpenTK
 				this.SetupBlendType(tech.Blending, this.currentDevice.DepthWrite);
 
 			// Bind Shader
-			ContentRef<ShaderProgram> selShader = tech.Shader;
-			if (lastTech == null || selShader.Res != lastTech.Shader.Res)
-				NativeShaderProgram.Bind(selShader);
+			NativeShaderProgram shader = (tech.Shader.Res != null ? tech.Shader.Res.Native : null) as NativeShaderProgram;
+			NativeShaderProgram.Bind(shader);
 
 			// Setup shader data
-			if (selShader.IsAvailable)
+			if (shader != null)
 			{
-				ShaderFieldInfo[] varInfo = selShader.Res.Fields;
+				ShaderFieldInfo[] varInfo = shader.Fields;
+				int[] locations = shader.FieldLocations;
 
 				// Setup sampler bindings automatically
 				int curSamplerIndex = 0;
@@ -357,13 +361,13 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					for (int i = 0; i < varInfo.Length; i++)
 					{
-						if (varInfo[i].Handle == -1) continue;
+						if (locations[i] == -1) continue;
 						if (varInfo[i].Type != ShaderFieldType.Sampler2D) continue;
 
 						// Bind Texture
 						ContentRef<Texture> texRef = material.GetTexture(varInfo[i].Name);
 						NativeTexture.Bind(texRef, curSamplerIndex);
-						GL.Uniform1(varInfo[i].Handle, curSamplerIndex);
+						GL.Uniform1(locations[i], curSamplerIndex);
 
 						curSamplerIndex++;
 					}
@@ -375,10 +379,11 @@ namespace Duality.Backend.DefaultOpenTK
 				{
 					for (int i = 0; i < varInfo.Length; i++)
 					{
-						if (varInfo[i].Handle == -1) continue;
+						if (locations[i] == -1) continue;
 						float[] data = material.GetUniform(varInfo[i].Name);
 						if (data == null) continue;
-						NativeShaderProgram.SetUniform(ref varInfo[i], data);
+
+						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
 					}
 				}
 			}

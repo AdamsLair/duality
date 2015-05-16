@@ -21,7 +21,6 @@ namespace Duality.Resources
 		private	string source = null;
 		[DontSerialize] private	INativeShaderPart	native		= null;
 		[DontSerialize] private	bool				compiled	= false;
-		[DontSerialize] private	ShaderFieldInfo[]	fields		= null;
 
 		/// <summary>
 		/// [GET] The shaders native backend. Don't use this unless you know exactly what you're doing.
@@ -41,13 +40,6 @@ namespace Duality.Resources
 		public bool Compiled
 		{
 			get { return this.compiled; }
-		}
-		/// <summary>
-		/// [GET] Information about the <see cref="ShaderFieldInfo">variables</see> declared in the shader.
-		/// </summary>
-		public ShaderFieldInfo[] Fields
-		{
-			get { return this.fields; }
 		}
 		/// <summary>
 		/// [GET] The shaders source code.
@@ -138,7 +130,6 @@ namespace Duality.Resources
 			}
 
 			this.compiled = true;
-			this.fields = this.native.GetFields();
 		}
 
 		protected override void OnLoaded()

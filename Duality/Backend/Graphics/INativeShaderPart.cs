@@ -15,11 +15,5 @@ namespace Duality.Backend
 		/// <param name="sourceCode"></param>
 		/// <param name="type"></param>
 		void LoadSource(string sourceCode, ShaderType type);
-
-		/// <summary>
-		/// Retrieves reflection data on the shaders fields.
-		/// </summary>
-		/// <returns></returns>
-		ShaderFieldInfo[] GetFields();
 	}
 }
