@@ -1118,6 +1118,12 @@ namespace Duality
 			T selectedBackend = null;
 			foreach (T backend in backends)
 			{
+				if (appData.SkipBackends != null && appData.SkipBackends.Any(s => string.Equals(s, backend.Name, StringComparison.InvariantCultureIgnoreCase)))
+				{
+					Log.Core.Write("Backend {0} skipped because of AppData settings.", backend.Name);
+					continue;
+				}
+
 				bool available = false;
 				try
 				{

@@ -16,6 +16,10 @@ namespace Duality.Backend.DefaultOpenTK
 		private RenderStats		renderStats		= null;
 		private	uint			primaryVBO		= 0;
 		
+		string IDualityBackend.Id
+		{
+			get { return "DefaultOpenTKGraphicsBackend"; }
+		}
 		string IDualityBackend.Name
 		{
 			get { return "OpenGL 2.1 (OpenTK)"; }

@@ -23,6 +23,7 @@ namespace Duality
 		private	bool				physicsFixedTime		= false;
 		private	bool				localUserData			= false;
 		private	bool				multisampleBackBuffer	= true;
+		private string[]			skipBackends			= null;
 		private	object				customData				= null;
 
 		/// <summary>
@@ -118,6 +119,14 @@ namespace Duality
 		{
 			get { return this.multisampleBackBuffer; }
 			set { this.multisampleBackBuffer = value; }
+		}
+		/// <summary>
+		/// [GET / SET] An optional list of backend <see cref="IDualityBackend.Id"/> values to skip when loading.
+		/// </summary>
+		public string[] SkipBackends
+		{
+			get { return this.skipBackends; }
+			set { this.skipBackends = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Use this property to store custom application data.
