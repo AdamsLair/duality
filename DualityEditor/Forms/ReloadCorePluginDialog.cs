@@ -327,7 +327,7 @@ namespace Duality.Editor.Forms
 			Stream strData;
 
 			string tempDir = Path.Combine(Path.GetTempPath(), "Duality");
-			string tempScenePath = Path.Combine(tempDir, "ReloadPluginBackup" + Scene.FileExt);
+			string tempScenePath = Path.Combine(tempDir, "ReloadPluginBackup" + Resource.GetFileExtByType<Scene>());
 			string tempDataPath = Path.Combine(tempDir, "ReloadPluginBackup.dat");
 			if (!Directory.Exists(tempDir)) Directory.CreateDirectory(tempDir);
 

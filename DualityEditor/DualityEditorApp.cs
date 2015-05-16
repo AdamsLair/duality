@@ -291,7 +291,7 @@ namespace Duality.Editor
 			Application.AddMessageFilter(menuKeyInterceptor);
 
 			// If there are no Scenes in the current project, init the first one with some default objects.
-			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Scene.FileExt, SearchOption.AllDirectories).Any())
+			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.GetFileExtByType<Scene>(), SearchOption.AllDirectories).Any())
 			{
 				GameObject mainCam = new GameObject("MainCamera");
 				mainCam.AddComponent<Transform>().Pos = new Vector3(0, 0, -DrawDevice.DefaultFocusDist);
@@ -703,7 +703,7 @@ namespace Duality.Editor
 			else if (!skipYetUnsaved)
 			{
 				string basePath = Path.Combine(DualityApp.DataDirectory, "Scene");
-				string path = PathHelper.GetFreePath(basePath, Scene.FileExt);
+				string path = PathHelper.GetFreePath(basePath, Resource.GetFileExtByType<Scene>());
 				Scene.Current.Save(path);
 				DualityApp.AppData.Version++;
 				
