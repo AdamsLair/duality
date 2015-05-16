@@ -1112,15 +1112,15 @@ namespace Duality
 			}
 
 			// Sort backends from best to worst
-			backends.StableSort((a, b) => b.Priority - a.Priority);
+			backends.StableSort((a, b) => b.Priority > a.Priority ? 1 : -1);
 
 			// Try to initialize each one and select the first that works
 			T selectedBackend = null;
 			foreach (T backend in backends)
 			{
-				if (appData.SkipBackends != null && appData.SkipBackends.Any(s => string.Equals(s, backend.Name, StringComparison.InvariantCultureIgnoreCase)))
+				if (appData.SkipBackends != null && appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.InvariantCultureIgnoreCase)))
 				{
-					Log.Core.Write("Backend {0} skipped because of AppData settings.", backend.Name);
+					Log.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
 					continue;
 				}
 
@@ -1130,13 +1130,13 @@ namespace Duality
 					available = backend.CheckAvailable();
 					if (!available)
 					{
-						Log.Core.Write("Backend {0} reports to be unavailable. Skipping it.", backend.Name);
+						Log.Core.Write("Backend '{0}' reports to be unavailable. Skipping it.", backend.Name);
 					}
 				}
 				catch (Exception e)
 				{
 					available = false;
-					Log.Core.WriteWarning("Backend {0} failed the availability check with an exception: {1}", backend.Name, Log.Exception(e));
+					Log.Core.WriteWarning("Backend '{0}' failed the availability check with an exception: {1}", backend.Name, Log.Exception(e));
 				}
 				if (!available) continue;
 

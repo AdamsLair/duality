@@ -72,6 +72,11 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\Dummy\DummyNativeShaderProgram.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeShaderPart.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeRenderTarget.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
+    <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
     <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
