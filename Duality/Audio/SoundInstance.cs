@@ -660,10 +660,10 @@ namespace Duality.Audio
 						this.isStreamed = true;
 						DualityApp.Sound.EnqueueForStreaming(this);
 					}
-					else
+					else if (audioDataRes.Native != null)
 					{
 						int handle = (this.native as Backend.DefaultOpenTK.NativeAudioSource).Handle;
-						AL.SourceQueueBuffer(handle, audioDataRes.AlBuffer);
+						AL.SourceQueueBuffer(handle, (audioDataRes.Native as Backend.DefaultOpenTK.NativeAudioBuffer).Handle);
 						AL.SourcePlay(handle);
 					} 
 				}

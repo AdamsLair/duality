@@ -24,7 +24,30 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void INativeAudioBuffer.LoadData<T>(int sampleRate, T[] data, int dataLength, AudioDataLayout dataLayout, AudioDataElementType dataElementType)
 		{
-			throw new NotImplementedException();
+			ALFormat format = ALFormat.Mono16;
+			if (dataLayout == AudioDataLayout.Mono)
+			{
+				if (dataElementType == AudioDataElementType.Byte)
+					format = ALFormat.Mono8;
+				else if (dataElementType == AudioDataElementType.Short)
+					format = ALFormat.Mono16;
+			}
+			else if (dataLayout == AudioDataLayout.LeftRight)
+			{
+				if (dataElementType == AudioDataElementType.Byte)
+					format = ALFormat.Stereo8;
+				else if (dataElementType == AudioDataElementType.Short)
+					format = ALFormat.Stereo16;
+			}
+
+			int sizeOfElement = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+
+			AL.BufferData(
+				this.handle,
+				format,
+				data, 
+				dataLength * sizeOfElement, 
+				sampleRate);
 		}
 		void IDisposable.Dispose()
 		{

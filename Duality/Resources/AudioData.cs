@@ -7,8 +7,7 @@ using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
 using Duality.Audio;
-
-using OpenTK.Audio.OpenAL;
+using Duality.Backend;
 
 
 namespace Duality.Resources
@@ -38,22 +37,24 @@ namespace Duality.Resources
 
 			Beep = ContentProvider.RequestContent<AudioData>(ContentPath_Beep);
 		}
-		
-		
-		/// <summary>
-		/// A dummy OpenAL buffer handle, indicating that the buffer in question is not available.
-		/// </summary>
-		public const int AlBuffer_NotAvailable = 0;
-		/// <summary>
-		/// A dummy OpenAL buffer handle, indicating that the buffer in question is inactive due to streaming.
-		/// </summary>
-		public const int AlBuffer_StreamMe = -1;
 
 
 		private	byte[]	data			= null;
 		private	bool	forceStream		= false;
-		[DontSerialize] private	int	alBuffer	= AlBuffer_NotAvailable;
+		[DontSerialize] private	INativeAudioBuffer native = null;
 
+		/// <summary>
+		/// [GET] The backends native audio buffer representation. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public INativeAudioBuffer Native
+		{
+			get
+			{
+				if (this.native == null) this.SetupNativeBuffer();
+				return this.native;
+			}
+		}
 		/// <summary>
 		/// [GET / SET] A data chunk representing Ogg Vorbis compressed
 		/// audio data.
@@ -62,7 +63,15 @@ namespace Duality.Resources
 		public byte[] OggVorbisData
 		{
 			get { return this.data; }
-			set { this.data = value; this.DisposeAlBuffer(); }
+			set
+			{
+				if (this.data != value)
+				{
+					this.data = value;
+					this.DisposeNativeBuffer();
+					this.SetupNativeBuffer();
+				}
+			}
 		}
 		/// <summary>
 		/// [GET / SET] If set to true, when playing a <see cref="Duality.Resources.Sound"/> that refers to this
@@ -72,7 +81,7 @@ namespace Duality.Resources
 		public bool ForceStream
 		{
 			get { return this.forceStream; }
-			set { this.forceStream = value; this.DisposeAlBuffer(); }
+			set { this.forceStream = value; this.DisposeNativeBuffer(); }
 		}
 		/// <summary>
 		/// [GET] Returns whether this AudioData will be played streamed.
@@ -81,23 +90,11 @@ namespace Duality.Resources
 		{
 			get { return this.forceStream || (this.data != null && this.data.Length > 1024 * 100); }
 		}
-		/// <summary>
-		/// [GET] The OpenAL buffer handle of this AudioData.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		internal int AlBuffer
-		{
-			get 
-			{ 
-				if (this.alBuffer == AlBuffer_NotAvailable) this.SetupAlBuffer();
-				return this.alBuffer;
-			}
-		}
 
 		/// <summary>
 		/// Creates a new, empty AudioData without any data.
 		/// </summary>
-		public AudioData() : this(Beep.Res.OggVorbisData.Clone() as byte[]) {}
+		public AudioData() { }
 		/// <summary>
 		/// Creates a new AudioData based on an Ogg Vorbis memory chunk.
 		/// </summary>
@@ -105,6 +102,7 @@ namespace Duality.Resources
 		public AudioData(byte[] oggVorbisData)
 		{
 			this.data = oggVorbisData;
+			this.SetupNativeBuffer();
 		}
 		/// <summary>
 		/// Creates a new AudioData based on a <see cref="System.IO.Stream"/> containing Ogg Vorbis data.
@@ -114,6 +112,7 @@ namespace Duality.Resources
 		{
 			this.data = new byte[oggVorbisDataStream.Length];
 			oggVorbisDataStream.Read(this.data, 0, (int)oggVorbisDataStream.Length);
+			this.SetupNativeBuffer();
 		}
 		/// <summary>
 		/// Creates a new AudioData base on an Ogg Vorbis file.
@@ -155,51 +154,55 @@ namespace Duality.Resources
 			else
 				this.data = File.ReadAllBytes(this.sourcePath);
 
-			this.DisposeAlBuffer();
+			this.DisposeNativeBuffer();
+			this.SetupNativeBuffer();
 		}
 		
 		/// <summary>
-		/// Disposes the AudioDatas OpenAL buffer.
+		/// Disposes the AudioDatas native buffer.
 		/// </summary>
-		/// <seealso cref="SetupAlBuffer"/>
-		public void DisposeAlBuffer()
+		/// <seealso cref="SetupNativeBuffer"/>
+		private void DisposeNativeBuffer()
 		{
-			if (this.alBuffer > AlBuffer_NotAvailable) AL.DeleteBuffer(this.alBuffer);
-			this.alBuffer = AlBuffer_NotAvailable;
-			return;
+			if (this.native != null)
+			{
+				this.native.Dispose();
+				this.native = null;
+			}
 		}
 		/// <summary>
-		/// Sets up a new OpenAL buffer for this AudioData. This will result in decompressing
+		/// Sets up a new native buffer for this AudioData. This will result in decompressing
 		/// the Ogg Vorbis data and uploading it to OpenAL, unless the AudioData is streamed.
 		/// </summary>
-		public void SetupAlBuffer()
+		private void SetupNativeBuffer()
 		{
 			// No AudioData available
-			if (this.data.Length == 0 || this.data == null)
+			if (this.data == null || this.data.Length == 0)
 			{
-				this.DisposeAlBuffer();
+				this.DisposeNativeBuffer();
 				return;
 			}
 
 			// Streamed Audio
 			if (this.IsStreamed)
 			{
-				this.DisposeAlBuffer();
-				this.alBuffer = AlBuffer_StreamMe;
+				this.DisposeNativeBuffer();
+				this.native = null;
 			}
 			// Non-Streamed Audio
 			else
 			{
-				if (this.alBuffer <= AlBuffer_NotAvailable)
+				if (this.native == null)
 				{
-					this.alBuffer = AL.GenBuffer();
+					this.native = DualityApp.AudioBackend.CreateBuffer();
+
 					PcmData pcm = OggVorbis.LoadFromMemory(this.data);
-					AL.BufferData(
-						this.alBuffer,
-						pcm.ChannelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-						pcm.Data.ToArray(), 
-						pcm.DataLength * PcmData.SizeOfDataElement, 
-						pcm.SampleRate);
+					this.native.LoadData(
+						pcm.SampleRate,
+						pcm.Data,
+						pcm.DataLength,
+						pcm.ChannelCount == 1 ? AudioDataLayout.Mono : AudioDataLayout.LeftRight,
+						AudioDataElementType.Short);
 				}
 				else
 				{
@@ -214,10 +217,15 @@ namespace Duality.Resources
 
 			// Dispose unmanages Resources
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
-				this.DisposeAlBuffer();
+				this.DisposeNativeBuffer();
 
 			// Get rid of the big data blob, so the GC can collect it.
 			this.data = null;
+		}
+		protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			this.SetupNativeBuffer();
 		}
 	}
 }

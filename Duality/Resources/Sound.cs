@@ -272,17 +272,12 @@ namespace Duality.Resources
 			return MathF.Rnd.OneOf(this.audioData);
 		}
 
-		/// <summary>
-		/// Assigns new <see cref="Duality.Resources.AudioData"/> to this Sound.
-		/// </summary>
-		/// <param name="data"></param>
 		private void PreloadData()
 		{
 			if (this.audioData == null) return;
 			for (int i = 0; i < this.audioData.Count; i++)
 			{
-				if (this.audioData[i].IsAvailable)
-					this.audioData[i].Res.SetupAlBuffer();
+				this.audioData[i].MakeAvailable();
 			}
 		}
 

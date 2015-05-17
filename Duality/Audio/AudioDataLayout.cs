@@ -10,6 +10,6 @@ namespace Duality.Audio
 	public enum AudioDataLayout
 	{
 		Mono,
-		StereoLR
+		LeftRight
 	}
 }
