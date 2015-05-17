@@ -20,7 +20,6 @@ namespace Duality.Audio
 	public sealed class SoundDevice : IDisposable
 	{
 		private	bool					disposed		= false;
-		private	AudioContext			context			= null;
 		private	GameObject				soundListener	= null;
 		private	Stack<int>				alSourcePool	= new Stack<int>();
 		private	List<SoundInstance>		sounds			= new List<SoundInstance>();
@@ -35,14 +34,6 @@ namespace Duality.Audio
 		private AutoResetEvent		streamWorkerQueueEvent	= null;
 		private bool				streamWorkerEnd			= false;
 
-
-		/// <summary>
-		/// [GET] Returns whether the SoundDevice is available. If false, no audio output can be generated.
-		/// </summary>
-		public bool IsAvailable
-		{
-			get { return this.context != null; }
-		}
 
 		/// <summary>
 		/// [GET / SET] The current listener object. This is automatically set to an available
@@ -177,35 +168,13 @@ namespace Duality.Audio
 					this.streamWorker = null;
 				}
 
-				try
-				{
-					// Clear all playing sounds
-					foreach (SoundInstance inst in this.sounds) inst.Dispose();
-					this.sounds.Clear();
+				// Clear all playing sounds
+				foreach (SoundInstance inst in this.sounds) inst.Dispose();
+				this.sounds.Clear();
 
-					// Clear all audio related Resources
-					ContentProvider.RemoveAllContent<AudioData>();
-					ContentProvider.RemoveAllContent<Sound>();
-
-					// Clear OpenAL source pool
-					foreach (int alSource in this.alSourcePool)
-					{
-						AL.DeleteSource(alSource);
-					}
-
-					// Shut down OpenAL context
-					if (this.context != null)
-					{
-						this.context.Dispose();
-						this.context = null;
-					}
-
-					AudioLibraryLoader.UnloadAudioLibrary();
-				}
-				catch (Exception e)
-				{
-					Log.Core.WriteError("An error occured while shutting down OpenAL: {0}", Log.Exception(e));
-				}
+				// Clear all audio related Resources
+				ContentProvider.RemoveAllContent<AudioData>();
+				ContentProvider.RemoveAllContent<Sound>();
 			}
 		}
 
@@ -289,7 +258,6 @@ namespace Duality.Audio
 		/// </summary>
 		internal void Update()
 		{
-			if (this.context == null) return;
 			Profile.TimeUpdateAudio.BeginMeasure();
 
 			this.UpdateListener();
@@ -307,7 +275,6 @@ namespace Duality.Audio
 		}
 		private void UpdateListener()
 		{
-			if (this.context == null) return;
 			if (this.soundListener != null && (this.soundListener.Disposed || !this.soundListener.Active)) this.soundListener = null;
 
 			// If no listener is defined, search one
@@ -384,7 +351,6 @@ namespace Duality.Audio
 		
 		private void DualityApp_AppDataChanged(object sender, EventArgs e)
 		{
-			if (this.context == null) return;
 			AL.DistanceModel(ALDistanceModel.LinearDistanceClamped);
 			AL.DopplerFactor(DualityApp.AppData.SoundDopplerFactor);
 			AL.SpeedOfSound(DualityApp.AppData.SpeedOfSound);

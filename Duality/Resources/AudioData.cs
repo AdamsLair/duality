@@ -190,7 +190,7 @@ namespace Duality.Resources
 			// Non-Streamed Audio
 			else
 			{
-				if (this.alBuffer <= AlBuffer_NotAvailable && DualityApp.Sound.IsAvailable)
+				if (this.alBuffer <= AlBuffer_NotAvailable)
 				{
 					this.alBuffer = AL.GenBuffer();
 					PcmData pcm = OggVorbis.LoadFromMemory(this.data);

@@ -471,8 +471,6 @@ namespace Duality.Audio
 		/// </summary>
 		public void Update()
 		{
-			if (!DualityApp.Sound.IsAvailable) return;
-
 			lock (this.strLock)
 			{
 				// Check existence of attachTo object
@@ -693,7 +691,6 @@ namespace Duality.Audio
 			lock (this.strLock)
 			{
 				if (this.Disposed) return false;
-				if (!DualityApp.Sound.IsAvailable) return false;
 
 				ALSourceState stateTemp = ALSourceState.Stopped;
 				bool sourceAvailable = this.native != null;
