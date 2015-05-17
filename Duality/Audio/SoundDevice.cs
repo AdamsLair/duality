@@ -23,11 +23,6 @@ namespace Duality.Audio
 		private	int						numPlaying3D	= 0;
 		private	bool					mute			= false;
 
-		private	Thread				streamWorker			= null;
-		private List<SoundInstance>	streamWorkerQueue		= null;
-		private AutoResetEvent		streamWorkerQueueEvent	= null;
-		private bool				streamWorkerEnd			= false;
-
 
 		/// <summary>
 		/// [GET / SET] The current listener object. This is automatically set to an available
@@ -121,14 +116,6 @@ namespace Duality.Audio
 
 		public SoundDevice()
 		{
-			// Set up the streaming thread
-			this.streamWorkerEnd = false;
-			this.streamWorkerQueue = new List<SoundInstance>();
-			this.streamWorkerQueueEvent = new AutoResetEvent(false);
-			this.streamWorker = new Thread(ThreadStreamFunc);
-			this.streamWorker.IsBackground = true;
-			this.streamWorker.Start();
-
 			DualityApp.AppDataChanged += this.DualityApp_AppDataChanged;
 		}
 		~SoundDevice()
@@ -146,21 +133,6 @@ namespace Duality.Audio
 			{
 				this.disposed = true;
 				DualityApp.AppDataChanged -= this.DualityApp_AppDataChanged;
-
-				// Shut down the streaming thread
-				if (this.streamWorker != null)
-				{
-					this.streamWorkerEnd = true;
-					if (!this.streamWorker.Join(1000))
-					{
-						this.streamWorker.Abort();
-					}
-					this.streamWorkerQueueEvent.Dispose();
-					this.streamWorkerEnd = false;
-					this.streamWorkerQueueEvent = null;
-					this.streamWorkerQueue = null;
-					this.streamWorker = null;
-				}
 
 				// Clear all playing sounds
 				foreach (SoundInstance inst in this.sounds) inst.Dispose();
@@ -215,19 +187,6 @@ namespace Duality.Audio
 
 			if (snd.IsAvailable && !snd.IsRuntimeResource)
 				this.resPlaying[snd.Path]--;
-		}
-		/// <summary>
-		/// Enqueues the specified <see cref="SoundInstance"/> in the streaming thread.
-		/// </summary>
-		/// <param name="instance"></param>
-		internal void EnqueueForStreaming(SoundInstance instance)
-		{
-			lock (this.streamWorkerQueue)
-			{
-				if (this.streamWorkerQueue.Contains(instance)) return;
-				this.streamWorkerQueue.Add(instance);
-			}
-			this.streamWorkerQueueEvent.Set();
 		}
 		
 		/// <summary>
@@ -323,63 +282,5 @@ namespace Duality.Audio
 				DualityApp.AppData.SpeedOfSound, 
 				DualityApp.AppData.SoundDopplerFactor);
 		}
-
-
-		private void ThreadStreamFunc()
-		{
-			int queueIndex = 0;
-			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-			watch.Restart();
-			while (!this.streamWorkerEnd)
-			{
-				// Determine which SoundInstance to update
-				SoundInstance sndInst;
-				lock (this.streamWorkerQueue)
-				{
-					if (this.streamWorkerQueue.Count > 0)
-					{
-						int count = this.streamWorkerQueue.Count;
-						queueIndex = (queueIndex + count) % count;
-						sndInst = this.streamWorkerQueue[queueIndex];
-						queueIndex = (queueIndex + count - 1) % count;
-					}
-					else
-					{
-						sndInst = null;
-						queueIndex = 0;
-					}
-				}
-
-				// If there is no SoundInstance available, wait for a signal of one being added.
-				if (sndInst == null)
-				{
-					// Timeout of 100 ms to check regularly for requesting the thread to end.
-					streamWorkerQueueEvent.WaitOne(100);
-					continue;
-				}
-
-				// Perform the necessary streaming operations on the SoundInstance, and remove it when requested
-				if (!sndInst.PerformStreaming())
-				{
-					lock (this.streamWorkerQueue)
-					{
-						this.streamWorkerQueue.Remove(sndInst);
-					}
-				}
-
-				// After each roundtrip, sleep a little, don't keep the processor busy for no reason
-				if (queueIndex == 0)
-				{
-					watch.Stop();
-					int roundtripTime = (int)watch.ElapsedMilliseconds;
-					if (roundtripTime <= 1)
-					{
-						streamWorkerQueueEvent.WaitOne(16);
-					}
-					watch.Restart();
-				}
-			}
-		}
-
 	}
 }

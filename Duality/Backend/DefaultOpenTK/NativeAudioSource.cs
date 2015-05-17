@@ -12,25 +12,6 @@ namespace Duality.Backend.DefaultOpenTK
 	[DontSerialize]
 	public class NativeAudioSource : INativeAudioSource
 	{
-		[FlagsAttribute]
-		private enum DirtyFlag : uint
-		{
-			None		= 0x00000000,
-
-			Pos			= 0x00000001,
-			Vel			= 0x00000002,
-			Pitch		= 0x00000004,
-			Loop		= 0x00000008,
-			MaxDist		= 0x00000010,
-			RefDist		= 0x00000020,
-			Relative	= 0x00000040,
-			Vol			= 0x00000080,
-			Paused		= 0x00000100,
-
-			AttachedTo	= Pos | Vel,
-
-			All			= 0xFFFFFFFF
-		}
 		private enum StopRequest
 		{
 			None,
@@ -38,27 +19,64 @@ namespace Duality.Backend.DefaultOpenTK
 			Immediately
 		}
 
-		private int			handle		= 0;
-		private	bool		isStreamed	= false;
-		private	DirtyFlag	dirtyState	= DirtyFlag.All;
+		private int		handle		= 0;
+		private	bool	isStreamed	= false;
+		private IAudioStreamProvider	streamProvider	= null;
 
-		private	object		strLock		= new object();
-		private	StopRequest	strStopReq	= StopRequest.None;
+		private object					strLock			= new object();
+		private	StopRequest				strStopReq		= StopRequest.None;
+		private	INativeAudioBuffer[]	strAlBuffers	= null;
+
 
 		public int Handle
 		{
 			get { return this.handle; }
+		}
+		bool INativeAudioSource.IsFinished
+		{
+			get
+			{
+				lock (this.strLock)
+				{
+					ALSourceState stateTemp = AL.GetSourceState(this.handle);
+
+					// Stopped and either not streamed or requesting to end.
+					if (stateTemp == ALSourceState.Stopped && (!this.isStreamed || this.strStopReq != StopRequest.None))
+						return true;
+					// Not even started playing, but requested to end anyway.
+					else if (stateTemp == ALSourceState.Initial && this.strStopReq == StopRequest.Immediately)
+						return true;
+					// Not finished yet.
+					else
+						return false;
+				}
+			}
 		}
 
 		public NativeAudioSource(int handle)
 		{
 			this.handle = handle;
 		}
+
+		void INativeAudioSource.Play(INativeAudioBuffer buffer)
+		{
+			this.isStreamed = false;
+			AL.SourceQueueBuffer(this.handle, (buffer as NativeAudioBuffer).Handle);
+			AL.SourcePlay(handle);
+		}
+		void INativeAudioSource.Play(IAudioStreamProvider streamingProvider)
+		{
+			this.isStreamed = true;
+			this.streamProvider = streamingProvider;
+			AudioBackend.ActiveInstance.EnqueueForStreaming(this);
+		}
 		void INativeAudioSource.Stop()
 		{
-			AL.SourceStop(this.handle);
-			this.strStopReq = StopRequest.Immediately;
-			// The next update will handle everything else
+			lock (this.strLock)
+			{
+				AL.SourceStop(this.handle);
+				this.strStopReq = StopRequest.Immediately;
+			}
 		}
 		void INativeAudioSource.Reset()
 		{
@@ -66,12 +84,34 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IDisposable.Dispose()
 		{
-			if (this.handle != 0)
+			lock (this.strLock)
 			{
-				this.ResetSourceState();
-				if (AudioBackend.ActiveInstance != null)
-					AudioBackend.ActiveInstance.FreeSourceHandle(this.handle);
-				this.handle = 0;
+				if (this.isStreamed)
+				{
+					this.streamProvider.CloseStream();
+					this.strStopReq = StopRequest.Immediately;
+				}
+
+				if (this.handle != 0)
+				{
+					this.ResetSourceState();
+					if (AudioBackend.ActiveInstance != null)
+						AudioBackend.ActiveInstance.FreeSourceHandle(this.handle);
+					this.handle = 0;
+				}
+
+				if (this.strAlBuffers != null)
+				{
+					for (int i = 0; i < this.strAlBuffers.Length; i++)
+					{
+						if (this.strAlBuffers[i] != null)
+						{
+							this.strAlBuffers[i].Dispose();
+							this.strAlBuffers[i] = null;
+						}
+					}
+					this.strAlBuffers = null;
+				}
 			}
 		}
 
@@ -92,8 +132,109 @@ namespace Duality.Backend.DefaultOpenTK
 					AL.Source(this.handle, ALSourcei.Buffer, 0);
 					AL.SourceRewind(this.handle);
 				}
+			}
+		}
 
-				this.dirtyState = DirtyFlag.All;
+		internal bool PerformStreaming()
+		{
+			lock (this.strLock)
+			{
+				if (this.handle == 0) return false;
+
+				ALSourceState stateTemp = AL.GetSourceState(this.handle);
+				if (stateTemp == ALSourceState.Stopped && this.strStopReq != StopRequest.None)
+				{
+					// Stopped due to regular EOF. If strStopReq is NOT set,
+					// the source stopped playing because it reached the end of the buffer
+					// but in fact only because we were too slow inserting new data.
+					return false;
+				}
+				else if (this.strStopReq == StopRequest.Immediately)
+				{
+					// Stopped intentionally due to Stop()
+					AL.SourceStop(handle);
+					return false;
+				}
+
+				if (stateTemp == ALSourceState.Initial)
+				{
+					// Initialize streaming
+					PerformStreamingBegin();
+
+					// Initially play source
+					AL.SourcePlay(handle);
+					stateTemp = AL.GetSourceState(handle);
+				}
+				else
+				{
+					// Stream new data
+					PerformStreamingUpdate();
+
+					// If the source stopped unintentionally, restart it. (See above)
+					if (stateTemp == ALSourceState.Stopped && this.strStopReq == StopRequest.None)
+					{
+						AL.SourcePlay(handle);
+					}
+				}
+			}
+
+			return true;
+		}
+		private void PerformStreamingBegin()
+		{
+			// Generate streaming buffers
+			this.strAlBuffers = new INativeAudioBuffer[3];
+			for (int i = 0; i < this.strAlBuffers.Length; ++i)
+			{
+				this.strAlBuffers[i] = DualityApp.AudioBackend.CreateBuffer();
+			}
+
+			// Begin streaming
+			this.streamProvider.OpenStream();
+
+			// Initially, completely fill all buffers
+			for (int i = 0; i < this.strAlBuffers.Length; ++i)
+			{
+				bool eof = !this.streamProvider.ReadStream(this.strAlBuffers[i]);
+				if (!eof)
+				{
+					AL.SourceQueueBuffer(this.handle, (this.strAlBuffers[i] as NativeAudioBuffer).Handle);
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		private void PerformStreamingUpdate()
+		{
+			int num;
+			AL.GetSource(this.handle, ALGetSourcei.BuffersProcessed, out num);
+			while (num > 0)
+			{
+				num--;
+
+				int unqueuedBufferHandle = AL.SourceUnqueueBuffer(this.handle);
+				INativeAudioBuffer unqueuedBuffer = null;
+				for (int i = 0; i < this.strAlBuffers.Length; i++)
+				{
+					NativeAudioBuffer buffer = this.strAlBuffers[i] as NativeAudioBuffer;
+					if (buffer.Handle == unqueuedBufferHandle)
+					{
+						unqueuedBuffer = buffer;
+						break;
+					}
+				}
+
+				bool eof = !this.streamProvider.ReadStream(unqueuedBuffer);
+				if (!eof)
+				{
+					AL.SourceQueueBuffer(this.handle, unqueuedBufferHandle);
+				}
+				else
+				{
+					this.strStopReq = StopRequest.EndOfStream;
+				}
 			}
 		}
 	}

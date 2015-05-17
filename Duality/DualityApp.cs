@@ -5,8 +5,6 @@ using System.Reflection;
 using System.IO;
 using System.Threading;
 
-using OpenTK.Audio.OpenAL;
-
 using Duality.Backend;
 using Duality.Resources;
 using Duality.Serialization;

@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
 
-using OpenTK;
-using OpenTK.Audio.OpenAL;
-
 using Duality.Resources;
 
 namespace Duality.Audio

@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Audio\AudioDataElementType.cs" />
     <Compile Include="Audio\AudioDataLayout.cs" />
+    <Compile Include="Backend\Audio\IAudioStreamProvider.cs" />
     <Compile Include="Audio\VorbisStreamHandle.cs" />
     <Compile Include="Audio\PcmData.cs" />
     <Compile Include="Audio\SoundType.cs" />

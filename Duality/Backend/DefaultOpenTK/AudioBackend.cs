@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Diagnostics;
+using System.Threading;
 
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
@@ -19,9 +21,16 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return activeInstance; }
 		}
 
+
 		private	AudioContext	context			= null;
 		private	Stack<int>		sourcePool		= new Stack<int>();
 		private	int				availSources	= 0;
+
+		private	Thread					streamWorker			= null;
+		private List<NativeAudioSource>	streamWorkerQueue		= null;
+		private AutoResetEvent			streamWorkerQueueEvent	= null;
+		private bool					streamWorkerEnd			= false;
+
 
 		public int MaxSourceCount
 		{
@@ -71,11 +80,34 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			this.availSources = this.sourcePool.Count;
 			Log.Core.Write("{0} sources available", this.sourcePool.Count);
+			
+			// Set up the streaming thread
+			this.streamWorkerEnd = false;
+			this.streamWorkerQueue = new List<NativeAudioSource>();
+			this.streamWorkerQueueEvent = new AutoResetEvent(false);
+			this.streamWorker = new Thread(ThreadStreamFunc);
+			this.streamWorker.IsBackground = true;
+			this.streamWorker.Start();
 
 			activeInstance = this;
 		}
 		void IDualityBackend.Shutdown()
 		{
+			// Shut down the streaming thread
+			if (this.streamWorker != null)
+			{
+				this.streamWorkerEnd = true;
+				if (!this.streamWorker.Join(1000))
+				{
+					this.streamWorker.Abort();
+				}
+				this.streamWorkerQueueEvent.Dispose();
+				this.streamWorkerEnd = false;
+				this.streamWorkerQueueEvent = null;
+				this.streamWorkerQueue = null;
+				this.streamWorker = null;
+			}
+
 			if (activeInstance == this)
 				activeInstance = null;
 
@@ -131,6 +163,71 @@ namespace Duality.Backend.DefaultOpenTK
 		internal void FreeSourceHandle(int handle)
 		{
 			this.sourcePool.Push(handle);
+		}
+		internal void EnqueueForStreaming(NativeAudioSource source)
+		{
+			lock (this.streamWorkerQueue)
+			{
+				if (this.streamWorkerQueue.Contains(source)) return;
+				this.streamWorkerQueue.Add(source);
+			}
+			this.streamWorkerQueueEvent.Set();
+		}
+
+		private void ThreadStreamFunc()
+		{
+			int queueIndex = 0;
+			Stopwatch watch = new Stopwatch();
+			watch.Restart();
+			while (!this.streamWorkerEnd)
+			{
+				// Determine which audio source to update
+				NativeAudioSource source;
+				lock (this.streamWorkerQueue)
+				{
+					if (this.streamWorkerQueue.Count > 0)
+					{
+						int count = this.streamWorkerQueue.Count;
+						queueIndex = (queueIndex + count) % count;
+						source = this.streamWorkerQueue[queueIndex];
+						queueIndex = (queueIndex + count - 1) % count;
+					}
+					else
+					{
+						source = null;
+						queueIndex = 0;
+					}
+				}
+
+				// If there is no audio source available, wait for a signal of one being added.
+				if (source == null)
+				{
+					// Timeout of 100 ms to check regularly for requesting the thread to end.
+					streamWorkerQueueEvent.WaitOne(100);
+					continue;
+				}
+
+				// Perform the necessary streaming operations on the audio source, and remove it when requested
+				if (!source.PerformStreaming())
+				{
+					lock (this.streamWorkerQueue)
+					{
+						this.streamWorkerQueue.Remove(source);
+					}
+				}
+
+				// After each roundtrip, sleep a little, don't keep the processor busy for no reason
+				if (queueIndex == 0)
+				{
+					watch.Stop();
+					int roundtripTime = (int)watch.ElapsedMilliseconds;
+					if (roundtripTime <= 1)
+					{
+						streamWorkerQueueEvent.WaitOne(16);
+					}
+					watch.Restart();
+				}
+			}
 		}
 
 		public static bool CheckOpenALErrors(bool silent = false)
