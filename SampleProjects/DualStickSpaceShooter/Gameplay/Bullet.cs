@@ -5,6 +5,7 @@ using System.Text;
 
 using Duality;
 using Duality.Drawing;
+using Duality.Audio;
 using Duality.Editor;
 using Duality.Resources;
 using Duality.Components;

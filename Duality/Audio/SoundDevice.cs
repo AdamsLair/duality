@@ -11,7 +11,7 @@ using OpenTK.Audio.OpenAL;
 using Duality.Resources;
 using Duality.Components;
 
-namespace Duality
+namespace Duality.Audio
 {
 	/// <summary>
 	/// Provides functionality to play and manage sound in Duality.
@@ -23,8 +23,6 @@ namespace Duality
 		private	GameObject				soundListener	= null;
 		private	Stack<int>				alSourcePool	= new Stack<int>();
 		private	List<SoundInstance>		sounds			= new List<SoundInstance>();
-		private	SoundBudgetQueue		budgetMusic		= new SoundBudgetQueue();
-		private	SoundBudgetQueue		budgetAmbient	= new SoundBudgetQueue();
 		private	Dictionary<string,int>	resPlaying		= new Dictionary<string,int>();
 		private	int						maxAlSources	= 0;
 		private	int						numPlaying2D	= 0;
@@ -37,20 +35,6 @@ namespace Duality
 		private bool				streamWorkerEnd			= false;
 
 
-		/// <summary>
-		/// [GET] A queue of currently playing ambient pads.
-		/// </summary>
-		public SoundBudgetQueue Ambient
-		{
-			get { return this.budgetAmbient; }
-		}
-		/// <summary>
-		/// [GET] A queue of currently playing music pads.
-		/// </summary>
-		public SoundBudgetQueue Music
-		{
-			get { return this.budgetMusic; }
-		}
 		/// <summary>
 		/// [GET] Returns whether the SoundDevice is available. If false, no audio output can be generated.
 		/// </summary>
@@ -337,9 +321,6 @@ namespace Duality
 		{
 			if (this.context == null) return;
 			Profile.TimeUpdateAudio.BeginMeasure();
-
-			this.budgetAmbient.Update();
-			this.budgetMusic.Update();
 
 			this.UpdateListener();
 

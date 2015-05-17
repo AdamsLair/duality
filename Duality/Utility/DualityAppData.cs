@@ -69,7 +69,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET / SET] The speed of sound. While this is technically a unitless value, you might assume something like "meters per second".
-		/// It is used to calculate the doppler effect of <see cref="SoundInstance">SoundInstances</see> that are moving relative to the
+		/// It is used to calculate the doppler effect of <see cref="Duality.Audio.SoundInstance">SoundInstances</see> that are moving relative to the
 		/// <see cref="Duality.Components.SoundListener"/>.
 		/// </summary>
 		public float SpeedOfSound

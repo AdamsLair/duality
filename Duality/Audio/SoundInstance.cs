@@ -8,32 +8,8 @@ using OpenTK.Audio.OpenAL;
 
 using Duality.Resources;
 
-namespace Duality
+namespace Duality.Audio
 {
-	/// <summary>
-	/// Describes the type of a sound. This is used for determining which specific
-	/// volume settings affect each sound.
-	/// </summary>
-	public enum SoundType
-	{
-		/// <summary>
-		/// A sound effect taking place in the game world.
-		/// </summary>
-		EffectWorld,
-		/// <summary>
-		/// A User Interface sound effect.
-		/// </summary>
-		EffectUI,
-		/// <summary>
-		/// A sound that is considered being game music.
-		/// </summary>
-		Music,
-		/// <summary>
-		/// A sound that is considered being spoken language.
-		/// </summary>
-		Speech
-	}
-
 	/// <summary>
 	/// An instance of a <see cref="Duality.Resources.Sound"/>.
 	/// </summary>
@@ -470,12 +446,12 @@ namespace Duality
 		private float GetTypeVolFactor()
 		{
 			float optVolFactor;
-			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.EffectWorld)
+			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.World)
 			{
-				case SoundType.EffectUI:
+				case SoundType.UserInterface:
 					optVolFactor = DualityApp.UserData.SfxEffectVol;
 					break;
-				case SoundType.EffectWorld:
+				case SoundType.World:
 					optVolFactor = DualityApp.UserData.SfxEffectVol;
 					break;
 				case SoundType.Speech:

@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Duality
+namespace Duality.Audio
 {
 	internal static class AudioLibraryLoader
 	{

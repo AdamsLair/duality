@@ -72,6 +72,11 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\VorbisStreamHandle.cs" />
+    <Compile Include="Audio\PcmData.cs" />
+    <Compile Include="Audio\SoundType.cs" />
+    <Compile Include="Backend\Audio\INativeAudioSource.cs" />
+    <Compile Include="Backend\Audio\INativeAudioBuffer.cs" />
     <Compile Include="Backend\Dummy\DummyNativeShaderProgram.cs" />
     <Compile Include="Backend\Dummy\DummyNativeShaderPart.cs" />
     <Compile Include="Backend\Dummy\DummyNativeRenderTarget.cs" />
@@ -88,6 +93,7 @@
     <Compile Include="Backend\BackendException.cs" />
     <Compile Include="Backend\IDualiyBackend.cs" />
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
+    <Compile Include="Backend\IAudioBackend.cs" />
     <Compile Include="Backend\IGraphicsBackend.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
@@ -244,7 +250,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsRandom.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsString.cs" />
     <Compile Include="Utility\ReflectionInfo.cs" />
-    <Compile Include="Audio\OggVorbis\OggVorbis.cs" />
+    <Compile Include="Audio\OggVorbis.cs" />
     <Compile Include="Utility\PathHelper.cs" />
     <Compile Include="Utility\ReflectionHelper.cs" />
     <Compile Include="Components\Camera.cs" />
@@ -280,7 +286,6 @@
     <Compile Include="Resources\Prefab.cs" />
     <Compile Include="Resources\VertexShader.cs" />
     <Compile Include="Resources\Scene.cs" />
-    <Compile Include="Audio\SoundBudgetPad.cs" />
     <Compile Include="Audio\SoundDevice.cs" />
     <Compile Include="Audio\SoundInstance.cs" />
     <Compile Include="Drawing\FormattedText.cs" />

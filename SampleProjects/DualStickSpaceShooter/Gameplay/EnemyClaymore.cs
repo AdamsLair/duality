@@ -10,6 +10,7 @@ using Duality.Components.Physics;
 using Duality.Components.Renderers;
 using Duality.Resources;
 using Duality.Drawing;
+using Duality.Audio;
 
 namespace DualStickSpaceShooter
 {

@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Editor;
 using Duality.Resources;
 using Duality.Properties;
+using Duality.Audio;
 using Duality.Cloning;
 
 namespace Duality.Components

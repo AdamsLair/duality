@@ -6,6 +6,7 @@ using System.Reflection;
 using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
+using Duality.Audio;
 
 using OpenTK.Audio.OpenAL;
 

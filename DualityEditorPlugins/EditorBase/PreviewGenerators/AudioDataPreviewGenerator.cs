@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using Duality;
 using Duality.Resources;
 using Duality.Drawing;
+using Duality.Audio;
 using Duality.Editor;
 using Font = Duality.Resources.Font;
 
