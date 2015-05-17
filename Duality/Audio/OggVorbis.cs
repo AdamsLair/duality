@@ -53,22 +53,22 @@ namespace Duality.Audio
 		}
 		public static bool StreamChunk(VorbisStreamHandle handle, out PcmData pcm, uint bufferSize = DefaultBufferSize)
 		{
-			pcm.dataLength = 0;
-			pcm.channelCount = handle.VorbisInstance.Channels;
-			pcm.sampleRate = handle.VorbisInstance.SampleRate;
+			pcm.DataLength = 0;
+			pcm.ChannelCount = handle.VorbisInstance.Channels;
+			pcm.SampleRate = handle.VorbisInstance.SampleRate;
 
 			bool eof = false;
 			float[] buffer = new float[bufferSize];
-			while (pcm.dataLength < buffer.Length)
+			while (pcm.DataLength < buffer.Length)
 			{
 				int samplesRead;
 				lock (readMutex)
 				{
-					samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.dataLength, buffer.Length - pcm.dataLength);
+					samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.DataLength, buffer.Length - pcm.DataLength);
 				}
 				if (samplesRead > 0)
 				{
-					pcm.dataLength += samplesRead;
+					pcm.DataLength += samplesRead;
 				}
 				else
 				{
@@ -77,16 +77,16 @@ namespace Duality.Audio
 				}
 			}
 
-			pcm.data = new short[pcm.dataLength];
-			CastBuffer(buffer, pcm.data, 0, pcm.dataLength);
+			pcm.Data = new short[pcm.DataLength];
+			CastBuffer(buffer, pcm.Data, 0, pcm.DataLength);
 
-			return pcm.dataLength > 0 && !eof;
+			return pcm.DataLength > 0 && !eof;
 		}
 		public static bool ReadAll(VorbisStreamHandle handle, out PcmData pcm)
 		{
-			pcm.channelCount = handle.VorbisInstance.Channels;
-			pcm.sampleRate = handle.VorbisInstance.SampleRate;
-			pcm.dataLength = 0;
+			pcm.ChannelCount = handle.VorbisInstance.Channels;
+			pcm.SampleRate = handle.VorbisInstance.SampleRate;
+			pcm.DataLength = 0;
 
 			List<float[]> allBuffers = new List<float[]>();
 			bool eof = false;
@@ -100,7 +100,7 @@ namespace Duality.Audio
 					int samplesRead;
 					lock (readMutex)
 					{
-						samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.dataLength, buffer.Length - pcm.dataLength);
+						samplesRead = handle.VorbisInstance.ReadSamples(buffer, pcm.DataLength, buffer.Length - pcm.DataLength);
 					}
 					if (samplesRead > 0)
 					{
@@ -118,20 +118,20 @@ namespace Duality.Audio
 				
 			if (totalSamplesRead > 0)
 			{
-				pcm.dataLength = totalSamplesRead;
-				pcm.data = new short[totalSamplesRead];
+				pcm.DataLength = totalSamplesRead;
+				pcm.Data = new short[totalSamplesRead];
 				int offset = 0;
 				for (int i = 0; i < allBuffers.Count; i++)
 				{
-					int len = Math.Min(pcm.data.Length - offset, allBuffers[i].Length);
-					CastBuffer(allBuffers[i], pcm.data, offset, len);
+					int len = Math.Min(pcm.Data.Length - offset, allBuffers[i].Length);
+					CastBuffer(allBuffers[i], pcm.Data, offset, len);
 					offset += len;
 				}
 				return !eof;
 			}
 			else
 			{
-				pcm.data = new short[0];
+				pcm.Data = new short[0];
 				return false;
 			}
 		}

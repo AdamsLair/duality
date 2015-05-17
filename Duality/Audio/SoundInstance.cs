@@ -777,14 +777,14 @@ namespace Duality.Audio
 			{
 				PcmData pcm;
 				bool eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
-				if (pcm.dataLength > 0)
+				if (pcm.DataLength > 0)
 				{
 					AL.BufferData(
 						this.strAlBuffers[i], 
-						pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-						pcm.data, 
-						pcm.dataLength * PcmData.SizeOfDataElement, 
-						pcm.sampleRate);
+						pcm.ChannelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
+						pcm.Data, 
+						pcm.DataLength * PcmData.SizeOfDataElement, 
+						pcm.SampleRate);
 					AL.SourceQueueBuffer(this.alSource, this.strAlBuffers[i]);
 					if (eof) break;
 				}
@@ -812,23 +812,23 @@ namespace Duality.Audio
 						if (this.looped)
 						{
 							OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out this.strOvStr);
-							if (pcm.dataLength == 0)
+							if (pcm.DataLength == 0)
 								eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
 							else
 								eof = false;
 						}
 					}
-					if (pcm.dataLength > 0)
+					if (pcm.DataLength > 0)
 					{
 						AL.BufferData(
 							unqueued, 
-							pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-							pcm.data, 
-							pcm.dataLength * PcmData.SizeOfDataElement, 
-							pcm.sampleRate);
+							pcm.ChannelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
+							pcm.Data, 
+							pcm.DataLength * PcmData.SizeOfDataElement, 
+							pcm.SampleRate);
 						AL.SourceQueueBuffer(this.alSource, unqueued);
 					}
-					if (pcm.dataLength == 0 || eof)
+					if (pcm.DataLength == 0 || eof)
 					{
 						this.strStopReq = StopRequest.EndOfStream;
 						break;

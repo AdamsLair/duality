@@ -196,10 +196,10 @@ namespace Duality.Resources
 					PcmData pcm = OggVorbis.LoadFromMemory(this.data);
 					AL.BufferData(
 						this.alBuffer,
-						pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-						pcm.data.ToArray(), 
-						pcm.dataLength * PcmData.SizeOfDataElement, 
-						pcm.sampleRate);
+						pcm.ChannelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
+						pcm.Data.ToArray(), 
+						pcm.DataLength * PcmData.SizeOfDataElement, 
+						pcm.SampleRate);
 				}
 				else
 				{

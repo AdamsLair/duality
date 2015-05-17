@@ -8,9 +8,9 @@ namespace Duality.Audio
 	{
 		public const int SizeOfDataElement = sizeof(short);
 
-		public	short[]	data;
-		public	int		dataLength;
-		public	int		channelCount;
-		public	int		sampleRate;
+		public	short[]	Data;
+		public	int		DataLength;
+		public	int		ChannelCount;
+		public	int		SampleRate;
 	}
 }
