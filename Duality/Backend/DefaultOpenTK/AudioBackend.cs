@@ -44,10 +44,6 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return 0; }
 		}
 
-		internal void FreeSourceHandle(int handle)
-		{
-			this.sourcePool.Push(handle);
-		}
 
 		bool IDualityBackend.CheckAvailable()
 		{
@@ -99,6 +95,27 @@ namespace Duality.Backend.DefaultOpenTK
 			AudioLibraryLoader.UnloadAudioLibrary();
 		}
 
+		void IAudioBackend.UpdateWorldSettings(float speedOfSound, float dopplerFactor)
+		{
+			AL.DistanceModel(ALDistanceModel.LinearDistanceClamped);
+			AL.DopplerFactor(dopplerFactor);
+			AL.SpeedOfSound(speedOfSound);
+		}
+		void IAudioBackend.UpdateListener(Vector3 position, Vector3 velocity, float angle, bool mute)
+		{
+			float[] orientation = new float[6];
+			orientation[0] = 0.0f;	// forward vector x value
+			orientation[1] = 0.0f;	// forward vector y value
+			orientation[2] = -1.0f;	// forward vector z value
+			orientation[5] = 0.0f;	// up vector z value
+			AL.Listener(ALListener3f.Position, position.X, -position.Y, -position.Z);
+			AL.Listener(ALListener3f.Velocity, velocity.X, -velocity.Y, -velocity.Z);
+			orientation[3] = MathF.Sin(angle);	// up vector x value
+			orientation[4] = MathF.Cos(angle);	// up vector y value
+			AL.Listener(ALListenerfv.Orientation, ref orientation);
+			AL.Listener(ALListenerf.Gain, mute ? 0.0f : 1.0f);
+		}
+
 		INativeAudioBuffer IAudioBackend.CreateBuffer()
 		{
 			return new NativeAudioBuffer();
@@ -109,6 +126,11 @@ namespace Duality.Backend.DefaultOpenTK
 				return null;
 			else
 				return new NativeAudioSource(this.sourcePool.Pop());
+		}
+		
+		internal void FreeSourceHandle(int handle)
+		{
+			this.sourcePool.Push(handle);
 		}
 
 		public static bool CheckOpenALErrors(bool silent = false)

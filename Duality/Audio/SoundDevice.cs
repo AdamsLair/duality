@@ -4,10 +4,6 @@ using System.Threading;
 using System.Linq;
 using System.Diagnostics;
 
-using OpenTK;
-using AudioContext = OpenTK.Audio.AudioContext;
-using OpenTK.Audio.OpenAL;
-
 using Duality.Resources;
 using Duality.Components;
 
@@ -264,20 +260,11 @@ namespace Duality.Audio
 				this.soundListener = Scene.Current.FindGameObject<SoundListener>();
 			}
 
-			float[] orientation = new float[6];
-			orientation[0] = 0.0f;	// forward vector x value
-			orientation[1] = 0.0f;	// forward vector y value
-			orientation[2] = -1.0f;	// forward vector z value
-			orientation[5] = 0.0f;	// up vector z value
-			Vector3 listenerPos = this.ListenerPos;
-			Vector3 listenerVel = this.ListenerVel;
-			float listenerAngle = this.ListenerAngle;
-			AL.Listener(ALListener3f.Position, listenerPos.X, -listenerPos.Y, -listenerPos.Z);
-			AL.Listener(ALListener3f.Velocity, listenerVel.X, -listenerVel.Y, -listenerVel.Z);
-			orientation[3] = MathF.Sin(listenerAngle);	// up vector x value
-			orientation[4] = MathF.Cos(listenerAngle);	// up vector y value
-			AL.Listener(ALListenerfv.Orientation, ref orientation);
-			AL.Listener(ALListenerf.Gain, this.mute ? 0.0f : 1.0f);
+			DualityApp.AudioBackend.UpdateListener(
+				this.ListenerPos,
+				this.ListenerVel,
+				this.ListenerAngle,
+				this.mute);
 		}
 		
 		/// <summary>
@@ -332,9 +319,9 @@ namespace Duality.Audio
 		
 		private void DualityApp_AppDataChanged(object sender, EventArgs e)
 		{
-			AL.DistanceModel(ALDistanceModel.LinearDistanceClamped);
-			AL.DopplerFactor(DualityApp.AppData.SoundDopplerFactor);
-			AL.SpeedOfSound(DualityApp.AppData.SpeedOfSound);
+			DualityApp.AudioBackend.UpdateWorldSettings(
+				DualityApp.AppData.SpeedOfSound, 
+				DualityApp.AppData.SoundDopplerFactor);
 		}
 
 

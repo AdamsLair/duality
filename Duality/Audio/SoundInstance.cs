@@ -75,11 +75,11 @@ namespace Duality.Audio
 		private	float			fadeWaitEnd		= 0.0f;
 
 		// Streaming
-		private	bool				isStreamed		= false;
-		private	VorbisStreamHandle	strOvStr		= null;
-		private	int[]				strAlBuffers	= null;
-		private	StopRequest			strStopReq		= StopRequest.None;
-		private	object				strLock			= new object();
+		private	bool					isStreamed		= false;
+		private	VorbisStreamHandle		strOvStr		= null;
+		private	INativeAudioBuffer[]	strAlBuffers	= null;
+		private	StopRequest				strStopReq		= StopRequest.None;
+		private	object					strLock			= new object();
 		
 
 		/// <summary>
@@ -262,8 +262,11 @@ namespace Duality.Audio
 					{
 						for (int i = 0; i < this.strAlBuffers.Length; i++)
 						{
-							if (!AL.IsBuffer(this.strAlBuffers[i])) return;
-							AL.DeleteBuffer(this.strAlBuffers[i]);
+							if (this.strAlBuffers[i] != null)
+							{
+								this.strAlBuffers[i].Dispose();
+								this.strAlBuffers[i] = null;
+							}
 						}
 						this.strAlBuffers = null;
 					}
@@ -751,10 +754,10 @@ namespace Duality.Audio
 			int handle = (this.native as Backend.DefaultOpenTK.NativeAudioSource).Handle;
 
 			// Generate streaming buffers
-			this.strAlBuffers = new int[3];
+			this.strAlBuffers = new INativeAudioBuffer[3];
 			for (int i = 0; i < this.strAlBuffers.Length; ++i)
 			{
-				AL.GenBuffers(1, out this.strAlBuffers[i]);
+				this.strAlBuffers[i] = DualityApp.AudioBackend.CreateBuffer();
 			}
 
 			// Begin streaming
@@ -767,13 +770,13 @@ namespace Duality.Audio
 				bool eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
 				if (pcm.DataLength > 0)
 				{
-					AL.BufferData(
-						this.strAlBuffers[i], 
-						pcm.ChannelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-						pcm.Data, 
-						pcm.DataLength * PcmData.SizeOfDataElement, 
-						pcm.SampleRate);
-					AL.SourceQueueBuffer(handle, this.strAlBuffers[i]);
+					this.strAlBuffers[i].LoadData(
+						pcm.SampleRate,
+						pcm.Data,
+						pcm.DataLength,
+						pcm.ChannelCount == 1 ? AudioDataLayout.Mono : AudioDataLayout.LeftRight,
+						AudioDataElementType.Short);
+					AL.SourceQueueBuffer(handle, (this.strAlBuffers[i] as Backend.DefaultOpenTK.NativeAudioBuffer).Handle);
 					if (eof) break;
 				}
 				else break;
