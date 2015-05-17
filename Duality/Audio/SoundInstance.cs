@@ -299,6 +299,7 @@ namespace Duality.Audio
 		/// </summary>
 		public void Stop()
 		{
+			this.strStopReq = StopRequest.Immediately;
 			if (this.native != null)
 				this.native.Stop();
 		}

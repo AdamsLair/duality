@@ -21,10 +21,8 @@ namespace Duality.Audio
 	{
 		private	bool					disposed		= false;
 		private	GameObject				soundListener	= null;
-		private	Stack<int>				alSourcePool	= new Stack<int>();
 		private	List<SoundInstance>		sounds			= new List<SoundInstance>();
 		private	Dictionary<string,int>	resPlaying		= new Dictionary<string,int>();
-		private	int						maxAlSources	= 0;
 		private	int						numPlaying2D	= 0;
 		private	int						numPlaying3D	= 0;
 		private	bool					mute			= false;
@@ -93,7 +91,7 @@ namespace Duality.Audio
 		/// </summary>
 		public int MaxOpenALSources
 		{
-			get { return this.maxAlSources; }
+			get { return (DualityApp.AudioBackend as Backend.DefaultOpenTK.AudioBackend).MaxSourceCount; }
 		}
 		/// <summary>
 		/// [GET] Returns the number of currently playing 2d sounds.
@@ -114,7 +112,7 @@ namespace Duality.Audio
 		/// </summary>
 		public int NumAvailable
 		{
-			get { return this.alSourcePool.Count; }
+			get { return (DualityApp.AudioBackend as Backend.DefaultOpenTK.AudioBackend).AvailableSources; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all currently playing SoundInstances.
@@ -190,23 +188,6 @@ namespace Duality.Audio
 				return 0;
 			else
 				return curNumSoundRes;
-		}
-		/// <summary>
-		/// Requests an OpenAL source handle.
-		/// </summary>
-		/// <returns>An OpenAL source handle. <see cref="SoundInstance.AlSource_NotAvailable"/> if no source is currently available.</returns>
-		internal int RequestAlSource()
-		{
-			if (this.alSourcePool.Count == 0) return SoundInstance.AlSource_NotAvailable;
-			return this.alSourcePool.Pop();
-		}
-		/// <summary>
-		/// Frees a previously requested OpenAL source.
-		/// </summary>
-		/// <param name="alSource">The OpenAL handle of the source to free.</param>
-		internal void FreeAlSource(int alSource)
-		{
-			this.alSourcePool.Push(alSource);
 		}
 		/// <summary>
 		/// Registers a <see cref="Duality.Resources.Sound">Sounds</see> playing instance.
