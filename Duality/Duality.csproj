@@ -72,11 +72,16 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\AudioDataElementType.cs" />
+    <Compile Include="Audio\AudioDataLayout.cs" />
     <Compile Include="Audio\VorbisStreamHandle.cs" />
     <Compile Include="Audio\PcmData.cs" />
     <Compile Include="Audio\SoundType.cs" />
     <Compile Include="Backend\Audio\INativeAudioSource.cs" />
     <Compile Include="Backend\Audio\INativeAudioBuffer.cs" />
+    <Compile Include="Backend\DefaultOpenTK\NativeAudioSource.cs" />
+    <Compile Include="Backend\DefaultOpenTK\NativeAudioBuffer.cs" />
+    <Compile Include="Backend\DefaultOpenTK\AudioBackend.cs" />
     <Compile Include="Backend\Dummy\DummyNativeShaderProgram.cs" />
     <Compile Include="Backend\Dummy\DummyNativeShaderPart.cs" />
     <Compile Include="Backend\Dummy\DummyNativeRenderTarget.cs" />
@@ -396,6 +401,7 @@
       <Name>DualityPrimitives</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>

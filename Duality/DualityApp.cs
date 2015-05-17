@@ -81,6 +81,7 @@ namespace Duality
 		private	static	StreamWriter				logfile				= null;
 		private	static	TextWriterLogOutput			logfileOutput		= null;
 		private	static	IGraphicsBackend			graphicsBack		= null;
+		private	static	IAudioBackend				audioBack			= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
 		private	static	MouseInput					mouse				= new MouseInput();
 		private	static	KeyboardInput				keyboard			= new KeyboardInput();
@@ -138,11 +139,18 @@ namespace Duality
 
 		
 		/// <summary>
-		/// [GET] The graphics backend that is used by Duality.
+		/// [GET] The graphics backend that is used by Duality. Don't use this unless you know exactly what you're doing.
 		/// </summary>
 		public static IGraphicsBackend GraphicsBackend
 		{
 			get { return graphicsBack; }
+		}
+		/// <summary>
+		/// [GET] The audio backend that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public static IAudioBackend AudioBackend
+		{
+			get { return audioBack; }
 		}
 		/// <summary>
 		/// [GET / SET] The size of the current rendering surface (full screen, a single window, etc.) in pixels. Setting this will not actually change
@@ -392,6 +400,8 @@ namespace Duality
 			LoadAppData();
 			LoadUserData();
 
+			// Initialize the audio backend
+			InitBackend(out audioBack);
 			sound = new SoundDevice();
 
 			// Initial changed event
@@ -481,6 +491,7 @@ namespace Duality
 				sound.Dispose();
 				sound = null;
 				ShutdownBackend(ref graphicsBack);
+				ShutdownBackend(ref audioBack);
 				ClearPlugins();
 				Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 				Log.Core.Write("DualityApp terminated");
@@ -534,8 +545,6 @@ namespace Duality
 			sound.Update();
 			OnAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
-			CheckOpenALErrors();
-			//CheckOpenGLErrors();
 			RunCleanup();
 
 			Profile.TimeUpdate.EndMeasure();
@@ -623,8 +632,6 @@ namespace Duality
 			sound.Update();
 			OnAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
-			CheckOpenALErrors();
-			//CheckOpenGLErrors();
 			RunCleanup();
 
 			Profile.TimeUpdate.EndMeasure();
@@ -1336,30 +1343,6 @@ namespace Duality
 		}
 		
 
-		/// <summary>
-		/// Checks for errors that might have occurred during audio processing.
-		/// </summary>
-		/// <param name="silent">If true, errors aren't logged.</param>
-		/// <returns>True, if an error occurred, false if not.</returns>
-		public static bool CheckOpenALErrors(bool silent = false)
-		{
-			if (sound != null && !sound.IsAvailable) return false;
-			ALError error;
-			bool found = false;
-			while ((error = AL.GetError()) != ALError.NoError)
-			{
-				if (!silent)
-				{
-					Log.Core.WriteError(
-						"Internal OpenAL error, code {0} at {1}", 
-						error,
-						Log.CurrentMethod(1));
-				}
-				found = true;
-				if (!silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
-			}
-			return found;
-		}
 
 		/// <summary>
 		/// This method performs an action only when compiling your plugin in debug mode.

@@ -6,6 +6,7 @@ namespace Duality.Backend
 {
 	public interface IAudioBackend : IDualityBackend
 	{
-
+		INativeAudioBuffer CreateBuffer();
+		INativeAudioSource CreateSource();
 	}
 }

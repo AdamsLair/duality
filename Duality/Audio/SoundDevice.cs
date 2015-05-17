@@ -136,37 +136,6 @@ namespace Duality.Audio
 
 		public SoundDevice()
 		{
-			Log.Core.Write("Initializing OpenAL...");
-			Log.Core.PushIndent();
-			try
-			{
-				AudioLibraryLoader.LoadAudioLibrary();
-
-				Log.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
-					AudioContext.AvailableDevices.ToString(d => d == AudioContext.DefaultDevice ? d + " (Default)" : d, "," + Environment.NewLine));
-
-				// Create OpenAL audio context
-				this.context = new AudioContext();
-				Log.Core.Write("Current device: {0}", this.context.CurrentDevice);
-
-				// Generate OpenAL source pool
-				while (true)
-				{
-					int newSrc = AL.GenSource();
-					if (!DualityApp.CheckOpenALErrors(true))
-						this.alSourcePool.Push(newSrc);
-					else
-						break;
-				}
-				this.maxAlSources = this.alSourcePool.Count;
-				Log.Core.Write("{0} sources available", this.alSourcePool.Count);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("An error occured while initializing OpenAL: {0}", Log.Exception(e));
-			}
-			Log.Core.PopIndent();
-			
 			// Set up the streaming thread
 			this.streamWorkerEnd = false;
 			this.streamWorkerQueue = new List<SoundInstance>();

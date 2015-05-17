@@ -42,7 +42,6 @@ namespace Duality.Audio
 			Immediately
 		}
 
-		public const int AlSource_NotYetAssigned = -1;
 		public const int AlSource_NotAvailable = 0;
 		public const int PriorityStealThreshold = 15;
 		public const int PriorityStealLoopedThreshold = 30;
@@ -51,7 +50,8 @@ namespace Duality.Audio
 		private	ContentRef<Sound>		sound		= null;
 		private	ContentRef<AudioData>	audioData	= null;
 		private	bool			disposed		= false;
-		private	int				alSource		= AlSource_NotYetAssigned;
+		private	bool			notYetAssigned	= true;
+		private	int				alSource		= AlSource_NotAvailable;
 		private	GameObject		attachedTo		= null;
 		private	Vector3			pos				= Vector3.Zero;
 		private	Vector3			vel				= Vector3.Zero;
@@ -250,6 +250,7 @@ namespace Duality.Audio
 						this.CleanupAlSource();
 						DualityApp.Sound.FreeAlSource(this.alSource);
 						this.alSource = AlSource_NotAvailable;
+						this.notYetAssigned = false;
 					}
 					if (this.strAlBuffers != null)
 					{
@@ -416,6 +417,7 @@ namespace Duality.Audio
 				}
 			}
 
+			this.notYetAssigned = false;
 			return (this.alSource != AlSource_NotAvailable);
 		}
 		private int PreCalcPriority()
@@ -547,7 +549,7 @@ namespace Duality.Audio
 				}
 
 				// Grab an OpenAL source, if not yet assigned
-				if (this.alSource == AlSource_NotYetAssigned)
+				if (this.notYetAssigned)
 				{
 					if (this.GrabAlSource())
 					{
