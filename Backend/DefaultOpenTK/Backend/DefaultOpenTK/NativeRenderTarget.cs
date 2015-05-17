@@ -275,7 +275,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			#endregion
 		}
-		void INativeRenderTarget.GetData<T>(T[] buffer, int targetIndex, int x, int y, int width, int height)
+		void INativeRenderTarget.GetData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height)
 		{
 			DualityApp.GuardSingleThreadState();
 
@@ -283,7 +283,7 @@ namespace Duality.Backend.DefaultOpenTK
 			Bind(this);
 			{
 				GL.ReadBuffer((ReadBufferMode)((int)ReadBufferMode.ColorAttachment0 + targetIndex));
-				GL.ReadPixels(x, y, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, buffer);
+				GL.ReadPixels(x, y, width, height, dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), buffer);
 				GL.ReadBuffer(ReadBufferMode.Back);
 			}
 			Bind(lastRt);
@@ -340,5 +340,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 			return RenderbufferStorage.Rgba8;
 		}
+
+
 	}
 }

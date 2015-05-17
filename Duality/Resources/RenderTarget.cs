@@ -152,7 +152,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// Retrieves the pixel data that is currently stored in video memory.
 		/// </summary>
-		/// <param name="buffer">The buffer (RGBA format) to store all the pixel data in. Its byte length needs to be at least width * height * 4.</param>
+		/// <param name="buffer">The buffer (Rgba8 format) to store all the pixel data in. Its byte length needs to be at least width * height * 4.</param>
 		/// <param name="targetIndex">The <see cref="Targets"/> index to read from.</param>
 		/// <param name="x">The x position of the rectangular area to read.</param>
 		/// <param name="y">The y position of the rectangular area to read.</param>
@@ -178,7 +178,7 @@ namespace Duality.Resources
 					"targetBuffer");
 			}
 			
-			this.native.GetData(buffer, targetIndex, x, y, width, height);
+			this.native.GetData(buffer, ColorDataLayout.Rgba, ColorDataElementType.Byte, targetIndex, x, y, width, height);
 
 			return readElements;
 		}

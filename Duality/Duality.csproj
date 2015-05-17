@@ -111,6 +111,8 @@
     <Compile Include="Components\Physics\CollisionCategory.cs" />
     <Compile Include="Drawing\Enums\BlendMode.cs" />
     <Compile Include="Drawing\Enums\ClearFlag.cs" />
+    <Compile Include="Drawing\Enums\ColorDataElementType.cs" />
+    <Compile Include="Drawing\Enums\ColorDataLayout.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />

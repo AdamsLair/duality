@@ -31,24 +31,33 @@ namespace Duality.Backend
 			bool mipmaps);
 
 		/// <summary>
-		/// Uploads the specified pixel data to video memory. A call to <see cref="SetupEmpty"/>
+		/// Uploads the specified pixel data in RGBA format to video memory. A call to <see cref="SetupEmpty"/>
 		/// is to be considered required for this.
 		/// </summary>
-		/// <param name="format"></param>
+		/// <param name="format">The textures internal format.</param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		/// <param name="data"></param>
-		void LoadData(
+		/// <param name="data">The block of pixel data to transfer.</param>
+		/// <param name="dataLayout">The color layout of the specified data block.</param>
+		/// <param name="dataElementType">The color element type of the specified data block.</param>
+		void LoadData<T>(
 			TexturePixelFormat format, 
 			int width, int height, 
-			ColorRgba[] data);
+			T[] data,
+			ColorDataLayout dataLayout,
+			ColorDataElementType dataElementType) where T : struct;
 
 		/// <summary>
 		/// Retrieves the textures pixel data from video memory in the Rgba8 format.
 		/// As a storage array type, either byte or <see cref="ColorRgba"/> is recommended.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="target"></param>
-		void GetData<T>(T[] target) where T : struct;
+		/// <param name="target">The buffer to store pixel values into.</param>
+		/// <param name="dataLayout">The desired color layout of the specified buffer.</param>
+		/// <param name="dataElementType">The desired color element type of the specified buffer.</param>
+		void GetData<T>(
+			T[] target,
+			ColorDataLayout dataLayout,
+			ColorDataElementType dataElementType) where T : struct;
 	}
 }

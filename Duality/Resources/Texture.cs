@@ -399,7 +399,12 @@ namespace Duality.Resources
 				}
 
 				// Load pixel data to video memory
-				this.nativeTex.LoadData(this.pixelformat, pixelData.Width, pixelData.Height, pixelData.Data);
+				this.nativeTex.LoadData(
+					this.pixelformat, 
+					pixelData.Width, pixelData.Height, 
+					pixelData.Data, 
+					ColorDataLayout.Rgba, 
+					ColorDataElementType.Byte);
 					
 				// Adjust atlas to represent UV coordinates
 				if (this.atlas != null)
@@ -447,7 +452,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// Retrieves the pixel data that is currently stored in video memory.
 		/// </summary>
-		/// <param name="targetBuffer">The buffer (RGBA format) to store all the pixel data in. 
+		/// <param name="targetBuffer">The buffer (Rgba8 format) to store all the pixel data in. 
 		/// Its byte length should be at least <see cref="TexelWidth"/> * <see cref="TexelHeight"/> * 4.</param>
 		/// <returns>The number of bytes that were read.</returns>
 		public int GetPixelData<T>(T[] targetBuffer) where T : struct
@@ -468,7 +473,7 @@ namespace Duality.Resources
 					"buffer");
 			}
 
-			this.nativeTex.GetData(buffer);
+			this.nativeTex.GetData(buffer, ColorDataLayout.Rgba, ColorDataElementType.Byte);
 
 			return readElements;
 		}

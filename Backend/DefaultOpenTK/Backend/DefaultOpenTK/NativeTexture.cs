@@ -139,7 +139,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 			if (lastTexId != this.handle) GL.BindTexture(TextureTarget.Texture2D, lastTexId);
 		}
-		void INativeTexture.LoadData(TexturePixelFormat format, int width, int height, ColorRgba[] data)
+		void INativeTexture.LoadData<T>(TexturePixelFormat format, int width, int height, T[] data, ColorDataLayout dataLayout, ColorDataElementType dataElementType)
 		{
 			DualityApp.GuardSingleThreadState();
 
@@ -150,7 +150,7 @@ namespace Duality.Backend.DefaultOpenTK
 			// Load pixel data to video memory
 			GL.TexImage2D(TextureTarget.Texture2D, 0, 
 				ToOpenTKPixelFormat(format), width, height, 0, 
-				GLPixelFormat.Rgba, PixelType.UnsignedByte, 
+				dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), 
 				data);
 
 			this.width = width;
@@ -159,7 +159,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 			GL.BindTexture(TextureTarget.Texture2D, lastTexId);
 		}
-		void INativeTexture.GetData<T>(T[] target)
+		void INativeTexture.GetData<T>(T[] target, ColorDataLayout dataLayout, ColorDataElementType dataElementType)
 		{
 			DualityApp.GuardSingleThreadState();
 
@@ -168,7 +168,7 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.BindTexture(TextureTarget.Texture2D, this.handle);
 			
 			GL.GetTexImage(TextureTarget.Texture2D, 0, 
-				GLPixelFormat.Rgba, PixelType.UnsignedByte, 
+				dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), 
 				target);
 
 			GL.BindTexture(TextureTarget.Texture2D, lastTexId);

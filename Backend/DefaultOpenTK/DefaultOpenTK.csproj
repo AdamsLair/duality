@@ -47,12 +47,14 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\DefaultOpenTK\ExtMethodsColorDataElementType.cs" />
     <Compile Include="Backend\DefaultOpenTK\GameWindowKeyboardInputSource.cs" />
     <Compile Include="Backend\DefaultOpenTK\GameWindowMouseInputSource.cs" />
     <Compile Include="Backend\DefaultOpenTK\GlobalGamepadInputSource.cs" />
     <Compile Include="Backend\DefaultOpenTK\GlobalJoystickInputSource.cs" />
     <Compile Include="Backend\DefaultOpenTK\GraphicsBackend.cs" />
     <Compile Include="Backend\DefaultOpenTK\NativeRenderTarget.cs" />
+    <Compile Include="Backend\DefaultOpenTK\ExtMethodsColorDataLayout.cs" />
     <Compile Include="Backend\DefaultOpenTK\NativeShaderPart.cs" />
     <Compile Include="Backend\DefaultOpenTK\NativeShaderProgram.cs" />
     <Compile Include="Backend\DefaultOpenTK\NativeWindow.cs" />
