@@ -13,6 +13,7 @@ namespace Duality.Audio
 	/// <summary>
 	/// An instance of a <see cref="Duality.Resources.Sound"/>.
 	/// </summary>
+	[DontSerialize]
 	public sealed class SoundInstance : IDisposable
 	{
 		[FlagsAttribute]

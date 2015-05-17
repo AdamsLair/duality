@@ -6,6 +6,7 @@ using NVorbis;
 
 namespace Duality.Audio
 {
+	[DontSerialize]
 	public class VorbisStreamHandle : IDisposable
 	{
 		private bool disposed;

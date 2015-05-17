@@ -16,6 +16,7 @@ namespace Duality.Audio
 	/// <summary>
 	/// Provides functionality to play and manage sound in Duality.
 	/// </summary>
+	[DontSerialize]
 	public sealed class SoundDevice : IDisposable
 	{
 		private	bool					disposed		= false;
