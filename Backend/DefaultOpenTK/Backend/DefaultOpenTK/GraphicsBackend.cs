@@ -12,6 +12,7 @@ using Duality.Resources;
 
 namespace Duality.Backend.DefaultOpenTK
 {
+	[DontSerialize]
 	public class GraphicsBackend : IGraphicsBackend, IVertexUploader
 	{
 		private static GraphicsBackend activeInstance = null;

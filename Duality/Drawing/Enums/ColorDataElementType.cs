@@ -5,7 +5,7 @@ using System.Linq;
 namespace Duality.Drawing
 {
 	/// <summary>
-	/// Describes the type of a color datas individual elements (R, G, B, ...)
+	/// Describes the type of a color values individual elements (R, G, B, ...)
 	/// </summary>
 	public enum ColorDataElementType
 	{
