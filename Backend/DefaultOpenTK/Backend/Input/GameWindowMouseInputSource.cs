@@ -41,8 +41,8 @@ namespace Duality.Backend.DefaultOpenTK
 		public GameWindowMouseInputSource(GameWindow window)
 		{
 			this.window = window;
-			this.window.Mouse.Enter += this.device_Enter;
-			this.window.Mouse.Leave += this.device_Leave;
+			this.window.MouseEnter += this.device_Enter;
+			this.window.MouseLeave += this.device_Leave;
 		}
 
 		private void device_Enter(object sender, EventArgs e)

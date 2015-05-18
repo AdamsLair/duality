@@ -43,19 +43,14 @@ namespace Duality.Backend.DefaultOpenTK
 		public GameWindowKeyboardInputSource(GameWindow window)
 		{
 			this.window = window;
-			this.window.Keyboard.GotFocus += this.device_GotFocus;
-			this.window.Keyboard.LostFocus += this.device_LostFocus;
+			this.window.FocusedChanged += this.window_FocusedChanged;
 			this.window.Keyboard.KeyDown += this.device_KeyDown;
 			this.window.KeyPress += this.window_KeyPress;
 		}
 
-		private void device_LostFocus(object sender, EventArgs e)
+		private void window_FocusedChanged(object sender, EventArgs e)
 		{
-			this.hasFocus = false;
-		}
-		private void device_GotFocus(object sender, EventArgs e)
-		{
-			this.hasFocus = true;
+			this.hasFocus = this.window.Focused;
 		}
 		private void device_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
 		{
