@@ -607,7 +607,7 @@ namespace Duality.Audio
 			this.curPriority = (int)Math.Round(priorityTemp / Math.Sqrt(DualityApp.Sound.GetNumPlaying(this.sound))); 
 
 			// Initially play the source
-			if (stateTemp == ALSourceState.Initial && !this.paused)
+			if (this.native.IsInitial && !this.paused)
 			{
 				if (audioDataRes.IsStreamed)
 				{

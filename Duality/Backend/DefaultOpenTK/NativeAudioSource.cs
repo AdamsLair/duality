@@ -20,6 +20,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 
 		private int		handle		= 0;
+		private	bool	isInitial	= true;
 		private	bool	isStreamed	= false;
 		private IAudioStreamProvider	streamProvider	= null;
 
@@ -31,6 +32,10 @@ namespace Duality.Backend.DefaultOpenTK
 		public int Handle
 		{
 			get { return this.handle; }
+		}
+		bool INativeAudioSource.IsInitial
+		{
+			get { return this.isInitial; }
 		}
 		bool INativeAudioSource.IsFinished
 		{
@@ -60,15 +65,27 @@ namespace Duality.Backend.DefaultOpenTK
 
 		void INativeAudioSource.Play(INativeAudioBuffer buffer)
 		{
-			this.isStreamed = false;
-			AL.SourceQueueBuffer(this.handle, (buffer as NativeAudioBuffer).Handle);
-			AL.SourcePlay(handle);
+			lock (this.strLock)
+			{
+				if (!this.isInitial) throw new InvalidOperationException("Native audio source already in use. To re-use an audio source, reset it first.");
+				this.isInitial = false;
+
+				AL.SourceQueueBuffer(this.handle, (buffer as NativeAudioBuffer).Handle);
+				AL.SourcePlay(handle);
+			}
 		}
 		void INativeAudioSource.Play(IAudioStreamProvider streamingProvider)
 		{
-			this.isStreamed = true;
-			this.streamProvider = streamingProvider;
-			AudioBackend.ActiveInstance.EnqueueForStreaming(this);
+			lock (this.strLock)
+			{
+				if (!this.isInitial) throw new InvalidOperationException("Native audio source already in use. To re-use an audio source, reset it first.");
+				this.isInitial = false;
+
+				this.isStreamed = true;
+				this.strStopReq = StopRequest.None;
+				this.streamProvider = streamingProvider;
+				AudioBackend.ActiveInstance.EnqueueForStreaming(this);
+			}
 		}
 		void INativeAudioSource.Stop()
 		{
@@ -80,7 +97,9 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void INativeAudioSource.Reset()
 		{
+			this.ResetLocalState();
 			this.ResetSourceState();
+			this.isInitial = true;
 		}
 		void IDisposable.Dispose()
 		{
@@ -100,6 +119,14 @@ namespace Duality.Backend.DefaultOpenTK
 					this.handle = 0;
 				}
 
+				this.ReleaseStreamBuffers();
+			}
+		}
+
+		private void ReleaseStreamBuffers()
+		{
+			lock (this.strLock)
+			{
 				if (this.strAlBuffers != null)
 				{
 					for (int i = 0; i < this.strAlBuffers.Length; i++)
@@ -114,7 +141,17 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 			}
 		}
+		private void ResetLocalState()
+		{
+			lock (this.strLock)
+			{
+				this.strStopReq = StopRequest.Immediately;
+				this.isStreamed = false;
+				this.streamProvider = null;
 
+				this.ReleaseStreamBuffers();
+			}
+		}
 		private void ResetSourceState()
 		{
 			lock (this.strLock)

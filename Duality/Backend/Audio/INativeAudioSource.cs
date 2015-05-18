@@ -7,6 +7,10 @@ namespace Duality.Backend
 	public interface INativeAudioSource : IDisposable
 	{
 		/// <summary>
+		/// [GET] Whether the audio source is in its initial state, i.e. ready to be used by a new sound instance.
+		/// </summary>
+		bool IsInitial { get; }
+		/// <summary>
 		/// [GET] Whether the audio source is completely finished with playing audio.
 		/// </summary>
 		bool IsFinished { get; }
