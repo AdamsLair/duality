@@ -588,6 +588,8 @@ namespace Duality.Drawing
 		}
 		public void Render(ClearFlag clearFlags, ColorRgba clearColor, float clearDepth)
 		{
+			if (DualityApp.GraphicsBackend == null) return;
+
 			// Process drawcalls
 			this.OptimizeBatches();
 			RenderOptions options = new RenderOptions

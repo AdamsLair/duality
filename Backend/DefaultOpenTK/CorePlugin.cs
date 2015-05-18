@@ -5,6 +5,7 @@ using System.Threading;
 
 using Duality;
 using Duality.Resources;
+using Duality.Input;
 
 namespace Duality.Backend.DefaultOpenTK
 {
@@ -20,6 +21,21 @@ namespace Duality.Backend.DefaultOpenTK
 
 			GlobalGamepadInputSource.UpdateAvailableDecives(DualityApp.Gamepads);
 			GlobalJoystickInputSource.UpdateAvailableDecives(DualityApp.Joysticks);
+		}
+		protected override void OnDisposePlugin()
+		{
+			base.OnDisposePlugin();
+
+			foreach (GamepadInput gamepad in DualityApp.Gamepads.ToArray())
+			{
+				if (gamepad.Source is GlobalGamepadInputSource)
+					DualityApp.Gamepads.RemoveSource(gamepad.Source);
+			}
+			foreach (JoystickInput joystick in DualityApp.Joysticks.ToArray())
+			{
+				if (joystick.Source is GlobalJoystickInputSource)
+					DualityApp.Joysticks.RemoveSource(joystick.Source);
+			}
 		}
 		
 		/// <summary>
