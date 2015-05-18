@@ -41,6 +41,7 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get
 			{
+				if (this.isInitial) return false;
 				lock (this.strLock)
 				{
 					ALSourceState stateTemp = AL.GetSourceState(this.handle);

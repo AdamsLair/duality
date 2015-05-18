@@ -504,12 +504,8 @@ namespace Duality.Audio
 				}
 			}
 
-			// Determine source state, if available
-			ALSourceState stateTemp = ALSourceState.Stopped;
-			if (this.native != null) stateTemp = AL.GetSourceState((this.native as Backend.DefaultOpenTK.NativeAudioSource).Handle);
-
 			// If the source is stopped / finished, dispose and return
-			if (this.native.IsFinished)
+			if (this.native == null || this.native.IsFinished)
 			{
 				this.Dispose();
 				return;
@@ -553,6 +549,10 @@ namespace Duality.Audio
 			if (this.native != null)
 			{
 				int handle = (this.native as Backend.DefaultOpenTK.NativeAudioSource).Handle;
+
+				// Determine source state, if available
+				ALSourceState stateTemp = AL.GetSourceState(handle);
+
 				if (this.is3D)
 				{
 					// Hack: Relative always dirty to support switching listeners without establishing a notifier-event

@@ -275,6 +275,16 @@ namespace Duality.Audio
 			this.sounds.Add(inst);
 			return inst;
 		}
+		/// <summary>
+		/// Stops all currently playing sounds.
+		/// </summary>
+		public void StopAll()
+		{
+			for (int i = this.sounds.Count - 1; i >= 0; i--)
+			{
+				this.sounds[i].Stop();
+			}
+		}
 		
 		private void DualityApp_AppDataChanged(object sender, EventArgs e)
 		{
