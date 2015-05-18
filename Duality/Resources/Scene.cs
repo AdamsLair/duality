@@ -24,10 +24,6 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
-		/// <summary>
-		/// A Scene resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Scene));
 		private const float PhysicsAccStart = Time.MsPFMult;
 
 

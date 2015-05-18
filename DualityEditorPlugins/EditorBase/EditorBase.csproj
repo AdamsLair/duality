@@ -60,20 +60,44 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EditorActions.cs" />
+    <Compile Include="DataConverters\ComponentFromSound.cs" />
+    <Compile Include="DataConverters\ComponentFromMaterial.cs" />
+    <Compile Include="DataConverters\ComponentFromFont.cs" />
+    <Compile Include="DataConverters\BatchInfoFromMaterial.cs" />
+    <Compile Include="DataConverters\SoundFromAudioData.cs" />
+    <Compile Include="DataConverters\PixmapFromTexture.cs" />
+    <Compile Include="DataConverters\TextureFromPixmap.cs" />
+    <Compile Include="DataConverters\TextureFromMaterial.cs" />
+    <Compile Include="DataConverters\MaterialFromTexture.cs" />
+    <Compile Include="DataConverters\MaterialFromBatchInfo.cs" />
+    <Compile Include="DataConverters\PrefabFromGameObject.cs" />
+    <Compile Include="DataConverters\GameObjFromComponents.cs" />
+    <Compile Include="DataConverters\GameObjFromPrefab.cs" />
+    <Compile Include="EditorActions\AudioDataToSound.cs" />
+    <Compile Include="EditorActions\FocusGameObject.cs" />
+    <Compile Include="EditorActions\OpenScene.cs" />
+    <Compile Include="EditorActions\InstantiatePrefab.cs" />
+    <Compile Include="EditorActions\OpenResource.cs" />
+    <Compile Include="EditorActions\ShaderToProgram.cs" />
+    <Compile Include="EditorActions\TextureToMaterial.cs" />
+    <Compile Include="EditorActions\PixmapToTexture.cs" />
+    <Compile Include="EditorActions\FocusComponent.cs" />
     <Compile Include="EditorBasePlugin.cs" />
     <Compile Include="Importers\AudioDataFileImporter.cs" />
     <Compile Include="Importers\FontFileImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataConverters.cs" />
+    <Compile Include="DataConverters\AudioDataFromSound.cs" />
+    <Compile Include="PreviewGenerators\PixmapPreviewGenerator.cs" />
+    <Compile Include="PreviewGenerators\AudioDataPreviewGenerator.cs" />
+    <Compile Include="PreviewGenerators\SoundPreviewGenerator.cs" />
     <Compile Include="Properties\EditorBaseRes.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>EditorBaseRes.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\EditorBaseResCache.cs" />
-    <Compile Include="PreviewGenerators.cs" />
+    <Compile Include="PreviewGenerators\FontPreviewGenerator.cs" />
     <Compile Include="PropertyEditors\BatchInfoPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ComponentPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Components\RigidBodyPropertyEditor.cs" />

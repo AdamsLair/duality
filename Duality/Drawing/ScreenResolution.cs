@@ -5,8 +5,28 @@ namespace Duality.Drawing
 {
 	public struct ScreenResolution
 	{
-		public int Width { get; set; }
-		public int Height { get; set; }
-		public float RefreshRate { get; set; }
+		private int width;
+		private int height;
+		private float refreshRate;
+
+		public int Width
+		{
+			get { return this.width; }
+		}
+		public int Height
+		{
+			get { return this.height; }
+		}
+		public float RefreshRate
+		{
+			get { return this.refreshRate; }
+		}
+
+		public ScreenResolution(int width, int height, float refreshRate)
+		{
+			this.width = width;
+			this.height = height;
+			this.refreshRate = refreshRate;
+		}
 	}
 }

@@ -10,6 +10,7 @@ using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
 
 using Duality;
 using Duality.Resources;
+using Duality.Audio;
 using Duality.Editor;
 using Duality.Editor.Plugins.Base.Properties;
 

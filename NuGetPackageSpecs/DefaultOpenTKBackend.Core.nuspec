@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
+    <version>1.0.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>OpenTK Backend</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/DefaultOpenTKBackend.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>The default backend layer for Duality.</summary>
+    <description>The default backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
+	<tags>Duality Core Plugin Backend</tags>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.0.0" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Backend\DefaultOpenTK\bin\Release\DefaultOpenTKBackend.core.dll" target="lib" />
+    <file src="..\Backend\DefaultOpenTK\bin\Release\DefaultOpenTKBackend.core.pdb" target="lib" />
+    <file src="..\Backend\DefaultOpenTK\bin\Release\OpenALSoft32.dll" target="lib" />
+    <file src="..\Backend\DefaultOpenTK\bin\Release\OpenALSoft64.dll" target="lib" />
+  </files>
+</package>

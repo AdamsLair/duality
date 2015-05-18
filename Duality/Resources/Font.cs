@@ -25,11 +25,6 @@ namespace Duality.Resources
 	public class Font : Resource
 	{
 		/// <summary>
-		/// A Font resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Font));
-		
-		/// <summary>
 		/// A generic <see cref="MonoSpace">monospace</see> Font (Size 8) that has been loaded from your systems font library.
 		/// This is usually "Courier New".
 		/// </summary>
@@ -103,11 +98,6 @@ namespace Duality.Resources
 		}
 
 		
-		/// <summary>
-		/// Refers to a null reference Font.
-		/// </summary>
-		/// <seealso cref="ContentRef{T}.Null"/>
-		public static readonly ContentRef<Font> None			= ContentRef<Font>.Null;
 		/// <summary>
 		/// A string containing all characters that are supported by Duality.
 		/// </summary>

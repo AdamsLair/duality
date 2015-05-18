@@ -3,8 +3,6 @@
 using Duality.Properties;
 using Duality.Editor;
 
-using OpenTK.Graphics.OpenGL;
-
 
 namespace Duality.Resources
 {
@@ -15,11 +13,6 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFragmentShader)]
 	public class FragmentShader : AbstractShader
 	{
-		/// <summary>
-		/// A FragmentShader resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(FragmentShader));
-		
 		/// <summary>
 		/// [GET] A minimal FragmentShader. It performs a texture lookup
 		/// and applies vertex-coloring.
@@ -60,9 +53,9 @@ namespace Duality.Resources
 		}
 
 
-		protected override ShaderType OglShaderType
+		protected override ShaderType Type
 		{
-			get { return ShaderType.FragmentShader; }
+			get { return ShaderType.Fragment; }
 		}
 		
 		public FragmentShader() : base(DefaultContent.MinimalFrag) {}

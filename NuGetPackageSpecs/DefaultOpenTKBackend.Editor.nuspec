@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Editor.Backend.DefaultOpenTK</id>
+    <version>1.0.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>OpenTK Editor Backend</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/DefaultOpenTKBackend.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>The default backend layer for the Duality editor.</summary>
+    <description>The default backend layer for the Duality editor. It uses OpenGL WinForms controls to integrate game views with editor UI.</description>
+	<tags>Duality Editor Plugin Backend</tags>
+    <dependencies>
+      <dependency id="AdamsLair.Duality.Backend.DefaultOpenTK" version="1.0.0" />
+      <dependency id="AdamsLair.Duality" version="2.0.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.0.0" />
+      <dependency id="AdamsLair.OpenTK" version="1.1.1" />
+      <dependency id="AdamsLair.OpenTK.GLControl" version="1.1.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Backend\DefaultOpenTKEditor\bin\Release\DefaultOpenTKBackend.editor.dll" target="lib" />
+    <file src="..\Backend\DefaultOpenTKEditor\bin\Release\DefaultOpenTKBackend.editor.pdb" target="lib" />
+  </files>
+</package>

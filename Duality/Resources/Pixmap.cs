@@ -26,11 +26,6 @@ namespace Duality.Resources
 	public class Pixmap : Resource
 	{
 		/// <summary>
-		/// A Pixmap resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Pixmap));
-
-		/// <summary>
 		/// Represents an unknown Pixmap version.
 		/// </summary>
 		private const int ResFormat_Version_Unknown		= 0;

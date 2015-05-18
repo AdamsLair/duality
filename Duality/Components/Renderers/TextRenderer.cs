@@ -21,7 +21,7 @@ namespace Duality.Components.Renderers
 		protected	FormattedText			text		= new FormattedText("Hello World");
 		protected	BatchInfo				customMat	= null;
 		protected	ColorRgba				colorTint	= ColorRgba.White;
-		protected	ContentRef<Material>	iconMat		= ContentRef<Material>.Null;
+		protected	ContentRef<Material>	iconMat		= null;
 		protected	int						offset		= 0;
 		[DontSerialize] protected	VertexC1P3T2[][]	vertFont	= null;
 		[DontSerialize] protected	VertexC1P3T2[]		vertIcon	= null;
@@ -80,7 +80,7 @@ namespace Duality.Components.Renderers
 			get { return this.text.TextMetrics; }
 		}
 		/// <summary>
-		/// [GET / SET] A custom, local <see cref="Duality.Resources.BatchInfo"/> overriding the texts own <see cref="Duality.Resources.Font.Material">
+		/// [GET / SET] A custom, local <see cref="Duality.Drawing.BatchInfo"/> overriding the texts own <see cref="Duality.Resources.Font.Material">
 		/// Materials</see>. Note that it does not override each <see cref="Duality.Resources.Font">Fonts</see> Texture, but their DrawTechniques and
 		/// main colors.
 		/// </summary>

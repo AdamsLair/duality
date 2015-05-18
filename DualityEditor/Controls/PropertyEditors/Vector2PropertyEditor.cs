@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using Vector2 = OpenTK.Vector2;
-
 using Duality;
 
 namespace Duality.Editor.Controls.PropertyEditors

@@ -167,7 +167,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 	}
 	public class ResourceNode : NodeBase
 	{
-		private	IContentRef	res		= ContentRef<Resource>.Null;
+		private	IContentRef	res		= null;
 		private	Type		resType	= null;
 
 		public IContentRef ResLink
@@ -187,7 +187,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		{
 			string[] fileNameSplit = Path.GetFileNameWithoutExtension(path).Split('.');
 
-			this.res.Path = path;
+			this.res = new ContentRef<Resource>(null, path);
 			this.resType = Resource.GetTypeByFileName(path);
 			this.ApplyPathToName();
 		}

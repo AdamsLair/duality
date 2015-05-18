@@ -66,9 +66,9 @@ namespace Duality.Editor.Plugins.Base
 			string ext = Path.GetExtension(srcFile).ToLower();
 			string targetResPath;
 			if (ext == SourceFileExtVertex)
-				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), VertexShader.FileExt);
+				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Resource.GetFileExtByType<VertexShader>());
 			else
-				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), FragmentShader.FileExt);
+				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Resource.GetFileExtByType<FragmentShader>());
 			return new string[] { targetResPath };
 		}
 	}

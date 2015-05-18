@@ -149,3 +149,8 @@ Other/NightlyBuild/NightlyBuilder.exe.config
 Other/NightlyBuild/NightlyBuilder.vshost.exe.config
 DualityPrimitives/bin/
 DualityPrimitives/obj/
+Backend/DefaultOpenTK/bin/
+Backend/DefaultOpenTK/obj/
+DualityLauncher/DualityLauncher.csproj.user
+Backend/DefaultOpenTKEditor/obj/
+Backend/DefaultOpenTKEditor/bin/

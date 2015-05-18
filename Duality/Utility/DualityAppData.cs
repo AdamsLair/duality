@@ -16,13 +16,14 @@ namespace Duality
 		private	string				authorName				= "Unknown";
 		private	string				websiteUrl				= "http://www.adamslair.net";
 		private	uint				version					= 0;
-		private	ContentRef<Scene>	startScene				= ContentRef<Scene>.Null;
+		private	ContentRef<Scene>	startScene				= null;
 		private	float				speedOfSound			= 360.0f;
 		private	float				soundDopplerFactor		= 1.0f;
 		private	float				physicsVelThreshold		= 0.5f * PhysicsUnit.VelocityToDuality;
 		private	bool				physicsFixedTime		= false;
 		private	bool				localUserData			= false;
 		private	bool				multisampleBackBuffer	= true;
+		private string[]			skipBackends			= null;
 		private	object				customData				= null;
 
 		/// <summary>
@@ -68,7 +69,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET / SET] The speed of sound. While this is technically a unitless value, you might assume something like "meters per second".
-		/// It is used to calculate the doppler effect of <see cref="SoundInstance">SoundInstances</see> that are moving relative to the
+		/// It is used to calculate the doppler effect of <see cref="Duality.Audio.SoundInstance">SoundInstances</see> that are moving relative to the
 		/// <see cref="Duality.Components.SoundListener"/>.
 		/// </summary>
 		public float SpeedOfSound
@@ -118,6 +119,14 @@ namespace Duality
 		{
 			get { return this.multisampleBackBuffer; }
 			set { this.multisampleBackBuffer = value; }
+		}
+		/// <summary>
+		/// [GET / SET] An optional list of backend <see cref="Duality.Backend.IDualityBackend.Id"/> values to skip when loading.
+		/// </summary>
+		public string[] SkipBackends
+		{
+			get { return this.skipBackends; }
+			set { this.skipBackends = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Use this property to store custom application data.

@@ -1,39 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using GameWindow = OpenTK.GameWindow;
-using GameWindowFlags = OpenTK.GameWindowFlags;
-using OpenTK.Graphics;
-
 using Duality;
+using Duality.Backend;
 using Duality.Resources;
 
 namespace Duality.VisualStudio
 {
-	public class DualityDebuggingTester : GameWindow
+	public static class DualityDebuggingTester 
 	{
-		public DualityDebuggingTester(int w, int h, GraphicsMode mode, string title, GameWindowFlags flags) : base(w, h, mode, title, flags) {}
-
-		/// <summary>
-		/// Der Haupteinstiegspunkt für die Anwendung.
-		/// </summary>
 		[STAThread]
 		public static void Main()
 		{
 			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game);
-			using (DualityDebuggingTester launcherWindow = new DualityDebuggingTester(
-				DualityApp.UserData.GfxWidth, 
-				DualityApp.UserData.GfxHeight, 
-				DualityApp.DefaultMode, 
-				DualityApp.AppData.AppName,
-				GameWindowFlags.Default))
+			
+			WindowOptions options = new WindowOptions
 			{
-				// Initialize default content
-				launcherWindow.MakeCurrent();
-				DualityApp.TargetResolution = new Vector2(launcherWindow.Width, launcherWindow.Height);
-				DualityApp.TargetMode = launcherWindow.Context.GraphicsMode;
-				DualityApp.InitGraphics();
-
+				Width = 800,
+				Height = 600
+			};
+			using (INativeWindow launcherWindow = DualityApp.OpenWindow(options))
+			{
 				// Run tests
 				BitmapDebuggerVisualizer.TestShow(Pixmap.DualityIcon.Res);
 				BitmapDebuggerVisualizer.TestShow(Pixmap.DualityIcon.Res.MainLayer);

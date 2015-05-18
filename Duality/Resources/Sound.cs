@@ -4,6 +4,7 @@ using System.Linq;
 
 using Duality.Editor;
 using Duality.Properties;
+using Duality.Audio;
 
 
 namespace Duality.Resources
@@ -23,11 +24,6 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSound)]
 	public class Sound : Resource
 	{
-		/// <summary>
-		/// A Sound resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Sound));
-		
 		/// <summary>
 		/// [GET] A simple beep Sound.
 		/// </summary>
@@ -50,7 +46,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public static ContentRef<Sound> CreateFromAudioData(ContentRef<AudioData> baseRes)
 		{
-			string resPath = PathHelper.GetFreePath(baseRes.FullName, FileExt);
+			string resPath = PathHelper.GetFreePath(baseRes.FullName, Resource.GetFileExtByType(typeof(Sound)));
 			Sound res = new Sound(baseRes);
 			res.Save(resPath);
 			return res;
@@ -68,7 +64,7 @@ namespace Duality.Resources
 			string basePath = baseRes.FirstOrDefault().FullName;
 			if (name != null) basePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(basePath), name);
 
-			string resPath = PathHelper.GetFreePath(basePath, FileExt);
+			string resPath = PathHelper.GetFreePath(basePath, Resource.GetFileExtByType(typeof(Sound)));
 			Sound res = new Sound(baseRes);
 			res.Save(resPath);
 			return res;
@@ -115,7 +111,7 @@ namespace Duality.Resources
 		private	float		pitchFactor		= 1.0f;
 		private	float		fadeOutAt		= 0.0f;
 		private	float		fadeOutTime		= 0.0f;
-		private	SoundType	type			= SoundType.EffectWorld;
+		private	SoundType	type			= SoundType.World;
 		private	List<ContentRef<AudioData>>	audioData	= null;
 
 		/// <summary>
@@ -158,7 +154,7 @@ namespace Duality.Resources
 			set { this.type = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Maximum number of <see cref="Duality.SoundInstance">SoundInstances</see> of this Sound that can
+		/// [GET / SET] Maximum number of <see cref="Duality.Audio.SoundInstance">SoundInstances</see> of this Sound that can
 		/// play simultaneously. If exceeded, any new instances of it are discarded.
 		/// </summary>
 		public int MaxInstances
@@ -183,7 +179,7 @@ namespace Duality.Resources
 			set { this.pitchFactor = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Play time in seconds at which <see cref="Duality.SoundInstance">SoundInstances</see> of this Sound
+		/// [GET / SET] Play time in seconds at which <see cref="Duality.Audio.SoundInstance">SoundInstances</see> of this Sound
 		/// automatically fade out.
 		/// </summary>
 		public float FadeOutAt
@@ -276,17 +272,12 @@ namespace Duality.Resources
 			return MathF.Rnd.OneOf(this.audioData);
 		}
 
-		/// <summary>
-		/// Assigns new <see cref="Duality.Resources.AudioData"/> to this Sound.
-		/// </summary>
-		/// <param name="data"></param>
 		private void PreloadData()
 		{
 			if (this.audioData == null) return;
 			for (int i = 0; i < this.audioData.Count; i++)
 			{
-				if (this.audioData[i].IsAvailable)
-					this.audioData[i].Res.SetupAlBuffer();
+				this.audioData[i].MakeAvailable();
 			}
 		}
 

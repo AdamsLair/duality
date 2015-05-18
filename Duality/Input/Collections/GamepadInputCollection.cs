@@ -21,23 +21,5 @@ namespace Duality.Input
 		{
 			return new GamepadInput(true);
 		}
-
-		public void AddGlobalDevices()
-		{
-			const int MinDeviceCheckCount = 8;
-			int deviceIndex = 0;
-			while (true)
-			{
-				GlobalGamepadInputSource gamepad = new GlobalGamepadInputSource(deviceIndex);
-				gamepad.UpdateState();
-
-				if (gamepad.IsAvailable)
-					this.AddSource(gamepad);
-				else if (deviceIndex >= MinDeviceCheckCount)
-					break;
-
-				deviceIndex++;
-			}
-		}
 	}
 }

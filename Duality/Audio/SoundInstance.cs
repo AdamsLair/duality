@@ -3,91 +3,38 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
 
-using OpenTK;
-using OpenTK.Audio.OpenAL;
-
 using Duality.Resources;
+using Duality.Backend;
 
-namespace Duality
+namespace Duality.Audio
 {
-	/// <summary>
-	/// Describes the type of a sound. This is used for determining which specific
-	/// volume settings affect each sound.
-	/// </summary>
-	public enum SoundType
-	{
-		/// <summary>
-		/// A sound effect taking place in the game world.
-		/// </summary>
-		EffectWorld,
-		/// <summary>
-		/// A User Interface sound effect.
-		/// </summary>
-		EffectUI,
-		/// <summary>
-		/// A sound that is considered being game music.
-		/// </summary>
-		Music,
-		/// <summary>
-		/// A sound that is considered being spoken language.
-		/// </summary>
-		Speech
-	}
-
 	/// <summary>
 	/// An instance of a <see cref="Duality.Resources.Sound"/>.
 	/// </summary>
-	public sealed class SoundInstance : IDisposable
+	[DontSerialize]
+	public sealed class SoundInstance : IDisposable, IAudioStreamProvider
 	{
-		[FlagsAttribute]
-		private enum DirtyFlag : uint
-		{
-			None		= 0x00000000,
-
-			Pos			= 0x00000001,
-			Vel			= 0x00000002,
-			Pitch		= 0x00000004,
-			Loop		= 0x00000008,
-			MaxDist		= 0x00000010,
-			RefDist		= 0x00000020,
-			Relative	= 0x00000040,
-			Vol			= 0x00000080,
-			Paused		= 0x00000100,
-
-			AttachedTo	= Pos | Vel,
-
-			All			= 0xFFFFFFFF
-		}
-		private enum StopRequest
-		{
-			None,
-			EndOfStream,
-			Immediately
-		}
-
-		public const int AlSource_NotYetAssigned = -1;
-		public const int AlSource_NotAvailable = 0;
 		public const int PriorityStealThreshold = 15;
 		public const int PriorityStealLoopedThreshold = 30;
 
 
 		private	ContentRef<Sound>		sound		= null;
 		private	ContentRef<AudioData>	audioData	= null;
-		private	bool			disposed		= false;
-		private	int				alSource		= AlSource_NotYetAssigned;
-		private	GameObject		attachedTo		= null;
-		private	Vector3			pos				= Vector3.Zero;
-		private	Vector3			vel				= Vector3.Zero;
-		private	float			vol				= 1.0f;
-		private	float			pitch			= 1.0f;
-		private	float			panning			= 0.0f;
-		private	bool			is3D			= false;
-		private	bool			looped			= false;
-		private	bool			paused			= false;
-		private	bool			registered		= false;
-		private	int				curPriority		= 0;
-		private	DirtyFlag		dirtyState		= DirtyFlag.All;
-		private	float			playTime		= 0.0f;
+		private	INativeAudioSource		native		= null;
+		private	bool				disposed		= false;
+		private	bool				notYetAssigned	= true;
+		private	GameObject			attachedTo		= null;
+		private	Vector3				pos				= Vector3.Zero;
+		private	Vector3				vel				= Vector3.Zero;
+		private	float				vol				= 1.0f;
+		private	float				pitch			= 1.0f;
+		private	float				panning			= 0.0f;
+		private	bool				is3D			= false;
+		private	bool				looped			= false;
+		private	bool				paused			= false;
+		private	bool				registered		= false;
+		private	int					curPriority		= 0;
+		private	float				playTime		= 0.0f;
 
 		// Fading
 		private	float			curFade			= 1.0f;
@@ -97,13 +44,16 @@ namespace Duality
 		private	float			fadeWaitEnd		= 0.0f;
 
 		// Streaming
-		private	bool				isStreamed		= false;
-		private	VorbisStreamHandle	strOvStr		= null;
-		private	int[]				strAlBuffers	= null;
-		private	StopRequest			strStopReq		= StopRequest.None;
-		private	object				strLock			= new object();
+		private	VorbisStreamHandle	strOvStr	= null;
 		
 
+		/// <summary>
+		/// [GET] The currently used native audio source, as provided by the Duality backend. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public INativeAudioSource Native
+		{
+			get { return this.native; }
+		}
 		/// <summary>
 		/// [GET] Whether the SoundInstance has been disposed. Disposed objects are not to be
 		/// used anymore and should be treated as null or similar.
@@ -178,7 +128,7 @@ namespace Duality
 		public float Volume
 		{
 			get { return this.vol; }
-			set { this.vol = value; this.dirtyState |= DirtyFlag.Vol; }
+			set { this.vol = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The sounds local pitch factor.
@@ -186,7 +136,7 @@ namespace Duality
 		public float Pitch
 		{
 			get { return this.pitch; }
-			set { this.pitch = value; this.dirtyState |= DirtyFlag.Pitch; }
+			set { this.pitch = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The sounds local stereo panning, ranging from -1.0f (left) to 1.0f (right).
@@ -195,7 +145,7 @@ namespace Duality
 		public float Panning
 		{
 			get { return this.panning; }
-			set { this.panning = value; this.dirtyState |= DirtyFlag.Pos; }
+			set { this.panning = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether the sound is played in a loop.
@@ -203,7 +153,7 @@ namespace Duality
 		public bool Looped
 		{
 			get { return this.looped; }
-			set { this.looped = value; this.dirtyState |= DirtyFlag.Loop; }
+			set { this.looped = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether the sound is currently paused.
@@ -211,7 +161,7 @@ namespace Duality
 		public bool Paused
 		{
 			get { return this.paused; }
-			set { this.paused = value; this.dirtyState |= DirtyFlag.Paused; }
+			set { this.paused = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The sounds position in space. If it is <see cref="AttachedTo">attached</see> to a GameObject,
@@ -254,37 +204,15 @@ namespace Duality
 		{
 			if (manually)
 			{
-				if (this.isStreamed)
-				{
-					lock (this.strLock)
-					{
-						OggVorbis.EndStream(ref this.strOvStr);
-					}
-					this.strStopReq = StopRequest.Immediately;
-				}
-
 				this.attachedTo = null;
 				this.curPriority = -1;
 
-				lock (this.strLock)
+				if (this.native != null)
 				{
-					if (this.alSource > AlSource_NotAvailable)
-					{
-						this.CleanupAlSource();
-						DualityApp.Sound.FreeAlSource(this.alSource);
-						this.alSource = AlSource_NotAvailable;
-					}
-					if (this.strAlBuffers != null)
-					{
-						for (int i = 0; i < this.strAlBuffers.Length; i++)
-						{
-							if (!AL.IsBuffer(this.strAlBuffers[i])) return;
-							AL.DeleteBuffer(this.strAlBuffers[i]);
-						}
-						this.strAlBuffers = null;
-					}
-					this.UnregisterPlaying();
+					this.native.Dispose();
+					this.native = null;
 				}
+				this.UnregisterPlaying();
 			}
 		}
 
@@ -315,9 +243,8 @@ namespace Duality
 		/// </summary>
 		public void Stop()
 		{
-			if (this.alSource > AlSource_NotAvailable) AL.SourceStop(this.alSource);
-			this.strStopReq = StopRequest.Immediately;
-			// The next update will handle everything else
+			if (this.native != null)
+				this.native.Stop();
 		}
 		/// <summary>
 		/// Fades the sound to a specific target value.
@@ -364,30 +291,10 @@ namespace Duality
 			this.fadeTarget = this.curFade;
 		}
 
-		private void CleanupAlSource()
+		private bool GrabNativeSource()
 		{
-			if (this.alSource <= AlSource_NotAvailable) return;
-			lock (this.strLock)
-			{
-				// Do not reuse before-streamed sources, since OpenAL doesn't seem to like that.
-				if (this.isStreamed)
-				{
-					AL.DeleteSource(this.alSource);
-					this.alSource = AL.GenSource();
-				}
-				// Reuse other OpenAL sources
-				else
-				{
-					AL.SourceStop(this.alSource);
-					AL.Source(this.alSource, ALSourcei.Buffer, 0);
-					AL.SourceRewind(this.alSource);
-				}
+			if (this.native != null) return true;
 
-				this.dirtyState = DirtyFlag.All;
-			}
-		}
-		private bool GrabAlSource()
-		{
 			// Retrieve maximum number of sources by kind (2D / 3D)
 			int maxNum = DualityApp.Sound.MaxOpenALSources * 3 / 4;
 			if (!this.is3D) maxNum = DualityApp.Sound.MaxOpenALSources - maxNum;
@@ -400,46 +307,39 @@ namespace Duality
 				curNum < maxNum &&
 				curNumSoundRes < this.sound.Res.MaxInstances)
 			{
-				this.alSource = DualityApp.Sound.RequestAlSource();
+				this.native = DualityApp.AudioBackend.CreateSource();
 			}
 			else
 			{
 				bool searchSimilar = curNumSoundRes >= this.sound.Res.MaxInstances;
-				lock (this.strLock)
+				this.curPriority = this.PreCalcPriority();
+
+				foreach (SoundInstance inst in DualityApp.Sound.Playing)
 				{
-					this.alSource = AlSource_NotAvailable;
-					this.curPriority = this.PreCalcPriority();
-
-					foreach (SoundInstance inst in DualityApp.Sound.Playing)
-					{
-						if (inst.alSource <= AlSource_NotAvailable) continue;
-						if (!searchSimilar && this.is3D != inst.is3D) continue;
-						if (searchSimilar && this.sound.Res != inst.sound.Res) continue;
+					if (inst.native == null) continue;
+					if (!searchSimilar && this.is3D != inst.is3D) continue;
+					if (searchSimilar && this.sound.Res != inst.sound.Res) continue;
 						
-						float ownPrioMult = 1.0f;
-						if (searchSimilar && !inst.Looped) ownPrioMult *= MathF.Sqrt(inst.playTime + 1.0f);
+					float ownPrioMult = 1.0f;
+					if (searchSimilar && !inst.Looped) ownPrioMult *= MathF.Sqrt(inst.playTime + 1.0f);
 							
-						if (this.curPriority * ownPrioMult > inst.curPriority + 
-							(inst.Looped ? PriorityStealLoopedThreshold : PriorityStealThreshold))
-						{
-							lock (inst.strLock)
-							{
-								this.alSource = inst.alSource;
-								this.CleanupAlSource();
-								inst.alSource = AlSource_NotAvailable;
-							}
-							break;
-						}
-						// List sorted by priority - if first fails, all will. Exception: Searching
-						// similar sounds where play times are taken into account
-						if (!searchSimilar)
-							break;
+					if (this.curPriority * ownPrioMult > inst.curPriority + 
+						(inst.Looped ? PriorityStealLoopedThreshold : PriorityStealThreshold))
+					{
+						this.native = inst.native;
+						this.native.Reset();
+						inst.native = null;
+						break;
 					}
-
+					// List sorted by priority - if first fails, all will. Exception: Searching
+					// similar sounds where play times are taken into account
+					if (!searchSimilar)
+						break;
 				}
 			}
 
-			return (this.alSource != AlSource_NotAvailable);
+			this.notYetAssigned = false;
+			return this.native != null;
 		}
 		private int PreCalcPriority()
 		{
@@ -470,12 +370,12 @@ namespace Duality
 		private float GetTypeVolFactor()
 		{
 			float optVolFactor;
-			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.EffectWorld)
+			switch (this.sound.IsAvailable ? this.sound.Res.Type : SoundType.World)
 			{
-				case SoundType.EffectUI:
+				case SoundType.UserInterface:
 					optVolFactor = DualityApp.UserData.SfxEffectVol;
 					break;
-				case SoundType.EffectWorld:
+				case SoundType.World:
 					optVolFactor = DualityApp.UserData.SfxEffectVol;
 					break;
 				case SoundType.Speech:
@@ -508,357 +408,219 @@ namespace Duality
 		/// </summary>
 		public void Update()
 		{
-			if (!DualityApp.Sound.IsAvailable) return;
+			// Check existence of attachTo object
+			if (this.attachedTo != null && this.attachedTo.Disposed) this.attachedTo = null;
 
-			lock (this.strLock)
+			// Retrieve sound resource values
+			Sound soundRes = this.sound.Res;
+			AudioData audioDataRes = this.audioData.Res;
+			if (soundRes == null || audioDataRes == null)
 			{
-				// Check existence of attachTo object
-				if (this.attachedTo != null && this.attachedTo.Disposed) this.attachedTo = null;
+				this.Dispose();
+				return;
+			}
 
-				// Retrieve sound resource values
-				Sound soundRes = this.sound.Res;
-				AudioData audioDataRes = this.audioData.Res;
-				if (soundRes == null || audioDataRes == null)
+			// Set up local variables for state calculation
+			float optVolFactor = this.GetTypeVolFactor();
+			float priorityTemp = 1000.0f;
+			AudioSourceState nativeState = AudioSourceState.Default;
+			nativeState.MinDistance = soundRes.MinDist;
+			nativeState.MaxDistance = soundRes.MaxDist;
+			nativeState.Volume = optVolFactor * soundRes.VolumeFactor * this.vol * this.curFade * this.pauseFade;
+			nativeState.Pitch = soundRes.PitchFactor * this.pitch;
+			priorityTemp *= nativeState.Volume;
+
+			// Calculate 3D source values, distance and priority
+			nativeState.Position = this.pos;
+			nativeState.Velocity = this.vel;
+			if (this.is3D)
+			{
+				Components.Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
+
+				// Attach to object
+				if (this.attachedTo != null && this.attachedTo != DualityApp.Sound.Listener)
 				{
-					this.Dispose();
-					return;
-				}
-				float optVolFactor = this.GetTypeVolFactor();
-				float minDistTemp = soundRes.MinDist;
-				float maxDistTemp = soundRes.MaxDist;
-				float volTemp = optVolFactor * soundRes.VolumeFactor * this.vol * this.curFade * this.pauseFade;
-				float pitchTemp = soundRes.PitchFactor * this.pitch;
-				float priorityTemp = 1000.0f;
-				priorityTemp *= volTemp;
-
-				// Calculate 3D source values, distance and priority
-				Vector3 posAbs = this.pos;
-				Vector3 velAbs = this.vel;
-				if (this.is3D)
-				{
-					Components.Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
-
-					// Attach to object
-					if (this.attachedTo != null && this.attachedTo != DualityApp.Sound.Listener)
-					{
-						MathF.TransformCoord(ref posAbs.X, ref posAbs.Y, attachTransform.Angle);
-						MathF.TransformCoord(ref velAbs.X, ref velAbs.Y, attachTransform.Angle);
-						posAbs += attachTransform.Pos;
-						velAbs += attachTransform.Vel;
-					}
-
-					// Distance check
-					Vector3 listenerPos = DualityApp.Sound.ListenerPos;
-					float dist;
-					if (this.attachedTo != DualityApp.Sound.Listener)
-						dist = MathF.Sqrt(
-							(posAbs.X - listenerPos.X) * (posAbs.X - listenerPos.X) +
-							(posAbs.Y - listenerPos.Y) * (posAbs.Y - listenerPos.Y) +
-							(posAbs.Z - listenerPos.Z) * (posAbs.Z - listenerPos.Z) * 0.25f);
-					else
-						dist = MathF.Sqrt(
-							posAbs.X * posAbs.X +
-							posAbs.Y * posAbs.Y +
-							posAbs.Z * posAbs.Z * 0.25f);
-					if (dist > maxDistTemp)
-					{
-						this.Dispose();
-						return;
-					}
-					else
-						priorityTemp *= Math.Max(0.0f, 1.0f - (dist - minDistTemp) / (maxDistTemp - minDistTemp));
+					MathF.TransformCoord(ref nativeState.Position.X, ref nativeState.Position.Y, attachTransform.Angle);
+					MathF.TransformCoord(ref nativeState.Velocity.X, ref nativeState.Velocity.Y, attachTransform.Angle);
+					nativeState.Position += attachTransform.Pos;
+					nativeState.Velocity += attachTransform.Vel;
 				}
 
-				// Grab an OpenAL source, if not yet assigned
-				if (this.alSource == AlSource_NotYetAssigned)
+				// Distance check
+				Vector3 listenerPos = DualityApp.Sound.ListenerPos;
+				float dist;
+				if (this.attachedTo != DualityApp.Sound.Listener)
 				{
-					if (this.GrabAlSource())
-					{
-						this.RegisterPlaying();
-					}
-					else
-					{
-						this.Dispose();
-						return;
-					}
-				}
-
-				// Determine source state, if available
-				ALSourceState stateTemp = ALSourceState.Stopped;
-				bool sourceAvailable = this.alSource > AlSource_NotAvailable;
-				if (sourceAvailable) stateTemp = AL.GetSourceState(this.alSource);
-
-				// If the source is stopped / finished, dispose and return
-				if (stateTemp == ALSourceState.Stopped && (!audioDataRes.IsStreamed || this.strStopReq != StopRequest.None))
-				{
-					this.Dispose();
-					return;
-				}
-				else if (stateTemp == ALSourceState.Initial && this.strStopReq == StopRequest.Immediately)
-				{
-					this.Dispose();
-					return;
-				} 
-
-				// Fading in and out
-				bool fadeOut = this.fadeTarget <= 0.0f;
-				if (!this.paused)
-				{
-					if (this.fadeTarget != this.curFade)
-					{
-						float fadeTemp = Time.TimeMult * Time.SPFMult / Math.Max(0.05f, this.fadeTimeSec);
-
-						if (this.fadeTarget > this.curFade)
-							this.curFade += fadeTemp;
-						else
-							this.curFade -= fadeTemp;
-
-						if (Math.Abs(this.curFade - this.fadeTarget) < fadeTemp * 2.0f)
-							this.curFade = this.fadeTarget;
-
-						this.dirtyState |= DirtyFlag.Vol;
-					}
-				}
-
-				// Special paused-fading
-				if (this.paused && this.pauseFade > 0.0f)
-				{
-					this.pauseFade = MathF.Max(0.0f, this.pauseFade - Time.TimeMult * Time.SPFMult * 5.0f);
-					this.dirtyState |= DirtyFlag.Paused | DirtyFlag.Vol;
-				}
-				else if (!this.paused && this.pauseFade < 1.0f)
-				{
-					this.pauseFade = MathF.Min(1.0f, this.pauseFade + Time.TimeMult * Time.SPFMult * 5.0f);
-					this.dirtyState |= DirtyFlag.Paused | DirtyFlag.Vol;
-				}
-
-				// Hack: Volume always dirty - just to be sure
-				this.dirtyState |= DirtyFlag.Vol;
-
-				if (sourceAvailable)
-				{
-					if (this.is3D)
-					{
-						// Hack: Relative always dirty to support switching listeners without establishing a notifier-event
-						this.dirtyState |= DirtyFlag.Relative;
-						if (this.attachedTo != null) this.dirtyState |= DirtyFlag.AttachedTo;
-
-						if ((this.dirtyState & DirtyFlag.Relative) != DirtyFlag.None)
-							AL.Source(this.alSource, ALSourceb.SourceRelative, this.attachedTo == DualityApp.Sound.Listener);
-						if ((this.dirtyState & DirtyFlag.Pos) != DirtyFlag.None)
-							AL.Source(this.alSource, ALSource3f.Position, posAbs.X, -posAbs.Y, -posAbs.Z * 0.5f);
-						if ((this.dirtyState & DirtyFlag.Vel) != DirtyFlag.None)
-							AL.Source(this.alSource, ALSource3f.Velocity, velAbs.X, -velAbs.Y, -velAbs.Z);
-					}
-					else
-					{
-						if ((this.dirtyState & DirtyFlag.Relative) != DirtyFlag.None)
-							AL.Source(this.alSource, ALSourceb.SourceRelative, true);
-						if ((this.dirtyState & DirtyFlag.Pos) != DirtyFlag.None)
-							AL.Source(this.alSource, ALSource3f.Position, this.panning, 0.0f, 0.0f);
-						if ((this.dirtyState & DirtyFlag.Vel) != DirtyFlag.None)
-							AL.Source(this.alSource, ALSource3f.Velocity, 0.0f, 0.0f, 0.0f);
-					}
-					if ((this.dirtyState & DirtyFlag.MaxDist) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSourcef.MaxDistance, maxDistTemp);
-					if ((this.dirtyState & DirtyFlag.RefDist) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSourcef.ReferenceDistance, minDistTemp);
-					if ((this.dirtyState & DirtyFlag.Loop) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSourceb.Looping, (this.looped && !audioDataRes.IsStreamed));
-					if ((this.dirtyState & DirtyFlag.Vol) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSourcef.Gain, volTemp);
-					if ((this.dirtyState & DirtyFlag.Pitch) != DirtyFlag.None)
-						AL.Source(this.alSource, ALSourcef.Pitch, pitchTemp);
-					if ((this.dirtyState & DirtyFlag.Paused) != DirtyFlag.None)
-					{
-						if (this.paused && this.pauseFade == 0.0f && stateTemp == ALSourceState.Playing)
-							AL.SourcePause(this.alSource);
-						else if ((!this.paused || this.pauseFade > 0.0f) && stateTemp == ALSourceState.Paused)
-							AL.SourcePlay(this.alSource);
-					}
-				}
-				this.dirtyState = DirtyFlag.None;
-
-				// Update play time
-				if (!this.paused)
-				{
-					this.playTime += MathF.Max(0.5f, pitchTemp) * Time.TimeMult * Time.SPFMult;
-					if (this.sound.Res.FadeOutAt > 0.0f && this.playTime >= this.sound.Res.FadeOutAt)
-						this.FadeOut(this.sound.Res.FadeOutTime);
-				}
-
-				// Finish priority calculation
-				this.curPriority = (int)Math.Round(priorityTemp / Math.Sqrt(DualityApp.Sound.GetNumPlaying(this.sound))); 
-
-				// Initially play the source
-				if (stateTemp == ALSourceState.Initial && !this.paused)
-				{
-					if (audioDataRes.IsStreamed)
-					{
-						this.isStreamed = true;
-						DualityApp.Sound.EnqueueForStreaming(this);
-					}
-					else
-					{
-						AL.SourceQueueBuffer(this.alSource, audioDataRes.AlBuffer);
-						AL.SourcePlay(this.alSource);
-					} 
-				}
-				
-				// Remove faded out sources
-				if (fadeOut && volTemp <= 0.0f)
-				{
-					this.fadeWaitEnd += Time.TimeMult * Time.MsPFMult;
-					// After fading out entirely, wait 50 ms before actually stopping the source to prevent unpleasant audio tick / glitch noises
-					if (this.fadeWaitEnd > 50.0f)
-					{
-						this.Dispose();
-						return;
-					}
+					dist = MathF.Sqrt(
+						(nativeState.Position.X - listenerPos.X) * (nativeState.Position.X - listenerPos.X) +
+						(nativeState.Position.Y - listenerPos.Y) * (nativeState.Position.Y - listenerPos.Y) +
+						(nativeState.Position.Z - listenerPos.Z) * (nativeState.Position.Z - listenerPos.Z) * 0.25f);
 				}
 				else
-					this.fadeWaitEnd = 0.0f;
-
-			}
-
-		}
-
-
-		internal bool PerformStreaming()
-		{
-			lock (this.strLock)
-			{
-				if (this.Disposed) return false;
-				if (!DualityApp.Sound.IsAvailable) return false;
-
-				ALSourceState stateTemp = ALSourceState.Stopped;
-				bool sourceAvailable = this.alSource > AlSource_NotAvailable;
-				if (sourceAvailable) stateTemp = AL.GetSourceState(this.alSource);
-
-				if (stateTemp == ALSourceState.Stopped && this.strStopReq != StopRequest.None)
 				{
-					// Stopped due to regular EOF. If strStopReq is NOT set,
-					// the source stopped playing because it reached the end of the buffer
-					// but in fact only because we were too slow inserting new data.
-					return false;
+					dist = MathF.Sqrt(
+						nativeState.Position.X * nativeState.Position.X +
+						nativeState.Position.Y * nativeState.Position.Y +
+						nativeState.Position.Z * nativeState.Position.Z * 0.25f);
 				}
-				else if (this.strStopReq == StopRequest.Immediately)
-				{
-					// Stopped intentionally due to Stop()
-					if (this.alSource > AlSource_NotAvailable) AL.SourceStop(this.alSource);
-					return false;
-				}
-
-				AudioData audioDataRes = this.audioData.Res;
-				if (!this.sound.IsAvailable || audioDataRes == null)
+				if (dist > nativeState.MaxDistance)
 				{
 					this.Dispose();
-					return false;
+					return;
 				}
+				else
+					priorityTemp *= Math.Max(0.0f, 1.0f - (dist - nativeState.MinDistance) / (nativeState.MaxDistance - nativeState.MinDistance));
+			}
 
-				if (sourceAvailable)
+			if (this.notYetAssigned)
+			{
+				// Grab a native audio source
+				if (this.GrabNativeSource())
 				{
-					if (stateTemp == ALSourceState.Initial)
-					{
-						// Initialize streaming
-						PerformStreamingBegin(audioDataRes);
+					this.RegisterPlaying();
+				}
+				// If there is none available, just stop right there.
+				else
+				{
+					this.Dispose();
+					return;
+				}
+			}
 
-						// Initially play source
-						AL.SourcePlay(this.alSource);
-						stateTemp = AL.GetSourceState(this.alSource);
-					}
+			// If the source is stopped / finished, dispose and return
+			if (this.native == null || this.native.IsFinished)
+			{
+				this.Dispose();
+				return;
+			}
+
+			// Fading in and out
+			bool fadeOut = this.fadeTarget <= 0.0f;
+			if (!this.paused)
+			{
+				if (this.fadeTarget != this.curFade)
+				{
+					float fadeTemp = Time.TimeMult * Time.SPFMult / Math.Max(0.05f, this.fadeTimeSec);
+
+					if (this.fadeTarget > this.curFade)
+						this.curFade += fadeTemp;
 					else
-					{
-						// Stream new data
-						PerformStreamingUpdate(audioDataRes);
+						this.curFade -= fadeTemp;
 
-						// If the source stopped unintentionally, restart it. (See above)
-						if (stateTemp == ALSourceState.Stopped && this.strStopReq == StopRequest.None)
-						{
-							AL.SourcePlay(this.alSource);
-						}
-					}
+					if (Math.Abs(this.curFade - this.fadeTarget) < fadeTemp * 2.0f)
+						this.curFade = this.fadeTarget;
 				}
 			}
 
-			return true;
-		}
-		private void PerformStreamingBegin(AudioData audioDataRes)
-		{
-			// Generate streaming buffers
-			this.strAlBuffers = new int[3];
-			for (int i = 0; i < this.strAlBuffers.Length; ++i)
+			// Special paused-fading
+			if (this.paused && this.pauseFade > 0.0f)
 			{
-				AL.GenBuffers(1, out this.strAlBuffers[i]);
+				this.pauseFade = MathF.Max(0.0f, this.pauseFade - Time.TimeMult * Time.SPFMult * 5.0f);
+			}
+			else if (!this.paused && this.pauseFade < 1.0f)
+			{
+				this.pauseFade = MathF.Min(1.0f, this.pauseFade + Time.TimeMult * Time.SPFMult * 5.0f);
 			}
 
-			// Begin streaming
+			// Apply the sounds state to its internal native audio source
+			if (this.native != null)
+			{
+				if (this.is3D)
+				{
+					nativeState.RelativeToListener = this.attachedTo == DualityApp.Sound.Listener;
+				}
+				else
+				{
+					nativeState.RelativeToListener = true;
+					nativeState.Position = new Vector3(this.panning, 0.0f, 0.0f);
+					nativeState.Velocity = Vector3.Zero;
+				}
+				nativeState.Looped = this.looped;
+				nativeState.Paused = this.paused && this.pauseFade == 0.0f;
+
+				this.native.ApplyState(ref nativeState);
+			}
+
+			// Update play time
+			if (!this.paused)
+			{
+				this.playTime += MathF.Max(0.5f, nativeState.Pitch) * Time.TimeMult * Time.SPFMult;
+				if (this.sound.Res.FadeOutAt > 0.0f && this.playTime >= this.sound.Res.FadeOutAt)
+					this.FadeOut(this.sound.Res.FadeOutTime);
+			}
+
+			// Finish priority calculation
+			this.curPriority = (int)Math.Round(priorityTemp / Math.Sqrt(DualityApp.Sound.GetNumPlaying(this.sound))); 
+
+			// Initially play the source
+			if (this.native.IsInitial && !this.paused)
+			{
+				if (audioDataRes.IsStreamed)
+				{
+					this.native.Play(this);
+				}
+				else if (audioDataRes.Native != null)
+				{
+					this.native.Play(audioDataRes.Native);
+				} 
+			}
+				
+			// Remove faded out sources
+			if (fadeOut && nativeState.Volume <= 0.0f)
+			{
+				this.fadeWaitEnd += Time.TimeMult * Time.MsPFMult;
+				// After fading out entirely, wait 50 ms before actually stopping the source to prevent unpleasant audio tick / glitch noises
+				if (this.fadeWaitEnd > 50.0f)
+				{
+					this.Dispose();
+					return;
+				}
+			}
+			else
+				this.fadeWaitEnd = 0.0f;
+		}
+
+		void IAudioStreamProvider.OpenStream()
+		{
+			AudioData audioDataRes = this.audioData.Res;
 			OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out this.strOvStr);
-
-			// Initially, completely fill all buffers
-			for (int i = 0; i < this.strAlBuffers.Length; ++i)
-			{
-				PcmData pcm;
-				bool eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
-				if (pcm.dataLength > 0)
-				{
-					AL.BufferData(
-						this.strAlBuffers[i], 
-						pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-						pcm.data, 
-						pcm.dataLength * PcmData.SizeOfDataElement, 
-						pcm.sampleRate);
-					AL.SourceQueueBuffer(this.alSource, this.strAlBuffers[i]);
-					if (eof) break;
-				}
-				else break;
-			}
 		}
-		private void PerformStreamingUpdate(AudioData audioDataRes)
+		bool IAudioStreamProvider.ReadStream(INativeAudioBuffer targetBuffer)
 		{
-			int num;
-			AL.GetSource(this.alSource, ALGetSourcei.BuffersProcessed, out num);
-			while (num > 0)
+			if (!OggVorbis.IsStreamValid(this.strOvStr))
+				return false;
+
+			AudioData audioDataRes = this.audioData.Res;
+			PcmData pcm;
+			bool eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
+			if (eof)
 			{
-				num--;
-
-				int unqueued;
-				unqueued = AL.SourceUnqueueBuffer(this.alSource);
-
-				if (OggVorbis.IsStreamValid(this.strOvStr))
+				OggVorbis.EndStream(ref this.strOvStr);
+				if (this.looped)
 				{
-					PcmData pcm;
-					bool eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
-					if (eof)
-					{
-						OggVorbis.EndStream(ref this.strOvStr);
-						if (this.looped)
-						{
-							OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out this.strOvStr);
-							if (pcm.dataLength == 0)
-								eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
-							else
-								eof = false;
-						}
-					}
-					if (pcm.dataLength > 0)
-					{
-						AL.BufferData(
-							unqueued, 
-							pcm.channelCount == 1 ? ALFormat.Mono16 : ALFormat.Stereo16,
-							pcm.data, 
-							pcm.dataLength * PcmData.SizeOfDataElement, 
-							pcm.sampleRate);
-						AL.SourceQueueBuffer(this.alSource, unqueued);
-					}
-					if (pcm.dataLength == 0 || eof)
-					{
-						this.strStopReq = StopRequest.EndOfStream;
-						break;
-					}
+					OggVorbis.BeginStreamFromMemory(audioDataRes.OggVorbisData, out this.strOvStr);
+					if (pcm.DataLength == 0)
+						eof = !OggVorbis.StreamChunk(this.strOvStr, out pcm);
+					else
+						eof = false;
 				}
 			}
-		}
 
+			if (pcm.DataLength > 0)
+			{
+				targetBuffer.LoadData(
+					pcm.SampleRate,
+					pcm.Data,
+					pcm.DataLength,
+					pcm.ChannelCount == 1 ? AudioDataLayout.Mono : AudioDataLayout.LeftRight,
+					AudioDataElementType.Short);
+			}
+
+			return pcm.DataLength != 0 && !eof;
+		}
+		void IAudioStreamProvider.CloseStream()
+		{
+			OggVorbis.EndStream(ref this.strOvStr);
+		}
 	}
 }

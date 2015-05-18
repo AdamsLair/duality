@@ -5,6 +5,7 @@ using System.Linq;
 using Duality.Editor;
 using Duality.Resources;
 using Duality.Properties;
+using Duality.Audio;
 using Duality.Cloning;
 
 namespace Duality.Components
@@ -22,7 +23,7 @@ namespace Duality.Components
 		/// </summary>
 		public class Source : ICloneExplicit
 		{
-			private	ContentRef<Sound>	sound			= ContentRef<Sound>.Null;
+			private	ContentRef<Sound>	sound			= null;
 			private	bool				looped			= true;
 			private	bool				paused			= false;
 			private	float				volume			= 1.0f;

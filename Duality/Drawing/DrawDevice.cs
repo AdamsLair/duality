@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using OpenTK.Graphics.OpenGL;
-using OpenTK;
-
-using Duality.Editor;
 using Duality.Resources;
+using Duality.Backend;
 
 namespace Duality.Drawing
 {
-	public class DrawDevice : IDrawDevice, IVertexUploader, IDisposable
+	[DontSerialize]
+	public class DrawDevice : IDrawDevice, IDisposable
 	{
 		private class DrawBatch<T> : IDrawBatch where T : struct, IVertexData
 		{
@@ -212,7 +210,6 @@ namespace Duality.Drawing
 		private	List<IDrawBatch>	drawBufferZSort	= new List<IDrawBatch>();
 		private	int					numRawBatches	= 0;
 		private	ContentRef<RenderTarget> renderTarget = null;
-		private	uint				hndlPrimaryVBO		= 0;
 
 
 		public bool Disposed
@@ -312,12 +309,8 @@ namespace Duality.Drawing
 
 		~DrawDevice()
 		{
-			// We require finalization in the main thread due to graphics / handle Resources
-			DualityApp.DisposeLater(this);
+			this.Dispose(false);
 		}
-		/// <summary>
-		/// Disposes the DrawDevice.
-		/// </summary>
 		public void Dispose()
 		{
 			this.Dispose(true);
@@ -327,13 +320,7 @@ namespace Duality.Drawing
 		{
 			if (!this.disposed)
 			{
-				if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
-					this.hndlPrimaryVBO != 0)
-				{
-					DualityApp.GuardSingleThreadState();
-					GL.DeleteBuffers(1, ref this.hndlPrimaryVBO);
-					this.hndlPrimaryVBO = 0;
-				}
+				// Release Resources
 				this.disposed = true;
 			}
 		}
@@ -594,80 +581,43 @@ namespace Duality.Drawing
 			this.GenerateProjection(new Rect(refSize), out this.matProjection);
 			this.matFinal = this.matModelView * this.matProjection;
 		}
-		public void BeginRendering(ClearFlag clearFlags, ColorRgba clearColor, float clearDepth)
+		public void PrepareForDrawcalls()
 		{
-			RenderTarget.Bind(this.renderTarget);
-
-			// Setup viewport
-			GL.Viewport((int)this.viewportRect.X, (int)this.viewportRect.Y, (int)this.viewportRect.W, (int)this.viewportRect.H);
-			GL.Scissor((int)this.viewportRect.X, (int)this.viewportRect.Y, (int)this.viewportRect.W, (int)this.viewportRect.H);
-
-			// Clear buffers
-			ClearBufferMask glClearMask = 0;
-			if ((clearFlags & ClearFlag.Color) != ClearFlag.None) glClearMask |= ClearBufferMask.ColorBufferBit;
-			if ((clearFlags & ClearFlag.Depth) != ClearFlag.None) glClearMask |= ClearBufferMask.DepthBufferBit;
-			GL.ClearColor(clearColor.R / 255.0f, clearColor.G / 255.0f, clearColor.B / 255.0f, clearColor.A / 255.0f);
-			GL.ClearDepth((double)clearDepth); // The "float version" is from OpenGL 4.1..
-			GL.Clear(glClearMask);
-
-			// Configure Rendering params
-			if (this.renderMode == RenderMatrix.OrthoScreen)
-			{
-				GL.Enable(EnableCap.ScissorTest);
-				GL.Enable(EnableCap.DepthTest);
-				GL.DepthFunc(DepthFunction.Always);
-			}
-			else
-			{
-				GL.Enable(EnableCap.ScissorTest);
-				GL.Enable(EnableCap.DepthTest);
-				GL.DepthFunc(DepthFunction.Lequal);
-			}
-
-			// Upload and adjust matrices
+			// Recalculate matrices according to current mode
 			this.UpdateMatrices();
-
-			GL.MatrixMode(MatrixMode.Modelview);
-			OpenTK.Matrix4 openTkModelView;
-			openTkModelView = new OpenTK.Matrix4(
-				this.matModelView.M11, this.matModelView.M12, this.matModelView.M13, this.matModelView.M14,
-				this.matModelView.M21, this.matModelView.M22, this.matModelView.M23, this.matModelView.M24,
-				this.matModelView.M31, this.matModelView.M32, this.matModelView.M33, this.matModelView.M34,
-				this.matModelView.M41, this.matModelView.M42, this.matModelView.M43, this.matModelView.M44);
-			GL.LoadMatrix(ref openTkModelView);
-
-			GL.MatrixMode(MatrixMode.Projection);
-			OpenTK.Matrix4 openTkProjection;
-			openTkProjection = new OpenTK.Matrix4(
-				this.matProjection.M11, this.matProjection.M12, this.matProjection.M13, this.matProjection.M14,
-				this.matProjection.M21, this.matProjection.M22, this.matProjection.M23, this.matProjection.M24,
-				this.matProjection.M31, this.matProjection.M32, this.matProjection.M33, this.matProjection.M34,
-				this.matProjection.M41, this.matProjection.M42, this.matProjection.M43, this.matProjection.M44);
-			GL.LoadMatrix(ref openTkProjection);
-
-			if (this.renderTarget.IsAvailable)
-			{
-				if (this.renderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, RenderTarget.BoundRT.Res.Height * 0.5f, 0.0f);
-				GL.Scale(1.0f, -1.0f, 1.0f);
-				if (this.renderMode == RenderMatrix.OrthoScreen) GL.Translate(0.0f, -RenderTarget.BoundRT.Res.Height * 0.5f, 0.0f);
-			}
 		}
-		public void EndRendering()
+		public void Render(ClearFlag clearFlags, ColorRgba clearColor, float clearDepth)
 		{
 			// Process drawcalls
 			this.OptimizeBatches();
-			this.BeginBatchRendering();
-
-			int drawCalls = 0;
+			RenderOptions options = new RenderOptions
 			{
-				// Z-Independent: Sorted as needed by batch optimizer
-				drawCalls += this.RenderBatches(this.drawBuffer);
-				// Z-Sorted: Back to Front
-				drawCalls += this.RenderBatches(this.drawBufferZSort);
-			}
-			Profile.StatNumDrawcalls.Add(drawCalls);
+				ClearFlags = clearFlags,
+				ClearColor = clearColor,
+				ClearDepth = clearDepth,
+				Viewport = this.viewportRect,
+				RenderMode = this.renderMode,
+				ModelViewMatrix = this.matModelView,
+				ProjectionMatrix = this.matProjection,
+				Target = this.renderTarget.IsAvailable ? this.renderTarget.Res.Native : null
+			};
+			RenderStats stats = new RenderStats();
+			DualityApp.GraphicsBackend.BeginRendering(this, options, stats);
 
-			this.FinishBatchRendering();
+			{
+				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.BeginMeasure();
+
+				// Z-Independent: Sorted as needed by batch optimizer
+				DualityApp.GraphicsBackend.Render(this.drawBuffer);
+
+				// Z-Sorted: Back to Front
+				DualityApp.GraphicsBackend.Render(this.drawBufferZSort);
+
+				if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.EndMeasure();
+			}
+			Profile.StatNumDrawcalls.Add(stats.DrawCalls);
+
+			DualityApp.GraphicsBackend.EndRendering();
 			this.drawBuffer.Clear();
 			this.drawBufferZSort.Clear();
 		}
@@ -779,251 +729,18 @@ namespace Duality.Drawing
 			return optimized;
 		}
 
-		private void BeginBatchRendering()
-		{
-			if (this.hndlPrimaryVBO == 0) GL.GenBuffers(1, out this.hndlPrimaryVBO);
-			GL.BindBuffer(BufferTarget.ArrayBuffer, this.hndlPrimaryVBO);
-		}
-		private int RenderBatches(List<IDrawBatch> buffer)
-		{
-			if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.BeginMeasure();
-
-			int drawCalls = 0;
-			List<IDrawBatch> batchesSharingVBO = new List<IDrawBatch>();
-			IDrawBatch lastBatchRendered = null;
-
-			IDrawBatch lastBatch = null;
-			for (int i = 0; i < buffer.Count; i++)
-			{
-				IDrawBatch currentBatch = buffer[i];
-				IDrawBatch nextBatch = (i < buffer.Count - 1) ? buffer[i + 1] : null;
-
-				if (lastBatch == null || lastBatch.SameVertexType(currentBatch))
-				{
-					batchesSharingVBO.Add(currentBatch);
-				}
-
-				if (batchesSharingVBO.Count > 0 && (nextBatch == null || !currentBatch.SameVertexType(nextBatch)))
-				{
-					int vertexOffset = 0;
-					batchesSharingVBO[0].UploadVertices(this, batchesSharingVBO);
-					drawCalls++;
-
-					foreach (IDrawBatch batch in batchesSharingVBO)
-					{
-						PrepareRenderBatch(batch);
-						RenderBatch(batch, vertexOffset, lastBatchRendered);
-						FinishRenderBatch(batch);
-
-						vertexOffset += batch.VertexCount;
-						lastBatchRendered = batch;
-						drawCalls++;
-					}
-
-					batchesSharingVBO.Clear();
-					lastBatch = null;
-				}
-				else
-					lastBatch = currentBatch;
-			}
-
-			if (lastBatchRendered != null)
-			{
-				lastBatchRendered.Material.FinishRendering();
-			}
-
-			if (this.pickingIndex == 0) Profile.TimeProcessDrawcalls.EndMeasure();
-			return drawCalls;
-		}
-		private void FinishBatchRendering()
-		{
-			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-		}
-
-		private void PrepareRenderBatch(IDrawBatch renderBatch)
-		{
-			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
-			ShaderProgram program = technique.Shader.Res;
-
-			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
-
-			VertexElement[] elements = vertexDeclaration.Elements;
-			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
-			{
-				switch (elements[elementIndex].Role)
-				{
-					case VertexElementRole.Position:
-					{
-						GL.EnableClientState(ArrayCap.VertexArray);
-						GL.VertexPointer(
-							elements[elementIndex].Count, 
-							VertexPointerType.Float, 
-							vertexDeclaration.Size, 
-							elements[elementIndex].Offset);
-						break;
-					}
-					case VertexElementRole.TexCoord:
-					{
-						GL.EnableClientState(ArrayCap.TextureCoordArray);
-						GL.TexCoordPointer(
-							elements[elementIndex].Count, 
-							TexCoordPointerType.Float, 
-							vertexDeclaration.Size, 
-							elements[elementIndex].Offset);
-						break;
-					}
-					case VertexElementRole.Color:
-					{
-						ColorPointerType attribType;
-						switch (elements[elementIndex].Type)
-						{
-							default:
-							case VertexElementType.Float: attribType = ColorPointerType.Float; break;
-							case VertexElementType.Byte: attribType = ColorPointerType.UnsignedByte; break;
-						}
-
-						GL.EnableClientState(ArrayCap.ColorArray);
-						GL.ColorPointer(
-							elements[elementIndex].Count, 
-							attribType, 
-							vertexDeclaration.Size, 
-							elements[elementIndex].Offset);
-						break;
-					}
-					default:
-					{
-						ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
-						if (varInfo != null)
-						{
-							int selectedVar = -1;
-							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
-							{
-								if (varInfo[varIndex].glVarLoc == -1) continue;
-								if (!varInfo[varIndex].MatchesVertexElement(
-									elements[elementIndex].Type, 
-									elements[elementIndex].Count))
-									continue;
-								
-								selectedVar = varIndex;
-								break;
-							}
-							if (selectedVar == -1) break;
-
-							VertexAttribPointerType attribType;
-							switch (elements[elementIndex].Type)
-							{
-								default:
-								case VertexElementType.Float: attribType = VertexAttribPointerType.Float; break;
-								case VertexElementType.Byte: attribType = VertexAttribPointerType.UnsignedByte; break;
-							}
-
-							GL.EnableVertexAttribArray(varInfo[selectedVar].glVarLoc);
-							GL.VertexAttribPointer(
-								varInfo[selectedVar].glVarLoc, 
-								elements[elementIndex].Count, 
-								attribType, 
-								false, 
-								vertexDeclaration.Size, 
-								elements[elementIndex].Offset);
-						}
-						break;
-					}
-				}
-			}
-		}
-		private void RenderBatch(IDrawBatch renderBatch, int vertexOffset, IDrawBatch lastBatchRendered)
-		{
-			if (lastBatchRendered == null || lastBatchRendered.Material != renderBatch.Material)
-				renderBatch.Material.SetupForRendering(this, lastBatchRendered == null ? null : lastBatchRendered.Material);
-
-			GL.DrawArrays(GetOpenTKVertexMode(renderBatch.VertexMode), vertexOffset, renderBatch.VertexCount);
-
-			lastBatchRendered = renderBatch;
-		}
-		void IVertexUploader.UploadBatchVertices<T>(VertexDeclaration format, T[] vertices, int vertexCount)
-		{
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(format.Size * vertexCount), IntPtr.Zero, BufferUsageHint.StreamDraw);
-			GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(format.Size * vertexCount), vertices, BufferUsageHint.StreamDraw);
-		}
-		private void FinishRenderBatch(IDrawBatch renderBatch)
-		{
-			DrawTechnique technique = renderBatch.Material.Technique.Res ?? DrawTechnique.Solid.Res;
-			ShaderProgram program = technique.Shader.Res;
-
-			VertexDeclaration vertexDeclaration = renderBatch.VertexDeclaration;
-
-			VertexElement[] elements = vertexDeclaration.Elements;
-			for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
-			{
-				switch (elements[elementIndex].Role)
-				{
-					case VertexElementRole.Position:
-					{
-						GL.DisableClientState(ArrayCap.VertexArray);
-						break;
-					}
-					case VertexElementRole.TexCoord:
-					{
-						GL.DisableClientState(ArrayCap.TextureCoordArray);
-						break;
-					}
-					case VertexElementRole.Color:
-					{
-						GL.DisableClientState(ArrayCap.ColorArray);
-						break;
-					}
-					default:
-					{
-						ShaderVarInfo[] varInfo = program != null ? program.VarInfo : null;
-						if (varInfo != null)
-						{
-							int selectedVar = -1;
-							for (int varIndex = 0; varIndex < varInfo.Length; varIndex++)
-							{
-								if (varInfo[varIndex].glVarLoc == -1) continue;
-								if (!varInfo[varIndex].MatchesVertexElement(
-									elements[elementIndex].Type, 
-									elements[elementIndex].Count))
-									continue;
-								
-								selectedVar = varIndex;
-								break;
-							}
-							if (selectedVar == -1) break;
-
-							GL.DisableVertexAttribArray(varInfo[selectedVar].glVarLoc);
-						}
-						break;
-					}
-				}
-			}
-		}
-
 		public static void RenderVoid(Rect viewportRect)
 		{
-			RenderTarget.Bind(ContentRef<RenderTarget>.Null);
-			
-			GL.Viewport((int)viewportRect.X, (int)viewportRect.Y, (int)viewportRect.W, (int)viewportRect.H);
-			GL.Scissor((int)viewportRect.X, (int)viewportRect.Y, (int)viewportRect.W, (int)viewportRect.H);
-
-			GL.ClearDepth(1.0d);
-			GL.ClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-			GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-		}
-
-		private static PrimitiveType GetOpenTKVertexMode(VertexMode mode)
-		{
-			switch (mode)
+			RenderOptions options = new RenderOptions
 			{
-				default:
-				case VertexMode.Points:			return PrimitiveType.Points;
-				case VertexMode.Lines:			return PrimitiveType.Lines;
-				case VertexMode.LineStrip:		return PrimitiveType.LineStrip;
-				case VertexMode.LineLoop:		return PrimitiveType.LineLoop;
-				case VertexMode.TriangleStrip:	return PrimitiveType.TriangleStrip;
-				case VertexMode.TriangleFan:	return PrimitiveType.TriangleFan;
-				case VertexMode.Quads:			return PrimitiveType.Quads;
-			}
+				ClearFlags = ClearFlag.All,
+				ClearColor = ColorRgba.TransparentBlack,
+				ClearDepth = 1.0f,
+				Viewport = viewportRect,
+				RenderMode = RenderMatrix.OrthoScreen
+			};
+			DualityApp.GraphicsBackend.BeginRendering(null, options);
+			DualityApp.GraphicsBackend.EndRendering();
 		}
 	}
 }

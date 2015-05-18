@@ -112,7 +112,7 @@ namespace Duality.Drawing
 		/// Adds a parameterized set of vertices to the drawing devices rendering schedule.
 		/// </summary>
 		/// <typeparam name="T">The type of vertex data to add.</typeparam>
-		/// <param name="material">The <see cref="Duality.Resources.BatchInfo"/> to use for rendering the vertices.</param>
+		/// <param name="material">The <see cref="Duality.Drawing.BatchInfo"/> to use for rendering the vertices.</param>
 		/// <param name="vertexMode">The vertices drawing mode.</param>
 		/// <param name="vertices">The vertex data to add.</param>
 		void AddVertices<T>(BatchInfo material, VertexMode vertexMode, params T[] vertices) where T : struct, IVertexData;
@@ -129,7 +129,7 @@ namespace Duality.Drawing
 		/// Adds a parameterized set of vertices to the drawing devices rendering schedule.
 		/// </summary>
 		/// <typeparam name="T">The type of vertex data to add.</typeparam>
-		/// <param name="material">The <see cref="Duality.Resources.BatchInfo"/> to use for rendering the vertices.</param>
+		/// <param name="material">The <see cref="Duality.Drawing.BatchInfo"/> to use for rendering the vertices.</param>
 		/// <param name="vertexMode">The vertices drawing mode.</param>
 		/// <param name="vertexBuffer">A vertex data buffer that stores the vertices to add.</param>
 		/// <param name="vertexCount">The number of vertices to add, from the beginning of the buffer.</param>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality;
+using Duality.Audio;
 using Duality.Resources;
 using Duality.Components.Physics;
 

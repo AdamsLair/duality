@@ -66,9 +66,9 @@
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
-    <ProjectReference Include="..\DynamicLighting.csproj">
+    <ProjectReference Include="..\..\Steering\Steering.csproj">
       <Project>{0130132B-C38D-463E-90AC-5D389E934FAE}</Project>
-      <Name>DynamicLighting</Name>
+      <Name>Steering</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

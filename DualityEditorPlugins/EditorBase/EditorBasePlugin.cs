@@ -134,7 +134,7 @@ namespace Duality.Editor.Plugins.Base
 					if (!rt.IsAvailable) continue;
 					if (rt.Res.Targets.Contains(texRef))
 					{
-						rt.Res.SetupOpenGLRes();
+						rt.Res.SetupTarget();
 
 						if (changedObj == null) changedObj = new List<object>();
 						changedObj.Add(rt.Res);
@@ -149,12 +149,9 @@ namespace Duality.Editor.Plugins.Base
 				foreach (ContentRef<ShaderProgram> sp in ContentProvider.GetLoadedContent<ShaderProgram>())
 				{
 					if (!sp.IsAvailable) continue;
-					if (sp.Res.Fragment == fragRef ||
-						sp.Res.Vertex == vertRef)
+					if (sp.Res.Fragment == fragRef || sp.Res.Vertex == vertRef)
 					{
-						bool wasCompiled = sp.Res.Compiled;
-						sp.Res.AttachShaders();
-						if (wasCompiled) sp.Res.Compile();
+						if (sp.Res.Compiled) sp.Res.Compile(true);
 
 						if (changedObj == null) changedObj = new List<object>();
 						changedObj.Add(sp.Res);

@@ -80,7 +80,7 @@ namespace Duality
 		/// <typeparam name="U">The Resource Type to create a reference of.</typeparam>
 		/// <returns>
 		/// A <see cref="ContentRef{T}"/> of the specified Type, referencing the same Resource.
-		/// Returns a <see cref="ContentRef{T}.Null">null reference</see> if the Resource is not assignable
+		/// Returns a null reference if the Resource is not assignable
 		/// to the specified Type.
 		/// </returns>
 		ContentRef<U> As<U>() where U : Resource;

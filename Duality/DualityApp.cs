@@ -5,14 +5,11 @@ using System.Reflection;
 using System.IO;
 using System.Threading;
 
-using OpenTK;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Audio.OpenAL;
-
+using Duality.Backend;
 using Duality.Resources;
 using Duality.Serialization;
 using Duality.Drawing;
+using Duality.Audio;
 using Duality.Cloning;
 using Duality.Input;
 
@@ -81,10 +78,9 @@ namespace Duality
 		private	static	string						logfilePath			= "logfile.txt";
 		private	static	StreamWriter				logfile				= null;
 		private	static	TextWriterLogOutput			logfileOutput		= null;
+		private	static	IGraphicsBackend			graphicsBack		= null;
+		private	static	IAudioBackend				audioBack			= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
-		private	static	GraphicsMode				targetMode			= null;
-		private	static	HashSet<GraphicsMode>		availModes			= new HashSet<GraphicsMode>(new GraphicsModeComparer());
-		private	static	GraphicsMode				defaultMode			= null;
 		private	static	MouseInput					mouse				= new MouseInput();
 		private	static	KeyboardInput				keyboard			= new KeyboardInput();
 		private	static	JoystickInputCollection		joysticks			= new JoystickInputCollection();
@@ -96,6 +92,7 @@ namespace Duality
 		private	static	DualityUserData				userData			= null;
 		private	static	List<object>				disposeSchedule		= new List<object>();
 
+		private	static	List<IDualityBackend>			activeBackends	= new List<IDualityBackend>();
 		private	static	Dictionary<string,CorePlugin>	plugins			= new Dictionary<string,CorePlugin>();
 		private	static	List<Assembly>					disposedPlugins	= new List<Assembly>();
 		private static	Dictionary<Type,List<Type>>		availTypeDict	= new Dictionary<Type,List<Type>>();
@@ -138,7 +135,21 @@ namespace Duality
 		/// </summary>
 		public static event EventHandler<CorePluginEventArgs> PluginReady	= null;
 
-
+		
+		/// <summary>
+		/// [GET] The graphics backend that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public static IGraphicsBackend GraphicsBackend
+		{
+			get { return graphicsBack; }
+		}
+		/// <summary>
+		/// [GET] The audio backend that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public static IAudioBackend AudioBackend
+		{
+			get { return audioBack; }
+		}
 		/// <summary>
 		/// [GET / SET] The size of the current rendering surface (full screen, a single window, etc.) in pixels. Setting this will not actually change
 		/// Duality's state - this is a pure "for your information" property.
@@ -147,22 +158,6 @@ namespace Duality
 		{
 			get { return targetResolution; }
 			set { targetResolution = value; }
-		}
-		/// <summary>
-		/// [GET / SET] The <see cref="GraphicsMode"/> in which rendering takes place. Setting this will not actually change
-		/// Duality's state - this is a pure "for your information" property.
-		/// </summary>
-		public static GraphicsMode TargetMode
-		{
-			get { return targetMode; }
-			set { targetMode = value; }
-		}
-		/// <summary>
-		/// [GET] Returns the <see cref="GraphicsMode"/> that Duality intends to use by default.
-		/// </summary>
-		public static GraphicsMode DefaultMode
-		{
-			get { return defaultMode; }
 		}
 		/// <summary>
 		/// [GET] Returns whether the Duality application is currently focused, i.e. can be considered
@@ -270,13 +265,6 @@ namespace Duality
 		public static string LogfilePath
 		{
 			get { return logfilePath; }
-		}
-		/// <summary>
-		/// [GET] Enumerates all available <see cref="GraphicsMode">GraphicsModes</see>.
-		/// </summary>
-		public static IEnumerable<GraphicsMode> AvailableModes
-		{
-			get { return availModes; }
 		}
 		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionContext"/> in which this DualityApp is currently running.
@@ -406,44 +394,19 @@ namespace Duality
 					Environment.ProcessorCount);
 			}
 
-			sound = new SoundDevice();
 			LoadPlugins();
 			LoadAppData();
 			LoadUserData();
-			
-			// Determine available and default graphics modes
-			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
-			foreach (int samplecount in aaLevels)
-			{
-				GraphicsMode mode = new GraphicsMode(32, 24, 0, samplecount, new OpenTK.Graphics.ColorFormat(0), 2, false);
-				if (!availModes.Contains(mode)) availModes.Add(mode);
-			}
-			int highestAALevel = MathF.RoundToInt(MathF.Log(MathF.Max(availModes.Max(m => m.Samples), 1.0f), 2.0f));
-			int targetAALevel = highestAALevel;
-			if (appData.MultisampleBackBuffer)
-			{
-				switch (userData.AntialiasingQuality)
-				{
-					case AAQuality.High:	targetAALevel = highestAALevel;		break;
-					case AAQuality.Medium:	targetAALevel = highestAALevel / 2; break;
-					case AAQuality.Low:		targetAALevel = highestAALevel / 4; break;
-					case AAQuality.Off:		targetAALevel = 0;					break;
-				}
-			}
-			else
-			{
-				targetAALevel = 0;
-			}
-			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
-			defaultMode = availModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? availModes.Last();
+
+			// Initialize the audio backend
+			InitBackend(out audioBack);
+			sound = new SoundDevice();
 
 			// Initial changed event
 			OnAppDataChanged();
 			OnUserDataChanged();
 
 			Formatter.InitDefaultMethod();
-			joysticks.AddGlobalDevices();
-			gamepads.AddGlobalDevices();
 
 			Log.Core.Write(
 				"DualityApp initialized" + Environment.NewLine +
@@ -455,39 +418,37 @@ namespace Duality
 				Environment.Is64BitProcess);
 
 			initialized = true;
+
 			InitPlugins();
 		}
-
 		/// <summary>
-		/// Applies the specified screen resolution to both game and display device. This is a shorthand for
-		/// assigning a modified version of <see cref="DualityUserData"/> to <see cref="UserData"/>.
+		/// Opens up a window for Duality to render into. This also initializes the part of Duality that requires a 
+		/// valid rendering context. Should be called before performing any rendering related operations with Duality.
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="fullscreen"></param>
-		public static void ApplyResolution(int width, int height, bool fullscreen)
+		public static INativeWindow OpenWindow(WindowOptions options)
 		{
-			userData.GfxWidth = width;
-			userData.GfxHeight = height;
-			userData.GfxMode = fullscreen ? ScreenMode.Fullscreen : ScreenMode.Window;
-			OnUserDataChanged();
+			if (!initialized) throw new InvalidOperationException("Can't initialize graphics / rendering because Duality itself isn't initialized yet.");
+
+			if (graphicsBack == null) InitBackend(out graphicsBack);
+
+			Log.Core.Write("Opening Window...");
+			Log.Core.PushIndent();
+			INativeWindow window = graphicsBack.CreateWindow(options);
+			Log.Core.PopIndent();
+
+			InitPostWindow();
+
+			return window;
 		}
 		/// <summary>
-		/// Enumerates all available screen resolutions on the default display device.
+		/// Initializes the part of Duality that requires a valid rendering context. 
+		/// Should be called before performing any rendering related operations with Duality.
 		/// </summary>
-		/// <returns></returns>
-		public static IEnumerable<ScreenResolution> GetAvailableResolutions()
+		public static void InitPostWindow()
 		{
-			return DisplayDevice.Default.AvailableResolutions
-				.Select(resolution => new ScreenResolution
-				{
-					Width = resolution.Width, 
-					Height = resolution.Height, 
-					RefreshRate = resolution.RefreshRate
-				})
-				.Distinct();
+			if (graphicsBack == null) InitBackend(out graphicsBack);
+			ContentProvider.InitDefaultContent();
 		}
-
 		/// <summary>
 		/// Terminates this DualityApp. This does not end the current Process, but will instruct the engine to
 		/// leave main loop and message processing as soon as possible.
@@ -527,6 +488,8 @@ namespace Duality
 				}
 				sound.Dispose();
 				sound = null;
+				ShutdownBackend(ref graphicsBack);
+				ShutdownBackend(ref audioBack);
 				ClearPlugins();
 				Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 				Log.Core.Write("DualityApp terminated");
@@ -547,33 +510,20 @@ namespace Duality
 			initialized = false;
 			execContext = ExecutionContext.Terminated;
 		}
+
 		/// <summary>
-		/// Initializes the part of Duality that requires a valid rendering context. Should be called before
-		/// performing any rendering related operations with Dualit.
+		/// Applies the specified screen resolution to both game and display device. This is a shorthand for
+		/// assigning a modified version of <see cref="DualityUserData"/> to <see cref="UserData"/>.
 		/// </summary>
-		public static void InitGraphics()
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="fullscreen"></param>
+		public static void ApplyResolution(int width, int height, bool fullscreen)
 		{
-			if (!initialized) throw new InvalidOperationException("Can't initialize graphics / rendering because Duality itself isn't initialized yet.");
-
-			// Determine OpenGL capabilities and log them
-			try
-			{
-				CheckOpenGLErrors();
-				Log.Core.Write("Initializing Graphics{0}OpenGL Version: {1}{0}Vendor: {2}{0}Renderer: {3}{0}Shading Language Version: {4}",
-					Environment.NewLine,
-					GL.GetString(StringName.Version),
-					GL.GetString(StringName.Vendor),
-					GL.GetString(StringName.Renderer),
-					GL.GetString(StringName.ShadingLanguageVersion));
-				CheckOpenGLErrors();
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", Log.Exception(e));
-			}
-
-			// Initialize default content
-			ContentProvider.InitDefaultContent();
+			userData.GfxWidth = width;
+			userData.GfxHeight = height;
+			userData.GfxMode = fullscreen ? ScreenMode.Fullscreen : ScreenMode.Window;
+			OnUserDataChanged();
 		}
 
 		/// <summary>
@@ -593,8 +543,6 @@ namespace Duality
 			sound.Update();
 			OnAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
-			CheckOpenALErrors();
-			//CheckOpenGLErrors();
 			RunCleanup();
 
 			Profile.TimeUpdate.EndMeasure();
@@ -682,8 +630,6 @@ namespace Duality
 			sound.Update();
 			OnAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
-			CheckOpenALErrors();
-			//CheckOpenGLErrors();
 			RunCleanup();
 
 			Profile.TimeUpdate.EndMeasure();
@@ -754,7 +700,7 @@ namespace Duality
 
 		private static void LoadPlugins()
 		{
-			ClearPlugins();
+			if (plugins.Count > 0) throw new InvalidOperationException("Can't load plugins more than once.");
 
 			Log.Core.Write("Scanning for core plugins...");
 			Log.Core.PushIndent();
@@ -852,7 +798,6 @@ namespace Duality
 				{
 					plugin = (CorePlugin)pluginType.CreateInstanceOf();
 					plugin.FilePath = pluginFilePath;
-					plugin.LoadPlugin();
 					plugins.Add(plugin.AssemblyName, plugin);
 				}
 				catch (Exception e)
@@ -864,14 +809,6 @@ namespace Duality
 			}
 
 			return plugin;
-		}
-		private static void RemovePlugin(Assembly pluginAssembly)
-		{
-			CorePlugin plugin;
-			if (plugins.TryGetValue(pluginAssembly.GetShortAssemblyName(), out plugin))
-			{
-				RemovePlugin(plugin);
-			}
 		}
 		private static void RemovePlugin(CorePlugin plugin)
 		{
@@ -947,6 +884,25 @@ namespace Duality
 		{
 			if (!pluginFilePath.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase))
 				return null;
+
+			// If we're trying to reload an active backend plugin, stop
+			foreach (var pair in plugins)
+			{
+				CorePlugin backendPlugin = pair.Value;
+				if (PathHelper.ArePathsEqual(backendPlugin.FilePath, pluginFilePath))
+				{
+					foreach (IDualityBackend backend in activeBackends)
+					{
+						Type backendType = backend.GetType();
+						if (backendPlugin.PluginAssembly == backendType.Assembly)
+						{
+							Log.Core.WriteError("Can't reload a plugin that contains an active backend: {0}", backend.Name);
+							return null;
+						}
+					}
+					break;
+				}
+			}
 			
 			// Load the updated plugin Assembly
 			Assembly pluginAssembly = null;
@@ -1080,6 +1036,113 @@ namespace Duality
 			return availTypes;
 		}
 
+		internal static void InitBackend<T>(out T target, Func<Type,IEnumerable<Type>> typeFinder = null) where T : class, IDualityBackend
+		{
+			if (typeFinder == null) typeFinder = GetAvailDualityTypes;
+
+			Log.Core.Write("Initializing {0}...", Log.Type(typeof(T)));
+			Log.Core.PushIndent();
+
+			// Generate a list of available backends for evaluation
+			List<IDualityBackend> backends = new List<IDualityBackend>();
+			foreach (Type backendType in typeFinder(typeof(IDualityBackend)))
+			{
+				if (backendType.IsInterface) continue;
+				if (backendType.IsAbstract) continue;
+				if (!backendType.IsClass) continue;
+				if (!typeof(T).IsAssignableFrom(backendType)) continue;
+
+				IDualityBackend backend = backendType.CreateInstanceOf() as IDualityBackend;
+				if (backend == null)
+				{
+					Log.Core.WriteWarning("Unable to create an instance of {0}. Skipping it.", backendType.FullName);
+					continue;
+				}
+				backends.Add(backend);
+			}
+
+			// Sort backends from best to worst
+			backends.StableSort((a, b) => b.Priority > a.Priority ? 1 : -1);
+
+			// Try to initialize each one and select the first that works
+			T selectedBackend = null;
+			foreach (T backend in backends)
+			{
+				if (appData.SkipBackends != null && appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.InvariantCultureIgnoreCase)))
+				{
+					Log.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
+					continue;
+				}
+
+				bool available = false;
+				try
+				{
+					available = backend.CheckAvailable();
+					if (!available)
+					{
+						Log.Core.Write("Backend '{0}' reports to be unavailable. Skipping it.", backend.Name);
+					}
+				}
+				catch (Exception e)
+				{
+					available = false;
+					Log.Core.WriteWarning("Backend '{0}' failed the availability check with an exception: {1}", backend.Name, Log.Exception(e));
+				}
+				if (!available) continue;
+
+				Log.Core.Write("{0}...", backend.Name);
+				Log.Core.PushIndent();
+				{
+					try
+					{
+						backend.Init();
+						selectedBackend = backend;
+					}
+					catch (Exception e)
+					{
+						Log.Core.WriteError("Failed: {0}", Log.Exception(e));
+					}
+				}
+				Log.Core.PopIndent();
+
+				if (selectedBackend != null)
+					break;
+			}
+
+			// If we found a proper backend and initialized it, add it to the list of active backends
+			if (selectedBackend != null)
+			{
+				target = selectedBackend;
+				activeBackends.Add(selectedBackend);
+			}
+			else
+			{
+				target = null;
+			}
+
+			Log.Core.PopIndent();
+		}
+		internal static void ShutdownBackend<T>(ref T backend) where T : class, IDualityBackend
+		{
+			if (backend == null) return;
+
+			Log.Core.Write("Shutting down {0}...", backend.Name);
+			Log.Core.PushIndent();
+			{
+				try
+				{
+					backend.Shutdown();
+					activeBackends.Remove(backend);
+					backend = null;
+				}
+				catch (Exception e)
+				{
+					Log.Core.WriteError("Failed: {0}", Log.Exception(e));
+				}
+			}
+			Log.Core.PopIndent();
+		}
+
 		private static void OnBeforeUpdate()
 		{
 			foreach (CorePlugin plugin in plugins.Values) plugin.OnBeforeUpdate();
@@ -1191,28 +1254,28 @@ namespace Duality
 
 			if (mouse.Source != null && mouse.Source.GetType().Assembly == invalidAssembly)
 			{
-				mouse.Source = null;
 				Log.Core.WriteWarning(warningText, Log.Type(mouse.Source.GetType()));
+				mouse.Source = null;
 			}
 			if (keyboard.Source != null && keyboard.Source.GetType().Assembly == invalidAssembly)
 			{
-				keyboard.Source = null;
 				Log.Core.WriteWarning(warningText, Log.Type(keyboard.Source.GetType()));
+				keyboard.Source = null;
 			}
 			foreach (JoystickInput joystick in joysticks.ToArray())
 			{
 				if (joystick.Source != null && joystick.Source.GetType().Assembly == invalidAssembly)
 				{
-					joysticks.RemoveSource(joystick.Source);
 					Log.Core.WriteWarning(warningText, Log.Type(joystick.Source.GetType()));
+					joysticks.RemoveSource(joystick.Source);
 				}
 			}
 			foreach (GamepadInput gamepad in gamepads.ToArray())
 			{
 				if (gamepad.Source != null && gamepad.Source.GetType().Assembly == invalidAssembly)
 				{
-					gamepads.RemoveSource(gamepad.Source);
 					Log.Core.WriteWarning(warningText, Log.Type(gamepad.Source.GetType()));
+					gamepads.RemoveSource(gamepad.Source);
 				}
 			}
 		}
@@ -1278,54 +1341,6 @@ namespace Duality
 		}
 		
 
-		/// <summary>
-		/// Checks for errors that might have occurred during audio processing.
-		/// </summary>
-		/// <param name="silent">If true, errors aren't logged.</param>
-		/// <returns>True, if an error occurred, false if not.</returns>
-		public static bool CheckOpenALErrors(bool silent = false)
-		{
-			if (sound != null && !sound.IsAvailable) return false;
-			ALError error;
-			bool found = false;
-			while ((error = AL.GetError()) != ALError.NoError)
-			{
-				if (!silent)
-				{
-					Log.Core.WriteError(
-						"Internal OpenAL error, code {0} at {1}", 
-						error,
-						Log.CurrentMethod(1));
-				}
-				found = true;
-				if (!silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
-			}
-			return found;
-		}
-		/// <summary>
-		/// Checks for errors that might have occurred during video processing. You should avoid calling this method due to performance reasons.
-		/// Only use it on suspect.
-		/// </summary>
-		/// <param name="silent">If true, errors aren't logged.</param>
-		/// <returns>True, if an error occurred, false if not.</returns>
-		public static bool CheckOpenGLErrors(bool silent = false)
-		{
-			ErrorCode error;
-			bool found = false;
-			while ((error = GL.GetError()) != ErrorCode.NoError)
-			{
-				if (!silent)
-				{
-					Log.Core.WriteError(
-						"Internal OpenGL error, code {0} at {1}", 
-						error,
-						Log.CurrentMethod(1));
-				}
-				found = true;
-			}
-			if (found && !silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
-			return found;
-		}
 
 		/// <summary>
 		/// This method performs an action only when compiling your plugin in debug mode.
@@ -1362,29 +1377,6 @@ namespace Duality
 			{
 				action();
 			}
-		}
-
-		/// <summary>
-		/// Guards the calling method agains being called from a thread that is not the main thread.
-		/// Use this only at critical code segments that are likely to be called from somewhere else than the main thread
-		/// but aren't allowed to.
-		/// </summary>
-		/// <param name="silent"></param>
-		/// <returns>True if everyhing is allright. False if the guarded state has been violated.</returns>
-		[System.Diagnostics.DebuggerStepThrough]
-		public static bool GuardSingleThreadState(bool silent = false)
-		{
-			if (Thread.CurrentThread != mainThread)
-			{
-				if (!silent)
-				{
-					Log.Core.WriteError(
-						"Method {0} isn't allowed to be called from a Thread that is not the main Thread.", 
-						Log.CurrentMethod(1));
-				}
-				return false;
-			}
-			return true;
 		}
 	}
 }

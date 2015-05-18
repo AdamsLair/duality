@@ -4,8 +4,7 @@ using System.Linq;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Cloning;
-
-using OpenTK.Graphics.OpenGL;
+using Duality.Backend;
 
 namespace Duality.Resources
 {
@@ -20,11 +19,6 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageShaderProgram)]
 	public class ShaderProgram : Resource
 	{
-		/// <summary>
-		/// A ShaderProgram resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(ShaderProgram));
-
 		/// <summary>
 		/// A minimal ShaderProgram, using a <see cref="Duality.Resources.VertexShader.Minimal"/> VertexShader and
 		/// a <see cref="Duality.Resources.FragmentShader.Minimal"/> FragmentShader.
@@ -67,54 +61,27 @@ namespace Duality.Resources
 			SmoothAnim	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SmoothAnim);
 			SharpAlpha	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SharpMask);
 		}
-		
-		/// <summary>
-		/// Refers to a null reference ShaderProgram.
-		/// </summary>
-		/// <seealso cref="ContentRef{T}.Null"/>
-		public static readonly ContentRef<ShaderProgram> None	= ContentRef<ShaderProgram>.Null;
-		private	static	ShaderProgram	curBound	= null;
-		/// <summary>
-		/// [GET] Returns the currently bound ShaderProgram.
-		/// </summary>
-		public static ContentRef<ShaderProgram> BoundProgram
-		{
-			get { return new ContentRef<ShaderProgram>(curBound); }
-		}
-
-		/// <summary>
-		/// Binds a ShaderProgram in order to use it.
-		/// </summary>
-		/// <param name="prog">The ShaderProgram to be bound.</param>
-		public static void Bind(ContentRef<ShaderProgram> prog)
-		{
-			ShaderProgram progRes = prog.IsExplicitNull ? null : prog.Res;
-			if (curBound == progRes) return;
-
-			if (progRes == null)
-			{
-				GL.UseProgram(0);
-				curBound = null;
-			}
-			else
-			{
-				if (!progRes.compiled) progRes.Compile();
-
-				if (progRes.glProgramId == 0)	throw new ArgumentException("Specified shader program has no valid OpenGL program Id! Maybe it hasn't been loaded / initialized properly?", "prog");
-				if (progRes.Disposed)			throw new ArgumentException("Specified shader program has already been deleted!", "prog");
-					
-				GL.UseProgram(progRes.glProgramId);
-				curBound = progRes;
-			}
-		}
 
 
 		private	ContentRef<VertexShader>	vert	= VertexShader.Minimal;
 		private	ContentRef<FragmentShader>	frag	= FragmentShader.Minimal;
-		[DontSerialize] private	int							glProgramId	= 0;
-		[DontSerialize] private bool						compiled	= false;
-		[DontSerialize] private	ShaderVarInfo[]				varInfo		= null;
-
+		[DontSerialize] private	INativeShaderProgram	native		= null;
+		[DontSerialize] private bool					compiled	= false;
+		[DontSerialize] private	ShaderFieldInfo[]		fields		= null;
+		
+		/// <summary>
+		/// [GET] The shaders native backend. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public INativeShaderProgram Native
+		{
+			get
+			{
+				if (!this.compiled)
+					this.Compile();
+				return this.native;
+			}
+		}
 		/// <summary>
 		/// [GET] Returns whether this ShaderProgram has been compiled.
 		/// </summary>
@@ -126,9 +93,9 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] Returns an array containing information about the variables that have been declared in shader source code.
 		/// </summary>
-		public ShaderVarInfo[] VarInfo
+		public ShaderFieldInfo[] Fields
 		{
-			get { return this.varInfo; }
+			get { return this.fields; }
 		}
 		/// <summary>
 		/// [GET] Returns the number of vertex attributes that have been declared.
@@ -136,7 +103,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int AttribCount
 		{
-			get { return this.varInfo != null ? this.varInfo.Count(v => v.scope == ShaderVarScope.Attribute) : 0; }
+			get { return this.fields != null ? this.fields.Count(v => v.Scope == ShaderFieldScope.Attribute) : 0; }
 		}
 		/// <summary>
 		/// [GET] Returns the number of uniform variables that have been declared.
@@ -144,7 +111,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public int UniformCount
 		{
-			get { return this.varInfo != null ? this.varInfo.Count(v => v.scope == ShaderVarScope.Uniform) : 0; }
+			get { return this.fields != null ? this.fields.Count(v => v.Scope == ShaderFieldScope.Uniform) : 0; }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="VertexShader"/> that is used by this ShaderProgram.
@@ -153,7 +120,11 @@ namespace Duality.Resources
 		public ContentRef<VertexShader> Vertex
 		{
 			get { return this.vert; }
-			set { this.AttachShaders(value, this.frag); this.Compile(); }
+			set
+			{
+				this.vert = value;
+				this.compiled = false;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="FragmentShader"/> that is used by this ShaderProgram.
@@ -162,7 +133,11 @@ namespace Duality.Resources
 		public ContentRef<FragmentShader> Fragment
 		{
 			get { return this.frag; }
-			set { this.AttachShaders(this.vert, value); this.Compile(); }
+			set
+			{
+				this.frag = value;
+				this.compiled = false;
+			}
 		}
 
 		/// <summary>
@@ -176,118 +151,54 @@ namespace Duality.Resources
 		/// <param name="f"></param>
 		public ShaderProgram(ContentRef<VertexShader> v, ContentRef<FragmentShader> f)
 		{
-			this.AttachShaders(v, f);
-			this.Compile();
-		}
-
-		/// <summary>
-		/// Re-Attaches the currently used <see cref="VertexShader">Vertex-</see> and <see cref="FragmentShader"/>.
-		/// </summary>
-		public void AttachShaders()
-		{
-			this.AttachShaders(this.vert, this.frag);
-		}
-		/// <summary>
-		/// Attaches the specified <see cref="VertexShader">Vertex-</see> and <see cref="FragmentShader"/> to this ShaderProgram.
-		/// </summary>
-		/// <param name="v"></param>
-		/// <param name="f"></param>
-		public void AttachShaders(ContentRef<VertexShader> v, ContentRef<FragmentShader> f)
-		{
-			DualityApp.GuardSingleThreadState();
-
-			if (this.glProgramId == 0)	this.glProgramId = GL.CreateProgram();
-			else						this.DetachShaders();
-
-			this.compiled = false;
 			this.vert = v;
 			this.frag = f;
-
-			// Assure both shaders are compiled
-			if (this.vert.IsAvailable) this.vert.Res.Compile();
-			if (this.frag.IsAvailable) this.frag.Res.Compile();
-			
-			// Attach both shaders
-			if (this.vert.IsAvailable) GL.AttachShader(this.glProgramId, this.vert.Res.OglShaderId);
-			if (this.frag.IsAvailable) GL.AttachShader(this.glProgramId, this.frag.Res.OglShaderId);
-		}
-		/// <summary>
-		/// Detaches <see cref="VertexShader">Vertex-</see> and <see cref="FragmentShader"/> from the ShaderProgram.
-		/// </summary>
-		public void DetachShaders()
-		{
-			if (this.glProgramId == 0) return;
-			this.compiled = false;
-
-			// Determine currently attached shaders
-			int[] attachedShaders = new int[10];
-			int attachCount = 0;
-			GL.GetAttachedShaders(this.glProgramId, attachedShaders.Length, out attachCount, attachedShaders);
-
-			// Detach all attached shaders
-			for (int i = 0; i < attachCount; i++)
-			{
-				GL.DetachShader(this.glProgramId, attachedShaders[i]);
-			}
 		}
 
 		/// <summary>
 		/// Compiles the ShaderProgram. This is done automatically when loading the ShaderProgram
 		/// or when binding it.
 		/// </summary>
-		public void Compile()
+		/// <param name="force">If true, the program is recompiled even if it already was compiled before.</param>
+		public void Compile(bool force = false)
 		{
-			DualityApp.GuardSingleThreadState();
+			if (!force && this.compiled) return;
+			if (this.native == null) this.native = DualityApp.GraphicsBackend.CreateShaderProgram();
 
-			if (this.glProgramId == 0) return;
-			if (this.compiled) return;
+			// Assure both shaders are compiled
+			if (this.vert.IsAvailable) this.vert.Res.Compile();
+			if (this.frag.IsAvailable) this.frag.Res.Compile();
 
-			GL.LinkProgram(this.glProgramId);
-
-			int result;
-			GL.GetProgram(this.glProgramId, GetProgramParameterName.LinkStatus, out result);
-			if (result == 0)
+			// Load the program with both shaders attached
+			INativeShaderPart nativeVert = this.vert.Res != null ? this.vert.Res.Native : null;
+			INativeShaderPart nativeFrag = this.frag.Res != null ? this.frag.Res.Native : null;
+			try
 			{
-				string infoLog = GL.GetProgramInfoLog(this.glProgramId);
-				Log.Core.WriteError("Error linking shader program. InfoLog:{1}{0}", infoLog, Environment.NewLine);
-				return;
+				this.native.LoadProgram(nativeVert, nativeFrag);
 			}
-			this.compiled = true;
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
+			}
 
-			// Collect variable infos from sub programs
-			ShaderVarInfo[] fragVarArray = this.frag.IsAvailable ? this.frag.Res.VarInfo : null;
-			ShaderVarInfo[] vertVarArray = this.vert.IsAvailable ? this.vert.Res.VarInfo : null;
-			if (fragVarArray != null && vertVarArray != null)
-				this.varInfo = vertVarArray.Union(fragVarArray).ToArray();
-			else if (vertVarArray != null)
-				this.varInfo = vertVarArray.ToArray();
-			else
-				this.varInfo = fragVarArray.ToArray();
 			// Determine actual variable locations
-			for (int i = 0; i < this.varInfo.Length; i++)
-			{
-				if (this.varInfo[i].scope == ShaderVarScope.Uniform)
-					this.varInfo[i].glVarLoc = GL.GetUniformLocation(this.glProgramId, this.varInfo[i].name);
-				else
-					this.varInfo[i].glVarLoc = GL.GetAttribLocation(this.glProgramId, this.varInfo[i].name);
-			}
+			this.fields = this.native.GetFields();
+
+			this.compiled = true;
 		}
 
 		protected override void OnLoaded()
 		{
-			this.AttachShaders();
 			this.Compile();
 			base.OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)
 		{
 			base.OnDisposing(manually);
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
-				this.glProgramId != 0)
+			if (this.native != null)
 			{
-				this.DetachShaders();
-				GL.DeleteProgram(this.glProgramId);
-				this.glProgramId = 0;
+				this.native.Dispose();
+				this.native = null;
 			}
 		}
 
@@ -295,7 +206,6 @@ namespace Duality.Resources
 		{
 			base.OnCopyDataTo(target, operation);
 			ShaderProgram targetShader = target as ShaderProgram;
-			targetShader.AttachShaders();
 			targetShader.Compile();
 		}
 	}

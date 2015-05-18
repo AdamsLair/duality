@@ -11,6 +11,7 @@ using ButtonState = AdamsLair.WinForms.Drawing.ButtonState;
 using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
 
 using Duality;
+using Duality.Audio;
 using Duality.Resources;
 using Duality.Editor;
 using Duality.Editor.Plugins.Base.Properties;

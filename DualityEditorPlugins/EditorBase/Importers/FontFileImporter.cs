@@ -40,7 +40,7 @@ namespace Duality.Editor.Plugins.Base
 		}
 		public string[] GetOutputFiles(string srcFile, string targetName, string targetDir)
 		{
-			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Font.FileExt);
+			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Resource.GetFileExtByType<Font>());
 			return new string[] { targetResPath };
 		}
 	}

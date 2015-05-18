@@ -20,11 +20,6 @@ namespace Duality.Resources
 	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePrefab)]
 	public class Prefab : Resource
 	{
-		/// <summary>
-		/// A Prefab resources file extension.
-		/// </summary>
-		public new static readonly string FileExt = Resource.GetFileExtByType(typeof(Prefab));
-
 		private static readonly ApplyPrefabContext PrefabContext = new ApplyPrefabContext();
 		private static readonly CloneProvider SharedPrefabProvider = new CloneProvider(PrefabContext);
 
@@ -266,7 +261,7 @@ namespace Duality.Resources
 		}
 
 
-		private PrefabLink() : this(null, ContentRef<Prefab>.Null) {}
+		private PrefabLink() : this(null, null) {}
 		/// <summary>
 		/// Creates a new PrefabLink, connecting a GameObject to a Prefab.
 		/// </summary>

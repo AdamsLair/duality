@@ -53,7 +53,7 @@ namespace Duality.Components.Renderers
 			set { this.outlineMaterial = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A custom, local <see cref="Duality.Resources.BatchInfo"/> overriding the <see cref="AreaMaterial"/>.
+		/// [GET / SET] A custom, local <see cref="Duality.Drawing.BatchInfo"/> overriding the <see cref="AreaMaterial"/>.
 		/// </summary>
 		public BatchInfo CustomAreaMaterial
 		{
@@ -61,7 +61,7 @@ namespace Duality.Components.Renderers
 			set { this.customAreaMaterial = value; }
 		}
 		/// <summary>
-		/// [GET / SET] A custom, local <see cref="Duality.Resources.BatchInfo"/> overriding the <see cref="OutlineMaterial"/>.
+		/// [GET / SET] A custom, local <see cref="Duality.Drawing.BatchInfo"/> overriding the <see cref="OutlineMaterial"/>.
 		/// </summary>
 		public BatchInfo CustomOutlineMaterial
 		{

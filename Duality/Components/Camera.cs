@@ -30,7 +30,7 @@ namespace Duality.Components
 			private RenderMatrix				matrixMode		= RenderMatrix.PerspectiveWorld;
 			private	VisibilityFlag				visibilityMask	= VisibilityFlag.AllGroups;
 			private	BatchInfo					input			= null;
-			private	ContentRef<RenderTarget>	output			= ContentRef<RenderTarget>.Null;
+			private	ContentRef<RenderTarget>	output			= null;
 
 			[DontSerialize]
 			private EventHandler<CollectDrawcallEventArgs> collectDrawcalls	= null;
@@ -145,7 +145,7 @@ namespace Duality.Components
 
 			public override string ToString()
 			{
-				ContentRef<Texture> inputTex = input == null ? ContentRef<Texture>.Null : input.MainTexture;
+				ContentRef<Texture> inputTex = input == null ? null : input.MainTexture;
 				return string.Format("{0} => {1}{2}",
 					inputTex.IsExplicitNull ? (input == null ? "Camera" : "Undefined") : inputTex.Name,
 					output.IsExplicitNull ? "Screen" : output.Name,
@@ -287,7 +287,6 @@ namespace Duality.Components
 			{
 				this.RenderSinglePass(viewportRect, t);
 			}
-			RenderTarget.Bind(RenderTarget.None);
 			this.drawDevice.VisibilityMask = this.visibilityMask;
 			this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
 			this.drawDevice.UpdateMatrices(); // Reset matrices for projection calculations during update
@@ -322,12 +321,10 @@ namespace Duality.Components
 				this.drawDevice.ViewportRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
 
 				// Render Scene
-				this.drawDevice.BeginRendering(ClearFlag.All, ColorRgba.Black, 1.0f);
+				this.drawDevice.PrepareForDrawcalls();
 				this.CollectDrawcalls();
-				this.drawDevice.EndRendering();
+				this.drawDevice.Render(ClearFlag.All, ColorRgba.Black, 1.0f);
 				this.drawDevice.PickingIndex = 0;
-
-				RenderTarget.Bind(RenderTarget.None);
 			}
 
 			// Move data to local buffer
@@ -544,7 +541,7 @@ namespace Duality.Components
 			if (p.Input == null)
 			{
 				// Render Scene
-				this.drawDevice.BeginRendering(p.ClearFlags, p.ClearColor, p.ClearDepth);
+				this.drawDevice.PrepareForDrawcalls();
 				try
 				{
 					this.CollectDrawcalls();
@@ -554,12 +551,12 @@ namespace Duality.Components
 				{
 					Log.Core.WriteError("There was an error while {0} was collecting drawcalls: {1}", this.ToString(), Log.Exception(e));
 				}
-				this.drawDevice.EndRendering();
+				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
 			}
 			else
 			{
 				Profile.TimePostProcessing.BeginMeasure();
-				this.drawDevice.BeginRendering(p.ClearFlags, p.ClearColor, p.ClearDepth);
+				this.drawDevice.PrepareForDrawcalls();
 
 				Texture mainTex = p.Input.MainTexture.Res;
 				Vector2 uvRatio = mainTex != null ? mainTex.UVRatio : Vector2.One;
@@ -585,7 +582,7 @@ namespace Duality.Components
 					device.AddVertices(p.Input, VertexMode.Quads, vertices);
 				}
 
-				this.drawDevice.EndRendering();
+				this.drawDevice.Render(p.ClearFlags, p.ClearColor, p.ClearDepth);
 				Profile.TimePostProcessing.EndMeasure();
 			}
 		}

@@ -178,7 +178,7 @@ namespace Duality.Editor
 		}
 		public ContentRef<Resource> OldContent
 		{
-			get { return this.IsDirectory ? ContentRef<Resource>.Null : new ContentRef<Resource>(null, this.oldPath); }
+			get { return this.IsDirectory ? null : new ContentRef<Resource>(null, this.oldPath); }
 		}
 
 		public ResourceRenamedEventArgs(string path, string oldPath) : base(path)

@@ -24,12 +24,6 @@ namespace Duality
 	[DebuggerTypeProxy(typeof(ContentRef<>.DebuggerTypeProxy))]
 	public struct ContentRef<T> : IEquatable<ContentRef<T>>, IContentRef where T : Resource
 	{
-		/// <summary>
-		/// An explicit null reference.
-		/// </summary>
-		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		public static readonly ContentRef<T> Null = new ContentRef<T>(null);
-
 		[DontSerialize, CloneBehavior(CloneBehavior.Reference), CloneField(CloneFieldFlags.DontSkip)]
 		private	T		contentInstance;
 		private	string	contentPath;
@@ -221,12 +215,12 @@ namespace Duality
 		/// <typeparam name="U">The Resource Type to create a reference of.</typeparam>
 		/// <returns>
 		/// A <see cref="ContentRef{T}"/> of the specified Type, referencing the same Resource.
-		/// Returns a <see cref="ContentRef{T}.Null">null reference</see> if the Resource is not assignable
+		/// Returns a null reference if the Resource is not assignable
 		/// to the specified Type.
 		/// </returns>
 		public ContentRef<U> As<U>() where U : Resource
 		{
-			if (!Is<U>()) return ContentRef<U>.Null;
+			if (!Is<U>()) return null;
 			return new ContentRef<U>(this.contentInstance as U, this.contentPath);
 		}
 

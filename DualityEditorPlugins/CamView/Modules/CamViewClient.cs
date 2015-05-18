@@ -10,9 +10,8 @@ using Duality.Components;
 using Duality.Drawing;
 
 using Duality.Editor;
+using Duality.Editor.Backend;
 using Duality.Editor.Forms;
-
-using OpenTK;
 
 namespace Duality.Editor.Plugins.CamView
 {
@@ -28,12 +27,12 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		public Size ClientSize
 		{
-			get { return this.view.LocalGLControl.ClientSize; }
+			get { return this.view.RenderableControl.ClientSize; }
 		}
 		public Cursor Cursor
 		{
-			get { return this.view.LocalGLControl.Cursor; }
-			set { this.view.LocalGLControl.Cursor = value; }
+			get { return this.view.RenderableControl.Cursor; }
+			set { this.view.RenderableControl.Cursor = value; }
 		}
 		public ColorRgba BgColor
 		{
@@ -48,9 +47,13 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.view.EditingUserGuides; }
 		}
-		internal GLControl LocalGLControl
+		internal INativeRenderableSite RenderableSite
 		{
-			get { return this.view == null ? null : this.view.LocalGLControl; }
+			get { return this.view == null ? null : this.view.RenderableSite; }
+		}
+		internal Control RenderableControl
+		{
+			get { return this.view == null ? null : this.view.RenderableControl; }
 		}
 
 		public Camera CameraComponent
@@ -65,31 +68,31 @@ namespace Duality.Editor.Plugins.CamView
 
 		public Point PointToClient(Point screenCoord)
 		{
-			return this.view.LocalGLControl.PointToClient(screenCoord);
+			return this.view.RenderableControl.PointToClient(screenCoord);
 		}
 		public Point PointToScreen(Point clientCoord)
 		{
-			return this.view.LocalGLControl.PointToScreen(clientCoord);
+			return this.view.RenderableControl.PointToScreen(clientCoord);
 		}
 		public void Invalidate()
 		{
-			if (this.view == null || this.view.LocalGLControl == null) return;
-			this.view.LocalGLControl.Invalidate();
+			if (this.view == null || this.view.RenderableControl == null) return;
+			this.view.RenderableControl.Invalidate();
 		}
 		public void Focus()
 		{
-			this.view.LocalGLControl.Focus();
+			this.view.RenderableControl.Focus();
 		}
 
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
-			DualityEditorApp.GLMakeCurrent(this.LocalGLControl);
+			this.RenderableSite.MakeCurrent();
 			var result = this.CameraComponent.PickRendererAt(new Rect(this.ClientSize.Width, this.ClientSize.Height), x, y);
 			return result;
 		}
 		public HashSet<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
-			DualityEditorApp.GLMakeCurrent(this.LocalGLControl);
+			this.RenderableSite.MakeCurrent();
 			var result = this.CameraComponent.PickRenderersIn(new Rect(this.ClientSize.Width, this.ClientSize.Height), x, y, w, h);
 			return result;
 		}

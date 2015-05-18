@@ -4,60 +4,25 @@ using System.Threading;
 using System.Linq;
 using System.Diagnostics;
 
-using OpenTK;
-using AudioContext = OpenTK.Audio.AudioContext;
-using OpenTK.Audio.OpenAL;
-
 using Duality.Resources;
 using Duality.Components;
 
-namespace Duality
+namespace Duality.Audio
 {
 	/// <summary>
 	/// Provides functionality to play and manage sound in Duality.
 	/// </summary>
+	[DontSerialize]
 	public sealed class SoundDevice : IDisposable
 	{
 		private	bool					disposed		= false;
-		private	AudioContext			context			= null;
 		private	GameObject				soundListener	= null;
-		private	Stack<int>				alSourcePool	= new Stack<int>();
 		private	List<SoundInstance>		sounds			= new List<SoundInstance>();
-		private	SoundBudgetQueue		budgetMusic		= new SoundBudgetQueue();
-		private	SoundBudgetQueue		budgetAmbient	= new SoundBudgetQueue();
 		private	Dictionary<string,int>	resPlaying		= new Dictionary<string,int>();
-		private	int						maxAlSources	= 0;
 		private	int						numPlaying2D	= 0;
 		private	int						numPlaying3D	= 0;
 		private	bool					mute			= false;
 
-		private	Thread				streamWorker			= null;
-		private List<SoundInstance>	streamWorkerQueue		= null;
-		private AutoResetEvent		streamWorkerQueueEvent	= null;
-		private bool				streamWorkerEnd			= false;
-
-
-		/// <summary>
-		/// [GET] A queue of currently playing ambient pads.
-		/// </summary>
-		public SoundBudgetQueue Ambient
-		{
-			get { return this.budgetAmbient; }
-		}
-		/// <summary>
-		/// [GET] A queue of currently playing music pads.
-		/// </summary>
-		public SoundBudgetQueue Music
-		{
-			get { return this.budgetMusic; }
-		}
-		/// <summary>
-		/// [GET] Returns whether the SoundDevice is available. If false, no audio output can be generated.
-		/// </summary>
-		public bool IsAvailable
-		{
-			get { return this.context != null; }
-		}
 
 		/// <summary>
 		/// [GET / SET] The current listener object. This is automatically set to an available
@@ -117,7 +82,7 @@ namespace Duality
 		/// </summary>
 		public int MaxOpenALSources
 		{
-			get { return this.maxAlSources; }
+			get { return DualityApp.AudioBackend.MaxSourceCount; }
 		}
 		/// <summary>
 		/// [GET] Returns the number of currently playing 2d sounds.
@@ -138,7 +103,7 @@ namespace Duality
 		/// </summary>
 		public int NumAvailable
 		{
-			get { return this.alSourcePool.Count; }
+			get { return DualityApp.AudioBackend.AvailableSources; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all currently playing SoundInstances.
@@ -151,45 +116,6 @@ namespace Duality
 
 		public SoundDevice()
 		{
-			Log.Core.Write("Initializing OpenAL...");
-			Log.Core.PushIndent();
-			try
-			{
-				AudioLibraryLoader.LoadAudioLibrary();
-
-				Log.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
-					AudioContext.AvailableDevices.ToString(d => d == AudioContext.DefaultDevice ? d + " (Default)" : d, "," + Environment.NewLine));
-
-				// Create OpenAL audio context
-				this.context = new AudioContext();
-				Log.Core.Write("Current device: {0}", this.context.CurrentDevice);
-
-				// Generate OpenAL source pool
-				while (true)
-				{
-					int newSrc = AL.GenSource();
-					if (!DualityApp.CheckOpenALErrors(true))
-						this.alSourcePool.Push(newSrc);
-					else
-						break;
-				}
-				this.maxAlSources = this.alSourcePool.Count;
-				Log.Core.Write("{0} sources available", this.alSourcePool.Count);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("An error occured while initializing OpenAL: {0}", Log.Exception(e));
-			}
-			Log.Core.PopIndent();
-			
-			// Set up the streaming thread
-			this.streamWorkerEnd = false;
-			this.streamWorkerQueue = new List<SoundInstance>();
-			this.streamWorkerQueueEvent = new AutoResetEvent(false);
-			this.streamWorker = new Thread(ThreadStreamFunc);
-			this.streamWorker.IsBackground = true;
-			this.streamWorker.Start();
-
 			DualityApp.AppDataChanged += this.DualityApp_AppDataChanged;
 		}
 		~SoundDevice()
@@ -208,50 +134,13 @@ namespace Duality
 				this.disposed = true;
 				DualityApp.AppDataChanged -= this.DualityApp_AppDataChanged;
 
-				// Shut down the streaming thread
-				if (this.streamWorker != null)
-				{
-					this.streamWorkerEnd = true;
-					if (!this.streamWorker.Join(1000))
-					{
-						this.streamWorker.Abort();
-					}
-					this.streamWorkerQueueEvent.Dispose();
-					this.streamWorkerEnd = false;
-					this.streamWorkerQueueEvent = null;
-					this.streamWorkerQueue = null;
-					this.streamWorker = null;
-				}
+				// Clear all playing sounds
+				foreach (SoundInstance inst in this.sounds) inst.Dispose();
+				this.sounds.Clear();
 
-				try
-				{
-					// Clear all playing sounds
-					foreach (SoundInstance inst in this.sounds) inst.Dispose();
-					this.sounds.Clear();
-
-					// Clear all audio related Resources
-					ContentProvider.RemoveAllContent<AudioData>();
-					ContentProvider.RemoveAllContent<Sound>();
-
-					// Clear OpenAL source pool
-					foreach (int alSource in this.alSourcePool)
-					{
-						AL.DeleteSource(alSource);
-					}
-
-					// Shut down OpenAL context
-					if (this.context != null)
-					{
-						this.context.Dispose();
-						this.context = null;
-					}
-
-					AudioLibraryLoader.UnloadAudioLibrary();
-				}
-				catch (Exception e)
-				{
-					Log.Core.WriteError("An error occured while shutting down OpenAL: {0}", Log.Exception(e));
-				}
+				// Clear all audio related Resources
+				ContentProvider.RemoveAllContent<AudioData>();
+				ContentProvider.RemoveAllContent<Sound>();
 			}
 		}
 
@@ -267,23 +156,6 @@ namespace Duality
 				return 0;
 			else
 				return curNumSoundRes;
-		}
-		/// <summary>
-		/// Requests an OpenAL source handle.
-		/// </summary>
-		/// <returns>An OpenAL source handle. <see cref="SoundInstance.AlSource_NotAvailable"/> if no source is currently available.</returns>
-		internal int RequestAlSource()
-		{
-			if (this.alSourcePool.Count == 0) return SoundInstance.AlSource_NotAvailable;
-			return this.alSourcePool.Pop();
-		}
-		/// <summary>
-		/// Frees a previously requested OpenAL source.
-		/// </summary>
-		/// <param name="alSource">The OpenAL handle of the source to free.</param>
-		internal void FreeAlSource(int alSource)
-		{
-			this.alSourcePool.Push(alSource);
 		}
 		/// <summary>
 		/// Registers a <see cref="Duality.Resources.Sound">Sounds</see> playing instance.
@@ -316,30 +188,13 @@ namespace Duality
 			if (snd.IsAvailable && !snd.IsRuntimeResource)
 				this.resPlaying[snd.Path]--;
 		}
-		/// <summary>
-		/// Enqueues the specified <see cref="SoundInstance"/> in the streaming thread.
-		/// </summary>
-		/// <param name="instance"></param>
-		internal void EnqueueForStreaming(SoundInstance instance)
-		{
-			lock (this.streamWorkerQueue)
-			{
-				if (this.streamWorkerQueue.Contains(instance)) return;
-				this.streamWorkerQueue.Add(instance);
-			}
-			this.streamWorkerQueueEvent.Set();
-		}
 		
 		/// <summary>
 		/// Updates the SoundDevice.
 		/// </summary>
 		internal void Update()
 		{
-			if (this.context == null) return;
 			Profile.TimeUpdateAudio.BeginMeasure();
-
-			this.budgetAmbient.Update();
-			this.budgetMusic.Update();
 
 			this.UpdateListener();
 
@@ -356,7 +211,6 @@ namespace Duality
 		}
 		private void UpdateListener()
 		{
-			if (this.context == null) return;
 			if (this.soundListener != null && (this.soundListener.Disposed || !this.soundListener.Active)) this.soundListener = null;
 
 			// If no listener is defined, search one
@@ -365,20 +219,11 @@ namespace Duality
 				this.soundListener = Scene.Current.FindGameObject<SoundListener>();
 			}
 
-			float[] orientation = new float[6];
-			orientation[0] = 0.0f;	// forward vector x value
-			orientation[1] = 0.0f;	// forward vector y value
-			orientation[2] = -1.0f;	// forward vector z value
-			orientation[5] = 0.0f;	// up vector z value
-			Vector3 listenerPos = this.ListenerPos;
-			Vector3 listenerVel = this.ListenerVel;
-			float listenerAngle = this.ListenerAngle;
-			AL.Listener(ALListener3f.Position, listenerPos.X, -listenerPos.Y, -listenerPos.Z);
-			AL.Listener(ALListener3f.Velocity, listenerVel.X, -listenerVel.Y, -listenerVel.Z);
-			orientation[3] = MathF.Sin(listenerAngle);	// up vector x value
-			orientation[4] = MathF.Cos(listenerAngle);	// up vector y value
-			AL.Listener(ALListenerfv.Orientation, ref orientation);
-			AL.Listener(ALListenerf.Gain, this.mute ? 0.0f : 1.0f);
+			DualityApp.AudioBackend.UpdateListener(
+				this.ListenerPos,
+				this.ListenerVel,
+				this.ListenerAngle,
+				this.mute);
 		}
 		
 		/// <summary>
@@ -430,71 +275,22 @@ namespace Duality
 			this.sounds.Add(inst);
 			return inst;
 		}
+		/// <summary>
+		/// Stops all currently playing sounds.
+		/// </summary>
+		public void StopAll()
+		{
+			for (int i = this.sounds.Count - 1; i >= 0; i--)
+			{
+				this.sounds[i].Stop();
+			}
+		}
 		
 		private void DualityApp_AppDataChanged(object sender, EventArgs e)
 		{
-			if (this.context == null) return;
-			AL.DistanceModel(ALDistanceModel.LinearDistanceClamped);
-			AL.DopplerFactor(DualityApp.AppData.SoundDopplerFactor);
-			AL.SpeedOfSound(DualityApp.AppData.SpeedOfSound);
+			DualityApp.AudioBackend.UpdateWorldSettings(
+				DualityApp.AppData.SpeedOfSound, 
+				DualityApp.AppData.SoundDopplerFactor);
 		}
-
-
-		private void ThreadStreamFunc()
-		{
-			int queueIndex = 0;
-			System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch();
-			watch.Restart();
-			while (!this.streamWorkerEnd)
-			{
-				// Determine which SoundInstance to update
-				SoundInstance sndInst;
-				lock (this.streamWorkerQueue)
-				{
-					if (this.streamWorkerQueue.Count > 0)
-					{
-						int count = this.streamWorkerQueue.Count;
-						queueIndex = (queueIndex + count) % count;
-						sndInst = this.streamWorkerQueue[queueIndex];
-						queueIndex = (queueIndex + count - 1) % count;
-					}
-					else
-					{
-						sndInst = null;
-						queueIndex = 0;
-					}
-				}
-
-				// If there is no SoundInstance available, wait for a signal of one being added.
-				if (sndInst == null)
-				{
-					// Timeout of 100 ms to check regularly for requesting the thread to end.
-					streamWorkerQueueEvent.WaitOne(100);
-					continue;
-				}
-
-				// Perform the necessary streaming operations on the SoundInstance, and remove it when requested
-				if (!sndInst.PerformStreaming())
-				{
-					lock (this.streamWorkerQueue)
-					{
-						this.streamWorkerQueue.Remove(sndInst);
-					}
-				}
-
-				// After each roundtrip, sleep a little, don't keep the processor busy for no reason
-				if (queueIndex == 0)
-				{
-					watch.Stop();
-					int roundtripTime = (int)watch.ElapsedMilliseconds;
-					if (roundtripTime <= 1)
-					{
-						streamWorkerQueueEvent.WaitOne(16);
-					}
-					watch.Restart();
-				}
-			}
-		}
-
 	}
 }

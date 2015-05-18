@@ -1096,13 +1096,10 @@ namespace Duality.Components.Physics
 		{
 			if (context == InitContext.Activate)
 			{
+				// Do some cleanup before updating again
+				this.RemoveDisposedJoints();
 				// Initialize the backing Farseer objects upon activation
 				this.Initialize();
-			}
-			else if (context == InitContext.Loaded)
-			{
-				// Do some cleanup after loading
-				this.RemoveDisposedJoints();
 			}
 			else if (context == InitContext.AddToGameObject && DualityApp.ExecContext == DualityApp.ExecutionContext.Editor)
 			{

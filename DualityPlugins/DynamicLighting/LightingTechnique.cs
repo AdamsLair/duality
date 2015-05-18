@@ -18,7 +18,7 @@ namespace Duality.Plugins.DynamicLighting
 			get { return true; }
 		}
 
-		protected override void PrepareRendering(IDrawDevice device, BatchInfo material)
+		public override void PrepareRendering(IDrawDevice device, BatchInfo material)
 		{
 			base.PrepareRendering(device, material);
 

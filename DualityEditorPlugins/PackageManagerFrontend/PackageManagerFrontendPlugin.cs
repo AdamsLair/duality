@@ -25,28 +25,30 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			get { return "PackageManagerFrontend"; }
 		}
+		public PackageViewDialog PackageView
+		{
+			get
+			{
+				if (this.packageView == null)
+					this.packageView = new PackageViewDialog();
+				return this.packageView;
+			}
+		}
 
 
 		protected override void SaveUserData(XElement node)
 		{
 			XElement packageViewElem = new XElement("PackageView");
 			node.Add(packageViewElem);
-			this.packageView.SaveUserData(packageViewElem);
+			this.PackageView.SaveUserData(packageViewElem);
 		}
 		protected override void LoadUserData(XElement node)
 		{
 			XElement packageViewElem = node.Element("PackageView");
 			if (packageViewElem != null)
 			{
-				this.packageView.LoadUserData(packageViewElem);
+				this.PackageView.LoadUserData(packageViewElem);
 			}
-		}
-		protected override void LoadPlugin()
-		{
-			base.LoadPlugin();
-
-			// Set up dialog instance
-			this.packageView = new PackageViewDialog();
 		}
 		protected override void InitPlugin(MainForm main)
 		{
@@ -64,7 +66,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		
 		public void ShowPackageViewDialog()
 		{
-			DialogResult result = this.packageView.ShowDialog(DualityEditorApp.MainForm);
+			DialogResult result = this.PackageView.ShowDialog(DualityEditorApp.MainForm);
 		}
 
 		private void menuItemLogView_Click(object sender, EventArgs e)

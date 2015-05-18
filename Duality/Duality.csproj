@@ -62,16 +62,42 @@
       <HintPath>..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Audio\Enums\AudioDataElementType.cs" />
+    <Compile Include="Audio\Enums\AudioDataLayout.cs" />
+    <Compile Include="Backend\Audio\AudioSourceState.cs" />
+    <Compile Include="Backend\Audio\IAudioStreamProvider.cs" />
+    <Compile Include="Audio\VorbisStreamHandle.cs" />
+    <Compile Include="Audio\PcmData.cs" />
+    <Compile Include="Audio\Enums\SoundType.cs" />
+    <Compile Include="Backend\Audio\INativeAudioSource.cs" />
+    <Compile Include="Backend\Audio\INativeAudioBuffer.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeAudioSource.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeAudioBuffer.cs" />
+    <Compile Include="Backend\Dummy\DummyAudioBackend.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeShaderProgram.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeShaderPart.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeRenderTarget.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeWindow.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
+    <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
+    <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
+    <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
+    <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
+    <Compile Include="Backend\Graphics\INativeWindow.cs" />
+    <Compile Include="Backend\Graphics\INativeTexture.cs" />
+    <Compile Include="Backend\Graphics\WindowOptions.cs" />
+    <Compile Include="Backend\Graphics\RenderStats.cs" />
+    <Compile Include="Backend\BackendException.cs" />
+    <Compile Include="Backend\IDualiyBackend.cs" />
+    <Compile Include="Backend\Graphics\RenderOptions.cs" />
+    <Compile Include="Backend\IAudioBackend.cs" />
+    <Compile Include="Backend\IGraphicsBackend.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
     <Compile Include="Cloning\ICloneOperation.cs" />
@@ -80,12 +106,34 @@
     <Compile Include="Cloning\ICloneTargetSetup.cs" />
     <Compile Include="Cloning\CloneType.cs" />
     <Compile Include="Cloning\ManuallyClonedAttribute.cs" />
+    <Compile Include="Components\ICmpInterfaces\ICmpEditorUpdatable.cs" />
+    <Compile Include="Components\ICmpInterfaces\ICmpInitializable.cs" />
+    <Compile Include="Components\ICmpInterfaces\ICmpCollisionListener.cs" />
+    <Compile Include="Components\ICmpInterfaces\ICmpRenderer.cs" />
+    <Compile Include="Components\ICmpInterfaces\ICmpUpdatable.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
+    <Compile Include="Drawing\Enums\BlendMode.cs" />
+    <Compile Include="Drawing\Enums\ClearFlag.cs" />
+    <Compile Include="Drawing\Enums\ColorDataElementType.cs" />
+    <Compile Include="Drawing\Enums\ColorDataLayout.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
+    <Compile Include="Drawing\Enums\RenderMatrix.cs" />
+    <Compile Include="Drawing\Enums\PerspectiveMode.cs" />
+    <Compile Include="Drawing\Enums\VertexMode.cs" />
+    <Compile Include="Drawing\BatchInfo.cs" />
     <Compile Include="Drawing\IDrawBatch.cs" />
-    <Compile Include="Drawing\VertexFormatDefinition.cs" />
-    <Compile Include="Drawing\TextureEnums.cs" />
-    <Compile Include="Drawing\IRendererVisibilityStrategy.cs" />
-    <Compile Include="Drawing\DefaultRendererVisibilityStrategy.cs" />
+    <Compile Include="Drawing\Enums\TextureSizeMode.cs" />
+    <Compile Include="Drawing\Enums\TextureMagFilter.cs" />
+    <Compile Include="Drawing\Enums\TextureMinFilter.cs" />
+    <Compile Include="Drawing\Enums\TextureWrapMode.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexDeclaration.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElement.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElementType.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElementRole.cs" />
+    <Compile Include="Drawing\VertexFormatDefinition\VertexElementAttribute.cs" />
+    <Compile Include="Drawing\Enums\TexturePixelFormat.cs" />
+    <Compile Include="Components\Other\IRendererVisibilityStrategy.cs" />
+    <Compile Include="Components\Other\DefaultRendererVisibilityStrategy.cs" />
     <Compile Include="Drawing\ScreenResolution.cs" />
     <Compile Include="Input\UserInputEventArgs.cs" />
     <Compile Include="Input\JoystickButtonEventArgs.cs" />
@@ -96,6 +144,9 @@
     <Compile Include="Input\Key.cs" />
     <Compile Include="Input\MouseEventArgs.cs" />
     <Compile Include="Input\MouseButton.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderFieldScope.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
+    <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
@@ -103,7 +154,6 @@
     <Compile Include="Utility\Streams\SubStreamWrapper.cs" />
     <Compile Include="Utility\Streams\StreamWrapper.cs" />
     <Compile Include="Utility\Streams\NonClosingStreamWrapper.cs" />
-    <Compile Include="Audio\AudioLibraryLoader.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />
     <Compile Include="Cloning\CloneProviderContext.cs" />
     <Compile Include="Cloning\ICloneExplicit.cs" />
@@ -112,7 +162,7 @@
     <Compile Include="Cloning\Surrogates\DelegateSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Components\Diagnostics\VisualLogRenderer.cs" />
-    <Compile Include="Components\ICmpInterfaces.cs" />
+    <Compile Include="Components\Other\CollisionData.cs" />
     <Compile Include="Components\Physics\Joints\GearJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\PulleyJointInfo.cs" />
     <Compile Include="Components\Physics\Joints\LineJointInfo.cs" />
@@ -142,9 +192,9 @@
     <Compile Include="Properties\CoreResNames.cs" />
     <Compile Include="Drawing\DrawDevice.cs" />
     <Compile Include="Drawing\IDrawDevice.cs" />
-    <Compile Include="Drawing\DrawDeviceEnums.cs" />
+    <Compile Include="Drawing\Enums\VisibilityFlag.cs" />
     <Compile Include="Drawing\CanvasBuffer.cs" />
-    <Compile Include="Drawing\DashPattern.cs" />
+    <Compile Include="Drawing\Enums\DashPattern.cs" />
     <Compile Include="Drawing\CanvasState.cs" />
     <Compile Include="Utility\Math\Alignment.cs" />
     <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
@@ -173,18 +223,14 @@
     <Compile Include="Input\GamepadAxis.cs" />
     <Compile Include="Input\StateManagers\GamepadInput.cs" />
     <Compile Include="Input\Sources\IGamepadInputSource.cs" />
-    <Compile Include="Input\Sources\GlobalGamepadInputSource.cs" />
     <Compile Include="Input\Collections\UserInputCollection.cs" />
     <Compile Include="Input\Sources\IKeyboardInputSource.cs" />
     <Compile Include="Input\Sources\IMouseInputSource.cs" />
     <Compile Include="Input\Sources\IJoystickInputSource.cs" />
     <Compile Include="Input\StateManagers\JoystickInput.cs" />
     <Compile Include="Input\Sources\IUserInputSource.cs" />
-    <Compile Include="Input\Sources\GlobalJoystickInputSource.cs" />
     <Compile Include="Input\StateManagers\MouseInput.cs" />
     <Compile Include="Input\StateManagers\KeyboardInput.cs" />
-    <Compile Include="Input\Sources\GameWindowMouseInputSource.cs" />
-    <Compile Include="Input\Sources\GameWindowKeyboardInputSource.cs" />
     <Compile Include="Utility\Log\ExtMethodsVisualLogEntry.cs" />
     <Compile Include="Utility\Log\VisualLogAnchor.cs" />
     <Compile Include="Utility\Log\VisualLog.cs" />
@@ -207,9 +253,8 @@
     <Compile Include="Utility\Extensions\ExtMethodsIList.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsRandom.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsString.cs" />
-    <Compile Include="Drawing\GraphicsModeComparer.cs" />
     <Compile Include="Utility\ReflectionInfo.cs" />
-    <Compile Include="Audio\OggVorbis\OggVorbis.cs" />
+    <Compile Include="Audio\OggVorbis.cs" />
     <Compile Include="Utility\PathHelper.cs" />
     <Compile Include="Utility\ReflectionHelper.cs" />
     <Compile Include="Components\Camera.cs" />
@@ -245,7 +290,6 @@
     <Compile Include="Resources\Prefab.cs" />
     <Compile Include="Resources\VertexShader.cs" />
     <Compile Include="Resources\Scene.cs" />
-    <Compile Include="Audio\SoundBudgetPad.cs" />
     <Compile Include="Audio\SoundDevice.cs" />
     <Compile Include="Audio\SoundInstance.cs" />
     <Compile Include="Drawing\FormattedText.cs" />
@@ -267,10 +311,10 @@
     <Compile Include="Serialization\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Serialization\TypeDataLayout.cs" />
     <Compile Include="Time.cs" />
-    <Compile Include="Drawing\VertexFormat\IVertexData.cs" />
-    <Compile Include="Drawing\VertexFormat\VertexC1P3T4A1.cs" />
-    <Compile Include="Drawing\VertexFormat\VertexC1P3T2.cs" />
-    <Compile Include="Drawing\VertexFormat\VertexC1P3.cs" />
+    <Compile Include="Drawing\VertexData\IVertexData.cs" />
+    <Compile Include="Drawing\VertexData\VertexC1P3T4A1.cs" />
+    <Compile Include="Drawing\VertexData\VertexC1P3T2.cs" />
+    <Compile Include="Drawing\VertexData\VertexC1P3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\Checkerboard.png" />
@@ -341,12 +385,6 @@
     <None Include="EmbeddedResources\EditorSupport\Field.png" />
     <None Include="EmbeddedResources\EditorSupport\Property.png" />
     <None Include="EmbeddedResources\EditorSupport\iconCmpProfileRenderer.png" />
-    <Content Include="OpenALSoft32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="OpenALSoft64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">
@@ -354,6 +392,7 @@
       <Name>DualityPrimitives</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
