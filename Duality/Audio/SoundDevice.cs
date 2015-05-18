@@ -82,7 +82,7 @@ namespace Duality.Audio
 		/// </summary>
 		public int MaxOpenALSources
 		{
-			get { return (DualityApp.AudioBackend as Backend.DefaultOpenTK.AudioBackend).MaxSourceCount; }
+			get { return DualityApp.AudioBackend.MaxSourceCount; }
 		}
 		/// <summary>
 		/// [GET] Returns the number of currently playing 2d sounds.
@@ -103,7 +103,7 @@ namespace Duality.Audio
 		/// </summary>
 		public int NumAvailable
 		{
-			get { return (DualityApp.AudioBackend as Backend.DefaultOpenTK.AudioBackend).AvailableSources; }
+			get { return DualityApp.AudioBackend.AvailableSources; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all currently playing SoundInstances.

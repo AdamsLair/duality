@@ -19,9 +19,11 @@ namespace Duality.Backend.DefaultOpenTK
 			Immediately
 		}
 
-		private int		handle		= 0;
-		private	bool	isInitial	= true;
-		private	bool	isStreamed	= false;
+		private int						handle			= 0;
+		private	bool					isInitial		= true;
+		private	bool					isStreamed		= false;
+		private	bool					isFirstUpdate	= true;
+		private	AudioSourceState		lastState		= AudioSourceState.Default;
 		private IAudioStreamProvider	streamProvider	= null;
 
 		private object					strLock			= new object();
@@ -101,6 +103,41 @@ namespace Duality.Backend.DefaultOpenTK
 			this.ResetLocalState();
 			this.ResetSourceState();
 			this.isInitial = true;
+			this.isFirstUpdate = true;
+		}
+		void INativeAudioSource.ApplyState(ref AudioSourceState state)
+		{
+			lock (this.strLock)
+			{
+				ALSourceState nativeState = AL.GetSourceState(this.handle);
+				bool looped = state.Looped && !this.isStreamed;
+
+				if (this.isFirstUpdate || this.lastState.RelativeToListener != state.RelativeToListener)
+					AL.Source(handle, ALSourceb.SourceRelative, state.RelativeToListener);
+				if (this.isFirstUpdate || this.lastState.Position != state.Position)
+					AL.Source(handle, ALSource3f.Position, state.Position.X, -state.Position.Y, -state.Position.Z * 0.5f);
+				if (this.isFirstUpdate || this.lastState.Velocity != state.Velocity)
+					AL.Source(handle, ALSource3f.Velocity, state.Velocity.X, -state.Velocity.Y, -state.Velocity.Z);
+				if (this.isFirstUpdate || this.lastState.MaxDistance != state.MaxDistance)
+					AL.Source(handle, ALSourcef.MaxDistance, state.MaxDistance);
+				if (this.isFirstUpdate || this.lastState.MinDistance != state.MinDistance)
+					AL.Source(handle, ALSourcef.ReferenceDistance, state.MinDistance);
+				if (this.isFirstUpdate || this.lastState.Looped != looped)
+					AL.Source(handle, ALSourceb.Looping, looped);
+				if (this.isFirstUpdate || this.lastState.Volume != state.Volume)
+					AL.Source(handle, ALSourcef.Gain, state.Volume);
+				if (this.isFirstUpdate || this.lastState.Pitch != state.Pitch)
+					AL.Source(handle, ALSourcef.Pitch, state.Pitch);
+
+				if (state.Paused && nativeState == ALSourceState.Playing)
+					AL.SourcePause(handle);
+				else if (!state.Paused && nativeState == ALSourceState.Paused)
+					AL.SourcePlay(handle);
+
+				this.lastState = state;
+				this.lastState.Looped = looped;
+				this.isFirstUpdate = false;
+			}
 		}
 		void IDisposable.Dispose()
 		{

@@ -32,13 +32,13 @@ namespace Duality.Backend.DefaultOpenTK
 		private bool					streamWorkerEnd			= false;
 
 
-		public int MaxSourceCount
-		{
-			get { return this.availSources; }
-		}
-		public int AvailableSources
+		int IAudioBackend.AvailableSources
 		{
 			get { return this.sourcePool.Count; }
+		}
+		int IAudioBackend.MaxSourceCount
+		{
+			get { return this.availSources; }
 		}
 		string IDualityBackend.Id
 		{

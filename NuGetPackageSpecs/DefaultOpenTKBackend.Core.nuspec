@@ -16,11 +16,12 @@
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.0.0" />
       <dependency id="AdamsLair.OpenTK" version="1.1.1" />
-      <dependency id="AdamsLair.Duality.Primitives" version="1.0.1" />
     </dependencies>
   </metadata>
   <files>
     <file src="..\Backend\DefaultOpenTK\bin\Release\DefaultOpenTKBackend.core.dll" target="lib" />
     <file src="..\Backend\DefaultOpenTK\bin\Release\DefaultOpenTKBackend.core.pdb" target="lib" />
+    <file src="..\Backend\DefaultOpenTK\bin\Release\OpenALSoft32.dll" target="lib" />
+    <file src="..\Backend\DefaultOpenTK\bin\Release\OpenALSoft64.dll" target="lib" />
   </files>
 </package>

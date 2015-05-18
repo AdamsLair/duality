@@ -62,27 +62,24 @@
       <HintPath>..\packages\AdamsLair.NVorbis.0.7.5\lib\portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10\NVorbis.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="OpenTK, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.OpenTK.1.1.1.0\lib\net20\OpenTK.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\AudioDataElementType.cs" />
-    <Compile Include="Audio\AudioDataLayout.cs" />
+    <Compile Include="Audio\Enums\AudioDataElementType.cs" />
+    <Compile Include="Audio\Enums\AudioDataLayout.cs" />
+    <Compile Include="Backend\Audio\AudioSourceState.cs" />
     <Compile Include="Backend\Audio\IAudioStreamProvider.cs" />
     <Compile Include="Audio\VorbisStreamHandle.cs" />
     <Compile Include="Audio\PcmData.cs" />
-    <Compile Include="Audio\SoundType.cs" />
+    <Compile Include="Audio\Enums\SoundType.cs" />
     <Compile Include="Backend\Audio\INativeAudioSource.cs" />
     <Compile Include="Backend\Audio\INativeAudioBuffer.cs" />
-    <Compile Include="Backend\DefaultOpenTK\NativeAudioSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\NativeAudioBuffer.cs" />
-    <Compile Include="Backend\DefaultOpenTK\AudioBackend.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeAudioSource.cs" />
+    <Compile Include="Backend\Dummy\DummyNativeAudioBuffer.cs" />
+    <Compile Include="Backend\Dummy\DummyAudioBackend.cs" />
     <Compile Include="Backend\Dummy\DummyNativeShaderProgram.cs" />
     <Compile Include="Backend\Dummy\DummyNativeShaderPart.cs" />
     <Compile Include="Backend\Dummy\DummyNativeRenderTarget.cs" />
@@ -157,7 +154,6 @@
     <Compile Include="Utility\Streams\SubStreamWrapper.cs" />
     <Compile Include="Utility\Streams\StreamWrapper.cs" />
     <Compile Include="Utility\Streams\NonClosingStreamWrapper.cs" />
-    <Compile Include="Audio\AudioLibraryLoader.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />
     <Compile Include="Cloning\CloneProviderContext.cs" />
     <Compile Include="Cloning\ICloneExplicit.cs" />
@@ -389,12 +385,6 @@
     <None Include="EmbeddedResources\EditorSupport\Field.png" />
     <None Include="EmbeddedResources\EditorSupport\Property.png" />
     <None Include="EmbeddedResources\EditorSupport\iconCmpProfileRenderer.png" />
-    <Content Include="OpenALSoft32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="OpenALSoft64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">

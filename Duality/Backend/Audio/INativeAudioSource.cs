@@ -31,5 +31,11 @@ namespace Duality.Backend
 		/// Resets the entire state of the source, so it can be reused as if it was just created.
 		/// </summary>
 		void Reset();
+		/// <summary>
+		/// Updates the audio sources settings according to the specified data struct. It may modify
+		/// the struct in order to reflect the actual settings, as supported by the backend.
+		/// </summary>
+		/// <param name="state"></param>
+		void ApplyState(ref AudioSourceState state);
 	}
 }

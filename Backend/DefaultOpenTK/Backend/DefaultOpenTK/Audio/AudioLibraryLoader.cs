@@ -5,12 +5,12 @@ using System.Text;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace Duality.Audio
+namespace Duality.Backend.DefaultOpenTK
 {
 	internal static class AudioLibraryLoader
 	{
-		private const string SourceFileName32 = "OpenALSoft32.dll";
-		private const string SourceFileName64 = "OpenALSoft64.dll";
+		private static readonly string SourceFileName32 = Path.Combine(DualityApp.PluginDirectory, "OpenALSoft32.dll");
+		private static readonly string SourceFileName64 = Path.Combine(DualityApp.PluginDirectory, "OpenALSoft64.dll");
 		private const string TargetFileName = "OpenAL32.dll";
 
 		public static void LoadAudioLibrary()
