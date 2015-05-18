@@ -47,23 +47,23 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\DefaultOpenTK\Audio\AudioBackend.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Audio\AudioLibraryLoader.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\ExtMethodsColorDataElementType.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Input\GameWindowKeyboardInputSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Input\GameWindowMouseInputSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Input\GlobalGamepadInputSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Input\GlobalJoystickInputSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\GraphicsBackend.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Audio\NativeAudioBuffer.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Audio\NativeAudioSource.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\NativeRenderTarget.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\ExtMethodsColorDataLayout.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\NativeShaderPart.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\NativeShaderProgram.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\NativeWindow.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\NativeTexture.cs" />
-    <Compile Include="Backend\DefaultOpenTK\Graphics\GraphicsModeComparer.cs" />
+    <Compile Include="Backend\Audio\AudioBackend.cs" />
+    <Compile Include="Backend\Audio\AudioLibraryLoader.cs" />
+    <Compile Include="Backend\Graphics\ExtMethodsColorDataElementType.cs" />
+    <Compile Include="Backend\Input\GameWindowKeyboardInputSource.cs" />
+    <Compile Include="Backend\Input\GameWindowMouseInputSource.cs" />
+    <Compile Include="Backend\Input\GlobalGamepadInputSource.cs" />
+    <Compile Include="Backend\Input\GlobalJoystickInputSource.cs" />
+    <Compile Include="Backend\Graphics\GraphicsBackend.cs" />
+    <Compile Include="Backend\Audio\NativeAudioBuffer.cs" />
+    <Compile Include="Backend\Audio\NativeAudioSource.cs" />
+    <Compile Include="Backend\Graphics\NativeRenderTarget.cs" />
+    <Compile Include="Backend\Graphics\ExtMethodsColorDataLayout.cs" />
+    <Compile Include="Backend\Graphics\NativeShaderPart.cs" />
+    <Compile Include="Backend\Graphics\NativeShaderProgram.cs" />
+    <Compile Include="Backend\Graphics\NativeWindow.cs" />
+    <Compile Include="Backend\Graphics\NativeTexture.cs" />
+    <Compile Include="Backend\Graphics\GraphicsModeComparer.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

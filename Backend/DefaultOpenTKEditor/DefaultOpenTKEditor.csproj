@@ -51,10 +51,10 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\DefaultOpenTK\GraphicsModeComparer.cs" />
-    <Compile Include="Backend\DefaultOpenTK\NativeRenderableSite.cs" />
-    <Compile Include="Backend\DefaultOpenTK\NativeEditorGraphicsContext.cs" />
-    <Compile Include="Backend\DefaultOpenTK\EditorGraphicsBackend.cs" />
+    <Compile Include="Backend\GraphicsModeComparer.cs" />
+    <Compile Include="Backend\NativeRenderableSite.cs" />
+    <Compile Include="Backend\NativeEditorGraphicsContext.cs" />
+    <Compile Include="Backend\EditorGraphicsBackend.cs" />
     <Compile Include="EditorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
