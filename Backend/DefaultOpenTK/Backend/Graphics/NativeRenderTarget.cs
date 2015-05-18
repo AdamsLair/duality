@@ -125,7 +125,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		void INativeRenderTarget.Setup(IReadOnlyList<INativeTexture> targets, AAQuality multisample)
 		{
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			if (targets == null) return;
 			if (targets.Count == 0) return;
@@ -277,7 +277,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void INativeRenderTarget.GetData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int targetIndex, int x, int y, int width, int height)
 		{
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			NativeRenderTarget lastRt = BoundRT;
 			Bind(this);
@@ -291,7 +291,7 @@ namespace Duality.Backend.DefaultOpenTK
 		void IDisposable.Dispose()
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			if (this.handleMainFBO != 0)
 			{

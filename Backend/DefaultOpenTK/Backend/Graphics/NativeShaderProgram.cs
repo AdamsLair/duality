@@ -82,7 +82,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		void INativeShaderProgram.LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment)
 		{
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			if (this.handle == 0) 
 				this.handle = GL.CreateProgram();

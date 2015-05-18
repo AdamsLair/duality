@@ -29,7 +29,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		void INativeShaderPart.LoadSource(string sourceCode, ShaderType type)
 		{
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			if (this.handle == 0) this.handle = GL.CreateShader(GetOpenTKShaderType(type));
 			GL.ShaderSource(this.handle, sourceCode);
@@ -106,7 +106,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
 				this.handle != 0)
 			{
-				DualityApp.GuardSingleThreadState();
+				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 				GL.DeleteShader(this.handle);
 				this.handle = 0;
 			}

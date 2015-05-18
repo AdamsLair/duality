@@ -69,7 +69,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
 				this.primaryVBO != 0)
 			{
-				DualityApp.GuardSingleThreadState();
+				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 				GL.DeleteBuffers(1, ref this.primaryVBO);
 				this.primaryVBO = 0;
 			}

@@ -109,7 +109,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		void INativeTexture.SetupEmpty(TexturePixelFormat format, int width, int height, TextureMinFilter minFilter, TextureMagFilter magFilter, TextureWrapMode wrapX, TextureWrapMode wrapY, int anisoLevel, bool mipmaps)
 		{
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			int lastTexId;
 			GL.GetInteger(GetPName.TextureBinding2D, out lastTexId);
@@ -141,7 +141,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void INativeTexture.LoadData<T>(TexturePixelFormat format, int width, int height, T[] data, ColorDataLayout dataLayout, ColorDataElementType dataElementType)
 		{
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			int lastTexId;
 			GL.GetInteger(GetPName.TextureBinding2D, out lastTexId);
@@ -161,7 +161,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void INativeTexture.GetData<T>(T[] target, ColorDataLayout dataLayout, ColorDataElementType dataElementType)
 		{
-			DualityApp.GuardSingleThreadState();
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 
 			int lastTexId;
 			GL.GetInteger(GetPName.TextureBinding2D, out lastTexId);
@@ -178,7 +178,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
 				this.handle != 0)
 			{
-				DualityApp.GuardSingleThreadState();
+				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 				GL.DeleteTexture(this.handle);
 				this.handle = 0;
 			}

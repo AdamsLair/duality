@@ -114,8 +114,6 @@ namespace Duality.Resources
 		/// </summary>
 		public void Compile()
 		{
-			DualityApp.GuardSingleThreadState();
-
 			if (this.compiled) return;
 			if (String.IsNullOrEmpty(this.source)) return;
 
