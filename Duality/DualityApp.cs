@@ -403,7 +403,7 @@ namespace Duality
 			OnUserDataChanged();
 
 			// Determine the default serialization method
-			Formatter.InitDefaultMethod();
+			Serializer.InitDefaultMethod();
 
 			// Initialize all core plugins
 			InitPlugins();
@@ -668,7 +668,7 @@ namespace Duality
 		/// </summary>
 		public static void LoadAppData()
 		{
-			appData = Formatter.TryReadObject<DualityAppData>(AppDataPath) ?? new DualityAppData();
+			appData = Serializer.TryReadObject<DualityAppData>(AppDataPath) ?? new DualityAppData();
 		}
 		/// <summary>
 		/// Triggers Duality to (re)load its <see cref="DualityUserData"/>.
@@ -677,14 +677,14 @@ namespace Duality
 		{
 			string path = UserDataPath;
 			if (!File.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor) path = "DefaultUserData.dat";
-			userData = Formatter.TryReadObject<DualityUserData>(path) ?? new DualityUserData();
+			userData = Serializer.TryReadObject<DualityUserData>(path) ?? new DualityUserData();
 		}
 		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityAppData"/>.
 		/// </summary>
 		public static void SaveAppData()
 		{
-			Formatter.WriteObject(appData, AppDataPath, FormattingMethod.Xml);
+			Serializer.WriteObject(appData, AppDataPath, SerializeMethod.Xml);
 		}
 		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityUserData"/>.
@@ -692,10 +692,10 @@ namespace Duality
 		public static void SaveUserData()
 		{
 			string path = UserDataPath;
-			Formatter.WriteObject(userData, UserDataPath, FormattingMethod.Xml);
+			Serializer.WriteObject(userData, UserDataPath, SerializeMethod.Xml);
 			if (execContext == ExecutionContext.Editor)
 			{
-				Formatter.WriteObject(userData, "DefaultUserData.dat", FormattingMethod.Xml);
+				Serializer.WriteObject(userData, "DefaultUserData.dat", SerializeMethod.Xml);
 			}
 		}
 
@@ -1197,7 +1197,7 @@ namespace Duality
 			availTypeDict.Clear();
 			ReflectionHelper.ClearTypeCache();
 			Component.ClearTypeCache();
-			Formatter.ClearTypeCache();
+			Serializer.ClearTypeCache();
 			CloneProvider.ClearTypeCache();
 			
 			// Clean input sources that a disposed Assembly forgot to unregister.

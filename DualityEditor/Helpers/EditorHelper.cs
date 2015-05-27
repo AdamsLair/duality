@@ -286,11 +286,11 @@ namespace Duality.Editor
 			{
 				// Initialize AppData
 				DualityAppData data;
-				data = Formatter.TryReadObject<DualityAppData>(DualityApp.AppDataPath) ?? new DualityAppData();
+				data = Serializer.TryReadObject<DualityAppData>(DualityApp.AppDataPath) ?? new DualityAppData();
 				data.AppName = projName;
 				data.AuthorName = Environment.UserName;
 				data.Version = 0;
-				Formatter.WriteObject(data, DualityApp.AppDataPath, FormattingMethod.Xml);
+				Serializer.WriteObject(data, DualityApp.AppDataPath, SerializeMethod.Xml);
 			
 				// Read content source code data (needed to rename classes / namespaces)
 				string oldRootNamespaceNameCore;

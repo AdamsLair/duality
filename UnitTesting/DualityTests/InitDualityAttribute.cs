@@ -65,7 +65,7 @@ namespace Duality.Tests
 			}
 
 			// Load local testing memory
-			TestHelper.LocalTestMemory = Formatter.TryReadObject<TestMemory>(TestHelper.LocalTestMemoryFilePath, FormattingMethod.Xml);
+			TestHelper.LocalTestMemory = Serializer.TryReadObject<TestMemory>(TestHelper.LocalTestMemoryFilePath, SerializeMethod.Xml);
 
 			Console.WriteLine("----- Duality environment setup complete -----");
 		}
@@ -92,7 +92,7 @@ namespace Duality.Tests
 			// Save local testing memory
 			if (TestContext.CurrentContext.Result.Status == TestStatus.Passed && !System.Diagnostics.Debugger.IsAttached)
 			{
-				Formatter.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, FormattingMethod.Xml);
+				Serializer.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, SerializeMethod.Xml);
 			}
 
 			Console.WriteLine("----- Duality environment teardown complete -----");

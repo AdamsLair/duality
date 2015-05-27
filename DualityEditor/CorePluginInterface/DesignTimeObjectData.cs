@@ -101,11 +101,11 @@ namespace Duality.Editor
 
 		private static void Save(string filePath)
 		{
-			Formatter.WriteObject(manager, filePath, FormattingMethod.Binary);
+			Serializer.WriteObject(manager, filePath, SerializeMethod.Binary);
 		}
 		private static void Load(string filePath)
 		{
-			manager = Formatter.TryReadObject<DesignTimeObjectDataManager>(filePath) ?? new DesignTimeObjectDataManager();
+			manager = Serializer.TryReadObject<DesignTimeObjectDataManager>(filePath) ?? new DesignTimeObjectDataManager();
 		}
 		private static void Scene_Leaving(object sender, EventArgs e)
 		{

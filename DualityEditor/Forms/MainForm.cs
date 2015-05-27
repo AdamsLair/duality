@@ -333,7 +333,7 @@ namespace Duality.Editor.Forms
 			this.menuRunSandboxSlower.Enabled = Sandbox.State != SandboxState.Inactive;
 			this.menuRunSandboxFaster.Enabled = Sandbox.State != SandboxState.Inactive;
 
-			if (Duality.Serialization.Formatter.DefaultMethod == Duality.Serialization.FormattingMethod.Xml)
+			if (Duality.Serialization.Serializer.DefaultMethod == Duality.Serialization.SerializeMethod.Xml)
 			{
 				this.selectFormattingMethod.Image = this.formatXml.Image;
 				this.formatXml.Checked = true;
@@ -532,25 +532,25 @@ namespace Duality.Editor.Forms
 
 		private void formatBinary_Click(object sender, EventArgs e)
 		{
-			if (Duality.Serialization.Formatter.DefaultMethod == Duality.Serialization.FormattingMethod.Binary) return;
-			Duality.Serialization.Formatter.DefaultMethod = Duality.Serialization.FormattingMethod.Binary;
+			if (Duality.Serialization.Serializer.DefaultMethod == Duality.Serialization.SerializeMethod.Binary) return;
+			Duality.Serialization.Serializer.DefaultMethod = Duality.Serialization.SerializeMethod.Binary;
 			this.UpdateToolbar();
 
 			ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(this, 
 				Properties.GeneralRes.TaskChangeDataFormat_Caption, 
-				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Formatter.DefaultMethod.ToString()), 
+				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Serializer.DefaultMethod.ToString()), 
 				this.async_ChangeDataFormat, null);
 			taskDialog.ShowDialog();
 		}
 		private void formatXml_Click(object sender, EventArgs e)
 		{
-			if (Duality.Serialization.Formatter.DefaultMethod == Duality.Serialization.FormattingMethod.Xml) return;
-			Duality.Serialization.Formatter.DefaultMethod = Duality.Serialization.FormattingMethod.Xml;
+			if (Duality.Serialization.Serializer.DefaultMethod == Duality.Serialization.SerializeMethod.Xml) return;
+			Duality.Serialization.Serializer.DefaultMethod = Duality.Serialization.SerializeMethod.Xml;
 			this.UpdateToolbar();
 
 			ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(this, 
 				Properties.GeneralRes.TaskChangeDataFormat_Caption, 
-				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Formatter.DefaultMethod.ToString()), 
+				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Serializer.DefaultMethod.ToString()), 
 				this.async_ChangeDataFormat, null);
 			taskDialog.ShowDialog();
 		}

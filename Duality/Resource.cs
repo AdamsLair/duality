@@ -190,7 +190,7 @@ namespace Duality
 			else
 				streamName = str.ToString();
 
-			using (var formatter = Formatter.Create(str))
+			using (var formatter = Serializer.Create(str))
 			{
 				formatter.AddFieldBlocker(Resource.DontSerializeResourceBlocker);
 				if (this is Duality.Resources.Scene) // This is an unfortunate hack. Refactor when necessary.
@@ -378,7 +378,7 @@ namespace Duality
 		/// <returns>The Resource that has been loaded.</returns>
 		public static T Load<T>(Stream str, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
-			using (var formatter = Formatter.Create(str))
+			using (var formatter = Serializer.Create(str))
 			{
 				return Load<T>(formatter, resPath, loadCallback, initResource);
 			}
@@ -399,7 +399,7 @@ namespace Duality
 		/// uninitialized Resources or register them in the ContentProvider.
 		/// </param>
 		/// <returns>The Resource that has been loaded.</returns>
-		public static T Load<T>(Formatter formatter, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
+		public static T Load<T>(Serializer formatter, string resPath = null, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
 			T newContent = null;
 
@@ -498,7 +498,7 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// A <see cref="Duality.Serialization.Formatter.FieldBlockers">FieldBlocker</see> to prevent
+		/// A <see cref="Duality.Serialization.Serializer.FieldBlockers">FieldBlocker</see> to prevent
 		/// fields flagged with a <see cref="DontSerializeResourceAttribute"/> from being serialized.
 		/// </summary>
 		/// <param name="field"></param>
@@ -509,7 +509,7 @@ namespace Duality
 			return field.HasAttributeCached<DontSerializeResourceAttribute>();
 		}
 		/// <summary>
-		/// A <see cref="Duality.Serialization.Formatter.FieldBlockers">FieldBlocker</see> to prevent
+		/// A <see cref="Duality.Serialization.Serializer.FieldBlockers">FieldBlocker</see> to prevent
 		/// fields of <see cref="Duality.Resources.PrefabLink">PrefabLink-ed</see> objects from being serialized unnecessarily.
 		/// </summary>
 		/// <param name="field"></param>
