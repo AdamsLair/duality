@@ -408,6 +408,9 @@ namespace Duality
 			// Initialize all core plugins
 			InitPlugins();
 
+			// Initialize the graphics backend
+			InitBackend(out graphicsBack);
+
 			// Initialize the audio backend
 			InitBackend(out audioBack);
 			sound = new SoundDevice();
@@ -418,7 +421,7 @@ namespace Duality
 			Log.Core.Write(
 				"DualityApp initialized" + Environment.NewLine +
 				"Debug Mode: {0}" + Environment.NewLine +
-				"Command line arguments: {1}" + Environment.NewLine +
+				"Command line arguments: {1}",
 				System.Diagnostics.Debugger.IsAttached,
 				args != null ? args.ToString(", ") : "null");
 		}
@@ -429,8 +432,6 @@ namespace Duality
 		public static INativeWindow OpenWindow(WindowOptions options)
 		{
 			if (!initialized) throw new InvalidOperationException("Can't initialize graphics / rendering because Duality itself isn't initialized yet.");
-
-			if (graphicsBack == null) InitBackend(out graphicsBack);
 
 			Log.Core.Write("Opening Window...");
 			Log.Core.PushIndent();
@@ -447,7 +448,6 @@ namespace Duality
 		/// </summary>
 		public static void InitPostWindow()
 		{
-			if (graphicsBack == null) InitBackend(out graphicsBack);
 			ContentProvider.InitDefaultContent();
 		}
 		/// <summary>

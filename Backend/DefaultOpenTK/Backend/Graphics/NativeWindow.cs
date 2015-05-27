@@ -63,7 +63,9 @@ namespace Duality.Backend.DefaultOpenTK
 				options.Title,
 				GameWindowFlags.Default);
 			this.internalWindow.MakeCurrent();
-			this.internalWindow.CursorVisible = options.SystemCursorVisible;
+			this.internalWindow.CursorVisible = true;
+			if (!options.SystemCursorVisible)
+				this.internalWindow.Cursor = MouseCursor.Empty;
 			this.internalWindow.VSync = (options.RefreshMode != RefreshMode.VSync) ? VSyncMode.Off : VSyncMode.On;
 
 			Log.Core.Write("Window Specification: {0}Mode: {1}{0}VSync: {2}{0}SwapInterval: {3}{0}", 
