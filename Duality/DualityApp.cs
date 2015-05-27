@@ -366,7 +366,7 @@ namespace Duality
 			AppDomain.CurrentDomain.AssemblyResolve		+= CurrentDomain_AssemblyResolve;
 			AppDomain.CurrentDomain.AssemblyLoad		+= CurrentDomain_AssemblyLoad;
 
-			// Write systems specs as debug log
+			// Write systems specs as a debug log
 			{
 				string osFriendlyName = null;
 				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
@@ -398,28 +398,29 @@ namespace Duality
 			LoadAppData();
 			LoadUserData();
 
-			// Initialize the audio backend
-			InitBackend(out audioBack);
-			sound = new SoundDevice();
-
 			// Initial changed event
 			OnAppDataChanged();
 			OnUserDataChanged();
 
+			// Determine the default serialization method
 			Formatter.InitDefaultMethod();
 
+			// Initialize all core plugins
+			InitPlugins();
+
+			// Initialize the audio backend
+			InitBackend(out audioBack);
+			sound = new SoundDevice();
+			
+			initialized = true;
+
+			// Write environment specs as a debug log
 			Log.Core.Write(
 				"DualityApp initialized" + Environment.NewLine +
 				"Debug Mode: {0}" + Environment.NewLine +
 				"Command line arguments: {1}" + Environment.NewLine +
-				"Is64BitProcess: {2}",
 				System.Diagnostics.Debugger.IsAttached,
-				args != null ? args.ToString(", ") : "null",
-				Environment.Is64BitProcess);
-
-			initialized = true;
-
-			InitPlugins();
+				args != null ? args.ToString(", ") : "null");
 		}
 		/// <summary>
 		/// Opens up a window for Duality to render into. This also initializes the part of Duality that requires a 

@@ -7,6 +7,8 @@ using Duality;
 using Duality.Resources;
 using Duality.Input;
 
+using OpenTK;
+
 namespace Duality.Backend.DefaultOpenTK
 {
     public class DefaultOpenTKBackendPlugin : CorePlugin
@@ -19,6 +21,20 @@ namespace Duality.Backend.DefaultOpenTK
 
 			mainThread = Thread.CurrentThread;
 
+			// Initialize OpenTK
+			{
+				bool inEditor = DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor;
+				ToolkitOptions options = new ToolkitOptions
+				{
+					// Prefer the native backend in the editor, because it supports GLControl. SDL doesn't.
+					Backend = inEditor ? PlatformBackend.PreferNative : PlatformBackend.Default,
+					// Disable High Resolution support in the editor, because it's not DPI-Aware
+					EnableHighResolution = !inEditor
+				};
+				Toolkit.Init(options);
+			}
+
+			// Register global / non-windowbound input devices
 			GlobalGamepadInputSource.UpdateAvailableDecives(DualityApp.Gamepads);
 			GlobalJoystickInputSource.UpdateAvailableDecives(DualityApp.Joysticks);
 		}

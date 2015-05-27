@@ -32,7 +32,7 @@ namespace Duality.Editor.Backend.DefaultOpenTK
 		void IDualityBackend.Init()
 		{
 			// Since we'll be using only one context, we don't need sharing
-			OpenTK.Graphics.GraphicsContext.ShareContexts = false;
+			GraphicsContext.ShareContexts = false;
 		}
 		void IDualityBackend.Shutdown() { }
 
