@@ -18,7 +18,7 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 			int desiredWidth = query.DesiredWidth;
 			int desiredHeight = query.DesiredHeight;
 
-			Pixmap.Layer layer = pixmap.MainLayer;
+			PixelData layer = pixmap.MainLayer;
 			if (layer == null)
 			{
 				query.Result = new Bitmap(1, 1);
@@ -34,14 +34,14 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 					Math.Min(desiredWidth, pixmap.Width),
 					Math.Min(desiredHeight, pixmap.Height));
 				if (layer.Width != desiredWidth || layer.Height != desiredHeight)
-					layer = layer.CloneRescale(desiredWidth, desiredHeight, Pixmap.FilterMethod.Linear);
+					layer = layer.CloneRescale(desiredWidth, desiredHeight, ImageScaleFilter.Linear);
 			}
 			else if (query.SizeMode == PreviewSizeMode.FixedBoth)
-				layer = layer.CloneRescale(desiredWidth, desiredHeight, Pixmap.FilterMethod.Linear);
+				layer = layer.CloneRescale(desiredWidth, desiredHeight, ImageScaleFilter.Linear);
 			else if (query.SizeMode == PreviewSizeMode.FixedWidth)
-				layer = layer.CloneRescale(desiredWidth, MathF.RoundToInt(desiredWidth / widthRatio), Pixmap.FilterMethod.Linear);
+				layer = layer.CloneRescale(desiredWidth, MathF.RoundToInt(desiredWidth / widthRatio), ImageScaleFilter.Linear);
 			else if (query.SizeMode == PreviewSizeMode.FixedHeight)
-				layer = layer.CloneRescale(MathF.RoundToInt(widthRatio * desiredHeight), desiredHeight, Pixmap.FilterMethod.Linear);
+				layer = layer.CloneRescale(MathF.RoundToInt(widthRatio * desiredHeight), desiredHeight, ImageScaleFilter.Linear);
 			else
 				layer = layer.Clone();
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.DebuggerVisualizers;
+using Duality.Drawing;
 using Duality.Resources;
 
 [assembly: DebuggerVisualizer(
@@ -12,7 +13,7 @@ using Duality.Resources;
 [assembly: DebuggerVisualizer(
 	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
 	typeof(Duality.VisualStudio.PixmapLayerDebuggerVisualizerObjectSource), 
-	Target = typeof(Pixmap.Layer), 
+	Target = typeof(PixelData), 
 	Description = "Pixmap Layer Visualizer")]
 
 namespace Duality.VisualStudio
@@ -32,7 +33,7 @@ namespace Duality.VisualStudio
 	{
 		public override void GetData(object target, Stream outgoingData)
 		{
-			Pixmap.Layer layer = target as Pixmap.Layer;
+			PixelData layer = target as PixelData;
 			BinaryFormatter formatter = new BinaryFormatter();
 			formatter.Serialize(outgoingData, string.Format("Layer {0}x{1}", layer.Width, layer.Height));
 			formatter.Serialize(outgoingData, layer.ToBitmap());

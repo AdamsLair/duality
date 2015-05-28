@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.VisualStudio.DebuggerVisualizers;
 using Duality.Resources;
+using Duality.Drawing;
 
 [assembly: DebuggerVisualizer(
 	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
@@ -59,7 +60,7 @@ namespace Duality.VisualStudio
 					typeof(PixmapDebuggerVisualizerObjectSource));
 				visualizerHost.ShowVisualizer();
 			}
-			else if (objToVisualize is Pixmap.Layer)
+			else if (objToVisualize is PixelData)
 			{
 				var visualizerHost = new VisualizerDevelopmentHost(
 					objToVisualize,

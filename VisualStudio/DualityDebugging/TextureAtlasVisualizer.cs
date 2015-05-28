@@ -22,7 +22,7 @@ namespace Duality.VisualStudio
 		public override void GetData(object target, Stream outgoingData)
 		{
 			Texture texture = target as Texture;
-			Pixmap.Layer layer = texture.GetPixelData();
+			PixelData layer = texture.GetPixelData();
 			Bitmap bitmap = layer.ToBitmap();
 
 			if (texture.BasePixmap.Res != null)

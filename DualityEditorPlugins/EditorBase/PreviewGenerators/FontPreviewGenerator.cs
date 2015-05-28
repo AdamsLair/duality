@@ -24,7 +24,7 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 			formatText.WordWrap = FormattedText.WrapMode.Word;
 			formatText.Fonts = new[] { new ContentRef<Font>(font) };
 			formatText.ApplySource(text);
-			Pixmap.Layer textLayer = new Pixmap.Layer(desiredWidth, MathF.RoundToInt(formatText.Size.Y));
+			PixelData textLayer = new PixelData(desiredWidth, MathF.RoundToInt(formatText.Size.Y));
 			formatText.RenderToBitmap(text, textLayer, 5, 0);
 
 			Bitmap resultBitmap = textLayer.ToBitmap();

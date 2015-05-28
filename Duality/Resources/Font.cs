@@ -525,7 +525,7 @@ namespace Duality.Resources
 
 				for (int i = 0; i < SupportedChars.Length; ++i)
 				{
-					Pixmap.Layer glyphTemp = this.GetGlyphBitmap(SupportedChars[i]);
+					PixelData glyphTemp = this.GetGlyphBitmap(SupportedChars[i]);
 
 					this.glyphs[i].kerningSamplesLeft	= new int[kerningY.Length];
 					this.glyphs[i].kerningSamplesRight	= new int[kerningY.Length];
@@ -646,9 +646,9 @@ namespace Duality.Resources
 			int rows;
 			cols = rows = (int)Math.Ceiling(Math.Sqrt(SupportedChars.Length));
 
-			Pixmap.Layer pixelLayer = new Pixmap.Layer(MathF.RoundToInt(cols * this.internalFont.Size * 1.2f), MathF.RoundToInt(rows * this.internalFont.Height * 1.2f));
-			Pixmap.Layer glyphTemp;
-			Pixmap.Layer glyphTempTypo;
+			PixelData pixelLayer = new PixelData(MathF.RoundToInt(cols * this.internalFont.Size * 1.2f), MathF.RoundToInt(rows * this.internalFont.Height * 1.2f));
+			PixelData glyphTemp;
+			PixelData glyphTempTypo;
 			Bitmap bm;
 			Bitmap measureBm = new Bitmap(1, 1);
 			Rect[] atlas = new Rect[SupportedChars.Length];
@@ -678,7 +678,7 @@ namespace Duality.Resources
 						glyphGraphics.TextRenderingHint = textRenderingHint;
 						glyphGraphics.DrawString(str, this.internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatDef);
 					}
-					glyphTemp = new Pixmap.Layer(bm);
+					glyphTemp = new PixelData(bm);
 					
 					// Rasterize a single glyph in typographic mode for metric analysis
 					if (!isSpace)
@@ -700,7 +700,7 @@ namespace Duality.Resources
 							glyphGraphics.TextRenderingHint = textRenderingHint;
 							glyphGraphics.DrawString(str, this.internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatTypo);
 						}
-						glyphTempTypo = new Pixmap.Layer(bm);
+						glyphTempTypo = new PixelData(bm);
 						glyphTempTypo.Crop(true, false);
 					}
 					else
@@ -815,12 +815,12 @@ namespace Duality.Resources
 		/// </summary>
 		/// <param name="glyph">The glyph of which to retrieve the Bitmap.</param>
 		/// <returns>The Bitmap that has been retrieved, or null if the glyph is not supported.</returns>
-		public Pixmap.Layer GetGlyphBitmap(char glyph)
+		public PixelData GetGlyphBitmap(char glyph)
 		{
 			Rect targetRect;
 			int charIndex = (int)glyph > CharLookup.Length ? 0 : CharLookup[(int)glyph];
 			this.pixelData.LookupAtlas(charIndex, out targetRect);
-			Pixmap.Layer subImg = new Pixmap.Layer(
+			PixelData subImg = new PixelData(
 				MathF.RoundToInt(targetRect.W), 
 				MathF.RoundToInt(targetRect.H));
 			this.pixelData.MainLayer.DrawOnto(subImg, BlendMode.Solid, 
@@ -1018,27 +1018,27 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// Renders a text to the specified target <see cref="Duality.Resources.Pixmap"/> <see cref="Duality.Resources.Pixmap.Layer"/>.
+		/// Renders a text to the specified target <see cref="Duality.Resources.Pixmap"/> <see cref="Duality.Drawing.PixelData"/>.
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="target"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
-		public void RenderToBitmap(string text, Pixmap.Layer target, float x = 0.0f, float y = 0.0f)
+		public void RenderToBitmap(string text, PixelData target, float x = 0.0f, float y = 0.0f)
 		{
 			this.RenderToBitmap(text, target, x, y, ColorRgba.White);
 		}
 		/// <summary>
-		/// Renders a text to the specified target <see cref="Duality.Resources.Pixmap"/> <see cref="Duality.Resources.Pixmap.Layer"/>.
+		/// Renders a text to the specified target <see cref="Duality.Drawing.PixelData"/>.
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="target"></param>
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="clr"></param>
-		public void RenderToBitmap(string text, Pixmap.Layer target, float x, float y, ColorRgba clr)
+		public void RenderToBitmap(string text, PixelData target, float x, float y, ColorRgba clr)
 		{
-			Pixmap.Layer pixelData = this.pixelData.MainLayer;
+			PixelData pixelData = this.pixelData.MainLayer;
 
 			float curOffset = 0.0f;
 			GlyphData glyphData;

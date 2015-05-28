@@ -1395,7 +1395,7 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="target"></param>
-		public void RenderToBitmap(string text, Pixmap.Layer target, float x = 0.0f, float y = 0.0f, Pixmap.Layer icons = null)
+		public void RenderToBitmap(string text, PixelData target, float x = 0.0f, float y = 0.0f, PixelData icons = null)
 		{
 			// Rendering
 			int fontNum = this.fonts != null ? this.fonts.Length : 0;
@@ -1423,7 +1423,7 @@ namespace Duality.Drawing
 					Vector2 dataCoord = iconUvRect.Pos * new Vector2(icons.Width, icons.Height);
 					Vector2 dataSize = iconUvRect.Size * new Vector2(icons.Width, icons.Height);
 					
-					Pixmap.Layer iconLayer = icons.CloneSubImage(
+					PixelData iconLayer = icons.CloneSubImage(
 						MathF.RoundToInt(dataCoord.X), 
 						MathF.RoundToInt(dataCoord.Y),
 						MathF.RoundToInt(dataSize.X), 

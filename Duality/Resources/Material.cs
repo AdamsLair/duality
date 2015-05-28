@@ -100,7 +100,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public static ContentRef<Material> CreateFromTexture(ContentRef<Texture> baseRes)
 		{
-			string resPath = PathHelper.GetFreePath(baseRes.FullName, FileExt);
+			string resPath = PathHelper.GetFreePath(baseRes.FullName, Resource.GetFileExtByType<Material>());
 			Material res = new Material(DrawTechnique.Mask, ColorRgba.White, baseRes);
 			res.Save(resPath);
 			return res;

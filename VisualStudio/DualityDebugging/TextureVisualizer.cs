@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.DebuggerVisualizers;
 
 using Duality;
 using Duality.Resources;
+using Duality.Drawing;
 
 [assembly: DebuggerVisualizer(
 	typeof(Duality.VisualStudio.BitmapDebuggerVisualizer), 
@@ -21,7 +22,7 @@ namespace Duality.VisualStudio
 		public override void GetData(object target, Stream outgoingData)
 		{
 			Texture texture = target as Texture;
-			Pixmap.Layer layer = texture.GetPixelData();
+			PixelData layer = texture.GetPixelData();
 			Bitmap bitmap = layer.ToBitmap();
 
 			BinaryFormatter formatter = new BinaryFormatter();

@@ -12,6 +12,7 @@ using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
 
 using Duality;
 using Duality.Resources;
+using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -41,7 +42,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		
 		protected override int GetPreviewHash()
 		{
-			Pixmap.Layer basePxLayer = this.value != null ? this.value.MainLayer : null;
+			PixelData basePxLayer = this.value != null ? this.value.MainLayer : null;
 			int hash = this.value != null && this.value.Atlas != null ? this.value.Atlas.GetCombinedHashCode() : 0;
 			MathF.CombineHashCode(ref hash, basePxLayer != null ? basePxLayer.GetHashCode() : 0);
 			return hash;
@@ -66,7 +67,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 				Rect pxRect;
 				this.value.LookupAtlas(frameIndex, out pxRect);
-				Pixmap.Layer subImage = this.value.MainLayer.CloneSubImage((int)pxRect.X, (int)pxRect.Y, (int)pxRect.W, (int)pxRect.H);
+				PixelData subImage = this.value.MainLayer.CloneSubImage((int)pxRect.X, (int)pxRect.Y, (int)pxRect.W, (int)pxRect.H);
 				return subImage.ToBitmap();
 			}
 		}

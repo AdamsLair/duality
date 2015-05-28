@@ -13,6 +13,7 @@ using BorderStyle = AdamsLair.WinForms.Drawing.BorderStyle;
 using Duality;
 using Duality.Resources;
 using Duality.Editor;
+using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -127,7 +128,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			if (convOp.CanPerform<Pixmap>())
 			{
 				Pixmap basePx = convOp.Perform<Pixmap>().FirstOrDefault();
-				Pixmap.Layer basePxLayer = basePx != null ? basePx.MainLayer : null;
+				PixelData basePxLayer = basePx != null ? basePx.MainLayer : null;
 				return basePxLayer != null ? basePxLayer.GetHashCode() : 0;
 			}
 			else if (convOp.CanPerform<AudioData>())

@@ -176,23 +176,23 @@ namespace Duality.Tests.Drawing
 
 		private void TestImagesEqual(Bitmap referenceImage, Action<Canvas> renderMethod)
 		{
-			Pixmap.Layer image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
-			Pixmap.Layer reference = new Pixmap.Layer(referenceImage);
+			PixelData image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
+			PixelData reference = new PixelData(referenceImage);
 			bool equal = this.AreImagesEqual(reference, image);
 			if (!equal && Debugger.IsAttached)
 			{
 				// If the debugger is attached, create a nice diff image for the programmer to view.
-				Pixmap.Layer diff = this.CreateDiffImage(image, reference);
+				PixelData diff = this.CreateDiffImage(image, reference);
 			}
 			Assert.IsTrue(equal);
 		}
 		private bool AreImagesEqual(Bitmap referenceImage, Action<Canvas> renderMethod)
 		{
-			Pixmap.Layer image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
-			Pixmap.Layer reference = new Pixmap.Layer(referenceImage);
+			PixelData image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
+			PixelData reference = new PixelData(referenceImage);
 			return this.AreImagesEqual(reference, image);
 		}
-		private bool AreImagesEqual(Pixmap.Layer first, Pixmap.Layer second)
+		private bool AreImagesEqual(PixelData first, PixelData second)
 		{
 			if (first == second) return true;
 			if (first.Width != second.Width) return false;
@@ -226,17 +226,17 @@ namespace Duality.Tests.Drawing
 		}
 		private void CreateReferenceImage(string name, int width, int height, Action<Canvas> renderMethod)
 		{
-			Pixmap.Layer image = this.RenderToTexture(width, height, renderMethod);
+			PixelData image = this.RenderToTexture(width, height, renderMethod);
 			image.SavePixelData(TestHelper.GetEmbeddedResourcePath(name, ".png"));
 		}
 
-		private Pixmap.Layer CreateDiffImage(Pixmap.Layer first, Pixmap.Layer second)
+		private PixelData CreateDiffImage(PixelData first, PixelData second)
 		{
-			if (first == second) return new Pixmap.Layer(first.Width, first.Height);
-			if (first.Width != second.Width) return new Pixmap.Layer(1, 1);
-			if (first.Height != second.Height) return new Pixmap.Layer(1, 1);
+			if (first == second) return new PixelData(first.Width, first.Height);
+			if (first.Width != second.Width) return new PixelData(1, 1);
+			if (first.Height != second.Height) return new PixelData(1, 1);
 
-			Pixmap.Layer diff = new Pixmap.Layer(first.Width, first.Height);
+			PixelData diff = new PixelData(first.Width, first.Height);
 			ColorRgba[] firstData = first.Data;
 			ColorRgba[] secondData = second.Data;
 			ColorRgba[] diffData = diff.Data;
@@ -250,9 +250,9 @@ namespace Duality.Tests.Drawing
 
 			return diff;
 		}
-		private Pixmap.Layer RenderToTexture(int width, int height, Action<Canvas> renderMethod)
+		private PixelData RenderToTexture(int width, int height, Action<Canvas> renderMethod)
 		{
-			Pixmap.Layer pixelData;
+			PixelData pixelData;
 
 			using (Texture texture = new Texture(width, height, TextureSizeMode.NonPowerOfTwo))
 			using (RenderTarget renderTarget = new RenderTarget(AAQuality.Off, texture))

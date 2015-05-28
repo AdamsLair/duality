@@ -25,6 +25,8 @@ namespace Duality.Plugins.Compatibility
 					resolveTypeError.ResolvedType = typeof(Duality.Drawing.BatchInfo).GetNestedType("DirtyFlag", ReflectionHelper.BindAll);
 				else if (fixedTypeId.EndsWith("Duality.Drawing.DefaultRendererVisibilityStrategy"))
 					resolveTypeError.ResolvedType = typeof(Duality.Components.DefaultRendererVisibilityStrategy);
+				else if (fixedTypeId.EndsWith("Duality.Resources.Pixmap.Layer"))
+					resolveTypeError.ResolvedType = typeof(Duality.Drawing.PixelData);
 			}
 
 			return;

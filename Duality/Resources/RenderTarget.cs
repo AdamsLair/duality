@@ -125,9 +125,9 @@ namespace Duality.Resources
 		/// <param name="y">The y position of the rectangular area to read.</param>
 		/// <param name="width">The width of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Width"/>.</param>
 		/// <param name="height">The height of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Height"/>.</param>
-		public Pixmap.Layer GetPixelData(int targetIndex = 0, int x = 0, int y = 0, int width = -1, int height = -1)
+		public PixelData GetPixelData(int targetIndex = 0, int x = 0, int y = 0, int width = -1, int height = -1)
 		{
-			Pixmap.Layer target = new Pixmap.Layer();
+			PixelData target = new PixelData();
 			this.GetPixelData(target, targetIndex, x, y, width, height);
 			return target;
 		}
@@ -140,7 +140,7 @@ namespace Duality.Resources
 		/// <param name="y">The y position of the rectangular area to read.</param>
 		/// <param name="width">The width of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Width"/>.</param>
 		/// <param name="height">The height of the rectangular area to read. Defaults to the <see cref="RenderTarget"/> <see cref="Height"/>.</param>
-		public void GetPixelData(Pixmap.Layer target, int targetIndex = 0, int x = 0, int y = 0, int width = -1, int height = -1)
+		public void GetPixelData(PixelData target, int targetIndex = 0, int x = 0, int y = 0, int width = -1, int height = -1)
 		{
 			NormalizeReadRect(ref x, ref y, ref width, ref height, this.Width, this.Height);
 

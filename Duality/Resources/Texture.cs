@@ -90,7 +90,7 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public static ContentRef<Texture> CreateFromPixmap(ContentRef<Pixmap> pixmap)
 		{
-			string texPath = PathHelper.GetFreePath(pixmap.FullName, FileExt);
+			string texPath = PathHelper.GetFreePath(pixmap.FullName, Resource.GetFileExtByType<Texture>());
 			Texture tex = new Texture(pixmap);
 			tex.Save(texPath);
 			return tex;
@@ -370,7 +370,7 @@ namespace Duality.Resources
 
 			if (!this.basePixmap.IsExplicitNull)
 			{
-				Pixmap.Layer pixelData = null;
+				PixelData pixelData = null;
 				Pixmap basePixmapRes = this.basePixmap.IsAvailable ? this.basePixmap.Res : null;
 				if (basePixmapRes != null)
 				{
@@ -388,14 +388,14 @@ namespace Duality.Resources
 				{
 					if (this.texSizeMode == TextureSizeMode.Enlarge)
 					{
-						Pixmap.Layer oldData = pixelData;
+						PixelData oldData = pixelData;
 						pixelData = oldData.CloneResize(this.texWidth, this.texHeight);
 						// Fill border pixels manually - that's cheaper than ColorTransparentPixels here.
 						oldData.DrawOnto(pixelData, BlendMode.Solid, this.pxWidth, 0, 1, this.pxHeight, this.pxWidth - 1, 0);
 						oldData.DrawOnto(pixelData, BlendMode.Solid, 0, this.pxHeight, this.pxWidth, 1, 0, this.pxHeight - 1);
 					}
 					else
-						pixelData = pixelData.CloneRescale(this.texWidth, this.texHeight, Pixmap.FilterMethod.Linear);
+						pixelData = pixelData.CloneRescale(this.texWidth, this.texHeight, ImageScaleFilter.Linear);
 				}
 
 				// Load pixel data to video memory
@@ -433,9 +433,9 @@ namespace Duality.Resources
 		/// Retrieves the pixel data that is currently stored in video memory.
 		/// </summary>
 		/// <returns></returns>
-		public Pixmap.Layer GetPixelData()
+		public PixelData GetPixelData()
 		{
-			Pixmap.Layer result = new Pixmap.Layer();
+			PixelData result = new PixelData();
 			this.GetPixelData(result);
 			return result;
 		}
@@ -443,7 +443,7 @@ namespace Duality.Resources
 		/// Retrieves the pixel data that is currently stored in video memory.
 		/// </summary>
 		/// <param name="target">The target image to store the retrieved pixel data in.</param>
-		public void GetPixelData(Pixmap.Layer target)
+		public void GetPixelData(PixelData target)
 		{
 			ColorRgba[] data = new ColorRgba[this.texWidth * this.texHeight];
 			this.GetPixelDataInternal(data);
