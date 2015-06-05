@@ -70,6 +70,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK", "Backend\De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTKEditor", "Backend\DefaultOpenTKEditor\DefaultOpenTKEditor.csproj", "{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality_PCL_WiP", "Duality\Duality_PCL_WiP.csproj", "{EA4BFD24-5904-48DC-B9FF-36B559BD751E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -176,6 +178,8 @@ Global
 		{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA4BFD24-5904-48DC-B9FF-36B559BD751E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA4BFD24-5904-48DC-B9FF-36B559BD751E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

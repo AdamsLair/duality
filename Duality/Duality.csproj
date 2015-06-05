@@ -199,7 +199,6 @@
     <Compile Include="Drawing\CanvasBuffer.cs" />
     <Compile Include="Drawing\Enums\DashPattern.cs" />
     <Compile Include="Drawing\CanvasState.cs" />
-    <Compile Include="Utility\Math\Alignment.cs" />
     <Compile Include="Components\Renderers\AnimSpriteRenderer.cs" />
     <Compile Include="Components\Renderers\TextRenderer.cs" />
     <Compile Include="Components\SoundEmitter.cs" />
@@ -214,7 +213,6 @@
     <Compile Include="Utility\Math\PhysicsConvert.cs" />
     <Compile Include="Utility\EditorHint.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIEnumerable.cs" />
-    <Compile Include="Utility\Math\Range.cs" />
     <Compile Include="Utility\RawList.cs" />
     <Compile Include="IContentRef.cs" />
     <Compile Include="Input\Collections\GamepadInputCollection.cs" />
@@ -270,9 +268,7 @@
     <Compile Include="Utility\GameObjectManager.cs" />
     <Compile Include="Utility\Log\DataLogOutput.cs" />
     <Compile Include="Utility\Log\Log.cs" />
-    <Compile Include="Utility\Math\MathF.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Utility\Math\Rect.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="Resources\AbstractShader.cs" />
     <Compile Include="Resources\AudioData.cs" />

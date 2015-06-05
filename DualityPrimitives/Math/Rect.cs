@@ -554,124 +554,16 @@ namespace Duality
 			switch (align)
 			{
 				default:
-				case Alignment.TopLeft:		return AlignTopLeft		(x, y, w, h);
-				case Alignment.TopRight:	return AlignTopRight	(x, y, w, h);
-				case Alignment.BottomLeft:	return AlignBottomLeft	(x, y, w, h);
-				case Alignment.BottomRight:	return AlignBottomRight	(x, y, w, h);
-				case Alignment.Center:		return AlignCenter		(x, y, w, h);
-				case Alignment.Bottom:		return AlignBottom		(x, y, w, h);
-				case Alignment.Left:		return AlignLeft		(x, y, w, h);
-				case Alignment.Right:		return AlignRight		(x, y, w, h);
-				case Alignment.Top:			return AlignTop			(x, y, w, h);
+				case Alignment.TopLeft:		return new Rect(x, y, w, h);
+				case Alignment.TopRight:	return new Rect(x - w, y, w, h);
+				case Alignment.BottomLeft:	return new Rect(x, y - h, w, h);
+				case Alignment.BottomRight:	return new Rect(x - w, y - h, w, h);
+				case Alignment.Center:		return new Rect(x - w * 0.5f, y - h * 0.5f, w, h);
+				case Alignment.Bottom:		return new Rect(x - w * 0.5f, y - h, w, h);
+				case Alignment.Left:		return new Rect(x, y - h * 0.5f, w, h);
+				case Alignment.Right:		return new Rect(x - w, y - h * 0.5f, w, h);
+				case Alignment.Top:			return new Rect(x - w * 0.5f, y, w, h);
 			}
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned centered.
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignCenter(float x, float y, float w, float h)
-		{
-			return new Rect(x - w * 0.5f, y - h * 0.5f, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned at the top.
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignTop(float x, float y, float w, float h)
-		{
-			return new Rect(x - w * 0.5f, y, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned at the bottom.
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignBottom(float x, float y, float w, float h)
-		{
-			return new Rect(x - w * 0.5f, y - h, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned left
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignLeft(float x, float y, float w, float h)
-		{
-			return new Rect(x, y - h * 0.5f, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned right
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignRight(float x, float y, float w, float h)
-		{
-			return new Rect(x - w, y - h * 0.5f, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned top left.
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignTopLeft(float x, float y, float w, float h)
-		{
-			return new Rect(x, y, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned top right.
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignTopRight(float x, float y, float w, float h)
-		{
-			return new Rect(x - w, y, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned bottom left.
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignBottomLeft(float x, float y, float w, float h)
-		{
-			return new Rect(x, y - h, w, h);
-		}
-		/// <summary>
-		/// Creates a Rect using x and y Coordinates that are assumed to be aligned bottom right.
-		/// </summary>
-		/// <param name="x">The Rects x-Coordinate.</param>
-		/// <param name="y">The Rects y-Coordinate.</param>
-		/// <param name="w">The Rects width.</param>
-		/// <param name="h">The Rects height.</param>
-		/// <returns></returns>
-		public static Rect AlignBottomRight(float x, float y, float w, float h)
-		{
-			return new Rect(x - w, y - h, w, h);
 		}
 
 		/// <summary>
@@ -693,15 +585,6 @@ namespace Duality
 		public static bool operator !=(Rect left, Rect right)
 		{
 			return !left.Equals(right);
-		}
-
-		public static implicit operator System.Drawing.Rectangle(Rect r)
-		{
-			return new System.Drawing.Rectangle((int)r.X, (int)r.Y, (int)r.W, (int)r.H);
-		}
-		public static implicit operator Rect(System.Drawing.Rectangle r)
-		{
-			return new Rect(r.X, r.Y, r.Width, r.Height);
 		}
 	}
 }

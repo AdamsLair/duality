@@ -40,7 +40,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override Rect AABB
 		{
-			get { return Rect.AlignCenter(position.X, position.Y, radius * 2, radius * 2); }
+			get { return Rect.Align(Alignment.Center, position.X, position.Y, radius * 2, radius * 2); }
 		}
 
 		public CircleShapeInfo() {}

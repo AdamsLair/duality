@@ -84,7 +84,7 @@ namespace DualStickSpaceShooter
 			body.CollidesWith &= ~CollisionCategory.Cat3;
 
 			sprite.SharedMaterial = this.spriteMaterial;
-			sprite.Rect = Rect.AlignCenter(0.0f, 0.0f, spriteSize.X * 0.5f, spriteSize.Y * 0.5f);
+			sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, spriteSize.X * 0.5f, spriteSize.Y * 0.5f);
 
 			bullet.InitFrom(this);
 

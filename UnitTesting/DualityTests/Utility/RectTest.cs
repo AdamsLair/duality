@@ -162,19 +162,19 @@ namespace Duality.Tests.Utility
 			Assert.IsFalse(rect.Contains(-1, -11, 2, 22));
 			Assert.IsFalse(rect.Contains(-6, -1, 12, 2));
 		}
-		[Test] public void Alignment()
+		[Test] public void CreateAlignment()
 		{
-			Assert.AreEqual(new Rect(-5, -5, 10, 10),   Rect.AlignCenter(0, 0, 10, 10));
+			Assert.AreEqual(new Rect(-5, -5, 10, 10),   Rect.Align(Alignment.Center, 0, 0, 10, 10));
 
-			Assert.AreEqual(new Rect(0, -5, 10, 10),    Rect.AlignLeft(0, 0, 10, 10));
-			Assert.AreEqual(new Rect(-10, -5, 10, 10),  Rect.AlignRight(0, 0, 10, 10));
-			Assert.AreEqual(new Rect(-5, 0, 10, 10),    Rect.AlignTop(0, 0, 10, 10));
-			Assert.AreEqual(new Rect(-5, -10, 10, 10),  Rect.AlignBottom(0, 0, 10, 10));
+			Assert.AreEqual(new Rect(0, -5, 10, 10),    Rect.Align(Alignment.Left, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(-10, -5, 10, 10),  Rect.Align(Alignment.Right, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(-5, 0, 10, 10),    Rect.Align(Alignment.Top, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(-5, -10, 10, 10),  Rect.Align(Alignment.Bottom, 0, 0, 10, 10));
 
-			Assert.AreEqual(new Rect(0, 0, 10, 10),     Rect.AlignTopLeft(0, 0, 10, 10));
-			Assert.AreEqual(new Rect(-10, 0, 10, 10),   Rect.AlignTopRight(0, 0, 10, 10));
-			Assert.AreEqual(new Rect(0, -10, 10, 10),   Rect.AlignBottomLeft(0, 0, 10, 10));
-			Assert.AreEqual(new Rect(-10, -10, 10, 10), Rect.AlignBottomRight(0, 0, 10, 10));
+			Assert.AreEqual(new Rect(0, 0, 10, 10),     Rect.Align(Alignment.TopLeft, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(-10, 0, 10, 10),   Rect.Align(Alignment.TopRight, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(0, -10, 10, 10),   Rect.Align(Alignment.BottomLeft, 0, 0, 10, 10));
+			Assert.AreEqual(new Rect(-10, -10, 10, 10), Rect.Align(Alignment.BottomRight, 0, 0, 10, 10));
 		}
 
 		[Test] 

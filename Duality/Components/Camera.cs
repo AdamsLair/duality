@@ -564,7 +564,7 @@ namespace Duality.Components
 				Rect targetRect;
 				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor &&
 					!this.drawDevice.Target.IsAvailable)
-					targetRect = Rect.AlignCenter(this.drawDevice.TargetSize.X * 0.5f, this.drawDevice.TargetSize.Y * 0.5f, inputSize.X, inputSize.Y);
+					targetRect = Rect.Align(Alignment.Center, this.drawDevice.TargetSize.X * 0.5f, this.drawDevice.TargetSize.Y * 0.5f, inputSize.X, inputSize.Y);
 				else
 					targetRect = new Rect(this.drawDevice.TargetSize);
 

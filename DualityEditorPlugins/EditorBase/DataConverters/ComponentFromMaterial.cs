@@ -45,7 +45,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<SpriteRenderer>();
 					if (sprite == null) sprite = new SpriteRenderer();
 					sprite.SharedMaterial = mat;
-					if (mainTex != null) sprite.Rect = Rect.AlignCenter(0.0f, 0.0f, mainTex.PixelWidth, mainTex.PixelHeight);
+					if (mainTex != null) sprite.Rect = Rect.Align(Alignment.Center, 0.0f, 0.0f, mainTex.PixelWidth, mainTex.PixelHeight);
 					convert.SuggestResultName(sprite, mat.Name);
 					results.Add(sprite);
 				}
@@ -55,7 +55,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 					if (sprite == null && gameobj != null) sprite = gameobj.GetComponent<AnimSpriteRenderer>();
 					if (sprite == null) sprite = new AnimSpriteRenderer();
 					sprite.SharedMaterial = mat;
-					sprite.Rect = Rect.AlignCenter(
+					sprite.Rect = Rect.Align(Alignment.Center, 
 						0.0f, 
 						0.0f, 
 						(mainTex.PixelWidth / basePixmap.AnimCols) - basePixmap.AnimFrameBorder * 2, 
