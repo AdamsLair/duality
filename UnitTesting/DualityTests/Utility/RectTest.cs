@@ -58,8 +58,6 @@ namespace Duality.Tests.Utility
 
 			Assert.AreEqual(new Vector2(1, 2), rect.Pos);
 			Assert.AreEqual(new Vector2(3, 4), rect.Size);
-			Assert.AreEqual(3 * 4, rect.Area);
-			Assert.AreEqual(2 * (3 + 4), rect.Perimeter);
 			Assert.AreEqual(MathF.Distance(1 + 3, 2 + 4), rect.BoundingRadius);
 			Assert.AreEqual(1, rect.LeftX);
 			Assert.AreEqual(2, rect.TopY);
@@ -228,10 +226,10 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(new Rect(rect.BottomRight.X - 1, rect.BottomRight.Y - 1, 1, 1), rect.Intersection(rect.BottomRight.X - 1, rect.BottomRight.Y - 1, 2, 2));
 
 			// Non-intersection
-			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(MathF.Abs(rect.W), 0)).Area);
-			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(-MathF.Abs(rect.W), 0)).Area);
-			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(0, MathF.Abs(rect.H))).Area);
-			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(0, -MathF.Abs(rect.H))).Area);
+			Assert.AreEqual(Rect.Empty, rect.Intersection(rect.WithOffset(MathF.Abs(rect.W), 0)));
+			Assert.AreEqual(Rect.Empty, rect.Intersection(rect.WithOffset(-MathF.Abs(rect.W), 0)));
+			Assert.AreEqual(Rect.Empty, rect.Intersection(rect.WithOffset(0, MathF.Abs(rect.H))));
+			Assert.AreEqual(Rect.Empty, rect.Intersection(rect.WithOffset(0, -MathF.Abs(rect.H))));
 		}
 
 		private void AssertRectEqual(Rect rect, float x, float y, float w, float h)

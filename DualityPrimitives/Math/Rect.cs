@@ -126,20 +126,6 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// [GET] The area that is occupied by the Rect.
-		/// </summary>
-		public float Area
-		{
-			get { return MathF.Abs(W * H); }
-		}
-		/// <summary>
-		/// [GET] The Rects perimeter i.e. sum of all edge lengths.
-		/// </summary>
-		public float Perimeter
-		{
-			get { return 2 * MathF.Abs(W) + 2 * MathF.Abs(H); }
-		}
-		/// <summary>
 		/// [GET] If this Rect was to fit inside a bounding circle originating from [0,0],
 		/// this would be its radius.
 		/// </summary>
@@ -429,7 +415,7 @@ namespace Duality
 		/// <param name="y">y-Coordinate of the Rect to intersect with.</param>
 		/// <param name="w">Width of the Rect to intersect with.</param>
 		/// <param name="h">Height of the Rect to intersect with.</param>
-		/// <returns>A new Rect that describes both Rects intersection area.</returns>
+		/// <returns>A new Rect that describes both Rects intersection area. <see cref="Empty"/>, if there is no intersection.</returns>
 		public Rect Intersection(float x, float y, float w, float h)
 		{
 			return this.Intersection(new Rect(x, y, w, h));
@@ -438,7 +424,7 @@ namespace Duality
 		/// Returns a Rect that equals this Rects intersection with another Rect.
 		/// </summary>
 		/// <param name="rect">The other Rect to intersect with.</param>
-		/// <returns>A new Rect that describes both Rects intersection area.</returns>
+		/// <returns>A new Rect that describes both Rects intersection area. <see cref="Empty"/>, if there is no intersection.</returns>
 		public Rect Intersection(Rect rect)
 		{
 			rect = rect.Normalized();
@@ -449,11 +435,13 @@ namespace Duality
 			if ((norm.X - rect.X) > 0.0f) tempWidth -= (norm.X - rect.X);
 			if ((norm.Y - rect.Y) > 0.0f) tempHeight -= (norm.Y - rect.Y);
 
-			return new Rect(
+			Rect result = new Rect(
 				Math.Max(norm.X, rect.X),
 				Math.Max(norm.Y, rect.Y),
 				Math.Min(norm.W, tempWidth),
 				Math.Min(norm.H, tempHeight));
+
+			return (result.W == 0 || result.H == 0) ? Rect.Empty : result;
 		}
 
 		/// <summary>

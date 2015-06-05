@@ -2,7 +2,6 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using System.Drawing;
 
 using Duality;
 
@@ -29,11 +28,11 @@ namespace Duality.Tests.Utility
 				2, 3 }, grid);
 
 			Assert.IsTrue(grid.Contains(3));
-			Assert.AreEqual(new Point(1, 1), grid.IndexOf(3));
+			Assert.AreEqual(new Point2(1, 1), grid.IndexOf(3));
 			Assert.IsTrue(grid.Remove(3));
 			Assert.IsFalse(grid.Remove(3));
 			Assert.IsFalse(grid.Contains(3));
-			Assert.AreEqual(new Point(-1, -1), grid.IndexOf(3));
+			Assert.AreEqual(new Point2(-1, -1), grid.IndexOf(3));
 			CollectionAssert.AreEqual(new[] { 
 				0, 1, 
 				2, 0 }, grid);
@@ -178,9 +177,9 @@ namespace Duality.Tests.Utility
 			grid[0, 1] = 2;
 			grid[1, 1] = 3;
 
-			Assert.AreEqual(new Point(1, 0), grid.FindIndex(i => i == 1));
+			Assert.AreEqual(new Point2(1, 0), grid.FindIndex(i => i == 1));
 			Assert.AreEqual(1, grid.Find(i => i == 1));
-			CollectionAssert.AreEqual(new[] { new Point(0, 1), new Point(1, 1) }, grid.FindAllIndices(i => i > 1));
+			CollectionAssert.AreEqual(new[] { new Point2(0, 1), new Point2(1, 1) }, grid.FindAllIndices(i => i > 1));
 			CollectionAssert.AreEqual(new[] { 2, 3 }, grid.FindAll(i => i > 1));
 		}
 	}
