@@ -31,12 +31,10 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "Sound:";
-			const string ContentPath_Beep		= VirtualContentPath + "Beep";
-
-			ContentProvider.AddContent(ContentPath_Beep, new Sound(AudioData.Beep));
-
-			Beep = ContentProvider.RequestContent<Sound>(ContentPath_Beep);
+			InitDefaultContentFromDictionary<Sound>(new Dictionary<string,Sound>
+			{
+				{ "Beep", new Sound(AudioData.Beep) }
+			});
 		}
 
 		/// <summary>

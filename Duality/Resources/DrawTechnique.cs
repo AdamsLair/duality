@@ -92,63 +92,27 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "DrawTechnique:";
-			const string ContentDir_SmoothAnim	= VirtualContentPath + "SmoothAnim:";
-		
-			const string ContentPath_Solid		= VirtualContentPath + "Solid";
-			const string ContentPath_Mask		= VirtualContentPath + "Mask";
-			const string ContentPath_Add		= VirtualContentPath + "Add";
-			const string ContentPath_Alpha		= VirtualContentPath + "Alpha";
-			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
-			const string ContentPath_Multiply	= VirtualContentPath + "Multiply";
-			const string ContentPath_Light		= VirtualContentPath + "Light";
-			const string ContentPath_Invert		= VirtualContentPath + "Invert";
-			const string ContentPath_Picking	= VirtualContentPath + "Picking";
-		
-			const string ContentPath_SmoothAnim_Solid		= ContentDir_SmoothAnim + "Solid";
-			const string ContentPath_SmoothAnim_Mask		= ContentDir_SmoothAnim + "Mask";
-			const string ContentPath_SmoothAnim_Add			= ContentDir_SmoothAnim + "Add";
-			const string ContentPath_SmoothAnim_Alpha		= ContentDir_SmoothAnim + "Alpha";
-			const string ContentPath_SmoothAnim_Multiply	= ContentDir_SmoothAnim + "Multiply";
-			const string ContentPath_SmoothAnim_Light		= ContentDir_SmoothAnim + "Light";
-			const string ContentPath_SmoothAnim_Invert		= ContentDir_SmoothAnim + "Invert";
+			InitDefaultContentFromDictionary<DrawTechnique>(new Dictionary<string,DrawTechnique>
+			{
+				{ "Solid", new DrawTechnique(BlendMode.Solid) },
+				{ "Mask", new DrawTechnique(BlendMode.Mask) },
+				{ "Add", new DrawTechnique(BlendMode.Add) },
+				{ "Alpha", new DrawTechnique(BlendMode.Alpha) },
+				{ "Multiply", new DrawTechnique(BlendMode.Multiply) },
+				{ "Light", new DrawTechnique(BlendMode.Light) },
+				{ "Invert", new DrawTechnique(BlendMode.Invert) },
 
-			ContentProvider.AddContent(ContentPath_Solid,		new DrawTechnique(BlendMode.Solid));
-			ContentProvider.AddContent(ContentPath_Mask,		new DrawTechnique(BlendMode.Mask));
-			ContentProvider.AddContent(ContentPath_Add,			new DrawTechnique(BlendMode.Add));
-			ContentProvider.AddContent(ContentPath_Alpha,		new DrawTechnique(BlendMode.Alpha));
-			ContentProvider.AddContent(ContentPath_Multiply,	new DrawTechnique(BlendMode.Multiply));
-			ContentProvider.AddContent(ContentPath_Light,		new DrawTechnique(BlendMode.Light));
-			ContentProvider.AddContent(ContentPath_Invert,		new DrawTechnique(BlendMode.Invert));
-
-			ContentProvider.AddContent(ContentPath_Picking,		new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking));
-			ContentProvider.AddContent(ContentPath_SharpMask,	new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha));
-			
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Solid,	new DrawTechnique(BlendMode.Solid,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Mask,		new DrawTechnique(BlendMode.Mask,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Add,		new DrawTechnique(BlendMode.Add,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Alpha,	new DrawTechnique(BlendMode.Alpha,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Multiply,	new DrawTechnique(BlendMode.Multiply,	ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Light,	new DrawTechnique(BlendMode.Light,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
-			ContentProvider.AddContent(ContentPath_SmoothAnim_Invert,	new DrawTechnique(BlendMode.Invert,		ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration));
-
-			Solid		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Solid);
-			Mask		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Mask);
-			Add			= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Add);
-			Alpha		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Alpha);
-			Multiply	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Multiply);
-			Light		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Light);
-			Invert		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Invert);
-			Picking		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_Picking);
-			SharpAlpha	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SharpMask);
-
-			SmoothAnim_Solid	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Solid);
-			SmoothAnim_Mask		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Mask);
-			SmoothAnim_Add		= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Add);
-			SmoothAnim_Alpha	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Alpha);
-			SmoothAnim_Multiply	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Multiply);
-			SmoothAnim_Light	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Light);
-			SmoothAnim_Invert	= ContentProvider.RequestContent<DrawTechnique>(ContentPath_SmoothAnim_Invert);
+				{ "Picking", new DrawTechnique(BlendMode.Mask, ShaderProgram.Picking) },
+				{ "SharpAlpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SharpAlpha) },
+				
+				{ "SmoothAnim_Solid", new DrawTechnique(BlendMode.Solid, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "SmoothAnim_Mask", new DrawTechnique(BlendMode.Mask, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "SmoothAnim_Add", new DrawTechnique(BlendMode.Add, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "SmoothAnim_Alpha", new DrawTechnique(BlendMode.Alpha, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "SmoothAnim_Multiply", new DrawTechnique(BlendMode.Multiply, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "SmoothAnim_Light", new DrawTechnique(BlendMode.Light, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+				{ "SmoothAnim_Invert", new DrawTechnique(BlendMode.Invert, ShaderProgram.SmoothAnim, VertexC1P3T4A1.Declaration) },
+			});
 		}
 		
 

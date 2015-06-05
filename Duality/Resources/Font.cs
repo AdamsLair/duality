@@ -34,67 +34,33 @@ namespace Duality.Resources
 		/// This is usually "Courier New".
 		/// </summary>
 		public static ContentRef<Font> GenericMonospace10	{ get; private set; }
-		/// <summary>
-		/// A generic serif Font (Size 12) that has been loaded from your systems font library.
-		/// This is usually "Times New Roman".
-		/// </summary>
-		public static ContentRef<Font> GenericSerif12		{ get; private set; }
-		/// <summary>
-		/// A generic sans-serif Font (Size 12) that has been loaded from your systems font library.
-		/// This is usually "Arial".
-		/// </summary>
-		public static ContentRef<Font> GenericSansSerif12	{ get; private set; }
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Font:";
-			const string ContentPath_GenericMonospace10	= VirtualContentPath + "GenericMonospace10";
-			const string ContentPath_GenericMonospace8	= VirtualContentPath + "GenericMonospace8";
-			const string ContentPath_GenericSerif12		= VirtualContentPath + "GenericSerif12";
-			const string ContentPath_GenericSansSerif12	= VirtualContentPath + "GenericSansSerif12";
+			Font genericMonospace8;
+			Font genericMonospace10;
 
-			Font tmp;
+			genericMonospace8 = new Font();
+			genericMonospace8.Family = FontFamily.GenericMonospace.Name;
+			genericMonospace8.Size = 8;
+			genericMonospace8.CharSpacing = 0;
+			genericMonospace8.GlyphRenderMode = RenderMode.MonochromeBitmap;
+			genericMonospace8.MonoSpace = true;
+			genericMonospace8.ReloadData();
+
+			genericMonospace10 = new Font();
+			genericMonospace10.Family = FontFamily.GenericMonospace.Name;
+			genericMonospace10.Size = 10;
+			genericMonospace10.CharSpacing = 0;
+			genericMonospace10.GlyphRenderMode = RenderMode.MonochromeBitmap;
+			genericMonospace10.MonoSpace = true;
+			genericMonospace10.ReloadData();
 			
-			tmp = new Font();
-			tmp.Family = FontFamily.GenericMonospace.Name;
-			tmp.Size = 8;
-			tmp.CharSpacing = 0;
-			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
-			tmp.MonoSpace = true;
-			tmp.ReloadData();
-			ContentProvider.AddContent(ContentPath_GenericMonospace8, tmp);
-
-			tmp = new Font();
-			tmp.Family = FontFamily.GenericMonospace.Name;
-			tmp.Size = 10;
-			tmp.CharSpacing = 0;
-			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
-			tmp.MonoSpace = true;
-			tmp.ReloadData();
-			ContentProvider.AddContent(ContentPath_GenericMonospace10, tmp);
-
-			tmp = new Font();
-			tmp.Family = FontFamily.GenericSerif.Name;
-			tmp.Size = 12;
-			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
-			tmp.Kerning = true;
-			tmp.MonoSpace = false;
-			tmp.ReloadData();
-			ContentProvider.AddContent(ContentPath_GenericSerif12, tmp);
-
-			tmp = new Font();
-			tmp.Family = FontFamily.GenericSansSerif.Name;
-			tmp.Size = 12;
-			tmp.GlyphRenderMode = RenderMode.MonochromeBitmap;
-			tmp.Kerning = true;
-			tmp.MonoSpace = false;
-			tmp.ReloadData();
-			ContentProvider.AddContent(ContentPath_GenericSansSerif12, tmp);
-
-			GenericMonospace8	= ContentProvider.RequestContent<Font>(ContentPath_GenericMonospace8);
-			GenericMonospace10	= ContentProvider.RequestContent<Font>(ContentPath_GenericMonospace10);
-			GenericSerif12		= ContentProvider.RequestContent<Font>(ContentPath_GenericSerif12);
-			GenericSansSerif12	= ContentProvider.RequestContent<Font>(ContentPath_GenericSansSerif12);
+			InitDefaultContentFromDictionary<Font>(new Dictionary<string,Font>
+			{
+				{ "GenericMonospace8", genericMonospace8 },
+				{ "GenericMonospace10", genericMonospace10 },
+			});
 		}
 
 		

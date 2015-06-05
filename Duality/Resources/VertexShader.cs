@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using Duality.Properties;
 using Duality.Editor;
@@ -26,15 +27,14 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath			= ContentProvider.VirtualContentPath + "VertexShader:";
-			const string ContentPath_Minimal		= VirtualContentPath + "Minimal";
-			const string ContentPath_SmoothAnim		= VirtualContentPath + "SmoothAnim";
-
-			ContentProvider.AddContent(ContentPath_Minimal, new VertexShader(DefaultContent.MinimalVert));
-			ContentProvider.AddContent(ContentPath_SmoothAnim, new VertexShader(DefaultContent.SmoothAnimVert));
-
-			Minimal		= ContentProvider.RequestContent<VertexShader>(ContentPath_Minimal);
-			SmoothAnim	= ContentProvider.RequestContent<VertexShader>(ContentPath_SmoothAnim);
+			InitDefaultContentFromEmbedded<VertexShader>(".vert", stream =>
+			{
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					string code = reader.ReadToEnd();
+					return new VertexShader(code);
+				}
+			});
 		}
 
 
@@ -43,7 +43,7 @@ namespace Duality.Resources
 			get { return ShaderType.Vertex; }
 		}
 
-		public VertexShader() : base(DefaultContent.MinimalVert) {}
+		public VertexShader() : base(string.Empty) {}
 		public VertexShader(string sourceCode) : base(sourceCode) {}
 	}
 }

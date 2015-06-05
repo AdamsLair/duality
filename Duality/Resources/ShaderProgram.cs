@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Duality.Editor;
@@ -45,21 +46,13 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "ShaderProgram:";
-			const string ContentPath_Minimal	= VirtualContentPath + "Minimal";
-			const string ContentPath_Picking	= VirtualContentPath + "Picking";
-			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
-			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
-
-			ContentProvider.AddContent(ContentPath_Minimal, new ShaderProgram(VertexShader.Minimal, FragmentShader.Minimal));
-			ContentProvider.AddContent(ContentPath_Picking, new ShaderProgram(VertexShader.Minimal, FragmentShader.Picking));
-			ContentProvider.AddContent(ContentPath_SmoothAnim, new ShaderProgram(VertexShader.SmoothAnim, FragmentShader.SmoothAnim));
-			ContentProvider.AddContent(ContentPath_SharpMask, new ShaderProgram(VertexShader.Minimal, FragmentShader.SharpAlpha));
-
-			Minimal		= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Minimal);
-			Picking		= ContentProvider.RequestContent<ShaderProgram>(ContentPath_Picking);
-			SmoothAnim	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SmoothAnim);
-			SharpAlpha	= ContentProvider.RequestContent<ShaderProgram>(ContentPath_SharpMask);
+			InitDefaultContentFromDictionary<ShaderProgram>(new Dictionary<string,ShaderProgram>
+			{
+				{ "Minimal", new ShaderProgram(VertexShader.Minimal, FragmentShader.Minimal) },
+				{ "Picking", new ShaderProgram(VertexShader.Minimal, FragmentShader.Picking) },
+				{ "SmoothAnim", new ShaderProgram(VertexShader.SmoothAnim, FragmentShader.SmoothAnim) },
+				{ "SharpAlpha", new ShaderProgram(VertexShader.Minimal, FragmentShader.SharpAlpha) }
+			});
 		}
 
 

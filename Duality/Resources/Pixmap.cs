@@ -53,30 +53,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Pixmap:";
-			const string ContentPath_DualityIcon		= VirtualContentPath + "DualityIcon";
-			const string ContentPath_DualityIconB		= VirtualContentPath + "DualityIconB";
-			const string ContentPath_DualityLogoBig		= VirtualContentPath + "DualityLogoBig";
-			const string ContentPath_DualityLogoMedium	= VirtualContentPath + "DualityLogoMedium";
-			const string ContentPath_DualityLogoSmall	= VirtualContentPath + "DualityLogoSmall";
-			const string ContentPath_White				= VirtualContentPath + "White";
-			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
-
-			ContentProvider.AddContent(ContentPath_DualityIcon,		new Pixmap(DefaultContent.DualityIcon));
-			ContentProvider.AddContent(ContentPath_DualityIconB,		new Pixmap(DefaultContent.DualityIconB));
-			ContentProvider.AddContent(ContentPath_DualityLogoBig,		new Pixmap(DefaultContent.DualityLogoBig));
-			ContentProvider.AddContent(ContentPath_DualityLogoMedium,	new Pixmap(DefaultContent.DualityLogoMedium));
-			ContentProvider.AddContent(ContentPath_DualityLogoSmall,	new Pixmap(DefaultContent.DualityLogoSmall));
-			ContentProvider.AddContent(ContentPath_White,				new Pixmap(new PixelData(1, 1, ColorRgba.White)));
-			ContentProvider.AddContent(ContentPath_Checkerboard,		new Pixmap(DefaultContent.Checkerboard));
-
-			DualityIcon			= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIcon);
-			DualityIconB		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityIconB);
-			DualityLogoBig		= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogoBig);
-			DualityLogoMedium	= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogoMedium);
-			DualityLogoSmall	= ContentProvider.RequestContent<Pixmap>(ContentPath_DualityLogoSmall);
-			White				= ContentProvider.RequestContent<Pixmap>(ContentPath_White);
-			Checkerboard		= ContentProvider.RequestContent<Pixmap>(ContentPath_Checkerboard);
+			InitDefaultContentFromEmbedded<Pixmap>(".png", stream => new Pixmap(stream));
 		}
 
 		
@@ -189,6 +166,14 @@ namespace Duality.Resources
 		/// </summary>
 		public Pixmap() : this(Checkerboard.Res.MainLayer.Clone()) {}
 		/// <summary>
+		/// Creates a new Pixmap from the specified <see cref="Duality.Drawing.PixelData"/>.
+		/// </summary>
+		/// <param name="image"></param>
+		public Pixmap(PixelData image)
+		{
+			this.MainLayer = image;
+		}
+		/// <summary>
 		/// Creates a new Pixmap from the specified <see cref="System.Drawing.Bitmap"/>.
 		/// </summary>
 		/// <param name="image">The <see cref="System.Drawing.Bitmap"/> that will be used by the Pixmap.</param>
@@ -197,12 +182,15 @@ namespace Duality.Resources
 			this.MainLayer = new PixelData(image);
 		}
 		/// <summary>
-		/// Creates a new Pixmap from the specified <see cref="Duality.Drawing.PixelData"/>.
+		/// Creates a new Pixmap from the specified image stream.
 		/// </summary>
-		/// <param name="image"></param>
-		public Pixmap(PixelData image)
+		/// <param name="imagePath">A path to the image stream that will be used as pixel data source.</param>
+		public Pixmap(Stream imageStream)
 		{
-			this.MainLayer = image;
+			using (Bitmap image = new Bitmap(imageStream))
+			{
+				this.MainLayer = new PixelData(image);
+			}
 		}
 		/// <summary>
 		/// Creates a new Pixmap from the specified image file.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 using Duality.Properties;
 using Duality.Editor;
@@ -35,21 +36,14 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "FragmentShader:";
-			const string ContentPath_Minimal	= VirtualContentPath + "Minimal";
-			const string ContentPath_Picking	= VirtualContentPath + "Picking";
-			const string ContentPath_SmoothAnim	= VirtualContentPath + "SmoothAnim";
-			const string ContentPath_SharpMask	= VirtualContentPath + "SharpAlpha";
-
-			ContentProvider.AddContent(ContentPath_Minimal,	new FragmentShader(DefaultContent.MinimalFrag));
-			ContentProvider.AddContent(ContentPath_Picking,	new FragmentShader(DefaultContent.PickingFrag));
-			ContentProvider.AddContent(ContentPath_SmoothAnim,	new FragmentShader(DefaultContent.SmoothAnimFrag));
-			ContentProvider.AddContent(ContentPath_SharpMask,	new FragmentShader(DefaultContent.SharpAlphaFrag));
-
-			Minimal		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Minimal);
-			Picking		= ContentProvider.RequestContent<FragmentShader>(ContentPath_Picking);
-			SmoothAnim	= ContentProvider.RequestContent<FragmentShader>(ContentPath_SmoothAnim);
-			SharpAlpha	= ContentProvider.RequestContent<FragmentShader>(ContentPath_SharpMask);
+			InitDefaultContentFromEmbedded<FragmentShader>(".frag", stream =>
+			{
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					string code = reader.ReadToEnd();
+					return new FragmentShader(code);
+				}
+			});
 		}
 
 
@@ -58,7 +52,7 @@ namespace Duality.Resources
 			get { return ShaderType.Fragment; }
 		}
 		
-		public FragmentShader() : base(DefaultContent.MinimalFrag) {}
+		public FragmentShader() : base(string.Empty) {}
 		public FragmentShader(string sourceCode) : base(sourceCode) {}
 	}
 }

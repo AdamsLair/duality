@@ -50,36 +50,22 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath				= ContentProvider.VirtualContentPath + "Texture:";
-			const string ContentPath_DualityIcon		= VirtualContentPath + "DualityIcon";
-			const string ContentPath_DualityIconB		= VirtualContentPath + "DualityIconB";
-			const string ContentPath_DualityLogoBig		= VirtualContentPath + "DualityLogoBig";
-			const string ContentPath_DualityLogoMedium	= VirtualContentPath + "DualityLogoMedium";
-			const string ContentPath_DualityLogoSmall	= VirtualContentPath + "DualityLogoSmall";
-			const string ContentPath_White				= VirtualContentPath + "White";
-			const string ContentPath_Checkerboard		= VirtualContentPath + "Checkerboard";
-
-			ContentProvider.AddContent(ContentPath_DualityIcon, new Texture(Pixmap.DualityIcon));
-			ContentProvider.AddContent(ContentPath_DualityIconB, new Texture(Pixmap.DualityIconB));
-			ContentProvider.AddContent(ContentPath_DualityLogoBig, new Texture(Pixmap.DualityLogoBig));
-			ContentProvider.AddContent(ContentPath_DualityLogoMedium, new Texture(Pixmap.DualityLogoMedium));
-			ContentProvider.AddContent(ContentPath_DualityLogoSmall, new Texture(Pixmap.DualityLogoSmall));
-			ContentProvider.AddContent(ContentPath_White, new Texture(Pixmap.White));
-			ContentProvider.AddContent(ContentPath_Checkerboard, new Texture(
-				Pixmap.Checkerboard, 
-				TextureSizeMode.Default,
-				TextureMagFilter.Nearest,
-				TextureMinFilter.Nearest,
-				TextureWrapMode.Repeat,
-				TextureWrapMode.Repeat));
-
-			DualityIcon			= ContentProvider.RequestContent<Texture>(ContentPath_DualityIcon);
-			DualityIconB		= ContentProvider.RequestContent<Texture>(ContentPath_DualityIconB);
-			DualityLogoBig		= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoBig);
-			DualityLogoMedium	= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoMedium);
-			DualityLogoSmall	= ContentProvider.RequestContent<Texture>(ContentPath_DualityLogoSmall);
-			White				= ContentProvider.RequestContent<Texture>(ContentPath_White);
-			Checkerboard		= ContentProvider.RequestContent<Texture>(ContentPath_Checkerboard);
+			InitDefaultContentFromDictionary<Texture>(new Dictionary<string,Texture>
+			{
+				{ "DualityIcon", new Texture(Pixmap.DualityIcon) },
+				{ "DualityIconB", new Texture(Pixmap.DualityIconB) },
+				{ "DualityLogoBig", new Texture(Pixmap.DualityLogoBig) },
+				{ "DualityLogoMedium", new Texture(Pixmap.DualityLogoMedium) },
+				{ "DualityLogoSmall", new Texture(Pixmap.DualityLogoSmall) },
+				{ "White", new Texture(Pixmap.White) },
+				{ "Checkerboard", new Texture(
+					Pixmap.Checkerboard, 
+					TextureSizeMode.Default,
+					TextureMagFilter.Nearest,
+					TextureMinFilter.Nearest,
+					TextureWrapMode.Repeat,
+					TextureWrapMode.Repeat) },
+			});
 		}
 
 

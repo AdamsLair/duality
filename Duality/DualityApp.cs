@@ -70,7 +70,6 @@ namespace Duality
 		public const string DataDirectory	= "Data";
 
 
-		private	static	Thread						mainThread			= null;
 		private	static	bool						initialized			= false;
 		private	static	bool						isUpdating			= false;
 		private	static	bool						runFromEditor		= false;
@@ -319,9 +318,6 @@ namespace Duality
 		{
 			if (initialized) return;
 
-			// Set main thread
-			mainThread = Thread.CurrentThread;
-
 			// Process command line options
 			if (args != null)
 			{
@@ -551,53 +547,6 @@ namespace Duality
 
 			if (terminateScheduled) Terminate();
 		}
-		private static void UpdateUserInput()
-		{
-			mouse.Update();
-			keyboard.Update();
-			joysticks.Update();
-			gamepads.Update();
-		}
-		/// <summary>
-		/// Performs a single render cycle.
-		/// </summary>
-		/// <param name="camPredicate">Optional predicate to select which Cameras may be rendered and which not.</param>
-		public static void Render(Rect viewportRect, Predicate<Duality.Components.Camera> camPredicate = null)
-		{
-			Scene.Current.Render(viewportRect, camPredicate);
-		}
-
-		/// <summary>
-		/// Schedules the specified object for disposal. It is guaranteed to be disposed by the end of the current update cycle.
-		/// </summary>
-		/// <param name="o">The object to schedule for disposal.</param>
-		public static void DisposeLater(object o)
-		{
-			disposeSchedule.Add(o);
-		}
-		/// <summary>
-		/// Performs all scheduled disposal calls and cleans up internal data. This is done automatically at the
-		/// end of each <see cref="Update">frame update</see> and you shouldn't need to call this in general.
-		/// Invoking this method while an update is still in progress may result in undefined behavior. Don't do this.
-		/// </summary>
-		public static void RunCleanup()
-		{
-			// Perform scheduled object disposals
-			object[] disposeScheduleArray = disposeSchedule.ToArray();
-			disposeSchedule.Clear();
-			foreach (object o in disposeScheduleArray)
-			{
-				IManageableObject m = o as IManageableObject;
-				if (m != null) { m.Dispose(); continue; }
-				IDisposable d = o as IDisposable;
-				if (d != null) { d.Dispose(); continue; }
-			}
-
-			// Perform late finalization and remove disposed object references
-			Resource.RunCleanup();
-			Scene.Current.RunCleanup();
-		}
-
 		internal static void EditorUpdate(IEnumerable<GameObject> updateObjects, bool freezeScene, bool forceFixedStep)
 		{
 			isUpdating = true;
@@ -638,29 +587,44 @@ namespace Duality
 
 			if (terminateScheduled) Terminate();
 		}
+		/// <summary>
+		/// Performs a single render cycle.
+		/// </summary>
+		/// <param name="camPredicate">Optional predicate to select which Cameras may be rendered and which not.</param>
+		public static void Render(Rect viewportRect, Predicate<Duality.Components.Camera> camPredicate = null)
+		{
+			Scene.Current.Render(viewportRect, camPredicate);
+		}
 
 		/// <summary>
-		/// Loads all <see cref="Resource">Resources</see> that are located in this DualityApp's data directory and
-		/// saves them again. All loaded content is discarded both before and after this operation. You usually don't
-		/// need this, but it can be useful for migrating persistent game content between different versions through
-		/// serialization.
+		/// Schedules the specified object for disposal. It is guaranteed to be disposed by the end of the current update cycle.
 		/// </summary>
-		public static void LoadSaveAll()
+		/// <param name="o">The object to schedule for disposal.</param>
+		public static void DisposeLater(object o)
 		{
-			LoadAppData();
-			LoadUserData();
-
-			ContentProvider.ClearContent();
-			string[] resFiles = Directory.GetFiles(DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
-			foreach (string file in resFiles)
+			disposeSchedule.Add(o);
+		}
+		/// <summary>
+		/// Performs all scheduled disposal calls and cleans up internal data. This is done automatically at the
+		/// end of each <see cref="Update">frame update</see> and you shouldn't need to call this in general.
+		/// Invoking this method while an update is still in progress may result in undefined behavior. Don't do this.
+		/// </summary>
+		public static void RunCleanup()
+		{
+			// Perform scheduled object disposals
+			object[] disposeScheduleArray = disposeSchedule.ToArray();
+			disposeSchedule.Clear();
+			foreach (object o in disposeScheduleArray)
 			{
-				var cr = ContentProvider.RequestContent(file);
-				cr.Res.Save(file);
+				IManageableObject m = o as IManageableObject;
+				if (m != null) { m.Dispose(); continue; }
+				IDisposable d = o as IDisposable;
+				if (d != null) { d.Dispose(); continue; }
 			}
-			ContentProvider.ClearContent();
 
-			SaveAppData();
-			SaveUserData();
+			// Perform late finalization and remove disposed object references
+			Resource.RunCleanup();
+			Scene.Current.RunCleanup();
 		}
 
 		/// <summary>
@@ -1035,6 +999,14 @@ namespace Duality
 			availTypeDict[baseType] = availTypes;
 
 			return availTypes;
+		}
+
+		private static void UpdateUserInput()
+		{
+			mouse.Update();
+			keyboard.Update();
+			joysticks.Update();
+			gamepads.Update();
 		}
 
 		internal static void InitBackend<T>(out T target, Func<Type,IEnumerable<Type>> typeFinder = null) where T : class, IDualityBackend

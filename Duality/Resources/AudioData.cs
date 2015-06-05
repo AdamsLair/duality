@@ -30,12 +30,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			const string VirtualContentPath		= ContentProvider.VirtualContentPath + "AudioData:";
-			const string ContentPath_Beep		= VirtualContentPath + "Beep";
-
-			ContentProvider.AddContent(ContentPath_Beep, new AudioData(DefaultContent.Beep));
-
-			Beep = ContentProvider.RequestContent<AudioData>(ContentPath_Beep);
+			InitDefaultContentFromEmbedded<AudioData>(".ogg", stream => new AudioData(stream));
 		}
 
 

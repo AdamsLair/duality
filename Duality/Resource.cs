@@ -542,6 +542,54 @@ namespace Duality
 				res.Dispose(false);
 			}
 		}
+
+		protected static void InitDefaultContentFromEmbedded<T>(string nameExt, Func<Stream,T> resourceCreator) where T : Resource
+		{
+			string embeddedNameBase = "Duality.EmbeddedResources.";
+			Assembly embeddingAssembly = typeof(Resource).Assembly;
+
+			InitDefaultContent<T>(name => 
+			{
+				using (Stream stream = embeddingAssembly.GetManifestResourceStream(embeddedNameBase + name + nameExt))
+				{
+					return resourceCreator(stream);
+				}
+			});
+		}
+		protected static void InitDefaultContentFromDictionary<T>(IDictionary<string,T> dictionary) where T : Resource
+		{
+			InitDefaultContent<T>(name => 
+			{
+				T res;
+				if (dictionary.TryGetValue(name, out res))
+					return res;
+				else
+					return null;
+			});
+		}
+		protected static void InitDefaultContent<T>(Func<string,T> resourceCreator) where T : Resource
+		{
+			string contentPathBase = ContentProvider.VirtualContentPath + typeof(T).Name + ":";
+
+			Type resourceType = typeof(T);
+			PropertyInfo[] defaultResProps = resourceType
+				.GetProperties(BindingFlags.Public | BindingFlags.Static)
+				.Where(p => typeof(IContentRef).IsAssignableFrom(p.PropertyType))
+				.ToArray();
+
+			for (int i = 0; i < defaultResProps.Length; i++)
+			{
+				string name = defaultResProps[i].Name;
+				string contentPath = contentPathBase + name.Replace('_', ':');
+
+				T resource = resourceCreator(name);
+				if (resource != null)
+				{
+					ContentProvider.AddContent(contentPath, resource);
+					defaultResProps[i].SetValue(null, ContentProvider.RequestContent<T>(contentPath));
+				}
+			}
+		}
 	}
 
 	/// <summary>
