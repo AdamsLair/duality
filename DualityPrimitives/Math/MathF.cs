@@ -573,7 +573,7 @@ namespace Duality
 		/// <summary>
 		/// Returns the inverse sine value of the specified (radian) angle.
 		/// </summary>
-		/// <param name="angle">A radian angle.</param>
+		/// <param name="sin">A radian angle.</param>
 		/// <returns></returns>
 		public static float Asin(float sin)
 		{
@@ -582,7 +582,7 @@ namespace Duality
 		/// <summary>
 		/// Returns the inverse cosine value of the specified (radian) angle.
 		/// </summary>
-		/// <param name="angle">A radian angle.</param>
+		/// <param name="cos">A radian angle.</param>
 		/// <returns></returns>
 		public static float Acos(float cos)
 		{
@@ -591,7 +591,7 @@ namespace Duality
 		/// <summary>
 		/// Returns the inverse tangent value of the specified (radian) angle.
 		/// </summary>
-		/// <param name="angle">A radian angle.</param>
+		/// <param name="tan">A radian angle.</param>
 		/// <returns></returns>
 		public static float Atan(float tan)
 		{
@@ -932,7 +932,7 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Prepares a 2d transformation (rotation & scale).
+		/// Prepares a 2d transformation (rotation and scale).
 		/// </summary>
 		/// <param name="rot">The rotation to apply in radians.</param>
 		/// <param name="scale">The scale factor to apply.</param>
@@ -947,7 +947,7 @@ namespace Duality
 			yDot = new Vector2(sin * scale.Y, cos * scale.Y);
 		}
 		/// <summary>
-		/// Prepares a 2d transformation (rotation & scale).
+		/// Prepares a 2d transformation (rotation and scale).
 		/// </summary>
 		/// <param name="rot">The rotation to apply in radians.</param>
 		/// <param name="scale">The scale factor to apply.</param>
