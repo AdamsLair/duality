@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
-using System.Drawing;
 
 namespace Duality
 {
@@ -141,9 +140,9 @@ namespace Duality
 		/// </summary>
 		/// <param name="dataIndex"></param>
 		/// <returns></returns>
-		public Point GetGridIndex(int dataIndex)
+		public Point2 GetGridIndex(int dataIndex)
 		{
-			return new Point(dataIndex % this.width, dataIndex / this.width);
+			return new Point2(dataIndex % this.width, dataIndex / this.width);
 		}
 		/// <summary>
 		/// Determines the raw data index from the specified two-dimensional grid index.
@@ -161,11 +160,11 @@ namespace Duality
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns></returns>
-		public Point IndexOf(T item)
+		public Point2 IndexOf(T item)
 		{
 			int index = Array.IndexOf(this.sequence.Data, item, 0, this.sequence.Count);
 			if (index == -1)
-				return new Point(-1, -1);
+				return new Point2(-1, -1);
 			else
 				return this.GetGridIndex(index);
 		}
@@ -210,7 +209,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
-		public Point FindIndex(Predicate<T> predicate)
+		public Point2 FindIndex(Predicate<T> predicate)
 		{
 			T[] data = this.sequence.Data;
 			int count = this.sequence.Count;
@@ -221,14 +220,14 @@ namespace Duality
 					return this.GetGridIndex(i);
 				}
 			}
-			return new Point(-1, -1);
+			return new Point2(-1, -1);
 		}
 		/// <summary>
 		/// Finds all indices of items that match the specified predicate.
 		/// </summary>
 		/// <param name="predicate"></param>
 		/// <returns></returns>
-		public IEnumerable<Point> FindAllIndices(Predicate<T> predicate)
+		public IEnumerable<Point2> FindAllIndices(Predicate<T> predicate)
 		{
 			T[] data = this.sequence.Data;
 			int count = this.sequence.Count;
@@ -255,9 +254,10 @@ namespace Duality
 		/// Determines the boundaries of the grids non-null content.
 		/// </summary>
 		/// <returns></returns>
-		public Rectangle GetContentBoundaries()
+		public void GetContentBoundaries(out Point2 topLeft, out Point2 size)
 		{
-			Rectangle bounds = new Rectangle(this.width, this.height, 0, 0);
+			topLeft = new Point2(this.width, this.height);
+			size = new Point2(0, 0);
 
 			int count = this.sequence.Count;
 			T[] data = this.sequence.Data;
@@ -266,15 +266,13 @@ namespace Duality
 				if (GenericOperator.Equal(data[i], default(T))) continue;
 				int cX = i % this.width;
 				int cY = i / this.width;
-				bounds.X = Math.Min(bounds.X, cX);
-				bounds.Y = Math.Min(bounds.Y, cY);
-				bounds.Width = Math.Max(bounds.Width, cX);
-				bounds.Height = Math.Max(bounds.Height, cY);
+				topLeft.X = Math.Min(topLeft.X, cX);
+				topLeft.Y = Math.Min(topLeft.Y, cY);
+				size.X = Math.Max(size.X, cX);
+				size.Y = Math.Max(size.Y, cY);
 			}
-			bounds.Width = 1 + Math.Max(0, bounds.Width - bounds.X);
-			bounds.Height = 1 + Math.Max(0, bounds.Height - bounds.Y);
-
-			return bounds;
+			size.X = 1 + Math.Max(0, size.X - topLeft.X);
+			size.Y = 1 + Math.Max(0, size.Y - topLeft.Y);
 		}
 
 		/// <summary>
@@ -425,12 +423,14 @@ namespace Duality
 		public void ShrinkToFit(ShrinkMode mode = ShrinkMode.Both)
 		{
 			if (mode == ShrinkMode.None) return;
-			Rectangle bounds = this.GetContentBoundaries();
+			Point2 topLeft;
+			Point2 size;
+			this.GetContentBoundaries(out topLeft, out size);
 			this.AssumeRect(
-				mode.HasFlag(ShrinkMode.X) ? bounds.X : 0, 
-				mode.HasFlag(ShrinkMode.Y) ? bounds.Y : 0, 
-				mode.HasFlag(ShrinkMode.X) ? bounds.Width : this.width, 
-				mode.HasFlag(ShrinkMode.Y) ? bounds.Height : this.height);
+				mode.HasFlag(ShrinkMode.X) ? topLeft.X : 0, 
+				mode.HasFlag(ShrinkMode.Y) ? topLeft.Y : 0, 
+				mode.HasFlag(ShrinkMode.X) ? size.X : this.width, 
+				mode.HasFlag(ShrinkMode.Y) ? size.Y : this.height);
 		}
 		
 		/// <summary>

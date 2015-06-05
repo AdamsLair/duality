@@ -322,20 +322,6 @@ namespace Duality
             result = left.X * right.X + left.Y * right.Y;
         }
 
-		/// <summary>
-		/// Calculates the distance between two points described by two vectors. 
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static float Distance(ref Vector2 left, ref Vector2 right)
-		{
-			Vector2 diff;
-			diff.X = left.X - right.X;
-			diff.Y = left.Y - right.Y;
-			return (float)Math.Sqrt(diff.X * diff.X + diff.Y * diff.Y);
-		}
-
         /// <summary>
         /// Returns a new Vector that is the linear blend of the 2 given Vectors
         /// </summary>

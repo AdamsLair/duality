@@ -83,7 +83,7 @@ namespace Duality
 		/// <param name="left"></param>
 		/// <param name="right"></param>
 		/// <returns></returns>
-		public static float Distance(ref Point2 left, ref Point2 right)
+		public static float Distance(Point2 left, Point2 right)
 		{
 			Point2 diff;
 			diff.X = left.X - right.X;

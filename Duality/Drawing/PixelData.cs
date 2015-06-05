@@ -410,31 +410,38 @@ namespace Duality.Drawing
 		public void Crop(bool cropX = true, bool cropY = true)
 		{
 			if (!cropX && !cropY) return;
-			Rectangle bounds = this.OpaqueBounds();
-			this.SubImage(cropX ? bounds.X : 0, cropY ? bounds.Y : 0, cropX ? bounds.Width : this.width, cropY ? bounds.Height : this.height);
+			Point2 topLeft;
+			Point2 size;
+			this.GetOpaqueBoundaries(out topLeft, out size);
+			this.SubImage(
+				cropX ? topLeft.X : 0, 
+				cropY ? topLeft.Y : 0, 
+				cropX ? size.X : this.width, 
+				cropY ? size.Y : this.height);
 		}
 
 		/// <summary>
 		/// Measures the bounding rectangle of the Layers opaque pixels.
 		/// </summary>
-		/// <returns></returns>
-		public Rectangle OpaqueBounds()
+		/// <param name="topLeft"></param>
+		/// <param name="size"></param>
+		public void GetOpaqueBoundaries(out Point2 topLeft, out Point2 size)
 		{
-			Rectangle bounds = new Rectangle(this.width, this.height, 0, 0);
+			topLeft = new Point2(this.width, this.height);
+			size = new Point2(0, 0);
+
 			for (int i = 0; i < this.data.Length; i++)
 			{
 				if (this.data[i].A == 0) continue;
-				int x = i % this.width;
-				int y = i / this.width;
-				bounds.X = Math.Min(bounds.X, x);
-				bounds.Y = Math.Min(bounds.Y, y);
-				bounds.Width = Math.Max(bounds.Width, x);
-				bounds.Height = Math.Max(bounds.Height, y);
+				int cX = i % this.width;
+				int cY = i / this.width;
+				topLeft.X = Math.Min(topLeft.X, cX);
+				topLeft.Y = Math.Min(topLeft.Y, cY);
+				size.X = Math.Max(size.X, cX);
+				size.Y = Math.Max(size.Y, cY);
 			}
-			bounds.Width = 1 + Math.Max(0, bounds.Width - bounds.X);
-			bounds.Height = 1 + Math.Max(0, bounds.Height - bounds.Y);
-
-			return bounds;
+			size.X = 1 + Math.Max(0, size.X - topLeft.X);
+			size.Y = 1 + Math.Max(0, size.Y - topLeft.Y);
 		}
 		/// <summary>
 		/// Determines the average color of a Layer.
@@ -496,7 +503,7 @@ namespace Duality.Drawing
 
 			Parallel.ForEach(Partitioner.Create(0, this.data.Length), range =>
 			{
-				Point	pos		= new Point();
+				Point2	pos		= new Point2();
 				int[]	nPos	= new int[8];
 				bool[]	nOk		= new bool[8];
 				int[]	mixClr	= new int[4];
@@ -648,8 +655,14 @@ namespace Duality.Drawing
 		public PixelData CloneCrop(bool cropX = true, bool cropY = true)
 		{
 			if (!cropX && !cropY) return this.Clone();
-			Rectangle bounds = this.OpaqueBounds();
-			return this.CloneSubImage(cropX ? bounds.X : 0, cropY ? bounds.Y : 0, cropX ? bounds.Width : this.width, cropY ? bounds.Height : this.height);
+			Point2 topLeft;
+			Point2 size;
+			this.GetOpaqueBoundaries(out topLeft, out size);
+			return this.CloneSubImage(
+				cropX ? topLeft.X : 0, 
+				cropY ? topLeft.Y : 0, 
+				cropX ? size.X : this.width, 
+				cropY ? size.Y : this.height);
 		}
 			
 		/// <summary>

@@ -683,15 +683,18 @@ namespace Duality.Resources
 					// Rasterize a single glyph in typographic mode for metric analysis
 					if (!isSpace)
 					{
-						Rectangle glyphTempBounds = glyphTemp.OpaqueBounds();
-						glyphTemp.SubImage(glyphTempBounds.X, 0, glyphTempBounds.Width, glyphTemp.Height);
+						Point2 glyphTempOpaqueTopLeft;
+						Point2 glyphTempOpaqueSize;
+						glyphTemp.GetOpaqueBoundaries(out glyphTempOpaqueTopLeft, out glyphTempOpaqueSize);
+
+						glyphTemp.SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphTemp.Height);
 
 						if (CharBodyAscentRef.Contains(SupportedChars[i]))
-							this.bodyAscent += glyphTempBounds.Height;
+							this.bodyAscent += glyphTempOpaqueSize.Y;
 						if (CharBaseLineRef.Contains(SupportedChars[i]))
-							this.baseLine += glyphTempBounds.Bottom;
+							this.baseLine += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
 						if (CharDescentRef.Contains(SupportedChars[i]))
-							this.descent += glyphTempBounds.Bottom;
+							this.descent += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
 						
 						bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), this.internalFont.Height + 1);
 						using (Graphics glyphGraphics = Graphics.FromImage(bm))
