@@ -1312,13 +1312,13 @@ namespace Duality.Drawing
 					if (hasBounds && elementBounds[elementBounds.Count - 1] == Rect.Empty)
 						elementBounds[elementBounds.Count - 1] = new Rect(elemOffset.X, elemOffset.Y, elemSize.X, elemSize.Y);
 					else if (hasBounds)
-						elementBounds[elementBounds.Count - 1] = elementBounds[elementBounds.Count - 1].ExpandToContain(elemOffset.X, elemOffset.Y, elemSize.X, elemSize.Y);
+						elementBounds[elementBounds.Count - 1] = elementBounds[elementBounds.Count - 1].ExpandedToContain(elemOffset.X, elemOffset.Y, elemSize.X, elemSize.Y);
 				
 					if (lineChanged) lineBounds.Add(Rect.Empty);
 					if (hasBounds && lineBounds[lineBounds.Count - 1] == Rect.Empty)
 						lineBounds[lineBounds.Count - 1] = new Rect(elemOffset.X, elemOffset.Y, elemSize.X, elemSize.Y);
 					else if (hasBounds)
-						lineBounds[lineBounds.Count - 1] = lineBounds[lineBounds.Count - 1].ExpandToContain(elemOffset.X, elemOffset.Y, elemSize.X, elemSize.Y);
+						lineBounds[lineBounds.Count - 1] = lineBounds[lineBounds.Count - 1].ExpandedToContain(elemOffset.X, elemOffset.Y, elemSize.X, elemSize.Y);
 
 					size.X = Math.Max(size.X, elemOffset.X + elemSize.X);
 					size.Y = Math.Max(size.Y, elemOffset.Y + elemSize.Y);

@@ -47,7 +47,7 @@ namespace Duality.Plugins.DynamicLighting
 			float rotation = this.GameObj.Transform.Angle;
 			MathF.GetTransformDotVec(rotation, out xDot, out yDot);
 
-			Rect rectTemp = this.rect.Transform(this.GameObj.Transform.Scale, this.GameObj.Transform.Scale);
+			Rect rectTemp = this.rect.Transformed(this.GameObj.Transform.Scale, this.GameObj.Transform.Scale);
 			Vector2 edge1 = rectTemp.TopLeft;
 			Vector2 edge2 = rectTemp.BottomLeft;
 			Vector2 edge3 = rectTemp.BottomRight;
@@ -168,7 +168,7 @@ namespace Duality.Plugins.DynamicLighting
 			float rotation = this.GameObj.Transform.Angle;
 			MathF.GetTransformDotVec(rotation, out xDot, out yDot);
 
-			Rect rectTemp = this.rect.Transform(this.GameObj.Transform.Scale, this.GameObj.Transform.Scale);
+			Rect rectTemp = this.rect.Transformed(this.GameObj.Transform.Scale, this.GameObj.Transform.Scale);
 			Vector2 edge1 = rectTemp.TopLeft;
 			Vector2 edge2 = rectTemp.BottomLeft;
 			Vector2 edge3 = rectTemp.BottomRight;

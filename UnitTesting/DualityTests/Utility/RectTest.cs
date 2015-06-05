@@ -91,41 +91,35 @@ namespace Duality.Tests.Utility
 			Rect originalF = new Rect(1.4f, 2.4f, 3.4f, 4.4f);
 
 			// Transform operations should always return copies
-			original.Scale(2.5f, 2.5f);
-			original.Round();
-			original.Offset(1.5f, 1.5f);
-			original.Ceiling();
-			original.Transform(2.5f, 2.5f);
-			original.Floor();
+			original.Scaled(2.5f, 2.5f);
+			original.WithOffset(1.5f, 1.5f);
+			original.Transformed(2.5f, 2.5f);
 			Assert.AreEqual(original, new Rect(1, 2, 3, 4));
 
 			// Test some basic transformations
-			Assert.AreEqual(new Rect(1, 2, 6, 8), original.Scale(2, 2));
-			Assert.AreEqual(new Rect(3, 4, 3, 4), original.Offset(2, 2));
-			Assert.AreEqual(new Rect(2, 4, 6, 8), original.Transform(2, 2));
-			Assert.AreEqual(new Rect(1, 2, 3, 4), originalF.Round());
-			Assert.AreEqual(new Rect(1, 2, 3, 4), originalF.Floor());
-			Assert.AreEqual(new Rect(2, 3, 4, 5), originalF.Ceiling());
+			Assert.AreEqual(new Rect(1, 2, 6, 8), original.Scaled(2, 2));
+			Assert.AreEqual(new Rect(3, 4, 3, 4), original.WithOffset(2, 2));
+			Assert.AreEqual(new Rect(2, 4, 6, 8), original.Transformed(2, 2));
 
 			// Check normalizing
-			Assert.AreEqual(new Rect(1, 2, 3, 4), new Rect(4, 6, -3, -4).Normalize());
+			Assert.AreEqual(new Rect(1, 2, 3, 4), new Rect(4, 6, -3, -4).Normalized());
 		}
 		[Test] public void ExpandTo()
 		{
 			Rect rect = Rect.Empty;
 
 			// Transform operations should always return copies
-			rect.ExpandToContain(10, 10);
+			rect.ExpandedToContain(10, 10);
 			Assert.AreEqual(rect, Rect.Empty);
 
 			// Test expansion operations
-			rect = rect.ExpandToContain(new Rect(-1, -2, 1, 2));
+			rect = rect.ExpandedToContain(new Rect(-1, -2, 1, 2));
 			Assert.AreEqual(new Rect(-1, -2, 1, 2), rect);
 
-			rect = rect.ExpandToContain(new Rect(0, 0, 2, 1));
+			rect = rect.ExpandedToContain(new Rect(0, 0, 2, 1));
 			Assert.AreEqual(new Rect(-1, -2, 3, 3), rect);
 
-			rect = rect.ExpandToContain(new Vector2(5, 0));
+			rect = rect.ExpandedToContain(new Vector2(5, 0));
 			Assert.AreEqual(new Rect(-1, -2, 6, 3), rect);
 		}
 		[Test] public void Containment()
@@ -151,10 +145,10 @@ namespace Duality.Tests.Utility
 
 			// A rect should contain itself, but not any offset variant
 			Assert.IsTrue(rect.Contains(rect));
-			Assert.IsFalse(rect.Contains(rect.Offset(1, 0)));
-			Assert.IsFalse(rect.Contains(rect.Offset(-1, 0)));
-			Assert.IsFalse(rect.Contains(rect.Offset(0, 1)));
-			Assert.IsFalse(rect.Contains(rect.Offset(0, -1)));
+			Assert.IsFalse(rect.Contains(rect.WithOffset(1, 0)));
+			Assert.IsFalse(rect.Contains(rect.WithOffset(-1, 0)));
+			Assert.IsFalse(rect.Contains(rect.WithOffset(0, 1)));
+			Assert.IsFalse(rect.Contains(rect.WithOffset(0, -1)));
 
 			// It can contain a smaller rect, but not a bigger one
 			Assert.IsTrue(rect.Contains(1, 2, 3, 4));
@@ -186,10 +180,10 @@ namespace Duality.Tests.Utility
 
 			// Intersection with self and offset-variants
 			Assert.IsTrue(rect.Intersects(rect));
-			Assert.IsTrue(rect.Intersects(rect.Offset(1, 0)));
-			Assert.IsTrue(rect.Intersects(rect.Offset(-1, 0)));
-			Assert.IsTrue(rect.Intersects(rect.Offset(0, 1)));
-			Assert.IsTrue(rect.Intersects(rect.Offset(0, -1)));
+			Assert.IsTrue(rect.Intersects(rect.WithOffset(1, 0)));
+			Assert.IsTrue(rect.Intersects(rect.WithOffset(-1, 0)));
+			Assert.IsTrue(rect.Intersects(rect.WithOffset(0, 1)));
+			Assert.IsTrue(rect.Intersects(rect.WithOffset(0, -1)));
 
 			// Intersection with crossing rect: Horizontal
 			Assert.IsTrue(rect.Intersects(rect.MinX - 1, rect.MinY, rect.MaxX - rect.MinX + 2, rect.MaxY - rect.MinY));
@@ -226,14 +220,14 @@ namespace Duality.Tests.Utility
 		public void IntersectionRect(int x, int y, int w, int h)
 		{
 			Rect rect = new Rect(x, y, w, h);
-			Rect norm = rect.Normalize();
+			Rect norm = rect.Normalized();
 
 			// Intersection with self and offset-variants
 			Assert.AreEqual(norm, rect.Intersection(rect));
-			Assert.AreEqual(new Rect(norm.X + 1, norm.Y    , norm.W - 1, norm.H    ), rect.Intersection(rect.Offset(1, 0)));
-			Assert.AreEqual(new Rect(norm.X    , norm.Y    , norm.W - 1, norm.H    ), rect.Intersection(rect.Offset(-1, 0)));
-			Assert.AreEqual(new Rect(norm.X    , norm.Y + 1, norm.W    , norm.H - 1), rect.Intersection(rect.Offset(0, 1)));
-			Assert.AreEqual(new Rect(norm.X    , norm.Y    , norm.W    , norm.H - 1), rect.Intersection(rect.Offset(0, -1)));
+			Assert.AreEqual(new Rect(norm.X + 1, norm.Y    , norm.W - 1, norm.H    ), rect.Intersection(rect.WithOffset(1, 0)));
+			Assert.AreEqual(new Rect(norm.X    , norm.Y    , norm.W - 1, norm.H    ), rect.Intersection(rect.WithOffset(-1, 0)));
+			Assert.AreEqual(new Rect(norm.X    , norm.Y + 1, norm.W    , norm.H - 1), rect.Intersection(rect.WithOffset(0, 1)));
+			Assert.AreEqual(new Rect(norm.X    , norm.Y    , norm.W    , norm.H - 1), rect.Intersection(rect.WithOffset(0, -1)));
 
 			// Intersection with corners
 			Assert.AreEqual(new Rect(rect.TopLeft.X        , rect.TopLeft.Y        , 1, 1), rect.Intersection(rect.TopLeft.X - 1    , rect.TopLeft.Y - 1    , 2, 2));
@@ -242,10 +236,10 @@ namespace Duality.Tests.Utility
 			Assert.AreEqual(new Rect(rect.BottomRight.X - 1, rect.BottomRight.Y - 1, 1, 1), rect.Intersection(rect.BottomRight.X - 1, rect.BottomRight.Y - 1, 2, 2));
 
 			// Non-intersection
-			Assert.AreEqual(0, rect.Intersection(rect.Offset(MathF.Abs(rect.W), 0)).Area);
-			Assert.AreEqual(0, rect.Intersection(rect.Offset(-MathF.Abs(rect.W), 0)).Area);
-			Assert.AreEqual(0, rect.Intersection(rect.Offset(0, MathF.Abs(rect.H))).Area);
-			Assert.AreEqual(0, rect.Intersection(rect.Offset(0, -MathF.Abs(rect.H))).Area);
+			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(MathF.Abs(rect.W), 0)).Area);
+			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(-MathF.Abs(rect.W), 0)).Area);
+			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(0, MathF.Abs(rect.H))).Area);
+			Assert.AreEqual(0, rect.Intersection(rect.WithOffset(0, -MathF.Abs(rect.H))).Area);
 		}
 
 		private void AssertRectEqual(Rect rect, float x, float y, float w, float h)

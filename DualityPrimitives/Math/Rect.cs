@@ -227,7 +227,7 @@ namespace Duality
 		/// <param name="x">Movement in x-Direction.</param>
 		/// <param name="y">Movement in y-Direction.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Offset(float x, float y)
+		public Rect WithOffset(float x, float y)
 		{
 			Rect newRect = this;
 			newRect.X += x;
@@ -239,7 +239,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="offset">Movement vector.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Offset(Vector2 offset)
+		public Rect WithOffset(Vector2 offset)
 		{
 			Rect newRect = this;
 			newRect.X += offset.X;
@@ -254,7 +254,7 @@ namespace Duality
 		/// <param name="x">x-Scale factor.</param>
 		/// <param name="y">y-Scale factor.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Scale(float x, float y)
+		public Rect Scaled(float x, float y)
 		{
 			Rect newRect = this;
 			newRect.W *= x;
@@ -267,7 +267,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="factor">Scale factor.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Scale(Vector2 factor)
+		public Rect Scaled(Vector2 factor)
 		{
 			Rect newRect = this;
 			newRect.W *= factor.X;
@@ -281,7 +281,7 @@ namespace Duality
 		/// <param name="x">x-Scale factor.</param>
 		/// <param name="y">y-Scale factor.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Transform(float x, float y)
+		public Rect Transformed(float x, float y)
 		{
 			Rect newRect = this;
 			newRect.X *= x;
@@ -296,7 +296,7 @@ namespace Duality
 		/// </summary>
 		/// <param name="scale">Scale factor.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Transform(Vector2 scale)
+		public Rect Transformed(Vector2 scale)
 		{
 			Rect newRect = this;
 			newRect.X *= scale.X;
@@ -315,9 +315,9 @@ namespace Duality
 		/// <param name="w">Width of the Rect to contain.</param>
 		/// <param name="h">Height of the Rect to contain.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect ExpandToContain(float x, float y, float w, float h)
+		public Rect ExpandedToContain(float x, float y, float w, float h)
 		{
-			return this.ExpandToContain(x, y).ExpandToContain(x + w, y + h);
+			return this.ExpandedToContain(x, y).ExpandedToContain(x + w, y + h);
 		}
 		/// <summary>
 		/// Returns a new version of this Rect that has been expanded to contain
@@ -325,9 +325,9 @@ namespace Duality
 		/// </summary>
 		/// <param name="other">The Rect to contain.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect ExpandToContain(Rect other)
+		public Rect ExpandedToContain(Rect other)
 		{
-			return this.ExpandToContain(other.X, other.Y).ExpandToContain(other.X + other.W, other.Y + other.H);
+			return this.ExpandedToContain(other.X, other.Y).ExpandedToContain(other.X + other.W, other.Y + other.H);
 		}
 		/// <summary>
 		/// Returns a new version of this Rect that has been expanded to contain
@@ -336,7 +336,7 @@ namespace Duality
 		/// <param name="x">x-Coordinate of the point to contain.</param>
 		/// <param name="y">y-Coordinate of the point to contain.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect ExpandToContain(float x, float y)
+		public Rect ExpandedToContain(float x, float y)
 		{
 			Rect newRect = this;
 			if (x < newRect.X)
@@ -359,43 +359,16 @@ namespace Duality
 		/// </summary>
 		/// <param name="p">The point to contain.</param>
 		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect ExpandToContain(Vector2 p)
+		public Rect ExpandedToContain(Vector2 p)
 		{
-			return this.ExpandToContain(p.X, p.Y);
+			return this.ExpandedToContain(p.X, p.Y);
 		}
 
-		/// <summary>
-		/// Returns a new version of this Rect with integer coordinates and size.
-		/// They have been <see cref="MathF.Round(float)">rounded</see>.
-		/// </summary>
-		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Round()
-		{
-			return new Rect(MathF.Round(X), MathF.Round(Y), MathF.Round(W), MathF.Round(H));
-		}
-		/// <summary>
-		/// Returns a new version of this Rect with integer coordinates and size.
-		/// They have been <see cref="MathF.Ceiling">ceiled</see>.
-		/// </summary>
-		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Ceiling()
-		{
-			return new Rect(MathF.Ceiling(X), MathF.Ceiling(Y), MathF.Ceiling(W), MathF.Ceiling(H));
-		}
-		/// <summary>
-		/// Returns a new version of this Rect with integer coordinates and size.
-		/// They have been <see cref="MathF.Floor">floored</see>.
-		/// </summary>
-		/// <returns>A new Rect with the specified adjustments.</returns>
-		public Rect Floor()
-		{
-			return new Rect(MathF.Floor(X), MathF.Floor(Y), MathF.Floor(W), MathF.Floor(H));
-		}
 		/// <summary>
 		/// Returns a normalized version of the rect, i.e. one with a positive width and height.
 		/// </summary>
 		/// <returns></returns>
-		public Rect Normalize()
+		public Rect Normalized()
 		{
 			Rect normalized = this;
 			if (normalized.W < 0)
@@ -471,8 +444,8 @@ namespace Duality
 		/// <returns>True, if the Rect intersects the other Rect, false if not.</returns>
 		public bool Intersects(Rect rect)
 		{
-			rect = rect.Normalize();
-			Rect norm = this.Normalize();
+			rect = rect.Normalized();
+			Rect norm = this.Normalized();
 			if (norm.X > (rect.X + rect.W) || (norm.X + norm.W) < rect.X) return false;
 			if (norm.Y > (rect.Y + rect.H) || (norm.Y + norm.H) < rect.Y) return false;
 			return true;
@@ -496,8 +469,8 @@ namespace Duality
 		/// <returns>A new Rect that describes both Rects intersection area.</returns>
 		public Rect Intersection(Rect rect)
 		{
-			rect = rect.Normalize();
-			Rect norm = this.Normalize();
+			rect = rect.Normalized();
+			Rect norm = this.Normalized();
 
 			float tempWidth = Math.Min(rect.W, norm.W - (rect.X - norm.X));
 			float tempHeight = Math.Min(rect.H, norm.H - (rect.Y - norm.Y));

@@ -367,7 +367,7 @@ namespace Duality.Components.Renderers
 			Vector2 xDot, yDot;
 			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, scaleTemp, out xDot, out yDot);
 
-			Rect rectTemp = this.rect.Transform(this.gameobj.Transform.Scale, this.gameobj.Transform.Scale);
+			Rect rectTemp = this.rect.Transformed(this.gameobj.Transform.Scale, this.gameobj.Transform.Scale);
 			Vector2 edge1 = rectTemp.TopLeft;
 			Vector2 edge2 = rectTemp.BottomLeft;
 			Vector2 edge3 = rectTemp.BottomRight;

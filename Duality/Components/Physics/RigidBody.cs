@@ -321,10 +321,10 @@ namespace Duality.Components.Physics
 
 				Rect boundRect = this.shapes[0].AABB;
 				foreach (ShapeInfo info in this.shapes.Skip(1))
-					boundRect = boundRect.ExpandToContain(info.AABB);
+					boundRect = boundRect.ExpandedToContain(info.AABB);
 
 				float scale = this.GameObj.Transform.Scale;
-				return boundRect.Transform(scale, scale).BoundingRadius;
+				return boundRect.Transformed(scale, scale).BoundingRadius;
 			}
 		}
 		/// <summary>
