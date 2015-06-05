@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace Duality
 {
@@ -237,7 +236,7 @@ namespace Duality
 		{
 			int r = 1;
 			for (; n > 1; n--) r *= n;
-			return Math.Abs(r);
+			return System.Math.Abs(r);
 		}
 
 		/// <summary>
@@ -775,7 +774,7 @@ namespace Duality
 			val2 = MathF.NormalizeVar(val2, minVal, maxVal);
 			if (val1 == val2) return 0.0f;
 
-			if (Math.Abs(val1 - val2) > (maxVal - minVal) * 0.5f)
+			if (System.Math.Abs(val1 - val2) > (maxVal - minVal) * 0.5f)
 			{
 				if (val1 > val2) return 1.0f;
 				else return -1.0f;
@@ -801,7 +800,7 @@ namespace Duality
 			val2 = MathF.NormalizeVar(val2, minVal, maxVal);
 			if (val1 == val2) return 0;
 
-			if (Math.Abs(val1 - val2) > (maxVal - minVal) * 0.5f)
+			if (System.Math.Abs(val1 - val2) > (maxVal - minVal) * 0.5f)
 			{
 				if (val1 > val2) return 1;
 				else return -1;
@@ -825,7 +824,7 @@ namespace Duality
 			val2 = MathF.NormalizeAngle(val2);
 			if (val1 == val2) return 0.0f;
 
-			if (Math.Abs(val1 - val2) > RadAngle180)
+			if (System.Math.Abs(val1 - val2) > RadAngle180)
 			{
 				if (val1 > val2) return 1.0f;
 				else return -1.0f;
@@ -1085,7 +1084,7 @@ namespace Duality
 			crossX = 0.0f;
 			crossY = 0.0f;
 
-			if (Math.Abs(d) < 0.0001)
+			if (System.Math.Abs(d) < 0.0001)
 				return false;
 			else
 			{
