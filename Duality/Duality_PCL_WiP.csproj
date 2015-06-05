@@ -273,11 +273,6 @@
     <Compile Include="Resource.cs" />
     <Compile Include="Resources\AbstractShader.cs" />
     <Compile Include="Resources\AudioData.cs" />
-    <Compile Include="Resources\DefaultContent.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>DefaultContent.resx</DependentUpon>
-    </Compile>
     <Compile Include="Resources\DrawTechnique.cs" />
     <Compile Include="Resources\FragmentShader.cs" />
     <Compile Include="Resources\Font.cs" />
@@ -326,11 +321,6 @@
     <EmbeddedResource Include="EmbeddedResources\DualityLogoBig.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityLogoMedium.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityLogoSmall.png" />
-    <EmbeddedResource Include="Resources\DefaultContent.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>DefaultContent.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="EmbeddedResources\DualityIcon.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityIconB.png" />
     <EmbeddedResource Include="EmbeddedResources\SharpAlpha.frag" />
