@@ -345,8 +345,8 @@ namespace Duality.Components
 		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
 		public ICmpRenderer PickRendererAt(Rect viewportRect, int x, int y)
 		{
-			if (x < viewportRect.MinX || x >= viewportRect.MaxX) return null;
-			if (y < viewportRect.MinY || y >= viewportRect.MaxY) return null;
+			if (x < viewportRect.LeftX || x >= viewportRect.RightX) return null;
+			if (y < viewportRect.TopY || y >= viewportRect.BottomY) return null;
 			
 			this.RenderPickingMap(viewportRect.Size);
 
@@ -571,10 +571,10 @@ namespace Duality.Components
 				IDrawDevice device = this.drawDevice;
 				{
 					VertexC1P3T2[] vertices = new VertexC1P3T2[4];
-					vertices[0].Pos = new Vector3(targetRect.MinX, targetRect.MinY, 0.0f);
-					vertices[1].Pos = new Vector3(targetRect.MaxX, targetRect.MinY, 0.0f);
-					vertices[2].Pos = new Vector3(targetRect.MaxX, targetRect.MaxY, 0.0f);
-					vertices[3].Pos = new Vector3(targetRect.MinX, targetRect.MaxY, 0.0f);
+					vertices[0].Pos = new Vector3(targetRect.LeftX, targetRect.TopY, 0.0f);
+					vertices[1].Pos = new Vector3(targetRect.RightX, targetRect.TopY, 0.0f);
+					vertices[2].Pos = new Vector3(targetRect.RightX, targetRect.BottomY, 0.0f);
+					vertices[3].Pos = new Vector3(targetRect.LeftX, targetRect.BottomY, 0.0f);
 					vertices[0].TexCoord = new Vector2(0.0f, 0.0f);
 					vertices[1].TexCoord = new Vector2(uvRatio.X, 0.0f);
 					vertices[2].TexCoord = new Vector2(uvRatio.X, uvRatio.Y);
