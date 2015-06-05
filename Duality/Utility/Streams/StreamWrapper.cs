@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Runtime.Remoting;
 
 
 namespace Duality
@@ -50,10 +49,6 @@ namespace Duality
 		{
 			get { return this.baseStream.WriteTimeout; }
 			set { this.baseStream.WriteTimeout = value; }
-		}
-		public override ObjRef CreateObjRef(Type requestedType)
-		{
-			throw new NotSupportedException();
 		}
 
 
