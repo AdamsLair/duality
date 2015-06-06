@@ -27,7 +27,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromEmbedded<VertexShader>(".vert", stream =>
+			InitDefaultContent<VertexShader>(".vert", stream =>
 			{
 				using (StreamReader reader = new StreamReader(stream))
 				{

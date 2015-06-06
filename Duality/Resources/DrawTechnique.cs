@@ -92,7 +92,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromDictionary<DrawTechnique>(new Dictionary<string,DrawTechnique>
+			InitDefaultContent<DrawTechnique>(new Dictionary<string,DrawTechnique>
 			{
 				{ "Solid", new DrawTechnique(BlendMode.Solid) },
 				{ "Mask", new DrawTechnique(BlendMode.Mask) },

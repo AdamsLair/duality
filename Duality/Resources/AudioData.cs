@@ -30,7 +30,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromEmbedded<AudioData>(".ogg", stream => new AudioData(stream));
+			InitDefaultContent<AudioData>(".ogg", stream => new AudioData(stream));
 		}
 
 

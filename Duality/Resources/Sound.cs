@@ -31,7 +31,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromDictionary<Sound>(new Dictionary<string,Sound>
+			InitDefaultContent<Sound>(new Dictionary<string,Sound>
 			{
 				{ "Beep", new Sound(AudioData.Beep) }
 			});

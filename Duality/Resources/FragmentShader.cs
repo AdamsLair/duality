@@ -36,7 +36,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromEmbedded<FragmentShader>(".frag", stream =>
+			InitDefaultContent<FragmentShader>(".frag", stream =>
 			{
 				using (StreamReader reader = new StreamReader(stream))
 				{

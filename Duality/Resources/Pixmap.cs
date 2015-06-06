@@ -53,7 +53,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromEmbedded<Pixmap>(".png", stream => new Pixmap(stream));
+			InitDefaultContent<Pixmap>(".png", stream => new Pixmap(stream));
 		}
 
 		

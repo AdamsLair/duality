@@ -46,7 +46,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromDictionary<ShaderProgram>(new Dictionary<string,ShaderProgram>
+			InitDefaultContent<ShaderProgram>(new Dictionary<string,ShaderProgram>
 			{
 				{ "Minimal", new ShaderProgram(VertexShader.Minimal, FragmentShader.Minimal) },
 				{ "Picking", new ShaderProgram(VertexShader.Minimal, FragmentShader.Picking) },

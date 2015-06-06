@@ -543,20 +543,20 @@ namespace Duality
 			}
 		}
 
-		protected static void InitDefaultContentFromEmbedded<T>(string nameExt, Func<Stream,T> resourceCreator) where T : Resource
+		internal static void InitDefaultContent<T>(string embeddedNameExt, Func<Stream,T> resourceCreator) where T : Resource
 		{
 			string embeddedNameBase = "Duality.EmbeddedResources.";
 			Assembly embeddingAssembly = typeof(Resource).Assembly;
 
 			InitDefaultContent<T>(name => 
 			{
-				using (Stream stream = embeddingAssembly.GetManifestResourceStream(embeddedNameBase + name + nameExt))
+				using (Stream stream = embeddingAssembly.GetManifestResourceStream(embeddedNameBase + name + embeddedNameExt))
 				{
 					return resourceCreator(stream);
 				}
 			});
 		}
-		protected static void InitDefaultContentFromDictionary<T>(IDictionary<string,T> dictionary) where T : Resource
+		internal static void InitDefaultContent<T>(IDictionary<string,T> dictionary) where T : Resource
 		{
 			InitDefaultContent<T>(name => 
 			{
@@ -567,7 +567,7 @@ namespace Duality
 					return null;
 			});
 		}
-		protected static void InitDefaultContent<T>(Func<string,T> resourceCreator) where T : Resource
+		internal static void InitDefaultContent<T>(Func<string,T> resourceCreator) where T : Resource
 		{
 			string contentPathBase = ContentProvider.VirtualContentPath + typeof(T).Name + ":";
 

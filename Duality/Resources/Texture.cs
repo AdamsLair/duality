@@ -50,7 +50,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromDictionary<Texture>(new Dictionary<string,Texture>
+			InitDefaultContent<Texture>(new Dictionary<string,Texture>
 			{
 				{ "DualityIcon", new Texture(Pixmap.DualityIcon) },
 				{ "DualityIconB", new Texture(Pixmap.DualityIconB) },

@@ -56,7 +56,7 @@ namespace Duality.Resources
 			genericMonospace10.MonoSpace = true;
 			genericMonospace10.ReloadData();
 			
-			InitDefaultContentFromDictionary<Font>(new Dictionary<string,Font>
+			InitDefaultContent<Font>(new Dictionary<string,Font>
 			{
 				{ "GenericMonospace8", genericMonospace8 },
 				{ "GenericMonospace10", genericMonospace10 },

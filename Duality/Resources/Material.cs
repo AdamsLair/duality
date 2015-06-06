@@ -61,7 +61,7 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContentFromDictionary<Material>(new Dictionary<string,Material>
+			InitDefaultContent<Material>(new Dictionary<string,Material>
 			{
 				{ "SolidWhite", new Material(DrawTechnique.Solid, ColorRgba.White) },
 				{ "SolidBlack", new Material(DrawTechnique.Solid, ColorRgba.Black) },
