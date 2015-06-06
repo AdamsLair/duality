@@ -34,8 +34,7 @@ namespace Duality.VisualStudio
 
 		public static void VisualizeAtlas(Bitmap bitmap, List<Rect> atlas)
 		{
-			ColorRgba avgColor = bitmap.GetAverageColor();
-			ColorRgba atlasColor = avgColor.GetLuminance() < 0.5f ? new ColorRgba(128, 0, 0, 164) : new ColorRgba(255, 128, 128, 164);
+			ColorRgba atlasColor = new ColorRgba(255, 128, 128, 164);
 
 			// Draw atlas rects
 			if (atlas != null)

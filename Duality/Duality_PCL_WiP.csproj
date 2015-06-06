@@ -170,7 +170,6 @@
     <Compile Include="Cloning\CloneProviderContext.cs" />
     <Compile Include="Cloning\ICloneExplicit.cs" />
     <Compile Include="Cloning\ICloneSurrogate.cs" />
-    <Compile Include="Cloning\Surrogates\BitmapSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\DelegateSurrogate.cs" />
     <Compile Include="Cloning\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Components\Diagnostics\VisualLogRenderer.cs" />
@@ -210,7 +209,6 @@
     <Compile Include="Drawing\Canvas.cs" />
     <Compile Include="Utility\DualityAppData.cs" />
     <Compile Include="Utility\DualityUserData.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
     <Compile Include="Utility\IManageableObject.cs" />
     <Compile Include="Utility\InitState.cs" />
     <Compile Include="Utility\Math\GenericOperator.cs" />
@@ -304,7 +302,6 @@
     <Compile Include="Serialization\XmlSerializer.cs" />
     <Compile Include="Serialization\SerializeType.cs" />
     <Compile Include="Serialization\DataType.cs" />
-    <Compile Include="Serialization\Surrogates\BitmapSurrogate.cs" />
     <Compile Include="Serialization\Surrogates\DictionarySurrogate.cs" />
     <Compile Include="Serialization\TypeDataLayout.cs" />
     <Compile Include="Time.cs" />

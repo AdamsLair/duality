@@ -5,7 +5,7 @@ using System.Drawing.Drawing2D;
 
 using Duality.Drawing;
 
-namespace Duality
+namespace Duality.Editor
 {
 	/// <summary>
 	/// Provides extension methods for <see cref="System.Drawing.Bitmap">Bitmaps</see>.

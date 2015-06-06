@@ -20,7 +20,6 @@ namespace Duality.VisualStudio
 		private	bool		useRed		= true;
 		private	bool		useGreen	= true;
 		private	bool		useBlue		= true;
-		private	ColorRgba	avgColor	= ColorRgba.Black;
 
 		public Bitmap Bitmap
 		{
@@ -28,7 +27,6 @@ namespace Duality.VisualStudio
 			set
 			{
 				this.bmp = value;
-				this.avgColor = this.bmp != null ? this.bmp.GetAverageColor() : ColorRgba.Black;
 				this.UpdateSize();
 				this.Invalidate();
 			}
@@ -97,8 +95,8 @@ namespace Duality.VisualStudio
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			Color brightChecker = this.avgColor.GetLuminance() > 0.5f ? Color.FromArgb(48, 48, 48) : Color.FromArgb(224, 224, 224);
-			Color darkChecker = this.avgColor.GetLuminance() > 0.5f ? Color.FromArgb(32, 32, 32) : Color.FromArgb(192, 192, 192);
+			Color brightChecker = Color.FromArgb(224, 224, 224);
+			Color darkChecker = Color.FromArgb(192, 192, 192);
 			
 			e.Graphics.FillRectangle(new HatchBrush(HatchStyle.LargeCheckerBoard, brightChecker, darkChecker), this.ClientRectangle);
 			
