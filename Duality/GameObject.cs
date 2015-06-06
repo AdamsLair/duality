@@ -23,8 +23,8 @@ namespace Duality
 	/// <seealso cref="Duality.Resources.Scene"/>
 	/// <seealso cref="Duality.Resources.PrefabLink"/>
 	[CloneBehavior(CloneBehavior.Reference)]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageGameObject)]
+	[EditorHintCategory(CoreResNames.CategoryNone)]
+	[EditorHintImage(CoreResNames.ImageGameObject)]
 	public sealed class GameObject : IManageableObject, IUniqueIdentifyable, ICloneExplicit
 	{
 		[DontSerialize] 

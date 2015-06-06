@@ -35,7 +35,7 @@ namespace Duality.Editor
 			Image image = null;
 			foreach (var attrib in type.GetAttributesCached<EditorHintImageAttribute>())
 			{
-				image = attrib.IconImage;
+				image = attrib.IconImageObject as Image;
 				if (image != null) break;
 			}
 			return image;

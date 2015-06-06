@@ -19,8 +19,8 @@ namespace Duality.Plugins.Steering
 	/// need a high-level pathfinding layer on top of the local avoidance.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryAI)]
-	[EditorHintImage(typeof(SteeringRes), SteeringResNames.ImageAgent)]
+	[EditorHintCategory(CoreResNames.CategoryAI)]
+	[EditorHintImage(SteeringResNames.ImageAgent)]
 	public class Agent : Component
 	{
 		private IVelocitySampler		sampler			= null;

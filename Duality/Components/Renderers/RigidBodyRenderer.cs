@@ -15,8 +15,8 @@ namespace Duality.Components.Renderers
 	/// A <see cref="Duality.Component"/> that renders a RigidBodies shape and outline.
 	/// </summary>
 	[RequiredComponent(typeof(RigidBody))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRigidBodyRenderer)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(CoreResNames.ImageRigidBodyRenderer)]
 	public class RigidBodyRenderer : Renderer
 	{
 		private	ContentRef<Material>	areaMaterial			= Material.Checkerboard;

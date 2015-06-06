@@ -20,8 +20,8 @@ namespace Duality.Resources
 	/// </example>
 	/// <seealso cref="Duality.Resources.AudioData"/>
 	[ExplicitResourceReference(typeof(AudioData))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSound)]
+	[EditorHintCategory(CoreResNames.CategorySound)]
+	[EditorHintImage(CoreResNames.ImageSound)]
 	public class Sound : Resource
 	{
 		/// <summary>

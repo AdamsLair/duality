@@ -16,8 +16,8 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.VertexShader"/>
 	/// <seealso cref="Duality.Resources.FragmentShader"/>
 	[ExplicitResourceReference(typeof(AbstractShader))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageShaderProgram)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(CoreResNames.ImageShaderProgram)]
 	public class ShaderProgram : Resource
 	{
 		/// <summary>

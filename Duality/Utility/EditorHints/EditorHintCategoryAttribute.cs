@@ -31,19 +31,6 @@ namespace Duality.Editor
 			get { return this.category; }
 		}
 
-		public EditorHintCategoryAttribute(Type resourceClass, string propertyName)
-		{
-			PropertyInfo resourceProperty = resourceClass.GetProperty(propertyName, ReflectionHelper.BindStaticAll);
-			if (resourceProperty != null && resourceProperty.PropertyType == typeof(string))
-			{
-				this.category = (string)resourceProperty.GetValue(null, null);
-			}
-			else
-			{
-				this.category = propertyName;
-			}
-			this.UpdateCategoryTree();
-		}
 		public EditorHintCategoryAttribute(string category)
 		{
 			this.category = category;

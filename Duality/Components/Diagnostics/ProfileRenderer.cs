@@ -14,8 +14,8 @@ namespace Duality.Components.Diagnostics
 	/// <summary>
 	/// A diagnostic <see cref="Duality.Component"/> that displays current performance measurements and other profiling stats.
 	/// </summary>
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryDiagnostics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageProfileRenderer)]
+	[EditorHintCategory(CoreResNames.CategoryDiagnostics)]
+	[EditorHintImage(CoreResNames.ImageProfileRenderer)]
 	public class ProfileRenderer : Component, ICmpRenderer, ICmpUpdatable
 	{
 		private class GraphCacheEntry

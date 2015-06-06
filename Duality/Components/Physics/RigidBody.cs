@@ -17,8 +17,8 @@ namespace Duality.Components.Physics
 	/// </summary>
 	[ManuallyCloned]
 	[RequiredComponent(typeof(Transform))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryPhysics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageRigidBody)]
+	[EditorHintCategory(CoreResNames.CategoryPhysics)]
+	[EditorHintImage(CoreResNames.ImageRigidBody)]
 	public sealed class RigidBody : Component, ICmpInitializable, ICmpUpdatable, ICmpEditorUpdatable
 	{
 		private struct ColEvent

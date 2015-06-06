@@ -9,8 +9,8 @@ namespace Duality.Components
 	/// Makes this <see cref="GameObject"/> the 3d sound listener.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSoundListener)]
+	[EditorHintCategory(CoreResNames.CategorySound)]
+	[EditorHintImage(CoreResNames.ImageSoundListener)]
 	public sealed class SoundListener : Component, ICmpInitializable
 	{
 		public void MakeCurrent()

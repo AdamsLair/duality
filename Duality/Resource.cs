@@ -19,7 +19,7 @@ namespace Duality
 	/// <seealso cref="ContentRef{T}"/>
 	/// <seealso cref="ContentProvider"/>
 	[CloneBehavior(CloneBehavior.Reference)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageResource)]
+	[EditorHintImage(CoreResNames.ImageResource)]
 	public abstract class Resource : IManageableObject, IDisposable, ICloneExplicit
 	{
 		/// <summary>

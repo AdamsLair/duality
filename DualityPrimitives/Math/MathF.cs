@@ -937,7 +937,6 @@ namespace Duality
 		/// <param name="scale">The scale factor to apply.</param>
 		/// <param name="xDot">Dot product base for the transformed x value.</param>
 		/// <param name="yDot">Dot product base for the transformed y value.</param>
-		/// <seealso cref="TransformDotVec"/>
 		public static void GetTransformDotVec(float rot, Vector2 scale, out Vector2 xDot, out Vector2 yDot)
 		{
 			float sin = (float)System.Math.Sin(rot);
@@ -952,7 +951,6 @@ namespace Duality
 		/// <param name="scale">The scale factor to apply.</param>
 		/// <param name="xDot">Dot product base for the transformed x value.</param>
 		/// <param name="yDot">Dot product base for the transformed y value.</param>
-		/// <seealso cref="TransformDotVec"/>
 		public static void GetTransformDotVec(float rot, float scale, out Vector2 xDot, out Vector2 yDot)
 		{
 			float sin = (float)System.Math.Sin(rot);

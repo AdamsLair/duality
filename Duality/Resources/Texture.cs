@@ -15,8 +15,8 @@ namespace Duality.Resources
 	/// <seealso cref="Duality.Resources.Pixmap"/>
 	/// <seealso cref="Duality.Resources.RenderTarget"/>
 	[ExplicitResourceReference(typeof(Pixmap))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageTexture)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(CoreResNames.ImageTexture)]
 	public class Texture : Resource
 	{
 		/// <summary>

@@ -19,7 +19,7 @@ namespace Duality.Plugins.Steering.Sample
 	[RequiredComponent(typeof(Agent))]
 	[RequiredComponent(typeof(Transform))]
 	[RequiredComponent(typeof(RigidBody))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryAI)]
+	[EditorHintCategory(CoreResNames.CategoryAI)]
 	public class AgentAttributeTranslator : Component, ICmpUpdatable
 	{
 		public void OnUpdate()

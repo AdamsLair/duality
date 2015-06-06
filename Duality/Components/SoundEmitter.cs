@@ -14,8 +14,8 @@ namespace Duality.Components
 	/// Provides functionality to emit sound.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategorySound)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageSoundEmitter)]
+	[EditorHintCategory(CoreResNames.CategorySound)]
+	[EditorHintImage(CoreResNames.ImageSoundEmitter)]
 	public sealed class SoundEmitter : Component, ICmpUpdatable, ICmpInitializable, ICmpEditorUpdatable
 	{
 		/// <summary>

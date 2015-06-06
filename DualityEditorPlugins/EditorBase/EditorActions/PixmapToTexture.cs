@@ -23,7 +23,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		}
 		public override Image Icon
 		{
-			get { return CoreRes.IconResTexture; }
+			get { return typeof(Texture).GetEditorImage(); }
 		}
 
 		public override void Perform(Pixmap obj)

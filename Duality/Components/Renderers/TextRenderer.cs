@@ -13,8 +13,8 @@ namespace Duality.Components.Renderers
 	/// Renders a text to represent the <see cref="GameObject"/>.
 	/// </summary>
 	[ManuallyCloned]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(CoreResNames.ImageFont)]
 	public class TextRenderer : Renderer, ICmpInitializable
 	{
 		protected	Alignment				blockAlign	= Alignment.Center;

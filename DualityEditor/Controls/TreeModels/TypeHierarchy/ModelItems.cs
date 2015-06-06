@@ -6,7 +6,6 @@ using System.IO;
 using System.Drawing;
 
 using Duality.Editor.Properties;
-using Duality.Properties;
 
 namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 {
@@ -51,7 +50,7 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 		public TypeItem(Type type, BaseItem parent) : base(parent)
 		{
 			this.type = type;
-			this.icon = type.GetEditorImage() ?? CoreRes.IconClass;
+			this.icon = type.GetEditorImage() ?? GeneralRes.IconClass;
 		}
 	}
 	public class NamespaceItem : BaseItem

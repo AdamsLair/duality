@@ -343,6 +343,7 @@
     <None Include="EmbeddedResources\EditorUserData.xml" />
     <None Include="EmbeddedResources\application_stopwatch.png" />
     <EmbeddedResource Include="EmbeddedResources\ErrorHandlersTemplate.txt" />
+    <EmbeddedResource Include="EmbeddedResources\Class.png" />
     <Content Include="EmbeddedResources\namespace.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
     <None Include="EmbeddedResources\arrow_undo.png" />

@@ -61,11 +61,6 @@
     <Compile Include="Characteristics\AdvancedAgentCharacteristics.cs" />
     <Compile Include="Characteristics\DefaultAgentCharacteristics.cs" />
     <Compile Include="Properties\SteeringResNames.cs" />
-    <Compile Include="Properties\SteeringRes.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SteeringRes.resx</DependentUpon>
-    </Compile>
     <Compile Include="Targets\ISteeringTarget.cs" />
     <Compile Include="Targets\DirectionTarget.cs" />
     <Compile Include="Targets\PointTarget.cs" />
@@ -86,13 +81,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="EmbeddedResources\CmpIconAgent.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\SteeringRes.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>SteeringRes.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <EmbeddedResource Include="EmbeddedResources\CmpIconAgent.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

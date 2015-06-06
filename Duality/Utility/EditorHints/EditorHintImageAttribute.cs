@@ -13,14 +13,13 @@ namespace Duality.Editor
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
 	public class EditorHintImageAttribute : EditorHintAttribute
 	{
-		public delegate Image Resolver(string resourceTypeId, string propertyName);
+		public delegate object Resolver(string manifestResourceName);
 
-		private	Image		iconImage		= null;
-		private	string		resourceTypeId	= null;
-		private	string		propertyName	= null;
-		private	bool		resolved		= false;
+		private	object		iconImageObj			= null;
+		private	string		manifestResourceName	= null;
+		private	bool		resolved				= false;
 
-		private static List<Resolver> registeredResolvers = new List<Resolver> { DefaultResolver };
+		private static List<Resolver> registeredResolvers = new List<Resolver>();
 		public static event Resolver ImageResolvers
 		{
 			add { registeredResolvers.Add(value); }
@@ -28,56 +27,34 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
-		/// [GET] The icon image that will be used to represent this Type.
+		/// [GET] The icon image object that will be used to represent this Type.
 		/// </summary>
-		public Image IconImage
+		public object IconImageObject
 		{
 			get
 			{
-				if (!this.resolved) this.ResolveImage();
-				return this.iconImage;
+				if (!this.resolved) this.ResolveImageObject();
+				return this.iconImageObj;
 			}
 		}
 
-		public EditorHintImageAttribute(string resourceTypeId, string propertyName)
+		public EditorHintImageAttribute(string manifestResourceName)
 		{
-			this.resourceTypeId = resourceTypeId;
-			this.propertyName = propertyName;
-		}
-		public EditorHintImageAttribute(Type resourceType, string propertyName)
-		{
-			this.resourceTypeId = resourceType.GetTypeId();
-			this.propertyName = propertyName;
+			this.manifestResourceName = manifestResourceName;
 		}
 
-		private void ResolveImage()
+		private void ResolveImageObject()
 		{
 			this.resolved = true;
-			this.iconImage = null;
-			if (!string.IsNullOrEmpty(this.resourceTypeId) && !string.IsNullOrEmpty(this.propertyName))
+			this.iconImageObj = null;
+			if (!string.IsNullOrEmpty(this.manifestResourceName))
 			{
 				foreach (Resolver resolver in registeredResolvers)
 				{
-					this.iconImage = resolver(this.resourceTypeId, this.propertyName);
-					if (this.iconImage != null) break;
+					this.iconImageObj = resolver(this.manifestResourceName);
+					if (this.iconImageObj != null) break;
 				}
 			}
-		}
-
-		private static Image DefaultResolver(string resourceTypeId, string propertyName)
-		{
-			Type resourceClass = ReflectionHelper.ResolveType(resourceTypeId);
-			PropertyInfo resourceProperty = resourceClass != null ? resourceClass.GetProperty(propertyName, ReflectionHelper.BindStaticAll) : null;
-			if (resourceProperty != null && typeof(Image).IsAssignableFrom(resourceProperty.PropertyType))
-			{
-				try
-				{
-					return resourceProperty.GetValue(null, null) as Image;
-				}
-				catch (Exception) {}
-			}
-
-			return null;
 		}
 	}
 }

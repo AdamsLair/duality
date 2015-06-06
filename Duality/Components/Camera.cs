@@ -15,8 +15,8 @@ namespace Duality.Components
 	/// A Camera is responsible for rendering the current <see cref="Duality.Resources.Scene"/>.
 	/// </summary>
 	[RequiredComponent(typeof(Transform))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageCamera)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(CoreResNames.ImageCamera)]
 	public sealed class Camera : Component, ICmpInitializable
 	{
 		/// <summary>

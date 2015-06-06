@@ -196,11 +196,6 @@
     <Compile Include="Components\Diagnostics\ProfileRenderer.cs" />
     <Compile Include="ContentRef.cs" />
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="Properties\CoreRes.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CoreRes.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\CoreResNames.cs" />
     <Compile Include="Drawing\DrawDevice.cs" />
     <Compile Include="Drawing\IDrawDevice.cs" />
@@ -320,11 +315,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\Checkerboard.png" />
-    <EmbeddedResource Include="Properties\CoreRes.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>CoreRes.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="EmbeddedResources\DualityLogoBig.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityLogoMedium.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityLogoSmall.png" />
@@ -344,44 +334,44 @@
     <EmbeddedResource Include="EmbeddedResources\Minimal.vert" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="EmbeddedResources\EditorSupport\iconResVertexShader.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpCamera.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpCapsuleCollider.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpCircleCollider.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpEdgeCollider.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpLoopCollider.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpRectCollider.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpRigidBodyRenderer.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpSoundListener.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpSpriteRenderer.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpTransform.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpUnknown.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconGameObj.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResAudioData.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResDrawTechnique.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResFont.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResFragmentShader.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResMaterial.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResPixmap.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResPrefabEmpty.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResPrefabFull.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResRenderTarget.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResScene.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResShaderProgram.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResSound.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResTexture.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconResUnknown.png" />
-    <None Include="EmbeddedResources\EditorSupport\Primitive.png" />
-    <None Include="EmbeddedResources\EditorSupport\Object.png" />
-    <None Include="EmbeddedResources\EditorSupport\ObjectRef.png" />
-    <None Include="EmbeddedResources\EditorSupport\Method.png" />
-    <None Include="EmbeddedResources\EditorSupport\Array.png" />
-    <None Include="EmbeddedResources\EditorSupport\Delegate.png" />
-    <None Include="EmbeddedResources\EditorSupport\Class.png" />
-    <None Include="EmbeddedResources\EditorSupport\Event.png" />
-    <None Include="EmbeddedResources\EditorSupport\Field.png" />
-    <None Include="EmbeddedResources\EditorSupport\Property.png" />
-    <None Include="EmbeddedResources\EditorSupport\iconCmpProfileRenderer.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResVertexShader.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpCamera.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpCapsuleCollider.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpCircleCollider.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpEdgeCollider.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpLoopCollider.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpRectCollider.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpRigidBodyRenderer.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpSoundListener.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpSpriteRenderer.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpTransform.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpUnknown.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconGameObj.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResAudioData.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResDrawTechnique.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResFont.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResFragmentShader.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResMaterial.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResPixmap.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResPrefabEmpty.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResPrefabFull.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResRenderTarget.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResScene.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResShaderProgram.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResSound.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResTexture.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconResUnknown.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Primitive.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Object.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\ObjectRef.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Method.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Array.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Delegate.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Class.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Event.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Field.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\Property.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpProfileRenderer.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">

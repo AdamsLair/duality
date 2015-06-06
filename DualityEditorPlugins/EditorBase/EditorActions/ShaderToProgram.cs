@@ -23,7 +23,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		}
 		public override Image Icon
 		{
-			get { return CoreRes.IconResShaderProgram; }
+			get { return typeof(ShaderProgram).GetEditorImage(); }
 		}
 
 		public override void Perform(IEnumerable<AbstractShader> shaderEnum)

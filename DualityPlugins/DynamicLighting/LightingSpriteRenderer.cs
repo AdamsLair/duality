@@ -13,8 +13,8 @@ namespace Duality.Plugins.DynamicLighting
 	/// <summary>
 	/// Renders a sprite using dynamic lighting, either per-vertex or per-pixel, depending on the DrawTechnique that is used.
 	/// </summary>
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(DynLightRes), DynLightResNames.IconComponentLightingSpriteRenderer)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(DynLightResNames.IconComponentLightingSpriteRenderer)]
 	public class LightingSpriteRenderer : SpriteRenderer
 	{
 		private	float	vertexTranslucency	= 0.0f;

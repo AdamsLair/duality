@@ -1478,30 +1478,17 @@ namespace Duality.Editor
 			else
 				return null;
 		}
-		private static Image EditorHintImageResolver(string resourceClassName, string propertyName)
+		private static object EditorHintImageResolver(string manifestResourceName)
 		{
-			string shortClassName = resourceClassName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-			if (string.IsNullOrEmpty(shortClassName)) return null;
-
-			foreach (Assembly editorPlugin in GetDualityEditorAssemblies())
+			Assembly[] allAssemblies = DualityApp.GetDualityAssemblies().Concat(GetDualityEditorAssemblies()).Distinct().ToArray();
+			foreach (Assembly assembly in allAssemblies)
 			{
-				Type[] editorTypes;
-				try { editorTypes = editorPlugin.GetTypes(); }
-				catch (Exception) { continue; }
-
-				foreach (Type editorClass in editorTypes)
+				string[] resourceNames = assembly.GetManifestResourceNames();
+				if (resourceNames.Contains(manifestResourceName))
 				{
-					if (editorClass.Name == shortClassName)
+					using (Stream stream = assembly.GetManifestResourceStream(manifestResourceName))
 					{
-						try
-						{
-							PropertyInfo resourceProperty = editorClass.GetProperty(propertyName, ReflectionHelper.BindStaticAll);
-							if (resourceProperty != null && typeof(Image).IsAssignableFrom(resourceProperty.PropertyType))
-							{
-								return resourceProperty.GetValue(null, null) as Image;
-							}
-						}
-						catch (Exception) {}
+						return Bitmap.FromStream(stream);
 					}
 				}
 			}

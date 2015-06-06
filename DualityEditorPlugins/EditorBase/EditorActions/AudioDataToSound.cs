@@ -23,7 +23,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		}
 		public override Image Icon
 		{
-			get { return CoreRes.IconResSound; }
+			get { return typeof(Sound).GetEditorImage(); }
 		}
 
 		public override void Perform(IEnumerable<AudioData> objEnum)

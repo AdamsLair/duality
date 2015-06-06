@@ -18,8 +18,8 @@ namespace Duality.Resources
 	/// </summary>
 	/// <seealso cref="BatchInfo"/>
 	[ExplicitResourceReference(typeof(Texture))]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageMaterial)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(CoreResNames.ImageMaterial)]
 	public class Material : Resource
 	{
 		/// <summary>

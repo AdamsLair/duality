@@ -52,7 +52,7 @@ namespace Duality
 	/// </summary>
 	[ManuallyCloned]
 	[CloneBehavior(CloneBehavior.Reference)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageComponent)]
+	[EditorHintImage(CoreResNames.ImageComponent)]
 	public abstract class Component : IManageableObject, IUniqueIdentifyable, ICloneExplicit
 	{
 		/// <summary>

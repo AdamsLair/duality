@@ -16,8 +16,8 @@ namespace Duality.Resources
 	/// ensures that changes made to the Prefab propagate to all of its instances as well. It also keeps track of Properties that
 	/// have been deliberately modified in the editor and restores them after re-applying the original Prefabs data.
 	/// </summary>
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImagePrefab)]
+	[EditorHintCategory(CoreResNames.CategoryNone)]
+	[EditorHintImage(CoreResNames.ImagePrefab)]
 	public class Prefab : Resource
 	{
 		private static readonly ApplyPrefabContext PrefabContext = new ApplyPrefabContext();

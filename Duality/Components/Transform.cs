@@ -10,8 +10,8 @@ namespace Duality.Components
 	/// Represents a <see cref="GameObject">GameObjects</see> physical location in the world, relative to its <see cref="GameObject.Parent"/>.
 	/// </summary>
 	[ManuallyCloned]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageTransform)]
+	[EditorHintCategory(CoreResNames.CategoryNone)]
+	[EditorHintImage(CoreResNames.ImageTransform)]
 	public sealed class Transform : Component, ICmpUpdatable, ICmpEditorUpdatable, ICmpInitializable
 	{
 		/// <summary>

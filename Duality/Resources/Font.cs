@@ -20,8 +20,8 @@ namespace Duality.Resources
 	/// pre-rasterized and stored in a <see cref="Duality.Resources.Texture"/> with an <see cref="Duality.Resources.Pixmap.Atlas"/>.
 	/// </summary>
 	[ExplicitResourceReference()]
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageFont)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(CoreResNames.ImageFont)]
 	public class Font : Resource
 	{
 		/// <summary>

@@ -6,12 +6,14 @@ using System.Text;
 namespace Duality.Plugins.DynamicLighting.Properties
 {
 	/// <summary>
-	/// This static class contains constant string representations of certain <see cref="DynLightRes"/> resource entries.
+	/// This static class contains constant string representations of certain resource names.
 	/// </summary>
 	public static class DynLightResNames
 	{
-		public const string IconComponentLightingSpriteRenderer	= "IconCmpLightingSpriteRenderer";
-		public const string IconResourceLightingTechnique		= "IconResLightingTechnique";
-		public const string IconResourceLight					= "IconLight";
+		private const string ManifestBaseName	= "Duality.Plugins.DynamicLighting.EmbeddedResources.";
+
+		public const string IconComponentLightingSpriteRenderer	= ManifestBaseName + "iconCmpLightingSpriteRenderer.png";
+		public const string IconResourceLightingTechnique		= ManifestBaseName + "iconResLightingTechnique.png";
+		public const string IconResourceLight					= ManifestBaseName + "lightbulb.png";
 	}
 }

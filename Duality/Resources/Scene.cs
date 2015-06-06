@@ -20,8 +20,8 @@ namespace Duality.Resources
 	/// <see cref="Scene.Current"/> which represents a level, gamestate or a combination of both, depending
 	/// on you own design.
 	/// </summary>
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryNone)]
-	[EditorHintImage(typeof(CoreRes), CoreResNames.ImageScene)]
+	[EditorHintCategory(CoreResNames.CategoryNone)]
+	[EditorHintImage(CoreResNames.ImageScene)]
 	public sealed class Scene : Resource
 	{
 		private const float PhysicsAccStart = Time.MsPFMult;

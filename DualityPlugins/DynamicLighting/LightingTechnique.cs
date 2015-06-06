@@ -9,8 +9,8 @@ using Duality.Plugins.DynamicLighting.Properties;
 
 namespace Duality.Plugins.DynamicLighting
 {
-	[EditorHintCategory(typeof(CoreRes), CoreResNames.CategoryGraphics)]
-	[EditorHintImage(typeof(DynLightRes), DynLightResNames.IconResourceLightingTechnique)]
+	[EditorHintCategory(CoreResNames.CategoryGraphics)]
+	[EditorHintImage(DynLightResNames.IconResourceLightingTechnique)]
 	public class LightingTechnique : DrawTechnique
 	{
 		public override bool NeedsPreparation
