@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using OpenTK;
 using OpenTK.Graphics;
@@ -665,7 +666,7 @@ namespace Duality.Backend.DefaultOpenTK
 		/// </summary>
 		/// <param name="silent">If true, errors aren't logged.</param>
 		/// <returns>True, if an error occurred, false if not.</returns>
-		public static bool CheckOpenGLErrors(bool silent = false)
+		public static bool CheckOpenGLErrors(bool silent = false, [CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{
 			ErrorCode error;
 			bool found = false;
@@ -674,9 +675,11 @@ namespace Duality.Backend.DefaultOpenTK
 				if (!silent)
 				{
 					Log.Core.WriteError(
-						"Internal OpenGL error, code {0} at {1}", 
+						"Internal OpenGL error, code {0} at {1} in {2}, line {3}.", 
 						error,
-						Log.CurrentMethod(1));
+						callerInfoMember,
+						callerInfoFile,
+						callerInfoLine);
 				}
 				found = true;
 			}

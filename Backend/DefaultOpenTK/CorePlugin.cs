@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Linq;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 using Duality;
 using Duality.Resources;
@@ -63,15 +64,15 @@ namespace Duality.Backend.DefaultOpenTK
 		/// <param name="silent"></param>
 		/// <returns>True if everyhing is allright. False if the guarded state has been violated.</returns>
 		[System.Diagnostics.DebuggerStepThrough]
-		internal static bool GuardSingleThreadState(bool silent = false)
+		internal static bool GuardSingleThreadState(bool silent = false, [CallerMemberName] string callerInfoMember = null)
 		{
 			if (Thread.CurrentThread != mainThread)
 			{
 				if (!silent)
 				{
 					Log.Core.WriteError(
-						"Method {0} isn't allowed to be called from a Thread that is not the main Thread.", 
-						Log.CurrentMethod(1));
+						"Method {0} isn't allowed to be called from a Thread that is not the main Thread.",
+						callerInfoMember);
 				}
 				return false;
 			}

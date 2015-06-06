@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Duality
 {
@@ -262,32 +263,19 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Retrieves the current stack frame.
+		/// Returns a string that can be used for representing the current line and method within a source code file.
+		/// This method uses caller information attributes on its parameters - omit them in order to let the compiler do its work.
 		/// </summary>
-		/// <param name="skipFrames">The number of frames to skip. This function itsself is omitted by default.</param>
-		/// <returns>The caller's stack frame.</returns>
-		public static System.Diagnostics.StackFrame CurrentStackFrame(int skipFrames = 0)
-		{
-			return new System.Diagnostics.StackTrace(skipFrames + 1).GetFrame(0);
-		}
-		/// <summary>
-		/// Returns the name of the caller method.
-		/// </summary>
-		/// <param name="skipFrames">The number of frames to skip. This function itsself is omitted by default.</param>
-		/// <param name="includeDeclaringType">If true, the methods declaring type is included in the returned name.</param>
+		/// <param name="callerInfoMember"></param>
+		/// <param name="callerInfoFile"></param>
+		/// <param name="callerInfoLine"></param>
 		/// <returns></returns>
-		public static string CurrentMethod(int skipFrames = 0, bool includeDeclaringType = true)
+		public static string CurrentMethod([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{
-			return MethodInfo(CurrentStackFrame(skipFrames + 1).GetMethod(), includeDeclaringType);
-		}
-		/// <summary>
-		/// Returns the name of the caller methods declaring type.
-		/// </summary>
-		/// <param name="skipFrames">The number of frames to skip. This function itsself is omitted by default.</param>
-		/// <returns></returns>
-		public static string CurrentType(int skipFrames = 0)
-		{
-			return Type(CurrentStackFrame(skipFrames + 1).GetMethod().DeclaringType);
+			return string.Format("{0} in '{1}', line {2}.",
+				callerInfoMember,
+				callerInfoFile,
+				callerInfoLine);
 		}
 
 		/// <summary>

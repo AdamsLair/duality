@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Diagnostics;
 using System.Threading;
+using System.Runtime.CompilerServices;
 
 using OpenTK.Audio;
 using OpenTK.Audio.OpenAL;
@@ -230,7 +231,7 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 		}
 
-		public static bool CheckOpenALErrors(bool silent = false)
+		public static bool CheckOpenALErrors(bool silent = false, [CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{
 			ALError error;
 			bool found = false;
@@ -239,9 +240,11 @@ namespace Duality.Backend.DefaultOpenTK
 				if (!silent)
 				{
 					Log.Core.WriteError(
-						"Internal OpenAL error, code {0} at {1}", 
+						"Internal OpenAL error, code {0} at {1} in {2}, line {3}.", 
 						error,
-						Log.CurrentMethod(1));
+						callerInfoMember,
+						callerInfoFile,
+						callerInfoLine);
 				}
 				found = true;
 				if (!silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
