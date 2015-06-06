@@ -150,6 +150,14 @@
     <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
     <Compile Include="Serialization\SerializeMethod.cs" />
+    <Compile Include="Utility\EditorHints\EditorHintImageAttribute.cs" />
+    <Compile Include="Utility\EditorHints\EditorHintCategoryAttribute.cs" />
+    <Compile Include="Utility\EditorHints\EditorHintDecimalPlacesAttribute.cs" />
+    <Compile Include="Utility\EditorHints\EditorHintIncrementAttribute.cs" />
+    <Compile Include="Utility\EditorHints\EditorHintRangeAttribute.cs" />
+    <Compile Include="Utility\EditorHints\EditorHintFlagsAttribute.cs" />
+    <Compile Include="Utility\EditorHints\EditorHintAttribute.cs" />
+    <Compile Include="Utility\EditorHints\MemberFlags.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
@@ -212,7 +220,6 @@
     <Compile Include="Utility\InitState.cs" />
     <Compile Include="Utility\Math\GenericOperator.cs" />
     <Compile Include="Utility\Math\PhysicsConvert.cs" />
-    <Compile Include="Utility\EditorHint.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIEnumerable.cs" />
     <Compile Include="Utility\RawList.cs" />
     <Compile Include="IContentRef.cs" />

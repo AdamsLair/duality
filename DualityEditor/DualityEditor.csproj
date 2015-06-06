@@ -162,7 +162,8 @@
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BuildHelper.cs" />
-    <Compile Include="Helpers\ExtMethodsZipArchive.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsMemberInfoEditorHint.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsZipArchive.cs" />
     <Compile Include="PackageManagement\PackageCompatibility.cs" />
     <Compile Include="PackageManagement\PackageLicenseAgreementEventArgs.cs" />
     <Compile Include="PackageManagement\PackageName.cs" />
@@ -181,9 +182,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\EventArgs.cs" />
-    <Compile Include="Helpers\ExtMethodsControl.cs" />
-    <Compile Include="Helpers\ExtMethodsDataObject.cs" />
-    <Compile Include="Helpers\ExtMethodsColor.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsControl.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsDataObject.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsColor.cs" />
     <Compile Include="CorePluginInterface\FileImportProvider.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
@@ -222,7 +223,7 @@
     <Compile Include="Forms\ReloadCorePluginDialog.Designer.cs">
       <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\ExtMethodsTreeViewAdv.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsTreeViewAdv.cs" />
     <Compile Include="Forms\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,13 +231,13 @@
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HelpInfo.cs" />
-    <Compile Include="Helpers\ExtMethodsGraphics.cs" />
-    <Compile Include="Helpers\ExtMethodsForm.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsGraphics.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsForm.cs" />
     <Compile Include="Helpers\MessageFilter.cs" />
-    <Compile Include="Helpers\ExtMethodsToolStrip.cs" />
-    <Compile Include="Helpers\ExtMethodsMouseButtons.cs" />
-    <Compile Include="Helpers\ExtMethodsKeys.cs" />
-    <Compile Include="Helpers\ExtMethodsCamera.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsToolStrip.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsMouseButtons.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsKeys.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsCamera.cs" />
     <Compile Include="Helpers\NativeMethods.cs" />
     <Compile Include="Helpers\ObjectSelection.cs" />
     <Compile Include="HelpSystem.cs" />
