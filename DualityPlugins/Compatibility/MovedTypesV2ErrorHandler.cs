@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 
 using Duality;
 using Duality.Serialization;
@@ -22,7 +22,7 @@ namespace Duality.Plugins.Compatibility
 				else if (fixedTypeId.EndsWith("Duality.Resources.BatchInfo"))
 					resolveTypeError.ResolvedType = typeof(Duality.Drawing.BatchInfo);
 				else if (fixedTypeId.EndsWith("Duality.Resources.BatchInfo.DirtyFlag"))
-					resolveTypeError.ResolvedType = typeof(Duality.Drawing.BatchInfo).GetNestedType("DirtyFlag", ReflectionHelper.BindAll);
+					resolveTypeError.ResolvedType = typeof(Duality.Drawing.BatchInfo).GetTypeInfo().DeclaredNestedTypes.FirstOrDefault(t => t.Name == "DirtyFlag");
 				else if (fixedTypeId.EndsWith("Duality.Drawing.DefaultRendererVisibilityStrategy"))
 					resolveTypeError.ResolvedType = typeof(Duality.Components.DefaultRendererVisibilityStrategy);
 				else if (fixedTypeId.EndsWith("Duality.Resources.Pixmap.Layer"))

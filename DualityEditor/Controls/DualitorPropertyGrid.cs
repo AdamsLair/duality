@@ -215,10 +215,11 @@ namespace Duality.Editor.Controls
 				{
 					captured = true;
 					if (enumEdit.DropDownHoveredName != null)
-						return HelpInfo.FromMember(enumEdit.EditedType.GetField(enumEdit.DropDownHoveredName, ReflectionHelper.BindAll));
+						return HelpInfo.FromMember(enumEdit.EditedType.GetTypeInfo().GetRuntimeFields().FirstOrDefault(f => f.Name == enumEdit.DropDownHoveredName));
 					else
 					{
-						FieldInfo field = enumEdit.EditedType.GetField(enumEdit.DisplayedValue.ToString(), ReflectionHelper.BindAll);
+						string displayedValueString = enumEdit.DisplayedValue.ToString();
+						FieldInfo field = enumEdit.EditedType.GetTypeInfo().GetRuntimeFields().FirstOrDefault(f => f.Name == displayedValueString);
 						if (field != null) return HelpInfo.FromMember(field);
 					}
 				}
@@ -226,10 +227,11 @@ namespace Duality.Editor.Controls
 				{
 					captured = true;
 					if (enumFlagEdit.DropDownHoveredItem != null)
-						return HelpInfo.FromMember(enumFlagEdit.EditedType.GetField(enumFlagEdit.DropDownHoveredItem.Caption, ReflectionHelper.BindAll));
+						return HelpInfo.FromMember(enumFlagEdit.EditedType.GetTypeInfo().GetRuntimeFields().FirstOrDefault(f => f.Name == enumFlagEdit.DropDownHoveredItem.Caption));
 					else
 					{
-						FieldInfo field = enumFlagEdit.EditedType.GetField(enumFlagEdit.DisplayedValue.ToString(), ReflectionHelper.BindAll);
+						string displayedValueString = enumFlagEdit.DisplayedValue.ToString();
+						FieldInfo field = enumFlagEdit.EditedType.GetTypeInfo().GetRuntimeFields().FirstOrDefault(f => f.Name == displayedValueString);
 						if (field != null) return HelpInfo.FromMember(field);
 					}
 				}

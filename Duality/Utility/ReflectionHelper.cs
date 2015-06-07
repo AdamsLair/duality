@@ -52,10 +52,6 @@ namespace Duality
 		/// Equals <c>BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic</c>.
 		/// </summary>
 		public const BindingFlags BindStaticAll = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-		/// <summary>
-		/// Equals <c>BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic</c>.
-		/// </summary>
-		public const BindingFlags BindAll = BindingFlags.Static | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
 		/// <summary>
 		/// Creates an instance of a Type. Attempts to use the Types default empty constructor, but will
@@ -942,12 +938,12 @@ namespace Duality
 				}
 				else if (memberTypeToken == MemberTokenFieldInfo)
 				{
-					MemberInfo member = declaringType.GetField(token[2], BindAll);
+					MemberInfo member = declaringType.GetRuntimeFields().FirstOrDefault(m => m.Name == token[2]);
 					if (member != null) return member;
 				}
 				else if (memberTypeToken == MemberTokenEventInfo)
 				{
-					MemberInfo member = declaringType.GetEvent(token[2], BindAll);
+					MemberInfo member = declaringType.GetRuntimeEvents().FirstOrDefault(m => m.Name == token[2]);
 					if (member != null) return member;
 				}
 				else
@@ -981,8 +977,8 @@ namespace Duality
 					}
 					else if (memberTypeToken == MemberTokenPropertyInfo)
 					{
-						PropertyInfo[] availProps = declaringType.GetProperties(BindAll).Where(
-							m => m.Name == memberName && 
+						PropertyInfo[] availProps = declaringType.GetRuntimeProperties().Where(m => 
+							m.Name == memberName && 
 							m.GetIndexParameters().Length == memberParams.Length).ToArray();
 						foreach (PropertyInfo prop in availProps)
 						{

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
+using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using BitArray = System.Collections.BitArray;
@@ -327,10 +328,11 @@ namespace Duality.Editor.Plugins.CamView
 			this.SetCurrentCamera(null);
 
 			// Initialize PerspectiveMode Selector
+			FieldInfo[] perspectiveModeFields = typeof(PerspectiveMode).GetTypeInfo().GetRuntimeFields().ToArray();
 			foreach (string perspectiveName in Enum.GetNames(typeof(PerspectiveMode)))
 			{
 				ToolStripMenuItem perspectiveItem = new ToolStripMenuItem(perspectiveName);
-				var perspectiveField = typeof(PerspectiveMode).GetField(perspectiveName, ReflectionHelper.BindAll);
+				var perspectiveField = perspectiveModeFields.FirstOrDefault(m => m.Name == perspectiveName);
 				perspectiveItem.Tag = HelpInfo.FromMember(perspectiveField);
 				this.perspectiveDropDown.DropDownItems.Add(perspectiveItem);
 			}

@@ -245,16 +245,16 @@ namespace Duality.Editor
 			}
 
 			// Determine the members (declaring) type
-			Type memberType = ResolveDocStyleType(memberTypeName);
+			TypeInfo memberType = ResolveDocStyleType(memberTypeName);
 			if (memberType == null) return null;
 
 			// Determine the member info
 			if (memberEntryType == EntryType.Type)
 				return memberType;
 			else if (memberEntryType == EntryType.Field)
-				return memberType.GetField(memberName, ReflectionHelper.BindAll);
+				return memberType.GetRuntimeFields().FirstOrDefault(m => m.Name == memberName);
 			else if (memberEntryType == EntryType.Event)
-				return memberType.GetEvent(memberName, ReflectionHelper.BindAll);
+				return memberType.GetRuntimeEvents().FirstOrDefault(m => m.Name == memberName);
 			else if (memberEntryType == EntryType.Property)
 			{
 				string methodName;
@@ -291,7 +291,20 @@ namespace Duality.Editor
 				if (paramTypes.Any(p => p == null))
 					return null;
 
-				return memberType.GetProperty(methodName, ReflectionHelper.BindAll, null, null, paramTypes, null);
+				return memberType.GetRuntimeProperties().FirstOrDefault(m => 
+				{
+					if (m.Name != methodName) return false;
+
+					ParameterInfo[] indexerParams = m.GetIndexParameters();
+					if (indexerParams.Length != paramTypes.Length) return false;
+
+					for (int i = 0; i < paramTypes.Length; i++)
+					{
+						if (paramTypes[i] != indexerParams[i].ParameterType)
+							return false;
+					}
+					return true;
+				});
 			}
 			else if (memberEntryType == EntryType.Method)
 			{
@@ -356,7 +369,7 @@ namespace Duality.Editor
 						methodName = methodName.Remove(genMethodArgDeclIndex);
 					}
 
-					MethodInfo[] availMethods = memberType.GetMethods(ReflectionHelper.BindAll).Where(
+					MethodInfo[] availMethods = memberType.GetRuntimeMethods().Where(
 						m => m.Name == methodName && 
 						m.GetGenericArguments().Length == genMethodArgs &&
 						m.GetParameters().Length == paramTypes.Length).ToArray();
@@ -395,9 +408,10 @@ namespace Duality.Editor
 
 			return null;
 		}
-		private static Type ResolveDocStyleType(string typeString, MethodInfo declaringMethod = null)
+		private static TypeInfo ResolveDocStyleType(string typeString, MethodInfo declaringMethod = null)
 		{
-			return ReflectionHelper.ResolveType(ConvertFromDocStyleType(typeString), declaringMethod);
+			Type type = ReflectionHelper.ResolveType(ConvertFromDocStyleType(typeString), declaringMethod);
+			return type != null ? type.GetTypeInfo() : null;
 		}
 		private static string ConvertFromDocStyleType(string typeString)
 		{
