@@ -57,7 +57,6 @@ namespace Duality.Tests.Serialization
 			ConstructorInfo constructorInfo = typeInfo.DeclaredConstructors.FirstOrDefault();
 
 			this.TestWriteRead(type,			this.PrimaryFormat);
-			this.TestWriteRead(typeInfo,		this.PrimaryFormat);
 			this.TestWriteRead(fieldInfo,		this.PrimaryFormat);
 			this.TestWriteRead(propertyInfo,	this.PrimaryFormat);
 			this.TestWriteRead(methodInfo,		this.PrimaryFormat);

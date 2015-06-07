@@ -419,7 +419,7 @@ namespace Duality.Serialization
 
 			// Check whether the object is expected to be serialized
 			if (dataType != DataType.ObjectRef &&
-				objSerializeType.Type.HasAttributeCached<DontSerializeAttribute>() && 
+				!objSerializeType.IsSerializable && 
 				!typeof(ISerializeExplicit).IsAssignableFrom(objSerializeType.Type) &&
 				GetSurrogateFor(objSerializeType.Type) == null) 
 			{

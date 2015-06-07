@@ -9,12 +9,14 @@ namespace Duality.Serialization
 	/// The SerializeType class is essentially caching serialization-relevant information
 	/// that has been generated basing on a <see cref="System.Type"/>.
 	/// </summary>
+	[DontSerialize]
 	public sealed class SerializeType
 	{
 		private	TypeInfo	type;
 		private	FieldInfo[]	fields;
 		private	string		typeString;
 		private	DataType	dataType;
+		private bool		dontSerialize;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Type"/> that is described.
@@ -46,6 +48,13 @@ namespace Duality.Serialization
 			get { return this.dataType; }
 		}
 		/// <summary>
+		/// [GET] Returns whether objects of this Type are viable for serialization. 
+		/// </summary>
+		public bool IsSerializable
+		{
+			get { return !this.dontSerialize; }
+		}
+		/// <summary>
 		/// [GET] Returns whether object of this Type can be referenced by other serialized objects.
 		/// </summary>
 		public bool CanBeReferenced
@@ -68,6 +77,9 @@ namespace Duality.Serialization
 		{
 			this.type = t.GetTypeInfo();
 			this.dataType = GetDataType(this.type);
+			this.typeString = this.type.GetTypeId();
+			this.dontSerialize = this.type.HasAttributeCached<DontSerializeAttribute>();
+
 			if (this.dataType == DataType.Struct)
 			{
 				// Retrieve all fields that are not flagged not to be serialized
@@ -86,13 +98,12 @@ namespace Duality.Serialization
 
 				// Store the filtered fields in a fixed form
 				this.fields = filteredFields.ToArray();
+				this.fields.StableSort((a, b) => string.Compare(a.Name, b.Name));
 			}
 			else
 			{
 				this.fields = new FieldInfo[0];
 			}
-			this.typeString = this.type.GetTypeId();
-			this.fields.StableSort((a, b) => string.Compare(a.Name, b.Name));
 		}
 
 		private static DataType GetDataType(Type t)
