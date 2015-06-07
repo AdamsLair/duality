@@ -927,8 +927,29 @@ namespace Duality
 		{
 			string[] token = memberString.Split(':');
 
-			TypeInfo declaringType = token.Length > 1 ? ResolveType(token[1], asmSearch, null).GetTypeInfo() : null;
-			char memberTypeToken = (token.Length > 0 && token[0].Length > 0) ? token[0][0] : MemberTokenUndefined;
+			char memberTypeToken;
+			TypeInfo declaringType;
+
+			// If there is no member type token, it is actually a type id.
+			if (token.Length == 1)
+			{
+				Type type = ResolveType(token[0], asmSearch, null);
+				declaringType = type != null ? type.GetTypeInfo() : null;
+				memberTypeToken = MemberTokenTypeInfo;
+			}
+			// Otherwise, determine the member type using the member type token
+			else if (token.Length > 1)
+			{
+				Type type = ResolveType(token[1], asmSearch, null);
+				declaringType = type != null ? type.GetTypeInfo() : null;
+				memberTypeToken = (token[0].Length > 0) ? token[0][0] : MemberTokenUndefined;
+			}
+			// If we have nothing (empty string, etc.), fail
+			else
+			{
+				declaringType = null;
+				memberTypeToken = MemberTokenUndefined;
+			}
 
 			if (declaringType != null && memberTypeToken != ' ')
 			{

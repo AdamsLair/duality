@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.IO;
@@ -45,6 +46,22 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(rnd.NextDouble(),		this.PrimaryFormat);
 			this.TestWriteRead(rnd.Next().ToString(),	this.PrimaryFormat);
 			this.TestWriteRead((SomeEnum)rnd.Next(10),	this.PrimaryFormat);
+		}
+		[Test] public void SerializeMemberInfo()
+		{
+			Type type = typeof(Dictionary<string,int>);
+			TypeInfo typeInfo = type.GetTypeInfo();
+			FieldInfo fieldInfo = typeInfo.GetRuntimeFields().FirstOrDefault();
+			PropertyInfo propertyInfo = typeInfo.GetRuntimeProperties().FirstOrDefault();
+			MethodInfo methodInfo = typeInfo.GetRuntimeMethods().FirstOrDefault();
+			ConstructorInfo constructorInfo = typeInfo.DeclaredConstructors.FirstOrDefault();
+
+			this.TestWriteRead(type,			this.PrimaryFormat);
+			this.TestWriteRead(typeInfo,		this.PrimaryFormat);
+			this.TestWriteRead(fieldInfo,		this.PrimaryFormat);
+			this.TestWriteRead(propertyInfo,	this.PrimaryFormat);
+			this.TestWriteRead(methodInfo,		this.PrimaryFormat);
+			this.TestWriteRead(constructorInfo,	this.PrimaryFormat);
 		}
 		[Test] public void SerializeFlatStruct()
 		{

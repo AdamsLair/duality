@@ -115,11 +115,10 @@ namespace Duality.Serialization
 				else if (t == typeof(double))	return DataType.Double;
 				else if (t == typeof(decimal))	return DataType.Decimal;
 			}
+			else if (typeof(Type).IsAssignableFrom(t))
+				return DataType.Type;
 			else if (typeof(MemberInfo).IsAssignableFrom(t))
-			{
-				if		(typeof(Type).IsAssignableFrom(t))			return DataType.Type;
-				else if (typeof(MemberInfo).IsAssignableFrom(t))	return DataType.MemberInfo;
-			}
+				return DataType.MemberInfo;
 			else if (typeof(Delegate).IsAssignableFrom(t))
 				return DataType.Delegate;
 			else if (t == typeof(string))
