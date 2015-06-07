@@ -206,8 +206,8 @@ namespace Duality.Serialization
 		{
 			Array objAsArray = obj as Array;
 
-			if (objAsArray.Rank != 1) throw new ArgumentException("Non single-Rank arrays are not supported");
-			if (objAsArray.GetLowerBound(0) != 0) throw new ArgumentException("Non zero-based arrays are not supported");
+			if (objAsArray.Rank != 1) throw new NotSupportedException("Non single-Rank arrays are not supported");
+			if (objAsArray.GetLowerBound(0) != 0) throw new NotSupportedException("Non zero-based arrays are not supported");
 
 			if (objAsArray is byte[])
 			{
