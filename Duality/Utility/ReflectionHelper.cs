@@ -17,6 +17,14 @@ namespace Duality
 	/// </summary>
 	public static class ReflectionHelper
 	{
+		private const char MemberTokenUndefined			= 'U';
+		private const char MemberTokenTypeInfo			= 'T';
+		private const char MemberTokenFieldInfo			= 'F';
+		private const char MemberTokenPropertyInfo		= 'P';
+		private const char MemberTokenEventInfo			= 'E';
+		private const char MemberTokenMethodInfo		= 'M';
+		private const char MemberTokenConstructorInfo	= 'C';
+
 		private delegate object ObjectActivator();
 
 		private	static	readonly	ObjectActivator			nullObjectActivator			= () => null;
@@ -730,23 +738,42 @@ namespace Duality
 		/// <returns></returns>
 		public static string GetMemberId(this MemberInfo member)
 		{
-			if (member is Type) return "T:" + GetTypeId(member as Type);
+			if (member is Type)
+				return MemberTokenTypeInfo + ":" + GetTypeId(member as Type);
+			if (member is TypeInfo)
+				return MemberTokenTypeInfo + ":" + GetTypeId((member as TypeInfo).AsType());
+
 			string declType = member.DeclaringType.GetTypeId();
 
 			FieldInfo field = member as FieldInfo;
-			if (field != null) return "F:" + declType + ':' + field.Name;
+			if (field != null)
+				return MemberTokenFieldInfo + ":" + declType + ':' + field.Name;
 
 			EventInfo ev = member as EventInfo;
-			if (ev != null) return "E:" + declType + ':' + ev.Name;
+			if (ev != null)
+				return MemberTokenEventInfo + ":" + declType + ':' + ev.Name;
 
 			PropertyInfo property = member as PropertyInfo;
 			if (property != null)
 			{
 				ParameterInfo[] parameters = property.GetIndexParameters();
 				if (parameters.Length == 0)
-					return "P:" + declType + ':' + property.Name;
+					return MemberTokenPropertyInfo + ":" + declType + ':' + property.Name;
 				else
-					return "P:" + declType + ':' + property.Name + '(' + parameters.ToString(p => p.ParameterType.GetTypeId(), ",") + ')';
+					return MemberTokenPropertyInfo + ":" + declType + ':' + property.Name + '(' + parameters.ToString(p => p.ParameterType.GetTypeId(), ",") + ')';
+			}
+
+			ConstructorInfo ctor = member as ConstructorInfo;
+			if (ctor != null)
+			{
+				ParameterInfo[] parameters = ctor.GetParameters();
+
+				string result = MemberTokenConstructorInfo + ":" + declType + ':' + (ctor.IsStatic ? "s" : "i");
+
+				if (parameters.Length != 0)
+					result += '(' + parameters.ToString(p => p.ParameterType.GetTypeId(), ", ") + ')';
+
+				return result;
 			}
 
 			MethodInfo method = member as MethodInfo;
@@ -755,7 +782,7 @@ namespace Duality
 				ParameterInfo[] parameters = method.GetParameters();
 				Type[] genArgs = method.GetGenericArguments();
 
-				string result = "M:" + declType + ':' + method.Name;
+				string result = MemberTokenMethodInfo + ":" + declType + ':' + method.Name;
 				
 				if (genArgs.Length != 0)
 				{
@@ -766,19 +793,6 @@ namespace Duality
 				}
 				if (parameters.Length != 0)
 					result += '(' + parameters.ToString(p => p.ParameterType.GetTypeId(), ",") + ')';
-
-				return result;
-			}
-
-			ConstructorInfo ctor = member as ConstructorInfo;
-			if (ctor != null)
-			{
-				ParameterInfo[] parameters = ctor.GetParameters();
-
-				string result = "C:" + declType + ':' + (ctor.IsStatic ? "s" : "i");
-
-				if (parameters.Length != 0)
-					result += '(' + parameters.ToString(p => p.ParameterType.GetTypeId(), ", ") + ')';
 
 				return result;
 			}
@@ -927,32 +941,20 @@ namespace Duality
 			string[] token = memberString.Split(':');
 
 			Type declaringType = token.Length > 1 ? ResolveType(token[1], asmSearch, null) : null;
-			MemberTypes memberType = MemberTypes.Custom;
-			if (token.Length > 0)
-			{
-				switch (token[0][0])
-				{
-					case 'T':	memberType = MemberTypes.TypeInfo;		break;
-					case 'M':	memberType = MemberTypes.Method;		break;
-					case 'F':	memberType = MemberTypes.Field;			break;
-					case 'E':	memberType = MemberTypes.Event;			break;
-					case 'C':	memberType = MemberTypes.Constructor;	break;
-					case 'P':	memberType = MemberTypes.Property;		break;
-				}
-			}
+			char memberTypeToken = (token.Length > 0 && token[0].Length > 0) ? token[0][0] : MemberTokenUndefined;
 
-			if (declaringType != null && memberType != MemberTypes.Custom)
+			if (declaringType != null && memberTypeToken != ' ')
 			{
-				if (memberType == MemberTypes.TypeInfo)
+				if (memberTypeToken == MemberTokenTypeInfo)
 				{
 					return declaringType;
 				}
-				else if (memberType == MemberTypes.Field)
+				else if (memberTypeToken == MemberTokenFieldInfo)
 				{
 					MemberInfo member = declaringType.GetField(token[2], BindAll);
 					if (member != null) return member;
 				}
-				else if (memberType == MemberTypes.Event)
+				else if (memberTypeToken == MemberTokenEventInfo)
 				{
 					MemberInfo member = declaringType.GetEvent(token[2], BindAll);
 					if (member != null) return member;
@@ -966,7 +968,7 @@ namespace Duality
 					string memberName = memberParamListStartIndex != -1 ? token[2].Substring(0, memberParamListStartIndex) : token[2];
 					Type[] memberParamTypes = memberParams.Select(p => ResolveType(p, asmSearch, null)).ToArray();
 
-					if (memberType == MemberTypes.Constructor)
+					if (memberTypeToken == MemberTokenConstructorInfo)
 					{
 						ConstructorInfo[] availCtors = declaringType.GetConstructors(memberName == "s" ? BindStaticAll : BindInstanceAll).Where(
 							m => m.GetParameters().Length == memberParams.Length).ToArray();
@@ -986,7 +988,7 @@ namespace Duality
 							if (possibleMatch) return ctor;
 						}
 					}
-					else if (memberType == MemberTypes.Property)
+					else if (memberTypeToken == MemberTokenPropertyInfo)
 					{
 						PropertyInfo[] availProps = declaringType.GetProperties(BindAll).Where(
 							m => m.Name == memberName && 
