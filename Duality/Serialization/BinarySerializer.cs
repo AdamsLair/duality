@@ -40,6 +40,7 @@ namespace Duality.Serialization
 
 		
 		private	const	string	HeaderId	= "BinaryFormatterHeader";
+		private	const	ushort	MinVersion	= 3;
 		private	const	ushort	Version		= 3;
 
 
@@ -619,24 +620,13 @@ namespace Duality.Serialization
 				TypeDataLayout layout	= this.ReadTypeDataLayout(header.TypeString);
 
 				// Read fields
-				if (this.dataVersion <= 2)
+				bool[] fieldOmitted = new bool[layout.Fields.Length];
+				this.ReadArrayData(fieldOmitted);
+				for (int i = 0; i < layout.Fields.Length; i++)
 				{
-					for (int i = 0; i < layout.Fields.Length; i++)
-					{
-						object fieldValue = this.ReadObjectData();
-						this.AssignValueToField(header.SerializeType, obj, layout.Fields[i].name, fieldValue);
-					}
-				}
-				else if (this.dataVersion >= 3)
-				{
-					bool[] fieldOmitted = new bool[layout.Fields.Length];
-					this.ReadArrayData(fieldOmitted);
-					for (int i = 0; i < layout.Fields.Length; i++)
-					{
-						if (fieldOmitted[i]) continue;
-						object fieldValue = this.ReadObjectData();
-						this.AssignValueToField(header.SerializeType, obj, layout.Fields[i].name, fieldValue);
-					}
+					if (fieldOmitted[i]) continue;
+					object fieldValue = this.ReadObjectData();
+					this.AssignValueToField(header.SerializeType, obj, layout.Fields[i].name, fieldValue);
 				}
 			}
 
@@ -657,116 +647,15 @@ namespace Duality.Serialization
 
 			try
 			{
-				#region Version 1
-				if (this.dataVersion <= 1)
+				if (header.DataType == DataType.Type)
 				{
-					if (header.DataType == DataType.Type)
-					{
-						string typeString = this.reader.ReadString();
-						Type type = this.ResolveType(typeString);
-						result = type;
-					}
-					else if (header.DataType == DataType.FieldInfo)
-					{
-						bool isStatic = this.reader.ReadBoolean();
-						string declaringTypeString = this.reader.ReadString();
-						string fieldName = this.reader.ReadString();
-
-						Type declaringType = this.ResolveType(declaringTypeString);
-						FieldInfo field = declaringType.GetField(fieldName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll);
-						result = field;
-					}
-					else if (header.DataType == DataType.PropertyInfo)
-					{
-						bool isStatic = this.reader.ReadBoolean();
-						string declaringTypeString = this.reader.ReadString();
-						string propertyName = this.reader.ReadString();
-						string propertyTypeString = this.reader.ReadString();
-
-						int paramCount = this.reader.ReadInt32();
-						string[] paramTypeStrings = new string[paramCount];
-						for (int i = 0; i < paramCount; i++)
-							paramTypeStrings[i] = this.reader.ReadString();
-
-						Type declaringType = this.ResolveType(declaringTypeString);
-						Type propertyType = this.ResolveType(propertyTypeString);
-						Type[] paramTypes = new Type[paramCount];
-						for (int i = 0; i < paramCount; i++)
-							paramTypes[i] = this.ResolveType(paramTypeStrings[i]);
-
-						PropertyInfo property = declaringType.GetProperty(
-							propertyName, 
-							isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll, 
-							null, 
-							propertyType, 
-							paramTypes, 
-							null);
-
-						result = property;
-					}
-					else if (header.DataType == DataType.MethodInfo)
-					{
-						bool isStatic = this.reader.ReadBoolean();
-						string declaringTypeString = this.reader.ReadString();
-						string methodName = this.reader.ReadString();
-
-						int paramCount = this.reader.ReadInt32();
-						string[] paramTypeStrings = new string[paramCount];
-						for (int i = 0; i < paramCount; i++)
-							paramTypeStrings[i] = this.reader.ReadString();
-
-						Type declaringType = this.ResolveType(declaringTypeString);
-						Type[] paramTypes = new Type[paramCount];
-						for (int i = 0; i < paramCount; i++)
-							paramTypes[i] = this.ResolveType(paramTypeStrings[i]);
-
-						MethodInfo method = declaringType.GetMethod(methodName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll, null, paramTypes, null);
-						result = method;
-					}
-					else if (header.DataType == DataType.ConstructorInfo)
-					{
-						bool isStatic = this.reader.ReadBoolean();
-						string declaringTypeString = this.reader.ReadString();
-
-						int paramCount = this.reader.ReadInt32();
-						string[] paramTypeStrings = new string[paramCount];
-						for (int i = 0; i < paramCount; i++)
-							paramTypeStrings[i] = this.reader.ReadString();
-
-						Type declaringType = this.ResolveType(declaringTypeString);
-						Type[] paramTypes = new Type[paramCount];
-						for (int i = 0; i < paramCount; i++)
-							paramTypes[i] = this.ResolveType(paramTypeStrings[i]);
-
-						ConstructorInfo method = declaringType.GetConstructor(isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll, null, paramTypes, null);
-						result = method;
-					}
-					else if (header.DataType == DataType.EventInfo)
-					{
-						bool isStatic = this.reader.ReadBoolean();
-						string declaringTypeString = this.reader.ReadString();
-						string eventName = this.reader.ReadString();
-
-						Type declaringType = this.ResolveType(declaringTypeString);
-						EventInfo e = declaringType.GetEvent(eventName, isStatic ? ReflectionHelper.BindStaticAll : ReflectionHelper.BindInstanceAll);
-						result = e;
-					}
-					else
-						throw new ApplicationException(string.Format("Invalid DataType '{0}' in ReadMemberInfo method.", header.DataType));
+					string typeString = this.reader.ReadString();
+					result = this.ResolveType(typeString, header.ObjectId);
 				}
-				#endregion
-				else if (this.dataVersion >= 2)
+				else
 				{
-					if (header.DataType == DataType.Type)
-					{
-						string typeString = this.reader.ReadString();
-						result = this.ResolveType(typeString, header.ObjectId);
-					}
-					else
-					{
-						string memberString = this.reader.ReadString();
-						result = this.ResolveMember(memberString, header.ObjectId);
-					}
+					string memberString = this.reader.ReadString();
+					result = this.ResolveMember(memberString, header.ObjectId);
 				}
 			}
 			catch (Exception e)
@@ -852,7 +741,9 @@ namespace Duality.Serialization
 			{
 				string headerId = this.reader.ReadString();
 				if (headerId != HeaderId) throw new ApplicationException("Header ID does not match.");
+
 				this.dataVersion = this.reader.ReadUInt16();
+				if (this.dataVersion < MinVersion) throw new NotSupportedException(string.Format("Binary data version {0} is below minimum version {1}", this.dataVersion, MinVersion));
 
 				// Create "Safe zone" for additional data
 				long lastPos = this.reader.BaseStream.Position;

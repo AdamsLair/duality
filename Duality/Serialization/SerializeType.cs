@@ -117,12 +117,8 @@ namespace Duality.Serialization
 			}
 			else if (typeof(MemberInfo).IsAssignableFrom(t))
 			{
-				if		(typeof(Type).IsAssignableFrom(t))				return DataType.Type;
-				else if (typeof(FieldInfo).IsAssignableFrom(t))			return DataType.FieldInfo;
-				else if (typeof(PropertyInfo).IsAssignableFrom(t))		return DataType.PropertyInfo;
-				else if (typeof(MethodInfo).IsAssignableFrom(t))		return DataType.MethodInfo;
-				else if (typeof(ConstructorInfo).IsAssignableFrom(t))	return DataType.ConstructorInfo;
-				else if (typeof(EventInfo).IsAssignableFrom(t))			return DataType.EventInfo;
+				if		(typeof(Type).IsAssignableFrom(t))			return DataType.Type;
+				else if (typeof(MemberInfo).IsAssignableFrom(t))	return DataType.MemberInfo;
 			}
 			else if (typeof(Delegate).IsAssignableFrom(t))
 				return DataType.Delegate;

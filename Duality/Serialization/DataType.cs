@@ -75,25 +75,9 @@ namespace Duality.Serialization
 		/// </summary>
 		Type = 14,
 		/// <summary>
-		/// A <see cref="System.Reflection.FieldInfo"/> value
+		/// A <see cref="System.Reflection.MemberInfo"/> value
 		/// </summary>
-		FieldInfo = 15,
-		/// <summary>
-		/// A <see cref="System.Reflection.PropertyInfo"/> value
-		/// </summary>
-		PropertyInfo = 16,
-		/// <summary>
-		/// A <see cref="System.Reflection.MethodInfo"/> value
-		/// </summary>
-		MethodInfo = 17,
-		/// <summary>
-		/// A <see cref="System.Reflection.ConstructorInfo"/> value
-		/// </summary>
-		ConstructorInfo = 18,
-		/// <summary>
-		/// A <see cref="System.Reflection.EventInfo"/> value
-		/// </summary>
-		EventInfo = 19,
+		MemberInfo = 27,
 
 		/// <summary>
 		/// A <see cref="System.Delegate"/> value
@@ -140,7 +124,11 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		public static bool IsMemberInfoType(this DataType dt)
 		{
-			return (ushort)dt >= (ushort)DataType.Type && (ushort)dt <= (ushort)DataType.EventInfo;
+			return 
+				dt == DataType.Type || 
+				dt == DataType.MemberInfo ||
+				// Legacy support for the time where there were individual DataTypes for MemberInfos, ranging from 14 (Type) to 19 (EventInfo). Written 2015-06-07.
+				((ushort)dt >= 14 && (ushort)dt <= 19);
 		}
 		/// <summary>
 		/// Returns whether the specified <see cref="DataType"/> requires an explicit type name during serialization.
@@ -173,18 +161,14 @@ namespace Duality.Serialization
 				case DataType.Bool:				return typeof(bool);
 				case DataType.Byte:				return typeof(byte);
 				case DataType.Char:				return typeof(char);
-				case DataType.ConstructorInfo:	return typeof(ConstructorInfo);
 				case DataType.Decimal:			return typeof(decimal);
 				case DataType.Delegate:			return typeof(Delegate);
 				case DataType.Double:			return typeof(double);
-				case DataType.EventInfo:		return typeof(EventInfo);
-				case DataType.FieldInfo:		return typeof(FieldInfo);
 				case DataType.Float:			return typeof(float);
 				case DataType.Int:				return typeof(int);
 				case DataType.Long:				return typeof(long);
-				case DataType.MethodInfo:		return typeof(MethodInfo);
+				case DataType.MemberInfo:		return typeof(MemberInfo);
 				case DataType.ObjectRef:		return typeof(object);
-				case DataType.PropertyInfo:		return typeof(PropertyInfo);
 				case DataType.SByte:			return typeof(sbyte);
 				case DataType.Short:			return typeof(short);
 				case DataType.String:			return typeof(string);

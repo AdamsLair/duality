@@ -339,6 +339,12 @@ namespace Duality.Serialization
 			{
 				if (dataTypeStr == "Class") // Legacy support (Written 2014-03-10)
 					dataType = DataType.Struct;
+				if (dataTypeStr == "MethodInfo" || // Legacy support (Written 2015-06-07)
+					dataTypeStr == "ConstructorInfo" ||
+					dataTypeStr == "PropertyInfo" ||
+					dataTypeStr == "FieldInfo" ||
+					dataTypeStr == "EventInfo")
+					dataType = DataType.MemberInfo;
 				else 
 					dataType = DataType.Unknown;
 			}
