@@ -189,33 +189,7 @@ namespace Duality
 			}
 			return true;
 		}
-		/// <summary>
-		/// Returns a Types inheritance level. The <c>object</c>-Type has an inheritance level of
-		/// zero, each subsequent inheritance increases it by one.
-		/// </summary>
-		/// <param name="t"></param>
-		/// <returns></returns>
-		public static int GetTypeHierarchyLevel(this Type t)
-		{
-			int level = 0;
-			while (t.BaseType != null) { t = t.BaseType; level++; }
-			return level;
-		}
 
-		/// <summary>
-		/// Returns all fields matching the specified bindingflags, even if private and inherited.
-		/// </summary>
-		/// <param name="flags"></param>
-		/// <returns></returns>
-		public static List<FieldInfo> GetAllFields(this Type type, BindingFlags flags)
-		{
-			List<FieldInfo> result = new List<FieldInfo>();
-
-			do { result.AddRange(type.GetFields(flags | BindingFlags.DeclaredOnly)); }
-			while ((type = type.BaseType) != null);
-
-			return result;
-		}
 		/// <summary>
 		/// Returns all custom attributes of the specified Type that are attached to the specified member.
 		/// Inherites attributes are returned as well. This method is usually faster than <see cref="Attribute.GetCustomAttributes"/>,
@@ -292,7 +266,7 @@ namespace Duality
 		{
 			if (obj == null) return obj;
 			if (visitedGraph.Contains(obj)) return obj;
-			Type objType = obj.GetType();
+			TypeInfo objType = obj.GetType().GetTypeInfo();
 
 			// Visit object
 			if (objType.IsClass) visitedGraph.Add(obj);
@@ -341,9 +315,11 @@ namespace Duality
 			else
 			{
 				// Explore fields
-				var fields = objType.GetAllFields(BindInstanceAll);
+				var fields = objType.DeclaredFieldsDeep();
 				foreach (FieldInfo field in fields)
 				{
+					if (field.IsStatic) continue;
+
 					object val = field.GetValue(obj);
 					val = VisitObjectsDeep<T>(val, visitor, stopAtTarget, visitedGraph, exploreTypeCache);
 					if (!objType.IsClass || typeof(T).IsAssignableFrom(field.FieldType)) field.SetValue(obj, val);
@@ -363,10 +339,16 @@ namespace Duality
 					explore = true;
 
 				// Don't explore primitives
-				else if (variableType.IsPrimitiveExt())
+				else if (variableType.IsPrimitive)
+					explore = false;
+				else if (variableType.IsEnum)
 					explore = false;
 
 				// Some hardcoded early-outs for well known types
+				else if (variableType == typeof(decimal))
+					explore = false;
+				else if (variableType == typeof(string))
+					explore = false;
 				else if (typeof(MemberInfo).IsAssignableFrom(variableType))
 					explore = false;
 				else if (typeof(Delegate).IsAssignableFrom(variableType))
@@ -390,7 +372,8 @@ namespace Duality
 					// Check referred fields
 					else
 					{
-						explore = variableType.GetAllFields(BindInstanceAll).Any(f => 
+						explore = variableType.GetTypeInfo().DeclaredFieldsDeep().Any(f => 
+							!f.IsStatic &&
 							!string.Equals(f.Name, "_syncRoot", StringComparison.InvariantCultureIgnoreCase) && 
 							VisitObjectsDeep_ExploreType(searchForType, f.FieldType, exploreTypeCache));
 					}
@@ -410,10 +393,11 @@ namespace Duality
 		public static bool CleanEventBindings(object targetObject, Assembly invalidAssembly)
 		{
 			bool cleanedAny = false;
-			Type targetType = targetObject.GetType();
-			List<FieldInfo> targetFields = targetType.GetAllFields(BindInstanceAll);
+			TypeInfo targetType = targetObject.GetType().GetTypeInfo();
+			IEnumerable<FieldInfo> targetFields = targetType.DeclaredFieldsDeep();
 			foreach (FieldInfo field in targetFields)
 			{
+				if (field.IsStatic) continue;
 				if (typeof(Delegate).IsAssignableFrom(field.FieldType))
 				{
 					Delegate delOld = field.GetValue(targetObject) as Delegate;
@@ -437,9 +421,10 @@ namespace Duality
 		public static bool CleanEventBindings(Type targetType, Assembly invalidAssembly)
 		{
 			bool cleanedAny = false;
-			List<FieldInfo> targetFields = targetType.GetAllFields(BindStaticAll);
+			IEnumerable<FieldInfo> targetFields = targetType.GetTypeInfo().DeclaredFieldsDeep();
 			foreach (FieldInfo field in targetFields)
 			{
+				if (!field.IsStatic) continue;
 				if (typeof(Delegate).IsAssignableFrom(field.FieldType))
 				{
 					Delegate delOld = field.GetValue(null) as Delegate;
@@ -505,17 +490,26 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Returns whether the specified type doesn't contain any non-byvalue contents and thus can be cloned by assignment. 
-		/// This is typically the case for any primitive types or types being constructed only of primitive and shallow types.
+		/// Returns whether the specified type is a primitive, enum, string, decimal, or struct that
+		/// consists only of those types.
 		/// </summary>
 		/// <param name="baseObj"></param>
 		/// <returns></returns>
 		public static bool IsPlainOldData(this Type type)
 		{
+			// Early-out for some obvious cases
 			if (type.IsArray) return false;
-			if (type.IsPrimitiveExt()) return true;
+			if (type.IsPrimitive) return true;
+			if (type.IsEnum) return true;
+
+			// Special cases for some well-known classes
+			if (type == typeof(string)) return true;
+			if (type == typeof(decimal)) return true;
+
+			// Otherwise, any class is not plain old data
 			if (type.IsClass) return false;
 
+			// If we have no evidence so far, check the cache and iterate fields
 			bool isPlainOldData;
 			if (plainOldDataTypeCache.TryGetValue(type, out isPlainOldData))
 			{
@@ -524,8 +518,9 @@ namespace Duality
 			else
 			{
 				isPlainOldData = true;
-				foreach (FieldInfo field in type.GetAllFields(ReflectionHelper.BindInstanceAll))
+				foreach (FieldInfo field in type.GetTypeInfo().DeclaredFieldsDeep())
 				{
+					if (field.IsStatic) continue;
 					if (!IsPlainOldData(field.FieldType))
 					{
 						isPlainOldData = false;
@@ -536,34 +531,7 @@ namespace Duality
 				return isPlainOldData;
 			}
 		}
-		/// <summary>
-		/// Returns whether the specified Type acts as a primitive. Unline <see cref="System.Type.IsPrimitive"/>, this method
-		/// also returns true for Enums, Strings and Decimals.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		public static bool IsPrimitiveExt(this Type type)
-		{
-			if (type.IsPrimitive) return true;
-			if (type.IsEnum) return true;
-			if (type == typeof(string)) return true;
-			if (type == typeof(decimal)) return true;
 
-			return false;
-		}
-
-		/// <summary>
-		/// Clears the ReflectionHelpers Type cache.
-		/// </summary>
-		internal static void ClearTypeCache()
-		{
-			createInstanceMethodCache.Clear();
-			typeResolveCache.Clear();
-			memberResolveCache.Clear();
-			plainOldDataTypeCache.Clear();
-			resRefCache.Clear();
-			customMemberAttribCache.Clear();
-		}
 		/// <summary>
 		/// Resolves a Type based on its <see cref="GetTypeId">type id</see>.
 		/// </summary>
@@ -573,19 +541,6 @@ namespace Duality
 		public static Type ResolveType(string typeString, MethodInfo declaringMethod = null)
 		{
 			return ResolveType(typeString, null, declaringMethod);
-		}
-		private static Type ResolveType(string typeString, IEnumerable<Assembly> searchAsm, MethodInfo declaringMethod)
-		{
-			if (typeString == null) return null;
-
-			Type result;
-			if (typeResolveCache.TryGetValue(typeString, out result)) return result;
-
-			if (searchAsm == null) searchAsm = AppDomain.CurrentDomain.GetAssemblies().Except(DualityApp.DisposedPlugins).ToArray();
-			result = FindType(typeString, searchAsm, declaringMethod);
-			if (result != null && declaringMethod == null) typeResolveCache[typeString] = result;
-
-			return result;
 		}
 		/// <summary>
 		/// Resolves a Member based on its <see cref="GetMemberId">member id</see>.
@@ -633,16 +588,6 @@ namespace Duality
 			return assemblyName.Split(',')[0];
 		}
 
-		/// <summary>
-		/// Returns a Types keyword, its "short" name. Just the types "base", no generic
-		/// type parameters or array specifications.
-		/// </summary>
-		/// <param name="T">The Type to describe</param>
-		/// <returns></returns>
-		public static string GetTypeKeyword(this Type T)
-		{
-			return T.Name.Split(new[] {'`'}, StringSplitOptions.RemoveEmptyEntries)[0].Replace('+', '.');
-		}
 		/// <summary>
 		/// Returns a string describing a certain Type.
 		/// </summary>
@@ -799,13 +744,66 @@ namespace Duality
 
 			throw new NotSupportedException(string.Format("Member Type '{0} not supported", Log.Type(member.GetType())));
 		}
+
 		/// <summary>
-		/// Retrieves a Type based on a <see cref="GetTypeId">type id</see> string.
+		/// Performs a selective split operation on the specified string. Intended to be used on hierarchial argument lists.
 		/// </summary>
-		/// <param name="typeName">The type id to use for the search.</param>
-		/// <param name="asmSearch">An enumeration of all Assemblies the searched Type could be located in.</param>
-		/// <param name="declaringMethod">The generic method that is declaring the Type. Only necessary when resolving a generic methods parameter Type.</param>
+		/// <param name="argList">The argument list to split.</param>
+		/// <param name="pushLevel">The char that increases the current hierarchy level.</param>
+		/// <param name="popLevel">The char that decreases the current hierarchy level.</param>
+		/// <param name="separator">The char that separates two arguments.</param>
+		/// <param name="splitLevel">The hierarchy level at which to perform the split operation.</param>
 		/// <returns></returns>
+		public static string[] SplitArgs(string argList, char pushLevel, char popLevel, char separator, int splitLevel)
+		{
+			if (argList == null) return new string[0];
+
+			// Splitting the parameter list without destroying generic arguments
+			int lastSplitIndex = -1;
+			int genArgLevel = 0;
+			List<string> ptm = new List<string>();
+			for (int i = 0; i < argList.Length; i++)
+			{
+				if (argList[i] == separator && genArgLevel == splitLevel)
+				{
+					ptm.Add(argList.Substring(lastSplitIndex + 1, i - lastSplitIndex - 1));
+					lastSplitIndex = i;
+				}
+				else if (argList[i] == pushLevel)
+					genArgLevel++;
+				else if (argList[i] == popLevel)
+					genArgLevel--;
+			}
+			ptm.Add(argList.Substring(lastSplitIndex + 1, argList.Length - lastSplitIndex - 1));
+			return ptm.ToArray();
+		}
+		
+		/// <summary>
+		/// Clears the ReflectionHelpers Type cache.
+		/// </summary>
+		internal static void ClearTypeCache()
+		{
+			createInstanceMethodCache.Clear();
+			typeResolveCache.Clear();
+			memberResolveCache.Clear();
+			plainOldDataTypeCache.Clear();
+			resRefCache.Clear();
+			customMemberAttribCache.Clear();
+		}
+
+		private static Type ResolveType(string typeString, IEnumerable<Assembly> searchAsm, MethodInfo declaringMethod)
+		{
+			if (typeString == null) return null;
+
+			Type result;
+			if (typeResolveCache.TryGetValue(typeString, out result)) return result;
+
+			if (searchAsm == null) searchAsm = AppDomain.CurrentDomain.GetAssemblies().Except(DualityApp.DisposedPlugins).ToArray();
+			result = FindType(typeString, searchAsm, declaringMethod);
+			if (result != null && declaringMethod == null) typeResolveCache[typeString] = result;
+
+			return result;
+		}
 		private static Type FindType(string typeName, IEnumerable<Assembly> asmSearch, MethodInfo declaringMethod = null)
 		{
 			typeName = typeName.Trim();
@@ -929,18 +927,11 @@ namespace Duality
 
 			return baseType;
 		}
-		/// <summary>
-		/// Retrieves a MemberInfo based on a <see cref="GetMemberId">member id</see>.
-		/// </summary>
-		/// <param name="typeName">The member string to use for the search.</param>
-		/// <param name="asmSearch">An enumeration of all Assemblies the searched Type could be located in.</param>
-		/// <returns></returns>
-		/// <seealso cref="GetMemberId(MemberInfo)"/>
 		private static MemberInfo FindMember(string memberString, IEnumerable<Assembly> asmSearch)
 		{
 			string[] token = memberString.Split(':');
 
-			Type declaringType = token.Length > 1 ? ResolveType(token[1], asmSearch, null) : null;
+			TypeInfo declaringType = token.Length > 1 ? ResolveType(token[1], asmSearch, null).GetTypeInfo() : null;
 			char memberTypeToken = (token.Length > 0 && token[0].Length > 0) ? token[0][0] : MemberTokenUndefined;
 
 			if (declaringType != null && memberTypeToken != ' ')
@@ -1024,8 +1015,8 @@ namespace Duality
 					int genArgCount = genArgToken.Length > 0 ? int.Parse(genArgToken.Substring(0, genArgListStartIndex != -1 ? genArgListStartIndex : genArgToken.Length)) : 0;
 
 					// Select the method that fits
-					MethodInfo[] availMethods = declaringType.GetMethods(BindAll).Where(
-						m => m.Name == memberName && 
+					MethodInfo[] availMethods = declaringType.GetRuntimeMethods().Where(m => 
+						m.Name == memberName && 
 						m.GetGenericArguments().Length == genArgCount &&
 						m.GetParameters().Length == memberParams.Length).ToArray();
 					foreach (MethodInfo method in availMethods)
@@ -1051,12 +1042,6 @@ namespace Duality
 			if (MemberResolve != null) MemberResolve(null, args);
 			return args.ResolvedMember;
 		}
-		/// <summary>
-		/// Compares two Type names for equality, ignoring the plus / dot difference.
-		/// </summary>
-		/// <param name="typeNameA"></param>
-		/// <param name="typeNameB"></param>
-		/// <returns></returns>
 		private static bool IsFullTypeNameEqual(string typeNameA, string typeNameB)
 		{
 			// Not doing this for performance reasons:
@@ -1078,39 +1063,6 @@ namespace Duality
 			}
 
 			return true;
-		}
-
-		/// <summary>
-		/// Performs a selective split operation on the specified string. Intended to be used on hierarchial argument lists.
-		/// </summary>
-		/// <param name="argList">The argument list to split.</param>
-		/// <param name="pushLevel">The char that increases the current hierarchy level.</param>
-		/// <param name="popLevel">The char that decreases the current hierarchy level.</param>
-		/// <param name="separator">The char that separates two arguments.</param>
-		/// <param name="splitLevel">The hierarchy level at which to perform the split operation.</param>
-		/// <returns></returns>
-		public static string[] SplitArgs(string argList, char pushLevel, char popLevel, char separator, int splitLevel)
-		{
-			if (argList == null) return new string[0];
-
-			// Splitting the parameter list without destroying generic arguments
-			int lastSplitIndex = -1;
-			int genArgLevel = 0;
-			List<string> ptm = new List<string>();
-			for (int i = 0; i < argList.Length; i++)
-			{
-				if (argList[i] == separator && genArgLevel == splitLevel)
-				{
-					ptm.Add(argList.Substring(lastSplitIndex + 1, i - lastSplitIndex - 1));
-					lastSplitIndex = i;
-				}
-				else if (argList[i] == pushLevel)
-					genArgLevel++;
-				else if (argList[i] == popLevel)
-					genArgLevel--;
-			}
-			ptm.Add(argList.Substring(lastSplitIndex + 1, argList.Length - lastSplitIndex - 1));
-			return ptm.ToArray();
 		}
 	}
 

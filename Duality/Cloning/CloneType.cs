@@ -60,7 +60,7 @@ namespace Duality.Cloning
 			}
 		}
 
-		private	Type				type;
+		private	TypeInfo			type;
 		private	CloneType			elementType;
 		private	CloneField[]		fieldData;
 		private	bool				plainOldData;
@@ -168,7 +168,7 @@ namespace Duality.Cloning
 		/// <param name="type"></param>
 		public CloneType(Type type)
 		{
-			this.type = type;
+			this.type = type.GetTypeInfo();
 			this.plainOldData =
 				this.type.IsPlainOldData() ||
 				typeof(MemberInfo).IsAssignableFrom(this.type); /* Handle MemberInfo like POD */ 
@@ -200,8 +200,9 @@ namespace Duality.Cloning
 
 			// Retrieve field data
 			List<CloneField> fieldData = new List<CloneField>();
-			foreach (FieldInfo field in this.type.GetAllFields(ReflectionHelper.BindInstanceAll))
+			foreach (FieldInfo field in this.type.DeclaredFieldsDeep())
 			{
+				if (field.IsStatic) continue;
 				if (field.IsInitOnly) continue;
 				if (field.HasAttributeCached<ManuallyClonedAttribute>()) continue;
 				if (field.DeclaringType.HasAttributeCached<ManuallyClonedAttribute>()) continue;

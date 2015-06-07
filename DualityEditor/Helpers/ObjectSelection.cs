@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+
 using Duality;
 
 namespace Duality.Editor
@@ -269,19 +271,19 @@ namespace Duality.Editor
 			result.LocalHierarchyExpand();
 			return result;
 		}
-		public Type GetSharedType()
+		public TypeInfo GetSharedType()
 		{
 			var query = 
 				from o in this.obj
-				select new { Obj = o, Type = o.GetType() };
-			var entry = query.OrderBy(e => e.Type.GetTypeHierarchyLevel()).LastOrDefault();
+				select new { Obj = o, Type = o.GetType().GetTypeInfo() };
+			var entry = query.OrderBy(e => e.Type.GetInheritanceDepth()).LastOrDefault();
 			if (entry == null) return null;
 
-			Type t = entry.Type;
-			while (t != typeof(object) && !this.obj.All(o => t.IsInstanceOfType(o)))
-				t = t.BaseType;
+			TypeInfo sharedType = entry.Type;
+			while (sharedType != typeof(object) && !this.obj.All(o => sharedType.IsInstanceOfType(o)))
+				sharedType = sharedType.GetBaseTypeInfo();
 
-			return t;
+			return sharedType;
 		}
 		
 		protected void UpdateCategories()
@@ -322,16 +324,16 @@ namespace Duality.Editor
 		public static int GetTypeShareLevel(ObjectSelection first, ObjectSelection second)
 		{
 			if (first == null || second == null) return -1;
-			Type firstType = first.GetSharedType();
-			Type secondType = second.GetSharedType();
+			TypeInfo firstType = first.GetSharedType();
+			TypeInfo secondType = second.GetSharedType();
 			if (firstType == null || secondType == null) return -1;
-			if (firstType.GetTypeHierarchyLevel() < secondType.GetTypeHierarchyLevel()) MathF.Swap(ref firstType, ref secondType);
+			if (firstType.GetInheritanceDepth() < secondType.GetInheritanceDepth()) MathF.Swap(ref firstType, ref secondType);
 
 			int level = 0;
 			while (firstType != secondType && !firstType.IsAssignableFrom(secondType))
 			{
 				level++;
-				firstType = firstType.BaseType;
+				firstType = firstType.GetBaseTypeInfo();
 			}
 			return firstType == typeof(object) ? int.MaxValue : level;
 		}

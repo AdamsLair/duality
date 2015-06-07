@@ -11,7 +11,7 @@ namespace Duality.Serialization
 	/// </summary>
 	public sealed class SerializeType
 	{
-		private	Type		type;
+		private	TypeInfo	type;
 		private	FieldInfo[]	fields;
 		private	string		typeString;
 		private	DataType	dataType;
@@ -66,14 +66,14 @@ namespace Duality.Serialization
 		/// <param name="t"></param>
 		public SerializeType(Type t)
 		{
-			this.type = t;
+			this.type = t.GetTypeInfo();
 			this.dataType = GetDataType(this.type);
 			if (this.dataType == DataType.Struct)
 			{
 				// Retrieve all fields that are not flagged not to be serialized
 				IEnumerable<FieldInfo> filteredFields = this.type
-					.GetAllFields(ReflectionHelper.BindInstanceAll)
-					.Where(f => !f.HasAttributeCached<DontSerializeAttribute>());
+					.DeclaredFieldsDeep()
+					.Where(f => !f.IsStatic && !f.HasAttributeCached<DontSerializeAttribute>());
 
 				// Ugly hack to skip .Net collection _syncRoot fields. 
 				// Can't use field.IsNonSerialized, because that doesn't exist in the PCL profile,

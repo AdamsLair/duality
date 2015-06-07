@@ -180,7 +180,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		}
 		public override string TypeName
 		{
-			get { return this.resType != null ? this.resType.GetTypeKeyword() : null; }
+			get { return this.resType != null ? this.resType.Name : null; }
 		}
 
 		public ResourceNode(string path) : base(path, null, false)
