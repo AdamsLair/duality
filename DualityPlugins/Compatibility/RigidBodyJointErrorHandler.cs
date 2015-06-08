@@ -11,6 +11,8 @@ namespace Duality.Plugins.Compatibility
 {
 	public class RigidBodyJointErrorHandler : SerializeErrorHandler
 	{
+		private FieldInfo jointsField = typeof(RigidBody).GetTypeInfo().GetRuntimeFields().FirstOrDefault(m => !m.IsStatic && m.Name == "joints");
+
 		public override void HandleError(SerializeError error)
 		{
 			AssignFieldError fieldError = error as AssignFieldError;
@@ -35,7 +37,6 @@ namespace Duality.Plugins.Compatibility
 				{
 					if (other)
 					{
-						FieldInfo jointsField = typeof(RigidBody).GetField("joints", BindingFlags.Instance | BindingFlags.NonPublic);
 						IList<JointInfo> jointList = jointsField.GetValue(target) as IList<JointInfo>;
 						jointList.Remove(joint);
 					}
