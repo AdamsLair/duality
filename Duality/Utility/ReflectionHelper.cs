@@ -45,15 +45,6 @@ namespace Duality
 		public static event EventHandler<ResolveMemberEventArgs> MemberResolve	= null;
 
 		/// <summary>
-		/// Equals <c>BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic</c>.
-		/// </summary>
-		public const BindingFlags BindInstanceAll = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-		/// <summary>
-		/// Equals <c>BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic</c>.
-		/// </summary>
-		public const BindingFlags BindStaticAll = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
-
-		/// <summary>
 		/// Creates an instance of a Type. Attempts to use the Types default empty constructor, but will
 		/// return an uninitialized object in case no constructor is available.
 		/// </summary>
@@ -69,8 +60,10 @@ namespace Duality
 			}
 			else
 			{
+				TypeInfo typeInfo = type.GetTypeInfo();
+
 				// Filter out non-instantiatable Types
-				if (type.IsAbstract || type.IsInterface || type.IsGenericTypeDefinition)
+				if (typeInfo.IsAbstract || typeInfo.IsInterface || typeInfo.IsGenericTypeDefinition)
 				{
 					activator = nullObjectActivator;
 				}
@@ -80,16 +73,16 @@ namespace Duality
 					activator = () => "";
 				}
 				// If the caller wants an array, create an empty one
-				else if (typeof(Array).IsAssignableFrom(type) && type.GetArrayRank() == 1)
+				else if (typeInfo.IsArray && typeInfo.GetArrayRank() == 1)
 				{
-					activator = () => Array.CreateInstance(type.GetElementType(), 0);
+					activator = () => Array.CreateInstance(typeInfo.GetElementType(), 0);
 				}
 				else
 				{
 					try
 					{
 						// Attempt to invoke the Type default empty constructor
-						ConstructorInfo emptyConstructor = type.GetConstructor(BindInstanceAll, null, Type.EmptyTypes, null);
+						ConstructorInfo emptyConstructor = typeInfo.DeclaredConstructors.FirstOrDefault(m => !m.IsStatic && m.GetParameters().Length == 0);
 						if (emptyConstructor != null)
 						{
 							var constructorLambda = Expression.Lambda<ObjectActivator>(Expression.New(emptyConstructor));
@@ -200,18 +193,21 @@ namespace Duality
 			if (!customMemberAttribCache.TryGetValue(member, out result))
 			{
 				result = Attribute.GetCustomAttributes(member, true);
-				if (member.DeclaringType != null && !member.DeclaringType.IsInterface)
+
+				TypeInfo declaringTypeInfo = member.DeclaringType == null ? null : member.DeclaringType.GetTypeInfo();
+				if (declaringTypeInfo != null && !declaringTypeInfo.IsInterface)
 				{
 					IEnumerable<Attribute> query = result;
-					Type[] interfaces = member.DeclaringType.GetInterfaces();
+					Type[] interfaces = declaringTypeInfo.ImplementedInterfaces.ToArray();
 					if (interfaces.Length > 0)
 					{
 						bool addedAny = false;
 						foreach (Type interfaceType in interfaces)
 						{
-							MemberInfo[] interfaceMembers = interfaceType.GetMember(member.Name, member.MemberType, ReflectionHelper.BindInstanceAll);
-							foreach (MemberInfo interfaceMemberInfo in interfaceMembers)
+							TypeInfo interfaceTypeInfo = interfaceType.GetTypeInfo();
+							foreach (MemberInfo interfaceMemberInfo in interfaceTypeInfo.DeclaredMembersDeep())
 							{
+								if (interfaceMemberInfo.Name != member.Name) continue;
 								IEnumerable<Attribute> subQuery = GetAttributesCached<Attribute>(interfaceMemberInfo);
 								if (subQuery.Any())
 								{
@@ -978,8 +974,10 @@ namespace Duality
 
 					if (memberTypeToken == MemberTokenConstructorInfo)
 					{
-						ConstructorInfo[] availCtors = declaringType.GetConstructors(memberName == "s" ? BindStaticAll : BindInstanceAll).Where(
-							m => m.GetParameters().Length == memberParams.Length).ToArray();
+						bool lookForStatic = memberName == "s";
+						ConstructorInfo[] availCtors = declaringType.DeclaredConstructors.Where(m => 
+							m.IsStatic == lookForStatic && 
+							m.GetParameters().Length == memberParams.Length).ToArray();
 						foreach (ConstructorInfo ctor in availCtors)
 						{
 							bool possibleMatch = true;

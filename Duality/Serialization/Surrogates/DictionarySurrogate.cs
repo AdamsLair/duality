@@ -11,6 +11,9 @@ namespace Duality.Serialization.Surrogates
 	/// </summary>
 	public class DictionarySurrogate : SerializeSurrogate<IDictionary>
 	{
+		private MethodInfo genericWriteMethodDef = typeof(DictionarySurrogate).GetTypeInfo().GetRuntimeMethods().FirstOrDefault(m => !m.IsStatic && m.Name == "WriteDataSpecific");
+		private MethodInfo genericReadMethodDef = typeof(DictionarySurrogate).GetTypeInfo().GetRuntimeMethods().FirstOrDefault(m => !m.IsStatic && m.Name == "ReadDataSpecific");
+
 		public override bool MatchesType(Type t)
 		{
 			return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
@@ -19,14 +22,14 @@ namespace Duality.Serialization.Surrogates
 		{
 			Type dictType = this.RealObject.GetType();
 			Type[] genArgs = dictType.GetGenericArguments();
-			MethodInfo cast = typeof(DictionarySurrogate).GetMethod("WriteDataSpecific", ReflectionHelper.BindInstanceAll).MakeGenericMethod(genArgs);
+			MethodInfo cast = genericWriteMethodDef.MakeGenericMethod(genArgs);
 			cast.Invoke(this, new[] { writer });
 		}
 		public override void ReadData(IDataReader reader)
 		{
 			Type dictType = this.RealObject.GetType();
 			Type[] genArgs = dictType.GetGenericArguments();
-			MethodInfo cast = typeof(DictionarySurrogate).GetMethod("ReadDataSpecific", ReflectionHelper.BindInstanceAll).MakeGenericMethod(genArgs);
+			MethodInfo cast = genericReadMethodDef.MakeGenericMethod(genArgs);
 			cast.Invoke(this, new[] { reader });
 		}
 

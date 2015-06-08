@@ -47,7 +47,8 @@ namespace Duality.Editor
 		/// <param name="staticMethodName"></param>
 		public PropertyEditorAssignmentAttribute(Type methodHostType, string staticMethodName)
 		{
-			MethodInfo methodInfo = methodHostType.GetMethod(staticMethodName, ReflectionHelper.BindStaticAll);
+			TypeInfo hostTypeInfo = methodHostType.GetTypeInfo();
+			MethodInfo methodInfo = hostTypeInfo.GetRuntimeMethods().FirstOrDefault(m => m.IsStatic && m.Name == staticMethodName);
 			this.dynamicAssign = Delegate.CreateDelegate(typeof(PropertyEditorMatching), methodInfo) as PropertyEditorMatching;
 		}
 

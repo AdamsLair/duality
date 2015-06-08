@@ -67,9 +67,10 @@ namespace Duality.Drawing
 
 		private VertexDeclaration(Type dataType)
 		{
-			if (dataType.IsClass) throw new InvalidOperationException("Vertex formats need to be structs. Classes are not supported.");
+			TypeInfo dataTypeInfo = dataType.GetTypeInfo();
+			if (dataTypeInfo.IsClass) throw new InvalidOperationException("Vertex formats need to be structs. Classes are not supported.");
 
-			FieldInfo[] fields = dataType.GetFields(ReflectionHelper.BindInstanceAll);
+			FieldInfo[] fields = dataTypeInfo.GetRuntimeFields().Where(m => !m.IsStatic).ToArray();
 
 			this.dataType = dataType;
 			this.typeIndex = GetVertexTypeIndex(dataType);
@@ -120,12 +121,14 @@ namespace Duality.Drawing
 				count = 1;
 				return true;
 			}
-			else if (!dataType.IsClass && !dataType.IsEnum && !dataType.IsPrimitive)
+			
+			TypeInfo dataTypeInfo = dataType.GetTypeInfo();
+			if (!dataTypeInfo.IsClass && !dataTypeInfo.IsEnum && !dataTypeInfo.IsPrimitive)
 			{
 				type = VertexElementType.Unknown;
 				count = 0;
 
-				FieldInfo[] fields = dataType.GetFields(ReflectionHelper.BindInstanceAll);
+				FieldInfo[] fields = dataTypeInfo.GetRuntimeFields().Where(m => !m.IsStatic).ToArray();
 				for (int i = 0; i < fields.Length; i++)
 				{
 					VertexElementType fieldType;

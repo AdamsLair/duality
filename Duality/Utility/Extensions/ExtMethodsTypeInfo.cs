@@ -51,5 +51,23 @@ namespace Duality
 
 			return result;
 		}
+		/// <summary>
+		/// Returns all members that are declared within this Type, or any of its base Types.
+		/// Includes public, non-public, static and instance fields.
+		/// </summary>
+		/// <param name="flags"></param>
+		/// <returns></returns>
+		public static IEnumerable<MemberInfo> DeclaredMembersDeep(this TypeInfo type)
+		{
+			IEnumerable<MemberInfo> result = Enumerable.Empty<MemberInfo>();
+
+			while (type != null)
+			{
+				result = result.Concat(type.DeclaredMembers);
+				type = type.GetBaseTypeInfo();
+			}
+
+			return result;
+		}
 	}
 }

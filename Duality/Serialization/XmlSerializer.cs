@@ -596,7 +596,7 @@ namespace Duality.Serialization
 			target = this.ReadObjectData(targetElement);
 			if (del != null && target != null)
 			{
-				FieldInfo targetField = header.ObjectType.GetField("_target", ReflectionHelper.BindInstanceAll);
+				FieldInfo targetField = header.ObjectType.GetRuntimeFields().FirstOrDefault(f => !f.IsStatic && f.Name == "_target");
 				targetField.SetValue(del, target);
 			}
 

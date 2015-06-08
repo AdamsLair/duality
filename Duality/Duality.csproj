@@ -160,6 +160,7 @@
     <Compile Include="Utility\EditorHints\MemberFlags.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsPropertyInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsTypeInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\Grid.cs" />

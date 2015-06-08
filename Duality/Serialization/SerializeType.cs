@@ -19,9 +19,9 @@ namespace Duality.Serialization
 		private bool		dontSerialize;
 
 		/// <summary>
-		/// [GET] The <see cref="System.Type"/> that is described.
+		/// [GET] The <see cref="System.Reflection.TypeInfo"/> that is described.
 		/// </summary>
-		public Type Type
+		public TypeInfo Type
 		{
 			get { return this.type; }
 		}

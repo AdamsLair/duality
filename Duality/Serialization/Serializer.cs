@@ -157,7 +157,7 @@ namespace Duality.Serialization
 			/// <summary>
 			/// [GET] The objects resolved type information. May be unavailable / null when loading objects.
 			/// </summary>
-			public Type ObjectType
+			public TypeInfo ObjectType
 			{
 				get { return (this.serializeType != null) ? this.serializeType.Type : null; }
 			}

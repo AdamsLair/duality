@@ -571,10 +571,13 @@ namespace Duality
 		{
 			string contentPathBase = ContentProvider.VirtualContentPath + typeof(T).Name + ":";
 
-			Type resourceType = typeof(T);
+			TypeInfo resourceType = typeof(T).GetTypeInfo();
 			PropertyInfo[] defaultResProps = resourceType
-				.GetProperties(BindingFlags.Public | BindingFlags.Static)
-				.Where(p => typeof(IContentRef).IsAssignableFrom(p.PropertyType))
+				.GetRuntimeProperties()
+				.Where(p => 
+					p.IsPublic() &&
+					p.IsStatic() &&
+					typeof(IContentRef).IsAssignableFrom(p.PropertyType))
 				.ToArray();
 
 			for (int i = 0; i < defaultResProps.Length; i++)
