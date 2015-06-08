@@ -157,7 +157,7 @@ namespace Duality
 			if (lhs.DeclaringType != null && lhs.DeclaringType.IsArray)
 				return false;
  
-			if (lhs.Module != rhs.Module)
+			if (lhs.MetadataToken != rhs.MetadataToken || lhs.Module != rhs.Module)
 				return false;
  
 			if (lhs is MethodInfo)
