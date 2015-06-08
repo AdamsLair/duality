@@ -131,7 +131,8 @@ namespace Duality
 		/// <returns></returns>
 		public static object GetDefaultInstanceOf(this Type instanceType)
 		{
-			if (instanceType.IsValueType)
+			TypeInfo typeInfo = instanceType.GetTypeInfo();
+			if (typeInfo.IsValueType)
 				return instanceType.CreateInstanceOf();
 			else
 				return null;
@@ -156,7 +157,7 @@ namespace Duality
 			if (lhs.DeclaringType != null && lhs.DeclaringType.IsArray)
 				return false;
  
-			if (lhs.MetadataToken != rhs.MetadataToken || lhs.Module != rhs.Module)
+			if (lhs.Module != rhs.Module)
 				return false;
  
 			if (lhs is MethodInfo)
@@ -192,7 +193,7 @@ namespace Duality
 			Attribute[] result;
 			if (!customMemberAttribCache.TryGetValue(member, out result))
 			{
-				result = Attribute.GetCustomAttributes(member, true);
+				result = member.GetCustomAttributes(true).OfType<Attribute>().ToArray();
 
 				TypeInfo declaringTypeInfo = member.DeclaringType == null ? null : member.DeclaringType.GetTypeInfo();
 				if (declaringTypeInfo != null && !declaringTypeInfo.IsInterface)

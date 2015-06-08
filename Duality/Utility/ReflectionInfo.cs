@@ -64,17 +64,17 @@ namespace Duality
 		static ReflectionInfo()
 		{
 			// Retrieve PropertyInfo data
-			TypeInfo gameobject = typeof(GameObject).GetTypeInfo();
+			Type gameobject = typeof(GameObject);
 			Property_GameObject_Name			= GetProperty(gameobject, "Name");
 			Property_GameObject_ActiveSingle	= GetProperty(gameobject, "ActiveSingle");
 			Property_GameObject_Parent			= GetProperty(gameobject, "Parent");
 			Property_GameObject_PrefabLink		= GetProperty(gameobject, "PrefabLink");
 
-			TypeInfo component = typeof(Component).GetTypeInfo();
+			Type component = typeof(Component);
 			Property_Component_GameObj		= GetProperty(component, "GameObj");
 			Property_Component_ActiveSingle	= GetProperty(component, "ActiveSingle");
 
-			TypeInfo transform = typeof(Transform).GetTypeInfo();
+			Type transform = typeof(Transform);
 			Property_Transform_RelativePos		= GetProperty(transform, "RelativePos");
 			Property_Transform_RelativeAngle	= GetProperty(transform, "RelativeAngle");
 			Property_Transform_RelativeScale	= GetProperty(transform, "RelativeScale");
@@ -88,47 +88,47 @@ namespace Duality
 			Property_Transform_DeriveAngle		= GetProperty(transform, "DeriveAngle");
 			Property_Transform_IgnoreParent		= GetProperty(transform, "IgnoreParent");
 			
-			TypeInfo camera = typeof(Camera).GetTypeInfo();
+			Type camera = typeof(Camera);
 			Property_Camera_FocusDist			= GetProperty(camera, "FocusDist");
 			Property_Camera_ClearColor			= GetProperty(camera, "ClearColor");
 
-			TypeInfo collider = typeof(RigidBody).GetTypeInfo();
+			Type collider = typeof(RigidBody);
 			Property_RigidBody_Shapes			= GetProperty(collider, "Shapes");
 			Property_RigidBody_Joints			= GetProperty(collider, "Joints");
 
-			TypeInfo drawTech = typeof(DrawTechnique).GetTypeInfo();
+			Type drawTech = typeof(DrawTechnique);
 			Property_DrawTechnique_PreferredVertexFormat	= GetProperty(drawTech, "PreferredVertexFormat");
 			
-			TypeInfo font = typeof(Font).GetTypeInfo();
+			Type font = typeof(Font);
 			Property_Font_Family	= GetProperty(font, "Family");
 
-			TypeInfo pixmap = typeof(Pixmap).GetTypeInfo();
+			Type pixmap = typeof(Pixmap);
 			Property_Pixmap_AnimCols			= GetProperty(pixmap, "AnimCols");
 			Property_Pixmap_AnimRows			= GetProperty(pixmap, "AnimRows");
 			Property_Pixmap_AnimFrameBorder		= GetProperty(pixmap, "AnimFrameBorder");
 			Property_Pixmap_Atlas				= GetProperty(pixmap, "Atlas");
 
-			TypeInfo batchInfo = typeof(BatchInfo).GetTypeInfo();
+			Type batchInfo = typeof(BatchInfo);
 			Property_BatchInfo_Technique	= GetProperty(batchInfo, "Technique");
 			Property_BatchInfo_MainColor	= GetProperty(batchInfo, "MainColor");
 			Property_BatchInfo_Textures		= GetProperty(batchInfo, "Textures");
 			Property_BatchInfo_Uniforms		= GetProperty(batchInfo, "Uniforms");
 			
-			TypeInfo soundEmitter = typeof(SoundEmitter).GetTypeInfo();
+			Type soundEmitter = typeof(SoundEmitter);
 			Property_SoundEmitter_Sources	= GetProperty(soundEmitter, "Sources");
 
 			// Retrieve FieldInfo data
-			TypeInfo material = typeof(Material).GetTypeInfo();
+			Type material = typeof(Material);
 			Field_Material_Info	= GetField(material, "info");
 		}
 		
-		private static PropertyInfo GetProperty(TypeInfo typeInfo, string name)
+		private static PropertyInfo GetProperty(Type type, string name)
 		{
-			return typeInfo.GetRuntimeProperties().FirstOrDefault(m => !m.IsStatic() && m.Name == name);
+			return type.GetRuntimeProperties().FirstOrDefault(m => !m.IsStatic() && m.Name == name);
 		}
-		private static FieldInfo GetField(TypeInfo typeInfo, string name)
+		private static FieldInfo GetField(Type type, string name)
 		{
-			return typeInfo.GetRuntimeFields().FirstOrDefault(m => !m.IsStatic && m.Name == name);
+			return type.GetRuntimeFields().FirstOrDefault(m => !m.IsStatic && m.Name == name);
 		}
 	}
 }
