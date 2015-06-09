@@ -18,6 +18,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 {
 	internal class ExplicitCloneTestObjectA : TestObject, ICloneExplicit
 	{
+		private ExplicitCloneTestObjectA() { }
 		public ExplicitCloneTestObjectA(Random rnd, int maxChildren) : base(rnd, maxChildren) {}
 			
 		void ICloneExplicit.SetupCloneTargets(object target, ICloneTargetSetup setup)
@@ -43,6 +44,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneField(CloneFieldFlags.Skip)]
 		public bool SpecialSetupDone = false;
 
+		private ExplicitCloneTestObjectB() { }
 		public ExplicitCloneTestObjectB(Random rnd, int maxChildren) : base(rnd, maxChildren) {}
 
 		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup)
@@ -57,6 +59,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 	}
 	internal class ExplicitCloneTestObjectC : TestObject, ICloneExplicit
 	{
+		private ExplicitCloneTestObjectC() { }
 		public ExplicitCloneTestObjectC(Random rnd, int maxChildren) : base(rnd, maxChildren) {}
 
 		void ICloneExplicit.SetupCloneTargets(object targetObj, ICloneTargetSetup setup) {}

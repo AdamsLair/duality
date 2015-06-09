@@ -24,7 +24,8 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public ReferencedObject NestedObject;
 		[CloneBehavior(typeof(ReferencedObject), CloneBehavior.ChildObject)]
 		public Dictionary<string,ReferencedObject> ObjectStore;
-			
+
+		private OwnershipTestObject() { }
 		public OwnershipTestObject(Random rnd)
 		{
 			this.NestedObject = new ReferencedObject { TestProperty = rnd.Next().ToString() };

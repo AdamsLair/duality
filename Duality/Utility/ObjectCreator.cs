@@ -17,12 +17,6 @@ namespace Duality
 		private delegate object CreateMethod();
 
 		private	static readonly CreateMethod nullObjectActivator = () => null;
-		private	static readonly MethodInfo createInstanceMethod = 
-			typeof(ObjectCreator).GetRuntimeMethods().FirstOrDefault(m => 
-				m.IsStatic && 
-				m.Name == "CreateInstanceOf" && 
-				m.GetParameters().Length == 1);
-
 		private	static Dictionary<Type,CreateMethod> createInstanceMethodCache = new Dictionary<Type,CreateMethod>();
 
 
@@ -97,54 +91,42 @@ namespace Duality
 			{
 				activator = nullObjectActivator;
 
-				try
-				{
-					// Retrieve constructors, sorted from trivial to parameter-rich
-					ConstructorInfo[] constructors = typeInfo.DeclaredConstructors
-						.Where(c => !c.IsStatic)
-						.Select(c => new { Info = c, ParamCount = c.GetParameters().Length })
-						.OrderBy(s => s.ParamCount)
-						.Select(s => s.Info)
-						.ToArray();
+				// Retrieve constructors, sorted from trivial to parameter-rich
+				ConstructorInfo[] constructors = typeInfo.DeclaredConstructors
+					.Where(c => !c.IsStatic)
+					.Select(c => new { Info = c, ParamCount = c.GetParameters().Length })
+					.OrderBy(s => s.ParamCount)
+					.Select(s => s.Info)
+					.ToArray();
 
-					for (int passIndex = 0; passIndex < 2; passIndex++)
+				Exception lastError = null;
+				foreach (ConstructorInfo con in constructors)
+				{
+					// Prepare constructor argument values - just use default(T) for all of them.
+					ParameterInfo[] conParams = con.GetParameters();
+					Expression[] args = new Expression[conParams.Length];
+					for (int i = 0; i < args.Length; i++)
 					{
-						// In the first pass, just use default(T) for all constructor arguments.
-						// If that doesn't work, create the arguments recursively in the second pass.
-						bool tryDefaultArg = (passIndex == 0);
+						Type paramType = conParams[i].ParameterType;
+						TypeInfo paramTypeInfo = paramType.GetTypeInfo();
 
-						foreach (ConstructorInfo con in constructors)
-						{
-							// Prepare constructor argument values - just use default(T) for all of them.
-							ParameterInfo[] conParams = con.GetParameters();
-							Expression[] args = new Expression[conParams.Length];
-							for (int i = 0; i < args.Length; i++)
-							{
-								Type paramType = conParams[i].ParameterType;
-								TypeInfo paramTypeInfo = paramType.GetTypeInfo();
-
-								if (tryDefaultArg || paramTypeInfo.IsValueType)
-									args[i] = Expression.Default(paramTypeInfo);
-								else
-									args[i] = Expression.Convert(
-										Expression.Call(createInstanceMethod, Expression.Constant(paramType)), 
-										paramType);
-							}
-
-							// Compile a lambda method invoking the constructor
-							var lambda = Expression.Lambda<CreateMethod>(Expression.New(con, args));
-							activator = lambda.Compile();
-
-							// Does it work?
-							firstResult = CheckActivator(activator);
-							if (firstResult != null)
-								break;
-						}
+						args[i] = Expression.Default(paramTypeInfo);
 					}
+
+					// Compile a lambda method invoking the constructor
+					var lambda = Expression.Lambda<CreateMethod>(Expression.New(con, args));
+					activator = lambda.Compile();
+
+					// Does it work?
+					firstResult = CheckActivator(activator, out lastError);
+					if (firstResult != null)
+						break;
 				}
-				catch (Exception)
+
+				// If all constructors failed, inform someone. This is not ideal.
+				if (firstResult == null)
 				{
-					activator = nullObjectActivator;
+					Log.Core.WriteWarning("Failed to create object of Type {0}. Make sure there is a trivial constructor.", Log.Type(type));
 				}
 			}
 
@@ -153,17 +135,19 @@ namespace Duality
 			{
 				Exception error;
 				firstResult = CheckActivator(activator, out error);
-				if (firstResult == null)
-					activator = nullObjectActivator;
 
 				// If we fail to initialize the Type due to a problem in its static constructor, it's likely a user problem. Let him know.
 				if (error is TypeInitializationException)
 				{
-					Log.Editor.WriteError("Failed to initialize Type {0}: {1}",
+					Log.Core.WriteError("Failed to initialize Type {0}: {1}",
 						Log.Type(type),
 						Log.Exception(error.InnerException));
 				}
 			}
+
+			// If we still don't have anything, just use a dummy.
+			if (firstResult == null)
+				activator = nullObjectActivator;
 
 			return activator;
 		}

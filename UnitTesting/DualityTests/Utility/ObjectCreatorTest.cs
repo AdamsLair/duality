@@ -43,7 +43,6 @@ namespace Duality.Tests.Utility
 			Assert.IsTrue(CheckCreateInstance<TestCreateClassRegular>());
 			Assert.IsTrue(CheckCreateInstance<TestCreateClassPrivate>());
 			Assert.IsTrue(CheckCreateInstance<TestCreateClassNonEmpty>());
-			Assert.IsTrue(CheckCreateInstance<TestCreateClassRequiresNonNull>());
 
 			// Some Collections
 			Assert.IsTrue(CheckCreateInstance<List<int>>());
@@ -53,6 +52,7 @@ namespace Duality.Tests.Utility
 			Assert.IsFalse(CheckCreateInstance<ITestCreateInterface>());
 			Assert.IsFalse(CheckCreateInstance<TestCreateClassAbstract>());
 			Assert.IsFalse(CheckCreateInstance<TestCreateClassStaticError>());
+			Assert.IsFalse(CheckCreateInstance<TestCreateClassNonTrivial>());
 		}
 
 		private struct TestCreateStructRegular { }
@@ -68,9 +68,9 @@ namespace Duality.Tests.Utility
 		{
 			public TestCreateClassNonEmpty(string value) { }
 		}
-		public class TestCreateClassRequiresNonNull
+		public class TestCreateClassNonTrivial
 		{
-			public TestCreateClassRequiresNonNull(string value)
+			public TestCreateClassNonTrivial(string value)
 			{
 				if (value == null) throw new ArgumentNullException("value");
 			}

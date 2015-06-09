@@ -27,7 +27,8 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneField(CloneFieldFlags.DontSkip)]
 		public int NonSerializedField;
 		public AlwaysSkippedObject SkippedObject;
-			
+
+		private SkipFieldTestObject() { }
 		public SkipFieldTestObject(Random rnd)
 		{
 			this.StringField = rnd.Next().ToString();

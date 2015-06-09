@@ -24,7 +24,8 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public ContentRef<Resource> TestContentRef { get; set; }
 		public ReferencedObject TestReference { get; set; }
 		public List<ReferencedObject> TestReferenceList { get; set; }
-		
+
+		private TestResource() { }
 		public TestResource(Random rnd)
 		{
 			this.TestProperty = "TestStringA" + rnd.NextByte();

@@ -21,7 +21,8 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public string StringField;
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		public Guid Identity;
-			
+
+		private IdentityTestObjectA() { }
 		public IdentityTestObjectA(Random rnd)
 		{
 			this.StringField = rnd.Next().ToString();
@@ -34,6 +35,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		public ReferencedObject Identity;
 			
+		private IdentityTestObjectB() { }
 		public IdentityTestObjectB(Random rnd)
 		{
 			this.StringField = rnd.Next().ToString();
@@ -46,6 +48,7 @@ namespace Duality.Tests.Cloning.HelperObjects
 		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		public int Identity;
 			
+		private IdentityTestObjectC() { }
 		public IdentityTestObjectC(Random rnd)
 		{
 			this.StringField = rnd.Next().ToString();

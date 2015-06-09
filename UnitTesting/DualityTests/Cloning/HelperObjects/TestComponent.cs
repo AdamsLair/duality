@@ -25,7 +25,8 @@ namespace Duality.Tests.Cloning.HelperObjects
 		public List<ReferencedObject> TestReferenceList { get; set; }
 		public GameObject GameObjectReference { get; set; }
 		public Component ComponentReference { get; set; }
-		
+
+		private TestComponent() { }
 		public TestComponent(Random rnd)
 		{
 			this.TestProperty = "TestStringA" + rnd.NextByte();

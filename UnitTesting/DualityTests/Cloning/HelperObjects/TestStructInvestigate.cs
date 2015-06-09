@@ -27,7 +27,8 @@ namespace Duality.Tests.Cloning.HelperObjects
 		}
 
 		public InvestigateStruct Data { get; set; }
-		
+
+		private TestStructInvestigate() { }
 		public TestStructInvestigate(Random rnd)
 		{
 			this.Data = new InvestigateStruct { SomeInt = rnd.Next(), OwnedObject = new OwnedObject { TestData = rnd.Next() } };
