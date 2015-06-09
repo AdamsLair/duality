@@ -25,10 +25,6 @@ namespace Duality
 		private const char MemberTokenMethodInfo		= 'M';
 		private const char MemberTokenConstructorInfo	= 'C';
 
-		private delegate object ObjectActivator();
-
-		private	static	readonly	ObjectActivator			nullObjectActivator			= () => null;
-		private	static	Dictionary<Type,ObjectActivator>	createInstanceMethodCache	= new Dictionary<Type,ObjectActivator>();
 		private	static	Dictionary<string,Type>				typeResolveCache			= new Dictionary<string,Type>();
 		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
 		private	static	Dictionary<Type,bool>				plainOldDataTypeCache		= new Dictionary<Type,bool>();
@@ -43,100 +39,6 @@ namespace Duality
 		/// Fired when automatically resolving a certain Member has failed. Allows any subscriber to provide a suitable match.
 		/// </summary>
 		public static event EventHandler<ResolveMemberEventArgs> MemberResolve	= null;
-
-		/// <summary>
-		/// Creates an instance of a Type. Attempts to use the Types default empty constructor, but will
-		/// return an uninitialized object in case no constructor is available.
-		/// </summary>
-		/// <param name="type">The Type to create an instance of.</param>
-		/// <returns>An instance of the Type. Null, if instanciation wasn't possible.</returns>
-		[System.Diagnostics.DebuggerStepThrough]
-		public static object CreateInstanceOf(this Type type)
-		{
-			ObjectActivator activator;
-			if (createInstanceMethodCache.TryGetValue(type, out activator))
-			{
-				return activator();
-			}
-			else
-			{
-				TypeInfo typeInfo = type.GetTypeInfo();
-
-				// Filter out non-instantiatable Types
-				if (typeInfo.IsAbstract || typeInfo.IsInterface || typeInfo.IsGenericTypeDefinition)
-				{
-					activator = nullObjectActivator;
-				}
-				// If the caller wants a string, just return an empty one
-				else if (type == typeof(string))
-				{
-					activator = () => "";
-				}
-				// If the caller wants an array, create an empty one
-				else if (typeInfo.IsArray && typeInfo.GetArrayRank() == 1)
-				{
-					activator = () => Array.CreateInstance(typeInfo.GetElementType(), 0);
-				}
-				else
-				{
-					try
-					{
-						// Attempt to invoke the Type default empty constructor
-						ConstructorInfo emptyConstructor = typeInfo.DeclaredConstructors.FirstOrDefault(m => !m.IsStatic && m.GetParameters().Length == 0);
-						if (emptyConstructor != null)
-						{
-							var constructorLambda = Expression.Lambda<ObjectActivator>(Expression.New(emptyConstructor));
-							activator = constructorLambda.Compile();
-						}
-						// If there is no such constructor available, provide an uninitialized object
-						else
-						{
-							activator = () => System.Runtime.Serialization.FormatterServices.GetUninitializedObject(type);
-						}
-					}
-					catch (Exception)
-					{
-						activator = nullObjectActivator;
-					}
-				}
-
-				// Test whether our activation method really works, and mind it for later
-				object firstResult;
-				try
-				{
-					firstResult = activator();
-				}
-				catch (Exception e)
-				{
-					// If we fail to initialize the Type due to a problem in its static constructor, it's likely a user problem. Let him know.
-					if (e is TypeInitializationException)
-					{
-						Log.Editor.WriteError("Failed to initialize Type {0}: {1}",
-							Log.Type(type),
-							Log.Exception(e.InnerException));
-					}
-
-					activator = nullObjectActivator;
-					firstResult = null;
-				}
-				createInstanceMethodCache[type] = activator;
-
-				return firstResult;
-			}
-		}
-		/// <summary>
-		/// Returns the default instance of a Type. Equals <c>default(T)</c>, but works for Reflection.
-		/// </summary>
-		/// <param name="instanceType">The Type to create a default instance of.</param>
-		/// <returns></returns>
-		public static object GetDefaultInstanceOf(this Type instanceType)
-		{
-			TypeInfo typeInfo = instanceType.GetTypeInfo();
-			if (typeInfo.IsValueType)
-				return instanceType.CreateInstanceOf();
-			else
-				return null;
-		}
 
 		/// <summary>
 		/// Returns whether two MemberInfo objects are equal.
@@ -776,7 +678,6 @@ namespace Duality
 		/// </summary>
 		internal static void ClearTypeCache()
 		{
-			createInstanceMethodCache.Clear();
 			typeResolveCache.Clear();
 			memberResolveCache.Clear();
 			plainOldDataTypeCache.Clear();

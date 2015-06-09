@@ -67,9 +67,12 @@ namespace Duality.Tests.Cloning.HelperObjects
 			{
 				foreach (var key in this.DictField.Keys)
 				{
-					var a = this.DictField[key];
-					var b = other.DictField[key];
-					if (object.ReferenceEquals(a, b) && !object.ReferenceEquals(a, null)) return true;
+					TestObject a = this.DictField[key];
+					TestObject b;
+					if (other.DictField.TryGetValue(key, out b))
+					{
+						if (object.ReferenceEquals(a, b) && !object.ReferenceEquals(a, null)) return true;
+					}
 				}
 			}
 			return false;

@@ -76,6 +76,7 @@
     <Compile Include="Utility\PathHelperTest.cs" />
     <Compile Include="Utility\RectTest.cs" />
     <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
+    <Compile Include="Utility\ObjectCreatorTest.cs" />
     <Compile Include="Utility\ReflectionHelperTest.cs" />
     <Compile Include="Utility\GenericOperatorTest.cs" />
     <Compile Include="Utility\GridTest.cs" />

@@ -789,8 +789,8 @@ namespace Duality.Serialization
 		{
 			if (surrogates == null)
 			{
-				surrogates = 
-					DualityApp.GetAvailDualityTypes(typeof(ISerializeSurrogate))
+				surrogates = DualityApp.GetAvailDualityTypes(typeof(ISerializeSurrogate))
+					.Where(t => !t.IsAbstract && !t.IsInterface)
 					.Select(t => t.CreateInstanceOf())
 					.OfType<ISerializeSurrogate>()
 					.NotNull()
