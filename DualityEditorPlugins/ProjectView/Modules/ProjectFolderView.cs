@@ -447,7 +447,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			string resPath = PathHelper.GetFreePath(Path.Combine(basePath, desiredName), nameExt);
 			resPath = PathHelper.MakeFilePathRelative(resPath);
 
-			Resource resInstance = ReflectionHelper.CreateInstanceOf(type) as Resource;
+			Resource resInstance = type.CreateInstanceOf() as Resource;
 			resInstance.Save(resPath);
 
 			// Schedule path for later selection - as soon as it actually exists.

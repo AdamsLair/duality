@@ -27,7 +27,7 @@ namespace Duality
 
 		private	static	Dictionary<string,Type>				typeResolveCache			= new Dictionary<string,Type>();
 		private	static	Dictionary<string,MemberInfo>		memberResolveCache			= new Dictionary<string,MemberInfo>();
-		private	static	Dictionary<Type,bool>				plainOldDataTypeCache		= new Dictionary<Type,bool>();
+		private	static	Dictionary<TypeInfo,bool>			plainOldDataTypeCache		= new Dictionary<TypeInfo,bool>();
 		private	static	Dictionary<MemberInfo,Attribute[]>	customMemberAttribCache		= new Dictionary<MemberInfo,Attribute[]>();
 		private	static	Dictionary<KeyValuePair<Type,Type>,bool>	resRefCache			= new Dictionary<KeyValuePair<Type,Type>,bool>();
 
@@ -161,10 +161,13 @@ namespace Duality
 		{
 			if (obj == null) return obj;
 			if (visitedGraph.Contains(obj)) return obj;
-			TypeInfo objType = obj.GetType().GetTypeInfo();
+
+			Type objType = obj.GetType();
+			TypeInfo objTypeInfo = objType.GetTypeInfo();
+			TypeInfo targetTypeInfo = typeof(T).GetTypeInfo();
 
 			// Visit object
-			if (objType.IsClass) visitedGraph.Add(obj);
+			if (objTypeInfo.IsClass) visitedGraph.Add(obj);
 			if (obj is T)
 			{
 				obj = visitor((T)obj);
@@ -185,10 +188,11 @@ namespace Duality
 			{
 				Array baseArray = (Array)obj;
 				Type elemType = objType.GetElementType();
+				TypeInfo elemTypeInfo = elemType.GetTypeInfo();
 				int length = baseArray.Length;
 
 				// Explore elements
-				if (!elemType.IsClass || typeof(T).IsAssignableFrom(elemType))
+				if (!elemTypeInfo.IsClass || targetTypeInfo.IsAssignableFrom(elemTypeInfo))
 				{
 					for (int i = 0; i < length; ++i)
 					{
@@ -210,14 +214,18 @@ namespace Duality
 			else
 			{
 				// Explore fields
-				var fields = objType.DeclaredFieldsDeep();
+				var fields = objTypeInfo.DeclaredFieldsDeep();
 				foreach (FieldInfo field in fields)
 				{
 					if (field.IsStatic) continue;
+					TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
 
 					object val = field.GetValue(obj);
+
 					val = VisitObjectsDeep<T>(val, visitor, stopAtTarget, visitedGraph, exploreTypeCache);
-					if (!objType.IsClass || typeof(T).IsAssignableFrom(field.FieldType)) field.SetValue(obj, val);
+
+					if (!objTypeInfo.IsClass || targetTypeInfo.IsAssignableFrom(fieldTypeInfo))
+						field.SetValue(obj, val);
 				}
 			}
 
@@ -229,14 +237,17 @@ namespace Duality
 			bool explore = false;
 			if (!exploreTypeCache.TryGetValue(variableType, out explore))
 			{
+				TypeInfo searchForTypeInfo = searchForType.GetTypeInfo();
+				TypeInfo variableTypeInfo = variableType.GetTypeInfo();
+
 				// Found a variable of the searched type? Done.
-				if (searchForType.IsAssignableFrom(variableType))
+				if (searchForTypeInfo.IsAssignableFrom(variableTypeInfo))
 					explore = true;
 
 				// Don't explore primitives
-				else if (variableType.IsPrimitive)
+				else if (variableTypeInfo.IsPrimitive)
 					explore = false;
-				else if (variableType.IsEnum)
+				else if (variableTypeInfo.IsEnum)
 					explore = false;
 
 				// Some hardcoded early-outs for well known types
@@ -244,13 +255,13 @@ namespace Duality
 					explore = false;
 				else if (variableType == typeof(string))
 					explore = false;
-				else if (typeof(MemberInfo).IsAssignableFrom(variableType))
+				else if (typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(variableTypeInfo))
 					explore = false;
-				else if (typeof(Delegate).IsAssignableFrom(variableType))
+				else if (typeof(Delegate).GetTypeInfo().IsAssignableFrom(variableTypeInfo))
 					explore = false;
 
 				// We also need to explore (for example) all "object" variables, because they could contain anything
-				else if (variableType.IsAssignableFrom(searchForType))
+				else if (variableTypeInfo.IsAssignableFrom(searchForTypeInfo))
 					explore = true;
 
 				// Perform a deep check unless trivially true
@@ -269,7 +280,7 @@ namespace Duality
 					{
 						explore = variableType.GetTypeInfo().DeclaredFieldsDeep().Any(f => 
 							!f.IsStatic &&
-							!string.Equals(f.Name, "_syncRoot", StringComparison.InvariantCultureIgnoreCase) && 
+							!string.Equals(f.Name, "_syncRoot", StringComparison.OrdinalIgnoreCase) && 
 							VisitObjectsDeep_ExploreType(searchForType, f.FieldType, exploreTypeCache));
 					}
 				}
@@ -288,12 +299,14 @@ namespace Duality
 		public static bool CleanEventBindings(object targetObject, Assembly invalidAssembly)
 		{
 			bool cleanedAny = false;
-			TypeInfo targetType = targetObject.GetType().GetTypeInfo();
-			IEnumerable<FieldInfo> targetFields = targetType.DeclaredFieldsDeep();
+			TypeInfo delegateTypeInfo = typeof(Delegate).GetTypeInfo();
+			TypeInfo targetTypeInfo = targetObject.GetType().GetTypeInfo();
+			IEnumerable<FieldInfo> targetFields = targetTypeInfo.DeclaredFieldsDeep();
 			foreach (FieldInfo field in targetFields)
 			{
 				if (field.IsStatic) continue;
-				if (typeof(Delegate).IsAssignableFrom(field.FieldType))
+				TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
+				if (delegateTypeInfo.IsAssignableFrom(fieldTypeInfo))
 				{
 					Delegate delOld = field.GetValue(targetObject) as Delegate;
 					Delegate delNew = CleanEventBindings_Delegate(delOld, invalidAssembly);
@@ -316,11 +329,13 @@ namespace Duality
 		public static bool CleanEventBindings(Type targetType, Assembly invalidAssembly)
 		{
 			bool cleanedAny = false;
+			TypeInfo delegateTypeInfo = typeof(Delegate).GetTypeInfo();
 			IEnumerable<FieldInfo> targetFields = targetType.GetTypeInfo().DeclaredFieldsDeep();
 			foreach (FieldInfo field in targetFields)
 			{
 				if (!field.IsStatic) continue;
-				if (typeof(Delegate).IsAssignableFrom(field.FieldType))
+				TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
+				if (delegateTypeInfo.IsAssignableFrom(fieldTypeInfo))
 				{
 					Delegate delOld = field.GetValue(null) as Delegate;
 					Delegate delNew = CleanEventBindings_Delegate(delOld, invalidAssembly);
@@ -337,9 +352,9 @@ namespace Duality
 		{
 			if (del == null) return del;
 			Delegate[] oldInvokeList = del.GetInvocationList();
-			if (oldInvokeList.Any(e => e.Method.DeclaringType.Assembly == invalidAssembly))
+			if (oldInvokeList.Any(e => e.GetMethodInfo().DeclaringType.GetTypeInfo().Assembly == invalidAssembly))
 			{
-				return Delegate.Combine(oldInvokeList.Where(e => e.Method.DeclaringType.Assembly != invalidAssembly).ToArray());
+				return Delegate.Combine(oldInvokeList.Where(e => e.GetMethodInfo().DeclaringType.GetTypeInfo().Assembly != invalidAssembly).ToArray());
 			}
 			return del;
 		}
@@ -353,22 +368,27 @@ namespace Duality
 		/// <returns></returns>
 		public static bool CanReferenceResource(Type sourceResType, Type targetResType)
 		{
-			if (!typeof(Resource).IsAssignableFrom(sourceResType)) throw new ArgumentException("Only Resource Types are valid.", "sourceResType");
-			if (!typeof(Resource).IsAssignableFrom(targetResType)) throw new ArgumentException("Only Resource Types are valid.", "targetResType");
-			
 			bool result;
 			if (!resRefCache.TryGetValue(new KeyValuePair<Type,Type>(sourceResType, targetResType), out result))
 			{
 				resRefCache[new KeyValuePair<Type,Type>(sourceResType, targetResType)] = false;
+				
+				TypeInfo resourceTypeInfo = typeof(Resource).GetTypeInfo();
+				TypeInfo sourceResTypeInfo = sourceResType.GetTypeInfo();
+				TypeInfo targetResTypeInfo = targetResType.GetTypeInfo();
+
+				if (!resourceTypeInfo.IsAssignableFrom(sourceResTypeInfo)) throw new ArgumentException("Only Resource Types are valid.", "sourceResType");
+				if (!resourceTypeInfo.IsAssignableFrom(targetResTypeInfo)) throw new ArgumentException("Only Resource Types are valid.", "targetResType");
 
 				bool foundIt = false;
 				bool foundAny = false;
-				foreach (ExplicitResourceReferenceAttribute refAttrib in GetAttributesCached<ExplicitResourceReferenceAttribute>(sourceResType))
+				foreach (ExplicitResourceReferenceAttribute refAttrib in sourceResTypeInfo.GetAttributesCached<ExplicitResourceReferenceAttribute>())
 				{
 					foundAny = true;
 					foreach (Type refType in refAttrib.ReferencedTypes)
 					{
-						if (refType.IsAssignableFrom(targetResType) || CanReferenceResource(refType, targetResType))
+						TypeInfo refTypeInfo = refType.GetTypeInfo();
+						if (refTypeInfo.IsAssignableFrom(targetResTypeInfo) || CanReferenceResource(refType, targetResType))
 						{
 							foundIt = true;
 							break;
@@ -390,39 +410,41 @@ namespace Duality
 		/// </summary>
 		/// <param name="baseObj"></param>
 		/// <returns></returns>
-		public static bool IsPlainOldData(this Type type)
+		public static bool IsPlainOldData(this TypeInfo typeInfo)
 		{
 			// Early-out for some obvious cases
-			if (type.IsArray) return false;
-			if (type.IsPrimitive) return true;
-			if (type.IsEnum) return true;
+			if (typeInfo.IsArray) return false;
+			if (typeInfo.IsPrimitive) return true;
+			if (typeInfo.IsEnum) return true;
 
 			// Special cases for some well-known classes
+			Type type = typeInfo.AsType();
 			if (type == typeof(string)) return true;
 			if (type == typeof(decimal)) return true;
 
 			// Otherwise, any class is not plain old data
-			if (type.IsClass) return false;
+			if (typeInfo.IsClass) return false;
 
 			// If we have no evidence so far, check the cache and iterate fields
 			bool isPlainOldData;
-			if (plainOldDataTypeCache.TryGetValue(type, out isPlainOldData))
+			if (plainOldDataTypeCache.TryGetValue(typeInfo, out isPlainOldData))
 			{
 				return isPlainOldData;
 			}
 			else
 			{
 				isPlainOldData = true;
-				foreach (FieldInfo field in type.GetTypeInfo().DeclaredFieldsDeep())
+				foreach (FieldInfo field in typeInfo.DeclaredFieldsDeep())
 				{
 					if (field.IsStatic) continue;
-					if (!IsPlainOldData(field.FieldType))
+					TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
+					if (!IsPlainOldData(fieldTypeInfo))
 					{
 						isPlainOldData = false;
 						break;
 					}
 				}
-				plainOldDataTypeCache[type] = isPlainOldData;
+				plainOldDataTypeCache[typeInfo] = isPlainOldData;
 				return isPlainOldData;
 			}
 		}
@@ -486,39 +508,43 @@ namespace Duality
 		/// <summary>
 		/// Returns a string describing a certain Type.
 		/// </summary>
-		/// <param name="T">The Type to describe</param>
+		/// <param name="type">The Type to describe</param>
 		/// <returns></returns>
-		public static string GetTypeCSCodeName(this Type T, bool shortName = false)
+		public static string GetTypeCSCodeName(this Type type, bool shortName = false)
 		{
 			StringBuilder typeStr = new StringBuilder();
 
-			if (T.IsGenericParameter)
+			if (type.IsGenericParameter)
 			{
-				return T.Name;
+				return type.Name;
 			}
-			if (T.IsArray)
+			if (type.IsArray)
 			{
-				typeStr.Append(GetTypeCSCodeName(T.GetElementType(), shortName));
+				typeStr.Append(GetTypeCSCodeName(type.GetElementType(), shortName));
 				typeStr.Append('[');
-				typeStr.Append(',', T.GetArrayRank() - 1);
+				typeStr.Append(',', type.GetArrayRank() - 1);
 				typeStr.Append(']');
 			}
 			else
 			{
-				Type[] genArgs = T.IsGenericType ? T.GetGenericArguments() : null;
+				TypeInfo typeInfo = type.GetTypeInfo();
+				Type[] genArgs = typeInfo.IsGenericType ? typeInfo.GenericTypeArguments : null;
 
-				if (T.IsNested)
+				if (type.IsNested)
 				{
-					Type declType = T.DeclaringType;
-					if (declType.IsGenericTypeDefinition)
+					Type declType = type.DeclaringType;
+					TypeInfo declTypeInfo = declType.GetTypeInfo();
+
+					if (declTypeInfo.IsGenericTypeDefinition)
 					{
-						Array.Resize(ref genArgs, declType.GetGenericArguments().Length);
-						declType = declType.MakeGenericType(genArgs);
-						genArgs = T.GetGenericArguments().Skip(genArgs.Length).ToArray();
+						Array.Resize(ref genArgs, declTypeInfo.GenericTypeArguments.Length);
+						declType = declTypeInfo.MakeGenericType(genArgs);
+						declTypeInfo = declType.GetTypeInfo();
+						genArgs = type.GenericTypeArguments.Skip(genArgs.Length).ToArray();
 					}
 					string parentName = GetTypeCSCodeName(declType, shortName);
 
-					string[] nestedNameToken = shortName ? T.Name.Split('+') : T.FullName.Split('+');
+					string[] nestedNameToken = shortName ? type.Name.Split('+') : type.FullName.Split('+');
 					string nestedName = nestedNameToken[nestedNameToken.Length - 1];
 						
 					int genTypeSepIndex = nestedName.IndexOf("[[", StringComparison.Ordinal);
@@ -533,20 +559,20 @@ namespace Duality
 				else
 				{
 					if (shortName)
-						typeStr.Append(T.Name.Split(new[] {'`'}, StringSplitOptions.RemoveEmptyEntries)[0].Replace('+', '.'));
+						typeStr.Append(type.Name.Split(new[] {'`'}, StringSplitOptions.RemoveEmptyEntries)[0].Replace('+', '.'));
 					else
-						typeStr.Append(T.FullName.Split(new[] {'`'}, StringSplitOptions.RemoveEmptyEntries)[0].Replace('+', '.'));
+						typeStr.Append(type.FullName.Split(new[] {'`'}, StringSplitOptions.RemoveEmptyEntries)[0].Replace('+', '.'));
 				}
 
 				if (genArgs != null && genArgs.Length > 0)
 				{
-					if (T.IsGenericTypeDefinition)
+					if (typeInfo.IsGenericTypeDefinition)
 					{
 						typeStr.Append('<');
 						typeStr.Append(',', genArgs.Length - 1);
 						typeStr.Append('>');
 					}
-					else if (T.IsGenericType)
+					else if (typeInfo.IsGenericType)
 					{
 						typeStr.Append('<');
 						for (int i = 0; i < genArgs.Length; i++)
@@ -578,8 +604,6 @@ namespace Duality
 		/// <returns></returns>
 		public static string GetMemberId(this MemberInfo member)
 		{
-			if (member is Type)
-				return MemberTokenTypeInfo + ":" + GetTypeId(member as Type);
 			if (member is TypeInfo)
 				return MemberTokenTypeInfo + ":" + GetTypeId((member as TypeInfo).AsType());
 
@@ -720,7 +744,8 @@ namespace Duality
 			string elementTypeName = typeName;
 
 			// Handle Reference
-			if (token[token.Length - 1].LastOrDefault() == '&')
+			string lastToken = token[token.Length - 1];
+			if (lastToken.Length > 0 && lastToken[lastToken.Length - 1] == '&')
 			{
 				Type elementType = ResolveType(typeName.Substring(0, typeName.Length - 1), asmSearch, declaringMethod);
 				if (elementType == null) return null;
@@ -733,7 +758,12 @@ namespace Duality
 			if (arrayMatches.Count > 0)
 			{
 				string rankStr = arrayMatches[arrayMatches.Count - 1].Value;
-				arrayRank = 1 + rankStr.Count(c => c == ',');
+				int commaCount = 0;
+				for (int i = 0; i < rankStr.Length; i++)
+				{
+					if (rankStr[i] == ',') commaCount++;
+				}
+				arrayRank = 1 + commaCount;
 				elementTypeName = elementTypeName.Substring(0, elementTypeName.Length - rankStr.Length);
 			}
 			
@@ -758,9 +788,9 @@ namespace Duality
 			else
 			{
 				// Retrieve base type
-				foreach (Assembly a in asmSearch)
+				foreach (Assembly assembly in asmSearch)
 				{
-					baseType = a.GetType(typeNameBase);
+					baseType = assembly.GetType(typeNameBase);
 					if (baseType != null) break;
 				}
 				// Failed to retrieve base type? Try manually and ignore plus / dot difference.
@@ -768,19 +798,19 @@ namespace Duality
 				{
 					string assemblyNameGuess = typeName.Split('.', '+').FirstOrDefault();
 					IEnumerable<Assembly> sortedAsmSearch = asmSearch.OrderByDescending(a => a.GetShortAssemblyName() == assemblyNameGuess);
-					foreach (Assembly a in sortedAsmSearch)
+					foreach (Assembly assembly in sortedAsmSearch)
 					{
 						// Try to retrieve all Types from the current Assembly
-						Type[] types;
-						try { types = a.GetTypes(); }
+						TypeInfo[] definedTypes;
+						try { definedTypes = assembly.DefinedTypes.ToArray(); }
 						catch (Exception) { continue; }
 
 						// Iterate and manually compare names
-						foreach (Type t in types)
+						foreach (TypeInfo typeInfo in definedTypes)
 						{
-							if (IsFullTypeNameEqual(typeNameBase, t.FullName))
+							if (IsFullTypeNameEqual(typeNameBase, typeInfo.FullName))
 							{
-								baseType = t;
+								baseType = typeInfo.AsType();
 								break;
 							}
 						}
@@ -791,8 +821,11 @@ namespace Duality
 				if (baseType == null)
 				{
 					ResolveMemberEventArgs args = new ResolveMemberEventArgs(typeNameBase);
-					if (TypeResolve != null) TypeResolve(null, args);
-					baseType = args.ResolvedMember as Type;
+					if (TypeResolve != null)
+					{
+						TypeResolve(null, args);
+					}
+					baseType = (args.ResolvedMember is TypeInfo) ? (args.ResolvedMember as TypeInfo).AsType() : null;
 				}
 			}
 			
@@ -826,20 +859,20 @@ namespace Duality
 			string[] token = memberString.Split(':');
 
 			char memberTypeToken;
-			TypeInfo declaringType;
+			Type declaringType;
 
 			// If there is no member type token, it is actually a type id.
 			if (token.Length == 1)
 			{
 				Type type = ResolveType(token[0], asmSearch, null);
-				declaringType = type != null ? type.GetTypeInfo() : null;
+				declaringType = type != null ? type : null;
 				memberTypeToken = MemberTokenTypeInfo;
 			}
 			// Otherwise, determine the member type using the member type token
 			else if (token.Length > 1)
 			{
 				Type type = ResolveType(token[1], asmSearch, null);
-				declaringType = type != null ? type.GetTypeInfo() : null;
+				declaringType = type != null ? type : null;
 				memberTypeToken = (token[0].Length > 0) ? token[0][0] : MemberTokenUndefined;
 			}
 			// If we have nothing (empty string, etc.), fail
@@ -851,9 +884,11 @@ namespace Duality
 
 			if (declaringType != null && memberTypeToken != ' ')
 			{
+				TypeInfo declaringTypeInfo = declaringType.GetTypeInfo();
+
 				if (memberTypeToken == MemberTokenTypeInfo)
 				{
-					return declaringType;
+					return declaringType.GetTypeInfo();
 				}
 				else if (memberTypeToken == MemberTokenFieldInfo)
 				{
@@ -877,7 +912,7 @@ namespace Duality
 					if (memberTypeToken == MemberTokenConstructorInfo)
 					{
 						bool lookForStatic = memberName == "s";
-						ConstructorInfo[] availCtors = declaringType.DeclaredConstructors.Where(m => 
+						ConstructorInfo[] availCtors = declaringTypeInfo.DeclaredConstructors.Where(m => 
 							m.IsStatic == lookForStatic && 
 							m.GetParameters().Length == memberParams.Length).ToArray();
 						foreach (ConstructorInfo ctor in availCtors)

@@ -257,9 +257,12 @@ namespace Duality.Tests.Resources
 
 			foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
 			{
-				if (!property.PropertyType.IsPlainOldData()) continue;
+				TypeInfo propertyTypeInfo = property.PropertyType.GetTypeInfo();
+				if (!propertyTypeInfo.IsPlainOldData()) continue;
+
 				object va = property.GetValue(a, null);
 				object vb = property.GetValue(b, null);
+
 				if (!object.Equals(va, vb)) return false;
 			}
 

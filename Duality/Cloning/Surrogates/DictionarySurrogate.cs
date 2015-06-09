@@ -18,9 +18,11 @@ namespace Duality.Cloning.Surrogates
 		{
 			Type dictType = source.GetType();
 			Type[] genArgs = dictType.GetGenericArguments();
+			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
+			TypeInfo secondGenArgInfo = genArgs[1].GetTypeInfo();
 
 			// Handle all keys and values. Reuse existing objects wherever possible.
-			if (!genArgs[0].IsPlainOldData())
+			if (!firstGenArgInfo.IsPlainOldData())
 			{
 				if (source == target)
 				{
@@ -33,7 +35,7 @@ namespace Duality.Cloning.Surrogates
 						setup.HandleObject(key, null);
 				}
 			}
-			if (!genArgs[1].IsPlainOldData())
+			if (!secondGenArgInfo.IsPlainOldData())
 			{
 				if (source == target)
 				{
@@ -51,10 +53,12 @@ namespace Duality.Cloning.Surrogates
 		{
 			Type dictType = source.GetType();
 			Type[] genArgs = dictType.GetGenericArguments();
+			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
+			TypeInfo secondGenArgInfo = genArgs[1].GetTypeInfo();
 
 			// Determine unwrapping behavior to provide faster / more optimized loops.
-			bool isKeyPlainOld = genArgs[0].IsPlainOldData();
-			bool isValuePlainOld = genArgs[1].IsPlainOldData();
+			bool isKeyPlainOld = firstGenArgInfo.IsPlainOldData();
+			bool isValuePlainOld = secondGenArgInfo.IsPlainOldData();
 
 			// Copy all pairs. Don't check each pair, if the Type won't be unwrapped anyway.
 			target.Clear();
