@@ -157,4 +157,12 @@ namespace Duality.Tests.Serialization
 			return first.SetEqual(second);
 		}
 	}
+	public class MemberInfoTestObject
+	{
+		public int Field;
+		public event EventHandler Event;
+		public int Property { get { return 0; } }
+		public int Method(string param) { return 0; }
+		public MemberInfoTestObject() { }
+	}
 }

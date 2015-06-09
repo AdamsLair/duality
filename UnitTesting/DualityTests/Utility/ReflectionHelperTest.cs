@@ -66,6 +66,44 @@ namespace Duality.Tests.Utility
 			ReflectionHelper.VisitObjectsDeep<string>(visitedRoot, s => { visitedCount++; return s; });
 			Assert.AreEqual(3, visitedCount);
 		}
+		[Test] public void CreateInstanceOf()
+		{
+			// Primitive types
+			Assert.IsTrue(CheckCreateInstance<bool>());
+			Assert.IsTrue(CheckCreateInstance<byte>());
+			Assert.IsTrue(CheckCreateInstance<sbyte>());
+			Assert.IsTrue(CheckCreateInstance<short>());
+			Assert.IsTrue(CheckCreateInstance<ushort>());
+			Assert.IsTrue(CheckCreateInstance<int>());
+			Assert.IsTrue(CheckCreateInstance<uint>());
+			Assert.IsTrue(CheckCreateInstance<float>());
+			Assert.IsTrue(CheckCreateInstance<double>());
+
+			// Pseudo-primitive types
+			Assert.IsTrue(CheckCreateInstance<string>());
+			Assert.IsTrue(CheckCreateInstance<decimal>());
+
+			// Arrays
+			Assert.IsTrue(CheckCreateInstance<int[]>());
+			Assert.IsTrue(CheckCreateInstance<string[]>());
+			Assert.IsTrue(CheckCreateInstance<object[]>());
+
+			// Structs
+			Assert.IsTrue(CheckCreateInstance<TestCreateStructRegular>());
+
+			// Classes
+			Assert.IsTrue(CheckCreateInstance<TestCreateClassRegular>());
+			Assert.IsTrue(CheckCreateInstance<TestCreateClassPrivate>());
+			Assert.IsTrue(CheckCreateInstance<TestCreateClassNonEmpty>());
+
+			// Some Collections
+			Assert.IsTrue(CheckCreateInstance<List<int>>());
+			Assert.IsTrue(CheckCreateInstance<Dictionary<string,object>>());
+
+			// Things that can't be created
+			Assert.IsFalse(CheckCreateInstance<IDisposable>());
+			Assert.IsFalse(CheckCreateInstance<TestCreateClassAbstract>());
+		}
 
 		private class TestVisitorClass
 		{
@@ -76,7 +114,7 @@ namespace Duality.Tests.Utility
 			public object ObjectField;
 		}
 
-		public class TestMemberClass
+		internal class TestMemberClass
 		{
 			public string SomeField;
 			public event EventHandler SomeEvent;
@@ -96,6 +134,28 @@ namespace Duality.Tests.Utility
 			public class SomeClass {}
 		}
 
+		private struct TestCreateStructRegular { }
+		public class TestCreateClassRegular
+		{
+			public TestCreateClassRegular() { }
+		}
+		public class TestCreateClassPrivate
+		{
+			private TestCreateClassPrivate() { }
+		}
+		public class TestCreateClassNonEmpty
+		{
+			public TestCreateClassNonEmpty(string value) { }
+		}
+		public abstract class TestCreateClassAbstract { }
+
+		private bool CheckCreateInstance<T>()
+		{
+			if (typeof(T).IsValueType)
+				return object.Equals(default(T), typeof(T).CreateInstanceOf());
+			else
+				return typeof(T).CreateInstanceOf() != null;
+		}
 		private bool CheckResolveType<T>()
 		{
 			Type type = typeof(T);

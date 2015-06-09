@@ -49,18 +49,20 @@ namespace Duality.Tests.Serialization
 		}
 		[Test] public void SerializeMemberInfo()
 		{
-			Type type = typeof(Dictionary<string,int>);
+			Type type = typeof(MemberInfoTestObject);
 			TypeInfo typeInfo = type.GetTypeInfo();
-			FieldInfo fieldInfo = typeInfo.GetRuntimeFields().FirstOrDefault();
-			PropertyInfo propertyInfo = typeInfo.GetRuntimeProperties().FirstOrDefault();
-			MethodInfo methodInfo = typeInfo.GetRuntimeMethods().FirstOrDefault();
+			FieldInfo fieldInfo = type.GetRuntimeFields().FirstOrDefault();
+			PropertyInfo propertyInfo = type.GetRuntimeProperties().FirstOrDefault();
+			MethodInfo methodInfo = type.GetRuntimeMethods().FirstOrDefault();
 			ConstructorInfo constructorInfo = typeInfo.DeclaredConstructors.FirstOrDefault();
+			EventInfo eventInfo = type.GetRuntimeEvents().FirstOrDefault();
 
 			this.TestWriteRead(type,			this.PrimaryFormat);
 			this.TestWriteRead(fieldInfo,		this.PrimaryFormat);
 			this.TestWriteRead(propertyInfo,	this.PrimaryFormat);
 			this.TestWriteRead(methodInfo,		this.PrimaryFormat);
 			this.TestWriteRead(constructorInfo,	this.PrimaryFormat);
+			this.TestWriteRead(eventInfo,		this.PrimaryFormat);
 		}
 		[Test] public void SerializeFlatStruct()
 		{
