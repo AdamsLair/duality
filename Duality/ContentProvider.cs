@@ -435,7 +435,7 @@ namespace Duality
 		}
 		private static Resource LoadContent(string path)
 		{
-			if (string.IsNullOrEmpty(path) || !File.Exists(path)) return null;
+			if (string.IsNullOrEmpty(path) || IsDefaultContentPath(path) || !File.Exists(path)) return null;
 
 			Log.Core.Write("Loading Resource '{0}'...", path);
 			Log.Core.PushIndent();
