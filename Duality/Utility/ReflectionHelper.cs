@@ -41,48 +41,6 @@ namespace Duality
 		public static event EventHandler<ResolveMemberEventArgs> MemberResolve	= null;
 
 		/// <summary>
-		/// Returns whether two MemberInfo objects are equal.
-		/// </summary>
-		/// <param name="lhs">The first MemberInfo.</param>
-		/// <param name="rhs">The second MemberInfo.</param>
-		/// <returns></returns>
-		public static bool MemberInfoEquals(MemberInfo lhs, MemberInfo rhs)
-		{
-			if (lhs == rhs)
-				return true;
- 
-			if (lhs.DeclaringType != rhs.DeclaringType)
-				return false;
- 
-			// Methods on arrays do not have metadata tokens but their ReflectedType
-			// always equals their DeclaringType
-			if (lhs.DeclaringType != null && lhs.DeclaringType.IsArray)
-				return false;
- 
-			if (lhs.MetadataToken != rhs.MetadataToken || lhs.Module != rhs.Module)
-				return false;
- 
-			if (lhs is MethodInfo)
-			{
-				MethodInfo lhsMethod = lhs as MethodInfo;
- 
-				if (lhsMethod.IsGenericMethod)
-				{
-					MethodInfo rhsMethod = rhs as MethodInfo;
- 
-					Type[] lhsGenArgs = lhsMethod.GetGenericArguments();
-					Type[] rhsGenArgs = rhsMethod.GetGenericArguments();
-					for (int i = 0; i < rhsGenArgs.Length; i++)
-					{
-						if (lhsGenArgs[i] != rhsGenArgs[i])
-							return false;
-					}
-				}
-			}
-			return true;
-		}
-
-		/// <summary>
 		/// Returns all custom attributes of the specified Type that are attached to the specified member.
 		/// Inherites attributes are returned as well. This method is usually faster than <see cref="Attribute.GetCustomAttributes"/>,
 		/// because it caches previous results internally.

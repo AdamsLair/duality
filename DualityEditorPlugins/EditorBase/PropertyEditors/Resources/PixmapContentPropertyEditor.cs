@@ -24,10 +24,10 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnPropertySet(PropertyInfo property, IEnumerable<object> targets)
 		{
 			base.OnPropertySet(property, targets);
-			if (ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_AnimCols) ||
-				ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_AnimRows) ||
-				ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_AnimFrameBorder) ||
-				ReflectionHelper.MemberInfoEquals(property, ReflectionInfo.Property_Pixmap_Atlas))
+			if (property.IsEquivalent(ReflectionInfo.Property_Pixmap_AnimCols) ||
+				property.IsEquivalent(ReflectionInfo.Property_Pixmap_AnimRows) ||
+				property.IsEquivalent(ReflectionInfo.Property_Pixmap_AnimFrameBorder) ||
+				property.IsEquivalent(ReflectionInfo.Property_Pixmap_Atlas))
 			{
 				this.PerformGetValue();
 				(this.ParentEditor as PixmapPropertyEditor).UpdatePreview();

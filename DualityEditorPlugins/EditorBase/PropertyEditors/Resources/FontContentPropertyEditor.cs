@@ -14,7 +14,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	{
 		protected override PropertyEditor AutoCreateMemberEditor(MemberInfo info)
 		{
-			if (ReflectionHelper.MemberInfoEquals(info, ReflectionInfo.Property_Font_Family))
+			if (info.IsEquivalent(ReflectionInfo.Property_Font_Family))
 			{
 				ObjectSelectorPropertyEditor e = new ObjectSelectorPropertyEditor();
 				e.EditedType = (info as System.Reflection.PropertyInfo).PropertyType;

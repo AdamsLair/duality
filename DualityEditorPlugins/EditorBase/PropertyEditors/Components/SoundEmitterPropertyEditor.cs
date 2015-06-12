@@ -40,7 +40,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		protected override bool IsAutoCreateMember(MemberInfo info)
 		{
-			if (ReflectionHelper.MemberInfoEquals(info, ReflectionInfo.Property_SoundEmitter_Sources)) return false;
+			if (info.IsEquivalent(ReflectionInfo.Property_SoundEmitter_Sources)) return false;
 			return base.IsAutoCreateMember(info);
 		}
 		protected override void OnUpdateFromObjects(object[] values)

@@ -466,7 +466,7 @@ namespace Duality.Resources
 		/// <param name="value">The value to which the specified Property has been changed to.</param>
 		public void PushChange(object target, PropertyInfo prop, object value)
 		{
-			if (ReflectionHelper.MemberInfoEquals(prop, ReflectionInfo.Property_GameObject_Parent)) return; // Reject changing "Parent" as it would destroy the PrefabLink
+			if (prop.IsEquivalent(ReflectionInfo.Property_GameObject_Parent)) return; // Reject changing "Parent" as it would destroy the PrefabLink
 			if (!prop.CanWrite) return;
 			if (this.changes == null) this.changes = new List<VarMod>();
 

@@ -17,7 +17,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	{
 		protected override PropertyEditor AutoCreateMemberEditor(MemberInfo info)
 		{
-			if (ReflectionHelper.MemberInfoEquals(info, ReflectionInfo.Property_DrawTechnique_PreferredVertexFormat))
+			if (info.IsEquivalent(ReflectionInfo.Property_DrawTechnique_PreferredVertexFormat))
 			{
 				List<VertexDeclaration> vertexTypes = new List<VertexDeclaration>();
 				vertexTypes.Add(null);

@@ -35,8 +35,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		protected override bool IsAutoCreateMember(MemberInfo info)
 		{
-			if (ReflectionHelper.MemberInfoEquals(info, ReflectionInfo.Property_BatchInfo_MainColor)) return true;
-			if (ReflectionHelper.MemberInfoEquals(info, ReflectionInfo.Property_BatchInfo_Technique)) return true;
+			if (info.IsEquivalent(ReflectionInfo.Property_BatchInfo_MainColor)) return true;
+			if (info.IsEquivalent(ReflectionInfo.Property_BatchInfo_Technique)) return true;
 			return false;
 		}
 		protected override void OnUpdateFromObjects(object[] values)

@@ -146,7 +146,7 @@ namespace Duality.Editor
 
 		public bool HasProperty(PropertyInfo info)
 		{
-			return this.completeChange || this.propInfos.Any(i => ReflectionHelper.MemberInfoEquals(i, info));
+			return this.completeChange || this.propInfos.Any(i => i.IsEquivalent(info));
 		}
 		public bool HasProperty(string name)
 		{
