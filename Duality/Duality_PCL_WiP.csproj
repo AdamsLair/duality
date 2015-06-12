@@ -159,6 +159,7 @@
     <Compile Include="Utility\EditorHints\EditorHintRangeAttribute.cs" />
     <Compile Include="Utility\EditorHints\MemberFlags.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsMemberInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsPropertyInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsTypeInfo.cs" />
