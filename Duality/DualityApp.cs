@@ -441,6 +441,7 @@ namespace Duality
 		/// <summary>
 		/// Initializes the part of Duality that requires a valid rendering context. 
 		/// Should be called before performing any rendering related operations with Duality.
+		/// Is called implicitly when using <see cref="OpenWindow"/>.
 		/// </summary>
 		public static void InitPostWindow()
 		{
