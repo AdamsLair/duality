@@ -63,6 +63,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleLogOutput.cs" />
     <Compile Include="SafeNativeMethods.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Program.cs" />

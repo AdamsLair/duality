@@ -1,18 +1,13 @@
 ﻿using System;
 
-namespace Duality
+namespace Duality.Launcher
 {
 	/// <summary>
 	/// A <see cref="ILogOutput">Log output</see> that uses the <see cref="System.Console"/> as message destination.
 	/// </summary>
 	public class ConsoleLogOutput : TextWriterLogOutput
 	{
-		private	ConsoleColor	bgColor;
-
-		public ConsoleLogOutput(ConsoleColor bgColor = ConsoleColor.Black) : base(Console.Out)
-		{
-			this.bgColor = bgColor;
-		}
+		public ConsoleLogOutput() : base(Console.Out) { }
 		
 		/// <summary>
 		/// Writes a single message to the output.
@@ -26,7 +21,11 @@ namespace Duality
 			ConsoleColor clrBg = Console.BackgroundColor;
 			ConsoleColor clrFg = Console.ForegroundColor;
 
-			Console.BackgroundColor = this.bgColor;
+			if (source == Log.Game)					Console.BackgroundColor = ConsoleColor.DarkGray;
+			else if (source == Log.Core)			Console.BackgroundColor = ConsoleColor.DarkBlue;
+			else if (source == Log.Editor)			Console.BackgroundColor = ConsoleColor.DarkMagenta;
+			else									Console.BackgroundColor = ConsoleColor.Black;
+
 			if (type == LogMessageType.Warning)		Console.ForegroundColor = ConsoleColor.Yellow;
 			else if (type == LogMessageType.Error)	Console.ForegroundColor = ConsoleColor.Red;
 			else									Console.ForegroundColor = ConsoleColor.Gray;

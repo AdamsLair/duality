@@ -19,7 +19,7 @@ namespace Duality.Tests
 		private	string				oldEnvDir			= null;
 		private	CorePlugin			unitTestPlugin		= null;
 		private	INativeWindow		dummyWindow			= null;
-		private	ConsoleLogOutput	consoleLogOutput	= null;
+		private	TextWriterLogOutput	consoleLogOutput	= null;
 
 		public ActionTargets Targets
 		{
@@ -39,12 +39,10 @@ namespace Duality.Tests
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
 
 			// Add some Console logs manually for NUnit
-			if (!Log.Game.Outputs.OfType<ConsoleLogOutput>().Any())
+			if (!Log.Core.Outputs.OfType<TextWriterLogOutput>().Any(o => o.Target == Console.Out))
 			{
-				if (this.consoleLogOutput == null) this.consoleLogOutput = new ConsoleLogOutput();
-				Log.Game.AddOutput(this.consoleLogOutput);
-				Log.Core.AddOutput(this.consoleLogOutput);
-				Log.Editor.AddOutput(this.consoleLogOutput);
+				if (this.consoleLogOutput == null) this.consoleLogOutput = new TextWriterLogOutput(Console.Out);
+				Log.AddGlobalOutput(this.consoleLogOutput);
 			}
 
 			// Initialize Duality
@@ -74,9 +72,7 @@ namespace Duality.Tests
 			Console.WriteLine("----- Beginning Duality environment teardown -----");
 			
 			// Remove NUnit Console logs
-			Log.Game.RemoveOutput(this.consoleLogOutput);
-			Log.Core.RemoveOutput(this.consoleLogOutput);
-			Log.Editor.RemoveOutput(this.consoleLogOutput);
+			Log.RemoveGlobalOutput(this.consoleLogOutput);
 			this.consoleLogOutput = null;
 
 			if (this.dummyWindow != null)

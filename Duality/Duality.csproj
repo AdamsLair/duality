@@ -253,7 +253,6 @@
     <Compile Include="Utility\Profiling\TimeCounter.cs" />
     <Compile Include="Utility\Profiling\ProfileCounter.cs" />
     <Compile Include="Utility\Profiling\Profile.cs" />
-    <Compile Include="Utility\Log\ConsoleLogOutput.cs" />
     <Compile Include="ContentProvider.cs" />
     <Compile Include="Utility\DualityEventArgs.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIList.cs" />

@@ -4,7 +4,9 @@ using System.Threading;
 using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
+using Duality;
 using Duality.Editor.Properties;
 using Duality.Editor.Forms;
 using Duality.Editor.PackageManagement;
@@ -32,6 +34,22 @@ namespace Duality.Editor
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
+			// Set up file logging
+			StreamWriter logfileWriter = null;
+			TextWriterLogOutput logfileOutput = null;
+			try
+			{
+				logfileWriter = new StreamWriter(DualityEditorApp.EditorLogfilePath);
+				logfileWriter.AutoFlush = true;
+				logfileOutput = new TextWriterLogOutput(logfileWriter);
+				Log.AddGlobalOutput(logfileOutput);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteWarning("Text Logfile unavailable: {0}", Log.Exception(e));
+			}
+
+			// Winforms Setup
 			Application.CurrentCulture = Thread.CurrentThread.CurrentCulture;
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
@@ -82,12 +100,22 @@ namespace Duality.Editor
 			SplashScreen splashScreen = new SplashScreen(recover);
 			splashScreen.Show();
 			Application.Run();
+
+			// Clean up the log file
+			if (logfileWriter != null)
+			{
+				Log.RemoveGlobalOutput(logfileOutput);
+				logfileWriter.Flush();
+				logfileWriter.Close();
+				logfileWriter = null;
+				logfileOutput = null;
+			}
 		}
 		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
 		{
 			try
 			{
-				Duality.Log.Editor.WriteError("An error occurred: {0}", Duality.Log.Exception(e.Exception));
+				Log.Editor.WriteError("An error occurred: {0}", Log.Exception(e.Exception));
 			}
 			catch (Exception) { /* Assure we're not causing any further exception by logging... */ }
 		}

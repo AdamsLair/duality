@@ -8,11 +8,16 @@ namespace Duality
 	/// </summary>
 	public class TextWriterLogOutput : ILogOutput
 	{
-		private	TextWriter		writer	= null;
+		private	TextWriter target = null;
 
-		public TextWriterLogOutput(TextWriter writer)
+		public TextWriter Target
 		{
-			this.writer = writer;
+			get { return this.target; }
+		}
+
+		public TextWriterLogOutput(TextWriter target)
+		{
+			this.target = target;
 		}
 		
 		/// <summary>
@@ -49,7 +54,7 @@ namespace Duality
 					lines[i] = new string(' ', prefix.Length + 9 + indent * 4) + lines[i];
 				}
 
-				this.writer.WriteLine(lines[i]);
+				this.target.WriteLine(lines[i]);
 			}
 		}
 	}

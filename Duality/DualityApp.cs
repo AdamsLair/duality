@@ -74,9 +74,6 @@ namespace Duality
 		private	static	bool						isUpdating			= false;
 		private	static	bool						runFromEditor		= false;
 		private	static	bool						terminateScheduled	= false;
-		private	static	string						logfilePath			= "logfile.txt";
-		private	static	StreamWriter				logfile				= null;
-		private	static	TextWriterLogOutput			logfileOutput		= null;
 		private	static	IGraphicsBackend			graphicsBack		= null;
 		private	static	IAudioBackend				audioBack			= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
@@ -259,13 +256,6 @@ namespace Duality
 			}
 		}
 		/// <summary>
-		/// [GET] Returns the path where the current logfile is located at.
-		/// </summary>
-		public static string LogfilePath
-		{
-			get { return logfilePath; }
-		}
-		/// <summary>
 		/// [GET] Returns the <see cref="ExecutionContext"/> in which this DualityApp is currently running.
 		/// </summary>
 		public static ExecutionContext ExecContext
@@ -329,32 +319,10 @@ namespace Duality
 				if (args.Contains(CmdArgDebug)) System.Diagnostics.Debugger.Launch();
 				// Run from editor
 				if (args.Contains(CmdArgEditor)) runFromEditor = true;
-				// Set logfile path
-				if (logArgIndex != -1)
-				{
-					logfilePath = args[logArgIndex];
-					if (string.IsNullOrWhiteSpace(Path.GetExtension(logfilePath)))
-						logfilePath += ".txt";
-				}
 			}
 
 			environment = env;
 			execContext = context;
-
-			// Initialize Logfile
-			try
-			{
-				logfile = new StreamWriter(logfilePath);
-				logfile.AutoFlush = true;
-				logfileOutput = new TextWriterLogOutput(logfile);
-				Log.Game.AddOutput(logfileOutput);
-				Log.Core.AddOutput(logfileOutput);
-				Log.Editor.AddOutput(logfileOutput);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteWarning("Text Logfile unavailable: {0}", Log.Exception(e));
-			}
 
 			// Assure Duality is properly terminated in any case and register additional AppDomain events
 			AppDomain.CurrentDomain.ProcessExit			+= CurrentDomain_ProcessExit;
@@ -491,18 +459,6 @@ namespace Duality
 				ClearPlugins();
 				Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 				Log.Core.Write("DualityApp terminated");
-			}
-
-			// Terminate Logfile
-			if (logfile != null)
-			{
-				Log.Game.RemoveOutput(logfileOutput);
-				Log.Core.RemoveOutput(logfileOutput);
-				Log.Editor.RemoveOutput(logfileOutput);
-				logfileOutput = null;
-				logfile.Flush();
-				logfile.Close();
-				logfile = null;
 			}
 
 			initialized = false;

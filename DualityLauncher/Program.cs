@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.IO;
 using System.Drawing;
 
 using Duality;
@@ -22,7 +23,26 @@ namespace Duality.Launcher
 			bool isRunFromEditor = args.Contains(DualityApp.CmdArgEditor);
 			bool isProfiling = args.Contains(DualityApp.CmdArgProfiling);
 			if (isDebugging || isRunFromEditor) ShowConsole();
+			
+			// Set up console logging
+			Log.AddGlobalOutput(new ConsoleLogOutput());
 
+			// Set up file logging
+			StreamWriter logfileWriter = null;
+			TextWriterLogOutput logfileOutput = null;
+			try
+			{
+				logfileWriter = new StreamWriter("logfile.txt");
+				logfileWriter.AutoFlush = true;
+				logfileOutput = new TextWriterLogOutput(logfileWriter);
+				Log.AddGlobalOutput(logfileOutput);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteWarning("Text Logfile unavailable: {0}", Log.Exception(e));
+			}
+
+			// Write initial log message before actually booting Duality
 			Log.Core.Write("Running DualityLauncher with flags: {1}{0}", 
 				Environment.NewLine,
 				new[] { isDebugging ? "Debugging" : null, isProfiling ? "Profiling" : null, isRunFromEditor ? "RunFromEditor" : null }.NotNull().ToString(", "));
@@ -51,6 +71,16 @@ namespace Duality.Launcher
 
 			// Shut down the Duality core
 			DualityApp.Terminate();
+			
+			// Clean up the log file
+			if (logfileWriter != null)
+			{
+				Log.RemoveGlobalOutput(logfileOutput);
+				logfileWriter.Flush();
+				logfileWriter.Close();
+				logfileWriter = null;
+				logfileOutput = null;
+			}
 		}
 
 		private static bool hasConsole = false;

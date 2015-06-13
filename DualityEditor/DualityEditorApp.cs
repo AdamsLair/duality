@@ -59,6 +59,7 @@ namespace Duality.Editor
 
 	public static class DualityEditorApp
 	{
+		public	const	string	EditorLogfilePath		= "logfile_editor.txt";
 		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
 		public	const	string	UserDataFile			= "EditorUserData.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
@@ -233,7 +234,7 @@ namespace Duality.Editor
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
 			DualityApp.PluginReady += DualityApp_PluginReady;
-			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, new[] {"logfile", "logfile_editor"});
+			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor);
 			
 			// Need to load editor plugins before initializing the graphics context, so the backend is available
 			LoadPlugins();

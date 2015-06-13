@@ -72,10 +72,19 @@ namespace Duality
 			logGame		= new Log("Game", state, data);
 			logCore		= new Log("Core", state, data);
 			logEditor	= new Log("Edit", state, data);
+		}
 
-			logGame.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkGray));
-			logCore.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkBlue));
-			logEditor.AddOutput(new ConsoleLogOutput(ConsoleColor.DarkMagenta));
+		public static void AddGlobalOutput(ILogOutput output)
+		{
+			logGame.AddOutput(output);
+			logCore.AddOutput(output);
+			logEditor.AddOutput(output);
+		}
+		public static void RemoveGlobalOutput(ILogOutput output)
+		{
+			logGame.RemoveOutput(output);
+			logCore.RemoveOutput(output);
+			logEditor.RemoveOutput(output);
 		}
 
 
