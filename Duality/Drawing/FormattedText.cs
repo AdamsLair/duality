@@ -1338,63 +1338,6 @@ namespace Duality.Drawing
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="target"></param>
-		public void RenderToBitmap(string text, System.Drawing.Image target, float x = 0.0f, float y = 0.0f, System.Drawing.Image icons = null)
-		{
-			using (System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(target))
-			{
-				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-
-				// Rendering
-				int fontNum = this.fonts != null ? this.fonts.Length : 0;
-				RenderState state = new RenderState(this);
-				Element elem;
-				while ((elem = state.NextElement()) != null)
-				{
-					if (elem is TextElement && state.Font != null)
-					{
-						TextElement textElem = elem as TextElement;
-						state.Font.RenderToBitmap(
-							state.CurrentElemText, 
-							target, 
-							x + state.CurrentElemOffset.X, 
-							y + state.CurrentElemOffset.Y + state.LineBaseLine - state.Font.BaseLine, 
-							state.Color);
-					}
-					else if (elem is IconElement)
-					{
-						IconElement iconElem = elem as IconElement;
-						Icon icon = iconElem.IconIndex >= 0 && iconElem.IconIndex < this.icons.Length ? this.icons[iconElem.IconIndex] : new Icon();
-						Vector2 iconSize = icon.size;
-						Vector2 iconOffset = icon.offset;
-						Rect iconUvRect = icon.uvRect;
-						Vector2 dataCoord = iconUvRect.Pos * new Vector2(icons.Width, icons.Height);
-						Vector2 dataSize = iconUvRect.Size * new Vector2(icons.Width, icons.Height);
-						
-						var attrib = new System.Drawing.Imaging.ImageAttributes();
-						attrib.SetColorMatrix(new System.Drawing.Imaging.ColorMatrix(new[] {
-							new[] {state.Color.R / 255.0f, 0, 0, 0},
-							new[] {0, state.Color.G / 255.0f, 0, 0},
-							new[] {0, 0, state.Color.B / 255.0f, 0},
-							new[] {0, 0, 0, state.Color.A / 255.0f} }));
-						g.DrawImage(icons,
-							new System.Drawing.Rectangle(
-								MathF.RoundToInt(x + state.CurrentElemOffset.X + iconOffset.X), 
-								MathF.RoundToInt(y + state.CurrentElemOffset.Y + state.LineBaseLine - iconSize.Y + iconOffset.Y), 
-								MathF.RoundToInt(iconSize.X), 
-								MathF.RoundToInt(iconSize.Y)),
-							dataCoord.X, dataCoord.Y, dataSize.X, dataSize.Y,
-							System.Drawing.GraphicsUnit.Pixel,
-							attrib);
-					}
-				}
-			}
-		}
-		/// <summary>
-		/// Renders a text to the specified target Image.
-		/// </summary>
-		/// <param name="text"></param>
-		/// <param name="target"></param>
 		public void RenderToBitmap(string text, PixelData target, float x = 0.0f, float y = 0.0f, PixelData icons = null)
 		{
 			// Rendering
