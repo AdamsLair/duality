@@ -10,8 +10,8 @@
 	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>The default backend layer for the Duality editor.</summary>
-    <description>The default backend layer for the Duality editor. It uses OpenGL WinForms controls to integrate game views with editor UI.</description>
+	<summary>The default editor backend layer for Duality.</summary>
+    <description>The default editor backend layer for Duality. It uses OpenGL WinForms controls to integrate game views with editor UI.</description>
 	<tags>Duality Editor Plugin Backend</tags>
     <dependencies>
       <dependency id="AdamsLair.Duality.Backend.DefaultOpenTK" version="1.0.0" />

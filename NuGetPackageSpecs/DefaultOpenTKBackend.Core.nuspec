@@ -10,8 +10,8 @@
 	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>The default backend layer for Duality.</summary>
-    <description>The default backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
+	<summary>The default audiovisual backend layer for Duality.</summary>
+    <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
 	<tags>Duality Core Plugin Backend</tags>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.0.0" />
