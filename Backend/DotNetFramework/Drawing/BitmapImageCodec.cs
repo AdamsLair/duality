@@ -8,7 +8,10 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace Duality.Drawing
+using Duality;
+using Duality.Drawing;
+
+namespace Duality.Backend.DotNetFramework
 {
 	public class BitmapImageCodec : IImageCodec
 	{

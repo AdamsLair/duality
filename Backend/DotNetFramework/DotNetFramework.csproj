@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{35045E2E-7748-4D1D-BE05-BF72A19C295F}</ProjectGuid>
+    <ProjectGuid>{FDA91F3F-1626-4E41-A1FC-2C3F45754CE4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Duality.Backend.DefaultOpenTK</RootNamespace>
-    <AssemblyName>DefaultOpenTKBackend.core</AssemblyName>
+    <RootNamespace>Duality.Backend.DotNetFramework</RootNamespace>
+    <AssemblyName>DotNetFrameworkBackend.core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
@@ -38,33 +38,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AdamsLair.OpenTK.1.1.2.0\lib\net20\OpenTK.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\Audio\AudioBackend.cs" />
-    <Compile Include="Backend\Audio\AudioLibraryLoader.cs" />
-    <Compile Include="Backend\Graphics\ExtMethodsColorDataElementType.cs" />
-    <Compile Include="Backend\Input\GameWindowKeyboardInputSource.cs" />
-    <Compile Include="Backend\Input\GameWindowMouseInputSource.cs" />
-    <Compile Include="Backend\Input\GlobalGamepadInputSource.cs" />
-    <Compile Include="Backend\Input\GlobalJoystickInputSource.cs" />
-    <Compile Include="Backend\Graphics\GraphicsBackend.cs" />
-    <Compile Include="Backend\Audio\NativeAudioBuffer.cs" />
-    <Compile Include="Backend\Audio\NativeAudioSource.cs" />
-    <Compile Include="Backend\Graphics\NativeRenderTarget.cs" />
-    <Compile Include="Backend\Graphics\ExtMethodsColorDataLayout.cs" />
-    <Compile Include="Backend\Graphics\NativeShaderPart.cs" />
-    <Compile Include="Backend\Graphics\NativeShaderProgram.cs" />
-    <Compile Include="Backend\Graphics\NativeWindow.cs" />
-    <Compile Include="Backend\Graphics\NativeTexture.cs" />
-    <Compile Include="Backend\Graphics\GraphicsModeComparer.cs" />
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="Drawing\BitmapImageCodec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,34 +57,14 @@
       <Name>Duality</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="OpenALSoft32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="OpenALSoft64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>mkdir  "$(SolutionDir)DualityLauncher\bin\$(ConfigurationName)\Plugins"
 copy "$(TargetPath)" "$(SolutionDir)DualityLauncher\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)DualityLauncher\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)DualityLauncher\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)DualityLauncher\bin\$(ConfigurationName)\Plugins"
 mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
 copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
 mkdir  "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"
-copy "$(TargetDir)OpenTK.dll" "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"
-copy "$(TargetDir)OpenALSoft32.dll" "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"
-copy "$(TargetDir)OpenALSoft64.dll" "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"</PostBuildEvent>
+copy "$(TargetPath)" "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
