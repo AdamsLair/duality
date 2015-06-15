@@ -2,8 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -24,6 +22,10 @@ namespace Duality.Drawing
 		/// Represents the PNG-compressed <see cref="PixelData"/> version.
 		/// </summary>
 		private const int Serialize_Version_LayerPng	= 3;
+		/// <summary>
+		/// Represents the first v2.x <see cref="PixelData"/> version that requires an explicitly stated format id for image codec support.
+		/// </summary>
+		private const int Serialize_Version_FormatId	= 4;
 
 
 		private	int	width;
@@ -87,26 +89,20 @@ namespace Duality.Drawing
 			for (int i = 0; i < this.data.Length; i++)
 				this.data[i] = backColor;
 		}
+		/// <summary>
+		/// Creates a new <see cref="PixelData"/> object using the specified dimensions and data array.
+		/// The specified data block will be used directly without copying it first.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="data"></param>
 		public PixelData(int width, int height, ColorRgba[] data)
 		{
 			if (data == null) throw new ArgumentNullException("data");
 			if (width < 0) throw new ArgumentException("Width may not be negative.", "width");
 			if (height < 0) throw new ArgumentException("Height may not be negative.", "height");
 
-			this.SetPixelDataRgba(data, width, height);
-		}
-		public PixelData(Bitmap image)
-		{
-			if (image == null) throw new ArgumentNullException("image");
-			this.FromBitmap(image);
-		}
-		public PixelData(string imagePath)
-		{
-			if (string.IsNullOrEmpty(imagePath)) throw new ArgumentNullException("imagePath");
-				
-			byte[] buffer = File.ReadAllBytes(imagePath);
-			Bitmap bm = new Bitmap(new MemoryStream(buffer));
-			this.FromBitmap(bm);
+			this.SetData(data, width, height);
 		}
 
 		/// <summary>
@@ -115,148 +111,20 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public PixelData Clone()
 		{
-			return new PixelData(this.width, this.height, this.data);
+			return new PixelData(
+				this.width, 
+				this.height, 
+				this.data.Clone() as ColorRgba[]);
 		}
-
+		
 		/// <summary>
-		/// Saves the pixel data contained in this layer to the specified file.
-		/// </summary>
-		/// <param name="imagePath"></param>
-		public void SavePixelData(string imagePath)
-		{
-			using (Bitmap bmp = this.ToBitmap())
-			using (MemoryStream stream = new MemoryStream())
-			{
-				string ext = System.IO.Path.GetExtension(imagePath);
-				ImageFormat format = bmp.RawFormat;
-				if (string.Equals(ext, ".png", StringComparison.InvariantCultureIgnoreCase))
-					format = ImageFormat.Png;
-				else if (string.Equals(ext, ".jpg", StringComparison.InvariantCultureIgnoreCase))
-					format = ImageFormat.Jpeg;
-				else if (string.Equals(ext, ".jpeg", StringComparison.InvariantCultureIgnoreCase))
-					format = ImageFormat.Jpeg;
-				else if (string.Equals(ext, ".tif", StringComparison.InvariantCultureIgnoreCase))
-					format = ImageFormat.Tiff;
-				else if (string.Equals(ext, ".tiff", StringComparison.InvariantCultureIgnoreCase))
-					format = ImageFormat.Tiff;
-				else if (string.Equals(ext, ".bmp", StringComparison.InvariantCultureIgnoreCase))
-					format = ImageFormat.Bmp;
-
-				bmp.Save(stream, format);
-				File.WriteAllBytes(imagePath, stream.ToArray());
-			}
-		}
-		/// <summary>
-		/// Loads the pixel data in this layer from the specified file.
-		/// </summary>
-		/// <param name="imagePath"></param>
-		public void LoadPixelData(string imagePath)
-		{
-			using (Bitmap bmp = new Bitmap(imagePath))
-			{
-				this.FromBitmap(bmp);
-			}
-		}
-		/// <summary>
-		/// Discards all pixel data in this Layer.
-		/// </summary>
-		public void ClearPixelData()
-		{
-			this.data = new ColorRgba[0];
-			this.width = 0;
-			this.height = 0;
-		}
-			
-		/// <summary>
-		/// Creates a <see cref="System.Drawing.Bitmap"/> out of this Layer.
-		/// </summary>
-		/// <returns></returns>
-		public Bitmap ToBitmap()
-		{
-			if (this.width == 0 || this.height == 0)
-				return new Bitmap(1, 1);
-
-			int[] argbValues = this.GetPixelDataIntArgb();
-			Bitmap bm = new Bitmap(this.width, this.height);
-			BitmapData data = bm.LockBits(
-				new Rectangle(0, 0, bm.Width, bm.Height),
-				ImageLockMode.WriteOnly,
-				PixelFormat.Format32bppArgb);
-			
-			int pixels = data.Width * data.Height;
-			System.Runtime.InteropServices.Marshal.Copy(argbValues, 0, data.Scan0, pixels);
-
-			bm.UnlockBits(data);
-			return bm;
-		}
-		/// <summary>
-		/// Gets the Layers pixel data in the ColorRgba format. Note that this data is a clone and thus modifying it won't
-		/// affect the Layer it has been retrieved from.
-		/// </summary>
-		/// <returns></returns>
-		public ColorRgba[] GetPixelDataRgba()
-		{
-			return this.data.Clone() as ColorRgba[];
-		}
-		/// <summary>
-		/// Gets the Layers pixel data in bytewise Rgba format. (Four elements per pixel)
-		/// </summary>
-		/// <returns></returns>
-		public byte[] GetPixelDataByteRgba()
-		{
-			byte[] rgbaValues = new byte[this.data.Length * 4];
-			for (int i = 0; i < this.data.Length; i++)
-			{
-				rgbaValues[i * 4 + 0] = this.data[i].R;
-				rgbaValues[i * 4 + 1] = this.data[i].G;
-				rgbaValues[i * 4 + 2] = this.data[i].B;
-				rgbaValues[i * 4 + 3] = this.data[i].A;
-			}
-			return rgbaValues;
-		}
-		/// <summary>
-		/// Gets the Layers pixel data in the integer Argb format. (One element per pixel)
-		/// </summary>
-		/// <returns></returns>
-		public int[] GetPixelDataIntArgb()
-		{
-			int[] argbValues = new int[this.data.Length];
-			unchecked
-			{
-				for (int i = 0; i < this.data.Length; i++)
-					argbValues[i] = this.data[i].ToIntArgb();
-			}
-			return argbValues;
-		}
-
-		/// <summary>
-		/// Sets this Layers pixel data to the one contained in the specified <see cref="System.Drawing.Bitmap"/>
-		/// </summary>
-		/// <param name="bm"></param>
-		public void FromBitmap(Bitmap bm)
-		{
-			// Retrieve data
-			BitmapData data = bm.LockBits(
-				new Rectangle(0, 0, bm.Width, bm.Height),
-				ImageLockMode.ReadOnly,
-				PixelFormat.Format32bppArgb);
-			
-			int pixels = data.Width * data.Height;
-			int[] argbValues = new int[pixels];
-			System.Runtime.InteropServices.Marshal.Copy(data.Scan0, argbValues, 0, pixels);
-			bm.UnlockBits(data);
-				
-			this.SetPixelDataArgb(argbValues, bm.Width, bm.Height);
-			this.ColorTransparentPixels();
-		}
-		/// <summary>
-		/// Sets the layers pixel data in the ColorRgba format. Note that the specified data will be copied and thus modifying it
-		/// outside won't affect the Layer it has been inserted into.
+		/// Replaces the <see cref="PixelData"/>s content with the specified color data.
+		/// Ownership of the data block will be assumed - it won't be copied before using it.
 		/// </summary>
 		/// <param name="pixelData"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public void SetPixelDataRgba(ColorRgba[] pixelData, int width = -1, int height = -1)
+		public void SetData(ColorRgba[] pixelData, int width = -1, int height = -1)
 		{
 			if (width < 0) width = this.width;
 			if (height < 0) height = this.height;
@@ -264,63 +132,7 @@ namespace Duality.Drawing
 
 			this.width = width;
 			this.height = height;
-			this.data = pixelData.Clone() as ColorRgba[];
-		}
-		/// <summary>
-		/// Sets the Layers pixel data in bytewise Rgba format. (Four elements per pixel)
-		/// </summary>
-		/// <param name="pixelData"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		public void SetPixelDataRgba(byte[] pixelData, int width = -1, int height = -1)
-		{
-			if (width < 0) width = this.width;
-			if (height < 0) height = this.height;
-			if (pixelData.Length != 4 * width * height) throw new ArgumentException("Data length doesn't match 4 * width * height", "pixelData");
-
-			this.width = width;
-			this.height = height;
-			if (this.data == null || this.data.Length != this.width * this.height)
-				this.data = new ColorRgba[this.width * this.height];
-
-			Parallel.ForEach(Partitioner.Create(0, this.data.Length), range =>
-			{
-				for (int i = range.Item1; i < range.Item2; i++)
-				{
-					this.data[i].R = pixelData[i * 4 + 0];
-					this.data[i].G = pixelData[i * 4 + 1];
-					this.data[i].B = pixelData[i * 4 + 2];
-					this.data[i].A = pixelData[i * 4 + 3];
-				}
-			});
-		}
-		/// <summary>
-		/// Sets the Layers pixel data in the integer Argb format. (One element per pixel)
-		/// </summary>
-		/// <param name="pixelData"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		public void SetPixelDataArgb(int[] pixelData, int width = -1, int height = -1)
-		{
-			if (width < 0) width = this.width;
-			if (height < 0) height = this.height;
-			if (pixelData.Length != width * height) throw new ArgumentException("Data length doesn't match width * height", "pixelData");
-
-			this.width = width;
-			this.height = height;
-			if (this.data == null || this.data.Length != this.width * this.height) 
-				this.data = new ColorRgba[this.width * this.height];
-
-			Parallel.ForEach(Partitioner.Create(0, this.data.Length), range =>
-			{
-				for (int i = range.Item1; i < range.Item2; i++)
-				{
-					this.data[i].A = (byte)((pixelData[i] & 0xFF000000) >> 24);
-					this.data[i].R = (byte)((pixelData[i] & 0x00FF0000) >> 16);
-					this.data[i].G = (byte)((pixelData[i] & 0x0000FF00) >> 8);
-					this.data[i].B = (byte)((pixelData[i] & 0x000000FF) >> 0);
-				}
-			});
+			this.data = pixelData;
 		}
 
 		/// <summary>
@@ -902,7 +714,7 @@ namespace Duality.Drawing
 		{
 			if (this.width == w && this.height == h) return null;
 				
-			ColorRgba[]	tempDestData	= new ColorRgba[w * h];
+			ColorRgba[]	tempDestData = new ColorRgba[w * h];
 			if (filter == ImageScaleFilter.Nearest)
 			{
 				// Don't use Parallel.For here, the overhead is too big and the compiler 
@@ -987,11 +799,22 @@ namespace Duality.Drawing
 
 		void ISerializeExplicit.WriteData(IDataWriter writer)
 		{
-			writer.WriteValue("version", Serialize_Version_LayerPng);
+			string formatId = ImageCodec.FormatPng;
+
+			writer.WriteValue("version", Serialize_Version_FormatId);
+			writer.WriteValue("formatId", formatId);
+			
+			IImageCodec codec = ImageCodec.GetWrite(formatId);
+			if (codec == null)
+			{
+				throw new NotSupportedException(string.Format(
+					"Unable to retrieve image codec for format '{0}'. Can't save image data.",
+					formatId));
+			}
 
 			using (MemoryStream str = new MemoryStream(1024 * 64))
 			{
-				this.ToBitmap().Save(str, System.Drawing.Imaging.ImageFormat.Png);
+				codec.Write(str, this, formatId);
 				writer.WriteValue("pixelData", str.ToArray());
 			}
 		}
@@ -1001,12 +824,39 @@ namespace Duality.Drawing
 			try { reader.ReadValue("version", out version); }
 			catch (Exception) { version = Serialize_Version_Unknown; }
 
-			if (version == Serialize_Version_LayerPng)
+			string formatId;
+			if (version == Serialize_Version_FormatId)
 			{
-				byte[] dataBlock;
-				reader.ReadValue("pixelData", out dataBlock);
-				Bitmap bm = dataBlock != null ? new Bitmap(new MemoryStream(dataBlock)) : null;
-				if (bm != null) this.FromBitmap(bm);
+				reader.ReadValue("formatId", out formatId);
+			}
+			else if (version == Serialize_Version_LayerPng)
+			{
+				formatId = ImageCodec.FormatPng;
+			}
+			else
+			{
+				throw new NotSupportedException(string.Format(
+					"Unknown PixelData serialization version '{0}'. Can't load image data.",
+					version));
+			}
+			
+			IImageCodec codec = ImageCodec.GetRead(formatId);
+			if (codec == null)
+			{
+				throw new NotSupportedException(string.Format(
+					"Unable to retrieve image codec for format '{0}'. Can't load image data.",
+					formatId));
+			}
+
+			byte[] dataBlock;
+			reader.ReadValue("pixelData", out dataBlock);
+			using (MemoryStream stream = new MemoryStream(dataBlock))
+			{
+				PixelData pixelData = codec.Read(stream);
+				this.data = pixelData.data;
+				this.width = pixelData.width;
+				this.height = pixelData.height;
+				pixelData = null;
 			}
 		}
 	}

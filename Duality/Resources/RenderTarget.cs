@@ -147,7 +147,7 @@ namespace Duality.Resources
 			ColorRgba[] data = new ColorRgba[width * height];
 
 			this.GetPixelDataInternal(data, targetIndex, x, y, width, height);
-			target.SetPixelDataRgba(data, width, height);
+			target.SetData(data, width, height);
 		}
 		/// <summary>
 		/// Retrieves the pixel data that is currently stored in video memory.

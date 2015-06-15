@@ -1124,6 +1124,7 @@ namespace Duality
 
 			// Clean globally cached type values
 			availTypeDict.Clear();
+			ImageCodec.ClearTypeCache();
 			ObjectCreator.ClearTypeCache();
 			ReflectionHelper.ClearTypeCache();
 			Component.ClearTypeCache();

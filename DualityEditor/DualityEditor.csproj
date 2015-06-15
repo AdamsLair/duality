@@ -162,6 +162,7 @@
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BuildHelper.cs" />
+    <Compile Include="Helpers\Extensions\ExtMethodsPixelData.cs" />
     <Compile Include="Helpers\Extensions\ExtMethodsBitmap.cs" />
     <Compile Include="Helpers\Extensions\ExtMethodsMemberInfoEditorHint.cs" />
     <Compile Include="Helpers\Extensions\ExtMethodsZipArchive.cs" />

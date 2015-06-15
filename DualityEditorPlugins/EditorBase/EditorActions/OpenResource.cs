@@ -25,11 +25,32 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			AbstractShader	shader		= obj as AbstractShader;
 
 			if (pixmap != null)
-				FileImportProvider.OpenSourceFile(pixmap, PixmapFileImporter.SourceFileExtPrimary, pixmap.SavePixelData);
+			{
+				FileImportProvider.OpenSourceFile(
+					pixmap, 
+					PixmapFileImporter.SourceFileExtPrimary, 
+					path => SavePixmapData(pixmap, path));
+			}
 			else if (audioData != null)
-				FileImportProvider.OpenSourceFile(audioData, AudioDataFileImporter.SourceFileExtPrimary, audioData.SaveOggVorbisData);
+			{
+				FileImportProvider.OpenSourceFile(
+					audioData, 
+					AudioDataFileImporter.SourceFileExtPrimary, 
+					audioData.SaveOggVorbisData);
+			}
 			else if (shader != null)
-				FileImportProvider.OpenSourceFile(shader, shader is FragmentShader ? ShaderFileImporter.SourceFileExtFragment : ShaderFileImporter.SourceFileExtVertex, shader.SaveSource);
+			{
+				string fileExt;
+				if (shader is FragmentShader)
+					fileExt = ShaderFileImporter.SourceFileExtFragment;
+				else
+					fileExt = ShaderFileImporter.SourceFileExtVertex;
+
+				FileImportProvider.OpenSourceFile(
+					shader, 
+					fileExt, 
+					shader.SaveSource);
+			}
 		}
 		public override bool CanPerformOn(Resource obj)
 		{
@@ -42,6 +63,14 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 		public override bool MatchesContext(string context)
 		{
 			return context == DualityEditorApp.ActionContextOpenRes;
+		}
+
+		private static void SavePixmapData(Pixmap pixmap, string targetPath)
+		{
+			using (Bitmap bmp = pixmap.MainLayer.ToBitmap())
+			{
+				bmp.Save(targetPath);
+			}
 		}
 	}
 }

@@ -63,6 +63,7 @@
     <Compile Include="Cloning\HelperObjects\TestResource.cs" />
     <Compile Include="Cloning\SpecificCloningTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
+    <Compile Include="ExtMethodsPixelData.cs" />
     <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
     <Compile Include="Resources\PrefabTest.cs" />
     <Compile Include="Serialization\TestObjects.cs" />

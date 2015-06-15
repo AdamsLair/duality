@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 
@@ -53,7 +52,16 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
-			InitDefaultContent<Pixmap>(".png", stream => new Pixmap(stream));
+			IImageCodec codec = ImageCodec.GetRead(ImageCodec.FormatPng);
+			if (codec == null)
+			{
+				Log.Core.WriteError(
+					"Unable to retrieve image codec for format '{0}'. Can't initialize default {1} Resources.",
+					ImageCodec.FormatPng,
+					typeof(Pixmap).Name);
+				return;
+			}
+			InitDefaultContent<Pixmap>(".png", stream => new Pixmap(codec.Read(stream)));
 		}
 
 		
@@ -118,7 +126,7 @@ namespace Duality.Resources
 		{
 			get { return this.atlas; }
 			set { this.atlas = value; }
-		}					//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Pixel size of the border around each individual animation frame.
 		/// within the image.
@@ -129,7 +137,7 @@ namespace Duality.Resources
 		{
 			get { return this.animFrameBorder; }
 			set { this.GenerateAnimAtlas(this.animCols, this.animRows, value); }
-		}						//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Information about different animation frames contained in this Pixmap.
 		/// Setting this will lead to an auto-generated atlas map according to the animation.
@@ -140,7 +148,7 @@ namespace Duality.Resources
 		{
 			get { return this.animCols; }
 			set { this.GenerateAnimAtlas(value, value == 0 ? 0 : this.animRows, this.animFrameBorder); }
-		}						//	GS
+		}
 		/// <summary>
 		/// [GET / SET] Information about different animation frames contained in this Pixmap.
 		/// Setting this will lead to an auto-generated atlas map according to the animation.
@@ -151,7 +159,7 @@ namespace Duality.Resources
 		{
 			get { return this.animRows; }
 			set { this.GenerateAnimAtlas(value == 0 ? 0 : this.animCols, value, this.animFrameBorder); }
-		}						//	GS
+		}
 		/// <summary>
 		/// [GET] Total number of animation frames in this Pixmap
 		/// </summary>
@@ -159,12 +167,12 @@ namespace Duality.Resources
 		public int AnimFrames
 		{
 			get { return this.animRows * this.animCols; }
-		}					//	G
+		}
  
 		/// <summary>
 		/// Creates a new, empty Pixmap.
 		/// </summary>
-		public Pixmap() : this(Checkerboard.Res.MainLayer.Clone()) {}
+		public Pixmap() : this(null) {}
 		/// <summary>
 		/// Creates a new Pixmap from the specified <see cref="Duality.Drawing.PixelData"/>.
 		/// </summary>
@@ -172,65 +180,6 @@ namespace Duality.Resources
 		public Pixmap(PixelData image)
 		{
 			this.MainLayer = image;
-		}
-		/// <summary>
-		/// Creates a new Pixmap from the specified <see cref="System.Drawing.Bitmap"/>.
-		/// </summary>
-		/// <param name="image">The <see cref="System.Drawing.Bitmap"/> that will be used by the Pixmap.</param>
-		public Pixmap(Bitmap image)
-		{
-			this.MainLayer = new PixelData(image);
-		}
-		/// <summary>
-		/// Creates a new Pixmap from the specified image stream.
-		/// </summary>
-		/// <param name="imagePath">A path to the image stream that will be used as pixel data source.</param>
-		public Pixmap(Stream imageStream)
-		{
-			using (Bitmap image = new Bitmap(imageStream))
-			{
-				this.MainLayer = new PixelData(image);
-			}
-		}
-		/// <summary>
-		/// Creates a new Pixmap from the specified image file.
-		/// </summary>
-		/// <param name="imagePath">A path to the image file that will be used as pixel data source.</param>
-		public Pixmap(string imagePath)
-		{
-			this.LoadPixelData(imagePath);
-		}
-
-		/// <summary>
-		/// Saves the Pixmaps pixel data as image file. Its image format is determined by the file extension.
-		/// </summary>
-		/// <param name="imagePath">The path of the file to which the pixel data is written.</param>
-		public void SavePixelData(string imagePath = null)
-		{
-			if (imagePath == null) imagePath = this.sourcePath;
-
-			// We're saving this Pixmaps pixel data for the first time
-			if (!this.IsDefaultContent && this.sourcePath == null) this.sourcePath = imagePath;
-
-			if (this.MainLayer != null)
-				this.MainLayer.SavePixelData(imagePath);
-			else
-				Checkerboard.Res.MainLayer.SavePixelData(imagePath);
-		}
-		/// <summary>
-		/// Replaces the Pixmaps pixel data with a new dataset that has been retrieved from file.
-		/// </summary>
-		/// <param name="imagePath">The path of the file from which to retrieve the new pixel data.</param>
-		public void LoadPixelData(string imagePath = null)
-		{
-			if (imagePath == null) imagePath = this.sourcePath;
-
-			this.sourcePath = imagePath;
-
-			if (String.IsNullOrEmpty(this.sourcePath) || !File.Exists(this.sourcePath))
-				this.MainLayer = null;
-			else
-				this.MainLayer = new PixelData(imagePath);
 		}
 
 		/// <summary>

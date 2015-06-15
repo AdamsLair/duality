@@ -23,7 +23,7 @@ namespace Duality.Tests.Drawing
 
 		[TestFixtureSetUp] public void FixtureSetup()
 		{
-			this.texCoordUV = new Texture(new Pixmap(TestRes.TexCoordUV));
+			this.texCoordUV = new Texture(new Pixmap(BitmapToPixelData(TestRes.TexCoordUV)));
 		}
 		[TestFixtureTearDown] public void FixtureTearDown()
 		{
@@ -177,7 +177,7 @@ namespace Duality.Tests.Drawing
 		private void TestImagesEqual(Bitmap referenceImage, Action<Canvas> renderMethod)
 		{
 			PixelData image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
-			PixelData reference = new PixelData(referenceImage);
+			PixelData reference = BitmapToPixelData(referenceImage);
 			bool equal = this.AreImagesEqual(reference, image);
 			if (!equal && Debugger.IsAttached)
 			{
@@ -189,7 +189,7 @@ namespace Duality.Tests.Drawing
 		private bool AreImagesEqual(Bitmap referenceImage, Action<Canvas> renderMethod)
 		{
 			PixelData image = this.RenderToTexture(referenceImage.Width, referenceImage.Height, renderMethod);
-			PixelData reference = new PixelData(referenceImage);
+			PixelData reference = BitmapToPixelData(referenceImage);
 			return this.AreImagesEqual(reference, image);
 		}
 		private bool AreImagesEqual(PixelData first, PixelData second)
@@ -227,7 +227,13 @@ namespace Duality.Tests.Drawing
 		private void CreateReferenceImage(string name, int width, int height, Action<Canvas> renderMethod)
 		{
 			PixelData image = this.RenderToTexture(width, height, renderMethod);
-			image.SavePixelData(TestHelper.GetEmbeddedResourcePath(name, ".png"));
+
+			string formatId = ImageCodec.FormatPng;
+			IImageCodec codec = ImageCodec.GetWrite(formatId);
+			using (Stream stream = File.Open(TestHelper.GetEmbeddedResourcePath(name, ".png"), FileMode.Create))
+			{
+				codec.Write(stream, image, formatId);
+			}
 		}
 
 		private PixelData CreateDiffImage(PixelData first, PixelData second)
@@ -274,6 +280,13 @@ namespace Duality.Tests.Drawing
 				pixelData = texture.GetPixelData();
 			}
 
+			return pixelData;
+		}
+		
+		private static PixelData BitmapToPixelData(Bitmap bitmap)
+		{
+			PixelData pixelData = new PixelData();
+			pixelData.FromBitmap(bitmap);
 			return pixelData;
 		}
 	}

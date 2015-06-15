@@ -644,7 +644,7 @@ namespace Duality.Resources
 						glyphGraphics.TextRenderingHint = textRenderingHint;
 						glyphGraphics.DrawString(str, this.internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatDef);
 					}
-					glyphTemp = new PixelData(bm);
+					glyphTemp = BitmapToPixelData(bm);
 					
 					// Rasterize a single glyph in typographic mode for metric analysis
 					if (!isSpace)
@@ -669,7 +669,7 @@ namespace Duality.Resources
 							glyphGraphics.TextRenderingHint = textRenderingHint;
 							glyphGraphics.DrawString(str, this.internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatTypo);
 						}
-						glyphTempTypo = new PixelData(bm);
+						glyphTempTypo = BitmapToPixelData(bm);
 						glyphTempTypo.Crop(true, false);
 					}
 					else
@@ -1196,6 +1196,36 @@ namespace Duality.Resources
 			
 			loadedFontRegistry[result.Name] = result;
 			return result;
+		}
+
+		private static PixelData BitmapToPixelData(Bitmap bitmap)
+		{
+			// Retrieve data
+			System.Drawing.Imaging.BitmapData data = bitmap.LockBits(
+				new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+				System.Drawing.Imaging.ImageLockMode.ReadOnly,
+				System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			
+			int pixels = data.Width * data.Height;
+			int[] argbValues = new int[pixels];
+			System.Runtime.InteropServices.Marshal.Copy(data.Scan0, argbValues, 0, pixels);
+			bitmap.UnlockBits(data);
+			
+			PixelData pixelData = new PixelData(bitmap.Width, bitmap.Height);
+			ColorRgba[] rawData = pixelData.Data;
+			System.Threading.Tasks.Parallel.ForEach(System.Collections.Concurrent.Partitioner.Create(0, rawData.Length), range =>
+			{
+				for (int i = range.Item1; i < range.Item2; i++)
+				{
+					rawData[i].A = (byte)((argbValues[i] & 0xFF000000) >> 24);
+					rawData[i].R = (byte)((argbValues[i] & 0x00FF0000) >> 16);
+					rawData[i].G = (byte)((argbValues[i] & 0x0000FF00) >> 8);
+					rawData[i].B = (byte)((argbValues[i] & 0x000000FF) >> 0);
+				}
+			});
+			pixelData.ColorTransparentPixels();
+
+			return pixelData;
 		}
 	}
 }

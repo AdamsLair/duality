@@ -112,11 +112,14 @@
     <Compile Include="Components\ICmpInterfaces\ICmpRenderer.cs" />
     <Compile Include="Components\ICmpInterfaces\ICmpUpdatable.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
+    <Compile Include="Drawing\BitmapImageCodec.cs" />
     <Compile Include="Drawing\Enums\BlendMode.cs" />
     <Compile Include="Drawing\Enums\ClearFlag.cs" />
     <Compile Include="Drawing\Enums\ColorDataElementType.cs" />
     <Compile Include="Drawing\Enums\ColorDataLayout.cs" />
     <Compile Include="Drawing\Enums\ImageScaleFilter.cs" />
+    <Compile Include="Drawing\IImageCodec.cs" />
+    <Compile Include="Drawing\ImageCodec.cs" />
     <Compile Include="Drawing\PixelData.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
