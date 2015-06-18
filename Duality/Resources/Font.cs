@@ -170,21 +170,21 @@ namespace Duality.Resources
 		private	float		lineHeightFactor	= 1.0f;
 		private	bool		monospace			= true;
 		private	bool		kerning				= false;
+		private	GlyphData[]	glyphs				= null;
+		private	Pixmap		pixelData			= null;
+		private	int			maxGlyphWidth		= 0;
+		private	int			height				= 0;
+		private	int			ascent				= 0;
+		private	int			bodyAscent			= 0;
+		private	int			descent				= 0;
+		private	int			baseLine			= 0;
 		// Embedded custom font family
 		private	byte[]		embeddedFont		= null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private SysDrawFont	internalFont	= null;
-		[DontSerialize] private	GlyphData[]	glyphs			= null;
 		[DontSerialize] private	Material	material		= null;
-		[DontSerialize] private	Pixmap		pixelData		= null;
 		[DontSerialize] private	Texture		texture			= null;
 		[DontSerialize] private	bool		needsReload		= true;
-		[DontSerialize] private	int			maxGlyphWidth	= 0;
-		[DontSerialize] private	int			height			= 0;
-		[DontSerialize] private	int			ascent			= 0;
-		[DontSerialize] private	int			bodyAscent		= 0;
-		[DontSerialize] private	int			descent			= 0;
-		[DontSerialize] private	int			baseLine		= 0;
 
 
 		/// <summary>
@@ -567,6 +567,10 @@ namespace Duality.Resources
 		{
 			if (this.internalFont != null) this.internalFont.Dispose();
 			this.internalFont = null;
+			
+			// Load custom font, if not available yet
+			if (GetFontFamily(this.familyName) == null && this.embeddedFont != null)
+				LoadFontFamilyFromMemory(this.embeddedFont);
 
 			FontFamily family = GetFontFamily(this.familyName);
 			if (family != null)
@@ -734,6 +738,13 @@ namespace Duality.Resources
 			// Create internal Pixmap and Texture Resources
 			this.pixelData = new Pixmap(pixelLayer);
 			this.pixelData.Atlas = new List<Rect>(atlas);
+			this.GenerateTexMat();
+		}
+		private void GenerateTexMat()
+		{
+			if (this.material != null) this.material.Dispose();
+			if (this.texture != null) this.texture.Dispose();
+
 			this.texture = new Texture(this.pixelData, 
 				TextureSizeMode.Enlarge, 
 				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
@@ -1130,11 +1141,7 @@ namespace Duality.Resources
 
 		protected override void OnLoaded()
 		{
-			// Load custom font, if not available yet
-			if (GetFontFamily(this.familyName) == null && this.embeddedFont != null)
-				LoadFontFamilyFromMemory(this.embeddedFont);
-
-			this.ReloadData();
+			this.GenerateTexMat();
 			base.OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)
