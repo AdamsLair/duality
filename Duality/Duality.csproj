@@ -112,6 +112,8 @@
     <Compile Include="Components\ICmpInterfaces\ICmpRenderer.cs" />
     <Compile Include="Components\ICmpInterfaces\ICmpUpdatable.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
+    <Compile Include="Drawing\Enums\FontStyle.cs" />
+    <Compile Include="Drawing\Enums\FitTextMode.cs" />
     <Compile Include="Drawing\Enums\BlendMode.cs" />
     <Compile Include="Drawing\Enums\ClearFlag.cs" />
     <Compile Include="Drawing\Enums\ColorDataElementType.cs" />
@@ -323,6 +325,8 @@
     <EmbeddedResource Include="EmbeddedResources\DualityIcon.png" />
     <EmbeddedResource Include="EmbeddedResources\DualityIconB.png" />
     <EmbeddedResource Include="EmbeddedResources\SharpAlpha.frag" />
+    <EmbeddedResource Include="EmbeddedResources\Cousine10.Font.res" />
+    <EmbeddedResource Include="EmbeddedResources\Cousine8.Font.res" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -383,6 +387,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EmbeddedResources\CousineLicense.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

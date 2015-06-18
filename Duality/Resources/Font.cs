@@ -5,8 +5,12 @@ using System.Linq;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
+
 using SysDrawFont = System.Drawing.Font;
+using SysDrawFontStyle = System.Drawing.FontStyle;
+using FontStyle = Duality.Drawing.FontStyle;
 
 using Duality.Drawing;
 using Duality.Editor;
@@ -37,25 +41,19 @@ namespace Duality.Resources
 
 		internal static void InitDefaultContent()
 		{
+			Assembly embeddingAssembly = typeof(Font).GetTypeInfo().Assembly;
+
 			Font genericMonospace8;
 			Font genericMonospace10;
+			using (Stream stream = embeddingAssembly.GetManifestResourceStream("Duality.EmbeddedResources.Cousine8.Font.res"))
+			{
+				genericMonospace8 = Resource.Load<Font>(stream);
+			}
+			using (Stream stream = embeddingAssembly.GetManifestResourceStream("Duality.EmbeddedResources.Cousine10.Font.res"))
+			{
+				genericMonospace10 = Resource.Load<Font>(stream);
+			}
 
-			genericMonospace8 = new Font();
-			genericMonospace8.Family = FontFamily.GenericMonospace.Name;
-			genericMonospace8.Size = 8;
-			genericMonospace8.CharSpacing = 0;
-			genericMonospace8.GlyphRenderMode = RenderMode.MonochromeBitmap;
-			genericMonospace8.MonoSpace = true;
-			genericMonospace8.ReloadData();
-
-			genericMonospace10 = new Font();
-			genericMonospace10.Family = FontFamily.GenericMonospace.Name;
-			genericMonospace10.Size = 10;
-			genericMonospace10.CharSpacing = 0;
-			genericMonospace10.GlyphRenderMode = RenderMode.MonochromeBitmap;
-			genericMonospace10.MonoSpace = true;
-			genericMonospace10.ReloadData();
-			
 			InitDefaultContent<Font>(new Dictionary<string,Font>
 			{
 				{ "GenericMonospace8", genericMonospace8 },
@@ -87,29 +85,6 @@ namespace Duality.Resources
 			CharLookup = cl;
 		}
 
-
-		/// <summary>
-		/// Specifies how a text fitting algorithm works.
-		/// </summary>
-		public enum FitTextMode
-		{
-			/// <summary>
-			/// Text is fit by character, i.e. can be separated anywhere.
-			/// </summary>
-			ByChar,
-			/// <summary>
-			/// Text is fit <see cref="ByWord">by word</see>, preferring leading whitespaces.
-			/// </summary>
-			ByWordLeadingSpace,
-			/// <summary>
-			/// Text is fit <see cref="ByWord">by word</see>, preferring trailing whitespaces.
-			/// </summary>
-			ByWordTrailingSpace,
-			/// <summary>
-			/// Text is fit by word boundaries, i.e. can only be separated between words.
-			/// </summary>
-			ByWord = ByWordTrailingSpace
-		}
 
 		/// <summary>
 		/// Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
@@ -568,6 +543,10 @@ namespace Duality.Resources
 			if (this.internalFont != null) this.internalFont.Dispose();
 			this.internalFont = null;
 			
+			SysDrawFontStyle style = SysDrawFontStyle.Regular;
+			if (this.style.HasFlag(FontStyle.Bold)) style |= SysDrawFontStyle.Bold;
+			if (this.style.HasFlag(FontStyle.Italic)) style |= SysDrawFontStyle.Italic;
+
 			// Load custom font, if not available yet
 			if (GetFontFamily(this.familyName) == null && this.embeddedFont != null)
 				LoadFontFamilyFromMemory(this.embeddedFont);
@@ -577,16 +556,16 @@ namespace Duality.Resources
 			{
 				try
 				{
-					this.internalFont = new SysDrawFont(family, this.size, this.style);
+					this.internalFont = new SysDrawFont(family, this.size, style);
 				}
 				catch (Exception)
 				{
-					this.internalFont = new SysDrawFont(FontFamily.GenericMonospace, this.size, this.style);
+					this.internalFont = new SysDrawFont(FontFamily.GenericMonospace, this.size, style);
 				}
 			}
 			else
 			{
-				this.internalFont = new SysDrawFont(FontFamily.GenericMonospace, this.size, this.style);
+				this.internalFont = new SysDrawFont(FontFamily.GenericMonospace, this.size, style);
 			}
 		}
 		private void ReleaseResources()

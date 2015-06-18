@@ -408,15 +408,15 @@ namespace Duality.Drawing
 					// Word wrap by glyph / word
 					if (this.parent.maxWidth > 0 && this.parent.wrapMode != WrapMode.Element)
 					{
-						Font.FitTextMode fitMode = Resources.Font.FitTextMode.ByChar;
+						FitTextMode fitMode = FitTextMode.ByChar;
 						if (this.parent.wrapMode == WrapMode.Word)
-							fitMode = (this.lineAlign == Alignment.Right) ? Font.FitTextMode.ByWordLeadingSpace : Font.FitTextMode.ByWordTrailingSpace;
+							fitMode = (this.lineAlign == Alignment.Right) ? FitTextMode.ByWordLeadingSpace : FitTextMode.ByWordTrailingSpace;
 						textToDisplay = textElem.Text.Substring(this.curElemWrapIndex, textElem.Text.Length - this.curElemWrapIndex);
 						fittingText = this.font.FitText(textToDisplay, this.lineAvailWidth - (this.offset.X - this.lineBeginX), fitMode);
 
 						// If by-word results in instant line break: Do it by glyph instead
 						if (this.offset.X == this.lineBeginX && fittingText.Length == 0 && this.parent.wrapMode == WrapMode.Word) 
-							fittingText = this.font.FitText(textToDisplay, this.lineAvailWidth - (this.offset.X - this.lineBeginX), Font.FitTextMode.ByChar);
+							fittingText = this.font.FitText(textToDisplay, this.lineAvailWidth - (this.offset.X - this.lineBeginX), FitTextMode.ByChar);
 
 						// If doing it by glyph results in an instant line break: Use at least one glyph anyway
 						if (this.lineAvailWidth == this.parent.maxWidth && 
