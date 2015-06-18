@@ -137,7 +137,6 @@ namespace Duality.Resources
 		}
 
 		
-		private	string		familyName			= FontFamily.GenericMonospace.Name;
 		private	float		size				= 8.0f;
 		private	FontStyle	style				= FontStyle.Regular;
 		private	RenderMode	renderMode			= RenderMode.SharpBitmap;
@@ -157,26 +156,12 @@ namespace Duality.Resources
 		private	byte[]		embeddedFont		= null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private SysDrawFont	internalFont	= null;
+		[DontSerialize] private string		familyName		= null;
 		[DontSerialize] private	Material	material		= null;
 		[DontSerialize] private	Texture		texture			= null;
 		[DontSerialize] private	bool		needsReload		= true;
 
 
-		/// <summary>
-		/// [GET / SET] The name of the font family that is used.
-		/// </summary>
-		public string Family
-		{
-			get { return this.familyName; }
-			set 
-			{
-				// Do not allow changing the family if a custom family is used
-				if (this.embeddedFont != null) return;
-
-				this.familyName = value;
-				this.needsReload = true;
-			}
-		}
 		/// <summary>
 		/// [GET / SET] The size of the Font.
 		/// </summary>
@@ -343,28 +328,7 @@ namespace Duality.Resources
 			get { return this.baseLine; }
 		}
 
-		
-		/// <summary>
-		/// Sets up a new Font.
-		/// </summary>
-		public Font()
-		{
-			this.ReloadData();
-		}
-		/// <summary>
-		/// Creates a new Font based on a system font.
-		/// </summary>
-		/// <param name="familyName">The font family to use.</param>
-		/// <param name="emSize">The Fonts <see cref="Size"/>.</param>
-		/// <param name="style">The Fonts style.</param>
-		public Font(string familyName, float emSize, FontStyle style = FontStyle.Regular) 
-		{
-			this.familyName = familyName;
-			this.size = emSize;
-			this.style = style;
-			this.ReloadData();
-		}
-		
+
 		/// <summary>
 		/// Replaces the Fonts custom font family with a new dataset that has been retrieved from file.
 		/// </summary>
@@ -724,6 +688,9 @@ namespace Duality.Resources
 			if (this.material != null) this.material.Dispose();
 			if (this.texture != null) this.texture.Dispose();
 
+			if (this.pixelData == null)
+				return;
+
 			this.texture = new Texture(this.pixelData, 
 				TextureSizeMode.Enlarge, 
 				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
@@ -868,6 +835,9 @@ namespace Duality.Resources
 			int len = text.Length * 4;
 			if (vertices == null || vertices.Length < len) vertices = new VertexC1P3T2[len];
 			
+			if (this.texture == null)
+				return len;
+
 			float curOffset = 0.0f;
 			GlyphData glyphData;
 			Rect uvRect;
@@ -932,8 +902,10 @@ namespace Duality.Resources
 		/// <param name="clr"></param>
 		public void RenderToBitmap(string text, PixelData target, float x, float y, ColorRgba clr)
 		{
-			PixelData pixelData = this.pixelData.MainLayer;
+			if (this.pixelData == null)
+				return;
 
+			PixelData bitmap = this.pixelData.MainLayer;
 			float curOffset = 0.0f;
 			GlyphData glyphData;
 			Rect uvRect;
@@ -944,7 +916,7 @@ namespace Duality.Resources
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
 				Vector2 dataCoord = uvRect.Pos * new Vector2(this.pixelData.Width, this.pixelData.Height) / this.texture.UVRatio;
 				
-				pixelData.DrawOnto(target, 
+				bitmap.DrawOnto(target, 
 					BlendMode.Alpha, 
 					MathF.RoundToInt(x + curOffset + glyphXOff), 
 					MathF.RoundToInt(y),
@@ -965,8 +937,9 @@ namespace Duality.Resources
 		/// <returns>The size of the measured text.</returns>
 		public Vector2 MeasureText(string text)
 		{
-			Vector2 textSize = Vector2.Zero;
+			if (this.texture == null) return Vector2.Zero;
 
+			Vector2 textSize = Vector2.Zero;
 			float curOffset = 0.0f;
 			GlyphData glyphData;
 			Rect uvRect;
@@ -993,6 +966,8 @@ namespace Duality.Resources
 		/// <returns>The size of the measured text.</returns>
 		public Vector2 MeasureText(string[] text)
 		{
+			if (this.texture == null) return Vector2.Zero;
+
 			Vector2 textSize = Vector2.Zero;
 			if (text == null) return textSize;
 
@@ -1014,8 +989,9 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public string FitText(string text, float maxWidth, FitTextMode fitMode = FitTextMode.ByChar)
 		{
-			Vector2 textSize = Vector2.Zero;
+			if (this.texture == null) return text;
 
+			Vector2 textSize = Vector2.Zero;
 			float curOffset = 0.0f;
 			GlyphData glyphData;
 			Rect uvRect;
@@ -1049,6 +1025,8 @@ namespace Duality.Resources
 		/// <returns>A rectangle that describes the specified glyphs position and size.</returns>
 		public Rect MeasureTextGlyph(string text, int index)
 		{
+			if (this.texture == null) return Rect.Empty;
+
 			float curOffset = 0.0f;
 			GlyphData glyphData;
 			Rect uvRect;
@@ -1063,7 +1041,7 @@ namespace Duality.Resources
 				curOffset += glyphXAdv;
 			}
 
-			return new Rect();
+			return Rect.Empty;
 		}
 		/// <summary>
 		/// Returns the index of the glyph that is located at a certain location within a text.
@@ -1074,6 +1052,8 @@ namespace Duality.Resources
 		/// <returns>The index of the glyph that is located at the specified position.</returns>
 		public int PickTextGlyph(string text, float x, float y)
 		{
+			if (this.texture == null) return -1;
+
 			float curOffset = 0.0f;
 			GlyphData glyphData;
 			Rect uvRect;

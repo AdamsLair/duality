@@ -14,8 +14,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
 	public class RigidBodyShapeCamViewLayer : CamViewLayer
 	{
-		private	ContentRef<Font>	bigFont	= new ContentRef<Font>(null, "__editor__bigfont__");
-
 		public override string LayerName
 		{
 			get { return Properties.CamViewRes.CamViewLayer_RigidBodyShape_Name; }
@@ -74,7 +72,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			base.OnCollectDrawcalls(canvas);
 			List<RigidBody> visibleColliders = this.QueryVisibleColliders().ToList();
 
-			this.RetrieveResources();
 			RigidBody selectedBody = this.QuerySelectedCollider();
 
 			canvas.State.TextFont = Font.GenericMonospace10;
@@ -204,18 +201,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			}
 		}
 		
-		private void RetrieveResources()
-		{
-			if (!this.bigFont.IsAvailable)
-			{
-				Font bigFontRes = new Font();
-				bigFontRes.Family = System.Drawing.FontFamily.GenericSansSerif.Name;
-				bigFontRes.Size = 32;
-				bigFontRes.Kerning = true;
-				bigFontRes.ReloadData();
-				ContentProvider.AddContent(bigFont.Path, bigFontRes);
-			}
-		}
 		private IEnumerable<RigidBody> QueryVisibleColliders()
 		{
 			var allColliders = Scene.Current.FindComponents<RigidBody>();

@@ -4,7 +4,6 @@
   <bodyAscent dataType="Int">7</bodyAscent>
   <descent dataType="Int">3</descent>
   <embeddedFont />
-  <familyName dataType="String">Cousine</familyName>
   <glyphs dataType="Array" type="Duality.Resources.Font+GlyphData[]" id="427169525">
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Height dataType="Int">17</Height>
