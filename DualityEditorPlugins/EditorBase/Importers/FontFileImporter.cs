@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.Base
 		public bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile)
 		{
 			ContentRef<Font> f = r.As<Font>();
-			return f != null && f.Res.CustomFamilyData != null && f.Res.SourcePath == srcFile;
+			return f != null && f.Res.EmbeddedTrueTypeFont != null && f.Res.SourcePath == srcFile;
 		}
 		public string[] GetOutputFiles(string srcFile, string targetName, string targetDir)
 		{

@@ -142,23 +142,23 @@ namespace Duality.Resources
 			/// <summary>
 			/// Thw width of the glyph
 			/// </summary>
-			public	int		width;
+			public int Width;
 			/// <summary>
 			/// The height of the glyph
 			/// </summary>
-			public	int		height;
+			public int Height;
 			/// <summary>
 			/// The glyphs X offset when rendering it.
 			/// </summary>
-			public	int		offsetX;
+			public int OffsetX;
 			/// <summary>
 			/// The glyphs kerning samples to the left.
 			/// </summary>
-			public	int[]	kerningSamplesLeft;
+			public int[] KerningSamplesLeft;
 			/// <summary>
 			/// The glyphs kerning samples to the right.
 			/// </summary>
-			public	int[]	kerningSamplesRight;
+			public int[] KerningSamplesRight;
 		}
 
 		
@@ -171,11 +171,11 @@ namespace Duality.Resources
 		private	bool		monospace			= true;
 		private	bool		kerning				= false;
 		// Embedded custom font family
-		private	byte[]		customFamilyData	= null;
+		private	byte[]		embeddedFont		= null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private SysDrawFont	internalFont	= null;
 		[DontSerialize] private	GlyphData[]	glyphs			= null;
-		[DontSerialize] private	Material	mat				= null;
+		[DontSerialize] private	Material	material		= null;
 		[DontSerialize] private	Pixmap		pixelData		= null;
 		[DontSerialize] private	Texture		texture			= null;
 		[DontSerialize] private	bool		needsReload		= true;
@@ -196,7 +196,7 @@ namespace Duality.Resources
 			set 
 			{
 				// Do not allow changing the family if a custom family is used
-				if (this.customFamilyData != null) return;
+				if (this.embeddedFont != null) return;
 
 				this.familyName = value;
 				this.needsReload = true;
@@ -256,7 +256,7 @@ namespace Duality.Resources
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public Material Material
 		{
-			get { return this.mat; }
+			get { return this.material; }
 		}
 		/// <summary>
 		/// [GET / SET] Additional spacing between each character. This is usually one tenth of the Fonts <see cref="Size"/>.
@@ -305,12 +305,12 @@ namespace Duality.Resources
 		}
 		
 		/// <summary>
-		/// [GET] Returns a chunk of memory that contains this Fonts custom family data.
+		/// [GET] Returns a chunk of memory that contains this Fonts embedded TrueType data for rendering glyphs.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public byte[] CustomFamilyData
+		public byte[] EmbeddedTrueTypeFont
 		{
-			get { return this.customFamilyData; }
+			get { return this.embeddedFont; }
 		}
 
 		/// <summary>
@@ -404,8 +404,8 @@ namespace Duality.Resources
 				this.sourcePath = null;
 			else
 			{
-				this.customFamilyData = File.ReadAllBytes(this.sourcePath);
-				this.familyName = LoadFontFamilyFromMemory(this.customFamilyData).Name;
+				this.embeddedFont = File.ReadAllBytes(this.sourcePath);
+				this.familyName = LoadFontFamilyFromMemory(this.embeddedFont).Name;
 			}
 		}
 		/// <summary>
@@ -414,13 +414,13 @@ namespace Duality.Resources
 		/// <param name="path">The path of the file to which to save the font family data.</param>
 		public void SaveCustomFamilyData(string path = null)
 		{
-			if (this.customFamilyData == null) throw new InvalidOperationException("There is no custom family data defined that could be saved.");
+			if (this.embeddedFont == null) throw new InvalidOperationException("There is no custom family data defined that could be saved.");
 			if (path == null) path = this.sourcePath;
 
 			// We're saving this Pixmaps pixel data for the first time
 			if (!this.IsDefaultContent && this.sourcePath == null) this.sourcePath = path;
 
-			File.WriteAllBytes(path, this.customFamilyData);
+			File.WriteAllBytes(path, this.embeddedFont);
 		}
 
 		/// <summary>
@@ -447,7 +447,7 @@ namespace Duality.Resources
 			{
 				for (int i = 0; i < SupportedChars.Length; ++i)
 				{
-					this.glyphs[i].offsetX -= (int)Math.Round((this.maxGlyphWidth - this.glyphs[i].width) / 2.0f);
+					this.glyphs[i].OffsetX -= (int)Math.Round((this.maxGlyphWidth - this.glyphs[i].Width) / 2.0f);
 				}
 			}
 
@@ -493,14 +493,14 @@ namespace Duality.Resources
 				{
 					PixelData glyphTemp = this.GetGlyphBitmap(SupportedChars[i]);
 
-					this.glyphs[i].kerningSamplesLeft	= new int[kerningY.Length];
-					this.glyphs[i].kerningSamplesRight	= new int[kerningY.Length];
+					this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
+					this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
 
 					if (SupportedChars[i] != ' ')
 					{
 						// Left side samples
 						{
-							int[] leftData = this.glyphs[i].kerningSamplesLeft;
+							int[] leftData = this.glyphs[i].KerningSamplesLeft;
 							int leftMid = glyphTemp.Width / 2;
 							int lastSampleY = 0;
 							for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
@@ -527,7 +527,7 @@ namespace Duality.Resources
 
 						// Right side samples
 						{
-							int[] rightData = this.glyphs[i].kerningSamplesRight;
+							int[] rightData = this.glyphs[i].KerningSamplesRight;
 							int rightMid = (glyphTemp.Width + 1) / 2;
 							int lastSampleY = 0;
 							for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
@@ -558,8 +558,8 @@ namespace Duality.Resources
 			{
 				for (int i = 0; i < SupportedChars.Length; ++i)
 				{
-					this.glyphs[i].kerningSamplesLeft	= null;
-					this.glyphs[i].kerningSamplesRight	= null;
+					this.glyphs[i].KerningSamplesLeft	= null;
+					this.glyphs[i].KerningSamplesRight	= null;
 				}
 			}
 		}
@@ -587,11 +587,11 @@ namespace Duality.Resources
 		}
 		private void ReleaseResources()
 		{
-			if (this.mat != null) this.mat.Dispose();
+			if (this.material != null) this.material.Dispose();
 			if (this.texture != null) this.texture.Dispose();
 			if (this.pixelData != null) this.pixelData.Dispose();
 
-			this.mat = null;
+			this.material = null;
 			this.texture = null;
 			this.pixelData = null;
 
@@ -599,7 +599,7 @@ namespace Duality.Resources
 		}
 		private void GenerateResources()
 		{
-			if (this.mat != null || this.texture != null || this.pixelData != null)
+			if (this.material != null || this.texture != null || this.pixelData != null)
 				this.ReleaseResources();
 
 			TextRenderingHint textRenderingHint;
@@ -686,13 +686,13 @@ namespace Duality.Resources
 					
 					// Memorize atlas coordinates & glyph data
 					this.maxGlyphWidth = Math.Max(this.maxGlyphWidth, glyphTemp.Width);
-					this.glyphs[i].width = glyphTemp.Width;
-					this.glyphs[i].height = glyphTemp.Height;
-					this.glyphs[i].offsetX = glyphTemp.Width - glyphTempTypo.Width;
+					this.glyphs[i].Width = glyphTemp.Width;
+					this.glyphs[i].Height = glyphTemp.Height;
+					this.glyphs[i].OffsetX = glyphTemp.Width - glyphTempTypo.Width;
 					if (isSpace)
 					{
-						this.glyphs[i].width /= 2;
-						this.glyphs[i].offsetX /= 2;
+						this.glyphs[i].Width /= 2;
+						this.glyphs[i].OffsetX /= 2;
 					}
 					atlas[i].X = x;
 					atlas[i].Y = y;
@@ -756,7 +756,7 @@ namespace Duality.Resources
 			{
 				matInfo.SetUniform("smoothness", this.size * 4.0f);
 			}
-			this.mat = new Material(matInfo);
+			this.material = new Material(matInfo);
 		}
 
 		/// <summary>
@@ -897,20 +897,20 @@ namespace Duality.Resources
 				vertices[i * 4 + 0].TexCoord = uvRect.TopLeft;
 				vertices[i * 4 + 0].Color = ColorRgba.White;
 
-				vertices[i * 4 + 1].Pos.X = glyphPos.X + glyphData.width;
+				vertices[i * 4 + 1].Pos.X = glyphPos.X + glyphData.Width;
 				vertices[i * 4 + 1].Pos.Y = glyphPos.Y;
 				vertices[i * 4 + 1].Pos.Z = 0.0f;
 				vertices[i * 4 + 1].TexCoord = uvRect.TopRight;
 				vertices[i * 4 + 1].Color = ColorRgba.White;
 
-				vertices[i * 4 + 2].Pos.X = glyphPos.X + glyphData.width;
-				vertices[i * 4 + 2].Pos.Y = glyphPos.Y + glyphData.height;
+				vertices[i * 4 + 2].Pos.X = glyphPos.X + glyphData.Width;
+				vertices[i * 4 + 2].Pos.Y = glyphPos.Y + glyphData.Height;
 				vertices[i * 4 + 2].Pos.Z = 0.0f;
 				vertices[i * 4 + 2].TexCoord = uvRect.BottomRight;
 				vertices[i * 4 + 2].Color = ColorRgba.White;
 
 				vertices[i * 4 + 3].Pos.X = glyphPos.X;
-				vertices[i * 4 + 3].Pos.Y = glyphPos.Y + glyphData.height;
+				vertices[i * 4 + 3].Pos.Y = glyphPos.Y + glyphData.Height;
 				vertices[i * 4 + 3].Pos.Z = 0.0f;
 				vertices[i * 4 + 3].TexCoord = uvRect.BottomLeft;
 				vertices[i * 4 + 3].Color = ColorRgba.White;
@@ -958,8 +958,8 @@ namespace Duality.Resources
 					BlendMode.Alpha, 
 					MathF.RoundToInt(x + curOffset + glyphXOff), 
 					MathF.RoundToInt(y),
-					glyphData.width, 
-					glyphData.height,
+					glyphData.Width, 
+					glyphData.Height,
 					MathF.RoundToInt(dataCoord.X), 
 					MathF.RoundToInt(dataCoord.Y), 
 					clr);
@@ -987,7 +987,7 @@ namespace Duality.Resources
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
 
 				textSize.X = Math.Max(textSize.X, curOffset + glyphXAdv - this.spacing);
-				textSize.Y = Math.Max(textSize.Y, glyphData.height);
+				textSize.Y = Math.Max(textSize.Y, glyphData.Height);
 
 				curOffset += glyphXAdv;
 			}
@@ -1037,7 +1037,7 @@ namespace Duality.Resources
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
 
 				textSize.X = Math.Max(textSize.X, curOffset + glyphXAdv);
-				textSize.Y = Math.Max(textSize.Y, glyphData.height);
+				textSize.Y = Math.Max(textSize.Y, glyphData.Height);
 
 				if (textSize.X > maxWidth) return lastValidLength > 0 ? text.Substring(0, lastValidLength) : "";
 
@@ -1068,7 +1068,7 @@ namespace Duality.Resources
 			{
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
 
-				if (i == index) return new Rect(curOffset + glyphXOff, 0, glyphData.width, glyphData.height);
+				if (i == index) return new Rect(curOffset + glyphXOff, 0, glyphData.Width, glyphData.Height);
 
 				curOffset += glyphXAdv;
 			}
@@ -1094,7 +1094,7 @@ namespace Duality.Resources
 			{
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
 
-				glyphRect = new Rect(curOffset + glyphXOff, 0, glyphData.width, glyphData.height);
+				glyphRect = new Rect(curOffset + glyphXOff, 0, glyphData.Width, glyphData.Height);
 				if (glyphRect.Contains(x, y)) return i;
 
 				curOffset += glyphXAdv;
@@ -1110,7 +1110,7 @@ namespace Duality.Resources
 			this.texture.LookupAtlas(charIndex, out uvRect);
 
 			this.GetGlyphData(glyph, out glyphData);
-			glyphXOff = -glyphData.offsetX;
+			glyphXOff = -glyphData.OffsetX;
 
 			if (this.kerning && !this.monospace && !this.needsReload)
 			{
@@ -1119,20 +1119,20 @@ namespace Duality.Resources
 				this.GetGlyphData(glyphNext, out glyphDataNext);
 
 				int minSum = int.MaxValue;
-				for (int k = 0; k < glyphData.kerningSamplesRight.Length; k++)
-					minSum = Math.Min(minSum, glyphData.kerningSamplesRight[k] + glyphDataNext.kerningSamplesLeft[k]);
+				for (int k = 0; k < glyphData.KerningSamplesRight.Length; k++)
+					minSum = Math.Min(minSum, glyphData.KerningSamplesRight[k] + glyphDataNext.KerningSamplesLeft[k]);
 
-				glyphXAdv = (this.monospace ? this.maxGlyphWidth : -glyphData.offsetX + glyphData.width) + this.spacing - minSum;
+				glyphXAdv = (this.monospace ? this.maxGlyphWidth : -glyphData.OffsetX + glyphData.Width) + this.spacing - minSum;
 			}
 			else
-				glyphXAdv = (this.monospace ? this.maxGlyphWidth : -glyphData.offsetX + glyphData.width) + this.spacing;
+				glyphXAdv = (this.monospace ? this.maxGlyphWidth : -glyphData.OffsetX + glyphData.Width) + this.spacing;
 		}
 
 		protected override void OnLoaded()
 		{
 			// Load custom font, if not available yet
-			if (GetFontFamily(this.familyName) == null && this.customFamilyData != null)
-				LoadFontFamilyFromMemory(this.customFamilyData);
+			if (GetFontFamily(this.familyName) == null && this.embeddedFont != null)
+				LoadFontFamilyFromMemory(this.embeddedFont);
 
 			this.ReloadData();
 			base.OnLoaded();
