@@ -47,6 +47,70 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(rnd.Next().ToString(),	this.PrimaryFormat);
 			this.TestWriteRead((SomeEnum)rnd.Next(10),	this.PrimaryFormat);
 		}
+		[Test] public void SerializePrimitiveArrays()
+		{
+			Random rnd = new Random();
+
+			this.TestWriteRead(
+				this.CreateArray<bool>(50, () => rnd.NextBool()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<byte>(50, () => rnd.NextByte()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<sbyte>(50, () => (sbyte)rnd.Next(sbyte.MinValue, sbyte.MaxValue)), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<short>(50, () => (short)rnd.Next(short.MinValue, short.MaxValue)), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<ushort>(50, () => (ushort)rnd.Next(ushort.MinValue, ushort.MaxValue)), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<int>(50, () => (int)rnd.Next(int.MinValue, int.MaxValue)), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<uint>(50, () => (uint)rnd.Next()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<long>(50, () => (long)rnd.Next()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<ulong>(50, () => (ulong)rnd.Next()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<float>(50, () => rnd.NextFloat()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<double>(50, () => rnd.NextDouble()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+
+			this.TestWriteRead(
+				this.CreateArray<decimal>(50, () => (decimal)rnd.NextDouble()), 
+				this.PrimaryFormat,
+				ArrayEquals);
+		}
 		[Test] public void SerializeMemberInfo()
 		{
 			Type type = typeof(MemberInfoTestObject);
@@ -226,8 +290,35 @@ namespace Duality.Tests.Serialization
 			}
 		}
 
-		private void TestDataEqual<T>(string name, T writeObj, SerializeMethod format)
+		private T[] CreateArray<T>(int length, Func<T> initValue) where T : struct
 		{
+			T[] result = new T[length];
+			for (int i = 0; i < length; i++)
+			{
+				result[i] = initValue();
+			}
+			return result;
+		}
+		private static bool ArrayEquals<T>(T[] a, T[] b) where T : struct
+		{
+			if (a == b) return true;
+			if (a == null) return false;
+			if (b == null) return false;
+			if (a.Length != b.Length) return false;
+
+			for (int i = 0; i < a.Length; i++)
+			{
+				if (!object.Equals(a[i], b[i]))
+					return false;
+			}
+
+			return true;
+		}
+
+		private void TestDataEqual<T>(string name, T writeObj, SerializeMethod format, Func<T,T,bool> checkEqual = null)
+		{
+			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
+
 			T readObj;
 			byte[] data = (byte[])TestRes.ResourceManager.GetObject(this.GetReferenceResourceName(name, format), System.Globalization.CultureInfo.InvariantCulture);
 			using (MemoryStream stream = new MemoryStream(data))
@@ -235,10 +326,12 @@ namespace Duality.Tests.Serialization
 			{
 				formatter.ReadObject(out readObj);
 			}
-			Assert.IsTrue(writeObj.Equals(readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
+			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		private void TestWriteRead<T>(T writeObj, SerializeMethod format)
+		private void TestWriteRead<T>(T writeObj, SerializeMethod format, Func<T,T,bool> checkEqual = null)
 		{
+			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
+
 			T readObj;
 			using (MemoryStream stream = new MemoryStream())
 			{
@@ -255,10 +348,12 @@ namespace Duality.Tests.Serialization
 					readObj = formatterRead.ReadObject<T>();
 				}
 			}
-			Assert.IsTrue(writeObj.Equals(readObj), "Failed single WriteRead of Type {0} with Value {1}", typeof(T), writeObj);
+			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed single WriteRead of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		private void TestSequential<T>(T writeObjA, T writeObjB, SerializeMethod format)
+		private void TestSequential<T>(T writeObjA, T writeObjB, SerializeMethod format, Func<T,T,bool> checkEqual = null)
 		{
+			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
+
 			T readObjA;
 			T readObjB;
 
@@ -290,11 +385,13 @@ namespace Duality.Tests.Serialization
 				}
 			}
 
-			Assert.IsTrue(writeObjA.Equals(readObjA), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
-			Assert.IsTrue(writeObjB.Equals(readObjB), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
+			Assert.IsTrue(checkEqual(writeObjA, readObjA), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
+			Assert.IsTrue(checkEqual(writeObjB, readObjB), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
 		}
-		private void TestRandomAccess<T>(T writeObjA, T writeObjB, SerializeMethod format)
+		private void TestRandomAccess<T>(T writeObjA, T writeObjB, SerializeMethod format, Func<T,T,bool> checkEqual = null)
 		{
+			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
+
 			T readObjA;
 			T readObjB;
 
@@ -333,8 +430,8 @@ namespace Duality.Tests.Serialization
 				}
 			}
 
-			Assert.IsTrue(writeObjA.Equals(readObjA), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
-			Assert.IsTrue(writeObjB.Equals(readObjB), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
+			Assert.IsTrue(checkEqual(writeObjA, readObjA), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
+			Assert.IsTrue(checkEqual(writeObjB, readObjB), "Failed random access WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
 		}
 	}
 }

@@ -237,27 +237,28 @@ namespace Duality.Serialization
 		private void WriteArray(object obj, ObjectHeader header)
 		{
 			Array objAsArray = obj as Array;
+			Type elementType = header.ObjectType.GetElementType();
 
 			if (objAsArray.Rank != 1) throw new NotSupportedException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new NotSupportedException("Non zero-based arrays are not supported");
 
 			this.writer.Write(objAsArray.Rank);
 			this.writer.Write(objAsArray.Length);
-
-			if		(objAsArray is bool[])		this.WriteArrayData(objAsArray as bool[]);
-			else if (objAsArray is byte[])		this.WriteArrayData(objAsArray as byte[]);
-			else if (objAsArray is sbyte[])		this.WriteArrayData(objAsArray as sbyte[]);
-			else if (objAsArray is short[])		this.WriteArrayData(objAsArray as short[]);
-			else if (objAsArray is ushort[])	this.WriteArrayData(objAsArray as ushort[]);
-			else if (objAsArray is int[])		this.WriteArrayData(objAsArray as int[]);
-			else if (objAsArray is uint[])		this.WriteArrayData(objAsArray as uint[]);
-			else if (objAsArray is long[])		this.WriteArrayData(objAsArray as long[]);
-			else if (objAsArray is ulong[])		this.WriteArrayData(objAsArray as ulong[]);
-			else if (objAsArray is float[])		this.WriteArrayData(objAsArray as float[]);
-			else if (objAsArray is double[])	this.WriteArrayData(objAsArray as double[]);
-			else if (objAsArray is decimal[])	this.WriteArrayData(objAsArray as decimal[]);
-			else if (objAsArray is char[])		this.WriteArrayData(objAsArray as char[]);
-			else if (objAsArray is string[])	this.WriteArrayData(objAsArray as string[]);
+			
+			if		(elementType == typeof(bool))		this.WriteArrayData(objAsArray as bool[]);
+			else if (elementType == typeof(byte))		this.WriteArrayData(objAsArray as byte[]);
+			else if (elementType == typeof(sbyte))		this.WriteArrayData(objAsArray as sbyte[]);
+			else if (elementType == typeof(short))		this.WriteArrayData(objAsArray as short[]);
+			else if (elementType == typeof(ushort))		this.WriteArrayData(objAsArray as ushort[]);
+			else if (elementType == typeof(int))		this.WriteArrayData(objAsArray as int[]);
+			else if (elementType == typeof(uint))		this.WriteArrayData(objAsArray as uint[]);
+			else if (elementType == typeof(long))		this.WriteArrayData(objAsArray as long[]);
+			else if (elementType == typeof(ulong))		this.WriteArrayData(objAsArray as ulong[]);
+			else if (elementType == typeof(float))		this.WriteArrayData(objAsArray as float[]);
+			else if (elementType == typeof(double))		this.WriteArrayData(objAsArray as double[]);
+			else if (elementType == typeof(decimal))	this.WriteArrayData(objAsArray as decimal[]);
+			else if (elementType == typeof(char))		this.WriteArrayData(objAsArray as char[]);
+			else if (elementType == typeof(string))		this.WriteArrayData(objAsArray as string[]);
 			else
 			{
 				for (long l = 0; l < objAsArray.Length; l++)
@@ -514,28 +515,28 @@ namespace Duality.Serialization
 		}
 		private Array ReadArray(ObjectHeader header)
 		{
-			int		arrRang			= this.reader.ReadInt32();
-			int		arrLength		= this.reader.ReadInt32();
+			int arrRank = this.reader.ReadInt32();
+			int arrLength = this.reader.ReadInt32();
+			Type elementType = header.ObjectType.GetElementType();
 
-			Array arrObj = header.ObjectType != null ? Array.CreateInstance(header.ObjectType.GetElementType(), arrLength) : null;
-			
 			// Prepare object reference
+			Array arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, arrLength) : null;
 			this.idManager.Inject(arrObj, header.ObjectId);
 
-			if		(arrObj is bool[])		this.ReadArrayData(arrObj as bool[]);
-			else if (arrObj is byte[])		this.ReadArrayData(arrObj as byte[]);
-			else if (arrObj is sbyte[])		this.ReadArrayData(arrObj as sbyte[]);
-			else if (arrObj is short[])		this.ReadArrayData(arrObj as short[]);
-			else if (arrObj is ushort[])	this.ReadArrayData(arrObj as ushort[]);
-			else if (arrObj is int[])		this.ReadArrayData(arrObj as int[]);
-			else if (arrObj is uint[])		this.ReadArrayData(arrObj as uint[]);
-			else if (arrObj is long[])		this.ReadArrayData(arrObj as long[]);
-			else if (arrObj is ulong[])		this.ReadArrayData(arrObj as ulong[]);
-			else if (arrObj is float[])		this.ReadArrayData(arrObj as float[]);
-			else if (arrObj is double[])	this.ReadArrayData(arrObj as double[]);
-			else if (arrObj is decimal[])	this.ReadArrayData(arrObj as decimal[]);
-			else if (arrObj is char[])		this.ReadArrayData(arrObj as char[]);
-			else if (arrObj is string[])	this.ReadArrayData(arrObj as string[]);
+			if		(elementType == typeof(bool))		this.ReadArrayData(arrObj as bool[]);
+			else if (elementType == typeof(byte))		this.ReadArrayData(arrObj as byte[]);
+			else if (elementType == typeof(sbyte))		this.ReadArrayData(arrObj as sbyte[]);
+			else if (elementType == typeof(short))		this.ReadArrayData(arrObj as short[]);
+			else if (elementType == typeof(ushort))		this.ReadArrayData(arrObj as ushort[]);
+			else if (elementType == typeof(int))		this.ReadArrayData(arrObj as int[]);
+			else if (elementType == typeof(uint))		this.ReadArrayData(arrObj as uint[]);
+			else if (elementType == typeof(long))		this.ReadArrayData(arrObj as long[]);
+			else if (elementType == typeof(ulong))		this.ReadArrayData(arrObj as ulong[]);
+			else if (elementType == typeof(float))		this.ReadArrayData(arrObj as float[]);
+			else if (elementType == typeof(double))		this.ReadArrayData(arrObj as double[]);
+			else if (elementType == typeof(decimal))	this.ReadArrayData(arrObj as decimal[]);
+			else if (elementType == typeof(char))		this.ReadArrayData(arrObj as char[]);
+			else if (elementType == typeof(string))		this.ReadArrayData(arrObj as string[]);
 			else
 			{
 				for (int l = 0; l < arrLength; l++)

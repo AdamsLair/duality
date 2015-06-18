@@ -205,19 +205,32 @@ namespace Duality.Serialization
 		private void WriteArray(XElement element, object obj, ObjectHeader header)
 		{
 			Array objAsArray = obj as Array;
+			TypeInfo arrayTypeInfo = header.ObjectType;
+			Type elementType = arrayTypeInfo.GetElementType();
+			TypeInfo elementTypeInfo = elementType.GetTypeInfo();
 
 			if (objAsArray.Rank != 1) throw new NotSupportedException("Non single-Rank arrays are not supported");
 			if (objAsArray.GetLowerBound(0) != 0) throw new NotSupportedException("Non zero-based arrays are not supported");
 
-			if (objAsArray is byte[])
-			{
-				byte[] byteArr = objAsArray as byte[];
-				element.Value = EncodeByteArray(byteArr);
-			}
+			// If it's a primitive array, save the values as a comma-separated list
+			if (elementType == typeof(bool))			this.WriteArrayData(element, objAsArray as bool[]);
+			else if (elementType == typeof(byte))		this.WriteArrayData(element, objAsArray as byte[]);
+			else if (elementType == typeof(sbyte))		this.WriteArrayData(element, objAsArray as sbyte[]);
+			else if (elementType == typeof(short))		this.WriteArrayData(element, objAsArray as short[]);
+			else if (elementType == typeof(ushort))		this.WriteArrayData(element, objAsArray as ushort[]);
+			else if (elementType == typeof(int))		this.WriteArrayData(element, objAsArray as int[]);
+			else if (elementType == typeof(uint))		this.WriteArrayData(element, objAsArray as uint[]);
+			else if (elementType == typeof(long))		this.WriteArrayData(element, objAsArray as long[]);
+			else if (elementType == typeof(ulong))		this.WriteArrayData(element, objAsArray as ulong[]);
+			else if (elementType == typeof(float))		this.WriteArrayData(element, objAsArray as float[]);
+			else if (elementType == typeof(double))		this.WriteArrayData(element, objAsArray as double[]);
+			else if (elementType == typeof(decimal))	this.WriteArrayData(element, objAsArray as decimal[]);
+			// Any non-trivial object data will be serialized recursively
 			else
 			{
+				int nonDefaultElementCount = this.GetArrayNonDefaultElementCount(objAsArray, elementTypeInfo);
+
 				// Write Array elements
-				int nonDefaultElementCount = this.GetArrayNonDefaultElementCount(objAsArray, header.ObjectType.GetElementType());
 				for (int i = 0; i < nonDefaultElementCount; i++)
 				{
 					XElement itemElement = new XElement("item");
@@ -320,6 +333,65 @@ namespace Duality.Serialization
 			element.SetAttributeValue("value", XmlConvert.ToString(Convert.ToInt64(obj)));
 		}
 		
+		private void WriteArrayData(XElement element, bool[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, byte[] array)
+		{
+			element.Value = Convert.ToBase64String(array, Base64FormattingOptions.None);
+		}
+		private void WriteArrayData(XElement element, sbyte[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, short[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, ushort[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, int[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, uint[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, long[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, ulong[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, float[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, double[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WriteArrayData(XElement element, decimal[] array)
+		{
+			this.WritePrimitiveArrayData(element, array, v => XmlConvert.ToString(v));
+		}
+		private void WritePrimitiveArrayData<T>(XElement element, T[] array, Func<T,string> toString) where T : struct
+		{
+			StringBuilder listBuilder = new StringBuilder();
+			for (int i = 0; i < array.Length; i++)
+			{
+				if (i != 0) listBuilder.Append(", ");
+				listBuilder.Append(toString(array[i]));
+			}
+			element.Value = listBuilder.ToString();
+		}
+
 
 		private object ReadObjectData(XElement element)
 		{
@@ -413,23 +485,48 @@ namespace Duality.Serialization
 		}
 		private Array ReadArray(XElement element, ObjectHeader header)
 		{
-			string arrLengthString = element.GetAttributeValue("length");
-			int arrLength = arrLengthString == null	? element.Elements().Count() : XmlConvert.ToInt32(arrLengthString);
-
 			Array arrObj;
-			if (header.ObjectType == typeof(byte[]))
+			TypeInfo arrayTypeInfo = header.ObjectType;
+			Type elementType = arrayTypeInfo.GetElementType();
+			
+			// Determine the array length based on child elements or explicit value
+			string explicitLengthString = element.GetAttributeValue("length");
+			int explicitLength = explicitLengthString == null ? -1 : XmlConvert.ToInt32(explicitLengthString);
+
+			// Expect the "complex" array format, if there are child elements or an explicit length (children may be omitted)
+			bool isComplex = element.Elements().Any() || explicitLength != -1;
+
+			// Read a primitive value array
+			if (!isComplex)
 			{
-				string binHexString = element.Value;
-				byte[] byteArr = DecodeByteArray(binHexString);
+				if		(elementType == typeof(bool))		{ bool[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(byte))		{ byte[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(sbyte))		{ sbyte[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(short))		{ short[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(ushort))		{ ushort[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(int))		{ int[]		array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(uint))		{ uint[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(long))		{ long[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(ulong))		{ ulong[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(float))		{ float[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(double))		{ double[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else if (elementType == typeof(decimal))	{ decimal[]	array; this.ReadArrayData(element, out array); arrObj = array; }
+				else
+				{
+					this.LocalLog.WriteWarning("Can't read primitive value array. Unknown element type '{0}'. Discarding data.", Log.Type(elementType));
+					arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, 0) : null;
+				}
 
 				// Set object reference
-				this.idManager.Inject(byteArr, header.ObjectId);
-				arrObj = byteArr;
+				this.idManager.Inject(arrObj, header.ObjectId);
 			}
+			// Read a complex value array, where each item is an XML element
 			else
 			{
+				int arrLength = explicitLength != -1 ? explicitLength : element.Elements().Count();
+
 				// Prepare object reference
-				arrObj = Array.CreateInstance(header.ObjectType.GetElementType(), arrLength);
+				arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, arrLength) : null;
 				this.idManager.Inject(arrObj, header.ObjectId);
 
 				int itemIndex = 0;
@@ -616,7 +713,72 @@ namespace Duality.Serialization
 			long val = valueString == null ? 0 : XmlConvert.ToInt64(valueString);
 			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType, name, val);
 		}
+		
+		private void ReadArrayData(XElement element, out bool[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToBoolean(s));
+		}
+		private void ReadArrayData(XElement element, out byte[] array)
+		{
+			array = Convert.FromBase64String(element.Value);
+		}
+		private void ReadArrayData(XElement element, out sbyte[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => (sbyte)XmlConvert.ToInt16(s));
+		}
+		private void ReadArrayData(XElement element, out short[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToInt16(s));
+		}
+		private void ReadArrayData(XElement element, out ushort[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToUInt16(s));
+		}
+		private void ReadArrayData(XElement element, out int[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToInt32(s));
+		}
+		private void ReadArrayData(XElement element, out uint[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToUInt32(s));
+		}
+		private void ReadArrayData(XElement element, out long[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToInt64(s));
+		}
+		private void ReadArrayData(XElement element, out ulong[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToUInt64(s));
+		}
+		private void ReadArrayData(XElement element, out float[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToSingle(s));
+		}
+		private void ReadArrayData(XElement element, out double[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToDouble(s));
+		}
+		private void ReadArrayData(XElement element, out decimal[] array)
+		{
+			this.ReadPrimitiveArrayData(element, out array, s => XmlConvert.ToDecimal(s));
+		}
+		private void ReadPrimitiveArrayData<T>(XElement element, out T[] array, Func<string,T> fromString) where T : struct
+		{
+			string[] valueStrings = element.Value.Split(new char[] { ',' });
 
+			array = new T[valueStrings.Length];
+			try
+			{
+				for (int i = 0; i < array.Length; i++)
+				{
+					array[i] = fromString(valueStrings[i]);
+				}
+			}
+			catch (Exception e)
+			{
+				this.LocalLog.WriteError("Error reading primitive value array of element type {0}: {1}", Log.Type(typeof(T)), Log.Exception(e));
+			}
+		}
 		
 		/// <summary>
 		/// Determines the length of the longest Array element sequence that contains
@@ -737,15 +899,6 @@ namespace Duality.Serialization
 			// Reset the original Stream to the expected position and return the substream
 			stream.Position = oldPos + byteOffset + reducedData.Length;
 			return result;
-		}
-
-		private static byte[] DecodeByteArray(string str)
-		{
-			return Convert.FromBase64String(str);
-		}
-		private static string EncodeByteArray(byte[] arr)
-		{
-			return Convert.ToBase64String(arr, Base64FormattingOptions.None);
 		}
 
 		private static string GetXmlElementName(string codeName)
