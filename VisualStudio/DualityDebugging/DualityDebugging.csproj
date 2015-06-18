@@ -59,6 +59,7 @@
       <DependentUpon>BitmapForm.cs</DependentUpon>
     </Compile>
     <Compile Include="BitmapVisualizer.cs" />
+    <Compile Include="ExtMethodsBitmap.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
     <Compile Include="TextureAtlasVisualizer.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
