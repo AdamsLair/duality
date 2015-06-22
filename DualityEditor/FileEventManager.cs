@@ -21,10 +21,28 @@ namespace Duality.Editor
 {
 	public static class FileEventManager
 	{
+		private class DeletedEventArgsExt : FileSystemEventArgs
+		{
+			private bool isDirectory = false;
+			public bool IsDirectory
+			{
+				get { return this.isDirectory; }
+			}
+			public bool IsFile
+			{
+				get { return !this.isDirectory; }
+			}
+			public DeletedEventArgsExt(WatcherChangeTypes changeTypes, string directory, string name, bool isDir) : base(changeTypes, directory, name)
+			{
+				this.isDirectory = isDir;
+			}
+		}
+
 		private	static DateTime						lastEventProc			= DateTime.Now;
 		private static FileSystemWatcher			pluginWatcherWorking	= null;
 		private static FileSystemWatcher			pluginWatcherExec		= null;
-		private static FileSystemWatcher			dataDirWatcher			= null;
+		private static FileSystemWatcher			dataDirWatcherFile		= null;
+		private static FileSystemWatcher			dataDirWatcherDirectory	= null;
 		private static FileSystemWatcher			sourceDirWatcher		= null;
 		private	static HashSet<string>				reimportSchedule		= new HashSet<string>();
 		private	static HashSet<string>				editorModifiedFiles		= new HashSet<string>();
@@ -49,7 +67,7 @@ namespace Duality.Editor
 			pluginWatcherWorking.EnableRaisingEvents = false;
 			pluginWatcherWorking.Filter = "*.dll";
 			pluginWatcherWorking.IncludeSubdirectories = true;
-			pluginWatcherWorking.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+			pluginWatcherWorking.NotifyFilter = NotifyFilters.LastWrite;
 			pluginWatcherWorking.Path = DualityApp.PluginDirectory;
 			pluginWatcherWorking.Changed += corePluginWatcher_Changed;
 			pluginWatcherWorking.Created += corePluginWatcher_Changed;
@@ -63,23 +81,36 @@ namespace Duality.Editor
 				pluginWatcherExec.EnableRaisingEvents = false;
 				pluginWatcherExec.Filter = "*.dll";
 				pluginWatcherExec.IncludeSubdirectories = true;
-				pluginWatcherExec.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.CreationTime;
+				pluginWatcherExec.NotifyFilter = NotifyFilters.LastWrite;
 				pluginWatcherExec.Path = execPluginDir;
 				pluginWatcherExec.Changed += corePluginWatcher_Changed;
 				pluginWatcherExec.Created += corePluginWatcher_Changed;
 				pluginWatcherExec.EnableRaisingEvents = true;
 			}
 			
-			dataDirWatcher = new FileSystemWatcher();
-			dataDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
-			dataDirWatcher.EnableRaisingEvents = false;
-			dataDirWatcher.IncludeSubdirectories = true;
-			dataDirWatcher.Path = DualityApp.DataDirectory;
-			dataDirWatcher.Created += fileSystemWatcher_ForwardData;
-			dataDirWatcher.Changed += fileSystemWatcher_ForwardData;
-			dataDirWatcher.Deleted += fileSystemWatcher_ForwardData;
-			dataDirWatcher.Renamed += fileSystemWatcher_ForwardData;
-			dataDirWatcher.EnableRaisingEvents = true;
+			dataDirWatcherFile = new FileSystemWatcher();
+			dataDirWatcherFile.SynchronizingObject = DualityEditorApp.MainForm;
+			dataDirWatcherFile.EnableRaisingEvents = false;
+			dataDirWatcherFile.IncludeSubdirectories = true;
+			dataDirWatcherFile.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
+			dataDirWatcherFile.Path = DualityApp.DataDirectory;
+			dataDirWatcherFile.Created += fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.Changed += fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.Deleted += fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.Renamed += fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.EnableRaisingEvents = true;
+
+			dataDirWatcherDirectory = new FileSystemWatcher();
+			dataDirWatcherDirectory.SynchronizingObject = DualityEditorApp.MainForm;
+			dataDirWatcherDirectory.EnableRaisingEvents = false;
+			dataDirWatcherDirectory.IncludeSubdirectories = true;
+			dataDirWatcherDirectory.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.LastWrite;
+			dataDirWatcherDirectory.Path = DualityApp.DataDirectory;
+			dataDirWatcherDirectory.Created += fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.Changed += fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.Deleted += fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.Renamed += fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.EnableRaisingEvents = true;
 			
 			sourceDirWatcher = new FileSystemWatcher();
 			sourceDirWatcher.SynchronizingObject = DualityEditorApp.MainForm;
@@ -112,14 +143,23 @@ namespace Duality.Editor
 			pluginWatcherWorking.Dispose();
 			pluginWatcherWorking = null;
 
-			dataDirWatcher.EnableRaisingEvents = false;
-			dataDirWatcher.Created -= fileSystemWatcher_ForwardData;
-			dataDirWatcher.Changed -= fileSystemWatcher_ForwardData;
-			dataDirWatcher.Deleted -= fileSystemWatcher_ForwardData;
-			dataDirWatcher.Renamed -= fileSystemWatcher_ForwardData;
-			dataDirWatcher.SynchronizingObject = null;
-			dataDirWatcher.Dispose();
-			dataDirWatcher = null;
+			dataDirWatcherFile.EnableRaisingEvents = false;
+			dataDirWatcherFile.Created -= fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.Changed -= fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.Deleted -= fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.Renamed -= fileSystemWatcher_ForwardData;
+			dataDirWatcherFile.SynchronizingObject = null;
+			dataDirWatcherFile.Dispose();
+			dataDirWatcherFile = null;
+
+			dataDirWatcherDirectory.EnableRaisingEvents = false;
+			dataDirWatcherDirectory.Created -= fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.Changed -= fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.Deleted -= fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.Renamed -= fileSystemWatcher_ForwardData;
+			dataDirWatcherDirectory.SynchronizingObject = null;
+			dataDirWatcherDirectory.Dispose();
+			dataDirWatcherDirectory = null;
 
 			sourceDirWatcher.EnableRaisingEvents = false;
 			sourceDirWatcher.Created -= fileSystemWatcher_ForwardSource;
@@ -205,9 +245,17 @@ namespace Duality.Editor
 			
 			return current;
 		}
-		private static void PushDataDirEvent(FileSystemEventArgs e)
+		private static void PushDataDirEvent(FileSystemEventArgs e, bool isDirectory)
 		{
 			if (IsResPathIgnored(e.FullPath)) return;
+
+			// In case we're dealing with a deletion, we'll need to add some meta information to know whether it was a file or directory.
+			if (e.ChangeType == WatcherChangeTypes.Deleted)
+			{
+				string baseDir = (e.Name.Length > 0) ? e.FullPath.Remove(e.FullPath.Length - e.Name.Length, e.Name.Length) : "";
+				e = new DeletedEventArgsExt(e.ChangeType, baseDir, e.Name, isDirectory);
+			}
+
 			dataDirEventBuffer.RemoveAll(f => f.FullPath == e.FullPath && f.ChangeType == e.ChangeType);
 			dataDirEventBuffer.Add(e);
 		}
@@ -218,8 +266,17 @@ namespace Duality.Editor
 			// Process events
 			while (dataDirEventBuffer.Count > 0)
 			{
-				FileSystemEventArgs e = FetchFileSystemEvent(dataDirEventBuffer, dataDirWatcher.Path);
+				FileSystemEventArgs e = FetchFileSystemEvent(dataDirEventBuffer, DualityApp.DataDirectory);
 				if (e == null) continue;
+
+				// Determine whether we're dealing with a directory
+				bool isDirectory = Directory.Exists(e.FullPath);
+				{
+					// If this is a deletion, nothing exists anymore, rely on metadata instead.
+					DeletedEventArgsExt de = e as DeletedEventArgsExt;
+					if (de != null && de.IsDirectory)
+						isDirectory = true;
+				}
 
 				if (e.ChangeType == WatcherChangeTypes.Changed)
 				{
@@ -227,13 +284,14 @@ namespace Duality.Editor
 					if (IsPathEditorModified(e.FullPath))
 						continue;
 
-					ResourceEventArgs args = new ResourceEventArgs(e.FullPath);
-					if (Resource.IsResourceFile(e.FullPath) || args.IsDirectory)
+					if (Resource.IsResourceFile(e.FullPath) || isDirectory)
 					{
+						ContentRef<Resource> resRef = new ContentRef<Resource>(null, e.FullPath);
+
 						// Unregister outdated resources, if modified outside the editor
-						if (!args.IsDirectory && ContentProvider.HasContent(args.Path))
+						if (!isDirectory && ContentProvider.HasContent(e.FullPath))
 						{
-							bool isCurrentScene = args.Content.Is<Scene>() && Scene.Current == args.Content.Res;
+							bool isCurrentScene = resRef.Is<Scene>() && Scene.Current == resRef.Res;
 							if (isCurrentScene || DualityEditorApp.IsResourceUnsaved(e.FullPath))
 							{
 								DialogResult result = MessageBox.Show(
@@ -244,15 +302,16 @@ namespace Duality.Editor
 								if (result == DialogResult.Yes)
 								{
 									string curScenePath = Scene.CurrentPath;
-									ContentProvider.RemoveContent(args.Path);
+									ContentProvider.RemoveContent(e.FullPath);
 									if (isCurrentScene) Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curScenePath), true);
 								}
 							}
 							else
-								ContentProvider.RemoveContent(args.Path);
+								ContentProvider.RemoveContent(e.FullPath);
 						}
 
-						if (ResourceModified != null) ResourceModified(null, args);
+						if (ResourceModified != null)
+							ResourceModified(null, new ResourceEventArgs(e.FullPath, isDirectory));
 					}
 				}
 				else if (e.ChangeType == WatcherChangeTypes.Created)
@@ -263,7 +322,7 @@ namespace Duality.Editor
 						if (Resource.IsResourceFile(e.FullPath))
 						{
 							if (ResourceCreated != null)
-								ResourceCreated(null, new ResourceEventArgs(e.FullPath));
+								ResourceCreated(null, new ResourceEventArgs(e.FullPath, false));
 						}
 						// Import non-Resource file
 						else
@@ -299,21 +358,22 @@ namespace Duality.Editor
 					{
 						// Register newly detected Resource directory
 						if (ResourceCreated != null)
-							ResourceCreated(null, new ResourceEventArgs(e.FullPath));
+							ResourceCreated(null, new ResourceEventArgs(e.FullPath, true));
 					}
 				}
 				else if (e.ChangeType == WatcherChangeTypes.Deleted)
 				{
 					// Is it a Resource file or just something else?
-					ResourceEventArgs args = new ResourceEventArgs(e.FullPath);
-					if (Resource.IsResourceFile(e.FullPath) || args.IsDirectory)
+					if (Resource.IsResourceFile(e.FullPath) || isDirectory)
 					{
+						ResourceEventArgs args = new ResourceEventArgs(e.FullPath, isDirectory);
+
 						// Organize the Source/Media directory accordingly
 						DeleteSourceMediaFile(args);
 
 						// Unregister no-more existing resources
-						if (args.IsDirectory)	ContentProvider.RemoveContentTree(args.Path);
-						else					ContentProvider.RemoveContent(args.Path);
+						if (isDirectory)	ContentProvider.RemoveContentTree(args.Path);
+						else				ContentProvider.RemoveContent(args.Path);
 
 						if (ResourceDeleted != null)
 							ResourceDeleted(null, args);
@@ -323,19 +383,19 @@ namespace Duality.Editor
 				{
 					// Is it a Resource file or just something else?
 					RenamedEventArgs re = e as RenamedEventArgs;
-					ResourceRenamedEventArgs args = new ResourceRenamedEventArgs(re.FullPath, re.OldFullPath);
-					if (Resource.IsResourceFile(e.FullPath) || args.IsDirectory)
+					ResourceRenamedEventArgs args = new ResourceRenamedEventArgs(re.FullPath, re.OldFullPath, isDirectory);
+					if (Resource.IsResourceFile(e.FullPath) || isDirectory)
 					{
 						// Rename content registerations
-						if (args.IsDirectory)	ContentProvider.RenameContentTree(args.OldPath, args.Path);
-						else					ContentProvider.RenameContent(args.OldPath, args.Path);
+						if (isDirectory)	ContentProvider.RenameContentTree(args.OldPath, args.Path);
+						else				ContentProvider.RenameContent(args.OldPath, args.Path);
 
 						// Query skipped paths
-						bool isEmptyDir = args.IsDirectory && !Directory.EnumerateFileSystemEntries(args.Path).Any();
+						bool isEmptyDir = isDirectory && !Directory.EnumerateFileSystemEntries(args.Path).Any();
 						bool isSkippedPath = isEmptyDir;
 						if (!isSkippedPath && BeginGlobalRename != null)
 						{
-							BeginGlobalRenameEventArgs beginGlobalRenameArgs = new BeginGlobalRenameEventArgs(args.Path, args.OldPath);
+							BeginGlobalRenameEventArgs beginGlobalRenameArgs = new BeginGlobalRenameEventArgs(args.Path, args.OldPath, isDirectory);
 							BeginGlobalRename(null, beginGlobalRenameArgs);
 							isSkippedPath = beginGlobalRenameArgs.Cancel;
 						}
@@ -570,7 +630,7 @@ namespace Duality.Editor
 		}
 		private static void fileSystemWatcher_ForwardData(object sender, FileSystemEventArgs e)
 		{
-			PushDataDirEvent(e);
+			PushDataDirEvent(e, sender == dataDirWatcherDirectory);
 		}
 		private static void corePluginWatcher_Changed(object sender, FileSystemEventArgs e)
 		{

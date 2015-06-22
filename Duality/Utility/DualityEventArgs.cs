@@ -123,18 +123,12 @@ namespace Duality
 			get { return this.isDirectory ? null : this.content; }
 		}
 
-		public ResourceEventArgs(string path) : this(new ContentRef<Resource>(null, path)) {}
-		public ResourceEventArgs(IContentRef resRef) : this(new ContentRef<Resource>(resRef.ResWeak, resRef.Path)) {}
-		public ResourceEventArgs(ContentRef<Resource> resRef)
+		public ResourceEventArgs(string path, bool isDirectory) : this(new ContentRef<Resource>(null, path), isDirectory) {}
+		public ResourceEventArgs(ContentRef<Resource> resRef, bool isDirectory = false)
 		{
 			this.content = resRef;
-			this.isResource = this.content.IsLoaded || this.content.IsDefaultContent || System.IO.File.Exists(this.content.Path);
-			this.isDirectory = !this.isResource && System.IO.Directory.Exists(this.content.Path);
-			if (!this.isDirectory && !this.isResource)
-			{
-				this.isDirectory = string.IsNullOrEmpty(System.IO.Path.GetExtension(this.content.Path));
-				this.isResource = !this.isDirectory;
-			}
+			this.isResource = !isDirectory;
+			this.isDirectory = isDirectory;
 		}
 	}
 

@@ -181,7 +181,7 @@ namespace Duality.Editor
 			get { return this.IsDirectory ? null : new ContentRef<Resource>(null, this.oldPath); }
 		}
 
-		public ResourceRenamedEventArgs(string path, string oldPath) : base(path)
+		public ResourceRenamedEventArgs(string path, string oldPath, bool isDirectory) : base(path, isDirectory)
 		{
 			this.oldPath = oldPath;
 		}
@@ -195,6 +195,6 @@ namespace Duality.Editor
 			get { return this.cancel; }
 			set { this.cancel = value; }
 		}
-		public BeginGlobalRenameEventArgs(string path, string oldPath) : base(path, oldPath) {}
+		public BeginGlobalRenameEventArgs(string path, string oldPath, bool isDirectory) : base(path, oldPath, isDirectory) {}
 	}
 }
