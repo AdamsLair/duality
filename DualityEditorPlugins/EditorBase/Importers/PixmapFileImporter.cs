@@ -25,6 +25,7 @@ namespace Duality.Editor.Plugins.Base
 			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
 			PixelData pixelData = LoadPixelData(srcFile);
 			Pixmap res = new Pixmap(pixelData);
+			res.SourcePath = srcFile;
 			res.Save(output[0]);
 		}
 
@@ -37,6 +38,7 @@ namespace Duality.Editor.Plugins.Base
 			PixelData pixelData = LoadPixelData(srcFile);
 			Pixmap res = r.Res as Pixmap;
 			res.MainLayer = pixelData;
+			res.SourcePath = srcFile;
 		}
 
 		public bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile)
