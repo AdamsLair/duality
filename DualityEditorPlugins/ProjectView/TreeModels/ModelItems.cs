@@ -185,8 +185,6 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 
 		public ResourceNode(string path) : base(path, null, false)
 		{
-			string[] fileNameSplit = Path.GetFileNameWithoutExtension(path).Split('.');
-
 			this.res = new ContentRef<Resource>(null, path);
 			this.resType = Resource.GetTypeByFileName(path);
 			this.ApplyPathToName();
@@ -241,11 +239,7 @@ namespace Duality.Editor.Plugins.ProjectView.TreeModels
 		public override string GetNameFromPath(string path)
 		{
 			if (!ContentProvider.IsDefaultContentPath(path))
-			{
-				string fileName = Path.GetFileNameWithoutExtension(path);
-				string[] fileNameSplit = fileName.Split('.');
-				return fileNameSplit[0];
-			}
+				return ContentProvider.GetNameFromPath(path);
 			else
 				return base.GetNameFromPath(path);
 		}
