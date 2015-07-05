@@ -157,3 +157,4 @@ Backend/DefaultOpenTKEditor/bin/
 Duality/Duality_PCL_WiP.csproj.user
 Backend/DotNetFramework/bin/
 Backend/DotNetFramework/obj/
+*.userprefs
