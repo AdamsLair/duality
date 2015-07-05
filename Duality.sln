@@ -17,12 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpAdvisor", "DualityEdito
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DualityPlugins", "DualityPlugins", "{03729F9B-E2FF-4FFC-ADC1-862D9BE94803}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting", "DualityPlugins\DynamicLighting\DynamicLighting.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Core", "DualityPlugins\DynamicLighting\DynamicLighting.Core.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D821AFB9-BCC9-4025-9A9C-798E2BC546AB} = {D821AFB9-BCC9-4025-9A9C-798E2BC546AB}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting", "DualityEditorPlugins\DynamicLighting\DynamicLighting.csproj", "{3518ECDE-DC59-472A-AB91-7AEF884C6DDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Editor", "DualityEditorPlugins\DynamicLighting\DynamicLighting.Editor.csproj", "{3518ECDE-DC59-472A-AB91-7AEF884C6DDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityDebugging", "VisualStudio\DualityDebugging\DualityDebugging.csproj", "{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}"
 EndProject
