@@ -167,7 +167,7 @@ namespace Duality.Serialization
 		{
 			if		(obj is bool)		element.Value = XmlConvert.ToString((bool)obj);
 			else if (obj is byte)		element.Value = XmlConvert.ToString((byte)obj);
-			else if (obj is char)		element.Value = XmlConvert.ToString((char)obj);
+			else if (obj is char)		element.Value = XmlConvert.EncodeName(XmlConvert.ToString((char)obj));
 			else if (obj is string)		element.Value = (string)obj;
 			else if (obj is sbyte)		element.Value = XmlConvert.ToString((sbyte)obj);
 			else if (obj is short)		element.Value = XmlConvert.ToString((short)obj);
@@ -477,7 +477,7 @@ namespace Duality.Serialization
 				case DataType.Float:		return XmlConvert.ToSingle(val);
 				case DataType.Double:		return XmlConvert.ToDouble(val);
 				case DataType.Decimal:		return XmlConvert.ToDecimal(val);
-				case DataType.Char:			return XmlConvert.ToChar(val);
+				case DataType.Char:			return XmlConvert.ToChar(XmlConvert.DecodeName(val));
 				case DataType.String:		return val;
 				default:
 					throw new ArgumentException(string.Format("DataType '{0}' is not a primitive.", dataType));

@@ -47,6 +47,13 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(rnd.Next().ToString(),	this.PrimaryFormat);
 			this.TestWriteRead((SomeEnum)rnd.Next(10),	this.PrimaryFormat);
 		}
+		[Test] public void SerializeCharData()
+		{
+			for (int i = 0; i < 256; i++)
+			{
+				this.TestWriteRead((char)i,	this.PrimaryFormat);
+			}
+		}
 		[Test] public void SerializePrimitiveArrays()
 		{
 			Random rnd = new Random();
