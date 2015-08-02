@@ -335,7 +335,9 @@ namespace Duality
 				string osFriendlyName = null;
 				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
 				{
-					if (Environment.OSVersion.Version >= new Version(6, 3, 0))
+					if (Environment.OSVersion.Version >= new Version(10, 0, 0))
+						osFriendlyName = "Windows 10";
+					else if (Environment.OSVersion.Version >= new Version(6, 3, 0))
 						osFriendlyName = "Windows 8.1";
 					else if (Environment.OSVersion.Version >= new Version(6, 2, 0))
 						osFriendlyName = "Windows 8";
