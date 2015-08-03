@@ -118,6 +118,31 @@ namespace Duality.Tests.Serialization
 				this.PrimaryFormat,
 				ArrayEquals);
 		}
+		[Test] public void SerializeEmptyArrays()
+		{
+			Random rnd = new Random();
+
+			// Primitive Types
+			this.TestWriteRead(new bool[0],		this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new byte[0],		this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new sbyte[0],	this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new short[0],	this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new ushort[0],	this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new int[0],		this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new uint[0],		this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new long[0],		this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new ulong[0],	this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new float[0],	this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new double[0],	this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new decimal[0],	this.PrimaryFormat, ArrayEquals);
+
+			// Complex Types
+			this.TestWriteRead(new object[0],		this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new Type[0],			this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new string[0],		this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new GameObject[0],	this.PrimaryFormat, ArrayEquals);
+			this.TestWriteRead(new Component[0],	this.PrimaryFormat, ArrayEquals);
+		}
 		[Test] public void SerializeMemberInfo()
 		{
 			Type type = typeof(MemberInfoTestObject);
@@ -306,7 +331,7 @@ namespace Duality.Tests.Serialization
 			}
 			return result;
 		}
-		private static bool ArrayEquals<T>(T[] a, T[] b) where T : struct
+		private static bool ArrayEquals<T>(T[] a, T[] b)
 		{
 			if (a == b) return true;
 			if (a == null) return false;

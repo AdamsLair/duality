@@ -495,9 +495,16 @@ namespace Duality.Serialization
 
 			// Expect the "complex" array format, if there are child elements or an explicit length (children may be omitted)
 			bool isComplex = element.Elements().Any() || explicitLength != -1;
+			bool isEmpty = explicitLength == 0 || (!isComplex && string.IsNullOrEmpty(element.Value));
 
+			// Early-out: Create an empty array
+			if (isEmpty)
+			{
+				arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, 0) : null;
+				this.idManager.Inject(arrObj, header.ObjectId);
+			}
 			// Read a primitive value array
-			if (!isComplex)
+			else if (!isComplex)
 			{
 				if		(elementType == typeof(bool))		{ bool[]	array; this.ReadArrayData(element, out array); arrObj = array; }
 				else if (elementType == typeof(byte))		{ byte[]	array; this.ReadArrayData(element, out array); arrObj = array; }
@@ -764,13 +771,6 @@ namespace Duality.Serialization
 		}
 		private void ReadPrimitiveArrayData<T>(XElement element, out T[] array, Func<string,T> fromString) where T : struct
 		{
-			// Early-out: If we have an empty element, assume an empty array as well.
-			if (string.IsNullOrEmpty(element.Value))
-			{
-				array = new T[0];
-				return;
-			}
-
 			string[] valueStrings = element.Value.Split(new char[] { ',' });
 			array = new T[valueStrings.Length];
 			try
