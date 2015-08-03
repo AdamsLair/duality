@@ -67,12 +67,12 @@
           <_items dataType="Array" type="Duality.Resources.PrefabLink+VarMod[]" id="4083202788">
             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="4066257096">
-                <_items dataType="Array" type="System.Int32[]" id="3998382700" />
+                <_items dataType="Array" type="System.Int32[]" id="3998382700"></_items>
                 <_size dataType="Int">0</_size>
                 <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
-              <prop dataType="PropertyInfo" id="771728094" value="P:Duality.Plugins.Steering.Agent:Target" />
+              <prop dataType="MemberInfo" id="771728094" value="P:Duality.Plugins.Steering.Agent:Target" />
               <val dataType="Struct" type="Duality.Plugins.Steering.PointTarget" id="2243493172">
                 <location dataType="Struct" type="Duality.Vector2">
                   <X dataType="Float">0</X>
@@ -87,7 +87,7 @@
                 <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">13978918</componentType>
-              <prop dataType="PropertyInfo" id="111936128" value="P:Duality.Components.Transform:RelativePos" />
+              <prop dataType="MemberInfo" id="111936128" value="P:Duality.Components.Transform:RelativePos" />
               <val dataType="Struct" type="Duality.Vector3">
                 <X dataType="Float">-10</X>
                 <Y dataType="Float">0</Y>
@@ -96,24 +96,24 @@
             </item>
             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1158369158">
-                <_items dataType="Array" type="System.Int32[]" id="993453730" />
+                <_items dataType="Array" type="System.Int32[]" id="993453730"></_items>
                 <_size dataType="Int">0</_size>
                 <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2144167866</componentType>
-              <prop dataType="PropertyInfo" id="2206450092" value="P:Duality.Plugins.Steering.Agent:Characteristics" />
+              <prop dataType="MemberInfo" id="2206450092" value="P:Duality.Plugins.Steering.Agent:Characteristics" />
               <val dataType="Struct" type="Duality.Plugins.Steering.DefaultAgentCharacteristics" id="1960959242">
                 <aggressiveness dataType="Float">0.5</aggressiveness>
               </val>
             </item>
             <item dataType="Struct" type="Duality.Resources.PrefabLink+VarMod">
               <childIndex dataType="Struct" type="System.Collections.Generic.List`1[[System.Int32]]" id="1840298872">
-                <_items dataType="Array" type="System.Int32[]" id="950995964" />
+                <_items dataType="Array" type="System.Int32[]" id="950995964"></_items>
                 <_size dataType="Int">0</_size>
                 <_version dataType="Int">1</_version>
               </childIndex>
               <componentType dataType="ObjectRef">2771621414</componentType>
-              <prop dataType="PropertyInfo" id="1291869230" value="P:Duality.Components.Renderers.RigidBodyRenderer:ColorTint" />
+              <prop dataType="MemberInfo" id="1291869230" value="P:Duality.Components.Renderers.RigidBodyRenderer:ColorTint" />
               <val dataType="Struct" type="Duality.Drawing.ColorRgba">
                 <A dataType="Byte">255</A>
                 <B dataType="Byte">224</B>
@@ -310,6 +310,7 @@
             <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
               <contentPath />
             </iconMat>
+            <offset dataType="Int">0</offset>
             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3586881284">
               <displayedText dataType="String">The RigidBodies used in this sample do not collide. All interaction is based solely on Agent decisions.</displayedText>
               <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="1193496900">
@@ -318,12 +319,10 @@
                 </item>
               </elements>
               <flowAreas />
-              <fontGlyphCount dataType="Array" type="System.Int32[]" id="2207134358">
-                <item dataType="Int">103</item>
-              </fontGlyphCount>
+              <fontGlyphCount dataType="Array" type="System.Int32[]" id="2207134358">103</fontGlyphCount>
               <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1032945920">
                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                  <contentPath dataType="String">Data\SteeringSample\Data\InfoTextFont.Font.res</contentPath>
+                  <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
                 </item>
               </fonts>
               <iconCount dataType="Int">0</iconCount>
@@ -367,5 +366,6 @@
     </item>
   </serializeObj>
   <sourcePath />
+  <visibilityStrategy dataType="Struct" type="Duality.Components.DefaultRendererVisibilityStrategy" id="2035693768" />
 </root>
 <!-- XmlFormatterBase Document Separator -->
