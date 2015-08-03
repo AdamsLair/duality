@@ -239,8 +239,8 @@ namespace Duality.Serialization
 					this.WriteObjectData(itemElement, objAsArray.GetValue(i));
 				}
 
-				// Write original length, in case trailing elements were omitted.
-				if (nonDefaultElementCount != objAsArray.Length)
+				// Write original length, in case trailing elements were omitted or we have an (XML-ambiguous) zero-element array.
+				if (nonDefaultElementCount != objAsArray.Length || nonDefaultElementCount == 0)
 				{
 					element.SetAttributeValue("length", XmlConvert.ToString(objAsArray.Length));
 				}
