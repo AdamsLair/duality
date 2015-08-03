@@ -42,7 +42,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		public static void Bind(ContentRef<Duality.Resources.Texture> target, int texUnit = 0)
 		{
-			Bind((target.Res != null ? target.Res.Native : null) as NativeTexture);
+			Bind((target.Res != null ? target.Res.Native : null) as NativeTexture, texUnit);
 		}
 		public static void Bind(NativeTexture tex, int texUnit = 0)
 		{
