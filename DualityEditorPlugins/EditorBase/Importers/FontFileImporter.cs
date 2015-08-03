@@ -17,7 +17,9 @@ namespace Duality.Editor.Plugins.Base
 		{
 			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
 			Font font = new Font();
-			font.LoadCustomFamilyData(srcFile);
+
+			font.SourcePath = srcFile;
+			font.EmbeddedTrueTypeFont = File.ReadAllBytes(srcFile);
 			font.RenderGlyphs();
 			font.Save(output[0]);
 		}
@@ -29,7 +31,8 @@ namespace Duality.Editor.Plugins.Base
 		public void ReImportFile(ContentRef<Resource> r, string srcFile)
 		{
 			Font font = r.Res as Font;
-			font.LoadCustomFamilyData(srcFile);
+			font.SourcePath = srcFile;
+			font.EmbeddedTrueTypeFont = File.ReadAllBytes(srcFile);
 			font.RenderGlyphs();
 		}
 

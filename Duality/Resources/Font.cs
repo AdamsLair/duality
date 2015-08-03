@@ -240,6 +240,7 @@ namespace Duality.Resources
 		public byte[] EmbeddedTrueTypeFont
 		{
 			get { return this.embeddedFont; }
+			set { this.embeddedFont = value; this.glyphsDirty = true; }
 		}
 
 		/// <summary>
@@ -299,39 +300,8 @@ namespace Duality.Resources
 
 
 		/// <summary>
-		/// Replaces the Fonts custom font family with a new dataset that has been retrieved from file.
-		/// </summary>
-		/// <param name="path">The path of the file from which to retrieve the new font family data.</param>
-		public void LoadCustomFamilyData(string path = null)
-		{
-			if (path == null) path = this.sourcePath;
-
-			this.sourcePath = path;
-
-			if (String.IsNullOrEmpty(this.sourcePath) || !File.Exists(this.sourcePath))
-				this.sourcePath = null;
-			else
-			{
-				this.embeddedFont = File.ReadAllBytes(this.sourcePath);
-			}
-		}
-		/// <summary>
-		/// Saves the Fonts custom font family to file.
-		/// </summary>
-		/// <param name="path">The path of the file to which to save the font family data.</param>
-		public void SaveCustomFamilyData(string path = null)
-		{
-			if (this.embeddedFont == null) throw new InvalidOperationException("There is no custom family data defined that could be saved.");
-			if (path == null) path = this.sourcePath;
-
-			// We're saving this Pixmaps pixel data for the first time
-			if (!this.IsDefaultContent && this.sourcePath == null) this.sourcePath = path;
-
-			File.WriteAllBytes(path, this.embeddedFont);
-		}
-
-		/// <summary>
 		/// Applies a new set of rendered glyphs to the <see cref="Font"/>, adjusts its typeface metadata and clears out the <see cref="GlyphsDirty"/> flag.
+		/// This method is used by the editor to update a Font after adjusting its properties.
 		/// </summary>
 		/// <param name="bitmap"></param>
 		/// <param name="atlas"></param>
