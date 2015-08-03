@@ -21,6 +21,11 @@ namespace Duality.Backend.Dummy
 			get { return int.MinValue; }
 		}
 
+		IEnumerable<ScreenResolution> IGraphicsBackend.AvailableScreenResolutions
+		{
+			get { return new ScreenResolution[] { new ScreenResolution(640, 480, 60) }; }
+		}
+
 		bool IDualityBackend.CheckAvailable()
 		{
 			return true;
@@ -51,11 +56,6 @@ namespace Duality.Backend.Dummy
 		INativeWindow IGraphicsBackend.CreateWindow(WindowOptions options)
 		{
 			return new DummyNativeWindow();
-		}
-
-		IEnumerable<ScreenResolution> IGraphicsBackend.GetScreenResolutions()
-		{
-			return new ScreenResolution[] { new ScreenResolution(640, 480, 60) };
 		}
 	}
 }

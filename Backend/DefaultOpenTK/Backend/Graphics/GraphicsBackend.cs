@@ -37,6 +37,15 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return this.availGraphicsModes; }
 		}
+		public IEnumerable<ScreenResolution> AvailableScreenResolutions
+		{
+			get
+			{ 
+				return DisplayDevice.Default.AvailableResolutions
+					.Select(resolution => new ScreenResolution(resolution.Width, resolution.Height, resolution.RefreshRate))
+					.Distinct();
+			}
+		}
 
 		string IDualityBackend.Id
 		{
@@ -219,13 +228,6 @@ namespace Duality.Backend.DefaultOpenTK
 		INativeWindow IGraphicsBackend.CreateWindow(WindowOptions options)
 		{
 			return new NativeWindow(defaultGraphicsMode, options);
-		}
-
-		IEnumerable<ScreenResolution> IGraphicsBackend.GetScreenResolutions()
-		{
-			return DisplayDevice.Default.AvailableResolutions
-				.Select(resolution => new ScreenResolution(resolution.Width, resolution.Height, resolution.RefreshRate))
-				.Distinct();
 		}
 
 		private void QueryGraphicsModes()
