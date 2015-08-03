@@ -16,10 +16,10 @@ namespace Duality.Editor.Plugins.Base
 		public void ImportFile(string srcFile, string targetName, string targetDir)
 		{
 			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
-			Font res = new Font();
-			res.LoadCustomFamilyData(srcFile);
-			res.ReloadData();
-			res.Save(output[0]);
+			Font font = new Font();
+			font.LoadCustomFamilyData(srcFile);
+			font.RenderGlyphs();
+			font.Save(output[0]);
 		}
 
 		public bool CanReImportFile(ContentRef<Resource> r, string srcFile)
@@ -28,9 +28,9 @@ namespace Duality.Editor.Plugins.Base
 		}
 		public void ReImportFile(ContentRef<Resource> r, string srcFile)
 		{
-			Font f = r.Res as Font;
-			f.LoadCustomFamilyData(srcFile);
-			f.ReloadData();
+			Font font = r.Res as Font;
+			font.LoadCustomFamilyData(srcFile);
+			font.RenderGlyphs();
 		}
 
 		public bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile)

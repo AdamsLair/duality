@@ -90,8 +90,8 @@ namespace Duality.Editor.Plugins.Base
 				if (resRef.IsLoaded)
 				{
 					Font fnt = resRef.As<Font>().Res;
-					if (fnt.NeedsReload)
-						fnt.ReloadData();
+					if (fnt.GlyphsDirty)
+						fnt.RenderGlyphs();
 				}
 
 				foreach (Duality.Components.Renderers.TextRenderer r in Scene.Current.AllObjects.GetComponents<Duality.Components.Renderers.TextRenderer>())

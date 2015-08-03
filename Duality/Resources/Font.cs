@@ -2,15 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
-
-using SysDrawFont = System.Drawing.Font;
-using SysDrawFontStyle = System.Drawing.FontStyle;
-using FontStyle = Duality.Drawing.FontStyle;
 
 using Duality.Drawing;
 using Duality.Editor;
@@ -62,12 +55,6 @@ namespace Duality.Resources
 		}
 
 		
-		public static readonly string			DefaultChars		= "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß";
-		private const string					CharBaseLineRef		= "acemnorsuvwxz";
-		private const string					CharDescentRef		= "pqgjyQ|";
-		private const string					CharBodyAscentRef	= "acemnorsuvwxz";
-
-
 		/// <summary>
 		/// Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
 		/// </summary>
@@ -138,15 +125,13 @@ namespace Duality.Resources
 		private	int			bodyAscent			= 0;
 		private	int			descent				= 0;
 		private	int			baseLine			= 0;
-		// Embedded custom font family
+		// Embedded custom font family for editor glyph rendering support
 		private	byte[]		embeddedFont		= null;
 		// Data that is automatically acquired while loading the font
-		[DontSerialize] private	PrivateFontCollection fontManager = null;
 		[DontSerialize] private int[]		charLookup		= null;
-		[DontSerialize] private SysDrawFont	internalFont	= null;
 		[DontSerialize] private	Material	material		= null;
 		[DontSerialize] private	Texture		texture			= null;
-		[DontSerialize] private	bool		needsReload		= true;
+		[DontSerialize] private	bool		glyphsDirty		= false;
 
 
 		/// <summary>
@@ -164,8 +149,8 @@ namespace Duality.Resources
 				if (this.size != value)
 				{
 					this.size = Math.Max(1.0f, value);
-					this.spacing = this.internalFont.Size / 10.0f;
-					this.needsReload = true;
+					this.spacing = this.size / 10.0f;
+					this.glyphsDirty = true;
 				}
 			}
 		}
@@ -178,7 +163,7 @@ namespace Duality.Resources
 			set
 			{
 				this.style = value;
-				this.needsReload = true;
+				this.glyphsDirty = true;
 			}
 		}
 		/// <summary>
@@ -191,7 +176,7 @@ namespace Duality.Resources
 			set
 			{
 				this.renderMode = value;
-				this.needsReload = true;
+				this.glyphsDirty = true;
 			}
 		}
 		/// <summary>
@@ -225,7 +210,7 @@ namespace Duality.Resources
 		public bool MonoSpace
 		{
 			get { return this.monospace; }
-			set { this.monospace = value; this.needsReload = true; }
+			set { this.monospace = value; this.glyphsDirty = true; }
 		}
 		/// <summary>
 		/// [GET / SET] Whether this Font uses kerning, a technique where characters are moved closer together based on their actual shape,
@@ -236,16 +221,16 @@ namespace Duality.Resources
 		public bool Kerning
 		{
 			get { return this.kerning; }
-			set { this.kerning = value; this.needsReload = true; }
+			set { this.kerning = value; this.glyphsDirty = true; }
 		}
 		/// <summary>
-		/// [GET] Returns whether this Font needs a <see cref="ReloadData">reload</see> in order to apply
+		/// [GET] Returns whether this Font requires to re-render its glyphs in order to match the
 		/// changes that have been made to its Properties.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public bool NeedsReload
+		public bool GlyphsDirty
 		{
-			get { return this.needsReload; }
+			get { return this.glyphsDirty; }
 		}
 		
 		/// <summary>
@@ -346,14 +331,16 @@ namespace Duality.Resources
 		}
 
 		/// <summary>
-		/// Reloads this Fonts internal data and rasterizes its glyphs.
+		/// Applies a new set of rendered glyphs to the <see cref="Font"/>, adjusts its typeface metadata and clears out the <see cref="GlyphsDirty"/> flag.
 		/// </summary>
-		public void ReloadData()
-		{
-			this.UpdateInternalFont();
-			GenerateResources(this, this.internalFont);
-			this.needsReload = false;
-		}
+		/// <param name="bitmap"></param>
+		/// <param name="atlas"></param>
+		/// <param name="glyphs"></param>
+		/// <param name="height"></param>
+		/// <param name="ascent"></param>
+		/// <param name="bodyAscent"></param>
+		/// <param name="descent"></param>
+		/// <param name="baseLine"></param>
 		public void SetGlyphData(PixelData bitmap, Rect[] atlas, GlyphData[] glyphs, int height, int ascent, int bodyAscent, int descent, int baseLine)
 		{
 			this.ReleaseResources();
@@ -376,7 +363,7 @@ namespace Duality.Resources
 			this.UpdateKerningData();
 			this.GenerateTexMat();
 
-			this.needsReload = false;
+			this.glyphsDirty = false;
 		}
 		/// <summary>
 		/// Updates this Fonts kerning sample data.
@@ -487,48 +474,6 @@ namespace Duality.Resources
 				}
 			}
 		}
-		private void UpdateInternalFont()
-		{
-			if (this.internalFont != null) this.internalFont.Dispose();
-			this.internalFont = null;
-
-			// Load custom font, if not available yet
-			if (this.fontManager == null)
-			{
-				this.fontManager = new PrivateFontCollection();
-				GCHandle handle = GCHandle.Alloc(this.embeddedFont, GCHandleType.Pinned);
-				try
-				{
-					IntPtr fontMemPtr = handle.AddrOfPinnedObject();
-					this.fontManager.AddMemoryFont(fontMemPtr, this.embeddedFont.Length);
-				}
-				finally
-				{
-					handle.Free();
-				}
-			}
-			
-			SysDrawFontStyle style = SysDrawFontStyle.Regular;
-			if (this.style.HasFlag(FontStyle.Bold)) style |= SysDrawFontStyle.Bold;
-			if (this.style.HasFlag(FontStyle.Italic)) style |= SysDrawFontStyle.Italic;
-
-			FontFamily family = this.fontManager.Families.FirstOrDefault();
-			if (family != null)
-			{
-				try
-				{
-					this.internalFont = new SysDrawFont(family, this.size, style);
-				}
-				catch (Exception)
-				{
-					this.internalFont = new SysDrawFont(FontFamily.GenericMonospace, this.size, style);
-				}
-			}
-			else
-			{
-				this.internalFont = new SysDrawFont(FontFamily.GenericMonospace, this.size, style);
-			}
-		}
 		private void ReleaseResources()
 		{
 			if (this.material != null) this.material.Dispose();
@@ -539,161 +484,7 @@ namespace Duality.Resources
 			this.texture = null;
 			this.pixelData = null;
 
-			this.needsReload = true;
-		}
-		private static void GenerateResources(Font target, SysDrawFont internalFont)
-		{
-			GlyphData[] glyphs = new GlyphData[DefaultChars.Length];
-			for (int i = 0; i < glyphs.Length; i++)
-			{
-				glyphs[i].Glyph = DefaultChars[i];
-			}
-
-			int bodyAscent = 0;
-			int baseLine = 0;
-			int descent = 0;
-			int ascent = 0;
-
-			TextRenderingHint textRenderingHint;
-			if (target.GlyphRenderMode == RenderMode.MonochromeBitmap)
-				textRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
-			else
-				textRenderingHint = TextRenderingHint.AntiAliasGridFit;
-
-			int cols;
-			int rows;
-			cols = rows = (int)Math.Ceiling(Math.Sqrt(glyphs.Length));
-
-			PixelData pixelLayer = new PixelData(MathF.RoundToInt(cols * internalFont.Size * 1.2f), MathF.RoundToInt(rows * internalFont.Height * 1.2f));
-			PixelData glyphTemp;
-			PixelData glyphTempTypo;
-			Bitmap bm;
-			Bitmap measureBm = new Bitmap(1, 1);
-			Rect[] atlas = new Rect[glyphs.Length];
-			using (Graphics measureGraphics = Graphics.FromImage(measureBm))
-			{
-				Brush fntBrush = new SolidBrush(Color.Black);
-
-				StringFormat formatDef = StringFormat.GenericDefault;
-				formatDef.LineAlignment = StringAlignment.Near;
-				formatDef.FormatFlags = 0;
-				StringFormat formatTypo = StringFormat.GenericTypographic;
-				formatTypo.LineAlignment = StringAlignment.Near;
-
-				int x = 1;
-				int y = 1;
-				for (int i = 0; i < glyphs.Length; ++i)
-				{
-					string str = glyphs[i].Glyph.ToString(CultureInfo.InvariantCulture);
-					bool isSpace = str == " ";
-					SizeF charSize = measureGraphics.MeasureString(str, internalFont, pixelLayer.Width, formatDef);
-
-					// Rasterize a single glyph for rendering
-					bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
-					using (Graphics glyphGraphics = Graphics.FromImage(bm))
-					{
-						glyphGraphics.Clear(Color.Transparent);
-						glyphGraphics.TextRenderingHint = textRenderingHint;
-						glyphGraphics.DrawString(str, internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatDef);
-					}
-					glyphTemp = BitmapToPixelData(bm);
-					
-					// Rasterize a single glyph in typographic mode for metric analysis
-					if (!isSpace)
-					{
-						Point2 glyphTempOpaqueTopLeft;
-						Point2 glyphTempOpaqueSize;
-						glyphTemp.GetOpaqueBoundaries(out glyphTempOpaqueTopLeft, out glyphTempOpaqueSize);
-
-						glyphTemp.SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphTemp.Height);
-
-						if (CharBodyAscentRef.Contains(glyphs[i].Glyph))
-							bodyAscent += glyphTempOpaqueSize.Y;
-						if (CharBaseLineRef.Contains(glyphs[i].Glyph))
-							baseLine += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
-						if (CharDescentRef.Contains(glyphs[i].Glyph))
-							descent += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
-						
-						bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
-						using (Graphics glyphGraphics = Graphics.FromImage(bm))
-						{
-							glyphGraphics.Clear(Color.Transparent);
-							glyphGraphics.TextRenderingHint = textRenderingHint;
-							glyphGraphics.DrawString(str, internalFont, fntBrush, new RectangleF(0, 0, bm.Width, bm.Height), formatTypo);
-						}
-						glyphTempTypo = BitmapToPixelData(bm);
-						glyphTempTypo.Crop(true, false);
-					}
-					else
-					{
-						glyphTempTypo = glyphTemp;
-					}
-
-					// Update xy values if it doesn't fit anymore
-					if (x + glyphTemp.Width + 2 > pixelLayer.Width)
-					{
-						x = 1;
-						y += internalFont.Height + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.1875f), 3, 10);
-					}
-					
-					// Memorize atlas coordinates & glyph data
-					glyphs[i].Width = glyphTemp.Width;
-					glyphs[i].Height = glyphTemp.Height;
-					glyphs[i].OffsetX = glyphTemp.Width - glyphTempTypo.Width;
-					if (isSpace)
-					{
-						glyphs[i].Width /= 2;
-						glyphs[i].OffsetX /= 2;
-					}
-					atlas[i].X = x;
-					atlas[i].Y = y;
-					atlas[i].W = glyphTemp.Width;
-					atlas[i].H = (internalFont.Height + 1);
-
-					// Draw it onto the font surface
-					glyphTemp.DrawOnto(pixelLayer, BlendMode.Solid, x, y);
-
-					x += glyphTemp.Width + MathF.Clamp((int)MathF.Ceiling(internalFont.Height * 0.125f), 2, 10);
-				}
-			}
-
-			// White out texture except alpha channel.
-			for (int i = 0; i < pixelLayer.Data.Length; i++)
-			{
-				pixelLayer.Data[i].R = 255;
-				pixelLayer.Data[i].G = 255;
-				pixelLayer.Data[i].B = 255;
-			}
-
-			// Monospace offset adjustments
-			if (target.MonoSpace)
-			{
-				int maxGlyphWidth = 0;
-				for (int i = 0; i < glyphs.Length; i++)
-				{
-					maxGlyphWidth = Math.Max(maxGlyphWidth, glyphs[i].Width);
-				}
-				for (int i = 0; i < glyphs.Length; ++i)
-				{
-					glyphs[i].OffsetX -= (int)Math.Round((maxGlyphWidth - glyphs[i].Width) / 2.0f);
-				}
-			}
-
-			// Determine Font properties
-			{
-				float lineSpacing = internalFont.FontFamily.GetLineSpacing(internalFont.Style);
-				float emHeight = internalFont.FontFamily.GetEmHeight(internalFont.Style);
-				float cellAscent = internalFont.FontFamily.GetCellAscent(internalFont.Style);
-				float cellDescent = internalFont.FontFamily.GetCellDescent(internalFont.Style);
-
-				ascent = (int)Math.Round(cellAscent * internalFont.Size / emHeight);
-				bodyAscent /= CharBodyAscentRef.Length;
-				baseLine /= CharBaseLineRef.Length;
-				descent = (int)Math.Round(((float)descent / CharDescentRef.Length) - (float)baseLine);
-			}
-
-			// Apply rendered glyph data to the Duality Font
-			target.SetGlyphData(pixelLayer, atlas, glyphs, (int)internalFont.Height, ascent, bodyAscent, descent, baseLine);
+			this.glyphsDirty = true;
 		}
 		private void GenerateTexMat()
 		{
@@ -1108,7 +899,7 @@ namespace Duality.Resources
 			this.GetGlyphData(glyph, out glyphData);
 			glyphXOff = -glyphData.OffsetX;
 
-			if (this.kerning && !this.monospace && !this.needsReload)
+			if (this.kerning && !this.monospace && !this.glyphsDirty)
 			{
 				char glyphNext = index + 1 < text.Length ? text[index + 1] : ' ';
 				GlyphData glyphDataNext;
@@ -1134,11 +925,6 @@ namespace Duality.Resources
 		{
 			base.OnDisposing(manually);
 			this.ReleaseResources();
-
-			if (this.internalFont != null) this.internalFont.Dispose();
-			if (this.fontManager != null) this.fontManager.Dispose();
-			this.internalFont = null;
-			this.fontManager = null;
 		}
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
@@ -1146,36 +932,6 @@ namespace Duality.Resources
 			Font c = target as Font;
 			c.GenerateCharLookup();
 			c.GenerateTexMat();
-		}
-
-		private static PixelData BitmapToPixelData(Bitmap bitmap)
-		{
-			// Retrieve data
-			System.Drawing.Imaging.BitmapData data = bitmap.LockBits(
-				new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-				System.Drawing.Imaging.ImageLockMode.ReadOnly,
-				System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			
-			int pixels = data.Width * data.Height;
-			int[] argbValues = new int[pixels];
-			System.Runtime.InteropServices.Marshal.Copy(data.Scan0, argbValues, 0, pixels);
-			bitmap.UnlockBits(data);
-			
-			PixelData pixelData = new PixelData(bitmap.Width, bitmap.Height);
-			ColorRgba[] rawData = pixelData.Data;
-			System.Threading.Tasks.Parallel.ForEach(System.Collections.Concurrent.Partitioner.Create(0, rawData.Length), range =>
-			{
-				for (int i = range.Item1; i < range.Item2; i++)
-				{
-					rawData[i].A = (byte)((argbValues[i] & 0xFF000000) >> 24);
-					rawData[i].R = (byte)((argbValues[i] & 0x00FF0000) >> 16);
-					rawData[i].G = (byte)((argbValues[i] & 0x0000FF00) >> 8);
-					rawData[i].B = (byte)((argbValues[i] & 0x000000FF) >> 0);
-				}
-			});
-			pixelData.ColorTransparentPixels();
-
-			return pixelData;
 		}
 	}
 }
