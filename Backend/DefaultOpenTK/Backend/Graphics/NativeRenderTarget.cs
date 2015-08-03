@@ -340,7 +340,5 @@ namespace Duality.Backend.DefaultOpenTK
 
 			return RenderbufferStorage.Rgba8;
 		}
-
-
 	}
 }

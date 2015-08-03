@@ -490,6 +490,12 @@ namespace Duality.Resources
 		}
 		private void GenerateCharLookup()
 		{
+			if (this.glyphs == null)
+			{
+				this.charLookup = new int[0];
+				return;
+			}
+
 			int maxCharVal = 0;
 			for (int i = 0; i < this.glyphs.Length; i++)
 			{

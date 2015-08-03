@@ -764,8 +764,14 @@ namespace Duality.Serialization
 		}
 		private void ReadPrimitiveArrayData<T>(XElement element, out T[] array, Func<string,T> fromString) where T : struct
 		{
-			string[] valueStrings = element.Value.Split(new char[] { ',' });
+			// Early-out: If we have an empty element, assume an empty array as well.
+			if (string.IsNullOrEmpty(element.Value))
+			{
+				array = new T[0];
+				return;
+			}
 
+			string[] valueStrings = element.Value.Split(new char[] { ',' });
 			array = new T[valueStrings.Length];
 			try
 			{

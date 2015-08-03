@@ -1487,9 +1487,16 @@ namespace Duality.Editor
 				string[] resourceNames = assembly.GetManifestResourceNames();
 				if (resourceNames.Contains(manifestResourceName))
 				{
+					// Since images require to keep their origin stream open, we'll need to copy it to gain independence.
 					using (Stream stream = assembly.GetManifestResourceStream(manifestResourceName))
+					using (Bitmap bitmap = Bitmap.FromStream(stream) as Bitmap)
 					{
-						return Bitmap.FromStream(stream);
+						Bitmap independentBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+						using (Graphics graphics = Graphics.FromImage(independentBitmap))
+						{
+							graphics.DrawImageUnscaled(bitmap, 0, 0);
+						}
+						return independentBitmap;
 					}
 				}
 			}
