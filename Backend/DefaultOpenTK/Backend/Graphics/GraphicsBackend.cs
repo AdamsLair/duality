@@ -230,6 +230,45 @@ namespace Duality.Backend.DefaultOpenTK
 			return new NativeWindow(defaultGraphicsMode, options);
 		}
 
+		void IGraphicsBackend.GetOutputPixelData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int x, int y, int width, int height)
+		{
+			DefaultOpenTKBackendPlugin.GuardSingleThreadState();
+
+			NativeRenderTarget lastRt = NativeRenderTarget.BoundRT;
+			NativeRenderTarget.Bind(null);
+			{
+				GL.ReadPixels(x, y, width, height, dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), buffer);
+
+				// The image will be upside-down because of OpenGL's coordinate system. Flip it.
+				int structSize = System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
+				T[] switchLine = new T[width * 4 / structSize];
+				for (int flipY = 0; flipY < height / 2; flipY++)
+				{
+					int lineIndex = flipY * width * 4 / structSize;
+					int lineIndex2 = (height - 1 - flipY) * width * 4 / structSize;
+
+					// Copy the current line to the switch buffer
+					for (int lineX = 0; lineX < width; lineX++)
+					{
+						switchLine[lineX] = buffer[lineIndex + lineX];
+					}
+
+					// Copy the opposite line to the current line
+					for (int lineX = 0; lineX < width; lineX++)
+					{
+						buffer[lineIndex + lineX] = buffer[lineIndex2 + lineX];
+					}
+
+					// Copy the switch buffer to the opposite line
+					for (int lineX = 0; lineX < width; lineX++)
+					{
+						buffer[lineIndex2 + lineX] = switchLine[lineX];
+					}
+				}
+			}
+			NativeRenderTarget.Bind(lastRt);
+		}
+
 		private void QueryGraphicsModes()
 		{
 			int[] aaLevels = new int[] { 0, 2, 4, 6, 8, 16 };
