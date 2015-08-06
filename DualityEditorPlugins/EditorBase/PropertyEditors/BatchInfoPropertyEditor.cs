@@ -55,6 +55,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				ShaderFieldInfo[] varInfoArray = null;
 				if (refTech != null && refTech.Shader.IsAvailable)
 				{
+					if (!refTech.Shader.Res.Compiled)
+						refTech.Shader.Res.Compile();
 					varInfoArray = refTech.Shader.Res.Fields;
 				}
 				else
