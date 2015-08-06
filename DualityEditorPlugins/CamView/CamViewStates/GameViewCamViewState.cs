@@ -25,11 +25,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.OnEnterState();
 			this.View.SetToolbarCamSettingsEnabled(false);
+			this.CameraObj.Active = false;
 		}
 		protected internal override void OnLeaveState()
 		{
 			base.OnLeaveState();
 			this.View.SetToolbarCamSettingsEnabled(true);
+			this.CameraObj.Active = true;
 		}
 		protected override void OnRenderState()
 		{

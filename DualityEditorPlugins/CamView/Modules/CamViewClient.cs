@@ -119,14 +119,15 @@ namespace Duality.Editor.Plugins.CamView
 
 		public void MakeDualityTarget()
 		{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
+
 			DualityApp.TargetResolution = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
 			DualityApp.Mouse.Source = this.view;
 			DualityApp.Keyboard.Source = this.view;
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
-			{
-				if (this.CameraObj.GetComponent<SoundListener>() != null)
-					this.CameraObj.GetComponent<SoundListener>().MakeCurrent();
-			}
+
+			SoundListener localListener = this.CameraObj.GetComponent<SoundListener>();
+			if (localListener != null && localListener.Active)
+				localListener.MakeCurrent();
 		}
 	}
 }
