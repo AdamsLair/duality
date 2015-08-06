@@ -17,7 +17,7 @@ namespace DualStickSpaceShooter
 			// Load all available content so we don't need on-demand loading during runtime.
 			// It's probably not a good idea for content-rich games, consider having a per-level
 			// loading screen instead, or something similar.
-			if (!this.contentLoaded)
+			if (!this.contentLoaded && DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
 				Log.Game.Write("Loading game content...");
 				Log.Game.PushIndent();
