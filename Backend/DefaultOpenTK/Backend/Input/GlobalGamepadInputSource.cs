@@ -10,6 +10,7 @@ namespace Duality.Backend.DefaultOpenTK
 	public class GlobalGamepadInputSource : IGamepadInputSource
 	{
 		private	int	deviceIndex;
+		private bool hasAxesOrButtons;
 		private	GamePadState state;
 		private	GamePadCapabilities caps;
 		
@@ -19,7 +20,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		public bool IsAvailable
 		{
-			get { return this.caps.IsConnected; }
+			get { return this.caps.IsConnected && (this.caps.IsMapped || this.hasAxesOrButtons); }
 		}
 		public bool this[GamepadButton button]
 		{
@@ -78,6 +79,13 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			this.caps = GamePad.GetCapabilities(this.deviceIndex);
 			this.state = GamePad.GetState(this.deviceIndex);
+
+			// If it's not a well-known gamepad, check the corresponding joystick whether there are any axes or buttons
+			if (!this.caps.IsMapped)
+			{
+				JoystickCapabilities joystickCaps = Joystick.GetCapabilities(this.deviceIndex);
+				this.hasAxesOrButtons = joystickCaps.AxisCount > 0 || joystickCaps.ButtonCount > 0 || joystickCaps.HatCount > 0;
+			}
 		}
 		public void SetVibration(float left, float right)
 		{

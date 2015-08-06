@@ -17,7 +17,7 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		public bool IsAvailable
 		{
-			get { return this.caps.IsConnected; }
+			get { return this.caps.IsConnected && (this.caps.AxisCount > 0 || this.caps.ButtonCount > 0 || this.caps.HatCount > 0); }
 		}
 		public int AxisCount
 		{
