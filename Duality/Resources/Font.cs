@@ -110,13 +110,13 @@ namespace Duality.Resources
 		}
 
 		
-		private	float		size				= 8.0f;
+		private	float		size				= 16.0f;
 		private	FontStyle	style				= FontStyle.Regular;
 		private	RenderMode	renderMode			= RenderMode.SharpBitmap;
 		private	float		spacing				= 0.0f;
 		private	float		lineHeightFactor	= 1.0f;
-		private	bool		monospace			= true;
-		private	bool		kerning				= false;
+		private	bool		monospace			= false;
+		private	bool		kerning				= true;
 		private	GlyphData[]	glyphs				= null;
 		private	Pixmap		pixelData			= null;
 		private	int			maxGlyphWidth		= 0;

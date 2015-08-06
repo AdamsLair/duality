@@ -12,10 +12,10 @@
   <fadeOutTime dataType="Float">0</fadeOutTime>
   <maxDistFactor dataType="Float">0.2</maxDistFactor>
   <maxInstances dataType="Int">5</maxInstances>
-  <minDistFactor dataType="Float">0.1</minDistFactor>
+  <minDistFactor dataType="Float">0.5</minDistFactor>
   <pitchFactor dataType="Float">1</pitchFactor>
   <sourcePath />
   <type dataType="Enum" type="Duality.Audio.SoundType" name="World" value="0" />
-  <volFactor dataType="Float">0.5</volFactor>
+  <volFactor dataType="Float">1</volFactor>
 </root>
 <!-- XmlFormatterBase Document Separator -->
