@@ -815,9 +815,9 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			// Prepare old entries for removal
 			HashSet<MenuModelItem> oldItems = new HashSet<MenuModelItem>();
-			foreach (MenuModelItem item in this.nodeContextItemNew.Items)
+			foreach (MenuModelItem item in this.nodeContextItemNew.ItemsDeep)
 			{
-				if (item.Tag is Type || item.Tag is Assembly)
+				if (item.Tag is CreateContextEntryTag)
 					oldItems.Add(item);
 			}
 			
@@ -859,7 +859,10 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 
 			// Remove old entries that are not used anymore
-			this.nodeContextItemNew.RemoveItems(oldItems);
+			foreach (MenuModelItem item in oldItems)
+			{
+				item.Parent.RemoveItem(item);
+			}
 		}
 		
 		private void textBoxFilter_TextChanged(object sender, EventArgs e)
