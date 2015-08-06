@@ -27,6 +27,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private	HashSet<GraphicsMode>	availGraphicsModes		= null;
 		private	GraphicsMode			defaultGraphicsMode		= null;
 		private	uint					primaryVBO				= 0;
+		private	NativeWindow			activeWindow			= null;
 		
 
 		public GraphicsMode DefaultGraphicsMode
@@ -82,6 +83,14 @@ namespace Duality.Backend.DefaultOpenTK
 				DefaultOpenTKBackendPlugin.GuardSingleThreadState();
 				GL.DeleteBuffers(1, ref this.primaryVBO);
 				this.primaryVBO = 0;
+			}
+
+			// Since the window outlives the graphics backend in the usual launcher setup, 
+			// we'll need to unhook early, so Duality can complete its cleanup before the window does.
+			if (this.activeWindow != null)
+			{
+				this.activeWindow.UnhookFromDuality();
+				this.activeWindow = null;
 			}
 		}
 
@@ -227,7 +236,16 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		INativeWindow IGraphicsBackend.CreateWindow(WindowOptions options)
 		{
-			return new NativeWindow(defaultGraphicsMode, options);
+			// Only one game window allowed at a time
+			if (this.activeWindow != null)
+			{
+				(this.activeWindow as INativeWindow).Dispose();
+				this.activeWindow = null;
+			}
+
+			// Create a window and keep track of it
+			this.activeWindow = new NativeWindow(defaultGraphicsMode, options);
+			return this.activeWindow;
 		}
 
 		void IGraphicsBackend.GetOutputPixelData<T>(T[] buffer, ColorDataLayout dataLayout, ColorDataElementType dataElementType, int x, int y, int width, int height)

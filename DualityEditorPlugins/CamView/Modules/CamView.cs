@@ -162,6 +162,7 @@ namespace Duality.Editor.Plugins.CamView
 
 		public const float DefaultDisplayBoundRadius = 25.0f;
 
+		private static CamView	activeCamView	= null;
 
 		private	int						runtimeId					= 0;
 		private	INativeRenderableSite	graphicsControl			= null;
@@ -378,12 +379,20 @@ namespace Duality.Editor.Plugins.CamView
 			// Update camera transform properties & GUI
 			this.OnPerspectiveChanged();
 			this.OnCamTransformChanged();
+
+			// Initially assume ownership of Duality rendering and audio
+			this.MakeDualityTarget();
 		}
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
 
-			if (this.nativeCamObj != null) this.nativeCamObj.Dispose();
+			// If this was the active Camera View, stop assuming this.
+			if (activeCamView == this)
+				activeCamView = null;
+
+			if (this.nativeCamObj != null)
+				this.nativeCamObj.Dispose();
 
 			FileEventManager.ResourceModified		-= this.FileEventManager_ResourceModified;
 			DualityEditorApp.HighlightObject		-= this.DualityEditorApp_HighlightObject;
@@ -735,6 +744,21 @@ namespace Duality.Editor.Plugins.CamView
 					this.RenderableControl.Invalidate();
 				}
 			}
+		}
+
+		public void MakeDualityTarget()
+		{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
+
+			activeCamView = this;
+
+			DualityApp.TargetResolution = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
+			DualityApp.Mouse.Source = this;
+			DualityApp.Keyboard.Source = this;
+
+			SoundListener localListener = this.CameraObj.GetComponent<SoundListener>();
+			if (localListener != null && localListener.Active)
+				localListener.MakeCurrent();
 		}
 
 		internal void SaveUserData(XElement node)
@@ -1104,6 +1128,10 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void graphicsControl_Resize(object sender, EventArgs e)
 		{
+			if (activeCamView == this)
+			{
+				DualityApp.TargetResolution = new Vector2(this.ClientSize.Width, this.ClientSize.Height);
+			}
 			this.RenderableControl.Invalidate();
 		}
 
