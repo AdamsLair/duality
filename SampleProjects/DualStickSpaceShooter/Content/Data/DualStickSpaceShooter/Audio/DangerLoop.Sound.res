@@ -12,7 +12,7 @@
   <fadeOutTime dataType="Float">0</fadeOutTime>
   <maxDistFactor dataType="Float">0.142857149</maxDistFactor>
   <maxInstances dataType="Int">5</maxInstances>
-  <minDistFactor dataType="Float">0.0714285746</minDistFactor>
+  <minDistFactor dataType="Float">0.2857143</minDistFactor>
   <pitchFactor dataType="Float">1</pitchFactor>
   <sourcePath />
   <type dataType="Enum" type="Duality.Audio.SoundType" name="World" value="0" />
