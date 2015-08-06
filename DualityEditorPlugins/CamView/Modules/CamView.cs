@@ -253,7 +253,7 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		public Control RenderableControl
 		{
-			get { return this.graphicsControl.Control; }
+			get { return this.graphicsControl != null ? this.graphicsControl.Control : null; }
 		}
 		public ToolStrip ToolbarCamera
 		{
