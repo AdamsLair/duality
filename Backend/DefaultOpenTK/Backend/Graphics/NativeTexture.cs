@@ -122,7 +122,10 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)ToOpenTKTextureWrapMode(wrapY));
 
 			// Anisotropic filtering
-			GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName) ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, (float)anisoLevel);
+			if (anisoLevel > 0)
+			{
+				GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName) ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, (float)anisoLevel);
+			}
 
 			// If needed, care for Mipmaps
 			GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.GenerateMipmap, mipmaps ? 1 : 0);
