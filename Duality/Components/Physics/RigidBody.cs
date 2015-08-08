@@ -57,6 +57,7 @@ namespace Duality.Components.Physics
 		private	float				explicitMass	= 0.0f;
 		private	CollisionCategory	colCat			= CollisionCategory.Cat1;
 		private	CollisionCategory	colWith			= CollisionCategory.All;
+		private	CollisionFilter		colFilter		= null;
 		private	List<ShapeInfo>		shapes			= null;
 		private	List<JointInfo>		joints			= null;
 
@@ -255,6 +256,17 @@ namespace Duality.Components.Physics
 				this.colWith = value;
 				if (this.body != null) this.body.CollidesWith = (Category)value;
 			}
+		}
+		/// <summary>
+		/// [GET / SET] A callbcak method that is used to determine whether or not a collision should occur.
+		/// While more costly than other means of collision filtering, this allows for a more fine-grained
+		/// case-to-case decision.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public CollisionFilter CollisionFilter
+		{
+			get { return this.colFilter; }
+			set { this.colFilter = value; }
 		}
 		/// <summary>
 		/// [GET] The bodies total number of revolutions.
@@ -921,6 +933,19 @@ namespace Duality.Components.Physics
 
 		private bool body_OnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
 		{
+			if (this.colFilter != null)
+			{
+				Component otherComponent = fixtureB.Body.UserData as Component;
+				GameObject otherObject = otherComponent != null ? otherComponent.GameObj : fixtureB.Body.UserData as GameObject;
+				if (!this.colFilter(new CollisionFilterData(
+					this.GameObj,
+					otherObject,
+					fixtureA.UserData as ShapeInfo,
+					fixtureB.UserData as ShapeInfo)))
+				{
+					return false;
+				}
+			}
 			this.eventBuffer.Add(new ColEvent(ColEvent.EventType.Collision, fixtureA, fixtureB, null));
 			return true;
 		}
