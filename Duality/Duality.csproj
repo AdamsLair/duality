@@ -161,6 +161,15 @@
     <Compile Include="Utility\EditorHints\EditorHintFlagsAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintAttribute.cs" />
     <Compile Include="Utility\EditorHints\MemberFlags.cs" />
+    <Compile Include="Utility\EventArgs\CorePluginEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\ComponentEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\CollisionEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\TransformChangedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\ResourceResolveEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\ResourceSaveEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\ResourceEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\GameObjectParentChangedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\GameObjectEventArgs.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsMemberInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
@@ -257,7 +266,7 @@
     <Compile Include="Utility\Profiling\ProfileCounter.cs" />
     <Compile Include="Utility\Profiling\Profile.cs" />
     <Compile Include="ContentProvider.cs" />
-    <Compile Include="Utility\DualityEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\CollectDrawcallEventArgs.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsIList.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsRandom.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsString.cs" />
