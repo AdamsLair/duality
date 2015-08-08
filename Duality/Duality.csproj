@@ -110,7 +110,11 @@
     <Compile Include="Components\ICmpInterfaces\ICmpCollisionListener.cs" />
     <Compile Include="Components\ICmpInterfaces\ICmpRenderer.cs" />
     <Compile Include="Components\ICmpInterfaces\ICmpUpdatable.cs" />
+    <Compile Include="Components\Physics\RayCastCallback.cs" />
     <Compile Include="Components\Physics\CollisionCategory.cs" />
+    <Compile Include="Components\Physics\BodyType.cs" />
+    <Compile Include="Components\Physics\RayCastData.cs" />
+    <Compile Include="Components\Physics\RigidBodyCollisionEventArgs.cs" />
     <Compile Include="Drawing\Enums\FontStyle.cs" />
     <Compile Include="Drawing\Enums\FitTextMode.cs" />
     <Compile Include="Drawing\Enums\BlendMode.cs" />
