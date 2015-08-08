@@ -161,12 +161,12 @@
     <Compile Include="Forms\PublishGameDialog.Designer.cs">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\BuildHelper.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsDualityFont.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsPixelData.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsBitmap.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsMemberInfoEditorHint.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsZipArchive.cs" />
+    <Compile Include="Utility\BuildHelper.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsDualityFont.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsPixelData.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsMemberInfoEditorHint.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsZipArchive.cs" />
     <Compile Include="PackageManagement\PackageCompatibility.cs" />
     <Compile Include="PackageManagement\PackageLicenseAgreementEventArgs.cs" />
     <Compile Include="PackageManagement\PackageName.cs" />
@@ -180,14 +180,14 @@
       <DependentUpon>GeneralRes.resx</DependentUpon>
     </Compile>
     <Compile Include="Properties\GeneralResCache.cs" />
-    <Compile Include="Helpers\CursorHelper.cs" />
-    <Compile Include="Helpers\EditorHelper.cs">
+    <Compile Include="Utility\CursorHelper.cs" />
+    <Compile Include="Utility\EditorHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\EventArgs.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsControl.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsDataObject.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsColor.cs" />
+    <Compile Include="Utility\EventArgs.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsControl.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsDataObject.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsColor.cs" />
     <Compile Include="CorePluginInterface\FileImportProvider.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
@@ -226,30 +226,30 @@
     <Compile Include="Forms\ReloadCorePluginDialog.Designer.cs">
       <DependentUpon>ReloadCorePluginDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Extensions\ExtMethodsTreeViewAdv.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsTreeViewAdv.cs" />
     <Compile Include="Forms\SplashScreen.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SplashScreen.Designer.cs">
       <DependentUpon>SplashScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\HelpInfo.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsGraphics.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsForm.cs" />
-    <Compile Include="Helpers\MessageFilter.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsToolStrip.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsMouseButtons.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsKeys.cs" />
-    <Compile Include="Helpers\Extensions\ExtMethodsCamera.cs" />
-    <Compile Include="Helpers\NativeMethods.cs" />
-    <Compile Include="Helpers\ObjectSelection.cs" />
+    <Compile Include="Utility\HelpInfo.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsGraphics.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsForm.cs" />
+    <Compile Include="Utility\MessageFilter.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsToolStrip.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsMouseButtons.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsKeys.cs" />
+    <Compile Include="Utility\Extensions\ExtMethodsCamera.cs" />
+    <Compile Include="Utility\NativeMethods.cs" />
+    <Compile Include="Utility\ObjectSelection.cs" />
     <Compile Include="HelpSystem.cs" />
     <Compile Include="FileEventManager.cs" />
     <Compile Include="Sandbox.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Helpers\RecycleBin.cs" />
-    <Compile Include="Helpers\XmlCodeDoc.cs" />
+    <Compile Include="Utility\RecycleBin.cs" />
+    <Compile Include="Utility\XmlCodeDoc.cs" />
     <Compile Include="UndoRedoActions\DeleteGameObjectAction.cs" />
     <Compile Include="UndoRedoActions\CloneGameObjectAction.cs" />
     <Compile Include="UndoRedoActions\DeleteComponentAction.cs" />
