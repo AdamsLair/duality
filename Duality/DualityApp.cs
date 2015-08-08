@@ -300,25 +300,25 @@ namespace Duality
 		/// Initializes this DualityApp. Should be called before performing any operations within Duality.
 		/// </summary>
 		/// <param name="context">The <see cref="ExecutionContext"/> in which Duality runs.</param>
-		/// <param name="args">
+		/// <param name="commandLineArgs">
 		/// Command line arguments to run this DualityApp with. 
 		/// Usually these are just the ones from the host application, passed on.
 		/// </param>
-		public static void Init(ExecutionEnvironment env = ExecutionEnvironment.Unknown, ExecutionContext context = ExecutionContext.Unknown, string[] args = null)
+		public static void Init(ExecutionEnvironment env, ExecutionContext context, string[] commandLineArgs)
 		{
 			if (initialized) return;
 
 			// Process command line options
-			if (args != null)
+			if (commandLineArgs != null)
 			{
-				int logArgIndex = args.IndexOfFirst("logfile");
-				if (logArgIndex != -1 && logArgIndex + 1 < args.Length) logArgIndex++;
+				int logArgIndex = commandLineArgs.IndexOfFirst("logfile");
+				if (logArgIndex != -1 && logArgIndex + 1 < commandLineArgs.Length) logArgIndex++;
 				else logArgIndex = -1;
 
 				// Enter debug mode
-				if (args.Contains(CmdArgDebug)) System.Diagnostics.Debugger.Launch();
+				if (commandLineArgs.Contains(CmdArgDebug)) System.Diagnostics.Debugger.Launch();
 				// Run from editor
-				if (args.Contains(CmdArgEditor)) runFromEditor = true;
+				if (commandLineArgs.Contains(CmdArgEditor)) runFromEditor = true;
 			}
 
 			environment = env;
@@ -389,7 +389,7 @@ namespace Duality
 				"Debug Mode: {0}" + Environment.NewLine +
 				"Command line arguments: {1}",
 				System.Diagnostics.Debugger.IsAttached,
-				args != null ? args.ToString(", ") : "null");
+				commandLineArgs != null ? commandLineArgs.ToString(", ") : "null");
 		}
 		/// <summary>
 		/// Opens up a window for Duality to render into. This also initializes the part of Duality that requires a 

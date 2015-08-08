@@ -141,7 +141,7 @@ namespace Duality.Components.Physics
 		}
 		/// <summary>
 		/// [GET / SET] Whether the body is included in continous collision detection or not.
-		/// It prevents the body from moving through others at high speeds at the cost of Profile.
+		/// It prevents the body from moving through others at high speeds at the cost of performance.
 		/// </summary>
 		public bool ContinousCollision
 		{

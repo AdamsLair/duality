@@ -530,7 +530,7 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// Retrieves the rasterized <see cref="System.Drawing.Bitmap"/> for a single glyph.
+		/// Retrieves the rasterized <see cref="Duality.Drawing.PixelData"/> for a single glyph.
 		/// </summary>
 		/// <param name="glyph">The glyph of which to retrieve the Bitmap.</param>
 		/// <returns>The Bitmap that has been retrieved, or null if the glyph is not supported.</returns>

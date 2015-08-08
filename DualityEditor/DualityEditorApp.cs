@@ -234,7 +234,7 @@ namespace Duality.Editor
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
 			DualityApp.PluginReady += DualityApp_PluginReady;
-			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor);
+			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, null);
 			
 			// Need to load editor plugins before initializing the graphics context, so the backend is available
 			LoadPlugins();
