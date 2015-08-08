@@ -8,12 +8,18 @@ namespace Duality.Components.Physics
 	public enum BodyType
 	{
 		/// <summary>
-		/// A static body. It will never move due to physical forces.
+		/// A static body will never move due to physical forces.
 		/// </summary>
 		Static,
 		/// <summary>
-		/// A dynamic body. Its movement is determined by physical effects.
+		/// A dynamic body's movement is determined by physical effects.
 		/// </summary>
-		Dynamic
+		Dynamic,
+		/// <summary>
+		/// A kinematic body can push around dynamic bodies, but is itself unaffected by 
+		/// physical influences due to collisions. It can't collide with static bodies.
+		/// Use with caution.
+		/// </summary>
+		Kinematic
 	}
 }

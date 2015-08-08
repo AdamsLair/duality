@@ -84,7 +84,7 @@ namespace Duality.Components.Physics
 			{
 				if (this.body != null)
 				{
-					this.body.BodyType = (value == BodyType.Static ? FarseerPhysics.Dynamics.BodyType.Static : FarseerPhysics.Dynamics.BodyType.Dynamic);
+					this.body.BodyType = ToFarseerBodyType(value);
 					this.FlagBodyShape();
 				}
 				this.bodyType = value;
@@ -851,7 +851,7 @@ namespace Duality.Components.Physics
 			Transform t = this.GameObj != null ? this.GameObj.Transform : null;
 
 			this.body = new Body(Scene.PhysicsWorld, this);
-			this.body.BodyType = (this.bodyType == BodyType.Static ? FarseerPhysics.Dynamics.BodyType.Static : FarseerPhysics.Dynamics.BodyType.Dynamic);
+			this.body.BodyType = ToFarseerBodyType(this.bodyType);
 			this.body.LinearDamping = this.linearDamp;
 			this.body.AngularDamping = this.angularDamp;
 			this.body.FixedRotation = this.fixedAngle;
@@ -1038,9 +1038,10 @@ namespace Duality.Components.Physics
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 				this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 				this.revolutions = this.body.Revolutions;
-				Transform t = this.gameobj.Transform;
-				if (this.bodyType == BodyType.Dynamic)
+				if (this.bodyType != BodyType.Static)
 				{
+					Transform t = this.gameobj.Transform;
+
 					// Make sure we're not overwriting any previously occuring changes
 					t.CommitChanges();
 
@@ -1449,6 +1450,19 @@ namespace Duality.Components.Physics
 			Scene.AwakePhysics();
 		}
 
+		private static FarseerPhysics.Dynamics.BodyType ToFarseerBodyType(BodyType bodyType)
+		{
+			switch (bodyType)
+			{
+				case BodyType.Static:
+					return FarseerPhysics.Dynamics.BodyType.Static;
+				default:
+				case BodyType.Dynamic:
+					return FarseerPhysics.Dynamics.BodyType.Dynamic;
+				case BodyType.Kinematic:
+					return FarseerPhysics.Dynamics.BodyType.Kinematic;
+			}
+		}
 
 		
 		[System.Diagnostics.Conditional("DEBUG")]
