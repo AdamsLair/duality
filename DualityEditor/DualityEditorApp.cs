@@ -865,9 +865,6 @@ namespace Duality.Editor
 					userDoc.Save(userFileEditor);
 				}
 			}
-
-			// Keep auto-generated files up-to-date
-			File.WriteAllText(EditorHelper.SourceCodeGameResFile, EditorHelper.GenerateGameResSrcFile());
 		}
 		public static void ReadPluginSourceCodeContentData(out string rootNamespace, out string desiredRootNamespace)
 		{

@@ -27,7 +27,6 @@ namespace Duality.Editor
 		public const string SourceCodeSolutionFile				= SourceCodeDirectory + @"\ProjectPlugins.sln";
 		public const string SourceCodeProjectCorePluginFile		= SourceCodeProjectCorePluginDir + @"\CorePlugin.csproj";
 		public const string SourceCodeProjectEditorPluginFile	= SourceCodeProjectEditorPluginDir + @"\EditorPlugin.csproj";
-		public const string SourceCodeGameResFile				= SourceCodeProjectCorePluginDir + @"\Properties\GameRes.cs";
 		public const string SourceCodeErrorHandlerFile			= SourceCodeProjectCorePluginDir + @"\Properties\ErrorHandlers.cs";
 		public const string SourceCodeCorePluginFile			= SourceCodeProjectCorePluginDir + @"\CorePlugin.cs";
 		public const string SourceCodeComponentExampleFile		= SourceCodeProjectCorePluginDir + @"\YourCustomComponentType.cs";
@@ -99,111 +98,6 @@ namespace Duality.Editor
 			source = source.Replace("OLDROOTNAMESPACE", oldRootNamespace);
 			source = source.Replace("ROOTNAMESPACE", rootNamespace);
 			return source;
-		}
-		public static string GenerateGameResSrcFile()
-		{
-			string gameRes = Properties.GeneralRes.GameResTemplate;
-			string mainClassName;
-			StringBuilder builder = new StringBuilder();
-			GenerateGameResSrcFile_ScanDir(builder, DualityApp.DataDirectory, 1, out mainClassName);
-			return gameRes.Replace("CONTENT", builder.ToString());
-		}
-		private static void GenerateGameResSrcFile_ScanFile(StringBuilder builder, string filePath, int indent, out string propName)
-		{
-			if (!PathHelper.IsPathVisible(filePath)) { propName = null; return; }
-			if (!Resource.IsResourceFile(filePath)) { propName = null; return; }
-
-			Type resType = Resource.GetTypeByFileName(filePath);
-			if (resType == null) { propName = null; return; }
-
-			string typeStr = resType.GetTypeCSCodeName();
-			string indentStr = new string('\t', indent);
-			propName = GenerateGameResSrcFile_ClassName(filePath);
-
-			builder.Append(indentStr); 
-			builder.Append("public static Duality.ContentRef<");
-			builder.Append(typeStr);
-			builder.Append("> ");
-			builder.Append(propName);
-			builder.Append(" { get { return Duality.ContentProvider.RequestContent<");
-			builder.Append(typeStr);
-			builder.Append(">(@\"");
-			builder.Append(filePath);
-			builder.AppendLine("\"); }}");
-		}
-		private static void GenerateGameResSrcFile_ScanDir(StringBuilder builder, string dirPath, int indent, out string className)
-		{
-			if (!PathHelper.IsPathVisible(dirPath)) { className = null; return; }
-			dirPath = dirPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-
-			string indentStr = new string('\t', indent);
-			className = GenerateGameResSrcFile_ClassName(dirPath);
-
-			// ---------- Begin class ----------
-			builder.Append(indentStr); 
-			builder.Append("public static class ");
-			builder.Append(className);
-			builder.AppendLine(" {");
-
-			// ---------- Sub directories ----------
-			string[] subDirs = Directory.GetDirectories(dirPath);
-			List<string> dirClassNames = new List<string>();
-			foreach (string dir in subDirs)
-			{
-				string dirClassName;
-				GenerateGameResSrcFile_ScanDir(builder, dir, indent + 1, out dirClassName);
-				if (!string.IsNullOrEmpty(dirClassName))
-					dirClassNames.Add(dirClassName);
-			}
-
-			// ---------- Files ----------
-			string[] files = Directory.GetFiles(dirPath);
-			List<string> filePropNames = new List<string>();
-			foreach (string file in files)
-			{
-				string propName;
-				GenerateGameResSrcFile_ScanFile(builder, file, indent + 1, out propName);
-				if (!string.IsNullOrEmpty(propName))
-					filePropNames.Add(propName);
-			}
-
-			// ---------- LoadAll() method ----------
-			builder.Append(indentStr); 
-			builder.Append('\t'); 
-			builder.AppendLine("public static void LoadAll() {");
-			foreach (string dirClassName in dirClassNames)
-			{
-				builder.Append(indentStr); 
-				builder.Append('\t'); 
-				builder.Append('\t'); 
-				builder.Append(dirClassName);
-				builder.AppendLine(".LoadAll();");
-			}
-			foreach (string propName in filePropNames)
-			{
-				builder.Append(indentStr); 
-				builder.Append('\t'); 
-				builder.Append('\t'); 
-				builder.Append(propName);
-				builder.AppendLine(".MakeAvailable();");
-			}
-			builder.Append(indentStr); 
-			builder.Append('\t'); 
-			builder.AppendLine("}");
-
-			// ---------- End class ----------
-			builder.Append(indentStr); 
-			builder.AppendLine("}");
-		}
-		private static string GenerateGameResSrcFile_ClassName(string path)
-		{
-			// Strip path and resource extension
-			if (Resource.IsResourceFile(path))
-				path = Path.GetFileNameWithoutExtension(path);
-			else
-				path = Path.GetFileName(path);
-
-			return GenerateClassNameFromPath(path);
 		}
 
 		public static string CreateNewProject(string projName, string projFolder, ProjectTemplateInfo template)
