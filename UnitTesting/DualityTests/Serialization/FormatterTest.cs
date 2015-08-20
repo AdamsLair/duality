@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 
 using Duality;
+using Duality.IO;
 using Duality.Serialization;
 using Duality.Tests.Properties;
 

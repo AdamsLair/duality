@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Diagnostics;
 
+using Duality.IO;
 using Duality.Resources;
 
 namespace Duality

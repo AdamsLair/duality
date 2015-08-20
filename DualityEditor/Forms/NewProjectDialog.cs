@@ -13,6 +13,7 @@ using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 
 using Duality;
+using Duality.IO;
 
 using Duality.Editor.Controls.TreeModels.FileSystem;
 using Duality.Editor.Properties;

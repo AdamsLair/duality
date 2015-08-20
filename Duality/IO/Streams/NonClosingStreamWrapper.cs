@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 
-namespace Duality
+namespace Duality.IO
 {
 	/// <summary>
 	/// Wraps a <see cref="Stream"/>, but only pretends to close it without actually doing so.

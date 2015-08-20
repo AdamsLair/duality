@@ -16,6 +16,8 @@ using WeifenLuo.WinFormsUI.Docking;
 using Aga.Controls.Tree;
 using Aga.Controls.Tree.NodeControls;
 
+using Duality.IO;
+
 using Duality.Editor.Properties;
 using Duality.Editor.PackageManagement;
 using Duality.Editor.Forms;

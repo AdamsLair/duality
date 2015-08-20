@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Net;
 
 using Duality;
+using Duality.IO;
 using Duality.Editor.PackageManagement;
 using Duality.Editor.Plugins.PackageManagerFrontend.Properties;
 

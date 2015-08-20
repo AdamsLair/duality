@@ -11,6 +11,7 @@ using System.Drawing;
 using Microsoft.Win32;
 
 using Duality;
+using Duality.IO;
 using Duality.Serialization;
 
 namespace Duality.Editor

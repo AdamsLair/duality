@@ -130,6 +130,11 @@
     <Compile Include="Drawing\IImageCodec.cs" />
     <Compile Include="Drawing\ImageCodec.cs" />
     <Compile Include="Drawing\PixelData.cs" />
+    <Compile Include="IO\PathHelper.cs" />
+    <Compile Include="IO\Streams\ExtMethodsStream.cs" />
+    <Compile Include="IO\Streams\NonClosingStreamWrapper.cs" />
+    <Compile Include="IO\Streams\StreamWrapper.cs" />
+    <Compile Include="IO\Streams\SubStreamWrapper.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />
@@ -183,15 +188,11 @@
     <Compile Include="Utility\Extensions\ExtMethodsIColorData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsMemberInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsPropertyInfo.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsStream.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsTypeInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\Grid.cs" />
     <Compile Include="Utility\Math\Range.cs" />
     <Compile Include="Utility\ObjectCreator.cs" />
-    <Compile Include="Utility\Streams\SubStreamWrapper.cs" />
-    <Compile Include="Utility\Streams\StreamWrapper.cs" />
-    <Compile Include="Utility\Streams\NonClosingStreamWrapper.cs" />
     <Compile Include="Cloning\CloneProvider.cs" />
     <Compile Include="Cloning\CloneProviderContext.cs" />
     <Compile Include="Cloning\ICloneExplicit.cs" />
@@ -281,7 +282,6 @@
     <Compile Include="Utility\Extensions\ExtMethodsString.cs" />
     <Compile Include="Utility\ReflectionInfo.cs" />
     <Compile Include="Audio\OggVorbis.cs" />
-    <Compile Include="Utility\PathHelper.cs" />
     <Compile Include="Utility\ReflectionHelper.cs" />
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Component.cs" />

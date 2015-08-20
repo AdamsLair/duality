@@ -6,6 +6,7 @@ using Duality.Properties;
 using Duality.Drawing;
 using Duality.Cloning;
 using Duality.Backend;
+using Duality.IO;
 
 namespace Duality.Resources
 {

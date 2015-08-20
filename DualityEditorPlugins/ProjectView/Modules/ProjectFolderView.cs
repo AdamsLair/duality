@@ -14,6 +14,7 @@ using AdamsLair.WinForms.ItemModels;
 using AdamsLair.WinForms.ItemViews;
 
 using Duality;
+using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
 using Duality.Editor.UndoRedoActions;

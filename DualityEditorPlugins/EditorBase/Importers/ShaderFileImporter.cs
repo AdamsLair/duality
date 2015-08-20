@@ -2,6 +2,7 @@
 using System.IO;
 
 using Duality;
+using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
 

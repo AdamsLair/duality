@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Reflection;
 
 using Duality;
+using Duality.IO;
 
 namespace Duality.Editor
 {

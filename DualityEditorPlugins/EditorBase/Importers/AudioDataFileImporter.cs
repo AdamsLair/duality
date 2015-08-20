@@ -5,6 +5,7 @@ using System.Linq;
 using Duality;
 using Duality.Resources;
 using Duality.Editor;
+using Duality.IO;
 
 namespace Duality.Editor.Plugins.Base
 {

@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 
-namespace Duality
+namespace Duality.IO
 {
 	/// <summary>
 	/// Wraps a <see cref="Stream"/> inside a proxy that allows accessing only a certain portion of the Stream,

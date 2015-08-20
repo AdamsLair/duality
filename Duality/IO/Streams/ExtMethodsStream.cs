@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 
-namespace Duality
+namespace Duality.IO
 {
 	public static class ExtMethodsStream
 	{

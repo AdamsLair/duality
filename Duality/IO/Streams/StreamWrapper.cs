@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 
 
-namespace Duality
+namespace Duality.IO
 {
 	/// <summary>
 	/// Wraps a <see cref="Stream"/> within a new one, and forwards all functionality to the underlying Stream.

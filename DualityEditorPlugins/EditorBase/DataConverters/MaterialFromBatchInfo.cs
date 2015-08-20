@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 
 using Duality;
+using Duality.IO;
 using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Resources;

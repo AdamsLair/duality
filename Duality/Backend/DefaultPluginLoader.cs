@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Collections.Generic;
 
+using Duality.IO;
+
 namespace Duality.Backend
 {
 	public class DefaultPluginLoader : IPluginLoader

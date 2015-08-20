@@ -9,6 +9,7 @@ using Duality.Serialization;
 using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
+using Duality.IO;
 
 namespace Duality
 {

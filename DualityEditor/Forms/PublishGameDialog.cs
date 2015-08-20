@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.IO.Compression;
 
+using Duality.IO;
+
 using Duality.Editor.Properties;
 
 namespace Duality.Editor.Forms

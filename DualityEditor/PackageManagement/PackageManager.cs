@@ -10,6 +10,7 @@ using System.Diagnostics;
 
 using NuGet;
 
+using Duality.IO;
 using Duality.Editor.Properties;
 using Duality.Editor.Forms;
 

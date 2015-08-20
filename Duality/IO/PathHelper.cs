@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
 
-namespace Duality
+namespace Duality.IO
 {
 	/// <summary>
 	/// Provides helper methods for handling <see cref="System.IO.Path">Paths</see>.

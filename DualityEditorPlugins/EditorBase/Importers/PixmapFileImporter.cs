@@ -4,6 +4,7 @@ using System.Linq;
 using System.Drawing;
 
 using Duality;
+using Duality.IO;
 using Duality.Drawing;
 using Duality.Resources;
 using Duality.Editor;

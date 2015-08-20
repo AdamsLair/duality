@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 
 using Duality;
+using Duality.IO;
 
 using NUnit.Framework;
 

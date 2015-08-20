@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 
 using Duality;
+using Duality.IO;
 using Duality.Resources;
 using Duality.Editor.Properties;
 

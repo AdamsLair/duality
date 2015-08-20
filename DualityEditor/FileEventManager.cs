@@ -11,6 +11,7 @@ using System.Xml.Linq;
 using System.Text.RegularExpressions;
 
 using Duality;
+using Duality.IO;
 using Duality.Resources;
 using Duality.Serialization;
 using Duality.Editor.Forms;

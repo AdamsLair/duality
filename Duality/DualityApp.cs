@@ -12,6 +12,7 @@ using Duality.Drawing;
 using Duality.Audio;
 using Duality.Cloning;
 using Duality.Input;
+using Duality.IO;
 
 namespace Duality
 {

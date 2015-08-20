@@ -7,6 +7,8 @@ using System.Xml.Linq;
 using System.IO;
 using System.Reflection;
 
+using Duality.IO;
+
 namespace Duality.Serialization
 {
 	/// <summary>

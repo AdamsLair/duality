@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Drawing;
 
+using Duality.IO;
 using Duality.Resources;
 using Duality.Properties;
 using Duality.Editor.Plugins.Base.Properties;
