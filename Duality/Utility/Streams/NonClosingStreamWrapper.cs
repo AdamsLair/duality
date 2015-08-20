@@ -65,38 +65,13 @@ namespace Duality
 		}
 		protected override void Dispose(bool disposing)
 		{
-			this.Close();
-		}
-
-		public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-		{
-			this.ThrowIfClosed();
-			return base.BeginRead(buffer, offset, count, callback, state);
-		}
-		public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
-		{
-			this.ThrowIfClosed();
-			return base.BeginWrite(buffer, offset, count, callback, state);
-		}
-		public override int EndRead(IAsyncResult asyncResult)
-		{
-			this.ThrowIfClosed();
-			return base.EndRead(asyncResult);
-		}
-		public override void EndWrite(IAsyncResult asyncResult)
-		{
-			this.ThrowIfClosed();
-			base.EndWrite(asyncResult);
-		}
-
-		public override void Close()
-		{
 			if (!this.pretendClosed)
 			{
 				base.Flush();
 			}
-			this.pretendClosed = true;			
+			this.pretendClosed = true;	
 		}
+
 		public override void Flush()
 		{
 			this.ThrowIfClosed();
