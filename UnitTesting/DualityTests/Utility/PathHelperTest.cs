@@ -8,22 +8,6 @@ namespace Duality.Tests.Utility
 	[TestFixture]
 	public class PathHelperTest
 	{
-		[Test] public void FileHashEquality()
-		{
-			byte[] buffer = new byte[1024 * 1024];
-			MathF.Rnd.NextBytes(buffer);
-			try
-			{
-				File.WriteAllText("Test.txt", BitConverter.ToString(buffer));
-				
-				Assert.AreEqual(PathHelper.GetFileHash("Test.txt"), PathHelper.GetFileHash("Test.txt"));
-			}
-			finally
-			{
-				if (File.Exists("Test.txt"))
-					File.Delete("Test.txt");
-			}
-		}
 		[Test] public void FileEquality()
 		{
 			byte[] bufferA = new byte[1024 * 1024];

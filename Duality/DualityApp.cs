@@ -74,6 +74,7 @@ namespace Duality
 		private	static	bool						isUpdating			= false;
 		private	static	bool						runFromEditor		= false;
 		private	static	bool						terminateScheduled	= false;
+		private	static	IPluginLoader				pluginLoader		= null;
 		private	static	IGraphicsBackend			graphicsBack		= null;
 		private	static	IAudioBackend				audioBack			= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
@@ -132,6 +133,13 @@ namespace Duality
 		public static event EventHandler<CorePluginEventArgs> PluginReady	= null;
 
 		
+		/// <summary>
+		/// [GET] The plugin loader that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public static IPluginLoader PluginLoader
+		{
+			get { return pluginLoader; }
+		}
 		/// <summary>
 		/// [GET] The graphics backend that is used by Duality. Don't use this unless you know exactly what you're doing.
 		/// </summary>
@@ -304,7 +312,7 @@ namespace Duality
 		/// Command line arguments to run this DualityApp with. 
 		/// Usually these are just the ones from the host application, passed on.
 		/// </param>
-		public static void Init(ExecutionEnvironment env, ExecutionContext context, string[] commandLineArgs)
+		public static void Init(ExecutionEnvironment env, ExecutionContext context, IPluginLoader plugins, string[] commandLineArgs)
 		{
 			if (initialized) return;
 
@@ -327,8 +335,14 @@ namespace Duality
 			// Assure Duality is properly terminated in any case and register additional AppDomain events
 			AppDomain.CurrentDomain.ProcessExit			+= CurrentDomain_ProcessExit;
 			AppDomain.CurrentDomain.UnhandledException	+= CurrentDomain_UnhandledException;
-			AppDomain.CurrentDomain.AssemblyResolve		+= CurrentDomain_AssemblyResolve;
-			AppDomain.CurrentDomain.AssemblyLoad		+= CurrentDomain_AssemblyLoad;
+
+			// Initialize the plugin loader
+			{
+				pluginLoader = plugins ?? new Duality.Backend.Dummy.DummyPluginLoader();
+				Log.Core.Write("Using '{0}' to load plugins.", pluginLoader.GetType().Name);
+
+				pluginLoader.Init(pluginLoader_ResolveAssembly);
+			}
 
 			// Write systems specs as a debug log
 			{
@@ -459,6 +473,7 @@ namespace Duality
 				ShutdownBackend(ref graphicsBack);
 				ShutdownBackend(ref audioBack);
 				ClearPlugins();
+				pluginLoader.Terminate();
 				Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 				Log.Core.Write("DualityApp terminated");
 			}
@@ -629,8 +644,11 @@ namespace Duality
 			Log.Core.Write("Scanning for core plugins...");
 			Log.Core.PushIndent();
 
-			foreach (string dllPath in GetPluginLibPaths("*.core.dll"))
+			foreach (string dllPath in pluginLoader.AvailableAssemblyPaths)
 			{
+				if (!dllPath.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase))
+					continue;
+
 				Log.Core.Write("{0}...", dllPath);
 				Log.Core.PushIndent();
 				LoadPlugin(dllPath);
@@ -639,33 +657,8 @@ namespace Duality
 
 			Log.Core.PopIndent();
 		}
-		private static Assembly LoadPluginAssembly(string pluginFilePath)
-		{
-			// When in the launcher, there will be no dynamic plugin reload, so load them by their file name.
-			if (environment == ExecutionEnvironment.Launcher)
-			{
-				return Assembly.LoadFrom(pluginFilePath);
-			}
-			// When in the editor, we cannot lock those files or identify them due to reload, so load them anonymously
-			else
-			{
-				// Guess the path of the symbol file
-				string pluginDebugInfoPath = Path.Combine(
-					Path.GetDirectoryName(pluginFilePath), 
-					Path.GetFileNameWithoutExtension(pluginFilePath)) + ".pdb";
-				if (!File.Exists(pluginDebugInfoPath))
-					pluginDebugInfoPath = null;
-
-				// Load the assembly - and its symbols, if provided
-				if (pluginDebugInfoPath != null)
-					return Assembly.Load(File.ReadAllBytes(pluginFilePath), File.ReadAllBytes(pluginDebugInfoPath));
-				else
-					return Assembly.Load(File.ReadAllBytes(pluginFilePath));
-			}
-		}
 		private static CorePlugin LoadPlugin(string pluginFilePath)
 		{
-
 			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);
 			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
 			if (plugin != null) return plugin;
@@ -673,7 +666,7 @@ namespace Duality
 			Assembly pluginAssembly = null;
 			try
 			{
-				pluginAssembly = LoadPluginAssembly(pluginFilePath);
+				pluginAssembly = pluginLoader.LoadAssembly(pluginFilePath, true);
 			}
 			catch (Exception e)
 			{
@@ -722,6 +715,7 @@ namespace Duality
 				{
 					plugin = (CorePlugin)pluginType.CreateInstanceOf();
 					plugin.FilePath = pluginFilePath;
+					plugin.FileHash = pluginLoader.GetAssemblyHash(pluginFilePath);
 					plugins.Add(plugin.AssemblyName, plugin);
 				}
 				catch (Exception e)
@@ -832,7 +826,7 @@ namespace Duality
 			Assembly pluginAssembly = null;
 			try
 			{
-				pluginAssembly = LoadPluginAssembly(pluginFilePath);
+				pluginAssembly = pluginLoader.LoadAssembly(pluginFilePath, true);
 			}
 			catch (Exception e)
 			{
@@ -859,45 +853,7 @@ namespace Duality
 
 			return plugin;
 		}
-		/// <summary>
-		/// Determines whether the plugin that is represented by the specified Assembly file is referenced by any of the
-		/// specified Assemblies.
-		/// </summary>
-		/// <param name="pluginFilePath"></param>
-		/// <param name="assemblies"></param>
-		/// <returns></returns>
-		public static bool IsDependencyPlugin(string pluginFilePath, IEnumerable<Assembly> assemblies)
-		{
-			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);
-			foreach (Assembly assembly in assemblies)
-			{
-				AssemblyName[] refNames = assembly.GetReferencedAssemblies();
-				if (refNames.Any(rn => rn.Name == asmName)) return true;
-			}
-			return false;
-		}
 
-		/// <summary>
-		/// Enumerates all available plugin directory file paths that match the specified search pattern.
-		/// This method 
-		/// </summary>
-		/// <param name="searchPattern"></param>
-		/// <returns></returns>
-		public static IEnumerable<string> GetPluginLibPaths(string searchPattern)
-		{
-			// Search for plugin libraries in both "WorkingDir/Plugins" and "ExecDir/Plugins"
-			IEnumerable<string> availLibFiles = new string[0];
-			if (Directory.Exists(PluginDirectory)) 
-			{
-				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(PluginDirectory, searchPattern, SearchOption.AllDirectories));
-			}
-			string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, PluginDirectory);
-			if (Path.GetFullPath(execPluginDir).ToLower() != Path.GetFullPath(PluginDirectory).ToLower() && Directory.Exists(execPluginDir))
-			{
-				availLibFiles = availLibFiles.Concat(Directory.EnumerateFiles(execPluginDir, searchPattern, SearchOption.AllDirectories));
-			}
-			return availLibFiles;
-		}
 		/// <summary>
 		/// Enumerates all currently loaded assemblies that are part of Duality, i.e. Duality itsself and all loaded plugins.
 		/// </summary>
@@ -906,17 +862,6 @@ namespace Duality
 		{
 			yield return typeof(DualityApp).Assembly;
 			foreach (CorePlugin p in LoadedPlugins) yield return p.PluginAssembly;
-		}
-		/// <summary>
-		/// Enumerates all currently loaded assemblies.
-		/// </summary>
-		/// <returns></returns>
-		public static IEnumerable<Assembly> GetLoadedAssemblies()
-		{
-			return GetDualityAssemblies()
-				.Concat(GetDualityAssemblies().SelectMany(a => a.GetReferencedAssemblies().Select(n => Assembly.Load(n))))
-				.Distinct()
-				.Where(a => !disposedPlugins.Contains(a));
 		}
 		/// <summary>
 		/// Enumerates all available Duality <see cref="System.Type">Types</see> that are assignable
@@ -1223,55 +1168,45 @@ namespace Duality
 			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
 			if (e.IsTerminating) Terminate(true);
 		}
-		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+		private static Assembly pluginLoader_ResolveAssembly(ResolveAssemblyEventArgs args)
 		{
-			string assemblyNameStub = ReflectionHelper.GetShortAssemblyName(args.Name);
-
 			// First assume we are searching for a dynamically loaded plugin assembly
 			CorePlugin plugin;
-			if (plugins.TryGetValue(assemblyNameStub, out plugin))
+			if (plugins.TryGetValue(args.AssemblyName, out plugin))
 			{
 				return plugin.PluginAssembly;
 			}
 			// Not there? Search for other libraries in the Plugins folder
 			else
 			{
-				// Iterate over available library files
-				foreach (string libFile in GetPluginLibPaths("*.dll"))
+				//  Search for plugins that haven't been loaded yet, and load them first
+				foreach (string libFile in pluginLoader.AvailableAssemblyPaths)
 				{
-					string libFileName = Path.GetFileNameWithoutExtension(libFile);
-					if (libFileName.Equals(assemblyNameStub, StringComparison.InvariantCultureIgnoreCase))
+					string libFileEnding = ".core.dll";
+					if (!libFile.EndsWith(libFileEnding, StringComparison.InvariantCultureIgnoreCase))
+						continue;
+
+					string libName = libFile.Remove(libFile.Length - libFileEnding.Length, libFileEnding.Length);
+					if (libName.Equals(args.AssemblyName, StringComparison.InvariantCultureIgnoreCase))
 					{
-						bool isPlugin = libFileName.EndsWith(".core", StringComparison.InvariantCultureIgnoreCase);
-						if (isPlugin)
-						{
-							// It's a plugin that hasn't been loaded yet? Load it now.
-							plugin = LoadPlugin(libFile);
-							if (plugin != null) return plugin.PluginAssembly;
-						}
-						else
-						{
-							// Lock the Assembly file. Dynamically reloading Plugins is supported - but not reloading external libraries.
-							try
-							{
-								Assembly library = Assembly.LoadFrom(libFile);
-								return library;
-							}
-							catch (Exception e)
-							{
-								Log.Core.WriteError("Error loading Assembly '{0}' from file '{1}: {2}", assemblyNameStub, libFile, Log.Exception(e));
-							}
-						}
+						plugin = LoadPlugin(libFile);
+						if (plugin != null) return plugin.PluginAssembly;
+					}
+				}
+
+				// Search for other libraries that might be located inside the plugin directory
+				foreach (string libFile in pluginLoader.AvailableAssemblyPaths)
+				{
+					string libName = Path.GetFileNameWithoutExtension(libFile);
+					if (libName.Equals(args.AssemblyName, StringComparison.InvariantCultureIgnoreCase))
+					{
+						return pluginLoader.LoadAssembly(libFile, false);
 					}
 				}
 			}
 
 			// Admit that we didn't find anything.
 			return null;
-		}
-		private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
-		{
-			Log.Core.Write("Assembly loaded: {0}", args.LoadedAssembly.GetShortAssemblyName());
 		}
 		
 

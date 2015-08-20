@@ -163,7 +163,7 @@ namespace Duality.Editor.Forms
 				CorePlugin plugin = DualityApp.LoadedPlugins.FirstOrDefault(p => Path.GetFullPath(p.FilePath) == fullPath);
 				if (plugin == null) continue;
 
-				int hash = PathHelper.GetFileHash(this.reloadSchedule[i]);
+				int hash = DualityApp.PluginLoader.GetAssemblyHash(this.reloadSchedule[i]);
 				if (plugin.FileHash == hash)
 				{
 					this.reloadSchedule.RemoveAt(i);
@@ -401,7 +401,7 @@ namespace Duality.Editor.Forms
 			// different assemblies are resolved, it is impossible to prevent any plugin from still binding the old
 			// version of the dependency in question. Any source code referring to the disposed dependency may
 			// result in undefined behavior. A full restart is necessary.
-			else if (reloadPluginPaths.Any(asmFile => DualityApp.IsDependencyPlugin(asmFile, allPluginAssemblies)))
+			else if (reloadPluginPaths.Any(asmFile => IsDependencyPlugin(asmFile, allPluginAssemblies)))
 			{
 				return true;
 			}
@@ -487,6 +487,24 @@ namespace Duality.Editor.Forms
 				// Register the reloaded Scene in the ContentProvider, if it wasn't just a temporary one.
 				workInterface.MainForm.Invoke((Action)(() => ContentProvider.AddContent(scenePath, workInterface.TempScene)));
 			}
+		}
+		
+		/// <summary>
+		/// Determines whether the plugin that is represented by the specified Assembly file is referenced by any of the
+		/// specified Assemblies.
+		/// </summary>
+		/// <param name="pluginFilePath"></param>
+		/// <param name="assemblies"></param>
+		/// <returns></returns>
+		private static bool IsDependencyPlugin(string pluginFilePath, IEnumerable<Assembly> assemblies)
+		{
+			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);
+			foreach (Assembly assembly in assemblies)
+			{
+				AssemblyName[] refNames = assembly.GetReferencedAssemblies();
+				if (refNames.Any(rn => rn.Name == asmName)) return true;
+			}
+			return false;
 		}
 
 		private delegate void CloseMainFormDelegate(MainForm form);

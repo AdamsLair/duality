@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Reflection;
 
@@ -339,22 +338,6 @@ namespace Duality
 				}
 			}
 			return true;
-		}
-		/// <summary>
-		/// Calculates a hash value from the full (byte by byte) content of a file.
-		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
-		public static int GetFileHash(string filePath)
-		{
-			if (!File.Exists(filePath)) return 0;
-
-			using (BufferedStream stream = new BufferedStream(File.OpenRead(filePath), 512000))
-			{
-				var sha = MD5.Create();
-				byte[] hash = sha.ComputeHash(stream);
-				return BitConverter.ToInt32(hash, 0);
-			}
 		}
 	}
 }

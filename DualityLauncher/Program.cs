@@ -48,7 +48,11 @@ namespace Duality.Launcher
 				new[] { isDebugging ? "Debugging" : null, isProfiling ? "Profiling" : null, isRunFromEditor ? "RunFromEditor" : null }.NotNull().ToString(", "));
 
 			// Initialize the Duality core
-			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game, args);
+			DualityApp.Init(
+				DualityApp.ExecutionEnvironment.Launcher,
+				DualityApp.ExecutionContext.Game,
+				new DefaultPluginLoader(),
+				args);
 			
 			// Open up a new window
 			WindowOptions options = new WindowOptions

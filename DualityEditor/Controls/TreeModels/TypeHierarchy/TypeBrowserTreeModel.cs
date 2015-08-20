@@ -54,7 +54,12 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 		private void InitAssemblyCache()
 		{
 			if (this.assemblies != null) return;
-			this.assemblies = DualityApp.GetLoadedAssemblies().ToArray();
+			this.assemblies = 
+				DualityApp.GetDualityAssemblies()
+				.Concat(DualityApp.GetDualityAssemblies().SelectMany(a => a.GetReferencedAssemblies().Select(n => Assembly.Load(n))))
+				.Distinct()
+				.Where(a => !DualityApp.DisposedPlugins.Contains(a))
+				.ToArray();
 			this.namespaces = this.assemblies
 				.SelectMany(a => a.GetExportedTypes())
 				.Select(t => t.Namespace)

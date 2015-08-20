@@ -234,7 +234,11 @@ namespace Duality.Editor
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
 			DualityApp.PluginReady += DualityApp_PluginReady;
-			DualityApp.Init(DualityApp.ExecutionEnvironment.Editor, DualityApp.ExecutionContext.Editor, null);
+			DualityApp.Init(
+				DualityApp.ExecutionEnvironment.Editor, 
+				DualityApp.ExecutionContext.Editor, 
+				new DefaultPluginLoader(), 
+				null);
 			
 			// Need to load editor plugins before initializing the graphics context, so the backend is available
 			LoadPlugins();
@@ -386,8 +390,11 @@ namespace Duality.Editor
 			Log.Editor.Write("Scanning for editor plugins...");
 			Log.Editor.PushIndent();
 
-			foreach (string dllPath in DualityApp.GetPluginLibPaths("*.editor.dll"))
+			foreach (string dllPath in DualityApp.PluginLoader.AvailableAssemblyPaths)
 			{
+				if (!dllPath.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase))
+					continue;
+
 				Log.Editor.Write("Loading '{0}'...", dllPath);
 				Log.Editor.PushIndent();
 				try

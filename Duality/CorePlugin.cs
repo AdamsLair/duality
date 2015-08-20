@@ -27,15 +27,12 @@ namespace Duality
 		public string FilePath
 		{
 			get { return this.filePath; }
-			internal set
-			{
-				this.filePath = value;
-				this.fileHash = PathHelper.GetFileHash(this.filePath);
-			}
+			internal set { this.filePath = value; }
 		}
 		public int FileHash
 		{
 			get { return this.fileHash; }
+			internal set { this.fileHash = value; }
 		}
 
 		protected CorePlugin()

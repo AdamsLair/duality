@@ -46,6 +46,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Duality\Backend\DefaultPluginLoader.cs">
+      <Link>DefaultPluginLoader.cs</Link>
+    </Compile>
     <Compile Include="Cloning\HelperObjects\ExplicitCloneTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\IdentityTestObject.cs" />
     <Compile Include="Cloning\HelperObjects\ComplexDelegateTestObject.cs" />

@@ -12,7 +12,11 @@ namespace Duality.VisualStudio
 		[STAThread]
 		public static void Main()
 		{
-			DualityApp.Init(DualityApp.ExecutionEnvironment.Launcher, DualityApp.ExecutionContext.Game, null);
+			DualityApp.Init(
+				DualityApp.ExecutionEnvironment.Launcher, 
+				DualityApp.ExecutionContext.Game, 
+				null,
+				null);
 			
 			WindowOptions options = new WindowOptions
 			{
