@@ -86,6 +86,7 @@
     <Compile Include="Backend\Dummy\DummyNativeWindow.cs" />
     <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
     <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
+    <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
     <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
     <Compile Include="Backend\IAudioBackend.cs" />
     <Compile Include="Backend\IGraphicsBackend.cs" />
+    <Compile Include="Backend\IPluginLoader.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
     <Compile Include="Cloning\ICloneOperation.cs" />
