@@ -192,6 +192,12 @@ namespace Duality.Editor
 		{
 			DualityEditorApp.needsRecovery = recover;
 			DualityEditorApp.mainForm = mainForm;
+			
+			// Set up a global exception handler to log errors
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+			// Register Assembly Resolve hook for inter-Plugin dependency handling
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
 			// Create working directories, if not existing yet.
 			if (!Directory.Exists(DualityApp.DataDirectory))
@@ -224,9 +230,6 @@ namespace Duality.Editor
 			if (!Directory.Exists(EditorHelper.SourceDirectory)) Directory.CreateDirectory(EditorHelper.SourceDirectory);
 			if (!Directory.Exists(EditorHelper.SourceMediaDirectory)) Directory.CreateDirectory(EditorHelper.SourceMediaDirectory);
 			if (!Directory.Exists(EditorHelper.SourceCodeDirectory)) Directory.CreateDirectory(EditorHelper.SourceCodeDirectory);
-
-			// Register Assembly Resolve hook for inter-Plugin dependency handling
-			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
 			// Initialize Package Management system
 			packageManager = new PackageManager();
@@ -1473,9 +1476,13 @@ namespace Duality.Editor
 		{
 			AnalyzeCorePlugin(e.Plugin);
 		}
+		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
+		}
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			// If this method gets called, assume we are searching for a dynamically loaded plugin assembly
+			// We might be looking for an editor plugin
 			string assemblyNameStub = ReflectionHelper.GetShortAssemblyName(args.Name);
 			EditorPlugin plugin = plugins.FirstOrDefault(p => assemblyNameStub == p.AssemblyName);
 			if (plugin != null)

@@ -42,6 +42,9 @@ namespace Duality.Launcher
 				Log.Core.WriteWarning("Text Logfile unavailable: {0}", Log.Exception(e));
 			}
 
+			// Set up a global exception handler to log errors
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
 			// Write initial log message before actually booting Duality
 			Log.Core.Write("Running DualityLauncher with flags: {1}{0}", 
 				Environment.NewLine,
@@ -85,6 +88,11 @@ namespace Duality.Launcher
 				logfileWriter = null;
 				logfileOutput = null;
 			}
+		}
+
+		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
 		}
 
 		private static bool hasConsole = false;

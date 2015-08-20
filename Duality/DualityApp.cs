@@ -331,11 +331,7 @@ namespace Duality
 
 			environment = env;
 			execContext = context;
-
-			// Assure Duality is properly terminated in any case and register additional AppDomain events
-			AppDomain.CurrentDomain.ProcessExit			+= CurrentDomain_ProcessExit;
-			AppDomain.CurrentDomain.UnhandledException	+= CurrentDomain_UnhandledException;
-
+			
 			// Initialize the plugin loader
 			{
 				pluginLoader = plugins ?? new Duality.Backend.Dummy.DummyPluginLoader();
@@ -437,46 +433,36 @@ namespace Duality
 		/// </summary>
 		public static void Terminate()
 		{
-			Terminate(false);
-		}
-		private static void Terminate(bool unexpected)
-		{
 			if (!initialized) return;
-
-			if (unexpected)
+			if (isUpdating)
 			{
-				Log.Core.WriteError("DualityApp terminated unexpectedly");
+				terminateScheduled = true;
+				return;
 			}
-			else
+
+			if (environment == ExecutionEnvironment.Editor && execContext == ExecutionContext.Game)
 			{
-				if (isUpdating)
-				{
-					terminateScheduled = true;
-					return;
-				}
-
-				if (environment == ExecutionEnvironment.Editor && execContext == ExecutionContext.Game)
-				{
-					Scene.Current.Dispose();
-					Log.Core.Write("DualityApp Sandbox terminated");
-					terminateScheduled = false;
-					return;
-				}
-
-				if (execContext != ExecutionContext.Editor)
-				{
-					OnTerminating();
-					SaveUserData();
-				}
-				sound.Dispose();
-				sound = null;
-				ShutdownBackend(ref graphicsBack);
-				ShutdownBackend(ref audioBack);
-				ClearPlugins();
-				pluginLoader.Terminate();
-				Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
-				Log.Core.Write("DualityApp terminated");
+				Scene.Current.Dispose();
+				Log.Core.Write("DualityApp Sandbox terminated");
+				terminateScheduled = false;
+				return;
 			}
+
+			if (execContext != ExecutionContext.Editor)
+			{
+				OnTerminating();
+				SaveUserData();
+			}
+
+			sound.Dispose();
+			sound = null;
+			ShutdownBackend(ref graphicsBack);
+			ShutdownBackend(ref audioBack);
+			ClearPlugins();
+			pluginLoader.Terminate();
+
+			Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
+			Log.Core.Write("DualityApp terminated");
 
 			initialized = false;
 			execContext = ExecutionContext.Terminated;
@@ -1159,15 +1145,6 @@ namespace Duality
 			}
 		}
 
-		private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
-		{
-			Terminate(true);
-		}
-		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
-			if (e.IsTerminating) Terminate(true);
-		}
 		private static Assembly pluginLoader_ResolveAssembly(ResolveAssemblyEventArgs args)
 		{
 			// First assume we are searching for a dynamically loaded plugin assembly
