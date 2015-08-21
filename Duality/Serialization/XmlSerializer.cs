@@ -147,7 +147,7 @@ namespace Duality.Serialization
 			catch (Exception e)
 			{
 				// Log the error
-				this.LocalLog.WriteError("Error writing object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
+				this.LocalLog.WriteError("Error writing object: {0}", Log.Exception(e));
 			}
 			finally
 			{
@@ -442,7 +442,7 @@ namespace Duality.Serialization
 			}
 			catch (Exception e)
 			{
-				this.LocalLog.WriteError("Error reading object: {0}", e is ApplicationException ? e.Message : Log.Exception(e));
+				this.LocalLog.WriteError("Error reading object: {0}", Log.Exception(e));
 			}
 
 			return result;
@@ -646,7 +646,7 @@ namespace Duality.Serialization
 			object obj;
 			uint objId = XmlConvert.ToUInt32(element.Value);
 
-			if (!this.idManager.Lookup(objId, out obj)) throw new ApplicationException(string.Format("Can't resolve object reference '{0}'.", objId));
+			if (!this.idManager.Lookup(objId, out obj)) throw new Exception(string.Format("Can't resolve object reference '{0}'.", objId));
 
 			return obj;
 		}

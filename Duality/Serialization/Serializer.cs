@@ -4,6 +4,8 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
+using Duality.IO;
+
 namespace Duality.Serialization
 {
 	/// <summary>
@@ -742,7 +744,7 @@ namespace Duality.Serialization
 		/// <param name="method"></param>
 		public static void WriteObject<T>(T obj, string file, SerializeMethod method = SerializeMethod.Unknown)
 		{
-			string dirName = Path.GetDirectoryName(file);
+			string dirName = PathStr.GetDirectoryName(file);
 			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
 			using (FileStream str = File.Open(file, FileMode.Create))
 			{

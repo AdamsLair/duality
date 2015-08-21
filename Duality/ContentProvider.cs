@@ -45,8 +45,8 @@ namespace Duality
 		public static string GetNameFromPath(string resPath)
 		{
 			if (string.IsNullOrEmpty(resPath)) return "null";
-			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', Path.DirectorySeparatorChar);
-			return Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(resPath));
+			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', PathStr.DirectorySeparatorChar);
+			return PathStr.GetFileNameWithoutExtension(PathStr.GetFileNameWithoutExtension(resPath));
 		}
 		/// <summary>
 		/// Determines the full (hierarchical) name of a Resource based on its path.
@@ -56,8 +56,8 @@ namespace Duality
 		public static string GetFullNameFromPath(string resPath)
 		{
 			if (string.IsNullOrEmpty(resPath)) return "null";
-			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', Path.DirectorySeparatorChar);
-			return Path.Combine(Path.GetDirectoryName(resPath), GetNameFromPath(resPath));
+			if (IsDefaultContentPath(resPath)) resPath = resPath.Replace(':', PathStr.DirectorySeparatorChar);
+			return PathStr.Combine(PathStr.GetDirectoryName(resPath), GetNameFromPath(resPath));
 		}
 
 		/// <summary>
@@ -351,10 +351,10 @@ namespace Duality
 			if (String.IsNullOrEmpty(dir)) return;
 
 			// Assure we're ending with directory separator chars.
-			if (dir[dir.Length - 1] == Path.AltDirectorySeparatorChar) dir = dir.Remove(dir.Length - 1, 1);
-			if (dir[dir.Length - 1] != Path.DirectorySeparatorChar) dir += Path.DirectorySeparatorChar;
-			if (newDir[newDir.Length - 1] == Path.AltDirectorySeparatorChar) newDir = newDir.Remove(newDir.Length - 1, 1);
-			if (newDir[newDir.Length - 1] != Path.DirectorySeparatorChar) newDir += Path.DirectorySeparatorChar;
+			if (dir[dir.Length - 1] == PathStr.AltDirectorySeparatorChar) dir = dir.Remove(dir.Length - 1, 1);
+			if (dir[dir.Length - 1] != PathStr.DirectorySeparatorChar) dir += PathStr.DirectorySeparatorChar;
+			if (newDir[newDir.Length - 1] == PathStr.AltDirectorySeparatorChar) newDir = newDir.Remove(newDir.Length - 1, 1);
+			if (newDir[newDir.Length - 1] != PathStr.DirectorySeparatorChar) newDir += PathStr.DirectorySeparatorChar;
 
 			List<string> renameList = new List<string>(
 				from p in resLibrary.Keys

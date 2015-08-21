@@ -35,4 +35,3 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.0")]
 [assembly: AssemblyVersion("1.6.4")]
 [assembly: InternalsVisibleTo("DualityEditor")]
-[assembly: NeutralResourcesLanguageAttribute("en-US", UltimateResourceFallbackLocation.MainAssembly)]

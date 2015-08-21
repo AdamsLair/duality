@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
-using System.IO;
 using System.Text;
 using System;
 
 using Duality.Resources;
 using Duality.Drawing;
+using Duality.IO;
 
 namespace Duality
 {
@@ -33,7 +33,7 @@ namespace Duality
 		public string Name
 		{
 			get { return this.name; }
-			set { this.FullName = Path.Combine(this.parentName, value); }
+			set { this.FullName = PathStr.Combine(this.parentName, value); }
 		}
 		/// <summary>
 		/// [GET / SET] The counters full name, including possibly existing parent counters.
@@ -44,8 +44,8 @@ namespace Duality
 			set
 			{
 				this.path = value;
-				this.name = Path.GetFileName(value);
-				this.parentName = Path.GetDirectoryName(value);
+				this.name = PathStr.GetFileName(value);
+				this.parentName = PathStr.GetDirectoryName(value);
 			}
 		}
 		/// <summary>

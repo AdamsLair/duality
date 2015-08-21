@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.IO;
+
+using Duality.IO;
 
 namespace Duality.Editor
 {
@@ -40,7 +41,7 @@ namespace Duality.Editor
 			if (!string.IsNullOrWhiteSpace(this.category))
 			{
 				this.categoryTree = this.category.Split(
-					new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }, 
+					new[] { PathStr.DirectorySeparatorChar, PathStr.AltDirectorySeparatorChar }, 
 					StringSplitOptions.RemoveEmptyEntries);
 			}
 			else

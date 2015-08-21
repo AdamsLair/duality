@@ -255,7 +255,7 @@ namespace Duality
 				}
 				else
 				{
-					return Path.Combine(
+					return PathStr.Combine(
 						Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
 						"Duality", 
 						"AppData", 
@@ -633,7 +633,7 @@ namespace Duality
 
 			foreach (string dllPath in pluginLoader.AvailableAssemblyPaths)
 			{
-				if (!dllPath.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase))
+				if (!dllPath.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
 					continue;
 
 				Log.Core.Write("{0}...", dllPath);
@@ -646,7 +646,7 @@ namespace Duality
 		}
 		private static CorePlugin LoadPlugin(string pluginFilePath)
 		{
-			string asmName = Path.GetFileNameWithoutExtension(pluginFilePath);
+			string asmName = PathStr.GetFileNameWithoutExtension(pluginFilePath);
 			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
 			if (plugin != null) return plugin;
 
@@ -787,7 +787,7 @@ namespace Duality
 		/// <param name="pluginFilePath"></param>
 		internal static CorePlugin ReloadPlugin(string pluginFilePath)
 		{
-			if (!pluginFilePath.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase))
+			if (!pluginFilePath.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
 				return null;
 
 			// If we're trying to reload an active backend plugin, stop
@@ -932,7 +932,7 @@ namespace Duality
 			T selectedBackend = null;
 			foreach (T backend in backends)
 			{
-				if (appData.SkipBackends != null && appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.InvariantCultureIgnoreCase)))
+				if (appData.SkipBackends != null && appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
 				{
 					Log.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
 					continue;
@@ -1161,11 +1161,11 @@ namespace Duality
 				foreach (string libFile in pluginLoader.AvailableAssemblyPaths)
 				{
 					string libFileEnding = ".core.dll";
-					if (!libFile.EndsWith(libFileEnding, StringComparison.InvariantCultureIgnoreCase))
+					if (!libFile.EndsWith(libFileEnding, StringComparison.OrdinalIgnoreCase))
 						continue;
 
 					string libName = libFile.Remove(libFile.Length - libFileEnding.Length, libFileEnding.Length);
-					if (libName.Equals(args.AssemblyName, StringComparison.InvariantCultureIgnoreCase))
+					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
 						plugin = LoadPlugin(libFile);
 						if (plugin != null) return plugin.PluginAssembly;
@@ -1175,8 +1175,8 @@ namespace Duality
 				// Search for other libraries that might be located inside the plugin directory
 				foreach (string libFile in pluginLoader.AvailableAssemblyPaths)
 				{
-					string libName = Path.GetFileNameWithoutExtension(libFile);
-					if (libName.Equals(args.AssemblyName, StringComparison.InvariantCultureIgnoreCase))
+					string libName = PathStr.GetFileNameWithoutExtension(libFile);
+					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
 						return pluginLoader.LoadAssembly(libFile, false);
 					}

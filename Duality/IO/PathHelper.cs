@@ -81,7 +81,7 @@ namespace Duality.IO
 			secondPath = Path.GetFullPath(secondPath);
 
 			// Compare absolute paths
-			return string.Equals(firstPath, secondPath, pathsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
+			return string.Equals(firstPath, secondPath, pathsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
 		}
 		/// <summary>
 		/// Returns whether one path is a sub-path of another.

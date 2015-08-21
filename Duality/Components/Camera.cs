@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 
+using Duality.IO;
 using Duality.Editor;
 using Duality.Cloning;
 using Duality.Drawing;
@@ -279,7 +279,7 @@ namespace Duality.Components
 			this.MakeAvailable();
 			this.UpdateDeviceConfig();
 
-			string counterName = Path.Combine("Cameras", this.gameobj.Name);
+			string counterName = PathStr.Combine("Cameras", this.gameobj.Name);
 			Profile.BeginMeasure(counterName);
 			Profile.TimeRender.BeginMeasure();
 

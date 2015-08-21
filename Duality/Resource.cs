@@ -138,7 +138,7 @@ namespace Duality
 		/// </param>
 		public void Save(string saveAsPath = null, bool makePermanent = true)
 		{
-			if (this.Disposed) throw new ApplicationException("Can't save a Resource that has been disposed.");
+			if (this.Disposed) throw new ObjectDisposedException("Can't save a Resource that has been disposed.");
 			if (string.IsNullOrWhiteSpace(saveAsPath))
 			{
 				saveAsPath = this.path;
@@ -155,7 +155,7 @@ namespace Duality
 				ContentProvider.AddContent(this.path, this);
 			}
 
-			string dirName = System.IO.Path.GetDirectoryName(saveAsPath);
+			string dirName = PathStr.GetDirectoryName(saveAsPath);
 			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
 			using (FileStream str = File.Open(saveAsPath, FileMode.Create))
 			{
@@ -169,7 +169,7 @@ namespace Duality
 		/// <param name="str"></param>
 		public void Save(Stream str)
 		{
-			if (this.Disposed) throw new ApplicationException("Can't save a Resource that has been disposed.");
+			if (this.Disposed) throw new ObjectDisposedException("Can't save a Resource that has been disposed.");
 
 			this.CheckedOnSaving(null);
 			this.WriteToStream(str);
@@ -393,7 +393,7 @@ namespace Duality
 			try
 			{
 				Resource res = formatter.ReadObject<Resource>();
-				if (res == null) throw new ApplicationException("Loading Resource failed");
+				if (res == null) throw new Exception("Loading Resource failed");
 
 				res.initState = InitState.Initializing;
 				res.path = resPath;
@@ -433,7 +433,7 @@ namespace Duality
 		/// <returns></returns>
 		public static bool IsResourceFile(string filePath)
 		{
-			return System.IO.Path.GetExtension(filePath).ToLower() == FileExt;
+			return string.Equals(PathStr.GetExtension(filePath), FileExt, StringComparison.OrdinalIgnoreCase);
 		}
 		/// <summary>
 		/// Returns all Resource files that are located in the specified directory. This doesn't affect
@@ -478,7 +478,7 @@ namespace Duality
 		public static Type GetTypeByFileName(string filePath)
 		{
 			if (string.IsNullOrEmpty(filePath) || ContentProvider.IsDefaultContentPath(filePath)) return null;
-			filePath = System.IO.Path.GetFileNameWithoutExtension(filePath);
+			filePath = PathStr.GetFileNameWithoutExtension(filePath);
 			string[] token = filePath.Split('.');
 			if (token.Length < 2) return null;
 			return DualityApp.GetAvailDualityTypes(typeof(Resource)).FirstOrDefault(t => t.Name == token[token.Length - 1]);

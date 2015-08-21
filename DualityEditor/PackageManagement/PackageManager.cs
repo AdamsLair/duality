@@ -152,7 +152,7 @@ namespace Duality.Editor.PackageManagement
 			PackageInfo packageInfo = this.QueryPackageInfo(package.PackageName);
 			if (packageInfo == null)
 			{
-				throw new ApplicationException(string.Format(
+				throw new Exception(string.Format(
 					"Can't resolve version of package '{0}'. There seems to be no compatible version available.",
 					package.Id));
 			}

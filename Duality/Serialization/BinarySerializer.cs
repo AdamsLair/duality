@@ -163,7 +163,7 @@ namespace Duality.Serialization
 				result = this.ReadObjectBody(header);
 
 				// If we read the object properly and aren't where we're supposed to be, something went wrong
-				if (this.reader.BaseStream.Position != lastPos + offset) throw new ApplicationException(string.Format("Wrong dataset offset: '{0}' instead of expected value '{1}'.", this.reader.BaseStream.Position - lastPos, offset));
+				if (this.reader.BaseStream.Position != lastPos + offset) throw new Exception(string.Format("Wrong dataset offset: '{0}' instead of expected value '{1}'.", this.reader.BaseStream.Position - lastPos, offset));
 			}
 			catch (Exception e)
 			{
@@ -173,7 +173,7 @@ namespace Duality.Serialization
 				this.LocalLog.WriteError("Error reading object at '{0:X8}'-'{1:X8}': {2}", 
 					lastPos,
 					lastPos + offset, 
-					e is ApplicationException ? e.Message : Log.Exception(e));
+					Log.Exception(e));
 			}
 
 			return result;
@@ -640,7 +640,7 @@ namespace Duality.Serialization
 			object obj;
 			uint objId = this.reader.ReadUInt32();
 
-			if (!this.idManager.Lookup(objId, out obj)) throw new ApplicationException(string.Format("Can't resolve object reference '{0}'.", objId));
+			if (!this.idManager.Lookup(objId, out obj)) throw new Exception(string.Format("Can't resolve object reference '{0}'.", objId));
 
 			return obj;
 		}
@@ -743,7 +743,7 @@ namespace Duality.Serialization
 			try
 			{
 				string headerId = this.reader.ReadString();
-				if (headerId != HeaderId) throw new ApplicationException("Header ID does not match.");
+				if (headerId != HeaderId) throw new Exception("Header ID does not match.");
 
 				this.dataVersion = this.reader.ReadUInt16();
 				if (this.dataVersion < MinVersion) throw new NotSupportedException(string.Format("Binary data version {0} is below minimum version {1}", this.dataVersion, MinVersion));
@@ -756,7 +756,7 @@ namespace Duality.Serialization
 					// --[ Insert reading additional data here ]--
 
 					// If we read the object properly and aren't where we're supposed to be, something went wrong
-					if (this.reader.BaseStream.Position != lastPos + offset) throw new ApplicationException(string.Format("Wrong dataset offset: '{0}' instead of expected value '{1}'.", offset, this.reader.BaseStream.Position - lastPos));
+					if (this.reader.BaseStream.Position != lastPos + offset) throw new Exception(string.Format("Wrong dataset offset: '{0}' instead of expected value '{1}'.", offset, this.reader.BaseStream.Position - lastPos));
 				}
 				catch (Exception e)
 				{
