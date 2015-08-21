@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 using Duality.IO;
 
-namespace Duality.Tests.Utility
+namespace Duality.Tests.IO
 {
 	[TestFixture]
 	public class PathHelperTest

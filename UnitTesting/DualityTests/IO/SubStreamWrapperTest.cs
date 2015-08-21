@@ -9,7 +9,7 @@ using Duality.IO;
 
 using NUnit.Framework;
 
-namespace Duality.Tests.Utility
+namespace Duality.Tests.IO
 {
 	[TestFixture]
 	public class SubStreamWrapperTest
