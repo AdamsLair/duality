@@ -109,49 +109,6 @@ namespace Duality.Resources
 			oggVorbisDataStream.Read(this.data, 0, (int)oggVorbisDataStream.Length);
 			this.SetupNativeBuffer();
 		}
-		/// <summary>
-		/// Creates a new AudioData base on an Ogg Vorbis file.
-		/// </summary>
-		/// <param name="filepath">Path to the Ogg Vorbis file.</param>
-		public AudioData(string filepath)
-		{
-			this.LoadOggVorbisData(filepath);
-		}
-
-		/// <summary>
-		/// Saves the audio data as Ogg Vorbis file.
-		/// </summary>
-		/// <param name="oggVorbisPath">The path of the file to which the audio data is written.</param>
-		public void SaveOggVorbisData(string oggVorbisPath = null)
-		{
-			if (oggVorbisPath == null) oggVorbisPath = this.sourcePath;
-
-			// We're saving this data for the first time
-			if (!this.IsDefaultContent && this.sourcePath == null) this.sourcePath = oggVorbisPath;
-
-			if (this.data != null)
-				File.WriteAllBytes(oggVorbisPath, this.data);
-			else
-				File.WriteAllBytes(oggVorbisPath, Beep.Res.OggVorbisData);
-		}
-		/// <summary>
-		/// Loads new audio data from an Ogg Vorbis file.
-		/// </summary>
-		/// <param name="oggVorbisPath">The path of the file from which the audio data is read.</param>
-		public void LoadOggVorbisData(string oggVorbisPath = null)
-		{
-			if (oggVorbisPath == null) oggVorbisPath = this.sourcePath;
-
-			this.sourcePath = oggVorbisPath;
-
-			if (String.IsNullOrEmpty(this.sourcePath) || !File.Exists(this.sourcePath))
-				this.data = null;
-			else
-				this.data = File.ReadAllBytes(this.sourcePath);
-
-			this.DisposeNativeBuffer();
-			this.SetupNativeBuffer();
-		}
 		
 		/// <summary>
 		/// Disposes the AudioDatas native buffer.

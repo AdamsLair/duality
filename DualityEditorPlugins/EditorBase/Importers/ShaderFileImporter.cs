@@ -24,17 +24,20 @@ namespace Duality.Editor.Plugins.Base
 		{
 			string ext = Path.GetExtension(srcFile);
 			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
+			string sourceCode = File.ReadAllText(srcFile);
 			if (string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
 			{
 				VertexShader res = new VertexShader();
-				res.LoadSource(srcFile);
+				res.Source = sourceCode;
+				res.SourcePath = srcFile;
 				res.Compile();
 				res.Save(output[0]);
 			}
 			else
 			{
 				FragmentShader res = new FragmentShader();
-				res.LoadSource(srcFile);
+				res.Source = sourceCode;
+				res.SourcePath = srcFile;
 				res.Compile();
 				res.Save(output[0]);
 			}
@@ -53,7 +56,9 @@ namespace Duality.Editor.Plugins.Base
 		public void ReImportFile(ContentRef<Resource> r, string srcFile)
 		{
 			AbstractShader s = r.Res as AbstractShader;
-			s.LoadSource(srcFile);
+			string sourceCode = File.ReadAllText(srcFile);
+			s.Source = sourceCode;
+			s.SourcePath = srcFile;
 			s.Compile();
 		}
 

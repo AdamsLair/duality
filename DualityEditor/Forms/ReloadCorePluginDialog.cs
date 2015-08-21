@@ -435,9 +435,11 @@ namespace Duality.Editor.Forms
 				
 				Log.Editor.Write("{0}...", curPath);
 				Log.Editor.PushIndent();
-				CorePlugin plugin = workInterface.MainForm.Invoke((Func<string,CorePlugin>)DualityApp.ReloadPlugin, curPath) as CorePlugin;
-				if (plugin != null) initSchedule.Add(plugin);
-				workInterface.Progress += 0.10f / (float)count;
+				{
+					CorePlugin plugin = workInterface.MainForm.Invoke((Func<string,CorePlugin>)DualityApp.ReloadPlugin, curPath) as CorePlugin;
+					if (plugin != null) initSchedule.Add(plugin);
+					workInterface.Progress += 0.10f / (float)count;
+				}
 				Log.Editor.PopIndent();
 				Thread.Sleep(20);
 

@@ -22,7 +22,9 @@ namespace Duality.Editor.Plugins.Base
 		public void ImportFile(string srcFile, string targetName, string targetDir)
 		{
 			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
-			AudioData res = new AudioData(srcFile);
+			AudioData res = new AudioData();
+			res.OggVorbisData = File.ReadAllBytes(srcFile);
+			res.SourcePath = srcFile;
 			res.Save(output[0]);
 		}
 
@@ -33,7 +35,8 @@ namespace Duality.Editor.Plugins.Base
 		public void ReImportFile(ContentRef<Resource> r, string srcFile)
 		{
 			AudioData a = r.Res as AudioData;
-			a.LoadOggVorbisData(srcFile);
+			a.OggVorbisData = File.ReadAllBytes(srcFile);
+			a.SourcePath = srcFile;
 		}
 
 		public bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile)

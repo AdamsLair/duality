@@ -51,7 +51,6 @@ namespace Duality.Resources
 			set
 			{
 				this.compiled = false;
-				this.sourcePath = null;
 				this.source = value;
 			}
 		}
@@ -63,50 +62,6 @@ namespace Duality.Resources
 			this.Source = sourceCode;
 		}
 
-
-		/// <summary>
-		/// Loads new shader source code from the specified <see cref="System.IO.Stream"/>.
-		/// </summary>
-		/// <param name="stream">The <see cref="System.IO.Stream"/> to read the source code from.</param>
-		public void LoadSource(Stream stream)
-		{
-			StreamReader reader = new StreamReader(stream);
-
-			this.compiled = false;
-			this.sourcePath = null;
-			this.source = reader.ReadToEnd();
-		}
-		/// <summary>
-		/// Loads new shader source code from the specified file.
-		/// </summary>
-		/// <param name="filePath">The path of the file to read the source code from.</param>
-		public void LoadSource(string filePath = null)
-		{
-			if (filePath == null) filePath = this.sourcePath;
-
-			this.compiled = false;
-			this.sourcePath = filePath;
-			this.source = "";
-			if (!File.Exists(this.sourcePath)) return;
-
-			this.source = File.ReadAllText(this.sourcePath);
-		}
-		/// <summary>
-		/// Saves the current shader source code to the specified file.
-		/// </summary>
-		/// <param name="filePath">The path of the file to write the source code to.</param>
-		public void SaveSource(string filePath = null)
-		{
-			if (filePath == null) filePath = this.sourcePath;
-
-			// We're saving this data for the first time
-			if (!this.IsDefaultContent && this.sourcePath == null) this.sourcePath = filePath;
-
-			if (this.source != null)
-				File.WriteAllText(filePath, this.source);
-			else
-				File.WriteAllText(filePath, "");
-		}
 
 		/// <summary>
 		/// Compiles the shader. This is done automatically when loading the shader

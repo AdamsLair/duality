@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 				FileImportProvider.OpenSourceFile(
 					audioData, 
 					AudioDataFileImporter.SourceFileExtPrimary, 
-					audioData.SaveOggVorbisData);
+					path => SaveAudioData(audioData, path));
 			}
 			else if (shader != null)
 			{
@@ -49,7 +49,7 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 				FileImportProvider.OpenSourceFile(
 					shader, 
 					fileExt, 
-					shader.SaveSource);
+					path => SaveShaderData(shader, path));
 			}
 		}
 		public override bool CanPerformOn(Resource obj)
@@ -71,6 +71,14 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			{
 				bmp.Save(targetPath);
 			}
+		}
+		private static void SaveShaderData(AbstractShader shader, string targetPath)
+		{
+			File.WriteAllText(targetPath, shader.Source);
+		}
+		private static void SaveAudioData(AudioData audio, string targetPath)
+		{
+			File.WriteAllBytes(targetPath, audio.OggVorbisData);
 		}
 	}
 }
