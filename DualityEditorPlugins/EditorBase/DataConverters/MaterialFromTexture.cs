@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 
 using Duality;
+using Duality.IO;
 using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Resources;
@@ -49,7 +50,9 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				Material targetRes = this.FindMatch(baseRes);
 				if (targetRes == null && convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes))
 				{
-					targetRes = Material.CreateFromTexture(baseRes).Res;
+					string resPath = PathHelper.GetFreePath(baseRes.FullName, Resource.GetFileExtByType<Material>());
+					targetRes = new Material(DrawTechnique.Mask, ColorRgba.White, baseRes);
+					targetRes.Save(resPath);
 				}
 
 				if (targetRes == null) continue;

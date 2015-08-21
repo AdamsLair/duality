@@ -211,19 +211,6 @@ namespace Duality.IO
 		}
 
 		/// <summary>
-		/// Takes a string that is supposed to be a file name and converts it into an
-		/// actually valid file name, replacing invalid characters by undercores.
-		/// </summary>
-		/// <param name="fileName">A string that is supposed to be a file name.</param>
-		/// <returns>A valid file name.</returns>
-		public static string GetValidFileName(string fileName)
-		{
-			string invalidChars = new string(Path.GetInvalidFileNameChars());
-			string invalidReStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", Regex.Escape(invalidChars));
-			return Regex.Replace(fileName, invalidReStr, "_");
-		}
-
-		/// <summary>
 		/// Returns whether the specified file or directory is visible, i.e. not hidden.
 		/// </summary>
 		/// <param name="path"></param>

@@ -10,6 +10,9 @@ namespace Duality.Backend
 {
 	public class DefaultPluginLoader : IPluginLoader
 	{
+		private static readonly Assembly execAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityApp).Assembly;
+		private static readonly string execAssemblyDir = Path.GetFullPath(Path.GetDirectoryName(execAssembly.Location));
+
 		private ResolveAssemblyCallback resolveCallback = null;
 
 		public IEnumerable<string> BaseDirectories
@@ -25,8 +28,12 @@ namespace Duality.Backend
 				}
 
 				// Add the executing directory plugin folder
-				string execPluginDir = Path.Combine(PathHelper.ExecutingAssemblyDir, DualityApp.PluginDirectory);
-				if (!PathHelper.ArePathsEqual(execPluginDir, DualityApp.PluginDirectory) && Directory.Exists(execPluginDir))
+				string execPluginDir = Path.Combine(execAssemblyDir, DualityApp.PluginDirectory);
+				bool sameDir = string.Equals(
+					Path.GetFullPath(execPluginDir), 
+					Path.GetFullPath(DualityApp.PluginDirectory), 
+					StringComparison.InvariantCultureIgnoreCase);
+				if (!sameDir && Directory.Exists(execPluginDir))
 				{
 					availLibFiles.Add(execPluginDir);
 				}

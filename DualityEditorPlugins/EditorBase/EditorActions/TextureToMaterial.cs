@@ -4,6 +4,8 @@ using System.Linq;
 using System.IO;
 using System.Drawing;
 
+using Duality.IO;
+using Duality.Drawing;
 using Duality.Resources;
 using Duality.Properties;
 using Duality.Editor.Plugins.Base.Properties;
@@ -28,7 +30,9 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
 		public override void Perform(Texture obj)
 		{
-			Material.CreateFromTexture(obj);
+			string resPath = PathHelper.GetFreePath(obj.FullName, Resource.GetFileExtByType<Material>());
+			Material res = new Material(DrawTechnique.Mask, ColorRgba.White, obj);
+			res.Save(resPath);
 		}
 	}
 }

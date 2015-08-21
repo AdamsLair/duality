@@ -76,19 +76,6 @@ namespace Duality.Resources
 			});
 		}
 
-		/// <summary>
-		/// Creates a new Material Resource based on the specified Texture, saves it and returns a reference to it.
-		/// </summary>
-		/// <param name="baseRes"></param>
-		/// <returns></returns>
-		public static ContentRef<Material> CreateFromTexture(ContentRef<Texture> baseRes)
-		{
-			string resPath = PathHelper.GetFreePath(baseRes.FullName, Resource.GetFileExtByType<Material>());
-			Material res = new Material(DrawTechnique.Mask, ColorRgba.White, baseRes);
-			res.Save(resPath);
-			return res;
-		}
-
 
 		private BatchInfo info = new BatchInfo();
 		

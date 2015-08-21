@@ -155,12 +155,11 @@ namespace Duality
 				ContentProvider.AddContent(this.path, this);
 			}
 
-			string streamName;
 			string dirName = System.IO.Path.GetDirectoryName(saveAsPath);
 			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
 			using (FileStream str = File.Open(saveAsPath, FileMode.Create))
 			{
-				this.WriteToStream(str, out streamName);
+				this.WriteToStream(str);
 			}
 			this.CheckedOnSaved(saveAsPath);
 		}
@@ -172,25 +171,12 @@ namespace Duality
 		{
 			if (this.Disposed) throw new ApplicationException("Can't save a Resource that has been disposed.");
 
-			string streamName;
-
 			this.CheckedOnSaving(null);
-			this.WriteToStream(str, out streamName);
+			this.WriteToStream(str);
 			this.CheckedOnSaved(null);
 		}
-		private void WriteToStream(Stream str, out string streamName)
+		private void WriteToStream(Stream str)
 		{
-			if (str is FileStream)
-			{
-				FileStream fileStream = str as FileStream;
-				if (PathHelper.IsPathLocatedIn(fileStream.Name, "."))
-					streamName = PathHelper.MakeFilePathRelative(fileStream.Name);
-				else
-					streamName = fileStream.Name;
-			}
-			else
-				streamName = str.ToString();
-
 			using (var formatter = Serializer.Create(str))
 			{
 				formatter.AddFieldBlocker(Resource.DontSerializeResourceBlocker);

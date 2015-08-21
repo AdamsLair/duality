@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Drawing;
 
+using Duality.IO;
 using Duality.Resources;
 using Duality.Properties;
 using Duality.Editor.Plugins.Base.Properties;
@@ -28,7 +29,9 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
 		public override void Perform(Pixmap obj)
 		{
-			Texture.CreateFromPixmap(obj);
+			string texPath = PathHelper.GetFreePath(obj.FullName, Resource.GetFileExtByType<Texture>());
+			Texture tex = new Texture(obj);
+			tex.Save(texPath);
 		}
 	}
 }

@@ -259,7 +259,7 @@ namespace Duality
 						Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
 						"Duality", 
 						"AppData", 
-						PathHelper.GetValidFileName(appData.AppName), 
+						PathStr.GetValidFileName(appData.AppName), 
 						"UserData.dat");
 				}
 			}

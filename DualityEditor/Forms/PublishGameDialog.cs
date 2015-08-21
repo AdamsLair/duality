@@ -130,7 +130,7 @@ namespace Duality.Editor.Forms
 		public static void PublishProject(string targetDir, bool includeSource, bool includeEditor, bool compress, bool createShortcuts, Func<string,bool> targetExistsCallback = null)
 		{
 			// Determine a valid directory name for the game
-			string gameDirName = PathHelper.GetValidFileName(DualityApp.AppData.AppName);
+			string gameDirName = PathStr.GetValidFileName(DualityApp.AppData.AppName);
 			string targetGameDir = Path.Combine(targetDir, gameDirName);
 			string archiveBaseDir = targetGameDir;
 

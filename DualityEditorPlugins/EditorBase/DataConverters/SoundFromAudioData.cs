@@ -70,7 +70,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			// Create objects
 			if (createDataSource != null)
 			{
-				List<ContentRef<Sound>> createdSounds = Sound.CreateMultipleFromAudioData(createDataSource.Ref());
+				List<ContentRef<Sound>> createdSounds = EditorActions.AudioDataToSound.CreateMultipleFromAudioData(createDataSource.Ref());
 				foreach (ContentRef<Sound> sound in createdSounds)
 					convert.AddResult(sound.Res);
 			}

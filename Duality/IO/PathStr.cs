@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Duality.IO
 {
@@ -240,6 +241,19 @@ namespace Duality.IO
 		public static char[] GetInvalidFileNameChars()
 		{
 			return InvalidFileNameChars.Clone() as char[];
+		}
+
+		/// <summary>
+		/// Returns a copy of the specified file name which has been
+		/// cleared of all invalid path characters.
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
+		public static string GetValidFileName(string fileName)
+		{
+			string invalidChars = new string(InvalidFileNameChars);
+			string invalidReStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", Regex.Escape(invalidChars));
+			return Regex.Replace(fileName, invalidReStr, "_");
 		}
 		
 		private static int IndexOfExtension(string path, bool firstOfMultiExt)
