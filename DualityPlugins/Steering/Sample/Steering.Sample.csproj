@@ -67,9 +67,9 @@
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Steering.csproj">
+    <ProjectReference Include="..\Steering.Core.csproj">
       <Project>{0130132B-C38D-463E-90AC-5D389E934FAE}</Project>
-      <Name>Steering</Name>
+      <Name>Steering.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

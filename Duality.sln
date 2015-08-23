@@ -1,28 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality", "Duality\Duality.csproj", "{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityEditor", "DualityEditor\DualityEditor.csproj", "{9FB9F397-FD39-460C-A9AD-B4780D19945F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorBase", "DualityEditorPlugins\EditorBase\EditorBase.csproj", "{D0C5CAAD-1344-4E8F-BD8B-B26F81672F4B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EditorBase.Editor", "DualityEditorPlugins\EditorBase\EditorBase.Editor.csproj", "{D0C5CAAD-1344-4E8F-BD8B-B26F81672F4B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DualityEditorPlugins", "DualityEditorPlugins", "{F1705E0B-40BC-464C-B5CD-15A78E626F69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityLauncher", "DualityLauncher\DualityLauncher.csproj", "{60AFE733-4F2A-4045-B829-ED3E9612D5BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpAdvisor", "DualityEditorPlugins\HelpAdvisor\HelpAdvisor.csproj", "{C8DB64F9-9FBD-456F-A8AB-BC3478DFAA85}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelpAdvisor.Editor", "DualityEditorPlugins\HelpAdvisor\HelpAdvisor.Editor.csproj", "{C8DB64F9-9FBD-456F-A8AB-BC3478DFAA85}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DualityPlugins", "DualityPlugins", "{03729F9B-E2FF-4FFC-ADC1-862D9BE94803}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting", "DualityPlugins\DynamicLighting\DynamicLighting.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Core", "DualityPlugins\DynamicLighting\DynamicLighting.Core.csproj", "{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D821AFB9-BCC9-4025-9A9C-798E2BC546AB} = {D821AFB9-BCC9-4025-9A9C-798E2BC546AB}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting", "DualityEditorPlugins\DynamicLighting\DynamicLighting.csproj", "{3518ECDE-DC59-472A-AB91-7AEF884C6DDA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicLighting.Editor", "DualityEditorPlugins\DynamicLighting\DynamicLighting.Editor.csproj", "{3518ECDE-DC59-472A-AB91-7AEF884C6DDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityDebugging", "VisualStudio\DualityDebugging\DualityDebugging.csproj", "{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}"
 EndProject
@@ -30,29 +30,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityDebuggingTest", "VisualStudio\DualityDebuggingTest\DualityDebuggingTest.csproj", "{7FA1C4E4-626E-476A-84A5-DEB9A7D83377}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compatibility", "DualityPlugins\Compatibility\Compatibility.csproj", "{FDA21F0F-1646-4E41-A1FC-1C3F05694CE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compatibility.Core", "DualityPlugins\Compatibility\Compatibility.Core.csproj", "{FDA21F0F-1646-4E41-A1FC-1C3F05694CE4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{25E5F85E-2B49-4959-A7F4-45E7C492F345}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityTests", "UnitTesting\DualityTests\DualityTests.csproj", "{0C1B88A8-4FF3-43D3-9BC6-E71DBB561075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering", "DualityPlugins\Steering\Steering.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering.Core", "DualityPlugins\Steering\Steering.Core.csproj", "{0130132B-C38D-463E-90AC-5D389E934FAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogView", "DualityEditorPlugins\LogView\LogView.csproj", "{B45A8DA4-C597-4AE2-83B2-D79C89EE70C3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogView.Editor", "DualityEditorPlugins\LogView\LogView.Editor.csproj", "{B45A8DA4-C597-4AE2-83B2-D79C89EE70C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectInspector", "DualityEditorPlugins\ObjectInspector\ObjectInspector.csproj", "{CC7E52D3-B847-4187-A343-2368144F4C8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectInspector.Editor", "DualityEditorPlugins\ObjectInspector\ObjectInspector.Editor.csproj", "{CC7E52D3-B847-4187-A343-2368144F4C8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectView", "DualityEditorPlugins\ProjectView\ProjectView.csproj", "{C617D028-5319-4F9F-B048-D61268ED277B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectView.Editor", "DualityEditorPlugins\ProjectView\ProjectView.Editor.csproj", "{C617D028-5319-4F9F-B048-D61268ED277B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SceneView", "DualityEditorPlugins\SceneView\SceneView.csproj", "{B237138D-ED43-400B-85B2-C1705A85D856}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SceneView.Editor", "DualityEditorPlugins\SceneView\SceneView.Editor.csproj", "{B237138D-ED43-400B-85B2-C1705A85D856}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamView", "DualityEditorPlugins\CamView\CamView.csproj", "{E67350ED-2676-492A-9FBE-A08B5FBF3726}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CamView.Editor", "DualityEditorPlugins\CamView\CamView.Editor.csproj", "{E67350ED-2676-492A-9FBE-A08B5FBF3726}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{1F9CE5E4-5E97-4813-9299-33064673D393}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityUpdater", "DualityUpdater\DualityUpdater.csproj", "{7BED6319-022E-4B62-8F64-F51DE9A2D7EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagerFrontend", "DualityEditorPlugins\PackageManagerFrontend\PackageManagerFrontend.csproj", "{E771E45B-3EB3-4CD3-8483-7D8798D0F5F8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagerFrontend.Editor", "DualityEditorPlugins\PackageManagerFrontend\PackageManagerFrontend.Editor.csproj", "{E771E45B-3EB3-4CD3-8483-7D8798D0F5F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steering.Sample", "DualityPlugins\Steering\Sample\Steering.Sample.csproj", "{42799734-50F9-4230-A835-23308EF9705F}"
 EndProject
@@ -66,11 +66,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityPrimitives", "Dualit
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{DF44DD2F-C4E0-4DF5-ACE0-3ECB3F9291FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTKEditor", "Backend\DefaultOpenTKEditor\DefaultOpenTKEditor.csproj", "{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK.Editor", "Backend\DefaultOpenTKEditor\DefaultOpenTK.Editor.csproj", "{FDA91F3F-1621-4E41-A1FC-2C3F45754CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework", "Backend\DotNetFramework\DotNetFramework.csproj", "{FDA91F3F-1626-4E41-A1FC-2C3F45754CE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetFramework.Core", "Backend\DotNetFramework\DotNetFramework.Core.csproj", "{FDA91F3F-1626-4E41-A1FC-2C3F45754CE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK", "Backend\DefaultOpenTK\DefaultOpenTK.csproj", "{35045E2E-7748-4D1D-BE05-BF72A19C295F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DefaultOpenTK.Core", "Backend\DefaultOpenTK\DefaultOpenTK.Core.csproj", "{35045E2E-7748-4D1D-BE05-BF72A19C295F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

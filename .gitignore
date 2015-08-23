@@ -157,3 +157,6 @@ Backend/DefaultOpenTKEditor/bin/
 Duality/Duality_PCL_WiP.csproj.user
 Backend/DotNetFramework/bin/
 Backend/DotNetFramework/obj/
+DualityEditorPlugins/PackageManagerFrontend/PackageManagerFrontend.Editor.csproj.user
+DualityEditorPlugins/EditorBase/EditorBase.Editor.csproj.user
+DualityPlugins/Steering/Steering.Core.csproj.user
