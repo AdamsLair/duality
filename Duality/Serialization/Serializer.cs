@@ -883,7 +883,7 @@ namespace Duality.Serialization
 		{
 			ResolveTypeError error = new ResolveTypeError(e.MemberId);
 			if (HandleSerializeError(error))
-				e.ResolvedMember = error.ResolvedType;
+				e.ResolvedMember = error.ResolvedType != null ? error.ResolvedType.GetTypeInfo() : null;
 		}
 	}
 }

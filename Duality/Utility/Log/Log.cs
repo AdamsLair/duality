@@ -457,7 +457,7 @@ namespace Duality
 			string eName = Type(e.GetType());
 
 			return string.Format(System.Globalization.CultureInfo.InvariantCulture, 
-				"{0}: {2}{4}CallStack:{4}{3}",
+				"{0}: {1}{3}CallStack:{3}{2}",
 				eName,
 				e.Message,
 				e.StackTrace,

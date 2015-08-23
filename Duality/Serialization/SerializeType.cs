@@ -76,8 +76,8 @@ namespace Duality.Serialization
 		public SerializeType(Type t)
 		{
 			this.type = t.GetTypeInfo();
+			this.typeString = t.GetTypeId();
 			this.dataType = GetDataType(this.type);
-			this.typeString = this.type.GetTypeId();
 			this.dontSerialize = this.type.HasAttributeCached<DontSerializeAttribute>();
 
 			if (this.dataType == DataType.Struct)
@@ -94,7 +94,7 @@ namespace Duality.Serialization
 					.Where(f => !(
 						f.FieldType == typeof(object) && 
 						f.Name == "_syncRoot" && 
-						typeof(System.Collections.ICollection).IsAssignableFrom(f.DeclaringType)));
+						typeof(System.Collections.ICollection).GetTypeInfo().IsAssignableFrom(f.DeclaringType.GetTypeInfo())));
 
 				// Store the filtered fields in a fixed form
 				this.fields = filteredFields.ToArray();
@@ -106,39 +106,40 @@ namespace Duality.Serialization
 			}
 		}
 
-		private static DataType GetDataType(Type t)
+		private static DataType GetDataType(TypeInfo typeInfo)
 		{
-			if (t.IsEnum)
+			Type type = typeInfo.AsType();
+			if (typeInfo.IsEnum)
 				return DataType.Enum;
-			else if (t.IsPrimitive)
+			else if (typeInfo.IsPrimitive)
 			{
-				if		(t == typeof(bool))		return DataType.Bool;
-				else if (t == typeof(byte))		return DataType.Byte;
-				else if (t == typeof(char))		return DataType.Char;
-				else if (t == typeof(sbyte))	return DataType.SByte;
-				else if (t == typeof(short))	return DataType.Short;
-				else if (t == typeof(ushort))	return DataType.UShort;
-				else if (t == typeof(int))		return DataType.Int;
-				else if (t == typeof(uint))		return DataType.UInt;
-				else if (t == typeof(long))		return DataType.Long;
-				else if (t == typeof(ulong))	return DataType.ULong;
-				else if (t == typeof(float))	return DataType.Float;
-				else if (t == typeof(double))	return DataType.Double;
-				else if (t == typeof(decimal))	return DataType.Decimal;
+				if		(type == typeof(bool))		return DataType.Bool;
+				else if (type == typeof(byte))		return DataType.Byte;
+				else if (type == typeof(char))		return DataType.Char;
+				else if (type == typeof(sbyte))		return DataType.SByte;
+				else if (type == typeof(short))		return DataType.Short;
+				else if (type == typeof(ushort))	return DataType.UShort;
+				else if (type == typeof(int))		return DataType.Int;
+				else if (type == typeof(uint))		return DataType.UInt;
+				else if (type == typeof(long))		return DataType.Long;
+				else if (type == typeof(ulong))		return DataType.ULong;
+				else if (type == typeof(float))		return DataType.Float;
+				else if (type == typeof(double))	return DataType.Double;
+				else if (type == typeof(decimal))	return DataType.Decimal;
 			}
-			else if (typeof(Type).IsAssignableFrom(t))
+			else if (typeof(Type).GetTypeInfo().IsAssignableFrom(typeInfo))
 				return DataType.Type;
-			else if (typeof(MemberInfo).IsAssignableFrom(t))
+			else if (typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(typeInfo))
 				return DataType.MemberInfo;
-			else if (typeof(Delegate).IsAssignableFrom(t))
+			else if (typeof(Delegate).GetTypeInfo().IsAssignableFrom(typeInfo))
 				return DataType.Delegate;
-			else if (t == typeof(string))
+			else if (type == typeof(string))
 				return DataType.String;
-			else if (t.IsArray)
+			else if (typeInfo.IsArray)
 				return DataType.Array;
-			else if (t.IsClass)
+			else if (typeInfo.IsClass)
 				return DataType.Struct;
-			else if (t.IsValueType)
+			else if (typeInfo.IsValueType)
 				return DataType.Struct;
 
 			// Should never happen in theory

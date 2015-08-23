@@ -8,6 +8,16 @@ namespace Duality
 	public static class ExtMethodsTypeInfo
 	{
 		/// <summary>
+		/// Returns whether the specified object is an instance of the specified TypeInfo.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static bool IsInstanceOfType(this TypeInfo type, object instance)
+		{
+			if (instance == null) return false;
+			return type.IsAssignableFrom(instance.GetType().GetTypeInfo());
+		}
+		/// <summary>
 		/// Returns a TypeInfos BaseType as a TypeInfo, or null if it was null.
 		/// </summary>
 		/// <param name="type"></param>
