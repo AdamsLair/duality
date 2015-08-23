@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Duality.Cloning
 {
@@ -22,9 +23,9 @@ namespace Duality.Cloning
 		/// <summary>
 		/// Checks whether this surrogate is able to clone the specified object type.
 		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> of the object in question.</param>
+		/// <param name="t">The <see cref="System.TypeInfo"/> of the object in question.</param>
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
-		bool MatchesType(Type t);
+		bool MatchesType(TypeInfo t);
 
 		void SetupCloneTargets(object source, object target, out bool requireLateSetup, ICloneTargetSetup setup);
 		void LateSetup(object source, ref object target, ICloneOperation operation);
@@ -69,9 +70,9 @@ namespace Duality.Cloning
 		/// <summary>
 		/// Checks whether this surrogate is able to clone the specified object type.
 		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> of the object in question.</param>
+		/// <param name="t">The <see cref="System.TypeInfo"/> of the object in question.</param>
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
-		public virtual bool MatchesType(Type t)
+		public virtual bool MatchesType(TypeInfo t)
 		{
 			return typeof(T).IsAssignableFrom(t);
 		}

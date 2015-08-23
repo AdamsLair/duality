@@ -788,7 +788,7 @@ namespace Duality.Cloning
 			result.Init();
 			return result;
 		}
-		internal static ICloneSurrogate GetSurrogateFor(Type type)
+		internal static ICloneSurrogate GetSurrogateFor(TypeInfo type)
 		{
 			if (surrogates == null)
 			{

@@ -422,7 +422,7 @@ namespace Duality.Serialization
 			// Check whether the object is expected to be serialized
 			if (dataType != DataType.ObjectRef &&
 				!objSerializeType.IsSerializable && 
-				!typeof(ISerializeExplicit).IsAssignableFrom(objSerializeType.Type) &&
+				!typeof(ISerializeExplicit).GetTypeInfo().IsAssignableFrom(objSerializeType.Type) &&
 				GetSurrogateFor(objSerializeType.Type) == null) 
 			{
 				this.LocalLog.WriteWarning("Ignoring object of Type '{0}' which is flagged with the {1}.", 
@@ -499,7 +499,8 @@ namespace Duality.Serialization
 				return;
 			}
 
-			if (fieldValue != null && !field.FieldType.IsInstanceOfType(fieldValue))
+			TypeInfo fieldTypeInfo = field.FieldType.GetTypeInfo();
+			if (fieldValue != null && !fieldTypeInfo.IsInstanceOfType(fieldValue))
 			{
 				if (!this.HandleAssignValueToField(objSerializeType, obj, fieldName, fieldValue))
 				{
@@ -511,7 +512,7 @@ namespace Duality.Serialization
 					object castVal;
 					try
 					{
-						if (field.FieldType.IsEnum)
+						if (fieldTypeInfo.IsEnum)
 						{
 							castVal = Convert.ChangeType(fieldValue, Enum.GetUnderlyingType(field.FieldType), System.Globalization.CultureInfo.InvariantCulture);
 							castVal = Enum.ToObject(field.FieldType, castVal);
@@ -532,7 +533,7 @@ namespace Duality.Serialization
 				return;
 			}
 
-			if (fieldValue == null && field.FieldType.IsValueType) fieldValue = field.FieldType.CreateInstanceOf();
+			if (fieldValue == null && fieldTypeInfo.IsValueType) fieldValue = field.FieldType.CreateInstanceOf();
 			field.SetValue(obj, fieldValue);
 		}
 		/// <summary>
@@ -787,7 +788,7 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="t">The <see cref="System.Type"/> to retrieve a <see cref="Duality.Serialization.ISerializeSurrogate"/> for.</param>
 		/// <returns></returns>
-		protected static ISerializeSurrogate GetSurrogateFor(Type type)
+		protected static ISerializeSurrogate GetSurrogateFor(TypeInfo type)
 		{
 			if (surrogates == null)
 			{

@@ -14,7 +14,7 @@ namespace Duality.Serialization.Surrogates
 		private MethodInfo genericWriteMethodDef = typeof(DictionarySurrogate).GetTypeInfo().GetRuntimeMethods().FirstOrDefault(m => !m.IsStatic && m.Name == "WriteDataSpecific");
 		private MethodInfo genericReadMethodDef = typeof(DictionarySurrogate).GetTypeInfo().GetRuntimeMethods().FirstOrDefault(m => !m.IsStatic && m.Name == "ReadDataSpecific");
 
-		public override bool MatchesType(Type t)
+		public override bool MatchesType(TypeInfo t)
 		{
 			return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
 		}

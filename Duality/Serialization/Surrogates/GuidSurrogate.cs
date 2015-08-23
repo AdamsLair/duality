@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Collections.Generic;
 
 namespace Duality.Serialization.Surrogates
@@ -13,7 +14,7 @@ namespace Duality.Serialization.Surrogates
 			writer.WriteValue("data", this.RealObject.ToByteArray());
 		}
 		public override void WriteData(IDataWriter writer) {}
-		public override object ConstructObject(IDataReader reader, Type objType)
+		public override object ConstructObject(IDataReader reader, TypeInfo objType)
 		{
 			byte[] data;
 			reader.ReadValue("data", out data);
@@ -41,7 +42,7 @@ namespace Duality.Serialization.Surrogates
 			writer.WriteValue("data", data);
 		}
 		public override void WriteData(IDataWriter writer) {}
-		public override object ConstructObject(IDataReader reader, Type objType)
+		public override object ConstructObject(IDataReader reader, TypeInfo objType)
 		{
 			byte[] data;
 			reader.ReadValue("data", out data);

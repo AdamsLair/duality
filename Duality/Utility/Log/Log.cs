@@ -306,6 +306,15 @@ namespace Duality
 			return type.GetTypeCSCodeName(true);
 		}
 		/// <summary>
+		/// Returns a string that can be used for representing a <see cref="System.TypeInfo"/> in log entries.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static string Type(TypeInfo type)
+		{
+			return Log.Type(type.AsType());
+		}
+		/// <summary>
 		/// Returns a string that can be used for representing a method in log entries.
 		/// </summary>
 		/// <param name="info"></param>

@@ -9,7 +9,7 @@ namespace Duality.Cloning.Surrogates
 {
 	public class DictionarySurrogate : CloneSurrogate<IDictionary>
 	{
-		public override bool MatchesType(Type t)
+		public override bool MatchesType(TypeInfo t)
 		{
 			return typeof(IDictionary).IsAssignableFrom(t) && t.IsGenericType && t.GetGenericArguments().Length >= 2;
 		}

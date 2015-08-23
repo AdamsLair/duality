@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Duality.Serialization
 {
@@ -25,9 +26,9 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Checks whether this surrogate is able to de/serialize the specified object type.
 		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> of the object in question.</param>
+		/// <param name="t">The <see cref="System.TypeInfo"/> of the object in question.</param>
 		/// <returns>True, if this surrogate is able to de/serialize such object, false if not.</returns>
-		bool MatchesType(Type t);
+		bool MatchesType(TypeInfo t);
 		/// <summary>
 		/// Writes constructor data for the replaced object. This will be used in a deserialization pre-pass 
 		/// for constructing the object. Note that constructor data may not contain any object references to
@@ -41,8 +42,8 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <param name="reader">The <see cref="IDataReader"/> to deserialize constructor data from.</param>
 		/// <param name="objType">The <see cref="System.Type"/> of the object to create.</param>
-		/// <returns>An instance of the specified <see cref="System.Type"/> that has been constructed using the provided data.</returns>
-		object ConstructObject(IDataReader reader, Type objType);
+		/// <returns>An instance of the specified <see cref="System.TypeInfo"/> that has been constructed using the provided data.</returns>
+		object ConstructObject(IDataReader reader, TypeInfo objType);
 	}
 	/// <summary>
 	/// Default base class for <see cref="ISerializeSurrogate">Serialization Surrogates</see>. It implements both
@@ -86,9 +87,9 @@ namespace Duality.Serialization
 		/// <summary>
 		/// Checks whether this surrogate is able to de/serialize the specified object type.
 		/// </summary>
-		/// <param name="t">The <see cref="System.Type"/> of the object in question.</param>
+		/// <param name="t">The <see cref="System.TypeInfo"/> of the object in question.</param>
 		/// <returns>True, if this surrogate is able to de/serialize such object, false if not.</returns>
-		public virtual bool MatchesType(Type t)
+		public virtual bool MatchesType(TypeInfo t)
 		{
 			return typeof(T) == t;
 		}
@@ -111,9 +112,9 @@ namespace Duality.Serialization
 		/// serialization using <see cref="WriteConstructorData"/>.
 		/// </summary>
 		/// <param name="reader">The <see cref="IDataReader"/> to deserialize constructor data from.</param>
-		/// <param name="objType">The <see cref="System.Type"/> of the object to create.</param>
+		/// <param name="objType">The <see cref="System.TypeInfo"/> of the object to create.</param>
 		/// <returns>An instance of the specified <see cref="System.Type"/> that has been constructed using the provided data.</returns>
-		public virtual object ConstructObject(IDataReader reader, Type objType)
+		public virtual object ConstructObject(IDataReader reader, TypeInfo objType)
 		{
 			return objType.CreateInstanceOf();
 		}
