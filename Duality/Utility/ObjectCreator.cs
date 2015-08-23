@@ -17,31 +17,31 @@ namespace Duality
 		private delegate object CreateMethod();
 
 		private	static readonly CreateMethod nullObjectActivator = () => null;
-		private	static Dictionary<Type,CreateMethod> createInstanceMethodCache = new Dictionary<Type,CreateMethod>();
+		private	static Dictionary<TypeInfo,CreateMethod> createInstanceMethodCache = new Dictionary<TypeInfo,CreateMethod>();
 
 
 		/// <summary>
 		/// Creates an instance of a Type. Attempts to use the Types default empty constructor, but will
 		/// return an uninitialized object in case no constructor is available.
 		/// </summary>
-		/// <param name="type">The Type to create an instance of.</param>
+		/// <param name="typeInfo">The Type to create an instance of.</param>
 		/// <returns>An instance of the Type. Null, if instanciation wasn't possible.</returns>
-		public static object CreateInstanceOf(this Type type)
+		public static object CreateInstanceOf(this TypeInfo typeInfo)
 		{
 			CreateMethod activator;
-			if (createInstanceMethodCache.TryGetValue(type, out activator))
+			if (createInstanceMethodCache.TryGetValue(typeInfo, out activator))
 			{
 				return activator();
 			}
 			else
 			{
 				// To prevent recursion, assume failed object initialization until proven otherwise
-				createInstanceMethodCache[type] = nullObjectActivator;
+				createInstanceMethodCache[typeInfo] = nullObjectActivator;
 
 				// Determine how to create an object of this type
 				object firstResult;
-				activator = CreateObjectActivator(type, out firstResult);
-				createInstanceMethodCache[type] = activator;
+				activator = CreateObjectActivator(typeInfo, out firstResult);
+				createInstanceMethodCache[typeInfo] = activator;
 				return firstResult;
 			}
 		}
@@ -50,20 +50,18 @@ namespace Duality
 		/// </summary>
 		/// <param name="instanceType">The Type to create a default instance of.</param>
 		/// <returns></returns>
-		public static object GetDefaultOf(this Type instanceType)
+		public static object GetDefaultOf(this TypeInfo typeInfo)
 		{
-			TypeInfo typeInfo = instanceType.GetTypeInfo();
 			if (typeInfo.IsValueType)
-				return instanceType.CreateInstanceOf();
+				return typeInfo.CreateInstanceOf();
 			else
 				return null;
 		}
 
 
-		private static CreateMethod CreateObjectActivator(Type type, out object firstResult)
+		private static CreateMethod CreateObjectActivator(TypeInfo typeInfo, out object firstResult)
 		{
 			CreateMethod activator;
-			TypeInfo typeInfo = type.GetTypeInfo();
 			firstResult = null;
 
 			// Filter out non-instantiatable Types
@@ -72,7 +70,7 @@ namespace Duality
 				activator = nullObjectActivator;
 			}
 			// If the caller wants a string, just return an empty one
-			else if (type == typeof(string))
+			else if (typeInfo.AsType() == typeof(string))
 			{
 				activator = () => "";
 			}
@@ -84,7 +82,7 @@ namespace Duality
 			// For structs, boxing a default(T) is sufficient
 			else if (typeInfo.IsValueType)
 			{
-				var lambda = Expression.Lambda<CreateMethod>(Expression.Convert(Expression.Default(type), typeof(object)));
+				var lambda = Expression.Lambda<CreateMethod>(Expression.Convert(Expression.Default(typeInfo.AsType()), typeof(object)));
 				activator = lambda.Compile();
 			}
 			else
@@ -108,9 +106,7 @@ namespace Duality
 					for (int i = 0; i < args.Length; i++)
 					{
 						Type paramType = conParams[i].ParameterType;
-						TypeInfo paramTypeInfo = paramType.GetTypeInfo();
-
-						args[i] = Expression.Default(paramTypeInfo);
+						args[i] = Expression.Default(paramType);
 					}
 
 					// Compile a lambda method invoking the constructor
@@ -126,7 +122,7 @@ namespace Duality
 				// If all constructors failed, inform someone. This is not ideal.
 				if (firstResult == null)
 				{
-					Log.Core.WriteWarning("Failed to create object of Type {0}. Make sure there is a trivial constructor.", Log.Type(type));
+					Log.Core.WriteWarning("Failed to create object of Type {0}. Make sure there is a trivial constructor.", Log.Type(typeInfo));
 				}
 			}
 
@@ -140,7 +136,7 @@ namespace Duality
 				if (error is TypeInitializationException)
 				{
 					Log.Core.WriteError("Failed to initialize Type {0}: {1}",
-						Log.Type(type),
+						Log.Type(typeInfo),
 						Log.Exception(error.InnerException));
 				}
 			}

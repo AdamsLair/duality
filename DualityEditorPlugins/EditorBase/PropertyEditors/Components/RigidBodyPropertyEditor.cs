@@ -270,7 +270,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			this.Items = 
 				from t in DualityApp.GetAvailDualityTypes(typeof(JointInfo))
 				where !t.IsAbstract && !t.GetAttributesCached<EditorHintFlagsAttribute>().Any(f => f.Flags.HasFlag(MemberFlags.Invisible))
-				select new ObjectItem(t, t.Name.Replace("JointInfo", "Joint"));
+				select new ObjectItem(t.AsType(), t.Name.Replace("JointInfo", "Joint"));
 		}
 		protected override void OnReadOnlyChanged()
 		{
@@ -286,7 +286,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			Type jointType = this.DisplayedValue as Type;
 			if (jointType == null) return;
 
-			IEnumerable<JointInfo> newJoints = Enumerable.Repeat(jointType, this.targetArray.Length).Select(t => t.CreateInstanceOf() as JointInfo);
+			IEnumerable<JointInfo> newJoints = Enumerable.Repeat(jointType, this.targetArray.Length).Select(t => t.GetTypeInfo().CreateInstanceOf() as JointInfo);
 			UndoRedoManager.Do(new CreateRigidBodyJointAction(this.targetArray, newJoints));
 		}
 	}

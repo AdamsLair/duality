@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Reflection;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -27,7 +28,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			get 
 			{ 
-				IContentRef ctRef = (this.EditedType.CreateInstanceOf() ?? typeof(ContentRef<Resource>).CreateInstanceOf()) as IContentRef;
+				IContentRef ctRef = (this.EditedType.GetTypeInfo().CreateInstanceOf() ?? typeof(ContentRef<Resource>).GetTypeInfo().CreateInstanceOf()) as IContentRef;
 				ctRef.Path = this.contentPath;
 				ctRef.MakeAvailable();
 				return ctRef;

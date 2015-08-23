@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 using Duality;
@@ -59,7 +60,7 @@ namespace Duality.Editor.UndoRedoActions
 				foreach (Type required in obj.GetRequiredComponents().Reverse())
 				{
 					if (this.targetParentObj.GetComponent(required) != null) continue;
-					obj = required.CreateInstanceOf() as Component;
+					obj = required.GetTypeInfo().CreateInstanceOf() as Component;
 					this.backupObj.Insert(i, obj.DeepClone(BackupCloneContext));
 					this.targetObj.Insert(i, obj);
 				}

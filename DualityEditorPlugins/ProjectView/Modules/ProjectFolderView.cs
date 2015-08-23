@@ -448,7 +448,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			string resPath = PathHelper.GetFreePath(Path.Combine(basePath, desiredName), nameExt);
 			resPath = PathHelper.MakeFilePathRelative(resPath);
 
-			Resource resInstance = type.CreateInstanceOf() as Resource;
+			Resource resInstance = type.GetTypeInfo().CreateInstanceOf() as Resource;
 			resInstance.Save(resPath);
 
 			// Schedule path for later selection - as soon as it actually exists.
@@ -757,7 +757,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				from t in DualityApp.GetAvailDualityTypes(typeof(Resource))
 				where !t.IsAbstract
 				select t;
-			foreach (Type resType in resourceTypeQuery)
+			foreach (TypeInfo resType in resourceTypeQuery)
 			{
 				// Skip invisible Types
 			    EditorHintFlagsAttribute editorHintFlags = resType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();

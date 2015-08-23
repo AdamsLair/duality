@@ -75,7 +75,7 @@ namespace Duality.Cloning
 		/// <summary>
 		/// [GET] The <see cref="System.Type"/> that is described.
 		/// </summary>
-		public Type Type
+		public TypeInfo Type
 		{
 			get { return this.type; }
 		}

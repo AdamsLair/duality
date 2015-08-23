@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Duality.Drawing
 {
@@ -21,7 +22,7 @@ namespace Duality.Drawing
 				if (typeof(T) == typeof(IColorData))
 					return (T)source;
 				else
-					clr = (T)typeof(T).CreateInstanceOf();
+					clr = (T)typeof(T).GetTypeInfo().CreateInstanceOf();
 			}
 			clr.SetIntArgb(source.ToIntArgb());
 			return clr;
@@ -38,8 +39,9 @@ namespace Duality.Drawing
 			if (!typeof(IColorData).IsAssignableFrom(type)) throw new ArgumentException("Target type must implement IColorData.", "type");
 			if (type == typeof(IColorData)) return source;
 
-			IColorData clr = type.GetDefaultOf() as IColorData;
-			if (clr == null) clr = type.CreateInstanceOf() as IColorData;
+			TypeInfo typeInfo = type.GetTypeInfo();
+			IColorData clr = typeInfo.GetDefaultOf() as IColorData;
+			if (clr == null) clr = typeInfo.CreateInstanceOf() as IColorData;
 			clr.SetIntArgb(source.ToIntArgb());
 			return clr;
 		}

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using Duality.Resources;
 using Duality.Cloning;
@@ -597,7 +598,7 @@ namespace Duality
 				return existing;
 			}
 
-			Component newComp = type.CreateInstanceOf() as Component;
+			Component newComp = type.GetTypeInfo().CreateInstanceOf() as Component;
 			this.AddComponent(newComp, type);
 
 			return newComp;

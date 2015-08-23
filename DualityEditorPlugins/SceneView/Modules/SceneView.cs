@@ -506,7 +506,7 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 
 			// Create Components
-			CreateComponentAction action = new CreateComponentAction(baseObj, cmpType.CreateInstanceOf() as Component);
+			CreateComponentAction action = new CreateComponentAction(baseObj, cmpType.GetTypeInfo().CreateInstanceOf() as Component);
 			UndoRedoManager.Do(action);
 			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
 
@@ -826,7 +826,7 @@ namespace Duality.Editor.Plugins.SceneView
 				from t in DualityApp.GetAvailDualityTypes(typeof(Component))
 				where !t.IsAbstract
 				select t;
-			foreach (Type cmpType in componentTypeQuery)
+			foreach (TypeInfo cmpType in componentTypeQuery)
 			{
 				// Skip invisible Types
 			    EditorHintFlagsAttribute editorHintFlags = cmpType.GetAttributesCached<EditorHintFlagsAttribute>().FirstOrDefault();

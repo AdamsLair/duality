@@ -306,7 +306,7 @@ namespace Duality
 			return type.GetTypeCSCodeName(true);
 		}
 		/// <summary>
-		/// Returns a string that can be used for representing a <see cref="System.TypeInfo"/> in log entries.
+		/// Returns a string that can be used for representing a <see cref="System.Reflection.TypeInfo"/> in log entries.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns></returns>
@@ -435,8 +435,8 @@ namespace Duality
 				return FieldInfo(info as FieldInfo, includeDeclaringType);
 			else if (info is EventInfo)
 				return EventInfo(info as EventInfo, includeDeclaringType);
-			else if (info is Type)
-				return Type(info as Type);
+			else if (info is TypeInfo)
+				return Type(info as TypeInfo);
 			else if (info != null)
 				return info.ToString();
 			else
@@ -455,12 +455,10 @@ namespace Duality
 			if (e == null) return null;
 
 			string eName = Type(e.GetType());
-			string eSite = e.TargetSite != null ? MemberInfo(e.TargetSite) : null;
 
 			return string.Format(System.Globalization.CultureInfo.InvariantCulture, 
-				"{0}{1}: {2}{4}CallStack:{4}{3}",
+				"{0}: {2}{4}CallStack:{4}{3}",
 				eName,
-				eSite != null ? " at " + eSite : "",
 				e.Message,
 				e.StackTrace,
 				Environment.NewLine);

@@ -291,7 +291,7 @@ namespace Duality.Editor.Plugins.CamView
 				from t in DualityEditorApp.GetAvailDualityEditorTypes(typeof(CamViewState))
 				where !t.IsAbstract
 				select t;
-			foreach (Type t in camViewStateTypeQuery)
+			foreach (TypeInfo t in camViewStateTypeQuery)
 			{
 				CamViewState state = t.CreateInstanceOf() as CamViewState;
 				state.View = this;
@@ -302,7 +302,7 @@ namespace Duality.Editor.Plugins.CamView
 				from t in DualityEditorApp.GetAvailDualityEditorTypes(typeof(CamViewLayer))
 				where !t.IsAbstract
 				select t;
-			foreach (Type t in camViewLayerTypeQuery)
+			foreach (TypeInfo t in camViewLayerTypeQuery)
 			{
 				CamViewLayer layer = t.CreateInstanceOf() as CamViewLayer;
 				layer.View = this;
@@ -470,11 +470,6 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			this.layerSelector.DropDown.Closing -= this.layerSelector_Closing;
 			this.layerSelector.DropDownItems.Clear();
-
-			IEnumerable<Type> camViewStateTypeQuery = 
-				from t in DualityEditorApp.GetAvailDualityEditorTypes(typeof(CamViewLayer))
-				where !t.IsAbstract
-				select t;
 
 			foreach (var pair in this.availLayers)
 			{

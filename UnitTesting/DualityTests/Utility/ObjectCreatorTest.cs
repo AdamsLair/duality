@@ -88,9 +88,9 @@ namespace Duality.Tests.Utility
 		private bool CheckCreateInstance<T>()
 		{
 			if (typeof(T).IsValueType)
-				return object.Equals(default(T), typeof(T).CreateInstanceOf());
+				return object.Equals(default(T), typeof(T).GetTypeInfo().CreateInstanceOf());
 			else
-				return typeof(T).CreateInstanceOf() != null;
+				return typeof(T).GetTypeInfo().CreateInstanceOf() != null;
 		}
 	}
 }

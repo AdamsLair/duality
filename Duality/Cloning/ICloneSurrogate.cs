@@ -23,7 +23,7 @@ namespace Duality.Cloning
 		/// <summary>
 		/// Checks whether this surrogate is able to clone the specified object type.
 		/// </summary>
-		/// <param name="t">The <see cref="System.TypeInfo"/> of the object in question.</param>
+		/// <param name="t">The <see cref="System.Reflection.TypeInfo"/> of the object in question.</param>
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
 		bool MatchesType(TypeInfo t);
 
@@ -70,22 +70,24 @@ namespace Duality.Cloning
 		/// <summary>
 		/// Checks whether this surrogate is able to clone the specified object type.
 		/// </summary>
-		/// <param name="t">The <see cref="System.TypeInfo"/> of the object in question.</param>
+		/// <param name="t">The <see cref="System.Reflection.TypeInfo"/> of the object in question.</param>
 		/// <returns>True, if this surrogate is able to clone such object, false if not.</returns>
 		public virtual bool MatchesType(TypeInfo t)
 		{
-			return typeof(T).IsAssignableFrom(t);
+			return typeof(T).GetTypeInfo().IsAssignableFrom(t);
 		}
 		
 		public virtual void CreateTargetObject(T source, ref T target, ICloneTargetSetup setup)
 		{
 			Type objType = source.GetType();
-			target = objType.CreateInstanceOf() as T;
+			TypeInfo objTypeInfo = objType.GetTypeInfo();
+			target = objTypeInfo.CreateInstanceOf() as T;
 		}
 		public virtual void CreateTargetObjectLate(T source, ref T target, ICloneOperation operation)
 		{
 			Type objType = source.GetType();
-			target = objType.CreateInstanceOf() as T;
+			TypeInfo objTypeInfo = objType.GetTypeInfo();
+			target = objTypeInfo.CreateInstanceOf() as T;
 		}
 		public abstract void SetupCloneTargets(T source, T target, ICloneTargetSetup setup);
 		public abstract void CopyDataTo(T source, T target, ICloneOperation operation);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 
 using AdamsLair.WinForms.PropertyEditing;
 
@@ -13,11 +14,11 @@ namespace Duality.Editor.Controls.PropertyEditors
 	{
 		public int IsResponsibleFor(Type baseType, ProviderContext context)
 		{
-			IEnumerable<Type> propertyEditorTypes = DualityEditorApp.GetAvailDualityEditorTypes(typeof(PropertyEditor));
+			IEnumerable<TypeInfo> propertyEditorTypes = DualityEditorApp.GetAvailDualityEditorTypes(typeof(PropertyEditor));
 			if (propertyEditorTypes.Any())
 			{
 				int bestScore = PropertyGrid.EditorPriority_None;
-				foreach (Type editorType in propertyEditorTypes)
+				foreach (TypeInfo editorType in propertyEditorTypes)
 				{
 					var assignment = editorType.GetAttributesCached<PropertyEditorAssignmentAttribute>().FirstOrDefault();
 					if (assignment == null) continue;
@@ -36,12 +37,12 @@ namespace Duality.Editor.Controls.PropertyEditors
 		}
 		public PropertyEditor CreateEditor(Type baseType, ProviderContext context)
 		{
-			IEnumerable<Type> propertyEditorTypes = DualityEditorApp.GetAvailDualityEditorTypes(typeof(PropertyEditor));
+			IEnumerable<TypeInfo> propertyEditorTypes = DualityEditorApp.GetAvailDualityEditorTypes(typeof(PropertyEditor));
 			if (propertyEditorTypes.Any())
 			{
 				int bestScore = PropertyGrid.EditorPriority_None;
-				Type bestType = null;
-				foreach (Type editorType in propertyEditorTypes)
+				TypeInfo bestType = null;
+				foreach (TypeInfo editorType in propertyEditorTypes)
 				{
 					var assignment = editorType.GetAttributesCached<PropertyEditorAssignmentAttribute>().FirstOrDefault();
 					if (assignment == null) continue;

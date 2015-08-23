@@ -70,9 +70,9 @@ namespace Duality.Editor
 		
 		private	static MainForm						mainForm			= null;
 		private	static IEditorGraphicsBackend		graphicsBack		= null;
-		private	static INativeEditorGraphicsContext			mainGraphicsContext	= null;
+		private	static INativeEditorGraphicsContext	mainGraphicsContext	= null;
 		private	static List<EditorPlugin>			plugins				= new List<EditorPlugin>();
-		private	static Dictionary<Type,List<Type>>	availTypeDict		= new Dictionary<Type,List<Type>>();
+		private	static Dictionary<Type,List<TypeInfo>>	availTypeDict	= new Dictionary<Type,List<TypeInfo>>();
 		private	static List<IEditorAction>			editorActions		= new List<IEditorAction>();
 		private	static ReloadCorePluginDialog		corePluginReloader	= null;
 		private	static bool							needsRecovery		= false;
@@ -284,7 +284,7 @@ namespace Duality.Editor
 			UndoRedoManager.Init();
 
 			// Initialize editor actions
-			foreach (Type actionType in GetAvailDualityEditorTypes(typeof(IEditorAction)))
+			foreach (TypeInfo actionType in GetAvailDualityEditorTypes(typeof(IEditorAction)))
 			{
 				if (actionType.IsAbstract) continue;
 				IEditorAction action = actionType.CreateInstanceOf() as IEditorAction;
@@ -404,13 +404,13 @@ namespace Duality.Editor
 				try
 				{
 					Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(dllPath));
-					Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(EditorPlugin).IsAssignableFrom(t));
+					Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(EditorPlugin).GetTypeInfo().IsAssignableFrom(t));
 					if (pluginType == null)
 					{
 						Log.Editor.WriteWarning("Can't find EditorPlugin class. Discarding plugin...");
 						continue;
 					}
-					EditorPlugin plugin = (EditorPlugin)pluginType.CreateInstanceOf();
+					EditorPlugin plugin = (EditorPlugin)pluginType.GetTypeInfo().CreateInstanceOf();
 					plugins.Add(plugin);
 				}
 				catch (Exception e)
@@ -449,18 +449,18 @@ namespace Duality.Editor
 			yield return typeof(MainForm).Assembly;
 			foreach (Assembly a in plugins.Select(ep => ep.GetType().Assembly)) yield return a;
 		}
-		public static IEnumerable<Type> GetAvailDualityEditorTypes(Type baseType)
+		public static IEnumerable<TypeInfo> GetAvailDualityEditorTypes(Type baseType)
 		{
-			List<Type> availTypes;
+			List<TypeInfo> availTypes;
 			if (availTypeDict.TryGetValue(baseType, out availTypes)) return availTypes;
 
-			availTypes = new List<Type>();
+			availTypes = new List<TypeInfo>();
 			IEnumerable<Assembly> asmQuery = GetDualityEditorAssemblies();
 			foreach (Assembly asm in asmQuery)
 			{
 				// Try to retrieve all Types from the current Assembly
-				Type[] types;
-				try { types = asm.GetExportedTypes(); }
+				IEnumerable<TypeInfo> types;
+				try { types = asm.ExportedTypes.Select(t => t.GetTypeInfo()); }
 				catch (Exception) { continue; }
 
 				// Add the matching subset of these types to the result
@@ -624,7 +624,7 @@ namespace Duality.Editor
 				}
 
 				// If none exists, create one
-				return deserializeDockContent ?? (dockContentType.CreateInstanceOf() as IDockContent);
+				return deserializeDockContent ?? (dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
 			}
 		}
 

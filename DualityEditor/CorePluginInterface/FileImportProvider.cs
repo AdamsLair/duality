@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using Duality;
 using Duality.IO;
@@ -26,7 +27,7 @@ namespace Duality.Editor
 		
 		internal static void Init()
 		{
-			foreach (Type genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(IFileImporter)))
+			foreach (TypeInfo genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(IFileImporter)))
 			{
 				if (genType.IsAbstract) continue;
 				IFileImporter gen = genType.CreateInstanceOf() as IFileImporter;

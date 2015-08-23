@@ -533,7 +533,7 @@ namespace Duality.Serialization
 				return;
 			}
 
-			if (fieldValue == null && fieldTypeInfo.IsValueType) fieldValue = field.FieldType.CreateInstanceOf();
+			if (fieldValue == null && fieldTypeInfo.IsValueType) fieldValue = fieldTypeInfo.CreateInstanceOf();
 			field.SetValue(obj, fieldValue);
 		}
 		/// <summary>
@@ -812,8 +812,8 @@ namespace Duality.Serialization
 			if (error.Handled) return true;
 			if (serializeHandlerCache.Count == 0)
 			{
-				IEnumerable<Type> handlerTypes = DualityApp.GetAvailDualityTypes(typeof(SerializeErrorHandler));
-				foreach (Type handlerType in handlerTypes)
+				IEnumerable<TypeInfo> handlerTypes = DualityApp.GetAvailDualityTypes(typeof(SerializeErrorHandler));
+				foreach (TypeInfo handlerType in handlerTypes)
 				{
 					if (handlerType.IsAbstract) continue;
 					try

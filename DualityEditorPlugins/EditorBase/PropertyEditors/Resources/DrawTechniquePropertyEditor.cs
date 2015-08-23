@@ -21,7 +21,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				List<VertexDeclaration> vertexTypes = new List<VertexDeclaration>();
 				vertexTypes.Add(null);
-				foreach (Type vertexType in DualityApp.GetAvailDualityTypes(typeof(IVertexData)))
+				foreach (TypeInfo vertexType in DualityApp.GetAvailDualityTypes(typeof(IVertexData)))
 				{
 					if (vertexType.IsClass) continue;
 					if (vertexType.IsAbstract) continue;

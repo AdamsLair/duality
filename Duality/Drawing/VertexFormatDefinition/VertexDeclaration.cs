@@ -39,7 +39,8 @@ namespace Duality.Drawing
 			if (vertexType == null) return null;
 			if (!typeof(IVertexData).IsAssignableFrom(vertexType)) return null;
 
-			IVertexData dummyVertex = vertexType.CreateInstanceOf() as IVertexData;
+			TypeInfo vertexTypeInfo = vertexType.GetTypeInfo();
+			IVertexData dummyVertex = vertexTypeInfo.CreateInstanceOf() as IVertexData;
 			return dummyVertex != null ? dummyVertex.Declaration : null;
 		}
 

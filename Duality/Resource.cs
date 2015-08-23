@@ -481,7 +481,7 @@ namespace Duality
 			filePath = PathOp.GetFileNameWithoutExtension(filePath);
 			string[] token = filePath.Split('.');
 			if (token.Length < 2) return null;
-			return DualityApp.GetAvailDualityTypes(typeof(Resource)).FirstOrDefault(t => t.Name == token[token.Length - 1]);
+			return DualityApp.GetAvailDualityTypes(typeof(Resource)).FirstOrDefault(t => t.Name == token[token.Length - 1]).AsType();
 		}
 
 		/// <summary>

@@ -131,7 +131,7 @@ namespace Duality.Editor.Controls
 				DialogResult result = createDialog.ShowDialog();
 				if (result == DialogResult.OK)
 				{
-					obj = createDialog.SelectedType.CreateInstanceOf();
+					obj = createDialog.SelectedType.GetTypeInfo().CreateInstanceOf();
 				}
 			}
 

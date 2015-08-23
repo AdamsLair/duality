@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection;
 
 using Duality;
 using Duality.Resources;
@@ -22,7 +23,7 @@ namespace Duality.Editor
 
 		internal static void Init()
 		{
-			foreach (Type genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(IPreviewGenerator)))
+			foreach (TypeInfo genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(IPreviewGenerator)))
 			{
 				if (genType.IsAbstract) continue;
 				IPreviewGenerator gen = genType.CreateInstanceOf() as IPreviewGenerator;

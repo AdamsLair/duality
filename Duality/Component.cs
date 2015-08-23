@@ -335,7 +335,7 @@ namespace Duality
 			{
 				if (this.RequiredBy != null) return;
 				this.RequiredBy = new List<Type>();
-				foreach (Type cmp in DualityApp.GetAvailDualityTypes(typeof(Component)))
+				foreach (TypeInfo cmp in DualityApp.GetAvailDualityTypes(typeof(Component)))
 				{
 					if (cmp == this.Component) continue; // Don't require itself
 					if (RequiresComponent(cmp, this.Component))

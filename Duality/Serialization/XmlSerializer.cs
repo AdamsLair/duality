@@ -796,7 +796,7 @@ namespace Duality.Serialization
 		/// <param name="array"></param>
 		/// <param name="elementType"></param>
 		/// <returns></returns>
-		private int GetArrayNonDefaultElementCount(Array array, Type elementType)
+		private int GetArrayNonDefaultElementCount(Array array, TypeInfo elementType)
 		{
 			if (array.Length == 0) return 0;
 

@@ -91,7 +91,7 @@ namespace Duality.Serialization
 		/// <returns>True, if this surrogate is able to de/serialize such object, false if not.</returns>
 		public virtual bool MatchesType(TypeInfo t)
 		{
-			return typeof(T) == t;
+			return typeof(T).GetTypeInfo() == t;
 		}
 		
 		/// <summary>

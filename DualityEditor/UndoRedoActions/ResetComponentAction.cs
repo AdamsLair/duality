@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using Duality;
 using Duality.Cloning;
@@ -45,6 +46,7 @@ namespace Duality.Editor.UndoRedoActions
 			foreach (Component component in this.targetObj)
 			{
 				Type cmpType = component.GetType();
+				TypeInfo cmpTypeInfo = cmpType.GetTypeInfo();
 				PrefabLink link = component.GameObj.AffectedByPrefabLink;
 				if (link != null)
 				{
@@ -54,7 +56,7 @@ namespace Duality.Editor.UndoRedoActions
 				}
 				else
 				{
-					Component resetBase = cmpType.CreateInstanceOf() as Component;
+					Component resetBase = cmpTypeInfo.CreateInstanceOf() as Component;
 					resetBase.CopyTo(component);
 				}
 			}

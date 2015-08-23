@@ -93,7 +93,7 @@ namespace Duality
 		private	static	List<IDualityBackend>			activeBackends	= new List<IDualityBackend>();
 		private	static	Dictionary<string,CorePlugin>	plugins			= new Dictionary<string,CorePlugin>();
 		private	static	List<Assembly>					disposedPlugins	= new List<Assembly>();
-		private static	Dictionary<Type,List<Type>>		availTypeDict	= new Dictionary<Type,List<Type>>();
+		private static	Dictionary<Type,List<TypeInfo>>	availTypeDict	= new Dictionary<Type,List<TypeInfo>>();
 		
 		/// <summary>
 		/// Called when the game becomes focused or loses focus.
@@ -700,7 +700,7 @@ namespace Duality
 			{
 				try
 				{
-					plugin = (CorePlugin)pluginType.CreateInstanceOf();
+					plugin = (CorePlugin)pluginType.GetTypeInfo().CreateInstanceOf();
 					plugin.FilePath = pluginFilePath;
 					plugin.FileHash = pluginLoader.GetAssemblyHash(pluginFilePath);
 					plugins.Add(plugin.AssemblyName, plugin);
@@ -866,18 +866,18 @@ namespace Duality
 		/// }
 		/// </code>
 		/// </example>
-		public static IEnumerable<Type> GetAvailDualityTypes(Type baseType)
+		public static IEnumerable<TypeInfo> GetAvailDualityTypes(Type baseType)
 		{
-			List<Type> availTypes;
+			List<TypeInfo> availTypes;
 			if (availTypeDict.TryGetValue(baseType, out availTypes)) return availTypes;
 
-			availTypes = new List<Type>();
+			availTypes = new List<TypeInfo>();
 			IEnumerable<Assembly> asmQuery = GetDualityAssemblies();
 			foreach (Assembly asm in asmQuery)
 			{
 				// Try to retrieve all Types from the current Assembly
-				Type[] types;
-				try { types = asm.GetExportedTypes(); }
+				IEnumerable<TypeInfo> types;
+				try { types = asm.ExportedTypes.Select(t => t.GetTypeInfo()); }
 				catch (Exception) { continue; }
 
 				// Add the matching subset of these types to the result
@@ -900,7 +900,7 @@ namespace Duality
 			gamepads.Update();
 		}
 
-		internal static void InitBackend<T>(out T target, Func<Type,IEnumerable<Type>> typeFinder = null) where T : class, IDualityBackend
+		internal static void InitBackend<T>(out T target, Func<Type,IEnumerable<TypeInfo>> typeFinder = null) where T : class, IDualityBackend
 		{
 			if (typeFinder == null) typeFinder = GetAvailDualityTypes;
 
@@ -909,14 +909,14 @@ namespace Duality
 
 			// Generate a list of available backends for evaluation
 			List<IDualityBackend> backends = new List<IDualityBackend>();
-			foreach (Type backendType in typeFinder(typeof(IDualityBackend)))
+			foreach (TypeInfo backendType in typeFinder(typeof(IDualityBackend)))
 			{
 				if (backendType.IsInterface) continue;
 				if (backendType.IsAbstract) continue;
 				if (!backendType.IsClass) continue;
 				if (!typeof(T).IsAssignableFrom(backendType)) continue;
 
-				IDualityBackend backend = backendType.CreateInstanceOf() as IDualityBackend;
+				IDualityBackend backend = backendType.GetTypeInfo().CreateInstanceOf() as IDualityBackend;
 				if (backend == null)
 				{
 					Log.Core.WriteWarning("Unable to create an instance of {0}. Skipping it.", backendType.FullName);

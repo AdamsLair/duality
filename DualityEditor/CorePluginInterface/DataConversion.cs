@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 using Duality;
@@ -129,7 +130,7 @@ namespace Duality.Editor
 		
 		internal static void Init()
 		{
-			foreach (Type genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(DataConverter)))
+			foreach (TypeInfo genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(DataConverter)))
 			{
 				if (genType.IsAbstract) continue;
 				DataConverter gen = genType.CreateInstanceOf() as DataConverter;
