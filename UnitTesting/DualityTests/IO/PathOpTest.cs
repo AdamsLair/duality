@@ -9,7 +9,7 @@ using Duality.IO;
 namespace Duality.Tests.IO
 {
 	[TestFixture]
-	public class PathStrTest
+	public class PathOpTest
 	{
 		private static readonly string Whitespace = " ";
 		private static readonly string[] InvalidPathSamples = new string[]
@@ -24,31 +24,31 @@ namespace Duality.Tests.IO
 		[Test] public void IsPathRooted()
 		{
 			// Absolute paths
-			Assert.IsTrue(PathStr.IsPathRooted(@"C:\TestPath\SomeFile.txt"));
-			Assert.IsTrue(PathStr.IsPathRooted(@"C:/TestPath/SomeFile.txt"));
-			Assert.IsTrue(PathStr.IsPathRooted(@"C:/TestPath\SomeFile.txt"));
-			Assert.IsTrue(PathStr.IsPathRooted(@"\TestPath\SomeFile.txt"));
-			Assert.IsTrue(PathStr.IsPathRooted(@"/TestPath/SomeFile.txt"));
-			Assert.IsTrue(PathStr.IsPathRooted(@"/TestPath\SomeFile.txt"));
+			Assert.IsTrue(PathOp.IsPathRooted(@"C:\TestPath\SomeFile.txt"));
+			Assert.IsTrue(PathOp.IsPathRooted(@"C:/TestPath/SomeFile.txt"));
+			Assert.IsTrue(PathOp.IsPathRooted(@"C:/TestPath\SomeFile.txt"));
+			Assert.IsTrue(PathOp.IsPathRooted(@"\TestPath\SomeFile.txt"));
+			Assert.IsTrue(PathOp.IsPathRooted(@"/TestPath/SomeFile.txt"));
+			Assert.IsTrue(PathOp.IsPathRooted(@"/TestPath\SomeFile.txt"));
 
 			// Relative paths
-			Assert.IsFalse(PathStr.IsPathRooted(@"TestPath\SomeFile.txt"));
-			Assert.IsFalse(PathStr.IsPathRooted(@"TestPath/SomeFile.txt"));
+			Assert.IsFalse(PathOp.IsPathRooted(@"TestPath\SomeFile.txt"));
+			Assert.IsFalse(PathOp.IsPathRooted(@"TestPath/SomeFile.txt"));
 
 			// Null and empty paths
-			Assert.IsFalse(PathStr.IsPathRooted(null));
-			Assert.IsFalse(PathStr.IsPathRooted(string.Empty));
-			Assert.IsFalse(PathStr.IsPathRooted(Whitespace));
+			Assert.IsFalse(PathOp.IsPathRooted(null));
+			Assert.IsFalse(PathOp.IsPathRooted(string.Empty));
+			Assert.IsFalse(PathOp.IsPathRooted(Whitespace));
 
 			// Invalid paths
 			foreach (string invalidPath in InvalidPathSamples)
 			{
-				Assert.Throws<ArgumentException>(() => PathStr.IsPathRooted(invalidPath));
+				Assert.Throws<ArgumentException>(() => PathOp.IsPathRooted(invalidPath));
 			}
 		}
 		[Test] public void Combine()
 		{
-			char sep = PathStr.DirectorySeparatorChar;
+			char sep = PathOp.DirectorySeparatorChar;
 
 			// Various combinations of relative and absolute paths
 			AssertCombineOverloads(
@@ -108,7 +108,7 @@ namespace Duality.Tests.IO
 		{
 			// Retrieving directory names from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathStr.GetDirectoryName(s));
+				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetDirectoryName(s));
 				tester.AssertEqual(string.Empty,  @"C:");
 				tester.AssertEqual(@"C:",         @"C:\");
 				tester.AssertEqual(string.Empty,  @"File");
@@ -128,21 +128,21 @@ namespace Duality.Tests.IO
 			}
 
 			// Null and empty paths
-			Assert.AreEqual(string.Empty, PathStr.GetDirectoryName(null));
-			Assert.AreEqual(string.Empty, PathStr.GetDirectoryName(string.Empty));
-			Assert.AreEqual(string.Empty, PathStr.GetDirectoryName(Whitespace));
+			Assert.AreEqual(string.Empty, PathOp.GetDirectoryName(null));
+			Assert.AreEqual(string.Empty, PathOp.GetDirectoryName(string.Empty));
+			Assert.AreEqual(string.Empty, PathOp.GetDirectoryName(Whitespace));
 
 			// Invalid paths
 			foreach (string invalidPath in InvalidPathSamples)
 			{
-				Assert.Throws<ArgumentException>(() => PathStr.GetDirectoryName(invalidPath));
+				Assert.Throws<ArgumentException>(() => PathOp.GetDirectoryName(invalidPath));
 			}
 		}
 		[Test] public void GetFileName()
 		{
 			// Retrieving file names from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathStr.GetFileName(s));
+				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetFileName(s));
 				tester.AssertEqual(@"C:",             @"C:");
 				tester.AssertEqual(string.Empty,      @"C:\");
 				tester.AssertEqual(@"File",           @"File");
@@ -162,21 +162,21 @@ namespace Duality.Tests.IO
 			}
 
 			// Null and empty paths
-			Assert.AreEqual(string.Empty, PathStr.GetFileName(null));
-			Assert.AreEqual(string.Empty, PathStr.GetFileName(string.Empty));
-			Assert.AreEqual(string.Empty, PathStr.GetFileName(Whitespace));
+			Assert.AreEqual(string.Empty, PathOp.GetFileName(null));
+			Assert.AreEqual(string.Empty, PathOp.GetFileName(string.Empty));
+			Assert.AreEqual(string.Empty, PathOp.GetFileName(Whitespace));
 
 			// Invalid paths
 			foreach (string invalidPath in InvalidPathSamples)
 			{
-				Assert.Throws<ArgumentException>(() => PathStr.GetFileName(invalidPath));
+				Assert.Throws<ArgumentException>(() => PathOp.GetFileName(invalidPath));
 			}
 		}
 		[Test] public void GetFileNameWithoutExtension()
 		{
 			// Retrieving filenames without extensions from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathStr.GetFileNameWithoutExtension(s));
+				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetFileNameWithoutExtension(s));
 				tester.AssertEqual(@"C:",         @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
 				tester.AssertEqual(@"File",       @"File");
@@ -197,7 +197,7 @@ namespace Duality.Tests.IO
 
 			// Retrieving filenames without multi-extensions from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathStr.GetFileNameWithoutExtension(s, true));
+				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetFileNameWithoutExtension(s, true));
 				tester.AssertEqual(@"C:",         @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
 				tester.AssertEqual(@"File",       @"File");
@@ -217,21 +217,21 @@ namespace Duality.Tests.IO
 			}
 
 			// Null and empty paths
-			Assert.AreEqual(string.Empty, PathStr.GetFileNameWithoutExtension(null));
-			Assert.AreEqual(string.Empty, PathStr.GetFileNameWithoutExtension(string.Empty));
-			Assert.AreEqual(string.Empty, PathStr.GetFileNameWithoutExtension(Whitespace));
+			Assert.AreEqual(string.Empty, PathOp.GetFileNameWithoutExtension(null));
+			Assert.AreEqual(string.Empty, PathOp.GetFileNameWithoutExtension(string.Empty));
+			Assert.AreEqual(string.Empty, PathOp.GetFileNameWithoutExtension(Whitespace));
 
 			// Invalid paths
 			foreach (string invalidPath in InvalidPathSamples)
 			{
-				Assert.Throws<ArgumentException>(() => PathStr.GetFileNameWithoutExtension(invalidPath));
+				Assert.Throws<ArgumentException>(() => PathOp.GetFileNameWithoutExtension(invalidPath));
 			}
 		}
 		[Test] public void GetExtension()
 		{
 			// Retrieving extensions from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathStr.GetExtension(s));
+				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetExtension(s));
 				tester.AssertEqual(string.Empty,  @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
 				tester.AssertEqual(string.Empty,  @"File");
@@ -252,7 +252,7 @@ namespace Duality.Tests.IO
 
 			// Retrieving multi-extensions from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathStr.GetExtension(s, true));
+				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetExtension(s, true));
 				tester.AssertEqual(string.Empty,  @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
 				tester.AssertEqual(string.Empty,  @"File");
@@ -272,14 +272,14 @@ namespace Duality.Tests.IO
 			}
 
 			// Null and empty paths
-			Assert.AreEqual(string.Empty, PathStr.GetExtension(null));
-			Assert.AreEqual(string.Empty, PathStr.GetExtension(string.Empty));
-			Assert.AreEqual(string.Empty, PathStr.GetExtension(Whitespace));
+			Assert.AreEqual(string.Empty, PathOp.GetExtension(null));
+			Assert.AreEqual(string.Empty, PathOp.GetExtension(string.Empty));
+			Assert.AreEqual(string.Empty, PathOp.GetExtension(Whitespace));
 
 			// Invalid paths
 			foreach (string invalidPath in InvalidPathSamples)
 			{
-				Assert.Throws<ArgumentException>(() => PathStr.GetExtension(invalidPath));
+				Assert.Throws<ArgumentException>(() => PathOp.GetExtension(invalidPath));
 			}
 		}
 
@@ -293,10 +293,10 @@ namespace Duality.Tests.IO
 			}
 			public void AssertEqual(string expected, string input)
 			{
-				string inputAlt1 = input != null ? input.Replace(PathStr.DirectorySeparatorChar, PathStr.AltDirectorySeparatorChar) : null;
-				string inputAlt2 = input != null ? input.Replace(PathStr.AltDirectorySeparatorChar, PathStr.DirectorySeparatorChar) : null;
-				string expectedAlt1 = expected != null ? expected.Replace(PathStr.DirectorySeparatorChar, PathStr.AltDirectorySeparatorChar) : null;
-				string expectedAlt2 = expected != null ? expected.Replace(PathStr.AltDirectorySeparatorChar, PathStr.DirectorySeparatorChar) : null;
+				string inputAlt1 = input != null ? input.Replace(PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar) : null;
+				string inputAlt2 = input != null ? input.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar) : null;
+				string expectedAlt1 = expected != null ? expected.Replace(PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar) : null;
+				string expectedAlt2 = expected != null ? expected.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar) : null;
 
 				Assert.AreEqual(expected, this.method(input));
 				Assert.AreEqual(expectedAlt1, this.method(inputAlt1));
@@ -306,13 +306,13 @@ namespace Duality.Tests.IO
 
 		private static void AssertCombineOverloads(string expected, string first, string second)
 		{
-			Assert.AreEqual(expected, PathStr.Combine(first, second));
-			Assert.AreEqual(expected, PathStr.Combine(new string[] { first, second }));
+			Assert.AreEqual(expected, PathOp.Combine(first, second));
+			Assert.AreEqual(expected, PathOp.Combine(new string[] { first, second }));
 		}
 		private static void AssertCombineOverloadsThrow<T>(string first, string second) where T : Exception
 		{
-			Assert.Throws<T>(() => PathStr.Combine(first, second));
-			Assert.Throws<T>(() => PathStr.Combine(new string[] { first, second }));
+			Assert.Throws<T>(() => PathOp.Combine(first, second));
+			Assert.Throws<T>(() => PathOp.Combine(new string[] { first, second }));
 		}
 	}
 }

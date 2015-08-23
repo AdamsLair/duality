@@ -9,7 +9,7 @@ namespace Duality.IO
 	/// Defines static methods for performing common operations on path strings, such as combining them or extracting file extensions.
 	/// This class mirrors the functionality of <see cref="System.IO.Path"/> in a platform-agnostic way using Duality's path format.
 	/// </summary>
-	public static class PathStr
+	public static class PathOp
 	{
 		public static readonly char DirectorySeparatorChar;
 		public static readonly char AltDirectorySeparatorChar;
@@ -21,7 +21,7 @@ namespace Duality.IO
 		private static readonly char[] InvalidPathChars;
 		private static readonly char[] InvalidFileNameChars;
 
-		static PathStr()
+		static PathOp()
 		{
 			AltDirectorySeparatorChar = '/';
 			DirectorySeparatorChar = '\\';

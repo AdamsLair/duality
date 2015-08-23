@@ -131,7 +131,7 @@
     <Compile Include="Drawing\ImageCodec.cs" />
     <Compile Include="Drawing\PixelData.cs" />
     <Compile Include="IO\PathHelper.cs" />
-    <Compile Include="IO\PathStr.cs" />
+    <Compile Include="IO\PathOp.cs" />
     <Compile Include="IO\Streams\ExtMethodsStream.cs" />
     <Compile Include="IO\Streams\NonClosingStreamWrapper.cs" />
     <Compile Include="IO\Streams\StreamWrapper.cs" />

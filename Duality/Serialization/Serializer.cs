@@ -744,7 +744,7 @@ namespace Duality.Serialization
 		/// <param name="method"></param>
 		public static void WriteObject<T>(T obj, string file, SerializeMethod method = SerializeMethod.Unknown)
 		{
-			string dirName = PathStr.GetDirectoryName(file);
+			string dirName = PathOp.GetDirectoryName(file);
 			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
 			using (FileStream str = File.Open(file, FileMode.Create))
 			{

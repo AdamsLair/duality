@@ -234,7 +234,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 				hashedValue *= 3074457345618258799ul;
 			}
 			string hashedUrl = Convert.ToBase64String(BitConverter.GetBytes(hashedValue));
-			return PathStr.GetValidFileName(hashedUrl) + extension;
+			return PathOp.GetValidFileName(hashedUrl) + extension;
 		}
 	}
 	public class LocalPackageItem : PackageItem

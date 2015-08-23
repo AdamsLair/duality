@@ -279,7 +279,7 @@ namespace Duality.Components
 			this.MakeAvailable();
 			this.UpdateDeviceConfig();
 
-			string counterName = PathStr.Combine("Cameras", this.gameobj.Name);
+			string counterName = PathOp.Combine("Cameras", this.gameobj.Name);
 			Profile.BeginMeasure(counterName);
 			Profile.TimeRender.BeginMeasure();
 

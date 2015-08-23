@@ -41,7 +41,7 @@ namespace Duality.Editor
 			if (!string.IsNullOrWhiteSpace(this.category))
 			{
 				this.categoryTree = this.category.Split(
-					new[] { PathStr.DirectorySeparatorChar, PathStr.AltDirectorySeparatorChar }, 
+					new[] { PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar }, 
 					StringSplitOptions.RemoveEmptyEntries);
 			}
 			else

@@ -67,7 +67,7 @@
     <Compile Include="Cloning\SpecificCloningTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
-    <Compile Include="IO\PathStrTest.cs" />
+    <Compile Include="IO\PathOpTest.cs" />
     <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
     <Compile Include="Resources\PrefabTest.cs" />
     <Compile Include="Serialization\TestObjects.cs" />
@@ -86,8 +86,8 @@
     <Compile Include="Utility\ReflectionHelperTest.cs" />
     <Compile Include="Utility\GenericOperatorTest.cs" />
     <Compile Include="Utility\GridTest.cs" />
-    <Compile Include="IO\NonClosingStreamWrapperTest.cs" />
-    <Compile Include="IO\SubStreamWrapperTest.cs" />
+    <Compile Include="IO\Streams\NonClosingStreamWrapperTest.cs" />
+    <Compile Include="IO\Streams\SubStreamWrapperTest.cs" />
     <Compile Include="Utility\RawListTest.cs" />
     <Compile Include="InitDualityAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

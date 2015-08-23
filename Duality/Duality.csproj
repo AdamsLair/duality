@@ -127,7 +127,7 @@
     <Compile Include="Drawing\IImageCodec.cs" />
     <Compile Include="Drawing\PixelData.cs" />
     <Compile Include="Drawing\ImageCodec.cs" />
-    <Compile Include="IO\PathStr.cs" />
+    <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />

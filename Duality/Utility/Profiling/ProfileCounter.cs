@@ -33,7 +33,7 @@ namespace Duality
 		public string Name
 		{
 			get { return this.name; }
-			set { this.FullName = PathStr.Combine(this.parentName, value); }
+			set { this.FullName = PathOp.Combine(this.parentName, value); }
 		}
 		/// <summary>
 		/// [GET / SET] The counters full name, including possibly existing parent counters.
@@ -44,8 +44,8 @@ namespace Duality
 			set
 			{
 				this.path = value;
-				this.name = PathStr.GetFileName(value);
-				this.parentName = PathStr.GetDirectoryName(value);
+				this.name = PathOp.GetFileName(value);
+				this.parentName = PathOp.GetDirectoryName(value);
 			}
 		}
 		/// <summary>

@@ -155,7 +155,7 @@ namespace Duality
 				ContentProvider.AddContent(this.path, this);
 			}
 
-			string dirName = PathStr.GetDirectoryName(saveAsPath);
+			string dirName = PathOp.GetDirectoryName(saveAsPath);
 			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
 			using (FileStream str = File.Open(saveAsPath, FileMode.Create))
 			{
@@ -433,7 +433,7 @@ namespace Duality
 		/// <returns></returns>
 		public static bool IsResourceFile(string filePath)
 		{
-			return string.Equals(PathStr.GetExtension(filePath), FileExt, StringComparison.OrdinalIgnoreCase);
+			return string.Equals(PathOp.GetExtension(filePath), FileExt, StringComparison.OrdinalIgnoreCase);
 		}
 		/// <summary>
 		/// Returns all Resource files that are located in the specified directory. This doesn't affect
@@ -478,7 +478,7 @@ namespace Duality
 		public static Type GetTypeByFileName(string filePath)
 		{
 			if (string.IsNullOrEmpty(filePath) || ContentProvider.IsDefaultContentPath(filePath)) return null;
-			filePath = PathStr.GetFileNameWithoutExtension(filePath);
+			filePath = PathOp.GetFileNameWithoutExtension(filePath);
 			string[] token = filePath.Split('.');
 			if (token.Length < 2) return null;
 			return DualityApp.GetAvailDualityTypes(typeof(Resource)).FirstOrDefault(t => t.Name == token[token.Length - 1]);

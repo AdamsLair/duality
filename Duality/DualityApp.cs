@@ -255,11 +255,11 @@ namespace Duality
 				}
 				else
 				{
-					return PathStr.Combine(
+					return PathOp.Combine(
 						Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
 						"Duality", 
 						"AppData", 
-						PathStr.GetValidFileName(appData.AppName), 
+						PathOp.GetValidFileName(appData.AppName), 
 						"UserData.dat");
 				}
 			}
@@ -646,7 +646,7 @@ namespace Duality
 		}
 		private static CorePlugin LoadPlugin(string pluginFilePath)
 		{
-			string asmName = PathStr.GetFileNameWithoutExtension(pluginFilePath);
+			string asmName = PathOp.GetFileNameWithoutExtension(pluginFilePath);
 			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
 			if (plugin != null) return plugin;
 
@@ -1175,7 +1175,7 @@ namespace Duality
 				// Search for other libraries that might be located inside the plugin directory
 				foreach (string libFile in pluginLoader.AvailableAssemblyPaths)
 				{
-					string libName = PathStr.GetFileNameWithoutExtension(libFile);
+					string libName = PathOp.GetFileNameWithoutExtension(libFile);
 					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
 						return pluginLoader.LoadAssembly(libFile, false);
