@@ -54,11 +54,11 @@ namespace Duality.Cloning
 		}
 		private class LocalCloneBehavior
 		{
-			private Type			targetType;
+			private TypeInfo		targetType;
 			private CloneBehavior	behavior;
 			private bool			locked;
 
-			public Type TargetType
+			public TypeInfo TargetType
 			{
 				get { return this.targetType; }
 			}
@@ -72,7 +72,7 @@ namespace Duality.Cloning
 				set { this.locked = value; }
 			}
 
-			public LocalCloneBehavior(Type targetType, CloneBehavior behavior)
+			public LocalCloneBehavior(TypeInfo targetType, CloneBehavior behavior)
 			{
 				this.targetType = targetType;
 				this.behavior = behavior;
@@ -149,7 +149,7 @@ namespace Duality.Cloning
 			this.sourceRoot = source;
 			this.targetRoot = target;
 			this.PrepareCloneGraph();
-			if (!object.ReferenceEquals(source, null) && source.GetType().IsValueType)
+			if (!object.ReferenceEquals(source, null) && source.GetType().GetTypeInfo().IsValueType)
 			{
 				target = source;
 				this.SetTargetOf(source, target);
@@ -280,7 +280,7 @@ namespace Duality.Cloning
 				}
 
 				// If the target doesn't match the source, discard it
-				if (target != null && target.GetType() != typeData.Type)
+				if (target != null && target.GetType() != typeData.Type.AsType())
 					target = null;
 			}
 
@@ -317,7 +317,7 @@ namespace Duality.Cloning
 				{
 					Array sourceArray = source as Array;
 					originalTargetArray = target as Array;
-					target = Array.CreateInstance(typeData.ElementType.Type, sourceArray.Length);
+					target = Array.CreateInstance(typeData.ElementType.Type.AsType(), sourceArray.Length);
 				}
 				// Only create target object when no reuse is possible
 				else if (object.ReferenceEquals(target, null))
@@ -538,7 +538,7 @@ namespace Duality.Cloning
 				field.SetValue(target, field.GetValue(source));
 			}
 			// If this field stores a value type, no assignment or mapping is necessary. Just handle the struct.
-			else if (field.FieldType.IsValueType)
+			else if (field.FieldType.GetTypeInfo().IsValueType)
 			{
 				object sourceFieldValue = field.GetValue(source);
 				object targetFieldValue = field.GetValue(target);
@@ -657,7 +657,7 @@ namespace Duality.Cloning
 		{
 			this.SetTargetOf(source, target);
 		}
-		void ICloneTargetSetup.HandleObject<T>(T source, T target, CloneBehavior behavior, Type behaviorTarget)
+		void ICloneTargetSetup.HandleObject<T>(T source, T target, CloneBehavior behavior, TypeInfo behaviorTarget)
 		{
 			if (object.ReferenceEquals(source, this.currentObject))
 			{
@@ -683,9 +683,9 @@ namespace Duality.Cloning
 				this.PrepareObjectCloneGraph(source, target, null, behavior);
 			}
 		}
-		void ICloneTargetSetup.HandleValue<T>(ref T source, ref T target, CloneBehavior behavior, Type behaviorTarget)
+		void ICloneTargetSetup.HandleValue<T>(ref T source, ref T target, CloneBehavior behavior, TypeInfo behaviorTarget)
 		{
-			if (typeof(T) == this.currentCloneType.Type)
+			if (typeof(T) == this.currentCloneType.Type.AsType())
 			{
 				// Structs can't contain themselfs. If source's type is equal to our current clone type, this is a handle-self call.
 				this.PrepareValueChildCloneGraph<T>(ref source, ref target, this.currentCloneType);
@@ -807,20 +807,20 @@ namespace Duality.Cloning
 			}
 			return null;
 		}
-		internal static CloneBehaviorAttribute GetCloneBehaviorAttribute(Type type)
+		internal static CloneBehaviorAttribute GetCloneBehaviorAttribute(TypeInfo typeInfo)
 		{
 			// Hardcoded cloning behavior for MemberInfo metadata classes
-			if (typeof(MemberInfo).IsAssignableFrom(type))
+			if (typeof(MemberInfo).GetTypeInfo().IsAssignableFrom(typeInfo))
 			{
 				return memberInfoCloneBehavior;
 			}
 
 			// Attributes attached directly to this Type
 			CloneBehaviorAttribute directAttrib;
-			if (!cloneBehaviorCache.TryGetValue(type, out directAttrib))
+			if (!cloneBehaviorCache.TryGetValue(typeInfo.AsType(), out directAttrib))
 			{
-				directAttrib = type.GetAttributesCached<CloneBehaviorAttribute>().FirstOrDefault();
-				cloneBehaviorCache[type] = directAttrib;
+				directAttrib = typeInfo.GetAttributesCached<CloneBehaviorAttribute>().FirstOrDefault();
+				cloneBehaviorCache[typeInfo.AsType()] = directAttrib;
 			}
 			return directAttrib;
 		}

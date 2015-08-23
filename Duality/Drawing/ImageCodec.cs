@@ -28,11 +28,10 @@ namespace Duality.Drawing
 			availableCodecs = new List<IImageCodec>();
 			foreach (TypeInfo imageCodecType in DualityApp.GetAvailDualityTypes(typeof(IImageCodec)))
 			{
-				TypeInfo imageCodecTypeInfo = imageCodecType.GetTypeInfo();
- 				if (imageCodecTypeInfo.IsAbstract) continue;
- 				if (imageCodecTypeInfo.IsInterface) continue;
+ 				if (imageCodecType.IsAbstract) continue;
+ 				if (imageCodecType.IsInterface) continue;
 
-				IImageCodec codec = imageCodecTypeInfo.CreateInstanceOf() as IImageCodec;
+				IImageCodec codec = imageCodecType.CreateInstanceOf() as IImageCodec;
 				if (codec != null)
 				{
 					availableCodecs.Add(codec);

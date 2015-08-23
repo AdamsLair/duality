@@ -442,7 +442,7 @@ namespace Duality.Serialization
 		/// <param name="objId">The object id of the affected object.</param>
 		/// <param name="serializeType">The <see cref="System.Type"/> of the affected object.</param>
 		/// <param name="e">The <see cref="System.Exception"/> that occurred.</param>
-		protected void LogCustomSerializationError(uint objId, Type serializeType, Exception e)
+		protected void LogCustomSerializationError(uint objId, TypeInfo serializeType, Exception e)
 		{
 			this.log.WriteError(
 				"An error occurred in custom serialization in object Id {0} of type '{1}': {2}",
@@ -456,7 +456,7 @@ namespace Duality.Serialization
 		/// <param name="objId">The object id of the affected object.</param>
 		/// <param name="serializeType">The <see cref="System.Type"/> of the affected object.</param>
 		/// <param name="e">The <see cref="System.Exception"/> that occurred.</param>
-		protected void LogCustomDeserializationError(uint objId, Type serializeType, Exception e)
+		protected void LogCustomDeserializationError(uint objId, TypeInfo serializeType, Exception e)
 		{
 			this.log.WriteError(
 				"An error occurred in custom deserialization in object Id {0} of type '{1}': {2}",

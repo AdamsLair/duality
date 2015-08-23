@@ -263,8 +263,8 @@ namespace Duality.Serialization
 			else if (elementType == typeof(string))		this.WriteArrayData(objAsArray as string[]);
 			else
 			{
-				for (long l = 0; l < objAsArray.Length; l++)
-					this.WriteObjectData(objAsArray.GetValue(l));
+				for (int i = 0; i < objAsArray.Length; i++)
+					this.WriteObjectData(objAsArray.GetValue(i));
 			}
 		}
 		private void WriteStruct(object obj, ObjectHeader header)
@@ -322,14 +322,14 @@ namespace Duality.Serialization
 			if (!multi)
 			{
 				Delegate objAsDelegate = obj as Delegate;
-				this.WriteObjectData(objAsDelegate.Method);
+				this.WriteObjectData(objAsDelegate.GetMethodInfo());
 				this.WriteObjectData(objAsDelegate.Target);
 			}
 			else
 			{
 				MulticastDelegate objAsDelegate = obj as MulticastDelegate;
 				Delegate[] invokeList = objAsDelegate.GetInvocationList();
-				this.WriteObjectData(objAsDelegate.Method);
+				this.WriteObjectData(objAsDelegate.GetMethodInfo());
 				this.WriteObjectData(objAsDelegate.Target);
 				this.WriteObjectData(invokeList);
 			}
@@ -653,7 +653,7 @@ namespace Duality.Serialization
 				if (header.DataType == DataType.Type)
 				{
 					string typeString = this.reader.ReadString();
-					result = this.ResolveType(typeString, header.ObjectId);
+					result = this.ResolveType(typeString, header.ObjectId).GetTypeInfo();
 				}
 				else
 				{
@@ -683,7 +683,7 @@ namespace Duality.Serialization
 			// Create the delegate without target and fix it later, so we can register its object id before loading its target object
 			MethodInfo	method	= this.ReadObjectData() as MethodInfo;
 			object		target	= null;
-			Delegate	del		= header.ObjectType != null && method != null ? Delegate.CreateDelegate(header.ObjectType, target, method) : null;
+			Delegate	del		= header.ObjectType != null && method != null ? method.CreateDelegate(header.ObjectType.AsType(), target) : null;
 
 			// Prepare object reference
 			this.idManager.Inject(del, header.ObjectId);
@@ -709,7 +709,7 @@ namespace Duality.Serialization
 		{
 			string name = this.reader.ReadString();
 			long val = this.reader.ReadInt64();
-			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType, name, val);
+			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType.AsType(), name, val);
 		}
 		
 		private TypeDataLayout GetCachedTypeDataLayout(string t)

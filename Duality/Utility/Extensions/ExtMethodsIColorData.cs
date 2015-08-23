@@ -36,10 +36,11 @@ namespace Duality.Drawing
 		/// <returns></returns>
 		public static IColorData ConvertTo(this IColorData source, Type type)
 		{
-			if (!typeof(IColorData).IsAssignableFrom(type)) throw new ArgumentException("Target type must implement IColorData.", "type");
+			TypeInfo typeInfo = type.GetTypeInfo();
+
+			if (!typeof(IColorData).GetTypeInfo().IsAssignableFrom(typeInfo)) throw new ArgumentException("Target type must implement IColorData.", "type");
 			if (type == typeof(IColorData)) return source;
 
-			TypeInfo typeInfo = type.GetTypeInfo();
 			IColorData clr = typeInfo.GetDefaultOf() as IColorData;
 			if (clr == null) clr = typeInfo.CreateInstanceOf() as IColorData;
 			clr.SetIntArgb(source.ToIntArgb());

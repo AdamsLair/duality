@@ -36,7 +36,7 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<GameObject> ByName(this IEnumerable<GameObject> objEnum, string name)
 		{
-			if (name.Contains('/'))
+			if (name.IndexOf('/') != -1)
 			{
 				string[] names = name.Split('/');
 				IEnumerable<GameObject> cur = objEnum.ByName(names[0]);
@@ -58,7 +58,7 @@ namespace Duality
 		/// <returns></returns>
 		public static GameObject FirstByName(this IEnumerable<GameObject> objEnum, string name)
 		{
-			if (name.Contains('/'))
+			if (name.IndexOf('/') != -1)
 			{
 				string[] names = name.Split('/');
 				GameObject cur = objEnum.FirstByName(names[0]);

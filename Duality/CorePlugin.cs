@@ -37,7 +37,7 @@ namespace Duality
 
 		protected CorePlugin()
 		{
-			this.assembly = this.GetType().Assembly;
+			this.assembly = this.GetType().GetTypeInfo().Assembly;
 			this.asmName = this.assembly.GetShortAssemblyName();
 		}
 		internal void Dispose()
