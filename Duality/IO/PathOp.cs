@@ -114,7 +114,7 @@ namespace Duality.IO
 		/// </summary>
 		/// <param name="path"></param>
 		/// <returns></returns>
-		public static string GetFileNameWithoutExtension(string path, bool multiExt = false)
+		public static string GetFileNameWithoutExtension(string path)
 		{
 			if (string.IsNullOrEmpty(path)) return string.Empty;
 
@@ -122,7 +122,7 @@ namespace Duality.IO
 			path = path.Trim();
 
 			int dirSepIndex = path.LastIndexOfAny(DirectorySeparatorChars);
-			int extSepIndex = IndexOfExtension(path, multiExt);
+			int extSepIndex = IndexOfExtension(path);
 			int extLen = (extSepIndex != -1) ? path.Length - extSepIndex : 0;
 			int dirLen = (dirSepIndex + 1);
 
@@ -143,14 +143,14 @@ namespace Duality.IO
 		/// The paths file extension, including the leading separator char. 
 		/// Returns an empty string, if no extension was found.
 		/// </returns>
-		public static string GetExtension(string path, bool multiExt = false)
+		public static string GetExtension(string path)
 		{
 			if (string.IsNullOrEmpty(path)) return string.Empty;
 
 			CheckInvalidPathChars(path);
 			path = path.Trim();
 
-			int sepIndex = IndexOfExtension(path, multiExt);
+			int sepIndex = IndexOfExtension(path);
 			return (sepIndex > -1) ? 
 				path.Substring(sepIndex) : 
 				string.Empty;
@@ -256,15 +256,12 @@ namespace Duality.IO
 			return Regex.Replace(fileName, invalidReStr, "_");
 		}
 		
-		private static int IndexOfExtension(string path, bool firstOfMultiExt)
+		private static int IndexOfExtension(string path)
 		{
 			if (path == null) return -1;
 
 			int lastSepIndex = path.LastIndexOfAny(DirectorySeparatorChars);
-			if (!firstOfMultiExt)
-				return path.LastIndexOf(ExtensionSeparatorChar, path.Length - 1, path.Length - (lastSepIndex + 1));
-			else
-				return path.IndexOf(ExtensionSeparatorChar, lastSepIndex + 1);
+			return path.LastIndexOf(ExtensionSeparatorChar, path.Length - 1, path.Length - (lastSepIndex + 1));
 		}
 		private static void CheckInvalidPathChars(string path)
 		{

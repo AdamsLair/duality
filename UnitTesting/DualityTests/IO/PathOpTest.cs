@@ -195,27 +195,6 @@ namespace Duality.Tests.IO
 				tester.AssertEqual(@"File.multi", @"Folder.txt\File.multi.ext");
 			}
 
-			// Retrieving filenames without multi-extensions from various paths
-			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetFileNameWithoutExtension(s, true));
-				tester.AssertEqual(@"C:",         @"C:");
-				tester.AssertEqual(string.Empty,  @"C:\");
-				tester.AssertEqual(@"File",       @"File");
-				tester.AssertEqual(@"File",       @"File.ext");
-				tester.AssertEqual(@"File",       @"File.multi.ext");
-				tester.AssertEqual(@"Folder",     @"C:\Folder");
-				tester.AssertEqual(string.Empty,  @"C:\Folder\");
-				tester.AssertEqual(@"File",       @"C:\Folder\File.ext");
-				tester.AssertEqual(@"File",       @"C:\Folder\File.multi.ext");
-				tester.AssertEqual(string.Empty,  @"\Folder\");
-				tester.AssertEqual(@"File",       @"\Folder\File.ext");
-				tester.AssertEqual(@"File",       @"Folder\File.ext");
-				tester.AssertEqual(@"File",       @"Folder.txt\File.ext");
-				tester.AssertEqual(@"File",       @"\Folder\File.multi.ext");
-				tester.AssertEqual(@"File",       @"Folder\File.multi.ext");
-				tester.AssertEqual(@"File",       @"Folder.txt\File.multi.ext");
-			}
-
 			// Null and empty paths
 			Assert.AreEqual(string.Empty, PathOp.GetFileNameWithoutExtension(null));
 			Assert.AreEqual(string.Empty, PathOp.GetFileNameWithoutExtension(string.Empty));
@@ -248,27 +227,6 @@ namespace Duality.Tests.IO
 				tester.AssertEqual(@".ext",       @"\Folder\File.multi.ext");
 				tester.AssertEqual(@".ext",       @"Folder\File.multi.ext");
 				tester.AssertEqual(@".ext",       @"Folder.txt\File.multi.ext");
-			}
-
-			// Retrieving multi-extensions from various paths
-			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetExtension(s, true));
-				tester.AssertEqual(string.Empty,  @"C:");
-				tester.AssertEqual(string.Empty,  @"C:\");
-				tester.AssertEqual(string.Empty,  @"File");
-				tester.AssertEqual(@".ext",       @"File.ext");
-				tester.AssertEqual(@".multi.ext", @"File.multi.ext");
-				tester.AssertEqual(string.Empty,  @"C:\Folder");
-				tester.AssertEqual(string.Empty,  @"C:\Folder\");
-				tester.AssertEqual(@".ext",       @"C:\Folder\File.ext");
-				tester.AssertEqual(@".multi.ext", @"C:\Folder\File.multi.ext");
-				tester.AssertEqual(string.Empty,  @"\Folder\");
-				tester.AssertEqual(@".ext",       @"\Folder\File.ext");
-				tester.AssertEqual(@".ext",       @"Folder\File.ext");
-				tester.AssertEqual(@".ext",       @"Folder.txt\File.ext");
-				tester.AssertEqual(@".multi.ext", @"\Folder\File.multi.ext");
-				tester.AssertEqual(@".multi.ext", @"Folder\File.multi.ext");
-				tester.AssertEqual(@".multi.ext", @"Folder.txt\File.multi.ext");
 			}
 
 			// Null and empty paths
