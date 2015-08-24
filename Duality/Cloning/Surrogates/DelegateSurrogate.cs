@@ -51,7 +51,8 @@ namespace Duality.Cloning.Surrogates
 					object invokeTargetObject = null;
 					if (operation.GetTarget(sourceInvokeList[i].Target, ref invokeTargetObject))
 					{
-						Delegate targetSubDelegate = Delegate.CreateDelegate(sourceInvokeList[i].GetType(), invokeTargetObject, sourceInvokeList[i].Method);
+						MethodInfo method = sourceInvokeList[i].GetMethodInfo();
+						Delegate targetSubDelegate = method.CreateDelegate(sourceInvokeList[i].GetType(), invokeTargetObject);
 						mergedInvokeList.Add(targetSubDelegate);
 					}
 				}
@@ -66,7 +67,8 @@ namespace Duality.Cloning.Surrogates
 
 					if (!operation.IsTarget(targetInvokeList[i].Target))
 					{
-						Delegate targetSubDelegate = Delegate.CreateDelegate(targetInvokeList[i].GetType(), targetInvokeList[i].Target, targetInvokeList[i].Method);
+						MethodInfo method = targetInvokeList[i].GetMethodInfo();
+						Delegate targetSubDelegate = method.CreateDelegate(targetInvokeList[i].GetType(), targetInvokeList[i].Target);
 						mergedInvokeList.Add(targetSubDelegate);
 					}
 				}

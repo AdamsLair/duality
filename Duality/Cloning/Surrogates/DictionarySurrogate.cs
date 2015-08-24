@@ -11,13 +11,13 @@ namespace Duality.Cloning.Surrogates
 	{
 		public override bool MatchesType(TypeInfo t)
 		{
-			return typeof(IDictionary).IsAssignableFrom(t) && t.IsGenericType && t.GetGenericArguments().Length >= 2;
+			return typeof(IDictionary).GetTypeInfo().IsAssignableFrom(t) && t.IsGenericType && t.GenericTypeArguments.Length >= 2;
 		}
 
 		public override void SetupCloneTargets(IDictionary source, IDictionary target, ICloneTargetSetup setup)
 		{
 			Type dictType = source.GetType();
-			Type[] genArgs = dictType.GetGenericArguments();
+			Type[] genArgs = dictType.GenericTypeArguments;
 			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
 			TypeInfo secondGenArgInfo = genArgs[1].GetTypeInfo();
 
@@ -52,7 +52,7 @@ namespace Duality.Cloning.Surrogates
 		public override void CopyDataTo(IDictionary source, IDictionary target, ICloneOperation operation)
 		{
 			Type dictType = source.GetType();
-			Type[] genArgs = dictType.GetGenericArguments();
+			Type[] genArgs = dictType.GenericTypeArguments;
 			TypeInfo firstGenArgInfo = genArgs[0].GetTypeInfo();
 			TypeInfo secondGenArgInfo = genArgs[1].GetTypeInfo();
 

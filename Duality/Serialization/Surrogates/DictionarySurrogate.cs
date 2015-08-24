@@ -11,57 +11,49 @@ namespace Duality.Serialization.Surrogates
 	/// </summary>
 	public class DictionarySurrogate : SerializeSurrogate<IDictionary>
 	{
-		private MethodInfo genericWriteMethodDef = typeof(DictionarySurrogate).GetTypeInfo().GetRuntimeMethods().FirstOrDefault(m => !m.IsStatic && m.Name == "WriteDataSpecific");
-		private MethodInfo genericReadMethodDef = typeof(DictionarySurrogate).GetTypeInfo().GetRuntimeMethods().FirstOrDefault(m => !m.IsStatic && m.Name == "ReadDataSpecific");
-
 		public override bool MatchesType(TypeInfo t)
 		{
 			return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>);
 		}
 		public override void WriteData(IDataWriter writer)
 		{
-			Type dictType = this.RealObject.GetType();
-			Type[] genArgs = dictType.GetGenericArguments();
-			MethodInfo cast = genericWriteMethodDef.MakeGenericMethod(genArgs);
-			cast.Invoke(this, new[] { writer });
+			IDictionary dict = this.RealObject;
+			TypeInfo dictType = dict.GetType().GetTypeInfo();
+			Type[] genArgs = dictType.GenericTypeArguments;
+
+			if (genArgs[0] == typeof(string))
+			{
+				foreach (DictionaryEntry entry in dict)
+					writer.WriteValue(entry.Key as string, entry.Value);
+			}
+			else
+			{
+				object[] keys = new object[dict.Keys.Count];
+				object[] values = new object[dict.Values.Count];
+
+				dict.Keys.CopyTo(keys, 0);
+				dict.Keys.CopyTo(values, 0);
+
+				writer.WriteValue("keys", keys);
+				writer.WriteValue("values", values);
+			}
 		}
 		public override void ReadData(IDataReader reader)
 		{
-			Type dictType = this.RealObject.GetType();
-			Type[] genArgs = dictType.GetGenericArguments();
-			MethodInfo cast = genericReadMethodDef.MakeGenericMethod(genArgs);
-			cast.Invoke(this, new[] { reader });
-		}
+			IDictionary dict = this.RealObject;
+			TypeInfo dictType = dict.GetType().GetTypeInfo();
+			Type[] genArgs = dictType.GenericTypeArguments;
 
-		protected void WriteDataSpecific<T,U>(IDataWriter writer)
-		{
-			Dictionary<T,U> dict = this.RealObject as Dictionary<T,U>;
-			
-			if (typeof(T) == typeof(string))
-			{
-				foreach (var pair in dict)
-					writer.WriteValue(pair.Key as string, pair.Value);
-			}
-			else
-			{
-				writer.WriteValue("keys", dict.Keys.ToArray());
-				writer.WriteValue("values", dict.Values.ToArray());
-			}
-		}
-		protected void ReadDataSpecific<T,U>(IDataReader reader)
-		{
-			Dictionary<T,U> dict = this.RealObject as Dictionary<T,U>;
-			
 			dict.Clear();
-			if (typeof(T) == typeof(string))
+			if (genArgs[0] == typeof(string))
 			{
 				foreach (var key in reader.Keys)
-					dict.Add((T)(object)key, reader.ReadValue<U>(key));
+					dict.Add(key, reader.ReadValue(key));
 			}
 			else
 			{
-				T[] keys;
-				U[] values;
+				object[] keys;
+				object[] values;
 				reader.ReadValue("keys", out keys);
 				reader.ReadValue("values", out values);
 

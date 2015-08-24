@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 
 using Duality.Resources;
 using Duality.Cloning;
@@ -62,15 +63,21 @@ namespace Duality
 		{
 			get
 			{
-				if (this.contentInstance != null && !this.contentInstance.Disposed) return this.contentInstance.GetType();
+				// If we have a valid instance, ask for its type.
+				if (this.contentInstance != null && !this.contentInstance.Disposed)
+					return this.contentInstance.GetType();
 				
+				// Otherwise, try to derive the type from its path.
 				Type result = Resource.GetTypeByFileName(this.contentPath);
 				if (result != null) return result;
 
+				// If that fails, load or retrieve a Resource instance and ask for its type.
 				this.RetrieveInstance();
-				if (this.contentInstance != null && !this.contentInstance.Disposed) return this.contentInstance.GetType();
+				if (this.contentInstance != null && !this.contentInstance.Disposed)
+					return this.contentInstance.GetType();
 
-				return null;
+				// If that fails too, just remain unspecific by stating that it's a Resource.
+				return typeof(Resource);
 			}
 		}
 		/// <summary>
@@ -195,7 +202,8 @@ namespace Duality
 		/// <returns>True, if the referenced Resource is of the specified Type or subclassing it.</returns>
 		public bool Is(Type resType)
 		{
-			return resType.IsAssignableFrom(typeof(Resource)) || resType.IsAssignableFrom(this.ResType);
+			TypeInfo resTypeInfo = resType.GetTypeInfo();
+			return resTypeInfo.IsAssignableFrom(typeof(Resource).GetTypeInfo()) || resTypeInfo.IsAssignableFrom(this.ResType.GetTypeInfo());
 		}
 		/// <summary>
 		/// Determines if the references Resource's Type is assignable to the specified Type.
@@ -205,9 +213,14 @@ namespace Duality
 		public bool Is<U>() where U : Resource
 		{
 			if (this.contentInstance != null && !this.contentInstance.Disposed)
+			{
 				return this.contentInstance is U;
+			}
 			else
-				return typeof(U).IsAssignableFrom(typeof(Resource)) || typeof(U).IsAssignableFrom(this.ResType);
+			{
+				TypeInfo typeInfoU = typeof(U).GetTypeInfo();
+				return typeInfoU.IsAssignableFrom(typeof(Resource).GetTypeInfo()) || typeInfoU.IsAssignableFrom(this.ResType.GetTypeInfo());
+			}
 		}
 		/// <summary>
 		/// Creates a <see cref="ContentRef{T}"/> of the specified Type, referencing the same Resource.
@@ -252,7 +265,7 @@ namespace Duality
 
 		public override string ToString()
 		{
-			Type resType = this.ResType ?? typeof(Resource);
+			Type resType = this.ResType;
 
 			char stateChar;
 			if (this.IsDefaultContent)
