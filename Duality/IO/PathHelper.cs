@@ -167,48 +167,6 @@ namespace Duality.IO
 
 			return Path.Combine(resultDir, fileName);
 		}
-		/// <summary>
-		/// Returns a mutual base path of two different paths.
-		/// </summary>
-		/// <param name="path">The first path.</param>
-		/// <param name="path2">The second path.</param>
-		/// <returns>The mutual base path of both.</returns>
-		/// <example>
-		/// <c>PathHelper.GetMutualDirectory(@"C:\SomeDir\SubDir\File.txt", @"C:\SomeDir\SubDir2\File.txt")</c> will return <c>C:\SomeDir</c>.
-		/// </example>
-		public static string GetMutualDirectory(string path, string path2)
-		{
-			string dir		= Path.GetFullPath(path);
-			string dirRel	= Path.GetFullPath(path2);
-
-			// Different disk drive: No mutual directory
-			if (Directory.GetDirectoryRoot(dir) != Directory.GetDirectoryRoot(dirRel))	return null;
-
-			string		resultDir	= "";
-			string[]	dirToken	= dir.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			string[]	dirRelToken	= dirRel.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-
-			int numBackDir = dirRelToken.Length - dirToken.Length;
-			for (int i = 1; i < Math.Min(dirToken.Length, dirRelToken.Length); i++)
-			{
-				if (dirToken[i] != dirRelToken[i])
-				{
-					numBackDir = dirRelToken.Length - i;
-					break;
-				}
-			}
-
-			// Go back until we've reached the smallest mutual directory
-			if (numBackDir > 0)
-			{
-				resultDir = 
-					Path.DirectorySeparatorChar + 
-					(".." + Path.DirectorySeparatorChar).Multiply(numBackDir) + 
-					resultDir;
-			}
-
-			return resultDir;
-		}
 
 		/// <summary>
 		/// Returns whether the specified file or directory is visible, i.e. not hidden.
