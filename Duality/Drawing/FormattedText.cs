@@ -223,9 +223,9 @@ namespace Duality.Drawing
 		/// </summary>
 		public class Metrics
 		{
-			private	Vector2		size;
-			private	IList<Rect>	lineBounds;
-			private	IList<Rect>	elementBounds;
+			private	Vector2				size;
+			private	IReadOnlyList<Rect>	lineBounds;
+			private	IReadOnlyList<Rect>	elementBounds;
 
 			/// <summary>
 			/// [GET] The size of the formatted text block as whole.
@@ -244,14 +244,14 @@ namespace Duality.Drawing
 			/// <summary>
 			/// [GET] Each lines boundary.
 			/// </summary>
-			public IList<Rect> LineBounds
+			public IReadOnlyList<Rect> LineBounds
 			{
 				get { return this.lineBounds; }
 			}
 			/// <summary>
 			/// [GET] Each formatted text elements individual boundary.
 			/// </summary>
-			public IList<Rect> ElementBounds
+			public IReadOnlyList<Rect> ElementBounds
 			{
 				get { return this.elementBounds; }
 			}
@@ -259,8 +259,8 @@ namespace Duality.Drawing
 			public Metrics(Vector2 size, List<Rect> lineBounds, List<Rect> elementBounds)
 			{
 				this.size = size;
-				this.lineBounds = lineBounds.AsReadOnly();
-				this.elementBounds = elementBounds.AsReadOnly();
+				this.lineBounds = lineBounds;
+				this.elementBounds = elementBounds;
 			}
 		}
 		/// <summary>

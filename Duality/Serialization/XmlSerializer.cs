@@ -310,7 +310,7 @@ namespace Duality.Serialization
 				element.Add(targetElement);
 
 				Delegate objAsDelegate = obj as Delegate;
-				this.WriteObjectData(methodElement, objAsDelegate.Method);
+				this.WriteObjectData(methodElement, objAsDelegate.GetMethodInfo());
 				this.WriteObjectData(targetElement, objAsDelegate.Target);
 			}
 			else
@@ -324,7 +324,7 @@ namespace Duality.Serialization
 
 				MulticastDelegate objAsDelegate = obj as MulticastDelegate;
 				Delegate[] invokeList = objAsDelegate.GetInvocationList();
-				this.WriteObjectData(methodElement, objAsDelegate.Method);
+				this.WriteObjectData(methodElement, objAsDelegate.GetMethodInfo());
 				this.WriteObjectData(targetElement, objAsDelegate.Target);
 				this.WriteObjectData(invocationListElement, invokeList);
 			}
@@ -341,7 +341,7 @@ namespace Duality.Serialization
 		}
 		private void WriteArrayData(XElement element, byte[] array)
 		{
-			element.Value = Convert.ToBase64String(array, Base64FormattingOptions.None);
+			element.Value = Convert.ToBase64String(array);
 		}
 		private void WriteArrayData(XElement element, sbyte[] array)
 		{
@@ -658,7 +658,7 @@ namespace Duality.Serialization
 				if (header.DataType == DataType.Type)
 				{
 					string typeString = element.GetAttributeValue("value");
-					result = this.ResolveType(typeString, header.ObjectId);
+					result = this.ResolveType(typeString, header.ObjectId).GetTypeInfo();
 				}
 				else
 				{
@@ -693,7 +693,7 @@ namespace Duality.Serialization
 			// Create the delegate without target and fix it later, so we can register its object id before loading its target object
 			MethodInfo	method	= this.ReadObjectData(methodElement) as MethodInfo;
 			object		target	= null;
-			Delegate	del		= header.ObjectType != null && method != null ? Delegate.CreateDelegate(header.ObjectType, target, method) : null;
+			Delegate	del		= header.ObjectType != null && method != null ? method.CreateDelegate(header.ObjectType.AsType(), target) : null;
 
 			// Prepare object reference
 			this.idManager.Inject(del, header.ObjectId);
@@ -702,7 +702,7 @@ namespace Duality.Serialization
 			target = this.ReadObjectData(targetElement);
 			if (del != null && target != null)
 			{
-				FieldInfo targetField = header.ObjectType.GetRuntimeFields().FirstOrDefault(f => !f.IsStatic && f.Name == "_target");
+				FieldInfo targetField = header.ObjectType.DeclaredFields.FirstOrDefault(f => !f.IsStatic && f.Name == "_target");
 				targetField.SetValue(del, target);
 			}
 
@@ -720,7 +720,7 @@ namespace Duality.Serialization
 			string name = element.GetAttributeValue("name");
 			string valueString = element.GetAttributeValue("value");
 			long val = valueString == null ? 0 : XmlConvert.ToInt64(valueString);
-			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType, name, val);
+			return (header.ObjectType == null) ? null : this.ResolveEnumValue(header.ObjectType.AsType(), name, val);
 		}
 		
 		private void ReadArrayData(XElement element, out bool[] array)
@@ -885,13 +885,13 @@ namespace Duality.Serialization
 					else if (firstContentLine)
 					{
 						docDataBuilder.AppendLine(line.Remove(0, indexOf + DocumentSeparator.Length));
-						byteOffset += Encoding.Default.GetBytes(DocumentSeparator).Length;
+						byteOffset += reader.CurrentEncoding.GetBytes(DocumentSeparator).Length;
 					}
 					// Stop at the separator when it occurs last
 					else
 					{
 						docDataBuilder.Append(line.Substring(0, indexOf));
-						byteOffset += Encoding.Default.GetBytes(DocumentSeparator + Environment.NewLine).Length;
+						byteOffset += reader.CurrentEncoding.GetBytes(DocumentSeparator + Environment.NewLine).Length;
 						break;
 					}
 

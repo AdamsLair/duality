@@ -26,7 +26,7 @@ namespace Duality.Editor
 			else if (hint == null)
 				return overrideHints.OfType<T>().FirstOrDefault();
 			else
-				return overrideHints.OfType<T>().Where(o => hint.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? hint;
+				return overrideHints.OfType<T>().Where(o => hint.GetType().GetTypeInfo().IsInstanceOfType(o)).FirstOrDefault() ?? hint;
 		}
 		/// <summary>
 		/// Retrieves the specified editor hint attributes from a member, if existing.
@@ -43,7 +43,7 @@ namespace Duality.Editor
 			else if (hints == null)
 				return overrideHints.OfType<T>();
 			else
-				return hints.Select(original => overrideHints.OfType<T>().Where(o => original.GetType().IsInstanceOfType(o)).FirstOrDefault() ?? original);
+				return hints.Select(original => overrideHints.OfType<T>().Where(o => original.GetType().GetTypeInfo().IsInstanceOfType(o)).FirstOrDefault() ?? original);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 using FarseerPhysics.Dynamics;
@@ -265,16 +266,19 @@ namespace Duality.Resources
 		private	Vector2						globalGravity		= Vector2.UnitY * 33.0f;
 		private IRendererVisibilityStrategy	visibilityStrategy	= new DefaultRendererVisibilityStrategy();
 		private	GameObject[]				serializeObj		= null;
+
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
-		private	GameObjectManager					objectManager		= new GameObjectManager();
+		private	GameObjectManager objectManager = new GameObjectManager();
+
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
-		private	List<Component>						renderers			= new List<Component>();
+		private	List<Component> renderers = new List<Component>();
+
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
-		private Dictionary<Type,List<Component>>	componentyByType	= new Dictionary<Type,List<Component>>();
+		private Dictionary<TypeInfo,List<Component>> componentyByType = new Dictionary<TypeInfo,List<Component>>();
 
 		
 		/// <summary>
@@ -654,13 +658,15 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public IEnumerable<Component> FindComponents(Type type)
 		{
+			TypeInfo typeInfo = type.GetTypeInfo();
+
 			// Determine which by-type lists to use
 			bool multiple = false;
 			List<Component> singleResult = null;
 			List<List<Component>> query = null;
 			foreach (var pair in this.componentyByType)
 			{
-				if (type.IsAssignableFrom(pair.Key))
+				if (typeInfo.IsAssignableFrom(pair.Key))
 				{
 					if (!multiple && singleResult == null)
 					{
@@ -741,9 +747,10 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public Component FindComponent(Type type, bool activeOnly = true)
 		{
+			TypeInfo typeInfo = type.GetTypeInfo();
 			foreach (var pair in this.componentyByType)
 			{
-				if (type.IsAssignableFrom(pair.Key))
+				if (typeInfo.IsAssignableFrom(pair.Key))
 				{
 					if (activeOnly)
 					{
@@ -771,7 +778,7 @@ namespace Duality.Resources
 		private void AddToManagers(Component cmp)
 		{
 			// Per-Type lists
-			Type cmpType = cmp.GetType();
+			TypeInfo cmpType = cmp.GetType().GetTypeInfo();
 			List<Component> cmpList;
 			if (!this.componentyByType.TryGetValue(cmpType, out cmpList))
 			{
@@ -791,7 +798,7 @@ namespace Duality.Resources
 		private void RemoveFromManagers(Component cmp)
 		{
 			// Per-Type lists
-			Type cmpType = cmp.GetType();
+			TypeInfo cmpType = cmp.GetType().GetTypeInfo();
 			List<Component> cmpList;
 			if (this.componentyByType.TryGetValue(cmpType, out cmpList))
 				cmpList.Remove(cmp);

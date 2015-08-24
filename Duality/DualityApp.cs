@@ -690,7 +690,9 @@ namespace Duality
 			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
 			if (plugin != null) return plugin;
 
-			Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(CorePlugin).IsAssignableFrom(t));
+			TypeInfo pluginType = pluginAssembly.ExportedTypes
+				.Select(t => t.GetTypeInfo())
+				.FirstOrDefault(t => typeof(CorePlugin).GetTypeInfo().IsAssignableFrom(t));
 			if (pluginType == null)
 			{
 				Log.Core.WriteWarning("Can't find CorePlugin class. Discarding plugin...");
@@ -700,7 +702,7 @@ namespace Duality
 			{
 				try
 				{
-					plugin = (CorePlugin)pluginType.GetTypeInfo().CreateInstanceOf();
+					plugin = (CorePlugin)pluginType.CreateInstanceOf();
 					plugin.FilePath = pluginFilePath;
 					plugin.FileHash = pluginLoader.GetAssemblyHash(pluginFilePath);
 					plugins.Add(plugin.AssemblyName, plugin);
@@ -798,7 +800,7 @@ namespace Duality
 				{
 					foreach (IDualityBackend backend in activeBackends)
 					{
-						Type backendType = backend.GetType();
+						TypeInfo backendType = backend.GetType().GetTypeInfo();
 						if (backendPlugin.PluginAssembly == backendType.Assembly)
 						{
 							Log.Core.WriteError("Can't reload a plugin that contains an active backend: {0}", backend.Name);
@@ -847,7 +849,7 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<Assembly> GetDualityAssemblies()
 		{
-			yield return typeof(DualityApp).Assembly;
+			yield return typeof(DualityApp).GetTypeInfo().Assembly;
 			foreach (CorePlugin p in LoadedPlugins) yield return p.PluginAssembly;
 		}
 		/// <summary>
@@ -883,7 +885,7 @@ namespace Duality
 				// Add the matching subset of these types to the result
 				availTypes.AddRange(
 					from t in types
-					where baseType.IsAssignableFrom(t)
+					where baseType.GetTypeInfo().IsAssignableFrom(t)
 					orderby t.Name
 					select t);
 			}
@@ -914,9 +916,9 @@ namespace Duality
 				if (backendType.IsInterface) continue;
 				if (backendType.IsAbstract) continue;
 				if (!backendType.IsClass) continue;
-				if (!typeof(T).IsAssignableFrom(backendType)) continue;
+				if (!typeof(T).GetTypeInfo().IsAssignableFrom(backendType)) continue;
 
-				IDualityBackend backend = backendType.GetTypeInfo().CreateInstanceOf() as IDualityBackend;
+				IDualityBackend backend = backendType.CreateInstanceOf() as IDualityBackend;
 				if (backend == null)
 				{
 					Log.Core.WriteWarning("Unable to create an instance of {0}. Skipping it.", backendType.FullName);
@@ -1118,19 +1120,19 @@ namespace Duality
 				invalidAssembly.GetShortAssemblyName(),
 				"{0}");
 
-			if (mouse.Source != null && mouse.Source.GetType().Assembly == invalidAssembly)
+			if (mouse.Source != null && mouse.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 			{
 				Log.Core.WriteWarning(warningText, Log.Type(mouse.Source.GetType()));
 				mouse.Source = null;
 			}
-			if (keyboard.Source != null && keyboard.Source.GetType().Assembly == invalidAssembly)
+			if (keyboard.Source != null && keyboard.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 			{
 				Log.Core.WriteWarning(warningText, Log.Type(keyboard.Source.GetType()));
 				keyboard.Source = null;
 			}
 			foreach (JoystickInput joystick in joysticks.ToArray())
 			{
-				if (joystick.Source != null && joystick.Source.GetType().Assembly == invalidAssembly)
+				if (joystick.Source != null && joystick.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 				{
 					Log.Core.WriteWarning(warningText, Log.Type(joystick.Source.GetType()));
 					joysticks.RemoveSource(joystick.Source);
@@ -1138,7 +1140,7 @@ namespace Duality
 			}
 			foreach (GamepadInput gamepad in gamepads.ToArray())
 			{
-				if (gamepad.Source != null && gamepad.Source.GetType().Assembly == invalidAssembly)
+				if (gamepad.Source != null && gamepad.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 				{
 					Log.Core.WriteWarning(warningText, Log.Type(gamepad.Source.GetType()));
 					gamepads.RemoveSource(gamepad.Source);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 using System.Diagnostics;
 
 using Duality.IO;
@@ -138,7 +139,8 @@ namespace Duality
 		/// <returns></returns>
 		public static List<IContentRef> GetDefaultContent(Type t)
 		{
-			return defaultContent.Where(r => t.IsInstanceOfType(r)).Select(r => new ContentRef<Resource>(r) as IContentRef).ToList();
+			TypeInfo typeInfo = t.GetTypeInfo();
+			return defaultContent.Where(r => typeInfo.IsInstanceOfType(r)).Select(r => new ContentRef<Resource>(r) as IContentRef).ToList();
 		}
 		/// <summary>
 		/// Returns a list of all currently loaded content matching the specified Type
@@ -160,8 +162,9 @@ namespace Duality
 		/// <returns></returns>
 		public static List<IContentRef> GetLoadedContent(Type t)
 		{
+			TypeInfo typeInfo = t.GetTypeInfo();
 			return resLibrary.Values
-				.Where(r => t.IsInstanceOfType(r) && !r.Disposed)
+				.Where(r => typeInfo.IsInstanceOfType(r) && !r.Disposed)
 				.Select(r => r.GetContentRef())
 				.ToList();
 		}
@@ -190,12 +193,15 @@ namespace Duality
 		/// <returns></returns>
 		public static List<IContentRef> GetAvailableContent(Type t, string baseDirectory = null)
 		{
+			TypeInfo typeInfo = t.GetTypeInfo();
+
 			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
 			IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
+
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p) as IContentRef)
 				.Where(r => r.Is(t))
-				.Concat(defaultContent.Where(r => t.IsInstanceOfType(r)).Select(r => new ContentRef<Resource>(r) as IContentRef))
+				.Concat(defaultContent.Where(r => typeInfo.IsInstanceOfType(r)).Select(r => new ContentRef<Resource>(r) as IContentRef))
 				.ToList();
 		}
 		/// <summary>
@@ -315,7 +321,10 @@ namespace Duality
 		}
 		internal static IEnumerable<Resource> EnumeratePluginContent()
 		{
-			return resLibrary.Values.Where(res => res is Prefab || res is Scene || res.GetType().Assembly != typeof(ContentProvider).Assembly);
+			return resLibrary.Values.Where(res => 
+				res is Prefab || 
+				res is Scene || 
+				res.GetType().GetTypeInfo().Assembly != typeof(ContentProvider).GetTypeInfo().Assembly);
 		}
 
 		/// <summary>

@@ -10,14 +10,14 @@ namespace Duality
 		public static bool IsPublic(this PropertyInfo property)
 		{
 			return 
-				(property.CanRead && property.GetGetMethod(true).IsPublic) || 
-				(property.CanWrite && property.GetSetMethod(true).IsPublic);
+				(property.CanRead && property.GetMethod.IsPublic) || 
+				(property.CanWrite && property.SetMethod.IsPublic);
 		}
 		public static bool IsStatic(this PropertyInfo property)
 		{
 			return 
-				(property.CanRead && property.GetGetMethod(true).IsStatic) || 
-				(property.CanWrite && property.GetSetMethod(true).IsStatic);
+				(property.CanRead && property.GetMethod.IsStatic) || 
+				(property.CanWrite && property.SetMethod.IsStatic);
 		}
 	}
 }

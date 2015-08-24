@@ -533,7 +533,7 @@ namespace Duality
 		internal static void InitDefaultContent<T>(string embeddedNameExt, Func<Stream,T> resourceCreator) where T : Resource
 		{
 			string embeddedNameBase = "Duality.EmbeddedResources.";
-			Assembly embeddingAssembly = typeof(Resource).Assembly;
+			Assembly embeddingAssembly = typeof(Resource).GetTypeInfo().Assembly;
 
 			InitDefaultContent<T>(name => 
 			{
@@ -560,11 +560,11 @@ namespace Duality
 
 			TypeInfo resourceType = typeof(T).GetTypeInfo();
 			PropertyInfo[] defaultResProps = resourceType
-				.GetRuntimeProperties()
+				.DeclaredPropertiesDeep()
 				.Where(p => 
 					p.IsPublic() &&
 					p.IsStatic() &&
-					typeof(IContentRef).IsAssignableFrom(p.PropertyType))
+					typeof(IContentRef).GetTypeInfo().IsAssignableFrom(p.PropertyType.GetTypeInfo()))
 				.ToArray();
 
 			for (int i = 0; i < defaultResProps.Length; i++)
@@ -605,9 +605,10 @@ namespace Duality
 		public ExplicitResourceReferenceAttribute(params Type[] referencedTypes)
 		{
 			if (referencedTypes == null) throw new ArgumentNullException("referencedTypes");
+			TypeInfo resourceTypeInfo = typeof(Resource).GetTypeInfo();
 			for (int i = 0; i < referencedTypes.Length; ++i)
 			{
-				if (referencedTypes[i] == null || !typeof(Resource).IsAssignableFrom(referencedTypes[i]))
+				if (referencedTypes[i] == null || !resourceTypeInfo.IsAssignableFrom(referencedTypes[i].GetTypeInfo()))
 					throw new ArgumentException("Only Resource Types are valied in this Attribute");
 			}
 			this.referencedTypes = referencedTypes;

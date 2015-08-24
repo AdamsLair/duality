@@ -532,7 +532,8 @@ namespace Duality
 		/// <seealso cref="GetComponents{T}()"/>
 		public IEnumerable<Component> GetComponents(Type t)
 		{
-			return this.compList.Where(c => t.IsInstanceOfType(c));
+			TypeInfo typeInfo = t.GetTypeInfo();
+			return this.compList.Where(c => typeInfo.IsInstanceOfType(c));
 		}
 		/// <summary>
 		/// Enumerates all <see cref="Component"/>s of this object's child GameObjects that match the specified <see cref="Type"/> or subclass it.

@@ -408,7 +408,7 @@ namespace Duality.Resources
 					try
 					{
 
-						if (this.changes[i].prop.PropertyType.IsValueType)
+						if (this.changes[i].prop.PropertyType.GetTypeInfo().IsValueType)
 							applyVal = this.changes[i].val;
 						else
 							applyVal = this.changes[i].val.DeepClone();
@@ -476,9 +476,9 @@ namespace Duality.Resources
 
 			if (targetObj == null) 
 				throw new ArgumentException("Target object is not a valid child of this PrefabLinks GameObject", "target");
-			if (value == null && prop.PropertyType.IsValueType)
+			if (value == null && prop.PropertyType.GetTypeInfo().IsValueType)
 				throw new ArgumentException("Target field cannot be assigned from null value.", "value");
-			if (value != null && !prop.PropertyType.IsInstanceOfType(value))
+			if (value != null && !prop.PropertyType.GetTypeInfo().IsInstanceOfType(value))
 				throw new ArgumentException("Target field not assignable from Type " + value.GetType().Name + ".", "value");
 
 			VarMod change;
@@ -501,7 +501,7 @@ namespace Duality.Resources
 			object changeVal = prop.GetValue(target, null);
 
 			// Clone the changelist entry value
-			if (changeVal != null && !changeVal.GetType().IsValueType)
+			if (changeVal != null && !changeVal.GetType().GetTypeInfo().IsValueType)
 			{
 				changeVal = changeVal.DeepClone();
 			}
@@ -575,7 +575,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// Clears the change list for certain objects
 		/// </summary>
-		public void ClearChanges(GameObject targetObj, Type cmpType, PropertyInfo prop)
+		public void ClearChanges(GameObject targetObj, TypeInfo cmpType, PropertyInfo prop)
 		{
 			if (this.changes == null || this.changes.Count == 0) return;
 
@@ -583,7 +583,7 @@ namespace Duality.Resources
 			for (int i = this.changes.Count - 1; i >= 0; i--)
 			{
 				if (indexPath != null && !this.changes[i].childIndex.SequenceEqual(indexPath)) continue;
-				if (cmpType != null && !cmpType.IsAssignableFrom(this.changes[i].componentType)) continue;
+				if (cmpType != null && !cmpType.IsAssignableFrom(this.changes[i].componentType.GetTypeInfo())) continue;
 				if (prop != null && prop != this.changes[i].prop) continue;
 				this.changes.RemoveAt(i);
 			}
