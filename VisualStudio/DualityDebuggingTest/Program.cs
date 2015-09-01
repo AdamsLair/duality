@@ -15,7 +15,7 @@ namespace Duality.VisualStudio
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Launcher, 
 				DualityApp.ExecutionContext.Game, 
-				null,
+				new DefaultPluginLoader(),
 				null);
 			
 			WindowOptions options = new WindowOptions

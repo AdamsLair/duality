@@ -73,7 +73,7 @@ namespace Duality.VisualStudio
 				var visualizerHost = new VisualizerDevelopmentHost(
 					objToVisualize,
 					typeof(BitmapDebuggerVisualizer),
-					typeof(PixmapAtlasDebuggerVisualizerObjectSource));
+					typeof(TextureAtlasDebuggerVisualizerObjectSource));
 				visualizerHost.ShowVisualizer();
 			}
 			else

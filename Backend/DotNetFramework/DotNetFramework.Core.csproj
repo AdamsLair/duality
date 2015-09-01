@@ -66,7 +66,9 @@ copy "$(TargetPath)" "$(SolutionDir)DualityLauncher\bin\$(ConfigurationName)\Plu
 mkdir  "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
 copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
 mkdir  "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"
-copy "$(TargetPath)" "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"</PostBuildEvent>
+copy "$(TargetPath)" "$(SolutionDir)UnitTesting\DualityTests\bin\Plugins"
+mkdir  "$(SolutionDir)VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)VisualStudio\DualityDebuggingTest\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
