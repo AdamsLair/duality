@@ -32,7 +32,7 @@ namespace Duality.Serialization.Surrogates
 				object[] values = new object[dict.Values.Count];
 
 				dict.Keys.CopyTo(keys, 0);
-				dict.Keys.CopyTo(values, 0);
+				dict.Values.CopyTo(values, 0);
 
 				writer.WriteValue("keys", keys);
 				writer.WriteValue("values", values);
