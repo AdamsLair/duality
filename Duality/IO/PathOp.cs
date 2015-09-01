@@ -101,6 +101,13 @@ namespace Duality.IO
 			if (string.IsNullOrEmpty(firstPath) && string.IsNullOrEmpty(secondPath)) return true;
 			if (string.IsNullOrEmpty(firstPath) || string.IsNullOrEmpty(secondPath)) return false;
 
+			// Prepare for early-out string equality check
+			firstPath = firstPath.Trim();
+			secondPath = secondPath.Trim();
+
+			// Early-out for string equality, avoiding file system access
+			if (string.Equals(firstPath, secondPath, StringComparison.OrdinalIgnoreCase)) return true;
+
 			// Obtain absolute paths
 			firstPath = GetFullPath(firstPath);
 			secondPath = GetFullPath(secondPath);

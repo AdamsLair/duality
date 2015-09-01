@@ -815,18 +815,18 @@ namespace Duality.Editor
 			
 			// Replace exec path in user files, since VS doesn't support relative paths there..
 			{
-				XDocument userDoc;
-				const string userFileCore = EditorHelper.SourceCodeProjectCorePluginFile + ".user";
-				const string userFileEditor = EditorHelper.SourceCodeProjectEditorPluginFile + ".user";
+				XDocument projectDoc;
+				const string coreProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
+				const string editorProjectFile = EditorHelper.SourceCodeProjectEditorPluginFile;
 
-				if (!File.Exists(userFileCore))
+				if (!File.Exists(coreProjectFile))
 				{
 					using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
 					using (ZipArchive gamePluginZip = null)
 					{
 						foreach (var e in gamePluginZip.Entries)
 						{
-							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(userFileCore), StringComparison.InvariantCultureIgnoreCase))
+							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(coreProjectFile), StringComparison.InvariantCultureIgnoreCase))
 							{
 								e.Extract(EditorHelper.SourceCodeDirectory, true);
 								break;
@@ -834,24 +834,44 @@ namespace Duality.Editor
 						}
 					}
 				}
-				if (File.Exists(userFileCore))
+				if (File.Exists(coreProjectFile))
 				{
-					userDoc = XDocument.Load(userFileCore);
-					foreach (XElement element in userDoc.Descendants("StartProgram", true))
-						element.Value = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
-					foreach (XElement element in userDoc.Descendants("StartWorkingDirectory", true))
-						element.Value = Path.GetFullPath(".");
-					userDoc.Save(userFileCore);
+					bool anythingChanged = false;
+
+					string startProgram = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
+					string startWorkingDir = Path.GetFullPath(".");
+
+					projectDoc = XDocument.Load(coreProjectFile);
+					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
+					{
+						if (!PathOp.ArePathsEqual(element.Value, startProgram))
+						{
+							element.Value = startProgram;
+							anythingChanged = true;
+						}
+					}
+					foreach (XElement element in projectDoc.Descendants("StartWorkingDirectory", true))
+					{
+						if (!PathOp.ArePathsEqual(element.Value, startWorkingDir))
+						{
+							element.Value = startWorkingDir;
+							anythingChanged = true;
+						}
+					}
+					if (anythingChanged)
+					{
+						projectDoc.Save(coreProjectFile);
+					}
 				}
 				
-				if (!File.Exists(userFileEditor))
+				if (!File.Exists(editorProjectFile))
 				{
 					using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
 					using (ZipArchive gamePluginZip = null)
 					{
 						foreach (var e in gamePluginZip.Entries)
 						{
-							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(userFileEditor), StringComparison.InvariantCultureIgnoreCase))
+							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(editorProjectFile), StringComparison.InvariantCultureIgnoreCase))
 							{
 								e.Extract(EditorHelper.SourceCodeDirectory, true);
 								break;
@@ -859,14 +879,34 @@ namespace Duality.Editor
 						}
 					}
 				}
-				if (File.Exists(userFileEditor))
+				if (File.Exists(editorProjectFile))
 				{
-					userDoc = XDocument.Load(userFileEditor);
-					foreach (XElement element in userDoc.Descendants("StartProgram", true))
-						element.Value = Path.GetFullPath("DualityEditor.exe");
-					foreach (XElement element in userDoc.Descendants("StartWorkingDirectory", true))
-						element.Value = Path.GetFullPath(".");
-					userDoc.Save(userFileEditor);
+					bool anythingChanged = false;
+
+					string startProgram = Path.GetFullPath("DualityEditor.exe");
+					string startWorkingDir = Path.GetFullPath(".");
+
+					projectDoc = XDocument.Load(editorProjectFile);
+					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
+					{
+						if (!PathOp.ArePathsEqual(element.Value, startProgram))
+						{
+							element.Value = startProgram;
+							anythingChanged = true;
+						}
+					}
+					foreach (XElement element in projectDoc.Descendants("StartWorkingDirectory", true))
+					{
+						if (!PathOp.ArePathsEqual(element.Value, startWorkingDir))
+						{
+							element.Value = startWorkingDir;
+							anythingChanged = true;
+						}
+					}
+					if (anythingChanged)
+					{
+						projectDoc.Save(editorProjectFile);
+					}
 				}
 			}
 		}
@@ -895,13 +935,6 @@ namespace Duality.Editor
 				{
 					gamePluginZip.ExtractAll(EditorHelper.SourceCodeDirectory, false);
 				}
-			}
-
-			// If Visual Studio is available, don't use the express version
-			if (File.Exists(EditorHelper.SourceCodeSolutionFile) && (int)EditorHelper.VisualStudioEdition >= (int)VisualStudioEdition.Standard)
-			{
-				string solution = File.ReadAllText(EditorHelper.SourceCodeSolutionFile);
-				File.WriteAllText(EditorHelper.SourceCodeSolutionFile, solution.Replace("# Visual C# Express 2010", "# Visual Studio 2010"), Encoding.UTF8);
 			}
 			
 			string projectClassName = EditorHelper.GenerateClassNameFromPath(EditorHelper.CurrentProjectName);
