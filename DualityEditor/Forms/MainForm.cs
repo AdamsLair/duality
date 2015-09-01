@@ -611,7 +611,7 @@ namespace Duality.Editor.Forms
 			}
 
 			var loadedContent = ContentProvider.GetLoadedContent<Resource>();
-			List<string> resFiles = Resource.GetResourceFiles();
+			string[] resFiles = Resource.GetResourceFiles().ToArray();
 			foreach (string file in resFiles)
 			{
 				if (Sandbox.IsActive && file == Scene.CurrentPath) continue; // Skip current Scene in Sandbox
@@ -624,21 +624,21 @@ namespace Duality.Editor.Forms
 				{
 					// Retrieve already loaded content
 					var cr = ContentProvider.RequestContent(file);
-					state.Progress += 0.45f / resFiles.Count; yield return null;
+					state.Progress += 0.45f / resFiles.Length; yield return null;
 
 					// Perform rename and flag unsaved / modified
 					cr.Res.Save();
-					state.Progress += 0.45f / resFiles.Count; yield return null;
+					state.Progress += 0.45f / resFiles.Length; yield return null;
 				}
 				else
 				{
 					// Load content without initializing it
 					Resource res = Resource.Load<Resource>(file, null, false);
-					state.Progress += 0.45f / resFiles.Count; yield return null;
+					state.Progress += 0.45f / resFiles.Length; yield return null;
 
 					// Perform rename and save it without making it globally available
 					res.Save(null, false);
-					state.Progress += 0.45f / resFiles.Count; yield return null;
+					state.Progress += 0.45f / resFiles.Length; yield return null;
 				}
 			}
 		}

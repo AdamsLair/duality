@@ -673,8 +673,8 @@ namespace Duality.Serialization
 		{
 			try
 			{
-				if (!File.Exists(file)) return default(T);
-				using (FileStream str = File.OpenRead(file))
+				if (!FileOp.Exists(file)) return default(T);
+				using (Stream str = FileOp.Open(file, FileAccessMode.Read))
 				{
 					return Serializer.TryReadObject<T>(str, method);
 				}
@@ -716,7 +716,7 @@ namespace Duality.Serialization
 		/// <returns></returns>
 		public static T ReadObject<T>(string file, SerializeMethod method = SerializeMethod.Unknown)
 		{
-			using (FileStream str = File.OpenRead(file))
+			using (Stream str = FileOp.Open(file, FileAccessMode.Read))
 			{
 				return Serializer.ReadObject<T>(str, method);
 			}
@@ -746,8 +746,8 @@ namespace Duality.Serialization
 		public static void WriteObject<T>(T obj, string file, SerializeMethod method = SerializeMethod.Unknown)
 		{
 			string dirName = PathOp.GetDirectoryName(file);
-			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
-			using (FileStream str = File.Open(file, FileMode.Create))
+			if (!string.IsNullOrEmpty(dirName) && !DirectoryOp.Exists(dirName)) DirectoryOp.Create(dirName);
+			using (Stream str = FileOp.Create(file))
 			{
 				Serializer.WriteObject<T>(obj, str, method);
 			}
@@ -850,11 +850,12 @@ namespace Duality.Serialization
 			else
 				defaultMethod = SerializeMethod.Binary;
 
-			if (Directory.Exists(DualityApp.DataDirectory))
+			if (DirectoryOp.Exists(DualityApp.DataDirectory))
 			{
-				foreach (string anyResource in Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories))
+				foreach (string resFile in DirectoryOp.GetFiles(DualityApp.DataDirectory, true))
 				{
-					using (FileStream stream = File.OpenRead(anyResource))
+					if (!resFile.EndsWith(Resource.FileExt, StringComparison.OrdinalIgnoreCase)) continue;
+					using (Stream stream = FileOp.Open(resFile, FileAccessMode.Read))
 					{
 						try
 						{

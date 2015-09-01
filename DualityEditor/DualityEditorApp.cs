@@ -787,7 +787,7 @@ namespace Duality.Editor
 		{
 			if (ContentProvider.IsDefaultContentPath(path)) return;
 			if (!File.Exists(path)) return;
-			if (!PathHelper.IsPathLocatedIn(path, DualityApp.DataDirectory)) return;
+			if (!PathOp.IsPathLocatedIn(path, DualityApp.DataDirectory)) return;
 
 			// We don't want to screw anything up by trying to backup stuff, so just catch and log everything.
 			try

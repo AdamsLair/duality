@@ -42,7 +42,7 @@ namespace Duality
 
 		/// <summary>
 		/// Returns all custom attributes of the specified Type that are attached to the specified member.
-		/// Inherites attributes are returned as well. This method is usually faster than <see cref="Attribute.GetCustomAttributes"/>,
+		/// Inherites attributes are returned as well. This method is usually faster than comparable .Net methods,
 		/// because it caches previous results internally.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
@@ -93,8 +93,8 @@ namespace Duality
 		}
 		/// <summary>
 		/// Returns all custom attributes of the specified Type that are attached to the specified member.
-		/// Inherites attributes are returned as well. This method is usually faster than <see cref="Attribute.GetCustomAttributes"/>
-		/// and similar .Net methods, because it caches previous results internally.
+		/// Inherites attributes are returned as well. This method is usually faster than comparable .Net methods, 
+		/// because it caches previous results internally.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="member"></param>

@@ -23,17 +23,26 @@ namespace Duality.Tests.IO
 
 		[Test] public void IsPathRooted()
 		{
-			// Absolute paths
-			Assert.IsTrue(PathOp.IsPathRooted(@"C:\TestPath\SomeFile.txt"));
-			Assert.IsTrue(PathOp.IsPathRooted(@"C:/TestPath/SomeFile.txt"));
-			Assert.IsTrue(PathOp.IsPathRooted(@"C:/TestPath\SomeFile.txt"));
-			Assert.IsTrue(PathOp.IsPathRooted(@"\TestPath\SomeFile.txt"));
-			Assert.IsTrue(PathOp.IsPathRooted(@"/TestPath/SomeFile.txt"));
-			Assert.IsTrue(PathOp.IsPathRooted(@"/TestPath\SomeFile.txt"));
-
-			// Relative paths
-			Assert.IsFalse(PathOp.IsPathRooted(@"TestPath\SomeFile.txt"));
-			Assert.IsFalse(PathOp.IsPathRooted(@"TestPath/SomeFile.txt"));
+			// Retrieving directory names from various paths
+			{
+				var tester = CreatePermutationTester(s => PathOp.IsPathRooted(s));
+				tester.AssertEqual(true,  @"C:");
+				tester.AssertEqual(true,  @"C:\");
+				tester.AssertEqual(false, @"File");
+				tester.AssertEqual(false, @"File.ext");
+				tester.AssertEqual(false, @"File.multi.ext");
+				tester.AssertEqual(true,  @"C:\Folder");
+				tester.AssertEqual(true,  @"C:\Folder\");
+				tester.AssertEqual(true,  @"C:\Folder\File.ext");
+				tester.AssertEqual(true,  @"C:\Folder\File.multi.ext");
+				tester.AssertEqual(true,  @"\Folder\");
+				tester.AssertEqual(true,  @"\Folder\File.ext");
+				tester.AssertEqual(false, @"Folder\File.ext");
+				tester.AssertEqual(false, @"Folder.txt\File.ext");
+				tester.AssertEqual(true,  @"\Folder\File.multi.ext");
+				tester.AssertEqual(false, @"Folder\File.multi.ext");
+				tester.AssertEqual(false, @"Folder.txt\File.multi.ext");
+			}
 
 			// Null and empty paths
 			Assert.IsFalse(PathOp.IsPathRooted(null));
@@ -108,7 +117,7 @@ namespace Duality.Tests.IO
 		{
 			// Retrieving directory names from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetDirectoryName(s));
+				var tester = CreatePermutationTester(s => PathOp.GetDirectoryName(s));
 				tester.AssertEqual(string.Empty,  @"C:");
 				tester.AssertEqual(@"C:",         @"C:\");
 				tester.AssertEqual(string.Empty,  @"File");
@@ -142,7 +151,7 @@ namespace Duality.Tests.IO
 		{
 			// Retrieving file names from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetFileName(s));
+				var tester = CreatePermutationTester(s => PathOp.GetFileName(s));
 				tester.AssertEqual(@"C:",             @"C:");
 				tester.AssertEqual(string.Empty,      @"C:\");
 				tester.AssertEqual(@"File",           @"File");
@@ -176,7 +185,7 @@ namespace Duality.Tests.IO
 		{
 			// Retrieving filenames without extensions from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetFileNameWithoutExtension(s));
+				var tester = CreatePermutationTester(s => PathOp.GetFileNameWithoutExtension(s));
 				tester.AssertEqual(@"C:",         @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
 				tester.AssertEqual(@"File",       @"File");
@@ -210,7 +219,7 @@ namespace Duality.Tests.IO
 		{
 			// Retrieving extensions from various paths
 			{
-				PathPermutationTester tester = new PathPermutationTester(s => PathOp.GetExtension(s));
+				var tester = CreatePermutationTester(s => PathOp.GetExtension(s));
 				tester.AssertEqual(string.Empty,  @"C:");
 				tester.AssertEqual(string.Empty,  @"C:\");
 				tester.AssertEqual(string.Empty,  @"File");
@@ -240,28 +249,81 @@ namespace Duality.Tests.IO
 				Assert.Throws<ArgumentException>(() => PathOp.GetExtension(invalidPath));
 			}
 		}
-
-		private class PathPermutationTester
+		[Test] public void GetFullPath()
 		{
-			private Func<string,string> method;
-
-			public PathPermutationTester(Func<string,string> method)
+			// Retrieving full path identifiers from various absolute and relative paths.
 			{
-				this.method = method;
+				string currentDir = Directory.GetCurrentDirectory();
+				string currentVolume = Path.GetFullPath(currentDir).Substring(0, 2);
+				var tester = CreatePermutationTester(s => PathOp.GetFullPath(s), true);
+				//tester.AssertEqual(@"C:\",                                                 @"C:");
+				tester.AssertEqual(@"C:\",                                                 @"C:\");
+				tester.AssertEqual(Path.Combine(currentDir, @"File"),                      @"File");
+				tester.AssertEqual(Path.Combine(currentDir, @"File.ext"),                  @"File.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"File.multi.ext"),            @"File.multi.ext");
+				tester.AssertEqual(@"C:\Folder",                                           @"C:\Folder");
+				tester.AssertEqual(@"C:\Folder\",                                          @"C:\Folder\");
+				tester.AssertEqual(@"C:\Folder\File.ext",                                  @"C:\Folder\File.ext");
+				tester.AssertEqual(@"C:\Folder\File.multi.ext",                            @"C:\Folder\File.multi.ext");
+				tester.AssertEqual(currentVolume + @"\Folder\",                            @"\Folder\");
+				tester.AssertEqual(currentVolume + @"\Folder\File.ext",                    @"\Folder\File.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"Folder\File.ext"),           @"Folder\File.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"Folder.txt\File.ext"),       @"Folder.txt\File.ext");
+				tester.AssertEqual(currentVolume + @"\Folder\File.multi.ext",              @"\Folder\File.multi.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"Folder\File.multi.ext"),     @"Folder\File.multi.ext");
+				tester.AssertEqual(Path.Combine(currentDir, @"Folder.txt\File.multi.ext"), @"Folder.txt\File.multi.ext");
 			}
-			public void AssertEqual(string expected, string input)
-			{
-				string inputAlt1 = input != null ? input.Replace(PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar) : null;
-				string inputAlt2 = input != null ? input.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar) : null;
-				string expectedAlt1 = expected != null ? expected.Replace(PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar) : null;
-				string expectedAlt2 = expected != null ? expected.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar) : null;
 
-				Assert.AreEqual(expected, this.method(input));
-				Assert.AreEqual(expectedAlt1, this.method(inputAlt1));
-				Assert.AreEqual(expectedAlt2, this.method(inputAlt2));
+			// Null and empty paths
+			Assert.AreEqual(string.Empty, PathOp.GetFullPath(null));
+			Assert.AreEqual(string.Empty, PathOp.GetFullPath(string.Empty));
+			Assert.AreEqual(string.Empty, PathOp.GetFullPath(Whitespace));
+
+			// Invalid paths
+			foreach (string invalidPath in InvalidPathSamples)
+			{
+				Assert.Throws<ArgumentException>(() => PathOp.GetFullPath(invalidPath));
 			}
 		}
 
+		private class PathPermutationTester<T>
+		{
+			private Func<string,T> method;
+			private bool expectNormalizedOutput;
+
+			public PathPermutationTester(Func<string,T> method, bool expectNormalizedOutput)
+			{
+				this.method = method;
+				this.expectNormalizedOutput = expectNormalizedOutput;
+			}
+			public void AssertEqual(T expected, string input)
+			{
+				string inputAlt1 = input != null ? input.Replace(PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar) : null;
+				string inputAlt2 = input != null ? input.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar) : null;
+
+				if (typeof(T) == typeof(string) && !expectNormalizedOutput)
+				{
+					string expextedStr = (string)(object)expected;
+					string expectedAlt1 = expextedStr != null ? expextedStr.Replace(PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar) : null;
+					string expectedAlt2 = expextedStr != null ? expextedStr.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar) : null;
+
+					Assert.AreEqual(expected, this.method(input));
+					Assert.AreEqual(expectedAlt1, this.method(inputAlt1));
+					Assert.AreEqual(expectedAlt2, this.method(inputAlt2));
+				}
+				else
+				{
+					Assert.AreEqual(expected, this.method(input));
+					Assert.AreEqual(expected, this.method(inputAlt1));
+					Assert.AreEqual(expected, this.method(inputAlt2));
+				}
+			}
+		}
+
+		private static PathPermutationTester<T> CreatePermutationTester<T>(Func<string,T> method, bool expectNormalizedOutput = false)
+		{
+			return new PathPermutationTester<T>(method, expectNormalizedOutput);
+		}
 		private static void AssertCombineOverloads(string expected, string first, string second)
 		{
 			Assert.AreEqual(expected, PathOp.Combine(first, second));

@@ -78,8 +78,8 @@ namespace Duality.Editor.Forms
 				return false;
 			}
 
-			if (PathHelper.ArePathsEqual(this.textboxFolderPath.Text, Environment.CurrentDirectory) ||
-				PathHelper.IsPathLocatedIn(this.textboxFolderPath.Text, Environment.CurrentDirectory))
+			if (PathOp.ArePathsEqual(this.textboxFolderPath.Text, Environment.CurrentDirectory) ||
+				PathOp.IsPathLocatedIn(this.textboxFolderPath.Text, Environment.CurrentDirectory))
 			{
 				this.textboxFolderPath.BackColor = errorColor;
 				MessageBox.Show(

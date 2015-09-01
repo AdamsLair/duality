@@ -903,7 +903,7 @@ namespace Duality.Editor.Plugins.ProjectView
 						bool targetInSource = false;
 						foreach (string srcPath in data.GetFileDropList())
 						{
-							if (PathHelper.IsPathLocatedIn(baseTargetPath, srcPath))
+							if (PathOp.IsPathLocatedIn(baseTargetPath, srcPath))
 							{
 								targetInSource = true;
 								break;
@@ -1175,7 +1175,7 @@ namespace Duality.Editor.Plugins.ProjectView
 					dstPath = PathHelper.GetFreePath(dstPathBase, dstPathExt);
 				}
 				// Skip if target is located inside source
-				if (PathHelper.IsPathLocatedIn(dstPath, srcPath)) continue;
+				if (PathOp.IsPathLocatedIn(dstPath, srcPath)) continue;
 
 				// From here, continue with relative destination path
 				dstPath = PathHelper.MakeFilePathRelative(dstPath);
@@ -1217,7 +1217,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Skip if target equals source
 				if (srcPath == dstPath) continue;
 				// Skip if target is located inside source
-				if (PathHelper.IsPathLocatedIn(dstPath, srcPath)) continue;
+				if (PathOp.IsPathLocatedIn(dstPath, srcPath)) continue;
 
 				// From here, continue with relative destination path
 				dstPath = PathHelper.MakeFilePathRelative(dstPath);
@@ -1430,7 +1430,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			if (node != null)
 			{
 				string newDirectory = Path.GetDirectoryName(e.Path);
-				bool moved = !PathHelper.ArePathsEqual(Path.GetDirectoryName(e.OldPath), newDirectory);
+				bool moved = !PathOp.ArePathsEqual(Path.GetDirectoryName(e.OldPath), newDirectory);
 
 				// If its a file, remove and add it again
 				if (File.Exists(e.Path))

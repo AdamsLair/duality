@@ -176,8 +176,7 @@ namespace Duality
 		/// <returns></returns>
 		public static List<ContentRef<T>> GetAvailableContent<T>(string baseDirectory = null) where T : Resource
 		{
-			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
-			IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
+			IEnumerable<string> resFiles = Resource.GetResourceFiles(baseDirectory);
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p))
 				.Where(r => r.Is<T>())
@@ -194,10 +193,7 @@ namespace Duality
 		public static List<IContentRef> GetAvailableContent(Type t, string baseDirectory = null)
 		{
 			TypeInfo typeInfo = t.GetTypeInfo();
-
-			if (baseDirectory == null) baseDirectory = DualityApp.DataDirectory;
-			IEnumerable<string> resFiles = Directory.EnumerateFiles(baseDirectory, "*" + Resource.FileExt, SearchOption.AllDirectories);
-
+			IEnumerable<string> resFiles = Resource.GetResourceFiles(baseDirectory);
 			return resFiles
 				.Select(p => new ContentRef<Resource>(null, p) as IContentRef)
 				.Where(r => r.Is(t))
@@ -291,7 +287,7 @@ namespace Duality
 
 			List<string> unregisterList = new List<string>(
 				from p in resLibrary.Keys
-				where !IsDefaultContentPath(p) && PathHelper.IsPathLocatedIn(p, dir)
+				where !IsDefaultContentPath(p) && PathOp.IsPathLocatedIn(p, dir)
 				select p);
 
 			foreach (string p in unregisterList)
@@ -367,7 +363,7 @@ namespace Duality
 
 			List<string> renameList = new List<string>(
 				from p in resLibrary.Keys
-				where !IsDefaultContentPath(p) && PathHelper.IsPathLocatedIn(p, dir)
+				where !IsDefaultContentPath(p) && PathOp.IsPathLocatedIn(p, dir)
 				select p);
 
 			foreach (string p in renameList)
@@ -445,7 +441,7 @@ namespace Duality
 		}
 		private static Resource LoadContent(string path)
 		{
-			if (string.IsNullOrEmpty(path) || IsDefaultContentPath(path) || !File.Exists(path)) return null;
+			if (string.IsNullOrEmpty(path) || IsDefaultContentPath(path) || !FileOp.Exists(path)) return null;
 
 			Log.Core.Write("Loading Resource '{0}'...", path);
 			Log.Core.PushIndent();

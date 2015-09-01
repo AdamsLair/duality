@@ -156,7 +156,7 @@ namespace Duality.Editor.Forms
 					MessageBoxIcon.Warning);
 				return false;
 			}
-			if (PathHelper.IsPathLocatedIn(targetDir, Environment.CurrentDirectory))
+			if (PathOp.IsPathLocatedIn(targetDir, Environment.CurrentDirectory))
 			{
 				this.textBoxFolder.BackColor = errorColor;
 				MessageBox.Show(
@@ -201,7 +201,7 @@ namespace Duality.Editor.Forms
 
 			// Ask if the selected template should be copied to the template directory, if not located there (auto-install)
 			if (this.selectedTemplate.SpecialTag == ProjectTemplateInfo.SpecialInfo.None && 
-				!PathHelper.IsPathLocatedIn(this.selectedTemplate.FilePath, EditorHelper.GlobalProjectTemplateDirectory))
+				!PathOp.IsPathLocatedIn(this.selectedTemplate.FilePath, EditorHelper.GlobalProjectTemplateDirectory))
 			{
 				DialogResult result = MessageBox.Show(
 					Properties.GeneralRes.Msg_InstallNewTemplate_Desc,

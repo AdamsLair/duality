@@ -682,19 +682,11 @@ namespace Duality.Serialization
 
 			// Create the delegate without target and fix it later, so we can register its object id before loading its target object
 			MethodInfo	method	= this.ReadObjectData() as MethodInfo;
-			object		target	= null;
+			object		target	= this.ReadObjectData();
 			Delegate	del		= header.ObjectType != null && method != null ? method.CreateDelegate(header.ObjectType.AsType(), target) : null;
 
-			// Prepare object reference
+			// Add object reference
 			this.idManager.Inject(del, header.ObjectId);
-
-			// Read the target object now and replace the dummy
-			target = this.ReadObjectData();
-			if (del != null && target != null)
-			{
-				FieldInfo targetField = header.ObjectType.GetRuntimeFields().FirstOrDefault(f => !f.IsStatic && f.Name == "_target");
-				targetField.SetValue(del, target);
-			}
 
 			// Combine multicast delegates
 			if (multi)

@@ -76,6 +76,7 @@ namespace Duality
 		private	static	bool						runFromEditor		= false;
 		private	static	bool						terminateScheduled	= false;
 		private	static	IPluginLoader				pluginLoader		= null;
+		private	static	ISystemBackend				systemBack			= null;
 		private	static	IGraphicsBackend			graphicsBack		= null;
 		private	static	IAudioBackend				audioBack			= null;
 		private	static	Vector2						targetResolution	= Vector2.Zero;
@@ -140,6 +141,13 @@ namespace Duality
 		public static IPluginLoader PluginLoader
 		{
 			get { return pluginLoader; }
+		}
+		/// <summary>
+		/// [GET] The system backend that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public static ISystemBackend SystemBackend
+		{
+			get { return systemBack; }
 		}
 		/// <summary>
 		/// [GET] The graphics backend that is used by Duality. Don't use this unless you know exactly what you're doing.
@@ -341,49 +349,20 @@ namespace Duality
 				pluginLoader.Init(pluginLoader_ResolveAssembly);
 			}
 
-			// Write systems specs as a debug log
-			{
-				string osFriendlyName = null;
-				if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-				{
-					if (Environment.OSVersion.Version >= new Version(10, 0, 0))
-						osFriendlyName = "Windows 10";
-					else if (Environment.OSVersion.Version >= new Version(6, 3, 0))
-						osFriendlyName = "Windows 8.1";
-					else if (Environment.OSVersion.Version >= new Version(6, 2, 0))
-						osFriendlyName = "Windows 8";
-					else if (Environment.OSVersion.Version >= new Version(6, 1, 0))
-						osFriendlyName = "Windows 7";
-					else if (Environment.OSVersion.Version >= new Version(6, 0, 0))
-						osFriendlyName = "Windows Vista";
-					else if (Environment.OSVersion.Version >= new Version(5, 2, 0))
-						osFriendlyName = "Windows XP 64 Bit Edition";
-					else if (Environment.OSVersion.Version >= new Version(5, 1, 0))
-						osFriendlyName = "Windows XP";
-					else if (Environment.OSVersion.Version >= new Version(5, 0, 0))
-						osFriendlyName = "Windows 2000";
-				}
-				Log.Core.Write("Initializing Duality...{0}Operating System: {1}{0}64 Bit Process: {2}{0}CLR Version: {3}{0}Processor Count: {4}", 
-					Environment.NewLine,
-					Environment.OSVersion + (osFriendlyName != null ? (" (" + osFriendlyName + ")") : ""),
-					Environment.Is64BitProcess,
-					Environment.Version,
-					Environment.ProcessorCount);
-			}
-
+			// Load all plugins. This needs to be done first, so backends and Types can be located.
 			LoadPlugins();
+
+			// Initialize the system backend for system info and file system access
+			InitBackend(out systemBack);
+
+			// Load application and user data and submit a change event, so all settings are applied
 			LoadAppData();
 			LoadUserData();
-
-			// Initial changed event
 			OnAppDataChanged();
 			OnUserDataChanged();
 
 			// Determine the default serialization method
 			Serializer.InitDefaultMethod();
-
-			// Initialize all core plugins
-			InitPlugins();
 
 			// Initialize the graphics backend
 			InitBackend(out graphicsBack);
@@ -391,6 +370,9 @@ namespace Duality
 			// Initialize the audio backend
 			InitBackend(out audioBack);
 			sound = new SoundDevice();
+
+			// Initialize all core plugins, this may allocate Resources or establish references between plugins
+			InitPlugins();
 			
 			initialized = true;
 
@@ -460,9 +442,13 @@ namespace Duality
 			ShutdownBackend(ref graphicsBack);
 			ShutdownBackend(ref audioBack);
 			ClearPlugins();
+
+			// Since this performs file system operations, it needs to happen before shutting down the system backend.
+			Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
+
+			ShutdownBackend(ref systemBack);
 			pluginLoader.Terminate();
 
-			Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 			Log.Core.Write("DualityApp terminated");
 
 			initialized = false;
@@ -601,7 +587,7 @@ namespace Duality
 		public static void LoadUserData()
 		{
 			string path = UserDataPath;
-			if (!File.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor) path = "DefaultUserData.dat";
+			if (!FileOp.Exists(path) || execContext == ExecutionContext.Editor || runFromEditor) path = "DefaultUserData.dat";
 			userData = Serializer.TryReadObject<DualityUserData>(path) ?? new DualityUserData();
 		}
 		/// <summary>
@@ -796,7 +782,7 @@ namespace Duality
 			foreach (var pair in plugins)
 			{
 				CorePlugin backendPlugin = pair.Value;
-				if (PathHelper.ArePathsEqual(backendPlugin.FilePath, pluginFilePath))
+				if (PathOp.ArePathsEqual(backendPlugin.FilePath, pluginFilePath))
 				{
 					foreach (IDualityBackend backend in activeBackends)
 					{
@@ -934,7 +920,9 @@ namespace Duality
 			T selectedBackend = null;
 			foreach (T backend in backends)
 			{
-				if (appData.SkipBackends != null && appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
+				if (appData != null && 
+					appData.SkipBackends != null && 
+					appData.SkipBackends.Any(s => string.Equals(s, backend.Id, StringComparison.OrdinalIgnoreCase)))
 				{
 					Log.Core.Write("Backend '{0}' skipped because of AppData settings.", backend.Name);
 					continue;

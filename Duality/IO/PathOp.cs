@@ -74,6 +74,67 @@ namespace Duality.IO
 				path[0] == AltDirectorySeparatorChar ||
 				(path.Length > 1 && path[1] == VolumeSeparatorChar);
 		}
+		/// <summary>
+		/// Returns a rooted version of the specified path, which uniquely identifies the referenced file system entity.
+		/// Unlike most methods of <see cref="PathOp"/>, this method accesses the file system.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public static string GetFullPath(string path)
+		{
+			if (string.IsNullOrWhiteSpace(path)) return string.Empty;
+
+			CheckInvalidPathChars(path);
+
+			return DualityApp.SystemBackend.FileSystem.GetFullPath(path);
+		}
+		/// <summary>
+		/// Returns whether two paths are referring to the same file system entity.
+		/// Unlike most methods of <see cref="PathOp"/>, this method accesses the file system.
+		/// </summary>
+		/// <param name="firstPath"></param>
+		/// <param name="secondPath"></param>
+		/// <returns></returns>
+		public static bool ArePathsEqual(string firstPath, string secondPath)
+		{
+			// Early-out for null or empty cases
+			if (string.IsNullOrEmpty(firstPath) && string.IsNullOrEmpty(secondPath)) return true;
+			if (string.IsNullOrEmpty(firstPath) || string.IsNullOrEmpty(secondPath)) return false;
+
+			// Obtain absolute paths
+			firstPath = GetFullPath(firstPath);
+			secondPath = GetFullPath(secondPath);
+
+			// Compare absolute paths
+			return string.Equals(firstPath, secondPath, StringComparison.OrdinalIgnoreCase);
+		}
+		/// <summary>
+		/// Returns whether one path is a sub-path of another.
+		/// Unlike most methods of <see cref="PathOp"/>, this method accesses the file system.
+		/// </summary>
+		/// <param name="path">The supposed sub-path.</param>
+		/// <param name="baseDir">The (directory) path in which the supposed sub-path might be located in.</param>
+		/// <returns>True, if <c>path</c> is a sub-path of <c>baseDir</c>.</returns>
+		/// <example>
+		/// <c>PathHelper.IsPathLocatedIn(@"C:\SomeDir\SubDir", @"C:\SomeDir")</c> will return true.
+		/// </example>
+		public static bool IsPathLocatedIn(string path, string baseDir)
+		{
+			if (baseDir[baseDir.Length - 1] != DirectorySeparatorChar &&
+				baseDir[baseDir.Length - 1] != AltDirectorySeparatorChar)
+				baseDir += DirectorySeparatorChar;
+
+			path = GetFullPath(path);
+			baseDir = GetDirectoryName(GetFullPath(baseDir));
+			do
+			{
+				path = GetDirectoryName(path);
+				if (path == baseDir) return true;
+				if (path.Length < baseDir.Length) return false;
+			} while (!String.IsNullOrEmpty(path));
+
+			return false;
+		}
 		
 		/// <summary>
 		/// Determines the directory name component of a path, i.e. everything except the rightmost path element name.
@@ -263,7 +324,7 @@ namespace Duality.IO
 			int lastSepIndex = path.LastIndexOfAny(DirectorySeparatorChars);
 			return path.LastIndexOf(ExtensionSeparatorChar, path.Length - 1, path.Length - (lastSepIndex + 1));
 		}
-		private static void CheckInvalidPathChars(string path)
+		internal static void CheckInvalidPathChars(string path)
 		{
 			if (path.IndexOfAny(InvalidPathChars) != -1) throw new ArgumentException("Illegal characters in path.");
 		}

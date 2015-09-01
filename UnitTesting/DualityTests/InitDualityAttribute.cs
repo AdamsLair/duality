@@ -86,14 +86,16 @@ namespace Duality.Tests
 			    this.dummyWindow.Dispose();
 			    this.dummyWindow = null;
 			}
-			DualityApp.Terminate();
-			Environment.CurrentDirectory = this.oldEnvDir;
 
-			// Save local testing memory
+			// Save local testing memory. As this uses Duality serializers, 
+			// it needs to be done before terminating Duality.
 			if (TestContext.CurrentContext.Result.Status == TestStatus.Passed && !System.Diagnostics.Debugger.IsAttached)
 			{
 				Serializer.WriteObject(TestHelper.LocalTestMemory, TestHelper.LocalTestMemoryFilePath, SerializeMethod.Xml);
 			}
+
+			DualityApp.Terminate();
+			Environment.CurrentDirectory = this.oldEnvDir;
 
 			Console.WriteLine("----- Duality environment teardown complete -----");
 		}

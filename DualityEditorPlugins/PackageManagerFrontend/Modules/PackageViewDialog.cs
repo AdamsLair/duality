@@ -645,7 +645,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			// Delete all files and directories in the local package store, except the icon cache
 			foreach (string dir in Directory.EnumerateDirectories(this.packageManager.LocalPackageStoreDirectory))
 			{
-				if (PathHelper.ArePathsEqual(PackageItem.PackageIconCacheDir, dir))
+				if (PathOp.ArePathsEqual(PackageItem.PackageIconCacheDir, dir))
 					continue;
 				Directory.Delete(dir, true);
 			}

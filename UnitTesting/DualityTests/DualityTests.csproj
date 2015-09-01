@@ -91,7 +91,6 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="Drawing\CanvasTest.cs" />
     <Compile Include="Utility\ExtMethodsMemberInfoTest.cs" />
-    <Compile Include="IO\PathHelperTest.cs" />
     <Compile Include="Utility\RectTest.cs" />
     <Compile Include="Utility\ExtMethodsTypeInfoTest.cs" />
     <Compile Include="Utility\ObjectCreatorTest.cs" />

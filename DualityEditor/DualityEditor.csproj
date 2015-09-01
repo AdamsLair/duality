@@ -251,6 +251,7 @@
     <Compile Include="Sandbox.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\PathHelper.cs" />
     <Compile Include="Utility\RecycleBin.cs" />
     <Compile Include="Utility\XmlCodeDoc.cs" />
     <Compile Include="UndoRedoActions\DeleteGameObjectAction.cs" />

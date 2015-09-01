@@ -76,6 +76,8 @@
     <Compile Include="Audio\Enums\SoundType.cs" />
     <Compile Include="Backend\Audio\INativeAudioSource.cs" />
     <Compile Include="Backend\Audio\INativeAudioBuffer.cs" />
+    <Compile Include="Backend\Dummy\DummyFileSystem.cs" />
+    <Compile Include="Backend\Dummy\DummySystemBackend.cs" />
     <Compile Include="Backend\Dummy\DummyNativeAudioSource.cs" />
     <Compile Include="Backend\Dummy\DummyNativeAudioBuffer.cs" />
     <Compile Include="Backend\Dummy\DummyAudioBackend.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="Backend\Graphics\WindowOptions.cs" />
     <Compile Include="Backend\Graphics\RenderStats.cs" />
     <Compile Include="Backend\BackendException.cs" />
+    <Compile Include="Backend\ISystemBackend.cs" />
     <Compile Include="Backend\IDualiyBackend.cs" />
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
     <Compile Include="Backend\IAudioBackend.cs" />
@@ -127,6 +130,10 @@
     <Compile Include="Drawing\IImageCodec.cs" />
     <Compile Include="Drawing\PixelData.cs" />
     <Compile Include="Drawing\ImageCodec.cs" />
+    <Compile Include="IO\FileOp.cs" />
+    <Compile Include="IO\DirectoryOp.cs" />
+    <Compile Include="IO\FileAccessMode.cs" />
+    <Compile Include="IO\IFileSystem.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
@@ -281,7 +288,6 @@
     <Compile Include="Utility\Extensions\ExtMethodsString.cs" />
     <Compile Include="Utility\ReflectionInfo.cs" />
     <Compile Include="Audio\OggVorbis.cs" />
-    <Compile Include="IO\PathHelper.cs" />
     <Compile Include="Utility\ReflectionHelper.cs" />
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Component.cs" />

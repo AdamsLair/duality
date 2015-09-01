@@ -77,6 +77,7 @@
     <Compile Include="Audio\Enums\SoundType.cs" />
     <Compile Include="Backend\Audio\INativeAudioSource.cs" />
     <Compile Include="Backend\Audio\INativeAudioBuffer.cs" />
+    <Compile Include="Backend\Dummy\DummyFileSystem.cs" />
     <Compile Include="Backend\Dummy\DummyNativeAudioSource.cs" />
     <Compile Include="Backend\Dummy\DummyNativeAudioBuffer.cs" />
     <Compile Include="Backend\Dummy\DummyAudioBackend.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Backend\Dummy\DummyNativeTexture.cs" />
     <Compile Include="Backend\Dummy\DummyGraphicsBackend.cs" />
     <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
+    <Compile Include="Backend\Dummy\DummySystemBackend.cs" />
     <Compile Include="Backend\Graphics\INativeRenderTarget.cs" />
     <Compile Include="Backend\Graphics\INativeShaderProgram.cs" />
     <Compile Include="Backend\Graphics\INativeShaderPart.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="Backend\IAudioBackend.cs" />
     <Compile Include="Backend\IGraphicsBackend.cs" />
     <Compile Include="Backend\IPluginLoader.cs" />
+    <Compile Include="Backend\ISystemBackend.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />
     <Compile Include="Cloning\ICloneOperation.cs" />
@@ -130,7 +133,10 @@
     <Compile Include="Drawing\IImageCodec.cs" />
     <Compile Include="Drawing\ImageCodec.cs" />
     <Compile Include="Drawing\PixelData.cs" />
-    <Compile Include="IO\PathHelper.cs" />
+    <Compile Include="IO\FileAccessMode.cs" />
+    <Compile Include="IO\FileOp.cs" />
+    <Compile Include="IO\IFileSystem.cs" />
+    <Compile Include="IO\DirectoryOp.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="IO\Streams\ExtMethodsStream.cs" />
     <Compile Include="IO\Streams\NonClosingStreamWrapper.cs" />

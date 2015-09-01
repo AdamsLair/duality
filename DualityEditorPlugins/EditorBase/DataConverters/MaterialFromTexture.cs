@@ -84,7 +84,7 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				
 				// If that fails, search for other matches
 				string targetName = baseRes.Name + fileExt;
-				List<string> resFilePaths = Resource.GetResourceFiles();
+				string[] resFilePaths = Resource.GetResourceFiles().ToArray();
 				var resNameMatch = resFilePaths.Where(p => Path.GetFileName(p) == targetName);
 				var resQuery = resNameMatch.Concat(resFilePaths).Distinct();
 				foreach (string resFile in resQuery)

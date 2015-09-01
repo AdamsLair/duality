@@ -43,6 +43,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Backend\System\NativeFileSystem.cs" />
+    <Compile Include="Backend\System\SystemBackend.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Drawing\BitmapImageCodec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

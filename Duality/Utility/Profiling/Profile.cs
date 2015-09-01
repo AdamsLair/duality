@@ -7,6 +7,7 @@ using System;
 
 using Duality.Resources;
 using Duality.Drawing;
+using Duality.IO;
 
 namespace Duality
 {
@@ -190,7 +191,7 @@ namespace Duality
 		/// <param name="filePath"></param>
 		public static void SaveTextReport(string filePath)
 		{
-			using (FileStream str = File.Open(filePath, FileMode.Create))
+			using (Stream str = FileOp.Create(filePath))
 			{
 				SaveTextReport(str);
 			}

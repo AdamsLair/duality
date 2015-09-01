@@ -450,7 +450,7 @@ namespace Duality.Editor
 				// Mind modified source files for re-import
 				if (e.ChangeType == WatcherChangeTypes.Changed)
 				{
-					if (File.Exists(e.FullPath) && PathHelper.IsPathLocatedIn(e.FullPath, EditorHelper.SourceMediaDirectory)) 
+					if (File.Exists(e.FullPath) && PathOp.IsPathLocatedIn(e.FullPath, EditorHelper.SourceMediaDirectory)) 
 						reimportSchedule.Add(e.FullPath);
 				}
 			}
@@ -531,7 +531,7 @@ namespace Duality.Editor
 				string relativeOldDataPath = PathHelper.MakeFilePathRelative(renameEvent.OldPath, DualityApp.DataDirectory);
 				string relativeMediaDir = Path.GetDirectoryName(relativeMediaPath);
 				string relativeOldDataDir = Path.GetDirectoryName(relativeOldDataPath);
-				if (PathHelper.ArePathsEqual(relativeMediaDir, relativeOldDataDir))
+				if (PathOp.ArePathsEqual(relativeMediaDir, relativeOldDataDir))
 				{
 					string relativeNewDataDir = Path.GetDirectoryName(PathHelper.MakeFilePathRelative(renameEvent.Path, DualityApp.DataDirectory));
 					string newMediaDir = Path.Combine(EditorHelper.SourceMediaDirectory, relativeNewDataDir);
@@ -540,11 +540,11 @@ namespace Duality.Editor
 			}
 
 			// If media and data file were named similarly, keep that naming scheme
-			if (!PathHelper.ArePathsEqual(Path.GetFileName(renameEvent.OldPath), Path.GetFileName(renameEvent.Path)))
+			if (!PathOp.ArePathsEqual(Path.GetFileName(renameEvent.OldPath), Path.GetFileName(renameEvent.Path)))
 			{
 				string mediaFileNameWithoutExt = Path.GetFileNameWithoutExtension(mediaPath);
 				string oldDataName = ContentProvider.GetNameFromPath(renameEvent.OldPath);
-				if (PathHelper.ArePathsEqual(mediaFileNameWithoutExt, oldDataName))
+				if (PathOp.ArePathsEqual(mediaFileNameWithoutExt, oldDataName))
 				{
 					string newDataName = ContentProvider.GetNameFromPath(renameEvent.Path);
 					string newMediaFileName = newDataName + Path.GetExtension(mediaPath);
@@ -555,7 +555,7 @@ namespace Duality.Editor
 			if (renameEvent.IsResource)
 			{
 				// Move the media file to mirror the data files movement
-				if (!PathHelper.ArePathsEqual(mediaPath, oldMediaPath))
+				if (!PathOp.ArePathsEqual(mediaPath, oldMediaPath))
 				{
 					if (File.Exists(oldMediaPath) && !File.Exists(mediaPath))
 					{
@@ -568,7 +568,7 @@ namespace Duality.Editor
 			else if (renameEvent.IsDirectory)
 			{
 				// Move the media directory to mirror the data files movement
-				if (!PathHelper.ArePathsEqual(mediaPath, oldMediaPath))
+				if (!PathOp.ArePathsEqual(mediaPath, oldMediaPath))
 				{
 					if (Directory.Exists(oldMediaPath) && !Directory.Exists(mediaPath))
 					{
@@ -689,7 +689,7 @@ namespace Duality.Editor
 			var targetResTypes = renameData.Any(e => e.IsDirectory) ? null : renameData.Select(e => e.ContentType).ToArray();
 			var loadedContent = ContentProvider.GetLoadedContent<Resource>();
 			var reloadContent = new List<IContentRef>();
-			List<string> resFiles = Resource.GetResourceFiles();
+			string[] resFiles = Resource.GetResourceFiles().ToArray();
 			List<Resource> modifiedRes = new List<Resource>();
 			foreach (string file in resFiles)
 			{
@@ -715,7 +715,7 @@ namespace Duality.Editor
 					}
 					if (!canReferenceRes)
 					{
-						state.Progress += 0.9f / resFiles.Count;
+						state.Progress += 0.9f / resFiles.Length;
 						continue;
 					}
 				}
@@ -733,7 +733,7 @@ namespace Duality.Editor
 				{
 					// Retrieve already loaded content
 					IContentRef cr = ContentProvider.RequestContent(file);
-					state.Progress += 0.45f / resFiles.Count; yield return null;
+					state.Progress += 0.45f / resFiles.Length; yield return null;
 
 					// Perform rename and flag unsaved / modified
 					fileCounter = async_RenameContentRefs_Perform(cr.Res, renameData);
@@ -743,7 +743,7 @@ namespace Duality.Editor
 				{
 					// Load content without initializing it
 					Resource res = Resource.Load<Resource>(file, null, false);
-					state.Progress += 0.45f / resFiles.Count; yield return null;
+					state.Progress += 0.45f / resFiles.Length; yield return null;
 
 					// Perform rename and save it without making it globally available
 					fileCounter = async_RenameContentRefs_Perform(res, renameData);
@@ -751,7 +751,7 @@ namespace Duality.Editor
 				}
 
 				totalCounter += fileCounter;
-				state.Progress += 0.45f / resFiles.Count; yield return null;
+				state.Progress += 0.45f / resFiles.Length; yield return null;
 			}
 
 			// Notify the editor about modified Resources
@@ -777,7 +777,7 @@ namespace Duality.Editor
 						counter++;
 						break;
 					}
-					else if (e.IsDirectory && PathHelper.IsPathLocatedIn(r.Path, e.OldPath))
+					else if (e.IsDirectory && PathOp.IsPathLocatedIn(r.Path, e.OldPath))
 					{
 						r.Path = r.Path.Replace(e.OldPath, e.Path);
 						counter++;

@@ -875,7 +875,7 @@ namespace Duality.Editor.PackageManagement
 				{
 					try
 					{
-						if (PathHelper.ArePathsEqual(attribute.Value, referringTo))
+						if (PathOp.ArePathsEqual(attribute.Value, referringTo))
 						{
 							anyReference = true;
 							break;

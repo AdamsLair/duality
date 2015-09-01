@@ -156,8 +156,8 @@ namespace Duality
 			}
 
 			string dirName = PathOp.GetDirectoryName(saveAsPath);
-			if (!string.IsNullOrEmpty(dirName) && !Directory.Exists(dirName)) Directory.CreateDirectory(dirName);
-			using (FileStream str = File.Open(saveAsPath, FileMode.Create))
+			if (!string.IsNullOrEmpty(dirName) && !DirectoryOp.Exists(dirName)) DirectoryOp.Create(dirName);
+			using (Stream str = FileOp.Create(saveAsPath))
 			{
 				this.WriteToStream(str);
 			}
@@ -338,10 +338,10 @@ namespace Duality
 		/// <returns>The Resource that has been loaded.</returns>
 		public static T Load<T>(string path, Action<T> loadCallback = null, bool initResource = true) where T : Resource
 		{
-			if (!File.Exists(path)) return null;
+			if (!FileOp.Exists(path)) return null;
 
 			T newContent;
-			using (FileStream str = File.OpenRead(path))
+			using (Stream str = FileOp.Open(path, FileAccessMode.Read))
 			{
 				newContent = Load<T>(str, path, loadCallback, initResource);
 			}
@@ -441,10 +441,11 @@ namespace Duality
 		/// </summary>
 		/// <param name="folderPath"></param>
 		/// <returns></returns>
-		public static List<string> GetResourceFiles(string folderPath = null)
+		public static IEnumerable<string> GetResourceFiles(string folderPath = null)
 		{
 			if (string.IsNullOrEmpty(folderPath)) folderPath = DualityApp.DataDirectory;
-			return Directory.EnumerateFiles(folderPath, "*" + Resource.FileExt, SearchOption.AllDirectories).ToList();
+			IEnumerable<string> resFiles = DirectoryOp.GetFiles(folderPath, true);
+			return resFiles.Where(path => path.EndsWith(Resource.FileExt, StringComparison.OrdinalIgnoreCase));
 		}
 		/// <summary>
 		/// Returns the Resource file extension for a specific Resource Type.

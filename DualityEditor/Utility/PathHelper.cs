@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Reflection;
 
-namespace Duality.IO
+namespace Duality.Editor
 {
 	/// <summary>
 	/// Provides helper methods for handling <see cref="System.IO.Path">Paths</see>.
@@ -64,53 +64,6 @@ namespace Duality.IO
 			return path;
 		}
 
-		/// <summary>
-		/// Returns whether two paths are to be considered equal, because they are referring to the same physical location.
-		/// </summary>
-		/// <param name="firstPath"></param>
-		/// <param name="secondPath"></param>
-		/// <returns></returns>
-		public static bool ArePathsEqual(string firstPath, string secondPath)
-		{
-			// Early-out for null or empty cases
-			if (string.IsNullOrEmpty(firstPath) && string.IsNullOrEmpty(secondPath)) return true;
-			if (string.IsNullOrEmpty(firstPath) || string.IsNullOrEmpty(secondPath)) return false;
-
-			// Obtain absolute paths
-			firstPath = Path.GetFullPath(firstPath);
-			secondPath = Path.GetFullPath(secondPath);
-
-			// Compare absolute paths
-			return string.Equals(firstPath, secondPath, pathsCaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase);
-		}
-		/// <summary>
-		/// Returns whether one path is a sub-path of another.
-		/// </summary>
-		/// <param name="path">The supposed sub-path.</param>
-		/// <param name="baseDir">The (directory) path in which the supposed sub-path might be located in.</param>
-		/// <returns>True, if <c>path</c> is a sub-path of <c>baseDir</c>.</returns>
-		/// <example>
-		/// <c>PathHelper.IsPathLocatedIn(@"C:\SomeDir\SubDir", @"C:\SomeDir")</c> will return true.
-		/// </example>
-		public static bool IsPathLocatedIn(string path, string baseDir)
-		{
-			bool baseDirIsFile = File.Exists(baseDir);
-			if (baseDirIsFile) return false;
-
-			if (baseDir[baseDir.Length - 1] != Path.DirectorySeparatorChar &&
-				baseDir[baseDir.Length - 1] != Path.AltDirectorySeparatorChar)
-				baseDir += Path.DirectorySeparatorChar;
-
-			path = Path.GetFullPath(path);
-			baseDir = Path.GetDirectoryName(Path.GetFullPath(baseDir));
-			do
-			{
-				path = Path.GetDirectoryName(path);
-				if (path == baseDir) return true;
-				if (path.Length < baseDir.Length) return false;
-			} while (!String.IsNullOrEmpty(path));
-			return false;
-		}
 		/// <summary>
 		/// Returns the relative path from one path to another.
 		/// </summary>

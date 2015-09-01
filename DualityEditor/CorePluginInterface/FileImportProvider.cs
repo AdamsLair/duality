@@ -238,7 +238,7 @@ namespace Duality.Editor
 
 			// Does the system suggest that the Resource would use that file if it was opened for editing?
 			string resourceSourcePath = SelectSourceFilePath(resourceRef, srcFileExt);
-			if (PathHelper.ArePathsEqual(resourceSourcePath, srcFilePath))
+			if (PathOp.ArePathsEqual(resourceSourcePath, srcFilePath))
 				return true;
 
 			// Nope.
