@@ -32,14 +32,13 @@ namespace Duality.Editor.Forms
 			@".\Source",
 			@"*.pdb",
 			@".\FarseerDuality.xml",
-			@".\NVorbis.xml",
-			@".\OpenTK.GLControl.xml" };
+			@".\NVorbis.xml" };
 		private static readonly string[] EditorPathBlacklist = new string[] {
 			@".\Plugins\*.xml",
 			@".\Plugins\*.editor.dll",
 			@".\DualityEditor.*",
 			@".\Duality.xml",
-			@".\OpenTK.xml",
+			@".\DualityPrimitives.xml",
 			@".\DDoc.chm",
 			@".\" + DualityEditorApp.UserDataFile,
 			@".\" + DualityEditorApp.DesignTimeDataFile,
@@ -52,7 +51,7 @@ namespace Duality.Editor.Forms
 			@".\DualityUpdater.*",
 			@".\NuGet.Core.*",
 			@".\Ionic.Zip.*",
-			@".\OpenTK.GLControl.*",
+			@".\Plugins\OpenTK.GLControl.*",
 			@".\PackageConfig.xml" };
 		private static readonly Regex[] RegExTemporaryProjectFiles = TemporaryProjectFiles.Select(w => PathWildcardToRegex(w)).ToArray();
 		private static readonly Regex[] RegExSourcePathBlacklist = SourcePathBlacklist.Select(w => PathWildcardToRegex(w)).ToArray();
