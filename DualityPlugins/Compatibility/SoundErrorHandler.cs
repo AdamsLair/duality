@@ -14,7 +14,7 @@ namespace Duality.Plugins.Compatibility
 		public override void HandleError(SerializeError error)
 		{
 			AssignFieldError fieldError = error as AssignFieldError;
-			if (fieldError != null && fieldError.TargetObjectType.Type == typeof(Sound))
+			if (fieldError != null && fieldError.TargetObjectType.Type.AsType() == typeof(Sound))
 			{
 				Sound targetObject = fieldError.TargetObject as Sound;
 				if (targetObject != null)
