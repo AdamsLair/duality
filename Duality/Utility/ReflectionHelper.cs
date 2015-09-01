@@ -428,7 +428,11 @@ namespace Duality
 			MemberInfo result;
 			if (memberResolveCache.TryGetValue(memberString, out result)) return result;
 
-			Assembly[] searchAsm = AppDomain.CurrentDomain.GetAssemblies().Except(DualityApp.DisposedPlugins).ToArray();
+			Assembly[] searchAsm = 
+				DualityApp.SystemBackend.GetLoadedAssemblies()
+				.Except(DualityApp.DisposedPlugins)
+				.ToArray();
+
 			result = FindMember(memberString, searchAsm);
 			if (result != null) memberResolveCache[memberString] = result;
 
@@ -673,8 +677,15 @@ namespace Duality
 
 			Type result;
 			if (typeResolveCache.TryGetValue(typeString, out result)) return result;
+			
+			if (searchAsm == null)
+			{
+				searchAsm = 
+					DualityApp.SystemBackend.GetLoadedAssemblies()
+					.Except(DualityApp.DisposedPlugins)
+					.ToArray();
+			}
 
-			if (searchAsm == null) searchAsm = AppDomain.CurrentDomain.GetAssemblies().Except(DualityApp.DisposedPlugins).ToArray();
 			result = FindType(typeString, searchAsm, declaringMethod);
 			if (result != null && declaringMethod == null) typeResolveCache[typeString] = result;
 

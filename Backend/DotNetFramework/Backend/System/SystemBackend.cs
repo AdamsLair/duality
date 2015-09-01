@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using Duality.IO;
 
@@ -67,5 +68,23 @@ namespace Duality.Backend.DotNetFramework
 			}
 		}
 		void IDualityBackend.Shutdown() { }
+
+		string ISystemBackend.GetNamedPath(NamedDirectory dir)
+		{
+			switch (dir)
+			{
+				default:                             return null;
+				case NamedDirectory.Current:         return System.IO.Directory.GetCurrentDirectory();
+				case NamedDirectory.ApplicationData: return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+				case NamedDirectory.MyDocuments:     return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+				case NamedDirectory.MyMusic:         return Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+				case NamedDirectory.MyPictures:      return Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+			}
+		}
+
+		IEnumerable<Assembly> ISystemBackend.GetLoadedAssemblies()
+		{
+			return AppDomain.CurrentDomain.GetAssemblies();
+		}
 	}
 }

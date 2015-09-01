@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 using Duality.IO;
 
@@ -33,5 +34,14 @@ namespace Duality.Backend.Dummy
 		}
 		void IDualityBackend.Init() { }
 		void IDualityBackend.Shutdown() { }
+
+		string ISystemBackend.GetNamedPath(NamedDirectory dir)
+		{
+			return string.Empty;
+		}
+		IEnumerable<Assembly> ISystemBackend.GetLoadedAssemblies()
+		{
+			return Enumerable.Empty<Assembly>();
+		}
 	}
 }

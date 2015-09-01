@@ -264,7 +264,7 @@ namespace Duality
 				else
 				{
 					return PathOp.Combine(
-						Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
+						systemBack.GetNamedPath(NamedDirectory.MyDocuments),
 						"Duality", 
 						"AppData", 
 						PathOp.GetValidFileName(appData.AppName), 
