@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Steering.Sample</id>
-    <version>1.0.2</version>
+    <version>2.0.0</version>
 	<authors>Daniel Herb, Fedja Adam</authors>
 	<owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours Sample</title>
@@ -13,9 +13,10 @@
 	<summary>A sample project to show how to use Steering Behaviours.</summary>
     <description>A sample project to show how to use Steering Behaviours.</description>
 	<tags>Duality Sample Plugin Steering Component AI</tags>
+	<releaseNotes>Initial v2.0 Release</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.Steering" version="1.0.3" />
-      <dependency id="AdamsLair.Duality" version="1.5.3" />
+      <dependency id="AdamsLair.Duality.Plugins.Steering" version="2.0.0" />
+      <dependency id="AdamsLair.Duality" version="2.0.0" />
     </dependencies>
   </metadata>
   <files>

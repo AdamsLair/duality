@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Docs</id>
-    <version>1.0.1</version>
+    <version>2.0.0</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Documentation</title>
@@ -13,6 +13,7 @@
 	<summary>Contains the external Duality API documentation help files.</summary>
     <description>Contains the external Duality API documentation help files. This is not required for in-editor documentation, but rather an external reference.</description>
 	<tags>Duality Documentation</tags>
+	<releaseNotes>Initial v2.0 Release</releaseNotes>
   </metadata>
   <files>
     <file src="..\Documentation\Help\DDoc.chm" target="lib" />

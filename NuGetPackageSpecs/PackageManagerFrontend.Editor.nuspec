@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.PackageManagerFrontend</id>
-    <version>1.1.2</version>
+    <version>2.0.0</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Package Manager Frontend</title>
@@ -13,12 +13,10 @@
 	<summary>A user interface for conveniently managing Duality packages.</summary>
     <description>A user interface for conveniently managing Duality packages.</description>
 	<tags>Duality Editor Plugin PackageManagerFrontend</tags>
-	<releaseNotes>PackageManager Dialog
-#CHANGE: Packages that are likely incompatible to the current install setup will be hidden from the Online Repository list of packages.
-	</releaseNotes>
+	<releaseNotes>Initial v2.0 Release</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="1.6.4" />
-      <dependency id="AdamsLair.Duality.Editor" version="1.4.1" />
+      <dependency id="AdamsLair.Duality" version="2.0.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.0.0" />
     </dependencies>
   </metadata>
   <files>
