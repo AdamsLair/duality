@@ -51,10 +51,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml.Linq" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Characteristics\IAgentCharacteristics.cs" />
     <Compile Include="Agent\Agent.cs" />
     <Compile Include="Agent\AgentManager.cs" />
