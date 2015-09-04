@@ -160,3 +160,11 @@ Backend/DotNetFramework/obj/
 DualityEditorPlugins/PackageManagerFrontend/PackageManagerFrontend.Editor.csproj.user
 DualityEditorPlugins/EditorBase/EditorBase.Editor.csproj.user
 DualityPlugins/Steering/Steering.Core.csproj.user
+SampleProjects/CameraController/obj/
+SampleProjects/CameraController/Content/Backup/
+SampleProjects/CameraController/bin/
+SampleProjects/CameraController/Content/Source/
+SampleProjects/CameraController/Content/logfile.txt
+SampleProjects/CameraController/Content/perflog.txt
+SampleProjects/CameraController/Content/PackageConfig.xml
+SampleProjects/CameraController/Content/DesignTimeData.dat

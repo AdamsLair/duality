@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CameraController.core</name>
+    </assembly>
+    <members>
+        <member name="T:CameraController.ICameraController">
+            <summary>
+            This is a public interface that allows this sample project to
+            communicate with all its different CameraController implementations,
+            without knowing them personally. If you just want to pick one specific
+            CameraController for your project, you don't need this interface at all.
+            Just remove it.
+            </summary>
+        </member>
+        <member name="P:CameraController.ICameraController.TargetObject">
+            <summary>
+            [GET / SET] The object which is followed by this controller.
+            </summary>
+        </member>
+        <member name="P:CameraController.SmoothPositionThresholdCameraController.Smoothness">
+            <summary>
+            [GET / SET] How smooth the camera should follow its target.
+            </summary>
+        </member>
+        <member name="P:CameraController.SmoothPositionThresholdCameraController.ThresholdDist">
+            <summary>
+            [GET / SET] The distance threshold that needs to be exceeded before the camera starts to move.
+            </summary>
+        </member>
+        <member name="P:CameraController.SmoothPositionCameraController.Smoothness">
+            <summary>
+            [GET / SET] How smooth the camera should follow its target.
+            </summary>
+        </member>
+        <member name="T:CameraController.ExampleSceneController">
+            <summary>
+            This class is in control of the example scene. It draws some debug information
+            and makes sure that users can select a camera controller to use, etc.
+            </summary>
+        </member>
+        <member name="P:CameraController.ExampleSceneController.MainCameraObject">
+            <summary>
+            [GET / SET] The main camera, on which sample camera controllers will be installed.
+            </summary>
+        </member>
+        <member name="P:CameraController.ExampleSceneController.TargetObject">
+            <summary>
+            [GET / SET] The target object, which sample camera controllers will be configured to follow.
+            </summary>
+        </member>
+        <member name="P:CameraController.ExampleSceneController.ActiveCameraController">
+            <summary>
+            [GET / SET] The index of the currently active camera controller.
+            </summary>
+        </member>
+        <member name="P:CameraController.PlayerCharacter.Speed">
+            <summary>
+            [GET / SET] The maximum movement speed of the player character.
+            </summary>
+        </member>
+    </members>
+</doc>
