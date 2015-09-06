@@ -18,7 +18,7 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>DualityIconC.ico</ApplicationIcon>
+    <ApplicationIcon>DualityIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -114,6 +114,18 @@
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
+    <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
+    <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
+    <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />
+    <Compile Include="Extensibility\EditorActions\IEditorAction.cs" />
+    <Compile Include="Extensibility\FileImport\IFileImporter.cs" />
+    <Compile Include="Extensibility\Previews\PreviewImageQuery.cs" />
+    <Compile Include="Extensibility\Previews\IPreviewGenerator.cs" />
+    <Compile Include="Extensibility\Previews\PreviewGenerator.cs" />
+    <Compile Include="Extensibility\Previews\PreviewSoundQuery.cs" />
+    <Compile Include="Extensibility\Previews\PreviewQuery.cs" />
+    <Compile Include="Extensibility\Previews\IPreviewQuery.cs" />
+    <Compile Include="Extensibility\Previews\PreviewSizeMode.cs" />
     <Compile Include="Forms\CreateObjectDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -147,10 +159,10 @@
     <Compile Include="Controls\PropertyEditors\VectorPropertyEditor.cs" />
     <Compile Include="Controls\PropertyEditors\Provider.cs" />
     <Compile Include="Controls\PropertyEditors\Vector2PropertyEditor.cs" />
-    <Compile Include="CorePluginInterface\DataConversion.cs" />
-    <Compile Include="CorePluginInterface\EditorAction.cs" />
-    <Compile Include="CorePluginInterface\DesignTimeObjectData.cs" />
-    <Compile Include="CorePluginInterface\PreviewProvider.cs" />
+    <Compile Include="Extensibility\DataConversion\DataConverter.cs" />
+    <Compile Include="Extensibility\EditorActions\EditorAction.cs" />
+    <Compile Include="DesignTimeObjectData.cs" />
+    <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
     <Compile Include="Forms\LicenseAcceptDialog.cs">
       <SubType>Form</SubType>
@@ -191,7 +203,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsControl.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsDataObject.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsColor.cs" />
-    <Compile Include="CorePluginInterface\FileImportProvider.cs" />
+    <Compile Include="FileImportProvider.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -344,8 +356,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DualityIcon.ico" />
-    <Content Include="DualityIconB.ico" />
-    <Content Include="DualityIconC.ico" />
     <None Include="EmbeddedResources\clock.png" />
     <None Include="EmbeddedResources\EditorUserData.xml" />
     <None Include="EmbeddedResources\application_stopwatch.png" />

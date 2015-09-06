@@ -18,7 +18,7 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>DualityIconC.ico</ApplicationIcon>
+    <ApplicationIcon>DualityIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -84,8 +84,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DualityIcon.ico" />
-    <Content Include="DualityIconB.ico" />
-    <Content Include="DualityIconC.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
