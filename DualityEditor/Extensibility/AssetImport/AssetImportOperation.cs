@@ -47,8 +47,20 @@ namespace Duality.Editor
 			if (!PathOp.ArePathsEqual(targetBaseDir, DualityApp.DataDirectory) && !PathOp.IsPathLocatedIn(targetBaseDir, DualityApp.DataDirectory))
 			{
 				throw new ArgumentException(
-					string.Format("The specified base directory needs to be located within the Duality '{0}' direcctory", DualityApp.DataDirectory),
+					string.Format("The specified target base directory needs to be located within the Duality '{0}' direcctory", DualityApp.DataDirectory),
 					"targetBaseDir");
+			}
+			if (PathOp.ArePathsEqual(inputBaseDir, EditorHelper.SourceMediaDirectory) || PathOp.IsPathLocatedIn(inputBaseDir, EditorHelper.SourceMediaDirectory))
+			{
+				throw new ArgumentException(
+					string.Format("The specified input base directory must not to be located within the Duality '{0}' direcctory", EditorHelper.SourceMediaDirectory),
+					"inputBaseDir");
+			}
+			if (inputFiles.Any(file => PathOp.IsPathLocatedIn(file, EditorHelper.SourceMediaDirectory)))
+			{
+				throw new ArgumentException(
+					string.Format("Can't import Assets using source files that are located within the Duality '{0}' direcctory", EditorHelper.SourceMediaDirectory),
+					"inputFiles");
 			}
 
 			if (PathOp.ArePathsEqual(targetBaseDir, DualityApp.DataDirectory))
@@ -84,8 +96,8 @@ namespace Duality.Editor
 
 				if (this.DoesOverwriteData() && !this.InvokeConfirmOverwrite())
 					break;
-				if (!this.CopySourceToLocalFolder())
-					break;
+
+				this.CopySourceToLocalFolder();
 				if (!this.ImportFromLocalFolder())
 					break;
 
@@ -206,7 +218,7 @@ namespace Duality.Editor
 
 			return false;
 		}
-		private bool CopySourceToLocalFolder()
+		private void CopySourceToLocalFolder()
 		{
 			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
 			{
@@ -236,15 +248,15 @@ namespace Duality.Editor
 				catch (Exception ex)
 				{
 					Log.Editor.WriteError("Can't copy source files to the media / source directory: {0}", Log.Exception(ex));
-					return false;
+					this.inputMapping.RemoveAt(assignmentIndex);
+					assignmentIndex--;
 				}
 			}
-
-			return true;
 		}
 		private bool ImportFromLocalFolder()
 		{
-			bool importSuccess = false;
+			bool importFailure = false;
+			bool anyImported = false;
 
 			this.output = new HashSet<ContentRef<Resource>>();
 			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
@@ -257,18 +269,9 @@ namespace Duality.Editor
 					try
 					{
 						assignment.Importer.Import(importEnv);
-						importSuccess = true;
-					}
-					catch (Exception ex)
-					{
-						importSuccess = false;
-						Log.Editor.WriteError("An error occurred while trying to import files: {0}", Log.Exception(ex));
-						break;
-					}
+						anyImported = true;
 
-					// Collect references to the imported Resources, so we can return them later
-					if (importSuccess)
-					{
+						// Collect references to the imported Resources, so we can return them later
 						foreach (var resourceRef in importEnv.OutputResources)
 						{
 							this.output.Add(resourceRef);
@@ -283,10 +286,17 @@ namespace Duality.Editor
 							}
 						}
 					}
+					catch (Exception ex)
+					{
+						importFailure = true;
+						Log.Editor.WriteError("An error occurred while trying to import files: {0}", Log.Exception(ex));
+						this.inputMapping.RemoveAt(assignmentIndex);
+						assignmentIndex--;
+					}
 				}
 			}
 
-			return importSuccess;
+			return anyImported && !importFailure;
 		}
 
 		private bool InvokeConfirmOverwrite()

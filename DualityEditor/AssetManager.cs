@@ -61,6 +61,21 @@ namespace Duality.Editor
 			
 			return Enumerable.Empty<ContentRef<Resource>>();
 
+			/* 
+			 * Notes:
+			 * 
+			 * - In the first step, perform a regular import preparation step with the specified input
+			 *   paths, in order to let importers determine Resources to update, and a mapping to files
+			 *   
+			 * - The only case where this isn't sufficient is when users manually restructure their
+			 *   Source/Media directory, in which case it wouldn't be expected behavior for Duality to
+			 *   still react to the moved / renamed files.
+			 *   
+			 * - Thus, ReImport will be a lot easier to do with the new API.
+			 */
+
+			// -------------------------------------------------------------------------------------------------------
+
 			//string fileExt = Path.GetExtension(filePath);
 
 			//// Find an importer to handle the file import
@@ -140,16 +155,6 @@ namespace Duality.Editor
 			//}
 		}
 
-		private static bool ConfirmOverwriteData()
-		{
-			DialogResult result = MessageBox.Show(
-				String.Format(Properties.GeneralRes.Msg_ImportConfirmOverwrite_Text), 
-				Properties.GeneralRes.Msg_ImportConfirmOverwrite_Caption, 
-				MessageBoxButtons.YesNo, 
-				MessageBoxIcon.Warning);
-			return result == DialogResult.Yes;
-		}
-
 		public static void OpenSourceFile(ContentRef<Resource> resourceRef, string srcFileExt, Action<string> saveSrcToAction)
 		{
 			// Default content: Use temporary location
@@ -204,6 +209,16 @@ namespace Duality.Editor
 			}
 			string targetPathWithoutExt = Path.Combine(Path.Combine(EditorHelper.SourceMediaDirectory, fileDir), r.Name);
 			return targetPathWithoutExt + srcFileExt;
+		}
+
+		private static bool ConfirmOverwriteData()
+		{
+			DialogResult result = MessageBox.Show(
+				String.Format(Properties.GeneralRes.Msg_ImportConfirmOverwrite_Text), 
+				Properties.GeneralRes.Msg_ImportConfirmOverwrite_Caption, 
+				MessageBoxButtons.YesNo, 
+				MessageBoxIcon.Warning);
+			return result == DialogResult.Yes;
 		}
 	}
 }
