@@ -325,35 +325,6 @@ namespace Duality.Editor
 							if (ResourceCreated != null)
 								ResourceCreated(null, new ResourceEventArgs(e.FullPath, false));
 						}
-						// Import non-Resource file
-						else
-						{
-							bool abort = false;
-
-							if (FileImportProvider.DoesImportOverwriteData(e.FullPath))
-							{
-								DialogResult result = MessageBox.Show(
-									String.Format(Properties.GeneralRes.Msg_ImportConfirmOverwrite_Text, e.FullPath), 
-									Properties.GeneralRes.Msg_ImportConfirmOverwrite_Caption, 
-									MessageBoxButtons.YesNo, 
-									MessageBoxIcon.Warning);
-								abort = result == DialogResult.No;
-							}
-
-							if (!abort)
-							{
-								bool importedSuccessfully = FileImportProvider.ImportFile(e.FullPath);
-								if (!importedSuccessfully)
-								{
-									MessageBox.Show(
-										String.Format(Properties.GeneralRes.Msg_CantImport_Text, e.FullPath), 
-										Properties.GeneralRes.Msg_CantImport_Caption, 
-										MessageBoxButtons.OK, 
-										MessageBoxIcon.Error);
-								}
-								abort = !importedSuccessfully;
-							}
-						}
 					}
 					else if (Directory.Exists(e.FullPath))
 					{
@@ -475,7 +446,7 @@ namespace Duality.Editor
 			{
 				Resource res = deleteEvent.Content.Res;
 				if (res != null && res.SourcePath != null) mediaPath = res.SourcePath;
-				if (!File.Exists(mediaPath)) mediaPath = FileImportProvider.SelectSourceFilePath(deleteEvent.Content, Path.GetExtension(mediaPath));
+				if (!File.Exists(mediaPath)) mediaPath = AssetManager.SelectSourceFilePath(deleteEvent.Content, Path.GetExtension(mediaPath));
 				if (!File.Exists(mediaPath)) return;
 			}
 			else if (deleteEvent.IsDirectory)
@@ -513,7 +484,7 @@ namespace Duality.Editor
 			{
 				Resource res = renameEvent.Content.Res;
 				if (res.SourcePath != null) mediaPath = res.SourcePath;
-				if (!File.Exists(mediaPath)) mediaPath = FileImportProvider.SelectSourceFilePath(renameEvent.OldContent, Path.GetExtension(mediaPath));
+				if (!File.Exists(mediaPath)) mediaPath = AssetManager.SelectSourceFilePath(renameEvent.OldContent, Path.GetExtension(mediaPath));
 				if (!File.Exists(mediaPath)) return;
 			}
 			else if (renameEvent.IsDirectory)
@@ -617,12 +588,11 @@ namespace Duality.Editor
 				// Hacky: Wait a little for the files to be accessable again (Might be used by another process)
 				System.Threading.Thread.Sleep(50);
 
-				foreach (string file in reimportSchedule)
-				{
-					if (!File.Exists(file)) continue;
-					FileImportProvider.ReimportFile(file);
-				}
+				string[] existingReImportFiles = reimportSchedule
+					.Where(path => File.Exists(path))
+					.ToArray();
 				reimportSchedule.Clear();
+				AssetManager.ReImportAssets(existingReImportFiles);
 			}
 		}
 		private static void fileSystemWatcher_ForwardSource(object sender, FileSystemEventArgs e)

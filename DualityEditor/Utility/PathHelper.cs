@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.IO;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Reflection;
+
+using Duality.IO;
 
 namespace Duality.Editor
 {
@@ -83,7 +86,8 @@ namespace Duality.Editor
 			dir = Path.GetDirectoryName(dir);
 
 			// Different disk drive: Cannot generate relative path.
-			if (Directory.GetDirectoryRoot(dir) != Directory.GetDirectoryRoot(dirRel))	return null;
+			if (Directory.GetDirectoryRoot(dir) != Directory.GetDirectoryRoot(dirRel))
+				return null;
 
 			string		resultDir	= "";
 			string[]	dirToken	= dir.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
@@ -119,6 +123,26 @@ namespace Duality.Editor
 			}
 
 			return Path.Combine(resultDir, fileName);
+		}
+		/// <summary>
+		/// Determines the mutual base directory of a set of paths.
+		/// </summary>
+		/// <param name="paths"></param>
+		/// <returns></returns>
+		public static string GetMutualBaseDirectory(IEnumerable<string> paths)
+		{
+			string mutualBasePath = Path.GetFullPath(paths.First());
+			while (!paths.All(path => PathOp.IsPathLocatedIn(path, mutualBasePath)))
+			{
+				mutualBasePath = Path.GetDirectoryName(mutualBasePath);
+				if (string.IsNullOrEmpty(mutualBasePath))
+				{
+					mutualBasePath = null;
+					break;
+				}
+			}
+
+			return mutualBasePath;
 		}
 
 		/// <summary>

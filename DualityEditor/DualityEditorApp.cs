@@ -275,7 +275,7 @@ namespace Duality.Editor
 
 			// Initialize secondary editor components
 			DesignTimeObjectData.Init();
-			FileImportProvider.Init();
+			AssetManager.Init();
 			ConvertOperation.Init();
 			PreviewProvider.Init();
 			Sandbox.Init();
@@ -376,7 +376,7 @@ namespace Duality.Editor
 				Sandbox.Terminate();
 				PreviewProvider.Terminate();
 				ConvertOperation.Terminate();
-				FileImportProvider.Terminate();
+				AssetManager.Terminate();
 				DesignTimeObjectData.Terminate();
 
 				// Shut down the editor backend

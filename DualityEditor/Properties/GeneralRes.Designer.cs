@@ -718,7 +718,7 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can&apos;t import file &apos;{0}&apos;. The files format is not supported..
+        ///   Looks up a localized string similar to Can&apos;t import file &apos;{0}&apos;. None of the available importers is able to handle the files format..
         /// </summary>
         public static string Msg_CantImport_Text {
             get {
@@ -943,7 +943,7 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Importing file &apos;{0}&apos; would overwrite an already imported file. Do you want to continue?.
+        ///   Looks up a localized string similar to This import operation would overwrite already imported Resources or already present source / media files. Do you want to continue?.
         /// </summary>
         public static string Msg_ImportConfirmOverwrite_Text {
             get {

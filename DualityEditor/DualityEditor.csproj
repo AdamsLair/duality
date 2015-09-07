@@ -114,11 +114,15 @@
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
+    <Compile Include="Extensibility\AssetImport\AssetImportOperation.cs" />
+    <Compile Include="Extensibility\AssetImport\AssetImportInput.cs" />
     <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
     <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
     <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />
     <Compile Include="Extensibility\EditorActions\IEditorAction.cs" />
-    <Compile Include="Extensibility\FileImport\IFileImporter.cs" />
+    <Compile Include="Extensibility\AssetImport\DefaultAssetImportEnvironment.cs" />
+    <Compile Include="Extensibility\AssetImport\IAssetImportEnvironment.cs" />
+    <Compile Include="Extensibility\AssetImport\IAssetImporter.cs" />
     <Compile Include="Extensibility\Previews\PreviewImageQuery.cs" />
     <Compile Include="Extensibility\Previews\IPreviewGenerator.cs" />
     <Compile Include="Extensibility\Previews\PreviewGenerator.cs" />
@@ -203,7 +207,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsControl.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsDataObject.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsColor.cs" />
-    <Compile Include="FileImportProvider.cs" />
+    <Compile Include="AssetManager.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>

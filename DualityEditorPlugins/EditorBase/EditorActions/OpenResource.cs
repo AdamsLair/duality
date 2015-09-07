@@ -26,27 +26,27 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
 			if (pixmap != null)
 			{
-				FileImportProvider.OpenSourceFile(
+				AssetManager.OpenSourceFile(
 					pixmap, 
-					PixmapFileImporter.SourceFileExtPrimary, 
+					PixmapAssetImporter.SourceFileExtPrimary, 
 					path => SavePixmapData(pixmap, path));
 			}
 			else if (audioData != null)
 			{
-				FileImportProvider.OpenSourceFile(
+				AssetManager.OpenSourceFile(
 					audioData, 
-					AudioDataFileImporter.SourceFileExtPrimary, 
+					AudioDataAssetImporter.SourceFileExtPrimary, 
 					path => SaveAudioData(audioData, path));
 			}
 			else if (shader != null)
 			{
 				string fileExt;
 				if (shader is FragmentShader)
-					fileExt = ShaderFileImporter.SourceFileExtFragment;
+					fileExt = ShaderAssetImporter.SourceFileExtFragment;
 				else
-					fileExt = ShaderFileImporter.SourceFileExtVertex;
+					fileExt = ShaderAssetImporter.SourceFileExtVertex;
 
-				FileImportProvider.OpenSourceFile(
+				AssetManager.OpenSourceFile(
 					shader, 
 					fileExt, 
 					path => SaveShaderData(shader, path));
