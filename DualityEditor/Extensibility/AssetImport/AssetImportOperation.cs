@@ -32,7 +32,7 @@ namespace Duality.Editor
 		{
 			get { return this.input; }
 		}
-		public IEnumerable<ContentRef<Resource>> OutputResources
+		public IEnumerable<ContentRef<Resource>> Output
 		{
 			get { return this.output ?? Enumerable.Empty<ContentRef<Resource>>(); }
 		}

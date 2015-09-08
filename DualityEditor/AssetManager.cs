@@ -52,14 +52,25 @@ namespace Duality.Editor
 					MessageBoxIcon.Error);
 			}
 
-			return importOperation.OutputResources;
+			return importOperation.Output;
 		}
 		public static IEnumerable<ContentRef<Resource>> ReImportAssets(IEnumerable<string> localInputFiles)
 		{
 			// Early-out, if no input files are specified
 			if (!localInputFiles.Any()) return Enumerable.Empty<ContentRef<Resource>>();
 			
-			return Enumerable.Empty<ContentRef<Resource>>();
+			// Set up an import operation and process it
+			AssetReImportOperation reimportOperation = new AssetReImportOperation(localInputFiles);
+			bool success = reimportOperation.Perform();
+			
+			// Notify the editor that we have modified some Resources
+			if (reimportOperation.Output.Any())
+			{
+				IEnumerable<Resource> touchedResources = reimportOperation.Output.Res();
+				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(touchedResources));
+			}
+
+			return reimportOperation.Output;
 
 			/* 
 			 * Notes:

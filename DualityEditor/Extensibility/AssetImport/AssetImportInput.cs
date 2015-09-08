@@ -7,6 +7,9 @@ using Duality;
 
 namespace Duality.Editor
 {
+	/// <summary>
+	/// Represents a single work item in an Asset import or re-import operation.
+	/// </summary>
 	public struct AssetImportInput
 	{
 		private string path;

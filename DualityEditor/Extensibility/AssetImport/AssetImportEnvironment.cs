@@ -11,6 +11,7 @@ namespace Duality.Editor
 	public class AssetImportEnvironment : IAssetImportEnvironment
 	{
 		private bool isPrepareStep = false;
+		private bool isReImport = false;
 		private string targetDir = null;
 		private string sourceDir = null;
 		private AssetImportInput[] input = null;
@@ -22,6 +23,11 @@ namespace Duality.Editor
 		{
 			get { return this.isPrepareStep; }
 			set { this.isPrepareStep = value; }
+		}
+		public bool IsReImport
+		{
+			get { return this.isReImport; }
+			set { this.isReImport = value; }
 		}
 		public string TargetDirectory
 		{
@@ -75,7 +81,7 @@ namespace Duality.Editor
 			string targetResPath = this.GetTargetPath<T>(fullName);
 
 			// When requested during preparation, just return an empty ContentRef
-			if (this.isPrepareStep)
+			if (this.isPrepareStep || this.isReImport)
 			{
 				return new ContentRef<T>(null, targetResPath);
 			}
@@ -99,26 +105,35 @@ namespace Duality.Editor
 
 		private string GetTargetPath<T>(string fullName) where T : Resource
 		{
-			string ext = Resource.GetFileExtByType<T>();
-			string targetPath = PathHelper.GetFreePath(Path.Combine(this.targetDir, fullName), ext);
-
-			// Reverse engineer a new full name based on the determined target path
-			string targetFullName;
+			// If this is a Re-Import operation, try to reproduce actual Resource paths
+			if (this.isReImport)
 			{
-				string targetFullNameDir = Path.GetDirectoryName(fullName);
-				string targetFullNameFile = Path.GetFileName(targetPath);
-				targetFullNameFile = targetFullNameFile.Remove(targetFullNameFile.Length - ext.Length, ext.Length);
-				targetFullName = Path.Combine(targetFullNameDir, targetFullNameFile);
+				return Path.Combine(this.targetDir, fullName) + Resource.GetFileExtByType<T>();
 			}
-
-			// If the new full name is different from the old one, keep the rename operation in mind,
-			// so we can also alter the local source / media destination accordingly, should there be one.
-			if (!string.Equals(fullName, targetFullName, StringComparison.OrdinalIgnoreCase))
+			// Otherwise, attempt to get a free path for a fresh import
+			else
 			{
-				this.assetRenameMap[fullName] = targetFullName;
-			}
+				string ext = Resource.GetFileExtByType<T>();
+				string targetPath = PathHelper.GetFreePath(Path.Combine(this.targetDir, fullName), ext);
 
-			return targetPath;
+				// Reverse engineer a new full name based on the determined target path
+				string targetFullName;
+				{
+					string targetFullNameDir = Path.GetDirectoryName(fullName);
+					string targetFullNameFile = Path.GetFileName(targetPath);
+					targetFullNameFile = targetFullNameFile.Remove(targetFullNameFile.Length - ext.Length, ext.Length);
+					targetFullName = Path.Combine(targetFullNameDir, targetFullNameFile);
+				}
+
+				// If the new full name is different from the old one, keep the rename operation in mind,
+				// so we can also alter the local source / media destination accordingly, should there be one.
+				if (!string.Equals(fullName, targetFullName, StringComparison.OrdinalIgnoreCase))
+				{
+					this.assetRenameMap[fullName] = targetFullName;
+				}
+
+				return targetPath;
+			}
 		}
 	}
 }
