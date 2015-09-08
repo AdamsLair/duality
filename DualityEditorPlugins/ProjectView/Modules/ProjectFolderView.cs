@@ -148,6 +148,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				if (exclusive) this.folderView.ClearSelection();
 				viewNode.IsSelected = select;
 				this.folderView.EnsureVisible(viewNode);
+				this.folderView.Invalidate();
 				return true;
 			}
 			return false;
@@ -847,6 +848,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				importedResources = AssetManager.ImportAssets(dropBaseDir, mutualBaseDir, nonResFiles);
 
 				// ...and schedule them for selection later
+				this.folderView.ClearSelection();
 				foreach (ContentRef<Resource> resRef in importedResources)
 				{
 					this.ScheduleSelect(resRef.Path);

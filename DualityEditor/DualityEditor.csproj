@@ -116,11 +116,12 @@
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImportInput.cs" />
+    <Compile Include="Extensibility\AssetImport\ExtMethodsIAssetImportEnvironment.cs" />
     <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
     <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
     <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />
     <Compile Include="Extensibility\EditorActions\IEditorAction.cs" />
-    <Compile Include="Extensibility\AssetImport\DefaultAssetImportEnvironment.cs" />
+    <Compile Include="Extensibility\AssetImport\AssetImportEnvironment.cs" />
     <Compile Include="Extensibility\AssetImport\IAssetImportEnvironment.cs" />
     <Compile Include="Extensibility\AssetImport\IAssetImporter.cs" />
     <Compile Include="Extensibility\Previews\PreviewImageQuery.cs" />

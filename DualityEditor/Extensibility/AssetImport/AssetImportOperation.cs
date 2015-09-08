@@ -16,6 +16,7 @@ namespace Duality.Editor
 		private AssetImportInput[] input = null;
 		private RawList<ImportInputAssignment> inputMapping = null;
 		private HashSet<ContentRef<Resource>> output = null;
+		private Dictionary<string,string> assetRenameMap = null;
 		private Func<bool> confirmOverwrite = null;
 
 
@@ -116,18 +117,21 @@ namespace Duality.Editor
 		{
 			this.inputMapping = null;
 			this.output = null;
+			this.assetRenameMap = null;
 		}
 		private void DetermineImportInputMapping()
 		{
 			this.inputMapping = new RawList<ImportInputAssignment>();
+			this.assetRenameMap = new Dictionary<string,string>();
 
 			List<AssetImportInput> unhandledInput = this.input.ToList();
 			while (unhandledInput.Count > 0)
 			{
-				DefaultAssetImportEnvironment prepareEnv = new DefaultAssetImportEnvironment(
+				AssetImportEnvironment prepareEnv = new AssetImportEnvironment(
 					this.targetDir, 
 					this.sourceDir, 
 					unhandledInput);
+				prepareEnv.IsPrepareStep = true;
 
 				// Find an importer to handle some or all of the unhandled input files
 				bool foundImporter = false;
@@ -147,9 +151,18 @@ namespace Duality.Editor
 					AssetImportInput[] handledInput = prepareEnv.HandledInput.ToArray();
 					if (handledInput.Length > 0)
 					{
-						foreach (AssetImportInput item in handledInput)
+						for (int i = 0; i < handledInput.Length; i++)
 						{
-							unhandledInput.Remove(item);
+							unhandledInput.Remove(handledInput[i]);
+						}
+
+						// If the preparation step renamed output Resources, keep this in mind
+						if (prepareEnv.AssetRenameMap.Count > 0)
+						{
+							foreach (var pair in prepareEnv.AssetRenameMap)
+							{
+								this.assetRenameMap[pair.Key] = pair.Value;
+							}
 						}
 
 						foundImporter = true;
@@ -178,10 +191,27 @@ namespace Duality.Editor
 				AssetImportInput[] handledInputInSourceMedia = new AssetImportInput[assignment.HandledInput.Length];
 				for (int i = 0; i < assignment.HandledInput.Length; i++)
 				{
-					handledInputInSourceMedia[i] = new AssetImportInput(
-						Path.Combine(sourceDir, assignment.HandledInput[i].RelativePath),
-						assignment.HandledInput[i].RelativePath,
-						assignment.HandledInput[i].FullAssetName);
+					string oldFullName = assignment.HandledInput[i].FullAssetName;
+					string newFullName;
+
+					// If there was an automatic rename of output Resources, reflect that with local source / media paths
+					if (this.assetRenameMap.TryGetValue(oldFullName, out newFullName))
+					{
+						string ext = Path.GetExtension(assignment.HandledInput[i].Path);
+						string newRelativePath = newFullName + ext;
+						handledInputInSourceMedia[i] = new AssetImportInput(
+							Path.Combine(sourceDir, newRelativePath),
+							newRelativePath,
+							newFullName);
+					}
+					// Otherwise, perform a regular mapping from original input location to local source / media
+					else
+					{
+						handledInputInSourceMedia[i] = new AssetImportInput(
+							Path.Combine(sourceDir, assignment.HandledInput[i].RelativePath),
+							assignment.HandledInput[i].RelativePath,
+							assignment.HandledInput[i].FullAssetName);
+					}
 				}
 
 				// Assign the determined paths back to the input mapping
@@ -265,25 +295,36 @@ namespace Duality.Editor
 
 				// Import the (copied and mapped) files, this importer previously requested to handle
 				{
-					DefaultAssetImportEnvironment importEnv = new DefaultAssetImportEnvironment(this.targetDir, this.sourceDir, assignment.HandledInputInSourceMedia);
+					AssetImportEnvironment importEnv = new AssetImportEnvironment(this.targetDir, this.sourceDir, assignment.HandledInputInSourceMedia);
 					try
 					{
 						assignment.Importer.Import(importEnv);
 						anyImported = true;
-
-						// Collect references to the imported Resources, so we can return them later
+						
+						// Get a list on properly registered output Resources and report warnings on the rest
+						List<Resource> expectedOutput = new List<Resource>();
 						foreach (var resourceRef in importEnv.OutputResources)
 						{
-							this.output.Add(resourceRef);
 							if (!assignment.ExpectedOutput.Contains(resourceRef))
 							{
-								Log.Editor.WriteError(
+								Log.Editor.WriteWarning(
 									"AssetImporter '{0}' created an unpredicted output Resource: '{1}'. " + Environment.NewLine +
 									"This may cause problems in the Asset Management system, especially during Asset re-import. " + Environment.NewLine +
 									"Please fix the implementation of the PrepareImport method so it properly calls AddOutput for each predicted output Resource.",
 									Log.Type(assignment.Importer.GetType()),
 									resourceRef);
 							}
+							else
+							{
+								expectedOutput.Add(resourceRef.Res);
+							}
+						}
+
+						// Collect references to the imported Resources and save them
+						foreach (Resource resource in expectedOutput)
+						{
+							resource.Save();
+							this.output.Add(resource);
 						}
 					}
 					catch (Exception ex)

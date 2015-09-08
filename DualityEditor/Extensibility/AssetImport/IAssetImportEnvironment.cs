@@ -13,7 +13,9 @@ namespace Duality.Editor
 		IEnumerable<AssetImportInput> Input { get; }
 
 		bool HandleInput(string inputPath);
+
+		ContentRef<T> GetOutput<T>(string fullName) where T : Resource, new();
+		void AddOutput<T>(string fullName) where T : Resource;
 		void AddOutput(IContentRef resource);
-		void AddOutput<T>(string resourcePath) where T : Resource;
 	}
 }

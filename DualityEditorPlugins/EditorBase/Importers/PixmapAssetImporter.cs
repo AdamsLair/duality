@@ -16,34 +16,32 @@ namespace Duality.Editor.Plugins.Base
 		public static readonly string SourceFileExtPrimary = ".png";
 		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary, ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
 
+		private static bool AcceptsInput(AssetImportInput input)
+		{
+			string inputFileExt = Path.GetExtension(input.Path);
+			bool matchingFileExt = SourceFileExts.Any(acceptedExt => string.Equals(inputFileExt, acceptedExt, StringComparison.InvariantCultureIgnoreCase));
+			return matchingFileExt;
+		}
+
 		public void PrepareImport(IAssetImportEnvironment env)
 		{
-			foreach (AssetImportInput input in env.Input)
+			foreach (AssetImportInput input in env.HandleAllInput(AcceptsInput))
 			{
-				string ext = Path.GetExtension(input.Path);
-				if (SourceFileExts.Any(e => string.Equals(ext, e, StringComparison.InvariantCultureIgnoreCase)))
-				{
-					if (env.HandleInput(input.Path))
-					{
-						string targetResPath = this.GetTargetPath(input.FullAssetName, env.TargetDirectory);
-						env.AddOutput<Pixmap>(targetResPath);
-					}
-				}
+				env.AddOutput<Pixmap>(input.FullAssetName);
 			}
 		}
 		public void Import(IAssetImportEnvironment env)
 		{
-			foreach (AssetImportInput input in env.Input)
+			foreach (AssetImportInput input in env.HandleAllInput())
 			{
-				if (env.HandleInput(input.Path))
+				ContentRef<Pixmap> targetPixmapRef = env.GetOutput<Pixmap>(input.FullAssetName);
 				{
-					string targetResPath = this.GetTargetPath(input.FullAssetName, env.TargetDirectory);
+					Pixmap targetPixmap = targetPixmapRef.Res;
 					PixelData pixelData = this.LoadPixelData(input.Path);
-					Pixmap res = new Pixmap(pixelData);
-					res.SourcePath = input.Path;
-					res.Save(targetResPath);
-					env.AddOutput<Pixmap>(targetResPath);
+					targetPixmap.MainLayer = pixelData;
+					targetPixmap.SourcePath = input.Path;
 				}
+				env.AddOutput(targetPixmapRef);
 			}
 		}
 
@@ -59,11 +57,6 @@ namespace Duality.Editor.Plugins.Base
 		//	res.SourcePath = srcFile;
 		//}
 
-		private string GetTargetPath(string fullAssetName, string targetBaseDir)
-		{
-			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetBaseDir, fullAssetName), Resource.GetFileExtByType<Pixmap>());
-			return targetResPath;
-		}
 		private PixelData LoadPixelData(string filePath)
 		{
 			PixelData pixelData = new PixelData();
