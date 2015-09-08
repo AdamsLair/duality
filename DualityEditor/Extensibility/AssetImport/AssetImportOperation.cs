@@ -151,12 +151,13 @@ namespace Duality.Editor
 					AssetImportInput[] handledInput = prepareEnv.HandledInput.ToArray();
 					if (handledInput.Length > 0)
 					{
+						// Remove the handled input from the queue
 						for (int i = 0; i < handledInput.Length; i++)
 						{
 							unhandledInput.Remove(handledInput[i]);
 						}
 
-						// If the preparation step renamed output Resources, keep this in mind
+						// If the preparation step auto-renamed output Resources, keep this in mind
 						if (prepareEnv.AssetRenameMap.Count > 0)
 						{
 							foreach (var pair in prepareEnv.AssetRenameMap)
@@ -165,6 +166,7 @@ namespace Duality.Editor
 							}
 						}
 
+						// We have found a valid input assignment for a set of files
 						foundImporter = true;
 						this.inputMapping.Add(new ImportInputAssignment
 						{
