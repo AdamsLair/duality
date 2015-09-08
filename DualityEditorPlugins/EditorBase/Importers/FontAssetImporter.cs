@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 
 using Duality;
-using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
 
@@ -9,52 +10,48 @@ namespace Duality.Editor.Plugins.Base
 {
 	public class FontAssetImporter : IAssetImporter
 	{
-		public bool CanImportFile(string srcFile)
-		{
-			string ext = Path.GetExtension(srcFile).ToLower();
-			return ext == ".ttf";
-		}
-		public void ImportFile(string srcFile, string targetName, string targetDir)
-		{
-			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
-			Font font = new Font();
-
-			font.SourcePath = srcFile;
-			font.EmbeddedTrueTypeFont = File.ReadAllBytes(srcFile);
-			font.RenderGlyphs();
-			font.Save(output[0]);
-		}
-
-		public bool CanReImportFile(ContentRef<Resource> r, string srcFile)
-		{
-			return r.Is<Font>();
-		}
-		public void ReImportFile(ContentRef<Resource> r, string srcFile)
-		{
-			Font font = r.Res as Font;
-			font.SourcePath = srcFile;
-			font.EmbeddedTrueTypeFont = File.ReadAllBytes(srcFile);
-			font.RenderGlyphs();
-		}
-
-		public bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile)
-		{
-			ContentRef<Font> f = r.As<Font>();
-			return f != null && f.Res.EmbeddedTrueTypeFont != null && f.Res.SourcePath == srcFile;
-		}
-		public string[] GetOutputFiles(string srcFile, string targetName, string targetDir)
-		{
-			string targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Resource.GetFileExtByType<Font>());
-			return new string[] { targetResPath };
-		}
+		public static readonly string SourceFileExtPrimary = ".ttf";
+		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary };
 
 		public void PrepareImport(IAssetImportEnvironment env)
 		{
-			throw new System.NotImplementedException();
+			// Ask to handle all input that matches the conditions in AcceptsInput
+			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
+			{
+				// For all handled input items, specify which Resource the importer intends to create / modify
+				env.AddOutput<Font>(input.FullAssetName);
+			}
 		}
 		public void Import(IAssetImportEnvironment env)
 		{
-			throw new System.NotImplementedException();
+			// Ask to handle all available input. No need to filter this anymore, as
+			// the preparation step already made a selection with AcceptsInput. We won't
+			// get any input here that didn't match.
+			foreach (AssetImportInput input in env.HandleAllInput())
+			{
+				// Request a target Resource with a name matching the input
+				ContentRef<Font> targetRef = env.GetOutput<Font>(input.FullAssetName);
+
+				// If we successfully acquired one, proceed with the import
+				if (targetRef.IsAvailable)
+				{
+					Font target = targetRef.Res;
+
+					// Update font data from the input file
+					target.EmbeddedTrueTypeFont = File.ReadAllBytes(input.Path);
+					target.RenderGlyphs();
+
+					// Add the requested output to signal that we've done something with it
+					env.AddOutput(targetRef);
+				}
+			}
+		}
+		
+		private bool AcceptsInput(AssetImportInput input)
+		{
+			string inputFileExt = Path.GetExtension(input.Path);
+			bool matchingFileExt = SourceFileExts.Any(acceptedExt => string.Equals(inputFileExt, acceptedExt, StringComparison.InvariantCultureIgnoreCase));
+			return matchingFileExt;
 		}
 	}
 }

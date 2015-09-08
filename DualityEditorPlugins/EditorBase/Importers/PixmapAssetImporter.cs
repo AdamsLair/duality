@@ -32,21 +32,21 @@ namespace Duality.Editor.Plugins.Base
 			// get any input here that didn't match.
 			foreach (AssetImportInput input in env.HandleAllInput())
 			{
-				// Request a Pixmap with a name matching the input
-				ContentRef<Pixmap> targetPixmapRef = env.GetOutput<Pixmap>(input.FullAssetName);
+				// Request a target Resource with a name matching the input
+				ContentRef<Pixmap> targetRef = env.GetOutput<Pixmap>(input.FullAssetName);
 
 				// If we successfully acquired one, proceed with the import
-				if (targetPixmapRef.IsAvailable)
+				if (targetRef.IsAvailable)
 				{
-					Pixmap targetPixmap = targetPixmapRef.Res;
+					Pixmap target = targetRef.Res;
 
 					// Update pixel data from the input file
 					PixelData pixelData = this.LoadPixelData(input.Path);
-					targetPixmap.MainLayer = pixelData;
-					targetPixmap.SourcePath = input.Path;
+					target.MainLayer = pixelData;
+					target.SourcePath = input.Path;
 
 					// Add the requested output to signal that we've done something with it
-					env.AddOutput(targetPixmapRef);
+					env.AddOutput(targetRef);
 				}
 			}
 		}

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.IO;
 
 using Duality;
@@ -12,79 +13,57 @@ namespace Duality.Editor.Plugins.Base
 	{
 		public static readonly string SourceFileExtVertex = ".vert";
 		public static readonly string SourceFileExtFragment = ".frag";
-
-		public bool CanImportFile(string srcFile)
-		{
-			string ext = Path.GetExtension(srcFile);
-			return 
-				string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase) || 
-				string.Equals(ext, SourceFileExtFragment, StringComparison.InvariantCultureIgnoreCase); 
-		}
-		public void ImportFile(string srcFile, string targetName, string targetDir)
-		{
-			string ext = Path.GetExtension(srcFile);
-			string[] output = this.GetOutputFiles(srcFile, targetName, targetDir);
-			string sourceCode = File.ReadAllText(srcFile);
-			if (string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
-			{
-				VertexShader res = new VertexShader();
-				res.Source = sourceCode;
-				res.SourcePath = srcFile;
-				res.Compile();
-				res.Save(output[0]);
-			}
-			else
-			{
-				FragmentShader res = new FragmentShader();
-				res.Source = sourceCode;
-				res.SourcePath = srcFile;
-				res.Compile();
-				res.Save(output[0]);
-			}
-		}
-
-		public bool CanReImportFile(ContentRef<Resource> r, string srcFile)
-		{
-			string ext = Path.GetExtension(srcFile);
-			if (r.Is<VertexShader>() && string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
-				return true;
-			else if (r.Is<FragmentShader>() && string.Equals(ext, SourceFileExtFragment, StringComparison.InvariantCultureIgnoreCase))
-				return true;
-			else
-				return false;
-		}
-		public void ReImportFile(ContentRef<Resource> r, string srcFile)
-		{
-			AbstractShader s = r.Res as AbstractShader;
-			string sourceCode = File.ReadAllText(srcFile);
-			s.Source = sourceCode;
-			s.SourcePath = srcFile;
-			s.Compile();
-		}
-
-		public bool IsUsingSrcFile(ContentRef<Resource> r, string srcFile)
-		{
-			ContentRef<AbstractShader> s = r.As<AbstractShader>();
-			return s != null && s.Res.SourcePath == srcFile;
-		}
-		public string[] GetOutputFiles(string srcFile, string targetName, string targetDir)
-		{
-			string ext = Path.GetExtension(srcFile).ToLower();
-			string targetResPath;
-			if (ext == SourceFileExtVertex)
-				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Resource.GetFileExtByType<VertexShader>());
-			else
-				targetResPath = PathHelper.GetFreePath(Path.Combine(targetDir, targetName), Resource.GetFileExtByType<FragmentShader>());
-			return new string[] { targetResPath };
-		}
+		private static readonly string[] SourceFileExts = new[] { SourceFileExtVertex, SourceFileExtFragment };
 
 		public void PrepareImport(IAssetImportEnvironment env)
 		{
-			throw new NotImplementedException();
+			// Ask to handle all input that matches the conditions in AcceptsInput
+			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
+			{
+				// For all handled input items, specify which Resource the importer intends to create / modify
+				string ext = Path.GetExtension(input.Path);
+				if (string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
+					env.AddOutput<VertexShader>(input.FullAssetName);
+				else
+					env.AddOutput<FragmentShader>(input.FullAssetName);
+			}
 		}
 		public void Import(IAssetImportEnvironment env)
 		{
-			throw new NotImplementedException();
+			// Ask to handle all available input. No need to filter this anymore, as
+			// the preparation step already made a selection with AcceptsInput. We won't
+			// get any input here that didn't match.
+			foreach (AssetImportInput input in env.HandleAllInput())
+			{
+				string ext = Path.GetExtension(input.Path);
+
+				// Request a target Resource with a name matching the input
+				IContentRef targetRef;
+				if (string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
+					targetRef = env.GetOutput<VertexShader>(input.FullAssetName);
+				else
+					targetRef = env.GetOutput<FragmentShader>(input.FullAssetName);
+
+				// If we successfully acquired one, proceed with the import
+				if (targetRef.IsAvailable)
+				{
+					AbstractShader target = targetRef.Res as AbstractShader;
+
+					// Update shader data from the input file
+					target.Source = File.ReadAllText(input.Path);
+					target.Compile();
+
+					// Add the requested output to signal that we've done something with it
+					env.AddOutput(targetRef);
+				}
+			}
+		}
+		
+		private bool AcceptsInput(AssetImportInput input)
+		{
+			string inputFileExt = Path.GetExtension(input.Path);
+			bool matchingFileExt = SourceFileExts.Any(acceptedExt => string.Equals(inputFileExt, acceptedExt, StringComparison.InvariantCultureIgnoreCase));
+			return matchingFileExt;
 		}
 	}
 }
