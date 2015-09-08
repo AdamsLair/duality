@@ -14,7 +14,7 @@ namespace Duality.Editor
 	{
 		private string path;
 		private string relativePath;
-		private string fullAssetName;
+		private string assetName;
 
 		/// <summary>
 		/// [GET] The path where this input file is located.
@@ -31,26 +31,26 @@ namespace Duality.Editor
 			get { return this.relativePath; }
 		}
 		/// <summary>
-		/// [GET] The input's full name. Use this to derive Resource names from input items during import operations.
+		/// [GET] The input's asset name. Use this to derive Resource names from input items during import operations.
 		/// </summary>
-		public string FullAssetName
+		public string AssetName
 		{
-			get { return this.fullAssetName; }
+			get { return this.assetName; }
 		}
 
 		public AssetImportInput(string path, string baseDir)
 		{
 			this.path = path;
 			this.relativePath = PathHelper.MakeFilePathRelative(this.path, baseDir);
-			this.fullAssetName = System.IO.Path.Combine(
+			this.assetName = System.IO.Path.Combine(
 				System.IO.Path.GetDirectoryName(this.relativePath), 
 				System.IO.Path.GetFileNameWithoutExtension(this.path));
 		}
-		public AssetImportInput(string path, string relativePath, string fullAssetName)
+		public AssetImportInput(string path, string relativePath, string assetName)
 		{
 			this.path = path;
 			this.relativePath = relativePath;
-			this.fullAssetName = fullAssetName;
+			this.assetName = assetName;
 		}
 
 		public override string ToString()

@@ -76,9 +76,9 @@ namespace Duality.Editor
 			this.handledInput.Add(this.input[inputIndex]);
 			return true;
 		}
-		public ContentRef<T> GetOutput<T>(string fullName) where T : Resource, new()
+		public ContentRef<T> GetOutput<T>(string assetName) where T : Resource, new()
 		{
-			string targetResPath = this.GetTargetPath<T>(fullName);
+			string targetResPath = this.GetTargetPath<T>(assetName);
 
 			// When requested during preparation, just return an empty ContentRef
 			if (this.isPrepareStep || this.isReImport)
@@ -93,9 +93,9 @@ namespace Duality.Editor
 				return new ContentRef<T>(targetRes, targetResPath);
 			}
 		}
-		public void AddOutput<T>(string fullName) where T : Resource
+		public void AddOutput<T>(string assetName) where T : Resource
 		{
-			string targetResPath = this.GetTargetPath<T>(fullName);
+			string targetResPath = this.GetTargetPath<T>(assetName);
 			this.AddOutput(new ContentRef<T>(null, targetResPath));
 		}
 		public void AddOutput(IContentRef resource)
@@ -103,23 +103,23 @@ namespace Duality.Editor
 			this.output.Add(resource.As<Resource>());
 		}
 
-		private string GetTargetPath<T>(string fullName) where T : Resource
+		private string GetTargetPath<T>(string assetName) where T : Resource
 		{
 			// If this is a Re-Import operation, try to reproduce actual Resource paths
 			if (this.isReImport)
 			{
-				return Path.Combine(this.targetDir, fullName) + Resource.GetFileExtByType<T>();
+				return Path.Combine(this.targetDir, assetName) + Resource.GetFileExtByType<T>();
 			}
 			// Otherwise, attempt to get a free path for a fresh import
 			else
 			{
 				string ext = Resource.GetFileExtByType<T>();
-				string targetPath = PathHelper.GetFreePath(Path.Combine(this.targetDir, fullName), ext);
+				string targetPath = PathHelper.GetFreePath(Path.Combine(this.targetDir, assetName), ext);
 
 				// Reverse engineer a new full name based on the determined target path
 				string targetFullName;
 				{
-					string targetFullNameDir = Path.GetDirectoryName(fullName);
+					string targetFullNameDir = Path.GetDirectoryName(assetName);
 					string targetFullNameFile = Path.GetFileName(targetPath);
 					targetFullNameFile = targetFullNameFile.Remove(targetFullNameFile.Length - ext.Length, ext.Length);
 					targetFullName = Path.Combine(targetFullNameDir, targetFullNameFile);
@@ -127,9 +127,9 @@ namespace Duality.Editor
 
 				// If the new full name is different from the old one, keep the rename operation in mind,
 				// so we can also alter the local source / media destination accordingly, should there be one.
-				if (!string.Equals(fullName, targetFullName, StringComparison.OrdinalIgnoreCase))
+				if (!string.Equals(assetName, targetFullName, StringComparison.OrdinalIgnoreCase))
 				{
-					this.assetRenameMap[fullName] = targetFullName;
+					this.assetRenameMap[assetName] = targetFullName;
 				}
 
 				return targetPath;

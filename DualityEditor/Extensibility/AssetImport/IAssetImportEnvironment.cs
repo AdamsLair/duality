@@ -32,20 +32,20 @@ namespace Duality.Editor
 		bool HandleInput(string inputPath);
 
 		/// <summary>
-		/// Requests an output <see cref="Duality.Resource"/> with the specified name (see <see cref="AssetImportInput.FullAssetname"/>).
+		/// Requests an output <see cref="Duality.Resource"/> with the specified name (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).
 		/// Use this method to create a new Resource during import, or request the affected one during re-import.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="fullName">The name of the requested output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.FullAssetname"/>).</param>
+		/// <param name="assetName">The name of the requested output <see cref="Duality.Resource"/> (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).</param>
 		/// <returns></returns>
-		ContentRef<T> GetOutput<T>(string fullName) where T : Resource, new();
+		ContentRef<T> GetOutput<T>(string assetName) where T : Resource, new();
 		/// <summary>
 		/// Specifies that the current importer will create or modify a <see cref="Duality.Resource"/> with 
-		/// the specified name (see <see cref="AssetImportInput.FullAssetname"/>).
+		/// the specified name (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="fullName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.FullAssetname"/>).</param>
-		void AddOutput<T>(string fullName) where T : Resource;
+		/// <param name="assetName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).</param>
+		void AddOutput<T>(string assetName) where T : Resource;
 		/// <summary>
 		/// Submits the specified <see cref="Duality.Resource"/> as a generated output of the current importer.
 		/// </summary>

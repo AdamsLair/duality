@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
 			{
 				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<Pixmap>(input.FullAssetName);
+				env.AddOutput<Pixmap>(input.AssetName);
 			}
 		}
 		public void Import(IAssetImportEnvironment env)
@@ -33,7 +33,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput())
 			{
 				// Request a target Resource with a name matching the input
-				ContentRef<Pixmap> targetRef = env.GetOutput<Pixmap>(input.FullAssetName);
+				ContentRef<Pixmap> targetRef = env.GetOutput<Pixmap>(input.AssetName);
 
 				// If we successfully acquired one, proceed with the import
 				if (targetRef.IsAvailable)

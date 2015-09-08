@@ -193,7 +193,7 @@ namespace Duality.Editor
 				AssetImportInput[] handledInputInSourceMedia = new AssetImportInput[assignment.HandledInput.Length];
 				for (int i = 0; i < assignment.HandledInput.Length; i++)
 				{
-					string oldFullName = assignment.HandledInput[i].FullAssetName;
+					string oldFullName = assignment.HandledInput[i].AssetName;
 					string newFullName;
 
 					// If there was an automatic rename of output Resources, reflect that with local source / media paths
@@ -212,7 +212,7 @@ namespace Duality.Editor
 						handledInputInSourceMedia[i] = new AssetImportInput(
 							Path.Combine(sourceDir, assignment.HandledInput[i].RelativePath),
 							assignment.HandledInput[i].RelativePath,
-							assignment.HandledInput[i].FullAssetName);
+							assignment.HandledInput[i].AssetName);
 					}
 				}
 

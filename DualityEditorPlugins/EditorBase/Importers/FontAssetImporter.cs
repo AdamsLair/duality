@@ -19,7 +19,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
 			{
 				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<Font>(input.FullAssetName);
+				env.AddOutput<Font>(input.AssetName);
 			}
 		}
 		public void Import(IAssetImportEnvironment env)
@@ -30,7 +30,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput())
 			{
 				// Request a target Resource with a name matching the input
-				ContentRef<Font> targetRef = env.GetOutput<Font>(input.FullAssetName);
+				ContentRef<Font> targetRef = env.GetOutput<Font>(input.AssetName);
 
 				// If we successfully acquired one, proceed with the import
 				if (targetRef.IsAvailable)

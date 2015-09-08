@@ -20,7 +20,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
 			{
 				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<AudioData>(input.FullAssetName);
+				env.AddOutput<AudioData>(input.AssetName);
 			}
 		}
 		public void Import(IAssetImportEnvironment env)
@@ -31,7 +31,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput())
 			{
 				// Request a target Resource with a name matching the input
-				ContentRef<AudioData> targetRef = env.GetOutput<AudioData>(input.FullAssetName);
+				ContentRef<AudioData> targetRef = env.GetOutput<AudioData>(input.AssetName);
 
 				// If we successfully acquired one, proceed with the import
 				if (targetRef.IsAvailable)
