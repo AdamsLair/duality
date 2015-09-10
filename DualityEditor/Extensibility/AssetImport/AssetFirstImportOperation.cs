@@ -80,7 +80,9 @@ namespace Duality.Editor
 		}
 		protected override bool OnPerform()
 		{
-			this.DetermineImportInputMapping();
+			if (!this.DetermineImportInputMapping())
+				return false;
+
 			this.DetermineLocalInputFilePaths();
 
 			if (this.DoesOverwriteData() && !this.InvokeConfirmOverwrite())
@@ -93,7 +95,7 @@ namespace Duality.Editor
 			return true;
 		}
 
-		private void DetermineImportInputMapping()
+		private bool DetermineImportInputMapping()
 		{
 			AssetImportEnvironment prepareEnv = new AssetImportEnvironment(
 				this.targetDir, 
@@ -112,6 +114,8 @@ namespace Duality.Editor
 					this.assetRenameMap[pair.Key] = pair.Value;
 				}
 			}
+
+			return this.inputMapping.Count > 0;
 		}
 		private void DetermineLocalInputFilePaths()
 		{

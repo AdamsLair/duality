@@ -30,7 +30,8 @@ namespace Duality.Editor
 		protected override void OnResetWorkingData() { }
 		protected override bool OnPerform()
 		{
-			this.DetermineImportInputMapping();
+			if (!this.DetermineImportInputMapping())
+				return false;
 
 			if (!this.ImportFromLocalFolder())
 				return false;
@@ -38,7 +39,7 @@ namespace Duality.Editor
 			return true;
 		}
 
-		private void DetermineImportInputMapping()
+		private bool DetermineImportInputMapping()
 		{
 			AssetImportEnvironment prepareEnv = new AssetImportEnvironment(
 				DualityApp.DataDirectory, 
@@ -48,10 +49,23 @@ namespace Duality.Editor
 			prepareEnv.IsReImport = true;
 
 			this.inputMapping = this.SelectImporter(prepareEnv);
+
+			// Filter out mappings without existing target Resources - can't Re-Import what isn't there.
+			for (int i = this.inputMapping.Count - 1; i >= 0; i--)
+			{
+				if (this.inputMapping.Data[i].ExpectedOutput.Any(res => !res.IsAvailable))
+				{
+					this.inputMapping.RemoveAt(i);
+				}
+			}
+
+			// Since this is a Re-Import, all input files are located in source / media
 			for (int i = 0; i < this.inputMapping.Count; i++)
 			{
 				this.inputMapping.Data[i].HandledInputInSourceMedia = this.inputMapping.Data[i].HandledInput;
 			}
+
+			return this.inputMapping.Count > 0;
 		}
 		private bool ImportFromLocalFolder()
 		{
