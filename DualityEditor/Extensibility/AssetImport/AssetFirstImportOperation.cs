@@ -40,18 +40,6 @@ namespace Duality.Editor
 					string.Format("The specified target base directory needs to be located within the Duality '{0}' direcctory", DualityApp.DataDirectory),
 					"targetBaseDir");
 			}
-			if (PathOp.ArePathsEqual(inputBaseDir, EditorHelper.SourceMediaDirectory) || PathOp.IsPathLocatedIn(inputBaseDir, EditorHelper.SourceMediaDirectory))
-			{
-				throw new ArgumentException(
-					string.Format("The specified input base directory must not to be located within the Duality '{0}' direcctory", EditorHelper.SourceMediaDirectory),
-					"inputBaseDir");
-			}
-			if (inputFiles.Any(file => PathOp.IsPathLocatedIn(file, EditorHelper.SourceMediaDirectory)))
-			{
-				throw new ArgumentException(
-					string.Format("Can't import Assets using source files that are located within the Duality '{0}' direcctory", EditorHelper.SourceMediaDirectory),
-					"inputFiles");
-			}
 
 			if (PathOp.ArePathsEqual(targetBaseDir, DualityApp.DataDirectory))
 			{
@@ -199,6 +187,10 @@ namespace Duality.Editor
 						string filePath = assignment.HandledInput[i].Path;
 						string filePathInSourceMedia = assignment.HandledInputInSourceMedia[i].Path;
 						string dirPathInSourceMedia = Path.GetDirectoryName(filePathInSourceMedia);
+
+						// If the file is already where it needs to be, skip it
+						if (PathOp.ArePathsEqual(filePath, filePathInSourceMedia))
+							continue;
 
 						// If there already is a similarly named file in the source directory, delete it.
 						if (File.Exists(filePathInSourceMedia))
