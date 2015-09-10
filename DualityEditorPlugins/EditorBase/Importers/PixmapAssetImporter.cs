@@ -15,6 +15,19 @@ namespace Duality.Editor.Plugins.Base
 	{
 		public static readonly string SourceFileExtPrimary = ".png";
 		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary, ".bmp", ".jpg", ".jpeg", ".tif", ".tiff" };
+		
+		public string Id
+		{
+			get { return "BasicPixmapAssetImporter"; }
+		}
+		public string Name
+		{
+			get { return "Pixmap Importer"; }
+		}
+		public int Priority
+		{
+			get { return 0; }
+		}
 
 		public void PrepareImport(IAssetImportEnvironment env)
 		{

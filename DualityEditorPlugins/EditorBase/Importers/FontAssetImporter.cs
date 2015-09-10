@@ -12,6 +12,19 @@ namespace Duality.Editor.Plugins.Base
 	{
 		public static readonly string SourceFileExtPrimary = ".ttf";
 		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary };
+		
+		public string Id
+		{
+			get { return "BasicFontAssetImporter"; }
+		}
+		public string Name
+		{
+			get { return "TrueType Font Importer"; }
+		}
+		public int Priority
+		{
+			get { return 0; }
+		}
 
 		public void PrepareImport(IAssetImportEnvironment env)
 		{

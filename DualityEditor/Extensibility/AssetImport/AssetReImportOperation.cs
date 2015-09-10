@@ -85,7 +85,9 @@ namespace Duality.Editor
 					}
 					catch (Exception ex)
 					{
-						Log.Editor.WriteError("An error occurred in the preparation step of an AssetImporter: {0}", Log.Exception(ex));
+						Log.Editor.WriteError("An error occurred in the preparation step of '{1}': {0}", 
+							Log.Exception(ex),
+							Log.Type(importer.GetType()));
 						continue;
 					}
 
@@ -167,7 +169,9 @@ namespace Duality.Editor
 					catch (Exception ex)
 					{
 						importFailure = true;
-						Log.Editor.WriteError("An error occurred while trying to re-import files: {0}", Log.Exception(ex));
+						Log.Editor.WriteError("An error occurred while trying to re-import files using '{1}': {0}", 
+							Log.Exception(ex),
+							Log.Type(assignment.Importer.GetType()));
 						this.inputMapping.RemoveAt(assignmentIndex);
 						assignmentIndex--;
 					}

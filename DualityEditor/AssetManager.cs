@@ -26,6 +26,7 @@ namespace Duality.Editor
 				IAssetImporter gen = genType.CreateInstanceOf() as IAssetImporter;
 				if (gen != null) importers.Add(gen);
 			}
+			importers.StableSort((a, b) => b.Priority > a.Priority ? 1 : -1);
 		}
 		internal static void Terminate()
 		{

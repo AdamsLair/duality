@@ -13,6 +13,19 @@ namespace Duality.Editor.Plugins.Base
 	{
 		public static readonly string SourceFileExtPrimary = ".ogg";
 		private static readonly string[] SourceFileExts = new[] { SourceFileExtPrimary };
+		
+		public string Id
+		{
+			get { return "BasicAudioDataAssetImporter"; }
+		}
+		public string Name
+		{
+			get { return "AudioData Importer"; }
+		}
+		public int Priority
+		{
+			get { return 0; }
+		}
 
 		public void PrepareImport(IAssetImportEnvironment env)
 		{
