@@ -61,6 +61,12 @@ namespace Duality.Editor
 			this.input = input.ToArray();
 		}
 
+		public void ResetAcquiredData()
+		{
+			this.output.Clear();
+			this.handledInput.Clear();
+		}
+
 		public bool HandleInput(string filePath)
 		{
 			int inputIndex = this.input.IndexOfFirst(i => PathOp.ArePathsEqual(i.Path, filePath));

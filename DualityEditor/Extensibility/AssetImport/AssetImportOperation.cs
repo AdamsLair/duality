@@ -8,26 +8,13 @@ using Duality.IO;
 
 namespace Duality.Editor
 {
-	public class AssetImportOperation
+	public abstract class AssetImportOperation
 	{
-		private string targetDir = null;
-		private string sourceDir = null;
-		private string inputBaseDir = null;
-		private AssetImportInput[] input = null;
-		private RawList<ImportInputAssignment> inputMapping = null;
-		private HashSet<ContentRef<Resource>> output = null;
-		private Dictionary<string,string> assetRenameMap = null;
-		private Func<bool> confirmOverwrite = null;
+		protected AssetImportInput[] input = null;
+		protected RawList<ImportInputAssignment> inputMapping = null;
+		protected HashSet<ContentRef<Resource>> output = null;
 
 
-		public string TargetDirectory
-		{
-			get { return this.targetDir; }
-		}
-		public string SourceDirectory
-		{
-			get { return this.sourceDir; }
-		}
 		public IEnumerable<AssetImportInput> Input
 		{
 			get { return this.input; }
@@ -36,75 +23,12 @@ namespace Duality.Editor
 		{
 			get { return this.output ?? Enumerable.Empty<ContentRef<Resource>>(); }
 		}
-		public Func<bool> ConfirmOverwriteCallback
-		{
-			get { return this.confirmOverwrite; }
-			set { this.confirmOverwrite = value; }
-		}
 
-
-		public AssetImportOperation(string targetBaseDir, string inputBaseDir, IEnumerable<string> inputFiles)
-		{
-			if (!PathOp.ArePathsEqual(targetBaseDir, DualityApp.DataDirectory) && !PathOp.IsPathLocatedIn(targetBaseDir, DualityApp.DataDirectory))
-			{
-				throw new ArgumentException(
-					string.Format("The specified target base directory needs to be located within the Duality '{0}' direcctory", DualityApp.DataDirectory),
-					"targetBaseDir");
-			}
-			if (PathOp.ArePathsEqual(inputBaseDir, EditorHelper.SourceMediaDirectory) || PathOp.IsPathLocatedIn(inputBaseDir, EditorHelper.SourceMediaDirectory))
-			{
-				throw new ArgumentException(
-					string.Format("The specified input base directory must not to be located within the Duality '{0}' direcctory", EditorHelper.SourceMediaDirectory),
-					"inputBaseDir");
-			}
-			if (inputFiles.Any(file => PathOp.IsPathLocatedIn(file, EditorHelper.SourceMediaDirectory)))
-			{
-				throw new ArgumentException(
-					string.Format("Can't import Assets using source files that are located within the Duality '{0}' direcctory", EditorHelper.SourceMediaDirectory),
-					"inputFiles");
-			}
-
-			if (PathOp.ArePathsEqual(targetBaseDir, DualityApp.DataDirectory))
-			{
-				this.targetDir = DualityApp.DataDirectory;
-				this.sourceDir = EditorHelper.SourceMediaDirectory;
-			}
-			else
-			{
-				string baseDir = PathHelper.MakeFilePathRelative(targetBaseDir, DualityApp.DataDirectory);
-				this.targetDir = Path.Combine(DualityApp.DataDirectory, baseDir);
-				this.sourceDir = Path.Combine(EditorHelper.SourceMediaDirectory, baseDir);
-			}
-
-			string[] inputFileArray = inputFiles.ToArray();
-			this.inputBaseDir = inputBaseDir;
-			this.input = new AssetImportInput[inputFileArray.Length];
-			for (int i = 0; i < this.input.Length; i++)
-			{
-				this.input[i] = new AssetImportInput(inputFileArray[i], inputBaseDir);
-			}
-		}
 
 		public bool Perform()
 		{
 			this.ResetWorkingData();
-
-			bool importSuccess = false;
-			while (true)
-			{
-				this.DetermineImportInputMapping();
-				this.DetermineLocalInputFilePaths();
-
-				if (this.DoesOverwriteData() && !this.InvokeConfirmOverwrite())
-					break;
-
-				this.CopySourceToLocalFolder();
-				if (!this.ImportFromLocalFolder())
-					break;
-
-				importSuccess = true;
-				break;
-			}
+			bool importSuccess = this.OnPerform();
 
 			// Clean up, in case we've done heavy-duty work
 			GC.Collect();
@@ -113,253 +37,127 @@ namespace Duality.Editor
 			return importSuccess;
 		}
 
+		protected abstract void OnResetWorkingData();
+		protected abstract bool OnPerform();
+		protected virtual int ResolveMappingConflict(ImportInputAssignment[] conflictingAssignments)
+		{
+			int keepIndex = -1;
+			int highestPrio = int.MinValue;
+			for (int i = 0; i < conflictingAssignments.Length; i++)
+			{
+				if (conflictingAssignments[i].Importer.Priority > highestPrio)
+				{
+					highestPrio = conflictingAssignments[i].Importer.Priority;
+					keepIndex = i;
+				}
+			}
+			return keepIndex;
+		}
+		
+		protected RawList<ImportInputAssignment> SelectImporter(AssetImportEnvironment env)
+		{
+			if (!env.IsPrepareStep) throw new ArgumentException(
+				"The specified import environment must be configured as a preparation environment.", 
+				"env");
+
+			// Find an importer to handle some or all of the unhandled input files
+			RawList<ImportInputAssignment> candidateMapping = new RawList<ImportInputAssignment>();
+			foreach (IAssetImporter importer in AssetManager.Importers)
+			{
+				env.ResetAcquiredData();
+
+				try
+				{
+					importer.PrepareImport(env);
+				}
+				catch (Exception ex)
+				{
+					Log.Editor.WriteError("An error occurred in the preparation step of '{1}': {0}", 
+						Log.Exception(ex),
+						Log.Type(importer.GetType()));
+					continue;
+				}
+
+				if (env.HandledInput.Any())
+				{
+					candidateMapping.Add(new ImportInputAssignment
+					{
+						Importer = importer,
+						HandledInput = env.HandledInput.ToArray(),
+						ExpectedOutput = env.OutputResources.ToArray()
+					});
+				}
+			}
+
+			// Determine if multiple importers intend to handle the same files and resolve conflicts
+			List<int> conflictingIndices = new List<int>();
+			List<string> conflictingFiles = new List<string>();
+			for (int mainIndex = 0; mainIndex < candidateMapping.Count; mainIndex++)
+			{
+				ImportInputAssignment assignment = candidateMapping[mainIndex];
+
+				// Find all conflicts related to this assignment
+				conflictingIndices.Clear();
+				conflictingFiles.Clear();
+				for (int secondIndex = 0; secondIndex < candidateMapping.Count; secondIndex++)
+				{
+					if (secondIndex == mainIndex) continue;
+
+					ImportInputAssignment conflictAssignment = candidateMapping[secondIndex];
+					IEnumerable<string> mainFiles = assignment.HandledInput.Select(item => item.Path);
+					IEnumerable<string> secondFiles = conflictAssignment.HandledInput.Select(item => item.Path);
+					string[] conflicts = mainFiles.Union(secondFiles).ToArray();
+					if (conflicts.Length > 0)
+					{
+						if (conflictingIndices.Count == 0) conflictingIndices.Add(mainIndex);
+						conflictingIndices.Add(secondIndex);
+						conflictingFiles.AddRange(conflicts);
+					}
+				}
+
+				// Resolve conflicts with this assignment
+				if (conflictingIndices.Count > 0)
+				{
+					// Determine which importer to prefer for this conflict
+					ImportInputAssignment[] conflictingAssignments = conflictingIndices.Select(i => candidateMapping[i]).ToArray();
+					int keepIndex = this.ResolveMappingConflict(conflictingAssignments);
+
+					// Sort indices to remove in declining order and remove their mappings
+					conflictingIndices.Remove(keepIndex);
+					conflictingIndices.Sort((a, b) => b - a);
+					foreach (int index in conflictingIndices)
+					{
+						candidateMapping.RemoveAt(index);
+					}
+
+					// Start over with the conflict search
+					mainIndex = -1;
+					continue;
+				}
+			}
+
+			return candidateMapping;
+		}
 		private void ResetWorkingData()
 		{
 			this.inputMapping = null;
 			this.output = null;
-			this.assetRenameMap = null;
-		}
-		private void DetermineImportInputMapping()
-		{
-			this.inputMapping = new RawList<ImportInputAssignment>();
-			this.assetRenameMap = new Dictionary<string,string>();
-
-			List<AssetImportInput> unhandledInput = this.input.ToList();
-			while (unhandledInput.Count > 0)
-			{
-				AssetImportEnvironment prepareEnv = new AssetImportEnvironment(
-					this.targetDir, 
-					this.sourceDir, 
-					unhandledInput);
-				prepareEnv.IsPrepareStep = true;
-
-				// Find an importer to handle some or all of the unhandled input files
-				bool foundImporter = false;
-				foreach (IAssetImporter importer in AssetManager.Importers)
-				{
-					try
-					{
-						importer.PrepareImport(prepareEnv);
-					}
-					catch (Exception ex)
-					{
-						Log.Editor.WriteError("An error occurred in the preparation step of '{1}': {0}", 
-							Log.Exception(ex),
-							Log.Type(importer.GetType()));
-						continue;
-					}
-
-					// See which files the current importer is able to handle
-					AssetImportInput[] handledInput = prepareEnv.HandledInput.ToArray();
-					if (handledInput.Length > 0)
-					{
-						// Remove the handled input from the queue
-						for (int i = 0; i < handledInput.Length; i++)
-						{
-							unhandledInput.Remove(handledInput[i]);
-						}
-
-						// If the preparation step auto-renamed output Resources, keep this in mind
-						if (prepareEnv.AssetRenameMap.Count > 0)
-						{
-							foreach (var pair in prepareEnv.AssetRenameMap)
-							{
-								this.assetRenameMap[pair.Key] = pair.Value;
-							}
-						}
-
-						// We have found a valid input assignment for a set of files
-						foundImporter = true;
-						this.inputMapping.Add(new ImportInputAssignment
-						{
-							Importer = importer,
-							ExpectedOutput = prepareEnv.OutputResources.ToArray(),
-							HandledInput = handledInput
-						});
-						break;
-					}
-				}
-
-				// If no suitable importer was found to handle the remaining files, stop
-				if (!foundImporter)
-					break;
-			}
-		}
-		private void DetermineLocalInputFilePaths()
-		{
-			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
-			{
-				ImportInputAssignment assignment = inputMapping.Data[assignmentIndex];
-
-				// Create a relative mapping for each of the handled files
-				AssetImportInput[] handledInputInSourceMedia = new AssetImportInput[assignment.HandledInput.Length];
-				for (int i = 0; i < assignment.HandledInput.Length; i++)
-				{
-					string oldFullName = assignment.HandledInput[i].AssetName;
-					string newFullName;
-
-					// If there was an automatic rename of output Resources, reflect that with local source / media paths
-					if (this.assetRenameMap.TryGetValue(oldFullName, out newFullName))
-					{
-						string ext = Path.GetExtension(assignment.HandledInput[i].Path);
-						string newRelativePath = newFullName + ext;
-						handledInputInSourceMedia[i] = new AssetImportInput(
-							Path.Combine(sourceDir, newRelativePath),
-							newRelativePath,
-							newFullName);
-					}
-					// Otherwise, perform a regular mapping from original input location to local source / media
-					else
-					{
-						handledInputInSourceMedia[i] = new AssetImportInput(
-							Path.Combine(sourceDir, assignment.HandledInput[i].RelativePath),
-							assignment.HandledInput[i].RelativePath,
-							assignment.HandledInput[i].AssetName);
-					}
-				}
-
-				// Assign the determined paths back to the input mapping
-				this.inputMapping.Data[assignmentIndex].HandledInputInSourceMedia = handledInputInSourceMedia;
-			}
-		}
-		private bool DoesOverwriteData()
-		{
-			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
-			{
-				ImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
-
-				// Determine if we'll be overwriting any Resource files
-				for (int i = 0; i < assignment.ExpectedOutput.Length; i++)
-				{
-					if (File.Exists(assignment.ExpectedOutput[i].Path))
-					{
-						return true;
-					}
-				}
-
-				// Determine if we'll be overwriting any source / media files
-				for (int i = 0; i < assignment.HandledInput.Length; i++)
-				{
-					if (File.Exists(assignment.HandledInputInSourceMedia[i].Path))
-					{
-						if (!PathHelper.FilesEqual(assignment.HandledInput[i].Path, assignment.HandledInputInSourceMedia[i].Path))
-						{
-							return true;
-						}
-					}
-				}
-			}
-
-			return false;
-		}
-		private void CopySourceToLocalFolder()
-		{
-			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
-			{
-				ImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
-
-				// Copy all handled files to the media / source directory
-				try
-				{
-					// Copy each handled file into source / media, while preserving the original relative structure
-					for (int i = 0; i < assignment.HandledInput.Length; i++)
-					{
-						string filePath = assignment.HandledInput[i].Path;
-						string filePathInSourceMedia = assignment.HandledInputInSourceMedia[i].Path;
-						string dirPathInSourceMedia = Path.GetDirectoryName(filePathInSourceMedia);
-
-						// If there already is a similarly named file in the source directory, delete it.
-						if (File.Exists(filePathInSourceMedia))
-							File.Delete(filePathInSourceMedia);
-
-						// Assure the media / source directory exists
-						Directory.CreateDirectory(dirPathInSourceMedia);
-
-						// Copy file from its original location to the source / media directory
-						File.Copy(filePath, filePathInSourceMedia);
-					}
-				}
-				catch (Exception ex)
-				{
-					Log.Editor.WriteError("Can't copy source files to the media / source directory: {0}", Log.Exception(ex));
-					this.inputMapping.RemoveAt(assignmentIndex);
-					assignmentIndex--;
-				}
-			}
-		}
-		private bool ImportFromLocalFolder()
-		{
-			bool importFailure = false;
-			bool anyImported = false;
-
-			this.output = new HashSet<ContentRef<Resource>>();
-			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
-			{
-				ImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
-
-				// Import the (copied and mapped) files, this importer previously requested to handle
-				{
-					AssetImportEnvironment importEnv = new AssetImportEnvironment(this.targetDir, this.sourceDir, assignment.HandledInputInSourceMedia);
-					try
-					{
-						assignment.Importer.Import(importEnv);
-						anyImported = true;
-						
-						// Get a list on properly registered output Resources and report warnings on the rest
-						List<Resource> expectedOutput = new List<Resource>();
-						foreach (var resourceRef in importEnv.OutputResources)
-						{
-							if (!assignment.ExpectedOutput.Contains(resourceRef))
-							{
-								Log.Editor.WriteWarning(
-									"AssetImporter '{0}' created an unpredicted output Resource: '{1}'. " + Environment.NewLine +
-									"This may cause problems in the Asset Management system, especially during Asset re-import. " + Environment.NewLine +
-									"Please fix the implementation of the PrepareImport method so it properly calls AddOutput for each predicted output Resource.",
-									Log.Type(assignment.Importer.GetType()),
-									resourceRef);
-							}
-							else
-							{
-								expectedOutput.Add(resourceRef.Res);
-							}
-						}
-
-						// Collect references to the imported Resources and save them
-						foreach (Resource resource in expectedOutput)
-						{
-							resource.Save();
-							this.output.Add(resource);
-						}
-					}
-					catch (Exception ex)
-					{
-						importFailure = true;
-						Log.Editor.WriteError("An error occurred while trying to import files using '{1}': {0}", 
-							Log.Exception(ex),
-							Log.Type(assignment.Importer.GetType()));
-						this.inputMapping.RemoveAt(assignmentIndex);
-						assignmentIndex--;
-					}
-				}
-			}
-
-			return anyImported && !importFailure;
+			this.OnResetWorkingData();
 		}
 
-		private bool InvokeConfirmOverwrite()
-		{
-			if (this.confirmOverwrite != null)
-				return this.confirmOverwrite();
-			else
-				return false;
-		}
-
-		private struct ImportInputAssignment
+		protected struct ImportInputAssignment
 		{
 			public IAssetImporter Importer;
 			public AssetImportInput[] HandledInput;
 			public AssetImportInput[] HandledInputInSourceMedia;
 			public ContentRef<Resource>[] ExpectedOutput;
+
+			public override string ToString()
+			{
+				return string.Format("{0}: {1} items",
+					this.Importer != null ? this.Importer.Id : "null",
+					this.HandledInput != null ? this.HandledInput.Length : 0);
+			}
 		}
 	}
 }

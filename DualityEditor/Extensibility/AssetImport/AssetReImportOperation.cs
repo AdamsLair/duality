@@ -8,23 +8,8 @@ using Duality.IO;
 
 namespace Duality.Editor
 {
-	public class AssetReImportOperation
+	public class AssetReImportOperation : AssetImportOperation
 	{
-		private AssetImportInput[] input = null;
-		private RawList<ReImportInputAssignment> inputMapping = null;
-		private HashSet<ContentRef<Resource>> output = null;
-
-
-		public IEnumerable<AssetImportInput> Input
-		{
-			get { return this.input; }
-		}
-		public IEnumerable<ContentRef<Resource>> Output
-		{
-			get { return this.output ?? Enumerable.Empty<ContentRef<Resource>>(); }
-		}
-
-
 		public AssetReImportOperation(IEnumerable<string> inputFiles)
 		{
 			if (inputFiles.Any(file => !PathOp.IsPathLocatedIn(file, EditorHelper.SourceMediaDirectory)))
@@ -42,80 +27,30 @@ namespace Duality.Editor
 			}
 		}
 
-		public bool Perform()
+		protected override void OnResetWorkingData() { }
+		protected override bool OnPerform()
 		{
-			this.ResetWorkingData();
-
 			this.DetermineImportInputMapping();
-			bool importSuccess = this.ImportFromLocalFolder();
 
-			// Clean up, in case we've done heavy-duty work
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			if (!this.ImportFromLocalFolder())
+				return false;
 
-			return importSuccess;
+			return true;
 		}
 
-		private void ResetWorkingData()
-		{
-			this.inputMapping = null;
-			this.output = null;
-		}
 		private void DetermineImportInputMapping()
 		{
-			this.inputMapping = new RawList<ReImportInputAssignment>();
+			AssetImportEnvironment prepareEnv = new AssetImportEnvironment(
+				DualityApp.DataDirectory, 
+				EditorHelper.SourceMediaDirectory, 
+				this.input);
+			prepareEnv.IsPrepareStep = true;
+			prepareEnv.IsReImport = true;
 
-			List<AssetImportInput> unhandledInput = this.input.ToList();
-			while (unhandledInput.Count > 0)
+			this.inputMapping = this.SelectImporter(prepareEnv);
+			for (int i = 0; i < this.inputMapping.Count; i++)
 			{
-				AssetImportEnvironment prepareEnv = new AssetImportEnvironment(
-					DualityApp.DataDirectory, 
-					EditorHelper.SourceMediaDirectory, 
-					unhandledInput);
-				prepareEnv.IsPrepareStep = true;
-				prepareEnv.IsReImport = true;
-
-				// Find an importer to handle some or all of the unhandled input files
-				bool foundImporter = false;
-				foreach (IAssetImporter importer in AssetManager.Importers)
-				{
-					try
-					{
-						importer.PrepareImport(prepareEnv);
-					}
-					catch (Exception ex)
-					{
-						Log.Editor.WriteError("An error occurred in the preparation step of '{1}': {0}", 
-							Log.Exception(ex),
-							Log.Type(importer.GetType()));
-						continue;
-					}
-
-					// See which files the current importer is able to handle
-					AssetImportInput[] handledInput = prepareEnv.HandledInput.ToArray();
-					if (handledInput.Length > 0)
-					{
-						// Remove the handled input from the queue
-						for (int i = 0; i < handledInput.Length; i++)
-						{
-							unhandledInput.Remove(handledInput[i]);
-						}
-
-						// We have found a valid input assignment for a set of files
-						foundImporter = true;
-						this.inputMapping.Add(new ReImportInputAssignment
-						{
-							Importer = importer,
-							ExpectedOutput = prepareEnv.OutputResources.ToArray(),
-							HandledInputInSourceMedia = handledInput
-						});
-						break;
-					}
-				}
-
-				// If no suitable importer was found to handle the remaining files, stop
-				if (!foundImporter)
-					break;
+				this.inputMapping.Data[i].HandledInputInSourceMedia = this.inputMapping.Data[i].HandledInput;
 			}
 		}
 		private bool ImportFromLocalFolder()
@@ -126,7 +61,7 @@ namespace Duality.Editor
 			this.output = new HashSet<ContentRef<Resource>>();
 			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
 			{
-				ReImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
+				ImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
 
 				// Import the (copied and mapped) files, this importer previously requested to handle
 				{
@@ -179,13 +114,6 @@ namespace Duality.Editor
 			}
 
 			return anyImported && !importFailure;
-		}
-
-		private struct ReImportInputAssignment
-		{
-			public IAssetImporter Importer;
-			public AssetImportInput[] HandledInputInSourceMedia;
-			public ContentRef<Resource>[] ExpectedOutput;
 		}
 	}
 }

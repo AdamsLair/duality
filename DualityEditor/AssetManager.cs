@@ -39,7 +39,7 @@ namespace Duality.Editor
 			if (!inputFiles.Any()) return Enumerable.Empty<ContentRef<Resource>>();
 
 			// Set up an import operation and process it
-			AssetImportOperation importOperation = new AssetImportOperation(targetBaseDir, inputBaseDir, inputFiles);
+			AssetFirstImportOperation importOperation = new AssetFirstImportOperation(targetBaseDir, inputBaseDir, inputFiles);
 			importOperation.ConfirmOverwriteCallback = ConfirmOverwriteData;
 			bool success = importOperation.Perform();
 
