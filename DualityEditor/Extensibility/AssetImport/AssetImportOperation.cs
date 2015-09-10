@@ -10,9 +10,35 @@ namespace Duality.Editor
 {
 	public abstract class AssetImportOperation
 	{
+		private class ConflictData : IAssetImporterConflictData
+		{
+			private int defaultIndex;
+			private ImportInputAssignment[] conflicts;
+
+			public IAssetImporter DefaultImporter
+			{
+				get { return this.conflicts[defaultIndex].Importer; }
+			}
+			public IEnumerable<IAssetImporter> Importers
+			{
+				get { return this.conflicts.Select(assign => assign.Importer); }
+			}
+			public IEnumerable<string> InputFiles
+			{
+				get { return this.conflicts.SelectMany(assign => assign.HandledInput.Select(i => i.Path)).Distinct(); }
+			}
+
+			public ConflictData(ImportInputAssignment[] conflicts, int defaultIndex)
+			{
+				this.conflicts = conflicts;
+				this.defaultIndex = defaultIndex;
+			}
+		}
+
 		protected AssetImportInput[] input = null;
 		protected RawList<ImportInputAssignment> inputMapping = null;
 		protected HashSet<ContentRef<Resource>> output = null;
+		private AssetImporterConflictHandler conflictHandler = null;
 
 
 		public IEnumerable<AssetImportInput> Input
@@ -22,6 +48,11 @@ namespace Duality.Editor
 		public IEnumerable<ContentRef<Resource>> Output
 		{
 			get { return this.output ?? Enumerable.Empty<ContentRef<Resource>>(); }
+		}
+		public AssetImporterConflictHandler ImporterConflictHandler
+		{
+			get { return this.conflictHandler; }
+			set { this.conflictHandler = value; }
 		}
 
 
@@ -39,20 +70,6 @@ namespace Duality.Editor
 
 		protected abstract void OnResetWorkingData();
 		protected abstract bool OnPerform();
-		protected virtual int ResolveMappingConflict(ImportInputAssignment[] conflictingAssignments)
-		{
-			int keepIndex = -1;
-			int highestPrio = int.MinValue;
-			for (int i = 0; i < conflictingAssignments.Length; i++)
-			{
-				if (conflictingAssignments[i].Importer.Priority > highestPrio)
-				{
-					highestPrio = conflictingAssignments[i].Importer.Priority;
-					keepIndex = i;
-				}
-			}
-			return keepIndex;
-		}
 		
 		protected RawList<ImportInputAssignment> SelectImporter(AssetImportEnvironment env)
 		{
@@ -122,6 +139,13 @@ namespace Duality.Editor
 					ImportInputAssignment[] conflictingAssignments = conflictingIndices.Select(i => candidateMapping[i]).ToArray();
 					int keepIndex = this.ResolveMappingConflict(conflictingAssignments);
 
+					// If we somehow decided that none of the options is viable, abort the operation
+					if (keepIndex == -1)
+					{
+						candidateMapping.Clear();
+						return candidateMapping;
+					}
+
 					// Sort indices to remove in declining order and remove their mappings
 					conflictingIndices.Remove(keepIndex);
 					conflictingIndices.Sort((a, b) => b - a);
@@ -137,6 +161,31 @@ namespace Duality.Editor
 			}
 
 			return candidateMapping;
+		}
+		private int ResolveMappingConflict(ImportInputAssignment[] conflictingAssignments)
+		{
+			// By default, fall back on simply prefering the highest-priority importer
+			int keepIndex = -1;
+			int highestPrio = int.MinValue;
+			for (int i = 0; i < conflictingAssignments.Length; i++)
+			{
+				if (conflictingAssignments[i].Importer.Priority > highestPrio)
+				{
+					highestPrio = conflictingAssignments[i].Importer.Priority;
+					keepIndex = i;
+				}
+			}
+
+			// If there is a conflict handler (such as "spawn a user dialog"), see if that can deal with it.
+			if (this.conflictHandler != null)
+			{
+				ConflictData data = new ConflictData(conflictingAssignments, keepIndex);
+				IAssetImporter selectedImporter = this.conflictHandler(data);
+				int selectedIndex = conflictingAssignments.IndexOfFirst(assignment => assignment.Importer == selectedImporter);
+				return selectedIndex;
+			}
+
+			return keepIndex;
 		}
 		private void ResetWorkingData()
 		{

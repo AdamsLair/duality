@@ -12,6 +12,7 @@ namespace Duality.Editor.Properties
 	/// </summary>
 	public static class GeneralResCache
 	{
+		public static readonly Bitmap	page_white				= GeneralRes.page_white;
 		public static readonly Bitmap	arrow_undo				= GeneralRes.arrow_undo;
 		public static readonly Bitmap	arrow_redo				= GeneralRes.arrow_redo;
 		public static readonly Bitmap	ColorWheel				= GeneralRes.ColorWheel;

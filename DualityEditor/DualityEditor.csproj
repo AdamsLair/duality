@@ -89,6 +89,7 @@
       <HintPath>..\packages\AdamsLair.WinForms.PopupControl.1.0.0.0\lib\net40\PopupControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
@@ -114,6 +115,7 @@
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
+    <Compile Include="Extensibility\AssetImport\AssetImporterConflictHandler.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetReImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetFirstImportOperation.cs" />
@@ -183,6 +185,13 @@
     <Compile Include="Forms\PublishGameDialog.Designer.cs">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Extensibility\AssetImport\SelectAssetImporterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Extensibility\AssetImport\SelectAssetImporterDialog.Designer.cs">
+      <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\GeneralResNames.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsDualityFont.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsPixelData.cs" />
@@ -293,6 +302,9 @@
     <Compile Include="UndoRedoManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="Extensibility\AssetImport\SelectAssetImporterDialog.resx">
+      <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
       <DependentUpon>CreateObjectDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -368,7 +380,9 @@
     <None Include="EmbeddedResources\application_stopwatch.png" />
     <EmbeddedResource Include="EmbeddedResources\ErrorHandlersTemplate.txt" />
     <EmbeddedResource Include="EmbeddedResources\Class.png" />
+    <EmbeddedResource Include="EmbeddedResources\AssetImporter.png" />
     <Content Include="EmbeddedResources\namespace.png" />
+    <None Include="EmbeddedResources\page_white.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
     <None Include="EmbeddedResources\arrow_undo.png" />
     <None Include="EmbeddedResources\arrow_redo.png" />

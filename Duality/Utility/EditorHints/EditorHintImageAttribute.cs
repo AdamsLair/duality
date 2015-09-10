@@ -9,7 +9,7 @@ namespace Duality.Editor
 	/// <summary>
 	/// Provides an icon or image that can be used to represent the given Type within the editor.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = false)]
+	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface, AllowMultiple = false)]
 	public class EditorHintImageAttribute : EditorHintAttribute
 	{
 		public delegate object Resolver(string manifestResourceName);

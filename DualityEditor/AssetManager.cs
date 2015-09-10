@@ -38,13 +38,22 @@ namespace Duality.Editor
 			// Early-out, if no input files are specified
 			if (!inputFiles.Any()) return Enumerable.Empty<ContentRef<Resource>>();
 
+			bool userAbort = false;
+			bool success = false;
+
 			// Set up an import operation and process it
 			AssetFirstImportOperation importOperation = new AssetFirstImportOperation(targetBaseDir, inputBaseDir, inputFiles);
 			importOperation.ConfirmOverwriteCallback = ConfirmOverwriteData;
-			bool success = importOperation.Perform();
+			importOperation.ImporterConflictHandler = data =>
+			{
+				IAssetImporter userSelection = ResolveImporterConflict(data);
+				if (userSelection == null) userAbort = true;
+				return userSelection;
+			};
+			success = importOperation.Perform();
 
 			// If the operation was a failure, display an error message in the editor UI.
-			if (!success)
+			if (!success && !userAbort)
 			{
 				MessageBox.Show(
 					String.Format(Properties.GeneralRes.Msg_CantImport_Text, inputFiles.First()), 
@@ -62,6 +71,7 @@ namespace Duality.Editor
 			
 			// Set up an import operation and process it
 			AssetReImportOperation reimportOperation = new AssetReImportOperation(localInputFiles);
+			reimportOperation.ImporterConflictHandler = ResolveImporterConflict;
 			bool success = reimportOperation.Perform();
 			
 			// Notify the editor that we have modified some Resources
@@ -72,99 +82,6 @@ namespace Duality.Editor
 			}
 
 			return reimportOperation.Output;
-
-			/* 
-			 * Notes:
-			 * 
-			 * - In the first step, perform a regular import preparation step with the specified input
-			 *   paths, in order to let importers determine Resources to update, and a mapping to files
-			 *   
-			 * - The only case where this isn't sufficient is when users manually restructure their
-			 *   Source/Media directory, in which case it wouldn't be expected behavior for Duality to
-			 *   still react to the moved / renamed files.
-			 *   
-			 * - Thus, ReImport will be a lot easier to do with the new API.
-			 */
-
-			// -------------------------------------------------------------------------------------------------------
-
-			//string fileExt = Path.GetExtension(filePath);
-
-			//// Find an importer to handle the file import
-			//IAssetImporter importer = importers.FirstOrDefault(i => i.CanImportFile(filePath));
-			//if (importer == null) return;
-
-			//// Determine which Resources are affected
-			//ContentRef<Resource> affectedResource = null;
-
-			//// First, try to guess which Resource is affected using the file name
-			//{
-			//	string guessedResourceName = ContentProvider.GetNameFromPath(filePath);
-			//	string resourceSearchPattern = "*" + guessedResourceName + "*" + Resource.FileExt;
-			//	foreach (string resourcePath in Directory.EnumerateFiles(DualityApp.DataDirectory, resourceSearchPattern, SearchOption.AllDirectories))
-			//	{
-			//		ContentRef<Resource> resourceRef = new ContentRef<Resource>(null, resourcePath);
-			//		string resourceName = ContentProvider.GetNameFromPath(resourcePath);
-
-			//		// If the name doesn't match, skip
-			//		if (!string.Equals(resourceName, guessedResourceName, StringComparison.InvariantCultureIgnoreCase))
-			//			continue;
-			//		// If there is no association between source fil and Resource, skip it
-			//		if (!IsUsingSourceFile(importer, resourceRef, filePath, fileExt) && importer.CanReImportFile(resourceRef, filePath))
-			//			continue;
-			//		// If the importer can't handle that Resource with that file, skip it
-			//		if (!importer.CanReImportFile(resourceRef, filePath))
-			//			continue;
-
-			//		affectedResource = resourceRef;
-			//		break; 
-			//	}
-			//}
-
-			//// No idea yet? Try brute force and check all the available Resources
-			//if (affectedResource == null)
-			//{
-			//	foreach (ContentRef<Resource> resRef in ContentProvider.GetAvailableContent<Resource>())
-			//	{
-			//		// If this is default content, skip it
-			//		if (resRef.IsDefaultContent)
-			//			continue;
-			//		// If there is no association between source fil and Resource, skip it
-			//		if (!IsUsingSourceFile(importer, resRef, filePath, fileExt) && importer.CanReImportFile(resRef, filePath))
-			//			continue;
-			//		// If the importer can't handle that Resource with that file, skip it
-			//		if (!importer.CanReImportFile(resRef, filePath))
-			//			continue;
-
-			//		affectedResource = resRef;
-			//		break; 
-			//	}
-			//}
-
-			//// Re-Import the affected Resources
-			//List<Resource> touchedResources = null;
-			//if (affectedResource != null)
-			//{
-			//	try
-			//	{
-			//		importer.ReImportFile(affectedResource, filePath);
-			//		if (affectedResource.IsLoaded)
-			//		{
-			//			if (touchedResources == null) touchedResources = new List<Resource>();
-			//			touchedResources.Add(affectedResource.Res);
-			//		}
-			//	}
-			//	catch (Exception e) 
-			//	{
-			//		Log.Editor.WriteError("Can't re-import file '{0}': {1}", filePath, Log.Exception(e));
-			//	}
-			//}
-
-			//// Notify the editor that we have modified some Resources
-			//if (touchedResources != null)
-			//{
-			//	DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection((IEnumerable<object>)touchedResources));
-			//}
 		}
 
 		public static void OpenSourceFile(ContentRef<Resource> resourceRef, string srcFileExt, Action<string> saveSrcToAction)
@@ -231,6 +148,15 @@ namespace Duality.Editor
 				MessageBoxButtons.YesNo, 
 				MessageBoxIcon.Warning);
 			return result == DialogResult.Yes;
+		}
+		private static IAssetImporter ResolveImporterConflict(IAssetImporterConflictData data)
+		{
+			SelectAssetImporterDialog dialog = new SelectAssetImporterDialog(
+				data.Importers, 
+				data.DefaultImporter, 
+				data.InputFiles);
+			DialogResult result = dialog.ShowDialog();
+			return dialog.SelectedImporter;
 		}
 	}
 }

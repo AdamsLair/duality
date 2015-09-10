@@ -55,26 +55,23 @@ namespace Duality
 			{
 				result = member.GetCustomAttributes(true).OfType<Attribute>().ToArray();
 
-				TypeInfo declaringTypeInfo = member.DeclaringType == null ? null : member.DeclaringType.GetTypeInfo();
-				if (declaringTypeInfo != null && !declaringTypeInfo.IsInterface)
+				// If it's a Type, also check implemented interfaces for (EditorHint) attributes
+				if (member is TypeInfo)
 				{
+					TypeInfo typeInfo = member as TypeInfo;
 					IEnumerable<Attribute> query = result;
-					Type[] interfaces = declaringTypeInfo.ImplementedInterfaces.ToArray();
+					Type[] interfaces = typeInfo.ImplementedInterfaces.ToArray();
 					if (interfaces.Length > 0)
 					{
 						bool addedAny = false;
 						foreach (Type interfaceType in interfaces)
 						{
 							TypeInfo interfaceTypeInfo = interfaceType.GetTypeInfo();
-							foreach (MemberInfo interfaceMemberInfo in interfaceTypeInfo.DeclaredMembersDeep())
+							IEnumerable<Attribute> subQuery = GetAttributesCached<Editor.EditorHintAttribute>(interfaceTypeInfo);
+							if (subQuery.Any())
 							{
-								if (interfaceMemberInfo.Name != member.Name) continue;
-								IEnumerable<Attribute> subQuery = GetAttributesCached<Attribute>(interfaceMemberInfo);
-								if (subQuery.Any())
-								{
-									query = query.Concat(subQuery);
-									addedAny = true;
-								}
+								query = query.Concat(subQuery);
+								addedAny = true;
 							}
 						}
 						if (addedAny)
@@ -83,6 +80,40 @@ namespace Duality
 						}
 					}
 				}
+				// If it's a member, check if it is an interface implementation and add their (EditorHint) attributes as well
+				else
+				{
+					TypeInfo declaringTypeInfo = member.DeclaringType == null ? null : member.DeclaringType.GetTypeInfo();
+					if (declaringTypeInfo != null && !declaringTypeInfo.IsInterface)
+					{
+						IEnumerable<Attribute> query = result;
+						Type[] interfaces = declaringTypeInfo.ImplementedInterfaces.ToArray();
+						if (interfaces.Length > 0)
+						{
+							bool addedAny = false;
+							foreach (Type interfaceType in interfaces)
+							{
+								TypeInfo interfaceTypeInfo = interfaceType.GetTypeInfo();
+								foreach (MemberInfo interfaceMemberInfo in interfaceTypeInfo.DeclaredMembersDeep())
+								{
+									if (interfaceMemberInfo.Name != member.Name) continue;
+									IEnumerable<Attribute> subQuery = GetAttributesCached<Editor.EditorHintAttribute>(interfaceMemberInfo);
+									if (subQuery.Any())
+									{
+										query = query.Concat(subQuery);
+										addedAny = true;
+									}
+								}
+							}
+							if (addedAny)
+							{
+								result = query.Distinct().ToArray();
+							}
+						}
+					}
+				}
+
+				// Mind the result for later. Don't do this twice.
 				customMemberAttribCache[member] = result;
 			}
 

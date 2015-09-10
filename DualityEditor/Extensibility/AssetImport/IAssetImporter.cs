@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality;
+using Duality.Editor.Properties;
 
 namespace Duality.Editor
 {
+	[EditorHintImage(GeneralResNames.ImageAssetImporter)]
 	public interface IAssetImporter
 	{
 		/// <summary>
