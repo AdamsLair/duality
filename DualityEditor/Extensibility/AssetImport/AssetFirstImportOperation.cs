@@ -32,7 +32,7 @@ namespace Duality.Editor
 		}
 
 
-		public AssetFirstImportOperation(string targetBaseDir, string inputBaseDir, IEnumerable<string> inputFiles)
+		public AssetFirstImportOperation(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir)
 		{
 			if (!PathOp.ArePathsEqual(targetBaseDir, DualityApp.DataDirectory) && !PathOp.IsPathLocatedIn(targetBaseDir, DualityApp.DataDirectory))
 			{
@@ -79,6 +79,15 @@ namespace Duality.Editor
 			this.CopySourceToLocalFolder();
 			if (!this.ImportFromLocalFolder())
 				return false;
+
+			return true;
+		}
+		protected override bool OnSimulatePerform()
+		{
+			if (!this.DetermineImportInputMapping())
+				return false;
+
+			this.DetermineLocalInputFilePaths();
 
 			return true;
 		}

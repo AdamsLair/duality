@@ -67,9 +67,19 @@ namespace Duality.Editor
 
 			return importSuccess;
 		}
+		public bool SimulatePerform()
+		{
+			this.ResetWorkingData();
+			if (!this.OnSimulatePerform())
+				return false;
+
+			this.output = this.inputMapping.SelectMany(item => item.ExpectedOutput).ToList();
+			return true;
+		}
 
 		protected abstract void OnResetWorkingData();
 		protected abstract bool OnPerform();
+		protected abstract bool OnSimulatePerform();
 		
 		protected RawList<ImportInputAssignment> SelectImporter(AssetImportEnvironment env)
 		{

@@ -43,10 +43,10 @@ namespace Duality.Editor.Plugins.Base
 		}
 		public void Import(IAssetImportEnvironment env)
 		{
-			// Ask to handle all available input. No need to filter this anymore, as
+			// Handle all available input. No need to filter or ask for this anymore, as
 			// the preparation step already made a selection with AcceptsInput. We won't
 			// get any input here that didn't match.
-			foreach (AssetImportInput input in env.HandleAllInput())
+			foreach (AssetImportInput input in env.Input)
 			{
 				string ext = Path.GetExtension(input.Path);
 
@@ -70,6 +70,32 @@ namespace Duality.Editor.Plugins.Base
 					env.AddOutput(targetRef, input.Path);
 				}
 			}
+		}
+
+		public void PrepareExport(IAssetExportEnvironment env)
+		{
+			// We can export any Resource that is a shader
+			if (env.Input is AbstractShader)
+			{
+				// Add the file path of the exported output we'll produce.
+				if (env.Input is FragmentShader)
+					env.AddOutputPath(env.Input.Name + SourceFileExtFragment);
+				else
+					env.AddOutputPath(env.Input.Name + SourceFileExtVertex);
+			}
+		}
+		public void Export(IAssetExportEnvironment env)
+		{
+			// Determine input and output path
+			AbstractShader input = env.Input as AbstractShader;
+			string outputPath;
+			if (env.Input is FragmentShader)
+				outputPath = env.AddOutputPath(input.Name + SourceFileExtFragment);
+			else
+				outputPath = env.AddOutputPath(input.Name + SourceFileExtVertex);
+
+			// Take the input Resource's TrueType font data and save it at the specified location
+			File.WriteAllText(outputPath, input.Source);
 		}
 		
 		private bool AcceptsInput(AssetImportInput input)

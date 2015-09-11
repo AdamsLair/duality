@@ -38,6 +38,10 @@ namespace Duality.Editor
 
 			return true;
 		}
+		protected override bool OnSimulatePerform()
+		{
+			return this.DetermineImportInputMapping();
+		}
 
 		private bool DetermineImportInputMapping()
 		{

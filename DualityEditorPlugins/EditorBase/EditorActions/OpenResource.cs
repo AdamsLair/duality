@@ -20,65 +20,30 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
 		public override void Perform(Resource obj)
 		{
-			Pixmap			pixmap		= obj as Pixmap;
-			AudioData		audioData	= obj as AudioData;
-			AbstractShader	shader		= obj as AbstractShader;
-
-			if (pixmap != null)
+			string[] exportedPaths = AssetManager.ExportAssets(obj);
+			
+			// If there is only a single source path, open the file right away
+			if (exportedPaths.Length == 1)
 			{
-				AssetManager.OpenSourceFile(
-					pixmap,
- 					(res, dir) => new string[] { Path.Combine(dir, res.Name) + PixmapAssetImporter.SourceFileExtPrimary },
-					(res, dir) => SavePixmapData(res as Pixmap, Path.Combine(dir, res.Name) + PixmapAssetImporter.SourceFileExtPrimary));
+				System.Diagnostics.Process.Start(exportedPaths[0]);
 			}
-			else if (audioData != null)
+			// If there are multiple source paths, just open the base directory
+			else
 			{
-				AssetManager.OpenSourceFile(
-					audioData, 
- 					(res, dir) => new string[] { Path.Combine(dir, res.Name) + AudioDataAssetImporter.SourceFileExtPrimary },
-					(res, dir) => SaveAudioData(res as AudioData, Path.Combine(dir, res.Name) + AudioDataAssetImporter.SourceFileExtPrimary));
-			}
-			else if (shader != null)
-			{
-				string fileExt;
-				if (shader is FragmentShader)
-					fileExt = ShaderAssetImporter.SourceFileExtFragment;
-				else
-					fileExt = ShaderAssetImporter.SourceFileExtVertex;
-
-				AssetManager.OpenSourceFile(
-					shader, 
- 					(res, dir) => new string[] { Path.Combine(dir, res.Name) + fileExt },
-					(res, dir) => SaveShaderData(res as AbstractShader, Path.Combine(dir, res.Name) + fileExt));
+				string mutualBaseDir = PathHelper.GetMutualBaseDirectory(exportedPaths);
+				System.Diagnostics.Process.Start(mutualBaseDir);
 			}
 		}
 		public override bool CanPerformOn(Resource obj)
 		{
 			if (!base.CanPerformOn(obj)) return false;
-			if (obj is Pixmap) return true;
-			if (obj is AudioData) return true;
-			if (obj is AbstractShader) return true;
-			return false;
+			
+			string[] exportedPaths = AssetManager.SimulateExportAssets(obj);
+			return exportedPaths.Length > 0;
 		}
 		public override bool MatchesContext(string context)
 		{
 			return context == DualityEditorApp.ActionContextOpenRes;
-		}
-
-		private static void SavePixmapData(Pixmap pixmap, string targetPath)
-		{
-			using (Bitmap bmp = pixmap.MainLayer.ToBitmap())
-			{
-				bmp.Save(targetPath);
-			}
-		}
-		private static void SaveShaderData(AbstractShader shader, string targetPath)
-		{
-			File.WriteAllText(targetPath, shader.Source);
-		}
-		private static void SaveAudioData(AudioData audio, string targetPath)
-		{
-			File.WriteAllBytes(targetPath, audio.OggVorbisData);
 		}
 	}
 }

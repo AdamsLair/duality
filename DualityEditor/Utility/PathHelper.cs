@@ -131,6 +131,7 @@ namespace Duality.Editor
 		/// <returns></returns>
 		public static string GetMutualBaseDirectory(IEnumerable<string> paths)
 		{
+			bool originalIsRooted = Path.IsPathRooted(paths.First());
 			string mutualBasePath = Path.GetFullPath(paths.First());
 			while (!paths.All(path => PathOp.IsPathLocatedIn(path, mutualBasePath)))
 			{
@@ -141,8 +142,7 @@ namespace Duality.Editor
 					break;
 				}
 			}
-
-			return mutualBasePath;
+			return originalIsRooted ? mutualBasePath : MakeFilePathRelative(mutualBasePath);
 		}
 
 		/// <summary>

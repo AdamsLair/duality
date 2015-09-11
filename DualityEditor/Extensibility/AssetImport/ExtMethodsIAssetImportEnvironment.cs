@@ -16,12 +16,12 @@ namespace Duality.Editor
 		/// <param name="env"></param>
 		/// <param name="predicate"></param>
 		/// <returns>Enumerates all input items which the requesting importer is allowed to handle.</returns>
-		public static IEnumerable<AssetImportInput> HandleAllInput(this IAssetImportEnvironment env, Predicate<AssetImportInput> predicate = null)
+		public static IEnumerable<AssetImportInput> HandleAllInput(this IAssetImportEnvironment env, Predicate<AssetImportInput> predicate)
 		{
 			List<AssetImportInput> handledInput = new List<AssetImportInput>();
 			foreach (AssetImportInput input in env.Input)
 			{
-				if ((predicate == null || predicate(input)) && env.HandleInput(input.Path))
+				if (predicate(input) && env.HandleInput(input.Path))
 				{
 					handledInput.Add(input);
 				}

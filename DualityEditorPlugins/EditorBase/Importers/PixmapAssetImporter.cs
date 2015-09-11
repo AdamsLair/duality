@@ -40,10 +40,10 @@ namespace Duality.Editor.Plugins.Base
 		}
 		public void Import(IAssetImportEnvironment env)
 		{
-			// Ask to handle all available input. No need to filter this anymore, as
+			// Handle all available input. No need to filter or ask for this anymore, as
 			// the preparation step already made a selection with AcceptsInput. We won't
 			// get any input here that didn't match.
-			foreach (AssetImportInput input in env.HandleAllInput())
+			foreach (AssetImportInput input in env.Input)
 			{
 				// Request a target Resource with a name matching the input
 				ContentRef<Pixmap> targetRef = env.GetOutput<Pixmap>(input.AssetName);
@@ -63,6 +63,25 @@ namespace Duality.Editor.Plugins.Base
 			}
 		}
 		
+		public void PrepareExport(IAssetExportEnvironment env)
+		{
+			// We can export any Resource that is a Pixmap
+			if (env.Input is Pixmap)
+			{
+				// Add the file path of the exported output we'll produce.
+				env.AddOutputPath(env.Input.Name + SourceFileExtPrimary);
+			}
+		}
+		public void Export(IAssetExportEnvironment env)
+		{
+			// Determine input and output path
+			Pixmap input = env.Input as Pixmap;
+			string outputPath = env.AddOutputPath(input.Name + SourceFileExtPrimary);
+
+			// Take the input Resource's pixel data and save it at the specified location
+			this.SavePixelData(input.MainLayer, outputPath);
+		}
+		
 		private bool AcceptsInput(AssetImportInput input)
 		{
 			string inputFileExt = Path.GetExtension(input.Path);
@@ -79,6 +98,13 @@ namespace Duality.Editor.Plugins.Base
 				pixelData.FromBitmap(bitmap);
 			}
 			return pixelData;
+		}
+		private void SavePixelData(PixelData data, string filePath)
+		{
+			using (Bitmap bmp = data.ToBitmap())
+			{
+				bmp.Save(filePath);
+			}
 		}
 	}
 }

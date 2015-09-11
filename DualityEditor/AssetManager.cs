@@ -33,7 +33,15 @@ namespace Duality.Editor
 			importers.Clear();
 		}
 
-		public static AssetImportOutput[] ImportAssets(string targetBaseDir, string inputBaseDir, IEnumerable<string> inputFiles)
+		public static AssetImportOutput[] ImportAssets(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir)
+		{
+			return ImportAssets(inputFiles, targetBaseDir, inputBaseDir, false);
+		}
+		public static AssetImportOutput[] SimulateImportAssets(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir)
+		{
+			return ImportAssets(inputFiles, targetBaseDir, inputBaseDir, true);
+		}
+		private static AssetImportOutput[] ImportAssets(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir, bool simulate)
 		{
 			// Early-out, if no input files are specified
 			if (!inputFiles.Any()) return new AssetImportOutput[0];
@@ -42,7 +50,7 @@ namespace Duality.Editor
 			bool success = false;
 
 			// Set up an import operation and process it
-			AssetFirstImportOperation importOperation = new AssetFirstImportOperation(targetBaseDir, inputBaseDir, inputFiles);
+			AssetFirstImportOperation importOperation = new AssetFirstImportOperation(inputFiles, targetBaseDir, inputBaseDir);
 			importOperation.ConfirmOverwriteCallback = ConfirmOverwriteData;
 			importOperation.ImporterConflictHandler = data =>
 			{
@@ -50,13 +58,15 @@ namespace Duality.Editor
 				if (userSelection == null) userAbort = true;
 				return userSelection;
 			};
-			success = importOperation.Perform();
+			success = simulate ? 
+				importOperation.SimulatePerform() : 
+				importOperation.Perform();
 
 			// If the operation was a failure, display an error message in the editor UI.
-			if (!success && !userAbort)
+			if (!simulate && !success && !userAbort)
 			{
 				MessageBox.Show(
-					String.Format(Properties.GeneralRes.Msg_CantImport_Text, inputFiles.First()), 
+					string.Format(Properties.GeneralRes.Msg_CantImport_Text, inputFiles.First()), 
 					Properties.GeneralRes.Msg_CantImport_Caption, 
 					MessageBoxButtons.OK, 
 					MessageBoxIcon.Error);
@@ -64,7 +74,16 @@ namespace Duality.Editor
 
 			return importOperation.Output.ToArray();
 		}
+
 		public static AssetImportOutput[] ReImportAssets(IEnumerable<string> localInputFiles)
+		{
+			return ReImportAssets(localInputFiles, false);
+		}
+		public static AssetImportOutput[] SimulateReImportAssets(IEnumerable<string> localInputFiles)
+		{
+			return ReImportAssets(localInputFiles, true);
+		}
+		private static AssetImportOutput[] ReImportAssets(IEnumerable<string> localInputFiles, bool simulate)
 		{
 			// Early-out, if no input files are specified
 			if (!localInputFiles.Any()) return new AssetImportOutput[0];
@@ -72,10 +91,12 @@ namespace Duality.Editor
 			// Set up an import operation and process it
 			AssetReImportOperation reimportOperation = new AssetReImportOperation(localInputFiles);
 			reimportOperation.ImporterConflictHandler = ResolveImporterConflict;
-			bool success = reimportOperation.Perform();
+			bool success = simulate ? 
+				reimportOperation.SimulatePerform() : 
+				reimportOperation.Perform();
 			
 			// Notify the editor that we have modified some Resources
-			if (reimportOperation.Output.Any())
+			if (!simulate && reimportOperation.Output.Any())
 			{
 				IEnumerable<Resource> touchedResources = reimportOperation.Output.Select(item => item.Resource).Res();
 				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(touchedResources));
@@ -84,47 +105,53 @@ namespace Duality.Editor
 			return reimportOperation.Output.ToArray();
 		}
 
-		public delegate IEnumerable<string> SourceFileGetter(Resource resource, string sourceFileBaseDir);
-		public delegate void SourceFileSaver(Resource resource, string sourceFileBaseDir);
-		public static void OpenSourceFile(ContentRef<Resource> resourceRef, SourceFileGetter getSourceFiles, SourceFileSaver saveSrcToAction)
+		public static string[] ExportAssets(ContentRef<Resource> inputResource, string sourceBaseDir = null)
 		{
-			Resource resource = resourceRef.Res;
-			string mainSourceFileDir = resourceRef.IsDefaultContent ? Path.GetTempPath() : SelectMainSourceFileDir(resource);
-			string[] sourceFilePaths = getSourceFiles(resource, mainSourceFileDir).ToArray();
-
-			// Make sure the required directories exist
-			foreach (string path in sourceFilePaths)
-			{
-				string dirName = Path.GetDirectoryName(path);
-				if (!Directory.Exists(dirName))
-					Directory.CreateDirectory(dirName);
-			}
-			
-			// Perform an export operation
-			saveSrcToAction(resource, mainSourceFileDir);
-
-			// If there is only a single source path, open the file right away
-			if (sourceFilePaths.Length == 1)
-			{
-				System.Diagnostics.Process.Start(sourceFilePaths[0]);
-			}
-			// If there are multiple source paths, just open the base directory
-			else
-			{
-				System.Diagnostics.Process.Start(mainSourceFileDir);
-			}
+			return ExportAssets(inputResource, sourceBaseDir, false);
 		}
-		public static string SelectMainSourceFileDir(ContentRef<Resource> res)
+		public static string[] SimulateExportAssets(ContentRef<Resource> inputResource, string sourceBaseDir = null)
 		{
-			string filePath = PathHelper.MakeFilePathRelative(res.Path, DualityApp.DataDirectory);
-			string fileDir = Path.GetDirectoryName(filePath);
-			if (filePath.Contains(".."))
+			return ExportAssets(inputResource, sourceBaseDir, true);
+		}
+		private static string[] ExportAssets(ContentRef<Resource> inputResource, string sourceBaseDir, bool simulate)
+		{
+			// Early-out, if the input Resource isn't available
+			if (!inputResource.IsAvailable) return new string[0];
+
+			if (sourceBaseDir == null)
 			{
-				filePath = Path.GetFileName(filePath);
-				fileDir = ".";
+				string resDir = Path.GetDirectoryName(inputResource.Path);
+				sourceBaseDir = Path.Combine(
+					EditorHelper.SourceMediaDirectory,
+					PathHelper.MakeFilePathRelative(resDir, DualityApp.DataDirectory));
 			}
-			string targetDir = Path.Combine(EditorHelper.SourceMediaDirectory, fileDir);
-			return targetDir;
+
+			bool userAbort = false;
+			bool success = false;
+
+			// Set up an export operation and process it
+			AssetExportOperation exportOperation = new AssetExportOperation(inputResource.Res, sourceBaseDir);
+			exportOperation.ImporterConflictHandler = data =>
+			{
+				IAssetImporter userSelection = ResolveImporterConflict(data);
+				if (userSelection == null) userAbort = true;
+				return userSelection;
+			};
+			success = simulate ?
+				exportOperation.SimulatePerform() :
+				exportOperation.Perform();
+
+			// If the operation was a failure, display an error message in the editor UI.
+			if (!simulate && !success && !userAbort)
+			{
+				MessageBox.Show(
+					string.Format(Properties.GeneralRes.Msg_CantExport_Text, inputResource.Path), 
+					Properties.GeneralRes.Msg_CantExport_Caption, 
+					MessageBoxButtons.OK, 
+					MessageBoxIcon.Error);
+			}
+
+			return exportOperation.OutputPaths.ToArray();
 		}
 
 		private static bool ConfirmOverwriteData()

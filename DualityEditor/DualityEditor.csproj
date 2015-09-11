@@ -115,13 +115,16 @@
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
+    <Compile Include="Extensibility\AssetImport\AssetExportEnvironment.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImporterConflictHandler.cs" />
+    <Compile Include="Extensibility\AssetImport\AssetExportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImportOutput.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetReImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetFirstImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImportInput.cs" />
     <Compile Include="Extensibility\AssetImport\ExtMethodsIAssetImportEnvironment.cs" />
+    <Compile Include="Extensibility\AssetImport\IAssetExportEnvironment.cs" />
     <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
     <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
     <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />

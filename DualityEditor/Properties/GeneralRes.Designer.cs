@@ -709,6 +709,24 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t export Resource.
+        /// </summary>
+        public static string Msg_CantExport_Caption {
+            get {
+                return ResourceManager.GetString("Msg_CantExport_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can&apos;t export Resource &apos;{0}&apos;. None of the available importers is able to handle this Resource type..
+        /// </summary>
+        public static string Msg_CantExport_Text {
+            get {
+                return ResourceManager.GetString("Msg_CantExport_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can&apos;t import file.
         /// </summary>
         public static string Msg_CantImport_Caption {

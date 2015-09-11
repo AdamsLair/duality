@@ -556,4 +556,10 @@
   <data name="page_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\page_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Msg_CantExport_Caption" xml:space="preserve">
+    <value>Can't export Resource</value>
+  </data>
+  <data name="Msg_CantExport_Text" xml:space="preserve">
+    <value>Can't export Resource '{0}'. None of the available importers is able to handle this Resource type.</value>
+  </data>
 </root>

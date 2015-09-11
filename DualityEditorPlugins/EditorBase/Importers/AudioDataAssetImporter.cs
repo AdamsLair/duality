@@ -38,10 +38,10 @@ namespace Duality.Editor.Plugins.Base
 		}
 		public void Import(IAssetImportEnvironment env)
 		{
-			// Ask to handle all available input. No need to filter this anymore, as
+			// Handle all available input. No need to filter or ask for this anymore, as
 			// the preparation step already made a selection with AcceptsInput. We won't
 			// get any input here that didn't match.
-			foreach (AssetImportInput input in env.HandleAllInput())
+			foreach (AssetImportInput input in env.Input)
 			{
 				// Request a target Resource with a name matching the input
 				ContentRef<AudioData> targetRef = env.GetOutput<AudioData>(input.AssetName);
@@ -58,6 +58,25 @@ namespace Duality.Editor.Plugins.Base
 					env.AddOutput(targetRef, input.Path);
 				}
 			}
+		}
+
+		public void PrepareExport(IAssetExportEnvironment env)
+		{
+			// We can export any Resource that is an AudioData
+			if (env.Input is AudioData)
+			{
+				// Add the file path of the exported output we'll produce.
+				env.AddOutputPath(env.Input.Name + SourceFileExtPrimary);
+			}
+		}
+		public void Export(IAssetExportEnvironment env)
+		{
+			// Determine input and output path
+			AudioData input = env.Input as AudioData;
+			string outputPath = env.AddOutputPath(input.Name + SourceFileExtPrimary);
+
+			// Take the input Resource's audio data and save it at the specified location
+			File.WriteAllBytes(outputPath, input.OggVorbisData);
 		}
 		
 		private bool AcceptsInput(AssetImportInput input)

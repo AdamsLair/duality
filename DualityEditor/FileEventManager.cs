@@ -421,13 +421,17 @@ namespace Duality.Editor
 				// Mind modified source files for re-import
 				if (e.ChangeType == WatcherChangeTypes.Changed)
 				{
+					// Ignore stuff saved by the editor itself
+					if (IsPathEditorModified(e.FullPath))
+						continue;
+
 					if (File.Exists(e.FullPath) && PathOp.IsPathLocatedIn(e.FullPath, EditorHelper.SourceMediaDirectory)) 
 						reimportSchedule.Add(e.FullPath);
 				}
 			}
 		}
 
-		private static void FlagPathEditorModified(string path)
+		public static void FlagPathEditorModified(string path)
 		{
 			if (string.IsNullOrEmpty(path)) return; // Ignore bad paths
 			string fullPath = Path.GetFullPath(path);

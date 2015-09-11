@@ -37,10 +37,10 @@ namespace Duality.Editor.Plugins.Base
 		}
 		public void Import(IAssetImportEnvironment env)
 		{
-			// Ask to handle all available input. No need to filter this anymore, as
+			// Handle all available input. No need to filter or ask for this anymore, as
 			// the preparation step already made a selection with AcceptsInput. We won't
 			// get any input here that didn't match.
-			foreach (AssetImportInput input in env.HandleAllInput())
+			foreach (AssetImportInput input in env.Input)
 			{
 				// Request a target Resource with a name matching the input
 				ContentRef<Font> targetRef = env.GetOutput<Font>(input.AssetName);
@@ -58,6 +58,26 @@ namespace Duality.Editor.Plugins.Base
 					env.AddOutput(targetRef, input.Path);
 				}
 			}
+		}
+
+		public void PrepareExport(IAssetExportEnvironment env)
+		{
+			// We can export any Resource that is a Font with an embedded TrueType face
+			Font input = env.Input as Font;
+			if (input != null && input.EmbeddedTrueTypeFont != null)
+			{
+				// Add the file path of the exported output we'll produce.
+				env.AddOutputPath(env.Input.Name + SourceFileExtPrimary);
+			}
+		}
+		public void Export(IAssetExportEnvironment env)
+		{
+			// Determine input and output path
+			Font input = env.Input as Font;
+			string outputPath = env.AddOutputPath(input.Name + SourceFileExtPrimary);
+
+			// Take the input Resource's TrueType font data and save it at the specified location
+			File.WriteAllBytes(outputPath, input.EmbeddedTrueTypeFont);
 		}
 		
 		private bool AcceptsInput(AssetImportInput input)

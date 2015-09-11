@@ -845,7 +845,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			{
 				// Import Resources...
 				AssetImportOutput[] importedResources;
-				importedResources = AssetManager.ImportAssets(dropBaseDir, mutualBaseDir, nonResFiles);
+				importedResources = AssetManager.ImportAssets(nonResFiles, dropBaseDir, mutualBaseDir);
 
 				// ...and schedule them for selection later
 				this.folderView.ClearSelection();

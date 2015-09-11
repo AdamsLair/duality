@@ -35,5 +35,18 @@ namespace Duality.Editor
 		/// </summary>
 		/// <param name="env"></param>
 		void Import(IAssetImportEnvironment env);
+
+		/// <summary>
+		/// In the preparation step of an export operation, an importer determines whether it
+		/// is able to handle the specified Resource and registers the expected output source files.
+		/// </summary>
+		/// <param name="env"></param>
+		void PrepareExport(IAssetExportEnvironment env);
+		/// <summary>
+		/// Performs the previously prepared export operation. Creates and / or modifies source files
+		/// according to the specified input Resource.
+		/// </summary>
+		/// <param name="env"></param>
+		void Export(IAssetExportEnvironment env);
 	}
 }
