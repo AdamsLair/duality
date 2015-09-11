@@ -115,23 +115,23 @@
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetExportEnvironment.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetImporterConflictHandler.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetExportOperation.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetImportOutput.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetImportOperation.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetReImportOperation.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetFirstImportOperation.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetImportInput.cs" />
-    <Compile Include="Extensibility\AssetImport\ExtMethodsIAssetImportEnvironment.cs" />
-    <Compile Include="Extensibility\AssetImport\IAssetExportEnvironment.cs" />
+    <Compile Include="AssetManagement\Export\AssetExportEnvironment.cs" />
+    <Compile Include="AssetManagement\AssetImporterConflictHandler.cs" />
+    <Compile Include="AssetManagement\Export\AssetExportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportOutput.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetReImportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetFirstImportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportInput.cs" />
+    <Compile Include="AssetManagement\Import\ExtMethodsIAssetImportEnvironment.cs" />
+    <Compile Include="AssetManagement\Export\IAssetExportEnvironment.cs" />
     <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
     <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
     <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />
     <Compile Include="Extensibility\EditorActions\IEditorAction.cs" />
-    <Compile Include="Extensibility\AssetImport\AssetImportEnvironment.cs" />
-    <Compile Include="Extensibility\AssetImport\IAssetImportEnvironment.cs" />
-    <Compile Include="Extensibility\AssetImport\IAssetImporter.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportEnvironment.cs" />
+    <Compile Include="AssetManagement\Import\IAssetImportEnvironment.cs" />
+    <Compile Include="AssetManagement\IAssetImporter.cs" />
     <Compile Include="Extensibility\Previews\PreviewImageQuery.cs" />
     <Compile Include="Extensibility\Previews\IPreviewGenerator.cs" />
     <Compile Include="Extensibility\Previews\PreviewGenerator.cs" />
@@ -189,10 +189,10 @@
     <Compile Include="Forms\PublishGameDialog.Designer.cs">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extensibility\AssetImport\SelectAssetImporterDialog.cs">
+    <Compile Include="AssetManagement\SelectAssetImporterDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extensibility\AssetImport\SelectAssetImporterDialog.Designer.cs">
+    <Compile Include="AssetManagement\SelectAssetImporterDialog.Designer.cs">
       <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\GeneralResNames.cs" />
@@ -223,7 +223,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsControl.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsDataObject.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsColor.cs" />
-    <Compile Include="AssetManager.cs" />
+    <Compile Include="AssetManagement\AssetManager.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -306,7 +306,7 @@
     <Compile Include="UndoRedoManager.cs">
       <SubType>Code</SubType>
     </Compile>
-    <EmbeddedResource Include="Extensibility\AssetImport\SelectAssetImporterDialog.resx">
+    <EmbeddedResource Include="AssetManagement\SelectAssetImporterDialog.resx">
       <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
