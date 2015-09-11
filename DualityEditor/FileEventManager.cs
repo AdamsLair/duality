@@ -442,7 +442,7 @@ namespace Duality.Editor
 		{
 			if (deleteEvent.IsResource)
 			{
-				IList<string> mediaPaths = GetSourceMediaPaths(deleteEvent.Content.Res);
+				IList<string> mediaPaths = GetSourceMediaPaths(deleteEvent.Content);
 				for (int i = 0; i < mediaPaths.Count; i++)
 				{
 					if (File.Exists(mediaPaths[i]))
@@ -480,7 +480,7 @@ namespace Duality.Editor
 				string newName = Path.GetFileName(newNameInMediaSource);
 				string oldName = Path.GetFileName(oldNameInMediaSource);
 
-				IList<string> mediaPaths = GetSourceMediaPaths(renameEvent.Content.Res);
+				IList<string> mediaPaths = GetSourceMediaPaths(renameEvent.OldContent);
 				for (int i = 0; i < mediaPaths.Count; i++)
 				{
 					string oldPath = mediaPaths[i];
@@ -530,7 +530,7 @@ namespace Duality.Editor
 				}
 			}
 		}
-		private static IList<string> GetSourceMediaPaths(Resource res)
+		private static IList<string> GetSourceMediaPaths(ContentRef<Resource> reference)
 		{
 			// ToDo
 			return new string[0];
