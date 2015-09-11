@@ -21,6 +21,7 @@ using Duality.Editor.Backend;
 using Duality.Editor.Forms;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.PackageManagement;
+using Duality.Editor.AssetManagement;
 
 using WeifenLuo.WinFormsUI.Docking;
 

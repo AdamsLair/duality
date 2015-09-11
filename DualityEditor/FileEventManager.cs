@@ -15,6 +15,7 @@ using Duality.IO;
 using Duality.Resources;
 using Duality.Serialization;
 using Duality.Editor.Forms;
+using Duality.Editor.AssetManagement;
 
 using WeifenLuo.WinFormsUI.Docking;
 

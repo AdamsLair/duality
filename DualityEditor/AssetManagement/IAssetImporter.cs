@@ -5,7 +5,7 @@ using System.Linq;
 using Duality;
 using Duality.Editor.Properties;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	[EditorHintImage(GeneralResNames.ImageAssetImporter)]
 	public interface IAssetImporter

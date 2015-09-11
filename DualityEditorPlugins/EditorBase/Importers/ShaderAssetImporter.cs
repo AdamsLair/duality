@@ -6,6 +6,7 @@ using Duality;
 using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
+using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.Base
 {

@@ -5,7 +5,7 @@ using System.IO;
 
 using Duality;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	/// <summary>
 	/// Represents a single work item in an Asset import or re-import operation.

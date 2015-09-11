@@ -6,7 +6,7 @@ using System.IO;
 using Duality;
 
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	/// <summary>
 	/// Provides information on the way a <see cref="Duality.Resource"/> should be treated during

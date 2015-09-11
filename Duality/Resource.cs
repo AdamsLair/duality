@@ -6,10 +6,11 @@ using System.IO;
 using System.Reflection;
 
 using Duality.Serialization;
-using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
 using Duality.IO;
+using Duality.Editor;
+using Duality.Editor.AssetManagement;
 
 namespace Duality
 {

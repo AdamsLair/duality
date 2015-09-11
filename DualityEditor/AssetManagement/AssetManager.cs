@@ -8,7 +8,7 @@ using System.Windows.Forms;
 using Duality;
 using Duality.IO;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	public static class AssetManager
 	{

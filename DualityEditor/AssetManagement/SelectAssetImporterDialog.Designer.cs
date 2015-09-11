@@ -1,4 +1,4 @@
-﻿namespace Duality.Editor
+﻿namespace Duality.Editor.AssetManagement
 {
 	partial class SelectAssetImporterDialog
 	{

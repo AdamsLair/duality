@@ -4,7 +4,7 @@ using System.Linq;
 
 using Duality;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	/// <summary>
 	/// Provides an API for an <see cref="IAssetImporter"/> to use during export operations.

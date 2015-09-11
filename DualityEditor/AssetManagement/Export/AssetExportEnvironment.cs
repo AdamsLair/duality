@@ -6,7 +6,7 @@ using System.IO;
 using Duality;
 using Duality.IO;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	public class AssetExportEnvironment : IAssetExportEnvironment
 	{

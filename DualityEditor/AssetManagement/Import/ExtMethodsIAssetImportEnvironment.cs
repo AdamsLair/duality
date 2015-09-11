@@ -4,7 +4,7 @@ using System.Linq;
 
 using Duality;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	public static class ExtMethodsIAssetImportEnvironment
 	{
@@ -30,10 +30,10 @@ namespace Duality.Editor
 		}
 		/// <summary>
 		/// Specifies that the current importer will create or modify a <see cref="Duality.Resource"/> with 
-		/// the specified name (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).
+		/// the specified name (see <see cref="Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="assetName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).</param>
+		/// <param name="assetName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).</param>
 		/// <param name="inputPath">The input path that is used to generate this output <see cref="Duality.Resource"/>.</param>
 		public static void AddOutput<T>(this IAssetImportEnvironment env, string assetName, string inputPath) where T : Resource
 		{

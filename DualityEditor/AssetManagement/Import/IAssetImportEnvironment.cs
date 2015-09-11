@@ -4,7 +4,7 @@ using System.Linq;
 
 using Duality;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	/// <summary>
 	/// Provides an API for an <see cref="IAssetImporter"/> to use during import operations.
@@ -32,19 +32,19 @@ namespace Duality.Editor
 		bool HandleInput(string inputPath);
 
 		/// <summary>
-		/// Requests an output <see cref="Duality.Resource"/> with the specified name (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).
+		/// Requests an output <see cref="Duality.Resource"/> with the specified name (see <see cref="AssetImportInput.AssetName"/>).
 		/// Use this method to create a new Resource during import, or request the affected one during re-import.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="assetName">The name of the requested output <see cref="Duality.Resource"/> (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).</param>
+		/// <param name="assetName">The name of the requested output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.AssetName"/>).</param>
 		/// <returns></returns>
 		ContentRef<T> GetOutput<T>(string assetName) where T : Resource, new();
 		/// <summary>
 		/// Specifies that the current importer will create or modify a <see cref="Duality.Resource"/> with 
-		/// the specified name (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).
+		/// the specified name (see <see cref="AssetImportInput.AssetName"/>).
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="assetName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).</param>
+		/// <param name="assetName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.AssetName"/>).</param>
 		/// <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="Duality.Resource"/>.</param>
 		void AddOutput<T>(string assetName, IEnumerable<string> inputPaths) where T : Resource;
 		/// <summary>

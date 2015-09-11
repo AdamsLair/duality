@@ -17,6 +17,7 @@ using Duality;
 using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
+using Duality.Editor.AssetManagement;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.ProjectView.TreeModels;
 

@@ -8,6 +8,7 @@ using Duality.Resources;
 using Duality.Properties;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.UndoRedoActions;
+using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {

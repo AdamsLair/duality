@@ -11,7 +11,7 @@ using Aga.Controls.Tree.NodeControls;
 
 using Duality.Editor.Properties;
 
-namespace Duality.Editor
+namespace Duality.Editor.AssetManagement
 {
 	public partial class SelectAssetImporterDialog : Form
 	{
