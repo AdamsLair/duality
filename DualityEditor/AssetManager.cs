@@ -33,10 +33,10 @@ namespace Duality.Editor
 			importers.Clear();
 		}
 
-		public static IEnumerable<ContentRef<Resource>> ImportAssets(string targetBaseDir, string inputBaseDir, IEnumerable<string> inputFiles)
+		public static AssetImportOutput[] ImportAssets(string targetBaseDir, string inputBaseDir, IEnumerable<string> inputFiles)
 		{
 			// Early-out, if no input files are specified
-			if (!inputFiles.Any()) return Enumerable.Empty<ContentRef<Resource>>();
+			if (!inputFiles.Any()) return new AssetImportOutput[0];
 
 			bool userAbort = false;
 			bool success = false;
@@ -62,12 +62,12 @@ namespace Duality.Editor
 					MessageBoxIcon.Error);
 			}
 
-			return importOperation.Output;
+			return importOperation.Output.ToArray();
 		}
-		public static IEnumerable<ContentRef<Resource>> ReImportAssets(IEnumerable<string> localInputFiles)
+		public static AssetImportOutput[] ReImportAssets(IEnumerable<string> localInputFiles)
 		{
 			// Early-out, if no input files are specified
-			if (!localInputFiles.Any()) return Enumerable.Empty<ContentRef<Resource>>();
+			if (!localInputFiles.Any()) return new AssetImportOutput[0];
 			
 			// Set up an import operation and process it
 			AssetReImportOperation reimportOperation = new AssetReImportOperation(localInputFiles);
@@ -77,67 +77,54 @@ namespace Duality.Editor
 			// Notify the editor that we have modified some Resources
 			if (reimportOperation.Output.Any())
 			{
-				IEnumerable<Resource> touchedResources = reimportOperation.Output.Res();
+				IEnumerable<Resource> touchedResources = reimportOperation.Output.Select(item => item.Resource).Res();
 				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(touchedResources));
 			}
 
-			return reimportOperation.Output;
+			return reimportOperation.Output.ToArray();
 		}
 
-		public static void OpenSourceFile(ContentRef<Resource> resourceRef, string srcFileExt, Action<string> saveSrcToAction)
+		public delegate IEnumerable<string> SourceFileGetter(Resource resource, string sourceFileBaseDir);
+		public delegate void SourceFileSaver(Resource resource, string sourceFileBaseDir);
+		public static void OpenSourceFile(ContentRef<Resource> resourceRef, SourceFileGetter getSourceFiles, SourceFileSaver saveSrcToAction)
 		{
-			// Default content: Use temporary location
-			if (resourceRef.IsDefaultContent)
+			Resource resource = resourceRef.Res;
+			string mainSourceFileDir = resourceRef.IsDefaultContent ? Path.GetTempPath() : SelectMainSourceFileDir(resource);
+			string[] sourceFilePaths = getSourceFiles(resource, mainSourceFileDir).ToArray();
+
+			// Make sure the required directories exist
+			foreach (string path in sourceFilePaths)
 			{
-				string tmpLoc = Path.Combine(Path.GetTempPath(), resourceRef.Path.Replace(':', '_')) + srcFileExt;
-				Directory.CreateDirectory(Path.GetDirectoryName(tmpLoc));
-				saveSrcToAction(tmpLoc);
-				System.Diagnostics.Process.Start(tmpLoc);
+				string dirName = Path.GetDirectoryName(path);
+				if (!Directory.Exists(dirName))
+					Directory.CreateDirectory(dirName);
 			}
-			// Other content: Use permanent src file location
+			
+			// Perform an export operation
+			saveSrcToAction(resource, mainSourceFileDir);
+
+			// If there is only a single source path, open the file right away
+			if (sourceFilePaths.Length == 1)
+			{
+				System.Diagnostics.Process.Start(sourceFilePaths[0]);
+			}
+			// If there are multiple source paths, just open the base directory
 			else
 			{
-				Resource resource = resourceRef.Res;
-				string srcFilePath = resource.SourcePath;
-
-				// If the Resource to open doesn't know where its source file is, search or create it
-				if (String.IsNullOrEmpty(srcFilePath) || !File.Exists(srcFilePath))
-				{
-					// Determine the desired source file path
-					srcFilePath = SelectSourceFilePath(resourceRef, srcFileExt);
-
-					// If there already is a matching file in the desired path, it's probably been relocated there
-					if (File.Exists(srcFilePath))
-					{
-						// Do nothing and simply use the existing file.
-					}
-					// Otherwise, export the Resource to the desired path
-					else
-					{
-						Directory.CreateDirectory(Path.GetDirectoryName(srcFilePath));
-						saveSrcToAction(srcFilePath);
-					}
-
-					// Keep in mind where we left the source file
-					resource.SourcePath = srcFilePath;
-					DualityEditorApp.FlagResourceUnsaved(resource);
-				}
-
-				// Open the source file
-				System.Diagnostics.Process.Start(srcFilePath);
+				System.Diagnostics.Process.Start(mainSourceFileDir);
 			}
 		}
-		public static string SelectSourceFilePath(ContentRef<Resource> r, string srcFileExt)
+		public static string SelectMainSourceFileDir(ContentRef<Resource> res)
 		{
-			string filePath = PathHelper.MakeFilePathRelative(r.Path, DualityApp.DataDirectory);
+			string filePath = PathHelper.MakeFilePathRelative(res.Path, DualityApp.DataDirectory);
 			string fileDir = Path.GetDirectoryName(filePath);
 			if (filePath.Contains(".."))
 			{
 				filePath = Path.GetFileName(filePath);
 				fileDir = ".";
 			}
-			string targetPathWithoutExt = Path.Combine(Path.Combine(EditorHelper.SourceMediaDirectory, fileDir), r.Name);
-			return targetPathWithoutExt + srcFileExt;
+			string targetDir = Path.Combine(EditorHelper.SourceMediaDirectory, fileDir);
+			return targetDir;
 		}
 
 		private static bool ConfirmOverwriteData()

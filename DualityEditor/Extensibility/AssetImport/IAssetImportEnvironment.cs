@@ -45,11 +45,13 @@ namespace Duality.Editor
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="assetName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="Duality.Editor.AssetImportInput.AssetName"/>).</param>
-		void AddOutput<T>(string assetName) where T : Resource;
+		/// <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="Duality.Resource"/>.</param>
+		void AddOutput<T>(string assetName, IEnumerable<string> inputPaths) where T : Resource;
 		/// <summary>
 		/// Submits the specified <see cref="Duality.Resource"/> as a generated output of the current importer.
 		/// </summary>
-		/// <param name="resource"></param>
-		void AddOutput(IContentRef resource);
+		/// <param name="resource">A reference to the generated output <see cref="Duality.Resource"/>.</param>
+		/// <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="Duality.Resource"/>.</param>
+		void AddOutput(IContentRef resource, IEnumerable<string> inputPaths);
 	}
 }

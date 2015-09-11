@@ -33,7 +33,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
 			{
 				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<AudioData>(input.AssetName);
+				env.AddOutput<AudioData>(input.AssetName, input.Path);
 			}
 		}
 		public void Import(IAssetImportEnvironment env)
@@ -55,7 +55,7 @@ namespace Duality.Editor.Plugins.Base
 					target.OggVorbisData = File.ReadAllBytes(input.Path);
 
 					// Add the requested output to signal that we've done something with it
-					env.AddOutput(targetRef);
+					env.AddOutput(targetRef, input.Path);
 				}
 			}
 		}

@@ -440,34 +440,24 @@ namespace Duality.Editor
 		}
 		private static void DeleteSourceMediaFile(ResourceEventArgs deleteEvent)
 		{
-			// Determine which source/media path we're going to modify
-			string mediaPath = null;
 			if (deleteEvent.IsResource)
 			{
-				Resource res = deleteEvent.Content.Res;
-				if (res != null && res.SourcePath != null) mediaPath = res.SourcePath;
-				if (!File.Exists(mediaPath)) mediaPath = AssetManager.SelectSourceFilePath(deleteEvent.Content, Path.GetExtension(mediaPath));
-				if (!File.Exists(mediaPath)) return;
-			}
-			else if (deleteEvent.IsDirectory)
-			{
-				mediaPath = Path.Combine(EditorHelper.SourceMediaDirectory, PathHelper.MakeFilePathRelative(deleteEvent.Path, DualityApp.DataDirectory));
-			}
-			
-			// Ignore stuff changes without data to modify
-			if (mediaPath == null) return;
-			
-			// Remove now-unused media files
-			if (deleteEvent.IsResource)
-			{
-				if (File.Exists(mediaPath))
+				IList<string> mediaPaths = GetSourceMediaPaths(deleteEvent.Content.Res);
+				for (int i = 0; i < mediaPaths.Count; i++)
 				{
-					RecycleBin.SendSilent(mediaPath);
-					PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPath), true);
+					if (File.Exists(mediaPaths[i]))
+					{
+						RecycleBin.SendSilent(mediaPaths[i]);
+						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPaths[i]), true);
+					}
 				}
 			}
 			else if (deleteEvent.IsDirectory)
 			{
+				string mediaPath = Path.Combine(
+					EditorHelper.SourceMediaDirectory, 
+					PathHelper.MakeFilePathRelative(deleteEvent.Path, DualityApp.DataDirectory));
+
 				if (Directory.Exists(mediaPath))
 				{
 					RecycleBin.SendSilent(mediaPath);
@@ -477,78 +467,73 @@ namespace Duality.Editor
 		}
 		private static void MoveSourceMediaFile(ResourceRenamedEventArgs renameEvent)
 		{
-			// Determine which source/media path we're going to modify
-			string oldMediaPath = null;
-			string mediaPath = null;
 			if (renameEvent.IsResource)
 			{
-				Resource res = renameEvent.Content.Res;
-				if (res.SourcePath != null) mediaPath = res.SourcePath;
-				if (!File.Exists(mediaPath)) mediaPath = AssetManager.SelectSourceFilePath(renameEvent.OldContent, Path.GetExtension(mediaPath));
-				if (!File.Exists(mediaPath)) return;
-			}
-			else if (renameEvent.IsDirectory)
-			{
-				mediaPath = Path.Combine(EditorHelper.SourceMediaDirectory, PathHelper.MakeFilePathRelative(renameEvent.OldPath, DualityApp.DataDirectory));
-			}
-			oldMediaPath = mediaPath;
+				string newNameInMediaSource = Path.Combine(
+						EditorHelper.SourceMediaDirectory, 
+						PathHelper.MakeFilePathRelative(renameEvent.Content.FullName, DualityApp.DataDirectory));
+				string oldNameInMediaSource = Path.Combine(
+						EditorHelper.SourceMediaDirectory, 
+						PathHelper.MakeFilePathRelative(renameEvent.OldContent.FullName, DualityApp.DataDirectory));
+				string newMediaDir = Path.GetDirectoryName(newNameInMediaSource);
+				string oldMediaDir = Path.GetDirectoryName(oldNameInMediaSource);
+				string newName = Path.GetFileName(newNameInMediaSource);
+				string oldName = Path.GetFileName(oldNameInMediaSource);
 
-			// Ignore stuff changes without data to modify
-			if (mediaPath == null) return;
-
-			// If media and data file were located in a similar folder structure, keep that structure
-			{
-				string relativeMediaPath = PathHelper.MakeFilePathRelative(mediaPath, EditorHelper.SourceMediaDirectory);
-				string relativeOldDataPath = PathHelper.MakeFilePathRelative(renameEvent.OldPath, DualityApp.DataDirectory);
-				string relativeMediaDir = Path.GetDirectoryName(relativeMediaPath);
-				string relativeOldDataDir = Path.GetDirectoryName(relativeOldDataPath);
-				if (PathOp.ArePathsEqual(relativeMediaDir, relativeOldDataDir))
+				IList<string> mediaPaths = GetSourceMediaPaths(renameEvent.Content.Res);
+				for (int i = 0; i < mediaPaths.Count; i++)
 				{
-					string relativeNewDataDir = Path.GetDirectoryName(PathHelper.MakeFilePathRelative(renameEvent.Path, DualityApp.DataDirectory));
-					string newMediaDir = Path.Combine(EditorHelper.SourceMediaDirectory, relativeNewDataDir);
-					mediaPath = Path.Combine(newMediaDir, Path.GetFileName(mediaPath));
-				}
-			}
+					string oldPath = mediaPaths[i];
+					string relativeOldPath = PathHelper.MakeFilePathRelative(oldPath, oldMediaDir);
 
-			// If media and data file were named similarly, keep that naming scheme
-			if (!PathOp.ArePathsEqual(Path.GetFileName(renameEvent.OldPath), Path.GetFileName(renameEvent.Path)))
-			{
-				string mediaFileNameWithoutExt = Path.GetFileNameWithoutExtension(mediaPath);
-				string oldDataName = ContentProvider.GetNameFromPath(renameEvent.OldPath);
-				if (PathOp.ArePathsEqual(mediaFileNameWithoutExt, oldDataName))
-				{
-					string newDataName = ContentProvider.GetNameFromPath(renameEvent.Path);
-					string newMediaFileName = newDataName + Path.GetExtension(mediaPath);
-					mediaPath = Path.Combine(Path.GetDirectoryName(mediaPath), newMediaFileName);
-				}
-			}
+					// Handle rename operations
+					relativeOldPath = relativeOldPath.Replace(oldName, newName);
 
-			if (renameEvent.IsResource)
-			{
-				// Move the media file to mirror the data files movement
-				if (!PathOp.ArePathsEqual(mediaPath, oldMediaPath))
-				{
-					if (File.Exists(oldMediaPath) && !File.Exists(mediaPath))
+					// Locate in moved directory
+					string newPath = Path.Combine(
+						newMediaDir, 
+						relativeOldPath);
+
+					// Move the media file to mirror the data files movement
+					if (!PathOp.ArePathsEqual(oldPath, newPath))
 					{
-						Directory.CreateDirectory(Path.GetDirectoryName(mediaPath));
-						File.Move(oldMediaPath, mediaPath);
-						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldMediaPath), true);
+						if (File.Exists(oldPath) && !File.Exists(newPath))
+						{
+							Directory.CreateDirectory(Path.GetDirectoryName(newPath));
+							File.Move(oldPath, newPath);
+							PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldPath), true);
+						}
 					}
 				}
 			}
 			else if (renameEvent.IsDirectory)
 			{
-				// Move the media directory to mirror the data files movement
-				if (!PathOp.ArePathsEqual(mediaPath, oldMediaPath))
+				// Determine which source/media directory we're going to move
+				string oldMediaPath = Path.Combine(
+					EditorHelper.SourceMediaDirectory, 
+					PathHelper.MakeFilePathRelative(renameEvent.OldPath, DualityApp.DataDirectory));
+
+				// Determine where that old source/media directory needs to be moved
+				string newMediaPath = Path.Combine(
+					EditorHelper.SourceMediaDirectory, 
+					PathHelper.MakeFilePathRelative(renameEvent.Path, DualityApp.DataDirectory));
+
+				// Move the media directory to mirror the data directories movement
+				if (!PathOp.ArePathsEqual(newMediaPath, oldMediaPath))
 				{
-					if (Directory.Exists(oldMediaPath) && !Directory.Exists(mediaPath))
+					if (Directory.Exists(oldMediaPath) && !Directory.Exists(newMediaPath))
 					{
-						Directory.CreateDirectory(Path.GetDirectoryName(mediaPath));
-						Directory.Move(oldMediaPath, mediaPath);
+						Directory.CreateDirectory(Path.GetDirectoryName(newMediaPath));
+						Directory.Move(oldMediaPath, newMediaPath);
 						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(oldMediaPath), true);
 					}
 				}
 			}
+		}
+		private static IList<string> GetSourceMediaPaths(Resource res)
+		{
+			// ToDo
+			return new string[0];
 		}
 
 		private static void DualityEditorApp_EditorIdling(object sender, EventArgs e)

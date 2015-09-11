@@ -824,7 +824,7 @@ namespace Duality.Editor.Plugins.ProjectView
 					foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
 					{
 						// Skip Resource files
-						if (Resource.IsResourceFile(path))
+						if (Resource.IsResourceFile(file))
 							continue;
 
 						nonResFiles.Add(file);
@@ -844,14 +844,14 @@ namespace Duality.Editor.Plugins.ProjectView
 			if (nonResFiles.Count > 0)
 			{
 				// Import Resources...
-				IEnumerable<ContentRef<Resource>> importedResources;
+				AssetImportOutput[] importedResources;
 				importedResources = AssetManager.ImportAssets(dropBaseDir, mutualBaseDir, nonResFiles);
 
 				// ...and schedule them for selection later
 				this.folderView.ClearSelection();
-				foreach (ContentRef<Resource> resRef in importedResources)
+				foreach (AssetImportOutput output in importedResources)
 				{
-					this.ScheduleSelect(resRef.Path);
+					this.ScheduleSelect(output.Resource.Path);
 				}
 
 				// If we imported something, consider all incoming files handled. Don't perform
@@ -1091,8 +1091,13 @@ namespace Duality.Editor.Plugins.ProjectView
 						this.folderView.ClearSelection();
 						foreach (Resource res in resList)
 						{
-							string desiredName = res.SourcePath != null ? Path.GetFileNameWithoutExtension(res.SourcePath) : res.Name;
-							if (string.IsNullOrEmpty(desiredName)) desiredName = res.GetType().Name;
+							string desiredName = null;
+							if (string.IsNullOrEmpty(desiredName))
+								desiredName = res.Name;
+							if (string.IsNullOrEmpty(desiredName) && res.AssetInfo != null)
+								desiredName = res.AssetInfo.NameHint;
+							if (string.IsNullOrEmpty(desiredName))
+								desiredName = res.GetType().Name;
 
 							bool pointsToFile = !res.IsDefaultContent && !res.IsRuntimeResource;
 							string basePath = this.GetInsertActionTargetBasePath(targetDirNode);
@@ -1275,7 +1280,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				if (Resource.IsResourceFile(dstPath))
 				{
 					IContentRef tempResRef = ContentProvider.RequestContent(dstPath);
-					tempResRef.Res.SourcePath = null;
+					tempResRef.Res.AssetInfo = null;
 					tempResRef.Res.Save();
 				}
 

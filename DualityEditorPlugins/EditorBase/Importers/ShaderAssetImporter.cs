@@ -36,9 +36,9 @@ namespace Duality.Editor.Plugins.Base
 				// For all handled input items, specify which Resource the importer intends to create / modify
 				string ext = Path.GetExtension(input.Path);
 				if (string.Equals(ext, SourceFileExtVertex, StringComparison.InvariantCultureIgnoreCase))
-					env.AddOutput<VertexShader>(input.AssetName);
+					env.AddOutput<VertexShader>(input.AssetName, input.Path);
 				else
-					env.AddOutput<FragmentShader>(input.AssetName);
+					env.AddOutput<FragmentShader>(input.AssetName, input.Path);
 			}
 		}
 		public void Import(IAssetImportEnvironment env)
@@ -67,7 +67,7 @@ namespace Duality.Editor.Plugins.Base
 					target.Compile();
 
 					// Add the requested output to signal that we've done something with it
-					env.AddOutput(targetRef);
+					env.AddOutput(targetRef, input.Path);
 				}
 			}
 		}

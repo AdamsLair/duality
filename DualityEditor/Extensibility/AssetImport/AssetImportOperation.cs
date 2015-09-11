@@ -37,7 +37,7 @@ namespace Duality.Editor
 
 		protected AssetImportInput[] input = null;
 		protected RawList<ImportInputAssignment> inputMapping = null;
-		protected HashSet<ContentRef<Resource>> output = null;
+		protected List<AssetImportOutput> output = null;
 		private AssetImporterConflictHandler conflictHandler = null;
 
 
@@ -45,9 +45,9 @@ namespace Duality.Editor
 		{
 			get { return this.input; }
 		}
-		public IEnumerable<ContentRef<Resource>> Output
+		public IEnumerable<AssetImportOutput> Output
 		{
-			get { return this.output ?? Enumerable.Empty<ContentRef<Resource>>(); }
+			get { return this.output ?? Enumerable.Empty<AssetImportOutput>(); }
 		}
 		public AssetImporterConflictHandler ImporterConflictHandler
 		{
@@ -101,7 +101,7 @@ namespace Duality.Editor
 					{
 						Importer = importer,
 						HandledInput = env.HandledInput.ToArray(),
-						ExpectedOutput = env.OutputResources.ToArray()
+						ExpectedOutput = env.Output.ToArray()
 					});
 				}
 			}
@@ -162,6 +162,55 @@ namespace Duality.Editor
 
 			return candidateMapping;
 		}
+		protected bool RunImporter(AssetImportEnvironment env, ImportInputAssignment assignment, IList<AssetImportOutput> outputCollection)
+		{
+			try
+			{
+				assignment.Importer.Import(env);
+						
+				// Get a list on properly registered output Resources and report warnings on the rest
+				List<AssetImportOutput> expectedOutput = new List<AssetImportOutput>();
+				foreach (AssetImportOutput output in env.Output)
+				{
+					if (!assignment.ExpectedOutput.Any(item => item.Resource == output.Resource))
+					{
+						Log.Editor.WriteWarning(
+							"AssetImporter '{0}' created an unpredicted output Resource: '{1}'. " + Environment.NewLine +
+							"This may cause problems in the Asset Management system, especially during Asset re-import. " + Environment.NewLine +
+							"Please fix the implementation of the PrepareImport method so it properly calls AddOutput for each predicted output Resource.",
+							Log.Type(assignment.Importer.GetType()),
+							output.Resource);
+					}
+					else
+					{
+						expectedOutput.Add(output);
+					}
+				}
+
+				// Collect references to the imported Resources and save them
+				foreach (AssetImportOutput output in expectedOutput)
+				{
+					Resource resource = output.Resource.Res;
+
+					AssetInfo assetInfo = resource.AssetInfo ?? new AssetInfo();
+					assetInfo.ImporterId = assignment.Importer.Id;
+					assetInfo.NameHint = resource.Name;
+
+					resource.AssetInfo = assetInfo;
+					outputCollection.Add(output);
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.Editor.WriteError("An error occurred while trying to import files using '{1}': {0}", 
+					Log.Exception(ex),
+					Log.Type(assignment.Importer.GetType()));
+				return false;
+			}
+
+			return true;
+		}
+
 		private int ResolveMappingConflict(ImportInputAssignment[] conflictingAssignments)
 		{
 			// By default, fall back on simply prefering the highest-priority importer
@@ -199,7 +248,7 @@ namespace Duality.Editor
 			public IAssetImporter Importer;
 			public AssetImportInput[] HandledInput;
 			public AssetImportInput[] HandledInputInSourceMedia;
-			public ContentRef<Resource>[] ExpectedOutput;
+			public AssetImportOutput[] ExpectedOutput;
 
 			public override string ToString()
 			{

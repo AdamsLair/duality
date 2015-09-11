@@ -35,7 +35,7 @@ namespace Duality.Editor.Plugins.Base
 			foreach (AssetImportInput input in env.HandleAllInput(this.AcceptsInput))
 			{
 				// For all handled input items, specify which Resource the importer intends to create / modify
-				env.AddOutput<Pixmap>(input.AssetName);
+				env.AddOutput<Pixmap>(input.AssetName, input.Path);
 			}
 		}
 		public void Import(IAssetImportEnvironment env)
@@ -56,10 +56,9 @@ namespace Duality.Editor.Plugins.Base
 					// Update pixel data from the input file
 					PixelData pixelData = this.LoadPixelData(input.Path);
 					target.MainLayer = pixelData;
-					target.SourcePath = input.Path;
 
 					// Add the requested output to signal that we've done something with it
-					env.AddOutput(targetRef);
+					env.AddOutput(targetRef, input.Path);
 				}
 			}
 		}

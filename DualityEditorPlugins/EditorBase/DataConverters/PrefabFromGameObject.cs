@@ -48,7 +48,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 
 					// Create Prefab
 					Prefab prefab = new Prefab(draggedObj);
-					prefab.SourcePath = draggedObj.Name; // Dummy "source path" that may be used as indicator where to save the Resource later.
+
+					// Add a dummy "source path" that may be used as indicator where to save the Resource later.
+					prefab.AssetInfo = new AssetInfo();
+					prefab.AssetInfo.NameHint = draggedObj.Name;
 
 					// Mark GameObject as handled
 					convert.MarkObjectHandled(draggedObj);						

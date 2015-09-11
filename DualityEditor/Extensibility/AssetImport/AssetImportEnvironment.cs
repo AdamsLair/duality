@@ -16,7 +16,7 @@ namespace Duality.Editor
 		private string sourceDir = null;
 		private AssetImportInput[] input = null;
 		private List<AssetImportInput> handledInput = new List<AssetImportInput>();
-		private HashSet<ContentRef<Resource>> output = new HashSet<ContentRef<Resource>>();
+		private List<AssetImportOutput> output = new List<AssetImportOutput>();
 		private Dictionary<string,string> assetRenameMap = new Dictionary<string,string>();
 
 		public bool IsPrepareStep
@@ -45,7 +45,7 @@ namespace Duality.Editor
 		{
 			get { return this.handledInput; }
 		}
-		public IEnumerable<ContentRef<Resource>> OutputResources
+		public IEnumerable<AssetImportOutput> Output
 		{
 			get { return this.output; }
 		}
@@ -99,14 +99,18 @@ namespace Duality.Editor
 				return new ContentRef<T>(targetRes, targetResPath);
 			}
 		}
-		public void AddOutput<T>(string assetName) where T : Resource
+		public void AddOutput<T>(string assetName, IEnumerable<string> inputPaths) where T : Resource
 		{
 			string targetResPath = this.GetTargetPath<T>(assetName);
-			this.AddOutput(new ContentRef<T>(null, targetResPath));
+			this.AddOutput(new ContentRef<T>(null, targetResPath), inputPaths);
 		}
-		public void AddOutput(IContentRef resource)
+		public void AddOutput(IContentRef resource, IEnumerable<string> inputPaths)
 		{
-			this.output.Add(resource.As<Resource>());
+			// If this is not a preparation step, require all output Resources to be actually available.
+			if (!this.isPrepareStep && !resource.IsAvailable)
+				throw new ArgumentException("Can't add a non-existent output Resource", "resource");
+
+			this.output.Add(new AssetImportOutput(resource.As<Resource>(), inputPaths));
 		}
 
 		private string GetTargetPath<T>(string assetName) where T : Resource

@@ -53,7 +53,7 @@ namespace Duality.Editor
 			// Filter out mappings without existing target Resources - can't Re-Import what isn't there.
 			for (int i = this.inputMapping.Count - 1; i >= 0; i--)
 			{
-				if (this.inputMapping.Data[i].ExpectedOutput.Any(res => !res.IsAvailable))
+				if (this.inputMapping.Data[i].ExpectedOutput.Any(item => !item.Resource.IsAvailable))
 				{
 					this.inputMapping.RemoveAt(i);
 				}
@@ -69,65 +69,24 @@ namespace Duality.Editor
 		}
 		private bool ImportFromLocalFolder()
 		{
-			bool importFailure = false;
-			bool anyImported = false;
+			bool failed = false;
 
-			this.output = new HashSet<ContentRef<Resource>>();
+			// Import all files this importer previously requested to handle
+			this.output = new List<AssetImportOutput>();
 			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
 			{
 				ImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
-
-				// Import the (copied and mapped) files, this importer previously requested to handle
-				{
-					AssetImportEnvironment importEnv = new AssetImportEnvironment(
-						DualityApp.DataDirectory, 
-						EditorHelper.SourceMediaDirectory, 
-						assignment.HandledInputInSourceMedia);
-					importEnv.IsReImport = true;
-
-					try
-					{
-						assignment.Importer.Import(importEnv);
-						anyImported = true;
-						
-						// Get a list on properly registered output Resources and report warnings on the rest
-						List<Resource> expectedOutput = new List<Resource>();
-						foreach (var resourceRef in importEnv.OutputResources)
-						{
-							if (!assignment.ExpectedOutput.Contains(resourceRef))
-							{
-								Log.Editor.WriteWarning(
-									"AssetImporter '{0}' created an unpredicted output Resource: '{1}'. " + Environment.NewLine +
-									"This may cause problems in the Asset Management system, especially during Asset re-import. " + Environment.NewLine +
-									"Please fix the implementation of the PrepareImport method so it properly calls AddOutput for each predicted output Resource.",
-									Log.Type(assignment.Importer.GetType()),
-									resourceRef);
-							}
-							else
-							{
-								expectedOutput.Add(resourceRef.Res);
-							}
-						}
-
-						// Collect references to the imported Resources and save them
-						foreach (Resource resource in expectedOutput)
-						{
-							this.output.Add(resource);
-						}
-					}
-					catch (Exception ex)
-					{
-						importFailure = true;
-						Log.Editor.WriteError("An error occurred while trying to re-import files using '{1}': {0}", 
-							Log.Exception(ex),
-							Log.Type(assignment.Importer.GetType()));
-						this.inputMapping.RemoveAt(assignmentIndex);
-						assignmentIndex--;
-					}
-				}
+				AssetImportEnvironment importEnv = new AssetImportEnvironment(
+					DualityApp.DataDirectory, 
+					EditorHelper.SourceMediaDirectory, 
+					assignment.HandledInputInSourceMedia);
+				importEnv.IsReImport = true;
+				
+				if (!this.RunImporter(importEnv, assignment, this.output))
+					failed = true;
 			}
 
-			return anyImported && !importFailure;
+			return !failed;
 		}
 	}
 }

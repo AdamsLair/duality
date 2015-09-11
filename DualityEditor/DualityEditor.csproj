@@ -116,6 +116,7 @@
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImporterConflictHandler.cs" />
+    <Compile Include="Extensibility\AssetImport\AssetImportOutput.cs" />
     <Compile Include="Extensibility\AssetImport\AssetImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetReImportOperation.cs" />
     <Compile Include="Extensibility\AssetImport\AssetFirstImportOperation.cs" />

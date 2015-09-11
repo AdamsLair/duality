@@ -151,7 +151,7 @@ namespace Duality.Editor
 				// Determine if we'll be overwriting any Resource files
 				for (int i = 0; i < assignment.ExpectedOutput.Length; i++)
 				{
-					if (File.Exists(assignment.ExpectedOutput[i].Path))
+					if (File.Exists(assignment.ExpectedOutput[i].Resource.Path))
 					{
 						return true;
 					}
@@ -213,61 +213,26 @@ namespace Duality.Editor
 		}
 		private bool ImportFromLocalFolder()
 		{
-			bool importFailure = false;
-			bool anyImported = false;
+			bool failed = false;
 
-			this.output = new HashSet<ContentRef<Resource>>();
+			// Import the (copied and mapped) files this importer previously requested to handle
+			this.output = new List<AssetImportOutput>();
 			for (int assignmentIndex = 0; assignmentIndex < this.inputMapping.Count; assignmentIndex++)
 			{
 				ImportInputAssignment assignment = this.inputMapping.Data[assignmentIndex];
+				AssetImportEnvironment importEnv = new AssetImportEnvironment(this.targetDir, this.sourceDir, assignment.HandledInputInSourceMedia);
 
-				// Import the (copied and mapped) files, this importer previously requested to handle
-				{
-					AssetImportEnvironment importEnv = new AssetImportEnvironment(this.targetDir, this.sourceDir, assignment.HandledInputInSourceMedia);
-					try
-					{
-						assignment.Importer.Import(importEnv);
-						anyImported = true;
-						
-						// Get a list on properly registered output Resources and report warnings on the rest
-						List<Resource> expectedOutput = new List<Resource>();
-						foreach (var resourceRef in importEnv.OutputResources)
-						{
-							if (!assignment.ExpectedOutput.Contains(resourceRef))
-							{
-								Log.Editor.WriteWarning(
-									"AssetImporter '{0}' created an unpredicted output Resource: '{1}'. " + Environment.NewLine +
-									"This may cause problems in the Asset Management system, especially during Asset re-import. " + Environment.NewLine +
-									"Please fix the implementation of the PrepareImport method so it properly calls AddOutput for each predicted output Resource.",
-									Log.Type(assignment.Importer.GetType()),
-									resourceRef);
-							}
-							else
-							{
-								expectedOutput.Add(resourceRef.Res);
-							}
-						}
-
-						// Collect references to the imported Resources and save them
-						foreach (Resource resource in expectedOutput)
-						{
-							resource.Save();
-							this.output.Add(resource);
-						}
-					}
-					catch (Exception ex)
-					{
-						importFailure = true;
-						Log.Editor.WriteError("An error occurred while trying to import files using '{1}': {0}", 
-							Log.Exception(ex),
-							Log.Type(assignment.Importer.GetType()));
-						this.inputMapping.RemoveAt(assignmentIndex);
-						assignmentIndex--;
-					}
-				}
+				if (!this.RunImporter(importEnv, assignment, this.output))
+					failed = true;
 			}
 
-			return anyImported && !importFailure;
+			// Save the newly imported Resources
+			foreach (AssetImportOutput item in this.output)
+			{
+				item.Resource.Res.Save();
+			}
+
+			return !failed;
 		}
 
 		private bool InvokeConfirmOverwrite()

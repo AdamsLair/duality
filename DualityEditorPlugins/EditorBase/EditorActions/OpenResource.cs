@@ -27,16 +27,16 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 			if (pixmap != null)
 			{
 				AssetManager.OpenSourceFile(
-					pixmap, 
-					PixmapAssetImporter.SourceFileExtPrimary, 
-					path => SavePixmapData(pixmap, path));
+					pixmap,
+ 					(res, dir) => new string[] { Path.Combine(dir, res.Name) + PixmapAssetImporter.SourceFileExtPrimary },
+					(res, dir) => SavePixmapData(res as Pixmap, Path.Combine(dir, res.Name) + PixmapAssetImporter.SourceFileExtPrimary));
 			}
 			else if (audioData != null)
 			{
 				AssetManager.OpenSourceFile(
 					audioData, 
-					AudioDataAssetImporter.SourceFileExtPrimary, 
-					path => SaveAudioData(audioData, path));
+ 					(res, dir) => new string[] { Path.Combine(dir, res.Name) + AudioDataAssetImporter.SourceFileExtPrimary },
+					(res, dir) => SaveAudioData(res as AudioData, Path.Combine(dir, res.Name) + AudioDataAssetImporter.SourceFileExtPrimary));
 			}
 			else if (shader != null)
 			{
@@ -48,8 +48,8 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
 				AssetManager.OpenSourceFile(
 					shader, 
-					fileExt, 
-					path => SaveShaderData(shader, path));
+ 					(res, dir) => new string[] { Path.Combine(dir, res.Name) + fileExt },
+					(res, dir) => SaveShaderData(res as AbstractShader, Path.Combine(dir, res.Name) + fileExt));
 			}
 		}
 		public override bool CanPerformOn(Resource obj)
