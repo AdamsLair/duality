@@ -223,49 +223,49 @@ namespace Duality.Editor.AssetManagement
 
 		private int ResolveMappingConflict(ImportInputAssignment[] conflictingAssignments)
 		{
-			// If we have an already-existing expected output, see if it knows which importer to use
+			// Determine the preferred importer based on existing output Resources
 			string preferredImporterId = null;
 			{
-				// Aggregate all existing output Resources
-				HashSet<Resource> existingResources = new HashSet<Resource>(); 
+				// Check each importer assignment individually, as each one represents a conflicting import operation
 				for (int i = 0; i < conflictingAssignments.Length; i++)
 				{
-					bool ambiguous = false;
+					preferredImporterId = null;
+
+					// Find out whether all output Resources of this importer assignment exist and share the same preferred importer
 					AssetImportOutput[] output = conflictingAssignments[i].ExpectedOutput;
 					for (int j = 0; j < output.Length; j++)
 					{
 						Resource existingRes = output[j].Resource.Res;
 						if (existingRes == null)
 						{
-							ambiguous = true;
+							preferredImporterId = null;
 							break;
 						}
-						existingResources.Add(existingRes);
-					}
-					if (ambiguous) break;
-				}
 
-				// See if the existing Resources have a common preferred importer
-				foreach (Resource existingRes in existingResources)
-				{
-					string resImporterPref = existingRes.AssetInfo != null ? existingRes.AssetInfo.ImporterId : null;
+						// If at least one Resource doesn't have a preference, that's ambiuous. Cancel it.
+						string resImporterPref = existingRes.AssetInfo != null ? existingRes.AssetInfo.ImporterId : null;
+						if (resImporterPref == null)
+						{
+							preferredImporterId = null;
+							break;
+						}
 
-					// If at least one Resource doesn't have a preference, that's ambiuous. Cancel it.
-					if (resImporterPref == null)
-					{
-						preferredImporterId = null;
-						break;
+						// Set up the shared importer preference
+						if (preferredImporterId == null)
+						{
+							preferredImporterId = resImporterPref;
+						}
+						// If different outputs from this mapping report different preferred importers, that's ambiguous. Cancel it.
+						else if (preferredImporterId != resImporterPref)
+						{
+							preferredImporterId = null;
+							break;
+						}
 					}
 
-					// Set up the shared importer preference
-					if (preferredImporterId == null)
+					// If this importer assignment's Resources have full confidence in a preferred importer, we have a match
+					if (preferredImporterId != null)
 					{
-						preferredImporterId = resImporterPref;
-					}
-					// If different outputs from this mapping report different preferred importers, that's ambiguous. Cancel it.
-					else if (preferredImporterId != resImporterPref)
-					{
-						preferredImporterId = null;
 						break;
 					}
 				}
