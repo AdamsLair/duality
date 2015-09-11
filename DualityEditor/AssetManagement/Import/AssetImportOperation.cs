@@ -133,7 +133,7 @@ namespace Duality.Editor.AssetManagement
 					ImportInputAssignment conflictAssignment = candidateMapping[secondIndex];
 					IEnumerable<string> mainFiles = assignment.HandledInput.Select(item => item.Path);
 					IEnumerable<string> secondFiles = conflictAssignment.HandledInput.Select(item => item.Path);
-					string[] conflicts = mainFiles.Union(secondFiles).ToArray();
+					string[] conflicts = mainFiles.Intersect(secondFiles).ToArray();
 					if (conflicts.Length > 0)
 					{
 						if (conflictingIndices.Count == 0) conflictingIndices.Add(mainIndex);

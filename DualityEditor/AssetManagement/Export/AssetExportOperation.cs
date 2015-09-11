@@ -37,7 +37,7 @@ namespace Duality.Editor.AssetManagement
 			}
 		}
 
-		private string sourceDir = null;
+		private string exportDir = null;
 		private Resource input = null;
 		private ExportInputAssignment inputMapping = default(ExportInputAssignment);
 		private List<string> outputPaths = null;
@@ -59,9 +59,9 @@ namespace Duality.Editor.AssetManagement
 		}
 
 		
-		public AssetExportOperation(Resource input, string sourceBaseDir)
+		public AssetExportOperation(Resource input, string exportDir)
 		{
-			this.sourceDir = sourceBaseDir;
+			this.exportDir = exportDir;
 			this.input = input;
 		}
 
@@ -92,7 +92,7 @@ namespace Duality.Editor.AssetManagement
 		private bool DetermineExportInputMapping()
 		{
 			AssetExportEnvironment prepareEnv = new AssetExportEnvironment(
-				this.sourceDir, 
+				this.exportDir, 
 				this.input);
 			prepareEnv.IsPrepareStep = true;
 			this.inputMapping = this.SelectImporter(prepareEnv);
@@ -103,7 +103,7 @@ namespace Duality.Editor.AssetManagement
 			this.outputPaths = new List<string>();
 			bool success = false;
 			{
-				AssetExportEnvironment importEnv = new AssetExportEnvironment(this.sourceDir, this.input);
+				AssetExportEnvironment importEnv = new AssetExportEnvironment(this.exportDir, this.input);
 				success = this.RunImporter(importEnv, this.inputMapping, this.outputPaths);
 			}
 			return success;

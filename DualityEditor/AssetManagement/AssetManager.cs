@@ -105,32 +105,34 @@ namespace Duality.Editor.AssetManagement
 			return reimportOperation.Output.ToArray();
 		}
 
-		public static string[] ExportAssets(ContentRef<Resource> inputResource, string sourceBaseDir = null)
+		public static string[] ExportAssets(ContentRef<Resource> inputResource, string exportDir = null)
 		{
-			return ExportAssets(inputResource, sourceBaseDir, false);
+			return ExportAssets(inputResource, exportDir, false);
 		}
-		public static string[] SimulateExportAssets(ContentRef<Resource> inputResource, string sourceBaseDir = null)
+		public static string[] SimulateExportAssets(ContentRef<Resource> inputResource, string exportDir = null)
 		{
-			return ExportAssets(inputResource, sourceBaseDir, true);
+			return ExportAssets(inputResource, exportDir, true);
 		}
-		private static string[] ExportAssets(ContentRef<Resource> inputResource, string sourceBaseDir, bool simulate)
+		private static string[] ExportAssets(ContentRef<Resource> inputResource, string exportDir, bool simulate)
 		{
 			// Early-out, if the input Resource isn't available
 			if (!inputResource.IsAvailable) return new string[0];
 
-			if (sourceBaseDir == null)
+			// If there is no export directory set, derive it from the Resource path in the Data folder
+			if (exportDir == null)
 			{
-				string resDir = Path.GetDirectoryName(inputResource.Path);
-				sourceBaseDir = Path.Combine(
+				string resFullNameInData = PathHelper.MakeFilePathRelative(inputResource.FullName, DualityApp.DataDirectory);
+				string resDirInData = Path.GetDirectoryName(resFullNameInData);
+				exportDir = Path.Combine(
 					EditorHelper.SourceMediaDirectory,
-					PathHelper.MakeFilePathRelative(resDir, DualityApp.DataDirectory));
+					resDirInData);
 			}
 
 			bool userAbort = false;
 			bool success = false;
 
 			// Set up an export operation and process it
-			AssetExportOperation exportOperation = new AssetExportOperation(inputResource.Res, sourceBaseDir);
+			AssetExportOperation exportOperation = new AssetExportOperation(inputResource.Res, exportDir);
 			exportOperation.ImporterConflictHandler = data =>
 			{
 				IAssetImporter userSelection = ResolveImporterConflict(data);

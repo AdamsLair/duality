@@ -12,11 +12,11 @@ namespace Duality.Editor.AssetManagement
 	public interface IAssetExportEnvironment
 	{
 		/// <summary>
-		/// [GET] The source (Source/Media) base directory of this export operation.
+		/// [GET] The directory to export the source files into.
 		/// </summary>
-		string SourceDirectory { get; }
+		string ExportDirectory { get; }
 		/// <summary>
-		/// [GET] The input <see cref="Duality.Resource"/> that should be exported to the <see cref="SourceDirectory"/>.
+		/// [GET] The input <see cref="Duality.Resource"/> that should be exported to the <see cref="ExportDirectory"/>.
 		/// </summary>
 		Resource Input { get; }
 

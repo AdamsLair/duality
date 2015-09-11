@@ -11,7 +11,7 @@ namespace Duality.Editor.AssetManagement
 	public class AssetExportEnvironment : IAssetExportEnvironment
 	{
 		private bool isPrepareStep = false;
-		private string sourceDir = null;
+		private string exportDir = null;
 		private Resource input = null;
 		private bool isHandled = false;
 		private List<string> outputPaths = new List<string>();
@@ -21,9 +21,9 @@ namespace Duality.Editor.AssetManagement
 			get { return this.isPrepareStep; }
 			set { this.isPrepareStep = value; }
 		}
-		public string SourceDirectory
+		public string ExportDirectory
 		{
-			get { return this.sourceDir; }
+			get { return this.exportDir; }
 		}
 		public Resource Input
 		{
@@ -38,9 +38,9 @@ namespace Duality.Editor.AssetManagement
 			get { return this.outputPaths; }
 		}
 		
-		public AssetExportEnvironment(string sourceDir, Resource input)
+		public AssetExportEnvironment(string exportDir, Resource input)
 		{
-			this.sourceDir = sourceDir;
+			this.exportDir = exportDir;
 			this.input = input;
 		}
 
@@ -51,7 +51,7 @@ namespace Duality.Editor.AssetManagement
 		}
 		public string AddOutputPath(string localFilePath)
 		{
-			string filePath = Path.Combine(this.sourceDir, localFilePath);
+			string filePath = Path.Combine(this.exportDir, localFilePath);
 
 			// If we're doing actual work, make sure the directory exists
 			if (!this.isPrepareStep)
