@@ -213,6 +213,65 @@ namespace Duality.Editor
 
 		private int ResolveMappingConflict(ImportInputAssignment[] conflictingAssignments)
 		{
+			// If we have an already-existing expected output, see if it knows which importer to use
+			string preferredImporterId = null;
+			{
+				// Aggregate all existing output Resources
+				HashSet<Resource> existingResources = new HashSet<Resource>(); 
+				for (int i = 0; i < conflictingAssignments.Length; i++)
+				{
+					bool ambiguous = false;
+					AssetImportOutput[] output = conflictingAssignments[i].ExpectedOutput;
+					for (int j = 0; j < output.Length; j++)
+					{
+						Resource existingRes = output[j].Resource.Res;
+						if (existingRes == null)
+						{
+							ambiguous = true;
+							break;
+						}
+						existingResources.Add(existingRes);
+					}
+					if (ambiguous) break;
+				}
+
+				// See if the existing Resources have a common preferred importer
+				foreach (Resource existingRes in existingResources)
+				{
+					string resImporterPref = existingRes.AssetInfo != null ? existingRes.AssetInfo.ImporterId : null;
+
+					// If at least one Resource doesn't have a preference, that's ambiuous. Cancel it.
+					if (resImporterPref == null)
+					{
+						preferredImporterId = null;
+						break;
+					}
+
+					// Set up the shared importer preference
+					if (preferredImporterId == null)
+					{
+						preferredImporterId = resImporterPref;
+					}
+					// If different outputs from this mapping report different preferred importers, that's ambiguous. Cancel it.
+					else if (preferredImporterId != resImporterPref)
+					{
+						preferredImporterId = null;
+						break;
+					}
+				}
+			}
+
+			// If we have a preferred ID, see if it's an option
+			if (preferredImporterId != null)
+			{
+				for (int i = 0; i < conflictingAssignments.Length; i++)
+				{
+					// If we have a match with the preferred importer, this is definitely the correct assignment to handle this.
+					if (conflictingAssignments[i].Importer.Id == preferredImporterId)
+						return i;
+				}
+			}
+
 			// By default, fall back on simply prefering the highest-priority importer
 			int keepIndex = -1;
 			int highestPrio = int.MinValue;
