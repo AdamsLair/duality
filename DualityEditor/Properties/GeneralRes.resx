@@ -272,7 +272,7 @@
     <value>Can't import file</value>
   </data>
   <data name="Msg_CantImport_Text" xml:space="preserve">
-    <value>Can't import file '{0}'. The files format is not supported.</value>
+    <value>Can't import file '{0}'. None of the available importers is able to handle the files format.</value>
   </data>
   <data name="Msg_ConfirmBreakPrefabLink_Caption" xml:space="preserve">
     <value>Break Prefab Link?</value>
@@ -329,7 +329,7 @@
     <value>Overwrite file?</value>
   </data>
   <data name="Msg_ImportConfirmOverwrite_Text" xml:space="preserve">
-    <value>Importing file '{0}' would overwrite an already imported file. Do you want to continue?</value>
+    <value>This import operation would overwrite already imported Resources or already present source / media files. Do you want to continue?</value>
   </data>
   <data name="Msg_InstallNewTemplate_Caption" xml:space="preserve">
     <value>Install new Template?</value>
@@ -552,5 +552,14 @@
   </data>
   <data name="IconClass" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\Class.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="page_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\page_white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Msg_CantExport_Caption" xml:space="preserve">
+    <value>Can't export Resource</value>
+  </data>
+  <data name="Msg_CantExport_Text" xml:space="preserve">
+    <value>Can't export Resource '{0}'. None of the available importers is able to handle this Resource type.</value>
   </data>
 </root>

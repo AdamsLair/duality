@@ -224,7 +224,7 @@
     <value>Press F to focus the world origin.</value>
   </data>
   <data name="CamView_Help_CamActions_Move" xml:space="preserve">
-    <value>Use Mouse Wheel and Right Mouse button to move.</value>
+    <value>Use Mouse Wheel, Middle and Right Mouse button to move.</value>
   </data>
   <data name="CamView_Help_CamActions_MoveAlternate" xml:space="preserve">
     <value>Hold Space for alternative camera movement.</value>

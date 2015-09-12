@@ -133,7 +133,9 @@
     <Compile Include="IO\DirectoryOp.cs" />
     <Compile Include="IO\FileAccessMode.cs" />
     <Compile Include="IO\IFileSystem.cs" />
+    <Compile Include="IO\PathEqualityComparer.cs" />
     <Compile Include="IO\PathOp.cs" />
+    <Compile Include="Resources\AssetInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />

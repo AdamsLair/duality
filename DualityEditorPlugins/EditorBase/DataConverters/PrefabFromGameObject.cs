@@ -9,6 +9,7 @@ using Duality.Components.Renderers;
 using Duality.Resources;
 using Duality.Drawing;
 using Duality.Editor;
+using Duality.Editor.AssetManagement;
 
 
 namespace Duality.Editor.Plugins.Base.DataConverters
@@ -48,7 +49,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 
 					// Create Prefab
 					Prefab prefab = new Prefab(draggedObj);
-					prefab.SourcePath = draggedObj.Name; // Dummy "source path" that may be used as indicator where to save the Resource later.
+
+					// Add a name hint that may be used as indicator to select a Resource name later
+					prefab.AssetInfo = new AssetInfo();
+					prefab.AssetInfo.NameHint = draggedObj.Name;
 
 					// Mark GameObject as handled
 					convert.MarkObjectHandled(draggedObj);						

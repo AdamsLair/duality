@@ -6,10 +6,11 @@ using System.IO;
 using System.Reflection;
 
 using Duality.Serialization;
-using Duality.Editor;
 using Duality.Cloning;
 using Duality.Properties;
 using Duality.IO;
+using Duality.Editor;
+using Duality.Editor.AssetManagement;
 
 namespace Duality
 {
@@ -36,17 +37,20 @@ namespace Duality
 		public static event EventHandler<ResourceSaveEventArgs>	ResourceSaving = null;
 		
 		/// <summary>
-		/// The path of the file from which the Resource has been originally imported or initialized.
+		/// Contains information on how this <see cref="Resource"/> should be treated during
+		/// Asset import operations in the editor.
 		/// </summary>
-		protected string sourcePath = null;
+		[CloneField(CloneFieldFlags.Skip)]
+		protected AssetInfo assetInfo = null;
 		/// <summary>
 		/// The path of this Resource.
 		/// </summary>
 		[DontSerialize]
-		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		protected string path = null;
+		/// <summary>
+		/// The initialization state of the Resource. Also specifies a disposed-state.
+		/// </summary>
 		[DontSerialize]
-		[CloneField(CloneFieldFlags.IdentityRelevant)]
 		private InitState initState = InitState.Initialized;
 
 		/// <summary>
@@ -69,14 +73,27 @@ namespace Duality
 			internal set { this.path = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The path of the file from which the Resource has been originally imported or initialized.
-		/// Setting this does not affect the Resource in any way.
+		/// [GET / SET] Provides information on the way this <see cref="Duality.Resource"/> should be treated during
+		/// Asset import operations in the editor. This information is not available at runtime and can only be
+		/// accessed or set outside a <see cref="DualityApp.ExecutionEnvironment.Launcher"/> environment.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public string SourcePath
+		public AssetInfo AssetInfo
 		{
-			get { return this.sourcePath; }
-			set { this.sourcePath = value; }
+			get
+			{
+				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Launcher)
+					return null;
+				else
+					return this.assetInfo;
+			}
+			set
+			{
+				if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Launcher)
+					throw new NotSupportedException("This property cannot be set at runtime.");
+				else
+					this.assetInfo = value;
+			}
 		}
 		/// <summary>
 		/// [GET] The name of the Resource.
@@ -149,7 +166,8 @@ namespace Duality
 			this.CheckedOnSaving(saveAsPath);
 
 			// We're saving a new Resource for the first time: Register it in the library
-			if (makePermanent && string.IsNullOrWhiteSpace(this.path))
+			bool isPermanent = !string.IsNullOrWhiteSpace(this.path);
+			if (makePermanent && !isPermanent)
 			{
 				this.path = saveAsPath;
 				ContentProvider.AddContent(this.path, this);

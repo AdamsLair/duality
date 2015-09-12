@@ -89,6 +89,7 @@
       <HintPath>..\packages\AdamsLair.WinForms.PopupControl.1.0.0.0\lib\net40\PopupControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.XML" />
     <Reference Include="System.Xml.Linq" />
@@ -114,11 +115,23 @@
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
+    <Compile Include="AssetManagement\Export\AssetExportEnvironment.cs" />
+    <Compile Include="AssetManagement\AssetImporterConflictHandler.cs" />
+    <Compile Include="AssetManagement\Export\AssetExportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportOutput.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetReImportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetFirstImportOperation.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportInput.cs" />
+    <Compile Include="AssetManagement\Import\ExtMethodsIAssetImportEnvironment.cs" />
+    <Compile Include="AssetManagement\Export\IAssetExportEnvironment.cs" />
     <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
     <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
     <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />
     <Compile Include="Extensibility\EditorActions\IEditorAction.cs" />
-    <Compile Include="Extensibility\FileImport\IFileImporter.cs" />
+    <Compile Include="AssetManagement\Import\AssetImportEnvironment.cs" />
+    <Compile Include="AssetManagement\Import\IAssetImportEnvironment.cs" />
+    <Compile Include="AssetManagement\IAssetImporter.cs" />
     <Compile Include="Extensibility\Previews\PreviewImageQuery.cs" />
     <Compile Include="Extensibility\Previews\IPreviewGenerator.cs" />
     <Compile Include="Extensibility\Previews\PreviewGenerator.cs" />
@@ -176,7 +189,17 @@
     <Compile Include="Forms\PublishGameDialog.Designer.cs">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="AssetManagement\SelectAssetImporterDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssetManagement\SelectAssetImporterDialog.Designer.cs">
+      <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\GeneralResNames.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
+    <Compile Include="Utility\HighlightMode.cs" />
+    <Compile Include="Utility\AutosaveFrequency.cs" />
+    <Compile Include="Utility\SelectMode.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsDualityFont.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsPixelData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
@@ -203,7 +226,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsControl.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsDataObject.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsColor.cs" />
-    <Compile Include="FileImportProvider.cs" />
+    <Compile Include="AssetManagement\AssetManager.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -286,6 +309,9 @@
     <Compile Include="UndoRedoManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="AssetManagement\SelectAssetImporterDialog.resx">
+      <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CreateObjectDialog.resx">
       <DependentUpon>CreateObjectDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -361,7 +387,9 @@
     <None Include="EmbeddedResources\application_stopwatch.png" />
     <EmbeddedResource Include="EmbeddedResources\ErrorHandlersTemplate.txt" />
     <EmbeddedResource Include="EmbeddedResources\Class.png" />
+    <EmbeddedResource Include="EmbeddedResources\AssetImporter.png" />
     <Content Include="EmbeddedResources\namespace.png" />
+    <None Include="EmbeddedResources\page_white.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
     <None Include="EmbeddedResources\arrow_undo.png" />
     <None Include="EmbeddedResources\arrow_redo.png" />

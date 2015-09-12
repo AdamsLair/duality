@@ -8,6 +8,7 @@ using Duality.Resources;
 using Duality.Properties;
 using Duality.Editor.Plugins.Base.Properties;
 using Duality.Editor.UndoRedoActions;
+using Duality.Editor.AssetManagement;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
@@ -20,65 +21,30 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
 		public override void Perform(Resource obj)
 		{
-			Pixmap			pixmap		= obj as Pixmap;
-			AudioData		audioData	= obj as AudioData;
-			AbstractShader	shader		= obj as AbstractShader;
-
-			if (pixmap != null)
+			string[] exportedPaths = AssetManager.ExportAssets(obj);
+			
+			// If there is only a single source path, open the file right away
+			if (exportedPaths.Length == 1)
 			{
-				FileImportProvider.OpenSourceFile(
-					pixmap, 
-					PixmapFileImporter.SourceFileExtPrimary, 
-					path => SavePixmapData(pixmap, path));
+				System.Diagnostics.Process.Start(exportedPaths[0]);
 			}
-			else if (audioData != null)
+			// If there are multiple source paths, just open the base directory
+			else
 			{
-				FileImportProvider.OpenSourceFile(
-					audioData, 
-					AudioDataFileImporter.SourceFileExtPrimary, 
-					path => SaveAudioData(audioData, path));
-			}
-			else if (shader != null)
-			{
-				string fileExt;
-				if (shader is FragmentShader)
-					fileExt = ShaderFileImporter.SourceFileExtFragment;
-				else
-					fileExt = ShaderFileImporter.SourceFileExtVertex;
-
-				FileImportProvider.OpenSourceFile(
-					shader, 
-					fileExt, 
-					path => SaveShaderData(shader, path));
+				string mutualBaseDir = PathHelper.GetMutualBaseDirectory(exportedPaths);
+				System.Diagnostics.Process.Start(mutualBaseDir);
 			}
 		}
 		public override bool CanPerformOn(Resource obj)
 		{
 			if (!base.CanPerformOn(obj)) return false;
-			if (obj is Pixmap) return true;
-			if (obj is AudioData) return true;
-			if (obj is AbstractShader) return true;
-			return false;
+			
+			string[] exportedPaths = AssetManager.SimulateExportAssets(obj);
+			return exportedPaths.Length > 0;
 		}
 		public override bool MatchesContext(string context)
 		{
 			return context == DualityEditorApp.ActionContextOpenRes;
-		}
-
-		private static void SavePixmapData(Pixmap pixmap, string targetPath)
-		{
-			using (Bitmap bmp = pixmap.MainLayer.ToBitmap())
-			{
-				bmp.Save(targetPath);
-			}
-		}
-		private static void SaveShaderData(AbstractShader shader, string targetPath)
-		{
-			File.WriteAllText(targetPath, shader.Source);
-		}
-		private static void SaveAudioData(AudioData audio, string targetPath)
-		{
-			File.WriteAllBytes(targetPath, audio.OggVorbisData);
 		}
 	}
 }

@@ -17,6 +17,7 @@ using Duality;
 using Duality.IO;
 using Duality.Resources;
 using Duality.Editor;
+using Duality.Editor.AssetManagement;
 using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.ProjectView.TreeModels;
 
@@ -59,7 +60,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		private	Dictionary<Node,bool>	tempNodeVisibilityCache		= new Dictionary<Node,bool>();
 		private	string					tempUpperFilter				= null;
 		private	string					tempDropBasePath			= null;
-		private	StringCollection		tempFileDropList			= null;
+		private	List<string>			tempFileDropList			= null;
 		private bool					tempScheduleSelectionChange	= false;
 
 		private MenuModelItem			nodeContextItemNew				= null;
@@ -148,6 +149,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				if (exclusive) this.folderView.ClearSelection();
 				viewNode.IsSelected = select;
 				this.folderView.EnsureVisible(viewNode);
+				this.folderView.Invalidate();
 				return true;
 			}
 			return false;
@@ -380,26 +382,40 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Dropping files
 				if (data.ContainsFileDropList())
 				{
-					this.tempFileDropList = data.GetFileDropList();
+					IEnumerable<string> incomingFiles = data.GetFileDropList().OfType<string>();
 
-					// Retrieve preferred drop effect (Windows system stuff)
-					MemoryStream dropEffect = data.GetData("Preferred DropEffect") as MemoryStream;
-					bool move = false;
-					if (dropEffect != null)
-					{
-						byte[] moveEffect = new byte[4];
-						dropEffect.Read(moveEffect, 0, 4);
-						move = moveEffect[0] == 2 && moveEffect[1] == 0 && moveEffect[2] == 0 && moveEffect[3] == 0;
-					}
+					// Handle file import operations and filter out files that have been handled that way.
+					incomingFiles = this.HandleFileImport(this.tempDropBasePath, incomingFiles);
 
-					// Display context menu if both moving and copying are available
-					if (move)
+					// Filter out non-Resource files that might have been dropped accidentally into the data directory
+					incomingFiles = incomingFiles.Where(path => Resource.IsResourceFile(path) || Directory.Exists(path));
+
+					// If there's anything left, proceed with a regular file drop operation
+					if (incomingFiles.Any())
 					{
-						this.moveHereToolStripMenuItem_Click(this, null);
-						Clipboard.Clear();
+						this.tempFileDropList = incomingFiles.ToList();
+
+						// Retrieve preferred drop effect (Windows system stuff)
+						MemoryStream dropEffect = data.GetData("Preferred DropEffect") as MemoryStream;
+						bool move = false;
+						if (dropEffect != null)
+						{
+							byte[] moveEffect = new byte[4];
+							dropEffect.Read(moveEffect, 0, 4);
+							move = moveEffect[0] == 2 && moveEffect[1] == 0 && moveEffect[2] == 0 && moveEffect[3] == 0;
+						}
+
+						// Depending on the preferred effect, either move or copy the specified files
+						if (move)
+						{
+							this.moveHereToolStripMenuItem_Click(this, null);
+							Clipboard.Clear();
+						}
+						else
+						{
+							this.copyHereToolStripMenuItem_Click(this, null);
+						}
 					}
-					else
-						this.copyHereToolStripMenuItem_Click(this, null);
 				}
 			}
 
@@ -796,6 +812,58 @@ namespace Duality.Editor.Plugins.ProjectView
 			}
 		}
 
+		private IEnumerable<string> HandleFileImport(string dropBaseDir, IEnumerable<string> incomingFiles)
+		{
+			// List all non-Resource files that are candidates to start an import operation
+			string mutualBaseDir = PathHelper.GetMutualBaseDirectory(incomingFiles);
+			List<string> nonResFiles = new List<string>();
+			foreach (string path in incomingFiles)
+			{
+				// If it's a directory, enumerate all non-Resource files inside
+				if (Directory.Exists(path))
+				{
+					foreach (string file in Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories))
+					{
+						// Skip Resource files
+						if (Resource.IsResourceFile(file))
+							continue;
+
+						nonResFiles.Add(file);
+					}
+				}
+				else if (File.Exists(path))
+				{
+					// Skip Resource files
+					if (Resource.IsResourceFile(path))
+						continue;
+
+					nonResFiles.Add(path);
+				}
+			}
+
+			// Do we have any import candidates? Start an import operation.
+			if (nonResFiles.Count > 0)
+			{
+				// Import Resources...
+				AssetImportOutput[] importedResources;
+				importedResources = AssetManager.ImportAssets(nonResFiles, dropBaseDir, mutualBaseDir);
+
+				// ...and schedule them for selection later
+				this.folderView.ClearSelection();
+				foreach (AssetImportOutput output in importedResources)
+				{
+					this.ScheduleSelect(output.Resource.Path);
+				}
+
+				// If we imported something, consider all incoming files handled. Don't perform
+				// any other operations simultaneously to an Asset import, this is just confusing.
+				return Enumerable.Empty<string>();
+			}
+
+			// By default, just return the incoming files as is, unfiltered.
+			return incomingFiles;
+		}
+
 		private void textBoxFilter_TextChanged(object sender, EventArgs e)
 		{
 			this.ApplyNodeFilter();
@@ -967,15 +1035,27 @@ namespace Duality.Editor.Plugins.ProjectView
 				// Dropping files
 				if (data.ContainsFileDropList())
 				{
-					this.tempFileDropList = data.GetFileDropList();
+					IEnumerable<string> incomingFiles = data.GetFileDropList().OfType<string>();
 
-					// Display context menu if both moving and copying are availabled
-					if (effectMove && effectCopy)
-						this.contextMenuDragMoveCopy.Show(this, this.PointToClient(new Point(e.X, e.Y)));
-					else if (effectCopy)
-						this.copyHereToolStripMenuItem_Click(this, null);
-					else if (effectMove)
-						this.moveHereToolStripMenuItem_Click(this, null);
+					// Handle file import operations and filter out files that have been handled that way.
+					incomingFiles = this.HandleFileImport(this.tempDropBasePath, incomingFiles);
+
+					// Filter out non-Resource files that might have been dropped accidentally into the data directory
+					incomingFiles = incomingFiles.Where(path => Resource.IsResourceFile(path) || Directory.Exists(path));
+
+					// If there's anything left, proceed with a regular file drop operation
+					if (incomingFiles.Any())
+					{
+						this.tempFileDropList = incomingFiles.ToList();
+						
+						// Display context menu if both moving and copying are availabled
+						if (effectMove && effectCopy)
+							this.contextMenuDragMoveCopy.Show(this, this.PointToClient(new Point(e.X, e.Y)));
+						else if (effectCopy)
+							this.copyHereToolStripMenuItem_Click(this, null);
+						else if (effectMove)
+							this.moveHereToolStripMenuItem_Click(this, null);
+					}
 				}
 				// Dropping GameObject to Prefab
 				else if (
@@ -1012,8 +1092,13 @@ namespace Duality.Editor.Plugins.ProjectView
 						this.folderView.ClearSelection();
 						foreach (Resource res in resList)
 						{
-							string desiredName = res.SourcePath != null ? Path.GetFileNameWithoutExtension(res.SourcePath) : res.Name;
-							if (string.IsNullOrEmpty(desiredName)) desiredName = res.GetType().Name;
+							string desiredName = null;
+							if (string.IsNullOrEmpty(desiredName))
+								desiredName = res.Name;
+							if (string.IsNullOrEmpty(desiredName) && res.AssetInfo != null)
+								desiredName = res.AssetInfo.NameHint;
+							if (string.IsNullOrEmpty(desiredName))
+								desiredName = res.GetType().Name;
 
 							bool pointsToFile = !res.IsDefaultContent && !res.IsRuntimeResource;
 							string basePath = this.GetInsertActionTargetBasePath(targetDirNode);
@@ -1196,7 +1281,7 @@ namespace Duality.Editor.Plugins.ProjectView
 				if (Resource.IsResourceFile(dstPath))
 				{
 					IContentRef tempResRef = ContentProvider.RequestContent(dstPath);
-					tempResRef.Res.SourcePath = null;
+					tempResRef.Res.AssetInfo = null;
 					tempResRef.Res.Save();
 				}
 
@@ -1212,7 +1297,7 @@ namespace Duality.Editor.Plugins.ProjectView
 			{
 				string srcPath = Path.GetFullPath(p);
 				string dstPath =  Path.GetFullPath(Path.Combine(this.tempDropBasePath, Path.GetFileName(p)));
-				bool localAction = srcPath.StartsWith(dataDirPath);
+				bool localAction = PathOp.IsPathLocatedIn(srcPath, dataDirPath);
 
 				// Skip if target equals source
 				if (srcPath == dstPath) continue;
