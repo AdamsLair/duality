@@ -116,6 +116,9 @@ namespace Duality.Editor.AssetManagement
 				}
 			}
 
+			// Sort candidate mapping from most files to least files, so we can solve the biggest conflicts first
+			candidateMapping.Sort((a, b) => b.HandledInput.Length - a.HandledInput.Length);
+
 			// Determine if multiple importers intend to handle the same files and resolve conflicts
 			List<int> conflictingIndices = new List<int>();
 			List<string> conflictingFiles = new List<string>();

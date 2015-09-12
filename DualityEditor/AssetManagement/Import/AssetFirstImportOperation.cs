@@ -210,6 +210,9 @@ namespace Duality.Editor.AssetManagement
 
 						// Copy file from its original location to the source / media directory
 						File.Copy(filePath, filePathInSourceMedia);
+
+						// Let the editor know that this was an internal operation - don't handle it like an external operation
+						FileEventManager.FlagPathEditorModified(filePathInSourceMedia);
 					}
 				}
 				catch (Exception ex)
