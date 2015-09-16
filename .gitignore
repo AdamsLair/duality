@@ -168,3 +168,11 @@ SampleProjects/CameraController/Content/logfile.txt
 SampleProjects/CameraController/Content/perflog.txt
 SampleProjects/CameraController/Content/PackageConfig.xml
 SampleProjects/CameraController/Content/DesignTimeData.dat
+SampleProjects/BasicMenu/obj/
+SampleProjects/BasicMenu/Content/Backup/
+SampleProjects/BasicMenu/bin/
+SampleProjects/BasicMenu/Content/Source/
+SampleProjects/BasicMenu/Content/logfile.txt
+SampleProjects/BasicMenu/Content/perflog.txt
+SampleProjects/BasicMenu/Content/PackageConfig.xml
+SampleProjects/BasicMenu/Content/DesignTimeData.dat
