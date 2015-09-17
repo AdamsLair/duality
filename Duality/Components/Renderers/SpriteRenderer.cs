@@ -1,10 +1,10 @@
 ﻿using System;
 
-using Duality.Drawing;
 using Duality.Resources;
 using Duality.Editor;
 using Duality.Properties;
 using Duality.Cloning;
+using Duality.Drawing;
 
 namespace Duality.Components.Renderers
 {

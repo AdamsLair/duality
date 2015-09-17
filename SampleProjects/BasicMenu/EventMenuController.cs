@@ -10,7 +10,7 @@ using Duality.Components.Renderers;
 namespace BasicMenu
 {
 	[RequiredComponent(typeof(Camera))]
-	public class EventMenuController : Component, ICmpInitializable
+	public class EventMenuController : MenuController, ICmpInitializable
 	{
         [DontSerialize]
         private EventHandler<Duality.Input.MouseMoveEventArgs> mouseMove;
@@ -29,8 +29,11 @@ namespace BasicMenu
 
         public void OnInit(Component.InitContext context)
         {
-            DualityApp.Mouse.Move += mouseMove;
-            DualityApp.Mouse.ButtonDown += buttonDown;
+            if (context == InitContext.Activate)
+            {
+                DualityApp.Mouse.Move += mouseMove;
+                DualityApp.Mouse.ButtonDown += buttonDown;
+            }
         }
 
         public void OnShutdown(Component.ShutdownContext context)
@@ -50,7 +53,7 @@ namespace BasicMenu
             // check all MenuComponents under the mouse and sort them by Z,
             // to find the one nearest to the Camera
             MenuComponent hoveredComponent = this.GameObj.ParentScene.FindComponents<MenuComponent>()
-                .Where(mc => mc.GetAreaOnScreen().Contains(mousePosition))
+                .Where(mc => mc.GameObj.Active && mc.GetAreaOnScreen().Contains(mousePosition))
                 .OrderBy(mc => mc.GameObj.Transform.Pos.Z)
                 .FirstOrDefault();
 
@@ -73,8 +76,8 @@ namespace BasicMenu
 
         void Button_Down(object sender, Duality.Input.MouseButtonEventArgs e)
         {
-            // am I hovering a component? do something!
-            if(currentComponent != null)
+            // did I click the left button and am I hovering a component? do something!
+            if(e.Button == Duality.Input.MouseButton.Left && currentComponent != null)
             {
                 currentComponent.DoAction();
             }

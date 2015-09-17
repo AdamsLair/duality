@@ -1,7 +1,8 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Texture" id="129723834">
   <anisoFilter dataType="Bool">false</anisoFilter>
+  <assetInfo />
   <basePixmap dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Pixmap]]">
-    <contentPath dataType="String">Data\CameraController\Visuals\BackgroundTile.Pixmap.res</contentPath>
+    <contentPath dataType="String">Data\BasicMenu\Visuals\BackgroundTile.Pixmap.res</contentPath>
   </basePixmap>
   <filterMag dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Nearest" value="0" />
   <filterMin dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="Nearest" value="0" />
@@ -10,7 +11,6 @@
     <X dataType="Float">128</X>
     <Y dataType="Float">128</Y>
   </size>
-  <sourcePath />
   <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="Enlarge" value="0" />
   <wrapX dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Repeat" value="1" />
   <wrapY dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Repeat" value="1" />

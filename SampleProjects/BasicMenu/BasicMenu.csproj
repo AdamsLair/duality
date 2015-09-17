@@ -4,13 +4,13 @@
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)SampleProjects\CameraController\Content\</StartWorkingDirectory>
+    <StartWorkingDirectory>$(SolutionDir)SampleProjects\BasicMenu\Content\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)SampleProjects\CameraController\Content\</StartWorkingDirectory>
+    <StartWorkingDirectory>$(SolutionDir)SampleProjects\BasicMenu\Content\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -48,14 +48,22 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>CameraController.core.xml</DocumentationFile>
+    <DocumentationFile>BasicMenu.core.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="MenuAnotherChangeColor.cs" />
+    <Compile Include="MenuAnother.cs" />
+    <Compile Include="UpdateMenuController.cs" />
+    <Compile Include="MenuController.cs" />
     <Compile Include="EventMenuController.cs" />
     <Compile Include="MenuComponent.cs" />
     <Compile Include="CorePlugin.cs" />
+    <Compile Include="MenuBackToMain.cs" />
+    <Compile Include="MenuQuitConfirm.cs" />
+    <Compile Include="MenuQuit.cs" />
+    <Compile Include="CenterScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

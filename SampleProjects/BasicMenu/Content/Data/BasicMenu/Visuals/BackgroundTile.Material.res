@@ -1,7 +1,8 @@
 ﻿<root dataType="Struct" type="Duality.Resources.Material" id="129723834">
+  <assetInfo />
   <info dataType="Struct" type="Duality.Drawing.BatchInfo" id="427169525">
     <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
-    <hashCode dataType="Int">0</hashCode>
+    <hashCode dataType="Int">1636299349</hashCode>
     <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
       <A dataType="Byte">255</A>
       <B dataType="Byte">255</B>
@@ -15,12 +16,11 @@
       <header />
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
-          <contentPath dataType="String">Data\CameraController\Visuals\BackgroundTile.Texture.res</contentPath>
+          <contentPath dataType="String">Data\BasicMenu\Visuals\BackgroundTile.Texture.res</contentPath>
         </mainTex>
       </body>
     </textures>
     <uniforms />
   </info>
-  <sourcePath />
 </root>
 <!-- XmlFormatterBase Document Separator -->

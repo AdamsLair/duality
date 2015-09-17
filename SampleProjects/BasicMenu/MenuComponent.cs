@@ -25,11 +25,16 @@ namespace BasicMenu
             set { this.hoverTint = value; }
         }
 
+        public MenuComponent()
+        {
+            hoverTint = ColorRgba.Red;
+        }
+
         public void MouseEnter()
         {
             if (this.spriteRenderer != null)
             {
-                if (this.originalTint == null)
+                if (this.originalTint == default(ColorRgba))
                 {
                     this.originalTint = this.spriteRenderer.ColorTint;
                 }
@@ -56,8 +61,8 @@ namespace BasicMenu
             }
 
             // return the area only if it's currently drawn on the overlay - to simplify
-            return (this.spriteRenderer.VisibilityGroup & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None ? 
-                this.spriteRenderer.Rect.WithOffset(this.GameObj.Transform.Pos.Xy) : 
+            return (this.spriteRenderer.VisibilityGroup & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None ?
+                this.spriteRenderer.Rect.WithOffset(this.GameObj.Transform.Pos.Xy) :
                 Rect.Empty;
         }
 	}
