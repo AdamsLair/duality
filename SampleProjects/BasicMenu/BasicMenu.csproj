@@ -53,16 +53,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="MenuAnotherChangeColor.cs" />
-    <Compile Include="MenuAnother.cs" />
-    <Compile Include="UpdateMenuController.cs" />
+    <Compile Include="Components\MenuAnotherChangeColor.cs" />
+    <Compile Include="Components\MenuAnother.cs" />
+    <Compile Include="Controllers\UpdateMenuController.cs" />
     <Compile Include="MenuController.cs" />
-    <Compile Include="EventMenuController.cs" />
+    <Compile Include="Controllers\EventMenuController.cs" />
     <Compile Include="MenuComponent.cs" />
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="MenuBackToMain.cs" />
-    <Compile Include="MenuQuitConfirm.cs" />
-    <Compile Include="MenuQuit.cs" />
+    <Compile Include="Components\MenuBackToMain.cs" />
+    <Compile Include="Components\MenuQuitConfirm.cs" />
+    <Compile Include="Components\MenuQuit.cs" />
     <Compile Include="CenterScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

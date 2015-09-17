@@ -30,23 +30,27 @@ namespace BasicMenu
                 .FirstOrDefault();
 
             // I found my hovered menu component.. is it different from the current one?
-            // if yes, and it's not null, I should leave it.
-            if (hoveredComponent != currentComponent && currentComponent != null)
+            if (hoveredComponent != currentComponent)
             {
-                currentComponent.MouseLeave();
+                // if the old one is not null, leave it.
+                if (currentComponent != null)
+                {
+                    currentComponent.MouseLeave();
+                }
+
+                // if the new one is not null, enter it.
+                if (hoveredComponent != null)
+                {
+                    hoveredComponent.MouseEnter();
+                }
             }
 
-            // if the new one is not null, enter it.
-            if (hoveredComponent != null)
-            {
-                hoveredComponent.MouseEnter();
-            }
 
             // set the current component to the hovered one.
             currentComponent = hoveredComponent;
 
             // did I click the left button and am I hovering a component? do something!
-            if (DualityApp.Mouse.ButtonPressed(Duality.Input.MouseButton.Left) && currentComponent != null)
+            if (DualityApp.Mouse.ButtonHit(Duality.Input.MouseButton.Left) && currentComponent != null)
             {
                 currentComponent.DoAction();
             }
