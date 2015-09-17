@@ -101,6 +101,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.InvalidateSelectionStats();
 			this.UpdateToolbar();
 
+			this.View.ActivateLayer(typeof(CamViewLayers.RigidBodyShapeCamViewLayer));
 			this.View.LockLayer(typeof(CamViewLayers.RigidBodyShapeCamViewLayer));
 		}
 		protected internal override void OnLeaveState()

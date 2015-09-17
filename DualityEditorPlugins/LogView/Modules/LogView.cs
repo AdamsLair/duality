@@ -90,35 +90,27 @@ namespace Duality.Editor.Plugins.LogView
 		
 		internal void SaveUserData(XElement node)
 		{
-			node.SetAttributeValue("showMessages", this.buttonMessages.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("showWarnings", this.buttonWarnings.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("showErrors", this.buttonErrors.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("showCore", this.buttonCore.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("showEditor", this.buttonEditor.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("showGame", this.buttonGame.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("autoClear", this.checkAutoClear.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("pauseOnError", this.buttonPauseOnError.Checked.ToString(CultureInfo.InvariantCulture));
+			node.SetElementValue("ShowMessages", this.buttonMessages.Checked);
+			node.SetElementValue("ShowWarnings", this.buttonWarnings.Checked);
+			node.SetElementValue("ShowErrors", this.buttonErrors.Checked);
+			node.SetElementValue("ShowCore", this.buttonCore.Checked);
+			node.SetElementValue("ShowEditor", this.buttonEditor.Checked);
+			node.SetElementValue("ShowGame", this.buttonGame.Checked);
+			node.SetElementValue("AutoClear", this.checkAutoClear.Checked);
+			node.SetElementValue("PauseOnError", this.buttonPauseOnError.Checked);
 		}
 		internal void LoadUserData(XElement node)
 		{
 			bool tryParseBool;
 
-			if (bool.TryParse(node.GetAttributeValue("showMessages"), out tryParseBool))
-				this.buttonMessages.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("showWarnings"), out tryParseBool))
-				this.buttonWarnings.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("showErrors"), out tryParseBool))
-				this.buttonErrors.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("showCore"), out tryParseBool))
-				this.buttonCore.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("showEditor"), out tryParseBool))
-				this.buttonEditor.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("showGame"), out tryParseBool))
-				this.buttonGame.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("autoClear"), out tryParseBool))
-				this.checkAutoClear.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("pauseOnError"), out tryParseBool))
-				this.buttonPauseOnError.Checked = tryParseBool;
+			if (node.GetElementValue("ShowMessages", out tryParseBool)) this.buttonMessages.Checked = tryParseBool;
+			if (node.GetElementValue("ShowWarnings", out tryParseBool)) this.buttonWarnings.Checked = tryParseBool;
+			if (node.GetElementValue("ShowErrors", out tryParseBool))   this.buttonErrors.Checked = tryParseBool;
+			if (node.GetElementValue("ShowCore", out tryParseBool))     this.buttonCore.Checked = tryParseBool;
+			if (node.GetElementValue("ShowEditor", out tryParseBool))   this.buttonEditor.Checked = tryParseBool;
+			if (node.GetElementValue("ShowGame", out tryParseBool))     this.buttonGame.Checked = tryParseBool;
+			if (node.GetElementValue("AutoClear", out tryParseBool))    this.checkAutoClear.Checked = tryParseBool;
+			if (node.GetElementValue("PauseOnError", out tryParseBool)) this.buttonPauseOnError.Checked = tryParseBool;
 
 			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceCore, this.buttonCore.Checked);
 			this.logEntryList.SetFilterFlag(LogEntryList.MessageFilter.SourceEditor, this.buttonEditor.Checked);

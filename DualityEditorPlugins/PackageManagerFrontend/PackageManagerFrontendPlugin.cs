@@ -39,8 +39,9 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		protected override void SaveUserData(XElement node)
 		{
 			XElement packageViewElem = new XElement("PackageView");
-			node.Add(packageViewElem);
 			this.PackageView.SaveUserData(packageViewElem);
+			if (!packageViewElem.IsEmpty)
+				node.Add(packageViewElem);
 		}
 		protected override void LoadUserData(XElement node)
 		{

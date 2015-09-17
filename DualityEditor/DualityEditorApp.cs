@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Xml;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
 
@@ -458,28 +459,43 @@ namespace Duality.Editor
 
 			using (FileStream str = File.Create(UserDataFile))
 			{
-				StreamWriter writer = new StreamWriter(str);
-				// --- Save custom user data here ---
-				XDocument xmlDoc = new XDocument();
-				XElement rootElement = new XElement("UserData");
-				xmlDoc.Add(rootElement);
-				XElement editorAppElement = new XElement("EditorApp");
-				rootElement.Add(editorAppElement);
-				editorAppElement.SetAttributeValue("backups", backupsEnabled.ToString(System.Globalization.CultureInfo.InvariantCulture));
-				editorAppElement.SetAttributeValue("autosaves", autosaveFrequency.ToString());
-				editorAppElement.SetAttributeValue("launcher", launcherApp);
-				foreach (EditorPlugin plugin in plugins)
+				Encoding encoding = Encoding.Default;
+				using (StreamWriter writer = new StreamWriter(str.NonClosing()))
 				{
-					XElement pluginXmlElement = new XElement("Plugin_" + plugin.Id);
-					rootElement.Add(pluginXmlElement);
-					plugin.SaveUserData(pluginXmlElement);
+					encoding = writer.Encoding;
+
+					XDocument xmlDoc = new XDocument();
+					XElement rootElement = new XElement("UserData");
+					{
+						XElement editorAppElement = new XElement("EditorApp");
+						{
+							editorAppElement.SetElementValue("Backups", backupsEnabled);
+							editorAppElement.SetElementValue("Autosaves", autosaveFrequency);
+							editorAppElement.SetElementValue("LauncherPath", launcherApp);
+						}
+						if (!editorAppElement.IsEmpty)
+							rootElement.Add(editorAppElement);
+
+						XElement pluginsElement = new XElement("Plugins");
+						foreach (EditorPlugin plugin in plugins)
+						{
+							XElement pluginElement = new XElement("Plugin");
+							pluginElement.SetAttributeValue("id", plugin.Id);
+							plugin.SaveUserData(pluginElement);
+							if (!pluginElement.IsEmpty)
+								pluginsElement.Add(pluginElement);
+						}
+						if (!pluginsElement.IsEmpty)
+							rootElement.Add(pluginsElement);
+					}
+					xmlDoc.Add(rootElement);
+					xmlDoc.Save(writer.BaseStream);
+
+					writer.WriteLine();
+					writer.WriteLine(UserDataDockSeparator);
+					writer.Flush();
 				}
-				xmlDoc.Save(writer.BaseStream);
-				// ----------------------------------
-				writer.WriteLine();
-				writer.WriteLine(UserDataDockSeparator);
-				writer.Flush();
-				mainForm.MainDockPanel.SaveAsXml(str, writer.Encoding);
+				mainForm.MainDockPanel.SaveAsXml(str, encoding);
 			}
 
 			Log.Editor.PopIndent();
@@ -495,22 +511,28 @@ namespace Duality.Editor
 			Log.Editor.Write("Loading user data...");
 			Log.Editor.PushIndent();
 
+			Encoding encoding = Encoding.Default;
+			StringBuilder editorData = new StringBuilder();
+			StringBuilder dockPanelData = new StringBuilder();
 			using (StreamReader reader = new StreamReader(UserDataFile))
 			{
+				encoding = reader.CurrentEncoding;
 				string line;
+
 				// Retrieve pre-DockPanel section
-				StringBuilder editorData = new StringBuilder();
 				while ((line = reader.ReadLine()) != null && line.Trim() != UserDataDockSeparator) 
 					editorData.AppendLine(line);
+
 				// Retrieve DockPanel section
-				StringBuilder dockPanelData = new StringBuilder();
 				while ((line = reader.ReadLine()) != null) 
 					dockPanelData.AppendLine(line);
+			}
 
-				// Load DockPanel Data
+			// Load DockPanel Data
+			{
 				Log.Editor.Write("Loading DockPanel data...");
 				Log.Editor.PushIndent();
-				MemoryStream dockPanelDataStream = new MemoryStream(reader.CurrentEncoding.GetBytes(dockPanelData.ToString()));
+				MemoryStream dockPanelDataStream = new MemoryStream(encoding.GetBytes(dockPanelData.ToString()));
 				try
 				{
 					mainForm.MainDockPanel.LoadFromXml(dockPanelDataStream, DeserializeDockContent);
@@ -520,32 +542,38 @@ namespace Duality.Editor
 					Log.Editor.WriteError("Cannot load DockPanel data due to malformed or non-existent Xml: {0}", Log.Exception(e));
 				}
 				Log.Editor.PopIndent();
+			}
 
-				// --- Read custom user data from StringBuilder here ---
+			// Load editor userdata
+			{
 				Log.Editor.Write("Loading editor user data...");
 				Log.Editor.PushIndent();
 				try
 				{
 					XDocument xmlDoc = XDocument.Parse(editorData.ToString());
-					IEnumerable<XElement> editorAppElemQuery = xmlDoc.Descendants("EditorApp");
-					if (editorAppElemQuery.Any())
+					XElement rootElement = xmlDoc.Root;
+					XElement editorAppElement = rootElement.Elements("EditorApp").FirstOrDefault();
+					if (editorAppElement != null)
 					{
-						XElement editorAppElement = editorAppElemQuery.First();
-						bool.TryParse(editorAppElement.GetAttributeValue("backups"), out backupsEnabled);
-						Enum.TryParse<AutosaveFrequency>(editorAppElement.GetAttributeValue("autosaves"), out autosaveFrequency);
-						launcherApp = editorAppElement.GetAttributeValue("launcher");
+						editorAppElement.TryGetElementValue("Backups", ref backupsEnabled);
+						editorAppElement.TryGetElementValue("Autosaves", ref autosaveFrequency);
+						editorAppElement.TryGetElementValue("LauncherPath", ref launcherApp);
 					}
-					foreach (XElement child in xmlDoc.Descendants())
+					XElement pluginsElement = rootElement.Elements("Plugins").FirstOrDefault();
+					if (pluginsElement != null)
 					{
-						if (child.Name.LocalName.StartsWith("Plugin_"))
+						foreach (XElement child in pluginsElement.Elements("Plugin"))
 						{
-							string pluginName = child.Name.LocalName.Substring(7, child.Name.LocalName.Length - 7);
-							foreach (EditorPlugin plugin in plugins)
+							string id = child.GetAttributeValue("id");
+							if (id != null)
 							{
-								if (plugin.Id == pluginName)
+								foreach (EditorPlugin plugin in plugins)
 								{
-									plugin.LoadUserData(child);
-									break;
+									if (plugin.Id == id)
+									{
+										plugin.LoadUserData(child);
+										break;
+									}
 								}
 							}
 						}
@@ -553,13 +581,13 @@ namespace Duality.Editor
 				}
 				catch (Exception e)
 				{
-					Log.Editor.WriteError("Cannot load plugin user data due to malformed or non-existent Xml: {0}", Log.Exception(e));
+					Log.Editor.WriteError("Error loading editor user data: {0}", Log.Exception(e));
 				}
 				Log.Editor.PopIndent();
-				// -----------------------------------------------------
 			}
 
 			Log.Editor.PopIndent();
+			return;
 		}
 		private static IDockContent DeserializeDockContent(string persistName)
 		{

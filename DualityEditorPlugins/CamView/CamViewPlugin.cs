@@ -46,7 +46,8 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			for (int i = 0; i < this.camViews.Count; i++)
 			{
-				XElement camViewElem = new XElement("CamView_" + i);
+				XElement camViewElem = new XElement("CamView");
+				camViewElem.SetAttributeValue("id", i);
 				node.Add(camViewElem);
 				this.camViews[i].SaveUserData(camViewElem);
 			}
@@ -54,10 +55,11 @@ namespace Duality.Editor.Plugins.CamView
 		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
-			for (int i = 0; i < this.camViews.Count; i++)
+			foreach (XElement camViewElem in node.Elements("CamView"))
 			{
-				XElement camViewElem = node.Element("CamView_" + i);
-				if (camViewElem == null) continue;
+				int i = camViewElem.GetAttributeValue("id", 0);
+				if (i < 0 || i >= this.camViews.Count) continue;
+
 				this.camViews[i].LoadUserData(camViewElem);
 			}
 			this.isLoading = false;

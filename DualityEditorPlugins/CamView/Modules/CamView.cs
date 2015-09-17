@@ -759,15 +759,22 @@ namespace Duality.Editor.Plugins.CamView
 
 		internal void SaveUserData(XElement node)
 		{
-			node.SetElementValue("Perspective", this.nativeCamObj.Camera.Perspective.ToString());
-			node.SetElementValue("FocusDist", XmlConvert.ToString(this.nativeCamObj.Camera.FocusDist));
-			node.SetElementValue("BgColorArgb", XmlConvert.ToString(this.nativeCamObj.Camera.ClearColor.ToIntArgb()));
+			node.SetElementValue("Perspective", this.nativeCamObj.Camera.Perspective);
+			node.SetElementValue("FocusDist", this.nativeCamObj.Camera.FocusDist);
+			XElement bgColorElement = new XElement("BackgroundColor");
+			{
+				bgColorElement.SetElementValue("R", this.nativeCamObj.Camera.ClearColor.R);
+				bgColorElement.SetElementValue("G", this.nativeCamObj.Camera.ClearColor.G);
+				bgColorElement.SetElementValue("B", this.nativeCamObj.Camera.ClearColor.B);
+				bgColorElement.SetElementValue("A", this.nativeCamObj.Camera.ClearColor.A);
+			}
+			node.Add(bgColorElement);
 
 			XElement snapToGridSizeElement = new XElement("SnapToGridSize");
 			node.Add(snapToGridSizeElement);
-			snapToGridSizeElement.SetElementValue("X", XmlConvert.ToString(this.editingUserGuides.GridSize.X));
-			snapToGridSizeElement.SetElementValue("Y", XmlConvert.ToString(this.editingUserGuides.GridSize.Y));
-			snapToGridSizeElement.SetElementValue("Z", XmlConvert.ToString(this.editingUserGuides.GridSize.Z));
+			snapToGridSizeElement.SetElementValue("X", this.editingUserGuides.GridSize.X);
+			snapToGridSizeElement.SetElementValue("Y", this.editingUserGuides.GridSize.Y);
+			snapToGridSizeElement.SetElementValue("Z", this.editingUserGuides.GridSize.Z);
 
 			if (this.activeState != null) 
 				node.SetElementValue("ActiveState", this.activeState.GetType().GetTypeId());
@@ -775,85 +782,93 @@ namespace Duality.Editor.Plugins.CamView
 			XElement stateListNode = new XElement("States");
 			foreach (var pair in this.availStates)
 			{
-				XElement stateNode = new XElement(pair.Key.GetTypeId());
+				XElement stateNode = new XElement("State");
+				stateNode.SetAttributeValue("type", pair.Key.GetTypeId());
 				pair.Value.SaveUserData(stateNode);
-				stateListNode.Add(stateNode);
+				if (!stateNode.IsEmpty)
+					stateListNode.Add(stateNode);
 			}
-			node.Add(stateListNode);
+			if (!stateListNode.IsEmpty)
+				node.Add(stateListNode);
 
 			XElement layerListNode = new XElement("Layers");
 			foreach (var pair in this.availLayers)
 			{
-				XElement layerNode = new XElement(pair.Key.GetTypeId());
+				XElement layerNode = new XElement("Layer");
+				layerNode.SetAttributeValue("type", pair.Key.GetTypeId());
 				pair.Value.SaveUserData(layerNode);
-				layerListNode.Add(layerNode);
+				if (!layerListNode.IsEmpty)
+					layerListNode.Add(layerNode);
 			}
-			node.Add(layerListNode);
+			if (!layerListNode.IsEmpty)
+				node.Add(layerListNode);
 		}
 		internal void LoadUserData(XElement node)
 		{
 			decimal tryParseDecimal;
-			int tryParseInt;
-
-			// Legacy support for old XML layout (written 2014-05-29)
-			bool loadFromAttributes = node.Attribute("focusDist") != null;
-			if (loadFromAttributes)
+			if (node.GetElementValue("FocusDist", out tryParseDecimal))
 			{
-				if (decimal.TryParse(node.GetAttributeValue("focusDist"), out tryParseDecimal))
-				{
-					this.focusDist.Value = Math.Abs(tryParseDecimal);
-				}
-				if (int.TryParse(node.GetAttributeValue("bgColorArgb"), out tryParseInt))
-				{
-					this.oldColorDialogColor = Color.FromArgb(tryParseInt);
-					this.selectedColorDialogColor = this.oldColorDialogColor;
-				}
-				this.loadTempPerspective = node.GetAttributeValue("perspective");
-				this.loadTempState = node.GetAttributeValue("activeState");
+				this.focusDist.Value = Math.Abs(tryParseDecimal);
 			}
-			else
+			XElement bgColorElement = node.Element("BackgroundColor");
+			if (bgColorElement != null)
 			{
-				if (decimal.TryParse(node.GetElementValue("FocusDist"), out tryParseDecimal))
-				{
-					this.focusDist.Value = Math.Abs(tryParseDecimal);
-				}
-				if (int.TryParse(node.GetElementValue("BgColorArgb"), out tryParseInt))
-				{
-					this.oldColorDialogColor = Color.FromArgb(tryParseInt);
-					this.selectedColorDialogColor = this.oldColorDialogColor;
-				}
-				this.loadTempPerspective = node.GetElementValue("Perspective");
-				this.loadTempState = node.GetElementValue("ActiveState");
+				ColorRgba color = ColorRgba.Black;
+				bgColorElement.TryGetElementValue("R", ref color.R);
+				bgColorElement.TryGetElementValue("G", ref color.G);
+				bgColorElement.TryGetElementValue("B", ref color.B);
+				bgColorElement.TryGetElementValue("A", ref color.A);
 
-				XElement snapToGridSizeElement = node.Element("SnapToGridSize");
-				if (snapToGridSizeElement != null)
-				{
-					Vector3 size;
-					size.X = XmlConvert.ToSingle(snapToGridSizeElement.GetElementValue("X") ?? "0");
-					size.Y = XmlConvert.ToSingle(snapToGridSizeElement.GetElementValue("Y") ?? "0");
-					size.Z = XmlConvert.ToSingle(snapToGridSizeElement.GetElementValue("Z") ?? "0");
-					this.editingUserGuides.GridSize = size;
-				}
+				this.oldColorDialogColor = Color.FromArgb(color.A, color.R, color.G, color.B);
+				this.selectedColorDialogColor = this.oldColorDialogColor;
+			}
+			node.GetElementValue("Perspective", this.loadTempPerspective);
+			node.GetElementValue("ActiveState", this.loadTempState);
+
+			XElement snapToGridSizeElement = node.Element("SnapToGridSize");
+			if (snapToGridSizeElement != null)
+			{
+				Vector3 size;
+				snapToGridSizeElement.GetElementValue("X", out size.X);
+				snapToGridSizeElement.GetElementValue("Y", out size.Y);
+				snapToGridSizeElement.GetElementValue("Z", out size.Z);
+				this.editingUserGuides.GridSize = size;
 			}
 
-			XElement stateListNode = node.Element("States") ?? node.Element("states"); // Legacy support (written 2014-05-09)
+			XElement stateListNode = node.Element("States");
 			if (stateListNode != null)
 			{
+				Dictionary<string,XElement> stateElementMap = new Dictionary<string,XElement>();
+				foreach (XElement stateElement in stateListNode.Elements("State"))
+				{
+					string type = stateElement.GetAttributeValue("type");
+					if (!string.IsNullOrEmpty(type))
+						stateElementMap.Add(type, stateElement);
+				}
 				foreach (var pair in this.availStates)
 				{
-					XElement stateNode = stateListNode.Element(pair.Key.GetTypeId());
-					if (stateNode == null) continue;
+					XElement stateNode;
+					if (!stateElementMap.TryGetValue(pair.Key.GetTypeId(), out stateNode)) continue;
+
 					pair.Value.LoadUserData(stateNode);
 				}
 			}
 
-			XElement layerListNode = node.Element("Layers") ?? node.Element("layers"); // Legacy support (written 2014-05-09)
+			XElement layerListNode = node.Element("Layers");
 			if (layerListNode != null)
 			{
+				Dictionary<string,XElement> layerElementMap = new Dictionary<string,XElement>();
+				foreach (XElement layerElement in stateListNode.Elements("Layer"))
+				{
+					string type = layerElement.GetAttributeValue("type");
+					if (!string.IsNullOrEmpty(type))
+						layerElementMap.Add(type, layerElement);
+				}
 				foreach (var pair in this.availLayers)
 				{
-					XElement layerNode = layerListNode.Element(pair.Key.GetTypeId());
-					if (layerNode == null) continue;
+					XElement layerNode;
+					if (!layerElementMap.TryGetValue(pair.Key.GetTypeId(), out layerNode)) continue;
+
 					pair.Value.LoadUserData(layerNode);
 				}
 			}

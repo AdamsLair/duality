@@ -106,22 +106,19 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 		internal void SaveUserData(XElement node)
 		{
-			node.SetAttributeValue("autoRefresh", this.buttonAutoRefresh.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("locked", this.buttonLock.Checked.ToString(CultureInfo.InvariantCulture));
-			node.SetAttributeValue("titleText", this.Text);
-			node.SetAttributeValue("debug", this.buttonDebug.Checked.ToString(CultureInfo.InvariantCulture));
+			node.SetElementValue("AutoRefresh", this.buttonAutoRefresh.Checked);
+			node.SetElementValue("Locked", this.buttonLock.Checked);
+			node.SetElementValue("TitleText", this.Text);
+			node.SetElementValue("DebugMode", this.buttonDebug.Checked);
 		}
 		internal void LoadUserData(XElement node)
 		{
 			bool tryParseBool;
 
-			if (bool.TryParse(node.GetAttributeValue("autoRefresh"), out tryParseBool))
-				this.buttonAutoRefresh.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("locked"), out tryParseBool))
-				this.buttonLock.Checked = tryParseBool;
-			if (bool.TryParse(node.GetAttributeValue("debug"), out tryParseBool))
-				this.buttonDebug.Checked = tryParseBool;
-			this.Text = node.GetAttributeValue("titleText");
+			if (node.GetElementValue("AutoRefresh", out tryParseBool)) this.buttonAutoRefresh.Checked = tryParseBool;
+			if (node.GetElementValue("Locked", out tryParseBool)) this.buttonLock.Checked = tryParseBool;
+			if (node.GetElementValue("DebugMode", out tryParseBool)) this.buttonDebug.Checked = tryParseBool;
+			this.Text = node.GetElementValue("TitleText", this.Text);
 		}
 
 		private void UpdateButtons()

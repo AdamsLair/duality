@@ -178,13 +178,13 @@ namespace Duality.Editor.Plugins.SceneView
 
 		internal void SaveUserData(XElement node)
 		{
-			node.SetAttributeValue("showComponents", this.buttonShowComponents.Checked.ToString(CultureInfo.InvariantCulture));
+			node.SetElementValue("ShowComponents", this.buttonShowComponents.Checked);
 		}
 		internal void LoadUserData(XElement node)
 		{
 			bool tryParseBool;
 
-			if (bool.TryParse(node.GetAttributeValue("showComponents"), out tryParseBool))
+			if (node.GetElementValue("ShowComponents", out tryParseBool))
 				this.buttonShowComponents.Checked = tryParseBool;
 		}
 

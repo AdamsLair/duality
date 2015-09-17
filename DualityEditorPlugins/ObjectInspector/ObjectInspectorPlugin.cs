@@ -61,19 +61,21 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			for (int i = 0; i < this.objViews.Count; i++)
 			{
-				XElement objViewElem = new XElement("ObjInspector_" + i);
-				node.Add(objViewElem);
-				this.objViews[i].SaveUserData(objViewElem);
+				XElement elem = new XElement("ObjectInspector");
+				elem.SetAttributeValue("id", i);
+				node.Add(elem);
+				this.objViews[i].SaveUserData(elem);
 			}
 		}
 		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
-			for (int i = 0; i < this.objViews.Count; i++)
+			foreach (XElement elem in node.Elements("ObjectInspector"))
 			{
-				XElement objViewElem = node.Element("ObjInspector_" + i);
-				if (objViewElem == null) continue;
-				this.objViews[i].LoadUserData(objViewElem);
+				int i = elem.GetAttributeValue("id", 0);
+				if (i < 0 || i >= this.objViews.Count) continue;
+
+				this.objViews[i].LoadUserData(elem);
 			}
 			this.isLoading = false;
 		}

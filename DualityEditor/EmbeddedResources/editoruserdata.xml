@@ -1,45 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <UserData>
-  <EditorApp backups="True" autosaves="ThirtyMinutes" />
-  <Plugin_CamView>
-    <CamView_0 perspective="Parallax" focusDist="500" bgColorArgb="4210752" activeState="Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState">
-      <states>
-        <Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState>
-          <activeLayers />
-        </Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState>
-        <Duality.Editor.Plugins.CamView.CamViewStates.RigidBodyEditorCamViewState>
-          <activeLayers>
-            <Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer />
-            <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyShapeCamViewLayer />
-            <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyJointCamViewLayer />
-          </activeLayers>
-        </Duality.Editor.Plugins.CamView.CamViewStates.RigidBodyEditorCamViewState>
-        <Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState>
-          <activeLayers>
-            <Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer />
-          </activeLayers>
-        </Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState>
-      </states>
-      <layers>
-        <Duality.Editor.Plugins.CamView.CamViewLayers.BackPlateCamViewLayer />
-        <Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer />
-        <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyJointCamViewLayer />
-        <Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyShapeCamViewLayer />
-      </layers>
-    </CamView_0>
-  </Plugin_CamView>
-  <Plugin_EditorBase />
-  <Plugin_HelpAdvisor />
-  <Plugin_LogView>
-    <LogView_0 showMessages="True" showWarnings="True" showErrors="True" showCore="True" showEditor="True" showGame="True" autoClear="True" pauseOnError="True" />
-  </Plugin_LogView>
-  <Plugin_ObjectInspector>
-    <ObjInspector_0 autoRefresh="True" locked="False" titleText="Object Inspector" debug="False" />
-  </Plugin_ObjectInspector>
-  <Plugin_ProjectView />
-  <Plugin_ResourceHacker />
-  <Plugin_SceneView>
-    <SceneView_0 showComponents="True" />
-  </Plugin_SceneView>
+  <EditorApp>
+    <Backups>true</Backups>
+    <Autosaves>ThirtyMinutes</Autosaves>
+  </EditorApp>
+  <Plugins>
+    <Plugin id="CamView">
+      <CamView id="0">
+        <Perspective>Parallax</Perspective>
+        <FocusDist>500</FocusDist>
+        <BackgroundColor>
+          <R>64</R>
+          <G>64</G>
+          <B>64</B>
+          <A>0</A>
+        </BackgroundColor>
+        <SnapToGridSize>
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+        </SnapToGridSize>
+        <ActiveState>Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState</ActiveState>
+        <States>
+          <State type="Duality.Editor.Plugins.CamView.CamViewStates.RigidBodyEditorCamViewState">
+            <ActiveLayers>
+              <Item>Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyJointCamViewLayer</Item>
+              <Item>Duality.Editor.Plugins.CamView.CamViewLayers.RigidBodyShapeCamViewLayer</Item>
+              <Item>Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer</Item>
+            </ActiveLayers>
+            <ObjectVisibility>
+              <Item>Duality.Components.Physics.RigidBody</Item>
+            </ObjectVisibility>
+          </State>
+          <State type="Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState">
+            <ActiveLayers>
+              <Item>Duality.Editor.Plugins.CamView.CamViewLayers.GridCamViewLayer</Item>
+            </ActiveLayers>
+          </State>
+        </States>
+      </CamView>
+    </Plugin>
+    <Plugin id="LogView">
+      <LogView>
+        <ShowMessages>true</ShowMessages>
+        <ShowWarnings>true</ShowWarnings>
+        <ShowErrors>true</ShowErrors>
+        <ShowCore>true</ShowCore>
+        <ShowEditor>true</ShowEditor>
+        <ShowGame>true</ShowGame>
+        <AutoClear>true</AutoClear>
+        <PauseOnError>true</PauseOnError>
+      </LogView>
+    </Plugin>
+    <Plugin id="ObjectInspector">
+      <ObjectInspector id="0">
+        <AutoRefresh>true</AutoRefresh>
+        <Locked>false</Locked>
+        <TitleText>Object Inspector</TitleText>
+        <DebugMode>false</DebugMode>
+      </ObjectInspector>
+    </Plugin>
+    <Plugin id="SceneView">
+      <SceneView>
+        <ShowComponents>true</ShowComponents>
+      </SceneView>
+    </Plugin>
+  </Plugins>
 </UserData>
 <!-- DockPanel Data -->
 <?xml version="1.0" encoding="utf-8"?>

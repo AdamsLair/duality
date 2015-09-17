@@ -45,9 +45,10 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			if (this.logView != null)
 			{
-				XElement logViewElem = new XElement("LogView_0");
-				node.Add(logViewElem);
+				XElement logViewElem = new XElement("LogView");
 				this.logView.SaveUserData(logViewElem);
+				if (!logViewElem.IsEmpty)
+					node.Add(logViewElem);
 			}
 		}
 		protected override void LoadUserData(XElement node)
@@ -55,9 +56,11 @@ namespace Duality.Editor.Plugins.LogView
 			this.isLoading = true;
 			if (this.logView != null)
 			{
-				XElement logViewElem = node.Element("LogView_0");
-				if (logViewElem != null)
+				foreach (XElement logViewElem in node.Elements("LogView"))
 				{
+					int i = logViewElem.GetAttributeValue("id", 0);
+					if (i < 0 || i >= 1) continue;
+
 					this.logView.LoadUserData(logViewElem);
 				}
 			}

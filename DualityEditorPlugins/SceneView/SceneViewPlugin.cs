@@ -46,9 +46,10 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			if (this.sceneView != null)
 			{
-				XElement sceneViewElem = new XElement("SceneView_0");
-				node.Add(sceneViewElem);
+				XElement sceneViewElem = new XElement("SceneView");
 				this.sceneView.SaveUserData(sceneViewElem);
+				if (!sceneViewElem.IsEmpty)
+					node.Add(sceneViewElem);
 			}
 		}
 		protected override void LoadUserData(XElement node)
@@ -56,9 +57,11 @@ namespace Duality.Editor.Plugins.SceneView
 			this.isLoading = true;
 			if (this.sceneView != null)
 			{
-				XElement sceneViewElem = node.Element("SceneView_0");
-				if (sceneViewElem != null)
+				foreach (XElement sceneViewElem in node.Elements("SceneView"))
 				{
+					int i = sceneViewElem.GetAttributeValue("id", 0);
+					if (i < 0 || i >= 1) continue;
+
 					this.sceneView.LoadUserData(sceneViewElem);
 				}
 			}

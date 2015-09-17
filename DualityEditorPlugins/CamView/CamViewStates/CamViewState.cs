@@ -384,28 +384,30 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			XElement activeLayersNode = new XElement("ActiveLayers");
 			foreach (Type t in this.lastActiveLayers)
 			{
-				XElement typeEntry = new XElement(t.GetTypeId());
+				XElement typeEntry = new XElement("Item", t.GetTypeId());
 				activeLayersNode.Add(typeEntry);
 			}
-			node.Add(activeLayersNode);
+			if (!activeLayersNode.IsEmpty)
+				node.Add(activeLayersNode);
 
 			XElement objVisibilityNode = new XElement("ObjectVisibility");
 			foreach (Type t in this.lastObjVisibility)
 			{
-				XElement typeEntry = new XElement(t.GetTypeId());
+				XElement typeEntry = new XElement("Item", t.GetTypeId());
 				objVisibilityNode.Add(typeEntry);
 			}
-			node.Add(objVisibilityNode);
+			if (!objVisibilityNode.IsEmpty)
+				node.Add(objVisibilityNode);
 		}
 		internal protected virtual void LoadUserData(XElement node)
 		{
-			XElement activeLayersNode = node.Element("ActiveLayers") ?? node.Element("activeLayers"); // Legacy support (written 2014-05-09)
+			XElement activeLayersNode = node.Element("ActiveLayers");
 			if (activeLayersNode != null)
 			{
 				this.lastActiveLayers.Clear();
-				foreach (XElement layerNode in activeLayersNode.Elements())
+				foreach (XElement layerNode in activeLayersNode.Elements("Item"))
 				{
-					Type layerType = ReflectionHelper.ResolveType(layerNode.Name.LocalName);
+					Type layerType = ReflectionHelper.ResolveType(layerNode.Value);
 					if (layerType != null) this.lastActiveLayers.Add(layerType);
 				}
 			}
@@ -414,9 +416,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (objVisibilityNode != null)
 			{
 				this.lastObjVisibility.Clear();
-				foreach (XElement typeNode in objVisibilityNode.Elements())
+				foreach (XElement typeNode in objVisibilityNode.Elements("Item"))
 				{
-					Type type = ReflectionHelper.ResolveType(typeNode.Name.LocalName);
+					Type type = ReflectionHelper.ResolveType(typeNode.Value);
 					if (type != null) this.lastObjVisibility.Add(type);
 				}
 			}
