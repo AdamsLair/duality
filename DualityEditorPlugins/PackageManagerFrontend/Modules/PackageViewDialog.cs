@@ -186,6 +186,11 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				}
 			}
 		}
+		public string SearchFilter
+		{
+			get { return this.toolStripSearchBox.Text; }
+			set { this.toolStripSearchBox.Text = value; }
+		}
 
 		public PackageViewDialog()
 		{
@@ -232,7 +237,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.buttonUninstall.Visible		= isItemInstalled && canUninstall;
 			this.buttonUpdate.Visible			= isItemInstalled && canUpdate;
 			this.bottomFlowSpacer2.Visible		= this.buttonInstall.Visible || this.buttonUninstall.Visible || this.buttonUpdate.Visible;
-			this.buttonUpdateAll.Visible		= this.packageList.Root.Children.Select(n => n.Tag as PackageItem).Any(n => n.IsUpdatable);
+			this.buttonUpdateAll.Visible		= this.packageList.Root.Children.Select(n => n.Tag as PackageItem).NotNull().Any(n => n.IsUpdatable);
 			this.buttonApply.Visible			= this.restartRequired;
 			this.labelRequireRestart.Visible	= this.restartRequired;
 		}
@@ -463,7 +468,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 			this.modelInstalled = new InstalledPackagesTreeModel(this.packageManager);
 			this.modelInstalled.NodesChanged += this.modelInstalled_NodesChanged;
 
-			this.Display = DisplayMode.Installed;
+			this.OnDisplayModeChanged(DisplayMode.None, this.display);
+			this.toolStripSearchBox_TextChanged(this.toolStripSearchBox, EventArgs.Empty);
 
 			this.UpdateBottomButtons();
 			this.UpdateInfoArea();
@@ -596,8 +602,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 				};
 			}
 
-			this.modelInstalled.ItemFilter = itemFilter;
-			this.modelOnline.ItemFilter = itemFilter;
+			if (this.modelInstalled != null) this.modelInstalled.ItemFilter = itemFilter;
+			if (this.modelOnline != null) this.modelOnline.ItemFilter = itemFilter;
 		}
 		private void buttonAdvanced_Click(object sender, EventArgs e)
 		{

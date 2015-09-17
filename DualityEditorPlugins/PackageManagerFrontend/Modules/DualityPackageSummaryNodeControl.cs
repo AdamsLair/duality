@@ -24,6 +24,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			// Retrieve item information
 			PackageItem item = node.Tag as PackageItem;
+			if (item == null) return;
+
 			string headline = null;
 			string summary = null;
 			if (item != null)

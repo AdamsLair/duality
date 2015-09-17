@@ -25,6 +25,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			// Retrieve item information
 			PackageItem item = node.Tag as PackageItem;
+			if (item == null) return;
+
 			Image typeIcon = null;
 			if (item != null)
 			{

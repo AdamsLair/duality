@@ -34,6 +34,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			// Retrieve item information
 			PackageItem item = node.Tag as PackageItem;
+			if (item == null) return;
+
 			Version itemVersion = null;
 			Version newVersion = null;
 			PackageCompatibility compatibility = PackageCompatibility.None;

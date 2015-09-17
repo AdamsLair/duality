@@ -33,6 +33,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 
 			// Retrieve item information
 			PackageItem item = node.Tag as PackageItem;
+			if (item == null) return;
+
 			DateTime date = item.ItemPackageInfo.PublishDate;
 			bool isOld = (DateTime.Now - date).TotalDays > 180;
 			string yearText = date.ToString("yyyy");
