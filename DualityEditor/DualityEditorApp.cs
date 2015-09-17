@@ -55,6 +55,7 @@ namespace Duality.Editor
 		private	static ObjectSelection.Category		selectionActiveCat	= ObjectSelection.Category.None;
 		private	static bool							selectionChanging	= false;
 		private	static Dictionary<Guid,Type>		selectionTempScene	= null;	// GameObjCmp sel inbetween scene switches
+		private	static bool							firstEditorSession	= false;
 		private	static bool							backupsEnabled		= true;
 		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
@@ -113,6 +114,10 @@ namespace Duality.Editor
 		public static IEnumerable<Resource> UnsavedResources
 		{
 			get { return unsavedResources.Where(r => !r.Disposed && !r.IsDefaultContent && !r.IsRuntimeResource && (r != Scene.Current || !Sandbox.IsActive)); }
+		}
+		public static bool IsFirstEditorSession
+		{
+			get { return firstEditorSession; }
 		}
 		public static bool BackupsEnabled
 		{
@@ -320,6 +325,9 @@ namespace Duality.Editor
 					Application.RemoveMessageFilter(menuKeyInterceptor);
 				}
 
+				// If this was our first session, it ends now. This will be saved as userdata
+				firstEditorSession = false;
+
 				// Save UserData
 				DualityEditorApp.SaveUserData();
 				DualityApp.SaveAppData();
@@ -472,6 +480,7 @@ namespace Duality.Editor
 							editorAppElement.SetElementValue("Backups", backupsEnabled);
 							editorAppElement.SetElementValue("Autosaves", autosaveFrequency);
 							editorAppElement.SetElementValue("LauncherPath", launcherApp);
+							editorAppElement.SetElementValue("FirstSession", firstEditorSession);
 						}
 						if (!editorAppElement.IsEmpty)
 							rootElement.Add(editorAppElement);
@@ -558,6 +567,7 @@ namespace Duality.Editor
 						editorAppElement.TryGetElementValue("Backups", ref backupsEnabled);
 						editorAppElement.TryGetElementValue("Autosaves", ref autosaveFrequency);
 						editorAppElement.TryGetElementValue("LauncherPath", ref launcherApp);
+						editorAppElement.TryGetElementValue("FirstSession", ref firstEditorSession);
 					}
 					XElement pluginsElement = rootElement.Elements("Plugins").FirstOrDefault();
 					if (pluginsElement != null)

@@ -3,6 +3,7 @@
   <EditorApp>
     <Backups>true</Backups>
     <Autosaves>ThirtyMinutes</Autosaves>
+    <FirstSession>true</FirstSession>
   </EditorApp>
   <Plugins>
     <Plugin id="CamView">
