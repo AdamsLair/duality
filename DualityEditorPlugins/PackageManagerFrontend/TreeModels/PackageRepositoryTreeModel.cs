@@ -29,6 +29,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		private		BackgroundWorker				itemIconLoader		= null;
 		private		ConcurrentQueue<BaseItem>		itemsToRead			= new ConcurrentQueue<BaseItem>();
 		private		ConcurrentQueue<BaseItem>		itemsToGetIcon		= new ConcurrentQueue<BaseItem>();
+		private		object							workerLock			= new object();
 		private		object							itemLock			= new object();
 		private		bool							requireFullSort		= false;
 		private		IComparer<BaseItem>				sortComparer		= null;
@@ -57,7 +58,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		}
 		public bool IsBusy
 		{
-			get { return this.itemRetriever.IsBusy || this.itemInfoLoader.IsBusy; }
+			get { return this.itemRetriever.IsBusy || this.itemInfoLoader.IsBusy || this.itemIconLoader.IsBusy; }
 		}
 
 		#pragma warning disable 67  // Event never used
@@ -135,7 +136,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		/// </summary>
 		public virtual void ApplyChanges()
 		{
-			this.RunBackgroundWorkers();
+			this.RunLoadInfoWorkers();
 		}
 
 		public IEnumerable GetChildren(TreePath treePath)
@@ -145,10 +146,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			if (parentItem == null)
 			{
 				// Start retrieving all the items from out source asynchronously
-				if (this.items.Count == 0 && !this.itemRetriever.IsBusy)
-				{
-					this.itemRetriever.RunWorkerAsync();
-				}
+				if (this.items.Count == 0)
+					this.RunWorker(this.itemRetriever);
 
 				// Determine which items to display and return them
 				List<BaseItem> displayedItems = new List<BaseItem>();
@@ -164,6 +163,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 						displayedItems.Add(item);
 					}
 				}
+
 				return displayedItems;
 			}
 
@@ -185,12 +185,12 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 		/// <summary>
 		/// Wakes info and icon loaders to read online item data.
 		/// </summary>
-		protected void RunBackgroundWorkers()
+		protected void RunLoadInfoWorkers()
 		{
-			if (!this.itemInfoLoader.IsBusy && !this.itemsToRead.IsEmpty)
-				this.itemInfoLoader.RunWorkerAsync();
-			if (!this.itemIconLoader.IsBusy && !this.itemsToGetIcon.IsEmpty)
-				this.itemIconLoader.RunWorkerAsync();
+			if (!this.itemsToRead.IsEmpty)
+				this.RunWorker(this.itemInfoLoader);
+			if (!this.itemsToGetIcon.IsEmpty)
+				this.RunWorker(this.itemIconLoader);
 		}
 		protected BaseItem GetItem(string packageId, Version packageVersion)
 		{
@@ -214,7 +214,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 
 			// Wake info and icon loaders to read online item data
-			this.RunBackgroundWorkers();
+			this.RunLoadInfoWorkers();
 		}
 		protected void RemoveItem(BaseItem item)
 		{
@@ -300,6 +300,18 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 		}
 
+		private void RunWorker(BackgroundWorker worker)
+		{
+			if (!worker.IsBusy)
+			{
+				lock (this.workerLock)
+				{
+					if (!worker.IsBusy)
+						worker.RunWorkerAsync();
+				}
+			}
+		}
+
 		private void Worker_RetrieveItems(object sender, DoWorkEventArgs e)
 		{
 			// Create items within the model
@@ -332,7 +344,7 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.TreeModels
 			}
 
 			// Wake info and icon loaders to read online item data
-			this.RunBackgroundWorkers();
+			this.RunLoadInfoWorkers();
 		}
 		private void Worker_ReadItemData(object sender, DoWorkEventArgs e)
 		{
