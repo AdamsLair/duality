@@ -166,13 +166,13 @@
                     <ignoreParent dataType="Bool">false</ignoreParent>
                     <parentTransform />
                     <pos dataType="Struct" type="Duality.Vector3">
-                      <X dataType="Float">0</X>
-                      <Y dataType="Float">0</Y>
+                      <X dataType="Float">357</X>
+                      <Y dataType="Float">306.5</Y>
                       <Z dataType="Float">0</Z>
                     </pos>
                     <posAbs dataType="Struct" type="Duality.Vector3">
-                      <X dataType="Float">0</X>
-                      <Y dataType="Float">0</Y>
+                      <X dataType="Float">357</X>
+                      <Y dataType="Float">306.5</Y>
                       <Z dataType="Float">0</Z>
                     </posAbs>
                     <scale dataType="Float">1</scale>
@@ -194,8 +194,8 @@
                     <Z dataType="Float">0</Z>
                   </pos>
                   <posAbs dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">30</Y>
+                    <X dataType="Float">357</X>
+                    <Y dataType="Float">336.5</Y>
                     <Z dataType="Float">0</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
@@ -261,7 +261,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="903757334">4</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1915816672">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -338,8 +338,8 @@
                     <Z dataType="Float">0</Z>
                   </pos>
                   <posAbs dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">-30</Y>
+                    <X dataType="Float">357</X>
+                    <Y dataType="Float">276.5</Y>
                     <Z dataType="Float">0</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
@@ -395,17 +395,17 @@
                   </iconMat>
                   <offset dataType="Int">0</offset>
                   <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1477098221">
-                    <displayedText dataType="String">Another Menu</displayedText>
+                    <displayedText dataType="String">Another menu</displayedText>
                     <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="131759846">
                       <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="672740736">
-                        <text dataType="String">Another Menu</text>
+                        <text dataType="String">Another menu</text>
                       </item>
                     </elements>
                     <flowAreas />
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="348260666">12</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1087560806">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -413,7 +413,7 @@
                     <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                     <maxHeight dataType="Int">0</maxHeight>
                     <maxWidth dataType="Int">0</maxWidth>
-                    <sourceText dataType="String">Another Menu</sourceText>
+                    <sourceText dataType="String">Another menu</sourceText>
                     <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                   </text>
                   <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
@@ -498,129 +498,6 @@
       </identifier>
       <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
       <name dataType="String">#MenuMain</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="2253730436">
-      <active dataType="Bool">true</active>
-      <children dataType="Struct" type="System.Collections.Generic.List`1[[Duality.GameObject]]" id="2684401466">
-        <_items dataType="Array" type="Duality.GameObject[]" id="783780096" length="4">
-          <item dataType="Struct" type="Duality.GameObject" id="2372995991">
-            <active dataType="Bool">true</active>
-            <children />
-            <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2083117683">
-              <_items dataType="Array" type="Duality.Component[]" id="3552646438" length="4">
-                <item dataType="Struct" type="Duality.Components.Transform" id="438343627">
-                  <active dataType="Bool">true</active>
-                  <angle dataType="Float">0</angle>
-                  <angleAbs dataType="Float">0</angleAbs>
-                  <angleVel dataType="Float">0</angleVel>
-                  <angleVelAbs dataType="Float">0</angleVelAbs>
-                  <deriveAngle dataType="Bool">true</deriveAngle>
-                  <gameobj dataType="ObjectRef">2372995991</gameobj>
-                  <ignoreParent dataType="Bool">false</ignoreParent>
-                  <parentTransform />
-                  <pos dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </pos>
-                  <posAbs dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </posAbs>
-                  <scale dataType="Float">1</scale>
-                  <scaleAbs dataType="Float">1</scaleAbs>
-                  <vel dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </vel>
-                  <velAbs dataType="Struct" type="Duality.Vector3">
-                    <X dataType="Float">0</X>
-                    <Y dataType="Float">0</Y>
-                    <Z dataType="Float">0</Z>
-                  </velAbs>
-                </item>
-                <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="4015162559">
-                  <active dataType="Bool">true</active>
-                  <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-                    <A dataType="Byte">255</A>
-                    <B dataType="Byte">255</B>
-                    <G dataType="Byte">255</G>
-                    <R dataType="Byte">255</R>
-                  </colorTint>
-                  <customMat />
-                  <gameobj dataType="ObjectRef">2372995991</gameobj>
-                  <offset dataType="Int">10</offset>
-                  <pixelGrid dataType="Bool">false</pixelGrid>
-                  <rect dataType="Struct" type="Duality.Rect">
-                    <H dataType="Float">8192</H>
-                    <W dataType="Float">8192</W>
-                    <X dataType="Float">-4096</X>
-                    <Y dataType="Float">-4096</Y>
-                  </rect>
-                  <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="WrapBoth" value="3" />
-                  <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                    <contentPath dataType="String">Data\BasicMenu\Visuals\BackgroundTile.Material.res</contentPath>
-                  </sharedMat>
-                  <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-                </item>
-              </_items>
-              <_size dataType="Int">2</_size>
-              <_version dataType="Int">2</_version>
-            </compList>
-            <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1192659896" surrogate="true">
-              <header />
-              <body>
-                <keys dataType="Array" type="System.Object[]" id="852773145">
-                  <item dataType="ObjectRef">3939607504</item>
-                  <item dataType="ObjectRef">2378641220</item>
-                </keys>
-                <values dataType="Array" type="System.Object[]" id="1552232320">
-                  <item dataType="ObjectRef">438343627</item>
-                  <item dataType="ObjectRef">4015162559</item>
-                </values>
-              </body>
-            </compMap>
-            <compTransform dataType="ObjectRef">438343627</compTransform>
-            <identifier dataType="Struct" type="System.Guid" surrogate="true">
-              <header>
-                <data dataType="Array" type="System.Byte[]" id="1848791899">+ExNizz3cEe0UfGBqwttHw==</data>
-              </header>
-              <body />
-            </identifier>
-            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-            <name dataType="String">Background</name>
-            <parent dataType="ObjectRef">2253730436</parent>
-            <prefabLink />
-          </item>
-        </_items>
-        <_size dataType="Int">1</_size>
-        <_version dataType="Int">5</_version>
-      </children>
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2184748730">
-        <_items dataType="Array" type="Duality.Component[]" id="4289085568" length="0" />
-        <_size dataType="Int">0</_size>
-        <_version dataType="Int">0</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3346030650" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="2568592896" length="0" />
-          <values dataType="Array" type="System.Object[]" id="1888829390" length="0" />
-        </body>
-      </compMap>
-      <compTransform />
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="2797805212">sXPEN5GpdUGA1RgdUkw6QA==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">System</name>
       <parent />
       <prefabLink />
     </item>
@@ -748,7 +625,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="1330293434">2</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1135772198">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -892,7 +769,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="3286133434">3</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="208270374">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -1112,7 +989,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="704362006">4</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2559987936">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -1256,7 +1133,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="2136208022">6</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2277630208">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -1354,7 +1231,6 @@
     </item>
     <item dataType="ObjectRef">2178015094</item>
     <item dataType="ObjectRef">1367178791</item>
-    <item dataType="ObjectRef">2372995991</item>
     <item dataType="ObjectRef">3148492957</item>
     <item dataType="ObjectRef">1225237399</item>
     <item dataType="ObjectRef">147130678</item>

@@ -10,7 +10,7 @@ using Duality.Components.Renderers;
 namespace BasicMenu
 {
 	[RequiredComponent(typeof(SpriteRenderer))]
-	public abstract class MenuComponent : Component
+	public abstract class MenuComponent : Component, ICmpUpdatable
 	{
         private ColorRgba hoverTint;
 
@@ -18,6 +18,10 @@ namespace BasicMenu
         private ColorRgba originalTint;
         [DontSerialize]
         private SpriteRenderer spriteRenderer;
+        [DontSerialize]
+        private ColorRgba targetTint;
+        [DontSerialize]
+        private ColorRgba tintDelta;
 
         public ColorRgba HoverTint
         {
@@ -28,6 +32,11 @@ namespace BasicMenu
         public MenuComponent()
         {
             hoverTint = ColorRgba.Red;
+        }
+
+        private void FadeTo(ColorRgba targetColor)
+        {
+
         }
 
         public void MouseEnter()
@@ -60,10 +69,20 @@ namespace BasicMenu
                 this.spriteRenderer = this.GameObj.GetComponent<SpriteRenderer>();
             }
 
+            Rect result = Rect.Empty;
+
             // return the area only if it's currently drawn on the overlay - to simplify
-            return (this.spriteRenderer.VisibilityGroup & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None ?
-                this.spriteRenderer.Rect.WithOffset(this.GameObj.Transform.Pos.Xy) :
-                Rect.Empty;
+            if ((this.spriteRenderer.VisibilityGroup & VisibilityFlag.ScreenOverlay) != VisibilityFlag.None)
+            {
+                result = this.spriteRenderer.Rect.WithOffset(this.GameObj.Transform.Pos.Xy);
+            }
+
+            return result;
         }
-	}
+
+        void ICmpUpdatable.OnUpdate()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
