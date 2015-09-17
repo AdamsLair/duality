@@ -55,24 +55,42 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		{
 			base.InitPlugin(main);
 
-			// Request menu
+			// Request menus
 			MenuModelItem fileItem = main.MainMenu.RequestItem(GeneralRes.MenuName_File);
 			fileItem.AddItem(new MenuModelItem
 			{
 			    Name = PackageManagerFrontendRes.MenuItemName_PackageView,
 			    Icon = PackageManagerFrontendResCache.IconPackage.ToBitmap(),
-			    ActionHandler = this.menuItemLogView_Click
+			    ActionHandler = this.menuItemManagePackages_Click
+			});
+			MenuModelItem helpItem = main.MainMenu.RequestItem(GeneralRes.MenuName_Help);
+			helpItem.AddItem(new MenuModelItem
+			{
+			    Name = PackageManagerFrontendRes.MenuItemName_BrowseSamples,
+			    ActionHandler = this.menuItemBrowseSamples_Click
 			});
 		}
 		
 		public void ShowPackageViewDialog()
 		{
-			DialogResult result = this.PackageView.ShowDialog(DualityEditorApp.MainForm);
+			this.PackageView.Display = PackageViewDialog.DisplayMode.Installed;
+			this.PackageView.SearchFilter = string.Empty;
+			this.PackageView.ShowDialog(DualityEditorApp.MainForm);
+		}
+		public void ShowSamplePackageBrowser()
+		{
+			this.PackageView.Display = PackageViewDialog.DisplayMode.Online;
+			this.PackageView.SearchFilter = PackageManagement.PackageManager.SampleTag;
+			this.PackageView.ShowDialog(DualityEditorApp.MainForm);
 		}
 
-		private void menuItemLogView_Click(object sender, EventArgs e)
+		private void menuItemManagePackages_Click(object sender, EventArgs e)
 		{
 			this.ShowPackageViewDialog();
+		}
+		private void menuItemBrowseSamples_Click(object sender, EventArgs e)
+		{
+			this.ShowSamplePackageBrowser();
 		}
 	}
 }

@@ -217,4 +217,7 @@
   <data name="ItemName_VisitLinkUrl" xml:space="preserve">
     <value>View on {0}</value>
   </data>
+  <data name="MenuItemName_BrowseSamples" xml:space="preserve">
+    <value>Browse Samples...</value>
+  </data>
 </root>
