@@ -1538,7 +1538,7 @@
       <_version dataType="Int">1</_version>
     </layers>
   </pixelData>
-  <renderMode dataType="Enum" type="Duality.Resources.Font+RenderMode" name="SharpBitmap" value="3" />
+  <renderMode dataType="Enum" type="Duality.Resources.Font+RenderMode" name="GrayscaleBitmap" value="1" />
   <size dataType="Float">16</size>
   <spacing dataType="Float">1.5</spacing>
   <style dataType="Enum" type="Duality.Drawing.FontStyle" name="Regular" value="0" />

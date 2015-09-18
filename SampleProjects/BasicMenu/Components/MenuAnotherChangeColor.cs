@@ -20,7 +20,7 @@ namespace BasicMenu
 
         public override void DoAction()
         {
-            this.GameObj.GetComponent<SpriteRenderer>().ColorTint = rnd.NextColorRgba();
+            FadeTo(rnd.NextColorRgba(), true);
         }
     }
 }

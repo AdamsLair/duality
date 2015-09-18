@@ -4,5 +4,13 @@
         <name>BasicMenu.core</name>
     </assembly>
     <members>
+        <member name="F:BasicMenu.MenuComponent.targetTint">
+             used for fade effect
+            
+        </member>
+        <member name="M:BasicMenu.MenuComponent.#ctor">
+             used for fade effect
+            
+        </member>
     </members>
 </doc>

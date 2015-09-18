@@ -7,7 +7,7 @@ namespace BasicMenu
     [RequiredComponent(typeof(SpriteRenderer))]
     public abstract class MenuComponent : Component, ICmpUpdatable
     {
-        private static readonly float MAX_FADE_TIME = 2;
+        private static readonly float MAX_FADE_TIME = .5f;
 
         private ColorRgba hoverTint;
 
@@ -17,11 +17,14 @@ namespace BasicMenu
         [DontSerialize]
         private SpriteRenderer spriteRenderer;
 
-        [DontSerialize]
-        private ColorRgba startingTint;
-
+        /**
+         * used for fade effect
+         **/
         [DontSerialize]
         private ColorRgba targetTint;
+
+        [DontSerialize]
+        private Vector4 startingTint;
 
         [DontSerialize]
         private Vector4 tintDelta;
@@ -32,10 +35,16 @@ namespace BasicMenu
         [DontSerialize]
         private float fadingTime;
 
+        [DontSerialize]
+        private bool isFadingOut;
+        /**
+         * used for fade effect
+         **/
+
         public MenuComponent()
         {
-            hoverTint = ColorRgba.Red;
-            fadingTime = timeToFade = MAX_FADE_TIME;
+            this.hoverTint = ColorRgba.Red;
+            this.fadingTime = MAX_FADE_TIME;
         }
 
         public ColorRgba HoverTint
@@ -67,27 +76,25 @@ namespace BasicMenu
         {
             float lastDelta = Time.TimeMult * Time.MsPFMult / 1000;
 
-            if (fadingTime < timeToFade)
+            if (this.fadingTime < this.timeToFade)
             {
-                if(fadingTime + lastDelta >= timeToFade)
+                if (this.fadingTime + lastDelta >= this.timeToFade)
                 {
                     this.spriteRenderer.ColorTint = this.targetTint;
-                    fadingTime = timeToFade;
+
+                    if(this.isFadingOut)
+                    {
+                        this.fadingTime = MAX_FADE_TIME;
+                    }
                 }
                 else
                 {
-                    ColorRgba currentTint = this.spriteRenderer.ColorTint;
-
-                    Vector4 newTint = ColorToVector(currentTint);
-                    newTint += (this.tintDelta * lastDelta);
-
-                    VisualLog.Default.DrawText(0, 0, this.spriteRenderer.ColorTint.ToString());
+                    Vector4 newTint = this.startingTint + (this.tintDelta * this.fadingTime);
                     this.spriteRenderer.ColorTint = VectorToColor(newTint);
-                    fadingTime += lastDelta;
                 }
             }
 
-            this.timeToFade = MathF.Min(this.timeToFade + lastDelta, MAX_FADE_TIME);
+            this.fadingTime = MathF.Min(this.fadingTime + lastDelta, MAX_FADE_TIME);
         }
 
         public void MouseEnter()
@@ -99,30 +106,31 @@ namespace BasicMenu
                     this.originalTint = this.spriteRenderer.ColorTint;
                 }
 
-                //this.spriteRenderer.ColorTint = this.hoverTint;
-                FadeTo(this.hoverTint);
+                FadeTo(this.hoverTint, false);
             }
         }
 
         public void MouseLeave()
         {
-            if (this.originalTint != null && this.spriteRenderer != null)
+            if (this.originalTint != default(ColorRgba) && this.spriteRenderer != null)
             {
-                //this.spriteRenderer.ColorTint = this.originalTint;
-                FadeTo(this.originalTint);
+                FadeTo(this.originalTint, true);
             }
         }
 
-        private void FadeTo(ColorRgba targetTint)
+        protected void FadeTo(ColorRgba targetColor, bool fadeOut)
         {
-            this.startingTint = this.spriteRenderer.ColorTint;
-            this.targetTint = targetTint;
+            this.targetTint = targetColor;
+            this.isFadingOut = fadeOut;
 
-            Vector4 delta = ColorToVector(targetTint) - ColorToVector(startingTint);
-            this.tintDelta = delta / this.fadingTime;
+            this.startingTint = ColorToVector(this.spriteRenderer.ColorTint);
 
-            this.timeToFade = fadingTime;
+            Vector4 delta = ColorToVector(this.targetTint) - this.startingTint;
+
+            this.timeToFade = this.fadingTime;
             this.fadingTime = 0;
+
+            this.tintDelta = delta / this.timeToFade;
         }
 
         private Vector4 ColorToVector(ColorRgba color)
