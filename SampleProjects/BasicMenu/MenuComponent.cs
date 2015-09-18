@@ -81,12 +81,11 @@ namespace BasicMenu
                     Vector4 newTint = ColorToVector(currentTint);
                     newTint += (this.tintDelta * lastDelta);
 
+                    VisualLog.Default.DrawText(0, 0, this.spriteRenderer.ColorTint.ToString());
                     this.spriteRenderer.ColorTint = VectorToColor(newTint);
                     fadingTime += lastDelta;
                 }
             }
-
-            VisualLog.Default.DrawText(0, 0, this.spriteRenderer.ColorTint.ToString());
 
             this.timeToFade = MathF.Min(this.timeToFade + lastDelta, MAX_FADE_TIME);
         }
