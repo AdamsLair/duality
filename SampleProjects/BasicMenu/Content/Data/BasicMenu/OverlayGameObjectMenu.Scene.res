@@ -167,12 +167,12 @@
                     <parentTransform />
                     <pos dataType="Struct" type="Duality.Vector3">
                       <X dataType="Float">357</X>
-                      <Y dataType="Float">306.5</Y>
+                      <Y dataType="Float">438.5</Y>
                       <Z dataType="Float">0</Z>
                     </pos>
                     <posAbs dataType="Struct" type="Duality.Vector3">
                       <X dataType="Float">357</X>
-                      <Y dataType="Float">306.5</Y>
+                      <Y dataType="Float">438.5</Y>
                       <Z dataType="Float">0</Z>
                     </posAbs>
                     <scale dataType="Float">1</scale>
@@ -195,7 +195,7 @@
                   </pos>
                   <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">357</X>
-                    <Y dataType="Float">336.5</Y>
+                    <Y dataType="Float">468.5</Y>
                     <Z dataType="Float">0</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
@@ -261,7 +261,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="903757334">4</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1915816672">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -339,7 +339,7 @@
                   </pos>
                   <posAbs dataType="Struct" type="Duality.Vector3">
                     <X dataType="Float">357</X>
-                    <Y dataType="Float">276.5</Y>
+                    <Y dataType="Float">408.5</Y>
                     <Z dataType="Float">0</Z>
                   </posAbs>
                   <scale dataType="Float">1</scale>
@@ -405,7 +405,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="348260666">12</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1087560806">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -625,7 +625,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="1330293434">2</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1135772198">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -769,7 +769,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="3286133434">3</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="208270374">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -989,7 +989,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="704362006">4</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2559987936">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
@@ -1133,7 +1133,7 @@
                     <fontGlyphCount dataType="Array" type="System.Int32[]" id="2136208022">6</fontGlyphCount>
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2277630208">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Data\BasicMenu\Visuals\OpenSans-Semibold.Font.res</contentPath>
+                        <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                       </item>
                     </fonts>
                     <iconCount dataType="Int">0</iconCount>
