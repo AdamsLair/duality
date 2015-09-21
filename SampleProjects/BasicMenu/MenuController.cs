@@ -10,19 +10,44 @@ using Duality.Components.Renderers;
 namespace BasicMenu
 {
 	[RequiredComponent(typeof(Camera))]
-	public abstract class MenuController : Component
+	public abstract class MenuController : Component, ICmpInitializable
 	{
+        private MenuPage startingMenu;
+
+        [DontSerialize]
+        private MenuPage currentMenu;
+
+        public MenuPage StartingMenu
+        {
+            get { return this.startingMenu; }
+            set { this.startingMenu = value; }
+        }
+
         public MenuController()
         { }
 
-        public void SwitchToMenu(string menuName)
+        public void SwitchToMenu(MenuPage page)
         {
-            foreach(GameObject menuItem in this.GameObj.ParentScene.ActiveRootObjects.Where(obj => obj.Name.StartsWith("#Menu")))
+            if (this.currentMenu != null)
             {
-                menuItem.Active = false;
+                this.currentMenu.GameObj.Active = false;
             }
 
-            this.GameObj.ParentScene.FindGameObject(menuName, false).Active = true;
+            page.GameObj.Active = true;
+            this.currentMenu = page;
+        }
+
+        void ICmpInitializable.OnInit(Component.InitContext context)
+        {
+            if(context == InitContext.Activate)
+            {
+                SwitchToMenu(this.startingMenu);
+            }
+        }
+
+        void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
+        {
+            // nothing to do here
         }
     }
 }

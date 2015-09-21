@@ -54,15 +54,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\MenuAnotherChangeColor.cs" />
-    <Compile Include="Components\MenuAnother.cs" />
     <Compile Include="Controllers\UpdateMenuController.cs" />
+    <Compile Include="MenuPage.cs" />
     <Compile Include="MenuController.cs" />
     <Compile Include="Controllers\EventMenuController.cs" />
     <Compile Include="MenuComponent.cs" />
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="Components\MenuBackToMain.cs" />
+    <Compile Include="Components\MenuSwitchToPage.cs" />
     <Compile Include="Components\MenuQuitConfirm.cs" />
-    <Compile Include="Components\MenuQuit.cs" />
     <Compile Include="CenterScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

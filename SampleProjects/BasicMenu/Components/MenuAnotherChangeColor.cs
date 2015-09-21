@@ -10,17 +10,9 @@ namespace BasicMenu
 {
     public class MenuChangeColor : MenuComponent
     {
-        [DontSerialize]
-        private Random rnd;
-
-        public MenuChangeColor()
-        {
-            rnd = new Random();
-        }
-
         public override void DoAction()
         {
-            FadeTo(rnd.NextColorRgba(), true);
+            FadeTo(MathF.Rnd.NextColorRgba(), true);
         }
     }
 }
