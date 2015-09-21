@@ -27,7 +27,7 @@ namespace BasicMenu
             // No menus currently active? Switch to StartingMenu - this is checked everytime
             if (this.currentMenu == null)
             {
-                SwitchToMenu(StartingMenu);
+                this.SwitchToMenu(this.StartingMenu);
             }
 
             mousePosition.X = DualityApp.Mouse.X;

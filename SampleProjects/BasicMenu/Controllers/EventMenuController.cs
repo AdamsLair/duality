@@ -39,7 +39,7 @@ namespace BasicMenu
             if (context == InitContext.Activate)
             {
                 // since I know I'm being activated, I can switch to the StartingMenu here
-                SwitchToMenu(StartingMenu);
+                this.SwitchToMenu(this.StartingMenu);
 
                 DualityApp.Mouse.Move += mouseMove;
                 DualityApp.Mouse.ButtonDown += buttonDown;

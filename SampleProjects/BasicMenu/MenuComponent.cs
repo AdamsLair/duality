@@ -103,7 +103,7 @@ namespace BasicMenu
                 {
                     // ... and after this frame I will still be fading. Get the correct color.
                     Vector4 newTint = this.startingTint + (this.tintDelta * (this.fadingTime + lastDelta));
-                    this.spriteRenderer.ColorTint = VectorToColor(newTint);
+                    this.spriteRenderer.ColorTint = this.VectorToColor(newTint);
                 }
             }
 
@@ -119,7 +119,7 @@ namespace BasicMenu
                     this.originalTint = this.spriteRenderer.ColorTint;
                 }
 
-                FadeTo(this.hoverTint, false);
+                this.FadeTo(this.hoverTint, false);
             }
         }
 
@@ -127,7 +127,7 @@ namespace BasicMenu
         {
             if (this.originalTint != default(ColorRgba) && this.spriteRenderer != null)
             {
-                FadeTo(this.originalTint, true);
+                this.FadeTo(this.originalTint, true);
             }
         }
 
@@ -136,9 +136,9 @@ namespace BasicMenu
             this.targetTint = targetColor;
             this.isFadingOut = fadeOut;
 
-            this.startingTint = ColorToVector(this.spriteRenderer.ColorTint);
+            this.startingTint = this.ColorToVector(this.spriteRenderer.ColorTint);
 
-            Vector4 delta = ColorToVector(this.targetTint) - this.startingTint;
+            Vector4 delta = this.ColorToVector(this.targetTint) - this.startingTint;
 
             // Here I use the time taken for the last fade operation as the time available for the new one.
             // This is because if I am fading in and move out the mouse before the fading is complete,

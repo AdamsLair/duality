@@ -12,7 +12,7 @@ namespace BasicMenu
     {
         public override void DoAction()
         {
-            FadeTo(MathF.Rnd.NextColorRgba(), true);
+            this.FadeTo(MathF.Rnd.NextColorRgba(), true);
         }
     }
 }

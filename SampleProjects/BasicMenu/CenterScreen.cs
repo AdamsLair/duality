@@ -17,14 +17,14 @@ namespace BasicMenu
 
         void ICmpUpdatable.OnUpdate()
         {
-            Center();
+            this.Center();
         }
 
         void ICmpInitializable.OnInit(Component.InitContext context)
         {
             if(context == InitContext.Activate)
             {
-                Center();
+                this.Center();
             }
         }
 
