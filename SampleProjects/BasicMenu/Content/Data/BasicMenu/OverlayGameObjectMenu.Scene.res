@@ -95,12 +95,12 @@
             <gameobj dataType="ObjectRef">3588826678</gameobj>
           </item>
           <item dataType="Struct" type="BasicMenu.EventMenuController" id="1563800156">
-            <active dataType="Bool">false</active>
+            <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3588826678</gameobj>
             <startingMenu dataType="Struct" type="BasicMenu.MenuPage" id="3799790557">
               <active dataType="Bool">true</active>
               <gameobj dataType="Struct" type="Duality.GameObject" id="1991011308">
-                <active dataType="Bool">false</active>
+                <active dataType="Bool">true</active>
                 <children dataType="Struct" type="System.Collections.Generic.List`1[[Duality.GameObject]]" id="2276070543">
                   <_items dataType="Array" type="Duality.GameObject[]" id="79688878" length="4">
                     <item dataType="Struct" type="Duality.GameObject" id="2178015094">
@@ -129,12 +129,12 @@
                               <parentTransform />
                               <pos dataType="Struct" type="Duality.Vector3">
                                 <X dataType="Float">357</X>
-                                <Y dataType="Float">418.5</Y>
+                                <Y dataType="Float">418</Y>
                                 <Z dataType="Float">0</Z>
                               </pos>
                               <posAbs dataType="Struct" type="Duality.Vector3">
                                 <X dataType="Float">357</X>
-                                <Y dataType="Float">418.5</Y>
+                                <Y dataType="Float">418</Y>
                                 <Z dataType="Float">0</Z>
                               </posAbs>
                               <scale dataType="Float">1</scale>
@@ -157,7 +157,7 @@
                             </pos>
                             <posAbs dataType="Struct" type="Duality.Vector3">
                               <X dataType="Float">357</X>
-                              <Y dataType="Float">448.5</Y>
+                              <Y dataType="Float">448</Y>
                               <Z dataType="Float">0</Z>
                             </posAbs>
                             <scale dataType="Float">1</scale>
@@ -778,7 +778,7 @@
                             </pos>
                             <posAbs dataType="Struct" type="Duality.Vector3">
                               <X dataType="Float">357</X>
-                              <Y dataType="Float">388.5</Y>
+                              <Y dataType="Float">388</Y>
                               <Z dataType="Float">0</Z>
                             </posAbs>
                             <scale dataType="Float">1</scale>
@@ -1423,7 +1423,7 @@
             </startingMenu>
           </item>
           <item dataType="Struct" type="BasicMenu.UpdateMenuController" id="743110769">
-            <active dataType="Bool">true</active>
+            <active dataType="Bool">false</active>
             <gameobj dataType="ObjectRef">3588826678</gameobj>
             <startingMenu dataType="ObjectRef">3799790557</startingMenu>
           </item>
@@ -1482,12 +1482,12 @@
             <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
-              <Y dataType="Float">-180</Y>
+              <Y dataType="Float">-200</Y>
               <Z dataType="Float">0</Z>
             </pos>
             <posAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
-              <Y dataType="Float">-180</Y>
+              <Y dataType="Float">-200</Y>
               <Z dataType="Float">0</Z>
             </posAbs>
             <scale dataType="Float">1.25</scale>
@@ -1506,7 +1506,7 @@
           <item dataType="Struct" type="Duality.Components.Renderers.SpriteRenderer" id="1849493036">
             <active dataType="Bool">true</active>
             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">128</A>
+              <A dataType="Byte">192</A>
               <B dataType="Byte">64</B>
               <G dataType="Byte">64</G>
               <R dataType="Byte">64</R>
@@ -1553,6 +1553,129 @@
       </identifier>
       <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
       <name dataType="String">Background</name>
+      <parent />
+      <prefabLink />
+    </item>
+    <item dataType="Struct" type="Duality.GameObject" id="2733405151">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2935515421">
+        <_items dataType="Array" type="Duality.Component[]" id="2120373478" length="4">
+          <item dataType="Struct" type="Duality.Components.Transform" id="798752787">
+            <active dataType="Bool">true</active>
+            <angle dataType="Float">0</angle>
+            <angleAbs dataType="Float">0</angleAbs>
+            <angleVel dataType="Float">0</angleVel>
+            <angleVelAbs dataType="Float">0</angleVelAbs>
+            <deriveAngle dataType="Bool">true</deriveAngle>
+            <gameobj dataType="ObjectRef">2733405151</gameobj>
+            <ignoreParent dataType="Bool">false</ignoreParent>
+            <parentTransform />
+            <pos dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">120</Y>
+              <Z dataType="Float">0</Z>
+            </pos>
+            <posAbs dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">120</Y>
+              <Z dataType="Float">0</Z>
+            </posAbs>
+            <scale dataType="Float">1</scale>
+            <scaleAbs dataType="Float">1</scaleAbs>
+            <vel dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">0</Y>
+              <Z dataType="Float">0</Z>
+            </vel>
+            <velAbs dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">0</Y>
+              <Z dataType="Float">0</Z>
+            </velAbs>
+          </item>
+          <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="181066677">
+            <active dataType="Bool">true</active>
+            <blockAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+              <A dataType="Byte">255</A>
+              <B dataType="Byte">255</B>
+              <G dataType="Byte">255</G>
+              <R dataType="Byte">255</R>
+            </colorTint>
+            <customMat />
+            <gameobj dataType="ObjectRef">2733405151</gameobj>
+            <iconMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+              <contentPath />
+            </iconMat>
+            <offset dataType="Int">0</offset>
+            <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1658023141">
+              <displayedText dataType="String">To start using the menu, enable eitherEventMenuController or UpdateMenuControllerin MainCamera's GameObject.Having both enabled at the same time mightcreate issues.</displayedText>
+              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="24092822">
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="2752707104">
+                  <text dataType="String">To start using the menu, enable either</text>
+                </item>
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="2033064846" />
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="3292334396">
+                  <text dataType="String">EventMenuController or UpdateMenuController</text>
+                </item>
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="1121777938" />
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="3495836120">
+                  <text dataType="String">in MainCamera's GameObject.</text>
+                </item>
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="2803614246" />
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="4132210356" />
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="4103576362">
+                  <text dataType="String">Having both enabled at the same time might</text>
+                </item>
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="274693840" />
+                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="4044281278">
+                  <text dataType="String">create issues.</text>
+                </item>
+              </elements>
+              <flowAreas />
+              <fontGlyphCount dataType="Array" type="System.Int32[]" id="1792449754">164</fontGlyphCount>
+              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2885120310">
+                <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
+                  <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
+                </item>
+              </fonts>
+              <iconCount dataType="Int">0</iconCount>
+              <icons />
+              <lineAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+              <maxHeight dataType="Int">0</maxHeight>
+              <maxWidth dataType="Int">400</maxWidth>
+              <sourceText dataType="String">To start using the menu, enable either/nEventMenuController or UpdateMenuController/nin MainCamera's GameObject./n/nHaving both enabled at the same time might/ncreate issues.</sourceText>
+              <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
+            </text>
+            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
+          </item>
+        </_items>
+        <_size dataType="Int">2</_size>
+        <_version dataType="Int">2</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4186247928" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="3822850679">
+            <item dataType="ObjectRef">3562508622</item>
+            <item dataType="ObjectRef">868565246</item>
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="2715098432">
+            <item dataType="ObjectRef">798752787</item>
+            <item dataType="ObjectRef">181066677</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform dataType="ObjectRef">798752787</compTransform>
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="1689408213">7Tq2cVo2nkm6EuVYyhtBrA==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">TextRenderer</name>
       <parent />
       <prefabLink />
     </item>

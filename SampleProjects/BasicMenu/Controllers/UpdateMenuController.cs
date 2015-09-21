@@ -9,6 +9,11 @@ using Duality.Components.Renderers;
 
 namespace BasicMenu
 {
+    /// <summary>
+    /// This Component implements an OnUpdate-based MenuController.
+    /// Pros: Easier to set up, requires only to implement OnUpdate.
+    /// Cons: The controller logic is called on every frame, even when nothing is happening.
+    /// </summary>
 	[RequiredComponent(typeof(Camera))]
 	public class UpdateMenuController : MenuController, ICmpUpdatable
 	{
@@ -19,6 +24,12 @@ namespace BasicMenu
 
         void ICmpUpdatable.OnUpdate()
         {
+            // No menus currently active? Switch to StartingMenu - this is checked everytime
+            if (this.currentMenu == null)
+            {
+                SwitchToMenu(StartingMenu);
+            }
+
             mousePosition.X = DualityApp.Mouse.X;
             mousePosition.Y = DualityApp.Mouse.Y;
 

@@ -35,6 +35,7 @@ namespace BasicMenu
 
         private void Center()
         {
+            // Simply keep the associated GameObject centered in the middle of the screen
             centerScreen.Xy = DualityApp.TargetResolution / 2;
             this.GameObj.Transform.Pos = centerScreen;
         }

@@ -9,6 +9,12 @@ using Duality.Components.Renderers;
 
 namespace BasicMenu
 {
+    /// <summary>
+    /// This Component implements an Event-based MenuController.
+    /// Pros: Logic gets called only when an event is fired, allows better timing due to the presence of 
+    /// OnInit and OnShutdown.
+    /// Cons: Requires to clean up the event listeners once finished.
+    /// </summary>
 	[RequiredComponent(typeof(Camera))]
 	public class EventMenuController : MenuController, ICmpInitializable
 	{
@@ -29,8 +35,12 @@ namespace BasicMenu
 
         public void OnInit(Component.InitContext context)
         {
+            // listening for mouse Move and ButtonDown events
             if (context == InitContext.Activate)
             {
+                // since I know I'm being activated, I can switch to the StartingMenu here
+                SwitchToMenu(StartingMenu);
+
                 DualityApp.Mouse.Move += mouseMove;
                 DualityApp.Mouse.ButtonDown += buttonDown;
             }
@@ -38,6 +48,7 @@ namespace BasicMenu
 
         public void OnShutdown(Component.ShutdownContext context)
         {
+            // remember to clean up the events on Deactivate - needs to be more careful
             if(context == ShutdownContext.Deactivate)
             {
                 DualityApp.Mouse.Move -= mouseMove;

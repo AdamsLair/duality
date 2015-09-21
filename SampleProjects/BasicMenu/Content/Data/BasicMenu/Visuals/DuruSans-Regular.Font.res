@@ -12,862 +12,862 @@
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x003F_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2787873864">4, 0, 4, 2, 2, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1402921182">3, 0, 0, 3, 3, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0020_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="724069044">0, 0, 0, 0, 0, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2036567074">0, 0, 0, 0, 0, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">4</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">a</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1003516416">5, 5, 1, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3302006150">4, 4, 1, 1, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">b</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4168038188">0, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="621583626">4, 4, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">c</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3346691064">4, 4, 0, 0, 0, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1106596398">3, 3, 1, 3, 0, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">d</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3997506276">5, 5, 1, 0, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3290752946">0, 0, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">11</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">e</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4227496368">5, 5, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="392916694">4, 4, 0, 0, 1, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">f</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2258070556">3, 2, 0, 2, 2, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="219509658">1, 1, 1, 3, 3, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">8</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">g</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1171922088">6, 6, 0, 0, 0, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3799579454">5, 5, 1, 3, 2, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">h</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3745779476">0, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4118787074">4, 4, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">i</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3423915104">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4197226982">0, 0, 0, 0, 0, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">j</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2631212428">3, 3, 3, 3, 3, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="645908202">0, 0, 0, 0, 0, 0</KerningSamplesRight>
       <OffsetX dataType="Int">1</OffsetX>
       <Width dataType="Int">6</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">k</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1999363800">0, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="116704654">4, 4, 1, 4, 1, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">l</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2463853508">0, 0, 0, 0, 0, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="797089042">2, 2, 2, 2, 1, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">6</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">m</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1723367568">8, 8, 0, 0, 0, 8</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="224581174">7, 7, 0, 0, 0, 7</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">17</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">n</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1388639100">5, 5, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2280460026">4, 4, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">o</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3764002824">6, 6, 1, 1, 1, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2451038238">5, 5, 1, 1, 1, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">p</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1557281908">5, 5, 0, 0, 0, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2420312418">4, 4, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">q</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3207962048">5, 5, 1, 0, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3067517126">4, 4, 1, 1, 1, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">11</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">r</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2230697196">3, 3, 0, 0, 0, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="273106506">2, 2, 0, 2, 2, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">7</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">s</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1633470392">4, 4, 1, 1, 0, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="291514734">3, 3, 1, 1, 1, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">t</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="307957924">4, 2, 1, 2, 2, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2240954610">3, 3, 1, 3, 1, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">u</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="279135600">5, 5, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3905773078">4, 4, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">v</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="360123868">6, 6, 1, 2, 4, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1461785818">5, 5, 0, 2, 3, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">w</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1965506664">9, 9, 0, 1, 2, 9</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="939094654">8, 8, 0, 2, 3, 8</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">18</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">x</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1110178004">5, 5, 0, 3, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1277425986">4, 4, 1, 3, 1, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">11</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">y</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3904675872">6, 6, 1, 2, 3, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2504532262">5, 5, 1, 2, 3, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">z</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3211736908">5, 5, 1, 3, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2987209770">4, 4, 0, 3, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">A</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3641976472">8, 5, 4, 2, 0, 8</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="567142606">7, 5, 4, 2, 1, 7</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">16</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">B</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="130333060">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="109006418">4, 1, 1, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">11</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">C</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2145926224">6, 1, 0, 0, 1, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1197553014">5, 1, 5, 5, 0, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">13</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">D</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1712992572">6, 0, 0, 0, 0, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2071105594">5, 1, 0, 0, 1, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">13</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">E</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1596789704">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3963308894">4, 1, 1, 2, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">F</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4285503028">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2567911074">4, 1, 1, 2, 4, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">G</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3001793920">7, 1, 1, 0, 1, 7</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3590755334">6, 1, 1, 1, 1, 6</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">14</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">H</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1341616812">6, 1, 1, 1, 1, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3746711434">5, 0, 0, 0, 0, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">13</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">I</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1374142328">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="558824622">1, 0, 0, 0, 0, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">J</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3651837540">3, 3, 3, 3, 1, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3095128626">2, 0, 0, 0, 0, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">7</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">K</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3549837616">6, 0, 0, 0, 0, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3459376470">5, 1, 4, 3, 1, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">L</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2360112028">5, 1, 1, 1, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1069491738">4, 4, 4, 4, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">M</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1199709224">8, 1, 1, 1, 1, 8</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1233138110">7, 0, 0, 0, 0, 7</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">17</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">N</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2632013460">6, 1, 1, 1, 1, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2160620162">5, 0, 0, 0, 0, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">13</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">O</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="241787872">7, 1, 0, 0, 1, 7</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2361719910">6, 1, 0, 0, 1, 6</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">15</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">P</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="65547532">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="122236266">4, 0, 0, 1, 4, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">11</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">Q</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3673970264">7, 1, 0, 0, 1, 7</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3374388238">6, 1, 0, 0, 1, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">15</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">R</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="388366148">5, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2627325842">4, 0, 0, 1, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">11</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">S</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3170022416">5, 1, 1, 4, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2112219318">4, 1, 3, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">T</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1253846780">6, 1, 6, 6, 6, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2013890938">5, 0, 5, 5, 5, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">13</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">U</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1614431112">6, 0, 0, 0, 0, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1609135774">5, 0, 0, 0, 0, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">V</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4083342324">7, 0, 2, 3, 4, 7</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="515167202">6, 0, 2, 3, 4, 6</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">14</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">W</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2854963520">10, 0, 1, 2, 3, 10</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="815960902">9, 0, 1, 2, 3, 9</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">21</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">X</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2551969900">6, 0, 2, 2, 0, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3667062986">5, 0, 3, 2, 0, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">Y</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2938469176">6, 0, 2, 4, 5, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="962366446">5, 1, 3, 5, 5, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">13</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">Z</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1793643556">6, 1, 5, 2, 1, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3285582706">5, 1, 3, 5, 0, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0031_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2695899376">2, 0, 2, 2, 2, 2</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2699710614">1, 0, 0, 0, 0, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">5</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0032_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4050930012">4, 0, 4, 3, 0, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2232532826">3, 1, 0, 2, 0, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0033_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4075891688">5, 1, 3, 5, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="893104382">4, 1, 1, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0034_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1771808852">6, 4, 2, 0, 6, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4002758594">5, 2, 2, 0, 2, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0035_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="703549344">5, 1, 0, 5, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1704586150">4, 0, 1, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0036_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="471761612">5, 2, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2785939114">4, 1, 1, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0037_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="939565592">5, 0, 5, 3, 2, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="226054990">4, 0, 1, 3, 4, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0038_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2323334404">5, 1, 1, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2688882898">4, 0, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0039_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1009274832">5, 0, 0, 1, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2688130038">4, 0, 0, 0, 1, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0030_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3447787708">6, 1, 1, 1, 1, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3560990394">5, 1, 1, 1, 1, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x002C_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="225342280">1, 1, 1, 1, 1, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2530779614">1, 1, 1, 1, 0, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x003B_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4193729972">2, 2, 1, 2, 1, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4243325218">1, 1, 0, 1, 0, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">4</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x002E_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2513490176">1, 1, 1, 1, 0, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2581165702">1, 1, 1, 1, 0, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">:</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="4124227116">1, 1, 0, 1, 0, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1652722186">1, 1, 0, 1, 0, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x002D_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3214163704">3, 3, 3, 0, 3, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1163572014">2, 2, 2, 0, 2, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">7</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2590363108">6, 6, 6, 6, 6, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="840039602">5, 5, 5, 5, 5, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">13</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x003C_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3663176880">4, 4, 1, 0, 4, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4013182934">3, 3, 1, 2, 1, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">8</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x003E_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="945135388">3, 3, 0, 2, 0, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1479700634">2, 2, 1, 0, 2, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">7</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x007C_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1120841640">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3551205438">0, 0, 0, 0, 0, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0023_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="517276180">6, 4, 1, 0, 2, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1416064258">5, 2, 0, 1, 4, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0027_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1072093024">1, 1, 1, 1, 1, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3657092838">1, 0, 1, 1, 1, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x002B_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2186821772">5, 5, 1, 0, 4, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1601245162">4, 4, 0, 0, 4, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x002A_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="680499672">3, 0, 0, 4, 4, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2992796302">1, 1, 1, 3, 3, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x007E_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="582710980">6, 6, 1, 0, 6, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1296899602">5, 5, 0, 0, 5, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0040_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1855080336">9, 2, 1, 0, 1, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2108149558">8, 2, 1, 1, 1, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">19</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x005E_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1655160444">5, 2, 0, 5, 5, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="596471802">4, 2, 0, 4, 4, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x00B0_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3050492680">0, 0, 3, 3, 3, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1051745566">0, 0, 2, 2, 2, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">7</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0021_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3443315572">1, 0, 0, 1, 0, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3339887202">1, 0, 1, 1, 0, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">3</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0022_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="472079552">3, 1, 1, 3, 3, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4216931782">2, 0, 0, 2, 2, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">6</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x00A7_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1913406444">4, 0, 0, 0, 2, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1569959754">3, 1, 1, 0, 0, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">8</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0024_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3509707448">4, 1, 0, 3, 1, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2745281134">4, 1, 4, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0025_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3990869924">8, 0, 0, 3, 3, 8</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2439395826">7, 3, 2, 0, 0, 7</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">17</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0026_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="218304624">7, 3, 3, 1, 1, 7</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4221169430">6, 4, 4, 1, 1, 6</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">14</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x002F_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="639914204">5, 5, 4, 3, 1, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1889975770">0, 1, 2, 4, 4, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0028_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1711283048">2, 1, 0, 0, 0, 2</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3491673982">1, 1, 1, 1, 1, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">5</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0029_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2288031700">1, 0, 2, 2, 1, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1888037442">1, 1, 0, 0, 1, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">5</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x003D_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2595321632">5, 5, 1, 1, 1, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3238742566">4, 4, 0, 1, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x0060_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="356337228">0, 1, 2, 2, 2, 2</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1499124010">1, 0, 1, 1, 1, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">5</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x00B2_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1251691928">4, 1, 3, 1, 4, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="647588302">3, 1, 1, 1, 3, 3</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x00B3_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3622554756">3, 0, 2, 0, 3, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3239982930">2, 1, 0, 0, 2, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">7</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x007B_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1613379408">3, 2, 2, 0, 2, 3</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1090927222">0, 0, 2, 2, 2, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">6</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x005B_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="3923612732">0, 0, 0, 0, 0, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2015914298">0, 1, 1, 1, 1, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">5</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x005D_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1382514376">0, 0, 2, 2, 2, 0</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="2080148574">0, 0, 0, 0, 0, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">5</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x007D_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2094019892">1, 1, 3, 3, 3, 1</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="4084649890">2, 1, 1, 0, 1, 2</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">6</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x005C_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2837801088">0, 0, 2, 4, 4, 4</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3880109318">3, 3, 3, 2, 1, 0</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">9</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">_x00B4_</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="482186668">2, 0, 2, 2, 2, 2</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1187687562">0, 1, 1, 1, 1, 1</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">5</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">ö</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2885212792">6, 3, 1, 1, 1, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3515907502">5, 3, 1, 1, 1, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">ä</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="739225956">5, 2, 1, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3911208754">4, 2, 1, 1, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">ü</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="2580559920">5, 2, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1851937366">4, 2, 0, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">Ö</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="646495900">5, 1, 0, 0, 1, 7</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="3228895002">4, 1, 0, 0, 1, 6</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">15</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">Ä</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1028607784">5, 5, 4, 2, 0, 8</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="1975070398">5, 5, 4, 2, 1, 7</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">16</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">Ü</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="921182612">3, 0, 0, 0, 0, 6</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="542134146">3, 0, 0, 0, 0, 5</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">12</Width>
     </item>
     <item dataType="Struct" type="Duality.Resources.Font+GlyphData">
       <Glyph dataType="Char">ß</Glyph>
       <Height dataType="Int">28</Height>
-      <KerningSamplesLeft />
-      <KerningSamplesRight />
+      <KerningSamplesLeft dataType="Array" type="System.Int32[]" id="1476467424">1, 0, 0, 0, 0, 5</KerningSamplesLeft>
+      <KerningSamplesRight dataType="Array" type="System.Int32[]" id="934338918">4, 3, 3, 0, 0, 4</KerningSamplesRight>
       <OffsetX dataType="Int">0</OffsetX>
       <Width dataType="Int">10</Width>
     </item>
   </glyphs>
   <height dataType="Int">27</height>
-  <kerning dataType="Bool">false</kerning>
+  <kerning dataType="Bool">true</kerning>
   <lineHeightFactor dataType="Float">1</lineHeightFactor>
   <maxGlyphWidth dataType="Int">21</maxGlyphWidth>
   <monospace dataType="Bool">false</monospace>
@@ -1540,7 +1540,7 @@
   </pixelData>
   <renderMode dataType="Enum" type="Duality.Resources.Font+RenderMode" name="GrayscaleBitmap" value="1" />
   <size dataType="Float">16</size>
-  <spacing dataType="Float">1.5</spacing>
+  <spacing dataType="Float">2</spacing>
   <style dataType="Enum" type="Duality.Drawing.FontStyle" name="Regular" value="0" />
 </root>
 <!-- XmlFormatterBase Document Separator -->
