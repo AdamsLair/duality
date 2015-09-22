@@ -298,7 +298,8 @@ namespace Duality.Components
 		/// This method needs to be called each frame a picking operation is to be performed.
 		/// </summary>
 		/// <param name="viewportSize">Size of the viewport area to which will be rendered.</param>
-		public void RenderPickingMap(Point2 viewportSize)
+		/// <param name="renderOverlay">Whether or not to render screen overlay renderers onto the picking target.</param>
+		public void RenderPickingMap(Point2 viewportSize, bool renderOverlay)
 		{
 			Profile.TimeVisualPicking.BeginMeasure();
 
@@ -324,6 +325,17 @@ namespace Duality.Components
 					this.drawDevice.PrepareForDrawcalls();
 					this.CollectDrawcalls();
 					this.drawDevice.Render(ClearFlag.All, ColorRgba.Black, 1.0f);
+				}
+
+				// Render screen overlays
+				if (renderOverlay)
+				{
+					this.drawDevice.VisibilityMask = this.visibilityMask;
+					this.drawDevice.RenderMode = RenderMatrix.OrthoScreen;
+
+					this.drawDevice.PrepareForDrawcalls();
+					this.CollectDrawcalls();
+					this.drawDevice.Render(ClearFlag.None, ColorRgba.Black, 1.0f);
 				}
 
 				this.drawDevice.PickingIndex = 0;
