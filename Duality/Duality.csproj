@@ -404,16 +404,16 @@
     <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconCmpProfileRenderer.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">
-      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
-      <Name>DualityPrimitives</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\White.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="EmbeddedResources\CousineLicense.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
