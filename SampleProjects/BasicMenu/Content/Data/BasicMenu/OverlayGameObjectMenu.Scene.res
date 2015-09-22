@@ -213,20 +213,12 @@
                             </iconMat>
                             <offset dataType="Int">0</offset>
                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="872099668">
-                              <displayedText dataType="String">Quit</displayedText>
-                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="784925412">
-                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="2378237892">
-                                  <text dataType="String">Quit</text>
-                                </item>
-                              </elements>
                               <flowAreas />
-                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="1860480534">4</fontGlyphCount>
-                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2817156320">
+                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="784925412">
                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                 </item>
                               </fonts>
-                              <iconCount dataType="Int">0</iconCount>
                               <icons />
                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                               <maxHeight dataType="Int">0</maxHeight>
@@ -361,20 +353,12 @@
                                             </iconMat>
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1042193923">
-                                              <displayedText dataType="String">No</displayedText>
-                                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="3083413798">
-                                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="2929444096">
-                                                  <text dataType="String">No</text>
-                                                </item>
-                                              </elements>
                                               <flowAreas />
-                                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="589245114">2</fontGlyphCount>
-                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="379494950">
+                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3083413798">
                                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                                 </item>
                                               </fonts>
-                                              <iconCount dataType="Int">0</iconCount>
                                               <icons />
                                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                                               <maxHeight dataType="Int">0</maxHeight>
@@ -506,20 +490,12 @@
                                             </iconMat>
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="250618125">
-                                              <displayedText dataType="String">Yes</displayedText>
-                                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="1710331686">
-                                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="3528172800">
-                                                  <text dataType="String">Yes</text>
-                                                </item>
-                                              </elements>
                                               <flowAreas />
-                                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="4028336826">3</fontGlyphCount>
-                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3751650342">
+                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1710331686">
                                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                                 </item>
                                               </fonts>
-                                              <iconCount dataType="Int">0</iconCount>
                                               <icons />
                                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                                               <maxHeight dataType="Int">0</maxHeight>
@@ -626,20 +602,12 @@
                                             </iconMat>
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1307621871">
-                                              <displayedText dataType="String">Do you really want to quit?</displayedText>
-                                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="1903152366">
-                                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="4200817744">
-                                                  <text dataType="String">Do you really want to quit?</text>
-                                                </item>
-                                              </elements>
                                               <flowAreas />
-                                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="3056177610">27</fontGlyphCount>
-                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1256437470">
+                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1903152366">
                                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                                 </item>
                                               </fonts>
-                                              <iconCount dataType="Int">0</iconCount>
                                               <icons />
                                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                                               <maxHeight dataType="Int">0</maxHeight>
@@ -834,20 +802,12 @@
                             </iconMat>
                             <offset dataType="Int">0</offset>
                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1618922621">
-                              <displayedText dataType="String">Another menu</displayedText>
-                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="4105342758">
-                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="1796269312">
-                                  <text dataType="String">Another menu</text>
-                                </item>
-                              </elements>
                               <flowAreas />
-                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="3686124218">12</fontGlyphCount>
-                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1990712358">
+                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="4105342758">
                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                 </item>
                               </fonts>
-                              <iconCount dataType="Int">0</iconCount>
                               <icons />
                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                               <maxHeight dataType="Int">0</maxHeight>
@@ -982,20 +942,12 @@
                                             </iconMat>
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="3198418452">
-                                              <displayedText dataType="String">Back</displayedText>
-                                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="3414604388">
-                                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="1449856452">
-                                                  <text dataType="String">Back</text>
-                                                </item>
-                                              </elements>
                                               <flowAreas />
-                                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="3193047062">4</fontGlyphCount>
-                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2946223968">
+                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="3414604388">
                                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                                 </item>
                                               </fonts>
-                                              <iconCount dataType="Int">0</iconCount>
                                               <icons />
                                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                                               <maxHeight dataType="Int">0</maxHeight>
@@ -1127,20 +1079,12 @@
                                             </iconMat>
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="2072820292">
-                                              <displayedText dataType="String">Change</displayedText>
-                                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="13806148">
-                                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="1752484420">
-                                                  <text dataType="String">Change</text>
-                                                </item>
-                                              </elements>
                                               <flowAreas />
-                                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="2656823958">6</fontGlyphCount>
-                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2087772160">
+                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="13806148">
                                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                                 </item>
                                               </fonts>
-                                              <iconCount dataType="Int">0</iconCount>
                                               <icons />
                                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                                               <maxHeight dataType="Int">0</maxHeight>
@@ -1247,20 +1191,12 @@
                                             </iconMat>
                                             <offset dataType="Int">0</offset>
                                             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="4152971802">
-                                              <displayedText dataType="String">Click Change to change its color</displayedText>
-                                              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="517886336">
-                                                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="1945238940">
-                                                  <text dataType="String">Click Change to change its color</text>
-                                                </item>
-                                              </elements>
                                               <flowAreas />
-                                              <fontGlyphCount dataType="Array" type="System.Int32[]" id="1447727310">32</fontGlyphCount>
-                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="1159020316">
+                                              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="517886336">
                                                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                                                   <contentPath dataType="String">Data\BasicMenu\Visuals\DuruSans-Regular.Font.res</contentPath>
                                                 </item>
                                               </fonts>
-                                              <iconCount dataType="Int">0</iconCount>
                                               <icons />
                                               <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                                               <maxHeight dataType="Int">0</maxHeight>
@@ -1573,12 +1509,12 @@
             <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
-              <Y dataType="Float">120</Y>
+              <Y dataType="Float">160</Y>
               <Z dataType="Float">0</Z>
             </pos>
             <posAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
-              <Y dataType="Float">120</Y>
+              <Y dataType="Float">160</Y>
               <Z dataType="Float">0</Z>
             </posAbs>
             <scale dataType="Float">1</scale>
@@ -1610,42 +1546,17 @@
             </iconMat>
             <offset dataType="Int">0</offset>
             <text dataType="Struct" type="Duality.Drawing.FormattedText" id="1658023141">
-              <displayedText dataType="String">To start using the menu, enable eitherEventMenuController or UpdateMenuControllerin MainCamera's GameObject.Having both enabled at the same time mightcreate issues.</displayedText>
-              <elements dataType="Array" type="Duality.Drawing.FormattedText+Element[]" id="24092822">
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="2752707104">
-                  <text dataType="String">To start using the menu, enable either</text>
-                </item>
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="2033064846" />
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="3292334396">
-                  <text dataType="String">EventMenuController or UpdateMenuController</text>
-                </item>
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="1121777938" />
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="3495836120">
-                  <text dataType="String">in MainCamera's GameObject.</text>
-                </item>
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="2803614246" />
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="4132210356" />
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="4103576362">
-                  <text dataType="String">Having both enabled at the same time might</text>
-                </item>
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+NewLineElement" id="274693840" />
-                <item dataType="Struct" type="Duality.Drawing.FormattedText+TextElement" id="4044281278">
-                  <text dataType="String">create issues.</text>
-                </item>
-              </elements>
               <flowAreas />
-              <fontGlyphCount dataType="Array" type="System.Int32[]" id="1792449754">164</fontGlyphCount>
-              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2885120310">
+              <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="24092822">
                 <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
                   <contentPath dataType="String">Default:Font:GenericMonospace10</contentPath>
                 </item>
               </fonts>
-              <iconCount dataType="Int">0</iconCount>
               <icons />
               <lineAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
               <maxHeight dataType="Int">0</maxHeight>
-              <maxWidth dataType="Int">400</maxWidth>
-              <sourceText dataType="String">To start using the menu, enable either/nEventMenuController or UpdateMenuController/nin MainCamera's GameObject./n/nHaving both enabled at the same time might/ncreate issues.</sourceText>
+              <maxWidth dataType="Int">350</maxWidth>
+              <sourceText dataType="String">To start using the menu, enable either /cFFAA44FFEventMenuController/cFFFFFFFF or /cFFAA44FFUpdateMenuController/cFFFFFFFF in MainCamera's GameObject./n/nHaving both enabled at the same time might create issues./n/nAlso, make sure to switch to the /c44AAFFFFGame View/cFFFFFFFF when running this sample in the editor.</sourceText>
               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
             </text>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
