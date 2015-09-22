@@ -62,7 +62,6 @@
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Components\MenuSwitchToPage.cs" />
     <Compile Include="Components\MenuQuitConfirm.cs" />
-    <Compile Include="CenterScreen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

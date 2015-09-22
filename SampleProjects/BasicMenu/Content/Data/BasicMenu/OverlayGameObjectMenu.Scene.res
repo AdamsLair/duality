@@ -128,13 +128,13 @@
                               <ignoreParent dataType="Bool">false</ignoreParent>
                               <parentTransform />
                               <pos dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">357</X>
-                                <Y dataType="Float">418</Y>
+                                <X dataType="Float">0</X>
+                                <Y dataType="Float">0</Y>
                                 <Z dataType="Float">0</Z>
                               </pos>
                               <posAbs dataType="Struct" type="Duality.Vector3">
-                                <X dataType="Float">357</X>
-                                <Y dataType="Float">418</Y>
+                                <X dataType="Float">0</X>
+                                <Y dataType="Float">0</Y>
                                 <Z dataType="Float">0</Z>
                               </posAbs>
                               <scale dataType="Float">1</scale>
@@ -156,8 +156,8 @@
                               <Z dataType="Float">0</Z>
                             </pos>
                             <posAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">357</X>
-                              <Y dataType="Float">448</Y>
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">30</Y>
                               <Z dataType="Float">0</Z>
                             </posAbs>
                             <scale dataType="Float">1</scale>
@@ -195,7 +195,7 @@
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                             </sharedMat>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3920643916">
                             <active dataType="Bool">true</active>
@@ -226,7 +226,7 @@
                               <sourceText dataType="String">Quit</sourceText>
                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                             </text>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                           </item>
                           <item dataType="Struct" type="BasicMenu.MenuSwitchToPage" id="2494082424">
                             <active dataType="Bool">true</active>
@@ -335,7 +335,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="596154483">
                                             <active dataType="Bool">true</active>
@@ -366,7 +366,7 @@
                                               <sourceText dataType="String">No</sourceText>
                                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                                             </text>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="BasicMenu.MenuSwitchToPage" id="3464560287">
                                             <active dataType="Bool">true</active>
@@ -472,7 +472,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="2967866221">
                                             <active dataType="Bool">true</active>
@@ -503,7 +503,7 @@
                                               <sourceText dataType="String">Yes</sourceText>
                                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                                             </text>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="BasicMenu.MenuQuitConfirm" id="3250337400">
                                             <active dataType="Bool">true</active>
@@ -615,7 +615,7 @@
                                               <sourceText dataType="String">Do you really want to quit?</sourceText>
                                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                                             </text>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                         </_items>
                                         <_size dataType="Int">2</_size>
@@ -653,26 +653,20 @@
                                 <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1081580280">
                                   <_items dataType="Array" type="Duality.Component[]" id="1564357257" length="4">
                                     <item dataType="ObjectRef">1056562467</item>
-                                    <item dataType="Struct" type="BasicMenu.CenterScreen" id="3507355933">
-                                      <active dataType="Bool">true</active>
-                                      <gameobj dataType="ObjectRef">2991214831</gameobj>
-                                    </item>
                                     <item dataType="ObjectRef">505026784</item>
                                   </_items>
-                                  <_size dataType="Int">3</_size>
-                                  <_version dataType="Int">5</_version>
+                                  <_size dataType="Int">2</_size>
+                                  <_version dataType="Int">6</_version>
                                 </compList>
                                 <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="623612233" surrogate="true">
                                   <header />
                                   <body>
                                     <keys dataType="Array" type="System.Object[]" id="3053465364">
                                       <item dataType="ObjectRef">3562508622</item>
-                                      <item dataType="Type" id="3459735652" value="BasicMenu.CenterScreen" />
-                                      <item dataType="Type" id="3683234838" value="BasicMenu.MenuPage" />
+                                      <item dataType="Type" id="3459735652" value="BasicMenu.MenuPage" />
                                     </keys>
                                     <values dataType="Array" type="System.Object[]" id="95060278">
                                       <item dataType="ObjectRef">1056562467</item>
-                                      <item dataType="ObjectRef">3507355933</item>
                                       <item dataType="ObjectRef">505026784</item>
                                     </values>
                                   </body>
@@ -745,8 +739,8 @@
                               <Z dataType="Float">0</Z>
                             </pos>
                             <posAbs dataType="Struct" type="Duality.Vector3">
-                              <X dataType="Float">357</X>
-                              <Y dataType="Float">388</Y>
+                              <X dataType="Float">0</X>
+                              <Y dataType="Float">-30</Y>
                               <Z dataType="Float">0</Z>
                             </posAbs>
                             <scale dataType="Float">1</scale>
@@ -784,7 +778,7 @@
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                             </sharedMat>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                           </item>
                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="3109807613">
                             <active dataType="Bool">true</active>
@@ -815,7 +809,7 @@
                               <sourceText dataType="String">Another menu</sourceText>
                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                             </text>
-                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                           </item>
                           <item dataType="Struct" type="BasicMenu.MenuSwitchToPage" id="1683246121">
                             <active dataType="Bool">true</active>
@@ -924,7 +918,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="1889759500">
                                             <active dataType="Bool">true</active>
@@ -955,7 +949,7 @@
                                               <sourceText dataType="String">Back</sourceText>
                                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                                             </text>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="BasicMenu.MenuSwitchToPage" id="463198008">
                                             <active dataType="Bool">true</active>
@@ -1061,7 +1055,7 @@
                                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                               <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                                             </sharedMat>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="1391879196">
                                             <active dataType="Bool">true</active>
@@ -1092,7 +1086,7 @@
                                               <sourceText dataType="String">Change</sourceText>
                                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                                             </text>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                           <item dataType="Struct" type="BasicMenu.MenuChangeColor" id="2040529331">
                                             <active dataType="Bool">true</active>
@@ -1204,7 +1198,7 @@
                                               <sourceText dataType="String">Click Change to change its color</sourceText>
                                               <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
                                             </text>
-                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0, AllFlags" value="2147483649" />
+                                            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="AllGroups" value="2147483647" />
                                           </item>
                                         </_items>
                                         <_size dataType="Int">2</_size>
@@ -1242,14 +1236,10 @@
                                 <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="457994634">
                                   <_items dataType="Array" type="Duality.Component[]" id="1074222780" length="4">
                                     <item dataType="ObjectRef">2226196885</item>
-                                    <item dataType="Struct" type="BasicMenu.CenterScreen" id="382023055">
-                                      <active dataType="Bool">true</active>
-                                      <gameobj dataType="ObjectRef">4160849249</gameobj>
-                                    </item>
                                     <item dataType="ObjectRef">1674661202</item>
                                   </_items>
-                                  <_size dataType="Int">3</_size>
-                                  <_version dataType="Int">3</_version>
+                                  <_size dataType="Int">2</_size>
+                                  <_version dataType="Int">4</_version>
                                 </compList>
                                 <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2041585262" surrogate="true">
                                   <header />
@@ -1257,11 +1247,9 @@
                                     <keys dataType="Array" type="System.Object[]" id="3431116448">
                                       <item dataType="ObjectRef">3562508622</item>
                                       <item dataType="ObjectRef">3459735652</item>
-                                      <item dataType="ObjectRef">3683234838</item>
                                     </keys>
                                     <values dataType="Array" type="System.Object[]" id="1617593486">
                                       <item dataType="ObjectRef">2226196885</item>
-                                      <item dataType="ObjectRef">382023055</item>
                                       <item dataType="ObjectRef">1674661202</item>
                                     </values>
                                   </body>
@@ -1320,14 +1308,10 @@
                 <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="4202967264">
                   <_items dataType="Array" type="Duality.Component[]" id="1965095717" length="4">
                     <item dataType="ObjectRef">56358944</item>
-                    <item dataType="Struct" type="BasicMenu.CenterScreen" id="2507152410">
-                      <active dataType="Bool">true</active>
-                      <gameobj dataType="ObjectRef">1991011308</gameobj>
-                    </item>
                     <item dataType="ObjectRef">3799790557</item>
                   </_items>
-                  <_size dataType="Int">3</_size>
-                  <_version dataType="Int">11</_version>
+                  <_size dataType="Int">2</_size>
+                  <_version dataType="Int">12</_version>
                 </compList>
                 <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1719832285" surrogate="true">
                   <header />
@@ -1335,11 +1319,9 @@
                     <keys dataType="Array" type="System.Object[]" id="606515620">
                       <item dataType="ObjectRef">3562508622</item>
                       <item dataType="ObjectRef">3459735652</item>
-                      <item dataType="ObjectRef">3683234838</item>
                     </keys>
                     <values dataType="Array" type="System.Object[]" id="862054166">
                       <item dataType="ObjectRef">56358944</item>
-                      <item dataType="ObjectRef">2507152410</item>
                       <item dataType="ObjectRef">3799790557</item>
                     </values>
                   </body>

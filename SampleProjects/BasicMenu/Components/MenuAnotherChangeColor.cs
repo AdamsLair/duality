@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace BasicMenu
 {
-    public class MenuChangeColor : MenuComponent
-    {
-        public override void DoAction()
-        {
-            this.FadeTo(MathF.Rnd.NextColorRgba(), true);
-        }
-    }
+	public class MenuChangeColor : MenuComponent
+	{
+		public override void DoAction()
+		{
+			this.FadeTo(MathF.Rnd.NextColorRgba(), true);
+		}
+	}
 }

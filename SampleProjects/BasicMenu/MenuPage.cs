@@ -4,6 +4,6 @@ using Duality.Drawing;
 
 namespace BasicMenu
 {
-    public class MenuPage : Component
-    { }
+	public class MenuPage : Component
+	{ }
 }

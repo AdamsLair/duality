@@ -6,5 +6,5 @@ using Duality;
 
 namespace BasicMenu
 {
-    public class BasicMenuCorePlugin : CorePlugin { }
+	public class BasicMenuCorePlugin : CorePlugin { }
 }

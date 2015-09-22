@@ -7,23 +7,23 @@ using System.Threading.Tasks;
 
 namespace BasicMenu
 {
-    public class MenuSwitchToPage : MenuComponent
-    {
-        private MenuPage target;
+	public class MenuSwitchToPage : MenuComponent
+	{
+		private MenuPage target;
 
-        public MenuPage Target
-        {
-            get { return this.target; }
-            set { this.target = value; }
-        }
+		public MenuPage Target
+		{
+			get { return this.target; }
+			set { this.target = value; }
+		}
 
-        public override void DoAction()
-        {
-            MenuController mc = this.GameObj.ParentScene.FindComponent<MenuController>();
-            if (mc != null)
-            {
-                mc.SwitchToMenu(this.target);
-            }
-        }
-    }
+		public override void DoAction()
+		{
+			MenuController mc = this.GameObj.ParentScene.FindComponent<MenuController>();
+			if (mc != null)
+			{
+				mc.SwitchToMenu(this.target);
+			}
+		}
+	}
 }
