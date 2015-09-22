@@ -17,7 +17,8 @@ namespace Duality.Editor.Plugins.CamView
 {
 	public abstract class CamViewClient
 	{
-		private	CamView	view	= null;
+		private	CamView view = null;
+		private	int pickingFrameLast = -1;
 
 
 		public CamView View
@@ -87,14 +88,14 @@ namespace Duality.Editor.Plugins.CamView
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
 			this.RenderableSite.MakeCurrent();
-			var result = this.CameraComponent.PickRendererAt(new Rect(this.ClientSize.Width, this.ClientSize.Height), x, y);
-			return result;
+			this.RenderPickingMap();
+			return this.CameraComponent.PickRendererAt(x, y);
 		}
-		public HashSet<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
+		public IEnumerable<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
 			this.RenderableSite.MakeCurrent();
-			var result = this.CameraComponent.PickRenderersIn(new Rect(this.ClientSize.Width, this.ClientSize.Height), x, y, w, h);
-			return result;
+			this.RenderPickingMap();
+			return this.CameraComponent.PickRenderersIn(x, y, w, h);
 		}
 		public bool IsCoordInView(Vector3 c, float boundRad = 1.0f)
 		{
@@ -120,6 +121,16 @@ namespace Duality.Editor.Plugins.CamView
 		public void MakeDualityTarget()
 		{
 			this.view.MakeDualityTarget();
+		}
+
+		private bool RenderPickingMap()
+		{
+			if (this.pickingFrameLast == Time.FrameCount) return false;
+
+			this.pickingFrameLast = Time.FrameCount;
+			this.CameraComponent.RenderPickingMap(new Vector2(this.ClientSize.Width, this.ClientSize.Height));
+
+			return true;
 		}
 	}
 }

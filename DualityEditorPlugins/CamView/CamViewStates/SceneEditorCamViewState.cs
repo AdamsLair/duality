@@ -192,7 +192,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override List<CamViewState.SelObj> PickSelObjIn(int x, int y, int w, int h)
 		{
-			HashSet<ICmpRenderer> picked = this.PickRenderersIn(x, y, w, h);
+			IEnumerable<ICmpRenderer> picked = this.PickRenderersIn(x, y, w, h);
 			return picked
 				.OfType<Component>()
 				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)

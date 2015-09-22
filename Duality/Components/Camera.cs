@@ -165,7 +165,6 @@ namespace Duality.Components
 		[DontSerialize] private	List<ICmpRenderer>	pickingMap		= null;
 		[DontSerialize] private	RenderTarget		pickingRT		= null;
 		[DontSerialize] private	Texture				pickingTex		= null;
-		[DontSerialize] private	int					pickingLast		= -1;
 		[DontSerialize] private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
 		[DontSerialize] private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
 
@@ -296,15 +295,11 @@ namespace Duality.Components
 		}
 		/// <summary>
 		/// Renders a picking map of the current <see cref="Duality.Resources.Scene"/>.
-		/// If picking is required, this will be (automatically) done each frame a picking operation needs to
-		/// be performed. 
+		/// This method needs to be called each frame a picking operation is to be performed.
 		/// </summary>
-		/// <param name="viewportSize">Sife of the viewport area to which will be rendered.</param>
-		/// <returns>True, if the picking map has been rendered. False, if this frames cached version is used.</returns>
-		public bool RenderPickingMap(Vector2 viewportSize)
+		/// <param name="viewportSize">Size of the viewport area to which will be rendered.</param>
+		public void RenderPickingMap(Vector2 viewportSize)
 		{
-			if (this.pickingLast == Time.FrameCount) return false;
-			this.pickingLast = Time.FrameCount;
 			Profile.TimeVisualPicking.BeginMeasure();
 
 			// Render picking map
@@ -334,24 +329,21 @@ namespace Duality.Components
 			this.pickingRT.GetPixelData(this.pickingBuffer);
 
 			Profile.TimeVisualPicking.EndMeasure();
-			return true;
 		}
 		/// <summary>
 		/// Picks the <see cref="Duality.ICmpRenderer"/> that owns the pixel at the specified position.
+		/// The resulting information is only accurate if <see cref="RenderPickingMap"/> has been called this frame.
 		/// </summary>
 		/// <param name="x">x-Coordinate of the pixel to check.</param>
 		/// <param name="y">y-Coordinate of the pixel to check.</param>
-		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
 		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
-		public ICmpRenderer PickRendererAt(Rect viewportRect, int x, int y)
+		public ICmpRenderer PickRendererAt(int x, int y)
 		{
-			if (x < viewportRect.LeftX || x >= viewportRect.RightX) return null;
-			if (y < viewportRect.TopY || y >= viewportRect.BottomY) return null;
-			
-			this.RenderPickingMap(viewportRect.Size);
+			if (x < 0 || x >= this.pickingTex.PixelWidth) return null;
+			if (y < 0 || y >= this.pickingTex.PixelHeight) return null;
 
-			x = MathF.Clamp(x - (int)viewportRect.X, 0, this.pickingTex.PixelWidth - 1);
-			y = MathF.Clamp(y - (int)viewportRect.Y, 0, this.pickingTex.PixelHeight - 1);
+			x = MathF.Clamp(x, 0, this.pickingTex.PixelWidth - 1);
+			y = MathF.Clamp(y, 0, this.pickingTex.PixelHeight - 1);
 
 			int rendererId = 
 				(this.pickingBuffer[4 * (x + y * this.pickingTex.PixelWidth) + 0] << 16) |
@@ -373,34 +365,22 @@ namespace Duality.Components
 				return null;
 		}
 		/// <summary>
-		/// Picks the <see cref="Duality.ICmpRenderer"/> that owns the pixel at the specified position.
-		/// </summary>
-		/// <param name="x">x-Coordinate of the pixel to check.</param>
-		/// <param name="y">y-Coordinate of the pixel to check.</param>
-		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
-		public ICmpRenderer PickRendererAt(int x, int y)
-		{
-			return this.PickRendererAt(new Rect(DualityApp.TargetResolution), x, y);
-		}
-		/// <summary>
 		/// Picks all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> contained within the specified
 		/// rectangular area.
+		/// The resulting information is only accurate if <see cref="RenderPickingMap"/> has been called this frame.
 		/// </summary>
 		/// <param name="x">x-Coordinate of the Rect.</param>
 		/// <param name="y">y-Coordinate of the Rect.</param>
 		/// <param name="w">Width of the Rect.</param>
 		/// <param name="h">Height of the Rect.</param>
-		/// <param name="viewportRect">The viewport area to which will be rendered.</param>
 		/// <returns>A set of all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> that have been picked.</returns>
-		public HashSet<ICmpRenderer> PickRenderersIn(Rect viewportRect, int x, int y, int w, int h)
+		public IEnumerable<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
 			Rect dstRect = new Rect(x, y, w, h);
-			if (!dstRect.Intersects(viewportRect)) return new HashSet<ICmpRenderer>();
-			dstRect = dstRect.Intersection(viewportRect);
-			dstRect.X -= viewportRect.X;
-			dstRect.Y -= viewportRect.Y;
+			Rect availRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
 
-			this.RenderPickingMap(viewportRect.Size);
+			if (!dstRect.Intersects(availRect)) return Enumerable.Empty<ICmpRenderer>();
+			dstRect = dstRect.Intersection(availRect);
 
 			x = Math.Max((int)dstRect.X, 0);
 			y = Math.Max((int)dstRect.Y, 0);
@@ -430,19 +410,6 @@ namespace Duality.Components
 			}
 
 			return result;
-		}
-		/// <summary>
-		/// Picks all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> contained within the specified
-		/// rectangular area.
-		/// </summary>
-		/// <param name="x">x-Coordinate of the Rect.</param>
-		/// <param name="y">y-Coordinate of the Rect.</param>
-		/// <param name="w">Width of the Rect.</param>
-		/// <param name="h">Height of the Rect.</param>
-		/// <returns>A set of all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> that have been picked.</returns>
-		public HashSet<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
-		{
-			return this.PickRenderersIn(new Rect(DualityApp.TargetResolution), x, y, w, h);
 		}
 
 		/// <summary>
