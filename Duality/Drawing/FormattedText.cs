@@ -634,10 +634,10 @@ namespace Duality.Drawing
 		private	WrapMode			wrapMode		= WrapMode.Word;
 		private	Alignment			lineAlign		= Alignment.Left;
 
-		private	string				displayedText	= null;
-		private	int[]				fontGlyphCount	= null;
-		private	int					iconCount		= 0;
-		private	Element[]			elements		= null;
+		[DontSerialize] private	string				displayedText	= null;
+		[DontSerialize] private	int[]				fontGlyphCount	= null;
+		[DontSerialize] private	int					iconCount		= 0;
+		[DontSerialize] private	Element[]			elements		= null;
 
 		[DontSerialize] private bool				updateVertexCache	= true;
 		[DontSerialize] private VertexC1P3T2[][]	vertTextCache		= null;
