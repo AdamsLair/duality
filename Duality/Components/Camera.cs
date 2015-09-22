@@ -165,7 +165,7 @@ namespace Duality.Components
 		[DontSerialize] private	List<ICmpRenderer>	pickingMap		= null;
 		[DontSerialize] private	RenderTarget		pickingRT		= null;
 		[DontSerialize] private	Texture				pickingTex		= null;
-		[DontSerialize] private	byte[]				pickingBuffer	= new byte[4 * 256 * 256];
+		[DontSerialize] private	byte[]				pickingBuffer	= null;
 		[DontSerialize] private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
 
 		
@@ -298,7 +298,7 @@ namespace Duality.Components
 		/// This method needs to be called each frame a picking operation is to be performed.
 		/// </summary>
 		/// <param name="viewportSize">Size of the viewport area to which will be rendered.</param>
-		public void RenderPickingMap(Vector2 viewportSize)
+		public void RenderPickingMap(Point2 viewportSize)
 		{
 			Profile.TimeVisualPicking.BeginMeasure();
 
@@ -308,25 +308,38 @@ namespace Duality.Components
 				this.UpdateDeviceConfig();
 				this.SetupPickingRT(viewportSize);
 
+				if (this.pickingMap == null) this.pickingMap = new List<ICmpRenderer>();
+				this.pickingMap.Clear();
+
 				// Setup DrawDevice
 				this.drawDevice.PickingIndex = 1;
 				this.drawDevice.Target = this.pickingRT;
-				this.drawDevice.VisibilityMask = this.visibilityMask & VisibilityFlag.AllGroups;
-				this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
 				this.drawDevice.ViewportRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
 
-				// Render Scene
-				this.drawDevice.PrepareForDrawcalls();
-				this.CollectDrawcalls();
-				this.drawDevice.Render(ClearFlag.All, ColorRgba.Black, 1.0f);
+				// Render the world
+				{
+					this.drawDevice.VisibilityMask = this.visibilityMask & VisibilityFlag.AllGroups;
+					this.drawDevice.RenderMode = RenderMatrix.PerspectiveWorld;
+
+					this.drawDevice.PrepareForDrawcalls();
+					this.CollectDrawcalls();
+					this.drawDevice.Render(ClearFlag.All, ColorRgba.Black, 1.0f);
+				}
+
 				this.drawDevice.PickingIndex = 0;
 			}
 
 			// Move data to local buffer
 			int pxNum = this.pickingTex.PixelWidth * this.pickingTex.PixelHeight;
 			int pxByteNum = pxNum * 4;
-			if (pxByteNum > this.pickingBuffer.Length) Array.Resize(ref this.pickingBuffer, Math.Max(this.pickingBuffer.Length * 2, pxByteNum));
+
+			if (this.pickingBuffer == null)
+				this.pickingBuffer = new byte[pxByteNum];
+			else if (pxByteNum > this.pickingBuffer.Length)
+				Array.Resize(ref this.pickingBuffer, Math.Max(this.pickingBuffer.Length * 2, pxByteNum));
+
 			this.pickingRT.GetPixelData(this.pickingBuffer);
+			PixelData test = this.pickingRT.GetPixelData();
 
 			Profile.TimeVisualPicking.EndMeasure();
 		}
@@ -339,16 +352,20 @@ namespace Duality.Components
 		/// <returns>The <see cref="Duality.ICmpRenderer"/> that owns the pixel.</returns>
 		public ICmpRenderer PickRendererAt(int x, int y)
 		{
+			if (this.pickingBuffer == null) return null;
 			if (x < 0 || x >= this.pickingTex.PixelWidth) return null;
 			if (y < 0 || y >= this.pickingTex.PixelHeight) return null;
 
 			x = MathF.Clamp(x, 0, this.pickingTex.PixelWidth - 1);
 			y = MathF.Clamp(y, 0, this.pickingTex.PixelHeight - 1);
 
+			int baseIndex = 4 * (x + y * this.pickingTex.PixelWidth);
+			if (baseIndex + 4 >= this.pickingBuffer.Length) return null;
+
 			int rendererId = 
-				(this.pickingBuffer[4 * (x + y * this.pickingTex.PixelWidth) + 0] << 16) |
-				(this.pickingBuffer[4 * (x + y * this.pickingTex.PixelWidth) + 1] << 8) |
-				(this.pickingBuffer[4 * (x + y * this.pickingTex.PixelWidth) + 2] << 0);
+				(this.pickingBuffer[baseIndex + 0] << 16) |
+				(this.pickingBuffer[baseIndex + 1] << 8) |
+				(this.pickingBuffer[baseIndex + 2] << 0);
 			if (rendererId > this.pickingMap.Count)
 			{
 				Log.Core.WriteWarning("Unexpected picking result: {0}", ColorRgba.FromIntArgb(rendererId));
@@ -376,6 +393,11 @@ namespace Duality.Components
 		/// <returns>A set of all <see cref="Duality.ICmpRenderer">ICmpRenderers</see> that have been picked.</returns>
 		public IEnumerable<ICmpRenderer> PickRenderersIn(int x, int y, int w, int h)
 		{
+			if (this.pickingBuffer == null)
+				return Enumerable.Empty<ICmpRenderer>();
+			if ((x + w) + (y + h) * this.pickingTex.PixelWidth >= this.pickingBuffer.Length)
+				return Enumerable.Empty<ICmpRenderer>();
+
 			Rect dstRect = new Rect(x, y, w, h);
 			Rect availRect = new Rect(this.pickingTex.PixelWidth, this.pickingTex.PixelHeight);
 
@@ -394,9 +416,11 @@ namespace Duality.Components
 				int offset = 4 * (x + (y + j) * this.pickingTex.PixelWidth);
 				for (int i = 0; i < w; ++i)
 				{
-					int rendererId =	(this.pickingBuffer[offset]		<< 16) |
-										(this.pickingBuffer[offset + 1] << 8) |
-										(this.pickingBuffer[offset + 2] << 0);
+					int rendererId =
+						(this.pickingBuffer[offset]		<< 16) |
+						(this.pickingBuffer[offset + 1] << 8) |
+						(this.pickingBuffer[offset + 2] << 0);
+
 					if (rendererId != rendererIdLast)
 					{
 						if (rendererId - 1 > this.pickingMap.Count)
@@ -538,14 +562,22 @@ namespace Duality.Components
 				IDrawDevice device = this.drawDevice;
 				{
 					VertexC1P3T2[] vertices = new VertexC1P3T2[4];
+
 					vertices[0].Pos = new Vector3(targetRect.LeftX, targetRect.TopY, 0.0f);
 					vertices[1].Pos = new Vector3(targetRect.RightX, targetRect.TopY, 0.0f);
 					vertices[2].Pos = new Vector3(targetRect.RightX, targetRect.BottomY, 0.0f);
 					vertices[3].Pos = new Vector3(targetRect.LeftX, targetRect.BottomY, 0.0f);
+
 					vertices[0].TexCoord = new Vector2(0.0f, 0.0f);
 					vertices[1].TexCoord = new Vector2(uvRatio.X, 0.0f);
 					vertices[2].TexCoord = new Vector2(uvRatio.X, uvRatio.Y);
 					vertices[3].TexCoord = new Vector2(0.0f, uvRatio.Y);
+
+					vertices[0].Color = ColorRgba.White;
+					vertices[1].Color = ColorRgba.White;
+					vertices[2].Color = ColorRgba.White;
+					vertices[3].Color = ColorRgba.White;
+
 					device.AddVertices(p.Input, VertexMode.Quads, vertices);
 				}
 
@@ -577,8 +609,9 @@ namespace Duality.Components
 			// Collect drawcalls
 			if (this.drawDevice.IsPicking)
 			{
-				this.pickingMap = new List<ICmpRenderer>(rendererQuery);
-				foreach (ICmpRenderer r in this.pickingMap)
+				ICmpRenderer[] result = rendererQuery.ToArray();
+				this.pickingMap.AddRange(result);
+				foreach (ICmpRenderer r in result)
 				{
 					r.Draw(this.drawDevice);
 					this.drawDevice.PickingIndex++;
@@ -594,16 +627,16 @@ namespace Duality.Components
 				Profile.TimeCollectDrawcalls.EndMeasure();
 			}
 		}
-		private void SetupPickingRT(Vector2 size)
+		private void SetupPickingRT(Point2 size)
 		{
 			if (this.pickingTex == null || 
-				this.pickingTex.PixelWidth != MathF.RoundToInt(size.X) || 
-				this.pickingTex.PixelHeight != MathF.RoundToInt(size.Y))
+				this.pickingTex.PixelWidth != size.X || 
+				this.pickingTex.PixelHeight != size.Y)
 			{
 				if (this.pickingTex != null) this.pickingTex.Dispose();
 				if (this.pickingRT != null) this.pickingRT.Dispose();
 				this.pickingTex = new Texture(
-					MathF.RoundToInt(size.X), MathF.RoundToInt(size.Y), TextureSizeMode.Default, 
+					size.X, size.Y, TextureSizeMode.Default, 
 					TextureMagFilter.Nearest, TextureMinFilter.Nearest);
 				this.pickingRT = new RenderTarget(AAQuality.Off, this.pickingTex);
 			}

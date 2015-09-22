@@ -126,9 +126,10 @@ namespace Duality.Editor.Plugins.CamView
 		private bool RenderPickingMap()
 		{
 			if (this.pickingFrameLast == Time.FrameCount) return false;
+			if (this.ClientSize.IsEmpty) return false;
 
 			this.pickingFrameLast = Time.FrameCount;
-			this.CameraComponent.RenderPickingMap(new Vector2(this.ClientSize.Width, this.ClientSize.Height));
+			this.CameraComponent.RenderPickingMap(new Point2(this.ClientSize.Width, this.ClientSize.Height));
 
 			return true;
 		}
