@@ -83,6 +83,7 @@
     <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
     <Compile Include="Resources\PrefabTest.cs" />
     <Compile Include="Serialization\TestObjects.cs" />
+    <Compile Include="TestCategory.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="Cloning\CloneProviderTest.cs" />
     <Compile Include="Components\ICmpInitializableTest.cs" />

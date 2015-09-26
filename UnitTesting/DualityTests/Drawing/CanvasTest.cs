@@ -16,7 +16,7 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Drawing
 {
-	[TestFixture]
+	[TestFixture(Category = TestCategory.Rendering)]
 	public class CanvasTest
 	{
 		private Texture texCoordUV;
