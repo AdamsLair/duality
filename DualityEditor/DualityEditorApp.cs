@@ -35,8 +35,9 @@ namespace Duality.Editor
 		public	const	string	UserDataFile			= "EditorUserData.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
 
-		public	const	string	ActionContextMenu		= "ContextMenu";
-		public	const	string	ActionContextOpenRes	= "OpenRes";
+		public	const	string	ActionContextMenu			= "ContextMenu";
+		public	const	string	ActionContextOpenRes		= "OpenRes";
+		public	const	string	ActionContextFirstSession	= "FirstSession";
 		
 		private	static MainForm						mainForm			= null;
 		private	static IEditorGraphicsBackend		graphicsBack		= null;

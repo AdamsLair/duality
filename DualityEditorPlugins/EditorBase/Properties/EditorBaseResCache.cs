@@ -17,5 +17,8 @@ namespace Duality.Editor.Plugins.Base.Properties
 		public static readonly Bitmap	IconSpeakerBlack			= EditorBaseRes.IconSpeakerBlack;
 		public static readonly Bitmap	IconSpeakerWhite			= EditorBaseRes.IconSpeakerWhite;
 		public static readonly Bitmap	IconAbortCross				= EditorBaseRes.IconAbortCross;
+		public static readonly Bitmap	IconDownloadCodeIDE			= EditorBaseRes.IconDownloadCodeIDE;
+		public static readonly Bitmap	IconCommunity				= EditorBaseRes.IconCommunity;
+		public static readonly Bitmap	IconTutorial				= EditorBaseRes.IconTutorial;
 	}
 }

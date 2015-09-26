@@ -215,15 +215,26 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;UserData&gt;
-        ///  &lt;EditorApp backups=&quot;True&quot; autosaves=&quot;ThirtyMinutes&quot; /&gt;
-        ///  &lt;Plugin_CamView&gt;
-        ///    &lt;CamView_0 perspective=&quot;Parallax&quot; focusDist=&quot;500&quot; bgColorArgb=&quot;4210752&quot; activeState=&quot;Duality.Editor.Plugins.CamView.CamViewStates.SceneEditorCamViewState&quot;&gt;
-        ///      &lt;states&gt;
-        ///        &lt;Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState&gt;
-        ///          &lt;activeLayers /&gt;
-        ///        &lt;/Duality.Editor.Plugins.CamView.CamViewStates.GameViewCamViewState&gt;
-        ///        &lt;Duality.Editor.Plugins.CamView.CamViewStates.RigidBod [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;UserData&gt;
+        ///  &lt;EditorApp&gt;
+        ///    &lt;Backups&gt;true&lt;/Backups&gt;
+        ///    &lt;Autosaves&gt;ThirtyMinutes&lt;/Autosaves&gt;
+        ///    &lt;FirstSession&gt;true&lt;/FirstSession&gt;
+        ///  &lt;/EditorApp&gt;
+        ///  &lt;Plugins&gt;
+        ///    &lt;Plugin id=&quot;CamView&quot;&gt;
+        ///      &lt;CamView id=&quot;0&quot;&gt;
+        ///        &lt;Perspective&gt;Parallax&lt;/Perspective&gt;
+        ///        &lt;FocusDist&gt;500&lt;/FocusDist&gt;
+        ///        &lt;BackgroundColor&gt;
+        ///          &lt;R&gt;64&lt;/R&gt;
+        ///          &lt;G&gt;64&lt;/G&gt;
+        ///          &lt;B&gt;64&lt;/B&gt;
+        ///          &lt;A&gt;0&lt;/A&gt;
+        ///        &lt;/BackgroundColor&gt;
+        ///        &lt;SnapToGridSize&gt;
+        ///           [rest of string was truncated]&quot;;.
         /// </summary>
         public static string DefaultEditorUserData {
             get {
@@ -642,6 +653,15 @@ namespace Duality.Editor.Properties {
         public static string MenuItemName_UndoEmpty {
             get {
                 return ResourceManager.GetString("MenuItemName_UndoEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Getting Started.
+        /// </summary>
+        public static string MenuItemName_WelcomeDialog {
+            get {
+                return ResourceManager.GetString("MenuItemName_WelcomeDialog", resourceCulture);
             }
         }
         

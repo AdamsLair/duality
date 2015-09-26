@@ -56,6 +56,7 @@ namespace Duality.Editor.Plugins.HelpAdvisor
 			{
 				Name = HelpAdvisorRes.MenuItemName_Advisor,
 				Icon = HelpAdvisorResCache.IconHelp,
+				SortValue = MenuModelItem.SortValue_Top,
 				ActionHandler = this.menuItemHelpAdvisor_Click
 			});
 		}

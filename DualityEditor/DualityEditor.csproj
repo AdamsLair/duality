@@ -175,6 +175,12 @@
     <Compile Include="Extensibility\DataConversion\DataConverter.cs" />
     <Compile Include="Extensibility\EditorActions\EditorAction.cs" />
     <Compile Include="DesignTimeObjectData.cs" />
+    <Compile Include="Forms\WelcomeDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WelcomeDialog.Designer.cs">
+      <DependentUpon>WelcomeDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="PreviewProvider.cs" />
     <Compile Include="DualityEditorApp.cs" />
     <Compile Include="Forms\LicenseAcceptDialog.cs">
@@ -320,6 +326,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PublishGameDialog.resx">
       <DependentUpon>PublishGameDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\WelcomeDialog.resx">
+      <DependentUpon>WelcomeDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\GeneralRes.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

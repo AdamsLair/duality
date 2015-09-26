@@ -24,6 +24,7 @@ namespace Duality.Editor.Forms
 		private	ToolStripMenuItem	activeMenu		= null;
 		private MenuModel			mainMenuModel	= new MenuModel();
 		private	MenuStripMenuView	mainMenuView	= null;
+		private WelcomeDialog		welcomeDialog	= null;
 
 		// Hardcoded main menu items
 		private MenuModelItem	menuRunSandboxPlay		= null;
@@ -301,6 +302,17 @@ namespace Duality.Editor.Forms
 						Name			= GeneralRes.MenuItemName_About,
 						SortValue		= MenuModelItem.SortValue_Top,
 						ActionHandler	= this.aboutItem_Click
+					},
+					new MenuModelItem
+					{
+						Name			= "TopSeparator",
+						SortValue		= MenuModelItem.SortValue_Top + 1,
+						TypeHint		= MenuItemTypeHint.Separator
+					},
+					new MenuModelItem
+					{
+						Name			= GeneralRes.MenuItemName_WelcomeDialog,
+						ActionHandler	= this.welcomeDialogItem_Click
 					}
 				}}
 			});
@@ -359,6 +371,12 @@ namespace Duality.Editor.Forms
 
 			// Initially update Undo / Redo menu
 			this.UndoRedoManager_StackChanged(null, EventArgs.Empty);
+
+			// Show the welcome dialog when appropriate
+			if (DualityEditorApp.IsFirstEditorSession)
+			{
+				this.welcomeDialogItem_Click(this, EventArgs.Empty);
+			}
 		}
 		protected override void OnClosed(EventArgs e)
 		{
@@ -511,6 +529,24 @@ namespace Duality.Editor.Forms
 		{
 			AboutBox about = new AboutBox();
 			about.ShowDialog(this);
+		}
+		private void welcomeDialogItem_Click(object sender, EventArgs e)
+		{
+			if (this.welcomeDialog == null)
+			{
+				this.welcomeDialog = new WelcomeDialog();
+				this.welcomeDialog.Disposed += this.welcomeDialog_Disposed;
+			}
+
+			if (this.welcomeDialog.Visible)
+				this.welcomeDialog.Focus();
+			else if (!this.welcomeDialog.IsEmpty)
+				this.welcomeDialog.Show(this);
+		}
+		private void welcomeDialog_Disposed(object sender, EventArgs e)
+		{
+			this.welcomeDialog.Disposed -= this.welcomeDialog_Disposed;
+			this.welcomeDialog = null;
 		}
 		private void newProjectItem_Click(object sender, EventArgs e)
 		{

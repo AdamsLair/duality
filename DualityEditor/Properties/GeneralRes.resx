@@ -562,4 +562,7 @@
   <data name="Msg_CantExport_Text" xml:space="preserve">
     <value>Can't export Resource '{0}'. None of the available importers is able to handle this Resource type.</value>
   </data>
+  <data name="MenuItemName_WelcomeDialog" xml:space="preserve">
+    <value>Getting Started</value>
+  </data>
 </root>

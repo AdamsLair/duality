@@ -62,6 +62,24 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Download example projects to see Duality in action..
+        /// </summary>
+        public static string ActionDesc_BrowseSamplePackages {
+            get {
+                return ResourceManager.GetString("ActionDesc_BrowseSamplePackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse Sample Packages.
+        /// </summary>
+        public static string ActionName_BrowseSamplePackages {
+            get {
+                return ResourceManager.GetString("ActionName_BrowseSamplePackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         public static System.Drawing.Bitmap IconCore {
@@ -167,6 +185,16 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties {
         public static System.Drawing.Bitmap IconSample {
             get {
                 object obj = ResourceManager.GetObject("IconSample", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap IconSampleBig {
+            get {
+                object obj = ResourceManager.GetObject("IconSampleBig", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -74,6 +74,9 @@
     <Compile Include="DataConverters\GameObjFromComponents.cs" />
     <Compile Include="DataConverters\GameObjFromPrefab.cs" />
     <Compile Include="EditorActions\AudioDataToSound.cs" />
+    <Compile Include="EditorActions\FirstSession\VisitCommunityForum.cs" />
+    <Compile Include="EditorActions\FirstSession\ViewGettingStartedTutorial.cs" />
+    <Compile Include="EditorActions\FirstSession\DownloadVisualStudio.cs" />
     <Compile Include="EditorActions\FocusGameObject.cs" />
     <Compile Include="EditorActions\OpenScene.cs" />
     <Compile Include="EditorActions\InstantiatePrefab.cs" />
@@ -171,8 +174,11 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="EmbeddedResources\IconTutorial.png" />
+    <None Include="EmbeddedResources\IconCommunity.png" />
     <None Include="EmbeddedResources\DropdownSettingsBlack.png" />
     <None Include="EmbeddedResources\cross.png" />
+    <None Include="EmbeddedResources\IconDownloadCodeIDE.png" />
     <Content Include="EmbeddedResources\eye.ico" />
     <None Include="EmbeddedResources\IconSpeakerBlack.png" />
     <None Include="EmbeddedResources\IconSpeakerWhite.png" />

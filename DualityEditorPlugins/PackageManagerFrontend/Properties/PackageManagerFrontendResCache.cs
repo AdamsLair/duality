@@ -21,5 +21,6 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend.Properties
 		public static readonly Image IconCore = PackageManagerFrontendRes.IconCore;
 		public static readonly Image IconEditor = PackageManagerFrontendRes.IconEditor;
 		public static readonly Image IconSample = PackageManagerFrontendRes.IconSample;
+		public static readonly Image IconSampleBig = PackageManagerFrontendRes.IconSampleBig;
 	}
 }

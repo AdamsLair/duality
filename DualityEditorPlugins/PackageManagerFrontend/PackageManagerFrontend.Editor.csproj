@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EditorActions\FirstSession\BrowseSamplePackages.cs" />
     <Compile Include="Modules\DualityPackageTypeNodeControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -111,6 +112,7 @@
     <Content Include="EmbeddedResources\core.png" />
     <Content Include="EmbeddedResources\editor.png" />
     <None Include="EmbeddedResources\filter.png" />
+    <None Include="EmbeddedResources\IconSampleBig.png" />
     <Content Include="EmbeddedResources\IncompatibleInstall.png" />
     <Content Include="EmbeddedResources\IncompatibleUpdate.png" />
     <Content Include="EmbeddedResources\LikelySafeUpdate.png" />
