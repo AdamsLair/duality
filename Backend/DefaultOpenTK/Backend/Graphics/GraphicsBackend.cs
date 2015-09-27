@@ -16,6 +16,8 @@ namespace Duality.Backend.DefaultOpenTK
 	[DontSerialize]
 	public class GraphicsBackend : IGraphicsBackend, IVertexUploader
 	{
+		private static readonly Version MinOpenGLVersion = new Version(2, 1);
+
 		private static GraphicsBackend activeInstance = null;
 		public static GraphicsBackend ActiveInstance
 		{
@@ -687,6 +689,9 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public static void LogOpenGLSpecs()
 		{
+			// Accessing OpenGL functionality requires context. Don't get confused by AccessViolationExceptions, fail better instead.
+			GraphicsContext.Assert();
+
 			try
 			{
 				CheckOpenGLErrors();
@@ -706,7 +711,7 @@ namespace Duality.Backend.DefaultOpenTK
 					Version version;
 					if (Version.TryParse(token[i], out version))
 					{
-						if (version.Major < 2 && version.Minor < 1)
+						if (version.Major < MinOpenGLVersion.Major && version.Minor < MinOpenGLVersion.Minor)
 						{
 							Log.Core.WriteWarning("The detected OpenGL version {0} appears to be lower than the required minimum. OpenGL 2.1 or higher is required to run Duality applications.");
 						}
@@ -727,6 +732,9 @@ namespace Duality.Backend.DefaultOpenTK
 		/// <returns>True, if an error occurred, false if not.</returns>
 		public static bool CheckOpenGLErrors(bool silent = false, [CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{
+			// Accessing OpenGL functionality requires context. Don't get confused by AccessViolationExceptions, fail better instead.
+			GraphicsContext.Assert();
+
 			ErrorCode error;
 			bool found = false;
 			while ((error = GL.GetError()) != ErrorCode.NoError)
