@@ -1,0 +1,9 @@
+branches:
+  except:
+    - gh-pages
+    
+# Do not build on tags (GitHub only)
+skip_tags: true
+
+build:
+  project: Duality.sln
