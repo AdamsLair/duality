@@ -78,7 +78,8 @@ namespace NightlyBuilder
 				Console.WriteLine("ERROR: {0}", e);
 				Console.ForegroundColor = ConsoleColor.Gray;
 				Console.WriteLine();
-				Console.ReadLine();
+				if (!config.NonInteractive)
+					Console.ReadLine();
 			}
 		}
 
@@ -90,28 +91,32 @@ namespace NightlyBuilder
 			FileVersionInfo versionLauncher = null;
 
 			// Build the target Solution
-			Console.WriteLine("================================ Build Solution ===============================");
+			if (!config.NoBuild)
 			{
-				bool buildSuccess = BuildVisualStudioSolution(config.SolutionPath, "Release");
-				if (!buildSuccess)
-					throw new ApplicationException("The project doesn't compile properly. Cannot proceed in this state.");
+				Console.WriteLine("================================ Build Solution ===============================");
+				{
+					bool buildSuccess = BuildVisualStudioSolution(config.SolutionPath, "Release");
+					if (!buildSuccess)
+						throw new ApplicationException("The project doesn't compile properly. Cannot proceed in this state.");
 
-				versionCore = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "Duality.dll"));
-				versionEditor = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityEditor.exe"));
-				versionLauncher = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityLauncher.exe"));
+					versionCore = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "Duality.dll"));
+					versionEditor = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityEditor.exe"));
+					versionLauncher = FileVersionInfo.GetVersionInfo(Path.Combine(config.BuildResultDir, "DualityLauncher.exe"));
 
-				Console.WriteLine("Build Successful");
-				Console.WriteLine("  Core Version:     {0}", versionCore.FileVersion);
-				Console.WriteLine("  Editor Version:   {0}", versionEditor.FileVersion);
-				Console.WriteLine("  Launcher Version: {0}", versionLauncher.FileVersion);
+					Console.WriteLine("Build Successful");
+					Console.WriteLine("  Core Version:     {0}", versionCore.FileVersion);
+					Console.WriteLine("  Editor Version:   {0}", versionEditor.FileVersion);
+					Console.WriteLine("  Launcher Version: {0}", versionLauncher.FileVersion);
+				}
+				Console.WriteLine("===============================================================================");
+				Console.WriteLine();
+				Console.WriteLine();
 			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
 
 			// Perform unit testing
-			Console.WriteLine("================================= Unit Testing ================================");
+			if (!config.NoTests)
 			{
+				Console.WriteLine("================================= Unit Testing ================================");
 				foreach (string nunitProjectFile in Directory.EnumerateFiles(config.UnitTestProjectDir, "*.nunit", SearchOption.TopDirectoryOnly))
 				{
 					Console.Write("Testing '{0}'... ", Path.GetFileName(nunitProjectFile));
@@ -177,10 +182,10 @@ namespace NightlyBuilder
 						throw new ApplicationException("Something appears to have failed during unit testing, because no result file was found.");
 					}
 				}
+				Console.WriteLine("===============================================================================");
+				Console.WriteLine();
+				Console.WriteLine();
 			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
 
 			// Build the documentation
 			bool includeDocs =
@@ -392,7 +397,8 @@ namespace NightlyBuilder
 			}
 
 			Console.WriteLine("Finished Build.");
-			Console.ReadLine();
+			if (!config.NonInteractive)
+				Console.ReadLine();
 		}
 
 		public static string WildcardToRegex(string pattern)

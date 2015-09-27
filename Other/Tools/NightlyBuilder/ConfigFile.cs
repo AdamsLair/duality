@@ -24,7 +24,10 @@ namespace NightlyBuilder
 		public string NuGetPath { get; set; }
 		public string NuGetPackageSpecsDir { get; set; }
 		public string NuGetPackageTargetDir { get; set; }
+		public bool NoBuild { get; set; }
+		public bool NoTests { get; set; }
 		public bool NoDocs { get; set; }
+		public bool NonInteractive { get; set; }
 		public List<string> FileCopyBlackList { get; set; }
 
 		public void Save(string filePath)
