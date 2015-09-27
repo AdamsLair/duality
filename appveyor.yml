@@ -7,3 +7,11 @@ skip_tags: true
 
 build:
   project: Duality.sln
+  verbosity: minimal
+  
+test:
+  assemblies:
+    - 'UnitTesting\*.dll'
+  categories:
+    except:
+      - Rendering   # AppVeyor VMs don't have GPU access.
