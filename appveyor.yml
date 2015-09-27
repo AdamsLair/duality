@@ -28,3 +28,5 @@ artifacts:
     name: "Binary Release"
   - path: 'Other\NightlyBuild\NuGetPackages\*.nupkg'
     name: "NuGet Packages"
+  - path: 'Other\NightlyBuild\NuGetPackages'
+    name: "NuGet Packages Zip"
