@@ -11,7 +11,7 @@ build:
   project: Duality.sln
   verbosity: minimal
   
-after_build: "Package Binary NoDocs.bat"
+after_build: '"Package Binary NoDocs.bat"'
   
 test:
   assemblies:
