@@ -26,7 +26,7 @@ after_test: '"Other\Scripts\Package Binary CI Script.bat"'
 artifacts:
   - path: 'Other\NightlyBuild\Package\Duality.zip'
     name: "Binary Release"
-  - path: 'Other\NightlyBuild\NuGetPackages\*.nupkg'
-    name: "NuGet Packages"
   - path: 'Other\NightlyBuild\NuGetPackages'
     name: "All NuGet Packages"
+# - path: 'Other\NightlyBuild\NuGetPackages\*.nupkg'
+#   name: "NuGet Packages"
