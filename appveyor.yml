@@ -1,0 +1,19 @@
+version: AppVeyor {branch} Build {build}
+
+branches:
+  except:
+    - gh-pages
+    
+# Do not build on tags (GitHub only)
+skip_tags: true
+
+build:
+  project: Duality.sln
+  verbosity: minimal
+  
+test:
+  assemblies:
+    - 'UnitTesting\DualityTests\**\*.dll'
+  categories:
+    except:
+      - Rendering   # AppVeyor VMs don't have GPU access.
