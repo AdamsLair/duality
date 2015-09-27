@@ -9,4 +9,4 @@ Latest binary release: http://dualitybin.adamslair.net/
 
 Fork / Contribution Guide: [How to Contribute](https://github.com/AdamsLair/duality/wiki/How-to-Contribute)
 
-Buy me a drink: [Donate via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC)
+Donate: [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC)
