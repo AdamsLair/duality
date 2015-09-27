@@ -21,7 +21,7 @@ test:
       - Rendering   # AppVeyor VMs don't have GPU access.
 
 artifacts:
-  - path: "Other\NightlyBuild\Package\Duality.zip"
+  - path: 'Other\NightlyBuild\Package\Duality.zip'
     name: "Binary Release"
-  - path: "Other\NightlyBuild\NuGetPackages\*.nupkg"
+  - path: 'Other\NightlyBuild\NuGetPackages\*.nupkg'
     name: "NuGet Packages"
