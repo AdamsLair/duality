@@ -7,11 +7,12 @@ branches:
 # Do not build on tags (GitHub only)
 skip_tags: true
 
+platform: Any CPU
+configuration: Release
+
 build:
   project: Duality.sln
   verbosity: minimal
-  
-after_build: '"Other\Scripts\Package Binary CI Script.bat"'
   
 test:
   assemblies:
@@ -19,6 +20,8 @@ test:
   categories:
     except:
       - Rendering   # AppVeyor VMs don't have GPU access.
+  
+after_test: '"Other\Scripts\Package Binary CI Script.bat"'
 
 artifacts:
   - path: 'Other\NightlyBuild\Package\Duality.zip'
