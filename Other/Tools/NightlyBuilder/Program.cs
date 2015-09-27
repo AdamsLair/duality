@@ -360,7 +360,18 @@ namespace NightlyBuilder
 
 						if (!File.Exists(Path.Combine(config.NuGetPackageTargetDir, targetFileName)))
 						{
-							throw new ApplicationException(string.Format("Failed to create NuGet Package {0}", Path.GetFileName(file)));
+							// If in non-interactive mode, continue to build packages even if one of them failed.
+							if (config.NonInteractive)
+							{
+								Console.ForegroundColor = ConsoleColor.Red;
+								Console.WriteLine("failed");
+								Console.ForegroundColor = ConsoleColor.Gray;
+							}
+							// Otherwise, stop with an exception.
+							else
+							{
+								throw new ApplicationException(string.Format("Failed to create NuGet Package {0}", Path.GetFileName(file)));
+							}
 						}
 						else
 						{
