@@ -1,3 +1,5 @@
+version: AppVeyor Build {build}
+
 branches:
   except:
     - gh-pages
@@ -11,7 +13,7 @@ build:
   
 test:
   assemblies:
-    - 'UnitTesting\*.dll'
+    - 'UnitTesting\DualityTests\**\*.dll'
   categories:
     except:
       - Rendering   # AppVeyor VMs don't have GPU access.
