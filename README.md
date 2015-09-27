@@ -10,3 +10,6 @@ Latest binary release: http://dualitybin.adamslair.net/
 Fork / Contribution Guide: [How to Contribute](https://github.com/AdamsLair/duality/wiki/How-to-Contribute)
 
 Donate: [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC)
+
+### Build status: 
+Branch **master**: [![Build status](https://ci.appveyor.com/api/projects/status/github/AdamsLair/duality?branch=master&svg=true)](https://ci.appveyor.com/project/ilexp/duality)
