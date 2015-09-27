@@ -29,4 +29,4 @@ artifacts:
   - path: 'Other\NightlyBuild\NuGetPackages\*.nupkg'
     name: "NuGet Packages"
   - path: 'Other\NightlyBuild\NuGetPackages'
-    name: "NuGet Packages Zip"
+    name: "All NuGet Packages"
