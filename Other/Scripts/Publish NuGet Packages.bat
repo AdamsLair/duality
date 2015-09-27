@@ -1,3 +1,5 @@
+cd %~dp0./../../
+
 :: upload the nuget packages
 for /r %%i in (Other\NightlyBuild\NuGetPackages\*.nupkg) do .nuget\nuget push %%i
 
