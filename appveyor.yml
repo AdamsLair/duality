@@ -1,4 +1,4 @@
-version: AppVeyor Build {build}
+version: AppVeyor {branch} Build {build}
 
 branches:
   except:
