@@ -12,4 +12,7 @@ Fork / Contribution Guide: [How to Contribute](https://github.com/AdamsLair/dual
 Donate: [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC)
 
 ### Build status: 
-Branch **master**: [![Build status](https://ci.appveyor.com/api/projects/status/github/AdamsLair/duality?branch=master&svg=true)](https://ci.appveyor.com/project/ilexp/duality)
+| Branch | Status |
+|--------|--------|
+| master | [![Build status](https://ci.appveyor.com/api/projects/status/github/AdamsLair/duality?branch=master&svg=true)](https://ci.appveyor.com/project/ilexp/duality) |
+| 1.x | [![Build status](https://ci.appveyor.com/api/projects/status/github/AdamsLair/duality?branch=1.x&svg=true)](https://ci.appveyor.com/project/ilexp/duality) |
