@@ -629,7 +629,7 @@ namespace Duality.Resources
 
 			var sortedQuery = from obj in objEnum
 							  where obj.PrefabLink != null && predicate(obj.PrefabLink)
-							  group obj by obj.HierarchyLevel into g
+							  group obj by GetObjectHierarchyLevel(obj) into g
 							  orderby g.Key
 							  select g;
 
@@ -641,6 +641,13 @@ namespace Duality.Resources
 				}
 
 			return appliedLinks;
+		}
+		private static int GetObjectHierarchyLevel(GameObject obj)
+		{
+			if (obj.Parent == null)
+				return 0;
+			else
+				return GetObjectHierarchyLevel(obj.Parent) + 1;
 		}
 	}
 

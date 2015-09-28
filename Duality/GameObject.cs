@@ -28,6 +28,8 @@ namespace Duality
 	[EditorHintImage(CoreResNames.ImageGameObject)]
 	public sealed class GameObject : IManageableObject, IUniqueIdentifyable, ICloneExplicit
 	{
+		private static readonly GameObject[] EmptyChildren = new GameObject[0];
+
 		[DontSerialize] 
 		private		Scene						scene		= null;
 		private		GameObject					parent		= null;
@@ -173,33 +175,11 @@ namespace Duality
 			internal set { this.identifier = value; }
 		}
 		/// <summary>
-		/// [GET] Returns the number of parents this object has when travelling upwards the scene graph hierarchy.
-		/// </summary>
-		/// <example>
-		/// This will be zero for a root object (one that has no parent object), one for a root object's child,
-		/// two for a root object's child's child, and so on.
-		/// </example>
-		public int HierarchyLevel
-		{
-			get
-			{
-				if (this.parent == null) return 0;
-				else return this.parent.HierarchyLevel + 1;
-			}
-		}
-		/// <summary>
 		/// [GET] Enumerates this objects child GameObjects.
 		/// </summary>
-		public IEnumerable<GameObject> Children
+		public IReadOnlyList<GameObject> Children
 		{
-			get
-			{
-				if (this.children == null) yield break;
-				foreach (GameObject c in this.children)
-				{
-					yield return c;
-				}
-			}
+			get { return this.children ?? EmptyChildren as IReadOnlyList<GameObject>; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all GameObjects that are directly or indirectly parented to this object, i.e. its
