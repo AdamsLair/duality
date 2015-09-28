@@ -555,7 +555,7 @@ namespace Duality.Editor.Plugins.CamView
 		private void InitCameraSelector()
 		{
 			this.camSelector.Items.Clear();
-			this.camSelector.Items.Add(new CamEntry(this.nativeCamObj.Camera));
+			this.camSelector.Items.Add(new CamEntry(this.nativeCamObj.GetComponent<Camera>()));
 
 			foreach (Camera c in Scene.Current.AllObjects.GetComponents<Camera>().OrderBy(c => c.GameObj.FullName))
 				this.camSelector.Items.Add(new CamEntry(c));
@@ -587,7 +587,7 @@ namespace Duality.Editor.Plugins.CamView
 
 		public void SetCurrentCamera(Camera c)
 		{
-			if (c == null) c = this.nativeCamObj.Camera;
+			if (c == null) c = this.nativeCamObj.GetComponent<Camera>();
 			if (c == this.camComp) return;
 
 			Camera prev = this.camComp;
@@ -595,7 +595,7 @@ namespace Duality.Editor.Plugins.CamView
 			if (c.GameObj == this.nativeCamObj)
 			{
 				this.camObj = this.nativeCamObj;
-				this.camComp = this.camObj.Camera;
+				this.camComp = this.camObj.GetComponent<Camera>();
 				this.camSelector.SelectedIndex = 0;
 			}
 			else
@@ -759,14 +759,16 @@ namespace Duality.Editor.Plugins.CamView
 
 		internal void SaveUserData(XElement node)
 		{
-			node.SetElementValue("Perspective", this.nativeCamObj.Camera.Perspective);
-			node.SetElementValue("FocusDist", this.nativeCamObj.Camera.FocusDist);
+			Camera nativeCamera = this.nativeCamObj.GetComponent<Camera>();
+
+			node.SetElementValue("Perspective", nativeCamera.Perspective);
+			node.SetElementValue("FocusDist", nativeCamera.FocusDist);
 			XElement bgColorElement = new XElement("BackgroundColor");
 			{
-				bgColorElement.SetElementValue("R", this.nativeCamObj.Camera.ClearColor.R);
-				bgColorElement.SetElementValue("G", this.nativeCamObj.Camera.ClearColor.G);
-				bgColorElement.SetElementValue("B", this.nativeCamObj.Camera.ClearColor.B);
-				bgColorElement.SetElementValue("A", this.nativeCamObj.Camera.ClearColor.A);
+				bgColorElement.SetElementValue("R", nativeCamera.ClearColor.R);
+				bgColorElement.SetElementValue("G", nativeCamera.ClearColor.G);
+				bgColorElement.SetElementValue("B", nativeCamera.ClearColor.B);
+				bgColorElement.SetElementValue("A", nativeCamera.ClearColor.A);
 			}
 			node.Add(bgColorElement);
 

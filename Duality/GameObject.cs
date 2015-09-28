@@ -259,37 +259,12 @@ namespace Duality
 
 		/// <summary>
 		/// [GET] The GameObject's <see cref="Duality.Components.Transform"/> Component, if existing.
+		/// This is a cached / faster shortcut-version of <see cref="GetComponent{T}"/>.
 		/// </summary>
 		/// <seealso cref="Duality.Components.Transform"/>
 		public Transform Transform
 		{
 			get { return this.compTransform; }
-		}
-		/// <summary>
-		/// [GET] The GameObject's <see cref="Duality.Components.Camera"/> Component, if existing.
-		/// </summary>
-		/// <seealso cref="Duality.Components.Camera"/>
-		public Camera Camera
-		{
-			get { return this.GetComponent<Components.Camera>(); }
-		}
-		/// <summary>
-		/// [GET] The GameObject's <see cref="Duality.Components.Renderer"/> Component, if existing. 
-		/// </summary>
-		/// <remarks>Note that a GameObject may contain multiple Renderers in which case the return value of this property may be any of them.</remarks>
-		/// <seealso cref="Duality.Components.Renderer"/>
-		public ICmpRenderer Renderer
-		{
-			get { return this.GetComponent<ICmpRenderer>(); }
-		}
-		/// <summary>
-		/// [GET] The GameObject's <see cref="Duality.Components.Physics.RigidBody"/> Component, if existing. 
-		/// </summary>
-		/// <remarks>Note that a GameObject may contain multiple Colliders in which case the return value of this property may be any of them.</remarks>
-		/// <seealso cref="Duality.Components.Physics.RigidBody"/>
-		public RigidBody RigidBody
-		{
-			get { return this.GetComponent<Components.Physics.RigidBody>(); }
 		}
 
 		uint IUniqueIdentifyable.PreferredId

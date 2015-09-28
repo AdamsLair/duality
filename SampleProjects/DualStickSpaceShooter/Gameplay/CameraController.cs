@@ -66,7 +66,7 @@ namespace DualStickSpaceShooter
 		private void AdjustToScreenSize()
 		{
 			Vector2 screenSize = DualityApp.TargetResolution;
-			Camera camera = this.GameObj.Camera;
+			Camera camera = this.GameObj.GetComponent<Camera>();
 			camera.FocusDist = ReferenceFocusDist * screenSize.Length * this.zoomFactor / ReferenceScreenDiameter;
 		}
 		private Vector3 GetTargetOffset(float maxDistFromCenter)
@@ -82,7 +82,7 @@ namespace DualStickSpaceShooter
 			if (this.followObjects == null) return;
 			if (this.followObjects.Count == 0) return;
 
-			Camera camera = this.GameObj.Camera;
+			Camera camera = this.GameObj.GetComponent<Camera>();
 			Transform transform = this.GameObj.Transform;
 
 			// Update screen shake behavior

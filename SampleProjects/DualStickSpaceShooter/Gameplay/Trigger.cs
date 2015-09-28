@@ -88,11 +88,12 @@ namespace DualStickSpaceShooter
 			{
 				float radius = 100.0f;
 
-				CircleShapeInfo triggerCircle = this.GameObj.RigidBody.Shapes.OfType<CircleShapeInfo>().FirstOrDefault();
+				RigidBody body = this.GameObj.GetComponent<RigidBody>();
+				CircleShapeInfo triggerCircle = body.Shapes.OfType<CircleShapeInfo>().FirstOrDefault();
 				if (triggerCircle != null)
 					radius = triggerCircle.Radius;
 				else
-					radius = this.GameObj.RigidBody.BoundRadius;
+					radius = body.BoundRadius;
 
 				if (this.collisionCounter > 0)
 				{

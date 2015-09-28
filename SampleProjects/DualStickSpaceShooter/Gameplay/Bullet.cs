@@ -30,7 +30,7 @@ namespace DualStickSpaceShooter
 		public void Fire(Player owner, Vector2 sourceDragVel, Vector2 position, float angle, out Vector2 recoilImpulse)
 		{
 			Transform		transform	= this.GameObj.Transform;
-			RigidBody		body		= this.GameObj.RigidBody;
+			RigidBody		body		= this.GameObj.GetComponent<RigidBody>();
 			SpriteRenderer	sprite		= this.GameObj.GetComponent<SpriteRenderer>();
 			BulletBlueprint	blueprint	= this.blueprint.Res;
 
@@ -67,9 +67,9 @@ namespace DualStickSpaceShooter
 			if (otherShip != null && otherShip.Owner == this.owner) return;
 
 			// Get all the objet references we'll need
-			RigidBody		otherBody	= args.CollideWith.RigidBody;
+			RigidBody		otherBody	= args.CollideWith.GetComponent<RigidBody>();
 			Transform		transform	= this.GameObj.Transform;
-			RigidBody		body		= this.GameObj.RigidBody;
+			RigidBody		body		= this.GameObj.GetComponent<RigidBody>();
 			BulletBlueprint	blueprint	= this.blueprint.Res;
 
 			// Okay, let's determine where *exactly* our bullet hit

@@ -24,8 +24,8 @@ namespace Duality.Plugins.Steering.Sample
 	{
 		public void OnUpdate()
 		{
-			RigidBody		rigidBody	= this.GameObj.RigidBody;
-			Agent			agent		= GameObj.GetComponent<Agent>();
+			RigidBody		rigidBody	= this.GameObj.GetComponent<RigidBody>();
+			Agent			agent		= this.GameObj.GetComponent<Agent>();
 			CircleShapeInfo shapeInfo	= rigidBody.Shapes.OfType<CircleShapeInfo>().FirstOrDefault();
 			if (shapeInfo != null)
 			{

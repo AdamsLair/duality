@@ -48,7 +48,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				get
 				{
-					ICmpRenderer r = this.gameObj.Renderer;
+					ICmpRenderer r = this.gameObj.GetComponent<ICmpRenderer>();
 					if (r == null)
 					{
 						if (this.gameObj.Transform != null)

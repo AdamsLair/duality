@@ -44,7 +44,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				get
 				{
-					ICmpRenderer r = this.bodyObj.Renderer;
+					ICmpRenderer r = this.bodyObj.GetComponent<ICmpRenderer>();
 					return r == null ? CamView.DefaultDisplayBoundRadius : r.BoundRadius;
 				}
 			}

@@ -231,7 +231,7 @@ namespace DualStickSpaceShooter
 		}
 		private int GetSpikeIndex(ShapeInfo spikeShape)
 		{
-			RigidBody body = this.GameObj.RigidBody;
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 			if (body == null) return -1;
 
 			int i = 0;
@@ -248,7 +248,7 @@ namespace DualStickSpaceShooter
 		{
 			EnemyBlueprint blueprint = this.blueprint.Res;
 			Transform transform = this.GameObj.Transform;
-			RigidBody body = this.GameObj.RigidBody;
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 			Ship ship = this.GameObj.GetComponent<Ship>();
 
 			// Calculate distress caused by going in a different direction than desired

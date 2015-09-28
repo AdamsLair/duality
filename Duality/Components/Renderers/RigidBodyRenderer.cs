@@ -34,7 +34,7 @@ namespace Duality.Components.Renderers
 
 		public override float BoundRadius
 		{
-			get { return this.GameObj.RigidBody.BoundRadius; }
+			get { return this.GameObj.GetComponent<RigidBody>().BoundRadius; }
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="Duality.Resources.Material"/> that is used for rendering the RigidBodies shape areaa.
@@ -124,7 +124,7 @@ namespace Duality.Components.Renderers
 		public override void Draw(IDrawDevice device)
 		{
 			Transform tranform = this.GameObj.Transform;
-			RigidBody body = this.GameObj.RigidBody;
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 
 			Canvas canvas = new Canvas(device, this.vertexBuffer);
 

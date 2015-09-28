@@ -116,7 +116,7 @@ namespace DualStickSpaceShooter
 			this.goalReachTime = (float)Time.GameTimer.TotalMilliseconds;
 
 			// Become a ghost
-			RigidBody body = this.controlObj.GameObj.RigidBody;
+			RigidBody body = this.controlObj.GameObj.GetComponent<RigidBody>();
 			body.CollidesWith = CollisionCategory.None;
 
 			// Become invincible
@@ -176,7 +176,7 @@ namespace DualStickSpaceShooter
 			{
 				if (this.hasReachedGoal)
 				{
-					RigidBody body = this.controlObj.GameObj.RigidBody;
+					RigidBody body = this.controlObj.GameObj.GetComponent<RigidBody>();
 					SpriteRenderer sprite = this.controlObj.GameObj.GetComponent<SpriteRenderer>();
 
 					// If we've reached the goal, update the final animation and do nothing else

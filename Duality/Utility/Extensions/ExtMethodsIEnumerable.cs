@@ -117,36 +117,6 @@ namespace Duality
 		{
 			return objEnum.Select(o => o.Transform).NotNull();
 		}
-		/// <summary>
-		/// Enumerates all <see cref="Duality.GameObject">GameObjects</see> <see cref="Duality.Components.Camera"/> Components.
-		/// </summary>
-		/// <param name="objEnum"></param>
-		/// <param name="activeOnly"></param>
-		/// <returns></returns>
-		public static IEnumerable<Components.Camera> Camera(this IEnumerable<GameObject> objEnum)
-		{
-			return objEnum.Select(o => o.Camera).NotNull();
-		}
-		/// <summary>
-		/// Enumerates all <see cref="Duality.GameObject">GameObjects</see> <see cref="Duality.Components.Renderer"/> Components.
-		/// </summary>
-		/// <param name="objEnum"></param>
-		/// <param name="activeOnly"></param>
-		/// <returns></returns>
-		public static IEnumerable<ICmpRenderer> Renderer(this IEnumerable<GameObject> objEnum)
-		{
-			return objEnum.Select(o => o.Renderer).NotNull();
-		}
-		/// <summary>
-		/// Enumerates all <see cref="Duality.GameObject">GameObjects</see> <see cref="Duality.Components.Physics.RigidBody"/> Components.
-		/// </summary>
-		/// <param name="objEnum"></param>
-		/// <param name="activeOnly"></param>
-		/// <returns></returns>
-		public static IEnumerable<Components.Physics.RigidBody> RigidBody(this IEnumerable<GameObject> objEnum)
-		{
-			return objEnum.Select(o => o.RigidBody).NotNull();
-		}
 
 		/// <summary>
 		/// Enumerates all <see cref="Component">Components</see> parent <see cref="Duality.GameObject">GameObjects</see>.

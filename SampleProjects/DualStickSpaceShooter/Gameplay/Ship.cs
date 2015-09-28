@@ -97,7 +97,7 @@ namespace DualStickSpaceShooter
 			if (blueprint.DeathEffects != null)
 			{
 				Transform transform = this.GameObj.Transform;
-				RigidBody body = this.GameObj.RigidBody;
+				RigidBody body = this.GameObj.GetComponent<RigidBody>();
 				for (int i = 0; i < blueprint.DeathEffects.Length; i++)
 				{
 					Prefab deathEffectPrefab = blueprint.DeathEffects[i].Res;
@@ -131,7 +131,7 @@ namespace DualStickSpaceShooter
 			this.isDead = false;
 
 			// Make sure to reset the rigidbodies movement state
-			RigidBody body = this.GameObj.RigidBody;
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 			body.LinearVelocity = Vector2.Zero;
 			body.AngularVelocity = 0.0f;
 
@@ -157,7 +157,7 @@ namespace DualStickSpaceShooter
 			this.weaponTimer += this.blueprint.Res.WeaponDelay;
 
 			Transform transform = this.GameObj.Transform;
-			RigidBody body = this.GameObj.RigidBody;
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 
 			this.FireBullet(body, transform, new Vector2(0.0f, -15.0f), 0.0f);
 		}
@@ -188,7 +188,7 @@ namespace DualStickSpaceShooter
 		void ICmpUpdatable.OnUpdate()
 		{
 			Transform		transform	= this.GameObj.Transform;
-			RigidBody		body		= this.GameObj.RigidBody;
+			RigidBody		body		= this.GameObj.GetComponent<RigidBody>();
 			ShipBlueprint	blueprint	= this.blueprint.Res;
 
 			// Heal when damaged
