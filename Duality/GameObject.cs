@@ -177,9 +177,9 @@ namespace Duality
 		/// <summary>
 		/// [GET] Enumerates this objects child GameObjects.
 		/// </summary>
-		public IReadOnlyList<GameObject> Children
+		public IEnumerable<GameObject> Children
 		{
-			get { return this.children ?? EmptyChildren as IReadOnlyList<GameObject>; }
+			get { return this.children ?? EmptyChildren as IEnumerable<GameObject>; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all GameObjects that are directly or indirectly parented to this object, i.e. its
