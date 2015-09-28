@@ -78,9 +78,13 @@ namespace NightlyBuilder
 				Console.WriteLine("ERROR: {0}", e);
 				Console.ForegroundColor = ConsoleColor.Gray;
 				Console.WriteLine();
-				if (!config.NonInteractive)
+				if (config.NonInteractive)
+					Environment.Exit(1);
+				else
 					Console.ReadLine();
 			}
+
+			Environment.Exit(0);
 		}
 
 		public static void PerformNightlyBuild(ConfigFile config)
