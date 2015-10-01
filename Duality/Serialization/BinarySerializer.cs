@@ -44,9 +44,10 @@ namespace Duality.Serialization
 		}
 
 		
-		private	const	string	HeaderId	= "BinaryFormatterHeader";
-		private	const	ushort	MinVersion	= 3;
-		private	const	ushort	Version		= 3;
+		private const	string	HeaderId		= "BinaryFormatterHeader";
+		private const	int		HeaderLength	= 1 + 21 + 2; // Length Prefix, HeaderId, Version
+		private const	ushort	MinVersion		= 3;
+		private const	ushort	Version			= 3;
 
 
 		private BinaryWriter	writer		= null;
@@ -60,9 +61,13 @@ namespace Duality.Serialization
 
 		protected override bool MatchesStreamFormat(Stream stream)
 		{
+			if (stream.Length < HeaderLength) return false;
 			using (BinaryReader reader = new BinaryReader(stream.NonClosing()))
 			{
-				string headerId = reader.ReadString();
+				byte length = reader.ReadByte();
+				if (length != HeaderId.Length) return false;
+
+				string headerId = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(HeaderId.Length), 0, HeaderId.Length);
 				if (headerId != HeaderId) return false;
 
 				int dataVersion = reader.ReadUInt16();
@@ -344,7 +349,8 @@ namespace Duality.Serialization
 		
 		private void WriteHeader()
 		{
-			this.writer.Write(HeaderId);
+			this.writer.Write((byte)HeaderId.Length);
+			this.writer.Write(System.Text.Encoding.UTF8.GetBytes(HeaderId));
 			this.writer.Write(Version);
 			this.WritePushOffset();
 
@@ -736,7 +742,10 @@ namespace Duality.Serialization
 			long initialPos = this.reader.BaseStream.Position;
 			try
 			{
-				string headerId = this.reader.ReadString();
+				byte length = reader.ReadByte();
+				if (length != HeaderId.Length) throw new Exception("Header ID does not match.");
+
+				string headerId = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(HeaderId.Length), 0, HeaderId.Length);
 				if (headerId != HeaderId) throw new Exception("Header ID does not match.");
 
 				this.dataVersion = this.reader.ReadUInt16();

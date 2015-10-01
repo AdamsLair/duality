@@ -775,8 +775,6 @@ namespace Duality.Serialization
 						"An error occurred while asking {0} whether it matched the format of a certain Stream: {1}",
 						Log.Type(serializer.GetType()),
 						Log.Exception(e));
-					serializer.Dispose();
-					tempSerializers.RemoveAt(i);
 				}
 				finally
 				{
