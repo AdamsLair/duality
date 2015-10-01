@@ -22,7 +22,7 @@ namespace Duality.Editor.Forms
 	public partial class MainForm : Form, IHelpProvider
 	{
 		private	bool				nonUserClosing		= false;
-		private	ToolStripMenuItem	activeMenu			= null;
+		private	ToolStrip			activeMenu			= null;
 		private MenuModel			mainMenuModel		= new MenuModel();
 		private	MenuStripMenuView	mainMenuView		= null;
 		private MenuModel			serializerMenuModel	= new MenuModel();
@@ -121,8 +121,6 @@ namespace Duality.Editor.Forms
 		public void InitMenus()
 		{
 			this.mainMenuView = new MenuStripMenuView(this.mainMenuStrip.Items);
-			this.mainMenuView.ItemInserted += this.mainMenuView_ItemInserted;
-			this.mainMenuView.ItemRemoved += this.mainMenuView_ItemRemoved;
 			this.mainMenuView.Model = this.mainMenuModel;
 
 			MenuModelItem helpItem;
@@ -367,7 +365,7 @@ namespace Duality.Editor.Forms
 				{
 					newItem.Name			= serializerName;
 					newItem.Icon			= serializerType.GetEditorImage();
-					newItem.Tag			= HelpInfo.FromMember(serializerType.GetTypeInfo());
+					newItem.Tag				= serializerType;
 					newItem.ActionHandler	= this.formatSetDefault_Click;
 				});
 
@@ -604,19 +602,9 @@ namespace Duality.Editor.Forms
 		{
 			MenuModelItem item = sender as MenuModelItem;
 
-			Type clickedSerializerType = null;
-			foreach (Type serializerType in Serializer.AvailableTypes)
-			{
-				string serializerName = serializerType.Name;
-				if (serializerName.StartsWith(item.Name))
-				{
-					clickedSerializerType = serializerType;
-					break;
-				}
-			}
-
-			if (Serializer.DefaultType == clickedSerializerType)
-				return;
+			Type clickedSerializerType = item.Tag as Type;
+			if (clickedSerializerType == null) return;
+			if (clickedSerializerType == Serializer.DefaultType) return;
 
 			Serializer.DefaultType = clickedSerializerType;
 			this.UpdateToolbar();
@@ -761,31 +749,21 @@ namespace Duality.Editor.Forms
 			Application.Exit();
 		}
 
-		private void mainMenuView_ItemRemoved(object sender, MenuStripMenuViewItemEventArgs e)
+		private void selectFormattingMethod_DropDownOpened(object sender, EventArgs e)
 		{
-			if (e.ViewItem is ToolStripMenuItem && e.Modelitem.Parent == null)
-			{
-				ToolStripMenuItem mainMenuItem = e.ViewItem as ToolStripMenuItem;
-				mainMenuItem.DropDownOpened -= this.mainMenuItem_DropDownOpened;
-				mainMenuItem.DropDownClosed -= this.mainMenuItem_DropDownClosed;
-			}
+			this.activeMenu = this.mainToolStrip;
 		}
-		private void mainMenuView_ItemInserted(object sender, MenuStripMenuViewItemEventArgs e)
-		{
-			if (e.ViewItem is ToolStripMenuItem && e.Modelitem.Parent == null)
-			{
-				ToolStripMenuItem mainMenuItem = e.ViewItem as ToolStripMenuItem;
-				mainMenuItem.DropDownOpened += this.mainMenuItem_DropDownOpened;
-				mainMenuItem.DropDownClosed += this.mainMenuItem_DropDownClosed;
-			}
-		}
-		private void mainMenuItem_DropDownClosed(object sender, EventArgs e)
+		private void selectFormattingMethod_DropDownClosed(object sender, EventArgs e)
 		{
 			this.activeMenu = null;
 		}
-		private void mainMenuItem_DropDownOpened(object sender, EventArgs e)
+		private void mainMenuStrip_MenuActivate(object sender, EventArgs e)
 		{
-			this.activeMenu = sender as ToolStripMenuItem;
+			this.activeMenu = this.mainMenuStrip;
+		}
+		private void mainMenuStrip_MenuDeactivate(object sender, EventArgs e)
+		{
+			this.activeMenu = null;
 		}
 
 		private void UpdateSplitButtonBackupSettings()
@@ -836,24 +814,29 @@ namespace Duality.Editor.Forms
 		{
 			HelpInfo result = null;
 			Point globalPos = this.PointToScreen(localPos);
+			object hoveredObj = null;
 
-			// Hovering a menu
+			// Hovering an open menu: Capture help focus, so Controls behind it can't grab it.
 			if (this.activeMenu != null)
 			{
-				ToolStripItem	item		= this.mainMenuStrip.GetItemAtDeep(globalPos);
-				object			itemTag		= item != null ? item.Tag : null;
-				
-				result = itemTag as HelpInfo;
+				ToolStripItem item = this.activeMenu.GetItemAtDeep(globalPos);
+				hoveredObj = item != null ? item.Tag : null;
 				captured = true;
 			}
-			// Hovering toolstrip stuff
+			// By default, look out for hovered toolstrip items
 			else
 			{
-				ToolStripItem	item		= this.mainToolStrip.GetItemAtDeep(globalPos);
-				object			itemTag		= item != null ? item.Tag : null;
-				
-				result = itemTag as HelpInfo;
+				ToolStripItem item = this.mainToolStrip.GetItemAtDeep(globalPos);
+				hoveredObj = item != null ? item.Tag : null;
 				captured = false;
+			}
+
+			// Determine resulting HelpInfo
+			{
+				if (hoveredObj is Type)
+					result = HelpInfo.FromMember((hoveredObj as Type).GetTypeInfo());
+				else
+					result = hoveredObj as HelpInfo;
 			}
 
 			return result;
