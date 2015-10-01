@@ -17,7 +17,7 @@ namespace Duality.Tests.Serialization
 {
 	[TestFixture(SerializeMethod.Xml)]
 	[TestFixture(SerializeMethod.Binary)]
-	public class FormatterTest
+	public class SerializerTest
 	{
 		private SerializeMethod format;
 
@@ -30,7 +30,7 @@ namespace Duality.Tests.Serialization
 			get { return Enum.GetValues(typeof(SerializeMethod)).Cast<SerializeMethod>().Where(m => m != SerializeMethod.Unknown && m != this.PrimaryFormat); }
 		}
 
-		public FormatterTest(SerializeMethod format)
+		public SerializerTest(SerializeMethod format)
 		{
 			this.format = format;
 		}
