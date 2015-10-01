@@ -6,6 +6,8 @@ using System.IO;
 using System.Reflection;
 
 using Duality.IO;
+using Duality.Editor;
+using Duality.Properties;
 
 namespace Duality.Serialization
 {
@@ -13,6 +15,7 @@ namespace Duality.Serialization
 	/// De/Serializes object data.
 	/// </summary>
 	[DontSerialize]
+	[EditorHintImage(CoreResNames.ImageBinarySerializer)]
 	public class BinarySerializer : Serializer
 	{
 		private class CustomSerialIO : CustomSerialIOBase<BinarySerializer>
@@ -54,41 +57,19 @@ namespace Duality.Serialization
 		private Dictionary<string,TypeDataLayout>	typeDataLayout		= new Dictionary<string,TypeDataLayout>();
 		private Dictionary<string,long>				typeDataLayoutMap	= new Dictionary<string,long>();
 
-		
-		public override bool CanWrite
-		{
-			get { return this.writer != null; }
-		}
-		public override bool CanRead
-		{
-			get { return this.reader != null; }
-		}
 
-
-		public BinarySerializer(Stream stream)
+		protected override bool MatchesStreamFormat(Stream stream)
 		{
-			stream = stream.NonClosing();
-			this.writer = (stream != null && stream.CanWrite) ? new BinaryWriter(stream) : null;
-			this.reader = (stream != null && stream.CanRead) ? new BinaryReader(stream) : null;
-		}
-		protected override void OnDisposed(bool manually)
-		{
-			base.OnDisposed(manually);
-
-			if (this.writer != null)
+			using (BinaryReader reader = new BinaryReader(stream.NonClosing()))
 			{
-				this.writer.Flush();
-				this.writer.Dispose();
-				this.writer = null;
-			}
+				string headerId = reader.ReadString();
+				if (headerId != HeaderId) return false;
 
-			if (this.reader != null)
-			{
-				this.reader.Dispose();
-				this.reader = null;
+				int dataVersion = reader.ReadUInt16();
+				if (dataVersion < MinVersion) return false;
 			}
+			return true;
 		}
-		
 		protected override void WriteObjectData(object obj)
 		{
 			// Retrieve type data
@@ -178,27 +159,48 @@ namespace Duality.Serialization
 
 			return result;
 		}
-		
-		protected override void BeginReadOperation()
+
+		protected override void OnTargetStreamChanged(Stream oldStream, Stream newStream)
 		{
-			base.BeginReadOperation();
+			base.OnTargetStreamChanged(oldStream, newStream);
+
+			if (this.writer != null)
+			{
+				this.writer.Flush();
+				this.writer.Dispose();
+				this.writer = null;
+			}
+
+			if (this.reader != null)
+			{
+				this.reader.Dispose();
+				this.reader = null;
+			}
+
+			Stream stream = this.TargetStream != null ? this.TargetStream.NonClosing() : null;
+			this.writer = (stream != null && stream.CanWrite) ? new BinaryWriter(stream) : null;
+			this.reader = (stream != null && stream.CanRead) ? new BinaryReader(stream) : null;
+		}
+		protected override void OnBeginReadOperation()
+		{
+			base.OnBeginReadOperation();
 			this.ReadHeader();
 		}
-		protected override void BeginWriteOperation()
+		protected override void OnBeginWriteOperation()
 		{
-			base.BeginWriteOperation();
+			base.OnBeginWriteOperation();
 			this.WriteHeader();
 		}
-		protected override void EndReadOperation()
+		protected override void OnEndReadOperation()
 		{
-			base.EndReadOperation();
+			base.OnEndReadOperation();
 			this.typeDataLayout.Clear();
 			this.typeDataLayoutMap.Clear();
 			this.offsetStack.Clear();
 		}
-		protected override void EndWriteOperation()
+		protected override void OnEndWriteOperation()
 		{
-			base.EndWriteOperation();
+			base.OnEndWriteOperation();
 			this.typeDataLayout.Clear();
 			this.typeDataLayoutMap.Clear();
 			this.offsetStack.Clear();

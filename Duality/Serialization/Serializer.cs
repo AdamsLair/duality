@@ -215,18 +215,43 @@ namespace Duality.Serialization
 		/// </summary>
 		protected	ObjectIdManager		idManager		= new ObjectIdManager();
 
-		private	bool	disposed	= false;
-		private	Log		log			= Log.Core;
+		private	Stream	stream			= null;
+		private	bool	opInProgress	= false;
+		private	bool	disposed		= false;
+		private	Log		log				= Log.Core;
 
 		
 		/// <summary>
-		/// [GET] Can this serializer read data?
+		/// [GET] Can this <see cref="Serializer"/> read data?
 		/// </summary>
-		public abstract bool CanRead { get; }
+		public virtual bool CanRead
+		{
+			get { return this.stream != null && this.stream.CanRead; }
+		}
 		/// <summary>
-		/// [GET] Can this serializer write data?
+		/// [GET] Can this <see cref="Serializer"/> write data?
 		/// </summary>
-		public abstract bool CanWrite { get; }
+		public virtual bool CanWrite
+		{
+			get { return this.stream != null && this.stream.CanWrite; }
+		}
+		/// <summary>
+		/// [GET / SET] The target <see cref="Stream"/> this <see cref="Serializer"/> operates on (i.e. reads from and writes to).
+		/// </summary>
+		public Stream TargetStream
+		{
+			get { return this.stream; }
+			set
+			{
+				if (this.opInProgress) throw new InvalidOperationException("Can't change the target Stream while an I/O operation is in progress.");
+				if (this.stream != value)
+				{
+					Stream oldValue = this.stream;
+					this.stream = value;
+					this.OnTargetStreamChanged(oldValue, this.stream);
+				}
+			}
+		}
 		/// <summary>
 		/// [GET / SET] The local de/serialization <see cref="Duality.Log"/>.
 		/// </summary>
@@ -270,7 +295,10 @@ namespace Duality.Serialization
 				this.OnDisposed(manually);
 			}
 		}
-		protected virtual void OnDisposed(bool manually) {}
+		protected virtual void OnDisposed(bool manually)
+		{
+			this.TargetStream = null;
+		}
 
 		
 		/// <summary>
@@ -353,8 +381,7 @@ namespace Duality.Serialization
 		}
 		/// <summary>
 		/// Determines whether a specific <see cref="System.Reflection.FieldInfo">field</see> is blocked.
-		/// Instead of writing the value of a blocked field, the matching <see cref="System.Type">Types</see>
-		/// defautl value is assumed.
+		/// Blocked fields, despite being generally flagged as being serializable, are omitted during de/serialization and retain their default value.
 		/// </summary>
 		/// <param name="field">The <see cref="System.Reflection.FieldInfo">field</see> in question.</param>
 		/// <param name="obj">The object where this field originates from.</param>
@@ -364,7 +391,14 @@ namespace Duality.Serialization
 			return this.fieldBlockers.Any(blocker => blocker(field, obj));
 		}
 
-
+		/// <summary>
+		/// Determines whether or not the specified <see cref="Stream"/> matches the required format by
+		/// this <see cref="Serializer"/>. This is used to determine which <see cref="Serializer"/> can be
+		/// used for any given input <see cref="Stream"/>.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns></returns>
+		protected abstract bool MatchesStreamFormat(Stream stream);
 		/// <summary>
 		/// Writes the specified object including all referenced objects.
 		/// </summary>
@@ -376,27 +410,27 @@ namespace Duality.Serialization
 		/// <returns>The object that has been read.</returns>
 		protected abstract void WriteObjectData(object obj);
 		/// <summary>
+		/// Called when the target stream this <see cref="Serializer"/> operates on has changed.
+		/// </summary>
+		/// <param name="oldStream"></param>
+		/// <param name="newStream"></param>
+		protected virtual void OnTargetStreamChanged(Stream oldStream, Stream newStream) { }
+		/// <summary>
 		/// Signals the beginning of an atomic ReadObject operation.
 		/// </summary>
-		protected virtual void BeginReadOperation() {}
+		protected virtual void OnBeginReadOperation() { }
 		/// <summary>
 		/// Signals the beginning of an atomic WriteObject operation.
 		/// </summary>
-		protected virtual void BeginWriteOperation() {}
+		protected virtual void OnBeginWriteOperation() { }
 		/// <summary>
 		/// Signals the end of an atomic ReadObject operation.
 		/// </summary>
-		protected virtual void EndReadOperation()
-		{
-			this.idManager.Clear();
-		}
+		protected virtual void OnEndReadOperation() { }
 		/// <summary>
 		/// Signals the end of an atomic WriteObject operation.
 		/// </summary>
-		protected virtual void EndWriteOperation()
-		{
-			this.idManager.Clear();
-		}
+		protected virtual void OnEndWriteOperation() { }
 		
 		/// <summary>
 		/// Prepares an object for serialization and generates its header information.
@@ -604,6 +638,44 @@ namespace Duality.Serialization
 			return (Enum)Enum.ToObject(enumType, value);
 		}
 
+		private void BeginReadOperation()
+		{
+			if (this.opInProgress) throw new InvalidOperationException("Can't begin a new operation before ending the previous one.");
+			if (this.stream == null) throw new InvalidOperationException("Can't read data, because no target Stream was defined.");
+			if (!this.CanRead) throw new InvalidOperationException("Can't read data, because the Serializer doesn't support it.");
+
+			this.opInProgress = true;
+
+			this.OnBeginReadOperation();
+		}
+		private void BeginWriteOperation()
+		{
+			if (this.opInProgress) throw new InvalidOperationException("Can't begin a new operation before ending the previous one.");
+			if (this.stream == null) throw new InvalidOperationException("Can't write data, because no target Stream was defined.");
+			if (!this.CanWrite) throw new InvalidOperationException("Can't write data, because the Serializer doesn't support it.");
+
+			this.opInProgress = true;
+
+			this.OnBeginWriteOperation();
+		}
+		private void EndReadOperation()
+		{
+			if (!this.opInProgress) throw new InvalidOperationException("Can't end the current operation, because no operation is in progress.");
+
+			this.idManager.Clear();
+			this.opInProgress = false;
+
+			this.OnEndReadOperation();
+		}
+		private void EndWriteOperation()
+		{
+			if (!this.opInProgress) throw new InvalidOperationException("Can't end the current operation, because no operation is in progress.");
+
+			this.idManager.Clear();
+			this.opInProgress = false;
+
+			this.OnEndWriteOperation();
+		}
 		private bool HandleAssignValueToField(SerializeType objSerializeType, object obj, string fieldName, object fieldValue)
 		{
 			AssignFieldError error = new AssignFieldError(objSerializeType, obj, fieldName, fieldValue);
@@ -611,18 +683,62 @@ namespace Duality.Serialization
 		}
 
 
-		private	static Dictionary<Type,SerializeType>	serializeTypeCache		= new Dictionary<Type,SerializeType>();
-		private	static List<SerializeErrorHandler>		serializeHandlerCache	= new List<SerializeErrorHandler>();
-		private	static List<ISerializeSurrogate>		surrogates				= null;
-		private static SerializeMethod					defaultMethod			= SerializeMethod.Xml;
+		private	static List<Type>						availableSerializerTypes	= new List<Type>();
+		private	static List<Serializer>					tempCheckSerializers		= new List<Serializer>();
+		private	static Dictionary<Type,SerializeType>	serializeTypeCache			= new Dictionary<Type,SerializeType>();
+		private	static List<SerializeErrorHandler>		serializeHandlerCache		= new List<SerializeErrorHandler>();
+		private	static List<ISerializeSurrogate>		surrogates					= null;
+		private static Type								defaultSerializer			= null;
 
 		/// <summary>
-		/// [GET / SET] The default formatting method to use, if no other is specified.
+		/// [GET / SET] The default <see cref="Serializer"/> type to use, if no other is specified.
 		/// </summary>
-		public static SerializeMethod DefaultMethod
+		public static Type DefaultType
 		{
-			get { return defaultMethod; }
-			set { defaultMethod = value; }
+			get { return defaultSerializer; }
+			set { defaultSerializer = value; }
+		}
+		/// <summary>
+		/// [GET] Enumerates all available <see cref="Serializer"/> types.
+		/// </summary>
+		public static IEnumerable<Type> AvailableTypes
+		{
+			get
+			{
+				if (availableSerializerTypes.Count == 0)
+				{
+					availableSerializerTypes = new List<Type>();
+					foreach (TypeInfo typeInfo in DualityApp.GetAvailDualityTypes(typeof(Serializer)))
+					{
+						if (typeInfo.IsAbstract) continue;
+						availableSerializerTypes.Add(typeInfo.AsType());
+					}
+				}
+				return availableSerializerTypes;
+			}
+		}
+		/// <summary>
+		/// [GET] A list of internal, temporary <see cref="Serializer"/> instances to check for Stream compatibility.
+		/// </summary>
+		private static IList<Serializer> TempCheckSerializers
+		{
+			get
+			{
+				if (tempCheckSerializers.Count == 0)
+				{
+					tempCheckSerializers = new List<Serializer>();
+					foreach (TypeInfo typeInfo in DualityApp.GetAvailDualityTypes(typeof(Serializer)))
+					{
+						if (typeInfo.IsAbstract) continue;
+
+						Serializer instance = typeInfo.CreateInstanceOf() as Serializer;
+						if (instance == null) continue;
+
+						tempCheckSerializers.Add(instance);
+					}
+				}
+				return tempCheckSerializers;
+			}
 		}
 		
 		static Serializer()
@@ -632,33 +748,71 @@ namespace Duality.Serialization
 		}
 
 		/// <summary>
+		/// Uses a (seekable, random access) Stream to detect the serializer that can handle it.
+		/// </summary>
+		/// <param name="stream"></param>
+		/// <returns></returns>
+		public static Type Detect(Stream stream)
+		{
+			if (!stream.CanRead || !stream.CanSeek) throw new ArgumentException("The specified Stream needs to be readable, seekable and provide random-access functionality.");
+			if (stream.Length == 0) throw new InvalidOperationException("The specified stream must not be empty.");
+
+			IList<Serializer> tempSerializers = TempCheckSerializers;
+			for (int i = tempSerializers.Count - 1; i >= 0; i--)
+			{
+				Serializer serializer = tempSerializers[i];
+				long oldPos = stream.Position;
+				try
+				{
+					if (serializer.MatchesStreamFormat(stream))
+					{
+						return serializer.GetType();
+					}
+				}
+				catch (Exception e)
+				{
+					Log.Core.WriteError(
+						"An error occurred while asking {0} whether it matched the format of a certain Stream: {1}",
+						Log.Type(serializer.GetType()),
+						Log.Exception(e));
+					serializer.Dispose();
+					tempSerializers.RemoveAt(i);
+				}
+				finally
+				{
+					stream.Seek(oldPos, SeekOrigin.Begin);
+				}
+			}
+
+			return null;
+		}
+		/// <summary>
 		/// Creates a new <see cref="Serializer"/> using the specified stream for I/O.
 		/// </summary>
 		/// <param name="stream">The stream to use.</param>
-		/// <param name="method">
-		/// The serialization method to prefer. If <see cref="SerializeMethod.Unknown"/> is specified, if the stream
-		/// is read- and seekable, auto-detection is used. Otherwise, the <see cref="DefaultMethod">default serialization method</see> is used.
+		/// <param name="preferredSerializer">
+		/// The serialization method to prefer. Auto-detection is used when not specified explicitly
+		/// and the underlying stream supports seeking / random access. Otherwise, the <see cref="DefaultType"/> is used.
 		/// </param>
 		/// <returns>A newly created <see cref="Serializer"/> meeting the specified criteria.</returns>
-		public static Serializer Create(Stream stream, SerializeMethod method = SerializeMethod.Unknown)
+		public static Serializer Create(Stream stream, Type preferredSerializer = null)
 		{
-			if (method == SerializeMethod.Unknown)
+			if (preferredSerializer == null)
 			{
 				if (stream.CanRead && stream.CanSeek && stream.Length > 0)
-				{
-					if (XmlSerializer.IsXmlStream(stream))
-						method = SerializeMethod.Xml;
-					else
-						method = SerializeMethod.Binary;
-				}
+					preferredSerializer = Detect(stream);
 				else
-					method = defaultMethod;
+					preferredSerializer = defaultSerializer;
 			}
 
-			if (method == SerializeMethod.Xml)
-				return new XmlSerializer(stream);
-			else
-				return new BinarySerializer(stream);
+			TypeInfo baseTypeInfo = typeof(Serializer).GetTypeInfo();
+			TypeInfo serializerTypeInfo = preferredSerializer.GetTypeInfo();
+			if (!baseTypeInfo.IsAssignableFrom(serializerTypeInfo))
+				throw new ArgumentException("Can't use a non-{0} Type as a {0}.", baseTypeInfo.Name);
+
+			Serializer serializer = serializerTypeInfo.CreateInstanceOf() as Serializer;
+			serializer.TargetStream = stream;
+			return serializer;
 		}
 		/// <summary>
 		/// Reads an object of the specified Type from an existing data file, expecting that it might fail.
@@ -667,16 +821,16 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="file"></param>
-		/// <param name="method"></param>
+		/// <param name="preferredSerializer"></param>
 		/// <returns></returns>
-		public static T TryReadObject<T>(string file, SerializeMethod method = SerializeMethod.Unknown)
+		public static T TryReadObject<T>(string file, Type preferredSerializer = null)
 		{
 			try
 			{
 				if (!FileOp.Exists(file)) return default(T);
 				using (Stream str = FileOp.Open(file, FileAccessMode.Read))
 				{
-					return Serializer.TryReadObject<T>(str, method);
+					return Serializer.TryReadObject<T>(str, preferredSerializer);
 				}
 			}
 			catch (Exception)
@@ -691,13 +845,13 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="stream"></param>
-		/// <param name="method"></param>
+		/// <param name="preferredSerializer"></param>
 		/// <returns></returns>
-		public static T TryReadObject<T>(Stream stream, SerializeMethod method = SerializeMethod.Unknown)
+		public static T TryReadObject<T>(Stream stream, Type preferredSerializer = null)
 		{
 			try
 			{
-				using (Serializer formatter = Serializer.Create(stream, method))
+				using (Serializer formatter = Serializer.Create(stream, preferredSerializer))
 				{
 					return formatter.ReadObject<T>();
 				}
@@ -712,13 +866,13 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="file"></param>
-		/// <param name="method"></param>
+		/// <param name="preferredSerializer"></param>
 		/// <returns></returns>
-		public static T ReadObject<T>(string file, SerializeMethod method = SerializeMethod.Unknown)
+		public static T ReadObject<T>(string file, Type preferredSerializer = null)
 		{
 			using (Stream str = FileOp.Open(file, FileAccessMode.Read))
 			{
-				return Serializer.ReadObject<T>(str, method);
+				return Serializer.ReadObject<T>(str, preferredSerializer);
 			}
 		}
 		/// <summary>
@@ -726,11 +880,11 @@ namespace Duality.Serialization
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="stream"></param>
-		/// <param name="method"></param>
+		/// <param name="preferredSerializer"></param>
 		/// <returns></returns>
-		public static T ReadObject<T>(Stream stream, SerializeMethod method = SerializeMethod.Unknown)
+		public static T ReadObject<T>(Stream stream, Type preferredSerializer = null)
 		{
-			using (Serializer formatter = Serializer.Create(stream, method))
+			using (Serializer formatter = Serializer.Create(stream, preferredSerializer))
 			{
 				return formatter.ReadObject<T>();
 			}
@@ -742,14 +896,14 @@ namespace Duality.Serialization
 		/// <typeparam name="T"></typeparam>
 		/// <param name="obj"></param>
 		/// <param name="file"></param>
-		/// <param name="method"></param>
-		public static void WriteObject<T>(T obj, string file, SerializeMethod method = SerializeMethod.Unknown)
+		/// <param name="preferredSerializer"></param>
+		public static void WriteObject<T>(T obj, string file, Type preferredSerializer = null)
 		{
 			string dirName = PathOp.GetDirectoryName(file);
 			if (!string.IsNullOrEmpty(dirName) && !DirectoryOp.Exists(dirName)) DirectoryOp.Create(dirName);
 			using (Stream str = FileOp.Create(file))
 			{
-				Serializer.WriteObject<T>(obj, str, method);
+				Serializer.WriteObject<T>(obj, str, preferredSerializer);
 			}
 		}
 		/// <summary>
@@ -758,10 +912,10 @@ namespace Duality.Serialization
 		/// <typeparam name="T"></typeparam>
 		/// <param name="obj"></param>
 		/// <param name="stream"></param>
-		/// <param name="method"></param>
-		public static void WriteObject<T>(T obj, Stream stream, SerializeMethod method = SerializeMethod.Unknown)
+		/// <param name="preferredSerializer"></param>
+		public static void WriteObject<T>(T obj, Stream stream, Type preferredSerializer = null)
 		{
-			using (Serializer formatter = Serializer.Create(stream, method))
+			using (Serializer formatter = Serializer.Create(stream, preferredSerializer))
 			{
 				formatter.WriteObject(obj);
 			}
@@ -846,9 +1000,9 @@ namespace Duality.Serialization
 		internal static void InitDefaultMethod()
 		{
 			if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
-				defaultMethod = SerializeMethod.Xml;
+				defaultSerializer = typeof(XmlSerializer);
 			else
-				defaultMethod = SerializeMethod.Binary;
+				defaultSerializer = typeof(BinarySerializer);
 
 			if (DirectoryOp.Exists(DualityApp.DataDirectory))
 			{
@@ -859,7 +1013,7 @@ namespace Duality.Serialization
 					{
 						try
 						{
-							defaultMethod = XmlSerializer.IsXmlStream(stream) ? SerializeMethod.Xml : SerializeMethod.Binary;
+							defaultSerializer = Detect(stream);
 							break;
 						}
 						catch (Exception) {}
@@ -869,6 +1023,13 @@ namespace Duality.Serialization
 		}
 		internal static void ClearTypeCache()
 		{
+			foreach (Serializer tempSerializer in tempCheckSerializers)
+			{
+				tempSerializer.Dispose();
+			}
+			tempCheckSerializers.Clear();
+			availableSerializerTypes.Clear();
+			defaultSerializer = null;
 			surrogates = null;
 			serializeTypeCache.Clear();
 			serializeHandlerCache.Clear();

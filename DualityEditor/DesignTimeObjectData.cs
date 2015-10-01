@@ -101,7 +101,7 @@ namespace Duality.Editor
 
 		private static void Save(string filePath)
 		{
-			Serializer.WriteObject(manager, filePath, SerializeMethod.Binary);
+			Serializer.WriteObject(manager, filePath, typeof(BinarySerializer));
 		}
 		private static void Load(string filePath)
 		{

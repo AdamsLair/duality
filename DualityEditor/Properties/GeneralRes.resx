@@ -469,7 +469,7 @@
   <data name="MenuItemName_ProfileGame" xml:space="preserve">
     <value>Profile Game</value>
   </data>
-  <data name="MenuItemInfo_FormatUpdateAll" xml:space="preserve">
+  <data name="MenuItemInfo_SerializerUpdateAll" xml:space="preserve">
     <value>This operation will load and re-save all existing Resources. Due to the serialization progress, all Resources will be guaranteed to use the same file format and to be up-to-date according to core plugin class definitions.</value>
   </data>
   <data name="TaskFormatUpdateAll_Caption" xml:space="preserve">
@@ -564,5 +564,8 @@
   </data>
   <data name="MenuItemName_WelcomeDialog" xml:space="preserve">
     <value>Getting Started</value>
+  </data>
+  <data name="MenuItemName_SerializerUpdateAll" xml:space="preserve">
+    <value>Update All</value>
   </data>
 </root>

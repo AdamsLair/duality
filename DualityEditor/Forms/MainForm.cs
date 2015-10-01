@@ -8,6 +8,7 @@ using System.Reflection;
 
 using Duality;
 using Duality.IO;
+using Duality.Serialization;
 using Duality.Resources;
 using Duality.Editor.Properties;
 
@@ -20,11 +21,13 @@ namespace Duality.Editor.Forms
 {
 	public partial class MainForm : Form, IHelpProvider
 	{
-		private	bool				nonUserClosing	= false;
-		private	ToolStripMenuItem	activeMenu		= null;
-		private MenuModel			mainMenuModel	= new MenuModel();
-		private	MenuStripMenuView	mainMenuView	= null;
-		private WelcomeDialog		welcomeDialog	= null;
+		private	bool				nonUserClosing		= false;
+		private	ToolStripMenuItem	activeMenu			= null;
+		private MenuModel			mainMenuModel		= new MenuModel();
+		private	MenuStripMenuView	mainMenuView		= null;
+		private MenuModel			serializerMenuModel	= new MenuModel();
+		private	MenuStripMenuView	serializerMenuView	= null;
+		private WelcomeDialog		welcomeDialog		= null;
 
 		// Hardcoded main menu items
 		private MenuModelItem	menuRunSandboxPlay		= null;
@@ -317,6 +320,26 @@ namespace Duality.Editor.Forms
 				}}
 			});
 
+			this.serializerMenuView = new MenuStripMenuView(this.selectFormattingMethod.DropDownItems);
+			this.serializerMenuView.Model = this.serializerMenuModel;
+
+			this.serializerMenuModel.AddItems(new[]
+			{
+				new MenuModelItem
+				{
+					Name			= "BottomSeparator",
+					SortValue		= MenuModelItem.SortValue_Bottom,
+					TypeHint		= MenuItemTypeHint.Separator
+				},
+				new MenuModelItem
+				{
+					Name			= GeneralRes.MenuItemName_SerializerUpdateAll,
+					SortValue		= MenuModelItem.SortValue_Bottom,
+					Tag				= HelpInfo.FromText(GeneralRes.MenuItemName_SerializerUpdateAll, GeneralRes.MenuItemInfo_SerializerUpdateAll),
+					ActionHandler	= this.formatUpdateAll_Click
+				}
+			});
+
 			// Set some view-specific properties
 			ToolStripItem helpViewItem = this.mainMenuView.GetViewItem(helpItem);
 			helpViewItem.Alignment = ToolStripItemAlignment.Right;
@@ -330,7 +353,28 @@ namespace Duality.Editor.Forms
 			this.actionStepSandbox.Tag = HelpInfo.FromText(this.actionStepSandbox.Text, GeneralRes.MenuItemInfo_SandboxStep);
 			this.actionPauseSandbox.Tag = HelpInfo.FromText(this.actionPauseSandbox.Text, GeneralRes.MenuItemInfo_SandboxPause);
 			this.actionStopSandbox.Tag = HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop);
-			this.formatUpdateAll.Tag = HelpInfo.FromText(this.formatUpdateAll.Text, GeneralRes.MenuItemInfo_FormatUpdateAll);
+		}
+		private void UpdateSerializerMenu()
+		{
+			Image defaultSerializerIcon = Serializer.DefaultType.GetEditorImage();
+			foreach (Type serializerType in Serializer.AvailableTypes)
+			{
+				string serializerName = serializerType.Name;
+				if (serializerName.EndsWith(typeof(Serializer).Name))
+					serializerName = serializerName.Substring(0, serializerName.Length - typeof(Serializer).Name.Length);
+
+				MenuModelItem item = this.serializerMenuModel.RequestItem(serializerName, newItem => 
+				{
+					newItem.Name			= serializerName;
+					newItem.Icon			= serializerType.GetEditorImage();
+					newItem.Tag			= HelpInfo.FromMember(serializerType.GetTypeInfo());
+					newItem.ActionHandler	= this.formatSetDefault_Click;
+				});
+
+				item.Checked = Serializer.DefaultType == serializerType;
+			}
+
+			this.selectFormattingMethod.Image = defaultSerializerIcon;
 		}
 		private void UpdateToolbar()
 		{
@@ -346,18 +390,7 @@ namespace Duality.Editor.Forms
 			this.menuRunSandboxSlower.Enabled = Sandbox.State != SandboxState.Inactive;
 			this.menuRunSandboxFaster.Enabled = Sandbox.State != SandboxState.Inactive;
 
-			if (Duality.Serialization.Serializer.DefaultMethod == Duality.Serialization.SerializeMethod.Xml)
-			{
-				this.selectFormattingMethod.Image = this.formatXml.Image;
-				this.formatXml.Checked = true;
-				this.formatBinary.Checked = false;
-			}
-			else
-			{
-				this.selectFormattingMethod.Image = this.formatBinary.Image;
-				this.formatXml.Checked = false;
-				this.formatBinary.Checked = true;
-			}
+			this.UpdateSerializerMenu();
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -567,27 +600,30 @@ namespace Duality.Editor.Forms
 			}
 		}
 
-		private void formatBinary_Click(object sender, EventArgs e)
+		private void formatSetDefault_Click(object sender, EventArgs e)
 		{
-			if (Duality.Serialization.Serializer.DefaultMethod == Duality.Serialization.SerializeMethod.Binary) return;
-			Duality.Serialization.Serializer.DefaultMethod = Duality.Serialization.SerializeMethod.Binary;
+			MenuModelItem item = sender as MenuModelItem;
+
+			Type clickedSerializerType = null;
+			foreach (Type serializerType in Serializer.AvailableTypes)
+			{
+				string serializerName = serializerType.Name;
+				if (serializerName.StartsWith(item.Name))
+				{
+					clickedSerializerType = serializerType;
+					break;
+				}
+			}
+
+			if (Serializer.DefaultType == clickedSerializerType)
+				return;
+
+			Serializer.DefaultType = clickedSerializerType;
 			this.UpdateToolbar();
 
 			ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(this, 
 				Properties.GeneralRes.TaskChangeDataFormat_Caption, 
-				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Serializer.DefaultMethod.ToString()), 
-				this.async_ChangeDataFormat, null);
-			taskDialog.ShowDialog();
-		}
-		private void formatXml_Click(object sender, EventArgs e)
-		{
-			if (Duality.Serialization.Serializer.DefaultMethod == Duality.Serialization.SerializeMethod.Xml) return;
-			Duality.Serialization.Serializer.DefaultMethod = Duality.Serialization.SerializeMethod.Xml;
-			this.UpdateToolbar();
-
-			ProcessingBigTaskDialog taskDialog = new ProcessingBigTaskDialog(this, 
-				Properties.GeneralRes.TaskChangeDataFormat_Caption, 
-				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Duality.Serialization.Serializer.DefaultMethod.ToString()), 
+				string.Format(Properties.GeneralRes.TaskChangeDataFormat_Desc, Serializer.DefaultType.ToString()), 
 				this.async_ChangeDataFormat, null);
 			taskDialog.ShowDialog();
 		}

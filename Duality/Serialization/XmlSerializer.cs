@@ -8,6 +8,8 @@ using System.IO;
 using System.Reflection;
 
 using Duality.IO;
+using Duality.Editor;
+using Duality.Properties;
 
 namespace Duality.Serialization
 {
@@ -15,6 +17,7 @@ namespace Duality.Serialization
 	/// De/Serializes object data.
 	/// </summary>
 	[DontSerialize]
+	[EditorHintImage(CoreResNames.ImageXmlSerializer)]
 	public class XmlSerializer : Serializer
 	{
 		private class CustomSerialIO : CustomSerialIOBase<XmlSerializer>
@@ -50,26 +53,25 @@ namespace Duality.Serialization
 		
 		private const string DocumentSeparator = "<!-- XmlFormatterBase Document Separator -->";
 
-		private	Stream		stream	= null;
-		private	XDocument	doc		= null;
+		private	XDocument doc = null;
+
 		
-
-		public override bool CanWrite
+		[System.Diagnostics.DebuggerStepThrough]
+		protected override bool MatchesStreamFormat(Stream stream)
 		{
-			get { return this.stream != null && this.stream.CanWrite; }
+			try
+			{
+				using (XmlReader xmlRead = XmlReader.Create(stream, GetReaderSettings()))
+				{
+					xmlRead.Read();
+				}
+				return true;
+			} 
+			catch (Exception)
+			{
+				return false;
+			}
 		}
-		public override bool CanRead
-		{
-			get { return this.stream != null && this.stream.CanRead; }
-		}
-
-
-		public XmlSerializer(Stream stream)
-		{
-			this.stream = stream;
-		}
-		
-
 		protected override void WriteObjectData(object obj)
 		{
 			this.WriteObjectData(this.doc.Root, obj);
@@ -81,42 +83,36 @@ namespace Duality.Serialization
 			return this.ReadObjectData(objElement);
 		}
 
-		protected override void BeginReadOperation()
+		protected override void OnBeginReadOperation()
 		{
-			if (this.stream == null) throw new InvalidOperationException("Can't read data, because the Stream is unavailable.");
-			if (!this.stream.CanRead) throw new InvalidOperationException("Can't read data, because the Stream doesn't support it.");
+			base.OnBeginReadOperation();
 
-			base.BeginReadOperation();
-
-			using (XmlReader reader = XmlReader.Create(ReadSingleDocument(this.stream), GetReaderSettings()))
+			using (XmlReader reader = XmlReader.Create(ReadSingleDocument(this.TargetStream), GetReaderSettings()))
 			{
 				this.doc = XDocument.Load(reader);
 			}
 		}
-		protected override void EndReadOperation()
+		protected override void OnEndReadOperation()
 		{
-			base.EndReadOperation();
+			base.OnEndReadOperation();
 			this.doc = null;
 		}
-		protected override void BeginWriteOperation()
+		protected override void OnBeginWriteOperation()
 		{
-			if (this.stream == null) throw new InvalidOperationException("Can't write data, because the Stream is unavailable.");
-			if (!this.stream.CanWrite) throw new InvalidOperationException("Can't write data, because the Stream doesn't support it.");
-
-			base.BeginWriteOperation();
+			base.OnBeginWriteOperation();
 			this.doc = new XDocument(new XElement("root"));
 		}
-		protected override void EndWriteOperation()
+		protected override void OnEndWriteOperation()
 		{
-			base.EndWriteOperation();
-			using (XmlWriter writer = XmlWriter.Create(this.stream, GetWriterSettings()))
+			base.OnEndWriteOperation();
+			using (XmlWriter writer = XmlWriter.Create(this.TargetStream, GetWriterSettings()))
 			{
 				this.doc.Save(writer);
 			}
 
 			// Insert "stop token" separator, so reading Xml data won't screw up 
 			// the underlying streams position when reading it again later.
-			using (StreamWriter writer = new StreamWriter(this.stream.NonClosing()))
+			using (StreamWriter writer = new StreamWriter(this.TargetStream.NonClosing()))
 			{
 				writer.WriteLine();
 				writer.WriteLine(DocumentSeparator);
@@ -800,32 +796,6 @@ namespace Duality.Serialization
 			}
 
 			return array.Length - omitElementCount;
-		}
-
-		/// <summary>
-		/// Returns whether the specified stream is an XML stream. The check requires a stream that is both readable and seekable.
-		/// </summary>
-		/// <param name="stream"></param>
-		/// <returns></returns>
-		[System.Diagnostics.DebuggerStepThrough]
-		public static bool IsXmlStream(Stream stream)
-		{
-			if (!stream.CanRead) throw new InvalidOperationException("The specified stream is not readable.");
-			if (!stream.CanSeek) throw new InvalidOperationException("The specified stream is not seekable. XML check aborted to maintain stream state.");
-			if (stream.Length == 0) throw new InvalidOperationException("The specified stream is empty.");
-			long oldPos = stream.Position;
-
-			bool isXml = true;
-			try
-			{
-				using (XmlReader xmlRead = XmlReader.Create(stream, GetReaderSettings()))
-				{
-					xmlRead.Read();
-				}
-			} catch (Exception) { isXml = false; }
-			stream.Seek(oldPos, SeekOrigin.Begin);
-
-			return isXml;
 		}
 		
 		/// <summary>

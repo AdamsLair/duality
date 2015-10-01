@@ -185,7 +185,7 @@ namespace Duality.Editor
 				data.AppName = projName;
 				data.AuthorName = Environment.UserName;
 				data.Version = 0;
-				Serializer.WriteObject(data, DualityApp.AppDataPath, SerializeMethod.Xml);
+				Serializer.WriteObject(data, DualityApp.AppDataPath, typeof(XmlSerializer));
 			
 				// Read content source code data (needed to rename classes / namespaces)
 				string oldRootNamespaceNameCore;

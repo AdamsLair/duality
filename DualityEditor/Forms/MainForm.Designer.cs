@@ -71,16 +71,11 @@
 			this.optionAutosaveThirtyMinutes = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionAutoSaveOneHour = new System.Windows.Forms.ToolStripMenuItem();
 			this.selectFormattingMethod = new System.Windows.Forms.ToolStripSplitButton();
-			this.formatBinary = new System.Windows.Forms.ToolStripMenuItem();
-			this.formatXml = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-			this.formatUpdateAll = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// dockPanel
 			// 
-			this.dockPanel.ActiveAutoHideContent = null;
 			this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.dockPanel.DockBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(162)))), ((int)(((byte)(162)))), ((int)(((byte)(162)))));
 			this.dockPanel.Location = new System.Drawing.Point(0, 49);
@@ -94,6 +89,7 @@
 			tabGradient1.StartColor = System.Drawing.SystemColors.Control;
 			tabGradient1.TextColor = System.Drawing.SystemColors.ControlDarkDark;
 			autoHideStripSkin1.TabGradient = tabGradient1;
+			autoHideStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
 			dockPanelSkin1.AutoHideStripSkin = autoHideStripSkin1;
 			tabGradient2.EndColor = System.Drawing.SystemColors.ControlLightLight;
 			tabGradient2.StartColor = System.Drawing.SystemColors.ControlLightLight;
@@ -107,6 +103,7 @@
 			tabGradient3.TextColor = System.Drawing.SystemColors.ControlText;
 			dockPaneStripGradient1.InactiveTabGradient = tabGradient3;
 			dockPaneStripSkin1.DocumentGradient = dockPaneStripGradient1;
+			dockPaneStripSkin1.TextFont = new System.Drawing.Font("Segoe UI", 9F);
 			tabGradient4.EndColor = System.Drawing.SystemColors.ActiveCaption;
 			tabGradient4.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
 			tabGradient4.StartColor = System.Drawing.SystemColors.GradientActiveCaption;
@@ -374,45 +371,12 @@
 			// 
 			this.selectFormattingMethod.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.selectFormattingMethod.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.selectFormattingMethod.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.formatBinary,
-            this.formatXml,
-            this.toolStripSeparator4,
-            this.formatUpdateAll});
 			this.selectFormattingMethod.Image = ((System.Drawing.Image)(resources.GetObject("selectFormattingMethod.Image")));
 			this.selectFormattingMethod.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.selectFormattingMethod.Name = "selectFormattingMethod";
 			this.selectFormattingMethod.Size = new System.Drawing.Size(32, 22);
 			this.selectFormattingMethod.Text = "Project Data Format";
 			this.selectFormattingMethod.Click += new System.EventHandler(this.selectFormattingMethod_Click);
-			// 
-			// formatBinary
-			// 
-			this.formatBinary.Image = global::Duality.Editor.Properties.Resources.page_gear;
-			this.formatBinary.Name = "formatBinary";
-			this.formatBinary.Size = new System.Drawing.Size(152, 22);
-			this.formatBinary.Text = "Binary";
-			this.formatBinary.Click += new System.EventHandler(this.formatBinary_Click);
-			// 
-			// formatXml
-			// 
-			this.formatXml.Image = global::Duality.Editor.Properties.Resources.page_code;
-			this.formatXml.Name = "formatXml";
-			this.formatXml.Size = new System.Drawing.Size(152, 22);
-			this.formatXml.Text = "Xml";
-			this.formatXml.Click += new System.EventHandler(this.formatXml_Click);
-			// 
-			// toolStripSeparator4
-			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(149, 6);
-			// 
-			// formatUpdateAll
-			// 
-			this.formatUpdateAll.Name = "formatUpdateAll";
-			this.formatUpdateAll.Size = new System.Drawing.Size(152, 22);
-			this.formatUpdateAll.Text = "Update All";
-			this.formatUpdateAll.Click += new System.EventHandler(this.formatUpdateAll_Click);
 			// 
 			// MainForm
 			// 
@@ -455,8 +419,6 @@
 		private System.Windows.Forms.ToolStripButton actionPauseSandbox;
 		private System.Windows.Forms.ToolStripButton actionStopSandbox;
 		private System.Windows.Forms.ToolStripSplitButton selectFormattingMethod;
-		private System.Windows.Forms.ToolStripMenuItem formatBinary;
-		private System.Windows.Forms.ToolStripMenuItem formatXml;
 		private System.Windows.Forms.ToolStripSplitButton splitButtonBackupSettings;
 		private System.Windows.Forms.ToolStripMenuItem checkBackups;
 		private System.Windows.Forms.ToolStripMenuItem menuAutosave;
@@ -466,8 +428,6 @@
 		private System.Windows.Forms.ToolStripMenuItem optionAutoSaveOneHour;
 		private System.Windows.Forms.ToolStripButton actionRunSandbox;
 		private System.Windows.Forms.ToolStripButton actionStepSandbox;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-		private System.Windows.Forms.ToolStripMenuItem formatUpdateAll;
 	}
 }
 

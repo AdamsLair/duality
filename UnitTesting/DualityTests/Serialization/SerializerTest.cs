@@ -15,22 +15,22 @@ using NUnit.Framework;
 
 namespace Duality.Tests.Serialization
 {
-	[TestFixture(SerializeMethod.Xml)]
-	[TestFixture(SerializeMethod.Binary)]
+	[TestFixture(typeof(XmlSerializer))]
+	[TestFixture(typeof(BinarySerializer))]
 	public class SerializerTest
 	{
-		private SerializeMethod format;
+		private Type format;
 
-		private SerializeMethod PrimaryFormat
+		private Type PrimaryFormat
 		{
 			get { return this.format; }
 		}
-		private IEnumerable<SerializeMethod> OtherFormats
+		private IEnumerable<Type> OtherFormats
 		{
-			get { return Enum.GetValues(typeof(SerializeMethod)).Cast<SerializeMethod>().Where(m => m != SerializeMethod.Unknown && m != this.PrimaryFormat); }
+			get { return Serializer.AvailableTypes.Where(m => m != this.PrimaryFormat); }
 		}
 
-		public SerializerTest(SerializeMethod format)
+		public SerializerTest(Type format)
 		{
 			this.format = format;
 		}
@@ -222,7 +222,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsTrue(rawDataB.Equals(rawDataResultB));
 			Assert.IsTrue(data.Equals(dataResult));
 		}
-		[Test] public void ConvertFormat([ValueSource("OtherFormats")] SerializeMethod to)
+		[Test] public void ConvertFormat([ValueSource("OtherFormats")] Type to)
 		{
 			Random rnd = new Random();
 			TestObject data = new TestObject(rnd);
@@ -309,11 +309,11 @@ namespace Duality.Tests.Serialization
 		}
 
 		
-		private string GetReferenceResourceName(string name, SerializeMethod format)
+		private string GetReferenceResourceName(string name, Type format)
 		{
-			return string.Format("FormatterTest{0}{1}Data", name, format);
+			return string.Format("SerializerTest{0}{1}Data", name, format.Name);
 		}
-		private void CreateReferenceFile<T>(string name, T writeObj, SerializeMethod format)
+		private void CreateReferenceFile<T>(string name, T writeObj, Type format)
 		{
 			string filePath = TestHelper.GetEmbeddedResourcePath(GetReferenceResourceName(name, format), ".dat");
 			using (FileStream stream = File.Open(filePath, FileMode.Create))
@@ -348,7 +348,7 @@ namespace Duality.Tests.Serialization
 			return true;
 		}
 
-		private void TestDataEqual<T>(string name, T writeObj, SerializeMethod format, Func<T,T,bool> checkEqual = null)
+		private void TestDataEqual<T>(string name, T writeObj, Type format, Func<T,T,bool> checkEqual = null)
 		{
 			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
 
@@ -361,7 +361,7 @@ namespace Duality.Tests.Serialization
 			}
 			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		private void TestWriteRead<T>(T writeObj, SerializeMethod format, Func<T,T,bool> checkEqual = null)
+		private void TestWriteRead<T>(T writeObj, Type format, Func<T,T,bool> checkEqual = null)
 		{
 			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
 
@@ -383,7 +383,7 @@ namespace Duality.Tests.Serialization
 			}
 			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed single WriteRead of Type {0} with Value {1}", typeof(T), writeObj);
 		}
-		private void TestSequential<T>(T writeObjA, T writeObjB, SerializeMethod format, Func<T,T,bool> checkEqual = null)
+		private void TestSequential<T>(T writeObjA, T writeObjB, Type format, Func<T,T,bool> checkEqual = null)
 		{
 			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
 
@@ -421,7 +421,7 @@ namespace Duality.Tests.Serialization
 			Assert.IsTrue(checkEqual(writeObjA, readObjA), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjA);
 			Assert.IsTrue(checkEqual(writeObjB, readObjB), "Failed sequential WriteRead of Type {0} with Value {1}", typeof(T), writeObjB);
 		}
-		private void TestRandomAccess<T>(T writeObjA, T writeObjB, SerializeMethod format, Func<T,T,bool> checkEqual = null)
+		private void TestRandomAccess<T>(T writeObjA, T writeObjB, Type format, Func<T,T,bool> checkEqual = null)
 		{
 			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
 

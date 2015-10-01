@@ -80,6 +80,11 @@
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
     <Compile Include="IO\PathOpTest.cs" />
+    <Compile Include="Properties\TestRes.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TestRes.resx</DependentUpon>
+    </Compile>
     <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
     <Compile Include="Resources\PrefabTest.cs" />
     <Compile Include="Serialization\TestObjects.cs" />
@@ -103,13 +108,8 @@
     <Compile Include="Utility\RawListTest.cs" />
     <Compile Include="InitDualityAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\TestRes.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TestRes.resx</DependentUpon>
-    </Compile>
     <Compile Include="Resources\SceneTest.cs" />
-    <Compile Include="Serialization\FormatterTest.cs" />
+    <Compile Include="Serialization\SerializerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DualityPrimitives\DualityPrimitives.csproj">
@@ -130,8 +130,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CanvasTestNothing.png" />
-    <None Include="EmbeddedResources\FormatterTestOldBinaryData.dat" />
-    <None Include="EmbeddedResources\FormatterTestOldXmlData.dat" />
+    <None Include="EmbeddedResources\SerializerTestOldBinarySerializerData.dat" />
+    <None Include="EmbeddedResources\SerializerTestOldXmlSerializerData.dat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CanvasTestRedSquare.png" />

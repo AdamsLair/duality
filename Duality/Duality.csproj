@@ -167,7 +167,6 @@
     <Compile Include="Resources\ShaderInfo\ShaderFieldScope.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldInfo.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderFieldType.cs" />
-    <Compile Include="Serialization\SerializeMethod.cs" />
     <Compile Include="Backend\Dummy\DummyPluginLoader.cs" />
     <Compile Include="Utility\EditorHints\EditorHintImageAttribute.cs" />
     <Compile Include="Utility\EditorHints\EditorHintCategoryAttribute.cs" />
@@ -408,6 +407,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="EmbeddedResources\CousineLicense.txt" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconBinarySerializer.png" />
+    <EmbeddedResource Include="EmbeddedResources\EditorSupport\iconXmlSerializer.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DualityPrimitives\DualityPrimitives.csproj">

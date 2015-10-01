@@ -595,7 +595,7 @@ namespace Duality
 		/// </summary>
 		public static void SaveAppData()
 		{
-			Serializer.WriteObject(appData, AppDataPath, SerializeMethod.Xml);
+			Serializer.WriteObject(appData, AppDataPath, typeof(XmlSerializer));
 		}
 		/// <summary>
 		/// Triggers Duality to save its <see cref="DualityUserData"/>.
@@ -603,10 +603,10 @@ namespace Duality
 		public static void SaveUserData()
 		{
 			string path = UserDataPath;
-			Serializer.WriteObject(userData, UserDataPath, SerializeMethod.Xml);
+			Serializer.WriteObject(userData, UserDataPath, typeof(XmlSerializer));
 			if (execContext == ExecutionContext.Editor)
 			{
-				Serializer.WriteObject(userData, "DefaultUserData.dat", SerializeMethod.Xml);
+				Serializer.WriteObject(userData, "DefaultUserData.dat", typeof(XmlSerializer));
 			}
 		}
 
