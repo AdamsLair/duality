@@ -14,7 +14,7 @@ using Duality.Properties;
 namespace Duality.Serialization
 {
 	/// <summary>
-	/// De/Serializes object data.
+	/// De/Serializes objects in an XML format. Additional metadata is included in order to allow an extended degree of error tolerance when working under development conditions.
 	/// </summary>
 	[DontSerialize]
 	[EditorHintImage(CoreResNames.ImageXmlSerializer)]

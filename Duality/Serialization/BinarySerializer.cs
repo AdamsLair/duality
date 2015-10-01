@@ -12,7 +12,7 @@ using Duality.Properties;
 namespace Duality.Serialization
 {
 	/// <summary>
-	/// De/Serializes object data.
+	/// De/Serializes objects in a binary format. Additional metadata is included in order to allow an extended degree of error tolerance when working under development conditions.
 	/// </summary>
 	[DontSerialize]
 	[EditorHintImage(CoreResNames.ImageBinarySerializer)]
