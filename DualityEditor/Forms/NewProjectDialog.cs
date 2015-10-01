@@ -146,11 +146,24 @@ namespace Duality.Editor.Forms
 			}
 			
 			string targetDir = Path.Combine(this.textBoxFolder.Text, this.textBoxName.Text);
-			if (Directory.Exists(targetDir) || File.Exists(targetDir))
+			if (Directory.Exists(targetDir))
+			{
+				if (Directory.EnumerateFiles(targetDir, "*", SearchOption.AllDirectories).Any())
+				{
+					this.textBoxFolder.BackColor = errorColor;
+					MessageBox.Show(
+						GeneralRes.Msg_CreateProjectErrorTargetExists_Desc,
+						GeneralRes.Msg_CreateProjectErrorTargetExists_Caption,
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Warning);
+					return false;
+				}
+			}
+			if (File.Exists(targetDir))
 			{
 				this.textBoxFolder.BackColor = errorColor;
 				MessageBox.Show(
-					GeneralRes.Msg_CreateProjectErrorTargetExists_Desc,
+					GeneralRes.Msg_CreateProjectErrorTargetIsFilePath_Desc,
 					GeneralRes.Msg_CreateProjectErrorTargetExists_Caption,
 					MessageBoxButtons.OK,
 					MessageBoxIcon.Warning);

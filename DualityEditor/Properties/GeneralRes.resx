@@ -542,8 +542,11 @@
     <value>Invalid Target Directory</value>
   </data>
   <data name="Msg_CreateProjectErrorTargetExists_Desc" xml:space="preserve">
-    <value>The new projects target directory already exists. Please select a different one.</value>
+    <value>The specified target folder already exists and is not empty. Please select a different one.</value>
   </data>
+	<data name="Msg_CreateProjectErrorTargetIsFilePath_Desc" xml:space="preserve">
+		<value>The specified target folder is not a valid path. Please select a different one.</value>
+	</data>
   <data name="Msg_PublishProjectErrorNestedFolder_Caption" xml:space="preserve">
     <value>Invalid Target Directory</value>
   </data>
