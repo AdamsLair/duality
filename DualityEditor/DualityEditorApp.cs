@@ -315,57 +315,58 @@ namespace Duality.Editor
 				}
 			}
 
-			// Not cancelling? Then actually start terminating.
-			if (!cancel)
-			{
-				if (Terminating != null) Terminating(null, EventArgs.Empty);
+			// Did we cancel it? Return false.
+			if (cancel)
+				return false;
+
+			// Otherwise, actually start terminating.
+			// From this point on, there's no return - need to re-init the editor afterwards.
+			if (Terminating != null)
+				Terminating(null, EventArgs.Empty);
 				
-				// Unregister message hook
-				if (menuKeyInterceptor != null)
-				{
-					Application.RemoveMessageFilter(menuKeyInterceptor);
-				}
+			// Unregister message hook
+			if (menuKeyInterceptor != null)
+				Application.RemoveMessageFilter(menuKeyInterceptor);
 
-				// If this was our first session, it ends now. This will be saved as userdata
-				firstEditorSession = false;
+			// If this was our first session, it ends now. This will be saved as userdata
+			firstEditorSession = false;
 
-				// Save UserData
-				DualityEditorApp.SaveUserData();
-				DualityApp.SaveAppData();
+			// Save UserData
+			DualityEditorApp.SaveUserData();
+			DualityApp.SaveAppData();
 
-				// Unregister events
-				EditorHintImageAttribute.ImageResolvers -= EditorHintImageResolver;
-				DualityApp.PluginReady -= DualityApp_PluginReady;
-				mainForm.Activated -= mainForm_Activated;
-				mainForm.Deactivate -= mainForm_Deactivate;
-				Scene.Leaving -= Scene_Leaving;
-				Scene.Entered -= Scene_Entered;
-				Application.Idle -= Application_Idle;
-				Resource.ResourceSaved -= Resource_ResourceSaved;
-				Resource.ResourceSaving -= Resource_ResourceSaving;
-				FileEventManager.PluginChanged -= FileEventManager_PluginChanged;
+			// Unregister events
+			EditorHintImageAttribute.ImageResolvers -= EditorHintImageResolver;
+			DualityApp.PluginReady -= DualityApp_PluginReady;
+			mainForm.Activated -= mainForm_Activated;
+			mainForm.Deactivate -= mainForm_Deactivate;
+			Scene.Leaving -= Scene_Leaving;
+			Scene.Entered -= Scene_Entered;
+			Application.Idle -= Application_Idle;
+			Resource.ResourceSaved -= Resource_ResourceSaved;
+			Resource.ResourceSaving -= Resource_ResourceSaving;
+			FileEventManager.PluginChanged -= FileEventManager_PluginChanged;
 
-				// Terminate editor actions
-				editorActions.Clear();
+			// Terminate editor actions
+			editorActions.Clear();
 
-				// Terminate secondary editor components
-				UndoRedoManager.Terminate();
-				FileEventManager.Terminate();
-				HelpSystem.Terminate();
-				Sandbox.Terminate();
-				PreviewProvider.Terminate();
-				ConvertOperation.Terminate();
-				AssetManager.Terminate();
-				DesignTimeObjectData.Terminate();
+			// Terminate secondary editor components
+			UndoRedoManager.Terminate();
+			FileEventManager.Terminate();
+			HelpSystem.Terminate();
+			Sandbox.Terminate();
+			PreviewProvider.Terminate();
+			ConvertOperation.Terminate();
+			AssetManager.Terminate();
+			DesignTimeObjectData.Terminate();
 
-				// Shut down the editor backend
-				DualityApp.ShutdownBackend(ref graphicsBack);
+			// Shut down the editor backend
+			DualityApp.ShutdownBackend(ref graphicsBack);
 
-				// Terminate Duality
-				DualityApp.Terminate();
-			}
+			// Terminate Duality
+			DualityApp.Terminate();
 
-			return !cancel;
+			return true;
 		}
 
 		private static void LoadPlugins()

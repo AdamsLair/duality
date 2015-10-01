@@ -352,14 +352,7 @@ namespace Duality.Editor.Plugins.CamView
 			}
 
 			// Register DualityApp updater for camera steering behaviour
-			FileEventManager.ResourceModified		+= this.FileEventManager_ResourceModified;
-			DualityEditorApp.HighlightObject		+= this.DualityEditorApp_HighlightObject;
-			DualityEditorApp.ObjectPropertyChanged	+= this.DualityEditorApp_ObjectPropertyChanged;
-			DualityEditorApp.UpdatingEngine			+= this.DualityEditorApp_UpdatingEngine;
-			Scene.Entered							+= this.Scene_Entered;
-			Scene.Leaving							+= this.Scene_Leaving;
-			Scene.GameObjectRemoved					+= this.Scene_GameObjectUnregistered;
-			Scene.ComponentRemoving					+= this.Scene_ComponentRemoving;
+			this.RegisterEditorEvents();
 
 			// Update Camera values according to GUI (which carries loaded or default settings)
 			this.focusDist_ValueChanged(this.focusDist, null);
@@ -394,7 +387,27 @@ namespace Duality.Editor.Plugins.CamView
 			if (this.nativeCamObj != null)
 				this.nativeCamObj.Dispose();
 
+			this.UnregisterEditorEvents();
+
+			this.SetCurrentState((CamViewState)null);
+		}
+		
+		private void RegisterEditorEvents()
+		{
+			FileEventManager.ResourceModified		+= this.FileEventManager_ResourceModified;
+			DualityEditorApp.Terminating			+= this.DualityEditorApp_Terminating;
+			DualityEditorApp.HighlightObject		+= this.DualityEditorApp_HighlightObject;
+			DualityEditorApp.ObjectPropertyChanged	+= this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.UpdatingEngine			+= this.DualityEditorApp_UpdatingEngine;
+			Scene.Entered							+= this.Scene_Entered;
+			Scene.Leaving							+= this.Scene_Leaving;
+			Scene.GameObjectRemoved					+= this.Scene_GameObjectUnregistered;
+			Scene.ComponentRemoving					+= this.Scene_ComponentRemoving;
+		}
+		private void UnregisterEditorEvents()
+		{
 			FileEventManager.ResourceModified		-= this.FileEventManager_ResourceModified;
+			DualityEditorApp.Terminating			-= this.DualityEditorApp_Terminating;
 			DualityEditorApp.HighlightObject		-= this.DualityEditorApp_HighlightObject;
 			DualityEditorApp.ObjectPropertyChanged	-= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine			-= this.DualityEditorApp_UpdatingEngine;
@@ -402,10 +415,8 @@ namespace Duality.Editor.Plugins.CamView
 			Scene.Leaving							-= this.Scene_Leaving;
 			Scene.GameObjectRemoved					-= this.Scene_GameObjectUnregistered;
 			Scene.ComponentRemoving					-= this.Scene_ComponentRemoving;
-
-			this.SetCurrentState((CamViewState)null);
 		}
-		
+
 		private void InitGLControl()
 		{
 			this.SuspendLayout();
@@ -1227,6 +1238,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (!e.IsResource) return;
 			this.RenderableControl.Invalidate();
+		}
+		private void DualityEditorApp_Terminating(object sender, EventArgs e)
+		{
+			this.UnregisterEditorEvents();
 		}
 		private void DualityEditorApp_HighlightObject(object sender, HighlightObjectEventArgs e)
 		{
