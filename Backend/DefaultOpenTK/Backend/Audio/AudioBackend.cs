@@ -62,6 +62,9 @@ namespace Duality.Backend.DefaultOpenTK
 		void IDualityBackend.Init()
 		{
 			AudioLibraryLoader.LoadAudioLibrary();
+
+			// Initialize OpenTK, if not done yet
+			DefaultOpenTKBackendPlugin.InitOpenTK();
 			
 			Log.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
 				AudioContext.AvailableDevices.ToString(d => d == AudioContext.DefaultDevice ? d + " (Default)" : d, "," + Environment.NewLine));

@@ -70,6 +70,9 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IDualityBackend.Init()
 		{
+			// Initialize OpenTK, if not done yet
+			DefaultOpenTKBackendPlugin.InitOpenTK();
+
 			// Determine available and default graphics modes
 			this.QueryGraphicsModes();
 			activeInstance = this;
