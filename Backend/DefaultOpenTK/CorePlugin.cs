@@ -35,6 +35,9 @@ namespace Duality.Backend.DefaultOpenTK
 				};
 				Toolkit.Init(options);
 			}
+
+			// Initially check for available input devices
+			this.DetectInputDevices();
 		}
 		protected override void OnAfterUpdate()
 		{
@@ -43,9 +46,7 @@ namespace Duality.Backend.DefaultOpenTK
 			// Periodically check for global / non-windowbound input devices
 			if (Time.MainTimer.TotalSeconds - this.lastInputDeviceUpdate > 1.0f)
 			{
-				this.lastInputDeviceUpdate = Time.MainTimer.TotalSeconds;
-				GlobalGamepadInputSource.UpdateAvailableDecives(DualityApp.Gamepads);
-				GlobalJoystickInputSource.UpdateAvailableDecives(DualityApp.Joysticks);
+				this.DetectInputDevices();
 			}
 		}
 		protected override void OnDisposePlugin()
@@ -62,6 +63,13 @@ namespace Duality.Backend.DefaultOpenTK
 				if (joystick.Source is GlobalJoystickInputSource)
 					DualityApp.Joysticks.RemoveSource(joystick.Source);
 			}
+		}
+
+		private void DetectInputDevices()
+		{
+			this.lastInputDeviceUpdate = Time.MainTimer.TotalSeconds;
+			GlobalGamepadInputSource.UpdateAvailableDecives(DualityApp.Gamepads);
+			GlobalJoystickInputSource.UpdateAvailableDecives(DualityApp.Joysticks);
 		}
 		
 		/// <summary>
