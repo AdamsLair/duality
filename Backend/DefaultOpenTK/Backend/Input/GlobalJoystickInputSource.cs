@@ -7,6 +7,8 @@ namespace Duality.Backend.DefaultOpenTK
 {
 	public class GlobalJoystickInputSource : IJoystickInputSource
 	{
+		private static List<GlobalJoystickInputSource> cachedDevices = new List<GlobalJoystickInputSource>();
+
 		private	int	deviceIndex;
 		private	int	detectedHatCount;
 		private	OpenTK.Input.JoystickState state;
@@ -96,6 +98,7 @@ namespace Duality.Backend.DefaultOpenTK
 		public static void UpdateAvailableDecives(JoystickInputCollection inputManager)
 		{
 			const int MinDeviceCheckCount = 8;
+			const int MaxDeviceCheckCount = 32;
 
 			// Determine which devices are currently active already, so we can skip their indices
 			List<int> skipIndices = null;
@@ -111,14 +114,18 @@ namespace Duality.Backend.DefaultOpenTK
 
 			// Iterate over device indices and see what responds
 			int deviceIndex = -1;
-			while (true)
+			while (deviceIndex < MaxDeviceCheckCount)
 			{
 				deviceIndex++;
 
 				if (skipIndices != null && skipIndices.Contains(deviceIndex))
 					continue;
-
-				GlobalJoystickInputSource joystick = new GlobalJoystickInputSource(deviceIndex);
+				
+				while (deviceIndex >= cachedDevices.Count)
+				{
+					cachedDevices.Add(new GlobalJoystickInputSource(cachedDevices.Count));
+				}
+				GlobalJoystickInputSource joystick = cachedDevices[deviceIndex];
 				joystick.UpdateState();
 
 				if (joystick.IsAvailable)

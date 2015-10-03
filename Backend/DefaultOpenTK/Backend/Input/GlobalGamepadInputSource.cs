@@ -9,6 +9,8 @@ namespace Duality.Backend.DefaultOpenTK
 {
 	public class GlobalGamepadInputSource : IGamepadInputSource
 	{
+		private static List<GlobalGamepadInputSource> cachedDevices = new List<GlobalGamepadInputSource>();
+
 		private	int	deviceIndex;
 		private bool hasAxesOrButtons;
 		private	GamePadState state;
@@ -95,6 +97,7 @@ namespace Duality.Backend.DefaultOpenTK
 		public static void UpdateAvailableDecives(GamepadInputCollection inputManager)
 		{
 			const int MinDeviceCheckCount = 8;
+			const int MaxDeviceCheckCount = 32;
 
 			// Determine which devices are currently active already, so we can skip their indices
 			List<int> skipIndices = null;
@@ -110,14 +113,18 @@ namespace Duality.Backend.DefaultOpenTK
 
 			// Iterate over device indices and see what responds
 			int deviceIndex = -1;
-			while (true)
+			while (deviceIndex < MaxDeviceCheckCount)
 			{
 				deviceIndex++;
 
 				if (skipIndices != null && skipIndices.Contains(deviceIndex))
 					continue;
 
-				GlobalGamepadInputSource gamepad = new GlobalGamepadInputSource(deviceIndex);
+				while (deviceIndex >= cachedDevices.Count)
+				{
+					cachedDevices.Add(new GlobalGamepadInputSource(cachedDevices.Count));
+				}
+				GlobalGamepadInputSource gamepad = cachedDevices[deviceIndex];
 				gamepad.UpdateState();
 
 				if (gamepad.IsAvailable)
