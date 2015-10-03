@@ -72,9 +72,7 @@ namespace Duality.Input
 					if (this.source != null)
 					{
 						this.description = this.source.Description;
-						this.axisCount = this.source.AxisCount;
-						this.buttonCount = this.source.ButtonCount;
-						this.hatCount = this.source.HatCount;
+						this.UpdateInputCounts();
 					}
 				}
 			}
@@ -187,6 +185,8 @@ namespace Duality.Input
 			{
 				// Update source state
 				this.source.UpdateState();
+				// Update how many buttons, hats and axes there are - some sources aren't constant here.
+				this.UpdateInputCounts();
 				// Obtain new state
 				this.currentState.UpdateFromSource(this.source);
 			}
@@ -253,6 +253,12 @@ namespace Duality.Input
 					}
 				}
 			}
+		}
+		private void UpdateInputCounts()
+		{
+			this.axisCount = this.source.AxisCount;
+			this.buttonCount = this.source.ButtonCount;
+			this.hatCount = this.source.HatCount;
 		}
 		
 		/// <summary>

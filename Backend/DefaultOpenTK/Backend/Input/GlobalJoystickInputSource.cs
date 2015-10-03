@@ -8,6 +8,7 @@ namespace Duality.Backend.DefaultOpenTK
 	public class GlobalJoystickInputSource : IJoystickInputSource
 	{
 		private	int	deviceIndex;
+		private	int	detectedHatCount;
 		private	OpenTK.Input.JoystickState state;
 		private	OpenTK.Input.JoystickCapabilities caps;
 		
@@ -29,7 +30,14 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		public int HatCount
 		{
-			get { return this.caps.HatCount; }
+			get 
+			{
+				// Due to OpenTK sometimes reporting the wrong hat count, adjust its value when required
+				if (this.caps.IsConnected)
+					return Math.Max(this.detectedHatCount, this.caps.HatCount);
+				else
+					return this.caps.HatCount;
+			}
 		}
 		public bool this[JoystickButton button]
 		{
@@ -71,6 +79,18 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			this.caps = OpenTK.Input.Joystick.GetCapabilities(this.deviceIndex);
 			this.state = OpenTK.Input.Joystick.GetState(this.deviceIndex);
+
+			// Due to OpenTK sometimes reporting the wrong hat count, adjust its value when required
+			{
+				int highestInputHat = 0;
+
+				if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat3).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 4;
+				else if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat2).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 3;
+				else if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat1).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 2;
+				else if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat0).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 1;
+
+				this.detectedHatCount = Math.Max(this.detectedHatCount, highestInputHat);
+			}
 		}
 
 		public static void UpdateAvailableDecives(JoystickInputCollection inputManager)
