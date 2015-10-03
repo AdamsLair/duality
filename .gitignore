@@ -179,3 +179,17 @@ SampleProjects/BasicMenu/Content/DesignTimeData.dat
 SampleProjects/BasicMenu/Content/OpenAL32.dll
 SampleProjects/DualStickSpaceShooter/Content/OpenAL32.dll
 SampleProjects/CameraController/Content/OpenAL32.dll
+SampleProjects/InputHandling/bin/
+SampleProjects/InputHandling/obj/
+SampleProjects/InputHandling/Content/Source/
+SampleProjects/InputHandling/Content/Backup/
+SampleProjects/InputHandling/Content/Data/desktop.ini
+SampleProjects/InputHandling/Content/Data/WorkingFolderIcon.ico
+SampleProjects/InputHandling/Content/perflog.txt
+SampleProjects/InputHandling/Content/PackageConfig.xml
+SampleProjects/InputHandling/Content/OpenAL32.dll
+SampleProjects/InputHandling/Content/logfile.txt
+SampleProjects/InputHandling/Content/DesignTimeData.dat
+SampleProjects/InputHandling/InputHandling.core.xml
+SampleProjects/InputHandling/Content/AppData.dat
+SampleProjects/InputHandling/Content/DefaultUserData.dat
