@@ -143,6 +143,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case Key.Clear:			return OpenTK.Input.Key.Clear;
 				case Key.Sleep:			return OpenTK.Input.Key.Sleep;
 
+				case Key.Keypad0:		return OpenTK.Input.Key.Keypad0;
 				case Key.Keypad1:		return OpenTK.Input.Key.Keypad1;
 				case Key.Keypad2:		return OpenTK.Input.Key.Keypad2;
 				case Key.Keypad3:		return OpenTK.Input.Key.Keypad3;
@@ -186,6 +187,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case Key.Y:				return OpenTK.Input.Key.Y;
 				case Key.Z:				return OpenTK.Input.Key.Z;
     
+				case Key.Number0:		return OpenTK.Input.Key.Number0;
 				case Key.Number1:		return OpenTK.Input.Key.Number1;
 				case Key.Number2:		return OpenTK.Input.Key.Number2;
 				case Key.Number3:		return OpenTK.Input.Key.Number3;
