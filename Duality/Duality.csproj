@@ -98,6 +98,9 @@
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
     <Compile Include="Backend\IAudioBackend.cs" />
     <Compile Include="Backend\IGraphicsBackend.cs" />
+    <Compile Include="Input\JoystickHatEventArgs.cs" />
+    <Compile Include="Input\JoystickHatPosition.cs" />
+    <Compile Include="Input\JoystickHat.cs" />
     <Compile Include="IO\NamedDirectory.cs" />
     <Compile Include="Cloning\CloneBehaviorAttribute.cs" />
     <Compile Include="Cloning\CloneBehavior.cs" />

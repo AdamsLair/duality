@@ -27,6 +27,10 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			get { return this.caps.ButtonCount; }
 		}
+		public int HatCount
+		{
+			get { return this.caps.HatCount; }
+		}
 		public bool this[JoystickButton button]
 		{
 			get 
@@ -45,6 +49,16 @@ namespace Duality.Backend.DefaultOpenTK
 					return this.state.GetAxis(GetOpenTKJoystickAxis(axis));
 				else
 					return 0.0f;
+			}
+		}
+		public JoystickHatPosition this[JoystickHat hat]
+		{
+			get 
+			{
+				if (this.HatCount > (int)hat)
+					return GetDualityJoystickHatPosition(this.state.GetHat(GetOpenTKJoystickHat(hat)).Position);
+				else
+					return JoystickHatPosition.Centered;
 			}
 		}
 
@@ -153,6 +167,35 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 
 			return OpenTK.Input.JoystickAxis.Last;
+		}
+		private static OpenTK.Input.JoystickHat GetOpenTKJoystickHat(JoystickHat hat)
+		{
+			switch (hat)
+			{
+				case JoystickHat.Hat0:	return OpenTK.Input.JoystickHat.Hat0;
+				case JoystickHat.Hat1:	return OpenTK.Input.JoystickHat.Hat1;
+				case JoystickHat.Hat2:	return OpenTK.Input.JoystickHat.Hat2;
+				case JoystickHat.Hat3:	return OpenTK.Input.JoystickHat.Hat3;
+			}
+
+			return OpenTK.Input.JoystickHat.Last;
+		}
+		private static JoystickHatPosition GetDualityJoystickHatPosition(OpenTK.Input.HatPosition hatPos)
+		{
+			switch (hatPos)
+			{
+				case OpenTK.Input.HatPosition.Centered:	 return JoystickHatPosition.Centered;
+				case OpenTK.Input.HatPosition.Up:        return JoystickHatPosition.Up;
+				case OpenTK.Input.HatPosition.UpLeft:    return JoystickHatPosition.Up | JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.UpRight:   return JoystickHatPosition.Up | JoystickHatPosition.Right;
+				case OpenTK.Input.HatPosition.Right:     return JoystickHatPosition.Right;
+				case OpenTK.Input.HatPosition.Left:      return JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.Down:      return JoystickHatPosition.Down;
+				case OpenTK.Input.HatPosition.DownLeft:  return JoystickHatPosition.Down | JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.DownRight: return JoystickHatPosition.Down | JoystickHatPosition.Right;
+			}
+
+			return JoystickHatPosition.Centered;
 		}
 	}
 }
