@@ -43,15 +43,10 @@ namespace Duality.Backend.DefaultOpenTK
 		public GameWindowKeyboardInputSource(GameWindow window)
 		{
 			this.window = window;
-			this.window.FocusedChanged += this.window_FocusedChanged;
 			this.window.Keyboard.KeyDown += this.device_KeyDown;
 			this.window.KeyPress += this.window_KeyPress;
 		}
 
-		private void window_FocusedChanged(object sender, EventArgs e)
-		{
-			this.hasFocus = this.window.Focused;
-		}
 		private void device_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
 		{
 			this.repeatCounter++;
@@ -63,6 +58,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public void UpdateState()
 		{
+			this.hasFocus = this.window.Focused;
 			this.charInput = this.charInputBuffer.ToString();
 			this.charInputBuffer.Clear();
 		}
