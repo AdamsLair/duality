@@ -86,7 +86,21 @@ namespace Duality.Input
 		{
 			get { return this.source != null && this.source.IsAvailable; }
 		}
-
+		
+		/// <summary>
+		/// [GET] The left triggers current value.
+		/// </summary>
+		public float LeftTrigger
+		{
+			get { return this.currentState.AxisValue[(int)GamepadAxis.LeftTrigger]; }
+		}
+		/// <summary>
+		/// [GET] The left triggers movement speed.
+		/// </summary>
+		public float LeftTriggerSpeed
+		{
+			get { return this.currentState.AxisValue[(int)GamepadAxis.LeftTrigger] - this.lastState.AxisValue[(int)GamepadAxis.LeftTrigger]; }
+		}
 		/// <summary>
 		/// [GET] The left thumbsticks current value.
 		/// </summary>
@@ -113,6 +127,20 @@ namespace Duality.Input
 					this.lastState.AxisValue[(int)GamepadAxis.LeftThumbstickX], 
 					this.lastState.AxisValue[(int)GamepadAxis.LeftThumbstickY]) ;
 			}
+		}
+		/// <summary>
+		/// [GET] The right triggers current value.
+		/// </summary>
+		public float RightTrigger
+		{
+			get { return this.currentState.AxisValue[(int)GamepadAxis.RightTrigger]; }
+		}
+		/// <summary>
+		/// [GET] The right triggers movement speed.
+		/// </summary>
+		public float RightTriggerSpeed
+		{
+			get { return this.currentState.AxisValue[(int)GamepadAxis.RightTrigger] - this.lastState.AxisValue[(int)GamepadAxis.RightTrigger]; }
 		}
 		/// <summary>
 		/// [GET] The right thumbsticks current value.
