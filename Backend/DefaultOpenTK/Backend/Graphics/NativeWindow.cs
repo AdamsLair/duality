@@ -46,6 +46,11 @@ namespace Duality.Backend.DefaultOpenTK
 		private RefreshMode		refreshMode;
 		private Stopwatch		frameLimiterWatch = new Stopwatch();
 
+		public bool IsMultisampled
+		{
+			get { return (this.internalWindow != null) ? (this.internalWindow.Context.GraphicsMode.Samples > 0) : false; }
+		}
+
 		public NativeWindow(GraphicsMode mode, WindowOptions options)
 		{
 			if (options.ScreenMode == ScreenMode.Native)

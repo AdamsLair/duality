@@ -24,12 +24,13 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return activeInstance; }
 		}
 
-		private	IDrawDevice				currentDevice			= null;
-		private RenderStats				renderStats				= null;
-		private	HashSet<GraphicsMode>	availGraphicsModes		= null;
-		private	GraphicsMode			defaultGraphicsMode		= null;
-		private	uint					primaryVBO				= 0;
-		private	NativeWindow			activeWindow			= null;
+		private	IDrawDevice           currentDevice           = null;
+		private RenderStats           renderStats             = null;
+		private	HashSet<GraphicsMode> availGraphicsModes      = null;
+		private	GraphicsMode          defaultGraphicsMode     = null;
+		private	uint                  primaryVBO              = 0;
+		private	NativeWindow          activeWindow            = null;
+		private	bool                  useAlphaToCoverageBlend = false;
 		
 
 		public GraphicsMode DefaultGraphicsMode
@@ -48,6 +49,10 @@ namespace Duality.Backend.DefaultOpenTK
 					.Select(resolution => new ScreenResolution(resolution.Width, resolution.Height, resolution.RefreshRate))
 					.Distinct();
 			}
+		}
+		public NativeWindow ActiveWindow
+		{
+			get { return this.activeWindow; }
 		}
 
 		string IDualityBackend.Id
@@ -108,6 +113,14 @@ namespace Duality.Backend.DefaultOpenTK
 
 			// Prepare the target surface for rendering
 			NativeRenderTarget.Bind(options.Target as NativeRenderTarget);
+
+			// Determine whether masked blending should use alpha-to-coverage mode
+			if (NativeRenderTarget.BoundRT != null)
+				this.useAlphaToCoverageBlend = NativeRenderTarget.BoundRT.Samples > 0;
+			else if (GraphicsBackend.ActiveInstance.ActiveWindow != null)
+				this.useAlphaToCoverageBlend = GraphicsBackend.ActiveInstance.ActiveWindow.IsMultisampled; 
+			else
+				this.useAlphaToCoverageBlend = GraphicsBackend.ActiveInstance.DefaultGraphicsMode.Samples > 0; 
 
 			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);
@@ -576,14 +589,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case BlendMode.Mask:
 					GL.DepthMask(depthWrite);
 					GL.Disable(EnableCap.Blend);
-
-					bool useAlphaToCoverage = false;
-					if (NativeRenderTarget.BoundRT != null)
-						useAlphaToCoverage = NativeRenderTarget.BoundRT.Samples > 0;
-					else
-						useAlphaToCoverage = GraphicsBackend.ActiveInstance.DefaultGraphicsMode.Samples > 0; 
-
-					if (useAlphaToCoverage)
+					if (this.useAlphaToCoverageBlend)
 					{
 						GL.Disable(EnableCap.AlphaTest);
 						GL.Enable(EnableCap.SampleAlphaToCoverage);
