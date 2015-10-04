@@ -767,7 +767,6 @@ namespace Duality.Backend.DefaultOpenTK
 		public static void DebugCheckOpenGLErrors([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
 		{
 			if (!System.Diagnostics.Debugger.IsAttached) return;
-			Log.Core.Write("DebugCheckOpenGLErrors");
 			CheckOpenGLErrors(false, callerInfoMember, callerInfoFile, callerInfoLine);
 		}
 	}
