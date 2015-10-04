@@ -101,6 +101,8 @@ namespace Duality.Backend.DefaultOpenTK
 
 		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats)
 		{
+			DebugCheckOpenGLErrors();
+
 			this.currentDevice = device;
 			this.renderStats = stats;
 
@@ -214,8 +216,9 @@ namespace Duality.Backend.DefaultOpenTK
 		void IGraphicsBackend.EndRendering()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
 			this.currentDevice = null;
+
+			DebugCheckOpenGLErrors();
 		}
 		void IVertexUploader.UploadBatchVertices<T>(VertexDeclaration declaration, T[] vertices, int vertexCount)
 		{
@@ -755,6 +758,17 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			if (found && !silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
 			return found;
+		}
+		/// <summary>
+		/// Checks for OpenGL errors using <see cref="CheckOpenGLErrors"/> when both compiled in debug mode and a with an attached debugger.
+		/// </summary>
+		/// <returns></returns>
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void DebugCheckOpenGLErrors([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
+		{
+			if (!System.Diagnostics.Debugger.IsAttached) return;
+			Log.Core.Write("DebugCheckOpenGLErrors");
+			CheckOpenGLErrors(false, callerInfoMember, callerInfoFile, callerInfoLine);
 		}
 	}
 }
