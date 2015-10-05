@@ -361,9 +361,6 @@ namespace Duality
 			OnAppDataChanged();
 			OnUserDataChanged();
 
-			// Determine the default serialization method
-			Serializer.InitDefaultMethod();
-
 			// Initialize the graphics backend
 			InitBackend(out graphicsBack);
 
