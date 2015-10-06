@@ -11,6 +11,7 @@ namespace BasicMenu
 	{
 		public override void DoAction()
 		{
+            base.DoAction();
 			DualityApp.Terminate();
 		}
 	}

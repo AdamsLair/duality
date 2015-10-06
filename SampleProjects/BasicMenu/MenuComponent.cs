@@ -2,6 +2,7 @@
 using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Drawing;
+using Duality.Resources;
 
 namespace BasicMenu
 {
@@ -46,7 +47,13 @@ namespace BasicMenu
 			set { this.hoverTint = value; }
 		}
 
-		public abstract void DoAction();
+		public virtual void DoAction()
+        {
+            // obtain a reference to the default Beep sound...
+            ContentRef<Sound> beep = ContentProvider.RequestContent<Sound>("Default:Sound:Beep");
+            // ... and play it
+            DualityApp.Sound.PlaySound(beep);
+        }
 
 		/// <summary>
 		/// This returns the area on screen that is currently occupied by the SpriteRenderer.
