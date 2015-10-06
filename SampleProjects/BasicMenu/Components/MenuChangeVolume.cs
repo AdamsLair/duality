@@ -10,24 +10,25 @@ namespace BasicMenu
 {
 	public class MenuChangeVolume : MenuComponent
 	{
-        private short changeAmount;
+		private short changeAmount;
 
-        public short ChangeAmount {
-            get { return this.changeAmount; }
-            set { this.changeAmount = value; }
-        }
+		public short ChangeAmount
+		{
+			get { return this.changeAmount; }
+			set { this.changeAmount = value; }
+		}
 
 		public override void DoAction()
 		{
-            base.DoAction();
+			base.DoAction();
 
-            float volume = DualityApp.UserData.SfxMasterVol;
-            volume += (this.changeAmount / 10f);
+			float volume = DualityApp.UserData.SfxMasterVol;
+			volume += (this.changeAmount / 10f);
 
-            // make sure that the volume is between 0 and 1
-            volume = MathF.Min(MathF.Max(volume, 0), 1);
+			// make sure that the volume is between 0 and 1
+			volume = MathF.Min(MathF.Max(volume, 0), 1);
 
-            DualityApp.UserData.SfxMasterVol = volume;
+			DualityApp.UserData.SfxMasterVol = volume;
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace BasicMenu
 
 		public override void DoAction()
 		{
-            base.DoAction();
+			base.DoAction();
 			MenuController mc = this.GameObj.ParentScene.FindComponent<MenuController>();
 			if (mc != null)
 			{

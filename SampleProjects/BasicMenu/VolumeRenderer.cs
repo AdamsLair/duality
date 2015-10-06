@@ -10,19 +10,19 @@ namespace BasicMenu
 	[RequiredComponent(typeof(TextRenderer))]
 	public class VolumeRenderer : Component, ICmpUpdatable
 	{
-        [DontSerialize]
-        private TextRenderer volumeText;
+		[DontSerialize]
+		private TextRenderer volumeText;
 
 		void ICmpUpdatable.OnUpdate()
 		{
-            if (this.volumeText == null)
-            {
-                // still don't have it.. grab the TextRenderer
-                this.volumeText = this.GameObj.GetComponent<TextRenderer>();
-            }
+			if (this.volumeText == null)
+			{
+				// still don't have it.. grab the TextRenderer
+				this.volumeText = this.GameObj.GetComponent<TextRenderer>();
+			}
 
-            // update the volume value
-            volumeText.Text.SourceText = String.Format("Volume {0:0.0}", DualityApp.UserData.SfxMasterVol);
+			// update the volume value
+			volumeText.Text.SourceText = String.Format("Volume {0:0.0}", DualityApp.UserData.SfxMasterVol);
 		}
 	}
 }
