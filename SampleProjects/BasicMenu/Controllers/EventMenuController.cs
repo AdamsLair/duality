@@ -49,7 +49,7 @@ namespace BasicMenu
 		public void OnShutdown(Component.ShutdownContext context)
 		{
 			// remember to clean up the events on Deactivate - needs to be more careful
-			if(context == ShutdownContext.Deactivate)
+			if (context == ShutdownContext.Deactivate)
 			{
 				DualityApp.Mouse.Move -= mouseMove;
 				DualityApp.Mouse.ButtonDown -= buttonDown;
@@ -91,7 +91,7 @@ namespace BasicMenu
 		void Button_Down(object sender, Duality.Input.MouseButtonEventArgs e)
 		{
 			// did I click the left button and am I hovering a component? do something!
-			if(e.Button == Duality.Input.MouseButton.Left && currentComponent != null)
+			if (e.Button == Duality.Input.MouseButton.Left && currentComponent != null)
 			{
 				currentComponent.DoAction();
 			}
