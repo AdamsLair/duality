@@ -161,7 +161,7 @@
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">1613882883</gameobj>
             <material dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-              <contentPath dataType="String">Default:Material:Checkerboard</contentPath>
+              <contentPath dataType="String">Data\Sample\Visuals\Material.Material.res</contentPath>
             </material>
             <offset dataType="Int">0</offset>
             <rect dataType="Struct" type="Duality.Rect">
@@ -170,7 +170,7 @@
               <X dataType="Float">-128</X>
               <Y dataType="Float">-128</Y>
             </rect>
-            <subdivisions dataType="UShort">1</subdivisions>
+            <subdivisions dataType="UShort">4</subdivisions>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
