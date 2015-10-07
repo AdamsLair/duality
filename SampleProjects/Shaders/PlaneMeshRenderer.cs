@@ -167,12 +167,15 @@ namespace Shaders
 			}
 
 			// map the subdivisions' vertices to quad vertices
-			// i.e. quad [0,0] = vertices [0, 4, 5, 1]
-			// the formula for the vertices are, given S = subdivisions + 1
-			// v0 = S * y + x
-			// v1 = S * (y + 1) + x
-			// v2 = S * (y + 1) + (x + 1)
-			// v3 = S * y + (x + 1)
+			// i.e, assuming subdivisions = 3
+			// i.e. quad [0, 0] = _drawVertices[0, 1, 2, 3], _calcVertices [0, 4, 5, 1]
+			// i.e. quad [1, 1] = _drawVertices[16, 17, 18, 19], _calcVertices [5, 9, 10, 6]
+			//
+			// the formula for the vertices are, given S = subdivisions + 1:
+			// _drawVertices[0] = _calcVertices[S * y + x]
+			// _drawVertices[1] = _calcVertices[S * (y + 1) + x]
+			// _drawVertices[2] = _calcVertices[S * (y + 1) + (x + 1)]
+			// _drawVertices[3] = _calcVertices[S * y + (x + 1)]
 
 			int S = this.subdivisions + 1;
 			for (int y = 0; y < this.subdivisions; y++)
@@ -188,6 +191,7 @@ namespace Shaders
 				}
 			}
 
+			this.material.Res.SetUniform("time", (float)Time.GameTimer.TotalSeconds);
 			device.AddVertices(this.material, VertexMode.Quads, _drawVertices);
 		}
 	}

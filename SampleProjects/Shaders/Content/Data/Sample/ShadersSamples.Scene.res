@@ -165,12 +165,12 @@
             </material>
             <offset dataType="Int">0</offset>
             <rect dataType="Struct" type="Duality.Rect">
-              <H dataType="Float">256</H>
-              <W dataType="Float">256</W>
-              <X dataType="Float">-128</X>
-              <Y dataType="Float">-128</Y>
+              <H dataType="Float">200</H>
+              <W dataType="Float">200</W>
+              <X dataType="Float">0</X>
+              <Y dataType="Float">0</Y>
             </rect>
-            <subdivisions dataType="UShort">4</subdivisions>
+            <subdivisions dataType="UShort">12</subdivisions>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
