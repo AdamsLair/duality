@@ -61,6 +61,7 @@ namespace Duality
 
 		private static CreateMethod CreateObjectActivator(TypeInfo typeInfo, out object firstResult)
 		{
+			Exception lastError = null;
 			CreateMethod activator;
 			firstResult = null;
 
@@ -97,7 +98,6 @@ namespace Duality
 					.Select(s => s.Info)
 					.ToArray();
 
-				Exception lastError = null;
 				foreach (ConstructorInfo con in constructors)
 				{
 					// Prepare constructor argument values - just use default(T) for all of them.
@@ -119,25 +119,41 @@ namespace Duality
 						break;
 				}
 
-				// If all constructors failed, inform someone. This is not ideal.
-				if (firstResult == null)
+				// If there were no suitable constructors, log a generic warning.
+				if (constructors.Length == 0)
 				{
-					Log.Core.WriteWarning("Failed to create object of Type {0}. Make sure there is a trivial constructor.", Log.Type(typeInfo));
+					Log.Core.WriteWarning(
+						"Failed to create object of Type {0}. Make sure there is a trivial constructor.", 
+						Log.Type(typeInfo));
 				}
 			}
 
 			// Test whether our activation method really works, replace with dummy if not
 			if (firstResult == null)
 			{
-				Exception error;
-				firstResult = CheckActivator(activator, out error);
-
-				// If we fail to initialize the Type due to a problem in its static constructor, it's likely a user problem. Let him know.
-				if (error is TypeInitializationException)
+				// If we didn't yet try to create an object instance or value, do it now.
+				if (lastError == null)
 				{
-					Log.Core.WriteError("Failed to initialize Type {0}: {1}",
-						Log.Type(typeInfo),
-						Log.Exception(error.InnerException));
+					firstResult = CheckActivator(activator, out lastError);
+				}
+
+				// If there was an error / Exception thrown while creating the object, inform someone.
+				if (lastError != null)
+				{
+					// If it's a problem in a static constructor, get the inner exception to know what's actually wrong.
+					if (lastError is TypeInitializationException)
+					{
+						Log.Core.WriteError("Failed to initialize Type {0}: {1}",
+							Log.Type(typeInfo),
+							Log.Exception(lastError.InnerException));
+					}
+					// Otherwise, just do a regular error log.
+					else
+					{
+						Log.Core.WriteError("Failed to create object of Type {0}: {1}",
+							Log.Type(typeInfo),
+							Log.Exception(lastError));
+					}
 				}
 			}
 

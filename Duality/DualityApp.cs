@@ -1171,6 +1171,9 @@ namespace Duality
 			}
 
 			// Admit that we didn't find anything.
+			Log.Core.WriteWarning(
+				"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
+				args.AssemblyName);
 			return null;
 		}
 		

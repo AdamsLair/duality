@@ -1480,11 +1480,14 @@ namespace Duality.Editor.Plugins.SceneView
 			if (clickedItem == null) return;
 			if (!(clickedItem.Tag is CreateContextEntryTag)) return;
 
-			// Create the Component
+			// Determine which entry we clicked on and determine which type of Component to create.
 			CreateContextEntryTag clickedEntry = clickedItem.Tag as CreateContextEntryTag;
 			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
 			if (clickedType == null) return;
+
+			// Create the Component
 			Component cmp = this.CreateComponent(this.objectView.SelectedNode, clickedType);
+			if (cmp == null) return;
 
 			NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
 			if (cmpNode != null)
