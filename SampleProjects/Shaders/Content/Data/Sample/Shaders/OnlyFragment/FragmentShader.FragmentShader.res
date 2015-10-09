@@ -5,7 +5,6 @@
   </assetInfo>
   <source dataType="String">uniform sampler2D mainTex;
 uniform float time;
-varying float test;
 
 out vec4 colorOut;
 

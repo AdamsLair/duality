@@ -112,6 +112,10 @@ namespace Shaders
 		void ICmpRenderer.Draw(Duality.Drawing.IDrawDevice device)
 		{
 			PrepareVertices(device);
+
+			// set time uniform
+			this.material.Res.SetUniform("time", (float)Time.GameTimer.TotalSeconds);
+			device.AddVertices(this.material, VertexMode.Quads, _drawVertices);
 		}
 
 		private void PrepareVertices(Duality.Drawing.IDrawDevice device)
@@ -190,9 +194,6 @@ namespace Shaders
 					_drawVertices[k + 3] = _calcVertices[S * y + (x + 1)];
 				}
 			}
-
-			this.material.Res.SetUniform("time", (float)Time.GameTimer.TotalSeconds);
-			device.AddVertices(this.material, VertexMode.Quads, _drawVertices);
 		}
 	}
 }

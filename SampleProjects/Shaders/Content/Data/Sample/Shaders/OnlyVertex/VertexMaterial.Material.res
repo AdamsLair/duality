@@ -10,7 +10,7 @@
       <R dataType="Byte">255</R>
     </mainColor>
     <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
-      <contentPath dataType="String">Data\Sample\Visuals\DrawTechnique.DrawTechnique.res</contentPath>
+      <contentPath dataType="String">Data\Sample\Shaders\OnlyVertex\VertexDrawTechnique.DrawTechnique.res</contentPath>
     </technique>
     <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="1100841590" surrogate="true">
       <header />
@@ -20,7 +20,14 @@
         </mainTex>
       </body>
     </textures>
-    <uniforms />
+    <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="649525530" surrogate="true">
+      <header />
+      <body>
+        <time dataType="Array" type="System.Single[]" id="411997508">178.948288</time>
+        <gl_ModelViewMatrix dataType="Array" type="System.Single[]" id="1885627030">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</gl_ModelViewMatrix>
+        <gl_ProjectionMatrix dataType="Array" type="System.Single[]" id="766962944">0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0</gl_ProjectionMatrix>
+      </body>
+    </uniforms>
   </info>
 </root>
 <!-- XmlFormatterBase Document Separator -->
