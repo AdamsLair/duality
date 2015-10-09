@@ -706,9 +706,11 @@ namespace Duality
 		{
 			if (typeString == null) return null;
 
+			// If we already have resolved this before, just return the cached result
 			Type result;
 			if (typeResolveCache.TryGetValue(typeString, out result)) return result;
 			
+			// If not specified otherwise, we'll search across all loaded Assemblies
 			if (searchAsm == null)
 			{
 				searchAsm = 
@@ -717,8 +719,12 @@ namespace Duality
 					.ToArray();
 			}
 
+			// Perform the search
 			result = FindType(typeString, searchAsm, declaringMethod);
-			if (result != null && declaringMethod == null) typeResolveCache[typeString] = result;
+
+			// Mind the result for later, if it's successful and generally applicable
+			if (result != null && declaringMethod == null)
+				typeResolveCache[typeString] = result;
 
 			return result;
 		}
