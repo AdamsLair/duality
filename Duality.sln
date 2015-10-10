@@ -88,6 +88,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicMenu", "SampleProjects
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputHandling", "SampleProjects\InputHandling\InputHandling.csproj", "{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shaders", "SampleProjects\Shaders\Shaders.csproj", "{24BD25E6-C512-4359-A6BC-DAA155568C58}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -210,6 +212,10 @@ Global
 		{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24BD25E6-C512-4359-A6BC-DAA155568C58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24BD25E6-C512-4359-A6BC-DAA155568C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24BD25E6-C512-4359-A6BC-DAA155568C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24BD25E6-C512-4359-A6BC-DAA155568C58}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -251,5 +257,6 @@ Global
 		{3FC49A5C-EDF1-4AE6-9EF6-6635296102EF} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{D3F86677-EB30-450B-8AAC-81F0FBDC19B5} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{9EF413B4-0416-45FF-9A8D-85CC21C4C15B} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{24BD25E6-C512-4359-A6BC-DAA155568C58} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 	EndGlobalSection
 EndGlobal

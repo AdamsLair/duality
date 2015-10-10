@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Shaders.core</name>
+    </assembly>
+    <members>
+        <member name="P:Shaders.PlaneMeshRenderer.Rect">
+            <summary>
+            [GET / SET] The rectangular area the sprite occupies. Relative to the <see cref="T:Duality.GameObject"/>.
+            </summary>
+        </member>
+        <member name="P:Shaders.PlaneMeshRenderer.Material">
+            <summary>
+            [GET / SET] The <see cref="T:Duality.Resources.Material"/> that is used for rendering the sprite.
+            </summary>
+        </member>
+        <member name="P:Shaders.PlaneMeshRenderer.Offset">
+            <summary>
+            [GET / SET] A virtual Z offset that affects the order in which objects are drawn. If you want to assure an object is drawn after another one,
+            just assign a higher Offset value to the background object.
+            </summary>
+        </member>
+        <member name="P:Shaders.PlaneMeshRenderer.VertexZOffset">
+            <summary>
+            [GET] The internal Z-Offset added to the renderers vertices based on its <see cref="P:Shaders.PlaneMeshRenderer.Offset"/> value.
+            </summary>
+        </member>
+        <member name="P:Shaders.PlaneMeshRenderer.Subdivisions">
+            <summary>
+            [GET / SET] the number of mesh subdivisions (min. 1)
+            </summary>
+        </member>
+        <member name="P:Shaders.PlaneMeshRenderer.VisibilityGroup">
+            <summary>
+            [GET / SET] the VisibilityGroup
+            </summary>
+        </member>
+    </members>
+</doc>

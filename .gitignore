@@ -193,3 +193,12 @@ SampleProjects/InputHandling/Content/DesignTimeData.dat
 SampleProjects/InputHandling/InputHandling.core.xml
 SampleProjects/InputHandling/Content/AppData.dat
 SampleProjects/InputHandling/Content/DefaultUserData.dat
+SampleProjects/Shaders/obj/
+SampleProjects/Shaders/Content/Backup/
+SampleProjects/Shaders/bin/
+SampleProjects/Shaders/Content/Source/
+SampleProjects/Shaders/Content/logfile.txt
+SampleProjects/Shaders/Content/perflog.txt
+SampleProjects/Shaders/Content/PackageConfig.xml
+SampleProjects/Shaders/Content/DesignTimeData.dat
+SampleProjects/Shaders/Content/OpenAL32.dll
