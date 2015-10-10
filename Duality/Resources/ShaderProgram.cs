@@ -157,15 +157,15 @@ namespace Duality.Resources
 			try
 			{
 				this.native.LoadProgram(nativeVert, nativeFrag);
+				this.fields = this.native.GetFields();
 			}
 			catch (Exception e)
 			{
+				this.fields = new ShaderFieldInfo[0];
 				Log.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
 			}
 
-			// Determine actual variable locations
-			this.fields = this.native.GetFields();
-
+			// Even if we failed, we tried to compile it. Don't do it again and again.
 			this.compiled = true;
 		}
 

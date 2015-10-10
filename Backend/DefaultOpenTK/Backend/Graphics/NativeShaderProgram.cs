@@ -112,8 +112,9 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.GetProgram(this.handle, GetProgramParameterName.LinkStatus, out result);
 			if (result == 0)
 			{
-				string infoLog = GL.GetProgramInfoLog(this.handle);
-				throw new BackendException(string.Format("Linker error:{1}{0}", infoLog, Environment.NewLine));
+				string errorLog = GL.GetProgramInfoLog(this.handle);
+				this.RollbackAtFault();
+				throw new BackendException(string.Format("Linker error:{1}{0}", errorLog, Environment.NewLine));
 			}
 			
 			// Collect variable infos from sub programs
@@ -168,15 +169,20 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IDisposable.Dispose()
 		{
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
-				this.handle != 0)
-			{
-				this.DetachShaders();
-				GL.DeleteProgram(this.handle);
-				this.handle = 0;
-			}
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated)
+				return;
+
+			this.DeleteProgram();
 		}
 
+		private void DeleteProgram()
+		{
+			if (this.handle == 0) return;
+
+			this.DetachShaders();
+			GL.DeleteProgram(this.handle);
+			this.handle = 0;
+		}
 		private void DetachShaders()
 		{
 			// Determine currently attached shaders
@@ -189,6 +195,18 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				GL.DetachShader(this.handle, attachedShaders[i]);
 			}
+		}
+		/// <summary>
+		/// In case of errors loading the program, this methods rolls back the state of this
+		/// shader program, so consistency can be assured.
+		/// </summary>
+		private void RollbackAtFault()
+		{
+			this.fields = new ShaderFieldInfo[0];
+			this.fieldLocations = new int[0];
+			this.builtinIndex = new int[0];
+
+			this.DeleteProgram();
 		}
 	}
 }
