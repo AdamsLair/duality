@@ -34,6 +34,7 @@ namespace Duality.Backend.DefaultOpenTK
 			if (location == -1) return;
 			switch (field.Type)
 			{
+				case ShaderFieldType.Bool:
 				case ShaderFieldType.Int:
 					int[] arrI = new int[field.ArrayLength];
 					for (int j = 0; j < arrI.Length; j++) arrI[j] = (int)data[j];

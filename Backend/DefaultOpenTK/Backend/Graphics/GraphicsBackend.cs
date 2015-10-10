@@ -558,10 +558,10 @@ namespace Duality.Backend.DefaultOpenTK
 				}
 
 				// Specify builtin shader variables, if requested
+				float[] fieldValue = null;
 				for (int i = 0; i < builtinIndices.Length; i++)
 				{
-					float fieldValue;
-					if (BuiltinShaderFields.TryGetValue(builtinIndices[i], out fieldValue))
+					if (BuiltinShaderFields.TryGetValue(this.currentDevice, builtinIndices[i], ref fieldValue))
 						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], fieldValue);
 				}
 			}
