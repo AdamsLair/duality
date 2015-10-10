@@ -88,7 +88,12 @@ namespace Duality.Resources
 		/// </summary>
 		public ShaderFieldInfo[] Fields
 		{
-			get { return this.fields; }
+			get
+			{
+				if (this.fields == null)
+					this.Compile();
+				return this.fields;
+			}
 		}
 		/// <summary>
 		/// [GET] Returns the number of vertex attributes that have been declared.

@@ -523,6 +523,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				ShaderFieldInfo[] varInfo = shader.Fields;
 				int[] locations = shader.FieldLocations;
+				int[] builtinIndices = shader.BuiltinVariableIndex;
 
 				// Setup sampler bindings automatically
 				int curSamplerIndex = 0;
@@ -554,6 +555,14 @@ namespace Duality.Backend.DefaultOpenTK
 
 						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
 					}
+				}
+
+				// Specify builtin shader variables, if requested
+				for (int i = 0; i < builtinIndices.Length; i++)
+				{
+					float fieldValue;
+					if (BuiltinShaderFields.TryGetValue(builtinIndices[i], out fieldValue))
+						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], fieldValue);
 				}
 			}
 			// Setup fixed function data

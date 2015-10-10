@@ -28,7 +28,7 @@ namespace Duality.Backend.DefaultOpenTK
 				curBound = prog;
 			}
 		}
-		public static void SetUniform(ref ShaderFieldInfo field, int location, float[] data)
+		public static void SetUniform(ref ShaderFieldInfo field, int location, params float[] data)
 		{
 			if (field.Scope != ShaderFieldScope.Uniform) return;
 			if (location == -1) return;
@@ -66,6 +66,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private int handle;
 		private ShaderFieldInfo[] fields;
 		private int[] fieldLocations;
+		private int[] builtinIndex;
 
 		public int Handle
 		{
@@ -78,6 +79,15 @@ namespace Duality.Backend.DefaultOpenTK
 		public int[] FieldLocations
 		{
 			get { return this.fieldLocations; }
+		}
+		/// <summary>
+		/// [GET] If a certain field refers to a builtin shader variable, the appropriate array element contains its index.
+		/// Otherwise, it contains <see cref="Duality.Resources.BuiltinShaderFields.InvalidIndex"/>. If no builtin variable
+		/// is used at all, this property will return an empty array.
+		/// </summary>
+		public int[] BuiltinVariableIndex
+		{
+			get { return this.builtinIndex; }
 		}
 
 		void INativeShaderProgram.LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment)
@@ -132,6 +142,25 @@ namespace Duality.Backend.DefaultOpenTK
 				else
 					this.fieldLocations[i] = GL.GetAttribLocation(this.handle, this.fields[i].Name);
 			}
+
+			// Determine whether we're using builtin shader variables
+			this.builtinIndex = new int[this.fields.Length];
+			bool anyBuildinUsed = false;
+			for (int i = 0; i < this.fields.Length; i++)
+			{
+				if (this.fields[i].Scope == ShaderFieldScope.Uniform)
+				{
+					this.builtinIndex[i] = BuiltinShaderFields.GetIndex(this.fields[i].Name);
+					if (this.builtinIndex[i] != BuiltinShaderFields.InvalidIndex)
+						anyBuildinUsed = true;
+				}
+				else
+				{ 
+					this.builtinIndex[i] = BuiltinShaderFields.InvalidIndex;
+				}
+			}
+			if (!anyBuildinUsed)
+				this.builtinIndex = new int[0];
 		}
 		ShaderFieldInfo[] INativeShaderProgram.GetFields()
 		{
