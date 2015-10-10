@@ -208,3 +208,4 @@ SampleProjects/BasicShaders/BasicShaders.core.xml
 SampleProjects/BasicShaders/Content/AppData.dat
 SampleProjects/BasicShaders/Content/DefaultUserData.dat
 SampleProjects/BasicShaders/Content/UserData.dat
+DualityPlugins/DynamicLighting/Sample/Testbed/OpenAL32.dll
