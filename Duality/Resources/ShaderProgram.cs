@@ -96,22 +96,6 @@ namespace Duality.Resources
 			}
 		}
 		/// <summary>
-		/// [GET] Returns the number of vertex attributes that have been declared.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int AttribCount
-		{
-			get { return this.fields != null ? this.fields.Count(v => v.Scope == ShaderFieldScope.Attribute) : 0; }
-		}
-		/// <summary>
-		/// [GET] Returns the number of uniform variables that have been declared.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int UniformCount
-		{
-			get { return this.fields != null ? this.fields.Count(v => v.Scope == ShaderFieldScope.Uniform) : 0; }
-		}
-		/// <summary>
 		/// [GET / SET] The <see cref="VertexShader"/> that is used by this ShaderProgram.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
