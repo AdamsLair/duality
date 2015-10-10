@@ -10,8 +10,8 @@ namespace Duality.Editor
 {
 	public class ConversionData : IDataObject
 	{
-		private	IDataObject		data		= null;
-		private	DataObject		dataCache	= new DataObject();
+		private	IDataObject data      = null;
+		private	DataObject  dataCache = new DataObject();
 
 		public ConversionData(IDataObject data)
 		{
@@ -20,34 +20,48 @@ namespace Duality.Editor
 
 		public object GetData(Type format)
 		{
-			if (!this.dataCache.GetDataPresent(format) && this.data.GetDataPresent(format))
-				this.dataCache.SetData(format, this.data.GetData(format));
-			return this.dataCache.GetData(format);
+			return (this as IDataObject).GetData(format.FullName, true);
 		}
-		public object GetData(string format)
-		{
-			if (!this.dataCache.GetDataPresent(format) && this.data.GetDataPresent(format))
-				this.dataCache.SetData(format, this.data.GetData(format));
-			return this.dataCache.GetData(format);
-		}
-		public object GetData(string format, bool autoConvert)
-		{
-			if (!this.dataCache.GetDataPresent(format) && this.data.GetDataPresent(format, autoConvert))
-				this.dataCache.SetData(format, this.data.GetData(format, autoConvert));
-			return this.dataCache.GetData(format);
-		}
-
 		public bool GetDataPresent(Type format)
 		{
-			return this.data.GetDataPresent(format);
+			return (this as IDataObject).GetDataPresent(format.FullName, true);
 		}
-		public bool GetDataPresent(string format)
+
+		object IDataObject.GetData(string format)
 		{
-			return this.data.GetDataPresent(format);
+			return (this as IDataObject).GetData(format, true);
 		}
-		public bool GetDataPresent(string format, bool autoConvert)
+		object IDataObject.GetData(string format, bool autoConvert)
 		{
-			return this.data.GetDataPresent(format, autoConvert);
+			bool isCached = 
+				this.dataCache.GetDataPresent(format, autoConvert) || 
+				this.dataCache.GetWrappedDataPresent(format);
+
+			if (!isCached)
+			{
+				object obj;
+				if (this.data.GetDataPresent(format, autoConvert))
+					obj = this.data.GetData(format, autoConvert);
+				else if (this.data.GetWrappedDataPresent(format))
+					obj = this.data.GetWrappedData(format);
+				else
+					obj = null;
+
+				if (obj != null)
+					this.dataCache.SetData(format, obj);
+			}
+
+			return this.dataCache.GetData(format, autoConvert);
+		}
+		bool IDataObject.GetDataPresent(string format)
+		{
+			return (this as IDataObject).GetDataPresent(format, true);
+		}
+		bool IDataObject.GetDataPresent(string format, bool autoConvert)
+		{
+			return 
+				this.data.GetDataPresent(format, autoConvert) || 
+				this.data.GetWrappedDataPresent(format);
 		}
 
 		string[] IDataObject.GetFormats()
