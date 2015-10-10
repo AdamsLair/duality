@@ -4,16 +4,18 @@
     <nameHint dataType="String">FragmentShader</nameHint>
   </assetInfo>
   <source dataType="String">uniform float GameTime;
-uniform float CameraFocusDist;
-uniform vec3 CameraPosition;
-uniform bool CameraParallax;
 
 uniform sampler2D mainTex;
 uniform float ColorShiftSpeed;
 
 void main()
 {
-	vec4 color = texture2D(mainTex, gl_TexCoord[0].st);
+    vec2 texCoord = gl_TexCoord[0].st;
+	texCoord += 0.1 * vec2(
+		sin(GameTime + gl_FragCoord.x * 0.01),
+		cos(GameTime + gl_FragCoord.y * 0.01));
+	
+	vec4 color = texture2D(mainTex, texCoord);
 	color.rgb = vec3(
 		color.r * sin(ColorShiftSpeed * GameTime), 
 		color.g * sin(ColorShiftSpeed * GameTime * 0.5), 
