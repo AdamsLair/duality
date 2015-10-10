@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicMenu", "SampleProjects
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputHandling", "SampleProjects\InputHandling\InputHandling.csproj", "{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shaders", "SampleProjects\Shaders\Shaders.csproj", "{24BD25E6-C512-4359-A6BC-DAA155568C58}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicShaders", "SampleProjects\BasicShaders\BasicShaders.csproj", "{24BD25E6-C512-4359-A6BC-DAA155568C58}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,5 +6,5 @@ using Duality;
 
 namespace Shaders
 {
-	public class ShadersCorePlugin : CorePlugin { }
+	public class BasicShadersCorePlugin : CorePlugin { }
 }

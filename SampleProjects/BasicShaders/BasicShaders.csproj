@@ -4,13 +4,13 @@
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)SampleProjects\Shaders\Content\</StartWorkingDirectory>
+    <StartWorkingDirectory>$(SolutionDir)SampleProjects\BasicShaders\Content\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
     <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
-    <StartWorkingDirectory>$(SolutionDir)SampleProjects\Shaders\Content\</StartWorkingDirectory>
+    <StartWorkingDirectory>$(SolutionDir)SampleProjects\BasicShaders\Content\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -20,8 +20,9 @@
     <ProjectGuid>{24BD25E6-C512-4359-A6BC-DAA155568C58}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Shaders</RootNamespace>
-    <AssemblyName>Shaders.core</AssemblyName>
+    <RootNamespace>BasicShaders</RootNamespace>
+    <AssemblyName>BasicShaders.core</AssemblyName>
+    <DocumentationFile>BasicShaders.core.xml</DocumentationFile>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\..\..\..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
@@ -37,7 +38,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>Shaders.core.xml</DocumentationFile>
     <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -54,7 +54,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
-    <Compile Include="PlaneMeshRenderer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

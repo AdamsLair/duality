@@ -2,7 +2,7 @@
   <anisoFilter dataType="Bool">false</anisoFilter>
   <assetInfo />
   <basePixmap dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Pixmap]]">
-    <contentPath dataType="String">Data\Sample\Visuals\BackgroundTile.Pixmap.res</contentPath>
+    <contentPath dataType="String">Data\BasicShaders\Visuals\BackgroundTile.Pixmap.res</contentPath>
   </basePixmap>
   <filterMag dataType="Enum" type="Duality.Drawing.TextureMagFilter" name="Nearest" value="0" />
   <filterMin dataType="Enum" type="Duality.Drawing.TextureMinFilter" name="Nearest" value="0" />
