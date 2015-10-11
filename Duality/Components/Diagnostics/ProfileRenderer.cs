@@ -31,7 +31,7 @@ namespace Duality.Components.Diagnostics
 		private	bool					textReportStat		= true;
 		private	bool					drawGraphs			= true;
 		private	List<string>			counterGraphs		= new List<string> { Profile.TimeFrame.FullName, Profile.TimeRender.FullName, Profile.TimeUpdate.FullName, Profile.StatMemoryTotalUsage.FullName };
-		private	ProfileReportOptions	textReportOptions	= ProfileReportOptions.LastValue;
+		private	ProfileReportOptions	textReportOptions	= ProfileReportOptions.LastValue | ProfileReportOptions.OmitMinorValues;
 		private	int						updateInterval		= 250;
 		private	Key						keyToggleTextPerf	= Key.F2;
 		private	Key						keyToggleTextStat	= Key.F3;
@@ -162,7 +162,10 @@ namespace Duality.Components.Diagnostics
 				if (!this.textReportStat) counters = counters.Where(c => !(c is StatCounter));
 				if (this.textReport == null || (Time.MainTimer - this.textReportLast).TotalMilliseconds > this.updateInterval)
 				{
-					string report = Profile.GetTextReport(counters, this.textReportOptions | ProfileReportOptions.FormattedText);
+					string report = Profile.GetTextReport(
+						counters, 
+						this.textReportOptions | 
+						ProfileReportOptions.FormattedText);
 
 					if (this.textReport == null)
 					{
