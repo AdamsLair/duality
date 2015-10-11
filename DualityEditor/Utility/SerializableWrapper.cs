@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
 using Duality.Serialization;
+using Duality.Cloning;
 
 namespace Duality.Editor
 {
@@ -42,7 +43,12 @@ namespace Duality.Editor
 		{
 			using (MemoryStream stream = new MemoryStream())
 			{
-				Serializer.WriteObject(this.data, stream, typeof(BinarySerializer));
+				// Clone the object first to make sure it's isolated and doesn't 
+				// drag a whole Scene (or so) into the serialization graph.
+				object isolatedObj = this.data.DeepClone();
+
+				// Now serialize the isolated object
+				Serializer.WriteObject(isolatedObj, stream, typeof(BinarySerializer));
 				byte[] serializedData = stream.ToArray();
 				info.AddValue("data", serializedData);
 			}
