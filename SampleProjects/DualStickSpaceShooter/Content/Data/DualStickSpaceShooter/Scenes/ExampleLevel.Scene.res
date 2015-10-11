@@ -8104,7 +8104,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -8442,7 +8442,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -16187,7 +16187,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -16328,7 +16328,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -16469,7 +16469,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -16610,7 +16610,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -16751,7 +16751,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -16892,7 +16892,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -17033,7 +17033,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -17174,7 +17174,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -17315,7 +17315,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -17477,7 +17477,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -17635,7 +17635,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -17785,7 +17785,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -17943,7 +17943,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -18097,7 +18097,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -18247,7 +18247,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -18397,7 +18397,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -18551,7 +18551,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -27007,7 +27007,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -27345,7 +27345,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -27507,7 +27507,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -27669,7 +27669,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -27827,7 +27827,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -27985,7 +27985,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -28135,7 +28135,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -28289,7 +28289,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -28447,7 +28447,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -28609,7 +28609,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -28759,7 +28759,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -28909,7 +28909,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -29063,7 +29063,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -29213,7 +29213,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -29354,7 +29354,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -29495,7 +29495,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -29636,7 +29636,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -29798,7 +29798,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -29956,7 +29956,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -30118,7 +30118,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -30280,7 +30280,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -30442,7 +30442,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -30604,7 +30604,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -30766,7 +30766,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -30928,7 +30928,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -31086,7 +31086,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -31240,7 +31240,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -31402,7 +31402,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -31560,7 +31560,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -31718,7 +31718,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -31880,7 +31880,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -32038,7 +32038,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -32200,7 +32200,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -32354,7 +32354,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -32512,7 +32512,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
@@ -32674,7 +32674,7 @@
                               <outlineMaterial dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                                 <contentPath dataType="String">Default:Material:SolidWhite</contentPath>
                               </outlineMaterial>
-                              <outlineWidth dataType="Float">3</outlineWidth>
+                              <outlineWidth dataType="Float">0</outlineWidth>
                               <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               <wrapTexture dataType="Bool">true</wrapTexture>
                             </item>
