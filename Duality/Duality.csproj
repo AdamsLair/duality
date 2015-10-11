@@ -139,6 +139,7 @@
     <Compile Include="IO\PathEqualityComparer.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\AssetInfo.cs" />
+    <Compile Include="Resources\ShaderInfo\BuiltinShaderFields.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />
     <Compile Include="Drawing\Enums\RenderMatrix.cs" />
     <Compile Include="Drawing\Enums\PerspectiveMode.cs" />

@@ -14,16 +14,20 @@ namespace Duality.Drawing
 	public interface IDrawDevice
 	{
 		/// <summary>
-		/// [GET] Reference coordinate for rendering i.e. the position of the drawing device's Camera.
+		/// [GET] The perspective projection type that is currently active in this drawing device.
+		/// </summary>
+		PerspectiveMode Perspective { get; }
+		/// <summary>
+		/// [GET] Reference coordinate for rendering i.e. the position of the drawing device's virtual camera.
 		/// </summary>
 		Vector3 RefCoord { get; }
 		/// <summary>
-		/// [GET] Reference angle for rendering i.e. the angle of the drawing device's Camera.
+		/// [GET] Reference angle for rendering i.e. the angle of the drawing device's virtual camera.
 		/// </summary>
 		float RefAngle { get; }
 		/// <summary>
 		/// [GET] Reference distance for calculating the perspective effect. An object this far away from
-		/// the Camera will appear in its original size.
+		/// the camera will appear in its original size.
 		/// </summary>
 		float FocusDist { get; }
 		/// <summary>

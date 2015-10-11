@@ -97,7 +97,7 @@ namespace Duality.Editor.Plugins.Base.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visual Studio 2013 (Update 2) or newer is required..
+        ///   Looks up a localized string similar to Visual Studio 2013 (Update 3) or newer is required..
         /// </summary>
         public static string ActionDesc_DownloadVisualStudio {
             get {

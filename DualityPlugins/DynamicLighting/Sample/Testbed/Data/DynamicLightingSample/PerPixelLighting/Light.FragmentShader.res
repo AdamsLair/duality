@@ -1,11 +1,15 @@
 ﻿<root dataType="Struct" type="Duality.Resources.FragmentShader" id="129723834">
+  <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
+    <importerId dataType="String">BasicShaderAssetImporter</importerId>
+    <nameHint dataType="String">Light</nameHint>
+  </assetInfo>
   <source dataType="String">#version 120
 
 uniform sampler2D mainTex;
 uniform sampler2D normalTex;
 uniform sampler2D specularTex;
 
-uniform vec3 _camWorldPos;
+uniform vec3 CameraPosition;
 
 uniform int _lightCount;
 uniform vec4 _lightPos[8];
@@ -17,7 +21,7 @@ varying mat2 objTransform;
 
 void main()
 {
-	vec3 eyeDir = normalize(_camWorldPos - worldSpacePos);
+	vec3 eyeDir = normalize(CameraPosition - worldSpacePos);
   
 	vec4 clrDiffuse = gl_Color * texture2D(mainTex, gl_TexCoord[0].st);
 	vec4 clrNormal = texture2D(normalTex, gl_TexCoord[0].st);
@@ -65,6 +69,5 @@ void main()
 	
 	gl_FragColor = finalColor;
 }</source>
-  <sourcePath dataType="String">Source\Media\DynamicLightingSample\PerPixelLighting\Light.frag</sourcePath>
 </root>
 <!-- XmlFormatterBase Document Separator -->

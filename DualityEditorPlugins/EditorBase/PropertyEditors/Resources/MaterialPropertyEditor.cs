@@ -10,6 +10,11 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	[PropertyEditorAssignment(typeof(Material), PropertyEditorAssignmentAttribute.PrioritySpecialized)]
 	public class MaterialPropertyEditor : ResourcePropertyEditor
 	{
+		public MaterialPropertyEditor() : base()
+		{
+			this.Indent = 0;
+		}
+
 		protected override void BeforeAutoCreateEditors()
 		{
 			base.BeforeAutoCreateEditors();
@@ -19,7 +24,6 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			e.HeaderIcon = null;
 			e.HeaderValueText = null;
 			e.HeaderHeight = 0;
-			e.Indent = 0;
 			e.Expanded = true;
 		}
 		protected override bool IsAutoCreateMember(MemberInfo info)

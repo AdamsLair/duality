@@ -245,7 +245,7 @@
     <value>..\EmbeddedResources\eye.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ActionDesc_DownloadVisualStudio" xml:space="preserve">
-    <value>Visual Studio 2013 (Update 2) or newer is required.</value>
+    <value>Visual Studio 2013 (Update 3) or newer is required.</value>
   </data>
   <data name="ActionName_DownloadVisualStudio" xml:space="preserve">
     <value>Download Visual Studio</value>

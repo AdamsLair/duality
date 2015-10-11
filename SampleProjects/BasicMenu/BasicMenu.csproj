@@ -54,7 +54,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Components\MenuAnotherChangeColor.cs" />
+    <Compile Include="Components\MenuChangeVolume.cs" />
     <Compile Include="Controllers\UpdateMenuController.cs" />
+    <Compile Include="VolumeRenderer.cs" />
     <Compile Include="MenuPage.cs" />
     <Compile Include="MenuController.cs" />
     <Compile Include="Controllers\EventMenuController.cs" />

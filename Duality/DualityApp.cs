@@ -614,10 +614,15 @@ namespace Duality
 			Log.Core.Write("Scanning for core plugins...");
 			Log.Core.PushIndent();
 
+			List<string> auxilLibs = new List<string>();
 			foreach (string dllPath in pluginLoader.AvailableAssemblyPaths)
 			{
 				if (!dllPath.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
+				{ 
+					if (!dllPath.EndsWith(".editor.dll", StringComparison.OrdinalIgnoreCase))
+						auxilLibs.Add(dllPath);
 					continue;
+				}
 
 				Log.Core.Write("{0}...", dllPath);
 				Log.Core.PushIndent();
@@ -626,6 +631,28 @@ namespace Duality
 			}
 
 			Log.Core.PopIndent();
+
+			// Make sure to have all plugin-related Assemblies available even before even
+			// getting an AssemblyResolve event - we might need to resolve their Types due
+			// to deserialization, which may happen before touching any related class in code.
+			if (auxilLibs.Count > 0)
+			{
+				Log.Core.Write("Loading auxiliary libraries...");
+				Log.Core.PushIndent();
+
+				foreach (string dllPath in auxilLibs)
+				{
+					// Load the Assembly in a try-catch block, as we might accidentally stumble upon
+					// unmanaged or incompatible Assemblies in the process.
+					try
+					{
+						pluginLoader.LoadAssembly(dllPath, false);
+					}
+					catch (BadImageFormatException) { }
+				}
+
+				Log.Core.PopIndent();
+			}
 		}
 		private static CorePlugin LoadPlugin(string pluginFilePath)
 		{
@@ -1171,6 +1198,9 @@ namespace Duality
 			}
 
 			// Admit that we didn't find anything.
+			Log.Core.WriteWarning(
+				"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
+				args.AssemblyName);
 			return null;
 		}
 		
