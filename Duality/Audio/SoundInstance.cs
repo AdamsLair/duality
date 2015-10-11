@@ -29,6 +29,7 @@ namespace Duality.Audio
 		private	Vector3    vel            = Vector3.Zero;
 		private	float      vol            = 1.0f;
 		private	float      pitch          = 1.0f;
+		private	float      lowpass        = 1.0f;
 		private	float      panning        = 0.0f;
 		private	bool       is3D           = false;
 		private	bool       looped         = false;
@@ -138,6 +139,14 @@ namespace Duality.Audio
 		{
 			get { return this.pitch; }
 			set { this.pitch = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The sounds local lowpass value. Lower values cut off more frequencies.
+		/// </summary>
+		public float Lowpass
+		{
+			get { return this.lowpass; }
+			set { this.lowpass = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The sounds local stereo panning, ranging from -1.0f (left) to 1.0f (right).
@@ -429,6 +438,7 @@ namespace Duality.Audio
 			nativeState.MaxDistance = soundRes.MaxDist;
 			nativeState.Volume = optVolFactor * soundRes.VolumeFactor * this.vol * this.curFade * this.pauseFade;
 			nativeState.Pitch = soundRes.PitchFactor * this.pitch;
+			nativeState.Lowpass = soundRes.LowpassFactor * this.lowpass;
 			priorityTemp *= nativeState.Volume;
 
 			// Calculate 3D source values, distance and priority
