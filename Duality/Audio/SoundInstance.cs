@@ -14,37 +14,38 @@ namespace Duality.Audio
 	[DontSerialize]
 	public sealed class SoundInstance : IDisposable, IAudioStreamProvider
 	{
-		public const int PriorityStealThreshold = 15;
+		public const int PriorityStealThreshold       = 15;
 		public const int PriorityStealLoopedThreshold = 30;
 
 
-		private	ContentRef<Sound>		sound		= null;
-		private	ContentRef<AudioData>	audioData	= null;
-		private	INativeAudioSource		native		= null;
-		private	bool				disposed		= false;
-		private	bool				notYetAssigned	= true;
-		private	GameObject			attachedTo		= null;
-		private	Vector3				pos				= Vector3.Zero;
-		private	Vector3				vel				= Vector3.Zero;
-		private	float				vol				= 1.0f;
-		private	float				pitch			= 1.0f;
-		private	float				panning			= 0.0f;
-		private	bool				is3D			= false;
-		private	bool				looped			= false;
-		private	bool				paused			= false;
-		private	bool				registered		= false;
-		private	int					curPriority		= 0;
-		private	float				playTime		= 0.0f;
+		private	ContentRef<Sound>     sound     = null;
+		private	ContentRef<AudioData> audioData = null;
+		private	INativeAudioSource    native    = null;
+
+		private	bool       disposed       = false;
+		private	bool       notYetAssigned = true;
+		private	GameObject attachedTo     = null;
+		private	Vector3    pos            = Vector3.Zero;
+		private	Vector3    vel            = Vector3.Zero;
+		private	float      vol            = 1.0f;
+		private	float      pitch          = 1.0f;
+		private	float      panning        = 0.0f;
+		private	bool       is3D           = false;
+		private	bool       looped         = false;
+		private	bool       paused         = false;
+		private	bool       registered     = false;
+		private	int        curPriority    = 0;
+		private	float      playTime       = 0.0f;
 
 		// Fading
-		private	float			curFade			= 1.0f;
-		private	float			fadeTarget		= 1.0f;
-		private	float			fadeTimeSec		= 1.0f;
-		private	float			pauseFade		= 1.0f;
-		private	float			fadeWaitEnd		= 0.0f;
+		private	float curFade     = 1.0f;
+		private	float fadeTarget  = 1.0f;
+		private	float fadeTimeSec = 1.0f;
+		private	float pauseFade   = 1.0f;
+		private	float fadeWaitEnd = 0.0f;
 
 		// Streaming
-		private	VorbisStreamHandle	strOvStr	= null;
+		private	VorbisStreamHandle strOvStr = null;
 		
 
 		/// <summary>
