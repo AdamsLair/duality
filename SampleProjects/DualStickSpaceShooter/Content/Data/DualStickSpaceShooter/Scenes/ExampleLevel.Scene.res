@@ -49521,7 +49521,7 @@
             <keyToggleGraph dataType="Enum" type="Duality.Input.Key" name="F4" value="13" />
             <keyToggleTextPerf dataType="Enum" type="Duality.Input.Key" name="F2" value="11" />
             <keyToggleTextStat dataType="Enum" type="Duality.Input.Key" name="F3" value="12" />
-            <textReportOptions dataType="Enum" type="Duality.ProfileReportOptions" name="LastValue" value="1" />
+            <textReportOptions dataType="Enum" type="Duality.ProfileReportOptions" name="LastValue, OmitMinorValues" value="32769" />
             <textReportPerf dataType="Bool">false</textReportPerf>
             <textReportStat dataType="Bool">false</textReportStat>
             <updateInterval dataType="Int">250</updateInterval>
