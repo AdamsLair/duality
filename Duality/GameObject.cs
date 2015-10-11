@@ -853,21 +853,6 @@ namespace Duality
 			operation.HandleObject(this.prefabLink, ref target.prefabLink, true);
 		}
 
-		internal void Update()
-		{
-			// Update Components
-			this.IterateComponents<ICmpUpdatable>(
-				l => l.OnUpdate(),
-				l => (l as Component).Active);
-		}
-		internal void EditorUpdate()
-		{
-			// Update Components
-			this.IterateComponents<ICmpEditorUpdatable>(
-				l => l.OnUpdate(),
-				l => (l as Component).Active);
-		}
-
 		/// <summary>
 		/// Sanitary check in case something failed deserializing
 		/// </summary>
