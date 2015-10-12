@@ -431,6 +431,8 @@ namespace Duality.Audio
 			}
 
 			// Set up local variables for state calculation
+			Vector3 listenerPos = DualityApp.Sound.ListenerPos;
+			bool attachedToListener = this.attachedTo != null && ((this.attachedTo == DualityApp.Sound.Listener) || this.attachedTo.IsChildOf(DualityApp.Sound.Listener));
 			float optVolFactor = this.GetTypeVolFactor();
 			float priorityTemp = 1000.0f;
 			AudioSourceState nativeState = AudioSourceState.Default;
@@ -449,7 +451,7 @@ namespace Duality.Audio
 				Components.Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
 
 				// Attach to object
-				if (this.attachedTo != null && this.attachedTo != DualityApp.Sound.Listener)
+				if (this.attachedTo != null)
 				{
 					MathF.TransformCoord(ref nativeState.Position.X, ref nativeState.Position.Y, attachTransform.Angle);
 					MathF.TransformCoord(ref nativeState.Velocity.X, ref nativeState.Velocity.Y, attachTransform.Angle);
@@ -458,22 +460,10 @@ namespace Duality.Audio
 				}
 
 				// Distance check
-				Vector3 listenerPos = DualityApp.Sound.ListenerPos;
-				float dist;
-				if (this.attachedTo != DualityApp.Sound.Listener)
-				{
-					dist = MathF.Sqrt(
-						(nativeState.Position.X - listenerPos.X) * (nativeState.Position.X - listenerPos.X) +
-						(nativeState.Position.Y - listenerPos.Y) * (nativeState.Position.Y - listenerPos.Y) +
-						(nativeState.Position.Z - listenerPos.Z) * (nativeState.Position.Z - listenerPos.Z) * 0.25f);
-				}
-				else
-				{
-					dist = MathF.Sqrt(
-						nativeState.Position.X * nativeState.Position.X +
-						nativeState.Position.Y * nativeState.Position.Y +
-						nativeState.Position.Z * nativeState.Position.Z * 0.25f);
-				}
+				float dist = MathF.Sqrt(
+					(nativeState.Position.X - listenerPos.X) * (nativeState.Position.X - listenerPos.X) +
+					(nativeState.Position.Y - listenerPos.Y) * (nativeState.Position.Y - listenerPos.Y) +
+					(nativeState.Position.Z - listenerPos.Z) * (nativeState.Position.Z - listenerPos.Z) * 0.25f);
 				if (dist > nativeState.MaxDistance)
 				{
 					this.Dispose();
@@ -538,7 +528,9 @@ namespace Duality.Audio
 			{
 				if (this.is3D)
 				{
-					nativeState.RelativeToListener = this.attachedTo == DualityApp.Sound.Listener;
+					nativeState.RelativeToListener = attachedToListener;
+					if (attachedToListener)
+						nativeState.Position -= listenerPos;
 				}
 				else
 				{
