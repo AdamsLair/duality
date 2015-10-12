@@ -209,3 +209,14 @@ SampleProjects/BasicShaders/Content/AppData.dat
 SampleProjects/BasicShaders/Content/DefaultUserData.dat
 SampleProjects/BasicShaders/Content/UserData.dat
 DualityPlugins/DynamicLighting/Sample/Testbed/OpenAL32.dll
+SampleProjects/AudioHandling/obj/
+SampleProjects/AudioHandling/bin/
+SampleProjects/AudioHandling/Content/Source/
+SampleProjects/AudioHandling/Content/Backup/
+SampleProjects/AudioHandling/Content/AppData.dat
+SampleProjects/AudioHandling/AudioHandling.core.xml
+SampleProjects/AudioHandling/Content/DesignTimeData.dat
+SampleProjects/AudioHandling/Content/OpenAL32.dll
+SampleProjects/AudioHandling/Content/DefaultUserData.dat
+SampleProjects/AudioHandling/Content/PackageConfig.xml
+SampleProjects/AudioHandling/AudioHandling.csproj.user
