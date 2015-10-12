@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Duality", "Duality\Duality.csproj", "{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}"
 EndProject
@@ -89,6 +89,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputHandling", "SampleProjects\InputHandling\InputHandling.csproj", "{9EF413B4-0416-45FF-9A8D-85CC21C4C15B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicShaders", "SampleProjects\BasicShaders\BasicShaders.csproj", "{24BD25E6-C512-4359-A6BC-DAA155568C58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlapOrDie", "SampleProjects\FlapOrDie\FlapOrDie.csproj", "{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -216,6 +218,10 @@ Global
 		{24BD25E6-C512-4359-A6BC-DAA155568C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24BD25E6-C512-4359-A6BC-DAA155568C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24BD25E6-C512-4359-A6BC-DAA155568C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -258,5 +264,6 @@ Global
 		{D3F86677-EB30-450B-8AAC-81F0FBDC19B5} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{9EF413B4-0416-45FF-9A8D-85CC21C4C15B} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{24BD25E6-C512-4359-A6BC-DAA155568C58} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 	EndGlobalSection
 EndGlobal
