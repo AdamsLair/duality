@@ -220,3 +220,15 @@ SampleProjects/AudioHandling/Content/OpenAL32.dll
 SampleProjects/AudioHandling/Content/DefaultUserData.dat
 SampleProjects/AudioHandling/Content/PackageConfig.xml
 SampleProjects/AudioHandling/AudioHandling.csproj.user
+SampleProjects/ParticleSystem/bin/
+SampleProjects/ParticleSystem/Content/Source/
+SampleProjects/ParticleSystem/obj/
+SampleProjects/ParticleSystem/Content/Backup/
+SampleProjects/ParticleSystem/Content/AppData.dat
+SampleProjects/ParticleSystem/Content/DefaultUserData.dat
+SampleProjects/ParticleSystem/Content/DesignTimeData.dat
+SampleProjects/ParticleSystem/Content/OpenAL32.dll
+SampleProjects/ParticleSystem/Content/PackageConfig.xml
+SampleProjects/ParticleSystem/Content/logfile.txt
+SampleProjects/ParticleSystem/Content/perflog.txt
+SampleProjects/ParticleSystem/ParticleSystem.core.xml
