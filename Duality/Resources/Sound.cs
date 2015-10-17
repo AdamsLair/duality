@@ -43,6 +43,7 @@ namespace Duality.Resources
 		private	float		maxDistFactor	= 1.0f;
 		private	float		volFactor		= 1.0f;
 		private	float		pitchFactor		= 1.0f;
+		private	float		lowpassFactor	= 1.0f;
 		private	float		fadeOutAt		= 0.0f;
 		private	float		fadeOutTime		= 0.0f;
 		private	SoundType	type			= SoundType.World;
@@ -91,6 +92,7 @@ namespace Duality.Resources
 		/// [GET / SET] Maximum number of <see cref="Duality.Audio.SoundInstance">SoundInstances</see> of this Sound that can
 		/// play simultaneously. If exceeded, any new instances of it are discarded.
 		/// </summary>
+		[EditorHintRange(0, 100, 0, 10)]
 		public int MaxInstances
 		{
 			get { return this.maxInstances; }
@@ -99,6 +101,7 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET / SET] A volume factor that is applied when playing this sound.
 		/// </summary>
+		[EditorHintRange(0.0f, 10.0f, 0.0f, 2.0f)]
 		public float VolumeFactor
 		{
 			get { return this.volFactor; }
@@ -107,10 +110,20 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET / SET] A pitch factor that is applied when playing this sound.
 		/// </summary>
+		[EditorHintRange(0.0f, 10.0f)]
 		public float PitchFactor
 		{
 			get { return this.pitchFactor; }
 			set { this.pitchFactor = value; }
+		}
+		/// <summary>
+		/// [GET / SET] A lowpass factor that is applied when playing this sound.
+		/// </summary>
+		[EditorHintRange(0.0f, 1.0f)]
+		public float LowpassFactor
+		{
+			get { return this.lowpassFactor; }
+			set { this.lowpassFactor = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Play time in seconds at which <see cref="Duality.Audio.SoundInstance">SoundInstances</see> of this Sound
@@ -135,6 +148,7 @@ namespace Duality.Resources
 		/// </summary>
 		/// <seealso cref="MinDist"/>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		[EditorHintRange(0.0f, 100.0f, 0.0f, 20.0f)]
 		public float MinDistFactor
 		{
 			get { return this.minDistFactor; }
@@ -146,6 +160,7 @@ namespace Duality.Resources
 		/// </summary>
 		/// <seealso cref="MaxDist"/>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		[EditorHintRange(0.0f, 100.0f, 0.0f, 20.0f)]
 		public float MaxDistFactor
 		{
 			get { return this.maxDistFactor; }
@@ -156,6 +171,7 @@ namespace Duality.Resources
 		/// </summary>
 		/// <seealso cref="MinDistFactor"/>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		[EditorHintRange(0.0f, 100000.0f, 0.0f, 2000.0f)]
 		public float MinDist
 		{
 			get { return DualityApp.Sound.DefaultMinDist * this.minDistFactor; }
@@ -166,6 +182,7 @@ namespace Duality.Resources
 		/// </summary>
 		/// <seealso cref="MaxDistFactor"/>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
+		[EditorHintRange(0.0f, 100000.0f, 0.0f, 10000.0f)]
 		public float MaxDist
 		{
 			get { return DualityApp.Sound.DefaultMaxDist * this.maxDistFactor; }

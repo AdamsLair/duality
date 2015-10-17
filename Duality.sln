@@ -91,6 +91,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicShaders", "SampleProjects\BasicShaders\BasicShaders.csproj", "{24BD25E6-C512-4359-A6BC-DAA155568C58}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlapOrDie", "SampleProjects\FlapOrDie\FlapOrDie.csproj", "{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AudioHandling", "SampleProjects\AudioHandling\AudioHandling.csproj", "{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -222,6 +223,10 @@ Global
 		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -265,5 +270,6 @@ Global
 		{9EF413B4-0416-45FF-9A8D-85CC21C4C15B} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{24BD25E6-C512-4359-A6BC-DAA155568C58} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{31ED388E-C8FD-4A77-A0DC-42CD5EB54E4C} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
+		{A16AF3AA-B690-4ADD-90DC-D5A90190AD0E} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 	EndGlobalSection
 EndGlobal

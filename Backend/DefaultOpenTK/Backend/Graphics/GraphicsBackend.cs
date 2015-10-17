@@ -734,7 +734,10 @@ namespace Duality.Backend.DefaultOpenTK
 					{
 						if (version.Major < MinOpenGLVersion.Major && version.Minor < MinOpenGLVersion.Minor)
 						{
-							Log.Core.WriteWarning("The detected OpenGL version {0} appears to be lower than the required minimum. OpenGL 2.1 or higher is required to run Duality applications.");
+							Log.Core.WriteWarning(
+								"The detected OpenGL version {0} appears to be lower than the required minimum. Version {1} or higher is required to run Duality applications.",
+								version,
+								MinOpenGLVersion);
 						}
 						break;
 					}
