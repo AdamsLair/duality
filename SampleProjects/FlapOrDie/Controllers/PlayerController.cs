@@ -6,6 +6,7 @@ using Duality;
 using Duality.Input;
 using Duality.Components.Physics;
 using Duality.Resources;
+using Duality.Components.Renderers;
 
 namespace FlapOrDie.Controllers
 {
@@ -14,6 +15,12 @@ namespace FlapOrDie.Controllers
     {
         [DontSerialize]
         private RigidBody rigidBody;
+
+        private AnimSpriteRenderer bodyRenderer;
+
+        private AnimSpriteRenderer frontWingRenderer;
+
+        private AnimSpriteRenderer backWingRenderer;
 
         private float impulseStrength;
 
@@ -31,6 +38,9 @@ namespace FlapOrDie.Controllers
         }
 
         [DontSerialize]
+        private float flapTime;
+
+        [DontSerialize]
         private bool isDead;
 
         public bool IsDead
@@ -38,23 +48,59 @@ namespace FlapOrDie.Controllers
             get { return this.isDead; }
         }
 
+        public AnimSpriteRenderer Body
+        {
+            get { return this.bodyRenderer; }
+            set { this.bodyRenderer = value; }
+        }
+
+        public AnimSpriteRenderer FrontWing
+        {
+            get { return this.frontWingRenderer; }
+            set { this.frontWingRenderer = value; }
+        }
+
+        public AnimSpriteRenderer BackWing
+        {
+            get { return this.backWingRenderer; }
+            set { this.backWingRenderer = value; }
+        }
+
         public void Reset()
         {
             this.points = 0;
             this.isDead = false;
             this.GameObj.Transform.Pos = Vector3.Zero;
+            
+            Body.AnimFirstFrame = 1;
         }
 
         void ICmpUpdatable.OnUpdate()
         {
-            if (this.rigidBody == null)
+            float lastDelta = Time.MsPFMult * Time.TimeMult / 1000;
+            if (this.rigidBody == null) this.rigidBody = this.GameObj.GetComponent<RigidBody>();
+
+            if (!this.isDead)
             {
-                this.rigidBody = this.GameObj.GetComponent<RigidBody>();
+                if (DualityApp.Keyboard.KeyHit(Key.Space))
+                {
+                    this.rigidBody.ApplyLocalImpulse(-Vector2.UnitY * this.impulseStrength);
+                    flapTime = (Time.MsPFMult / 1000 * 2);
+                }
             }
 
-            if (!this.isDead && DualityApp.Keyboard.KeyHit(Key.Space))
+            if(flapTime > 0)
             {
-                this.rigidBody.ApplyLocalImpulse(-Vector2.UnitY * this.impulseStrength);
+                FrontWing.GameObj.Transform.Angle = -MathF.PiOver4;
+                BackWing.GameObj.Transform.Angle = MathF.PiOver4;
+                flapTime -= lastDelta;
+            }
+
+            if(flapTime < 0)
+            {
+                FrontWing.GameObj.Transform.Angle = 0;
+                BackWing.GameObj.Transform.Angle = 0;
+                flapTime = 0;
             }
 
             if (DualityApp.Keyboard.KeyHit(Key.Escape))
@@ -76,6 +122,7 @@ namespace FlapOrDie.Controllers
             {
                 // otherwise, you're dead!
                 this.isDead = true;
+                Body.AnimFirstFrame = 2;
             }
         }
 
