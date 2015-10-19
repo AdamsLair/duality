@@ -518,13 +518,10 @@ namespace Duality.Resources
 
 				int oldCount = updatableComponents.Count;
 
-				// Collect active Components
+				// Collect Components
 				updatableComponents.Reserve(updatableComponents.Count + pair.Value.Count);
 				for (int i = 0; i < pair.Value.Count; i++)
 				{
-					if (!pair.Value[i].Active)
-						continue;
-
 					updatableComponents.Add(pair.Value[i]);
 				}
 
@@ -551,6 +548,9 @@ namespace Duality.Resources
 				for (int i = 0; i < data.Length; i++)
 				{
 					if (i >= updatableComponents.Count) break;
+
+					// Skip inactive, disposed and detached Components
+					if (!data[i].Active) continue;
 
 					// Manage profilers per Component type
 					if (i == 0 || i - updateMapBegin >= updateData[updateMapIndex].Count)
