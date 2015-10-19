@@ -23,7 +23,7 @@
     <file src="..\SampleProjects\ParticleSystem\Content\Plugins\ParticleSystem.core.dll" target="lib" />
     <file src="..\SampleProjects\ParticleSystem\Content\Plugins\ParticleSystem.core.xml" target="lib" />
     <file src="..\SampleProjects\ParticleSystem\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\ParticleSystem\**\*.cs" target="source" exclude="..\SampleProjects\ParticleSystem\Content\**\*.*" />
+    <file src="..\SampleProjects\ParticleSystem\**\*.cs" target="source" exclude="..\SampleProjects\ParticleSystem\Content\**\*.*;..\SampleProjects\ParticleSystem\obj\**\*.*" />
     <file src="..\SampleProjects\ParticleSystem\ParticleSystem.csproj" target="source" />
   </files>
 </package>
