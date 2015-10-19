@@ -285,8 +285,28 @@ namespace Duality.Updater
 					}
 				}
 
+				// Determine existing ItemGroup with Assembly references, or create one
+				XElement referenceGroup;
+				{
+					XElement existingReferenceItem = csproj.Descendants("Reference", true).FirstOrDefault();
+					if (existingReferenceItem != null)
+					{
+						referenceGroup = existingReferenceItem.Parent;
+					}
+					else
+					{
+						XElement sampleItemGroup = csproj.Descendants("ItemGroup", true).FirstOrDefault();
+						XName itemGroupName;
+						if (sampleItemGroup != null)
+							itemGroupName = sampleItemGroup.Name;
+						else
+							itemGroupName = XName.Get("ItemGroup", csproj.Root.Name.NamespaceName);
+						referenceGroup = new XElement(itemGroupName);
+						csproj.Root.Add(referenceGroup);
+					}
+				}
+
 				// Transform project references to local relative paths
-				XElement referenceGroup = csproj.Descendants("Reference", true).First().Parent;
 				foreach (var element in csproj.Descendants("ProjectReference", true))
 				{
 					string projectPath = element.Attribute("Include", true).Value;

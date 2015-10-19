@@ -399,21 +399,21 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 		protected Func<IEnumerable<object>> CreateUniformFloatValueGetter(string name)
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)o.GetUniform(name)[0] : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)o.GetUniform(name)[0] : null);
 		}
 		protected Func<IEnumerable<object>> CreateUniformIntValueGetter(string name)
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)(int)o.GetUniform(name)[0] : null);
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)(int)o.GetUniform(name)[0] : null);
 		}
 		protected Func<IEnumerable<object>> CreateUniformVec2ValueGetter(string name)
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)
 				new Vector2(o.GetUniform(name)[0], o.GetUniform(name)[1])
 				: null);
 		}
 		protected Func<IEnumerable<object>> CreateUniformVec3ValueGetter(string name)
 		{
-			return () => this.GetValue().Cast<BatchInfo>().Select(o => o != null ? (object)
+			return () => this.GetValue().Cast<BatchInfo>().Select(o => (o != null && o.GetUniform(name) != null) ? (object)
 				new Vector3(o.GetUniform(name)[0], o.GetUniform(name)[1], o.GetUniform(name)[2])
 				: null);
 		}
@@ -426,7 +426,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				List<object> result = new List<object>();
 				foreach (var info in batchInfos)
 				{
-					float[] arrayBase = info.GetUniform(name);
+					float[] arrayBase = info.GetUniform(name) ?? new float[0];
 					int elementCount = arrayBase.Length / arraySize;
 					float[][] arrays = new float[arraySize][];
 					for (int i = 0; i < arraySize; i++)
@@ -450,7 +450,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				List<object> result = new List<object>();
 				foreach (var info in batchInfos)
 				{
-					float[] arrayBase = info.GetUniform(name);
+					float[] arrayBase = info.GetUniform(name) ?? new float[0];
 					int arraySize = arrayBase.Length / 2;
 					Vector2[] arrays = new Vector2[arraySize];
 					for (int i = 0; i < arraySize; i++)
@@ -472,7 +472,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				List<object> result = new List<object>();
 				foreach (var info in batchInfos)
 				{
-					float[] arrayBase = info.GetUniform(name);
+					float[] arrayBase = info.GetUniform(name) ?? new float[0];
 					int arraySize = arrayBase.Length / 3;
 					Vector3[] arrays = new Vector3[arraySize];
 					for (int i = 0; i < arraySize; i++)

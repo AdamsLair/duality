@@ -45,7 +45,7 @@ namespace Duality.Backend.DotNetFramework
 		
 		Stream IFileSystem.CreateFile(string path)
 		{
-			return File.Open(path, FileMode.Create);
+			return File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
 		}
 		Stream IFileSystem.OpenFile(string path, FileAccessMode mode)
 		{
@@ -66,7 +66,7 @@ namespace Duality.Backend.DotNetFramework
 					break;
 			}
 
-			return File.Open(path, FileMode.Open, access);
+			return File.Open(path, FileMode.Open, access, FileShare.ReadWrite);
 		}
 		void IFileSystem.DeleteFile(string path)
 		{

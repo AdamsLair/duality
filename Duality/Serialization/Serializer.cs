@@ -695,7 +695,17 @@ namespace Duality.Serialization
 		/// </summary>
 		public static Type DefaultType
 		{
-			get { return defaultSerializer; }
+			get
+			{
+				// If we don't know yet, determine the default serialization method to use
+				if (defaultSerializer == null)
+				{
+					InitDefaultMethod();
+				}
+
+				// If we still don't know, assume XML serialization, because we really need a default.
+				return defaultSerializer ?? typeof(XmlSerializer);
+			}
 			set { defaultSerializer = value; }
 		}
 		/// <summary>
@@ -795,19 +805,21 @@ namespace Duality.Serialization
 		/// <returns>A newly created <see cref="Serializer"/> meeting the specified criteria.</returns>
 		public static Serializer Create(Stream stream, Type preferredSerializer = null)
 		{
-			if (preferredSerializer == null)
-			{
-				if (stream.CanRead && stream.CanSeek && stream.Length > 0)
-					preferredSerializer = Detect(stream);
-				else
-					preferredSerializer = defaultSerializer;
-			}
+			// If no preferred serializer is specified, try to detect which one to use
+			if (preferredSerializer == null && stream.CanRead && stream.CanSeek && stream.Length > 0)
+				preferredSerializer = Detect(stream);
 
+			// If detection wasn't possible, assume the default serializer.
+			if (preferredSerializer == null)
+				preferredSerializer = DefaultType;
+
+			// Do a consistency check on the serializer type we got passed - is it really a Serializer?
 			TypeInfo baseTypeInfo = typeof(Serializer).GetTypeInfo();
 			TypeInfo serializerTypeInfo = preferredSerializer.GetTypeInfo();
 			if (!baseTypeInfo.IsAssignableFrom(serializerTypeInfo))
 				throw new ArgumentException("Can't use a non-{0} Type as a {0}.", baseTypeInfo.Name);
 
+			// Create an instance of the Serializer, configure and return it
 			Serializer serializer = serializerTypeInfo.CreateInstanceOf() as Serializer;
 			serializer.TargetStream = stream;
 			return serializer;
@@ -997,11 +1009,13 @@ namespace Duality.Serialization
 		
 		internal static void InitDefaultMethod()
 		{
+			// By default, assume one of the builtin serializers, depending on execution environment
 			if (DualityApp.ExecEnvironment == DualityApp.ExecutionEnvironment.Editor)
 				defaultSerializer = typeof(XmlSerializer);
 			else
 				defaultSerializer = typeof(BinarySerializer);
 
+			// Search for actual Resource files and detect their serialization format
 			if (DirectoryOp.Exists(DualityApp.DataDirectory))
 			{
 				foreach (string resFile in DirectoryOp.GetFiles(DualityApp.DataDirectory, true))
@@ -1011,8 +1025,12 @@ namespace Duality.Serialization
 					{
 						try
 						{
-							defaultSerializer = Detect(stream);
-							break;
+							Type matchingSerializer = Detect(stream);
+							if (matchingSerializer != null)
+							{
+								defaultSerializer = matchingSerializer;
+								break;
+							}
 						}
 						catch (Exception) {}
 					}
@@ -1027,10 +1045,19 @@ namespace Duality.Serialization
 			}
 			tempCheckSerializers.Clear();
 			availableSerializerTypes.Clear();
-			defaultSerializer = null;
 			surrogates = null;
 			serializeTypeCache.Clear();
 			serializeHandlerCache.Clear();
+
+			// If our default serializer isn't defined in the main Assembly, forget about it
+			if (defaultSerializer != null)
+			{
+				bool isMainAssembly = defaultSerializer.GetTypeInfo().Assembly == typeof(DualityApp).GetTypeInfo().Assembly;
+				if (!isMainAssembly)
+				{
+					defaultSerializer = null;
+				}
+			}
 		}
 
 		private static void ReflectionHelper_MemberResolve(object sender, ResolveMemberEventArgs e)

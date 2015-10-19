@@ -16,6 +16,10 @@ namespace Duality.Input
 		/// </summary>
 		int ButtonCount { get; }
 		/// <summary>
+		/// [GET] Returns the number of hats.
+		/// </summary>
+		int HatCount { get; }
+		/// <summary>
 		/// [GET] Returns whether the specified device button is currently pressed.
 		/// </summary>
 		/// <param name="button"></param>
@@ -27,5 +31,11 @@ namespace Duality.Input
 		/// <param name="axis"></param>
 		/// <returns></returns>
 		float this[JoystickAxis axis] { get; }
+		/// <summary>
+		/// [GET] Returns the current position of the specified joystick hat.
+		/// </summary>
+		/// <param name="hat"></param>
+		/// <returns></returns>
+		JoystickHatPosition this[JoystickHat hat] { get; }
 	}
 }

@@ -12,6 +12,7 @@ namespace Duality.Backend
 			Velocity = Vector3.Zero,
 			Volume = 1.0f,
 			Pitch = 1.0f,
+			Lowpass = 1.0f,
 			MinDistance = 0.0f,
 			MaxDistance = 10000.0f,
 			Looped = false,
@@ -23,6 +24,7 @@ namespace Duality.Backend
 		public Vector3 Velocity;
 		public float Volume;
 		public float Pitch;
+		public float Lowpass;
 		public float MinDistance;
 		public float MaxDistance;
 		public bool Looped;

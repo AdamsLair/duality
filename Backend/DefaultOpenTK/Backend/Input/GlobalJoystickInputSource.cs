@@ -7,7 +7,10 @@ namespace Duality.Backend.DefaultOpenTK
 {
 	public class GlobalJoystickInputSource : IJoystickInputSource
 	{
+		private static List<GlobalJoystickInputSource> cachedDevices = new List<GlobalJoystickInputSource>();
+
 		private	int	deviceIndex;
+		private	int	detectedHatCount;
 		private	OpenTK.Input.JoystickState state;
 		private	OpenTK.Input.JoystickCapabilities caps;
 		
@@ -26,6 +29,17 @@ namespace Duality.Backend.DefaultOpenTK
 		public int ButtonCount
 		{
 			get { return this.caps.ButtonCount; }
+		}
+		public int HatCount
+		{
+			get 
+			{
+				// Due to OpenTK sometimes reporting the wrong hat count, adjust its value when required
+				if (this.caps.IsConnected)
+					return Math.Max(this.detectedHatCount, this.caps.HatCount);
+				else
+					return this.caps.HatCount;
+			}
 		}
 		public bool this[JoystickButton button]
 		{
@@ -47,6 +61,16 @@ namespace Duality.Backend.DefaultOpenTK
 					return 0.0f;
 			}
 		}
+		public JoystickHatPosition this[JoystickHat hat]
+		{
+			get 
+			{
+				if (this.HatCount > (int)hat)
+					return GetDualityJoystickHatPosition(this.state.GetHat(GetOpenTKJoystickHat(hat)).Position);
+				else
+					return JoystickHatPosition.Centered;
+			}
+		}
 
 		public GlobalJoystickInputSource(int deviceIndex)
 		{
@@ -57,11 +81,24 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			this.caps = OpenTK.Input.Joystick.GetCapabilities(this.deviceIndex);
 			this.state = OpenTK.Input.Joystick.GetState(this.deviceIndex);
+
+			// Due to OpenTK sometimes reporting the wrong hat count, adjust its value when required
+			{
+				int highestInputHat = 0;
+
+				if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat3).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 4;
+				else if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat2).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 3;
+				else if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat1).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 2;
+				else if (this.state.GetHat(OpenTK.Input.JoystickHat.Hat0).Position != OpenTK.Input.HatPosition.Centered) highestInputHat = 1;
+
+				this.detectedHatCount = Math.Max(this.detectedHatCount, highestInputHat);
+			}
 		}
 
 		public static void UpdateAvailableDecives(JoystickInputCollection inputManager)
 		{
 			const int MinDeviceCheckCount = 8;
+			const int MaxDeviceCheckCount = 32;
 
 			// Determine which devices are currently active already, so we can skip their indices
 			List<int> skipIndices = null;
@@ -77,14 +114,18 @@ namespace Duality.Backend.DefaultOpenTK
 
 			// Iterate over device indices and see what responds
 			int deviceIndex = -1;
-			while (true)
+			while (deviceIndex < MaxDeviceCheckCount)
 			{
 				deviceIndex++;
 
 				if (skipIndices != null && skipIndices.Contains(deviceIndex))
 					continue;
-
-				GlobalJoystickInputSource joystick = new GlobalJoystickInputSource(deviceIndex);
+				
+				while (deviceIndex >= cachedDevices.Count)
+				{
+					cachedDevices.Add(new GlobalJoystickInputSource(cachedDevices.Count));
+				}
+				GlobalJoystickInputSource joystick = cachedDevices[deviceIndex];
 				joystick.UpdateState();
 
 				if (joystick.IsAvailable)
@@ -153,6 +194,35 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 
 			return OpenTK.Input.JoystickAxis.Last;
+		}
+		private static OpenTK.Input.JoystickHat GetOpenTKJoystickHat(JoystickHat hat)
+		{
+			switch (hat)
+			{
+				case JoystickHat.Hat0:	return OpenTK.Input.JoystickHat.Hat0;
+				case JoystickHat.Hat1:	return OpenTK.Input.JoystickHat.Hat1;
+				case JoystickHat.Hat2:	return OpenTK.Input.JoystickHat.Hat2;
+				case JoystickHat.Hat3:	return OpenTK.Input.JoystickHat.Hat3;
+			}
+
+			return OpenTK.Input.JoystickHat.Last;
+		}
+		private static JoystickHatPosition GetDualityJoystickHatPosition(OpenTK.Input.HatPosition hatPos)
+		{
+			switch (hatPos)
+			{
+				case OpenTK.Input.HatPosition.Centered:	 return JoystickHatPosition.Centered;
+				case OpenTK.Input.HatPosition.Up:        return JoystickHatPosition.Up;
+				case OpenTK.Input.HatPosition.UpLeft:    return JoystickHatPosition.Up | JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.UpRight:   return JoystickHatPosition.Up | JoystickHatPosition.Right;
+				case OpenTK.Input.HatPosition.Right:     return JoystickHatPosition.Right;
+				case OpenTK.Input.HatPosition.Left:      return JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.Down:      return JoystickHatPosition.Down;
+				case OpenTK.Input.HatPosition.DownLeft:  return JoystickHatPosition.Down | JoystickHatPosition.Left;
+				case OpenTK.Input.HatPosition.DownRight: return JoystickHatPosition.Down | JoystickHatPosition.Right;
+			}
+
+			return JoystickHatPosition.Centered;
 		}
 	}
 }

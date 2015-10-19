@@ -39,23 +39,34 @@ namespace Duality
 					switch (type)
 					{
 						case LogMessageType.Message:
-							lines[i] = prefix + "Info:    " + new string(' ', indent * 4) + lines[i];
+							lines[i] = prefix + "Msg: " + new string(' ', indent * 2) + lines[i];
 							break;
 						case LogMessageType.Warning:
-							lines[i] = prefix + "Warning: " + new string(' ', indent * 4) + lines[i];
+							lines[i] = prefix + "Wrn: " + new string(' ', indent * 2) + lines[i];
 							break;
 						case LogMessageType.Error:
-							lines[i] = prefix + "ERROR:   " + new string(' ', indent * 4) + lines[i];
+							lines[i] = prefix + "ERR: " + new string(' ', indent * 2) + lines[i];
 							break;
 					}
 				}
 				else
 				{
-					lines[i] = new string(' ', prefix.Length + 9 + indent * 4) + lines[i];
+					lines[i] = new string(' ', prefix.Length + 5 + indent * 2) + lines[i];
 				}
 
-				this.target.WriteLine(lines[i]);
+				this.WriteLine(source, type, lines[i], context);
 			}
+		}
+		/// <summary>
+		/// Writes a single line of the final, formatted text message to the output.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="type"></param>
+		/// <param name="formattedLine"></param>
+		/// <param name="context"></param>
+		protected virtual void WriteLine(Log source, LogMessageType type, string formattedLine, object context)
+		{
+			this.target.WriteLine(formattedLine);
 		}
 	}
 }

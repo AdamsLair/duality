@@ -220,6 +220,8 @@ namespace Duality
 		/// <param name="filePath"></param>
 		public static string GetTextReport(IEnumerable<ProfileCounter> reportCounters, ProfileReportOptions options = ProfileReportOptions.LastValue)
 		{
+			bool omitMinor = (options & ProfileReportOptions.OmitMinorValues) != ProfileReportOptions.None;
+
 			// Group Counters by Type
 			Dictionary<Type,List<ProfileCounter>> countersByType = new Dictionary<Type,List<ProfileCounter>>();
 			Type[] existingTypes = reportCounters.Select(c => c.GetType()).Distinct().ToArray();
@@ -276,6 +278,8 @@ namespace Duality
 
 					ProfileReportCounterData data;
 					current.GetReportData(out data, options);
+					if (omitMinor && data.Severity <= 0.005f)
+						continue;
 					
 					if (options.HasFlag(ProfileReportOptions.FormattedText))
 					{

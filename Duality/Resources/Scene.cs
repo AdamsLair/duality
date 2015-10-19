@@ -263,6 +263,13 @@ namespace Duality.Resources
 		}
 
 
+		private struct UpdateEntry
+		{
+			public TypeInfo Type;
+			public int Count;
+			public TimeCounter Profiler;
+		}
+
 		private	Vector2						globalGravity		= Vector2.UnitY * 33.0f;
 		private IRendererVisibilityStrategy	visibilityStrategy	= new DefaultRendererVisibilityStrategy();
 		private	GameObject[]				serializeObj		= null;
@@ -278,7 +285,7 @@ namespace Duality.Resources
 
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
-		private Dictionary<TypeInfo,List<Component>> componentyByType = new Dictionary<TypeInfo,List<Component>>();
+		private Dictionary<TypeInfo,List<Component>> componentsByType = new Dictionary<TypeInfo,List<Component>>();
 
 		
 		/// <summary>
@@ -456,10 +463,7 @@ namespace Duality.Resources
 			Profile.TimeUpdateScene.BeginMeasure();
 			DualityApp.EditorGuard(() =>
 			{
-				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
-				foreach (GameObject obj in activeObj)
-					obj.Update();
-
+				this.UpdateComponents<ICmpUpdatable>(cmp => cmp.OnUpdate());
 				this.UpdateVisibilityStrategy();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
@@ -488,16 +492,94 @@ namespace Duality.Resources
 			Profile.TimeUpdateScene.BeginMeasure();
 			DualityApp.EditorGuard(() =>
 			{
-				// Update all GameObjects
-				GameObject[] activeObj = this.objectManager.ActiveObjects.ToArray();
-				foreach (GameObject obj in activeObj)
-					obj.EditorUpdate();
-
+				this.UpdateComponents<ICmpEditorUpdatable>(cmp => cmp.OnUpdate());
 				this.UpdateVisibilityStrategy();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
 
 			switchLock--;
+		}
+		private void UpdateComponents<T>(Action<T> updateAction) where T : class
+		{
+			float componentUpdateTotalTime = 0.0f;
+			TimeCounter overheadProfiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\Overhead");
+			TimeCounter allComponentsProfiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\All Components");
+			allComponentsProfiler.BeginMeasure();
+
+			// Gather a list of updatable Components
+			RawList<Component> updatableComponents = new RawList<Component>(256);
+			RawList<UpdateEntry> updateMap = new RawList<UpdateEntry>();
+			foreach (var pair in this.componentsByType)
+			{
+				// Skip Component types that aren't updatable anyway
+				Component sampleComponent = pair.Value.FirstOrDefault();
+				if (!(sampleComponent is T))
+					continue;
+
+				int oldCount = updatableComponents.Count;
+
+				// Collect Components
+				updatableComponents.Reserve(updatableComponents.Count + pair.Value.Count);
+				for (int i = 0; i < pair.Value.Count; i++)
+				{
+					updatableComponents.Add(pair.Value[i]);
+				}
+
+				// Keep in mind how many Components of each type we have in what order
+				if (updatableComponents.Count - oldCount > 0)
+				{
+					updateMap.Add(new UpdateEntry
+					{
+						Type = pair.Key,
+						Count = updatableComponents.Count - oldCount,
+						Profiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\" + pair.Key.Name)
+					});
+				}
+			}
+
+			// Update all Components. They're still sorted by type.
+			{
+				int updateMapIndex = -1;
+				int updateMapBegin = -1;
+				TimeCounter activeProfiler = null;
+				Component[] data = updatableComponents.Data;
+				UpdateEntry[] updateData = updateMap.Data;
+
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i >= updatableComponents.Count) break;
+
+					// Skip inactive, disposed and detached Components
+					if (!data[i].Active) continue;
+
+					// Manage profilers per Component type
+					if (i == 0 || i - updateMapBegin >= updateData[updateMapIndex].Count)
+					{
+						updateMapIndex++;
+						updateMapBegin = i;
+
+						if (activeProfiler != null)
+						{
+							activeProfiler.EndMeasure();
+							componentUpdateTotalTime += activeProfiler.LastValue;
+						}
+						activeProfiler = updateData[updateMapIndex].Profiler;
+						activeProfiler.BeginMeasure();
+					}
+
+					// Invoke the Component's update action
+					updateAction(data[i] as T);
+				}
+				
+				if (activeProfiler != null)
+				{
+					activeProfiler.EndMeasure();
+					componentUpdateTotalTime += activeProfiler.LastValue;
+				}
+			}
+
+			allComponentsProfiler.EndMeasure();
+			overheadProfiler.Set(allComponentsProfiler.LastValue - componentUpdateTotalTime);
 		}
 		private void UpdateVisibilityStrategy()
 		{
@@ -512,7 +594,7 @@ namespace Duality.Resources
 		{
 			this.objectManager.Flush();
 			this.renderers.RemoveAll(i => i == null || i.Disposed);
-			foreach (var cmpList in this.componentyByType.Values)
+			foreach (var cmpList in this.componentsByType.Values)
 				cmpList.RemoveAll(i => i == null || i.Disposed);
 		}
 
@@ -664,7 +746,7 @@ namespace Duality.Resources
 			bool multiple = false;
 			List<Component> singleResult = null;
 			List<List<Component>> query = null;
-			foreach (var pair in this.componentyByType)
+			foreach (var pair in this.componentsByType)
 			{
 				if (typeInfo.IsAssignableFrom(pair.Key))
 				{
@@ -678,7 +760,7 @@ namespace Duality.Resources
 						// Switch to multiselect mode
 						if (!multiple)
 						{
-							query = new List<List<Component>>(this.componentyByType.Values.Count);
+							query = new List<List<Component>>(this.componentsByType.Values.Count);
 							if (singleResult != null) query.Add(singleResult);
 						}
 						query.Add(pair.Value);
@@ -748,7 +830,7 @@ namespace Duality.Resources
 		public Component FindComponent(Type type, bool activeOnly = true)
 		{
 			TypeInfo typeInfo = type.GetTypeInfo();
-			foreach (var pair in this.componentyByType)
+			foreach (var pair in this.componentsByType)
 			{
 				if (typeInfo.IsAssignableFrom(pair.Key))
 				{
@@ -780,10 +862,10 @@ namespace Duality.Resources
 			// Per-Type lists
 			TypeInfo cmpType = cmp.GetType().GetTypeInfo();
 			List<Component> cmpList;
-			if (!this.componentyByType.TryGetValue(cmpType, out cmpList))
+			if (!this.componentsByType.TryGetValue(cmpType, out cmpList))
 			{
 				cmpList = new List<Component>();
-				this.componentyByType[cmpType] = cmpList;
+				this.componentsByType[cmpType] = cmpList;
 			}
 			cmpList.Add(cmp);
 
@@ -800,7 +882,7 @@ namespace Duality.Resources
 			// Per-Type lists
 			TypeInfo cmpType = cmp.GetType().GetTypeInfo();
 			List<Component> cmpList;
-			if (this.componentyByType.TryGetValue(cmpType, out cmpList))
+			if (this.componentsByType.TryGetValue(cmpType, out cmpList))
 				cmpList.Remove(cmp);
 
 			// Specialized lists

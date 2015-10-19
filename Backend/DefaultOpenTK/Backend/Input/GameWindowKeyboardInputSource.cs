@@ -43,15 +43,10 @@ namespace Duality.Backend.DefaultOpenTK
 		public GameWindowKeyboardInputSource(GameWindow window)
 		{
 			this.window = window;
-			this.window.FocusedChanged += this.window_FocusedChanged;
 			this.window.Keyboard.KeyDown += this.device_KeyDown;
 			this.window.KeyPress += this.window_KeyPress;
 		}
 
-		private void window_FocusedChanged(object sender, EventArgs e)
-		{
-			this.hasFocus = this.window.Focused;
-		}
 		private void device_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
 		{
 			this.repeatCounter++;
@@ -63,6 +58,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public void UpdateState()
 		{
+			this.hasFocus = this.window.Focused;
 			this.charInput = this.charInputBuffer.ToString();
 			this.charInputBuffer.Clear();
 		}
@@ -143,6 +139,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case Key.Clear:			return OpenTK.Input.Key.Clear;
 				case Key.Sleep:			return OpenTK.Input.Key.Sleep;
 
+				case Key.Keypad0:		return OpenTK.Input.Key.Keypad0;
 				case Key.Keypad1:		return OpenTK.Input.Key.Keypad1;
 				case Key.Keypad2:		return OpenTK.Input.Key.Keypad2;
 				case Key.Keypad3:		return OpenTK.Input.Key.Keypad3;
@@ -186,6 +183,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case Key.Y:				return OpenTK.Input.Key.Y;
 				case Key.Z:				return OpenTK.Input.Key.Z;
     
+				case Key.Number0:		return OpenTK.Input.Key.Number0;
 				case Key.Number1:		return OpenTK.Input.Key.Number1;
 				case Key.Number2:		return OpenTK.Input.Key.Number2;
 				case Key.Number3:		return OpenTK.Input.Key.Number3;

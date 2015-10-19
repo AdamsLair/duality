@@ -28,12 +28,13 @@ namespace Duality.Backend.DefaultOpenTK
 				curBound = prog;
 			}
 		}
-		public static void SetUniform(ref ShaderFieldInfo field, int location, float[] data)
+		public static void SetUniform(ref ShaderFieldInfo field, int location, params float[] data)
 		{
 			if (field.Scope != ShaderFieldScope.Uniform) return;
 			if (location == -1) return;
 			switch (field.Type)
 			{
+				case ShaderFieldType.Bool:
 				case ShaderFieldType.Int:
 					int[] arrI = new int[field.ArrayLength];
 					for (int j = 0; j < arrI.Length; j++) arrI[j] = (int)data[j];
@@ -66,6 +67,7 @@ namespace Duality.Backend.DefaultOpenTK
 		private int handle;
 		private ShaderFieldInfo[] fields;
 		private int[] fieldLocations;
+		private int[] builtinIndex;
 
 		public int Handle
 		{
@@ -78,6 +80,15 @@ namespace Duality.Backend.DefaultOpenTK
 		public int[] FieldLocations
 		{
 			get { return this.fieldLocations; }
+		}
+		/// <summary>
+		/// [GET] If a certain field refers to a builtin shader variable, the appropriate array element contains its index.
+		/// Otherwise, it contains <see cref="Duality.Resources.BuiltinShaderFields.InvalidIndex"/>. If no builtin variable
+		/// is used at all, this property will return an empty array.
+		/// </summary>
+		public int[] BuiltinVariableIndex
+		{
+			get { return this.builtinIndex; }
 		}
 
 		void INativeShaderProgram.LoadProgram(INativeShaderPart vertex, INativeShaderPart fragment)
@@ -102,8 +113,9 @@ namespace Duality.Backend.DefaultOpenTK
 			GL.GetProgram(this.handle, GetProgramParameterName.LinkStatus, out result);
 			if (result == 0)
 			{
-				string infoLog = GL.GetProgramInfoLog(this.handle);
-				throw new BackendException(string.Format("Linker error:{1}{0}", infoLog, Environment.NewLine));
+				string errorLog = GL.GetProgramInfoLog(this.handle);
+				this.RollbackAtFault();
+				throw new BackendException(string.Format("Linker error:{1}{0}", errorLog, Environment.NewLine));
 			}
 			
 			// Collect variable infos from sub programs
@@ -132,6 +144,25 @@ namespace Duality.Backend.DefaultOpenTK
 				else
 					this.fieldLocations[i] = GL.GetAttribLocation(this.handle, this.fields[i].Name);
 			}
+
+			// Determine whether we're using builtin shader variables
+			this.builtinIndex = new int[this.fields.Length];
+			bool anyBuildinUsed = false;
+			for (int i = 0; i < this.fields.Length; i++)
+			{
+				if (this.fields[i].Scope == ShaderFieldScope.Uniform)
+				{
+					this.builtinIndex[i] = BuiltinShaderFields.GetIndex(this.fields[i].Name);
+					if (this.builtinIndex[i] != BuiltinShaderFields.InvalidIndex)
+						anyBuildinUsed = true;
+				}
+				else
+				{ 
+					this.builtinIndex[i] = BuiltinShaderFields.InvalidIndex;
+				}
+			}
+			if (!anyBuildinUsed)
+				this.builtinIndex = new int[0];
 		}
 		ShaderFieldInfo[] INativeShaderProgram.GetFields()
 		{
@@ -139,15 +170,20 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IDisposable.Dispose()
 		{
-			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated &&
-				this.handle != 0)
-			{
-				this.DetachShaders();
-				GL.DeleteProgram(this.handle);
-				this.handle = 0;
-			}
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated)
+				return;
+
+			this.DeleteProgram();
 		}
 
+		private void DeleteProgram()
+		{
+			if (this.handle == 0) return;
+
+			this.DetachShaders();
+			GL.DeleteProgram(this.handle);
+			this.handle = 0;
+		}
 		private void DetachShaders()
 		{
 			// Determine currently attached shaders
@@ -160,6 +196,18 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				GL.DetachShader(this.handle, attachedShaders[i]);
 			}
+		}
+		/// <summary>
+		/// In case of errors loading the program, this methods rolls back the state of this
+		/// shader program, so consistency can be assured.
+		/// </summary>
+		private void RollbackAtFault()
+		{
+			this.fields = new ShaderFieldInfo[0];
+			this.fieldLocations = new int[0];
+			this.builtinIndex = new int[0];
+
+			this.DeleteProgram();
 		}
 	}
 }

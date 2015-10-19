@@ -82,15 +82,16 @@ namespace Duality.Backend.DefaultOpenTK
 				ShaderFieldType varType = ShaderFieldType.Unknown;
 				switch (curLineSplit[1].ToUpper())
 				{
-					case "FLOAT":		varType = ShaderFieldType.Float; break;
-					case "VEC2":		varType = ShaderFieldType.Vec2; break;
-					case "VEC3":		varType = ShaderFieldType.Vec3; break;
-					case "VEC4":		varType = ShaderFieldType.Vec4; break;
-					case "MAT2":		varType = ShaderFieldType.Mat2; break;
-					case "MAT3":		varType = ShaderFieldType.Mat3; break;
-					case "MAT4":		varType = ShaderFieldType.Mat4; break;
-					case "INT":			varType = ShaderFieldType.Int; break;
-					case "SAMPLER2D":	varType = ShaderFieldType.Sampler2D; break;
+					case "FLOAT":     varType = ShaderFieldType.Float; break;
+					case "VEC2":      varType = ShaderFieldType.Vec2; break;
+					case "VEC3":      varType = ShaderFieldType.Vec3; break;
+					case "VEC4":      varType = ShaderFieldType.Vec4; break;
+					case "MAT2":      varType = ShaderFieldType.Mat2; break;
+					case "MAT3":      varType = ShaderFieldType.Mat3; break;
+					case "MAT4":      varType = ShaderFieldType.Mat4; break;
+					case "INT":       varType = ShaderFieldType.Int; break;
+					case "BOOL":      varType = ShaderFieldType.Bool; break;
+					case "SAMPLER2D": varType = ShaderFieldType.Sampler2D; break;
 				}
 
 				curLineSplit = curLineSplit[2].Split(new char[] {'[', ']'}, StringSplitOptions.RemoveEmptyEntries);

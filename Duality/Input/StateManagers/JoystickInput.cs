@@ -11,9 +11,10 @@ namespace Duality.Input
 	{
 		private class State
 		{
-			public bool		IsAvailable		= false;
-			public float[]	AxisValue		= new float[(int)JoystickAxis.Last + 1];
-			public bool[]	ButtonPressed	= new bool[(int)JoystickButton.Last + 1];
+			public bool                   IsAvailable    = false;
+			public float[]                AxisValue      = new float[(int)JoystickAxis.Last + 1];
+			public bool[]                 ButtonPressed  = new bool[(int)JoystickButton.Last + 1];
+			public JoystickHatPosition[]  HatPosition    = new JoystickHatPosition[(int)JoystickHat.Last + 1];
 
 			public State() {}
 			public State(State baseState)
@@ -25,6 +26,7 @@ namespace Duality.Input
 				other.IsAvailable = this.IsAvailable;
 				this.AxisValue.CopyTo(other.AxisValue, 0);
 				this.ButtonPressed.CopyTo(other.ButtonPressed, 0);
+				this.HatPosition.CopyTo(other.HatPosition, 0);
 			}
 			public void UpdateFromSource(IJoystickInputSource source)
 			{
@@ -39,6 +41,10 @@ namespace Duality.Input
 				{
 					this.AxisValue[i] = source[(JoystickAxis)i];
 				}
+				for (int i = 0; i < this.HatPosition.Length; i++)
+				{
+					this.HatPosition[i] = source[(JoystickHat)i];
+				}
 			}
 		}
 
@@ -48,6 +54,7 @@ namespace Duality.Input
 		private	string					description		= null;
 		private	int						axisCount		= 0;
 		private	int						buttonCount		= 0;
+		private	int						hatCount		= 0;
 		private	bool					isDummy			= false;
 
 
@@ -65,8 +72,7 @@ namespace Duality.Input
 					if (this.source != null)
 					{
 						this.description = this.source.Description;
-						this.axisCount = this.source.AxisCount;
-						this.buttonCount = this.source.ButtonCount;
+						this.UpdateInputCounts();
 					}
 				}
 			}
@@ -104,6 +110,13 @@ namespace Duality.Input
 		{
 			get { return this.buttonCount; }
 		}
+		/// <summary>
+		/// [GET] Returns the number of joystick hats.
+		/// </summary>
+		public int HatCount
+		{
+			get { return this.hatCount; }
+		}
 
 		/// <summary>
 		/// [GET] Returns whether the specified device button is currently pressed.
@@ -123,6 +136,15 @@ namespace Duality.Input
 		{
 			get { return this.currentState.AxisValue[(int)axis]; }
 		}
+		/// <summary>
+		/// [GET] Returns the current position of the specified joystick hat.
+		/// </summary>
+		/// <param name="hat"></param>
+		/// <returns></returns>
+		public JoystickHatPosition this[JoystickHat hat]
+		{
+			get { return this.currentState.HatPosition[(int)hat]; }
+		}
 
 		/// <summary>
 		/// Fired once when a device button is no longer pressed.
@@ -135,7 +157,11 @@ namespace Duality.Input
 		/// <summary>
 		/// Fired whenever a device axis changes its value.
 		/// </summary>
-		public event EventHandler<JoystickAxisEventArgs> Move;
+		public event EventHandler<JoystickAxisEventArgs> AxisMove;
+		/// <summary>
+		/// Fired whenever a joystick hat moves.
+		/// </summary>
+		public event EventHandler<JoystickHatEventArgs> HatMove;
 		/// <summary>
 		/// Fired when the joystick is no longer available to Duality.
 		/// </summary>
@@ -159,6 +185,8 @@ namespace Duality.Input
 			{
 				// Update source state
 				this.source.UpdateState();
+				// Update how many buttons, hats and axes there are - some sources aren't constant here.
+				this.UpdateInputCounts();
 				// Obtain new state
 				this.currentState.UpdateFromSource(this.source);
 			}
@@ -201,9 +229,9 @@ namespace Duality.Input
 			{
 				if (this.currentState.AxisValue[i] != this.lastState.AxisValue[i])
 				{
-					if (this.Move != null)
+					if (this.AxisMove != null)
 					{
-						this.Move(this, new JoystickAxisEventArgs(
+						this.AxisMove(this, new JoystickAxisEventArgs(
 							this,
 							(JoystickAxis)i,
 							this.currentState.AxisValue[i],
@@ -211,6 +239,26 @@ namespace Duality.Input
 					}
 				}
 			}
+			for (int i = 0; i < this.currentState.HatPosition.Length; i++)
+			{
+				if (this.currentState.HatPosition[i] != this.lastState.HatPosition[i])
+				{
+					if (this.HatMove != null)
+					{
+						this.HatMove(this, new JoystickHatEventArgs(
+							this,
+							(JoystickHat)i,
+							this.currentState.HatPosition[i],
+							this.lastState.HatPosition[i]));
+					}
+				}
+			}
+		}
+		private void UpdateInputCounts()
+		{
+			this.axisCount = this.source.AxisCount;
+			this.buttonCount = this.source.ButtonCount;
+			this.hatCount = this.source.HatCount;
 		}
 		
 		/// <summary>
@@ -258,6 +306,34 @@ namespace Duality.Input
 		public float AxisSpeed(JoystickAxis axis)
 		{
 			return this.currentState.AxisValue[(int)axis] - this.lastState.AxisValue[(int)axis];
+		}
+		
+		/// <summary>
+		/// Returns the current position of the specified joystick hat.
+		/// </summary>
+		/// <param name="hat"></param>
+		/// <returns></returns>
+		public JoystickHatPosition HatPosition(JoystickHat hat)
+		{
+			return this.currentState.HatPosition[(int)hat];
+		}
+		/// <summary>
+		/// Returns all new hat displacement that occurred since last frame.
+		/// </summary>
+		/// <param name="hat"></param>
+		/// <returns></returns>
+		public JoystickHatPosition HatHit(JoystickHat hat)
+		{
+			return this.currentState.HatPosition[(int)hat] & (~this.lastState.HatPosition[(int)hat]);
+		}
+		/// <summary>
+		/// Returns all old hat displacement that stopped since last frame.
+		/// </summary>
+		/// <param name="hat"></param>
+		/// <returns></returns>
+		public JoystickHatPosition HatReleased(JoystickHat hat)
+		{
+			return this.lastState.HatPosition[(int)hat] & (~this.currentState.HatPosition[(int)hat]);
 		}
 	}
 }

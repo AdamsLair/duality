@@ -18,7 +18,7 @@
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>DualityIcon.ico</ApplicationIcon>
+    <ApplicationIcon>DualityLogoIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -294,6 +294,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utility\PathHelper.cs" />
     <Compile Include="Utility\RecycleBin.cs" />
+    <Compile Include="Utility\SerializableWrapper.cs" />
     <Compile Include="Utility\XmlCodeDoc.cs" />
     <Compile Include="UndoRedoActions\DeleteGameObjectAction.cs" />
     <Compile Include="UndoRedoActions\CloneGameObjectAction.cs" />
@@ -397,6 +398,7 @@
     <EmbeddedResource Include="EmbeddedResources\ErrorHandlersTemplate.txt" />
     <EmbeddedResource Include="EmbeddedResources\Class.png" />
     <EmbeddedResource Include="EmbeddedResources\AssetImporter.png" />
+    <Content Include="DualityLogoIcon.ico" />
     <Content Include="EmbeddedResources\namespace.png" />
     <None Include="EmbeddedResources\page_white.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />

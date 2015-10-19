@@ -43,6 +43,8 @@
     <string>Plugins</string>
     <string>AdamsLair.WinForms.*</string>
     <string>Aga.Controls.*</string>
+    <string>DualityPrimitives.pdb</string>
+    <string>DualityPrimitives.xml</string>
     <string>Duality.pdb</string>
     <string>Duality.xml</string>
     <string>DualityEditor.pdb</string>

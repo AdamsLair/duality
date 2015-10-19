@@ -2,6 +2,7 @@
 using Duality.Components;
 using Duality.Components.Renderers;
 using Duality.Drawing;
+using Duality.Resources;
 
 namespace BasicMenu
 {
@@ -46,7 +47,11 @@ namespace BasicMenu
 			set { this.hoverTint = value; }
 		}
 
-		public abstract void DoAction();
+		public virtual void DoAction()
+		{
+			// play a beep
+			DualityApp.Sound.PlaySound(Sound.Beep);
+		}
 
 		/// <summary>
 		/// This returns the area on screen that is currently occupied by the SpriteRenderer.
@@ -85,7 +90,7 @@ namespace BasicMenu
 					// ... but after this frame, I will stop. I can simply set the color as the target.
 					this.sprite.ColorTint = this.targetTint;
 
-					if(this.isFadingOut)
+					if (this.isFadingOut)
 					{
 						// since it was a fade out, I set fadingTime as the maximum allowed,
 						// so that the following fade in can take all the time it needs.

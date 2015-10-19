@@ -67,7 +67,7 @@ namespace Duality
 		public static void InitDefaultContent()
 		{
 			if (defaultContentInitialized) return;
-			Log.Core.Write("Initializing default content..");
+			Log.Core.Write("Initializing default content...");
 			Log.Core.PushIndent();
 
 			var oldResLib = resLibrary.Values.ToArray();
@@ -91,8 +91,8 @@ namespace Duality
 			}
 
 			defaultContentInitialized = true;
+			Log.Core.Write("...done!");
 			Log.Core.PopIndent();
-			Log.Core.Write("..done");
 		}
 		/// <summary>
 		/// Initializes Dualitys embedded default content.
@@ -443,7 +443,7 @@ namespace Duality
 		{
 			if (string.IsNullOrEmpty(path) || IsDefaultContentPath(path) || !FileOp.Exists(path)) return null;
 
-			Log.Core.Write("Loading Resource '{0}'...", path);
+			Log.Core.Write("Loading Resource '{0}'", path);
 			Log.Core.PushIndent();
 
 			// Load the Resource and register it

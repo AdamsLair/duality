@@ -19,16 +19,17 @@ namespace Duality.Backend.DefaultOpenTK
 			Immediately
 		}
 
-		private int						handle			= 0;
-		private	bool					isInitial		= true;
-		private	bool					isStreamed		= false;
-		private	bool					isFirstUpdate	= true;
-		private	AudioSourceState		lastState		= AudioSourceState.Default;
-		private IAudioStreamProvider	streamProvider	= null;
+		private int                  handle         = 0;
+		private int                  filterHandle   = 0;
+		private	bool                 isInitial      = true;
+		private	bool                 isStreamed     = false;
+		private	bool                 isFirstUpdate  = true;
+		private	AudioSourceState     lastState      = AudioSourceState.Default;
+		private IAudioStreamProvider streamProvider = null;
 
-		private object					strLock			= new object();
-		private	StopRequest				strStopReq		= StopRequest.None;
-		private	INativeAudioBuffer[]	strAlBuffers	= null;
+		private object               strLock        = new object();
+		private	StopRequest          strStopReq     = StopRequest.None;
+		private	INativeAudioBuffer[] strAlBuffers   = null;
 
 
 		public int Handle
@@ -129,6 +130,28 @@ namespace Duality.Backend.DefaultOpenTK
 				if (this.isFirstUpdate || this.lastState.Pitch != state.Pitch)
 					AL.Source(handle, ALSourcef.Pitch, state.Pitch);
 
+				// Update lowpass settings requires Effects extension
+				if (this.isFirstUpdate || this.lastState.Lowpass != state.Lowpass)
+				{
+					var fx = AudioBackend.ActiveInstance.EffectsExtension;
+					if (fx != null)
+					{
+						// If there is no filter, create one when required.
+						if (this.filterHandle == 0 && state.Lowpass < 1.0f)
+						{
+							this.filterHandle = fx.GenFilter();
+							fx.Filter(this.filterHandle, EfxFilteri.FilterType, (int)EfxFilterType.Lowpass);
+							fx.Filter(this.filterHandle, EfxFilterf.LowpassGain, 1);
+						}
+						// If there is a filter, keep it up-to-date
+						if (this.filterHandle != 0)
+						{
+							fx.Filter(this.filterHandle, EfxFilterf.LowpassGainHF, MathF.Clamp(state.Lowpass, 0.0f, 1.0f));
+							fx.BindFilterToSource(this.handle, this.filterHandle);
+						}
+					}
+				}
+
 				if (state.Paused && nativeState == ALSourceState.Playing)
 					AL.SourcePause(handle);
 				else if (!state.Paused && nativeState == ALSourceState.Paused)
@@ -149,9 +172,10 @@ namespace Duality.Backend.DefaultOpenTK
 					this.strStopReq = StopRequest.Immediately;
 				}
 
+				this.ResetSourceState();
+
 				if (this.handle != 0)
 				{
-					this.ResetSourceState();
 					if (AudioBackend.ActiveInstance != null)
 						AudioBackend.ActiveInstance.FreeSourceHandle(this.handle);
 					this.handle = 0;
@@ -194,18 +218,37 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			lock (this.strLock)
 			{
-				// Do not reuse before-streamed sources, since OpenAL doesn't seem to like that.
-				if (this.isStreamed)
+				// Release filters, if present
+				if (this.filterHandle != 0)
 				{
-					AL.DeleteSource(this.handle);
-					this.handle = AL.GenSource();
+					var fx = AudioBackend.ActiveInstance.EffectsExtension;
+					if (fx != null)
+					{
+						if (this.handle != 0)
+						{
+							fx.BindFilterToSource(this.handle, 0);
+						}
+						fx.DeleteFilter(this.filterHandle);
+						this.filterHandle = 0;
+					}
 				}
-				// Reuse other OpenAL sources
-				else
+
+				// Reset the internal OpenAL source, if present
+				if (this.handle != 0)
 				{
-					AL.SourceStop(this.handle);
-					AL.Source(this.handle, ALSourcei.Buffer, 0);
-					AL.SourceRewind(this.handle);
+					// Do not reuse before-streamed sources, since OpenAL doesn't seem to like that.
+					if (this.isStreamed)
+					{
+						AL.DeleteSource(this.handle);
+						this.handle = AL.GenSource();
+					}
+					// Reuse other OpenAL sources
+					else
+					{
+						AL.SourceStop(this.handle);
+						AL.Source(this.handle, ALSourcei.Buffer, 0);
+						AL.SourceRewind(this.handle);
+					}
 				}
 			}
 		}

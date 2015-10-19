@@ -21,6 +21,7 @@ namespace Duality.Resources
 		private ShaderFieldType type;
 		private int arrayLength;
 		private string name;
+		private bool isPrivate;
 
 		/// <summary>
 		/// [GET] The <see cref="ShaderFieldScope">scope</see> of the variable
@@ -57,7 +58,7 @@ namespace Duality.Resources
 		/// </summary>
 		public bool IsPrivate
 		{
-			get { return string.IsNullOrEmpty(this.Name) || this.Name[0] == '_'; }
+			get { return this.isPrivate; }
 		}
 
 		public ShaderFieldInfo(string name, ShaderFieldType type, ShaderFieldScope scope, int arrayLength = 1)
@@ -66,6 +67,10 @@ namespace Duality.Resources
 			this.type = type;
 			this.scope = scope;
 			this.arrayLength = arrayLength;
+			this.isPrivate = 
+				string.IsNullOrEmpty(name) || 
+				name[0] == '_' || 
+				BuiltinShaderFields.GetIndex(name) != BuiltinShaderFields.InvalidIndex;
 		}
 
 		public override string ToString()

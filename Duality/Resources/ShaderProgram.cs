@@ -88,23 +88,12 @@ namespace Duality.Resources
 		/// </summary>
 		public ShaderFieldInfo[] Fields
 		{
-			get { return this.fields; }
-		}
-		/// <summary>
-		/// [GET] Returns the number of vertex attributes that have been declared.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int AttribCount
-		{
-			get { return this.fields != null ? this.fields.Count(v => v.Scope == ShaderFieldScope.Attribute) : 0; }
-		}
-		/// <summary>
-		/// [GET] Returns the number of uniform variables that have been declared.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public int UniformCount
-		{
-			get { return this.fields != null ? this.fields.Count(v => v.Scope == ShaderFieldScope.Uniform) : 0; }
+			get
+			{
+				if (this.fields == null)
+					this.Compile();
+				return this.fields;
+			}
 		}
 		/// <summary>
 		/// [GET / SET] The <see cref="VertexShader"/> that is used by this ShaderProgram.
@@ -168,15 +157,15 @@ namespace Duality.Resources
 			try
 			{
 				this.native.LoadProgram(nativeVert, nativeFrag);
+				this.fields = this.native.GetFields();
 			}
 			catch (Exception e)
 			{
+				this.fields = new ShaderFieldInfo[0];
 				Log.Core.WriteError("Error loading ShaderProgram {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
 			}
 
-			// Determine actual variable locations
-			this.fields = this.native.GetFields();
-
+			// Even if we failed, we tried to compile it. Don't do it again and again.
 			this.compiled = true;
 		}
 

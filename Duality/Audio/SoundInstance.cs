@@ -14,37 +14,39 @@ namespace Duality.Audio
 	[DontSerialize]
 	public sealed class SoundInstance : IDisposable, IAudioStreamProvider
 	{
-		public const int PriorityStealThreshold = 15;
+		public const int PriorityStealThreshold       = 15;
 		public const int PriorityStealLoopedThreshold = 30;
 
 
-		private	ContentRef<Sound>		sound		= null;
-		private	ContentRef<AudioData>	audioData	= null;
-		private	INativeAudioSource		native		= null;
-		private	bool				disposed		= false;
-		private	bool				notYetAssigned	= true;
-		private	GameObject			attachedTo		= null;
-		private	Vector3				pos				= Vector3.Zero;
-		private	Vector3				vel				= Vector3.Zero;
-		private	float				vol				= 1.0f;
-		private	float				pitch			= 1.0f;
-		private	float				panning			= 0.0f;
-		private	bool				is3D			= false;
-		private	bool				looped			= false;
-		private	bool				paused			= false;
-		private	bool				registered		= false;
-		private	int					curPriority		= 0;
-		private	float				playTime		= 0.0f;
+		private	ContentRef<Sound>     sound     = null;
+		private	ContentRef<AudioData> audioData = null;
+		private	INativeAudioSource    native    = null;
+
+		private	bool       disposed       = false;
+		private	bool       notYetAssigned = true;
+		private	GameObject attachedTo     = null;
+		private	Vector3    pos            = Vector3.Zero;
+		private	Vector3    vel            = Vector3.Zero;
+		private	float      vol            = 1.0f;
+		private	float      pitch          = 1.0f;
+		private	float      lowpass        = 1.0f;
+		private	float      panning        = 0.0f;
+		private	bool       is3D           = false;
+		private	bool       looped         = false;
+		private	bool       paused         = false;
+		private	bool       registered     = false;
+		private	int        curPriority    = 0;
+		private	float      playTime       = 0.0f;
 
 		// Fading
-		private	float			curFade			= 1.0f;
-		private	float			fadeTarget		= 1.0f;
-		private	float			fadeTimeSec		= 1.0f;
-		private	float			pauseFade		= 1.0f;
-		private	float			fadeWaitEnd		= 0.0f;
+		private	float curFade     = 1.0f;
+		private	float fadeTarget  = 1.0f;
+		private	float fadeTimeSec = 1.0f;
+		private	float pauseFade   = 1.0f;
+		private	float fadeWaitEnd = 0.0f;
 
 		// Streaming
-		private	VorbisStreamHandle	strOvStr	= null;
+		private	VorbisStreamHandle strOvStr = null;
 		
 
 		/// <summary>
@@ -137,6 +139,14 @@ namespace Duality.Audio
 		{
 			get { return this.pitch; }
 			set { this.pitch = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The sounds local lowpass value. Lower values cut off more frequencies.
+		/// </summary>
+		public float Lowpass
+		{
+			get { return this.lowpass; }
+			set { this.lowpass = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The sounds local stereo panning, ranging from -1.0f (left) to 1.0f (right).
@@ -421,6 +431,8 @@ namespace Duality.Audio
 			}
 
 			// Set up local variables for state calculation
+			Vector3 listenerPos = DualityApp.Sound.ListenerPos;
+			bool attachedToListener = this.attachedTo != null && ((this.attachedTo == DualityApp.Sound.Listener) || this.attachedTo.IsChildOf(DualityApp.Sound.Listener));
 			float optVolFactor = this.GetTypeVolFactor();
 			float priorityTemp = 1000.0f;
 			AudioSourceState nativeState = AudioSourceState.Default;
@@ -428,6 +440,7 @@ namespace Duality.Audio
 			nativeState.MaxDistance = soundRes.MaxDist;
 			nativeState.Volume = optVolFactor * soundRes.VolumeFactor * this.vol * this.curFade * this.pauseFade;
 			nativeState.Pitch = soundRes.PitchFactor * this.pitch;
+			nativeState.Lowpass = soundRes.LowpassFactor * this.lowpass;
 			priorityTemp *= nativeState.Volume;
 
 			// Calculate 3D source values, distance and priority
@@ -438,7 +451,7 @@ namespace Duality.Audio
 				Components.Transform attachTransform = this.attachedTo != null ? this.attachedTo.Transform : null;
 
 				// Attach to object
-				if (this.attachedTo != null && this.attachedTo != DualityApp.Sound.Listener)
+				if (this.attachedTo != null)
 				{
 					MathF.TransformCoord(ref nativeState.Position.X, ref nativeState.Position.Y, attachTransform.Angle);
 					MathF.TransformCoord(ref nativeState.Velocity.X, ref nativeState.Velocity.Y, attachTransform.Angle);
@@ -447,22 +460,10 @@ namespace Duality.Audio
 				}
 
 				// Distance check
-				Vector3 listenerPos = DualityApp.Sound.ListenerPos;
-				float dist;
-				if (this.attachedTo != DualityApp.Sound.Listener)
-				{
-					dist = MathF.Sqrt(
-						(nativeState.Position.X - listenerPos.X) * (nativeState.Position.X - listenerPos.X) +
-						(nativeState.Position.Y - listenerPos.Y) * (nativeState.Position.Y - listenerPos.Y) +
-						(nativeState.Position.Z - listenerPos.Z) * (nativeState.Position.Z - listenerPos.Z) * 0.25f);
-				}
-				else
-				{
-					dist = MathF.Sqrt(
-						nativeState.Position.X * nativeState.Position.X +
-						nativeState.Position.Y * nativeState.Position.Y +
-						nativeState.Position.Z * nativeState.Position.Z * 0.25f);
-				}
+				float dist = MathF.Sqrt(
+					(nativeState.Position.X - listenerPos.X) * (nativeState.Position.X - listenerPos.X) +
+					(nativeState.Position.Y - listenerPos.Y) * (nativeState.Position.Y - listenerPos.Y) +
+					(nativeState.Position.Z - listenerPos.Z) * (nativeState.Position.Z - listenerPos.Z) * 0.25f);
 				if (dist > nativeState.MaxDistance)
 				{
 					this.Dispose();
@@ -527,7 +528,9 @@ namespace Duality.Audio
 			{
 				if (this.is3D)
 				{
-					nativeState.RelativeToListener = this.attachedTo == DualityApp.Sound.Listener;
+					nativeState.RelativeToListener = attachedToListener;
+					if (attachedToListener)
+						nativeState.Position -= listenerPos;
 				}
 				else
 				{

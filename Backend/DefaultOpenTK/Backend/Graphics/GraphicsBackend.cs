@@ -24,12 +24,13 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return activeInstance; }
 		}
 
-		private	IDrawDevice				currentDevice			= null;
-		private RenderStats				renderStats				= null;
-		private	HashSet<GraphicsMode>	availGraphicsModes		= null;
-		private	GraphicsMode			defaultGraphicsMode		= null;
-		private	uint					primaryVBO				= 0;
-		private	NativeWindow			activeWindow			= null;
+		private	IDrawDevice           currentDevice           = null;
+		private RenderStats           renderStats             = null;
+		private	HashSet<GraphicsMode> availGraphicsModes      = null;
+		private	GraphicsMode          defaultGraphicsMode     = null;
+		private	uint                  primaryVBO              = 0;
+		private	NativeWindow          activeWindow            = null;
+		private	bool                  useAlphaToCoverageBlend = false;
 		
 
 		public GraphicsMode DefaultGraphicsMode
@@ -48,6 +49,10 @@ namespace Duality.Backend.DefaultOpenTK
 					.Select(resolution => new ScreenResolution(resolution.Width, resolution.Height, resolution.RefreshRate))
 					.Distinct();
 			}
+		}
+		public NativeWindow ActiveWindow
+		{
+			get { return this.activeWindow; }
 		}
 
 		string IDualityBackend.Id
@@ -70,6 +75,9 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IDualityBackend.Init()
 		{
+			// Initialize OpenTK, if not done yet
+			DefaultOpenTKBackendPlugin.InitOpenTK();
+
 			// Determine available and default graphics modes
 			this.QueryGraphicsModes();
 			activeInstance = this;
@@ -98,11 +106,21 @@ namespace Duality.Backend.DefaultOpenTK
 
 		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats)
 		{
+			DebugCheckOpenGLErrors();
+
 			this.currentDevice = device;
 			this.renderStats = stats;
 
 			// Prepare the target surface for rendering
 			NativeRenderTarget.Bind(options.Target as NativeRenderTarget);
+
+			// Determine whether masked blending should use alpha-to-coverage mode
+			if (NativeRenderTarget.BoundRT != null)
+				this.useAlphaToCoverageBlend = NativeRenderTarget.BoundRT.Samples > 0;
+			else if (GraphicsBackend.ActiveInstance.ActiveWindow != null)
+				this.useAlphaToCoverageBlend = GraphicsBackend.ActiveInstance.ActiveWindow.IsMultisampled; 
+			else
+				this.useAlphaToCoverageBlend = GraphicsBackend.ActiveInstance.DefaultGraphicsMode.Samples > 0; 
 
 			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);
@@ -211,8 +229,9 @@ namespace Duality.Backend.DefaultOpenTK
 		void IGraphicsBackend.EndRendering()
 		{
 			GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
 			this.currentDevice = null;
+
+			DebugCheckOpenGLErrors();
 		}
 		void IVertexUploader.UploadBatchVertices<T>(VertexDeclaration declaration, T[] vertices, int vertexCount)
 		{
@@ -504,6 +523,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				ShaderFieldInfo[] varInfo = shader.Fields;
 				int[] locations = shader.FieldLocations;
+				int[] builtinIndices = shader.BuiltinVariableIndex;
 
 				// Setup sampler bindings automatically
 				int curSamplerIndex = 0;
@@ -535,6 +555,14 @@ namespace Duality.Backend.DefaultOpenTK
 
 						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], data);
 					}
+				}
+
+				// Specify builtin shader variables, if requested
+				float[] fieldValue = null;
+				for (int i = 0; i < builtinIndices.Length; i++)
+				{
+					if (BuiltinShaderFields.TryGetValue(this.currentDevice, builtinIndices[i], ref fieldValue))
+						NativeShaderProgram.SetUniform(ref varInfo[i], locations[i], fieldValue);
 				}
 			}
 			// Setup fixed function data
@@ -570,14 +598,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case BlendMode.Mask:
 					GL.DepthMask(depthWrite);
 					GL.Disable(EnableCap.Blend);
-
-					bool useAlphaToCoverage = false;
-					if (NativeRenderTarget.BoundRT != null)
-						useAlphaToCoverage = NativeRenderTarget.BoundRT.Samples > 0;
-					else
-						useAlphaToCoverage = GraphicsBackend.ActiveInstance.DefaultGraphicsMode.Samples > 0; 
-
-					if (useAlphaToCoverage)
+					if (this.useAlphaToCoverageBlend)
 					{
 						GL.Disable(EnableCap.AlphaTest);
 						GL.Enable(EnableCap.SampleAlphaToCoverage);
@@ -713,7 +734,10 @@ namespace Duality.Backend.DefaultOpenTK
 					{
 						if (version.Major < MinOpenGLVersion.Major && version.Minor < MinOpenGLVersion.Minor)
 						{
-							Log.Core.WriteWarning("The detected OpenGL version {0} appears to be lower than the required minimum. OpenGL 2.1 or higher is required to run Duality applications.");
+							Log.Core.WriteWarning(
+								"The detected OpenGL version {0} appears to be lower than the required minimum. Version {1} or higher is required to run Duality applications.",
+								version,
+								MinOpenGLVersion);
 						}
 						break;
 					}
@@ -752,6 +776,16 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			if (found && !silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
 			return found;
+		}
+		/// <summary>
+		/// Checks for OpenGL errors using <see cref="CheckOpenGLErrors"/> when both compiled in debug mode and a with an attached debugger.
+		/// </summary>
+		/// <returns></returns>
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void DebugCheckOpenGLErrors([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
+		{
+			if (!System.Diagnostics.Debugger.IsAttached) return;
+			CheckOpenGLErrors(false, callerInfoMember, callerInfoFile, callerInfoLine);
 		}
 	}
 }

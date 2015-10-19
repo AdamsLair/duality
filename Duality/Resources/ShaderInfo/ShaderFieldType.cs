@@ -14,7 +14,11 @@ namespace Duality.Resources
 		/// Unknown type.
 		/// </summary>
 		Unknown = -1,
-
+		
+		/// <summary>
+		/// A <see cref="System.Boolean"/> variable.
+		/// </summary>
+		Bool,
 		/// <summary>
 		/// A <see cref="System.Int32"/> variable.
 		/// </summary>
@@ -66,6 +70,8 @@ namespace Duality.Resources
 					return typeof(float);
 				case ShaderFieldType.Int:
 					return typeof(int);
+				case ShaderFieldType.Bool:
+					return typeof(bool);
 			}
 		}
 		public static int GetElementCount(this ShaderFieldType type)

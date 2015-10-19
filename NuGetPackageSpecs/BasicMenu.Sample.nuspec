@@ -23,7 +23,7 @@
     <file src="..\SampleProjects\BasicMenu\Content\Plugins\BasicMenu.core.dll" target="lib" />
     <file src="..\SampleProjects\BasicMenu\Content\Plugins\BasicMenu.core.xml" target="lib" />
     <file src="..\SampleProjects\BasicMenu\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\BasicMenu\**\*.cs" target="source" exclude="..\SampleProjects\BasicMenu\Content\**\*.*" />
+    <file src="..\SampleProjects\BasicMenu\**\*.cs" target="source" exclude="..\SampleProjects\BasicMenu\Content\**\*.*;..\SampleProjects\BasicMenu\obj\**\*.*" />
     <file src="..\SampleProjects\BasicMenu\BasicMenu.csproj" target="source" />
   </files>
 </package>

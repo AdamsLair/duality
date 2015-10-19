@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Samples.AudioHandling</id>
+    <version>2.0.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>Audio Handling Sample</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/AudioHandlingSample.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>Demonstrates how to handle Audio in Duality.</summary>
+    <description>This package contains a sample Scene for handling audio using SoundEmitters, and another one for handling it manually using code.</description>
+	<tags>Duality Sample Plugin Audio</tags>
+	<releaseNotes>Initial v2.0 Release</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.0.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\SampleProjects\AudioHandling\Content\Plugins\AudioHandling.core.dll" target="lib" />
+    <file src="..\SampleProjects\AudioHandling\Content\Plugins\AudioHandling.core.xml" target="lib" />
+    <file src="..\SampleProjects\AudioHandling\Content\Data\**\*.res" target="content" />
+    <file src="..\SampleProjects\AudioHandling\**\*.cs" target="source" exclude="..\SampleProjects\AudioHandling\Content\**\*.*;..\SampleProjects\AudioHandling\obj\**\*.*" />
+    <file src="..\SampleProjects\AudioHandling\AudioHandling.csproj" target="source" />
+  </files>
+</package>

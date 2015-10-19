@@ -79,6 +79,7 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				curBound = null;
 				GL.Ext.BindFramebuffer(FramebufferTarget.FramebufferExt, 0);
+				GL.ReadBuffer(ReadBufferMode.Back);
 				GL.DrawBuffer(DrawBufferMode.Back);
 			}
 			else
@@ -282,9 +283,10 @@ namespace Duality.Backend.DefaultOpenTK
 			NativeRenderTarget lastRt = BoundRT;
 			Bind(this);
 			{
+				ReadBufferMode oldReadBuffer = (ReadBufferMode)GL.GetInteger(GetPName.ReadBuffer);
 				GL.ReadBuffer((ReadBufferMode)((int)ReadBufferMode.ColorAttachment0 + targetIndex));
 				GL.ReadPixels(x, y, width, height, dataLayout.ToOpenTK(), dataElementType.ToOpenTK(), buffer);
-				GL.ReadBuffer(ReadBufferMode.Back);
+				GL.ReadBuffer(oldReadBuffer);
 			}
 			Bind(lastRt);
 		}
