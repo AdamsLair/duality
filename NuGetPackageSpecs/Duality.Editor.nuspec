@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -18,7 +18,7 @@
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.0.0" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
-      <dependency id="AdamsLair.TreeViewAdv" version="1.7.3" />
+      <dependency id="AdamsLair.TreeViewAdv" version="1.7.4" />
       <dependency id="AdamsLair.WinForms" version="1.0.16" />
       <dependency id="AdamsLair.WinForms.PopupControl" version="1.0.0.0" />
       <dependency id="NuGet.Core" version="2.8.3" />
