@@ -14,6 +14,10 @@
     <description>Contains the external Duality API documentation help files. This is not required for in-editor documentation, but rather an external reference.</description>
 	<tags>Duality Documentation</tags>
 	<releaseNotes>Initial v2.0 Release</releaseNotes>
+	<!-- A dependency to at least some Duality Assembly is required, so this package is recognized as a proper Duality package -->
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.0.0" />
+    </dependencies>
   </metadata>
   <files>
     <file src="..\Documentation\Help\DDoc.chm" target="lib" />
