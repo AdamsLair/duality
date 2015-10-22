@@ -6,7 +6,7 @@ branches:
     
 # fetch repository as zip archive
 shallow_clone: true
-
+    
 # Do not build on tags (GitHub only)
 skip_tags: true
 
