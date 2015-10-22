@@ -11,8 +11,8 @@
     <X dataType="Float">2400</X>
     <Y dataType="Float">600</Y>
   </size>
-  <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="Enlarge" value="0" />
-  <wrapX dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Clamp" value="0" />
+  <texSizeMode dataType="Enum" type="Duality.Drawing.TextureSizeMode" name="Stretch" value="1" />
+  <wrapX dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Repeat" value="1" />
   <wrapY dataType="Enum" type="Duality.Drawing.TextureWrapMode" name="Clamp" value="0" />
 </root>
 <!-- XmlFormatterBase Document Separator -->

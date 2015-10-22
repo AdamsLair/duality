@@ -8,6 +8,7 @@ using Duality.Components.Physics;
 using Duality.Components;
 using Duality.Resources;
 using Duality.Components.Renderers;
+using FlapOrDie.Components;
 
 namespace FlapOrDie.Controllers
 {
@@ -32,6 +33,7 @@ namespace FlapOrDie.Controllers
 
         private ContentRef<Prefab> obstaclePrefab;
         private GameObject gameOverOverlay;
+		private BackgroundScroller bgScroller;
 
         public float BaseSpeed
         {
@@ -63,13 +65,19 @@ namespace FlapOrDie.Controllers
             set { this.gameOverOverlay = value; }
         }
 
-        private TextRenderer scoreText;
-
-        public TextRenderer ScoreTextRenderer
+		public BackgroundScroller BackgroundScroller
         {
-            get { return this.scoreText; }
-            set { this.scoreText = value; }
+            get { return this.bgScroller; }
+			set { this.bgScroller = value; }
         }
+
+		private TextRenderer scoreText;
+
+		public TextRenderer ScoreTextRenderer
+		{
+			get { return this.scoreText; }
+			set { this.scoreText = value; }
+		}
 
         public void Reset()
         {
@@ -91,6 +99,8 @@ namespace FlapOrDie.Controllers
 
             deltaPos.X = this.baseSpeed + (player.Points * this.pointsMultiplier);
             deltaPos.X *= Time.MsPFMult * Time.TimeMult / 1000;
+
+			this.bgScroller.Update(deltaPos.X);
 
             IEnumerable<GameObject> obstacles = this.GameObj.ParentScene.FindGameObjects<Tags.Obstacle>();
             foreach(GameObject obstacle in obstacles)
@@ -128,6 +138,10 @@ namespace FlapOrDie.Controllers
             Vector3 startPosition = new Vector3(FlapOrDieCorePlugin.HalfWidth + 50, MathF.Rnd.NextFloat(-variance, variance), 0);
             GameObject newObstacle = this.obstaclePrefab.Res.Instantiate();
             newObstacle.Transform.Pos = startPosition;
+			foreach(AnimSpriteRenderer asr in newObstacle.GetComponentsInChildren<AnimSpriteRenderer>())
+			{
+				asr.AnimFirstFrame = MathF.Rnd.Next(asr.SharedMaterial.Res.MainTexture.Res.BasePixmap.Res.AnimFrames) + 1;
+			}
 
             this.GameObj.ParentScene.AddObject(newObstacle);
         }

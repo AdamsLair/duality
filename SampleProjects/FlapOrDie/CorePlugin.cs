@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Duality;
+using Duality.Resources;
 
 namespace FlapOrDie
 {

@@ -71,6 +71,9 @@ namespace FlapOrDie.Controllers
             this.points = 0;
             this.isDead = false;
             this.GameObj.Transform.Pos = Vector3.Zero;
+			this.GameObj.Transform.Angle = 0;
+			this.GameObj.GetComponent<RigidBody>().LinearVelocity = Vector2.Zero;
+			this.GameObj.GetComponent<RigidBody>().AngularVelocity = 0;
             
             Body.AnimFirstFrame = 1;
         }
@@ -85,7 +88,7 @@ namespace FlapOrDie.Controllers
                 if (DualityApp.Keyboard.KeyHit(Key.Space))
                 {
                     this.rigidBody.ApplyLocalImpulse(-Vector2.UnitY * this.impulseStrength);
-                    flapTime = (Time.MsPFMult / 1000 * 2);
+                    flapTime = (Time.MsPFMult / 1000 * 3);
                 }
             }
 

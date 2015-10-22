@@ -53,6 +53,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Components\MusicManager.cs" />
+    <Compile Include="Components\BackgroundScroller.cs" />
     <Compile Include="Components\Ticker.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Controllers\GameController.cs" />
