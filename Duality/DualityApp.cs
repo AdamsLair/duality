@@ -434,6 +434,9 @@ namespace Duality
 				SaveUserData();
 			}
 
+			// Discard plugin data (Resources, current Scene) ahead of time. Otherwise, it'll get shut down in ClearPlugins, after the backend is gone.
+			OnDiscardPluginData();
+
 			sound.Dispose();
 			sound = null;
 			ShutdownBackend(ref graphicsBack);
