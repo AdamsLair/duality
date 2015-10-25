@@ -3,7 +3,6 @@
   <FirstDualityInstall>true</FirstDualityInstall>
   <RepositoryUrl>https://packages.nuget.org/api/v2</RepositoryUrl>
   <Packages>
-    <Package id="AdamsLair.Duality.Primitives" />
     <Package id="AdamsLair.Duality" />
     <Package id="AdamsLair.Duality.Launcher" />
     <Package id="AdamsLair.Duality.Backend.DefaultOpenTK" />

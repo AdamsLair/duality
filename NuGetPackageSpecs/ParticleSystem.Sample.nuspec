@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>AdamsLair.Duality.Samples.ParticleSystem</id>
+    <version>2.0.0</version>
+	<authors>Fedja Adam</authors>
+	<owners>Fedja Adam</owners>
+    <title>Custom ParticleSystem Sample</title>
+	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/ParticleSystemSample.png</iconUrl>
+	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<summary>Implements and showcases a custom Particle System in Duality.</summary>
+    <description>This package implements a custom Particle System in Duality and showcases its functionality in a sample Scene.</description>
+	<tags>Duality Sample Plugin Particles Rendering</tags>
+	<releaseNotes>Initial v2.0 Release</releaseNotes>
+    <dependencies>
+      <dependency id="AdamsLair.Duality" version="2.0.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.0.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\SampleProjects\ParticleSystem\Content\Plugins\ParticleSystem.core.dll" target="lib" />
+    <file src="..\SampleProjects\ParticleSystem\Content\Plugins\ParticleSystem.core.xml" target="lib" />
+    <file src="..\SampleProjects\ParticleSystem\Content\Data\**\*.res" target="content" />
+    <file src="..\SampleProjects\ParticleSystem\**\*.cs" target="source" exclude="..\SampleProjects\ParticleSystem\Content\**\*.*;..\SampleProjects\ParticleSystem\obj\**\*.*" />
+    <file src="..\SampleProjects\ParticleSystem\ParticleSystem.csproj" target="source" />
+  </files>
+</package>

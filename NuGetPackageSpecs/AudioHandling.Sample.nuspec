@@ -23,7 +23,7 @@
     <file src="..\SampleProjects\AudioHandling\Content\Plugins\AudioHandling.core.dll" target="lib" />
     <file src="..\SampleProjects\AudioHandling\Content\Plugins\AudioHandling.core.xml" target="lib" />
     <file src="..\SampleProjects\AudioHandling\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\AudioHandling\**\*.cs" target="source" exclude="..\SampleProjects\AudioHandling\Content\**\*.*" />
+    <file src="..\SampleProjects\AudioHandling\**\*.cs" target="source" exclude="..\SampleProjects\AudioHandling\Content\**\*.*;..\SampleProjects\AudioHandling\obj\**\*.*" />
     <file src="..\SampleProjects\AudioHandling\AudioHandling.csproj" target="source" />
   </files>
 </package>

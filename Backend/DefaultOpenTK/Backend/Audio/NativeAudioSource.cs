@@ -172,9 +172,10 @@ namespace Duality.Backend.DefaultOpenTK
 					this.strStopReq = StopRequest.Immediately;
 				}
 
+				this.ResetSourceState();
+
 				if (this.handle != 0)
 				{
-					this.ResetSourceState();
 					if (AudioBackend.ActiveInstance != null)
 						AudioBackend.ActiveInstance.FreeSourceHandle(this.handle);
 					this.handle = 0;
@@ -217,28 +218,36 @@ namespace Duality.Backend.DefaultOpenTK
 		{
 			lock (this.strLock)
 			{
-				// Do not reuse before-streamed sources, since OpenAL doesn't seem to like that.
-				if (this.isStreamed)
-				{
-					AL.DeleteSource(this.handle);
-					this.handle = AL.GenSource();
-				}
-				// Reuse other OpenAL sources
-				else
-				{
-					AL.SourceStop(this.handle);
-					AL.Source(this.handle, ALSourcei.Buffer, 0);
-					AL.SourceRewind(this.handle);
-				}
-
 				// Release filters, if present
 				if (this.filterHandle != 0)
 				{
 					var fx = AudioBackend.ActiveInstance.EffectsExtension;
 					if (fx != null)
 					{
+						if (this.handle != 0)
+						{
+							fx.BindFilterToSource(this.handle, 0);
+						}
 						fx.DeleteFilter(this.filterHandle);
 						this.filterHandle = 0;
+					}
+				}
+
+				// Reset the internal OpenAL source, if present
+				if (this.handle != 0)
+				{
+					// Do not reuse before-streamed sources, since OpenAL doesn't seem to like that.
+					if (this.isStreamed)
+					{
+						AL.DeleteSource(this.handle);
+						this.handle = AL.GenSource();
+					}
+					// Reuse other OpenAL sources
+					else
+					{
+						AL.SourceStop(this.handle);
+						AL.Source(this.handle, ALSourcei.Buffer, 0);
+						AL.SourceRewind(this.handle);
 					}
 				}
 			}

@@ -387,7 +387,8 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void UpdatePackage(PackageInfo info)
 		{
-			if (!this.ConfirmCompatibility(info))
+			PackageInfo newestInfo = this.packageManager.QueryPackageInfo(info.PackageName.VersionInvariant);
+			if (!this.ConfirmCompatibility(newestInfo))
 				return;
 
 			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(
@@ -406,7 +407,10 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 		}
 		private void UpdateAllPackages()
 		{
-			if (!this.ConfirmCompatibility(this.packageManager.GetUpdatablePackages()))
+			IEnumerable<PackageInfo> newestUpdatablePackages = 
+				this.packageManager.GetUpdatablePackages()
+				.Select(p => this.packageManager.QueryPackageInfo(p.PackageName.VersionInvariant));
+			if (!this.ConfirmCompatibility(newestUpdatablePackages))
 				return;
 
 			ProcessingBigTaskDialog setupDialog = new ProcessingBigTaskDialog(

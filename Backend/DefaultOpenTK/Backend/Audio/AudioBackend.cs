@@ -161,6 +161,8 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IAudioBackend.UpdateListener(Vector3 position, Vector3 velocity, float angle, bool mute)
 		{
+			DebugCheckOpenALErrors();
+
 			float[] orientation = new float[6];
 			orientation[0] = 0.0f;	// forward vector x value
 			orientation[1] = 0.0f;	// forward vector y value
@@ -172,6 +174,8 @@ namespace Duality.Backend.DefaultOpenTK
 			orientation[4] = MathF.Cos(angle);	// up vector y value
 			AL.Listener(ALListenerfv.Orientation, ref orientation);
 			AL.Listener(ALListenerf.Gain, mute ? 0.0f : 1.0f);
+
+			DebugCheckOpenALErrors();
 		}
 
 		INativeAudioBuffer IAudioBackend.CreateBuffer()
@@ -312,6 +316,16 @@ namespace Duality.Backend.DefaultOpenTK
 				if (!silent && System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
 			}
 			return found;
+		}
+		/// <summary>
+		/// Checks for OpenAL errors using <see cref="CheckOpenALErrors"/> when both compiled in debug mode and a with an attached debugger.
+		/// </summary>
+		/// <returns></returns>
+		[System.Diagnostics.Conditional("DEBUG")]
+		public static void DebugCheckOpenALErrors([CallerMemberName] string callerInfoMember = null, [CallerFilePath] string callerInfoFile = null, [CallerLineNumber] int callerInfoLine = -1)
+		{
+			if (!System.Diagnostics.Debugger.IsAttached) return;
+			CheckOpenALErrors(false, callerInfoMember, callerInfoFile, callerInfoLine);
 		}
 	}
 }

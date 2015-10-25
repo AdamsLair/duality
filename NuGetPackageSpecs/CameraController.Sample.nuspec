@@ -23,7 +23,7 @@
     <file src="..\SampleProjects\CameraController\Content\Plugins\CameraController.core.dll" target="lib" />
     <file src="..\SampleProjects\CameraController\Content\Plugins\CameraController.core.xml" target="lib" />
     <file src="..\SampleProjects\CameraController\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\CameraController\**\*.cs" target="source" exclude="..\SampleProjects\CameraController\Content\**\*.*" />
+    <file src="..\SampleProjects\CameraController\**\*.cs" target="source" exclude="..\SampleProjects\CameraController\Content\**\*.*;..\SampleProjects\CameraController\obj\**\*.*" />
     <file src="..\SampleProjects\CameraController\CameraController.csproj" target="source" />
   </files>
 </package>
