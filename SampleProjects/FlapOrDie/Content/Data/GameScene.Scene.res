@@ -962,7 +962,7 @@
             <pointsMultiplier dataType="Float">10</pointsMultiplier>
             <scoreText dataType="Struct" type="Duality.Components.Renderers.TextRenderer" id="334788617">
               <active dataType="Bool">true</active>
-              <blockAlign dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+              <blockAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
               <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                 <A dataType="Byte">255</A>
                 <B dataType="Byte">255</B>
@@ -986,12 +986,12 @@
                       <ignoreParent dataType="Bool">false</ignoreParent>
                       <parentTransform />
                       <pos dataType="Struct" type="Duality.Vector3">
-                        <X dataType="Float">50</X>
+                        <X dataType="Float">0</X>
                         <Y dataType="Float">30</Y>
                         <Z dataType="Float">0</Z>
                       </pos>
                       <posAbs dataType="Struct" type="Duality.Vector3">
-                        <X dataType="Float">50</X>
+                        <X dataType="Float">0</X>
                         <Y dataType="Float">30</Y>
                         <Z dataType="Float">0</Z>
                       </posAbs>
@@ -1052,7 +1052,7 @@
                 <icons />
                 <lineAlign dataType="Enum" type="Duality.Alignment" name="Left" value="1" />
                 <maxHeight dataType="Int">0</maxHeight>
-                <maxWidth dataType="Int">100</maxWidth>
+                <maxWidth dataType="Int">500</maxWidth>
                 <sourceText dataType="String">Score: 0</sourceText>
                 <wrapMode dataType="Enum" type="Duality.Drawing.FormattedText+WrapMode" name="Word" value="1" />
               </text>

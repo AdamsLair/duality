@@ -44,7 +44,7 @@ namespace FlapOrDie.Components
         private void ShowNextString()
         {
             this.Text.SourceText = this.strings[index];
-            this.GameObj.Transform.RelativePos = new Vector3(FlapOrDieCorePlugin.HalfWidth, 0, 0);
+            this.GameObj.Transform.RelativePos = new Vector3(FlapOrDieCorePlugin.HalfWidth + this.Text.TextMetrics.Size.X, 0, 0);
 
             index = (index + 1) % this.strings.Count;
         }

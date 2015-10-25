@@ -95,7 +95,8 @@ namespace FlapOrDie.Controllers
 
         void ICmpUpdatable.OnUpdate()
         {
-            this.scoreText.Text.SourceText = String.Format("Score: {0}", player.Points);
+            string highschore = player.Points > FlapOrDieCorePlugin.CurrentHighScore ? " New Highscore" : String.Empty;
+            this.scoreText.Text.SourceText = String.Format("Score: {0} {1}", player.Points, highschore);
 
             deltaPos.X = this.baseSpeed + (player.Points * this.pointsMultiplier);
             deltaPos.X *= Time.MsPFMult * Time.TimeMult / 1000;
@@ -125,6 +126,7 @@ namespace FlapOrDie.Controllers
             else
             {
                 GameOverOverlay.Active = true;
+                FlapOrDieCorePlugin.CurrentHighScore = player.Points;
             }
 
             this.lastFramePoints = player.Points;
