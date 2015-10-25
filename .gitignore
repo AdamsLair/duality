@@ -209,6 +209,15 @@ SampleProjects/BasicShaders/Content/AppData.dat
 SampleProjects/BasicShaders/Content/DefaultUserData.dat
 SampleProjects/BasicShaders/Content/UserData.dat
 DualityPlugins/DynamicLighting/Sample/Testbed/OpenAL32.dll
+SampleProjects/FlapOrDie/obj/
+SampleProjects/FlapOrDie/Content/Backup/
+SampleProjects/FlapOrDie/bin/
+SampleProjects/FlapOrDie/Content/Source/
+SampleProjects/FlapOrDie/Content/logfile.txt
+SampleProjects/FlapOrDie/Content/perflog.txt
+SampleProjects/FlapOrDie/Content/PackageConfig.xml
+SampleProjects/FlapOrDie/Content/DesignTimeData.dat
+SampleProjects/FlapOrDie/Content/OpenAL32.dll
 SampleProjects/AudioHandling/obj/
 SampleProjects/AudioHandling/bin/
 SampleProjects/AudioHandling/Content/Source/

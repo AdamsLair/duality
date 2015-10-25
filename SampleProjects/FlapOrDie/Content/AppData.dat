@@ -1,0 +1,18 @@
+﻿<root dataType="Struct" type="Duality.DualityAppData" id="129723834">
+  <appName dataType="String">Flap or Die</appName>
+  <authorName dataType="String">AdamsLair</authorName>
+  <customData />
+  <localUserData dataType="Bool">true</localUserData>
+  <multisampleBackBuffer dataType="Bool">true</multisampleBackBuffer>
+  <physicsFixedTime dataType="Bool">false</physicsFixedTime>
+  <physicsVelThreshold dataType="Float">0.8333333</physicsVelThreshold>
+  <skipBackends />
+  <soundDopplerFactor dataType="Float">1</soundDopplerFactor>
+  <speedOfSound dataType="Float">360</speedOfSound>
+  <startScene dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Scene]]">
+    <contentPath dataType="String">Data\MainMenu.Scene.res</contentPath>
+  </startScene>
+  <version dataType="UInt">4</version>
+  <websiteUrl dataType="String">http://www.adamslair.net</websiteUrl>
+</root>
+<!-- XmlFormatterBase Document Separator -->
