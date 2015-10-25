@@ -6,5 +6,6 @@ The Duality core library embeds several bitmap fonts which are based on the Open
 
 The Duality sample project "DualStickSpaceShooter" uses bitmap fonts which are based on the Open Source font "Josefin Sans" by Santiago Orozco.
 
-The Duality sample project "BasicMenu" uses bitmap fonts which are based on the Open Source font "Duru Sans" by Sorkin Type Co (www.sorkintype.com) under the SIL Open Font License, Version 1.1.
-This license is available with a FAQ at: http://scripts.sil.org/OFL
+The Duality sample project "BasicMenu" uses bitmap fonts which are based on the Open Source font "Duru Sans" by Sorkin Type Co (www.sorkintype.com) under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL
+
+The Duality sample project "Flap-Or-Die" uses bitmap fonts which are based on the Open Source font "Duru Sans" by Sorkin Type Co (www.sorkintype.com) and "Condiment" by Sudtipos (www.sudtipos.com) under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: http://scripts.sil.org/OFL. It also uses the background song "Attack of the 8-Bit Hyper Cranks" by Eric Matyas (http://soundimage.org/).

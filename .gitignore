@@ -218,6 +218,9 @@ SampleProjects/FlapOrDie/Content/perflog.txt
 SampleProjects/FlapOrDie/Content/PackageConfig.xml
 SampleProjects/FlapOrDie/Content/DesignTimeData.dat
 SampleProjects/FlapOrDie/Content/OpenAL32.dll
+SampleProjects/FlapOrDie/Content/AppData.dat
+SampleProjects/FlapOrDie/Content/DefaultUserData.dat
+SampleProjects/FlapOrDie/Content/UserData.dat
 SampleProjects/AudioHandling/obj/
 SampleProjects/AudioHandling/bin/
 SampleProjects/AudioHandling/Content/Source/
@@ -241,3 +244,4 @@ SampleProjects/ParticleSystem/Content/PackageConfig.xml
 SampleProjects/ParticleSystem/Content/logfile.txt
 SampleProjects/ParticleSystem/Content/perflog.txt
 SampleProjects/ParticleSystem/ParticleSystem.core.xml
+SampleProjects/FlapOrDie/Content/high.score
