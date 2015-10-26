@@ -13,6 +13,9 @@
 	<summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
 	<tags>Duality Core Plugin Backend</tags>
+	<releaseNotes>Bugfixes, OpenTK Update
+#FIX: Fixed mouse input availability not being detected correctly when letting OpenTK use SDL2.
+#CHANGE: Updated to OpenTK 1.1.6.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.0.2" />
       <dependency id="AdamsLair.OpenTK" version="1.1.6" />

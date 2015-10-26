@@ -13,6 +13,9 @@
 	<summary>The default editor backend layer for Duality.</summary>
     <description>The default editor backend layer for Duality. It uses OpenGL WinForms controls to integrate game views with editor UI.</description>
 	<tags>Duality Editor Plugin Backend</tags>
+	<releaseNotes>Bugfixes, OpenTK Update
+#FIX: Fixed mouse input availability not being detected correctly when letting OpenTK use SDL2.
+#CHANGE: Updated to OpenTK 1.1.6.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Backend.DefaultOpenTK" version="2.0.1" />
       <dependency id="AdamsLair.Duality" version="2.0.2" />

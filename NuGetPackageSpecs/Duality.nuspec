@@ -14,7 +14,7 @@
     <description>The Duality engine core.</description>
 	<tags>Duality Core</tags>
 	<releaseNotes>Bugfixes
-#FIX: When shutting down the engine, Resources are now disposed before the backend is shut down.</releaseNotes>
+#FIX: Fixed unreasonable mouse "speed" values when leaving the window at one place and entering in another.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
