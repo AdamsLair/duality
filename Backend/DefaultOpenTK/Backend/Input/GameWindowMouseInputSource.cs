@@ -51,19 +51,20 @@ namespace Duality.Backend.DefaultOpenTK
 		public GameWindowMouseInputSource(GameWindow window)
 		{
 			this.window = window;
+			this.window.MouseEnter += this.window_MouseEnter;
+			this.window.MouseLeave += this.window_MouseLeave;
 		}
 
-		public void UpdateState()
+		public void UpdateState() { }
+
+		private void window_MouseLeave(object sender, EventArgs e)
 		{
-			OpenTK.Input.MouseState state = OpenTK.Input.Mouse.GetCursorState();
-			System.Drawing.Point localPoint = this.window.PointToClient(new System.Drawing.Point(state.X, state.Y));
-			this.cursorInView = 
-				localPoint.X >= 0 && 
-				localPoint.Y >= 0 && 
-				localPoint.X <= this.window.ClientSize.Width && 
-				localPoint.Y <= this.window.ClientSize.Height;
+			this.cursorInView = false;
 		}
-
+		private void window_MouseEnter(object sender, EventArgs e)
+		{
+			this.cursorInView = true;
+		}
 		private static OpenTK.Input.MouseButton GetOpenTKMouseButton(MouseButton button)
 		{
 			switch (button)
