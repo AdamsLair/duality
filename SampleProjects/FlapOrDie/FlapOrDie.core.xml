@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FlapOrDie.core</name>
+    </assembly>
+    <members>
+        <member name="T:FlapOrDie.FlapOrDieCorePlugin">
+            <summary>
+            Defines a Duality core plugin.
+            </summary>
+        </member>
+    </members>
+</doc>
