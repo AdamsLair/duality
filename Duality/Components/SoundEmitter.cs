@@ -28,6 +28,7 @@ namespace Duality.Components
 			private	bool				paused			= false;
 			private	float				volume			= 1.0f;
 			private	float				pitch			= 1.0f;
+			private	float				lowpass			= 1.0f;
 			private	Vector3				offset			= Vector3.Zero;
 			[DontSerializeResource]
 			private	bool				hasBeenPlayed	= false;
@@ -101,6 +102,19 @@ namespace Duality.Components
 				}
 			}
 			/// <summary>
+			/// [GET / SET] The sources lowpass factor.
+			/// </summary>
+			[EditorHintRange(0.0f, 1.0f)]
+			public float Lowpass
+			{
+				get { return this.lowpass; }
+				set 
+				{ 
+					if (this.instance != null) this.instance.Lowpass = value;
+					this.lowpass = value;
+				}
+			}
+			/// <summary>
 			/// [GET / SET] The 3d offset of the emitted sound relative to the GameObject.
 			/// </summary>
 			public Vector3 Offset
@@ -153,6 +167,7 @@ namespace Duality.Components
 					this.instance.Looped = this.looped;
 					this.instance.Volume = this.volume;
 					this.instance.Pitch = this.pitch;
+					this.instance.Lowpass = this.lowpass;
 					this.instance.Paused = this.paused;
 					this.hasBeenPlayed = true;
 				}
@@ -169,6 +184,7 @@ namespace Duality.Components
 				target.paused			= this.paused;
 				target.volume			= this.volume;
 				target.pitch			= this.pitch;
+				target.lowpass			= this.lowpass;
 				target.offset			= this.offset;
 				target.hasBeenPlayed	= this.hasBeenPlayed;
 

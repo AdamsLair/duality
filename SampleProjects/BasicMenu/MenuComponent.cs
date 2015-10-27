@@ -47,11 +47,7 @@ namespace BasicMenu
 			set { this.hoverTint = value; }
 		}
 
-		public virtual void DoAction()
-		{
-			// play a beep
-			DualityApp.Sound.PlaySound(Sound.Beep);
-		}
+		public virtual void DoAction() { }
 
 		/// <summary>
 		/// This returns the area on screen that is currently occupied by the SpriteRenderer.

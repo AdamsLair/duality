@@ -105,14 +105,14 @@ namespace Duality.Input
 		/// </summary>
 		public int XSpeed
 		{
-			get { return this.currentState.X - this.lastState.X; }
+			get { return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.X - this.lastState.X) : 0; }
 		}
 		/// <summary>
 		/// [GET] Returns the Y position change since last frame.
 		/// </summary>
 		public int YSpeed
 		{
-			get { return this.currentState.Y - this.lastState.Y; }
+			get { return (this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.Y - this.lastState.Y) : 0; }
 		}
 		/// <summary>
 		/// [GET] The viewport-local cursor position change since last frame.
@@ -221,8 +221,8 @@ namespace Duality.Input
 							this,
 							this.currentState.X, 
 							this.currentState.Y, 
-							this.currentState.X - this.lastState.X, 
-							this.currentState.Y - this.lastState.Y));
+							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.X - this.lastState.X) : 0, 
+							(this.currentState.IsAvailable && this.lastState.IsAvailable) ? (this.currentState.Y - this.lastState.Y) : 0));
 					}
 				}
 				if (this.currentState.Wheel != this.lastState.Wheel)

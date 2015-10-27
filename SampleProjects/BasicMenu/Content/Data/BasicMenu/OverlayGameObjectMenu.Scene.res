@@ -2300,6 +2300,42 @@
       <prefabLink />
     </item>
     <item dataType="ObjectRef">3150618205</item>
+    <item dataType="Struct" type="Duality.GameObject" id="907618950">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="43005776">
+        <_items dataType="Array" type="Duality.Component[]" id="2079251388" length="4">
+          <item dataType="Struct" type="BasicMenu.MouseCursorRenderer" id="1313891129">
+            <active dataType="Bool">true</active>
+            <gameobj dataType="ObjectRef">907618950</gameobj>
+          </item>
+        </_items>
+        <_size dataType="Int">1</_size>
+        <_version dataType="Int">1</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="1228380014" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="740264482">
+            <item dataType="Type" id="1961653520" value="BasicMenu.MouseCursorRenderer" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="1203260682">
+            <item dataType="ObjectRef">1313891129</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform />
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="4252989906">wG8rjzLH0UWLy35KUweUlw==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">MouseCursorRenderer</name>
+      <parent />
+      <prefabLink />
+    </item>
     <item dataType="ObjectRef">1367178791</item>
     <item dataType="ObjectRef">2583417145</item>
     <item dataType="ObjectRef">1572686554</item>

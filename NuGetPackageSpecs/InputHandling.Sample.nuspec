@@ -23,7 +23,7 @@
     <file src="..\SampleProjects\InputHandling\Content\Plugins\InputHandling.core.dll" target="lib" />
     <file src="..\SampleProjects\InputHandling\Content\Plugins\InputHandling.core.xml" target="lib" />
     <file src="..\SampleProjects\InputHandling\Content\Data\**\*.res" target="content" />
-    <file src="..\SampleProjects\InputHandling\**\*.cs" target="source" exclude="..\SampleProjects\InputHandling\Content\**\*.*" />
+    <file src="..\SampleProjects\InputHandling\**\*.cs" target="source" exclude="..\SampleProjects\InputHandling\Content\**\*.*;..\SampleProjects\InputHandling\obj\**\*.*" />
     <file src="..\SampleProjects\InputHandling\InputHandling.csproj" target="source" />
   </files>
 </package>

@@ -8,8 +8,8 @@ namespace Duality.Backend.DefaultOpenTK
 	{
 		public delegate void CursorPosSetter(int v);
 
-		private	GameWindow		window;
-		private bool			cursorInView;
+		private GameWindow window;
+		private bool       cursorInView;
 
 		public string Description
 		{
@@ -22,12 +22,22 @@ namespace Duality.Backend.DefaultOpenTK
 		public int X
 		{
 			get { return this.window.Mouse.X; }
-			set { }
+			set
+			{
+				OpenTK.Input.MouseState state = OpenTK.Input.Mouse.GetCursorState();
+				System.Drawing.Point screenPoint = this.window.PointToScreen(new System.Drawing.Point(value, 0));
+				OpenTK.Input.Mouse.SetPosition(screenPoint.X, state.Y);
+			}
 		}
 		public int Y
 		{
 			get { return this.window.Mouse.Y; }
-			set { }
+			set
+			{
+				OpenTK.Input.MouseState state = OpenTK.Input.Mouse.GetCursorState();
+				System.Drawing.Point screenPoint = this.window.PointToScreen(new System.Drawing.Point(0, value));
+				OpenTK.Input.Mouse.SetPosition(state.X, screenPoint.Y);
+			}
 		}
 		public float Wheel
 		{
@@ -41,21 +51,20 @@ namespace Duality.Backend.DefaultOpenTK
 		public GameWindowMouseInputSource(GameWindow window)
 		{
 			this.window = window;
-			this.window.MouseEnter += this.device_Enter;
-			this.window.MouseLeave += this.device_Leave;
-		}
-
-		private void device_Enter(object sender, EventArgs e)
-		{
-			this.cursorInView = true;
-		}
-		private void device_Leave(object sender, EventArgs e)
-		{
-			this.cursorInView = false;
+			this.window.MouseEnter += this.window_MouseEnter;
+			this.window.MouseLeave += this.window_MouseLeave;
 		}
 
 		public void UpdateState() { }
 
+		private void window_MouseLeave(object sender, EventArgs e)
+		{
+			this.cursorInView = false;
+		}
+		private void window_MouseEnter(object sender, EventArgs e)
+		{
+			this.cursorInView = true;
+		}
 		private static OpenTK.Input.MouseButton GetOpenTKMouseButton(MouseButton button)
 		{
 			switch (button)
