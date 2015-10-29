@@ -63,16 +63,6 @@ namespace FlapOrDie
                 }
                 catch { }
             }
-
-            //preloading pixmaps and sound
-            foreach(ContentRef<Pixmap> p in ContentProvider.GetAvailableContent<Pixmap>())
-            {
-                p.MakeAvailable();
-            }
-            foreach (ContentRef<Sound> s in ContentProvider.GetAvailableContent<Sound>())
-            {
-                s.MakeAvailable();
-            }
         }
 
         protected override void OnDisposePlugin()
