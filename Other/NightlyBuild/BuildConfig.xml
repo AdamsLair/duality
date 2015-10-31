@@ -4,7 +4,7 @@
   <BuildResultDir>..\..\DualityEditor\bin\Release</BuildResultDir>
   <DocSolutionPath>..\..\Documentation\Documentation.shfbproj</DocSolutionPath>
   <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
-  <NUnitBinDir>..\..\UnitTesting\NUnit</NUnitBinDir>
+  <NUnitBinDir>..\..\packages\NUnit.Runners.2.6.4\tools</NUnitBinDir>
   <UnitTestProjectDir>..\..\UnitTesting\</UnitTestProjectDir>
   <NuGetPath>..\..\.nuget\NuGet.exe</NuGetPath>
   <NuGetPackageSpecsDir>..\..\NuGetPackageSpecs</NuGetPackageSpecsDir>
