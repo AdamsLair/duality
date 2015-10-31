@@ -239,6 +239,7 @@ namespace Duality.Tests.Resources
 			GameObject objA = new GameObject("ObjectA");
 			GameObject objB = new GameObject("ObjectB");
 			TestReferenceComponent refComp = objA.AddComponent<TestReferenceComponent>();
+			List<GameObject> objList = refComp.ReferencedObjectList;
 
 			// Create a Prefab, make it available and link to it
 			Prefab prefab = new Prefab(objA);
@@ -247,17 +248,25 @@ namespace Duality.Tests.Resources
 
 			// Assign a new reference to the Prefab instance
 			refComp.ReferencedObject = objB;
+			refComp.ReferencedObjectList.Add(objB);
 			objA.PrefabLink.PushChange(refComp, PropertyOf(() => refComp.ReferencedObject));
+			objA.PrefabLink.PushChange(refComp, PropertyOf(() => refComp.ReferencedObjectList));
 
 			// Are we pointing to the right object?
 			Assert.AreSame(objB, refComp.ReferencedObject);
+			Assert.AreSame(objB, refComp.ReferencedObjectList[0]);
+			Assert.AreSame(objList, refComp.ReferencedObjectList);
 
 			// Now apply the Prefab
 			objA.PrefabLink.Apply();
 
 			// Are we still pointing to the right object? Or is it a copy now?
 			Assert.AreEqual(objB.Name, refComp.ReferencedObject.Name);
+			Assert.AreEqual(objB.Name, refComp.ReferencedObjectList[0].Name);
 			Assert.AreSame(objB, refComp.ReferencedObject);
+			Assert.AreSame(objB, refComp.ReferencedObjectList[0]);
+			// Have we still properly copied the list / container?
+			Assert.AreNotSame(objList, refComp.ReferencedObjectList);
 		}
 
 		private void AddTempContent(string path, Resource res)
@@ -322,10 +331,17 @@ namespace Duality.Tests.Resources
 		private class TestReferenceComponent : Component
 		{
 			private GameObject obj;
+			private List<GameObject> objList = new List<GameObject>();
+
 			public GameObject ReferencedObject
 			{
 				get { return this.obj; }
 				set { this.obj = value; }
+			}
+			public List<GameObject> ReferencedObjectList
+			{
+				get { return this.objList; }
+				set { this.objList = value; }
 			}
 		}
 	}
