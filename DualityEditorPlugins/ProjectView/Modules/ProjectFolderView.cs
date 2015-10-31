@@ -1093,7 +1093,7 @@ namespace Duality.Editor.Plugins.ProjectView
 						foreach (Resource res in resList)
 						{
 							string desiredName = null;
-							if (string.IsNullOrEmpty(desiredName))
+							if (string.IsNullOrEmpty(desiredName) && res.Path != null)
 								desiredName = res.Name;
 							if (string.IsNullOrEmpty(desiredName) && res.AssetInfo != null)
 								desiredName = res.AssetInfo.NameHint;
