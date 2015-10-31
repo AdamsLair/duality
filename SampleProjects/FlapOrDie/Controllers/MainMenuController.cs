@@ -10,22 +10,32 @@ using Duality.Resources;
 
 namespace FlapOrDie.Controllers
 {
-    [RequiredComponent(typeof(Camera))]
-    public class MainMenuController : Component, ICmpUpdatable
-    {
-        void ICmpUpdatable.OnUpdate()
-        {
-            if(DualityApp.Keyboard.KeyHit(Key.Escape))
-            {
-                DualityApp.Terminate();
-            }
-            if(DualityApp.Keyboard.KeyHit(Key.Space))
-            {
-                ContentRef<Scene> gameScene = ContentProvider.RequestContent<Scene>(@"Data\GameScene.Scene.res");
-                gameScene.Res.FindComponent<GameController>().Reset();
+	[RequiredComponent(typeof(Camera))]
+	public class MainMenuController : Component, ICmpUpdatable
+	{
+		void ICmpUpdatable.OnUpdate()
+		{
+			if (DualityApp.Keyboard.KeyHit(Key.Escape))
+			{
+				DualityApp.Terminate();
+			}
+			if (DualityApp.Keyboard.KeyHit(Key.Space))
+			{
+				//preloading materials and sounds
+				foreach (ContentRef<Material> m in ContentProvider.GetAvailableContent<Material>())
+				{
+					m.MakeAvailable();
+				}
+				foreach (ContentRef<Sound> s in ContentProvider.GetAvailableContent<Sound>())
+				{
+					s.MakeAvailable();
+				}
 
-                Scene.SwitchTo(gameScene);
-            }
-        }
-    }
+				ContentRef<Scene> gameScene = ContentProvider.RequestContent<Scene>(@"Data\GameScene.Scene.res");
+				gameScene.Res.FindComponent<GameController>().Reset();
+
+				Scene.SwitchTo(gameScene);
+			}
+		}
+	}
 }

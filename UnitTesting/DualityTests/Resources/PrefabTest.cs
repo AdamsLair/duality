@@ -20,6 +20,17 @@ namespace Duality.Tests.Resources
 	[TestFixture]
 	public class PrefabTest
 	{
+		private HashSet<Resource> localTempContent = new HashSet<Resource>();
+
+		[TearDown] public void TearDownTest()
+		{
+			foreach (Resource res in localTempContent)
+			{
+				ContentProvider.RemoveContent(res);
+			}
+			localTempContent.Clear();
+		}
+
 		[Test] public void CreatePrefab()
 		{
 			GameObject obj = this.CreateSimpleGameObject();
@@ -132,7 +143,7 @@ namespace Duality.Tests.Resources
 
 			// Create a Prefab from this hierarchy, make it available and link to it
 			Prefab prefab = new Prefab(childPrefab ? child : parent);
-			ContentProvider.AddContent(prefabName, prefab);
+			this.AddTempContent(prefabName, prefab);
 			(childPrefab ? child : parent).LinkToPrefab(prefab);
 
 			// Save the Scene and reload it
@@ -220,7 +231,40 @@ namespace Duality.Tests.Resources
 			Assert.IsFalse(gameObj.GetComponent<SpriteRenderer>().ActiveSingle);
 			Assert.IsFalse(gameObj.GetComponent<Transform>().ActiveSingle);
 		}
+		[Test] public void PrefabChangeListCloningBug()
+		{
+			// Tests for https://github.com/AdamsLair/duality/issues/191
+			
+			// Create a sample Scene to test this
+			GameObject objA = new GameObject("ObjectA");
+			GameObject objB = new GameObject("ObjectB");
+			TestReferenceComponent refComp = objA.AddComponent<TestReferenceComponent>();
 
+			// Create a Prefab, make it available and link to it
+			Prefab prefab = new Prefab(objA);
+			this.AddTempContent("TestPrefab", prefab);
+			objA.LinkToPrefab(prefab);
+
+			// Assign a new reference to the Prefab instance
+			refComp.ReferencedObject = objB;
+			objA.PrefabLink.PushChange(refComp, PropertyOf(() => refComp.ReferencedObject));
+
+			// Are we pointing to the right object?
+			Assert.AreSame(objB, refComp.ReferencedObject);
+
+			// Now apply the Prefab
+			objA.PrefabLink.Apply();
+
+			// Are we still pointing to the right object? Or is it a copy now?
+			Assert.AreEqual(objB.Name, refComp.ReferencedObject.Name);
+			Assert.AreSame(objB, refComp.ReferencedObject);
+		}
+
+		private void AddTempContent(string path, Resource res)
+		{
+			ContentProvider.AddContent(path, res);
+			localTempContent.Add(res);
+		}
 		private GameObject CreateSimpleGameObject(GameObject parent = null)
 		{
 			GameObject obj = new GameObject("SimpleObject", parent);
@@ -275,5 +319,14 @@ namespace Duality.Tests.Resources
 		}
 
 		private class TestComponent : Component {}
+		private class TestReferenceComponent : Component
+		{
+			private GameObject obj;
+			public GameObject ReferencedObject
+			{
+				get { return this.obj; }
+				set { this.obj = value; }
+			}
+		}
 	}
 }

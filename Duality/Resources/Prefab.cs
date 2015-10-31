@@ -407,8 +407,8 @@ namespace Duality.Resources
 					object applyVal = null;
 					try
 					{
-
-						if (this.changes[i].prop.PropertyType.GetTypeInfo().IsValueType)
+						CloneType cloneType = CloneProvider.GetCloneType(this.changes[i].prop.PropertyType);
+						if (cloneType.Type.IsValueType || cloneType.DefaultCloneBehavior != CloneBehavior.ChildObject)
 							applyVal = this.changes[i].val;
 						else
 							applyVal = this.changes[i].val.DeepClone();
@@ -500,10 +500,14 @@ namespace Duality.Resources
 			if (!prop.CanWrite || !prop.CanRead) return;
 			object changeVal = prop.GetValue(target, null);
 
-			// Clone the changelist entry value
-			if (changeVal != null && !changeVal.GetType().GetTypeInfo().IsValueType)
+			// Clone the changelist entry value, if required
+			if (changeVal != null)
 			{
-				changeVal = changeVal.DeepClone();
+				CloneType cloneType = CloneProvider.GetCloneType(changeVal.GetType());
+				if (!cloneType.Type.IsValueType && cloneType.DefaultCloneBehavior == CloneBehavior.ChildObject)
+				{
+					changeVal = changeVal.DeepClone();
+				}
 			}
 
 			this.PushChange(target, prop, changeVal);
