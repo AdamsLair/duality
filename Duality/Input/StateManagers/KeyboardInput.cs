@@ -10,8 +10,6 @@ namespace Duality.Input
 		private class State
 		{
 			public bool		IsAvailable		= false;
-			public bool		KeyRepeat		= true;
-			public int		KeyRepeatCount	= 0;
 			public bool[]	KeyPressed		= new bool[(int)Key.Last + 1];
 			public string	CharInput		= string.Empty;
 
@@ -23,8 +21,6 @@ namespace Duality.Input
 			public void CopyTo(State other)
 			{
 				other.IsAvailable		= this.IsAvailable;
-				other.KeyRepeat			= this.KeyRepeat;
-				other.KeyRepeatCount	= this.KeyRepeatCount;
 				other.CharInput			= this.CharInput;
 				this.KeyPressed.CopyTo(other.KeyPressed, 0);
 			}
@@ -33,8 +29,6 @@ namespace Duality.Input
 				this.IsAvailable = source != null ? source.IsAvailable : false;
 				if (source == null) return;
 
-				this.KeyRepeat = source.KeyRepeat;
-				this.KeyRepeatCount = source.KeyRepeatCounter;
 				this.CharInput = source.CharInput ?? string.Empty;
 				for (int i = 0; i < this.KeyPressed.Length; i++)
 				{
@@ -46,7 +40,6 @@ namespace Duality.Input
 		private	IKeyboardInputSource	source			= null;
 		private	State					currentState	= new State();
 		private	State					lastState		= new State();
-		private	bool					anyNewKeydown	= false;
 
 
 		/// <summary>
@@ -60,11 +53,6 @@ namespace Duality.Input
 				if (this.source != value)
 				{
 					this.source = value;
-
-					if (this.source != null)
-					{
-						this.source.KeyRepeat = this.currentState.KeyRepeat;
-					}
 				}
 			}
 		}
@@ -88,18 +76,6 @@ namespace Duality.Input
 			get { return this.currentState.IsAvailable; }
 		}
 		/// <summary>
-		/// [GET / SET] Whether a key that is pressed and hold down should fire the <see cref="KeyDown"/> event repeatedly.
-		/// </summary>
-		public bool KeyRepeat
-		{
-			get { return this.currentState.KeyRepeat; }
-			set 
-			{
-				this.currentState.KeyRepeat = value;
-				if (this.source != null) this.source.KeyRepeat = this.currentState.KeyRepeat;
-			}
-		}
-		/// <summary>
 		/// [GET] Returns the concatenated character input that was typed since the last input update.
 		/// </summary>
 		public string CharInput
@@ -121,7 +97,7 @@ namespace Duality.Input
 		/// </summary>
 		public event EventHandler<KeyboardKeyEventArgs> KeyUp;
 		/// <summary>
-		/// Fired once when a key is pressed. May be fired repeatedly, if <see cref="KeyRepeat"/> is true.
+		/// Fired once when a key is pressed.
 		/// </summary>
 		public event EventHandler<KeyboardKeyEventArgs> KeyDown;
 		/// <summary>
@@ -159,12 +135,10 @@ namespace Duality.Input
 				if (this.NoLongerAvailable != null)
 					this.NoLongerAvailable(this, EventArgs.Empty);
 			}
-			this.anyNewKeydown = false;
 			for (int i = 0; i < this.currentState.KeyPressed.Length; i++)
 			{
 				if (this.currentState.KeyPressed[i] && !this.lastState.KeyPressed[i])
 				{
-					this.anyNewKeydown = true;
 					if (this.KeyDown != null)
 						this.KeyDown(this, new KeyboardKeyEventArgs(this, (Key)i, this.currentState.KeyPressed[i]));
 				}
@@ -172,17 +146,6 @@ namespace Duality.Input
 				{
 					if (this.KeyUp != null)
 						this.KeyUp(this, new KeyboardKeyEventArgs(this, (Key)i, this.currentState.KeyPressed[i]));
-				}
-			}
-			if (!this.anyNewKeydown && this.currentState.KeyRepeatCount != this.lastState.KeyRepeatCount && this.currentState.KeyRepeat)
-			{
-				for (int i = 0; i < this.currentState.KeyPressed.Length; i++)
-				{
-					if (this.currentState.KeyPressed[i])
-					{
-						if (this.KeyDown != null)
-							this.KeyDown(this, new KeyboardKeyEventArgs(this, (Key)i, this.currentState.KeyPressed[i]));
-					}
 				}
 			}
 		}
@@ -207,10 +170,7 @@ namespace Duality.Input
 		/// <returns></returns>
 		public bool KeyHit(Key key)
 		{
-			if (!this.currentState.KeyPressed[(int)key]) return false;
-			return 
-				(!this.lastState.KeyPressed[(int)key]) || 
-				(this.currentState.KeyRepeat && !this.anyNewKeydown && this.currentState.KeyRepeatCount != this.lastState.KeyRepeatCount);
+			return this.currentState.KeyPressed[(int)key] && !this.lastState.KeyPressed[(int)key];
 		}
 		/// <summary>
 		/// Returns whether the specified key was released this frame.

@@ -194,9 +194,7 @@ namespace Duality.Editor.Plugins.CamView
 		private	float			inputMouseWheel			= 0.0f;
 		private	int				inputMouseButtons		= 0;
 		private	bool			inputMouseInView		= false;
-		private	bool			inputKeyRepeat			= false;
 		private	bool			inputKeyFocus			= false;
-		private	int				inputKeyRepeatCount		= 0;
 		private	BitArray		inputKeyPressed			= new BitArray((int)Key.Last + 1, false);
 		private	string			inputCharInput			= null;
 		private	StringBuilder	inputCharInputBuffer	= new StringBuilder();
@@ -1124,7 +1122,6 @@ namespace Duality.Editor.Plugins.CamView
 				Key inputKey = e.KeyCode.ToDualitySingle();
 				bool wasPressed = this.inputKeyPressed[(int)inputKey];
 				this.inputKeyPressed = this.inputKeyPressed.Or(e.KeyCode.ToDuality());
-				this.inputKeyRepeatCount++;
 			}
 		}
 		private void graphicsControl_KeyUp(object sender, KeyEventArgs e)
@@ -1482,15 +1479,6 @@ namespace Duality.Editor.Plugins.CamView
 			get { return (this.inputMouseButtons & (1 << (int)btn)) != 0; }
 		}
 
-		bool IKeyboardInputSource.KeyRepeat
-		{
-			get { return this.inputKeyRepeat; }
-			set { this.inputKeyRepeat = value; }
-		}
-		int IKeyboardInputSource.KeyRepeatCounter
-		{
-			get { return this.inputKeyRepeatCount; }
-		}
 		string IKeyboardInputSource.CharInput
 		{
 			get { return this.inputCharInput ?? string.Empty; }

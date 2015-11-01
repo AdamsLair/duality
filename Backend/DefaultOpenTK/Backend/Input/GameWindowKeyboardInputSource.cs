@@ -10,7 +10,6 @@ namespace Duality.Backend.DefaultOpenTK
 	{
 		private	GameWindow		window;
 		private bool			hasFocus;
-		private	int				repeatCounter;
 		private	string			charInput;
 		private	StringBuilder	charInputBuffer = new StringBuilder();
 		
@@ -21,15 +20,6 @@ namespace Duality.Backend.DefaultOpenTK
 		public bool IsAvailable
 		{
 			get { return this.window != null && this.window.Keyboard != null && this.hasFocus; }
-		}
-		public bool KeyRepeat
-		{
-			get { return this.window.Keyboard.KeyRepeat; }
-			set { this.window.Keyboard.KeyRepeat = value; }
-		}
-		public int KeyRepeatCounter
-		{
-			get { return this.repeatCounter; }
 		}
 		public string CharInput
 		{
@@ -43,14 +33,9 @@ namespace Duality.Backend.DefaultOpenTK
 		public GameWindowKeyboardInputSource(GameWindow window)
 		{
 			this.window = window;
-			this.window.Keyboard.KeyDown += this.device_KeyDown;
 			this.window.KeyPress += this.window_KeyPress;
 		}
 
-		private void device_KeyDown(object sender, OpenTK.Input.KeyboardKeyEventArgs e)
-		{
-			this.repeatCounter++;
-		}
 		private void window_KeyPress(object sender, OpenTK.KeyPressEventArgs e)
 		{
 			this.charInputBuffer.Append(e.KeyChar);
