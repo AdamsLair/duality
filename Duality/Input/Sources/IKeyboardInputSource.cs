@@ -9,14 +9,6 @@ namespace Duality.Input
 	public interface IKeyboardInputSource : IUserInputSource
 	{
 		/// <summary>
-		/// [GET / SET] Whether a key that is pressed and hold down should fire the KeyDown event repeatedly.
-		/// </summary>
-		bool KeyRepeat { get; set; }
-		/// <summary>
-		/// [GET] Returns the current key repeat counter value. A key repeat event will be fired for each increment that isn't accompanied by a state change.
-		/// </summary>
-		int KeyRepeatCounter { get; }
-		/// <summary>
 		/// [GET] Returns the concatenated character input that was typed since the last input update.
 		/// </summary>
 		string CharInput { get; }

@@ -17,7 +17,6 @@ namespace Duality.Editor
 		/// <summary>
 		/// Stores the specified non-<see cref="SerializableAttribute"/> data inside the specified data object using a serializable wrapper.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
 		/// <param name="data"></param>
 		/// <param name="value"></param>
 		public static void SetWrappedData(this IDataObject data, object value)
