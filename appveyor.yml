@@ -19,7 +19,6 @@ build:
   
 test:
   assemblies:
-    - 'UnitTesting\DualityTests\**\*.dll'
   categories:
     only:
       - None   # AppVeyor VMs don't have GPU access and v1.x isn't able to deal with this at all.
