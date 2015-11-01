@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -13,10 +13,10 @@
 	<summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
 	<tags>Duality Core Plugin Backend</tags>
-	<releaseNotes>Minor CI Testing Bugfixes
-#FIX: (Hopefully) Fixed various exceptions when running Duality tests on a machine without display device.</releaseNotes>
+	<releaseNotes>Removed Old KeyRepeat Code
+#REMOVE: Entirely removed the old KeyRepeat code, as it was only useful for emulated keyboard input, which is now done directly using CharInput. It also got in the way when using KeyHit and holding down a key.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.0.3" />
+      <dependency id="AdamsLair.Duality" version="2.0.4" />
       <dependency id="AdamsLair.OpenTK" version="1.1.6" />
     </dependencies>
   </metadata>
