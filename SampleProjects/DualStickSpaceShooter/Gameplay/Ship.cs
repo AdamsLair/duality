@@ -205,7 +205,10 @@ namespace DualStickSpaceShooter
 				velocityDiff / MathF.Max(0.001f, velocityDiff.Length), 
 				this.targetThrust / MathF.Max(0.001f, this.targetThrust.Length));
 			Vector2 thrusterActivity = this.targetThrust.Length * MathF.Max(sameDirectionFactor, 0.0f) * velocityDiff / MathF.Max(velocityDiff.Length, 1.0f);
-			body.ApplyWorldForce(thrusterActivity * blueprint.ThrusterPower);
+			if (thrusterActivity.Length > 0.00001f) // Don't wake physics without actually doing work
+			{
+				body.ApplyWorldForce(thrusterActivity * blueprint.ThrusterPower);
+			}
 
 			// Turn to the desired fire angle
 			if (this.targetAngleRatio > 0.0f)
@@ -224,9 +227,13 @@ namespace DualStickSpaceShooter
 					turnDirection	= shortestTurnDirection;
 					turnLength		= shortestTurnLength;
 				}
-				float turnSpeedRatio	= MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
-				float turnVelocity		= turnSpeedRatio * turnDirection * blueprint.MaxTurnSpeed * this.targetAngleRatio;
-				body.AngularVelocity	+= (turnVelocity - body.AngularVelocity) * blueprint.TurnPower * Time.TimeMult;
+				float turnSpeedRatio = MathF.Min(turnLength * 0.25f, MathF.RadAngle30) / MathF.RadAngle30;
+				float turnVelocity = turnSpeedRatio * turnDirection * blueprint.MaxTurnSpeed * this.targetAngleRatio;
+				float angularVelocityChange = (turnVelocity - body.AngularVelocity) * blueprint.TurnPower;
+				if (MathF.Abs(angularVelocityChange) > 0.0000001f) // Don't wake physics without actually doing work
+				{
+					body.AngularVelocity += angularVelocityChange * Time.TimeMult;
+				}
 			}
 
 			// Weapon cooldown

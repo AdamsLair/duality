@@ -14,6 +14,6 @@ Donate: [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_
 ### Build status: 
 | [Branch](https://github.com/AdamsLair/duality/wiki/Branch-Descriptions)  | Status |
 |---------|--------|
-| master  | [![Build status](https://ci.appveyor.com/api/projects/status/github/AdamsLair/duality?branch=master&svg=true)](https://ci.appveyor.com/project/ilexp/duality/branch/master) |
-| release | [![Build status](https://ci.appveyor.com/api/projects/status/github/AdamsLair/duality?branch=release&svg=true)](https://ci.appveyor.com/project/ilexp/duality/branch/release) |
-| 1.x     | [![Build status](https://ci.appveyor.com/api/projects/status/github/AdamsLair/duality?branch=1.x&svg=true)](https://ci.appveyor.com/project/ilexp/duality/branch/1.x)    |
+| master  | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/master?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/master) |
+| release | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/release?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/release) |
+| 1.x     | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/1.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/1.x)    |
