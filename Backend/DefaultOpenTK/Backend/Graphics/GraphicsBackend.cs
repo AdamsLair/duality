@@ -713,10 +713,11 @@ namespace Duality.Backend.DefaultOpenTK
 			// Accessing OpenGL functionality requires context. Don't get confused by AccessViolationExceptions, fail better instead.
 			GraphicsContext.Assert();
 
+			string versionString = null;
 			try
 			{
 				CheckOpenGLErrors();
-				string versionString = GL.GetString(StringName.Version);
+				versionString = GL.GetString(StringName.Version);
 				Log.Core.Write("OpenGL Version: {1}{0}Vendor: {2}{0}Renderer: {3}{0}Shading Language Version: {4}",
 					Environment.NewLine,
 					versionString,
@@ -724,15 +725,22 @@ namespace Duality.Backend.DefaultOpenTK
 					GL.GetString(StringName.Renderer),
 					GL.GetString(StringName.ShadingLanguageVersion));
 				CheckOpenGLErrors();
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", Log.Exception(e));
+			}
 
-				// Parse the OpenGL version string in order to determine if it's sufficient
+			// Parse the OpenGL version string in order to determine if it's sufficient
+			if (versionString != null)
+			{
 				string[] token = versionString.Split(' ');
 				for (int i = 0; i < token.Length; i++)
 				{
 					Version version;
 					if (Version.TryParse(token[i], out version))
 					{
-						if (version.Major < MinOpenGLVersion.Major && version.Minor < MinOpenGLVersion.Minor)
+						if (version.Major < MinOpenGLVersion.Major || version.Minor < MinOpenGLVersion.Minor)
 						{
 							Log.Core.WriteWarning(
 								"The detected OpenGL version {0} appears to be lower than the required minimum. Version {1} or higher is required to run Duality applications.",
@@ -742,10 +750,6 @@ namespace Duality.Backend.DefaultOpenTK
 						break;
 					}
 				}
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteWarning("Can't determine OpenGL specs, because an error occurred: {0}", Log.Exception(e));
 			}
 		}
 		/// <summary>
