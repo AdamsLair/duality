@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Duality.Editor;
 using Duality.Properties;
@@ -89,7 +88,7 @@ namespace Duality.Resources
 		[DontSerialize] private	int		texHeight	= 0;
 		[DontSerialize] private	Vector2	uvRatio		= new Vector2(1.0f, 1.0f);
 		[DontSerialize] private	bool	needsReload	= true;
-		[DontSerialize] private	AtlasKeyValuePair[]	atlas		= null;
+		[DontSerialize] private	Rect[]	atlas		= null;
 
 
 		/// <summary>
@@ -388,14 +387,10 @@ namespace Duality.Resources
 					scale.Y = this.uvRatio.Y / this.pxHeight;
 					for (int i = 0; i < this.atlas.Length; i++)
 					{
-						Rect value = this.atlas[i].Value;
-
-						value.X *= scale.X;
-						value.W *= scale.X;
-						value.Y *= scale.Y;
-						value.H *= scale.Y;
-
-						this.atlas[i].Value = value;
+						this.atlas[i].X *= scale.X;
+						this.atlas[i].W *= scale.X;
+						this.atlas[i].Y *= scale.Y;
+						this.atlas[i].H *= scale.Y;
 					}
 				}
 			}
@@ -471,34 +466,7 @@ namespace Duality.Resources
 			}
 			else
 			{
-				uv = this.atlas[MathF.Clamp(index, 0, this.atlas.Length - 1)].Value;
-			}
-		}
-
-		/// <summary>
-		/// Does a safe (null-checked) texture <see cref="Duality.Resources.Pixmap.Atlas"/> lookup.
-		/// </summary>
-		/// <param name="key"></param>
-		/// <param name="uv"></param>
-		public void LookupAtlas(string key, out Rect uv)
-		{
-			if (this.atlas == null)
-			{
-				uv.X = uv.Y = 0.0f;
-				uv.W = this.uvRatio.X;
-				uv.H = this.uvRatio.Y;
-			}
-			else
-			{
-				AtlasKeyValuePair kvp = this.atlas.FirstOrDefault(a => a.Key == key);
-				if (kvp.Equals(default(AtlasKeyValuePair)))
-				{
-					uv.X = uv.Y = 0.0f;
-					uv.W = this.uvRatio.X;
-					uv.H = this.uvRatio.Y;
-				}
-				else
-					uv = kvp.Value;
+				uv = this.atlas[MathF.Clamp(index, 0, this.atlas.Length - 1)];
 			}
 		}
 		/// <summary>
