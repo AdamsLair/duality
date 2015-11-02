@@ -107,7 +107,7 @@ namespace Duality.Editor
 			PixelData glyphTempTypo;
 			Bitmap bm;
 			Bitmap measureBm = new Bitmap(1, 1);
-			Rect[] atlas = new Rect[glyphs.Length];
+			AtlasKeyValuePair[] atlas = new AtlasKeyValuePair[glyphs.Length];
 			using (Graphics measureGraphics = Graphics.FromImage(measureBm))
 			{
 				Brush fntBrush = new SolidBrush(Color.Black);
@@ -185,10 +185,14 @@ namespace Duality.Editor
 						glyphs[i].Width /= 2;
 						glyphs[i].OffsetX /= 2;
 					}
-					atlas[i].X = x;
-					atlas[i].Y = y;
-					atlas[i].W = glyphTemp.Width;
-					atlas[i].H = (internalFont.Height + 1);
+
+					Rect rect = new Rect();
+					rect.X = x;
+					rect.Y = y;
+					rect.W = glyphTemp.Width;
+					rect.H = (internalFont.Height + 1);
+
+					atlas[i] = new AtlasKeyValuePair(glyphs[i].Glyph.ToString(), rect);
 
 					// Draw it onto the font surface
 					glyphTemp.DrawOnto(pixelLayer, BlendMode.Solid, x, y);

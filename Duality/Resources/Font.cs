@@ -311,7 +311,7 @@ namespace Duality.Resources
 		/// <param name="bodyAscent"></param>
 		/// <param name="descent"></param>
 		/// <param name="baseLine"></param>
-		public void SetGlyphData(PixelData bitmap, Rect[] atlas, GlyphData[] glyphs, int height, int ascent, int bodyAscent, int descent, int baseLine)
+		public void SetGlyphData(PixelData bitmap, AtlasKeyValuePair[] atlas, GlyphData[] glyphs, int height, int ascent, int bodyAscent, int descent, int baseLine)
 		{
 			this.ReleaseResources();
 

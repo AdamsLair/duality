@@ -65,8 +65,8 @@ namespace Duality.Resources
 		}
 
 		
-		private	List<PixelData>	layers			= new List<PixelData>();
-		private	List<Rect>		atlas			= null;
+		private	List<PixelData>				layers			= new List<PixelData>();
+		private List<AtlasKeyValuePair>		atlas = null;
 		private	int				animCols		= 0;
 		private	int				animRows		= 0;
 		private	int				animFrameBorder	= 0;
@@ -122,7 +122,7 @@ namespace Duality.Resources
 		/// [GET / SET] The Pixmaps atlas array, distinguishing different areas in pixel coordinates
 		/// </summary>
 		[EditorHintFlags(MemberFlags.ForceWriteback)]
-		public List<Rect> Atlas
+		public List<AtlasKeyValuePair> Atlas
 		{
 			get { return this.atlas; }
 			set { this.atlas = value; }
@@ -216,7 +216,7 @@ namespace Duality.Resources
 			frames = this.animCols * this.animRows;
 			if (frames > 0)
 			{
-				if (this.atlas == null) this.atlas = new List<Rect>(frames);
+				if (this.atlas == null) this.atlas = new List<AtlasKeyValuePair>(frames);
 				int i = 0;
 				for (int y = 0; y < this.animRows; y++)
 				{
@@ -227,7 +227,7 @@ namespace Duality.Resources
 							y * frameSize.Y + this.animFrameBorder,
 							frameSize.X - this.animFrameBorder * 2,
 							frameSize.Y - this.animFrameBorder * 2);
-						this.atlas.Insert(i, frameRect);
+						this.atlas.Insert(i, new AtlasKeyValuePair(i.ToString(), frameRect));
 						i++;
 					}
 				}
@@ -250,7 +250,34 @@ namespace Duality.Resources
 			}
 			else
 			{
-				region = this.atlas[MathF.Clamp(index, 0, this.atlas.Count - 1)];
+				region = this.atlas[MathF.Clamp(index, 0, this.atlas.Count - 1)].Value;
+			}
+		}
+
+		/// <summary>
+		/// Does a safe (null-checked) pixmap <see cref="Atlas"/> lookup.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="region"></param>
+		public void LookupAtlas(string key, out Rect region)
+		{
+			if (this.atlas == null)
+			{
+				region.X = region.Y = 0.0f;
+				region.W = this.Width;
+				region.H = this.Height;
+			}
+			else 
+			{
+				AtlasKeyValuePair kvp = this.atlas.FirstOrDefault(a => a.Key == key);
+				if (kvp.Equals(default(AtlasKeyValuePair)))
+				{
+					region.X = region.Y = 0.0f;
+					region.W = this.Width;
+					region.H = this.Height;
+				}
+				else
+					region = kvp.Value;
 			}
 		}
 		/// <summary>

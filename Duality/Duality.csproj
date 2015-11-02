@@ -98,6 +98,7 @@
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
     <Compile Include="Backend\IAudioBackend.cs" />
     <Compile Include="Backend\IGraphicsBackend.cs" />
+    <Compile Include="Components\Renderers\SpriteSheetRenderer.cs" />
     <Compile Include="Input\JoystickHatEventArgs.cs" />
     <Compile Include="Input\JoystickHatPosition.cs" />
     <Compile Include="Input\JoystickHat.cs" />
@@ -290,6 +291,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsIList.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsRandom.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsString.cs" />
+    <Compile Include="Utility\AtlasKeyValuePair.cs" />
     <Compile Include="Utility\ReflectionInfo.cs" />
     <Compile Include="Audio\OggVorbis.cs" />
     <Compile Include="Utility\ReflectionHelper.cs" />
