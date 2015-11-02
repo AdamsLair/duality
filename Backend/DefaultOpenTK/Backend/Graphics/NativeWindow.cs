@@ -53,7 +53,7 @@ namespace Duality.Backend.DefaultOpenTK
 
 		public NativeWindow(GraphicsMode mode, WindowOptions options)
 		{
-			if (options.ScreenMode == ScreenMode.Native)
+			if (options.ScreenMode == ScreenMode.Native && DisplayDevice.Default != null)
 			{
 				options.Width = DisplayDevice.Default.Width;
 				options.Height = DisplayDevice.Default.Height;
@@ -129,7 +129,8 @@ namespace Duality.Backend.DefaultOpenTK
 			this.UnhookFromDuality();
 			if (this.internalWindow != null)
 			{
-				DisplayDevice.Default.RestoreResolution();
+				if (DisplayDevice.Default != null)
+					DisplayDevice.Default.RestoreResolution();
 				this.internalWindow.Dispose();
 				this.internalWindow = null;
 			}
@@ -152,6 +153,9 @@ namespace Duality.Backend.DefaultOpenTK
 		
 		private void OnUserDataChanged(object sender, EventArgs e)
 		{
+			// Early-out, if no display is connected / available anyway
+			if (DisplayDevice.Default == null) return;
+
 			switch (DualityApp.UserData.GfxMode)
 			{
 				case ScreenMode.Window:
@@ -203,8 +207,8 @@ namespace Duality.Backend.DefaultOpenTK
 				while (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult)
 				{
 					// Enough leftover time? Risk a millisecond sleep.
-					if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult * 0.75f)
-						System.Threading.Thread.Sleep(1);
+					//if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult * 0.75f)
+					//	System.Threading.Thread.Sleep(1);
 				}
 			}
 			this.frameLimiterWatch.Restart();
