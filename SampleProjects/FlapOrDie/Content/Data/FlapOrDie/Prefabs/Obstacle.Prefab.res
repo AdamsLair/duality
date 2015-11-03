@@ -84,7 +84,7 @@
                 <animFrameCount dataType="Int">0</animFrameCount>
                 <animLoopMode dataType="Enum" type="Duality.Components.Renderers.AnimSpriteRenderer+LoopMode" name="RandomSingle" value="3" />
                 <animPaused dataType="Bool">false</animPaused>
-                <animTime dataType="Float">0</animTime>
+                <animTime dataType="Float">3.32663727</animTime>
                 <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                   <A dataType="Byte">255</A>
                   <B dataType="Byte">255</B>
@@ -104,7 +104,7 @@
                 </rect>
                 <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                  <contentPath dataType="String">Data\Graphics\columns-top.Material.res</contentPath>
+                  <contentPath dataType="String">Data\FlapOrDie\Graphics\columns-top.Material.res</contentPath>
                 </sharedMat>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </item>
@@ -153,7 +153,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">1</_size>
-                  <_version dataType="Int">3</_version>
+                  <_version dataType="Int">6</_version>
                 </shapes>
               </item>
             </_items>
@@ -232,7 +232,7 @@
                 <animFrameCount dataType="Int">0</animFrameCount>
                 <animLoopMode dataType="Enum" type="Duality.Components.Renderers.AnimSpriteRenderer+LoopMode" name="RandomSingle" value="3" />
                 <animPaused dataType="Bool">false</animPaused>
-                <animTime dataType="Float">0</animTime>
+                <animTime dataType="Float">1.221462</animTime>
                 <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
                   <A dataType="Byte">255</A>
                   <B dataType="Byte">255</B>
@@ -252,7 +252,7 @@
                 </rect>
                 <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                  <contentPath dataType="String">Data\Graphics\columns-bottom.Material.res</contentPath>
+                  <contentPath dataType="String">Data\FlapOrDie\Graphics\columns-bottom.Material.res</contentPath>
                 </sharedMat>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </item>
@@ -301,7 +301,7 @@
                     </item>
                   </_items>
                   <_size dataType="Int">1</_size>
-                  <_version dataType="Int">3</_version>
+                  <_version dataType="Int">6</_version>
                 </shapes>
               </item>
             </_items>
@@ -387,7 +387,7 @@
               </item>
             </_items>
             <_size dataType="Int">1</_size>
-            <_version dataType="Int">3</_version>
+            <_version dataType="Int">6</_version>
           </shapes>
         </item>
         <item dataType="Struct" type="FlapOrDie.Tags.Obstacle" id="3310321378">
