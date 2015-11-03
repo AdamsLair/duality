@@ -13,6 +13,8 @@ namespace FlapOrDie.Controllers
 	[RequiredComponent(typeof(Camera))]
 	public class MainMenuController : Component, ICmpUpdatable
 	{
+		public ContentRef<Scene> GameScene { get; set; }
+
 		void ICmpUpdatable.OnUpdate()
 		{
 			if (DualityApp.Keyboard.KeyHit(Key.Escape))
@@ -31,10 +33,9 @@ namespace FlapOrDie.Controllers
 					s.MakeAvailable();
 				}
 
-				ContentRef<Scene> gameScene = ContentProvider.RequestContent<Scene>(@"Data\GameScene.Scene.res");
-				gameScene.Res.FindComponent<GameController>().Reset();
+				GameScene.Res.FindComponent<GameController>().Reset();
 
-				Scene.SwitchTo(gameScene);
+				Scene.SwitchTo(GameScene);
 			}
 		}
 	}
