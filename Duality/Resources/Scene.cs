@@ -148,6 +148,10 @@ namespace Duality.Resources
 		/// <param name="forceImmediately">If true, an immediate switch is forced. Use only when necessary.</param>
 		public static void SwitchTo(ContentRef<Scene> scene, bool forceImmediately = false)
 		{
+			// Check parameters
+			if (!scene.IsExplicitNull && !scene.IsAvailable) 
+				throw new ArgumentException("Can't switch to Scene '" + scene.Path + "' because it doesn't seem to exist.", "scene");
+
 			if (switchLock == 0 || forceImmediately)
 			{
 				Scene.Current = scene.Res;
