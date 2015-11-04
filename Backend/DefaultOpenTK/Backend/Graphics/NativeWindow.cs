@@ -207,8 +207,8 @@ namespace Duality.Backend.DefaultOpenTK
 				while (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult)
 				{
 					// Enough leftover time? Risk a millisecond sleep.
-					if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult * 0.75f)
-						System.Threading.Thread.Sleep(1);
+					//if (this.frameLimiterWatch.Elapsed.TotalMilliseconds < Time.MsPFMult * 0.75f)
+					//	System.Threading.Thread.Sleep(1);
 				}
 			}
 			this.frameLimiterWatch.Restart();

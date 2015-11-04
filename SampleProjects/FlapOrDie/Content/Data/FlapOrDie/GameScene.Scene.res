@@ -236,7 +236,7 @@
                                 </rect>
                                 <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="WrapHorizontal" value="1" />
                                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                  <contentPath dataType="String">Data\Graphics\bg-middle.Material.res</contentPath>
+                                  <contentPath dataType="String">Data\FlapOrDie\Graphics\bg-middle.Material.res</contentPath>
                                 </sharedMat>
                                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               </item>
@@ -327,7 +327,7 @@
                                 </rect>
                                 <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="WrapHorizontal" value="1" />
                                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                  <contentPath dataType="String">Data\Graphics\bg-front.Material.res</contentPath>
+                                  <contentPath dataType="String">Data\FlapOrDie\Graphics\bg-front.Material.res</contentPath>
                                 </sharedMat>
                                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                               </item>
@@ -406,7 +406,7 @@
                 </rect>
                 <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="WrapHorizontal" value="1" />
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                  <contentPath dataType="String">Data\Graphics\bg-back.Material.res</contentPath>
+                  <contentPath dataType="String">Data\FlapOrDie\Graphics\bg-back.Material.res</contentPath>
                 </sharedMat>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </back>
@@ -478,7 +478,7 @@
                           </rect>
                           <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
                           <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                            <contentPath dataType="String">Data\Graphics\game-over.Material.res</contentPath>
+                            <contentPath dataType="String">Data\FlapOrDie\Graphics\game-over.Material.res</contentPath>
                           </sharedMat>
                           <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                         </item>
@@ -541,7 +541,7 @@
             </gameOverOverlay>
             <lastFramePoints dataType="UShort">0</lastFramePoints>
             <obstaclePrefab dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Prefab]]">
-              <contentPath dataType="String">Data\Prefabs\Obstacle.Prefab.res</contentPath>
+              <contentPath dataType="String">Data\FlapOrDie\Prefabs\Obstacle.Prefab.res</contentPath>
             </obstaclePrefab>
             <player dataType="Struct" type="FlapOrDie.Controllers.PlayerController" id="1655396855">
               <active dataType="Bool">true</active>
@@ -651,7 +651,7 @@
                                         </rect>
                                         <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
                                         <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                          <contentPath dataType="String">Data\Graphics\bat-spritesheet.Material.res</contentPath>
+                                          <contentPath dataType="String">Data\FlapOrDie\Graphics\bat-spritesheet.Material.res</contentPath>
                                         </sharedMat>
                                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                                       </item>
@@ -749,7 +749,7 @@
                                         </rect>
                                         <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
                                         <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                                          <contentPath dataType="String">Data\Graphics\bat-spritesheet.Material.res</contentPath>
+                                          <contentPath dataType="String">Data\FlapOrDie\Graphics\bat-spritesheet.Material.res</contentPath>
                                         </sharedMat>
                                         <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                                       </item>
@@ -949,7 +949,7 @@
                 </rect>
                 <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
                 <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-                  <contentPath dataType="String">Data\Graphics\bat-spritesheet.Material.res</contentPath>
+                  <contentPath dataType="String">Data\FlapOrDie\Graphics\bat-spritesheet.Material.res</contentPath>
                 </sharedMat>
                 <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
               </backWingRenderer>
@@ -957,6 +957,9 @@
               <frontWingRenderer dataType="ObjectRef">4088274168</frontWingRenderer>
               <gameobj dataType="ObjectRef">1005786875</gameobj>
               <impulseStrength dataType="Float">400</impulseStrength>
+              <menuScene dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Scene]]">
+                <contentPath dataType="String">Data\FlapOrDie\MainMenu.Scene.res</contentPath>
+              </menuScene>
             </player>
             <pointsGapVariance dataType="Float">5</pointsGapVariance>
             <pointsMultiplier dataType="Float">10</pointsMultiplier>
@@ -1046,7 +1049,7 @@
                 <flowAreas />
                 <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="175878390">
                   <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                    <contentPath dataType="String">Data\Font\Condiment-Small.Font.res</contentPath>
+                    <contentPath dataType="String">Data\FlapOrDie\Font\Condiment-Small.Font.res</contentPath>
                   </item>
                 </fonts>
                 <icons />
@@ -1062,7 +1065,7 @@
           <item dataType="Struct" type="FlapOrDie.Components.MusicManager" id="2873579469">
             <active dataType="Bool">true</active>
             <bgm dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Sound]]">
-              <contentPath dataType="String">Data\Audio\Attack-of-the-8-Bit-Hyper-Cranks.Sound.res</contentPath>
+              <contentPath dataType="String">Data\FlapOrDie\Audio\Attack-of-the-8-Bit-Hyper-Cranks.Sound.res</contentPath>
             </bgm>
             <gameobj dataType="ObjectRef">2889347069</gameobj>
           </item>

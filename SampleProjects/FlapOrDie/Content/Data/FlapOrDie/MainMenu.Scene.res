@@ -91,6 +91,9 @@
             <visibilityMask dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="All" value="4294967295" />
           </item>
           <item dataType="Struct" type="FlapOrDie.Controllers.MainMenuController" id="2431515162">
+            <_x003C_GameScene_x003E_k__BackingField dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Scene]]">
+              <contentPath dataType="String">Data\FlapOrDie\GameScene.Scene.res</contentPath>
+            </_x003C_GameScene_x003E_k__BackingField>
             <active dataType="Bool">true</active>
             <gameobj dataType="ObjectRef">3687316043</gameobj>
           </item>
@@ -235,7 +238,7 @@
                     <flowAreas />
                     <fonts dataType="Array" type="Duality.ContentRef`1[[Duality.Resources.Font]][]" id="2270095752">
                       <item dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Font]]">
-                        <contentPath dataType="String">Data\Font\DuruSans-Regular.Font.res</contentPath>
+                        <contentPath dataType="String">Data\FlapOrDie\Font\DuruSans-Regular.Font.res</contentPath>
                       </item>
                     </fonts>
                     <icons />
@@ -368,7 +371,7 @@
             </rect>
             <rectMode dataType="Enum" type="Duality.Components.Renderers.SpriteRenderer+UVMode" name="Stretch" value="0" />
             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
-              <contentPath dataType="String">Data\Graphics\flap-or-die.Material.res</contentPath>
+              <contentPath dataType="String">Data\FlapOrDie\Graphics\flap-or-die.Material.res</contentPath>
             </sharedMat>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
