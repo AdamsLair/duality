@@ -13,57 +13,49 @@ namespace FlapOrDie.Controllers
     [RequiredComponent(typeof(RigidBody))]
     public class PlayerController : Component, ICmpUpdatable, ICmpCollisionListener
     {
-        [DontSerialize]
-        private RigidBody rigidBody;
-
         private AnimSpriteRenderer bodyRenderer;
-
         private AnimSpriteRenderer frontWingRenderer;
-
         private AnimSpriteRenderer backWingRenderer;
-
         private float impulseStrength;
+        private ContentRef<Scene> menuScene;
 
-        public float ImpulseStrength
-        {
-            get { return this.impulseStrength; }
-            set { this.impulseStrength = value; }
-        }
-        [DontSerialize]
-        private ushort points;
-
-        public ushort Points
-        {
-            get { return this.points; }
-        }
-
-        [DontSerialize]
-        private float flapTime;
-
-        [DontSerialize]
-        private bool isDead;
-
-        public bool IsDead
-        {
-            get { return this.isDead; }
-        }
+        [DontSerialize] private RigidBody rigidBody;
+        [DontSerialize] private ushort points;
+        [DontSerialize] private float flapTime;
+        [DontSerialize] private bool isDead;
 
         public AnimSpriteRenderer Body
         {
             get { return this.bodyRenderer; }
             set { this.bodyRenderer = value; }
         }
-
         public AnimSpriteRenderer FrontWing
         {
             get { return this.frontWingRenderer; }
             set { this.frontWingRenderer = value; }
         }
-
         public AnimSpriteRenderer BackWing
         {
             get { return this.backWingRenderer; }
             set { this.backWingRenderer = value; }
+        }
+        public float ImpulseStrength
+        {
+            get { return this.impulseStrength; }
+            set { this.impulseStrength = value; }
+        }
+		public ContentRef<Scene> MenuScene
+		{
+			get { return this.menuScene; }
+			set { this.menuScene = value; }
+		}
+        public ushort Points
+        {
+            get { return this.points; }
+        }
+        public bool IsDead
+        {
+            get { return this.isDead; }
         }
 
         public void Reset()
@@ -108,10 +100,9 @@ namespace FlapOrDie.Controllers
 
             if (DualityApp.Keyboard.KeyHit(Key.Escape))
             {
-                Scene.SwitchTo(ContentProvider.RequestContent<Scene>(@"Data\MainMenu.Scene.res"));
+                Scene.SwitchTo(this.menuScene);
             }
         }
-
         void ICmpCollisionListener.OnCollisionBegin(Component sender, CollisionEventArgs args)
         {
             // did the player hit a gate sensor? +1 point)
@@ -128,12 +119,10 @@ namespace FlapOrDie.Controllers
                 Body.AnimFirstFrame = 2;
             }
         }
-
         void ICmpCollisionListener.OnCollisionEnd(Component sender, CollisionEventArgs args)
         {
             // nothing to do here
         }
-
         void ICmpCollisionListener.OnCollisionSolve(Component sender, CollisionEventArgs args)
         {
             // nothing to do here

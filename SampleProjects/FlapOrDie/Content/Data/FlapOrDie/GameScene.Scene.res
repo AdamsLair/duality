@@ -957,6 +957,9 @@
               <frontWingRenderer dataType="ObjectRef">4088274168</frontWingRenderer>
               <gameobj dataType="ObjectRef">1005786875</gameobj>
               <impulseStrength dataType="Float">400</impulseStrength>
+              <menuScene dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Scene]]">
+                <contentPath dataType="String">Data\FlapOrDie\MainMenu.Scene.res</contentPath>
+              </menuScene>
             </player>
             <pointsGapVariance dataType="Float">5</pointsGapVariance>
             <pointsMultiplier dataType="Float">10</pointsMultiplier>
