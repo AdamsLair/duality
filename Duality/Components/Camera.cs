@@ -639,9 +639,7 @@ namespace Duality.Components
 			else
 			{
 				bool profilePerType = visibilityStrategy.IsRendererQuerySorted;
-				float collectDrawsValueBefore = Profile.TimeCollectDrawcalls.LastValue;
 				Profile.TimeCollectDrawcalls.BeginMeasure();
-				float componentCollectTotalTime = 0.0f;
 
 				Type lastRendererType = null;
 				Type rendererType = null;
@@ -658,10 +656,7 @@ namespace Duality.Components
 						if (rendererType != lastRendererType)
 						{
 							if (activeProfiler != null)
-							{
 								activeProfiler.EndMeasure();
-								componentCollectTotalTime += activeProfiler.LastValue;
-							}
 							activeProfiler = Profile.RequestCounter<TimeCounter>(Profile.TimeCollectDrawcalls.FullName + @"\" + rendererType.Name);
 							activeProfiler.BeginMeasure();
 							lastRendererType = rendererType;
@@ -673,16 +668,9 @@ namespace Duality.Components
 				}
 				
 				if (activeProfiler != null)
-				{
 					activeProfiler.EndMeasure();
-					componentCollectTotalTime += activeProfiler.LastValue;
-				}
 
 				Profile.TimeCollectDrawcalls.EndMeasure();
-				if (profilePerType)
-				{
-					Profile.TimeCollectDrawcallsOverhead.Add((Profile.TimeCollectDrawcalls.LastValue - collectDrawsValueBefore) - componentCollectTotalTime);
-				}
 			}
 		}
 		private void SetupPickingRT(Point2 size)

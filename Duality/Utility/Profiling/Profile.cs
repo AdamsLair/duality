@@ -22,7 +22,6 @@ namespace Duality
 		public static readonly TimeCounter TimeUpdate;
 		public static readonly TimeCounter TimeUpdateScene;
 		public static readonly TimeCounter TimeUpdateSceneComponents;
-		public static readonly TimeCounter TimeUpdateSceneOverhead;
 		public static readonly TimeCounter TimeUpdateAudio;
 		public static readonly TimeCounter TimeUpdatePhysics;
 		public static readonly TimeCounter TimeUpdatePhysicsContacts;
@@ -34,7 +33,6 @@ namespace Duality
 		public static readonly TimeCounter TimeSwapBuffers;
 		public static readonly TimeCounter TimeQueryVisibleRenderers;
 		public static readonly TimeCounter TimeCollectDrawcalls;
-		public static readonly TimeCounter TimeCollectDrawcallsOverhead;
 		public static readonly TimeCounter TimeOptimizeDrawcalls;
 		public static readonly TimeCounter TimeProcessDrawcalls;
 		public static readonly TimeCounter TimePostProcessing;
@@ -60,7 +58,6 @@ namespace Duality
 			TimeUpdatePhysicsController       = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Controller");
 			TimeUpdateScene                   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene");
 			TimeUpdateSceneComponents      = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene\All Components");
-			TimeUpdateSceneOverhead           = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene\Overhead");
 			TimeUpdatePhysicsContinous        = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Continous");
 			TimeUpdateAudio                   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Audio");
 			TimeUpdatePhysicsAddRemove        = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\AddRemove");
@@ -69,7 +66,6 @@ namespace Duality
 			TimeSwapBuffers                   = RequestCounter<TimeCounter>(@"Duality\Frame\Render\SwapBuffers");
 			TimeQueryVisibleRenderers         = RequestCounter<TimeCounter>(@"Duality\Frame\Render\QueryVisibleRenderers");
 			TimeCollectDrawcalls              = RequestCounter<TimeCounter>(@"Duality\Frame\Render\CollectDrawcalls");
-			TimeCollectDrawcallsOverhead      = RequestCounter<TimeCounter>(@"Duality\Frame\Render\CollectDrawcalls\Overhead");
 			TimeOptimizeDrawcalls             = RequestCounter<TimeCounter>(@"Duality\Frame\Render\OptimizeDrawcalls");
 			TimeProcessDrawcalls              = RequestCounter<TimeCounter>(@"Duality\Frame\Render\ProcessDrawcalls");
 			TimePostProcessing                = RequestCounter<TimeCounter>(@"Duality\Frame\Render\PostProcessing");
