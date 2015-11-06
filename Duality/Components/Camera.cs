@@ -605,10 +605,11 @@ namespace Duality.Components
 			// Query renderers
 			IRendererVisibilityStrategy visibilityStrategy = Scene.Current.VisibilityStrategy;
 			if (visibilityStrategy == null) return;
-			IEnumerable<ICmpRenderer> rendererQuery = visibilityStrategy.QueryVisibleRenderers(this.drawDevice);
+			RawList<ICmpRenderer> visibleRenderers = new RawList<ICmpRenderer>();
+			visibilityStrategy.QueryVisibleRenderers(this.drawDevice, visibleRenderers);
 			if (this.editorRenderFilter.Count > 0)
 			{
-				rendererQuery = rendererQuery.Where(r => 
+				visibleRenderers.RemoveAll(r =>
 				{
 					for (int i = 0; i < this.editorRenderFilter.Count; i++)
 					{
@@ -621,9 +622,8 @@ namespace Duality.Components
 			// Collect drawcalls
 			if (this.drawDevice.IsPicking)
 			{
-				ICmpRenderer[] result = rendererQuery.ToArray();
-				this.pickingMap.AddRange(result);
-				foreach (ICmpRenderer r in result)
+				this.pickingMap.AddRange(visibleRenderers);
+				foreach (ICmpRenderer r in visibleRenderers)
 				{
 					r.Draw(this.drawDevice);
 					this.drawDevice.PickingIndex++;
@@ -633,8 +633,12 @@ namespace Duality.Components
 			{
 				Profile.TimeCollectDrawcalls.BeginMeasure();
 
-				foreach (ICmpRenderer r in rendererQuery)
-					r.Draw(this.drawDevice);
+				ICmpRenderer[] data = visibleRenderers.Data;
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i >= visibleRenderers.Count) break;
+					data[i].Draw(this.drawDevice);
+				}
 
 				Profile.TimeCollectDrawcalls.EndMeasure();
 			}

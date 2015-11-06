@@ -16,12 +16,17 @@ namespace Duality.Components
 		/// Queries all renderers that are currently visible to the specified device.
 		/// </summary>
 		/// <param name="device"></param>
+		/// <param name="targetList">The list that should be updated by this method.</param>
 		/// <returns></returns>
-		IEnumerable<ICmpRenderer> QueryVisibleRenderers(IDrawDevice device);
+		void QueryVisibleRenderers(IDrawDevice device, RawList<ICmpRenderer> targetList);
 		/// <summary>
-		/// Updates the strategy to account for changes in the <see cref="Duality.Resources.Scene"/>.
+		/// Updates the strategy to account for changes in the <see cref="Duality.Resources.Scene"/>
+		/// after each frame update.
 		/// </summary>
-		/// <param name="existingRenderers"></param>
-		void Update(IEnumerable<ICmpRenderer> existingRenderers);
+		void Update();
+
+		void AddRenderer(ICmpRenderer renderer);
+		void RemoveRenderer(ICmpRenderer renderer);
+		void CleanupRenderers();
 	}
 }
