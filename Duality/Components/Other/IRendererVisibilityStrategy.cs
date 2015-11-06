@@ -13,6 +13,13 @@ namespace Duality.Components
 	public interface IRendererVisibilityStrategy
 	{
 		/// <summary>
+		/// [GET] Specifies whether the output from <see cref="QueryVisibleRenderers"/> is sorted by Component type.
+		/// If it is, the system may use that information to provide more detailed profiling info that would otherwise
+		/// be too time-consuming to collect.
+		/// </summary>
+		bool IsRendererQuerySorted { get; }
+
+		/// <summary>
 		/// Queries all renderers that are currently visible to the specified device.
 		/// </summary>
 		/// <param name="device"></param>
@@ -25,8 +32,19 @@ namespace Duality.Components
 		/// </summary>
 		void Update();
 
+		/// <summary>
+		/// Registers a new renderer.
+		/// </summary>
+		/// <param name="renderer"></param>
 		void AddRenderer(ICmpRenderer renderer);
+		/// <summary>
+		/// Removes a previously registered renderer.
+		/// </summary>
+		/// <param name="renderer"></param>
 		void RemoveRenderer(ICmpRenderer renderer);
+		/// <summary>
+		/// Removes disposed and invalid renderers from the rendering queue.
+		/// </summary>
 		void CleanupRenderers();
 	}
 }
