@@ -43,7 +43,8 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET / SET] The number of used indices within the internal <see cref="Data"/> array. Setting this to a higher value
-		/// may cause the list to grow its internal array.
+		/// may cause the list to grow its internal array. Decreasing this value does not reset "removed" elements of the internal
+		/// array to their default value.
 		/// </summary>
 		public int Count
 		{
@@ -169,7 +170,7 @@ namespace Duality
 			this.Reserve(this.count + 1);
 			if (targetIndex < this.count)
 			{
-				this.Move(targetIndex, this.count - targetIndex, 1);
+				this.MoveInternal(targetIndex, this.count - targetIndex, 1, false);
 			}
 			this.data[targetIndex] = item;
 			this.count++;
@@ -205,7 +206,7 @@ namespace Duality
 			this.Reserve(this.count + count);
 			if (targetIndex < this.count)
 			{
-				this.Move(targetIndex, this.count - targetIndex, count);
+				this.MoveInternal(targetIndex, this.count - targetIndex, count, false);
 			}
 			Array.Copy(items, sourceIndex, this.data, targetIndex, count);
 			this.count += count;
@@ -220,7 +221,7 @@ namespace Duality
 			int index = this.IndexOf(item);
 			if (index >= 0)
 			{
-				this.RemoveAt(this.IndexOf(item));
+				this.RemoveAt(index);
 				return true;
 			}
 			else
@@ -249,8 +250,9 @@ namespace Duality
 			}
 			else
 			{
-				this.Move(index + count, this.count - (index + count), -count);
+				this.MoveInternal(index + count, this.count - (index + count), -count, false);
 				this.count -= count;
+				Array.Clear(this.data, this.count, count);
 			}
 		}
 		/// <summary>
@@ -291,6 +293,7 @@ namespace Duality
 			{
 				int removedCount = this.count - count;
 				this.count -= removedCount;
+				Array.Clear(this.data, this.count, removedCount);
 				return removedCount;
 			}
 
@@ -301,6 +304,7 @@ namespace Duality
 		/// </summary>
 		public void Clear()
 		{
+			Array.Clear(this.data, 0, this.count);
 			this.count = 0;
 		}
 
@@ -388,12 +392,35 @@ namespace Duality
 			Array.Resize(ref this.data, MathF.Max(this.data.Length * 2, capacity, BaseCapacity));
 		}
 		/// <summary>
-		/// Moves a range of elements by a certain value.
+		/// Moves a range of elements by a certain value and resets the indices that now remain empty.
 		/// </summary>
 		/// <param name="index"></param>
 		/// <param name="count"></param>
 		/// <param name="moveBy"></param>
 		public void Move(int index, int count, int moveBy)
+		{
+			this.MoveInternal(index, count, moveBy, true);
+		}
+		
+		/// <summary>
+		/// Copies the contents of this collection to the specified array.
+		/// </summary>
+		/// <param name="array"></param>
+		/// <param name="arrayIndex"></param>
+		public void CopyTo(T[] array, int arrayIndex)
+		{
+			Array.Copy(this.data, 0, array, arrayIndex, this.count);
+		}
+		public IEnumerator<T> GetEnumerator()
+		{
+			for (int i = 0; i < this.count; i++)
+			{
+				yield return this.data[i];
+			}
+		}
+
+
+		private void MoveInternal(int index, int count, int moveBy, bool resetToDefault)
 		{
 			if (count < 0)									throw new ArgumentException("Parameter 'count' may not be negative.", "count");
 			if (index < 0 || index >= this.data.Length)		throw new IndexOutOfRangeException("Parameter 'index' is out of range.");
@@ -415,6 +442,11 @@ namespace Duality
 						this.data[i] = this.data[i - moveBy];
 					}
 				}
+				if (resetToDefault)
+				{
+					int clearCount = Math.Min(moveBy, count);
+					Array.Clear(this.data, index, clearCount);
+				}
 			}
 			else
 			{
@@ -429,23 +461,11 @@ namespace Duality
 						this.data[i] = this.data[i - moveBy];
 					}
 				}
-			}
-		}
-		
-		/// <summary>
-		/// Copies the contents of this collection to the specified array.
-		/// </summary>
-		/// <param name="array"></param>
-		/// <param name="arrayIndex"></param>
-		public void CopyTo(T[] array, int arrayIndex)
-		{
-			Array.Copy(this.data, 0, array, arrayIndex, this.count);
-		}
-		public IEnumerator<T> GetEnumerator()
-		{
-			for (int i = 0; i < this.count; i++)
-			{
-				yield return this.data[i];
+				if (resetToDefault)
+				{
+					int clearCount = Math.Min(-moveBy, count);
+					Array.Clear(this.data, index + count - clearCount, clearCount);
+				}
 			}
 		}
 
