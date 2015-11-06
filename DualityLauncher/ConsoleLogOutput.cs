@@ -29,6 +29,8 @@ namespace Duality.Launcher
 				endGreyLength = this.GetEqualEndChars(this.lastLogLine, formattedLine);
 				if (beginGreyLength == formattedLine.Length)
 					endGreyLength = 0;
+				if (beginGreyLength + endGreyLength >= formattedLine.Length)
+					endGreyLength = 0;
 			}
 
 			// Dark beginning

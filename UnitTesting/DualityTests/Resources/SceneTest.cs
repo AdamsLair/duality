@@ -17,6 +17,15 @@ namespace Duality.Tests.Resources
 	[TestFixture]
 	public class SceneTest
 	{
+		[Test] public void SwitchToNonExistent()
+		{
+			// Switching to an explicit null Scene should work
+			Scene.SwitchTo(null);
+			Assert.IsTrue(Scene.Current.IsEmpty);
+
+			// Switching to a Scene that doesn't exist should throw an exception
+			Assert.Throws<ArgumentException>(() => Scene.SwitchTo(new ContentRef<Scene>(null, "I_Dont_Exist\\Invalid_Path")));
+		}
 		[Test] public void SwitchToRegular()
 		{
 			// Set up some objects
