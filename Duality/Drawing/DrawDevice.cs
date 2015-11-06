@@ -733,6 +733,8 @@ namespace Duality.Drawing
 
 		public static void RenderVoid(Rect viewportRect)
 		{
+			if (DualityApp.GraphicsBackend == null) return;
+
 			RenderOptions options = new RenderOptions
 			{
 				ClearFlags = ClearFlag.All,

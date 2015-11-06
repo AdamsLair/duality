@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Duality.Drawing;
+using Duality.Cloning;
 
 namespace Duality.Components
 {
@@ -13,18 +14,76 @@ namespace Duality.Components
 	public class DefaultRendererVisibilityStrategy : IRendererVisibilityStrategy
 	{
 		[DontSerialize]
-		private IEnumerable<ICmpRenderer> renderers;
+		[CloneField(CloneFieldFlags.DontSkip)]
+		private int totalRendererCount = 0;
+		[DontSerialize]
+		[CloneField(CloneFieldFlags.DontSkip)]
+		private Dictionary<Type,RawList<ICmpRenderer>> renderersByType = new Dictionary<Type,RawList<ICmpRenderer>>();
 
-		public IEnumerable<ICmpRenderer> QueryVisibleRenderers(IDrawDevice device)
+		public bool IsRendererQuerySorted
 		{
-			if (this.renderers == null)
-				return Enumerable.Empty<ICmpRenderer>();
-			else
-				return this.renderers.Where(r => (r as Component).Active && r.IsVisible(device));
+			get { return true; }
 		}
-		public void Update(IEnumerable<ICmpRenderer> existingRenderers)
+
+		public void QueryVisibleRenderers(IDrawDevice device, RawList<ICmpRenderer> targetList)
 		{
-			this.renderers = existingRenderers;
+			// Empty the cached list of visible renderers
+			targetList.Count = 0;
+			targetList.Reserve(this.totalRendererCount);
+
+			// Copy references to all renderers that are visible to the target device
+			int visibleCount = 0;
+			ICmpRenderer[] targetData = targetList.Data;
+			foreach (var pair in this.renderersByType)
+			{
+				ICmpRenderer[] data = pair.Value.Data;
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i >= pair.Value.Count) break;
+
+					if ((data[i] as Component).Active && data[i].IsVisible(device))
+					{
+						targetData[visibleCount] = data[i];
+						visibleCount++;
+					}
+				}
+			}
+			targetList.Count = visibleCount;
+		}
+		public void Update() { }
+
+		public void AddRenderer(ICmpRenderer renderer)
+		{
+			Type type = renderer.GetType();
+			RawList<ICmpRenderer> list;
+			if (!this.renderersByType.TryGetValue(type, out list))
+			{
+				list = new RawList<ICmpRenderer>();
+				this.renderersByType.Add(type, list);
+			}
+			list.Add(renderer);
+			this.totalRendererCount++;
+		}
+		public void RemoveRenderer(ICmpRenderer renderer)
+		{
+			Type type = renderer.GetType();
+			RawList<ICmpRenderer> list;
+			if (!this.renderersByType.TryGetValue(type, out list))
+			{
+				list = new RawList<ICmpRenderer>();
+				this.renderersByType.Add(type, list);
+			}
+			list.Remove(renderer);
+			this.totalRendererCount--;
+		}
+		public void CleanupRenderers()
+		{
+			foreach (var pair in this.renderersByType)
+			{
+				int oldCount = pair.Value.Count;
+				pair.Value.RemoveAll(i => i == null || (i as Component).Disposed);
+				this.totalRendererCount -= oldCount - pair.Value.Count;
+			}
 		}
 	}
 }

@@ -62,27 +62,27 @@ namespace Duality.Tests.Utility
 
 			intList.AddRange(testArray);
 			intList.Move(0, 3, 3);
-			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 0, 1, 2, 6, 7, 8, 9 }, intList);
+			CollectionAssert.AreEqual(new int[] { 0, 0, 0, 0, 1, 2, 6, 7, 8, 9 }, intList);
 			intList.Clear();
 
 			intList.AddRange(testArray);
 			intList.Move(0, 3, 5);
-			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 4, 0, 1, 2, 8, 9 }, intList);
+			CollectionAssert.AreEqual(new int[] { 0, 0, 0, 3, 4, 0, 1, 2, 8, 9 }, intList);
 			intList.Clear();
 
 			intList.AddRange(testArray);
 			intList.Move(7, 3, -1);
-			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 7, 8, 9, 9 }, intList);
+			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 4, 5, 7, 8, 9, 0 }, intList);
 			intList.Clear();
 
 			intList.AddRange(testArray);
 			intList.Move(7, 3, -3);
-			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 7, 8, 9, 7, 8, 9 }, intList);
+			CollectionAssert.AreEqual(new int[] { 0, 1, 2, 3, 7, 8, 9, 0, 0, 0 }, intList);
 			intList.Clear();
 
 			intList.AddRange(testArray);
 			intList.Move(7, 3, -5);
-			CollectionAssert.AreEqual(new int[] { 0, 1, 7, 8, 9, 5, 6, 7, 8, 9 }, intList);
+			CollectionAssert.AreEqual(new int[] { 0, 1, 7, 8, 9, 5, 6, 0, 0, 0 }, intList);
 			intList.Clear();
 		}
 		[Test] public void Resize()
@@ -106,9 +106,14 @@ namespace Duality.Tests.Utility
 			int[] testArray = Enumerable.Range(0, 10).ToArray();
 			RawList<int> intList = new RawList<int>();
 
+			// Sorting an empty array is a no-op, but entirely valid. No exceptions expected.
+			intList.Sort();
+
+			// Insert the reversed data
 			intList.AddRange(testArray.Reverse().ToArray());
 			CollectionAssert.AreEqual(testArray.Reverse(), intList);
 
+			// Sort it and check if its equal to the original data
 			intList.Sort();
 			CollectionAssert.AreEqual(testArray, intList);
 		}
@@ -133,6 +138,45 @@ namespace Duality.Tests.Utility
 				RawList<int> list = new RawList<int>(Enumerable.Range(0, 10));
 				list.RemoveAll(i => i % 2 == 0);
 				CollectionAssert.AreEqual(new int[] { 1, 3, 5, 7, 9 }, list);
+			}
+		}
+		[Test] public void RemoveResetsReferenceTypesToDefault()
+		{
+			RawList<string> list = new RawList<string>(Enumerable.Range(0, 10).Select(i => i.ToString()));
+
+			// Is the internal array empty if not assigned otherwise?
+			if (list.Capacity > list.Count)
+				Assert.AreSame(null, list.Data[list.Count]);
+
+			// Adjusting the count shouldn't affect the internal array, just as documented
+			list.Count = 0;
+			for (int i = 0; i < 10; i++)
+			{
+				Assert.AreNotSame(null, list.Data[i]);
+			}
+			list.Count = 10;
+
+			// Check various types of removal and make sure the internal array is reset properly
+			{
+				// Remove an element
+				list.Remove("1");
+				Assert.AreSame(null, list.Data[list.Count]);
+				list.RemoveAt(5);
+				Assert.AreSame(null, list.Data[list.Count]);
+
+				// Remove a range
+				list.RemoveRange(0, 5);
+				for (int i = list.Count; i < list.Data.Length; i++)
+				{
+					Assert.AreSame(null, list.Data[i]);
+				}
+
+				// Clear the list
+				list.Clear();
+				for (int i = list.Count; i < list.Data.Length; i++)
+				{
+					Assert.AreSame(null, list.Data[i]);
+				}
 			}
 		}
 	}

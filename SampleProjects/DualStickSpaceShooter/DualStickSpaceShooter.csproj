@@ -9,7 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <DualityPackageExcludeParentElement />
     <StartAction>Program</StartAction>
-    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartProgram>$(SolutionDir)DualityEditor\bin\Release\DualityEditor.exe</StartProgram>
     <StartWorkingDirectory>$(SolutionDir)SampleProjects\DualStickSpaceShooter\Content\</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup>

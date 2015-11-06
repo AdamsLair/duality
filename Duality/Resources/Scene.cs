@@ -28,15 +28,15 @@ namespace Duality.Resources
 		private const float PhysicsAccStart = Time.MsPFMult;
 
 
-		private	static	World				physicsWorld		= new World(Vector2.Zero);
-		private	static	float				physicsAcc			= 0.0f;
-		private	static	bool				physicsLowFps		= false;
-		private	static	ContentRef<Scene>	current				= new Scene();
-		private	static	bool				curAutoGen			= false;
-		private	static	bool				isSwitching			= false;
-		private	static	int					switchLock			= 0;
-		private	static	bool				switchToScheduled	= false;
-		private	static	ContentRef<Scene>	switchToTarget		= null;
+		private static World               physicsWorld      = new World(Vector2.Zero);
+		private static float               physicsAcc        = 0.0f;
+		private static bool                physicsLowFps     = false;
+		private static ContentRef<Scene>   current           = new Scene();
+		private static bool                curAutoGen        = false;
+		private static bool                isSwitching       = false;
+		private static int                 switchLock        = 0;
+		private static bool                switchToScheduled = false;
+		private static ContentRef<Scene>   switchToTarget    = null;
 
 
 		/// <summary>
@@ -274,18 +274,14 @@ namespace Duality.Resources
 			public TimeCounter Profiler;
 		}
 
-		private	Vector2						globalGravity		= Vector2.UnitY * 33.0f;
-		private IRendererVisibilityStrategy	visibilityStrategy	= new DefaultRendererVisibilityStrategy();
-		private	GameObject[]				serializeObj		= null;
+		private Vector2                     globalGravity      = Vector2.UnitY * 33.0f;
+		private IRendererVisibilityStrategy visibilityStrategy = new DefaultRendererVisibilityStrategy();
+		private GameObject[]                serializeObj       = null;
 
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
 		[CloneBehavior(typeof(GameObject), CloneBehavior.ChildObject)]
 		private	GameObjectManager objectManager = new GameObjectManager();
-
-		[DontSerialize]
-		[CloneField(CloneFieldFlags.DontSkip)]
-		private	List<Component> renderers = new List<Component>();
 
 		[DontSerialize]
 		[CloneField(CloneFieldFlags.DontSkip)]
@@ -298,7 +294,7 @@ namespace Duality.Resources
 		public IRendererVisibilityStrategy VisibilityStrategy
 		{
 			get { return this.visibilityStrategy; }
-			set { this.visibilityStrategy = value; }
+			set { this.visibilityStrategy = value ?? new DefaultRendererVisibilityStrategy(); }
 		}
 		/// <summary>
 		/// [GET / SET] Global gravity force that is applied to all objects that obey the laws of physics.
@@ -468,7 +464,7 @@ namespace Duality.Resources
 			DualityApp.EditorGuard(() =>
 			{
 				this.UpdateComponents<ICmpUpdatable>(cmp => cmp.OnUpdate());
-				this.UpdateVisibilityStrategy();
+				this.visibilityStrategy.Update();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
 
@@ -497,7 +493,7 @@ namespace Duality.Resources
 			DualityApp.EditorGuard(() =>
 			{
 				this.UpdateComponents<ICmpEditorUpdatable>(cmp => cmp.OnUpdate());
-				this.UpdateVisibilityStrategy();
+				this.visibilityStrategy.Update();
 			});
 			Profile.TimeUpdateScene.EndMeasure();
 
@@ -505,10 +501,9 @@ namespace Duality.Resources
 		}
 		private void UpdateComponents<T>(Action<T> updateAction) where T : class
 		{
+			float updateSceneValueBefore = Profile.TimeUpdateSceneComponents.LastValue;
+			Profile.TimeUpdateSceneComponents.BeginMeasure();
 			float componentUpdateTotalTime = 0.0f;
-			TimeCounter overheadProfiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\Overhead");
-			TimeCounter allComponentsProfiler = Profile.RequestCounter<TimeCounter>(Profile.TimeUpdateScene.FullName + @"\All Components");
-			allComponentsProfiler.BeginMeasure();
 
 			// Gather a list of updatable Components
 			RawList<Component> updatableComponents = new RawList<Component>(256);
@@ -582,14 +577,8 @@ namespace Duality.Resources
 				}
 			}
 
-			allComponentsProfiler.EndMeasure();
-			overheadProfiler.Set(allComponentsProfiler.LastValue - componentUpdateTotalTime);
-		}
-		private void UpdateVisibilityStrategy()
-		{
-			if (this.visibilityStrategy == null)
-				this.visibilityStrategy = new DefaultRendererVisibilityStrategy();
-			this.visibilityStrategy.Update(this.renderers.Cast<ICmpRenderer>());
+			Profile.TimeUpdateSceneComponents.EndMeasure();
+			Profile.TimeUpdateSceneOverhead.Add((Profile.TimeUpdateSceneComponents.LastValue - updateSceneValueBefore) - componentUpdateTotalTime);
 		}
 		/// <summary>
 		/// Cleanes up disposed Scene objects.
@@ -597,7 +586,7 @@ namespace Duality.Resources
 		new internal void RunCleanup()
 		{
 			this.objectManager.Flush();
-			this.renderers.RemoveAll(i => i == null || i.Disposed);
+			this.visibilityStrategy.CleanupRenderers();
 			foreach (var cmpList in this.componentsByType.Values)
 				cmpList.RemoveAll(i => i == null || i.Disposed);
 		}
@@ -874,7 +863,8 @@ namespace Duality.Resources
 			cmpList.Add(cmp);
 
 			// Specialized lists
-			if (cmp is ICmpRenderer)	this.renderers.Add(cmp);
+			ICmpRenderer renderer = cmp as ICmpRenderer;
+			if (renderer != null) this.visibilityStrategy.AddRenderer(renderer);
 		}
 		private void RemoveFromManagers(GameObject obj)
 		{
@@ -890,7 +880,8 @@ namespace Duality.Resources
 				cmpList.Remove(cmp);
 
 			// Specialized lists
-			if (cmp is ICmpRenderer)	this.renderers.Remove(cmp);
+			ICmpRenderer renderer = cmp as ICmpRenderer;
+			if (renderer != null) this.visibilityStrategy.RemoveRenderer(renderer);
 		}
 		private void RegisterManagerEvents()
 		{
@@ -974,6 +965,9 @@ namespace Duality.Resources
 		}
 		protected override void OnLoaded()
 		{
+			if (this.visibilityStrategy == null)
+				this.visibilityStrategy = new DefaultRendererVisibilityStrategy();
+
 			if (this.serializeObj != null)
 			{
 				this.UnregisterManagerEvents();
@@ -995,7 +989,7 @@ namespace Duality.Resources
 			foreach (GameObject obj in this.objectManager.AllObjects)
 				obj.OnLoaded();
 
-			this.UpdateVisibilityStrategy();
+			this.visibilityStrategy.Update();
 		}
 		protected override void OnDisposing(bool manually)
 		{

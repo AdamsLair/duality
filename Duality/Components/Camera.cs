@@ -604,26 +604,33 @@ namespace Duality.Components
 
 			// Query renderers
 			IRendererVisibilityStrategy visibilityStrategy = Scene.Current.VisibilityStrategy;
-			if (visibilityStrategy == null) return;
-			IEnumerable<ICmpRenderer> rendererQuery = visibilityStrategy.QueryVisibleRenderers(this.drawDevice);
-			if (this.editorRenderFilter.Count > 0)
+			RawList<ICmpRenderer> visibleRenderers;
 			{
-				rendererQuery = rendererQuery.Where(r => 
+				if (visibilityStrategy == null) return;
+				Profile.TimeQueryVisibleRenderers.BeginMeasure();
+
+				visibleRenderers = new RawList<ICmpRenderer>();
+				visibilityStrategy.QueryVisibleRenderers(this.drawDevice, visibleRenderers);
+				if (this.editorRenderFilter.Count > 0)
 				{
-					for (int i = 0; i < this.editorRenderFilter.Count; i++)
+					visibleRenderers.RemoveAll(r =>
 					{
-						if (!this.editorRenderFilter[i](r)) return false;
-					}
-					return true;
-				});
+						for (int i = 0; i < this.editorRenderFilter.Count; i++)
+						{
+							if (!this.editorRenderFilter[i](r)) return true;
+						}
+						return false;
+					});
+				}
+
+				Profile.TimeQueryVisibleRenderers.EndMeasure();
 			}
 
 			// Collect drawcalls
 			if (this.drawDevice.IsPicking)
 			{
-				ICmpRenderer[] result = rendererQuery.ToArray();
-				this.pickingMap.AddRange(result);
-				foreach (ICmpRenderer r in result)
+				this.pickingMap.AddRange(visibleRenderers);
+				foreach (ICmpRenderer r in visibleRenderers)
 				{
 					r.Draw(this.drawDevice);
 					this.drawDevice.PickingIndex++;
@@ -631,12 +638,51 @@ namespace Duality.Components
 			}
 			else
 			{
+				bool profilePerType = visibilityStrategy.IsRendererQuerySorted;
+				float collectDrawsValueBefore = Profile.TimeCollectDrawcalls.LastValue;
 				Profile.TimeCollectDrawcalls.BeginMeasure();
+				float componentCollectTotalTime = 0.0f;
 
-				foreach (ICmpRenderer r in rendererQuery)
-					r.Draw(this.drawDevice);
+				Type lastRendererType = null;
+				Type rendererType = null;
+				TimeCounter activeProfiler = null;
+				ICmpRenderer[] data = visibleRenderers.Data;
+				for (int i = 0; i < data.Length; i++)
+				{
+					if (i >= visibleRenderers.Count) break;
+
+					// Manage profilers per Component type
+					if (profilePerType)
+					{
+						rendererType = data[i].GetType();
+						if (rendererType != lastRendererType)
+						{
+							if (activeProfiler != null)
+							{
+								activeProfiler.EndMeasure();
+								componentCollectTotalTime += activeProfiler.LastValue;
+							}
+							activeProfiler = Profile.RequestCounter<TimeCounter>(Profile.TimeCollectDrawcalls.FullName + @"\" + rendererType.Name);
+							activeProfiler.BeginMeasure();
+							lastRendererType = rendererType;
+						}
+					}
+
+					// Collect Drawcalls from this Component
+					data[i].Draw(this.drawDevice);
+				}
+				
+				if (activeProfiler != null)
+				{
+					activeProfiler.EndMeasure();
+					componentCollectTotalTime += activeProfiler.LastValue;
+				}
 
 				Profile.TimeCollectDrawcalls.EndMeasure();
+				if (profilePerType)
+				{
+					Profile.TimeCollectDrawcallsOverhead.Add((Profile.TimeCollectDrawcalls.LastValue - collectDrawsValueBefore) - componentCollectTotalTime);
+				}
 			}
 		}
 		private void SetupPickingRT(Point2 size)
