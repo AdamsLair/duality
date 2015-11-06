@@ -501,9 +501,7 @@ namespace Duality.Resources
 		}
 		private void UpdateComponents<T>(Action<T> updateAction) where T : class
 		{
-			float updateSceneValueBefore = Profile.TimeUpdateSceneComponents.LastValue;
 			Profile.TimeUpdateSceneComponents.BeginMeasure();
-			float componentUpdateTotalTime = 0.0f;
 
 			// Gather a list of updatable Components
 			RawList<Component> updatableComponents = new RawList<Component>(256);
@@ -558,10 +556,7 @@ namespace Duality.Resources
 						updateMapBegin = i;
 
 						if (activeProfiler != null)
-						{
 							activeProfiler.EndMeasure();
-							componentUpdateTotalTime += activeProfiler.LastValue;
-						}
 						activeProfiler = updateData[updateMapIndex].Profiler;
 						activeProfiler.BeginMeasure();
 					}
@@ -571,14 +566,10 @@ namespace Duality.Resources
 				}
 				
 				if (activeProfiler != null)
-				{
 					activeProfiler.EndMeasure();
-					componentUpdateTotalTime += activeProfiler.LastValue;
-				}
 			}
 
 			Profile.TimeUpdateSceneComponents.EndMeasure();
-			Profile.TimeUpdateSceneOverhead.Add((Profile.TimeUpdateSceneComponents.LastValue - updateSceneValueBefore) - componentUpdateTotalTime);
 		}
 		/// <summary>
 		/// Cleanes up disposed Scene objects.
