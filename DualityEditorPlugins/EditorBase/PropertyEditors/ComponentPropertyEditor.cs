@@ -38,7 +38,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			if (specificEditor == null)
 			{
-				foreach (PropertyEditor editor in this.Children)
+				foreach (PropertyEditor editor in this.ChildEditors)
 				{
 					MemberInfo member = this.MapEditorToMember(editor);
 					editor.ValueModified = this.IsMemberInPrefabLinkChanges(member);

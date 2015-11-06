@@ -63,19 +63,19 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				if (this.ContentInitialized)
 				{
 					this.UpdateComponentEditors(values);
-					foreach (PropertyEditor e in this.Children)
+					foreach (PropertyEditor e in this.ChildEditors)
 						e.PerformGetValue();
 				}
-				this.Expanded = !this.ContentInitialized || this.Children.Any();
+				this.Expanded = !this.ContentInitialized || this.ChildEditors.Any();
 			}
 		}
 		protected override void OnSetValue()
 		{
 			base.OnSetValue();
 			if (this.ReadOnly) return;
-			if (!this.Children.Any()) return;
+			if (!this.ChildEditors.Any()) return;
 
-			foreach (PropertyEditor e in this.Children)
+			foreach (PropertyEditor e in this.ChildEditors)
 				e.PerformSetValue();
 		}
 
@@ -83,7 +83,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			this.BeginUpdate();
 
-			if (!this.Children.Any())
+			if (!this.ChildEditors.Any())
 			{
 				this.gameObjEditor.Getter = this.GetValue;
 				this.gameObjEditor.Setter = this.SetValue;

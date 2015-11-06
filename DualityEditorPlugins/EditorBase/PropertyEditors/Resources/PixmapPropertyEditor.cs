@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		public void UpdatePreview()
 		{
-			this.Children.OfType<PixmapPreviewPropertyEditor>().First().PerformGetValue();
+			this.ChildEditors.OfType<PixmapPreviewPropertyEditor>().First().PerformGetValue();
 		}
 	}
 }

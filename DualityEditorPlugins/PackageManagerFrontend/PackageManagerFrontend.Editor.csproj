@@ -35,9 +35,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.0.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\AdamsLair.WinForms.1.0.16.0\lib\net40-Client\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AdamsLair.WinForms.1.1.0.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AdamsLair.TreeViewAdv.1.7.4.0\lib\net20\Aga.Controls.dll</HintPath>
