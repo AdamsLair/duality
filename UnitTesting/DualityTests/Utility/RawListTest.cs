@@ -106,9 +106,14 @@ namespace Duality.Tests.Utility
 			int[] testArray = Enumerable.Range(0, 10).ToArray();
 			RawList<int> intList = new RawList<int>();
 
+			// Sorting an empty array is a no-op, but entirely valid. No exceptions expected.
+			intList.Sort();
+
+			// Insert the reversed data
 			intList.AddRange(testArray.Reverse().ToArray());
 			CollectionAssert.AreEqual(testArray.Reverse(), intList);
 
+			// Sort it and check if its equal to the original data
 			intList.Sort();
 			CollectionAssert.AreEqual(testArray, intList);
 		}
