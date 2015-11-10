@@ -43,7 +43,7 @@ namespace Duality.Resources
 			get { return ShaderType.Vertex; }
 		}
 
-		public VertexShader() : base(string.Empty) {}
+		public VertexShader() : base(Minimal.IsAvailable ? Minimal.Res.Source : string.Empty) {}
 		public VertexShader(string sourceCode) : base(sourceCode) {}
 	}
 }

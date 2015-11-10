@@ -52,7 +52,7 @@ namespace Duality.Resources
 			get { return ShaderType.Fragment; }
 		}
 		
-		public FragmentShader() : base(string.Empty) {}
+		public FragmentShader() : base(Minimal.IsAvailable ? Minimal.Res.Source : string.Empty) {}
 		public FragmentShader(string sourceCode) : base(sourceCode) {}
 	}
 }
