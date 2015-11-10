@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
 	<authors>Fedja Adam</authors>
 	<owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,10 +13,11 @@
 	<summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
 	<tags>Duality Editor</tags>
-	<releaseNotes>Game Plugin Template Bugfixes
-#FIX: The game plugin template no longer references System and System.Xml by default.</releaseNotes>
+	<releaseNotes>Editor Key Input Bugfixes
+#FIX: Fixed a bug where BackSpace was not properly forwarded from an editor CamView to the engine input.
+#FIX: Fixed a bug where backspaces from editor CamViews were forwarded as keyboard input characters.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.0.5" />
+      <dependency id="AdamsLair.Duality" version="2.1.2" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.4" />
       <dependency id="AdamsLair.WinForms" version="1.1.0" />
