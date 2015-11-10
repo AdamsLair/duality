@@ -833,8 +833,8 @@ namespace Duality.Editor.Plugins.CamView
 				this.oldColorDialogColor = Color.FromArgb(color.A, color.R, color.G, color.B);
 				this.selectedColorDialogColor = this.oldColorDialogColor;
 			}
-			node.GetElementValue("Perspective", this.loadTempPerspective);
-			node.GetElementValue("ActiveState", this.loadTempState);
+			this.loadTempPerspective = node.GetElementValue("Perspective", this.loadTempPerspective);
+			this.loadTempState = node.GetElementValue("ActiveState", this.loadTempState);
 
 			XElement snapToGridSizeElement = node.Element("SnapToGridSize");
 			if (snapToGridSizeElement != null)
