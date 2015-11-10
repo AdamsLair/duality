@@ -68,6 +68,7 @@ namespace Duality.Editor
 			keysNames[Keys.OemBackslash] = Key.NonUSBackSlash.ToString();
 			keysNames[Keys.OemPipe] = Key.Tilde.ToString();
 			keysNames[Keys.PageDown] = Key.PageDown.ToString();
+			keysNames[Keys.Back] = Key.BackSpace.ToString();
 
 			// Generate mapping
 			foreach (var pair in keysNames)

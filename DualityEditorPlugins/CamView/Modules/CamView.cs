@@ -1144,6 +1144,7 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (this.activeState.EngineUserInput)
 			{
+				if (e.KeyChar == '\b') return; // Filter out backspace control character, so we don't get more chars than the regular launcher backend.
 				this.inputCharInputBuffer.Append(e.KeyChar);
 			}
 		}
