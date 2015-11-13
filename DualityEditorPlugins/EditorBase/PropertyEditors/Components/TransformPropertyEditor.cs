@@ -315,7 +315,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(System.Drawing.Point localPos, ref bool captured)
 		{
-			PropertyEditor pickedEditor = this.PickEditorAt(localPos.X, localPos.Y, true);
+			PropertyEditor pickedEditor = this.PickEditorAt(this.Location.X + localPos.X, this.Location.Y + localPos.Y, true);
 			if (this.showRelative)
 			{
 				if (pickedEditor == this.editorPos)
