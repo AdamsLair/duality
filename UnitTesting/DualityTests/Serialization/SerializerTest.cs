@@ -144,6 +144,37 @@ namespace Duality.Tests.Serialization
 			this.TestWriteRead(new GameObject[0],	this.PrimaryFormat, ArrayEquals);
 			this.TestWriteRead(new Component[0],	this.PrimaryFormat, ArrayEquals);
 		}
+		[Test] public void SerializeStructArrays()
+		{
+			Random rnd = new Random();
+			TestData[] testData = new TestData[10];
+			for (int i = 0; i < testData.Length; i++)
+			{
+				testData[i] = new TestData(rnd);
+			}
+
+			// Can we properly serialize an array of structs?
+			this.TestWriteRead(testData, this.PrimaryFormat, ArrayEquals);
+		}
+		[Test] public void SerializeEnumArrays()
+		{
+			Random rnd = new Random();
+			SomeEnum[] testData = new SomeEnum[10];
+			for (int i = 0; i < testData.Length; i++)
+			{
+				switch (rnd.Next(4))
+				{
+					default:
+					case 0: testData[i] = SomeEnum.Zero;   break;
+					case 1: testData[i] = SomeEnum.First;  break;
+					case 2: testData[i] = SomeEnum.Second; break;
+					case 3: testData[i] = SomeEnum.Third;  break;
+				}
+			}
+
+			// Can we properly serialize an array of enums?
+			this.TestWriteRead(testData, this.PrimaryFormat, ArrayEquals);
+		}
 		[Test] public void SerializeMemberInfo()
 		{
 			Type type = typeof(MemberInfoTestObject);
