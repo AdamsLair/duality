@@ -47,7 +47,7 @@ namespace Duality.Serialization
 		private const string HeaderId     = "BinaryFormatterHeader";
 		private const int    HeaderLength = 1 + 21 + 2; // Length Prefix, HeaderId, Version
 		private const ushort MinVersion   = 3;
-		private const ushort Version      = 4;
+		private const ushort Version      = 5;
 
 
 		private BinaryWriter writer      = null;
@@ -271,9 +271,11 @@ namespace Duality.Serialization
 			else
 			{
 				TypeInfo elementTypeInfo = elementType.GetTypeInfo();
+				bool valueTypeArray = elementTypeInfo.IsValueType;
 
-				// If it's a value type, we can take the fast path
-				if (elementTypeInfo.IsValueType)
+				// If it's a value type, we can take the fast path. Write down that we did.
+				this.writer.Write(valueTypeArray);
+				if (valueTypeArray)
 				{
 					object defaultValue = elementTypeInfo.GetDefaultOf();
 					ObjectHeader sharedHeader = null; // In a value type array all elements are the exact same type
@@ -599,8 +601,14 @@ namespace Duality.Serialization
 			{
 				SerializeType elementSerializeType = GetSerializeType(elementType);
 
-				// If it's a value type and the format version supports it, we can take the fast path
-				if (this.dataVersion >= 4 && elementSerializeType.Type.IsValueType)
+				// If it's serialized as a value type array and the format version supports it, we can take the fast path
+				bool valueTypeArray = false;
+				if (this.dataVersion >= 5)
+				{
+					valueTypeArray = this.reader.ReadBoolean();
+				}
+
+				if (valueTypeArray)
 				{
 					object defaultValue = elementSerializeType.Type.GetDefaultOf();
 
