@@ -28,6 +28,8 @@ namespace Duality.Editor
 		/// </summary>
 		public static void RenderGlyphs(this DualityFont font)
 		{
+			if (font.EmbeddedTrueTypeFont == null) throw new InvalidOperationException("Can't render glyphs of a Duality Font without embedded vector Font information.");
+
 			using (PrivateFontCollection fontManager = new PrivateFontCollection())
 			{
 				// Load custom font family using System.Drawing
