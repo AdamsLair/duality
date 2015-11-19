@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Duality.Drawing;
 using Duality.Cloning;
 using Duality.Resources;
 using Duality.Editor;
@@ -18,15 +19,18 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTileset)]
 	public class Tileset : Resource
 	{
-		private static readonly TilesetVisualInput[] EmptyVisualInputLayers = new TilesetVisualInput[0];
+		private static readonly TilesetVisualInput DefaultVisualInput = new TilesetVisualInput();
 
-		private TilesetVisualInput[] visualInputLayers = EmptyVisualInputLayers;
-		[DontSerialize] private bool compiled          = false;
+		private List<TilesetVisualInput> visualInputLayers = new List<TilesetVisualInput>();
+
+		[DontSerialize] private bool compiled = false;
+
 
 		/// <summary>
 		/// The different layers of <see cref="TilesetVisualInput"/>, which compose the look of all the tiles
 		/// that are defined in this <see cref="Tileset"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public IList<TilesetVisualInput> VisualInputLayers
 		{
 			get { return this.visualInputLayers; }
@@ -40,12 +44,86 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.compiled; }
 		}
 
+
 		/// <summary>
 		/// Compiles the <see cref="Tileset"/> using the specified source data, in order to
 		/// generate optimized target data for rendering and collision detection.
 		/// </summary>
 		public void Compile()
 		{
+			// ToDo: Support for a distinct target tile spacing (to prevent filter artifacts)
+			// ToDo: Prepare information on AutoTile expansion
+			// ToDo: Mapping between conceptual tiles and actual tiles (with AutoTiles in mind)
+			// ToDo: Collision info per tile
+			// ToDo: Height info per tile
+			// ToDo: Flat / Upright info per tile
+			// ToDo: Additional data / tags per tile
+
+			// Generate output pixel data
+			for (int visualLayerIndex = 0; visualLayerIndex < this.visualInputLayers.Count; visualLayerIndex++)
+			{
+				TilesetVisualInput input = this.visualInputLayers[visualLayerIndex] ?? DefaultVisualInput;
+				PixelData sourceData = (input.SourceData.Res ?? Pixmap.Checkerboard.Res).MainLayer;
+
+				// What's the space requirement for each tile?
+				Point2 sourceTileBounds = new Point2(
+					input.SourceTileSize.X + input.SourceTileSpacing * 2, 
+					input.SourceTileSize.Y + input.SourceTileSpacing * 2);
+				Point2 targetTileBounds = sourceTileBounds; // ToDo: Account for different (smaller or larger) target spacing
+
+				// How many tiles will we have?
+				int sourceHorizontalCount = sourceData.Width / sourceTileBounds.X;
+				int sourceVerticalCount = sourceData.Height / sourceTileBounds.Y;
+				int sourceTileCount = sourceHorizontalCount * sourceVerticalCount;
+				int targetTileCount = sourceTileCount; // ToDo: Account for expanded AutoTiles
+
+				// What's the optimal texture size to include them all?
+				int targetTextureWidth;
+				int targetTextureHeight;
+				{
+					int minTilesPerLine = MathF.Max(1, (int)MathF.Sqrt(targetTileCount));
+					targetTextureWidth = MathF.NextPowerOfTwo(targetTileBounds.X * minTilesPerLine);
+
+					int actualTilesPerLine = targetTextureWidth / targetTileBounds.X;
+					int requiredLineCount = 1 + (targetTileCount / actualTilesPerLine);
+					targetTextureHeight = MathF.NextPowerOfTwo(targetTileBounds.Y * requiredLineCount);
+				}
+
+				// Create a buffer for writing target pixel data
+				PixelData targetData = new PixelData(targetTextureWidth, targetTextureHeight);
+
+				// Iterate over tiles and move each tile from source to target
+				Point2 targetTilePos = new Point2(0, 0);
+				for (int tileIndex = 0; tileIndex < sourceTileCount; tileIndex++)
+				{
+					// Determine where on the source buffer the tile is located
+					Point2 sourceTilePos = new Point2(
+						sourceTileBounds.X * (tileIndex % sourceHorizontalCount),
+						sourceTileBounds.Y * (tileIndex / sourceHorizontalCount));
+
+					// ToDo: Expand AutoTiles
+
+					// Draw the source tile onto the target buffer, including its spacing / border
+					sourceData.DrawOnto(targetData, 
+						BlendMode.Solid, 
+						targetTilePos.X, targetTilePos.Y, 
+						sourceTileBounds.X, sourceTileBounds.Y, 
+						sourceTilePos.X, sourceTilePos.Y);
+
+					// ToDo: If target spacing is bigger than source spacing, fill the empty edges and corners with matching colors
+
+					// Advance the target tile position
+					targetTilePos.X += targetTileBounds.X;
+					if (targetTilePos.X + targetTileBounds.X > targetData.Width)
+					{
+						targetTilePos.X = 0;
+						targetTilePos.Y += targetTileBounds.Y;
+					}
+				}
+			}
+
+			// ToDo: Upload data to internal / runtime textures
+
 			this.compiled = true;
 		}
 
