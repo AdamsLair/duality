@@ -90,7 +90,7 @@ namespace Duality.Resources
 		{
 			get
 			{
-				if (this.fields == null)
+				if (!this.compiled)
 					this.Compile();
 				return this.fields;
 			}
@@ -141,15 +141,14 @@ namespace Duality.Resources
 		/// Compiles the ShaderProgram. This is done automatically when loading the ShaderProgram
 		/// or when binding it.
 		/// </summary>
-		/// <param name="force">If true, the program is recompiled even if it already was compiled before.</param>
-		public void Compile(bool force = false)
+		public void Compile()
 		{
-			if (!force && this.compiled) return;
-			if (this.native == null) this.native = DualityApp.GraphicsBackend.CreateShaderProgram();
+			if (this.native == null)
+				this.native = DualityApp.GraphicsBackend.CreateShaderProgram();
 
 			// Assure both shaders are compiled
-			if (this.vert.IsAvailable) this.vert.Res.Compile();
-			if (this.frag.IsAvailable) this.frag.Res.Compile();
+			this.CompileIfRequired(this.vert.Res);
+			this.CompileIfRequired(this.frag.Res);
 
 			// Load the program with both shaders attached
 			INativeShaderPart nativeVert = this.vert.Res != null ? this.vert.Res.Native : null;
@@ -169,6 +168,13 @@ namespace Duality.Resources
 			this.compiled = true;
 		}
 
+		private void CompileIfRequired(AbstractShader part)
+		{
+			if (part == null) return;  // Shader not available? No need to compile.
+			if (part.Compiled) return; // Shader already compiled? No need to compile.
+			part.Compile();
+		}
+
 		protected override void OnLoaded()
 		{
 			this.Compile();
@@ -183,12 +189,11 @@ namespace Duality.Resources
 				this.native = null;
 			}
 		}
-
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
 			base.OnCopyDataTo(target, operation);
 			ShaderProgram targetShader = target as ShaderProgram;
-			targetShader.Compile();
+			if (this.compiled) targetShader.Compile();
 		}
 	}
 }

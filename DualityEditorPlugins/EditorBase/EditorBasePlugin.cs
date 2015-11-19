@@ -151,7 +151,7 @@ namespace Duality.Editor.Plugins.Base
 					if (!sp.IsAvailable) continue;
 					if (sp.Res.Fragment == fragRef || sp.Res.Vertex == vertRef)
 					{
-						if (sp.Res.Compiled) sp.Res.Compile(true);
+						if (sp.Res.Compiled) sp.Res.Compile();
 
 						if (changedObj == null) changedObj = new List<object>();
 						changedObj.Add(sp.Res);
