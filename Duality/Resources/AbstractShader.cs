@@ -69,10 +69,11 @@ namespace Duality.Resources
 		/// </summary>
 		public void Compile()
 		{
-			if (this.compiled) return;
-			if (String.IsNullOrEmpty(this.source)) return;
+			if (string.IsNullOrEmpty(this.source)) throw new InvalidOperationException("Can't compile a shader without any source code specified.");
 
-			if (this.native == null) this.native = DualityApp.GraphicsBackend.CreateShaderPart();
+			if (this.native == null)
+				this.native = DualityApp.GraphicsBackend.CreateShaderPart();
+
 			try
 			{
 				this.native.LoadSource(this.source, this.Type);
