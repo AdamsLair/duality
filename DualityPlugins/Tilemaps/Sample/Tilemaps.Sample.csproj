@@ -51,6 +51,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="TestComponent.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -64,7 +65,7 @@
       <Name>Duality</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tilemaps.Core.csproj">
-      <Project>{afe883f3-72b4-4c7c-a1d1-44edc09c8f6e}</Project>
+      <Project>{2f7d1f9d-0803-4e13-85a6-0af56ac05431}</Project>
       <Name>Tilemaps.Core</Name>
     </ProjectReference>
   </ItemGroup>

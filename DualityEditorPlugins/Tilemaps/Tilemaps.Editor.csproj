@@ -51,7 +51,7 @@
       <Name>DualityEditor</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DualityPlugins\Tilemaps\Tilemaps.Core.csproj">
-      <Project>{AFE883F3-72B4-4C7C-A1D1-44EDC09C8F6E}</Project>
+      <Project>{2f7d1f9d-0803-4e13-85a6-0af56ac05431}</Project>
       <Name>Tilemaps.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\DualityPrimitives\DualityPrimitives.csproj">
