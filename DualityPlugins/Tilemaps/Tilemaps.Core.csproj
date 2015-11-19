@@ -47,6 +47,7 @@
     <Compile Include="TilemapCollider.cs" />
     <Compile Include="TilemapRenderer.cs" />
     <Compile Include="Tilemap.cs" />
+    <Compile Include="TilesetVisualInput.cs" />
     <Compile Include="Tileset.cs" />
   </ItemGroup>
   <ItemGroup>
