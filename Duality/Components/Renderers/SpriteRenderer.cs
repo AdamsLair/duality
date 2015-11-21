@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Duality.Resources;
 using Duality.Editor;
@@ -49,6 +49,8 @@ namespace Duality.Components.Renderers
 		protected	UVMode					rectMode	= UVMode.Stretch;
 		protected	bool					pixelGrid	= false;
 		protected	int						offset		= 0;
+		protected bool flipHorizontal = false;
+		protected bool flipVertical = false;
 		[DontSerialize] protected	VertexC1P3T2[]	vertices	= null;
 
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -124,6 +126,22 @@ namespace Duality.Components.Renderers
 		{
 			get { return this.offset * 0.01f; }
 		}
+		/// <summary>
+		/// [GET / SET] Specifies whether or not the sprite will be flipped horizontally when rendered.
+		/// </summary>
+		public bool FlipHorizontal
+		{
+			get { return this.flipHorizontal; }
+			set { this.flipHorizontal = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specifies whether or not the sprite will be flipped vertically when rendered.
+		/// </summary>
+		public bool FlipVertical
+		{
+			get { return this.flipVertical; }
+			set { this.flipVertical = value; }
+		}
 
 
 		public SpriteRenderer() {}
@@ -170,6 +188,7 @@ namespace Duality.Components.Renderers
 			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, scaleTemp, out xDot, out yDot);
 
 			Rect rectTemp = this.rect.Transformed(this.gameobj.Transform.Scale, this.gameobj.Transform.Scale);
+
 			Vector2 edge1 = rectTemp.TopLeft;
 			Vector2 edge2 = rectTemp.BottomLeft;
 			Vector2 edge3 = rectTemp.BottomRight;
@@ -179,38 +198,43 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
+            
+			float left = flipHorizontal ? uvRect.RightX : uvRect.X;
+			float right = flipHorizontal ? uvRect.X : uvRect.RightX;
+			float top = flipVertical ? uvRect.BottomY : uvRect.Y;
+			float bottom = flipVertical ? uvRect.Y : uvRect.BottomY;
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
 			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].TexCoord.X = uvRect.X;
-			vertices[0].TexCoord.Y = uvRect.Y;
+			vertices[0].TexCoord.X = left;
+			vertices[0].TexCoord.Y = top;
 			vertices[0].Color = mainClr;
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.BottomY;
+			vertices[1].TexCoord.X = left;
+			vertices[1].TexCoord.Y = bottom;
 			vertices[1].Color = mainClr;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.RightX;
-			vertices[2].TexCoord.Y = uvRect.BottomY;
+			vertices[2].TexCoord.X = right;
+			vertices[2].TexCoord.Y = bottom;
 			vertices[2].Color = mainClr;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.RightX;
-			vertices[3].TexCoord.Y = uvRect.Y;
-			vertices[3].Color = mainClr;
-			
-			if (this.pixelGrid)
+			vertices[3].TexCoord.X = right;
+			vertices[3].TexCoord.Y = top;
+            vertices[3].Color = mainClr;
+
+            if (this.pixelGrid)
 			{
 				vertices[0].Pos.X = MathF.Round(vertices[0].Pos.X);
 				vertices[1].Pos.X = MathF.Round(vertices[1].Pos.X);
