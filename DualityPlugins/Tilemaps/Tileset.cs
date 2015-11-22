@@ -52,6 +52,9 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		public void Compile()
 		{
+			// Clear previous data
+			this.DiscardCompiledData();
+
 			// ToDo: Support for a distinct target tile spacing (to prevent filter artifacts)
 			// ToDo: Prepare information on AutoTile expansion
 			// ToDo: Mapping between conceptual tiles and actual tiles (with AutoTiles in mind)
@@ -61,9 +64,9 @@ namespace Duality.Plugins.Tilemaps
 			// ToDo: Additional data / tags per tile
 
 			// Generate output pixel data
-			for (int visualInputIndex = 0; visualInputIndex < this.renderConfig.Count; visualInputIndex++)
+			for (int renderInputIndex = 0; renderInputIndex < this.renderConfig.Count; renderInputIndex++)
 			{
-				TilesetRenderInput input = this.renderConfig[visualInputIndex] ?? DefaultRenderInput;
+				TilesetRenderInput input = this.renderConfig[renderInputIndex] ?? DefaultRenderInput;
 				PixelData sourceData = (input.SourceData.Res ?? Pixmap.Checkerboard.Res).MainLayer;
 
 				// What's the space requirement for each tile?
@@ -94,6 +97,7 @@ namespace Duality.Plugins.Tilemaps
 				PixelData targetData = new PixelData(targetTextureWidth, targetTextureHeight);
 
 				// Iterate over tiles and move each tile from source to target
+				List<Rect> tileAtlas = new List<Rect>();
 				Point2 targetTilePos = new Point2(0, 0);
 				for (int tileIndex = 0; tileIndex < sourceTileCount; tileIndex++)
 				{
@@ -113,6 +117,13 @@ namespace Duality.Plugins.Tilemaps
 
 					// ToDo: If target spacing is bigger than source spacing, fill the empty edges and corners with matching colors
 
+					// Add an entry to the generated atlas
+					tileAtlas.Add(new Rect(
+						targetTilePos.X + input.SourceTileSpacing, 
+						targetTilePos.Y + input.SourceTileSpacing, 
+						targetTileBounds.X - input.SourceTileSpacing * 2, 
+						targetTileBounds.Y - input.SourceTileSpacing * 2));
+
 					// Advance the target tile position
 					targetTilePos.X += targetTileBounds.X;
 					if (targetTilePos.X + targetTileBounds.X > targetData.Width)
@@ -122,12 +133,32 @@ namespace Duality.Plugins.Tilemaps
 					}
 				}
 
-				// Create 
+				// Create the texture to be used for this rendering input
+				using (Pixmap targetPixmap = new Pixmap(targetData))
+				{
+					targetPixmap.Atlas = tileAtlas;
+					Texture targetTexture = new Texture(
+						targetPixmap, TextureSizeMode.Enlarge, 
+						input.TargetMagFilter, input.TargetMinFilter, 
+						TextureWrapMode.Clamp, TextureWrapMode.Clamp, 
+						input.TargetFormat);
+
+					this.renderData.Add(targetTexture);
+				}
 			}
 
 			// ToDo: Upload data to internal / runtime textures
 
 			this.compiled = true;
+		}
+		private void DiscardCompiledData()
+		{
+			this.compiled = false;
+			foreach (Texture tex in this.renderData)
+			{
+				tex.Dispose();
+			}
+			this.renderData.Clear();
 		}
 
 		protected override void OnLoaded()
@@ -138,7 +169,7 @@ namespace Duality.Plugins.Tilemaps
 		protected override void OnDisposing(bool manually)
 		{
 			base.OnDisposing(manually);
-			this.compiled = false;
+			this.DiscardCompiledData();
 		}
 		protected override void OnCopyDataTo(object target, ICloneOperation operation)
 		{
