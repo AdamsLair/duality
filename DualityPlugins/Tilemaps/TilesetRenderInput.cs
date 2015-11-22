@@ -9,13 +9,14 @@ using Duality.Editor;
 namespace Duality.Plugins.Tilemaps
 {
 	/// <summary>
-	/// Defines a single visual input layer in a <see cref="Tileset"/> definition. Each tile's visual representation is composed of all visual layers that
-	/// are defined in a <see cref="Tileset"/> - essentially, they are mapped to the different texture layers used when rendering each tile.
+	/// Describes a single rendering input in a <see cref="Tileset"/> definition. Each tile's visual representation is 
+	/// composed of all rendering inputs that are defined in a <see cref="Tileset"/> - essentially, they are mapped to 
+	/// the different texture inputs used when rendering each tile.
 	/// </summary>
-	public class TilesetVisualInput
+	public class TilesetRenderInput
 	{
-		private const string DefaultName = "Input Layer";
-		private const string DefaultId   = "inputLayerId";
+		private const string DefaultName = "Rendering Input";
+		private const string DefaultId   = "renderInputId";
 
 		private string             name              = DefaultName;
 		private string             id                = DefaultId;
@@ -27,7 +28,7 @@ namespace Duality.Plugins.Tilemaps
 		private TexturePixelFormat targetFormat      = TexturePixelFormat.Rgba;
 
 		/// <summary>
-		/// [GET / SET] The human-friendly name of this visual layer.
+		/// [GET / SET] The human-friendly name of this rendering input.
 		/// </summary>
 		public string Name
 		{
@@ -35,7 +36,7 @@ namespace Duality.Plugins.Tilemaps
 			set { this.name = value ?? DefaultName; }
 		}
 		/// <summary>
-		/// [GET / SET] The id of this visual layer, which can later be used for mapping it to <see cref="Material"/> texture slots, etc.
+		/// [GET / SET] The id of this rendering input, which can later be used for mapping it to <see cref="Material"/> texture slots, etc.
 		/// </summary>
 		public string Id
 		{
@@ -43,7 +44,7 @@ namespace Duality.Plugins.Tilemaps
 			set { this.id = value ?? DefaultId; }
 		}
 		/// <summary>
-		/// [GET / SET] The source pixel data from which this visual layer will be created. This may end up to be equal to the actually used
+		/// [GET / SET] The source pixel data from which this rendering input will be created. This may end up to be equal to the actually used
 		/// pixel data, but it doesn't necessarily have to be, as the <see cref="Tileset"/> is allowed to make internal modifications and optimizations
 		/// while preparing the data for rendering.
 		/// </summary>
@@ -53,8 +54,8 @@ namespace Duality.Plugins.Tilemaps
 			set { this.sourceData = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The width and height (in pixels) of each tile in this specific layer of the source data. This is usually equal in all
-		/// visual layers of a <see cref="Tileset"/>. Whether or not this tile size is used in the generated target data is up to the
+		/// [GET / SET] The width and height (in pixels) of each tile in the specified source data. This is usually equal in all
+		/// rendering inputs of a <see cref="Tileset"/>. Whether or not this tile size is used in the generated target data is up to the
 		/// <see cref="Tileset"/> implementation.
 		/// </summary>
 		public Point2 SourceTileSize

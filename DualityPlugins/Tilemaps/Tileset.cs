@@ -19,21 +19,22 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTileset)]
 	public class Tileset : Resource
 	{
-		private static readonly TilesetVisualInput DefaultVisualInput = new TilesetVisualInput();
+		private static readonly TilesetRenderInput DefaultRenderInput = new TilesetRenderInput();
 
-		private List<TilesetVisualInput> visualInputLayers = new List<TilesetVisualInput>();
+		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
+		private List<Texture>            renderData   = new List<Texture>();
 
 		[DontSerialize] private bool compiled = false;
 
 
 		/// <summary>
-		/// The different layers of <see cref="TilesetVisualInput"/>, which compose the look of all the tiles
+		/// The different layers of <see cref="TilesetRenderInput"/>, which compose the look of all the tiles
 		/// that are defined in this <see cref="Tileset"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public IList<TilesetVisualInput> VisualInputLayers
+		public IList<TilesetRenderInput> RenderConfig
 		{
-			get { return this.visualInputLayers; }
+			get { return this.renderConfig; }
 		}
 		/// <summary>
 		/// [GET] Whether this <see cref="Tileset"/> has been compiled yet or not.
@@ -60,9 +61,9 @@ namespace Duality.Plugins.Tilemaps
 			// ToDo: Additional data / tags per tile
 
 			// Generate output pixel data
-			for (int visualLayerIndex = 0; visualLayerIndex < this.visualInputLayers.Count; visualLayerIndex++)
+			for (int visualInputIndex = 0; visualInputIndex < this.renderConfig.Count; visualInputIndex++)
 			{
-				TilesetVisualInput input = this.visualInputLayers[visualLayerIndex] ?? DefaultVisualInput;
+				TilesetRenderInput input = this.renderConfig[visualInputIndex] ?? DefaultRenderInput;
 				PixelData sourceData = (input.SourceData.Res ?? Pixmap.Checkerboard.Res).MainLayer;
 
 				// What's the space requirement for each tile?
@@ -120,6 +121,8 @@ namespace Duality.Plugins.Tilemaps
 						targetTilePos.Y += targetTileBounds.Y;
 					}
 				}
+
+				// Create 
 			}
 
 			// ToDo: Upload data to internal / runtime textures

@@ -29,7 +29,7 @@ namespace Duality.Plugins.Tilemaps.Sample
 				Pixmap sourceData = new Pixmap(sourceRaw);
 
 				Tileset tileset = new Tileset();
-				tileset.VisualInputLayers.Add(new TilesetVisualInput
+				tileset.RenderConfig.Add(new TilesetRenderInput
 				{
 					SourceData = sourceData,
 					SourceTileSpacing = 1,
