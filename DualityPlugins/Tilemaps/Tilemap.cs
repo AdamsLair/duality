@@ -15,5 +15,6 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTilemap)]
 	public class Tilemap : Component
 	{
+		private Grid<Tile> tiles = new Grid<Tile>();
 	}
 }
