@@ -23,6 +23,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// [GET] An interface providing read access to the tile data in this <see cref="Tilemap"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public IReadOnlyGrid<Tile> Tiles
 		{
 			get { return this.tiles; }
