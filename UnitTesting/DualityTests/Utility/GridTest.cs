@@ -84,6 +84,11 @@ namespace Duality.Tests.Utility
 			CollectionAssert.AreEqual(new[] { 
 				0, 1, 
 				2, 3 }, grid);
+
+			// Resizing with negative width or height should throw an exception
+			Assert.Throws<ArgumentException>(() => grid.Resize(-1, 1));
+			Assert.Throws<ArgumentException>(() => grid.Resize(1, -1));
+			Assert.Throws<ArgumentException>(() => grid.Resize(-1, -1));
 		}
 		[Test] public void AssumeRect()
 		{
