@@ -15,11 +15,20 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTilemap)]
 	public class Tilemap : Component
 	{
-		private Grid<Tile> tiles = new Grid<Tile>();
+		private ContentRef<Tileset> tileset = null;
+		private Grid<Tile>          tiles   = new Grid<Tile>();
 
 		[DontSerialize] private bool isUpdating = false;
 
 
+		/// <summary>
+		/// [GET / SET] The <see cref="Tileset"/> that defined the properties of each type of <see cref="Tile"/>.
+		/// </summary>
+		public ContentRef<Tileset> Tileset
+		{
+			get { return this.tileset; }
+			set { this.tileset = value; }
+		}
 		/// <summary>
 		/// [GET] An interface providing read access to the tile data in this <see cref="Tilemap"/>.
 		/// </summary>
@@ -27,6 +36,13 @@ namespace Duality.Plugins.Tilemaps
 		public IReadOnlyGrid<Tile> Tiles
 		{
 			get { return this.tiles; }
+		}
+		/// <summary>
+		/// [GET] The number of tiles on each axis.
+		/// </summary>
+		public Point2 TileCount
+		{
+			get { return new Point2(this.tiles.Width, this.tiles.Height); }
 		}
 
 
@@ -39,7 +55,7 @@ namespace Duality.Plugins.Tilemaps
 		public void SetTile(int x, int y, Tile tile)
 		{
 			this.tiles[x, y] = tile;
-			this.NotifyTileChanges(x, y, 1, 1);
+			this.OnTilesChanged(x, y, 1, 1);
 		}
 		/// <summary>
 		/// Resizes the <see cref="Tilemap"/>.
@@ -52,7 +68,7 @@ namespace Duality.Plugins.Tilemaps
 			if (this.tiles.Width == width && this.tiles.Height == height) return;
 
 			this.tiles.Resize(width, height, origin);
-			this.NotifyTileChanges(0, 0, this.tiles.Width, this.tiles.Height);
+			this.OnTilesChanged();
 		}
 		/// <summary>
 		/// Clears the <see cref="Tilemap"/> without modifying its size.
@@ -60,7 +76,7 @@ namespace Duality.Plugins.Tilemaps
 		public void Clear()
 		{
 			this.tiles.Clear();
-			this.NotifyTileChanges(0, 0, this.tiles.Width, this.tiles.Height);
+			this.OnTilesChanged();
 		}
 
 		/// <summary>
@@ -91,7 +107,7 @@ namespace Duality.Plugins.Tilemaps
 		public void EndUpdateTiles(int x, int y, int width, int height)
 		{
 			if (!this.isUpdating) throw new InvalidOperationException("Can't end a Tilemap update when there was none being performed.");
-			this.NotifyTileChanges(x, y, width, height);
+			this.OnTilesChanged(x, y, width, height);
 			this.isUpdating = false;
 		}
 		/// <summary>
@@ -105,10 +121,14 @@ namespace Duality.Plugins.Tilemaps
 			this.EndUpdateTiles(0, 0, this.tiles.Width, this.tiles.Height);
 		}
 
-		private void NotifyTileChanges(int x, int y, int width, int height)
+		private void OnTilesChanged(int x, int y, int width, int height)
 		{
 			// ToDo: Provide an ICmp interface for listening to tilemap changes within the same object.
 			// ToDo: Provide a public event for anyone interested. Unfortunately, this is required for external TilemapColliders pointing to a Tilemap.
+		}
+		private void OnTilesChanged()
+		{
+			this.OnTilesChanged(0, 0, this.tiles.Width, this.tiles.Height);
 		}
 	}
 }

@@ -19,8 +19,10 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTileset)]
 	public class Tileset : Resource
 	{
+		public  static readonly Vector2            DefaultTileSize    = new Vector2(32, 32);
 		private static readonly TilesetRenderInput DefaultRenderInput = new TilesetRenderInput();
 
+		private Vector2                  tileSize     = DefaultTileSize;
 		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
 		private List<Texture>            renderData   = new List<Texture>();
 
@@ -35,6 +37,15 @@ namespace Duality.Plugins.Tilemaps
 		public IList<TilesetRenderInput> RenderConfig
 		{
 			get { return this.renderConfig; }
+		}
+		/// <summary>
+		/// [GET / SET] The desired size of a tile in world space. How exactly this value is accounted for depends
+		/// on the Components that evaluate it for rendering, collision detection, etc.
+		/// </summary>
+		public Vector2 TileSize
+		{
+			get { return this.tileSize; }
+			set { this.tileSize = value; }
 		}
 		/// <summary>
 		/// [GET] Whether this <see cref="Tileset"/> has been compiled yet or not.

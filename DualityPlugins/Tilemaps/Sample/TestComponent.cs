@@ -41,6 +41,7 @@ namespace Duality.Plugins.Tilemaps.Sample
 				// Create test tilemap object
 				GameObject tilemapObj = new GameObject("Tilemap");
 				Tilemap tilemap = tilemapObj.AddComponent<Tilemap>();
+				tilemap.Tileset = tileset;
 				{
 					Grid<Tile> tileData = tilemap.BeginUpdateTiles();
 					tileData.Resize(10, 10);
