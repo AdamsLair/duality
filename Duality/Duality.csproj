@@ -195,6 +195,7 @@
     <Compile Include="Utility\Extensions\ExtMethodsPropertyInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsTypeInfo.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
+    <Compile Include="Utility\IReadOnlyGrid.cs" />
     <Compile Include="Utility\Grid.cs" />
     <Compile Include="Utility\Math\Range.cs" />
     <Compile Include="Utility\ObjectCreator.cs" />
