@@ -44,10 +44,10 @@ namespace Duality.Plugins.Tilemaps.Sample
 				tilemap.Tileset = tileset;
 				{
 					Grid<Tile> tileData = tilemap.BeginUpdateTiles();
-					tileData.Resize(10, 10);
+					tileData.Resize(100, 100);
 					for (int i = 0; i < tileData.Capacity; i++)
 					{
-						tileData.RawData[i].Index = i;
+						tileData.RawData[i].Index = i % 100;
 					}
 					tilemap.EndUpdateTiles();
 				}

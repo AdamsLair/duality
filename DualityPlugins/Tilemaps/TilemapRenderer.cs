@@ -133,9 +133,6 @@ namespace Duality.Plugins.Tilemaps
 
 				// Determine the edge length of a square that is big enough to enclose the world space rect of the Camera view
 				float cameraRectEdgeLen = MathF.Max(device.TargetSize.X, device.TargetSize.Y);
-				// DEBUG:
-				cameraRectEdgeLen *= 0.35f;
-
 				float localCameraRectEdgeLen = cameraRectEdgeLen * MathF.Sqrt(2) / cameraScaleAtObj;
 				int maxCameraTileCount = 2 + (int)MathF.Ceiling(localCameraRectEdgeLen / (MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale));
 
