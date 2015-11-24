@@ -47,12 +47,13 @@ namespace Duality.Plugins.Tilemaps
 		{
 			get
 			{
+				Transform transform = this.GameObj.Transform;
 				Tilemap tilemap = this.ActiveTilemap;
 				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
 				Point2 tileCount = tilemap != null ? tilemap.TileCount : new Point2(1, 1);
 				Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 				Rect tilemapRect = Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
-				return tilemapRect.BoundingRadius;
+				return tilemapRect.BoundingRadius * transform.Scale;
 			}
 		}
 		private Tilemap ActiveTilemap
@@ -75,62 +76,95 @@ namespace Duality.Plugins.Tilemaps
 
 		public override void Draw(IDrawDevice device)
 		{
+			// Determine basic working data
 			Tilemap tilemap = this.ActiveTilemap;
 			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
 			Point2 tileCount = tilemap != null ? tilemap.TileCount : new Point2(1, 1);
 			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 
-			Vector3 posTemp = this.GameObj.Transform.Pos;
-			float scaleTemp = 1.0f;
-			device.PreprocessCoords(ref posTemp, ref scaleTemp);
+			// Early-out, if insufficient
+			if (tilemap == null) return;
 
-			Vector2 xDot, yDot;
-			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, scaleTemp, out xDot, out yDot);
+			// Account for Camera-relative coordinates and parallax effect / Z depth
+			Vector3 objPos = this.GameObj.Transform.Pos;
+			float objScale = this.GameObj.Transform.Scale;
+			device.PreprocessCoords(ref objPos, ref objScale);
 
-			Rect tilemapRect = Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
-			tilemapRect = tilemapRect.Transformed(this.GameObj.Transform.Scale, this.GameObj.Transform.Scale);
-			Vector2 tilemapTopLeft = tilemapRect.TopLeft;
-			Vector2 tilemapBottomLeft = tilemapRect.BottomLeft;
-			Vector2 tilemapBottomRight = tilemapRect.BottomRight;
-			Vector2 tilemapTopRight = tilemapRect.TopRight;
+			// Determine transformed X and Y axis in world space
+			Vector2 xAxis = Vector2.UnitX;
+			Vector2 yAxis = Vector2.UnitY;
+			MathF.TransformCoord(ref xAxis.X, ref xAxis.Y, this.GameObj.Transform.Angle, objScale);
+			MathF.TransformCoord(ref yAxis.X, ref yAxis.Y, this.GameObj.Transform.Angle, objScale);
 
-			MathF.TransformDotVec(ref tilemapTopLeft, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref tilemapBottomLeft, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref tilemapBottomRight, ref xDot, ref yDot);
-			MathF.TransformDotVec(ref tilemapTopRight, ref xDot, ref yDot);
+			// Determine the total size and origin of the rendered Tilemap
+			Vector2 renderTotalSize = tileCount * tileSize;
+			Vector2 renderOrigin = Vector2.Zero;
+			this.origin.ApplyTo(ref renderOrigin, ref renderTotalSize);
 
+			// Transform rendering origin into world space
+			renderOrigin = renderOrigin.X * xAxis + renderOrigin.Y * yAxis;
+			renderTotalSize *= objScale;
+
+			// Determine Tile visibility
+			int visibleTiles = tileCount.X * tileCount.Y;
+			Point2 visibleTileCount = tileCount;
+
+			// Reserve the required space for vertex data in our locally cached buffer
 			if (this.vertices == null) this.vertices = new RawList<VertexC1P3T2>();
-			this.vertices.Count = 4;
+			this.vertices.Count = visibleTiles * 4;
 			VertexC1P3T2[] vertexData = this.vertices.Data;
 
-			vertexData[0].Pos.X = posTemp.X + tilemapTopLeft.X;
-			vertexData[0].Pos.Y = posTemp.Y + tilemapTopLeft.Y;
-			vertexData[0].Pos.Z = posTemp.Z;
-			vertexData[0].TexCoord.X = 0.0f;
-			vertexData[0].TexCoord.Y = 0.0f;
-			vertexData[0].Color = ColorRgba.Red;
+			// Configure vertices
+			Vector3 renderStartPos = objPos + new Vector3(renderOrigin);
+			Vector3 renderPos = renderStartPos;
+			Vector2 tileXStep = xAxis * tileSize.X;
+			Vector2 tileYStep = yAxis * tileSize.Y;
+			Point2 tileGridStartPos = Point2.Zero;
+			Point2 tileGridPos = tileGridStartPos;
+			for (int tileIndex = 0; tileIndex < visibleTiles; tileIndex++)
+			{
+				int vertexBaseIndex = tileIndex * 4;
 
-			vertexData[1].Pos.X = posTemp.X + tilemapBottomLeft.X;
-			vertexData[1].Pos.Y = posTemp.Y + tilemapBottomLeft.Y;
-			vertexData[1].Pos.Z = posTemp.Z;
-			vertexData[1].TexCoord.X = 0.0f;
-			vertexData[1].TexCoord.Y = 0.0f;
-			vertexData[1].Color = ColorRgba.Green;
+				vertexData[vertexBaseIndex + 0].Pos.X = renderPos.X;
+				vertexData[vertexBaseIndex + 0].Pos.Y = renderPos.Y;
+				vertexData[vertexBaseIndex + 0].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 0].TexCoord.X = 0.0f;
+				vertexData[vertexBaseIndex + 0].TexCoord.Y = 0.0f;
+				vertexData[vertexBaseIndex + 0].Color = ColorRgba.Red;
 
-			vertexData[2].Pos.X = posTemp.X + tilemapBottomRight.X;
-			vertexData[2].Pos.Y = posTemp.Y + tilemapBottomRight.Y;
-			vertexData[2].Pos.Z = posTemp.Z;
-			vertexData[2].TexCoord.X = 0.0f;
-			vertexData[2].TexCoord.Y = 0.0f;
-			vertexData[2].Color = ColorRgba.Blue;
+				vertexData[vertexBaseIndex + 1].Pos.X = renderPos.X + tileYStep.X;
+				vertexData[vertexBaseIndex + 1].Pos.Y = renderPos.Y + tileYStep.Y;
+				vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 1].TexCoord.X = 0.0f;
+				vertexData[vertexBaseIndex + 1].TexCoord.Y = 0.0f;
+				vertexData[vertexBaseIndex + 1].Color = ColorRgba.Green;
+
+				vertexData[vertexBaseIndex + 2].Pos.X = renderPos.X + tileXStep.X + tileYStep.X;
+				vertexData[vertexBaseIndex + 2].Pos.Y = renderPos.Y + tileXStep.Y + tileYStep.Y;
+				vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 2].TexCoord.X = 0.0f;
+				vertexData[vertexBaseIndex + 2].TexCoord.Y = 0.0f;
+				vertexData[vertexBaseIndex + 2].Color = ColorRgba.Blue;
 				
-			vertexData[3].Pos.X = posTemp.X + tilemapTopRight.X;
-			vertexData[3].Pos.Y = posTemp.Y + tilemapTopRight.Y;
-			vertexData[3].Pos.Z = posTemp.Z;
-			vertexData[3].TexCoord.X = 0.0f;
-			vertexData[3].TexCoord.Y = 0.0f;
-			vertexData[3].Color = ColorRgba.Black;
+				vertexData[vertexBaseIndex + 3].Pos.X = renderPos.X + tileXStep.X;
+				vertexData[vertexBaseIndex + 3].Pos.Y = renderPos.Y + tileXStep.Y;
+				vertexData[vertexBaseIndex + 3].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 3].TexCoord.X = 0.0f;
+				vertexData[vertexBaseIndex + 3].TexCoord.Y = 0.0f;
+				vertexData[vertexBaseIndex + 3].Color = ColorRgba.Black;
 
+				tileGridPos.X++;
+				renderPos.Xy += tileXStep;
+				if (tileGridPos.X >= visibleTileCount.X)
+				{
+					tileGridPos.X = tileGridStartPos.X;
+					tileGridPos.Y++;
+					renderPos = renderStartPos;
+					renderPos.Xy += tileYStep * tileGridPos.Y;
+				}
+			}
+
+			// Submit all the vertices as one draw batch
 			device.AddVertices(Material.SolidWhite, VertexMode.Quads, vertexData, this.vertices.Count);
 		}
 	}
