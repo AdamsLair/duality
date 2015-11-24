@@ -85,12 +85,12 @@ namespace Duality.Plugins.Tilemaps
 			// Early-out, if insufficient
 			if (tilemap == null) return;
 
-			// Account for Camera-relative coordinates and parallax effect / Z depth
+			// Account for Camera-relative coordinates (view space) and parallax effect / Z depth
 			Vector3 objPos = this.GameObj.Transform.Pos;
 			float objScale = this.GameObj.Transform.Scale;
 			device.PreprocessCoords(ref objPos, ref objScale);
 
-			// Determine transformed X and Y axis in world space
+			// Determine transformed X and Y axis in view space
 			Vector2 xAxis = Vector2.UnitX;
 			Vector2 yAxis = Vector2.UnitY;
 			MathF.TransformCoord(ref xAxis.X, ref xAxis.Y, this.GameObj.Transform.Angle, objScale);
@@ -108,6 +108,8 @@ namespace Duality.Plugins.Tilemaps
 			// Determine Tile visibility
 			int visibleTiles = tileCount.X * tileCount.Y;
 			Point2 visibleTileCount = tileCount;
+			Point2 tileGridStartPos = Point2.Zero;
+			Vector3 renderStartPos = objPos + new Vector3(renderOrigin);
 
 			// Reserve the required space for vertex data in our locally cached buffer
 			if (this.vertices == null) this.vertices = new RawList<VertexC1P3T2>();
@@ -115,11 +117,9 @@ namespace Duality.Plugins.Tilemaps
 			VertexC1P3T2[] vertexData = this.vertices.Data;
 
 			// Configure vertices
-			Vector3 renderStartPos = objPos + new Vector3(renderOrigin);
 			Vector3 renderPos = renderStartPos;
 			Vector2 tileXStep = xAxis * tileSize.X;
 			Vector2 tileYStep = yAxis * tileSize.Y;
-			Point2 tileGridStartPos = Point2.Zero;
 			Point2 tileGridPos = tileGridStartPos;
 			for (int tileIndex = 0; tileIndex < visibleTiles; tileIndex++)
 			{
