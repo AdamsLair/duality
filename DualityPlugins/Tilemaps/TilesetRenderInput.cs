@@ -23,6 +23,7 @@ namespace Duality.Plugins.Tilemaps
 		private ContentRef<Pixmap> sourceData        = null;
 		private Point2             sourceTileSize    = new Point2(32, 32);
 		private int                sourceTileSpacing = 0;
+		private int                targetTileSpacing = 1;
 		private TextureMagFilter   targetMagFilter   = TextureMagFilter.Linear;
 		private TextureMinFilter   targetMinFilter   = TextureMinFilter.LinearMipmapLinear;
 		private TexturePixelFormat targetFormat      = TexturePixelFormat.Rgba;
@@ -65,14 +66,23 @@ namespace Duality.Plugins.Tilemaps
 		}
 		/// <summary>
 		/// [GET / SET] The spacing (in pixels) around each tile in the source data. A spacing of one means that there is a 1-pixel-wide space on
-		/// each side of every tile, meaning that the actual space between two tiles will be two pixels. The spacing is also applied on edges of the
-		/// provided pixel data, meaning that the spacing will also generate an offset for top-left and bottom-right tiles. 
-		/// Whether or not this tile spacing is used in the generated target data is up to the <see cref="Tileset"/> implementation.
+		/// each side of every tile, meaning that the actual space between two tiles will be two pixels.
 		/// </summary>
 		public int SourceTileSpacing
 		{
 			get { return this.sourceTileSpacing; }
 			set { this.sourceTileSpacing = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The spacing (in pixels) around each tile in the target data. A spacing of one means that there is a 1-pixel-wide space on
+		/// each side of every tile, meaning that the actual space between two tiles will be two pixels. The spacing is also applied on edges of the
+		/// provided pixel data, meaning that the spacing will also generate an offset for top-left and bottom-right tiles. 
+		/// Whether or not this tile spacing is used in the generated target data is up to the <see cref="Tileset"/> implementation.
+		/// </summary>
+		public int TargetTileSpacing
+		{
+			get { return this.targetTileSpacing; }
+			set { this.targetTileSpacing = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The target data's magnification (zooming in) filtering algorithm.

@@ -112,7 +112,9 @@ namespace Duality.Plugins.Tilemaps
 				Point2 sourceTileBounds = new Point2(
 					input.SourceTileSize.X + input.SourceTileSpacing * 2, 
 					input.SourceTileSize.Y + input.SourceTileSpacing * 2);
-				Point2 targetTileBounds = sourceTileBounds; // ToDo: Account for different (smaller or larger) target spacing
+				Point2 targetTileBounds = new Point2(
+					input.SourceTileSize.X + input.TargetTileSpacing * 2, 
+					input.SourceTileSize.Y + input.TargetTileSpacing * 2);
 
 				// How many tiles will we have?
 				int sourceHorizontalCount = sourceData.Width / sourceTileBounds.X;
@@ -148,20 +150,30 @@ namespace Duality.Plugins.Tilemaps
 					// ToDo: Expand AutoTiles
 
 					// Draw the source tile onto the target buffer, including its spacing / border
+					Point2 targetContentPos = new Point2(
+						targetTilePos.X + input.TargetTileSpacing, 
+						targetTilePos.Y + input.TargetTileSpacing);
 					sourceData.DrawOnto(targetData, 
 						BlendMode.Solid, 
-						targetTilePos.X, targetTilePos.Y, 
-						sourceTileBounds.X, sourceTileBounds.Y, 
-						sourceTilePos.X, sourceTilePos.Y);
+						targetContentPos.X, 
+						targetContentPos.Y, 
+						input.SourceTileSize.X, 
+						input.SourceTileSize.Y, 
+						sourceTilePos.X + input.SourceTileSpacing, 
+						sourceTilePos.Y + input.SourceTileSpacing);
 
-					// ToDo: If target spacing is bigger than source spacing, fill the empty edges and corners with matching colors
+					// Fill up the target spacing area with similar pixels
+					if (input.TargetTileSpacing > 0)
+					{
+						FillTileSpacing(targetData, input.TargetTileSpacing, targetContentPos, input.SourceTileSize);
+					}
 
 					// Add an entry to the generated atlas
 					tileAtlas.Add(new Rect(
-						targetTilePos.X + input.SourceTileSpacing, 
-						targetTilePos.Y + input.SourceTileSpacing, 
-						targetTileBounds.X - input.SourceTileSpacing * 2, 
-						targetTileBounds.Y - input.SourceTileSpacing * 2));
+						targetTilePos.X + input.TargetTileSpacing, 
+						targetTilePos.Y + input.TargetTileSpacing, 
+						targetTileBounds.X - input.TargetTileSpacing * 2, 
+						targetTileBounds.Y - input.TargetTileSpacing * 2));
 
 					// Advance the target tile position
 					targetTilePos.X += targetTileBounds.X;
@@ -208,6 +220,102 @@ namespace Duality.Plugins.Tilemaps
 				tex.Dispose();
 			}
 			this.renderData.Clear();
+		}
+
+		private static void FillTileSpacing(PixelData targetData, int targetTileSpacing, Point2 targetContentPos, Point2 targetTileSize)
+		{
+			ColorRgba[] rawData = targetData.Data;
+			int width = targetData.Width;
+			int baseIndex;
+			int offsetIndex;
+
+			// Top
+			for (int offset = 1; offset <= targetTileSpacing; offset++)
+			{
+				baseIndex = targetContentPos.Y * width + targetContentPos.X;
+				offsetIndex = (targetContentPos.Y - offset) * width + targetContentPos.X;
+				for (int i = 0; i < targetTileSize.X; i++)
+				{
+					rawData[offsetIndex + i] = rawData[baseIndex + i];
+				}
+			}
+
+			// Bottom
+			for (int offset = 1; offset <= targetTileSpacing; offset++)
+			{
+				baseIndex = (targetContentPos.Y + targetTileSize.Y - 1) * width + targetContentPos.X;
+				offsetIndex = (targetContentPos.Y + targetTileSize.Y - 1 + offset) * width + targetContentPos.X;
+				for (int i = 0; i < targetTileSize.X; i++)
+				{
+					rawData[offsetIndex + i] = rawData[baseIndex + i];
+				}
+			}
+
+			// Left
+			for (int offset = 1; offset <= targetTileSpacing; offset++)
+			{
+				baseIndex = targetContentPos.Y * width + targetContentPos.X;
+				offsetIndex = targetContentPos.Y * width + targetContentPos.X - offset;
+				for (int i = 0; i < targetTileSize.X; i++)
+				{
+					rawData[offsetIndex + i * width] = rawData[baseIndex + i * width];
+				}
+			}
+
+			// Right
+			for (int offset = 1; offset <= targetTileSpacing; offset++)
+			{
+				baseIndex = targetContentPos.Y * width + targetContentPos.X + targetTileSize.X - 1;
+				offsetIndex = targetContentPos.Y * width + targetContentPos.X + targetTileSize.X - 1 + offset;
+				for (int i = 0; i < targetTileSize.X; i++)
+				{
+					rawData[offsetIndex + i * width] = rawData[baseIndex + i * width];
+				}
+			}
+
+			// Top Left Corner
+			baseIndex = targetContentPos.Y * width + targetContentPos.X;
+			for (int offsetY = 1; offsetY <= targetTileSpacing; offsetY++)
+			{
+				for (int offsetX = 1; offsetX <= targetTileSpacing; offsetX++)
+				{
+					offsetIndex = baseIndex - offsetX - offsetY * width;
+					rawData[offsetIndex] = rawData[baseIndex];
+				}
+			}
+
+			// Top Right Corner
+			baseIndex = targetContentPos.Y * width + targetContentPos.X + targetTileSize.X - 1;
+			for (int offsetY = 1; offsetY <= targetTileSpacing; offsetY++)
+			{
+				for (int offsetX = 1; offsetX <= targetTileSpacing; offsetX++)
+				{
+					offsetIndex = baseIndex + offsetX - offsetY * width;
+					rawData[offsetIndex] = rawData[baseIndex];
+				}
+			}
+
+			// Bottom Left Corner
+			baseIndex = (targetContentPos.Y + targetTileSize.Y - 1) * width + targetContentPos.X;
+			for (int offsetY = 1; offsetY <= targetTileSpacing; offsetY++)
+			{
+				for (int offsetX = 1; offsetX <= targetTileSpacing; offsetX++)
+				{
+					offsetIndex = baseIndex - offsetX + offsetY * width;
+					rawData[offsetIndex] = rawData[baseIndex];
+				}
+			}
+
+			// Bottom Right Corner
+			baseIndex = (targetContentPos.Y + targetTileSize.Y - 1) * width + targetContentPos.X + targetTileSize.X - 1;
+			for (int offsetY = 1; offsetY <= targetTileSpacing; offsetY++)
+			{
+				for (int offsetX = 1; offsetX <= targetTileSpacing; offsetX++)
+				{
+					offsetIndex = baseIndex + offsetX + offsetY * width;
+					rawData[offsetIndex] = rawData[baseIndex];
+				}
+			}
 		}
 
 		protected override void OnLoaded()

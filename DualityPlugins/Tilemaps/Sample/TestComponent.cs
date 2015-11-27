@@ -37,7 +37,8 @@ namespace Duality.Plugins.Tilemaps.Sample
 					Name = "Main Texture",
 					SourceData = sourceData,
 					SourceTileSpacing = 1,
-					SourceTileSize = new Point2(32, 32)
+					SourceTileSize = new Point2(32, 32),
+					TargetTileSpacing = 4
 				});
 				tileset.Compile();
 				tileset.Save("Data\\TestTiles" + Resource.GetFileExtByType<Tileset>());
