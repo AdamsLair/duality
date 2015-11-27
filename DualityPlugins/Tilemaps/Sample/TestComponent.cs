@@ -36,9 +36,6 @@ namespace Duality.Plugins.Tilemaps.Sample
 					Id = "mainTex",
 					Name = "Main Texture",
 					SourceData = sourceData,
-					SourceTileSpacing = 1,
-					SourceTileSize = new Point2(32, 32),
-					TargetTileSpacing = 4
 				});
 				tileset.Compile();
 				tileset.Save("Data\\TestTiles" + Resource.GetFileExtByType<Tileset>());
@@ -54,7 +51,7 @@ namespace Duality.Plugins.Tilemaps.Sample
 						tileData.Resize(100, 100);
 						for (int i = 0; i < tileData.Capacity; i++)
 						{
-							tileData.RawData[i].Index = i % 100;
+							tileData.RawData[i].Index = i % 379;
 						}
 						tilemap.EndUpdateTiles();
 					}

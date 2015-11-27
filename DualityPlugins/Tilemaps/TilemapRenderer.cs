@@ -92,8 +92,8 @@ namespace Duality.Plugins.Tilemaps
 			device.PreprocessCoords(ref objPos, ref cameraScaleAtObj);
 			objScale *= cameraScaleAtObj;
 
-			// Early-out, if too small to be visible
-			if ((tileSize * objScale).Length <= 0.00000001f) return;
+			// Early-out, if so small that it might break the math behind rendering a single tile.
+			if (objScale <= 0.000000001f) return;
 
 			// Determine transformed X and Y axis in view space
 			Vector2 xAxis = Vector2.UnitX;
@@ -219,6 +219,9 @@ namespace Duality.Plugins.Tilemaps
 				(tileset != null ? tileset.RenderMaterial : null) ?? Material.Checkerboard,
 				VertexMode.Quads, 
 				vertexData, this.vertices.Count);
+
+			Profile.AddToStat(@"Duality\Stats\Render\Tilemaps\NumTiles", renderedTileCount);
+			Profile.AddToStat(@"Duality\Stats\Render\Tilemaps\NumVertices", this.vertices.Count);
 		}
 	}
 }
