@@ -132,17 +132,22 @@ namespace Duality.Plugins.Tilemaps
 				}
 
 				// Determine the edge length of a square that is big enough to enclose the world space rect of the Camera view
-				float cameraRectEdgeLen = MathF.Max(device.TargetSize.X, device.TargetSize.Y);
-				float localCameraRectEdgeLen = cameraRectEdgeLen * MathF.Sqrt(2) / cameraScaleAtObj;
-				int maxCameraTileCount = 2 + (int)MathF.Ceiling(localCameraRectEdgeLen / (MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale));
+				float visualAngle = this.GameObj.Transform.Angle - device.RefAngle;
+				Vector2 visualBounds = new Vector2(
+					device.TargetSize.Y * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.X * MathF.Abs(MathF.Cos(visualAngle)),
+					device.TargetSize.X * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.Y * MathF.Abs(MathF.Cos(visualAngle)));
+				Vector2 localVisualBounds = visualBounds / cameraScaleAtObj;
+				Point2 targetVisibleTileCount = new Point2(
+					2 + (int)MathF.Ceiling(localVisualBounds.X / MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale), 
+					2 + (int)MathF.Ceiling(localVisualBounds.Y / MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale));
 
 				// Determine the tile indices (xy) that are visible within that rect
 				tileGridStartPos = new Point2(
-					viewCenterTile.X - maxCameraTileCount / 2,
-					viewCenterTile.Y - maxCameraTileCount / 2);
+					viewCenterTile.X - targetVisibleTileCount.X / 2,
+					viewCenterTile.Y - targetVisibleTileCount.Y / 2);
 				Point2 tileGridEndPos = new Point2(
-					tileGridStartPos.X + maxCameraTileCount,
-					tileGridStartPos.Y + maxCameraTileCount);
+					tileGridStartPos.X + targetVisibleTileCount.X,
+					tileGridStartPos.Y + targetVisibleTileCount.Y);
 				tileGridStartPos.X = MathF.Max(tileGridStartPos.X, 0);
 				tileGridStartPos.Y = MathF.Max(tileGridStartPos.Y, 0);
 				tileGridEndPos.X = MathF.Min(tileGridEndPos.X, tileCount.X);
