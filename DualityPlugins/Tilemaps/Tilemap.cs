@@ -15,8 +15,8 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTilemap)]
 	public class Tilemap : Component
 	{
-		private ContentRef<Tileset> tileset = null;
-		private Grid<Tile>          tiles   = new Grid<Tile>();
+		private ContentRef<Tileset> tileset  = null;
+		private TilemapData         tileData = new TilemapData();
 
 		[DontSerialize] private bool isUpdating = false;
 
@@ -35,14 +35,14 @@ namespace Duality.Plugins.Tilemaps
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IReadOnlyGrid<Tile> Tiles
 		{
-			get { return this.tiles; }
+			get { return this.tileData.Tiles; }
 		}
 		/// <summary>
 		/// [GET] The number of tiles on each axis.
 		/// </summary>
 		public Point2 TileCount
 		{
-			get { return new Point2(this.tiles.Width, this.tiles.Height); }
+			get { return this.tileData.TileCount; }
 		}
 
 
@@ -54,7 +54,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="tile"></param>
 		public void SetTile(int x, int y, Tile tile)
 		{
-			this.tiles[x, y] = tile;
+			this.tileData.Tiles[x, y] = tile;
 			this.OnTilesChanged(x, y, 1, 1);
 		}
 		/// <summary>
@@ -65,9 +65,9 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="origin"></param>
 		public void Resize(int width, int height, Alignment origin = Alignment.TopLeft)
 		{
-			if (this.tiles.Width == width && this.tiles.Height == height) return;
+			if (this.tileData.Tiles.Width == width && this.tileData.Tiles.Height == height) return;
 
-			this.tiles.Resize(width, height, origin);
+			this.tileData.Tiles.Resize(width, height, origin);
 			this.OnTilesChanged();
 		}
 		/// <summary>
@@ -75,7 +75,7 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		public void Clear()
 		{
-			this.tiles.Clear();
+			this.tileData.Tiles.Clear();
 			this.OnTilesChanged();
 		}
 
@@ -92,7 +92,7 @@ namespace Duality.Plugins.Tilemaps
 		{
 			if (this.isUpdating) throw new InvalidOperationException("Can't begin a Tilemap update when there is already one being performed.");
 			this.isUpdating = true;
-			return this.tiles;
+			return this.tileData.Tiles;
 		}
 		/// <summary>
 		/// Ends an external update operation to the tile data stored in the <see cref="Tilemap"/>. Calling this
@@ -118,7 +118,7 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		public void EndUpdateTiles()
 		{
-			this.EndUpdateTiles(0, 0, this.tiles.Width, this.tiles.Height);
+			this.EndUpdateTiles(0, 0, this.tileData.Tiles.Width, this.tileData.Tiles.Height);
 		}
 
 		private void OnTilesChanged(int x, int y, int width, int height)
@@ -128,7 +128,7 @@ namespace Duality.Plugins.Tilemaps
 		}
 		private void OnTilesChanged()
 		{
-			this.OnTilesChanged(0, 0, this.tiles.Width, this.tiles.Height);
+			this.OnTilesChanged(0, 0, this.tileData.Tiles.Width, this.tileData.Tiles.Height);
 		}
 	}
 }

@@ -45,6 +45,7 @@
     <Compile Include="Properties\TilemapsResNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tile.cs" />
+    <Compile Include="TilemapData.cs" />
     <Compile Include="TilemapCollider.cs" />
     <Compile Include="TilemapRenderer.cs" />
     <Compile Include="Tilemap.cs" />
