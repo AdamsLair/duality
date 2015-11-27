@@ -170,34 +170,38 @@ namespace Duality.Plugins.Tilemaps
 			for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
 			{
 				int vertexBaseIndex = tileIndex * 4;
+				Tile tile = tilemap.Tiles[tileGridPos.X, tileGridPos.Y];
+
+				Rect uv;
+				tileset.LookupTileAtlas(0, tile.Index, out uv);
 
 				vertexData[vertexBaseIndex + 0].Pos.X = renderPos.X;
 				vertexData[vertexBaseIndex + 0].Pos.Y = renderPos.Y;
 				vertexData[vertexBaseIndex + 0].Pos.Z = renderPos.Z;
-				vertexData[vertexBaseIndex + 0].TexCoord.X = 0.0f;
-				vertexData[vertexBaseIndex + 0].TexCoord.Y = 0.0f;
-				vertexData[vertexBaseIndex + 0].Color = ColorRgba.Red;
+				vertexData[vertexBaseIndex + 0].TexCoord.X = uv.X;
+				vertexData[vertexBaseIndex + 0].TexCoord.Y = uv.Y;
+				vertexData[vertexBaseIndex + 0].Color = ColorRgba.White;
 
 				vertexData[vertexBaseIndex + 1].Pos.X = renderPos.X + tileYStep.X;
 				vertexData[vertexBaseIndex + 1].Pos.Y = renderPos.Y + tileYStep.Y;
 				vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z;
-				vertexData[vertexBaseIndex + 1].TexCoord.X = 0.0f;
-				vertexData[vertexBaseIndex + 1].TexCoord.Y = 0.0f;
-				vertexData[vertexBaseIndex + 1].Color = ColorRgba.Green;
+				vertexData[vertexBaseIndex + 1].TexCoord.X = uv.X;
+				vertexData[vertexBaseIndex + 1].TexCoord.Y = uv.Y + uv.H;
+				vertexData[vertexBaseIndex + 1].Color = ColorRgba.White;
 
 				vertexData[vertexBaseIndex + 2].Pos.X = renderPos.X + tileXStep.X + tileYStep.X;
 				vertexData[vertexBaseIndex + 2].Pos.Y = renderPos.Y + tileXStep.Y + tileYStep.Y;
 				vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z;
-				vertexData[vertexBaseIndex + 2].TexCoord.X = 0.0f;
-				vertexData[vertexBaseIndex + 2].TexCoord.Y = 0.0f;
-				vertexData[vertexBaseIndex + 2].Color = ColorRgba.Blue;
+				vertexData[vertexBaseIndex + 2].TexCoord.X = uv.X + uv.W;
+				vertexData[vertexBaseIndex + 2].TexCoord.Y = uv.Y + uv.H;
+				vertexData[vertexBaseIndex + 2].Color = ColorRgba.White;
 				
 				vertexData[vertexBaseIndex + 3].Pos.X = renderPos.X + tileXStep.X;
 				vertexData[vertexBaseIndex + 3].Pos.Y = renderPos.Y + tileXStep.Y;
 				vertexData[vertexBaseIndex + 3].Pos.Z = renderPos.Z;
-				vertexData[vertexBaseIndex + 3].TexCoord.X = 0.0f;
-				vertexData[vertexBaseIndex + 3].TexCoord.Y = 0.0f;
-				vertexData[vertexBaseIndex + 3].Color = ColorRgba.Black;
+				vertexData[vertexBaseIndex + 3].TexCoord.X = uv.X + uv.W;
+				vertexData[vertexBaseIndex + 3].TexCoord.Y = uv.Y;
+				vertexData[vertexBaseIndex + 3].Color = ColorRgba.White;
 
 				tileGridPos.X++;
 				renderPos.Xy += tileXStep;
@@ -211,7 +215,10 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			// Submit all the vertices as one draw batch
-			device.AddVertices(Material.SolidWhite, VertexMode.Quads, vertexData, this.vertices.Count);
+			device.AddVertices(
+				(tileset != null ? tileset.RenderMaterial : null) ?? Material.Checkerboard,
+				VertexMode.Quads, 
+				vertexData, this.vertices.Count);
 		}
 	}
 }

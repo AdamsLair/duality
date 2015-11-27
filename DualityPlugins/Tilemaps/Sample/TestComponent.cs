@@ -27,31 +27,38 @@ namespace Duality.Plugins.Tilemaps.Sample
 					sourceRaw = codec.Read(stream);
 				}
 				Pixmap sourceData = new Pixmap(sourceRaw);
+				sourceData.Save("Data\\TestTilesColor" + Resource.GetFileExtByType<Pixmap>());
 
 				// Create test tileset and compile it
 				Tileset tileset = new Tileset();
 				tileset.RenderConfig.Add(new TilesetRenderInput
 				{
+					Id = "mainTex",
+					Name = "Main Texture",
 					SourceData = sourceData,
 					SourceTileSpacing = 1,
 					SourceTileSize = new Point2(32, 32)
 				});
 				tileset.Compile();
+				tileset.Save("Data\\TestTiles" + Resource.GetFileExtByType<Tileset>());
 
 				// Create test tilemap object
-				GameObject tilemapObj = new GameObject("Tilemap");
-				Tilemap tilemap = tilemapObj.AddComponent<Tilemap>();
-				tilemap.Tileset = tileset;
+				if (this.GameObj.ParentScene != null)
 				{
-					Grid<Tile> tileData = tilemap.BeginUpdateTiles();
-					tileData.Resize(100, 100);
-					for (int i = 0; i < tileData.Capacity; i++)
+					GameObject tilemapObj = new GameObject("Tilemap");
+					Tilemap tilemap = tilemapObj.AddComponent<Tilemap>();
+					tilemap.Tileset = tileset;
 					{
-						tileData.RawData[i].Index = i % 100;
+						Grid<Tile> tileData = tilemap.BeginUpdateTiles();
+						tileData.Resize(100, 100);
+						for (int i = 0; i < tileData.Capacity; i++)
+						{
+							tileData.RawData[i].Index = i % 100;
+						}
+						tilemap.EndUpdateTiles();
 					}
-					tilemap.EndUpdateTiles();
+					this.GameObj.ParentScene.AddObject(tilemapObj);
 				}
-				this.GameObj.ParentScene.AddObject(tilemapObj);
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }

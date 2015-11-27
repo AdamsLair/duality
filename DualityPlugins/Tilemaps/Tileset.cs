@@ -24,11 +24,20 @@ namespace Duality.Plugins.Tilemaps
 
 		private Vector2                  tileSize     = DefaultTileSize;
 		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
-		private List<Texture>            renderData   = new List<Texture>();
+		private BatchInfo                baseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
-		[DontSerialize] private bool compiled = false;
+		[DontSerialize] private List<Texture> renderData     = new List<Texture>();
+		[DontSerialize] private Material      renderMaterial = null;
+		[DontSerialize] private bool          compiled       = false;
 
-
+		
+		/// <summary>
+		/// [GET] A configuration template that is used for generating the output <see cref="RenderMaterial"/>.
+		/// </summary>
+		public BatchInfo BaseMaterial
+		{
+			get { return this.baseMaterial; }
+		}
 		/// <summary>
 		/// The different layers of <see cref="TilesetRenderInput"/>, which compose the look of all the tiles
 		/// that are defined in this <see cref="Tileset"/>.
@@ -37,6 +46,14 @@ namespace Duality.Plugins.Tilemaps
 		public IList<TilesetRenderInput> RenderConfig
 		{
 			get { return this.renderConfig; }
+		}
+		/// <summary>
+		/// [GET] The <see cref="Material"/> that has been compiled from the specified <see cref="RenderConfig"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Material RenderMaterial
+		{
+			get { return this.renderMaterial; }
 		}
 		/// <summary>
 		/// [GET / SET] The desired size of a tile in world space. How exactly this value is accounted for depends
@@ -55,7 +72,18 @@ namespace Duality.Plugins.Tilemaps
 		{
 			get { return this.compiled; }
 		}
-
+		
+		/// <summary>
+		/// Looks up the vertex UV rect for the specified rendering input / data and tile.
+		/// </summary>
+		/// <param name="renderDataIndex"></param>
+		/// <param name="tileIndex"></param>
+		/// <param name="uv"></param>
+		public void LookupTileAtlas(int renderDataIndex, int tileIndex, out Rect uv)
+		{
+			Texture texture = this.renderData[renderDataIndex];
+			texture.LookupAtlas(tileIndex, out uv);
+		}
 
 		/// <summary>
 		/// Compiles the <see cref="Tileset"/> using the specified source data, in order to
@@ -158,13 +186,23 @@ namespace Duality.Plugins.Tilemaps
 				}
 			}
 
-			// ToDo: Upload data to internal / runtime textures
+			// Generate an output material from the generated textures
+			this.renderMaterial = new Material(this.baseMaterial);
+			for (int i = 0; i < this.renderConfig.Count; i++)
+			{
+				this.renderMaterial.SetTexture(this.renderConfig[i].Id, this.renderData[i] ?? Texture.Checkerboard);
+			}
 
 			this.compiled = true;
 		}
 		private void DiscardCompiledData()
 		{
 			this.compiled = false;
+			if (this.renderMaterial != null)
+			{
+				this.renderMaterial.Dispose();
+				this.renderMaterial = null;
+			}
 			foreach (Texture tex in this.renderData)
 			{
 				tex.Dispose();
