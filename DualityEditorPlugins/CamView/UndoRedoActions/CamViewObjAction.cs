@@ -15,17 +15,17 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 {
 	public abstract class CamViewObjAction : UndoRedoAction
 	{
-		public delegate void PostPerformAction(IEnumerable<CamViewState.SelObj> obj);
+		public delegate void PostPerformAction(IEnumerable<ObjectEditorCamViewState.SelObj> obj);
 
-		protected	CamViewState.SelObj[]	targetObj	= null;
-		protected	PostPerformAction		postPerform = null;
+		protected ObjectEditorCamViewState.SelObj[] targetObj   = null;
+		protected PostPerformAction                 postPerform = null;
 		
 		public override bool IsVoid
 		{
 			get { return this.targetObj == null || this.targetObj.Length == 0; }
 		}
 
-		public CamViewObjAction(IEnumerable<CamViewState.SelObj> obj, PostPerformAction postPerform)
+		public CamViewObjAction(IEnumerable<ObjectEditorCamViewState.SelObj> obj, PostPerformAction postPerform)
 		{
 			if (obj == null) throw new ArgumentNullException("obj");
 			this.targetObj = obj.Where(o => o != null && !o.IsInvalid && o.HasTransform).ToArray();

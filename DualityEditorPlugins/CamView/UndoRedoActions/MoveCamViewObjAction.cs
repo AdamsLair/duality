@@ -29,7 +29,7 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 			get { return base.IsVoid || this.moveBy == Vector3.Zero; }
 		}
 
-		public MoveCamViewObjAction(IEnumerable<CamViewState.SelObj> obj, PostPerformAction postPerform, Vector3 moveBy) : base(obj, postPerform)
+		public MoveCamViewObjAction(IEnumerable<ObjectEditorCamViewState.SelObj> obj, PostPerformAction postPerform, Vector3 moveBy) : base(obj, postPerform)
 		{
 			this.moveBy = moveBy;
 		}
@@ -58,7 +58,7 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 					this.backupPos[i] = this.targetObj[i].Pos;
 			}
 
-			foreach (CamViewState.SelObj s in this.targetObj)
+			foreach (ObjectEditorCamViewState.SelObj s in this.targetObj)
 				s.Pos += this.moveBy;
 
 			if (this.postPerform != null)

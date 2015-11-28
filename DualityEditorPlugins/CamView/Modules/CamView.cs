@@ -1073,9 +1073,6 @@ namespace Duality.Editor.Plugins.CamView
 				{
 					this.inputKeyFocus = true;
 				}
-
-				if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
-					this.activeState.SelectObjects(this.activeState.SelectedObjects);
 			}
 		}
 		private void graphicsControl_LostFocus(object sender, EventArgs e)

@@ -29,7 +29,7 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 			get { return base.IsVoid || this.scaleBy == 1.0f; }
 		}
 
-		public ScaleCamViewObjAction(IEnumerable<CamViewState.SelObj> obj, PostPerformAction postPerform, float scaleBy) : base(obj, postPerform)
+		public ScaleCamViewObjAction(IEnumerable<ObjectEditorCamViewState.SelObj> obj, PostPerformAction postPerform, float scaleBy) : base(obj, postPerform)
 		{
 			this.scaleBy = scaleBy;
 		}
@@ -64,13 +64,13 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 			}
 			
 			Vector3 center = Vector3.Zero;
-			foreach (CamViewState.SelObj s in this.targetObj)
+			foreach (ObjectEditorCamViewState.SelObj s in this.targetObj)
 			{
 				center += s.Pos;
 			}
 			if (this.targetObj.Length > 0) center /= this.targetObj.Length;
 			
-			foreach (CamViewState.SelObj s in this.targetObj)
+			foreach (ObjectEditorCamViewState.SelObj s in this.targetObj)
 			{
 				Vector3 scaleVec = new Vector3(this.scaleBy, this.scaleBy, this.scaleBy);
 				Vector3 posRelCenter = s.Pos - center;
