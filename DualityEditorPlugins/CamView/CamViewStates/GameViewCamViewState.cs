@@ -17,7 +17,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public GameViewCamViewState()
 		{
 			this.CameraActionAllowed = false;
-			this.MouseActionAllowed = false;
 			this.EngineUserInput = true;
 		}
 

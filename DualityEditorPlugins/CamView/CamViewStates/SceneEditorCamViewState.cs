@@ -15,7 +15,7 @@ using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
-	public class SceneEditorCamViewState : CamViewState
+	public class SceneEditorCamViewState : ObjectEditorCamViewState
 	{
 		public class SelGameObj : SelObj
 		{
@@ -165,7 +165,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected override void OnCollectStateOverlayDrawcalls(Canvas canvas)
 		{
 			base.OnCollectStateOverlayDrawcalls(canvas);
-			if (this.SelObjAction == ObjectAction.None && this.DragMustWait && !this.dragLastLoc.IsEmpty)
+			if (this.ObjAction == ObjectAction.None && this.DragMustWait && !this.dragLastLoc.IsEmpty)
 			{
 				canvas.PushState();
 				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, ColorRgba.White));
@@ -183,14 +183,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 
-		public override CamViewState.SelObj PickSelObjAt(int x, int y)
+		public override SelObj PickSelObjAt(int x, int y)
 		{
 			Component picked = this.PickRendererAt(x, y) as Component;
 			if (picked != null && DesignTimeObjectData.Get(picked.GameObj).IsLocked) picked = null;
 			if (picked != null) return new SelGameObj(picked.GameObj);
 			return null;
 		}
-		public override List<CamViewState.SelObj> PickSelObjIn(int x, int y, int w, int h)
+		public override List<SelObj> PickSelObjIn(int x, int y, int w, int h)
 		{
 			IEnumerable<ICmpRenderer> picked = this.PickRenderersIn(x, y, w, h);
 			return picked
@@ -206,12 +206,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 			ClearContextMenu();
 		}
-		public override void SelectObjects(IEnumerable<CamViewState.SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
+		public override void SelectObjects(IEnumerable<SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
 		{
 			base.SelectObjects(selObjEnum, mode);
 			DualityEditorApp.Select(this, new ObjectSelection(selObjEnum.Select(s => s.ActualObject)), mode);
 		}
-		protected override void PostPerformAction(IEnumerable<CamViewState.SelObj> selObjEnum, CamViewState.ObjectAction action)
+		protected override void PostPerformAction(IEnumerable<SelObj> selObjEnum, ObjectAction action)
 		{
 			base.PostPerformAction(selObjEnum, action);
 			if (action == ObjectAction.Move)
@@ -287,7 +287,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.dragLastLoc = Point.Empty;
 			this.dragTime = DateTime.Now;
 			this.Invalidate();
-			if (this.SelObjAction == ObjectAction.None) return;
+			if (this.ObjAction == ObjectAction.None) return;
 			
 			this.EndAction();
 
@@ -305,7 +305,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			base.OnDragOver(e);
 
 			if (e.Effect == DragDropEffects.None) return;
-			if (this.SelObjAction == ObjectAction.None && !this.DragMustWait)
+			if (this.ObjAction == ObjectAction.None && !this.DragMustWait)
 				this.DragBeginAction(e);
 			
 			Point clientCoord = this.PointToClient(new Point(e.X, e.Y));
@@ -314,22 +314,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.dragLastLoc = clientCoord;
 			this.Invalidate();
 
-			if (this.SelObjAction != ObjectAction.None) this.UpdateAction();
+			if (this.ObjAction != ObjectAction.None) this.UpdateAction();
 		}
 		protected override void OnDragDrop(DragEventArgs e)
 		{
 			base.OnDragDrop(e);
 
-			if (this.SelObjAction == ObjectAction.None)
+			if (this.ObjAction == ObjectAction.None)
 			{
 				this.DragBeginAction(e);
-				if (this.SelObjAction != ObjectAction.None) this.UpdateAction();
+				if (this.ObjAction != ObjectAction.None) this.UpdateAction();
 			}
 			
 			this.dragLastLoc = Point.Empty;
 			this.dragTime = DateTime.Now;
 
-			if (this.SelObjAction != ObjectAction.None) this.EndAction();
+			if (this.ObjAction != ObjectAction.None) this.EndAction();
 
 			UndoRedoManager.EndMacro();
 		}

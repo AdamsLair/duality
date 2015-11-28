@@ -31,7 +31,7 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 			get { return base.IsVoid || this.turnBy == 0.0f; }
 		}
 
-		public RotateCamViewObjAction(IEnumerable<CamViewState.SelObj> obj, PostPerformAction postPerform, float turnBy) : base(obj, postPerform)
+		public RotateCamViewObjAction(IEnumerable<ObjectEditorCamViewState.SelObj> obj, PostPerformAction postPerform, float turnBy) : base(obj, postPerform)
 		{
 			this.turnBy = turnBy;
 		}
@@ -66,13 +66,13 @@ namespace Duality.Editor.Plugins.CamView.UndoRedoActions
 			}
 			
 			Vector3 center = Vector3.Zero;
-			foreach (CamViewState.SelObj s in this.targetObj)
+			foreach (ObjectEditorCamViewState.SelObj s in this.targetObj)
 			{
 				center += s.Pos;
 			}
 			if (this.targetObj.Length > 0) center /= this.targetObj.Length;
 
-			foreach (CamViewState.SelObj s in this.targetObj)
+			foreach (ObjectEditorCamViewState.SelObj s in this.targetObj)
 			{
 				Vector3 posRelCenter = s.Pos - center;
 				Vector3 posRelCenterTarget = posRelCenter;

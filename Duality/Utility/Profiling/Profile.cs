@@ -16,7 +16,7 @@ namespace Duality
 	/// </summary>
 	public static class Profile
 	{
-		private	static	Dictionary<string,ProfileCounter>	counterMap	= new Dictionary<string,ProfileCounter>();
+		private	static	Dictionary<string,ProfileCounter> counterMap = new Dictionary<string,ProfileCounter>();
 
 		public static readonly TimeCounter TimeFrame;
 		public static readonly TimeCounter TimeUpdate;
@@ -57,7 +57,7 @@ namespace Duality
 			TimeUpdate                        = RequestCounter<TimeCounter>(@"Duality\Frame\Update");
 			TimeUpdatePhysicsController       = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Controller");
 			TimeUpdateScene                   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene");
-			TimeUpdateSceneComponents      = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene\All Components");
+			TimeUpdateSceneComponents         = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Scene\All Components");
 			TimeUpdatePhysicsContinous        = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\Continous");
 			TimeUpdateAudio                   = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Audio");
 			TimeUpdatePhysicsAddRemove        = RequestCounter<TimeCounter>(@"Duality\Frame\Update\Physics\AddRemove");
