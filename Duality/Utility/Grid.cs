@@ -13,7 +13,7 @@ namespace Duality
 	/// <typeparam name="T"></typeparam>
 	[DebuggerTypeProxy(typeof(Grid<>.DebuggerTypeProxy))]
 	[DebuggerDisplay("Width = {Width}, Height = {Height}")]
-	public class Grid<T> : IEnumerable<T>
+	public class Grid<T> : IReadOnlyGrid<T>, IEnumerable<T>
 	{
 		/// <summary>
 		/// Specifies flags on how to shrink a grid to its minimal size.
@@ -347,7 +347,7 @@ namespace Duality
 			return matchCount;
 		}
 		/// <summary>
-		/// Clears the grid by overwriting it with null values.
+		/// Clears the grid without modifying its size.
 		/// </summary>
 		public void Clear()
 		{

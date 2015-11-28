@@ -19,7 +19,7 @@ using Font = Duality.Resources.Font;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
-	public partial class RigidBodyEditorCamViewState : CamViewState
+	public partial class RigidBodyEditorCamViewState : ObjectEditorCamViewState
 	{
 		public static readonly Cursor ArrowCreateCircle		= CursorHelper.CreateCursor(CamViewResCache.CursorArrowCreateCircle, 0, 0);
 		public static readonly Cursor ArrowCreatePolygon	= CursorHelper.CreateCursor(CamViewResCache.CursorArrowCreatePolygon, 0, 0);
@@ -129,7 +129,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.toolCreateLoop.Enabled = this.toolCreateCircle.Enabled && this.selectedBody.BodyType == BodyType.Static;
 		}
 
-		public override CamViewState.SelObj PickSelObjAt(int x, int y)
+		public override SelObj PickSelObjAt(int x, int y)
 		{
 			RigidBody pickedCollider = null;
 			ShapeInfo pickedShape = null;
@@ -162,9 +162,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			return null;
 		}
-		public override List<CamViewState.SelObj> PickSelObjIn(int x, int y, int w, int h)
+		public override List<SelObj> PickSelObjIn(int x, int y, int w, int h)
 		{
-			List<CamViewState.SelObj> result = new List<SelObj>();
+			List<SelObj> result = new List<SelObj>();
 			
 			RigidBody pickedCollider = null;
 			ShapeInfo pickedShape = null;
@@ -273,7 +273,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			return result;
 		}
 
-		public override void SelectObjects(IEnumerable<CamViewState.SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
+		public override void SelectObjects(IEnumerable<SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
 		{
 			base.SelectObjects(selObjEnum, mode);
 			if (!selObjEnum.Any()) return;
@@ -306,7 +306,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			//DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp | ObjectSelection.Category.Other);
 			DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 		}
-		public override void DeleteObjects(IEnumerable<CamViewState.SelObj> objEnum)
+		public override void DeleteObjects(IEnumerable<SelObj> objEnum)
 		{
 			if (objEnum.OfType<SelShape>().Any())
 			{
@@ -316,7 +316,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				UndoRedoManager.Do(new DeleteRigidBodyShapeAction(selShapes));
 			}
 		}
-		public override List<CamViewState.SelObj> CloneObjects(IEnumerable<CamViewState.SelObj> objEnum)
+		public override List<SelObj> CloneObjects(IEnumerable<SelObj> objEnum)
 		{
 			if (objEnum == null || !objEnum.Any()) return base.CloneObjects(objEnum);
 			List<SelObj> result = new List<SelObj>();
@@ -700,7 +700,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			base.OnLostFocus();
 			this.LeaveCursorState();
 		}
-		protected override void OnBeginAction(CamViewState.ObjectAction action)
+		protected override void OnBeginAction(ObjectAction action)
 		{
 			base.OnBeginAction(action);
 			bool shapeAction = 
@@ -713,7 +713,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.EditingUserGuide.SnapScaleOrigin = Vector3.One * this.selectedBody.GameObj.Transform.Scale;
 			}
 		}
-		protected override void OnEndAction(CamViewState.ObjectAction action)
+		protected override void OnEndAction(ObjectAction action)
 		{
 			base.OnEndAction(action);
 			bool shapeAction = 
@@ -731,7 +731,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.EditingUserGuide.SnapPosOrigin = Vector3.Zero;
 			this.EditingUserGuide.SnapScaleOrigin = Vector3.One;
 		}
-		protected override void PostPerformAction(IEnumerable<CamViewState.SelObj> selObjEnum, CamViewState.ObjectAction action)
+		protected override void PostPerformAction(IEnumerable<SelObj> selObjEnum, ObjectAction action)
 		{
 			base.PostPerformAction(selObjEnum, action);
 			SelShape[] selShapeArray = selObjEnum.OfType<SelShape>().ToArray();
@@ -756,7 +756,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			return base.UpdateStatusText();
 		}
-		protected override string UpdateActionText()
+		protected override string UpdateActionText(ref Vector2 actionTextPos)
 		{
 			Vector2 vertex = Vector2.Zero;
 			if (this.mouseState == CursorState.CreatePolygon || this.mouseState == CursorState.CreateLoop)
@@ -793,7 +793,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 						string.Format("Vertex Y:{0,9:0.00}", vertex.Y);
 				}
 			}
-			return base.UpdateActionText();
+			return base.UpdateActionText(ref actionTextPos);
 		}
 	
 		private void EditorForm_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)

@@ -29,14 +29,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			All			= Position | Scale
 		}
-		public enum LockedAxis
-		{
-			None,
-
-			X,
-			Y,
-			Z
-		}
 		public enum CameraAction
 		{
 			None,
@@ -47,147 +39,46 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			DragScene,
 			RotateScene
 		}
-		public enum ObjectAction
-		{
-			None,
-			RectSelect,
-			Move,
-			Rotate,
-			Scale,
-		}
-		public abstract class SelObj : IEquatable<SelObj>
-		{
-			public abstract object ActualObject { get; }
-			public abstract bool HasTransform { get; }
-			public abstract float BoundRadius { get; }
-			public abstract Vector3 Pos { get; set; }
-			public virtual Vector3 Scale
-			{
-				get { return Vector3.One; }
-				set {}
-			}
-			public virtual float Angle
-			{
-				get { return 0.0f; }
-				set {}
-			}
-			public virtual bool ShowBoundRadius
-			{
-				get { return true; }
-			}
-			public virtual bool ShowPos
-			{
-				get { return true; }
-			}
-			public virtual bool ShowAngle
-			{
-				get { return false; }
-			}
-			public virtual string DisplayObjectName
-			{
-				get { return this.ActualObject != null ? this.ActualObject.ToString() : "null"; }
-			}
-			public bool IsInvalid
-			{
-				get { return this.ActualObject == null; }
-			}
-
-			public virtual bool IsActionAvailable(ObjectAction action)
-			{
-				if (action == ObjectAction.Move) return true;
-				return false;
-			}
-			public virtual string UpdateActionText(ObjectAction action, bool performing)
-			{
-				return null;
-			}
-			
-			public override bool Equals(object obj)
-			{
-				if (obj is SelObj)
-					return this == (SelObj)obj;
-				else
-					return base.Equals(obj);
-			}
-			public override int GetHashCode()
-			{
-				return this.ActualObject.GetHashCode();
-			}
-			public bool Equals(SelObj other)
-			{
-				return this == other;
-			}
-
-			public static bool operator ==(SelObj first, SelObj second)
-			{
-				if (object.ReferenceEquals(first, null))
-				{
-					if (object.ReferenceEquals(second, null)) return true;
-					else return false;
-				}
-				else if (object.ReferenceEquals(second, null))
-					return false;
-
-				return first.ActualObject == second.ActualObject;
-			}
-			public static bool operator !=(SelObj first, SelObj second)
-			{
-				return !(first == second);
-			}
-		}
 
 
 		private static readonly ContentRef<Duality.Resources.Font> OverlayFont = Duality.Resources.Font.GenericMonospace8;
 
-		private Vector3			camVel					= Vector3.Zero;
-		private	float			camAngleVel				= 0.0f;
-		private	Point			camActionBeginLoc		= Point.Empty;
-		private Vector3			camActionBeginLocSpace	= Vector3.Zero;
-		private	CameraAction	camAction				= CameraAction.None;
-		private	bool			camActionAllowed		= true;
-		private	bool			camTransformChanged		= false;
-		private	bool			camBeginDragScene		= false;
-		private	Camera.Pass		camPassBg			= null;
-		private	Camera.Pass		camPassEdWorld		= null;
-		private Camera.Pass		camPassEdScreen		= null;
-		private	bool			engineUserInput		= false;
-		private	bool			actionAllowed		= true;
-		private	bool			actionIsClone		= false;
-		private	Point			actionBeginLoc		= Point.Empty;
-		private Vector3			actionBeginLocSpace	= Vector3.Zero;
-		private Vector3			actionLastLocSpace	= Vector3.Zero;
-		private	LockedAxis		actionLockedAxis	= LockedAxis.None;
-		private	UserGuideType	snapToUserGuides	= UserGuideType.All;
-		private ObjectAction	action				= ObjectAction.None;
-		private	bool			selectionStatsValid	= false;
-		private	Vector3			selectionCenter		= Vector3.Zero;
-		private	float			selectionRadius		= 0.0f;
-		private	ObjectSelection	activeRectSel		= new ObjectSelection();
-		private	ObjectAction	mouseoverAction		= ObjectAction.None;
-		private	SelObj			mouseoverObject		= null;
-		private	bool			mouseoverSelect		= false;
-		private	bool			mouseover			= false;
-		private	CameraAction	drawCamGizmoState	= CameraAction.None;
-		private	ObjectAction	drawSelGizmoState	= ObjectAction.None;
-		private	FormattedText	statusText			= new FormattedText();
-		private	FormattedText	actionText			= new FormattedText();
-		private	List<Type>		lastActiveLayers	= new List<Type>();
-		private	List<Type>		lastObjVisibility	= new List<Type>();
-		protected	List<SelObj>	actionObjSel	= new List<SelObj>();
-		protected	List<SelObj>	allObjSel		= new List<SelObj>();
-		protected	List<SelObj>	indirectObjSel	= new List<SelObj>();
+		private Vector3       camVel                 = Vector3.Zero;
+		private float         camAngleVel            = 0.0f;
+		private Point         camActionBeginLoc      = Point.Empty;
+		private Vector3       camActionBeginLocSpace = Vector3.Zero;
+		private CameraAction  camAction              = CameraAction.None;
+		private bool          camActionAllowed       = true;
+		private bool          camTransformChanged    = false;
+		private bool          camBeginDragScene      = false;
+		private Camera.Pass   camPassBg              = null;
+		private Camera.Pass   camPassEdWorld         = null;
+		private Camera.Pass   camPassEdScreen        = null;
+		private bool          engineUserInput        = false;
+		private UserGuideType snapToUserGuides       = UserGuideType.All;
+		private bool          mouseover              = false;
+		private CameraAction  drawCamGizmoState      = CameraAction.None;
+		private FormattedText statusText             = new FormattedText();
+		private FormattedText actionText             = new FormattedText();
+		private List<Type>    lastActiveLayers       = new List<Type>();
+		private List<Type>    lastObjVisibility      = new List<Type>();
 
 
-		public ObjectAction SelObjAction
-		{
-			get { return this.action; }
-		}
 		public abstract string StateName { get; }
 
-		public IEnumerable<SelObj> SelectedObjects
+		protected virtual bool IsActionInProgress
 		{
-			get { return this.allObjSel; }
+			get { return false; }
 		}
+		protected virtual bool HasCameraFocusPosition
+		{
+			get { return false; }
+		}
+		protected virtual Vector3 CameraFocusPosition
+		{
+			get { return Vector3.Zero; }
+		}
+
 		public bool IsActive
 		{
 			get { return this.View != null && this.View.ActiveState == this; }
@@ -196,25 +87,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return this.engineUserInput; }
 			protected set { this.engineUserInput = value; }
-		}
-		public bool MouseActionAllowed
-		{
-			get { return this.actionAllowed; }
-			protected set
-			{
-				this.actionAllowed = value;
-				if (!this.actionAllowed)
-				{
-					this.mouseoverAction = ObjectAction.None;
-					this.mouseoverObject = null;
-					this.mouseoverSelect = false;
-					if (this.action != ObjectAction.None)
-					{
-						this.EndAction();
-						this.UpdateAction();
-					}
-				}
-			}
 		}
 		public bool CameraActionAllowed
 		{
@@ -233,32 +105,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			get { return this.mouseover; }
 		}
-		public SelObj MouseoverObject
+		public bool CamActionRequiresCursor
 		{
-			get { return this.mouseoverObject; }
+			get { return this.camBeginDragScene; }
 		}
 		public CameraAction CamAction
 		{
 			get { return this.camAction; }
-		}
-		public ObjectAction MouseoverAction
-		{
-			get { return this.mouseoverAction; }
-		}
-		public ObjectAction Action
-		{
-			get { return this.action; }
-		}
-		public ObjectAction VisibleAction
-		{
-			get
-			{
-				return 
-					(this.drawSelGizmoState != ObjectAction.None ? this.drawSelGizmoState : 
-					(this.action != ObjectAction.None ? this.action :
-					(this.mouseoverAction != ObjectAction.RectSelect ? this.mouseoverAction :
-					ObjectAction.None)));
-			}
 		}
 		public UserGuideType SnapToUserGuides
 		{
@@ -272,11 +125,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public string ActionText
 		{
 			get { return this.actionText.SourceText; }
-		}
-
-		public Vector3 SelectionCenter
-		{
-			get { return selectionCenter; }
 		}
 
 
@@ -429,119 +277,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		protected virtual void OnCollectStateDrawcalls(Canvas canvas)
 		{
-			// Assure we know how to display the current selection
-			this.ValidateSelectionStats();
-
 			// Collect the views layer drawcalls
 			this.CollectLayerDrawcalls(canvas);
-
-			List<SelObj> transformObjSel = this.allObjSel.Where(s => s.HasTransform).ToList();
-			Point cursorPos = this.PointToClient(Cursor.Position);
-			canvas.PushState();
-			
-			// Draw indirectly selected object overlay
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f)));
-			this.DrawSelectionMarkers(canvas, this.indirectObjSel);
-			if (this.mouseoverObject != null && (this.mouseoverAction == ObjectAction.RectSelect || this.mouseoverSelect) && !transformObjSel.Contains(this.mouseoverObject)) 
-				this.DrawSelectionMarkers(canvas, new [] { this.mouseoverObject });
-
-			// Draw selected object overlay
-			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
-			this.DrawSelectionMarkers(canvas, transformObjSel);
-
-			// Draw overall selection boundary
-			if (transformObjSel.Count > 1)
-			{
-				float midZ = transformObjSel.Average(t => t.Pos.Z);
-				float maxZDiff = transformObjSel.Max(t => MathF.Abs(t.Pos.Z - midZ));
-				if (maxZDiff > 0.001f)
-				{
-					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
-					canvas.DrawSphere(
-						this.selectionCenter.X, 
-						this.selectionCenter.Y, 
-						this.selectionCenter.Z - 0.1f, 
-						this.selectionRadius);
-				}
-				else
-				{
-					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.5f)));
-					canvas.DrawCircle(
-						this.selectionCenter.X, 
-						this.selectionCenter.Y, 
-						this.selectionCenter.Z - 0.1f, 
-						this.selectionRadius);
-				}
-			}
-
-			// Draw scale action dots
-			bool canMove = this.actionObjSel.Any(s => s.IsActionAvailable(ObjectAction.Move));
-			bool canScale = (canMove && this.actionObjSel.Count > 1) || this.actionObjSel.Any(s => s.IsActionAvailable(ObjectAction.Scale));
-			if (canScale)
-			{
-				float dotR = 3.0f / this.GetScaleAtZ(this.selectionCenter.Z);
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
-				canvas.FillCircle(
-					this.selectionCenter.X + this.selectionRadius, 
-					this.selectionCenter.Y, 
-					this.selectionCenter.Z - 0.1f,
-					dotR);
-				canvas.FillCircle(
-					this.selectionCenter.X - this.selectionRadius, 
-					this.selectionCenter.Y, 
-					this.selectionCenter.Z - 0.1f,
-					dotR);
-				canvas.FillCircle(
-					this.selectionCenter.X, 
-					this.selectionCenter.Y + this.selectionRadius, 
-					this.selectionCenter.Z - 0.1f,
-					dotR);
-				canvas.FillCircle(
-					this.selectionCenter.X, 
-					this.selectionCenter.Y - this.selectionRadius, 
-					this.selectionCenter.Z - 0.1f,
-					dotR);
-			}
-
-			if (this.action != ObjectAction.None)
-			{
-				// Draw action lock axes
-				this.DrawLockedAxes(canvas, this.selectionCenter.X, this.selectionCenter.Y, this.selectionCenter.Z, this.selectionRadius * 4);
-			}
-
-			canvas.PopState();
 		}
 		protected virtual void OnCollectStateOverlayDrawcalls(Canvas canvas)
 		{
 			// Gather general data
 			Point cursorPos = this.PointToClient(Cursor.Position);
-			ObjectAction visibleObjectAction = this.VisibleAction;
 
 			// Update action text from hovered / selection / action object
-			bool actionTextUpdated = false;
 			Vector2 actionTextPos = new Vector2(cursorPos.X + 30, cursorPos.Y + 10);
-			if (visibleObjectAction != ObjectAction.None && ((this.mouseoverObject != null && this.mouseoverSelect) || this.actionObjSel.Count == 1))
-			{
-				SelObj obj;
-				if (this.mouseoverObject != null || this.mouseoverAction == visibleObjectAction)
-				{
-					obj = (this.mouseoverObject != null && this.mouseoverSelect) ? this.mouseoverObject : this.actionObjSel[0];
-				}
-				else
-				{
-					obj = this.actionObjSel[0];
-					actionTextPos = this.GetScreenCoord(this.actionObjSel[0].Pos).Xy;
-				}
-
-				// If the SelObj is valid, draw the gizmo
-				if (obj.ActualObject != null)
-				{
-					actionTextUpdated = true;
-					this.actionText.SourceText = obj.UpdateActionText(visibleObjectAction, this.action != ObjectAction.None) ?? this.UpdateActionText();
-				}
-			}
-			if (!actionTextUpdated)
-				this.actionText.SourceText = this.UpdateActionText();
+			this.actionText.SourceText = this.UpdateActionText(ref actionTextPos);
 
 			// Collect the views overlay layer drawcalls
 			this.CollectLayerOverlayDrawcalls(canvas);
@@ -598,10 +344,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 						canvas.DrawText(this.statusText, 10, this.ClientSize.Height - statusTextSize.Y - 10, drawBackground: true);
 					}
 				}
-
-				// Draw rect selection
-				if (this.action == ObjectAction.RectSelect)
-					canvas.DrawRect(this.actionBeginLoc.X, this.actionBeginLoc.Y, cursorPos.X - this.actionBeginLoc.X, cursorPos.Y - this.actionBeginLoc.Y);
 			}
 			canvas.PopState();
 		}
@@ -613,7 +355,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected virtual string UpdateStatusText()
 		{
 			CameraAction visibleCamAction = this.drawCamGizmoState != CameraAction.None ? this.drawCamGizmoState : this.camAction;
-			ObjectAction visibleObjectAction = this.VisibleAction;
 
 			// Draw camera action hints
 			if (visibleCamAction == CameraAction.Rotate || visibleCamAction == CameraAction.RotateScene)
@@ -635,16 +376,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 			}
 
-			// Draw action hints
-			if (visibleObjectAction == ObjectAction.Move)				return Properties.CamViewRes.CamView_Action_Move;
-			else if (visibleObjectAction == ObjectAction.Rotate)		return Properties.CamViewRes.CamView_Action_Rotate;
-			else if (visibleObjectAction == ObjectAction.Scale)			return Properties.CamViewRes.CamView_Action_Scale;
-			else if (visibleObjectAction == ObjectAction.RectSelect)	return Properties.CamViewRes.CamView_Action_Select_Active;
-
 			// Unhandled
 			return null;
 		}
-		protected virtual string UpdateActionText()
+		protected virtual string UpdateActionText(ref Vector2 actionTextPos)
 		{
 			return null;
 		}
@@ -665,13 +400,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			
 			if (this.camAction == CameraAction.DragScene)
 			{
-				this.ValidateSelectionStats();
-
 				Vector2 curPos = new Vector2(cursorPos.X, cursorPos.Y);
 				Vector2 lastPos = new Vector2(this.camActionBeginLoc.X, this.camActionBeginLoc.Y);
 				this.camActionBeginLoc = new Point((int)curPos.X, (int)curPos.Y);
 
-				float refZ = (this.SelectedObjects.Any() && camObj.Transform.Pos.Z < this.selectionCenter.Z - cam.NearZ) ? this.selectionCenter.Z : 0.0f;
+				float refZ = (this.HasCameraFocusPosition && camObj.Transform.Pos.Z < this.CameraFocusPosition.Z - cam.NearZ) ? this.CameraFocusPosition.Z : 0.0f;
 				if (camObj.Transform.Pos.Z >= refZ - cam.NearZ)
 					refZ = camObj.Transform.Pos.Z + MathF.Abs(cam.FocusDist);
 
@@ -698,7 +431,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				if (this.camBeginDragScene)
 				{
-					float refZ = (this.SelectedObjects.Any() && camObj.Transform.Pos.Z < this.selectionCenter.Z - cam.NearZ) ? this.selectionCenter.Z : 0.0f;
+					float refZ = (this.HasCameraFocusPosition && camObj.Transform.Pos.Z < this.CameraFocusPosition.Z - cam.NearZ) ? this.CameraFocusPosition.Z : 0.0f;
 					if (camObj.Transform.Pos.Z >= refZ - cam.NearZ)
 						refZ = camObj.Transform.Pos.Z + MathF.Abs(cam.FocusDist);
 					moveVec = new Vector3(moveVec.Xy * 0.5f / this.GetScaleAtZ(refZ), moveVec.Z);
@@ -763,17 +496,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 			{
-				this.InvalidateSelectionStats();
 				this.Invalidate();
 			}
 		}
-		protected virtual void OnBeginAction(ObjectAction action) {}
-		protected virtual void OnEndAction(ObjectAction action) {}
 
 		protected virtual void OnSceneChanged()
 		{
-			if (this.mouseoverObject != null && this.mouseoverObject.IsInvalid) this.mouseoverObject = null;
-
 			this.Invalidate();
 		}
 		protected virtual void OnCurrentCameraChanged(CamView.CameraChangedEventArgs e) {}
@@ -790,84 +518,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected virtual void OnMouseDown(MouseEventArgs e) {}
 		protected virtual void OnMouseUp(MouseEventArgs e) {}
 		protected virtual void OnMouseMove(MouseEventArgs e) {}
+		protected virtual void OnMouseWheel(MouseEventArgs e) {}
+		protected virtual void OnMouseLeave(EventArgs e) {}
+		protected virtual void OnCamActionRequiresCursorChanged(EventArgs e) {}
+
 		protected void OnMouseMove()
 		{
 			Point mousePos = this.PointToClient(Cursor.Position);
 			this.OnMouseMove(new MouseEventArgs(Control.MouseButtons, 0, mousePos.X, mousePos.Y, 0));
 		}
-
-
-		public virtual SelObj PickSelObjAt(int x, int y)
-		{
-			return null;
-		}
-		public virtual List<SelObj> PickSelObjIn(int x, int y, int w, int h)
-		{
-			return new List<SelObj>();
-		}
-		public virtual void SelectObjects(IEnumerable<SelObj> selObjEnum, SelectMode mode = SelectMode.Set) {}
-		public virtual void ClearSelection() {}
-		protected virtual void PostPerformAction(IEnumerable<SelObj> selObjEnum, ObjectAction action) {}
-
-		public virtual void DeleteObjects(IEnumerable<SelObj> objEnum) {}
-		public virtual List<SelObj> CloneObjects(IEnumerable<SelObj> objEnum) { return new List<SelObj>(); }
-		public void MoveSelectionBy(Vector3 move)
-		{
-			if (move == Vector3.Zero) return;
-
-			UndoRedoManager.Do(new MoveCamViewObjAction(
-				this.actionObjSel, 
-				obj => this.PostPerformAction(obj, ObjectAction.Move), 
-				move));
-
-			this.drawSelGizmoState = ObjectAction.Move;
-			this.InvalidateSelectionStats();
-			this.Invalidate();
-		}
-		public void MoveSelectionTo(Vector3 target)
-		{
-			this.MoveSelectionBy(target - this.selectionCenter);
-		}
-		public void MoveSelectionToCursor()
-		{
-			Point mousePos = this.PointToClient(Cursor.Position);
-			Vector3 mouseSpaceCoord = this.GetSpaceCoord(new Vector3(mousePos.X, mousePos.Y, this.selectionCenter.Z));
-
-			// Apply user guide snapping
-			if ((this.snapToUserGuides & UserGuideType.Position) != UserGuideType.None)
-			{
-				mouseSpaceCoord = this.EditingUserGuide.SnapPosition(mouseSpaceCoord);
-			}
-
-			this.MoveSelectionTo(mouseSpaceCoord);
-		}
-		public void RotateSelectionBy(float rotation)
-		{
-			if (rotation == 0.0f) return;
-			
-			UndoRedoManager.Do(new RotateCamViewObjAction(
-				this.actionObjSel, 
-				obj => this.PostPerformAction(obj, ObjectAction.Rotate), 
-				rotation));
-
-			this.drawSelGizmoState = ObjectAction.Rotate;
-			this.InvalidateSelectionStats();
-			this.Invalidate();
-		}
-		public void ScaleSelectionBy(float scale)
-		{
-			if (scale == 1.0f) return;
-
-			UndoRedoManager.Do(new ScaleCamViewObjAction(
-				this.actionObjSel, 
-				obj => this.PostPerformAction(obj, ObjectAction.Scale), 
-				scale));
-
-			this.drawSelGizmoState = ObjectAction.Scale;
-			this.InvalidateSelectionStats();
-			this.Invalidate();
-		}
 		
+
+		protected void StopCameraMovement()
+		{
+			this.camVel = Vector3.Zero;
+			this.camAngleVel = 0.0f;
+		}
 
 		protected void SetDefaultActiveLayers(params Type[] activeLayers)
 		{
@@ -892,408 +558,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected void RestoreObjectVisibility()
 		{
 			this.View.SetObjectVisibility(this.lastObjVisibility);
-		}
-
-		protected void DrawSelectionMarkers(Canvas canvas, IEnumerable<SelObj> obj)
-		{
-			// Determine turned Camera axes for angle-independent drawing
-			Vector2 catDotX, catDotY;
-			float camAngle = this.CameraObj.Transform.Angle;
-			MathF.GetTransformDotVec(camAngle, out catDotX, out catDotY);
-			Vector3 right = new Vector3(1.0f, 0.0f, 0.0f);
-			Vector3 down = new Vector3(0.0f, 1.0f, 0.0f);
-			MathF.TransformDotVec(ref right, ref catDotX, ref catDotY);
-			MathF.TransformDotVec(ref down, ref catDotX, ref catDotY);
-
-			canvas.State.ZOffset = -1.0f;
-			foreach (SelObj selObj in obj)
-			{
-				if (!selObj.HasTransform) continue;
-				Vector3 posTemp = selObj.Pos;
-				float scaleTemp = 1.0f;
-				float radTemp = selObj.BoundRadius;
-
-				if (!canvas.DrawDevice.IsCoordInView(posTemp, radTemp)) continue;
-
-				// Draw selection marker
-				if (selObj.ShowPos)
-				{
-					canvas.DrawDevice.PreprocessCoords(ref posTemp, ref scaleTemp);
-					posTemp.Z = 0.0f;
-					{
-						VertexC1P3[] vertices = new VertexC1P3[4];
-						vertices[0].Pos = posTemp - right * 10.0f;
-						vertices[1].Pos = posTemp + right * 10.0f;
-						vertices[2].Pos = posTemp - down * 10.0f;
-						vertices[3].Pos = posTemp + down * 10.0f;
-						canvas.DrawDevice.AddVertices(canvas.State.Material, VertexMode.Lines, vertices);
-					}
-				}
-
-				// Draw angle marker
-				if (selObj.ShowAngle)
-				{
-					posTemp = selObj.Pos + 
-						radTemp * right * MathF.Sin(selObj.Angle - camAngle) - 
-						radTemp * down * MathF.Cos(selObj.Angle - camAngle);
-					canvas.DrawLine(selObj.Pos.X, selObj.Pos.Y, selObj.Pos.Z, posTemp.X, posTemp.Y, posTemp.Z);
-				}
-
-				// Draw boundary
-				if (selObj.ShowBoundRadius && radTemp > 0.0f)
-					canvas.DrawCircle(selObj.Pos.X, selObj.Pos.Y, selObj.Pos.Z, radTemp);
-			}
-			canvas.State.ZOffset = 0.0f;
-		}
-		protected void DrawLockedAxes(Canvas canvas, float x, float y, float z, float r)
-		{
-			Vector3 refPos = canvas.DrawDevice.RefCoord;
-			float nearZ = canvas.DrawDevice.NearZ;
-
-			canvas.PushState();
-			if (this.actionLockedAxis == LockedAxis.X)
-			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Red, 0.5f)));
-				canvas.DrawLine(x - r, y, z, x + r, y, z);
-			}
-			if (this.actionLockedAxis == LockedAxis.Y)
-			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Green, 0.5f)));
-				canvas.DrawLine(x, y - r, z, x, y + r, z);
-			}
-			if (this.actionLockedAxis == LockedAxis.Z)
-			{
-				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, ColorRgba.Blue, 0.5f)));
-				canvas.DrawLine(x, y, MathF.Max(z - r, refPos.Z + nearZ + 10), x, y, z);
-				canvas.DrawLine(x, y, z, x, y, z + r);
-			}
-			canvas.PopState();
-		}
-		
-		protected void BeginAction(ObjectAction action)
-		{
-			if (action == ObjectAction.None) return;
-			Point mouseLoc = this.PointToClient(Cursor.Position);
-
-			this.ValidateSelectionStats();
-
-			this.camVel = Vector3.Zero;
-
-			this.action = action;
-			this.actionBeginLoc = mouseLoc;
-			this.actionBeginLocSpace = this.GetSpaceCoord(new Vector3(
-				mouseLoc.X, 
-				mouseLoc.Y, 
-				(this.action == ObjectAction.RectSelect) ? 0.0f : this.selectionCenter.Z));
-
-			if (this.action == ObjectAction.Move)
-				this.actionBeginLocSpace.Z = this.CameraObj.Transform.Pos.Z;
-
-			this.actionLastLocSpace = this.actionBeginLocSpace;
-
-			if (Sandbox.State == SandboxState.Playing)
-				Sandbox.Freeze();
-
-			this.OnBeginAction(this.action);
-		}
-		protected void EndAction()
-		{
-			if (this.action == ObjectAction.None) return;
-			Point mouseLoc = this.PointToClient(Cursor.Position);
-
-			if (this.action == ObjectAction.RectSelect)
-			{
-				this.activeRectSel = new ObjectSelection();
-			}
-
-			if (Sandbox.State == SandboxState.Playing)
-				Sandbox.UnFreeze();
-
-			this.OnEndAction(this.action);
-			this.action = ObjectAction.None;
-
-			if (this.actionIsClone)
-			{
-				this.actionIsClone = false;
-				UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
-			}
-			UndoRedoManager.Finish();
-		}
-		protected void UpdateAction()
-		{
-			Point mouseLoc = this.PointToClient(Cursor.Position);
-
-			if (this.action == ObjectAction.RectSelect)
-				this.UpdateRectSelection(mouseLoc);
-			else if (this.action == ObjectAction.Move)
-				this.UpdateObjMove(mouseLoc);
-			else if (this.action == ObjectAction.Rotate)
-				this.UpdateObjRotate(mouseLoc);
-			else if (this.action == ObjectAction.Scale)
-				this.UpdateObjScale(mouseLoc);
-			else
-				this.UpdateMouseover(mouseLoc);
-
-			if (this.action != ObjectAction.None)
-				this.InvalidateSelectionStats();
-		}
-
-		protected void InvalidateSelectionStats()
-		{
-			this.selectionStatsValid = false;
-		}
-		private void ValidateSelectionStats()
-		{
-			if (this.selectionStatsValid) return;
-			
-			List<SelObj> transformObjSel = this.allObjSel.Where(s => s.HasTransform).ToList();
-
-			this.selectionCenter = Vector3.Zero;
-			this.selectionRadius = 0.0f;
-
-			foreach (SelObj s in transformObjSel)
-				this.selectionCenter += s.Pos;
-			if (transformObjSel.Count > 0) this.selectionCenter /= transformObjSel.Count;
-
-			foreach (SelObj s in transformObjSel)
-				this.selectionRadius = MathF.Max(this.selectionRadius, s.BoundRadius + (s.Pos - this.selectionCenter).Length);
-
-			this.selectionStatsValid = true;
-		}
-
-		protected void UpdateMouseover(Point mouseLoc)
-		{
-			bool lastMouseoverSelect = this.mouseoverSelect;
-			SelObj lastMouseoverObject = this.mouseoverObject;
-			ObjectAction lastMouseoverAction = this.mouseoverAction;
-
-			if (this.actionAllowed && !this.camBeginDragScene && this.camAction == CameraAction.None)
-			{
-				this.ValidateSelectionStats();
-
-				// Determine object at mouse position
-				this.mouseoverObject = this.PickSelObjAt(mouseLoc.X, mouseLoc.Y);
-
-				// Determine action variables
-				Vector3 mouseSpaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
-				float scale = this.GetScaleAtZ(this.selectionCenter.Z);
-				const float boundaryThickness = 10.0f;
-				bool tooSmall = this.selectionRadius * scale <= boundaryThickness * 2.0f;
-				bool mouseOverBoundary = MathF.Abs((mouseSpaceCoord - this.selectionCenter).Length - this.selectionRadius) * scale < boundaryThickness;
-				bool mouseInsideBoundary = !mouseOverBoundary && (mouseSpaceCoord - this.selectionCenter).Length < this.selectionRadius;
-				bool mouseAtCenterAxis = 
-					MathF.Abs(mouseSpaceCoord.X - this.selectionCenter.X) * scale < boundaryThickness || 
-					MathF.Abs(mouseSpaceCoord.Y - this.selectionCenter.Y) * scale < boundaryThickness;
-				bool shift = (Control.ModifierKeys & Keys.Shift) != Keys.None;
-				bool ctrl = (Control.ModifierKeys & Keys.Control) != Keys.None;
-
-				bool anySelection = this.actionObjSel.Count > 0;
-				bool canMove = this.actionObjSel.Any(s => s.IsActionAvailable(ObjectAction.Move));
-				bool canRotate = (canMove && this.actionObjSel.Count > 1) || this.actionObjSel.Any(s => s.IsActionAvailable(ObjectAction.Rotate));
-				bool canScale = (canMove && this.actionObjSel.Count > 1) || this.actionObjSel.Any(s => s.IsActionAvailable(ObjectAction.Scale));
-
-				// Select which action to propose
-				this.mouseoverSelect = false;
-				if (ctrl)
-					this.mouseoverAction = ObjectAction.RectSelect;
-				else if (anySelection && !tooSmall && mouseOverBoundary && mouseAtCenterAxis && this.selectionRadius > 0.0f && canScale)
-					this.mouseoverAction = ObjectAction.Scale;
-				else if (anySelection && !tooSmall && mouseOverBoundary && canRotate)
-					this.mouseoverAction = ObjectAction.Rotate;
-				else if (anySelection && mouseInsideBoundary && canMove)
-					this.mouseoverAction = ObjectAction.Move;
-				else if (shift) // Lower prio than Ctrl, because Shift also modifies mouse actions
-					this.mouseoverAction = ObjectAction.RectSelect;
-				else if (this.mouseoverObject != null && this.mouseoverObject.IsActionAvailable(ObjectAction.Move))
-				{
-					this.mouseoverAction = ObjectAction.Move; 
-					this.mouseoverSelect = true;
-				}
-				else
-					this.mouseoverAction = ObjectAction.RectSelect;
-			}
-			else
-			{
-				this.mouseoverObject = null;
-				this.mouseoverSelect = false;
-				this.mouseoverAction = ObjectAction.None;
-			}
-
-			// If mouseover changed..
-			if (this.mouseoverObject != lastMouseoverObject || 
-				this.mouseoverSelect != lastMouseoverSelect ||
-				this.mouseoverAction != lastMouseoverAction)
-			{
-				// Adjust mouse cursor based on proposed action
-				if (this.mouseoverAction == ObjectAction.Move)
-					this.Cursor = CursorHelper.ArrowActionMove;
-				else if (this.mouseoverAction == ObjectAction.Rotate)
-					this.Cursor = CursorHelper.ArrowActionRotate;
-				else if (this.mouseoverAction == ObjectAction.Scale)
-					this.Cursor = CursorHelper.ArrowActionScale;
-				else
-					this.Cursor = CursorHelper.Arrow;
-			}
-			
-			// Redraw if action gizmos might be visible
-			if (this.actionAllowed)
-				this.Invalidate();
-		}
-		private void UpdateRectSelection(Point mouseLoc)
-		{
-			if (DualityEditorApp.IsSelectionChanging) return; // Prevent Recursion in case SelectObjects triggers UpdateAction.
-
-			bool shift = (Control.ModifierKeys & Keys.Shift) != Keys.None;
-			bool ctrl = (Control.ModifierKeys & Keys.Control) != Keys.None;
-
-			// Determine picked rect
-			int pX = Math.Max(Math.Min(mouseLoc.X, this.actionBeginLoc.X), 0);
-			int pY = Math.Max(Math.Min(mouseLoc.Y, this.actionBeginLoc.Y), 0);
-			int pX2 = Math.Max(mouseLoc.X, this.actionBeginLoc.X);
-			int pY2 = Math.Max(mouseLoc.Y, this.actionBeginLoc.Y);
-			int pW = Math.Max(pX2 - pX, 1);
-			int pH = Math.Max(pY2 - pY, 1);
-
-			// Check which renderers are picked
-			List<SelObj> picked = this.PickSelObjIn(pX, pY, pW, pH);
-
-			// Store in internal rect selection
-			ObjectSelection oldRectSel = this.activeRectSel;
-			this.activeRectSel = new ObjectSelection(picked);
-
-			// Apply internal selection to actual editor selection
-			if (shift || ctrl)
-			{
-				if (this.activeRectSel.ObjectCount > 0)
-				{
-					ObjectSelection added = (this.activeRectSel - oldRectSel) + (oldRectSel - this.activeRectSel);
-					this.SelectObjects(added.OfType<SelObj>(), shift ? SelectMode.Append : SelectMode.Toggle);
-				}
-			}
-			else if (this.activeRectSel.ObjectCount > 0)
-				this.SelectObjects(this.activeRectSel.OfType<SelObj>());
-			else
-				this.ClearSelection();
-
-			this.Invalidate();
-		}
-		private void UpdateObjMove(Point mouseLoc)
-		{
-			this.ValidateSelectionStats();
-
-			// Determine where to move the object
-			float zMovement = this.CameraObj.Transform.Pos.Z - this.actionLastLocSpace.Z;
-			Vector3 mousePosSpace = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z + zMovement)); mousePosSpace.Z = 0;
-			Vector3 resetMovement = this.actionBeginLocSpace - this.actionLastLocSpace;
-			Vector3 targetMovement = mousePosSpace - this.actionLastLocSpace; targetMovement.Z = zMovement;
-
-			// Apply user guide snapping
-			if ((this.snapToUserGuides & UserGuideType.Position) != UserGuideType.None)
-			{
-				Vector3 snappedCenter = this.selectionCenter;
-				Vector3 targetPosSpace = snappedCenter + targetMovement;
-
-				// When moving multiple objects, snap only relative to the original selection center, so individual grid alignment is retained
-				if (this.actionObjSel.Count > 1)
-					snappedCenter = this.EditingUserGuide.SnapPosition(this.selectionCenter);
-
-				targetPosSpace = this.EditingUserGuide.SnapPosition(targetPosSpace);
-				targetMovement = targetPosSpace - snappedCenter;
-			}
-
-			// Apply user axis locks
-			targetMovement = this.ApplyAxisLock(targetMovement, resetMovement, mousePosSpace - this.actionBeginLocSpace + new Vector3(0.0f, 0.0f, this.CameraObj.Transform.Pos.Z));
-
-			// Move the selected objects accordingly
-			this.MoveSelectionBy(targetMovement);
-
-			this.actionLastLocSpace += targetMovement;
-		}
-		private void UpdateObjRotate(Point mouseLoc)
-		{
-			this.ValidateSelectionStats();
-
-			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
-			float lastAngle = MathF.Angle(this.selectionCenter.X, this.selectionCenter.Y, this.actionLastLocSpace.X, this.actionLastLocSpace.Y);
-			float curAngle = MathF.Angle(this.selectionCenter.X, this.selectionCenter.Y, spaceCoord.X, spaceCoord.Y);
-			float rotation = curAngle - lastAngle;
-
-			this.RotateSelectionBy(rotation);
-
-			this.actionLastLocSpace = spaceCoord;
-		}
-		private void UpdateObjScale(Point mouseLoc)
-		{
-			this.ValidateSelectionStats();
-			if (this.selectionRadius == 0.0f) return;
-
-			Vector3 spaceCoord = this.GetSpaceCoord(new Vector3(mouseLoc.X, mouseLoc.Y, this.selectionCenter.Z));
-			float lastRadius = this.selectionRadius;
-			float curRadius = (this.selectionCenter - spaceCoord).Length;
-
-			if ((this.snapToUserGuides & UserGuideType.Scale) != UserGuideType.None)
-			{
-				curRadius = this.EditingUserGuide.SnapSize(curRadius);
-			}
-
-			float scale = MathF.Clamp(curRadius / lastRadius, 0.0001f, 10000.0f);
-			this.ScaleSelectionBy(scale);
-
-			this.actionLastLocSpace = spaceCoord;
-			this.Invalidate();
-		}
-
-		/// <summary>
-		/// Returns an axis-locked version of the specified vector, if requested by the user. Doesn't
-		/// do anything when no axis lock is in currently active.
-		/// </summary>
-		/// <param name="baseVec">The base vector without any locking in place.</param>
-		/// <param name="lockedVec">A reference vector that represents the base vector being locked to all axes at once.</param>
-		/// <param name="beginToTarget">The movement vector to evaluate in order to determine the axes to which the base vector will be locked.</param>
-		/// <returns></returns>
-		protected Vector3 ApplyAxisLock(Vector3 baseVec, Vector3 lockedVec, Vector3 beginToTarget)
-		{
-			bool shift = (Control.ModifierKeys & Keys.Shift) != Keys.None;
-			if (!shift)
-			{
-				this.actionLockedAxis = LockedAxis.None;
-				return baseVec;
-			}
-			else
-			{
-				float xWeight = MathF.Abs(Vector3.Dot(beginToTarget.Normalized, Vector3.UnitX));
-				float yWeight = MathF.Abs(Vector3.Dot(beginToTarget.Normalized, Vector3.UnitY));
-				float zWeight = MathF.Abs(Vector3.Dot(beginToTarget.Normalized, Vector3.UnitZ));
-				
-				if (xWeight >= yWeight && xWeight >= zWeight)
-				{
-					this.actionLockedAxis = LockedAxis.X;
-					return new Vector3(baseVec.X, lockedVec.Y, lockedVec.Z);
-				}
-				else if (yWeight >= xWeight && yWeight >= zWeight)
-				{
-					this.actionLockedAxis = LockedAxis.Y;
-					return new Vector3(lockedVec.X, baseVec.Y, lockedVec.Z);
-				}
-				else if (zWeight >= yWeight && zWeight >= xWeight)
-				{
-					this.actionLockedAxis = LockedAxis.Z;
-					return new Vector3(lockedVec.X, lockedVec.Y, baseVec.Z);
-				}
-				return lockedVec;
-			}
-		}
-		protected Vector2 ApplyAxisLock(Vector2 baseVec, Vector2 lockedVec, Vector2 beginToTarget)
-		{
-			return this.ApplyAxisLock(new Vector3(baseVec), new Vector3(lockedVec), new Vector3(beginToTarget)).Xy;
-		}
-		protected Vector3 ApplyAxisLock(Vector3 targetVec, Vector3 lockedVec)
-		{
-			return targetVec + this.ApplyAxisLock(Vector3.Zero, lockedVec - targetVec, lockedVec - targetVec);
-		}
-		protected Vector2 ApplyAxisLock(Vector2 targetVec, Vector2 lockedVec)
-		{
-			return targetVec + this.ApplyAxisLock(Vector2.Zero, lockedVec - targetVec, lockedVec - targetVec);
 		}
 		
 		protected void CollectLayerDrawcalls(Canvas canvas)
@@ -1369,13 +633,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void RenderableControl_MouseMove(object sender, MouseEventArgs e)
 		{
 			this.mouseover = true;
-			this.UpdateAction();
 			if (!this.camBeginDragScene) this.OnMouseMove(e);
 		}
 		private void RenderableControl_MouseUp(object sender, MouseEventArgs e)
 		{
 			this.drawCamGizmoState = CameraAction.None;
-			this.drawSelGizmoState = ObjectAction.None;
 
 			if (this.camBeginDragScene)
 			{
@@ -1384,12 +646,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			else
 			{
-				if (this.action == ObjectAction.RectSelect && this.actionBeginLoc == e.Location)
-					this.UpdateRectSelection(e.Location);
-
-				if (e.Button == MouseButtons.Left)
-					this.EndAction();
-
 				if (this.camAction == CameraAction.Move && e.Button == MouseButtons.Middle)
 					this.camAction = CameraAction.None;
 				else if (this.camAction == CameraAction.Rotate && e.Button == MouseButtons.Right)
@@ -1405,7 +661,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			bool alt = (Control.ModifierKeys & Keys.Alt) != Keys.None;
 
 			this.drawCamGizmoState = CameraAction.None;
-			this.drawSelGizmoState = ObjectAction.None;
 
 			if (this.camBeginDragScene)
 			{
@@ -1430,26 +685,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			else
 			{
-				if (this.action == ObjectAction.None)
-				{
-					if (e.Button == MouseButtons.Left)
-					{
-						if (this.mouseoverSelect)
-						{
-							// To interact with an object that isn't selected yet: Select it.
-							if (!this.allObjSel.Contains(this.mouseoverObject))
-								this.SelectObjects(new [] { this.mouseoverObject });
-						}
-						if (alt)
-						{
-							UndoRedoManager.BeginMacro();
-							this.actionIsClone = true;
-							this.SelectObjects(this.CloneObjects(this.actionObjSel));
-						}
-						this.BeginAction(this.mouseoverAction);
-					}
-				}
-
 				if (this.camActionAllowed && this.camAction == CameraAction.None)
 				{
 					this.camActionBeginLoc = e.Location;
@@ -1473,7 +708,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (!this.mouseover) return;
 
 			this.drawCamGizmoState = CameraAction.None;
-			this.drawSelGizmoState = ObjectAction.None;
 
 			if (e.Delta != 0)
 			{
@@ -1505,59 +739,25 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					this.View.FocusDist = this.View.FocusDist + this.View.FocusDistIncrement * e.Delta / 40;
 				}
 			}
+
+			this.OnMouseWheel(e);
 		}
 		private void RenderableControl_MouseLeave(object sender, EventArgs e)
 		{
-			this.UpdateAction();
 			if (!this.camBeginDragScene) this.OnMouseMove();
-
-			this.mouseoverAction = ObjectAction.None;
-			this.mouseoverObject = null;
-			this.mouseoverSelect = false;
+			this.OnMouseLeave(e);
 			this.mouseover = false;
 
 			this.Invalidate();
 		}
 		private void RenderableControl_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (this.actionAllowed)
-			{
-				if (e.KeyCode == Keys.Delete)
-				{
-					List<SelObj> deleteList = this.actionObjSel.ToList();
-					this.ClearSelection();
-					this.DeleteObjects(deleteList);
-				}
-				else if (e.KeyCode == Keys.C && e.Control)
-				{
-					List<SelObj> cloneList = this.CloneObjects(this.actionObjSel);
-					this.SelectObjects(cloneList);
-				}
-				else if (e.KeyCode == Keys.G)
-				{
-					if (e.Alt)
-					{
-						this.SelectObjects(this.CloneObjects(this.actionObjSel));
-						e.SuppressKeyPress = true; // Prevent menustrip from getting focused
-					}
-					this.MoveSelectionToCursor();
-				}
-				else if (!e.Control && e.KeyCode == Keys.Left)		this.MoveSelectionBy(-Vector3.UnitX);
-				else if (!e.Control && e.KeyCode == Keys.Right)		this.MoveSelectionBy(Vector3.UnitX);
-				else if (!e.Control && e.KeyCode == Keys.Up)		this.MoveSelectionBy(-Vector3.UnitY);
-				else if (!e.Control && e.KeyCode == Keys.Down)		this.MoveSelectionBy(Vector3.UnitY);
-				else if (!e.Control && e.KeyCode == Keys.Add)		this.MoveSelectionBy(Vector3.UnitZ);
-				else if (!e.Control && e.KeyCode == Keys.Subtract)	this.MoveSelectionBy(-Vector3.UnitZ);
-				else if (e.KeyCode == Keys.ShiftKey)				this.UpdateAction();
-				else if (e.KeyCode == Keys.ControlKey)				this.UpdateAction();
-			}
-
 			if (this.camActionAllowed)
 			{
-				if (e.KeyCode == Keys.Space && this.action == ObjectAction.None && !this.camBeginDragScene)
+				if (e.KeyCode == Keys.Space && !this.IsActionInProgress && !this.camBeginDragScene)
 				{
 					this.camBeginDragScene = true;
-					this.UpdateAction();
+					this.OnCamActionRequiresCursorChanged(EventArgs.Empty);
 					this.Cursor = CursorHelper.HandGrab;
 				}
 				else if (e.KeyCode == Keys.F)
@@ -1626,15 +826,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.camBeginDragScene = false;
 				this.camAction = CameraAction.None;
 				this.Cursor = CursorHelper.Arrow;
-				this.UpdateAction();
+				this.OnCamActionRequiresCursorChanged(EventArgs.Empty);
 			}
-			else if (e.KeyCode == Keys.ShiftKey)
-			{
-				this.actionLockedAxis = LockedAxis.None;
-				this.UpdateAction();
-			}
-			else if (e.KeyCode == Keys.ControlKey)
-				this.UpdateAction();
 
 			this.OnKeyUp(e);
 		}
@@ -1648,7 +841,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (DualityEditorApp.MainForm == null) return;
 
 			this.camAction = CameraAction.None;
-			this.EndAction();
 			this.OnLostFocus();
 			this.Invalidate();
 		}
@@ -1676,7 +868,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void View_FocusDistChanged(object sender, EventArgs e)
 		{
-			this.UpdateAction();
 			if (!this.camBeginDragScene) this.OnMouseMove();
 		}
 		private void View_CurrentCameraChanged(object sender, CamView.CameraChangedEventArgs e)
@@ -1692,7 +883,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (e.HasAnyProperty(ReflectionInfo.Property_Transform_RelativePos, ReflectionInfo.Property_Transform_RelativeAngle) &&
 				e.Objects.Components.Any(c => c.GameObj == this.CameraObj))
 			{
-				this.UpdateAction();
 				if (!this.camBeginDragScene) this.OnMouseMove();
 			}
 		}
@@ -1727,17 +917,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		public virtual HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
 		{
-			if (this.actionAllowed && this.SelectedObjects.Any())
-			{
-				return HelpInfo.FromText(CamViewRes.CamView_Help_ObjActions, 
-					CamViewRes.CamView_Help_ObjActions_Delete + "\n" +
-					CamViewRes.CamView_Help_ObjActions_Clone + "\n" +
-					CamViewRes.CamView_Help_ObjActions_EditClone + "\n" +
-					CamViewRes.CamView_Help_ObjActions_MoveStep + "\n" +
-					CamViewRes.CamView_Help_ObjActions_Focus + "\n" +
-					CamViewRes.CamView_Help_ObjActions_AxisLock);
-			}
-			else if (this.camActionAllowed)
+			if (this.camActionAllowed)
 			{
 				return HelpInfo.FromText(CamViewRes.CamView_Help_CamActions, 
 					CamViewRes.CamView_Help_CamActions_Move + "\n" +
@@ -1745,8 +925,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					CamViewRes.CamView_Help_CamActions_MoveStep + "\n" +
 					CamViewRes.CamView_Help_CamActions_Focus);
 			}
-
-			return null;
+			else
+			{
+				return null;
+			}
 		}
 	}
 }

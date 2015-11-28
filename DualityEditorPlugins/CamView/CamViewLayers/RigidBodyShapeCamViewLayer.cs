@@ -7,8 +7,10 @@ using Duality;
 using Duality.Drawing;
 using Duality.Resources;
 using Duality.Components.Physics;
+
 using Duality.Editor;
 using Duality.Editor.Forms;
+using Duality.Editor.Plugins.CamView.CamViewStates;
 
 namespace Duality.Editor.Plugins.CamView.CamViewLayers
 {
@@ -97,7 +99,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				//	EdgeShapeInfo edge = s as EdgeShapeInfo;
 					LoopShapeInfo loop = s as LoopShapeInfo;
 
-					float shapeAlpha = colliderAlpha * (selectedBody == null || this.View.ActiveState.SelectedObjects.Any(sel => sel.ActualObject == s) ? 1.0f : 0.5f);
+					ObjectEditorCamViewState editorState = this.View.ActiveState as ObjectEditorCamViewState;
+					float shapeAlpha = colliderAlpha * (selectedBody == null || editorState == null || editorState.SelectedObjects.Any(sel => sel.ActualObject == s) ? 1.0f : 0.5f);
 					float densityRelative = MathF.Abs(maxDensity - minDensity) < 0.01f ? 1.0f : s.Density / avgDensity;
 					ColorRgba clr = s.IsSensor ? this.ShapeSensorColor : this.ShapeColor;
 					ColorRgba fontClr = this.FgColor;
