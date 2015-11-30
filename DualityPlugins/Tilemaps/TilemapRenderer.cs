@@ -43,20 +43,11 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.externalTilemap; }
 			set { this.externalTilemap = value; }
 		}
-		public override float BoundRadius
-		{
-			get
-			{
-				Transform transform = this.GameObj.Transform;
-				Tilemap tilemap = this.ActiveTilemap;
-				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
-				Point2 tileCount = tilemap != null ? tilemap.TileCount : new Point2(1, 1);
-				Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
-				Rect tilemapRect = Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
-				return tilemapRect.BoundingRadius * transform.Scale;
-			}
-		}
-		private Tilemap ActiveTilemap
+		/// <summary>
+		/// [GET] A reference to the <see cref="Tilemap"/> that is currently rendered by this <see cref="TilemapRenderer"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Tilemap ActiveTilemap
 		{
 			get 
 			{
@@ -72,7 +63,58 @@ namespace Duality.Plugins.Tilemaps
 				}
 			}
 		}
+		/// <summary>
+		/// [GET] The rectangular region that is occupied by the rendered <see cref="Tilemap"/>, in local / object space.
+		/// </summary>
+		public Rect LocalTilemapRect
+		{
+			get
+			{
+				Tilemap tilemap = this.ActiveTilemap;
+				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+				Point2 tileCount = tilemap != null ? tilemap.TileCount : Point2.Zero;
+				Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+				return Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
+			}
+		}
+		public override float BoundRadius
+		{
+			get
+			{
+				Transform transform = this.GameObj.Transform;
+				Rect tilemapRect = this.LocalTilemapRect;
+				return tilemapRect.BoundingRadius * transform.Scale;
+			}
+		}
 
+
+		/// <summary>
+		/// Given the specified coordinate in local / object space, this method returns the
+		/// tile index that is located there.
+		/// </summary>
+		/// <param name="localPos"></param>
+		/// <returns></returns>
+		public Point2 GetTileAtLocalPos(Vector2 localPos)
+		{
+			// Early-out, if the specified local position is not within the tilemap rect
+			Rect localRect = this.LocalTilemapRect;
+			if (!localRect.Contains(localPos))
+				return new Point2(-1, -1);
+
+			Tilemap tilemap = this.ActiveTilemap;
+			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+			Point2 tileCount = tilemap != null ? tilemap.TileCount : Point2.Zero;
+			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+
+			// Early-out, if the rendered tilemap is empty
+			if (tileCount.X <= 0 || tileCount.Y <= 0)
+				return new Point2(-1, -1);
+
+			// Determine the tile index at the specified local position
+			return new Point2(
+				MathF.Clamp((int)MathF.Floor((localPos.X - localRect.X) / tileSize.X), 0, tileCount.X - 1),
+				MathF.Clamp((int)MathF.Floor((localPos.Y - localRect.Y) / tileSize.Y), 0, tileCount.Y - 1));
+		}
 
 		public override void Draw(IDrawDevice device)
 		{
@@ -138,23 +180,19 @@ namespace Duality.Plugins.Tilemaps
 					device.TargetSize.X * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.Y * MathF.Abs(MathF.Cos(visualAngle)));
 				Vector2 localVisualBounds = visualBounds / cameraScaleAtObj;
 				Point2 targetVisibleTileCount = new Point2(
-					2 + (int)MathF.Ceiling(localVisualBounds.X / MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale), 
-					2 + (int)MathF.Ceiling(localVisualBounds.Y / MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale));
+					2 + (int)MathF.Ceiling(localVisualBounds.X / (MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale)), 
+					2 + (int)MathF.Ceiling(localVisualBounds.Y / (MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale)));
 
 				// Determine the tile indices (xy) that are visible within that rect
 				tileGridStartPos = new Point2(
-					viewCenterTile.X - targetVisibleTileCount.X / 2,
-					viewCenterTile.Y - targetVisibleTileCount.Y / 2);
+					MathF.Max(viewCenterTile.X - targetVisibleTileCount.X / 2, 0),
+					MathF.Max(viewCenterTile.Y - targetVisibleTileCount.Y / 2, 0));
 				Point2 tileGridEndPos = new Point2(
-					tileGridStartPos.X + targetVisibleTileCount.X,
-					tileGridStartPos.Y + targetVisibleTileCount.Y);
-				tileGridStartPos.X = MathF.Max(tileGridStartPos.X, 0);
-				tileGridStartPos.Y = MathF.Max(tileGridStartPos.Y, 0);
-				tileGridEndPos.X = MathF.Min(tileGridEndPos.X, tileCount.X);
-				tileGridEndPos.Y = MathF.Min(tileGridEndPos.Y, tileCount.Y);
+					MathF.Min(tileGridStartPos.X + targetVisibleTileCount.X, tileCount.X),
+					MathF.Min(tileGridStartPos.Y + targetVisibleTileCount.Y, tileCount.Y));
 				visibleTileCount = new Point2(
-					tileGridEndPos.X - tileGridStartPos.X,
-					tileGridEndPos.Y - tileGridStartPos.Y);
+					MathF.Clamp(tileGridEndPos.X - tileGridStartPos.X, 0, tileCount.X),
+					MathF.Clamp(tileGridEndPos.Y - tileGridStartPos.Y, 0, tileCount.Y));
 
 				// Determine start position for rendering
 				renderStartPos = 
