@@ -42,7 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TilemapsPlugin.cs" />
+    <Compile Include="CamViewStates\TilemapEditorCamViewState.cs" />
+    <Compile Include="EditorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +62,10 @@
     <ProjectReference Include="..\..\Duality\Duality.csproj">
       <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
       <Name>Duality</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CamView\CamView.Editor.csproj">
+      <Project>{e67350ed-2676-492a-9fbe-a08b5fbf3726}</Project>
+      <Name>CamView.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

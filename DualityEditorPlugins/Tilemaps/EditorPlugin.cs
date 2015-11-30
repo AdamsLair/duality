@@ -7,7 +7,7 @@ using Duality.Editor;
 
 namespace Duality.Editor.Plugins.Tilemaps
 {
-	public class TilemapsPlugin : EditorPlugin
+	public class TilemapsEditorPlugin : EditorPlugin
 	{
 		public override string Id
 		{
