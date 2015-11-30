@@ -96,8 +96,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// If we're hovering a tile of the current renderer, we're done
 				if (tileCursorPos.X != -1 && tileCursorPos.Y != -1)
 				{
-					this.hoveredTile = tileCursorPos;
-					this.hoveredRenderer = renderer;
+					if (!DesignTimeObjectData.Get(renderer.GameObj).IsLocked)
+					{
+						this.hoveredTile = tileCursorPos;
+						this.hoveredRenderer = renderer;
+					}
 					break;
 				}
 			}
