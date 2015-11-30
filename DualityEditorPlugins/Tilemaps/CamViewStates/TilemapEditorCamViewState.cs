@@ -139,8 +139,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseDown(e);
 			if (e.Button == MouseButtons.Left)
 			{
-				if (this.hoveredRenderer != null)
-					DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap));
+				if (this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != null)
+					DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap.GameObj));
 				else
 					DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 			}
