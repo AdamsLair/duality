@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				typeof(TilemapRenderer));
 		}
 		
-		protected Tilemap QuerySelectedTilemap()
+		private Tilemap QuerySelectedTilemap()
 		{
 			// Detect whether the user has either selected a Tilemap directly, 
 			// or a related Component that points to an external one
@@ -53,6 +53,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				r.Active && 
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
+		}
+		private bool GetTilemapDisplayedGreyedOut(Tilemap tilemap)
+		{
+			Tilemap hoveredTilemap = this.hoveredRenderer != null ? this.hoveredRenderer.ActiveTilemap : null;
+			if (this.selectedTilemap != null)
+				return tilemap != this.selectedTilemap && tilemap != hoveredTilemap;
+			else
+				return false;
 		}
 
 		protected override void OnEnterState()
@@ -80,7 +88,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Determine which renderers we're able to see right now and sort them by their Z values
 			TilemapRenderer[] visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
-			visibleRenderers.StableSort((a, b) => Comparer<float>.Default.Compare(a.GameObj.Transform.Pos.Z, b.GameObj.Transform.Pos.Z));
+			visibleRenderers.StableSort((a, b) =>
+			{
+				// The currently edited tilemap always prevails
+				if (a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
+					return -1;
+				// Otherwise, do regular Z sorting
+				else
+					return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
+			});
 
 			// Iterate over visible tilemap renderers to find out what the cursor is hovering
 			for (int i = 0; i < visibleRenderers.Length; i++)
@@ -121,12 +137,46 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (this.hoveredRenderer != null)
+			if (e.Button == MouseButtons.Left)
 			{
-				DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap));
+				if (this.hoveredRenderer != null)
+					DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap));
+				else
+					DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 			}
 		}
 
+		protected override void OnRenderState()
+		{
+			// "Grey out" all non-selected Tilemap Renderers
+			Dictionary<TilemapRenderer,ColorRgba> oldColors = null;
+			if (this.selectedTilemap != null)
+			{
+				foreach (TilemapRenderer renderer in Scene.Current.FindComponents<TilemapRenderer>())
+				{
+					if (renderer.ActiveTilemap == this.selectedTilemap)
+						continue;
+
+					if (oldColors == null)
+						oldColors = new Dictionary<TilemapRenderer,ColorRgba>();
+
+					oldColors[renderer] = renderer.ColorTint;
+					renderer.ColorTint = renderer.ColorTint.WithAlpha(0.33f);
+				}
+			}
+
+			// Do all the regular state rendering
+			base.OnRenderState();
+
+			// Reset each renderer's color tint value
+			if (oldColors != null)
+			{
+				foreach (var pair in oldColors)
+				{
+					pair.Key.ColorTint = pair.Value;
+				}
+			}
+		}
 		protected override void OnCollectStateDrawcalls(Canvas canvas)
 		{
 			base.OnCollectStateDrawcalls(canvas);
@@ -141,6 +191,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
 				Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 				Rect localRect = renderer.LocalTilemapRect;
+				bool greyOut = this.selectedTilemap != null && this.selectedTilemap != tilemap;
 
 				// Determine the object's local coordinate system (rotated, scaled) in world space
 				Vector2 worldAxisX = Vector2.UnitX;
@@ -153,9 +204,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				canvas.State.TransformAngle = transform.Angle;
 				canvas.State.TransformScale = new Vector2(transform.Scale);
 				canvas.State.ZOffset = -0.01f;
-				canvas.State.ColorTint = this.FgColor;
 
 				// Draw the surrounding rect of the tilemap
+				canvas.State.ColorTint = this.FgColor.WithAlpha(greyOut ? 0.33f : 1.0f);
 				canvas.DrawRect(
 					transform.Pos.X, 
 					transform.Pos.Y, 
@@ -168,6 +219,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				{
 					Vector2 localTilePos = tileSize * this.hoveredTile;
 					Vector2 worldTilePos = localTilePos.X * worldAxisX + localTilePos.Y * worldAxisY;
+					canvas.State.ColorTint = this.FgColor;
 					canvas.DrawRect(
 						transform.Pos.X + worldTilePos.X, 
 						transform.Pos.Y + worldTilePos.Y, 
