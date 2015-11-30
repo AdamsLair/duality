@@ -111,6 +111,21 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.Invalidate();
 			}
 		}
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			base.OnMouseLeave(e);
+			this.hoveredTile = InvalidTile;
+			this.hoveredRenderer = null;
+			this.Invalidate();
+		}
+		protected override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e);
+			if (this.hoveredRenderer != null)
+			{
+				DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap));
+			}
+		}
 
 		protected override void OnCollectStateDrawcalls(Canvas canvas)
 		{
