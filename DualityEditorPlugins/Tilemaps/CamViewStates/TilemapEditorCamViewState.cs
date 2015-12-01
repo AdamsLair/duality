@@ -12,6 +12,7 @@ using Duality.Resources;
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
 using Duality.Editor.Plugins.CamView.CamViewStates;
+using Duality.Editor.Plugins.CamView.CamViewLayers;
 
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
@@ -20,6 +21,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 	{
 		private enum TilemapTool
 		{
+			None,
+
 			Select,
 			Brush,
 			Rect,
@@ -29,10 +32,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		private static readonly Point2 InvalidTile = new Point2(-1, -1);
 
-		private TilemapTool     activeTool       = TilemapTool.Brush;
+		private TilemapTool     selectedTool     = TilemapTool.Brush;
 		private Tilemap         selectedTilemap  = null;
 		private TilemapRenderer hoveredRenderer  = null;
 		private Point2          hoveredTile      = InvalidTile;
+		private TilemapTool     activeTool       = TilemapTool.None;
 
 		private ToolStrip       toolstrip        = null;
 		private ToolStripButton toolButtonSelect = null;
@@ -53,53 +57,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.SetDefaultObjectVisibility(
 				typeof(Tilemap),
 				typeof(TilemapRenderer));
+			this.SetDefaultActiveLayers(
+				typeof(GridCamViewLayer));
 		}
 		
-		private void UpdateToolbar()
-		{
-			this.toolButtonSelect.Checked = false;
-			this.toolButtonBrush.Checked  = false;
-			this.toolButtonRect.Checked   = false;
-			this.toolButtonOval.Checked   = false;
-			this.toolButtonFill.Checked   = false;
-
-			switch (this.activeTool)
-			{
-				case TilemapTool.Select: this.toolButtonSelect.Checked = true; break;
-				case TilemapTool.Brush:  this.toolButtonBrush.Checked  = true; break;
-				case TilemapTool.Rect:   this.toolButtonRect.Checked   = true; break;
-				case TilemapTool.Oval:   this.toolButtonOval.Checked   = true; break;
-				case TilemapTool.Fill:   this.toolButtonFill.Checked   = true; break;
-			}
-		}
-		private void UpdateCursor()
-		{
-			if (this.hoveredRenderer == null)
-			{
-				this.Cursor = TilemapsResCache.CursorTileSelect;
-			}
-			else if (this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
-			{
-				this.Cursor = TilemapsResCache.CursorTileSelectActive;
-			}
-			else
-			{
-				switch (this.activeTool)
-				{
-					case TilemapTool.Select: this.Cursor = TilemapsResCache.CursorTileSelect; break;
-					case TilemapTool.Brush:  this.Cursor = TilemapsResCache.CursorTileBrush;  break;
-					case TilemapTool.Rect:   this.Cursor = TilemapsResCache.CursorTileRect;   break;
-					case TilemapTool.Oval:   this.Cursor = TilemapsResCache.CursorTileOval;   break;
-					case TilemapTool.Fill:   this.Cursor = TilemapsResCache.CursorTileFill;   break;
-				}
-			}
-		}
 		private void SetActiveTool(TilemapTool tool)
 		{
-			this.activeTool = tool;
-			this.UpdateCursor();
+			this.selectedTool = tool;
 			this.UpdateToolbar();
-			this.Invalidate();
+			this.OnMouseMove();
 		}
 
 		private Tilemap QuerySelectedTilemap()
@@ -127,6 +93,86 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				return tilemap != this.selectedTilemap && tilemap != hoveredTilemap;
 			else
 				return false;
+		}
+		
+		private void UpdateToolbar()
+		{
+			this.toolButtonSelect.Checked = false;
+			this.toolButtonBrush.Checked  = false;
+			this.toolButtonRect.Checked   = false;
+			this.toolButtonOval.Checked   = false;
+			this.toolButtonFill.Checked   = false;
+
+			switch (this.selectedTool)
+			{
+				case TilemapTool.Select: this.toolButtonSelect.Checked = true; break;
+				case TilemapTool.Brush:  this.toolButtonBrush.Checked  = true; break;
+				case TilemapTool.Rect:   this.toolButtonRect.Checked   = true; break;
+				case TilemapTool.Oval:   this.toolButtonOval.Checked   = true; break;
+				case TilemapTool.Fill:   this.toolButtonFill.Checked   = true; break;
+			}
+		}
+		private void UpdateCursor()
+		{
+			switch (this.activeTool)
+			{
+				case TilemapTool.None:   this.Cursor = TilemapsResCache.CursorTileSelect;       break;
+				case TilemapTool.Select: this.Cursor = TilemapsResCache.CursorTileSelectActive; break;
+				case TilemapTool.Brush:  this.Cursor = TilemapsResCache.CursorTileBrush;        break;
+				case TilemapTool.Rect:   this.Cursor = TilemapsResCache.CursorTileRect;         break;
+				case TilemapTool.Oval:   this.Cursor = TilemapsResCache.CursorTileOval;         break;
+				case TilemapTool.Fill:   this.Cursor = TilemapsResCache.CursorTileFill;         break;
+			}
+		}
+		private void UpdateHoverState(Point cursorPos)
+		{
+			Point2 lastHoveredTile = this.hoveredTile;
+			TilemapRenderer lastHoveredRenderer = this.hoveredRenderer;
+
+			// Reset hover data
+			this.hoveredTile = InvalidTile;
+			this.hoveredRenderer = null;
+
+			// Determine which renderers we're able to see right now and sort them by their Z values
+			TilemapRenderer[] visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
+			visibleRenderers.StableSort((a, b) =>
+			{
+				// The currently edited tilemap always prevails
+				if (this.selectedTool != TilemapTool.Select && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
+					return -1;
+				// Otherwise, do regular Z sorting
+				else
+					return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
+			});
+
+			// Iterate over visible tilemap renderers to find out what the cursor is hovering
+			for (int i = 0; i < visibleRenderers.Length; i++)
+			{
+				TilemapRenderer renderer = visibleRenderers[i];
+				Transform transform = renderer.GameObj.Transform;
+
+				// Determine where the cursor is hovering in various coordinate systems
+				Vector3 worldCursorPos = this.CameraComponent.GetSpaceCoord(new Vector3(cursorPos.X, cursorPos.Y, transform.Pos.Z));
+				Vector2 localCursorPos = transform.GetLocalPoint(worldCursorPos.Xy);
+				Point2 tileCursorPos = renderer.GetTileAtLocalPos(localCursorPos);
+
+				// If we're hovering a tile of the current renderer, we're done
+				if (tileCursorPos.X != -1 && tileCursorPos.Y != -1)
+				{
+					if (!DesignTimeObjectData.Get(renderer.GameObj).IsLocked)
+					{
+						this.hoveredTile = tileCursorPos;
+						this.hoveredRenderer = renderer;
+					}
+					break;
+				}
+			}
+
+			// If something changed, redraw the view
+			if (lastHoveredTile != this.hoveredTile || lastHoveredRenderer != this.hoveredRenderer)
+			{
+				this.Invalidate();
+			}
 		}
 
 		protected override void OnEnterState()
@@ -181,7 +227,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 
 			// Initial update
-			this.SetActiveTool(this.activeTool);
+			this.SetActiveTool(this.selectedTool);
 			this.UpdateToolbar();
 		}
 		protected override void OnLeaveState()
@@ -214,50 +260,21 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			Point2 lastHoveredTile = this.hoveredTile;
-			TilemapRenderer lastHoveredRenderer = this.hoveredRenderer;
 
-			// Reset hover data
-			this.hoveredTile = InvalidTile;
-			this.hoveredRenderer = null;
+			// Determine what the cursor is hovering over
+			this.UpdateHoverState(e.Location);
 
-			// Determine which renderers we're able to see right now and sort them by their Z values
-			TilemapRenderer[] visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
-			visibleRenderers.StableSort((a, b) =>
-			{
-				// The currently edited tilemap always prevails
-				if (this.activeTool != TilemapTool.Select && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
-					return -1;
-				// Otherwise, do regular Z sorting
-				else
-					return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
-			});
+			// Determine what action the cursor would do in the current state
+			TilemapTool lastActiveTool = this.activeTool;
+			if (this.hoveredRenderer == null)
+				this.activeTool = TilemapTool.None;
+			else if (this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
+				this.activeTool = TilemapTool.Select;
+			else
+				this.activeTool = this.selectedTool;
 
-			// Iterate over visible tilemap renderers to find out what the cursor is hovering
-			for (int i = 0; i < visibleRenderers.Length; i++)
-			{
-				TilemapRenderer renderer = visibleRenderers[i];
-				Transform transform = renderer.GameObj.Transform;
-
-				// Determine where the cursor is hovering in various coordinate systems
-				Vector3 worldCursorPos = this.CameraComponent.GetSpaceCoord(new Vector3(e.X, e.Y, transform.Pos.Z));
-				Vector2 localCursorPos = transform.GetLocalPoint(worldCursorPos.Xy);
-				Point2 tileCursorPos = renderer.GetTileAtLocalPos(localCursorPos);
-
-				// If we're hovering a tile of the current renderer, we're done
-				if (tileCursorPos.X != -1 && tileCursorPos.Y != -1)
-				{
-					if (!DesignTimeObjectData.Get(renderer.GameObj).IsLocked)
-					{
-						this.hoveredTile = tileCursorPos;
-						this.hoveredRenderer = renderer;
-					}
-					break;
-				}
-			}
-
-			// If something changed, redraw the view
-			if (lastHoveredTile != this.hoveredTile || lastHoveredRenderer != this.hoveredRenderer)
+			// If our highlighted action changed, redraw view and update the cursor
+			if (lastActiveTool != this.activeTool)
 			{
 				this.UpdateCursor();
 				this.Invalidate();
@@ -268,6 +285,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseLeave(e);
 			this.hoveredTile = InvalidTile;
 			this.hoveredRenderer = null;
+			this.activeTool = TilemapTool.None;
+			this.UpdateCursor();
 			this.Invalidate();
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -275,10 +294,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseDown(e);
 			if (e.Button == MouseButtons.Left)
 			{
-				if (this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != null)
-					DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap.GameObj));
-				else
-					DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+				switch (this.activeTool)
+				{
+					case TilemapTool.None:
+						DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+						break;
+					case TilemapTool.Select:
+						DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap.GameObj));
+						break;
+				}
 			}
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -302,7 +326,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnCamActionRequiresCursorChanged(EventArgs e)
 		{
 			base.OnCamActionRequiresCursorChanged(e);
-			this.UpdateCursor();
+			this.OnMouseMove();
 		}
 
 		protected override void OnRenderState()
@@ -339,6 +363,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnCollectStateDrawcalls(Canvas canvas)
 		{
 			base.OnCollectStateDrawcalls(canvas);
+			BatchInfo defaultMaterial = canvas.State.Material;
+			BatchInfo highlightMaterial = this.FgColor.GetLuminance() > 0.5f ? 
+				new BatchInfo(DrawTechnique.Light, ColorRgba.White.WithAlpha(0.5f)) :
+				new BatchInfo(DrawTechnique.Alpha, ColorRgba.White);
 
 			TilemapRenderer[] visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
 			for (int i = 0; i < visibleRenderers.Length; i++)
@@ -378,7 +406,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				{
 					Vector2 localTilePos = tileSize * this.hoveredTile;
 					Vector2 worldTilePos = localTilePos.X * worldAxisX + localTilePos.Y * worldAxisY;
+					canvas.State.ColorTint = this.FgColor.WithAlpha(0.25f);
+					canvas.State.SetMaterial(highlightMaterial);
+					canvas.FillRect(
+						transform.Pos.X + worldTilePos.X, 
+						transform.Pos.Y + worldTilePos.Y, 
+						transform.Pos.Z,
+						tileSize.X, 
+						tileSize.Y);
 					canvas.State.ColorTint = this.FgColor;
+					canvas.State.SetMaterial(defaultMaterial);
 					canvas.DrawRect(
 						transform.Pos.X + worldTilePos.X, 
 						transform.Pos.Y + worldTilePos.Y, 
@@ -400,7 +437,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.selectedTilemap != newSelection)
 			{
 				this.selectedTilemap = newSelection;
-				this.UpdateCursor();
+				if (this.Mouseover)
+					this.OnMouseMove();
 				this.Invalidate();
 			}
 		}

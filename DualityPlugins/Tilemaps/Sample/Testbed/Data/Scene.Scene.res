@@ -311,8 +311,8 @@
             <active dataType="Bool">true</active>
             <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
               <A dataType="Byte">255</A>
-              <B dataType="Byte">0</B>
-              <G dataType="Byte">0</G>
+              <B dataType="Byte">128</B>
+              <G dataType="Byte">128</G>
               <R dataType="Byte">255</R>
             </colorTint>
             <externalTilemap />
