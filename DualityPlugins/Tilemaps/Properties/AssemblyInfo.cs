@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Tilemaps")]
-[assembly: AssemblyCopyright("Copyright © Fedja Adam 2012")]
+[assembly: AssemblyCopyright("Copyright © Fedja Adam 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

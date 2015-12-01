@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Drawing;
 
 using Duality;
 using Duality.Drawing;
 using Duality.Components;
 using Duality.Resources;
 using Duality.Plugins.Tilemaps;
+using Duality.Editor.Plugins.Tilemaps.Properties;
 using Duality.Editor.Plugins.CamView.CamViewStates;
 
 
@@ -16,11 +18,28 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
 	public class TilemapEditorCamViewState : CamViewState
 	{
+		private enum TilemapTool
+		{
+			Select,
+			Brush,
+			Rect,
+			Oval,
+			Fill
+		}
+
 		private static readonly Point2 InvalidTile = new Point2(-1, -1);
 
-		private Tilemap         selectedTilemap = null;
-		private TilemapRenderer hoveredRenderer = null;
-		private Point2          hoveredTile     = InvalidTile;
+		private TilemapTool     activeTool       = TilemapTool.Select;
+		private Tilemap         selectedTilemap  = null;
+		private TilemapRenderer hoveredRenderer  = null;
+		private Point2          hoveredTile      = InvalidTile;
+
+		private ToolStrip       toolstrip        = null;
+		private ToolStripButton toolButtonSelect = null;
+		private ToolStripButton toolButtonBrush  = null;
+		private ToolStripButton toolButtonRect   = null;
+		private ToolStripButton toolButtonOval   = null;
+		private ToolStripButton toolButtonFill   = null;
 
 
 		public override string StateName
@@ -36,6 +55,41 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				typeof(TilemapRenderer));
 		}
 		
+		private void UpdateToolbar()
+		{
+			this.toolButtonSelect.Checked = false;
+			this.toolButtonBrush.Checked  = false;
+			this.toolButtonRect.Checked   = false;
+			this.toolButtonOval.Checked   = false;
+			this.toolButtonFill.Checked   = false;
+
+			switch (this.activeTool)
+			{
+				case TilemapTool.Select: this.toolButtonSelect.Checked = true; break;
+				case TilemapTool.Brush:  this.toolButtonBrush.Checked  = true; break;
+				case TilemapTool.Rect:   this.toolButtonRect.Checked   = true; break;
+				case TilemapTool.Oval:   this.toolButtonOval.Checked   = true; break;
+				case TilemapTool.Fill:   this.toolButtonFill.Checked   = true; break;
+			}
+		}
+		private void UpdateCursor()
+		{
+			switch (this.activeTool)
+			{
+				case TilemapTool.Select: this.Cursor = TilemapsResCache.CursorTileSelect; break;
+				case TilemapTool.Brush:  this.Cursor = TilemapsResCache.CursorTileBrush;  break;
+				case TilemapTool.Rect:   this.Cursor = TilemapsResCache.CursorTileRect;   break;
+				case TilemapTool.Oval:   this.Cursor = TilemapsResCache.CursorTileOval;   break;
+				case TilemapTool.Fill:   this.Cursor = TilemapsResCache.CursorTileFill;   break;
+			}
+		}
+		private void SetActiveTool(TilemapTool tool)
+		{
+			this.activeTool = tool;
+			this.UpdateCursor();
+			this.UpdateToolbar();
+		}
+
 		private Tilemap QuerySelectedTilemap()
 		{
 			// Detect whether the user has either selected a Tilemap directly, 
@@ -67,13 +121,82 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			base.OnEnterState();
 
+			// Init the custom tile editing toolbar
+			{
+				this.View.SuspendLayout();
+				this.toolstrip = new ToolStrip();
+				this.toolstrip.SuspendLayout();
+
+				this.toolstrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+				this.toolstrip.Name = "toolstrip";
+				this.toolstrip.Text = "Tilemap Editor Tools";
+
+				this.toolButtonSelect = new ToolStripButton(TilemapsRes.ItemName_TileSelect, TilemapsResCache.IconTileSelect, this.toolButtonSelect_Click);
+				this.toolButtonSelect.DisplayStyle = ToolStripItemDisplayStyle.Image;
+				this.toolButtonSelect.AutoToolTip = true;
+				this.toolstrip.Items.Add(this.toolButtonSelect);
+
+				this.toolButtonBrush = new ToolStripButton(TilemapsRes.ItemName_TileBrush, TilemapsResCache.IconTileBrush, this.toolButtonBrush_Click);
+				this.toolButtonBrush.DisplayStyle = ToolStripItemDisplayStyle.Image;
+				this.toolButtonBrush.AutoToolTip = true;
+				this.toolstrip.Items.Add(this.toolButtonBrush);
+
+				this.toolButtonRect = new ToolStripButton(TilemapsRes.ItemName_TileRect, TilemapsResCache.IconTileRect, this.toolButtonRect_Click);
+				this.toolButtonRect.DisplayStyle = ToolStripItemDisplayStyle.Image;
+				this.toolButtonRect.AutoToolTip = true;
+				this.toolstrip.Items.Add(this.toolButtonRect);
+
+				this.toolButtonOval = new ToolStripButton(TilemapsRes.ItemName_TileOval, TilemapsResCache.IconTileOval, this.toolButtonOval_Click);
+				this.toolButtonOval.DisplayStyle = ToolStripItemDisplayStyle.Image;
+				this.toolButtonOval.AutoToolTip = true;
+				this.toolstrip.Items.Add(this.toolButtonOval);
+
+				this.toolButtonFill = new ToolStripButton(TilemapsRes.ItemName_TileFill, TilemapsResCache.IconTileFill, this.toolButtonFill_Click);
+				this.toolButtonFill.DisplayStyle = ToolStripItemDisplayStyle.Image;
+				this.toolButtonFill.AutoToolTip = true;
+				this.toolstrip.Items.Add(this.toolButtonFill);
+
+				this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+				this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
+
+				this.View.Controls.Add(this.toolstrip);
+				this.View.Controls.SetChildIndex(this.toolstrip, this.View.Controls.IndexOf(this.View.ToolbarCamera));
+				this.toolstrip.ResumeLayout(true);
+				this.View.ResumeLayout(true);
+			}
+
+			// Register events
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
+
+			// Initial update
+			this.SetActiveTool(this.activeTool);
+			this.UpdateToolbar();
 		}
 		protected override void OnLeaveState()
 		{
 			base.OnLeaveState();
 
+			// Cleanup the custom tile editing toolbar
+			{
+				this.toolstrip.Dispose();
+				this.toolButtonSelect.Dispose();
+				this.toolButtonBrush.Dispose();
+				this.toolButtonRect.Dispose();
+				this.toolButtonOval.Dispose();
+				this.toolButtonFill.Dispose();
+				this.toolstrip = null;
+				this.toolButtonSelect = null;
+				this.toolButtonBrush = null;
+				this.toolButtonRect = null;
+				this.toolButtonOval = null;
+				this.toolButtonFill = null;
+			}
+
+			// Unregister events
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
+
+			// Reset state
+			this.Cursor = CursorHelper.Arrow;
 		}
 
 		protected override void OnMouseMove(MouseEventArgs e)
@@ -144,6 +267,29 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				else
 					DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 			}
+		}
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+
+			if (Control.ModifierKeys == Keys.None)
+			{
+				if (e.KeyCode == Keys.Q && this.toolButtonSelect.Enabled)
+					this.toolButtonSelect_Click(this, EventArgs.Empty);
+				else if (e.KeyCode == Keys.W && this.toolButtonBrush.Enabled)
+					this.toolButtonBrush_Click(this, EventArgs.Empty);
+				else if (e.KeyCode == Keys.E && this.toolButtonRect.Enabled)
+					this.toolButtonRect_Click(this, EventArgs.Empty);
+				else if (e.KeyCode == Keys.R && this.toolButtonOval.Enabled)
+					this.toolButtonOval_Click(this, EventArgs.Empty);
+				else if (e.KeyCode == Keys.T && this.toolButtonFill.Enabled)
+					this.toolButtonFill_Click(this, EventArgs.Empty);
+			}
+		}
+		protected override void OnCamActionRequiresCursorChanged(EventArgs e)
+		{
+			base.OnCamActionRequiresCursorChanged(e);
+			this.UpdateCursor();
 		}
 
 		protected override void OnRenderState()
@@ -244,6 +390,27 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 
 			this.Invalidate();
+		}
+
+		private void toolButtonSelect_Click(object sender, EventArgs e)
+		{
+			this.SetActiveTool(TilemapTool.Select);
+		}
+		private void toolButtonBrush_Click(object sender, EventArgs e)
+		{
+			this.SetActiveTool(TilemapTool.Brush);
+		}
+		private void toolButtonRect_Click(object sender, EventArgs e)
+		{
+			this.SetActiveTool(TilemapTool.Rect);
+		}
+		private void toolButtonOval_Click(object sender, EventArgs e)
+		{
+			this.SetActiveTool(TilemapTool.Oval);
+		}
+		private void toolButtonFill_Click(object sender, EventArgs e)
+		{
+			this.SetActiveTool(TilemapTool.Fill);
 		}
 	}
 }
