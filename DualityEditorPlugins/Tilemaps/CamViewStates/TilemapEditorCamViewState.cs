@@ -29,7 +29,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		private static readonly Point2 InvalidTile = new Point2(-1, -1);
 
-		private TilemapTool     activeTool       = TilemapTool.Select;
+		private TilemapTool     activeTool       = TilemapTool.Brush;
 		private Tilemap         selectedTilemap  = null;
 		private TilemapRenderer hoveredRenderer  = null;
 		private Point2          hoveredTile      = InvalidTile;
@@ -74,13 +74,24 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		}
 		private void UpdateCursor()
 		{
-			switch (this.activeTool)
+			if (this.hoveredRenderer == null)
 			{
-				case TilemapTool.Select: this.Cursor = TilemapsResCache.CursorTileSelect; break;
-				case TilemapTool.Brush:  this.Cursor = TilemapsResCache.CursorTileBrush;  break;
-				case TilemapTool.Rect:   this.Cursor = TilemapsResCache.CursorTileRect;   break;
-				case TilemapTool.Oval:   this.Cursor = TilemapsResCache.CursorTileOval;   break;
-				case TilemapTool.Fill:   this.Cursor = TilemapsResCache.CursorTileFill;   break;
+				this.Cursor = TilemapsResCache.CursorTileSelect;
+			}
+			else if (this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
+			{
+				this.Cursor = TilemapsResCache.CursorTileSelectActive;
+			}
+			else
+			{
+				switch (this.activeTool)
+				{
+					case TilemapTool.Select: this.Cursor = TilemapsResCache.CursorTileSelect; break;
+					case TilemapTool.Brush:  this.Cursor = TilemapsResCache.CursorTileBrush;  break;
+					case TilemapTool.Rect:   this.Cursor = TilemapsResCache.CursorTileRect;   break;
+					case TilemapTool.Oval:   this.Cursor = TilemapsResCache.CursorTileOval;   break;
+					case TilemapTool.Fill:   this.Cursor = TilemapsResCache.CursorTileFill;   break;
+				}
 			}
 		}
 		private void SetActiveTool(TilemapTool tool)
@@ -88,6 +99,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.activeTool = tool;
 			this.UpdateCursor();
 			this.UpdateToolbar();
+			this.Invalidate();
 		}
 
 		private Tilemap QuerySelectedTilemap()
@@ -214,7 +226,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			visibleRenderers.StableSort((a, b) =>
 			{
 				// The currently edited tilemap always prevails
-				if (a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
+				if (this.activeTool != TilemapTool.Select && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
 					return -1;
 				// Otherwise, do regular Z sorting
 				else
@@ -247,6 +259,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// If something changed, redraw the view
 			if (lastHoveredTile != this.hoveredTile || lastHoveredRenderer != this.hoveredRenderer)
 			{
+				this.UpdateCursor();
 				this.Invalidate();
 			}
 		}
@@ -382,14 +395,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (!e.AffectedCategories.HasFlag(ObjectSelection.Category.GameObjCmp))
 				return;
 
-			// Collider selection changed
-			if ((e.AffectedCategories & ObjectSelection.Category.GameObjCmp) != ObjectSelection.Category.None)
+			// Tilemap selection changed
+			Tilemap newSelection = this.QuerySelectedTilemap();
+			if (this.selectedTilemap != newSelection)
 			{
-				Tilemap newSelection = this.QuerySelectedTilemap();
 				this.selectedTilemap = newSelection;
+				this.UpdateCursor();
+				this.Invalidate();
 			}
-
-			this.Invalidate();
 		}
 
 		private void toolButtonSelect_Click(object sender, EventArgs e)
