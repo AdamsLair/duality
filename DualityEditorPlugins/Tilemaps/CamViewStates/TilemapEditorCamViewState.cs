@@ -99,14 +99,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
-		private bool GetTilemapDisplayedGreyedOut(Tilemap tilemap)
-		{
-			Tilemap hoveredTilemap = this.hoveredRenderer != null ? this.hoveredRenderer.ActiveTilemap : null;
-			if (this.selectedTilemap != null)
-				return tilemap != this.selectedTilemap && tilemap != hoveredTilemap;
-			else
-				return false;
-		}
 		
 		private void UpdateToolbar()
 		{
