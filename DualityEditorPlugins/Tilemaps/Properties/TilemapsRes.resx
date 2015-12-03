@@ -160,4 +160,16 @@
   <data name="ItemName_TileSelect" xml:space="preserve">
     <value>Selection Tool (Q)</value>
   </data>
+  <data name="UndoRedo_EditTilemapDrawTiles" xml:space="preserve">
+    <value>Draw Tiles</value>
+  </data>
+  <data name="UndoRedo_EditTilemapFillTileOval" xml:space="preserve">
+    <value>Fill Tile Oval</value>
+  </data>
+  <data name="UndoRedo_EditTilemapFillTileRect" xml:space="preserve">
+    <value>Fill Tile Rect</value>
+  </data>
+  <data name="UndoRedo_EditTilemapFloodFillTiles" xml:space="preserve">
+    <value>Flood Fill Tiles</value>
+  </data>
 </root>

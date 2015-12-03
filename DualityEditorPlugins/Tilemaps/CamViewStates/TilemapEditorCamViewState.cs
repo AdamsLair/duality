@@ -11,6 +11,7 @@ using Duality.Components;
 using Duality.Resources;
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
+using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 using Duality.Editor.Plugins.CamView.CamViewStates;
 using Duality.Editor.Plugins.CamView.CamViewLayers;
 
@@ -29,24 +30,33 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Oval,
 			Fill
 		}
+		private enum ContinuousAction
+		{
+			None,
+
+			DrawTile,
+			FillTileRect,
+			FillTileOval
+		}
 
 		private static readonly Point2 InvalidTile = new Point2(-1, -1);
 
-		private TilemapTool     selectedTool     = TilemapTool.Brush;
-		private Tilemap         selectedTilemap  = null;
-		private TilemapRenderer hoveredRenderer  = null;
-		private Point2          hoveredTile      = InvalidTile;
-		private TilemapTool     activeTool       = TilemapTool.None;
-		private Tilemap         activeTilemap    = null;
-		private Point2          activeAreaOrigin = InvalidTile;
-		private Grid<bool>      activeArea       = new Grid<bool>();
+		private TilemapTool      selectedTool     = TilemapTool.Brush;
+		private Tilemap          selectedTilemap  = null;
+		private TilemapRenderer  hoveredRenderer  = null;
+		private Point2           hoveredTile      = InvalidTile;
+		private TilemapTool      activeTool       = TilemapTool.None;
+		private Tilemap          activeTilemap    = null;
+		private Point2           activeAreaOrigin = InvalidTile;
+		private Grid<bool>       activeArea       = new Grid<bool>();
+		private ContinuousAction action           = ContinuousAction.None;
 
-		private ToolStrip       toolstrip        = null;
-		private ToolStripButton toolButtonSelect = null;
-		private ToolStripButton toolButtonBrush  = null;
-		private ToolStripButton toolButtonRect   = null;
-		private ToolStripButton toolButtonOval   = null;
-		private ToolStripButton toolButtonFill   = null;
+		private ToolStrip        toolstrip        = null;
+		private ToolStripButton  toolButtonSelect = null;
+		private ToolStripButton  toolButtonBrush  = null;
+		private ToolStripButton  toolButtonRect   = null;
+		private ToolStripButton  toolButtonOval   = null;
+		private ToolStripButton  toolButtonFill   = null;
 
 
 		public override string StateName
@@ -148,6 +158,12 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
 			});
 
+			// While doing an action, it's either the selected tilemap or none. No switch inbetween.
+			if (this.action != ContinuousAction.None && visibleRenderers.Length > 0)
+			{
+				visibleRenderers = new TilemapRenderer[] { visibleRenderers[0] };
+			}
+
 			// Iterate over visible tilemap renderers to find out what the cursor is hovering
 			for (int i = 0; i < visibleRenderers.Length; i++)
 			{
@@ -185,7 +201,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// Determine what action the cursor would do in the current state
 			if (this.hoveredRenderer == null)
 				this.activeTool = TilemapTool.None;
-			else if (this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
+			else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
 				this.activeTool = TilemapTool.Select;
 			else
 				this.activeTool = this.selectedTool;
@@ -193,10 +209,45 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.activeTool != TilemapTool.None)
 				this.activeTilemap = this.hoveredRenderer.ActiveTilemap ?? this.selectedTilemap;
 
-			// Determine a preview of the actions affected area
-			this.activeAreaOrigin = this.hoveredTile;
-			this.activeArea.Resize(1, 1);
-			this.activeArea[0, 0] = true;
+			// Determine the area that is affected by the current action
+			switch (this.activeTool)
+			{
+				case TilemapTool.None:
+				{
+					this.activeAreaOrigin = this.hoveredTile;
+					this.activeArea.Resize(0, 0);
+					break;
+				}
+				case TilemapTool.Select:
+				case TilemapTool.Brush:
+				{
+					this.activeAreaOrigin = this.hoveredTile;
+					this.activeArea.Resize(1, 1);
+					this.activeArea[0, 0] = true;
+					break;
+				}
+				case TilemapTool.Rect:
+				{
+					this.activeAreaOrigin = this.hoveredTile;
+					this.activeArea.Resize(1, 1);
+					this.activeArea[0, 0] = true;
+					break;
+				}
+				case TilemapTool.Oval:
+				{
+					this.activeAreaOrigin = this.hoveredTile;
+					this.activeArea.Resize(1, 1);
+					this.activeArea[0, 0] = true;
+					break;
+				}
+				case TilemapTool.Fill:
+				{
+					this.activeAreaOrigin = this.hoveredTile;
+					this.activeArea.Resize(1, 1);
+					this.activeArea[0, 0] = true;
+					break;
+				}
+			}
 
 			// If our highlighted action changed, redraw view and update the cursor
 			if (lastActiveTool != this.activeTool || lastActiveTilemap != this.activeTilemap)
@@ -206,8 +257,45 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 		}
 
+		private void EditTilemapDrawTile(Tilemap tilemap, Point2 pos, Tile tile)
+		{
+			UndoRedoManager.Do(new EditTilemapAction(
+				this.activeTilemap, 
+				EditTilemapActionType.DrawTile, 
+				this.activeAreaOrigin, 
+				new Grid<Tile>(1, 1, new Tile[] { tile }),
+				new Grid<bool>(1, 1, new bool[] { true })));
+			this.Invalidate();
+		}
+
+		private void BeginContinuousAction(ContinuousAction action)
+		{
+			if (this.action == action) return;
+			this.action = action;
+
+			if (this.action == ContinuousAction.DrawTile)
+			{
+				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, new Tile { Index = 1 });
+			}
+		}
+		private void UpdateContinuousAction()
+		{
+			if (this.action == ContinuousAction.DrawTile)
+			{
+				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, new Tile { Index = 1 });
+			}
+		}
+		private void EndContinuousAction()
+		{
+			if (this.action == ContinuousAction.None) return;
+			this.action = ContinuousAction.None;
+			UndoRedoManager.Finish();
+		}
+
 		private void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, ColorRgba color, Point2 origin, Grid<bool> highlight)
 		{
+			if (highlight.Capacity == 0) return;
+
 			BatchInfo defaultMaterial = canvas.State.Material;
 			BatchInfo highlightMaterial = this.FgColor.GetLuminance() > 0.5f ? 
 				new BatchInfo(DrawTechnique.Light, ColorRgba.White.WithAlpha(0.5f)) :
@@ -404,6 +492,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Register events
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 
 			// Initial update
 			this.SetActiveTool(this.selectedTool);
@@ -431,6 +520,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Unregister events
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 
 			// Reset state
 			this.Cursor = CursorHelper.Arrow;
@@ -439,10 +529,17 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
+			Point2 lastHoverTile = this.hoveredTile;
 
 			// Determine what the cursor is hovering over and what actions it could perform
 			this.UpdateHoverState(e.Location);
 			this.UpdateActiveState();
+
+			// If we're performing a continuous action, update it when our hover tile changes
+			if (this.hoveredTile != lastHoverTile)
+			{
+				this.UpdateContinuousAction();
+			}
 		}
 		protected override void OnMouseLeave(EventArgs e)
 		{
@@ -461,16 +558,25 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseDown(e);
 			if (e.Button == MouseButtons.Left)
 			{
-				switch (this.activeTool)
+				// Begin a continuous action, if one is associated with the currently active tool
+				ContinuousAction newAction = GetContinuousActionOfTool(this.activeTool);
+				if (newAction != ContinuousAction.None)
 				{
-					case TilemapTool.None:
-						DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
-						break;
-					case TilemapTool.Select:
-						DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap.GameObj));
-						break;
+					if (this.selectedTilemap != this.activeTilemap)
+						DualityEditorApp.Select(this, new ObjectSelection(this.activeTilemap.GameObj));
+					this.BeginContinuousAction(newAction);
 				}
+				// Otherwise, do a selection or deselection
+				else if (this.activeTool == TilemapTool.Select)
+					DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap.GameObj));
+				else if (this.activeTool == TilemapTool.None)
+					DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 			}
+		}
+		protected override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
+			this.EndContinuousAction();
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -581,6 +687,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.Invalidate();
 			}
 		}
+		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
+		{
+			if (e.HasProperty(TilemapsReflectionInfo.Property_Tilemap_Tiles))
+			{
+				this.Invalidate();
+			}
+		}
 
 		private void toolButtonSelect_Click(object sender, EventArgs e)
 		{
@@ -601,6 +714,17 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private void toolButtonFill_Click(object sender, EventArgs e)
 		{
 			this.SetActiveTool(TilemapTool.Fill);
+		}
+
+		private static ContinuousAction GetContinuousActionOfTool(TilemapTool tool)
+		{
+			switch (tool)
+			{
+				default:                return ContinuousAction.None;
+				case TilemapTool.Brush: return ContinuousAction.DrawTile;
+				case TilemapTool.Rect:  return ContinuousAction.FillTileRect;
+				case TilemapTool.Oval:  return ContinuousAction.FillTileOval;
+			}
 		}
 	}
 }

@@ -56,6 +56,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TilemapsRes.resx</DependentUpon>
     </Compile>
+    <Compile Include="ReflectionInfo.cs" />
+    <Compile Include="UndoRedoActions\EditTilemapActionType.cs" />
+    <Compile Include="UndoRedoActions\EditTilemapAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DualityEditor\DualityEditor.csproj">
@@ -92,9 +95,6 @@
     <None Include="EmbeddedResources\IconTileBrush.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="EmbeddedResources\IconTileCircle.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\IconTileFill.png" />
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CursorTileRect.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EmbeddedResources\IconTileOval.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

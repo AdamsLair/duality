@@ -194,5 +194,41 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
                 return ResourceManager.GetString("ItemName_TileSelect", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Draw Tiles.
+        /// </summary>
+        internal static string UndoRedo_EditTilemapDrawTiles {
+            get {
+                return ResourceManager.GetString("UndoRedo_EditTilemapDrawTiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill Tile Oval.
+        /// </summary>
+        internal static string UndoRedo_EditTilemapFillTileOval {
+            get {
+                return ResourceManager.GetString("UndoRedo_EditTilemapFillTileOval", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fill Tile Rect.
+        /// </summary>
+        internal static string UndoRedo_EditTilemapFillTileRect {
+            get {
+                return ResourceManager.GetString("UndoRedo_EditTilemapFillTileRect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Flood Fill Tiles.
+        /// </summary>
+        internal static string UndoRedo_EditTilemapFloodFillTiles {
+            get {
+                return ResourceManager.GetString("UndoRedo_EditTilemapFloodFillTiles", resourceCulture);
+            }
+        }
     }
 }
