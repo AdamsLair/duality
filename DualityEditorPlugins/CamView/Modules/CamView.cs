@@ -180,7 +180,9 @@ namespace Duality.Editor.Plugins.CamView
 		private	string					loadTempState				= null;
 		private	string					loadTempPerspective			= null;
 		private	ToolStripItem			activeToolItem				= null;
-		private	InputEventMessageRedirector	waitForInputFilter		= null;
+		private	InputEventMessageRedirector	globalInputFilter		= null;
+		private DateTime					globalInputLastOtherKey	= DateTime.Now;
+		private DateTime					lastLocalMouseMove		= DateTime.Now;
 		private Color					oldColorDialogColor;
 		private Color					selectedColorDialogColor;
 
@@ -976,28 +978,57 @@ namespace Duality.Editor.Plugins.CamView
 			if (this.graphicsControl.Control.Focused) return;
 
 			// Hook global message filter
-			if (this.waitForInputFilter == null)
+			if (this.globalInputFilter == null)
 			{
-				this.waitForInputFilter = new InputEventMessageRedirector(
+				this.globalInputFilter = new InputEventMessageRedirector(
 					this.graphicsControl.Control, 
 					this.FocusHookFilter, 
-					InputEventMessageRedirector.MessageType.MouseWheel);
-				Application.AddMessageFilter(this.waitForInputFilter);
+					InputEventMessageRedirector.MessageType.MouseWheel,
+					InputEventMessageRedirector.MessageType.KeyDown);
+				Application.AddMessageFilter(this.globalInputFilter);
 			}
 		}
 		private void RemoveFocusHook()
 		{
 			// Remove global message filter
-			if (this.waitForInputFilter != null)
+			if (this.globalInputFilter != null)
 			{
-				Application.RemoveMessageFilter(this.waitForInputFilter);
-				this.waitForInputFilter = null;
+				Application.RemoveMessageFilter(this.globalInputFilter);
+				this.globalInputFilter = null;
 			}
 		}
 		private bool FocusHookFilter(InputEventMessageRedirector.MessageType type, EventArgs e)
 		{
-			// Capture the mouse wheel - except in sandbox mode. Input is likely to be needed in the current Game View
-			return Sandbox.State != SandboxState.Playing;
+			// Don't capture when the sandbox is active. Input is likely to be needed in the current Game View.
+			if (Sandbox.State == SandboxState.Playing) return false;
+
+			// Capture mouse wheel for camera navigation
+			if (type == InputEventMessageRedirector.MessageType.MouseWheel)
+			{
+				return true;
+			}
+			// Capture space key for alternative camera navigation
+			else if (type == InputEventMessageRedirector.MessageType.KeyDown)
+			{
+				KeyEventArgs keyArgs = e as KeyEventArgs;
+				if (keyArgs == null) return false;
+				if (keyArgs.KeyCode == Keys.Space)
+				{
+					// Only capture the space key when we had recent movement and no other input keys.
+					// The user might be typing something with the mouse cursor accidentally hovering here.
+					if ((DateTime.Now - this.globalInputLastOtherKey).TotalMilliseconds > 1000 &&
+						(DateTime.Now - this.lastLocalMouseMove).TotalMilliseconds < 1000)
+					{
+						return true;
+					}
+				}
+				else
+				{
+					this.globalInputLastOtherKey = DateTime.Now;
+				}
+			}
+			
+			return false;
 		}
 		private void graphicsControl_MouseLeave(object sender, EventArgs e)
 		{
@@ -1051,6 +1082,8 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void graphicsControl_MouseMove(object sender, MouseEventArgs e)
 		{
+			this.lastLocalMouseMove = DateTime.Now;
+
 			if (this.activeState.EngineUserInput)
 			{
 				int lastX = this.inputMouseX;
