@@ -138,6 +138,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.hoveredTile = InvalidTile;
 			this.hoveredRenderer = null;
 
+			// Early-out, if a camera action claims the cursor
+			if (this.CamActionRequiresCursor)
+			{
+				if (lastHoveredTile != this.hoveredTile || lastHoveredRenderer != this.hoveredRenderer)
+					this.Invalidate();
+				return;
+			}
+
 			// Determine which renderers we're able to see right now and sort them by their Z values
 			TilemapRenderer[] visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
 			visibleRenderers.StableSort((a, b) =>
