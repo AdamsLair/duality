@@ -136,80 +136,24 @@ namespace Duality.Plugins.Tilemaps
 			// Early-out, if insufficient
 			if (tilemap == null) return;
 
-			// Account for Camera-relative coordinates (view space) and parallax effect / Z depth
-			Vector3 objPos = this.GameObj.Transform.Pos;
-			float objScale = this.GameObj.Transform.Scale;
-			float cameraScaleAtObj = 1.0f;
-			device.PreprocessCoords(ref objPos, ref cameraScaleAtObj);
-			objScale *= cameraScaleAtObj;
-
-			// Early-out, if so small that it might break the math behind rendering a single tile.
-			if (objScale <= 0.000000001f) return;
-
-			// Determine transformed X and Y axis in view space
-			Vector2 xAxis = Vector2.UnitX;
-			Vector2 yAxis = Vector2.UnitY;
-			MathF.TransformCoord(ref xAxis.X, ref xAxis.Y, this.GameObj.Transform.Angle, objScale);
-			MathF.TransformCoord(ref yAxis.X, ref yAxis.Y, this.GameObj.Transform.Angle, objScale);
-
 			// Determine the total size and origin of the rendered Tilemap
 			Vector2 renderTotalSize = tileCount * tileSize;
 			Vector2 renderOrigin = Vector2.Zero;
 			this.origin.ApplyTo(ref renderOrigin, ref renderTotalSize);
-
-			// Transform rendering origin into world space
-			renderOrigin = renderOrigin.X * xAxis + renderOrigin.Y * yAxis;
-			renderTotalSize *= objScale;
+			MathF.TransformCoord(ref renderOrigin.X, ref renderOrigin.Y, this.GameObj.Transform.Angle, this.GameObj.Transform.Scale);
 
 			// Determine Tile visibility
-			Vector2 tileXStep = xAxis * tileSize.X;
-			Vector2 tileYStep = yAxis * tileSize.Y;
-			Point2 visibleTileCount;
-			Point2 tileGridStartPos;
-			Vector3 renderStartPos;
+			TilemapCulling.TileInput cullingIn = new TilemapCulling.TileInput
 			{
-				// Determine which tile is in the center of view space.
-				Point2 viewCenterTile = Point2.Zero;
-				{
-					// Project the view center coordinate (view space zero) into the local space of the rendered tilemap
-					Vector2 viewRenderStartPos = objPos.Xy + renderOrigin;
-					Vector2 localViewCenter = Vector2.Zero - viewRenderStartPos;
-					localViewCenter = new Vector2(
-						Vector2.Dot(localViewCenter, xAxis.Normalized),
-						Vector2.Dot(localViewCenter, yAxis.Normalized)) / objScale;
-					viewCenterTile = new Point2(
-						(int)MathF.Floor(localViewCenter.X / tileSize.X),
-						(int)MathF.Floor(localViewCenter.Y / tileSize.Y));
-				}
-
-				// Determine the edge length of a square that is big enough to enclose the world space rect of the Camera view
-				float visualAngle = this.GameObj.Transform.Angle - device.RefAngle;
-				Vector2 visualBounds = new Vector2(
-					device.TargetSize.Y * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.X * MathF.Abs(MathF.Cos(visualAngle)),
-					device.TargetSize.X * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.Y * MathF.Abs(MathF.Cos(visualAngle)));
-				Vector2 localVisualBounds = visualBounds / cameraScaleAtObj;
-				Point2 targetVisibleTileCount = new Point2(
-					2 + (int)MathF.Ceiling(localVisualBounds.X / (MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale)), 
-					2 + (int)MathF.Ceiling(localVisualBounds.Y / (MathF.Min(tileSize.X, tileSize.Y) * this.GameObj.Transform.Scale)));
-
-				// Determine the tile indices (xy) that are visible within that rect
-				tileGridStartPos = new Point2(
-					MathF.Max(viewCenterTile.X - targetVisibleTileCount.X / 2, 0),
-					MathF.Max(viewCenterTile.Y - targetVisibleTileCount.Y / 2, 0));
-				Point2 tileGridEndPos = new Point2(
-					MathF.Min(tileGridStartPos.X + targetVisibleTileCount.X, tileCount.X),
-					MathF.Min(tileGridStartPos.Y + targetVisibleTileCount.Y, tileCount.Y));
-				visibleTileCount = new Point2(
-					MathF.Clamp(tileGridEndPos.X - tileGridStartPos.X, 0, tileCount.X),
-					MathF.Clamp(tileGridEndPos.Y - tileGridStartPos.Y, 0, tileCount.Y));
-
-				// Determine start position for rendering
-				renderStartPos = 
-					objPos + 
-					new Vector3(renderOrigin) + 
-					new Vector3(tileGridStartPos.X * tileXStep + tileGridStartPos.Y * tileYStep);
-			}
-			int renderedTileCount = visibleTileCount.X * visibleTileCount.Y;
+				// Remember: All these transform values are in world space
+				TilemapPos = this.GameObj.Transform.Pos + new Vector3(renderOrigin),
+				TilemapScale = this.GameObj.Transform.Scale,
+				TilemapAngle = this.GameObj.Transform.Angle,
+				TileCount = tileCount,
+				TileSize = tileSize
+			};
+			TilemapCulling.TileOutput cullingOut = TilemapCulling.GetVisibleTileRect(device, cullingIn);
+			int renderedTileCount = cullingOut.VisibleTileCount.X * cullingOut.VisibleTileCount.Y;
 
 			// Determine rendering parameters
 			Material material = (tileset != null ? tileset.RenderMaterial : null) ?? Material.Checkerboard.Res;
@@ -221,8 +165,10 @@ namespace Duality.Plugins.Tilemaps
 			VertexC1P3T2[] vertexData = this.vertices.Data;
 
 			// Configure vertices
-			Vector3 renderPos = renderStartPos;
-			Point2 tileGridPos = tileGridStartPos;
+			Vector2 tileXStep = cullingOut.XAxisView * cullingIn.TileSize.X;
+			Vector2 tileYStep = cullingOut.YAxisView * cullingIn.TileSize.Y;
+			Vector3 renderPos = cullingOut.RenderOriginView;
+			Point2 tileGridPos = cullingOut.VisibleTileStart;
 			for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
 			{
 				int vertexBaseIndex = tileIndex * 4;
@@ -261,12 +207,12 @@ namespace Duality.Plugins.Tilemaps
 
 				tileGridPos.X++;
 				renderPos.Xy += tileXStep;
-				if ((tileGridPos.X - tileGridStartPos.X) >= visibleTileCount.X)
+				if ((tileGridPos.X - cullingOut.VisibleTileStart.X) >= cullingOut.VisibleTileCount.X)
 				{
-					tileGridPos.X = tileGridStartPos.X;
+					tileGridPos.X = cullingOut.VisibleTileStart.X;
 					tileGridPos.Y++;
-					renderPos = renderStartPos;
-					renderPos.Xy += tileYStep * (tileGridPos.Y - tileGridStartPos.Y);
+					renderPos = cullingOut.RenderOriginView;
+					renderPos.Xy += tileYStep * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
 				}
 			}
 
