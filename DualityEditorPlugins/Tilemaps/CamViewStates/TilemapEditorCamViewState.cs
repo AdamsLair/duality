@@ -260,12 +260,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private void EditTilemapDrawTile(Tilemap tilemap, Point2 pos, Tile tile)
 		{
 			UndoRedoManager.Do(new EditTilemapAction(
-				this.activeTilemap, 
+				tilemap, 
 				EditTilemapActionType.DrawTile, 
-				this.activeAreaOrigin, 
+				pos, 
 				new Grid<Tile>(1, 1, new Tile[] { tile }),
 				new Grid<bool>(1, 1, new bool[] { true })));
-			this.Invalidate();
 		}
 
 		private void BeginContinuousAction(ContinuousAction action)
