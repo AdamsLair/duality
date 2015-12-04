@@ -460,8 +460,6 @@ namespace Duality.Components.Renderers
 				else
 					uvRectNext = uvRect;
 			}
-			else if (mainTex != null)
-				uvRect = uvRectNext = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
 			else
 				uvRect = uvRectNext = new Rect(1.0f, 1.0f);
 		}
