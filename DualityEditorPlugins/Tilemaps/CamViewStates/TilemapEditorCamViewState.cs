@@ -257,14 +257,17 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 		}
 
-		private void EditTilemapDrawTile(Tilemap tilemap, Point2 pos, Tile tile)
+		private void EditTilemapDrawTile(Tilemap tilemap, Point2 pos, Grid<bool> area, Tile tile)
 		{
+			Grid<Tile> drawPatch = new Grid<Tile>(area.Width, area.Height);
+			drawPatch.Fill(tile, 0, 0, area.Width, area.Height);
+
 			UndoRedoManager.Do(new EditTilemapAction(
 				tilemap, 
 				EditTilemapActionType.DrawTile, 
 				pos, 
-				new Grid<Tile>(1, 1, new Tile[] { tile }),
-				new Grid<bool>(1, 1, new bool[] { true })));
+				drawPatch,
+				area));
 		}
 
 		private void BeginContinuousAction(ContinuousAction action)
@@ -274,14 +277,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			if (this.action == ContinuousAction.DrawTile)
 			{
-				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, new Tile { Index = 1 });
+				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, this.activeArea, new Tile { Index = 1 });
 			}
 		}
 		private void UpdateContinuousAction()
 		{
 			if (this.action == ContinuousAction.DrawTile)
 			{
-				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, new Tile { Index = 1 });
+				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, this.activeArea, new Tile { Index = 1 });
 			}
 		}
 		private void EndContinuousAction()
@@ -663,7 +666,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					localRect.H);
 
 				// Highlight the currently active tiles
-				if (this.activeTilemap == renderer.ActiveTilemap && this.activeAreaOrigin != InvalidTile)
+				if (this.activeTilemap == renderer.ActiveTilemap)
 				{
 					this.DrawTileHighlights(canvas, renderer, ColorRgba.Red, this.activeAreaOrigin, this.activeArea);
 				}

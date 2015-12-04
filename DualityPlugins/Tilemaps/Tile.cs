@@ -16,5 +16,10 @@ namespace Duality.Plugins.Tilemaps
 		/// The index in the <see cref="Tileset"/> to which this <see cref="Tile"/> refers.
 		/// </summary>
 		public int Index;
+
+		public override string ToString()
+		{
+			return string.Format("Tile: {0}", this.Index);
+		}
 	}
 }

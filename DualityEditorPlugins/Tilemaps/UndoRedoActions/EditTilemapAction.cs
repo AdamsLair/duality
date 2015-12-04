@@ -47,8 +47,8 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			this.tilemap = tilemap;
 			this.type = type;
 			this.origin = origin;
-			this.newTiles = newTiles;
-			this.editMask = editMask;
+			this.newTiles = new Grid<Tile>(newTiles);
+			this.editMask = new Grid<bool>(editMask);
 		}
 
 		public override void Do()
@@ -88,7 +88,14 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		{
 			base.Append(action, performAction);
 			EditTilemapAction editAction = action as EditTilemapAction;
+
+			// Perform the newly appended action individually
+			if (performAction)
+			{
+				editAction.Do();
+			}
 			
+			// Determine working data for merging the two tile grids
 			Point2 originDiff = new Point2(
 				editAction.origin.X - this.origin.X,
 				editAction.origin.Y - this.origin.Y);
@@ -104,14 +111,11 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			Point2 growOffset = new Point2(
 				Math.Min(0, originDiff.X), 
 				Math.Min(0, originDiff.Y));
-
-			// Perform the newly appended action individually
-			if (performAction)
-			{
-				editAction.Do();
-			}
+			Point2 drawOffset = new Point2(
+				Math.Max(0, originDiff.X), 
+				Math.Max(0, originDiff.Y));
 			
-			// Make sure to extend the tile data storage of this action, so the next action can fit in
+			// Make sure to extend the tile data storage of this action, so the appended action can fit in
 			this.newTiles.AssumeRect(growOffset.X, growOffset.Y, newSize.X, newSize.Y);
 			this.editMask.AssumeRect(growOffset.X, growOffset.Y, newSize.X, newSize.Y);
 			this.oldTiles.AssumeRect(growOffset.X, growOffset.Y, newSize.X, newSize.Y);
@@ -120,16 +124,29 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			this.origin.X += growOffset.X;
 			this.origin.Y += growOffset.Y;
 
-			// Apply new tile data from the next action to this one
-			MaskedCopyGrid(editAction.newTiles, this.newTiles, editAction.editMask, Math.Max(0, originDiff.X), Math.Max(0, originDiff.Y));
-			MaskedCopyGrid( // For updating the old tile backup, mask out all tiles from the next action that were already in this one
-				this.editMask, editAction.editMask, this.editMask, 
-				-originDiff.X, 
-				-originDiff.Y, 
-				-1, -1, 0, 0, 
-				(source, target) => false);
-			MaskedCopyGrid(editAction.editMask, this.editMask, editAction.editMask, Math.Max(0, originDiff.X), Math.Max(0, originDiff.Y));
-			MaskedCopyGrid(editAction.oldTiles, this.oldTiles, editAction.editMask, Math.Max(0, originDiff.X), Math.Max(0, originDiff.Y));
+			// Determine the tiles that are edited in the appended operation, but weren't before
+			Grid<bool> newlyEditedMask = new Grid<bool>(editAction.editMask);
+			{
+				Point2 bounds = new Point2(
+					Math.Min(newlyEditedMask.Width, this.editMask.Width - drawOffset.X),
+					Math.Min(newlyEditedMask.Height, this.editMask.Height - drawOffset.Y));
+
+				for (int y = 0; y < bounds.Y; y++)
+				{
+					for (int x = 0; x < bounds.X; x++)
+					{
+						bool existingMask = this.editMask[x + drawOffset.X, y + drawOffset.Y];
+						bool appendedMask = editAction.editMask[x, y];
+
+						newlyEditedMask[x, y] = !existingMask && appendedMask;
+					}
+				}
+			}
+
+			// Apply new tile data from the appended action to this one
+			MaskedCopyGrid(editAction.newTiles, this.newTiles, editAction.editMask, drawOffset.X, drawOffset.Y);
+			MaskedCopyGrid(editAction.oldTiles, this.oldTiles, newlyEditedMask,     drawOffset.X, drawOffset.Y);
+			MaskedCopyGrid(editAction.editMask, this.editMask, editAction.editMask, drawOffset.X, drawOffset.Y);
 		}
 
 		private void OnNotifyPropertyChanged()
