@@ -50,6 +50,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private Point2           activeAreaOrigin = InvalidTile;
 		private Grid<bool>       activeArea       = new Grid<bool>();
 		private ContinuousAction action           = ContinuousAction.None;
+		private Point2           actionBeginTile  = InvalidTile;
 
 		private ToolStrip        toolstrip        = null;
 		private ToolStripButton  toolButtonSelect = null;
@@ -187,6 +188,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				}
 			}
 
+			// If we're not doing an action, let our action begin tile just follow around
+			if (this.action == ContinuousAction.None)
+				this.actionBeginTile = this.hoveredTile;
+
 			// If something changed, redraw the view
 			if (lastHoveredTile != this.hoveredTile || lastHoveredRenderer != this.hoveredRenderer)
 			{
@@ -228,16 +233,44 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				}
 				case TilemapTool.Rect:
 				{
-					this.activeAreaOrigin = this.hoveredTile;
-					this.activeArea.Resize(1, 1);
-					this.activeArea[0, 0] = true;
+					Point2 topLeft = new Point2(
+						Math.Min(this.actionBeginTile.X, this.hoveredTile.X),
+						Math.Min(this.actionBeginTile.Y, this.hoveredTile.Y));
+					Point2 size = new Point2(
+						1 + Math.Abs(this.actionBeginTile.X - this.hoveredTile.X),
+						1 + Math.Abs(this.actionBeginTile.Y - this.hoveredTile.Y));
+					this.activeAreaOrigin = topLeft;
+					this.activeArea.Resize(size.X, size.Y);
+					this.activeArea.Fill(true, 0, 0, size.X, size.Y);
 					break;
 				}
 				case TilemapTool.Oval:
 				{
-					this.activeAreaOrigin = this.hoveredTile;
-					this.activeArea.Resize(1, 1);
-					this.activeArea[0, 0] = true;
+					Point2 topLeft = new Point2(
+						Math.Min(this.actionBeginTile.X, this.hoveredTile.X),
+						Math.Min(this.actionBeginTile.Y, this.hoveredTile.Y));
+					Point2 size = new Point2(
+						1 + Math.Abs(this.actionBeginTile.X - this.hoveredTile.X),
+						1 + Math.Abs(this.actionBeginTile.Y - this.hoveredTile.Y));
+					Vector2 radius = (Vector2)size * 0.5f;
+					Vector2 offset = new Vector2(0.5f, 0.5f) - radius;
+
+					// Adjust to receive nicer low-res shapes
+					radius.X -= 0.1f;
+					radius.Y -= 0.1f;
+
+					this.activeAreaOrigin = topLeft;
+					this.activeArea.Resize(size.X, size.Y);
+					for (int y = 0; y < size.Y; y++)
+					{
+						for (int x = 0; x < size.X; x++)
+						{
+							Vector2 relative = new Vector2(x, y) + offset;
+							this.activeArea[x, y] = 
+								((relative.X * relative.X) / (radius.X * radius.X)) + 
+								((relative.Y * relative.Y) / (radius.Y * radius.Y)) <= 1.0f;
+						}
+					}
 					break;
 				}
 				case TilemapTool.Fill:
@@ -257,40 +290,68 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 		}
 
-		private void EditTilemapDrawTile(Tilemap tilemap, Point2 pos, Grid<bool> area, Tile tile)
+		private void PerformDrawTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile)
 		{
-			Grid<Tile> drawPatch = new Grid<Tile>(area.Width, area.Height);
-			drawPatch.Fill(tile, 0, 0, area.Width, area.Height);
+			Grid<Tile> drawPatch = new Grid<Tile>(brush.Width, brush.Height);
+			drawPatch.Fill(tile, 0, 0, brush.Width, brush.Height);
 
 			UndoRedoManager.Do(new EditTilemapAction(
 				tilemap, 
-				EditTilemapActionType.DrawTile, 
+				actionType, 
 				pos, 
 				drawPatch,
-				area));
+				brush));
 		}
 
 		private void BeginContinuousAction(ContinuousAction action)
 		{
 			if (this.action == action) return;
 			this.action = action;
+			this.actionBeginTile = this.activeAreaOrigin;
 
 			if (this.action == ContinuousAction.DrawTile)
 			{
-				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, this.activeArea, new Tile { Index = 1 });
+				this.PerformDrawTiles(
+					EditTilemapActionType.DrawTile, 
+					this.activeTilemap, 
+					this.activeAreaOrigin, 
+					this.activeArea, 
+					new Tile { Index = 1 });
 			}
 		}
 		private void UpdateContinuousAction()
 		{
 			if (this.action == ContinuousAction.DrawTile)
 			{
-				this.EditTilemapDrawTile(this.activeTilemap, this.activeAreaOrigin, this.activeArea, new Tile { Index = 1 });
+				this.PerformDrawTiles(
+					EditTilemapActionType.DrawTile, 
+					this.activeTilemap, 
+					this.activeAreaOrigin, 
+					this.activeArea, 
+					new Tile { Index = 1 });
 			}
 		}
 		private void EndContinuousAction()
 		{
 			if (this.action == ContinuousAction.None) return;
+
+			if (this.action == ContinuousAction.FillTileRect ||
+				this.action == ContinuousAction.FillTileOval)
+			{
+				EditTilemapActionType type = 
+					(this.action == ContinuousAction.FillTileRect) ? 
+					EditTilemapActionType.FillRect : 
+					EditTilemapActionType.FillOval;
+				this.PerformDrawTiles(
+					EditTilemapActionType.FillRect,
+					this.activeTilemap, 
+					this.activeAreaOrigin, 
+					this.activeArea, 
+					new Tile { Index = 2 });
+			}
+
 			this.action = ContinuousAction.None;
+			this.actionBeginTile = InvalidTile;
 			UndoRedoManager.Finish();
 		}
 
@@ -347,31 +408,48 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					int renderedTileCount = cullingOut.VisibleTileCount.X * cullingOut.VisibleTileCount.Y;
 
 					// Draw all visible highlighted tiles
-					Point2 tileGridPos = cullingOut.VisibleTileStart;
-					Vector2 renderStartPos = worldOriginPos + tileGridPos.X * tileSize.X * worldAxisX + tileGridPos.Y * tileSize.Y * worldAxisY;;
-					Vector2 renderPos = renderStartPos;
-					Vector2 tileXStep = worldAxisX * tileSize.X;
-					Vector2 tileYStep = worldAxisY * tileSize.Y;
-					for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
 					{
-						if (highlight[tileGridPos.X, tileGridPos.Y])
+						Point2 tileGridPos = cullingOut.VisibleTileStart;
+						Vector2 renderStartPos = worldOriginPos + tileGridPos.X * tileSize.X * worldAxisX + tileGridPos.Y * tileSize.Y * worldAxisY;;
+						Vector2 renderPos = renderStartPos;
+						Vector2 tileXStep = worldAxisX * tileSize.X;
+						Vector2 tileYStep = worldAxisY * tileSize.Y;
+						int lineMergeCount = 0;
+						int totalRects = 0;
+						for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
 						{
-							canvas.FillRect(
-								transform.Pos.X + renderPos.X, 
-								transform.Pos.Y + renderPos.Y, 
-								transform.Pos.Z,
-								tileSize.X, 
-								tileSize.Y);
-						}
+							bool current = highlight[tileGridPos.X, tileGridPos.Y];
+							if (current)
+							{
+								// Try to merge consecutive rects in the same line to reduce drawcalls / CPU load
+								bool hasNext = (tileGridPos.X + 1 < highlight.Width) && ((tileGridPos.X + 1 - cullingOut.VisibleTileStart.X) < cullingOut.VisibleTileCount.X);
+								bool next = hasNext ? highlight[tileGridPos.X + 1, tileGridPos.Y] : false;
+								if (next)
+								{
+									lineMergeCount++;
+								}
+								else
+								{
+									totalRects++;
+									canvas.FillRect(
+										transform.Pos.X + renderPos.X - lineMergeCount * tileXStep.X, 
+										transform.Pos.Y + renderPos.Y - lineMergeCount * tileXStep.Y, 
+										transform.Pos.Z,
+										tileSize.X * (1 + lineMergeCount), 
+										tileSize.Y);
+									lineMergeCount = 0;
+								}
+							}
 
-						tileGridPos.X++;
-						renderPos += tileXStep;
-						if ((tileGridPos.X - cullingOut.VisibleTileStart.X) >= cullingOut.VisibleTileCount.X)
-						{
-							tileGridPos.X = cullingOut.VisibleTileStart.X;
-							tileGridPos.Y++;
-							renderPos = renderStartPos;
-							renderPos += tileYStep * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
+							tileGridPos.X++;
+							renderPos += tileXStep;
+							if ((tileGridPos.X - cullingOut.VisibleTileStart.X) >= cullingOut.VisibleTileCount.X)
+							{
+								tileGridPos.X = cullingOut.VisibleTileStart.X;
+								tileGridPos.Y++;
+								renderPos = renderStartPos;
+								renderPos += tileYStep * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
+							}
 						}
 					}
 				}
