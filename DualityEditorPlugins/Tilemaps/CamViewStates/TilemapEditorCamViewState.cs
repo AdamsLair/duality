@@ -52,6 +52,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private ContinuousAction action           = ContinuousAction.None;
 		private Point2           actionBeginTile  = InvalidTile;
 
+		private Grid<bool>       activeFillBuffer       = new Grid<bool>();
+		private List<Vector2[]>  activeAreaOutlineCache = new List<Vector2[]>();
+
 		private ToolStrip        toolstrip        = null;
 		private ToolStripButton  toolButtonSelect = null;
 		private ToolStripButton  toolButtonBrush  = null;
@@ -219,6 +222,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			{
 				case TilemapTool.None:
 				{
+					this.activeAreaOutlineCache.Clear();
 					this.activeAreaOrigin = this.hoveredTile;
 					this.activeArea.Resize(0, 0);
 					break;
@@ -226,6 +230,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				case TilemapTool.Select:
 				case TilemapTool.Brush:
 				{
+					this.activeAreaOutlineCache.Clear();
 					this.activeAreaOrigin = this.hoveredTile;
 					this.activeArea.Resize(1, 1);
 					this.activeArea[0, 0] = true;
@@ -239,6 +244,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					Point2 size = new Point2(
 						1 + Math.Abs(this.actionBeginTile.X - this.hoveredTile.X),
 						1 + Math.Abs(this.actionBeginTile.Y - this.hoveredTile.Y));
+					this.activeAreaOutlineCache.Clear();
 					this.activeAreaOrigin = topLeft;
 					this.activeArea.Resize(size.X, size.Y);
 					this.activeArea.Fill(true, 0, 0, size.X, size.Y);
@@ -259,6 +265,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					radius.X -= 0.1f;
 					radius.Y -= 0.1f;
 
+					this.activeAreaOutlineCache.Clear();
 					this.activeAreaOrigin = topLeft;
 					this.activeArea.Resize(size.X, size.Y);
 					for (int y = 0; y < size.Y; y++)
@@ -275,9 +282,30 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				}
 				case TilemapTool.Fill:
 				{
-					this.activeAreaOrigin = this.hoveredTile;
-					this.activeArea.Resize(1, 1);
-					this.activeArea[0, 0] = true;
+					// Don't update flood fill when still inside the previous flood fill area
+					Point2 activeLocalHover = new Point2(
+						this.hoveredTile.X - this.activeAreaOrigin.X, 
+						this.hoveredTile.Y - this.activeAreaOrigin.Y);
+					bool hoverInsideActiveRect = (
+						activeLocalHover.X > 0 && 
+						activeLocalHover.Y > 0 &&
+						activeLocalHover.X < this.activeArea.Width &&
+						activeLocalHover.Y < this.activeArea.Height);
+					bool hoverInsideActiveArea = (hoverInsideActiveRect && this.activeArea[activeLocalHover.X, activeLocalHover.Y]);
+					if (hoverInsideActiveArea)
+						break;
+
+					// Run the flood fill algorithm
+					Grid<Tile> tiles = this.activeTilemap.BeginUpdateTiles();
+					FloodFillTiles(ref this.activeFillBuffer, tiles, this.hoveredTile);
+					this.activeTilemap.EndUpdateTiles(0, 0, 0, 0);
+
+					// Find the filled areas boundaries and copy it to the active area
+					Point2 filledAreaSize;
+					this.activeFillBuffer.GetContentBoundaries(out this.activeAreaOrigin, out filledAreaSize);
+					this.activeArea.Resize(filledAreaSize.X, filledAreaSize.Y);
+					this.activeFillBuffer.CopyTo(this.activeArea, 0, 0, -1, -1, this.activeAreaOrigin.X, this.activeAreaOrigin.Y);
+					this.activeAreaOutlineCache.Clear();
 					break;
 				}
 			}
@@ -355,7 +383,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			UndoRedoManager.Finish();
 		}
 
-		private void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, ColorRgba color, Point2 origin, Grid<bool> highlight)
+		private void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, ColorRgba color, Point2 origin, Grid<bool> highlight, List<Vector2[]> outlineCache = null)
 		{
 			if (highlight.Capacity == 0) return;
 
@@ -389,7 +417,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				
 				// Fill all highlighted tiles that are currently visible
 				{
-					canvas.State.ColorTint = this.FgColor.WithAlpha(0.25f);
+					canvas.State.ColorTint = color * this.FgColor.WithAlpha(0.25f);
 					canvas.State.SetMaterial(highlightMaterial);
 				
 					// Determine tile visibility
@@ -455,61 +483,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				}
 
 				// Determine the outlines of individual highlighted tile patches
-				List<Vector2[]> outlines = new List<Vector2[]>();
+				if (outlineCache == null) outlineCache = new List<Vector2[]>();
+				if (outlineCache.Count == 0)
 				{
-					// Generate a data structure containing all visible edges
-					TileEdgeMap edgeMap = new TileEdgeMap(highlight.Width + 1, highlight.Height + 1);
-					for (int y = 0; y < edgeMap.Height; y++)
-					{
-						for (int x = 0; x < edgeMap.Width; x++)
-						{
-							// Determine highlight state of the four tiles around this node
-							bool topLeft     = x > 0               && y > 0                && highlight[x - 1, y - 1];
-							bool topRight    = x < highlight.Width && y > 0                && highlight[x    , y - 1];
-							bool bottomLeft  = x > 0               && y < highlight.Height && highlight[x - 1, y    ];
-							bool bottomRight = x < highlight.Width && y < highlight.Height && highlight[x    , y    ];
-
-							// Determine which edges are visible
-							if (topLeft     != topRight   ) edgeMap.AddEdge(new Point2(x, y), new Point2(x    , y - 1));
-							if (topRight    != bottomRight) edgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y    ));
-							if (bottomRight != bottomLeft ) edgeMap.AddEdge(new Point2(x, y), new Point2(x    , y + 1));
-							if (bottomLeft  != topLeft    ) edgeMap.AddEdge(new Point2(x, y), new Point2(x - 1, y    ));
-						}
-					}
-
-					// Traverse edges to form outlines until no more edges are left
-					RawList<Vector2> outlineBuilder = new RawList<Vector2>();
-					while (true)
-					{
-						// Find the beginning of an outline
-						Point2 current = edgeMap.FindNonEmpty();
-						if (current.X == -1 || current.Y == -1) break;
-
-						// Traverse it until no more edges are left
-						while (true)
-						{
-							Point2 next = edgeMap.GetClockwiseNextFrom(current);
-							if (next.X == -1 || next.Y == -1) break;
-
-							outlineBuilder.Add(next * tileSize);
-							edgeMap.RemoveEdge(current, next);
-							current = next;
-						}
-
-						// If we have enough vertices, keep the outline for drawing
-						Vector2[] outline = new Vector2[outlineBuilder.Count];
-						outlineBuilder.CopyTo(outline, 0);
-						outlines.Add(outline);
-
-						// Reset the outline builder to an empty state
-						outlineBuilder.Clear();
-					}
+					GetTileAreaOutlines(highlight, tileSize, ref outlineCache);
 				}
 
 				// Draw outlines around all highlighted tile patches
-				canvas.State.ColorTint = this.FgColor;
+				canvas.State.ColorTint = color * this.FgColor;
 				canvas.State.SetMaterial(defaultMaterial);
-				foreach (Vector2[] outline in outlines)
+				foreach (Vector2[] outline in outlineCache)
 				{
 					canvas.DrawPolygon(
 						outline,
@@ -646,6 +629,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						DualityEditorApp.Select(this, new ObjectSelection(this.activeTilemap.GameObj));
 					this.BeginContinuousAction(newAction);
 				}
+				// If the fill tool is selected, directly perform the fill operation
+				else if (this.activeTool == TilemapTool.Fill)
+				{
+					this.PerformDrawTiles(EditTilemapActionType.FloodFill, this.activeTilemap, this.activeAreaOrigin, this.activeArea, new Tile { Index = 4 });
+					// Clear our buffered fill tool state
+					this.activeArea.Clear();
+				}
 				// Otherwise, do a selection or deselection
 				else if (this.activeTool == TilemapTool.Select)
 					DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap.GameObj));
@@ -746,7 +736,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// Highlight the currently active tiles
 				if (this.activeTilemap == renderer.ActiveTilemap)
 				{
-					this.DrawTileHighlights(canvas, renderer, ColorRgba.Red, this.activeAreaOrigin, this.activeArea);
+					this.DrawTileHighlights(
+						canvas, 
+						renderer, 
+						ColorRgba.White, 
+						this.activeAreaOrigin, 
+						this.activeArea, 
+						this.activeAreaOutlineCache);
 				}
 			}
 		}
@@ -805,6 +801,77 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				case TilemapTool.Rect:  return ContinuousAction.FillTileRect;
 				case TilemapTool.Oval:  return ContinuousAction.FillTileOval;
 			}
+		}
+		
+		private static void GetTileAreaOutlines(Grid<bool> tileArea, Vector2 tileSize, ref List<Vector2[]> outlines)
+		{
+			// Initialize the container we'll put our outlines into
+			if (outlines == null)
+				outlines = new List<Vector2[]>();
+			else
+				outlines.Clear();
+
+			// Generate a data structure containing all visible edges
+			TileEdgeMap edgeMap = new TileEdgeMap(tileArea.Width + 1, tileArea.Height + 1);
+			for (int y = 0; y < edgeMap.Height; y++)
+			{
+				for (int x = 0; x < edgeMap.Width; x++)
+				{
+					// Determine highlight state of the four tiles around this node
+					bool topLeft     = x > 0              && y > 0               && tileArea[x - 1, y - 1];
+					bool topRight    = x < tileArea.Width && y > 0               && tileArea[x    , y - 1];
+					bool bottomLeft  = x > 0              && y < tileArea.Height && tileArea[x - 1, y    ];
+					bool bottomRight = x < tileArea.Width && y < tileArea.Height && tileArea[x    , y    ];
+
+					// Determine which edges are visible
+					if (topLeft     != topRight   ) edgeMap.AddEdge(new Point2(x, y), new Point2(x    , y - 1));
+					if (topRight    != bottomRight) edgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y    ));
+					if (bottomRight != bottomLeft ) edgeMap.AddEdge(new Point2(x, y), new Point2(x    , y + 1));
+					if (bottomLeft  != topLeft    ) edgeMap.AddEdge(new Point2(x, y), new Point2(x - 1, y    ));
+				}
+			}
+
+			// Traverse edges to form outlines until no more edges are left
+			RawList<Vector2> outlineBuilder = new RawList<Vector2>();
+			while (true)
+			{
+				// Find the beginning of an outline
+				Point2 current = edgeMap.FindNonEmpty();
+				if (current.X == -1 || current.Y == -1) break;
+
+				// Traverse it until no more edges are left
+				while (true)
+				{
+					Point2 next = edgeMap.GetClockwiseNextFrom(current);
+					if (next.X == -1 || next.Y == -1) break;
+
+					outlineBuilder.Add(next * tileSize);
+					edgeMap.RemoveEdge(current, next);
+					current = next;
+				}
+
+				// If we have enough vertices, keep the outline for drawing
+				Vector2[] outline = new Vector2[outlineBuilder.Count];
+				outlineBuilder.CopyTo(outline, 0);
+				outlines.Add(outline);
+
+				// Reset the outline builder to an empty state
+				outlineBuilder.Clear();
+			}
+		}
+
+		/// <summary>
+		/// Performs a flood fill operation originating from the specified position. 
+		/// <see cref="Tile"/> equality is checked in the <see cref="_FloodFill_TilesEqual"/> method.
+		/// </summary>
+		/// <param name="fillBuffer">A buffer that will be filled with the result of the flood fill operation.</param>
+		/// <param name="tiles"></param>
+		/// <param name="pos"></param>
+		private static void FloodFillTiles(ref Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos)
+		{
+			// ToDo
+			fillBuffer.Resize(1, 1);
+			fillBuffer[0, 0] = true;
 		}
 	}
 }

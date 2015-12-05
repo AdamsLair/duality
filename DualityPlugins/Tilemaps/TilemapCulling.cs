@@ -124,8 +124,8 @@ namespace Duality.Plugins.Tilemaps
 				device.TargetSize.X * MathF.Abs(MathF.Sin(visualAngle)) + device.TargetSize.Y * MathF.Abs(MathF.Cos(visualAngle)));
 			Vector2 localVisualBounds = visualBounds / cameraScaleAtObj;
 			Point2 targetVisibleTileCount = new Point2(
-				2 + (int)MathF.Ceiling(localVisualBounds.X / (MathF.Min(input.TileSize.X, input.TileSize.Y) * input.TilemapScale)), 
-				2 + (int)MathF.Ceiling(localVisualBounds.Y / (MathF.Min(input.TileSize.X, input.TileSize.Y) * input.TilemapScale)));
+				3 + (int)MathF.Ceiling(localVisualBounds.X / (MathF.Min(input.TileSize.X, input.TileSize.Y) * input.TilemapScale)), 
+				3 + (int)MathF.Ceiling(localVisualBounds.Y / (MathF.Min(input.TileSize.X, input.TileSize.Y) * input.TilemapScale)));
 
 			// Determine the tile indices (xy) that are visible within that rect
 			output.VisibleTileStart = new Point2(

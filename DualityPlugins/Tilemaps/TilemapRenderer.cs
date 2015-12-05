@@ -135,6 +135,7 @@ namespace Duality.Plugins.Tilemaps
 
 			// Early-out, if insufficient
 			if (tilemap == null) return;
+			if (tileset == null) return;
 
 			// Determine the total size and origin of the rendered Tilemap
 			Vector2 renderTotalSize = tileCount * tileSize;
