@@ -85,7 +85,7 @@ namespace Duality.Drawing
 					// Only one batch? Don't bother copying data
 					DrawBatch<T> b = uploadBatches[0] as DrawBatch<T>;
 					vertexData = b.vertices;
-					vertexCount = b.vertices.Length;
+					vertexCount = b.VertexCount;
 				}
 				else
 				{
