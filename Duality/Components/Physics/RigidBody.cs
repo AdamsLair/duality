@@ -30,10 +30,10 @@ namespace Duality.Components.Physics
 				PostSolve
 			}
 
-			public	EventType		Type;
-			public	Fixture			FixtureA;
-			public	Fixture			FixtureB;
-			public	CollisionData	Data;
+			public EventType     Type;
+			public Fixture       FixtureA;
+			public Fixture       FixtureB;
+			public CollisionData Data;
 
 			public ColEvent(EventType type, Fixture fxA, Fixture fxB, CollisionData data)
 			{
@@ -45,29 +45,30 @@ namespace Duality.Components.Physics
 		}
 
 
-		private	BodyType			bodyType		= BodyType.Dynamic;
-		private	float				linearDamp		= 0.3f;
-		private	float				angularDamp		= 0.3f;
-		private	bool				fixedAngle		= false;
-		private	bool				ignoreGravity	= false;
-		private	bool				continous		= false;
-		private	Vector2				linearVel		= Vector2.Zero;
-		private	float				angularVel		= 0.0f;
-		private	float				revolutions		= 0.0f;
-		private	float				explicitMass	= 0.0f;
-		private	CollisionCategory	colCat			= CollisionCategory.Cat1;
-		private	CollisionCategory	colWith			= CollisionCategory.All;
-		private	CollisionFilter		colFilter		= null;
-		private	List<ShapeInfo>		shapes			= null;
-		private	List<JointInfo>		joints			= null;
+		private BodyType bodyType        = BodyType.Dynamic;
+		private float    linearDamp      = 0.3f;
+		private float    angularDamp     = 0.3f;
+		private bool     fixedAngle      = false;
+		private bool     ignoreGravity   = false;
+		private bool     continous       = false;
+		private Vector2  linearVel       = Vector2.Zero;
+		private float    angularVel      = 0.0f;
+		private float    revolutions     = 0.0f;
+		private float    explicitMass    = 0.0f;
+		private float    explicitInertia = 0.0f;
+		private CollisionCategory colCat    = CollisionCategory.Cat1;
+		private CollisionCategory colWith   = CollisionCategory.All;
+		private CollisionFilter   colFilter = null;
+		private List<ShapeInfo>   shapes    = null;
+		private List<JointInfo>   joints    = null;
 
-		[DontSerialize] private	float			lastScale			= 1.0f;
-		[DontSerialize] private	InitState		bodyInitState		= InitState.Disposed;
-		[DontSerialize] private	bool			schedUpdateBody		= false;
-		[DontSerialize] private	bool			isUpdatingBody		= false;
-		[DontSerialize] private	bool			isProcessingEvents	= false;
-		[DontSerialize] private	Body			body				= null;
-		[DontSerialize] private	List<ColEvent>	eventBuffer			= new List<ColEvent>();
+		[DontSerialize] private float     lastScale          = 1.0f;
+		[DontSerialize] private InitState bodyInitState      = InitState.Disposed;
+		[DontSerialize] private bool      schedUpdateBody    = false;
+		[DontSerialize] private bool      isUpdatingBody     = false;
+		[DontSerialize] private bool      isProcessingEvents = false;
+		[DontSerialize] private Body      body               = null;
+		[DontSerialize] private List<ColEvent> eventBuffer   = new List<ColEvent>();
 
 
 		internal Body PhysicsBody
@@ -218,6 +219,8 @@ namespace Duality.Components.Physics
 		/// assign an explicit, fixed value to override the automatically calculated mass. To reset to
 		/// automated calculation, set to zero.
 		/// </summary>
+		[EditorHintIncrement(5.0f)]
+		[EditorHintDecimalPlaces(1)]
 		public float Mass
 		{
 			get 
@@ -230,7 +233,28 @@ namespace Duality.Components.Physics
 			set
 			{
 				this.explicitMass = value;
-				this.UpdateBodyMass();
+				this.UpdateBodyMassData();
+			}
+		}
+		/// <summary>
+		/// [GET / SET] The bodies rotational inertia about the local origin. This is usually calculated automatically. 
+		/// You may however assign an explicit, fixed value to override the automatically calculated inertia. To reset to
+		/// automated calculation, set to zero.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public float Inertia
+		{
+			get 
+			{
+				if (this.explicitInertia <= 0.0f && this.body != null)
+					return PhysicsUnit.InertiaToDuality * this.body.Inertia;
+				else
+					return this.explicitInertia;
+			}
+			set
+			{
+				this.explicitInertia = value;
+				this.UpdateBodyMassData();
 			}
 		}
 		/// <summary>
@@ -797,18 +821,18 @@ namespace Duality.Components.Physics
 			}
 			this.body.CollisionCategories = (Category)this.colCat;
 			this.body.CollidesWith = (Category)this.colWith;
-			this.UpdateBodyMass();
+			this.UpdateBodyMassData();
 
 			this.AwakeBody();
 			this.isUpdatingBody = false;
 		}
-		private void UpdateBodyMass()
+		private void UpdateBodyMassData()
 		{
 			if (this.body == null) return;
 
 			this.body.ResetMassData();
-			if (this.explicitMass > 0.0f)
-				this.body.Mass = PhysicsUnit.MassToPhysical * this.explicitMass;
+			if (this.explicitMass    > 0.0f) this.body.Mass    = PhysicsUnit.MassToPhysical    * this.explicitMass;
+			if (this.explicitInertia > 0.0f) this.body.Inertia = PhysicsUnit.InertiaToPhysical * this.explicitInertia;
 		}
 
 		private void CleanupBody()

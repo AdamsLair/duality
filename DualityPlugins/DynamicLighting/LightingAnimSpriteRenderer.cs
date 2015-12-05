@@ -17,9 +17,9 @@ namespace Duality.Plugins.DynamicLighting
 	[EditorHintImage(DynLightResNames.IconComponentLightingSpriteRenderer)]
 	public class LightingAnimSpriteRenderer : AnimSpriteRenderer
 	{
-		private	float	vertexTranslucency	= 0.0f;
-		[DontSerialize]	private	VertexC1P3T2A4[]	verticesLight		= null;
-		[DontSerialize]	private	VertexC1P3T4A4A1[]	verticesLightSmooth	= null;
+		private float vertexTranslucency = 0.0f;
+		[DontSerialize] private VertexC1P3T2A4[]   verticesLight       = null;
+		[DontSerialize] private VertexC1P3T4A4A1[] verticesLightSmooth = null;
 
 		/// <summary>
 		/// [GET / SET] Specifies the objects translucency for Light when using vertex lighting.
@@ -80,15 +80,36 @@ namespace Duality.Plugins.DynamicLighting
 				objRotMat = new Vector4((float)Math.Cos(-rotation), -(float)Math.Sin(-rotation), (float)Math.Sin(-rotation), (float)Math.Cos(-rotation));
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A4A1[4];
+			
+			// Calculate UV coordinates
+			float left       = uvRect.X;
+			float right      = uvRect.RightX;
+			float top        = uvRect.Y;
+			float bottom     = uvRect.BottomY;
+			float nextLeft   = uvRectNext.X;
+			float nextRight  = uvRectNext.RightX;
+			float nextTop    = uvRectNext.Y;
+			float nextBottom = uvRectNext.BottomY;
+
+			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
+			{
+				MathF.Swap(ref left, ref right);
+				MathF.Swap(ref nextLeft, ref nextRight);
+			}
+			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
+			{
+				MathF.Swap(ref top, ref bottom);
+				MathF.Swap(ref nextTop, ref nextBottom);
+			}
 
 			// Directly pass World Position with each vertex, see note in Light.cs
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
 			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].TexCoord.X = uvRect.X;
-			vertices[0].TexCoord.Y = uvRect.Y;
-			vertices[0].TexCoord.Z = uvRectNext.X;
-			vertices[0].TexCoord.W = uvRectNext.Y;
+			vertices[0].TexCoord.X = left;
+			vertices[0].TexCoord.Y = top;
+			vertices[0].TexCoord.Z = nextLeft;
+			vertices[0].TexCoord.W = nextTop;
 			vertices[0].Color = mainClr;
 			vertices[0].Attrib = perPixel ? objRotMat : vertexLight[0];
 			vertices[0].Attrib2 = curAnimFrameFade;
@@ -96,10 +117,10 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.BottomY;
-			vertices[1].TexCoord.Z = uvRectNext.X;
-			vertices[1].TexCoord.W = uvRectNext.BottomY;
+			vertices[1].TexCoord.X = left;
+			vertices[1].TexCoord.Y = bottom;
+			vertices[1].TexCoord.Z = nextLeft;
+			vertices[1].TexCoord.W = nextBottom;
 			vertices[1].Color = mainClr;
 			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
 			vertices[1].Attrib2 = curAnimFrameFade;
@@ -107,10 +128,10 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.RightX;
-			vertices[2].TexCoord.Y = uvRect.BottomY;
-			vertices[2].TexCoord.Z = uvRectNext.RightX;
-			vertices[2].TexCoord.W = uvRectNext.BottomY;
+			vertices[2].TexCoord.X = right;
+			vertices[2].TexCoord.Y = bottom;
+			vertices[2].TexCoord.Z = nextRight;
+			vertices[2].TexCoord.W = nextBottom;
 			vertices[2].Color = mainClr;
 			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
 			vertices[2].Attrib2 = curAnimFrameFade;
@@ -118,10 +139,10 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.RightX;
-			vertices[3].TexCoord.Y = uvRect.Y;
-			vertices[3].TexCoord.Z = uvRectNext.RightX;
-			vertices[3].TexCoord.W = uvRectNext.Y;
+			vertices[3].TexCoord.X = right;
+			vertices[3].TexCoord.Y = top;
+			vertices[3].TexCoord.Z = nextRight;
+			vertices[3].TexCoord.W = nextTop;
 			vertices[3].Color = mainClr;
 			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];
 			vertices[3].Attrib2 = curAnimFrameFade;
@@ -199,38 +220,50 @@ namespace Duality.Plugins.DynamicLighting
 			Vector4 objRotMat = Vector4.Zero;
 			if (perPixel)
 				objRotMat = new Vector4((float)Math.Cos(-rotation), -(float)Math.Sin(-rotation), (float)Math.Sin(-rotation), (float)Math.Cos(-rotation));
+			
+			// Calculate UV coordinates
+			float left   = uvRect.X;
+			float right  = uvRect.RightX;
+			float top    = uvRect.Y;
+			float bottom = uvRect.BottomY;
+
+			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
+				MathF.Swap(ref left, ref right);
+			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
+				MathF.Swap(ref top, ref bottom);
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2A4[4];
-
+			
+			// Directly pass World Position with each vertex, see note in Light.cs
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
 			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].TexCoord.X = uvRect.X;
-			vertices[0].TexCoord.Y = uvRect.Y;
+			vertices[0].TexCoord.X = left;
+			vertices[0].TexCoord.Y = top;
 			vertices[0].Color = mainClr;
 			vertices[0].Attrib = perPixel ? objRotMat : vertexLight[0];
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.BottomY;
+			vertices[1].TexCoord.X = left;
+			vertices[1].TexCoord.Y = bottom;
 			vertices[1].Color = mainClr;
 			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.RightX;
-			vertices[2].TexCoord.Y = uvRect.BottomY;
+			vertices[2].TexCoord.X = right;
+			vertices[2].TexCoord.Y = bottom;
 			vertices[2].Color = mainClr;
 			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.RightX;
-			vertices[3].TexCoord.Y = uvRect.Y;
+			vertices[3].TexCoord.X = right;
+			vertices[3].TexCoord.Y = top;
 			vertices[3].Color = mainClr;
 			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];
 		}
