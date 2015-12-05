@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Duality.Resources;
 using Duality.Editor;
@@ -17,39 +17,62 @@ namespace Duality.Components.Renderers
 	public class SpriteRenderer : Renderer
 	{
 		/// <summary>
-		/// SPecifies, how the sprites uv-Coordinates are calculated.
+		/// Specifies how the sprites uv-Coordinates are calculated.
 		/// </summary>
+		[Flags]
 		public enum UVMode
 		{
 			/// <summary>
 			/// The uv-Coordinates are constant, stretching the supplied texture to fit the SpriteRenderers dimensions.
 			/// </summary>
-			Stretch			= 0x0,
+			Stretch        = 0x0,
 			/// <summary>
 			/// The u-Coordinate is calculated based on the available horizontal space, allowing the supplied texture to be
 			/// tiled across the SpriteRenderers width.
 			/// </summary>
-			WrapHorizontal	= 0x1,
+			WrapHorizontal = 0x1,
 			/// <summary>
 			/// The v-Coordinate is calculated based on the available vertical space, allowing the supplied texture to be
 			/// tiled across the SpriteRenderers height.
 			/// </summary>
-			WrapVertical	= 0x2,
+			WrapVertical   = 0x2,
 			/// <summary>
 			/// The uv-Coordinates are calculated based on the available space, allowing the supplied texture to be
 			/// tiled across the SpriteRenderers size.
 			/// </summary>
-			WrapBoth		= WrapHorizontal | WrapVertical
+			WrapBoth       = WrapHorizontal | WrapVertical
+		}
+		/// <summary>
+		/// Specifies whether the sprite should be flipped on a given axis.
+		/// </summary>
+		[Flags]
+		public enum FlipMode
+		{
+			/// <summary>
+			/// The sprite will not be flipped at all.
+			/// </summary>
+			None       = 0x0,
+			/// <summary>
+			/// The sprite will be flipped on its horizontal axis.
+			/// </summary>
+			Horizontal = 0x1,
+			/// <summary>
+			/// The sprite will be flipped on its vertical axis.
+			/// </summary>
+			Vertical   = 0x2
 		}
 
-		protected	Rect					rect		= Rect.Align(Alignment.Center, 0, 0, 256, 256);
-		protected	ContentRef<Material>	sharedMat	= Material.DualityIcon;
-		protected	BatchInfo				customMat	= null;
-		protected	ColorRgba				colorTint	= ColorRgba.White;
-		protected	UVMode					rectMode	= UVMode.Stretch;
-		protected	bool					pixelGrid	= false;
-		protected	int						offset		= 0;
-		[DontSerialize] protected	VertexC1P3T2[]	vertices	= null;
+
+		protected Rect                 rect      = Rect.Align(Alignment.Center, 0, 0, 256, 256);
+		protected ContentRef<Material> sharedMat = Material.DualityIcon;
+		protected BatchInfo            customMat = null;
+		protected ColorRgba            colorTint = ColorRgba.White;
+		protected UVMode               rectMode  = UVMode.Stretch;
+		protected bool                 pixelGrid = false;
+		protected int                  offset    = 0;
+		protected FlipMode             flipMode  = FlipMode.None;
+		[DontSerialize] protected VertexC1P3T2[] vertices = null;
+
 
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public override float BoundRadius
@@ -124,6 +147,14 @@ namespace Duality.Components.Renderers
 		{
 			get { return this.offset * 0.01f; }
 		}
+		/// <summary>
+		/// [GET / SET] Specifies whether the sprite should be flipped on a given axis when redered.
+		/// </summary>
+		public FlipMode Flip
+		{
+			get { return this.flipMode; }
+			set { this.flipMode = value; }
+		}
 
 
 		public SpriteRenderer() {}
@@ -170,6 +201,7 @@ namespace Duality.Components.Renderers
 			MathF.GetTransformDotVec(this.GameObj.Transform.Angle, scaleTemp, out xDot, out yDot);
 
 			Rect rectTemp = this.rect.Transformed(this.gameobj.Transform.Scale, this.gameobj.Transform.Scale);
+
 			Vector2 edge1 = rectTemp.TopLeft;
 			Vector2 edge2 = rectTemp.BottomLeft;
 			Vector2 edge3 = rectTemp.BottomRight;
@@ -179,37 +211,47 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
+            
+			float left   = uvRect.X;
+			float right  = uvRect.RightX;
+			float top    = uvRect.Y;
+			float bottom = uvRect.BottomY;
+
+			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
+				MathF.Swap(ref left, ref right);
+			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
+				MathF.Swap(ref top, ref bottom);
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
 			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].TexCoord.X = uvRect.X;
-			vertices[0].TexCoord.Y = uvRect.Y;
+			vertices[0].TexCoord.X = left;
+			vertices[0].TexCoord.Y = top;
 			vertices[0].Color = mainClr;
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.BottomY;
+			vertices[1].TexCoord.X = left;
+			vertices[1].TexCoord.Y = bottom;
 			vertices[1].Color = mainClr;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.RightX;
-			vertices[2].TexCoord.Y = uvRect.BottomY;
+			vertices[2].TexCoord.X = right;
+			vertices[2].TexCoord.Y = bottom;
 			vertices[2].Color = mainClr;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.RightX;
-			vertices[3].TexCoord.Y = uvRect.Y;
+			vertices[3].TexCoord.X = right;
+			vertices[3].TexCoord.Y = top;
 			vertices[3].Color = mainClr;
-			
+
 			if (this.pixelGrid)
 			{
 				vertices[0].Pos.X = MathF.Round(vertices[0].Pos.X);

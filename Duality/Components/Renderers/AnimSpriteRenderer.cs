@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -53,18 +53,18 @@ namespace Duality.Components.Renderers
 			Queue
 		}
 
-		private	int			animFirstFrame		= 0;
-		private	int			animFrameCount		= 0;
-		private	float		animDuration		= 5.0f;
-		private	LoopMode	animLoopMode		= LoopMode.Loop;
-		private	float		animTime			= 0.0f;
-		private	bool		animPaused			= false;
-		private	List<int>	customFrameSequence	= null;
+		private int       animFirstFrame      = 0;
+		private int       animFrameCount      = 0;
+		private float     animDuration        = 5.0f;
+		private LoopMode  animLoopMode        = LoopMode.Loop;
+		private float     animTime            = 0.0f;
+		private bool      animPaused          = false;
+		private List<int> customFrameSequence = null;
 
-		[DontSerialize] private int		curAnimFrame		= 0;
-		[DontSerialize] private int		nextAnimFrame		= 0;
-		[DontSerialize] private float	curAnimFrameFade	= 0.0f;
-		[DontSerialize] private	VertexC1P3T4A1[]	verticesSmooth	= null;
+		[DontSerialize] private int   curAnimFrame      = 0;
+		[DontSerialize] private int   nextAnimFrame     = 0;
+		[DontSerialize] private float curAnimFrameFade  = 0.0f;
+		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth = null;
 
 
 		/// <summary>
@@ -378,45 +378,65 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
 			
+			float left       = uvRect.X;
+			float right      = uvRect.RightX;
+			float top        = uvRect.Y;
+			float bottom     = uvRect.BottomY;
+			float nextLeft   = uvRectNext.X;
+			float nextRight  = uvRectNext.RightX;
+			float nextTop    = uvRectNext.Y;
+			float nextBottom = uvRectNext.BottomY;
+
+			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
+			{
+				MathF.Swap(ref left, ref right);
+				MathF.Swap(ref nextLeft, ref nextRight);
+			}
+			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
+			{
+				MathF.Swap(ref top, ref bottom);
+				MathF.Swap(ref nextTop, ref nextBottom);
+			}
+
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
 			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].TexCoord.X = uvRect.X;
-			vertices[0].TexCoord.Y = uvRect.Y;
-			vertices[0].TexCoord.Z = uvRectNext.X;
-			vertices[0].TexCoord.W = uvRectNext.Y;
+			vertices[0].TexCoord.X = left;
+			vertices[0].TexCoord.Y = top;
+			vertices[0].TexCoord.Z = nextLeft;
+			vertices[0].TexCoord.W = nextTop;
 			vertices[0].Color = mainClr;
 			vertices[0].Attrib = curAnimFrameFade;
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.BottomY;
-			vertices[1].TexCoord.Z = uvRectNext.X;
-			vertices[1].TexCoord.W = uvRectNext.BottomY;
+			vertices[1].TexCoord.X = left;
+			vertices[1].TexCoord.Y = bottom;
+			vertices[1].TexCoord.Z = nextLeft;
+			vertices[1].TexCoord.W = nextBottom;
 			vertices[1].Color = mainClr;
 			vertices[1].Attrib = curAnimFrameFade;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.RightX;
-			vertices[2].TexCoord.Y = uvRect.BottomY;
-			vertices[2].TexCoord.Z = uvRectNext.RightX;
-			vertices[2].TexCoord.W = uvRectNext.BottomY;
+			vertices[2].TexCoord.X = right;
+			vertices[2].TexCoord.Y = bottom;
+			vertices[2].TexCoord.Z = nextRight;
+			vertices[2].TexCoord.W = nextBottom;
 			vertices[2].Color = mainClr;
 			vertices[2].Attrib = curAnimFrameFade;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.RightX;
-			vertices[3].TexCoord.Y = uvRect.Y;
-			vertices[3].TexCoord.Z = uvRectNext.RightX;
-			vertices[3].TexCoord.W = uvRectNext.Y;
+			vertices[3].TexCoord.X = right;
+			vertices[3].TexCoord.Y = top;
+			vertices[3].TexCoord.Z = nextRight;
+			vertices[3].TexCoord.W = nextTop;
 			vertices[3].Color = mainClr;
 			vertices[3].Attrib = curAnimFrameFade;
 
@@ -460,8 +480,6 @@ namespace Duality.Components.Renderers
 				else
 					uvRectNext = uvRect;
 			}
-			else if (mainTex != null)
-				uvRect = uvRectNext = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
 			else
 				uvRect = uvRectNext = new Rect(1.0f, 1.0f);
 		}
