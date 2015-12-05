@@ -53,18 +53,18 @@ namespace Duality.Components.Renderers
 			Queue
 		}
 
-		private	int			animFirstFrame		= 0;
-		private	int			animFrameCount		= 0;
-		private	float		animDuration		= 5.0f;
-		private	LoopMode	animLoopMode		= LoopMode.Loop;
-		private	float		animTime			= 0.0f;
-		private	bool		animPaused			= false;
-		private	List<int>	customFrameSequence	= null;
+		private int       animFirstFrame      = 0;
+		private int       animFrameCount      = 0;
+		private float     animDuration        = 5.0f;
+		private LoopMode  animLoopMode        = LoopMode.Loop;
+		private float     animTime            = 0.0f;
+		private bool      animPaused          = false;
+		private List<int> customFrameSequence = null;
 
-		[DontSerialize] private int		curAnimFrame		= 0;
-		[DontSerialize] private int		nextAnimFrame		= 0;
-		[DontSerialize] private float	curAnimFrameFade	= 0.0f;
-		[DontSerialize] private	VertexC1P3T4A1[]	verticesSmooth	= null;
+		[DontSerialize] private int   curAnimFrame      = 0;
+		[DontSerialize] private int   nextAnimFrame     = 0;
+		[DontSerialize] private float curAnimFrameFade  = 0.0f;
+		[DontSerialize] private VertexC1P3T4A1[] verticesSmooth = null;
 
 
 		/// <summary>
@@ -201,7 +201,7 @@ namespace Duality.Components.Renderers
 		}
 
 
-        	public AnimSpriteRenderer() {}
+		public AnimSpriteRenderer() {}
 		public AnimSpriteRenderer(Rect rect, ContentRef<Material> mainMat) : base(rect, mainMat) {}
 		
 		/// <summary>
@@ -377,18 +377,28 @@ namespace Duality.Components.Renderers
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
+			
+			float left       = uvRect.X;
+			float right      = uvRect.RightX;
+			float top        = uvRect.Y;
+			float bottom     = uvRect.BottomY;
+			float nextLeft   = uvRectNext.X;
+			float nextRight  = uvRectNext.RightX;
+			float nextTop    = uvRectNext.Y;
+			float nextBottom = uvRectNext.BottomY;
 
-        		float left = flipHorizontal ? uvRect.RightX : uvRect.X;
-        		float right = flipHorizontal ? uvRect.X : uvRect.RightX;
-        		float top = flipVertical ? uvRect.BottomY : uvRect.Y;
-        		float bottom = flipVertical ? uvRect.Y : uvRect.BottomY;
+			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
+			{
+				MathF.Swap(ref left, ref right);
+				MathF.Swap(ref nextLeft, ref nextRight);
+			}
+			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
+			{
+				MathF.Swap(ref top, ref bottom);
+				MathF.Swap(ref nextTop, ref nextBottom);
+			}
 
-        		float nextLeft = flipHorizontal ? uvRectNext.RightX : uvRectNext.X;
-        		float nextRight = flipHorizontal ? uvRectNext.X : uvRectNext.RightX;
-        		float nextTop = flipVertical ? uvRectNext.BottomY : uvRectNext.Y;
-        		float nextBottom = flipVertical ? uvRectNext.Y : uvRectNext.BottomY;
-
-        		if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];
+			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T4A1[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;

@@ -17,8 +17,8 @@ namespace Duality.Plugins.DynamicLighting
 	[EditorHintImage(DynLightResNames.IconComponentLightingSpriteRenderer)]
 	public class LightingSpriteRenderer : SpriteRenderer
 	{
-		private	float	vertexTranslucency	= 0.0f;
-		[DontSerialize]	private	VertexC1P3T2A4[]	verticesLight	= null;
+		private float vertexTranslucency = 0.0f;
+		[DontSerialize] private VertexC1P3T2A4[] verticesLight = null;
 
 		/// <summary>
 		/// [GET / SET] Specifies the objects translucency for Light when using vertex lighting.
@@ -77,6 +77,17 @@ namespace Duality.Plugins.DynamicLighting
 			Vector4 objRotMat = Vector4.Zero;
 			if (perPixel)
 				objRotMat = new Vector4((float)Math.Cos(-rotation), -(float)Math.Sin(-rotation), (float)Math.Sin(-rotation), (float)Math.Cos(-rotation));
+			
+			// Calculate UV coordinates
+			float left   = uvRect.X;
+			float right  = uvRect.RightX;
+			float top    = uvRect.Y;
+			float bottom = uvRect.BottomY;
+
+			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
+				MathF.Swap(ref left, ref right);
+			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
+				MathF.Swap(ref top, ref bottom);
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2A4[4];
 
@@ -84,32 +95,32 @@ namespace Duality.Plugins.DynamicLighting
 			vertices[0].Pos.X = posTemp.X + edge1.X;
 			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
 			vertices[0].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[0].TexCoord.X = uvRect.X;
-			vertices[0].TexCoord.Y = uvRect.Y;
+			vertices[0].TexCoord.X = left;
+			vertices[0].TexCoord.Y = top;
 			vertices[0].Color = mainClr;
 			vertices[0].Attrib = perPixel ? objRotMat : vertexLight[0];
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
 			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
 			vertices[1].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[1].TexCoord.X = uvRect.X;
-			vertices[1].TexCoord.Y = uvRect.BottomY;
+			vertices[1].TexCoord.X = left;
+			vertices[1].TexCoord.Y = bottom;
 			vertices[1].Color = mainClr;
 			vertices[1].Attrib = perPixel ? objRotMat : vertexLight[1];
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
 			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
 			vertices[2].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[2].TexCoord.X = uvRect.RightX;
-			vertices[2].TexCoord.Y = uvRect.BottomY;
+			vertices[2].TexCoord.X = right;
+			vertices[2].TexCoord.Y = bottom;
 			vertices[2].Color = mainClr;
 			vertices[2].Attrib = perPixel ? objRotMat : vertexLight[2];
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
 			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
 			vertices[3].Pos.Z = posTemp.Z + this.VertexZOffset;
-			vertices[3].TexCoord.X = uvRect.RightX;
-			vertices[3].TexCoord.Y = uvRect.Y;
+			vertices[3].TexCoord.X = right;
+			vertices[3].TexCoord.Y = top;
 			vertices[3].Color = mainClr;
 			vertices[3].Attrib = perPixel ? objRotMat : vertexLight[3];
 			
