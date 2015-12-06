@@ -19,6 +19,26 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTilemapRenderer)]
 	public class TilemapRenderer : Renderer
 	{
+		/// <summary>
+		/// Specifies the desired behavior when picking a tile outside the rendered area.
+		/// </summary>
+		public enum TilePickMode
+		{
+			/// <summary>
+			/// Negative and out-of-bounds coordinates are returned.
+			/// </summary>
+			Free,
+			/// <summary>
+			/// The returned tile coordinates are clamped to the available rendered area.
+			/// </summary>
+			Clamp,
+			/// <summary>
+			/// Coordinates outside the rendered area are rejected.
+			/// </summary>
+			Reject
+		}
+
+
 		private Alignment origin          = Alignment.Center;
 		private Tilemap   externalTilemap = null;
 		private ColorRgba colorTint       = ColorRgba.White;
@@ -102,12 +122,13 @@ namespace Duality.Plugins.Tilemaps
 		/// tile index that is located there.
 		/// </summary>
 		/// <param name="localPos"></param>
+		/// <param name="pickMode">Specifies the desired behavior when attempting to get a tile outside the rendered area.</param>
 		/// <returns></returns>
-		public Point2 GetTileAtLocalPos(Vector2 localPos)
+		public Point2 GetTileAtLocalPos(Vector2 localPos, TilePickMode pickMode)
 		{
 			// Early-out, if the specified local position is not within the tilemap rect
 			Rect localRect = this.LocalTilemapRect;
-			if (!localRect.Contains(localPos))
+			if (pickMode == TilePickMode.Reject && !localRect.Contains(localPos))
 				return new Point2(-1, -1);
 
 			Tilemap tilemap = this.ActiveTilemap;
@@ -115,14 +136,23 @@ namespace Duality.Plugins.Tilemaps
 			Point2 tileCount = tilemap != null ? tilemap.TileCount : Point2.Zero;
 			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 
-			// Early-out, if the rendered tilemap is empty
-			if (tileCount.X <= 0 || tileCount.Y <= 0)
-				return new Point2(-1, -1);
-
 			// Determine the tile index at the specified local position
-			return new Point2(
-				MathF.Clamp((int)MathF.Floor((localPos.X - localRect.X) / tileSize.X), 0, tileCount.X - 1),
-				MathF.Clamp((int)MathF.Floor((localPos.Y - localRect.Y) / tileSize.Y), 0, tileCount.Y - 1));
+			Point2 tileIndex = new Point2(
+				(int)MathF.Floor((localPos.X - localRect.X) / tileSize.X),
+				(int)MathF.Floor((localPos.Y - localRect.Y) / tileSize.Y));
+
+			// Clamp or reject the tile index when required
+			if (pickMode != TilePickMode.Free)
+			{
+				if (tileCount.X <= 0 || tileCount.Y <= 0)
+					return new Point2(-1, -1);
+
+				tileIndex = new Point2(
+					MathF.Clamp(tileIndex.X, 0, tileCount.X - 1),
+					MathF.Clamp(tileIndex.Y, 0, tileCount.Y - 1));
+			}
+
+			return tileIndex;
 		}
 
 		public override void Draw(IDrawDevice device)
