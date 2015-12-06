@@ -90,6 +90,43 @@ namespace Duality.Tests.Utility
 			Assert.Throws<ArgumentException>(() => grid.Resize(1, -1));
 			Assert.Throws<ArgumentException>(() => grid.Resize(-1, -1));
 		}
+		[Test] public void ResizeClear()
+		{
+			Grid<int> grid = new Grid<int>(2, 2);
+			grid[0, 0] = 0;
+			grid[1, 0] = 1;
+			grid[0, 1] = 2;
+			grid[1, 1] = 3;
+
+			Assert.AreEqual(4, grid.Capacity);
+			Assert.AreEqual(2, grid.Width);
+			Assert.AreEqual(2, grid.Height);
+			CollectionAssert.AreEqual(new[] { 
+				0, 1, 
+				2, 3 }, grid);
+
+			grid.ResizeClear(1, 1);
+			Assert.AreEqual(1, grid.Capacity);
+			Assert.AreEqual(1, grid.Width);
+			Assert.AreEqual(1, grid.Height);
+			CollectionAssert.AreEqual(new[] { 
+				0 }, grid);
+
+			grid.ResizeClear(4, 4);
+			Assert.AreEqual(16, grid.Capacity);
+			Assert.AreEqual(4, grid.Width);
+			Assert.AreEqual(4, grid.Height);
+			CollectionAssert.AreEqual(new[] { 
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0 }, grid);
+
+			// Resizing with negative width or height should throw an exception
+			Assert.Throws<ArgumentException>(() => grid.ResizeClear(-1, 1));
+			Assert.Throws<ArgumentException>(() => grid.ResizeClear(1, -1));
+			Assert.Throws<ArgumentException>(() => grid.ResizeClear(-1, -1));
+		}
 		[Test] public void AssumeRect()
 		{
 			Grid<int> grid = new Grid<int>(2, 2);
@@ -115,9 +152,25 @@ namespace Duality.Tests.Utility
 				0, 0, 0, 0,
 				0, 0, 0, 0 }, grid);
 
-			grid.ShrinkToFit();
+			grid.AssumeRect(-1, -2, 4, 4);
+			Assert.AreEqual(16, grid.Capacity);
+			Assert.AreEqual(4, grid.Width);
+			Assert.AreEqual(4, grid.Height);
 			CollectionAssert.AreEqual(new[] { 
-				3 }, grid);
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 3, 0, 0,
+				0, 0, 0, 0 }, grid);
+
+			grid.AssumeRect(2, 0, 4, 4);
+			Assert.AreEqual(16, grid.Capacity);
+			Assert.AreEqual(4, grid.Width);
+			Assert.AreEqual(4, grid.Height);
+			CollectionAssert.AreEqual(new[] { 
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0,
+				0, 0, 0, 0 }, grid);
 
 			Random rnd = new Random();
 			grid.Resize(4, 4);
