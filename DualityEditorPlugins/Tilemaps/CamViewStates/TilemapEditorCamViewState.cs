@@ -859,7 +859,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				outlineBuilder.Clear();
 			}
 		}
-
+		
 		/// <summary>
 		/// Performs a flood fill operation originating from the specified position. 
 		/// <see cref="Tile"/> equality is checked in the <see cref="_FloodFill_TilesEqual"/> method.
@@ -869,9 +869,122 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		/// <param name="pos"></param>
 		private static void FloodFillTiles(ref Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos)
 		{
-			// ToDo
-			fillBuffer.Resize(1, 1);
-			fillBuffer[0, 0] = true;
+			// ## Note: ##
+			// This flood fill algorithm is a modified version of "A More Efficient Flood Fill" by Adam Milazzo.
+			// All credit for the original idea and sample implementation goes to him. Last seen on the web here:
+			// http://adammil.net/blog/v126_A_More_Efficient_Flood_Fill.html
+			// ###########
+
+			// Initialize fill buffer
+			if (fillBuffer == null)
+				fillBuffer = new Grid<bool>(tiles.Width, tiles.Height);
+			else if (fillBuffer.Width != tiles.Width || fillBuffer.Height != tiles.Height)
+				fillBuffer.Resize(tiles.Width, tiles.Height);
+			fillBuffer.Clear();
+
+			// Get the base tile for comparison
+			Tile baseTile = tiles[pos.X, pos.Y];
+
+			// Find the topleft-most tile to start with
+			pos = _FloodFillTiles_FindTopLeft(fillBuffer, tiles, pos, baseTile);
+			// Run the main part of the algorithm
+			_FloodFillTiles(fillBuffer, tiles, pos, baseTile);
+		}
+		private static void _FloodFillTiles(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
+		{
+			// Since the top and left of the current tile are blocking the fill operation, proceed down and right
+			int lastRowLength = 0;
+			do
+			{
+				Point2 rowPos = pos;
+				int rowLength = 0;
+
+				// Narrow scan line width on the left when necessary
+				if (lastRowLength != 0 && !_FloodFill_IsCandidate(fillBuffer, tiles, pos, baseTile))
+				{
+					do
+					{
+						pos.X++;
+						lastRowLength--;
+					}
+					while (lastRowLength != 0 && !_FloodFill_IsCandidate(fillBuffer, tiles, pos, baseTile));
+
+					rowPos.X = pos.X;
+				}
+				// Expand scan line width to the left when necessary
+				else
+				{
+					for (; pos.X != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile); rowLength++, lastRowLength++)
+					{
+						pos.X--;
+						fillBuffer[pos.X, pos.Y] = true;
+
+						// If something above the current scan line is free, handle it recursively
+						if (pos.Y != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile))
+						{
+							// Find the topleft-most tile to start with
+							Point2 targetPos = new Point2(pos.X, pos.Y - 1);
+							targetPos = _FloodFillTiles_FindTopLeft(fillBuffer, tiles, targetPos, baseTile);
+							_FloodFillTiles(fillBuffer, tiles, targetPos, baseTile);
+						}
+					}
+				}
+				
+				// Fill the current row
+				for (; rowPos.X < tiles.Width && _FloodFill_IsCandidate(fillBuffer, tiles, rowPos, baseTile); rowLength++, rowPos.X++)
+					fillBuffer[rowPos.X, rowPos.Y] = true;
+
+				// If the current row is shorter than the previous, see if there are 
+				// disconnected pixels below the (filled) previous row left to handle
+				if (rowLength < lastRowLength)
+				{
+					for (int end = pos.X + lastRowLength; ++rowPos.X < end; )
+					{
+						// Recursively handle the disconnected below-bottom pixels of the last row
+						if (_FloodFill_IsCandidate(fillBuffer, tiles, rowPos, baseTile)) 
+							_FloodFillTiles(fillBuffer, tiles, rowPos, baseTile);
+					}
+				}
+				// If the current row is longer than the previous, see if there are 
+				// top pixels above this one that are disconnected from the last row
+				else if (rowLength > lastRowLength && pos.Y != 0)
+				{
+					for (int prevRowX = pos.X + lastRowLength; ++prevRowX < rowPos.X; )
+					{
+						// Recursively handle the disconnected pixels of the last row
+						if (_FloodFill_IsCandidate(fillBuffer, tiles, new Point2(prevRowX, pos.Y - 1), baseTile))
+						{
+							// Find the topleft-most tile to start with
+							Point2 targetPos = new Point2(prevRowX, pos.Y - 1);
+							targetPos = _FloodFillTiles_FindTopLeft(fillBuffer, tiles, targetPos, baseTile);
+							_FloodFillTiles(fillBuffer, tiles, targetPos, baseTile);
+						}
+					}
+				}
+
+				lastRowLength = rowLength;
+			}
+			while (lastRowLength != 0 && ++pos.Y < tiles.Height);
+		}
+		private static Point2 _FloodFillTiles_FindTopLeft(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
+		{
+			// Find the topleft-most connected matching tile
+			while(true)
+			{
+				Point2 origin = pos;
+				while (pos.Y != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile)) pos.Y--;
+				while (pos.X != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile)) pos.X--;
+				if (pos == origin) break;
+			}
+			return pos;
+		}
+		private static bool _FloodFill_TilesEqual(Tile baseTile, Tile otherTile)
+		{
+			return baseTile.Index == otherTile.Index;
+		}
+		private static bool _FloodFill_IsCandidate(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
+		{
+			return !fillBuffer[pos.X, pos.Y] && _FloodFill_TilesEqual(baseTile, tiles[pos.X, pos.Y]);
 		}
 	}
 }
