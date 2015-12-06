@@ -352,10 +352,7 @@ namespace Duality
 		public void Clear()
 		{
 			T[] data = this.sequence.Data;
-			for (int i = 0; i < data.Length; i++)
-			{
-				data[i] = default(T);
-			}
+			Array.Clear(data, 0, data.Length);
 		}
 
 		/// <summary>
@@ -372,14 +369,28 @@ namespace Duality
 			if (height < 0) throw new ArgumentException("Height needs to be greater than or equal to zero.", "height");
 			if (x == 0 && y == 0 && width == this.width && height == this.height) return;
 
-			// Create a new grid of the requried target size.
-			Grid<T> tempGrid = new Grid<T>(width, height);
-			this.CopyTo(tempGrid, -x, -y);
+			// Do we need to carry over any old data?
+			bool oldDataCarriedOver = true;
+			if (width == 0 && height == 0)             oldDataCarriedOver = false; // Empty area
+			if (-x >= width      || -y >= height     ) oldDataCarriedOver = false; // Moved too far left or up
+			if (x  >= this.width || y  >= this.height) oldDataCarriedOver = false; // Moved too far right or down
 
-			// Become the temporary grid
-			this.sequence = tempGrid.sequence;
-			this.width = tempGrid.width;
-			this.height = tempGrid.height;
+			if (oldDataCarriedOver)
+			{
+				// Create a new grid of the requried target size and copy all contents
+				Grid<T> tempGrid = new Grid<T>(width, height);
+				this.CopyTo(tempGrid, -x, -y);
+
+				// Become the temporary grid
+				this.sequence = tempGrid.sequence;
+				this.width = tempGrid.width;
+				this.height = tempGrid.height;
+			}
+			else
+			{
+				// Just discard everything and allocate the required memory
+				this.ResizeClear(width, height);
+			}
 		}
 		/// <summary>
 		/// Resizes the grid.
@@ -415,6 +426,27 @@ namespace Duality
 				y = (newHeight - this.height) / 2;
 
 			this.AssumeRect(-x, -y, newWidth, newHeight);
+		}
+		/// <summary>
+		/// Resizes the grid and clears its contents. The fact that the old contents can be discarded
+		/// allows to perform the resize operation more efficiently.
+		/// </summary>
+		/// <param name="newWidth"></param>
+		/// <param name="newHeight"></param>
+		/// <param name="origin"></param>
+		public void ResizeClear(int newWidth, int newHeight)
+		{
+			if (newWidth < 0) throw new ArgumentException("Width needs to be greater than or equal to zero.", "newWidth");
+			if (newHeight < 0) throw new ArgumentException("Height needs to be greater than or equal to zero.", "newHeight");
+
+			bool canReuseOldArray = (this.sequence.Capacity >= newWidth * newHeight);
+
+			this.sequence.Count = newWidth * newHeight;
+			this.width = newWidth;
+			this.height = newHeight;
+
+			if (canReuseOldArray)
+				this.Clear();
 		}
 		/// <summary>
 		/// Shrinks the grid to match its non-null content boundaries.
