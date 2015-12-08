@@ -39,7 +39,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			FillTileOval
 		}
 
-		private static readonly Point2 InvalidTile = new Point2(-1, -1);
+		private static readonly float  FillAnimDuration = 250.0f;
+		private static readonly Point2 InvalidTile      = new Point2(-1, -1);
 
 		private TilemapTool      selectedTool       = TilemapTool.Brush;
 		private Tilemap          selectedTilemap    = null;
@@ -51,6 +52,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private Point2           activeAreaOrigin   = InvalidTile;
 		private Grid<bool>       activeArea         = new Grid<bool>();
 		private bool             activePreviewValid = false;
+		private DateTime         activePreviewTime  = DateTime.Now;
 		private ContinuousAction action             = ContinuousAction.None;
 		private Point2           actionBeginTile    = InvalidTile;
 
@@ -241,6 +243,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					this.activeAreaOrigin = this.hoveredTile;
 					this.activeArea.ResizeClear(0, 0);
 					this.activePreviewValid = true;
+					this.activePreviewTime = DateTime.Now;
 					break;
 				}
 				case TilemapTool.Select:
@@ -251,6 +254,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					this.activeArea.ResizeClear(1, 1);
 					this.activeArea[0, 0] = true;
 					this.activePreviewValid = true;
+					this.activePreviewTime = DateTime.Now;
 					break;
 				}
 				case TilemapTool.Rect:
@@ -271,6 +275,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					this.activeArea.ResizeClear(size.X, size.Y);
 					this.activeArea.Fill(true, 0, 0, size.X, size.Y);
 					this.activePreviewValid = true;
+					this.activePreviewTime = DateTime.Now;
 
 					// Manually define outlines in the trivial rect case
 					Tileset tileset = this.activeTilemap != null ? this.activeTilemap.Tileset.Res : null;
@@ -320,6 +325,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						}
 					}
 					this.activePreviewValid = true;
+					this.activePreviewTime = DateTime.Now;
 					break;
 				}
 				case TilemapTool.Fill:
@@ -333,8 +339,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						this.hoveredTile.X - this.activeAreaOrigin.X, 
 						this.hoveredTile.Y - this.activeAreaOrigin.Y);
 					bool hoverInsideActiveRect = (
-						activeLocalHover.X > 0 && 
-						activeLocalHover.Y > 0 &&
+						activeLocalHover.X >= 0 && 
+						activeLocalHover.Y >= 0 &&
 						activeLocalHover.X < this.activeArea.Width &&
 						activeLocalHover.Y < this.activeArea.Height);
 					bool hoverInsideActiveArea = (hoverInsideActiveRect && this.activeArea[activeLocalHover.X, activeLocalHover.Y]);
@@ -343,6 +349,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 					// Run the flood fill algorithm
 					this.activePreviewValid = this.GetFloodFillArea(this.activeTilemap, this.hoveredTile, true, ref this.activeArea, ref this.activeAreaOrigin);
+					this.activePreviewTime = DateTime.Now;
 					if (this.activePreviewValid)
 					{
 						this.activeAreaOutlineCache.Clear();
@@ -431,147 +438,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			UndoRedoManager.Finish();
 		}
 
-		private void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, Point2 origin, Grid<bool> highlight, List<Vector2[]> outlineCache = null, bool displayAsUncertain = false)
-		{
-			if (highlight.Capacity == 0) return;
-
-			BatchInfo defaultMaterial = canvas.State.Material;
-			BatchInfo highlightMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor);
-
-			Transform transform = renderer.GameObj.Transform;
-			Tilemap tilemap = renderer.ActiveTilemap;
-			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
-			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
-			Rect localRect = renderer.LocalTilemapRect;
-
-			// Determine the object's local coordinate system (rotated, scaled) in world space
-			Vector2 worldAxisX = Vector2.UnitX;
-			Vector2 worldAxisY = Vector2.UnitY;
-			MathF.TransformCoord(ref worldAxisX.X, ref worldAxisX.Y, transform.Angle, transform.Scale);
-			MathF.TransformCoord(ref worldAxisY.X, ref worldAxisY.Y, transform.Angle, transform.Scale);
-
-			Vector2 localOriginPos = tileSize * origin;
-			Vector2 worldOriginPos = localOriginPos.X * worldAxisX + localOriginPos.Y * worldAxisY;
-
-			canvas.PushState();
-			{
-				// Configure the canvas so our shapes are properly rotated and scaled
-				canvas.State.TransformHandle = -localRect.TopLeft;
-				canvas.State.TransformAngle = transform.Angle;
-				canvas.State.TransformScale = new Vector2(transform.Scale);
-				canvas.State.ZOffset = -0.01f;
-				
-				// Fill all highlighted tiles that are currently visible
-				{
-					canvas.State.ColorTint = ColorRgba.White.WithAlpha(0.375f);
-					canvas.State.SetMaterial(highlightMaterial);
-				
-					// Determine tile visibility
-					Vector2 worldTilemapOriginPos = localRect.TopLeft;
-					MathF.TransformCoord(ref worldTilemapOriginPos.X, ref worldTilemapOriginPos.Y, transform.Angle, transform.Scale);
-					TilemapCulling.TileInput cullingIn = new TilemapCulling.TileInput
-					{
-						// Remember: All these transform values are in world space
-						TilemapPos = transform.Pos + new Vector3(worldTilemapOriginPos) + new Vector3(worldOriginPos),
-						TilemapScale = transform.Scale,
-						TilemapAngle = transform.Angle,
-						TileCount = new Point2(highlight.Width, highlight.Height),
-						TileSize = tileSize
-					};
-					TilemapCulling.TileOutput cullingOut = TilemapCulling.GetVisibleTileRect(canvas.DrawDevice, cullingIn);
-					int renderedTileCount = cullingOut.VisibleTileCount.X * cullingOut.VisibleTileCount.Y;
-
-					// Draw all visible highlighted tiles
-					{
-						Point2 tileGridPos = cullingOut.VisibleTileStart;
-						Vector2 renderStartPos = worldOriginPos + tileGridPos.X * tileSize.X * worldAxisX + tileGridPos.Y * tileSize.Y * worldAxisY;;
-						Vector2 renderPos = renderStartPos;
-						Vector2 tileXStep = worldAxisX * tileSize.X;
-						Vector2 tileYStep = worldAxisY * tileSize.Y;
-						int lineMergeCount = 0;
-						int totalRects = 0;
-						for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
-						{
-							bool current = highlight[tileGridPos.X, tileGridPos.Y];
-							if (current)
-							{
-								// Try to merge consecutive rects in the same line to reduce drawcalls / CPU load
-								bool hasNext = (tileGridPos.X + 1 < highlight.Width) && ((tileGridPos.X + 1 - cullingOut.VisibleTileStart.X) < cullingOut.VisibleTileCount.X);
-								bool next = hasNext ? highlight[tileGridPos.X + 1, tileGridPos.Y] : false;
-								if (next)
-								{
-									lineMergeCount++;
-								}
-								else
-								{
-									totalRects++;
-									canvas.FillRect(
-										transform.Pos.X + renderPos.X - lineMergeCount * tileXStep.X, 
-										transform.Pos.Y + renderPos.Y - lineMergeCount * tileXStep.Y, 
-										transform.Pos.Z,
-										tileSize.X * (1 + lineMergeCount), 
-										tileSize.Y);
-									lineMergeCount = 0;
-								}
-							}
-
-							tileGridPos.X++;
-							renderPos += tileXStep;
-							if ((tileGridPos.X - cullingOut.VisibleTileStart.X) >= cullingOut.VisibleTileCount.X)
-							{
-								tileGridPos.X = cullingOut.VisibleTileStart.X;
-								tileGridPos.Y++;
-								renderPos = renderStartPos;
-								renderPos += tileYStep * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
-							}
-						}
-					}
-				}
-
-				// Draw highlight area outlines, unless flagged as uncertain
-				if (!displayAsUncertain)
-				{
-					// Determine the outlines of individual highlighted tile patches
-					if (outlineCache == null) outlineCache = new List<Vector2[]>();
-					if (outlineCache.Count == 0)
-					{
-						GetTileAreaOutlines(highlight, tileSize, ref outlineCache);
-					}
-
-					// Draw outlines around all highlighted tile patches
-					canvas.State.ColorTint = ColorRgba.White;
-					canvas.State.SetMaterial(defaultMaterial);
-					foreach (Vector2[] outline in outlineCache)
-					{
-						canvas.DrawPolygon(
-							outline,
-							transform.Pos.X + worldOriginPos.X, 
-							transform.Pos.Y + worldOriginPos.Y, 
-							transform.Pos.Z);
-					}
-				}
-
-				// If this is an uncertain highlight, i.e. not actually reflecting the represented action,
-				// draw a gizmo to indicate this for the user.
-				if (displayAsUncertain)
-				{
-					Vector2 highlightSize = new Vector2(highlight.Width * tileSize.X, highlight.Height * tileSize.Y);
-					Vector2 highlightCenter = highlightSize * 0.5f;
-
-					Vector3 circlePos = transform.Pos + new Vector3(worldOriginPos + worldAxisX * highlightCenter + worldAxisY * highlightCenter);
-					float circleRadius = MathF.Min(tileSize.X, tileSize.Y) * 0.2f;
-
-					canvas.State.ColorTint = ColorRgba.White;
-					canvas.FillCircle(
-						circlePos.X,
-						circlePos.Y,
-						circlePos.Z,
-						circleRadius);
-				}
-			}
-			canvas.PopState();
-		}
-		
 		/// <summary>
 		/// Runs the flood fill algorithm on the specified position and writes the result into the specified variables.
 		/// </summary>
@@ -651,6 +517,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// Register events
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
 
 			// Initial update
 			this.SetActiveTool(this.selectedTool);
@@ -679,6 +546,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// Unregister events
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
+			DualityEditorApp.UpdatingEngine -= this.DualityEditorApp_UpdatingEngine;
 
 			// Reset state
 			this.Cursor = CursorHelper.Arrow;
@@ -840,11 +708,24 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// Highlight the currently active tiles
 				if (this.activeTilemap == renderer.ActiveTilemap)
 				{
-					this.DrawTileHighlights(
+					// Fade-in the affected area for the fill tool to prevent visual noise when hovering around
+					float outlineIntensity = 1.0f;
+					float fillIntensity = 1.0f;
+					if (this.activeTool == TilemapTool.Fill && this.activePreviewValid)
+					{
+						float timeSinceFillSelect = (float)(DateTime.Now - this.activePreviewTime).TotalMilliseconds;
+						fillIntensity = MathF.Clamp(timeSinceFillSelect / FillAnimDuration, 0.0f, 1.0f);
+						outlineIntensity = 0.25f + 0.75f * MathF.Clamp(timeSinceFillSelect / FillAnimDuration, 0.0f, 1.0f);
+					}
+
+					// Draw the current tile hightlights
+					DrawTileHighlights(
 						canvas, 
 						renderer, 
 						this.activeAreaOrigin, 
 						this.activeArea, 
+						ColorRgba.White.WithAlpha(fillIntensity),
+						ColorRgba.White.WithAlpha(outlineIntensity),
 						this.activeAreaOutlineCache,
 						!this.activePreviewValid);
 				}
@@ -872,6 +753,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (e.HasProperty(TilemapsReflectionInfo.Property_Tilemap_Tiles))
 			{
 				this.Invalidate();
+			}
+		}
+		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)
+		{
+			// When using the fill tool fade-in, we'll need continuous updates until the animation is done
+			if (this.activeTool == TilemapTool.Fill && this.activePreviewValid)
+			{
+				float timeSinceFillSelect = (float)(DateTime.Now - this.activePreviewTime).TotalMilliseconds;
+				if (timeSinceFillSelect <= FillAnimDuration)
+					this.Invalidate();
 			}
 		}
 
@@ -906,7 +797,146 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				case TilemapTool.Oval:  return ContinuousAction.FillTileOval;
 			}
 		}
-		
+		private static void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, Point2 origin, Grid<bool> highlight, ColorRgba fillTint, ColorRgba outlineTint, List<Vector2[]> outlineCache = null, bool displayAsUncertain = false)
+		{
+			if (highlight.Capacity == 0) return;
+
+			BatchInfo defaultMaterial = canvas.State.Material;
+			BatchInfo highlightMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor);
+
+			Transform transform = renderer.GameObj.Transform;
+			Tilemap tilemap = renderer.ActiveTilemap;
+			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+			Rect localRect = renderer.LocalTilemapRect;
+
+			// Determine the object's local coordinate system (rotated, scaled) in world space
+			Vector2 worldAxisX = Vector2.UnitX;
+			Vector2 worldAxisY = Vector2.UnitY;
+			MathF.TransformCoord(ref worldAxisX.X, ref worldAxisX.Y, transform.Angle, transform.Scale);
+			MathF.TransformCoord(ref worldAxisY.X, ref worldAxisY.Y, transform.Angle, transform.Scale);
+
+			Vector2 localOriginPos = tileSize * origin;
+			Vector2 worldOriginPos = localOriginPos.X * worldAxisX + localOriginPos.Y * worldAxisY;
+
+			canvas.PushState();
+			{
+				// Configure the canvas so our shapes are properly rotated and scaled
+				canvas.State.TransformHandle = -localRect.TopLeft;
+				canvas.State.TransformAngle = transform.Angle;
+				canvas.State.TransformScale = new Vector2(transform.Scale);
+				canvas.State.ZOffset = -0.01f;
+				
+				// Fill all highlighted tiles that are currently visible
+				{
+					canvas.State.ColorTint = fillTint * ColorRgba.White.WithAlpha(0.375f);
+					canvas.State.SetMaterial(highlightMaterial);
+				
+					// Determine tile visibility
+					Vector2 worldTilemapOriginPos = localRect.TopLeft;
+					MathF.TransformCoord(ref worldTilemapOriginPos.X, ref worldTilemapOriginPos.Y, transform.Angle, transform.Scale);
+					TilemapCulling.TileInput cullingIn = new TilemapCulling.TileInput
+					{
+						// Remember: All these transform values are in world space
+						TilemapPos = transform.Pos + new Vector3(worldTilemapOriginPos) + new Vector3(worldOriginPos),
+						TilemapScale = transform.Scale,
+						TilemapAngle = transform.Angle,
+						TileCount = new Point2(highlight.Width, highlight.Height),
+						TileSize = tileSize
+					};
+					TilemapCulling.TileOutput cullingOut = TilemapCulling.GetVisibleTileRect(canvas.DrawDevice, cullingIn);
+					int renderedTileCount = cullingOut.VisibleTileCount.X * cullingOut.VisibleTileCount.Y;
+
+					// Draw all visible highlighted tiles
+					{
+						Point2 tileGridPos = cullingOut.VisibleTileStart;
+						Vector2 renderStartPos = worldOriginPos + tileGridPos.X * tileSize.X * worldAxisX + tileGridPos.Y * tileSize.Y * worldAxisY;;
+						Vector2 renderPos = renderStartPos;
+						Vector2 tileXStep = worldAxisX * tileSize.X;
+						Vector2 tileYStep = worldAxisY * tileSize.Y;
+						int lineMergeCount = 0;
+						int totalRects = 0;
+						for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
+						{
+							bool current = highlight[tileGridPos.X, tileGridPos.Y];
+							if (current)
+							{
+								// Try to merge consecutive rects in the same line to reduce drawcalls / CPU load
+								bool hasNext = (tileGridPos.X + 1 < highlight.Width) && ((tileGridPos.X + 1 - cullingOut.VisibleTileStart.X) < cullingOut.VisibleTileCount.X);
+								bool next = hasNext ? highlight[tileGridPos.X + 1, tileGridPos.Y] : false;
+								if (next)
+								{
+									lineMergeCount++;
+								}
+								else
+								{
+									totalRects++;
+									canvas.FillRect(
+										transform.Pos.X + renderPos.X - lineMergeCount * tileXStep.X, 
+										transform.Pos.Y + renderPos.Y - lineMergeCount * tileXStep.Y, 
+										transform.Pos.Z,
+										tileSize.X * (1 + lineMergeCount), 
+										tileSize.Y);
+									lineMergeCount = 0;
+								}
+							}
+
+							tileGridPos.X++;
+							renderPos += tileXStep;
+							if ((tileGridPos.X - cullingOut.VisibleTileStart.X) >= cullingOut.VisibleTileCount.X)
+							{
+								tileGridPos.X = cullingOut.VisibleTileStart.X;
+								tileGridPos.Y++;
+								renderPos = renderStartPos;
+								renderPos += tileYStep * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
+							}
+						}
+					}
+				}
+
+				// Draw highlight area outlines, unless flagged as uncertain
+				if (!displayAsUncertain)
+				{
+					// Determine the outlines of individual highlighted tile patches
+					if (outlineCache == null) outlineCache = new List<Vector2[]>();
+					if (outlineCache.Count == 0)
+					{
+						GetTileAreaOutlines(highlight, tileSize, ref outlineCache);
+					}
+
+					// Draw outlines around all highlighted tile patches
+					canvas.State.ColorTint = outlineTint;
+					canvas.State.SetMaterial(defaultMaterial);
+					foreach (Vector2[] outline in outlineCache)
+					{
+						canvas.DrawPolygon(
+							outline,
+							transform.Pos.X + worldOriginPos.X, 
+							transform.Pos.Y + worldOriginPos.Y, 
+							transform.Pos.Z);
+					}
+				}
+
+				// If this is an uncertain highlight, i.e. not actually reflecting the represented action,
+				// draw a gizmo to indicate this for the user.
+				if (displayAsUncertain)
+				{
+					Vector2 highlightSize = new Vector2(highlight.Width * tileSize.X, highlight.Height * tileSize.Y);
+					Vector2 highlightCenter = highlightSize * 0.5f;
+
+					Vector3 circlePos = transform.Pos + new Vector3(worldOriginPos + worldAxisX * highlightCenter + worldAxisY * highlightCenter);
+					float circleRadius = MathF.Min(tileSize.X, tileSize.Y) * 0.2f;
+
+					canvas.State.ColorTint = outlineTint;
+					canvas.FillCircle(
+						circlePos.X,
+						circlePos.Y,
+						circlePos.Z,
+						circleRadius);
+				}
+			}
+			canvas.PopState();
+		}
 		private static void GetTileAreaOutlines(Grid<bool> tileArea, Vector2 tileSize, ref List<Vector2[]> outlines)
 		{
 			// Initialize the container we'll put our outlines into
