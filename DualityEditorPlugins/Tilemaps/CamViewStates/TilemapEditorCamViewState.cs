@@ -18,58 +18,75 @@ using Duality.Editor.Plugins.CamView.CamViewLayers;
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
-	public class TilemapEditorCamViewState : CamViewState
+	public class TilemapEditorCamViewState : CamViewState, ITilemapToolEnvironment
 	{
-		private enum TilemapTool
-		{
-			None,
-
-			Select,
-			Brush,
-			Rect,
-			Oval,
-			Fill
-		}
-		private enum ContinuousAction
-		{
-			None,
-
-			DrawTile,
-			FillTileRect,
-			FillTileOval
-		}
-
 		private static readonly float  FillAnimDuration = 250.0f;
 		private static readonly Point2 InvalidTile      = new Point2(-1, -1);
 
-		private TilemapTool      selectedTool       = TilemapTool.Brush;
+		private TilemapTool toolNone   = new NoTilemapTool();
+		private TilemapTool toolSelect = new SelectTilemapTool();
+
+		private List<TilemapTool> tools             = new List<TilemapTool>();
+		private TilemapTool      selectedTool       = null;
 		private Tilemap          selectedTilemap    = null;
 		private TilemapRenderer  hoveredRenderer    = null;
 		private Point2           hoveredTile        = InvalidTile;
-		private TilemapTool      activeTool         = TilemapTool.None;
+		private TilemapTool      activeTool         = null;
 		private Tilemap          activeTilemap      = null;
 		private TilemapRenderer  activeRenderer     = null;
 		private Point2           activeAreaOrigin   = InvalidTile;
 		private Grid<bool>       activeArea         = new Grid<bool>();
+		private List<Vector2[]>  activeAreaOutlines = new List<Vector2[]>();
 		private bool             activePreviewValid = false;
 		private DateTime         activePreviewTime  = DateTime.Now;
-		private ContinuousAction action             = ContinuousAction.None;
+		private TilemapTool      actionTool         = null;
 		private Point2           actionBeginTile    = InvalidTile;
 
-		private Grid<bool>       activeFillBuffer       = new Grid<bool>();
-		private List<Vector2[]>  activeAreaOutlineCache = new List<Vector2[]>();
-
 		private ToolStrip        toolstrip        = null;
-		private ToolStripButton  toolButtonSelect = null;
-		private ToolStripButton  toolButtonBrush  = null;
-		private ToolStripButton  toolButtonRect   = null;
-		private ToolStripButton  toolButtonOval   = null;
-		private ToolStripButton  toolButtonFill   = null;
 
 
 		public override string StateName
 		{
 			get { return "Tilemap Editor"; }
+		}
+		public TilemapTool SelectedTool
+		{
+			get { return this.selectedTool; }
+			set
+			{
+				this.selectedTool = value;
+				this.UpdateToolbar();
+
+				// Invalidate cursor state 
+				this.OnMouseLeave(EventArgs.Empty);
+				this.OnMouseMove();
+			}
+		}
+		
+		Point2 ITilemapToolEnvironment.HoveredTile
+		{
+			get { return this.hoveredTile; }
+		}
+		Tilemap ITilemapToolEnvironment.ActiveTilemap
+		{
+			get { return this.activeTilemap; }
+		}
+		Point2 ITilemapToolEnvironment.ActiveOrigin
+		{
+			get { return this.activeAreaOrigin; }
+			set { this.activeAreaOrigin = value; }
+		}
+		Grid<bool> ITilemapToolEnvironment.ActiveArea
+		{
+			get { return this.activeArea; }
+		}
+		IList<Vector2[]> ITilemapToolEnvironment.ActiveAreaOutlines
+		{
+			get { return this.activeAreaOutlines; }
+		}
+		Point2 ITilemapToolEnvironment.ActionBeginTile
+		{
+			get { return this.actionBeginTile; }
 		}
 
 
@@ -80,13 +97,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				typeof(TilemapRenderer));
 			this.SetDefaultActiveLayers(
 				typeof(GridCamViewLayer));
-		}
-		
-		private void SetActiveTool(TilemapTool tool)
-		{
-			this.selectedTool = tool;
-			this.UpdateToolbar();
-			this.OnMouseMove();
 		}
 
 		private Tilemap QuerySelectedTilemap()
@@ -110,32 +120,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		
 		private void UpdateToolbar()
 		{
-			this.toolButtonSelect.Checked = false;
-			this.toolButtonBrush.Checked  = false;
-			this.toolButtonRect.Checked   = false;
-			this.toolButtonOval.Checked   = false;
-			this.toolButtonFill.Checked   = false;
-
-			switch (this.selectedTool)
+			foreach (TilemapTool tool in this.tools)
 			{
-				case TilemapTool.Select: this.toolButtonSelect.Checked = true; break;
-				case TilemapTool.Brush:  this.toolButtonBrush.Checked  = true; break;
-				case TilemapTool.Rect:   this.toolButtonRect.Checked   = true; break;
-				case TilemapTool.Oval:   this.toolButtonOval.Checked   = true; break;
-				case TilemapTool.Fill:   this.toolButtonFill.Checked   = true; break;
+				if (tool.ToolButton == null) continue;
+				tool.ToolButton.Checked = (this.selectedTool == tool);
 			}
 		}
 		private void UpdateCursor()
 		{
-			switch (this.activeTool)
-			{
-				case TilemapTool.None:   this.Cursor = TilemapsResCache.CursorTileSelect;       break;
-				case TilemapTool.Select: this.Cursor = TilemapsResCache.CursorTileSelectActive; break;
-				case TilemapTool.Brush:  this.Cursor = TilemapsResCache.CursorTileBrush;        break;
-				case TilemapTool.Rect:   this.Cursor = TilemapsResCache.CursorTileRect;         break;
-				case TilemapTool.Oval:   this.Cursor = TilemapsResCache.CursorTileOval;         break;
-				case TilemapTool.Fill:   this.Cursor = TilemapsResCache.CursorTileFill;         break;
-			}
+			this.Cursor = this.activeTool.ActionCursor;
 		}
 		private void UpdateHoverState(Point cursorPos)
 		{
@@ -157,7 +150,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			TilemapRenderer[] visibleRenderers;
 
 			// While doing an action, it's either the selected tilemap or none. No switch inbetween.
-			bool performingAction = this.action != ContinuousAction.None;
+			bool performingAction = this.actionTool != this.toolNone;
 			if (performingAction)
 			{
 				visibleRenderers = new TilemapRenderer[] { this.activeRenderer };
@@ -169,8 +162,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
 				visibleRenderers.StableSort((a, b) =>
 				{
-					// The currently edited tilemap always prevails
-					if (this.selectedTool != TilemapTool.Select && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
+					// When prefered by the editing tool, the currently edited tilemap always prevails in picking checks
+					if (this.selectedTool.PickPreferSelectedLayer && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
 						return -1;
 					// Otherwise, do regular Z sorting
 					else
@@ -205,7 +198,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 
 			// If we're not doing an action, let our action begin tile just follow around
-			if (this.action == ContinuousAction.None)
+			if (this.actionTool == this.toolNone)
 				this.actionBeginTile = this.hoveredTile;
 
 			// If something changed, redraw the view
@@ -222,148 +215,18 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Determine what action the cursor would do in the current state
 			if (this.hoveredRenderer == null)
-				this.activeTool = TilemapTool.None;
+				this.activeTool = this.toolNone;
 			else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
-				this.activeTool = TilemapTool.Select;
+				this.activeTool = this.toolSelect;
 			else
 				this.activeTool = this.selectedTool;
 
-			if (this.activeTool != TilemapTool.None)
-			{
-				this.activeTilemap = this.hoveredRenderer.ActiveTilemap;
-				this.activeRenderer = this.hoveredRenderer;
-			}
+			// Keep in mind on what renderer and tilemap belong to the currently active tool
+			this.activeTilemap = (this.hoveredRenderer != null) ? this.hoveredRenderer.ActiveTilemap : null;
+			this.activeRenderer = this.hoveredRenderer;
 
 			// Determine the area that is affected by the current action
-			switch (this.activeTool)
-			{
-				case TilemapTool.None:
-				{
-					this.activeAreaOutlineCache.Clear();
-					this.activeAreaOrigin = this.hoveredTile;
-					this.activeArea.ResizeClear(0, 0);
-					this.activePreviewValid = true;
-					this.activePreviewTime = DateTime.Now;
-					break;
-				}
-				case TilemapTool.Select:
-				case TilemapTool.Brush:
-				{
-					this.activeAreaOutlineCache.Clear();
-					this.activeAreaOrigin = this.hoveredTile;
-					this.activeArea.ResizeClear(1, 1);
-					this.activeArea[0, 0] = true;
-					this.activePreviewValid = true;
-					this.activePreviewTime = DateTime.Now;
-					break;
-				}
-				case TilemapTool.Rect:
-				{
-					Point2 topLeft = new Point2(
-						Math.Min(this.actionBeginTile.X, this.hoveredTile.X),
-						Math.Min(this.actionBeginTile.Y, this.hoveredTile.Y));
-					Point2 size = new Point2(
-						1 + Math.Abs(this.actionBeginTile.X - this.hoveredTile.X),
-						1 + Math.Abs(this.actionBeginTile.Y - this.hoveredTile.Y));
-
-					// Don't update the rect when still using the same boundary size
-					bool hoverInsideActiveArea = (this.activeAreaOrigin == topLeft && this.activeArea.Width == size.X && this.activeArea.Height == size.Y);
-					if (hoverInsideActiveArea)
-						break;
-
-					this.activeAreaOrigin = topLeft;
-					this.activeArea.ResizeClear(size.X, size.Y);
-					this.activeArea.Fill(true, 0, 0, size.X, size.Y);
-					this.activePreviewValid = true;
-					this.activePreviewTime = DateTime.Now;
-
-					// Manually define outlines in the trivial rect case
-					Tileset tileset = this.activeTilemap != null ? this.activeTilemap.Tileset.Res : null;
-					Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
-					this.activeAreaOutlineCache.Clear();
-					this.activeAreaOutlineCache.Add(new Vector2[]
-					{
-						new Vector2(0, 0),
-						new Vector2(tileSize.X * size.X, 0),
-						new Vector2(tileSize.X * size.X, tileSize.Y * size.Y),
-						new Vector2(0, tileSize.Y * size.Y)
-					});
-					break;
-				}
-				case TilemapTool.Oval:
-				{
-					Point2 topLeft = new Point2(
-						Math.Min(this.actionBeginTile.X, this.hoveredTile.X),
-						Math.Min(this.actionBeginTile.Y, this.hoveredTile.Y));
-					Point2 size = new Point2(
-						1 + Math.Abs(this.actionBeginTile.X - this.hoveredTile.X),
-						1 + Math.Abs(this.actionBeginTile.Y - this.hoveredTile.Y));
-
-					// Don't update the rect when still using the same boundary size
-					bool hoverInsideActiveArea = (this.activeAreaOrigin == topLeft && this.activeArea.Width == size.X && this.activeArea.Height == size.Y);
-					if (hoverInsideActiveArea)
-						break;
-
-					Vector2 radius = (Vector2)size * 0.5f;
-					Vector2 offset = new Vector2(0.5f, 0.5f) - radius;
-
-					// Adjust to receive nicer low-res shapes
-					radius.X -= 0.1f;
-					radius.Y -= 0.1f;
-
-					this.activeAreaOutlineCache.Clear();
-					this.activeAreaOrigin = topLeft;
-					this.activeArea.ResizeClear(size.X, size.Y);
-					for (int y = 0; y < size.Y; y++)
-					{
-						for (int x = 0; x < size.X; x++)
-						{
-							Vector2 relative = new Vector2(x, y) + offset;
-							this.activeArea[x, y] = 
-								((relative.X * relative.X) / (radius.X * radius.X)) + 
-								((relative.Y * relative.Y) / (radius.Y * radius.Y)) <= 1.0f;
-						}
-					}
-					this.activePreviewValid = true;
-					this.activePreviewTime = DateTime.Now;
-					break;
-				}
-				case TilemapTool.Fill:
-				{
-					// Don't update flood fill when still hovering the same tile
-					if (this.activeAreaOrigin == this.hoveredTile)
-						break;
-
-					// Don't update flood fill when still inside the previous flood fill area
-					Point2 activeLocalHover = new Point2(
-						this.hoveredTile.X - this.activeAreaOrigin.X, 
-						this.hoveredTile.Y - this.activeAreaOrigin.Y);
-					bool hoverInsideActiveRect = (
-						activeLocalHover.X >= 0 && 
-						activeLocalHover.Y >= 0 &&
-						activeLocalHover.X < this.activeArea.Width &&
-						activeLocalHover.Y < this.activeArea.Height);
-					bool hoverInsideActiveArea = (hoverInsideActiveRect && this.activeArea[activeLocalHover.X, activeLocalHover.Y]);
-					if (hoverInsideActiveArea)
-						break;
-
-					// Run the flood fill algorithm
-					this.activePreviewValid = this.GetFloodFillArea(this.activeTilemap, this.hoveredTile, true, ref this.activeArea, ref this.activeAreaOrigin);
-					this.activePreviewTime = DateTime.Now;
-					if (this.activePreviewValid)
-					{
-						this.activeAreaOutlineCache.Clear();
-					}
-					else
-					{
-						this.activeAreaOutlineCache.Clear();
-						this.activeAreaOrigin = this.hoveredTile;
-						this.activeArea.ResizeClear(1, 1);
-						this.activeArea[0, 0] = true;
-					}
-					break;
-				}
-			}
+			this.activeTool.UpdatePreview();
 
 			// If our highlighted action changed, redraw view and update the cursor
 			if (lastActiveTool != this.activeTool || lastActiveTilemap != this.activeTilemap || lastActiveRenderer != this.activeRenderer)
@@ -373,102 +236,58 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 		}
 
-		private void PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile)
+		private void BeginToolAction(TilemapTool action)
 		{
-			Grid<Tile> drawPatch = new Grid<Tile>(brush.Width, brush.Height);
-			drawPatch.Fill(tile, 0, 0, brush.Width, brush.Height);
+			if (this.actionTool == action) return;
 
-			UndoRedoManager.Do(new EditTilemapAction(
-				tilemap, 
-				actionType, 
-				pos, 
-				drawPatch,
-				brush));
-		}
-
-		private void BeginContinuousAction(ContinuousAction action)
-		{
-			if (this.action == action) return;
-			this.action = action;
+			this.actionTool = action;
 			this.actionBeginTile = this.activeAreaOrigin;
 
-			if (this.action == ContinuousAction.DrawTile)
-			{
-				this.PerformEditTiles(
-					EditTilemapActionType.DrawTile, 
-					this.activeTilemap, 
-					this.activeAreaOrigin, 
-					this.activeArea, 
-					new Tile { Index = 1 });
-			}
+			this.actionTool.BeginAction();
 		}
-		private void UpdateContinuousAction()
+		private void UpdateToolAction()
 		{
-			if (this.action == ContinuousAction.DrawTile)
-			{
-				this.PerformEditTiles(
-					EditTilemapActionType.DrawTile, 
-					this.activeTilemap, 
-					this.activeAreaOrigin, 
-					this.activeArea, 
-					new Tile { Index = 1 });
-			}
+			this.actionTool.UpdateAction();
 		}
-		private void EndContinuousAction()
+		private void EndToolAction()
 		{
-			if (this.action == ContinuousAction.None) return;
+			if (this.actionTool == this.toolNone) return;
 
-			if (this.action == ContinuousAction.FillTileRect ||
-				this.action == ContinuousAction.FillTileOval)
-			{
-				EditTilemapActionType type = 
-					(this.action == ContinuousAction.FillTileRect) ? 
-					EditTilemapActionType.FillRect : 
-					EditTilemapActionType.FillOval;
-				this.PerformEditTiles(
-					EditTilemapActionType.FillRect,
-					this.activeTilemap, 
-					this.activeAreaOrigin, 
-					this.activeArea, 
-					new Tile { Index = 2 });
-			}
+			this.actionTool.EndAction();
 
-			this.action = ContinuousAction.None;
+			this.actionTool = this.toolNone;
 			this.actionBeginTile = InvalidTile;
 			UndoRedoManager.Finish();
-		}
-
-		/// <summary>
-		/// Runs the flood fill algorithm on the specified position and writes the result into the specified variables.
-		/// </summary>
-		/// <param name="tilemap"></param>
-		/// <param name="pos"></param>
-		/// <param name="preview">If true, the algorithm will cancel when taking too long for an interactive preview.</param>
-		/// <param name="floodFillArea"></param>
-		/// <param name="floodFillOrigin"></param>
-		/// <returns>True, if the algorithm completed. False, if it was canceled.</returns>
-		private bool GetFloodFillArea(Tilemap tilemap, Point2 pos, bool preview, ref Grid<bool> floodFillArea, ref Point2 floodFillOrigin)
-		{
-			Grid<Tile> tiles = tilemap.BeginUpdateTiles();
-			Point2 fillTopLeft;
-			Point2 fillSize;
-			bool success = FloodFillTiles(ref this.activeFillBuffer, tiles, pos, preview ? (128 * 128) : 0, out fillTopLeft, out fillSize);
-			tilemap.EndUpdateTiles(0, 0, 0, 0);
-
-			// Find the filled areas boundaries and copy it to the active area
-			if (success)
-			{
-				floodFillOrigin = fillTopLeft;
-				floodFillArea.ResizeClear(fillSize.X, fillSize.Y);
-				this.activeFillBuffer.CopyTo(floodFillArea, 0, 0, -1, -1, floodFillOrigin.X, floodFillOrigin.Y);
-			}
-
-			return success;
 		}
 
 		protected override void OnEnterState()
 		{
 			base.OnEnterState();
+
+			// Init the available toolset, if not done before
+			if (this.tools.Count == 0)
+			{
+				TilemapTool[] availableTools = DualityEditorApp.GetAvailDualityEditorTypes(typeof(TilemapTool))
+					.Where(t => !t.IsAbstract)
+					.Select(t => t.CreateInstanceOf() as TilemapTool)
+					.NotNull()
+					.OrderBy(t => t.SortOrder)
+					.ToArray();
+
+				this.toolNone = availableTools.OfType<NoTilemapTool>().FirstOrDefault();
+				this.toolSelect = availableTools.OfType<SelectTilemapTool>().FirstOrDefault();
+
+				this.tools.AddRange(availableTools);
+				foreach (TilemapTool tool in this.tools)
+				{
+					tool.Environment = this;
+				}
+				this.tools.Remove(this.toolNone);
+
+				this.selectedTool = this.tools.FirstOrDefault(t => t != this.toolSelect) ?? this.toolSelect;
+				this.activeTool   = this.toolNone;
+				this.actionTool   = this.toolNone;
+			}
 
 			// Init the custom tile editing toolbar
 			{
@@ -479,34 +298,20 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.toolstrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 				this.toolstrip.Name = "toolstrip";
 				this.toolstrip.Text = "Tilemap Editor Tools";
-
-				this.toolButtonSelect = new ToolStripButton(TilemapsRes.ItemName_TileSelect, TilemapsResCache.IconTileSelect, this.toolButtonSelect_Click);
-				this.toolButtonSelect.DisplayStyle = ToolStripItemDisplayStyle.Image;
-				this.toolButtonSelect.AutoToolTip = true;
-				this.toolstrip.Items.Add(this.toolButtonSelect);
-
-				this.toolButtonBrush = new ToolStripButton(TilemapsRes.ItemName_TileBrush, TilemapsResCache.IconTileBrush, this.toolButtonBrush_Click);
-				this.toolButtonBrush.DisplayStyle = ToolStripItemDisplayStyle.Image;
-				this.toolButtonBrush.AutoToolTip = true;
-				this.toolstrip.Items.Add(this.toolButtonBrush);
-
-				this.toolButtonRect = new ToolStripButton(TilemapsRes.ItemName_TileRect, TilemapsResCache.IconTileRect, this.toolButtonRect_Click);
-				this.toolButtonRect.DisplayStyle = ToolStripItemDisplayStyle.Image;
-				this.toolButtonRect.AutoToolTip = true;
-				this.toolstrip.Items.Add(this.toolButtonRect);
-
-				this.toolButtonOval = new ToolStripButton(TilemapsRes.ItemName_TileOval, TilemapsResCache.IconTileOval, this.toolButtonOval_Click);
-				this.toolButtonOval.DisplayStyle = ToolStripItemDisplayStyle.Image;
-				this.toolButtonOval.AutoToolTip = true;
-				this.toolstrip.Items.Add(this.toolButtonOval);
-
-				this.toolButtonFill = new ToolStripButton(TilemapsRes.ItemName_TileFill, TilemapsResCache.IconTileFill, this.toolButtonFill_Click);
-				this.toolButtonFill.DisplayStyle = ToolStripItemDisplayStyle.Image;
-				this.toolButtonFill.AutoToolTip = true;
-				this.toolstrip.Items.Add(this.toolButtonFill);
-
 				this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 				this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
+
+				foreach (TilemapTool tool in this.tools)
+				{
+					tool.InitToolButton();
+
+					if (tool.ToolButton == null)
+						continue;
+
+					tool.ToolButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+					tool.ToolButton.AutoToolTip = true;
+					this.toolstrip.Items.Add(tool.ToolButton);
+				}
 
 				this.View.Controls.Add(this.toolstrip);
 				this.View.Controls.SetChildIndex(this.toolstrip, this.View.Controls.IndexOf(this.View.ToolbarCamera));
@@ -520,7 +325,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
 
 			// Initial update
-			this.SetActiveTool(this.selectedTool);
 			this.UpdateToolbar();
 		}
 		protected override void OnLeaveState()
@@ -529,18 +333,12 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Cleanup the custom tile editing toolbar
 			{
+				foreach (TilemapTool tool in this.tools)
+				{
+					tool.DisposeToolButton();
+				}
 				this.toolstrip.Dispose();
-				this.toolButtonSelect.Dispose();
-				this.toolButtonBrush.Dispose();
-				this.toolButtonRect.Dispose();
-				this.toolButtonOval.Dispose();
-				this.toolButtonFill.Dispose();
 				this.toolstrip = null;
-				this.toolButtonSelect = null;
-				this.toolButtonBrush = null;
-				this.toolButtonRect = null;
-				this.toolButtonOval = null;
-				this.toolButtonFill = null;
 			}
 
 			// Unregister events
@@ -564,7 +362,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// If we're performing a continuous action, update it when our hover tile changes
 			if (this.hoveredTile != lastHoverTile)
 			{
-				this.UpdateContinuousAction();
+				this.UpdateToolAction();
 			}
 		}
 		protected override void OnMouseLeave(EventArgs e)
@@ -572,7 +370,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseLeave(e);
 			this.hoveredTile = InvalidTile;
 			this.hoveredRenderer = null;
-			this.activeTool = TilemapTool.None;
+			this.activeTool = this.toolNone;
 			this.activeTilemap = null;
 			this.activeAreaOrigin = InvalidTile;
 			this.activeArea.ResizeClear(0, 0);
@@ -584,32 +382,23 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseDown(e);
 			if (e.Button == MouseButtons.Left)
 			{
-				// Begin a continuous action, if one is associated with the currently active tool
-				ContinuousAction newAction = GetContinuousActionOfTool(this.activeTool);
-				if (newAction != ContinuousAction.None)
+				// If the action preview isn't valid, do the full calculation now
+				if (!this.activePreviewValid)
 				{
-					if (this.selectedTilemap != this.activeTilemap)
+					this.activeTool.UpdateActiveArea();
+				}
+
+				// If the active tilemap isn't currently selected, perform a selection first
+				if (this.selectedTilemap != this.activeTilemap)
+				{
+					if (this.activeTilemap != null)
 						DualityEditorApp.Select(this, new ObjectSelection(this.activeTilemap.GameObj));
-					this.BeginContinuousAction(newAction);
+					else
+						DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 				}
-				// If the fill tool is selected, directly perform the fill operation
-				else if (this.activeTool == TilemapTool.Fill)
-				{
-					// If the flood fill preview isn't valid, do the full flood fill calculation now
-					if (!this.activePreviewValid)
-					{
-						this.GetFloodFillArea(this.activeTilemap, this.activeAreaOrigin, false, ref this.activeArea, ref this.activeAreaOrigin);
-					}
-					// Fill the determined area
-					this.PerformEditTiles(EditTilemapActionType.FloodFill, this.activeTilemap, this.activeAreaOrigin, this.activeArea, new Tile { Index = 4 });
-					// Clear our buffered fill tool state
-					this.activeArea.Clear();
-				}
-				// Otherwise, do a selection or deselection
-				else if (this.activeTool == TilemapTool.Select)
-					DualityEditorApp.Select(this, new ObjectSelection(this.hoveredRenderer.ActiveTilemap.GameObj));
-				else if (this.activeTool == TilemapTool.None)
-					DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+
+				// Begin a new action with the currently active tool
+				this.BeginToolAction(this.activeTool);
 			}
 		}
 		protected override void OnMouseUp(MouseEventArgs e)
@@ -617,7 +406,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseUp(e);
 			if (e.Button == MouseButtons.Left)
 			{
-				this.EndContinuousAction();
+				this.EndToolAction();
 			}
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -626,16 +415,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			if (Control.ModifierKeys == Keys.None)
 			{
-				if (e.KeyCode == Keys.Q && this.toolButtonSelect.Enabled)
-					this.toolButtonSelect_Click(this, EventArgs.Empty);
-				else if (e.KeyCode == Keys.W && this.toolButtonBrush.Enabled)
-					this.toolButtonBrush_Click(this, EventArgs.Empty);
-				else if (e.KeyCode == Keys.E && this.toolButtonRect.Enabled)
-					this.toolButtonRect_Click(this, EventArgs.Empty);
-				else if (e.KeyCode == Keys.R && this.toolButtonOval.Enabled)
-					this.toolButtonOval_Click(this, EventArgs.Empty);
-				else if (e.KeyCode == Keys.T && this.toolButtonFill.Enabled)
-					this.toolButtonFill_Click(this, EventArgs.Empty);
+				foreach (TilemapTool tool in this.tools)
+				{
+					if (tool.ShortcutKey == e.KeyCode)
+					{
+						this.SelectedTool = tool;
+						break;
+					}
+				}
 			}
 		}
 		protected override void OnCamActionRequiresCursorChanged(EventArgs e)
@@ -711,7 +498,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					// Fade-in the affected area for the fill tool to prevent visual noise when hovering around
 					float outlineIntensity = 1.0f;
 					float fillIntensity = 1.0f;
-					if (this.activeTool == TilemapTool.Fill && this.activePreviewValid)
+					if (this.activeTool.FadeInPreviews && this.activePreviewValid)
 					{
 						float timeSinceFillSelect = (float)(DateTime.Now - this.activePreviewTime).TotalMilliseconds;
 						fillIntensity = MathF.Clamp(timeSinceFillSelect / FillAnimDuration, 0.0f, 1.0f);
@@ -726,7 +513,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						this.activeArea, 
 						ColorRgba.White.WithAlpha(fillIntensity),
 						ColorRgba.White.WithAlpha(outlineIntensity),
-						this.activeAreaOutlineCache,
+						this.activeAreaOutlines,
 						!this.activePreviewValid);
 				}
 			}
@@ -758,7 +545,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)
 		{
 			// When using the fill tool fade-in, we'll need continuous updates until the animation is done
-			if (this.activeTool == TilemapTool.Fill && this.activePreviewValid)
+			if (this.activeTool.FadeInPreviews && this.activePreviewValid)
 			{
 				float timeSinceFillSelect = (float)(DateTime.Now - this.activePreviewTime).TotalMilliseconds;
 				if (timeSinceFillSelect <= FillAnimDuration)
@@ -766,37 +553,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 		}
 
-		private void toolButtonSelect_Click(object sender, EventArgs e)
-		{
-			this.SetActiveTool(TilemapTool.Select);
-		}
-		private void toolButtonBrush_Click(object sender, EventArgs e)
-		{
-			this.SetActiveTool(TilemapTool.Brush);
-		}
-		private void toolButtonRect_Click(object sender, EventArgs e)
-		{
-			this.SetActiveTool(TilemapTool.Rect);
-		}
-		private void toolButtonOval_Click(object sender, EventArgs e)
-		{
-			this.SetActiveTool(TilemapTool.Oval);
-		}
-		private void toolButtonFill_Click(object sender, EventArgs e)
-		{
-			this.SetActiveTool(TilemapTool.Fill);
-		}
-
-		private static ContinuousAction GetContinuousActionOfTool(TilemapTool tool)
-		{
-			switch (tool)
-			{
-				default:                return ContinuousAction.None;
-				case TilemapTool.Brush: return ContinuousAction.DrawTile;
-				case TilemapTool.Rect:  return ContinuousAction.FillTileRect;
-				case TilemapTool.Oval:  return ContinuousAction.FillTileOval;
-			}
-		}
 		private static void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, Point2 origin, Grid<bool> highlight, ColorRgba fillTint, ColorRgba outlineTint, List<Vector2[]> outlineCache = null, bool displayAsUncertain = false)
 		{
 			if (highlight.Capacity == 0) return;
@@ -993,174 +749,23 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				outlineBuilder.Clear();
 			}
 		}
-		
-		/// <summary>
-		/// Performs a flood fill operation originating from the specified position. 
-		/// <see cref="Tile"/> equality is checked in the <see cref="_FloodFill_TilesEqual"/> method.
-		/// </summary>
-		/// <param name="fillBuffer">A buffer that will be filled with the result of the flood fill operation.</param>
-		/// <param name="tiles"></param>
-		/// <param name="pos"></param>
-		/// <param name="maxTileCount">The maximum number of tiles to fill. If the filled tile count exceeds this number, the algorithm is canceled.</param>
-		/// <param name="fillAreaSize"></param>
-		/// <param name="fillAreaTopLeft"></param>
-		/// <returns>True when successful. False when aborted.</returns>
-		private static bool FloodFillTiles(ref Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, int maxTileCount, out Point2 fillAreaTopLeft, out Point2 fillAreaSize)
+
+		void ITilemapToolEnvironment.SubmitActiveAreaChanges(bool isFullPreview)
 		{
-			// ## Note: ##
-			// This flood fill algorithm is a modified version of "A More Efficient Flood Fill" by Adam Milazzo.
-			// All credit for the original idea and sample implementation goes to him. Last seen on the web here:
-			// http://adammil.net/blog/v126_A_More_Efficient_Flood_Fill.html
-			// ###########
-
-			// Initialize fill buffer
-			if (fillBuffer == null)
-				fillBuffer = new Grid<bool>(tiles.Width, tiles.Height);
-			else if (fillBuffer.Width != tiles.Width || fillBuffer.Height != tiles.Height)
-				fillBuffer.ResizeClear(tiles.Width, tiles.Height);
-			else
-				fillBuffer.Clear();
-
-			// Get the base tile for comparison
-			Tile baseTile = tiles[pos.X, pos.Y];
-
-			// Find the topleft-most tile to start with
-			fillAreaTopLeft = _FloodFillTiles_FindTopLeft(fillBuffer, tiles, pos, baseTile);
-			fillAreaSize = new Point2(1 + pos.X - fillAreaTopLeft.X, 1 + pos.Y - fillAreaTopLeft.Y);
-			pos = fillAreaTopLeft;
-
-			// Run the main part of the algorithm
-			if (maxTileCount <= 0) maxTileCount = int.MaxValue;
-			bool success = _FloodFillTiles(fillBuffer, tiles, pos, baseTile, ref maxTileCount, ref fillAreaTopLeft, ref fillAreaSize);
-
-			return success;
+			this.activePreviewTime = DateTime.Now;
+			this.activePreviewValid = isFullPreview;
 		}
-		private static bool _FloodFillTiles(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile, ref int maxTileCount, ref Point2 fillAreaTopLeft, ref Point2 fillAreaSize)
+		void ITilemapToolEnvironment.PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile)
 		{
-			// Adjust the fill area to the position we'll be starting to fill
-			fillAreaSize.X += Math.Max(fillAreaTopLeft.X - pos.X, 0);
-			fillAreaSize.Y += Math.Max(fillAreaTopLeft.Y - pos.Y, 0);
-			fillAreaTopLeft.X = Math.Min(fillAreaTopLeft.X, pos.X);
-			fillAreaTopLeft.Y = Math.Min(fillAreaTopLeft.Y, pos.Y);
+			Grid<Tile> drawPatch = new Grid<Tile>(brush.Width, brush.Height);
+			drawPatch.Fill(tile, 0, 0, brush.Width, brush.Height);
 
-			// Since the top and left of the current tile are blocking the fill operation, proceed down and right
-			int lastRowLength = 0;
-			do
-			{
-				Point2 rowPos = pos;
-				int rowLength = 0;
-				bool firstRow = (lastRowLength == 0);
-
-				// Narrow scan line width on the left when necessary
-				if (!firstRow && !_FloodFill_IsCandidate(fillBuffer, tiles, pos, baseTile))
-				{
-					while (lastRowLength > 1)
-					{
-						pos.X++;
-						lastRowLength--;
-
-						if (_FloodFill_IsCandidate(fillBuffer, tiles, pos, baseTile))
-							break;
-					}
-
-					rowPos.X = pos.X;
-				}
-				// Expand scan line width to the left when necessary
-				else
-				{
-					for (; pos.X != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile); rowLength++, lastRowLength++)
-					{
-						pos.X--;
-						fillBuffer[pos.X, pos.Y] = true;
-
-						// Adjust the fill area
-						fillAreaSize.X += Math.Max(fillAreaTopLeft.X - pos.X, 0);
-						fillAreaTopLeft.X = Math.Min(fillAreaTopLeft.X, pos.X);
-
-						// If something above the current scan line is free, handle it recursively
-						if (pos.Y != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile))
-						{
-							// Find the topleft-most tile to start with
-							Point2 targetPos = new Point2(pos.X, pos.Y - 1);
-							targetPos = _FloodFillTiles_FindTopLeft(fillBuffer, tiles, targetPos, baseTile);
-							if (!_FloodFillTiles(fillBuffer, tiles, targetPos, baseTile, ref maxTileCount, ref fillAreaTopLeft, ref fillAreaSize))
-								return false;
-						}
-					}
-				}
-				
-				// Fill the current row
-				for (; rowPos.X < tiles.Width && _FloodFill_IsCandidate(fillBuffer, tiles, rowPos, baseTile); rowLength++, rowPos.X++)
-				{
-					fillBuffer[rowPos.X, rowPos.Y] = true;
-				}
-				maxTileCount -= rowLength;
-				if (maxTileCount < 0) return false;
-
-				// Adjust the fill area
-				fillAreaSize.X = Math.Max(fillAreaSize.X, rowPos.X - fillAreaTopLeft.X);
-
-				// If the current row is shorter than the previous, see if there are 
-				// disconnected pixels below the (filled) previous row left to handle
-				if (rowLength < lastRowLength)
-				{
-					for (int end = pos.X + lastRowLength; ++rowPos.X < end; )
-					{
-						// Recursively handle the disconnected below-bottom pixels of the last row
-						if (_FloodFill_IsCandidate(fillBuffer, tiles, rowPos, baseTile))
-						{
-							if (!_FloodFillTiles(fillBuffer, tiles, rowPos, baseTile, ref maxTileCount, ref fillAreaTopLeft, ref fillAreaSize))
-								return false;
-						}
-					}
-				}
-				// If the current row is longer than the previous, see if there are 
-				// top pixels above this one that are disconnected from the last row
-				else if (rowLength > lastRowLength && pos.Y != 0)
-				{
-					for (int prevRowX = pos.X + lastRowLength; ++prevRowX < rowPos.X; )
-					{
-						// Recursively handle the disconnected pixels of the last row
-						if (_FloodFill_IsCandidate(fillBuffer, tiles, new Point2(prevRowX, pos.Y - 1), baseTile))
-						{
-							// Find the topleft-most tile to start with
-							Point2 targetPos = new Point2(prevRowX, pos.Y - 1);
-							targetPos = _FloodFillTiles_FindTopLeft(fillBuffer, tiles, targetPos, baseTile);
-							if (!_FloodFillTiles(fillBuffer, tiles, targetPos, baseTile, ref maxTileCount, ref fillAreaTopLeft, ref fillAreaSize))
-								return false;
-						}
-					}
-				}
-
-				lastRowLength = rowLength;
-				pos.Y++;
-
-				// Adjust the fill area
-				fillAreaSize.Y = Math.Max(fillAreaSize.Y, pos.Y - fillAreaTopLeft.Y);
-			}
-			while (lastRowLength != 0 && pos.Y < tiles.Height);
-
-			return true;
-		}
-		private static Point2 _FloodFillTiles_FindTopLeft(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
-		{
-			// Find the topleft-most connected matching tile
-			while(true)
-			{
-				Point2 origin = pos;
-				while (pos.Y != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X, pos.Y - 1), baseTile)) pos.Y--;
-				while (pos.X != 0 && _FloodFill_IsCandidate(fillBuffer, tiles, new Point2(pos.X - 1, pos.Y), baseTile)) pos.X--;
-				if (pos == origin) break;
-			}
-			return pos;
-		}
-		private static bool _FloodFill_TilesEqual(Tile baseTile, Tile otherTile)
-		{
-			return baseTile.Index == otherTile.Index;
-		}
-		private static bool _FloodFill_IsCandidate(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
-		{
-			return !fillBuffer[pos.X, pos.Y] && _FloodFill_TilesEqual(baseTile, tiles[pos.X, pos.Y]);
+			UndoRedoManager.Do(new EditTilemapAction(
+				tilemap, 
+				actionType, 
+				pos, 
+				drawPatch,
+				brush));
 		}
 	}
 }

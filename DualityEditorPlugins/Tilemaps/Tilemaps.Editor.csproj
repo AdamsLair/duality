@@ -47,6 +47,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CamViewStates\TilemapTools\SelectTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\FillTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\OvalTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\RectTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\BrushTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\NoTilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTools\ITilemapToolEnvironment.cs" />
+    <Compile Include="CamViewStates\TilemapTools\TilemapTool.cs" />
     <Compile Include="CamViewStates\TilemapEditorCamViewState.cs" />
     <Compile Include="EditorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
