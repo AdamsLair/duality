@@ -79,6 +79,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			get { return 0; }
 		}
+		/// <summary>
+		/// [GET] An optional hint that is displayed in the user interface when using this tool.
+		/// </summary>
+		public virtual HelpInfo HelpInfo
+		{
+			get { return null; }
+		}
 
 
 		/// <summary>

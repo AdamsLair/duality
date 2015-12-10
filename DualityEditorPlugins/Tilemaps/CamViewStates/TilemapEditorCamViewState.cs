@@ -308,6 +308,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					if (tool.ToolButton == null)
 						continue;
 
+					tool.ToolButton.Tag = tool.HelpInfo;
 					tool.ToolButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
 					tool.ToolButton.AutoToolTip = true;
 					this.toolstrip.Items.Add(tool.ToolButton);
@@ -553,6 +554,29 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 		}
 
+		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			return this.activeTool.HelpInfo ?? base.ProvideHoverHelp(localPos, ref captured);
+		}
+
+		void ITilemapToolEnvironment.SubmitActiveAreaChanges(bool isFullPreview)
+		{
+			this.activePreviewTime = DateTime.Now;
+			this.activePreviewValid = isFullPreview;
+		}
+		void ITilemapToolEnvironment.PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile)
+		{
+			Grid<Tile> drawPatch = new Grid<Tile>(brush.Width, brush.Height);
+			drawPatch.Fill(tile, 0, 0, brush.Width, brush.Height);
+
+			UndoRedoManager.Do(new EditTilemapAction(
+				tilemap, 
+				actionType, 
+				pos, 
+				drawPatch,
+				brush));
+		}
+
 		private static void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, Point2 origin, Grid<bool> highlight, ColorRgba fillTint, ColorRgba outlineTint, List<Vector2[]> outlineCache = null, bool displayAsUncertain = false)
 		{
 			if (highlight.Capacity == 0) return;
@@ -748,24 +772,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// Reset the outline builder to an empty state
 				outlineBuilder.Clear();
 			}
-		}
-
-		void ITilemapToolEnvironment.SubmitActiveAreaChanges(bool isFullPreview)
-		{
-			this.activePreviewTime = DateTime.Now;
-			this.activePreviewValid = isFullPreview;
-		}
-		void ITilemapToolEnvironment.PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile)
-		{
-			Grid<Tile> drawPatch = new Grid<Tile>(brush.Width, brush.Height);
-			drawPatch.Fill(tile, 0, 0, brush.Width, brush.Height);
-
-			UndoRedoManager.Do(new EditTilemapAction(
-				tilemap, 
-				actionType, 
-				pos, 
-				drawPatch,
-				brush));
 		}
 	}
 }
