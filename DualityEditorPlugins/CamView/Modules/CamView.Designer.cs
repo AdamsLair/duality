@@ -138,7 +138,6 @@
 			this.layerSelector.Name = "layerSelector";
 			this.layerSelector.Size = new System.Drawing.Size(29, 22);
 			this.layerSelector.Text = "Select visible Layers";
-			this.layerSelector.DropDownClosed += new System.EventHandler(this.layerSelector_DropDownClosed);
 			this.layerSelector.DropDownOpening += new System.EventHandler(this.layerSelector_DropDownOpening);
 			this.layerSelector.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.layerSelector_DropDownItemClicked);
 			// 
@@ -150,7 +149,6 @@
 			this.objectVisibilitySelector.Name = "objectVisibilitySelector";
 			this.objectVisibilitySelector.Size = new System.Drawing.Size(29, 22);
 			this.objectVisibilitySelector.Text = "Select visible Objects";
-			this.objectVisibilitySelector.DropDownClosed += new System.EventHandler(this.objectVisibilitySelector_DropDownClosed);
 			this.objectVisibilitySelector.DropDownOpening += new System.EventHandler(this.objectVisibilitySelector_DropDownOpening);
 			// 
 			// buttonResetZoom
@@ -173,7 +171,6 @@
 			this.perspectiveDropDown.Name = "perspectiveDropDown";
 			this.perspectiveDropDown.Size = new System.Drawing.Size(29, 22);
 			this.perspectiveDropDown.Text = "Select Perspective Mode";
-			this.perspectiveDropDown.DropDownClosed += new System.EventHandler(this.perspectiveDropDown_DropDownClosed);
 			this.perspectiveDropDown.DropDownOpening += new System.EventHandler(this.perspectiveDropDown_DropDownOpening);
 			this.perspectiveDropDown.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.perspectiveDropDown_DropDownItemClicked);
 			// 

@@ -22,7 +22,6 @@ namespace Duality.Editor.Forms
 	public partial class MainForm : Form, IHelpProvider
 	{
 		private	bool				nonUserClosing		= false;
-		private	ToolStrip			activeMenu			= null;
 		private MenuModel			mainMenuModel		= new MenuModel();
 		private	MenuStripMenuView	mainMenuView		= null;
 		private MenuModel			serializerMenuModel	= new MenuModel();
@@ -351,6 +350,7 @@ namespace Duality.Editor.Forms
 			this.actionStepSandbox.Tag = HelpInfo.FromText(this.actionStepSandbox.Text, GeneralRes.MenuItemInfo_SandboxStep);
 			this.actionPauseSandbox.Tag = HelpInfo.FromText(this.actionPauseSandbox.Text, GeneralRes.MenuItemInfo_SandboxPause);
 			this.actionStopSandbox.Tag = HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop);
+			this.checkBackups.Tag = HelpInfo.FromText(this.checkBackups.Text, GeneralRes.MenuItemInfo_ToggleBackups);
 		}
 		private void UpdateSerializerMenu()
 		{
@@ -749,23 +749,6 @@ namespace Duality.Editor.Forms
 			Application.Exit();
 		}
 
-		private void selectFormattingMethod_DropDownOpened(object sender, EventArgs e)
-		{
-			this.activeMenu = this.mainToolStrip;
-		}
-		private void selectFormattingMethod_DropDownClosed(object sender, EventArgs e)
-		{
-			this.activeMenu = null;
-		}
-		private void mainMenuStrip_MenuActivate(object sender, EventArgs e)
-		{
-			this.activeMenu = this.mainMenuStrip;
-		}
-		private void mainMenuStrip_MenuDeactivate(object sender, EventArgs e)
-		{
-			this.activeMenu = null;
-		}
-
 		private void UpdateSplitButtonBackupSettings()
 		{
 			this.checkBackups.Checked = DualityEditorApp.BackupsEnabled;
@@ -816,20 +799,9 @@ namespace Duality.Editor.Forms
 			Point globalPos = this.PointToScreen(localPos);
 			object hoveredObj = null;
 
-			// Hovering an open menu: Capture help focus, so Controls behind it can't grab it.
-			if (this.activeMenu != null)
-			{
-				ToolStripItem item = this.activeMenu.GetItemAtDeep(globalPos);
-				hoveredObj = item != null ? item.Tag : null;
-				captured = true;
-			}
-			// By default, look out for hovered toolstrip items
-			else
-			{
-				ToolStripItem item = this.mainToolStrip.GetItemAtDeep(globalPos);
-				hoveredObj = item != null ? item.Tag : null;
-				captured = false;
-			}
+			// Retrieve the currently hovered / active item from all child toolstrips
+			ToolStripItem hoveredItem = this.GetHoveredToolStripItem(globalPos, out captured);
+			hoveredObj = (hoveredItem != null) ? hoveredItem.Tag : null;
 
 			// Determine resulting HelpInfo
 			{

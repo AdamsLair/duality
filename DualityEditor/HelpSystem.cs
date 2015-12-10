@@ -84,6 +84,10 @@ namespace Duality.Editor
 				{
 					LoadXmlCodeDoc(xmlDocFile);
 				}
+				foreach (string xmlDocFile in Directory.EnumerateFiles(baseDir, "*.editor.xml", SearchOption.AllDirectories))
+				{
+					LoadXmlCodeDoc(xmlDocFile);
+				}
 			}
 		}
 		public static void LoadXmlCodeDoc(string file)

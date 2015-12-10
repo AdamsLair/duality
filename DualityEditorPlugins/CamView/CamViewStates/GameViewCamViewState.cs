@@ -7,6 +7,10 @@ using Duality.Drawing;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
+	/// <summary>
+	/// Provides a full preview of the game within the editor. 
+	/// This state renders the games actual audiovisual output and reroutes user input to the game.
+	/// </summary>
 	public class GameViewCamViewState : CamViewState
 	{
 		public override string StateName

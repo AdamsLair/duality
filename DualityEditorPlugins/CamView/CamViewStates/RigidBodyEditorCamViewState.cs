@@ -19,6 +19,9 @@ using Font = Duality.Resources.Font;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
+	/// <summary>
+	/// Allows you to edit the collision geometry of a <see cref="RigidBody"/>.
+	/// </summary>
 	public partial class RigidBodyEditorCamViewState : ObjectEditorCamViewState
 	{
 		public static readonly Cursor ArrowCreateCircle		= CursorHelper.CreateCursor(CamViewResCache.CursorArrowCreateCircle, 0, 0);
