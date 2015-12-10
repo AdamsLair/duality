@@ -13,6 +13,9 @@ using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
+	/// <summary>
+	/// Fills all tiles in the selected oval area with the source pattern.
+	/// </summary>
 	public class OvalTilemapTool : TilemapTool
 	{
 		public override string Name

@@ -13,6 +13,9 @@ using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
+	/// <summary>
+	/// Flood-fills the selected tile patch with the source pattern.
+	/// </summary>
 	public class FillTilemapTool : TilemapTool
 	{
 		private Grid<bool> activeFillBuffer = new Grid<bool>();
@@ -101,6 +104,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				new Tile { Index = 4 });
 
 			// Clear our buffered fill tool state / invalidate the preview
+			this.Environment.ActiveOrigin = new Point2(-1, -1);
 			this.Environment.ActiveArea.Clear();
 		}
 

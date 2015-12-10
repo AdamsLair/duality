@@ -146,19 +146,19 @@
     <value>..\EmbeddedResources\IconTileSelect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ItemName_TileBrush" xml:space="preserve">
-    <value>Tile Brush (W)</value>
+    <value>Tile Brush</value>
   </data>
   <data name="ItemName_TileFill" xml:space="preserve">
-    <value>Flood Fill (T)</value>
+    <value>Flood Fill</value>
   </data>
   <data name="ItemName_TileOval" xml:space="preserve">
-    <value>Draw Oval (R)</value>
+    <value>Draw Oval</value>
   </data>
   <data name="ItemName_TileRect" xml:space="preserve">
-    <value>Draw Rect (E)</value>
+    <value>Draw Rect</value>
   </data>
   <data name="ItemName_TileSelect" xml:space="preserve">
-    <value>Selection Tool (Q)</value>
+    <value>Selection Tool</value>
   </data>
   <data name="UndoRedo_EditTilemapDrawTiles" xml:space="preserve">
     <value>Draw Tiles</value>

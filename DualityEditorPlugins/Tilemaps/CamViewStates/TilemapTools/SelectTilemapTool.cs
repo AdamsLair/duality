@@ -11,6 +11,9 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
+	/// <summary>
+	/// Selects the topmost tilemap that is hovered by the mouse cursor for editing.
+	/// </summary>
 	public class SelectTilemapTool : TilemapTool
 	{
 		public override string Name

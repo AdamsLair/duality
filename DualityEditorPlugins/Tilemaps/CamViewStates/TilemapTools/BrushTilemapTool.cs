@@ -13,6 +13,9 @@ using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
+	/// <summary>
+	/// Draws the source pattern directly onto the tilemap.
+	/// </summary>
 	public class BrushTilemapTool : TilemapTool
 	{
 		public override string Name

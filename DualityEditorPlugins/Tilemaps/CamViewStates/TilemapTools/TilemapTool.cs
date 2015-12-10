@@ -17,6 +17,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 	{
 		private ITilemapToolEnvironment env;
 		private ToolStripButton toolButton;
+		private HelpInfo info;
 
 		
 		/// <summary>
@@ -42,6 +43,29 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		/// [GET] The icon of the editing operation as displayed to the user.
 		/// </summary>
 		public abstract Image Icon { get; }
+		/// <summary>
+		/// [GET] An optional hint that is displayed in the user interface when using this tool.
+		/// </summary>
+		public virtual HelpInfo HelpInfo
+		{
+			get
+			{
+				if (this.info == null && !string.IsNullOrEmpty(this.Name))
+				{
+					Type type = this.GetType();
+					if (HelpSystem.GetXmlCodeDoc(type) != null)
+					{
+						this.info = HelpInfo.FromMember(type);
+						this.info.Topic = this.Name;
+					}
+					else
+					{
+						this.info = HelpInfo.CreateNotAvailable(this.Name);
+					}
+				}
+				return this.info;
+			}
+		}
 		/// <summary>
 		/// [GET] The cursor image to be used when this tool is active.
 		/// </summary>
@@ -79,13 +103,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			get { return 0; }
 		}
-		/// <summary>
-		/// [GET] An optional hint that is displayed in the user interface when using this tool.
-		/// </summary>
-		public virtual HelpInfo HelpInfo
-		{
-			get { return null; }
-		}
 
 
 		/// <summary>
@@ -122,9 +139,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			string name = this.Name;
 			Image icon = this.Icon;
+			Keys shortcut = this.ShortcutKey;
 
 			if (string.IsNullOrWhiteSpace(name) || icon == null)
 				return;
+
+			if (shortcut != Keys.None)
+			{
+				name += " (" + shortcut.ToString() + ")";
+			}
 
 			this.toolButton = new ToolStripButton(name, icon);
 			this.toolButton.Click += this.toolButton_Click;

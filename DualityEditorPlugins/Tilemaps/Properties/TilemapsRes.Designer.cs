@@ -151,7 +151,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tile Brush (W).
+        ///   Looks up a localized string similar to Tile Brush.
         /// </summary>
         internal static string ItemName_TileBrush {
             get {
@@ -160,7 +160,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Flood Fill (T).
+        ///   Looks up a localized string similar to Flood Fill.
         /// </summary>
         internal static string ItemName_TileFill {
             get {
@@ -169,7 +169,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Draw Oval (R).
+        ///   Looks up a localized string similar to Draw Oval.
         /// </summary>
         internal static string ItemName_TileOval {
             get {
@@ -178,7 +178,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Draw Rect (E).
+        ///   Looks up a localized string similar to Draw Rect.
         /// </summary>
         internal static string ItemName_TileRect {
             get {
@@ -187,7 +187,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selection Tool (Q).
+        ///   Looks up a localized string similar to Selection Tool.
         /// </summary>
         internal static string ItemName_TileSelect {
             get {

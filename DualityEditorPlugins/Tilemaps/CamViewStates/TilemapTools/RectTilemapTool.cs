@@ -13,6 +13,9 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
+	/// <summary>
+	/// Fills all tiles in the selected rectangular area with the source pattern.
+	/// </summary>
 	public class RectTilemapTool : TilemapTool
 	{
 		public override string Name
