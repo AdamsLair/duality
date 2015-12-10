@@ -48,6 +48,9 @@ namespace Duality.Editor
 			inputFilter.MouseMove += inputFilter_MouseMove;
 			inputFilter.MouseLeave += inputFilter_MouseLeave;
 			inputFilter.KeyDown += inputFilter_KeyDown;
+			inputFilter.KeyUp += inputFilter_KeyUp;
+			inputFilter.SystemKeyDown += inputFilter_KeyDown;
+			inputFilter.SystemKeyUp += inputFilter_KeyUp;
 			inputFilter.MouseUp += inputFilter_MouseUp;
 			Application.AddMessageFilter(inputFilter);
 
@@ -64,6 +67,9 @@ namespace Duality.Editor
 			inputFilter.MouseMove -= inputFilter_MouseMove;
 			inputFilter.MouseLeave -= inputFilter_MouseLeave;
 			inputFilter.KeyDown -= inputFilter_KeyDown;
+			inputFilter.KeyUp -= inputFilter_KeyUp;
+			inputFilter.SystemKeyDown -= inputFilter_KeyDown;
+			inputFilter.SystemKeyUp -= inputFilter_KeyUp;
 			inputFilter.MouseUp -= inputFilter_MouseUp;
 			inputFilter = null;
 		}
@@ -218,6 +224,10 @@ namespace Duality.Editor
 				e.Handled = e.Handled || PerformHelpAction();
 			else
 				needStackUpdate = true;
+		}
+		private static void inputFilter_KeyUp(object sender, KeyEventArgs e)
+		{
+			needStackUpdate = true;
 		}
 	}
 }

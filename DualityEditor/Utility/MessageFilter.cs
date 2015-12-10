@@ -17,7 +17,9 @@ namespace Duality.Editor
 		WM_MOUSELEAVE	= 0x02A3,
 
 		WM_KEYDOWN		= 0x0100,
-		WM_SYSKEYDOWN	= 0x0104
+		WM_KEYUP		= 0x0101,
+		WM_SYSKEYDOWN	= 0x0104,
+		WM_SYSKEYUP		= 0x0105
 	}
 
 	public class InputEventMessageFilter : IMessageFilter
@@ -27,7 +29,9 @@ namespace Duality.Editor
 		public event EventHandler MouseUp;
 		public event EventHandler MouseWheel;
 		public event EventHandler<KeyEventArgs> KeyDown;
+		public event EventHandler<KeyEventArgs> KeyUp;
 		public event EventHandler<KeyEventArgs> SystemKeyDown;
+		public event EventHandler<KeyEventArgs> SystemKeyUp;
 
 		public bool PreFilterMessage(ref Message m)
 		{
@@ -60,12 +64,30 @@ namespace Duality.Editor
 					return args.Handled;
 				}
 			}
+			else if (m.Msg == (int)WindowsMessages.WM_KEYUP)
+			{
+				if (this.KeyUp != null)
+				{
+					KeyEventArgs args = new KeyEventArgs((Keys)m.WParam.ToInt32());
+					this.KeyUp(this, args);
+					return args.Handled;
+				}
+			}
 			else if (m.Msg == (int)WindowsMessages.WM_SYSKEYDOWN)
 			{
 				if (this.SystemKeyDown != null)
 				{
 					KeyEventArgs args = new KeyEventArgs((Keys)m.WParam.ToInt32());
 					this.SystemKeyDown(this, args);
+					return args.Handled;
+				}
+			}
+			else if (m.Msg == (int)WindowsMessages.WM_SYSKEYUP)
+			{
+				if (this.SystemKeyUp != null)
+				{
+					KeyEventArgs args = new KeyEventArgs((Keys)m.WParam.ToInt32());
+					this.SystemKeyUp(this, args);
 					return args.Handled;
 				}
 			}
