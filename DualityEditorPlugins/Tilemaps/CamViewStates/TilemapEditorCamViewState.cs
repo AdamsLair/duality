@@ -448,11 +448,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				if (tool.OverrideKey == e.KeyCode)
 				{
 					this.OverrideTool = tool;
+					e.Handled = true;
 					break;
 				}
 				else if (Control.ModifierKeys == Keys.None && tool.ShortcutKey == e.KeyCode)
 				{
 					this.SelectedTool = tool;
+					e.Handled = true;
 					break;
 				}
 			}
@@ -464,6 +466,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.overrideTool != null && this.overrideTool.OverrideKey == e.KeyCode)
 			{
 				this.OverrideTool = null;
+				e.Handled = true;
 			}
 		}
 		protected override void OnCamActionRequiresCursorChanged(EventArgs e)

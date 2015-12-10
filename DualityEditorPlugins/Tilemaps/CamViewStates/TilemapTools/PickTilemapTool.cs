@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		}
 		public override Keys OverrideKey
 		{
-			get { return Keys.Alt; }
+			get { return Keys.Menu; }
 		}
 		public override int SortOrder
 		{
