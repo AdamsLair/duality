@@ -24,8 +24,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 	/// </summary>
 	public class TilemapEditorCamViewState : CamViewState, ITilemapToolEnvironment
 	{
-		private static readonly float  FillAnimDuration = 250.0f;
-		private static readonly Point2 InvalidTile      = new Point2(-1, -1);
+		private static readonly float           FillAnimDuration = 250.0f;
+		private static readonly Point2          InvalidTile      = new Point2(-1, -1);
+		private static readonly ITileDrawSource EmptyTileSource  = new DummyTileDrawSource();
+		private static Texture                  strippledLineTex = null;
+
 
 		private TilemapTool toolNone   = new NoTilemapTool();
 		private TilemapTool toolSelect = new SelectTilemapTool();
@@ -43,6 +46,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private List<Vector2[]>  activeAreaOutlines = new List<Vector2[]>();
 		private bool             activePreviewValid = false;
 		private DateTime         activePreviewTime  = DateTime.Now;
+		private ITileDrawSource  tileSource         = EmptyTileSource;
 		private TilemapTool      actionTool         = null;
 		private Point2           actionBeginTile    = InvalidTile;
 
@@ -496,6 +500,19 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					transform.Pos.Z,
 					localRect.W, 
 					localRect.H);
+				
+				// Highlight source tiles when available
+				if (this.tileSource.SourceTilemap == renderer.ActiveTilemap)
+				{
+					DrawTileHighlights(
+						canvas, 
+						renderer, 
+						this.tileSource.SourceOrigin,
+						this.tileSource.SourceShape, 
+						ColorRgba.White,
+						ColorRgba.White, 
+						TileHighlightMode.Selection);
+				}
 
 				// Highlight the currently active tiles
 				if (this.activeTilemap == renderer.ActiveTilemap)
@@ -518,8 +535,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						this.activeArea, 
 						ColorRgba.White.WithAlpha(fillIntensity),
 						ColorRgba.White.WithAlpha(outlineIntensity),
-						this.activeAreaOutlines,
-						!this.activePreviewValid);
+						this.activePreviewValid ? TileHighlightMode.Normal : TileHighlightMode.Uncertain,
+						this.activeAreaOutlines);
 				}
 			}
 		}
@@ -571,7 +588,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		void ITilemapToolEnvironment.PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile)
 		{
 			Grid<Tile> drawPatch = new Grid<Tile>(brush.Width, brush.Height);
-			drawPatch.Fill(tile, 0, 0, brush.Width, brush.Height);
+			this.tileSource.FillTarget(drawPatch);
 
 			UndoRedoManager.Do(new EditTilemapAction(
 				tilemap, 
@@ -581,13 +598,43 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				brush));
 		}
 
-		private static void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, Point2 origin, Grid<bool> highlight, ColorRgba fillTint, ColorRgba outlineTint, List<Vector2[]> outlineCache = null, bool displayAsUncertain = false)
+		[Flags]
+		private enum TileHighlightMode
 		{
-			if (highlight.Capacity == 0) return;
+			Normal    = 0x0,
+			Selection = 0x1,
+			Uncertain = 0x2
+		}
+		private static void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, Point2 origin, IReadOnlyGrid<bool> highlight, ColorRgba fillTint, ColorRgba outlineTint, TileHighlightMode mode, List<Vector2[]> outlineCache = null)
+		{
+			if (highlight.Width == 0 || highlight.Height == 0) return;
 
-			BatchInfo defaultMaterial = canvas.State.Material;
-			BatchInfo highlightMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor);
+			// Generate strippled line texture if not available yet
+			if (strippledLineTex == null)
+			{
+				PixelData pixels = new PixelData(8, 1);
+				for (int i = 0; i < pixels.Width / 2; i++)
+					pixels[i, 0] = ColorRgba.White;
+				for (int i = pixels.Width / 2; i < pixels.Width; i++)
+					pixels[i, 0] = ColorRgba.TransparentWhite;
 
+				using (Pixmap pixmap = new Pixmap(pixels))
+				{
+					strippledLineTex = new Texture(pixmap, 
+						TextureSizeMode.Default, 
+						TextureMagFilter.Nearest, 
+						TextureMinFilter.Nearest, 
+						TextureWrapMode.Repeat, 
+						TextureWrapMode.Repeat, 
+						TexturePixelFormat.Rgba);
+				}
+			}
+
+			BatchInfo defaultMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor);
+			BatchInfo strippleMaterial = new BatchInfo(DrawTechnique.Alpha, canvas.State.Material.MainColor, strippledLineTex);
+			bool uncertain = (mode & TileHighlightMode.Uncertain) != 0;
+			bool selection = (mode & TileHighlightMode.Selection) != 0;
+			
 			Transform transform = renderer.GameObj.Transform;
 			Tilemap tilemap = renderer.ActiveTilemap;
 			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
@@ -610,11 +657,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				canvas.State.TransformAngle = transform.Angle;
 				canvas.State.TransformScale = new Vector2(transform.Scale);
 				canvas.State.ZOffset = -0.01f;
-				
+
 				// Fill all highlighted tiles that are currently visible
 				{
-					canvas.State.ColorTint = fillTint * ColorRgba.White.WithAlpha(0.375f);
-					canvas.State.SetMaterial(highlightMaterial);
+					canvas.State.SetMaterial(defaultMaterial);
+					canvas.State.ColorTint = fillTint * ColorRgba.White.WithAlpha(selection ? 0.2f : 0.375f);
 				
 					// Determine tile visibility
 					Vector2 worldTilemapOriginPos = localRect.TopLeft;
@@ -679,7 +726,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				}
 
 				// Draw highlight area outlines, unless flagged as uncertain
-				if (!displayAsUncertain)
+				if (!uncertain)
 				{
 					// Determine the outlines of individual highlighted tile patches
 					if (outlineCache == null) outlineCache = new List<Vector2[]>();
@@ -689,10 +736,22 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					}
 
 					// Draw outlines around all highlighted tile patches
+					canvas.State.SetMaterial(selection ? strippleMaterial : defaultMaterial);
 					canvas.State.ColorTint = outlineTint;
-					canvas.State.SetMaterial(defaultMaterial);
 					foreach (Vector2[] outline in outlineCache)
 					{
+						// For strippled-line display, determine total length of outline
+						if (selection)
+						{
+							float totalLength = 0.0f;
+							for (int i = 1; i < outline.Length; i++)
+							{
+								totalLength += (outline[i - 1] - outline[i]).Length;
+							}
+							canvas.State.TextureCoordinateRect = new Rect(totalLength / strippledLineTex.PixelWidth, 1.0f);
+						}
+
+						// Draw the outline
 						canvas.DrawPolygon(
 							outline,
 							transform.Pos.X + worldOriginPos.X, 
@@ -703,7 +762,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 				// If this is an uncertain highlight, i.e. not actually reflecting the represented action,
 				// draw a gizmo to indicate this for the user.
-				if (displayAsUncertain)
+				if (uncertain)
 				{
 					Vector2 highlightSize = new Vector2(highlight.Width * tileSize.X, highlight.Height * tileSize.Y);
 					Vector2 highlightCenter = highlightSize * 0.5f;
@@ -711,6 +770,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					Vector3 circlePos = transform.Pos + new Vector3(worldOriginPos + worldAxisX * highlightCenter + worldAxisY * highlightCenter);
 					float circleRadius = MathF.Min(tileSize.X, tileSize.Y) * 0.2f;
 
+					canvas.State.SetMaterial(defaultMaterial);
 					canvas.State.ColorTint = outlineTint;
 					canvas.FillCircle(
 						circlePos.X,
@@ -721,7 +781,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 			canvas.PopState();
 		}
-		private static void GetTileAreaOutlines(Grid<bool> tileArea, Vector2 tileSize, ref List<Vector2[]> outlines)
+		private static void GetTileAreaOutlines(IReadOnlyGrid<bool> tileArea, Vector2 tileSize, ref List<Vector2[]> outlines)
 		{
 			// Initialize the container we'll put our outlines into
 			if (outlines == null)
@@ -767,6 +827,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					edgeMap.RemoveEdge(current, next);
 					current = next;
 				}
+
+				// Close the loop by adding the first element again
+				if (outlineBuilder.Count > 0)
+					outlineBuilder.Add(outlineBuilder[0]);
 
 				// If we have enough vertices, keep the outline for drawing
 				Vector2[] outline = new Vector2[outlineBuilder.Count];

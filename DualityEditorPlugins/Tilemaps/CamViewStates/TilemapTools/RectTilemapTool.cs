@@ -67,7 +67,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				new Vector2(0, 0),
 				new Vector2(tileSize.X * size.X, 0),
 				new Vector2(tileSize.X * size.X, tileSize.Y * size.Y),
-				new Vector2(0, tileSize.Y * size.Y)
+				new Vector2(0, tileSize.Y * size.Y),
+				new Vector2(0, 0) // Close the loop
 			});
 
 			env.SubmitActiveAreaChanges(true);
