@@ -1430,6 +1430,21 @@ namespace Duality.Editor.Plugins.CamView
 			ToolStripItem item;
 			object itemTag;
 			
+			// If the state combobox is dropped down, check its items
+			if (this.stateSelector.DroppedDown)
+			{
+				captured = true;
+				StateEntry hoveredState = this.stateSelector.SelectedItem as StateEntry;
+				if (hoveredState != null)
+				{
+					HelpInfo info = HelpInfo.FromMember(hoveredState.StateType);
+					info.Topic = hoveredState.StateName;
+					return info;
+				}
+				else
+					return null;
+			}
+
 			// Retrieve the currently hovered / active item from all child toolstrips
 			item = this.GetHoveredToolStripItem(globalPos, out captured);
 			itemTag = (item != null) ? item.Tag : null;
@@ -1449,21 +1464,6 @@ namespace Duality.Editor.Plugins.CamView
 				{
 					return itemTag as HelpInfo;
 				}
-			}
-
-			// If the state combobox is dropped down, check its items
-			if (this.stateSelector.DroppedDown)
-			{
-				captured = true;
-				StateEntry hoveredState = this.stateSelector.SelectedItem as StateEntry;
-				if (hoveredState != null)
-				{
-					HelpInfo info = HelpInfo.FromMember(hoveredState.StateType);
-					info.Topic = hoveredState.StateName;
-					return info;
-				}
-				else
-					return null;
 			}
 
 			// Hovering the viewport
