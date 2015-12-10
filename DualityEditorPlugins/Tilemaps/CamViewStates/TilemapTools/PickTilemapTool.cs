@@ -14,7 +14,7 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
 	/// <summary>
-	/// Fills all tiles in the selected rectangular area with the source pattern.
+	/// Allows to select the source pattern for drawing tiles from an existing <see cref="Tilemap"/>.
 	/// </summary>
 	public class PickTilemapTool : TilemapTool
 	{
