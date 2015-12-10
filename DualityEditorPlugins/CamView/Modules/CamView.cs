@@ -179,7 +179,6 @@ namespace Duality.Editor.Plugins.CamView
 		private	GameObject				nativeCamObj				= null;
 		private	string					loadTempState				= null;
 		private	string					loadTempPerspective			= null;
-		private	ToolStripItem			activeToolItem				= null;
 		private	InputEventMessageRedirector	globalInputFilter		= null;
 		private DateTime					globalInputLastOtherKey	= DateTime.Now;
 		private DateTime					lastLocalMouseMove		= DateTime.Now;
@@ -1314,13 +1313,10 @@ namespace Duality.Editor.Plugins.CamView
 		
 		private void camSelector_DropDown(object sender, EventArgs e)
 		{
-			this.activeToolItem = this.camSelector;
 			this.InitCameraSelector();
 		}
 		private void camSelector_DropDownClosed(object sender, EventArgs e)
 		{
-			if (this.activeToolItem == this.camSelector)
-				this.activeToolItem = null;
 			if (this.camSelector.SelectedIndex == -1)
 			{
 				this.camSelector.SelectedIndex = this.GetCameraSelectorIndex(this.camComp);
@@ -1333,13 +1329,10 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void stateSelector_DropDown(object sender, EventArgs e)
 		{
-			this.activeToolItem = this.stateSelector;
 			this.InitStateSelector();
 		}
 		private void stateSelector_DropDownClosed(object sender, EventArgs e)
 		{
-			if (this.activeToolItem == this.stateSelector)
-				this.activeToolItem = null;
 			if (this.stateSelector.SelectedIndex == -1)
 			{
 				this.stateSelector.SelectedIndex = this.activeState != null ? this.stateSelector.Items.IndexOf(this.stateSelector.Items.Cast<StateEntry>().FirstOrDefault(sce => sce.StateType == this.activeState.GetType())) : -1;
@@ -1353,7 +1346,6 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void layerSelector_DropDownOpening(object sender, EventArgs e)
 		{
-			this.activeToolItem = this.layerSelector;
 			this.InitLayerSelector();
 		}
 		private void layerSelector_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -1372,14 +1364,8 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked) e.Cancel = true;
 		}
-		private void layerSelector_DropDownClosed(object sender, EventArgs e)
-		{
-			if (this.activeToolItem == this.layerSelector)
-				this.activeToolItem = null;
-		}
 		private void objectVisibilitySelector_DropDownOpening(object sender, EventArgs e)
 		{
-			this.activeToolItem = this.objectVisibilitySelector;
 			this.InitObjectVisibilitySelector();
 		}
 		private void objectVisibilitySelector_ItemPerformAction(object sender, EventArgs e)
@@ -1391,11 +1377,6 @@ namespace Duality.Editor.Plugins.CamView
 		private void objectVisibilitySelector_Closing(object sender, ToolStripDropDownClosingEventArgs e)
 		{
 			if (e.CloseReason == ToolStripDropDownCloseReason.ItemClicked) e.Cancel = true;
-		}
-		private void objectVisibilitySelector_DropDownClosed(object sender, EventArgs e)
-		{
-			if (this.activeToolItem == this.objectVisibilitySelector)
-				this.activeToolItem = null;
 		}
 		private void snapToGridSelector_DropDownOpening(object sender, EventArgs e)
 		{
@@ -1429,16 +1410,10 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void perspectiveDropDown_DropDownOpening(object sender, EventArgs e)
 		{
-			this.activeToolItem = this.perspectiveDropDown;
 			foreach (var item in this.perspectiveDropDown.DropDownItems.OfType<ToolStripMenuItem>())
 			{
 				item.Checked = (item.Text == this.camComp.Perspective.ToString());
 			}
-		}
-		private void perspectiveDropDown_DropDownClosed(object sender, EventArgs e)
-		{
-			if (this.activeToolItem == this.perspectiveDropDown)
-				this.activeToolItem = null;
 		}
 		private void perspectiveDropDown_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
@@ -1452,31 +1427,27 @@ namespace Duality.Editor.Plugins.CamView
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
 		{
-			HelpInfo result = null;
 			Point globalPos = this.PointToScreen(localPos);
+			ToolStripItem item;
+			object itemTag;
 			
-			ToolStripItem	item	= this.toolbarCamera.GetItemAtDeep(globalPos);
-			object			itemTag	= item != null ? item.Tag : null;
+			// Retrieve the currently hovered / active item from all child toolstrips
+			item = this.GetHoveredToolStripItem(globalPos, out captured);
+			itemTag = (item != null) ? item.Tag : null;
 
 			// Hovering a menu
-			if (item != null || this.activeToolItem != null)
-			{
-				result = itemTag as HelpInfo;
-				captured = (this.activeToolItem != null);
-			}
+			if (item != null || captured)
+				return itemTag as HelpInfo;
+
 			// Hovering the viewport
-			else
+			Point glLocalPos = this.RenderableControl.PointToClient(globalPos);
+			if (this.RenderableControl.ClientRectangle.Contains(glLocalPos))
 			{
-				captured = false;
-				Point glLocalPos = this.RenderableControl.PointToClient(globalPos);
-				if (this.RenderableControl.ClientRectangle.Contains(glLocalPos))
-				{
-					if (this.activeState != null)
-						result = this.activeState.ProvideHoverHelp(glLocalPos, ref captured);
-				}
+				if (this.activeState != null)
+					return this.activeState.ProvideHoverHelp(glLocalPos, ref captured);
 			}
 
-			return result;
+			return null;
 		}
 
 		int IMouseInputSource.X
