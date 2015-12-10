@@ -14,13 +14,15 @@ namespace Duality.Editor
 {
 	public static class HelpSystem
 	{
-		private	static XmlCodeDoc		docDatabase			= new XmlCodeDoc();
-		private	static InputEventMessageFilter	inputFilter	= null;
-		private	static Control			hoveredControl		= null;
-		private	static IHelpProvider	hoveredHelpProvider	= null;
-		private	static bool				hoveredHelpCaptured	= false;
-		private	static HelpStack		stack				= new HelpStack();
-		private	static bool				needStackUpdate		= false;
+		private	static XmlCodeDoc       docDatabase            = new XmlCodeDoc();
+		private	static InputEventMessageFilter inputFilter     = null;
+		private	static Control          hoveredControl         = null;
+		private	static IHelpProvider    hoveredHelpProvider    = null;
+		private	static bool             hoveredHelpCaptured    = false;
+		private	static HelpStack        stack                  = new HelpStack();
+		private	static bool             needStackUpdate        = false;
+		private	static DateTime         lastGlobalWindowUpdate = DateTime.Now;
+		private	static List<Form>       globalWindows          = null;
 		
 		public static event EventHandler<HelpStackChangedEventArgs> ActiveHelpChanged
 		{
@@ -104,13 +106,26 @@ namespace Duality.Editor
 		{
 			needStackUpdate = false;
 
-			foreach (Form f in EditorHelper.GetZSortedAppWindows())
+			// Retrieving all windows in a z-sorted way is a "time consuming" (~ 0.05ms) and API-heavy 
+			// query, and we don't need to be that accurate. Don't do it every time. Once a second is enough.
+			bool updateGlobalWindows = 
+				globalWindows == null || 
+				(DateTime.Now - lastGlobalWindowUpdate).TotalMilliseconds > 1000 || 
+				globalWindows.Any(f => f.IsDisposed);
+			if (updateGlobalWindows)
 			{
-				if (!f.Visible) continue;
-				if (!new Rectangle(f.Location, f.Size).Contains(Cursor.Position)) continue;
+				lastGlobalWindowUpdate = DateTime.Now;
+				globalWindows = EditorHelper.GetZSortedAppWindows();
+			}
 
-				Point localPos = f.PointToClient(Cursor.Position);
-				hoveredControl = f.GetChildAtPointDeep(localPos, GetChildAtPointSkip.Invisible | GetChildAtPointSkip.Transparent);
+			// Iterate through our list of windows to find the one we're hovering
+			foreach (Form form in globalWindows)
+			{
+				if (!form.Visible) continue;
+				if (!new Rectangle(form.Location, form.Size).Contains(Cursor.Position)) continue;
+
+				Point localPos = form.PointToClient(Cursor.Position);
+				hoveredControl = form.GetChildAtPointDeep(localPos, GetChildAtPointSkip.Invisible | GetChildAtPointSkip.Transparent);
 				break;
 			}
 
@@ -180,7 +195,6 @@ namespace Duality.Editor
 			{
 				// Schedule help stack update in main form
 				UpdateHelpStack();
-				needStackUpdate = false;
 			}
 		}
 
@@ -202,6 +216,8 @@ namespace Duality.Editor
 		{
 			if (e.KeyCode == Keys.F1)
 				e.Handled = e.Handled || PerformHelpAction();
+			else
+				needStackUpdate = true;
 		}
 	}
 }
