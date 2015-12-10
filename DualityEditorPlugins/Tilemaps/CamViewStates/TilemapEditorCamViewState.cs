@@ -18,6 +18,10 @@ using Duality.Editor.Plugins.CamView.CamViewLayers;
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
+	/// <summary>
+	/// Provides tools for editing <see cref="Tilemap">tilemaps</see>, which are embedded
+	/// directly into the current <see cref="Scene"/> using a <see cref="TilemapRenderer"/>.
+	/// </summary>
 	public class TilemapEditorCamViewState : CamViewState, ITilemapToolEnvironment
 	{
 		private static readonly float  FillAnimDuration = 250.0f;
