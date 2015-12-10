@@ -323,7 +323,6 @@
 			this.checkBackups.Name = "checkBackups";
 			this.checkBackups.Size = new System.Drawing.Size(123, 22);
 			this.checkBackups.Text = "Backups";
-			this.checkBackups.ToolTipText = "If active, Duality will backup each file before saving it.";
 			this.checkBackups.Click += new System.EventHandler(this.checkBackups_Clicked);
 			// 
 			// menuAutosave
