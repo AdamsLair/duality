@@ -18,6 +18,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 	public interface ITilemapToolEnvironment
 	{
 		/// <summary>
+		/// [GET / SET] When drawing tiles, this is the source from which the drawn pattern is retrieved.
+		/// This property is never null. Assigning null will reset it to its default non-null value.
+		/// </summary>
+		ITileDrawSource TileDrawSource { get; set; }
+		/// <summary>
 		/// [GET / SET] The currently selected <see="TilemapTool"/>.
 		/// </summary>
 		TilemapTool SelectedTool { get; set; }
@@ -48,7 +53,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		Point2 ActionBeginTile { get; }
 		
 		/// <summary>
-		/// Submits a set of previous changes to <see cref="ActiveArea"/> or <see cref="ActiveAreaOrigin"/> to be used in the editor.
+		/// Submits a set of previous changes to <see cref="ActiveArea"/> or <see cref="ActiveOrigin"/> to be used in the editor.
 		/// </summary>
 		/// <param name="isFullPreview">
 		/// Specifies whether the currently set editing area represents the actual area the action will be performed in.
@@ -62,7 +67,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		/// <param name="tilemap"></param>
 		/// <param name="pos"></param>
 		/// <param name="brush"></param>
-		/// <param name="tile"></param>
-		void PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile);
+		/// <param name="source"></param>
+		/// <param name="sourceOffset"></param>
+		void PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, ITileDrawSource source, Point2 sourceOffset);
 	}
 }

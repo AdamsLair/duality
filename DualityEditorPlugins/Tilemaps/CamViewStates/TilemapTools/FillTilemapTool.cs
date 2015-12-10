@@ -101,7 +101,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.Environment.ActiveTilemap, 
 				this.Environment.ActiveOrigin, 
 				this.Environment.ActiveArea, 
-				new Tile { Index = 4 });
+				this.Environment.TileDrawSource,
+				Point2.Zero);
 
 			// Clear our buffered fill tool state / invalidate the preview
 			this.Environment.ActiveOrigin = new Point2(-1, -1);

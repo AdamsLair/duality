@@ -26,9 +26,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			get { return EmptyShape; }
 		}
 
-		public void FillTarget(Grid<Tile> target)
+		public void FillTarget(Grid<Tile> target, Point2 offset)
 		{
 			target.Fill(new Tile(), 0, 0, target.Width, target.Height);
 		}
+		public void BeginAction() { }
+		public void EndAction() { }
 	}
 }

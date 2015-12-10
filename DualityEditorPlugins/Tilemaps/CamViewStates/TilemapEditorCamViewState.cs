@@ -34,6 +34,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private TilemapTool toolSelect = new SelectTilemapTool();
 
 		private List<TilemapTool> tools             = new List<TilemapTool>();
+		private TilemapTool      overrideTool       = null;
 		private TilemapTool      selectedTool       = null;
 		private Tilemap          selectedTilemap    = null;
 		private TilemapRenderer  hoveredRenderer    = null;
@@ -70,7 +71,25 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.OnMouseMove();
 			}
 		}
+		private TilemapTool OverrideTool
+		{
+			get { return this.overrideTool; }
+			set
+			{
+				this.overrideTool = value;
+				this.UpdateToolbar();
+
+				// Invalidate cursor state 
+				this.OnMouseLeave(EventArgs.Empty);
+				this.OnMouseMove();
+			}
+		}
 		
+		ITileDrawSource ITilemapToolEnvironment.TileDrawSource
+		{
+			get { return this.tileSource; }
+			set { this.tileSource = value ?? EmptyTileSource; }
+		}
 		Point2 ITilemapToolEnvironment.HoveredTile
 		{
 			get { return this.hoveredTile; }
@@ -171,7 +190,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				visibleRenderers.StableSort((a, b) =>
 				{
 					// When prefered by the editing tool, the currently edited tilemap always prevails in picking checks
-					if (this.selectedTool.PickPreferSelectedLayer && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
+					if ((this.overrideTool ?? this.selectedTool).PickPreferSelectedLayer && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
 						return -1;
 					// Otherwise, do regular Z sorting
 					else
@@ -227,7 +246,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
 				this.activeTool = this.toolSelect;
 			else
-				this.activeTool = this.selectedTool;
+				this.activeTool = this.overrideTool ?? this.selectedTool;
 
 			// Keep in mind on what renderer and tilemap belong to the currently active tool
 			this.activeTilemap = (this.hoveredRenderer != null) ? this.hoveredRenderer.ActiveTilemap : null;
@@ -251,6 +270,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.actionTool = action;
 			this.actionBeginTile = this.activeAreaOrigin;
 
+			this.tileSource.BeginAction();
 			this.actionTool.BeginAction();
 		}
 		private void UpdateToolAction()
@@ -262,6 +282,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.actionTool == this.toolNone) return;
 
 			this.actionTool.EndAction();
+			this.tileSource.EndAction();
 
 			this.actionTool = this.toolNone;
 			this.actionBeginTile = InvalidTile;
@@ -421,17 +442,28 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			base.OnKeyDown(e);
-
-			if (Control.ModifierKeys == Keys.None)
+			
+			foreach (TilemapTool tool in this.tools)
 			{
-				foreach (TilemapTool tool in this.tools)
+				if (tool.OverrideKey == e.KeyCode)
 				{
-					if (tool.ShortcutKey == e.KeyCode)
-					{
-						this.SelectedTool = tool;
-						break;
-					}
+					this.OverrideTool = tool;
+					break;
 				}
+				else if (Control.ModifierKeys == Keys.None && tool.ShortcutKey == e.KeyCode)
+				{
+					this.SelectedTool = tool;
+					break;
+				}
+			}
+		}
+		protected override void OnKeyUp(KeyEventArgs e)
+		{
+			base.OnKeyUp(e);
+			
+			if (this.overrideTool != null && this.overrideTool.OverrideKey == e.KeyCode)
+			{
+				this.OverrideTool = null;
 			}
 		}
 		protected override void OnCamActionRequiresCursorChanged(EventArgs e)
@@ -585,10 +617,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.activePreviewTime = DateTime.Now;
 			this.activePreviewValid = isFullPreview;
 		}
-		void ITilemapToolEnvironment.PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, Tile tile)
+		void ITilemapToolEnvironment.PerformEditTiles(EditTilemapActionType actionType, Tilemap tilemap, Point2 pos, Grid<bool> brush, ITileDrawSource source, Point2 sourceOffset)
 		{
 			Grid<Tile> drawPatch = new Grid<Tile>(brush.Width, brush.Height);
-			this.tileSource.FillTarget(drawPatch);
+			source.FillTarget(drawPatch, sourceOffset);
 
 			UndoRedoManager.Do(new EditTilemapAction(
 				tilemap, 

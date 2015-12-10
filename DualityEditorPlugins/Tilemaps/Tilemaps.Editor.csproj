@@ -50,6 +50,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="TilemapTileDrawSource.cs" />
     <Compile Include="DummyTileDrawSource.cs" />
     <Compile Include="ITileDrawSource.cs" />
     <Compile Include="CamViewStates\TilemapTools\SelectTilemapTool.cs" />
@@ -129,6 +131,8 @@
     <None Include="EmbeddedResources\CursorTileRect.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="EmbeddedResources\CursorPick.png" />
+    <None Include="EmbeddedResources\IconPick.png" />
     <Content Include="EmbeddedResources\IconTileOval.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

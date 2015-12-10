@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using Duality;
+using Duality.Plugins.Tilemaps;
 
 
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
@@ -77,6 +78,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		/// [GET] An optional shortcut key that can be used to invoke this tool.
 		/// </summary>
 		public virtual Keys ShortcutKey
+		{
+			get { return Keys.None; }
+		}
+		/// <summary>
+		/// [GET] An optional override key that, as long as pressed, will override the selected tool with this one.
+		/// </summary>
+		public virtual Keys OverrideKey
 		{
 			get { return Keys.None; }
 		}

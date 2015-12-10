@@ -81,7 +81,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.Environment.ActiveTilemap, 
 				this.Environment.ActiveOrigin, 
 				this.Environment.ActiveArea, 
-				new Tile { Index = 2 });
+				this.Environment.TileDrawSource,
+				Point2.Zero);
 		}
 	}
 }

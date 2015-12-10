@@ -38,7 +38,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		}
 		public override int SortOrder
 		{
-			get { return 0; }
+			get { return -1000; }
 		}
 
 		public override void UpdatePreview()

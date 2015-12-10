@@ -30,9 +30,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 		IReadOnlyGrid<bool> SourceShape { get; }
 
 		/// <summary>
+		/// Signals the beginning of a continuous editing operation that will access this source.
+		/// </summary>
+		void BeginAction();
+		/// <summary>
+		/// Signals the end of a continuous editing operation that will access this source.
+		/// </summary>
+		void EndAction();
+		/// <summary>
 		/// Fills the specified target grid with tiles from this source.
 		/// </summary>
 		/// <param name="target"></param>
-		void FillTarget(Grid<Tile> target);
+		/// <param name="offset"></param>
+		void FillTarget(Grid<Tile> target, Point2 offset);
 	}
 }

@@ -42,11 +42,28 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		public override void UpdatePreview()
 		{
 			ITilemapToolEnvironment env = this.Environment;
+			IReadOnlyGrid<bool> sourceShape = env.TileDrawSource.SourceShape;
 
 			env.ActiveAreaOutlines.Clear();
-			env.ActiveOrigin = env.HoveredTile;
-			env.ActiveArea.ResizeClear(1, 1);
-			env.ActiveArea[0, 0] = true;
+			env.ActiveOrigin = new Point2(
+				env.HoveredTile.X - sourceShape.Width / 2,
+				env.HoveredTile.Y - sourceShape.Height / 2);
+			if (sourceShape.Width > 0 && sourceShape.Height > 0)
+			{
+				env.ActiveArea.ResizeClear(sourceShape.Width, sourceShape.Height);
+				for (int y = 0; y < sourceShape.Height; y++)
+				{
+					for (int x = 0; x < sourceShape.Width; x++)
+					{
+						env.ActiveArea[x, y] = sourceShape[x, y];
+					}
+				}
+			}
+			else
+			{
+				env.ActiveArea.ResizeClear(1, 1);
+				env.ActiveArea[0, 0] = true;
+			}
 			env.SubmitActiveAreaChanges(true);
 		}
 		public override void BeginAction()
@@ -57,7 +74,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.Environment.ActiveTilemap, 
 				this.Environment.ActiveOrigin, 
 				this.Environment.ActiveArea, 
-				new Tile { Index = 1 });
+				this.Environment.TileDrawSource,
+				new Point2(
+					this.Environment.ActiveOrigin.X - this.Environment.ActionBeginTile.X,
+					this.Environment.ActiveOrigin.Y - this.Environment.ActionBeginTile.Y));
 		}
 		public override void UpdateAction()
 		{
@@ -67,7 +87,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.Environment.ActiveTilemap, 
 				this.Environment.ActiveOrigin, 
 				this.Environment.ActiveArea, 
-				new Tile { Index = 1 });
+				this.Environment.TileDrawSource,
+				new Point2(
+					this.Environment.ActiveOrigin.X - this.Environment.ActionBeginTile.X,
+					this.Environment.ActiveOrigin.Y - this.Environment.ActionBeginTile.Y));
 		}
 	}
 }

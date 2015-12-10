@@ -63,6 +63,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CursorPick {
+            get {
+                object obj = ResourceManager.GetObject("CursorPick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CursorTileBrush {
             get {
                 object obj = ResourceManager.GetObject("CursorTileBrush", resourceCulture);
@@ -96,6 +106,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static System.Drawing.Bitmap CursorTileRect {
             get {
                 object obj = ResourceManager.GetObject("CursorTileRect", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconPick {
+            get {
+                object obj = ResourceManager.GetObject("IconPick", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -147,6 +167,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
             get {
                 object obj = ResourceManager.GetObject("IconTileSelect", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tile Picker.
+        /// </summary>
+        internal static string ItemName_Pick {
+            get {
+                return ResourceManager.GetString("ItemName_Pick", resourceCulture);
             }
         }
         

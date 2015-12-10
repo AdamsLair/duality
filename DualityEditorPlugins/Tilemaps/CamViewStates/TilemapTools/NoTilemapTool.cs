@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using Duality;
+using Duality.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
 
 
