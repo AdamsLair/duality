@@ -892,7 +892,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			if (this.actionAllowed)
 			{
-				if (e.KeyCode == Keys.Delete)
+				if (e.KeyCode == Keys.Menu)
+				{
+					// Capture the left Alt key, so focus doesn't jump to the menu.
+					// We'll need Alt keys right here for those drag-clone actions.
+					e.Handled = true;
+				}
+				else if (e.KeyCode == Keys.Delete)
 				{
 					List<SelObj> deleteList = this.actionObjSel.ToList();
 					this.ClearSelection();
