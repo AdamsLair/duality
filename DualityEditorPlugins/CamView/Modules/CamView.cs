@@ -486,7 +486,6 @@ namespace Duality.Editor.Plugins.CamView
 				LayerEntry layerEntry = new LayerEntry(pair.Key, pair.Value);
 				ToolStripMenuItem layerItem = new ToolStripMenuItem(layerEntry.LayerName);
 				layerItem.Tag = layerEntry;
-				layerItem.ToolTipText = layerEntry.LayerDesc;
 				layerItem.Checked = this.activeLayers != null && this.activeLayers.Any(l => l.GetType() == layerEntry.LayerType);
 				layerItem.Enabled = !this.lockedLayers.Contains(layerEntry.LayerType);
 				this.layerSelector.DropDownItems.Add(layerItem);
@@ -1434,10 +1433,38 @@ namespace Duality.Editor.Plugins.CamView
 			// Retrieve the currently hovered / active item from all child toolstrips
 			item = this.GetHoveredToolStripItem(globalPos, out captured);
 			itemTag = (item != null) ? item.Tag : null;
-
-			// Hovering a menu
 			if (item != null || captured)
-				return itemTag as HelpInfo;
+			{
+				if (itemTag is LayerEntry)
+				{
+					LayerEntry entry = itemTag as LayerEntry;
+					return HelpInfo.FromText(entry.LayerName, entry.LayerDesc, entry.LayerType.GetMemberId());
+				}
+				else if (itemTag is ObjectVisibilityEntry)
+				{
+					ObjectVisibilityEntry entry = itemTag as ObjectVisibilityEntry;
+					return HelpInfo.FromMember(entry.ComponentType);
+				}
+				else
+				{
+					return itemTag as HelpInfo;
+				}
+			}
+
+			// If the state combobox is dropped down, check its items
+			if (this.stateSelector.DroppedDown)
+			{
+				captured = true;
+				StateEntry hoveredState = this.stateSelector.SelectedItem as StateEntry;
+				if (hoveredState != null)
+				{
+					HelpInfo info = HelpInfo.FromMember(hoveredState.StateType);
+					info.Topic = hoveredState.StateName;
+					return info;
+				}
+				else
+					return null;
+			}
 
 			// Hovering the viewport
 			Point glLocalPos = this.RenderableControl.PointToClient(globalPos);
