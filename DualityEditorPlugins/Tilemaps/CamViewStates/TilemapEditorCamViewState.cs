@@ -412,10 +412,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseDown(e);
 			if (e.Button == MouseButtons.Left)
 			{
+				// Because selection events may change the currently active tool,
+				// start by agreeing on what tool we're dealing with in this mouse event.
+				TilemapTool proposedAction = this.activeTool;
+
 				// If the action preview isn't valid, do the full calculation now
 				if (!this.activePreviewValid)
 				{
-					this.activeTool.UpdateActiveArea();
+					proposedAction.UpdateActiveArea();
 				}
 
 				// If the active tilemap isn't currently selected, perform a selection first
@@ -427,8 +431,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 						DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
 				}
 
-				// Begin a new action with the currently active tool
-				this.BeginToolAction(this.activeTool);
+				// Begin a new action with the proposed action tool
+				this.BeginToolAction(proposedAction);
 			}
 		}
 		protected override void OnMouseUp(MouseEventArgs e)
