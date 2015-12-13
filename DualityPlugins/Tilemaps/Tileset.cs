@@ -84,6 +84,27 @@ namespace Duality.Plugins.Tilemaps
 			Texture texture = this.renderData[renderDataIndex];
 			texture.LookupAtlas(tileIndex, out uv);
 		}
+		/// <summary>
+		/// Looks up the source pixel coordinates for the specified input layer and tile.
+		/// </summary>
+		/// <param name="renderConfigIndex"></param>
+		/// <param name="tileIndex"></param>
+		/// <param name="pos"></param>
+		/// <param name="size"></param>
+		public void LookupTileSourceRect(int renderConfigIndex, int tileIndex, out Point2 pos, out Point2 size)
+		{
+			TilesetRenderInput input = this.renderConfig[renderConfigIndex];
+			int rowWidth = input.SourceData.Res.Width;
+
+			size = new Point2(
+				input.SourceTileSize.X + input.SourceTileSpacing * 2,
+				input.SourceTileSize.Y + input.SourceTileSpacing * 2);
+
+			int totalXOffset = tileIndex * size.X;
+			pos = new Point2(
+				totalXOffset % rowWidth,
+				(totalXOffset / rowWidth) * size.Y);
+		}
 
 		/// <summary>
 		/// Compiles the <see cref="Tileset"/> using the specified source data, in order to
@@ -94,7 +115,6 @@ namespace Duality.Plugins.Tilemaps
 			// Clear previous data
 			this.DiscardCompiledData();
 
-			// ToDo: Support for a distinct target tile spacing (to prevent filter artifacts)
 			// ToDo: Prepare information on AutoTile expansion
 			// ToDo: Mapping between conceptual tiles and actual tiles (with AutoTiles in mind)
 			// ToDo: Collision info per tile
