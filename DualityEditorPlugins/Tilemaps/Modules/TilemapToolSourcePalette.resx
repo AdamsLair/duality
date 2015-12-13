@@ -117,74 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="CursorTileBrush" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\CursorTileBrush.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="CursorTileFill" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\CursorTileFill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="CursorTileOval" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\CursorTileOval.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="CursorTileRect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\CursorTileRect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconTileBrush" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconTileBrush.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconTileOval" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconTileOval.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconTileFill" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconTileFill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconTileRect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconTileRect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconTileSelect" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconTileSelect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ItemName_TileBrush" xml:space="preserve">
-    <value>Tile Brush</value>
-  </data>
-  <data name="ItemName_TileFill" xml:space="preserve">
-    <value>Flood Fill</value>
-  </data>
-  <data name="ItemName_TileOval" xml:space="preserve">
-    <value>Draw Oval</value>
-  </data>
-  <data name="ItemName_TileRect" xml:space="preserve">
-    <value>Draw Rect</value>
-  </data>
-  <data name="ItemName_TileSelect" xml:space="preserve">
-    <value>Selection Tool</value>
-  </data>
-  <data name="UndoRedo_EditTilemapDrawTiles" xml:space="preserve">
-    <value>Draw Tiles</value>
-  </data>
-  <data name="UndoRedo_EditTilemapFillTileOval" xml:space="preserve">
-    <value>Fill Tile Oval</value>
-  </data>
-  <data name="UndoRedo_EditTilemapFillTileRect" xml:space="preserve">
-    <value>Fill Tile Rect</value>
-  </data>
-  <data name="UndoRedo_EditTilemapFloodFillTiles" xml:space="preserve">
-    <value>Flood Fill Tiles</value>
-  </data>
-  <data name="CursorPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\CursorPick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="IconPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconPick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ItemName_Pick" xml:space="preserve">
-    <value>Tile Picker</value>
-  </data>
-  <data name="IconTilePalette" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconTilePalette.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="MenuItemName_TilePalette" xml:space="preserve">
-    <value>Tile Palette</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEtUTLdfamH/Y29k/2RvZf9kb2X/ZG9m/2Fs
+        Y/9MVU63AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIWejch1loPNfamD/6/Xs/9Tt1//U7tj/1e7Y/9Xu
+        2f/V7dn/YWxj/wAAAAAAAAAAAAAAAAAAAAAAAAAAKW2pMCVrpvyHruH/YG1h//j8+P9swpH/WKh4/3Kq
+        1f9dkLv/0unX/2RvZ/8AAAAAAAAAAAAAAAAAAAAAAAAAAC1wratuntH/mr3r/19tYf/4/Pj/gtmp/2zC
+        kf+Jwez/cqrV/9bt1/9jbmT/AAAAAAAAAAAAAAAAAAAAADZ3tC0ydLH8nsDs/2qd4v9fbWH/9/z4/3LV
+        1f9du7v/1K6V/7qVe//X7Nb/Y25k/wAAAABGgsBCQn+9hD99urc7erjzd6XX/6LD7f+gwe3/X21g//f8
+        +P+J7Oz/ctXV/+vGrP/UrpX/2erU/2FuZP9PiMeTZZjP/3yp2f+OteL/pMXt/6jH7v9lmM3/NXaz/1xq
+        Xf/7/Pv//P78//f8+P/3/Pj/9/z5/+v06/9eal//U4vL9q/N8P+xz/D/mcDs/3+v5/+ryu//Pny5/wAA
+        AABEXWX/XGpd/19tYP9fbWD/X21g/19tYf9eal//Plhh/1iOzt6pye3/hajt/1lr7f9rj+n/rs3w/26e
+        0v8/fbr/aJrO/6bG7v+Wm2r/rpgn/56YTv9nnOL/mbzq/yJoo/ZckdGck7rl/2919v+ChfX/QUHw/5G8
+        6/+vzfD/rczw/6vK8P+Gs+n/X6rC/0W0jv9Xqbf/caLk/5i76P8ma6ftYJTVM12S0vyTpfX/Wlv2/1KH
+        9P88p/v/Xazy/3+w5/98ruf/eavm/0C3gf9hyJj/PLh7/36t5/+QtuP/K2+r1QAAAABhlNWHh7Dh/7rX
+        8/8zp/7/bcD//yyk//9nv/D/O877/1u/8f9TtKH/PLh6/0i0kf+oyO7/eKbW/zByr5wAAAAAZJfYBmKV
+        1p+Gr+H/W7P5/yyk//9Bqvv/MdP+/23i//8s1f//gLHo/32u5/+qyu//psbt/zh4tvw1drMwAAAAAAAA
+        AAAAAAAAYpbXdWCU1faPt+P/utfz/17V+/8r1f//QtH7/7TS8v+y0PH/k7ni/2OWzP8+fLmKAAAAAAAA
+        AAAAAAAAAAAAAAAAAABjltceYZTVrnek3P+SueT/qcrs/6bH7P+OtuL/aZvS/0qEw9tGgsBOAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABildZCX5PUkFyR0dJZj8/PVY3MmVKKykUAAAAAAAAAAAAA
+        AAAAAAAA/wCsQfwArEH4AKxB+ACsQfAArEGAAKxBAACsQQEArEEAAKxBAACsQQAArEGAAKxBgACsQeAB
+        rEHwA6xB/A+sQQ==
+</value>
   </data>
 </root>

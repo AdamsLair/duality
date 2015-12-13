@@ -39,7 +39,12 @@
     <DocumentationFile>bin\Release\Tilemaps.editor.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AdamsLair.WinForms.1.1.0.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -51,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="Modules\TilemapToolSourcePalette.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilemapToolSourcePalette.Designer.cs">
+      <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
+    </Compile>
     <Compile Include="TilemapTileDrawSource.cs" />
     <Compile Include="DummyTileDrawSource.cs" />
     <Compile Include="ITileDrawSource.cs" />
@@ -101,6 +112,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Modules\TilemapToolSourcePalette.resx">
+      <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\TilemapsRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TilemapsRes.Designer.cs</LastGenOutput>
@@ -131,6 +145,7 @@
     <None Include="EmbeddedResources\CursorTileRect.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="EmbeddedResources\IconTilePalette.png" />
     <None Include="EmbeddedResources\CursorPick.png" />
     <None Include="EmbeddedResources\IconPick.png" />
     <Content Include="EmbeddedResources\IconTileOval.png" />
