@@ -244,6 +244,24 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Tileset selected.
+        /// </summary>
+        internal static string TilePalette_NoTilesetSelected {
+            get {
+                return ResourceManager.GetString("TilePalette_NoTilesetSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tileset: {0}.
+        /// </summary>
+        internal static string TilePalette_SelectedTileset {
+            get {
+                return ResourceManager.GetString("TilePalette_SelectedTileset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Draw Tiles.
         /// </summary>
         internal static string UndoRedo_EditTilemapDrawTiles {

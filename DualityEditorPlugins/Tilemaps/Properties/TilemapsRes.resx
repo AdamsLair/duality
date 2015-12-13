@@ -187,4 +187,10 @@
   <data name="MenuItemName_TilePalette" xml:space="preserve">
     <value>Tile Palette</value>
   </data>
+  <data name="TilePalette_NoTilesetSelected" xml:space="preserve">
+    <value>No Tileset selected</value>
+  </data>
+  <data name="TilePalette_SelectedTileset" xml:space="preserve">
+    <value>Tileset: {0}</value>
+  </data>
 </root>

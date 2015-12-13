@@ -56,11 +56,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="TilemapsEditorSelectionParser.cs" />
     <Compile Include="Modules\TilemapToolSourcePalette.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Modules\TilemapToolSourcePalette.Designer.cs">
       <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Modules\TilesetView.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="TilemapTileDrawSource.cs" />
     <Compile Include="DummyTileDrawSource.cs" />

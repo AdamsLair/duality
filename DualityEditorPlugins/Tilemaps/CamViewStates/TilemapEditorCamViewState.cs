@@ -126,16 +126,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				typeof(GridCamViewLayer));
 		}
 
-		private Tilemap QuerySelectedTilemap()
-		{
-			// Detect whether the user has either selected a Tilemap directly, 
-			// or a related Component that points to an external one
-			return
-				DualityEditorApp.Selection.Components.OfType<Tilemap>().FirstOrDefault() ?? 
-				DualityEditorApp.Selection.GameObjects.GetComponents<Tilemap>().FirstOrDefault() ??
-				DualityEditorApp.Selection.Components.OfType<TilemapRenderer>().Select(r => r.ExternalTilemap).FirstOrDefault() ?? 
-				DualityEditorApp.Selection.GameObjects.GetComponents<TilemapRenderer>().Select(r => r.ExternalTilemap).FirstOrDefault();
-		}
 		private IEnumerable<TilemapRenderer> QueryVisibleTilemapRenderers()
 		{
 			var all = Scene.Current.FindComponents<TilemapRenderer>();
@@ -595,7 +585,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				return;
 
 			// Tilemap selection changed
-			Tilemap newSelection = this.QuerySelectedTilemap();
+			Tilemap newSelection = TilemapsEditorSelectionParser.QuerySelectedTilemap();
 			if (this.selectedTilemap != newSelection)
 			{
 				this.selectedTilemap = newSelection;
