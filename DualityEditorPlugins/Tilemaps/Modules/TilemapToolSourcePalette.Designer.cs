@@ -70,7 +70,6 @@
 			// 
 			this.tilesetView.AutoScroll = true;
 			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(-2, -2);
-			this.tilesetView.DisplayedConfigIndex = 0;
 			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tilesetView.ForeColor = System.Drawing.Color.Black;
 			this.tilesetView.Location = new System.Drawing.Point(0, 25);

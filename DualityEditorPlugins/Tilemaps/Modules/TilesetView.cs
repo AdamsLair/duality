@@ -23,7 +23,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private Tileset             tileset                = null;
 		private int                 displayedConfigIndex   = 0;
-		private HorizontalAlignment rowAlignment           = HorizontalAlignment.Center;
+		private HorizontalAlignment rowAlignment           = HorizontalAlignment.Left;
 		private int                 totalTileCount         = 0;
 		private Size                tileSize               = Size.Empty;
 		private Point               tileCount              = Point.Empty;
@@ -52,6 +52,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		[DefaultValue(0)]
 		public int DisplayedConfigIndex
 		{
 			get { return this.displayedConfigIndex; }
