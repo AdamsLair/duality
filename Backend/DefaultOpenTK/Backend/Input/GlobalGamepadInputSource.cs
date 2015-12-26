@@ -128,7 +128,12 @@ namespace Duality.Backend.DefaultOpenTK
 				gamepad.UpdateState();
 
 				if (gamepad.IsAvailable)
+				{
 					inputManager.AddSource(gamepad);
+					Log.Core.Write(
+						"Detected new Gamepad Input: \"{0}\" at index {1}",
+						gamepad.Description, deviceIndex);
+				}
 				else if (deviceIndex >= MinDeviceCheckCount)
 					break;
 			}
