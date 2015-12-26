@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -63,28 +65,30 @@ namespace Duality.Editor.Plugins.Tilemaps
 				ActionHandler = this.menuItemTilePalette_Click
 			});
 		}
-
-		private TilemapToolSourcePalette RequestTilePalette()
+		protected override void SaveUserData(XElement node)
 		{
-			if (this.tilePalette == null || this.tilePalette.IsDisposed)
+			if (this.tilePalette != null)
 			{
-				this.tilePalette = new TilemapToolSourcePalette();
-				this.tilePalette.FormClosed += delegate(object sender, FormClosedEventArgs e)
+				XElement tilePaletteElem = new XElement("TilePalette");
+				this.tilePalette.SaveUserData(tilePaletteElem);
+				if (!tilePaletteElem.IsEmpty)
+					node.Add(tilePaletteElem);
+			}
+		}
+		protected override void LoadUserData(XElement node)
+		{
+			this.isLoading = true;
+			if (this.tilePalette != null)
+			{
+				foreach (XElement tilePaletteElem in node.Elements("TilePalette"))
 				{
-					this.tilePalette = null;
-					if (e.CloseReason == CloseReason.UserClosing)
-					{
-						this.pendingLocalTilePalettes--;
-					}
-				};
-			}
+					int i = tilePaletteElem.GetAttributeValue("id", 0);
+					if (i < 0 || i >= 1) continue;
 
-			if (!this.isLoading)
-			{
-				this.tilePalette.Show(DualityEditorApp.MainForm.MainDockPanel);
+					this.tilePalette.LoadUserData(tilePaletteElem);
+				}
 			}
-
-			return this.tilePalette;
+			this.isLoading = false;
 		}
 
 		/// <summary>
@@ -112,6 +116,29 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.tilePalette.Close();
 			else
 				this.pendingLocalTilePalettes--;
+		}
+
+		private TilemapToolSourcePalette RequestTilePalette()
+		{
+			if (this.tilePalette == null || this.tilePalette.IsDisposed)
+			{
+				this.tilePalette = new TilemapToolSourcePalette();
+				this.tilePalette.FormClosed += delegate(object sender, FormClosedEventArgs e)
+				{
+					this.tilePalette = null;
+					if (e.CloseReason == CloseReason.UserClosing)
+					{
+						this.pendingLocalTilePalettes--;
+					}
+				};
+			}
+
+			if (!this.isLoading)
+			{
+				this.tilePalette.Show(DualityEditorApp.MainForm.MainDockPanel);
+			}
+
+			return this.tilePalette;
 		}
 
 		private void menuItemTilePalette_Click(object sender, EventArgs e)

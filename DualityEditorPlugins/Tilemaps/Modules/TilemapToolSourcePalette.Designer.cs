@@ -30,8 +30,9 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TilemapToolSourcePalette));
 			this.mainToolStrip = new System.Windows.Forms.ToolStrip();
-			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
 			this.labelTileset = new System.Windows.Forms.ToolStripLabel();
+			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
+			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
 			this.mainToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -40,19 +41,12 @@
 			this.mainToolStrip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.labelTileset});
+            this.labelTileset,
+            this.buttonBrightness});
 			this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.mainToolStrip.Name = "mainToolStrip";
 			this.mainToolStrip.Size = new System.Drawing.Size(479, 25);
 			this.mainToolStrip.TabIndex = 1;
-			// 
-			// tilesetView
-			// 
-			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tilesetView.Location = new System.Drawing.Point(0, 25);
-			this.tilesetView.Name = "tilesetView";
-			this.tilesetView.Size = new System.Drawing.Size(479, 422);
-			this.tilesetView.TabIndex = 0;
 			// 
 			// labelTileset
 			// 
@@ -60,6 +54,32 @@
 			this.labelTileset.Name = "labelTileset";
 			this.labelTileset.Size = new System.Drawing.Size(41, 22);
 			this.labelTileset.Text = "Tileset";
+			// 
+			// buttonBrightness
+			// 
+			this.buttonBrightness.CheckOnClick = true;
+			this.buttonBrightness.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonBrightness.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.TilesetViewBrightness;
+			this.buttonBrightness.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonBrightness.Name = "buttonBrightness";
+			this.buttonBrightness.Size = new System.Drawing.Size(23, 22);
+			this.buttonBrightness.Text = "Toggle Background";
+			this.buttonBrightness.CheckedChanged += new System.EventHandler(this.buttonBrightness_CheckedChanged);
+			// 
+			// tilesetView
+			// 
+			this.tilesetView.AutoScroll = true;
+			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(-2, -2);
+			this.tilesetView.DisplayedConfigIndex = 0;
+			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tilesetView.ForeColor = System.Drawing.Color.Black;
+			this.tilesetView.Location = new System.Drawing.Point(0, 25);
+			this.tilesetView.Name = "tilesetView";
+			this.tilesetView.RowAlignment = Duality.Editor.Plugins.Tilemaps.TilesetView.HorizontalAlignment.Center;
+			this.tilesetView.Size = new System.Drawing.Size(479, 422);
+			this.tilesetView.TabIndex = 0;
+			this.tilesetView.TabStop = true;
+			this.tilesetView.Tileset = null;
 			// 
 			// TilemapToolSourcePalette
 			// 
@@ -87,5 +107,6 @@
 		private TilesetView tilesetView;
 		private System.Windows.Forms.ToolStrip mainToolStrip;
 		private System.Windows.Forms.ToolStripLabel labelTileset;
+		private System.Windows.Forms.ToolStripButton buttonBrightness;
 	}
 }

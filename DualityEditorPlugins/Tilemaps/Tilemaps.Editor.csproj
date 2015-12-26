@@ -56,6 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TilemapsEditorSelectionParser.cs" />
     <Compile Include="Modules\TilemapToolSourcePalette.cs">
       <SubType>Form</SubType>
@@ -119,6 +124,10 @@
     <EmbeddedResource Include="Modules\TilemapToolSourcePalette.resx">
       <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\TilemapsRes.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>TilemapsRes.Designer.cs</LastGenOutput>
@@ -149,6 +158,7 @@
     <None Include="EmbeddedResources\CursorTileRect.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
     <None Include="EmbeddedResources\IconTilePalette.png" />
     <None Include="EmbeddedResources\CursorPick.png" />
     <None Include="EmbeddedResources\IconPick.png" />

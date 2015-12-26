@@ -28,9 +28,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private Size                tileSize               = Size.Empty;
 		private Point               tileCount              = Point.Empty;
 		private Bitmap              tileBitmap             = null;
-		private	int                 additionalSpace        = 0;
-		private	Size                contentSize            = Size.Empty;
-		private	Size                spacing                = new Size(2, 2);
+		private Bitmap              backBitmap             = null;
+		private TextureBrush        backBrush              = null;
+		private int                 additionalSpace        = 0;
+		private Size                contentSize            = Size.Empty;
+		private Size                spacing                = new Size(2, 2);
+		private int                 hoverIndex             = -1;
 		private bool                globalEventsSubscribed = false;
 
 
@@ -68,6 +71,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			set
 			{
 				this.spacing = value;
+				this.GenerateBackgroundPattern();
 				this.UpdateContentStats();
 				this.Invalidate();
 			}
@@ -101,7 +105,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.SetStyle(ControlStyles.Opaque, true);
 			this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
-			this.UpdateContentStats();
+			this.OnTilesetChanged();
 		}
 		protected override void Dispose(bool disposing)
 		{
@@ -168,7 +172,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			return modelIndex;
 		}
-		public Point GetModelIndexLocation(int modelIndex, bool scrolled = true)
+		public Point GetTileIndexLocation(int tileIndex, bool scrolled = true)
 		{
 			Point result = this.ClientRectangle.Location;
 			result.X += this.Padding.Left;
@@ -187,10 +191,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 					break;
 			}
 
-			int rowIndex = modelIndex / this.tileCount.X;
-			int colIndex = modelIndex % this.tileCount.X;
-			result.X += colIndex * (this.tileSize.Width + this.spacing.Width);
-			result.Y += rowIndex * (this.tileSize.Height + this.spacing.Height);
+			if (this.tileCount.X > 0)
+			{
+				int rowIndex = tileIndex / this.tileCount.X;
+				int colIndex = tileIndex % this.tileCount.X;
+				result.X += colIndex * (this.tileSize.Width + this.spacing.Width);
+				result.Y += rowIndex * (this.tileSize.Height + this.spacing.Height);
+			}
 
 			if (scrolled)
 			{
@@ -228,6 +235,62 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.AutoScrollMinSize != autoScrollSize)
 				this.AutoScrollMinSize = autoScrollSize;
 		}
+		private void GenerateBackgroundPattern()
+		{
+			// Dispose old local bitmaps
+			if (this.backBitmap != null)
+			{
+				this.backBitmap.Dispose();
+				this.backBitmap = null;
+			}
+			if (this.backBrush != null)
+			{
+				this.backBrush.Dispose();
+				this.backBrush = null;
+			}
+
+			// Generate local background image based on tile size
+			{
+				float backLum = this.BackColor.GetLuminance();
+				Brush darkBrush = new SolidBrush(backLum <= 0.5f ? Color.FromArgb(32, 32, 32) : Color.FromArgb(192, 192, 192));
+				Brush brightBrush = new SolidBrush(backLum <= 0.5f ? Color.FromArgb(48, 48, 48) : Color.FromArgb(224, 224, 224));
+
+				Size cellBaseSize = (this.tileSize == Size.Empty) ? new Size(Tileset.DefaultTileSize.X, Tileset.DefaultTileSize.Y) : this.tileSize;
+				Point cellCount = new Point(4, 4);
+				Size cellSize = new Size(
+					cellBaseSize.Width / cellCount.X, 
+					cellBaseSize.Height / cellCount.Y);
+
+				this.backBitmap = new Bitmap(
+					cellBaseSize.Width + this.spacing.Width, 
+					cellBaseSize.Height + this.spacing.Height);
+				using (Graphics g = Graphics.FromImage(this.backBitmap))
+				{
+					g.Clear(Color.Transparent);
+
+					int totalCellCount = cellCount.X * cellCount.Y;
+					for (int i = 0; i < totalCellCount; i++)
+					{
+						int lineIndex = i / cellCount.X;
+						bool evenLine = (lineIndex % 2) == 0;
+						bool darkCell = (i % 2) == (evenLine ? 0 : 1);
+						Point cellPos = new Point(
+							(i % cellCount.X) * cellSize.Width, 
+							lineIndex * cellSize.Height);
+
+						g.FillRectangle(
+							darkCell ? darkBrush : brightBrush, 
+							cellPos.X, 
+							cellPos.Y, 
+							cellSize.Width, 
+							cellSize.Height);
+					}
+				}
+			}
+
+			// Create a background brush for OnPaint to use
+			this.backBrush = new TextureBrush(this.backBitmap);
+		}
 
 		private void SubscribeGlobalEvents()
 		{
@@ -243,15 +306,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		protected virtual void OnTilesetChanged()
 		{
-			TilesetRenderInput mainInput = (this.tileset != null) ? this.tileset.RenderConfig.FirstOrDefault() : null;
+			TilesetRenderInput mainInput = (this.tileset != null) ? this.tileset.RenderConfig.ElementAtOrDefault(this.displayedConfigIndex) : null;
 			Pixmap sourceData = (mainInput != null) ? mainInput.SourceData.Res : null;
 
+			// Dispose old local bitmaps
 			if (this.tileBitmap != null)
 			{
 				this.tileBitmap.Dispose();
 				this.tileBitmap = null;
 			}
 
+			// Retrieve tileset data and create local tileset bitmap
 			if (mainInput != null && sourceData != null)
 			{
 				this.tileBitmap = sourceData.MainLayer.ToBitmap();
@@ -269,7 +334,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.totalTileCount = 0;
 			}
 
+			this.GenerateBackgroundPattern();
 			this.UpdateContentStats();
+			this.Invalidate();
+		}
+		protected override void OnBackColorChanged(EventArgs e)
+		{
+			base.OnBackColorChanged(e);
+			this.GenerateBackgroundPattern();
 			this.Invalidate();
 		}
 		protected override void OnSizeChanged(EventArgs e)
@@ -284,16 +356,33 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.UpdateContentStats();
 			this.Invalidate();
 		}
+		protected override void OnEnabledChanged(EventArgs e)
+		{
+			base.OnEnabledChanged(e);
+			this.Invalidate();
+		}
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
-			e.Graphics.Clear(this.BackColor);
 
+			// Clear the background entirely
+			e.Graphics.Clear(this.BackColor);
+			
+			// Fill with background pattern
+			if (this.backBrush != null)
+			{
+				Point offset = this.GetTileIndexLocation(0);
+				this.backBrush.ResetTransform();
+				this.backBrush.TranslateTransform(offset.X, offset.Y);
+				e.Graphics.FillRectangle(this.backBrush, this.ClientRectangle);
+			}
+
+			// Draw tile items
 			if (this.totalTileCount > 0)
 			{
 				int firstIndex = this.PickTileIndexAt(e.ClipRectangle.Left, e.ClipRectangle.Top, true, true);
 				int lastIndex = this.PickTileIndexAt(e.ClipRectangle.Right - 1, e.ClipRectangle.Bottom - 1, true, true);
-				Point firstItemPos = this.GetModelIndexLocation(firstIndex);
+				Point firstItemPos = this.GetTileIndexLocation(firstIndex);
 
 				Size texSize = new Size(
 					MathF.NextPowerOfTwo(this.tileBitmap.Width),
@@ -329,10 +418,44 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 
+			// Draw hovered tile
+			if (this.Enabled && this.hoverIndex != -1)
+			{
+				Point hoverPos = this.GetTileIndexLocation(this.hoverIndex);
+				e.Graphics.FillRectangle(
+					new SolidBrush(Color.FromArgb(64, this.ForeColor)), 
+					hoverPos.X - 1, 
+					hoverPos.Y - 1, 
+					this.tileSize.Width + 1, 
+					this.tileSize.Height + 1);
+				e.Graphics.DrawRectangle(
+					new Pen(this.ForeColor), 
+					hoverPos.X - 1, 
+					hoverPos.Y - 1, 
+					this.tileSize.Width + 1, 
+					this.tileSize.Height + 1);
+			}
+
+			// Overlay with disabled plate
 			if (!this.Enabled)
 			{
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, this.BackColor)), this.ClientRectangle);
 			}
+		}
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+			int oldHoverIndex = this.hoverIndex;
+
+			this.hoverIndex = this.PickTileIndexAt(e.X, e.Y);
+
+			if (oldHoverIndex != this.hoverIndex)
+				this.Invalidate();
+		}
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			base.OnMouseClick(e);
+			this.Focus();
 		}
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)

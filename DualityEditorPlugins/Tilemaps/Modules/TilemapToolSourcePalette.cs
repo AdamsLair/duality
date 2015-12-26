@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Linq;
 
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -21,6 +23,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.mainToolStrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
 		}
 
+		internal void SaveUserData(XElement node)
+		{
+			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
+		}
+		internal void LoadUserData(XElement node)
+		{
+			bool tryParseBool;
+
+			if (node.GetElementValue("DarkBackground", out tryParseBool)) this.buttonBrightness.Checked = tryParseBool;
+
+			this.ApplyBrightness();
+		}
+
 		private void ApplySelectedTileset()
 		{
 			Tileset tileset = TilemapsEditorSelectionParser.QuerySelectedTileset();
@@ -29,6 +44,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.labelTileset.Text = (tileset != null) ? 
 				string.Format(TilemapsRes.TilePalette_SelectedTileset, tileset.Name) : 
 				TilemapsRes.TilePalette_NoTilesetSelected;
+		}
+		private void ApplyBrightness()
+		{
+			bool darkMode = this.buttonBrightness.Checked;
+			this.tilesetView.BackColor = darkMode ? Color.FromArgb(64, 64, 64) : Color.FromArgb(192, 192, 192);
+			this.tilesetView.ForeColor = darkMode ? Color.FromArgb(255, 255, 255) : Color.FromArgb(0, 0, 0);
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -42,7 +63,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			base.OnClosed(e);
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 		}
-
+		
+		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
+		{
+			this.ApplyBrightness();
+		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (e.SameObjects) return;

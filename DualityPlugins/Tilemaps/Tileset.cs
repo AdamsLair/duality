@@ -19,7 +19,7 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTileset)]
 	public class Tileset : Resource
 	{
-		public  static readonly Vector2            DefaultTileSize    = new Vector2(32, 32);
+		public  static readonly Point2             DefaultTileSize    = new Point2(32, 32);
 		private static readonly TilesetRenderInput DefaultRenderInput = new TilesetRenderInput();
 
 		private Vector2                  tileSize     = DefaultTileSize;
