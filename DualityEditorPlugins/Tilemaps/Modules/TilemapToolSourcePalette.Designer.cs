@@ -69,13 +69,15 @@
 			// tilesetView
 			// 
 			this.tilesetView.AutoScroll = true;
-			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(-2, -2);
+			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(1, 1);
 			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tilesetView.ForeColor = System.Drawing.Color.Black;
 			this.tilesetView.Location = new System.Drawing.Point(0, 25);
 			this.tilesetView.Name = "tilesetView";
+			this.tilesetView.Padding = new System.Windows.Forms.Padding(1);
 			this.tilesetView.RowAlignment = Duality.Editor.Plugins.Tilemaps.TilesetView.HorizontalAlignment.Center;
 			this.tilesetView.Size = new System.Drawing.Size(479, 422);
+			this.tilesetView.Spacing = new System.Drawing.Size(1, 1);
 			this.tilesetView.TabIndex = 0;
 			this.tilesetView.TabStop = true;
 			this.tilesetView.Tileset = null;
