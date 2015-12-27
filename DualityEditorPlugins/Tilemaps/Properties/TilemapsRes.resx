@@ -193,4 +193,10 @@
   <data name="TilePalette_SelectedTileset" xml:space="preserve">
     <value>Tileset: {0}</value>
   </data>
+  <data name="CamView_Help_TilemapEditorActions" xml:space="preserve">
+    <value>Tilemap Editor Actions</value>
+  </data>
+  <data name="CamView_Help_TilemapEditor_SelectTilemaps" xml:space="preserve">
+    <value>Use the arrow keys to quickly change tilemap selection.</value>
+  </data>
 </root>

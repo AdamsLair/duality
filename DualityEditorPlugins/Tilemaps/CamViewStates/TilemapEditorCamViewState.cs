@@ -180,11 +180,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				visibleRenderers.StableSort((a, b) =>
 				{
 					// When prefered by the editing tool, the currently edited tilemap always prevails in picking checks
-					if ((this.overrideTool ?? this.selectedTool).PickPreferSelectedLayer && a.ActiveTilemap == this.selectedTilemap && a.ActiveTilemap != b.ActiveTilemap)
-						return -1;
+					if ((this.overrideTool ?? this.selectedTool).PickPreferSelectedLayer && a.ActiveTilemap != b.ActiveTilemap)
+					{
+						if (a.ActiveTilemap == this.selectedTilemap)
+							return -1;
+						else if (b.ActiveTilemap == this.selectedTilemap)
+							return 1;
+					}
+
 					// Otherwise, do regular Z sorting
-					else
-						return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
+					return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
 				});
 			}
 
@@ -445,6 +450,40 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			base.OnKeyDown(e);
 			
+			// Hotkeys for switching the currently selected tilemap
+			if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down)
+			{
+				Tilemap[] visibleTilemaps = 
+					this.QueryVisibleTilemapRenderers()
+					.OrderBy(r => r.GameObj.Transform.Pos.Z)
+					.Select(r => r.ActiveTilemap)
+					.NotNull()
+					.Distinct()
+					.ToArray();
+				int selectedIndex = Array.IndexOf(visibleTilemaps, this.selectedTilemap);
+
+				if (visibleTilemaps.Length > 0)
+				{
+					if (e.KeyCode == Keys.Down)
+						selectedIndex = (selectedIndex == -1) ? (visibleTilemaps.Length - 1) : Math.Min(selectedIndex + 1, visibleTilemaps.Length - 1);
+					else if (e.KeyCode == Keys.Up)
+						selectedIndex = (selectedIndex == -1) ? 0 : Math.Max(selectedIndex - 1, 0);
+
+					Tilemap newSelection = visibleTilemaps[selectedIndex];
+					DualityEditorApp.Select(this, new ObjectSelection(newSelection.GameObj));
+				}
+
+				e.Handled = true;
+				return;
+			}
+			else if (e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+			{
+				DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+				e.Handled = true;
+				return;
+			}
+
+			// Check for tool-related keys
 			foreach (TilemapTool tool in this.tools)
 			{
 				if (tool.OverrideKey == e.KeyCode)
@@ -614,7 +653,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		public override HelpInfo ProvideHoverHelp(Point localPos, ref bool captured)
 		{
-			return this.activeTool.HelpInfo ?? base.ProvideHoverHelp(localPos, ref captured);
+			if (this.activeTool.HelpInfo != null)
+				return this.activeTool.HelpInfo;
+			else
+				return HelpInfo.FromText(TilemapsRes.CamView_Help_TilemapEditorActions, 
+					TilemapsRes.CamView_Help_TilemapEditor_SelectTilemaps);
 		}
 
 		void ITilemapToolEnvironment.SubmitActiveAreaChanges(bool isFullPreview)
