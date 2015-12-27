@@ -443,6 +443,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, this.BackColor)), this.ClientRectangle);
 			}
 		}
+		protected override void OnLeave(EventArgs e)
+		{
+			base.OnLeave(e);
+			this.hoverIndex = -1;
+			this.Invalidate();
+		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);

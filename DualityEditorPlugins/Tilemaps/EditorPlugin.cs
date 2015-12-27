@@ -19,16 +19,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public class TilemapsEditorPlugin : EditorPlugin
 	{
-		private	static TilemapsEditorPlugin instance = null;
+		private static readonly string ElementNameTilePalette = "TilePalette";
+
+		private static TilemapsEditorPlugin instance = null;
 		internal static TilemapsEditorPlugin Instance
 		{
 			get { return instance; }
 		}
 
 
-		private	bool                     isLoading                = false;
-		private	TilemapToolSourcePalette tilePalette              = null;
+		private bool                     isLoading                = false;
+		private TilemapToolSourcePalette tilePalette              = null;
 		private int                      pendingLocalTilePalettes = 0;
+		private XElement                 tilePaletteSettings      = null;
 		
 
 		public override string Id
@@ -41,6 +44,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			instance = this;
 		}
+
 		protected override IDockContent DeserializeDockContent(Type dockContentType)
 		{
 			this.isLoading = true;
@@ -67,27 +71,40 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		protected override void SaveUserData(XElement node)
 		{
+			// If we have a tile palette, save its settings to the cache node
 			if (this.tilePalette != null)
 			{
-				XElement tilePaletteElem = new XElement("TilePalette");
-				this.tilePalette.SaveUserData(tilePaletteElem);
-				if (!tilePaletteElem.IsEmpty)
-					node.Add(tilePaletteElem);
+				this.tilePaletteSettings = new XElement(ElementNameTilePalette);
+				this.tilePalette.SaveUserData(this.tilePaletteSettings);
+			}
+
+			// If there are cached tilemap settings available, save them persistently.
+			if (this.tilePaletteSettings != null && !this.tilePaletteSettings.IsEmpty)
+			{
+				node.Add(new XElement(this.tilePaletteSettings));
 			}
 		}
 		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
+
+			// Retrieve tile palette settings from persistent editor data
+			foreach (XElement tilePaletteElem in node.Elements(ElementNameTilePalette))
+			{
+				int i = tilePaletteElem.GetAttributeValue("id", 0);
+				if (i < 0 || i >= 1) continue;
+
+				// Cache settings for later
+				this.tilePaletteSettings = new XElement(tilePaletteElem);
+				break;
+			}
+
+			// If we have an active tile palette, apply the settings directly
 			if (this.tilePalette != null)
 			{
-				foreach (XElement tilePaletteElem in node.Elements("TilePalette"))
-				{
-					int i = tilePaletteElem.GetAttributeValue("id", 0);
-					if (i < 0 || i >= 1) continue;
-
-					this.tilePalette.LoadUserData(tilePaletteElem);
-				}
+				this.tilePalette.LoadUserData(this.tilePaletteSettings);
 			}
+
 			this.isLoading = false;
 		}
 
@@ -120,19 +137,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private TilemapToolSourcePalette RequestTilePalette()
 		{
+			// Create a new tile palette, if none is available right now
 			if (this.tilePalette == null || this.tilePalette.IsDisposed)
 			{
 				this.tilePalette = new TilemapToolSourcePalette();
-				this.tilePalette.FormClosed += delegate(object sender, FormClosedEventArgs e)
-				{
-					this.tilePalette = null;
-					if (e.CloseReason == CloseReason.UserClosing)
-					{
-						this.pendingLocalTilePalettes--;
-					}
-				};
+				this.tilePalette.FormClosed += this.tilePalette_FormClosed;
+			
+				// If there are cached settings available, apply them to the new palette
+				if (this.tilePaletteSettings != null)
+					this.tilePalette.LoadUserData(this.tilePaletteSettings);
 			}
 
+			// If we're not creating it as part of the loading procedure, add it to the main docking layout directly
 			if (!this.isLoading)
 			{
 				this.tilePalette.Show(DualityEditorApp.MainForm.MainDockPanel);
@@ -141,6 +157,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 			return this.tilePalette;
 		}
 
+		private void tilePalette_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			// Cache tile palette settings for later, so we don't lose them when losing the dock control
+			this.tilePaletteSettings = new XElement(ElementNameTilePalette);
+			this.tilePalette.SaveUserData(this.tilePaletteSettings);
+
+			// Acknowledge the disposal of our tile palette
+			this.tilePalette = null;
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				this.pendingLocalTilePalettes--;
+			}
+		}
 		private void menuItemTilePalette_Click(object sender, EventArgs e)
 		{
 			TilemapToolSourcePalette palette = this.tilePalette ?? this.PushTilePalette();
