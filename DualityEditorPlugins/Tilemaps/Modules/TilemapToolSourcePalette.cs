@@ -17,6 +17,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public partial class TilemapToolSourcePalette : DockContent
 	{
+		private Tileset SelectedTileset
+		{
+			get { return this.tilesetView.Tileset; }
+			set
+			{
+				// Apply the selection to the palette's controls
+				this.tilesetView.Tileset = value;
+				this.labelTileset.Text = (value != null) ? 
+					string.Format(TilemapsRes.TilePalette_SelectedTileset, value.Name) : 
+					TilemapsRes.TilePalette_NoTilesetSelected;
+			}
+		}
+
 		public TilemapToolSourcePalette()
 		{
 			this.InitializeComponent();
@@ -38,12 +51,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void ApplySelectedTileset()
 		{
-			Tileset tileset = TilemapsEditorSelectionParser.QuerySelectedTileset();
+			// Query the selected tileset - or just use the last one (for editing continuity reasons) if none is selected.
+			Tileset lastTileset = this.SelectedTileset;
+			Tileset tileset = TilemapsEditorSelectionParser.QuerySelectedTileset() ?? lastTileset;
+			if (tileset != null && tileset.Disposed)
+				tileset = null;
 
-			this.tilesetView.Tileset = tileset;
-			this.labelTileset.Text = (tileset != null) ? 
-				string.Format(TilemapsRes.TilePalette_SelectedTileset, tileset.Name) : 
-				TilemapsRes.TilePalette_NoTilesetSelected;
+			this.SelectedTileset = tileset;
 		}
 		private void ApplyBrightness()
 		{
@@ -56,17 +70,29 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			base.OnShown(e);
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
+			Resource.ResourceDisposing        += this.Resource_ResourceDisposing;
 			this.ApplySelectedTileset();
 		}
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
+			Resource.ResourceDisposing        -= this.Resource_ResourceDisposing;
 		}
 		
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
 			this.ApplyBrightness();
+		}
+		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
+		{
+			if (!e.IsResource) return;
+
+			// Deselect the current tileset, if it's being disposed
+			if (this.SelectedTileset == e.Content)
+			{
+				this.SelectedTileset = null;
+			}
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
