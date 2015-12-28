@@ -238,7 +238,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// Determine what action the cursor would do in the current state
 			if (this.actionTool != this.toolNone)
 				this.activeTool = this.actionTool;
-			else if (this.hoveredRenderer == null)
+			else if (this.hoveredRenderer == null || !this.Focused)
 				this.activeTool = this.toolNone;
 			else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
 				this.activeTool = this.toolSelect;
@@ -418,6 +418,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// Because selection events may change the currently active tool,
 				// start by agreeing on what tool we're dealing with in this mouse event.
 				TilemapTool proposedAction = this.activeTool;
+
+				// If there is no tool active, don't do selection changes or begin an action
+				if (proposedAction == this.toolNone) return;
 
 				// If the action preview isn't valid, do the full calculation now
 				if (!this.activePreviewValid)
@@ -656,9 +659,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			if (this.activeTool.HelpInfo != null)
 				return this.activeTool.HelpInfo;
-			else
+			else if (this.Focused)
 				return HelpInfo.FromText(TilemapsRes.CamView_Help_TilemapEditorActions, 
 					TilemapsRes.CamView_Help_TilemapEditor_SelectTilemaps);
+			else
+				return base.ProvideHoverHelp(localPos, ref captured);
 		}
 
 		void ITilemapToolEnvironment.SubmitActiveAreaChanges(bool isFullPreview)
