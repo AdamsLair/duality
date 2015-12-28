@@ -346,6 +346,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 			}
 			canvas.PopState();
+
+			// Draw a focus indicator at the view border
+			canvas.PushState();
+			{
+				ColorRgba focusColor = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.25f).WithAlpha(255);
+				ColorRgba noFocusColor = ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f).WithAlpha(255);
+				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.Focused ? focusColor : noFocusColor));
+				canvas.DrawRect(0, 0, this.ClientSize.Width, this.ClientSize.Height);
+			}
+			canvas.PopState();
 		}
 		protected virtual void OnCollectStateBackgroundDrawcalls(Canvas canvas)
 		{
@@ -611,6 +621,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Retrieve OpenGL context
  			try { this.RenderableSite.MakeCurrent(); } catch (Exception) { return; }
 
+			// Perform rendering
 			try
 			{
 				this.CameraComponent.Passes.Add(this.camPassBg);
@@ -628,6 +639,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				Log.Editor.WriteError("An error occurred during CamView {1} rendering. The current DrawDevice state may be compromised. Exception: {0}", Log.Exception(exception), this.CameraComponent.ToString());
 			}
 			
+			// Make sure the rendered result ends up on screen
 			this.RenderableSite.SwapBuffers();
 		}
 		private void RenderableControl_MouseMove(object sender, MouseEventArgs e)
