@@ -580,13 +580,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// Highlight source tiles when available
 				if (this.tileSource.SourceTilemap == renderer.ActiveTilemap)
 				{
+					float intensity = (this.selectedTilemap == this.tileSource.SourceTilemap) ? 1.0f : 0.5f;
 					DrawTileHighlights(
 						canvas, 
 						renderer, 
 						this.tileSource.SourceOrigin,
 						this.tileSource.SourceShape, 
-						ColorRgba.White,
-						ColorRgba.White, 
+						ColorRgba.White.WithAlpha(intensity),
+						ColorRgba.White.WithAlpha(intensity), 
 						TileHighlightMode.Selection);
 				}
 
