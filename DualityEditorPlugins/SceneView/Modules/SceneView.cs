@@ -747,7 +747,7 @@ namespace Duality.Editor.Plugins.SceneView
 			bool multiSelect = selNodeData.Count > 1;
 			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
 
-            this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
+			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
 			this.nodeContextItemClone.Visible = !noSelect && gameObjSelect;
 			this.nodeContextItemDelete.Visible = !noSelect;
@@ -1485,35 +1485,35 @@ namespace Duality.Editor.Plugins.SceneView
 			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
 			if (clickedType == null) return;
             
-            //Track the nodes that we add so that we can select them later
-		    List<NodeBase> addedNodes = new List<NodeBase>(this.objectView.SelectedNodes.Count);
-		    foreach (var selectedNode in this.objectView.SelectedNodes)
-		    {
-                //Create the Component
-                Component cmp = this.CreateComponent(selectedNode, clickedType);
-		        if (cmp == null) continue;
+			//Track the nodes that we add so that we can select them later
+			List<NodeBase> addedNodes = new List<NodeBase>(this.objectView.SelectedNodes.Count);
+			foreach (var selectedNode in this.objectView.SelectedNodes)
+			{
+				//Create the Component
+				Component cmp = this.CreateComponent(selectedNode, clickedType);
+				if (cmp == null) continue;
 
-                NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
-                if (cmpNode != null)
-                {
-                    addedNodes.Add(cmpNode);
-                }
-            }
+				NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
+				if (cmpNode != null)
+				{
+					addedNodes.Add(cmpNode);
+				}
+			}
 
-            // Deselect previous
-            this.objectView.ClearSelection();
+			// Deselect previous
+			this.objectView.ClearSelection();
 
-            // Select all new nodes
-            foreach (var cmpNode in addedNodes)
-		    {
-                TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(cmpNode));
-                if (dragObjViewNode != null)
-                {
-                    dragObjViewNode.IsSelected = true;
-                    this.objectView.EnsureVisible(dragObjViewNode);
-                }
-            }
-        }
+			// Select all new nodes
+			foreach (var cmpNode in addedNodes)
+			{
+				TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(cmpNode));
+				if (dragObjViewNode != null)
+				{
+					dragObjViewNode.IsSelected = true;
+					this.objectView.EnsureVisible(dragObjViewNode);
+				}
+			}
+		}
 		private void customObjectActionItem_Click(object sender, EventArgs e)
 		{
 			List<NodeBase> selNodeData = new List<NodeBase>(
