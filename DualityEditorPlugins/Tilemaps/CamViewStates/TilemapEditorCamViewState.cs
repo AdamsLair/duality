@@ -238,7 +238,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// Determine what action the cursor would do in the current state
 			if (this.actionTool != this.toolNone)
 				this.activeTool = this.actionTool;
-			else if (this.hoveredRenderer == null || !this.Focused)
+			else if (this.hoveredRenderer == null)
 				this.activeTool = this.toolNone;
 			else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
 				this.activeTool = this.toolSelect;
