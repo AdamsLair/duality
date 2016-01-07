@@ -76,13 +76,13 @@ namespace Duality.Editor.UndoRedoActions
 				}
 			}
 
-            //By this point, all Component dependencies are satisfied, so we can initialize the Components if needed
-		    foreach (Component t in this.targetObj)
-		    {
-		        InitializeComponent(t);
-		    }
+			//By this point, all Component dependencies are satisfied, so we can initialize the Components if needed
+			foreach (Component t in this.targetObj)
+			{
+				InitializeComponent(t);
+			}
 
-		    DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetParentObj));
+			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetParentObj));
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
 		public override void Undo()
@@ -96,22 +96,22 @@ namespace Duality.Editor.UndoRedoActions
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.targetParentObj));
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
 		}
-        private bool InitializeComponent(Component cmp)
-        {
-            IEditorAction initializer = this.GetInitializeComponentAction(cmp);
-            if (initializer == null) return false;
-
-            initializer.Perform(cmp);
-            return true;
-        }
-        private IEditorAction GetInitializeComponentAction(Component cmp)
-        {
-            if (cmp == null) return null;
-
-            var actions = DualityEditorApp.GetEditorActions(cmp.GetType(), new[] { cmp },
-                DualityEditorApp.ActionContextInitializeComponent);
-
-            return actions == null ? null : actions.FirstOrDefault(); ;
-        }
-    }
+	        private bool InitializeComponent(Component cmp)
+	        {
+			IEditorAction initializer = this.GetInitializeComponentAction(cmp);
+			if (initializer == null) return false;
+			
+			initializer.Perform(cmp);
+			return true;
+		}
+		private IEditorAction GetInitializeComponentAction(Component cmp)
+		{
+			if (cmp == null) return null;
+			
+			var actions = DualityEditorApp.GetEditorActions(cmp.GetType(), new[] { cmp },
+				DualityEditorApp.ActionContextInitializeComponent);
+			
+			return actions == null ? null : actions.FirstOrDefault();
+		}
+	}
 }
