@@ -38,8 +38,9 @@ namespace Duality.Editor
 		public	const	string	ActionContextMenu			= "ContextMenu";
 		public	const	string	ActionContextOpenRes		= "OpenRes";
 		public	const	string	ActionContextFirstSession	= "FirstSession";
-		
-		private	static MainForm						mainForm			= null;
+        public  const   string  ActionContextInitializeComponent = "InitializeComponent";
+
+        private	static MainForm						mainForm			= null;
 		private	static IEditorGraphicsBackend		graphicsBack		= null;
 		private	static INativeEditorGraphicsContext	mainGraphicsContext	= null;
 		private	static List<EditorPlugin>			plugins				= new List<EditorPlugin>();
