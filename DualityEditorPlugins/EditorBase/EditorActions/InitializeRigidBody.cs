@@ -3,7 +3,7 @@ using Duality.Components.Physics;
 
 namespace Duality.Editor.Plugins.Base.EditorActions
 {
-    public class InitializeRigidBody : InitializeComponent<RigidBody>
+    public class InitializeRigidBody : EditorSingleAction<RigidBody>
     {
         public override bool CanPerformOn(RigidBody body)
         {
@@ -16,6 +16,11 @@ namespace Duality.Editor.Plugins.Base.EditorActions
 
             // Add a default shape when creating a new RigidBody in the editor
             body.AddShape(new CircleShapeInfo(128.0f, Vector2.Zero, 1.0f));
+        }
+
+        public override bool MatchesContext(string context)
+        {
+            return context == DualityEditorApp.ActionContextInitializeComponent;
         }
     }
 }
