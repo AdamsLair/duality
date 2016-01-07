@@ -78,6 +78,8 @@
     <Compile Include="EditorActions\FirstSession\ViewGettingStartedTutorial.cs" />
     <Compile Include="EditorActions\FirstSession\DownloadVisualStudio.cs" />
     <Compile Include="EditorActions\FocusGameObject.cs" />
+    <Compile Include="EditorActions\InitializeComponent.cs" />
+    <Compile Include="EditorActions\InitializeRigidBody.cs" />
     <Compile Include="EditorActions\OpenScene.cs" />
     <Compile Include="EditorActions\InstantiatePrefab.cs" />
     <Compile Include="EditorActions\OpenResource.cs" />
