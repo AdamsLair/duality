@@ -1485,26 +1485,41 @@ namespace Duality.Editor.Plugins.SceneView
 			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
 			if (clickedType == null) return;
             
-			//Track the nodes that we add so that we can select them later
-			List<NodeBase> addedNodes = new List<NodeBase>(this.objectView.SelectedNodes.Count);
-			foreach (var selectedNode in this.objectView.SelectedNodes)
+			// Determine which (GameObject) nodes we're creating Components on.
+			List<TreeNodeAdv> targetViewNodes = new List<TreeNodeAdv>();
+			foreach (TreeNodeAdv viewNode in this.objectView.SelectedNodes)
 			{
-				//Create the Component
-				Component cmp = this.CreateComponent(selectedNode, clickedType);
+				GameObjectNode targetObjNode = viewNode.Tag as GameObjectNode;
+				if (targetObjNode == null) continue;
+
+				targetViewNodes.Add(viewNode);
+			}
+
+			// If none is selected, use a "null" dummy to allow quick creation at the Scene root
+			if (targetViewNodes.Count == 0)
+				targetViewNodes.Add(null);
+
+			// Track the nodes that we add so that we can select them later
+			UndoRedoManager.BeginMacro();
+			List<NodeBase> newComponentNodes = new List<NodeBase>(targetViewNodes.Count);
+			foreach (TreeNodeAdv targetViewNode in targetViewNodes)
+			{
+				// Create the Component
+				Component cmp = this.CreateComponent(targetViewNode, clickedType);
 				if (cmp == null) continue;
 
 				NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
-				if (cmpNode != null)
-				{
-					addedNodes.Add(cmpNode);
-				}
+				if (cmpNode == null) continue;
+					
+				newComponentNodes.Add(cmpNode);
 			}
+			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
 
 			// Deselect previous
 			this.objectView.ClearSelection();
 
 			// Select all new nodes
-			foreach (var cmpNode in addedNodes)
+			foreach (var cmpNode in newComponentNodes)
 			{
 				TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(cmpNode));
 				if (dragObjViewNode != null)
