@@ -163,7 +163,9 @@ namespace Duality
 					throw new ArgumentException("Can't save a Resource to an undefined path.", "saveAsPath");
 			}
 
-			this.CheckedOnSaving(saveAsPath);
+			// Prepare saving the Resource and abort if an error occurred in the process
+			bool preparedSuccessfully = this.CheckedOnSaving(saveAsPath);
+			if (!preparedSuccessfully) return;
 
 			// We're saving a new Resource for the first time: Register it in the library
 			bool isPermanent = !string.IsNullOrWhiteSpace(this.path);
