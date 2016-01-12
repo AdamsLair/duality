@@ -59,7 +59,7 @@ namespace Duality.Components.Physics
 		private CollisionCategory colCat    = CollisionCategory.Cat1;
 		private CollisionCategory colWith   = CollisionCategory.All;
 		private CollisionFilter   colFilter = null;
-		private List<ShapeInfo>   shapes    = null;
+		private List<ShapeInfo>   shapes    = new List<ShapeInfo>();
 		private List<JointInfo>   joints    = null;
 
 		[DontSerialize] private float     lastScale          = 1.0f;
@@ -1150,11 +1150,6 @@ namespace Duality.Components.Physics
 				this.RemoveDisposedJoints();
 				// Initialize the backing Farseer objects upon activation
 				this.Initialize();
-			}
-			else if (context == InitContext.AddToGameObject && DualityApp.ExecContext == DualityApp.ExecutionContext.Editor)
-			{
-				// Add a default shape when creating a new RigidBody in the editor
-				this.AddShape(new CircleShapeInfo(128.0f, Vector2.Zero, 1.0f));
 			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
