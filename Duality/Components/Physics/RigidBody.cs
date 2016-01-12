@@ -59,7 +59,7 @@ namespace Duality.Components.Physics
 		private CollisionCategory colCat    = CollisionCategory.Cat1;
 		private CollisionCategory colWith   = CollisionCategory.All;
 		private CollisionFilter   colFilter = null;
-		private List<ShapeInfo>   shapes    = new List<ShapeInfo>();
+		private List<ShapeInfo>   shapes    = null;
 		private List<JointInfo>   joints    = null;
 
 		[DontSerialize] private float     lastScale          = 1.0f;
@@ -333,7 +333,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<ShapeInfo> Shapes
 		{
-			get { return this.shapes; }
+			get { return this.shapes ?? Enumerable.Empty<ShapeInfo>(); }
 			set { this.SetShapes(value); }
 		}
 		/// <summary>
@@ -342,7 +342,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<JointInfo> Joints
 		{
-			get { return this.joints; }
+			get { return this.joints ?? Enumerable.Empty<JointInfo>(); }
 			set { this.SetJoints(value); }
 		}
 		/// <summary>

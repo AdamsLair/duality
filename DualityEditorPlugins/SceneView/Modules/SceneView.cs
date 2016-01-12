@@ -506,7 +506,7 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 
 			// Create Components
-			CreateComponentAction action = new CreateComponentAction(baseObj, cmpType.GetTypeInfo().CreateInstanceOf() as Component);
+			CreateComponentAction action = new CreateComponentAction(baseObj, cmpType);
 			UndoRedoManager.Do(action);
 			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
 
