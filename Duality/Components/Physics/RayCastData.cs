@@ -5,7 +5,7 @@ using System.Linq;
 namespace Duality.Components.Physics
 {
 	/// <summary>
-	///  Provides data about a <see cref="RigidBody.RayCast"/>.
+	///  Provides data about a <see cref="RigidBody"/> RayCast.
 	/// </summary>
 	public struct RayCastData
 	{

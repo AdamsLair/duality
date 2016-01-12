@@ -434,7 +434,7 @@ namespace Duality
 		}
 
 		/// <summary>
-		/// Initializes a Resource that has been <see cref="Load{T}">loaded</see> without initialization. You shouldn't need this method in almost all cases.
+		/// Initializes a Resource that has been loaded without initialization. You shouldn't need this method in almost all cases.
 		/// Only use it when you know exactly what you're doing. Consider requesting the Resource from the <see cref="ContentProvider"/> instead.
 		/// </summary>
 		/// <param name="res">The Resource to initialize.</param>
