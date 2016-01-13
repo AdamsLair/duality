@@ -9,6 +9,7 @@ using System.Xml.Linq;
 
 using WeifenLuo.WinFormsUI.Docking;
 
+using Duality.Resources;
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
 
@@ -17,13 +18,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public partial class TilemapToolSourcePalette : DockContent
 	{
-		private Tileset SelectedTileset
+		private ContentRef<Tileset> SelectedTileset
 		{
-			get { return this.tilesetView.Tileset; }
+			get { return this.tilesetView.TargetTileset; }
 			set
 			{
 				// Apply the selection to the palette's controls
-				this.tilesetView.Tileset = value;
+				this.tilesetView.TargetTileset = value;
 				this.labelTileset.Text = (value != null) ? 
 					string.Format(TilemapsRes.TilePalette_SelectedTileset, value.Name) : 
 					TilemapsRes.TilePalette_NoTilesetSelected;
@@ -51,10 +52,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void ApplySelectedTileset()
 		{
-			// Query the selected tileset - or just use the last one (for editing continuity reasons) if none is selected.
-			Tileset lastTileset = this.SelectedTileset;
-			Tileset tileset = TilemapsEditorSelectionParser.QuerySelectedTileset() ?? lastTileset;
-			if (tileset != null && tileset.Disposed)
+			// Query the selected tileset...
+			ContentRef<Tileset> lastTileset = this.SelectedTileset;
+			ContentRef<Tileset> tileset = TilemapsEditorSelectionParser.QuerySelectedTileset();
+
+			// ...or just use the last one (for editing continuity reasons) if none is selected.
+			if (tileset == null && TilemapsEditorSelectionParser.SceneContainsTileset(Scene.Current, lastTileset))
+				tileset = lastTileset;
+
+			// If the selected tileset is no longer available, deselect it.
+			if (!tileset.IsAvailable)
 				tileset = null;
 
 			this.SelectedTileset = tileset;
@@ -71,6 +78,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			base.OnShown(e);
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing        += this.Resource_ResourceDisposing;
+			Scene.Entered                     += this.Scene_Entered;
 			this.ApplySelectedTileset();
 		}
 		protected override void OnClosed(EventArgs e)
@@ -78,26 +86,44 @@ namespace Duality.Editor.Plugins.Tilemaps
 			base.OnClosed(e);
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing        -= this.Resource_ResourceDisposing;
+			Scene.Entered                     -= this.Scene_Entered;
 		}
 		
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
 			this.ApplyBrightness();
 		}
+
+		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (e.SameObjects) return;
+			this.ApplySelectedTileset();
+		}
 		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
 		{
 			if (!e.IsResource) return;
 
 			// Deselect the current tileset, if it's being disposed
-			if (this.SelectedTileset == e.Content)
+			if (this.SelectedTileset == e.Content.As<Tileset>())
 			{
 				this.SelectedTileset = null;
 			}
 		}
-		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void Scene_Entered(object sender, EventArgs e)
 		{
-			if (e.SameObjects) return;
-			this.ApplySelectedTileset();
+			// Search the newly entered Scene for available tilesets
+			IEnumerable<ContentRef<Tileset>> tilesets = TilemapsEditorSelectionParser.GetTilesetsInScene(Scene.Current);
+
+			// If the currently selected tileset is not available, select one of the available ones.
+			if (this.SelectedTileset == null || !tilesets.Contains(this.SelectedTileset))
+			{
+				ContentRef<Tileset> availableTileset = tilesets.FirstOrDefault();
+
+				if (availableTileset == null)
+					availableTileset = TilemapsEditorSelectionParser.QuerySelectedTileset();
+
+				this.SelectedTileset = availableTileset;
+			}
 		}
 	}
 }

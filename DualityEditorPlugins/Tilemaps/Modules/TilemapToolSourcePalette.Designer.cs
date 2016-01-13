@@ -80,7 +80,7 @@
 			this.tilesetView.Spacing = new System.Drawing.Size(1, 1);
 			this.tilesetView.TabIndex = 0;
 			this.tilesetView.TabStop = true;
-			this.tilesetView.Tileset = null;
+			this.tilesetView.TargetTileset = null;
 			// 
 			// TilemapToolSourcePalette
 			// 

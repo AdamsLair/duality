@@ -21,7 +21,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 
-		private Tileset             tileset                = null;
+		private ContentRef<Tileset> tileset                = null;
 		private int                 displayedConfigIndex   = 0;
 		private HorizontalAlignment rowAlignment           = HorizontalAlignment.Left;
 		private int                 totalTileCount         = 0;
@@ -37,7 +37,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private bool                globalEventsSubscribed = false;
 
 
-		public Tileset Tileset
+		public ContentRef<Tileset> TargetTileset
 		{
 			get { return this.tileset; }
 			set
@@ -307,7 +307,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		protected virtual void OnTilesetChanged()
 		{
-			TilesetRenderInput mainInput = (this.tileset != null) ? this.tileset.RenderConfig.ElementAtOrDefault(this.displayedConfigIndex) : null;
+			Tileset tileset = this.tileset.Res;
+			TilesetRenderInput mainInput = (tileset != null) ? tileset.RenderConfig.ElementAtOrDefault(this.displayedConfigIndex) : null;
 			Pixmap sourceData = (mainInput != null) ? mainInput.SourceData.Res : null;
 
 			// Dispose old local bitmaps
@@ -321,7 +322,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (mainInput != null && sourceData != null)
 			{
 				this.tileBitmap = sourceData.MainLayer.ToBitmap();
-				this.tileSize = new Size((int)this.tileset.TileSize.X, (int)this.tileset.TileSize.Y);
+				this.tileSize = new Size((int)tileset.TileSize.X, (int)tileset.TileSize.Y);
 				this.tileCount = new Point(
 					this.tileBitmap.Width / (mainInput.SourceTileSize.X + mainInput.SourceTileSpacing),
 					this.tileBitmap.Height / (mainInput.SourceTileSize.Y + mainInput.SourceTileSpacing));
@@ -366,6 +367,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			base.OnPaint(e);
 
+			Tileset tileset = this.tileset.Res;
+
 			// Clear the background entirely
 			e.Graphics.Clear(this.BackColor);
 			
@@ -391,7 +394,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			// Draw tile items
-			if (this.totalTileCount > 0)
+			if (tileset != null && this.totalTileCount > 0)
 			{
 				int firstIndex = this.PickTileIndexAt(e.ClipRectangle.Left, e.ClipRectangle.Top, true, true);
 				int lastIndex = this.PickTileIndexAt(e.ClipRectangle.Right - 1, e.ClipRectangle.Bottom - 1, true, true);
@@ -412,7 +415,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 					Point2 atlasTilePos;
 					Point2 atlasTileSize;
-					this.tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
+					tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
 
 					e.Graphics.DrawImage(this.tileBitmap, tileRect, atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y, GraphicsUnit.Pixel);
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using Duality;
+using Duality.Resources;
 using Duality.Plugins.Tilemaps;
 
 
@@ -19,7 +20,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				DualityEditorApp.Selection.Components.OfType<TilemapRenderer>().Select(r => r.ExternalTilemap).FirstOrDefault() ?? 
 				DualityEditorApp.Selection.GameObjects.GetComponents<TilemapRenderer>().Select(r => r.ExternalTilemap).FirstOrDefault();
 		}
-		public static Tileset QuerySelectedTileset()
+		public static ContentRef<Tileset> QuerySelectedTileset()
 		{
 			Tileset tileset = DualityEditorApp.Selection.Resources.OfType<Tileset>().FirstOrDefault();
 			if (tileset != null) return tileset;
@@ -28,6 +29,28 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (tilemap != null) return tilemap.Tileset.Res;
 
 			return null;
+		}
+
+		public static IEnumerable<ContentRef<Tileset>> GetTilesetsInScene(Scene scene)
+		{
+			HashSet<ContentRef<Tileset>> tilesets = new HashSet<ContentRef<Tileset>>();
+			foreach (Tilemap tilemap in scene.FindComponents<Tilemap>())
+			{
+				if (tilemap.Tileset != null)
+					tilesets.Add(tilemap.Tileset);
+			}
+
+			return tilesets;
+		}
+		public static bool SceneContainsTileset(Scene scene, ContentRef<Tileset> tileset)
+		{
+			foreach (Tilemap tilemap in scene.FindComponents<Tilemap>())
+			{
+				if (tilemap.Tileset == tileset)
+					return true;
+			}
+
+			return false;
 		}
 	}
 }
