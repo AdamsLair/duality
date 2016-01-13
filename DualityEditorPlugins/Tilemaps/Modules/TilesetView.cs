@@ -253,8 +253,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Generate local background image based on tile size
 			{
 				float backLum = this.BackColor.GetLuminance();
-				Brush darkBrush = new SolidBrush(backLum <= 0.5f ? Color.FromArgb(32, 32, 32) : Color.FromArgb(192, 192, 192));
-				Brush brightBrush = new SolidBrush(backLum <= 0.5f ? Color.FromArgb(48, 48, 48) : Color.FromArgb(224, 224, 224));
+				Brush darkBrush = new SolidBrush(backLum <= 0.5f ? Color.FromArgb(56, 56, 56) : Color.FromArgb(176, 176, 176));
+				Brush brightBrush = new SolidBrush(backLum <= 0.5f ? Color.FromArgb(72, 72, 72) : Color.FromArgb(208, 208, 208));
 
 				Size cellBaseSize = (this.tileSize == Size.Empty) ? new Size(Tileset.DefaultTileSize.X, Tileset.DefaultTileSize.Y) : this.tileSize;
 				Point cellCount = new Point(4, 4);
@@ -378,6 +378,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 				e.Graphics.FillRectangle(this.backBrush, this.ClientRectangle);
 			}
 
+			// Draw hovered tile background
+			if (this.Enabled && this.hoverIndex != -1)
+			{
+				Point hoverPos = this.GetTileIndexLocation(this.hoverIndex);
+				e.Graphics.FillRectangle(
+					new SolidBrush(Color.FromArgb(32, this.ForeColor)), 
+					hoverPos.X - 1, 
+					hoverPos.Y - 1, 
+					this.tileSize.Width + 1, 
+					this.tileSize.Height + 1);
+			}
+
 			// Draw tile items
 			if (this.totalTileCount > 0)
 			{
@@ -419,12 +431,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 
-			// Draw hovered tile
+			// Draw hovered tile foreground
 			if (this.Enabled && this.hoverIndex != -1)
 			{
 				Point hoverPos = this.GetTileIndexLocation(this.hoverIndex);
 				e.Graphics.FillRectangle(
-					new SolidBrush(Color.FromArgb(64, this.ForeColor)), 
+					new SolidBrush(Color.FromArgb(32, this.ForeColor)), 
 					hoverPos.X - 1, 
 					hoverPos.Y - 1, 
 					this.tileSize.Width + 1, 
