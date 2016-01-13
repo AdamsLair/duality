@@ -37,6 +37,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <DocumentationFile>bin\Release\CamView.editor.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AdamsLair.WinForms, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">

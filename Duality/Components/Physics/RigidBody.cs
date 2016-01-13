@@ -333,7 +333,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<ShapeInfo> Shapes
 		{
-			get { return this.shapes; }
+			get { return this.shapes ?? Enumerable.Empty<ShapeInfo>(); }
 			set { this.SetShapes(value); }
 		}
 		/// <summary>
@@ -342,7 +342,7 @@ namespace Duality.Components.Physics
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public IEnumerable<JointInfo> Joints
 		{
-			get { return this.joints; }
+			get { return this.joints ?? Enumerable.Empty<JointInfo>(); }
 			set { this.SetJoints(value); }
 		}
 		/// <summary>
@@ -1150,11 +1150,6 @@ namespace Duality.Components.Physics
 				this.RemoveDisposedJoints();
 				// Initialize the backing Farseer objects upon activation
 				this.Initialize();
-			}
-			else if (context == InitContext.AddToGameObject && DualityApp.ExecContext == DualityApp.ExecutionContext.Editor)
-			{
-				// Add a default shape when creating a new RigidBody in the editor
-				this.AddShape(new CircleShapeInfo(128.0f, Vector2.Zero, 1.0f));
 			}
 		}
 		void ICmpInitializable.OnShutdown(ShutdownContext context)
