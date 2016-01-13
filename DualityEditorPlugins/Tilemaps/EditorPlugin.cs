@@ -19,10 +19,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public class TilemapsEditorPlugin : EditorPlugin
 	{
-		private static readonly string ElementNameTilePalette = "TilePalette";
+		private static readonly string          ElementNameTilePalette = "TilePalette";
+		private static readonly ITileDrawSource EmptyTileDrawingSource = new DummyTileDrawSource();
 
 		private static TilemapsEditorPlugin instance = null;
-		internal static TilemapsEditorPlugin Instance
+		public static TilemapsEditorPlugin Instance
 		{
 			get { return instance; }
 		}
@@ -32,11 +33,21 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private TilemapToolSourcePalette tilePalette              = null;
 		private int                      pendingLocalTilePalettes = 0;
 		private XElement                 tilePaletteSettings      = null;
+		private ITileDrawSource          tileDrawingSource        = EmptyTileDrawingSource;
 		
 
 		public override string Id
 		{
 			get { return "Tilemaps"; }
+		}
+		/// <summary>
+		/// [GET / SET] The data source that is used for retrieving tile patterns while using a tile drawing tool.
+		/// Can be thought of as the "tile brush" that is currently used in user editing operations.
+		/// </summary>
+		public ITileDrawSource TileDrawingSource
+		{
+			get { return this.tileDrawingSource; }
+			set { this.tileDrawingSource = value ?? EmptyTileDrawingSource; }
 		}
 
 		

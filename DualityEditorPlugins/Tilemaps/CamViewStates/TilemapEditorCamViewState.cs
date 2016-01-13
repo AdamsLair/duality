@@ -26,37 +26,40 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 	{
 		private static readonly float           FillAnimDuration = 250.0f;
 		private static readonly Point2          InvalidTile      = new Point2(-1, -1);
-		private static readonly ITileDrawSource EmptyTileSource  = new DummyTileDrawSource();
 		private static Texture                  strippledLineTex = null;
 
 
 		private TilemapTool toolNone   = new NoTilemapTool();
 		private TilemapTool toolSelect = new SelectTilemapTool();
 
-		private List<TilemapTool> tools             = new List<TilemapTool>();
-		private TilemapTool      overrideTool       = null;
-		private TilemapTool      selectedTool       = null;
-		private Tilemap          selectedTilemap    = null;
-		private TilemapRenderer  hoveredRenderer    = null;
-		private Point2           hoveredTile        = InvalidTile;
-		private TilemapTool      activeTool         = null;
-		private Tilemap          activeTilemap      = null;
-		private TilemapRenderer  activeRenderer     = null;
-		private Point2           activeAreaOrigin   = InvalidTile;
-		private Grid<bool>       activeArea         = new Grid<bool>();
-		private List<Vector2[]>  activeAreaOutlines = new List<Vector2[]>();
-		private bool             activePreviewValid = false;
-		private DateTime         activePreviewTime  = DateTime.Now;
-		private ITileDrawSource  tileSource         = EmptyTileSource;
-		private TilemapTool      actionTool         = null;
-		private Point2           actionBeginTile    = InvalidTile;
+		private List<TilemapTool> tools              = new List<TilemapTool>();
+		private TilemapTool       overrideTool       = null;
+		private TilemapTool       selectedTool       = null;
+		private Tilemap           selectedTilemap    = null;
+		private TilemapRenderer   hoveredRenderer    = null;
+		private Point2            hoveredTile        = InvalidTile;
+		private TilemapTool       activeTool         = null;
+		private Tilemap           activeTilemap      = null;
+		private TilemapRenderer   activeRenderer     = null;
+		private Point2            activeAreaOrigin   = InvalidTile;
+		private Grid<bool>        activeArea         = new Grid<bool>();
+		private List<Vector2[]>   activeAreaOutlines = new List<Vector2[]>();
+		private bool              activePreviewValid = false;
+		private DateTime          activePreviewTime  = DateTime.Now;
+		private TilemapTool       actionTool         = null;
+		private Point2            actionBeginTile    = InvalidTile;
 
-		private ToolStrip        toolstrip        = null;
+		private ToolStrip         toolstrip          = null;
 
 
 		public override string StateName
 		{
 			get { return "Tilemap Editor"; }
+		}
+		public ITileDrawSource TileDrawSource
+		{
+			get { return TilemapsEditorPlugin.Instance.TileDrawingSource; }
+			set { TilemapsEditorPlugin.Instance.TileDrawingSource = value; }
 		}
 		public TilemapTool SelectedTool
 		{
@@ -85,11 +88,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			}
 		}
 		
-		ITileDrawSource ITilemapToolEnvironment.TileDrawSource
-		{
-			get { return this.tileSource; }
-			set { this.tileSource = value ?? EmptyTileSource; }
-		}
 		Point2 ITilemapToolEnvironment.HoveredTile
 		{
 			get { return this.hoveredTile; }
@@ -275,7 +273,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.actionTool = action;
 			this.actionBeginTile = this.activeAreaOrigin;
 
-			this.tileSource.BeginAction();
+			this.TileDrawSource.BeginAction();
 			this.actionTool.BeginAction();
 		}
 		private void UpdateToolAction()
@@ -287,7 +285,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.actionTool == this.toolNone) return;
 
 			this.actionTool.EndAction();
-			this.tileSource.EndAction();
+			this.TileDrawSource.EndAction();
 
 			this.actionTool = this.toolNone;
 			this.actionBeginTile = InvalidTile;
@@ -595,14 +593,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					localRect.H);
 				
 				// Highlight source tiles when available
-				if (this.tileSource.SourceTilemap == renderer.ActiveTilemap)
+				if (this.TileDrawSource.SourceTilemap == renderer.ActiveTilemap)
 				{
-					float intensity = (this.selectedTilemap == this.tileSource.SourceTilemap) ? 1.0f : 0.5f;
+					float intensity = (this.selectedTilemap == this.TileDrawSource.SourceTilemap) ? 1.0f : 0.5f;
 					DrawTileHighlights(
 						canvas, 
 						renderer, 
-						this.tileSource.SourceOrigin,
-						this.tileSource.SourceShape, 
+						this.TileDrawSource.SourceOrigin,
+						this.TileDrawSource.SourceShape, 
 						ColorRgba.White.WithAlpha(intensity),
 						ColorRgba.White.WithAlpha(intensity), 
 						TileHighlightMode.Selection);
