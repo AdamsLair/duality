@@ -156,6 +156,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.hoveredTile = InvalidTile;
 			this.hoveredRenderer = null;
 
+			// Early-out, if the cursor isn't even inside the CamView area
+			if (!this.View.ClientRectangle.Contains(cursorPos))
+			{
+				if (lastHoveredTile != this.hoveredTile || lastHoveredRenderer != this.hoveredRenderer)
+					this.Invalidate();
+				return;
+			}
+
 			// Early-out, if a camera action claims the cursor
 			if (this.CamActionRequiresCursor)
 			{
@@ -521,14 +529,20 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		protected override void OnRenderState()
 		{
-			// "Grey out" all non-selected Tilemap Renderers
+			// Determine whether one specific Tilemap is highlighted
+			Tilemap highlightTilemap = null;
+			if (this.activeTool != this.toolNone && this.activeTilemap != null)
+				highlightTilemap = this.activeTilemap;
+			else
+				highlightTilemap = this.selectedTilemap;
+
+			// "Grey out" all non-highlighted Tilemap Renderers
 			Dictionary<TilemapRenderer,ColorRgba> oldColors = null;
-			if (this.selectedTilemap != null)
+			if (highlightTilemap != null)
 			{
 				foreach (TilemapRenderer renderer in Scene.Current.FindComponents<TilemapRenderer>())
 				{
-					if (renderer.ActiveTilemap == this.selectedTilemap)
-						continue;
+					if (renderer.ActiveTilemap == highlightTilemap) continue;
 
 					if (oldColors == null)
 						oldColors = new Dictionary<TilemapRenderer,ColorRgba>();
