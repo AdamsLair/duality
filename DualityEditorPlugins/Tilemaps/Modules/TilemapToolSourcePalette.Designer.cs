@@ -32,7 +32,7 @@
 			this.mainToolStrip = new System.Windows.Forms.ToolStrip();
 			this.labelTileset = new System.Windows.Forms.ToolStripLabel();
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
-			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
+			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.SourcePaletteTilesetView();
 			this.mainToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -105,7 +105,7 @@
 
 		#endregion
 
-		private TilesetView tilesetView;
+		private Duality.Editor.Plugins.Tilemaps.SourcePaletteTilesetView tilesetView;
 		private System.Windows.Forms.ToolStrip mainToolStrip;
 		private System.Windows.Forms.ToolStripLabel labelTileset;
 		private System.Windows.Forms.ToolStripButton buttonBrightness;
