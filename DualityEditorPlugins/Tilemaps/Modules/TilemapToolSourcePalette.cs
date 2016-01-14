@@ -18,6 +18,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public partial class TilemapToolSourcePalette : DockContent
 	{
+		private PatternTileDrawSource paletteSource = new PatternTileDrawSource();
+
+
 		private ContentRef<Tileset> SelectedTileset
 		{
 			get { return this.tilesetView.TargetTileset; }
@@ -128,7 +131,32 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void tilesetView_SelectedAreaEditingFinished(object sender, EventArgs e)
 		{
-			// ToDo
+			// Early-out, if nothing is selected
+			if (this.tilesetView.SelectedArea.IsEmpty)
+			{
+				// When clearing the selection, remove it as tile drawing source, if it was set before
+				if (TilemapsEditorPlugin.Instance.TileDrawingSource == this.paletteSource)
+					TilemapsEditorPlugin.Instance.TileDrawingSource = TilemapsEditorPlugin.EmptyTileDrawingSource;
+				return;
+			}
+
+			// Retrieve selected tile data
+			Log.Editor.Write("Source Change");
+			IReadOnlyGrid<Tile> selectedTiles = this.tilesetView.SelectedTiles;
+			Grid<bool> shape = new Grid<bool>(selectedTiles.Width, selectedTiles.Height);
+			Grid<Tile> pattern = new Grid<Tile>(selectedTiles.Width, selectedTiles.Height);
+			for (int y = 0; y < selectedTiles.Height; y++)
+			{
+				for (int x = 0; x < selectedTiles.Width; x++)
+				{
+					shape[x, y] = true;
+					pattern[x, y] = selectedTiles[x, y];
+				}
+			}
+			this.paletteSource.SetData(shape, pattern);
+			
+			// Apply the selected tiles to the palettes source for tile drawing
+			TilemapsEditorPlugin.Instance.TileDrawingSource = this.paletteSource;
 		}
 	}
 }

@@ -20,7 +20,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 	public class TilemapsEditorPlugin : EditorPlugin
 	{
 		private static readonly string          ElementNameTilePalette = "TilePalette";
-		private static readonly ITileDrawSource EmptyTileDrawingSource = new DummyTileDrawSource();
+		public static readonly ITileDrawSource EmptyTileDrawingSource = new DummyTileDrawSource();
 
 		private static TilemapsEditorPlugin instance = null;
 		public static TilemapsEditorPlugin Instance

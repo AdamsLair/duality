@@ -41,7 +41,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					{
 						for (int x = 0; x < croppedArea.Width; x++)
 						{
-							this.selectedTiles[x, y] = new Tile { Index = this.GetTileIndex(x, y) };
+							this.selectedTiles[x, y] = new Tile { Index = this.GetTileIndex(croppedArea.X + x, croppedArea.Y + y) };
 						}
 					}
 

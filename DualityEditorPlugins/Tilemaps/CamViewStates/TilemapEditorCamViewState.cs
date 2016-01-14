@@ -154,8 +154,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.hoveredTile = InvalidTile;
 			this.hoveredRenderer = null;
 
-			// Early-out, if the cursor isn't even inside the CamView area
-			if (!this.View.ClientRectangle.Contains(cursorPos))
+			// Early-out, if the cursor isn't even inside the CamView area - unless the user is performing a cursor action
+			if (!this.View.ClientRectangle.Contains(cursorPos) && this.actionTool == this.toolNone)
 			{
 				if (lastHoveredTile != this.hoveredTile || lastHoveredRenderer != this.hoveredRenderer)
 					this.Invalidate();
@@ -241,19 +241,26 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Tilemap lastActiveTilemap = this.activeTilemap;
 			TilemapRenderer lastActiveRenderer = this.activeRenderer;
 
-			// Determine what action the cursor would do in the current state
+			// If an action is currently being performed, that action will always be the active tool
 			if (this.actionTool != this.toolNone)
+			{
 				this.activeTool = this.actionTool;
-			else if (this.hoveredRenderer == null)
-				this.activeTool = this.toolNone;
-			else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
-				this.activeTool = this.toolSelect;
+			}
+			// Otherwise, determine what action the cursor would do right now
 			else
-				this.activeTool = this.overrideTool ?? this.selectedTool;
+			{
+				// Determine the active tool dynamically based on user input state
+				if (this.hoveredRenderer == null)
+					this.activeTool = this.toolNone;
+				else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
+					this.activeTool = this.toolSelect;
+				else
+					this.activeTool = this.overrideTool ?? this.selectedTool;
 
-			// Keep in mind on what renderer and tilemap belong to the currently active tool
-			this.activeTilemap = (this.hoveredRenderer != null) ? this.hoveredRenderer.ActiveTilemap : null;
-			this.activeRenderer = this.hoveredRenderer;
+				// Keep in mind on what renderer and tilemap belong to the currently active tool
+				this.activeTilemap = (this.hoveredRenderer != null) ? this.hoveredRenderer.ActiveTilemap : null;
+				this.activeRenderer = this.hoveredRenderer;
+			}
 
 			// Determine the area that is affected by the current action
 			this.activeTool.UpdatePreview();
@@ -518,6 +525,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.OverrideTool = null;
 				e.Handled = true;
 			}
+		}
+		protected override void OnLostFocus()
+		{
+			base.OnLostFocus();
+			this.OverrideTool = null;
 		}
 		protected override void OnCamActionRequiresCursorChanged(EventArgs e)
 		{

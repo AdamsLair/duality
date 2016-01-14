@@ -64,6 +64,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="TileDrawSources\PatternTileDrawSource.cs" />
     <Compile Include="TilemapsEditorSelectionParser.cs" />
     <Compile Include="Modules\TilemapToolSourcePalette.cs">
       <SubType>Form</SubType>
@@ -74,9 +75,9 @@
     <Compile Include="Modules\TilesetView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TilemapTileDrawSource.cs" />
-    <Compile Include="DummyTileDrawSource.cs" />
-    <Compile Include="ITileDrawSource.cs" />
+    <Compile Include="TileDrawSources\TilemapTileDrawSource.cs" />
+    <Compile Include="TileDrawSources\DummyTileDrawSource.cs" />
+    <Compile Include="TileDrawSources\ITileDrawSource.cs" />
     <Compile Include="CamViewStates\TilemapTools\SelectTilemapTool.cs" />
     <Compile Include="CamViewStates\TilemapTools\FillTilemapTool.cs" />
     <Compile Include="CamViewStates\TilemapTools\OvalTilemapTool.cs" />
