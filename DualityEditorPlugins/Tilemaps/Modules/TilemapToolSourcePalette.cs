@@ -54,6 +54,23 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.ApplyBrightness();
 		}
 
+		private void SelectTilesetFromCurrentScene()
+		{
+			// Search the newly entered Scene for available tilesets
+			IEnumerable<ContentRef<Tileset>> tilesets = TilemapsEditorSelectionParser.GetTilesetsInScene(Scene.Current);
+
+			// If the currently selected tileset is not available, select one of the available ones.
+			if (this.SelectedTileset == null || !tilesets.Contains(this.SelectedTileset))
+			{
+				ContentRef<Tileset> availableTileset = tilesets.FirstOrDefault();
+
+				if (availableTileset == null)
+					availableTileset = TilemapsEditorSelectionParser.QuerySelectedTileset();
+
+				this.SelectedTileset = availableTileset;
+			}
+		}
+
 		private void ApplySelectedTileset()
 		{
 			// Query the selected tileset...
@@ -83,7 +100,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing        += this.Resource_ResourceDisposing;
 			Scene.Entered                     += this.Scene_Entered;
+
+			// Apply editor-global tileset selection
 			this.ApplySelectedTileset();
+			// If none is selected, fall back to a tileset from the current Scene
+			this.SelectTilesetFromCurrentScene();
 		}
 		protected override void OnClosed(EventArgs e)
 		{
@@ -97,7 +118,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			this.ApplyBrightness();
 		}
-
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (e.SameObjects) return;
@@ -115,19 +135,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void Scene_Entered(object sender, EventArgs e)
 		{
-			// Search the newly entered Scene for available tilesets
-			IEnumerable<ContentRef<Tileset>> tilesets = TilemapsEditorSelectionParser.GetTilesetsInScene(Scene.Current);
-
-			// If the currently selected tileset is not available, select one of the available ones.
-			if (this.SelectedTileset == null || !tilesets.Contains(this.SelectedTileset))
-			{
-				ContentRef<Tileset> availableTileset = tilesets.FirstOrDefault();
-
-				if (availableTileset == null)
-					availableTileset = TilemapsEditorSelectionParser.QuerySelectedTileset();
-
-				this.SelectedTileset = availableTileset;
-			}
+			this.SelectTilesetFromCurrentScene();
 		}
 		private void tilesetView_SelectedAreaEditingFinished(object sender, EventArgs e)
 		{
