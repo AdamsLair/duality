@@ -76,11 +76,12 @@
 			this.tilesetView.Name = "tilesetView";
 			this.tilesetView.Padding = new System.Windows.Forms.Padding(1);
 			this.tilesetView.RowAlignment = Duality.Editor.Plugins.Tilemaps.TilesetView.HorizontalAlignment.Center;
+			this.tilesetView.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
 			this.tilesetView.Size = new System.Drawing.Size(479, 422);
 			this.tilesetView.Spacing = new System.Drawing.Size(1, 1);
 			this.tilesetView.TabIndex = 0;
 			this.tilesetView.TabStop = true;
-			this.tilesetView.TargetTileset = null;
+			this.tilesetView.SelectedAreaEditingFinished += new System.EventHandler(this.tilesetView_SelectedAreaEditingFinished);
 			// 
 			// TilemapToolSourcePalette
 			// 

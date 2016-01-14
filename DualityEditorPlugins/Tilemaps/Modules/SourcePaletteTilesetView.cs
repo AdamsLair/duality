@@ -13,9 +13,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public class SourcePaletteTilesetView : TilesetView
 	{
-		private Rectangle selectedArea           = Rectangle.Empty;
-		private Point     actionBeginTilePos     = Point.Empty;
-		private bool      isUserSelecting        = false;
+		private Rectangle  selectedArea           = Rectangle.Empty;
+		private Grid<Tile> selectedTiles          = new Grid<Tile>();
+		private Point      actionBeginTilePos     = Point.Empty;
+		private bool       isUserSelecting        = false;
 
 		public event EventHandler SelectedAreaChanged = null;
 		public event EventHandler SelectedAreaEditingFinished = null;
@@ -28,11 +29,30 @@ namespace Duality.Editor.Plugins.Tilemaps
 			{
 				if (this.selectedArea != value)
 				{
-					this.selectedArea = value;
+					Rectangle croppedArea = new Rectangle(
+						Math.Max(value.X, 0),
+						Math.Max(value.Y, 0),
+						Math.Min(value.Width, this.TileCount.X - Math.Max(value.X, 0)),
+						Math.Min(value.Height, this.TileCount.Y - Math.Max(value.Y, 0)));
+
+					this.selectedArea = croppedArea;
+					this.selectedTiles.ResizeClear(croppedArea.Width, croppedArea.Height);
+					for (int y = 0; y < croppedArea.Height; y++)
+					{
+						for (int x = 0; x < croppedArea.Width; x++)
+						{
+							this.selectedTiles[x, y] = new Tile { Index = this.GetTileIndex(x, y) };
+						}
+					}
+
 					this.Invalidate();
 					this.RaiseSelectedAreaChanged();
 				}
 			}
+		}
+		public IReadOnlyGrid<Tile> SelectedTiles
+		{
+			get { return this.selectedTiles; }
 		}
 
 

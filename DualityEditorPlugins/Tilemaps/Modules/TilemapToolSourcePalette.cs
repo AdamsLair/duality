@@ -31,6 +31,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 		}
 
+
 		public TilemapToolSourcePalette()
 		{
 			this.InitializeComponent();
@@ -124,6 +125,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 				this.SelectedTileset = availableTileset;
 			}
+		}
+		private void tilesetView_SelectedAreaEditingFinished(object sender, EventArgs e)
+		{
+			// ToDo
 		}
 	}
 }
