@@ -113,7 +113,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.selectedArea.Width * (this.TileSize.Width + 1), 
 					this.selectedArea.Height * (this.TileSize.Height + 1)), 
 					System.Drawing.Drawing2D.CombineMode.Exclude);
-				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(64, this.BackColor)), this.ClientRectangle);
+				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(96, this.BackColor)), this.ClientRectangle);
 				e.Graphics.Clip = oldClip;
 
 				// Draw the selected tile area
@@ -141,6 +141,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 					startPos.Y - 4, 
 					this.selectedArea.Width * (this.TileSize.Width + 1) + 6, 
 					this.selectedArea.Height * (this.TileSize.Height + 1) + 6);
+				e.Graphics.DrawRectangle(
+					new Pen(Color.FromArgb(64, this.BackColor)), 
+					startPos.X - 5, 
+					startPos.Y - 5, 
+					this.selectedArea.Width * (this.TileSize.Width + 1) + 8, 
+					this.selectedArea.Height * (this.TileSize.Height + 1) + 8);
 			}
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
