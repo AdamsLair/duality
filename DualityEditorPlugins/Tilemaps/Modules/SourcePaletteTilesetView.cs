@@ -105,17 +105,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 				int startIndex = this.GetTileIndex(this.selectedArea.X, this.selectedArea.Y);
 				Point startPos = this.GetTileIndexLocation(startIndex);
 
-				// "Grey out" everything except the current selection a little bit
-				Region oldClip = e.Graphics.Clip;
-				e.Graphics.SetClip(new Rectangle(
-					startPos.X - 1, 
-					startPos.Y - 1, 
-					this.selectedArea.Width * (this.TileSize.Width + 1), 
-					this.selectedArea.Height * (this.TileSize.Height + 1)), 
-					System.Drawing.Drawing2D.CombineMode.Exclude);
-				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(96, this.BackColor)), this.ClientRectangle);
-				e.Graphics.Clip = oldClip;
-
 				// Draw the selected tile area
 				e.Graphics.DrawRectangle(
 					new Pen(this.BackColor), 
@@ -130,23 +119,29 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.selectedArea.Width * (this.TileSize.Width + 1) + 2, 
 					this.selectedArea.Height * (this.TileSize.Height + 1) + 2);
 				e.Graphics.DrawRectangle(
-					new Pen(this.BackColor), 
+					new Pen(this.ForeColor), 
 					startPos.X - 3, 
 					startPos.Y - 3, 
 					this.selectedArea.Width * (this.TileSize.Width + 1) + 4, 
 					this.selectedArea.Height * (this.TileSize.Height + 1) + 4);
 				e.Graphics.DrawRectangle(
-					new Pen(Color.FromArgb(128, this.BackColor)), 
+					new Pen(this.BackColor), 
 					startPos.X - 4, 
 					startPos.Y - 4, 
 					this.selectedArea.Width * (this.TileSize.Width + 1) + 6, 
 					this.selectedArea.Height * (this.TileSize.Height + 1) + 6);
 				e.Graphics.DrawRectangle(
-					new Pen(Color.FromArgb(64, this.BackColor)), 
+					new Pen(Color.FromArgb(128, this.BackColor)), 
 					startPos.X - 5, 
 					startPos.Y - 5, 
 					this.selectedArea.Width * (this.TileSize.Width + 1) + 8, 
 					this.selectedArea.Height * (this.TileSize.Height + 1) + 8);
+				e.Graphics.DrawRectangle(
+					new Pen(Color.FromArgb(64, this.BackColor)), 
+					startPos.X - 6, 
+					startPos.Y - 6, 
+					this.selectedArea.Width * (this.TileSize.Width + 1) + 10, 
+					this.selectedArea.Height * (this.TileSize.Height + 1) + 10);
 			}
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
