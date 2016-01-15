@@ -283,7 +283,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					}
 				}
 
-				// Iterate over visible tilemap renderers to find out what the cursor is hovering
+				// Iterate over the remaining tilemap renderers to find out which one prevails
 				for (int i = 0; i < visibleRenderers.Count; i++)
 				{
 					TilemapRenderer renderer = visibleRenderers[i];
