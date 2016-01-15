@@ -65,83 +65,73 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnPaintTiles(PaintEventArgs e)
 		{
 			Tileset tileset = this.TargetTileset.Res;
+			Color highlightColor = Color.White;
+			Color highlightBorderColor = Color.Black;
+			Region regularClip = e.Graphics.Clip;
+			Region selectionClip = regularClip.Clone();
+
+			// Fill the selection background
+			if (this.Enabled && !this.selectedArea.IsEmpty)
+			{
+				int startIndex = this.GetTileIndex(this.selectedArea.X, this.selectedArea.Y);
+				Rectangle rect = this.GetDrawingTileRect(startIndex, this.selectedArea.Width, this.selectedArea.Height, -1);
+				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
+				rect.Inflate(1, 1);
+				selectionClip.Exclude(rect);
+				e.Graphics.Clip = selectionClip;
+			}
 
 			// Draw hovered tile background
 			if (this.Enabled && this.HoveredTileIndex != -1)
 			{
-				Point hoverPos = this.GetTileIndexLocation(this.HoveredTileIndex);
-				e.Graphics.FillRectangle(
-					new SolidBrush(Color.FromArgb(32, this.ForeColor)), 
-					hoverPos.X - 1, 
-					hoverPos.Y - 1, 
-					this.TileSize.Width + 1, 
-					this.TileSize.Height + 1);
+				Rectangle rect = this.GetDrawingTileRect(this.HoveredTileIndex, 1, 1, -1);
+				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
 			}
 
 			// Paint the tile layer itself
+			e.Graphics.Clip = regularClip;
 			base.OnPaintTiles(e);
+			e.Graphics.Clip = selectionClip;
 
 			// Draw hovered tile foreground
 			if (this.Enabled && this.HoveredTileIndex != -1)
 			{
-				Point hoverPos = this.GetTileIndexLocation(this.HoveredTileIndex);
-				e.Graphics.FillRectangle(
-					new SolidBrush(Color.FromArgb(32, this.ForeColor)), 
-					hoverPos.X - 1, 
-					hoverPos.Y - 1, 
-					this.TileSize.Width + 1, 
-					this.TileSize.Height + 1);
-				e.Graphics.DrawRectangle(
-					new Pen(this.ForeColor), 
-					hoverPos.X - 1, 
-					hoverPos.Y - 1, 
-					this.TileSize.Width + 1, 
-					this.TileSize.Height + 1);
+				Rectangle rect = this.GetDrawingTileRect(this.HoveredTileIndex, 1, 1, -1);
+
+				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(highlightBorderColor), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(highlightColor), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(highlightBorderColor), rect);
 			}
 
 			// Draw selection indicators
 			if (this.Enabled && !this.selectedArea.IsEmpty)
 			{
+				e.Graphics.Clip = regularClip;
+
 				int startIndex = this.GetTileIndex(this.selectedArea.X, this.selectedArea.Y);
+				Rectangle rect = this.GetDrawingTileRect(startIndex, this.selectedArea.Width, this.selectedArea.Height, 0);
 				Point startPos = this.GetTileIndexLocation(startIndex);
 
-				// Draw the selected tile area
-				e.Graphics.DrawRectangle(
-					new Pen(this.BackColor), 
-					startPos.X - 1, 
-					startPos.Y - 1, 
-					this.selectedArea.Width * (this.TileSize.Width + 1), 
-					this.selectedArea.Height * (this.TileSize.Height + 1));
-				e.Graphics.DrawRectangle(
-					new Pen(this.ForeColor), 
-					startPos.X - 2, 
-					startPos.Y - 2, 
-					this.selectedArea.Width * (this.TileSize.Width + 1) + 2, 
-					this.selectedArea.Height * (this.TileSize.Height + 1) + 2);
-				e.Graphics.DrawRectangle(
-					new Pen(this.ForeColor), 
-					startPos.X - 3, 
-					startPos.Y - 3, 
-					this.selectedArea.Width * (this.TileSize.Width + 1) + 4, 
-					this.selectedArea.Height * (this.TileSize.Height + 1) + 4);
-				e.Graphics.DrawRectangle(
-					new Pen(this.BackColor), 
-					startPos.X - 4, 
-					startPos.Y - 4, 
-					this.selectedArea.Width * (this.TileSize.Width + 1) + 6, 
-					this.selectedArea.Height * (this.TileSize.Height + 1) + 6);
-				e.Graphics.DrawRectangle(
-					new Pen(Color.FromArgb(128, this.BackColor)), 
-					startPos.X - 5, 
-					startPos.Y - 5, 
-					this.selectedArea.Width * (this.TileSize.Width + 1) + 8, 
-					this.selectedArea.Height * (this.TileSize.Height + 1) + 8);
-				e.Graphics.DrawRectangle(
-					new Pen(Color.FromArgb(64, this.BackColor)), 
-					startPos.X - 6, 
-					startPos.Y - 6, 
-					this.selectedArea.Width * (this.TileSize.Width + 1) + 10, 
-					this.selectedArea.Height * (this.TileSize.Height + 1) + 10);
+				// Draw the selected tile area border
+				e.Graphics.DrawRectangle(new Pen(highlightBorderColor), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(highlightColor), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(highlightColor), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(highlightBorderColor), rect);
+				rect.Inflate(1, 1);
+
+				// Draw the outer shadow of the selected tile area
+				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(128, highlightBorderColor)), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, highlightBorderColor)), rect);
+				rect.Inflate(1, 1);
+				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(32, highlightBorderColor)), rect);
 			}
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
@@ -195,6 +185,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 			{
 				base.OnMouseMove(e);
 			}
+		}
+		
+		private Rectangle GetDrawingTileRect(int tileIndex, int tileW, int tileH, int offset)
+		{
+			Point startPos = this.GetTileIndexLocation(tileIndex);
+			return new Rectangle(
+				startPos.X - 1 - offset, 
+				startPos.Y - 1 - offset,
+				tileW * (this.TileSize.Width + this.Spacing.Width) + offset * 2, 
+				tileH * (this.TileSize.Height + this.Spacing.Height) + offset * 2);
 		}
 
 		private void RaiseSelectedAreaEditingFinished()
