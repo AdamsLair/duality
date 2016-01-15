@@ -279,6 +279,7 @@ namespace Duality.Editor.Plugins.CamView
 		public CamView(int runtimeId, string initStateTypeName = null)
 		{
 			this.InitializeComponent();
+
 			this.loadTempState = initStateTypeName;
 			this.oldColorDialogColor = Color.FromArgb(64, 64, 64);
 			this.selectedColorDialogColor = this.oldColorDialogColor;
@@ -471,10 +472,17 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void InitStateSelector()
 		{
+			this.stateSelector.BeginUpdate();
 			this.stateSelector.Items.Clear();
-
 			foreach (var pair in this.availStates)
+			{
 				this.stateSelector.Items.Add(new StateEntry(pair.Key, pair.Value));
+			}
+			this.stateSelector.EndUpdate();
+
+			// Prevent from exhibiting noticeable one-pixel "jump" when dropped down for the first time.
+			// Is this a ComboBox quirk? (Also, it doesn't appear to do width-resizes anyway)
+			this.stateSelector.AutoSize = false;
 		}
 		private void InitLayerSelector()
 		{
@@ -563,11 +571,14 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void InitCameraSelector()
 		{
+			this.camSelector.BeginUpdate();
 			this.camSelector.Items.Clear();
 			this.camSelector.Items.Add(new CamEntry(this.nativeCamObj.GetComponent<Camera>()));
-
 			foreach (Camera c in Scene.Current.AllObjects.GetComponents<Camera>().OrderBy(c => c.GameObj.FullName))
+			{
 				this.camSelector.Items.Add(new CamEntry(c));
+			}
+			this.camSelector.EndUpdate();
 		}
 		private void InitNativeCamera()
 		{
