@@ -29,6 +29,7 @@ namespace Duality.Plugins.Tilemaps
 		[DontSerialize] private List<Texture> renderData     = new List<Texture>();
 		[DontSerialize] private Material      renderMaterial = null;
 		[DontSerialize] private bool          compiled       = false;
+		[DontSerialize] private int           tileCount      = 0;
 
 		
 		/// <summary>
@@ -63,6 +64,13 @@ namespace Duality.Plugins.Tilemaps
 		{
 			get { return this.tileSize; }
 			set { this.tileSize = value; }
+		}
+		/// <summary>
+		/// [GET] The number of tiles in this <see cref="Tileset"/>. Calculated during compilation.
+		/// </summary>
+		public int TileCount
+		{
+			get { return this.tileCount; }
 		}
 		/// <summary>
 		/// [GET] Whether this <see cref="Tileset"/> has been compiled yet or not.
@@ -123,6 +131,7 @@ namespace Duality.Plugins.Tilemaps
 			// ToDo: Additional data / tags per tile
 
 			// Generate output pixel data
+			int minSourceTileCount = int.MaxValue;
 			for (int renderInputIndex = 0; renderInputIndex < this.renderConfig.Count; renderInputIndex++)
 			{
 				TilesetRenderInput input = this.renderConfig[renderInputIndex] ?? DefaultRenderInput;
@@ -141,6 +150,8 @@ namespace Duality.Plugins.Tilemaps
 				int sourceVerticalCount = sourceData.Height / sourceTileBounds.Y;
 				int sourceTileCount = sourceHorizontalCount * sourceVerticalCount;
 				int targetTileCount = sourceTileCount; // ToDo: Account for expanded AutoTiles
+
+				minSourceTileCount = Math.Min(minSourceTileCount, sourceTileCount);
 
 				// What's the optimal texture size to include them all?
 				int targetTextureWidth;
@@ -224,6 +235,9 @@ namespace Duality.Plugins.Tilemaps
 			{
 				this.renderMaterial.SetTexture(this.renderConfig[i].Id, this.renderData[i] ?? Texture.Checkerboard);
 			}
+
+			// Apply global tileset stats
+			this.tileCount = (this.renderConfig.Count > 0) ? minSourceTileCount : 0;
 
 			this.compiled = true;
 		}

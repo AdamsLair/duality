@@ -51,6 +51,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		private ToolStrip         toolstrip          = null;
 
+		private Dictionary<Tileset,bool[]> solidTileCache = new Dictionary<Tileset,bool[]>();
+
 
 		public override string StateName
 		{
@@ -132,7 +134,76 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
 		}
+		private Point2 GetTileAtLocalPos(TilemapRenderer renderer, Point localPos, TilemapRenderer.TilePickMode pickMode)
+		{
+			Transform transform = renderer.GameObj.Transform;
+
+			// Determine where the cursor is hovering in various coordinate systems
+			Vector3 worldCursorPos = this.CameraComponent.GetSpaceCoord(new Vector3(localPos.X, localPos.Y, transform.Pos.Z));
+			Vector2 localCursorPos = transform.GetLocalPoint(worldCursorPos.Xy);
+
+			// Determine tile coordinates of the cursor
+			return renderer.GetTileAtLocalPos(localCursorPos, pickMode);
+		}
 		
+		private bool IsTileTransparent(Tileset tileset, int tileIndex)
+		{
+			if (tileset == null) return true;
+			if (tileIndex < 0) return true;
+			if (tileIndex >= tileset.TileCount) return true;
+
+			bool[] mapping = this.GetSolidTileMapping(tileset);
+			return !mapping[tileIndex];
+		}
+		private bool[] GetSolidTileMapping(Tileset tileset)
+		{
+			bool[] mapping;
+			if (!this.solidTileCache.TryGetValue(tileset, out mapping))
+			{
+				mapping = this.BuildSolidTileMapping(tileset);
+				this.solidTileCache.Add(tileset, mapping);
+			}
+			return mapping;
+		}
+		private bool[] BuildSolidTileMapping(Tileset tileset)
+		{
+			bool[] mapping = new bool[tileset.TileCount];
+
+			if (tileset == null) return mapping;
+			if (tileset.RenderConfig.Count == 0) return mapping;
+
+			Pixmap sourcePixmap = tileset.RenderConfig[0].SourceData.Res;
+			if (sourcePixmap == null) return mapping;
+
+			PixelData sourceData = sourcePixmap.MainLayer;
+			if (sourceData == null) return mapping;
+
+			for (int i = 0; i < mapping.Length; i++)
+			{
+				Point2 pos;
+				Point2 size;
+				tileset.LookupTileSourceRect(0, i, out pos, out size);
+
+				bool solid = false;
+				for (int y = 0; y < size.Y; y++)
+				{
+					for (int x = 0; x < size.X; x++)
+					{
+						if (sourceData[pos.X + x, pos.Y + y].A > 0)
+						{
+							solid = true;
+							break;
+						}
+					}
+					if (solid) break;
+				}
+
+				mapping[i] = solid;
+			}
+
+			return mapping;
+		}
+
 		private void UpdateToolbar()
 		{
 			foreach (TilemapTool tool in this.tools)
@@ -169,24 +240,25 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					this.Invalidate();
 				return;
 			}
-
-			TilemapRenderer[] visibleRenderers;
-
-			// While doing an action, it's either the selected tilemap or none. No switch inbetween.
+			
+			// While doing an action, it's either the selected tilemap or none. No picking, just determine the hovered tile
 			bool performingAction = this.actionTool != this.toolNone;
 			if (performingAction)
 			{
-				visibleRenderers = new TilemapRenderer[] { this.activeRenderer };
+				this.hoveredTile = this.GetTileAtLocalPos(this.activeRenderer, cursorPos, TilemapRenderer.TilePickMode.Free);
 				this.hoveredRenderer = this.activeRenderer;
 			}
 			else
 			{
+				List<TilemapRenderer> visibleRenderers;
+				bool pureZSortPicking = !(this.overrideTool ?? this.selectedTool).PickPreferSelectedLayer || this.selectedTilemap == null;
+
 				// Determine which renderers we're able to see right now and sort them by their Z values
-				visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
+				visibleRenderers = this.QueryVisibleTilemapRenderers().ToList();
 				visibleRenderers.StableSort((a, b) =>
 				{
 					// When prefered by the editing tool, the currently edited tilemap always prevails in picking checks
-					if ((this.overrideTool ?? this.selectedTool).PickPreferSelectedLayer && a.ActiveTilemap != b.ActiveTilemap)
+					if (!pureZSortPicking && a.ActiveTilemap != b.ActiveTilemap)
 					{
 						if (a.ActiveTilemap == this.selectedTilemap)
 							return -1;
@@ -197,31 +269,47 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					// Otherwise, do regular Z sorting
 					return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
 				});
-			}
 
-			// Iterate over visible tilemap renderers to find out what the cursor is hovering
-			for (int i = 0; i < visibleRenderers.Length; i++)
-			{
-				TilemapRenderer renderer = visibleRenderers[i];
-				Transform transform = renderer.GameObj.Transform;
-
-				// Determine where the cursor is hovering in various coordinate systems
-				Vector3 worldCursorPos = this.CameraComponent.GetSpaceCoord(new Vector3(cursorPos.X, cursorPos.Y, transform.Pos.Z));
-				Vector2 localCursorPos = transform.GetLocalPoint(worldCursorPos.Xy);
-				Point2 tileCursorPos = renderer.GetTileAtLocalPos(localCursorPos, 
-					performingAction ? 
-					TilemapRenderer.TilePickMode.Free : 
-					TilemapRenderer.TilePickMode.Reject);
-
-				// If we're hovering a tile of the current renderer, we're done
-				if (performingAction || tileCursorPos != InvalidTile)
+				// Eliminate all tilemap renderers without a tile hit, so we remain with only the renderers under the cursor.
+				for (int i = visibleRenderers.Count - 1; i >= 0; i--)
 				{
-					if (!DesignTimeObjectData.Get(renderer.GameObj).IsLocked)
+					TilemapRenderer renderer = visibleRenderers[i];
+					Point2 tileCursorPos = this.GetTileAtLocalPos(renderer, cursorPos, TilemapRenderer.TilePickMode.Reject);
+					if (tileCursorPos == InvalidTile)
 					{
-						this.hoveredTile = tileCursorPos;
-						this.hoveredRenderer = renderer;
+						visibleRenderers.RemoveAt(i);
+						continue;
 					}
-					break;
+				}
+
+				// Iterate over visible tilemap renderers to find out what the cursor is hovering
+				for (int i = 0; i < visibleRenderers.Count; i++)
+				{
+					TilemapRenderer renderer = visibleRenderers[i];
+					Point2 tileCursorPos = this.GetTileAtLocalPos(renderer, cursorPos, TilemapRenderer.TilePickMode.Reject);
+
+					// If the hovered tile is transparent, don't treat it as a hit unless it's the bottom renderer
+					bool isBottomRenderer = (i == visibleRenderers.Count - 1);
+					if (pureZSortPicking && !isBottomRenderer)
+					{
+						Tilemap tilemap = renderer.ActiveTilemap;
+						int tileIndex = (tilemap != null) ? tilemap.Tiles[tileCursorPos.X, tileCursorPos.Y].Index : -1;
+						if (tileIndex == -1 || this.IsTileTransparent(tilemap.Tileset.Res, tileIndex))
+						{
+							tileCursorPos = InvalidTile;
+						}
+					}
+
+					// If we're hovering a tile of the current renderer, we're done
+					if (tileCursorPos != InvalidTile)
+					{
+						if (!DesignTimeObjectData.Get(renderer.GameObj).IsLocked)
+						{
+							this.hoveredTile = tileCursorPos;
+							this.hoveredRenderer = renderer;
+						}
+						break;
+					}
 				}
 			}
 
@@ -363,6 +451,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
+			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
 
 			// Initial update
 			this.UpdateToolbar();
@@ -388,6 +477,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine -= this.DualityEditorApp_UpdatingEngine;
+			Resource.ResourceDisposing -= this.Resource_ResourceDisposing;
 
 			// Reset state
 			this.Cursor = CursorHelper.Arrow;
@@ -667,6 +757,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			{
 				this.Invalidate();
 			}
+
+			// If we have any cached tileset data, clear the cache for the affected tilesets
+			if (this.solidTileCache.Count > 0)
+			{
+				foreach (Tileset tileset in e.Objects.Resources.OfType<Tileset>())
+				{
+					this.solidTileCache.Remove(tileset);
+				}
+			}
 		}
 		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)
 		{
@@ -676,6 +775,14 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				float timeSinceFillSelect = (float)(DateTime.Now - this.activePreviewTime).TotalMilliseconds;
 				if (timeSinceFillSelect <= FillAnimDuration)
 					this.Invalidate();
+			}
+		}
+		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
+		{
+			// If we have any cached tileset data, clear the cache for the affected tilesets
+			if (this.solidTileCache.Count > 0 && e.Content.Res is Tileset)
+			{
+				this.solidTileCache.Remove(e.Content.Res as Tileset);
 			}
 		}
 

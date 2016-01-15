@@ -380,8 +380,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.tileBitmap = sourceData.MainLayer.ToBitmap();
 				this.tileSize = new Size((int)tileset.TileSize.X, (int)tileset.TileSize.Y);
 				this.tileCount = new Point(
-					this.tileBitmap.Width / (mainInput.SourceTileSize.X + mainInput.SourceTileSpacing),
-					this.tileBitmap.Height / (mainInput.SourceTileSize.Y + mainInput.SourceTileSpacing));
+					this.tileBitmap.Width / (mainInput.SourceTileSize.X + mainInput.SourceTileSpacing * 2),
+					this.tileBitmap.Height / (mainInput.SourceTileSize.Y + mainInput.SourceTileSpacing * 2));
 				this.totalTileCount = this.tileCount.X * this.tileCount.Y;
 			}
 			else
