@@ -248,6 +248,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.hoveredTile = this.GetTileAtLocalPos(this.activeRenderer, cursorPos, TilemapRenderer.TilePickMode.Free);
 				this.hoveredRenderer = this.activeRenderer;
 			}
+			// Otherwise, perform a tile-based picking operation
 			else
 			{
 				List<TilemapRenderer> visibleRenderers;
