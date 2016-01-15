@@ -479,10 +479,6 @@ namespace Duality.Editor.Plugins.CamView
 				this.stateSelector.Items.Add(new StateEntry(pair.Key, pair.Value));
 			}
 			this.stateSelector.EndUpdate();
-
-			// Prevent from exhibiting noticeable one-pixel "jump" when dropped down for the first time.
-			// Is this a ComboBox quirk? (Also, it doesn't appear to do width-resizes anyway)
-			this.stateSelector.AutoSize = false;
 		}
 		private void InitLayerSelector()
 		{

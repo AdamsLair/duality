@@ -110,6 +110,7 @@
 			// 
 			// toolbarCamera
 			// 
+			this.toolbarCamera.AutoSize = false;
 			this.toolbarCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.toolbarCamera.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbarCamera.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
