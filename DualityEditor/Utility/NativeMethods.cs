@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace Duality.Editor
 {
-	public class NativeMethods
+	internal class NativeMethods
 	{
 		public const int GW_HWNDNEXT = 2; // The next window is below the specified window
 		public const int GW_HWNDPREV = 3; // The previous window is above
@@ -134,6 +134,9 @@ namespace Duality.Editor
 		public static extern bool GetIconInfo(IntPtr hIcon, ref IconInfo pIconInfo);
 		[DllImport("user32.dll")]
 		public static extern IntPtr CreateIconIndirect(ref IconInfo icon);
+
+		[DllImport("user32.dll", CharSet=CharSet.Auto, CallingConvention=CallingConvention.Winapi)]
+		public static extern IntPtr GetFocus();
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetTopWindow(IntPtr hWnd);
