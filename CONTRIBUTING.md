@@ -24,4 +24,4 @@ If you need help with using Duality, please consider [asking the community](http
 
 If you submit a Pull Request, keep in mind that your changes and additions must comply with the [project license](https://github.com/AdamsLair/duality/blob/master/LICENSE) and will be licensed under it upon merging.
 
-Please read the [contribution guide](https://github.com/AdamsLair/duality/wiki/How-to-Contribute) before submitting any Pull Requests.
+Please read the [wiki article on contribution](https://github.com/AdamsLair/duality/wiki/How-to-Contribute) before submitting any Pull Requests.
