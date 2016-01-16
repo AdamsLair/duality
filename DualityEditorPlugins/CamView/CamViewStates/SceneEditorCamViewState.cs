@@ -15,6 +15,11 @@ using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
+	/// <summary>
+	/// Allows to move, scale and rotate the objects of a <see cref="Scene"/> while providing a
+	/// preview through the lens of the editor <see cref="Camera"/>. User input is consumed
+	/// by the editor and not forwarded to the game.
+	/// </summary>
 	public class SceneEditorCamViewState : ObjectEditorCamViewState
 	{
 		public class SelGameObj : SelObj

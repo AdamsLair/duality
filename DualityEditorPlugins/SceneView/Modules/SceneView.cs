@@ -506,7 +506,7 @@ namespace Duality.Editor.Plugins.SceneView
 			}
 
 			// Create Components
-			CreateComponentAction action = new CreateComponentAction(baseObj, cmpType.GetTypeInfo().CreateInstanceOf() as Component);
+			CreateComponentAction action = new CreateComponentAction(baseObj, cmpType);
 			UndoRedoManager.Do(action);
 			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
 
@@ -747,7 +747,7 @@ namespace Duality.Editor.Plugins.SceneView
 			bool multiSelect = selNodeData.Count > 1;
 			bool gameObjSelect = selNodeData.Any(n => n is GameObjectNode);
 
-			this.nodeContextItemNew.Visible = (singleSelect && gameObjSelect) || noSelect;
+			this.nodeContextItemNew.Visible = gameObjSelect || noSelect;
 
 			this.nodeContextItemClone.Visible = !noSelect && gameObjSelect;
 			this.nodeContextItemDelete.Visible = !noSelect;
@@ -1484,25 +1484,49 @@ namespace Duality.Editor.Plugins.SceneView
 			CreateContextEntryTag clickedEntry = clickedItem.Tag as CreateContextEntryTag;
 			Type clickedType = ReflectionHelper.ResolveType(clickedEntry.TypeId);
 			if (clickedType == null) return;
-
-			// Create the Component
-			Component cmp = this.CreateComponent(this.objectView.SelectedNode, clickedType);
-			if (cmp == null) return;
-
-			NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
-			if (cmpNode != null)
+            
+			// Determine which (GameObject) nodes we're creating Components on.
+			List<TreeNodeAdv> targetViewNodes = new List<TreeNodeAdv>();
+			foreach (TreeNodeAdv viewNode in this.objectView.SelectedNodes)
 			{
-				// Deselect previous
-				this.objectView.ClearSelection();
+				GameObjectNode targetObjNode = viewNode.Tag as GameObjectNode;
+				if (targetObjNode == null) continue;
 
-				// Select new node
+				targetViewNodes.Add(viewNode);
+			}
+
+			// If none is selected, use a "null" dummy to allow quick creation at the Scene root
+			if (targetViewNodes.Count == 0)
+				targetViewNodes.Add(null);
+
+			// Track the nodes that we add so that we can select them later
+			UndoRedoManager.BeginMacro();
+			List<NodeBase> newComponentNodes = new List<NodeBase>(targetViewNodes.Count);
+			foreach (TreeNodeAdv targetViewNode in targetViewNodes)
+			{
+				// Create the Component
+				Component cmp = this.CreateComponent(targetViewNode, clickedType);
+				if (cmp == null) continue;
+
+				NodeBase cmpNode = (NodeBase)this.FindNode(cmp) ?? this.FindNode(cmp.GameObj);
+				if (cmpNode == null) continue;
+					
+				newComponentNodes.Add(cmpNode);
+			}
+			UndoRedoManager.EndMacro(UndoRedoManager.MacroDeriveName.FromFirst);
+
+			// Deselect previous
+			this.objectView.ClearSelection();
+
+			// Select all new nodes
+			foreach (var cmpNode in newComponentNodes)
+			{
 				TreeNodeAdv dragObjViewNode = this.objectView.FindNode(this.objectModel.GetPath(cmpNode));
 				if (dragObjViewNode != null)
 				{
 					dragObjViewNode.IsSelected = true;
 					this.objectView.EnsureVisible(dragObjViewNode);
 				}
-				return;
 			}
 		}
 		private void customObjectActionItem_Click(object sender, EventArgs e)

@@ -6,18 +6,29 @@ namespace Duality.Editor
 {
 	public static class ExtMethodsToolStrip
 	{
-		public static ToolStripItem GetItemAtDeep(this ToolStrip t, Point screenPos)
+		public static ToolStripItem GetItemAtDeep(this ToolStrip toolstrip, Point screenPos)
 		{
-			if (!t.Visible) return null;
+			if (!toolstrip.Visible) return null;
 
-			Point toolStripLocalPos = t.PointToClient(screenPos);
-			ToolStripItem item = t.GetItemAt(toolStripLocalPos);
+			Point toolStripLocalPos = toolstrip.PointToClient(screenPos);
+			ToolStripItem item = toolstrip.GetItemAt(toolStripLocalPos);
 			if (item != null) return item;
 
-			ToolStripDropDownItem dropItem = t.Items.OfType<ToolStripDropDownItem>().FirstOrDefault(i => i.DropDown.Visible);
+			ToolStripDropDownItem dropItem = toolstrip.GetActiveDropDown();
 			if (dropItem != null) return dropItem.DropDown.GetItemAtDeep(screenPos);
 
 			return null;
+		}
+		/// <summary>
+		/// Returns the currently dropped down item of this <see cref="ToolStrip"/>.
+		/// Returns null, if no dropdown is active.
+		/// </summary>
+		/// <param name="toolstrip"></param>
+		/// <returns></returns>
+		public static ToolStripDropDownItem GetActiveDropDown(this ToolStrip toolstrip)
+		{
+			if (!toolstrip.Visible) return null;
+			return toolstrip.Items.OfType<ToolStripDropDownItem>().FirstOrDefault(item => item.DropDown.Visible);
 		}
 	}
 }

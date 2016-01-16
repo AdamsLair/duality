@@ -571,4 +571,7 @@
   <data name="MenuItemName_SerializerUpdateAll" xml:space="preserve">
     <value>Update All</value>
   </data>
+  <data name="MenuItemInfo_ToggleBackups" xml:space="preserve">
+    <value>If active, Duality will backup each file before saving it.</value>
+  </data>
 </root>

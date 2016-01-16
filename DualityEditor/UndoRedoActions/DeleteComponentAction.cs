@@ -25,7 +25,7 @@ namespace Duality.Editor.UndoRedoActions
 			get { return GeneralRes.UndoRedo_DeleteComponentMulti; }
 		}
 
-		public DeleteComponentAction(IEnumerable<Component> obj) : base(obj) {}
+		public DeleteComponentAction(IEnumerable<Component> obj) : base(FilterComponents(obj)) {}
 
 		public override void Do()
 		{
@@ -58,6 +58,13 @@ namespace Duality.Editor.UndoRedoActions
 			}
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(this.backupParentObj));
 			DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(Scene.Current));
+		}
+
+		private static IEnumerable<Component> FilterComponents(IEnumerable<Component> cmp)
+		{
+			return cmp
+				.Distinct(ComponentTypeComparer.Default)
+				.OrderByDescending(c => c.GetRequiredComponents().Count());
 		}
 	}
 }

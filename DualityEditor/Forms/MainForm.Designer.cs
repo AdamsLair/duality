@@ -138,8 +138,6 @@
 			this.mainMenuStrip.Size = new System.Drawing.Size(916, 24);
 			this.mainMenuStrip.TabIndex = 2;
 			this.mainMenuStrip.Text = "menuStrip1";
-			this.mainMenuStrip.MenuActivate += new System.EventHandler(this.mainMenuStrip_MenuActivate);
-			this.mainMenuStrip.MenuDeactivate += new System.EventHandler(this.mainMenuStrip_MenuDeactivate);
 			// 
 			// BottomToolStripPanel
 			// 
@@ -325,7 +323,6 @@
 			this.checkBackups.Name = "checkBackups";
 			this.checkBackups.Size = new System.Drawing.Size(123, 22);
 			this.checkBackups.Text = "Backups";
-			this.checkBackups.ToolTipText = "If active, Duality will backup each file before saving it.";
 			this.checkBackups.Click += new System.EventHandler(this.checkBackups_Clicked);
 			// 
 			// menuAutosave
@@ -378,8 +375,6 @@
 			this.selectFormattingMethod.Name = "selectFormattingMethod";
 			this.selectFormattingMethod.Size = new System.Drawing.Size(32, 22);
 			this.selectFormattingMethod.Text = "Project Data Format";
-			this.selectFormattingMethod.DropDownClosed += new System.EventHandler(this.selectFormattingMethod_DropDownClosed);
-			this.selectFormattingMethod.DropDownOpened += new System.EventHandler(this.selectFormattingMethod_DropDownOpened);
 			this.selectFormattingMethod.Click += new System.EventHandler(this.selectFormattingMethod_Click);
 			// 
 			// MainForm

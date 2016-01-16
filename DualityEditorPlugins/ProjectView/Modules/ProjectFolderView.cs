@@ -459,15 +459,31 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			if (desiredName == null) desiredName = type.Name;
 
+			// Create a new Resource instance of the specified type
+			Resource resInstance = type.GetTypeInfo().CreateInstanceOf() as Resource;
+
+			// Gather all available user editing setup actions
+			IEnumerable<IEditorAction> setupActions = DualityEditorApp.GetEditorActions(
+				resInstance.GetType(), 
+				new[] { resInstance },
+				DualityEditorApp.ActionContextSetupObjectForEditing);
+
+			// Invoke all of them on the new Resource
+			foreach (IEditorAction setupAction in setupActions)
+			{
+				setupAction.Perform(resInstance);
+			}
+
+			// Determine the actual name and path of our new Resource
 			string basePath = this.GetInsertActionTargetBasePath(baseNode);
 			string nameExt = Resource.GetFileExtByType(type);
 			string resPath = PathHelper.GetFreePath(Path.Combine(basePath, desiredName), nameExt);
 			resPath = PathHelper.MakeFilePathRelative(resPath);
 
-			Resource resInstance = type.GetTypeInfo().CreateInstanceOf() as Resource;
+			// Save the new Resource to make it persistent - it will show up in the Project View once it's there
 			resInstance.Save(resPath);
 
-			// Schedule path for later selection - as soon as it actually exists.
+			// Schedule path for later selection and rename - as soon as it actually exists.
 			this.folderView.ClearSelection();
 			this.ScheduleSelect(resPath, true);
 			

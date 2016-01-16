@@ -1166,7 +1166,7 @@ namespace Duality.Drawing
 		}
 
 		/// <summary>
-		/// Updates the vertex cache that is used to optimize calls to <see cref="EmitVertices"/>. However, this is normally done automatically.
+		/// Updates the cache that is used when emitting vertices. However, this is normally done automatically.
 		/// </summary>
 		public void UpdateVertexCache()
 		{

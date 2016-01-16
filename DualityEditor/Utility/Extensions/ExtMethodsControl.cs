@@ -8,10 +8,47 @@ namespace Duality.Editor
 {
 	public static class ExtMethodsControl
 	{
-		public static Control GetChildAtPointDeep(this Control c, Point pt, GetChildAtPointSkip skip)
+		/// <summary>
+		/// Retrieves the currently active item from all (immediate, not deep) child toolstrips of this <see cref="Control"/>.
+		/// An item is considered active when it is hovered by the mouse cursor while no other dropped down 
+		/// is open, which would capture the mouse. All items are considered, even if nested within dropdowns.
+		/// </summary>
+		/// <param name="control"></param>
+		/// <param name="globalPos"></param>
+		/// <param name="isOnActiveDropDown"></param>
+		/// <returns></returns>
+		public static ToolStripItem GetHoveredToolStripItem(this Control control, Point globalPos, out bool isOnActiveDropDown)
 		{
-			Point globalPt = c.PointToScreen(pt);
-			Control child = c.GetChildAtPoint(pt, skip);
+			isOnActiveDropDown = false;
+
+			// Check for active dropdowns and their child items first - they'll capture cursor focus
+			foreach (ToolStrip toolstrip in control.Controls.OfType<ToolStrip>())
+			{
+				ToolStripDropDownItem dropItem = toolstrip.GetActiveDropDown();
+				if (dropItem != null)
+				{
+					isOnActiveDropDown = true;
+					return dropItem.DropDown.GetItemAtDeep(globalPos);
+				}
+			}
+
+			// Check whether any root-level toolstrip item is hovered
+			foreach (ToolStrip toolstrip in control.Controls.OfType<ToolStrip>())
+			{
+				ToolStripItem hoveredItem = null;
+				Point toolStripLocalPos = toolstrip.PointToClient(globalPos);
+				hoveredItem = toolstrip.GetItemAt(toolStripLocalPos) ?? hoveredItem;
+				if (hoveredItem != null)
+					return hoveredItem;
+			}
+
+			// Nothing found
+			return null;
+		}
+		public static Control GetChildAtPointDeep(this Control control, Point pt, GetChildAtPointSkip skip)
+		{
+			Point globalPt = control.PointToScreen(pt);
+			Control child = control.GetChildAtPoint(pt, skip);
 			Control deeperChild = child;
 			while (deeperChild != null)
 			{
@@ -20,21 +57,21 @@ namespace Duality.Editor
 			}
 			return deeperChild ?? child;
 		}
-		public static T GetControlAncestor<T>(this Control c) where T : class
+		public static T GetControlAncestor<T>(this Control control) where T : class
 		{
-			while (c != null)
+			while (control != null)
 			{
-				if (c is T) return c as T;
-				c = c.Parent;
+				if (control is T) return control as T;
+				control = control.Parent;
 			}
 			return null;
 		}
-		public static IEnumerable<T> GetControlAncestors<T>(this Control c) where T : class
+		public static IEnumerable<T> GetControlAncestors<T>(this Control control) where T : class
 		{
-			while (c != null)
+			while (control != null)
 			{
-				if (c is T) yield return c as T;
-				c = c.Parent;
+				if (control is T) yield return control as T;
+				control = control.Parent;
 			}
 			yield break;
 		}

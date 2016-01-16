@@ -240,25 +240,45 @@ namespace Duality.Editor
 		{
 			List<Form> result = new List<Form>();
 
+			// Generate a list of handles of this application's top-level forms
+			List<IntPtr> openFormHandles = new List<IntPtr>();
+			foreach (Form form in Application.OpenForms)
+			{
+				if (!form.TopLevel)
+				{
+					bool belongsToAnother = Application.OpenForms.OfType<Form>().Contains(form.TopLevelControl);
+					if (belongsToAnother)
+						continue;
+				}
+				openFormHandles.Add(form.Handle);
+			}
+
+			// Use WinAPI to iterate over windows in correct z-order until we found all our forms
 			IntPtr hwnd = NativeMethods.GetTopWindow((IntPtr)null);
 			while (hwnd != IntPtr.Zero)
 			{
-				// Get next window under the current handler
+				// Get next window under the current handle
 				hwnd = NativeMethods.GetNextWindow(hwnd, NativeMethods.GW_HWNDNEXT);
 
 				try
 				{
-					Form frm = Form.FromHandle(hwnd) as Form;
-					if (frm != null && Application.OpenForms.OfType<Form>().Contains(frm))
+					if (openFormHandles.Contains(hwnd))
+					{
+						Form frm = Form.FromHandle(hwnd) as Form;
 						result.Add(frm);
+
+						// Found all of our windows? No need to continue.
+						if (result.Count == openFormHandles.Count)
+							break;
+					}
 				}
 				catch
 				{
-					// Weird behaviour: In some cases, trying to cast to a Form a handle of an object 
-					// that isn't a form will just return null. In other cases, will throw an exception.
+					// Weird behaviour: In some cases, trying to cast to a Form, a handle of an object 
+					// that isn't a Form will just return null. In other cases, will throw an exception.
 				}
 			}
-
+			
 			return result;
 		}
 

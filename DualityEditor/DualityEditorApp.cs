@@ -35,10 +35,11 @@ namespace Duality.Editor
 		public	const	string	UserDataFile			= "EditorUserData.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
 
-		public	const	string	ActionContextMenu			= "ContextMenu";
-		public	const	string	ActionContextOpenRes		= "OpenRes";
-		public	const	string	ActionContextFirstSession	= "FirstSession";
-		
+		public	const	string	ActionContextMenu					= "ContextMenu";
+		public	const	string	ActionContextOpenRes				= "OpenRes";
+		public	const	string	ActionContextFirstSession			= "FirstSession";
+		public	const	string	ActionContextSetupObjectForEditing	= "SetupObjectForEditing";
+
 		private	static MainForm						mainForm			= null;
 		private	static IEditorGraphicsBackend		graphicsBack		= null;
 		private	static INativeEditorGraphicsContext	mainGraphicsContext	= null;
@@ -61,7 +62,6 @@ namespace Duality.Editor
 		private	static AutosaveFrequency			autosaveFrequency	= AutosaveFrequency.ThirtyMinutes;
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
-		private	static InputEventMessageFilter		menuKeyInterceptor	= null;
 		private	static PackageManager				packageManager		= null;
 
 
@@ -267,14 +267,6 @@ namespace Duality.Editor
 				if (action != null) editorActions.Add(action);
 			}
 
-			// Install a global message filter to intercept the menu key
-			if (menuKeyInterceptor == null)
-			{
-				menuKeyInterceptor = new InputEventMessageFilter();
-				menuKeyInterceptor.SystemKeyDown += menuKeyInterceptor_SystemKeyDown;
-			}
-			Application.AddMessageFilter(menuKeyInterceptor);
-
 			// If there are no Scenes in the current project, init the first one with some default objects.
 			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.GetFileExtByType<Scene>(), SearchOption.AllDirectories).Any())
 			{
@@ -323,10 +315,6 @@ namespace Duality.Editor
 			// From this point on, there's no return - need to re-init the editor afterwards.
 			if (Terminating != null)
 				Terminating(null, EventArgs.Empty);
-				
-			// Unregister message hook
-			if (menuKeyInterceptor != null)
-				Application.RemoveMessageFilter(menuKeyInterceptor);
 
 			// If this was our first session, it ends now. This will be saved as userdata
 			firstEditorSession = false;
@@ -1469,14 +1457,6 @@ namespace Duality.Editor
 			// Update source code, in case the user is switching to his IDE without hitting the "open source code" button again
 			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
 				DualityEditorApp.UpdatePluginSourceCode();
-		}
-		private static void menuKeyInterceptor_SystemKeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Menu)
-			{
-				// Intercept the menu / Alt key, since it only causes problems (stealing the message loop in unfortunate situations, etc.)
-				e.Handled = true;
-			}
 		}
 
 		private static void editorObjects_Registered(object sender, GameObjectEventArgs e)

@@ -44,6 +44,10 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			get { return this.view.FgColor; }
 		}
+		public bool Focused
+		{
+			get { return this.view.RenderableControl.Focused; }
+		}
 		public EditingGuide EditingUserGuide
 		{
 			get { return this.view.EditingUserGuides; }
