@@ -1,12 +1,12 @@
 #### Issues
 
-If you need help with using Duality, please consider [asking the community](http://forum.adamslair.net) first. The forum is the right place to gather advice and evidence about potential bugs and problems and many issues are discussed there before proceeding to be reported officially on GitHub. 
+If you need help with using Duality, please consider [asking the community](http://forum.adamslair.net) first. The forum is the right place to gather advice and evidence about potential bugs and problems and many issues are discussed there before proceeding to be reported officially on GitHub. The followig lists contain a sample of core points you should include in your issue report.
 
 (Of course, if you already have all the evidence, feel free to submit a new issue right away!)
 
 ##### Bug Reports
 
-- Short summary of the problem in 1-3 sentences.
+- Short summary of the problem in 1-3 sentences in the first paragraph. Followed by a more thorough description of the issue (if applicable)
 - A few easy steps to reproduce the behavior. Provide sample code and Resources where useful.
 - Complete logfiles (if applicable)
 - Screenshots (if applicable and useful)
