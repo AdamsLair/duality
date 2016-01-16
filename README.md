@@ -7,7 +7,7 @@ Besides the github project overview and documentation, there is also a [develope
 
 Latest binary release: http://dualitybin.adamslair.net/
 
-Fork / Contribution Guide: [How to Contribute](https://github.com/AdamsLair/duality/wiki/How-to-Contribute). If you submit a Pull Request, please keep in mind that your changes and additions must comply with the [project license](https://github.com/AdamsLair/duality/blob/master/LICENSE).
+Fork / Contribution Guide: [How to Contribute](https://github.com/AdamsLair/duality/wiki/How-to-Contribute).
 
 Donate: [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC) or [on itch.io](http://adamslair.itch.io/duality)
 
