@@ -361,6 +361,38 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.Invalidate();
 			}
 		}
+		private void UpdateOverrideToolFromModifierKeys()
+		{
+			foreach (TilemapTool tool in this.tools)
+			{
+				bool modifierPressed = false;
+				if (tool.OverrideKey == Keys.Menu)
+					modifierPressed = (Control.ModifierKeys & Keys.Alt) != Keys.None;
+				else if (tool.OverrideKey == Keys.ShiftKey)
+					modifierPressed = (Control.ModifierKeys & Keys.Shift) != Keys.None;
+				else if (tool.OverrideKey == Keys.ControlKey)
+					modifierPressed = (Control.ModifierKeys & Keys.Control) != Keys.None;
+				else
+					continue;
+
+				if (this.overrideTool == null)
+				{
+					if (modifierPressed)
+					{
+						this.OverrideTool = tool;
+						break;
+					}
+				}
+				else if (this.overrideTool == tool)
+				{
+					if (!modifierPressed)
+					{
+						this.OverrideTool = null;
+						break;
+					}
+				}
+			}
+		}
 
 		private void BeginToolAction(TilemapTool action)
 		{
@@ -491,6 +523,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			base.OnMouseMove(e);
 			Point2 lastHoverTile = this.hoveredTile;
+			
+			// If we don't have focus, at least check for modifier-based tool overrides
+			if (!this.Focused)
+				this.UpdateOverrideToolFromModifierKeys();
 
 			// Determine what the cursor is hovering over and what actions it could perform
 			this.UpdateHoverState(e.Location);
@@ -519,6 +555,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseDown(e);
 			if (e.Button == MouseButtons.Left)
 			{
+				// If we don't have focus, at least check for modifier-based tool overrides
+				if (!this.Focused)
+					this.UpdateOverrideToolFromModifierKeys();
+
 				// Because selection events may change the currently active tool,
 				// start by agreeing on what tool we're dealing with in this mouse event.
 				TilemapTool proposedAction = this.activeTool;
