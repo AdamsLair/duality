@@ -10,6 +10,9 @@ using WeifenLuo.WinFormsUI.Docking;
 using AdamsLair.WinForms.ItemModels;
 
 using Duality;
+using Duality.Resources;
+using Duality.Plugins.Tilemaps;
+
 using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
@@ -79,6 +82,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Icon = TilemapsResCache.IconTilePalette,
 				ActionHandler = this.menuItemTilePalette_Click
 			});
+
+			// Register events
+			FileEventManager.ResourceModified += this.FileEventManager_ResourceModified;
+			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
 		protected override void SaveUserData(XElement node)
 		{
@@ -189,6 +196,59 @@ namespace Duality.Editor.Plugins.Tilemaps
 				palette.Pane.Activate();
 				palette.Focus();
 			}
+		}
+		
+		private void FileEventManager_ResourceModified(object sender, ResourceEventArgs e)
+		{
+			if (e.IsResource) this.OnResourceModified(e.Content);
+		}
+		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
+		{
+			if (e.Objects.ResourceCount > 0)
+			{
+				foreach (var r in e.Objects.Resources)
+					this.OnResourceModified(r);
+			}
+		}
+		private void OnResourceModified(ContentRef<Resource> resRef)
+		{
+			List<object> changedObj = null;
+
+			// If a pixmap has been modified, rebuild the tilesets that are based on it.
+			if (resRef.Is<Pixmap>())
+			{
+				ContentRef<Pixmap> pixRef = resRef.As<Pixmap>();
+				foreach (ContentRef<Tileset> tilesetRef in ContentProvider.GetLoadedContent<Tileset>())
+				{
+					Tileset tileset = tilesetRef.Res;
+
+					// Early-out, if the tileset is unavailable, or we didn't compile it yet anyway
+					if (tileset == null) continue;
+					if (!tileset.Compiled) continue;
+
+					// Determine whether this tileset uses the modified pixmap
+					bool usesModifiedPixmap = false;
+					foreach (TilesetRenderInput input in tileset.RenderConfig)
+					{
+						if (input.SourceData == pixRef)
+						{
+							usesModifiedPixmap = true;
+							break;
+						}
+					}
+					if (!usesModifiedPixmap) continue;
+
+					// Recompile the tileset
+					tileset.Compile();
+
+					if (changedObj == null) changedObj = new List<object>();
+					changedObj.Add(tilesetRef.Res);
+				}
+			}
+
+			// Notify a change that isn't critical regarding persistence (don't flag stuff unsaved)
+			if (changedObj != null)
+				DualityEditorApp.NotifyObjPropChanged(this, new ObjectSelection(changedObj as IEnumerable<object>), false);
 		}
 	}
 }
