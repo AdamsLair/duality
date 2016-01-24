@@ -56,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="Modules\TilemapSetupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilemapSetupDialog.Designer.cs">
+      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\SourcePaletteTilesetView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -125,6 +131,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Modules\TilemapSetupDialog.resx">
+      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Modules\TilemapToolSourcePalette.resx">
       <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
     </EmbeddedResource>
