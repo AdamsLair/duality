@@ -22,6 +22,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties
 		public static readonly Bitmap IconTileRect     = TilemapsRes.IconTileRect;
 		public static readonly Bitmap IconPick         = TilemapsRes.IconPick;
 		public static readonly Bitmap IconTilePalette  = TilemapsRes.IconTilePalette;
+		public static readonly Bitmap IconResize       = TilemapsRes.IconResize;
 		public static readonly Cursor CursorTileSelect = CursorHelper.ArrowAction;
 		public static readonly Cursor CursorTileBrush  = CursorHelper.CreateCursor(TilemapsRes.CursorTileBrush, 1, 13);
 		public static readonly Cursor CursorTileRect   = CursorHelper.CreateCursor(TilemapsRes.CursorTileRect, 0, 0);

@@ -12,6 +12,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public static class TilemapsEditorSelectionParser
 	{
+		public static IEnumerable<Tilemap> QuerySelectedTilemaps()
+		{
+			return
+				DualityEditorApp.Selection.Components.OfType<Tilemap>()
+				.Concat(DualityEditorApp.Selection.GameObjects.GetComponents<Tilemap>())
+				.Concat(DualityEditorApp.Selection.Components.OfType<TilemapRenderer>().Select(r => r.ExternalTilemap))
+				.Concat(DualityEditorApp.Selection.GameObjects.GetComponents<TilemapRenderer>().Select(r => r.ExternalTilemap))
+				.NotNull()
+				.Distinct();
+		}
 		public static Tilemap QuerySelectedTilemap()
 		{
 			return

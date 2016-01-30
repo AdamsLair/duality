@@ -61,6 +61,24 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opens a user dialog that allows to resize the selected Tilemaps..
+        /// </summary>
+        internal static string ActionDesc_ResizeTilemap {
+            get {
+                return ResourceManager.GetString("ActionDesc_ResizeTilemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resize Tilemap.
+        /// </summary>
+        internal static string ActionName_ResizeTilemap {
+            get {
+                return ResourceManager.GetString("ActionName_ResizeTilemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use the arrow keys to quickly change tilemap selection..
         /// </summary>
         internal static string CamView_Help_TilemapEditor_SelectTilemaps {
@@ -134,6 +152,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static System.Drawing.Bitmap IconPick {
             get {
                 object obj = ResourceManager.GetObject("IconPick", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconResize {
+            get {
+                object obj = ResourceManager.GetObject("IconResize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -258,6 +286,33 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string MenuItemName_TilePalette {
             get {
                 return ResourceManager.GetString("MenuItemName_TilePalette", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resizing the selected Tilemaps will preserve the part of their content that still fits the new size and origin..
+        /// </summary>
+        internal static string TilemapSetupHeader_ResizeMap {
+            get {
+                return ResourceManager.GetString("TilemapSetupHeader_ResizeMap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resize {0} Tilemaps.
+        /// </summary>
+        internal static string TilemapSetupHeader_ResizeMultipleTilemaps {
+            get {
+                return ResourceManager.GetString("TilemapSetupHeader_ResizeMultipleTilemaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resize &apos;{0}&apos;.
+        /// </summary>
+        internal static string TilemapSetupHeader_ResizeSingleTilemap {
+            get {
+                return ResourceManager.GetString("TilemapSetupHeader_ResizeSingleTilemap", resourceCulture);
             }
         }
         

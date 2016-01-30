@@ -24,6 +24,12 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 	/// </summary>
 	public class TilemapEditorCamViewState : CamViewState, ITilemapToolEnvironment
 	{
+		private struct TilemapActionEntry
+		{
+			public IEditorAction Action;
+			public ToolStripButton ToolButton;
+		}
+
 		private static readonly float           FillAnimDuration = 250.0f;
 		private static readonly Point2          InvalidTile      = new Point2(-1, -1);
 		private static Texture                  strippledLineTex = null;
@@ -32,6 +38,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private TilemapTool toolNone   = new NoTilemapTool();
 		private TilemapTool toolSelect = new SelectTilemapTool();
 
+		private List<TilemapActionEntry> actions     = new List<TilemapActionEntry>();
 		private List<TilemapTool> tools              = new List<TilemapTool>();
 		private TilemapTool       overrideTool       = null;
 		private TilemapTool       selectedTool       = null;
@@ -69,7 +76,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			set
 			{
 				this.selectedTool = value;
-				this.UpdateToolbar();
+				this.UpdateTilemapToolButtons();
 
 				// Invalidate cursor state 
 				this.OnMouseLeave(EventArgs.Empty);
@@ -82,7 +89,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			set
 			{
 				this.overrideTool = value;
-				this.UpdateToolbar();
+				this.UpdateTilemapToolButtons();
 
 				// Invalidate cursor state 
 				this.OnMouseLeave(EventArgs.Empty);
@@ -128,11 +135,24 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		private IEnumerable<TilemapRenderer> QueryVisibleTilemapRenderers()
 		{
-			var all = Scene.Current.FindComponents<TilemapRenderer>();
-			return all.Where(r => 
+			return Scene.Current.FindComponents<TilemapRenderer>().Where(r => 
 				r.Active && 
 				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
 				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
+		}
+		private IEnumerable<Tilemap> QueryTilemapsInScene()
+		{
+			return Scene.Current.FindComponents<TilemapRenderer>()
+				.Select(r => r.ActiveTilemap)
+				.Where(t => t != null && t.Active && !DesignTimeObjectData.Get(t.GameObj).IsHidden)
+				.Distinct();
+		}
+		private IEnumerable<Tilemap> QueryActionTilemaps()
+		{
+			if (this.selectedTilemap != null)
+				return TilemapsEditorSelectionParser.QuerySelectedTilemaps();
+			else
+				return this.QueryTilemapsInScene();
 		}
 		private Point2 GetTileAtLocalPos(TilemapRenderer renderer, Point localPos, TilemapRenderer.TilePickMode pickMode)
 		{
@@ -204,12 +224,21 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			return mapping;
 		}
 
-		private void UpdateToolbar()
+		private void UpdateTilemapToolButtons()
 		{
 			foreach (TilemapTool tool in this.tools)
 			{
 				if (tool.ToolButton == null) continue;
 				tool.ToolButton.Checked = (this.selectedTool == tool);
+			}
+		}
+		private void UpdateActionToolButtons()
+		{
+			Tilemap[] actionTilemaps = this.QueryActionTilemaps().ToArray();
+			foreach (TilemapActionEntry entry in this.actions)
+			{
+				if (entry.ToolButton == null) continue;
+				entry.ToolButton.Visible = entry.Action.CanPerformOn(actionTilemaps);
 			}
 		}
 		private void UpdateCursor()
@@ -424,6 +453,23 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			base.OnEnterState();
 
+			// Init the available editor actions, if not done before
+			if (this.actions.Count == 0)
+			{
+				IEditorAction[] editorActions = DualityEditorApp.GetEditorActions(
+					typeof(Tilemap), 
+					Enumerable.Empty<object>(), 
+					TilemapsEditorPlugin.ActionTilemapEditor)
+					.ToArray();
+				foreach (IEditorAction action in editorActions)
+				{
+					this.actions.Add(new TilemapActionEntry
+					{
+						Action = action,
+					});
+				}
+			}
+
 			// Init the available toolset, if not done before
 			if (this.tools.Count == 0)
 			{
@@ -473,6 +519,26 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					tool.ToolButton.AutoToolTip = true;
 					this.toolstrip.Items.Add(tool.ToolButton);
 				}
+				for (int i = 0; i < this.actions.Count; i++)
+				{
+					TilemapActionEntry entry = this.actions[i];
+
+					ToolStripButton button = new ToolStripButton(entry.Action.Name, entry.Action.Icon);
+					button.DisplayStyle = ToolStripItemDisplayStyle.Image;
+					button.AutoToolTip = true;
+					button.Alignment = ToolStripItemAlignment.Right;
+					button.Click += this.actionToolButton_Click;
+
+					string desc = entry.Action.Description;
+					if (!string.IsNullOrEmpty(desc))
+					{
+						button.Tag = HelpInfo.FromText(entry.Action.Name, desc);
+					}
+
+					entry.ToolButton = button;
+					this.toolstrip.Items.Add(button);
+					this.actions[i] = entry;
+				}
 
 				this.View.Controls.Add(this.toolstrip);
 				this.View.Controls.SetChildIndex(this.toolstrip, this.View.Controls.IndexOf(this.View.ToolbarCamera));
@@ -487,7 +553,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
 
 			// Initial update
-			this.UpdateToolbar();
+			this.UpdateTilemapToolButtons();
 
 			// Make sure the tile palette is up and running
 			TilemapsEditorPlugin.Instance.PushTilePalette();
@@ -501,6 +567,17 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				foreach (TilemapTool tool in this.tools)
 				{
 					tool.DisposeToolButton();
+				}
+				for (int i = 0; i < this.actions.Count; i++)
+				{
+					TilemapActionEntry entry = this.actions[i];
+					if (entry.ToolButton != null)
+					{
+						entry.ToolButton.Click -= this.actionToolButton_Click;
+						entry.ToolButton.Dispose();
+						entry.ToolButton = null;
+					}
+					this.actions[i] = entry;
 				}
 				this.toolstrip.Dispose();
 				this.toolstrip = null;
@@ -790,6 +867,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				if (this.Mouseover)
 					this.OnMouseMove();
 				this.Invalidate();
+				this.UpdateActionToolButtons();
 			}
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
@@ -824,6 +902,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.solidTileCache.Count > 0 && e.Content.Res is Tileset)
 			{
 				this.solidTileCache.Remove(e.Content.Res as Tileset);
+			}
+		}
+		private void actionToolButton_Click(object sender, EventArgs e)
+		{
+			TilemapActionEntry clickedEntry = this.actions.FirstOrDefault(entry => entry.ToolButton == sender);
+			if (clickedEntry.Action != null)
+			{
+				Tilemap[] actionTilemaps = this.QueryActionTilemaps().ToArray();
+				clickedEntry.Action.Perform(actionTilemaps);
 			}
 		}
 

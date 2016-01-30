@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="EditorActions\OpenTilemapResizeDialog.cs" />
     <Compile Include="Modules\TilemapSetupDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,7 +92,7 @@
     <Compile Include="CamViewStates\TilemapTools\BrushTilemapTool.cs" />
     <Compile Include="CamViewStates\TilemapTools\NoTilemapTool.cs" />
     <Compile Include="CamViewStates\TilemapTools\ITilemapToolEnvironment.cs" />
-    <Compile Include="CamViewStates\TilemapTools\TilemapTool.cs" />
+    <Compile Include="CamViewStates\TilemapTool.cs" />
     <Compile Include="CamViewStates\TilemapEditorCamViewState.cs" />
     <Compile Include="EditorPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -171,6 +172,7 @@
     <None Include="EmbeddedResources\CursorTileRect.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="EmbeddedResources\IconResize.png" />
     <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
     <None Include="EmbeddedResources\IconTilePalette.png" />
     <None Include="EmbeddedResources\CursorPick.png" />

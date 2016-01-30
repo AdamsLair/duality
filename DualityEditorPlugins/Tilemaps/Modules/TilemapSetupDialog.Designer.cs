@@ -33,17 +33,17 @@
 			this.buttonCancel = new System.Windows.Forms.Button();
 			this.originSelector = new AdamsLair.WinForms.OriginSelector();
 			this.groupBoxSize = new System.Windows.Forms.GroupBox();
-			this.labelHeader = new System.Windows.Forms.Label();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.labelWidth = new System.Windows.Forms.Label();
-			this.labelHeight = new System.Windows.Forms.Label();
-			this.editorWidth = new System.Windows.Forms.NumericUpDown();
+			this.tableLayoutMapSize = new System.Windows.Forms.TableLayoutPanel();
 			this.editorHeight = new System.Windows.Forms.NumericUpDown();
+			this.labelHeight = new System.Windows.Forms.Label();
+			this.labelWidth = new System.Windows.Forms.Label();
+			this.editorWidth = new System.Windows.Forms.NumericUpDown();
+			this.labelHeader = new System.Windows.Forms.Label();
 			this.panelBottomBack.SuspendLayout();
 			this.groupBoxSize.SuspendLayout();
-			this.tableLayoutPanel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.editorWidth)).BeginInit();
+			this.tableLayoutMapSize.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.editorHeight)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.editorWidth)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// panelBottomBack
@@ -54,7 +54,7 @@
 			this.panelBottomBack.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panelBottomBack.Controls.Add(this.buttonOk);
 			this.panelBottomBack.Controls.Add(this.buttonCancel);
-			this.panelBottomBack.Location = new System.Drawing.Point(-1, 161);
+			this.panelBottomBack.Location = new System.Drawing.Point(-1, 183);
 			this.panelBottomBack.Name = "panelBottomBack";
 			this.panelBottomBack.Size = new System.Drawing.Size(268, 58);
 			this.panelBottomBack.TabIndex = 6;
@@ -68,6 +68,7 @@
 			this.buttonOk.TabIndex = 3;
 			this.buttonOk.Text = "Ok";
 			this.buttonOk.UseVisualStyleBackColor = true;
+			this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
 			// 
 			// buttonCancel
 			// 
@@ -84,66 +85,53 @@
 			// 
 			this.originSelector.Location = new System.Drawing.Point(6, 19);
 			this.originSelector.Name = "originSelector";
-			this.originSelector.Size = new System.Drawing.Size(76, 76);
+			this.originSelector.SelectedOrigin = AdamsLair.WinForms.OriginSelector.Origin.Center;
+			this.originSelector.Size = new System.Drawing.Size(82, 82);
 			this.originSelector.TabIndex = 7;
-			this.originSelector.Text = "button1";
 			// 
 			// groupBoxSize
 			// 
 			this.groupBoxSize.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBoxSize.Controls.Add(this.tableLayoutPanel1);
+			this.groupBoxSize.Controls.Add(this.tableLayoutMapSize);
 			this.groupBoxSize.Controls.Add(this.originSelector);
-			this.groupBoxSize.Location = new System.Drawing.Point(12, 42);
+			this.groupBoxSize.Location = new System.Drawing.Point(12, 60);
 			this.groupBoxSize.Name = "groupBoxSize";
-			this.groupBoxSize.Size = new System.Drawing.Size(240, 104);
+			this.groupBoxSize.Size = new System.Drawing.Size(240, 108);
 			this.groupBoxSize.TabIndex = 8;
 			this.groupBoxSize.TabStop = false;
 			this.groupBoxSize.Text = "Map Size";
 			// 
-			// labelHeader
+			// tableLayoutMapSize
 			// 
-			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelHeader.Location = new System.Drawing.Point(12, 9);
-			this.labelHeader.Name = "labelHeader";
-			this.labelHeader.Size = new System.Drawing.Size(240, 30);
-			this.labelHeader.TabIndex = 9;
-			this.labelHeader.Text = "ToDo: Some Header Text";
-			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+			this.tableLayoutMapSize.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.tableLayoutPanel1.ColumnCount = 2;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Controls.Add(this.editorHeight, 1, 1);
-			this.tableLayoutPanel1.Controls.Add(this.labelHeight, 0, 1);
-			this.tableLayoutPanel1.Controls.Add(this.labelWidth, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.editorWidth, 1, 0);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(88, 19);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 3;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(146, 79);
-			this.tableLayoutPanel1.TabIndex = 8;
+			this.tableLayoutMapSize.ColumnCount = 2;
+			this.tableLayoutMapSize.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutMapSize.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutMapSize.Controls.Add(this.editorHeight, 1, 1);
+			this.tableLayoutMapSize.Controls.Add(this.labelHeight, 0, 1);
+			this.tableLayoutMapSize.Controls.Add(this.labelWidth, 0, 0);
+			this.tableLayoutMapSize.Controls.Add(this.editorWidth, 1, 0);
+			this.tableLayoutMapSize.Location = new System.Drawing.Point(94, 19);
+			this.tableLayoutMapSize.Name = "tableLayoutMapSize";
+			this.tableLayoutMapSize.RowCount = 3;
+			this.tableLayoutMapSize.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutMapSize.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tableLayoutMapSize.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutMapSize.Size = new System.Drawing.Size(140, 83);
+			this.tableLayoutMapSize.TabIndex = 8;
 			// 
-			// labelWidth
+			// editorHeight
 			// 
-			this.labelWidth.AutoSize = true;
-			this.labelWidth.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.labelWidth.Location = new System.Drawing.Point(0, 0);
-			this.labelWidth.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
-			this.labelWidth.Name = "labelWidth";
-			this.labelWidth.Size = new System.Drawing.Size(41, 23);
-			this.labelWidth.TabIndex = 0;
-			this.labelWidth.Text = "Width:";
-			this.labelWidth.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.editorHeight.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.editorHeight.Location = new System.Drawing.Point(44, 26);
+			this.editorHeight.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.editorHeight.Name = "editorHeight";
+			this.editorHeight.Size = new System.Drawing.Size(96, 20);
+			this.editorHeight.TabIndex = 3;
 			// 
 			// labelHeight
 			// 
@@ -157,37 +145,52 @@
 			this.labelHeight.Text = "Height:";
 			this.labelHeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// labelWidth
+			// 
+			this.labelWidth.AutoSize = true;
+			this.labelWidth.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelWidth.Location = new System.Drawing.Point(0, 0);
+			this.labelWidth.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+			this.labelWidth.Name = "labelWidth";
+			this.labelWidth.Size = new System.Drawing.Size(41, 23);
+			this.labelWidth.TabIndex = 0;
+			this.labelWidth.Text = "Width:";
+			this.labelWidth.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
 			// editorWidth
 			// 
 			this.editorWidth.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.editorWidth.Location = new System.Drawing.Point(44, 3);
 			this.editorWidth.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
 			this.editorWidth.Name = "editorWidth";
-			this.editorWidth.Size = new System.Drawing.Size(102, 20);
+			this.editorWidth.Size = new System.Drawing.Size(96, 20);
 			this.editorWidth.TabIndex = 2;
 			// 
-			// editorHeight
+			// labelHeader
 			// 
-			this.editorHeight.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.editorHeight.Location = new System.Drawing.Point(44, 26);
-			this.editorHeight.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
-			this.editorHeight.Name = "editorHeight";
-			this.editorHeight.Size = new System.Drawing.Size(102, 20);
-			this.editorHeight.TabIndex = 3;
+			this.labelHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelHeader.AutoEllipsis = true;
+			this.labelHeader.Location = new System.Drawing.Point(12, 9);
+			this.labelHeader.Name = "labelHeader";
+			this.labelHeader.Size = new System.Drawing.Size(240, 48);
+			this.labelHeader.TabIndex = 9;
 			// 
 			// TilemapSetupDialog
 			// 
+			this.AcceptButton = this.buttonOk;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
-			this.ClientSize = new System.Drawing.Size(264, 201);
+			this.CancelButton = this.buttonCancel;
+			this.ClientSize = new System.Drawing.Size(264, 223);
 			this.Controls.Add(this.labelHeader);
 			this.Controls.Add(this.groupBoxSize);
 			this.Controls.Add(this.panelBottomBack);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(280, 240);
+			this.MinimumSize = new System.Drawing.Size(280, 260);
 			this.Name = "TilemapSetupDialog";
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
@@ -195,10 +198,10 @@
 			this.Text = "Tilemap Setup";
 			this.panelBottomBack.ResumeLayout(false);
 			this.groupBoxSize.ResumeLayout(false);
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.tableLayoutPanel1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.editorWidth)).EndInit();
+			this.tableLayoutMapSize.ResumeLayout(false);
+			this.tableLayoutMapSize.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.editorHeight)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.editorWidth)).EndInit();
 			this.ResumeLayout(false);
 
 		}
@@ -210,7 +213,7 @@
 		private System.Windows.Forms.Button buttonCancel;
 		private AdamsLair.WinForms.OriginSelector originSelector;
 		private System.Windows.Forms.GroupBox groupBoxSize;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutMapSize;
 		private System.Windows.Forms.NumericUpDown editorHeight;
 		private System.Windows.Forms.Label labelHeight;
 		private System.Windows.Forms.Label labelWidth;
