@@ -38,7 +38,7 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 		}
 		public override bool MatchesContext(string context)
 		{
-			return base.MatchesContext(context) || context == TilemapsEditorPlugin.ActionTilemapEditor;
+			return context == TilemapsEditorPlugin.ActionTilemapEditor;
 		}
 	}
 }

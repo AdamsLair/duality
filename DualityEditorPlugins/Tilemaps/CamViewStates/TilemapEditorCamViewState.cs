@@ -524,7 +524,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					TilemapActionEntry entry = this.actions[i];
 
 					ToolStripButton button = new ToolStripButton(entry.Action.Name, entry.Action.Icon);
-					button.DisplayStyle = ToolStripItemDisplayStyle.Image;
+					button.DisplayStyle = (button.Image != null) ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text;
 					button.AutoToolTip = true;
 					button.Alignment = ToolStripItemAlignment.Right;
 					button.Click += this.actionToolButton_Click;
