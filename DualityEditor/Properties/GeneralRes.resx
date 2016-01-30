@@ -574,4 +574,7 @@
   <data name="MenuItemInfo_ToggleBackups" xml:space="preserve">
     <value>If active, Duality will backup each file before saving it.</value>
   </data>
+  <data name="EditorApplicationTitle" xml:space="preserve">
+    <value>Dualitor</value>
+  </data>
 </root>

@@ -243,6 +243,15 @@ namespace Duality.Editor.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dualitor.
+        /// </summary>
+        public static string EditorApplicationTitle {
+            get {
+                return ResourceManager.GetString("EditorApplicationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to using System;
         ///using System.Collections.Generic;
         ///using System.Linq;

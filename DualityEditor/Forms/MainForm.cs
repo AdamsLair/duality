@@ -64,6 +64,7 @@ namespace Duality.Editor.Forms
 			this.menuAutosave.DropDown.Closing += this.menuAutosave_Closing;
 
 			this.InitMenus();
+			this.UpdateWindowTitle();
 			this.UpdateLaunchAppActions();
 		}
 		private void ApplyDockPanelSkin()
@@ -351,6 +352,15 @@ namespace Duality.Editor.Forms
 			this.actionPauseSandbox.Tag = HelpInfo.FromText(this.actionPauseSandbox.Text, GeneralRes.MenuItemInfo_SandboxPause);
 			this.actionStopSandbox.Tag = HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop);
 			this.checkBackups.Tag = HelpInfo.FromText(this.checkBackups.Text, GeneralRes.MenuItemInfo_ToggleBackups);
+		}
+		private void UpdateWindowTitle()
+		{
+			string editorName = GeneralRes.EditorApplicationTitle;
+			string projectName = EditorHelper.CurrentProjectName;
+			if (string.Equals(projectName, editorName, StringComparison.InvariantCultureIgnoreCase))
+				this.Text = editorName;
+			else
+				this.Text = string.Format("{0} ({1})", editorName, projectName);
 		}
 		private void UpdateSerializerMenu()
 		{

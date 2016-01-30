@@ -281,6 +281,18 @@ namespace Duality.Editor
 			
 			return result;
 		}
+		public static Control GetFocusedControl()
+		{
+			IntPtr nativeFocusControl = NativeMethods.GetFocus();
+
+			// Early-out if nothing is focused
+			if (nativeFocusControl == IntPtr.Zero)
+				return null;
+
+			// Retrieve the managed Control reference and return it
+			Control focusControl = Control.FromHandle(nativeFocusControl);
+			return focusControl;
+		}
 
 		private class ImageOverlaySet
 		{

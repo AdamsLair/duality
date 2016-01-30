@@ -4,8 +4,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 
-using WeifenLuo.WinFormsUI.Docking;
-
 using AdamsLair.WinForms.ItemModels;
 
 using Duality;
