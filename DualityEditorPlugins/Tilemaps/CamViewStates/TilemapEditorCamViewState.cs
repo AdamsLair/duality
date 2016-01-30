@@ -457,9 +457,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (this.actions.Count == 0)
 			{
 				IEditorAction[] editorActions = DualityEditorApp.GetEditorActions(
-					typeof(Tilemap), 
-					Enumerable.Empty<object>(), 
-					TilemapsEditorPlugin.ActionTilemapEditor)
+					typeof(Tilemap), null, TilemapsEditorPlugin.ActionTilemapEditor)
 					.ToArray();
 				foreach (IEditorAction action in editorActions)
 				{
@@ -551,9 +549,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
 			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
+			Scene.Entered += this.Scene_Entered;
 
 			// Initial update
 			this.UpdateTilemapToolButtons();
+			this.UpdateActionToolButtons();
 
 			// Make sure the tile palette is up and running
 			TilemapsEditorPlugin.Instance.PushTilePalette();
@@ -588,6 +588,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine -= this.DualityEditorApp_UpdatingEngine;
 			Resource.ResourceDisposing -= this.Resource_ResourceDisposing;
+			Scene.Entered -= this.Scene_Entered;
 
 			// Reset state
 			this.Cursor = CursorHelper.Arrow;
@@ -903,6 +904,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			{
 				this.solidTileCache.Remove(e.Content.Res as Tileset);
 			}
+		}
+		private void Scene_Entered(object sender, EventArgs e)
+		{
+			this.UpdateActionToolButtons();
 		}
 		private void actionToolButton_Click(object sender, EventArgs e)
 		{

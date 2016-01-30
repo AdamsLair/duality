@@ -40,5 +40,9 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 		{
 			return context == TilemapsEditorPlugin.ActionTilemapEditor;
 		}
+		public override bool CanPerformOn(IEnumerable<Tilemap> objEnum)
+		{
+			return base.CanPerformOn(objEnum) && objEnum.Any();
+		}
 	}
 }
