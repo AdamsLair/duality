@@ -266,6 +266,7 @@ namespace Duality.Editor
 				IEditorAction action = actionType.CreateInstanceOf() as IEditorAction;
 				if (action != null) editorActions.Add(action);
 			}
+			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
 
 			// If there are no Scenes in the current project, init the first one with some default objects.
 			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.GetFileExtByType<Scene>(), SearchOption.AllDirectories).Any())
@@ -442,12 +443,34 @@ namespace Duality.Editor
 
 			return availTypes;
 		}
+		/// <summary>
+		/// Enumerates editor user actions that can be applied to objects of the specified type.
+		/// A typical usage example for this are context menus that are populated dynamically
+		/// based on the selected object and the available editor plugin capabilities.
+		/// </summary>
+		/// <param name="subjectType">The type ob the object the action operates on.</param>
+		/// <param name="objects">
+		/// The set of objects the action will be applied on, which is used to
+		/// determine whether or not a given action can operate on the specific set of objects. If this is null, 
+		/// no such check is performed and all editor actions that match the other criteria are returned.
+		/// </param>
+		/// <param name="context">The context in which this action is performed.</param>
+		/// <returns></returns>
 		public static IEnumerable<IEditorAction> GetEditorActions(Type subjectType, IEnumerable<object> objects, string context = ActionContextMenu)
 		{
-			return editorActions.Where(a => 
-				a.SubjectType.IsAssignableFrom(subjectType) && 
-				a.MatchesContext(context) && 
-				a.CanPerformOn(objects));
+			if (objects != null)
+			{
+				return editorActions.Where(a => 
+					a.SubjectType.IsAssignableFrom(subjectType) && 
+					a.MatchesContext(context) && 
+					a.CanPerformOn(objects));
+			}
+			else
+			{
+				return editorActions.Where(a => 
+					a.SubjectType.IsAssignableFrom(subjectType) && 
+					a.MatchesContext(context));
+			}
 		}
 
 		private static void SaveUserData()

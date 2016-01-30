@@ -23,6 +23,10 @@ namespace Duality.Editor
 		{
 			get { return typeof(T); }
 		}
+		public virtual int Priority
+		{
+			get { return 0; }
+		}
 
 		public void Perform(T obj)
 		{
