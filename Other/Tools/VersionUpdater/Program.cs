@@ -247,7 +247,8 @@ namespace VersionUpdater
 
 			// Perform a git commit with an auto-generated message
 			{
-				string commitMsgFile = "PackageUpdateCommitMsg.txt";
+				string commitMsgFileName = "PackageUpdateCommitMsg.txt";
+				string commitMsgFilePath = Path.GetFullPath(Path.Combine(solutionDir, commitMsgFileName));
 
 				// Build the commit message
 				StringBuilder messageBuilder = new StringBuilder();
@@ -262,14 +263,34 @@ namespace VersionUpdater
 					messageBuilder.AppendFormat(PackageUpdateCommitMessage, changeInfo.Project.NuSpecPackageId, versionString);
 					messageBuilder.AppendLine();
 				}
-				File.WriteAllText(commitMsgFile, messageBuilder.ToString());
+				File.WriteAllText(commitMsgFilePath, messageBuilder.ToString());
+
+				// Stage all files in git
+				{
+					ProcessStartInfo gitStartInfo = new ProcessStartInfo
+					{
+						FileName = gitPath,
+						WorkingDirectory = solutionDir,
+						Arguments = "add -A"
+					};
+					Process gitProc = Process.Start(gitStartInfo);
+					gitProc.WaitForExit();
+				}
 
 				// Execute a git commit
-				Process gitProc = Process.Start(gitPath, "commit -F " + commitMsgFile);
-				gitProc.WaitForExit();
+				{
+					ProcessStartInfo gitStartInfo = new ProcessStartInfo
+					{
+						FileName = gitPath,
+						WorkingDirectory = solutionDir,
+						Arguments = "commit -F " + commitMsgFileName
+					};
+					Process gitProc = Process.Start(gitStartInfo);
+					gitProc.WaitForExit();
+				}
 
 				// Remove our temporary commit message file
-				File.Delete(commitMsgFile);
+				//File.Delete(commitMsgFilePath);
 			}
 
 			Console.WriteLine();
