@@ -13,6 +13,10 @@ namespace VersionUpdater
 {
 	public class Program
 	{
+		private static readonly string PackageUpdateCommitTitle = "Package Update";
+		private static readonly string PackageUpdateCommitMessageBegin = "#CHANGE: Updated Package Specs to ";
+		private static readonly string PackageUpdateCommitMessage = PackageUpdateCommitMessageBegin + "{0} {1}";
+
 		private class ProjectInfo
 		{
 			public string ProjectFilePath;
@@ -236,6 +240,39 @@ namespace VersionUpdater
 			}
 
 			Console.WriteLine();
+			Console.ForegroundColor = ConsoleColor.White;
+			Console.WriteLine("Performing Git Commit...");
+			Console.ResetColor();
+			Console.WriteLine();
+
+			// Perform a git commit with an auto-generated message
+			{
+				string commitMsgFile = "PackageUpdateCommitMsg.txt";
+
+				// Build the commit message
+				StringBuilder messageBuilder = new StringBuilder();
+				messageBuilder.AppendLine(PackageUpdateCommitTitle);
+				foreach (ProjectChangeInfo changeInfo in changes)
+				{
+					if (changeInfo.UpdateMode == UpdateMode.None) continue;
+					string versionString = string.Format("{0}.{1}.{2}", 
+						changeInfo.Project.NuSpecVersion.Major,
+						changeInfo.Project.NuSpecVersion.Minor,
+						changeInfo.Project.NuSpecVersion.Build);
+					messageBuilder.AppendFormat(PackageUpdateCommitMessage, changeInfo.Project.NuSpecPackageId, versionString);
+					messageBuilder.AppendLine();
+				}
+				File.WriteAllText(commitMsgFile, messageBuilder.ToString());
+
+				// Execute a git commit
+				Process gitProc = Process.Start(gitPath, "commit -F " + commitMsgFile);
+				gitProc.WaitForExit();
+
+				// Remove our temporary commit message file
+				File.Delete(commitMsgFile);
+			}
+
+			Console.WriteLine();
 			Console.WriteLine();
 			Console.WriteLine("All done!");
 			Console.ReadLine();
@@ -396,8 +433,8 @@ namespace VersionUpdater
 						string commitMessage = "#" + string.Join(Environment.NewLine + "#", commitMessageToken, 1, commitMessageToken.Length - 1);
 
 						// Stop reading as soon as we see a package update commit
-						if (string.Equals(commitTitle, "Package Update", StringComparison.InvariantCultureIgnoreCase) &&
-							commitMessage.IndexOf("#CHANGE: Updated Package Specs", StringComparison.InvariantCultureIgnoreCase) >= 0)
+						if (string.Equals(commitTitle, PackageUpdateCommitTitle, StringComparison.InvariantCultureIgnoreCase) &&
+							commitMessage.IndexOf(PackageUpdateCommitMessageBegin, StringComparison.InvariantCultureIgnoreCase) >= 0)
 						{
 							gitProc.CancelOutputRead();
 							gitProc.Kill();
