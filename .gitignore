@@ -248,3 +248,6 @@ SampleProjects/ParticleSystem/Content/logfile.txt
 SampleProjects/ParticleSystem/Content/perflog.txt
 SampleProjects/ParticleSystem/ParticleSystem.core.xml
 SampleProjects/FlapOrDie/Content/high.score
+Other/Tools/VersionUpdater/obj/
+Other/Scripts/bin/VersionUpdater.vshost.exe
+Other/Scripts/bin/VersionUpdater.vshost.exe.config

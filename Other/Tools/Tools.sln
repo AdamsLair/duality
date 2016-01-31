@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NightlyBuilder", "NightlyBuilder\NightlyBuilder.csproj", "{27AFF1FF-53D5-47C7-8CD5-7AAEA93F470E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionUpdater", "VersionUpdater\VersionUpdater.csproj", "{013AC6D1-F420-4039-A6AC-8AEF177601FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{27AFF1FF-53D5-47C7-8CD5-7AAEA93F470E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27AFF1FF-53D5-47C7-8CD5-7AAEA93F470E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27AFF1FF-53D5-47C7-8CD5-7AAEA93F470E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{013AC6D1-F420-4039-A6AC-8AEF177601FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{013AC6D1-F420-4039-A6AC-8AEF177601FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{013AC6D1-F420-4039-A6AC-8AEF177601FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{013AC6D1-F420-4039-A6AC-8AEF177601FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
