@@ -190,7 +190,7 @@ namespace VersionUpdater
 
 						line = 
 							line.Substring(0, beginIndex) + 
-							"(\"" + versionString + ")\"" +
+							"(\"" + versionString + "\")" +
 							line.Substring(endIndex + 1, line.Length - endIndex - 1);
 						assemblyInfoLines[i] = line;
 					}
