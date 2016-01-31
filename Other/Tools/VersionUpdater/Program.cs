@@ -192,6 +192,7 @@ namespace VersionUpdater
 							line.Substring(0, beginIndex) + 
 							versionString +
 							line.Substring(endIndex + 1, line.Length - endIndex - 1);
+						assemblyInfoLines[i] = line;
 					}
 					File.WriteAllLines(changeInfo.Project.AssemblyInfoFilePath, assemblyInfoLines);
 				}
