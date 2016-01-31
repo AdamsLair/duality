@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
     <version>2.2.0</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Camera View</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/CameraView.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/CameraView.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>A basic Camera View editor module.</summary>
+    <summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
-	<tags>Duality Editor Plugin CamView</tags>
-	<releaseNotes>HelpSystem, Bugfixes
+    <tags>Duality Editor Plugin CamView</tags>
+    <releaseNotes>HelpSystem, Bugfixes
 #ADD: Added a one-pixel border to the CamView, which indicates its focus state.
 #CHANGE: The CamView now uses XML docs to display information about CamViewStates.
 #FIX: The state selector combobox now has help system priority over tool buttons while opened.

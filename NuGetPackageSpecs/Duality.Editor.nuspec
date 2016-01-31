@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
     <version>2.2.1</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>The Duality editor.</summary>
+    <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
-	<tags>Duality Editor</tags>
-	<releaseNotes>Bugfixes
+    <tags>Duality Editor</tags>
+    <releaseNotes>Bugfixes
 #ADD: The editor now displays the current project name in its main window's title bar.
 #CHANGE: Updated dependency TreeViewAdv from version 1.7.4 to version 1.7.5
 #FIX: Fixed a bug where losing focus while editing the name of a Resource or GameObject in Scene View or Project View would lead to not being able to open up the context menu again until performing a subsequent editing operation using the F2 hotkey.</releaseNotes>

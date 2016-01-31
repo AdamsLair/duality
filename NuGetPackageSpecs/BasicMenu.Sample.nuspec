@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality.Samples.BasicMenu</id>
     <version>2.0.1</version>
-	<authors>Pilati Alessandro</authors>
-	<owners>Pilati Alessandro</owners>
+    <authors>Pilati Alessandro</authors>
+    <owners>Pilati Alessandro</owners>
     <title>Basic Menu Sample</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/BasicMenuSample.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/BasicMenuSample.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>Demonstrates a GameObject-based way to create a game menu.</summary>
+    <summary>Demonstrates a GameObject-based way to create a game menu.</summary>
     <description>This package contains an object-based game menu sample with a custom Font, multiple menu pages and simple color animations.</description>
-	<tags>Duality Sample Plugin Menu</tags>
-	<releaseNotes>Tweaks
+    <tags>Duality Sample Plugin Menu</tags>
+    <releaseNotes>Tweaks
 #CHANGE: Added a mouse cursor renderer, in case the sample is run without the system cursor being visible.
 #CHANGE: Removed the beeping sound when clicking / hovering buttons, as it doesn't match their smooth animation.</releaseNotes>
     <dependencies>

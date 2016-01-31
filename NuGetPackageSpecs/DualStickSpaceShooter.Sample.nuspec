@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality.Samples.DualStickSpaceShooter</id>
     <version>2.0.1</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Dual Stick Space Shooter Sample</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Game.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Game.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>A small dual stick space shooter made with Duality.</summary>
+    <summary>A small dual stick space shooter made with Duality.</summary>
     <description>This package contains a small coop game for one to two players, controlled with mouse / keyboard and gamepads. Recommended to play with stereo audio at full volume.</description>
-	<tags>Duality Sample Plugin Game Multiplayer Coop Shooter Topdown Minimalistic</tags>
-	<releaseNotes>Performance Optimizations
+    <tags>Duality Sample Plugin Game Multiplayer Coop Shooter Topdown Minimalistic</tags>
+    <releaseNotes>Performance Optimizations
 #CHANGE: The Ship Component no longer applies zero-length forces and angular velocities to its RigidBody, preventing it from sleeping.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.0.3" />

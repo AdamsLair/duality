@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.ProjectView</id>
     <version>2.0.3</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Project View</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/ProjectView.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/ProjectView.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>Provides an overview of project Resources and allows importing new Assets.</summary>
+    <summary>Provides an overview of project Resources and allows importing new Assets.</summary>
     <description>Provides an overview of project Resources and allows importing new Assets.</description>
-	<tags>Duality Editor Plugin ProjectView</tags>
-	<releaseNotes></releaseNotes>
+    <tags>Duality Editor Plugin ProjectView</tags>
+    <releaseNotes></releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.2.0" />
       <dependency id="AdamsLair.Duality.Editor" version="2.2.1" />
