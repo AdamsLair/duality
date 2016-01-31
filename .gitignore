@@ -1,4 +1,5 @@
 *.suo
+PackageUpdateCommitMsg.txt
 Duality/Duality.xml
 Duality/bin/
 Duality/obj/
