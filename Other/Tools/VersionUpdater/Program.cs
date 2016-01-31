@@ -121,6 +121,48 @@ namespace VersionUpdater
 			Console.WriteLine("Git executable path: '{0}'", gitPath);
 			Console.WriteLine();
 
+			// Check if there are any local changes in the git repo
+			{
+				bool anyModifiedFiles = false;
+				ProcessStartInfo gitStartInfo = new ProcessStartInfo
+				{
+					FileName = gitPath,
+					WorkingDirectory = solutionDir,
+					Arguments = "--no-pager ls-files -m",
+					UseShellExecute = false,
+					RedirectStandardOutput = true,
+					CreateNoWindow = true,
+					WindowStyle = ProcessWindowStyle.Hidden
+				};
+				Process gitProc = new Process();
+				gitProc.StartInfo = gitStartInfo;
+				gitProc.OutputDataReceived += delegate (object sender, DataReceivedEventArgs e)
+				{
+					// If we receive any non-empty lines, those are modified files
+					if (!string.IsNullOrEmpty(e.Data))
+					{
+						anyModifiedFiles = true;
+						gitProc.CancelOutputRead();
+						if (!gitProc.HasExited)
+							gitProc.Kill();
+						return;
+					}
+				};
+				gitProc.Start();
+				gitProc.BeginOutputReadLine();
+				gitProc.WaitForExit();
+
+				if (anyModifiedFiles)
+				{
+					Console.WriteLine();
+					Console.ForegroundColor = ConsoleColor.Yellow;
+					Console.WriteLine("  There are modified files in your local git repository. Please make sure to start the version updater tool only with a clean working copy and no staged files.");
+					Console.ResetColor();
+					Console.WriteLine();
+					return;
+				}
+			}
+
 			// Retrieve information about all project files and their nuspec associations
 			allProjects = ParseProjectInfo(config);
 
@@ -170,10 +212,12 @@ namespace VersionUpdater
 			// Apply the specified update modes to the version numbers of each project
 			UpdateVersionNumbers(config, changes);
 
+			// Remove change entries without an update
+			changes.RemoveAll(c => c.UpdateMode == UpdateMode.None);
+
 			// Apply version numbers and change logs to nuspecs and projects
 			foreach (ProjectChangeInfo changeInfo in changes)
 			{
-				if (changeInfo.UpdateMode == UpdateMode.None) continue;
 				string versionString = string.Format("{0}.{1}.{2}", 
 					changeInfo.Project.NuSpecVersion.Major,
 					changeInfo.Project.NuSpecVersion.Minor,
@@ -239,14 +283,15 @@ namespace VersionUpdater
 				}
 			}
 
-			Console.WriteLine();
-			Console.ForegroundColor = ConsoleColor.White;
-			Console.WriteLine("Performing Git Commit...");
-			Console.ResetColor();
-			Console.WriteLine();
-
 			// Perform a git commit with an auto-generated message
+			if (changes.Count > 0)
 			{
+				Console.WriteLine();
+				Console.ForegroundColor = ConsoleColor.White;
+				Console.WriteLine("Performing Git Commit...");
+				Console.ResetColor();
+				Console.WriteLine();
+
 				string commitMsgFileName = "PackageUpdateCommitMsg.txt";
 				string commitMsgFilePath = Path.GetFullPath(Path.Combine(solutionDir, commitMsgFileName));
 
@@ -255,7 +300,6 @@ namespace VersionUpdater
 				messageBuilder.AppendLine(PackageUpdateCommitTitle);
 				foreach (ProjectChangeInfo changeInfo in changes)
 				{
-					if (changeInfo.UpdateMode == UpdateMode.None) continue;
 					string versionString = string.Format("{0}.{1}.{2}", 
 						changeInfo.Project.NuSpecVersion.Major,
 						changeInfo.Project.NuSpecVersion.Minor,
@@ -271,7 +315,8 @@ namespace VersionUpdater
 					{
 						FileName = gitPath,
 						WorkingDirectory = solutionDir,
-						Arguments = "add -u"
+						Arguments = "add -u",
+						UseShellExecute = false,
 					};
 					Process gitProc = Process.Start(gitStartInfo);
 					gitProc.WaitForExit();
@@ -283,7 +328,8 @@ namespace VersionUpdater
 					{
 						FileName = gitPath,
 						WorkingDirectory = solutionDir,
-						Arguments = "commit -F " + commitMsgFileName
+						Arguments = "commit -F " + commitMsgFileName,
+						UseShellExecute = false,
 					};
 					Process gitProc = Process.Start(gitStartInfo);
 					gitProc.WaitForExit();
@@ -458,7 +504,8 @@ namespace VersionUpdater
 							commitMessage.IndexOf(PackageUpdateCommitMessageBegin, StringComparison.InvariantCultureIgnoreCase) >= 0)
 						{
 							gitProc.CancelOutputRead();
-							gitProc.Kill();
+							if (!gitProc.HasExited)
+								gitProc.Kill();
 							return;
 						}
 
