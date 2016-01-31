@@ -252,3 +252,4 @@ SampleProjects/FlapOrDie/Content/high.score
 Other/Tools/VersionUpdater/obj/
 Other/Scripts/bin/VersionUpdater.vshost.exe
 Other/Scripts/bin/VersionUpdater.vshost.exe.config
+Other/Scripts/bin/VersionUpdater.vshost.exe.manifest
