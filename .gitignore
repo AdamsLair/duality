@@ -249,8 +249,10 @@ SampleProjects/ParticleSystem/Content/logfile.txt
 SampleProjects/ParticleSystem/Content/perflog.txt
 SampleProjects/ParticleSystem/ParticleSystem.core.xml
 SampleProjects/FlapOrDie/Content/high.score
-Other/Scripts/bin/VersionUpdater.vshost.exe.config
+Other/Tools/VersionUpdater/obj/
 Other/Scripts/bin/VersionUpdater.vshost.exe
+Other/Scripts/bin/VersionUpdater.vshost.exe.config
+Other/Scripts/bin/VersionUpdater.vshost.exe.manifest
 Other/Tools/VersionUpdater/obj/
 DualityEditorPlugins/Tilemaps/bin/
 DualityEditorPlugins/Tilemaps/obj/
