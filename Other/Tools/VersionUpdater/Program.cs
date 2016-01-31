@@ -271,7 +271,7 @@ namespace VersionUpdater
 					{
 						FileName = gitPath,
 						WorkingDirectory = solutionDir,
-						Arguments = "add -A"
+						Arguments = "add -u"
 					};
 					Process gitProc = Process.Start(gitStartInfo);
 					gitProc.WaitForExit();
@@ -290,7 +290,7 @@ namespace VersionUpdater
 				}
 
 				// Remove our temporary commit message file
-				//File.Delete(commitMsgFilePath);
+				File.Delete(commitMsgFilePath);
 			}
 
 			Console.WriteLine();
