@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality</id>
     <version>2.2.0</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Duality Core</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Duality.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>The Duality engine core.</summary>
+    <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
-	<tags>Duality Core</tags>
-	<releaseNotes>Bugfixes, Tweaks
+    <tags>Duality Core</tags>
+    <releaseNotes>Bugfixes, Tweaks
 #FIX: Fixed uploading the wrong vertex count when rendering only a single draw batch.
 #ADD: Added Grid.ResizeClear method to make efficient use of buffering cases where a Grid is resized and cleared at once, without the need to keep any of its old contents.
 #CHANGE: When an exception is thrown in a Resources OnSaving preparation step, the Save operation in progress will not be executed to prevent data corruption.</releaseNotes>

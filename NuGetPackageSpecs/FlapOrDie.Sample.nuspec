@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality.Samples.FlapOrDie</id>
     <version>2.0.1</version>
-	<authors>Pilati Alessandro</authors>
-	<owners>Pilati Alessandro</owners>
+    <authors>Pilati Alessandro</authors>
+    <owners>Pilati Alessandro</owners>
     <title>Flap-Or-Die Sample</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Game.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Game.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>A clone of a commonly known casual game in Duality.</summary>
+    <summary>A clone of a commonly known casual game in Duality.</summary>
     <description>This package contains a simple implementation of a commonly known casual game.</description>
-	<tags>Duality Sample Plugin Game</tags>
-	<releaseNotes>Maintenance
+    <tags>Duality Sample Plugin Game</tags>
+    <releaseNotes>Maintenance
 #FIX: Moved content to its own subfolder, so this sample doesn't conflict with others.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.0.4" />
