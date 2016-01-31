@@ -791,7 +791,7 @@ namespace Duality.Editor.Plugins.SceneView
 			// Add items for the currently available actions
 			if (mainResType != null)
 			{
-				var customActions = DualityEditorApp.GetEditorActions(mainResType, selObjData).ToArray();
+				IEditorAction[] customActions = DualityEditorApp.GetEditorActions(mainResType, selObjData).ToArray();
 				foreach (IEditorAction actionEntry in customActions)
 				{
 					// Create an item for the current action
@@ -1531,16 +1531,26 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		private void customObjectActionItem_Click(object sender, EventArgs e)
 		{
+			// Determine the clicked action and parameters
+			MenuModelItem clickedItem = sender as MenuModelItem;
+			IEditorAction action = clickedItem.Tag as IEditorAction;
+			TypeInfo subjectType = action.SubjectType.GetTypeInfo();
+
+			// Gather all selected objects
 			List<NodeBase> selNodeData = new List<NodeBase>(
 				from vn in this.objectView.SelectedNodes
 				where vn.Tag is NodeBase
 				select vn.Tag as NodeBase);
-			List<object> selObjData = 
-				selNodeData.OfType<ComponentNode>().Select(n => n.Component).AsEnumerable<object>().Concat(
-				selNodeData.OfType<GameObjectNode>().Select(n => n.Obj)).ToList();
+			IEnumerable<object> selGameObjects = selNodeData.OfType<GameObjectNode>().Select(n => n.Obj);
+			IEnumerable<object> selComponents = selNodeData.OfType<ComponentNode>().Select(n => n.Component);
 
-			ToolStripMenuItem clickedItem = sender as ToolStripMenuItem;
-			IEditorAction action = clickedItem.Tag as IEditorAction;
+			// Aggregate selected Components and GameObjects, and filter by the action's subject type
+			object[] selObjData = selGameObjects
+				.Concat(selComponents)
+				.Where(o => subjectType.IsInstanceOfType(o))
+				.ToArray();
+
+			// Perform the clicked action
 			action.Perform(selObjData);
 		}
 

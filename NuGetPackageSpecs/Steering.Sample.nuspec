@@ -3,17 +3,17 @@
   <metadata>
     <id>AdamsLair.Duality.Plugins.Steering.Sample</id>
     <version>2.0.0</version>
-	<authors>Daniel Herb, Fedja Adam</authors>
-	<owners>Daniel Herb, Fedja Adam</owners>
+    <authors>Daniel Herb, Fedja Adam</authors>
+    <owners>Daniel Herb, Fedja Adam</owners>
     <title>Steering Behaviours Sample</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Steering.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Steering.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>A sample project to show how to use Steering Behaviours.</summary>
+    <summary>A sample project to show how to use Steering Behaviours.</summary>
     <description>A sample project to show how to use Steering Behaviours.</description>
-	<tags>Duality Sample Plugin Steering Component AI</tags>
-	<releaseNotes>Initial v2.0 Release</releaseNotes>
+    <tags>Duality Sample Plugin Steering Component AI</tags>
+    <releaseNotes>Initial v2.0 Release</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Steering" version="2.0.0" />
       <dependency id="AdamsLair.Duality" version="2.0.0" />

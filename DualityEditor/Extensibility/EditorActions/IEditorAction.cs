@@ -11,6 +11,7 @@ namespace Duality.Editor
 		string Description { get; }
 		Image Icon { get; }
 		Type SubjectType { get; }
+		int Priority { get; }
 
 		void Perform(object obj);
 		void Perform(IEnumerable<object> obj);
