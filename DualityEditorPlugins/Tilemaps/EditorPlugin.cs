@@ -38,6 +38,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private int                      pendingLocalTilePalettes = 0;
 		private XElement                 tilePaletteSettings      = null;
 		private ITileDrawSource          tileDrawingSource        = EmptyTileDrawingSource;
+
+		/// <summary>
+		/// An event that is fired when the <see cref="TileDrawingSource"/> is assigned a new value.
+		/// </summary>
+		public event EventHandler TileDrawingSourceChanged = null;
 		
 
 		public override string Id
@@ -51,7 +56,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 		public ITileDrawSource TileDrawingSource
 		{
 			get { return this.tileDrawingSource; }
-			set { this.tileDrawingSource = value ?? EmptyTileDrawingSource; }
+			set
+			{
+				this.tileDrawingSource = value ?? EmptyTileDrawingSource;
+				if (this.TileDrawingSourceChanged != null)
+					this.TileDrawingSourceChanged(this, EventArgs.Empty);
+			}
 		}
 
 		

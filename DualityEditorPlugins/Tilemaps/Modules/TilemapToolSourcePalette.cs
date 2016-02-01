@@ -97,9 +97,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
+
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing        += this.Resource_ResourceDisposing;
 			Scene.Entered                     += this.Scene_Entered;
+			TilemapsEditorPlugin.Instance.TileDrawingSourceChanged += 
+				this.TilemapsEditorPlugin_TileDrawingSourceChanged;
 
 			// Apply editor-global tileset selection
 			this.ApplySelectedTileset();
@@ -112,6 +115,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing        -= this.Resource_ResourceDisposing;
 			Scene.Entered                     -= this.Scene_Entered;
+			TilemapsEditorPlugin.Instance.TileDrawingSourceChanged -= 
+				this.TilemapsEditorPlugin_TileDrawingSourceChanged;
 		}
 		
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
@@ -149,7 +154,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			// Retrieve selected tile data
-			Log.Editor.Write("Source Change");
 			IReadOnlyGrid<Tile> selectedTiles = this.tilesetView.SelectedTiles;
 			Grid<bool> shape = new Grid<bool>(selectedTiles.Width, selectedTiles.Height);
 			Grid<Tile> pattern = new Grid<Tile>(selectedTiles.Width, selectedTiles.Height);
@@ -165,6 +169,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 			
 			// Apply the selected tiles to the palettes source for tile drawing
 			TilemapsEditorPlugin.Instance.TileDrawingSource = this.paletteSource;
+		}
+		private void TilemapsEditorPlugin_TileDrawingSourceChanged(object sender, EventArgs e)
+		{
+			// If the tile drawing source has been set to something other than this palette,
+			// deselect the local pattern, so it doesn't look like it's still active.
+			if (TilemapsEditorPlugin.Instance.TileDrawingSource != this.paletteSource)
+			{
+				this.tilesetView.SelectedArea = Rectangle.Empty;
+			}
 		}
 	}
 }
