@@ -57,11 +57,11 @@
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
     <Compile Include="EditorActions\OpenTilemapResizeDialog.cs" />
-    <Compile Include="Modules\TilemapSetupDialog.cs">
+    <Compile Include="Modules\TilemapResizeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Modules\TilemapSetupDialog.Designer.cs">
-      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    <Compile Include="Modules\TilemapResizeDialog.Designer.cs">
+      <DependentUpon>TilemapResizeDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Modules\SourcePaletteTilesetView.cs">
       <SubType>Component</SubType>
@@ -133,8 +133,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Modules\TilemapSetupDialog.resx">
-      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    <EmbeddedResource Include="Modules\TilemapResizeDialog.resx">
+      <DependentUpon>TilemapResizeDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Modules\TilemapToolSourcePalette.resx">
       <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>

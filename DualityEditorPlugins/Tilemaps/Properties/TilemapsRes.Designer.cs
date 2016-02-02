@@ -61,7 +61,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Opens a user dialog that allows to resize the selected Tilemaps..
+        ///   Looks up a localized string similar to Opens a user dialog that allows to resize the selected Tilemaps. If no tilemaps are selected, it will resize all currently active, non-hidden tilemaps in the current scene..
         /// </summary>
         internal static string ActionDesc_ResizeTilemap {
             get {
@@ -286,15 +286,6 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string MenuItemName_TilePalette {
             get {
                 return ResourceManager.GetString("MenuItemName_TilePalette", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Resizing the selected Tilemaps will preserve the part of their content that still fits the new size and origin..
-        /// </summary>
-        internal static string TilemapSetupHeader_ResizeMap {
-            get {
-                return ResourceManager.GetString("TilemapSetupHeader_ResizeMap", resourceCulture);
             }
         }
         

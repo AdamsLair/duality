@@ -1,0 +1,99 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+using AdamsLair.WinForms;
+
+using Duality.Plugins.Tilemaps;
+using Duality.Editor.Plugins.Tilemaps.Properties;
+
+namespace Duality.Editor.Plugins.Tilemaps
+{
+	public partial class TilemapSetupDialog : Form
+	{
+		private Tilemap[] tilemaps = null;
+		private Point2 currentSize = Point2.Zero;
+
+		/// <summary>
+		/// [GET / SET] The tilemaps that are to be adjusted by the dialog.
+		/// </summary>
+		public IEnumerable<Tilemap> Tilemaps
+		{
+			get { return this.tilemaps; }
+			set
+			{
+				this.tilemaps = value.NotNull().ToArray();
+				this.UpdateContent();
+			}
+		}
+
+
+		public TilemapSetupDialog()
+		{
+			this.InitializeComponent();
+			this.UpdateContent();
+		}
+
+
+		private void UpdateContent()
+		{
+			if (this.tilemaps == null) return;
+
+			this.currentSize = new Point2(
+				this.tilemaps.Min(t => t.TileCount.X),
+				this.tilemaps.Min(t => t.TileCount.Y));
+			this.editorWidth.Value = this.currentSize.X;
+			this.editorHeight.Value = this.currentSize.Y;
+			this.labelMultiselect.Visible = this.tilemaps.Any(t => t.TileCount != this.currentSize);
+			this.Text = (this.tilemaps.Length == 1) ?
+				string.Format(TilemapsRes.TilemapSetupHeader_ResizeSingleTilemap, this.tilemaps[0].GameObj != null ? this.tilemaps[0].GameObj.Name : typeof(Tilemap).Name) :
+				string.Format(TilemapsRes.TilemapSetupHeader_ResizeMultipleTilemaps, this.tilemaps.Length);
+		}
+		
+		private void editorWidth_ValueChanged(object sender, EventArgs e)
+		{
+			this.originSelector.InvertArrowsHorizontal = this.editorWidth.Value < this.currentSize.X;
+		}
+		private void editorHeight_ValueChanged(object sender, EventArgs e)
+		{
+			this.originSelector.InvertArrowsVertical = this.editorHeight.Value < this.currentSize.Y;
+		}
+		private void buttonOk_Click(object sender, EventArgs e)
+		{
+			if (this.tilemaps != null)
+			{
+				Point2 newSize = new Point2(
+					(int)this.editorWidth.Value,
+					(int)this.editorHeight.Value);
+				Alignment origin = OriginSelectorToAlignment(this.originSelector.SelectedOrigin);
+				foreach (Tilemap tilemap in this.tilemaps)
+				{
+					tilemap.Resize(newSize.X, newSize.Y, origin);
+				}
+			}
+			this.DialogResult = DialogResult.OK;
+			this.Close();
+		}
+
+		private static Alignment OriginSelectorToAlignment(OriginSelector.Origin origin)
+		{
+			switch (origin)
+			{
+				default:
+				case OriginSelector.Origin.Center:      return Alignment.Center;
+				case OriginSelector.Origin.Left:        return Alignment.Left;
+				case OriginSelector.Origin.Right:       return Alignment.Right;
+				case OriginSelector.Origin.TopLeft:     return Alignment.TopLeft;
+				case OriginSelector.Origin.Top:         return Alignment.Top;
+				case OriginSelector.Origin.TopRight:    return Alignment.TopRight;
+				case OriginSelector.Origin.BottomLeft:  return Alignment.BottomLeft;
+				case OriginSelector.Origin.Bottom:      return Alignment.Bottom;
+				case OriginSelector.Origin.BottomRight: return Alignment.BottomRight;
+			}
+		}
+	}
+}

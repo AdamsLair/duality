@@ -39,6 +39,7 @@
 			this.labelWidth = new System.Windows.Forms.Label();
 			this.editorWidth = new System.Windows.Forms.NumericUpDown();
 			this.labelHeader = new System.Windows.Forms.Label();
+			this.labelMultiselect = new System.Windows.Forms.Label();
 			this.panelBottomBack.SuspendLayout();
 			this.groupBoxSize.SuspendLayout();
 			this.tableLayoutMapSize.SuspendLayout();
@@ -115,6 +116,7 @@
 			this.tableLayoutMapSize.Controls.Add(this.labelHeight, 0, 1);
 			this.tableLayoutMapSize.Controls.Add(this.labelWidth, 0, 0);
 			this.tableLayoutMapSize.Controls.Add(this.editorWidth, 1, 0);
+			this.tableLayoutMapSize.Controls.Add(this.labelMultiselect, 0, 2);
 			this.tableLayoutMapSize.Location = new System.Drawing.Point(94, 19);
 			this.tableLayoutMapSize.Name = "tableLayoutMapSize";
 			this.tableLayoutMapSize.RowCount = 3;
@@ -129,9 +131,15 @@
 			this.editorHeight.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.editorHeight.Location = new System.Drawing.Point(44, 26);
 			this.editorHeight.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.editorHeight.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
 			this.editorHeight.Name = "editorHeight";
 			this.editorHeight.Size = new System.Drawing.Size(96, 20);
 			this.editorHeight.TabIndex = 3;
+			this.editorHeight.ValueChanged += new System.EventHandler(this.editorHeight_ValueChanged);
 			// 
 			// labelHeight
 			// 
@@ -162,9 +170,15 @@
 			this.editorWidth.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.editorWidth.Location = new System.Drawing.Point(44, 3);
 			this.editorWidth.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+			this.editorWidth.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
 			this.editorWidth.Name = "editorWidth";
 			this.editorWidth.Size = new System.Drawing.Size(96, 20);
 			this.editorWidth.TabIndex = 2;
+			this.editorWidth.ValueChanged += new System.EventHandler(this.editorWidth_ValueChanged);
 			// 
 			// labelHeader
 			// 
@@ -175,6 +189,21 @@
 			this.labelHeader.Name = "labelHeader";
 			this.labelHeader.Size = new System.Drawing.Size(240, 48);
 			this.labelHeader.TabIndex = 9;
+			this.labelHeader.Text = "Resizing the selected Tilemaps will preserve the part of their content that still" +
+    " fits the new size and origin.";
+			// 
+			// labelMultiselect
+			// 
+			this.tableLayoutMapSize.SetColumnSpan(this.labelMultiselect, 2);
+			this.labelMultiselect.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.labelMultiselect.Enabled = false;
+			this.labelMultiselect.Location = new System.Drawing.Point(3, 46);
+			this.labelMultiselect.Name = "labelMultiselect";
+			this.labelMultiselect.Size = new System.Drawing.Size(134, 37);
+			this.labelMultiselect.TabIndex = 4;
+			this.labelMultiselect.Text = "Multiple Tilemaps with differing sizes selected.";
+			this.labelMultiselect.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.labelMultiselect.Visible = false;
 			// 
 			// TilemapSetupDialog
 			// 
@@ -195,7 +224,7 @@
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Tilemap Setup";
+			this.Text = "Resize Tilemap";
 			this.panelBottomBack.ResumeLayout(false);
 			this.groupBoxSize.ResumeLayout(false);
 			this.tableLayoutMapSize.ResumeLayout(false);
@@ -219,6 +248,7 @@
 		private System.Windows.Forms.Label labelWidth;
 		private System.Windows.Forms.NumericUpDown editorWidth;
 		private System.Windows.Forms.Label labelHeader;
+		private System.Windows.Forms.Label labelMultiselect;
 
 	}
 }
