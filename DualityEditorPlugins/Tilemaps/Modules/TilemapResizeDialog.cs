@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using AdamsLair.WinForms;
+using AdamsLair.WinForms.PropertyEditing;
 
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
@@ -42,13 +43,20 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void UpdateContent()
 		{
 			if (this.tilemaps == null) return;
+			if (this.tilemaps.Length == 0) return;
 
 			this.currentSize = new Point2(
 				this.tilemaps.Min(t => t.TileCount.X),
 				this.tilemaps.Min(t => t.TileCount.Y));
+
+			Color multiSizeColor = Color.FromArgb(242, 212, 170);
+			bool multiSize = this.tilemaps.Any(t => t.TileCount != this.currentSize);
+
 			this.editorWidth.Value = this.currentSize.X;
 			this.editorHeight.Value = this.currentSize.Y;
-			this.labelMultiselect.Visible = this.tilemaps.Any(t => t.TileCount != this.currentSize);
+			this.labelMultiselect.Visible = multiSize;
+			this.editorWidth.BackColor = multiSize ? multiSizeColor : SystemColors.Window;
+			this.editorHeight.BackColor = multiSize ? multiSizeColor : SystemColors.Window;
 			this.Text = (this.tilemaps.Length == 1) ?
 				string.Format(TilemapsRes.TilemapSetupHeader_ResizeSingleTilemap, this.tilemaps[0].GameObj != null ? this.tilemaps[0].GameObj.Name : typeof(Tilemap).Name) :
 				string.Format(TilemapsRes.TilemapSetupHeader_ResizeMultipleTilemaps, this.tilemaps.Length);
@@ -64,7 +72,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void buttonOk_Click(object sender, EventArgs e)
 		{
-			if (this.tilemaps != null)
+			if (this.tilemaps != null && this.tilemaps.Length > 0)
 			{
 				Point2 newSize = new Point2(
 					(int)this.editorWidth.Value,

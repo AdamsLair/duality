@@ -34,7 +34,7 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 		{
 			TilemapSetupDialog resizeDialog = new TilemapSetupDialog();
 			resizeDialog.Tilemaps = objEnum;
-			resizeDialog.ShowDialog();
+			resizeDialog.ShowDialog(DualityEditorApp.MainForm);
 		}
 		public override bool MatchesContext(string context)
 		{
