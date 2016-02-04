@@ -92,6 +92,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Steering", "Steering", "{A3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{34618774-B865-4BAC-A890-925704761500}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityEditorTests", "UnitTesting\DualityEditorTests\DualityEditorTests.csproj", "{79641106-CC10-428D-883F-6F968E0F78CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -230,6 +232,10 @@ Global
 		{025EAC49-A10B-4116-B26B-72EB36CE7944}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{025EAC49-A10B-4116-B26B-72EB36CE7944}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{025EAC49-A10B-4116-B26B-72EB36CE7944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79641106-CC10-428D-883F-6F968E0F78CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79641106-CC10-428D-883F-6F968E0F78CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79641106-CC10-428D-883F-6F968E0F78CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79641106-CC10-428D-883F-6F968E0F78CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -271,5 +277,6 @@ Global
 		{025EAC49-A10B-4116-B26B-72EB36CE7944} = {9D215950-8E34-4070-914F-7B7D8A54ED6C}
 		{E01236B6-B9D1-4452-BD16-B656572B7D44} = {F7B868F5-0B5D-497C-BA40-FA08DD3EB07D}
 		{A3574D73-3689-4AA7-B1BE-359F1E0FCCFB} = {F7B868F5-0B5D-497C-BA40-FA08DD3EB07D}
+		{79641106-CC10-428D-883F-6F968E0F78CA} = {8425804A-7CFA-4E0B-9672-F979830DCC0F}
 	EndGlobalSection
 EndGlobal

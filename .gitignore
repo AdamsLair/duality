@@ -253,3 +253,5 @@ Other/Tools/VersionUpdater/obj/
 Other/Scripts/bin/VersionUpdater.vshost.exe
 Other/Scripts/bin/VersionUpdater.vshost.exe.config
 Other/Scripts/bin/VersionUpdater.vshost.exe.manifest
+UnitTesting/DualityEditorTests/obj/
+UnitTesting/DualityEditorTests/bin/

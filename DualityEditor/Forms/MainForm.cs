@@ -53,7 +53,7 @@ namespace Duality.Editor.Forms
 
 
 
-		internal MainForm()
+		public MainForm()
 		{
 			this.InitializeComponent();
 			this.ApplyDockPanelSkin();
