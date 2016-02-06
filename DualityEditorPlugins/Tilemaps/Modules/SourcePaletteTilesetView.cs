@@ -22,32 +22,38 @@ namespace Duality.Editor.Plugins.Tilemaps
 		public event EventHandler SelectedAreaEditingFinished = null;
 
 
+		/// <summary>
+		/// The selected area of tiles, in displayed tile space.
+		/// </summary>
 		public Rectangle SelectedArea
 		{
-			get { return this.selectedArea; }
+			get
+			{
+				return new Rectangle(
+					this.GetDisplayedTilePos(this.selectedArea.X, this.selectedArea.Y), 
+					this.selectedArea.Size);
+			}
 			set
 			{
-				if (this.selectedArea != value)
-				{
-					Rectangle croppedArea = new Rectangle(
-						Math.Max(value.X, 0),
-						Math.Max(value.Y, 0),
-						Math.Min(value.Width, this.TileCount.X - Math.Max(value.X, 0)),
-						Math.Min(value.Height, this.TileCount.Y - Math.Max(value.Y, 0)));
+				if (this.selectedArea == value) return;
 
-					this.selectedArea = croppedArea;
-					this.selectedTiles.ResizeClear(croppedArea.Width, croppedArea.Height);
-					for (int y = 0; y < croppedArea.Height; y++)
-					{
-						for (int x = 0; x < croppedArea.Width; x++)
-						{
-							this.selectedTiles[x, y] = new Tile { Index = this.GetTileIndex(croppedArea.X + x, croppedArea.Y + y) };
-						}
-					}
+				// Determine an actually valid area we can select, in displayed space
+				Rectangle croppedArea = new Rectangle(
+					Math.Max(value.X, 0),
+					Math.Max(value.Y, 0),
+					Math.Min(value.Width, this.DisplayedTileCount.X - Math.Max(value.X, 0)),
+					Math.Min(value.Height, this.DisplayedTileCount.Y - Math.Max(value.Y, 0)));
 
-					this.Invalidate();
-					this.RaiseSelectedAreaChanged();
-				}
+				// Assign selected area, but go back to original tileset space for this,
+				// so our selection area remains consistent when changing the display mode
+				// for tiles.
+				this.selectedArea = new Rectangle(
+					this.GetTilesetTilePos(croppedArea.X, croppedArea.Y),
+					croppedArea.Size);
+
+				this.UpdateSelectedTiles();
+				this.RaiseSelectedAreaChanged();
+				this.Invalidate();
 			}
 		}
 		public IReadOnlyGrid<Tile> SelectedTiles
@@ -61,6 +67,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 			base.OnTilesetChanged();
 			this.SelectedArea = Rectangle.Empty;
 			this.RaiseSelectedAreaEditingFinished();
+		}
+		protected override void OnTileDisplayModeChanged()
+		{
+			base.OnTileDisplayModeChanged();
+			this.UpdateSelectedTiles();
+			this.RaiseSelectedAreaChanged();
+			this.RaiseSelectedAreaEditingFinished();
+			this.Invalidate();
 		}
 		protected override void OnPaintTiles(PaintEventArgs e)
 		{
@@ -166,7 +180,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					this.actionBeginTilePos = this.GetTilePos(tileIndex);
 					this.isUserSelecting = true;
-					this.SelectedArea = new Rectangle(this.actionBeginTilePos.X, this.actionBeginTilePos.Y, 1, 1);
+					this.SelectedArea = new Rectangle(
+						this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y), 
+						new Size(1, 1));
 					this.HoveredTileIndex = -1;
 				}
 			}
@@ -190,12 +206,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (tileIndex != -1)
 				{
 					Point tilePos = this.GetTilePos(tileIndex);
+					Point displayedBeginPos = this.GetDisplayedTilePos(this.actionBeginTilePos.X, this.actionBeginTilePos.Y);
+					Point displayedCurrentPos = this.GetDisplayedTilePos(tilePos.X, tilePos.Y);
+
 					Point selectionTopLeft = new Point(
-						Math.Min(this.actionBeginTilePos.X, tilePos.X), 
-						Math.Min(this.actionBeginTilePos.Y, tilePos.Y));
+						Math.Min(displayedBeginPos.X, displayedCurrentPos.X), 
+						Math.Min(displayedBeginPos.Y, displayedCurrentPos.Y));
 					Point selectionBottomRight = new Point(
-						Math.Max(this.actionBeginTilePos.X, tilePos.X), 
-						Math.Max(this.actionBeginTilePos.Y, tilePos.Y));
+						Math.Max(displayedBeginPos.X, displayedCurrentPos.X), 
+						Math.Max(displayedBeginPos.Y, displayedCurrentPos.Y));
+
 					this.SelectedArea = new Rectangle(
 						selectionTopLeft.X,
 						selectionTopLeft.Y,
@@ -206,6 +226,31 @@ namespace Duality.Editor.Plugins.Tilemaps
 			else
 			{
 				base.OnMouseMove(e);
+			}
+		}
+
+		private void UpdateSelectedTiles()
+		{
+			Point selectedDisplayedPos = this.GetDisplayedTilePos(
+				this.selectedArea.X, 
+				this.selectedArea.Y);
+
+			this.selectedTiles.ResizeClear(this.selectedArea.Width, this.selectedArea.Height);
+			for (int y = 0; y < this.selectedArea.Height; y++)
+			{
+				for (int x = 0; x < this.selectedArea.Width; x++)
+				{
+					Point displayedPos = new Point(
+						selectedDisplayedPos.X + x, 
+						selectedDisplayedPos.Y + y);
+					Point tilesetPos = this.GetTilesetTilePos(
+						displayedPos.X, 
+						displayedPos.Y);
+					this.selectedTiles[x, y] = new Tile
+					{
+						Index = this.GetTileIndex(tilesetPos.X, tilesetPos.Y)
+					};
+				}
 			}
 		}
 

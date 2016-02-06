@@ -20,13 +20,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Center
 		}
 
+		protected enum MultiColumnMode
+		{
+			None,
+			Horizontal,
+			Vertical
+		}
+
 
 		private ContentRef<Tileset> tileset                = null;
 		private int                 displayedConfigIndex   = 0;
 		private HorizontalAlignment rowAlignment           = HorizontalAlignment.Left;
+		private bool                allowMultiColumnMode   = true;
+		private MultiColumnMode     multiColumnMode        = MultiColumnMode.None;
+		private int                 multiColumnCount       = 1;
+		private int                 multiColumnLength      = 0;
 		private int                 totalTileCount         = 0;
 		private Size                tileSize               = Size.Empty;
 		private Point               tileCount              = Point.Empty;
+		private Size                tilesetContentSize     = Size.Empty;
 		private Bitmap              tileBitmap             = null;
 		private Bitmap              backBitmap             = null;
 		private TextureBrush        backBrush              = null;
@@ -91,6 +103,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		[DefaultValue(true)]
+		public bool AllowMultiColumn
+		{
+			get { return this.allowMultiColumnMode; }
+			set
+			{
+				if (this.allowMultiColumnMode == value) return;
+				this.allowMultiColumnMode = value;
+				this.UpdateContentStats();
+			}
+		}
 		protected int HoveredTileIndex
 		{
 			get { return this.hoverIndex; }
@@ -103,13 +126,42 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		/// <summary>
+		/// [GET] The original tileset layout's number of tiles in X and Y direction.
+		/// </summary>
 		protected Point TileCount
 		{
 			get { return this.tileCount; }
 		}
+		/// <summary>
+		/// [GET] The pixel size of a single tile.
+		/// </summary>
 		protected Size TileSize
 		{
 			get { return this.tileSize; }
+		}
+		/// <summary>
+		/// [GET] The number of displayed tiles in X and Y direction.
+		/// </summary>
+		protected Point DisplayedTileCount
+		{
+			get
+			{
+				Point displayedTileCount = this.tileCount;
+				if (this.multiColumnMode == MultiColumnMode.Horizontal)
+				{
+					displayedTileCount = new Point(
+						this.tileCount.X * this.multiColumnCount,
+						this.multiColumnLength);
+				}
+				else if (this.multiColumnMode == MultiColumnMode.Vertical)
+				{
+					displayedTileCount = new Point(
+						this.multiColumnLength,
+						this.tileCount.Y * this.multiColumnCount);
+				}
+				return displayedTileCount;
+			}
 		}
 
 
@@ -184,9 +236,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (y >= this.contentSize.Height) return -1;
 			}
 
-			int rowIndex = y / (this.tileSize.Height + this.spacing.Height);
-			int colIndex = x / (this.tileSize.Width + this.spacing.Width);
-			int modelIndex = rowIndex * this.tileCount.X + colIndex;
+			// Determine the model index from the normalized local pixel position
+			int modelIndex;
+			{
+				Point singleColumnTilePos = this.GetTilesetTilePos(
+					x / (this.tileSize.Width + this.spacing.Width),
+					y / (this.tileSize.Height + this.spacing.Height));
+				modelIndex = singleColumnTilePos.Y * this.tileCount.X + singleColumnTilePos.X;
+			}
 
 			if (allowNearest)
 			{
@@ -228,10 +285,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			if (this.tileCount.X > 0)
 			{
-				int rowIndex = tileIndex / this.tileCount.X;
-				int colIndex = tileIndex % this.tileCount.X;
-				result.X += colIndex * (this.tileSize.Width + this.spacing.Width);
-				result.Y += rowIndex * (this.tileSize.Height + this.spacing.Height);
+				Point multiColumnTilePos = this.GetDisplayedTilePos(
+					tileIndex % this.tileCount.X,
+					tileIndex / this.tileCount.X);
+
+				result.X += multiColumnTilePos.X * (this.tileSize.Width + this.spacing.Width);
+				result.Y += multiColumnTilePos.Y * (this.tileSize.Height + this.spacing.Height);
 			}
 
 			if (scrolled)
@@ -243,7 +302,62 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 		/// <summary>
-		/// Converts a 2D tile (not pixel) coordinate into the associated tile index.
+		/// Converts a 2D tile (not pixel) coordinate from displayed to original tileset space.
+		/// </summary>
+		/// <param name="displayedTileX"></param>
+		/// <param name="displayedTileY"></param>
+		/// <returns></returns>
+		public Point GetTilesetTilePos(int displayedTileX, int displayedTileY)
+		{
+			int rowIndex = displayedTileY;
+			int colIndex = displayedTileX;
+
+			// Adjust column and row indices depending on multi-column display modes
+			if (this.multiColumnMode == MultiColumnMode.Horizontal)
+			{
+				int multiColumnIndex = colIndex / this.tileCount.X;
+				colIndex %= this.tileCount.X;
+				rowIndex += multiColumnIndex * this.multiColumnLength;
+			}
+			else if (this.multiColumnMode == MultiColumnMode.Vertical)
+			{
+				int multiColumnIndex = rowIndex / this.tileCount.Y;
+				rowIndex %= this.tileCount.Y;
+				colIndex += multiColumnIndex * this.multiColumnLength;
+			}
+
+			return new Point(colIndex, rowIndex);
+		}
+		/// <summary>
+		/// Converts a 2D tile (not pixel) coordinate from original tileset to displayed space.
+		/// </summary>
+		/// <param name="tilesetTileX"></param>
+		/// <param name="tilesetTileY"></param>
+		/// <returns></returns>
+		public Point GetDisplayedTilePos(int tilesetTileX, int tilesetTileY)
+		{
+			int rowIndex = tilesetTileY;
+			int colIndex = tilesetTileX;
+
+			// Adjust column and row indices depending on multi-column display modes
+			if (this.multiColumnMode == MultiColumnMode.Horizontal)
+			{
+				int multiColumnIndex = rowIndex / this.multiColumnLength;
+				rowIndex %= this.multiColumnLength;
+				colIndex += multiColumnIndex * this.tileCount.X;
+			}
+			else if (this.multiColumnMode == MultiColumnMode.Vertical)
+			{
+				int multiColumnIndex = colIndex / this.multiColumnLength;
+				colIndex %= this.multiColumnLength;
+				rowIndex += multiColumnIndex * this.tileCount.Y;
+			}
+
+			return new Point(colIndex, rowIndex);
+		}
+
+		/// <summary>
+		/// Converts a 2D tile (not pixel) coordinate (in tileset space) into the associated tile index.
 		/// </summary>
 		/// <param name="tileX"></param>
 		/// <param name="tileY"></param>
@@ -253,7 +367,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			return tileX + tileY * this.tileCount.X;
 		}
 		/// <summary>
-		/// Converts a tile index into a 2D tile (not pixel) coordinate.
+		/// Converts a tile index into a 2D tile (not pixel) coordinate, in tileset space.
 		/// </summary>
 		/// <param name="tileIndex"></param>
 		/// <returns></returns>
@@ -264,8 +378,59 @@ namespace Duality.Editor.Plugins.Tilemaps
 				tileIndex / this.tileCount.X);
 		}
 		
+		private void UpdateMultiColumnMode()
+		{
+			MultiColumnMode lastMode = this.multiColumnMode;
+			int lastCount = this.multiColumnCount;
+			int lastLength = this.multiColumnLength;
+
+			// Calculate how many columns we could fit vertically and horizontally
+			Point maxColumnCount;
+			if (this.totalTileCount == 0 || !this.allowMultiColumnMode)
+			{
+				maxColumnCount = Point.Empty;
+			}
+			else
+			{
+				int scrollbarBuffer = 1; // Stop one-pixel scrollbar appearances
+				maxColumnCount = new Point(
+					(this.ClientSize.Width - this.Padding.Horizontal - scrollbarBuffer) / this.tilesetContentSize.Width,
+					(this.ClientSize.Height - this.Padding.Vertical - scrollbarBuffer) / this.tilesetContentSize.Height);
+			}
+
+			// Use multiple columns if we can't fit the entire tileset,
+			// but we *could fit* it when split up.
+			if (maxColumnCount.X > 1 && maxColumnCount.Y == 0)
+			{
+				this.multiColumnMode = MultiColumnMode.Horizontal;
+				this.multiColumnCount = maxColumnCount.X;
+				this.multiColumnLength = (int)Math.Ceiling((float)this.tileCount.Y / (float)this.multiColumnCount);
+			}
+			else if (maxColumnCount.Y > 1 && maxColumnCount.X == 0)
+			{
+				this.multiColumnMode = MultiColumnMode.Vertical;
+				this.multiColumnCount = maxColumnCount.Y;
+				this.multiColumnLength = (int)Math.Ceiling((float)this.tileCount.X / (float)this.multiColumnCount);
+			}
+			else
+			{
+				this.multiColumnMode = MultiColumnMode.None;
+				this.multiColumnCount = 1;
+				this.multiColumnLength = this.tileCount.Y;
+			}
+
+			// If we changed our multi-column layout, notify everyone who needs to know
+			if (this.multiColumnMode != lastMode ||
+				this.multiColumnCount != lastCount ||
+				this.multiColumnLength != lastLength)
+			{
+				this.OnTileDisplayModeChanged();
+			}
+		}
 		private void UpdateContentStats()
 		{
+			this.UpdateMultiColumnMode();
+
 			Rectangle contentArea = new Rectangle(
 				this.ClientRectangle.X + this.Padding.Left,
 				this.ClientRectangle.Y + this.Padding.Top,
@@ -273,10 +438,22 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.ClientRectangle.Height - this.Padding.Vertical);
 
 			{
-				int hTiles = Math.Min(this.totalTileCount, this.tileCount.X);
+				Point displayedTileCount = this.tileCount;
+				if (this.multiColumnMode == MultiColumnMode.Horizontal)
+				{
+					displayedTileCount.X *= this.multiColumnCount;
+					displayedTileCount.Y = this.multiColumnLength;
+				}
+				else if (this.multiColumnMode == MultiColumnMode.Vertical)
+				{
+					displayedTileCount.X = this.multiColumnLength;
+					displayedTileCount.Y *= this.multiColumnCount;
+				}
+				displayedTileCount.X = Math.Min(displayedTileCount.X, this.totalTileCount);
+
 				this.contentSize = new Size(
-					hTiles * this.tileSize.Width + (hTiles - 1) * this.spacing.Width, 
-					this.tileCount.Y * this.tileSize.Height + (this.tileCount.Y - 1) * this.spacing.Height);
+					displayedTileCount.X * this.tileSize.Width  + (displayedTileCount.X - 1) * this.spacing.Width, 
+					displayedTileCount.Y * this.tileSize.Height + (displayedTileCount.Y - 1) * this.spacing.Height);
 			}
 			{
 				int lastAdditionalSpace = this.additionalSpace;
@@ -383,6 +560,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.tileBitmap.Width / (mainInput.SourceTileSize.X + mainInput.SourceTileSpacing * 2),
 					this.tileBitmap.Height / (mainInput.SourceTileSize.Y + mainInput.SourceTileSpacing * 2));
 				this.totalTileCount = this.tileCount.X * this.tileCount.Y;
+				this.tilesetContentSize = new Size(
+					this.tileSize.Width * this.tileCount.X + this.spacing.Width * (this.tileCount.X - 1), 
+					this.tileSize.Height * this.tileCount.Y + this.spacing.Height * (this.tileCount.Y - 1));
 			}
 			else
 			{
@@ -390,12 +570,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.tileSize = Size.Empty;
 				this.tileCount = Point.Empty;
 				this.totalTileCount = 0;
+				this.tilesetContentSize = Size.Empty;
 			}
 
 			this.GenerateBackgroundPattern();
 			this.UpdateContentStats();
 			this.Invalidate();
 		}
+		protected virtual void OnTileDisplayModeChanged() { }
 		protected override void OnBackColorChanged(EventArgs e)
 		{
 			base.OnBackColorChanged(e);
@@ -444,8 +626,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Draw visible tile items
 			Point basePos = firstItemPos;
 			Point curPos = basePos;
-			int skipItemsPerRow = (firstIndex % this.tileCount.X);
-			int itemsPerRenderedRow = this.tileCount.X - skipItemsPerRow;
+			int itemsPerRow = (this.multiColumnMode == MultiColumnMode.Vertical) ? this.multiColumnLength : this.tileCount.X;
+			int skipItemsPerRow = (firstIndex % itemsPerRow);
+			int itemsPerRenderedRow = itemsPerRow - skipItemsPerRow;
 			int itemsInCurrentRow = 0;
 			for (int i = firstIndex; i <= lastIndex; i++)
 			{
@@ -454,16 +637,37 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Point2 atlasTilePos;
 				Point2 atlasTileSize;
 				tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
-
+				
 				e.Graphics.DrawImage(this.tileBitmap, tileRect, atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y, GraphicsUnit.Pixel);
 
 				itemsInCurrentRow++;
-				if (itemsInCurrentRow == itemsPerRenderedRow)
+				bool isLastIndexInRow = (itemsInCurrentRow == itemsPerRenderedRow);
+				bool isLastIndexInHorizontalMultiColumn = 
+					(this.multiColumnMode == MultiColumnMode.Horizontal) &&
+					(i % (this.tileCount.X * this.multiColumnLength)) == (this.tileCount.X * this.multiColumnLength - 1);
+
+				if (isLastIndexInHorizontalMultiColumn)
+				{
+					itemsInCurrentRow = 0;
+					basePos.X += this.tileCount.X * (this.tileSize.Width + this.spacing.Width);
+					curPos = basePos;
+					i = this.PickTileIndexAt(curPos.X, curPos.Y, true, false);
+					if (i == -1) break;
+					i--;
+				}
+				else if (isLastIndexInRow)
 				{
 					curPos.X = basePos.X;
 					curPos.Y += this.tileSize.Height + this.spacing.Height;
 					itemsInCurrentRow = 0;
 					i += skipItemsPerRow;
+
+					if (this.multiColumnMode == MultiColumnMode.Vertical)
+					{
+						i = this.PickTileIndexAt(curPos.X, curPos.Y, true, false);
+						if (i == -1) break;
+						i--;
+					}
 				}
 				else
 				{
