@@ -33,6 +33,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		public TilemapTileDrawSource(Tilemap tilemap, Point2 origin, Grid<bool> area)
 		{
+			if (tilemap == null) throw new ArgumentNullException("tilemap");
 			this.tilemap = tilemap;
 			this.origin = origin;
 			this.area = new Grid<bool>(area);

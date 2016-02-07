@@ -76,6 +76,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			get { return this.selectedTool; }
 			set
 			{
+				if (this.selectedTool == value) return;
+
 				this.selectedTool = value;
 				this.UpdateTilemapToolButtons();
 
@@ -89,6 +91,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			get { return this.overrideTool; }
 			set
 			{
+				if (this.overrideTool == value) return;
+
 				this.overrideTool = value;
 				this.UpdateTilemapToolButtons();
 
