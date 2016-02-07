@@ -24,13 +24,15 @@ namespace Duality.Backend.DefaultOpenTK
 			get { return activeInstance; }
 		}
 
-		private	IDrawDevice           currentDevice           = null;
+		private IDrawDevice           currentDevice           = null;
 		private RenderStats           renderStats             = null;
-		private	HashSet<GraphicsMode> availGraphicsModes      = null;
-		private	GraphicsMode          defaultGraphicsMode     = null;
-		private	uint                  primaryVBO              = 0;
-		private	NativeWindow          activeWindow            = null;
-		private	bool                  useAlphaToCoverageBlend = false;
+		private HashSet<GraphicsMode> availGraphicsModes      = null;
+		private GraphicsMode          defaultGraphicsMode     = null;
+		private uint                  primaryVBO              = 0;
+		private NativeWindow          activeWindow            = null;
+		private bool                  useAlphaToCoverageBlend = false;
+
+		private List<IDrawBatch>      renderBatchesSharingVBO = new List<IDrawBatch>();
 		
 
 		public GraphicsMode DefaultGraphicsMode
@@ -176,11 +178,11 @@ namespace Duality.Backend.DefaultOpenTK
 		}
 		void IGraphicsBackend.Render(IReadOnlyList<IDrawBatch> batches)
 		{
-			List<IDrawBatch> batchesSharingVBO = new List<IDrawBatch>();
 			IDrawBatch lastBatchRendered = null;
 			IDrawBatch lastBatch = null;
 			int drawCalls = 0;
 
+			this.renderBatchesSharingVBO.Clear();
 			for (int i = 0; i < batches.Count; i++)
 			{
 				IDrawBatch currentBatch = batches[i];
@@ -188,16 +190,16 @@ namespace Duality.Backend.DefaultOpenTK
 
 				if (lastBatch == null || lastBatch.SameVertexType(currentBatch))
 				{
-					batchesSharingVBO.Add(currentBatch);
+					this.renderBatchesSharingVBO.Add(currentBatch);
 				}
 
-				if (batchesSharingVBO.Count > 0 && (nextBatch == null || !currentBatch.SameVertexType(nextBatch)))
+				if (this.renderBatchesSharingVBO.Count > 0 && (nextBatch == null || !currentBatch.SameVertexType(nextBatch)))
 				{
 					int vertexOffset = 0;
-					batchesSharingVBO[0].UploadVertices(this, batchesSharingVBO);
+					this.renderBatchesSharingVBO[0].UploadVertices(this, this.renderBatchesSharingVBO);
 					drawCalls++;
 
-					foreach (IDrawBatch batch in batchesSharingVBO)
+					foreach (IDrawBatch batch in this.renderBatchesSharingVBO)
 					{
 						drawCalls++;
 
@@ -209,7 +211,7 @@ namespace Duality.Backend.DefaultOpenTK
 						lastBatchRendered = batch;
 					}
 
-					batchesSharingVBO.Clear();
+					this.renderBatchesSharingVBO.Clear();
 					lastBatch = null;
 				}
 				else

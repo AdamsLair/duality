@@ -59,6 +59,13 @@ namespace Duality.Resources
 					"Unable to retrieve image codec for format '{0}'. Can't initialize default {1} Resources.",
 					ImageCodec.FormatPng,
 					typeof(Pixmap).Name);
+
+				// Initialize default content with generic error instances, so
+				// everything else can still work as expected. We logged the error,
+				// and there's nothing anyone can do about this at runtime, so just 
+				// fail gracefully without causing more trouble.
+				InitDefaultContent<Pixmap>(name => new Pixmap(new PixelData(1, 1, new ColorRgba(255, 0, 255))));
+
 				return;
 			}
 			InitDefaultContent<Pixmap>(".png", stream => new Pixmap(codec.Read(stream)));

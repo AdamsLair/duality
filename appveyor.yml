@@ -20,6 +20,7 @@ build:
 test:
   assemblies:
     - 'UnitTesting\DualityTests\**\*.dll'
+    - 'UnitTesting\DualityEditorTests\**\*.dll'
   categories:
     except:
       - Rendering   # AppVeyor VMs don't have GPU access.

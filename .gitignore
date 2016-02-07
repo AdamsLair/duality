@@ -275,3 +275,5 @@ DualityPlugins/Tilemaps/Sample/Testbed/Backup/
 DualityPlugins/Tilemaps/Sample/Testbed/DefaultUserData.dat
 DualityPlugins/Tilemaps/Sample/Testbed/logfile.txt
 DualityPlugins/Tilemaps/Sample/Testbed/perflog.txt
+UnitTesting/DualityEditorTests/obj/
+UnitTesting/DualityEditorTests/bin/
