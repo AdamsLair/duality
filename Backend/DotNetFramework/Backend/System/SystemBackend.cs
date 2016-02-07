@@ -71,15 +71,17 @@ namespace Duality.Backend.DotNetFramework
 
 		string ISystemBackend.GetNamedPath(NamedDirectory dir)
 		{
+			string path;
 			switch (dir)
 			{
-				default:                             return null;
-				case NamedDirectory.Current:         return System.IO.Directory.GetCurrentDirectory();
-				case NamedDirectory.ApplicationData: return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-				case NamedDirectory.MyDocuments:     return Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-				case NamedDirectory.MyMusic:         return Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-				case NamedDirectory.MyPictures:      return Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+				default:                             path = null; break;
+				case NamedDirectory.Current:         path = System.IO.Directory.GetCurrentDirectory(); break;
+				case NamedDirectory.ApplicationData: path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); break;
+				case NamedDirectory.MyDocuments:     path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments); break;
+				case NamedDirectory.MyMusic:         path = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic); break;
+				case NamedDirectory.MyPictures:      path = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures); break;
 			}
+			return this.fileSystem.GetDualityPathFormat(path);
 		}
 
 		IEnumerable<Assembly> ISystemBackend.GetLoadedAssemblies()
