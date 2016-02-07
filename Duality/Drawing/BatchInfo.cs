@@ -333,7 +333,10 @@ namespace Duality.Drawing
 			{
 				if (first.textures == null || second.textures == null) return false;
 				if (first.textures.Count != second.textures.Count) return false;
-				if (first.textures.Any(pair => second.textures[pair.Key].Res != pair.Value.Res)) return false;
+				foreach (var pair in first.textures)
+				{
+					if (second.textures[pair.Key].Res != pair.Value.Res) return false;
+				}
 			}
 
 			if (first.uniforms != second.uniforms)

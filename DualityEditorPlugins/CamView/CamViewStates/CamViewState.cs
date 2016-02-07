@@ -198,6 +198,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			control.MouseLeave	-= this.RenderableControl_MouseLeave;
 			control.KeyDown		-= this.RenderableControl_KeyDown;
 			control.KeyUp		-= this.RenderableControl_KeyUp;
+			control.GotFocus	-= this.RenderableControl_GotFocus;
 			control.LostFocus	-= this.RenderableControl_LostFocus;
 			control.DragDrop	-= this.RenderableControl_DragDrop;
 			control.DragEnter	-= this.RenderableControl_DragEnter;

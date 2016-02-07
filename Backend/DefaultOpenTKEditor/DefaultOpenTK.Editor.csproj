@@ -81,7 +81,10 @@
   <PropertyGroup>
     <PostBuildEvent>mkdir "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
 copy "$(TargetPath)" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
-copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"</PostBuildEvent>
+copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)DualityEditor\bin\$(ConfigurationName)\Plugins"
+mkdir  "$(SolutionDir)UnitTesting\DualityEditorTests\bin\Plugins"
+copy "$(TargetPath)" "$(SolutionDir)UnitTesting\DualityEditorTests\bin\Plugins"
+copy "$(TargetDir)OpenTK.GLControl.dll" "$(SolutionDir)UnitTesting\DualityEditorTests\bin\Plugins"</PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

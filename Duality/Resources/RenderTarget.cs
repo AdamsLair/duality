@@ -74,21 +74,33 @@ namespace Duality.Resources
 		/// </summary>
 		public int Width
 		{
-			get { return this.targets.FirstOrDefault().IsAvailable ? this.targets.FirstOrDefault().Res.PixelWidth : 0; }
+			get
+			{
+				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
+				return target.IsAvailable ? target.Res.PixelWidth : 0;
+			}
 		}
 		/// <summary>
 		/// [GET] Height of this RenderTarget. This values is derived by its <see cref="Targets"/>.
 		/// </summary>
 		public int Height
 		{
-			get { return this.targets.FirstOrDefault().IsAvailable ? this.targets.FirstOrDefault().Res.PixelHeight : 0; }
+			get
+			{
+				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
+				return target.IsAvailable ? target.Res.PixelHeight : 0;
+			}
 		}
 		/// <summary>
 		/// [GET] UVRatio of this RenderTarget. This values is derived by its <see cref="Targets"/>.
 		/// </summary>
 		public Vector2 UVRatio
 		{
-			get { return this.targets.FirstOrDefault().IsAvailable ? this.targets.FirstOrDefault().Res.UVRatio : Vector2.One; }
+			get
+			{
+				ContentRef<Texture> target = this.targets.Count > 0 ? this.targets[0] : null;
+				return target.IsAvailable ? target.Res.UVRatio : Vector2.One;
+			}
 		}
 
 		/// <summary>

@@ -1062,7 +1062,7 @@ namespace Duality.Components.Physics
 				this.linearVel = PhysicsUnit.VelocityToDuality * this.body.LinearVelocity;
 				this.angularVel = PhysicsUnit.AngularVelocityToDuality * this.body.AngularVelocity;
 				this.revolutions = this.body.Revolutions;
-				if (this.bodyType != BodyType.Static)
+				if (this.bodyType != BodyType.Static && this.body.Awake)
 				{
 					Transform t = this.gameobj.Transform;
 

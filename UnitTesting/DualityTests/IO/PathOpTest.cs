@@ -301,6 +301,7 @@ namespace Duality.Tests.IO
 				string inputAlt1 = input != null ? input.Replace(PathOp.DirectorySeparatorChar, PathOp.AltDirectorySeparatorChar) : null;
 				string inputAlt2 = input != null ? input.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar) : null;
 
+				// If we don't expect a normalized output, expect it to use the same set of directory separators as the input
 				if (typeof(T) == typeof(string) && !expectNormalizedOutput)
 				{
 					string expextedStr = (string)(object)expected;
@@ -311,6 +312,17 @@ namespace Duality.Tests.IO
 					Assert.AreEqual(expectedAlt1, this.method(inputAlt1));
 					Assert.AreEqual(expectedAlt2, this.method(inputAlt2));
 				}
+				// If we do expect a normalized output, normalize the reference value we test agains as well
+				else if (typeof(T) == typeof(string) && expectNormalizedOutput)
+				{
+					string expextedStr = (string)(object)expected;
+					string expectedNormalized = expextedStr.Replace(PathOp.AltDirectorySeparatorChar, PathOp.DirectorySeparatorChar);
+
+					Assert.AreEqual(expectedNormalized, this.method(input));
+					Assert.AreEqual(expectedNormalized, this.method(inputAlt1));
+					Assert.AreEqual(expectedNormalized, this.method(inputAlt2));
+				}
+				// If we're not expecting a string at all, just do the testing with all variants
 				else
 				{
 					Assert.AreEqual(expected, this.method(input));
