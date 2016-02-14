@@ -19,12 +19,13 @@ namespace Duality.Plugins.Tilemaps
 	[EditorHintImage(TilemapsResNames.ImageTileset)]
 	public class Tileset : Resource
 	{
-		public  static readonly Point2             DefaultTileSize    = new Point2(32, 32);
-		private static readonly TilesetRenderInput DefaultRenderInput = new TilesetRenderInput();
+		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
+		private static readonly TilesetRenderInput DefaultRenderInput  = new TilesetRenderInput();
+		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
 		private Vector2                  tileSize     = DefaultTileSize;
 		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
-		private BatchInfo                baseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+		private BatchInfo                baseMaterial = new BatchInfo(DefaultBaseMaterial);
 
 		[DontSerialize] private List<Texture> renderData     = new List<Texture>();
 		[DontSerialize] private Material      renderMaterial = null;
@@ -35,9 +36,17 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// [GET] A configuration template that is used for generating the output <see cref="RenderMaterial"/>.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.ForceWriteback)]
 		public BatchInfo BaseMaterial
 		{
 			get { return this.baseMaterial; }
+			private set
+			{
+				// This private setter is here for editor support
+				this.baseMaterial = value ?? new BatchInfo(DefaultBaseMaterial);
+				this.DiscardRenderMaterial();
+				this.GenerateRenderMaterial();
+			}
 		}
 		/// <summary>
 		/// [GET] The different layers of <see cref="TilesetRenderInput"/>, which compose the look of all the tiles
@@ -60,6 +69,8 @@ namespace Duality.Plugins.Tilemaps
 		/// [GET / SET] The desired size of a tile in world space. How exactly this value is accounted for depends
 		/// on the Components that evaluate it for rendering, collision detection, etc.
 		/// </summary>
+		[EditorHintDecimalPlaces(1)]
+		[EditorHintIncrement(1)]
 		public Vector2 TileSize
 		{
 			get { return this.tileSize; }
@@ -231,32 +242,60 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			// Generate an output material from the generated textures
-			this.renderMaterial = new Material(this.baseMaterial);
-			for (int i = 0; i < this.renderConfig.Count; i++)
-			{
-				this.renderMaterial.SetTexture(this.renderConfig[i].Id, this.renderData[i] ?? Texture.Checkerboard);
-			}
+			this.GenerateRenderMaterial();
 
 			// Apply global tileset stats
 			this.tileCount = (this.renderConfig.Count > 0) ? minSourceTileCount : 0;
 
 			this.compiled = true;
 		}
+		/// <summary>
+		/// Generates the <see cref="RenderMaterial"/> from the currently available
+		/// <see cref="BaseMaterial"/> and <see cref="renderData"/>.
+		/// </summary>
+		private void GenerateRenderMaterial()
+		{
+			this.renderMaterial = new Material(this.baseMaterial);
+			for (int i = 0; i < this.renderConfig.Count; i++)
+			{
+				this.renderMaterial.SetTexture(this.renderConfig[i].Id, this.renderData[i] ?? Texture.Checkerboard);
+			}
+		}
+		/// <summary>
+		/// Discards all <see cref="Tileset"/> data that was acquired during <see cref="Compile"/>.
+		/// </summary>
 		private void DiscardCompiledData()
 		{
 			this.compiled = false;
-			if (this.renderMaterial != null)
-			{
-				this.renderMaterial.Dispose();
-				this.renderMaterial = null;
-			}
+			this.DiscardRenderMaterial();
 			foreach (Texture tex in this.renderData)
 			{
 				tex.Dispose();
 			}
 			this.renderData.Clear();
 		}
+		/// <summary>
+		/// Discards a previously generated <see cref="RenderMaterial"/>. Does not discard any
+		/// other generated <see cref="Tileset"/> data.
+		/// </summary>
+		private void DiscardRenderMaterial()
+		{
+			if (this.renderMaterial != null)
+			{
+				this.renderMaterial.Dispose();
+				this.renderMaterial = null;
+			}
+		}
 
+		/// <summary>
+		/// Fills up the specified spacing around a tile's pixel data with colors that are
+		/// similar to the existing edge colors in order to prevent filtering artifacts
+		/// when rendering them as a texture atlas.
+		/// </summary>
+		/// <param name="targetData"></param>
+		/// <param name="targetTileSpacing"></param>
+		/// <param name="targetContentPos"></param>
+		/// <param name="targetTileSize"></param>
 		private static void FillTileSpacing(PixelData targetData, int targetTileSpacing, Point2 targetContentPos, Point2 targetTileSize)
 		{
 			ColorRgba[] rawData = targetData.Data;
