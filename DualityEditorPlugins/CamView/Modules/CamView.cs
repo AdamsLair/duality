@@ -165,7 +165,8 @@ namespace Duality.Editor.Plugins.CamView
 		private static CamView	activeCamView	= null;
 
 		private	int						runtimeId					= 0;
-		private	INativeRenderableSite	graphicsControl			= null;
+		private	bool					isHiddenDocument			= false;
+		private	INativeRenderableSite	graphicsControl				= null;
 		private	GameObject				camObj						= null;
 		private	Camera					camComp						= null;
 		private	CamViewState			activeState					= null;
@@ -205,6 +206,15 @@ namespace Duality.Editor.Plugins.CamView
 		public event EventHandler<CameraChangedEventArgs> CurrentCameraChanged	= null;
 
 
+		/// <summary>
+		/// [GET] Whether this <see cref="CamView"/> is a hidden document in the editor's <see cref="DockPanel"/>.
+		/// This is typically true when storing the <see cref="CamView"/> in a <see cref="DockPane"/> with multiple
+		/// tabs and then selecting a different tab, resulting in the <see cref="CamView"/> becoming hidden.
+		/// </summary>
+		public bool IsHiddenDocument
+		{
+			get { return this.isHiddenDocument; }
+		}
 		public ColorRgba BgColor
 		{
 			get { return this.camComp.ClearColor; }
@@ -345,9 +355,9 @@ namespace Duality.Editor.Plugins.CamView
 				this.SetCurrentState(stateType);
 				this.loadTempState = null;
 			}
+			// If we set the state explicitly before, we'll still need to fire its enter event. See SetCurrentState.
 			else
 			{
-				// If we set the state explicitly before, we'll still need to fire its enter event. See SetCurrentState.
 				this.activeState.OnEnterState();
 			}
 
@@ -375,6 +385,9 @@ namespace Duality.Editor.Plugins.CamView
 
 			// Initially assume ownership of Duality rendering and audio
 			this.MakeDualityTarget();
+
+			// Determine whether we've started out as a hidden document (inactive tab) of the dock panel
+			this.UpdateHiddenDocumentState();
 		}
 		protected override void OnClosed(EventArgs e)
 		{
@@ -391,6 +404,11 @@ namespace Duality.Editor.Plugins.CamView
 
 			this.SetCurrentState((CamViewState)null);
 		}
+		protected override void OnDockStateChanged(EventArgs e)
+		{
+			base.OnDockStateChanged(e);
+			this.UpdateHiddenDocumentState();
+		}
 		
 		private void RegisterEditorEvents()
 		{
@@ -403,6 +421,8 @@ namespace Duality.Editor.Plugins.CamView
 			Scene.Leaving							+= this.Scene_Leaving;
 			Scene.GameObjectRemoved					+= this.Scene_GameObjectUnregistered;
 			Scene.ComponentRemoving					+= this.Scene_ComponentRemoving;
+
+			this.DockPanel.ActiveContentChanged		+= this.DockPanel_ActiveContentChanged;
 		}
 		private void UnregisterEditorEvents()
 		{
@@ -415,6 +435,36 @@ namespace Duality.Editor.Plugins.CamView
 			Scene.Leaving							-= this.Scene_Leaving;
 			Scene.GameObjectRemoved					-= this.Scene_GameObjectUnregistered;
 			Scene.ComponentRemoving					-= this.Scene_ComponentRemoving;
+
+			this.DockPanel.ActiveContentChanged		-= this.DockPanel_ActiveContentChanged;
+		}
+		/// <summary>
+		/// Updates the <see cref="IsHiddenDocument"/> value of the <see cref="CamView"/> and fires
+		/// events in the currently active state according to the detected changes. This will allow
+		/// the active <see cref="CamViewState"/> to react to being hidden or becoming visible again.
+		/// </summary>
+		private void UpdateHiddenDocumentState()
+		{
+			bool lastHiddenDocument = this.isHiddenDocument;
+
+			// Assume we're hidden unless proven false
+			this.isHiddenDocument = true;
+
+			// If the CamView is the DockPanel's currently active document, we're sure it's not hidden.
+			if (this.DockPanel.ActiveDocument == this)
+				this.isHiddenDocument = false;
+			// The CamView is hidden when it's in a DockPane that isn't active (and thus "tabbed away")
+			else if (this.Pane != null && this.Pane.ActiveContent == this)
+				this.isHiddenDocument = false;
+
+			// If we have an active state, notify it of changes to its visibility
+			if (this.activeState != null)
+			{
+				if (this.isHiddenDocument && !lastHiddenDocument)
+					this.activeState.OnHidden();
+				else if (!this.isHiddenDocument && lastHiddenDocument)
+					this.activeState.OnShown();
+			}
 		}
 
 		private void InitGLControl()
@@ -645,7 +695,8 @@ namespace Duality.Editor.Plugins.CamView
 			else
 				this.stateSelector.SelectedIndex = -1;
 
-			// No glControl yet? We're not initialized properly and this is the initial state. Enter the state later.
+			// If we have a graphics control, we have initialized properly and can enter the state right away.
+			// Otherwise, this is the initial state and we'll need to wait until initialization. Enter the state later.
 			if (this.graphicsControl != null)
 			{
 				if (this.activeState != null) this.activeState.OnEnterState();
@@ -1317,6 +1368,10 @@ namespace Duality.Editor.Plugins.CamView
 			if (this.camObj == e.Object) this.SetCurrentCamera(null);
 		}
 		
+		private void DockPanel_ActiveContentChanged(object sender, EventArgs e)
+		{
+			this.UpdateHiddenDocumentState();
+		}
 		private void camSelector_DropDown(object sender, EventArgs e)
 		{
 			this.InitCameraSelector();
