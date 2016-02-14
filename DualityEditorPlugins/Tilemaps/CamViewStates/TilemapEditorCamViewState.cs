@@ -575,9 +575,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// Initial update
 			this.UpdateTilemapToolButtons();
 			this.UpdateActionToolButtons();
-
-			// Make sure the tile palette is up and running
-			TilemapsEditorPlugin.Instance.PushTilePalette();
 		}
 		protected override void OnLeaveState()
 		{
@@ -613,6 +610,17 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			// Reset state
 			this.Cursor = CursorHelper.Arrow;
+		}
+		protected override void OnShown()
+		{
+			base.OnShown();
+
+			// Make sure the tile palette is up and running
+			TilemapsEditorPlugin.Instance.PushTilePalette();
+		}
+		protected override void OnHidden()
+		{
+			base.OnHidden();
 
 			// Release the tile palette we requested before
 			TilemapsEditorPlugin.Instance.PopTilePalette();

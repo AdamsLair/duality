@@ -159,7 +159,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.pendingLocalTilePalettes == 0)
 				return;
 			else if (this.pendingLocalTilePalettes == 1 && this.tilePalette != null)
-				this.tilePalette.Close();
+				this.tilePalette.Hide();
 			else
 				this.pendingLocalTilePalettes--;
 		}
@@ -170,7 +170,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.tilePalette == null || this.tilePalette.IsDisposed)
 			{
 				this.tilePalette = new TilemapToolSourcePalette();
-				this.tilePalette.FormClosed += this.tilePalette_FormClosed;
+				this.tilePalette.VisibleChanged += tilePalette_VisibleChanged;
+				this.tilePalette.HideOnClose = true;
 			
 				// If there are cached settings available, apply them to the new palette
 				if (this.tilePaletteSettings != null)
@@ -186,22 +187,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 			return this.tilePalette;
 		}
 
-		private void tilePalette_FormClosed(object sender, FormClosedEventArgs e)
+		private void tilePalette_VisibleChanged(object sender, EventArgs e)
 		{
-			// Cache tile palette settings for later, so we don't lose them when losing the dock control
-			this.tilePaletteSettings = new XElement(ElementNameTilePalette);
-			this.tilePalette.SaveUserData(this.tilePaletteSettings);
-
-			// Acknowledge the disposal of our tile palette
-			this.tilePalette = null;
-			if (e.CloseReason == CloseReason.UserClosing)
+			if (this.tilePalette.IsHidden)
 			{
 				this.pendingLocalTilePalettes--;
 			}
 		}
 		private void menuItemTilePalette_Click(object sender, EventArgs e)
 		{
-			TilemapToolSourcePalette palette = this.tilePalette ?? this.PushTilePalette();
+			TilemapToolSourcePalette palette = this.PushTilePalette();
 			if (palette.Pane != null)
 			{
 				palette.Pane.Activate();
