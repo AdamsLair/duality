@@ -40,7 +40,7 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.baseMaterial; }
 		}
 		/// <summary>
-		/// The different layers of <see cref="TilesetRenderInput"/>, which compose the look of all the tiles
+		/// [GET] The different layers of <see cref="TilesetRenderInput"/>, which compose the look of all the tiles
 		/// that are defined in this <see cref="Tileset"/>.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
@@ -81,6 +81,7 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.compiled; }
 		}
 		
+
 		/// <summary>
 		/// Looks up the vertex UV rect for the specified rendering input / data and tile.
 		/// </summary>
