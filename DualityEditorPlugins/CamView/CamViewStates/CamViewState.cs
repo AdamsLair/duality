@@ -128,6 +128,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 
 
+		/// <summary>
+		/// Called when the <see cref="CamViewState"/> is entered.
+		/// Use this for overall initialization of the state.
+		/// </summary>
 		internal protected virtual void OnEnterState()
 		{
 			this.RestoreActiveLayers();
@@ -184,9 +188,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Initial Camera update
 			this.OnCurrentCameraChanged(new CamView.CameraChangedEventArgs(null, this.CameraComponent));
 			this.UpdateFormattedTextRenderers();
+
+			if (this.IsViewVisible)
+				this.OnShown();
 		}
+		/// <summary>
+		/// Called when the <see cref="CamViewState"/> is left.
+		/// Use this for overall termination of the state.
+		/// </summary>
 		internal protected virtual void OnLeaveState() 
 		{
+			if (this.IsViewVisible)
+				this.OnHidden();
+
 			this.Cursor = CursorHelper.Arrow;
 
 			Control control = this.RenderableSite.Control;
@@ -224,6 +238,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Final Camera cleanup
 			this.OnCurrentCameraChanged(new CamView.CameraChangedEventArgs(this.CameraComponent, null));
 		}
+		/// <summary>
+		/// Called when the <see cref="CamViewState"/> becomes visible to the user, e.g.
+		/// by being entered, selecting the multi-document tab that contains its parent <see cref="CamView"/>
+		/// or similar.
+		/// </summary>
+		internal protected virtual void OnShown() { }
+		/// <summary>
+		/// Called when the <see cref="CamViewState"/> becomes hidden from the user, e.g.
+		/// by being left, deselecting the multi-document tab that contains its parent <see cref="CamView"/>
+		/// or similar.
+		/// </summary>
+		internal protected virtual void OnHidden() { }
 		
 		internal protected virtual void SaveUserData(XElement node)
 		{

@@ -26,6 +26,14 @@ namespace Duality.Editor.Plugins.CamView
 			get { return this.view; }
 			internal set { this.view = value; }
 		}
+		/// <summary>
+		/// [GET] Whether the parent <see cref="CamView"/> of this <see cref="CamViewClient"/> is currently
+		/// visible to the user, or hidden away (e.g. by being in an inactive multi-document tab or similar).
+		/// </summary>
+		public bool IsViewVisible
+		{
+			get { return !this.view.IsHiddenDocument; }
+		}
 		public Size ClientSize
 		{
 			get { return this.view.RenderableControl.ClientSize; }
