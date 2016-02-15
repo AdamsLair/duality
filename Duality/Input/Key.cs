@@ -5,6 +5,15 @@ using System.Linq;
 
 namespace Duality.Input
 {
+	/// <summary>
+	/// Each enum entry represents a physical key location on a keyboard. 
+	/// These are not virtual key codes, but instead correspond to scancodes
+	/// and thus should be thought of as position indicators of a pressed key,
+	/// rather than a description of the letter that is printed on it.
+	/// 
+	/// In naming the enum entries, a US / Ascii / QWERTY keyboard is assumed
+	/// as a reference.
+	/// </summary>
     public enum Key
     {
         Unknown,

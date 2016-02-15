@@ -86,6 +86,15 @@ namespace Duality.Editor
             FO_RENAME =                 0x0004,
         }
 
+		public enum KeyMapType : uint 
+		{
+			MAPVK_VK_TO_VSC    = 0x0,
+			MAPVK_VSC_TO_VK    = 0x1,
+			MAPVK_VK_TO_CHAR   = 0x2,
+			MAPVK_VSC_TO_VK_EX = 0x3,
+			MAPVK_VK_TO_VSC_EX = 0x4
+		}
+
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
         public struct SHFILEOPSTRUCT_x86
         {
@@ -145,5 +154,8 @@ namespace Duality.Editor
 		public static extern bool IsWindowVisible(IntPtr hWnd);
 		[DllImport("user32.dll", CharSet = CharSet.Auto, EntryPoint = "GetWindow", SetLastError = true)]
 		public static extern IntPtr GetNextWindow(IntPtr hwnd, [MarshalAs(UnmanagedType.U4)] int wFlag);
+
+		[DllImport("user32.dll")]
+		public static extern uint MapVirtualKey(uint code, KeyMapType mapType);
 	}
 }
