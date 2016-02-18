@@ -622,7 +622,10 @@ namespace Duality.Editor.PackageManagement
 			{
 				if (!this.repositoryPackageCache.TryGetValue(id, out result))
 				{
-					result = this.repository.FindPackagesById(id).ToArray();
+					result = this.repository
+						.FindPackagesById(id)
+						.Where(p => p.IsReleaseVersion())
+						.ToArray();
 					this.repositoryPackageCache[id] = result;
 				}
 			}
@@ -676,12 +679,16 @@ namespace Duality.Editor.PackageManagement
 		private bool CheckDeepLicenseAgreements(NuGet.IPackage package)
 		{
 			var deepDependencyCountDict = this.GetDeepDependencyCount(new[] { this.CreatePackageInfo(package) });
-			NuGet.IPackage[] deepPackages = deepDependencyCountDict.Keys.Select(i => this.FindPackageInfo(i.PackageName.VersionInvariant)).ToArray();
+			NuGet.IPackage[] deepDependencies = deepDependencyCountDict.Keys
+				.Select(i => this.FindPackageInfo(i.PackageName))
+				.NotNull()
+				.ToArray();
+			NuGet.IPackage[] installedPackages = this.manager.LocalRepository.GetPackages().ToArray();
 
-			foreach (NuGet.IPackage p in deepPackages)
+			foreach (NuGet.IPackage p in deepDependencies)
 			{
 				// Skip the ones that are already installed
-				if (this.manager.LocalRepository.GetPackages().Any(l => l.Id == p.Id && l.Version == p.Version))
+				if (installedPackages.Any(l => l.Id == p.Id && l.Version == p.Version))
 					continue;
 
 				if (!this.CheckLicenseAgreement(p))
