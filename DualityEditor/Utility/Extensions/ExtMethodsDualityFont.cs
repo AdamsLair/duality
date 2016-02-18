@@ -13,6 +13,7 @@ using SysDrawFontStyle = System.Drawing.FontStyle;
 using FontStyle = Duality.Drawing.FontStyle;
 
 using Duality.Drawing;
+using System.Text;
 
 namespace Duality.Editor
 {
@@ -28,7 +29,7 @@ namespace Duality.Editor
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> based on its embedded TrueType representation.
 		/// </summary>
-		public static void RenderGlyphs(this DualityFont font)
+		public static void RenderGlyphs(this DualityFont font, ExtendedCharSet extendedSet = null)
 		{
 			if (font.EmbeddedTrueTypeFont == null) throw new InvalidOperationException("Can't render glyphs of a Duality Font without embedded vector Font information.");
 
@@ -56,7 +57,7 @@ namespace Duality.Editor
 			}
 
 			// Render the font's glyphs
-			RenderGlyphs(font, manager.Families.FirstOrDefault());
+            RenderGlyphs(font, manager.Families.FirstOrDefault(), extendedSet);
 
 			// Yes, we have a minor memory leak here - both the Font buffer and the private
 			// Font collection. Unfortunately though, GDI+ won't let us dispose them
@@ -75,7 +76,7 @@ namespace Duality.Editor
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
 		/// </summary>
-		public static void RenderGlyphs(this DualityFont font, FontFamily fontFamily)
+        public static void RenderGlyphs(this DualityFont font, FontFamily fontFamily, ExtendedCharSet extendedSet = null)
 		{
 			// Determine System.Drawing font style
 			SysDrawFontStyle style = SysDrawFontStyle.Regular;
@@ -105,7 +106,7 @@ namespace Duality.Editor
 			// Render the font's glyphs
 			using (internalFont)
 			{
-				RenderGlyphs(font, internalFont);
+                RenderGlyphs(font, internalFont, extendedSet);
 			}
 		}
 		/// <summary>
@@ -113,12 +114,25 @@ namespace Duality.Editor
 		/// This method assumes that the system font's size and style match the one specified in
 		/// the specified Duality font.
 		/// </summary>
-		private static void RenderGlyphs(DualityFont target, SysDrawFont internalFont)
+		private static void RenderGlyphs(DualityFont target, SysDrawFont internalFont, ExtendedCharSet extendedSet = null)
 		{
-			DualityFont.GlyphData[] glyphs = new DualityFont.GlyphData[DefaultChars.Length];
+            string allChars = DefaultChars;
+            string allCharBaseLineRef = CharBaseLineRef;
+            string allCharDescentRef = CharDescentRef;
+            string allCharBodyAscentRef = CharBodyAscentRef;
+
+            if(extendedSet != null)
+            {
+                allChars += extendedSet.Chars;                      //Maybe we should check if any char is duplicated
+                allCharBaseLineRef += extendedSet.CharBaseLine;     //And also check availbility of those characters in current font
+                allCharDescentRef += extendedSet.CharDescent;
+                allCharBodyAscentRef += extendedSet.CharBodyAscent;
+            }
+
+            DualityFont.GlyphData[] glyphs = new DualityFont.GlyphData[allChars.Length];
 			for (int i = 0; i < glyphs.Length; i++)
 			{
-				glyphs[i].Glyph = DefaultChars[i];
+				glyphs[i].Glyph = allChars[i];
 			}
 
 			int bodyAscent = 0;
@@ -183,11 +197,11 @@ namespace Duality.Editor
 
 						glyphTemp.SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphTemp.Height);
 
-						if (CharBodyAscentRef.Contains(glyphs[i].Glyph))
+						if (allCharBodyAscentRef.Contains(glyphs[i].Glyph))
 							bodyAscent += glyphTempOpaqueSize.Y;
-						if (CharBaseLineRef.Contains(glyphs[i].Glyph))
+						if (allCharBaseLineRef.Contains(glyphs[i].Glyph))
 							baseLine += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
-						if (CharDescentRef.Contains(glyphs[i].Glyph))
+						if (allCharDescentRef.Contains(glyphs[i].Glyph))
 							descent += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
 						
 						bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
@@ -264,13 +278,21 @@ namespace Duality.Editor
 				float cellDescent = internalFont.FontFamily.GetCellDescent(internalFont.Style);
 
 				ascent = (int)Math.Round(cellAscent * internalFont.Size / emHeight);
-				bodyAscent /= CharBodyAscentRef.Length;
-				baseLine /= CharBaseLineRef.Length;
-				descent = (int)Math.Round(((float)descent / CharDescentRef.Length) - (float)baseLine);
+				bodyAscent /= allCharBodyAscentRef.Length;
+				baseLine /= allCharBaseLineRef.Length;
+				descent = (int)Math.Round(((float)descent / allCharDescentRef.Length) - (float)baseLine);
 			}
 
 			// Apply rendered glyph data to the Duality Font
 			target.SetGlyphData(pixelLayer, atlas, glyphs, (int)internalFont.Height, ascent, bodyAscent, descent, baseLine);
 		}
 	}
+
+    public class ExtendedCharSet
+    {
+        public string Chars;
+        public string CharBaseLine;
+        public string CharDescent;
+        public string CharBodyAscent;
+    }
 }
