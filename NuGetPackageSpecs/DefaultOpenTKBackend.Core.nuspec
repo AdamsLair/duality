@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>2.0.5</version>
+    <version>2.0.6</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -13,11 +13,10 @@
     <summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
     <tags>Duality Core Plugin Backend</tags>
-    <releaseNotes>Added Backend Postbuild for Editor Tests, Reduced Memory Allocations
-#FIX: The editor unit testing project didn't receive any editor backend plugins and failed as a result. Adding postbuild events for copying them over to the new testing assembly fixes this.
-#CHANGE: Now producing slightly less garbage each frame.</releaseNotes>
+    <releaseNotes>Fixed bug: VertexMode.Triangles rendered as VertexMode.Points
+#</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.1" />
+      <dependency id="AdamsLair.Duality" version="2.2.2" />
       <dependency id="AdamsLair.OpenTK" version="1.1.6" />
     </dependencies>
   </metadata>
