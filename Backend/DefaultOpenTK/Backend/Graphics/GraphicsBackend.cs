@@ -672,6 +672,7 @@ namespace Duality.Backend.DefaultOpenTK
 				case VertexMode.Lines:			return PrimitiveType.Lines;
 				case VertexMode.LineStrip:		return PrimitiveType.LineStrip;
 				case VertexMode.LineLoop:		return PrimitiveType.LineLoop;
+				case VertexMode.Triangles:		return PrimitiveType.Triangles;
 				case VertexMode.TriangleStrip:	return PrimitiveType.TriangleStrip;
 				case VertexMode.TriangleFan:	return PrimitiveType.TriangleFan;
 				case VertexMode.Quads:			return PrimitiveType.Quads;
