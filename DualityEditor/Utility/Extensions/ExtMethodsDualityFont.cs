@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Globalization;
 using System.Linq;
 using System.Drawing;
@@ -13,7 +14,7 @@ using SysDrawFontStyle = System.Drawing.FontStyle;
 using FontStyle = Duality.Drawing.FontStyle;
 
 using Duality.Drawing;
-using System.Text;
+
 
 namespace Duality.Editor
 {
