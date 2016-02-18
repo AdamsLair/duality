@@ -23,6 +23,8 @@ namespace Duality.Editor
 		private const string	CharDescentRef		= "pqgjyQ|";
 		private const string	CharBodyAscentRef	= "acemnorsuvwxz";
 
+		private static Dictionary<int,PrivateFontCollection> fontManagers;
+
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> based on its embedded TrueType representation.
 		/// </summary>
@@ -30,23 +32,45 @@ namespace Duality.Editor
 		{
 			if (font.EmbeddedTrueTypeFont == null) throw new InvalidOperationException("Can't render glyphs of a Duality Font without embedded vector Font information.");
 
-			using (PrivateFontCollection fontManager = new PrivateFontCollection())
-			{
-				// Load custom font family using System.Drawing
-				GCHandle handle = GCHandle.Alloc(font.EmbeddedTrueTypeFont, GCHandleType.Pinned);
-				try
-				{
-					IntPtr fontMemPtr = handle.AddrOfPinnedObject();
-					fontManager.AddMemoryFont(fontMemPtr, font.EmbeddedTrueTypeFont.Length);
-				}
-				finally
-				{
-					handle.Free();
-				}
+			if (fontManagers == null)
+				fontManagers = new Dictionary<int,PrivateFontCollection>();
 
-				// Render the font's glyphs
-				RenderGlyphs(font, fontManager.Families.FirstOrDefault());
+			// Allocate one PrivateFontCollection for each embedded TrueType Font
+			// This is an unfortunate requirement to keep track of which Font is which,
+			// since a byte[] doesn't give it away, and a Font collection won't tell us
+			// which one we just added.
+			PrivateFontCollection manager;
+			int fontId = font.EmbeddedTrueTypeFont.GetHashCode();
+			if (!fontManagers.TryGetValue(fontId, out manager))
+			{
+				manager = new PrivateFontCollection();
+				fontManagers.Add(fontId, manager);
 			}
+
+			// Load custom font family using System.Drawing
+			if (manager.Families.Length == 0)
+			{
+				IntPtr fontBuffer = Marshal.AllocCoTaskMem(font.EmbeddedTrueTypeFont.Length);
+				Marshal.Copy(font.EmbeddedTrueTypeFont, 0, fontBuffer, font.EmbeddedTrueTypeFont.Length);
+				manager.AddMemoryFont(fontBuffer, font.EmbeddedTrueTypeFont.Length);
+			}
+
+			// Render the font's glyphs
+			RenderGlyphs(font, manager.Families.FirstOrDefault());
+
+			// Yes, we have a minor memory leak here - both the Font buffer and the private
+			// Font collection. Unfortunately though, GDI+ won't let us dispose them
+			// properly due to aggressive Font caching, see here:
+			//
+			// http://stackoverflow.com/questions/25583394/privatefontcollection-addmemoryfont-producing-random-errors-on-windows-server-20
+			//
+			// "Standard GDI+ lossage, disposing a Font does not actually destroy it. 
+			// It gets put back into a cache, with the assumption that it will be used again. 
+			// An important perf optimization, creating fonts is pretty expensive. That ends 
+			// poorly for private fonts when you destroy their home, the font will use 
+			// released memory. Producing bewildering results, including hard crashes. You'll 
+			// need to keep the collection around, as well as the IntPtr."
+			// – Hans Passant Aug 30 '14 at 16:13
 		}
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
@@ -63,7 +87,15 @@ namespace Duality.Editor
 			if (fontFamily != null)
 			{
 				try { internalFont = new SysDrawFont(fontFamily, font.Size, style); }
-				catch (Exception) { }
+				catch (Exception e)
+				{
+					Log.Editor.WriteError(
+						"Failed to create System Font '{1} {2}, {3}' for rendering Duality Font glyphs: {0}",
+						Log.Exception(e),
+						fontFamily.Name,
+						font.Size,
+						style);
+				}
 			}
 
 			// If creating the font failed, fall back to a default one
@@ -104,7 +136,10 @@ namespace Duality.Editor
 			int rows;
 			cols = rows = (int)Math.Ceiling(Math.Sqrt(glyphs.Length));
 
-			PixelData pixelLayer = new PixelData(MathF.RoundToInt(cols * internalFont.Size * 1.2f), MathF.RoundToInt(rows * internalFont.Height * 1.2f));
+			PixelData pixelLayer = new PixelData(
+				MathF.RoundToInt(cols * internalFont.Size * 1.2f), 
+				MathF.RoundToInt(rows * internalFont.Height * 1.2f),
+				ColorRgba.TransparentBlack);
 			PixelData glyphTemp;
 			PixelData glyphTempTypo;
 			Bitmap bm;

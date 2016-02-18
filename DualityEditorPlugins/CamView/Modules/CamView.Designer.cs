@@ -112,6 +112,7 @@
 			// 
 			this.toolbarCamera.AutoSize = false;
 			this.toolbarCamera.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
+			this.toolbarCamera.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolbarCamera.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolbarCamera.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.stateSelector,
@@ -245,7 +246,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(162)))), ((int)(((byte)(162)))), ((int)(((byte)(162)))));
+			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.ClientSize = new System.Drawing.Size(651, 438);
 			this.Controls.Add(this.toolbarCamera);
 			this.DockAreas = ((WeifenLuo.WinFormsUI.Docking.DockAreas)((WeifenLuo.WinFormsUI.Docking.DockAreas.Float | WeifenLuo.WinFormsUI.Docking.DockAreas.Document)));
@@ -258,7 +259,6 @@
 			this.toolbarCamera.ResumeLayout(false);
 			this.toolbarCamera.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 

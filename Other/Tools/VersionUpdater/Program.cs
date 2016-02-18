@@ -416,7 +416,9 @@ namespace VersionUpdater
 				};
 
 				// Determine the project's AssemblyInfo file
-				info.AssemblyInfoFilePath = Directory.EnumerateFiles(info.ProjectRootDir, "AssemblyInfo.cs", SearchOption.AllDirectories).FirstOrDefault();
+				info.AssemblyInfoFilePath = Directory.EnumerateFiles(info.ProjectRootDir, "AssemblyInfo.cs", SearchOption.AllDirectories)
+					.OrderBy(path => GetPathDepth(path))
+					.FirstOrDefault();
 
 				// Determine which nuspec belongs to this project
 				foreach (var pair in nuspecFiles)
@@ -706,6 +708,16 @@ namespace VersionUpdater
 			path = Path.GetFullPath(path);
 			relativeBaseDir = Path.GetFullPath(relativeBaseDir);
 			return path.Substring(relativeBaseDir.Length + 1, path.Length - relativeBaseDir.Length - 1);
+		}
+		private static int GetPathDepth(string path)
+		{
+			int depth = 0;
+			while (!string.IsNullOrEmpty(path))
+			{
+				path = Path.GetDirectoryName(path);
+				depth++;
+			}
+			return depth;
 		}
 	}
 }
