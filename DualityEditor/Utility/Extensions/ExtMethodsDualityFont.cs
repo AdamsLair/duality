@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Reflection;
@@ -19,10 +20,13 @@ namespace Duality.Editor
 {
 	public static class ExtMethodsDualityFont
 	{
-		private const string DefaultChars      = "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß";
-		private const string CharBaseLineRef   = "acemnorsuvwxz";
-		private const string CharDescentRef    = "pqgjyQ|";
-		private const string CharBodyAscentRef = "acemnorsuvwxz";
+		private static readonly FontRenderGlyphCharSet DefaultCharSet = new FontRenderGlyphCharSet
+		{
+			Chars             = "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß",
+			CharBaseLineRef   = "acemnorsuvwxz",
+			CharDescentRef    = "pqgjyQ|",
+			CharBodyAscentRef = "acemnorsuvwxz"
+		};
 
 		private static Dictionary<int,PrivateFontCollection> fontManagers;
 
@@ -107,7 +111,10 @@ namespace Duality.Editor
 			// Render the font's glyphs
 			using (internalFont)
 			{
-				RenderGlyphs(font, internalFont, extendedSet);
+				RenderGlyphs(
+					font, 
+					internalFont, 
+					DefaultCharSet.MergedWith(extendedSet));
 			}
 		}
 		/// <summary>
@@ -115,25 +122,12 @@ namespace Duality.Editor
 		/// This method assumes that the system font's size and style match the one specified in
 		/// the specified Duality font.
 		/// </summary>
-		private static void RenderGlyphs(DualityFont target, SysDrawFont internalFont, FontRenderGlyphCharSet extendedSet = null)
+		private static void RenderGlyphs(DualityFont target, SysDrawFont internalFont, FontRenderGlyphCharSet charSet)
 		{
-			string allChars = DefaultChars;
-			string allCharBaseLineRef = CharBaseLineRef;
-			string allCharDescentRef = CharDescentRef;
-			string allCharBodyAscentRef = CharBodyAscentRef;
-
-			if (extendedSet != null)
-			{
-				allChars += extendedSet.Chars;
-				allCharBaseLineRef += extendedSet.CharBaseLine;
-				allCharDescentRef += extendedSet.CharDescent;
-				allCharBodyAscentRef += extendedSet.CharBodyAscent;
-			}
-
-			DualityFont.GlyphData[] glyphs = new DualityFont.GlyphData[allChars.Length];
+			DualityFont.GlyphData[] glyphs = new DualityFont.GlyphData[charSet.Chars.Length];
 			for (int i = 0; i < glyphs.Length; i++)
 			{
-				glyphs[i].Glyph = allChars[i];
+				glyphs[i].Glyph = charSet.Chars[i];
 			}
 
 			int bodyAscent = 0;
@@ -198,11 +192,11 @@ namespace Duality.Editor
 
 						glyphTemp.SubImage(glyphTempOpaqueTopLeft.X, 0, glyphTempOpaqueSize.X, glyphTemp.Height);
 
-						if (allCharBodyAscentRef.Contains(glyphs[i].Glyph))
+						if (charSet.CharBodyAscentRef.Contains(glyphs[i].Glyph))
 							bodyAscent += glyphTempOpaqueSize.Y;
-						if (allCharBaseLineRef.Contains(glyphs[i].Glyph))
+						if (charSet.CharBaseLineRef.Contains(glyphs[i].Glyph))
 							baseLine += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
-						if (allCharDescentRef.Contains(glyphs[i].Glyph))
+						if (charSet.CharDescentRef.Contains(glyphs[i].Glyph))
 							descent += glyphTempOpaqueTopLeft.Y + glyphTempOpaqueSize.Y;
 						
 						bm = new Bitmap((int)Math.Ceiling(Math.Max(1, charSize.Width)), internalFont.Height + 1);
@@ -279,9 +273,9 @@ namespace Duality.Editor
 				float cellDescent = internalFont.FontFamily.GetCellDescent(internalFont.Style);
 
 				ascent = (int)Math.Round(cellAscent * internalFont.Size / emHeight);
-				bodyAscent /= allCharBodyAscentRef.Length;
-				baseLine /= allCharBaseLineRef.Length;
-				descent = (int)Math.Round(((float)descent / allCharDescentRef.Length) - (float)baseLine);
+				bodyAscent /= charSet.CharBodyAscentRef.Length;
+				baseLine /= charSet.CharBaseLineRef.Length;
+				descent = (int)Math.Round(((float)descent / charSet.CharDescentRef.Length) - (float)baseLine);
 			}
 
 			// Apply rendered glyph data to the Duality Font
@@ -290,25 +284,77 @@ namespace Duality.Editor
 	}
 
 	/// <summary>
-	/// Represents a character set that can be used to specify additional characters in <see cref="ExtMethodsDualityFont.RenderGlyphs"/>.
+	/// Represents a character set that can be used to specify additional characters 
+	/// in <see cref="ExtMethodsDualityFont.RenderGlyphs(DualityFont, FontRenderGlyphCharSet)"/>.
 	/// </summary>
 	public class FontRenderGlyphCharSet
 	{
+		private string chars             = string.Empty;
+		private string charBaseLineRef   = string.Empty;
+		private string charDescentRef    = string.Empty;
+		private string charBodyAscentRef = string.Empty;
+
 		/// <summary>
 		/// [GET / SET] All characters that will be available in the rendered character set.
 		/// </summary>
-		public string Chars { get; set; }
+		public string Chars
+		{
+			get { return this.chars; }
+			set { this.chars = value ?? string.Empty; }
+		}
 		/// <summary>
 		/// [GET / SET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font"/> <see cref="Duality.Resources.Font.BaseLine"/> parameter.
 		/// </summary>
-		public string CharBaseLine { get; set; }
+		public string CharBaseLineRef
+		{
+			get { return this.charBaseLineRef; }
+			set { this.charBaseLineRef = value ?? string.Empty; }
+		}
 		/// <summary>
 		/// [GET / SET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font"/> <see cref="Duality.Resources.Font.Descent"/> parameter.
 		/// </summary>
-		public string CharDescent { get; set; }
+		public string CharDescentRef
+		{
+			get { return this.charDescentRef; }
+			set { this.charDescentRef = value ?? string.Empty; }
+		}
 		/// <summary>
 		/// [GET / SET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font"/> <see cref="Duality.Resources.Font.Ascent"/> parameter.
 		/// </summary>
-		public string CharBodyAscent { get; set; }
+		public string CharBodyAscentRef
+		{
+			get { return this.charBodyAscentRef; }
+			set { this.charBodyAscentRef = value ?? string.Empty; }
+		}
+
+		/// <summary>
+		/// Merges two character sets to form a new one that contains both of their characters without duplicates.
+		/// </summary>
+		/// <param name="second"></param>
+		/// <returns></returns>
+		public FontRenderGlyphCharSet MergedWith(FontRenderGlyphCharSet second)
+		{
+			return new FontRenderGlyphCharSet
+			{
+				Chars             = MergeCharList(this.Chars,             (second != null) ? second.Chars             : null),
+				CharBaseLineRef   = MergeCharList(this.CharBaseLineRef,   (second != null) ? second.CharBaseLineRef   : null),
+				CharDescentRef    = MergeCharList(this.CharDescentRef,    (second != null) ? second.CharDescentRef    : null),
+				CharBodyAscentRef = MergeCharList(this.CharBodyAscentRef, (second != null) ? second.CharBodyAscentRef : null),
+			};
+		}
+
+		private static string MergeCharList(string first, string second)
+		{
+			if (string.IsNullOrEmpty(first)) return second ?? string.Empty;
+			if (string.IsNullOrEmpty(second)) return first ?? string.Empty;
+
+			StringBuilder builder = new StringBuilder(first, first.Length + second.Length);
+			for (int i = 0; i < second.Length; i++)
+			{
+				if (first.IndexOf(second[i]) == -1) continue;
+				builder.Append(second[i]);
+			}
+			return builder.ToString();
+		}
 	}
 }
