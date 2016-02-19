@@ -28,8 +28,9 @@ namespace Duality.Editor
 
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> based on its embedded TrueType representation.
+		/// <param name="extendedSet">Extended set of characters for renderning.</param>
 		/// </summary>
-		public static void RenderGlyphs(this DualityFont font, ExtendedCharSet extendedSet = null)
+		public static void RenderGlyphs(this DualityFont font, FontRenderGlyphCharSet extendedSet = null)
 		{
 			if (font.EmbeddedTrueTypeFont == null) throw new InvalidOperationException("Can't render glyphs of a Duality Font without embedded vector Font information.");
 
@@ -76,7 +77,7 @@ namespace Duality.Editor
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
 		/// </summary>
-        public static void RenderGlyphs(this DualityFont font, FontFamily fontFamily, ExtendedCharSet extendedSet = null)
+		public static void RenderGlyphs(this DualityFont font, FontFamily fontFamily, FontRenderGlyphCharSet extendedSet = null)
 		{
 			// Determine System.Drawing font style
 			SysDrawFontStyle style = SysDrawFontStyle.Regular;
@@ -114,20 +115,20 @@ namespace Duality.Editor
 		/// This method assumes that the system font's size and style match the one specified in
 		/// the specified Duality font.
 		/// </summary>
-		private static void RenderGlyphs(DualityFont target, SysDrawFont internalFont, ExtendedCharSet extendedSet = null)
+		private static void RenderGlyphs(DualityFont target, SysDrawFont internalFont, FontRenderGlyphCharSet extendedSet = null)
 		{
             string allChars = DefaultChars;
             string allCharBaseLineRef = CharBaseLineRef;
             string allCharDescentRef = CharDescentRef;
             string allCharBodyAscentRef = CharBodyAscentRef;
 
-            if(extendedSet != null)
-            {
-                allChars += extendedSet.Chars;                      //Maybe we should check if any char is duplicated
-                allCharBaseLineRef += extendedSet.CharBaseLine;     //And also check availbility of those characters in current font
-                allCharDescentRef += extendedSet.CharDescent;
-                allCharBodyAscentRef += extendedSet.CharBodyAscent;
-            }
+			if (extendedSet != null)
+			{
+				allChars += extendedSet.Chars;                      //Maybe we should check if any char is duplicated
+				allCharBaseLineRef += extendedSet.CharBaseLine;     //And also check availbility of those characters in current font
+				allCharDescentRef += extendedSet.CharDescent;		//Anyway checking is much more cheaper than drawing a one char
+				allCharBodyAscentRef += extendedSet.CharBodyAscent;
+			}
 
             DualityFont.GlyphData[] glyphs = new DualityFont.GlyphData[allChars.Length];
 			for (int i = 0; i < glyphs.Length; i++)
@@ -287,12 +288,26 @@ namespace Duality.Editor
 			target.SetGlyphData(pixelLayer, atlas, glyphs, (int)internalFont.Height, ascent, bodyAscent, descent, baseLine);
 		}
 	}
-
-    public class ExtendedCharSet
+	/// <summary>
+	/// Allows adding additional characters in Duality.Editor.ExtMethodDualityFont.RenderGlyphs() which already contains all basic chars, symbols and numbers.
+	/// </summary>
+	public class FontRenderGlyphCharSet
     {
-        public string Chars;
-        public string CharBaseLine;
-        public string CharDescent;
-        public string CharBodyAscent;
+		/// <summary>
+		/// All characters which will be rendered using current font.
+		/// </summary>
+		public string Chars { get; set; }
+		/// <summary>
+		/// All characters which will be rendered using <see cref="Duality.Resources.Font.BaseLine"/> parameter
+		/// </summary>
+		public string CharBaseLine { get; set; }
+		/// <summary>
+		/// All characters which will be rendered using <see cref="Duality.Resources.Font.Descent"/> parameter
+		/// </summary>
+		public string CharDescent { get; set; }
+		/// <summary>
+		/// All characters which will be rendered using <see cref="Duality.Resources.Font.Ascent"/> parameter
+		/// </summary>
+		public string CharBodyAscent { get; set; }
     }
 }
