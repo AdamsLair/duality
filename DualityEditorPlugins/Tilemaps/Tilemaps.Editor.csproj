@@ -44,8 +44,11 @@
       <HintPath>..\..\packages\AdamsLair.WinForms.1.1.1.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Aga.Controls, Version=1.7.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\AdamsLair.TreeViewAdv.1.7.5.0\lib\net20\Aga.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -66,6 +69,12 @@
     </Compile>
     <Compile Include="Modules\SourcePaletteTilesetView.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Modules\TilesetEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilesetEditor.Designer.cs">
+      <DependentUpon>TilesetEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="PreviewGenerators\TilesetPreviewGenerator.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -140,6 +149,9 @@
     <EmbeddedResource Include="Modules\TilemapToolSourcePalette.resx">
       <DependentUpon>TilemapToolSourcePalette.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Modules\TilesetEditor.resx">
+      <DependentUpon>TilesetEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -175,6 +187,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\IconResize.png" />
+    <None Include="EmbeddedResources\IconTilesetEditor.png" />
+    <None Include="EmbeddedResources\IconTilesetCollisionInfo.png" />
+    <None Include="EmbeddedResources\IconTilesetVisualLayers.png" />
     <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
     <None Include="EmbeddedResources\IconTilePalette.png" />
     <None Include="EmbeddedResources\CursorPick.png" />

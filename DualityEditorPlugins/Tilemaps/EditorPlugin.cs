@@ -22,9 +22,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public class TilemapsEditorPlugin : EditorPlugin
 	{
-		private static readonly string          ElementNameTilePalette = "TilePalette";
-		public  static readonly ITileDrawSource EmptyTileDrawingSource = new DummyTileDrawSource();
-		public  static readonly string          ActionTilemapEditor    = "TilemapEditor";
+		private static readonly string          ElementNameTilePalette   = "TilePalette";
+		private static readonly string          ElementNameTilesetEditor = "TilesetEditor";
+		public  static readonly ITileDrawSource EmptyTileDrawingSource   = new DummyTileDrawSource();
+		public  static readonly string          ActionTilemapEditor      = "TilemapEditor";
 
 		private static TilemapsEditorPlugin instance = null;
 		public static TilemapsEditorPlugin Instance
@@ -34,9 +35,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 
 		private bool                     isLoading                = false;
+		private TilesetEditor            tilesetEditor            = null;
 		private TilemapToolSourcePalette tilePalette              = null;
 		private int                      pendingLocalTilePalettes = 0;
 		private XElement                 tilePaletteSettings      = null;
+		private XElement                 tilesetEditorSettings    = null;
 		private ITileDrawSource          tileDrawingSource        = EmptyTileDrawingSource;
 
 		/// <summary>
@@ -76,6 +79,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			IDockContent result;
 			if (dockContentType == typeof(TilemapToolSourcePalette))
 				result = this.RequestTilePalette();
+			else if (dockContentType == typeof(TilesetEditor))
+				result = this.RequestTilesetEditor();
 			else
 				result = base.DeserializeDockContent(dockContentType);
 			this.isLoading = false;
@@ -93,6 +98,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Icon = TilemapsResCache.IconTilePalette,
 				ActionHandler = this.menuItemTilePalette_Click
 			});
+			viewItem.AddItem(new MenuModelItem
+			{
+				Name = TilemapsRes.MenuItemName_TilesetEditor,
+				Icon = TilemapsResCache.IconTilesetEditor,
+				ActionHandler = this.menuItemTilesetEditor_Click
+			});
 
 			// Register events
 			FileEventManager.ResourceModified += this.FileEventManager_ResourceModified;
@@ -100,39 +111,51 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		protected override void SaveUserData(XElement node)
 		{
-			// If we have a tile palette, save its settings to the cache node
+			// Save editor settings to local cache node
 			if (this.tilePalette != null)
 			{
 				this.tilePaletteSettings = new XElement(ElementNameTilePalette);
 				this.tilePalette.SaveUserData(this.tilePaletteSettings);
 			}
-
-			// If there are cached tilemap settings available, save them persistently.
-			if (this.tilePaletteSettings != null && !this.tilePaletteSettings.IsEmpty)
+			if (this.tilesetEditor != null)
 			{
-				node.Add(new XElement(this.tilePaletteSettings));
+				this.tilesetEditorSettings = new XElement(ElementNameTilesetEditor);
+				this.tilesetEditor.SaveUserData(this.tilesetEditorSettings);
 			}
+
+			// Save settings from the local cache node persistently.
+			if (this.tilePaletteSettings != null && !this.tilePaletteSettings.IsEmpty)
+				node.Add(new XElement(this.tilePaletteSettings));
+			if (this.tilesetEditorSettings != null && !this.tilesetEditorSettings.IsEmpty)
+				node.Add(new XElement(this.tilesetEditorSettings));
 		}
 		protected override void LoadUserData(XElement node)
 		{
 			this.isLoading = true;
 
-			// Retrieve tile palette settings from persistent editor data
+			// Retrieve settings from persistent editor data and put them into the local cache node
 			foreach (XElement tilePaletteElem in node.Elements(ElementNameTilePalette))
 			{
 				int i = tilePaletteElem.GetAttributeValue("id", 0);
 				if (i < 0 || i >= 1) continue;
 
-				// Cache settings for later
 				this.tilePaletteSettings = new XElement(tilePaletteElem);
 				break;
 			}
-
-			// If we have an active tile palette, apply the settings directly
-			if (this.tilePalette != null)
+			foreach (XElement tilesetEditorElem in node.Elements(ElementNameTilesetEditor))
 			{
-				this.tilePalette.LoadUserData(this.tilePaletteSettings);
+				int i = tilesetEditorElem.GetAttributeValue("id", 0);
+				if (i < 0 || i >= 1) continue;
+
+				this.tilesetEditorSettings = new XElement(tilesetEditorElem);
+				break;
 			}
+
+			// If we have an active matching editors, apply the settings directly
+			if (this.tilePalette != null)
+				this.tilePalette.LoadUserData(this.tilePaletteSettings);
+			if (this.tilesetEditor != null)
+				this.tilesetEditor.LoadUserData(this.tilesetEditorSettings);
 
 			this.isLoading = false;
 		}
@@ -163,14 +186,35 @@ namespace Duality.Editor.Plugins.Tilemaps
 			else
 				this.pendingLocalTilePalettes--;
 		}
+		
+		private TilesetEditor RequestTilesetEditor()
+		{
+			// Create a new tileset editor, if no is available right now
+			if (this.tilesetEditor == null || this.tilesetEditor.IsDisposed)
+			{
+				this.tilesetEditor = new TilesetEditor();
+				this.tilesetEditor.FormClosed += this.tilesetEditor_FormClosed;
+			
+				// If there are cached settings available, apply them to the new editor
+				if (this.tilePaletteSettings != null)
+					this.tilesetEditor.LoadUserData(this.tilePaletteSettings);
+			}
 
+			// If we're not creating it as part of the loading procedure, add it to the main docking layout directly
+			if (!this.isLoading)
+			{
+				this.tilesetEditor.Show(DualityEditorApp.MainForm.MainDockPanel);
+			}
+
+			return this.tilesetEditor;
+		}
 		private TilemapToolSourcePalette RequestTilePalette()
 		{
 			// Create a new tile palette, if none is available right now
 			if (this.tilePalette == null || this.tilePalette.IsDisposed)
 			{
 				this.tilePalette = new TilemapToolSourcePalette();
-				this.tilePalette.VisibleChanged += tilePalette_VisibleChanged;
+				this.tilePalette.VisibleChanged += this.tilePalette_VisibleChanged;
 				this.tilePalette.HideOnClose = true;
 			
 				// If there are cached settings available, apply them to the new palette
@@ -186,12 +230,30 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			return this.tilePalette;
 		}
+		
+		private void tilesetEditor_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			this.tilesetEditorSettings = new XElement(ElementNameTilesetEditor);
+			this.tilesetEditor.SaveUserData(this.tilesetEditorSettings);
 
+			this.tilesetEditor.FormClosed -= this.tilesetEditor_FormClosed;
+			this.tilesetEditor.Dispose();
+			this.tilesetEditor = null;
+		}
 		private void tilePalette_VisibleChanged(object sender, EventArgs e)
 		{
 			if (this.tilePalette.IsHidden)
 			{
 				this.pendingLocalTilePalettes--;
+			}
+		}
+		private void menuItemTilesetEditor_Click(object sender, EventArgs e)
+		{
+			TilesetEditor editor = this.RequestTilesetEditor();
+			if (editor.Pane != null)
+			{
+				editor.Pane.Activate();
+				editor.Focus();
 			}
 		}
 		private void menuItemTilePalette_Click(object sender, EventArgs e)

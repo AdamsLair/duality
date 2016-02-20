@@ -214,4 +214,10 @@
   <data name="TilemapSetupHeader_ResizeSingleTilemap" xml:space="preserve">
     <value>Resize '{0}'</value>
   </data>
+  <data name="MenuItemName_TilesetEditor" xml:space="preserve">
+    <value>Tileset Editor</value>
+  </data>
+  <data name="IconTilesetEditor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetEditor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
