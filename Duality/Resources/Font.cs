@@ -107,6 +107,15 @@ namespace Duality.Resources
 			/// The glyphs kerning samples to the right.
 			/// </summary>
 			public int[] KerningSamplesRight;
+
+			public override string ToString()
+			{
+				return string.Format("Glyph '{0}', {1}x{2}, Offset {3}", 
+					this.Glyph, 
+					this.Width, 
+					this.Height, 
+					this.OffsetX);
+			}
 		}
 
 		
@@ -325,6 +334,7 @@ namespace Duality.Resources
 			this.bodyAscent = bodyAscent;
 			this.descent = descent;
 			this.baseLine = baseLine;
+			this.maxGlyphWidth = 0;
 			for (int i = 0; i < this.glyphs.Length; i++)
 			{
 				this.maxGlyphWidth = Math.Max(this.maxGlyphWidth, this.glyphs[i].Width);
@@ -885,10 +895,10 @@ namespace Duality.Resources
 				for (int k = 0; k < glyphData.KerningSamplesRight.Length; k++)
 					minSum = Math.Min(minSum, glyphData.KerningSamplesRight[k] + glyphDataNext.KerningSamplesLeft[k]);
 
-				glyphXAdv = (this.monospace ? this.maxGlyphWidth : -glyphData.OffsetX + glyphData.Width) + this.spacing - minSum;
+				glyphXAdv = glyphData.Width - glyphData.OffsetX + this.spacing - minSum;
 			}
 			else
-				glyphXAdv = (this.monospace ? this.maxGlyphWidth : -glyphData.OffsetX + glyphData.Width) + this.spacing;
+				glyphXAdv = (this.monospace ? this.maxGlyphWidth : (glyphData.Width - glyphData.OffsetX)) + this.spacing;
 		}
 
 		protected override void OnLoaded()

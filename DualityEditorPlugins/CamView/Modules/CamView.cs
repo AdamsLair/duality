@@ -1205,17 +1205,16 @@ namespace Duality.Editor.Plugins.CamView
 
 			if (this.activeState.EngineUserInput)
 			{
-				Key inputKey = e.KeyCode.ToDualitySingle();
-				bool wasPressed = this.inputKeyPressed[(int)inputKey];
-				this.inputKeyPressed = this.inputKeyPressed.Or(e.KeyCode.ToDuality());
+				Key inputKey = e.KeyCode.ToDualityKey();
+				this.inputKeyPressed[(int)inputKey] = true;
 			}
 		}
 		private void graphicsControl_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (this.activeState.EngineUserInput)
 			{
-				Key inputKey = e.KeyCode.ToDualitySingle();
-				this.inputKeyPressed = this.inputKeyPressed.And(e.KeyCode.ToDuality().Not());
+				Key inputKey = e.KeyCode.ToDualityKey();
+				this.inputKeyPressed[(int)inputKey] = false;
 			}
 
 			// Use the number keys for a quick-select of states - but only when not consumed by the game
