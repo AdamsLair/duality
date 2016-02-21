@@ -327,7 +327,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No Tileset selected.
+        ///   Looks up a localized string similar to No Tileset available.
         /// </summary>
         internal static string TilePalette_NoTilesetSelected {
             get {

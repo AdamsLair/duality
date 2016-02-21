@@ -12,7 +12,14 @@
     <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
       <contentPath dataType="String">Default:DrawTechnique:Mask</contentPath>
     </technique>
-    <textures />
+    <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="1100841590" surrogate="true">
+      <header />
+      <body>
+        <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
+          <contentPath dataType="String">Default:Texture:White</contentPath>
+        </mainTex>
+      </body>
+    </textures>
     <uniforms />
   </baseMaterial>
   <renderConfig dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.TilesetRenderInput]]" id="2035693768">

@@ -152,9 +152,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			// If we have an active matching editors, apply the settings directly
-			if (this.tilePalette != null)
+			if (this.tilePalette != null && this.tilePaletteSettings != null)
 				this.tilePalette.LoadUserData(this.tilePaletteSettings);
-			if (this.tilesetEditor != null)
+			if (this.tilesetEditor != null && this.tilesetEditorSettings != null)
 				this.tilesetEditor.LoadUserData(this.tilesetEditorSettings);
 
 			this.isLoading = false;
