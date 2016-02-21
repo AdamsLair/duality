@@ -12,10 +12,36 @@ using Duality.Editor.Controls.ToolStrip;
 
 using WeifenLuo.WinFormsUI.Docking;
 
+using Aga.Controls.Tree;
+
 namespace Duality.Editor.Plugins.Tilemaps
 {
 	public partial class TilesetEditor : DockContent
 	{
+		private class VisualLayerNode : Node
+		{
+			private TilesetRenderInput layer = null;
+
+			public TilesetRenderInput VisualLayer
+			{
+				get { return this.layer; }
+			}
+			public override string Text
+			{
+				get { return this.layer.Name; }
+				set { throw new NotSupportedException(); }
+			}
+
+			public VisualLayerNode(TilesetRenderInput layer) : base()
+			{
+				this.layer = layer;
+			}
+		}
+
+		
+		private	TreeModel visualLayerModel = null;
+
+
 		private ContentRef<Tileset> SelectedTileset
 		{
 			get { return this.tilesetView.TargetTileset; }
@@ -28,6 +54,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.InitializeComponent();
 			this.toolStripModeSelect.Renderer = new DualitorToolStripProfessionalRenderer();
 			this.toolStripEdit.Renderer = new DualitorToolStripProfessionalRenderer();
+
+			this.visualLayerModel = new TreeModel();
+			this.visualLayerModel.Nodes.Add(new Node("Test"));
+			this.visualLayerModel.Nodes.Add(new Node("Test2"));
 		}
 		
 		internal void SaveUserData(XElement node)
@@ -58,6 +88,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
+			this.layerView.Model = this.visualLayerModel;
 
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing        += this.Resource_ResourceDisposing;

@@ -37,8 +37,9 @@
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
 			this.checkModeVisualLayers = new System.Windows.Forms.ToolStripButton();
 			this.checkModeCollisionInfo = new System.Windows.Forms.ToolStripButton();
-			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
+			this.nodeControlSummary = new Aga.Controls.Tree.NodeControls.NodeTextBox();
+			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -78,6 +79,7 @@
 			this.layerView.Margin = new System.Windows.Forms.Padding(0);
 			this.layerView.Model = null;
 			this.layerView.Name = "layerView";
+			this.layerView.NodeControls.Add(this.nodeControlSummary);
 			this.layerView.NodeFilter = null;
 			this.layerView.SelectedNode = null;
 			this.layerView.ShowLines = false;
@@ -145,18 +147,6 @@
 			this.checkModeCollisionInfo.Size = new System.Drawing.Size(97, 22);
 			this.checkModeCollisionInfo.Text = "Collision Info";
 			// 
-			// tilesetView
-			// 
-			this.tilesetView.AutoScroll = true;
-			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tilesetView.Location = new System.Drawing.Point(0, 0);
-			this.tilesetView.Margin = new System.Windows.Forms.Padding(0);
-			this.tilesetView.Name = "tilesetView";
-			this.tilesetView.Size = new System.Drawing.Size(319, 302);
-			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
-			this.tilesetView.TabIndex = 2;
-			this.tilesetView.TabStop = true;
-			// 
 			// splitMain
 			// 
 			this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -176,6 +166,26 @@
 			this.splitMain.Size = new System.Drawing.Size(503, 302);
 			this.splitMain.SplitterDistance = 180;
 			this.splitMain.TabIndex = 3;
+			// 
+			// nodeControlSummary
+			// 
+			this.nodeControlSummary.DataPropertyName = "Text";
+			this.nodeControlSummary.IncrementalSearchEnabled = true;
+			this.nodeControlSummary.LeftMargin = 3;
+			this.nodeControlSummary.ParentColumn = null;
+			// 
+			// tilesetView
+			// 
+			this.tilesetView.AutoScroll = true;
+			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(4, 4);
+			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tilesetView.Location = new System.Drawing.Point(0, 0);
+			this.tilesetView.Margin = new System.Windows.Forms.Padding(0);
+			this.tilesetView.Name = "tilesetView";
+			this.tilesetView.Size = new System.Drawing.Size(319, 302);
+			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
+			this.tilesetView.TabIndex = 2;
+			this.tilesetView.TabStop = true;
 			// 
 			// TilesetEditor
 			// 
@@ -218,5 +228,6 @@
 		private System.Windows.Forms.ToolStripButton buttonRemoveLayer;
 		private System.Windows.Forms.ToolStripButton buttonBrightness;
 		private System.Windows.Forms.SplitContainer splitMain;
+		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeControlSummary;
 	}
 }
