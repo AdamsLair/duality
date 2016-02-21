@@ -30,15 +30,16 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TilesetEditor));
 			this.toolStripModeSelect = new System.Windows.Forms.ToolStrip();
+			this.checkModeVisualLayers = new System.Windows.Forms.ToolStripButton();
+			this.checkModeCollisionInfo = new System.Windows.Forms.ToolStripButton();
 			this.layerView = new Aga.Controls.Tree.TreeViewAdv();
+			this.nodeControlIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
+			this.nodeControlSummary = new Duality.Editor.Plugins.Tilemaps.TilesetEditor.SummaryNodeControl();
 			this.toolStripEdit = new System.Windows.Forms.ToolStrip();
 			this.buttonAddLayer = new System.Windows.Forms.ToolStripButton();
 			this.buttonRemoveLayer = new System.Windows.Forms.ToolStripButton();
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
-			this.checkModeVisualLayers = new System.Windows.Forms.ToolStripButton();
-			this.checkModeCollisionInfo = new System.Windows.Forms.ToolStripButton();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
-			this.nodeControlSummary = new Aga.Controls.Tree.NodeControls.NodeTextBox();
 			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
@@ -62,6 +63,22 @@
 			this.toolStripModeSelect.TabIndex = 0;
 			this.toolStripModeSelect.Text = "Main Toolstrip";
 			// 
+			// checkModeVisualLayers
+			// 
+			this.checkModeVisualLayers.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetVisualLayers;
+			this.checkModeVisualLayers.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.checkModeVisualLayers.Name = "checkModeVisualLayers";
+			this.checkModeVisualLayers.Size = new System.Drawing.Size(94, 22);
+			this.checkModeVisualLayers.Text = "Visual Layers";
+			// 
+			// checkModeCollisionInfo
+			// 
+			this.checkModeCollisionInfo.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetCollisionInfo;
+			this.checkModeCollisionInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.checkModeCollisionInfo.Name = "checkModeCollisionInfo";
+			this.checkModeCollisionInfo.Size = new System.Drawing.Size(97, 22);
+			this.checkModeCollisionInfo.Text = "Collision Info";
+			// 
 			// layerView
 			// 
 			this.layerView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
@@ -79,13 +96,27 @@
 			this.layerView.Margin = new System.Windows.Forms.Padding(0);
 			this.layerView.Model = null;
 			this.layerView.Name = "layerView";
+			this.layerView.NodeControls.Add(this.nodeControlIcon);
 			this.layerView.NodeControls.Add(this.nodeControlSummary);
 			this.layerView.NodeFilter = null;
+			this.layerView.RowHeight = 40;
 			this.layerView.SelectedNode = null;
 			this.layerView.ShowLines = false;
 			this.layerView.ShowPlusMinus = false;
 			this.layerView.Size = new System.Drawing.Size(180, 302);
 			this.layerView.TabIndex = 1;
+			// 
+			// nodeControlIcon
+			// 
+			this.nodeControlIcon.DataPropertyName = "Image";
+			this.nodeControlIcon.LeftMargin = 1;
+			this.nodeControlIcon.ParentColumn = null;
+			this.nodeControlIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
+			// 
+			// nodeControlSummary
+			// 
+			this.nodeControlSummary.LeftMargin = 5;
+			this.nodeControlSummary.ParentColumn = null;
 			// 
 			// toolStripEdit
 			// 
@@ -131,22 +162,6 @@
 			this.buttonBrightness.Text = "Toggle Background";
 			this.buttonBrightness.CheckedChanged += new System.EventHandler(this.buttonBrightness_CheckedChanged);
 			// 
-			// checkModeVisualLayers
-			// 
-			this.checkModeVisualLayers.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetVisualLayers;
-			this.checkModeVisualLayers.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.checkModeVisualLayers.Name = "checkModeVisualLayers";
-			this.checkModeVisualLayers.Size = new System.Drawing.Size(94, 22);
-			this.checkModeVisualLayers.Text = "Visual Layers";
-			// 
-			// checkModeCollisionInfo
-			// 
-			this.checkModeCollisionInfo.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetCollisionInfo;
-			this.checkModeCollisionInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.checkModeCollisionInfo.Name = "checkModeCollisionInfo";
-			this.checkModeCollisionInfo.Size = new System.Drawing.Size(97, 22);
-			this.checkModeCollisionInfo.Text = "Collision Info";
-			// 
 			// splitMain
 			// 
 			this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -167,17 +182,9 @@
 			this.splitMain.SplitterDistance = 180;
 			this.splitMain.TabIndex = 3;
 			// 
-			// nodeControlSummary
-			// 
-			this.nodeControlSummary.DataPropertyName = "Text";
-			this.nodeControlSummary.IncrementalSearchEnabled = true;
-			this.nodeControlSummary.LeftMargin = 3;
-			this.nodeControlSummary.ParentColumn = null;
-			// 
 			// tilesetView
 			// 
 			this.tilesetView.AutoScroll = true;
-			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(4, 4);
 			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tilesetView.Location = new System.Drawing.Point(0, 0);
 			this.tilesetView.Margin = new System.Windows.Forms.Padding(0);
@@ -228,6 +235,7 @@
 		private System.Windows.Forms.ToolStripButton buttonRemoveLayer;
 		private System.Windows.Forms.ToolStripButton buttonBrightness;
 		private System.Windows.Forms.SplitContainer splitMain;
-		private Aga.Controls.Tree.NodeControls.NodeTextBox nodeControlSummary;
+		private SummaryNodeControl nodeControlSummary;
+		private Aga.Controls.Tree.NodeControls.NodeIcon nodeControlIcon;
 	}
 }

@@ -237,6 +237,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetSingleVisualLayer {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetSingleVisualLayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tile Picker.
         /// </summary>
         internal static string ItemName_Pick {

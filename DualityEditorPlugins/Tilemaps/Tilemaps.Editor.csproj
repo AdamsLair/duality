@@ -194,6 +194,7 @@
     <None Include="EmbeddedResources\IconDelete.png" />
     <None Include="EmbeddedResources\IconTilePalette.ico" />
     <None Include="EmbeddedResources\IconTilesetEditor.ico" />
+    <Content Include="EmbeddedResources\IconTilesetSingleVisualLayer.png" />
     <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
     <None Include="EmbeddedResources\IconTilePalette.png" />
     <None Include="EmbeddedResources\CursorPick.png" />
