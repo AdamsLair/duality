@@ -18,7 +18,7 @@ using Aga.Controls.Tree.NodeControls;
 
 namespace Duality.Editor.Plugins.Tilemaps
 {
-	public partial class TilesetEditor : DockContent
+	public partial class TilesetEditor : DockContent, IHelpProvider
 	{
 		private struct EditorModeInfo
 		{
@@ -145,6 +145,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			{
 				TilesetEditorMode mode = modeInstances[i];
 				ToolStripButton modeItem = new ToolStripButton(mode.Name, mode.Icon);
+				modeItem.AutoToolTip = false;
+				modeItem.ToolTipText = null;
 				modeItem.Tag = HelpInfo.FromText(mode.Name, mode.Description);
 				modeItem.Click += this.modeToolButton_Click;
 				this.toolStripModeSelect.Items.Add(modeItem);
@@ -298,6 +300,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
 
+		}
+
+		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			Point globalPos = this.PointToScreen(localPos);
+			object hoveredObj = null;
+
+			// Retrieve the currently hovered / active item from all child toolstrips
+			ToolStripItem hoveredItem = this.GetHoveredToolStripItem(globalPos, out captured);
+			hoveredObj = (hoveredItem != null) ? hoveredItem.Tag : null;
+
+			return hoveredObj as HelpInfo;
 		}
 	}
 }
