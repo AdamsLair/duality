@@ -9,6 +9,7 @@ using System.Windows.Forms;
 
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Controls.ToolStrip;
+using Duality.Editor.Plugins.Tilemaps.TilesetEditorModes;
 
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -19,6 +20,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 {
 	public partial class TilesetEditor : DockContent
 	{
+		private struct EditorModeInfo
+		{
+			public TilesetEditorMode Mode;
+			public ToolStripButton ToolButton;
+		}
 		private class SummaryNodeControl : NodeControl
 		{
 			public override void Draw(TreeNodeAdv node, DrawContext context)
@@ -103,7 +109,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 		
-		private	TreeModel visualLayerModel = null;
+		private TilesetEditorMode activeMode       = null;
+		private EditorModeInfo[]  availableModes   = null;
+		private	TreeModel         visualLayerModel = null;
 
 
 		private ContentRef<Tileset> SelectedTileset
@@ -126,6 +134,31 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.toolStripModeSelect.Renderer = new DualitorToolStripProfessionalRenderer();
 			this.toolStripEdit.Renderer = new DualitorToolStripProfessionalRenderer();
 
+			TilesetEditorMode[] modeInstances = DualityEditorApp.GetAvailDualityEditorTypes(typeof(TilesetEditorMode))
+				.Where(t => !t.IsAbstract)
+				.Select(t => t.CreateInstanceOf() as TilesetEditorMode)
+				.NotNull()
+				.OrderBy(t => t.SortOrder)
+				.ToArray();
+			this.availableModes = new EditorModeInfo[modeInstances.Length];
+			for (int i = 0; i < this.availableModes.Length; i++)
+			{
+				TilesetEditorMode mode = modeInstances[i];
+				ToolStripButton modeItem = new ToolStripButton(mode.Name, mode.Icon);
+				modeItem.Tag = HelpInfo.FromText(mode.Name, mode.Description);
+				modeItem.Click += this.modeToolButton_Click;
+				this.toolStripModeSelect.Items.Add(modeItem);
+				this.availableModes[i] = new EditorModeInfo
+				{
+					Mode = mode,
+					ToolButton = modeItem
+				};
+			}
+			if (this.availableModes.Length > 0)
+			{
+				this.SetActiveEditorMode(this.availableModes[0].Mode);
+			}
+
 			this.visualLayerModel = new TreeModel();
 			this.UpdateVisualLayerModel();
 		}
@@ -143,6 +176,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.ApplyBrightness();
 		}
 
+		private void SetActiveEditorMode(TilesetEditorMode mode)
+		{
+			for (int i = 0; i < this.availableModes.Length; i++)
+			{
+				EditorModeInfo info = this.availableModes[i];
+				info.ToolButton.Checked = (info.Mode == mode);
+			}
+			this.activeMode = mode;
+		}
 		private void UpdateVisualLayerModel()
 		{
 			Tileset tileset = this.SelectedTileset.Res;
@@ -231,7 +273,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.SelectedTileset = null;
 			}
 		}
-
+		
+		private void modeToolButton_Click(object sender, EventArgs e)
+		{
+			EditorModeInfo info = this.availableModes.First(i => i.ToolButton == sender);
+			this.SetActiveEditorMode(info.Mode);
+		}
 		private void buttonApply_Click(object sender, EventArgs e)
 		{
 
@@ -240,23 +287,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 
 		}
-		private void checkModeVisualLayers_Click(object sender, EventArgs e)
-		{
-
-		}
-		private void checkModeCollisionInfo_Click(object sender, EventArgs e)
-		{
-
-		}
-		private void checkModeDepthInfo_Click(object sender, EventArgs e)
-		{
-
-		}
 		private void buttonAddLayer_Click(object sender, EventArgs e)
 		{
 
 		}
 		private void buttonRemoveLayer_Click(object sender, EventArgs e)
+		{
+
+		}
+		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
 
 		}

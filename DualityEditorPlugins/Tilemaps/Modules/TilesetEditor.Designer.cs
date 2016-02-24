@@ -30,9 +30,6 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TilesetEditor));
 			this.toolStripModeSelect = new System.Windows.Forms.ToolStrip();
-			this.checkModeVisualLayers = new System.Windows.Forms.ToolStripButton();
-			this.checkModeCollisionInfo = new System.Windows.Forms.ToolStripButton();
-			this.checkModeDepthInfo = new System.Windows.Forms.ToolStripButton();
 			this.layerView = new Aga.Controls.Tree.TreeViewAdv();
 			this.nodeControlIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
 			this.nodeControlSummary = new Duality.Editor.Plugins.Tilemaps.TilesetEditor.SummaryNodeControl();
@@ -45,7 +42,6 @@
 			this.panelBottom = new System.Windows.Forms.Panel();
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonRevert = new System.Windows.Forms.Button();
-			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
@@ -59,42 +55,11 @@
 			this.toolStripModeSelect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.toolStripModeSelect.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolStripModeSelect.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-			this.toolStripModeSelect.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.checkModeVisualLayers,
-            this.checkModeCollisionInfo,
-            this.checkModeDepthInfo});
 			this.toolStripModeSelect.Location = new System.Drawing.Point(0, 0);
 			this.toolStripModeSelect.Name = "toolStripModeSelect";
 			this.toolStripModeSelect.Size = new System.Drawing.Size(529, 25);
 			this.toolStripModeSelect.TabIndex = 0;
 			this.toolStripModeSelect.Text = "Main Toolstrip";
-			// 
-			// checkModeVisualLayers
-			// 
-			this.checkModeVisualLayers.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetVisualLayers;
-			this.checkModeVisualLayers.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.checkModeVisualLayers.Name = "checkModeVisualLayers";
-			this.checkModeVisualLayers.Size = new System.Drawing.Size(94, 22);
-			this.checkModeVisualLayers.Text = "Visual Layers";
-			this.checkModeVisualLayers.Click += new System.EventHandler(this.checkModeVisualLayers_Click);
-			// 
-			// checkModeCollisionInfo
-			// 
-			this.checkModeCollisionInfo.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetCollisionInfo;
-			this.checkModeCollisionInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.checkModeCollisionInfo.Name = "checkModeCollisionInfo";
-			this.checkModeCollisionInfo.Size = new System.Drawing.Size(97, 22);
-			this.checkModeCollisionInfo.Text = "Collision Info";
-			this.checkModeCollisionInfo.Click += new System.EventHandler(this.checkModeCollisionInfo_Click);
-			// 
-			// checkModeDepthInfo
-			// 
-			this.checkModeDepthInfo.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetDepthInfo;
-			this.checkModeDepthInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.checkModeDepthInfo.Name = "checkModeDepthInfo";
-			this.checkModeDepthInfo.Size = new System.Drawing.Size(83, 22);
-			this.checkModeDepthInfo.Text = "Depth Info";
-			this.checkModeDepthInfo.Click += new System.EventHandler(this.checkModeDepthInfo_Click);
 			// 
 			// layerView
 			// 
@@ -124,6 +89,7 @@
 			this.layerView.ShowPlusMinus = false;
 			this.layerView.Size = new System.Drawing.Size(180, 259);
 			this.layerView.TabIndex = 1;
+			this.layerView.SelectionChanged += new System.EventHandler(this.layerView_SelectionChanged);
 			// 
 			// nodeControlIcon
 			// 
@@ -276,8 +242,6 @@
 			this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
 			this.ShowInTaskbar = false;
 			this.Text = "Tileset Editor";
-			this.toolStripModeSelect.ResumeLayout(false);
-			this.toolStripModeSelect.PerformLayout();
 			this.toolStripEdit.ResumeLayout(false);
 			this.toolStripEdit.PerformLayout();
 			this.splitMain.Panel1.ResumeLayout(false);
@@ -293,8 +257,6 @@
 		#endregion
 
 		private System.Windows.Forms.ToolStrip toolStripModeSelect;
-		private System.Windows.Forms.ToolStripButton checkModeVisualLayers;
-		private System.Windows.Forms.ToolStripButton checkModeCollisionInfo;
 		private Aga.Controls.Tree.TreeViewAdv layerView;
 		private TilesetView tilesetView;
 		private System.Windows.Forms.ToolStrip toolStripEdit;
@@ -304,7 +266,6 @@
 		private System.Windows.Forms.SplitContainer splitMain;
 		private SummaryNodeControl nodeControlSummary;
 		private Aga.Controls.Tree.NodeControls.NodeIcon nodeControlIcon;
-		private System.Windows.Forms.ToolStripButton checkModeDepthInfo;
 		private System.Windows.Forms.Panel panelBottom;
 		private System.Windows.Forms.Button buttonApply;
 		private System.Windows.Forms.Button buttonRevert;
