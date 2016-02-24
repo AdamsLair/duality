@@ -231,5 +231,34 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.SelectedTileset = null;
 			}
 		}
+
+		private void buttonApply_Click(object sender, EventArgs e)
+		{
+
+		}
+		private void buttonRevert_Click(object sender, EventArgs e)
+		{
+
+		}
+		private void checkModeVisualLayers_Click(object sender, EventArgs e)
+		{
+
+		}
+		private void checkModeCollisionInfo_Click(object sender, EventArgs e)
+		{
+
+		}
+		private void checkModeDepthInfo_Click(object sender, EventArgs e)
+		{
+
+		}
+		private void buttonAddLayer_Click(object sender, EventArgs e)
+		{
+
+		}
+		private void buttonRemoveLayer_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

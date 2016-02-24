@@ -32,6 +32,7 @@
 			this.toolStripModeSelect = new System.Windows.Forms.ToolStrip();
 			this.checkModeVisualLayers = new System.Windows.Forms.ToolStripButton();
 			this.checkModeCollisionInfo = new System.Windows.Forms.ToolStripButton();
+			this.checkModeDepthInfo = new System.Windows.Forms.ToolStripButton();
 			this.layerView = new Aga.Controls.Tree.TreeViewAdv();
 			this.nodeControlIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
 			this.nodeControlSummary = new Duality.Editor.Plugins.Tilemaps.TilesetEditor.SummaryNodeControl();
@@ -41,12 +42,16 @@
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
+			this.panelBottom = new System.Windows.Forms.Panel();
+			this.buttonApply = new System.Windows.Forms.Button();
+			this.buttonRevert = new System.Windows.Forms.Button();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
 			this.splitMain.Panel2.SuspendLayout();
 			this.splitMain.SuspendLayout();
+			this.panelBottom.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// toolStripModeSelect
@@ -56,10 +61,11 @@
 			this.toolStripModeSelect.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.toolStripModeSelect.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.checkModeVisualLayers,
-            this.checkModeCollisionInfo});
+            this.checkModeCollisionInfo,
+            this.checkModeDepthInfo});
 			this.toolStripModeSelect.Location = new System.Drawing.Point(0, 0);
 			this.toolStripModeSelect.Name = "toolStripModeSelect";
-			this.toolStripModeSelect.Size = new System.Drawing.Size(503, 25);
+			this.toolStripModeSelect.Size = new System.Drawing.Size(529, 25);
 			this.toolStripModeSelect.TabIndex = 0;
 			this.toolStripModeSelect.Text = "Main Toolstrip";
 			// 
@@ -70,6 +76,7 @@
 			this.checkModeVisualLayers.Name = "checkModeVisualLayers";
 			this.checkModeVisualLayers.Size = new System.Drawing.Size(94, 22);
 			this.checkModeVisualLayers.Text = "Visual Layers";
+			this.checkModeVisualLayers.Click += new System.EventHandler(this.checkModeVisualLayers_Click);
 			// 
 			// checkModeCollisionInfo
 			// 
@@ -78,21 +85,33 @@
 			this.checkModeCollisionInfo.Name = "checkModeCollisionInfo";
 			this.checkModeCollisionInfo.Size = new System.Drawing.Size(97, 22);
 			this.checkModeCollisionInfo.Text = "Collision Info";
+			this.checkModeCollisionInfo.Click += new System.EventHandler(this.checkModeCollisionInfo_Click);
+			// 
+			// checkModeDepthInfo
+			// 
+			this.checkModeDepthInfo.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconTilesetDepthInfo;
+			this.checkModeDepthInfo.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.checkModeDepthInfo.Name = "checkModeDepthInfo";
+			this.checkModeDepthInfo.Size = new System.Drawing.Size(83, 22);
+			this.checkModeDepthInfo.Text = "Depth Info";
+			this.checkModeDepthInfo.Click += new System.EventHandler(this.checkModeDepthInfo_Click);
 			// 
 			// layerView
 			// 
+			this.layerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.layerView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.layerView.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.layerView.ColumnHeaderHeight = 0;
 			this.layerView.DefaultToolTipProvider = null;
-			this.layerView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.layerView.DragDropMarkColor = System.Drawing.Color.Black;
 			this.layerView.FullRowSelect = true;
 			this.layerView.FullRowSelectActiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
 			this.layerView.FullRowSelectInactiveColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.layerView.Indent = 0;
 			this.layerView.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(92)))), ((int)(((byte)(92)))));
-			this.layerView.Location = new System.Drawing.Point(0, 0);
+			this.layerView.Location = new System.Drawing.Point(0, 4);
 			this.layerView.Margin = new System.Windows.Forms.Padding(0);
 			this.layerView.Model = null;
 			this.layerView.Name = "layerView";
@@ -103,7 +122,7 @@
 			this.layerView.SelectedNode = null;
 			this.layerView.ShowLines = false;
 			this.layerView.ShowPlusMinus = false;
-			this.layerView.Size = new System.Drawing.Size(180, 302);
+			this.layerView.Size = new System.Drawing.Size(180, 259);
 			this.layerView.TabIndex = 1;
 			// 
 			// nodeControlIcon
@@ -129,7 +148,7 @@
             this.buttonBrightness});
 			this.toolStripEdit.Location = new System.Drawing.Point(0, 25);
 			this.toolStripEdit.Name = "toolStripEdit";
-			this.toolStripEdit.Size = new System.Drawing.Size(503, 25);
+			this.toolStripEdit.Size = new System.Drawing.Size(529, 25);
 			this.toolStripEdit.TabIndex = 0;
 			// 
 			// buttonAddLayer
@@ -140,6 +159,8 @@
 			this.buttonAddLayer.Name = "buttonAddLayer";
 			this.buttonAddLayer.Size = new System.Drawing.Size(23, 22);
 			this.buttonAddLayer.Text = "Add";
+			this.buttonAddLayer.Visible = false;
+			this.buttonAddLayer.Click += new System.EventHandler(this.buttonAddLayer_Click);
 			// 
 			// buttonRemoveLayer
 			// 
@@ -149,6 +170,8 @@
 			this.buttonRemoveLayer.Name = "buttonRemoveLayer";
 			this.buttonRemoveLayer.Size = new System.Drawing.Size(23, 22);
 			this.buttonRemoveLayer.Text = "Remove";
+			this.buttonRemoveLayer.Visible = false;
+			this.buttonRemoveLayer.Click += new System.EventHandler(this.buttonRemoveLayer_Click);
 			// 
 			// buttonBrightness
 			// 
@@ -164,7 +187,9 @@
 			// 
 			// splitMain
 			// 
-			this.splitMain.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.splitMain.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 			this.splitMain.Location = new System.Drawing.Point(0, 50);
 			this.splitMain.Name = "splitMain";
@@ -178,7 +203,7 @@
 			// 
 			this.splitMain.Panel2.Controls.Add(this.tilesetView);
 			this.splitMain.Panel2MinSize = 150;
-			this.splitMain.Size = new System.Drawing.Size(503, 302);
+			this.splitMain.Size = new System.Drawing.Size(529, 267);
 			this.splitMain.SplitterDistance = 180;
 			this.splitMain.TabIndex = 3;
 			// 
@@ -189,17 +214,58 @@
 			this.tilesetView.Location = new System.Drawing.Point(0, 0);
 			this.tilesetView.Margin = new System.Windows.Forms.Padding(0);
 			this.tilesetView.Name = "tilesetView";
-			this.tilesetView.Size = new System.Drawing.Size(319, 302);
+			this.tilesetView.Size = new System.Drawing.Size(345, 267);
 			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
 			this.tilesetView.TabIndex = 2;
 			this.tilesetView.TabStop = true;
 			// 
+			// panelBottom
+			// 
+			this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.panelBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
+			this.panelBottom.Controls.Add(this.buttonApply);
+			this.panelBottom.Controls.Add(this.buttonRevert);
+			this.panelBottom.Location = new System.Drawing.Point(0, 316);
+			this.panelBottom.Margin = new System.Windows.Forms.Padding(0);
+			this.panelBottom.Name = "panelBottom";
+			this.panelBottom.Size = new System.Drawing.Size(529, 37);
+			this.panelBottom.TabIndex = 4;
+			// 
+			// buttonApply
+			// 
+			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonApply.Enabled = false;
+			this.buttonApply.Location = new System.Drawing.Point(361, 7);
+			this.buttonApply.Name = "buttonApply";
+			this.buttonApply.Size = new System.Drawing.Size(75, 23);
+			this.buttonApply.TabIndex = 1;
+			this.buttonApply.Text = "Apply";
+			this.buttonApply.UseVisualStyleBackColor = true;
+			this.buttonApply.Click += new System.EventHandler(this.buttonApply_Click);
+			// 
+			// buttonRevert
+			// 
+			this.buttonRevert.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttonRevert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.buttonRevert.Enabled = false;
+			this.buttonRevert.Location = new System.Drawing.Point(442, 7);
+			this.buttonRevert.Name = "buttonRevert";
+			this.buttonRevert.Size = new System.Drawing.Size(75, 23);
+			this.buttonRevert.TabIndex = 0;
+			this.buttonRevert.Text = "Revert";
+			this.buttonRevert.UseVisualStyleBackColor = true;
+			this.buttonRevert.Click += new System.EventHandler(this.buttonRevert_Click);
+			// 
 			// TilesetEditor
 			// 
+			this.AcceptButton = this.buttonApply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
-			this.ClientSize = new System.Drawing.Size(503, 352);
+			this.CancelButton = this.buttonRevert;
+			this.ClientSize = new System.Drawing.Size(529, 352);
+			this.Controls.Add(this.panelBottom);
 			this.Controls.Add(this.splitMain);
 			this.Controls.Add(this.toolStripEdit);
 			this.Controls.Add(this.toolStripModeSelect);
@@ -218,6 +284,7 @@
 			this.splitMain.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).EndInit();
 			this.splitMain.ResumeLayout(false);
+			this.panelBottom.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -237,5 +304,9 @@
 		private System.Windows.Forms.SplitContainer splitMain;
 		private SummaryNodeControl nodeControlSummary;
 		private Aga.Controls.Tree.NodeControls.NodeIcon nodeControlIcon;
+		private System.Windows.Forms.ToolStripButton checkModeDepthInfo;
+		private System.Windows.Forms.Panel panelBottom;
+		private System.Windows.Forms.Button buttonApply;
+		private System.Windows.Forms.Button buttonRevert;
 	}
 }

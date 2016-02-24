@@ -124,13 +124,16 @@
   <data name="IconTilesetCollisionInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconTilesetCollisionInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="IconDelete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconDelete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="IconAdd" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconAdd.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="IconTilesetVisualLayers" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconTilesetVisualLayers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="IconDelete" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\EmbeddedResources\IconDelete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="IconTilesetDepthInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -93,6 +93,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetDepthInfo {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetDepthInfo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconTilesetVisualLayers {
             get {
                 object obj = ResourceManager.GetObject("IconTilesetVisualLayers", resourceCulture);
