@@ -10,6 +10,9 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 
 namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 {
+	/// <summary>
+	/// Allows to edit the physical shape of each tile which can be used for collision detection and physics.
+	/// </summary>
 	public class CollisionInfoTilesetEditorMode : TilesetEditorMode
 	{
 		private TreeModel treeModel = new TreeModel();
@@ -21,10 +24,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		public override string Name
 		{
 			get { return TilemapsRes.TilesetEditorMode_CollisionInfo_Name; }
-		}
-		public override string Description
-		{
-			get { return TilemapsRes.TilesetEditorMode_CollisionInfo_Desc; }
 		}
 		public override Image Icon
 		{

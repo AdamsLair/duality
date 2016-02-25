@@ -10,6 +10,9 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 
 namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 {
+	/// <summary>
+	/// Allows to edit the depth information of each tile, which can be used for Z-Offset generation and Z sorting during rendering.
+	/// </summary>
 	public class DepthInfoTilesetEditorMode : TilesetEditorMode
 	{
 		private TreeModel treeModel = new TreeModel();
@@ -21,10 +24,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		public override string Name
 		{
 			get { return TilemapsRes.TilesetEditorMode_DepthInfo_Name; }
-		}
-		public override string Description
-		{
-			get { return TilemapsRes.TilesetEditorMode_DepthInfo_Desc; }
 		}
 		public override Image Icon
 		{

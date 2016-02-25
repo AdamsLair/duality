@@ -19,6 +19,10 @@ using Aga.Controls.Tree.NodeControls;
 
 namespace Duality.Editor.Plugins.Tilemaps
 {
+	/// <summary>
+	/// Allows editing the properties of a <see cref="Tileset"/> that can't be accessed easily in
+	/// a regular <see cref="AdamsLair.WinForms.PropertyEditing.PropertyGrid"/>.
+	/// </summary>
 	public partial class TilesetEditor : DockContent, IHelpProvider
 	{
 		private struct EditorModeInfo
@@ -32,10 +36,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private EditorModeInfo[]  availableModes   = null;
 
 
+		/// <summary>
+		/// [GET] The currently selected <see cref="Tileset"/> in this editor. This property
+		/// is dependent on and automatically set by editor-wide selection events.
+		/// </summary>
 		public ContentRef<Tileset> SelectedTileset
 		{
 			get { return this.tilesetView.TargetTileset; }
-			set
+			private set
 			{
 				if (this.tilesetView.TargetTileset != value)
 				{
@@ -51,38 +59,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.InitializeComponent();
 			this.toolStripModeSelect.Renderer = new DualitorToolStripProfessionalRenderer();
 			this.toolStripEdit.Renderer = new DualitorToolStripProfessionalRenderer();
-
-			TilesetEditorMode[] modeInstances = DualityEditorApp.GetAvailDualityEditorTypes(typeof(TilesetEditorMode))
-				.Where(t => !t.IsAbstract)
-				.Select(t => t.CreateInstanceOf() as TilesetEditorMode)
-				.NotNull()
-				.OrderBy(t => t.SortOrder)
-				.ToArray();
-			this.availableModes = new EditorModeInfo[modeInstances.Length];
-			for (int i = 0; i < this.availableModes.Length; i++)
-			{
-				TilesetEditorMode mode = modeInstances[i];
-				mode.Init(this);
-
-				ToolStripButton modeItem = new ToolStripButton(mode.Name, mode.Icon);
-				modeItem.AutoToolTip = false;
-				modeItem.ToolTipText = null;
-				modeItem.Tag = HelpInfo.FromText(mode.Name, mode.Description);
-				modeItem.Click += this.modeToolButton_Click;
-
-				this.toolStripModeSelect.Items.Add(modeItem);
-				this.availableModes[i] = new EditorModeInfo
-				{
-					Mode = mode,
-					ToolButton = modeItem
-				};
-			}
-			if (this.availableModes.Length > 0)
-			{
-				this.SetActiveEditorMode(this.availableModes[0].Mode);
-			}
-
-			this.OnTilesetSelectionChanged();
 		}
 		
 		internal void SaveUserData(XElement node)
@@ -131,6 +107,40 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			base.OnShown(e);
 
+			// Initialize the available editor modes and generate their toolbuttons
+			TilesetEditorMode[] modeInstances = DualityEditorApp.GetAvailDualityEditorTypes(typeof(TilesetEditorMode))
+				.Where(t => !t.IsAbstract)
+				.Select(t => t.CreateInstanceOf() as TilesetEditorMode)
+				.NotNull()
+				.OrderBy(t => t.SortOrder)
+				.ToArray();
+			this.availableModes = new EditorModeInfo[modeInstances.Length];
+			for (int i = 0; i < this.availableModes.Length; i++)
+			{
+				TilesetEditorMode mode = modeInstances[i];
+				mode.Init(this);
+
+				ToolStripButton modeItem = new ToolStripButton(mode.Name, mode.Icon);
+				modeItem.AutoToolTip = false;
+				modeItem.ToolTipText = null;
+				modeItem.Tag = HelpInfo.FromText(mode.Name, mode.Description);
+				modeItem.Click += this.modeToolButton_Click;
+
+				this.toolStripModeSelect.Items.Add(modeItem);
+				this.availableModes[i] = new EditorModeInfo
+				{
+					Mode = mode,
+					ToolButton = modeItem
+				};
+			}
+
+			// If we have at least one mode available, activate it
+			if (this.availableModes.Length > 0)
+			{
+				this.SetActiveEditorMode(this.availableModes[0].Mode);
+			}
+
+			// Subscribe for global editor events
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing             += this.Resource_ResourceDisposing;
@@ -157,11 +167,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.layerView.SelectedNode = this.layerView.Root.Children.FirstOrDefault();
 		}
 		
-		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
-		{
-			this.ApplyBrightness();
-		}
-		
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (this.SelectedTileset == null) return;
@@ -186,6 +191,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 		}
 		
+		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
+		{
+			this.ApplyBrightness();
+		}
 		private void modeToolButton_Click(object sender, EventArgs e)
 		{
 			EditorModeInfo info = this.availableModes.First(i => i.ToolButton == sender);

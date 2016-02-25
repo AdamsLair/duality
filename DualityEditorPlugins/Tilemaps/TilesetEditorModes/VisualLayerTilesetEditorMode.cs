@@ -11,6 +11,9 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 
 namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 {
+	/// <summary>
+	/// Allows to edit a Tileset's visual layers, which define the Texture- and Material properties that will affect how it is rendered.
+	/// </summary>
 	public class VisualLayerTilesetEditorMode : TilesetEditorMode
 	{
 		private class VisualLayerNode : TilesetEditorLayerNode
@@ -48,10 +51,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		public override string Name
 		{
 			get { return TilemapsRes.TilesetEditorMode_VisualLayer_Name; }
-		}
-		public override string Description
-		{
-			get { return TilemapsRes.TilesetEditorMode_VisualLayer_Desc; }
 		}
 		public override Image Icon
 		{

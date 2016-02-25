@@ -403,15 +403,6 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provides information about the physical shape of each tile which can be used for collision detection and physics..
-        /// </summary>
-        internal static string TilesetEditorMode_CollisionInfo_Desc {
-            get {
-                return ResourceManager.GetString("TilesetEditorMode_CollisionInfo_Desc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Collision Info.
         /// </summary>
         internal static string TilesetEditorMode_CollisionInfo_Name {
@@ -421,29 +412,11 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Provides depth information for each tile which can be used for Z-Offset generation and Z sorting during rendering..
-        /// </summary>
-        internal static string TilesetEditorMode_DepthInfo_Desc {
-            get {
-                return ResourceManager.GetString("TilesetEditorMode_DepthInfo_Desc", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Depth Info.
         /// </summary>
         internal static string TilesetEditorMode_DepthInfo_Name {
             get {
                 return ResourceManager.GetString("TilesetEditorMode_DepthInfo_Name", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A Tileset&apos;s visual layers define the Texture- and Material properties that will affect how it is rendered..
-        /// </summary>
-        internal static string TilesetEditorMode_VisualLayer_Desc {
-            get {
-                return ResourceManager.GetString("TilesetEditorMode_VisualLayer_Desc", resourceCulture);
             }
         }
         

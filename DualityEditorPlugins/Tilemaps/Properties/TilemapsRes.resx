@@ -232,20 +232,11 @@
   <data name="IconTilesetVisualLayers" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\IconTilesetVisualLayers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="TilesetEditorMode_CollisionInfo_Desc" xml:space="preserve">
-    <value>Provides information about the physical shape of each tile which can be used for collision detection and physics.</value>
-  </data>
   <data name="TilesetEditorMode_CollisionInfo_Name" xml:space="preserve">
     <value>Collision Info</value>
   </data>
-  <data name="TilesetEditorMode_DepthInfo_Desc" xml:space="preserve">
-    <value>Provides depth information for each tile which can be used for Z-Offset generation and Z sorting during rendering.</value>
-  </data>
   <data name="TilesetEditorMode_DepthInfo_Name" xml:space="preserve">
     <value>Depth Info</value>
-  </data>
-  <data name="TilesetEditorMode_VisualLayer_Desc" xml:space="preserve">
-    <value>A Tileset's visual layers define the Texture- and Material properties that will affect how it is rendered.</value>
   </data>
   <data name="TilesetEditorMode_VisualLayer_Name" xml:space="preserve">
     <value>Visual Layers</value>
