@@ -70,6 +70,10 @@
     <Compile Include="Modules\SourcePaletteTilesetView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Modules\TilesetEditorLayerNodeControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Modules\TilesetEditorLayerNode.cs" />
     <Compile Include="Modules\TilesetEditor.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -32,7 +32,7 @@
 			this.toolStripModeSelect = new System.Windows.Forms.ToolStrip();
 			this.layerView = new Aga.Controls.Tree.TreeViewAdv();
 			this.nodeControlIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
-			this.nodeControlSummary = new Duality.Editor.Plugins.Tilemaps.TilesetEditor.SummaryNodeControl();
+			this.nodeControlSummary = new Duality.Editor.Plugins.Tilemaps.TilesetEditorLayerNodeControl();
 			this.toolStripEdit = new System.Windows.Forms.ToolStrip();
 			this.buttonAddLayer = new System.Windows.Forms.ToolStripButton();
 			this.buttonRemoveLayer = new System.Windows.Forms.ToolStripButton();
@@ -277,7 +277,7 @@
 		private System.Windows.Forms.ToolStripButton buttonRemoveLayer;
 		private System.Windows.Forms.ToolStripButton buttonBrightness;
 		private System.Windows.Forms.SplitContainer splitMain;
-		private SummaryNodeControl nodeControlSummary;
+		private TilesetEditorLayerNodeControl nodeControlSummary;
 		private Aga.Controls.Tree.NodeControls.NodeIcon nodeControlIcon;
 		private System.Windows.Forms.Panel panelBottom;
 		private System.Windows.Forms.Button buttonApply;
