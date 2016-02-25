@@ -250,4 +250,10 @@
   <data name="TilesetEditorMode_VisualLayer_Name" xml:space="preserve">
     <value>Visual Layers</value>
   </data>
+  <data name="TilesetEditor_NoTilesetSelected" xml:space="preserve">
+    <value>No Tileset selected</value>
+  </data>
+  <data name="TilesetEditor_SelectedTileset" xml:space="preserve">
+    <value>Tileset: {0}</value>
+  </data>
 </root>

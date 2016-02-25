@@ -385,6 +385,24 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No Tileset selected.
+        /// </summary>
+        internal static string TilesetEditor_NoTilesetSelected {
+            get {
+                return ResourceManager.GetString("TilesetEditor_NoTilesetSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tileset: {0}.
+        /// </summary>
+        internal static string TilesetEditor_SelectedTileset {
+            get {
+                return ResourceManager.GetString("TilesetEditor_SelectedTileset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Provides information about the physical shape of each tile which can be used for collision detection and physics..
         /// </summary>
         internal static string TilesetEditorMode_CollisionInfo_Desc {

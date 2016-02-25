@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Tilemaps.TilesetEditorModes;
+using Duality.Editor.Plugins.Tilemaps.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -122,7 +123,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (this.tilesetView.TargetTileset != value)
 				{
 					this.tilesetView.TargetTileset = value;
-					this.UpdateVisualLayerModel();
+					this.OnSelectedTilesetChanged();
 				}
 			}
 		}
@@ -162,7 +163,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			this.visualLayerModel = new TreeModel();
-			this.UpdateVisualLayerModel();
+			this.OnSelectedTilesetChanged();
 		}
 		
 		internal void SaveUserData(XElement node)
@@ -246,6 +247,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing             -= this.Resource_ResourceDisposing;
+		}
+		private void OnSelectedTilesetChanged()
+		{
+			this.labelSelectedTileset.Text = (this.SelectedTileset != null) ? 
+				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, this.SelectedTileset.Name) : 
+				TilemapsRes.TilesetEditor_NoTilesetSelected;
+			this.UpdateVisualLayerModel();
+			this.layerView.SelectedNode = this.layerView.Root.Children.FirstOrDefault();
 		}
 		
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)

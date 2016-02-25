@@ -42,6 +42,8 @@
 			this.panelBottom = new System.Windows.Forms.Panel();
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonRevert = new System.Windows.Forms.Button();
+			this.labelSelectedTileset = new System.Windows.Forms.ToolStripLabel();
+			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
 			this.splitMain.Panel1.SuspendLayout();
@@ -55,6 +57,8 @@
 			this.toolStripModeSelect.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
 			this.toolStripModeSelect.GripMargin = new System.Windows.Forms.Padding(0);
 			this.toolStripModeSelect.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolStripModeSelect.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelSelectedTileset});
 			this.toolStripModeSelect.Location = new System.Drawing.Point(0, 0);
 			this.toolStripModeSelect.Name = "toolStripModeSelect";
 			this.toolStripModeSelect.Size = new System.Drawing.Size(529, 25);
@@ -223,6 +227,13 @@
 			this.buttonRevert.UseVisualStyleBackColor = true;
 			this.buttonRevert.Click += new System.EventHandler(this.buttonRevert_Click);
 			// 
+			// labelSelectedTileset
+			// 
+			this.labelSelectedTileset.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.labelSelectedTileset.Name = "labelSelectedTileset";
+			this.labelSelectedTileset.Size = new System.Drawing.Size(88, 22);
+			this.labelSelectedTileset.Text = "Selected Tileset";
+			// 
 			// TilesetEditor
 			// 
 			this.AcceptButton = this.buttonApply;
@@ -242,6 +253,8 @@
 			this.ShowHint = WeifenLuo.WinFormsUI.Docking.DockState.Document;
 			this.ShowInTaskbar = false;
 			this.Text = "Tileset Editor";
+			this.toolStripModeSelect.ResumeLayout(false);
+			this.toolStripModeSelect.PerformLayout();
 			this.toolStripEdit.ResumeLayout(false);
 			this.toolStripEdit.PerformLayout();
 			this.splitMain.Panel1.ResumeLayout(false);
@@ -269,5 +282,6 @@
 		private System.Windows.Forms.Panel panelBottom;
 		private System.Windows.Forms.Button buttonApply;
 		private System.Windows.Forms.Button buttonRevert;
+		private System.Windows.Forms.ToolStripLabel labelSelectedTileset;
 	}
 }
