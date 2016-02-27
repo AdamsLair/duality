@@ -13,7 +13,7 @@ namespace Duality.Editor.Plugins.UndoHistory
 	public class UndoHistoryPlugin : EditorPlugin
 	{
 		private	Modules.UndoHistory	undoHistory		= null;
-		private	bool	isLoading	= false;
+		private	bool                isLoading       = false;
 
 
 		public override string Id

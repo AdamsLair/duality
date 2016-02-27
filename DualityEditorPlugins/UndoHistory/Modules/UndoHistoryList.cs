@@ -13,9 +13,8 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 		{
 			private UndoHistoryList			parent		= null;
 			private	IUndoRedoActionInfo	    action		= null;
-			private	int						msgLines	= 1;
-		    private bool isCurrentAction = false;
-		    private DateTime? timestamp = null;
+			private	int                     msgLines    = 1;
+		    private bool                    isCurrentAction = false;
 
             public IUndoRedoActionInfo Action
 			{
@@ -25,10 +24,6 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
             {
                 get { return this.isCurrentAction; }
             }
-            public DateTime? Timestamp
-		    {
-                get { return this.timestamp; }
-		    }
 			public int Height
 			{
 				get { return Math.Max(20, 7 + this.msgLines * this.parent.Font.Height); }
@@ -41,8 +36,6 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
                 this.action = action;
 				this.msgLines = action.Name.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
                 this.isCurrentAction = isCurrentAction;
-                //TODO: DateTime.Now doesn't work as we're clearing the list each time the stack changes
-                this.timestamp = null; //DateTime.Now;
 			}
 
 			public void GetFullText(StringBuilder appendTo)
@@ -73,15 +66,11 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 
 
 		private	List<ViewEntry>		entryList			= new List<ViewEntry>();
-		private	DateTime			displayMinTime		= DateTime.MinValue;
-		private	IUndoRedoActionInfo boundOutput			= null;
 		private	Color				baseColor			= SystemColors.Control;
 		private	bool				scrolledToEnd		= true;
 		private	bool				lastSelected		= true;
 		private	ViewEntry			hoveredEntry		= null;
 		private	ViewEntry			selectedEntry		= null;
-		private	ContextMenuStrip	entryMenu			= null;
-        private List<IUndoRedoActionInfo> logSchedule = new List<IUndoRedoActionInfo>();
 		private System.ComponentModel.IContainer components = null;
         private Font                boldFont            = null;
 
@@ -279,7 +268,6 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 			base.OnPaint(e);
 			e.Graphics.TranslateTransform(this.AutoScrollPosition.X, this.AutoScrollPosition.Y);
 
-			Pen foregroundPen = new Pen(this.ForeColor);
 			Brush foregroundBrush = new SolidBrush(this.ForeColor);
 			Brush foregroundBrushAlpha = new SolidBrush(Color.FromArgb(128, this.ForeColor));
 			Brush baseBrush = new SolidBrush(this.baseColor);
@@ -300,8 +288,6 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 
 			int offsetY = 0;
 			bool evenEntry = false;
-            //TODO: Add in a timestamp maybe?
-		    bool showTimestamp = false;//this.ClientRectangle.Width >= 350;
             int timeStampWidth = this.Font.Height * 6;
 			Size textMargin = new Size(10, 2);
 			foreach (ViewEntry entry in this.DisplayedEntries)
@@ -315,11 +301,6 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 						textMargin.Width / 2, 
 						entryRect.Y + textMargin.Height, 
 						Math.Max(1, entryRect.Width - textMargin.Width / 2),
-                        entryRect.Height - textMargin.Height * 2);
-                    Rectangle timeTextRect = new Rectangle(
-                        entryRect.Width - textMargin.Width - (showTimestamp ? timeStampWidth : 0),
-                        entryRect.Y + textMargin.Height,
-                        (showTimestamp ? timeStampWidth : 0),
                         entryRect.Height - textMargin.Height * 2);
 
 					{
@@ -338,17 +319,6 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(64, 255, 255, 255)), entryRect);
 
                     e.Graphics.DrawString(entry.GetFullText(), entry.IsCurrentAction ? this.boldFont : this.Font, foregroundBrush, textRect, messageFormat);
-                    if (showTimestamp && entry.Timestamp.HasValue)
-                    {
-                        e.Graphics.DrawString(
-                            string.Format("{0:00}:{1:00}:{2:00}",
-                                entry.Timestamp.Value.Hour,
-                                entry.Timestamp.Value.Minute,
-                                entry.Timestamp.Value.Second),
-                            this.Font, foregroundBrushAlpha,
-                            new Rectangle(timeTextRect.Right - timeStampWidth, timeTextRect.Y, timeStampWidth, timeTextRect.Height),
-                            messageFormatTimestamp);
-                    }
 
 					if (this.selectedEntry == entry && this.Focused)
 					{
@@ -438,14 +408,6 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 			            UndoRedoManager.Redo();
 			        }
 			    }
-			}
-		}
-
-        private void boundOutput_NewEntry(object sender, IUndoRedoActionInfo e)
-		{
-			lock (this.logSchedule)
-			{
-				this.logSchedule.Add(e);
 			}
 		}
 	}
