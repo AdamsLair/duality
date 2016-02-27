@@ -79,6 +79,8 @@ DualityPlugins/Steering/Testbed/Source/Code/CorePlugin/Properties/GameRes.cs
 DualityPlugins/Steering/Testbed/Source/Code/EditorPlugin/EditorPlugin.csproj.user
 DualityEditorPlugins/LogView/bin/
 DualityEditorPlugins/LogView/obj/
+DualityEditorPlugins/UndoHistory/bin/
+DualityEditorPlugins/UndoHistory/obj/
 DualityEditorPlugins/ObjectInspector/bin/
 DualityEditorPlugins/ObjectInspector/obj/
 DualityEditorPlugins/LogView/LogView.csproj.user
