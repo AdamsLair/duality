@@ -18,6 +18,7 @@ namespace Duality.Editor.Plugins.UndoHistory.Modules
 			base.OnHandleCreated(e);
 
             UndoRedoManager.StackChanged += UndoRedoManagerOnStackChanged;
+            UndoRedoManagerOnStackChanged(null, null);
 			
 			this.undoHistoryList.ScrollToEnd();
 
