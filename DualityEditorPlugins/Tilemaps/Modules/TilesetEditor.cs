@@ -52,6 +52,23 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		/// <summary>
+		/// [GET] Whether or not the currently selected <see cref="Tileset"/> has pending
+		/// changes that have not yet been applied.
+		/// </summary>
+		protected bool PendingTilesetChanges
+		{
+			get { return this.pendingChanges; }
+			private set
+			{
+				if (this.pendingChanges != value)
+				{ 
+					this.pendingChanges = value;
+					this.buttonApply.Enabled = this.pendingChanges;
+					this.buttonRevert.Enabled = this.pendingChanges;
+				}
+			}
+		}
 
 
 		public TilesetEditor()
@@ -101,6 +118,22 @@ namespace Duality.Editor.Plugins.Tilemaps
 			bool darkMode = this.buttonBrightness.Checked;
 			this.tilesetView.BackColor = darkMode ? Color.FromArgb(64, 64, 64) : Color.FromArgb(192, 192, 192);
 			this.tilesetView.ForeColor = darkMode ? Color.FromArgb(255, 255, 255) : Color.FromArgb(0, 0, 0);
+		}
+
+		private void ApplyTilesetChanges()
+		{
+
+		}
+		private void ResetTilesetChanges()
+		{
+			// Copy the backup over to the actual edited tileset
+		}
+		private void AskApplyOrResetTilesetChanges()
+		{
+			// Make a backup of the tileset, so we can go back in case we change anything without applying it.
+			this.PendingTilesetChanges = false;
+
+			// ToDo: Yet to implement
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -157,23 +190,32 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void OnTilesetSelectionChanged()
 		{
+			// When switching to a different tileset, either apply or revert what we did to the current one
+			this.AskApplyOrResetTilesetChanges();
+
+			// Update the label that tells us which tileset is selected
 			this.labelSelectedTileset.Text = (this.SelectedTileset != null) ? 
 				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, this.SelectedTileset.Name) : 
 				TilemapsRes.TilesetEditor_NoTilesetSelected;
 
+			// Inform the currently active editing mode of this change
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetSelectionChanged();
 
+			// Reset the layer view selection
 			this.layerView.SelectedNode = this.layerView.Root.Children.FirstOrDefault();
 		}
 		
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (this.SelectedTileset == null) return;
-			if (!e.HasObject(this.SelectedTileset.Res)) return;
+			if (!e.HasObject(this.SelectedTileset.Res) &&
+				!e.HasAnyObject(this.SelectedTileset.Res.RenderConfig)) return;
 
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetModified(e);
+
+			this.PendingTilesetChanges = true;
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -202,11 +244,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void buttonApply_Click(object sender, EventArgs e)
 		{
-
+			this.ApplyTilesetChanges();
 		}
 		private void buttonRevert_Click(object sender, EventArgs e)
 		{
-
+			this.ResetTilesetChanges();
 		}
 		private void buttonAddLayer_Click(object sender, EventArgs e)
 		{

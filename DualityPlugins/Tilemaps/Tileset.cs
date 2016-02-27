@@ -406,7 +406,7 @@ namespace Duality.Plugins.Tilemaps
 		{
 			base.OnCopyDataTo(target, operation);
 			Tileset targetTileset = target as Tileset;
-			if (this.compiled) targetTileset.Compile();
+			if (targetTileset.compiled) targetTileset.Compile();
 		}
 	}
 }
