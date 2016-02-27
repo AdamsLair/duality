@@ -52,23 +52,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
-		/// <summary>
-		/// [GET] Whether or not the currently selected <see cref="Tileset"/> has pending
-		/// changes that have not yet been applied.
-		/// </summary>
-		protected bool PendingTilesetChanges
-		{
-			get { return this.pendingChanges; }
-			private set
-			{
-				if (this.pendingChanges != value)
-				{ 
-					this.pendingChanges = value;
-					this.buttonApply.Enabled = this.pendingChanges;
-					this.buttonRevert.Enabled = this.pendingChanges;
-				}
-			}
-		}
 
 
 		public TilesetEditor()
@@ -122,18 +105,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void ApplyTilesetChanges()
 		{
-
+			// ToDo
 		}
 		private void ResetTilesetChanges()
 		{
-			// Copy the backup over to the actual edited tileset
+			// ToDo
 		}
 		private void AskApplyOrResetTilesetChanges()
 		{
-			// Make a backup of the tileset, so we can go back in case we change anything without applying it.
-			this.PendingTilesetChanges = false;
-
-			// ToDo: Yet to implement
+			// ToDo: Show a user confirmation dialog when necessary
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -214,8 +194,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetModified(e);
-
-			this.PendingTilesetChanges = true;
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
