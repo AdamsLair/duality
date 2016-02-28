@@ -594,10 +594,19 @@ namespace Duality.Editor.Plugins.PackageManagerFrontend
 					PackageItem packageItem = item as PackageItem;
 					if (packageItem != null)
 					{
-						return 
-							packageItem.Title.Contains(filterString) ||
-							packageItem.Id.Contains(filterString) ||
-							(packageItem.ItemPackageInfo != null && packageItem.ItemPackageInfo.Tags.Any(t => t != null && t.Contains(filterString)));
+						StringComparison ignoreCase = StringComparison.InvariantCultureIgnoreCase;
+
+						// Check title, id and any of the tags for the filter string
+						if (packageItem.Title.IndexOf(filterString, ignoreCase) != -1) return true;
+						if (packageItem.Id.IndexOf(filterString, ignoreCase) != -1) return true;
+						if (packageItem.ItemPackageInfo != null && 
+							packageItem.ItemPackageInfo.Tags.Any(t => 
+								t != null && 
+								t.IndexOf(filterString, ignoreCase) != -1))
+							return true;
+
+						// If it isn't contained anywhere, we don't want this item here.
+						return false;
 					}
 					else
 					{
