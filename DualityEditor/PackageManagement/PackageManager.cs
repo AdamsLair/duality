@@ -688,7 +688,7 @@ namespace Duality.Editor.PackageManagement
 			foreach (NuGet.IPackage p in deepDependencies)
 			{
 				// Skip the ones that are already installed
-				if (installedPackages.Any(l => l.Id == p.Id && l.Version == p.Version))
+				if (installedPackages.Any(l => l.Id == p.Id && l.Version >= p.Version))
 					continue;
 
 				if (!this.CheckLicenseAgreement(p))
