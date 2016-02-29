@@ -32,6 +32,10 @@ namespace Duality.Editor
 		public static event EventHandler StackChanged = null;
 
 
+	    public static int ActionIndex
+	    {
+            get { return actionIndex; }
+	    }
 		public static int MaxUndoActions
 		{
 			get { return maxActions; }
@@ -53,6 +57,10 @@ namespace Duality.Editor
 		{
 			get { return NextAction; }
 		}
+        public static IEnumerable<IUndoRedoActionInfo> AllActions
+	    {
+            get { return actionStack; }
+	    }
 		private static UndoRedoAction PrevAction
 		{
 			get { return actionIndex < actionStack.Count && actionIndex >= 0 ? actionStack[actionIndex] : null; }
