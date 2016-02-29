@@ -342,7 +342,7 @@ namespace VersionUpdater
 			Console.WriteLine();
 			Console.WriteLine();
 			Console.WriteLine("All done!");
-			Console.ReadLine();
+			Console.WriteLine();
 		}
 
 		private static HashSet<PropertyInfo> ParseCommandLine(ConfigFile config, string[] args)
@@ -498,8 +498,27 @@ namespace VersionUpdater
 					{
 						string commitTitleAndMessage = line.Substring(indexOfSeparator, line.Length - indexOfSeparator).Trim();
 						string[] commitMessageToken = commitTitleAndMessage.Split('#');
-						string commitTitle = commitMessageToken[0].Trim();
-						string commitMessage = "#" + string.Join(Environment.NewLine + "#", commitMessageToken, 1, commitMessageToken.Length - 1);
+						string commitTitle;
+						string commitMessage;
+
+						// Received the expected commit message format in the form
+						//
+						// Title / Headline
+						// #CHANGE: Description
+						// #ADD: More Description
+						// ...
+						if (commitMessageToken.Length > 1)
+						{
+							commitTitle = commitMessageToken[0].Trim();
+							commitMessage = "#" + string.Join(Environment.NewLine + "#", commitMessageToken, 1, commitMessageToken.Length - 1);
+						}
+						// Received an unexpected message format
+						else
+						{
+							commitMessageToken = commitTitleAndMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+							commitTitle = commitMessageToken[0];
+							commitMessage = string.Empty;
+						}
 
 						// Stop reading as soon as we see a package update commit
 						if (string.Equals(commitTitle, PackageUpdateCommitTitle, StringComparison.InvariantCultureIgnoreCase) &&
@@ -571,9 +590,13 @@ namespace VersionUpdater
 						changeInfo.ModifiedFilePaths.Add(filePath);
 					}
 
-					// Add changelog entries
-					changeInfo.Titles.Add(commit.Title);
-					changeInfo.ChangeLog.AddRange(commit.Message.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+					// Add changelog entries, if we have meaningful comments
+					if (!string.IsNullOrEmpty(commit.Title) && !string.IsNullOrEmpty(commit.Message))
+					{
+						string[] msgItems = commit.Message.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+						changeInfo.Titles.Add(commit.Title);
+						changeInfo.ChangeLog.AddRange(msgItems);
+					}
 				}
 			}
 			return changesPerProject.Values.ToList();
