@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.2.5</version>
+    <version>2.2.6</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,13 +13,18 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>PackageManager Bugfixes
-#FIX: Fixed a bug where the License Acceptance dialog would show up even if the package in question was already installed. 
-#FIX: Fixed a bug where the package manager would sometimes consider pre-release versions of a package.</releaseNotes>
+    <releaseNotes>Project File Tweaks, Updated Aga.Controls Dependency, Some RenderGlyphs Refactoring
+#CHANGE: The auto-generated start program and working directory are now relative paths.
+#CHANGE: Updated to Aga.Controls 1.7.6 in order to apply some bugfixes.
+#CHANGE: Now using FontRenderGlyphCharSet internally as well. 
+#CHANGE: FontRenderGlyphCharSet no longer accepts null as character set value. 
+#CHANGE: No longer allowing duplicates in character sets.
+#CHANGE: Fixed remaining indentation spaces / replaced them with tabs. 
+#CHANGE: Changed the wording of some XML documentation to match Duality internals more closely.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.2" />
+      <dependency id="AdamsLair.Duality" version="2.2.3" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
-      <dependency id="AdamsLair.TreeViewAdv" version="1.7.5" />
+      <dependency id="AdamsLair.TreeViewAdv" version="1.7.6" />
       <dependency id="AdamsLair.WinForms" version="1.1.1" />
       <dependency id="AdamsLair.WinForms.PopupControl" version="1.0.0.0" />
       <dependency id="NuGet.Core" version="2.8.3" />
