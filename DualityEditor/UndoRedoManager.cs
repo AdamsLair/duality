@@ -89,6 +89,21 @@ namespace Duality.Editor
 			get { return NextAction; }
 		}
 		/// <summary>
+		/// [GET] The action stack containing all currently logged Undo / Redo actions.
+		/// New elements are added at the end while old elements are discarded at the beginning.
+		/// </summary>
+		public static IReadOnlyList<IUndoRedoActionInfo> ActionStack
+		{
+			get { return actionStack; }
+		}
+		/// <summary>
+		/// [GET] The <see cref="ActionStack"/> index of the action that was performed last.
+		/// </summary>
+		public static int ActionIndex
+		{
+			get { return actionIndex; }
+		}
+		/// <summary>
 		/// [GET] The previously performed action for Undo.
 		/// </summary>
 		private static UndoRedoAction PrevAction
