@@ -99,14 +99,30 @@ namespace Duality.Backend.DefaultOpenTK
 				this.internalWindow.Context.SwapInterval);
 
 			// Retrieve icon from executable file and set it as window icon
-			Assembly entryAssembly = Assembly.GetEntryAssembly();
-			if (entryAssembly != null)
+			string executablePath = null;
+			try
 			{
-				string executablePath = Path.GetFullPath(entryAssembly.Location);
-				if (File.Exists(executablePath))
+				Assembly entryAssembly = Assembly.GetEntryAssembly();
+				if (entryAssembly != null)
 				{
-					this.internalWindow.Icon = Icon.ExtractAssociatedIcon(executablePath);
+					executablePath = Path.GetFullPath(entryAssembly.Location);
+					if (File.Exists(executablePath))
+					{
+						this.internalWindow.Icon = Icon.ExtractAssociatedIcon(executablePath);
+					}
 				}
+			}
+			// As described in issue 301 (https://github.com/AdamsLair/duality/issues/301), the
+			// icon extraction can fail with an exception under certain circumstances. Don't fail
+			// just because of an icon. Log the error and continue.
+			catch (Exception e)
+			{
+				Log.Core.WriteError(
+					"There was an exception while trying to extract the " +
+					"window icon from the game's main executable '{0}'. This is " +
+					"uncritical, but still an error: {1}",
+					executablePath,
+					Log.Exception(e));
 			}
 
 			if (options.ScreenMode == ScreenMode.FullWindow)
