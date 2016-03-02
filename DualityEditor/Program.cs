@@ -39,6 +39,15 @@ namespace Duality.Editor
 			TextWriterLogOutput logfileOutput = null;
 			try
 			{
+				// If there is an existing logfile, preserve it under a different name
+				if (File.Exists(DualityEditorApp.EditorLogfilePath))
+				{
+					if (File.Exists(DualityEditorApp.EditorPrevLogfilePath))
+						File.Delete(DualityEditorApp.EditorPrevLogfilePath);
+					File.Move(DualityEditorApp.EditorLogfilePath, DualityEditorApp.EditorPrevLogfilePath);
+				}
+
+				// Create a new logfile
 				logfileWriter = new StreamWriter(DualityEditorApp.EditorLogfilePath);
 				logfileWriter.AutoFlush = true;
 				logfileOutput = new TextWriterLogOutput(logfileWriter);
