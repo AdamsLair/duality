@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.2.7</version>
+    <version>2.2.8</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,8 +13,12 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>Package Management Tweaks
-#CHANGE: Developer license agreements are no longer prompted again for packages that are already installed in a newer version.</releaseNotes>
+    <releaseNotes>Font Extension API Fixes, Editor "Previous" Logfiles, Package Synchronization
+#FIX: ExtMethodsDualityFont no longer uses a default parameter, so plugins can't silently update in source while being incompatible binary-wise. This should fix various errors in the latest binary release.
+#ADD: The editor now preserves the previously used editor logfile under a different name when creating a new one.
+#ADD: In addition to installing new packages or verifying their version on startup, installed packages that aren't registered will be uninstalled. This allows users to edit their PackageConfig.xml file manually and let the editor synchronize itself.
+#ADD: The UndoRedoManager class now exposes more information about the action stack, which is required for an Undo history editor module to work properly.
+#ADD: Added XML docs to UndoRedo related classes.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.2.3" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />

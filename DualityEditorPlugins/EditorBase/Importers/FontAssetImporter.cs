@@ -53,7 +53,7 @@ namespace Duality.Editor.Plugins.Base
 
 					// Update font data from the input file
 					target.EmbeddedTrueTypeFont = File.ReadAllBytes(input.Path);
-					target.RenderGlyphs();
+					target.RenderGlyphs(null);
 
 					// Add the requested output to signal that we've done something with it
 					env.AddOutput(targetRef, input.Path);

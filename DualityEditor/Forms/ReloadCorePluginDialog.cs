@@ -291,14 +291,6 @@ namespace Duality.Editor.Forms
 				{
 					Log.Editor.WriteError("Failed reloading plugins during runtime: {0}", Log.Exception(e));
 					Log.Editor.Write("Trying full restart...");
-					if (File.Exists(DualityEditorApp.EditorLogfilePath))
-					{
-						// Save the old logfile, in case someone wants to know what happened.
-						File.Copy(
-							DualityEditorApp.EditorLogfilePath, 
-							Path.GetFileNameWithoutExtension(DualityEditorApp.EditorLogfilePath) + "_reloadfailure" + Path.GetExtension(DualityEditorApp.EditorLogfilePath), 
-							true);
-					}
 
 					try
 					{

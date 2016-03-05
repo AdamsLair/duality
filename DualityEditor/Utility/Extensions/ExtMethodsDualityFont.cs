@@ -34,7 +34,7 @@ namespace Duality.Editor
 		/// Renders the <see cref="Duality.Resources.Font"/> based on its embedded TrueType representation.
 		/// <param name="extendedSet">Extended set of characters for renderning.</param>
 		/// </summary>
-		public static void RenderGlyphs(this DualityFont font, FontRenderGlyphCharSet extendedSet = null)
+		public static void RenderGlyphs(this DualityFont font, FontRenderGlyphCharSet extendedSet)
 		{
 			if (font.EmbeddedTrueTypeFont == null) throw new InvalidOperationException("Can't render glyphs of a Duality Font without embedded vector Font information.");
 
@@ -81,7 +81,7 @@ namespace Duality.Editor
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
 		/// </summary>
-		public static void RenderGlyphs(this DualityFont font, FontFamily fontFamily, FontRenderGlyphCharSet extendedSet = null)
+		public static void RenderGlyphs(this DualityFont font, FontFamily fontFamily, FontRenderGlyphCharSet extendedSet)
 		{
 			// Determine System.Drawing font style
 			SysDrawFontStyle style = SysDrawFontStyle.Regular;

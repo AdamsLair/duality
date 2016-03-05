@@ -18,12 +18,12 @@ namespace Duality.Editor.PackageManagement
 {
 	public sealed class PackageManager
 	{
-		public const string DualityTag	= "Duality";
-		public const string PluginTag	= "Plugin";
-		public const string SampleTag	= "Sample";
-		public const string CoreTag		= "Core";
-		public const string EditorTag	= "Editor";
-		public const string LauncherTag	= "Launcher";
+		public const string DualityTag  = "Duality";
+		public const string PluginTag   = "Plugin";
+		public const string SampleTag   = "Sample";
+		public const string CoreTag     = "Core";
+		public const string EditorTag   = "Editor";
+		public const string LauncherTag = "Launcher";
 
 		/// <summary>
 		/// A list of package names that are considered "core" Duality packages.
@@ -37,32 +37,32 @@ namespace Duality.Editor.PackageManagement
 			"AdamsLair.Duality.Launcher"
 		};
 
-		private const string UpdateConfigFile		= "ApplyUpdate.xml";
-		private const string PackageConfigFile		= "PackageConfig.xml";
-		private const string LocalPackageDir		= EditorHelper.SourceDirectory + @"\Packages";
-		private const string DefaultRepositoryUrl	= @"https://packages.nuget.org/api/v2";
+		private const string UpdateConfigFile     = "ApplyUpdate.xml";
+		private const string PackageConfigFile    = "PackageConfig.xml";
+		private const string LocalPackageDir      = EditorHelper.SourceDirectory + @"\Packages";
+		private const string DefaultRepositoryUrl = @"https://packages.nuget.org/api/v2";
 
 
-		private List<string>		repositoryUrls	= new List<string>{ DefaultRepositoryUrl };
-		private	bool				firstInstall	= false;
-		private	bool				hasLocalRepo	= false;
-		private	string				dataTargetDir	= null;
-		private	string				sourceTargetDir	= null;
-		private	string				pluginTargetDir	= null;
-		private	string				rootPath		= null;
-		private	List<LocalPackage>	localPackages	= new List<LocalPackage>();
-		private	List<LocalPackage>	uninstallQueue	= new List<LocalPackage>();
+		private List<string>       repositoryUrls  = new List<string>{ DefaultRepositoryUrl };
+		private bool               firstInstall    = false;
+		private bool               hasLocalRepo    = false;
+		private string             dataTargetDir   = null;
+		private string             sourceTargetDir = null;
+		private string             pluginTargetDir = null;
+		private string             rootPath        = null;
+		private List<LocalPackage> localPackages   = new List<LocalPackage>();
+		private List<PackageName>  uninstallQueue  = new List<PackageName>();
 
-		private	object cacheLock = new object();
+		private	object                              cacheLock              = new object();
 		private	Dictionary<string,NuGet.IPackage[]> repositoryPackageCache = new Dictionary<string,NuGet.IPackage[]>();
-		private	Dictionary<NuGet.IPackage,bool> licenseAcceptedCache = new Dictionary<NuGet.IPackage,bool>();
+		private	Dictionary<NuGet.IPackage,bool>     licenseAcceptedCache   = new Dictionary<NuGet.IPackage,bool>();
 
-		private NuGet.PackageManager		manager		= null;
-		private	NuGet.IPackageRepository	repository	= null;
+		private NuGet.PackageManager     manager    = null;
+		private NuGet.IPackageRepository repository = null;
 
 		public event EventHandler<PackageLicenseAgreementEventArgs> PackageLicenseAcceptRequired = null;
-		public event EventHandler<PackageEventArgs> PackageInstalled = null;
-		public event EventHandler<PackageEventArgs> PackageUninstalled = null;
+		public event EventHandler<PackageEventArgs>                 PackageInstalled             = null;
+		public event EventHandler<PackageEventArgs>                 PackageUninstalled           = null;
 
 
 		public IEnumerable<LocalPackage> LocalPackages
@@ -73,14 +73,29 @@ namespace Duality.Editor.PackageManagement
 		{
 			get { return this.firstInstall; }
 		}
-		public bool IsPackageUpdateRequired
+		public bool IsPackageSyncRequired
 		{
 			get
 			{
+				IPackage[] allInstalledPackages = this.manager
+					.LocalRepository
+					.GetPackages()
+					.ToArray();
+
+				// Do we have unregistered packages that are still installed?
+				bool needsUninstall = allInstalledPackages.Any(p =>
+					IsDualityPackage(p) &&
+					!this.localPackages.Any(n =>
+						n.Id == p.Id &&
+						n.Version == p.Version.Version));
+				if (needsUninstall)
+					return true;
+
+				// Do we have registered packages that are not installed or don't have a specific version?
 				return this.localPackages.Any(p => 
 					p.Version == null || 
 					p.Info == null || 
-					!this.manager.LocalRepository.GetPackages().Any(n => 
+					!allInstalledPackages.Any(n => 
 						n.Id == p.Id && 
 						n.Version == new SemanticVersion(p.Version)));
 			}
@@ -144,6 +159,12 @@ namespace Duality.Editor.PackageManagement
 			this.manager.InstallPackage(newPackage, false, false);
 		}
 
+		/// <summary>
+		/// Installs the specified package if it wasn't installed yet and synchronizes
+		/// the registered Duality package version number with the one that is present
+		/// in the local cache.
+		/// </summary>
+		/// <param name="package"></param>
 		public void VerifyPackage(LocalPackage package)
 		{
 			Version oldPackageVersion = package.Version;
@@ -187,15 +208,48 @@ namespace Duality.Editor.PackageManagement
 				this.SaveConfig();
 			}
 		}
+		/// <summary>
+		/// Uninstalls all Duality packages that are installed, but not registered. This
+		/// usually happens when a user manually edits the package config file and either
+		/// removes package entries explicitly, or changes their version numbers.
+		/// </summary>
+		public void UninstallNonRegisteredPackages()
+		{
+			IPackage[] allInstalledPackages = this.manager
+				.LocalRepository
+				.GetPackages()
+				.ToArray();
+			LocalPackage[] registeredPackages = this.localPackages
+				.ToArray();
+
+			foreach (IPackage package in allInstalledPackages)
+			{
+				// Skip non-Duality packages. They're not registered anyway and not expected to.
+				if (!IsDualityPackage(package)) continue;
+
+				// Skip packages that are registered in the exact same version
+				bool isRegistered = registeredPackages.Any(p => 
+					p.Id == package.Id && 
+					p.Version == package.Version.Version);
+				if (isRegistered) continue;
+
+				// Uninstall all others
+				this.UninstallPackage(package.Id, package.Version.Version);
+			}
+		}
 
 		public void UninstallPackage(PackageInfo package)
 		{
-			this.UninstallPackage(this.localPackages.FirstOrDefault(p => p.Id == package.Id));
+			this.UninstallPackage(package.Id, package.Version);
 		}
 		public void UninstallPackage(LocalPackage package)
 		{
-			this.uninstallQueue.Add(package);
-			this.manager.UninstallPackage(package.Id, new SemanticVersion(package.Version), false, true);
+			this.UninstallPackage(package.Id, package.Version);
+		}
+		private void UninstallPackage(string id, Version version)
+		{
+			this.uninstallQueue.Add(new PackageName(id, version));
+			this.manager.UninstallPackage(id, new SemanticVersion(version), false, true);
 			this.uninstallQueue.Clear();
 		}
 		public bool CanUninstallPackage(PackageInfo package)
@@ -235,7 +289,7 @@ namespace Duality.Editor.PackageManagement
 
 			this.uninstallQueue = null;
 			this.manager.UpdatePackage(newPackage, true, false);
-			this.uninstallQueue = new List<LocalPackage>();
+			this.uninstallQueue = new List<PackageName>();
 		}
 		public bool CanUpdatePackage(PackageInfo package)
 		{
@@ -901,12 +955,8 @@ namespace Duality.Editor.PackageManagement
 		{
 			Dictionary<string,string> fileMapping = new Dictionary<string,string>();
 
-			bool isDualityPackage = 
-				package.Tags != null &&
-				package.Tags.Contains(DualityTag);
-			bool isPluginPackage = 
-				isDualityPackage && 
-				package.Tags.Contains(PluginTag);
+			bool isDualityPackage = IsDualityPackage(package);
+			bool isPluginPackage = isDualityPackage && package.Tags.Contains(PluginTag);
 
 			string folderFriendlyPackageName = package.Id;
 			string binaryBaseDir = this.pluginTargetDir;
@@ -1080,7 +1130,13 @@ namespace Duality.Editor.PackageManagement
 
 			this.OnPackageInstalled(new PackageEventArgs(new PackageName(e.Package.Id, e.Package.Version.Version)));
 		}
-
+		
+		private static bool IsDualityPackage(NuGet.IPackage package)
+		{
+			return
+				package.Tags != null &&
+				package.Tags.Contains(DualityTag);
+		}
 		private static void DisplayDefaultLicenseAcceptDialog(PackageLicenseAgreementEventArgs args)
 		{
 			LicenseAcceptDialog licenseDialog = new LicenseAcceptDialog
