@@ -212,6 +212,12 @@ namespace Duality.Editor.PackageManagement
 		/// Uninstalls all Duality packages that are installed, but not registered. This
 		/// usually happens when a user manually edits the package config file and either
 		/// removes package entries explicitly, or changes their version numbers.
+		/// 
+		/// Due to the nature of this operation, it is possible that package dependencies
+		/// are removed even though they might still be required by some installed packages.
+		/// To make sure this state doesn't persist, it is recommended to perform a package
+		/// verification step afterwards, which will re-install dependencies that might have
+		/// been accidentally removed.
 		/// </summary>
 		public void UninstallNonRegisteredPackages()
 		{
@@ -233,23 +239,25 @@ namespace Duality.Editor.PackageManagement
 					p.Version == package.Version.Version);
 				if (isRegistered) continue;
 
-				// Uninstall all others
-				this.UninstallPackage(package.Id, package.Version.Version);
+				// Uninstall all others with a force-uninstall. If we happen to remove
+				// a package that is actually still needed, an additional package verification
+				// step afterwards will fix this.
+				this.UninstallPackage(package.Id, package.Version.Version, true);
 			}
 		}
 
 		public void UninstallPackage(PackageInfo package)
 		{
-			this.UninstallPackage(package.Id, package.Version);
+			this.UninstallPackage(package.Id, package.Version, false);
 		}
 		public void UninstallPackage(LocalPackage package)
 		{
-			this.UninstallPackage(package.Id, package.Version);
+			this.UninstallPackage(package.Id, package.Version, false);
 		}
-		private void UninstallPackage(string id, Version version)
+		private void UninstallPackage(string id, Version version, bool force)
 		{
 			this.uninstallQueue.Add(new PackageName(id, version));
-			this.manager.UninstallPackage(id, new SemanticVersion(version), false, true);
+			this.manager.UninstallPackage(id, new SemanticVersion(version), force, true);
 			this.uninstallQueue.Clear();
 		}
 		public bool CanUninstallPackage(PackageInfo package)
