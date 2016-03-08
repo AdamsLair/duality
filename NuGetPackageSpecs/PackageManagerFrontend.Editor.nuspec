@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.PackageManagerFrontend</id>
-    <version>2.0.2</version>
+    <version>2.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Package Manager Frontend</title>
@@ -13,11 +13,12 @@
     <summary>A user interface for conveniently managing Duality packages.</summary>
     <description>A user interface for conveniently managing Duality packages.</description>
     <tags>Duality Editor Plugin PackageManagerFrontend</tags>
-    <releaseNotes>Updated AdamsLair.WinForms Dependency
-#CHANGE: Updated AdamsLair.WinForms dependency to version 1.1.1</releaseNotes>
+    <releaseNotes>Package Manager View Tweaks, Updated Aga.Controls Dependency
+#CHANGE: Filtering in the package manager view is now case-insensitive.
+#CHANGE: Updated to Aga.Controls 1.7.6 in order to apply some bugfixes.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.2.2" />
+      <dependency id="AdamsLair.Duality" version="2.2.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.2.6" />
     </dependencies>
   </metadata>
   <files>

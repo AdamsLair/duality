@@ -31,6 +31,7 @@ namespace Duality.Editor
 	public static class DualityEditorApp
 	{
 		public	const	string	EditorLogfilePath		= "logfile_editor.txt";
+		public	const	string	EditorPrevLogfilePath	= "logfile_editor_prev.txt";
 		public	const	string	DesignTimeDataFile		= "DesignTimeData.dat";
 		public	const	string	UserDataFile			= "EditorUserData.xml";
 		private	const	string	UserDataDockSeparator	= "<!-- DockPanel Data -->";
@@ -839,6 +840,8 @@ namespace Duality.Editor
 				const string coreProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
 				const string editorProjectFile = EditorHelper.SourceCodeProjectEditorPluginFile;
 
+				string solutionDir = Path.GetFullPath(Path.GetDirectoryName(EditorHelper.SourceCodeSolutionFile));
+
 				if (!File.Exists(coreProjectFile))
 				{
 					using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
@@ -859,22 +862,33 @@ namespace Duality.Editor
 					bool anythingChanged = false;
 
 					string startProgram = Path.GetFullPath(DualityEditorApp.LauncherAppPath);
+					string startProgramRelative = PathHelper.MakeFilePathRelative(startProgram, solutionDir);
+					if (startProgramRelative != null)
+						startProgramRelative = "$(SolutionDir)" + startProgramRelative;
+					else
+						startProgramRelative = startProgram;
+
 					string startWorkingDir = Path.GetFullPath(".");
+					string startWorkingDirRelative = PathHelper.MakeDirectoryPathRelative(startWorkingDir, solutionDir);
+					if (startWorkingDirRelative != null)
+						startWorkingDirRelative = "$(SolutionDir)" + startWorkingDirRelative;
+					else
+						startWorkingDirRelative = startWorkingDir;
 
 					projectDoc = XDocument.Load(coreProjectFile);
 					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
 					{
-						if (!PathOp.ArePathsEqual(element.Value, startProgram))
+						if (!string.Equals(element.Value, startProgramRelative))
 						{
-							element.Value = startProgram;
+							element.Value = startProgramRelative;
 							anythingChanged = true;
 						}
 					}
 					foreach (XElement element in projectDoc.Descendants("StartWorkingDirectory", true))
 					{
-						if (!PathOp.ArePathsEqual(element.Value, startWorkingDir))
+						if (!string.Equals(element.Value, startWorkingDirRelative))
 						{
-							element.Value = startWorkingDir;
+							element.Value = startWorkingDirRelative;
 							anythingChanged = true;
 						}
 					}
@@ -904,22 +918,33 @@ namespace Duality.Editor
 					bool anythingChanged = false;
 
 					string startProgram = Path.GetFullPath("DualityEditor.exe");
+					string startProgramRelative = PathHelper.MakeFilePathRelative(startProgram, solutionDir);
+					if (startProgramRelative != null)
+						startProgramRelative = "$(SolutionDir)" + startProgramRelative;
+					else
+						startProgramRelative = startProgram;
+
 					string startWorkingDir = Path.GetFullPath(".");
+					string startWorkingDirRelative = PathHelper.MakeDirectoryPathRelative(startWorkingDir, solutionDir);
+					if (startWorkingDirRelative != null)
+						startWorkingDirRelative = "$(SolutionDir)" + startWorkingDirRelative;
+					else
+						startWorkingDirRelative = startWorkingDir;
 
 					projectDoc = XDocument.Load(editorProjectFile);
 					foreach (XElement element in projectDoc.Descendants("StartProgram", true))
 					{
-						if (!PathOp.ArePathsEqual(element.Value, startProgram))
+						if (!string.Equals(element.Value, startProgramRelative))
 						{
-							element.Value = startProgram;
+							element.Value = startProgramRelative;
 							anythingChanged = true;
 						}
 					}
 					foreach (XElement element in projectDoc.Descendants("StartWorkingDirectory", true))
 					{
-						if (!PathOp.ArePathsEqual(element.Value, startWorkingDir))
+						if (!string.Equals(element.Value, startWorkingDirRelative))
 						{
-							element.Value = startWorkingDir;
+							element.Value = startWorkingDirRelative;
 							anythingChanged = true;
 						}
 					}

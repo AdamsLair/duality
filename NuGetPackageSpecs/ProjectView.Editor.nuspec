@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.ProjectView</id>
-    <version>2.0.4</version>
+    <version>2.0.5</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Project View</title>
@@ -13,11 +13,11 @@
     <summary>Provides an overview of project Resources and allows importing new Assets.</summary>
     <description>Provides an overview of project Resources and allows importing new Assets.</description>
     <tags>Duality Editor Plugin ProjectView</tags>
-    <releaseNotes>Updated AdamsLair.WinForms Dependency
-#CHANGE: Updated AdamsLair.WinForms dependency to version 1.1.1</releaseNotes>
+    <releaseNotes>Updated Aga.Controls Dependency
+#CHANGE: Updated to Aga.Controls 1.7.6 in order to apply some bugfixes.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.2.2" />
+      <dependency id="AdamsLair.Duality" version="2.2.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.2.6" />
     </dependencies>
   </metadata>
   <files>

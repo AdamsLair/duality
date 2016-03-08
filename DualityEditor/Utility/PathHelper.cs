@@ -125,6 +125,22 @@ namespace Duality.Editor
 			return Path.Combine(resultDir, fileName);
 		}
 		/// <summary>
+		/// Same as <see cref="MakeFilePathRelative"/>, but for directories.
+		/// </summary>
+		/// <param name="directoryPath"></param>
+		/// <param name="relativeToDir"></param>
+		/// <returns></returns>
+		public static string MakeDirectoryPathRelative(string directoryPath, string relativeToDir = ".")
+		{
+			string dummyFilePath = Path.Combine(directoryPath, "dummy.txt");
+
+			string dummyFilePathRelative = MakeFilePathRelative(dummyFilePath, relativeToDir);
+			if (dummyFilePathRelative == null) return null;
+
+			string relativeDirectoryPath = Path.GetDirectoryName(dummyFilePathRelative);
+			return relativeDirectoryPath;
+		}
+		/// <summary>
 		/// Determines the mutual base directory of a set of paths.
 		/// </summary>
 		/// <param name="paths"></param>
