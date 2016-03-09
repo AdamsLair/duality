@@ -76,6 +76,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void SetActiveEditorMode(TilesetEditorMode mode)
 		{
+			// Reset the layer view selection
+			this.layerView.SelectedNode = null;
+
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnLeave();
 
@@ -102,18 +105,45 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.tilesetView.BackColor = darkMode ? Color.FromArgb(64, 64, 64) : Color.FromArgb(192, 192, 192);
 			this.tilesetView.ForeColor = darkMode ? Color.FromArgb(255, 255, 255) : Color.FromArgb(0, 0, 0);
 		}
-
+		
+		private void StartRecordTilesetChanges()
+		{
+			Log.Editor.Write(
+				"Start recording Tileset changes for Tileset '{0}'", 
+				this.SelectedTileset);
+			// ToDo
+		}
 		private void ApplyTilesetChanges()
 		{
+			Log.Editor.Write(
+				"Apply Tileset changes for Tileset '{0}'", 
+				this.SelectedTileset);
+
 			// ToDo
+
+			this.buttonApply.Enabled = false;
+			this.buttonRevert.Enabled = false;
 		}
 		private void ResetTilesetChanges()
 		{
+			Log.Editor.Write(
+				"Revert Tileset changes for Tileset '{0}'", 
+				this.SelectedTileset);
+
 			// ToDo
+
+			this.buttonApply.Enabled = false;
+			this.buttonRevert.Enabled = false;
 		}
 		private void AskApplyOrResetTilesetChanges()
 		{
+			Log.Editor.Write(
+				"Ask Apply or Revert Tileset changes for Tileset '{0}'", 
+				this.SelectedTileset);
+
 			// ToDo: Show a user confirmation dialog when necessary
+
+			this.ResetTilesetChanges();
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -173,6 +203,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// When switching to a different tileset, either apply or revert what we did to the current one
 			this.AskApplyOrResetTilesetChanges();
 
+			// We now know that we're operating on an unchanged Tileset. Start recording for the next apply / revert
+			this.StartRecordTilesetChanges();
+
 			// Update the label that tells us which tileset is selected
 			this.labelSelectedTileset.Text = (this.SelectedTileset != null) ? 
 				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, this.SelectedTileset.Name) : 
@@ -181,9 +214,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Inform the currently active editing mode of this change
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetSelectionChanged();
-
-			// Reset the layer view selection
-			this.layerView.SelectedNode = this.layerView.Root.Children.FirstOrDefault();
 		}
 		
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
@@ -194,6 +224,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetModified(e);
+
+			this.buttonApply.Enabled = true;
+			this.buttonRevert.Enabled = true;
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -238,7 +271,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
+			TreeNodeAdv viewNode = this.layerView.SelectedNode;
+			LayerSelectionChangedEventArgs args = new LayerSelectionChangedEventArgs(viewNode);
 
+			if (this.activeMode != null)
+				this.activeMode.RaiseOnLayerSelectionChanged(args);
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)

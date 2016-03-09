@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Linq;
 using System.Drawing;
 
@@ -38,6 +39,22 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				this.layer = layer;
 				this.Image = Properties.TilemapsResCache.IconTilesetSingleVisualLayer;
 			}
+
+			public void Invalidate()
+			{
+				this.NotifyModel();
+			}
+		}
+
+		private static readonly PropertyInfo PropertyTilesetRenderConfig;
+		static VisualLayerTilesetEditorMode()
+		{
+			PropertyTilesetRenderConfig = typeof(Tileset).GetProperty("RenderConfig");
+
+			// If we're unable to locate any of the properties, their name has probably changed.
+			// Fail and make some noise, so this can get fixed before it causes real problems
+			// in a release.
+			if (PropertyTilesetRenderConfig == null) throw new Exception("Can't resolve the required Tileset properties.");
 		}
 
 
@@ -86,6 +103,13 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				}
 			}
 
+			// Notify the model of changes for the existing nodes to account for name and id changes.
+			// This is only okay because we have so few notes in total. Don't do this for actual data.
+			foreach (VisualLayerNode node in this.treeModel.Nodes)
+			{
+				node.Invalidate();
+			}
+
 			// Add nodes that don't have a corresponding tree model node yet
 			foreach (TilesetRenderInput layer in tileset.RenderConfig)
 			{
@@ -106,7 +130,28 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 		protected override void OnTilesetModified(ObjectPropertyChangedEventArgs args)
 		{
+			Tileset tileset = this.SelectedTileset.Res;
+
+			// If a visual layer was modified, emit an editor-wide change event for
+			// the Tileset as well, so the editor knows it will need to save this Resource.
+			if (tileset != null && args.HasAnyObject(tileset.RenderConfig))
+			{
+				DualityEditorApp.NotifyObjPropChanged(
+					this, 
+					new ObjectSelection(tileset),
+					PropertyTilesetRenderConfig);
+			}
+
 			this.UpdateTreeModel();
+		}
+		protected override void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
+		{
+			base.OnLayerSelectionChanged(args);
+			VisualLayerNode selectedNode = args.SelectedNodeTag as VisualLayerNode;
+			if (selectedNode != null)
+				DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedNode.VisualLayer }));
+			else
+				DualityEditorApp.Deselect(this, obj => obj is TilesetRenderInput);
 		}
 	}
 }

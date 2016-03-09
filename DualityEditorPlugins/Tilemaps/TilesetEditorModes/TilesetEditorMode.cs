@@ -90,6 +90,10 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			this.OnTilesetModified(args);
 		}
+		internal void RaiseOnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
+		{
+			OnLayerSelectionChanged(args);
+		}
 
 		/// <summary>
 		/// Called when the editing mode becomes active.
@@ -108,5 +112,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// </summary>
 		/// <param name="args"></param>
 		protected virtual void OnTilesetModified(ObjectPropertyChangedEventArgs args) { }
+		/// <summary>
+		/// Called when the user item selection of the provided <see cref="LayerModel"/> has changed.
+		/// </summary>
+		protected virtual void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args) { }
 	}
 }
