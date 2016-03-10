@@ -30,6 +30,7 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TilesetEditor));
 			this.toolStripModeSelect = new System.Windows.Forms.ToolStrip();
+			this.labelSelectedTileset = new System.Windows.Forms.ToolStripLabel();
 			this.layerView = new Aga.Controls.Tree.TreeViewAdv();
 			this.nodeControlIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
 			this.nodeControlSummary = new Duality.Editor.Plugins.Tilemaps.TilesetEditorLayerNodeControl();
@@ -42,7 +43,7 @@
 			this.panelBottom = new System.Windows.Forms.Panel();
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonRevert = new System.Windows.Forms.Button();
-			this.labelSelectedTileset = new System.Windows.Forms.ToolStripLabel();
+			this.treeColumnMain = new Aga.Controls.Tree.TreeColumn();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -65,6 +66,13 @@
 			this.toolStripModeSelect.TabIndex = 0;
 			this.toolStripModeSelect.Text = "Main Toolstrip";
 			// 
+			// labelSelectedTileset
+			// 
+			this.labelSelectedTileset.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.labelSelectedTileset.Name = "labelSelectedTileset";
+			this.labelSelectedTileset.Size = new System.Drawing.Size(88, 22);
+			this.labelSelectedTileset.Text = "Selected Tileset";
+			// 
 			// layerView
 			// 
 			this.layerView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -73,6 +81,7 @@
 			this.layerView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(196)))), ((int)(((byte)(196)))), ((int)(((byte)(196)))));
 			this.layerView.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.layerView.ColumnHeaderHeight = 0;
+			this.layerView.Columns.Add(this.treeColumnMain);
 			this.layerView.DefaultToolTipProvider = null;
 			this.layerView.DragDropMarkColor = System.Drawing.Color.Black;
 			this.layerView.FullRowSelect = true;
@@ -93,19 +102,21 @@
 			this.layerView.ShowPlusMinus = false;
 			this.layerView.Size = new System.Drawing.Size(180, 259);
 			this.layerView.TabIndex = 1;
+			this.layerView.UseColumns = true;
 			this.layerView.SelectionChanged += new System.EventHandler(this.layerView_SelectionChanged);
+			this.layerView.Resize += new System.EventHandler(this.layerView_Resize);
 			// 
 			// nodeControlIcon
 			// 
 			this.nodeControlIcon.DataPropertyName = "Image";
 			this.nodeControlIcon.LeftMargin = 1;
-			this.nodeControlIcon.ParentColumn = null;
+			this.nodeControlIcon.ParentColumn = this.treeColumnMain;
 			this.nodeControlIcon.ScaleMode = Aga.Controls.Tree.ImageScaleMode.Clip;
 			// 
 			// nodeControlSummary
 			// 
 			this.nodeControlSummary.LeftMargin = 5;
-			this.nodeControlSummary.ParentColumn = null;
+			this.nodeControlSummary.ParentColumn = this.treeColumnMain;
 			// 
 			// toolStripEdit
 			// 
@@ -124,22 +135,24 @@
 			// buttonAddLayer
 			// 
 			this.buttonAddLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonAddLayer.Enabled = false;
 			this.buttonAddLayer.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconAdd;
 			this.buttonAddLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonAddLayer.Name = "buttonAddLayer";
 			this.buttonAddLayer.Size = new System.Drawing.Size(23, 22);
-			this.buttonAddLayer.Text = "Add";
+			this.buttonAddLayer.Text = "Add Layer";
 			this.buttonAddLayer.Visible = false;
 			this.buttonAddLayer.Click += new System.EventHandler(this.buttonAddLayer_Click);
 			// 
 			// buttonRemoveLayer
 			// 
 			this.buttonRemoveLayer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonRemoveLayer.Enabled = false;
 			this.buttonRemoveLayer.Image = global::Duality.Editor.Plugins.Tilemaps.Properties.Resources.IconDelete;
 			this.buttonRemoveLayer.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonRemoveLayer.Name = "buttonRemoveLayer";
 			this.buttonRemoveLayer.Size = new System.Drawing.Size(23, 22);
-			this.buttonRemoveLayer.Text = "Remove";
+			this.buttonRemoveLayer.Text = "Remove Layer";
 			this.buttonRemoveLayer.Visible = false;
 			this.buttonRemoveLayer.Click += new System.EventHandler(this.buttonRemoveLayer_Click);
 			// 
@@ -227,12 +240,11 @@
 			this.buttonRevert.UseVisualStyleBackColor = true;
 			this.buttonRevert.Click += new System.EventHandler(this.buttonRevert_Click);
 			// 
-			// labelSelectedTileset
+			// treeColumnMain
 			// 
-			this.labelSelectedTileset.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.labelSelectedTileset.Name = "labelSelectedTileset";
-			this.labelSelectedTileset.Size = new System.Drawing.Size(88, 22);
-			this.labelSelectedTileset.Text = "Selected Tileset";
+			this.treeColumnMain.Header = "";
+			this.treeColumnMain.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.treeColumnMain.TooltipText = null;
 			// 
 			// TilesetEditor
 			// 
@@ -283,5 +295,6 @@
 		private System.Windows.Forms.Button buttonApply;
 		private System.Windows.Forms.Button buttonRevert;
 		private System.Windows.Forms.ToolStripLabel labelSelectedTileset;
+		private Aga.Controls.Tree.TreeColumn treeColumnMain;
 	}
 }

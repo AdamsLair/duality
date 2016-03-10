@@ -46,17 +46,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			}
 		}
 
-		private static readonly PropertyInfo PropertyTilesetRenderConfig;
-		static VisualLayerTilesetEditorMode()
-		{
-			PropertyTilesetRenderConfig = typeof(Tileset).GetProperty("RenderConfig");
-
-			// If we're unable to locate any of the properties, their name has probably changed.
-			// Fail and make some noise, so this can get fixed before it causes real problems
-			// in a release.
-			if (PropertyTilesetRenderConfig == null) throw new Exception("Can't resolve the required Tileset properties.");
-		}
-
 
 		private	TreeModel treeModel = new TreeModel();
 
@@ -80,6 +69,14 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		public override ITreeModel LayerModel
 		{
 			get { return this.treeModel; }
+		}
+		public override LayerEditingCaps AllowLayerEditing
+		{
+			get { return LayerEditingCaps.All; }
+		}
+		protected TilesetRenderInput SelectedVisualLayer
+		{
+			get { return DualityEditorApp.Selection.Objects.OfType<TilesetRenderInput>().FirstOrDefault(); }
 		}
 
 
@@ -119,6 +116,30 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				}
 			}
 		}
+
+		public override void AddLayer()
+		{
+			base.AddLayer();
+			Tileset tileset = this.SelectedTileset.Res;
+			if (tileset == null) return;
+
+			UndoRedoManager.Do(new UndoRedoActions.AddTilesetVisualLayerAction(
+				tileset, 
+				new TilesetRenderInput()));
+		}
+		public override void RemoveLayer()
+		{
+			base.RemoveLayer();
+
+			TilesetRenderInput layer = this.SelectedVisualLayer;
+			Tileset tileset = this.SelectedTileset.Res;
+			if (layer == null) return;
+			if (tileset == null) return;
+
+			// ToDo
+			throw new NotImplementedException();
+			this.UpdateTreeModel();
+		}
 		
 		protected override void OnEnter()
 		{
@@ -139,19 +160,35 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				DualityEditorApp.NotifyObjPropChanged(
 					this, 
 					new ObjectSelection(tileset),
-					PropertyTilesetRenderConfig);
+					TilemapsReflectionInfo.Property_Tileset_RenderConfig);
 			}
 
 			this.UpdateTreeModel();
 		}
-		protected override void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
+		protected override void OnLayerSelectionChanged(LayerSelectionEventArgs args)
 		{
 			base.OnLayerSelectionChanged(args);
+			Tileset tileset = this.SelectedTileset.Res;
 			VisualLayerNode selectedNode = args.SelectedNodeTag as VisualLayerNode;
+
+			// Update global editor selection, so an Object Inspector can pick up the layer for editing
 			if (selectedNode != null)
 				DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedNode.VisualLayer }));
 			else
 				DualityEditorApp.Deselect(this, obj => obj is TilesetRenderInput);
+
+			// Update the TilesetView to show the appropriate layer
+			if (tileset != null)
+			{
+				int layerIndex = (selectedNode != null) ? 
+					tileset.RenderConfig.IndexOf(selectedNode.VisualLayer) : 
+					-1;
+
+				if (layerIndex == -1) 
+					layerIndex = 0;
+
+				this.TilesetView.DisplayedConfigIndex = layerIndex;
+			}
 		}
 	}
 }

@@ -27,6 +27,14 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			get { return this.editor.SelectedTileset; }
 		}
+		/// <summary>
+		/// [GET] The <see cref="TilesetView"/> of the <see cref="TilesetEditor"/>, which
+		/// can be customized on a per-<see cref="TilesetEditorMode"/> bases.
+		/// </summary>
+		protected TilesetView TilesetView
+		{
+			get { return editor.TilesetView; }
+		}
 
 		/// <summary>
 		/// [GET] The editing mode's unique and persistent id. As far as possible, this
@@ -63,6 +71,13 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			get { return 0; }
 		}
+		/// <summary>
+		/// [GET] Whether this <see cref="TilesetEditorMode"/> allows users to edit its layers.
+		/// </summary>
+		public virtual LayerEditingCaps AllowLayerEditing
+		{
+			get { return LayerEditingCaps.None; }
+		}
 
 
 		internal void Init(TilesetEditor editor)
@@ -90,10 +105,19 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			this.OnTilesetModified(args);
 		}
-		internal void RaiseOnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
+		internal void RaiseOnLayerSelectionChanged(LayerSelectionEventArgs args)
 		{
 			OnLayerSelectionChanged(args);
 		}
+
+		/// <summary>
+		/// Adds a new layer to the <see cref="LayerModel"/> that is defined by this <see cref="TilesetEditorMode"/>.
+		/// </summary>
+		public virtual void AddLayer() { }
+		/// <summary>
+		/// Removes the currently selected layer from the <see cref="LayerModel"/> that is defined by this <see cref="TilesetEditorMode"/>.
+		/// </summary>
+		public virtual void RemoveLayer() { }
 
 		/// <summary>
 		/// Called when the editing mode becomes active.
@@ -115,6 +139,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// <summary>
 		/// Called when the user item selection of the provided <see cref="LayerModel"/> has changed.
 		/// </summary>
-		protected virtual void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args) { }
+		protected virtual void OnLayerSelectionChanged(LayerSelectionEventArgs args) { }
 	}
 }

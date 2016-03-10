@@ -464,5 +464,14 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
                 return ResourceManager.GetString("UndoRedo_EditTilemapFloodFillTiles", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Visual Layer.
+        /// </summary>
+        internal static string UndoRedo_TilesetAddVisualLayer {
+            get {
+                return ResourceManager.GetString("UndoRedo_TilesetAddVisualLayer", resourceCulture);
+            }
+        }
     }
 }

@@ -190,6 +190,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		
 		/// <summary>
+		/// Invalidates the assigned <see cref="Tileset"/> and forces re-generating its
+		/// visual representation inside this <see cref="TilesetView"/>. This is only
+		/// necessary if the <see cref="Tileset"/> has changed outside the <see cref="TilesetView"/>.
+		/// </summary>
+		public void InvalidateTileset()
+		{
+			this.OnTilesetChanged();
+		}
+
+		/// <summary>
 		/// Determines the tile index at the specified pixel / view coordinate.
 		/// </summary>
 		/// <param name="x"></param>

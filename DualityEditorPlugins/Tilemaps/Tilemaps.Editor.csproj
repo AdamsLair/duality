@@ -121,8 +121,10 @@
     <Compile Include="TilesetEditorModes\DepthInfoTilesetEditorMode.cs" />
     <Compile Include="TilesetEditorModes\CollisionInfoTilesetEditorMode.cs" />
     <Compile Include="TilesetEditorModes\LayerSelectionChangedEventArgs.cs" />
+    <Compile Include="TilesetEditorModes\LayerEditingCaps.cs" />
     <Compile Include="TilesetEditorModes\VisualLayerTilesetEditorMode.cs" />
     <Compile Include="TilesetEditorModes\TilesetEditorMode.cs" />
+    <Compile Include="UndoRedoActions\AddTilesetVisualLayerAction.cs" />
     <Compile Include="UndoRedoActions\EditTilemapActionType.cs" />
     <Compile Include="UndoRedoActions\EditTilemapAction.cs" />
   </ItemGroup>

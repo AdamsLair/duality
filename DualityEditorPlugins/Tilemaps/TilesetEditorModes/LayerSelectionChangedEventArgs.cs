@@ -9,7 +9,7 @@ using Duality.Plugins.Tilemaps;
 
 namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 {
-	public class LayerSelectionChangedEventArgs : EventArgs
+	public class LayerSelectionEventArgs : EventArgs
 	{
 		private object selectedNodeTag = null;
 
@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			get { return this.selectedNodeTag; }
 		}
 
-		public LayerSelectionChangedEventArgs(TreeNodeAdv viewNode) : base()
+		public LayerSelectionEventArgs(TreeNodeAdv viewNode) : base()
 		{
 			this.selectedNodeTag = (viewNode != null) ? viewNode.Tag : null;
 		}

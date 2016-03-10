@@ -247,4 +247,7 @@
   <data name="TilesetEditor_SelectedTileset" xml:space="preserve">
     <value>Tileset: {0}</value>
   </data>
+  <data name="UndoRedo_TilesetAddVisualLayer" xml:space="preserve">
+    <value>Add Visual Layer</value>
+  </data>
 </root>

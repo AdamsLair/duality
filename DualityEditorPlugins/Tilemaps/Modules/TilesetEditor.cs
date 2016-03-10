@@ -52,13 +52,21 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		internal TilesetView TilesetView
+		{
+			get { return this.tilesetView; }
+		}
 
 
 		public TilesetEditor()
 		{
 			this.InitializeComponent();
+			this.treeColumnMain.DrawColHeaderBg += this.treeColumnMain_DrawColHeaderBg;
 			this.toolStripModeSelect.Renderer = new DualitorToolStripProfessionalRenderer();
 			this.toolStripEdit.Renderer = new DualitorToolStripProfessionalRenderer();
+
+			// Initial resize event to apply a proper size to the layer view main column
+			this.layerView_Resize(this, EventArgs.Empty);
 		}
 		
 		internal void SaveUserData(XElement node)
@@ -87,17 +95,30 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnEnter();
 
+			// Assign the new data model to the layer view
 			this.layerView.Model = (this.activeMode != null) ? this.activeMode.LayerModel : null;
+
+			// Update tool buttons so the appropriate one is checked
 			for (int i = 0; i < this.availableModes.Length; i++)
 			{
 				EditorModeInfo info = this.availableModes[i];
 				info.ToolButton.Checked = (info.Mode == mode);
 			}
+
+			// Update Add / Remove layer buttons
+			bool canAddRemove = (this.activeMode != null) ? 
+				this.activeMode.AllowLayerEditing.HasFlag(LayerEditingCaps.AddRemove) : 
+				false;
+			this.buttonAddLayer.Visible = canAddRemove;
+			this.buttonRemoveLayer.Visible = canAddRemove;
 		}
 		private void ApplySelectedTileset()
 		{
 			Tileset tileset = DualityEditorApp.Selection.Resources.OfType<Tileset>().FirstOrDefault();
-			this.SelectedTileset = tileset;
+			if (tileset != null)
+			{
+				this.SelectedTileset = tileset;
+			}
 		}
 		private void ApplyBrightness()
 		{
@@ -200,6 +221,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void OnTilesetSelectionChanged()
 		{
+			Tileset tileset = this.SelectedTileset.Res;
+
 			// When switching to a different tileset, either apply or revert what we did to the current one
 			this.AskApplyOrResetTilesetChanges();
 
@@ -207,9 +230,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.StartRecordTilesetChanges();
 
 			// Update the label that tells us which tileset is selected
-			this.labelSelectedTileset.Text = (this.SelectedTileset != null) ? 
-				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, this.SelectedTileset.Name) : 
+			this.labelSelectedTileset.Text = (tileset != null) ? 
+				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, tileset.Name) : 
 				TilemapsRes.TilesetEditor_NoTilesetSelected;
+
+			// Update the enabled state of Add and Remove buttons
+			this.buttonAddLayer.Enabled = tileset != null;
+			this.buttonRemoveLayer.Enabled = tileset != null;
+
+			// Update the displayed visual layer index
+			if (tileset == null)
+				this.tilesetView.DisplayedConfigIndex = 0;
+			else if (tileset.RenderConfig.Count <= this.tilesetView.DisplayedConfigIndex)
+				this.tilesetView.DisplayedConfigIndex = 0;
 
 			// Inform the currently active editing mode of this change
 			if (this.activeMode != null)
@@ -219,14 +252,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (this.SelectedTileset == null) return;
-			if (!e.HasObject(this.SelectedTileset.Res) &&
-				!e.HasAnyObject(this.SelectedTileset.Res.RenderConfig)) return;
+
+			bool affectsTileset = e.HasObject(this.SelectedTileset.Res);
+			bool affectsRenderConfig = e.HasAnyObject(this.SelectedTileset.Res.RenderConfig);
+			if (!affectsTileset && !affectsRenderConfig) return;
 
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetModified(e);
 
 			this.buttonApply.Enabled = true;
 			this.buttonRevert.Enabled = true;
+
+			if (affectsRenderConfig)
+				this.tilesetView.InvalidateTileset();
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -244,6 +282,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 		}
 		
+		private void treeColumnMain_DrawColHeaderBg(object sender, DrawColHeaderBgEventArgs e)
+		{
+			e.Graphics.FillRectangle(new SolidBrush(this.layerView.BackColor), e.Bounds);
+			e.Handled = true;
+		}
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
 			this.ApplyBrightness();
@@ -263,19 +306,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void buttonAddLayer_Click(object sender, EventArgs e)
 		{
-
+			if (this.activeMode != null)
+				this.activeMode.AddLayer();
 		}
 		private void buttonRemoveLayer_Click(object sender, EventArgs e)
 		{
-
+			if (this.activeMode != null)
+				this.activeMode.RemoveLayer();
 		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
 			TreeNodeAdv viewNode = this.layerView.SelectedNode;
-			LayerSelectionChangedEventArgs args = new LayerSelectionChangedEventArgs(viewNode);
+			LayerSelectionEventArgs args = new LayerSelectionEventArgs(viewNode);
 
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnLayerSelectionChanged(args);
+		}
+		private void layerView_Resize(object sender, EventArgs e)
+		{
+			this.treeColumnMain.Width = this.layerView.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 5;
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
