@@ -37,9 +37,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected	Point		panelDragBegin		= Point.Empty;
 		protected	Bitmap		prevImage			= null;
 		protected	float		prevImageLum		= 0.0f;
-		protected	int			prevImageHash		= -1;
 		protected	Sound		prevSound			= null;
 		protected	SoundInstance	prevSoundInst	= null;
+		private		int			prevHash			= -1;
 
 		public abstract string ReferenceName { get; }
 		public abstract bool ReferenceBroken { get; }
@@ -56,6 +56,20 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected virtual int GetPreviewHash()
 		{
 			return 0;
+		}
+		protected virtual void GeneratePreview() { }
+		/// <summary>
+		/// Generates a new preview when required, which is determined by
+		/// comparing the current <see cref="GetPreviewHash"/> value and the
+		/// one from the last used preview.
+		/// </summary>
+		protected void SynchronizePreview()
+		{
+			int newPrevImageHash = this.GetPreviewHash();
+			if (this.prevHash == newPrevImageHash) return;
+
+			this.GeneratePreview();
+			this.prevHash = newPrevImageHash;
 		}
 
 		public void PlayPreviewSound()
@@ -83,6 +97,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
+
+			this.SynchronizePreview();
 
 			bool linkBroken = this.ReferenceBroken;
 
