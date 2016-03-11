@@ -32,6 +32,7 @@
 			this.toolStripModeSelect = new System.Windows.Forms.ToolStrip();
 			this.labelSelectedTileset = new System.Windows.Forms.ToolStripLabel();
 			this.layerView = new Aga.Controls.Tree.TreeViewAdv();
+			this.treeColumnMain = new Aga.Controls.Tree.TreeColumn();
 			this.nodeControlIcon = new Aga.Controls.Tree.NodeControls.NodeIcon();
 			this.nodeControlSummary = new Duality.Editor.Plugins.Tilemaps.TilesetEditorLayerNodeControl();
 			this.toolStripEdit = new System.Windows.Forms.ToolStrip();
@@ -43,7 +44,6 @@
 			this.panelBottom = new System.Windows.Forms.Panel();
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonRevert = new System.Windows.Forms.Button();
-			this.treeColumnMain = new Aga.Controls.Tree.TreeColumn();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -104,7 +104,14 @@
 			this.layerView.TabIndex = 1;
 			this.layerView.UseColumns = true;
 			this.layerView.SelectionChanged += new System.EventHandler(this.layerView_SelectionChanged);
+			this.layerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.layerView_KeyDown);
 			this.layerView.Resize += new System.EventHandler(this.layerView_Resize);
+			// 
+			// treeColumnMain
+			// 
+			this.treeColumnMain.Header = "";
+			this.treeColumnMain.SortOrder = System.Windows.Forms.SortOrder.None;
+			this.treeColumnMain.TooltipText = null;
 			// 
 			// nodeControlIcon
 			// 
@@ -239,12 +246,6 @@
 			this.buttonRevert.Text = "Revert";
 			this.buttonRevert.UseVisualStyleBackColor = true;
 			this.buttonRevert.Click += new System.EventHandler(this.buttonRevert_Click);
-			// 
-			// treeColumnMain
-			// 
-			this.treeColumnMain.Header = "";
-			this.treeColumnMain.SortOrder = System.Windows.Forms.SortOrder.None;
-			this.treeColumnMain.TooltipText = null;
 			// 
 			// TilesetEditor
 			// 

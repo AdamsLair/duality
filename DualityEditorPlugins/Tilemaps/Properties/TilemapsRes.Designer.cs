@@ -473,5 +473,14 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
                 return ResourceManager.GetString("UndoRedo_TilesetAddVisualLayer", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove Visual Layer.
+        /// </summary>
+        internal static string UndoRedo_TilesetRemoveVisualLayer {
+            get {
+                return ResourceManager.GetString("UndoRedo_TilesetRemoveVisualLayer", resourceCulture);
+            }
+        }
     }
 }

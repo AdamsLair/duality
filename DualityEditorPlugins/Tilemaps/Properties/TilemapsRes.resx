@@ -250,4 +250,7 @@
   <data name="UndoRedo_TilesetAddVisualLayer" xml:space="preserve">
     <value>Add Visual Layer</value>
   </data>
+  <data name="UndoRedo_TilesetRemoveVisualLayer" xml:space="preserve">
+    <value>Remove Visual Layer</value>
+  </data>
 </root>

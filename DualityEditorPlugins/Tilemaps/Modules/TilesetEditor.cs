@@ -215,6 +215,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);
+
+			// Leave the currently active editor mode so it can shut down properly
+			this.SetActiveEditorMode(null);
+
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing             -= this.Resource_ResourceDisposing;
@@ -251,10 +255,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 		
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (this.SelectedTileset == null) return;
+			Tileset tileset = this.SelectedTileset.Res;
+			if (tileset == null) return;
 
-			bool affectsTileset = e.HasObject(this.SelectedTileset.Res);
-			bool affectsRenderConfig = e.HasAnyObject(this.SelectedTileset.Res.RenderConfig);
+			bool affectsTileset = e.HasObject(tileset);
+			bool affectsRenderConfig = 
+				e.HasAnyObject(tileset.RenderConfig) || 
+				e.HasAnyProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
 			if (!affectsTileset && !affectsRenderConfig) return;
 
 			if (this.activeMode != null)
@@ -325,6 +332,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void layerView_Resize(object sender, EventArgs e)
 		{
 			this.treeColumnMain.Width = this.layerView.ClientSize.Width - SystemInformation.VerticalScrollBarWidth - 5;
+		}
+		private void layerView_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyCode == Keys.Delete && e.Modifiers == Keys.None)
+			{
+				bool canAddRemove = this.activeMode.AllowLayerEditing.HasFlag(LayerEditingCaps.AddRemove);
+				if (this.activeMode != null && canAddRemove)
+					this.activeMode.RemoveLayer();
+			}
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)

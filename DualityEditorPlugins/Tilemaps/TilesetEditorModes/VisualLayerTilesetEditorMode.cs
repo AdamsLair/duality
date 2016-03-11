@@ -9,6 +9,7 @@ using Aga.Controls.Tree;
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
+using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 {
@@ -123,7 +124,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
-			UndoRedoManager.Do(new UndoRedoActions.AddTilesetVisualLayerAction(
+			UndoRedoManager.Do(new AddTilesetVisualLayerAction(
 				tileset, 
 				new TilesetRenderInput()));
 		}
@@ -136,9 +137,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			if (layer == null) return;
 			if (tileset == null) return;
 
-			// ToDo
-			throw new NotImplementedException();
-			this.UpdateTreeModel();
+			UndoRedoManager.Do(new RemoveTilesetVisualLayerAction(
+				tileset, 
+				layer));
 		}
 		
 		protected override void OnEnter()
