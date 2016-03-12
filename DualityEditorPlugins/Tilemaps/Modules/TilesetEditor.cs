@@ -32,9 +32,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 		
-		private TilesetEditorMode activeMode       = null;
-		private EditorModeInfo[]  availableModes   = null;
-
+		private TilesetEditorMode   activeMode       = null;
+		private EditorModeInfo[]    availableModes   = null;
+		private ContentRef<Tileset> backupTarget     = null;
+		private Tileset             tilesetBackup    = null;
+		private bool                tilesetModified  = false;
 
 		/// <summary>
 		/// [GET] The currently selected <see cref="Tileset"/> in this editor. This property
@@ -43,14 +45,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		public ContentRef<Tileset> SelectedTileset
 		{
 			get { return this.tilesetView.TargetTileset; }
-			private set
-			{
-				if (this.tilesetView.TargetTileset != value)
-				{
-					this.tilesetView.TargetTileset = value;
-					this.OnTilesetSelectionChanged();
-				}
-			}
 		}
 		internal TilesetView TilesetView
 		{
@@ -112,12 +106,27 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.buttonAddLayer.Visible = canAddRemove;
 			this.buttonRemoveLayer.Visible = canAddRemove;
 		}
-		private void ApplySelectedTileset()
+		internal void SetSelectedLayer(object layerViewTag)
+		{
+			this.layerView.SelectedNode = this.layerView
+				.Root
+				.Children
+				.FirstOrDefault(v => v.Tag == layerViewTag);
+		}
+		private void ApplyGlobalTilesetSelection()
 		{
 			Tileset tileset = DualityEditorApp.Selection.Resources.OfType<Tileset>().FirstOrDefault();
 			if (tileset != null)
 			{
-				this.SelectedTileset = tileset;
+				if (this.tilesetView.TargetTileset != tileset)
+				{
+					TilesetSelectionChangedEventArgs args = new TilesetSelectionChangedEventArgs(
+						this.tilesetView.TargetTileset,
+						tileset,
+						SelectionChangeReason.UserInput);
+					this.tilesetView.TargetTileset = tileset;
+					this.OnTilesetSelectionChanged(args);
+				}
 			}
 		}
 		private void ApplyBrightness()
@@ -129,10 +138,19 @@ namespace Duality.Editor.Plugins.Tilemaps
 		
 		private void StartRecordTilesetChanges()
 		{
-			Log.Editor.Write(
-				"Start recording Tileset changes for Tileset '{0}'", 
-				this.SelectedTileset);
-			// ToDo
+			// Copy the selected tileset's original settings to our local backup
+			Tileset tileset = this.SelectedTileset.Res;
+			if (tileset != null)
+			{
+				if (this.tilesetBackup == null)
+					this.tilesetBackup = new Tileset();
+				tileset.CopyTo(this.tilesetBackup);
+				this.backupTarget = this.SelectedTileset;
+			}
+			else
+			{
+				this.backupTarget = null;
+			}
 		}
 		private void ApplyTilesetChanges()
 		{
@@ -141,9 +159,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.SelectedTileset);
 
 			// ToDo
+			
+			this.tilesetModified = false;
+			this.buttonApply.Enabled = this.tilesetModified;
+			this.buttonRevert.Enabled = this.tilesetModified;
 
-			this.buttonApply.Enabled = false;
-			this.buttonRevert.Enabled = false;
+			this.StartRecordTilesetChanges();
 		}
 		private void ResetTilesetChanges()
 		{
@@ -153,18 +174,31 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// ToDo
 
-			this.buttonApply.Enabled = false;
-			this.buttonRevert.Enabled = false;
+			this.tilesetModified = false;
+			this.buttonApply.Enabled = this.tilesetModified;
+			this.buttonRevert.Enabled = this.tilesetModified;
+
+			this.StartRecordTilesetChanges();
 		}
-		private void AskApplyOrResetTilesetChanges()
+		private bool AskApplyOrResetTilesetChanges(bool allowCancel)
 		{
-			Log.Editor.Write(
-				"Ask Apply or Revert Tileset changes for Tileset '{0}'", 
-				this.SelectedTileset);
+			if (!this.tilesetModified) return true;
+			if (this.backupTarget == null) return true;
 
-			// ToDo: Show a user confirmation dialog when necessary
+			DialogResult result = MessageBox.Show(
+				this,
+				string.Format(TilemapsRes.Msg_ApplyOrResetTilesetChanges_Text, this.backupTarget.Name),
+				TilemapsRes.Msg_ApplyOrResetTilesetChanges_Caption,
+				allowCancel ? MessageBoxButtons.YesNoCancel : MessageBoxButtons.YesNo);
 
-			this.ResetTilesetChanges();
+			if (result == DialogResult.Yes)
+				this.ApplyTilesetChanges();
+			else if (result == DialogResult.No)
+				this.ResetTilesetChanges();
+			else if (result == DialogResult.Cancel)
+				return false;
+
+			return true;
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -210,7 +244,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Resource.ResourceDisposing             += this.Resource_ResourceDisposing;
 
 			// Apply editor-global tileset selection
-			this.ApplySelectedTileset();
+			this.ApplyGlobalTilesetSelection();
+
+			// Start recording tileset changes for Apply / Revert support
+			this.StartRecordTilesetChanges();
 		}
 		protected override void OnClosed(EventArgs e)
 		{
@@ -223,34 +260,44 @@ namespace Duality.Editor.Plugins.Tilemaps
 			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
 			Resource.ResourceDisposing             -= this.Resource_ResourceDisposing;
 		}
-		private void OnTilesetSelectionChanged()
+		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
-			Tileset tileset = this.SelectedTileset.Res;
+			base.OnFormClosing(e);
+			// Only ask for confirmation if the user is closing the Tileset editor
+			// itself - not when the Duality editor as a whole is closed or killed.
+			if (e.CloseReason == CloseReason.UserClosing)
+			{
+				bool cancel = !this.AskApplyOrResetTilesetChanges(true);
+				if (cancel) e.Cancel = true;
+			}
+		}
+		private void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
+		{
+			Tileset nextTileset = args.Next.Res;
 
 			// When switching to a different tileset, either apply or revert what we did to the current one
-			this.AskApplyOrResetTilesetChanges();
-
-			// We now know that we're operating on an unchanged Tileset. Start recording for the next apply / revert
+			if (args.ChangeReason != SelectionChangeReason.ObjectDisposing)
+				this.AskApplyOrResetTilesetChanges(false);
 			this.StartRecordTilesetChanges();
 
 			// Update the label that tells us which tileset is selected
-			this.labelSelectedTileset.Text = (tileset != null) ? 
-				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, tileset.Name) : 
+			this.labelSelectedTileset.Text = (nextTileset != null) ? 
+				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, nextTileset.Name) : 
 				TilemapsRes.TilesetEditor_NoTilesetSelected;
 
-			// Update the enabled state of Add and Remove buttons
-			this.buttonAddLayer.Enabled = tileset != null;
-			this.buttonRemoveLayer.Enabled = tileset != null;
-
 			// Update the displayed visual layer index
-			if (tileset == null)
+			if (nextTileset == null)
 				this.tilesetView.DisplayedConfigIndex = 0;
-			else if (tileset.RenderConfig.Count <= this.tilesetView.DisplayedConfigIndex)
+			else if (nextTileset.RenderConfig.Count <= this.tilesetView.DisplayedConfigIndex)
 				this.tilesetView.DisplayedConfigIndex = 0;
 
 			// Inform the currently active editing mode of this change
 			if (this.activeMode != null)
-				this.activeMode.RaiseOnTilesetSelectionChanged();
+				this.activeMode.RaiseOnTilesetSelectionChanged(args);
+
+			// Update the enabled state of Add and Remove buttons
+			this.buttonAddLayer.Enabled = (nextTileset != null);
+			this.buttonRemoveLayer.Enabled = (nextTileset != null && this.layerView.SelectedNode != null);
 		}
 		
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
@@ -267,8 +314,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetModified(e);
 
-			this.buttonApply.Enabled = true;
-			this.buttonRevert.Enabled = true;
+			this.tilesetModified = true;
+			this.buttonApply.Enabled = this.tilesetModified;
+			this.buttonRevert.Enabled = this.tilesetModified;
 
 			if (affectsRenderConfig)
 				this.tilesetView.InvalidateTileset();
@@ -276,16 +324,21 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (e.SameObjects) return;
-			this.ApplySelectedTileset();
+			this.ApplyGlobalTilesetSelection();
 		}
 		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
 		{
 			if (!e.IsResource) return;
 
-			// Deselect the current tileset, if it's being disposed
+			// Deselect the current tileset when it's being disposed
 			if (this.SelectedTileset == e.Content.As<Tileset>())
 			{
-				this.SelectedTileset = null;
+				TilesetSelectionChangedEventArgs args = new TilesetSelectionChangedEventArgs(
+					this.tilesetView.TargetTileset,
+					null,
+					SelectionChangeReason.ObjectDisposing);
+				this.tilesetView.TargetTileset = null;
+				this.OnTilesetSelectionChanged(args);
 			}
 		}
 		
@@ -324,7 +377,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
 			TreeNodeAdv viewNode = this.layerView.SelectedNode;
-			LayerSelectionEventArgs args = new LayerSelectionEventArgs(viewNode);
+			LayerSelectionChangedEventArgs args = new LayerSelectionChangedEventArgs(viewNode);
+
+			this.buttonRemoveLayer.Enabled = (viewNode != null);
 
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnLayerSelectionChanged(args);

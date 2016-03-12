@@ -253,4 +253,10 @@
   <data name="UndoRedo_TilesetRemoveVisualLayer" xml:space="preserve">
     <value>Remove Visual Layer</value>
   </data>
+  <data name="Msg_ApplyOrResetTilesetChanges_Caption" xml:space="preserve">
+    <value>Tileset modified</value>
+  </data>
+  <data name="Msg_ApplyOrResetTilesetChanges_Text" xml:space="preserve">
+    <value>You've made changes to Tileset '{0}'. Do you want to Apply them?</value>
+  </data>
 </root>

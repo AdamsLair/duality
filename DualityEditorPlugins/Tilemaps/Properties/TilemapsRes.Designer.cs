@@ -349,6 +349,24 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tileset modified.
+        /// </summary>
+        internal static string Msg_ApplyOrResetTilesetChanges_Caption {
+            get {
+                return ResourceManager.GetString("Msg_ApplyOrResetTilesetChanges_Caption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You&apos;ve made changes to Tileset &apos;{0}&apos;. Do you want to Apply them?.
+        /// </summary>
+        internal static string Msg_ApplyOrResetTilesetChanges_Text {
+            get {
+                return ResourceManager.GetString("Msg_ApplyOrResetTilesetChanges_Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resize {0} Tilemaps.
         /// </summary>
         internal static string TilemapSetupHeader_ResizeMultipleTilemaps {

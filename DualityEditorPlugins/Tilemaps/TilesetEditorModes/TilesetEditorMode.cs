@@ -97,15 +97,15 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			this.OnLeave();
 		}
-		internal void RaiseOnTilesetSelectionChanged()
+		internal void RaiseOnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
 		{
-			this.OnTilesetSelectionChanged();
+			this.OnTilesetSelectionChanged(args);
 		}
 		internal void RaiseOnTilesetModified(ObjectPropertyChangedEventArgs args)
 		{
 			this.OnTilesetModified(args);
 		}
-		internal void RaiseOnLayerSelectionChanged(LayerSelectionEventArgs args)
+		internal void RaiseOnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
 		{
 			OnLayerSelectionChanged(args);
 		}
@@ -118,6 +118,16 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// Removes the currently selected layer from the <see cref="LayerModel"/> that is defined by this <see cref="TilesetEditorMode"/>.
 		/// </summary>
 		public virtual void RemoveLayer() { }
+		/// <summary>
+		/// Selects the layer with the associated model node. This is the same value
+		/// that will be provided as part of the <see cref="OnLayerSelectionChanged"/> event
+		/// when reacting to selection changes.
+		/// </summary>
+		/// <param name="modelNode"></param>
+		public void SelectLayer(object modelNode)
+		{
+			this.editor.SetSelectedLayer(modelNode);
+		}
 
 		/// <summary>
 		/// Called when the editing mode becomes active.
@@ -130,7 +140,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// <summary>
 		/// Called when the <see cref="Tileset"/> selection changed.
 		/// </summary>
-		protected virtual void OnTilesetSelectionChanged() { }
+		/// <param name="args"></param>
+		protected virtual void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args) { }
 		/// <summary>
 		/// Called when the currently edited <see cref="Tileset"/> was modified.
 		/// </summary>
@@ -139,6 +150,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// <summary>
 		/// Called when the user item selection of the provided <see cref="LayerModel"/> has changed.
 		/// </summary>
-		protected virtual void OnLayerSelectionChanged(LayerSelectionEventArgs args) { }
+		protected virtual void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args) { }
 	}
 }

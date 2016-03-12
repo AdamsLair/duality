@@ -118,24 +118,34 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			}
 		}
 
+		/// <inheritdoc />
 		public override void AddLayer()
 		{
 			base.AddLayer();
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
+			TilesetRenderInput newLayer = new TilesetRenderInput();
 			UndoRedoManager.Do(new AddTilesetVisualLayerAction(
 				tileset, 
-				new TilesetRenderInput()));
+				newLayer));
+
+			// Select the newly created visual layer
+			VisualLayerNode modelNode = this.treeModel
+				.Nodes
+				.OfType<VisualLayerNode>()
+				.FirstOrDefault(n => n.VisualLayer == newLayer);
+			this.SelectLayer(modelNode);
 		}
+		/// <inheritdoc />
 		public override void RemoveLayer()
 		{
 			base.RemoveLayer();
 
-			TilesetRenderInput layer = this.SelectedVisualLayer;
 			Tileset tileset = this.SelectedTileset.Res;
-			if (layer == null) return;
+			TilesetRenderInput layer = this.SelectedVisualLayer;
 			if (tileset == null) return;
+			if (layer == null) return;
 
 			UndoRedoManager.Do(new RemoveTilesetVisualLayerAction(
 				tileset, 
@@ -146,7 +156,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			this.UpdateTreeModel();
 		}
-		protected override void OnTilesetSelectionChanged()
+		protected override void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
 		{
 			this.UpdateTreeModel();
 		}
@@ -166,7 +176,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			this.UpdateTreeModel();
 		}
-		protected override void OnLayerSelectionChanged(LayerSelectionEventArgs args)
+		protected override void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
 		{
 			base.OnLayerSelectionChanged(args);
 			Tileset tileset = this.SelectedTileset.Res;

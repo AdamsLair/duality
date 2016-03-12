@@ -120,6 +120,8 @@
     <Compile Include="ReflectionInfo.cs" />
     <Compile Include="TilesetEditorModes\DepthInfoTilesetEditorMode.cs" />
     <Compile Include="TilesetEditorModes\CollisionInfoTilesetEditorMode.cs" />
+    <Compile Include="TilesetEditorModes\SelectionChangeReason.cs" />
+    <Compile Include="TilesetEditorModes\TilesetSelectionChangedEventArgs.cs" />
     <Compile Include="TilesetEditorModes\LayerSelectionChangedEventArgs.cs" />
     <Compile Include="TilesetEditorModes\LayerEditingCaps.cs" />
     <Compile Include="TilesetEditorModes\VisualLayerTilesetEditorMode.cs" />
