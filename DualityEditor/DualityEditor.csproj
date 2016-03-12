@@ -203,6 +203,12 @@
     </Compile>
     <Compile Include="Properties\GeneralResNames.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
+    <Compile Include="Utility\EventArgs\ResourceRenamedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\PrefabAppliedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\ObjectPropertyChangedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\HighlightObjectEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\SelectionChangedEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\HelpStackChangedEventArgs.cs" />
     <Compile Include="Utility\SelectionChangeReason.cs" />
     <Compile Include="Utility\HighlightMode.cs" />
     <Compile Include="Utility\AutosaveFrequency.cs" />
@@ -229,7 +235,7 @@
     <Compile Include="Utility\EditorHelper.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utility\EventArgs.cs" />
+    <Compile Include="Utility\EventArgs\BeginGlobalRenameEventArgs.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsControl.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsDataObject.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsColor.cs" />
