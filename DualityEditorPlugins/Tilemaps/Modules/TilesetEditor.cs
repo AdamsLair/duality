@@ -116,17 +116,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void ApplyGlobalTilesetSelection()
 		{
 			Tileset tileset = DualityEditorApp.Selection.Resources.OfType<Tileset>().FirstOrDefault();
-			if (tileset != null)
+			if (this.tilesetView.TargetTileset != tileset)
 			{
-				if (this.tilesetView.TargetTileset != tileset)
-				{
-					TilesetSelectionChangedEventArgs args = new TilesetSelectionChangedEventArgs(
-						this.tilesetView.TargetTileset,
-						tileset,
-						SelectionChangeReason.UserInput);
-					this.tilesetView.TargetTileset = tileset;
-					this.OnTilesetSelectionChanged(args);
-				}
+				TilesetSelectionChangedEventArgs args = new TilesetSelectionChangedEventArgs(
+					this.tilesetView.TargetTileset,
+					tileset);
+				this.tilesetView.TargetTileset = tileset;
+				this.OnTilesetSelectionChanged(args);
 			}
 		}
 		private void ApplyBrightness()
@@ -241,7 +237,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Subscribe for global editor events
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
-			Resource.ResourceDisposing             += this.Resource_ResourceDisposing;
 
 			// Apply editor-global tileset selection
 			this.ApplyGlobalTilesetSelection();
@@ -258,7 +253,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
-			Resource.ResourceDisposing             -= this.Resource_ResourceDisposing;
 		}
 		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
@@ -276,8 +270,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Tileset nextTileset = args.Next.Res;
 
 			// When switching to a different tileset, either apply or revert what we did to the current one
-			if (args.ChangeReason != SelectionChangeReason.ObjectDisposing)
-				this.AskApplyOrResetTilesetChanges(false);
+			this.AskApplyOrResetTilesetChanges(false);
 			this.StartRecordTilesetChanges();
 
 			// Update the label that tells us which tileset is selected
@@ -325,21 +318,6 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			if (e.SameObjects) return;
 			this.ApplyGlobalTilesetSelection();
-		}
-		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
-		{
-			if (!e.IsResource) return;
-
-			// Deselect the current tileset when it's being disposed
-			if (this.SelectedTileset == e.Content.As<Tileset>())
-			{
-				TilesetSelectionChangedEventArgs args = new TilesetSelectionChangedEventArgs(
-					this.tilesetView.TargetTileset,
-					null,
-					SelectionChangeReason.ObjectDisposing);
-				this.tilesetView.TargetTileset = null;
-				this.OnTilesetSelectionChanged(args);
-			}
 		}
 		
 		private void treeColumnMain_DrawColHeaderBg(object sender, DrawColHeaderBgEventArgs e)

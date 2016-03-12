@@ -132,7 +132,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			if (!e.IsResource) return;
 
-			// Deselect the current tileset, if it's being disposed
+			// Deselect the current tileset, if it's being disposed.
+			// This is required since we don't always react to Deselect
+			// events, which the editor provides on Resource disposal.
 			if (this.SelectedTileset == e.Content.As<Tileset>())
 			{
 				this.SelectedTileset = null;
