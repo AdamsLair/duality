@@ -30,11 +30,12 @@ namespace Duality.Editor
 
 	public class SelectionChangedEventArgs : EventArgs
 	{
-		private	ObjectSelection				current;
-		private	ObjectSelection				previous;
-		private ObjectSelection.Category	diffCat;
-		private ObjectSelection				added;
-		private ObjectSelection				removed;
+		private ObjectSelection             current;
+		private ObjectSelection             previous;
+		private ObjectSelection.Category    diffCat;
+		private ObjectSelection             added;
+		private ObjectSelection             removed;
+		private SelectionChangeReason       reason;
 
 		public ObjectSelection Current
 		{
@@ -60,11 +61,16 @@ namespace Duality.Editor
 		{
 			get { return this.added.Empty && this.removed.Empty; }
 		}
+		public SelectionChangeReason ChangeReason
+		{
+			get { return this.reason; }
+		}
 
-		public SelectionChangedEventArgs(ObjectSelection current, ObjectSelection previous, ObjectSelection.Category changedCategoryFallback)
+		public SelectionChangedEventArgs(ObjectSelection current, ObjectSelection previous, ObjectSelection.Category changedCategoryFallback, SelectionChangeReason reason)
 		{
 			this.current = current;
 			this.previous = previous;
+			this.reason = reason;
 
 			this.diffCat = ObjectSelection.GetAffectedCategories(this.previous, this.current);
 			if (this.diffCat == ObjectSelection.Category.None) this.diffCat = changedCategoryFallback;
