@@ -113,14 +113,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 				.Children
 				.FirstOrDefault(v => v.Tag == layerViewTag);
 		}
-		private void ApplyGlobalTilesetSelection()
+		private void ApplyGlobalTilesetSelection(SelectionChangeReason changeReason)
 		{
 			Tileset tileset = DualityEditorApp.Selection.Resources.OfType<Tileset>().FirstOrDefault();
 			if (this.tilesetView.TargetTileset != tileset)
 			{
 				TilesetSelectionChangedEventArgs args = new TilesetSelectionChangedEventArgs(
 					this.tilesetView.TargetTileset,
-					tileset);
+					tileset,
+					changeReason);
 				this.tilesetView.TargetTileset = tileset;
 				this.OnTilesetSelectionChanged(args);
 			}
@@ -239,7 +240,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
 
 			// Apply editor-global tileset selection
-			this.ApplyGlobalTilesetSelection();
+			this.ApplyGlobalTilesetSelection(SelectionChangeReason.Unknown);
 
 			// Start recording tileset changes for Apply / Revert support
 			this.StartRecordTilesetChanges();
@@ -270,7 +271,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Tileset nextTileset = args.Next.Res;
 
 			// When switching to a different tileset, either apply or revert what we did to the current one
-			this.AskApplyOrResetTilesetChanges(false);
+			if (args.ChangeReason != SelectionChangeReason.ObjectDisposing)
+				this.AskApplyOrResetTilesetChanges(false);
 			this.StartRecordTilesetChanges();
 
 			// Update the label that tells us which tileset is selected
@@ -317,7 +319,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (e.SameObjects) return;
-			this.ApplyGlobalTilesetSelection();
+			this.ApplyGlobalTilesetSelection(e.ChangeReason);
 		}
 		
 		private void treeColumnMain_DrawColHeaderBg(object sender, DrawColHeaderBgEventArgs e)

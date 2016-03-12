@@ -16,6 +16,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 	{
 		private ContentRef<Tileset>   prev   = null;
 		private ContentRef<Tileset>   next   = null;
+		private SelectionChangeReason reason = SelectionChangeReason.Unknown;
 
 		/// <summary>
 		/// [GET] The previously selected <see cref="Tileset"/>.
@@ -31,11 +32,19 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			get { return this.next; }
 		}
+		/// <summary>
+		/// [GET] The reason for the selection change to occur.
+		/// </summary>
+		public SelectionChangeReason ChangeReason
+		{
+			get { return this.reason; }
+		}
 
-		public TilesetSelectionChangedEventArgs(ContentRef<Tileset> prev, ContentRef<Tileset> next) : base()
+		public TilesetSelectionChangedEventArgs(ContentRef<Tileset> prev, ContentRef<Tileset> next, SelectionChangeReason reason) : base()
 		{
 			this.prev = prev;
 			this.next = next;
+			this.reason = reason;
 		}
 	}
 }
