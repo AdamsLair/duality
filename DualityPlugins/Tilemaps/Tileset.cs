@@ -23,13 +23,17 @@ namespace Duality.Plugins.Tilemaps
 		private static readonly TilesetRenderInput DefaultRenderInput  = new TilesetRenderInput();
 		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
-		private Vector2                  tileSize     = DefaultTileSize;
+		[CloneBehavior(typeof(TilesetRenderInput), CloneBehavior.ChildObject)]
 		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
+
+		[CloneBehavior(CloneBehavior.ChildObject)]
 		private BatchInfo                baseMaterial = new BatchInfo(DefaultBaseMaterial);
+		private Vector2                  tileSize     = DefaultTileSize;
 
 		[DontSerialize] private List<Texture> renderData     = new List<Texture>();
 		[DontSerialize] private Material      renderMaterial = null;
 		[DontSerialize] private bool          compiled       = false;
+		[DontSerialize] private int           compileHash    = 0;
 		[DontSerialize] private int           tileCount      = 0;
 
 		
@@ -90,6 +94,20 @@ namespace Duality.Plugins.Tilemaps
 		public bool Compiled
 		{
 			get { return this.compiled; }
+		}
+		/// <summary>
+		/// [GET] Determines whether the <see cref="Tileset"/> has changed since the last
+		/// time it was compiled. Always true, if the <see cref="Tileset"/> has never been
+		/// compiled before.
+		/// </summary>
+		public bool HasChangedSinceCompile
+		{
+			get 
+			{ 
+				return 
+					!this.compiled || 
+					this.GetCompileHashCode() != this.compileHash;
+			}
 		}
 		
 
@@ -248,6 +266,7 @@ namespace Duality.Plugins.Tilemaps
 			this.tileCount = (this.renderConfig.Count > 0) ? minSourceTileCount : 0;
 
 			this.compiled = true;
+			this.compileHash = this.GetCompileHashCode();
 		}
 		/// <summary>
 		/// Generates the <see cref="RenderMaterial"/> from the currently available
@@ -285,6 +304,46 @@ namespace Duality.Plugins.Tilemaps
 				this.renderMaterial.Dispose();
 				this.renderMaterial = null;
 			}
+		}
+		/// <summary>
+		/// Determines the <see cref="Compile"/>-relevant hash code of the specified <see cref="Tileset"/>.
+		/// This value is used internally to determine whether a <see cref="Tileset"/> needs to be recompiled.
+		/// </summary>
+		/// <param name="tileset"></param>
+		/// <returns></returns>
+		public virtual int GetCompileHashCode()
+		{
+			int hash = 17;
+
+			if (this.baseMaterial != null)
+				MathF.CombineHashCode(ref hash, this.baseMaterial.GetHashCode());
+			MathF.CombineHashCode(ref hash, this.tileSize.GetHashCode());
+
+			foreach (TilesetRenderInput input in this.renderConfig)
+			{
+				MathF.CombineHashCode(ref hash, input.Id.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.Name.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.SourceData.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.SourceTileSize.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.SourceTileSpacing.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.TargetFormat.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.TargetMagFilter.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.TargetMinFilter.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.TargetTileSpacing.GetHashCode());
+			}
+
+			return hash;
+		}
+
+		protected override void OnLoaded()
+		{
+			this.Compile();
+			base.OnLoaded();
+		}
+		protected override void OnDisposing(bool manually)
+		{
+			base.OnDisposing(manually);
+			this.DiscardCompiledData();
 		}
 
 		/// <summary>
@@ -390,23 +449,6 @@ namespace Duality.Plugins.Tilemaps
 					rawData[offsetIndex] = rawData[baseIndex];
 				}
 			}
-		}
-
-		protected override void OnLoaded()
-		{
-			this.Compile();
-			base.OnLoaded();
-		}
-		protected override void OnDisposing(bool manually)
-		{
-			base.OnDisposing(manually);
-			this.DiscardCompiledData();
-		}
-		protected override void OnCopyDataTo(object target, ICloneOperation operation)
-		{
-			base.OnCopyDataTo(target, operation);
-			Tileset targetTileset = target as Tileset;
-			if (targetTileset.compiled) targetTileset.Compile();
 		}
 	}
 }

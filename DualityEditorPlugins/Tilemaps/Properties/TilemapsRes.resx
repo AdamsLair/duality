@@ -259,4 +259,10 @@
   <data name="Msg_ApplyOrResetTilesetChanges_Text" xml:space="preserve">
     <value>You've made changes to Tileset '{0}'. Do you want to Apply them?</value>
   </data>
+  <data name="UndoRedo_ApplyTilesetChanges" xml:space="preserve">
+    <value>Apply Tileset Changes</value>
+  </data>
+  <data name="UndoRedo_RevertTilesetChanges" xml:space="preserve">
+    <value>Revert Tileset Changes</value>
+  </data>
 </root>

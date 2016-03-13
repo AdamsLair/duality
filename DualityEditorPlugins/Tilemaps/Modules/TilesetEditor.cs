@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Duality.Plugins.Tilemaps;
 using Duality.Editor.Controls.ToolStrip;
 using Duality.Editor.Plugins.Tilemaps.TilesetEditorModes;
+using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 using Duality.Editor.Plugins.Tilemaps.Properties;
 
 using WeifenLuo.WinFormsUI.Docking;
@@ -32,11 +33,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 		
-		private TilesetEditorMode   activeMode       = null;
-		private EditorModeInfo[]    availableModes   = null;
-		private ContentRef<Tileset> backupTarget     = null;
-		private Tileset             tilesetBackup    = null;
-		private bool                tilesetModified  = false;
+		private TilesetEditorMode   activeMode     = null;
+		private EditorModeInfo[]    availableModes = null;
+		private ContentRef<Tileset> backupTarget   = null;
+		private Tileset             tilesetBackup  = null;
+		private bool                applyRequired  = false;
 
 		/// <summary>
 		/// [GET] The currently selected <see cref="Tileset"/> in this editor. This property
@@ -151,35 +152,42 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void ApplyTilesetChanges()
 		{
-			Log.Editor.Write(
-				"Apply Tileset changes for Tileset '{0}'", 
-				this.SelectedTileset);
+			UndoRedoManager.Do(new ApplyTilesetChangesAction(
+				this.SelectedTileset.Res, 
+				this.tilesetBackup));
 
-			// ToDo
-			
-			this.tilesetModified = false;
-			this.buttonApply.Enabled = this.tilesetModified;
-			this.buttonRevert.Enabled = this.tilesetModified;
-
-			this.StartRecordTilesetChanges();
+			this.CleanupAfterApplyRevert();
 		}
 		private void ResetTilesetChanges()
 		{
-			Log.Editor.Write(
-				"Revert Tileset changes for Tileset '{0}'", 
-				this.SelectedTileset);
+			UndoRedoManager.Do(new RevertTilesetChangesAction(
+				this.SelectedTileset.Res, 
+				this.tilesetBackup));
 
-			// ToDo
+			this.CleanupAfterApplyRevert();
+		}
+		private void CleanupAfterApplyRevert()
+		{
+			// We've handed our backup over to the Undo operation.
+			// Don't keep it around here, so we don't accidentally
+			// introduce changes to it.
+			this.tilesetBackup = null;
 
-			this.tilesetModified = false;
-			this.buttonApply.Enabled = this.tilesetModified;
-			this.buttonRevert.Enabled = this.tilesetModified;
+			this.applyRequired = false;
+			this.buttonApply.Enabled = this.applyRequired;
+			this.buttonRevert.Enabled = this.applyRequired;
 
 			this.StartRecordTilesetChanges();
+
+			// Deselect whichever layer node we had selected, because
+			// Apply / Revert operations affect the Tileset as a whole
+			// in ways we can't safely predict editor-wise. It may be
+			// best to not make breakable assumptions here.
+			this.layerView.SelectedNode = null;
 		}
 		private bool AskApplyOrResetTilesetChanges(bool allowCancel)
 		{
-			if (!this.tilesetModified) return true;
+			if (!this.applyRequired) return true;
 			if (this.backupTarget == null) return true;
 
 			DialogResult result = MessageBox.Show(
@@ -309,9 +317,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.activeMode != null)
 				this.activeMode.RaiseOnTilesetModified(e);
 
-			this.tilesetModified = true;
-			this.buttonApply.Enabled = this.tilesetModified;
-			this.buttonRevert.Enabled = this.tilesetModified;
+			this.applyRequired = tileset.HasChangedSinceCompile;
+			this.buttonApply.Enabled = this.applyRequired;
+			this.buttonRevert.Enabled = this.applyRequired;
 
 			if (affectsRenderConfig)
 				this.tilesetView.InvalidateTileset();

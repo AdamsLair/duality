@@ -448,6 +448,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply Tileset Changes.
+        /// </summary>
+        internal static string UndoRedo_ApplyTilesetChanges {
+            get {
+                return ResourceManager.GetString("UndoRedo_ApplyTilesetChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Draw Tiles.
         /// </summary>
         internal static string UndoRedo_EditTilemapDrawTiles {
@@ -480,6 +489,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string UndoRedo_EditTilemapFloodFillTiles {
             get {
                 return ResourceManager.GetString("UndoRedo_EditTilemapFloodFillTiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revert Tileset Changes.
+        /// </summary>
+        internal static string UndoRedo_RevertTilesetChanges {
+            get {
+                return ResourceManager.GetString("UndoRedo_RevertTilesetChanges", resourceCulture);
             }
         }
         

@@ -45,11 +45,6 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			this.OnNotifyPropertyChanged();
 		}
 
-		public override bool CanAppend(UndoRedoAction action)
-		{
-			return false;
-		}
-
 		private void OnNotifyPropertyChanged()
 		{
 			DualityEditorApp.NotifyObjPropChanged(
