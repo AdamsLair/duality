@@ -116,8 +116,8 @@ namespace Duality.Plugins.Tilemaps
 			MathF.TransformCoord(ref output.YAxisView.X, ref output.YAxisView.Y, input.TilemapAngle, objScale);
 			output.XAxisWorld = Vector2.UnitX;
 			output.YAxisWorld = Vector2.UnitY;
-			MathF.TransformCoord(ref output.XAxisWorld.X, ref output.XAxisWorld.Y, input.TilemapAngle);
-			MathF.TransformCoord(ref output.YAxisWorld.X, ref output.YAxisWorld.Y, input.TilemapAngle);
+			MathF.TransformCoord(ref output.XAxisWorld.X, ref output.XAxisWorld.Y, input.TilemapAngle, input.TilemapScale);
+			MathF.TransformCoord(ref output.YAxisWorld.X, ref output.YAxisWorld.Y, input.TilemapAngle, input.TilemapScale);
 
 			// Determine which tile is in the center of view space.
 			Point2 viewCenterTile = Point2.Zero;
