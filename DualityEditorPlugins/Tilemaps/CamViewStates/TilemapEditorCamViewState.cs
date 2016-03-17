@@ -338,11 +338,26 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					// If we're hovering a tile of the current renderer, we're done
 					if (tileCursorPos != InvalidTile)
 					{
-						if (!DesignTimeObjectData.Get(renderer.GameObj).IsLocked)
+						// If it's locked and not selected, treat it as blocking but don't allow editing
+						bool isLocked = DesignTimeObjectData.Get(renderer.GameObj).IsLocked;
+						if (isLocked)
 						{
-							this.hoveredTile = tileCursorPos;
-							this.hoveredRenderer = renderer;
+							bool isSelected = false;
+							IEnumerable<Tilemap> selectedTilemaps = TilemapsEditorSelectionParser.QuerySelectedTilemaps();
+							foreach (Tilemap tilemap in selectedTilemaps)
+							{
+								if (renderer.ActiveTilemap == tilemap)
+								{
+									isSelected = true;
+									break;
+								}
+							}
+							if (!isSelected) break;
 						}
+
+						// Set the hovered renderer and stop picking
+						this.hoveredTile = tileCursorPos;
+						this.hoveredRenderer = renderer;
 						break;
 					}
 				}
