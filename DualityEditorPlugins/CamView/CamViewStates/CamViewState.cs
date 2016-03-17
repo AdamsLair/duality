@@ -62,6 +62,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private FormattedText actionText             = new FormattedText();
 		private List<Type>    lastActiveLayers       = new List<Type>();
 		private List<Type>    lastObjVisibility      = new List<Type>();
+		private int           renderFrameLast        = -1;
 
 
 		public abstract string StateName { get; }
@@ -644,6 +645,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void RenderableControl_Paint(object sender, PaintEventArgs e)
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
+
+			// Only allow one rendered frame per simulated frame to avoid spamming repaints
+			// based on user input like OnMouseMove or similar. Remember that all buffer swaps
+			// and various core updates are only performed when the WinForms app reports to
+			// be idle. This certainly doesn't happen if the event queue fills up with repaint
+			// events faster than can be processed.
+			if (this.renderFrameLast == Time.FrameCount) return;
+			this.renderFrameLast = Time.FrameCount;
 
 			// Retrieve OpenGL context
  			try { this.RenderableSite.MakeCurrent(); } catch (Exception) { return; }
