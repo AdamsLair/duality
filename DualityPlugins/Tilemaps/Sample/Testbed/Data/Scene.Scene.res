@@ -186,7 +186,10 @@
             </colorTint>
             <externalTilemap />
             <gameobj dataType="ObjectRef">1204324351</gameobj>
+            <offset dataType="Float">0</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TilemapRenderer+TileDepthOffsetMode" name="Flat" value="0" />
+            <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
@@ -281,7 +284,10 @@
             </colorTint>
             <externalTilemap />
             <gameobj dataType="ObjectRef">4093171636</gameobj>
+            <offset dataType="Float">0</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TilemapRenderer+TileDepthOffsetMode" name="Flat" value="0" />
+            <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
@@ -376,7 +382,10 @@
             </colorTint>
             <externalTilemap />
             <gameobj dataType="ObjectRef">4225538166</gameobj>
+            <offset dataType="Float">0</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TilemapRenderer+TileDepthOffsetMode" name="Flat" value="0" />
+            <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
@@ -458,7 +467,10 @@
             </colorTint>
             <externalTilemap dataType="ObjectRef">1800056357</externalTilemap>
             <gameobj dataType="ObjectRef">109330599</gameobj>
+            <offset dataType="Float">0</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TilemapRenderer+TileDepthOffsetMode" name="Flat" value="0" />
+            <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
@@ -551,7 +563,10 @@
             </colorTint>
             <externalTilemap />
             <gameobj dataType="ObjectRef">2961408854</gameobj>
+            <offset dataType="Float">0</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TilemapRenderer+TileDepthOffsetMode" name="World" value="2" />
+            <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>
@@ -616,12 +631,12 @@
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
-              <Z dataType="Float">-0.01</Z>
+              <Z dataType="Float">0</Z>
             </pos>
             <posAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
               <Y dataType="Float">0</Y>
-              <Z dataType="Float">-0.01</Z>
+              <Z dataType="Float">0</Z>
             </posAbs>
             <scale dataType="Float">1</scale>
             <scaleAbs dataType="Float">1</scaleAbs>
@@ -646,7 +661,10 @@
             </colorTint>
             <externalTilemap />
             <gameobj dataType="ObjectRef">3085774208</gameobj>
+            <offset dataType="Float">-0.01</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TilemapRenderer+TileDepthOffsetMode" name="World" value="2" />
+            <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
         </_items>

@@ -37,16 +37,63 @@ namespace Duality.Plugins.Tilemaps
 			/// </summary>
 			Reject
 		}
+		/// <summary>
+		/// Specifies the way in which depth offsets are generated per-tile.
+		/// </summary>
+		public enum TileDepthOffsetMode
+		{
+			/// <summary>
+			/// All tiles share the same depth offset.
+			/// </summary>
+			Flat,
+			/// <summary>
+			/// A tile's depth offset is derived from its local position in the tilemap.
+			/// </summary>
+			Local,
+			/// <summary>
+			/// A tile's depth offset is derived from its world-space position.
+			/// </summary>
+			World
+		}
 
 
-		private Alignment origin          = Alignment.Center;
-		private Tilemap   externalTilemap = null;
-		private ColorRgba colorTint       = ColorRgba.White;
+		private Alignment           origin          = Alignment.Center;
+		private Tilemap             externalTilemap = null;
+		private ColorRgba           colorTint       = ColorRgba.White;
+		private float               offset          = 0.0f;
+		private float               tileDepthScale  = 0.01f;
+		private TileDepthOffsetMode tileDepthMode   = TileDepthOffsetMode.Flat;
 
 		[DontSerialize] private Tilemap localTilemap = null;
 		[DontSerialize] private RawList<VertexC1P3T2> vertices = null;
 
 		
+		/// <summary>
+		/// [GET / SET] The Z offset for the rendered <see cref="Tilemap"/> that is added
+		/// to each output vertex without contributing to perspective effects such as parallax.
+		/// </summary>
+		public float Offset
+		{
+			get { return this.offset; }
+			set { this.offset = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The depth offset scale that is used to determine how much depth each 
+		/// tile adds when using non-flat depth offset generation.
+		/// </summary>
+		public float TileDepthScale
+		{
+			get { return this.tileDepthScale; }
+			set { this.tileDepthScale = value; }
+		}
+		/// <summary>
+		/// [GET / SET] Specifies the way in which depth offsets are generated per-tile.
+		/// </summary>
+		public TileDepthOffsetMode TileDepthMode
+		{
+			get { return this.tileDepthMode; }
+			set { this.tileDepthMode = value; }
+		}
 		/// <summary>
 		/// [GET / SET] A color by which the rendered <see cref="Tilemap"/> is tinted.
 		/// </summary>
@@ -154,6 +201,30 @@ namespace Duality.Plugins.Tilemaps
 
 			return tileIndex;
 		}
+		/// <summary>
+		/// Determines the generated depth offset for the tile at the specified tile coordinates.
+		/// This also inclues the renderers overall offset as specified in <see cref="Offset"/>.
+		/// </summary>
+		/// <param name="tilePos"></param>
+		/// <returns></returns>
+		public float GetTileDepthOffsetAt(Point2 tilePos)
+		{
+			if (this.tileDepthMode == TileDepthOffsetMode.Flat)
+				return this.offset;
+
+			Tilemap tilemap = this.ActiveTilemap;
+			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+			Point2 tileCount = tilemap != null ? tilemap.TileCount : new Point2(1, 1);
+			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+
+			float depthPerTile = -tileSize.Y * this.GameObj.Transform.Scale * this.tileDepthScale;
+			float originDepthOffset = Rect.Align(this.origin, 0, 0, 0, tileCount.Y * depthPerTile).Y;
+
+			if (this.tileDepthMode == TileDepthOffsetMode.World)
+				originDepthOffset += (this.GameObj.Transform.Pos.Y / (float)tileSize.Y) * depthPerTile;
+
+			return this.offset + originDepthOffset + tilePos.Y * depthPerTile;
+		}
 
 		public override void Draw(IDrawDevice device)
 		{
@@ -194,12 +265,27 @@ namespace Duality.Plugins.Tilemaps
 			if (this.vertices == null) this.vertices = new RawList<VertexC1P3T2>();
 			this.vertices.Count = renderedTileCount * 4;
 			VertexC1P3T2[] vertexData = this.vertices.Data;
+			
+			// Determine and adjust data for Z offset generation
+			float depthPerTile = -cullingIn.TileSize.Y * cullingIn.TilemapScale * this.tileDepthScale;
 
-			// Configure vertices
+			if (this.tileDepthMode == TileDepthOffsetMode.Flat)
+				depthPerTile = 0.0f;
+
+			float originDepthOffset = Rect.Align(this.origin, 0, 0, 0, tileCount.Y * depthPerTile).Y;
+
+			if (this.tileDepthMode == TileDepthOffsetMode.World)
+				originDepthOffset += (this.GameObj.Transform.Pos.Y / (float)tileSize.Y) * depthPerTile;
+
+			cullingOut.RenderOriginView.Z += this.offset + originDepthOffset;
+
+			// Prepare vertex generation data
 			Vector2 tileXStep = cullingOut.XAxisView * cullingIn.TileSize.X;
 			Vector2 tileYStep = cullingOut.YAxisView * cullingIn.TileSize.Y;
 			Vector3 renderPos = cullingOut.RenderOriginView;
 			Point2 tileGridPos = cullingOut.VisibleTileStart;
+
+			// Configure vertices
 			for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
 			{
 				int vertexBaseIndex = tileIndex * 4;
@@ -217,14 +303,14 @@ namespace Duality.Plugins.Tilemaps
 
 				vertexData[vertexBaseIndex + 1].Pos.X = renderPos.X + tileYStep.X;
 				vertexData[vertexBaseIndex + 1].Pos.Y = renderPos.Y + tileYStep.Y;
-				vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z + depthPerTile;
 				vertexData[vertexBaseIndex + 1].TexCoord.X = uv.X;
 				vertexData[vertexBaseIndex + 1].TexCoord.Y = uv.Y + uv.H;
 				vertexData[vertexBaseIndex + 1].Color = mainColor;
 
 				vertexData[vertexBaseIndex + 2].Pos.X = renderPos.X + tileXStep.X + tileYStep.X;
 				vertexData[vertexBaseIndex + 2].Pos.Y = renderPos.Y + tileXStep.Y + tileYStep.Y;
-				vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z + depthPerTile;
 				vertexData[vertexBaseIndex + 2].TexCoord.X = uv.X + uv.W;
 				vertexData[vertexBaseIndex + 2].TexCoord.Y = uv.Y + uv.H;
 				vertexData[vertexBaseIndex + 2].Color = mainColor;
@@ -244,6 +330,7 @@ namespace Duality.Plugins.Tilemaps
 					tileGridPos.Y++;
 					renderPos = cullingOut.RenderOriginView;
 					renderPos.Xy += tileYStep * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
+					renderPos.Z += tileGridPos.Y * depthPerTile;
 				}
 			}
 
