@@ -17,7 +17,7 @@ namespace Duality
 		/// </summary>
 		public class SharedState
 		{
-			private	int	indent	= 0;
+			private int indent = 0;
 
 			/// <summary>
 			/// [GET / SET] The Logs indent value.
@@ -29,10 +29,10 @@ namespace Duality
 			}
 		}
 
-		private	static	Log				logGame		= null;
-		private	static	Log				logCore		= null;
-		private	static	Log				logEditor	= null;
-		private	static	DataLogOutput	data		= null;
+		private static Log           logGame   = null;
+		private static Log           logCore   = null;
+		private static Log           logEditor = null;
+		private static DataLogOutput data      = null;
 
 		/// <summary>
 		/// [GET] A log for game-related entries. Use this for logging data from game plugins.
@@ -69,9 +69,9 @@ namespace Duality
 			SharedState state = new SharedState();
 			data = new DataLogOutput();
 
-			logGame		= new Log("Game", state, data);
-			logCore		= new Log("Core", state, data);
-			logEditor	= new Log("Edit", state, data);
+			logGame   = new Log("Game", state, data);
+			logCore   = new Log("Core", state, data);
+			logEditor = new Log("Edit", state, data);
 		}
 
 		public static void AddGlobalOutput(ILogOutput output)
@@ -186,11 +186,12 @@ namespace Duality
 			}
 
 			// Forward the message to all outputs
+			LogEntry entry = new LogEntry(this, type, msg, context);
 			foreach (ILogOutput log in this.strOut)
 			{
 				try
 				{
-					log.Write(this, type, msg, context);
+					log.Write(entry);
 				}
 				catch (Exception)
 				{
@@ -463,40 +464,5 @@ namespace Duality
 				e.StackTrace,
 				Environment.NewLine);
 		}
-	}
-
-	/// <summary>
-	/// The type of a log message / entry.
-	/// </summary>
-	public enum LogMessageType
-	{
-		/// <summary>
-		/// Just a regular message. Nothing special. Neutrally informs about what's going on.
-		/// </summary>
-		Message,
-		/// <summary>
-		/// A warning message. It informs about unexpected data or behaviour that might not have caused any errors yet, but can lead to them.
-		/// It might also be used for expected errors from which Duality is likely to recover.
-		/// </summary>
-		Warning,
-		/// <summary>
-		/// An error message. It informs about an unexpected and/or critical error that has occurred.
-		/// </summary>
-		Error
-	}
-
-	/// <summary>
-	/// Represents a single <see cref="Log"/> output and provides actual writing functionality for 
-	/// </summary>
-	public interface ILogOutput
-	{
-		/// <summary>
-		/// Writes a single message to the output.
-		/// </summary>
-		/// <param name="source">The <see cref="Log"/> from which the message originates.</param>
-		/// <param name="type">The type of the log message.</param>
-		/// <param name="msg">The message to write.</param>
-		/// <param name="context">The context in which this log was written. Usually the primary object the log entry is associated with.</param>
-		void Write(Log source, LogMessageType type, string msg, object context);
 	}
 }

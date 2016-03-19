@@ -16,9 +16,9 @@ namespace Duality.Editor.Plugins.LogView
 {
 	public partial class LogView : DockContent
 	{
-		private	int unseenWarnings	= 0;
-		private	int	unseenErrors	= 0;
-		private	List<DataLogOutput.LogEntry> logSchedule = new List<DataLogOutput.LogEntry>();
+		private int               unseenWarnings = 0;
+		private int               unseenErrors   = 0;
+		private RawList<LogEntry> logSchedule    = new RawList<LogEntry>();
 
 
 		public LogView()
@@ -35,15 +35,15 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			base.OnHandleCreated(e);
 
-			Log.LogData.NewEntry += LogData_NewEntry;
-			this.logEntryList.BindToOutput(Log.LogData);
+			this.logEntryList.BindToDualityLogs();
 			this.logEntryList.ScrollToEnd();
 
-			foreach (var entry in Log.LogData.Data)
+			for (int i = 0; i < Log.LogData.Data.Count; i++)
 			{
-				if (entry.Type == LogMessageType.Warning)
+				LogMessageType type = Log.LogData.Data[i].Type;
+				if (type == LogMessageType.Warning)
 					this.unseenWarnings++;
-				else if (entry.Type == LogMessageType.Error)
+				else if (type == LogMessageType.Error)
 					this.unseenErrors++;
 			}
 			this.UpdateTabText();
@@ -59,8 +59,7 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			base.OnClosed(e);
 
-			this.logEntryList.BindToOutput(null);
-			Log.LogData.NewEntry -= LogData_NewEntry;
+			this.logEntryList.UnbindFromDualityLogs();
 
 			this.DockPanel.ActiveContentChanged -= DockPanel_ActiveContentChanged;
 			Sandbox.Entering -= this.Sandbox_Entering;
@@ -203,7 +202,7 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		private void logEntryList_NewEntry(object sender, LogEntryList.ViewEntryEventArgs e)
 		{
-			DataLogOutput.LogEntry logEntry = e.Entry.LogEntry;
+			LogEntry logEntry = e.Entry.LogEntry;
 			bool isHidden = this.DockHandler.DockState.IsAutoHide() && !this.ContainsFocus;
 			bool unseenChanges = false;
 
@@ -223,12 +222,9 @@ namespace Duality.Editor.Plugins.LogView
 			}
 
 			if (unseenChanges) this.UpdateTabText();
-		}
-		private void LogData_NewEntry(object sender, DataLogOutput.LogEntryEventArgs e)
-		{
-			if (this.InvokeRequired) return;
+
 			bool pause = 
-				e.Entry.Type == LogMessageType.Error && 
+				e.Entry.LogEntry.Type == LogMessageType.Error && 
 				this.buttonPauseOnError.Checked && 
 				Sandbox.State == SandboxState.Playing && 
 				!Sandbox.IsChangingState;

@@ -197,6 +197,9 @@
     <Compile Include="Utility\Extensions\ExtMethodsXml.cs" />
     <Compile Include="Utility\IReadOnlyGrid.cs" />
     <Compile Include="Utility\Grid.cs" />
+    <Compile Include="Utility\Log\ILogOutput.cs" />
+    <Compile Include="Utility\Log\LogMessageType.cs" />
+    <Compile Include="Utility\Log\LogEntry.cs" />
     <Compile Include="Utility\Math\Range.cs" />
     <Compile Include="Utility\ObjectCreator.cs" />
     <Compile Include="Backend\IPluginLoader.cs" />
