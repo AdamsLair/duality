@@ -20,23 +20,17 @@ namespace Duality
 			this.target = target;
 		}
 		
-		/// <summary>
-		/// Writes a single message to the output.
-		/// </summary>
-		/// <param name="source">The <see cref="Log"/> from which the message originates.</param>
-		/// <param name="type">The type of the log message.</param>
-		/// <param name="msg">The message to write.</param>
-		/// <param name="context">The context in which this log was written. Usually the primary object the log entry is associated with.</param>
-		public virtual void Write(Log source, LogMessageType type, string msg, object context)
+		/// <inheritdoc />
+		public virtual void Write(LogEntry entry)
 		{
-			int indent = source.Indent;
-			string prefix = source.Prefix ?? "";
-			string[] lines = msg.Split(new[] { '\n', '\r', '\0' }, StringSplitOptions.RemoveEmptyEntries);
+			int indent = entry.Source.Indent;
+			string prefix = entry.Source.Prefix ?? "";
+			string[] lines = entry.Message.Split(new[] { '\n', '\r', '\0' }, StringSplitOptions.RemoveEmptyEntries);
 			for (int i = 0; i < lines.Length; i++)
 			{
 				if (i == 0)
 				{
-					switch (type)
+					switch (entry.Type)
 					{
 						case LogMessageType.Message:
 							lines[i] = prefix + "Msg: " + new string(' ', indent * 2) + lines[i];
@@ -54,7 +48,7 @@ namespace Duality
 					lines[i] = new string(' ', prefix.Length + 5 + indent * 2) + lines[i];
 				}
 
-				this.WriteLine(source, type, lines[i], context);
+				this.WriteLine(entry.Source, entry.Type, lines[i], entry.Context);
 			}
 		}
 		/// <summary>

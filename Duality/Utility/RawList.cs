@@ -247,6 +247,7 @@ namespace Duality
 			if (index + count >= this.count)
 			{
 				this.count -= count;
+				Array.Clear(this.data, this.count, count);
 			}
 			else
 			{
