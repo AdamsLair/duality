@@ -29,10 +29,9 @@ namespace Duality
 			}
 		}
 
-		private static Log           logGame   = null;
-		private static Log           logCore   = null;
-		private static Log           logEditor = null;
-		private static DataLogOutput data      = null;
+		private static Log logGame   = null;
+		private static Log logCore   = null;
+		private static Log logEditor = null;
 
 		/// <summary>
 		/// [GET] A log for game-related entries. Use this for logging data from game plugins.
@@ -55,23 +54,15 @@ namespace Duality
 		{
 			get { return logEditor; }
 		}
-		/// <summary>
-		/// [GET] Returns an object storing all log entries that have been made since startup
-		/// </summary>
-		public static DataLogOutput LogData
-		{
-			get { return data; }
-		}
 
 		[System.Diagnostics.DebuggerNonUserCode]
 		static Log()
 		{
 			SharedState state = new SharedState();
-			data = new DataLogOutput();
 
-			logGame   = new Log("Game", state, data);
-			logCore   = new Log("Core", state, data);
-			logEditor = new Log("Edit", state, data);
+			logGame   = new Log("Game", state);
+			logCore   = new Log("Core", state);
+			logEditor = new Log("Edit", state);
 		}
 
 		public static void AddGlobalOutput(ILogOutput output)
@@ -88,10 +79,10 @@ namespace Duality
 		}
 
 
-		private	List<ILogOutput>	strOut		= null;
-		private	SharedState			state		= null;
-		private	string				name		= "Log";
-		private string				prefix		= "[Log] ";
+		private List<ILogOutput> strOut = null;
+		private SharedState      state  = null;
+		private string           name   = "Log";
+		private string           prefix = "[Log] ";
 
 		/// <summary>
 		/// [GET] The Log's name

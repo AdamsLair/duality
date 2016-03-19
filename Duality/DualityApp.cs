@@ -1122,7 +1122,6 @@ namespace Duality
 			if (ReflectionHelper.CleanEventBindings(typeof(Scene),				invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(Scene)));
 			if (ReflectionHelper.CleanEventBindings(typeof(Resource),			invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(Resource)));
 			if (ReflectionHelper.CleanEventBindings(typeof(ContentProvider),	invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(ContentProvider)));
-			if (ReflectionHelper.CleanEventBindings(Log.LogData,				invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(Log)) + ".LogData");
 			if (ReflectionHelper.CleanEventBindings(keyboard,					invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Keyboard");
 			if (ReflectionHelper.CleanEventBindings(mouse,						invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Mouse");
 			foreach (JoystickInput joystick in joysticks)

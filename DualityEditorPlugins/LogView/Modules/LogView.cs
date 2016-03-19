@@ -38,9 +38,10 @@ namespace Duality.Editor.Plugins.LogView
 			this.logEntryList.BindToDualityLogs();
 			this.logEntryList.ScrollToEnd();
 
-			for (int i = 0; i < Log.LogData.Data.Count; i++)
+			InMemoryLogOutput logHistory = DualityEditorApp.GlobalLogData;
+			for (int i = 0; i < logHistory.Entries.Count; i++)
 			{
-				LogMessageType type = Log.LogData.Data[i].Type;
+				LogMessageType type = logHistory.Entries[i].Type;
 				if (type == LogMessageType.Warning)
 					this.unseenWarnings++;
 				else if (type == LogMessageType.Error)

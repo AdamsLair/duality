@@ -8,14 +8,14 @@ namespace Duality
 	/// <summary>
 	/// A <see cref="ILogOutput">Log output</see> that stores all log entries in memory.
 	/// </summary>
-	public class DataLogOutput : ILogOutput
+	public class InMemoryLogOutput : ILogOutput
 	{
 		private RawList<LogEntry> data = new RawList<LogEntry>();
 
 		/// <summary>
-		/// [GET] Enumerates all log entries that have been made.
+		/// [GET] Allows to access all log entries that have been received.
 		/// </summary>
-		public IReadOnlyList<LogEntry> Data
+		public IReadOnlyList<LogEntry> Entries
 		{
 			get { return this.data; }
 		}

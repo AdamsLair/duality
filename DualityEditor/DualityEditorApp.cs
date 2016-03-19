@@ -64,6 +64,7 @@ namespace Duality.Editor
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
 		private	static PackageManager				packageManager		= null;
+		private	static InMemoryLogOutput			memoryLogOutput		= null;
 
 
 		public	static	event	EventHandler	Terminating			= null;
@@ -76,6 +77,10 @@ namespace Duality.Editor
 		public	static	event	EventHandler<ObjectPropertyChangedEventArgs>	ObjectPropertyChanged	= null;
 		
 		
+		public static InMemoryLogOutput GlobalLogData
+		{
+			get { return memoryLogOutput; }
+		}
 		public static PackageManager PackageManager
 		{
 			get { return packageManager; }
@@ -170,6 +175,10 @@ namespace Duality.Editor
 		{
 			DualityEditorApp.needsRecovery = recover;
 			DualityEditorApp.mainForm = mainForm;
+
+			// Set up an in-memory data log so plugins can access the log history when needed
+			memoryLogOutput = new InMemoryLogOutput();
+			Log.AddGlobalOutput(memoryLogOutput);
 			
 			// Set up a global exception handler to log errors
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -355,6 +364,13 @@ namespace Duality.Editor
 
 			// Terminate Duality
 			DualityApp.Terminate();
+
+			// Remove the global in-memory log
+			if (memoryLogOutput != null)
+			{
+				Log.RemoveGlobalOutput(memoryLogOutput);
+				memoryLogOutput = null; 
+			}
 
 			return true;
 		}

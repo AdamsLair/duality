@@ -305,7 +305,7 @@
     <Compile Include="DualityApp.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Utility\GameObjectManager.cs" />
-    <Compile Include="Utility\Log\DataLogOutput.cs" />
+    <Compile Include="Utility\Log\InMemoryLogOutput.cs" />
     <Compile Include="Utility\Log\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource.cs" />

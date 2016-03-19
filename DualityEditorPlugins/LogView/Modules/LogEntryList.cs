@@ -270,7 +270,7 @@ namespace Duality.Editor.Plugins.LogView
 			}
 			this.OnContentChanged();
 		}
-		public void UpdateFromDataLog(DataLogOutput dataLog)
+		public void UpdateFromDataLog(InMemoryLogOutput dataLog)
 		{
 			if (dataLog == null)
 			{
@@ -279,8 +279,8 @@ namespace Duality.Editor.Plugins.LogView
 			}
 
 			this.entryList.Clear();
-			for (int i = 0; i < dataLog.Data.Count; i++)
-				this.entryList.Add(new ViewEntry(this, dataLog.Data[i]));
+			for (int i = 0; i < dataLog.Entries.Count; i++)
+				this.entryList.Add(new ViewEntry(this, dataLog.Entries[i]));
 
 			this.OnContentChanged();
 		}
@@ -289,7 +289,7 @@ namespace Duality.Editor.Plugins.LogView
 			if (this.boundToDualityLogs) return;
 
 			Log.AddGlobalOutput(this);
-			this.UpdateFromDataLog(Log.LogData);
+			this.UpdateFromDataLog(DualityEditorApp.GlobalLogData);
 		}
 		public void UnbindFromDualityLogs()
 		{
