@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
-    <version>2.2.3</version>
+    <version>2.2.4</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera View</title>
@@ -13,12 +13,11 @@
     <summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
     <tags>Duality Editor Plugin CamView</tags>
-    <releaseNotes>Editor Keyboard Input, CamViewState Visibility Info
-#CHANGE: The editor CamView now reports scancodes to Duality to be independent from virtual key mappings / layout configurations and instead match physical key locations.
-#ADD: Added OnShown / OnHidden API to CamViewStates, as well as an IsViewVisible property. This allows states to react to moving their CamView into an inactive document tab or similar, which is useful when doing things that affect the editor outside the CamViewState itself.</releaseNotes>
+    <releaseNotes>Editor Performance Tweaks
+#CHANGE: The CamView is no longer allowed to render more than one frame per update cycle, allowing the WinForms message queue to be processed fast enough when spamming it with repaint events. This should make the editor more responsive when rendering takes a lot of time.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.2" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.2.4" />
+      <dependency id="AdamsLair.Duality" version="2.3.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.3.0" />
     </dependencies>
   </metadata>
   <files>

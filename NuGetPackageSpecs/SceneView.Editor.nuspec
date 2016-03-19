@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.SceneView</id>
-    <version>2.0.4</version>
+    <version>2.0.5</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Scene View</title>
@@ -13,11 +13,11 @@
     <summary>Displays the contents of the current Scene hierarchically and allows editing the Scene graph.</summary>
     <description>Displays the contents of the current Scene hierarchically and allows editing the Scene graph.</description>
     <tags>Duality Editor Plugin SceneView</tags>
-    <releaseNotes>Updated Aga.Controls Dependency
-#CHANGE: Updated to Aga.Controls 1.7.6 in order to apply some bugfixes.</releaseNotes>
+    <releaseNotes>DragDrop Selection
+#CHANGE: Dragdrop operations out of the Scene or Project View no longer affect editor-wide object selection.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.2.6" />
+      <dependency id="AdamsLair.Duality" version="2.3.0" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.3.0" />
     </dependencies>
   </metadata>
   <files>
