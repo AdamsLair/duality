@@ -21,6 +21,10 @@ namespace Duality.Plugins.Tilemaps
 		/// Represents the zip-compressed byte array <see cref="TilemapData"/> version.
 		/// </summary>
 		private const int Serialize_Version_ZippedBytes = 1;
+		/// <summary>
+		/// Represents the first <see cref="TilemapData"/> version that includes depth offsets.
+		/// </summary>
+		private const int Serialize_Version_DepthOffset = 2;
 
 
 		private Grid<Tile> tiles = new Grid<Tile>();
@@ -58,13 +62,14 @@ namespace Duality.Plugins.Tilemaps
 					for (int i = 0; i < this.tiles.Capacity; i++)
 					{
 						streamWriter.Write((int)rawData[i].Index);
+						streamWriter.Write((short)rawData[i].DepthOffset);
 					}
 				}
 				compressedData = compressedStream.ToArray();
 			}
 
 			// Transfer the compressed data to the serializer to handle it
-			writer.WriteValue("version", Serialize_Version_ZippedBytes);
+			writer.WriteValue("version", Serialize_Version_DepthOffset);
 			writer.WriteValue("data", compressedData);
 		}
 		void ISerializeExplicit.ReadData(IDataReader reader)
@@ -75,7 +80,8 @@ namespace Duality.Plugins.Tilemaps
 			catch (Exception) { version = Serialize_Version_Unknown; }
 			
 			// Read the compressed data and unpack it
-			if (version == Serialize_Version_ZippedBytes)
+			if (version >= Serialize_Version_ZippedBytes && 
+				version <= Serialize_Version_DepthOffset)
 			{
 				byte[] compressedData;
 				reader.ReadValue("data", out compressedData);
@@ -88,9 +94,10 @@ namespace Duality.Plugins.Tilemaps
 					int height = streamReader.ReadInt32();
 
 					Tile[] rawData = new Tile[width * height];
-					for (int i = 0; i < rawData.Length; i++)
+					switch (version)
 					{
-						rawData[i].Index = streamReader.ReadInt32();
+						case Serialize_Version_ZippedBytes: this.ReadBinVersionFirst(streamReader, rawData); break;
+						case Serialize_Version_DepthOffset: this.ReadBinVersionDepth(streamReader, rawData); break;
 					}
 
 					this.tiles = new Grid<Tile>(width, height, rawData);
@@ -101,6 +108,22 @@ namespace Duality.Plugins.Tilemaps
 				throw new NotSupportedException(string.Format(
 					"Unknown TilemapData serialization version '{0}'. Can't load tilemap data.",
 					version));
+			}
+		}
+
+		private void ReadBinVersionFirst(BinaryReader reader, Tile[] target)
+		{
+			for (int i = 0; i < target.Length; i++)
+			{
+				target[i].Index = reader.ReadInt32();
+			}
+		}
+		private void ReadBinVersionDepth(BinaryReader reader, Tile[] target)
+		{
+			for (int i = 0; i < target.Length; i++)
+			{
+				target[i].Index = reader.ReadInt32();
+				target[i].DepthOffset = reader.ReadInt16();
 			}
 		}
 	}

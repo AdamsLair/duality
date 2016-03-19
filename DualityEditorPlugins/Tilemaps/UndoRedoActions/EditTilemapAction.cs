@@ -157,7 +157,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 				TilemapsReflectionInfo.Property_Tilemap_Tiles);
 		}
 
-		private static void MaskedCopyGrid<T>(Grid<T> source, Grid<T> target, Grid<bool> sourceMask, int destX = 0, int destY = 0, int width = -1, int height = -1, int srcX = 0, int srcY = 0, Func<T,T,T> selector = null)
+		private static void MaskedCopyGrid<T>(Grid<T> source, Grid<T> target, Grid<bool> sourceMask, int destX = 0, int destY = 0, int width = -1, int height = -1, int srcX = 0, int srcY = 0)
 		{
 			if (width == -1) width = source.Width;
 			if (height == -1) height = source.Height;
@@ -172,32 +172,15 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			T[] targetData = target.RawData;
 			T[] sourceData = source.RawData;
 			bool[] maskData = sourceMask.RawData;
-			if (selector != null)
+			for (int i = beginX; i < endX; i++)
 			{
-				for (int i = beginX; i < endX; i++)
+				for (int j = beginY; j < endY; j++)
 				{
-					for (int j = beginY; j < endY; j++)
-					{
-						int sourceN = srcX + i + source.Width * (srcY + j);
-						if (!maskData[sourceN]) continue;
+					int sourceN = srcX + i + source.Width * (srcY + j);
+					if (!maskData[sourceN]) continue;
 
-						int targetN = destX + i + target.Width * (destY + j);
-						targetData[targetN] = selector(sourceData[sourceN], targetData[targetN]);
-					}
-				}
-			}
-			else
-			{
-				for (int i = beginX; i < endX; i++)
-				{
-					for (int j = beginY; j < endY; j++)
-					{
-						int sourceN = srcX + i + source.Width * (srcY + j);
-						if (!maskData[sourceN]) continue;
-
-						int targetN = destX + i + target.Width * (destY + j);
-						targetData[targetN] = sourceData[sourceN];
-					}
+					int targetN = destX + i + target.Width * (destY + j);
+					targetData[targetN] = sourceData[sourceN];
 				}
 			}
 		}

@@ -286,38 +286,40 @@ namespace Duality.Plugins.Tilemaps
 			Point2 tileGridPos = cullingOut.VisibleTileStart;
 
 			// Configure vertices
+			IReadOnlyGrid<Tile> tiles = tilemap.Tiles;
 			for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)
 			{
 				int vertexBaseIndex = tileIndex * 4;
-				Tile tile = tilemap.Tiles[tileGridPos.X, tileGridPos.Y];
+				Tile tile = tiles[tileGridPos.X, tileGridPos.Y];
+				float localDepthOffset = tile.DepthOffset * depthPerTile;
 
 				Rect uv;
 				tileset.LookupTileAtlas(0, tile.Index, out uv);
 
 				vertexData[vertexBaseIndex + 0].Pos.X = renderPos.X;
 				vertexData[vertexBaseIndex + 0].Pos.Y = renderPos.Y;
-				vertexData[vertexBaseIndex + 0].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 0].Pos.Z = renderPos.Z + localDepthOffset;
 				vertexData[vertexBaseIndex + 0].TexCoord.X = uv.X;
 				vertexData[vertexBaseIndex + 0].TexCoord.Y = uv.Y;
 				vertexData[vertexBaseIndex + 0].Color = mainColor;
 
 				vertexData[vertexBaseIndex + 1].Pos.X = renderPos.X + tileYStep.X;
 				vertexData[vertexBaseIndex + 1].Pos.Y = renderPos.Y + tileYStep.Y;
-				vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z + depthPerTile;
+				vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z + localDepthOffset + depthPerTile;
 				vertexData[vertexBaseIndex + 1].TexCoord.X = uv.X;
 				vertexData[vertexBaseIndex + 1].TexCoord.Y = uv.Y + uv.H;
 				vertexData[vertexBaseIndex + 1].Color = mainColor;
 
 				vertexData[vertexBaseIndex + 2].Pos.X = renderPos.X + tileXStep.X + tileYStep.X;
 				vertexData[vertexBaseIndex + 2].Pos.Y = renderPos.Y + tileXStep.Y + tileYStep.Y;
-				vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z + depthPerTile;
+				vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z + localDepthOffset + depthPerTile;
 				vertexData[vertexBaseIndex + 2].TexCoord.X = uv.X + uv.W;
 				vertexData[vertexBaseIndex + 2].TexCoord.Y = uv.Y + uv.H;
 				vertexData[vertexBaseIndex + 2].Color = mainColor;
 				
 				vertexData[vertexBaseIndex + 3].Pos.X = renderPos.X + tileXStep.X;
 				vertexData[vertexBaseIndex + 3].Pos.Y = renderPos.Y + tileXStep.Y;
-				vertexData[vertexBaseIndex + 3].Pos.Z = renderPos.Z;
+				vertexData[vertexBaseIndex + 3].Pos.Z = renderPos.Z + localDepthOffset;
 				vertexData[vertexBaseIndex + 3].TexCoord.X = uv.X + uv.W;
 				vertexData[vertexBaseIndex + 3].TexCoord.Y = uv.Y;
 				vertexData[vertexBaseIndex + 3].Color = mainColor;
