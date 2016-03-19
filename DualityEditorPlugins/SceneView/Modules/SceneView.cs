@@ -889,25 +889,37 @@ namespace Duality.Editor.Plugins.SceneView
 			if (this.tempIsInitializingObjects) return;
 			if (this.tempIsClearingObjects) return;
 
-			var selComponent =
-					from vn in this.objectView.SelectedNodes
-					where (vn.Tag is ComponentNode) && (vn.Tag as ComponentNode).Component != null
-					select (vn.Tag as ComponentNode).Component;
-			var selGameObj =
-					from vn in this.objectView.SelectedNodes
-					where (vn.Tag is GameObjectNode) && (vn.Tag as GameObjectNode).Obj != null
-					select (vn.Tag as GameObjectNode).Obj;
-
 			if (!DualityEditorApp.IsSelectionChanging)
 			{
-				var selObj = selGameObj.Union<object>(selComponent);
-				if (selObj.Any())
+				// If the left mouse button is pressed, reschedule the selection for later - this 
+				// might become a dragdrop operation, for which we do no wish selection changes.
+				if ((Control.MouseButtons & MouseButtons.Left) != MouseButtons.None)
 				{
-					if (!selGameObj.Any() || !selComponent.Any()) DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
-					DualityEditorApp.Select(this, new ObjectSelection(selObj));
+					this.tempScheduleSelectionChange = true;
 				}
+				// Otherwise, go ahead and adjust editor-wide selection
 				else
-					DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+				{
+					// Determine the set of locally selected objects
+					IEnumerable<Component> selComponent =
+							from vn in this.objectView.SelectedNodes
+							where (vn.Tag is ComponentNode) && (vn.Tag as ComponentNode).Component != null
+							select (vn.Tag as ComponentNode).Component;
+					IEnumerable<GameObject> selGameObj =
+							from vn in this.objectView.SelectedNodes
+							where (vn.Tag is GameObjectNode) && (vn.Tag as GameObjectNode).Obj != null
+							select (vn.Tag as GameObjectNode).Obj;
+					IEnumerable<object> selObj = selGameObj.Union<object>(selComponent);
+
+					// Perform the global selection change
+					if (selObj.Any())
+					{
+						if (!selGameObj.Any() || !selComponent.Any()) DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+						DualityEditorApp.Select(this, new ObjectSelection(selObj));
+					}
+					else
+						DualityEditorApp.Deselect(this, ObjectSelection.Category.GameObjCmp);
+				}
 			}
 		}
 		private void objectView_KeyDown(object sender, KeyEventArgs e)
@@ -942,8 +954,16 @@ namespace Duality.Editor.Plugins.SceneView
 		{
 			if (this.objectView.SelectedNodes.Count > 0)
 			{
+				// Make sure we don't have invalid combinations of 
+				// object types in the dragdrop operation by deselecting
+				// the ones that don't fit
 				this.AssureMonoSelection();
 
+				// If we've scheduled a selection change, un-schedule it. We don't
+				// want to change selection because of dragdrop operations.
+				this.tempScheduleSelectionChange = false;
+
+				// Perform the dragdrop operation
 				DataObject dragDropData = new DataObject();
 				this.AppendNodesToData(dragDropData, this.objectView.SelectedNodes, false);
 				this.DoDragDrop(dragDropData, DragDropEffects.All | DragDropEffects.Link);

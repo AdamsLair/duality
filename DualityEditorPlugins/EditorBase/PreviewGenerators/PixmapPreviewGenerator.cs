@@ -15,8 +15,8 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 	{
 		public override void Perform(Pixmap pixmap, PreviewImageQuery query)
 		{
-			int desiredWidth = query.DesiredWidth;
-			int desiredHeight = query.DesiredHeight;
+			Point2 desiredSize = new Point2(query.DesiredWidth, query.DesiredHeight);
+			Point2 cropToSize = new Point2(4096, 4096);
 
 			PixelData layer = pixmap.MainLayer;
 			if (layer == null)
@@ -24,26 +24,34 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 				query.Result = new Bitmap(1, 1);
 				return;
 			}
-			float widthRatio = (float)layer.Width / (float)layer.Height;
 
-			if (pixmap.Width * pixmap.Height > 4096 * 4096)
+			// If the desired preview is way smaller than the source data, specify a crop size
+			if (layer.Width > desiredSize.X * 8)  cropToSize.X = Math.Min(cropToSize.X, desiredSize.X * 8);
+			if (layer.Height > desiredSize.Y * 8) cropToSize.Y = Math.Min(cropToSize.Y, desiredSize.Y * 8);
+			
+			// If out image is too big, crop it
+			if (layer.Width > cropToSize.X || layer.Height > cropToSize.Y)
 			{
 				layer = layer.CloneSubImage(
-					pixmap.Width / 2 - Math.Min(desiredWidth, pixmap.Width) / 2,
-					pixmap.Height / 2 - Math.Min(desiredHeight, pixmap.Height) / 2,
-					Math.Min(desiredWidth, pixmap.Width),
-					Math.Min(desiredHeight, pixmap.Height));
-				if (layer.Width != desiredWidth || layer.Height != desiredHeight)
-					layer = layer.CloneRescale(desiredWidth, desiredHeight, ImageScaleFilter.Linear);
+					layer.Width / 2 - MathF.Min(layer.Width, cropToSize.X) / 2,
+					layer.Height / 2 - MathF.Min(layer.Height, cropToSize.Y) / 2,
+					MathF.Min(layer.Width, cropToSize.X),
+					MathF.Min(layer.Height, cropToSize.Y));
 			}
-			else if (query.SizeMode == PreviewSizeMode.FixedBoth)
-				layer = layer.CloneRescale(desiredWidth, desiredHeight, ImageScaleFilter.Linear);
-			else if (query.SizeMode == PreviewSizeMode.FixedWidth)
-				layer = layer.CloneRescale(desiredWidth, MathF.RoundToInt(desiredWidth / widthRatio), ImageScaleFilter.Linear);
+
+			// Determine the target size for the preview based on desired and actual size
+			Point2 targetSize;
+			float widthRatio = (float)layer.Width / (float)MathF.Max(layer.Height, 1);
+			if (query.SizeMode == PreviewSizeMode.FixedWidth)
+				targetSize = new Point2(desiredSize.X, MathF.RoundToInt(desiredSize.X / widthRatio));
 			else if (query.SizeMode == PreviewSizeMode.FixedHeight)
-				layer = layer.CloneRescale(MathF.RoundToInt(widthRatio * desiredHeight), desiredHeight, ImageScaleFilter.Linear);
+				targetSize = new Point2(MathF.RoundToInt(widthRatio * desiredSize.Y), desiredSize.Y);
 			else
-				layer = layer.Clone();
+				targetSize = desiredSize;
+			
+			// Create a properly resized version of the image data
+			if (layer.Width != targetSize.X || layer.Height != targetSize.Y)
+				layer = layer.CloneRescale(targetSize.X, targetSize.Y, ImageScaleFilter.Linear);
 
 			query.Result = layer.ToBitmap();
 		}

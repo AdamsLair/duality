@@ -911,29 +911,38 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		private void folderView_SelectionChanged(object sender, EventArgs e)
 		{
-			// Retrieve selected ResourceNodes
-			ResourceNode[] selResNode = (
-				from vn in this.folderView.SelectedNodes
-				where vn.Tag is ResourceNode
-				select vn.Tag as ResourceNode
-				).ToArray();
-			// Load their Resource data, if not loaded yet
-			Resource[] selRes = (
-				from rn in selResNode
-				where rn.ResLink.IsAvailable
-				select rn.ResLink.Res
-				).ToArray();
-
 			// Update context menu
 			this.UpdateContextMenuCommonActions();
-
-			// Adjust editor-wide selection
+			
 			if (!DualityEditorApp.IsSelectionChanging)
 			{
-				if (selRes.Length > 0)
-					DualityEditorApp.Select(this, new ObjectSelection(selRes));
+				// If the left mouse button is pressed, reschedule the selection for later - this 
+				// might become a dragdrop operation, for which we do no wish selection changes.
+				if ((Control.MouseButtons & MouseButtons.Left) != MouseButtons.None)
+				{
+					this.tempScheduleSelectionChange = true;
+				}
+				// Otherwise, go ahead and adjust editor-wide selection
 				else
-					DualityEditorApp.Deselect(this, ObjectSelection.Category.Resource);
+				{
+					// Retrieve selected ResourceNodes
+					ResourceNode[] selResNode = (
+						from vn in this.folderView.SelectedNodes
+						where vn.Tag is ResourceNode
+						select vn.Tag as ResourceNode
+						).ToArray();
+					// Load their Resource data, if not loaded yet
+					Resource[] selRes = (
+						from rn in selResNode
+						where rn.ResLink.IsAvailable
+						select rn.ResLink.Res
+						).ToArray();
+
+					if (selRes.Length > 0)
+						DualityEditorApp.Select(this, new ObjectSelection(selRes));
+					else
+						DualityEditorApp.Deselect(this, ObjectSelection.Category.Resource);
+				}
 			}
 		}
 		private void folderView_KeyDown(object sender, KeyEventArgs e)
@@ -963,6 +972,11 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			if (this.folderView.SelectedNodes.Count > 0)
 			{
+				// If we've scheduled a selection change, un-schedule it. We don't
+				// want to change selection because of dragdrop operations.
+				this.tempScheduleSelectionChange = false;
+
+				// Perform the dragdrop operation
 				DataObject dragDropData = new DataObject();
 				this.AppendNodesToData(dragDropData, this.folderView.SelectedNodes);
 				this.DoDragDrop(dragDropData, DragDropEffects.All | DragDropEffects.Link);
@@ -1261,6 +1275,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		
 		private void copyHereToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			bool anyOperationPerformed = false;
 			foreach (string p in this.tempFileDropList)
 			{
 				string srcPath = Path.GetFullPath(p);
@@ -1302,12 +1317,17 @@ namespace Duality.Editor.Plugins.ProjectView
 				}
 
 				this.ScheduleSelect(dstPath);
+				anyOperationPerformed = true;
 			}
 
-			this.folderView.ClearSelection();
+			if (anyOperationPerformed)
+			{
+				this.folderView.ClearSelection();
+			}
 		}
 		private void moveHereToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			bool anyOperationPerformed = false;
 			string dataDirPath = Path.GetFullPath(DualityApp.DataDirectory);
 			foreach (string p in this.tempFileDropList)
 			{
@@ -1348,9 +1368,13 @@ namespace Duality.Editor.Plugins.ProjectView
 				if (errorMove) this.DisplayErrorMoveFile(dstPath);
 
 				this.ScheduleSelect(dstPath);
+				anyOperationPerformed = true;
 			}
 
-			this.folderView.ClearSelection();
+			if (anyOperationPerformed)
+			{
+				this.folderView.ClearSelection();
+			}
 		}
 
 		private void contextMenuNode_Opening(object sender, CancelEventArgs e)

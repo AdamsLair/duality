@@ -65,18 +65,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				Component first = values.NotNull().FirstOrDefault();
 				this.component = first;
 				this.multiple = (values.Any(o => o == null) || values.Any(o => o != first));
-
-				this.GeneratePreview();
 			}
 			this.EndUpdate();
 			if (lastCmp != this.component || lastMultiple != this.multiple) this.Invalidate();
 		}
-
-		protected void GeneratePreview()
+		
+		protected override void GeneratePreview()
 		{
-			int prevHash = this.GetPreviewHash();
-			if (this.prevImageHash == prevHash) return;
-			this.prevImageHash = prevHash;
+			base.GeneratePreview();
 			
 			this.StopPreviewSound();
 			if (this.prevSound != null) this.prevSound.Dispose();

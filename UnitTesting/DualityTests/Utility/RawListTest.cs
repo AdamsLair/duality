@@ -164,6 +164,10 @@ namespace Duality.Tests.Utility
 				list.RemoveAt(5);
 				Assert.AreSame(null, list.Data[list.Count]);
 
+				// Remove the last element specifically to tap into a different code path
+				list.RemoveAt(list.Count - 1);
+				Assert.AreSame(null, list.Data[list.Count]);
+
 				// Remove a range
 				list.RemoveRange(0, 5);
 				for (int i = list.Count; i < list.Data.Length; i++)

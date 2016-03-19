@@ -64,6 +64,7 @@ namespace Duality.Editor
 		private	static DateTime						autosaveLast		= DateTime.Now;
 		private	static string						launcherApp			= null;
 		private	static PackageManager				packageManager		= null;
+		private	static InMemoryLogOutput			memoryLogOutput		= null;
 
 
 		public	static	event	EventHandler	Terminating			= null;
@@ -76,6 +77,10 @@ namespace Duality.Editor
 		public	static	event	EventHandler<ObjectPropertyChangedEventArgs>	ObjectPropertyChanged	= null;
 		
 		
+		public static InMemoryLogOutput GlobalLogData
+		{
+			get { return memoryLogOutput; }
+		}
 		public static PackageManager PackageManager
 		{
 			get { return packageManager; }
@@ -170,6 +175,10 @@ namespace Duality.Editor
 		{
 			DualityEditorApp.needsRecovery = recover;
 			DualityEditorApp.mainForm = mainForm;
+
+			// Set up an in-memory data log so plugins can access the log history when needed
+			memoryLogOutput = new InMemoryLogOutput();
+			Log.AddGlobalOutput(memoryLogOutput);
 			
 			// Set up a global exception handler to log errors
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -355,6 +364,13 @@ namespace Duality.Editor
 
 			// Terminate Duality
 			DualityApp.Terminate();
+
+			// Remove the global in-memory log
+			if (memoryLogOutput != null)
+			{
+				Log.RemoveGlobalOutput(memoryLogOutput);
+				memoryLogOutput = null; 
+			}
 
 			return true;
 		}
@@ -702,25 +718,29 @@ namespace Duality.Editor
 				selectionCurrent = selectionCurrent.Append(sel);
 			else if (mode == SelectMode.Toggle)
 				selectionCurrent = selectionCurrent.Toggle(sel);
-			OnSelectionChanged(sender, sel.Categories);
+			OnSelectionChanged(sender, sel.Categories, SelectionChangeReason.Unknown);
 		}
 		public static void Deselect(object sender, ObjectSelection sel)
 		{
-			selectionPrevious = selectionCurrent;
-			selectionCurrent = selectionCurrent.Remove(sel);
-			OnSelectionChanged(sender, ObjectSelection.Category.None);
+			Deselect(sender, sel, SelectionChangeReason.Unknown);
 		}
 		public static void Deselect(object sender, ObjectSelection.Category category)
 		{
 			selectionPrevious = selectionCurrent;
 			selectionCurrent = selectionCurrent.Clear(category);
-			OnSelectionChanged(sender, ObjectSelection.Category.None);
+			OnSelectionChanged(sender, ObjectSelection.Category.None, SelectionChangeReason.Unknown);
 		}
 		public static void Deselect(object sender, Predicate<object> predicate)
 		{
 			selectionPrevious = selectionCurrent;
 			selectionCurrent = selectionCurrent.Clear(predicate);
-			OnSelectionChanged(sender, ObjectSelection.Category.None);
+			OnSelectionChanged(sender, ObjectSelection.Category.None, SelectionChangeReason.Unknown);
+		}
+		private static void Deselect(object sender, ObjectSelection sel, SelectionChangeReason reason)
+		{
+			selectionPrevious = selectionCurrent;
+			selectionCurrent = selectionCurrent.Remove(sel);
+			OnSelectionChanged(sender, ObjectSelection.Category.None, reason);
 		}
 
 		public static string SaveCurrentScene(bool skipYetUnsaved = true)
@@ -1239,14 +1259,20 @@ namespace Duality.Editor
 			if (HighlightObject != null)
 				HighlightObject(sender, new HighlightObjectEventArgs(target, mode));
 		}
-		private static void OnSelectionChanged(object sender, ObjectSelection.Category changedCategoryFallback)
+		private static void OnSelectionChanged(object sender, ObjectSelection.Category changedCategoryFallback, SelectionChangeReason changeReson)
 		{
 			//if (selectionCurrent == selectionPrevious) return;
 			selectionChanging = true;
 
 			selectionActiveCat = changedCategoryFallback;
 			if (SelectionChanged != null)
-				SelectionChanged(sender, new SelectionChangedEventArgs(selectionCurrent, selectionPrevious, changedCategoryFallback));
+			{
+				SelectionChanged(sender, new SelectionChangedEventArgs(
+					selectionCurrent, 
+					selectionPrevious, 
+					changedCategoryFallback, 
+					changeReson));
+			}
 
 			selectionChanging = false;
 		}
@@ -1479,7 +1505,7 @@ namespace Duality.Editor
 		{
 			// Deselect disposed Resources
 			if (selectionCurrent.Resources.Contains(e.Content.Res))
-				Deselect(sender, new ObjectSelection(e.Content.Res));
+				Deselect(sender, new ObjectSelection(e.Content.Res), SelectionChangeReason.ObjectDisposing);
 			// Unflag disposed Resources
 			if (unsavedResources.Contains(e.Content.Res))
 				FlagResourceSaved(e.Content.Res);

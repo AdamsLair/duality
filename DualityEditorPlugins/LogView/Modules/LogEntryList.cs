@@ -14,38 +14,42 @@ using Duality.Editor;
 
 namespace Duality.Editor.Plugins.LogView
 {
-	public class LogEntryList : UserControl
+	public class LogEntryList : UserControl, ILogOutput
 	{
 		[Flags]
 		public enum MessageFilter
 		{
-			None			= 0x0,
+			None           = 0x0,
 
-			SourceCore		= 0x01,
-			SourceEditor	= 0x02,
-			SourceGame		= 0x04,
+			SourceCore     = 0x01,
+			SourceEditor   = 0x02,
+			SourceGame     = 0x04,
 
-			TypeMessage		= 0x08,
-			TypeWarning		= 0x10,
-			TypeError		= 0x20,
+			TypeMessage    = 0x08,
+			TypeWarning    = 0x10,
+			TypeError      = 0x20,
 
-			SourceAll		= SourceCore | SourceEditor | SourceGame,
-			TypeAll			= TypeMessage | TypeWarning | TypeError,
-			All				= SourceAll | TypeAll
+			SourceAll      = SourceCore | SourceEditor | SourceGame,
+			TypeAll        = TypeMessage | TypeWarning | TypeError,
+			All            = SourceAll | TypeAll
 		}
 		public class ViewEntry
 		{
-			private LogEntryList			parent		= null;
-			private	DataLogOutput.LogEntry	log			= null;
-			private	int						msgLines	= 1;
+			private LogEntryList parent   = null;
+			private LogEntry     log      = default(LogEntry);
+			private int          msgLines = 1;
 			
-			public DataLogOutput.LogEntry LogEntry
+			public LogEntry LogEntry
 			{
 				get { return this.log; }
 			}
 			public int Height
 			{
 				get { return Math.Max(20, 7 + this.msgLines * this.parent.Font.Height); }
+			}
+			public int Indent
+			{
+				get { return this.log.Indent; }
 			}
 			public Image TypeIcon
 			{
@@ -66,7 +70,7 @@ namespace Duality.Editor.Plugins.LogView
 				}
 			}
 
-			public ViewEntry(LogEntryList parent, DataLogOutput.LogEntry log)
+			public ViewEntry(LogEntryList parent, LogEntry log)
 			{
 				this.parent = parent;
 				this.log = log;
@@ -75,7 +79,7 @@ namespace Duality.Editor.Plugins.LogView
 
 			public bool Matches(DateTime minTime, MessageFilter filter)
 			{
-				if (this.log.Timestamp < minTime) return false;
+				if (this.log.TimeStamp < minTime) return false;
 				if (this.log.Type == LogMessageType.Message && (filter & MessageFilter.TypeMessage) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Warning && (filter & MessageFilter.TypeWarning) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Error && (filter & MessageFilter.TypeError) == MessageFilter.None) return false;
@@ -89,9 +93,9 @@ namespace Duality.Editor.Plugins.LogView
 				appendTo.Append(this.log.Source.Prefix);
 				switch (this.log.Type)
 				{
-					case LogMessageType.Message:	appendTo.Append("Info:    "); break;
-					case LogMessageType.Warning:	appendTo.Append("Warning: "); break;
-					case LogMessageType.Error:		appendTo.Append("Error:   "); break;
+					case LogMessageType.Message: appendTo.Append("Info:    "); break;
+					case LogMessageType.Warning: appendTo.Append("Warning: "); break;
+					case LogMessageType.Error:   appendTo.Append("Error:   "); break;
 				}
 				appendTo.Append(' ', this.log.Indent * 4);
 				appendTo.Append(this.log.Message);
@@ -105,7 +109,7 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		public class ViewEntryEventArgs : EventArgs
 		{
-			private ViewEntry	entry;
+			private ViewEntry entry;
 			public ViewEntry Entry
 			{
 				get { return this.entry; }
@@ -120,15 +124,15 @@ namespace Duality.Editor.Plugins.LogView
 		private	List<ViewEntry>		entryList			= new List<ViewEntry>();
 		private	MessageFilter		displayFilter		= MessageFilter.All;
 		private	DateTime			displayMinTime		= DateTime.MinValue;
-		private	DataLogOutput		boundOutput			= null;
 		private	Color				baseColor			= SystemColors.Control;
+		private	bool				boundToDualityLogs	= false;
 		private	bool				scrolledToEnd		= true;
 		private	bool				lastSelected		= true;
 		private	ViewEntry			hoveredEntry		= null;
 		private	ViewEntry			selectedEntry		= null;
 		private	ContextMenuStrip	entryMenu			= null;
 		private Timer				timerLogSchedule	= null;
-		private	List<DataLogOutput.LogEntry> logSchedule = new List<DataLogOutput.LogEntry>();
+		private	RawList<LogEntry>   logSchedule         = new RawList<LogEntry>();
 		private System.ComponentModel.IContainer components = null;
 
 
@@ -243,11 +247,7 @@ namespace Duality.Editor.Plugins.LogView
 			this.entryList.Clear();
 			this.OnContentChanged();
 		}
-		public ViewEntry GetViewEntry(DataLogOutput.LogEntry entry)
-		{
-			return this.entryList.FirstOrDefault(e => e.LogEntry == entry);
-		}
-		public ViewEntry AddEntry(DataLogOutput.LogEntry entry)
+		public ViewEntry AddEntry(LogEntry entry)
 		{
 			ViewEntry viewEntry = new ViewEntry(this, entry);
 			this.entryList.Add(viewEntry);
@@ -258,11 +258,11 @@ namespace Duality.Editor.Plugins.LogView
 			this.OnContentChanged();
 			return viewEntry;
 		}
-		public void AddEntry(IEnumerable<DataLogOutput.LogEntry> entries)
+		public void AddEntries(LogEntry[] entries, int count)
 		{
-			foreach (DataLogOutput.LogEntry entry in entries)
+			for (int i = 0; i < count; i++)
 			{
-				ViewEntry viewEntry = new ViewEntry(this, entry);
+				ViewEntry viewEntry = new ViewEntry(this, entries[i]);
 				this.entryList.Add(viewEntry);
 
 				if (this.NewEntry != null)
@@ -270,32 +270,32 @@ namespace Duality.Editor.Plugins.LogView
 			}
 			this.OnContentChanged();
 		}
-		public void UpdateFromLog(DataLogOutput dualityLog)
+		public void UpdateFromDataLog(InMemoryLogOutput dataLog)
 		{
-			if (dualityLog == null)
+			if (dataLog == null)
 			{
 				this.Clear();
 				return;
 			}
 
 			this.entryList.Clear();
-			foreach (var entry in dualityLog.Data)
-				this.entryList.Add(new ViewEntry(this, entry));
+			for (int i = 0; i < dataLog.Entries.Count; i++)
+				this.entryList.Add(new ViewEntry(this, dataLog.Entries[i]));
 
 			this.OnContentChanged();
 		}
-		public void BindToOutput(DataLogOutput dualityLog)
+		public void BindToDualityLogs()
 		{
-			if (this.boundOutput == dualityLog) return;
+			if (this.boundToDualityLogs) return;
 
-			if (this.boundOutput != null)
-				this.boundOutput.NewEntry -= this.boundOutput_NewEntry;
+			Log.AddGlobalOutput(this);
+			this.UpdateFromDataLog(DualityEditorApp.GlobalLogData);
+		}
+		public void UnbindFromDualityLogs()
+		{
+			if (!this.boundToDualityLogs) return;
 
-			this.boundOutput = dualityLog;
-			this.UpdateFromLog(this.boundOutput);
-
-			if (this.boundOutput != null)
-				this.boundOutput.NewEntry += this.boundOutput_NewEntry;
+			Log.RemoveGlobalOutput(this);
 		}
 		
 		public void SetFilterFlag(MessageFilter flag, bool isSet)
@@ -347,10 +347,10 @@ namespace Duality.Editor.Plugins.LogView
 			return null;
 		}
 		
-		private void ProcessIncomingEntries(IEnumerable<DataLogOutput.LogEntry> entries)
+		private void ProcessIncomingEntries(LogEntry[] entries, int count)
 		{
 			bool wasAtEnd = this.IsScrolledToEnd;
-			this.AddEntry(entries);
+			this.AddEntries(entries, count);
 			if (wasAtEnd) this.ScrollToEnd();
 		}
 		private void UpdateScrolledToEnd()
@@ -431,7 +431,7 @@ namespace Duality.Editor.Plugins.LogView
 
 				if (offsetY + entryHeight >= -this.AutoScrollPosition.Y)
 				{
-					int textIndent = entry.LogEntry.Indent * 20;
+					int textIndent = entry.Indent * 20;
 					Rectangle entryRect = new Rectangle(this.ClientRectangle.X, offsetY, this.ClientRectangle.Width, entryHeight);
 					Rectangle typeIconRect = new Rectangle(
 						entryRect.X + textMargin.Width / 2, 
@@ -488,9 +488,9 @@ namespace Duality.Editor.Plugins.LogView
 					{
 						e.Graphics.DrawString(
 							string.Format("{0:00}:{1:00}:{2:00}", 
-								entry.LogEntry.Timestamp.Hour, 
-								entry.LogEntry.Timestamp.Minute,
-								entry.LogEntry.Timestamp.Second), 
+								entry.LogEntry.TimeStamp.Hour, 
+								entry.LogEntry.TimeStamp.Minute,
+								entry.LogEntry.TimeStamp.Second), 
 							this.Font, foregroundBrushAlpha, 
 							new Rectangle(timeTextRect.Right - timeStampWidth, timeTextRect.Y, timeStampWidth, timeTextRect.Height), 
 							messageFormatTimestamp);
@@ -498,7 +498,7 @@ namespace Duality.Editor.Plugins.LogView
 					if (showFramestamp)
 					{
 						e.Graphics.DrawString(
-							string.Format("#{0}", entry.LogEntry.FrameIndex), 
+							string.Format("#{0}", entry.LogEntry.FrameStamp), 
 							this.Font, foregroundBrushAlpha, 
 							new Rectangle(timeTextRect.X + 5, timeTextRect.Y, timeTextRect.Width - (showTimestamp ? timeStampWidth + 10 : 0), timeTextRect.Height), 
 							messageFormatTimestamp);
@@ -631,27 +631,15 @@ namespace Duality.Editor.Plugins.LogView
 		private void timerLogSchedule_Tick(object sender, EventArgs e)
 		{
 			// Process a clone of the logSchedule to prevent any interference due to cross-thread logs
-			DataLogOutput.LogEntry[] logScheduleArray = null;
+			LogEntry[] logScheduleArray = null;
 			lock (this.logSchedule)
 			{
-				logScheduleArray = this.logSchedule.ToArray();
+				logScheduleArray = new LogEntry[this.logSchedule.Count];
+				Array.Copy(this.logSchedule.Data, logScheduleArray, this.logSchedule.Count);
 				this.logSchedule.Clear();
 			}
-			this.ProcessIncomingEntries(logScheduleArray);
+			this.ProcessIncomingEntries(logScheduleArray, logScheduleArray.Length);
 			this.timerLogSchedule.Enabled = false;
-		}
-		private void boundOutput_NewEntry(object sender, DataLogOutput.LogEntryEventArgs e)
-		{
-			lock (this.logSchedule)
-			{
-				this.logSchedule.Add(e.Entry);
-			}
-			if (!this.timerLogSchedule.Enabled)
-			{
-				// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
-				// and thus lead to a deadlock when something is logged while it is.
-				this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
-			}
 		}
 		private void entryMenu_CopyAllItems_Click(object sender, EventArgs e)
 		{
@@ -666,6 +654,20 @@ namespace Duality.Editor.Plugins.LogView
 		private void entryMenu_CopyItem_Click(object sender, EventArgs e)
 		{
 			Clipboard.SetText(this.SelectedEntry.GetFullText());
+		}
+
+		void ILogOutput.Write(LogEntry entry)
+		{
+			lock (this.logSchedule)
+			{
+				this.logSchedule.Add(entry);
+			}
+			if (!this.timerLogSchedule.Enabled)
+			{
+				// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
+				// and thus lead to a deadlock when something is logged while it is.
+				this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
+			}
 		}
 	}
 }
