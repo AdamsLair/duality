@@ -257,40 +257,42 @@ namespace Duality.Plugins.Tilemaps
 				Tile tile = tiles[tileGridPos.X, tileGridPos.Y];
 				if (tile.Index < tileData.Length)
 				{
-					TileInfo tileInfo = tileData[tile.Index];
+					Rect uvRect = tileData[tile.Index].TexCoord0;
+					bool visualEmpty = tileData[tile.Index].IsVisuallyEmpty;
 					float localDepthOffset = tile.DepthOffset * depthPerTile;
 
-					if (!tileInfo.IsVisuallyEmpty)
+					if (!visualEmpty)
 					{
 						vertexData[vertexBaseIndex + 0].Pos.X = renderPos.X;
 						vertexData[vertexBaseIndex + 0].Pos.Y = renderPos.Y;
 						vertexData[vertexBaseIndex + 0].Pos.Z = renderPos.Z + localDepthOffset;
-						vertexData[vertexBaseIndex + 0].TexCoord.X = tileInfo.TexCoord0.X;
-						vertexData[vertexBaseIndex + 0].TexCoord.Y = tileInfo.TexCoord0.Y;
+						vertexData[vertexBaseIndex + 0].TexCoord.X = uvRect.X;
+						vertexData[vertexBaseIndex + 0].TexCoord.Y = uvRect.Y;
 						vertexData[vertexBaseIndex + 0].Color = mainColor;
 
 						vertexData[vertexBaseIndex + 1].Pos.X = renderPos.X + tileYStep.X;
 						vertexData[vertexBaseIndex + 1].Pos.Y = renderPos.Y + tileYStep.Y;
 						vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z + localDepthOffset;
-						vertexData[vertexBaseIndex + 1].TexCoord.X = tileInfo.TexCoord0.X;
-						vertexData[vertexBaseIndex + 1].TexCoord.Y = tileInfo.TexCoord0.Y + tileInfo.TexCoord0.H;
+						vertexData[vertexBaseIndex + 1].TexCoord.X = uvRect.X;
+						vertexData[vertexBaseIndex + 1].TexCoord.Y = uvRect.Y + uvRect.H;
 						vertexData[vertexBaseIndex + 1].Color = mainColor;
 
 						vertexData[vertexBaseIndex + 2].Pos.X = renderPos.X + tileXStep.X + tileYStep.X;
 						vertexData[vertexBaseIndex + 2].Pos.Y = renderPos.Y + tileXStep.Y + tileYStep.Y;
 						vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z + localDepthOffset;
-						vertexData[vertexBaseIndex + 2].TexCoord.X = tileInfo.TexCoord0.X + tileInfo.TexCoord0.W;
-						vertexData[vertexBaseIndex + 2].TexCoord.Y = tileInfo.TexCoord0.Y + tileInfo.TexCoord0.H;
+						vertexData[vertexBaseIndex + 2].TexCoord.X = uvRect.X + uvRect.W;
+						vertexData[vertexBaseIndex + 2].TexCoord.Y = uvRect.Y + uvRect.H;
 						vertexData[vertexBaseIndex + 2].Color = mainColor;
 				
 						vertexData[vertexBaseIndex + 3].Pos.X = renderPos.X + tileXStep.X;
 						vertexData[vertexBaseIndex + 3].Pos.Y = renderPos.Y + tileXStep.Y;
 						vertexData[vertexBaseIndex + 3].Pos.Z = renderPos.Z + localDepthOffset;
-						vertexData[vertexBaseIndex + 3].TexCoord.X = tileInfo.TexCoord0.X + tileInfo.TexCoord0.W;
-						vertexData[vertexBaseIndex + 3].TexCoord.Y = tileInfo.TexCoord0.Y;
+						vertexData[vertexBaseIndex + 3].TexCoord.X = uvRect.X + uvRect.W;
+						vertexData[vertexBaseIndex + 3].TexCoord.Y = uvRect.Y;
 						vertexData[vertexBaseIndex + 3].Color = mainColor;
 
-						if (!tileInfo.IsVertical)
+						bool vertical = tileData[tile.Index].IsVertical;
+						if (!vertical)
 						{
 							vertexData[vertexBaseIndex + 1].Pos.Z += depthPerTile;
 							vertexData[vertexBaseIndex + 2].Pos.Z += depthPerTile;
@@ -302,13 +304,15 @@ namespace Duality.Plugins.Tilemaps
 				}
 
 				tileGridPos.X++;
-				renderPos.Xy += tileXStep;
+				renderPos.X += tileXStep.X;
+				renderPos.Y += tileXStep.Y;
 				if ((tileGridPos.X - cullingOut.VisibleTileStart.X) >= cullingOut.VisibleTileCount.X)
 				{
 					tileGridPos.X = cullingOut.VisibleTileStart.X;
 					tileGridPos.Y++;
 					renderPos = cullingOut.RenderOriginView;
-					renderPos.Xy += tileYStep * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
+					renderPos.X += tileYStep.X * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
+					renderPos.Y += tileYStep.Y * (tileGridPos.Y - cullingOut.VisibleTileStart.Y);
 					renderPos.Z += tileGridPos.Y * depthPerTile;
 				}
 			}
