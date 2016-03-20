@@ -272,14 +272,14 @@ namespace Duality.Plugins.Tilemaps
 
 						vertexData[vertexBaseIndex + 1].Pos.X = renderPos.X + tileYStep.X;
 						vertexData[vertexBaseIndex + 1].Pos.Y = renderPos.Y + tileYStep.Y;
-						vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z + localDepthOffset;
+						vertexData[vertexBaseIndex + 1].Pos.Z = renderPos.Z + localDepthOffset + depthPerTile;
 						vertexData[vertexBaseIndex + 1].TexCoord.X = uvRect.X;
 						vertexData[vertexBaseIndex + 1].TexCoord.Y = uvRect.Y + uvRect.H;
 						vertexData[vertexBaseIndex + 1].Color = mainColor;
 
 						vertexData[vertexBaseIndex + 2].Pos.X = renderPos.X + tileXStep.X + tileYStep.X;
 						vertexData[vertexBaseIndex + 2].Pos.Y = renderPos.Y + tileXStep.Y + tileYStep.Y;
-						vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z + localDepthOffset;
+						vertexData[vertexBaseIndex + 2].Pos.Z = renderPos.Z + localDepthOffset + depthPerTile;
 						vertexData[vertexBaseIndex + 2].TexCoord.X = uvRect.X + uvRect.W;
 						vertexData[vertexBaseIndex + 2].TexCoord.Y = uvRect.Y + uvRect.H;
 						vertexData[vertexBaseIndex + 2].Color = mainColor;
@@ -292,10 +292,10 @@ namespace Duality.Plugins.Tilemaps
 						vertexData[vertexBaseIndex + 3].Color = mainColor;
 
 						bool vertical = tileData[tile.Index].IsVertical;
-						if (!vertical)
+						if (vertical)
 						{
-							vertexData[vertexBaseIndex + 1].Pos.Z += depthPerTile;
-							vertexData[vertexBaseIndex + 2].Pos.Z += depthPerTile;
+							vertexData[vertexBaseIndex + 0].Pos.Z += depthPerTile;
+							vertexData[vertexBaseIndex + 3].Pos.Z += depthPerTile;
 						}
 
 						submittedTileCount++;
