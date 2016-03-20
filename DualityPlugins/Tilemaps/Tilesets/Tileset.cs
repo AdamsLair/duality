@@ -22,14 +22,17 @@ namespace Duality.Plugins.Tilemaps
 		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
 		private static readonly TilesetRenderInput DefaultRenderInput  = new TilesetRenderInput();
 		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
+		private static readonly TileInput[]        EmptyTileInput      = new TileInput[0];
+		private static readonly TileInfo[]         EmptyTileData       = new TileInfo[0];
 
 		[CloneBehavior(typeof(TilesetRenderInput), CloneBehavior.ChildObject)]
 		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
-
 		[CloneBehavior(CloneBehavior.ChildObject)]
 		private BatchInfo                baseMaterial = new BatchInfo(DefaultBaseMaterial);
 		private Vector2                  tileSize     = DefaultTileSize;
+		private TileInput[]              tileInput    = EmptyTileInput;
 
+		[DontSerialize] private TileInfo[]    tileData       = EmptyTileData;
 		[DontSerialize] private List<Texture> renderData     = new List<Texture>();
 		[DontSerialize] private Material      renderMaterial = null;
 		[DontSerialize] private bool          compiled       = false;
@@ -62,14 +65,6 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.renderConfig; }
 		}
 		/// <summary>
-		/// [GET] The <see cref="Material"/> that has been compiled from the specified <see cref="RenderConfig"/>.
-		/// </summary>
-		[EditorHintFlags(MemberFlags.Invisible)]
-		public Material RenderMaterial
-		{
-			get { return this.renderMaterial; }
-		}
-		/// <summary>
 		/// [GET / SET] The desired size of a tile in world space. How exactly this value is accounted for depends
 		/// on the Components that evaluate it for rendering, collision detection, etc.
 		/// </summary>
@@ -81,11 +76,40 @@ namespace Duality.Plugins.Tilemaps
 			set { this.tileSize = value; }
 		}
 		/// <summary>
+		/// [GET / SET] Provides information about each tile in the <see cref="Tileset"/>.
+		/// This information is transformed in the compilation process of a <see cref="Tileset"/>
+		/// in order to form the <see cref="TileData"/> that will be used for determining
+		/// tile behaviour.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public TileInput[] TileInput
+		{
+			get { return this.tileInput; }
+			set { this.tileInput = value ?? EmptyTileInput; }
+		}
+		/// <summary>
 		/// [GET] The number of tiles in this <see cref="Tileset"/>. Calculated during compilation.
 		/// </summary>
 		public int TileCount
 		{
 			get { return this.tileCount; }
+		}
+		/// <summary>
+		/// [GET] The <see cref="Material"/> that has been compiled from the specified <see cref="RenderConfig"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Material RenderMaterial
+		{
+			get { return this.renderMaterial; }
+		}
+		/// <summary>
+		/// [GET] Provides information about each compiled tile in the <see cref="Tileset"/>.
+		/// This information is generated during the compilation process of a <see cref="Tileset"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public TileInfo[] TileData
+		{
+			get { return this.tileData; }
 		}
 		/// <summary>
 		/// [GET] Whether this <see cref="Tileset"/> has been compiled yet or not.
@@ -100,6 +124,7 @@ namespace Duality.Plugins.Tilemaps
 		/// time it was compiled. Always true, if the <see cref="Tileset"/> has never been
 		/// compiled before.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public bool HasChangedSinceCompile
 		{
 			get 
@@ -153,12 +178,8 @@ namespace Duality.Plugins.Tilemaps
 			// Clear previous data
 			this.DiscardCompiledData();
 
-			// ToDo: Prepare information on AutoTile expansion
-			// ToDo: Mapping between conceptual tiles and actual tiles (with AutoTiles in mind)
-			// ToDo: Collision info per tile
-			// ToDo: Height info per tile
-			// ToDo: Flat / Upright info per tile
-			// ToDo: Additional data / tags per tile
+			// Prepare per-Tile data
+			RawList<TileInfo> perTileData = new RawList<TileInfo>();
 
 			// Generate output pixel data
 			int minSourceTileCount = int.MaxValue;
@@ -203,12 +224,17 @@ namespace Duality.Plugins.Tilemaps
 				Point2 targetTilePos = new Point2(0, 0);
 				for (int tileIndex = 0; tileIndex < sourceTileCount; tileIndex++)
 				{
+					// Initialize a new tile info when necessary
+					if (tileIndex >= perTileData.Count)
+					{
+						perTileData.Count++;
+						perTileData.Data[tileIndex].IsVisuallyEmpty = true;
+					}
+
 					// Determine where on the source buffer the tile is located
 					Point2 sourceTilePos = new Point2(
 						sourceTileBounds.X * (tileIndex % sourceHorizontalCount),
 						sourceTileBounds.Y * (tileIndex / sourceHorizontalCount));
-
-					// ToDo: Expand AutoTiles
 
 					// Draw the source tile onto the target buffer, including its spacing / border
 					Point2 targetContentPos = new Point2(
@@ -229,12 +255,26 @@ namespace Duality.Plugins.Tilemaps
 						FillTileSpacing(targetData, input.TargetTileSpacing, targetContentPos, input.SourceTileSize);
 					}
 
+					// Update whether the tile is considered visually empty
+					if (perTileData.Data[tileIndex].IsVisuallyEmpty)
+					{
+						bool isLayerVisuallyEmpty = IsCompletelyTransparent(
+							sourceData, 
+							new Point2(
+								sourceTilePos.X + input.SourceTileSpacing,
+								sourceTilePos.Y + input.SourceTileSpacing),
+							input.SourceTileSize);
+						if (!isLayerVisuallyEmpty)
+							perTileData.Data[tileIndex].IsVisuallyEmpty = false;
+					}
+
 					// Add an entry to the generated atlas
-					tileAtlas.Add(new Rect(
+					Rect atlasRect = new Rect(
 						targetTilePos.X + input.TargetTileSpacing, 
 						targetTilePos.Y + input.TargetTileSpacing, 
 						targetTileBounds.X - input.TargetTileSpacing * 2, 
-						targetTileBounds.Y - input.TargetTileSpacing * 2));
+						targetTileBounds.Y - input.TargetTileSpacing * 2);
+					tileAtlas.Add(atlasRect);
 
 					// Advance the target tile position
 					targetTilePos.X += targetTileBounds.X;
@@ -256,6 +296,29 @@ namespace Duality.Plugins.Tilemaps
 						input.TargetFormat);
 
 					this.renderData.Add(targetTexture);
+				}
+			}
+
+			// Generate additional per-tile data
+			{
+				this.tileData = new TileInfo[perTileData.Count];
+				perTileData.CopyTo(this.tileData, 0);
+
+				// Copy input data
+				for (int i = 0; i < this.tileData.Length; i++)
+				{
+					if (i >= this.tileInput.Length) break;
+					this.tileData[i].DepthOffset = this.tileInput[i].DepthOffset;
+					this.tileData[i].IsVertical = this.tileInput[i].IsVertical;
+				}
+
+				// Retrieve texture atlas data for quick lookup during rendering
+				if (this.renderData.Count > 0)
+				{
+					for (int i = 0; i < this.tileData.Length; i++)
+					{
+						this.renderData[0].LookupAtlas(i, out this.tileData[i].TexCoord0);
+					}
 				}
 			}
 
@@ -292,6 +355,7 @@ namespace Duality.Plugins.Tilemaps
 				tex.Dispose();
 			}
 			this.renderData.Clear();
+			this.tileData = EmptyTileData;
 		}
 		/// <summary>
 		/// Discards a previously generated <see cref="RenderMaterial"/>. Does not discard any
@@ -330,6 +394,12 @@ namespace Duality.Plugins.Tilemaps
 				MathF.CombineHashCode(ref hash, input.TargetMagFilter.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.TargetMinFilter.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.TargetTileSpacing.GetHashCode());
+			}
+
+			for (int i = 0; i < this.tileInput.Length; i++)
+			{
+				int tileHash = this.tileInput[i].GetHashCode();
+				MathF.CombineHashCode(ref hash, tileHash);
 			}
 
 			return hash;
@@ -449,6 +519,26 @@ namespace Duality.Plugins.Tilemaps
 					rawData[offsetIndex] = rawData[baseIndex];
 				}
 			}
+		}
+		/// <summary>
+		/// Determines whether the specified pixel data block is completely transparent in
+		/// the specified area.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="pos"></param>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		private static bool IsCompletelyTransparent(PixelData data, Point2 pos, Point2 size)
+		{
+			for (int y = pos.Y; y < pos.Y + size.Y; y++)
+			{
+				for (int x = pos.X; x < pos.X + size.X; x++)
+				{
+					if (data[x, y].A > 0)
+						return false;
+				}
+			}
+			return true;
 		}
 	}
 }

@@ -59,8 +59,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private ToolStrip         toolstrip          = null;
 		private bool              askedForResize     = false;
 
-		private Dictionary<Tileset,bool[]> solidTileCache = new Dictionary<Tileset,bool[]>();
-
 
 		public override string StateName
 		{
@@ -182,56 +180,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (tileIndex < 0) return true;
 			if (tileIndex >= tileset.TileCount) return true;
 
-			bool[] mapping = this.GetSolidTileMapping(tileset);
-			return !mapping[tileIndex];
-		}
-		private bool[] GetSolidTileMapping(Tileset tileset)
-		{
-			bool[] mapping;
-			if (!this.solidTileCache.TryGetValue(tileset, out mapping))
-			{
-				mapping = this.BuildSolidTileMapping(tileset);
-				this.solidTileCache.Add(tileset, mapping);
-			}
-			return mapping;
-		}
-		private bool[] BuildSolidTileMapping(Tileset tileset)
-		{
-			bool[] mapping = new bool[tileset.TileCount];
-
-			if (tileset == null) return mapping;
-			if (tileset.RenderConfig.Count == 0) return mapping;
-
-			Pixmap sourcePixmap = tileset.RenderConfig[0].SourceData.Res;
-			if (sourcePixmap == null) return mapping;
-
-			PixelData sourceData = sourcePixmap.MainLayer;
-			if (sourceData == null) return mapping;
-
-			for (int i = 0; i < mapping.Length; i++)
-			{
-				Point2 pos;
-				Point2 size;
-				tileset.LookupTileSourceRect(0, i, out pos, out size);
-
-				bool solid = false;
-				for (int y = 0; y < size.Y; y++)
-				{
-					for (int x = 0; x < size.X; x++)
-					{
-						if (sourceData[pos.X + x, pos.Y + y].A > 0)
-						{
-							solid = true;
-							break;
-						}
-					}
-					if (solid) break;
-				}
-
-				mapping[i] = solid;
-			}
-
-			return mapping;
+			return tileset.TileData[tileIndex].IsVisuallyEmpty;
 		}
 
 		private void UpdateTilemapToolButtons()
@@ -593,7 +542,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine += this.DualityEditorApp_UpdatingEngine;
-			Resource.ResourceDisposing += this.Resource_ResourceDisposing;
 			Scene.Entered += this.Scene_Entered;
 
 			// Initial update
@@ -629,7 +577,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.UpdatingEngine -= this.DualityEditorApp_UpdatingEngine;
-			Resource.ResourceDisposing -= this.Resource_ResourceDisposing;
 			Scene.Entered -= this.Scene_Entered;
 
 			// Reset state
@@ -944,15 +891,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			{
 				this.Invalidate();
 			}
-
-			// If we have any cached tileset data, clear the cache for the affected tilesets
-			if (this.solidTileCache.Count > 0)
-			{
-				foreach (Tileset tileset in e.Objects.Resources.OfType<Tileset>())
-				{
-					this.solidTileCache.Remove(tileset);
-				}
-			}
 		}
 		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)
 		{
@@ -962,14 +900,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				float timeSinceFillSelect = (float)(DateTime.Now - this.activePreviewTime).TotalMilliseconds;
 				if (timeSinceFillSelect <= FillAnimDuration)
 					this.Invalidate();
-			}
-		}
-		private void Resource_ResourceDisposing(object sender, ResourceEventArgs e)
-		{
-			// If we have any cached tileset data, clear the cache for the affected tilesets
-			if (this.solidTileCache.Count > 0 && e.Content.Res is Tileset)
-			{
-				this.solidTileCache.Remove(e.Content.Res as Tileset);
 			}
 		}
 		private void Scene_Entered(object sender, EventArgs e)
