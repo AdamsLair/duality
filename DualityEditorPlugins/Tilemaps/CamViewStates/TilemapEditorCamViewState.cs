@@ -20,7 +20,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
 	/// <summary>
 	/// Provides tools for editing <see cref="Tilemap">tilemaps</see>, which are embedded
-	/// directly into the current <see cref="Scene"/> using a <see cref="TilemapRenderer"/>.
+	/// directly into the current <see cref="Scene"/> using an <see cref="ICmpTilemapRenderer"/>.
 	/// </summary>
 	public class TilemapEditorCamViewState : CamViewState, ITilemapToolEnvironment
 	{
@@ -39,22 +39,22 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private TilemapTool toolSelect = new SelectTilemapTool();
 
 		private List<TilemapActionEntry> actions     = new List<TilemapActionEntry>();
-		private List<TilemapTool> tools              = new List<TilemapTool>();
-		private TilemapTool       overrideTool       = null;
-		private TilemapTool       selectedTool       = null;
-		private Tilemap           selectedTilemap    = null;
-		private TilemapRenderer   hoveredRenderer    = null;
-		private Point2            hoveredTile        = InvalidTile;
-		private TilemapTool       activeTool         = null;
-		private Tilemap           activeTilemap      = null;
-		private TilemapRenderer   activeRenderer     = null;
-		private Point2            activeAreaOrigin   = InvalidTile;
-		private Grid<bool>        activeArea         = new Grid<bool>();
-		private List<Vector2[]>   activeAreaOutlines = new List<Vector2[]>();
-		private bool              activePreviewValid = false;
-		private DateTime          activePreviewTime  = DateTime.Now;
-		private TilemapTool       actionTool         = null;
-		private Point2            actionBeginTile    = InvalidTile;
+		private List<TilemapTool>   tools              = new List<TilemapTool>();
+		private TilemapTool         overrideTool       = null;
+		private TilemapTool         selectedTool       = null;
+		private Tilemap             selectedTilemap    = null;
+		private ICmpTilemapRenderer hoveredRenderer    = null;
+		private Point2              hoveredTile        = InvalidTile;
+		private TilemapTool         activeTool         = null;
+		private Tilemap             activeTilemap      = null;
+		private ICmpTilemapRenderer activeRenderer     = null;
+		private Point2              activeAreaOrigin   = InvalidTile;
+		private Grid<bool>          activeArea         = new Grid<bool>();
+		private List<Vector2[]>     activeAreaOutlines = new List<Vector2[]>();
+		private bool                activePreviewValid = false;
+		private DateTime            activePreviewTime  = DateTime.Now;
+		private TilemapTool         actionTool         = null;
+		private Point2              actionBeginTile    = InvalidTile;
 
 		private ToolStrip         toolstrip          = null;
 		private bool              askedForResize     = false;
@@ -133,21 +133,25 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			this.SetDefaultObjectVisibility(
 				typeof(Tilemap),
-				typeof(TilemapRenderer));
+				typeof(ICmpTilemapRenderer));
 			this.SetDefaultActiveLayers(
 				typeof(GridCamViewLayer));
 		}
 
-		private IEnumerable<TilemapRenderer> QueryVisibleTilemapRenderers()
+		private IEnumerable<ICmpTilemapRenderer> QueryVisibleTilemapRenderers()
 		{
-			return Scene.Current.FindComponents<TilemapRenderer>().Where(r => 
-				r.Active && 
-				!DesignTimeObjectData.Get(r.GameObj).IsHidden && 
-				this.IsCoordInView(r.GameObj.Transform.Pos, r.BoundRadius));
+			return Scene.Current.FindComponents<ICmpTilemapRenderer>().Where(r => 
+			{
+				Component cmp = r as Component;
+				return
+					cmp.Active && 
+					!DesignTimeObjectData.Get(cmp.GameObj).IsHidden && 
+					this.IsCoordInView(cmp.GameObj.Transform.Pos, r.BoundRadius);
+			});
 		}
 		private IEnumerable<Tilemap> QueryTilemapsInScene()
 		{
-			return Scene.Current.FindComponents<TilemapRenderer>()
+			return Scene.Current.FindComponents<ICmpTilemapRenderer>()
 				.Select(r => r.ActiveTilemap)
 				.Where(t => t != null && t.Active && !DesignTimeObjectData.Get(t.GameObj).IsHidden)
 				.Distinct();
@@ -159,9 +163,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			else
 				return this.QueryTilemapsInScene();
 		}
-		private Point2 GetTileAtLocalPos(TilemapRenderer renderer, Point localPos, TilemapRenderer.TilePickMode pickMode)
+		private Point2 GetTileAtLocalPos(ICmpTilemapRenderer renderer, Point localPos, TilePickMode pickMode)
 		{
-			Transform transform = renderer.GameObj.Transform;
+			Component component = renderer as Component;
+			Transform transform = component.GameObj.Transform;
 
 			// Determine where the cursor is hovering in various coordinate systems
 			Vector3 worldCursorPos = this.CameraComponent.GetSpaceCoord(new Vector3(localPos.X, localPos.Y, transform.Pos.Z));
@@ -253,7 +258,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private void UpdateHoverState(Point cursorPos)
 		{
 			Point2 lastHoveredTile = this.hoveredTile;
-			TilemapRenderer lastHoveredRenderer = this.hoveredRenderer;
+			ICmpTilemapRenderer lastHoveredRenderer = this.hoveredRenderer;
 
 			// Reset hover data
 			this.hoveredTile = InvalidTile;
@@ -279,13 +284,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			bool performingAction = this.actionTool != this.toolNone;
 			if (performingAction)
 			{
-				this.hoveredTile = this.GetTileAtLocalPos(this.activeRenderer, cursorPos, TilemapRenderer.TilePickMode.Free);
+				this.hoveredTile = this.GetTileAtLocalPos(this.activeRenderer, cursorPos, TilePickMode.Free);
 				this.hoveredRenderer = this.activeRenderer;
 			}
 			// Otherwise, perform a tile-based picking operation
 			else
 			{
-				List<TilemapRenderer> visibleRenderers;
+				List<ICmpTilemapRenderer> visibleRenderers;
 				bool pureZSortPicking = !(this.overrideTool ?? this.selectedTool).PickPreferSelectedLayer || this.selectedTilemap == null;
 
 				// Determine which renderers we're able to see right now and sort them by their Z values
@@ -302,14 +307,17 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					}
 
 					// Otherwise, do regular Z sorting
-					return (a.GameObj.Transform.Pos.Z > b.GameObj.Transform.Pos.Z) ? 1 : -1;
+					return 
+						((a as Component).GameObj.Transform.Pos.Z + a.DepthOffset > 
+						(b as Component).GameObj.Transform.Pos.Z + b.DepthOffset) 
+						? 1 : -1;
 				});
 
 				// Eliminate all tilemap renderers without a tile hit, so we remain with only the renderers under the cursor.
 				for (int i = visibleRenderers.Count - 1; i >= 0; i--)
 				{
-					TilemapRenderer renderer = visibleRenderers[i];
-					Point2 tileCursorPos = this.GetTileAtLocalPos(renderer, cursorPos, TilemapRenderer.TilePickMode.Reject);
+					ICmpTilemapRenderer renderer = visibleRenderers[i];
+					Point2 tileCursorPos = this.GetTileAtLocalPos(renderer, cursorPos, TilePickMode.Reject);
 					if (tileCursorPos == InvalidTile)
 					{
 						visibleRenderers.RemoveAt(i);
@@ -320,8 +328,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// Iterate over the remaining tilemap renderers to find out which one prevails
 				for (int i = 0; i < visibleRenderers.Count; i++)
 				{
-					TilemapRenderer renderer = visibleRenderers[i];
-					Point2 tileCursorPos = this.GetTileAtLocalPos(renderer, cursorPos, TilemapRenderer.TilePickMode.Reject);
+					ICmpTilemapRenderer renderer = visibleRenderers[i];
+					Component component = renderer as Component;
+					Point2 tileCursorPos = this.GetTileAtLocalPos(renderer, cursorPos, TilePickMode.Reject);
 
 					// If the hovered tile is transparent, don't treat it as a hit unless it's the bottom renderer
 					bool isBottomRenderer = (i == visibleRenderers.Count - 1);
@@ -339,7 +348,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					if (tileCursorPos != InvalidTile)
 					{
 						// If it's locked and not selected, treat it as blocking but don't allow editing
-						bool isLocked = DesignTimeObjectData.Get(renderer.GameObj).IsLocked;
+						bool isLocked = DesignTimeObjectData.Get(component.GameObj).IsLocked;
 						if (isLocked)
 						{
 							bool isSelected = false;
@@ -377,7 +386,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			TilemapTool lastActiveTool = this.activeTool;
 			Tilemap lastActiveTilemap = this.activeTilemap;
-			TilemapRenderer lastActiveRenderer = this.activeRenderer;
+			ICmpTilemapRenderer lastActiveRenderer = this.activeRenderer;
 
 			// If an action is currently being performed, that action will always be the active tool
 			if (this.actionTool != this.toolNone)
@@ -724,7 +733,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			{
 				Tilemap[] visibleTilemaps = 
 					this.QueryVisibleTilemapRenderers()
-					.OrderBy(r => r.GameObj.Transform.Pos.Z)
+					.OrderBy(r => (r as Component).GameObj.Transform.Pos.Z + r.DepthOffset)
 					.Select(r => r.ActiveTilemap)
 					.NotNull()
 					.Distinct()
@@ -808,15 +817,15 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				highlightTilemap = this.selectedTilemap;
 
 			// "Grey out" all non-highlighted Tilemap Renderers
-			Dictionary<TilemapRenderer,ColorRgba> oldColors = null;
+			Dictionary<ICmpTilemapRenderer,ColorRgba> oldColors = null;
 			if (highlightTilemap != null)
 			{
-				foreach (TilemapRenderer renderer in Scene.Current.FindComponents<TilemapRenderer>())
+				foreach (ICmpTilemapRenderer renderer in Scene.Current.FindComponents<ICmpTilemapRenderer>())
 				{
 					if (renderer.ActiveTilemap == highlightTilemap) continue;
 
 					if (oldColors == null)
-						oldColors = new Dictionary<TilemapRenderer,ColorRgba>();
+						oldColors = new Dictionary<ICmpTilemapRenderer,ColorRgba>();
 
 					oldColors[renderer] = renderer.ColorTint;
 					renderer.ColorTint = renderer.ColorTint.WithAlpha(0.33f);
@@ -839,11 +848,12 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			base.OnCollectStateDrawcalls(canvas);
 
-			TilemapRenderer[] visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
+			ICmpTilemapRenderer[] visibleRenderers = this.QueryVisibleTilemapRenderers().ToArray();
 			for (int i = 0; i < visibleRenderers.Length; i++)
 			{
-				TilemapRenderer renderer = visibleRenderers[i];
-				Transform transform = renderer.GameObj.Transform;
+				ICmpTilemapRenderer renderer = visibleRenderers[i];
+				Component component = renderer as Component;
+				Transform transform = component.GameObj.Transform;
 
 				Tilemap tilemap = renderer.ActiveTilemap;
 				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
@@ -1012,7 +1022,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Selection = 0x1,
 			Uncertain = 0x2
 		}
-		private static void DrawTileHighlights(Canvas canvas, TilemapRenderer renderer, Point2 origin, IReadOnlyGrid<bool> highlight, ColorRgba fillTint, ColorRgba outlineTint, TileHighlightMode mode, List<Vector2[]> outlineCache = null)
+		private static void DrawTileHighlights(Canvas canvas, ICmpTilemapRenderer renderer, Point2 origin, IReadOnlyGrid<bool> highlight, ColorRgba fillTint, ColorRgba outlineTint, TileHighlightMode mode, List<Vector2[]> outlineCache = null)
 		{
 			if (highlight.Width == 0 || highlight.Height == 0) return;
 
@@ -1042,7 +1052,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			bool uncertain = (mode & TileHighlightMode.Uncertain) != 0;
 			bool selection = (mode & TileHighlightMode.Selection) != 0;
 			
-			Transform transform = renderer.GameObj.Transform;
+			Component component = renderer as Component;
+			Transform transform = component.GameObj.Transform;
 			Tilemap tilemap = renderer.ActiveTilemap;
 			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
 			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;

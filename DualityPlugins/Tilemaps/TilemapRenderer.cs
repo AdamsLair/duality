@@ -17,46 +17,8 @@ namespace Duality.Plugins.Tilemaps
 	/// </summary>
 	[EditorHintCategory(TilemapsResNames.CategoryTilemaps)]
 	[EditorHintImage(TilemapsResNames.ImageTilemapRenderer)]
-	public class TilemapRenderer : Renderer
+	public class TilemapRenderer : Renderer, ICmpTilemapRenderer
 	{
-		/// <summary>
-		/// Specifies the desired behavior when picking a tile outside the rendered area.
-		/// </summary>
-		public enum TilePickMode
-		{
-			/// <summary>
-			/// Negative and out-of-bounds coordinates are returned.
-			/// </summary>
-			Free,
-			/// <summary>
-			/// The returned tile coordinates are clamped to the available rendered area.
-			/// </summary>
-			Clamp,
-			/// <summary>
-			/// Coordinates outside the rendered area are rejected.
-			/// </summary>
-			Reject
-		}
-		/// <summary>
-		/// Specifies the way in which depth offsets are generated per-tile.
-		/// </summary>
-		public enum TileDepthOffsetMode
-		{
-			/// <summary>
-			/// All tiles share the same depth offset.
-			/// </summary>
-			Flat,
-			/// <summary>
-			/// A tile's depth offset is derived from its local position in the tilemap.
-			/// </summary>
-			Local,
-			/// <summary>
-			/// A tile's depth offset is derived from its world-space position.
-			/// </summary>
-			World
-		}
-
-
 		private Alignment           origin          = Alignment.Center;
 		private Tilemap             externalTilemap = null;
 		private ColorRgba           colorTint       = ColorRgba.White;
@@ -69,10 +31,10 @@ namespace Duality.Plugins.Tilemaps
 
 		
 		/// <summary>
-		/// [GET / SET] The Z offset for the rendered <see cref="Tilemap"/> that is added
+		/// [GET / SET] The depth offset for the rendered <see cref="Tilemap"/> that is added
 		/// to each output vertex without contributing to perspective effects such as parallax.
 		/// </summary>
-		public float Offset
+		public float DepthOffset
 		{
 			get { return this.offset; }
 			set { this.offset = value; }

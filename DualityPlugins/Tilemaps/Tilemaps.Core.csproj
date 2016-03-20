@@ -49,6 +49,9 @@
     <Compile Include="TilemapData.cs" />
     <Compile Include="TilemapCollider.cs" />
     <Compile Include="TilemapCulling.cs" />
+    <Compile Include="ICmpTilemapRenderer.cs" />
+    <Compile Include="TileDepthOffsetMode.cs" />
+    <Compile Include="TilePickMode.cs" />
     <Compile Include="TilemapRenderer.cs" />
     <Compile Include="Tilemap.cs" />
     <Compile Include="TilesetRenderInput.cs" />

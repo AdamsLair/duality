@@ -17,8 +17,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			return
 				DualityEditorApp.Selection.Components.OfType<Tilemap>()
 				.Concat(DualityEditorApp.Selection.GameObjects.GetComponents<Tilemap>())
-				.Concat(DualityEditorApp.Selection.Components.OfType<TilemapRenderer>().Select(r => r.ExternalTilemap))
-				.Concat(DualityEditorApp.Selection.GameObjects.GetComponents<TilemapRenderer>().Select(r => r.ExternalTilemap))
+				.Concat(DualityEditorApp.Selection.Components.OfType<ICmpTilemapRenderer>().Select(r => r.ActiveTilemap))
+				.Concat(DualityEditorApp.Selection.GameObjects.GetComponents<ICmpTilemapRenderer>().Select(r => r.ActiveTilemap))
 				.NotNull()
 				.Distinct();
 		}
@@ -27,8 +27,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			return
 				DualityEditorApp.Selection.Components.OfType<Tilemap>().FirstOrDefault() ?? 
 				DualityEditorApp.Selection.GameObjects.GetComponents<Tilemap>().FirstOrDefault() ??
-				DualityEditorApp.Selection.Components.OfType<TilemapRenderer>().Select(r => r.ExternalTilemap).FirstOrDefault() ?? 
-				DualityEditorApp.Selection.GameObjects.GetComponents<TilemapRenderer>().Select(r => r.ExternalTilemap).FirstOrDefault();
+				DualityEditorApp.Selection.Components.OfType<ICmpTilemapRenderer>().Select(r => r.ActiveTilemap).FirstOrDefault() ?? 
+				DualityEditorApp.Selection.GameObjects.GetComponents<ICmpTilemapRenderer>().Select(r => r.ActiveTilemap).FirstOrDefault();
 		}
 		public static ContentRef<Tileset> QuerySelectedTileset()
 		{
