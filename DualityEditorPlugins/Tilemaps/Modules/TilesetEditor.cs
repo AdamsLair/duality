@@ -87,11 +87,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			this.activeMode = mode;
 
-			if (this.activeMode != null)
-				this.activeMode.RaiseOnEnter();
-
 			// Assign the new data model to the layer view
 			this.layerView.Model = (this.activeMode != null) ? this.activeMode.LayerModel : null;
+
+			if (this.activeMode != null)
+				this.activeMode.RaiseOnEnter();
 
 			// Update tool buttons so the appropriate one is checked
 			for (int i = 0; i < this.availableModes.Length; i++)
@@ -106,6 +106,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 				false;
 			this.buttonAddLayer.Visible = canAddRemove;
 			this.buttonRemoveLayer.Visible = canAddRemove;
+
+			// Invalidate TilesetView because editor modes are likely to
+			// draw custom overlays using its event handlers. Directly show
+			// the effect of having a different editing mode selected.
+			this.tilesetView.Invalidate();
 		}
 		internal void SetSelectedLayer(object layerViewTag)
 		{

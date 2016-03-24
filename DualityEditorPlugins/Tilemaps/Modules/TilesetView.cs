@@ -48,6 +48,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private int                 hoverIndex             = -1;
 		private bool                globalEventsSubscribed = false;
 
+		public event EventHandler<TilesetViewPaintTilesEventArgs> PaintTiles = null;
+
 
 		public ContentRef<Tileset> TargetTileset
 		{
@@ -114,7 +116,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.UpdateContentStats();
 			}
 		}
-		protected int HoveredTileIndex
+		public int HoveredTileIndex
 		{
 			get { return this.hoverIndex; }
 			set
@@ -633,57 +635,84 @@ namespace Duality.Editor.Plugins.Tilemaps
 				MathF.NextPowerOfTwo(this.tileBitmap.Width),
 				MathF.NextPowerOfTwo(this.tileBitmap.Height));
 
-			// Draw visible tile items
-			Point basePos = firstItemPos;
-			Point curPos = basePos;
-			int itemsPerRow = (this.multiColumnMode == MultiColumnMode.Vertical) ? this.multiColumnLength : this.tileCount.X;
-			int skipItemsPerRow = (firstIndex % itemsPerRow);
-			int itemsPerRenderedRow = itemsPerRow - skipItemsPerRow;
-			int itemsInCurrentRow = 0;
-			for (int i = firstIndex; i <= lastIndex; i++)
+			// Determine rendering data for all visible tile items
+			RawList<TilesetViewPaintTileData> paintTileData = new RawList<TilesetViewPaintTileData>(lastIndex - firstIndex);
 			{
-				Rectangle tileRect = new Rectangle(curPos.X, curPos.Y, this.tileSize.Width, this.tileSize.Height);
+				Point basePos = firstItemPos;
+				Point curPos = basePos;
+				int itemsPerRow = (this.multiColumnMode == MultiColumnMode.Vertical) ? this.multiColumnLength : this.tileCount.X;
+				int skipItemsPerRow = (firstIndex % itemsPerRow);
+				int itemsPerRenderedRow = itemsPerRow - skipItemsPerRow;
+				int itemsInCurrentRow = 0;
+				for (int i = firstIndex; i <= lastIndex; i++)
+				{
+					Rectangle tileRect = new Rectangle(curPos.X, curPos.Y, this.tileSize.Width, this.tileSize.Height);
 
-				Point2 atlasTilePos;
-				Point2 atlasTileSize;
-				tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
+					Point2 atlasTilePos;
+					Point2 atlasTileSize;
+					tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
 				
-				e.Graphics.DrawImage(this.tileBitmap, tileRect, atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y, GraphicsUnit.Pixel);
-
-				itemsInCurrentRow++;
-				bool isLastIndexInRow = (itemsInCurrentRow == itemsPerRenderedRow);
-				bool isLastIndexInHorizontalMultiColumn = 
-					(this.multiColumnMode == MultiColumnMode.Horizontal) &&
-					(i % (this.tileCount.X * this.multiColumnLength)) == (this.tileCount.X * this.multiColumnLength - 1);
-
-				if (isLastIndexInHorizontalMultiColumn)
-				{
-					itemsInCurrentRow = 0;
-					basePos.X += this.tileCount.X * (this.tileSize.Width + this.spacing.Width);
-					curPos = basePos;
-					i = this.PickTileIndexAt(curPos.X, curPos.Y, true, false);
-					if (i == -1) break;
-					i--;
-				}
-				else if (isLastIndexInRow)
-				{
-					curPos.X = basePos.X;
-					curPos.Y += this.tileSize.Height + this.spacing.Height;
-					itemsInCurrentRow = 0;
-					i += skipItemsPerRow;
-
-					if (this.multiColumnMode == MultiColumnMode.Vertical)
+					paintTileData.Count++;
+					paintTileData.Data[paintTileData.Count - 1] = new TilesetViewPaintTileData
 					{
+						TileIndex = i,
+						SourceRect = new Rectangle(atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y),
+						ViewRect = tileRect
+					};
+
+					itemsInCurrentRow++;
+					bool isLastIndexInRow = (itemsInCurrentRow == itemsPerRenderedRow);
+					bool isLastIndexInHorizontalMultiColumn = 
+						(this.multiColumnMode == MultiColumnMode.Horizontal) &&
+						(i % (this.tileCount.X * this.multiColumnLength)) == (this.tileCount.X * this.multiColumnLength - 1);
+
+					if (isLastIndexInHorizontalMultiColumn)
+					{
+						itemsInCurrentRow = 0;
+						basePos.X += this.tileCount.X * (this.tileSize.Width + this.spacing.Width);
+						curPos = basePos;
 						i = this.PickTileIndexAt(curPos.X, curPos.Y, true, false);
 						if (i == -1) break;
 						i--;
 					}
-				}
-				else
-				{
-					curPos.X += this.tileSize.Width + this.spacing.Width;
+					else if (isLastIndexInRow)
+					{
+						curPos.X = basePos.X;
+						curPos.Y += this.tileSize.Height + this.spacing.Height;
+						itemsInCurrentRow = 0;
+						i += skipItemsPerRow;
+
+						if (this.multiColumnMode == MultiColumnMode.Vertical)
+						{
+							i = this.PickTileIndexAt(curPos.X, curPos.Y, true, false);
+							if (i == -1) break;
+							i--;
+						}
+					}
+					else
+					{
+						curPos.X += this.tileSize.Width + this.spacing.Width;
+					}
 				}
 			}
+
+			// Draw the previously determined visible tiles accordingly
+			TilesetViewPaintTileData[] rawPaintData = paintTileData.Data;
+			int paintedTileCount = paintTileData.Count;
+			for (int i = 0; i < rawPaintData.Length; i++)
+			{
+				if (i >= paintedTileCount) break;
+				e.Graphics.DrawImage(this.tileBitmap, rawPaintData[i].ViewRect, rawPaintData[i].SourceRect, GraphicsUnit.Pixel);
+			}
+
+			// Invoke the event handler
+			if (this.PaintTiles != null)
+				this.PaintTiles(this, new TilesetViewPaintTilesEventArgs(
+					e.Graphics,
+					e.ClipRectangle,
+					tileset,
+					this.tileBitmap,
+					paintTileData));
 		}
 		protected override void OnPaint(PaintEventArgs e)
 		{

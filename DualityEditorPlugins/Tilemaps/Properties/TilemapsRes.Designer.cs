@@ -249,6 +249,26 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetDepthLayer {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetDepthLayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetDepthVertical {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetDepthVertical", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconTilesetEditor {
             get {
                 object obj = ResourceManager.GetObject("IconTilesetEditor", resourceCulture);
@@ -417,6 +437,42 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string TilesetEditor_SelectedTileset {
             get {
                 return ResourceManager.GetString("TilesetEditor_SelectedTileset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tile Rendering Order.
+        /// </summary>
+        internal static string TilesetEditorDepthOffset_Desc {
+            get {
+                return ResourceManager.GetString("TilesetEditorDepthOffset_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Depth Offset.
+        /// </summary>
+        internal static string TilesetEditorDepthOffset_Name {
+            get {
+                return ResourceManager.GetString("TilesetEditorDepthOffset_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Vertical / Flat Tiles.
+        /// </summary>
+        internal static string TilesetEditorDepthVertical_Desc {
+            get {
+                return ResourceManager.GetString("TilesetEditorDepthVertical_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orientation.
+        /// </summary>
+        internal static string TilesetEditorDepthVertical_Name {
+            get {
+                return ResourceManager.GetString("TilesetEditorDepthVertical_Name", resourceCulture);
             }
         }
         

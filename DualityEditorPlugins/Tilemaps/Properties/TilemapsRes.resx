@@ -265,4 +265,22 @@
   <data name="UndoRedo_RevertTilesetChanges" xml:space="preserve">
     <value>Revert Tileset Changes</value>
   </data>
+  <data name="IconTilesetDepthLayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthLayer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTilesetDepthVertical" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthVertical.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetEditorDepthOffset_Desc" xml:space="preserve">
+    <value>Tile Rendering Order</value>
+  </data>
+  <data name="TilesetEditorDepthOffset_Name" xml:space="preserve">
+    <value>Depth Offset</value>
+  </data>
+  <data name="TilesetEditorDepthVertical_Desc" xml:space="preserve">
+    <value>Vertical / Flat Tiles</value>
+  </data>
+  <data name="TilesetEditorDepthVertical_Name" xml:space="preserve">
+    <value>Orientation</value>
+  </data>
 </root>

@@ -70,6 +70,8 @@
     <Compile Include="Modules\SourcePaletteTilesetView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Modules\TilesetViewPaintTileData.cs" />
+    <Compile Include="Modules\TilesetViewPaintTilesEventArgs.cs" />
     <Compile Include="Modules\TilesetEditorLayerNodeControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -210,6 +212,8 @@
     <None Include="EmbeddedResources\IconTilePalette.ico" />
     <None Include="EmbeddedResources\IconTilesetEditor.ico" />
     <None Include="EmbeddedResources\IconTilesetDepthInfo.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthLayer.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthVertical.png" />
     <Content Include="EmbeddedResources\IconTilesetSingleVisualLayer.png" />
     <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
     <None Include="EmbeddedResources\IconTilePalette.png" />
