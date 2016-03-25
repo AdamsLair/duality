@@ -693,17 +693,21 @@ namespace Duality.Editor.Plugins.Tilemaps
 				{
 					Rectangle tileRect = new Rectangle(curPos.X, curPos.Y, this.tileSize.Width, this.tileSize.Height);
 
-					Point2 atlasTilePos;
-					Point2 atlasTileSize;
-					tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
-				
-					paintTileBuffer.Count++;
-					paintTileBuffer.Data[paintTileBuffer.Count - 1] = new TilesetViewPaintTileData
+					// If the tile is actually visible, add the required data to the paint buffer
+					if (e.ClipRectangle.IntersectsWith(tileRect))
 					{
-						TileIndex = i,
-						SourceRect = new Rectangle(atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y),
-						ViewRect = tileRect
-					};
+						Point2 atlasTilePos;
+						Point2 atlasTileSize;
+						tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
+				
+						paintTileBuffer.Count++;
+						paintTileBuffer.Data[paintTileBuffer.Count - 1] = new TilesetViewPaintTileData
+						{
+							TileIndex = i,
+							SourceRect = new Rectangle(atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y),
+							ViewRect = tileRect
+						};
+					}
 
 					itemsInCurrentRow++;
 					bool isLastIndexInRow = (itemsInCurrentRow == itemsPerRenderedRow);

@@ -238,6 +238,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 				}
 			}
 		}
+		protected override void OnMouseLeave(EventArgs e)
+		{
+			this.InvalidateTile(this.HoveredTileIndex, 5);
+			base.OnMouseLeave(e);
+		}
 
 		private void UpdateSelectedTiles()
 		{

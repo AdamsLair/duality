@@ -115,7 +115,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private void TilesetView_PaintTiles(object sender, TilesetViewPaintTilesEventArgs e)
 		{
 			Font font = this.TilesetView.Font;
-			float outlineWidth = 2;
+			float outlineWidth = 3;
 			StringFormat textFormat = StringFormat.GenericTypographic;
 			textFormat.Alignment = StringAlignment.Center;
 			textFormat.LineAlignment = StringAlignment.Center;
