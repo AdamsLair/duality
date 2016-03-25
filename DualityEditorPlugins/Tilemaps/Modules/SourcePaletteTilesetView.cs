@@ -53,7 +53,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 				this.UpdateSelectedTiles();
 				this.RaiseSelectedAreaChanged();
-				this.Invalidate();
+				this.InvalidateTiles(
+					this.GetTileIndex(this.selectedArea.X, this.selectedArea.Y), 
+					this.selectedArea.Width, 
+					this.selectedArea.Height, 
+					5);
 			}
 		}
 		public IReadOnlyGrid<Tile> SelectedTiles
@@ -225,7 +229,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 			else
 			{
+				int lastHovered = this.HoveredTileIndex;
 				base.OnMouseMove(e);
+				if (lastHovered != this.HoveredTileIndex)
+				{
+					this.InvalidateTile(lastHovered, 5);
+					this.InvalidateTile(this.HoveredTileIndex, 5);
+				}
 			}
 		}
 

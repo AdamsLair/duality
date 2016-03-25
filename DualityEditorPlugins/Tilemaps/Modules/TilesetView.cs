@@ -200,6 +200,24 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			this.OnTilesetChanged();
 		}
+		public void InvalidateTile(int tileIndex, int pixelBorder)
+		{
+			this.InvalidateTiles(tileIndex, 1, 1, pixelBorder);
+		}
+		public void InvalidateTiles(int tileIndex, int tileCountX, int tileCountY, int pixelBorder)
+		{
+			if (tileIndex == -1) return;
+
+			Rectangle rect;
+			Point loc = this.GetTileIndexLocation(tileIndex);
+			rect = new Rectangle(
+				loc.X - this.spacing.Width - pixelBorder, 
+				loc.Y - this.spacing.Height - pixelBorder, 
+				(this.tileSize.Width + this.spacing.Width) * tileCountX + this.spacing.Width + pixelBorder * 2, 
+				(this.tileSize.Height + this.spacing.Height) * tileCountY + this.spacing.Height + pixelBorder * 2);
+
+			this.Invalidate(rect);
+		}
 
 		/// <summary>
 		/// Determines the tile index at the specified pixel / view coordinate.
@@ -254,9 +272,26 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Point singleColumnTilePos = this.GetTilesetTilePos(
 					x / (this.tileSize.Width + this.spacing.Width),
 					y / (this.tileSize.Height + this.spacing.Height));
-				modelIndex = singleColumnTilePos.Y * this.tileCount.X + singleColumnTilePos.X;
+
+				// Clamp selected 2D tile coordinates
+				bool isValidCoordinate = 
+					singleColumnTilePos.X < this.tileCount.X && 
+					singleColumnTilePos.Y < this.tileCount.Y;
+				if (!isValidCoordinate && allowNearest)
+				{
+					if (singleColumnTilePos.X >= this.tileCount.X) singleColumnTilePos.X = this.tileCount.X - 1;
+					if (singleColumnTilePos.Y >= this.tileCount.Y) singleColumnTilePos.Y = this.tileCount.Y - 1;
+					isValidCoordinate = true;
+				}
+
+				// Transform 2D tile coordinates to the model index of that tile
+				if (isValidCoordinate)
+					modelIndex = singleColumnTilePos.Y * this.tileCount.X + singleColumnTilePos.X;
+				else
+					modelIndex = -1;
 			}
 
+			// Clamp selected model index
 			if (allowNearest)
 			{
 				if (modelIndex < 0) modelIndex = 0;
@@ -627,13 +662,20 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.totalTileCount == 0) return;
 
 			// Determine which tiles are visible in the current viewport, so not all of them are drawn needlessly
-			int firstIndex = this.PickTileIndexAt(e.ClipRectangle.Left, e.ClipRectangle.Top, true, true);
-			int lastIndex = this.PickTileIndexAt(e.ClipRectangle.Right - 1, e.ClipRectangle.Bottom - 1, true, true);
+			// Note: Not using clip rectangle here, because the multicolumn rendering algorithm assumes that
+			// we always start at the beginning.
+			int firstIndex = this.PickTileIndexAt(0, 0, true, true);
+			int lastIndex = this.PickTileIndexAt(this.ClientSize.Width - 1, this.ClientSize.Height - 1, true, true);
 			Point firstItemPos = this.GetTileIndexLocation(firstIndex);
+			if (lastIndex < firstIndex) return;
 
 			Size texSize = new Size(
 				MathF.NextPowerOfTwo(this.tileBitmap.Width),
 				MathF.NextPowerOfTwo(this.tileBitmap.Height));
+
+			// ToDo: Cleanup the below algorithm, it's hard to understand and has far too many
+			// special cases. If performance doesn't suffer too much, maybe even do a 2D grid draw
+			// and query tile indices using PickTileIndexAt?
 
 			// Determine rendering data for all visible tile items
 			RawList<TilesetViewPaintTileData> paintTileData = new RawList<TilesetViewPaintTileData>(lastIndex - firstIndex);
@@ -668,11 +710,24 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 					if (isLastIndexInHorizontalMultiColumn)
 					{
+						// Determine how many tiles we need to skip to the next horizontal multicolumn
+						int baseIndexInRow = firstIndex % this.tileCount.X;
+						int tilesToNextMultiColumn = this.tileCount.X - baseIndexInRow;
+
+						// Switch to the next horizontal multicolumn
 						itemsInCurrentRow = 0;
-						basePos.X += this.tileCount.X * (this.tileSize.Width + this.spacing.Width);
+						basePos.X += tilesToNextMultiColumn * (this.tileSize.Width + this.spacing.Width);
 						curPos = basePos;
 						i = this.PickTileIndexAt(curPos.X, curPos.Y, true, false);
 						if (i == -1) break;
+
+						// Recalculate regular rowskip values because we switched to the next horizontal multicolumn
+						// If we previously rendered the last part of a row, this no longer applies. Since we are
+						// now back at the beginning of a row, we don't skip any items prior and render full rows instead.
+						// (Yes, this could be optimized, but there's no need right now)
+						skipItemsPerRow = 0;
+						itemsPerRenderedRow = itemsPerRow - skipItemsPerRow;
+
 						i--;
 					}
 					else if (isLastIndexInRow)
@@ -686,6 +741,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 						{
 							i = this.PickTileIndexAt(curPos.X, curPos.Y, true, false);
 							if (i == -1) break;
+
+							// Recalculate regular rowskip values because we might have switched to the next
+							// vertical multicolumn and might need to skip some tiles at the end because they
+							// don't map to a valid model index
+							int maxValidItemsInThisRow = this.tileCount.X - this.GetTilePos(i).X;
+							skipItemsPerRow = itemsPerRow - Math.Min(this.multiColumnLength, maxValidItemsInThisRow);
+							itemsPerRenderedRow = itemsPerRow - skipItemsPerRow;
+
 							i--;
 						}
 					}
@@ -743,8 +806,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			base.OnMouseLeave(e);
+			this.InvalidateTile(this.hoverIndex, 0);
 			this.hoverIndex = -1;
-			this.Invalidate();
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -752,7 +815,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			int oldHoverIndex = this.hoverIndex;
 			this.hoverIndex = this.PickTileIndexAt(e.X, e.Y);
 			if (oldHoverIndex != this.hoverIndex)
-				this.Invalidate();
+			{
+				this.InvalidateTile(oldHoverIndex, 0);
+				this.InvalidateTile(this.hoverIndex, 0);
+			}
 		}
 		protected override void OnMouseClick(MouseEventArgs e)
 		{
