@@ -48,6 +48,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private int                 hoverIndex             = -1;
 		private bool                globalEventsSubscribed = false;
 
+		private RawList<TilesetViewPaintTileData> paintTileBuffer = new RawList<TilesetViewPaintTileData>();
+
 		public event EventHandler<TilesetViewPaintTilesEventArgs> PaintTiles = null;
 
 
@@ -678,7 +680,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// and query tile indices using PickTileIndexAt?
 
 			// Determine rendering data for all visible tile items
-			RawList<TilesetViewPaintTileData> paintTileData = new RawList<TilesetViewPaintTileData>(lastIndex - firstIndex);
+			paintTileBuffer.Count = 0;
+			paintTileBuffer.Reserve(lastIndex - firstIndex);
 			{
 				Point basePos = firstItemPos;
 				Point curPos = basePos;
@@ -694,8 +697,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 					Point2 atlasTileSize;
 					tileset.LookupTileSourceRect(this.displayedConfigIndex, i, out atlasTilePos, out atlasTileSize);
 				
-					paintTileData.Count++;
-					paintTileData.Data[paintTileData.Count - 1] = new TilesetViewPaintTileData
+					paintTileBuffer.Count++;
+					paintTileBuffer.Data[paintTileBuffer.Count - 1] = new TilesetViewPaintTileData
 					{
 						TileIndex = i,
 						SourceRect = new Rectangle(atlasTilePos.X, atlasTilePos.Y, atlasTileSize.X, atlasTileSize.Y),
@@ -760,8 +763,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 
 			// Draw the previously determined visible tiles accordingly
-			TilesetViewPaintTileData[] rawPaintData = paintTileData.Data;
-			int paintedTileCount = paintTileData.Count;
+			TilesetViewPaintTileData[] rawPaintData = paintTileBuffer.Data;
+			int paintedTileCount = paintTileBuffer.Count;
 			for (int i = 0; i < rawPaintData.Length; i++)
 			{
 				if (i >= paintedTileCount) break;
@@ -775,7 +778,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					e.ClipRectangle,
 					tileset,
 					this.tileBitmap,
-					paintTileData));
+					paintTileBuffer));
 		}
 		protected override void OnPaint(PaintEventArgs e)
 		{
