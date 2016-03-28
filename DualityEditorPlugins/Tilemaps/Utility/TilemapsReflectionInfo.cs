@@ -10,6 +10,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 	{
 		public static readonly PropertyInfo Property_Tilemap_Tiles;
 		public static readonly PropertyInfo Property_Tileset_RenderConfig;
+		public static readonly PropertyInfo Property_Tileset_TileInput;
 
 		static TilemapsReflectionInfo()
 		{
@@ -18,6 +19,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			Type tileset = typeof(Tileset);
 			Property_Tileset_RenderConfig = GetProperty(tileset, "RenderConfig");
+			Property_Tileset_TileInput = GetProperty(tileset, "TileInput");
 		}
 		
 		private static PropertyInfo GetProperty(Type type, string name)

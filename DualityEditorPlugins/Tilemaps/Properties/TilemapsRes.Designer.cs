@@ -567,6 +567,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Edit Tile Input.
+        /// </summary>
+        internal static string UndoRedo_TilesetEditTileInput {
+            get {
+                return ResourceManager.GetString("UndoRedo_TilesetEditTileInput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove Visual Layer.
         /// </summary>
         internal static string UndoRedo_TilesetRemoveVisualLayer {

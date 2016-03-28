@@ -51,6 +51,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private RawList<TilesetViewPaintTileData> paintTileBuffer = new RawList<TilesetViewPaintTileData>();
 
 		public event EventHandler<TilesetViewPaintTilesEventArgs> PaintTiles = null;
+		public event EventHandler<TilesetViewTileIndexChangeEventArgs> HoveredTileChanged = null;
 
 
 		public ContentRef<Tileset> TargetTileset
@@ -215,8 +216,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			rect = new Rectangle(
 				loc.X - this.spacing.Width - pixelBorder, 
 				loc.Y - this.spacing.Height - pixelBorder, 
-				(this.tileSize.Width + this.spacing.Width) * tileCountX + this.spacing.Width + pixelBorder * 2, 
-				(this.tileSize.Height + this.spacing.Height) * tileCountY + this.spacing.Height + pixelBorder * 2);
+				1 + (this.tileSize.Width + this.spacing.Width) * tileCountX + this.spacing.Width + pixelBorder * 2, 
+				1 + (this.tileSize.Height + this.spacing.Height) * tileCountY + this.spacing.Height + pixelBorder * 2);
 
 			this.Invalidate(rect);
 		}
@@ -813,6 +814,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			base.OnMouseLeave(e);
+			if (this.hoverIndex != -1)
+			{
+				if (this.HoveredTileChanged != null)
+					this.HoveredTileChanged(this, new TilesetViewTileIndexChangeEventArgs(-1, this.hoverIndex));
+			}
 			this.InvalidateTile(this.hoverIndex, 0);
 			this.hoverIndex = -1;
 		}
@@ -823,6 +829,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.hoverIndex = this.PickTileIndexAt(e.X, e.Y);
 			if (oldHoverIndex != this.hoverIndex)
 			{
+				if (this.HoveredTileChanged != null)
+					this.HoveredTileChanged(this, new TilesetViewTileIndexChangeEventArgs(this.hoverIndex, oldHoverIndex));
 				this.InvalidateTile(oldHoverIndex, 0);
 				this.InvalidateTile(this.hoverIndex, 0);
 			}

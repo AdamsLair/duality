@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
+using Duality.Plugins.Tilemaps;
+
 namespace Duality.Editor.Plugins.Tilemaps
 {
 	/// <summary>

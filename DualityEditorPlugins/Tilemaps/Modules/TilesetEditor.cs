@@ -79,6 +79,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void SetActiveEditorMode(TilesetEditorMode mode)
 		{
+			UndoRedoManager.Finish();
+
 			// Reset the layer view selection
 			this.layerView.SelectedNode = null;
 
@@ -328,6 +330,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			if (affectsRenderConfig)
 				this.tilesetView.InvalidateTileset();
+			else
+				this.tilesetView.Invalidate();
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{

@@ -22,22 +22,20 @@ namespace Duality.Plugins.Tilemaps
 		public  static readonly Point2             DefaultTileSize     = new Point2(32, 32);
 		private static readonly TilesetRenderInput DefaultRenderInput  = new TilesetRenderInput();
 		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
-		private static readonly TileInput[]        EmptyTileInput      = new TileInput[0];
-		private static readonly TileInfo[]         EmptyTileData       = new TileInfo[0];
 
 		[CloneBehavior(typeof(TilesetRenderInput), CloneBehavior.ChildObject)]
 		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
 		[CloneBehavior(CloneBehavior.ChildObject)]
 		private BatchInfo                baseMaterial = new BatchInfo(DefaultBaseMaterial);
 		private Vector2                  tileSize     = DefaultTileSize;
-		private TileInput[]              tileInput    = EmptyTileInput;
+		private RawList<TileInput>       tileInput    = new RawList<TileInput>();
 
-		[DontSerialize] private TileInfo[]    tileData       = EmptyTileData;
-		[DontSerialize] private List<Texture> renderData     = new List<Texture>();
-		[DontSerialize] private Material      renderMaterial = null;
-		[DontSerialize] private bool          compiled       = false;
-		[DontSerialize] private int           compileHash    = 0;
-		[DontSerialize] private int           tileCount      = 0;
+		[DontSerialize] private RawList<TileInfo> tileData       = new RawList<TileInfo>();
+		[DontSerialize] private List<Texture>     renderData     = new List<Texture>();
+		[DontSerialize] private Material          renderMaterial = null;
+		[DontSerialize] private bool              compiled       = false;
+		[DontSerialize] private int               compileHash    = 0;
+		[DontSerialize] private int               tileCount      = 0;
 
 		
 		/// <summary>
@@ -82,10 +80,10 @@ namespace Duality.Plugins.Tilemaps
 		/// tile behaviour.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public TileInput[] TileInput
+		public RawList<TileInput> TileInput
 		{
 			get { return this.tileInput; }
-			set { this.tileInput = value ?? EmptyTileInput; }
+			set { this.tileInput = value ?? new RawList<TileInput>(); }
 		}
 		/// <summary>
 		/// [GET] The number of tiles in this <see cref="Tileset"/>. Calculated during compilation.
@@ -105,9 +103,10 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// [GET] Provides information about each compiled tile in the <see cref="Tileset"/>.
 		/// This information is generated during the compilation process of a <see cref="Tileset"/>.
+		/// Do not modify unless you know exactly what you're doing.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public TileInfo[] TileData
+		public RawList<TileInfo> TileData
 		{
 			get { return this.tileData; }
 		}
@@ -178,9 +177,6 @@ namespace Duality.Plugins.Tilemaps
 			// Clear previous data
 			this.DiscardCompiledData();
 
-			// Prepare per-Tile data
-			RawList<TileInfo> perTileData = new RawList<TileInfo>();
-
 			// Generate output pixel data
 			int minSourceTileCount = int.MaxValue;
 			for (int renderInputIndex = 0; renderInputIndex < this.renderConfig.Count; renderInputIndex++)
@@ -225,10 +221,10 @@ namespace Duality.Plugins.Tilemaps
 				for (int tileIndex = 0; tileIndex < sourceTileCount; tileIndex++)
 				{
 					// Initialize a new tile info when necessary
-					if (tileIndex >= perTileData.Count)
+					if (tileIndex >= this.tileData.Count)
 					{
-						perTileData.Count++;
-						perTileData.Data[tileIndex].IsVisuallyEmpty = true;
+						this.tileData.Count++;
+						this.tileData.Data[tileIndex].IsVisuallyEmpty = true;
 					}
 
 					// Determine where on the source buffer the tile is located
@@ -256,7 +252,7 @@ namespace Duality.Plugins.Tilemaps
 					}
 
 					// Update whether the tile is considered visually empty
-					if (perTileData.Data[tileIndex].IsVisuallyEmpty)
+					if (this.tileData.Data[tileIndex].IsVisuallyEmpty)
 					{
 						bool isLayerVisuallyEmpty = IsCompletelyTransparent(
 							sourceData, 
@@ -265,7 +261,7 @@ namespace Duality.Plugins.Tilemaps
 								sourceTilePos.Y + input.SourceTileSpacing),
 							input.SourceTileSize);
 						if (!isLayerVisuallyEmpty)
-							perTileData.Data[tileIndex].IsVisuallyEmpty = false;
+							this.tileData.Data[tileIndex].IsVisuallyEmpty = false;
 					}
 
 					// Add an entry to the generated atlas
@@ -301,23 +297,20 @@ namespace Duality.Plugins.Tilemaps
 
 			// Generate additional per-tile data
 			{
-				this.tileData = new TileInfo[perTileData.Count];
-				perTileData.CopyTo(this.tileData, 0);
-
 				// Copy input data
-				for (int i = 0; i < this.tileData.Length; i++)
+				for (int i = 0; i < this.tileData.Count; i++)
 				{
-					if (i >= this.tileInput.Length) break;
-					this.tileData[i].DepthOffset = this.tileInput[i].DepthOffset;
-					this.tileData[i].IsVertical = this.tileInput[i].IsVertical;
+					if (i >= this.tileInput.Count) break;
+					this.tileData.Data[i].DepthOffset = this.tileInput.Data[i].DepthOffset;
+					this.tileData.Data[i].IsVertical = this.tileInput.Data[i].IsVertical;
 				}
 
 				// Retrieve texture atlas data for quick lookup during rendering
 				if (this.renderData.Count > 0)
 				{
-					for (int i = 0; i < this.tileData.Length; i++)
+					for (int i = 0; i < this.tileData.Count; i++)
 					{
-						this.renderData[0].LookupAtlas(i, out this.tileData[i].TexCoord0);
+						this.renderData[0].LookupAtlas(i, out this.tileData.Data[i].TexCoord0);
 					}
 				}
 			}
@@ -355,7 +348,7 @@ namespace Duality.Plugins.Tilemaps
 				tex.Dispose();
 			}
 			this.renderData.Clear();
-			this.tileData = EmptyTileData;
+			this.tileData.Clear();
 		}
 		/// <summary>
 		/// Discards a previously generated <see cref="RenderMaterial"/>. Does not discard any
@@ -396,9 +389,11 @@ namespace Duality.Plugins.Tilemaps
 				MathF.CombineHashCode(ref hash, input.TargetTileSpacing.GetHashCode());
 			}
 
-			for (int i = 0; i < this.tileInput.Length; i++)
+			TileInput[] data = this.tileInput.Data;
+			int count = this.tileInput.Count;
+			for (int i = 0; i < count; i++)
 			{
-				int tileHash = this.tileInput[i].GetHashCode();
+				int tileHash = data[i].GetHashCode();
 				MathF.CombineHashCode(ref hash, tileHash);
 			}
 

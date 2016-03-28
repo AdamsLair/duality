@@ -165,7 +165,7 @@ namespace Duality.Plugins.Tilemaps
 		}
 		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
-		/// This also inclues the renderers overall offset as specified in <see cref="Offset"/>.
+		/// This also inclues the renderers overall offset as specified in <see cref="DepthOffset"/>.
 		/// </summary>
 		/// <param name="tilePos"></param>
 		/// <returns></returns>
@@ -249,7 +249,7 @@ namespace Duality.Plugins.Tilemaps
 
 			// Prepare vertex data array for batch-submitting
 			IReadOnlyGrid<Tile> tiles = tilemap.Tiles;
-			TileInfo[] tileData = tileset.TileData;
+			TileInfo[] tileData = tileset.TileData.Data;
 			int submittedTileCount = 0;
 			int vertexBaseIndex = 0;
 			for (int tileIndex = 0; tileIndex < renderedTileCount; tileIndex++)

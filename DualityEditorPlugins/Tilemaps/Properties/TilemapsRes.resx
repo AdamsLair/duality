@@ -283,4 +283,7 @@
   <data name="TilesetEditorDepthVertical_Name" xml:space="preserve">
     <value>Orientation</value>
   </data>
+  <data name="UndoRedo_TilesetEditTileInput" xml:space="preserve">
+    <value>Edit Tile Input</value>
+  </data>
 </root>
