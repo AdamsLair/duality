@@ -52,6 +52,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private DepthInfoLayerNode treeNodeVerticalLayer = null;
 		private EditMode           editMode              = EditMode.Offset;
 		private int                drawDepthOffset       = 0;
+		private bool               drawVertical          = false;
 		private bool               isUserDrawing         = false;
 
 		private Dictionary<string,Bitmap> textCache = new Dictionary<string,Bitmap>();
@@ -93,6 +94,45 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			this.treeModel.Nodes.Add(this.treeNodeVerticalLayer);
 		}
 
+		private Bitmap GetDepthOverlayBitmap(string text)
+		{
+			Font font = this.TilesetView.Font;
+			float outlineWidth = 3;
+			
+			StringFormat textFormat = StringFormat.GenericTypographic;
+			textFormat.Alignment = StringAlignment.Center;
+			textFormat.LineAlignment = StringAlignment.Center;
+
+			Bitmap bitmap;
+			if (!this.textCache.TryGetValue(text, out bitmap))
+			{
+				bitmap = new Bitmap(Tileset.DefaultTileSize.X, Tileset.DefaultTileSize.Y);
+
+				using (Graphics g = Graphics.FromImage(bitmap))
+				using (GraphicsPath path = new GraphicsPath())
+				using (Brush brush = new SolidBrush(Color.White))
+				using (Brush penBrush = new SolidBrush(Color.Black))
+				using (Pen pen = new Pen(penBrush, outlineWidth))
+				{
+					path.AddString(
+						text, 
+						font.FontFamily, 
+						(int)font.Style, 
+						font.Size * 2, 
+						new Rectangle(0, 0, bitmap.Width, bitmap.Height), 
+						textFormat);
+
+					g.SmoothingMode = SmoothingMode.HighQuality;
+					g.DrawPath(pen, path);                
+					g.FillPath(brush, path);                            
+					g.SmoothingMode = SmoothingMode.Default;
+				}
+
+				this.textCache.Add(text, bitmap);
+			}
+			return bitmap;
+		}
+
 		protected override void OnEnter()
 		{
 			base.OnEnter();
@@ -116,72 +156,72 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		protected override void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
 		{
 			base.OnLayerSelectionChanged(args);
+
 			if (args.SelectedNodeTag == this.treeNodeOffsetLayer)
 				this.editMode = EditMode.Offset;
 			else if (args.SelectedNodeTag == this.treeNodeVerticalLayer)
 				this.editMode = EditMode.Vertical;
 			else
 				this.SelectLayer(this.treeNodeOffsetLayer);
+
+			this.TilesetView.Invalidate();
 		}
 
 		private void TilesetView_PaintTiles(object sender, TilesetViewPaintTilesEventArgs e)
 		{
-			// Prepare data for rendering the text overlay
-			Font font = this.TilesetView.Font;
-			float outlineWidth = 3;
-			StringFormat textFormat = StringFormat.GenericTypographic;
-			textFormat.Alignment = StringAlignment.Center;
-			textFormat.LineAlignment = StringAlignment.Center;
-
 			TileInput[] tileInput = e.Tileset.TileInput.Data;
 			for (int i = 0; i < e.PaintedTiles.Count; i++)
 			{
 				TilesetViewPaintTileData paintData = e.PaintedTiles[i];
 				int depthOffset = 0;
+				bool isVertical = false;
 				if (tileInput.Length > paintData.TileIndex)
 				{
 					depthOffset = tileInput[paintData.TileIndex].DepthOffset;
+					isVertical = tileInput[paintData.TileIndex].IsVertical;
 				}
 
-				// Render the overlay text for the depth offset, if not cached already
-				string text = depthOffset.ToString();
-				Bitmap bitmap;
-				if (!this.textCache.TryGetValue(text, out bitmap))
+				Bitmap overlayBitmap;
+				int overlayAlpha;
+				Color overlayColor;
+
+				// Retrieve an overlay text bitmap that represents depth offset
+				if (this.editMode == EditMode.Offset)
 				{
-					bitmap = new Bitmap(Tileset.DefaultTileSize.X, Tileset.DefaultTileSize.Y);
+					string text = depthOffset.ToString();
+					overlayBitmap = this.GetDepthOverlayBitmap(text);
 
-					using (Graphics g = Graphics.FromImage(bitmap))
-					using (GraphicsPath path = new GraphicsPath())
-					using (Brush brush = new SolidBrush(Color.White))
-					using (Brush penBrush = new SolidBrush(Color.Black))
-					using (Pen pen = new Pen(penBrush, outlineWidth))
-					{
-						path.AddString(
-							text, 
-							font.FontFamily, 
-							(int)font.Style, 
-							font.Size * 2, 
-							new Rectangle(0, 0, bitmap.Width, bitmap.Height), 
-							textFormat);
-
-						g.SmoothingMode = SmoothingMode.HighQuality;
-						g.DrawPath(pen, path);                
-						g.FillPath(brush, path);                            
-						g.SmoothingMode = SmoothingMode.Default;
-					}
-
-					this.textCache.Add(text, bitmap);
+					// Determine color and alpha for the text overlay
+					overlayAlpha = 
+						(this.TilesetView.HoveredTileIndex == paintData.TileIndex ? 255 : 
+						(depthOffset != 0 ? 192 : 
+						64));
+					overlayColor = 
+						(depthOffset > 0 ? Color.FromArgb(192, 255, 128) : 
+						(depthOffset < 0 ? Color.FromArgb(255, 128, 128) : 
+						Color.FromArgb(255, 255, 255)));
+				}
+				// Use the appropriate icon for vertical / flat tiles
+				else
+				{
+					overlayBitmap = isVertical ? 
+						TilemapsResCache.IconTilesetDepthVerticalTile : 
+						TilemapsResCache.IconTilesetDepthFlatTile;
+					overlayAlpha = 
+						(this.TilesetView.HoveredTileIndex == paintData.TileIndex ? 255 : 
+						(isVertical ? 192 : 
+						64));
+					overlayColor = 
+						(isVertical ? Color.FromArgb(128, 192, 255) : 
+						Color.FromArgb(255, 255, 255));
 				}
 
-				// Determine color and alpha for the text overlay
-				int alpha = 
-					(this.TilesetView.HoveredTileIndex == paintData.TileIndex ? 255 : 
-					(depthOffset != 0 ? 192 : 
-					64));
-				Color color = 
-					(depthOffset > 0 ? Color.FromArgb(192, 255, 128) : 
-					(depthOffset < 0 ? Color.FromArgb(255, 128, 128) : 
-					Color.FromArgb(255, 255, 255)));
+				// Draw the overlay image in the center of the current tile
+				e.Graphics.DrawImageTint(
+					overlayBitmap, 
+					Color.FromArgb(overlayAlpha, overlayColor), 
+					paintData.ViewRect.X + (paintData.ViewRect.Width - overlayBitmap.Width) / 2,
+					paintData.ViewRect.Y + (paintData.ViewRect.Height - overlayBitmap.Height) / 2);
 
 				// Draw a hover indicator
 				if (paintData.TileIndex == this.TilesetView.HoveredTileIndex)
@@ -191,17 +231,10 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 					rect.Height -= 1;
 					e.Graphics.DrawRectangle(Pens.Black, rect);
 					rect.Inflate(-1, -1);
-					e.Graphics.DrawRectangle(new Pen(color), rect);
+					e.Graphics.DrawRectangle(new Pen(overlayColor), rect);
 					rect.Inflate(-1, -1);
 					e.Graphics.DrawRectangle(Pens.Black, rect);
 				}
-
-				// Draw the cached overlay image in the center of the current tile
-				e.Graphics.DrawImageTint(
-					bitmap, 
-					Color.FromArgb(alpha, color), 
-					paintData.ViewRect.X + (paintData.ViewRect.Width - bitmap.Width) / 2,
-					paintData.ViewRect.Y + (paintData.ViewRect.Height - bitmap.Height) / 2);
 			}
 		}
 		private void TilesetView_MouseDown(object sender, MouseEventArgs e)
@@ -212,20 +245,36 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
-			if (e.Button == MouseButtons.Left)
+			if (this.editMode == EditMode.Offset)
 			{
-				this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, 1);
-				this.isUserDrawing = true;
+				if (e.Button == MouseButtons.Left)
+				{
+					this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, 1);
+					this.isUserDrawing = true;
+				}
+				else if (e.Button == MouseButtons.Right)
+				{
+					this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, -1);
+					this.isUserDrawing = true;
+				}
+				else if (e.Button == MouseButtons.Middle)
+				{
+					SetDepthOffset(tileset, tileIndex, this.drawDepthOffset);
+					this.isUserDrawing = true;
+				}
 			}
-			else if (e.Button == MouseButtons.Right)
+			else
 			{
-				this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, -1);
-				this.isUserDrawing = true;
-			}
-			else if (e.Button == MouseButtons.Middle)
-			{
-				SetDepthOffset(tileset, tileIndex, this.drawDepthOffset);
-				this.isUserDrawing = true;
+				if (e.Button == MouseButtons.Left || e.Button == MouseButtons.Right)
+				{
+					this.drawVertical = ToggleDepthVertical(tileset, tileIndex);
+					this.isUserDrawing = true;
+				}
+				else if (e.Button == MouseButtons.Middle)
+				{
+					SetDepthVertical(tileset, tileIndex, this.drawVertical);
+					this.isUserDrawing = true;
+				}
 			}
 		}
 		private void TilesetView_MouseUp(object sender, MouseEventArgs e)
@@ -240,13 +289,16 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
-			if (e.KeyCode == Keys.Add)
+			if (this.editMode == EditMode.Offset)
 			{
-				this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, 1);
-			}
-			else if (e.KeyCode == Keys.Subtract)
-			{
-				this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, -1);
+				if (e.KeyCode == Keys.Add)
+				{
+					this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, 1);
+				}
+				else if (e.KeyCode == Keys.Subtract)
+				{
+					this.drawDepthOffset = AddDepthOffset(tileset, tileIndex, -1);
+				}
 			}
 		}
 		private void TilesetView_HoveredTileChanged(object sender, TilesetViewTileIndexChangeEventArgs e)
@@ -256,7 +308,10 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			if (this.isUserDrawing && e.TileIndex != -1)
 			{
-				SetDepthOffset(tileset, e.TileIndex, this.drawDepthOffset);
+				if (this.editMode == EditMode.Offset)
+					SetDepthOffset(tileset, e.TileIndex, this.drawDepthOffset);
+				else
+					SetDepthVertical(tileset, e.TileIndex, this.drawVertical);
 			}
 		}
 
@@ -271,6 +326,19 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			TileInput input = tileset.TileInput.Count > tileIndex ? tileset.TileInput[tileIndex] : default(TileInput);
 			input.DepthOffset = offset;
+			UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+		}
+		private static bool ToggleDepthVertical(Tileset tileset, int tileIndex)
+		{
+			TileInput input = tileset.TileInput.Count > tileIndex ? tileset.TileInput[tileIndex] : default(TileInput);
+			input.IsVertical = !input.IsVertical;
+			UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+			return input.IsVertical;
+		}
+		private static void SetDepthVertical(Tileset tileset, int tileIndex, bool vertical)
+		{
+			TileInput input = tileset.TileInput.Count > tileIndex ? tileset.TileInput[tileIndex] : default(TileInput);
+			input.IsVertical = vertical;
 			UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
 		}
 	}

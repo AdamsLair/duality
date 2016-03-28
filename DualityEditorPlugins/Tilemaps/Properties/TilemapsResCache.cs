@@ -29,6 +29,8 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties
 		public static readonly Bitmap IconTilesetDepthInfo         = TilemapsRes.IconTilesetDepthInfo;
 		public static readonly Bitmap IconTilesetDepthLayer        = TilemapsRes.IconTilesetDepthLayer;
 		public static readonly Bitmap IconTilesetDepthVertical     = TilemapsRes.IconTilesetDepthVertical;
+		public static readonly Bitmap IconTilesetDepthFlatTile     = TilemapsRes.IconTilesetDepthFlatTile;
+		public static readonly Bitmap IconTilesetDepthVerticalTile = TilemapsRes.IconTilesetDepthVerticalTile;
 		public static readonly Bitmap IconTilesetVisualLayers      = TilemapsRes.IconTilesetVisualLayers;
 		public static readonly Cursor CursorTileSelect             = CursorHelper.ArrowAction;
 		public static readonly Cursor CursorTileBrush              = CursorHelper.CreateCursor(TilemapsRes.CursorTileBrush, 1, 13);

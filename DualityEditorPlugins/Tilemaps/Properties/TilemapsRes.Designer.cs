@@ -239,6 +239,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetDepthFlatTile {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetDepthFlatTile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconTilesetDepthInfo {
             get {
                 object obj = ResourceManager.GetObject("IconTilesetDepthInfo", resourceCulture);
@@ -262,6 +272,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static System.Drawing.Bitmap IconTilesetDepthVertical {
             get {
                 object obj = ResourceManager.GetObject("IconTilesetDepthVertical", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetDepthVerticalTile {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetDepthVerticalTile", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

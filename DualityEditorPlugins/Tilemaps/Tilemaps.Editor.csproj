@@ -214,8 +214,10 @@
     <None Include="EmbeddedResources\IconTilePalette.ico" />
     <None Include="EmbeddedResources\IconTilesetEditor.ico" />
     <None Include="EmbeddedResources\IconTilesetDepthInfo.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthFlatTile.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthLayer.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthVertical.png" />
+    <Content Include="EmbeddedResources\IconTilesetDepthVerticalTile.png" />
     <Content Include="EmbeddedResources\IconTilesetSingleVisualLayer.png" />
     <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
     <None Include="EmbeddedResources\IconTilePalette.png" />

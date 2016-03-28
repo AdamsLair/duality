@@ -26,5 +26,14 @@ namespace Duality.Plugins.Tilemaps
 		/// Whether the tile is standing upright / vertical, as opposed to being flat on its <see cref="Tilemap"/> surface.
 		/// </summary>
 		public bool IsVertical;
+
+
+		public override int GetHashCode()
+		{
+			int hash = 17;
+			MathF.CombineHashCode(ref hash, this.DepthOffset);
+			MathF.CombineHashCode(ref hash, this.IsVertical ? 1 : 0);
+			return hash;
+		}
 	}
 }
