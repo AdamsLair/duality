@@ -58,9 +58,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			// Make a backup copy of the original tile input data block
 			if (this.backupTileInput == null)
 			{
-				this.backupTileInput = new RawList<TileInput>(
-					this.tileset.TileInput.Data.Clone() as TileInput[],
-					this.tileset.TileInput.Count);
+				this.backupTileInput = new RawList<TileInput>(this.tileset.TileInput);
 			}
 
 			// Expand the tile input when required
