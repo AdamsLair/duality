@@ -565,7 +565,7 @@
             <gameobj dataType="ObjectRef">2961408854</gameobj>
             <offset dataType="Float">0</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="Flat" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="World" value="2" />
             <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
@@ -611,7 +611,7 @@
             <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2875785653" custom="true">
               <body>
                 <version dataType="Int">2</version>
-                <data dataType="Array" type="System.Byte[]" id="2152370934">H4sIAAAAAAAEAO3duW7UUBQG4ElmACkJhE3sgheADkQTSBNqOuigSUOJxNKwNAEaloalpAJeAahIngxxDNKVDJZnlGGOPV8xn6xje+Yvrjz32le+m4PBYPP354+L4TAcFfXKfbXKUrgcroT7wwPhaniwdhZJ9sOv4bfwe4I8JEmS3fVTggzsq3eK7UPh4QSp2C33hHuLyt1i+2R4qqgcC48nSM7MlvdR2xx/NjyXIDn7rSsYJ/PWwi9vL/x9rysYyd1yJUEGdtFqxsJygiScB8cd65GVo9ZHrk70/eZucRqeSJCB8+D1BBn4/70X3g8fhA8TpGLXfRQ+Dp+ETxOkYtfdCp+Fz8MXCVKxu16N5yzr4auovA7fJMjGrvs2fBe+Dz8kSMX+uf6P58VkHo03OQ2NN7vu5ZT/X1uh8WZfXZrR774MjTe77qzaT7PleDNDHpKzdS36V1dqvazy/mdZz9kfY043orVcG7PN5Pz3JEmSJEmSJEmSJEly2parqDRrjRW290e43cKd2rkbZgoxHBbbR1uf9bFWGXceEefHM62P/JIgLftt+fbUxQR5mM3JVuf5nCA5c1qfw38+Khf0mrhLXoq2dDE8UttbVcrVoCZ7byrn01F4ulavKvXVoMj2Nr+R/mZc04aNx3A+XRuzB1Wt1HOjcb0ekiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiRJkiQ5PX8CVD9RJ2jqAAA=</data>
+                <data dataType="Array" type="System.Byte[]" id="2152370934">H4sIAAAAAAAEAO3duY7TUBQG4FkCSDMDwyZ2wQtAB6IZmGao6aCDZhpKJBaJVYIAEqvEWlIBrwBUwJMhjkG6kpnICUzm2PmKfLKO7eRPZDn3Jte+q1NTU6u/H3+cCWfDXlGv3FKrzIXz4UK4NdwWLobba3uRZDf8HH4JvybIQ5Ik2V4/JMjArnqpWN4R7kyQiu1yU7i5qFwulveHB4rKnnBvguTMbPk7apPtD4dHEiRnt3UG42hemP7lxem/r3UGI/m/XEiQgW20GrEwnyAJJ8Fh+3pkZa/xlosjPb+xW1wP9yXIwEnwbIIMHL9XwqvhtfB6glRsu7fC2+Gd8G6CVGy7/fBB+DB8lCAV2+vp+J9lOXwWlefhiwTZ2HZfh2/Ct+G7BKnYPZfX+L+YzKP+JtdD/c22ezLl91c/1N/sqnMb9LpPQ/3NtrtRx89gy/5mhjwkN9alaF+dqrWyyt8/y3rO9hhzuhJHy5khj5mc354kSZIkSZIkSZIkSa635SwqgzXHCpv7LfzewB+1fVeMFGI4WyzvbrzX+1pl2HFEnBwPNd7yU4K07Lbl3VNnEuTheGx+Hetos/N8TPAeOX6bXMdaH8N/NCrHtJq4hv2w+XWsJ+JYOh7uqq2tKuVsUKPdN5Vtd7TrWHvhwVq9qtRng+Kk+S/3TRp8R/rzcU6bXWPtjfBmgk+A43dpyBZUNVPPuYHz9VTeC+8neI/sko/DJwmSsEu+DF8lSEKSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEk28SfnygqiaOoAAA==</data>
               </body>
             </tileData>
             <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
@@ -663,7 +663,7 @@
             <gameobj dataType="ObjectRef">3085774208</gameobj>
             <offset dataType="Float">-0.01</offset>
             <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="Flat" value="0" />
+            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="World" value="2" />
             <tileDepthScale dataType="Float">0.01</tileDepthScale>
             <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
           </item>
