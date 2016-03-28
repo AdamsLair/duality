@@ -99,6 +99,11 @@ namespace Duality
 		/// <param name="data"></param>
 		public RawList(IEnumerable<T> data) : this(data.ToArray()) {}
 		/// <summary>
+		/// Creates a new list that is a copy of the specified source list.
+		/// </summary>
+		/// <param name="source"></param>
+		public RawList(RawList<T> source) : this(source.Data.Clone() as T[], source.Count) {}
+		/// <summary>
 		/// Creates a new list that wraps the specified array. Does not copy the array.
 		/// </summary>
 		/// <param name="wrapAround"></param>
@@ -411,6 +416,25 @@ namespace Duality
 		public void CopyTo(T[] array, int arrayIndex)
 		{
 			Array.Copy(this.data, 0, array, arrayIndex, this.count);
+		}
+		/// <summary>
+		/// Copies the contents of this list to the specified target list. The target list size will be
+		/// increased when necessary to fit all copied contents of the source list inside it at the specified index.
+		/// </summary>
+		/// <param name="target"></param>
+		/// <param name="targetIndex"></param>
+		/// <param name="count"></param>
+		public void CopyTo(RawList<T> target, int targetIndex, int count)
+		{
+			if (target == null) throw new ArgumentNullException("target");
+			if (targetIndex < 0) throw new ArgumentException("The target index may not be negative.", "targetIndex");
+			if (count > this.count) throw new ArgumentException(string.Format("Attempting to copy {0} elements, even though the source list only contains {1}.", count, this.count), "count");
+
+			// Make sure the target list is able to hold all data
+			target.Count = Math.Max(target.Count, targetIndex + count);
+
+			// Copy data from source to target
+			Array.Copy(this.data, 0, target.data, targetIndex, count);
 		}
 		public IEnumerator<T> GetEnumerator()
 		{
