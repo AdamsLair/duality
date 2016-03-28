@@ -165,7 +165,9 @@ namespace Duality.Plugins.Tilemaps
 		}
 		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
-		/// This also inclues the renderers overall offset as specified in <see cref="DepthOffset"/>.
+		/// This also inclues the renderers overall offset as specified in <see cref="DepthOffset"/>,
+		/// but ignores all actual per-tile and tileset depth offsets. The specified tile position
+		/// is considered virtual and does not have to be within the valid tile position range.
 		/// </summary>
 		/// <param name="tilePos"></param>
 		/// <returns></returns>
@@ -259,7 +261,8 @@ namespace Duality.Plugins.Tilemaps
 				{
 					Rect uvRect = tileData[tile.Index].TexCoord0;
 					bool visualEmpty = tileData[tile.Index].IsVisuallyEmpty;
-					float localDepthOffset = tile.DepthOffset * depthPerTile;
+					int tileBaseOffset = tileData[tile.Index].DepthOffset;
+					float localDepthOffset = (tile.DepthOffset + tileBaseOffset) * depthPerTile;
 
 					if (!visualEmpty)
 					{
