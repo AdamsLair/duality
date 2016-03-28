@@ -186,11 +186,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			this.StartRecordTilesetChanges();
 
-			// Deselect whichever layer node we had selected, because
-			// Apply / Revert operations affect the Tileset as a whole
-			// in ways we can't safely predict editor-wise. It may be
-			// best to not make breakable assumptions here.
-			this.layerView.SelectedNode = null;
+			this.tilesetView.Invalidate();
+			if (this.activeMode != null)
+				this.activeMode.RaiseOnApplyRevert();
 		}
 		private bool AskApplyOrResetTilesetChanges(bool allowCancel)
 		{

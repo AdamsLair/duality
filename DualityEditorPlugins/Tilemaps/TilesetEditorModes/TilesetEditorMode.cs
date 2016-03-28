@@ -109,6 +109,10 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			OnLayerSelectionChanged(args);
 		}
+		internal void RaiseOnApplyRevert()
+		{
+			OnApplyRevert();
+		}
 
 		/// <summary>
 		/// Adds a new layer to the <see cref="LayerModel"/> that is defined by this <see cref="TilesetEditorMode"/>.
@@ -151,5 +155,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// Called when the user item selection of the provided <see cref="LayerModel"/> has changed.
 		/// </summary>
 		protected virtual void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args) { }
+		/// <summary>
+		/// Called when the previously done <see cref="Tileset"/> changes are applied or reverted.
+		/// </summary>
+		protected virtual void OnApplyRevert() { }
 	}
 }
