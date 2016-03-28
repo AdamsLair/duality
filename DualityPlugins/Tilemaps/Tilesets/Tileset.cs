@@ -391,9 +391,18 @@ namespace Duality.Plugins.Tilemaps
 
 			TileInput[] data = this.tileInput.Data;
 			int count = this.tileInput.Count;
+			int defaultTileHash = default(TileInput).GetHashCode();
 			for (int i = 0; i < count; i++)
 			{
 				int tileHash = data[i].GetHashCode();
+
+				// Exclude hashes from default inputs so they're considered equal 
+				// to not being defined in the input data array.
+				if (tileHash == defaultTileHash) continue;
+
+				// Due to the above rule, we'll have to include each tiles index in the
+				// has, so leading defaults will still affect following non-defaults
+				MathF.CombineHashCode(ref hash, i);
 				MathF.CombineHashCode(ref hash, tileHash);
 			}
 
