@@ -24,13 +24,13 @@ namespace Duality.Components
 		/// </summary>
 		public class Pass
 		{
-			private ColorRgba					clearColor		= ColorRgba.TransparentBlack;
-			private float						clearDepth		= 1.0f;
-			private ClearFlag					clearFlags		= ClearFlag.All;
-			private RenderMatrix				matrixMode		= RenderMatrix.PerspectiveWorld;
-			private	VisibilityFlag				visibilityMask	= VisibilityFlag.AllGroups;
-			private	BatchInfo					input			= null;
-			private	ContentRef<RenderTarget>	output			= null;
+			private ColorRgba                clearColor     = ColorRgba.TransparentBlack;
+			private float                    clearDepth     = 1.0f;
+			private ClearFlag                clearFlags     = ClearFlag.All;
+			private RenderMatrix             matrixMode     = RenderMatrix.PerspectiveWorld;
+			private VisibilityFlag           visibilityMask = VisibilityFlag.AllGroups;
+			private BatchInfo                input          = null;
+			private ContentRef<RenderTarget> output         = null;
 
 			[DontSerialize]
 			private EventHandler<CollectDrawcallEventArgs> collectDrawcalls	= null;
@@ -44,6 +44,7 @@ namespace Duality.Components
 				remove { this.collectDrawcalls -= value; }
 			}
 			
+
 			/// <summary>
 			/// The input to use for rendering. This can for example be a <see cref="Duality.Resources.Texture"/> that
 			/// has been rendered to before and is now bound to perform a postprocessing step. If this is null, the current
@@ -102,6 +103,7 @@ namespace Duality.Components
 				get { return this.visibilityMask; }
 				set { this.visibilityMask = value; }
 			}
+			
 
 			public Pass() {}
 			public Pass(Pass copyFrom)
@@ -128,11 +130,11 @@ namespace Duality.Components
 
 				this.MakeAvailable();
 			}
+
 			public void MakeAvailable()
 			{
 				this.output.MakeAvailable();
 			}
-
 			internal void NotifyCollectDrawcalls(IDrawDevice device)
 			{
 				Profile.TimeCollectDrawcalls.BeginMeasure();
@@ -154,19 +156,19 @@ namespace Duality.Components
 		}
 
 
-		private	float	nearZ					= 0.0f;
-		private	float	farZ					= 10000.0f;
-		private	float	focusDist				= DrawDevice.DefaultFocusDist;
-		private	PerspectiveMode	perspective		= PerspectiveMode.Parallax;
-		private	VisibilityFlag	visibilityMask	= VisibilityFlag.All;
-		private	List<Pass>	passes				= new List<Pass>();
+		private float           nearZ          = 0.0f;
+		private float           farZ           = 10000.0f;
+		private float           focusDist      = DrawDevice.DefaultFocusDist;
+		private PerspectiveMode perspective    = PerspectiveMode.Parallax;
+		private VisibilityFlag  visibilityMask = VisibilityFlag.All;
+		private List<Pass>      passes         = new List<Pass>();
 
-		[DontSerialize] private	DrawDevice			drawDevice		= null;
-		[DontSerialize] private	List<ICmpRenderer>	pickingMap		= null;
-		[DontSerialize] private	RenderTarget		pickingRT		= null;
-		[DontSerialize] private	Texture				pickingTex		= null;
-		[DontSerialize] private	byte[]				pickingBuffer	= null;
-		[DontSerialize] private	List<Predicate<ICmpRenderer>>	editorRenderFilter	= new List<Predicate<ICmpRenderer>>();
+		[DontSerialize] private DrawDevice                    drawDevice         = null;
+		[DontSerialize] private List<ICmpRenderer>            pickingMap         = null;
+		[DontSerialize] private RenderTarget                  pickingRT          = null;
+		[DontSerialize] private Texture                       pickingTex         = null;
+		[DontSerialize] private byte[]                        pickingBuffer      = null;
+		[DontSerialize] private List<Predicate<ICmpRenderer>> editorRenderFilter = new List<Predicate<ICmpRenderer>>();
 
 		
 		/// <summary>

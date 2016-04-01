@@ -183,5 +183,26 @@ namespace Duality.Tests.Utility
 				}
 			}
 		}
+		[Test] public void CopyTo()
+		{
+			RawList<int> list = new RawList<int>(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 100, 100 }, 10);
+			RawList<int> listCopy = new RawList<int>(list);
+
+			Assert.AreNotSame(list.Data, listCopy.Data);
+			Assert.AreEqual(list.Count, listCopy.Count);
+			CollectionAssert.AreEqual(list.Data.Take(list.Count), listCopy.Data.Take(list.Count));
+			CollectionAssert.AreEqual(list, listCopy);
+
+			RawList<int> listCopy2 = new RawList<int>();
+			Assert.Throws<ArgumentNullException>(() => list.CopyTo(null, 0, 1));
+			Assert.Throws<ArgumentException>(() => list.CopyTo(listCopy2, 0, 17));
+			Assert.Throws<ArgumentException>(() => list.CopyTo(listCopy2, -1, 1));
+
+			CollectionAssert.AreEqual(new int[] { }, listCopy2);
+			list.CopyTo(listCopy2, 1, 2);
+			CollectionAssert.AreEqual(new int[] { 0, 0, 1 }, listCopy2);
+			list.CopyTo(listCopy2, 0, 10);
+			CollectionAssert.AreEqual(list, listCopy2);
+		}
 	}
 }

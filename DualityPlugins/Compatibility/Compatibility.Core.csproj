@@ -41,11 +41,7 @@
   <ItemGroup>
     <Compile Include="CorePlugin.cs" />
     <Compile Include="MovedTypesV2ErrorHandler.cs" />
-    <Compile Include="RigidBodyJointErrorHandler.cs" />
-    <Compile Include="RigidBodyRendererErrorHandler.cs" />
     <Compile Include="OldNamespacesErrorHandler.cs" />
-    <Compile Include="ProfileRendererErrorHandler.cs" />
-    <Compile Include="SoundErrorHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
