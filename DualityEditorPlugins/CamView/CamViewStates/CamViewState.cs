@@ -895,7 +895,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void RenderableControl_DragOver(object sender, DragEventArgs e)
 		{
 			this.OnDragOver(e);
-			// Force immediate buffer swap, because there is no event loop while dragging.
+			// Force immediate buffer swap and continuous repaint, because there is no event loop while dragging.
+			this.renderFrameLast = 0;
 			DualityEditorApp.PerformBufferSwap();
 		}
 		private void RenderableControl_DragLeave(object sender, EventArgs e)
