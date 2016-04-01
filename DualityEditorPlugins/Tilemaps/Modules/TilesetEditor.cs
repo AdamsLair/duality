@@ -316,7 +316,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			bool affectsTileset = e.HasObject(tileset);
 			bool affectsRenderConfig = 
 				e.HasAnyObject(tileset.RenderConfig) || 
-				e.HasAnyProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
+				e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
 			if (!affectsTileset && !affectsRenderConfig) return;
 
 			if (this.activeMode != null)
