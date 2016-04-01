@@ -59,20 +59,40 @@ namespace Duality.Editor
 
 		public bool HasProperty(PropertyInfo info)
 		{
-			return this.completeChange || this.propInfos.Any(i => i.IsEquivalent(info));
-		}
-		public bool HasProperty(string name)
-		{
-			return this.completeChange || this.propNames.Contains(name);
-		}
+			// If the property is mentioned explicitly, we have a match
+			if (this.propInfos.Any(i => i.IsEquivalent(info)))
+				return true;
 
+			// If we represent a complete, object-wide change, we have a match if
+			// there is at least one object that has the specified property.
+			if (this.completeChange && this.obj.Objects.Any(o => info.DeclaringType.IsAssignableFrom(o.GetType())))
+				return true;
+
+			// No match found
+			return false;
+		}
 		public bool HasAnyProperty(params PropertyInfo[] info)
 		{
-			return info.Any(this.HasProperty);
-		}
-		public bool HasAnyProperty(params string[] name)
-		{
-			return name.Any(this.HasProperty);
+			// If a property is mentioned explicitly, we have a match
+			foreach (PropertyInfo property in info)
+			{
+				if (this.propInfos.Any(i => i.IsEquivalent(property)))
+					return true;
+			}
+
+			// If we represent a complete, object-wide change, we have a match if
+			// there is at least one object that has one of the specified properties.
+			if (this.completeChange)
+			{
+				foreach (PropertyInfo property in info)
+				{
+					if (this.obj.Objects.Any(o => property.DeclaringType.IsAssignableFrom(o.GetType())))
+						return true;
+				}
+			}
+
+			// No match found
+			return false;
 		}
 	}
 }

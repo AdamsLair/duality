@@ -928,7 +928,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (e.HasAnyProperty(ReflectionInfo.Property_Transform_RelativePos, ReflectionInfo.Property_Transform_RelativeAngle) &&
+			if (e.HasAnyProperty(
+					ReflectionInfo.Property_Transform_RelativePos, 
+					ReflectionInfo.Property_Transform_RelativeAngle) &&
 				e.Objects.Components.Any(c => c.GameObj == this.CameraObj))
 			{
 				if (!this.camBeginDragScene) this.OnMouseMove();
