@@ -37,6 +37,7 @@ namespace Duality.Editor.Tests
 			string codeBaseURI = typeof(DualityEditorApp).Assembly.CodeBase;
 			string codeBasePath = codeBaseURI.StartsWith("file:") ? codeBaseURI.Remove(0, "file:".Length) : codeBaseURI;
 			codeBasePath = codeBasePath.TrimStart('/');
+			Console.WriteLine("Testing Editor Assembly: {0}", codeBasePath);
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
 
 			// Add some Console logs manually for NUnit

@@ -36,6 +36,7 @@ namespace Duality.Tests
 			string codeBaseURI = typeof(DualityApp).Assembly.CodeBase;
 			string codeBasePath = codeBaseURI.StartsWith("file:") ? codeBaseURI.Remove(0, "file:".Length) : codeBaseURI;
 			codeBasePath = codeBasePath.TrimStart('/');
+			Console.WriteLine("Testing Core Assembly: {0}", codeBasePath);
 			Environment.CurrentDirectory = Path.GetDirectoryName(codeBasePath);
 
 			// Add some Console logs manually for NUnit

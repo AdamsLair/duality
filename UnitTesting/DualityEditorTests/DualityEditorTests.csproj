@@ -63,6 +63,7 @@
     <Compile Include="GlobalSetup.cs" />
     <Compile Include="InitDualityEditorAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\EventArgs\ObjectPropertyChangedEventArgsTest.cs" />
     <Compile Include="Utility\PathHelperTest.cs" />
   </ItemGroup>
   <ItemGroup>
