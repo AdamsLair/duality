@@ -1029,6 +1029,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 					Point2 bottomRightTilePos = new Point2(
 						origin.X + cullingOut.VisibleTileStart.X + cullingOut.VisibleTileCount.X - 1,
 						origin.Y + cullingOut.VisibleTileStart.Y + cullingOut.VisibleTileCount.Y - 1);
+					bottomRightTilePos.X = MathF.Clamp(bottomRightTilePos.X, 0, tilemap.TileCount.X - 1);
+					bottomRightTilePos.Y = MathF.Clamp(bottomRightTilePos.Y, 0, tilemap.TileCount.Y - 1);
 					Tile bottomRightTile = tilemap.Tiles[bottomRightTilePos.X, bottomRightTilePos.Y];
 					TileInfo bottomRightTileInfo = 
 						(bottomRightTile.Index < tileset.TileData.Count) ? 
