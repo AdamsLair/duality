@@ -601,7 +601,11 @@ namespace Duality.Components
 		}
 		private void CollectDrawcalls()
 		{
-			// If no visibility groups are met, don't bother looking for renderers
+			// If no visibility groups are met, don't bother looking for renderers.
+			// This is important to allow efficient drawcall injection with additional
+			// "dummy" renderpasses. CamViewStates render their overlays by temporarily 
+			// adding 3 - 4 of these passes. Iterating over all objects again would be 
+			// devastating for performance and at the same time pointless.
 			if ((this.drawDevice.VisibilityMask & VisibilityFlag.AllGroups) == VisibilityFlag.None) return;
 
 			// Query renderers

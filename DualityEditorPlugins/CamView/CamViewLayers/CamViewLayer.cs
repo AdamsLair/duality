@@ -32,6 +32,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 		internal protected virtual void OnActivateLayer() {}
 		internal protected virtual void OnDeactivateLayer() {}
 		internal protected virtual void OnCollectDrawcalls(Canvas canvas) {}
+		internal protected virtual void OnCollectWorldOverlayDrawcalls(Canvas canvas) {}
 		internal protected virtual void OnCollectOverlayDrawcalls(Canvas canvas) {}
 		internal protected virtual void OnCollectBackgroundDrawcalls(Canvas canvas) {}
 	}

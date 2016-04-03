@@ -69,9 +69,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			}
 		}
 
-		protected internal override void OnCollectDrawcalls(Canvas canvas)
+		protected internal override void OnCollectWorldOverlayDrawcalls(Canvas canvas)
 		{
-			base.OnCollectDrawcalls(canvas);
+			base.OnCollectWorldOverlayDrawcalls(canvas);
 			List<RigidBody> visibleColliders = this.QueryVisibleColliders().ToList();
 
 			RigidBody selectedBody = this.QuerySelectedCollider();
