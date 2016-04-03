@@ -23,6 +23,7 @@ namespace Duality.Plugins.Tilemaps
 		private Tilemap             externalTilemap = null;
 		private ColorRgba           colorTint       = ColorRgba.White;
 		private float               offset          = 0.0f;
+		private int                 tileDepthOffset = 0;
 		private float               tileDepthScale  = 0.01f;
 		private TileDepthOffsetMode tileDepthMode   = TileDepthOffsetMode.Flat;
 
@@ -38,6 +39,19 @@ namespace Duality.Plugins.Tilemaps
 		{
 			get { return this.offset; }
 			set { this.offset = value; }
+		}
+		/// <summary>
+		/// [GET / SET] An offset measured in tiles that is assumed in the depth offset generation.
+		/// With an offset of one, each tile will be rendered with the base offset of "one tile higher up".
+		/// 
+		/// This can be used as a quick way to layer different tilemaps on each other where each layer
+		/// represents a certain world space height. The same effect can be achieved by carefully adjusting 
+		/// the <see cref="DepthOffset"/>.
+		/// </summary>
+		public int TileDepthOffset
+		{
+			get { return this.tileDepthOffset; }
+			set { this.tileDepthOffset = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The depth offset scale that is used to determine how much depth each 
@@ -187,7 +201,7 @@ namespace Duality.Plugins.Tilemaps
 			if (this.tileDepthMode == TileDepthOffsetMode.World)
 				originDepthOffset += (this.GameObj.Transform.Pos.Y / (float)tileSize.Y) * depthPerTile;
 
-			return this.offset + originDepthOffset + tilePos.Y * depthPerTile;
+			return this.offset + this.tileDepthOffset * depthPerTile + originDepthOffset + tilePos.Y * depthPerTile;
 		}
 
 		public override void Draw(IDrawDevice device)
@@ -241,7 +255,7 @@ namespace Duality.Plugins.Tilemaps
 			if (this.tileDepthMode == TileDepthOffsetMode.World)
 				originDepthOffset += (this.GameObj.Transform.Pos.Y / (float)tileSize.Y) * depthPerTile;
 
-			cullingOut.RenderOriginView.Z += this.offset + originDepthOffset;
+			cullingOut.RenderOriginView.Z += this.offset + this.tileDepthOffset * depthPerTile + originDepthOffset;
 
 			// Prepare vertex generation data
 			Vector2 tileXStep = cullingOut.XAxisView * cullingIn.TileSize.X;
