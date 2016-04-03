@@ -56,9 +56,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 			}
 		}
 
-		protected internal override void OnCollectDrawcalls(Canvas canvas)
+		protected internal override void OnCollectWorldOverlayDrawcalls(Canvas canvas)
 		{
-			base.OnCollectDrawcalls(canvas);
+			base.OnCollectWorldOverlayDrawcalls(canvas);
 			canvas.State.TextInvariantScale = true;
 			canvas.State.ZOffset = -1;
 
