@@ -787,99 +787,99 @@
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">3</DepthOffset>
         <IsVertical dataType="Bool">false</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
