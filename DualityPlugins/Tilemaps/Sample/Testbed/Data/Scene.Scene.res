@@ -125,579 +125,238 @@
       <parent />
       <prefabLink />
     </item>
-    <item dataType="Struct" type="Duality.GameObject" id="1204324351">
+    <item dataType="Struct" type="Duality.GameObject" id="10461599">
       <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2004972541">
-        <_items dataType="Array" type="Duality.Component[]" id="1072938278" length="4">
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="3206176368">
+      <children dataType="Struct" type="System.Collections.Generic.List`1[[Duality.GameObject]]" id="1388021341">
+        <_items dataType="Array" type="Duality.GameObject[]" id="2170589030" length="4">
+          <item dataType="Struct" type="Duality.GameObject" id="2961408854">
             <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">1204324351</gameobj>
-            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2854444812" custom="true">
+            <children />
+            <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="965536794">
+              <_items dataType="Array" type="Duality.Component[]" id="282188160" length="4">
+                <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="668293575">
+                  <active dataType="Bool">true</active>
+                  <gameobj dataType="ObjectRef">2961408854</gameobj>
+                  <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2703622211" custom="true">
+                    <body>
+                      <version dataType="Int">2</version>
+                      <data dataType="Array" type="System.Byte[]" id="455732262">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</data>
+                    </body>
+                  </tileData>
+                  <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
+                    <contentPath dataType="String">Data\TestTiles.Tileset.res</contentPath>
+                  </tileset>
+                </item>
+                <item dataType="Struct" type="Duality.Components.Transform" id="1026756490">
+                  <active dataType="Bool">true</active>
+                  <angle dataType="Float">0</angle>
+                  <angleAbs dataType="Float">0</angleAbs>
+                  <angleVel dataType="Float">0</angleVel>
+                  <angleVelAbs dataType="Float">0</angleVelAbs>
+                  <deriveAngle dataType="Bool">true</deriveAngle>
+                  <gameobj dataType="ObjectRef">2961408854</gameobj>
+                  <ignoreParent dataType="Bool">false</ignoreParent>
+                  <parentTransform />
+                  <pos dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </pos>
+                  <posAbs dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </posAbs>
+                  <scale dataType="Float">1</scale>
+                  <scaleAbs dataType="Float">1</scaleAbs>
+                  <vel dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </vel>
+                  <velAbs dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </velAbs>
+                </item>
+                <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="1659517006">
+                  <active dataType="Bool">true</active>
+                  <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                    <A dataType="Byte">255</A>
+                    <B dataType="Byte">255</B>
+                    <G dataType="Byte">255</G>
+                    <R dataType="Byte">255</R>
+                  </colorTint>
+                  <externalTilemap />
+                  <gameobj dataType="ObjectRef">2961408854</gameobj>
+                  <offset dataType="Float">0</offset>
+                  <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+                  <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="World" value="2" />
+                  <tileDepthOffset dataType="Int">0</tileDepthOffset>
+                  <tileDepthScale dataType="Float">0.01</tileDepthScale>
+                  <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
+                </item>
+              </_items>
+              <_size dataType="Int">3</_size>
+              <_version dataType="Int">3</_version>
+            </compList>
+            <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="4050640186" surrogate="true">
+              <header />
               <body>
-                <version dataType="Int">2</version>
-                <data dataType="Array" type="System.Byte[]" id="2024138916">H4sIAAAAAAAEAO3W07IYBhSG0SSNnQaNnSaN09h20tg8QWM7tW3btt2eU9u2bbudWZk+Qu/+fbFmP8CePd+iYsWKLSr23xRnCe7EkizF0izDsizH8qzAiqzEyqzCqqzGnVmdNViTtbgLa7MO67Ie67MBG7IRG7MJm7IZm7MFd2VLtuJubM02bMt2bM8O7MhO3J2d2YVd2Y3d2YM92Yu92Yd92Y/9OYADOYiDOYRDOYzDOYIjOYqjOYZjuQfHcTwncCIncTKncCqncTpncCZncTbncC7ncT4LuIALueO2FnNPLuFSLuNyruBKruJqruFaruN6buBGbuJmbuFWbuN27sW9uQ/35X7cnwfwQB7Eg3kID+VhPJxH8EgexaN5DI/lcTyeJ/BEnsSTeQpP5Wk8nWfwTJ7Fs3kOz+V5PJ8X8EJexIt5CS/lZbycV/BKXsWreQ2v5XW8njfwRt7Em3kLb+VtvJ138E7exbt5D+/lfSxkEe/nA3yQD/FhPsJH+Rgf5xN8kk/xaT7DZ/kcn+cLfJEv8WW+wlf5Gl/nG3yTb/FtvsN3+R7f5wf8kB/xY37CT/kZP+cX/JJf8Wt+w2/5Hb/nD/yRP/Fn/sJf+Rt/5x/8k3/xb/7DHa+/OEtwJ5ZkKZZmGZZlOZZnBVZkJVZmFVZlNe7M6qzBmqzFXVibdViX9VifDdiQjdiYTdiUzdicLbgrW7IVd2NrtmFbtmN7dmBHduLu7Mwu7Mpu7M4e7Mle7M0+7Mt+7M8BHMhBHMwhHMphHM4RHMlRHM0xHMs9OI7jOYETOYmTOYVTOY3TOYMzOYuzOYdzOY/zWcAFXMhFXMw9uYRLuYzLuYIruYqruYZruY7ruYEbuYmbuYVbuY3buWN2rCmcFE4KJ4WTwknhpHBSOCmcFE4KZz4LmMJJ4aRwUjgpnBROCieFk8JJ4aRwClnEFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4BUzgpnBROCieFk8JJ4aRwUjgpnBROIYuYwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwilgCieFk8JJ4aRwUjgpnBROCieFk8IpZBFTOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOAVM4aRwUjgpnBROCieFk8JJ4aRwUjiFLGIKJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4Kp4ApnBROCieFk8JJ4aRwUjgpnBROCqeQRUzhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknh/B+F8y+SuH50aOoAAA==</data>
+                <keys dataType="Array" type="System.Object[]" id="552656736">
+                  <item dataType="Type" id="3198937308" value="Duality.Plugins.Tilemaps.Tilemap" />
+                  <item dataType="ObjectRef">1128403856</item>
+                  <item dataType="Type" id="27113750" value="Duality.Plugins.Tilemaps.TilemapRenderer" />
+                </keys>
+                <values dataType="Array" type="System.Object[]" id="2310733966">
+                  <item dataType="ObjectRef">668293575</item>
+                  <item dataType="ObjectRef">1026756490</item>
+                  <item dataType="ObjectRef">1659517006</item>
+                </values>
               </body>
-            </tileData>
-            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
-              <contentPath dataType="String">Data\TestTiles.Tileset.res</contentPath>
-            </tileset>
+            </compMap>
+            <compTransform dataType="ObjectRef">1026756490</compTransform>
+            <identifier dataType="Struct" type="System.Guid" surrogate="true">
+              <header>
+                <data dataType="Array" type="System.Byte[]" id="588166524">KMXuZW3ZOEaxigxAvZjLRg==</data>
+              </header>
+              <body />
+            </identifier>
+            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+            <name dataType="String">BaseLayer</name>
+            <parent dataType="ObjectRef">10461599</parent>
+            <prefabLink />
           </item>
-          <item dataType="Struct" type="Duality.Components.Transform" id="3564639283">
+          <item dataType="Struct" type="Duality.GameObject" id="3085774208">
             <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">1204324351</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
-          </item>
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="4197399799">
-            <active dataType="Bool">true</active>
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">255</B>
-              <G dataType="Byte">255</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <externalTilemap />
-            <gameobj dataType="ObjectRef">1204324351</gameobj>
-            <offset dataType="Float">0</offset>
-            <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="Flat" value="0" />
-            <tileDepthScale dataType="Float">0.01</tileDepthScale>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2420306872" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="3748154519">
-            <item dataType="Type" id="3831934222" value="Duality.Plugins.Tilemaps.Tilemap" />
-            <item dataType="ObjectRef">1128403856</item>
-            <item dataType="Type" id="3045257546" value="Duality.Plugins.Tilemaps.TilemapRenderer" />
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="3977319104">
-            <item dataType="ObjectRef">3206176368</item>
-            <item dataType="ObjectRef">3564639283</item>
-            <item dataType="ObjectRef">4197399799</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">3564639283</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="3439226933">eMLIjgB3YUWg7L6MR7U35g==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TilemapA</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="4093171636">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3769923210">
-        <_items dataType="Array" type="Duality.Component[]" id="3334896608" length="4">
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="1800056357">
-            <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">4093171636</gameobj>
-            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="3496668625" custom="true">
+            <children />
+            <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="153351068">
+              <_items dataType="Array" type="Duality.Component[]" id="2220440004" length="4">
+                <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="792658929">
+                  <active dataType="Bool">true</active>
+                  <gameobj dataType="ObjectRef">3085774208</gameobj>
+                  <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="3306088781" custom="true">
+                    <body>
+                      <version dataType="Int">2</version>
+                      <data dataType="Array" type="System.Byte[]" id="1707160614">H4sIAAAAAAAEAO3duW4TURQG4GyAlATCJnbBC0AHogmkCTUddNCkoURikVglMCCFTWItqYBXACrgyRBnQLrS4GhsEvvM5Cv8aXRmxv5tjcb32nfmrkxMTKz8efx1KpwOZ4p65bZaZTacC+fD7eGOcCHcWduLJLvhl/Br+C1BHpIkyfb6MUEGdtUrxfKucHeCVGyXW8KtReVqsXwwPFRU9oX7EyRnZsvfUZtsfzQ8liA5u60zGIfz0uRvL0/+e60zGMn1cj5BBrbRasTCXK1e7+uRzT3Qpz5oX4+snGm85cJQz2/sFjfCfmdCcn09nyADR++18Hp4I7yZIBXb7p3wbngvvJ8gFdtuL3wUPg6fJEjF9no2/mdZCp9H5UX4MkE2tt034dvwXfg+QSp2z6U+/xeTedTf5Eaov9l2T6f8/uqF+ptddXZMr/ss1N9su+M6fta27G9myENyvC5G++pMrZVV/v5Z1nO2x5jT5Thazg14zOT89iRJkiRJkiRJkiRJcqMtZ1FZW3OssLnfwx8N/Fnbd9lIIYbTxfLexnt9qFUGHUfEzeORxlt+TpCW3ba8e+pUgjwcjc2vYx1udp5PCd4jR2+T61jrY/iPR+WEVhP72AubX8d6Ko6lk+Ge2tqqUs4GNdx9U9l2h7uOdSY8XKtXlfpsUNxs/s99k+p3pC+9GOe06T5rb4W3E3wCHL2LA7agqpl6Lqw5X0/lg/BhgvfILrkaPk2QhF3yVfg6QRKSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmyib8AGd+2ZWjqAAA=</data>
+                    </body>
+                  </tileData>
+                  <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
+                    <contentPath dataType="String">Data\TestTiles.Tileset.res</contentPath>
+                  </tileset>
+                </item>
+                <item dataType="Struct" type="Duality.Components.Transform" id="1151121844">
+                  <active dataType="Bool">true</active>
+                  <angle dataType="Float">0</angle>
+                  <angleAbs dataType="Float">0</angleAbs>
+                  <angleVel dataType="Float">0</angleVel>
+                  <angleVelAbs dataType="Float">0</angleVelAbs>
+                  <deriveAngle dataType="Bool">true</deriveAngle>
+                  <gameobj dataType="ObjectRef">3085774208</gameobj>
+                  <ignoreParent dataType="Bool">false</ignoreParent>
+                  <parentTransform />
+                  <pos dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </pos>
+                  <posAbs dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </posAbs>
+                  <scale dataType="Float">1</scale>
+                  <scaleAbs dataType="Float">1</scaleAbs>
+                  <vel dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </vel>
+                  <velAbs dataType="Struct" type="Duality.Vector3">
+                    <X dataType="Float">0</X>
+                    <Y dataType="Float">0</Y>
+                    <Z dataType="Float">0</Z>
+                  </velAbs>
+                </item>
+                <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="1783882360">
+                  <active dataType="Bool">true</active>
+                  <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+                    <A dataType="Byte">255</A>
+                    <B dataType="Byte">255</B>
+                    <G dataType="Byte">255</G>
+                    <R dataType="Byte">255</R>
+                  </colorTint>
+                  <externalTilemap />
+                  <gameobj dataType="ObjectRef">3085774208</gameobj>
+                  <offset dataType="Float">-0.01</offset>
+                  <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+                  <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="World" value="2" />
+                  <tileDepthOffset dataType="Int">0</tileDepthOffset>
+                  <tileDepthScale dataType="Float">0.01</tileDepthScale>
+                  <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
+                </item>
+              </_items>
+              <_size dataType="Int">3</_size>
+              <_version dataType="Int">3</_version>
+            </compList>
+            <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2608161814" surrogate="true">
+              <header />
               <body>
-                <version dataType="Int">2</version>
-                <data dataType="Array" type="System.Byte[]" id="1570235118">H4sIAAAAAAAEAO3W07IYBhSG0SSNnQaNnSaN09h20tg8QWM7tW3btt2eU9u2bbudWZk+Qu/+fbFmP8CePd+iYsWKLSr23xRnCe7EkizF0izDsizH8qzAiqzEyqzCqqzGnVmdNViTtbgLa7MO67Ie67MBG7IRG7MJm7IZm7MFd2VLtuJubM02bMt2bM8O7MhO3J2d2YVd2Y3d2YM92Yu92Yd92Y/9OYADOYiDOYRDOYzDOYIjOYqjOYZjuQfHcTwncCIncTKncCqncTpncCZncTbncC7ncT4LuIALueO2FnNPLuFSLuNyruBKruJqruFaruN6buBGbuJmbuFWbuN27sW9uQ/35X7cnwfwQB7Eg3kID+VhPJxH8EgexaN5DI/lcTyeJ/BEnsSTeQpP5Wk8nWfwTJ7Fs3kOz+V5PJ8X8EJexIt5CS/lZbycV/BKXsWreQ2v5XW8njfwRt7Em3kLb+VtvJ138E7exbt5D+/lfSxkEe/nA3yQD/FhPsJH+Rgf5xN8kk/xaT7DZ/kcn+cLfJEv8WW+wlf5Gl/nG3yTb/FtvsN3+R7f5wf8kB/xY37CT/kZP+cX/JJf8Wt+w2/5Hb/nD/yRP/Fn/sJf+Rt/5x/8k3/xb/7DHa+/OEtwJ5ZkKZZmGZZlOZZnBVZkJVZmFVZlNe7M6qzBmqzFXVibdViX9VifDdiQjdiYTdiUzdicLbgrW7IVd2NrtmFbtmN7dmBHduLu7Mwu7Mpu7M4e7Mle7M0+7Mt+7M8BHMhBHMwhHMphHM4RHMlRHM0xHMs9OI7jOYETOYmTOYVTOY3TOYMzOYuzOYdzOY/zWcAFXMhFXMw9uYRLuYzLuYIruYqruYZruY7ruYEbuYmbuYVbuY3buWN2rCmcFE4KJ4WTwknhpHBSOCmcFE4KZz4LmMJJ4aRwUjgpnBROCieFk8JJ4aRwClnEFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4BUzgpnBROCieFk8JJ4aRwUjgpnBROIYuYwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwilgCieFk8JJ4aRwUjgpnBROCieFk8IpZBFTOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOAVM4aRwUjgpnBROCieFk8JJ4aRwUjiFLGIKJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4Kp4ApnBROCieFk8JJ4aRwUjgpnBROCqeQRUzhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknhpHBSOCmcFE4KJ4WTwknh/B+F8y+SuH50aOoAAA==</data>
+                <keys dataType="Array" type="System.Object[]" id="3739445558">
+                  <item dataType="ObjectRef">3198937308</item>
+                  <item dataType="ObjectRef">1128403856</item>
+                  <item dataType="ObjectRef">27113750</item>
+                </keys>
+                <values dataType="Array" type="System.Object[]" id="2000748186">
+                  <item dataType="ObjectRef">792658929</item>
+                  <item dataType="ObjectRef">1151121844</item>
+                  <item dataType="ObjectRef">1783882360</item>
+                </values>
               </body>
-            </tileData>
-            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
-              <contentPath dataType="String">Data\TestTiles.Tileset.res</contentPath>
-            </tileset>
-          </item>
-          <item dataType="Struct" type="Duality.Components.Transform" id="2158519272">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">4093171636</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">150</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">-150</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">150</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">-150</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
-          </item>
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="2791279788">
-            <active dataType="Bool">true</active>
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">128</B>
-              <G dataType="Byte">128</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <externalTilemap />
-            <gameobj dataType="ObjectRef">4093171636</gameobj>
-            <offset dataType="Float">0</offset>
-            <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="Flat" value="0" />
-            <tileDepthScale dataType="Float">0.01</tileDepthScale>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3895455002" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="39189872">
-            <item dataType="ObjectRef">3831934222</item>
-            <item dataType="ObjectRef">1128403856</item>
-            <item dataType="ObjectRef">3045257546</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="2124623598">
-            <item dataType="ObjectRef">1800056357</item>
-            <item dataType="ObjectRef">2158519272</item>
-            <item dataType="ObjectRef">2791279788</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">2158519272</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="4051743436">e5PS8SobcESTwRnZuQDTvw==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TilemapB</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="4225538166">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="622956000">
-        <_items dataType="Array" type="Duality.Component[]" id="2342384604" length="4">
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="1932422887">
-            <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">4225538166</gameobj>
-            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="550722715" custom="true">
-              <body>
-                <version dataType="Int">2</version>
-                <data dataType="Array" type="System.Byte[]" id="3295367062">H4sIAAAAAAAEAOzdXWrDMBCF0fRn/+vMMppHg4m41siNJZ8DMYXG0fvHMHr+PB7P1wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC4sq9BTwAAAAAAuKdRpV17BwAAAADgnvaF/PvgU3UHAAAAAIB6bz/a3hV4AAAAAADWM7a3t6v7uxMBAAAAAGAN58235+dq7wAAAAAAzG7UlHtfOVfdAQAAAAC4glE7W0bdmtpHdQcAAAAA4FP2jb39d/Jr+az70UK+fTc/HQAAAAAAzpbcSVr/zeTZ9q7YJ6cDAAAAAMBK+np7soumfRYAAAAAAJztjPn2xG/zuaW3AwAAAABwfWP3t+fO6+35Da0AAAAAADBWe759bG8/utFdbwcAAAAA4A4qNVtvBwAAAACApGnnt6P23Zq6f0tvBwAAAABgLkd7e7t7J1trkrf0dgAAAAAA5pL39vybR+ntAAAAAACsoTLZ3rd5ZktvBwAAAABgDe07T/Pevt8Skz+39HYAAAAAAGZXKe3vevtRejsAAAAAALOr9/b6thm9HQAAAACA2dX3yeSFvD39nu+fAQAAAACAq6n09kfw3+QsXR0AAAAAgNm1u3e9pSenAwAAAADA7NqdPJ9I35dzLR0AAAAAgPtI5tL7JtXbU+42yQAAAAAAMK++204rm2H0dgAAAAAA1lPp7X23nertAAAAAACsp6+3V+jtAAAAAACs51O9XV0HAAAAAGAl/9/bt/R2AAAAAADWUOntlf3tSjsAAAAAACs5Y769r8MDAAAAAMC8PrtPBgAAAAAA1qC3AwAAAABAnd4OAAAAAAB1ejsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/twQEJAAAAgKD/r/sRKgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD8BhR/t3IiNWwA=</data>
-              </body>
-            </tileData>
-            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
-              <contentPath dataType="String">Data\TestTiles.Tileset.res</contentPath>
-            </tileset>
-          </item>
-          <item dataType="Struct" type="Duality.Components.Transform" id="2290885802">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">4225538166</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
-          </item>
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="2923646318">
-            <active dataType="Bool">true</active>
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">255</B>
-              <G dataType="Byte">255</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <externalTilemap />
-            <gameobj dataType="ObjectRef">4225538166</gameobj>
-            <offset dataType="Float">0</offset>
-            <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="Flat" value="0" />
-            <tileDepthScale dataType="Float">0.01</tileDepthScale>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2764209038" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="1639660850">
-            <item dataType="ObjectRef">3831934222</item>
-            <item dataType="ObjectRef">1128403856</item>
-            <item dataType="ObjectRef">3045257546</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="3812500298">
-            <item dataType="ObjectRef">1932422887</item>
-            <item dataType="ObjectRef">2290885802</item>
-            <item dataType="ObjectRef">2923646318</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">2290885802</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="3875643266">19aZc0Vmlk6UX+4+8/+wNw==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TilemapX</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="109330599">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1438854149">
-        <_items dataType="Array" type="Duality.Component[]" id="3791045206" length="4">
-          <item dataType="Struct" type="Duality.Components.Transform" id="2469645531">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0.08726646</angle>
-            <angleAbs dataType="Float">0.08726646</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">109330599</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">300</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">-300</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">300</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">-300</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
-          </item>
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="3102406047">
-            <active dataType="Bool">true</active>
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">128</B>
-              <G dataType="Byte">128</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <externalTilemap dataType="ObjectRef">1800056357</externalTilemap>
-            <gameobj dataType="ObjectRef">109330599</gameobj>
-            <offset dataType="Float">0</offset>
-            <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="Flat" value="0" />
-            <tileDepthScale dataType="Float">0.01</tileDepthScale>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
+            </compMap>
+            <compTransform dataType="ObjectRef">1151121844</compTransform>
+            <identifier dataType="Struct" type="System.Guid" surrogate="true">
+              <header>
+                <data dataType="Array" type="System.Byte[]" id="624963030">OGFE/6l2ukykXD788OcpAg==</data>
+              </header>
+              <body />
+            </identifier>
+            <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+            <name dataType="String">UpperLayer</name>
+            <parent dataType="ObjectRef">10461599</parent>
+            <prefabLink />
           </item>
         </_items>
         <_size dataType="Int">2</_size>
-        <_version dataType="Int">4</_version>
+        <_version dataType="Int">2</_version>
+      </children>
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="2081326968">
+        <_items dataType="Array" type="Duality.Component[]" id="1387570487" length="0" />
+        <_size dataType="Int">0</_size>
+        <_version dataType="Int">0</_version>
       </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2446716840" surrogate="true">
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="410896887" surrogate="true">
         <header />
         <body>
-          <keys dataType="Array" type="System.Object[]" id="3738009583">
-            <item dataType="ObjectRef">1128403856</item>
-            <item dataType="ObjectRef">3045257546</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="2184034720">
-            <item dataType="ObjectRef">2469645531</item>
-            <item dataType="ObjectRef">3102406047</item>
-          </values>
+          <keys dataType="Array" type="System.Object[]" id="232855956" length="0" />
+          <values dataType="Array" type="System.Object[]" id="1978646582" length="0" />
         </body>
       </compMap>
-      <compTransform dataType="ObjectRef">2469645531</compTransform>
+      <compTransform />
       <identifier dataType="Struct" type="System.Guid" surrogate="true">
         <header>
-          <data dataType="Array" type="System.Byte[]" id="1583501949">VgJJZ80iykK+zUN5mgwxOw==</data>
+          <data dataType="Array" type="System.Byte[]" id="1700514864">HunZh0b630iicX0zyp3aXg==</data>
         </header>
         <body />
       </identifier>
       <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TilemapB2</name>
+      <name dataType="String">Map</name>
       <parent />
       <prefabLink />
     </item>
-    <item dataType="Struct" type="Duality.GameObject" id="2961408854">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="1023990784">
-        <_items dataType="Array" type="Duality.Component[]" id="3240911004" length="4">
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="668293575">
-            <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">2961408854</gameobj>
-            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="3135594555" custom="true">
-              <body>
-                <version dataType="Int">2</version>
-                <data dataType="Array" type="System.Byte[]" id="3454070486">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</data>
-              </body>
-            </tileData>
-            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
-              <contentPath dataType="String">Data\TestTiles.Tileset.res</contentPath>
-            </tileset>
-          </item>
-          <item dataType="Struct" type="Duality.Components.Transform" id="1026756490">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">2961408854</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
-          </item>
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="1659517006">
-            <active dataType="Bool">true</active>
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">255</B>
-              <G dataType="Byte">255</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <externalTilemap />
-            <gameobj dataType="ObjectRef">2961408854</gameobj>
-            <offset dataType="Float">0</offset>
-            <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="World" value="2" />
-            <tileDepthScale dataType="Float">0.01</tileDepthScale>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3979117518" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="3656509138">
-            <item dataType="ObjectRef">3831934222</item>
-            <item dataType="ObjectRef">1128403856</item>
-            <item dataType="ObjectRef">3045257546</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="3223298250">
-            <item dataType="ObjectRef">668293575</item>
-            <item dataType="ObjectRef">1026756490</item>
-            <item dataType="ObjectRef">1659517006</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">1026756490</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="3428422498">KMXuZW3ZOEaxigxAvZjLRg==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TilemapC_Lower</name>
-      <parent />
-      <prefabLink />
-    </item>
-    <item dataType="Struct" type="Duality.GameObject" id="3085774208">
-      <active dataType="Bool">true</active>
-      <children />
-      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="3929111238">
-        <_items dataType="Array" type="Duality.Component[]" id="1185542400" length="4">
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Tilemap" id="792658929">
-            <active dataType="Bool">true</active>
-            <gameobj dataType="ObjectRef">3085774208</gameobj>
-            <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2875785653" custom="true">
-              <body>
-                <version dataType="Int">2</version>
-                <data dataType="Array" type="System.Byte[]" id="2152370934">H4sIAAAAAAAEAO3duY7TUBQG4FkCSDMDwyZ2wQtAB6IZmGao6aCDZhpKJBaJVYIAEqvEWlIBrwBUwJMhjkG6kpnICUzm2PmKfLKO7eRPZDn3Jte+q1NTU6u/H3+cCWfDXlGv3FKrzIXz4UK4NdwWLobba3uRZDf8HH4JvybIQ5Ik2V4/JMjArnqpWN4R7kyQiu1yU7i5qFwulveHB4rKnnBvguTMbPk7apPtD4dHEiRnt3UG42hemP7lxem/r3UGI/m/XEiQgW20GrEwnyAJJ8Fh+3pkZa/xlosjPb+xW1wP9yXIwEnwbIIMHL9XwqvhtfB6glRsu7fC2+Gd8G6CVGy7/fBB+DB8lCAV2+vp+J9lOXwWlefhiwTZ2HZfh2/Ct+G7BKnYPZfX+L+YzKP+JtdD/c22ezLl91c/1N/sqnMb9LpPQ/3NtrtRx89gy/5mhjwkN9alaF+dqrWyyt8/y3rO9hhzuhJHy5khj5mc354kSZIkSZIkSZIkSa635SwqgzXHCpv7LfzewB+1fVeMFGI4WyzvbrzX+1pl2HFEnBwPNd7yU4K07Lbl3VNnEuTheGx+Hetos/N8TPAeOX6bXMdaH8N/NCrHtJq4hv2w+XWsJ+JYOh7uqq2tKuVsUKPdN5Vtd7TrWHvhwVq9qtRng+Kk+S/3TRp8R/rzcU6bXWPtjfBmgk+A43dpyBZUNVPPuYHz9VTeC+8neI/sko/DJwmSsEu+DF8lSEKSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEmSJEk28SfnygqiaOoAAA==</data>
-              </body>
-            </tileData>
-            <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
-              <contentPath dataType="String">Data\TestTiles.Tileset.res</contentPath>
-            </tileset>
-          </item>
-          <item dataType="Struct" type="Duality.Components.Transform" id="1151121844">
-            <active dataType="Bool">true</active>
-            <angle dataType="Float">0</angle>
-            <angleAbs dataType="Float">0</angleAbs>
-            <angleVel dataType="Float">0</angleVel>
-            <angleVelAbs dataType="Float">0</angleVelAbs>
-            <deriveAngle dataType="Bool">true</deriveAngle>
-            <gameobj dataType="ObjectRef">3085774208</gameobj>
-            <ignoreParent dataType="Bool">false</ignoreParent>
-            <parentTransform />
-            <pos dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </pos>
-            <posAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </posAbs>
-            <scale dataType="Float">1</scale>
-            <scaleAbs dataType="Float">1</scaleAbs>
-            <vel dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </vel>
-            <velAbs dataType="Struct" type="Duality.Vector3">
-              <X dataType="Float">0</X>
-              <Y dataType="Float">0</Y>
-              <Z dataType="Float">0</Z>
-            </velAbs>
-          </item>
-          <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapRenderer" id="1783882360">
-            <active dataType="Bool">true</active>
-            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
-              <A dataType="Byte">255</A>
-              <B dataType="Byte">255</B>
-              <G dataType="Byte">255</G>
-              <R dataType="Byte">255</R>
-            </colorTint>
-            <externalTilemap />
-            <gameobj dataType="ObjectRef">3085774208</gameobj>
-            <offset dataType="Float">-0.01</offset>
-            <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
-            <tileDepthMode dataType="Enum" type="Duality.Plugins.Tilemaps.TileDepthOffsetMode" name="World" value="2" />
-            <tileDepthScale dataType="Float">0.01</tileDepthScale>
-            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
-          </item>
-        </_items>
-        <_size dataType="Int">3</_size>
-        <_version dataType="Int">3</_version>
-      </compList>
-      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3478357690" surrogate="true">
-        <header />
-        <body>
-          <keys dataType="Array" type="System.Object[]" id="547646260">
-            <item dataType="ObjectRef">3831934222</item>
-            <item dataType="ObjectRef">1128403856</item>
-            <item dataType="ObjectRef">3045257546</item>
-          </keys>
-          <values dataType="Array" type="System.Object[]" id="3711407862">
-            <item dataType="ObjectRef">792658929</item>
-            <item dataType="ObjectRef">1151121844</item>
-            <item dataType="ObjectRef">1783882360</item>
-          </values>
-        </body>
-      </compMap>
-      <compTransform dataType="ObjectRef">1151121844</compTransform>
-      <identifier dataType="Struct" type="System.Guid" surrogate="true">
-        <header>
-          <data dataType="Array" type="System.Byte[]" id="4072129680">OGFE/6l2ukykXD788OcpAg==</data>
-        </header>
-        <body />
-      </identifier>
-      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
-      <name dataType="String">TilemapC_Upper</name>
-      <parent />
-      <prefabLink />
-    </item>
+    <item dataType="ObjectRef">2961408854</item>
+    <item dataType="ObjectRef">3085774208</item>
   </serializeObj>
   <visibilityStrategy dataType="Struct" type="Duality.Components.DefaultRendererVisibilityStrategy" id="2035693768" />
 </root>

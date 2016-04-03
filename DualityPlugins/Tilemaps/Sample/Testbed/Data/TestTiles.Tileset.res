@@ -711,11 +711,11 @@
         <IsVertical dataType="Bool">true</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">1</DepthOffset>
         <IsVertical dataType="Bool">true</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
-        <DepthOffset dataType="Int">0</DepthOffset>
+        <DepthOffset dataType="Int">1</DepthOffset>
         <IsVertical dataType="Bool">true</IsVertical>
       </item>
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput">
