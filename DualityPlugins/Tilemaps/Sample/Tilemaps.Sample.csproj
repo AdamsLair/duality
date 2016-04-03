@@ -52,9 +52,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="LinearMovement.cs" />
-    <Compile Include="TestComponent.cs" />
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RpgLike\ActorRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\DualityPrimitives\DualityPrimitives.csproj">
