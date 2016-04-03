@@ -41,7 +41,7 @@ namespace Duality.Plugins.Tilemaps
 		}
 		/// <summary>
 		/// [GET / SET] The depth offset scale that is used to determine how much depth each 
-		/// tile adds when using non-flat depth offset generation.
+		/// tile / pixel / unit adds when using non-flat depth offset generation.
 		/// </summary>
 		public float TileDepthScale
 		{

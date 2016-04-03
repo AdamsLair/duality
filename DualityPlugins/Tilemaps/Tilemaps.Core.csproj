@@ -69,12 +69,16 @@
       <Name>Duality</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="EmbeddedResources\ImageTilesetBig.png" />
+    <Content Include="EmbeddedResources\ImageTilesetLarge.png" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\ImageTilemap.png" />
     <EmbeddedResource Include="EmbeddedResources\ImageTilemapCollider.png" />
     <EmbeddedResource Include="EmbeddedResources\ImageTilemapRenderer.png" />
     <EmbeddedResource Include="EmbeddedResources\ImageTileset.png" />
+    <EmbeddedResource Include="EmbeddedResources\ImageActorRenderer.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <PropertyGroup>
