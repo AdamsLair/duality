@@ -30,6 +30,7 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 		private float                offset         = 0.0f;
 		private float                depthScale     = 0.01f;
 		private bool                 isVertical     = true;
+		private float                height         = 0.0f;
 
 		[DontSerialize] private VertexC1P3T2[] vertices = null;
 
@@ -40,7 +41,13 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 			get 
 			{
 				float scale = this.GameObj.Transform.Scale;
-				return this.rect.Transformed(scale, scale).BoundingRadius;
+				Rect tempRect = this.rect;
+				tempRect.Y -= this.height;
+				tempRect.X *= scale;
+				tempRect.Y *= scale;
+				tempRect.W *= scale;
+				tempRect.H *= scale;
+				return tempRect.BoundingRadius;
 			}
 		}
 		/// <summary>
@@ -105,6 +112,18 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 			get { return this.isVertical; }
 			set { this.isVertical = value; }
 		}
+		/// <summary>
+		/// [GET / SET] The actor's current height above the ground. This is usually
+		/// zero / the same as the ground level, except when jumping, floating or being 
+		/// partially submerged.
+		/// </summary>
+		[EditorHintIncrement(1)]
+		[EditorHintDecimalPlaces(0)]
+		public float Height
+		{
+			get { return this.height; }
+			set { this.height = value; }
+		}
 		
 
 		/// <summary>
@@ -142,57 +161,55 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 		{
 			Transform transform = this.GameObj.Transform;
 			Vector3 posTemp = transform.Pos;
-			float scaleTemp = 1.0f;
+			float scaleTemp = transform.Scale;
 			device.PreprocessCoords(ref posTemp, ref scaleTemp);
 
 			Vector2 xDot, yDot;
 			MathF.GetTransformDotVec(transform.Angle, scaleTemp, out xDot, out yDot);
 
-			Rect rectTemp = this.rect.Transformed(transform.Scale, transform.Scale);
-
-			Vector2 edge1 = rectTemp.TopLeft;
-			Vector2 edge2 = rectTemp.BottomLeft;
-			Vector2 edge3 = rectTemp.BottomRight;
-			Vector2 edge4 = rectTemp.TopRight;
+			Vector2 edge1 = this.rect.TopLeft;
+			Vector2 edge2 = this.rect.BottomLeft;
+			Vector2 edge3 = this.rect.BottomRight;
+			Vector2 edge4 = this.rect.TopRight;
 
 			MathF.TransformDotVec(ref edge1, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge2, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge3, ref xDot, ref yDot);
 			MathF.TransformDotVec(ref edge4, ref xDot, ref yDot);
             
-			float left   = uvRect.X;
-			float right  = uvRect.RightX;
-			float top    = uvRect.Y;
-			float bottom = uvRect.BottomY;
+			float uvLeft   = uvRect.X;
+			float uvRight  = uvRect.RightX;
+			float uvTop    = uvRect.Y;
+			float uvBottom = uvRect.BottomY;
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
-			vertices[0].Pos.Y = posTemp.Y + edge1.Y;
+			vertices[0].Pos.Y = posTemp.Y + edge1.Y - this.height * scaleTemp;
 			vertices[0].Pos.Z = posTemp.Z;
-			vertices[0].TexCoord.X = left;
-			vertices[0].TexCoord.Y = top;
+			vertices[0].TexCoord.X = uvLeft;
+			vertices[0].TexCoord.Y = uvTop;
 			vertices[0].Color = mainClr;
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
-			vertices[1].Pos.Y = posTemp.Y + edge2.Y;
+			vertices[1].Pos.Y = posTemp.Y + edge2.Y - this.height * scaleTemp;
 			vertices[1].Pos.Z = posTemp.Z;
-			vertices[1].TexCoord.X = left;
-			vertices[1].TexCoord.Y = bottom;
+			vertices[1].TexCoord.X = uvLeft;
+			vertices[1].TexCoord.Y = uvBottom;
 			vertices[1].Color = mainClr;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
-			vertices[2].Pos.Y = posTemp.Y + edge3.Y;
+			vertices[2].Pos.Y = posTemp.Y + edge3.Y - this.height * scaleTemp;
 			vertices[2].Pos.Z = posTemp.Z;
-			vertices[2].TexCoord.X = right;
-			vertices[2].TexCoord.Y = bottom;
+			vertices[2].TexCoord.X = uvRight;
+			vertices[2].TexCoord.Y = uvBottom;
 			vertices[2].Color = mainClr;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
-			vertices[3].Pos.Y = posTemp.Y + edge4.Y;
+			vertices[3].Pos.Y = posTemp.Y + edge4.Y - this.height * scaleTemp;
 			vertices[3].Pos.Z = posTemp.Z;
-			vertices[3].TexCoord.X = right;
-			vertices[3].TexCoord.Y = top;
+			vertices[3].TexCoord.X = uvRight;
+			vertices[3].TexCoord.Y = uvTop;
 			vertices[3].Color = mainClr;
 
 			// Apply depth offsets
@@ -210,10 +227,10 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 			{
 				// Flat actors need to apply depth individually per vertex
 				float worldBaseY = transform.Pos.Y;
-				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y) * depthPerUnit;
-				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y) * depthPerUnit;
-				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y) * depthPerUnit;
-				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y) * depthPerUnit;
+				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y + this.height * scaleTemp) * depthPerUnit;
+				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y + this.height * scaleTemp) * depthPerUnit;
+				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y + this.height * scaleTemp) * depthPerUnit;
+				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y + this.height * scaleTemp) * depthPerUnit;
 			}
 		}
 
