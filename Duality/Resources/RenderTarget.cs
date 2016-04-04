@@ -215,8 +215,7 @@ namespace Duality.Resources
 			{
 				if (target.PixelWidth == 0 || target.PixelHeight == 0)
 				{
-					Log.Core.WriteError("Error initializing RenderTarget {0}: Texture {1} has a dimension of 0 {2}",
-						this.FullName, target.FullName, Environment.NewLine);
+					Log.Core.WriteError("Error initializing '{0}' because of '{1}' has a dimension of 0", this, target);
 					return;
 				}
 			}
