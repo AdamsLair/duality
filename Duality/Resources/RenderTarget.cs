@@ -211,6 +211,14 @@ namespace Duality.Resources
 		/// </summary>
 		protected void SetupNativeRes()
 		{
+			foreach (var target in this.targets.Where(t => t != null).Res()) {
+				if (target.PixelWidth == 0 || target.PixelHeight == 0) {
+					Log.Core.WriteError("Error initializing RenderTarget {0}: Texture {1} has a dimension of 0 {2}",
+						this.FullName, target.FullName, Environment.NewLine);
+					return;
+				}
+			}
+
 			if (this.native == null) this.native = DualityApp.GraphicsBackend.CreateRenderTarget();
 
 			INativeTexture[] targets = this.targets
