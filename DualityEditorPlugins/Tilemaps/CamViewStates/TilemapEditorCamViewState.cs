@@ -257,8 +257,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 					// Otherwise, do regular Z sorting
 					return 
-						((a as Component).GameObj.Transform.Pos.Z + a.DepthOffset > 
-						(b as Component).GameObj.Transform.Pos.Z + b.DepthOffset) 
+						((a as Component).GameObj.Transform.Pos.Z + a.BaseDepthOffset > 
+						(b as Component).GameObj.Transform.Pos.Z + b.BaseDepthOffset) 
 						? 1 : -1;
 				});
 
@@ -680,7 +680,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			{
 				Tilemap[] visibleTilemaps = 
 					this.QueryVisibleTilemapRenderers()
-					.OrderBy(r => (r as Component).GameObj.Transform.Pos.Z + r.DepthOffset)
+					.OrderBy(r => (r as Component).GameObj.Transform.Pos.Z + r.BaseDepthOffset)
 					.Select(r => r.ActiveTilemap)
 					.NotNull()
 					.Distinct()
@@ -767,15 +767,40 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Dictionary<ICmpTilemapRenderer,ColorRgba> oldColors = null;
 			if (highlightTilemap != null)
 			{
-				foreach (ICmpTilemapRenderer renderer in Scene.Current.FindComponents<ICmpTilemapRenderer>())
+				IEnumerable<ICmpTilemapRenderer> tilemapRenderers = Scene.Current.FindComponents<ICmpTilemapRenderer>();
+
+				// Determine the base depth of the currently highlighted Tilemap renderer.
+				float highlightBaseDepth = float.MinValue;
+				ICmpTilemapRenderer highlightRenderer = 
+					this.activeRenderer ?? 
+					tilemapRenderers.FirstOrDefault(r => r.ActiveTilemap == highlightTilemap);
+				if (highlightRenderer != null)
+				{
+					Transform highlightTransform = (highlightRenderer as Component).GameObj.Transform;
+					highlightBaseDepth = highlightTransform.Pos.Z + highlightRenderer.BaseDepthOffset;
+				}
+
+				// Temporarily reconfigure all tilemap renderers in the scene.
+				foreach (ICmpTilemapRenderer renderer in tilemapRenderers)
 				{
 					if (renderer.ActiveTilemap == highlightTilemap) continue;
 
+					// Backup the old color tint
 					if (oldColors == null)
 						oldColors = new Dictionary<ICmpTilemapRenderer,ColorRgba>();
-
 					oldColors[renderer] = renderer.ColorTint;
-					renderer.ColorTint = renderer.ColorTint.WithAlpha(0.33f);
+
+					// Determine the base depth of the tilemap renderer for comparison
+					Transform transform = (renderer as Component).GameObj.Transform;
+					float baseDepth = transform.Pos.Z + renderer.BaseDepthOffset;
+					bool isBelowHightlighted = baseDepth > highlightBaseDepth;
+
+					// If the renderer is below the active one, darken it.
+					if (isBelowHightlighted)
+						renderer.ColorTint = ColorRgba.Lerp(renderer.ColorTint, this.BgColor, 0.5f).WithAlpha(renderer.ColorTint.A);
+					// If the renderer is above the active one, make it transparent.
+					else
+						renderer.ColorTint = renderer.ColorTint.WithAlpha(0.33f);
 				}
 			}
 

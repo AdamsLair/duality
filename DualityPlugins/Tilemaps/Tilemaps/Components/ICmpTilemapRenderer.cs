@@ -32,8 +32,10 @@ namespace Duality.Plugins.Tilemaps
 		ColorRgba ColorTint { get; set; }
 		/// <summary>
 		/// [GET] The base depth offset that will be used when rendering the <see cref="Tilemap"/>.
+		/// This property represents the sum of all non-local depth adjustments in the rendered <see cref="Tilemap"/>,
+		/// expressed as an offset to the depth that is implicitly defined by the <see cref="Transform"/> Z position.
 		/// </summary>
-		float DepthOffset { get; }
+		float BaseDepthOffset { get; }
 
 
 		/// <summary>
