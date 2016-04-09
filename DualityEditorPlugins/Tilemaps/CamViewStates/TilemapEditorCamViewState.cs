@@ -348,7 +348,9 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				// Determine the active tool dynamically based on user input state
 				if (this.hoveredRenderer == null)
 					this.activeTool = this.toolNone;
-				else if (this.selectedTilemap != null && this.hoveredRenderer != null && this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
+				else if (this.selectedTilemap == null)
+					this.activeTool = this.toolSelect;
+				else if (this.hoveredRenderer.ActiveTilemap != this.selectedTilemap)
 					this.activeTool = this.toolSelect;
 				else
 					this.activeTool = this.overrideTool ?? this.selectedTool;
@@ -758,7 +760,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			// Determine whether one specific Tilemap is highlighted
 			Tilemap highlightTilemap = null;
-			if (this.activeTool != this.toolNone && this.activeTilemap != null)
+			if (this.activeTool != this.toolNone && this.activeTool != this.toolSelect && this.activeTilemap != null)
 				highlightTilemap = this.activeTilemap;
 			else
 				highlightTilemap = this.selectedTilemap;
