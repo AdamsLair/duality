@@ -12,6 +12,7 @@ using Duality.Drawing;
 
 using Duality.Editor;
 using Duality.Editor.Forms;
+using Duality.Editor.Plugins.CamView.CamViewLayers;
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
@@ -129,6 +130,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return this.actionText.SourceText; }
 		}
 
+
+		/// <summary>
+		/// Provides data on how the grid layer should be displayed to the user.
+		/// The default base class implementation provides reasonable values based on
+		/// user settings and mouse coordinates, but certain editing modes might
+		/// provide more suitable or specialized information instead.
+		/// </summary>
+		/// <param name="cursorPos"></param>
+		/// <param name="data"></param>
+		public virtual void GetDisplayedGridData(Point cursorPos, ref GridLayerData data)
+		{
+			data.GridBaseSize = this.View.EditingUserGuides.GridSize.Xy;
+			data.DisplayedGridPos = this.GetSpaceCoord(new Vector2(cursorPos.X, cursorPos.Y));
+		}
 
 		/// <summary>
 		/// Called when the <see cref="CamViewState"/> is entered.

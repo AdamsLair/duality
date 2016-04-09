@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CamViewLayers\GridLayerData.cs" />
     <Compile Include="CamViewStates\ObjectEditorCamViewState.cs" />
     <Compile Include="Modules\CamView.cs">
       <SubType>Form</SubType>
