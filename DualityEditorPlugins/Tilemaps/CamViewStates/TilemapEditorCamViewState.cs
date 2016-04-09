@@ -135,6 +135,20 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.SetDefaultActiveLayers(
 				typeof(GridCamViewLayer));
 		}
+		
+		/// <inheritdoc />
+		public override void GetDisplayedGridData(Point cursorPos, ref GridLayerData data)
+		{
+			base.GetDisplayedGridData(cursorPos, ref data);
+
+			Tilemap tilemap = this.activeTilemap ?? this.selectedTilemap;
+			Tileset tileset = (tilemap != null) ? tilemap.Tileset.Res : null;
+			Vector2 tileSize = (tileset != null) ? tileset.TileSize : Tileset.DefaultTileSize;
+			data.GridBaseSize = tileSize;
+
+			if (this.hoveredRenderer != null)
+				data.DisplayedGridPos = new Vector3(this.hoveredTile);
+		}
 
 		private IEnumerable<ICmpTilemapRenderer> QueryVisibleTilemapRenderers()
 		{
