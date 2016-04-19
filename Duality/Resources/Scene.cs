@@ -546,12 +546,13 @@ namespace Duality.Resources
 				{
 					if (i >= updatableComponents.Count) break;
 
-					// Skip inactive, disposed and detached Components
-					if (!data[i].Active) continue;
-
 					// Manage profilers per Component type
 					if (i == 0 || i - updateMapBegin >= updateData[updateMapIndex].Count)
 					{
+						// Note:
+						// Since we're doing this based on index-count ranges, this needs to be
+						// done before skipping inactive Components, so we don't run out of sync.
+
 						updateMapIndex++;
 						updateMapBegin = i;
 
@@ -560,6 +561,9 @@ namespace Duality.Resources
 						activeProfiler = updateData[updateMapIndex].Profiler;
 						activeProfiler.BeginMeasure();
 					}
+					
+					// Skip inactive, disposed and detached Components
+					if (!data[i].Active) continue;
 
 					// Invoke the Component's update action
 					updateAction(data[i] as T);

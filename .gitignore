@@ -256,3 +256,4 @@ Other/Scripts/bin/VersionUpdater.vshost.exe.manifest
 UnitTesting/DualityEditorTests/obj/
 UnitTesting/DualityEditorTests/bin/
 SampleProjects/AudioHandling/Content/logfile_editor_prev.txt
+SampleProjects/DualStickSpaceShooter/Content/logfile_editor_prev.txt
