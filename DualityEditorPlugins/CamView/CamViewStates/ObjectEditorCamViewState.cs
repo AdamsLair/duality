@@ -675,9 +675,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			base.OnLeaveState();
 		}
 
-		protected override void OnCollectStateDrawcalls(Canvas canvas)
+		protected override void OnCollectStateWorldOverlayDrawcalls(Canvas canvas)
 		{
-			base.OnCollectStateDrawcalls(canvas);
+			base.OnCollectStateWorldOverlayDrawcalls(canvas);
 
 			// Assure we know how to display the current selection
 			this.ValidateSelectionStats();

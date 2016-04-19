@@ -12,6 +12,7 @@ using Duality.Drawing;
 
 using Duality.Editor;
 using Duality.Editor.Forms;
+using Duality.Editor.Plugins.CamView.CamViewLayers;
 using Duality.Editor.Plugins.CamView.Properties;
 using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
@@ -53,6 +54,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private bool          camBeginDragScene      = false;
 		private Camera.Pass   camPassBg              = null;
 		private Camera.Pass   camPassEdWorld         = null;
+		private Camera.Pass   camPassEdWorldNoDepth  = null;
 		private Camera.Pass   camPassEdScreen        = null;
 		private bool          engineUserInput        = false;
 		private UserGuideType snapToUserGuides       = UserGuideType.All;
@@ -130,6 +132,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 
 		/// <summary>
+		/// Provides data on how the grid layer should be displayed to the user.
+		/// The default base class implementation provides reasonable values based on
+		/// user settings and mouse coordinates, but certain editing modes might
+		/// provide more suitable or specialized information instead.
+		/// </summary>
+		/// <param name="cursorPos"></param>
+		/// <param name="data"></param>
+		public virtual void GetDisplayedGridData(Point cursorPos, ref GridLayerData data)
+		{
+			data.GridBaseSize = this.View.EditingUserGuides.GridSize.Xy;
+			data.DisplayedGridPos = this.GetSpaceCoord(new Vector2(cursorPos.X, cursorPos.Y));
+		}
+
+		/// <summary>
 		/// Called when the <see cref="CamViewState"/> is entered.
 		/// Use this for overall initialization of the state.
 		/// </summary>
@@ -139,21 +155,42 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.RestoreObjectVisibility();
 
 			// Create re-usable render passes for editor gizmos
-			this.camPassBg = new Camera.Pass();
-			this.camPassBg.MatrixMode = RenderMatrix.OrthoScreen;
-			this.camPassBg.ClearFlags = ClearFlag.None;
-			this.camPassBg.VisibilityMask = VisibilityFlag.ScreenOverlay;
-			this.camPassEdWorld = new Camera.Pass();
-			this.camPassEdWorld.ClearFlags = ClearFlag.None;
-			this.camPassEdWorld.VisibilityMask = VisibilityFlag.None;
-			this.camPassEdScreen = new Camera.Pass();
-			this.camPassEdScreen.MatrixMode = RenderMatrix.OrthoScreen;
-			this.camPassEdScreen.ClearFlags = ClearFlag.None;
-			this.camPassEdScreen.VisibilityMask = VisibilityFlag.ScreenOverlay;
+			{
+				// A screen overlay that is rendered behind all following gizmos.
+				// This is used for the "background plate" to grey out or darken
+				// the actual rendered world in order to make custom gizmos more visible.
+				this.camPassBg = new Camera.Pass();
+				this.camPassBg.MatrixMode = RenderMatrix.OrthoScreen;
+				this.camPassBg.ClearFlags = ClearFlag.None;
+				this.camPassBg.VisibilityMask = VisibilityFlag.ScreenOverlay;
 
-			this.camPassBg.CollectDrawcalls			+= this.camPassBg_CollectDrawcalls;
-			this.camPassEdWorld.CollectDrawcalls	+= this.camPassEdWorld_CollectDrawcalls;
-			this.camPassEdScreen.CollectDrawcalls	+= this.camPassEdScreen_CollectDrawcalls;
+				// An in-world rendering step that can make use of the existing depth
+				// buffer values, so gizmos can interact with actual world geometry.
+				this.camPassEdWorld = new Camera.Pass();
+				this.camPassEdWorld.ClearFlags = ClearFlag.None;
+				this.camPassEdWorld.VisibilityMask = VisibilityFlag.None;
+
+				// An in-world rendering step where the depth buffer has been cleared.
+				// This allows to render gizmos in world coordinates that can occlude
+				// each other, while not interacting with world geometry or previously
+				// rendered gizmos.
+				this.camPassEdWorldNoDepth = new Camera.Pass();
+				this.camPassEdWorldNoDepth.ClearFlags = ClearFlag.Depth;
+				this.camPassEdWorldNoDepth.VisibilityMask = VisibilityFlag.None;
+
+				// The final screen overlay rendering step after all gizmos have been 
+				// rendered. This is ideal for most text / status overlays, as well as
+				// direct cursor feedback.
+				this.camPassEdScreen = new Camera.Pass();
+				this.camPassEdScreen.MatrixMode = RenderMatrix.OrthoScreen;
+				this.camPassEdScreen.ClearFlags = ClearFlag.None;
+				this.camPassEdScreen.VisibilityMask = VisibilityFlag.ScreenOverlay;
+			}
+
+			this.camPassBg.CollectDrawcalls             += this.camPassBg_CollectDrawcalls;
+			this.camPassEdWorld.CollectDrawcalls        += this.camPassEdWorld_CollectDrawcalls;
+			this.camPassEdWorldNoDepth.CollectDrawcalls	+= this.camPassEdWorldNoDepth_CollectDrawcalls;
+			this.camPassEdScreen.CollectDrawcalls       += this.camPassEdScreen_CollectDrawcalls;
 
 			Control control = this.RenderableSite.Control;
 			control.Paint		+= this.RenderableControl_Paint;
@@ -307,6 +344,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			// Collect the views layer drawcalls
 			this.CollectLayerDrawcalls(canvas);
+		}
+		protected virtual void OnCollectStateWorldOverlayDrawcalls(Canvas canvas)
+		{
+			// Collect the views layer drawcalls
+			this.CollectLayerWorldOverlayDrawcalls(canvas);
 		}
 		protected virtual void OnCollectStateOverlayDrawcalls(Canvas canvas)
 		{
@@ -609,6 +651,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				canvas.PopState();
 			}
 		}
+		protected void CollectLayerWorldOverlayDrawcalls(Canvas canvas)
+		{
+			var layers = this.View.ActiveLayers.ToArray();
+			layers.StableSort((a, b) => a.Priority - b.Priority);
+			foreach (var layer in layers)
+			{
+				canvas.PushState();
+				layer.OnCollectWorldOverlayDrawcalls(canvas);
+				canvas.PopState();
+			}
+		}
 		protected void CollectLayerOverlayDrawcalls(Canvas canvas)
 		{
 			var layers = this.View.ActiveLayers.ToArray();
@@ -662,12 +715,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			{
 				this.CameraComponent.Passes.Add(this.camPassBg);
 				this.CameraComponent.Passes.Add(this.camPassEdWorld);
+				this.CameraComponent.Passes.Add(this.camPassEdWorldNoDepth);
 				this.CameraComponent.Passes.Add(this.camPassEdScreen);
 
 				this.OnRenderState();
 
 				this.CameraComponent.Passes.Remove(this.camPassBg);
 				this.CameraComponent.Passes.Remove(this.camPassEdWorld);
+				this.CameraComponent.Passes.Remove(this.camPassEdWorldNoDepth);
 				this.CameraComponent.Passes.Remove(this.camPassEdScreen);
 			}
 			catch (Exception exception)
@@ -956,6 +1011,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
 
 			this.OnCollectStateDrawcalls(canvas);
+		}
+		private void camPassEdWorldNoDepth_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
+		{
+			Canvas canvas = new Canvas(e.Device);
+			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Mask, this.FgColor));
+			canvas.State.TextFont = Duality.Resources.Font.GenericMonospace8;
+
+			this.OnCollectStateWorldOverlayDrawcalls(canvas);
 		}
 		private void camPassBg_CollectDrawcalls(object sender, CollectDrawcallEventArgs e)
 		{

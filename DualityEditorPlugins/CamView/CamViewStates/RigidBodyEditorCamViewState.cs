@@ -387,9 +387,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				DualityEditorApp.Selection.GameObjects.GetComponents<RigidBody>().FirstOrDefault();
 		}
 
-		protected override void OnCollectStateDrawcalls(Canvas canvas)
+		protected override void OnCollectStateWorldOverlayDrawcalls(Canvas canvas)
 		{
-			base.OnCollectStateDrawcalls(canvas);
+			base.OnCollectStateWorldOverlayDrawcalls(canvas);
 
 			GameObject selGameObj = this.selectedBody != null ? this.selectedBody.GameObj : null;
 			Transform selTransform = selGameObj != null ? selGameObj.Transform : null;

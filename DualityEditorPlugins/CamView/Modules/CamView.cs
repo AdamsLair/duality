@@ -819,9 +819,21 @@ namespace Duality.Editor.Plugins.CamView
 			DualityApp.Mouse.Source = this;
 			DualityApp.Keyboard.Source = this;
 
+			// If we have a CamView-local listener that is active, use that one.
+			// Note: The GameViewCamViewState deactivates its own camera, since it uses the
+			// regular Scene rendering setup, rather than providing its own.
 			SoundListener localListener = this.CameraObj.GetComponent<SoundListener>();
 			if (localListener != null && localListener.Active)
+			{
 				localListener.MakeCurrent();
+			}
+			// If we don't have a local listener, use the regular one from the current scene
+			else
+			{
+				SoundListener sceneListener = Scene.Current.FindComponent<SoundListener>();
+				if (sceneListener != null)
+					sceneListener.MakeCurrent();
+			}
 		}
 
 		internal void SaveUserData(XElement node)

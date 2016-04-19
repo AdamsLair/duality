@@ -211,6 +211,15 @@ namespace Duality.Resources
 		/// </summary>
 		protected void SetupNativeRes()
 		{
+			foreach (var target in this.targets.Where(t => t != null).Res())
+			{
+				if (target.PixelWidth == 0 || target.PixelHeight == 0)
+				{
+					Log.Core.WriteError("Error initializing '{0}' because '{1}' has a dimension of zero.", this, target);
+					return;
+				}
+			}
+
 			if (this.native == null) this.native = DualityApp.GraphicsBackend.CreateRenderTarget();
 
 			INativeTexture[] targets = this.targets
@@ -223,7 +232,7 @@ namespace Duality.Resources
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error initializing RenderTarget {0}:{2}{1}", this.FullName, Log.Exception(e), Environment.NewLine);
+				Log.Core.WriteError("Error initializing RenderTarget {0}:{1}{2}", this, Environment.NewLine, Log.Exception(e));
 			}
 		}
 
