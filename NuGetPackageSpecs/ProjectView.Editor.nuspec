@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.ProjectView</id>
-    <version>2.0.6</version>
+    <version>2.0.7</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Project View</title>
@@ -13,11 +13,12 @@
     <summary>Provides an overview of project Resources and allows importing new Assets.</summary>
     <description>Provides an overview of project Resources and allows importing new Assets.</description>
     <tags>Duality Editor Plugin ProjectView</tags>
-    <releaseNotes>DragDrop Selection
-#CHANGE: Dragdrop operations out of the Scene or Project View no longer affect editor-wide object selection.</releaseNotes>
+    <releaseNotes>Bugfixes, AdamsLair.WinForms Update
+#FIX: Fixed an ArgumentNullException when pressing Ctrl+C or Ctrl+X on a numeric or string property editor while it didn't contain any value. 
+#CHANGE: Updated the AdamsLair.WinForms dependency to version 1.1.2.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.3.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.3.0" />
+      <dependency id="AdamsLair.Duality" version="2.3.2" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.3.2" />
     </dependencies>
   </metadata>
   <files>
