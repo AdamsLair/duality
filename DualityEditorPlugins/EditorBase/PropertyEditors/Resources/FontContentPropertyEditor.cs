@@ -27,7 +27,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			Font font = this.GetValue().FirstOrDefault() as Font;
 
 			bool lastCanRenderFont = this.canRenderFont;
-			this.canRenderFont = (font != null && font.EmbeddedTrueTypeFont != null);
+			this.canRenderFont = (font != null && font.GetGlyphBitmap(' ') != null);
 			if (lastCanRenderFont != this.canRenderFont)
 			{
 				if (CanRenderFontChanged != null)

@@ -88,7 +88,7 @@ namespace Duality.Editor.Plugins.Base
 				if (resRef.IsLoaded)
 				{
 					Font fnt = resRef.As<Font>().Res;
-					if (fnt.GlyphsDirty && fnt.EmbeddedTrueTypeFont != null)
+					if (fnt.GlyphsDirty)
 						fnt.RenderGlyphs(null);
 				}
 

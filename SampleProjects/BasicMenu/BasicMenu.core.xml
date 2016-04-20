@@ -4,21 +4,6 @@
         <name>BasicMenu.core</name>
     </assembly>
     <members>
-        <member name="M:BasicMenu.MenuComponent.GetAreaOnScreen">
-            <summary>
-            This returns the area on screen that is currently occupied by the SpriteRenderer.
-            For simplicity, this works only if it is set with the ScreenOverlay flag.
-            
-            A full 2.5D implementation (no ScreenOverlay) would require more complex calculations.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="P:BasicMenu.MenuComponent.HoverTint">
-            <summary>
-            [GET/SET] The color tint that will be used when the mouse is hovering
-            on the GameObject
-            </summary>
-        </member>
         <member name="T:BasicMenu.UpdateMenuController">
             <summary>
             This Component implements an OnUpdate-based MenuController.
@@ -38,6 +23,21 @@
             OnInit and OnShutdown.
             Cons: Requires to clean up the event listeners once finished.
             </summary>
+        </member>
+        <member name="P:BasicMenu.MenuComponent.HoverTint">
+            <summary>
+            [GET/SET] The color tint that will be used when the mouse is hovering
+            on the GameObject
+            </summary>
+        </member>
+        <member name="M:BasicMenu.MenuComponent.GetAreaOnScreen">
+            <summary>
+            This returns the area on screen that is currently occupied by the SpriteRenderer.
+            For simplicity, this works only if it is set with the ScreenOverlay flag.
+            
+            A full 2.5D implementation (no ScreenOverlay) would require more complex calculations.
+            </summary>
+            <returns></returns>
         </member>
     </members>
 </doc>
