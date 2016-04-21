@@ -100,6 +100,10 @@ namespace Duality.Resources
 			/// </summary>
 			public int OffsetX;
 			/// <summary>
+			/// The glyphs Y offset when rendering it.
+			/// </summary>
+			public int OffsetY;
+			/// <summary>
 			/// The glyphs kerning samples to the left.
 			/// </summary>
 			public int[] KerningSamplesLeft;
@@ -107,10 +111,6 @@ namespace Duality.Resources
 			/// The glyphs kerning samples to the right.
 			/// </summary>
 			public int[] KerningSamplesRight;
-			/// <summary>
-			/// The glyphs Y offset when rendering it.
-			/// </summary>
-			public int OffsetY;
 
 			public override string ToString()
 			{
@@ -395,7 +395,7 @@ namespace Duality.Resources
 					this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
 					this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
 
-					if (this.glyphs[i].Glyph != ' ' && this.glyphs[i].Glyph != '\t' && !(this.glyphs[i].Height == 0 && this.glyphs[i].Width == 0))
+					if (this.glyphs[i].Glyph != ' ' && this.glyphs[i].Glyph != '\t' && this.glyphs[i].Height > 0 && this.glyphs[i].Width > 0)
 					{
 						// Left side samples
 						{

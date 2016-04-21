@@ -36,53 +36,48 @@ namespace Duality.Editor
 		/// </summary>
 		public static void RenderGlyphs(this DualityFont font, FontRenderGlyphCharSet extendedSet)
 		{
-			if (font.EmbeddedTrueTypeFont == null)
+			if (font.EmbeddedTrueTypeFont == null) throw new InvalidOperationException("Can't render glyphs of a Duality Font without embedded vector Font information.");
+
+			if (fontManagers == null)
+				fontManagers = new Dictionary<int, PrivateFontCollection>();
+
+			// Allocate one PrivateFontCollection for each embedded TrueType Font
+			// This is an unfortunate requirement to keep track of which Font is which,
+			// since a byte[] doesn't give it away, and a Font collection won't tell us
+			// which one we just added.
+			PrivateFontCollection manager;
+			int fontId = font.EmbeddedTrueTypeFont.GetHashCode();
+			if (!fontManagers.TryGetValue(fontId, out manager))
 			{
-				font.UpdateKerningData();
-
+				manager = new PrivateFontCollection();
+				fontManagers.Add(fontId, manager);
 			}
-			else
+
+			// Load custom font family using System.Drawing
+			if (manager.Families.Length == 0)
 			{
-				if (fontManagers == null)
-					fontManagers = new Dictionary<int, PrivateFontCollection>();
-
-				// Allocate one PrivateFontCollection for each embedded TrueType Font
-				// This is an unfortunate requirement to keep track of which Font is which,
-				// since a byte[] doesn't give it away, and a Font collection won't tell us
-				// which one we just added.
-				PrivateFontCollection manager;
-				int fontId = font.EmbeddedTrueTypeFont.GetHashCode();
-				if (!fontManagers.TryGetValue(fontId, out manager))
-				{
-					manager = new PrivateFontCollection();
-					fontManagers.Add(fontId, manager);
-				}
-
-				// Load custom font family using System.Drawing
-				if (manager.Families.Length == 0)
-				{
-					IntPtr fontBuffer = Marshal.AllocCoTaskMem(font.EmbeddedTrueTypeFont.Length);
-					Marshal.Copy(font.EmbeddedTrueTypeFont, 0, fontBuffer, font.EmbeddedTrueTypeFont.Length);
-					manager.AddMemoryFont(fontBuffer, font.EmbeddedTrueTypeFont.Length);
-				}
-
-				// Render the font's glyphs
-				RenderGlyphs(font, manager.Families.FirstOrDefault(), extendedSet);
-
-				// Yes, we have a minor memory leak here - both the Font buffer and the private
-				// Font collection. Unfortunately though, GDI+ won't let us dispose them
-				// properly due to aggressive Font caching, see here:
-				//
-				// http://stackoverflow.com/questions/25583394/privatefontcollection-addmemoryfont-producing-random-errors-on-windows-server-20
-				//
-				// "Standard GDI+ lossage, disposing a Font does not actually destroy it. 
-				// It gets put back into a cache, with the assumption that it will be used again. 
-				// An important perf optimization, creating fonts is pretty expensive. That ends 
-				// poorly for private fonts when you destroy their home, the font will use 
-				// released memory. Producing bewildering results, including hard crashes. You'll 
-				// need to keep the collection around, as well as the IntPtr."
-				// – Hans Passant Aug 30 '14 at 16:13
+				IntPtr fontBuffer = Marshal.AllocCoTaskMem(font.EmbeddedTrueTypeFont.Length);
+				Marshal.Copy(font.EmbeddedTrueTypeFont, 0, fontBuffer, font.EmbeddedTrueTypeFont.Length);
+				manager.AddMemoryFont(fontBuffer, font.EmbeddedTrueTypeFont.Length);
 			}
+
+			// Render the font's glyphs
+			RenderGlyphs(font, manager.Families.FirstOrDefault(), extendedSet);
+
+			// Yes, we have a minor memory leak here - both the Font buffer and the private
+			// Font collection. Unfortunately though, GDI+ won't let us dispose them
+			// properly due to aggressive Font caching, see here:
+			//
+			// http://stackoverflow.com/questions/25583394/privatefontcollection-addmemoryfont-producing-random-errors-on-windows-server-20
+			//
+			// "Standard GDI+ lossage, disposing a Font does not actually destroy it. 
+			// It gets put back into a cache, with the assumption that it will be used again. 
+			// An important perf optimization, creating fonts is pretty expensive. That ends 
+			// poorly for private fonts when you destroy their home, the font will use 
+			// released memory. Producing bewildering results, including hard crashes. You'll 
+			// need to keep the collection around, as well as the IntPtr."
+			// – Hans Passant Aug 30 '14 at 16:13
+
 		}
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.

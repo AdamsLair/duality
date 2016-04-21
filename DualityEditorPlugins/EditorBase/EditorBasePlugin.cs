@@ -89,7 +89,16 @@ namespace Duality.Editor.Plugins.Base
 				{
 					Font fnt = resRef.As<Font>().Res;
 					if (fnt.GlyphsDirty)
-						fnt.RenderGlyphs(null);
+					{
+						if (fnt.EmbeddedTrueTypeFont != null)
+						{
+							fnt.RenderGlyphs(null);
+						}
+						else
+						{
+							fnt.UpdateKerningData();
+						}
+					}
 				}
 
 				foreach (Duality.Components.Renderers.TextRenderer r in Scene.Current.AllObjects.GetComponents<Duality.Components.Renderers.TextRenderer>())
