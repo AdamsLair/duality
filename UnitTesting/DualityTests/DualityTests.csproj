@@ -87,6 +87,7 @@
       <DependentUpon>TestRes.resx</DependentUpon>
     </Compile>
     <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
+    <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\PrefabTest.cs" />
     <Compile Include="Serialization\TestObjects.cs" />
     <Compile Include="TestCategory.cs" />
