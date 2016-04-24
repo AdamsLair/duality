@@ -388,8 +388,8 @@ namespace Duality.Resources
 				for (int i = 0; i < this.glyphs.Length; ++i)
 				{
 					PixelData glyphTemp_ = this.GetGlyphBitmap(this.glyphs[i].Glyph);
-					PixelData glyphTemp = new PixelData(this.glyphs[i].Width, this.glyphs[i].Height + this.glyphs[i].OffsetY);
-					glyphTemp_.DrawOnto(glyphTemp, BlendMode.Solid, 0, this.glyphs[i].OffsetY);
+					PixelData glyphTemp = new PixelData(this.glyphs[i].Width, this.Height);
+					glyphTemp_.DrawOnto(glyphTemp, BlendMode.Solid, 0, -this.glyphs[i].OffsetY);
 
 
 					this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
@@ -661,7 +661,7 @@ namespace Duality.Resources
 
 				Vector2 glyphPos;
 				glyphPos.X = MathF.Round(curOffset + glyphXOff);
-				glyphPos.Y = MathF.Round(0 - glyphYOff);
+				glyphPos.Y = MathF.Round(0 + glyphYOff);
 
 				vertices[i * 4 + 0].Pos.X = glyphPos.X;
 				vertices[i * 4 + 0].Pos.Y = glyphPos.Y;
@@ -732,7 +732,7 @@ namespace Duality.Resources
 				bitmap.DrawOnto(target, 
 					BlendMode.Alpha, 
 					MathF.RoundToInt(x + curOffset + glyphXOff), 
-					MathF.RoundToInt(y - glyphYOff),
+					MathF.RoundToInt(y + glyphYOff),
 					glyphData.Width, 
 					glyphData.Height,
 					MathF.RoundToInt(dataCoord.X), 
@@ -881,7 +881,7 @@ namespace Duality.Resources
 			{
 				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
 
-				glyphRect = new Rect(curOffset + glyphXOff, 0 - glyphYOff, glyphData.Width, glyphData.Height);
+				glyphRect = new Rect(curOffset + glyphXOff, 0 + glyphYOff, glyphData.Width, glyphData.Height);
 				if (glyphRect.Contains(x, y)) return i;
 
 				curOffset += glyphXAdv;
