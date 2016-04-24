@@ -661,7 +661,7 @@ namespace Duality.Resources
 
 				Vector2 glyphPos;
 				glyphPos.X = MathF.Round(curOffset + glyphXOff);
-                glyphPos.Y = MathF.Round(0 - glyphYOff);
+				glyphPos.Y = MathF.Round(0 - glyphYOff);
 
 				vertices[i * 4 + 0].Pos.X = glyphPos.X;
 				vertices[i * 4 + 0].Pos.Y = glyphPos.Y;
