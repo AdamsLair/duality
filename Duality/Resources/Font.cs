@@ -387,10 +387,7 @@ namespace Duality.Resources
 
 				for (int i = 0; i < this.glyphs.Length; ++i)
 				{
-					PixelData glyphTemp_ = this.GetGlyphBitmap(this.glyphs[i].Glyph);
-					PixelData glyphTemp = new PixelData(this.glyphs[i].Width, this.Height);
-					glyphTemp_.DrawOnto(glyphTemp, BlendMode.Solid, 0, -this.glyphs[i].OffsetY);
-
+					PixelData glyphTemp = this.GetGlyphBitmap(this.glyphs[i].Glyph);
 
 					this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
 					this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
@@ -406,8 +403,9 @@ namespace Duality.Resources
 							{
 								leftData[sampleIndex] = leftMid;
 
+								int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
 								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-								int endY = MathF.Clamp(kerningY[sampleIndex], 0, glyphTemp.Height);
+								int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
 								if (sampleIndex == leftData.Length - 1) endY = glyphTemp.Height;
 								lastSampleY = endY;
 
@@ -432,9 +430,10 @@ namespace Duality.Resources
 							for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
 							{
 								rightData[sampleIndex] = rightMid;
-
+								
+								int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
 								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-								int endY = MathF.Clamp(kerningY[sampleIndex], 0, glyphTemp.Height);
+								int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
 								if (sampleIndex == rightData.Length - 1) endY = glyphTemp.Height;
 								lastSampleY = endY;
 
