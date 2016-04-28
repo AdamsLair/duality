@@ -39,7 +39,7 @@ namespace Duality.Editor
 			if (font.EmbeddedTrueTypeFont == null) throw new InvalidOperationException("Can't render glyphs of a Duality Font without embedded vector Font information.");
 
 			if (fontManagers == null)
-				fontManagers = new Dictionary<int,PrivateFontCollection>();
+				fontManagers = new Dictionary<int, PrivateFontCollection>();
 
 			// Allocate one PrivateFontCollection for each embedded TrueType Font
 			// This is an unfortunate requirement to keep track of which Font is which,
@@ -77,6 +77,7 @@ namespace Duality.Editor
 			// released memory. Producing bewildering results, including hard crashes. You'll 
 			// need to keep the collection around, as well as the IntPtr."
 			// – Hans Passant Aug 30 '14 at 16:13
+
 		}
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
@@ -226,6 +227,7 @@ namespace Duality.Editor
 					glyphs[i].Width = glyphTemp.Width;
 					glyphs[i].Height = glyphTemp.Height;
 					glyphs[i].OffsetX = glyphTemp.Width - glyphTempTypo.Width;
+					glyphs[i].OffsetY = 0; // ttf fonts are rendered on blocks that are the whole size of the height - so no need for offset
 					if (isSpace)
 					{
 						glyphs[i].Width /= 2;
