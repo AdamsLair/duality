@@ -14,24 +14,31 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
 	public class FontContentPropertyEditor : ResourcePropertyEditor
 	{
-		private bool canRenderFont = false;
-		public event EventHandler CanRenderFontChanged = null;
-		public bool CanRenderFont
-		{
-			get { return this.canRenderFont; }
-		}
+		private bool canReRenderGlyphs = false;
 
 		protected override void OnGetValue()
 		{
 			base.OnGetValue();
 			Font font = this.GetValue().FirstOrDefault() as Font;
 
-			bool lastCanRenderFont = this.canRenderFont;
-			this.canRenderFont = (font != null && font.EmbeddedTrueTypeFont != null);
-			if (lastCanRenderFont != this.canRenderFont)
+			// Can we re-render this font dynamically when needed? This will determine whether
+			// users are allowed to change properties like Size or Style.
+			this.canReRenderGlyphs = (font != null && font.EmbeddedTrueTypeFont != null);
+			this.UpdateReadOnlyState();
+		}
+
+		private void UpdateReadOnlyState()
+		{
+			foreach (PropertyEditor memberEditor in this.ChildEditors)
 			{
-				if (CanRenderFontChanged != null)
-					CanRenderFontChanged(this, EventArgs.Empty);
+				bool willRequireReRender = 
+					memberEditor.EditedMember == ReflectionInfo.Property_Font_Size ||
+					memberEditor.EditedMember == ReflectionInfo.Property_Font_Style ||
+					memberEditor.EditedMember == ReflectionInfo.Property_Font_GlyphRenderMode ||
+					memberEditor.EditedMember == ReflectionInfo.Property_Font_MonoSpace;
+
+				if (willRequireReRender)
+					memberEditor.ReadOnly = !this.canReRenderGlyphs;
 			}
 		}
 	}
