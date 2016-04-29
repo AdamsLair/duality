@@ -235,7 +235,7 @@ namespace Duality.Resources
 		public bool Kerning
 		{
 			get { return this.kerning; }
-			set { this.kerning = value; this.glyphsDirty = true; }
+			set { this.kerning = value; }
 		}
 		/// <summary>
 		/// [GET] Returns whether this Font requires to re-render its glyphs in order to match the
@@ -353,111 +353,100 @@ namespace Duality.Resources
 		/// <summary>
 		/// Updates this Fonts kerning sample data.
 		/// </summary>
-		public void UpdateKerningData()
+		private void UpdateKerningData()
 		{
-			if (this.kerning)
+			int kerningSamples = (this.Ascent + this.Descent) / 4;
+			int[] kerningY;
+			if (kerningSamples <= 6)
 			{
-				int kerningSamples = (this.Ascent + this.Descent) / 4;
-				int[] kerningY;
-				if (kerningSamples <= 6)
-				{
-					kerningSamples = 6;
-					kerningY = new int[] {
-						this.BaseLine - this.Ascent,
-						this.BaseLine - this.BodyAscent,
-						this.BaseLine - this.BodyAscent * 2 / 3,
-						this.BaseLine - this.BodyAscent / 3,
-						this.BaseLine,
-						this.BaseLine + this.Descent};
-				}
-				else
-				{
-					kerningY = new int[kerningSamples];
-					int bodySamples = kerningSamples * 2 / 3;
-					int descentSamples = (kerningSamples - bodySamples) / 2;
-					int ascentSamples = kerningSamples - bodySamples - descentSamples;
-
-					for (int k = 0; k < ascentSamples; k++) 
-						kerningY[k] = this.BaseLine - this.Ascent + k * (this.Ascent - this.BodyAscent) / ascentSamples;
-					for (int k = 0; k < bodySamples; k++) 
-						kerningY[ascentSamples + k] = this.BaseLine - this.BodyAscent + k * this.BodyAscent / (bodySamples - 1);
-					for (int k = 0; k < descentSamples; k++) 
-						kerningY[ascentSamples + bodySamples + k] = this.BaseLine + (k + 1) * this.Descent / descentSamples;
-				}
-
-				for (int i = 0; i < this.glyphs.Length; ++i)
-				{
-					PixelData glyphTemp = this.GetGlyphBitmap(this.glyphs[i].Glyph);
-
-					this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
-					this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
-
-					if (this.glyphs[i].Glyph != ' ' && this.glyphs[i].Glyph != '\t' && this.glyphs[i].Height > 0 && this.glyphs[i].Width > 0)
-					{
-						// Left side samples
-						{
-							int[] leftData = this.glyphs[i].KerningSamplesLeft;
-							int leftMid = glyphTemp.Width / 2;
-							int lastSampleY = 0;
-							for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
-							{
-								leftData[sampleIndex] = leftMid;
-
-								int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
-								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-								int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
-								if (sampleIndex == leftData.Length - 1) endY = glyphTemp.Height;
-								lastSampleY = endY;
-
-								for (int y = beginY; y < endY; y++)
-								{
-									int x = 0;
-									while (glyphTemp[x, y].A <= 64)
-									{
-										x++;
-										if (x >= leftMid) break;
-									}
-									leftData[sampleIndex] = Math.Min(leftData[sampleIndex], x);
-								}
-							}
-						}
-
-						// Right side samples
-						{
-							int[] rightData = this.glyphs[i].KerningSamplesRight;
-							int rightMid = (glyphTemp.Width + 1) / 2;
-							int lastSampleY = 0;
-							for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
-							{
-								rightData[sampleIndex] = rightMid;
-								
-								int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
-								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-								int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
-								if (sampleIndex == rightData.Length - 1) endY = glyphTemp.Height;
-								lastSampleY = endY;
-
-								for (int y = beginY; y < endY; y++)
-								{
-									int x = glyphTemp.Width - 1;
-									while (glyphTemp[x, y].A <= 64)
-									{
-										x--;
-										if (x <= rightMid) break;
-									}
-									rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphTemp.Width - 1 - x);
-								}
-							}
-						}
-					}
-				}
+				kerningSamples = 6;
+				kerningY = new int[] {
+					this.BaseLine - this.Ascent,
+					this.BaseLine - this.BodyAscent,
+					this.BaseLine - this.BodyAscent * 2 / 3,
+					this.BaseLine - this.BodyAscent / 3,
+					this.BaseLine,
+					this.BaseLine + this.Descent};
 			}
 			else
 			{
-				for (int i = 0; i < this.glyphs.Length; ++i)
+				kerningY = new int[kerningSamples];
+				int bodySamples = kerningSamples * 2 / 3;
+				int descentSamples = (kerningSamples - bodySamples) / 2;
+				int ascentSamples = kerningSamples - bodySamples - descentSamples;
+
+				for (int k = 0; k < ascentSamples; k++) 
+					kerningY[k] = this.BaseLine - this.Ascent + k * (this.Ascent - this.BodyAscent) / ascentSamples;
+				for (int k = 0; k < bodySamples; k++) 
+					kerningY[ascentSamples + k] = this.BaseLine - this.BodyAscent + k * this.BodyAscent / (bodySamples - 1);
+				for (int k = 0; k < descentSamples; k++) 
+					kerningY[ascentSamples + bodySamples + k] = this.BaseLine + (k + 1) * this.Descent / descentSamples;
+			}
+
+			for (int i = 0; i < this.glyphs.Length; ++i)
+			{
+				PixelData glyphTemp = this.GetGlyphBitmap(this.glyphs[i].Glyph);
+
+				this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
+				this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
+
+				if (this.glyphs[i].Glyph != ' ' && this.glyphs[i].Glyph != '\t' && this.glyphs[i].Height > 0 && this.glyphs[i].Width > 0)
 				{
-					this.glyphs[i].KerningSamplesLeft	= null;
-					this.glyphs[i].KerningSamplesRight	= null;
+					// Left side samples
+					{
+						int[] leftData = this.glyphs[i].KerningSamplesLeft;
+						int leftMid = glyphTemp.Width / 2;
+						int lastSampleY = 0;
+						for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
+						{
+							leftData[sampleIndex] = leftMid;
+
+							int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
+							int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
+							int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
+							if (sampleIndex == leftData.Length - 1) endY = glyphTemp.Height;
+							lastSampleY = endY;
+
+							for (int y = beginY; y < endY; y++)
+							{
+								int x = 0;
+								while (glyphTemp[x, y].A <= 64)
+								{
+									x++;
+									if (x >= leftMid) break;
+								}
+								leftData[sampleIndex] = Math.Min(leftData[sampleIndex], x);
+							}
+						}
+					}
+
+					// Right side samples
+					{
+						int[] rightData = this.glyphs[i].KerningSamplesRight;
+						int rightMid = (glyphTemp.Width + 1) / 2;
+						int lastSampleY = 0;
+						for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
+						{
+							rightData[sampleIndex] = rightMid;
+								
+							int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
+							int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
+							int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
+							if (sampleIndex == rightData.Length - 1) endY = glyphTemp.Height;
+							lastSampleY = endY;
+
+							for (int y = beginY; y < endY; y++)
+							{
+								int x = glyphTemp.Width - 1;
+								while (glyphTemp[x, y].A <= 64)
+								{
+									x--;
+									if (x <= rightMid) break;
+								}
+								rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphTemp.Width - 1 - x);
+							}
+						}
+					}
 				}
 			}
 		}
