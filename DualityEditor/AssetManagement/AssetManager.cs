@@ -10,14 +10,23 @@ using Duality.IO;
 
 namespace Duality.Editor.AssetManagement
 {
+	/// <summary>
+	/// A static helper class that allows to easily perform operations related to the import and export of Resources.
+	/// </summary>
 	public static class AssetManager
 	{
 		private static List<IAssetImporter> importers = new List<IAssetImporter>();
+
+		/// <summary>
+		/// [GET] Enumerates all known <see cref="IAssetImporter"/>s, each represented by a single instance
+		/// and sorted by priority.
+		/// </summary>
 		public static IEnumerable<IAssetImporter> Importers
 		{
 			get { return importers; }
 		}
 		
+
 		internal static void Init()
 		{
 			foreach (TypeInfo genType in DualityEditorApp.GetAvailDualityEditorTypes(typeof(IAssetImporter)))
@@ -33,10 +42,30 @@ namespace Duality.Editor.AssetManagement
 			importers.Clear();
 		}
 
+		/// <summary>
+		/// Imports the specified set of input source files and returns a set of output Resources.
+		/// </summary>
+		/// <param name="inputFiles">An enumerable of input source files that should be imported.</param>
+		/// <param name="targetBaseDir">The target directory that serves as a base for creating output Resources.</param>
+		/// <param name="inputBaseDir">
+		/// The base directory of the previously specified input source files, 
+		/// which is mapped to the target base directory.
+		/// </param>
+		/// <returns></returns>
 		public static AssetImportOutput[] ImportAssets(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir)
 		{
 			return ImportAssets(inputFiles, targetBaseDir, inputBaseDir, false);
 		}
+		/// <summary>
+		/// Simulates an import operation in order to determine the expected output. No changes are made.
+		/// </summary>
+		/// <param name="inputFiles">An enumerable of input source files that should be imported.</param>
+		/// <param name="targetBaseDir">The target directory that serves as a base for creating output Resources.</param>
+		/// <param name="inputBaseDir">
+		/// The base directory of the previously specified input source files, 
+		/// which is mapped to the target base directory.
+		/// </param>
+		/// <returns></returns>
 		public static AssetImportOutput[] SimulateImportAssets(IEnumerable<string> inputFiles, string targetBaseDir, string inputBaseDir)
 		{
 			return ImportAssets(inputFiles, targetBaseDir, inputBaseDir, true);
@@ -75,10 +104,24 @@ namespace Duality.Editor.AssetManagement
 			return importOperation.Output.ToArray();
 		}
 
+		/// <summary>
+		/// Re-Imports the specified set of input source files and returns a set of updated output Resources.
+		/// </summary>
+		/// <param name="localInputFiles">
+		/// An enumerable of input source files that are already part of the local media source folder.
+		/// </param>
+		/// <returns></returns>
 		public static AssetImportOutput[] ReImportAssets(IEnumerable<string> localInputFiles)
 		{
 			return ReImportAssets(localInputFiles, false);
 		}
+		/// <summary>
+		/// Simulates a re-import operation in order to determine the expected output. No changes are made.
+		/// </summary>
+		/// <param name="localInputFiles">
+		/// An enumerable of input source files that are already part of the local media source folder.
+		/// </param>
+		/// <returns></returns>
 		public static AssetImportOutput[] SimulateReImportAssets(IEnumerable<string> localInputFiles)
 		{
 			return ReImportAssets(localInputFiles, true);
@@ -105,10 +148,22 @@ namespace Duality.Editor.AssetManagement
 			return reimportOperation.Output.ToArray();
 		}
 
+		/// <summary>
+		/// Exports the specified set of input Resources and returns a set of generated or updated output source files.
+		/// </summary>
+		/// <param name="inputResource">The <see cref="Resource"/> to be exported.</param>
+		/// <param name="exportDir">The target directory that serves as a base for creating output source files.</param>
+		/// <returns></returns>
 		public static string[] ExportAssets(ContentRef<Resource> inputResource, string exportDir = null)
 		{
 			return ExportAssets(inputResource, exportDir, false);
 		}
+		/// <summary>
+		/// Simulates an export operation in order to determine the expected output. No changes are made.
+		/// </summary>
+		/// <param name="inputResource">The <see cref="Resource"/> to be exported.</param>
+		/// <param name="exportDir">The target directory that serves as a base for creating output source files.</param>
+		/// <returns></returns>
 		public static string[] SimulateExportAssets(ContentRef<Resource> inputResource, string exportDir = null)
 		{
 			return ExportAssets(inputResource, exportDir, true);
@@ -120,13 +175,7 @@ namespace Duality.Editor.AssetManagement
 
 			// If there is no export directory set, derive it from the Resource path in the Data folder
 			if (exportDir == null)
-			{
-				string resFullNameInData = PathHelper.MakeFilePathRelative(inputResource.FullName, DualityApp.DataDirectory);
-				string resDirInData = Path.GetDirectoryName(resFullNameInData);
-				exportDir = Path.Combine(
-					EditorHelper.SourceMediaDirectory,
-					resDirInData);
-			}
+				exportDir = GetSourceMediaBaseDir(inputResource);
 
 			bool userAbort = false;
 			bool success = false;
@@ -154,6 +203,35 @@ namespace Duality.Editor.AssetManagement
 			}
 
 			return exportOperation.OutputPaths.ToArray();
+		}
+
+		/// <summary>
+		/// Determines the source files of the specified <see cref="Resource"/>, which
+		/// were used during the most recent import and can be re-used during export and re-import operations.
+		/// </summary>
+		/// <param name="resource"></param>
+		/// <returns></returns>
+		public static string[] GetAssetSourceFiles(ContentRef<Resource> resource)
+		{
+			// Early-out, if the input Resource isn't available
+			if (!resource.IsAvailable) return new string[0];
+			
+			// Assuming a symmetrical import-export, use a simulated export to determine the imported source.
+			return AssetManager.SimulateExportAssets(resource);
+		}
+		/// <summary>
+		/// Determines the expected base directory of the specified <see cref="Resource"/> instances source files,
+		/// which were used during the most recent import and can be re-used during export and re-import operations 
+		/// of that <see cref="Resource"/>.
+		/// </summary>
+		/// <param name="resource"></param>
+		/// <returns></returns>
+		private static string GetSourceMediaBaseDir(ContentRef<Resource> resource)
+		{
+			string resFullNameInData = PathHelper.MakeFilePathRelative(resource.FullName, DualityApp.DataDirectory);
+			string resDirInData = Path.GetDirectoryName(resFullNameInData);
+			string sourceMediaDir = Path.Combine(EditorHelper.SourceMediaDirectory, resDirInData);
+			return sourceMediaDir;
 		}
 
 		private static bool ConfirmOverwriteData()

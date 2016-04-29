@@ -450,7 +450,7 @@ namespace Duality.Editor
 		{
 			if (deleteEvent.IsResource)
 			{
-				IList<string> mediaPaths = GetSourceMediaPaths(deleteEvent.Content.Res);
+				IList<string> mediaPaths = AssetManager.GetAssetSourceFiles(deleteEvent.Content);
 				for (int i = 0; i < mediaPaths.Count; i++)
 				{
 					if (File.Exists(mediaPaths[i]))
@@ -478,13 +478,13 @@ namespace Duality.Editor
 			if (!renameEvent.IsResource)
 				return new string[0];
 			else
-				return GetSourceMediaPaths(renameEvent.OldContent.Res);
+				return AssetManager.GetAssetSourceFiles(renameEvent.OldContent);
 		}
 		private static void MoveSourceMediaFile(ResourceRenamedEventArgs renameEvent, string[] oldMediaPaths)
 		{
 			if (renameEvent.IsResource)
 			{
-				string[] newMediaPaths = GetSourceMediaPaths(renameEvent.Content.Res);
+				string[] newMediaPaths = AssetManager.GetAssetSourceFiles(renameEvent.Content);
 				for (int i = 0; i < oldMediaPaths.Length; i++)
 				{
 					string oldPath = oldMediaPaths[i];
@@ -525,11 +525,6 @@ namespace Duality.Editor
 					}
 				}
 			}
-		}
-		private static string[] GetSourceMediaPaths(Resource resource)
-		{
-			if (resource == null) return new string[0];
-			return AssetManager.SimulateExportAssets(resource);
 		}
 
 		private static void DualityEditorApp_EditorIdling(object sender, EventArgs e)
