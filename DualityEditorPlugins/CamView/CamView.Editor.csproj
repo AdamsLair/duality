@@ -40,6 +40,10 @@
     <NoWarn>1591,1592,1573,1571,1570,1572,0419</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AdamsLair.WinForms.1.1.4.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
