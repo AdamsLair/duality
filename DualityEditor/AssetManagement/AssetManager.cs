@@ -175,7 +175,7 @@ namespace Duality.Editor.AssetManagement
 
 			// If there is no export directory set, derive it from the Resource path in the Data folder
 			if (exportDir == null)
-				exportDir = GetSourceMediaBaseDir(inputResource);
+				exportDir = AssetInternalHelper.GetSourceMediaBaseDir(inputResource);
 
 			bool userAbort = false;
 			bool success = false;
@@ -221,7 +221,7 @@ namespace Duality.Editor.AssetManagement
 			string[] sourceFileHint = (assetInfo != null) ? assetInfo.SourceFileHint : null;
 			if (sourceFileHint != null && sourceFileHint.Length > 0)
 			{
-				string baseDir = GetSourceMediaBaseDir(resource);
+				string baseDir = AssetInternalHelper.GetSourceMediaBaseDir(resource);
 				RawList<string> sourceFilePaths = new RawList<string>(sourceFileHint.Length);
 				for (int i = 0; i < sourceFileHint.Length; i++)
 				{
@@ -238,20 +238,6 @@ namespace Duality.Editor.AssetManagement
 			// As a fallback, use a simulated export to determine the imported source.
 			// This is assuming a symmetrical import-export, which isn't always true.
 			return AssetManager.SimulateExportAssets(resource);
-		}
-		/// <summary>
-		/// Determines the expected base directory of the specified <see cref="Resource"/> instances source files,
-		/// which were used during the most recent import and can be re-used during export and re-import operations 
-		/// of that <see cref="Resource"/>.
-		/// </summary>
-		/// <param name="resource"></param>
-		/// <returns></returns>
-		internal static string GetSourceMediaBaseDir(ContentRef<Resource> resource)
-		{
-			string resFullNameInData = PathHelper.MakeFilePathRelative(resource.FullName, DualityApp.DataDirectory);
-			string resDirInData = Path.GetDirectoryName(resFullNameInData);
-			string sourceMediaDir = Path.Combine(EditorHelper.SourceMediaDirectory, resDirInData);
-			return sourceMediaDir;
 		}
 
 		private static bool ConfirmOverwriteData()

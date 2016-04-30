@@ -107,6 +107,7 @@
     <Compile Include="..\Duality\Backend\DefaultPluginLoader.cs">
       <Link>DefaultPluginLoader.cs</Link>
     </Compile>
+    <Compile Include="AssetManagement\AssetInternalHelper.cs" />
     <Compile Include="Backend\Dummy\DummyNativeRenderableSite.cs" />
     <Compile Include="Backend\Dummy\DummyNativeEditorGraphicsContext.cs" />
     <Compile Include="Backend\Dummy\DummyEditorGraphicsBackend.cs" />

@@ -205,7 +205,7 @@ namespace Duality.Editor.AssetManagement
 				{
 					Resource resource = output.Resource.Res;
 					
-					string sourceMediaBaseDir = AssetManager.GetSourceMediaBaseDir(resource);
+					string sourceMediaBaseDir = AssetInternalHelper.GetSourceMediaBaseDir(resource);
 					string[] sourceFileHints = new string[output.InputPaths.Count];
 					for (int i = 0; i < sourceFileHints.Length; i++)
 					{
