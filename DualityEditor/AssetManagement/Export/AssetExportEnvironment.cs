@@ -51,6 +51,9 @@ namespace Duality.Editor.AssetManagement
 		}
 		public string AddOutputPath(string localFilePath)
 		{
+			if (string.IsNullOrWhiteSpace(localFilePath)) 
+				throw new ArgumentException("File path can't be null or whitespace.", "localFilePath");
+
 			string filePath = Path.Combine(this.exportDir, localFilePath);
 
 			// If we're doing actual work, make sure the directory exists

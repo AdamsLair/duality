@@ -106,6 +106,12 @@ namespace Duality.Editor.AssetManagement
 		}
 		public void AddOutput(IContentRef resource, IEnumerable<string> inputPaths)
 		{
+			// Make sure that the provided input paths aren't null or whitespace.
+			if (inputPaths == null) 
+				throw new ArgumentNullException("inputPaths");
+			if (inputPaths.Any(p => string.IsNullOrWhiteSpace(p))) 
+				throw new ArgumentException("Input paths enumerable may not contain null or whitespace items.", "inputPaths");
+
 			// If this is not a preparation step, require all output Resources to be actually available.
 			if (!this.isPrepareStep && !resource.IsAvailable)
 				throw new ArgumentException("Can't add a non-existent output Resource", "resource");
