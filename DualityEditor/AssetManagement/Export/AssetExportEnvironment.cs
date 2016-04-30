@@ -66,5 +66,19 @@ namespace Duality.Editor.AssetManagement
 			this.isHandled = true;
 			return filePath;
 		}
+
+		public bool GetParameter<T>(string parameterName, out T value)
+		{
+			return AssetInternalHelper.GetAssetInfoCustomValue<T>(this.input, parameterName, out value);
+		}
+		public void SetParameter<T>(string parameterName, T value)
+		{
+			// Disallow adjusting parameters in the preparation step.
+			if (this.isPrepareStep) throw new InvalidOperationException(
+				"Cannot adjust parameter values in the preparation step. " +
+				"At this point, any Resource data is considered read-only.");
+
+			AssetInternalHelper.SetAssetInfoCustomValue<T>(this.input, parameterName, value);
+		}
 	}
 }

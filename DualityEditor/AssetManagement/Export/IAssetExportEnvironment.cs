@@ -27,5 +27,21 @@ namespace Duality.Editor.AssetManagement
 		/// </summary>
 		/// <param name="localFilePath"></param>
 		string AddOutputPath(string localFilePath);
+
+		/// <summary>
+		/// Retrieves the value of an export parameter for the exported <see cref="Resource"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="parameterName">The name of the parameter.</param>
+		/// <param name="value">An out reference to the variable to which the retrieved value will be assigned.</param>
+		/// <returns>True, if the value was retrieved successfully. False otherwise.</returns>
+		bool GetParameter<T>(string parameterName, out T value);
+		/// <summary>
+		/// Sets the value of an export parameter for the exported <see cref="Resource"/> 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="parameterName">The name of the parameter.</param>
+		/// <param name="value">The new value that should be assigned to the parameter.</param>
+		void SetParameter<T>(string parameterName, T value);
 	}
 }

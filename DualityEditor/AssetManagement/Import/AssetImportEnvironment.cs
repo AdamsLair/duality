@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 using Duality;
 using Duality.IO;
@@ -117,6 +118,27 @@ namespace Duality.Editor.AssetManagement
 				throw new ArgumentException("Can't add a non-existent output Resource", "resource");
 
 			this.output.Add(new AssetImportOutput(resource.As<Resource>(), inputPaths));
+		}
+		
+		public bool GetParameter<T>(IContentRef resource, string parameterName, out T value)
+		{
+			// If we're importing this asset for the first time, there is no data available.
+			if (!this.isReImport)
+			{
+				value = default(T);
+				return false;
+			}
+
+			return AssetInternalHelper.GetAssetInfoCustomValue<T>(resource.Res, parameterName, out value);
+		}
+		public void SetParameter<T>(IContentRef resource, string parameterName, T value)
+		{
+			// Disallow adjusting parameters in the preparation step.
+			if (this.isPrepareStep) throw new InvalidOperationException(
+				"Cannot adjust parameter values in the preparation step. " +
+				"At this point, any Resource data is considered read-only.");
+
+			AssetInternalHelper.SetAssetInfoCustomValue<T>(resource.Res, parameterName, value);
 		}
 
 		private string GetTargetPath<T>(string assetName) where T : Resource

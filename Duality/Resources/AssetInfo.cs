@@ -19,8 +19,10 @@ namespace Duality.Editor.AssetManagement
 	{
 		internal static readonly string FileHintNameVariable = "{Name}";
 
-		private string importerId = null;
-		private string[] sourceFileHint = null;
+		private string                    importerId     = null;
+		private string[]                  sourceFileHint = null;
+		private Dictionary<string,object> customData     = null;
+
 		[DontSerialize] private string nameHint = null;
 
 		/// <summary>
@@ -43,6 +45,17 @@ namespace Duality.Editor.AssetManagement
 		{
 			get { return this.sourceFileHint; }
 			set { this.sourceFileHint = value; }
+		}
+		/// <summary>
+		/// [GET / SET] A collection of key-value pairs that can be used to attach custom asset data
+		/// to the asset info of a <see cref="Resource"/>. This data can be used by importers and exporters
+		/// to persistently store parameters and user configuration regarding import and export
+		/// opreations of this <see cref="Resource"/>.
+		/// </summary>
+		public Dictionary<string,object> CustomData
+		{
+			get { return this.customData; }
+			set { this.customData = value; }
 		}
 		/// <summary>
 		/// [GET / SET] For runtime-only Resources that haven't been saved or located anywhere,

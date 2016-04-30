@@ -33,5 +33,75 @@ namespace Duality.Editor.AssetManagement
 			string sourceMediaDir = Path.Combine(EditorHelper.SourceMediaDirectory, resDirInData);
 			return sourceMediaDir;
 		}
+		
+		/// <summary>
+		/// Retrieves a custom data value from the specified Resource's <see cref="AssetInfo"/> data.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="resource"></param>
+		/// <param name="parameterName"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static bool GetAssetInfoCustomValue<T>(Resource resource, string parameterName, out T value)
+		{
+			// Otherwise, perform a defensive lookup
+			AssetInfo assetInfo = (resource != null) ? resource.AssetInfo : null;
+			Dictionary<string,object> customData = (assetInfo != null) ? assetInfo.CustomData : null;
+			object valueObj;
+			if (customData == null || !customData.TryGetValue(parameterName, out valueObj))
+			{
+				value = default(T);
+				return false;
+			}
+
+			// If we have a matching object, return it directly
+			if (valueObj is T)
+			{
+				value = (T)valueObj;
+				return true;
+			}
+
+			// Otherwise, try to cast it
+			try
+			{
+				value = (T)Convert.ChangeType(valueObj, typeof(T));
+				return true;
+			}
+			catch (Exception) { }
+
+			// If everything failed, return false and a default value
+			value = default(T);
+			return false;
+		}
+		/// <summary>
+		/// Sets a custom data value in the specified Resource's <see cref="AssetInfo"/> data.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="resource"></param>
+		/// <param name="parameterName"></param>
+		/// <param name="value"></param>
+		public static void SetAssetInfoCustomValue<T>(Resource resource, string parameterName, T value)
+		{
+			// Don't allow the usage of editor types here. They'll be serialized as part
+			// of the Resource, which can be loaded in a non-editor context
+			Type valueType = (value != null) ? value.GetType() : typeof(T);
+			IEnumerable<Assembly> editorAssemblies = DualityEditorApp.GetDualityEditorAssemblies();
+			if (editorAssemblies.Contains(valueType.Assembly))
+				throw new ArgumentException("Editor-related types cannot be used as import / export parameters.", "value");
+
+			// If the target Resource doesn't exist, fail silently
+			if (resource == null) return;
+
+			// Retrieve and / or initialize the Resource's asset info custom data
+			AssetInfo assetInfo = resource.AssetInfo ?? new AssetInfo();
+			Dictionary<string,object> customData = assetInfo.CustomData ?? new Dictionary<string,object>();
+			
+			// Assign the new parameter value and overwrite old values in the process
+			customData[parameterName] = value;
+
+			// Assign the values that we may have initialized just now
+			assetInfo.CustomData = customData;
+			resource.AssetInfo = assetInfo;
+		}
 	}
 }
