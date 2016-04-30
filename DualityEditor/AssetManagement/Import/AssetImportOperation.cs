@@ -204,10 +204,23 @@ namespace Duality.Editor.AssetManagement
 				foreach (AssetImportOutput output in expectedOutput)
 				{
 					Resource resource = output.Resource.Res;
+					
+					string sourceMediaBaseDir = AssetManager.GetSourceMediaBaseDir(resource);
+					string[] sourceFileHints = new string[output.InputPaths.Count];
+					for (int i = 0; i < sourceFileHints.Length; i++)
+					{
+						string fileName = Path.GetFileName(output.InputPaths[i]);
+						string directory = Path.GetDirectoryName(output.InputPaths[i]);
+						fileName = fileName.Replace(resource.Name, AssetInfo.FileHintNameVariable);
+						sourceFileHints[i] = PathHelper.MakeFilePathRelative(
+							Path.Combine(directory, fileName), 
+							sourceMediaBaseDir);
+					}
 
 					AssetInfo assetInfo = resource.AssetInfo ?? new AssetInfo();
 					assetInfo.ImporterId = assignment.Importer.Id;
 					assetInfo.NameHint = resource.Name;
+					assetInfo.SourceFileHint = sourceFileHints;
 
 					resource.AssetInfo = assetInfo;
 					outputCollection.Add(output);

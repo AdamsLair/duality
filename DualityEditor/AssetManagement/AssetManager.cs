@@ -215,8 +215,28 @@ namespace Duality.Editor.AssetManagement
 		{
 			// Early-out, if the input Resource isn't available
 			if (!resource.IsAvailable) return new string[0];
+
+			// If the Resoure provides an explicit hint which source files were used, rely on that.
+			AssetInfo assetInfo = resource.Res.AssetInfo;
+			string[] sourceFileHint = (assetInfo != null) ? assetInfo.SourceFileHint : null;
+			if (sourceFileHint != null && sourceFileHint.Length > 0)
+			{
+				string baseDir = GetSourceMediaBaseDir(resource);
+				RawList<string> sourceFilePaths = new RawList<string>(sourceFileHint.Length);
+				for (int i = 0; i < sourceFileHint.Length; i++)
+				{
+					if (string.IsNullOrWhiteSpace(sourceFileHint[i]))
+						continue;
+
+					string path = Path.Combine(baseDir, sourceFileHint[i].Replace(AssetInfo.FileHintNameVariable, resource.Name));
+					sourceFilePaths.Add(path);
+				}
+				sourceFilePaths.ShrinkToFit();
+				return sourceFilePaths.Data;
+			}
 			
-			// Assuming a symmetrical import-export, use a simulated export to determine the imported source.
+			// As a fallback, use a simulated export to determine the imported source.
+			// This is assuming a symmetrical import-export, which isn't always true.
 			return AssetManager.SimulateExportAssets(resource);
 		}
 		/// <summary>
@@ -226,7 +246,7 @@ namespace Duality.Editor.AssetManagement
 		/// </summary>
 		/// <param name="resource"></param>
 		/// <returns></returns>
-		private static string GetSourceMediaBaseDir(ContentRef<Resource> resource)
+		internal static string GetSourceMediaBaseDir(ContentRef<Resource> resource)
 		{
 			string resFullNameInData = PathHelper.MakeFilePathRelative(resource.FullName, DualityApp.DataDirectory);
 			string resDirInData = Path.GetDirectoryName(resFullNameInData);
