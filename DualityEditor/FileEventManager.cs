@@ -184,9 +184,16 @@ namespace Duality.Editor
 		}
 		private static bool IsPathIgnored(string filePath)
 		{
-			if (!File.Exists(filePath) && !Directory.Exists(filePath)) return false;
+			// Ignore all paths that represent hidden / invisible entities.
+			// Non-existent files and directories are considered non-visible as well.
 			if (!PathHelper.IsPathVisible(filePath)) return true;
+
+			// Some old hack to also ignore non-hidden .svn paths on Windows.
+			// On occasion, consider replacing this with a general rule to ignore
+			// all paths that contain an element (file or folder) starting with a dot.
 			if (filePath.Contains(@"/.svn/") || filePath.Contains(@"\.svn\")) return true;
+
+			// If we've reached this point, it's just some regular path. No need to ignore this.
 			return false;
 		}
 		
@@ -264,6 +271,7 @@ namespace Duality.Editor
 		private static void ProcessDataDirEvents()
 		{
 			List<ResourceRenamedEventArgs> renameEventBuffer = null;
+			HashSet<string> sourceMediaDeleteSchedule = null;
 
 			// Process events
 			while (dataDirEventBuffer.Count > 0)
@@ -341,8 +349,10 @@ namespace Duality.Editor
 					{
 						ResourceEventArgs args = new ResourceEventArgs(e.FullPath, isDirectory);
 
-						// Organize the Source/Media directory accordingly
-						DeleteSourceMediaFile(args);
+						// Schedule Source/Media file deletion to keep it organized / synced with Resource Data
+						if (sourceMediaDeleteSchedule == null)
+							sourceMediaDeleteSchedule = new HashSet<string>();
+						GetDeleteSourceMediaFilePaths(args, sourceMediaDeleteSchedule);
 
 						// Unregister no-more existing resources
 						if (isDirectory)	ContentProvider.RemoveContentTree(args.Path);
@@ -392,6 +402,26 @@ namespace Duality.Editor
 							MoveSourceMediaFile(args, oldMediaPaths);
 						}
 					}
+				}
+			}
+
+			// If we scheduled source / media files for deletion, do it now at once
+			if (sourceMediaDeleteSchedule != null)
+			{
+				// Gather a list of directories from which we're removing
+				HashSet<string> affectedDirectories = new HashSet<string>();
+				foreach (string file in sourceMediaDeleteSchedule)
+				{
+					affectedDirectories.Add(Path.GetDirectoryName(file));
+				}
+
+				// Send all the files to the recycle bin
+				RecycleBin.SendSilent(sourceMediaDeleteSchedule);
+
+				// Remove directories that are now empty
+				foreach (string dir in affectedDirectories)
+				{
+					PathHelper.DeleteEmptyDirectory(dir, true);
 				}
 			}
 
@@ -446,7 +476,7 @@ namespace Duality.Editor
 		{
 			return editorModifiedFiles.Contains(Path.GetFullPath(path));
 		}
-		private static void DeleteSourceMediaFile(ResourceEventArgs deleteEvent)
+		private static void GetDeleteSourceMediaFilePaths(ResourceEventArgs deleteEvent, ICollection<string> deletePathSchedule)
 		{
 			if (deleteEvent.IsResource)
 			{
@@ -455,8 +485,7 @@ namespace Duality.Editor
 				{
 					if (File.Exists(mediaPaths[i]))
 					{
-						RecycleBin.SendSilent(mediaPaths[i]);
-						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPaths[i]), true);
+						deletePathSchedule.Add(mediaPaths[i]);
 					}
 				}
 			}
@@ -465,11 +494,9 @@ namespace Duality.Editor
 				string mediaPath = Path.Combine(
 					EditorHelper.SourceMediaDirectory, 
 					PathHelper.MakeFilePathRelative(deleteEvent.Path, DualityApp.DataDirectory));
-
 				if (Directory.Exists(mediaPath))
 				{
-					RecycleBin.SendSilent(mediaPath);
-					PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPath), true);
+					deletePathSchedule.Add(mediaPath);
 				}
 			}
 		}

@@ -163,6 +163,7 @@ namespace Duality.Editor
 
 		/// <summary>
 		/// Returns whether the specified file or directory is visible, i.e. not hidden.
+		/// Non-exitent files or directories will be considered non-visible.
 		/// </summary>
 		/// <param name="path"></param>
 		/// <returns></returns>
@@ -178,7 +179,11 @@ namespace Duality.Editor
 				FileInfo fileInfo = new FileInfo(path);
 				return (fileInfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden;
 			}
-			else return false;
+			else
+			{
+				// If the path leads into nowhere, consider it non-visible.
+				return false;
+			}
 		}
 		/// <summary>
 		/// Returns whether the specified path is considered a valid file or folder path.
