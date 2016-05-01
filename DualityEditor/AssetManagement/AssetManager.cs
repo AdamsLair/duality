@@ -12,7 +12,14 @@ namespace Duality.Editor.AssetManagement
 {
 	/// <summary>
 	/// A static helper class that allows to easily perform operations related to the import and export of Resources.
+	/// It takes care of resolving importer conflicts, error handling and notifying the editor of changes.
+	/// 
+	/// In case you need a customized, hidden or strictly local asset operation, you can use asset operation classes
+	/// directly. Otherwise, prefer using the <see cref="AssetManager"/>.
 	/// </summary>
+	/// <seealso cref="AssetFirstImportOperation"/>
+	/// <seealso cref="AssetReImportOperation"/>
+	/// <seealso cref="AssetExportOperation"/>
 	public static class AssetManager
 	{
 		private static List<IAssetImporter> importers = new List<IAssetImporter>();
