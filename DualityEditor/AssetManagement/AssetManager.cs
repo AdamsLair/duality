@@ -12,10 +12,32 @@ namespace Duality.Editor.AssetManagement
 {
 	/// <summary>
 	/// A static helper class that allows to easily perform operations related to the import and export of Resources.
+	/// It takes care of resolving importer conflicts, error handling and notifying the editor of changes.
+	/// 
+	/// In case you need a customized, hidden or strictly local asset operation, you can use asset operation classes
+	/// directly. Otherwise, prefer using the <see cref="AssetManager"/>.
 	/// </summary>
+	/// <seealso cref="AssetFirstImportOperation"/>
+	/// <seealso cref="AssetReImportOperation"/>
+	/// <seealso cref="AssetExportOperation"/>
 	public static class AssetManager
 	{
 		private static List<IAssetImporter> importers = new List<IAssetImporter>();
+
+		/// <summary>
+		/// A global event that is fired when an import or re-import operation is finished.
+		/// 
+		/// Does not fire on simulated operations and only includes operations that are
+		/// performed using the <see cref="AssetManager"/> API.
+		/// </summary>
+		public static event EventHandler<AssetImportFinishedEventArgs> ImportFinished = null;
+		/// <summary>
+		/// A global event that is fired when an export operation is finished.
+		/// 
+		/// Does not fire on simulated operations and only includes operations that are
+		/// performed using the <see cref="AssetManager"/> API.
+		/// </summary>
+		public static event EventHandler<AssetExportFinishedEventArgs> ExportFinished = null;
 
 		/// <summary>
 		/// [GET] Enumerates all known <see cref="IAssetImporter"/>s, each represented by a single instance
@@ -91,14 +113,21 @@ namespace Duality.Editor.AssetManagement
 				importOperation.SimulatePerform() : 
 				importOperation.Perform();
 
-			// If the operation was a failure, display an error message in the editor UI.
-			if (!simulate && !success && !userAbort)
+			// Did we actually do something?
+			if (!simulate && !userAbort)
 			{
-				MessageBox.Show(
-					string.Format(Properties.GeneralRes.Msg_CantImport_Text, inputFiles.First()), 
-					Properties.GeneralRes.Msg_CantImport_Caption, 
-					MessageBoxButtons.OK, 
-					MessageBoxIcon.Error);
+				// If the operation was a failure, display an error message in the editor UI.
+				if (!success)
+				{
+					MessageBox.Show(
+						string.Format(Properties.GeneralRes.Msg_CantImport_Text, inputFiles.First()), 
+						Properties.GeneralRes.Msg_CantImport_Caption, 
+						MessageBoxButtons.OK, 
+						MessageBoxIcon.Error);
+				}
+
+				// Global event handling
+				OnImportFinished(importOperation, success);
 			}
 
 			return importOperation.Output.ToArray();
@@ -138,11 +167,18 @@ namespace Duality.Editor.AssetManagement
 				reimportOperation.SimulatePerform() : 
 				reimportOperation.Perform();
 			
-			// Notify the editor that we have modified some Resources
-			if (!simulate && reimportOperation.Output.Any())
+			// Did we actually do something?
+			if (!simulate)
 			{
-				IEnumerable<Resource> touchedResources = reimportOperation.Output.Select(item => item.Resource).Res();
-				DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(touchedResources));
+				// Notify the editor that we have modified some Resources
+				if (reimportOperation.Output.Any())
+				{
+					IEnumerable<Resource> touchedResources = reimportOperation.Output.Select(item => item.Resource).Res();
+					DualityEditorApp.NotifyObjPropChanged(null, new ObjectSelection(touchedResources));
+				}
+			
+				// Global event handling
+				OnImportFinished(reimportOperation, success);
 			}
 
 			return reimportOperation.Output.ToArray();
@@ -192,14 +228,21 @@ namespace Duality.Editor.AssetManagement
 				exportOperation.SimulatePerform() :
 				exportOperation.Perform();
 
-			// If the operation was a failure, display an error message in the editor UI.
-			if (!simulate && !success && !userAbort)
+			// Did we actually do something?
+			if (!simulate && !userAbort)
 			{
-				MessageBox.Show(
-					string.Format(Properties.GeneralRes.Msg_CantExport_Text, inputResource.Path), 
-					Properties.GeneralRes.Msg_CantExport_Caption, 
-					MessageBoxButtons.OK, 
-					MessageBoxIcon.Error);
+				// If the operation was a failure, display an error message in the editor UI.
+				if (!success)
+				{
+					MessageBox.Show(
+						string.Format(Properties.GeneralRes.Msg_CantExport_Text, inputResource.Path), 
+						Properties.GeneralRes.Msg_CantExport_Caption, 
+						MessageBoxButtons.OK, 
+						MessageBoxIcon.Error);
+				}
+			
+				// Global event handling
+				OnExportFinished(exportOperation, success);
 			}
 
 			return exportOperation.OutputPaths.ToArray();
@@ -257,6 +300,30 @@ namespace Duality.Editor.AssetManagement
 				data.InputFiles);
 			DialogResult result = dialog.ShowDialog();
 			return dialog.SelectedImporter;
+		}
+
+		private static void OnImportFinished(AssetImportOperation operation, bool success)
+		{
+			if (ImportFinished != null)
+			{
+				AssetImportFinishedEventArgs args = new AssetImportFinishedEventArgs(
+					success, 
+					operation is AssetReImportOperation, 
+					operation.Input, 
+					operation.Output);
+				ImportFinished(null, args);
+			}
+		}
+		private static void OnExportFinished(AssetExportOperation operation, bool success)
+		{
+			if (ExportFinished != null)
+			{
+				AssetExportFinishedEventArgs args = new AssetExportFinishedEventArgs(
+					success,
+					operation.Input,
+					operation.OutputPaths);
+				ExportFinished(null, args);
+			}
 		}
 	}
 }
