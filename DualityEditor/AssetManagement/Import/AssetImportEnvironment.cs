@@ -9,6 +9,12 @@ using Duality.IO;
 
 namespace Duality.Editor.AssetManagement
 {
+	/// <summary>
+	/// Environment class for an <see cref="IAssetImporter"/> during an import operation.
+	/// It specifies the API that is used to interact with the overall import process and
+	/// acts as an abstraction layer between importer and editor. This allows to perform
+	/// simulated imports and manage detailed information about inputs and outputs.
+	/// </summary>
 	public class AssetImportEnvironment : IAssetImportEnvironment
 	{
 		private bool isPrepareStep = false;
@@ -19,55 +25,93 @@ namespace Duality.Editor.AssetManagement
 		private List<AssetImportInput> handledInput = new List<AssetImportInput>();
 		private List<AssetImportOutput> output = new List<AssetImportOutput>();
 		private Dictionary<string,string> assetRenameMap = new Dictionary<string,string>();
-
+		
+		/// <summary>
+		/// [GET / SET] Whether the import operation is currently in the preparation phase.
+		/// </summary>
 		public bool IsPrepareStep
 		{
 			get { return this.isPrepareStep; }
 			set { this.isPrepareStep = value; }
 		}
+		/// <summary>
+		/// [GET / SET] Whether or not the import operation deals with input files that map to
+		/// an already existing <see cref="Resource"/> and aims at updating it.
+		/// </summary>
 		public bool IsReImport
 		{
 			get { return this.isReImport; }
 			set { this.isReImport = value; }
 		}
+		/// <summary>
+		/// [GET] The target (Data) base directory of this import operation.
+		/// </summary>
 		public string TargetDirectory
 		{
 			get { return this.targetDir; }
 		}
+		/// <summary>
+		/// [GET] The source (Source/Media) base directory of this import operation.
+		/// </summary>
 		public string SourceDirectory
 		{
 			get { return this.sourceDir; }
 		}
+		/// <summary>
+		/// [GET] Enumerates all input items that are to be imported.
+		/// </summary>
 		public IEnumerable<AssetImportInput> Input
 		{
 			get { return this.input; }
 		}
+		/// <summary>
+		/// [GET] Enumerates all input items that are flagged as being handled by the <see cref="IAssetImporter"/>.
+		/// </summary>
 		public IEnumerable<AssetImportInput> HandledInput
 		{
 			get { return this.handledInput; }
 		}
+		/// <summary>
+		/// [GET] Enumerates the (simulated or actual) output items that have been added by the active <see cref="IAssetImporter"/>.
+		/// </summary>
 		public IEnumerable<AssetImportOutput> Output
 		{
 			get { return this.output; }
 		}
+		/// <summary>
+		/// [GET] If a newly imported asset was automatically renamed due to naming conflicts, this property
+		/// provides a mapping from asset name to (renamed) target path. Import operations can use this information
+		/// from the preparation step in order to adjust input naming before entering the main import step.
+		/// </summary>
 		public IReadOnlyDictionary<string,string> AssetRenameMap
 		{
 			get { return this.assetRenameMap; }
 		}
 		
+
 		public AssetImportEnvironment(string targetDir, string sourceDir, IEnumerable<AssetImportInput> input)
 		{
 			this.targetDir = targetDir;
 			this.sourceDir = sourceDir;
 			this.input = input.ToArray();
 		}
-
+		
+		/// <summary>
+		/// Resets all working and result data of the environment. This is used as part of the importer selection
+		/// in the preparation phase in order to provide a clean slate for each <see cref="IAssetImporter"/> 
+		/// that is queried.
+		/// </summary>
 		public void ResetAcquiredData()
 		{
 			this.output.Clear();
 			this.handledInput.Clear();
 		}
-
+		
+		/// <summary>
+		/// Requests the specified input path to be handled by the current importer.
+		/// </summary>
+		/// <param name="inputPath"></param>
+		/// <returns>True, if the current importer is allowed to handle this input item, false if not.</returns>
 		public bool HandleInput(string filePath)
 		{
 			int inputIndex = this.input.IndexOfFirst(i => PathOp.ArePathsEqual(i.Path, filePath));
@@ -83,6 +127,13 @@ namespace Duality.Editor.AssetManagement
 			this.handledInput.Add(this.input[inputIndex]);
 			return true;
 		}
+		/// <summary>
+		/// Requests an output <see cref="Duality.Resource"/> with the specified name (see <see cref="AssetImportInput.AssetName"/>).
+		/// Use this method to create a new Resource during import, or request the affected one during re-import.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="assetName">The name of the requested output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.AssetName"/>).</param>
+		/// <returns></returns>
 		public ContentRef<T> GetOutput<T>(string assetName) where T : Resource, new()
 		{
 			string targetResPath = this.GetTargetPath<T>(assetName);
@@ -100,11 +151,23 @@ namespace Duality.Editor.AssetManagement
 				return new ContentRef<T>(targetRes, targetResPath);
 			}
 		}
+		/// <summary>
+		/// Specifies that the current importer will create or modify a <see cref="Duality.Resource"/> with 
+		/// the specified name (see <see cref="AssetImportInput.AssetName"/>).
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="assetName">The name of the generated output <see cref="Duality.Resource"/> (see <see cref="AssetImportInput.AssetName"/>).</param>
+		/// <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="Duality.Resource"/>.</param>
 		public void AddOutput<T>(string assetName, IEnumerable<string> inputPaths) where T : Resource
 		{
 			string targetResPath = this.GetTargetPath<T>(assetName);
 			this.AddOutput(new ContentRef<T>(null, targetResPath), inputPaths);
 		}
+		/// <summary>
+		/// Submits the specified <see cref="Duality.Resource"/> as a generated output of the current importer.
+		/// </summary>
+		/// <param name="resource">A reference to the generated output <see cref="Duality.Resource"/>.</param>
+		/// <param name="inputPaths">An enumeration of input paths that are used to generate this output <see cref="Duality.Resource"/>.</param>
 		public void AddOutput(IContentRef resource, IEnumerable<string> inputPaths)
 		{
 			// Make sure that the provided input paths aren't null or whitespace.
@@ -120,6 +183,14 @@ namespace Duality.Editor.AssetManagement
 			this.output.Add(new AssetImportOutput(resource.As<Resource>(), inputPaths));
 		}
 		
+		/// <summary>
+		/// Retrieves the value of an import parameter for the specified <see cref="Resource"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="resource">A reference to the <see cref="Duality.Resource"/> that is parameterized.</param>
+		/// <param name="parameterName">The name of the parameter.</param>
+		/// <param name="value">An out reference to the variable to which the retrieved value will be assigned.</param>
+		/// <returns>True, if the value was retrieved successfully. False otherwise.</returns>
 		public bool GetParameter<T>(IContentRef resource, string parameterName, out T value)
 		{
 			// If we're importing this asset for the first time, there is no data available.
@@ -131,6 +202,13 @@ namespace Duality.Editor.AssetManagement
 
 			return AssetInternalHelper.GetAssetInfoCustomValue<T>(resource.Res, parameterName, out value);
 		}
+		/// <summary>
+		/// Sets the value of an import parameter for the specified <see cref="Resource"/> 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="resource">A reference to the <see cref="Duality.Resource"/> that is parameterized.</param>
+		/// <param name="parameterName">The name of the parameter.</param>
+		/// <param name="value">The new value that should be assigned to the parameter.</param>
 		public void SetParameter<T>(IContentRef resource, string parameterName, T value)
 		{
 			// Disallow adjusting parameters in the preparation step.

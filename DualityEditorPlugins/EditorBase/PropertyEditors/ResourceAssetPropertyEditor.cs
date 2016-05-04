@@ -21,12 +21,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	public class ResourceAssetPropertyEditor : GroupedPropertyEditor
 	{
 		private ResourceImportExportPropertyEditor importExportEditor = null;
+		private bool registeredGlobalEvents = false;
 
 
 		public override object DisplayedValue
 		{
 			get { return this.GetValue(); }
 		}
+
 
 		public ResourceAssetPropertyEditor()
 		{
@@ -53,6 +55,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.importExportEditor.Setter = this.SetValues;
 				this.AddPropertyEditor(this.importExportEditor);
 			}
+			this.RegisterGlobalEvents();
 		}
 		public override void ClearContent()
 		{
@@ -63,6 +66,13 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 				this.importExportEditor.Dispose();
 				this.importExportEditor = null;
 			}
+			this.UnregisterGlobalEvents();
+		}
+
+		protected override void OnDisposing(bool manually)
+		{
+			base.OnDisposing(manually);
+			this.UnregisterGlobalEvents();
 		}
 		protected override void OnGetValue()
 		{
@@ -75,6 +85,33 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			base.OnSetValue();
 			foreach (PropertyEditor e in this.ChildEditors)
 				e.PerformSetValue();
+		}
+
+		private void RegisterGlobalEvents()
+		{
+			if (this.registeredGlobalEvents) return;
+			this.registeredGlobalEvents = true;
+			AssetManager.ExportFinished += this.AssetManager_ExportFinished;
+		}
+		private void UnregisterGlobalEvents()
+		{
+			if (!this.registeredGlobalEvents) return;
+			this.registeredGlobalEvents = false;
+			AssetManager.ExportFinished -= this.AssetManager_ExportFinished;
+		}
+
+		private void AssetManager_ExportFinished(object sender, AssetExportFinishedEventArgs e)
+		{
+			// Update after export in order to apply changes to the selected AssetInfo.
+			//
+			// Note that we don't need to do this explicitly for the import, as an
+			// import fill fire an ObjectPropertyChanged event, which in turn leads to
+			// the Object Inspector updating itself. The only reason we need this here
+			// is because an export will likely not change anything about the Resource
+			// and thus won't trigger editor updates. However, we do need to update here,
+			// because we depend on the fact whether or not source files are available.
+			//
+			this.PerformGetValue();
 		}
 	}
 }

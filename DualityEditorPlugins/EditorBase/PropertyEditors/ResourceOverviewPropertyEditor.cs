@@ -53,9 +53,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			base.OnGetValue();
 
 			// Determine if we have any Resource in our selection that can be imported / exported.
-			// For performance reasons, we'll just check if there are matching source files available,
-			// or we could create some. We don't really want to du a full import / export simulation 
-			// every time the getter is executed.
+			// Try to keep this as fast as possible, also avoid file system access if possible.
 			Resource[] values = this.GetValue().OfType<Resource>().ToArray();
 			bool anyImportExport = false;
 			foreach (Resource res in values)

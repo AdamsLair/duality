@@ -231,6 +231,14 @@ namespace Duality.Editor.AssetManagement
 			// Did we actually do something?
 			if (!simulate && !userAbort)
 			{
+				// If the exporter modified export parameters of the Resource, notify the editor that we have modified it.
+				if (exportOperation.IsAssetInfoChanged)
+				{
+					DualityEditorApp.NotifyObjPropChanged(null, 
+						new ObjectSelection(inputResource.Res), 
+						ReflectionInfo.Property_Resource_AssetInfo);
+				}
+
 				// If the operation was a failure, display an error message in the editor UI.
 				if (!success)
 				{

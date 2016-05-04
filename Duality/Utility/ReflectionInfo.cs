@@ -46,6 +46,8 @@ namespace Duality
 
 		public static readonly PropertyInfo	Property_DrawTechnique_PreferredVertexFormat;
 
+		public static readonly PropertyInfo	Property_Resource_AssetInfo;
+
 		public static readonly PropertyInfo	Property_Font_Family;
 		public static readonly PropertyInfo	Property_Font_Size;
 		public static readonly PropertyInfo	Property_Font_Style;
@@ -103,6 +105,9 @@ namespace Duality
 			Type drawTech = typeof(DrawTechnique);
 			Property_DrawTechnique_PreferredVertexFormat	= GetProperty(drawTech, "PreferredVertexFormat");
 			
+			Type resource = typeof(Resource);
+			Property_Resource_AssetInfo		= GetProperty(resource, "AssetInfo");
+
 			Type font = typeof(Font);
 			Property_Font_Family			= GetProperty(font, "Family");
 			Property_Font_Size				= GetProperty(font, "Size");

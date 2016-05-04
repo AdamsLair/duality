@@ -32,6 +32,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		private int       pressedButton        = -1;
 		private int       hoveredButton        = -1;
 
+
 		public override object DisplayedValue
 		{
 			get { return this.GetValue(); }
@@ -57,6 +58,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			get { return this.Enabled && !this.ReadOnly && this.sourceFilesAvailable; }
 		}
+
 
 		public ResourceImportExportPropertyEditor()
 		{
@@ -88,36 +90,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			base.OnGetValue();
 			Resource[] resources = this.GetValue().OfType<Resource>().ToArray();
-
-			// Remember the old button states
-			bool lastCanShow = this.CanShowSourceFiles;
-			bool lastCanExport = this.CanExportResource;
-			bool lastCanImport = this.CanReImportResource;
-
-			// Determine what we can actually do with our current selection
-			this.sourceFilesAvailable = false;
-			this.exporterAvailable = false;
-			foreach (Resource res in resources)
-			{
-				if (!this.sourceFilesAvailable)
-				{
-					string[] sourceFiles = AssetManager.GetAssetSourceFiles(res);
-					if (sourceFiles.All(path => File.Exists(path)))
-						this.sourceFilesAvailable = true;
-				}
-				if (!this.exporterAvailable)
-				{
-					string[] sourceFiles = AssetManager.SimulateExportAssets(res);
-					if (sourceFiles.Length > 0)
-						this.exporterAvailable = true;
-				}
-			}
-
-			// If any button state changed, request a redraw
-			if (lastCanShow != this.CanShowSourceFiles ||
-				lastCanExport != this.CanExportResource ||
-				lastCanImport != this.CanReImportResource)
-				this.Invalidate();
+			CheckAvailableActions(resources);
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
@@ -203,12 +176,56 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		}
 
 		/// <summary>
+		/// Determines which actions are available, given the specified enumerable of
+		/// <see cref="Resource"/> instances.
+		/// </summary>
+		/// <param name="resources"></param>
+		private void CheckAvailableActions(IEnumerable<Resource> resources)
+		{
+			// Remember the old button states
+			bool lastCanShow = this.CanShowSourceFiles;
+			bool lastCanExport = this.CanExportResource;
+			bool lastCanImport = this.CanReImportResource;
+
+			// Determine what we can actually do with our current selection
+			this.sourceFilesAvailable = false;
+			this.exporterAvailable = false;
+			foreach (Resource res in resources)
+			{
+				if (!this.sourceFilesAvailable)
+				{
+					string[] sourceFiles = AssetManager.GetAssetSourceFiles(res);
+					if (sourceFiles.All(path => File.Exists(path)))
+						this.sourceFilesAvailable = true;
+				}
+				if (!this.exporterAvailable)
+				{
+					string[] sourceFiles = AssetManager.SimulateExportAssets(res);
+					if (sourceFiles.Length > 0)
+						this.exporterAvailable = true;
+				}
+			}
+
+			// If any button state changed, request a redraw
+			if (lastCanShow != this.CanShowSourceFiles ||
+				lastCanExport != this.CanExportResource ||
+				lastCanImport != this.CanReImportResource)
+				this.Invalidate();
+		}
+
+		/// <summary>
 		/// Shows the primary source files of each of the current <see cref="Resource"/> selection
 		/// in the operating system's default file manager.
 		/// </summary>
 		private void ShowSourceFiles()
 		{
 			Resource[] resources = this.GetValue().OfType<Resource>().ToArray();
+
+			// Check again which actions are available, in case this has changed in the mean time.
+			CheckAvailableActions(resources);
+			if (!this.CanShowSourceFiles) return;
+
+			// Show the primary source file of each of the selected Resources.
 			foreach (Resource res in resources)
 			{
 				string[] sourceFiles = AssetManager.GetAssetSourceFiles(res);
@@ -226,9 +243,23 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		private void ExportResource()
 		{
 			Resource[] resources = this.GetValue().OfType<Resource>().ToArray();
+
+			// Check again which actions are available, in case this has changed in the mean time.
+			CheckAvailableActions(resources);
+			if (!this.CanExportResource) return;
+
+			// Perform the export operation
+			bool anySuccess = false;
 			foreach (Resource res in resources)
 			{
-				AssetManager.ExportAssets(res);
+				string[] result = AssetManager.ExportAssets(res);
+				if (result != null && result.Length > 0) anySuccess = true;
+			}
+
+			// If we were successful, play a feedback sound
+			if (anySuccess)
+			{
+				System.Media.SystemSounds.Asterisk.Play();
 			}
 		}
 		/// <summary>
@@ -237,12 +268,26 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		private void ReImportResource()
 		{
 			Resource[] resources = this.GetValue().OfType<Resource>().ToArray();
+
+			// Check again which actions are available, in case this has changed in the mean time.
+			CheckAvailableActions(resources);
+			if (!this.CanReImportResource) return;
+
+			// Perform the re-import operation
+			bool anySuccess = false;
 			foreach (Resource res in resources)
 			{
 				string[] sourceFiles = AssetManager.GetAssetSourceFiles(res);
 				if (sourceFiles.Length == 0) continue;
 
-				AssetManager.ReImportAssets(sourceFiles);
+				AssetImportOutput[] result = AssetManager.ReImportAssets(sourceFiles);
+				if (result != null && result.Length > 0) anySuccess = true;
+			}
+
+			// If we were successful, play a feedback sound
+			if (anySuccess)
+			{
+				System.Media.SystemSounds.Asterisk.Play();
 			}
 		}
 	}
