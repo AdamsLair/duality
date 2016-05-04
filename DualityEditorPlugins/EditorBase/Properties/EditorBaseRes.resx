@@ -271,4 +271,22 @@
   <data name="ActionName_VisitCommunityForum" xml:space="preserve">
     <value>Join the Community</value>
   </data>
+  <data name="ActionDesc_ExportResource" xml:space="preserve">
+    <value>Exports the Resource.</value>
+  </data>
+  <data name="ActionDesc_ReImportResource" xml:space="preserve">
+    <value>Imports the Resource using the previously used source files.</value>
+  </data>
+  <data name="ActionDesc_ShowResourceSources" xml:space="preserve">
+    <value>Shows the Resource's source files in your file system.</value>
+  </data>
+  <data name="ActionName_ExportResource" xml:space="preserve">
+    <value>Export Resource</value>
+  </data>
+  <data name="ActionName_ReImportResource" xml:space="preserve">
+    <value>Import Resource</value>
+  </data>
+  <data name="ActionName_ShowResourceSources" xml:space="preserve">
+    <value>Show Source Files</value>
+  </data>
 </root>

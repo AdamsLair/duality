@@ -14,6 +14,7 @@ using Duality.Drawing;
 using Duality.Editor;
 using Duality.Editor.AssetManagement;
 using Duality.Editor.UndoRedoActions;
+using Duality.Editor.Plugins.Base.Properties;
 
 namespace Duality.Editor.Plugins.Base.PropertyEditors
 {
@@ -22,7 +23,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	/// used asset operations, such as showing source files, or performing an export
 	/// or re-import operation.
 	/// </summary>
-	public class ResourceImportExportPropertyEditor : PropertyEditor
+	public class ResourceImportExportPropertyEditor : PropertyEditor, IHelpProvider
 	{
 		private bool      sourceFilesAvailable = false;
 		private bool      exporterAvailable    = false;
@@ -289,6 +290,28 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				System.Media.SystemSounds.Asterisk.Play();
 			}
+		}
+
+		/// <summary>
+		/// Provides custom <see cref="HelpInfo"/> tooltips for the action buttons.
+		/// </summary>
+		/// <param name="localPos"></param>
+		/// <param name="captured"></param>
+		/// <returns></returns>
+		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			HelpInfo result = null;
+			localPos.X += this.Location.X;
+			localPos.Y += this.Location.Y;
+
+			if (this.rectButtonShow.Contains(localPos))
+				result = HelpInfo.FromText(EditorBaseRes.ActionName_ShowResourceSources, EditorBaseRes.ActionDesc_ShowResourceSources);
+			else if (this.rectButtonExport.Contains(localPos))
+				result = HelpInfo.FromText(EditorBaseRes.ActionName_ExportResource, EditorBaseRes.ActionDesc_ExportResource);
+			else if (this.rectButtonReImport.Contains(localPos))
+				result = HelpInfo.FromText(EditorBaseRes.ActionName_ReImportResource, EditorBaseRes.ActionDesc_ReImportResource);
+
+			return result;
 		}
 	}
 }

@@ -19,7 +19,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 	/// buttons for commonly used Asset operations, such as showing source files, or performing
 	/// an export or re-import.
 	/// </summary>
-	public class ResourceAssetPropertyEditor : GroupedPropertyEditor
+	public class ResourceAssetPropertyEditor : GroupedPropertyEditor, IHelpProvider
 	{
 		private ResourceImportExportPropertyEditor importExportEditor = null;
 		private Dictionary<string,PropertyEditor> parameterEditors = new Dictionary<string,PropertyEditor>();
@@ -304,6 +304,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			// because we depend on the fact whether or not source files are available.
 			//
 			this.PerformGetValue();
+		}
+
+		/// <summary>
+		/// Provides custom <see cref="HelpInfo"/> regarding <see cref="AssetInfo"/> data.
+		/// </summary>
+		/// <param name="localPos"></param>
+		/// <param name="captured"></param>
+		/// <returns></returns>
+		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			return HelpInfo.FromMember(typeof(AssetInfo));
 		}
 	}
 }
