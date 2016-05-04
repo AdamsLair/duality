@@ -76,9 +76,15 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			if (directChild == args.Editor) return;
 
 			// If an editor has changed that was NOT a direct descendant, fire the appropriate notifier events.
-			// Always remember: If we don't emit a PropertyChanged event, PrefabLinks won't update their change lists!
+			// Otherwise, there will be changed events for the child objects, but no-one knows they belong to
+			// the Resource that is selected here.
+			// Direct descendants are not a problem, because we'll run into the default member setter method 
+			// that already takes care of this.
 			if (directChild != null && directChild != args.Editor && directChild.EditedMember != null)
 			{
+				// We don't actually fire notifier events, but perform an UndoRedoAction, which will
+				// do this among other things. Not sure if this is still required, but let's leave it like 
+				// this for now.
 				this.isInvokingDirectChild = true;
 				if (directChild.EditedMember is PropertyInfo)
 					UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, directChild.EditedMember as PropertyInfo, this.GetValue(), null));

@@ -206,6 +206,7 @@
       <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\GeneralResNames.cs" />
+    <Compile Include="UndoRedoActions\EditResourceAssetDataAction.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
     <Compile Include="Utility\EventArgs\ResourceRenamedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\PrefabAppliedEventArgs.cs" />
