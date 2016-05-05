@@ -27,7 +27,7 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			preview.Getter = this.GetValue;
 			this.ParentGrid.ConfigureEditor(preview);
 			this.AddPropertyEditor(preview);
-			FontContentPropertyEditor content = new FontContentPropertyEditor();
+			ResourcePropertyEditor content = new ResourcePropertyEditor();
 			content.EditedType = this.EditedType;
 			content.Getter = this.GetValue;
 			content.Setter = this.SetValues;

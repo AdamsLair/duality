@@ -112,7 +112,6 @@
     <Compile Include="PropertyEditors\Resources\AudioDataPreviewPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\AudioDataPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\FontPreviewPropertyEditor.cs" />
-    <Compile Include="PropertyEditors\Resources\FontContentPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\DrawTechniquePropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\ImagePreviewPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\PixmapContentPropertyEditor.cs" />

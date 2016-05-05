@@ -102,11 +102,17 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (e.HasObject(this.prevImageValue))
-			{
-				this.InvalidatePreview();
-				this.PerformGetValue();
-			}
+			// Ignore changes to objects we're not previewing
+			if (!e.HasObject(this.prevImageValue))
+				return;
+
+			// Ignore changes to AssetInfo data, as this doesn't directly affect us until Re-Import
+			if (!e.CompleteChange && e.HasProperty(ReflectionInfo.Property_Resource_AssetInfo))
+				return;
+
+			// Update the preview to reflect changes.
+			this.InvalidatePreview();
+			this.PerformGetValue();
 		}
 	}
 }
