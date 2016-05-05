@@ -387,7 +387,8 @@ namespace Duality.Editor.Plugins.Base
 				ascent:     ascent, 
 				bodyAscent: bodyAscent, 
 				descent:    descent, 
-				baseLine:   baseLine);
+				baseLine:   baseLine,
+				monospace:  monospace);
 			return new RenderedFontData
 			{
 				Bitmap = pixelLayer,

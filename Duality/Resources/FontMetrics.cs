@@ -14,6 +14,7 @@ namespace Duality.Resources
 		private int bodyAscent;
 		private int descent;
 		private int baseLine;
+		private bool monospace;
 
 		/// <summary>
 		/// [GET] The size of the <see cref="Font"/>.
@@ -57,9 +58,17 @@ namespace Duality.Resources
 		{
 			get { return this.baseLine; }
 		}
+		/// <summary>
+		/// [GET] Whether the described <see cref="Font"/> is considered to be a monospace <see cref="Font"/>,
+		/// i.e. whether all characters occupy the same horizontal space.
+		/// </summary>
+		public bool Monospace
+		{
+			get { return this.monospace; }
+		}
 
 		private FontMetrics() { }
-		public FontMetrics(float size, int height, int ascent, int bodyAscent, int descent, int baseLine)
+		public FontMetrics(float size, int height, int ascent, int bodyAscent, int descent, int baseLine, bool monospace)
 		{
 			this.size = size;
 			this.height = height;
@@ -67,6 +76,7 @@ namespace Duality.Resources
 			this.bodyAscent = bodyAscent;
 			this.descent = descent;
 			this.baseLine = baseLine;
+			this.monospace = monospace;
 		}
 	}
 }

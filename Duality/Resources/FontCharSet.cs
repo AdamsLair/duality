@@ -53,6 +53,7 @@ namespace Duality.Resources
 		}
 
 		private FontCharSet() { }
+		public FontCharSet(string chars) : this(chars, string.Empty, string.Empty, string.Empty) { }
 		public FontCharSet(string chars, string charBaseLineRef, string charDescentRef, string charBodyAscentRef)
 		{
 			this.chars = chars;
