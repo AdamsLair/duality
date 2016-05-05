@@ -24,7 +24,7 @@ namespace Duality.Resources
 		private string charBodyAscentRef = string.Empty;
 
 		/// <summary>
-		/// [GET] All characters that will be available in the rendered character set.
+		/// [GET] All characters that are part of this <see cref="FontCharSet"/>.
 		/// </summary>
 		public string Chars
 		{
