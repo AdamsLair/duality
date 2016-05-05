@@ -66,15 +66,22 @@ namespace Duality.Editor.Plugins.Base
 				{
 					DualityFont target = targetRef.Res;
 
+					// Retrieve import parameters
+					float       size            = env.GetOrInitParameter(targetRef, "Size"           , 16.0f            );
+					FontStyle   style           = env.GetOrInitParameter(targetRef, "Style"          , FontStyle.Regular);
+					string      extendedCharSet = env.GetOrInitParameter(targetRef, "ExtendedCharSet", string.Empty     );
+					bool        antialiasing    = env.GetOrInitParameter(targetRef, "AntiAlias"      , true             );
+					bool        monospace       = env.GetOrInitParameter(targetRef, "Monospace"      , false            );
+
 					// Load the TrueType Font and render all the required glyphs
 					byte[] trueTypeData = File.ReadAllBytes(input.Path);
 					RenderedFontData fontData = this.RenderGlyphs(
 						trueTypeData, 
-						target.Size, 
-						target.Style, 
-						null, 
-						target.GlyphRenderMode != DualityFont.RenderMode.MonochromeBitmap, 
-						target.MonoSpace);
+						size, 
+						style, 
+						!string.IsNullOrEmpty(extendedCharSet) ? new FontCharSet(extendedCharSet) : null, 
+						antialiasing, 
+						monospace);
 
 					// Transfer our rendered Font data to the Font Resource
 					target.SetGlyphData(
@@ -129,7 +136,7 @@ namespace Duality.Editor.Plugins.Base
 		/// Renders the <see cref="Duality.Resources.Font"/> based on its embedded TrueType representation.
 		/// <param name="extendedSet">Extended set of characters for renderning.</param>
 		/// </summary>
-		private RenderedFontData RenderGlyphs(byte[] trueTypeFontData, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiazing, bool monospace)
+		private RenderedFontData RenderGlyphs(byte[] trueTypeFontData, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
 		{
 			if (this.fontManagers == null)
 				this.fontManagers = new Dictionary<int, PrivateFontCollection>();
@@ -160,7 +167,7 @@ namespace Duality.Editor.Plugins.Base
 				emSize, 
 				style, 
 				extendedSet, 
-				antialiazing, 
+				antialiasing, 
 				monospace);
 
 			// Yes, we have a minor memory leak here - both the Font buffer and the private
@@ -181,7 +188,7 @@ namespace Duality.Editor.Plugins.Base
 		/// <summary>
 		/// Renders the <see cref="Duality.Resources.Font"/> using the specified system font family.
 		/// </summary>
-		private RenderedFontData RenderGlyphs(FontFamily fontFamily, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiazing, bool monospace)
+		private RenderedFontData RenderGlyphs(FontFamily fontFamily, float emSize, FontStyle style, FontCharSet extendedSet, bool antialiasing, bool monospace)
 		{
 			// Determine System.Drawing font style
 			SysDrawFontStyle systemStyle = SysDrawFontStyle.Regular;
@@ -214,7 +221,7 @@ namespace Duality.Editor.Plugins.Base
 				return this.RenderGlyphs(
 					internalFont, 
 					FontCharSet.Default.MergedWith(extendedSet),
-					antialiazing, 
+					antialiasing, 
 					monospace);
 			}
 		}

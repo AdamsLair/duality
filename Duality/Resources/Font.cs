@@ -139,59 +139,42 @@ namespace Duality.Resources
 		private	int			bodyAscent			= 0;
 		private	int			descent				= 0;
 		private	int			baseLine			= 0;
-		// Embedded custom font family for editor glyph rendering support
-		private	byte[]		embeddedFont		= null;
+		private FontMetrics	metrics				= null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private int[]		charLookup		= null;
 		[DontSerialize] private	Material	material		= null;
 		[DontSerialize] private	Texture		texture			= null;
-		[DontSerialize] private	bool		glyphsDirty		= false;
 
 
 		/// <summary>
-		/// [GET / SET] The size of the Font.
+		/// [GET] The size of the Font.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		[EditorHintRange(1, 150)]
-		[EditorHintIncrement(1)]
-		[EditorHintDecimalPlaces(1)]
+		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("Size information is import-only. Modify importer settings instead. For read-only access, use the Metrics property.")]
 		public float Size
 		{
 			get { return this.size; }
-			set 
-			{ 
-				if (this.size != value)
-				{
-					this.size = Math.Max(1.0f, value);
-					this.spacing = this.size / 10.0f;
-					this.glyphsDirty = true;
-				}
-			}
+			set {} // Remove this on the next breaking change cycle
 		}
 		/// <summary>
-		/// [GET / SET] The style of the font.
+		/// [GET] The style of the font. 
+		/// 
+		/// This property is obsolete and will be removed in the next major version step.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("Style information is import-only. Modify importer settings instead.")]
 		public FontStyle Style
 		{
 			get { return this.style; }
-			set
-			{
-				this.style = value;
-				this.glyphsDirty = true;
-			}
+			set {} // Remove this on the next breaking change cycle
 		}
 		/// <summary>
-		/// [GET / SET] Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
+		/// [GET / SET] Specifies how the glyphs of this <see cref="Font"/> are rendered in a text.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public RenderMode GlyphRenderMode
 		{
 			get { return this.renderMode; }
-			set
-			{
-				this.renderMode = value;
-				this.glyphsDirty = true;
-			}
+			set { this.renderMode = value; }
 		}
 		/// <summary>
 		/// [GET] The <see cref="Duality.Resources.Material"/> to use when rendering text of this Font.
@@ -219,12 +202,14 @@ namespace Duality.Resources
 			set { this.lineHeightFactor = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Whether this is considered a monospace Font. If true, each character occupies exactly the same space.
+		/// [GET] Whether this is considered a monospace Font. If true, each character occupies exactly the same space.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("Monospace information is import-only. Modify importer settings instead. For read-only access, use the Metrics property.")]
 		public bool MonoSpace
 		{
 			get { return this.monospace; }
-			set { this.monospace = value; this.glyphsDirty = true; }
+			set {} // Remove this on the next breaking change cycle
 		}
 		/// <summary>
 		/// [GET / SET] Whether this Font uses kerning, a technique where characters are moved closer together based on their actual shape,
@@ -240,21 +225,27 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET] Returns whether this Font requires to re-render its glyphs in order to match the
 		/// changes that have been made to its Properties.
+		/// 
+		/// This property is obsolete and will be removed in the next major version step.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("This property is obsolete with the new Font importer and custom import parameters.")]
 		public bool GlyphsDirty
 		{
-			get { return this.glyphsDirty; }
+			get { return false; }
 		}
 		
 		/// <summary>
 		/// [GET] Returns a chunk of memory that contains this Fonts embedded TrueType data for rendering glyphs.
+		/// 
+		/// This property is obsolete and will be removed in the next major version step.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("This property is obsolete with the new Font importer and custom import parameters.")]
 		public byte[] EmbeddedTrueTypeFont
 		{
-			get { return this.embeddedFont; }
-			set { this.embeddedFont = value; this.glyphsDirty = true; }
+			get { return null; }
+			set { }
 		}
 
 		/// <summary>
@@ -311,6 +302,30 @@ namespace Duality.Resources
 		{
 			get { return this.baseLine; }
 		}
+		/// <summary>
+		/// [GET] Provides access to various metrics that are inherent to this <see cref="Font"/> instance,
+		/// such as size, height, and various typographic measures.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public FontMetrics Metrics
+		{
+			get 
+			{
+				// Remove this on the next major version step.
+				if (this.metrics == null)
+				{
+					this.metrics = new FontMetrics(
+						this.size, 
+						this.height, 
+						this.ascent, 
+						this.bodyAscent, 
+						this.descent, 
+						this.baseLine,
+						this.monospace);
+				}
+				return this.metrics;
+			}
+		}
 
 
 		/// <summary>
@@ -330,11 +345,19 @@ namespace Duality.Resources
 
 			this.pixelData = new Pixmap(bitmap);
 			this.pixelData.Atlas = atlas.ToList();
+
+			this.metrics = metrics;
+
+			// Copy metrics data into local fields.
+			// Remove this on the next major version step.
+			this.size = metrics.Size;
 			this.height = metrics.Height;
 			this.ascent = metrics.Ascent;
 			this.bodyAscent = metrics.BodyAscent;
 			this.descent = metrics.Descent;
 			this.baseLine = metrics.BaseLine;
+			this.monospace = metrics.Monospace;
+
 			this.maxGlyphWidth = 0;
 			for (int i = 0; i < this.glyphs.Length; i++)
 			{
@@ -343,8 +366,6 @@ namespace Duality.Resources
 
 			this.UpdateKerningData();
 			this.GenerateTexMat();
-
-			this.glyphsDirty = false;
 		}
 		/// <summary>
 		/// Updates this Fonts kerning sample data.
@@ -455,8 +476,6 @@ namespace Duality.Resources
 			this.material = null;
 			this.texture = null;
 			this.pixelData = null;
-
-			this.glyphsDirty = true;
 		}
 		private void GenerateTexMat()
 		{
@@ -884,7 +903,7 @@ namespace Duality.Resources
 			glyphXOff = -glyphData.OffsetX;
 			glyphYOff = -glyphData.OffsetY;
 
-			if (this.kerning && !this.monospace && !this.glyphsDirty)
+			if (this.kerning && !this.monospace)
 			{
 				char glyphNext = index + 1 < text.Length ? text[index + 1] : ' ';
 				GlyphData glyphDataNext;
