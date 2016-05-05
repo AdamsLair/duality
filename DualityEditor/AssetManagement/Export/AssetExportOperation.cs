@@ -8,6 +8,9 @@ using Duality.IO;
 
 namespace Duality.Editor.AssetManagement
 {
+	/// <summary>
+	/// Encapsulates a single Resource export operation.
+	/// </summary>
 	public class AssetExportOperation
 	{
 		private class ConflictData : IAssetImporterConflictData
@@ -42,20 +45,39 @@ namespace Duality.Editor.AssetManagement
 		private ExportInputAssignment inputMapping = default(ExportInputAssignment);
 		private List<string> outputPaths = null;
 		private AssetImporterConflictHandler conflictHandler = null;
+		private bool isAssetInfoChanged = false;
 
 
+		/// <summary>
+		/// [GET] The <see cref="Resource"/> that is exported in this operation.
+		/// </summary>
 		public Resource Input
 		{
 			get { return this.input; }
 		}
+		/// <summary>
+		/// [GET] Enumerates all generated output paths. 
+		/// This result is only available after calling <see cref="Perform"/> or <see cref="SimulatePerform"/>.
+		/// </summary>
 		public IEnumerable<string> OutputPaths
 		{
 			get { return this.outputPaths ?? Enumerable.Empty<string>(); }
 		}
+		/// <summary>
+		/// [GET / SET] An optional delegate for resolving conflicts when multiple
+		/// <see cref="IAssetImporter"/> instances are able to export a given <see cref="Resource"/>.
+		/// </summary>
 		public AssetImporterConflictHandler ImporterConflictHandler
 		{
 			get { return this.conflictHandler; }
 			set { this.conflictHandler = value; }
+		}
+		/// <summary>
+		/// [GET] Whether the export operation modified export parameters of the exported <see cref="Resource"/>.
+		/// </summary>
+		public bool IsAssetInfoChanged
+		{
+			get { return this.isAssetInfoChanged; }
 		}
 
 		
@@ -65,6 +87,10 @@ namespace Duality.Editor.AssetManagement
 			this.input = input;
 		}
 
+		/// <summary>
+		/// Performs the operation and returns whether it was successful.
+		/// </summary>
+		/// <returns></returns>
 		public bool Perform()
 		{
 			this.ResetWorkingData();
@@ -79,6 +105,13 @@ namespace Duality.Editor.AssetManagement
 
 			return importSuccess;
 		}
+		/// <summary>
+		/// Simulates performing the operation without actually doing anything, and returns
+		/// whether the simulation was successful.
+		/// This can be used to determine which files would be affected when performing
+		/// the operation.
+		/// </summary>
+		/// <returns></returns>
 		public bool SimulatePerform()
 		{
 			this.ResetWorkingData();
@@ -105,6 +138,7 @@ namespace Duality.Editor.AssetManagement
 			{
 				AssetExportEnvironment importEnv = new AssetExportEnvironment(this.exportDir, this.input);
 				success = this.RunImporter(importEnv, this.inputMapping, this.outputPaths);
+				this.isAssetInfoChanged = importEnv.IsAssetInfoChanged;
 			}
 			return success;
 		}
@@ -230,6 +264,7 @@ namespace Duality.Editor.AssetManagement
 		}
 		private void ResetWorkingData()
 		{
+			this.isAssetInfoChanged = false;
 			this.inputMapping = default(ExportInputAssignment);
 			this.outputPaths = null;
 		}

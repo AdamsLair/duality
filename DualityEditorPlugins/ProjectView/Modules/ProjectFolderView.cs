@@ -423,20 +423,28 @@ namespace Duality.Editor.Plugins.ProjectView
 		}
 		protected void DeleteNodes(IEnumerable<TreeNodeAdv> nodes)
 		{
-			nodes = nodes.ToList();
-			bool allReadOnly = nodes.All(viewNode => (viewNode.Tag as NodeBase).ReadOnly);
-			
-			if (allReadOnly || !this.DisplayConfirmDeleteSelectedFiles()) return;
+			TreeNodeAdv[] nodeArray = nodes.ToArray();
 
+			// If they're all read-only, don't bother starting an operation
+			bool allReadOnly = nodeArray.All(viewNode => (viewNode.Tag as NodeBase).ReadOnly);
+			if (allReadOnly)
+				return;
+
+			// Ask for user confirmation
+			if (!this.DisplayConfirmDeleteSelectedFiles())
+				return;
+
+			// Query model nodes from the given view nodes
 			var nodeQuery = 
-				from viewNode in nodes
+				from viewNode in nodeArray
 				select this.folderModel.FindNode(this.folderView.GetPath(viewNode)) as NodeBase;
 
-			foreach (NodeBase nodeBase in nodeQuery)
-			{
-				if (nodeBase.ReadOnly) continue;
-				RecycleBin.Send(nodeBase.NodePath);
-			}
+			// Determine the array of file paths to be deleted and send it to the recycling bin
+			string[] deleteFilePaths = nodeQuery
+				.Where(n => !n.ReadOnly)
+				.Select(n => n.NodePath)
+				.ToArray();
+			RecycleBin.Send(deleteFilePaths);
 		}
 		protected void CreateFolder(TreeNodeAdv baseNode)
 		{

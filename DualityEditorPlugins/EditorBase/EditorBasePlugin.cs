@@ -85,14 +85,7 @@ namespace Duality.Editor.Plugins.Base
 			// If a font has been modified, reload it and update all TextRenderers
 			if (resRef.Is<Font>())
 			{
-				if (resRef.IsLoaded)
-				{
-					Font fnt = resRef.As<Font>().Res;
-					if (fnt.GlyphsDirty && fnt.EmbeddedTrueTypeFont != null)
-						fnt.RenderGlyphs(null);
-				}
-
-				foreach (Duality.Components.Renderers.TextRenderer r in Scene.Current.AllObjects.GetComponents<Duality.Components.Renderers.TextRenderer>())
+				foreach (TextRenderer r in Scene.Current.AllObjects.GetComponents<TextRenderer>())
 				{
 					r.Text.ApplySource();
 

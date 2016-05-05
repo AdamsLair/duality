@@ -27,18 +27,14 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			preview.Getter = this.GetValue;
 			this.ParentGrid.ConfigureEditor(preview);
 			this.AddPropertyEditor(preview);
-			FontContentPropertyEditor content = new FontContentPropertyEditor();
+			ResourcePropertyEditor content = new ResourcePropertyEditor();
 			content.EditedType = this.EditedType;
 			content.Getter = this.GetValue;
+			content.Setter = this.SetValues;
 			content.Hints = HintFlags.None;
 			content.HeaderHeight = 0;
 			content.HeaderValueText = null;
 			content.PreventFocus = true;
-			content.CanRenderFontChanged += (sender, e) => 
-			{
-				// Switch readonly mode on an off, depending on whether we can re-render this Font dynamically.
-				content.Setter = content.CanRenderFont ? this.SetValues : (Action<IEnumerable<object>>)null;
-			};
 			this.ParentGrid.ConfigureEditor(content);
 			this.AddPropertyEditor(content);
 			content.Expanded = true;

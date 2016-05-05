@@ -440,9 +440,18 @@ namespace Duality.Updater
 						break;
 					}
 				}
-				solutionLines.RemoveRange(startIndex, 1 + endIndex - startIndex);
 
-				File.WriteAllLines(solutionFile, solutionLines);
+				// If we found the reference block, remove it and save the solution file
+				if (startIndex != -1 && endIndex != -1)
+				{
+					solutionLines.RemoveRange(startIndex, 1 + endIndex - startIndex);
+					File.WriteAllLines(solutionFile, solutionLines);
+				}
+				// Otherwise, skip this step
+				else
+				{
+					return CommandResult.Skip;
+				}
 			}
 
 			return CommandResult.Success;

@@ -275,6 +275,8 @@ DualityPlugins/Tilemaps/Sample/Testbed/Backup/
 DualityPlugins/Tilemaps/Sample/Testbed/DefaultUserData.dat
 DualityPlugins/Tilemaps/Sample/Testbed/logfile.txt
 DualityPlugins/Tilemaps/Sample/Testbed/perflog.txt
+DualityPlugins/Tilemaps/Sample/Testbed/logfile_editor_prev.txt
 UnitTesting/DualityEditorTests/obj/
 UnitTesting/DualityEditorTests/bin/
-DualityPlugins/Tilemaps/Sample/Testbed/logfile_editor_prev.txt
+SampleProjects/AudioHandling/Content/logfile_editor_prev.txt
+SampleProjects/DualStickSpaceShooter/Content/logfile_editor_prev.txt

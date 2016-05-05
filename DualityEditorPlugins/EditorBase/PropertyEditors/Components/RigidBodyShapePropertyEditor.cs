@@ -25,12 +25,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 		{
 			base.OnPropertySet(property, targets);
 
-			var colShapes = targets.OfType<ShapeInfo>().ToArray();
-			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, property, colShapes, null));
+			var shapes = targets.OfType<ShapeInfo>().ToArray();
+			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, property, shapes, null));
 
-			var colliders = colShapes.Select(c => c.Parent).ToArray();
-			foreach (var c in colliders) c.AwakeBody();
-			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, ReflectionInfo.Property_RigidBody_Shapes, colliders, null));
+			var parentBodies = shapes.Select(c => c.Parent).NotNull().ToArray();
+			foreach (var body in parentBodies) body.AwakeBody();
+			UndoRedoManager.Do(new EditPropertyAction(this.ParentGrid, ReflectionInfo.Property_RigidBody_Shapes, parentBodies, null));
 		}
 	}
 }

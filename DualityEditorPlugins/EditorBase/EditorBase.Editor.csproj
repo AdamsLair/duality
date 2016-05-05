@@ -36,8 +36,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AdamsLair.WinForms.1.1.1.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AdamsLair.WinForms.1.1.4.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="PopupControl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -104,12 +104,14 @@
     <Compile Include="PropertyEditors\ComponentRefPropertyEditor.cs" />
     <Compile Include="PropertyEditors\GameObjectRefPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ObjectRefPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ResourceImportExportPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ResourceOverviewPropertyEditor.cs" />
+    <Compile Include="PropertyEditors\ResourceAssetPropertyEditor.cs" />
     <Compile Include="PropertyEditors\ResourcePropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\FontPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\AudioDataPreviewPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\AudioDataPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\FontPreviewPropertyEditor.cs" />
-    <Compile Include="PropertyEditors\Resources\FontContentPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\DrawTechniquePropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\ImagePreviewPropertyEditor.cs" />
     <Compile Include="PropertyEditors\Resources\PixmapContentPropertyEditor.cs" />

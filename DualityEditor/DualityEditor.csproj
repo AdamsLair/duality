@@ -71,8 +71,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AdamsLair.WinForms, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AdamsLair.WinForms.1.1.1.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
+    <Reference Include="AdamsLair.WinForms, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AdamsLair.WinForms.1.1.4.0\lib\net45\AdamsLair.WinForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Aga.Controls, Version=1.7.6.0, Culture=neutral, processorArchitecture=MSIL">
@@ -107,6 +107,10 @@
     <Compile Include="..\Duality\Backend\DefaultPluginLoader.cs">
       <Link>DefaultPluginLoader.cs</Link>
     </Compile>
+    <Compile Include="AssetManagement\AssetExportFinishedEventArgs.cs" />
+    <Compile Include="AssetManagement\AssetInternalHelper.cs" />
+    <Compile Include="AssetManagement\Export\ExtMethodsIAssetExportEnvironment.cs" />
+    <Compile Include="AssetManagement\AssetImportFinishedEventArgs.cs" />
     <Compile Include="Backend\Dummy\DummyNativeRenderableSite.cs" />
     <Compile Include="Backend\Dummy\DummyNativeEditorGraphicsContext.cs" />
     <Compile Include="Backend\Dummy\DummyEditorGraphicsBackend.cs" />
@@ -202,6 +206,7 @@
       <DependentUpon>SelectAssetImporterDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\GeneralResNames.cs" />
+    <Compile Include="UndoRedoActions\EditResourceAssetDataAction.cs" />
     <Compile Include="Utility\BuildHelper.cs" />
     <Compile Include="Utility\EventArgs\ResourceRenamedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\PrefabAppliedEventArgs.cs" />
@@ -213,7 +218,6 @@
     <Compile Include="Utility\HighlightMode.cs" />
     <Compile Include="Utility\AutosaveFrequency.cs" />
     <Compile Include="Utility\SelectMode.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsDualityFont.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsPixelData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsMemberInfoEditorHint.cs" />
