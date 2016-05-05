@@ -11,42 +11,54 @@ namespace Duality.Resources
 	/// </summary>
 	public class FontCharSet
 	{
+		public static readonly FontCharSet Default = new FontCharSet(
+			chars:             "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß",
+			charBaseLineRef:   "acemnorsuvwxz",
+			charDescentRef:    "pqgjyQ|",
+			charBodyAscentRef: "acemnorsuvwxz"
+		);
+
 		private string chars             = string.Empty;
 		private string charBaseLineRef   = string.Empty;
 		private string charDescentRef    = string.Empty;
 		private string charBodyAscentRef = string.Empty;
 
 		/// <summary>
-		/// [GET / SET] All characters that will be available in the rendered character set.
+		/// [GET] All characters that will be available in the rendered character set.
 		/// </summary>
 		public string Chars
 		{
 			get { return this.chars; }
-			set { this.chars = value ?? string.Empty; }
 		}
 		/// <summary>
-		/// [GET / SET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.BaseLine"/> parameter.
+		/// [GET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.BaseLine"/> parameter.
 		/// </summary>
 		public string CharBaseLineRef
 		{
 			get { return this.charBaseLineRef; }
-			set { this.charBaseLineRef = value ?? string.Empty; }
 		}
 		/// <summary>
-		/// [GET / SET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.Descent"/> parameter.
+		/// [GET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.Descent"/> parameter.
 		/// </summary>
 		public string CharDescentRef
 		{
 			get { return this.charDescentRef; }
-			set { this.charDescentRef = value ?? string.Empty; }
 		}
 		/// <summary>
-		/// [GET / SET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.Ascent"/> parameter.
+		/// [GET] Characters which will contribute to calculating the <see cref="Duality.Resources.Font.Ascent"/> parameter.
 		/// </summary>
 		public string CharBodyAscentRef
 		{
 			get { return this.charBodyAscentRef; }
-			set { this.charBodyAscentRef = value ?? string.Empty; }
+		}
+
+		private FontCharSet() { }
+		public FontCharSet(string chars, string charBaseLineRef, string charDescentRef, string charBodyAscentRef)
+		{
+			this.chars = chars;
+			this.charBaseLineRef = charBaseLineRef;
+			this.charDescentRef = charDescentRef;
+			this.charBodyAscentRef = charBodyAscentRef;
 		}
 
 		/// <summary>
@@ -56,13 +68,12 @@ namespace Duality.Resources
 		/// <returns></returns>
 		public FontCharSet MergedWith(FontCharSet second)
 		{
-			return new FontCharSet
-			{
-				Chars             = MergeCharList(this.Chars,             (second != null) ? second.Chars             : null),
-				CharBaseLineRef   = MergeCharList(this.CharBaseLineRef,   (second != null) ? second.CharBaseLineRef   : null),
-				CharDescentRef    = MergeCharList(this.CharDescentRef,    (second != null) ? second.CharDescentRef    : null),
-				CharBodyAscentRef = MergeCharList(this.CharBodyAscentRef, (second != null) ? second.CharBodyAscentRef : null),
-			};
+			return new FontCharSet(
+				chars:             MergeCharList(this.chars,             (second != null) ? second.chars             : null),
+				charBaseLineRef:   MergeCharList(this.charBaseLineRef,   (second != null) ? second.charBaseLineRef   : null),
+				charDescentRef:    MergeCharList(this.charDescentRef,    (second != null) ? second.charDescentRef    : null),
+				charBodyAscentRef: MergeCharList(this.charBodyAscentRef, (second != null) ? second.charBodyAscentRef : null)
+			);
 		}
 
 		private static string MergeCharList(string first, string second)

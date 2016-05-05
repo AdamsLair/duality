@@ -21,14 +21,6 @@ namespace Duality.Editor
 {
 	public static class ExtMethodsDualityFont
 	{
-		private static readonly FontCharSet DefaultCharSet = new FontCharSet
-		{
-			Chars             = "? abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,;.:-_<>|#'+*~@^°!\"§$%&/()=`²³{[]}\\´öäüÖÄÜß",
-			CharBaseLineRef   = "acemnorsuvwxz",
-			CharDescentRef    = "pqgjyQ|",
-			CharBodyAscentRef = "acemnorsuvwxz"
-		};
-
 		private static Dictionary<int,PrivateFontCollection> fontManagers;
 
 		/// <summary>
@@ -116,7 +108,7 @@ namespace Duality.Editor
 				RenderGlyphs(
 					font, 
 					internalFont, 
-					DefaultCharSet.MergedWith(extendedSet));
+					FontCharSet.Default.MergedWith(extendedSet));
 			}
 		}
 		/// <summary>
