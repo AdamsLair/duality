@@ -694,6 +694,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.actionText.MaxHeight = MathF.Min(500, this.ClientSize.Height / 2);
 			this.actionText.Fonts = new [] { OverlayFont };
 		}
+		private void ForceDragDropRenderUpdate()
+		{
+			// Force immediate buffer swap and continuous repaint, because there is no event loop while dragging.
+			this.renderFrameLast = 0;
+			DualityEditorApp.PerformBufferSwap();
+		}
 
 		private void RenderableControl_Paint(object sender, PaintEventArgs e)
 		{
@@ -950,21 +956,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void RenderableControl_DragOver(object sender, DragEventArgs e)
 		{
 			this.OnDragOver(e);
-			// Force immediate buffer swap and continuous repaint, because there is no event loop while dragging.
-			this.renderFrameLast = 0;
-			DualityEditorApp.PerformBufferSwap();
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_DragLeave(object sender, EventArgs e)
 		{
 			this.OnDragLeave(e);
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_DragEnter(object sender, DragEventArgs e)
 		{
 			this.OnDragEnter(e);
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_DragDrop(object sender, DragEventArgs e)
 		{
 			this.OnDragDrop(e);
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_Resize(object sender, EventArgs e)
 		{
