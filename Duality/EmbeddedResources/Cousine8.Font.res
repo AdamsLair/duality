@@ -866,6 +866,15 @@
   <kerning dataType="Bool">false</kerning>
   <lineHeightFactor dataType="Float">1</lineHeightFactor>
   <maxGlyphWidth dataType="Int">7</maxGlyphWidth>
+  <metrics dataType="Struct" type="Duality.Resources.FontMetrics" id="876525375">
+    <ascent dataType="Int">7</ascent>
+    <baseLine dataType="Int">9</baseLine>
+    <bodyAscent dataType="Int">6</bodyAscent>
+    <descent dataType="Int">2</descent>
+    <height dataType="Int">12</height>
+    <monospace dataType="Bool">true</monospace>
+    <size dataType="Float">8</size>
+  </metrics>
   <monospace dataType="Bool">true</monospace>
   <pixelData dataType="Struct" type="Duality.Resources.Pixmap" id="2035693768">
     <animCols dataType="Int">0</animCols>
