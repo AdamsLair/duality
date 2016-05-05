@@ -250,17 +250,9 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			if (!this.CanExportResource) return;
 
 			// Perform the export operation
-			bool anySuccess = false;
 			foreach (Resource res in resources)
 			{
-				string[] result = AssetManager.ExportAssets(res);
-				if (result != null && result.Length > 0) anySuccess = true;
-			}
-
-			// If we were successful, play a feedback sound
-			if (anySuccess)
-			{
-				System.Media.SystemSounds.Asterisk.Play();
+				AssetManager.ExportAssets(res);
 			}
 		}
 		/// <summary>
@@ -275,20 +267,12 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			if (!this.CanReImportResource) return;
 
 			// Perform the re-import operation
-			bool anySuccess = false;
 			foreach (Resource res in resources)
 			{
 				string[] sourceFiles = AssetManager.GetAssetSourceFiles(res);
 				if (sourceFiles.Length == 0) continue;
 
-				AssetImportOutput[] result = AssetManager.ReImportAssets(sourceFiles);
-				if (result != null && result.Length > 0) anySuccess = true;
-			}
-
-			// If we were successful, play a feedback sound
-			if (anySuccess)
-			{
-				System.Media.SystemSounds.Asterisk.Play();
+				AssetManager.ReImportAssets(sourceFiles);
 			}
 		}
 
