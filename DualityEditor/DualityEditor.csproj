@@ -218,7 +218,6 @@
     <Compile Include="Utility\HighlightMode.cs" />
     <Compile Include="Utility\AutosaveFrequency.cs" />
     <Compile Include="Utility\SelectMode.cs" />
-    <Compile Include="Utility\Extensions\ExtMethodsDualityFont.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsPixelData.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsBitmap.cs" />
     <Compile Include="Utility\Extensions\ExtMethodsMemberInfoEditorHint.cs" />

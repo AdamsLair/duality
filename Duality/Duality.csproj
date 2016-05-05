@@ -139,6 +139,7 @@
     <Compile Include="IO\PathEqualityComparer.cs" />
     <Compile Include="IO\PathOp.cs" />
     <Compile Include="Resources\AssetInfo.cs" />
+    <Compile Include="Resources\FontMetrics.cs" />
     <Compile Include="Resources\FontCharSet.cs" />
     <Compile Include="Resources\ShaderInfo\BuiltinShaderFields.cs" />
     <Compile Include="Resources\ShaderInfo\ShaderType.cs" />

@@ -320,12 +320,8 @@ namespace Duality.Resources
 		/// <param name="bitmap"></param>
 		/// <param name="atlas"></param>
 		/// <param name="glyphs"></param>
-		/// <param name="height"></param>
-		/// <param name="ascent"></param>
-		/// <param name="bodyAscent"></param>
-		/// <param name="descent"></param>
-		/// <param name="baseLine"></param>
-		public void SetGlyphData(PixelData bitmap, Rect[] atlas, GlyphData[] glyphs, int height, int ascent, int bodyAscent, int descent, int baseLine)
+		/// <param name="metrics"></param>
+		public void SetGlyphData(PixelData bitmap, Rect[] atlas, GlyphData[] glyphs, FontMetrics metrics)
 		{
 			this.ReleaseResources();
 
@@ -334,11 +330,11 @@ namespace Duality.Resources
 
 			this.pixelData = new Pixmap(bitmap);
 			this.pixelData.Atlas = atlas.ToList();
-			this.height = height;
-			this.ascent = ascent;
-			this.bodyAscent = bodyAscent;
-			this.descent = descent;
-			this.baseLine = baseLine;
+			this.height = metrics.Height;
+			this.ascent = metrics.Ascent;
+			this.bodyAscent = metrics.BodyAscent;
+			this.descent = metrics.Descent;
+			this.baseLine = metrics.BaseLine;
 			this.maxGlyphWidth = 0;
 			for (int i = 0; i < this.glyphs.Length; i++)
 			{
