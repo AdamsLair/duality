@@ -85,7 +85,7 @@ namespace Duality.Resources
 			StringBuilder builder = new StringBuilder(first, first.Length + second.Length);
 			for (int i = 0; i < second.Length; i++)
 			{
-				if (first.IndexOf(second[i]) == -1) continue;
+				if (first.IndexOf(second[i]) != -1) continue;
 				builder.Append(second[i]);
 			}
 			return builder.ToString();
