@@ -171,10 +171,19 @@ namespace Duality.Resources
 		/// <summary>
 		/// [GET / SET] Specifies how the glyphs of this <see cref="Font"/> are rendered in a text.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public RenderMode GlyphRenderMode
 		{
 			get { return this.renderMode; }
-			set { this.renderMode = value; }
+			set
+			{
+				if (this.renderMode != value)
+				{
+					this.renderMode = value;
+					this.GenerateTexture(); // Filtering depends on pixel-grid alignment.
+					this.GenerateMaterial();
+				}
+			}
 		}
 		/// <summary>
 		/// [GET] The <see cref="Duality.Resources.Material"/> to use when rendering text of this Font.
@@ -365,7 +374,8 @@ namespace Duality.Resources
 			}
 
 			this.UpdateKerningData();
-			this.GenerateTexMat();
+			this.GenerateTexture();
+			this.GenerateMaterial();
 		}
 		/// <summary>
 		/// Updates this Fonts kerning sample data.
@@ -477,9 +487,8 @@ namespace Duality.Resources
 			this.texture = null;
 			this.pixelData = null;
 		}
-		private void GenerateTexMat()
+		private void GenerateTexture()
 		{
-			if (this.material != null) this.material.Dispose();
 			if (this.texture != null) this.texture.Dispose();
 
 			if (this.pixelData == null)
@@ -489,6 +498,13 @@ namespace Duality.Resources
 				TextureSizeMode.Enlarge, 
 				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
 				this.IsPixelGridAligned ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
+		}
+		private void GenerateMaterial()
+		{
+			if (this.material != null) this.material.Dispose();
+
+			if (this.texture == null)
+				return;
 
 			// Select DrawTechnique to use
 			ContentRef<DrawTechnique> technique;
@@ -922,7 +938,8 @@ namespace Duality.Resources
 		protected override void OnLoaded()
 		{
 			this.GenerateCharLookup();
-			this.GenerateTexMat();
+			this.GenerateTexture();
+			this.GenerateMaterial();
 			base.OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)
@@ -935,7 +952,8 @@ namespace Duality.Resources
 			base.OnCopyDataTo(target, operation);
 			Font c = target as Font;
 			c.GenerateCharLookup();
-			c.GenerateTexMat();
+			c.GenerateTexture();
+			c.GenerateMaterial();
 		}
 	}
 }
