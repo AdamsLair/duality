@@ -355,6 +355,98 @@
       <parent />
       <prefabLink />
     </item>
+    <item dataType="Struct" type="Duality.GameObject" id="1593919710">
+      <active dataType="Bool">true</active>
+      <children />
+      <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="158003912">
+        <_items dataType="Array" type="Duality.Component[]" id="3716853356" length="4">
+          <item dataType="Struct" type="Duality.Components.Transform" id="3954234642">
+            <active dataType="Bool">true</active>
+            <angle dataType="Float">0</angle>
+            <angleAbs dataType="Float">0</angleAbs>
+            <angleVel dataType="Float">0</angleVel>
+            <angleVelAbs dataType="Float">0</angleVelAbs>
+            <deriveAngle dataType="Bool">true</deriveAngle>
+            <gameobj dataType="ObjectRef">1593919710</gameobj>
+            <ignoreParent dataType="Bool">false</ignoreParent>
+            <parentTransform />
+            <pos dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">240</Y>
+              <Z dataType="Float">0</Z>
+            </pos>
+            <posAbs dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">240</Y>
+              <Z dataType="Float">0</Z>
+            </posAbs>
+            <scale dataType="Float">1</scale>
+            <scaleAbs dataType="Float">1</scaleAbs>
+            <vel dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">0</Y>
+              <Z dataType="Float">0</Z>
+            </vel>
+            <velAbs dataType="Struct" type="Duality.Vector3">
+              <X dataType="Float">0</X>
+              <Y dataType="Float">0</Y>
+              <Z dataType="Float">0</Z>
+            </velAbs>
+          </item>
+          <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" id="3907431145">
+            <active dataType="Bool">true</active>
+            <colorTint dataType="Struct" type="Duality.Drawing.ColorRgba">
+              <A dataType="Byte">255</A>
+              <B dataType="Byte">255</B>
+              <G dataType="Byte">255</G>
+              <R dataType="Byte">255</R>
+            </colorTint>
+            <customMat />
+            <depthScale dataType="Float">0.01</depthScale>
+            <gameobj dataType="ObjectRef">1593919710</gameobj>
+            <height dataType="Float">0</height>
+            <isVertical dataType="Bool">true</isVertical>
+            <offset dataType="Float">-0.08</offset>
+            <rect dataType="Struct" type="Duality.Rect">
+              <H dataType="Float">48</H>
+              <W dataType="Float">32</W>
+              <X dataType="Float">-16</X>
+              <Y dataType="Float">-40</Y>
+            </rect>
+            <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
+              <contentPath dataType="String">Data\Cylinder.Material.res</contentPath>
+            </sharedMat>
+            <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
+          </item>
+        </_items>
+        <_size dataType="Int">2</_size>
+        <_version dataType="Int">2</_version>
+      </compList>
+      <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="2561091294" surrogate="true">
+        <header />
+        <body>
+          <keys dataType="Array" type="System.Object[]" id="3769218442">
+            <item dataType="ObjectRef">1128403856</item>
+            <item dataType="Type" id="499419104" value="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" />
+          </keys>
+          <values dataType="Array" type="System.Object[]" id="1630447898">
+            <item dataType="ObjectRef">3954234642</item>
+            <item dataType="ObjectRef">3907431145</item>
+          </values>
+        </body>
+      </compMap>
+      <compTransform dataType="ObjectRef">3954234642</compTransform>
+      <identifier dataType="Struct" type="System.Guid" surrogate="true">
+        <header>
+          <data dataType="Array" type="System.Byte[]" id="2941495914">6QaaXpvsP06njO2/8LNlCA==</data>
+        </header>
+        <body />
+      </identifier>
+      <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+      <name dataType="String">TestActor</name>
+      <parent />
+      <prefabLink />
+    </item>
     <item dataType="ObjectRef">2961408854</item>
     <item dataType="ObjectRef">3085774208</item>
   </serializeObj>
