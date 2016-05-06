@@ -140,7 +140,7 @@
                   <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2703622211" custom="true">
                     <body>
                       <version dataType="Int">2</version>
-                      <data dataType="Array" type="System.Byte[]" id="455732262">H4sIAAAAAAAEAO2UPU4DQQyFZy6CBpKF8KdABwUSNJTcl252oQh7AcqUdHAFwC7ytMaWdxchCj8pT1Eyz/7WM7MlpVS+Pm36Vkf+lqaokreKc+VXJfWouJaSas06HlWoo/FvfyklpVXAOlLySVug6uAXbTJjU5peTO/F+gpdpEsSj3tS2iSXpjfkeC9s/g15P5Lfk9L4900/EPzcC/foCbqsyE9G8svUs+jSCxLWselccy/v1i/IcXeqySZJ5FNr077Iw17T3pCoQo67s1F4mJzndgkkC3fqKg97+fmb/PN33mvcHeapgqQD8mvye/LiTt3mYS88CR4tHeuZR94LniGT35E/kK/cqWmnRWPmXZD/Mg/ei3Nen3bkN2nomDqELKbGTtvD3Cg1C/kZ+Sk5n9hseoH1fM6PyOffUw8zCu8FnlibX6bW5PMnP1/v5Db/x19DueQh/89P4SdHD4VCoVAoFAqFQiFbn2MlXl0IGAAA</data>
+                      <data dataType="Array" type="System.Byte[]" id="455732262">H4sIAAAAAAAEAJ1Yy05UQRC9dyfqwufGB7nOMIioUXe6MNENEUwMD02UPzUacmcERRJ1gdEFCxcYZyGPX1DOWXCcQ1UaK+Gk09PVdbq66lY1TVVVzd+/fnUgA+AQeKY+wLNAl3OYPw+8AGwx3w+QO3+3faj1OsBIy633030oXTnLJYwvA68U8/8R8C/X6tRHW4920H1c/KR9YTWQmcgzx9WK5GOKG7a+FSuOzqQES7TUkz2Jh4kUe8BhMf914MYx+ZdoRZFwLcWO8actvaN3YmUKOH1M/q61alY2hMmE+P9GitxzXNZ3uQOQt9Om3JyJnzry9t161JZ6Ur8q5dIA9XbWAz5kTr/dEybdYq379agt5a/Cs/AbdQI4JqfTfOFd6+2QT2tMBsL8AXAG2BRrPapHbY2bzz0vtH5NFNwR+Xhe0Idk/hj4DDhVrBV5m9Ia/27KuRf8Sj6aF7e5vjpk/rAaRdWaFF3Vcm9rzJO/5rWvcc4aS7qyAd4C3gQyYusUG1nPOL9ufDqBP8nf85oScY5E80Ij1jmPydi17gDd83vAfeOv5/XMpZzEzCng6eKv1p7wnKtHT1Ebn5J9iFvAFpj3JxTv+i7KKfx+3WKOegrdbRO4jJldjLdlJXM/r4zMbu/6rhpn2t0MGKr1nfQUvwX3RNelW8w//45VZtG5bclKP2MUXX4uSkfqSAn/qIPNOWue7hesdy2NZI805n7ekwxsXBVw+D/MMzHKTe2W24C/VkZn7refR7uvd7t9mY/eBZxn1WAFiao5+8CeMYnylJJntKLa1Rjwd4F2s5zX2sGMZvXXas4+aloYRr7VPFWJ1u+KXY8BfxcMhGHPrDRA3gg7gbxrdd8q/xXBfL3aVf55zLDyap8Q9QBezSnMBX4xNHLWgG+A74Ef5Fe9hX2z6zHs8aydhktJz5x7fk2YK/+h6GoWqy5jibHBiJq0+Sgeov7HRb9CXh+V/1vgivGPzt4AGbd87+irx+NZe0v/z9sT4KzgHNG8p32L+19vwfl7VWLc8r2jrx6PZ/aTGjM6ngcuCC6K3agz+QT8bPgFSO/5t8hrtNZivaPZ+hC1n+wJ5vyVub9ovmL8DThjM0NhGFU0r3fkP4/xC+BTYNRPUl4Cl4DPgctHL/xHfgJ/AXn7OsPbj7rQvCY6fxWPIvqWt7BoK/N3TUmEKMMdGW8LqpD/EnAhiHl/LTp/SvSu0R288mpUewatGLq8qg/xD4/MCEEIGAAA</data>
                     </body>
                   </tileData>
                   <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
@@ -239,7 +239,7 @@
                   <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="3306088781" custom="true">
                     <body>
                       <version dataType="Int">2</version>
-                      <data dataType="Array" type="System.Byte[]" id="1707160614">H4sIAAAAAAAEAO3TvU4CQRQF4KWypCJWJDwAsXIttRF5ER7Bn8afxAiFdFAhxSJGLSi3MT7F+EbKmeYkN7u5s7tuFnJJ+DK53Jk9w870oijq/X1H0fbzs0cmNP4OnPtV46wsPxXPqv9frWp3zXRJNiFPqG+kr1zCK3gduFoS2F/GWIzj1tZbjO/gPfXcwE3umvk3KNT8Z2X5BMdwQrt4gCnst7SrfdD4PTBJWij/IbIN4SPtgt/UsSL/C3RUcVTXnI1Y0Sk9QrY2fEZlWmidNWVm14VW03uC5Adwhsqc6lmzFqLiMjqd+FXOrUr/Lk7hWW7+V1E5hwPhBfX4e7T6t/x6+cR2qC7Pj6Mef4/KnPZq9am6is6u2GkT1CQv02+apmmapmmaprmL/gJVALxWCBgAAA==</data>
+                      <data dataType="Array" type="System.Byte[]" id="1707160614">H4sIAAAAAAAEAN2Yy05UQRCGh4uQIDARuURF5QEMK8aFC0kQZckrzMKFSxciidcEVMJFBYkmyALFiBC8QFAxJsZXOLyFj6H8tfmTSlWqZ85MVBK+VGqqumu6q7q7ZqBQKAz8+b9aOPw7+I+4RvL3RN9vdfFqdD99F5ir/quauib/FleJf0M8EbaR/IYomhvgBHgzceS1RPtqWFJyqeGQdyDfBe+RzSS47Y7pV1Aq/bksPgAfgo/oW9wH98BzDdHRNkh+mxjJHskXMGM35HbQqus+WI6BU/QteKeGAvG/BDPSZKSP5AZnyAhm7Id8yZ19EJ8WwTlo5gMzaq5TzMz1ikaLV/R5RN4KPoNmmfTs1U3yihozUxrWZ66vjqoyyl5cBIdV/P0kv1a+o+BlxStkI3X0KhwPV5CcjXKq+PeysBNztRi5xxnbQ3qdPxnZSB3pbGf2gn1Kz6eKFXMreARsIY1lL1Gddm0OyKYnYHkGPGt8at04fDp1gJ3hqLR+MdE+kj/C+I1TJLkc9pLMnE2MU9hUkVeE1xLtl2oWSYT6prvu2pcNfWQ99Stdz25Vev13x+op/L5G9B8TozoatvR3Jy9+zXW0yA2SL/Wt8R78QJoNZZMXuRY+hb18y8/glyqi+qE0PwNe++HxLUu9F7Wu8cpm4Th1nzhpeFnvt7yY2teMg7pPlLcQv5NvgbfJV5/h/itX3ieRLEql7hNnlI30X9NVzBJ/nxwHdUZZr9MF8DH4BHwKjtH6W/1XLV4mpwy9vneaQcmT55BfgIMqw7n/Ek0j+eq5NsGtxMjLOa1AhFbV/wJ3wF2y93sTofXe8HfZOnmKam15ta2q76VfLeKrIbvpvzeOgV1Kr2MQPWdRB8nS0ftVrzMwQn3rCeXUOgGeBPkXg9+jWz4rCBgAAA==</data>
                     </body>
                   </tileData>
                   <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
@@ -338,7 +338,7 @@
                   <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="2980221569" custom="true">
                     <body>
                       <version dataType="Int">2</version>
-                      <data dataType="Array" type="System.Byte[]" id="3362391342">H4sIAAAAAAAEAO3STQqDMBQE4Bdb9y5deokeoTfxwOlN1Cr0R0GdtzBQLHFjX3EC+QhDFpOfQkSKaZYyjxulFFawhk2QNAa6xfiAT/gKEl3fYWeg55riAEzckuj6jWAw0PO7Huptt7ALcm+gYcwr6G33cPir/uoJpzjD1P2+z/5mG3Nr5vD6YW6gW7x+xXDP5ZD/k1JKKaWUUkrpPo6B/tJNCBgAAA==</data>
+                      <data dataType="Array" type="System.Byte[]" id="3362391342">H4sIAAAAAAAEAO2YMU7DQBBFd4H0gCgCosgBQhcqJFIgajookKDhEKGDW3EMcxMSsAQGS5A/SIwYrRmDbX7hSHnarEbJm/VsvONRCGH08b4Ky9d9z549wQdwDi7UzILAzcNn8AUs1IyMH8GcwFO4AW6CW4oxLrkS5cPX+BUTJYG5cBvcAXcVM1BW+wnM1Xz2r84H8eeYoFb7DSxp/I/gdueIXEXkGjhwZN092/5XWa85X5dFy/5D8Nhw2ND32x3aRhZZgjpm/1f1aXfouSJDhXvqP2XLn0vh9ufMotqQ2X8cv1t5smAwF07c/sxZ2AphM/xL/dtIBmfP+lvOwGsC57r+EnkD3hI4a06xi23PyFwzmnLmsT0jg5uHcuaRbkX3jAxumnK32jNuA1U/PE8Y7Fl0Urmq+glDN4YXBFe5uncYd2KYO0xStL3D59UH9RXX9XCG8UlD2ZWVJinq/VK3u79E5GlD/vOEySE4TfyK3i+pe0c3fAfKgV1QCBgAAA==</data>
                     </body>
                   </tileData>
                   <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
@@ -471,12 +471,12 @@
             <parentTransform />
             <pos dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
-              <Y dataType="Float">240</Y>
+              <Y dataType="Float">0</Y>
               <Z dataType="Float">0</Z>
             </pos>
             <posAbs dataType="Struct" type="Duality.Vector3">
               <X dataType="Float">0</X>
-              <Y dataType="Float">240</Y>
+              <Y dataType="Float">0</Y>
               <Z dataType="Float">0</Z>
             </posAbs>
             <scale dataType="Float">1</scale>
