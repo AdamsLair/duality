@@ -15,17 +15,12 @@ namespace Duality.Editor
 	public static class PathHelper
 	{
 		private static string executingBinDir;
-		private static bool pathsCaseSensitive;
+		private static Regex  regExInvisibleUnixPath = new Regex(@"([\\\/]\.[^\.\\\/]|^\.)", RegexOptions.Compiled);
 
 		static PathHelper()
 		{
 			Assembly entryAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityApp).Assembly;
 			executingBinDir = Path.GetFullPath(Path.GetDirectoryName(entryAssembly.Location));
-			pathsCaseSensitive = 
-				Environment.OSVersion.Platform != PlatformID.Win32NT &&
-				Environment.OSVersion.Platform != PlatformID.Win32S &&
-				Environment.OSVersion.Platform != PlatformID.Win32Windows &&
-				Environment.OSVersion.Platform != PlatformID.WinCE;
 		}
 
 		/// <summary>
@@ -163,27 +158,32 @@ namespace Duality.Editor
 
 		/// <summary>
 		/// Returns whether the specified file or directory is visible, i.e. not hidden.
-		/// Non-exitent files or directories will be considered non-visible.
+		/// If visibility for a certain path can not be determined conclusively, it
+		/// will be assumed that the path is visible.
 		/// </summary>
 		/// <param name="path"></param>
 		/// <returns></returns>
 		public static bool IsPathVisible(string path)
 		{
-			if (Directory.Exists(path))
-			{
-				DirectoryInfo dirInfo = new DirectoryInfo(path);
-				return (dirInfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden;
-			}
-			else if (File.Exists(path))
-			{
-				FileInfo fileInfo = new FileInfo(path);
-				return (fileInfo.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden;
-			}
-			else
-			{
-				// If the path leads into nowhere, consider it non-visible.
+			// First, check if the path contains an element that begins with a dot.
+			// We'll assume that this is a hidden path. Yes, we'll do this on Windows
+			// too. There is software that uses this pattern (SVN, git, etc.) and
+			// users don't have an easy way to create those names by accident.
+			if (regExInvisibleUnixPath.IsMatch(path))
 				return false;
-			}
+
+			// Otherwise, we'll check the file system to determine whether the path
+			// points to a hidden file or directory.
+			DirectoryInfo dirInfo;
+			FileInfo fileInfo;
+			if ((dirInfo = new DirectoryInfo(path)).Exists && (dirInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+				return false;
+			else if ((fileInfo = new FileInfo(path)).Exists && (fileInfo.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+				return false;
+
+			// If we reach this point, we weren't able to find any clue of the path
+			// being invisible. Assume visibility.
+			return true;
 		}
 		/// <summary>
 		/// Returns whether the specified path is considered a valid file or folder path.
