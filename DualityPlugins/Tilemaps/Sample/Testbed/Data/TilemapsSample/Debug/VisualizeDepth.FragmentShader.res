@@ -1,7 +1,10 @@
 ﻿<root dataType="Struct" type="Duality.Resources.FragmentShader" id="129723834">
   <assetInfo dataType="Struct" type="Duality.Editor.AssetManagement.AssetInfo" id="427169525">
+    <customData />
     <importerId dataType="String">BasicShaderAssetImporter</importerId>
-    <nameHint dataType="String">VisualizeDepth</nameHint>
+    <sourceFileHint dataType="Array" type="System.String[]" id="1100841590">
+      <item dataType="String">{Name}.frag</item>
+    </sourceFileHint>
   </assetInfo>
   <source dataType="String">uniform sampler2D mainTex;
 
