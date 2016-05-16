@@ -35,5 +35,9 @@ namespace Duality.Plugins.Tilemaps
 		/// Specifies whether the tile can be considered visually empty, e.g. by being completely transparent.
 		/// </summary>
 		public bool IsVisuallyEmpty;
+		/// <summary>
+		/// Specifies the per-layer collision shape of this tile.
+		/// </summary>
+		public TileCollisionShapes Collision;
 	}
 }

@@ -26,6 +26,10 @@ namespace Duality.Plugins.Tilemaps
 		/// Whether the tile is standing upright / vertical, as opposed to being flat on its <see cref="Tilemap"/> surface.
 		/// </summary>
 		public bool IsVertical;
+		/// <summary>
+		/// Specifies the per-layer collision shape of this tile.
+		/// </summary>
+		public TileCollisionShapes Collision;
 
 
 		public override int GetHashCode()
@@ -33,6 +37,11 @@ namespace Duality.Plugins.Tilemaps
 			int hash = 17;
 			MathF.CombineHashCode(ref hash, this.DepthOffset);
 			MathF.CombineHashCode(ref hash, this.IsVertical ? 1 : 0);
+			MathF.CombineHashCode(ref hash, 
+				((byte)this.Collision.Layer0 << 24) | 
+				((byte)this.Collision.Layer1 << 16) | 
+				((byte)this.Collision.Layer2 << 8) | 
+				((byte)this.Collision.Layer3 << 0));
 			return hash;
 		}
 	}

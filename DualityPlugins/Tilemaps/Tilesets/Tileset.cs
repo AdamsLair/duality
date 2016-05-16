@@ -303,6 +303,7 @@ namespace Duality.Plugins.Tilemaps
 					if (i >= this.tileInput.Count) break;
 					this.tileData.Data[i].DepthOffset = this.tileInput.Data[i].DepthOffset;
 					this.tileData.Data[i].IsVertical = this.tileInput.Data[i].IsVertical;
+					this.tileData.Data[i].Collision = this.tileInput.Data[i].Collision;
 				}
 
 				// Retrieve texture atlas data for quick lookup during rendering
