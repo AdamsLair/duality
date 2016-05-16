@@ -174,29 +174,6 @@ namespace Duality.Editor
 		}
 
 
-		private static bool IsResPathIgnored(string filePath)
-		{
-			return IsPathIgnored(filePath);
-		}
-		private static bool IsSourcePathIgnored(string filePath)
-		{
-			return IsPathIgnored(filePath);
-		}
-		private static bool IsPathIgnored(string filePath)
-		{
-			// Ignore all paths that represent hidden / invisible entities.
-			// Non-existent files and directories are considered non-visible as well.
-			if (!PathHelper.IsPathVisible(filePath)) return true;
-
-			// Some old hack to also ignore non-hidden .svn paths on Windows.
-			// On occasion, consider replacing this with a general rule to ignore
-			// all paths that contain an element (file or folder) starting with a dot.
-			if (filePath.Contains(@"/.svn/") || filePath.Contains(@"\.svn\")) return true;
-
-			// If we've reached this point, it's just some regular path. No need to ignore this.
-			return false;
-		}
-		
 		private static FileSystemEventArgs FetchFileSystemEvent(List<FileSystemEventArgs> dirEventList, string basePath)
 		{
 			if (dirEventList.Count == 0) return null;
@@ -256,7 +233,7 @@ namespace Duality.Editor
 		}
 		private static void PushDataDirEvent(FileSystemEventArgs e, bool isDirectory)
 		{
-			if (IsResPathIgnored(e.FullPath)) return;
+			if (!PathHelper.IsPathVisible(e.FullPath)) return;
 
 			// In case we're dealing with a deletion, we'll need to add some meta information to know whether it was a file or directory.
 			if (e.ChangeType == WatcherChangeTypes.Deleted)
@@ -440,7 +417,7 @@ namespace Duality.Editor
 		}
 		private static void PushSourceDirEvent(FileSystemEventArgs e)
 		{
-			if (IsSourcePathIgnored(e.FullPath)) return;
+			if (!PathHelper.IsPathVisible(e.FullPath)) return;
 			sourceDirEventBuffer.RemoveAll(f => f.FullPath == e.FullPath && f.ChangeType == e.ChangeType);
 			sourceDirEventBuffer.Add(e);
 		}
