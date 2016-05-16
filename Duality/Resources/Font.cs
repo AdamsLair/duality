@@ -100,6 +100,10 @@ namespace Duality.Resources
 			/// </summary>
 			public int OffsetX;
 			/// <summary>
+			/// The glyphs Y offset when rendering it.
+			/// </summary>
+			public int OffsetY;
+			/// <summary>
 			/// The glyphs kerning samples to the left.
 			/// </summary>
 			public int[] KerningSamplesLeft;
@@ -110,11 +114,12 @@ namespace Duality.Resources
 
 			public override string ToString()
 			{
-				return string.Format("Glyph '{0}', {1}x{2}, Offset {3}", 
+				return string.Format("Glyph '{0}', {1}x{2}, OffsetX {3}, OffsetY {4}", 
 					this.Glyph, 
 					this.Width, 
 					this.Height, 
-					this.OffsetX);
+					this.OffsetX,
+					this.OffsetY);
 			}
 		}
 
@@ -134,49 +139,37 @@ namespace Duality.Resources
 		private	int			bodyAscent			= 0;
 		private	int			descent				= 0;
 		private	int			baseLine			= 0;
-		// Embedded custom font family for editor glyph rendering support
-		private	byte[]		embeddedFont		= null;
+		private FontMetrics	metrics				= null;
 		// Data that is automatically acquired while loading the font
 		[DontSerialize] private int[]		charLookup		= null;
 		[DontSerialize] private	Material	material		= null;
 		[DontSerialize] private	Texture		texture			= null;
-		[DontSerialize] private	bool		glyphsDirty		= false;
 
 
 		/// <summary>
-		/// [GET / SET] The size of the Font.
+		/// [GET] The size of the Font.
 		/// </summary>
-		[EditorHintFlags(MemberFlags.AffectsOthers)]
-		[EditorHintRange(1, 150)]
-		[EditorHintIncrement(1)]
-		[EditorHintDecimalPlaces(1)]
+		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("Size information is import-only. Modify importer settings instead. For read-only access, use the Metrics property.")]
 		public float Size
 		{
 			get { return this.size; }
-			set 
-			{ 
-				if (this.size != value)
-				{
-					this.size = Math.Max(1.0f, value);
-					this.spacing = this.size / 10.0f;
-					this.glyphsDirty = true;
-				}
-			}
+			set {} // Remove this on the next breaking change cycle
 		}
 		/// <summary>
-		/// [GET / SET] The style of the font.
+		/// [GET] The style of the font. 
+		/// 
+		/// This property is obsolete and will be removed in the next major version step.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("Style information is import-only. Modify importer settings instead.")]
 		public FontStyle Style
 		{
 			get { return this.style; }
-			set
-			{
-				this.style = value;
-				this.glyphsDirty = true;
-			}
+			set {} // Remove this on the next breaking change cycle
 		}
 		/// <summary>
-		/// [GET / SET] Specifies how a Font is rendered. This affects both internal glyph rasterization and rendering.
+		/// [GET / SET] Specifies how the glyphs of this <see cref="Font"/> are rendered in a text.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.AffectsOthers)]
 		public RenderMode GlyphRenderMode
@@ -184,8 +177,12 @@ namespace Duality.Resources
 			get { return this.renderMode; }
 			set
 			{
-				this.renderMode = value;
-				this.glyphsDirty = true;
+				if (this.renderMode != value)
+				{
+					this.renderMode = value;
+					this.GenerateTexture(); // Filtering depends on pixel-grid alignment.
+					this.GenerateMaterial();
+				}
 			}
 		}
 		/// <summary>
@@ -214,12 +211,14 @@ namespace Duality.Resources
 			set { this.lineHeightFactor = value; }
 		}
 		/// <summary>
-		/// [GET / SET] Whether this is considered a monospace Font. If true, each character occupies exactly the same space.
+		/// [GET] Whether this is considered a monospace Font. If true, each character occupies exactly the same space.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("Monospace information is import-only. Modify importer settings instead. For read-only access, use the Metrics property.")]
 		public bool MonoSpace
 		{
 			get { return this.monospace; }
-			set { this.monospace = value; this.glyphsDirty = true; }
+			set {} // Remove this on the next breaking change cycle
 		}
 		/// <summary>
 		/// [GET / SET] Whether this Font uses kerning, a technique where characters are moved closer together based on their actual shape,
@@ -230,26 +229,32 @@ namespace Duality.Resources
 		public bool Kerning
 		{
 			get { return this.kerning; }
-			set { this.kerning = value; this.glyphsDirty = true; }
+			set { this.kerning = value; }
 		}
 		/// <summary>
 		/// [GET] Returns whether this Font requires to re-render its glyphs in order to match the
 		/// changes that have been made to its Properties.
+		/// 
+		/// This property is obsolete and will be removed in the next major version step.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("This property is obsolete with the new Font importer and custom import parameters.")]
 		public bool GlyphsDirty
 		{
-			get { return this.glyphsDirty; }
+			get { return false; }
 		}
 		
 		/// <summary>
 		/// [GET] Returns a chunk of memory that contains this Fonts embedded TrueType data for rendering glyphs.
+		/// 
+		/// This property is obsolete and will be removed in the next major version step.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
+		[Obsolete("This property is obsolete with the new Font importer and custom import parameters.")]
 		public byte[] EmbeddedTrueTypeFont
 		{
-			get { return this.embeddedFont; }
-			set { this.embeddedFont = value; this.glyphsDirty = true; }
+			get { return null; }
+			set { }
 		}
 
 		/// <summary>
@@ -306,6 +311,30 @@ namespace Duality.Resources
 		{
 			get { return this.baseLine; }
 		}
+		/// <summary>
+		/// [GET] Provides access to various metrics that are inherent to this <see cref="Font"/> instance,
+		/// such as size, height, and various typographic measures.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public FontMetrics Metrics
+		{
+			get 
+			{
+				// Remove this on the next major version step.
+				if (this.metrics == null)
+				{
+					this.metrics = new FontMetrics(
+						this.size, 
+						this.height, 
+						this.ascent, 
+						this.bodyAscent, 
+						this.descent, 
+						this.baseLine,
+						this.monospace);
+				}
+				return this.metrics;
+			}
+		}
 
 
 		/// <summary>
@@ -315,12 +344,8 @@ namespace Duality.Resources
 		/// <param name="bitmap"></param>
 		/// <param name="atlas"></param>
 		/// <param name="glyphs"></param>
-		/// <param name="height"></param>
-		/// <param name="ascent"></param>
-		/// <param name="bodyAscent"></param>
-		/// <param name="descent"></param>
-		/// <param name="baseLine"></param>
-		public void SetGlyphData(PixelData bitmap, Rect[] atlas, GlyphData[] glyphs, int height, int ascent, int bodyAscent, int descent, int baseLine)
+		/// <param name="metrics"></param>
+		public void SetGlyphData(PixelData bitmap, Rect[] atlas, GlyphData[] glyphs, FontMetrics metrics)
 		{
 			this.ReleaseResources();
 
@@ -329,11 +354,19 @@ namespace Duality.Resources
 
 			this.pixelData = new Pixmap(bitmap);
 			this.pixelData.Atlas = atlas.ToList();
-			this.height = height;
-			this.ascent = ascent;
-			this.bodyAscent = bodyAscent;
-			this.descent = descent;
-			this.baseLine = baseLine;
+
+			this.metrics = metrics;
+
+			// Copy metrics data into local fields.
+			// Remove this on the next major version step.
+			this.size = metrics.Size;
+			this.height = metrics.Height;
+			this.ascent = metrics.Ascent;
+			this.bodyAscent = metrics.BodyAscent;
+			this.descent = metrics.Descent;
+			this.baseLine = metrics.BaseLine;
+			this.monospace = metrics.Monospace;
+
 			this.maxGlyphWidth = 0;
 			for (int i = 0; i < this.glyphs.Length; i++)
 			{
@@ -341,116 +374,106 @@ namespace Duality.Resources
 			}
 
 			this.UpdateKerningData();
-			this.GenerateTexMat();
-
-			this.glyphsDirty = false;
+			this.GenerateTexture();
+			this.GenerateMaterial();
 		}
 		/// <summary>
 		/// Updates this Fonts kerning sample data.
 		/// </summary>
-		public void UpdateKerningData()
+		private void UpdateKerningData()
 		{
-			if (this.kerning)
+			int kerningSamples = (this.Ascent + this.Descent) / 4;
+			int[] kerningY;
+			if (kerningSamples <= 6)
 			{
-				int kerningSamples = (this.Ascent + this.Descent) / 4;
-				int[] kerningY;
-				if (kerningSamples <= 6)
-				{
-					kerningSamples = 6;
-					kerningY = new int[] {
-						this.BaseLine - this.Ascent,
-						this.BaseLine - this.BodyAscent,
-						this.BaseLine - this.BodyAscent * 2 / 3,
-						this.BaseLine - this.BodyAscent / 3,
-						this.BaseLine,
-						this.BaseLine + this.Descent};
-				}
-				else
-				{
-					kerningY = new int[kerningSamples];
-					int bodySamples = kerningSamples * 2 / 3;
-					int descentSamples = (kerningSamples - bodySamples) / 2;
-					int ascentSamples = kerningSamples - bodySamples - descentSamples;
-
-					for (int k = 0; k < ascentSamples; k++) 
-						kerningY[k] = this.BaseLine - this.Ascent + k * (this.Ascent - this.BodyAscent) / ascentSamples;
-					for (int k = 0; k < bodySamples; k++) 
-						kerningY[ascentSamples + k] = this.BaseLine - this.BodyAscent + k * this.BodyAscent / (bodySamples - 1);
-					for (int k = 0; k < descentSamples; k++) 
-						kerningY[ascentSamples + bodySamples + k] = this.BaseLine + (k + 1) * this.Descent / descentSamples;
-				}
-
-				for (int i = 0; i < this.glyphs.Length; ++i)
-				{
-					PixelData glyphTemp = this.GetGlyphBitmap(this.glyphs[i].Glyph);
-
-					this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
-					this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
-
-					if (this.glyphs[i].Glyph != ' ')
-					{
-						// Left side samples
-						{
-							int[] leftData = this.glyphs[i].KerningSamplesLeft;
-							int leftMid = glyphTemp.Width / 2;
-							int lastSampleY = 0;
-							for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
-							{
-								leftData[sampleIndex] = leftMid;
-
-								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-								int endY = MathF.Clamp(kerningY[sampleIndex], 0, glyphTemp.Height);
-								if (sampleIndex == leftData.Length - 1) endY = glyphTemp.Height;
-								lastSampleY = endY;
-
-								for (int y = beginY; y < endY; y++)
-								{
-									int x = 0;
-									while (glyphTemp[x, y].A <= 64)
-									{
-										x++;
-										if (x >= leftMid) break;
-									}
-									leftData[sampleIndex] = Math.Min(leftData[sampleIndex], x);
-								}
-							}
-						}
-
-						// Right side samples
-						{
-							int[] rightData = this.glyphs[i].KerningSamplesRight;
-							int rightMid = (glyphTemp.Width + 1) / 2;
-							int lastSampleY = 0;
-							for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
-							{
-								rightData[sampleIndex] = rightMid;
-
-								int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
-								int endY = MathF.Clamp(kerningY[sampleIndex], 0, glyphTemp.Height);
-								if (sampleIndex == rightData.Length - 1) endY = glyphTemp.Height;
-								lastSampleY = endY;
-
-								for (int y = beginY; y < endY; y++)
-								{
-									int x = glyphTemp.Width - 1;
-									while (glyphTemp[x, y].A <= 64)
-									{
-										x--;
-										if (x <= rightMid) break;
-									}
-									rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphTemp.Width - 1 - x);
-								}
-							}
-						}
-					}
-				}
+				kerningSamples = 6;
+				kerningY = new int[] {
+					this.BaseLine - this.Ascent,
+					this.BaseLine - this.BodyAscent,
+					this.BaseLine - this.BodyAscent * 2 / 3,
+					this.BaseLine - this.BodyAscent / 3,
+					this.BaseLine,
+					this.BaseLine + this.Descent};
 			}
 			else
 			{
-				for (int i = 0; i < this.glyphs.Length; ++i)
+				kerningY = new int[kerningSamples];
+				int bodySamples = kerningSamples * 2 / 3;
+				int descentSamples = (kerningSamples - bodySamples) / 2;
+				int ascentSamples = kerningSamples - bodySamples - descentSamples;
+
+				for (int k = 0; k < ascentSamples; k++) 
+					kerningY[k] = this.BaseLine - this.Ascent + k * (this.Ascent - this.BodyAscent) / ascentSamples;
+				for (int k = 0; k < bodySamples; k++) 
+					kerningY[ascentSamples + k] = this.BaseLine - this.BodyAscent + k * this.BodyAscent / (bodySamples - 1);
+				for (int k = 0; k < descentSamples; k++) 
+					kerningY[ascentSamples + bodySamples + k] = this.BaseLine + (k + 1) * this.Descent / descentSamples;
+			}
+
+			for (int i = 0; i < this.glyphs.Length; ++i)
+			{
+				PixelData glyphTemp = this.GetGlyphBitmap(this.glyphs[i].Glyph);
+
+				this.glyphs[i].KerningSamplesLeft	= new int[kerningY.Length];
+				this.glyphs[i].KerningSamplesRight	= new int[kerningY.Length];
+
+				if (this.glyphs[i].Glyph != ' ' && this.glyphs[i].Glyph != '\t' && this.glyphs[i].Height > 0 && this.glyphs[i].Width > 0)
 				{
-					this.glyphs[i].KerningSamplesLeft	= null;
-					this.glyphs[i].KerningSamplesRight	= null;
+					// Left side samples
+					{
+						int[] leftData = this.glyphs[i].KerningSamplesLeft;
+						int leftMid = glyphTemp.Width / 2;
+						int lastSampleY = 0;
+						for (int sampleIndex = 0; sampleIndex < leftData.Length; sampleIndex++)
+						{
+							leftData[sampleIndex] = leftMid;
+
+							int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
+							int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
+							int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
+							if (sampleIndex == leftData.Length - 1) endY = glyphTemp.Height;
+							lastSampleY = endY;
+
+							for (int y = beginY; y < endY; y++)
+							{
+								int x = 0;
+								while (glyphTemp[x, y].A <= 64)
+								{
+									x++;
+									if (x >= leftMid) break;
+								}
+								leftData[sampleIndex] = Math.Min(leftData[sampleIndex], x);
+							}
+						}
+					}
+
+					// Right side samples
+					{
+						int[] rightData = this.glyphs[i].KerningSamplesRight;
+						int rightMid = (glyphTemp.Width + 1) / 2;
+						int lastSampleY = 0;
+						for (int sampleIndex = 0; sampleIndex < rightData.Length; sampleIndex++)
+						{
+							rightData[sampleIndex] = rightMid;
+								
+							int sampleY = kerningY[sampleIndex] + this.glyphs[i].OffsetY;
+							int beginY = MathF.Clamp(lastSampleY, 0, glyphTemp.Height - 1);
+							int endY = MathF.Clamp(sampleY, 0, glyphTemp.Height);
+							if (sampleIndex == rightData.Length - 1) endY = glyphTemp.Height;
+							lastSampleY = endY;
+
+							for (int y = beginY; y < endY; y++)
+							{
+								int x = glyphTemp.Width - 1;
+								while (glyphTemp[x, y].A <= 64)
+								{
+									x--;
+									if (x <= rightMid) break;
+								}
+								rightData[sampleIndex] = Math.Min(rightData[sampleIndex], glyphTemp.Width - 1 - x);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -463,12 +486,9 @@ namespace Duality.Resources
 			this.material = null;
 			this.texture = null;
 			this.pixelData = null;
-
-			this.glyphsDirty = true;
 		}
-		private void GenerateTexMat()
+		private void GenerateTexture()
 		{
-			if (this.material != null) this.material.Dispose();
 			if (this.texture != null) this.texture.Dispose();
 
 			if (this.pixelData == null)
@@ -478,6 +498,13 @@ namespace Duality.Resources
 				TextureSizeMode.Enlarge, 
 				this.IsPixelGridAligned ? TextureMagFilter.Nearest : TextureMagFilter.Linear,
 				this.IsPixelGridAligned ? TextureMinFilter.Nearest : TextureMinFilter.LinearMipmapLinear);
+		}
+		private void GenerateMaterial()
+		{
+			if (this.material != null) this.material.Dispose();
+
+			if (this.texture == null)
+				return;
 
 			// Select DrawTechnique to use
 			ContentRef<DrawTechnique> technique;
@@ -645,14 +672,15 @@ namespace Duality.Resources
 			GlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
+			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
 
 				Vector2 glyphPos;
 				glyphPos.X = MathF.Round(curOffset + glyphXOff);
-				glyphPos.Y = MathF.Round(0.0f);
+				glyphPos.Y = MathF.Round(0 + glyphYOff);
 
 				vertices[i * 4 + 0].Pos.X = glyphPos.X;
 				vertices[i * 4 + 0].Pos.Y = glyphPos.Y;
@@ -713,16 +741,17 @@ namespace Duality.Resources
 			GlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
+			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
 				Vector2 dataCoord = uvRect.Pos * new Vector2(this.pixelData.Width, this.pixelData.Height) / this.texture.UVRatio;
 				
 				bitmap.DrawOnto(target, 
 					BlendMode.Alpha, 
 					MathF.RoundToInt(x + curOffset + glyphXOff), 
-					MathF.RoundToInt(y),
+					MathF.RoundToInt(y + glyphYOff),
 					glyphData.Width, 
 					glyphData.Height,
 					MathF.RoundToInt(dataCoord.X), 
@@ -747,10 +776,11 @@ namespace Duality.Resources
 			GlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
+			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
 
 				textSize.X = Math.Max(textSize.X, curOffset + glyphXAdv - this.spacing);
 				textSize.Y = Math.Max(textSize.Y, glyphData.Height);
@@ -799,11 +829,12 @@ namespace Duality.Resources
 			GlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
+			float glyphYOff;
 			float glyphXAdv;
 			int lastValidLength = 0;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
 
 				textSize.X = Math.Max(textSize.X, curOffset + glyphXAdv);
 				textSize.Y = Math.Max(textSize.Y, glyphData.Height);
@@ -834,12 +865,13 @@ namespace Duality.Resources
 			GlyphData glyphData;
 			Rect uvRect;
 			float glyphXOff;
+			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
 
-				if (i == index) return new Rect(curOffset + glyphXOff, 0, glyphData.Width, glyphData.Height);
+				if (i == index) return new Rect(curOffset + glyphXOff, 0 + glyphYOff, glyphData.Width, glyphData.Height);
 
 				curOffset += glyphXAdv;
 			}
@@ -862,12 +894,13 @@ namespace Duality.Resources
 			Rect uvRect;
 			Rect glyphRect;
 			float glyphXOff;
+			float glyphYOff;
 			float glyphXAdv;
 			for (int i = 0; i < text.Length; i++)
 			{
-				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff);
+				this.ProcessTextAdv(text, i, out glyphData, out uvRect, out glyphXAdv, out glyphXOff, out glyphYOff);
 
-				glyphRect = new Rect(curOffset + glyphXOff, 0, glyphData.Width, glyphData.Height);
+				glyphRect = new Rect(curOffset + glyphXOff, 0 + glyphYOff, glyphData.Width, glyphData.Height);
 				if (glyphRect.Contains(x, y)) return i;
 
 				curOffset += glyphXAdv;
@@ -876,7 +909,7 @@ namespace Duality.Resources
 			return -1;
 		}
 
-		private void ProcessTextAdv(string text, int index, out GlyphData glyphData, out Rect uvRect, out float glyphXAdv, out float glyphXOff)
+		private void ProcessTextAdv(string text, int index, out GlyphData glyphData, out Rect uvRect, out float glyphXAdv, out float glyphXOff, out float glyphYOff)
 		{
 			char glyph = text[index];
 			int charIndex = (int)glyph > this.charLookup.Length ? 0 : this.charLookup[(int)glyph];
@@ -884,8 +917,9 @@ namespace Duality.Resources
 
 			this.GetGlyphData(glyph, out glyphData);
 			glyphXOff = -glyphData.OffsetX;
+			glyphYOff = -glyphData.OffsetY;
 
-			if (this.kerning && !this.monospace && !this.glyphsDirty)
+			if (this.kerning && !this.monospace)
 			{
 				char glyphNext = index + 1 < text.Length ? text[index + 1] : ' ';
 				GlyphData glyphDataNext;
@@ -904,7 +938,8 @@ namespace Duality.Resources
 		protected override void OnLoaded()
 		{
 			this.GenerateCharLookup();
-			this.GenerateTexMat();
+			this.GenerateTexture();
+			this.GenerateMaterial();
 			base.OnLoaded();
 		}
 		protected override void OnDisposing(bool manually)
@@ -917,7 +952,8 @@ namespace Duality.Resources
 			base.OnCopyDataTo(target, operation);
 			Font c = target as Font;
 			c.GenerateCharLookup();
-			c.GenerateTexMat();
+			c.GenerateTexture();
+			c.GenerateMaterial();
 		}
 	}
 }

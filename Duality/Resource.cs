@@ -498,11 +498,26 @@ namespace Duality
 		/// <returns>The Resource Type of the specified file</returns>
 		public static Type GetTypeByFileName(string filePath)
 		{
-			if (string.IsNullOrEmpty(filePath) || ContentProvider.IsDefaultContentPath(filePath)) return null;
+			// Early-out if we don't have a valid resource path
+			if (string.IsNullOrEmpty(filePath) || ContentProvider.IsDefaultContentPath(filePath))
+				return null;
+
+			// Determine the (double) extension of the resource path
 			filePath = PathOp.GetFileNameWithoutExtension(filePath);
 			string[] token = filePath.Split('.');
-			if (token.Length < 2) return null;
-			return DualityApp.GetAvailDualityTypes(typeof(Resource)).FirstOrDefault(t => t.Name == token[token.Length - 1]).AsType();
+			if (token.Length < 2)
+				return null;
+
+			// Extract the type extension and match it with the available resource types
+			string typeName = token[token.Length - 1];
+			TypeInfo matchingInfo = 
+				DualityApp.GetAvailDualityTypes(typeof(Resource))
+				.FirstOrDefault(t => t.Name == typeName);
+			if (matchingInfo == null)
+				return null;
+
+			// Return the result
+			return matchingInfo.AsType();
 		}
 
 		/// <summary>

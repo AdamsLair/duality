@@ -28,6 +28,7 @@ namespace Duality.Editor.AssetManagement
 			}
 			return handledInput;
 		}
+		
 		/// <summary>
 		/// Specifies that the current importer will create or modify a <see cref="Duality.Resource"/> with 
 		/// the specified name (see <see cref="Duality.Editor.AssetManagement.AssetImportInput.AssetName"/>).
@@ -47,6 +48,43 @@ namespace Duality.Editor.AssetManagement
 		public static void AddOutput(this IAssetImportEnvironment env, IContentRef resource, string inputPath)
 		{
 			env.AddOutput(resource, new string[] { inputPath });
+		}
+		
+		/// <summary>
+		/// Retrieves the value of an import parameter for the specified <see cref="Resource"/>.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="env"></param>
+		/// <param name="resource">A reference to the <see cref="Duality.Resource"/> that is parameterized.</param>
+		/// <param name="parameterName">The name of the parameter.</param>
+		/// <param name="defaultValue">If the value wasn't defined for the given Resource, the default value will be used instead.</param>
+		/// <returns>The retrieved value, or the default value of the expected value type.</returns>
+		public static T GetParameter<T>(this IAssetImportEnvironment env, IContentRef resource, string parameterName, T defaultValue)
+		{
+			T value;
+			if (env.GetParameter<T>(resource, parameterName, out value))
+				return value;
+			else
+				return defaultValue;
+		}
+		/// <summary>
+		/// Retrieves the value of an import parameter for the specified <see cref="Resource"/>.
+		/// If the parameter was undefined, it will be (persistently) initialized with the specified default value.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="env"></param>
+		/// <param name="resource">A reference to the <see cref="Duality.Resource"/> that is parameterized.</param>
+		/// <param name="parameterName">The name of the parameter.</param>
+		/// <param name="defaultValue">If the value wasn't defined for the given Resource, the default value will be used instead.</param>
+		/// <returns>The retrieved value, or the default value that was specified.</returns>
+		public static T GetOrInitParameter<T>(this IAssetImportEnvironment env, IContentRef resource, string parameterName, T defaultValue)
+		{
+			T value;
+			if (env.GetParameter<T>(resource, parameterName, out value))
+				return value;
+
+			env.SetParameter<T>(resource, parameterName, defaultValue);
+			return defaultValue;
 		}
 	}
 }

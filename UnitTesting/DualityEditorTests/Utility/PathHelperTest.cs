@@ -27,5 +27,35 @@ namespace Duality.Editor.Tests
 			// Fail explicitly when attempting to switch drives
 			Assert.IsNull(PathHelper.MakeFilePathRelative(PathOp.Combine("D:", "DirC", "File.txt"), PathOp.Combine("C:", "DirA", "DirB")));
 		}
+		[Test] public void IsPathVisible()
+		{
+			// Check regular paths where there is no reason to believe they aren't visible
+			Assert.IsTrue(PathHelper.IsPathVisible(@"C:\Folder\File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"C:/Folder/File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"Folder\File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"Folder/File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"Folder\..\File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"Folder/../File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"Folder\.\File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"Folder/./File.txt"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"Folder"));
+			Assert.IsTrue(PathHelper.IsPathVisible(@"File.txt"));
+
+			// Check paths that are invisible by unix / dot-convention
+			Assert.IsFalse(PathHelper.IsPathVisible(@"C:\Folder\.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"C:/Folder/.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"Folder\.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"Folder/.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"Folder\..\.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"Folder/../.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"Folder\.\.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"Folder/./.File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"C:\.Folder\File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@"C:/.Folder/File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@".Folder\File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@".Folder/File.txt"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@".Folder"));
+			Assert.IsFalse(PathHelper.IsPathVisible(@".File.txt"));
+		}
 	}
 }

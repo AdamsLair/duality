@@ -174,22 +174,6 @@ namespace Duality.Editor
 		}
 
 
-		private static bool IsResPathIgnored(string filePath)
-		{
-			return IsPathIgnored(filePath);
-		}
-		private static bool IsSourcePathIgnored(string filePath)
-		{
-			return IsPathIgnored(filePath);
-		}
-		private static bool IsPathIgnored(string filePath)
-		{
-			if (!File.Exists(filePath) && !Directory.Exists(filePath)) return false;
-			if (!PathHelper.IsPathVisible(filePath)) return true;
-			if (filePath.Contains(@"/.svn/") || filePath.Contains(@"\.svn\")) return true;
-			return false;
-		}
-		
 		private static FileSystemEventArgs FetchFileSystemEvent(List<FileSystemEventArgs> dirEventList, string basePath)
 		{
 			if (dirEventList.Count == 0) return null;
@@ -249,7 +233,7 @@ namespace Duality.Editor
 		}
 		private static void PushDataDirEvent(FileSystemEventArgs e, bool isDirectory)
 		{
-			if (IsResPathIgnored(e.FullPath)) return;
+			if (!PathHelper.IsPathVisible(e.FullPath)) return;
 
 			// In case we're dealing with a deletion, we'll need to add some meta information to know whether it was a file or directory.
 			if (e.ChangeType == WatcherChangeTypes.Deleted)
@@ -264,6 +248,7 @@ namespace Duality.Editor
 		private static void ProcessDataDirEvents()
 		{
 			List<ResourceRenamedEventArgs> renameEventBuffer = null;
+			HashSet<string> sourceMediaDeleteSchedule = null;
 
 			// Process events
 			while (dataDirEventBuffer.Count > 0)
@@ -341,8 +326,10 @@ namespace Duality.Editor
 					{
 						ResourceEventArgs args = new ResourceEventArgs(e.FullPath, isDirectory);
 
-						// Organize the Source/Media directory accordingly
-						DeleteSourceMediaFile(args);
+						// Schedule Source/Media file deletion to keep it organized / synced with Resource Data
+						if (sourceMediaDeleteSchedule == null)
+							sourceMediaDeleteSchedule = new HashSet<string>();
+						GetDeleteSourceMediaFilePaths(args, sourceMediaDeleteSchedule);
 
 						// Unregister no-more existing resources
 						if (isDirectory)	ContentProvider.RemoveContentTree(args.Path);
@@ -395,6 +382,26 @@ namespace Duality.Editor
 				}
 			}
 
+			// If we scheduled source / media files for deletion, do it now at once
+			if (sourceMediaDeleteSchedule != null)
+			{
+				// Gather a list of directories from which we're removing
+				HashSet<string> affectedDirectories = new HashSet<string>();
+				foreach (string file in sourceMediaDeleteSchedule)
+				{
+					affectedDirectories.Add(Path.GetDirectoryName(file));
+				}
+
+				// Send all the files to the recycle bin
+				RecycleBin.SendSilent(sourceMediaDeleteSchedule);
+
+				// Remove directories that are now empty
+				foreach (string dir in affectedDirectories)
+				{
+					PathHelper.DeleteEmptyDirectory(dir, true);
+				}
+			}
+
 			// If required, perform a global rename operation in all existing content
 			if (renameEventBuffer != null)
 			{
@@ -410,7 +417,7 @@ namespace Duality.Editor
 		}
 		private static void PushSourceDirEvent(FileSystemEventArgs e)
 		{
-			if (IsSourcePathIgnored(e.FullPath)) return;
+			if (!PathHelper.IsPathVisible(e.FullPath)) return;
 			sourceDirEventBuffer.RemoveAll(f => f.FullPath == e.FullPath && f.ChangeType == e.ChangeType);
 			sourceDirEventBuffer.Add(e);
 		}
@@ -446,17 +453,16 @@ namespace Duality.Editor
 		{
 			return editorModifiedFiles.Contains(Path.GetFullPath(path));
 		}
-		private static void DeleteSourceMediaFile(ResourceEventArgs deleteEvent)
+		private static void GetDeleteSourceMediaFilePaths(ResourceEventArgs deleteEvent, ICollection<string> deletePathSchedule)
 		{
 			if (deleteEvent.IsResource)
 			{
-				IList<string> mediaPaths = GetSourceMediaPaths(deleteEvent.Content.Res);
+				IList<string> mediaPaths = AssetManager.GetAssetSourceFiles(deleteEvent.Content);
 				for (int i = 0; i < mediaPaths.Count; i++)
 				{
 					if (File.Exists(mediaPaths[i]))
 					{
-						RecycleBin.SendSilent(mediaPaths[i]);
-						PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPaths[i]), true);
+						deletePathSchedule.Add(mediaPaths[i]);
 					}
 				}
 			}
@@ -465,11 +471,9 @@ namespace Duality.Editor
 				string mediaPath = Path.Combine(
 					EditorHelper.SourceMediaDirectory, 
 					PathHelper.MakeFilePathRelative(deleteEvent.Path, DualityApp.DataDirectory));
-
 				if (Directory.Exists(mediaPath))
 				{
-					RecycleBin.SendSilent(mediaPath);
-					PathHelper.DeleteEmptyDirectory(Path.GetDirectoryName(mediaPath), true);
+					deletePathSchedule.Add(mediaPath);
 				}
 			}
 		}
@@ -478,13 +482,13 @@ namespace Duality.Editor
 			if (!renameEvent.IsResource)
 				return new string[0];
 			else
-				return GetSourceMediaPaths(renameEvent.OldContent.Res);
+				return AssetManager.GetAssetSourceFiles(renameEvent.OldContent);
 		}
 		private static void MoveSourceMediaFile(ResourceRenamedEventArgs renameEvent, string[] oldMediaPaths)
 		{
 			if (renameEvent.IsResource)
 			{
-				string[] newMediaPaths = GetSourceMediaPaths(renameEvent.Content.Res);
+				string[] newMediaPaths = AssetManager.GetAssetSourceFiles(renameEvent.Content);
 				for (int i = 0; i < oldMediaPaths.Length; i++)
 				{
 					string oldPath = oldMediaPaths[i];
@@ -525,11 +529,6 @@ namespace Duality.Editor
 					}
 				}
 			}
-		}
-		private static string[] GetSourceMediaPaths(Resource resource)
-		{
-			if (resource == null) return new string[0];
-			return AssetManager.SimulateExportAssets(resource);
 		}
 
 		private static void DualityEditorApp_EditorIdling(object sender, EventArgs e)

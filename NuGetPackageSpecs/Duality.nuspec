@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.3.2</version>
+    <version>2.4.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,11 +13,31 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Update Cycle Bugfixes, RenderTarget Error Tweaks, CamView Interaction Indicator Depth Overlays
-#FIX: Fixed a bug in the Component update cycle that could happen when the first Component in the update order was inactive.
-#CHANGE: Tweaked old RenderTarget error log code to stick to more recent logging guidelines.
-#ADD: Added OnCollectWorldOverlayDrawcalls API to CamViewState and CamViewLayer. 
-#CHANGE: All world space user interaction indicators are now rendered in the new world overlay mode to better account for non-flat renderers.</releaseNotes>
+    <releaseNotes>Font Bugfixes, Bugfixes, Updated Embedded Fonts
+#FIX: Fixed a bug where setting the rendering mode of a Font would not update texture filtering parameters.
+#FIX: Fixed a bug in FontCharSet that would result in extended character sets being rejected.
+#CHANGE: Updated embedded monospace Font Resources to match recent changes.
+#CHANGE: Moved all Font import parameters from the Font class to custom AssetInfo data attachments.
+#ADD: FontMetrics now contains information about monospacing. 
+#ADD: Added a more convenient FontCharSet constructor.
+#ADD: Added an immutable FontMetric class for easier transfer of font metrics between classes and methods. 
+#CHANGE: Font Glyph rendering now takes place entirely in the FontAssetImporter. 
+#REMOVE: Removed the old editor extension methods for Font glyph rendering.
+#CHANGE: Tweaked documentation of FontCharSet.
+#CHANGE: The FontCharSet class is now read-only after construction.
+#CHANGE: Moved / Renamed the former editor FontRenderGlyphCharSet to FontCharSet in the core.
+#ADD: The AssetInfo editor now updated after export operations to account for changes in allowed actions and parameter updates. 
+#ADD: Added a feedback sound when performing an export or import operation successfully using either of the two editor buttons. 
+#ADD: Added more AssetManagement documentation.
+#ADD: Added an API for parameter retrieval to the import / export environment. 
+#ADD: Added custom data attachments to the AssetInfo class. 
+#ADD: Implemented parameter retrieval API using the new custom data attachments as a backend.
+#ADD: Imported Resources now keep explicit source file hints in their AssetInfo, which are used to determine their corresponding source media file paths. Simulated export operations are used as a fallback. 
+#CHANGE: The AssetInfo name hint property is no longer serialized, as it is considered temporary.
+#CHANGE: The Font PropertyEditor now selectively switches readonly mode for only the properties that require re-rendering glyphs when editing a Font Resource with or without an embedded ttf font.
+#CHANGE: Enabling and disabling kerning no longer requires re-rendering glyphs. Kerning information is generated in any case, only its usage is de/activated.
+#CHANGE: Removed the necessity for glyph drawing when using Y offsets from UpdateKerning by updating the algorithm.
+#FIX: Fixed a null reference exception when trying to determine the type of a Resource that has been renamed.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />

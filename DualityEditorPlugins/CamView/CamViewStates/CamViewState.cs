@@ -65,6 +65,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private List<Type>    lastActiveLayers       = new List<Type>();
 		private List<Type>    lastObjVisibility      = new List<Type>();
 		private int           renderFrameLast        = -1;
+		private bool          renderFrameScheduled   = false;
 
 
 		public abstract string StateName { get; }
@@ -574,10 +575,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.Invalidate();
 			}
 			
+			// If we're currently executing the game, invalidate every frame
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
-			{
 				this.Invalidate();
-			}
+
+			// If we previously skipped a repaint event because we already rendered
+			// a frame with that number, perform another repaint once we've entered
+			// the next frame. This will make sure we won't forget about previous
+			// one-shot invalidate calls just because we were already done rendering that
+			// frame.
+			if (this.renderFrameScheduled && this.renderFrameLast != Time.FrameCount)
+				this.Invalidate();
 		}
 
 		protected virtual void OnSceneChanged()
@@ -694,6 +702,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.actionText.MaxHeight = MathF.Min(500, this.ClientSize.Height / 2);
 			this.actionText.Fonts = new [] { OverlayFont };
 		}
+		private void ForceDragDropRenderUpdate()
+		{
+			// Force immediate buffer swap and continuous repaint, because there is no event loop while dragging.
+			this.renderFrameLast = 0;
+			DualityEditorApp.PerformBufferSwap();
+		}
 
 		private void RenderableControl_Paint(object sender, PaintEventArgs e)
 		{
@@ -704,7 +718,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// and various core updates are only performed when the WinForms app reports to
 			// be idle. This certainly doesn't happen if the event queue fills up with repaint
 			// events faster than can be processed.
-			if (this.renderFrameLast == Time.FrameCount) return;
+			if (this.renderFrameLast == Time.FrameCount)
+			{
+				// If we skipped this repaint, schedule one once we're ready for the next
+				// per-frame rendering. Otherwise we will lose one-off repaint events if
+				// they happen to fall in the same frame slot.
+				this.renderFrameScheduled = true;
+				return;
+			}
+			this.renderFrameScheduled = false;
 			this.renderFrameLast = Time.FrameCount;
 
 			// Retrieve OpenGL context
@@ -950,21 +972,22 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void RenderableControl_DragOver(object sender, DragEventArgs e)
 		{
 			this.OnDragOver(e);
-			// Force immediate buffer swap and continuous repaint, because there is no event loop while dragging.
-			this.renderFrameLast = 0;
-			DualityEditorApp.PerformBufferSwap();
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_DragLeave(object sender, EventArgs e)
 		{
 			this.OnDragLeave(e);
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_DragEnter(object sender, DragEventArgs e)
 		{
 			this.OnDragEnter(e);
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_DragDrop(object sender, DragEventArgs e)
 		{
 			this.OnDragDrop(e);
+			this.ForceDragDropRenderUpdate();
 		}
 		private void RenderableControl_Resize(object sender, EventArgs e)
 		{
