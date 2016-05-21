@@ -156,6 +156,19 @@ namespace Duality.Tests.Serialization
 			// Can we properly serialize an array of structs?
 			this.TestWriteRead(testData, this.PrimaryFormat, ArrayEquals);
 		}
+		[Test] public void SerializeNullDefault()
+		{
+			Random rnd = new Random();
+			NullDefaultTestObject nullTestObj = new NullDefaultTestObject
+			{
+				TestField = rnd.Next(),
+				ReferenceTypeField = null,
+				ValueTypeField = default(TestData)
+			};
+
+			// Can we properly serialize null and default values?
+			this.TestWriteRead(nullTestObj, this.PrimaryFormat);
+		}
 		[Test] public void SerializeEnumArrays()
 		{
 			Random rnd = new Random();

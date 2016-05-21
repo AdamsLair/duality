@@ -354,12 +354,19 @@ namespace Duality.Serialization
 			{
 				// Assure the type data layout has been written (only once per file)
 				this.WriteTypeDataLayout(header.SerializeType);
+				
+				// If we're serializing a value type, skip the entire object body if 
+				// it equals the zero-init struct. This will keep struct-heavy data a lot
+				// smaller binary-wise.
+				bool skipEntireBody = 
+					header.ObjectType.IsValueType && 
+					object.Equals(obj, header.SerializeType.DefaultValue);
 
 				// Write omitted field bitmask
 				bool[] fieldOmitted = new bool[header.SerializeType.Fields.Length];
 				for (int i = 0; i < fieldOmitted.Length; i++)
 				{
-					fieldOmitted[i] = this.IsFieldBlocked(header.SerializeType.Fields[i], obj);
+					fieldOmitted[i] = skipEntireBody || this.IsFieldBlocked(header.SerializeType.Fields[i], obj);
 				}
 				this.WriteArrayData(fieldOmitted);
 
