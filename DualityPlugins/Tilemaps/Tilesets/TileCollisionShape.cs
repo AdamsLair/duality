@@ -13,35 +13,39 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// The tile is completely empty. No collision at all.
 		/// </summary>
-		Free        = 0x0,
+		Free           = 0x00,
 
 		/// <summary>
-		/// Specifies that the top left corner of the tile is blocked.
+		/// The tile's top edge is considered solid.
 		/// </summary>
-		TopLeft     = 0x1,
+		Top            = 0x01,
 		/// <summary>
-		/// Specifies that the top right corner of the tile is blocked.
+		/// The tile's bottom edge is considered solid.
 		/// </summary>
-		TopRight    = 0x2,
+		Bottom         = 0x02,
 		/// <summary>
-		/// Specifies that the bottom left corner of the tile is blocked.
+		/// The tile's left edge is considered solid.
 		/// </summary>
-		BottomLeft  = 0x4,
+		Left           = 0x04,
 		/// <summary>
-		/// Specifies that the bottom right corner of the tile is blocked.
+		/// The tile's right edge is considered solid.
 		/// </summary>
-		BottomRight = 0x8,
+		Right          = 0x08,
 		/// <summary>
-		/// Whether or not the fill bit is set can make the difference between
-		/// a diagonal slope or a two-sided corner, as well as the difference
-		/// between a completely solid tile and one that is fenced on four sides.
+		/// A solid diagonal edge from the tile's bottom left to its
+		/// top right corner is assumed.
 		/// </summary>
-		Fill        = 0x10,
+		DiagonalUp     = 0x10,
+		/// <summary>
+		/// A solid diagonal edge from the tile's top left to its
+		/// bottom right corner is assumed.
+		/// </summary>
+		DiagonalDown   = 0x20,
 
 		/// <summary>
 		/// All collision bits are set. This is generally true for tiles that are
 		/// completely impassable / solid.
 		/// </summary>
-		Solid       = TopLeft | TopRight | BottomLeft | BottomRight | Fill
+		Solid          = Top | Bottom | Left | Right | DiagonalUp | DiagonalDown
 	}
 }

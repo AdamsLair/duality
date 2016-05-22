@@ -34,7 +34,6 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties
 		public static readonly Bitmap IconTilesetVisualLayers      = TilemapsRes.IconTilesetVisualLayers;
 		public static readonly Bitmap IconTilesetCollisionLayer    = TilemapsRes.IconTilesetCollisionLayer;
 		public static readonly Bitmap TilesetCollisionBit          = TilemapsRes.TilesetCollisionBit;
-		public static readonly Bitmap TilesetCollisionBitSmall     = TilemapsRes.TilesetCollisionBitSmall;
 		public static readonly Cursor CursorTileSelect             = CursorHelper.ArrowAction;
 		public static readonly Cursor CursorTileBrush              = CursorHelper.CreateCursor(TilemapsRes.CursorTileBrush, 1, 13);
 		public static readonly Cursor CursorTileRect               = CursorHelper.CreateCursor(TilemapsRes.CursorTileRect, 0, 0);
