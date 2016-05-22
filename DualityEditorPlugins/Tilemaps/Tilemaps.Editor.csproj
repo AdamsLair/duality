@@ -221,6 +221,8 @@
     <Content Include="EmbeddedResources\IconTilesetDepthVertical.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthVerticalTile.png" />
     <Content Include="EmbeddedResources\IconTilesetSingleVisualLayer.png" />
+    <None Include="EmbeddedResources\TilesetCollisionBit.png" />
+    <None Include="EmbeddedResources\TilesetCollisionBitSmall.png" />
     <Content Include="EmbeddedResources\TilesetViewBrightness.png" />
     <None Include="EmbeddedResources\IconTilePalette.png" />
     <None Include="EmbeddedResources\CursorPick.png" />

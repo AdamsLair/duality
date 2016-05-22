@@ -132,18 +132,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 			}
 		}
 		/// <summary>
+		/// [GET] The pixel size of a single tile.
+		/// </summary>
+		public Size TileSize
+		{
+			get { return this.tileSize; }
+		}
+		/// <summary>
 		/// [GET] The original tileset layout's number of tiles in X and Y direction.
 		/// </summary>
 		protected Point TileCount
 		{
 			get { return this.tileCount; }
-		}
-		/// <summary>
-		/// [GET] The pixel size of a single tile.
-		/// </summary>
-		protected Size TileSize
-		{
-			get { return this.tileSize; }
 		}
 		/// <summary>
 		/// [GET] The number of displayed tiles in X and Y direction.
@@ -813,20 +813,27 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		protected override void OnMouseLeave(EventArgs e)
 		{
+			int lastHoverIndex = this.hoverIndex;
+			this.hoverIndex = -1;
+
+			// Invoke base event handlers after updating the hover index, so that's already up-to-date
 			base.OnMouseLeave(e);
-			if (this.hoverIndex != -1)
+
+			if (lastHoverIndex != -1)
 			{
 				if (this.HoveredTileChanged != null)
-					this.HoveredTileChanged(this, new TilesetViewTileIndexChangeEventArgs(-1, this.hoverIndex));
+					this.HoveredTileChanged(this, new TilesetViewTileIndexChangeEventArgs(this.hoverIndex, lastHoverIndex));
 			}
-			this.InvalidateTile(this.hoverIndex, 0);
-			this.hoverIndex = -1;
+			this.InvalidateTile(lastHoverIndex, 0);
 		}
 		protected override void OnMouseMove(MouseEventArgs e)
 		{
-			base.OnMouseMove(e);
 			int oldHoverIndex = this.hoverIndex;
 			this.hoverIndex = this.PickTileIndexAt(e.X, e.Y);
+
+			// Invoke base event handlers after updating the hover index, so that's already up-to-date
+			base.OnMouseMove(e);
+
 			if (oldHoverIndex != this.hoverIndex)
 			{
 				if (this.HoveredTileChanged != null)

@@ -471,6 +471,26 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TilesetCollisionBit {
+            get {
+                object obj = ResourceManager.GetObject("TilesetCollisionBit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TilesetCollisionBitSmall {
+            get {
+                object obj = ResourceManager.GetObject("TilesetCollisionBitSmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Tileset selected.
         /// </summary>
         internal static string TilesetEditor_NoTilesetSelected {
