@@ -187,7 +187,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				this.pendingLocalTilePalettes--;
 		}
 		
-		private TilesetEditor RequestTilesetEditor()
+		public TilesetEditor RequestTilesetEditor()
 		{
 			// Create a new tileset editor, if no is available right now
 			if (this.tilesetEditor == null || this.tilesetEditor.IsDisposed)

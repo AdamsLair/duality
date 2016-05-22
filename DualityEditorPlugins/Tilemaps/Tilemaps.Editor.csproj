@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="EditorActions\OpenTileset.cs" />
     <Compile Include="EditorActions\OpenTilemapResizeDialog.cs" />
     <Compile Include="Modules\TilemapResizeDialog.cs">
       <SubType>Form</SubType>

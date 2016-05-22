@@ -61,11 +61,29 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opens the Tileset for editing..
+        /// </summary>
+        internal static string ActionDesc_OpenTileset {
+            get {
+                return ResourceManager.GetString("ActionDesc_OpenTileset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opens a user dialog that allows to resize the selected Tilemaps. If no tilemaps are selected, it will resize all currently active, non-hidden tilemaps in the current scene..
         /// </summary>
         internal static string ActionDesc_ResizeTilemap {
             get {
                 return ResourceManager.GetString("ActionDesc_ResizeTilemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Tileset.
+        /// </summary>
+        internal static string ActionName_OpenTileset {
+            get {
+                return ResourceManager.GetString("ActionName_OpenTileset", resourceCulture);
             }
         }
         
