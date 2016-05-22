@@ -107,6 +107,20 @@ namespace Duality.Cloning
 			if (context != null) this.context = context;
 		}
 
+		/// <summary>
+		/// Clones the specified object and returns the cloned instance.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="preserveCache">
+		/// If true, the mapping between source and target object graph is preserved.
+		/// 
+		/// This can be useful for doing a partial clone operation that is later continued or
+		/// repeated using the same <see cref="CloneProvider"/> instance. Since the mapping is
+		/// already present, performance of subsequent clone operations within the same object
+		/// graph can benefit by this.
+		/// </param>
+		/// <returns></returns>
 		public T CloneObject<T>(T source, bool preserveCache = false)
 		{
 			object target; // Don't use T, we'll need to make sure "target" is a reference Type
@@ -121,6 +135,22 @@ namespace Duality.Cloning
 			}
 			return (T)target;
 		}
+		/// <summary>
+		/// Copies the specified source object graph to the specified target object
+		/// graph. Where possible, existing objects will be preserved and updated,
+		/// rather than being overwritten.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="source"></param>
+		/// <param name="target"></param>
+		/// <param name="preserveCache">
+		/// If true, the mapping between source and target object graph is preserved.
+		/// 
+		/// This can be useful for doing a partial clone operation that is later continued or
+		/// repeated using the same <see cref="CloneProvider"/> instance. Since the mapping is
+		/// already present, performance of subsequent clone operations within the same object
+		/// graph can benefit by this.
+		/// </param>
 		public void CopyObject<T>(T source, T target, bool preserveCache = false)
 		{
 			try
@@ -133,12 +163,25 @@ namespace Duality.Cloning
 				this.EndCloneOperation(preserveCache);
 			}
 		}
+		/// <summary>
+		/// Clears the clone providers internal mapping between source and target
+		/// object graph. This is done automatically, unless the copy or clone
+		/// operation has been performed with explicitly preserving the cache.
+		/// </summary>
 		public void ClearCachedMapping()
 		{
 			this.targetMapping.Clear();
 			this.targetSet.Clear();
 		}
 		
+		/// <summary>
+		/// Prepares the clone operation by generating a mapping between source
+		/// and target object graph, and creating the target objects where required in the
+		/// process. 
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="target"></param>
+		/// <returns>Returns a reference to the target root object.</returns>
 		private object BeginCloneOperation(object source, object target = null)
 		{
 			if (this.targetSet.Contains(source))
@@ -146,21 +189,28 @@ namespace Duality.Cloning
 				throw new InvalidOperationException("You may not use a CloneProvider for cloning its own clone results after preserving the internal cache.");
 			}
 
+			// Prepare the target object graph we'll copy the source graph's values over to
 			this.sourceRoot = source;
 			this.targetRoot = target;
 			this.PrepareCloneGraph();
-			if (!object.ReferenceEquals(source, null) && source.GetType().GetTypeInfo().IsValueType)
-			{
-				target = source;
-				this.SetTargetOf(source, target);
-			}
-			else
-			{
-				this.GetTargetOf(source, out target);
-			}
+
+			// Get the target object which was either re-used or created in the preparation step
+			this.GetTargetOf(source, out target);
 			this.targetRoot = target;
 			return target;
 		}
+		/// <summary>
+		/// Ends the current clone operation by clearing all the working data that was
+		/// allocated in the process.
+		/// </summary>
+		/// <param name="preserveMapping">
+		/// If true, the mapping between source and target object graph is preserved.
+		/// 
+		/// This can be useful for doing a partial clone operation that is later continued or
+		/// repeated using the same <see cref="CloneProvider"/> instance. Since the mapping is
+		/// already present, performance of subsequent clone operations within the same object
+		/// graph can benefit by this.
+		/// </param>
 		private void EndCloneOperation(bool preserveMapping)
 		{
 			this.sourceRoot = null;
@@ -176,6 +226,12 @@ namespace Duality.Cloning
 				this.ClearCachedMapping();
 		}
 
+		/// <summary>
+		/// Registers a mapping from the specified source object to its
+		/// target object graph equivalent. This is a one-to-one relation.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="target"></param>
 		private void SetTargetOf(object source, object target)
 		{
 			if (object.ReferenceEquals(source, null)) return;
@@ -184,6 +240,18 @@ namespace Duality.Cloning
 				this.targetMapping[source] = target;
 			}
 		}
+		/// <summary>
+		/// Retrieves the target graph equivalent of the specified source
+		/// graph object and returns whether there is a valid source-target
+		/// relation.
+		/// 
+		/// Note that the resulting target object will (expected to) be the
+		/// same as the source object in cases where there is no mapping, but
+		/// reference assignment instead.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="target"></param>
+		/// <returns></returns>
 		private bool GetTargetOf(object source, out object target)
 		{
 			if (object.ReferenceEquals(source, null))
@@ -203,10 +271,25 @@ namespace Duality.Cloning
 			}
 			return true;
 		}
+		/// <summary>
+		/// Adds the specified source object to the handled object stack when
+		/// required and returns whether the object need to be investigated as 
+		/// part of the copy step at all.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="typeData"></param>
+		/// <returns></returns>
 		private bool PushCurrentObject(object source, CloneType typeData)
 		{
 			return typeData.Type.IsValueType || object.ReferenceEquals(source, null) || this.handledObjects.Add(source);
 		}
+		/// <summary>
+		/// Removes the specified source object from the handled object stack
+		/// after finishing its copy step.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="typeData"></param>
+		/// <returns></returns>
 		private bool PopCurrentObject(object source, CloneType typeData)
 		{
 			return typeData.Type.IsValueType || object.ReferenceEquals(source, null) || this.handledObjects.Remove(source);
