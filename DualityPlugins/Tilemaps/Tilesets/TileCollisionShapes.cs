@@ -10,21 +10,54 @@ namespace Duality.Plugins.Tilemaps
 	/// <seealso cref="TileInput"/>
 	public struct TileCollisionShapes
 	{
+		public static readonly int LayerCount = 4;
+
 		/// <summary>
 		/// The tiles collision shape on the default layer.
 		/// </summary>
-		public TileCollisionShape Layer0;
+		private TileCollisionShape Layer0;
 		/// <summary>
 		/// The tiles collision shape on first auxilliary layer.
 		/// </summary>
-		public TileCollisionShape Layer1;
+		private TileCollisionShape Layer1;
 		/// <summary>
 		/// The tiles collision shape on second auxilliary layer.
 		/// </summary>
-		public TileCollisionShape Layer2;
+		private TileCollisionShape Layer2;
 		/// <summary>
 		/// The tiles collision shape on third auxilliary layer.
 		/// </summary>
-		public TileCollisionShape Layer3;
+		private TileCollisionShape Layer3;
+
+		/// <summary>
+		/// [GET / SET] The collision shape on a given layer index from zero to (<see cref="LayerCount"/> - 1).
+		/// </summary>
+		/// <param name="layerIndex"></param>
+		/// <returns></returns>
+		public TileCollisionShape this[int layerIndex]
+		{
+			get
+			{
+				switch (layerIndex)
+				{
+					case 0: return this.Layer0;
+					case 1: return this.Layer1;
+					case 2: return this.Layer2;
+					case 3: return this.Layer3;
+				}
+				throw new IndexOutOfRangeException("Invalid collision layer index");
+			}
+			set
+			{
+				switch (layerIndex)
+				{
+					case 0: this.Layer0 = value; return;
+					case 1: this.Layer1 = value; return;
+					case 2: this.Layer2 = value; return;
+					case 3: this.Layer3 = value; return;
+				}
+				throw new IndexOutOfRangeException("Invalid collision layer index");
+			}
+		}
 	}
 }

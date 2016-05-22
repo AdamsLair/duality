@@ -37,11 +37,8 @@ namespace Duality.Plugins.Tilemaps
 			int hash = 17;
 			MathF.CombineHashCode(ref hash, this.DepthOffset);
 			MathF.CombineHashCode(ref hash, this.IsVertical ? 1 : 0);
-			MathF.CombineHashCode(ref hash, 
-				((byte)this.Collision.Layer0 << 24) | 
-				((byte)this.Collision.Layer1 << 16) | 
-				((byte)this.Collision.Layer2 << 8) | 
-				((byte)this.Collision.Layer3 << 0));
+			for (int i = 0; i < TileCollisionShapes.LayerCount; i++)
+				MathF.CombineHashCode(ref hash, (byte)this.Collision[i]);
 			return hash;
 		}
 	}
