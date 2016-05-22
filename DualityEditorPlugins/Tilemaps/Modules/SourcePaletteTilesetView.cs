@@ -96,8 +96,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Rectangle rect = new Rectangle(
 					startPos.X, 
 					startPos.Y,
-					this.selectedArea.Width * (this.TileSize.Width + this.Spacing.Width) - this.Spacing.Width, 
-					this.selectedArea.Height * (this.TileSize.Height + this.Spacing.Height) - this.Spacing.Height);
+					this.selectedArea.Width * (this.DisplayedTileSize.Width + this.Spacing.Width) - this.Spacing.Width, 
+					this.selectedArea.Height * (this.DisplayedTileSize.Height + this.Spacing.Height) - this.Spacing.Height);
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
 				selectionClip.Exclude(rect);
 				e.Graphics.Clip = selectionClip;
@@ -110,8 +110,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Rectangle rect = new Rectangle(
 					startPos.X, 
 					startPos.Y,
-					this.TileSize.Width, 
-					this.TileSize.Height);
+					this.DisplayedTileSize.Width, 
+					this.DisplayedTileSize.Height);
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
 			}
 
@@ -127,8 +127,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Rectangle rect = new Rectangle(
 					startPos.X, 
 					startPos.Y,
-					this.TileSize.Width, 
-					this.TileSize.Height);
+					this.DisplayedTileSize.Width, 
+					this.DisplayedTileSize.Height);
 
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
 				rect.Inflate(1, 1);
@@ -151,8 +151,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				Rectangle rect = new Rectangle(
 					startPos.X, 
 					startPos.Y,
-					this.selectedArea.Width * (this.TileSize.Width + this.Spacing.Width) - this.Spacing.Width, 
-					this.selectedArea.Height * (this.TileSize.Height + this.Spacing.Height) - this.Spacing.Height);
+					this.selectedArea.Width * (this.DisplayedTileSize.Width + this.Spacing.Width) - this.Spacing.Width, 
+					this.selectedArea.Height * (this.DisplayedTileSize.Height + this.Spacing.Height) - this.Spacing.Height);
 				rect.Inflate(1, 1);
 				rect.Size = new Size(rect.Size.Width - 1, rect.Size.Height - 1);
 

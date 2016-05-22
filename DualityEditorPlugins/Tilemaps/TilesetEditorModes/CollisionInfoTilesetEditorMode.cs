@@ -143,7 +143,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 		private void TilesetView_MouseMove(object sender, MouseEventArgs e)
 		{
-			Size tileSize = this.TilesetView.TileSize;
+			Size tileSize = this.TilesetView.DisplayedTileSize;
 			Point tilePos = this.TilesetView.GetTileIndexLocation(this.TilesetView.HoveredTileIndex);
 			Point posOnTile = new Point(e.X - tilePos.X, e.Y - tilePos.Y);
 			Size cornerBitSize = Size.Empty; // ToDo
