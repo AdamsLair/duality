@@ -215,6 +215,7 @@
     <None Include="EmbeddedResources\IconTilePalette.ico" />
     <None Include="EmbeddedResources\IconTilesetEditor.ico" />
     <None Include="EmbeddedResources\IconTilesetDepthInfo.png" />
+    <None Include="EmbeddedResources\IconTilesetCollisionLayer.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthFlatTile.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthLayer.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthVertical.png" />

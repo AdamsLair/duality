@@ -257,6 +257,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetCollisionLayer {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetCollisionLayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconTilesetDepthFlatTile {
             get {
                 object obj = ResourceManager.GetObject("IconTilesetDepthFlatTile", resourceCulture);
@@ -475,6 +485,33 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string TilesetEditor_SelectedTileset {
             get {
                 return ResourceManager.GetString("TilesetEditor_SelectedTileset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Aux. Collision.
+        /// </summary>
+        internal static string TilesetEditorCollisionAuxLayer_Name {
+            get {
+                return ResourceManager.GetString("TilesetEditorCollisionAuxLayer_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Layer Index {0}.
+        /// </summary>
+        internal static string TilesetEditorCollisionLayer_Desc {
+            get {
+                return ResourceManager.GetString("TilesetEditorCollisionLayer_Desc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Main Collision.
+        /// </summary>
+        internal static string TilesetEditorCollisionMainLayer_Name {
+            get {
+                return ResourceManager.GetString("TilesetEditorCollisionMainLayer_Name", resourceCulture);
             }
         }
         

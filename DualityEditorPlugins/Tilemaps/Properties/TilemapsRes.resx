@@ -298,4 +298,16 @@
   <data name="ActionName_OpenTileset" xml:space="preserve">
     <value>Edit Tileset</value>
   </data>
+  <data name="IconTilesetCollisionLayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetCollisionLayer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetEditorCollisionAuxLayer_Name" xml:space="preserve">
+    <value>Aux. Collision</value>
+  </data>
+  <data name="TilesetEditorCollisionLayer_Desc" xml:space="preserve">
+    <value>Layer Index {0}</value>
+  </data>
+  <data name="TilesetEditorCollisionMainLayer_Name" xml:space="preserve">
+    <value>Main Collision</value>
+  </data>
 </root>
