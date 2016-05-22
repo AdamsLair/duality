@@ -18,6 +18,30 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 	/// </summary>
 	public class CollisionInfoTilesetEditorMode : TilesetEditorMode
 	{
+		/// <summary>
+		/// Represents a certain area within a tile in the <see cref="TilesetView"/>,
+		/// which can be hovered or clicked by the user.
+		/// </summary>
+		private enum TileHotSpot
+		{
+			None,
+
+			Center,
+			Top,
+			Bottom,
+			Left,
+			Right
+		}
+		/// <summary>
+		/// Describes the way in which the current user drawing operation will interact
+		/// with existing collision bits.
+		/// </summary>
+		private enum CollisionDrawMode
+		{
+			Set,
+			Add,
+			Remove
+		}
 		private class CollisionInfoLayerNode : TilesetEditorLayerNode
 		{
 			private int layerIndex = 0;
@@ -50,9 +74,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private TreeModel                treeModel      = new TreeModel();
 		private CollisionInfoLayerNode[] layerNodes     = null;
 		private int                      editLayerIndex = 0;
-		private TileCollisionShape       hoveredBit     = TileCollisionShape.Free;
+		private TileHotSpot              hoveredArea    = TileHotSpot.None;
 		private bool                     isUserDrawing  = false;
-		private bool                     drawSetBit     = false;
+		private bool                     drawSimple     = false;
+		private CollisionDrawMode        drawMode       = CollisionDrawMode.Set;
+		private TileCollisionShape       drawShape      = TileCollisionShape.Free;
 
 
 		public override string Id
@@ -127,18 +153,92 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 		private void TilesetView_PaintTiles(object sender, TilesetViewPaintTilesEventArgs e)
 		{
+			Color colorFree = Color.White;
+			Color colorCollision = Color.FromArgb(128, 192, 255);
+
 			TileInput[] tileInput = e.Tileset.TileInput.Data;
 			for (int i = 0; i < e.PaintedTiles.Count; i++)
 			{
 				TilesetViewPaintTileData paintData = e.PaintedTiles[i];
+
+				// Prepare some data we'll need for drawing the tile collision info overlay
 				TileCollisionShape collision = TileCollisionShape.Free;
 				if (tileInput.Length > paintData.TileIndex)
 				{
 					collision = tileInput[paintData.TileIndex].Collision[this.editLayerIndex];
 				}
 				bool tileHovered = this.TilesetView.HoveredTileIndex == paintData.TileIndex;
+				bool simpleCollision = 
+					collision == TileCollisionShape.Solid ||
+					collision == TileCollisionShape.Free;
 
-				// ToDo
+				// Draw the center icon indicating the tiles simple solid / free state, as well as diagonal slopes
+				{
+					bool centerIsCollision = 
+						collision == TileCollisionShape.Solid ||
+						collision.HasFlag(TileCollisionShape.DiagonalUp) ||
+						collision.HasFlag(TileCollisionShape.DiagonalDown);
+
+					Bitmap centerImage;
+					if      (collision == TileCollisionShape.Solid)              centerImage = TilemapsResCache.TilesetCollisionBit;
+					else if (collision.HasFlag(TileCollisionShape.DiagonalUp))   centerImage = TilemapsResCache.TilesetCollisionDiagUp;
+					else if (collision.HasFlag(TileCollisionShape.DiagonalDown)) centerImage = TilemapsResCache.TilesetCollisionDiagDown;
+					else                                                         centerImage = TilemapsResCache.TilesetCollisionBit;
+					
+					Color centerColor;
+					if (centerIsCollision) centerColor = colorCollision;
+					else                   centerColor = colorFree;
+
+					e.Graphics.DrawImageTint(
+						centerImage, 
+						Color.FromArgb(GetCollisionIconAlpha(
+							tileHovered, 
+							this.hoveredArea == TileHotSpot.Center, 
+							centerIsCollision), centerColor), 
+						paintData.ViewRect.X + (paintData.ViewRect.Width - centerImage.Width) / 2,
+						paintData.ViewRect.Y + (paintData.ViewRect.Height - centerImage.Height) / 2);
+				}
+
+				// Draw collision icons for specific directional passability.
+				if (!simpleCollision || (tileHovered && (!this.isUserDrawing || !this.drawSimple)))
+				{
+					e.Graphics.DrawImageTint(
+						TilemapsResCache.TilesetCollisionVertical, 
+						Color.FromArgb(GetCollisionIconAlpha(
+							tileHovered, 
+							this.hoveredArea == TileHotSpot.Right, 
+							!simpleCollision && collision.HasFlag(TileCollisionShape.Right)), 
+							collision.HasFlag(TileCollisionShape.Right) ? colorCollision : colorFree), 
+						paintData.ViewRect.X + paintData.ViewRect.Width - TilemapsResCache.TilesetCollisionVertical.Width - 1,
+						paintData.ViewRect.Y + (paintData.ViewRect.Height - TilemapsResCache.TilesetCollisionVertical.Height) / 2);
+					e.Graphics.DrawImageTint(
+						TilemapsResCache.TilesetCollisionVertical, 
+						Color.FromArgb(GetCollisionIconAlpha(
+							tileHovered, 
+							this.hoveredArea == TileHotSpot.Left, 
+							!simpleCollision && collision.HasFlag(TileCollisionShape.Left)), 
+							collision.HasFlag(TileCollisionShape.Left) ? colorCollision : colorFree), 
+						paintData.ViewRect.X + 1,
+						paintData.ViewRect.Y + (paintData.ViewRect.Height - TilemapsResCache.TilesetCollisionVertical.Height) / 2);
+					e.Graphics.DrawImageTint(
+						TilemapsResCache.TilesetCollisionHorizontal, 
+						Color.FromArgb(GetCollisionIconAlpha(
+							tileHovered, 
+							this.hoveredArea == TileHotSpot.Top, 
+							!simpleCollision && collision.HasFlag(TileCollisionShape.Top)), 
+							collision.HasFlag(TileCollisionShape.Top) ? colorCollision : colorFree), 
+						paintData.ViewRect.X + (paintData.ViewRect.Width - TilemapsResCache.TilesetCollisionHorizontal.Width) / 2,
+						paintData.ViewRect.Y + 1);
+					e.Graphics.DrawImageTint(
+						TilemapsResCache.TilesetCollisionHorizontal, 
+						Color.FromArgb(GetCollisionIconAlpha(
+							tileHovered, 
+							this.hoveredArea == TileHotSpot.Bottom, 
+							!simpleCollision && collision.HasFlag(TileCollisionShape.Bottom)), 
+							collision.HasFlag(TileCollisionShape.Bottom) ? colorCollision : colorFree), 
+						paintData.ViewRect.X + (paintData.ViewRect.Width - TilemapsResCache.TilesetCollisionHorizontal.Width) / 2,
+						paintData.ViewRect.Y + paintData.ViewRect.Height - TilemapsResCache.TilesetCollisionHorizontal.Height - 1);
+				}
 			}
 		}
 		private void TilesetView_MouseMove(object sender, MouseEventArgs e)
@@ -146,20 +246,33 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Size tileSize = this.TilesetView.DisplayedTileSize;
 			Point tilePos = this.TilesetView.GetTileIndexLocation(this.TilesetView.HoveredTileIndex);
 			Point posOnTile = new Point(e.X - tilePos.X, e.Y - tilePos.Y);
-			Size cornerBitSize = Size.Empty; // ToDo
 			Size centerSize = new Size(
-				tileSize.Width - cornerBitSize.Width * 2,
-				tileSize.Height - cornerBitSize.Width * 2);
+				tileSize.Width - TilemapsResCache.TilesetCollisionVertical.Width * 2 - 2,
+				tileSize.Height - TilemapsResCache.TilesetCollisionHorizontal.Height * 2 - 2);
 
-			// Determine the hovered collision bit based on column / row hover states
-			TileCollisionShape lastHoveredBit = this.hoveredBit;
-			// ToDo
+			// Determine the hovered tile hotspot for user interaction
+			TileHotSpot lastHoveredArea = this.hoveredArea;
+			if (posOnTile.X > (tileSize.Width - centerSize.Width) / 2 &&
+				posOnTile.Y > (tileSize.Height - centerSize.Height) / 2 &&
+				posOnTile.X < (tileSize.Width + centerSize.Width) / 2 &&
+				posOnTile.Y < (tileSize.Height + centerSize.Height) / 2)
+			{
+				this.hoveredArea = TileHotSpot.Center;
+			}
+			else
+			{
+				float angle = MathF.Angle(tileSize.Width / 2, tileSize.Height / 2, posOnTile.X, posOnTile.Y);
+				if      (MathF.CircularDist(angle, 0.0f             ) < MathF.RadAngle45) this.hoveredArea = TileHotSpot.Top;
+				else if (MathF.CircularDist(angle, MathF.RadAngle90 ) < MathF.RadAngle45) this.hoveredArea = TileHotSpot.Right;
+				else if (MathF.CircularDist(angle, MathF.RadAngle180) < MathF.RadAngle45) this.hoveredArea = TileHotSpot.Bottom;
+				else                                                                      this.hoveredArea = TileHotSpot.Left;
+			}
 			
 			// If the user is in the process of setting or clearing bits, perform the drawing operation
 			if (this.isUserDrawing)
-				this.DrawCollisionBit();
+				this.PerformUserDrawAction();
 
-			if (lastHoveredBit != this.hoveredBit)
+			if (lastHoveredArea != this.hoveredArea)
 				this.TilesetView.InvalidateTile(this.TilesetView.HoveredTileIndex, 0);
 		}
 		private void TilesetView_MouseUp(object sender, MouseEventArgs e)
@@ -174,16 +287,69 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
-			// Determine whether the user will be setting or clearing collision bits
-			TileCollisionShape collision = tileset.TileInput[tileIndex].Collision[this.editLayerIndex];
-			this.drawSetBit = !collision.HasFlag(this.hoveredBit);
-			this.isUserDrawing = true;
+			// Conditional toggle operation on left click
+			if (e.Button == MouseButtons.Left)
+			{
+				TileCollisionShape collision = tileset.TileInput[tileIndex].Collision[this.editLayerIndex];
+				this.drawSimple = false;
+				switch (this.hoveredArea)
+				{
+					case TileHotSpot.Left:
+						this.drawShape = collision ^ TileCollisionShape.Left;
+						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						break;
+					case TileHotSpot.Right:
+						this.drawShape = collision ^ TileCollisionShape.Right;
+						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						break;
+					case TileHotSpot.Top:
+						this.drawShape = collision ^ TileCollisionShape.Top;
+						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						break;
+					case TileHotSpot.Bottom:
+						this.drawShape = collision ^ TileCollisionShape.Bottom;
+						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						break;
+					default:
+						if (collision == TileCollisionShape.Free)
+						{
+							this.drawSimple = true;
+							this.drawMode = CollisionDrawMode.Set;
+							this.drawShape = TileCollisionShape.Solid;
+						}
+						else if (collision == TileCollisionShape.Solid)
+						{
+							this.drawMode = CollisionDrawMode.Set;
+							this.drawShape = TileCollisionShape.DiagonalUp;
+						}
+						else if (collision.HasFlag(TileCollisionShape.DiagonalUp))
+						{
+							this.drawMode = CollisionDrawMode.Set;
+							this.drawShape = TileCollisionShape.DiagonalDown;
+						}
+						else if (collision.HasFlag(TileCollisionShape.DiagonalDown))
+						{
+							this.drawMode = CollisionDrawMode.Set;
+							this.drawShape = TileCollisionShape.Free;
+						}
+						break;
+				}
+				this.isUserDrawing = true;
+			}
+			// Clear operation on right click
+			else if (e.Button == MouseButtons.Right)
+			{
+				this.drawSimple = true;
+				this.drawShape = TileCollisionShape.Free;
+				this.drawMode = CollisionDrawMode.Set;
+				this.isUserDrawing = true;
+			}
 
 			// Perform the drawing operation
-			this.DrawCollisionBit();
+			this.PerformUserDrawAction();
 		}
 
-		private void DrawCollisionBit()
+		private void PerformUserDrawAction()
 		{
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
@@ -192,10 +358,22 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
 			TileInput input = tileset.TileInput[tileIndex];
-
-			// ToDo
+			if (this.drawMode == CollisionDrawMode.Add)
+				input.Collision[this.editLayerIndex] |= this.drawShape;
+			else if (this.drawMode == CollisionDrawMode.Remove)
+				input.Collision[this.editLayerIndex] &= ~this.drawShape;
+			else
+				input.Collision[this.editLayerIndex] = this.drawShape;
 
 			UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+		}
+
+		private static int GetCollisionIconAlpha(bool tileHovered, bool areaHovered, bool isActive)
+		{
+			if (tileHovered && areaHovered) return 255;
+			else if (isActive)              return 192;
+			else if (tileHovered)           return 128;
+			else                            return 64;
 		}
 	}
 }

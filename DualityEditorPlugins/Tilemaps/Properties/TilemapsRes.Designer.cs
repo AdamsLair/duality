@@ -481,6 +481,46 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TilesetCollisionDiagDown {
+            get {
+                object obj = ResourceManager.GetObject("TilesetCollisionDiagDown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TilesetCollisionDiagUp {
+            get {
+                object obj = ResourceManager.GetObject("TilesetCollisionDiagUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TilesetCollisionHorizontal {
+            get {
+                object obj = ResourceManager.GetObject("TilesetCollisionHorizontal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap TilesetCollisionVertical {
+            get {
+                object obj = ResourceManager.GetObject("TilesetCollisionVertical", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Tileset selected.
         /// </summary>
         internal static string TilesetEditor_NoTilesetSelected {

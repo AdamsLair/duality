@@ -16,28 +16,28 @@ namespace Duality.Plugins.Tilemaps
 		Free           = 0x00,
 
 		/// <summary>
-		/// The tile's top edge is considered solid.
+		/// The tiles top edge is considered solid.
 		/// </summary>
 		Top            = 0x01,
 		/// <summary>
-		/// The tile's bottom edge is considered solid.
+		/// The tiles bottom edge is considered solid.
 		/// </summary>
 		Bottom         = 0x02,
 		/// <summary>
-		/// The tile's left edge is considered solid.
+		/// The tiles left edge is considered solid.
 		/// </summary>
 		Left           = 0x04,
 		/// <summary>
-		/// The tile's right edge is considered solid.
+		/// The tiles right edge is considered solid.
 		/// </summary>
 		Right          = 0x08,
 		/// <summary>
-		/// A solid diagonal edge from the tile's bottom left to its
+		/// A solid diagonal edge from the tiles bottom left to its
 		/// top right corner is assumed.
 		/// </summary>
 		DiagonalUp     = 0x10,
 		/// <summary>
-		/// A solid diagonal edge from the tile's top left to its
+		/// A solid diagonal edge from the tiles top left to its
 		/// bottom right corner is assumed.
 		/// </summary>
 		DiagonalDown   = 0x20,
