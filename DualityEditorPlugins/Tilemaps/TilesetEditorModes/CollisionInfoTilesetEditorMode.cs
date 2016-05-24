@@ -278,6 +278,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private void TilesetView_MouseUp(object sender, MouseEventArgs e)
 		{
 			this.isUserDrawing = false;
+			this.TilesetView.InvalidateTile(this.TilesetView.HoveredTileIndex, 0);
 		}
 		private void TilesetView_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -295,20 +296,20 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				switch (this.hoveredArea)
 				{
 					case TileHotSpot.Left:
-						this.drawShape = collision ^ TileCollisionShape.Left;
-						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						this.drawShape = TileCollisionShape.Left;
+						this.drawMode = !collision.HasFlag(TileCollisionShape.Left) ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
 						break;
 					case TileHotSpot.Right:
-						this.drawShape = collision ^ TileCollisionShape.Right;
-						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						this.drawShape = TileCollisionShape.Right;
+						this.drawMode = !collision.HasFlag(TileCollisionShape.Right) ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
 						break;
 					case TileHotSpot.Top:
-						this.drawShape = collision ^ TileCollisionShape.Top;
-						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						this.drawShape = TileCollisionShape.Top;
+						this.drawMode = !collision.HasFlag(TileCollisionShape.Top) ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
 						break;
 					case TileHotSpot.Bottom:
-						this.drawShape = collision ^ TileCollisionShape.Bottom;
-						this.drawMode = (int)this.drawShape > (int)collision ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
+						this.drawShape = TileCollisionShape.Bottom;
+						this.drawMode = !collision.HasFlag(TileCollisionShape.Bottom) ? CollisionDrawMode.Add : CollisionDrawMode.Remove;
 						break;
 					default:
 						if (collision == TileCollisionShape.Free)
@@ -332,6 +333,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 							this.drawMode = CollisionDrawMode.Set;
 							this.drawShape = TileCollisionShape.Free;
 						}
+						else
+						{
+							this.drawMode = CollisionDrawMode.Set;
+							this.drawShape = TileCollisionShape.Solid;
+						}
 						break;
 				}
 				this.isUserDrawing = true;
@@ -347,6 +353,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			// Perform the drawing operation
 			this.PerformUserDrawAction();
+			this.TilesetView.InvalidateTile(tileIndex, 0);
 		}
 
 		private void PerformUserDrawAction()
