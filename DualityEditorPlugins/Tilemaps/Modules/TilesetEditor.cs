@@ -130,6 +130,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.tilesetView.TargetTileset,
 					tileset,
 					changeReason);
+				this.OnTilesetSelectionChanging(args);
 				this.tilesetView.TargetTileset = tileset;
 				this.OnTilesetSelectionChanged(args);
 			}
@@ -279,15 +280,17 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (cancel) e.Cancel = true;
 			}
 		}
-		private void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
+		private void OnTilesetSelectionChanging(TilesetSelectionChangedEventArgs args)
 		{
-			Tileset nextTileset = args.Next.Res;
-
 			// When switching to a different tileset, either apply or revert what we did to the current one
 			if (args.ChangeReason != SelectionChangeReason.ObjectDisposing)
 				this.AskApplyOrResetTilesetChanges(false);
 			this.StartRecordTilesetChanges();
-
+		}
+		private void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
+		{
+			Tileset nextTileset = args.Next.Res;
+			
 			// Update the label that tells us which tileset is selected
 			this.labelSelectedTileset.Text = (nextTileset != null) ? 
 				string.Format(TilemapsRes.TilesetEditor_SelectedTileset, nextTileset.Name) : 
