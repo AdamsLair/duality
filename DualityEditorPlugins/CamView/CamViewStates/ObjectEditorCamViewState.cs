@@ -272,6 +272,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			MathF.TransformDotVec(ref right, ref catDotX, ref catDotY);
 			MathF.TransformDotVec(ref down, ref catDotX, ref catDotY);
 
+			canvas.PushState();
 			canvas.State.ZOffset = -1.0f;
 			foreach (SelObj selObj in obj)
 			{
@@ -288,11 +289,16 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					canvas.DrawDevice.PreprocessCoords(ref posTemp, ref scaleTemp);
 					posTemp.Z = 0.0f;
 					{
+						ColorRgba color = canvas.State.ColorTint * canvas.State.Material.MainColor;
 						VertexC1P3[] vertices = new VertexC1P3[4];
-						vertices[0].Pos = posTemp - right * 10.0f;
-						vertices[1].Pos = posTemp + right * 10.0f;
-						vertices[2].Pos = posTemp - down * 10.0f;
-						vertices[3].Pos = posTemp + down * 10.0f;
+						vertices[0].Pos = posTemp - right * 5.0f;
+						vertices[1].Pos = posTemp + right * 5.0f;
+						vertices[2].Pos = posTemp - down * 5.0f;
+						vertices[3].Pos = posTemp + down * 5.0f;
+						vertices[0].Color = color;
+						vertices[1].Color = color;
+						vertices[2].Color = color;
+						vertices[3].Color = color;
 						canvas.DrawDevice.AddVertices(canvas.State.Material, VertexMode.Lines, vertices);
 					}
 				}
@@ -310,7 +316,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				if (selObj.ShowBoundRadius && radTemp > 0.0f)
 					canvas.DrawCircle(selObj.Pos.X, selObj.Pos.Y, selObj.Pos.Z, radTemp);
 			}
-			canvas.State.ZOffset = 0.0f;
+			canvas.PopState();
 		}
 		protected void DrawLockedAxes(Canvas canvas, float x, float y, float z, float r)
 		{
@@ -685,6 +691,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			List<SelObj> transformObjSel = this.allObjSel.Where(s => s.HasTransform).ToList();
 			Point cursorPos = this.PointToClient(Cursor.Position);
 			canvas.PushState();
+			canvas.State.ZOffset = -1.0f;
 			
 			// Draw indirectly selected object overlay
 			canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, ColorRgba.Lerp(this.FgColor, this.BgColor, 0.75f)));
@@ -707,7 +714,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					canvas.DrawSphere(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
-						this.selectionCenter.Z - 0.1f, 
+						this.selectionCenter.Z, 
 						this.selectionRadius);
 				}
 				else
@@ -716,7 +723,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					canvas.DrawCircle(
 						this.selectionCenter.X, 
 						this.selectionCenter.Y, 
-						this.selectionCenter.Z - 0.1f, 
+						this.selectionCenter.Z, 
 						this.selectionRadius);
 				}
 			}
@@ -727,27 +734,29 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (canScale)
 			{
 				float dotR = 3.0f / this.GetScaleAtZ(this.selectionCenter.Z);
+				canvas.State.ZOffset -= 0.1f;
 				canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Solid, this.FgColor));
 				canvas.FillCircle(
 					this.selectionCenter.X + this.selectionRadius, 
 					this.selectionCenter.Y, 
-					this.selectionCenter.Z - 0.1f,
+					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
 					this.selectionCenter.X - this.selectionRadius, 
 					this.selectionCenter.Y, 
-					this.selectionCenter.Z - 0.1f,
+					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
 					this.selectionCenter.X, 
 					this.selectionCenter.Y + this.selectionRadius, 
-					this.selectionCenter.Z - 0.1f,
+					this.selectionCenter.Z,
 					dotR);
 				canvas.FillCircle(
 					this.selectionCenter.X, 
 					this.selectionCenter.Y - this.selectionRadius, 
-					this.selectionCenter.Z - 0.1f,
+					this.selectionCenter.Z,
 					dotR);
+				canvas.State.ZOffset += 0.1f;
 			}
 
 			if (this.action != ObjectAction.None)
