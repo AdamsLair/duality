@@ -89,14 +89,14 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 				float maxDensity = c.Shapes.Max(s => s.Density);
 				float minDensity = c.Shapes.Min(s => s.Density);
 				float avgDensity = (maxDensity + minDensity) * 0.5f;
-				Vector3 colliderPos = c.GameObj.Transform.Pos;
-				float colliderScale = c.GameObj.Transform.Scale;
+				Vector3 objPos = c.GameObj.Transform.Pos;
+				float objScale = c.GameObj.Transform.Scale;
 				int index = 0;
 				foreach (ShapeInfo s in c.Shapes)
 				{
 					CircleShapeInfo circle = s as CircleShapeInfo;
 					PolyShapeInfo poly = s as PolyShapeInfo;
-				//	EdgeShapeInfo edge = s as EdgeShapeInfo;
+					ChainShapeInfo chain = s as ChainShapeInfo;
 					LoopShapeInfo loop = s as LoopShapeInfo;
 
 					ObjectEditorCamViewState editorState = this.View.ActiveState as ObjectEditorCamViewState;
@@ -109,71 +109,68 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					if (!c.IsAwake) clr = clr.ToHsva().WithSaturation(0.0f).ToRgba();
 					if (!s.IsValid) clr = this.ShapeErrorColor;
 
+					bool fillShape = (poly != null || circle != null);
+					Vector2[] shapeVertices = null;
+					if      (poly  != null) shapeVertices = poly .Vertices;
+					else if (loop  != null) shapeVertices = loop .Vertices;
+					else if (chain != null) shapeVertices = chain.Vertices;
+
 					if (circle != null)
 					{
-						Vector2 circlePos = circle.Position * colliderScale;
+						Vector2 circlePos = circle.Position * objScale;
 						MathF.TransformCoord(ref circlePos.X, ref circlePos.Y, c.GameObj.Transform.Angle);
 
-						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
-						canvas.FillCircle(
-							colliderPos.X + circlePos.X,
-							colliderPos.Y + circlePos.Y,
-							colliderPos.Z, 
-							circle.Radius * colliderScale);
+						if (fillShape)
+						{
+							canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
+							canvas.FillCircle(
+								objPos.X + circlePos.X,
+								objPos.Y + circlePos.Y,
+								objPos.Z, 
+								circle.Radius * objScale);
+						}
 						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
 						canvas.DrawCircle(
-							colliderPos.X + circlePos.X,
-							colliderPos.Y + circlePos.Y,
-							colliderPos.Z, 
-							circle.Radius * colliderScale);
+							objPos.X + circlePos.X,
+							objPos.Y + circlePos.Y,
+							objPos.Z, 
+							circle.Radius * objScale);
 
 						center = circlePos;
 					}
-					else if (poly != null)
+					else if (shapeVertices != null)
 					{
-						Vector2[] polyVert = poly.Vertices.ToArray();
-						for (int i = 0; i < polyVert.Length; i++)
+						Vector2[] drawVertices = shapeVertices.ToArray();
+						for (int i = 0; i < drawVertices.Length; i++)
 						{
-							center += polyVert[i];
-							Vector2.Multiply(ref polyVert[i], colliderScale, out polyVert[i]);
-							MathF.TransformCoord(ref polyVert[i].X, ref polyVert[i].Y, c.GameObj.Transform.Angle);
+							center += drawVertices[i];
+							Vector2.Multiply(ref drawVertices[i], objScale, out drawVertices[i]);
+							MathF.TransformCoord(ref drawVertices[i].X, ref drawVertices[i].Y, c.GameObj.Transform.Angle);
 						}
-						center /= polyVert.Length;
-						Vector2.Multiply(ref center, colliderScale, out center);
+						center /= drawVertices.Length;
+						Vector2.Multiply(ref center, objScale, out center);
 						MathF.TransformCoord(ref center.X, ref center.Y, c.GameObj.Transform.Angle);
 
-						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
-						canvas.FillPolygon(polyVert, colliderPos.X, colliderPos.Y, colliderPos.Z);
-						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
-						canvas.DrawPolygon(polyVert, colliderPos.X, colliderPos.Y, colliderPos.Z);
-					}
-					else if (loop != null)
-					{
-						Vector2[] loopVert = loop.Vertices.ToArray();
-						for (int i = 0; i < loopVert.Length; i++)
+						if (fillShape)
 						{
-							center += loopVert[i];
-							Vector2.Multiply(ref loopVert[i], colliderScale, out loopVert[i]);
-							MathF.TransformCoord(ref loopVert[i].X, ref loopVert[i].Y, c.GameObj.Transform.Angle);
+							canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha((0.25f + densityRelative * 0.25f) * shapeAlpha)));
+							canvas.FillPolygon(drawVertices, objPos.X, objPos.Y, objPos.Z);
 						}
-						center /= loopVert.Length;
-						Vector2.Multiply(ref center, colliderScale, out center);
-						MathF.TransformCoord(ref center.X, ref center.Y, c.GameObj.Transform.Angle);
-
 						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, clr.WithAlpha(shapeAlpha)));
-						canvas.DrawPolygon(loopVert, colliderPos.X, colliderPos.Y, colliderPos.Z);
+						canvas.DrawPolygon(drawVertices, objPos.X, objPos.Y, objPos.Z);
 					}
 					
 					// Draw shape index
 					if (c == selectedBody)
 					{
-						Vector2 textSize = textFont.MeasureText(index.ToString(CultureInfo.InvariantCulture));
+						string indexText = index.ToString();
+						Vector2 textSize = textFont.MeasureText(indexText);
 						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, fontClr.WithAlpha((shapeAlpha + 1.0f) * 0.5f)));
 						canvas.State.TransformHandle = textSize * 0.5f;
-						canvas.DrawText(index.ToString(CultureInfo.InvariantCulture), 
-							colliderPos.X + center.X, 
-							colliderPos.Y + center.Y,
-							colliderPos.Z);
+						canvas.DrawText(indexText, 
+							objPos.X + center.X, 
+							objPos.Y + center.Y,
+							objPos.Z);
 						canvas.State.TransformHandle = Vector2.Zero;
 					}
 
@@ -187,19 +184,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 					MathF.TransformCoord(ref localMassCenter.X, ref localMassCenter.Y, c.GameObj.Transform.Angle, c.GameObj.Transform.Scale);
 					canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, this.MassCenterColor.WithAlpha(colliderAlpha)));
 					canvas.DrawLine(
-						colliderPos.X + localMassCenter.X - 5.0f, 
-						colliderPos.Y + localMassCenter.Y, 
-						colliderPos.Z,
-						colliderPos.X + localMassCenter.X + 5.0f, 
-						colliderPos.Y + localMassCenter.Y, 
-						colliderPos.Z);
+						objPos.X + localMassCenter.X - 5.0f, 
+						objPos.Y + localMassCenter.Y, 
+						objPos.Z,
+						objPos.X + localMassCenter.X + 5.0f, 
+						objPos.Y + localMassCenter.Y, 
+						objPos.Z);
 					canvas.DrawLine(
-						colliderPos.X + localMassCenter.X, 
-						colliderPos.Y + localMassCenter.Y - 5.0f, 
-						colliderPos.Z,
-						colliderPos.X + localMassCenter.X, 
-						colliderPos.Y + localMassCenter.Y + 5.0f, 
-						colliderPos.Z);
+						objPos.X + localMassCenter.X, 
+						objPos.Y + localMassCenter.Y - 5.0f, 
+						objPos.Z,
+						objPos.X + localMassCenter.X, 
+						objPos.Y + localMassCenter.Y + 5.0f, 
+						objPos.Z);
 				}
 			}
 		}
