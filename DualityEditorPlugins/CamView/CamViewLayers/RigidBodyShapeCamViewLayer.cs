@@ -78,7 +78,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 
 			canvas.State.TextFont = Font.GenericMonospace10;
 			canvas.State.TextInvariantScale = true;
-			canvas.State.ZOffset = -1;
+			canvas.State.ZOffset = -0.5f;
 			Font textFont = canvas.State.TextFont.Res;
 
 			// Draw Shape layer
@@ -166,12 +166,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 						string indexText = index.ToString();
 						Vector2 textSize = textFont.MeasureText(indexText);
 						canvas.State.SetMaterial(new BatchInfo(DrawTechnique.Alpha, fontClr.WithAlpha((shapeAlpha + 1.0f) * 0.5f)));
-						canvas.State.TransformHandle = textSize * 0.5f;
 						canvas.DrawText(indexText, 
 							objPos.X + center.X, 
 							objPos.Y + center.Y,
 							objPos.Z);
-						canvas.State.TransformHandle = Vector2.Zero;
 					}
 
 					index++;
