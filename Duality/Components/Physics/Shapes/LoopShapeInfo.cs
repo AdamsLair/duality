@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using FarseerPhysics.Dynamics;
+using FarseerPhysics.Common;
 using FarseerPhysics.Collision.Shapes;
 
 using Duality.Editor;
@@ -10,11 +11,11 @@ using Duality.Editor;
 namespace Duality.Components.Physics
 {
 	/// <summary>
-	/// Describes a double-sided edge loop (outline) in a <see cref="RigidBody">RigidBodies</see> shape.
+	/// Describes a double-sided edge loop (outline) in a <see cref="RigidBody"/> shape.
 	/// </summary>
 	public sealed class LoopShapeInfo : ShapeInfo
 	{
-		private	Vector2[]	vertices;
+		private Vector2[] vertices;
 
 		/// <summary>
 		/// [GET / SET] The edge loops vertices. While assinging the array will cause an automatic update, simply modifying it will require you to call <see cref="ShapeInfo.UpdateShape"/> manually.
@@ -60,19 +61,20 @@ namespace Duality.Components.Physics
 		protected override Fixture CreateFixture(Body body)
 		{
 			if (!body.IsStatic) return null; // Loop shapes aren't allowed on nonstatic bodies.
-			var farseerVert = this.CreateVertices(1.0f);
-			if (farseerVert == null) return null;
+			if (this.vertices == null || this.vertices.Length < 3) return null;
 
 			this.Parent.CheckValidTransform();
 
-			Fixture f = body.CreateFixture(new LoopShape(farseerVert), this);
+			ChainShape shape = new ChainShape();
+			this.UpdateVertices(shape, 1.0f);
+			Fixture f = body.CreateFixture(shape, this);
 
 			this.Parent.CheckValidTransform();
 			return f;
 		}
 		internal override void UpdateFixture(bool updateShape = false)
 		{
-			// Loop shapes aren't allowed on nonstatic bodies.
+			// Loop / Chain shapes aren't allowed on nonstatic bodies.
 			if (this.Parent != null && this.Parent.BodyType != BodyType.Static)
 			{
 				this.DestroyFixture(this.Parent.PhysicsBody, false);
@@ -87,20 +89,23 @@ namespace Duality.Components.Physics
 			if (this.Parent.GameObj != null && this.Parent.GameObj.Transform != null)
 				scale = this.Parent.GameObj.Transform.Scale;
 
-			LoopShape poly = this.fixture.Shape as LoopShape;
-			poly.Vertices = this.CreateVertices(scale);
+			ChainShape shape = this.fixture.Shape as ChainShape;
+			this.UpdateVertices(shape, scale);
 		}
-		private FarseerPhysics.Common.Vertices CreateVertices(float scale)
+		private void UpdateVertices(ChainShape shape, float scale)
 		{
-			if (this.vertices == null || this.vertices.Length < 3) return null;
-			Vector2[] vertices = this.vertices.ToArray();
+			if (this.vertices == null || this.vertices.Length < 3) return;
 
-			FarseerPhysics.Common.Vertices farseerVert = new FarseerPhysics.Common.Vertices(vertices.Length);
-			for (int i = 0; i < vertices.Length; i++)
+			if (shape.Vertices == null)
+				shape.Vertices = new Vertices();
+			else
+				shape.Vertices.Clear();
+
+			for (int i = 0; i < this.vertices.Length; i++)
 			{
-				farseerVert.Add(PhysicsUnit.LengthToPhysical * vertices[i] * scale);
+				shape.Vertices.Add(PhysicsUnit.LengthToPhysical * this.vertices[i] * scale);
 			}
-			return farseerVert;
+			shape.MakeLoop();
 		}
 	}
 }
