@@ -1093,6 +1093,7 @@ namespace Duality.Drawing
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
 			device.PreprocessCoords(ref pos, ref scale);
+			if (this.State.TextInvariantScale) scale = 1.0f;
 			bool worldSpace = (pos != new Vector3(x, y, z));
 			
 			if (font.IsPixelGridAligned)
@@ -1211,6 +1212,7 @@ namespace Duality.Drawing
 			Vector3 pos = new Vector3(x, y, z);
 			float scale = 1.0f;
 			device.PreprocessCoords(ref pos, ref scale);
+			if (this.State.TextInvariantScale) scale = 1.0f;
 			bool worldSpace = (pos != new Vector3(x, y, z));
 			
 			if (text.Fonts != null && text.Fonts.Any(r => r.IsAvailable && r.Res.IsPixelGridAligned))
