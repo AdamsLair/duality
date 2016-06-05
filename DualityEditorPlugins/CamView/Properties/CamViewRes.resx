@@ -168,12 +168,6 @@
   <data name="CamView_Status_PosZ" xml:space="preserve">
     <value>Z: {0:F}</value>
   </data>
-  <data name="ColliderEditor_CreateCircle" xml:space="preserve">
-    <value>Create Circle...</value>
-  </data>
-  <data name="ColliderEditor_CreatePolygon" xml:space="preserve">
-    <value>Create Polygon...</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CursorArrowCreateCircle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\EmbeddedResources\curArrowCreateCircle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -295,9 +289,6 @@
   <data name="UndoRedo_DeleteRigidBodyShapeMulti" xml:space="preserve">
     <value>Delete {0} Shapes</value>
   </data>
-  <data name="ColliderEditor_CreateLoop" xml:space="preserve">
-    <value>Create Loop...</value>
-  </data>
   <data name="RigidBodyCamViewState_SelBodyName" xml:space="preserve">
     <value>RigidBody</value>
   </data>
@@ -315,5 +306,14 @@
   </data>
   <data name="CamView_Help_ObjActions_EditClone" xml:space="preserve">
     <value>Hold Alt to perform an action on a clone of the current selection.</value>
+  </data>
+  <data name="RigidBodyCamViewState_ItemName_CreateCircle" xml:space="preserve">
+    <value>Create Circle Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_ItemName_CreateLoop" xml:space="preserve">
+    <value>Create Loop Shape</value>
+  </data>
+  <data name="RigidBodyCamViewState_ItemName_CreatePolygon" xml:space="preserve">
+    <value>Create Polygon Shape</value>
   </data>
 </root>
