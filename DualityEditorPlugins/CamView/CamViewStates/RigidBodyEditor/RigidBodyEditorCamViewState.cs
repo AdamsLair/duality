@@ -217,8 +217,8 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				}
 			}
 
-			if (pickedShape != null) return SelShape.Create(pickedShape);
-			if (pickedCollider != null) return new SelBody(pickedCollider);
+			if (pickedShape != null) return RigidBodyEditorSelShape.Create(pickedShape);
+			if (pickedCollider != null) return new RigidBodyEditorSelBody(pickedCollider);
 
 			return null;
 		}
@@ -246,7 +246,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				if (pickedShape != null)
 				{
 					pickedCollider = c;
-					result.Add(new SelBody(pickedCollider));
+					result.Add(new RigidBodyEditorSelBody(pickedCollider));
 					break;
 				}
 				else pickedShape = null;
@@ -258,7 +258,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, pickedCollider.GameObj.Transform.Pos.Z));
 				float scale = this.GetScaleAtZ(pickedCollider.GameObj.Transform.Pos.Z);
 				List<ShapeInfo> picked = this.PickShapes(pickedCollider, worldCoord.Xy, new Vector2(w / scale, h / scale));
-				if (picked.Count > 0) result.AddRange(picked.Select(s => SelShape.Create(s) as SelObj));
+				if (picked.Count > 0) result.AddRange(picked.Select(s => RigidBodyEditorSelShape.Create(s) as SelObj));
 			}
 
 			return result;
@@ -340,7 +340,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 			// Otherwise, forward to regular object selection
 			else
-				this.SelectObjects(shapes.Select(s =>  SelShape.Create(s)).NotNull(), mode);
+				this.SelectObjects(shapes.Select(s =>  RigidBodyEditorSelShape.Create(s)).NotNull(), mode);
 		}
 		public override void SelectObjects(IEnumerable<SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
 		{
@@ -348,11 +348,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (!selObjEnum.Any()) return;
 			
 			// Change shape selection
-			if (selObjEnum.OfType<SelShape>().Any())
+			if (selObjEnum.OfType<RigidBodyEditorSelShape>().Any())
 			{
-				var shapeQuery = selObjEnum.OfType<SelShape>();
+				var shapeQuery = selObjEnum.OfType<RigidBodyEditorSelShape>();
 				var distinctShapeQuery = shapeQuery.GroupBy(s => s.Body).First(); // Assure there is only one collider active.
-				SelShape[] selShapeArray = distinctShapeQuery.ToArray();
+				RigidBodyEditorSelShape[] selShapeArray = distinctShapeQuery.ToArray();
 
 				// First, select the associated Collider
 				DualityEditorApp.Select(this, new ObjectSelection(selShapeArray[0].Body.GameObj), SelectMode.Set);
@@ -361,12 +361,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 
 			// Change collider selection
-			else if (selObjEnum.OfType<SelBody>().Any())
+			else if (selObjEnum.OfType<RigidBodyEditorSelBody>().Any())
 			{
 				// Deselect ShapeInfos
 				DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 				// Select Collider
-				DualityEditorApp.Select(this, new ObjectSelection(selObjEnum.OfType<SelBody>().Select(s => s.ActualObject)), mode);
+				DualityEditorApp.Select(this, new ObjectSelection(selObjEnum.OfType<RigidBodyEditorSelBody>().Select(s => s.ActualObject)), mode);
 			}
 		}
 		public override void ClearSelection()
@@ -376,9 +376,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		}
 		public override void DeleteObjects(IEnumerable<SelObj> objEnum)
 		{
-			if (objEnum.OfType<SelShape>().Any())
+			if (objEnum.OfType<RigidBodyEditorSelShape>().Any())
 			{
-				ShapeInfo[] selShapes = objEnum.OfType<SelShape>().Select(s => s.ActualObject as ShapeInfo).ToArray();
+				ShapeInfo[] selShapes = objEnum.OfType<RigidBodyEditorSelShape>().Select(s => s.ActualObject as ShapeInfo).ToArray();
 
 				DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 				UndoRedoManager.Do(new DeleteRigidBodyShapeAction(selShapes));
@@ -388,12 +388,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			if (objEnum == null || !objEnum.Any()) return base.CloneObjects(objEnum);
 			List<SelObj> result = new List<SelObj>();
-			if (objEnum.OfType<SelShape>().Any())
+			if (objEnum.OfType<RigidBodyEditorSelShape>().Any())
 			{
-				ShapeInfo[] selShapes = objEnum.OfType<SelShape>().Select(s => (s.ActualObject as ShapeInfo).DeepClone()).ToArray();
+				ShapeInfo[] selShapes = objEnum.OfType<RigidBodyEditorSelShape>().Select(s => (s.ActualObject as ShapeInfo).DeepClone()).ToArray();
 				CreateRigidBodyShapeAction cloneAction = new CreateRigidBodyShapeAction(this.selectedBody, selShapes);
 				UndoRedoManager.Do(cloneAction);
-				result.AddRange(cloneAction.Result.Select(s => SelShape.Create(s)));
+				result.AddRange(cloneAction.Result.Select(s => RigidBodyEditorSelShape.Create(s)));
 			}
 			return result;
 		}
@@ -630,7 +630,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		protected override void PostPerformAction(IEnumerable<SelObj> selObjEnum, ObjectAction action)
 		{
 			base.PostPerformAction(selObjEnum, action);
-			SelShape[] selShapeArray = selObjEnum.OfType<SelShape>().ToArray();
+			RigidBodyEditorSelShape[] selShapeArray = selObjEnum.OfType<RigidBodyEditorSelShape>().ToArray();
 
 			// Update the body directly after modifying it
 			if (this.selectedBody != null) this.selectedBody.SynchronizeBodyShape();
@@ -674,7 +674,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 				else
 				{
-					foreach (SelShape selShape in this.allObjSel.OfType<SelShape>())
+					foreach (RigidBodyEditorSelShape selShape in this.allObjSel.OfType<RigidBodyEditorSelShape>())
 						selShape.UpdateShapeStats();
 					this.InvalidateSelectionStats();
 					this.Invalidate();
@@ -703,7 +703,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if ((e.AffectedCategories & ObjectSelection.Category.Other) != ObjectSelection.Category.None)
 			{
 				if (e.Current.OfType<ShapeInfo>().Any())
-					this.allObjSel = e.Current.OfType<ShapeInfo>().Select(s => SelShape.Create(s) as SelObj).ToList();
+					this.allObjSel = e.Current.OfType<ShapeInfo>().Select(s => RigidBodyEditorSelShape.Create(s) as SelObj).ToList();
 				else
 					this.allObjSel = new List<SelObj>();
 

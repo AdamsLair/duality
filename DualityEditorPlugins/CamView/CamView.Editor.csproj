@@ -57,6 +57,12 @@
   <ItemGroup>
     <Compile Include="CamViewLayers\GridLayerData.cs" />
     <Compile Include="CamViewStates\ObjectEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelLoopShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyLikeShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelCircleShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolyLikeRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\LoopRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolygonRigidBodyEditorTool.cs" />
@@ -77,7 +83,7 @@
     <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
     <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
     <Compile Include="CamViewStates\CamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.SelObj.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelChainShape.cs" />
     <Compile Include="CamViewPlugin.cs" />
     <Compile Include="CamViewStates\GameViewCamViewState.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.cs" />
