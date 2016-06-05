@@ -70,6 +70,9 @@
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\CircleRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\Tools\NoRigidBodyEditorTool.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\SceneEditor\SelObj\SceneEditorSelGameObj.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Modules\CamView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,7 +90,7 @@
     <Compile Include="CamViewPlugin.cs" />
     <Compile Include="CamViewStates\GameViewCamViewState.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.cs" />
-    <Compile Include="CamViewStates\SceneEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\SceneEditor\SceneEditorCamViewState.cs" />
     <Compile Include="Modules\EditingGuide.cs" />
     <Compile Include="Modules\GridSizeDialog.cs">
       <SubType>Form</SubType>

@@ -22,90 +22,6 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 	/// </summary>
 	public class SceneEditorCamViewState : ObjectEditorCamViewState
 	{
-		public class SelGameObj : SelObj
-		{
-			private	GameObject	gameObj;
-
-			public override object ActualObject
-			{
-				get { return this.gameObj == null || this.gameObj.Disposed ? null : this.gameObj; }
-			}
-			public override bool HasTransform
-			{
-				get { return this.gameObj != null && !this.gameObj.Disposed && this.gameObj.Transform != null; }
-			}
-			public override Vector3 Pos
-			{
-				get { return this.gameObj.Transform.Pos; }
-				set { this.gameObj.Transform.Pos = value; }
-			}
-			public override float Angle
-			{
-				get { return this.gameObj.Transform.Angle; }
-				set { this.gameObj.Transform.Angle = value; }
-			}
-			public override Vector3 Scale
-			{
-				get { return Vector3.One * this.gameObj.Transform.Scale; }
-				set { this.gameObj.Transform.Scale = value.Length / MathF.Sqrt(3.0f); }
-			}
-			public override float BoundRadius
-			{
-				get
-				{
-					ICmpRenderer r = this.gameObj.GetComponent<ICmpRenderer>();
-					if (r == null)
-					{
-						if (this.gameObj.Transform != null)
-							return CamView.DefaultDisplayBoundRadius * this.gameObj.Transform.Scale;
-						else
-							return CamView.DefaultDisplayBoundRadius;
-					}
-					else
-						return r.BoundRadius;
-				}
-			}
-			public override bool ShowAngle
-			{
-				get { return true; }
-			}
-
-			public SelGameObj(GameObject obj)
-			{
-				this.gameObj = obj;
-			}
-
-			public override bool IsActionAvailable(ObjectAction action)
-			{
-				if (action == ObjectAction.Move ||
-					action == ObjectAction.Rotate ||
-					action == ObjectAction.Scale)
-					return this.HasTransform;
-				return false;
-			}
-			public override string UpdateActionText(ObjectAction action, bool performing)
-			{
-				if (action == ObjectAction.Move)
-				{
-					return
-						string.Format("X:{0,7:0}/n", this.gameObj.Transform.RelativePos.X) +
-						string.Format("Y:{0,7:0}/n", this.gameObj.Transform.RelativePos.Y) +
-						string.Format("Z:{0,7:0}", this.gameObj.Transform.RelativePos.Z);
-				}
-				else if (action == ObjectAction.Scale)
-				{
-					return string.Format("Scale:{0,5:0.00}", this.gameObj.Transform.RelativeScale);
-				}
-				else if (action == ObjectAction.Rotate)
-				{
-					return string.Format("Angle:{0,5:0}°", MathF.RadToDeg(this.gameObj.Transform.RelativeAngle));
-				}
-
-				return base.UpdateActionText(action, performing);
-			}
-		}
-
-
 		private ObjectSelection selBeforeDrag			= null;
 		private	DateTime		dragTime				= DateTime.Now;
 		private	Point			dragLastLoc				= Point.Empty;
@@ -140,17 +56,17 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			// Initial selection update
 			ObjectSelection current = DualityEditorApp.Selection;
-			this.allObjSel = current.GameObjects.Select(g => new SelGameObj(g) as SelObj).ToList();
+			this.allObjSel = current.GameObjects.Select(g => new SceneEditorSelGameObj(g) as SelObj).ToList();
 			{
 				var selectedGameObj = current.GameObjects;
 				var indirectViaCmpQuery = current.Components.GameObject();
 				var indirectViaChildQuery = selectedGameObj.ChildrenDeep();
 				var indirectQuery = indirectViaCmpQuery.Concat(indirectViaChildQuery).Except(selectedGameObj).Distinct();
-				this.indirectObjSel = indirectQuery.Select(g => new SelGameObj(g) as SelObj).ToList();
+				this.indirectObjSel = indirectQuery.Select(g => new SceneEditorSelGameObj(g) as SelObj).ToList();
 			}
 			{
 				var parentlessGameObj = current.GameObjects.Where(g => !current.GameObjects.Any(g2 => g.IsChildOf(g2))).ToList();
-				this.actionObjSel = parentlessGameObj.Select(g => new SelGameObj(g) as SelObj).Where(s => s.HasTransform).ToList();
+				this.actionObjSel = parentlessGameObj.Select(g => new SceneEditorSelGameObj(g) as SelObj).Where(s => s.HasTransform).ToList();
 			}
 
 			this.InvalidateSelectionStats();
@@ -192,7 +108,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			Component picked = this.PickRendererAt(x, y) as Component;
 			if (picked != null && DesignTimeObjectData.Get(picked.GameObj).IsLocked) picked = null;
-			if (picked != null) return new SelGameObj(picked.GameObj);
+			if (picked != null) return new SceneEditorSelGameObj(picked.GameObj);
 			return null;
 		}
 		public override List<SelObj> PickSelObjIn(int x, int y, int w, int h)
@@ -201,7 +117,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			return picked
 				.OfType<Component>()
 				.Where(r => !DesignTimeObjectData.Get(r.GameObj).IsLocked)
-				.Select(r => new SelGameObj(r.GameObj) as SelObj)
+				.Select(r => new SceneEditorSelGameObj(r.GameObj) as SelObj)
 				.ToList();
 		}
 
@@ -264,7 +180,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			CloneGameObjectAction cloneAction = new CloneGameObjectAction(objList);
 			UndoRedoManager.Do(cloneAction);
 
-			return cloneAction.Result.Select(o => new SelGameObj(o) as SelObj).ToList();
+			return cloneAction.Result.Select(o => new SceneEditorSelGameObj(o) as SelObj).ToList();
 		}
 
 		protected override void OnDragEnter(DragEventArgs e)
@@ -366,7 +282,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 				// Select them & begin action
 				this.selBeforeDrag = DualityEditorApp.Selection;
-				this.SelectObjects(createAction.Result.Select(g => new SelGameObj(g) as SelObj));
+				this.SelectObjects(createAction.Result.Select(g => new SceneEditorSelGameObj(g) as SelObj));
 				this.BeginAction(ObjectAction.Move);
 
 				// Get focused
@@ -391,7 +307,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if (e.SameObjects) return;
 
 			// Update object selection
-			this.allObjSel = e.Current.GameObjects.Select(g => new SelGameObj(g) as SelObj).ToList();
+			this.allObjSel = e.Current.GameObjects.Select(g => new SceneEditorSelGameObj(g) as SelObj).ToList();
 
 			// Update indirect object selection
 			{
@@ -399,18 +315,18 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				var indirectViaCmpQuery = e.Current.Components.GameObject();
 				var indirectViaChildQuery = selectedGameObj.ChildrenDeep();
 				var indirectQuery = indirectViaCmpQuery.Concat(indirectViaChildQuery).Except(selectedGameObj).Distinct();
-				this.indirectObjSel = indirectQuery.Select(g => new SelGameObj(g) as SelObj).ToList();
+				this.indirectObjSel = indirectQuery.Select(g => new SceneEditorSelGameObj(g) as SelObj).ToList();
 			}
 
 			// Update (parent-free) action object selection
 			{
 				// Remove removed objects
-				foreach (SelObj s in e.Removed.GameObjects.Select(g => new SelGameObj(g) as SelObj)) this.actionObjSel.Remove(s);
+				foreach (SelObj s in e.Removed.GameObjects.Select(g => new SceneEditorSelGameObj(g) as SelObj)) this.actionObjSel.Remove(s);
 				// Remove objects whichs parents are now added
 				this.actionObjSel.RemoveAll(s => e.Added.GameObjects.Any(o => this.IsAffectedByParent(s.ActualObject as GameObject, o)));
 				// Add objects whichs parents are not located in the current selection
 				var addedParentFreeGameObj = e.Added.GameObjects.Where(o => !this.allObjSel.Any(s => this.IsAffectedByParent(o, s.ActualObject as GameObject)));
-				this.actionObjSel.AddRange(addedParentFreeGameObj.Select(g => new SelGameObj(g) as SelObj).Where(s => s.HasTransform));
+				this.actionObjSel.AddRange(addedParentFreeGameObj.Select(g => new SceneEditorSelGameObj(g) as SelObj).Where(s => s.HasTransform));
 			}
 
 			this.InvalidateSelectionStats();
