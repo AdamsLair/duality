@@ -48,20 +48,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.circle = shape;
 		}
 
-		public override bool IsActionAvailable(ObjectEditorCamViewState.ObjectAction action)
+		public override bool IsActionAvailable(ObjectEditorAction action)
 		{
-			if (action == ObjectEditorCamViewState.ObjectAction.Rotate) return false;
+			if (action == ObjectEditorAction.Rotate) return false;
 			return base.IsActionAvailable(action);
 		}
-		public override string UpdateActionText(ObjectEditorCamViewState.ObjectAction action, bool performing)
+		public override string UpdateActionText(ObjectEditorAction action, bool performing)
 		{
-			if (action == ObjectEditorCamViewState.ObjectAction.Move)
+			if (action == ObjectEditorAction.Move)
 			{
 				return
 					string.Format("Center X:{0,9:0.00}/n", this.circle.Position.X) +
 					string.Format("Center Y:{0,9:0.00}", this.circle.Position.Y);
 			}
-			else if (action == ObjectEditorCamViewState.ObjectAction.Scale)
+			else if (action == ObjectEditorAction.Scale)
 			{
 				return string.Format("Radius:{0,8:0.00}", this.circle.Radius);
 			}

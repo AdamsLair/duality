@@ -15,7 +15,7 @@ using Duality.Editor.Plugins.CamView.UndoRedoActions;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
-	public class SceneEditorSelGameObj : ObjectEditorCamViewState.SelObj
+	public class SceneEditorSelGameObj : ObjectEditorSelObj
 	{
 		private	GameObject	gameObj;
 
@@ -68,28 +68,28 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.gameObj = obj;
 		}
 
-		public override bool IsActionAvailable(ObjectEditorCamViewState.ObjectAction action)
+		public override bool IsActionAvailable(ObjectEditorAction action)
 		{
-			if (action == ObjectEditorCamViewState.ObjectAction.Move ||
-				action == ObjectEditorCamViewState.ObjectAction.Rotate ||
-				action == ObjectEditorCamViewState.ObjectAction.Scale)
+			if (action == ObjectEditorAction.Move ||
+				action == ObjectEditorAction.Rotate ||
+				action == ObjectEditorAction.Scale)
 				return this.HasTransform;
 			return false;
 		}
-		public override string UpdateActionText(ObjectEditorCamViewState.ObjectAction action, bool performing)
+		public override string UpdateActionText(ObjectEditorAction action, bool performing)
 		{
-			if (action == ObjectEditorCamViewState.ObjectAction.Move)
+			if (action == ObjectEditorAction.Move)
 			{
 				return
 					string.Format("X:{0,7:0}/n", this.gameObj.Transform.RelativePos.X) +
 					string.Format("Y:{0,7:0}/n", this.gameObj.Transform.RelativePos.Y) +
 					string.Format("Z:{0,7:0}", this.gameObj.Transform.RelativePos.Z);
 			}
-			else if (action == ObjectEditorCamViewState.ObjectAction.Scale)
+			else if (action == ObjectEditorAction.Scale)
 			{
 				return string.Format("Scale:{0,5:0.00}", this.gameObj.Transform.RelativeScale);
 			}
-			else if (action == ObjectEditorCamViewState.ObjectAction.Rotate)
+			else if (action == ObjectEditorAction.Rotate)
 			{
 				return string.Format("Angle:{0,5:0}°", MathF.RadToDeg(this.gameObj.Transform.RelativeAngle));
 			}

@@ -7,7 +7,7 @@ using Duality.Components.Physics;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
-	internal class RigidBodyEditorSelBody : ObjectEditorCamViewState.SelObj
+	internal class RigidBodyEditorSelBody : ObjectEditorSelObj
 	{
 		private GameObject bodyObj;
 
@@ -56,7 +56,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.bodyObj = obj != null ? obj.GameObj : null;
 		}
 
-		public override bool IsActionAvailable(ObjectEditorCamViewState.ObjectAction action)
+		public override bool IsActionAvailable(ObjectEditorAction action)
 		{
 			return false;
 		}

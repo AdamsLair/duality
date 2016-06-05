@@ -189,7 +189,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 
-		public override SelObj PickSelObjAt(int x, int y)
+		public override ObjectEditorSelObj PickSelObjAt(int x, int y)
 		{
 			RigidBody pickedCollider = null;
 			ShapeInfo pickedShape = null;
@@ -222,9 +222,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 			return null;
 		}
-		public override List<SelObj> PickSelObjIn(int x, int y, int w, int h)
+		public override List<ObjectEditorSelObj> PickSelObjIn(int x, int y, int w, int h)
 		{
-			List<SelObj> result = new List<SelObj>();
+			List<ObjectEditorSelObj> result = new List<ObjectEditorSelObj>();
 			
 			RigidBody pickedCollider = null;
 			ShapeInfo pickedShape = null;
@@ -258,7 +258,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				Vector3 worldCoord = this.GetSpaceCoord(new Vector3(x, y, pickedCollider.GameObj.Transform.Pos.Z));
 				float scale = this.GetScaleAtZ(pickedCollider.GameObj.Transform.Pos.Z);
 				List<ShapeInfo> picked = this.PickShapes(pickedCollider, worldCoord.Xy, new Vector2(w / scale, h / scale));
-				if (picked.Count > 0) result.AddRange(picked.Select(s => RigidBodyEditorSelShape.Create(s) as SelObj));
+				if (picked.Count > 0) result.AddRange(picked.Select(s => RigidBodyEditorSelShape.Create(s) as ObjectEditorSelObj));
 			}
 
 			return result;
@@ -342,7 +342,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			else
 				this.SelectObjects(shapes.Select(s =>  RigidBodyEditorSelShape.Create(s)).NotNull(), mode);
 		}
-		public override void SelectObjects(IEnumerable<SelObj> selObjEnum, SelectMode mode = SelectMode.Set)
+		public override void SelectObjects(IEnumerable<ObjectEditorSelObj> selObjEnum, SelectMode mode = SelectMode.Set)
 		{
 			base.SelectObjects(selObjEnum, mode);
 			if (!selObjEnum.Any()) return;
@@ -374,7 +374,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			base.ClearSelection();
 			DualityEditorApp.Deselect(this, ObjectSelection.Category.Other);
 		}
-		public override void DeleteObjects(IEnumerable<SelObj> objEnum)
+		public override void DeleteObjects(IEnumerable<ObjectEditorSelObj> objEnum)
 		{
 			if (objEnum.OfType<RigidBodyEditorSelShape>().Any())
 			{
@@ -384,10 +384,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				UndoRedoManager.Do(new DeleteRigidBodyShapeAction(selShapes));
 			}
 		}
-		public override List<SelObj> CloneObjects(IEnumerable<SelObj> objEnum)
+		public override List<ObjectEditorSelObj> CloneObjects(IEnumerable<ObjectEditorSelObj> objEnum)
 		{
 			if (objEnum == null || !objEnum.Any()) return base.CloneObjects(objEnum);
-			List<SelObj> result = new List<SelObj>();
+			List<ObjectEditorSelObj> result = new List<ObjectEditorSelObj>();
 			if (objEnum.OfType<RigidBodyEditorSelShape>().Any())
 			{
 				ShapeInfo[] selShapes = objEnum.OfType<RigidBodyEditorSelShape>().Select(s => (s.ActualObject as ShapeInfo).DeepClone()).ToArray();
@@ -600,13 +600,13 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			base.OnLostFocus();
 			this.EndToolAction();
 		}
-		protected override void OnBeginAction(ObjectAction action)
+		protected override void OnBeginAction(ObjectEditorAction action)
 		{
 			base.OnBeginAction(action);
 
 			bool shapeAction = 
-				action != ObjectAction.RectSelect && 
-				action != ObjectAction.None;
+				action != ObjectEditorAction.RectSelect && 
+				action != ObjectEditorAction.None;
 			if (this.selectedBody != null && shapeAction)
 			{
 				this.selectedBody.BeginUpdateBodyShape();
@@ -614,20 +614,20 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.EditingUserGuide.SnapScaleOrigin = Vector3.One * this.selectedBody.GameObj.Transform.Scale;
 			}
 		}
-		protected override void OnEndAction(ObjectAction action)
+		protected override void OnEndAction(ObjectEditorAction action)
 		{
 			base.OnEndAction(action);
 
 			bool shapeAction = 
-				action != ObjectAction.RectSelect && 
-				action != ObjectAction.None;
+				action != ObjectEditorAction.RectSelect && 
+				action != ObjectEditorAction.None;
 			if (this.selectedBody != null && shapeAction)
 				this.selectedBody.EndUpdateBodyShape();
 
 			this.EditingUserGuide.SnapPosOrigin = Vector3.Zero;
 			this.EditingUserGuide.SnapScaleOrigin = Vector3.One;
 		}
-		protected override void PostPerformAction(IEnumerable<SelObj> selObjEnum, ObjectAction action)
+		protected override void PostPerformAction(IEnumerable<ObjectEditorSelObj> selObjEnum, ObjectEditorAction action)
 		{
 			base.PostPerformAction(selObjEnum, action);
 			RigidBodyEditorSelShape[] selShapeArray = selObjEnum.OfType<RigidBodyEditorSelShape>().ToArray();
@@ -703,9 +703,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			if ((e.AffectedCategories & ObjectSelection.Category.Other) != ObjectSelection.Category.None)
 			{
 				if (e.Current.OfType<ShapeInfo>().Any())
-					this.allObjSel = e.Current.OfType<ShapeInfo>().Select(s => RigidBodyEditorSelShape.Create(s) as SelObj).ToList();
+					this.allObjSel = e.Current.OfType<ShapeInfo>().Select(s => RigidBodyEditorSelShape.Create(s) as ObjectEditorSelObj).ToList();
 				else
-					this.allObjSel = new List<SelObj>();
+					this.allObjSel = new List<ObjectEditorSelObj>();
 
 				// Update indirect object selection
 				this.indirectObjSel.Clear();

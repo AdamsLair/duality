@@ -56,7 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewLayers\GridLayerData.cs" />
-    <Compile Include="CamViewStates\ObjectEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAxisLock.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAction.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorSelObj.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorCamViewState.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelLoopShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyShape.cs" />
     <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyLikeShape.cs" />

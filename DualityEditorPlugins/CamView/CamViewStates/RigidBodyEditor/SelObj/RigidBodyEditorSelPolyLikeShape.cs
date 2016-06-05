@@ -63,15 +63,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.UpdateShapeStats();
 		}
 
-		public override string UpdateActionText(ObjectEditorCamViewState.ObjectAction action, bool performing)
+		public override string UpdateActionText(ObjectEditorAction action, bool performing)
 		{
-			if (action == ObjectEditorCamViewState.ObjectAction.Move)
+			if (action == ObjectEditorAction.Move)
 			{
 				return
 					string.Format("Center X:{0,9:0.00}/n", this.center.X) +
 					string.Format("Center Y:{0,9:0.00}", this.center.Y);
 			}
-			else if (action == ObjectEditorCamViewState.ObjectAction.Scale)
+			else if (action == ObjectEditorAction.Scale)
 			{
 				if (MathF.Abs(this.scale.X - this.scale.Y) >= 0.01f)
 				{
@@ -84,7 +84,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 					return string.Format("Scale:{0,8:0.00}", this.scale.X);
 				}
 			}
-			else if (action == ObjectEditorCamViewState.ObjectAction.Rotate)
+			else if (action == ObjectEditorAction.Rotate)
 			{
 				return string.Format("Angle:{0,6:0.0}°", MathF.RadToDeg(this.angle));
 			}

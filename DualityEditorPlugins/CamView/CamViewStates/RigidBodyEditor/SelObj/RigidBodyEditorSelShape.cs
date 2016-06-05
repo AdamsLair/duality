@@ -7,7 +7,7 @@ using Duality.Components.Physics;
 
 namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
-	public abstract class RigidBodyEditorSelShape : ObjectEditorCamViewState.SelObj
+	public abstract class RigidBodyEditorSelShape : ObjectEditorSelObj
 	{
 		private ShapeInfo shape;
 			
@@ -37,11 +37,11 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			this.shape = shape;
 		}
 
-		public override bool IsActionAvailable(ObjectEditorCamViewState.ObjectAction action)
+		public override bool IsActionAvailable(ObjectEditorAction action)
 		{
-			if (action == ObjectEditorCamViewState.ObjectAction.Move) return true;
-			if (action == ObjectEditorCamViewState.ObjectAction.Rotate) return true;
-			if (action == ObjectEditorCamViewState.ObjectAction.Scale) return true;
+			if (action == ObjectEditorAction.Move) return true;
+			if (action == ObjectEditorAction.Rotate) return true;
+			if (action == ObjectEditorAction.Scale) return true;
 			return false;
 		}
 		public virtual void UpdateShapeStats() { }
