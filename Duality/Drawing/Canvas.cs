@@ -654,72 +654,7 @@ namespace Duality.Drawing
 		/// <param name="z"></param>
 		public void FillPolygonOutline(Vector2[] points, float width, float x, float y, float z = 0.0f)
 		{
-			width *= 0.5f;
-			Vector3 pos = new Vector3(x, y, z);
-
-			float scale = 1.0f;
-			this.device.PreprocessCoords(ref pos, ref scale);
-
-			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
-			Rect texCoordRect = this.State.TextureCoordinateRect;
-
-			// Determine bounding box
-			Rect pointBoundingRect = points.BoundingBox();
-			pointBoundingRect.X -= width * 0.5f;
-			pointBoundingRect.Y -= width * 0.5f;
-			pointBoundingRect.W += width;
-			pointBoundingRect.H += width;
-
-			// Set up vertex array
-			int vertexCount = points.Length * 2 + 2;
-			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(vertexCount);
-			for (int i = 0; i < points.Length; i++)
-			{
-				int vertexBase = i * 2;
-
-				int cur = i;
-				int prev = (i - 1 + points.Length) % points.Length;
-				int next = (i + 1) % points.Length;
-				
-				Vector2 tangent = (points[cur] - points[prev]).Normalized;
-				Vector2 tangent2 = (points[next] - points[cur]).Normalized;
-				Vector2 normal = tangent.PerpendicularLeft;
-				Vector2 normal2 = tangent2.PerpendicularLeft;
-				
-				float dot = Vector2.Dot(normal, tangent2);
-
-				Vector2 cross;
-				MathF.LinesCross(
-					points[prev].X - normal.X * width, points[prev].Y - normal.Y * width, 
-					points[cur].X  - normal.X * width, points[cur].Y  - normal.Y * width, 
-					points[cur].X  - normal2.X * width, points[cur].Y  - normal2.Y * width,
-					points[next].X - normal2.X * width, points[next].Y - normal2.Y * width,
-					out cross.X, out cross.Y,
-					true);
-
-				Vector2 leftOffset = Vector2.Zero;
-				Vector2 rightOffset = (tangent - tangent2).Normalized * (cross - points[cur]).Length * MathF.Sign(dot) * -2;
-
-				vertices[vertexBase + 0].Pos.X = (points[cur].X + leftOffset.X) * scale + pos.X;
-				vertices[vertexBase + 0].Pos.Y = (points[cur].Y + leftOffset.Y) * scale + pos.Y;
-				vertices[vertexBase + 0].Pos.Z = pos.Z;
-				vertices[vertexBase + 0].TexCoord.X = texCoordRect.X + ((points[i].X + leftOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
-				vertices[vertexBase + 0].TexCoord.Y = texCoordRect.Y + ((points[i].Y + leftOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
-				vertices[vertexBase + 0].Color = shapeColor;
-				
-				vertices[vertexBase + 1].Pos.X = (points[cur].X  + rightOffset.X) * scale + pos.X;
-				vertices[vertexBase + 1].Pos.Y = (points[cur].Y  + rightOffset.Y) * scale + pos.Y;
-				vertices[vertexBase + 1].Pos.Z = pos.Z;
-				vertices[vertexBase + 1].TexCoord.X = texCoordRect.X + ((points[i].X + rightOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
-				vertices[vertexBase + 1].TexCoord.Y = texCoordRect.Y + ((points[i].Y + rightOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
-				vertices[vertexBase + 1].Color = shapeColor;
-			}
-
-			vertices[vertexCount - 2] = vertices[0];
-			vertices[vertexCount - 1] = vertices[1];
-
-			this.State.TransformVertices(vertices, pos.Xy, scale);
-			this.device.AddVertices(this.State.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
+			this.FillThickOutline(points, width, x, y, z, true);
 		}
 
 		/// <summary>
@@ -780,6 +715,18 @@ namespace Duality.Drawing
 		public void FillThickLine(float x, float y, float x2, float y2, float width)
 		{
 			this.FillThickLine(x, y, 0, x2, y2, 0, width);
+		}
+		/// <summary>
+		/// Fills a thick line strip. All vertices share the same Z value.
+		/// </summary>
+		/// <param name="points"></param>
+		/// <param name="width"></param>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <param name="z"></param>
+		public void FillThickLines(Vector2[] points, float width, float x, float y, float z = 0.0f)
+		{
+			this.FillThickOutline(points, width, x, y, z, false);
 		}
 		
 		/// <summary>
@@ -1289,6 +1236,87 @@ namespace Duality.Drawing
 		{
 			Font font = this.State.TextFont.Res;
 			return font.MeasureText(text);
+		}
+
+		private void FillThickOutline(Vector2[] points, float width, float x, float y, float z, bool closedLoop)
+		{
+			width *= 0.5f;
+			Vector3 pos = new Vector3(x, y, z);
+
+			float scale = 1.0f;
+			this.device.PreprocessCoords(ref pos, ref scale);
+
+			ColorRgba shapeColor = this.State.ColorTint * this.State.MaterialDirect.MainColor;
+			Rect texCoordRect = this.State.TextureCoordinateRect;
+
+			// Determine bounding box
+			Rect pointBoundingRect = points.BoundingBox();
+			pointBoundingRect.X -= width * 0.5f;
+			pointBoundingRect.Y -= width * 0.5f;
+			pointBoundingRect.W += width;
+			pointBoundingRect.H += width;
+
+			// Set up vertex array
+			int vertexCount = points.Length * 2 + (closedLoop ? 2 : 0);
+			VertexC1P3T2[] vertices = this.buffer.RequestVertexArray(vertexCount);
+			for (int i = 0; i < points.Length; i++)
+			{
+				int vertexBase = i * 2;
+
+				int cur = i;
+				int prev = (i - 1 + points.Length) % points.Length;
+				int next = (i + 1) % points.Length;
+				
+				Vector2 tangent = (points[cur] - points[prev]).Normalized;
+				Vector2 tangent2 = (points[next] - points[cur]).Normalized;
+				Vector2 normal = tangent.PerpendicularLeft;
+				Vector2 normal2 = tangent2.PerpendicularLeft;
+				
+				float dot = Vector2.Dot(normal, tangent2);
+
+				Vector2 cross;
+				MathF.LinesCross(
+					points[prev].X - normal.X * width, points[prev].Y - normal.Y * width, 
+					points[cur].X  - normal.X * width, points[cur].Y  - normal.Y * width, 
+					points[cur].X  - normal2.X * width, points[cur].Y  - normal2.Y * width,
+					points[next].X - normal2.X * width, points[next].Y - normal2.Y * width,
+					out cross.X, out cross.Y,
+					true);
+
+				Vector2 leftOffset = Vector2.Zero;
+				Vector2 rightOffset = (tangent - tangent2).Normalized * (cross - points[cur]).Length * MathF.Sign(dot) * -2;
+				
+				if (!closedLoop)
+				{
+					bool first = (i == 0);
+					bool last = (i == points.Length - 1);
+					if (first) rightOffset = normal2 * width * 2;
+					if (last) rightOffset = normal * width * 2;
+				}
+
+				vertices[vertexBase + 0].Pos.X = (points[cur].X + leftOffset.X) * scale + pos.X;
+				vertices[vertexBase + 0].Pos.Y = (points[cur].Y + leftOffset.Y) * scale + pos.Y;
+				vertices[vertexBase + 0].Pos.Z = pos.Z;
+				vertices[vertexBase + 0].TexCoord.X = texCoordRect.X + ((points[i].X + leftOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 0].TexCoord.Y = texCoordRect.Y + ((points[i].Y + leftOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 0].Color = shapeColor;
+				
+				vertices[vertexBase + 1].Pos.X = (points[cur].X  + rightOffset.X) * scale + pos.X;
+				vertices[vertexBase + 1].Pos.Y = (points[cur].Y  + rightOffset.Y) * scale + pos.Y;
+				vertices[vertexBase + 1].Pos.Z = pos.Z;
+				vertices[vertexBase + 1].TexCoord.X = texCoordRect.X + ((points[i].X + rightOffset.X - pointBoundingRect.X) / pointBoundingRect.W) * texCoordRect.W;
+				vertices[vertexBase + 1].TexCoord.Y = texCoordRect.Y + ((points[i].Y + rightOffset.Y - pointBoundingRect.Y) / pointBoundingRect.H) * texCoordRect.H;
+				vertices[vertexBase + 1].Color = shapeColor;
+			}
+
+			if (closedLoop)
+			{
+				vertices[vertexCount - 2] = vertices[0];
+				vertices[vertexCount - 1] = vertices[1]; 
+			}
+
+			this.State.TransformVertices(vertices, pos.Xy, scale);
+			this.device.AddVertices(this.State.MaterialDirect, VertexMode.TriangleStrip, vertices, vertexCount);
 		}
 	}
 }
