@@ -216,9 +216,9 @@ namespace Duality.Components.Renderers
 		{
 			canvas.PushState();
 			if      (shape is CircleShapeInfo) this.DrawShapeOutline(canvas, transform, shape as CircleShapeInfo);
-			else if (shape is PolyShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as PolyShapeInfo).Vertices);
-			else if (shape is LoopShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as LoopShapeInfo).Vertices);
-			else if (shape is ChainShapeInfo)  this.DrawShapeOutline(canvas, transform, (shape as ChainShapeInfo).Vertices);
+			else if (shape is PolyShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as PolyShapeInfo).Vertices, true);
+			else if (shape is LoopShapeInfo)   this.DrawShapeOutline(canvas, transform, (shape as LoopShapeInfo).Vertices, true);
+			else if (shape is ChainShapeInfo)  this.DrawShapeOutline(canvas, transform, (shape as ChainShapeInfo).Vertices, false);
 			canvas.PopState();
 		}
 		private void DrawShapeOutline(Canvas canvas, Transform transform, CircleShapeInfo shape)
@@ -245,7 +245,7 @@ namespace Duality.Components.Renderers
 				MathF.RadAngle360,
 				this.outlineWidth);
 		}
-		private void DrawShapeOutline(Canvas canvas, Transform transform, Vector2[] shapeVertices)
+		private void DrawShapeOutline(Canvas canvas, Transform transform, Vector2[] shapeVertices, bool closedLoop)
 		{
 			Vector3 pos = transform.Pos;
 			float angle = transform.Angle;
@@ -260,7 +260,10 @@ namespace Duality.Components.Renderers
 			}
 			canvas.State.TransformAngle = angle;
 			canvas.State.TransformScale = new Vector2(scale, scale);
-			canvas.FillPolygonOutline(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
+			if (closedLoop)
+				canvas.FillPolygonOutline(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
+			else
+				canvas.FillThickLines(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
 		}
 	}
 }
