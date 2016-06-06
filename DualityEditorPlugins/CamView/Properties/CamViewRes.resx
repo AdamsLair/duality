@@ -316,4 +316,7 @@
   <data name="RigidBodyCamViewState_ItemName_CreatePolygon" xml:space="preserve">
     <value>Create Polygon Shape</value>
   </data>
+  <data name="RigidBodyCamViewState_ItemName_CreateChain" xml:space="preserve">
+    <value>Create Chain Shape</value>
+  </data>
 </root>

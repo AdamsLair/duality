@@ -484,6 +484,15 @@ namespace Duality.Editor.Plugins.CamView.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create Chain Shape.
+        /// </summary>
+        public static string RigidBodyCamViewState_ItemName_CreateChain {
+            get {
+                return ResourceManager.GetString("RigidBodyCamViewState_ItemName_CreateChain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create Circle Shape.
         /// </summary>
         public static string RigidBodyCamViewState_ItemName_CreateCircle {

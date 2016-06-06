@@ -266,16 +266,19 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 
 		private ShapeInfo PickShape(RigidBody body, Vector2 worldCoord)
 		{
-			// Special case for LoopShapes, because they are by definition unpickable
-			foreach (LoopShapeInfo loop in body.Shapes.OfType<LoopShapeInfo>())
+			// Special case for Loop- and ChainShapes, because they are by definition unpickable
+			Rect worldRect = Rect.Align(Alignment.Center, worldCoord.X, worldCoord.Y, 10.0f, 10.0f);
+			foreach (ShapeInfo shape in body.Shapes)
 			{
-				for (int i = 0; i < loop.Vertices.Length; i++)
-				{
-					Vector2 worldV1 = body.GameObj.Transform.GetWorldPoint(loop.Vertices[i]);
-					Vector2 worldV2 = body.GameObj.Transform.GetWorldPoint(loop.Vertices[(i + 1) % loop.Vertices.Length]);
-					float dist = MathF.PointLineDistance(worldCoord.X, worldCoord.Y, worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-					if (dist < 5.0f) return loop;
-				}
+				LoopShapeInfo loop = shape as LoopShapeInfo;
+				ChainShapeInfo chain = shape as ChainShapeInfo;
+				
+				Vector2[] vertices = null;
+				if (loop != null) vertices = loop.Vertices;
+				if (chain != null) vertices = chain.Vertices;
+
+				if (vertices != null && IsOutlineBoxIntersection(body.GameObj.Transform, vertices, worldRect))
+					return shape;
 			}
 
 			// Do a physical picking operation
@@ -288,49 +291,62 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// Do a physical picking operation
 			List<ShapeInfo> result = body.PickShapes(worldCoord, worldSize);
 
-			// Special case for LoopShapes, because they are by definition unpickable
-			foreach (LoopShapeInfo loop in body.Shapes.OfType<LoopShapeInfo>())
+			// Special case for Loop- and ChainShapes, because they are by definition unpickable
+			foreach (ShapeInfo shape in body.Shapes)
 			{
-				bool hit = false;
-				for (int i = 0; i < loop.Vertices.Length; i++)
+				LoopShapeInfo loop = shape as LoopShapeInfo;
+				ChainShapeInfo chain = shape as ChainShapeInfo;
+				
+				Vector2[] vertices = null;
+				if (loop != null) vertices = loop.Vertices;
+				if (chain != null) vertices = chain.Vertices;
+
+				if (vertices != null && IsOutlineBoxIntersection(body.GameObj.Transform, vertices, worldRect))
 				{
-					Vector2 worldV1 = body.GameObj.Transform.GetWorldPoint(loop.Vertices[i]);
-					Vector2 worldV2 = body.GameObj.Transform.GetWorldPoint(loop.Vertices[(i + 1) % loop.Vertices.Length]);
-					hit = hit || MathF.LinesCross(
-						worldRect.TopLeft.X, 
-						worldRect.TopLeft.Y, 
-						worldRect.TopRight.X, 
-						worldRect.TopRight.Y, 
-						worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-					hit = hit || MathF.LinesCross(
-						worldRect.TopLeft.X, 
-						worldRect.TopLeft.Y, 
-						worldRect.BottomLeft.X, 
-						worldRect.BottomLeft.Y, 
-						worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-					hit = hit || MathF.LinesCross(
-						worldRect.BottomRight.X, 
-						worldRect.BottomRight.Y, 
-						worldRect.TopRight.X, 
-						worldRect.TopRight.Y, 
-						worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-					hit = hit || MathF.LinesCross(
-						worldRect.BottomRight.X, 
-						worldRect.BottomRight.Y, 
-						worldRect.BottomLeft.X, 
-						worldRect.BottomLeft.Y, 
-						worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
-					hit = hit || worldRect.Contains(worldV1) || worldRect.Contains(worldV2);
-					if (hit) break;
-				}
-				if (hit)
-				{
-					result.Add(loop);
+					result.Add(shape);
 					continue;
 				}
 			}
 
 			return result;
+		}
+
+		private bool IsOutlineBoxIntersection(Transform transform, Vector2[] vertices, Rect box)
+		{
+			bool hit = false;
+			for (int i = 0; i < vertices.Length; i++)
+			{
+				Vector2 worldV1 = transform.GetWorldPoint(vertices[i]);
+				Vector2 worldV2 = transform.GetWorldPoint(vertices[(i + 1) % vertices.Length]);
+				hit = hit || MathF.LinesCross(
+					box.TopLeft.X, 
+					box.TopLeft.Y, 
+					box.TopRight.X, 
+					box.TopRight.Y, 
+					worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
+				hit = hit || MathF.LinesCross(
+					box.TopLeft.X, 
+					box.TopLeft.Y, 
+					box.BottomLeft.X, 
+					box.BottomLeft.Y, 
+					worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
+				hit = hit || MathF.LinesCross(
+					box.BottomRight.X, 
+					box.BottomRight.Y, 
+					box.TopRight.X, 
+					box.TopRight.Y, 
+					worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
+				hit = hit || MathF.LinesCross(
+					box.BottomRight.X, 
+					box.BottomRight.Y, 
+					box.BottomLeft.X, 
+					box.BottomLeft.Y, 
+					worldV1.X, worldV1.Y, worldV2.X, worldV2.Y);
+				hit = hit || box.Contains(worldV1) || box.Contains(worldV2);
+				if (hit) return true;
+			}
+
+			return false;
 		}
 
 		void IRigidBodyEditorToolEnvironment.SelectShapes(IEnumerable<ShapeInfo> shapes, SelectMode mode)
