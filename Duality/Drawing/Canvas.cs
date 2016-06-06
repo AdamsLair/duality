@@ -724,7 +724,7 @@ namespace Duality.Drawing
 		/// <param name="x"></param>
 		/// <param name="y"></param>
 		/// <param name="z"></param>
-		public void FillThickLines(Vector2[] points, float width, float x, float y, float z = 0.0f)
+		public void FillThickLineStrip(Vector2[] points, float width, float x, float y, float z = 0.0f)
 		{
 			this.FillThickOutline(points, width, x, y, z, false);
 		}

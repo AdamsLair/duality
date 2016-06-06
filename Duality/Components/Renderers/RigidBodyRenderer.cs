@@ -263,7 +263,7 @@ namespace Duality.Components.Renderers
 			if (closedLoop)
 				canvas.FillPolygonOutline(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
 			else
-				canvas.FillThickLines(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
+				canvas.FillThickLineStrip(shapeVertices, this.outlineWidth, pos.X, pos.Y, pos.Z);
 		}
 	}
 }
