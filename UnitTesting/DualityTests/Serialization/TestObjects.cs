@@ -165,4 +165,37 @@ namespace Duality.Tests.Serialization
 		public int Method(string param) { return 0; }
 		public MemberInfoTestObject() { }
 	}
+	public class NullDefaultTestObject : IEquatable<NullDefaultTestObject>
+	{
+		public int TestField;
+		public TestObject ReferenceTypeField;
+		public TestData ValueTypeField;
+
+		public static bool operator ==(NullDefaultTestObject first, NullDefaultTestObject second)
+		{
+			return first.Equals(second);
+		}
+		public static bool operator !=(NullDefaultTestObject first, NullDefaultTestObject second)
+		{
+			return !first.Equals(second);
+		}
+		public override bool Equals(object obj)
+		{
+			if (obj is NullDefaultTestObject)
+				return this.Equals((NullDefaultTestObject)obj);
+			else
+				return base.Equals(obj);
+		}
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+		public bool Equals(NullDefaultTestObject other)
+		{
+			return 
+				other.TestField == this.TestField &&
+				object.Equals(other.ReferenceTypeField, this.ReferenceTypeField) &&
+				object.Equals(other.ValueTypeField, this.ValueTypeField);
+		}
+	}
 }

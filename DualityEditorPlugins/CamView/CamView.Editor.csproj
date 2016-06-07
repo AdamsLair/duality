@@ -56,7 +56,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewLayers\GridLayerData.cs" />
-    <Compile Include="CamViewStates\ObjectEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAxisLock.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorAction.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorSelObj.cs" />
+    <Compile Include="CamViewStates\ObjectEditor\ObjectEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelLoopShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelPolyLikeShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelCircleShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelShape.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelBody.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\ChainRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolyLikeRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\LoopRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\PolygonRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\IRigidBodyEditorToolEnvironment.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\CircleRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\Tools\NoRigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorTool.cs" />
+    <Compile Include="CamViewStates\SceneEditor\SelObj\SceneEditorSelGameObj.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Modules\CamView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,11 +90,11 @@
     <Compile Include="CamViewLayers\RigidBodyJointCamViewLayer.cs" />
     <Compile Include="CamViewLayers\RigidBodyShapeCamViewLayer.cs" />
     <Compile Include="CamViewStates\CamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditorCamViewState.SelObj.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\SelObj\RigidBodyEditorSelChainShape.cs" />
     <Compile Include="CamViewPlugin.cs" />
     <Compile Include="CamViewStates\GameViewCamViewState.cs" />
-    <Compile Include="CamViewStates\RigidBodyEditorCamViewState.cs" />
-    <Compile Include="CamViewStates\SceneEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\RigidBodyEditor\RigidBodyEditorCamViewState.cs" />
+    <Compile Include="CamViewStates\SceneEditor\SceneEditorCamViewState.cs" />
     <Compile Include="Modules\EditingGuide.cs" />
     <Compile Include="Modules\GridSizeDialog.cs">
       <SubType>Form</SubType>

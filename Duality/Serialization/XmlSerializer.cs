@@ -248,10 +248,17 @@ namespace Duality.Serialization
 		{
 			ISerializeExplicit objAsCustom = obj as ISerializeExplicit;
 			ISerializeSurrogate objSurrogate = GetSurrogateFor(header.ObjectType);
+			
+			// If we're serializing a value type, skip the entire object body if 
+			// it equals the zero-init struct. This will keep struct-heavy data a lot
+			// more concise.
+			if (header.ObjectType.IsValueType && 
+				object.Equals(obj, header.SerializeType.DefaultValue)) 
+				return;
 
-			// Write the structs data type
-			if (objAsCustom != null)	element.SetAttributeValue("custom", XmlConvert.ToString(true));
-			if (objSurrogate != null)	element.SetAttributeValue("surrogate", XmlConvert.ToString(true));
+			// Write information about custom or surrogate serialization
+			if (objAsCustom != null)  element.SetAttributeValue("custom"   , XmlConvert.ToString(true));
+			if (objSurrogate != null) element.SetAttributeValue("surrogate", XmlConvert.ToString(true));
 
 			if (objSurrogate != null)
 			{

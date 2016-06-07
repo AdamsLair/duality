@@ -12,11 +12,12 @@ namespace Duality.Serialization
 	[DontSerialize]
 	public sealed class SerializeType
 	{
-		private	TypeInfo	type;
-		private	FieldInfo[]	fields;
-		private	string		typeString;
-		private	DataType	dataType;
-		private bool		dontSerialize;
+		private TypeInfo    type;
+		private FieldInfo[] fields;
+		private string      typeString;
+		private DataType    dataType;
+		private bool        dontSerialize;
+		private object      defaultValue;
 
 		/// <summary>
 		/// [GET] The <see cref="System.Reflection.TypeInfo"/> that is described.
@@ -68,6 +69,14 @@ namespace Duality.Serialization
 					this.dataType.IsMemberInfoType());
 			}
 		}
+		/// <summary>
+		/// [GET] Returns the default instance for objects of this type. This is a cached instance
+		/// of <see cref="ObjectCreator.GetDefaultOf"/>.
+		/// </summary>
+		public object DefaultValue
+		{
+			get { return this.defaultValue; }
+		}
 
 		/// <summary>
 		/// Creates a new SerializeType based on a <see cref="System.Type"/>, gathering all the information that is necessary for serialization.
@@ -79,6 +88,7 @@ namespace Duality.Serialization
 			this.typeString = t.GetTypeId();
 			this.dataType = GetDataType(this.type);
 			this.dontSerialize = this.type.HasAttributeCached<DontSerializeAttribute>();
+			this.defaultValue = this.type.GetDefaultOf();
 
 			if (this.dataType == DataType.Struct)
 			{
