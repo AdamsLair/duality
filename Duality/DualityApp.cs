@@ -711,30 +711,30 @@ namespace Duality
 			string asmName = pluginAssembly.GetShortAssemblyName();
 			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
 			if (plugin != null) return plugin;
-
-			TypeInfo pluginType = pluginAssembly.ExportedTypes
-				.Select(t => t.GetTypeInfo())
-				.FirstOrDefault(t => typeof(CorePlugin).GetTypeInfo().IsAssignableFrom(t));
-			if (pluginType == null)
+			
+			try
 			{
-				Log.Core.WriteWarning("Can't find CorePlugin class. Discarding plugin...");
-				disposedPlugins.Add(pluginAssembly);
-			}
-			else
-			{
-				try
+				TypeInfo pluginType = pluginAssembly.ExportedTypes
+					.Select(t => t.GetTypeInfo())
+					.FirstOrDefault(t => typeof(CorePlugin).GetTypeInfo().IsAssignableFrom(t));
+				if (pluginType == null)
+				{
+					Log.Core.WriteWarning("Can't find CorePlugin class. Discarding plugin...");
+					disposedPlugins.Add(pluginAssembly);
+				}
+				else
 				{
 					plugin = (CorePlugin)pluginType.CreateInstanceOf();
 					plugin.FilePath = pluginFilePath;
 					plugin.FileHash = pluginLoader.GetAssemblyHash(pluginFilePath);
 					plugins.Add(plugin.AssemblyName, plugin);
 				}
-				catch (Exception e)
-				{
-					Log.Core.WriteError("Error loading plugin: {0}", Log.Exception(e));
-					disposedPlugins.Add(pluginAssembly);
-					plugin = null;
-				}
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error loading plugin: {0}", Log.Exception(e));
+				disposedPlugins.Add(pluginAssembly);
+				plugin = null;
 			}
 
 			return plugin;
