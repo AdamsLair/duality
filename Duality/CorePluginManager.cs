@@ -72,20 +72,35 @@ namespace Duality
 		/// usage. Use <see cref="DualityApp.PluginManager"/> instead.
 		/// </summary>
 		internal CorePluginManager() { }
+
+		/// <summary>
+		/// Initializes the <see cref="CorePluginManager"/> with the specified <see cref="IPluginLoader"/>.
+		/// This method needs to be called once after instantiation (or previous termination) before plugins 
+		/// can be loaded.
+		/// </summary>
+		/// <param name="pluginLoader"></param>
 		public void Init(IPluginLoader pluginLoader)
 		{
+			if (this.pluginLoader != null) throw new InvalidOperationException("Plugin manager is already initialized.");
+
 			this.pluginLoader = pluginLoader;
 			this.pluginLoader.Init(this.pluginLoader_ResolveAssembly);
 		}
+		/// <summary>
+		/// Terminates the <see cref="CorePluginManager"/>. This will dispose all core plugins and plugin data.
+		/// </summary>
 		public void Terminate()
 		{
+			if (this.pluginLoader == null) throw new InvalidOperationException("Plugin manager is is not currently initialized.");
+
 			this.ClearPlugins();
-			if (this.pluginLoader != null)
-			{ 
-				this.pluginLoader.Terminate();
-				this.pluginLoader = null;
-			}
+			this.pluginLoader.Terminate();
+			this.pluginLoader = null;
 		}
+		/// <summary>
+		/// Requests the disposal of all content / data that is dependent on any of the currently active
+		/// plugins. This functioanlity is invoked automatically as part of reloading or removing plugins.
+		/// </summary>
 		public void DiscardPluginData()
 		{
 			this.OnDiscardPluginData();
@@ -143,6 +158,9 @@ namespace Duality
 			return availTypes;
 		}
 
+		/// <summary>
+		/// Loads all available core plugins, as well as auxilliary libraries.
+		/// </summary>
 		public void LoadPlugins()
 		{
 			if (this.loadedPlugins.Count > 0) throw new InvalidOperationException("Can't load plugins more than once.");
@@ -190,6 +208,9 @@ namespace Duality
 				Log.Core.PopIndent();
 			}
 		}
+		/// <summary>
+		/// Initializes all previously loaded plugins.
+		/// </summary>
 		public void InitPlugins()
 		{
 			Log.Core.Write("Initializing core plugins...");
@@ -204,13 +225,16 @@ namespace Duality
 			}
 			Log.Core.PopIndent();
 		}
+		/// <summary>
+		/// Disposes all loaded plugins and discards all related content / data.
+		/// </summary>
 		public void ClearPlugins()
 		{
 			foreach (CorePlugin plugin in this.loadedPlugins.Values)
 			{
 				this.disposedPlugins.Add(plugin.PluginAssembly);
 			}
-			this.OnDiscardPluginData();
+			this.DiscardPluginData();
 			foreach (CorePlugin plugin in this.loadedPlugins.Values)
 			{
 				try
@@ -329,7 +353,7 @@ namespace Duality
 			{
 				this.loadedPlugins.Remove(assemblyName);
 				this.disposedPlugins.Add(oldPlugin.PluginAssembly);
-				this.OnDiscardPluginData();
+				this.DiscardPluginData();
 				oldPlugin.Dispose();
 			}
 
@@ -341,6 +365,11 @@ namespace Duality
 
 			return updatedPlugin;
 		}
+		/// <summary>
+		/// Initializes the specified plugin. This concludes a manual plugin load or reload operation
+		/// using API like <see cref="LoadPlugin"/> and <see cref="ReloadPlugin"/>.
+		/// </summary>
+		/// <param name="plugin"></param>
 		public void InitPlugin(CorePlugin plugin)
 		{
 			try
@@ -355,10 +384,19 @@ namespace Duality
 			}
 		}
 
+		/// <summary>
+		/// Locks the specified plugin assembly, so any reload attempts are blocked.
+		/// </summary>
+		/// <param name="pluginAssembly"></param>
 		public void LockPlugin(Assembly pluginAssembly)
 		{
 			this.lockedPlugins.Add(pluginAssembly);
 		}
+		/// <summary>
+		/// Unlocks the specified plugin assembly, so future attempts at reloading will
+		/// no longer be blocked.
+		/// </summary>
+		/// <param name="pluginAssembly"></param>
 		public void UnlockPlugin(Assembly pluginAssembly)
 		{
 			this.lockedPlugins.Remove(pluginAssembly);
@@ -392,7 +430,7 @@ namespace Duality
 		{
 			// Dispose plugin and discard plugin related data
 			this.disposedPlugins.Add(plugin.PluginAssembly);
-			this.OnDiscardPluginData();
+			this.DiscardPluginData();
 			this.loadedPlugins.Remove(plugin.AssemblyName);
 			try
 			{
