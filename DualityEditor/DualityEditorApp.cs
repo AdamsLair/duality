@@ -223,7 +223,7 @@ namespace Duality.Editor
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
-			DualityApp.PluginReady += DualityApp_PluginReady;
+			DualityApp.PluginManager.PluginReady += DualityApp_PluginReady;
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Editor, 
 				DualityApp.ExecutionContext.Editor, 
@@ -336,7 +336,7 @@ namespace Duality.Editor
 
 			// Unregister events
 			EditorHintImageAttribute.ImageResolvers -= EditorHintImageResolver;
-			DualityApp.PluginReady -= DualityApp_PluginReady;
+			DualityApp.PluginManager.PluginReady -= DualityApp_PluginReady;
 			mainForm.Activated -= mainForm_Activated;
 			mainForm.Deactivate -= mainForm_Deactivate;
 			Scene.Leaving -= Scene_Leaving;
@@ -380,7 +380,8 @@ namespace Duality.Editor
 			Log.Editor.Write("Scanning for editor plugins...");
 			Log.Editor.PushIndent();
 
-			foreach (string dllPath in DualityApp.PluginLoader.AvailableAssemblyPaths)
+			IPluginLoader pluginLoader = DualityApp.PluginManager.PluginLoader;
+			foreach (string dllPath in pluginLoader.AvailableAssemblyPaths)
 			{
 				if (!dllPath.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase))
 					continue;
