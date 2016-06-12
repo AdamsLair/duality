@@ -32,13 +32,21 @@ namespace Duality
 		private Dictionary<Type,List<TypeInfo>> availTypeDict   = new Dictionary<Type,List<TypeInfo>>();
 
 		/// <summary>
-		/// Called when Duality needs to discard plugin data such as cached Types and values.
+		/// Called right before removing a plugin. This allows other systems to get rid of 
+		/// data and content that still depends on those plugins. Note that it is possible
+		/// for some plugin termination / disposal code to be run after this event.
 		/// </summary>
-		public event EventHandler DiscardPluginDataRequested = null;
+		public event EventHandler<CorePluginEventArgs> PluginsRemoving = null;
+		/// <summary>
+		/// Called right after removing a plugin. This allows other system to clear their
+		/// internal caches and clean up everything that might have been left by the removed
+		/// plugin. No plugin code is run after this event has been called.
+		/// </summary>
+		public event EventHandler<CorePluginEventArgs> PluginsRemoved = null;
 		/// <summary>
 		/// Fired whenever a core plugin has been initialized. This is the case after loading or reloading one.
 		/// </summary>
-		public event EventHandler<CorePluginEventArgs> PluginReady = null;
+		public event EventHandler<CorePluginEventArgs> PluginsReady = null;
 		
 		
 		/// <summary>
@@ -103,7 +111,7 @@ namespace Duality
 		/// </summary>
 		public void DiscardPluginData()
 		{
-			this.OnDiscardPluginData();
+			this.OnPluginsRemoving(this.LoadedPlugins);
 		}
 		
 		/// <summary>
@@ -230,12 +238,13 @@ namespace Duality
 		/// </summary>
 		public void ClearPlugins()
 		{
-			foreach (CorePlugin plugin in this.loadedPlugins.Values)
+			CorePlugin[] oldPlugins = this.LoadedPlugins.ToArray();
+			foreach (CorePlugin plugin in oldPlugins)
 			{
 				this.disposedPlugins.Add(plugin.PluginAssembly);
 			}
-			this.DiscardPluginData();
-			foreach (CorePlugin plugin in this.loadedPlugins.Values)
+			this.OnPluginsRemoving(oldPlugins);
+			foreach (CorePlugin plugin in oldPlugins)
 			{
 				try
 				{
@@ -246,7 +255,7 @@ namespace Duality
 					Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
 				}
 			}
-			this.CleanupAfterPlugins(loadedPlugins.Values);
+			this.OnPluginsRemoved(oldPlugins);
 			this.loadedPlugins.Clear();
 		}
 		
@@ -353,7 +362,7 @@ namespace Duality
 			{
 				this.loadedPlugins.Remove(assemblyName);
 				this.disposedPlugins.Add(oldPlugin.PluginAssembly);
-				this.DiscardPluginData();
+				this.OnPluginsRemoving(new[] { oldPlugin });
 				oldPlugin.Dispose();
 			}
 
@@ -361,7 +370,7 @@ namespace Duality
 			CorePlugin updatedPlugin = this.LoadPlugin(pluginAssembly, pluginFilePath);
 			
 			// Discard temporary plugin-related data (cached Types, etc.)
-			this.CleanupAfterPlugins(new[] { oldPlugin });
+			this.OnPluginsRemoved(new[] { oldPlugin });
 
 			return updatedPlugin;
 		}
@@ -375,7 +384,7 @@ namespace Duality
 			try
 			{
 				plugin.InitPlugin();
-				this.OnPluginReady(plugin);
+				this.OnPluginsReady(new[] { plugin });
 			}
 			catch (Exception e)
 			{
@@ -430,7 +439,7 @@ namespace Duality
 		{
 			// Dispose plugin and discard plugin related data
 			this.disposedPlugins.Add(plugin.PluginAssembly);
-			this.DiscardPluginData();
+			this.OnPluginsRemoving(new[] { plugin });
 			this.loadedPlugins.Remove(plugin.AssemblyName);
 			try
 			{
@@ -442,18 +451,18 @@ namespace Duality
 			}
 
 			// Discard temporary plugin-related data (cached Types, etc.)
-			this.CleanupAfterPlugins(new[] { plugin });
+			this.OnPluginsRemoved(new[] { plugin });
 		}
 
-		private void OnPluginReady(CorePlugin plugin)
+		private void OnPluginsReady(IEnumerable<CorePlugin> plugins)
 		{
-			if (this.PluginReady != null)
-				this.PluginReady(null, new CorePluginEventArgs(plugin));
+			if (this.PluginsReady != null)
+				this.PluginsReady(null, new CorePluginEventArgs(plugins));
 		}
-		private void OnDiscardPluginData()
+		private void OnPluginsRemoving(IEnumerable<CorePlugin> oldPlugins)
 		{
-			if (this.DiscardPluginDataRequested != null)
-				this.DiscardPluginDataRequested(null, EventArgs.Empty);
+			if (this.PluginsRemoving != null)
+				this.PluginsRemoving(null, new CorePluginEventArgs(oldPlugins));
 
 			// Dispose any existing Resources that could reference plugin data
 			VisualLog.ClearAll();
@@ -462,10 +471,13 @@ namespace Duality
 			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())
 				ContentProvider.RemoveContent(r.Path);
 		}
-		private void CleanupAfterPlugins(IEnumerable<CorePlugin> oldPlugins)
+		private void OnPluginsRemoved(IEnumerable<CorePlugin> oldPlugins)
 		{
 			oldPlugins = oldPlugins.NotNull().Distinct();
 			if (!oldPlugins.Any()) oldPlugins = null;
+
+			if (this.PluginsRemoved != null)
+				this.PluginsRemoved(null, new CorePluginEventArgs(oldPlugins));
 
 			// Clean globally cached type values
 			this.availTypeDict.Clear();
@@ -476,19 +488,18 @@ namespace Duality
 			Serializer.ClearTypeCache();
 			CloneProvider.ClearTypeCache();
 			
-			// Clean input sources that a disposed Assembly forgot to unregister.
 			if (oldPlugins != null)
 			{
+				// Clean input sources that a disposed Assembly forgot to unregister.
 				foreach (CorePlugin plugin in oldPlugins)
 					this.CleanInputSources(plugin.PluginAssembly);
-			}
-			// Clean event bindings that are still linked to the disposed Assembly.
-			if (oldPlugins != null)
-			{
+
+				// Clean event bindings that are still linked to the disposed Assembly.
 				foreach (CorePlugin plugin in oldPlugins)
 					this.CleanEventBindings(plugin.PluginAssembly);
 			}
 		}
+
 		private void CleanEventBindings(Assembly invalidAssembly)
 		{
 			// Note that this method is only a countermeasure against common mistakes. It doesn't guarantee

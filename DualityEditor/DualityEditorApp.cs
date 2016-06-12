@@ -223,7 +223,7 @@ namespace Duality.Editor
 
 			// Initialize Duality
 			EditorHintImageAttribute.ImageResolvers += EditorHintImageResolver;
-			DualityApp.PluginManager.PluginReady += DualityApp_PluginReady;
+			DualityApp.PluginManager.PluginsReady += DualityApp_PluginsReady;
 			DualityApp.Init(
 				DualityApp.ExecutionEnvironment.Editor, 
 				DualityApp.ExecutionContext.Editor, 
@@ -336,7 +336,7 @@ namespace Duality.Editor
 
 			// Unregister events
 			EditorHintImageAttribute.ImageResolvers -= EditorHintImageResolver;
-			DualityApp.PluginManager.PluginReady -= DualityApp_PluginReady;
+			DualityApp.PluginManager.PluginsReady -= DualityApp_PluginsReady;
 			mainForm.Activated -= mainForm_Activated;
 			mainForm.Deactivate -= mainForm_Deactivate;
 			Scene.Leaving -= Scene_Leaving;
@@ -1570,9 +1570,12 @@ namespace Duality.Editor
 			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;
 		}
-		private static void DualityApp_PluginReady(object sender, CorePluginEventArgs e)
+		private static void DualityApp_PluginsReady(object sender, CorePluginEventArgs e)
 		{
-			AnalyzeCorePlugin(e.Plugin);
+			foreach (CorePlugin plugin in e.Plugins)
+			{
+				AnalyzeCorePlugin(plugin);
+			}
 		}
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{

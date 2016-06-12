@@ -124,19 +124,15 @@ namespace Duality
 		/// Called when Duality needs to discard plugin data such as cached Types and values.
 		/// </summary>
 		[Obsolete("Use DualityApp.PluginManager instead.")]
-		public static event EventHandler DiscardPluginData
-		{
-			add { pluginManager.DiscardPluginDataRequested += value; }
-			remove { pluginManager.DiscardPluginDataRequested -= value; }
-		}
+		public static event EventHandler DiscardPluginData = null;
 		/// <summary>
 		/// Fired whenever a core plugin has been initialized. This is the case after loading or reloading one.
 		/// </summary>
 		[Obsolete("Use DualityApp.PluginManager instead.")]
 		public static event EventHandler<CorePluginEventArgs> PluginReady
 		{
-			add { pluginManager.PluginReady += value; }
-			remove { pluginManager.PluginReady -= value; }
+			add { pluginManager.PluginsReady += value; }
+			remove { pluginManager.PluginsReady -= value; }
 		}
 
 		
@@ -362,6 +358,7 @@ namespace Duality
 				Log.Core.Write("Using '{0}' to load plugins.", pluginLoader.GetType().Name);
 
 				pluginManager.Init(pluginLoader);
+				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
 			}
 
 			// Load all plugins. This needs to be done first, so backends and Types can be located.
@@ -463,6 +460,7 @@ namespace Duality
 
 			ShutdownBackend(ref systemBack);
 			pluginManager.Terminate();
+			pluginManager.PluginsRemoving -= pluginManager_PluginsRemoving;
 
 			Log.Core.Write("DualityApp terminated");
 
@@ -848,6 +846,13 @@ namespace Duality
 		{
 			if (Terminating != null)
 				Terminating(null, EventArgs.Empty);
+		}
+
+		private static void pluginManager_PluginsRemoving(object sender, CorePluginEventArgs e)
+		{
+			// This is a wrapper method for delivering the old API until removing it in v3.0
+			if (DiscardPluginData != null)
+				DiscardPluginData(sender, e);
 		}
 
 
