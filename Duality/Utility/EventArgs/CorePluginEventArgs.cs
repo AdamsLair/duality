@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Duality
 {
@@ -7,14 +9,14 @@ namespace Duality
 	/// </summary>
 	public class CorePluginEventArgs : EventArgs
 	{
-		private	CorePlugin	plugin;
-		public CorePlugin Plugin
+		private CorePlugin[] plugins;
+		public IReadOnlyList<CorePlugin> Plugins
 		{
-			get { return this.plugin; }
+			get { return this.plugins; }
 		}
-		public CorePluginEventArgs(CorePlugin plugin)
+		public CorePluginEventArgs(IEnumerable<CorePlugin> plugins)
 		{
-			this.plugin = plugin;
+			this.plugins = plugins.ToArray();
 		}
 	}
 }
