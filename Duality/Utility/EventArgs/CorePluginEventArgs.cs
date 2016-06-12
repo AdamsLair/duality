@@ -16,7 +16,11 @@ namespace Duality
 		}
 		public CorePluginEventArgs(IEnumerable<CorePlugin> plugins)
 		{
-			this.plugins = plugins.ToArray();
+			this.plugins = 
+				(plugins ?? Enumerable.Empty<CorePlugin>())
+				.NotNull()
+				.Distinct()
+				.ToArray();
 		}
 	}
 }
