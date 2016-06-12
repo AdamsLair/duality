@@ -58,7 +58,7 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 				DualityApp.GetDualityAssemblies()
 				.Concat(DualityApp.GetDualityAssemblies().SelectMany(a => a.GetReferencedAssemblies().Select(n => Assembly.Load(n))))
 				.Distinct()
-				.Where(a => !DualityApp.DisposedPlugins.Contains(a))
+				.Where(a => !DualityApp.PluginManager.DisposedPlugins.Contains(a))
 				.ToArray();
 			this.namespaces = this.assemblies
 				.SelectMany(a => a.GetExportedTypes())

@@ -54,7 +54,9 @@ namespace Duality.Tests
 				null);
 
 			// Manually register pseudo-plugin for the Unit Testing Assembly
-			this.unitTestPlugin = DualityApp.LoadPlugin(typeof(DualityTestsPlugin).Assembly, codeBasePath);
+			this.unitTestPlugin = DualityApp.PluginManager.LoadPlugin(
+				typeof(DualityTestsPlugin).Assembly, 
+				codeBasePath);
 
 			// Create a dummy window, to get access to all the device contexts
 			if (this.dummyWindow == null)
