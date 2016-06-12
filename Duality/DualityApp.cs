@@ -359,6 +359,7 @@ namespace Duality
 
 				pluginManager.Init(pluginLoader);
 				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
+				pluginManager.PluginsRemoved += pluginManager_PluginsRemoved;
 			}
 
 			// Load all plugins. This needs to be done first, so backends and Types can be located.
@@ -461,6 +462,7 @@ namespace Duality
 			ShutdownBackend(ref systemBack);
 			pluginManager.Terminate();
 			pluginManager.PluginsRemoving -= pluginManager_PluginsRemoving;
+			pluginManager.PluginsRemoved -= pluginManager_PluginsRemoved;
 
 			Log.Core.Write("DualityApp terminated");
 
@@ -847,12 +849,100 @@ namespace Duality
 			if (Terminating != null)
 				Terminating(null, EventArgs.Empty);
 		}
-
+		
 		private static void pluginManager_PluginsRemoving(object sender, CorePluginEventArgs e)
 		{
-			// This is a wrapper method for delivering the old API until removing it in v3.0
+			// Wrapper method for delivering the old API until removing it in v3.0
 			if (DiscardPluginData != null)
 				DiscardPluginData(sender, e);
+
+			// Dispose any existing Resources that could reference plugin data
+			VisualLog.ClearAll();
+			if (!Scene.Current.IsEmpty)
+				Scene.Current.Dispose();
+			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())
+				ContentProvider.RemoveContent(r.Path);
+		}
+		private static void pluginManager_PluginsRemoved(object sender, CorePluginEventArgs e)
+		{
+			// Clean globally cached type data
+			ImageCodec.ClearTypeCache();
+			ObjectCreator.ClearTypeCache();
+			ReflectionHelper.ClearTypeCache();
+			Component.ClearTypeCache();
+			Serializer.ClearTypeCache();
+			CloneProvider.ClearTypeCache();
+
+			// Clean input sources that a disposed Assembly forgot to unregister.
+			foreach (CorePlugin plugin in e.Plugins)
+				CleanInputSources(plugin.PluginAssembly);
+
+			// Clean event bindings that are still linked to the disposed Assembly.
+			foreach (CorePlugin plugin in e.Plugins)
+				CleanEventBindings(plugin.PluginAssembly);
+		}
+
+		private static void CleanEventBindings(Assembly invalidAssembly)
+		{
+			// Note that this method is only a countermeasure against common mistakes. It doesn't guarantee
+			// full error safety in all cases. Event bindings inbetween different plugins aren't checked,
+			// for example.
+
+			string warningText = string.Format(
+				"Found leaked event bindings to invalid Assembly '{0}' from {1}. " +
+				"This is a common problem when registering global events from within a CorePlugin " +
+				"without properly unregistering them later. Please make sure that all events are " +
+				"unregistered in CorePlugin::OnDisposePlugin().",
+				invalidAssembly.GetShortAssemblyName(),
+				"{0}");
+
+			if (ReflectionHelper.CleanEventBindings(typeof(DualityApp),      invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Scene),           invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Scene)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Resource),        invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Resource)));
+			if (ReflectionHelper.CleanEventBindings(typeof(ContentProvider), invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(ContentProvider)));
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Keyboard,     invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Keyboard");
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Mouse,        invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Mouse");
+			foreach (JoystickInput joystick in DualityApp.Joysticks)
+				if (ReflectionHelper.CleanEventBindings(joystick,            invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Joysticks");
+			foreach (GamepadInput gamepad in DualityApp.Gamepads)
+				if (ReflectionHelper.CleanEventBindings(gamepad,             invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Gamepads");
+		}
+		private static void CleanInputSources(Assembly invalidAssembly)
+		{
+			string warningText = string.Format(
+				"Found leaked input source '{1}' defined in invalid Assembly '{0}'. " +
+				"This is a common problem when registering input sources from within a CorePlugin " +
+				"without properly unregistering them later. Please make sure that all sources are " +
+				"unregistered in CorePlugin::OnDisposePlugin() or sooner.",
+				invalidAssembly.GetShortAssemblyName(),
+				"{0}");
+
+			if (DualityApp.Mouse.Source != null && DualityApp.Mouse.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
+			{
+				Log.Core.WriteWarning(warningText, Log.Type(DualityApp.Mouse.Source.GetType()));
+				DualityApp.Mouse.Source = null;
+			}
+			if (DualityApp.Keyboard.Source != null && DualityApp.Keyboard.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
+			{
+				Log.Core.WriteWarning(warningText, Log.Type(DualityApp.Keyboard.Source.GetType()));
+				DualityApp.Keyboard.Source = null;
+			}
+			foreach (JoystickInput joystick in DualityApp.Joysticks.ToArray())
+			{
+				if (joystick.Source != null && joystick.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
+				{
+					Log.Core.WriteWarning(warningText, Log.Type(joystick.Source.GetType()));
+					DualityApp.Joysticks.RemoveSource(joystick.Source);
+				}
+			}
+			foreach (GamepadInput gamepad in DualityApp.Gamepads.ToArray())
+			{
+				if (gamepad.Source != null && gamepad.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
+				{
+					Log.Core.WriteWarning(warningText, Log.Type(gamepad.Source.GetType()));
+					DualityApp.Gamepads.RemoveSource(gamepad.Source);
+				}
+			}
 		}
 
 
