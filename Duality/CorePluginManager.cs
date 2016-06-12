@@ -473,11 +473,10 @@ namespace Duality
 		}
 		private void OnPluginsRemoved(IEnumerable<CorePlugin> oldPlugins)
 		{
-			oldPlugins = oldPlugins.NotNull().Distinct();
-			if (!oldPlugins.Any()) oldPlugins = null;
+			CorePluginEventArgs args = new CorePluginEventArgs(oldPlugins);
 
 			if (this.PluginsRemoved != null)
-				this.PluginsRemoved(null, new CorePluginEventArgs(oldPlugins));
+				this.PluginsRemoved(null, args);
 
 			// Clean globally cached type values
 			this.availTypeDict.Clear();
@@ -488,16 +487,13 @@ namespace Duality
 			Serializer.ClearTypeCache();
 			CloneProvider.ClearTypeCache();
 			
-			if (oldPlugins != null)
-			{
-				// Clean input sources that a disposed Assembly forgot to unregister.
-				foreach (CorePlugin plugin in oldPlugins)
-					this.CleanInputSources(plugin.PluginAssembly);
+			// Clean input sources that a disposed Assembly forgot to unregister.
+			foreach (CorePlugin plugin in args.Plugins)
+				this.CleanInputSources(plugin.PluginAssembly);
 
-				// Clean event bindings that are still linked to the disposed Assembly.
-				foreach (CorePlugin plugin in oldPlugins)
-					this.CleanEventBindings(plugin.PluginAssembly);
-			}
+			// Clean event bindings that are still linked to the disposed Assembly.
+			foreach (CorePlugin plugin in args.Plugins)
+				this.CleanEventBindings(plugin.PluginAssembly);
 		}
 
 		private void CleanEventBindings(Assembly invalidAssembly)
