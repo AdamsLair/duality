@@ -71,8 +71,8 @@ namespace Duality
 
 
 		/// <summary>
-		/// Should not be instantiated by users due to its forced singleton-like
-		/// usage. Use <see cref="DualityApp.PluginManager"/> instead.
+		/// <see cref="CorePluginManager"/> should usually not be instantiated by users due to 
+		/// its forced singleton-like usage. Use <see cref="DualityApp.PluginManager"/> instead.
 		/// </summary>
 		internal CorePluginManager() { }
 
