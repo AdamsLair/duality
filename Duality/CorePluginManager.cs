@@ -88,7 +88,6 @@ namespace Duality
 
 			this.pluginLoader = pluginLoader;
 			this.pluginLoader.AssemblyResolve += this.pluginLoader_AssemblyResolve;
-			this.pluginLoader.Init();
 		}
 		/// <summary>
 		/// Terminates the <see cref="CorePluginManager"/>. This will dispose all core plugins and plugin data.
@@ -98,7 +97,6 @@ namespace Duality
 			if (this.pluginLoader == null) throw new InvalidOperationException("Plugin manager is is not currently initialized.");
 
 			this.ClearPlugins();
-			this.pluginLoader.Terminate();
 			this.pluginLoader.AssemblyResolve -= this.pluginLoader_AssemblyResolve;
 			this.pluginLoader = null;
 		}

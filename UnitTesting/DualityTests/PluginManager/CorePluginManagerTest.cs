@@ -15,18 +15,21 @@ namespace Duality.Tests.PluginManager
 			MockPluginLoader pluginLoader = new MockPluginLoader();
 			CorePluginManager pluginManager = new CorePluginManager();
 
+			// We expect the plugin manager not to assume ownership of
+			// the plugin loader, e.g. not to initialize or terminate it.
+
 			Assert.IsFalse(pluginLoader.Initialized);
 			Assert.IsFalse(pluginLoader.Disposed);
 
 			pluginManager.Init(pluginLoader);
 
-			Assert.IsTrue(pluginLoader.Initialized);
+			Assert.IsFalse(pluginLoader.Initialized);
 			Assert.IsFalse(pluginLoader.Disposed);
 
 			pluginManager.Terminate();
 
-			Assert.IsTrue(pluginLoader.Initialized);
-			Assert.IsTrue(pluginLoader.Disposed);
+			Assert.IsFalse(pluginLoader.Initialized);
+			Assert.IsFalse(pluginLoader.Disposed);
 		}
 		[Test] public void LoadPlugins()
 		{

@@ -75,6 +75,7 @@ namespace Duality
 		private static bool                    isUpdating         = false;
 		private static bool                    runFromEditor      = false;
 		private static bool                    terminateScheduled = false;
+		private static IPluginLoader           pluginLoader       = null;
 		private static CorePluginManager       pluginManager      = new CorePluginManager();
 		private static ISystemBackend          systemBack         = null;
 		private static IGraphicsBackend        graphicsBack       = null;
@@ -354,9 +355,10 @@ namespace Duality
 			
 			// Initialize the plugin manager
 			{
-				IPluginLoader pluginLoader = plugins ?? new Duality.Backend.Dummy.DummyPluginLoader();
+				pluginLoader = plugins ?? new Duality.Backend.Dummy.DummyPluginLoader();
 				Log.Core.Write("Using '{0}' to load plugins.", pluginLoader.GetType().Name);
 
+				pluginLoader.Init();
 				pluginManager.Init(pluginLoader);
 				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
 				pluginManager.PluginsRemoved += pluginManager_PluginsRemoved;
@@ -460,9 +462,13 @@ namespace Duality
 			Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 
 			ShutdownBackend(ref systemBack);
+
+			// Shut down the plugin manager and plugin loader
 			pluginManager.Terminate();
 			pluginManager.PluginsRemoving -= pluginManager_PluginsRemoving;
 			pluginManager.PluginsRemoved -= pluginManager_PluginsRemoved;
+			pluginLoader.Terminate();
+			pluginLoader = null;
 
 			Log.Core.Write("DualityApp terminated");
 
