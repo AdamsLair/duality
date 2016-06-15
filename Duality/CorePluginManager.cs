@@ -87,7 +87,8 @@ namespace Duality
 			if (this.pluginLoader != null) throw new InvalidOperationException("Plugin manager is already initialized.");
 
 			this.pluginLoader = pluginLoader;
-			this.pluginLoader.Init(this.pluginLoader_ResolveAssembly);
+			this.pluginLoader.AssemblyResolve += this.pluginLoader_AssemblyResolve;
+			this.pluginLoader.Init();
 		}
 		/// <summary>
 		/// Terminates the <see cref="CorePluginManager"/>. This will dispose all core plugins and plugin data.
@@ -98,6 +99,7 @@ namespace Duality
 
 			this.ClearPlugins();
 			this.pluginLoader.Terminate();
+			this.pluginLoader.AssemblyResolve -= this.pluginLoader_AssemblyResolve;
 			this.pluginLoader = null;
 		}
 		/// <summary>
@@ -471,13 +473,17 @@ namespace Duality
 			this.availTypeDict.Clear();
 		}
 
-		private Assembly pluginLoader_ResolveAssembly(ResolveAssemblyEventArgs args)
+		private void pluginLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
 		{
+			// Early-out, if the Assembly has already been resolved
+			if (args.IsResolved) return;
+
 			// First assume we are searching for a dynamically loaded plugin assembly
 			CorePlugin plugin;
 			if (this.loadedPlugins.TryGetValue(args.AssemblyName, out plugin))
 			{
-				return plugin.PluginAssembly;
+				args.Resolve(plugin.PluginAssembly);
+				return;
 			}
 			// Not there? Search for other libraries in the Plugins folder
 			else
@@ -493,7 +499,11 @@ namespace Duality
 					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
 						plugin = this.LoadPlugin(libFile);
-						if (plugin != null) return plugin.PluginAssembly;
+						if (plugin != null)
+						{
+							args.Resolve(plugin.PluginAssembly);
+							return;
+						}
 					}
 				}
 
@@ -503,16 +513,15 @@ namespace Duality
 					string libName = PathOp.GetFileNameWithoutExtension(libFile);
 					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
-						return this.pluginLoader.LoadAssembly(libFile, false);
+						Assembly assembly = this.pluginLoader.LoadAssembly(libFile, false);
+						if (assembly != null)
+						{
+							args.Resolve(assembly);
+							return;
+						}
 					}
 				}
 			}
-
-			// Admit that we didn't find anything.
-			Log.Core.WriteWarning(
-				"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
-				args.AssemblyName);
-			return null;
 		}
 	}
 }

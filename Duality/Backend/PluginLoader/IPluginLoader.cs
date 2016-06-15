@@ -11,6 +11,17 @@ namespace Duality.Backend
 	public interface IPluginLoader
 	{
 		/// <summary>
+		/// Fired when the runtime attempts to resolve a non-trivial <see cref="Assembly"/>
+		/// dependency, which may or may not be a plugin. Handling this event allows to
+		/// specify which <see cref="Assembly"/> to use.
+		/// </summary>
+		event EventHandler<AssemblyResolveEventArgs> AssemblyResolve;
+		/// <summary>
+		/// Fired when an <see cref="Assembly"/> is loaded by the runtime.
+		/// </summary>
+		event EventHandler<AssemblyLoadedEventArgs> AssemblyLoaded;
+
+		/// <summary>
 		/// [GET] Enumerates all base directories that will be searched for plugin
 		/// Assemblies.
 		/// </summary>
@@ -43,52 +54,13 @@ namespace Duality.Backend
 		int GetAssemblyHash(string assemblyPath);
 
 		/// <summary>
-		/// Initializes the plugin loader. As part of initialization, a callback method
-		/// for resolving Assemblies with existing, already loaded plugins will be provided.
+		/// Initializes the plugin loader.
 		/// </summary>
-		/// <param name="resolveCallback"></param>
-		void Init(ResolveAssemblyCallback resolveCallback);
+		void Init();
 		/// <summary>
 		/// Terminates the plugin loader and provides the opportunity for its implementation
 		/// to shut down properly.
 		/// </summary>
 		void Terminate();
-	}
-
-	/// <summary>
-	/// A callback method for resolving an Assembly based on its name.
-	/// </summary>
-	/// <param name="args"></param>
-	/// <returns></returns>
-	public delegate Assembly ResolveAssemblyCallback(ResolveAssemblyEventArgs args);
-
-	/// <summary>
-	/// Event arguments for the <see cref="ResolveAssemblyCallback"/> method.
-	/// </summary>
-	public class ResolveAssemblyEventArgs : EventArgs
-	{
-		private string fullAssemblyName;
-		private string assemblyName;
-
-		/// <summary>
-		/// The full name of the Assembly to resolve.
-		/// </summary>
-		public string FullAssemblyName
-		{
-			get { return this.fullAssemblyName; }
-		}
-		/// <summary>
-		/// The short name of the Assembly to resolve.
-		/// </summary>
-		public string AssemblyName
-		{
-			get { return this.assemblyName; }
-		}
-
-		public ResolveAssemblyEventArgs(string fullAssemblyName)
-		{
-			this.fullAssemblyName = fullAssemblyName;
-			this.assemblyName = ReflectionHelper.GetShortAssemblyName(fullAssemblyName);
-		}
 	}
 }

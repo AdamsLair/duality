@@ -18,9 +18,12 @@ namespace Duality.Tests.PluginManager
 		private HashSet<string>                     incompatibleDlls = new HashSet<string>();
 		private List<string>                        loadedAssemblies = new List<string>();
 		private Dictionary<MockCorePlugin,Assembly> pluginMap        = new Dictionary<MockCorePlugin,Assembly>();
-		private ResolveAssemblyCallback             resolveCallback  = null;
 		private bool                                initialized      = false;
 		private bool                                disposed         = false;
+		
+
+		public event EventHandler<AssemblyResolveEventArgs> AssemblyResolve;
+		public event EventHandler<AssemblyLoadedEventArgs> AssemblyLoaded;
 
 
 		public bool Initialized
@@ -60,7 +63,9 @@ namespace Duality.Tests.PluginManager
 
 		public Assembly InvokeResolveAssembly(string fullAssemblyName)
 		{
-			return this.resolveCallback(new ResolveAssemblyEventArgs(fullAssemblyName));
+			AssemblyResolveEventArgs resolveArgs = new AssemblyResolveEventArgs(fullAssemblyName);
+			this.AssemblyResolve(this, resolveArgs);
+			return resolveArgs.ResolvedAssembly;
 		}
 		public void AddPlugin(Assembly assembly)
 		{
@@ -83,14 +88,20 @@ namespace Duality.Tests.PluginManager
 		public Assembly LoadAssembly(string assemblyPath, bool anonymous)
 		{
 			string assemblyName = PathOp.GetFileNameWithoutExtension(assemblyPath);
+			bool wasLoaded = this.loadedAssemblies.Contains(assemblyPath);
 			this.loadedAssemblies.Add(assemblyPath);
 
 			if (this.incompatibleDlls.Contains(assemblyPath))
 				throw new BadImageFormatException("This path has been mocked to be an incompatible dll file.");
 
-			return 
+			Assembly assembly = 
 				this.LookupAssembly(assemblyPath) ?? 
-				this.resolveCallback(new ResolveAssemblyEventArgs(assemblyName));
+				this.InvokeResolveAssembly(assemblyName);
+
+			if (!wasLoaded && assembly != null && this.AssemblyLoaded != null)
+				this.AssemblyLoaded(this, new AssemblyLoadedEventArgs(assembly));
+
+			return assembly;
 		}
 		public int GetAssemblyHash(string assemblyPath)
 		{
@@ -98,14 +109,12 @@ namespace Duality.Tests.PluginManager
 			return (assembly != null) ? assembly.GetHashCode() : 0;
 		}
 
-		public void Init(ResolveAssemblyCallback resolveCallback)
+		public void Init()
 		{
-			this.resolveCallback = resolveCallback;
 			this.initialized = true;
 		}
 		public void Terminate()
 		{
-			this.resolveCallback = null;
 			this.disposed = true;
 		}
 
