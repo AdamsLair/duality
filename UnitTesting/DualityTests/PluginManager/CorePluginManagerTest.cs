@@ -299,6 +299,8 @@ namespace Duality.Tests.PluginManager
 				Assembly resolvedAssembly = pluginLoader.InvokeResolveAssembly(mockAssemblies[0].FullName);
 				Assert.IsNotNull(resolvedAssembly);
 				Assert.AreSame(mockAssemblies[0], resolvedAssembly);
+				Assert.AreEqual(1, pluginManager.LoadedPlugins.Count());
+				Assert.AreSame(mockAssemblies[0], pluginManager.LoadedPlugins.First().PluginAssembly);
 				CollectionAssert.Contains(pluginLoader.LoadedAssemblies, mockAssemblies[0].Location);
 
 				// Load and init all plugins
@@ -357,8 +359,12 @@ namespace Duality.Tests.PluginManager
 				pluginManager.LoadPlugins();
 				pluginManager.InitPlugins();
 
-				// If we try to do it twice, expect it to throw an exception
-				Assert.Throws<InvalidOperationException>(() => pluginManager.LoadPlugins());
+				// Now load them again
+				pluginManager.LoadPlugins();
+
+				// Assert that we do not have any duplicates and no disposed plugins
+				Assert.AreEqual(3, pluginManager.LoadedPlugins.Count());
+				Assert.IsEmpty(pluginManager.DisposedPlugins);
 
 				// Let's try loading assembly duplicates manually
 				for (int i = 0; i < mockPlugins.Length; i++)

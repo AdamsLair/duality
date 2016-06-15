@@ -104,6 +104,9 @@ namespace Duality.Backend
 
 		private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
+			// First, trigger a resolve event and see if we found a matching Assembly.
+			// This will give core and editor plugin managers to load plugin Assemblies
+			// their own way, or resolve with an already loaded one.
 			if (this.AssemblyResolve != null)
 			{
 				AssemblyResolveEventArgs resolveArgs = new AssemblyResolveEventArgs(args.Name);

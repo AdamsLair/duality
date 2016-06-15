@@ -169,8 +169,6 @@ namespace Duality
 		/// </summary>
 		public void LoadPlugins()
 		{
-			if (this.loadedPlugins.Count > 0) throw new InvalidOperationException("Can't load plugins more than once.");
-
 			Log.Core.Write("Scanning for core plugins...");
 			Log.Core.PushIndent();
 
@@ -488,14 +486,15 @@ namespace Duality
 			// Not there? Search for other libraries in the Plugins folder
 			else
 			{
-				//  Search for plugins that haven't been loaded yet, and load them first
+				// Search for core plugins that haven't been loaded yet, and load them first.
+				// This is required to satisfy dependencies while loading plugins, since
+				// we can't know which one requires which beforehand.
 				foreach (string libFile in this.pluginLoader.AvailableAssemblyPaths)
 				{
-					string libFileEnding = ".core.dll";
-					if (!libFile.EndsWith(libFileEnding, StringComparison.OrdinalIgnoreCase))
+					if (!libFile.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
 						continue;
 
-					string libName = libFile.Remove(libFile.Length - libFileEnding.Length, libFileEnding.Length);
+					string libName = PathOp.GetFileNameWithoutExtension(libFile);
 					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
 						plugin = this.LoadPlugin(libFile);
