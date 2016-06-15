@@ -11,7 +11,7 @@ using Duality.Backend;
 namespace Duality.Editor
 {
 	/// <summary>
-	/// Manages loading, reloading, initialization and disposal of Duality editor plugins.
+	/// Manages loading, initialization and life cycle of Duality editor plugins.
 	/// 
 	/// Since all assemblies are owned by the .Net runtime that only exposes a very limited
 	/// degree of control, this class should only be used statically: Disposing it would
@@ -166,6 +166,10 @@ namespace Duality.Editor
 			Log.Core.PopIndent();
 		}
 
+		/// <summary>
+		/// Saves all editor plugin user data into the specified parent <see cref="XElement"/>.
+		/// </summary>
+		/// <param name="parentElement"></param>
 		public void SaveUserData(XElement parentElement)
 		{
 			foreach (EditorPlugin plugin in this.LoadedPlugins)
@@ -177,6 +181,10 @@ namespace Duality.Editor
 					parentElement.Add(pluginElement);
 			}
 		}
+		/// <summary>
+		/// Loads all editor plugin user data from the specified parent <see cref="XElement"/>.
+		/// </summary>
+		/// <param name="parentElement"></param>
 		public void LoadUserData(XElement parentElement)
 		{
 			foreach (XElement child in parentElement.Elements("Plugin"))
