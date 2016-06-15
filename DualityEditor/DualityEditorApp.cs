@@ -388,26 +388,39 @@ namespace Duality.Editor
 
 				Log.Editor.Write("Loading '{0}'...", dllPath);
 				Log.Editor.PushIndent();
-				try
-				{
-					Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(dllPath));
-					Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(EditorPlugin).GetTypeInfo().IsAssignableFrom(t));
-					if (pluginType == null)
-					{
-						Log.Editor.WriteWarning("Can't find EditorPlugin class. Discarding plugin...");
-						continue;
-					}
-					EditorPlugin plugin = (EditorPlugin)pluginType.GetTypeInfo().CreateInstanceOf();
-					plugins.Add(plugin);
-				}
-				catch (Exception e)
-				{
-					Log.Editor.WriteError("Error loading plugin: {0}", Log.Exception(e));
-				}
+				LoadPlugin(dllPath);
 				Log.Editor.PopIndent();
 			}
 
 			Log.Editor.PopIndent();
+		}
+		private static EditorPlugin LoadPlugin(string filePath)
+		{
+			// Check for already loaded plugins first
+			string shortAssemblyName = PathOp.GetFileNameWithoutExtension(filePath);
+			EditorPlugin plugin = plugins.FirstOrDefault(p => shortAssemblyName == p.AssemblyName);
+			if (plugin != null)
+				return plugin;
+
+			try
+			{
+				Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(filePath));
+				Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(EditorPlugin).GetTypeInfo().IsAssignableFrom(t));
+				if (pluginType == null)
+				{
+					Log.Editor.WriteWarning("Can't find EditorPlugin class. Discarding plugin...");
+					return null;
+				}
+
+				plugin = (EditorPlugin)pluginType.GetTypeInfo().CreateInstanceOf();
+				plugins.Add(plugin);
+				return plugin;
+			}
+			catch (Exception e)
+			{
+				Log.Editor.WriteError("Error loading plugin: {0}", Log.Exception(e));
+				return null;
+			}
 		}
 		private static void InitPlugins()
 		{
@@ -1583,13 +1596,30 @@ namespace Duality.Editor
 		}
 		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			// We might be looking for an editor plugin
-			string assemblyNameStub = ReflectionHelper.GetShortAssemblyName(args.Name);
-			EditorPlugin plugin = plugins.FirstOrDefault(p => assemblyNameStub == p.AssemblyName);
+			// We might be looking for an already loaded editor plugin
+			string shortAssemblyName = ReflectionHelper.GetShortAssemblyName(args.Name);
+			EditorPlugin plugin = plugins.FirstOrDefault(p => shortAssemblyName == p.AssemblyName);
 			if (plugin != null)
 				return plugin.PluginAssembly;
-			else
-				return null;
+			
+			// Search for core plugins that haven't been loaded yet, and load them first.
+			// This is required to satisfy dependencies while loading plugins, since
+			// we can't know which one requires which beforehand.
+			foreach (string libFile in DualityApp.PluginManager.PluginLoader.AvailableAssemblyPaths)
+			{
+				if (!libFile.EndsWith(".editor.dll", StringComparison.OrdinalIgnoreCase))
+					continue;
+
+				string libName = PathOp.GetFileNameWithoutExtension(libFile);
+				if (libName.Equals(shortAssemblyName, StringComparison.OrdinalIgnoreCase))
+				{
+					plugin = LoadPlugin(libFile);
+					if (plugin != null)
+						return plugin.PluginAssembly;
+				}
+			}
+
+			return null;
 		}
 		private static object EditorHintImageResolver(string manifestResourceName)
 		{

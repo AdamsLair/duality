@@ -411,10 +411,12 @@ namespace Duality
 
 		private CorePlugin LoadPlugin(string pluginFilePath)
 		{
+			// Check for already loaded plugins first
 			string asmName = PathOp.GetFileNameWithoutExtension(pluginFilePath);
 			CorePlugin plugin = this.loadedPlugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
 			if (plugin != null) return plugin;
 
+			// Load the assembly from the specified path
 			Assembly pluginAssembly = null;
 			try
 			{
@@ -426,6 +428,7 @@ namespace Duality
 				plugin = null;
 			}
 
+			// If we succeeded, register the loaded assembly as a plugin
 			if (pluginAssembly != null)
 			{
 				plugin = this.LoadPlugin(pluginAssembly, pluginFilePath);
@@ -509,6 +512,10 @@ namespace Duality
 				// Search for other libraries that might be located inside the plugin directory
 				foreach (string libFile in this.pluginLoader.AvailableAssemblyPaths)
 				{
+					// Don't load editor (or any other) plugins here, only auxilliary libs allowed
+					if (libFile.EndsWith(".editor.dll", StringComparison.OrdinalIgnoreCase))
+						continue;
+
 					string libName = PathOp.GetFileNameWithoutExtension(libFile);
 					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 					{
