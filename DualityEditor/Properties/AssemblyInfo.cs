@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Resources;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
@@ -32,3 +34,4 @@ using System.Runtime.InteropServices;
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("2.4.0")]
 [assembly: AssemblyVersion("2.4.0")]
+[assembly: InternalsVisibleTo("DualityEditorTests")]

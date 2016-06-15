@@ -167,6 +167,72 @@ namespace Duality.Editor
 		}
 
 		/// <summary>
+		/// Adds an already loaded plugin Assembly to the internal Duality EditorPlugin registry.
+		/// You shouldn't need to call this method in general, since Duality manages its plugins
+		/// automatically. 
+		/// </summary>
+		/// <remarks>
+		/// This method can be useful in certain cases when it is necessary to treat an Assembly as a
+		/// Duality plugin, even though it isn't located in the Plugins folder, or is not available
+		/// as a file at all. A typical case for this is Unit Testing where the testing Assembly may
+		/// specify additional Duality types such as Components, Resources, etc.
+		/// </remarks>
+		/// <param name="pluginAssembly"></param>
+		/// <param name="pluginFilePath"></param>
+		/// <returns></returns>
+		public EditorPlugin LoadPlugin(Assembly pluginAssembly, string pluginFilePath)
+		{
+			string asmName = pluginAssembly.GetShortAssemblyName();
+			EditorPlugin plugin = this.loadedPlugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
+			if (plugin != null) return plugin;
+			
+			try
+			{
+				TypeInfo pluginType = pluginAssembly.ExportedTypes
+					.Select(t => t.GetTypeInfo())
+					.FirstOrDefault(t => typeof(EditorPlugin).GetTypeInfo().IsAssignableFrom(t));
+
+				if (pluginType == null) 
+					throw new Exception(string.Format(
+						"Plugin does not contain a public {0} class.", 
+						typeof(EditorPlugin).Name));
+
+				plugin = (EditorPlugin)pluginType.CreateInstanceOf();
+
+				if (plugin == null) 
+					throw new Exception(string.Format(
+						"Failed to instantiate {0} class.", 
+						Log.Type(pluginType.GetType())));
+
+				this.loadedPlugins.Add(plugin.AssemblyName, plugin);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error loading plugin: {0}", Log.Exception(e));
+				plugin = null;
+			}
+
+			return plugin;
+		}
+		/// <summary>
+		/// Initializes the specified plugin. This concludes a manual plugin load or reload operation
+		/// using API like <see cref="LoadPlugin"/> and <see cref="ReloadPlugin"/>.
+		/// </summary>
+		/// <param name="plugin"></param>
+		public void InitPlugin(EditorPlugin plugin)
+		{
+			try
+			{
+				plugin.InitPlugin(DualityEditorApp.MainForm);
+			}
+			catch (Exception e)
+			{
+				Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+				this.loadedPlugins.Remove(plugin.AssemblyName);
+			}
+		}
+
+		/// <summary>
 		/// Saves all editor plugin user data into the specified parent <see cref="XElement"/>.
 		/// </summary>
 		/// <param name="parentElement"></param>
@@ -228,52 +294,6 @@ namespace Duality.Editor
 			}
 
 			return plugin;
-		}
-		private EditorPlugin LoadPlugin(Assembly pluginAssembly, string pluginFilePath)
-		{
-			string asmName = pluginAssembly.GetShortAssemblyName();
-			EditorPlugin plugin = this.loadedPlugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
-			if (plugin != null) return plugin;
-			
-			try
-			{
-				TypeInfo pluginType = pluginAssembly.ExportedTypes
-					.Select(t => t.GetTypeInfo())
-					.FirstOrDefault(t => typeof(EditorPlugin).GetTypeInfo().IsAssignableFrom(t));
-
-				if (pluginType == null) 
-					throw new Exception(string.Format(
-						"Plugin does not contain a public {0} class.", 
-						typeof(EditorPlugin).Name));
-
-				plugin = (EditorPlugin)pluginType.CreateInstanceOf();
-
-				if (plugin == null) 
-					throw new Exception(string.Format(
-						"Failed to instantiate {0} class.", 
-						Log.Type(pluginType.GetType())));
-
-				this.loadedPlugins.Add(plugin.AssemblyName, plugin);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error loading plugin: {0}", Log.Exception(e));
-				plugin = null;
-			}
-
-			return plugin;
-		}
-		private void InitPlugin(EditorPlugin plugin)
-		{
-			try
-			{
-				plugin.InitPlugin(DualityEditorApp.MainForm);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
-				this.loadedPlugins.Remove(plugin.AssemblyName);
-			}
 		}
 
 		private void pluginLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
