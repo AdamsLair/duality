@@ -96,8 +96,8 @@
     <Compile Include="Backend\ISystemBackend.cs" />
     <Compile Include="Backend\IDualiyBackend.cs" />
     <Compile Include="Backend\Graphics\RenderOptions.cs" />
-    <Compile Include="Backend\IAudioBackend.cs" />
-    <Compile Include="Backend\IGraphicsBackend.cs" />
+    <Compile Include="Backend\Audio\IAudioBackend.cs" />
+    <Compile Include="Backend\Graphics\IGraphicsBackend.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
     <Compile Include="CorePluginManager.cs" />
     <Compile Include="Input\JoystickHatEventArgs.cs" />
@@ -206,7 +206,7 @@
     <Compile Include="Utility\Log\LogEntry.cs" />
     <Compile Include="Utility\Math\Range.cs" />
     <Compile Include="Utility\ObjectCreator.cs" />
-    <Compile Include="Backend\IPluginLoader.cs" />
+    <Compile Include="Backend\PluginLoader\IPluginLoader.cs" />
     <Compile Include="IO\Streams\SubStreamWrapper.cs" />
     <Compile Include="IO\Streams\StreamWrapper.cs" />
     <Compile Include="IO\Streams\NonClosingStreamWrapper.cs" />
