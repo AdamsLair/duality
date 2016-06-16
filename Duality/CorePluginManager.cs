@@ -102,6 +102,31 @@ namespace Duality
 			}
 			Log.Core.PopIndent();
 		}
+
+		/// <summary>
+		/// Invokes each plugin's <see cref="CorePlugin.OnBeforeUpdate"/> event handler.
+		/// </summary>
+		public void InvokeBeforeUpdate()
+		{
+			foreach (CorePlugin plugin in this.LoadedPlugins)
+				plugin.OnBeforeUpdate();
+		}
+		/// <summary>
+		/// Invokes each plugin's <see cref="CorePlugin.OnAfterUpdate"/> event handler.
+		/// </summary>
+		public void InvokeAfterUpdate()
+		{
+			foreach (CorePlugin plugin in this.LoadedPlugins)
+				plugin.OnAfterUpdate();
+		}
+		/// <summary>
+		/// Invokes each plugin's <see cref="CorePlugin.OnExecContextChanged"/> event handler.
+		/// </summary>
+		public void InvokeExecContextChanged(DualityApp.ExecutionContext previousContext)
+		{
+			foreach (CorePlugin plugin in this.LoadedPlugins)
+				plugin.OnExecContextChanged(previousContext);
+		}
 		
 		protected override void OnInit()
 		{

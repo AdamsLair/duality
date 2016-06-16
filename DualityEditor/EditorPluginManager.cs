@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using Duality.IO;
 using Duality.Backend;
 
+using WeifenLuo.WinFormsUI.Docking;
+
 namespace Duality.Editor
 {
 	/// <summary>
@@ -112,6 +114,45 @@ namespace Duality.Editor
 					plugin.LoadUserData(child);
 					break;
 				}
+			}
+		}
+		/// <summary>
+		/// As part of the docking suite layout deserialization, this method resolves
+		/// a persistent type name to an instance of the desired type.
+		/// </summary>
+		/// <param name="typeName"></param>
+		/// <returns></returns>
+		public IDockContent DeserializeDockContent(string typeName)
+		{
+			Type dockContentType = null;
+			Assembly dockContentAssembly = null;
+			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+			foreach (Assembly a in assemblies)
+			{
+				if ((dockContentType = a.GetType(typeName)) != null)
+				{
+					dockContentAssembly = a;
+					break;
+				}
+			}
+			
+			if (dockContentType == null) 
+				return null;
+			else
+			{
+				// First ask plugins from the dock contents assembly for existing instances
+				IDockContent deserializeDockContent = null;
+				foreach (EditorPlugin plugin in this.LoadedPlugins)
+				{
+					if (plugin.GetType().Assembly == dockContentAssembly)
+					{
+						deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
+						if (deserializeDockContent != null) break;
+					}
+				}
+
+				// If none exists, create one
+				return deserializeDockContent ?? (dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
 			}
 		}
 

@@ -539,37 +539,7 @@ namespace Duality.Editor
 		private static IDockContent DeserializeDockContent(string persistName)
 		{
 			Log.Editor.Write("Deserializing layout: '" + persistName + "'");
-
-			Type dockContentType = null;
-			Assembly dockContentAssembly = null;
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (Assembly a in assemblies)
-			{
-				if ((dockContentType = a.GetType(persistName)) != null)
-				{
-					dockContentAssembly = a;
-					break;
-				}
-			}
-			
-			if (dockContentType == null) 
-				return null;
-			else
-			{
-				// First ask plugins from the dock contents assembly for existing instances
-				IDockContent deserializeDockContent = null;
-				foreach (EditorPlugin plugin in pluginManager.LoadedPlugins)
-				{
-					if (plugin.GetType().Assembly == dockContentAssembly)
-					{
-						deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
-						if (deserializeDockContent != null) break;
-					}
-				}
-
-				// If none exists, create one
-				return deserializeDockContent ?? (dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
-			}
+			return pluginManager.DeserializeDockContent(persistName);
 		}
 
 		private static void InitMainGraphicsContext()

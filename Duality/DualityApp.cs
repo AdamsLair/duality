@@ -290,7 +290,7 @@ namespace Duality
 				{
 					ExecutionContext previous = execContext;
 					execContext = value;
-					OnExecContextChanged(previous);
+					pluginManager.InvokeExecContextChanged(previous);
 				}
 			}
 		}
@@ -500,11 +500,11 @@ namespace Duality
 			Time.FrameTick();
 			Profile.FrameTick();
 			VisualLog.UpdateLogEntries();
-			OnBeforeUpdate();
+			pluginManager.InvokeBeforeUpdate();
 			UpdateUserInput();
 			Scene.Current.Update();
 			sound.Update();
-			OnAfterUpdate();
+			pluginManager.InvokeAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
 			RunCleanup();
 
@@ -524,7 +524,7 @@ namespace Duality
 			{
 				VisualLog.UpdateLogEntries();
 			}
-			OnBeforeUpdate();
+			pluginManager.InvokeBeforeUpdate();
 			if (execContext == ExecutionContext.Game)
 			{
 				if (!freezeScene)	UpdateUserInput();
@@ -553,7 +553,7 @@ namespace Duality
 				}
 			}
 			sound.Update();
-			OnAfterUpdate();
+			pluginManager.InvokeAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
 			RunCleanup();
 
@@ -823,21 +823,6 @@ namespace Duality
 			Log.Core.PopIndent();
 		}
 
-		private static void OnBeforeUpdate()
-		{
-			foreach (CorePlugin plugin in pluginManager.LoadedPlugins)
-				plugin.OnBeforeUpdate();
-		}
-		private static void OnAfterUpdate()
-		{
-			foreach (CorePlugin plugin in pluginManager.LoadedPlugins)
-				plugin.OnAfterUpdate();
-		}
-		private static void OnExecContextChanged(ExecutionContext previousContext)
-		{
-			foreach (CorePlugin plugin in pluginManager.LoadedPlugins)
-				plugin.OnExecContextChanged(previousContext);
-		}
 		private static void OnUserDataChanged()
 		{
 			if (UserDataChanged != null)
