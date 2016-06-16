@@ -124,36 +124,34 @@ namespace Duality.Editor
 		/// <returns></returns>
 		public IDockContent DeserializeDockContent(string typeName)
 		{
-			Type dockContentType = null;
-			Assembly dockContentAssembly = null;
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (Assembly a in assemblies)
+			// First ask plugins from the dock contents assembly for existing instances
+			foreach (EditorPlugin plugin in this.LoadedPlugins)
 			{
-				if ((dockContentType = a.GetType(typeName)) != null)
+				Type dockContentType = plugin.PluginAssembly.GetType(typeName);
+				if (dockContentType != null)
 				{
-					dockContentAssembly = a;
-					break;
+					// Ask the plugin to deserialize this docking content, but fall back on
+					// creating the appropriate one using reflection.
+					IDockContent deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
+					return 
+						deserializeDockContent ?? 
+						(dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
 				}
 			}
-			
-			if (dockContentType == null) 
-				return null;
-			else
-			{
-				// First ask plugins from the dock contents assembly for existing instances
-				IDockContent deserializeDockContent = null;
-				foreach (EditorPlugin plugin in this.LoadedPlugins)
-				{
-					if (plugin.GetType().Assembly == dockContentAssembly)
-					{
-						deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
-						if (deserializeDockContent != null) break;
-					}
-				}
 
-				// If none exists, create one
-				return deserializeDockContent ?? (dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
+			// If none of the available plugins can handle that type name, query all available assemblies
+			Assembly[] allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+			foreach (Assembly assembly in allAssemblies)
+			{
+				Type dockContentType = assembly.GetType(typeName);
+				if (dockContentType != null)
+				{
+					return dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent;
+				}
 			}
+
+			// Still nothing? Can't resolve this one then.
+			return null;
 		}
 
 		protected override void OnInit()
