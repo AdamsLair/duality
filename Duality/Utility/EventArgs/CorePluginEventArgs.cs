@@ -1,20 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Duality
 {
-	/// <summary>
-	/// Provides event arguments related to <see cref="Duality.CorePlugin"/> instances.
-	/// </summary>
+	[Obsolete("Use DualityPluginEventArgs instead.")]
 	public class CorePluginEventArgs : EventArgs
 	{
-		private	CorePlugin	plugin;
-		public CorePlugin Plugin
+		private CorePlugin[] plugins;
+		public IReadOnlyList<CorePlugin> Plugins
 		{
-			get { return this.plugin; }
+			get { return this.plugins; }
 		}
-		public CorePluginEventArgs(CorePlugin plugin)
+		public CorePluginEventArgs(IEnumerable<CorePlugin> plugins)
 		{
-			this.plugin = plugin;
+			this.plugins = 
+				(plugins ?? Enumerable.Empty<CorePlugin>())
+				.NotNull()
+				.Distinct()
+				.ToArray();
 		}
 	}
 }

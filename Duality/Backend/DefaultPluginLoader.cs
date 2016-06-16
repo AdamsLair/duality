@@ -13,7 +13,8 @@ namespace Duality.Backend
 		private static readonly Assembly execAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityApp).Assembly;
 		private static readonly string execAssemblyDir = Path.GetFullPath(Path.GetDirectoryName(execAssembly.Location));
 
-		private ResolveAssemblyCallback resolveCallback = null;
+		public event EventHandler<AssemblyResolveEventArgs> AssemblyResolve;
+		public event EventHandler<AssemblyLoadedEventArgs> AssemblyLoaded;
 
 		public IEnumerable<string> BaseDirectories
 		{
@@ -90,10 +91,8 @@ namespace Duality.Backend
 			}
 		}
 		
-		public void Init(ResolveAssemblyCallback resolveCallback)
+		public void Init()
 		{
-			this.resolveCallback = resolveCallback;
-
 			AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
 			AppDomain.CurrentDomain.AssemblyLoad += this.CurrentDomain_AssemblyLoad;
 		}
@@ -101,19 +100,34 @@ namespace Duality.Backend
 		{
 			AppDomain.CurrentDomain.AssemblyResolve -= this.CurrentDomain_AssemblyResolve;
 			AppDomain.CurrentDomain.AssemblyLoad -= this.CurrentDomain_AssemblyLoad;
-
-			this.resolveCallback = null;
 		}
 
 		private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
-			if (this.resolveCallback != null)
-				return this.resolveCallback(new ResolveAssemblyEventArgs(args.Name));
-			else
-				return null;
+			// First, trigger a resolve event and see if we found a matching Assembly.
+			// This will give core and editor plugin managers to load plugin Assemblies
+			// their own way, or resolve with an already loaded one.
+			if (this.AssemblyResolve != null)
+			{
+				AssemblyResolveEventArgs resolveArgs = new AssemblyResolveEventArgs(args.Name);
+				this.AssemblyResolve(this, resolveArgs);
+
+				if (resolveArgs.IsResolved)
+					return resolveArgs.ResolvedAssembly;
+			}
+			
+			// Admit that we didn't find anything.
+			Log.Core.WriteWarning(
+				"Can't resolve Assembly '{0}' as requested by '{1}': None of the available assembly paths matches the requested name.",
+				args.Name,
+				Log.Assembly(args.RequestingAssembly));
+			return null;
 		}
 		private void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
 		{
+			if (this.AssemblyLoaded != null)
+				this.AssemblyLoaded(this, new AssemblyLoadedEventArgs(args.LoadedAssembly));
+
 			Log.Core.Write("Assembly loaded: {0}", args.LoadedAssembly.GetShortAssemblyName());
 		}
 	}

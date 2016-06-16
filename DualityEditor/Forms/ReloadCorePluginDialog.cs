@@ -160,10 +160,10 @@ namespace Duality.Editor.Forms
 			for (int i = this.reloadSchedule.Count - 1; i >= 0; i--)
 			{
 				string fullPath = Path.GetFullPath(this.reloadSchedule[i]);
-				CorePlugin plugin = DualityApp.LoadedPlugins.FirstOrDefault(p => Path.GetFullPath(p.FilePath) == fullPath);
+				CorePlugin plugin = DualityApp.PluginManager.LoadedPlugins.FirstOrDefault(p => Path.GetFullPath(p.FilePath) == fullPath);
 				if (plugin == null) continue;
 
-				int hash = DualityApp.PluginLoader.GetAssemblyHash(this.reloadSchedule[i]);
+				int hash = DualityApp.PluginManager.PluginLoader.GetAssemblyHash(this.reloadSchedule[i]);
 				if (plugin.FileHash == hash)
 				{
 					this.reloadSchedule.RemoveAt(i);
@@ -381,8 +381,9 @@ namespace Duality.Editor.Forms
 		private static bool RequiresFullRestart(IEnumerable<string> reloadPluginPaths)
 		{
 			Assembly[] allPluginAssemblies = 
-				DualityApp.LoadedPlugins.Select(p => p.PluginAssembly).Concat(
-				DualityEditorApp.Plugins.Select(p => p.PluginAssembly)).ToArray();
+				        DualityApp      .PluginManager.LoadedPlugins.Select(p => p.PluginAssembly)
+				.Concat(DualityEditorApp.PluginManager.LoadedPlugins.Select(p => p.PluginAssembly))
+				.ToArray();
 
 			// If there is any editor plugin to be reloaded, we need a full restart.
 			if (reloadPluginPaths.Any(asmFile => asmFile.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase)))
@@ -428,7 +429,7 @@ namespace Duality.Editor.Forms
 				Log.Editor.Write("{0}...", curPath);
 				Log.Editor.PushIndent();
 				{
-					CorePlugin plugin = workInterface.MainForm.Invoke((Func<string,CorePlugin>)DualityApp.ReloadPlugin, curPath) as CorePlugin;
+					CorePlugin plugin = workInterface.MainForm.Invoke((Func<string,CorePlugin>)DualityApp.PluginManager.ReloadPlugin, curPath) as CorePlugin;
 					if (plugin != null) initSchedule.Add(plugin);
 					workInterface.Progress += 0.10f / (float)count;
 				}
@@ -452,7 +453,7 @@ namespace Duality.Editor.Forms
 			{
 				Log.Editor.Write("{0}...", plugin.AssemblyName);
 				Log.Editor.PushIndent();
-				workInterface.MainForm.Invoke((Action<CorePlugin>)DualityApp.InitPlugin, plugin);
+				workInterface.MainForm.Invoke((Action<CorePlugin>)DualityApp.PluginManager.InitPlugin, plugin);
 				workInterface.Progress += 0.05f / (float)count;
 				Log.Editor.PopIndent();
 			}

@@ -86,7 +86,7 @@ namespace Duality.Editor
 			}
 
 			if (File.Exists(mainDocPath)) LoadXmlCodeDoc(mainDocPath);
-			foreach (string baseDir in DualityApp.PluginLoader.BaseDirectories)
+			foreach (string baseDir in DualityApp.PluginManager.PluginLoader.BaseDirectories)
 			{
 				foreach (string xmlDocFile in Directory.EnumerateFiles(baseDir, "*.core.xml", SearchOption.AllDirectories))
 				{

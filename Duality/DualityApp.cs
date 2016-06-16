@@ -64,37 +64,33 @@ namespace Duality
 			Editor
 		}
 
-		public const string CmdArgDebug		= "debug";
-		public const string CmdArgEditor	= "editor";
+		public const string CmdArgDebug     = "debug";
+		public const string CmdArgEditor    = "editor";
 		public const string CmdArgProfiling = "profile";
 		public const string PluginDirectory = "Plugins";
-		public const string DataDirectory	= "Data";
+		public const string DataDirectory   = "Data";
 
 
-		private	static	bool						initialized			= false;
-		private	static	bool						isUpdating			= false;
-		private	static	bool						runFromEditor		= false;
-		private	static	bool						terminateScheduled	= false;
-		private	static	IPluginLoader				pluginLoader		= null;
-		private	static	ISystemBackend				systemBack			= null;
-		private	static	IGraphicsBackend			graphicsBack		= null;
-		private	static	IAudioBackend				audioBack			= null;
-		private	static	Vector2						targetResolution	= Vector2.Zero;
-		private	static	MouseInput					mouse				= new MouseInput();
-		private	static	KeyboardInput				keyboard			= new KeyboardInput();
-		private	static	JoystickInputCollection		joysticks			= new JoystickInputCollection();
-		private	static	GamepadInputCollection		gamepads			= new GamepadInputCollection();
-		private	static	SoundDevice					sound				= null;
-		private	static	ExecutionEnvironment		environment			= ExecutionEnvironment.Unknown;
-		private	static	ExecutionContext			execContext			= ExecutionContext.Terminated;
-		private	static	DualityAppData				appData				= null;
-		private	static	DualityUserData				userData			= null;
-		private	static	List<object>				disposeSchedule		= new List<object>();
-
-		private	static	List<IDualityBackend>			activeBackends	= new List<IDualityBackend>();
-		private	static	Dictionary<string,CorePlugin>	plugins			= new Dictionary<string,CorePlugin>();
-		private	static	List<Assembly>					disposedPlugins	= new List<Assembly>();
-		private static	Dictionary<Type,List<TypeInfo>>	availTypeDict	= new Dictionary<Type,List<TypeInfo>>();
+		private static bool                    initialized        = false;
+		private static bool                    isUpdating         = false;
+		private static bool                    runFromEditor      = false;
+		private static bool                    terminateScheduled = false;
+		private static IPluginLoader           pluginLoader       = null;
+		private static CorePluginManager       pluginManager      = new CorePluginManager();
+		private static ISystemBackend          systemBack         = null;
+		private static IGraphicsBackend        graphicsBack       = null;
+		private static IAudioBackend           audioBack          = null;
+		private static Vector2                 targetResolution   = Vector2.Zero;
+		private static MouseInput              mouse              = new MouseInput();
+		private static KeyboardInput           keyboard           = new KeyboardInput();
+		private static JoystickInputCollection joysticks          = new JoystickInputCollection();
+		private static GamepadInputCollection  gamepads           = new GamepadInputCollection();
+		private static SoundDevice             sound              = null;
+		private static ExecutionEnvironment    environment        = ExecutionEnvironment.Unknown;
+		private static ExecutionContext        execContext        = ExecutionContext.Terminated;
+		private static DualityAppData          appData            = null;
+		private static DualityUserData         userData           = null;
+		private static List<object>            disposeSchedule    = new List<object>();
 		
 		/// <summary>
 		/// Called when the game becomes focused or loses focus.
@@ -115,32 +111,42 @@ namespace Duality
 		/// <summary>
 		/// Called when the games UserData changes
 		/// </summary>
-		public static event EventHandler UserDataChanged	= null;
+		public static event EventHandler UserDataChanged = null;
 		/// <summary>
 		/// Called when the games AppData changes
 		/// </summary>
-		public static event EventHandler AppDataChanged		= null;
+		public static event EventHandler AppDataChanged = null;
 		/// <summary>
 		/// Called when Duality is being terminated by choice (e.g. not because of crashes or similar).
 		/// It is also called in an editor environment.
 		/// </summary>
-		public static event EventHandler Terminating		= null;
+		public static event EventHandler Terminating = null;
 		/// <summary>
 		/// Called when Duality needs to discard plugin data such as cached Types and values.
 		/// </summary>
-		public static event EventHandler DiscardPluginData	= null;
+		[Obsolete("Use DualityApp.PluginManager instead.")]
+		public static event EventHandler DiscardPluginData = null;
 		/// <summary>
 		/// Fired whenever a core plugin has been initialized. This is the case after loading or reloading one.
 		/// </summary>
-		public static event EventHandler<CorePluginEventArgs> PluginReady	= null;
+		[Obsolete("Use DualityApp.PluginManager instead.")]
+		public static event EventHandler<CorePluginEventArgs> PluginReady = null;
 
 		
 		/// <summary>
+		/// [GET] The plugin manager that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// </summary>
+		public static CorePluginManager PluginManager
+		{
+			get { return pluginManager; }
+		}
+		/// <summary>
 		/// [GET] The plugin loader that is used by Duality. Don't use this unless you know exactly what you're doing.
 		/// </summary>
+		[Obsolete("Use DualityApp.PluginManager instead.")]
 		public static IPluginLoader PluginLoader
 		{
-			get { return pluginLoader; }
+			get { return pluginManager.PluginLoader; }
 		}
 		/// <summary>
 		/// [GET] The system backend that is used by Duality. Don't use this unless you know exactly what you're doing.
@@ -284,7 +290,7 @@ namespace Duality
 				{
 					ExecutionContext previous = execContext;
 					execContext = value;
-					OnExecContextChanged(previous);
+					pluginManager.InvokeExecContextChanged(previous);
 				}
 			}
 		}
@@ -298,18 +304,20 @@ namespace Duality
 		/// <summary>
 		/// [GET] Enumerates all currently loaded plugins.
 		/// </summary>
+		[Obsolete("Use DualityApp.PluginManager instead.")]
 		public static IEnumerable<CorePlugin> LoadedPlugins
 		{
-			get { return plugins.Values; }
+			get { return pluginManager.LoadedPlugins; }
 		}
 		/// <summary>
 		/// [GET] Enumerates all plugin assemblies that have been loaded before, but have been discarded due to a runtime plugin reload operation.
 		/// This is usually only the case when being executed from withing the editor or manually triggering a plugin reload. However,
 		/// this is normally unnecessary.
 		/// </summary>
+		[Obsolete("Use DualityApp.PluginManager instead.")]
 		public static IEnumerable<Assembly> DisposedPlugins
 		{
-			get { return disposedPlugins; }
+			get { return pluginManager.DisposedPlugins; }
 		}
 
 
@@ -341,16 +349,20 @@ namespace Duality
 			environment = env;
 			execContext = context;
 			
-			// Initialize the plugin loader
+			// Initialize the plugin manager
 			{
 				pluginLoader = plugins ?? new Duality.Backend.Dummy.DummyPluginLoader();
 				Log.Core.Write("Using '{0}' to load plugins.", pluginLoader.GetType().Name);
 
-				pluginLoader.Init(pluginLoader_ResolveAssembly);
+				pluginLoader.Init();
+				pluginManager.Init(pluginLoader);
+				pluginManager.PluginsReady += pluginManager_PluginsReady;
+				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
+				pluginManager.PluginsRemoved += pluginManager_PluginsRemoved;
 			}
 
 			// Load all plugins. This needs to be done first, so backends and Types can be located.
-			LoadPlugins();
+			pluginManager.LoadPlugins();
 
 			// Initialize the system backend for system info and file system access
 			InitBackend(out systemBack);
@@ -369,7 +381,7 @@ namespace Duality
 			sound = new SoundDevice();
 
 			// Initialize all core plugins, this may allocate Resources or establish references between plugins
-			InitPlugins();
+			pluginManager.InitPlugins();
 			
 			initialized = true;
 
@@ -435,19 +447,26 @@ namespace Duality
 			}
 
 			// Discard plugin data (Resources, current Scene) ahead of time. Otherwise, it'll get shut down in ClearPlugins, after the backend is gone.
-			OnDiscardPluginData();
+			pluginManager.DiscardPluginData();
 
 			sound.Dispose();
 			sound = null;
 			ShutdownBackend(ref graphicsBack);
 			ShutdownBackend(ref audioBack);
-			ClearPlugins();
+			pluginManager.ClearPlugins();
 
 			// Since this performs file system operations, it needs to happen before shutting down the system backend.
 			Profile.SaveTextReport(environment == ExecutionEnvironment.Editor ? "perflog_editor.txt" : "perflog.txt");
 
 			ShutdownBackend(ref systemBack);
+
+			// Shut down the plugin manager and plugin loader
+			pluginManager.Terminate();
+			pluginManager.PluginsReady -= pluginManager_PluginsReady;
+			pluginManager.PluginsRemoving -= pluginManager_PluginsRemoving;
+			pluginManager.PluginsRemoved -= pluginManager_PluginsRemoved;
 			pluginLoader.Terminate();
+			pluginLoader = null;
 
 			Log.Core.Write("DualityApp terminated");
 
@@ -481,11 +500,11 @@ namespace Duality
 			Time.FrameTick();
 			Profile.FrameTick();
 			VisualLog.UpdateLogEntries();
-			OnBeforeUpdate();
+			pluginManager.InvokeBeforeUpdate();
 			UpdateUserInput();
 			Scene.Current.Update();
 			sound.Update();
-			OnAfterUpdate();
+			pluginManager.InvokeAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
 			RunCleanup();
 
@@ -505,7 +524,7 @@ namespace Duality
 			{
 				VisualLog.UpdateLogEntries();
 			}
-			OnBeforeUpdate();
+			pluginManager.InvokeBeforeUpdate();
 			if (execContext == ExecutionContext.Game)
 			{
 				if (!freezeScene)	UpdateUserInput();
@@ -534,7 +553,7 @@ namespace Duality
 				}
 			}
 			sound.Update();
-			OnAfterUpdate();
+			pluginManager.InvokeAfterUpdate();
 			VisualLog.PrepareRenderLogEntries();
 			RunCleanup();
 
@@ -619,77 +638,6 @@ namespace Duality
 			}
 		}
 
-		private static void LoadPlugins()
-		{
-			if (plugins.Count > 0) throw new InvalidOperationException("Can't load plugins more than once.");
-
-			Log.Core.Write("Scanning for core plugins...");
-			Log.Core.PushIndent();
-
-			List<string> auxilLibs = new List<string>();
-			foreach (string dllPath in pluginLoader.AvailableAssemblyPaths)
-			{
-				if (!dllPath.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
-				{ 
-					if (!dllPath.EndsWith(".editor.dll", StringComparison.OrdinalIgnoreCase))
-						auxilLibs.Add(dllPath);
-					continue;
-				}
-
-				Log.Core.Write("{0}...", dllPath);
-				Log.Core.PushIndent();
-				LoadPlugin(dllPath);
-				Log.Core.PopIndent();
-			}
-
-			Log.Core.PopIndent();
-
-			// Make sure to have all plugin-related Assemblies available even before even
-			// getting an AssemblyResolve event - we might need to resolve their Types due
-			// to deserialization, which may happen before touching any related class in code.
-			if (auxilLibs.Count > 0)
-			{
-				Log.Core.Write("Loading auxiliary libraries...");
-				Log.Core.PushIndent();
-
-				foreach (string dllPath in auxilLibs)
-				{
-					// Load the Assembly in a try-catch block, as we might accidentally stumble upon
-					// unmanaged or incompatible Assemblies in the process.
-					try
-					{
-						pluginLoader.LoadAssembly(dllPath, false);
-					}
-					catch (BadImageFormatException) { }
-				}
-
-				Log.Core.PopIndent();
-			}
-		}
-		private static CorePlugin LoadPlugin(string pluginFilePath)
-		{
-			string asmName = PathOp.GetFileNameWithoutExtension(pluginFilePath);
-			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
-			if (plugin != null) return plugin;
-
-			Assembly pluginAssembly = null;
-			try
-			{
-				pluginAssembly = pluginLoader.LoadAssembly(pluginFilePath, true);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
-				plugin = null;
-			}
-
-			if (pluginAssembly != null)
-			{
-				plugin = LoadPlugin(pluginAssembly, pluginFilePath);
-			}
-
-			return plugin;
-		}
 		/// <summary>
 		/// Adds an already loaded plugin Assembly to the internal Duality CorePlugin registry.
 		/// You shouldn't need to call this method in general, since Duality manages its plugins
@@ -704,165 +652,24 @@ namespace Duality
 		/// <param name="pluginAssembly"></param>
 		/// <param name="pluginFilePath"></param>
 		/// <returns></returns>
+		[Obsolete("Use DualityApp.PluginManager instead.")]
 		public static CorePlugin LoadPlugin(Assembly pluginAssembly, string pluginFilePath)
 		{
-			disposedPlugins.Remove(pluginAssembly);
-
-			string asmName = pluginAssembly.GetShortAssemblyName();
-			CorePlugin plugin = plugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
-			if (plugin != null) return plugin;
-
-			TypeInfo pluginType = pluginAssembly.ExportedTypes
-				.Select(t => t.GetTypeInfo())
-				.FirstOrDefault(t => typeof(CorePlugin).GetTypeInfo().IsAssignableFrom(t));
-			if (pluginType == null)
-			{
-				Log.Core.WriteWarning("Can't find CorePlugin class. Discarding plugin...");
-				disposedPlugins.Add(pluginAssembly);
-			}
-			else
-			{
-				try
-				{
-					plugin = (CorePlugin)pluginType.CreateInstanceOf();
-					plugin.FilePath = pluginFilePath;
-					plugin.FileHash = pluginLoader.GetAssemblyHash(pluginFilePath);
-					plugins.Add(plugin.AssemblyName, plugin);
-				}
-				catch (Exception e)
-				{
-					Log.Core.WriteError("Error loading plugin: {0}", Log.Exception(e));
-					disposedPlugins.Add(pluginAssembly);
-					plugin = null;
-				}
-			}
-
-			return plugin;
+			return pluginManager.LoadPlugin(pluginAssembly, pluginFilePath);
 		}
-		private static void RemovePlugin(CorePlugin plugin)
-		{
-			// Dispose plugin and discard plugin related data
-			disposedPlugins.Add(plugin.PluginAssembly);
-			OnDiscardPluginData();
-			plugins.Remove(plugin.AssemblyName);
-			try
-			{
-				plugin.Dispose();
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
-			}
-
-			// Discard temporary plugin-related data (cached Types, etc.)
-			CleanupAfterPlugins(new[] { plugin });
-		}
-		private static void InitPlugins()
-		{
-			Log.Core.Write("Initializing core plugins...");
-			Log.Core.PushIndent();
-			CorePlugin[] initPlugins = plugins.Values.ToArray();
-			foreach (CorePlugin plugin in initPlugins)
-			{
-				Log.Core.Write("{0}...", plugin.AssemblyName);
-				Log.Core.PushIndent();
-				InitPlugin(plugin);
-				Log.Core.PopIndent();
-			}
-			Log.Core.PopIndent();
-		}
+		[Obsolete("Use DualityApp.PluginManager instead.")]
 		internal static void InitPlugin(CorePlugin plugin)
 		{
-			try
-			{
-				plugin.InitPlugin();
-				OnPluginReady(plugin);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
-				RemovePlugin(plugin);
-			}
-		}
-		private static void ClearPlugins()
-		{
-			foreach (CorePlugin plugin in plugins.Values)
-			{
-				disposedPlugins.Add(plugin.PluginAssembly);
-			}
-			OnDiscardPluginData();
-			foreach (CorePlugin plugin in plugins.Values)
-			{
-				try
-				{
-					plugin.Dispose();
-				}
-				catch (Exception e)
-				{
-					Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
-				}
-			}
-			CleanupAfterPlugins(plugins.Values);
-			plugins.Clear();
+			pluginManager.InitPlugin(plugin);
 		}
 		/// <summary>
 		/// Reloads the specified plugin. Does not initialize it.
 		/// </summary>
 		/// <param name="pluginFilePath"></param>
+		[Obsolete("Use DualityApp.PluginManager instead.")]
 		internal static CorePlugin ReloadPlugin(string pluginFilePath)
 		{
-			if (!pluginFilePath.EndsWith(".core.dll", StringComparison.OrdinalIgnoreCase))
-				return null;
-
-			// If we're trying to reload an active backend plugin, stop
-			foreach (var pair in plugins)
-			{
-				CorePlugin backendPlugin = pair.Value;
-				if (PathOp.ArePathsEqual(backendPlugin.FilePath, pluginFilePath))
-				{
-					foreach (IDualityBackend backend in activeBackends)
-					{
-						TypeInfo backendType = backend.GetType().GetTypeInfo();
-						if (backendPlugin.PluginAssembly == backendType.Assembly)
-						{
-							Log.Core.WriteError("Can't reload a plugin that contains an active backend: {0}", backend.Name);
-							return null;
-						}
-					}
-					break;
-				}
-			}
-			
-			// Load the updated plugin Assembly
-			Assembly pluginAssembly = null;
-			try
-			{
-				pluginAssembly = pluginLoader.LoadAssembly(pluginFilePath, true);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
-				return null;
-			}
-
-			// If we're overwriting an old plugin here, add the old version to the "disposed" blacklist
-			string assemblyName = pluginAssembly.GetShortAssemblyName();
-			CorePlugin oldPlugin;
-			if (plugins.TryGetValue(assemblyName, out oldPlugin))
-			{
-				plugins.Remove(assemblyName);
-				disposedPlugins.Add(oldPlugin.PluginAssembly);
-				OnDiscardPluginData();
-				oldPlugin.Dispose();
-			}
-
-			// Load the new plugin from the updated Assembly
-			CorePlugin plugin = LoadPlugin(pluginAssembly, pluginFilePath);
-			
-			// Discard temporary plugin-related data (cached Types, etc.)
-			CleanupAfterPlugins(new[] { oldPlugin });
-
-			return plugin;
+			return pluginManager.ReloadPlugin(pluginFilePath);
 		}
 
 		/// <summary>
@@ -871,8 +678,7 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<Assembly> GetDualityAssemblies()
 		{
-			yield return typeof(DualityApp).GetTypeInfo().Assembly;
-			foreach (CorePlugin p in LoadedPlugins) yield return p.PluginAssembly;
+			return pluginManager.GetAssemblies();
 		}
 		/// <summary>
 		/// Enumerates all available Duality <see cref="System.Type">Types</see> that are assignable
@@ -892,28 +698,7 @@ namespace Duality
 		/// </example>
 		public static IEnumerable<TypeInfo> GetAvailDualityTypes(Type baseType)
 		{
-			List<TypeInfo> availTypes;
-			if (availTypeDict.TryGetValue(baseType, out availTypes)) return availTypes;
-
-			availTypes = new List<TypeInfo>();
-			IEnumerable<Assembly> asmQuery = GetDualityAssemblies();
-			foreach (Assembly asm in asmQuery)
-			{
-				// Try to retrieve all Types from the current Assembly
-				IEnumerable<TypeInfo> types;
-				try { types = asm.ExportedTypes.Select(t => t.GetTypeInfo()); }
-				catch (Exception) { continue; }
-
-				// Add the matching subset of these types to the result
-				availTypes.AddRange(
-					from t in types
-					where baseType.GetTypeInfo().IsAssignableFrom(t)
-					orderby t.Name
-					select t);
-			}
-			availTypeDict[baseType] = availTypes;
-
-			return availTypes;
+			return pluginManager.GetTypes(baseType);
 		}
 
 		private static void UpdateUserInput()
@@ -1003,7 +788,9 @@ namespace Duality
 			if (selectedBackend != null)
 			{
 				target = selectedBackend;
-				activeBackends.Add(selectedBackend);
+
+				TypeInfo selectedBackendType = selectedBackend.GetType().GetTypeInfo();
+				pluginManager.LockPlugin(selectedBackendType.Assembly);
 			}
 			else
 			{
@@ -1022,7 +809,10 @@ namespace Duality
 				try
 				{
 					backend.Shutdown();
-					activeBackends.Remove(backend);
+
+					TypeInfo backendType = backend.GetType().GetTypeInfo();
+					pluginManager.UnlockPlugin(backendType.Assembly);
+
 					backend = null;
 				}
 				catch (Exception e)
@@ -1033,23 +823,6 @@ namespace Duality
 			Log.Core.PopIndent();
 		}
 
-		private static void OnBeforeUpdate()
-		{
-			foreach (CorePlugin plugin in plugins.Values) plugin.OnBeforeUpdate();
-		}
-		private static void OnAfterUpdate()
-		{
-			foreach (CorePlugin plugin in plugins.Values) plugin.OnAfterUpdate();
-		}
-		private static void OnPluginReady(CorePlugin plugin)
-		{
-			if (PluginReady != null)
-				PluginReady(null, new CorePluginEventArgs(plugin));
-		}
-		private static void OnExecContextChanged(ExecutionContext previousContext)
-		{
-			foreach (CorePlugin plugin in plugins.Values) plugin.OnExecContextChanged(previousContext);
-		}
 		private static void OnUserDataChanged()
 		{
 			if (UserDataChanged != null)
@@ -1065,10 +838,17 @@ namespace Duality
 			if (Terminating != null)
 				Terminating(null, EventArgs.Empty);
 		}
-		private static void OnDiscardPluginData()
+		
+		private static void pluginManager_PluginsReady(object sender, DualityPluginEventArgs e)
 		{
+			if (PluginReady != null)
+				PluginReady(sender, new CorePluginEventArgs(e.Plugins.OfType<CorePlugin>()));
+		}
+		private static void pluginManager_PluginsRemoving(object sender, DualityPluginEventArgs e)
+		{
+			// Wrapper method for delivering the old API until removing it in v3.0
 			if (DiscardPluginData != null)
-				DiscardPluginData(null, EventArgs.Empty);
+				DiscardPluginData(sender, e);
 
 			// Dispose any existing Resources that could reference plugin data
 			VisualLog.ClearAll();
@@ -1077,33 +857,25 @@ namespace Duality
 			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())
 				ContentProvider.RemoveContent(r.Path);
 		}
-		private static void CleanupAfterPlugins(IEnumerable<CorePlugin> oldPlugins)
+		private static void pluginManager_PluginsRemoved(object sender, DualityPluginEventArgs e)
 		{
-			oldPlugins = oldPlugins.NotNull().Distinct();
-			if (!oldPlugins.Any()) oldPlugins = null;
-
-			// Clean globally cached type values
-			availTypeDict.Clear();
+			// Clean globally cached type data
 			ImageCodec.ClearTypeCache();
 			ObjectCreator.ClearTypeCache();
 			ReflectionHelper.ClearTypeCache();
 			Component.ClearTypeCache();
 			Serializer.ClearTypeCache();
 			CloneProvider.ClearTypeCache();
-			
+
 			// Clean input sources that a disposed Assembly forgot to unregister.
-			if (oldPlugins != null)
-			{
-				foreach (CorePlugin plugin in oldPlugins)
-					CleanInputSources(plugin.PluginAssembly);
-			}
+			foreach (CorePlugin plugin in e.Plugins)
+				CleanInputSources(plugin.PluginAssembly);
+
 			// Clean event bindings that are still linked to the disposed Assembly.
-			if (oldPlugins != null)
-			{
-				foreach (CorePlugin plugin in oldPlugins)
-					CleanEventBindings(plugin.PluginAssembly);
-			}
+			foreach (CorePlugin plugin in e.Plugins)
+				CleanEventBindings(plugin.PluginAssembly);
 		}
+
 		private static void CleanEventBindings(Assembly invalidAssembly)
 		{
 			// Note that this method is only a countermeasure against common mistakes. It doesn't guarantee
@@ -1118,20 +890,16 @@ namespace Duality
 				invalidAssembly.GetShortAssemblyName(),
 				"{0}");
 
-			if (ReflectionHelper.CleanEventBindings(typeof(DualityApp),			invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)));
-			if (ReflectionHelper.CleanEventBindings(typeof(Scene),				invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(Scene)));
-			if (ReflectionHelper.CleanEventBindings(typeof(Resource),			invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(Resource)));
-			if (ReflectionHelper.CleanEventBindings(typeof(ContentProvider),	invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(ContentProvider)));
-			if (ReflectionHelper.CleanEventBindings(keyboard,					invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Keyboard");
-			if (ReflectionHelper.CleanEventBindings(mouse,						invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Mouse");
-			foreach (JoystickInput joystick in joysticks)
-			{
-				if (ReflectionHelper.CleanEventBindings(joystick,				invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Joysticks");
-			}
-			foreach (GamepadInput gamepad in gamepads)
-			{
-				if (ReflectionHelper.CleanEventBindings(gamepad,				invalidAssembly))	Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Gamepads");
-			}
+			if (ReflectionHelper.CleanEventBindings(typeof(DualityApp),      invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Scene),           invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Scene)));
+			if (ReflectionHelper.CleanEventBindings(typeof(Resource),        invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(Resource)));
+			if (ReflectionHelper.CleanEventBindings(typeof(ContentProvider), invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(ContentProvider)));
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Keyboard,     invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Keyboard");
+			if (ReflectionHelper.CleanEventBindings(DualityApp.Mouse,        invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Mouse");
+			foreach (JoystickInput joystick in DualityApp.Joysticks)
+				if (ReflectionHelper.CleanEventBindings(joystick,            invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Joysticks");
+			foreach (GamepadInput gamepad in DualityApp.Gamepads)
+				if (ReflectionHelper.CleanEventBindings(gamepad,             invalidAssembly)) Log.Core.WriteWarning(warningText, Log.Type(typeof(DualityApp)) + ".Gamepads");
 		}
 		private static void CleanInputSources(Assembly invalidAssembly)
 		{
@@ -1139,82 +907,37 @@ namespace Duality
 				"Found leaked input source '{1}' defined in invalid Assembly '{0}'. " +
 				"This is a common problem when registering input sources from within a CorePlugin " +
 				"without properly unregistering them later. Please make sure that all sources are " +
-				"unregistered in CorePlugin::OnDisposePlugin().",
+				"unregistered in CorePlugin::OnDisposePlugin() or sooner.",
 				invalidAssembly.GetShortAssemblyName(),
 				"{0}");
 
-			if (mouse.Source != null && mouse.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
+			if (DualityApp.Mouse.Source != null && DualityApp.Mouse.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 			{
-				Log.Core.WriteWarning(warningText, Log.Type(mouse.Source.GetType()));
-				mouse.Source = null;
+				Log.Core.WriteWarning(warningText, Log.Type(DualityApp.Mouse.Source.GetType()));
+				DualityApp.Mouse.Source = null;
 			}
-			if (keyboard.Source != null && keyboard.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
+			if (DualityApp.Keyboard.Source != null && DualityApp.Keyboard.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 			{
-				Log.Core.WriteWarning(warningText, Log.Type(keyboard.Source.GetType()));
-				keyboard.Source = null;
+				Log.Core.WriteWarning(warningText, Log.Type(DualityApp.Keyboard.Source.GetType()));
+				DualityApp.Keyboard.Source = null;
 			}
-			foreach (JoystickInput joystick in joysticks.ToArray())
+			foreach (JoystickInput joystick in DualityApp.Joysticks.ToArray())
 			{
 				if (joystick.Source != null && joystick.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 				{
 					Log.Core.WriteWarning(warningText, Log.Type(joystick.Source.GetType()));
-					joysticks.RemoveSource(joystick.Source);
+					DualityApp.Joysticks.RemoveSource(joystick.Source);
 				}
 			}
-			foreach (GamepadInput gamepad in gamepads.ToArray())
+			foreach (GamepadInput gamepad in DualityApp.Gamepads.ToArray())
 			{
 				if (gamepad.Source != null && gamepad.Source.GetType().GetTypeInfo().Assembly == invalidAssembly)
 				{
 					Log.Core.WriteWarning(warningText, Log.Type(gamepad.Source.GetType()));
-					gamepads.RemoveSource(gamepad.Source);
+					DualityApp.Gamepads.RemoveSource(gamepad.Source);
 				}
 			}
 		}
-
-		private static Assembly pluginLoader_ResolveAssembly(ResolveAssemblyEventArgs args)
-		{
-			// First assume we are searching for a dynamically loaded plugin assembly
-			CorePlugin plugin;
-			if (plugins.TryGetValue(args.AssemblyName, out plugin))
-			{
-				return plugin.PluginAssembly;
-			}
-			// Not there? Search for other libraries in the Plugins folder
-			else
-			{
-				//  Search for plugins that haven't been loaded yet, and load them first
-				foreach (string libFile in pluginLoader.AvailableAssemblyPaths)
-				{
-					string libFileEnding = ".core.dll";
-					if (!libFile.EndsWith(libFileEnding, StringComparison.OrdinalIgnoreCase))
-						continue;
-
-					string libName = libFile.Remove(libFile.Length - libFileEnding.Length, libFileEnding.Length);
-					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
-					{
-						plugin = LoadPlugin(libFile);
-						if (plugin != null) return plugin.PluginAssembly;
-					}
-				}
-
-				// Search for other libraries that might be located inside the plugin directory
-				foreach (string libFile in pluginLoader.AvailableAssemblyPaths)
-				{
-					string libName = PathOp.GetFileNameWithoutExtension(libFile);
-					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
-					{
-						return pluginLoader.LoadAssembly(libFile, false);
-					}
-				}
-			}
-
-			// Admit that we didn't find anything.
-			Log.Core.WriteWarning(
-				"Can't resolve Assembly '{0}': None of the available assembly paths matches the requested name.",
-				args.AssemblyName);
-			return null;
-		}
-		
 
 
 		/// <summary>

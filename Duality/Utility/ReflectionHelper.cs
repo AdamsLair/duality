@@ -461,7 +461,7 @@ namespace Duality
 
 			Assembly[] searchAsm = 
 				DualityApp.SystemBackend.GetLoadedAssemblies()
-				.Except(DualityApp.DisposedPlugins)
+				.Except(DualityApp.PluginManager.DisposedPlugins)
 				.ToArray();
 
 			result = FindMember(memberString, searchAsm);
@@ -715,7 +715,7 @@ namespace Duality
 			{
 				searchAsm = 
 					DualityApp.SystemBackend.GetLoadedAssemblies()
-					.Except(DualityApp.DisposedPlugins)
+					.Except(DualityApp.PluginManager.DisposedPlugins)
 					.ToArray();
 			}
 

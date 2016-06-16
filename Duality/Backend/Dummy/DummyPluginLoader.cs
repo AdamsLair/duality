@@ -7,6 +7,16 @@ namespace Duality.Backend.Dummy
 {
 	public class DummyPluginLoader : IPluginLoader
 	{
+		event EventHandler<AssemblyResolveEventArgs> IPluginLoader.AssemblyResolve
+		{
+			add { }
+			remove { }
+		}
+		event EventHandler<AssemblyLoadedEventArgs> IPluginLoader.AssemblyLoaded
+		{
+			add { }
+			remove { }
+		}
 		IEnumerable<string> IPluginLoader.BaseDirectories
 		{
 			get { return Enumerable.Empty<string>(); }
@@ -23,7 +33,7 @@ namespace Duality.Backend.Dummy
 		{
 			return 0;
 		}
-		void IPluginLoader.Init(ResolveAssemblyCallback resolveCallback) { }
+		void IPluginLoader.Init() { }
 		void IPluginLoader.Terminate() { }
 	}
 }

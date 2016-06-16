@@ -17,7 +17,6 @@ namespace Duality.IO
 		public static readonly char ExtensionSeparatorChar;
 
 		private static readonly char[] DirectorySeparatorChars;
-		private static readonly char[] AsciiBelow32;
 		private static readonly char[] InvalidPathChars;
 		private static readonly char[] InvalidFileNameChars;
 
@@ -30,22 +29,22 @@ namespace Duality.IO
 
 			DirectorySeparatorChars = new char[] { DirectorySeparatorChar, AltDirectorySeparatorChar };
 
-			AsciiBelow32 = new char[32];
-			for (int i = 0; i < AsciiBelow32.Length; i++)
+			char[] asciiBelow32 = new char[32];
+			for (int i = 0; i < asciiBelow32.Length; i++)
 			{
-				AsciiBelow32[i] = (char)i;
+				asciiBelow32[i] = (char)i;
 			}
 
-			InvalidPathChars = new char[AsciiBelow32.Length + 6];
+			InvalidPathChars = new char[asciiBelow32.Length + 6];
 			InvalidPathChars[0] = '"';
 			InvalidPathChars[1] = '<';
 			InvalidPathChars[2] = '>';
 			InvalidPathChars[3] = '|';
 			InvalidPathChars[4] = '*';
 			InvalidPathChars[5] = '?';
-			for (int i = 0; i < AsciiBelow32.Length; i++)
+			for (int i = 0; i < asciiBelow32.Length; i++)
 			{
-				InvalidPathChars[i + 6] = AsciiBelow32[i];
+				InvalidPathChars[i + 6] = asciiBelow32[i];
 			}
 			
 			InvalidFileNameChars = new char[InvalidPathChars.Length + 3];
