@@ -285,6 +285,7 @@ namespace Duality.Tests.PluginManager
 					new MockAssembly("MockDir/MockAuxilliaryA.dll"),
 					new MockAssembly("MockDir/MockAuxilliaryB.dll")
 				};
+				MockAssembly mockEditorAssembly = new MockAssembly("MockDir/MockPluginD.editor.dll");
 
 				// Set up some mock data for available assemblies
 				pluginLoader.AddBaseDir("MockDir");
@@ -292,19 +293,36 @@ namespace Duality.Tests.PluginManager
 				{
 					pluginLoader.AddPlugin(mockAssemblies[i]);
 				}
+				pluginLoader.AddPlugin(mockEditorAssembly);
 
 				// Set up a plugin manager using the mock loader
 				CorePluginManager pluginManager = new CorePluginManager();
 				pluginManager.Init(pluginLoader);
 
-				// First, make sure the attempt to resolve a not-yet-loaded plugin
-				// will result in loading it immediately to satisfy dependency relations
-				Assembly resolvedAssembly = pluginLoader.InvokeResolveAssembly(mockAssemblies[0].FullName);
-				Assert.IsNotNull(resolvedAssembly);
-				Assert.AreSame(mockAssemblies[0], resolvedAssembly);
-				Assert.AreEqual(1, pluginManager.LoadedPlugins.Count());
-				Assert.AreSame(mockAssemblies[0], pluginManager.LoadedPlugins.First().PluginAssembly);
-				CollectionAssert.Contains(pluginLoader.LoadedAssemblies, mockAssemblies[0].Location);
+				{
+					// First, make sure the attempt to resolve a not-yet-loaded plugin
+					// will result in loading it immediately to satisfy dependency relations
+					Assembly resolvedAssembly = pluginLoader.InvokeResolveAssembly(mockAssemblies[0].FullName);
+
+					// Assert that we successfully resolved it with a plugin (not just an assembly)
+					Assert.IsNotNull(resolvedAssembly);
+					Assert.AreSame(mockAssemblies[0], resolvedAssembly);
+					Assert.AreEqual(1, pluginManager.LoadedPlugins.Count());
+					Assert.AreSame(mockAssemblies[0], pluginManager.LoadedPlugins.First().PluginAssembly);
+					Assert.AreEqual(1, pluginLoader.LoadedAssemblies.Count());
+					CollectionAssert.Contains(pluginLoader.LoadedAssemblies, mockAssemblies[0].Location);
+				}
+
+				{
+					// Attempt to resolve a not-yet-loaded editor plugin
+					Assembly resolvedAssembly = pluginLoader.InvokeResolveAssembly(mockEditorAssembly.FullName);
+
+					// Assert that we did not resolve this, nor load any assemblies.
+					// Leave this to the EditorPluginManager, which can properly load them as a plugin.
+					Assert.IsNull(resolvedAssembly);
+					Assert.AreEqual(1, pluginManager.LoadedPlugins.Count());
+					Assert.AreEqual(1, pluginLoader.LoadedAssemblies.Count());
+				}
 
 				// Load and init all plugins
 				pluginManager.LoadPlugins();
