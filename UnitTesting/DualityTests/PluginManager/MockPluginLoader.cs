@@ -13,13 +13,13 @@ namespace Duality.Tests.PluginManager
 {
 	public class MockPluginLoader : IPluginLoader, IDisposable
 	{
-		private List<string>                        baseDirs         = new List<string>();
-		private Dictionary<string,Assembly>         assemblyMap      = new Dictionary<string,Assembly>();
-		private HashSet<string>                     incompatibleDlls = new HashSet<string>();
-		private List<string>                        loadedAssemblies = new List<string>();
-		private Dictionary<MockCorePlugin,Assembly> pluginMap        = new Dictionary<MockCorePlugin,Assembly>();
-		private bool                                initialized      = false;
-		private bool                                disposed         = false;
+		private List<string>                       baseDirs         = new List<string>();
+		private Dictionary<string,Assembly>        assemblyMap      = new Dictionary<string,Assembly>();
+		private HashSet<string>                    incompatibleDlls = new HashSet<string>();
+		private List<string>                       loadedAssemblies = new List<string>();
+		private Dictionary<DualityPlugin,Assembly> pluginMap        = new Dictionary<DualityPlugin,Assembly>();
+		private bool                               initialized      = false;
+		private bool                               disposed         = false;
 		
 
 		public event EventHandler<AssemblyResolveEventArgs> AssemblyResolve;
@@ -55,10 +55,12 @@ namespace Duality.Tests.PluginManager
 		public MockPluginLoader()
 		{
 			MockCorePlugin.MapToAssemblyCallback += this.MockCorePlugin_MapToAssemblyCallback;
+			MockPlugin.MapToAssemblyCallback += this.MockPlugin_MapToAssemblyCallback;
 		}
 		public void Dispose()
 		{
 			MockCorePlugin.MapToAssemblyCallback -= this.MockCorePlugin_MapToAssemblyCallback;
+			MockPlugin.MapToAssemblyCallback -= this.MockPlugin_MapToAssemblyCallback;
 		}
 
 		public Assembly InvokeResolveAssembly(string fullAssemblyName)
@@ -142,6 +144,21 @@ namespace Duality.Tests.PluginManager
 				assembly = this.assemblyMap
 					.Where(pair => !this.pluginMap.ContainsValue(pair.Value))
 					.Where(pair => pair.Key.EndsWith(".core.dll", StringComparison.InvariantCultureIgnoreCase))
+					.Select(pair => pair.Value)
+					.FirstOrDefault();
+				this.pluginMap.Add(mockPlugin, assembly);
+			}
+			return assembly;
+		}
+		private Assembly MockPlugin_MapToAssemblyCallback(MockPlugin mockPlugin)
+		{
+			// We'll just map the newly instantiated plugin to any of the assemblies
+			// we're mock-providing, except the ones that are already mapped
+			Assembly assembly;
+			if (!this.pluginMap.TryGetValue(mockPlugin, out assembly))
+			{
+				assembly = this.assemblyMap
+					.Where(pair => !this.pluginMap.ContainsValue(pair.Value))
 					.Select(pair => pair.Value)
 					.FirstOrDefault();
 				this.pluginMap.Add(mockPlugin, assembly);

@@ -10,29 +10,13 @@ namespace Duality.Editor.Tests.PluginManager
 	[TestFixture]
 	public class EditorPluginManagerTest
 	{
-		[Test] public void PluginLoaderInitTerminate()
-		{
-			MockPluginLoader pluginLoader = new MockPluginLoader();
-			EditorPluginManager pluginManager = new EditorPluginManager();
-
-			// We expect the plugin manager not to assume ownership of
-			// the plugin loader, e.g. not to initialize or terminate it.
-
-			Assert.IsFalse(pluginLoader.Initialized);
-			Assert.IsFalse(pluginLoader.Disposed);
-
-			pluginManager.Init(pluginLoader);
-
-			Assert.IsFalse(pluginLoader.Initialized);
-			Assert.IsFalse(pluginLoader.Disposed);
-
-			pluginManager.Terminate();
-
-			Assert.IsFalse(pluginLoader.Initialized);
-			Assert.IsFalse(pluginLoader.Disposed);
-		}
 		[Test] public void LoadPlugins()
 		{
+			//
+			// In this test, we're going to check overall LoadPlugins behavior,
+			// as well as the specific case of selective loading, where non-editor
+			// plugins and non-plugins are filtered out before loading.
+			//
 			using (MockPluginLoader pluginLoader = new MockPluginLoader())
 			{
 				// Set up some mock data for available assemblies
@@ -100,6 +84,11 @@ namespace Duality.Editor.Tests.PluginManager
 		}
 		[Test] public void ResolveAssembly()
 		{
+			//
+			// In this test, we're going to check the CorePluginManager's ability
+			// to load requested editor plugins on-demand (to satisfy inter-plugin dependencies)
+			// as well as to reject non-editor and non-plugins in those requests.
+			//
 			using (MockPluginLoader pluginLoader = new MockPluginLoader())
 			{
 				MockAssembly[] mockAssemblies = new MockAssembly[]
@@ -162,59 +151,6 @@ namespace Duality.Editor.Tests.PluginManager
 				}
 				
 				// Assert that we do not have any duplicates and still the same count of plugins
-				Assert.AreEqual(3, pluginManager.LoadedPlugins.Count());
-
-				pluginManager.Terminate();
-			}
-		}
-		[Test] public void DuplicateLoad()
-		{
-			using (MockPluginLoader pluginLoader = new MockPluginLoader())
-			{
-				MockAssembly[] mockPlugins = new MockAssembly[]
-				{
-					new MockAssembly("MockDir/MockPluginA.editor.dll", typeof(MockEditorPlugin)),
-					new MockAssembly("MockDir/MockPluginB.editor.dll", typeof(MockEditorPlugin)),
-					new MockAssembly("MockDir/MockPluginC.editor.dll", typeof(MockEditorPlugin))
-				};
-				MockAssembly[] mockAssemblies = new MockAssembly[]
-				{
-					mockPlugins[0],
-					mockPlugins[1],
-					mockPlugins[2],
-					new MockAssembly("MockDir/MockAuxilliaryA.dll"),
-					new MockAssembly("MockDir/MockAuxilliaryB.dll")
-				};
-
-				// Set up some mock data for available assemblies
-				pluginLoader.AddBaseDir("MockDir");
-				for (int i = 0; i < mockAssemblies.Length; i++)
-				{
-					pluginLoader.AddPlugin(mockAssemblies[i]);
-				}
-
-				// Set up a plugin manager using the mock loader
-				EditorPluginManager pluginManager = new EditorPluginManager();
-				pluginManager.Init(pluginLoader);
-
-				// Load and init all plugins
-				pluginManager.LoadPlugins();
-				pluginManager.InitPlugins();
-
-				// Now load them again
-				pluginManager.LoadPlugins();
-
-				// Assert that we do not have any duplicates and still the same count of plugins
-				Assert.AreEqual(3, pluginManager.LoadedPlugins.Count());
-
-				// Let's try loading assembly duplicates manually
-				for (int i = 0; i < mockPlugins.Length; i++)
-				{
-					EditorPlugin plugin = pluginManager.LoadPlugin(mockAssemblies[i], mockAssemblies[i].Location);
-					Assert.IsNotNull(plugin);
-				}
-
-				// Assert that we do not have any duplicates and no disposed plugins
 				Assert.AreEqual(3, pluginManager.LoadedPlugins.Count());
 
 				pluginManager.Terminate();

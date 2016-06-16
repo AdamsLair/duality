@@ -81,6 +81,9 @@
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
     <Compile Include="IO\PathOpTest.cs" />
+    <Compile Include="PluginManager\MockPlugin.cs" />
+    <Compile Include="PluginManager\MockPluginManager.cs" />
+    <Compile Include="PluginManager\PluginManagerTest.cs" />
     <Compile Include="PluginManager\MockCorePlugin.cs" />
     <Compile Include="Properties\TestRes.Designer.cs">
       <AutoGen>True</AutoGen>
