@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.5.1</version>
+    <version>2.6.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,15 +13,27 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>RigidBodyRenderer Chain Rendering, Canvas FillThickLines, Fixed Canvas.TextInvariantScale
-#FIX: Fixed ChainShape rendering in RigidBodyRenderer.
-#ADD: Added Canvas.FillThickLines method for drawing thick line strips.
-#FIX: Fixed TextInvariantScale being ignored by Canvas text rendering.
-#ADD: Added ChainShape support for RigidBodyRenderer.
-#CHANGE: Updated to AdamsLair.FarseerDuality 4.1.1.
-#ADD: Added some more documentation to the CloneProvider. 
-#CHANGE: Replaced a few lines that appear to be redundant. All cloning tests still working, so that seems to be fine.
-#ADD: Introduced a serialization special case for struct values that equal their default value, similar to classes that equal null. Don't need to serialize redundant information.</releaseNotes>
+    <releaseNotes>Moved Plugin Code, Unified CorePlugin and EditorPlugin, IPluginLoader Ownership
+#CHANGE: Moved some internal plugin management code to its matching PluginManager implementation.
+#CHANGE: Both CorePlugin and EditorPlugin now derive from a shared base class. 
+#CHANGE: Both CorePluginManager and EditorPluginManager now derive from a shared PluginManager&lt;T&gt; class.
+#CHANGE: CorePluginLoader no longer assumes ownership over the IPluginLoader it is provided with.
+#FIX: Fixed a bug where resolving an editor plugin dependency could lead to loading the same Assembly twice.
+#FIX: Fixed a bug where on-demand resolving a dependency between core plugins would lead to loading the dependency as a regular Assembly, not as a plugin. 
+#ADD: Extended the AssemblyResolve unit test to check for this.
+#CHANGE: Instead of providing a single callback in IPluginLoader.Init, the interface now defines events for others to subscribe.
+#CHANGE: Moved around some backend interface definitions.
+#ADD: Added unit tests for CorePluginManager.
+#ADD: Added an early-out to ClearPlugins for cases where there are no plugins left to remove. 
+#CHANGE: Moved some functionality from being hardcoded in CorePluginManager to being executed in event handlers, so CorePluginManager can be tested in isolation.
+#CHANGE: Removed an unused internal static variable and replaced it with a function local.
+#CHANGE: Avoided some potential null reference exceptions.
+#CHANGE: Now using a clear PluginRemoving/Removed event API, rather than discard / cleanupafter.
+#ADD: Added documentation for IPluginLoader
+#ADD: Added more documentation to the CorePluginManager API. 
+#ADD: Added some minor validation checks to CorePluginManager API calls.
+#CHANGE: Extracted CorePluginManager class from static DualityApp functionality.
+#CHANGE: When attempting to load a plugin that causes a TypeLoadException upon access, Duality is now able to recover gracefully.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />

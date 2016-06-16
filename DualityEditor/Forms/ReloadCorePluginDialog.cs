@@ -381,8 +381,9 @@ namespace Duality.Editor.Forms
 		private static bool RequiresFullRestart(IEnumerable<string> reloadPluginPaths)
 		{
 			Assembly[] allPluginAssemblies = 
-				DualityApp.PluginManager.LoadedPlugins.Select(p => p.PluginAssembly).Concat(
-				DualityEditorApp.Plugins.Select(p => p.PluginAssembly)).ToArray();
+				        DualityApp      .PluginManager.LoadedPlugins.Select(p => p.PluginAssembly)
+				.Concat(DualityEditorApp.PluginManager.LoadedPlugins.Select(p => p.PluginAssembly))
+				.ToArray();
 
 			// If there is any editor plugin to be reloaded, we need a full restart.
 			if (reloadPluginPaths.Any(asmFile => asmFile.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase)))

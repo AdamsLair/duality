@@ -129,6 +129,7 @@
     <Compile Include="AssetManagement\Import\AssetImportInput.cs" />
     <Compile Include="AssetManagement\Import\ExtMethodsIAssetImportEnvironment.cs" />
     <Compile Include="AssetManagement\Export\IAssetExportEnvironment.cs" />
+    <Compile Include="EditorPluginManager.cs" />
     <Compile Include="Extensibility\DataConversion\ConversionData.cs" />
     <Compile Include="Extensibility\DataConversion\ConvertOperation.cs" />
     <Compile Include="Extensibility\EditorActions\EditorSingleAction.cs" />

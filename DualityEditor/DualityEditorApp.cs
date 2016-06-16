@@ -41,11 +41,10 @@ namespace Duality.Editor
 		public	const	string	ActionContextFirstSession			= "FirstSession";
 		public	const	string	ActionContextSetupObjectForEditing	= "SetupObjectForEditing";
 
+		private	static EditorPluginManager			pluginManager		= new EditorPluginManager();
 		private	static MainForm						mainForm			= null;
 		private	static IEditorGraphicsBackend		graphicsBack		= null;
 		private	static INativeEditorGraphicsContext	mainGraphicsContext	= null;
-		private	static List<EditorPlugin>			plugins				= new List<EditorPlugin>();
-		private	static Dictionary<Type,List<TypeInfo>>	availTypeDict	= new Dictionary<Type,List<TypeInfo>>();
 		private	static List<IEditorAction>			editorActions		= new List<IEditorAction>();
 		private	static ReloadCorePluginDialog		corePluginReloader	= null;
 		private	static bool							needsRecovery		= false;
@@ -77,6 +76,10 @@ namespace Duality.Editor
 		public	static	event	EventHandler<ObjectPropertyChangedEventArgs>	ObjectPropertyChanged	= null;
 		
 		
+		public static EditorPluginManager PluginManager
+		{
+			get { return pluginManager; }
+		}
 		public static InMemoryLogOutput GlobalLogData
 		{
 			get { return memoryLogOutput; }
@@ -114,9 +117,10 @@ namespace Duality.Editor
 					corePluginReloader.State == ReloadCorePluginDialog.ReloaderState.RecoverFromRestart;
 			}
 		}
+		[Obsolete("Use DualityEditorApp.PluginManager instead.")]
 		public static IEnumerable<EditorPlugin> Plugins
 		{
-			get { return plugins; }
+			get { return pluginManager.LoadedPlugins; }
 		}
 		public static IEnumerable<Resource> UnsavedResources
 		{
@@ -183,9 +187,6 @@ namespace Duality.Editor
 			// Set up a global exception handler to log errors
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-			// Register Assembly Resolve hook for inter-Plugin dependency handling
-			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-
 			// Create working directories, if not existing yet.
 			if (!Directory.Exists(DualityApp.DataDirectory))
 			{
@@ -229,16 +230,19 @@ namespace Duality.Editor
 				DualityApp.ExecutionContext.Editor, 
 				new DefaultPluginLoader(), 
 				null);
+
+			// Initialize the plugin manager for the editor. We'll use the same loader as the core.
+			pluginManager.Init(DualityApp.PluginManager.PluginLoader);
 			
 			// Need to load editor plugins before initializing the graphics context, so the backend is available
-			LoadPlugins();
+			pluginManager.LoadPlugins();
 
 			// Need to initialize graphics context and default content before instantiating anything that could require any of them
 			InitMainGraphicsContext();
 			DualityApp.InitPostWindow();
 
 			LoadUserData();
-			InitPlugins();
+			pluginManager.InitPlugins();
 
 
 			// Set up core plugin reloader
@@ -362,6 +366,9 @@ namespace Duality.Editor
 			// Shut down the editor backend
 			DualityApp.ShutdownBackend(ref graphicsBack);
 
+			// Shut down the plugin manager 
+			pluginManager.Terminate();
+
 			// Terminate Duality
 			DualityApp.Terminate();
 
@@ -375,91 +382,13 @@ namespace Duality.Editor
 			return true;
 		}
 
-		private static void LoadPlugins()
-		{
-			Log.Editor.Write("Scanning for editor plugins...");
-			Log.Editor.PushIndent();
-
-			IPluginLoader pluginLoader = DualityApp.PluginManager.PluginLoader;
-			foreach (string dllPath in pluginLoader.AvailableAssemblyPaths)
-			{
-				if (!dllPath.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase))
-					continue;
-
-				Log.Editor.Write("Loading '{0}'...", dllPath);
-				Log.Editor.PushIndent();
-				try
-				{
-					Assembly pluginAssembly = Assembly.Load(File.ReadAllBytes(dllPath));
-					Type pluginType = pluginAssembly.GetExportedTypes().FirstOrDefault(t => typeof(EditorPlugin).GetTypeInfo().IsAssignableFrom(t));
-					if (pluginType == null)
-					{
-						Log.Editor.WriteWarning("Can't find EditorPlugin class. Discarding plugin...");
-						continue;
-					}
-					EditorPlugin plugin = (EditorPlugin)pluginType.GetTypeInfo().CreateInstanceOf();
-					plugins.Add(plugin);
-				}
-				catch (Exception e)
-				{
-					Log.Editor.WriteError("Error loading plugin: {0}", Log.Exception(e));
-				}
-				Log.Editor.PopIndent();
-			}
-
-			Log.Editor.PopIndent();
-		}
-		private static void InitPlugins()
-		{
-			Log.Editor.Write("Initializing editor plugins...");
-			Log.Editor.PushIndent();
-			foreach (EditorPlugin plugin in plugins.ToArray())
-			{
-				Log.Editor.Write("{0}...", plugin.Id);
-				Log.Editor.PushIndent();
-				try
-				{
-					plugin.InitPlugin(mainForm);
-				}
-				catch (Exception e)
-				{
-					Log.Editor.WriteError("Error initializing plugin: {0}", Log.Exception(e));
-					plugins.Remove(plugin);
-				}
-				Log.Editor.PopIndent();
-			}
-			Log.Editor.PopIndent();
-		}
-		
 		public static IEnumerable<Assembly> GetDualityEditorAssemblies()
 		{
-			yield return typeof(MainForm).Assembly;
-			foreach (Assembly a in plugins.Select(ep => ep.GetType().Assembly)) yield return a;
+			return pluginManager.GetAssemblies();
 		}
 		public static IEnumerable<TypeInfo> GetAvailDualityEditorTypes(Type baseType)
 		{
-			List<TypeInfo> availTypes;
-			if (availTypeDict.TryGetValue(baseType, out availTypes)) return availTypes;
-
-			availTypes = new List<TypeInfo>();
-			IEnumerable<Assembly> asmQuery = GetDualityEditorAssemblies();
-			foreach (Assembly asm in asmQuery)
-			{
-				// Try to retrieve all Types from the current Assembly
-				IEnumerable<TypeInfo> types;
-				try { types = asm.ExportedTypes.Select(t => t.GetTypeInfo()); }
-				catch (Exception) { continue; }
-
-				// Add the matching subset of these types to the result
-				availTypes.AddRange(
-					from t in types
-					where baseType.IsAssignableFrom(t)
-					orderby t.Name
-					select t);
-			}
-			availTypeDict[baseType] = availTypes;
-
-			return availTypes;
+			return pluginManager.GetTypes(baseType);
 		}
 		/// <summary>
 		/// Enumerates editor user actions that can be applied to objects of the specified type.
@@ -517,14 +446,7 @@ namespace Duality.Editor
 							rootElement.Add(editorAppElement);
 
 						XElement pluginsElement = new XElement("Plugins");
-						foreach (EditorPlugin plugin in plugins)
-						{
-							XElement pluginElement = new XElement("Plugin");
-							pluginElement.SetAttributeValue("id", plugin.Id);
-							plugin.SaveUserData(pluginElement);
-							if (!pluginElement.IsEmpty)
-								pluginsElement.Add(pluginElement);
-						}
+						pluginManager.SaveUserData(pluginsElement);
 						if (!pluginsElement.IsEmpty)
 							rootElement.Add(pluginsElement);
 					}
@@ -602,23 +524,7 @@ namespace Duality.Editor
 					}
 					XElement pluginsElement = rootElement.Elements("Plugins").FirstOrDefault();
 					if (pluginsElement != null)
-					{
-						foreach (XElement child in pluginsElement.Elements("Plugin"))
-						{
-							string id = child.GetAttributeValue("id");
-							if (id != null)
-							{
-								foreach (EditorPlugin plugin in plugins)
-								{
-									if (plugin.Id == id)
-									{
-										plugin.LoadUserData(child);
-										break;
-									}
-								}
-							}
-						}
-					}
+						pluginManager.LoadUserData(pluginsElement);
 				}
 				catch (Exception e)
 				{
@@ -633,37 +539,7 @@ namespace Duality.Editor
 		private static IDockContent DeserializeDockContent(string persistName)
 		{
 			Log.Editor.Write("Deserializing layout: '" + persistName + "'");
-
-			Type dockContentType = null;
-			Assembly dockContentAssembly = null;
-			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-			foreach (Assembly a in assemblies)
-			{
-				if ((dockContentType = a.GetType(persistName)) != null)
-				{
-					dockContentAssembly = a;
-					break;
-				}
-			}
-			
-			if (dockContentType == null) 
-				return null;
-			else
-			{
-				// First ask plugins from the dock contents assembly for existing instances
-				IDockContent deserializeDockContent = null;
-				foreach (EditorPlugin plugin in plugins)
-				{
-					if (plugin.GetType().Assembly == dockContentAssembly)
-					{
-						deserializeDockContent = plugin.DeserializeDockContent(dockContentType);
-						if (deserializeDockContent != null) break;
-					}
-				}
-
-				// If none exists, create one
-				return deserializeDockContent ?? (dockContentType.GetTypeInfo().CreateInstanceOf() as IDockContent);
-			}
+			return pluginManager.DeserializeDockContent(persistName);
 		}
 
 		private static void InitMainGraphicsContext()
@@ -1132,7 +1008,7 @@ namespace Duality.Editor
 
 		public static T GetPlugin<T>() where T : EditorPlugin
 		{
-			return plugins.OfType<T>().FirstOrDefault();
+			return pluginManager.LoadedPlugins.OfType<T>().FirstOrDefault();
 		}
 		public static void AnalyzeCorePlugin(CorePlugin plugin)
 		{
@@ -1150,7 +1026,7 @@ namespace Duality.Editor
 				// Scan for illegally referenced Assemblies
 				if (asmName == thisAsmName)
 					illegalRef = true;
-				else if (plugins.Any(p => p.PluginAssembly.GetShortAssemblyName() == asmName))
+				else if (pluginManager.LoadedPlugins.Any(p => p.PluginAssembly.GetShortAssemblyName() == asmName))
 					illegalRef = true;
 
 				// Warn about them
@@ -1570,7 +1446,7 @@ namespace Duality.Editor
 			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;
 		}
-		private static void DualityApp_PluginsReady(object sender, CorePluginEventArgs e)
+		private static void DualityApp_PluginsReady(object sender, DualityPluginEventArgs e)
 		{
 			foreach (CorePlugin plugin in e.Plugins)
 			{
@@ -1580,16 +1456,6 @@ namespace Duality.Editor
 		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			Log.Core.WriteError(Log.Exception(e.ExceptionObject as Exception));
-		}
-		private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
-		{
-			// We might be looking for an editor plugin
-			string assemblyNameStub = ReflectionHelper.GetShortAssemblyName(args.Name);
-			EditorPlugin plugin = plugins.FirstOrDefault(p => assemblyNameStub == p.AssemblyName);
-			if (plugin != null)
-				return plugin.PluginAssembly;
-			else
-				return null;
 		}
 		private static object EditorHintImageResolver(string manifestResourceName)
 		{
