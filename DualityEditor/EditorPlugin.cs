@@ -9,29 +9,13 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Duality.Editor
 {
-	public abstract class EditorPlugin
+	public abstract class EditorPlugin : DualityPlugin
 	{
-		private	Assembly	assembly	= null;
-		private	string		asmName		= null;
-
 		/// <summary>
 		/// The Plugins ID. This should be unique.
 		/// </summary>
 		public abstract string Id { get; }
-		public Assembly PluginAssembly
-		{
-			get { return this.assembly; }
-		}
-		public string AssemblyName
-		{
-			get { return this.asmName; }
-		}
 		
-		protected EditorPlugin()
-		{
-			this.assembly = this.GetType().Assembly;
-			this.asmName = this.assembly.GetShortAssemblyName();
-		}
 		/// <summary>
 		/// This method is called when all plugins and the editors user data and layout are loaded. May initialize GUI.
 		/// </summary>

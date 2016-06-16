@@ -20,29 +20,9 @@ namespace Duality.Editor
 	/// 
 	/// A static instance of this class is available through <see cref="DualityEditorApp.PluginManager"/>.
 	/// </summary>
-	public class EditorPluginManager
+	public class EditorPluginManager : PluginManager<EditorPlugin>
 	{
-		private IPluginLoader                   pluginLoader    = null;
-		private Dictionary<string,EditorPlugin> loadedPlugins   = new Dictionary<string,EditorPlugin>();
-		private Dictionary<Type,List<TypeInfo>> availTypeDict   = new Dictionary<Type,List<TypeInfo>>();
-		
-		
-		/// <summary>
-		/// [GET] The plugin loader which is used by the <see cref="EditorPluginManager"/> to discover
-		/// and load available plugin assemblies.
-		/// </summary>
-		public IPluginLoader PluginLoader
-		{
-			get { return this.pluginLoader; }
-		}
-		/// <summary>
-		/// [GET] Enumerates all currently loaded plugins.
-		/// </summary>
-		public IEnumerable<EditorPlugin> LoadedPlugins
-		{
-			get { return this.loadedPlugins.Values; }
-		}
-
+		private Assembly[] editorAssemblies = new Assembly[] { typeof(DualityEditorApp).GetTypeInfo().Assembly };
 
 		/// <summary>
 		/// <see cref="EditorPluginManager"/> should usually not be instantiated by users due to 
@@ -51,91 +31,24 @@ namespace Duality.Editor
 		internal EditorPluginManager() { }
 
 		/// <summary>
-		/// Initializes the <see cref="EditorPluginManager"/> with the specified <see cref="IPluginLoader"/>.
-		/// This method needs to be called once after instantiation (or previous termination) before plugins 
-		/// can be loaded.
-		/// </summary>
-		/// <param name="pluginLoader"></param>
-		public void Init(IPluginLoader pluginLoader)
-		{
-			if (this.pluginLoader != null) throw new InvalidOperationException("Plugin manager is already initialized.");
-
-			this.pluginLoader = pluginLoader;
-			this.pluginLoader.AssemblyResolve += this.pluginLoader_AssemblyResolve;
-		}
-		/// <summary>
-		/// Terminates the <see cref="EditorPluginManager"/>. This will dispose all editor plugins and plugin data.
-		/// </summary>
-		public void Terminate()
-		{
-			if (this.pluginLoader == null) throw new InvalidOperationException("Plugin manager is is not currently initialized.");
-
-			this.pluginLoader.AssemblyResolve -= this.pluginLoader_AssemblyResolve;
-			this.pluginLoader = null;
-		}
-		
-		/// <summary>
-		/// Enumerates all currently loaded assemblies that are part of Duality, i.e. Duality itsself and all loaded plugins.
+		/// Enumerates all currently loaded editor assemblies that are part of Duality, i.e. 
+		/// the editor Assembly itsself and all loaded plugins.
 		/// </summary>
 		/// <returns></returns>
-		public IEnumerable<Assembly> GetEditorAssemblies()
+		public override IEnumerable<Assembly> GetAssemblies()
 		{
-			yield return typeof(DualityApp).GetTypeInfo().Assembly;
-			foreach (EditorPlugin p in this.LoadedPlugins)
-				yield return p.PluginAssembly;
-		}
-		/// <summary>
-		/// Enumerates all available Duality <see cref="System.Type">Types</see> that are assignable
-		/// to the specified Type. 
-		/// </summary>
-		/// <param name="baseType">The base type to use for matching the result types.</param>
-		/// <returns>An enumeration of all Duality types deriving from the specified type.</returns>
-		/// <example>
-		/// The following code logs all available kinds of <see cref="Duality.Components.Renderer">Renderers</see>:
-		/// <code>
-		/// var rendererTypes = DualityApp.GetAvailDualityTypes(typeof(Duality.Components.Renderer));
-		/// foreach (Type rt in rendererTypes)
-		/// {
-		/// 	Log.Core.Write("Renderer Type '{0}' from Assembly '{1}'", Log.Type(rt), rt.Assembly.FullName);
-		/// }
-		/// </code>
-		/// </example>
-		public IEnumerable<TypeInfo> GetEditorTypes(Type baseType)
-		{
-			List<TypeInfo> availTypes;
-			if (this.availTypeDict.TryGetValue(baseType, out availTypes))
-				return availTypes;
-
-			availTypes = new List<TypeInfo>();
-			IEnumerable<Assembly> asmQuery = this.GetEditorAssemblies();
-			foreach (Assembly asm in asmQuery)
-			{
-				// Try to retrieve all Types from the current Assembly
-				IEnumerable<TypeInfo> types;
-				try { types = asm.ExportedTypes.Select(t => t.GetTypeInfo()); }
-				catch (Exception) { continue; }
-
-				// Add the matching subset of these types to the result
-				availTypes.AddRange(
-					from t in types
-					where baseType.GetTypeInfo().IsAssignableFrom(t)
-					orderby t.Name
-					select t);
-			}
-			this.availTypeDict[baseType] = availTypes;
-
-			return availTypes;
+			return this.editorAssemblies.Concat(base.GetAssemblies());
 		}
 
 		/// <summary>
 		/// Loads all available editor plugins, as well as auxilliary libraries.
 		/// </summary>
-		public void LoadPlugins()
+		public override void LoadPlugins()
 		{
 			Log.Editor.Write("Scanning for editor plugins...");
 			Log.Editor.PushIndent();
 
-			foreach (string dllPath in this.pluginLoader.AvailableAssemblyPaths)
+			foreach (string dllPath in this.PluginLoader.AvailableAssemblyPaths)
 			{
 				if (!dllPath.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase))
 					continue;
@@ -151,11 +64,11 @@ namespace Duality.Editor
 		/// <summary>
 		/// Initializes all previously loaded plugins.
 		/// </summary>
-		public void InitPlugins()
+		public override void InitPlugins()
 		{
 			Log.Core.Write("Initializing editor plugins...");
 			Log.Core.PushIndent();
-			EditorPlugin[] initPlugins = this.loadedPlugins.Values.ToArray();
+			EditorPlugin[] initPlugins = this.LoadedPlugins.ToArray();
 			foreach (EditorPlugin plugin in initPlugins)
 			{
 				Log.Core.Write("{0}...", plugin.AssemblyName);
@@ -164,72 +77,6 @@ namespace Duality.Editor
 				Log.Core.PopIndent();
 			}
 			Log.Core.PopIndent();
-		}
-
-		/// <summary>
-		/// Adds an already loaded plugin Assembly to the internal Duality EditorPlugin registry.
-		/// You shouldn't need to call this method in general, since Duality manages its plugins
-		/// automatically. 
-		/// </summary>
-		/// <remarks>
-		/// This method can be useful in certain cases when it is necessary to treat an Assembly as a
-		/// Duality plugin, even though it isn't located in the Plugins folder, or is not available
-		/// as a file at all. A typical case for this is Unit Testing where the testing Assembly may
-		/// specify additional Duality types such as Components, Resources, etc.
-		/// </remarks>
-		/// <param name="pluginAssembly"></param>
-		/// <param name="pluginFilePath"></param>
-		/// <returns></returns>
-		public EditorPlugin LoadPlugin(Assembly pluginAssembly, string pluginFilePath)
-		{
-			string asmName = pluginAssembly.GetShortAssemblyName();
-			EditorPlugin plugin = this.loadedPlugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
-			if (plugin != null) return plugin;
-			
-			try
-			{
-				TypeInfo pluginType = pluginAssembly.ExportedTypes
-					.Select(t => t.GetTypeInfo())
-					.FirstOrDefault(t => typeof(EditorPlugin).GetTypeInfo().IsAssignableFrom(t));
-
-				if (pluginType == null) 
-					throw new Exception(string.Format(
-						"Plugin does not contain a public {0} class.", 
-						typeof(EditorPlugin).Name));
-
-				plugin = (EditorPlugin)pluginType.CreateInstanceOf();
-
-				if (plugin == null) 
-					throw new Exception(string.Format(
-						"Failed to instantiate {0} class.", 
-						Log.Type(pluginType.GetType())));
-
-				this.loadedPlugins.Add(plugin.AssemblyName, plugin);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error loading plugin: {0}", Log.Exception(e));
-				plugin = null;
-			}
-
-			return plugin;
-		}
-		/// <summary>
-		/// Initializes the specified plugin. This concludes a manual plugin load or reload operation
-		/// using API like <see cref="LoadPlugin"/> and <see cref="ReloadPlugin"/>.
-		/// </summary>
-		/// <param name="plugin"></param>
-		public void InitPlugin(EditorPlugin plugin)
-		{
-			try
-			{
-				plugin.InitPlugin(DualityEditorApp.MainForm);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
-				this.loadedPlugins.Remove(plugin.AssemblyName);
-			}
 		}
 
 		/// <summary>
@@ -268,32 +115,19 @@ namespace Duality.Editor
 			}
 		}
 
-		private EditorPlugin LoadPlugin(string pluginFilePath)
+		protected override void OnInit()
 		{
-			// Check for already loaded plugins first
-			string asmName = PathOp.GetFileNameWithoutExtension(pluginFilePath);
-			EditorPlugin plugin = this.loadedPlugins.Values.FirstOrDefault(p => p.AssemblyName == asmName);
-			if (plugin != null) return plugin;
-
-			// Load the assembly from the specified path
-			Assembly pluginAssembly = null;
-			try
-			{
-				pluginAssembly = this.pluginLoader.LoadAssembly(pluginFilePath, true);
-			}
-			catch (Exception e)
-			{
-				Log.Core.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
-				plugin = null;
-			}
-
-			// If we succeeded, register the loaded assembly as a plugin
-			if (pluginAssembly != null)
-			{
-				plugin = this.LoadPlugin(pluginAssembly, pluginFilePath);
-			}
-
-			return plugin;
+			base.OnInit();
+			this.PluginLoader.AssemblyResolve += this.pluginLoader_AssemblyResolve;
+		}
+		protected override void OnTerminate()
+		{
+			base.OnTerminate();
+			this.PluginLoader.AssemblyResolve -= this.pluginLoader_AssemblyResolve;
+		}
+		protected override void OnInitPlugin(EditorPlugin plugin)
+		{
+			plugin.InitPlugin(DualityEditorApp.MainForm);
 		}
 
 		private void pluginLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
@@ -301,33 +135,22 @@ namespace Duality.Editor
 			// Early-out, if the Assembly has already been resolved
 			if (args.IsResolved) return;
 
-			// First assume we are searching for a dynamically loaded plugin assembly
-			EditorPlugin plugin;
-			if (this.loadedPlugins.TryGetValue(args.AssemblyName, out plugin))
+			// Search for editor plugins that haven't been loaded yet, and load them first.
+			// This is required to satisfy dependencies while loading plugins, since
+			// we can't know which one requires which beforehand.
+			foreach (string libFile in this.PluginLoader.AvailableAssemblyPaths)
 			{
-				args.Resolve(plugin.PluginAssembly);
-				return;
-			}
-			// Not there? Search for other libraries in the Plugins folder
-			else
-			{
-				// Search for editor plugins that haven't been loaded yet, and load them first.
-				// This is required to satisfy dependencies while loading plugins, since
-				// we can't know which one requires which beforehand.
-				foreach (string libFile in this.pluginLoader.AvailableAssemblyPaths)
-				{
-					if (!libFile.EndsWith(".editor.dll", StringComparison.OrdinalIgnoreCase))
-						continue;
+				if (!libFile.EndsWith(".editor.dll", StringComparison.OrdinalIgnoreCase))
+					continue;
 
-					string libName = PathOp.GetFileNameWithoutExtension(libFile);
-					if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
+				string libName = PathOp.GetFileNameWithoutExtension(libFile);
+				if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
+				{
+					EditorPlugin plugin = this.LoadPlugin(libFile);
+					if (plugin != null)
 					{
-						plugin = this.LoadPlugin(libFile);
-						if (plugin != null)
-						{
-							args.Resolve(plugin.PluginAssembly);
-							return;
-						}
+						args.Resolve(plugin.PluginAssembly);
+						return;
 					}
 				}
 			}

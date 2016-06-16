@@ -90,10 +90,10 @@ namespace Duality.Editor.Tests.PluginManager
 				// Assert that we can access all assemblies and types from plugins
 				foreach (MockAssembly mockAssembly in mockPlugins)
 				{
-					CollectionAssert.Contains(pluginManager.GetEditorAssemblies(), mockAssembly);
+					CollectionAssert.Contains(pluginManager.GetAssemblies(), mockAssembly);
 				}
-				CollectionAssert.Contains(pluginManager.GetEditorTypes(typeof(object)), typeof(MockEditorPlugin));
-				Assert.AreEqual(3, pluginManager.GetEditorTypes(typeof(MockEditorPlugin)).Count());
+				CollectionAssert.Contains(pluginManager.GetTypes(typeof(object)), typeof(MockEditorPlugin));
+				Assert.AreEqual(3, pluginManager.GetTypes(typeof(MockEditorPlugin)).Count());
 
 				pluginManager.Terminate();
 			}

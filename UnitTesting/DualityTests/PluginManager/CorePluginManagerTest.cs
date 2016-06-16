@@ -93,10 +93,10 @@ namespace Duality.Tests.PluginManager
 				// Assert that we can access all assemblies and types from plugins
 				foreach (MockAssembly mockAssembly in mockPlugins)
 				{
-					CollectionAssert.Contains(pluginManager.GetCoreAssemblies(), mockAssembly);
+					CollectionAssert.Contains(pluginManager.GetAssemblies(), mockAssembly);
 				}
-				CollectionAssert.Contains(pluginManager.GetCoreTypes(typeof(object)), typeof(MockCorePlugin));
-				Assert.AreEqual(3, pluginManager.GetCoreTypes(typeof(MockCorePlugin)).Count());
+				CollectionAssert.Contains(pluginManager.GetTypes(typeof(object)), typeof(MockCorePlugin));
+				Assert.AreEqual(3, pluginManager.GetTypes(typeof(MockCorePlugin)).Count());
 
 				pluginManager.Terminate();
 			}

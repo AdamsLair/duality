@@ -130,11 +130,7 @@ namespace Duality
 		/// Fired whenever a core plugin has been initialized. This is the case after loading or reloading one.
 		/// </summary>
 		[Obsolete("Use DualityApp.PluginManager instead.")]
-		public static event EventHandler<CorePluginEventArgs> PluginReady
-		{
-			add { pluginManager.PluginsReady += value; }
-			remove { pluginManager.PluginsReady -= value; }
-		}
+		public static event EventHandler<CorePluginEventArgs> PluginReady = null;
 
 		
 		/// <summary>
@@ -360,6 +356,7 @@ namespace Duality
 
 				pluginLoader.Init();
 				pluginManager.Init(pluginLoader);
+				pluginManager.PluginsReady += pluginManager_PluginsReady;
 				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
 				pluginManager.PluginsRemoved += pluginManager_PluginsRemoved;
 			}
@@ -465,6 +462,7 @@ namespace Duality
 
 			// Shut down the plugin manager and plugin loader
 			pluginManager.Terminate();
+			pluginManager.PluginsReady -= pluginManager_PluginsReady;
 			pluginManager.PluginsRemoving -= pluginManager_PluginsRemoving;
 			pluginManager.PluginsRemoved -= pluginManager_PluginsRemoved;
 			pluginLoader.Terminate();
@@ -680,7 +678,7 @@ namespace Duality
 		/// <returns></returns>
 		public static IEnumerable<Assembly> GetDualityAssemblies()
 		{
-			return pluginManager.GetCoreAssemblies();
+			return pluginManager.GetAssemblies();
 		}
 		/// <summary>
 		/// Enumerates all available Duality <see cref="System.Type">Types</see> that are assignable
@@ -700,7 +698,7 @@ namespace Duality
 		/// </example>
 		public static IEnumerable<TypeInfo> GetAvailDualityTypes(Type baseType)
 		{
-			return pluginManager.GetCoreTypes(baseType);
+			return pluginManager.GetTypes(baseType);
 		}
 
 		private static void UpdateUserInput()
@@ -856,7 +854,12 @@ namespace Duality
 				Terminating(null, EventArgs.Empty);
 		}
 		
-		private static void pluginManager_PluginsRemoving(object sender, CorePluginEventArgs e)
+		private static void pluginManager_PluginsReady(object sender, DualityPluginEventArgs e)
+		{
+			if (PluginReady != null)
+				PluginReady(sender, new CorePluginEventArgs(e.Plugins.OfType<CorePlugin>()));
+		}
+		private static void pluginManager_PluginsRemoving(object sender, DualityPluginEventArgs e)
 		{
 			// Wrapper method for delivering the old API until removing it in v3.0
 			if (DiscardPluginData != null)
@@ -869,7 +872,7 @@ namespace Duality
 			foreach (Resource r in ContentProvider.EnumeratePluginContent().ToArray())
 				ContentProvider.RemoveContent(r.Path);
 		}
-		private static void pluginManager_PluginsRemoved(object sender, CorePluginEventArgs e)
+		private static void pluginManager_PluginsRemoved(object sender, DualityPluginEventArgs e)
 		{
 			// Clean globally cached type data
 			ImageCodec.ClearTypeCache();

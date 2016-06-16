@@ -384,11 +384,11 @@ namespace Duality.Editor
 
 		public static IEnumerable<Assembly> GetDualityEditorAssemblies()
 		{
-			return pluginManager.GetEditorAssemblies();
+			return pluginManager.GetAssemblies();
 		}
 		public static IEnumerable<TypeInfo> GetAvailDualityEditorTypes(Type baseType)
 		{
-			return pluginManager.GetEditorTypes(baseType);
+			return pluginManager.GetTypes(baseType);
 		}
 		/// <summary>
 		/// Enumerates editor user actions that can be applied to objects of the specified type.
@@ -1476,7 +1476,7 @@ namespace Duality.Editor
 			}
 			corePluginReloader.State = ReloadCorePluginDialog.ReloaderState.WaitForPlugins;
 		}
-		private static void DualityApp_PluginsReady(object sender, CorePluginEventArgs e)
+		private static void DualityApp_PluginsReady(object sender, DualityPluginEventArgs e)
 		{
 			foreach (CorePlugin plugin in e.Plugins)
 			{

@@ -4,9 +4,7 @@ using System.Linq;
 
 namespace Duality
 {
-	/// <summary>
-	/// Provides event arguments related to <see cref="Duality.CorePlugin"/> instances.
-	/// </summary>
+	[Obsolete("Use DualityPluginEventArgs instead.")]
 	public class CorePluginEventArgs : EventArgs
 	{
 		private CorePlugin[] plugins;

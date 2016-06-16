@@ -101,6 +101,8 @@
     <Compile Include="Backend\PluginLoader\AssemblyLoadedEventArgs.cs" />
     <Compile Include="Backend\PluginLoader\AssemblyResolveEventArgs.cs" />
     <Compile Include="Components\Physics\Shapes\ChainShapeInfo.cs" />
+    <Compile Include="DualityPlugin.cs" />
+    <Compile Include="PluginManager.cs" />
     <Compile Include="CorePluginManager.cs" />
     <Compile Include="Input\JoystickHatEventArgs.cs" />
     <Compile Include="Input\JoystickHatPosition.cs" />
@@ -187,6 +189,7 @@
     <Compile Include="Utility\EditorHints\EditorHintAttribute.cs" />
     <Compile Include="Utility\EditorHints\MemberFlags.cs" />
     <Compile Include="Utility\EventArgs\CorePluginEventArgs.cs" />
+    <Compile Include="Utility\EventArgs\DualityPluginEventArgs.cs" />
     <Compile Include="Utility\EventArgs\ComponentEventArgs.cs" />
     <Compile Include="Utility\EventArgs\CollisionEventArgs.cs" />
     <Compile Include="Utility\EventArgs\TransformChangedEventArgs.cs" />

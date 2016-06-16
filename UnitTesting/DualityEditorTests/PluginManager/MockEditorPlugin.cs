@@ -31,8 +31,8 @@ namespace Duality.Editor.Tests.PluginManager
 		protected MockEditorPlugin()
 		{
 			// Create mocked assembly and assembly name values via test callback
-			FieldInfo assemblyField = typeof(EditorPlugin).GetField("assembly", BindingFlags.Instance | BindingFlags.NonPublic);
-			FieldInfo assemblyNameField = typeof(EditorPlugin).GetField("asmName", BindingFlags.Instance | BindingFlags.NonPublic);
+			FieldInfo assemblyField = typeof(DualityPlugin).GetField("assembly", BindingFlags.Instance | BindingFlags.NonPublic);
+			FieldInfo assemblyNameField = typeof(DualityPlugin).GetField("asmName", BindingFlags.Instance | BindingFlags.NonPublic);
 
 			// Can't proceed with test, if we're unable to properly mock the CorePlugin implementation
 			if (assemblyField == null) Assert.Inconclusive("Can't create proper MockCorePlugin");
