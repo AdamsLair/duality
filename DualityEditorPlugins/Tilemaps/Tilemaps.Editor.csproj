@@ -183,29 +183,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\IconTileBrush.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\IconTileFill.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\IconTileRect.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\IconTileSelect.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\CursorTileBrush.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\CursorTileFill.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\CursorTileOval.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\CursorTileRect.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="EmbeddedResources\IconResize.png" />
     <None Include="EmbeddedResources\IconTilesetEditor.png" />
     <None Include="EmbeddedResources\IconTilesetCollisionInfo.png" />
