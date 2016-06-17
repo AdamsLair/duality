@@ -26,7 +26,10 @@ namespace Duality
 		/// <see cref="CorePluginManager"/> should usually not be instantiated by users due to 
 		/// its forced singleton-like usage. Use <see cref="DualityApp.PluginManager"/> instead.
 		/// </summary>
-		internal CorePluginManager() { }
+		internal CorePluginManager()
+		{
+			this.PluginLog = Log.Core;
+		}
 		
 		/// <summary>
 		/// Enumerates all currently loaded assemblies that are part of Duality, i.e. Duality itsself and all loaded plugins.
@@ -42,8 +45,8 @@ namespace Duality
 		/// </summary>
 		public override void LoadPlugins()
 		{
-			Log.Core.Write("Scanning for core plugins...");
-			Log.Core.PushIndent();
+			this.PluginLog.Write("Scanning for core plugins...");
+			this.PluginLog.PushIndent();
 
 			List<string> auxilLibs = new List<string>();
 			foreach (string dllPath in this.PluginLoader.AvailableAssemblyPaths)
@@ -55,21 +58,21 @@ namespace Duality
 					continue;
 				}
 
-				Log.Core.Write("{0}...", dllPath);
-				Log.Core.PushIndent();
+				this.PluginLog.Write("{0}...", dllPath);
+				this.PluginLog.PushIndent();
 				this.LoadPlugin(dllPath);
-				Log.Core.PopIndent();
+				this.PluginLog.PopIndent();
 			}
 
-			Log.Core.PopIndent();
+			this.PluginLog.PopIndent();
 
 			// Make sure to have all plugin-related Assemblies available even before even
 			// getting an AssemblyResolve event - we might need to resolve their Types due
 			// to deserialization, which may happen before touching any related class in code.
 			if (auxilLibs.Count > 0)
 			{
-				Log.Core.Write("Loading auxiliary libraries...");
-				Log.Core.PushIndent();
+				this.PluginLog.Write("Loading auxiliary libraries...");
+				this.PluginLog.PushIndent();
 
 				foreach (string dllPath in auxilLibs)
 				{
@@ -82,7 +85,7 @@ namespace Duality
 					catch (BadImageFormatException) { }
 				}
 
-				Log.Core.PopIndent();
+				this.PluginLog.PopIndent();
 			}
 		}
 		/// <summary>
@@ -90,17 +93,17 @@ namespace Duality
 		/// </summary>
 		public override void InitPlugins()
 		{
-			Log.Core.Write("Initializing core plugins...");
-			Log.Core.PushIndent();
+			this.PluginLog.Write("Initializing core plugins...");
+			this.PluginLog.PushIndent();
 			CorePlugin[] initPlugins = this.LoadedPlugins.ToArray();
 			foreach (CorePlugin plugin in initPlugins)
 			{
-				Log.Core.Write("{0}...", plugin.AssemblyName);
-				Log.Core.PushIndent();
+				this.PluginLog.Write("{0}...", plugin.AssemblyName);
+				this.PluginLog.PushIndent();
 				this.InitPlugin(plugin);
-				Log.Core.PopIndent();
+				this.PluginLog.PopIndent();
 			}
-			Log.Core.PopIndent();
+			this.PluginLog.PopIndent();
 		}
 
 		/// <summary>

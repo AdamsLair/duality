@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>2.1.0</version>
+    <version>2.1.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
@@ -13,10 +13,12 @@
     <summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
     <tags>Duality Launcher</tags>
-    <releaseNotes>Dummy Commit
-#CHANGE: Dummy commit to introduce shared DefaultPluginLoader changes to DualityLauncher.</releaseNotes>
+    <releaseNotes>Minor Plugin Loader Bugfixes, Console Log Tweaks
+#FIX: Fixed a potential null reference exception when logging a failure to resolve an Assembly.
+#CHANGE: Console logs are now greyed out based on a repetition memory that is three lines long, rather than just one. 
+#CHANGE: When greying out similar log lines, leading whitespace is no longer regarded as different.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.6.0" />
+      <dependency id="AdamsLair.Duality" version="2.6.1" />
     </dependencies>
   </metadata>
   <files>

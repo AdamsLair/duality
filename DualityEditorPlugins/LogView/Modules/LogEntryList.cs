@@ -35,9 +35,9 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		public class ViewEntry
 		{
-			private LogEntryList parent   = null;
 			private LogEntry     log      = default(LogEntry);
 			private int          msgLines = 1;
+			private int          height   = 0;
 			
 			public LogEntry LogEntry
 			{
@@ -45,7 +45,7 @@ namespace Duality.Editor.Plugins.LogView
 			}
 			public int Height
 			{
-				get { return Math.Max(20, 7 + this.msgLines * this.parent.Font.Height); }
+				get { return this.height; }
 			}
 			public int Indent
 			{
@@ -72,14 +72,13 @@ namespace Duality.Editor.Plugins.LogView
 
 			public ViewEntry(LogEntryList parent, LogEntry log)
 			{
-				this.parent = parent;
 				this.log = log;
 				this.msgLines = log.Message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
+				this.height = Math.Max(20, 7 + this.msgLines * parent.Font.Height);
 			}
 
-			public bool Matches(DateTime minTime, MessageFilter filter)
+			public bool Matches(MessageFilter filter)
 			{
-				if (this.log.TimeStamp < minTime) return false;
 				if (this.log.Type == LogMessageType.Message && (filter & MessageFilter.TypeMessage) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Warning && (filter & MessageFilter.TypeWarning) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Error && (filter & MessageFilter.TypeError) == MessageFilter.None) return false;
@@ -121,18 +120,22 @@ namespace Duality.Editor.Plugins.LogView
 		}
 
 
-		private	List<ViewEntry>		entryList			= new List<ViewEntry>();
-		private	MessageFilter		displayFilter		= MessageFilter.All;
-		private	DateTime			displayMinTime		= DateTime.MinValue;
-		private	Color				baseColor			= SystemColors.Control;
-		private	bool				boundToDualityLogs	= false;
-		private	bool				scrolledToEnd		= true;
-		private	bool				lastSelected		= true;
-		private	ViewEntry			hoveredEntry		= null;
-		private	ViewEntry			selectedEntry		= null;
-		private	ContextMenuStrip	entryMenu			= null;
-		private Timer				timerLogSchedule	= null;
-		private	RawList<LogEntry>   logSchedule         = new RawList<LogEntry>();
+		private List<ViewEntry>     entryList          = new List<ViewEntry>();
+		private List<ViewEntry>     displayedEntryList = new List<ViewEntry>();
+		private MessageFilter       displayFilter      = MessageFilter.All;
+		private Color               baseColor          = SystemColors.Control;
+		private bool                boundToDualityLogs = false;
+		private bool                scrolledToEnd      = true;
+		private bool                lastSelected       = true;
+		private int                 firstDisplayIndex  = 0;
+		private int                 firstDisplayOffset = 0;
+		private ViewEntry           hoveredEntry       = null;
+		private ViewEntry           selectedEntry      = null;
+		private ContextMenuStrip    entryMenu          = null;
+		private Timer               timerLogSchedule   = null;
+		private RawList<LogEntry>   logSchedule        = new RawList<LogEntry>();
+		private bool                logScheduleActive  = false;
+		private object              logScheduleLock    = new object();
 		private System.ComponentModel.IContainer components = null;
 
 
@@ -147,7 +150,7 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		public IEnumerable<ViewEntry> DisplayedEntries
 		{
-			get { return this.entryList.Where(e => e.Matches(this.displayMinTime, this.displayFilter)); }
+			get { return this.displayedEntryList; }
 		}
 		public ViewEntry SelectedEntry
 		{
@@ -184,20 +187,6 @@ namespace Duality.Editor.Plugins.LogView
 				int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
 
 				this.displayFilter = value;
-				this.OnContentChanged();
-
-				this.ScrollToEntry(lastEntry, entryOff);
-			}
-		}
-		public DateTime DisplayMinTime
-		{
-			get { return this.displayMinTime; }
-			set
-			{
-				ViewEntry lastEntry = this.GetEntryAt(this.ScrollOffset);
-				int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
-
-				this.displayMinTime = value;
 				this.OnContentChanged();
 
 				this.ScrollToEntry(lastEntry, entryOff);
@@ -245,12 +234,14 @@ namespace Duality.Editor.Plugins.LogView
 		public void Clear()
 		{
 			this.entryList.Clear();
+			this.UpdateDisplayedEntries();
 			this.OnContentChanged();
 		}
 		public ViewEntry AddEntry(LogEntry entry)
 		{
 			ViewEntry viewEntry = new ViewEntry(this, entry);
 			this.entryList.Add(viewEntry);
+			this.UpdateDisplayedEntries();
 
 			if (this.NewEntry != null)
 				this.NewEntry(this, new ViewEntryEventArgs(viewEntry));
@@ -260,11 +251,19 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		public void AddEntries(LogEntry[] entries, int count)
 		{
+			// Update content
+			List<ViewEntry> newEntries = new List<ViewEntry>(entries.Length);
 			for (int i = 0; i < count; i++)
 			{
 				ViewEntry viewEntry = new ViewEntry(this, entries[i]);
 				this.entryList.Add(viewEntry);
+				newEntries.Add(viewEntry);
+			}
+			this.UpdateDisplayedEntries();
 
+			// Fire events
+			foreach (ViewEntry viewEntry in newEntries)
+			{
 				if (this.NewEntry != null)
 					this.NewEntry(this, new ViewEntryEventArgs(viewEntry));
 			}
@@ -281,6 +280,7 @@ namespace Duality.Editor.Plugins.LogView
 			this.entryList.Clear();
 			for (int i = 0; i < dataLog.Entries.Count; i++)
 				this.entryList.Add(new ViewEntry(this, dataLog.Entries[i]));
+			this.UpdateDisplayedEntries();
 
 			this.OnContentChanged();
 		}
@@ -329,7 +329,7 @@ namespace Duality.Editor.Plugins.LogView
 		public int GetEntryOffset(ViewEntry entry)
 		{
 			int totalHeight = 0;
-			foreach (ViewEntry e in this.DisplayedEntries)
+			foreach (ViewEntry e in this.displayedEntryList)
 			{
 				if (e == entry) break;
 				totalHeight += e.Height;
@@ -339,10 +339,16 @@ namespace Duality.Editor.Plugins.LogView
 		public ViewEntry GetEntryAt(int offsetY)
 		{
 			int totalHeight = 0;
-			foreach (ViewEntry entry in this.DisplayedEntries)
+			int startIndex = 0;
+			if (offsetY > this.firstDisplayOffset)
 			{
-				totalHeight += entry.Height;
-				if (totalHeight >= offsetY) return entry;
+				totalHeight = this.firstDisplayOffset;
+				startIndex = this.firstDisplayIndex;
+			}
+			for (int i = startIndex; i < this.displayedEntryList.Count; i++)
+			{
+				totalHeight += this.displayedEntryList[i].Height;
+				if (totalHeight >= offsetY) return this.displayedEntryList[i];
 			}
 			return null;
 		}
@@ -352,6 +358,37 @@ namespace Duality.Editor.Plugins.LogView
 			bool wasAtEnd = this.IsScrolledToEnd;
 			this.AddEntries(entries, count);
 			if (wasAtEnd) this.ScrollToEnd();
+		}
+		private void UpdateFirstDisplayIndex()
+		{
+			this.firstDisplayIndex = 0;
+			this.firstDisplayOffset = 0;
+
+			int offsetY = 0;
+			for (int i = 0; i < this.displayedEntryList.Count; i++)
+			{
+				int entryHeight = this.displayedEntryList[i].Height;
+
+				if (offsetY + entryHeight >= -this.AutoScrollPosition.Y)
+				{
+					this.firstDisplayIndex = i;
+					this.firstDisplayOffset = offsetY;
+					break;
+				}
+
+				offsetY += entryHeight;
+				if (offsetY > this.ClientRectangle.Height + (-this.AutoScrollPosition.Y))
+					break;
+			}
+		}
+		private void UpdateDisplayedEntries()
+		{
+			this.displayedEntryList.Clear();
+			for (int i = 0; i < this.entryList.Count; i++)
+			{
+				if (!this.entryList[i].Matches(this.displayFilter)) continue;
+				this.displayedEntryList.Add(this.entryList[i]);
+			}
 		}
 		private void UpdateScrolledToEnd()
 		{
@@ -372,14 +409,15 @@ namespace Duality.Editor.Plugins.LogView
 		private void UpdateContentSize()
 		{
 			this.AutoScrollMinSize = new Size(0, this.GetEntryOffset(null));
+			this.UpdateFirstDisplayIndex();
 		}
 		private void OnContentChanged()
 		{
 			this.UpdateContentSize();
 			this.UpdateHoveredEntry(this.PointToClient(Cursor.Position));
 			if (this.lastSelected)
-				this.SelectedEntry = this.DisplayedEntries.LastOrDefault();
-			else if (!this.DisplayedEntries.Contains(this.SelectedEntry))
+				this.SelectedEntry = this.displayedEntryList.LastOrDefault();
+			else if (!this.displayedEntryList.Contains(this.SelectedEntry))
 				this.SelectedEntry = null;
 			this.Invalidate();
 
@@ -389,7 +427,7 @@ namespace Duality.Editor.Plugins.LogView
 		private void OnSelectionChanged()
 		{
 			this.Invalidate();
-			this.lastSelected = this.SelectedEntry == this.DisplayedEntries.LastOrDefault();
+			this.lastSelected = this.SelectedEntry == this.displayedEntryList.LastOrDefault();
 			if (this.SelectionChanged != null)
 				this.SelectionChanged(this, EventArgs.Empty);
 		}
@@ -418,15 +456,15 @@ namespace Duality.Editor.Plugins.LogView
 
 			e.Graphics.FillRectangle(baseBrush, this.ClientRectangle);
 
-			int offsetY = 0;
-			bool evenEntry = false;
+			int offsetY = this.firstDisplayOffset;
 			bool showTimestamp = this.ClientRectangle.Width >= 350;
 			bool showFramestamp = this.ClientRectangle.Width >= 400;
 			int timeStampWidth = this.Font.Height * 6;
 			int frameStampWidth = this.Font.Height * 5;
 			Size textMargin = new Size(10, 2);
-			foreach (ViewEntry entry in this.DisplayedEntries)
+			for (int i = this.firstDisplayIndex; i < this.displayedEntryList.Count; i++)
 			{
+				ViewEntry entry = this.displayedEntryList[i];
 				int entryHeight = entry.Height;
 
 				if (offsetY + entryHeight >= -this.AutoScrollPosition.Y)
@@ -466,7 +504,7 @@ namespace Duality.Editor.Plugins.LogView
 					}
 
 					bool highlightBgColor = (this.selectedEntry == entry && this.Focused) || this.hoveredEntry == entry;
-					e.Graphics.FillRectangle((evenEntry && !highlightBgColor) ? backgroundBrushAlt : backgroundBrush, entryRect);
+					e.Graphics.FillRectangle(((i % 2) == 0 && !highlightBgColor) ? backgroundBrushAlt : backgroundBrush, entryRect);
 					if (entry.LogEntry.Type == LogMessageType.Warning)
 						e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(64, 245, 200, 85)), entryRect);
 					else if (entry.LogEntry.Type == LogMessageType.Error)
@@ -531,7 +569,6 @@ namespace Duality.Editor.Plugins.LogView
 				}
 
 				offsetY += entryHeight;
-				evenEntry = !evenEntry;
 				if (offsetY > this.ClientRectangle.Height + (-this.AutoScrollPosition.Y)) break;
 			}
 		}
@@ -545,6 +582,7 @@ namespace Duality.Editor.Plugins.LogView
 		protected override void OnScroll(ScrollEventArgs se)
 		{
 			base.OnScroll(se);
+			this.UpdateFirstDisplayIndex();
 			this.UpdateScrolledToEnd();
 			this.UpdateHoveredEntry(this.PointToClient(Cursor.Position));
 		}
@@ -552,6 +590,7 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			int wheelDivisor = Math.Max(1, 800 / this.ClientSize.Height);
 			base.OnMouseWheel(new MouseEventArgs(e.Button, e.Clicks, e.X, e.Y, Math.Sign(e.Delta) * Math.Max(Math.Abs(e.Delta) / wheelDivisor, 1)));
+			this.UpdateFirstDisplayIndex();
 			this.UpdateScrolledToEnd();
 			this.UpdateHoveredEntry(this.PointToClient(Cursor.Position));
 		}
@@ -614,16 +653,16 @@ namespace Duality.Editor.Plugins.LogView
 			{
 				this.entryMenu_CopyItem_Click(this, EventArgs.Empty);
 			}
-			else if (e.KeyCode == Keys.Down && this.DisplayedEntries.Any())
+			else if (e.KeyCode == Keys.Down && this.displayedEntryList.Any())
 			{
-				ViewEntry[] visEntries = this.DisplayedEntries.ToArray();
-				this.SelectedEntry = visEntries[MathF.Clamp(visEntries.IndexOfFirst(this.SelectedEntry) + 1, 0, visEntries.Length - 1)];
+				int newEntryIndex = MathF.Clamp(this.displayedEntryList.IndexOfFirst(this.SelectedEntry) + 1, 0, this.displayedEntryList.Count - 1);
+				this.SelectedEntry = this.displayedEntryList[newEntryIndex];
 				this.EnsureVisible(this.SelectedEntry);
 			}
-			else if (e.KeyCode == Keys.Up && this.DisplayedEntries.Any())
+			else if (e.KeyCode == Keys.Up && this.displayedEntryList.Any())
 			{
-				ViewEntry[] visEntries = this.DisplayedEntries.ToArray();
-				this.SelectedEntry = visEntries[MathF.Clamp(visEntries.IndexOfFirst(this.SelectedEntry) - 1, 0, visEntries.Length - 1)];
+				int newEntryIndex = MathF.Clamp(this.displayedEntryList.IndexOfFirst(this.SelectedEntry) - 1, 0, this.displayedEntryList.Count - 1);
+				this.SelectedEntry = this.displayedEntryList[newEntryIndex];
 				this.EnsureVisible(this.SelectedEntry);
 			}
 		}
@@ -632,19 +671,20 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			// Process a clone of the logSchedule to prevent any interference due to cross-thread logs
 			LogEntry[] logScheduleArray = null;
-			lock (this.logSchedule)
+			lock (this.logScheduleLock)
 			{
 				logScheduleArray = new LogEntry[this.logSchedule.Count];
 				Array.Copy(this.logSchedule.Data, logScheduleArray, this.logSchedule.Count);
 				this.logSchedule.Clear();
+				this.timerLogSchedule.Enabled = false;
+				this.logScheduleActive = false;
 			}
 			this.ProcessIncomingEntries(logScheduleArray, logScheduleArray.Length);
-			this.timerLogSchedule.Enabled = false;
 		}
 		private void entryMenu_CopyAllItems_Click(object sender, EventArgs e)
 		{
 			StringBuilder completeLog = new StringBuilder();
-			foreach (ViewEntry entry in this.DisplayedEntries)
+			foreach (ViewEntry entry in this.displayedEntryList)
 			{
 				entry.GetFullText(completeLog);
 				completeLog.AppendLine();
@@ -658,15 +698,16 @@ namespace Duality.Editor.Plugins.LogView
 
 		void ILogOutput.Write(LogEntry entry)
 		{
-			lock (this.logSchedule)
+			lock (this.logScheduleLock)
 			{
 				this.logSchedule.Add(entry);
-			}
-			if (!this.timerLogSchedule.Enabled)
-			{
-				// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
-				// and thus lead to a deadlock when something is logged while it is.
-				this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
+				if (!this.logScheduleActive)
+				{
+					// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
+					// and thus lead to a deadlock when something is logged while it is.
+					this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
+					this.logScheduleActive = true;
+				}
 			}
 		}
 	}
