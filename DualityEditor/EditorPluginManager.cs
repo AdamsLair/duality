@@ -30,7 +30,10 @@ namespace Duality.Editor
 		/// <see cref="EditorPluginManager"/> should usually not be instantiated by users due to 
 		/// its forced singleton-like usage. Use <see cref="DualityApp.PluginManager"/> instead.
 		/// </summary>
-		internal EditorPluginManager() { }
+		internal EditorPluginManager()
+		{
+			this.PluginLog = Log.Editor;
+		}
 
 		/// <summary>
 		/// Enumerates all currently loaded editor assemblies that are part of Duality, i.e. 
@@ -47,38 +50,38 @@ namespace Duality.Editor
 		/// </summary>
 		public override void LoadPlugins()
 		{
-			Log.Editor.Write("Scanning for editor plugins...");
-			Log.Editor.PushIndent();
+			this.PluginLog.Write("Scanning for editor plugins...");
+			this.PluginLog.PushIndent();
 
 			foreach (string dllPath in this.PluginLoader.AvailableAssemblyPaths)
 			{
 				if (!dllPath.EndsWith(".editor.dll", StringComparison.InvariantCultureIgnoreCase))
 					continue;
 
-				Log.Core.Write("{0}...", dllPath);
-				Log.Editor.PushIndent();
+				this.PluginLog.Write("{0}...", dllPath);
+				this.PluginLog.PushIndent();
 				LoadPlugin(dllPath);
-				Log.Editor.PopIndent();
+				this.PluginLog.PopIndent();
 			}
 
-			Log.Editor.PopIndent();
+			this.PluginLog.PopIndent();
 		}
 		/// <summary>
 		/// Initializes all previously loaded plugins.
 		/// </summary>
 		public override void InitPlugins()
 		{
-			Log.Core.Write("Initializing editor plugins...");
-			Log.Core.PushIndent();
+			this.PluginLog.Write("Initializing editor plugins...");
+			this.PluginLog.PushIndent();
 			EditorPlugin[] initPlugins = this.LoadedPlugins.ToArray();
 			foreach (EditorPlugin plugin in initPlugins)
 			{
-				Log.Core.Write("{0}...", plugin.AssemblyName);
-				Log.Core.PushIndent();
+				this.PluginLog.Write("{0}...", plugin.AssemblyName);
+				this.PluginLog.PushIndent();
 				this.InitPlugin(plugin);
-				Log.Core.PopIndent();
+				this.PluginLog.PopIndent();
 			}
-			Log.Core.PopIndent();
+			this.PluginLog.PopIndent();
 		}
 
 		/// <summary>

@@ -10,6 +10,9 @@ namespace Duality
 {
 	public abstract class PluginManager<T> where T : DualityPlugin
 	{
+		private static readonly Log dummyPluginLog = new Log("Dummy PluginManager Log");
+
+		private Log                             pluginLog       = dummyPluginLog;
 		private IPluginLoader                   pluginLoader    = null;
 		private Dictionary<string,T>            pluginRegistry  = new Dictionary<string,T>();
 		private List<Assembly>                  lockedPlugins   = new List<Assembly>();
@@ -64,6 +67,15 @@ namespace Duality
 		protected IReadOnlyDictionary<string,T> PluginRegistry
 		{
 			get { return this.pluginRegistry; }
+		}
+		/// <summary>
+		/// [GET / SET] An optional <see cref="Log"/> which is used for logging plugin
+		/// loading states and issues.
+		/// </summary>
+		protected Log PluginLog
+		{
+			get { return this.pluginLog; }
+			set { this.pluginLog = value ?? dummyPluginLog; }
 		}
 
 
@@ -175,7 +187,7 @@ namespace Duality
 				}
 				catch (Exception e)
 				{
-					Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+					this.pluginLog.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
 				}
 			}
 			this.OnPluginsRemoved(oldPlugins);
@@ -229,7 +241,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error loading plugin: {0}", Log.Exception(e));
+				this.pluginLog.WriteError("Error loading plugin: {0}", Log.Exception(e));
 				this.disposedPlugins.Add(pluginAssembly);
 				plugin = null;
 			}
@@ -252,7 +264,7 @@ namespace Duality
 					{
 						if (plugin.PluginAssembly == lockedAssembly)
 						{
-							Log.Core.WriteError(
+							this.pluginLog.WriteError(
 								"Can't reload plugin {0}, because it has been locked by the runtime. " + 
 								"This usually happens for plugins that implement a currently active backend.",
 								Log.Assembly(lockedAssembly));
@@ -271,7 +283,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
+				this.pluginLog.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
 				return null;
 			}
 
@@ -308,7 +320,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+				this.pluginLog.WriteError("Error initializing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
 				this.RemovePlugin(plugin);
 			}
 		}
@@ -346,7 +358,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
+				this.pluginLog.WriteError("Error loading plugin Assembly: {0}", Log.Exception(e));
 				plugin = null;
 			}
 
@@ -370,7 +382,7 @@ namespace Duality
 			}
 			catch (Exception e)
 			{
-				Log.Core.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
+				this.pluginLog.WriteError("Error disposing plugin {1}: {0}", Log.Exception(e), plugin.AssemblyName);
 			}
 
 			// Discard temporary plugin-related data (cached Types, etc.)
