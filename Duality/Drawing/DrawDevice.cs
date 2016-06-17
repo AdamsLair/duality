@@ -119,10 +119,7 @@ namespace Duality.Drawing
 			}
 			public bool CanAppendJIT<U>(float invZSortAccuracy, float zSortIndex, BatchInfo material, VertexMode vertexMode) where U : struct, IVertexData
 			{
-				if (invZSortAccuracy > 0.0f)
-				{
-					if (Math.Abs(zSortIndex - this.ZSortIndex) > invZSortAccuracy) return false;
-				}
+				if (invZSortAccuracy != 0.0f && Math.Abs(zSortIndex - this.ZSortIndex) > 0.0000001f) return false;
 				return 
 					vertexMode == this.vertexMode && 
 					this is DrawBatch<U> &&
@@ -175,12 +172,14 @@ namespace Duality.Drawing
 			public static float CalcZSortIndex(T[] vertices, int count = -1)
 			{
 				if (count < 0) count = vertices.Length;
-				float zSortIndex = 0.0f;
+
+				// Require double precision, so we don't get "z fighting" issues in our sort.
+				double zSortIndex = 0.0d;
 				for (int i = 0; i < count; i++)
 				{
 					zSortIndex += vertices[i].Pos.Z;
 				}
-				return zSortIndex / count;
+				return (float)(zSortIndex / (double)count);
 			}
 		}
 		
@@ -194,7 +193,6 @@ namespace Duality.Drawing
 		private	bool				disposed		= false;
 		private	float				nearZ			= 0.0f;
 		private	float				farZ			= 10000.0f;
-		private	float				zSortAccuracy	= 0.0f;
 		private	float				focusDist		= DefaultFocusDist;
 		private	Rect				viewportRect	= Rect.Empty;
 		private	Vector3				refPos			= Vector3.Zero;
@@ -239,26 +237,12 @@ namespace Duality.Drawing
 		public float NearZ
 		{
 			get { return this.nearZ; }
-			set
-			{
-				if (this.nearZ != value)
-				{
-					this.nearZ = value;
-					this.UpdateZSortAccuracy();
-				}
-			}
+			set { this.nearZ = value; }
 		}
 		public float FarZ
 		{
 			get { return this.farZ; }
-			set
-			{
-				if (this.farZ != value)
-				{
-					this.farZ = value;
-					this.UpdateZSortAccuracy();
-				}
-			}
+			set { this.farZ = value; }
 		}
 		/// <summary>
 		/// [GET / SET] Specified the perspective effect that is applied when rendering the world.
@@ -301,12 +285,8 @@ namespace Duality.Drawing
 			get { return this.viewportRect.Size; }
 		}
 
-		
-		public DrawDevice()
-		{
-			this.UpdateZSortAccuracy();
-		}
 
+		public DrawDevice() { }
 		~DrawDevice()
 		{
 			this.Dispose(false);
@@ -560,10 +540,10 @@ namespace Duality.Drawing
 			float zSortIndex = zSort ? DrawBatch<T>.CalcZSortIndex(vertexBuffer, vertexCount) : 0.0f;
 
 			if (buffer.Count > 0 && buffer[buffer.Count - 1].CanAppendJIT<T>(	
-					zSort ? 1.0f / this.zSortAccuracy : 0.0f, 
-					zSortIndex, 
-					material, 
-					vertexMode))
+				zSort ? 1.0f : 0.0f, // Obsolete as of 2016-06-17, can be replcaed with zSort bool.
+				zSortIndex, 
+				material, 
+				vertexMode))
 			{
 				buffer[buffer.Count - 1].AppendJIT(vertexBuffer, vertexCount);
 			}
@@ -625,10 +605,6 @@ namespace Duality.Drawing
 		}
 
 
-		private void UpdateZSortAccuracy()
-		{
-			this.zSortAccuracy = 10000000.0f / Math.Max(1.0f, Math.Abs(this.farZ - this.nearZ));
-		}
 		private void GenerateModelView(out Matrix4 mvMat)
 		{
 			mvMat = Matrix4.Identity;
@@ -677,7 +653,13 @@ namespace Duality.Drawing
 		}
 		private int DrawBatchComparerZSort(IDrawBatch first, IDrawBatch second)
 		{
-			return MathF.RoundToInt((second.ZSortIndex - first.ZSortIndex) * this.zSortAccuracy);
+            if (second.ZSortIndex < first.ZSortIndex) return -1;
+            if (second.ZSortIndex > first.ZSortIndex) return 1;
+            if (second.ZSortIndex == first.ZSortIndex) return 0;
+            if (float.IsNaN(second.ZSortIndex))
+                return (float.IsNaN(first.ZSortIndex) ? 0 : -1);
+            else
+                return 1;
 		}
 		private void OptimizeBatches()
 		{
