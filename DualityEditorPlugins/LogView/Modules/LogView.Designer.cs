@@ -255,7 +255,6 @@
 						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeMessage)
 						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeWarning)
 						| Duality.Editor.Plugins.LogView.LogEntryList.MessageFilter.TypeError)));
-			this.logEntryList.DisplayMinTime = new System.DateTime(((long)(0)));
 			this.logEntryList.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.logEntryList.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.logEntryList.Location = new System.Drawing.Point(0, 0);

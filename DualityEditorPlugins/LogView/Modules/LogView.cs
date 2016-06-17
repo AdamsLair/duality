@@ -181,7 +181,7 @@ namespace Duality.Editor.Plugins.LogView
 		private void buttonPauseOnError_CheckedChanged(object sender, EventArgs e) {}
 		private void actionClear_ButtonClick(object sender, EventArgs e)
 		{
-			this.logEntryList.DisplayMinTime = DateTime.Now;
+			this.logEntryList.Clear();
 			this.MarkAsRead();
 		}
 		private void logEntryList_Enter(object sender, EventArgs e)

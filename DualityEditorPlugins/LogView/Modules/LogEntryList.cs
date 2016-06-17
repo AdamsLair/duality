@@ -77,9 +77,8 @@ namespace Duality.Editor.Plugins.LogView
 				this.msgLines = log.Message.Split(new string[] { Environment.NewLine }, StringSplitOptions.None).Length;
 			}
 
-			public bool Matches(DateTime minTime, MessageFilter filter)
+			public bool Matches(MessageFilter filter)
 			{
-				if (this.log.TimeStamp < minTime) return false;
 				if (this.log.Type == LogMessageType.Message && (filter & MessageFilter.TypeMessage) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Warning && (filter & MessageFilter.TypeWarning) == MessageFilter.None) return false;
 				if (this.log.Type == LogMessageType.Error && (filter & MessageFilter.TypeError) == MessageFilter.None) return false;
@@ -123,7 +122,6 @@ namespace Duality.Editor.Plugins.LogView
 
 		private	List<ViewEntry>		entryList			= new List<ViewEntry>();
 		private	MessageFilter		displayFilter		= MessageFilter.All;
-		private	DateTime			displayMinTime		= DateTime.MinValue;
 		private	Color				baseColor			= SystemColors.Control;
 		private	bool				boundToDualityLogs	= false;
 		private	bool				scrolledToEnd		= true;
@@ -147,7 +145,7 @@ namespace Duality.Editor.Plugins.LogView
 		}
 		public IEnumerable<ViewEntry> DisplayedEntries
 		{
-			get { return this.entryList.Where(e => e.Matches(this.displayMinTime, this.displayFilter)); }
+			get { return this.entryList.Where(e => e.Matches(this.displayFilter)); }
 		}
 		public ViewEntry SelectedEntry
 		{
@@ -184,20 +182,6 @@ namespace Duality.Editor.Plugins.LogView
 				int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
 
 				this.displayFilter = value;
-				this.OnContentChanged();
-
-				this.ScrollToEntry(lastEntry, entryOff);
-			}
-		}
-		public DateTime DisplayMinTime
-		{
-			get { return this.displayMinTime; }
-			set
-			{
-				ViewEntry lastEntry = this.GetEntryAt(this.ScrollOffset);
-				int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
-
-				this.displayMinTime = value;
 				this.OnContentChanged();
 
 				this.ScrollToEntry(lastEntry, entryOff);
