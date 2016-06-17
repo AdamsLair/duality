@@ -7,7 +7,8 @@ namespace Duality.Launcher
 	/// </summary>
 	public class ConsoleLogOutput : TextWriterLogOutput
 	{
-		private string lastLogLine = null;
+		private string[] lastLogLines = new string[3];
+		private int lastLogLineIndex = 0;
 
 		public ConsoleLogOutput() : base(Console.Out) { }
 		
@@ -17,16 +18,18 @@ namespace Duality.Launcher
 			ConsoleColor clrFg = Console.ForegroundColor;
 
 			bool highlight = this.IsHighlightLine(source, formattedLine);
-			if (this.lastLogLine == null)
-				this.lastLogLine = "";
 
 			// If we're writing the same kind of text again, "grey out" the repeating parts
 			int beginGreyLength = 0;
-			int endGreyLength = 0;
+			int endGreyLength   = 0;
 			if (!highlight)
 			{
-				beginGreyLength = this.GetEqualBeginChars(this.lastLogLine, formattedLine);
-				endGreyLength = this.GetEqualEndChars(this.lastLogLine, formattedLine);
+				for (int i = 0; i < this.lastLogLines.Length; i++)
+				{
+					string lastLogLine = this.lastLogLines[i] ?? string.Empty;
+					beginGreyLength = Math.Max(beginGreyLength, this.GetEqualBeginChars(lastLogLine, formattedLine));
+					endGreyLength   = Math.Max(endGreyLength  , this.GetEqualEndChars  (lastLogLine, formattedLine));
+				}
 				if (beginGreyLength == formattedLine.Length)
 					endGreyLength = 0;
 				if (beginGreyLength + endGreyLength >= formattedLine.Length)
@@ -54,7 +57,8 @@ namespace Duality.Launcher
 			// End the current line
 			this.Target.WriteLine();
 
-			this.lastLogLine = formattedLine;
+			this.lastLogLines[this.lastLogLineIndex] = formattedLine;
+			this.lastLogLineIndex = (this.lastLogLineIndex + 1) % this.lastLogLines.Length;
 			Console.ForegroundColor = clrFg;
 			Console.BackgroundColor = clrBg;
 		}
@@ -104,12 +108,22 @@ namespace Duality.Launcher
 		{
 			int minLen = Math.Min(a.Length, b.Length);
 			int lastBreakCount = 0;
-			for (int i = 0; i < minLen; i++)
+			int i = 0;
+			int j = 0;
+			while (i < a.Length && j < b.Length)
 			{
-				if (a[i] != b[i])
+				// Skip whitespace / indentation
+				if (a[i] == ' ') { ++i; continue; }
+				if (b[j] == ' ') { ++j; lastBreakCount = j; continue; }
+
+				if (a[i] != b[j])
 					return lastBreakCount;
-				if (!char.IsLetterOrDigit(a[i]))
-					lastBreakCount = i + 1;
+
+				if (!char.IsLetterOrDigit(b[j]))
+					lastBreakCount = j + 1;
+
+				++i;
+				++j;
 			}
 			return minLen;
 		}
