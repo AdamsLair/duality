@@ -120,17 +120,19 @@ namespace Duality.Editor.Plugins.LogView
 		}
 
 
-		private	List<ViewEntry>		entryList			= new List<ViewEntry>();
-		private	MessageFilter		displayFilter		= MessageFilter.All;
-		private	Color				baseColor			= SystemColors.Control;
-		private	bool				boundToDualityLogs	= false;
-		private	bool				scrolledToEnd		= true;
-		private	bool				lastSelected		= true;
-		private	ViewEntry			hoveredEntry		= null;
-		private	ViewEntry			selectedEntry		= null;
-		private	ContextMenuStrip	entryMenu			= null;
-		private Timer				timerLogSchedule	= null;
-		private	RawList<LogEntry>   logSchedule         = new RawList<LogEntry>();
+		private List<ViewEntry>     entryList          = new List<ViewEntry>();
+		private MessageFilter       displayFilter      = MessageFilter.All;
+		private Color               baseColor          = SystemColors.Control;
+		private bool                boundToDualityLogs = false;
+		private bool                scrolledToEnd      = true;
+		private bool                lastSelected       = true;
+		private ViewEntry           hoveredEntry       = null;
+		private ViewEntry           selectedEntry      = null;
+		private ContextMenuStrip    entryMenu          = null;
+		private Timer               timerLogSchedule   = null;
+		private RawList<LogEntry>   logSchedule        = new RawList<LogEntry>();
+		private bool                logScheduleActive  = false;
+		private object              logScheduleLock    = new object();
 		private System.ComponentModel.IContainer components = null;
 
 
@@ -616,14 +618,15 @@ namespace Duality.Editor.Plugins.LogView
 		{
 			// Process a clone of the logSchedule to prevent any interference due to cross-thread logs
 			LogEntry[] logScheduleArray = null;
-			lock (this.logSchedule)
+			lock (this.logScheduleLock)
 			{
 				logScheduleArray = new LogEntry[this.logSchedule.Count];
 				Array.Copy(this.logSchedule.Data, logScheduleArray, this.logSchedule.Count);
 				this.logSchedule.Clear();
+				this.timerLogSchedule.Enabled = false;
+				this.logScheduleActive = false;
 			}
 			this.ProcessIncomingEntries(logScheduleArray, logScheduleArray.Length);
-			this.timerLogSchedule.Enabled = false;
 		}
 		private void entryMenu_CopyAllItems_Click(object sender, EventArgs e)
 		{
@@ -642,15 +645,16 @@ namespace Duality.Editor.Plugins.LogView
 
 		void ILogOutput.Write(LogEntry entry)
 		{
-			lock (this.logSchedule)
+			lock (this.logScheduleLock)
 			{
 				this.logSchedule.Add(entry);
-			}
-			if (!this.timerLogSchedule.Enabled)
-			{
-				// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
-				// and thus lead to a deadlock when something is logged while it is.
-				this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
+				if (!this.logScheduleActive)
+				{
+					// Don't use a synchronous Invoke. It will block while the BuildManager is active (why?)
+					// and thus lead to a deadlock when something is logged while it is.
+					this.InvokeEx(() => this.timerLogSchedule.Enabled = true, false);
+					this.logScheduleActive = true;
+				}
 			}
 		}
 	}
