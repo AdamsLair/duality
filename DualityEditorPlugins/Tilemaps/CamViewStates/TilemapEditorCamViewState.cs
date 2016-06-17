@@ -62,7 +62,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 		public override string StateName
 		{
-			get { return "Tilemap Editor"; }
+			get { return TilemapsRes.CamViewState_TilemapEditor_Name; }
 		}
 		public ITileDrawSource TileDrawSource
 		{

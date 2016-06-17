@@ -115,6 +115,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tilemap Editor.
+        /// </summary>
+        internal static string CamViewState_TilemapEditor_Name {
+            get {
+                return ResourceManager.GetString("CamViewState_TilemapEditor_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap CursorPick {
