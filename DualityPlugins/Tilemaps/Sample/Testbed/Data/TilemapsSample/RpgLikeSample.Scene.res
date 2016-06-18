@@ -507,7 +507,7 @@
                   <active dataType="Bool">true</active>
                   <angularDamp dataType="Float">0.3</angularDamp>
                   <angularVel dataType="Float">0</angularVel>
-                  <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Dynamic" value="1" />
+                  <bodyType dataType="Enum" type="Duality.Components.Physics.BodyType" name="Static" value="0" />
                   <colCat dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="Cat1" value="1" />
                   <colFilter />
                   <colWith dataType="Enum" type="Duality.Components.Physics.CollisionCategory" name="All" value="2147483647" />
@@ -522,19 +522,9 @@
                   <linearVel dataType="Struct" type="Duality.Vector2" />
                   <revolutions dataType="Float">0</revolutions>
                   <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="3389116725">
-                    <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="3351026678" length="4">
-                      <item dataType="Struct" type="Duality.Components.Physics.CircleShapeInfo" id="2265339616">
-                        <density dataType="Float">1</density>
-                        <friction dataType="Float">0.3</friction>
-                        <parent dataType="ObjectRef">3013493237</parent>
-                        <position dataType="Struct" type="Duality.Vector2" />
-                        <radius dataType="Float">128</radius>
-                        <restitution dataType="Float">0.3</restitution>
-                        <sensor dataType="Bool">false</sensor>
-                      </item>
-                    </_items>
-                    <_size dataType="Int">1</_size>
-                    <_version dataType="Int">1</_version>
+                    <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="3351026678" length="32" />
+                    <_size dataType="Int">0</_size>
+                    <_version dataType="Int">64</_version>
                   </shapes>
                 </item>
                 <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollider" id="2359977928">

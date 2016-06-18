@@ -64,6 +64,26 @@ namespace Duality.Plugins.Tilemaps
 			}
 		}
 
+		private void ClearRigidBody()
+		{
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
+			body.BeginUpdateBodyShape();
+			for (int y = 0; y < this.sectorCount.Y; y++)
+			{
+				for (int x = 0; x < this.sectorCount.X; x++)
+				{
+					Sector sector = this.sectors[x, y];
+					if (sector.Shapes != null)
+					{
+						foreach (ShapeInfo shape in sector.Shapes)
+							body.RemoveShape(shape);
+						sector.Shapes.Clear();
+					}
+					this.sectors[x, y] = sector;
+				}
+			}
+			body.EndUpdateBodyShape();
+		}
 		private void UpdateRigidBody()
 		{
 			this.tileCount = GetTileCount(this.sourceTilemaps);
@@ -75,19 +95,21 @@ namespace Duality.Plugins.Tilemaps
 				this.sectorCount.X, 
 				this.sectorCount.Y);
 
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
+			body.BeginUpdateBodyShape();
 			for (int y = 0; y < this.sectorCount.Y; y++)
 			{
 				for (int x = 0; x < this.sectorCount.X; x++)
 				{
-					this.UpdateRigidBody(x, y);
+					this.UpdateRigidBody(body, x, y);
 				}
 			}
+			body.EndUpdateBodyShape();
 		}
-		private void UpdateRigidBody(int sectorX, int sectorY)
+		private void UpdateRigidBody(RigidBody body, int sectorX, int sectorY)
 		{
 			Log.Core.Write("GenerateCollisionShapes {0}", new Point2(sectorX, sectorY));
 
-			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 			Sector sector = this.sectors[sectorX, sectorY];
 
 			// Determine collision checksum
@@ -115,7 +137,22 @@ namespace Duality.Plugins.Tilemaps
 				}
 
 				// Generate new shapes
-				this.GenerateCollisionShapes(this.tempCollisionData, sector.Shapes);
+				{
+					// Clear the temporary edge map first
+					this.tempEdgeMap.Clear();
+
+					// Populate the edge map with fence and block geometry
+					AddFenceCollisionEdges(this.tempCollisionData, this.tempEdgeMap);
+					AddBlockCollisionEdges(this.tempCollisionData, this.tempEdgeMap);
+
+					// Now traverse the edge map and gradually create chain / loop 
+					// shapes until all edges have been used.
+					GenerateCollisionShapes(this.tempEdgeMap, sector.Shapes);
+
+					// Add all the generated shapes to the target body
+					foreach (ShapeInfo shape in sector.Shapes)
+						body.AddShape(shape);
+				}
 				sector.Checksum = newChecksum;
 
 				w2.Stop();
@@ -124,69 +161,8 @@ namespace Duality.Plugins.Tilemaps
 
 			this.sectors[sectorX, sectorY] = sector;
 		}
-		private void GenerateCollisionShapes(Grid<TileCollisionShape> collisionData, IList<ShapeInfo> shapeList)
+		private void GenerateCollisionShapes(Grid<TileCollisionShape> collisionData, TileEdgeMap edgeMap, IList<ShapeInfo> shapeList)
 		{
-			this.tempEdgeMap.Clear();
-
-			// Populate the edge map with all the fence tiles first
-			for (int y = 0; y < SectorSize; y++)
-			{
-				for (int x = 0; x < SectorSize; x++)
-				{
-					TileCollisionShape collision = collisionData[x, y];
-
-					// Skip both free and completely solid tiles
-					if (collision == TileCollisionShape.Free)
-						continue;
-					if ((collision & TileCollisionShape.Solid) == TileCollisionShape.Solid)
-						continue;
-
-					// Add the various fence collision types
-					if ((collision & TileCollisionShape.Top) != TileCollisionShape.Free)
-						this.tempEdgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y));
-					if ((collision & TileCollisionShape.Bottom) != TileCollisionShape.Free)
-						this.tempEdgeMap.AddEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
-					if ((collision & TileCollisionShape.Left) != TileCollisionShape.Free)
-						this.tempEdgeMap.AddEdge(new Point2(x, y), new Point2(x, y + 1));
-					if ((collision & TileCollisionShape.Right) != TileCollisionShape.Free)
-						this.tempEdgeMap.AddEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
-					if ((collision & TileCollisionShape.DiagonalDown) != TileCollisionShape.Free)
-						this.tempEdgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y + 1));
-					if ((collision & TileCollisionShape.DiagonalUp) != TileCollisionShape.Free)
-						this.tempEdgeMap.AddEdge(new Point2(x, y + 1), new Point2(x + 1, y));
-				}
-			}
-
-			// Now add block geometry
-			for (int y = 0; y < SectorSize; y++)
-			{
-				for (int x = 0; x < SectorSize; x++)
-				{
-					// Skip non-solid blocks
-					bool center = (collisionData[x, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
-					if (!center) continue;
-
-					// A filled block will always overwrite its inner diagonal edges
-					this.tempEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y + 1));
-					this.tempEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y));
-
-					// Determine block collision neighbourhood
-					bool left   = (x == 0)              || (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
-					bool right  = (x == SectorSize - 1) || (collisionData[x + 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
-					bool top    = (y == 0)              || (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
-					bool bottom = (y == SectorSize - 1) || (collisionData[x, y + 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
-
-					// Adjust outer edge states 
-					if (center != left )  this.tempEdgeMap.AddEdge   (new Point2(x, y), new Point2(x, y + 1));
-					else                  this.tempEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x, y + 1));
-					if (center != right)  this.tempEdgeMap.AddEdge   (new Point2(x + 1, y), new Point2(x + 1, y + 1));
-					else                  this.tempEdgeMap.RemoveEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
-					if (center != top)    this.tempEdgeMap.AddEdge   (new Point2(x, y), new Point2(x + 1, y));
-					else                  this.tempEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y));
-					if (center != bottom) this.tempEdgeMap.AddEdge   (new Point2(x, y + 1), new Point2(x + 1, y + 1));
-					else                  this.tempEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
-				}
-			}
 		}
 		private int MergeCollisionData(int sectorX, int sectorY, Grid<TileCollisionShape> target)
 		{
@@ -262,6 +238,14 @@ namespace Duality.Plugins.Tilemaps
 				this.UpdateRigidBody();
 				this.SubscribeSourceEvents();
 			}
+			else if (context == InitContext.Saved)
+			{
+				// Since we're removing all generated bodies in the saving process,
+				// we'll have to re-generate them now
+				this.UpdateRigidBody();
+				// ToDo: Replace this with only a temporary removal so we don't
+				// actually have to re-generate everything.
+			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
 		{
@@ -269,6 +253,14 @@ namespace Duality.Plugins.Tilemaps
 			{
 				this.UnsubscribeSourceEvents();
 				this.sourceTilemaps = null;
+			}
+			else if (context == ShutdownContext.Saving)
+			{
+				// To avoid saving the generated collider redundantly, clear
+				// all of the generated shapes before saving
+				this.ClearRigidBody();
+				// ToDo: Replace this with only a temporary removal so we don't
+				// actually have to re-generate everything.
 			}
 		}
 
@@ -295,13 +287,16 @@ namespace Duality.Plugins.Tilemaps
 					MathF.Clamp(1 + (e.Pos.Y + e.Size.Y) / SectorSize, 0, this.sectorCount.Y));
 				Log.Core.Write("Selective Update of Sectors {0} [inclusive] to {1} [exclusive]", minSector, maxSector);
 				Log.Core.PushIndent();
+				RigidBody body = this.GameObj.GetComponent<RigidBody>();
+				body.BeginUpdateBodyShape();
 				for (int y = minSector.Y; y < maxSector.Y; y++)
 				{
 					for (int x = minSector.X; x < maxSector.X; x++)
 					{
-						this.UpdateRigidBody(x, y);
+						this.UpdateRigidBody(body, x, y);
 					}
 				}
+				body.EndUpdateBodyShape();
 				Log.Core.PopIndent();
 			}
 
@@ -329,6 +324,121 @@ namespace Duality.Plugins.Tilemaps
 				count.Y = Math.Min(count.Y, tilemaps[i].TileCount.Y);
 			}
 			return count;
+		}
+
+		private static void AddFenceCollisionEdges(Grid<TileCollisionShape> collisionData, TileEdgeMap targetEdgeMap)
+		{
+			// Populate the edge map with all the collision fences
+			for (int y = 0; y < SectorSize; y++)
+			{
+				for (int x = 0; x < SectorSize; x++)
+				{
+					TileCollisionShape collision = collisionData[x, y];
+
+					// Skip both free and completely solid tiles
+					if (collision == TileCollisionShape.Free)
+						continue;
+					if ((collision & TileCollisionShape.Solid) == TileCollisionShape.Solid)
+						continue;
+
+					// Add the various fence collision types
+					if ((collision & TileCollisionShape.Top) != TileCollisionShape.Free)
+						targetEdgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y));
+					if ((collision & TileCollisionShape.Bottom) != TileCollisionShape.Free)
+						targetEdgeMap.AddEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
+					if ((collision & TileCollisionShape.Left) != TileCollisionShape.Free)
+						targetEdgeMap.AddEdge(new Point2(x, y), new Point2(x, y + 1));
+					if ((collision & TileCollisionShape.Right) != TileCollisionShape.Free)
+						targetEdgeMap.AddEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
+					if ((collision & TileCollisionShape.DiagonalDown) != TileCollisionShape.Free)
+						targetEdgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y + 1));
+					if ((collision & TileCollisionShape.DiagonalUp) != TileCollisionShape.Free)
+						targetEdgeMap.AddEdge(new Point2(x, y + 1), new Point2(x + 1, y));
+				}
+			}
+		}
+		private static void AddBlockCollisionEdges(Grid<TileCollisionShape> collisionData, TileEdgeMap targetEdgeMap)
+		{
+			// Add block geometry to the specified edge map
+			for (int y = 0; y < SectorSize; y++)
+			{
+				for (int x = 0; x < SectorSize; x++)
+				{
+					// Skip non-solid blocks
+					bool center = (collisionData[x, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					if (!center) continue;
+
+					// A filled block will always overwrite its inner diagonal edges
+					targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y + 1));
+					targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y));
+
+					// Determine block collision neighbourhood
+					bool left   = (x == 0)              || (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool right  = (x == SectorSize - 1) || (collisionData[x + 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool top    = (y == 0)              || (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool bottom = (y == SectorSize - 1) || (collisionData[x, y + 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+
+					// Adjust outer edge states 
+					if (center != left )  targetEdgeMap.AddEdge   (new Point2(x, y), new Point2(x, y + 1));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x, y + 1));
+					if (center != right)  targetEdgeMap.AddEdge   (new Point2(x + 1, y), new Point2(x + 1, y + 1));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
+					if (center != top)    targetEdgeMap.AddEdge   (new Point2(x, y), new Point2(x + 1, y));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y));
+					if (center != bottom) targetEdgeMap.AddEdge   (new Point2(x, y + 1), new Point2(x + 1, y + 1));
+					else                  targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
+				}
+			}
+		}
+		private static void GenerateCollisionShapes(TileEdgeMap edgeMap, IList<ShapeInfo> shapeList)
+		{
+			// Traverse the edge map and gradually create chain / loop 
+			// shapes until all edges have been used.
+			RawList<Point2> currentChain = new RawList<Point2>();
+			RawList<Vector2> vertexBuffer = new RawList<Vector2>();
+			while (true)
+			{
+				// Begin a new continuous chain of nodes
+				currentChain.Clear();
+
+				// Find a starting node for our current chain.
+				// If there is none, we found and handled all edges.
+				Point2 start = edgeMap.FindNonEmpty();
+				if (start == new Point2(-1, -1))
+					break;
+
+				// Traverse the current chain node-by-node from the start we found
+				Point2 current = start;
+				while (true)
+				{
+					// Add the current node to our continuous chain
+					currentChain.Add(current);
+
+					// Find the next node that connects to the current one.
+					// If there is none, our current chain is done.
+					Point2 next = edgeMap.GetClockwiseNextFrom(current);
+					if (next == new Point2(-1, -1))
+						break;
+
+					// Remove the edge we used to get to the next node
+					edgeMap.RemoveEdge(current, next);
+
+					// Use the next node as origin for traversing further
+					current = next;
+				}
+
+				// Generate a shape from the current chain
+				bool isLoop = (start == currentChain[currentChain.Count - 1]);
+				vertexBuffer.Clear();
+				vertexBuffer.Count = isLoop ? currentChain.Count - 1 : currentChain.Count;
+				for (int i = 0; i < vertexBuffer.Count; i++)
+				{
+					vertexBuffer[i] = 20.0f * (Vector2)currentChain[i];
+				}
+				shapeList.Add(isLoop ? 
+					(ShapeInfo)new LoopShapeInfo(vertexBuffer) : 
+					(ShapeInfo)new ChainShapeInfo(vertexBuffer));
+			}
 		}
 	}
 }
