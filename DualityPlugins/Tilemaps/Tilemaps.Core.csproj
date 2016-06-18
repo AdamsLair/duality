@@ -44,6 +44,8 @@
     <Compile Include="CorePlugin.cs" />
     <Compile Include="Properties\TilemapsResNames.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tilemaps\Components\TilemapChangedEventArgs.cs" />
+    <Compile Include="Tilemaps\Components\TilemapCollisionSource.cs" />
     <Compile Include="Tilesets\TileCollisionShapes.cs" />
     <Compile Include="Tilesets\TileCollisionShape.cs" />
     <Compile Include="Tilesets\TileInfo.cs" />

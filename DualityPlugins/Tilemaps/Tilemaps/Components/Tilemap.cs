@@ -20,6 +20,14 @@ namespace Duality.Plugins.Tilemaps
 
 		[DontSerialize] private bool isUpdating = false;
 
+		[DontSerialize] 
+		private EventHandler<TilemapChangedEventArgs> eventTilemapChanged = null;
+		public event EventHandler<TilemapChangedEventArgs> EventTilemapChanged
+		{
+			add { this.eventTilemapChanged += value; }
+			remove { this.eventTilemapChanged -= value; }
+		}
+
 
 		/// <summary>
 		/// [GET / SET] The <see cref="Tileset"/> that defined the properties of each type of <see cref="Tile"/>.
@@ -123,8 +131,9 @@ namespace Duality.Plugins.Tilemaps
 
 		private void OnTilesChanged(int x, int y, int width, int height)
 		{
-			// ToDo: Provide an ICmp interface for listening to tilemap changes within the same object.
-			// ToDo: Provide a public event for anyone interested. Unfortunately, this is required for external TilemapColliders pointing to a Tilemap.
+			if (width == 0 || height == 0) return;
+			if (this.eventTilemapChanged != null)
+				this.eventTilemapChanged(this, new TilemapChangedEventArgs(this, x, y, width, height));
 		}
 		private void OnTilesChanged()
 		{
