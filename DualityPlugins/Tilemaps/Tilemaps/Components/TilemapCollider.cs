@@ -41,6 +41,8 @@ namespace Duality.Plugins.Tilemaps
 		[DontSerialize] private Point2 tileCount = Point2.Zero;
 		[DontSerialize] private Point2 sectorCount = Point2.Zero;
 		[DontSerialize] private Grid<Sector> sectors = null;
+		[DontSerialize] private Grid<TileCollisionShape> tempCollisionData = new Grid<TileCollisionShape>(SectorSize, SectorSize);
+		[DontSerialize] private TileEdgeMap tempEdgeMap = new TileEdgeMap(SectorSize + 1, SectorSize + 1);
 
 
 		/// <summary>
@@ -64,11 +66,11 @@ namespace Duality.Plugins.Tilemaps
 
 		private void UpdateRigidBody()
 		{
-			this.tileCount = this.GetTileCount();
+			this.tileCount = GetTileCount(this.sourceTilemaps);
 
 			this.sectorCount = new Point2(
-				1 + (this.tileCount.X - 1 / SectorSize),
-				1 + (this.tileCount.Y - 1 / SectorSize));
+				1 + ((this.tileCount.X - 1) / SectorSize),
+				1 + ((this.tileCount.Y - 1) / SectorSize));
 			this.sectors = new Grid<Sector>(
 				this.sectorCount.X, 
 				this.sectorCount.Y);
@@ -90,7 +92,7 @@ namespace Duality.Plugins.Tilemaps
 
 			// Determine collision checksum
 			var w = System.Diagnostics.Stopwatch.StartNew();
-			int newChecksum = this.CalculateChecksum(sectorX, sectorY);
+			int newChecksum = this.MergeCollisionData(sectorX, sectorY, this.tempCollisionData);
 			w.Stop();
 			Log.Core.Write("Checksum Gen Time: {0} ms", w.Elapsed.TotalMilliseconds);
 
@@ -98,6 +100,7 @@ namespace Duality.Plugins.Tilemaps
 			if (sector.Checksum != newChecksum)
 			{
 				Log.Core.Write("Different CheckSum: {0} --> {1}", sector.Checksum, newChecksum);
+				var w2 = System.Diagnostics.Stopwatch.StartNew();
 
 				// Clean up old shapes
 				if (sector.Shapes != null)
@@ -112,26 +115,87 @@ namespace Duality.Plugins.Tilemaps
 				}
 
 				// Generate new shapes
-				this.GenerateCollisionShapes(sectorX, sectorY, sector.Shapes);
+				this.GenerateCollisionShapes(this.tempCollisionData, sector.Shapes);
 				sector.Checksum = newChecksum;
+
+				w2.Stop();
+				Log.Core.Write("Shape Gen Time: {0} ms", w2.Elapsed.TotalMilliseconds);
 			}
 
 			this.sectors[sectorX, sectorY] = sector;
 		}
-		private int CalculateChecksum(int sectorX, int sectorY)
+		private void GenerateCollisionShapes(Grid<TileCollisionShape> collisionData, IList<ShapeInfo> shapeList)
+		{
+			this.tempEdgeMap.Clear();
+
+			// Populate the edge map with all the fence tiles first
+			for (int y = 0; y < SectorSize; y++)
+			{
+				for (int x = 0; x < SectorSize; x++)
+				{
+					TileCollisionShape collision = collisionData[x, y];
+
+					// Skip both free and completely solid tiles
+					if (collision == TileCollisionShape.Free)
+						continue;
+					if ((collision & TileCollisionShape.Solid) == TileCollisionShape.Solid)
+						continue;
+
+					// Add the various fence collision types
+					if ((collision & TileCollisionShape.Top) != TileCollisionShape.Free)
+						this.tempEdgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y));
+					if ((collision & TileCollisionShape.Bottom) != TileCollisionShape.Free)
+						this.tempEdgeMap.AddEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
+					if ((collision & TileCollisionShape.Left) != TileCollisionShape.Free)
+						this.tempEdgeMap.AddEdge(new Point2(x, y), new Point2(x, y + 1));
+					if ((collision & TileCollisionShape.Right) != TileCollisionShape.Free)
+						this.tempEdgeMap.AddEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
+					if ((collision & TileCollisionShape.DiagonalDown) != TileCollisionShape.Free)
+						this.tempEdgeMap.AddEdge(new Point2(x, y), new Point2(x + 1, y + 1));
+					if ((collision & TileCollisionShape.DiagonalUp) != TileCollisionShape.Free)
+						this.tempEdgeMap.AddEdge(new Point2(x, y + 1), new Point2(x + 1, y));
+				}
+			}
+
+			// Now add block geometry
+			for (int y = 0; y < SectorSize; y++)
+			{
+				for (int x = 0; x < SectorSize; x++)
+				{
+					// Skip non-solid blocks
+					bool center = (collisionData[x, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					if (!center) continue;
+
+					// A filled block will always overwrite its inner diagonal edges
+					this.tempEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y + 1));
+					this.tempEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y));
+
+					// Determine block collision neighbourhood
+					bool left   = (x == 0)              || (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool right  = (x == SectorSize - 1) || (collisionData[x + 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool top    = (y == 0)              || (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool bottom = (y == SectorSize - 1) || (collisionData[x, y + 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+
+					// Adjust outer edge states 
+					if (center != left )  this.tempEdgeMap.AddEdge   (new Point2(x, y), new Point2(x, y + 1));
+					else                  this.tempEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x, y + 1));
+					if (center != right)  this.tempEdgeMap.AddEdge   (new Point2(x + 1, y), new Point2(x + 1, y + 1));
+					else                  this.tempEdgeMap.RemoveEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
+					if (center != top)    this.tempEdgeMap.AddEdge   (new Point2(x, y), new Point2(x + 1, y));
+					else                  this.tempEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y));
+					if (center != bottom) this.tempEdgeMap.AddEdge   (new Point2(x, y + 1), new Point2(x + 1, y + 1));
+					else                  this.tempEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
+				}
+			}
+		}
+		private int MergeCollisionData(int sectorX, int sectorY, Grid<TileCollisionShape> target)
 		{
 			Point2 beginTile = new Point2(sectorX * SectorSize, sectorY * SectorSize);
 			Point2 endTile = new Point2((sectorX + 1) * SectorSize, (sectorY + 1) * SectorSize);
 			endTile.X = Math.Min(endTile.X, this.tileCount.X);
 			endTile.Y = Math.Min(endTile.Y, this.tileCount.Y);
 
-			TileInfo[][] tileData = new TileInfo[this.sourceTilemaps.Length][];
-			for (int i = 0; i < this.sourceTilemaps.Length; i++)
-			{
-				if (this.sourceTilemaps[i] == null) continue;
-				if (this.sourceTilemaps[i].Tileset == null) continue;
-				tileData[i] = this.sourceTilemaps[i].Tileset.Res.TileData.Data;
-			}
+			TileInfo[][] tileData = GetRawTileData(this.sourceTilemaps);
 
 			int checksum = 0;
 			for (int y = beginTile.Y; y < endTile.Y; y++)
@@ -148,28 +212,14 @@ namespace Duality.Plugins.Tilemaps
 						TileCollisionShape collision = tileData[i][tile.Index].Collision[this.source[i].Layers];
 						mergedCollision |= collision;
 					}
+					target[x - beginTile.X, y - beginTile.Y] = mergedCollision;
 					MathF.CombineHashCode(ref checksum, (int)mergedCollision);
 				}
 			}
 
 			return checksum;
 		}
-		private void GenerateCollisionShapes(int sectorX, int sectorY, IList<ShapeInfo> shapeList)
-		{
-
-		}
 		
-		private Point2 GetTileCount()
-		{
-			Point2 count = new Point2(int.MaxValue, int.MaxValue);
-			for (int i = 0; i < this.sourceTilemaps.Length; i++)
-			{
-				if (this.sourceTilemaps[i] == null) continue;
-				count.X = Math.Min(count.X, this.sourceTilemaps[i].TileCount.X);
-				count.Y = Math.Min(count.Y, this.sourceTilemaps[i].TileCount.Y);
-			}
-			return count;
-		}
 		private void RetrieveSourceTilemaps()
 		{
 			Tilemap localTilemap = this.GameObj.GetComponent<Tilemap>();
@@ -228,7 +278,7 @@ namespace Duality.Plugins.Tilemaps
 			Log.Core.PushIndent();
 
 			// If we resized our tilemap, we'll have to do a full update
-			Point2 newTileCount = this.GetTileCount();
+			Point2 newTileCount = GetTileCount(this.sourceTilemaps);
 			if (newTileCount != this.tileCount)
 			{
 				Log.Core.Write("Resize from {0} to {1}", this.tileCount, newTileCount);
@@ -256,6 +306,29 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			Log.Core.PopIndent();
+		}
+
+		private static TileInfo[][] GetRawTileData(Tilemap[] tilemaps)
+		{
+			TileInfo[][] tileData = new TileInfo[tilemaps.Length][];
+			for (int i = 0; i < tilemaps.Length; i++)
+			{
+				if (tilemaps[i] == null) continue;
+				if (tilemaps[i].Tileset == null) continue;
+				tileData[i] = tilemaps[i].Tileset.Res.TileData.Data;
+			}
+			return tileData;
+		}
+		private static Point2 GetTileCount(Tilemap[] tilemaps)
+		{
+			Point2 count = new Point2(int.MaxValue, int.MaxValue);
+			for (int i = 0; i < tilemaps.Length; i++)
+			{
+				if (tilemaps[i] == null) continue;
+				count.X = Math.Min(count.X, tilemaps[i].TileCount.X);
+				count.Y = Math.Min(count.Y, tilemaps[i].TileCount.Y);
+			}
+			return count;
 		}
 	}
 }
