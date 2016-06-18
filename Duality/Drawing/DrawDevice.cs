@@ -653,13 +653,13 @@ namespace Duality.Drawing
 		}
 		private int DrawBatchComparerZSort(IDrawBatch first, IDrawBatch second)
 		{
-            if (second.ZSortIndex < first.ZSortIndex) return -1;
-            if (second.ZSortIndex > first.ZSortIndex) return 1;
-            if (second.ZSortIndex == first.ZSortIndex) return 0;
-            if (float.IsNaN(second.ZSortIndex))
-                return (float.IsNaN(first.ZSortIndex) ? 0 : -1);
-            else
-                return 1;
+			if (second.ZSortIndex < first.ZSortIndex) return -1;
+			if (second.ZSortIndex > first.ZSortIndex) return 1;
+			if (second.ZSortIndex == first.ZSortIndex) return 0;
+			if (float.IsNaN(second.ZSortIndex))
+				return (float.IsNaN(first.ZSortIndex) ? 0 : -1);
+			else
+				return 1;
 		}
 		private void OptimizeBatches()
 		{
