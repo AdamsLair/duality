@@ -59,5 +59,22 @@ namespace Duality.Plugins.Tilemaps
 				throw new IndexOutOfRangeException("Invalid collision layer index");
 			}
 		}
+		/// <summary>
+		/// [GET] The collision shape on the specified (set of) layer(s).
+		/// </summary>
+		/// <param name="layerMask"></param>
+		/// <returns></returns>
+		public TileCollisionShape this[TileCollisionLayer layerMask]
+		{
+			get
+			{
+				TileCollisionShape result = TileCollisionShape.Free;
+				if ((layerMask & TileCollisionLayer.Layer0) != TileCollisionLayer.None) result |= this.Layer0;
+				if ((layerMask & TileCollisionLayer.Layer1) != TileCollisionLayer.None) result |= this.Layer1;
+				if ((layerMask & TileCollisionLayer.Layer2) != TileCollisionLayer.None) result |= this.Layer2;
+				if ((layerMask & TileCollisionLayer.Layer3) != TileCollisionLayer.None) result |= this.Layer3;
+				return result;
+			}
+		}
 	}
 }
