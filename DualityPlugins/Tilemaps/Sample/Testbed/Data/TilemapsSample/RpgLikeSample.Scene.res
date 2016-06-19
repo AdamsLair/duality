@@ -527,13 +527,15 @@
                   <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="3389116725">
                     <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="3351026678" length="64" />
                     <_size dataType="Int">0</_size>
-                    <_version dataType="Int">1712</_version>
+                    <_version dataType="Int">1832</_version>
                   </shapes>
                 </item>
                 <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollider" id="2359977928">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">4245684009</gameobj>
                   <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
+                  <roundedCorners dataType="Bool">true</roundedCorners>
+                  <solidOuterEdges dataType="Bool">true</solidOuterEdges>
                   <source dataType="Array" type="Duality.Plugins.Tilemaps.TilemapCollisionSource[]" id="4060396308">
                     <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollisionSource">
                       <Layers dataType="Enum" type="Duality.Plugins.Tilemaps.TileCollisionLayer" name="Layer0" value="1" />
