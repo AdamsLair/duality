@@ -131,7 +131,7 @@
                     <continous dataType="Bool">false</continous>
                     <explicitInertia dataType="Float">0</explicitInertia>
                     <explicitMass dataType="Float">80</explicitMass>
-                    <fixedAngle dataType="Bool">false</fixedAngle>
+                    <fixedAngle dataType="Bool">true</fixedAngle>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
                     <ignoreGravity dataType="Bool">false</ignoreGravity>
                     <joints />
@@ -144,8 +144,11 @@
                           <density dataType="Float">1</density>
                           <friction dataType="Float">0.3</friction>
                           <parent dataType="ObjectRef">361728938</parent>
-                          <position dataType="Struct" type="Duality.Vector2" />
-                          <radius dataType="Float">16</radius>
+                          <position dataType="Struct" type="Duality.Vector2">
+                            <X dataType="Float">0</X>
+                            <Y dataType="Float">-7</Y>
+                          </position>
+                          <radius dataType="Float">15</radius>
                           <restitution dataType="Float">0.3</restitution>
                           <sensor dataType="Bool">false</sensor>
                         </item>
@@ -524,12 +527,13 @@
                   <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="3389116725">
                     <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="3351026678" length="32" />
                     <_size dataType="Int">0</_size>
-                    <_version dataType="Int">64</_version>
+                    <_version dataType="Int">496</_version>
                   </shapes>
                 </item>
                 <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollider" id="2359977928">
                   <active dataType="Bool">true</active>
                   <gameobj dataType="ObjectRef">4245684009</gameobj>
+                  <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
                   <source dataType="Array" type="Duality.Plugins.Tilemaps.TilemapCollisionSource[]" id="4060396308">
                     <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollisionSource">
                       <Layers dataType="Enum" type="Duality.Plugins.Tilemaps.TileCollisionLayer" name="Layer0" value="1" />
