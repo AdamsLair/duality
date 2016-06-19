@@ -38,6 +38,7 @@ namespace Duality.Plugins.Tilemaps
 		private Alignment                origin          = Alignment.Center;
 		private TilemapCollisionSource[] source          = DefaultSource;
 		private bool                     solidOuterEdges = true;
+		private bool                     roundedCorners  = false;
 
 		[DontSerialize] private Tilemap referenceTilemap = null;
 		[DontSerialize] private Tilemap[] sourceTilemaps = null;
@@ -59,7 +60,7 @@ namespace Duality.Plugins.Tilemaps
 				if (this.origin != value)
 				{
 					this.origin = value;
-					this.UpdateRigidBody();
+					this.UpdateRigidBody(true);
 				}
 			}
 		}
@@ -78,7 +79,7 @@ namespace Duality.Plugins.Tilemaps
 					this.source = value.ToArray() ?? DefaultSource;
 					this.RetrieveSourceTilemaps();
 					this.SubscribeSourceEvents();
-					this.UpdateRigidBody();
+					this.UpdateRigidBody(false);
 				}
 			}
 		}
@@ -93,7 +94,22 @@ namespace Duality.Plugins.Tilemaps
 				if (this.solidOuterEdges != value)
 				{
 					this.solidOuterEdges = value;
-					this.UpdateRigidBody();
+					this.UpdateRigidBody(true);
+				}
+			}
+		}
+		/// <summary>
+		/// [GET / SET] Whether the <see cref="TilemapCollider"/> will attempt to generate rounded corners instead of sharp ones.
+		/// </summary>
+		public bool RoundedCorners
+		{
+			get { return this.roundedCorners; }
+			set
+			{
+				if (this.roundedCorners != value)
+				{
+					this.roundedCorners = value;
+					this.UpdateRigidBody(true);
 				}
 			}
 		}
@@ -132,16 +148,28 @@ namespace Duality.Plugins.Tilemaps
 			}
 			body.EndUpdateBodyShape();
 		}
-		private void UpdateRigidBody()
+		private void UpdateRigidBody(bool rebuildEvenIfUnchanged)
 		{
 			this.tileCount = GetTileCount(this.sourceTilemaps);
-
 			this.sectorCount = new Point2(
 				1 + ((this.tileCount.X - 1) / SectorSize),
 				1 + ((this.tileCount.Y - 1) / SectorSize));
-			this.sectors = new Grid<Sector>(
-				this.sectorCount.X, 
-				this.sectorCount.Y);
+
+			if (this.sectors == null)
+			{
+				this.sectors = new Grid<Sector>(
+					this.sectorCount.X, 
+					this.sectorCount.Y);
+			}
+			else if (rebuildEvenIfUnchanged || 
+				this.sectors.Width != this.sectorCount.X || 
+				this.sectors.Height != this.sectorCount.Y)
+			{
+				this.ClearRigidBody();
+				this.sectors.ResizeClear(
+					this.sectorCount.X, 
+					this.sectorCount.Y);
+			}
 
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 			body.BeginUpdateBodyShape();
@@ -193,7 +221,7 @@ namespace Duality.Plugins.Tilemaps
 					Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
 					Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 					Rect localRect = Rect.Align(this.origin, 0, 0, this.tileCount.X * tileSize.X, this.tileCount.Y * tileSize.Y);
-					GenerateCollisionShapes(this.tempEdgeMap, localRect.TopLeft, tileSize, sector.Shapes);
+					GenerateCollisionShapes(this.tempEdgeMap, localRect.TopLeft, tileSize, this.roundedCorners, sector.Shapes);
 
 					// Add all the generated shapes to the target body
 					foreach (ShapeInfo shape in sector.Shapes)
@@ -281,7 +309,7 @@ namespace Duality.Plugins.Tilemaps
 			if (context == InitContext.Activate)
 			{
 				this.RetrieveSourceTilemaps();
-				this.UpdateRigidBody();
+				this.UpdateRigidBody(true);
 				this.SubscribeSourceEvents();
 			}
 			else if (context == InitContext.Saved)
@@ -343,7 +371,7 @@ namespace Duality.Plugins.Tilemaps
 			Point2 newTileCount = GetTileCount(this.sourceTilemaps);
 			if (newTileCount != this.tileCount)
 			{
-				this.UpdateRigidBody();
+				this.UpdateRigidBody(false);
 			}
 			// Otherwise, only update the sectors that are affected by the change
 			else
@@ -469,7 +497,7 @@ namespace Duality.Plugins.Tilemaps
 				targetEdgeMap.AddEdge(new Point2(targetEdgeMap.Width - 1, y - 1), new Point2(targetEdgeMap.Width - 1, y));
 			}
 		}
-		private static void GenerateCollisionShapes(TileEdgeMap edgeMap, Vector2 origin, Vector2 tileSize, IList<ShapeInfo> shapeList)
+		private static void GenerateCollisionShapes(TileEdgeMap edgeMap, Vector2 origin, Vector2 tileSize, bool roundedCorners, IList<ShapeInfo> shapeList)
 		{
 			// Traverse the edge map and gradually create chain / loop 
 			// shapes until all edges have been used.
@@ -508,11 +536,38 @@ namespace Duality.Plugins.Tilemaps
 
 				// Generate a shape from the current chain
 				bool isLoop = (start == currentChain[currentChain.Count - 1]);
+				if (isLoop) currentChain.RemoveAt(currentChain.Count - 1);
 				vertexBuffer.Clear();
-				vertexBuffer.Count = isLoop ? currentChain.Count - 1 : currentChain.Count;
-				for (int i = 0; i < vertexBuffer.Count; i++)
+				if (roundedCorners && currentChain.Count >= 3)
 				{
-					vertexBuffer[i] = origin + tileSize * (Vector2)currentChain[i];
+					vertexBuffer.Count = currentChain.Count * 2;
+					for (int i = 0; i < currentChain.Count; i++)
+					{
+						int prevIndex = (i - 1 + currentChain.Count) % currentChain.Count;
+						int nextIndex = (i + 1) % currentChain.Count;
+
+						Vector2 currentVert = origin + tileSize * (Vector2)currentChain[i];
+						Vector2 prevVert = origin + tileSize * (Vector2)currentChain[prevIndex];
+						Vector2 nextVert = origin + tileSize * (Vector2)currentChain[nextIndex];
+
+						vertexBuffer[i * 2] = currentVert + (prevVert - currentVert).Normalized * tileSize * 0.2f;
+						vertexBuffer[i * 2 + 1] = currentVert + (nextVert - currentVert).Normalized * tileSize * 0.2f;
+					}
+					if (!isLoop)
+					{
+						Vector2 firstVert = origin + tileSize * (Vector2)currentChain[0];
+						Vector2 lastVert = origin + tileSize * (Vector2)currentChain[currentChain.Count - 1];
+						vertexBuffer[0] = firstVert;
+						vertexBuffer[vertexBuffer.Count - 1] = lastVert;
+					}
+				}
+				else
+				{
+					vertexBuffer.Count = currentChain.Count;
+					for (int i = 0; i < vertexBuffer.Count; i++)
+					{
+						vertexBuffer[i] = origin + tileSize * (Vector2)currentChain[i];
+					}
 				}
 				shapeList.Add(isLoop ? 
 					(ShapeInfo)new LoopShapeInfo(vertexBuffer) : 
