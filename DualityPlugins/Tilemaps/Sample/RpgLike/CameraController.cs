@@ -68,6 +68,8 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 				this.mapRect.Y + camArea.H / 2,
 				MathF.Max(this.mapRect.W - camArea.W, 0.0f),
 				MathF.Max(this.mapRect.H - camArea.H, 0.0f));
+			if (moveRect.W == 0.0f) moveRect.X = this.mapRect.CenterX;
+			if (moveRect.H == 0.0f) moveRect.Y = this.mapRect.CenterY;
 
 			// The position to focus on.
 			Vector3 focusPos = this.targetObj.Transform.Pos;
