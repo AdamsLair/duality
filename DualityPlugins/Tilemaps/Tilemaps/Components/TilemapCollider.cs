@@ -35,8 +35,9 @@ namespace Duality.Plugins.Tilemaps
 			}
 		};
 
-		private Alignment                origin = Alignment.Center;
-		private TilemapCollisionSource[] source = DefaultSource;
+		private Alignment                origin          = Alignment.Center;
+		private TilemapCollisionSource[] source          = DefaultSource;
+		private bool                     solidOuterEdges = true;
 
 		[DontSerialize] private Tilemap referenceTilemap = null;
 		[DontSerialize] private Tilemap[] sourceTilemaps = null;
@@ -53,7 +54,14 @@ namespace Duality.Plugins.Tilemaps
 		public Alignment Origin
 		{
 			get { return this.origin; }
-			set { this.origin = value; }
+			set
+			{
+				if (this.origin != value)
+				{
+					this.origin = value;
+					this.UpdateRigidBody();
+				}
+			}
 		}
 		/// <summary>
 		/// [GET / SET] Specifies which <see cref="Tilemap"/> components and collision layers to use
@@ -70,6 +78,22 @@ namespace Duality.Plugins.Tilemaps
 					this.source = value.ToArray() ?? DefaultSource;
 					this.RetrieveSourceTilemaps();
 					this.SubscribeSourceEvents();
+					this.UpdateRigidBody();
+				}
+			}
+		}
+		/// <summary>
+		/// [GET / SET] Whether the <see cref="TilemapCollider"/> will generate solid edges at the tilemaps outer borders.
+		/// </summary>
+		public bool SolidOuterEdges
+		{
+			get { return this.solidOuterEdges; }
+			set
+			{
+				if (this.solidOuterEdges != value)
+				{
+					this.solidOuterEdges = value;
+					this.UpdateRigidBody();
 				}
 			}
 		}
@@ -160,6 +184,8 @@ namespace Duality.Plugins.Tilemaps
 					// Populate the edge map with fence and block geometry
 					AddFenceCollisionEdges(this.tempCollisionData, this.tempEdgeMap);
 					AddBlockCollisionEdges(this.tempCollisionData, this.tempEdgeMap);
+					if (this.solidOuterEdges)
+						AddBorderCollisionEdges(this.tempEdgeMap);
 
 					// Now traverse the edge map and gradually create chain / loop 
 					// shapes until all edges have been used.
@@ -426,6 +452,21 @@ namespace Duality.Plugins.Tilemaps
 					if (center != bottom) targetEdgeMap.AddEdge   (new Point2(x, y + 1), new Point2(x + 1, y + 1));
 					else                  targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
 				}
+			}
+		}
+		private static void AddBorderCollisionEdges(TileEdgeMap targetEdgeMap)
+		{
+			// Horizontal borders
+			for (int x = 1; x < targetEdgeMap.Width; x++)
+			{
+				targetEdgeMap.AddEdge(new Point2(x - 1, 0), new Point2(x, 0));
+				targetEdgeMap.AddEdge(new Point2(x - 1, targetEdgeMap.Height - 1), new Point2(x, targetEdgeMap.Height - 1));
+			}
+			// Vertical borders
+			for (int y = 1; y < targetEdgeMap.Height; y++)
+			{
+				targetEdgeMap.AddEdge(new Point2(0, y - 1), new Point2(0, y));
+				targetEdgeMap.AddEdge(new Point2(targetEdgeMap.Width - 1, y - 1), new Point2(targetEdgeMap.Width - 1, y));
 			}
 		}
 		private static void GenerateCollisionShapes(TileEdgeMap edgeMap, Vector2 origin, Vector2 tileSize, IList<ShapeInfo> shapeList)
