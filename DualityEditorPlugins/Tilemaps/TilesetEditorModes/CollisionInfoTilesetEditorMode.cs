@@ -365,6 +365,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
 			TileInput input = tileset.TileInput[tileIndex];
+			TileCollisionShape lastCollision = input.Collision[this.editLayerIndex];
+
 			if (this.drawMode == CollisionDrawMode.Add)
 				input.Collision[this.editLayerIndex] |= this.drawShape;
 			else if (this.drawMode == CollisionDrawMode.Remove)
@@ -372,7 +374,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			else
 				input.Collision[this.editLayerIndex] = this.drawShape;
 
-			UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+			TileCollisionShape newCollision = input.Collision[this.editLayerIndex];
+			if (lastCollision != newCollision)
+			{
+				UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+			}
 		}
 
 		private static int GetCollisionIconAlpha(bool tileHovered, bool areaHovered, bool isActive)

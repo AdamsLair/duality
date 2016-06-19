@@ -325,8 +325,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private static void SetDepthOffset(Tileset tileset, int tileIndex, int offset)
 		{
 			TileInput input = tileset.TileInput.Count > tileIndex ? tileset.TileInput[tileIndex] : default(TileInput);
-			input.DepthOffset = offset;
-			UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+			if (input.DepthOffset != offset)
+			{
+				input.DepthOffset = offset;
+				UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+			}
 		}
 		private static bool ToggleDepthVertical(Tileset tileset, int tileIndex)
 		{
@@ -338,8 +341,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private static void SetDepthVertical(Tileset tileset, int tileIndex, bool vertical)
 		{
 			TileInput input = tileset.TileInput.Count > tileIndex ? tileset.TileInput[tileIndex] : default(TileInput);
-			input.IsVertical = vertical;
-			UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+			if (input.IsVertical != vertical)
+			{
+				input.IsVertical = vertical;
+				UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
+			}
 		}
 	}
 }

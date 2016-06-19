@@ -285,11 +285,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// When switching to a different tileset, either apply or revert what we did to the current one
 			if (args.ChangeReason != SelectionChangeReason.ObjectDisposing)
 				this.AskApplyOrResetTilesetChanges(false);
-			this.StartRecordTilesetChanges();
 		}
 		private void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
 		{
 			Tileset nextTileset = args.Next.Res;
+
+			this.StartRecordTilesetChanges();
 			
 			// Update the label that tells us which tileset is selected
 			this.labelSelectedTileset.Text = (nextTileset != null) ? 
