@@ -35,8 +35,10 @@ namespace Duality.Plugins.Tilemaps
 			}
 		};
 
+		private Alignment                origin = Alignment.Center;
 		private TilemapCollisionSource[] source = DefaultSource;
 
+		[DontSerialize] private Tilemap referenceTilemap = null;
 		[DontSerialize] private Tilemap[] sourceTilemaps = null;
 		[DontSerialize] private Point2 tileCount = Point2.Zero;
 		[DontSerialize] private Point2 sectorCount = Point2.Zero;
@@ -44,7 +46,15 @@ namespace Duality.Plugins.Tilemaps
 		[DontSerialize] private Grid<TileCollisionShape> tempCollisionData = new Grid<TileCollisionShape>(SectorSize, SectorSize);
 		[DontSerialize] private TileEdgeMap tempEdgeMap = new TileEdgeMap(SectorSize + 1, SectorSize + 1);
 
-
+		
+		/// <summary>
+		/// [GET / SET] The origin of the generated <see cref="RigidBody"/> shapes, relative to the position of its <see cref="GameObject"/>.
+		/// </summary>
+		public Alignment Origin
+		{
+			get { return this.origin; }
+			set { this.origin = value; }
+		}
 		/// <summary>
 		/// [GET / SET] Specifies which <see cref="Tilemap"/> components and collision layers to use
 		/// to generate the collision shape.
@@ -63,7 +73,20 @@ namespace Duality.Plugins.Tilemaps
 				}
 			}
 		}
-
+		/// <summary>
+		/// [GET] The rectangular region that is occupied by the generated <see cref="RigidBody"/> shapes, in local / object space.
+		/// </summary>
+		public Rect LocalTilemapRect
+		{
+			get
+			{
+				Tilemap tilemap = this.referenceTilemap;
+				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+				Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+				return Rect.Align(this.origin, 0, 0, this.tileCount.X * tileSize.X, this.tileCount.Y * tileSize.Y);
+			}
+		}
+		
 		private void ClearRigidBody()
 		{
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
@@ -79,6 +102,7 @@ namespace Duality.Plugins.Tilemaps
 							body.RemoveShape(shape);
 						sector.Shapes.Clear();
 					}
+					sector.Checksum = 0;
 					this.sectors[x, y] = sector;
 				}
 			}
@@ -108,22 +132,14 @@ namespace Duality.Plugins.Tilemaps
 		}
 		private void UpdateRigidBody(RigidBody body, int sectorX, int sectorY)
 		{
-			Log.Core.Write("GenerateCollisionShapes {0}", new Point2(sectorX, sectorY));
-
 			Sector sector = this.sectors[sectorX, sectorY];
 
 			// Determine collision checksum
-			var w = System.Diagnostics.Stopwatch.StartNew();
 			int newChecksum = this.MergeCollisionData(sectorX, sectorY, this.tempCollisionData);
-			w.Stop();
-			Log.Core.Write("Checksum Gen Time: {0} ms", w.Elapsed.TotalMilliseconds);
 
 			// If it differs from our previous value, update collision shapes
 			if (sector.Checksum != newChecksum)
 			{
-				Log.Core.Write("Different CheckSum: {0} --> {1}", sector.Checksum, newChecksum);
-				var w2 = System.Diagnostics.Stopwatch.StartNew();
-
 				// Clean up old shapes
 				if (sector.Shapes != null)
 				{
@@ -147,16 +163,17 @@ namespace Duality.Plugins.Tilemaps
 
 					// Now traverse the edge map and gradually create chain / loop 
 					// shapes until all edges have been used.
-					GenerateCollisionShapes(this.tempEdgeMap, sector.Shapes);
+					Tilemap tilemap = this.referenceTilemap;
+					Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+					Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+					Rect localRect = Rect.Align(this.origin, 0, 0, this.tileCount.X * tileSize.X, this.tileCount.Y * tileSize.Y);
+					GenerateCollisionShapes(this.tempEdgeMap, localRect.TopLeft, tileSize, sector.Shapes);
 
 					// Add all the generated shapes to the target body
 					foreach (ShapeInfo shape in sector.Shapes)
 						body.AddShape(shape);
 				}
 				sector.Checksum = newChecksum;
-
-				w2.Stop();
-				Log.Core.Write("Shape Gen Time: {0} ms", w2.Elapsed.TotalMilliseconds);
 			}
 
 			this.sectors[sectorX, sectorY] = sector;
@@ -200,12 +217,15 @@ namespace Duality.Plugins.Tilemaps
 		{
 			Tilemap localTilemap = this.GameObj.GetComponent<Tilemap>();
 
+			this.referenceTilemap = null;
 			this.sourceTilemaps = new Tilemap[this.source.Length];
 			for (int i = 0; i < this.sourceTilemaps.Length; i++)
 			{
 				this.sourceTilemaps[i] = 
 					this.source[i].SourceTilemap ?? 
 					localTilemap;
+				if (this.referenceTilemap == null && this.sourceTilemaps[i] != null)
+					this.referenceTilemap = this.sourceTilemaps[i];
 			}
 		}
 		private void SubscribeSourceEvents()
@@ -229,7 +249,7 @@ namespace Duality.Plugins.Tilemaps
 				this.sourceTilemaps[i].EventTilemapChanged -= handler;
 			}
 		}
-
+		
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
 			if (context == InitContext.Activate)
@@ -241,10 +261,24 @@ namespace Duality.Plugins.Tilemaps
 			else if (context == InitContext.Saved)
 			{
 				// Since we're removing all generated bodies in the saving process,
-				// we'll have to re-generate them now
-				this.UpdateRigidBody();
-				// ToDo: Replace this with only a temporary removal so we don't
-				// actually have to re-generate everything.
+				// we'll have to add them back now. Note that we don't actually 
+				// re-generate them.
+				RigidBody body = this.GameObj.GetComponent<RigidBody>();
+				body.BeginUpdateBodyShape();
+				for (int y = 0; y < this.sectorCount.Y; y++)
+				{
+					for (int x = 0; x < this.sectorCount.X; x++)
+					{
+						Sector sector = this.sectors[x, y];
+						if (sector.Shapes != null)
+						{
+							foreach (ShapeInfo shape in sector.Shapes)
+								body.AddShape(shape);
+						}
+						this.sectors[x, y] = sector;
+					}
+				}
+				body.EndUpdateBodyShape();
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
@@ -252,28 +286,37 @@ namespace Duality.Plugins.Tilemaps
 			if (context == ShutdownContext.Deactivate)
 			{
 				this.UnsubscribeSourceEvents();
+				this.ClearRigidBody();
 				this.sourceTilemaps = null;
 			}
 			else if (context == ShutdownContext.Saving)
 			{
-				// To avoid saving the generated collider redundantly, clear
-				// all of the generated shapes before saving
-				this.ClearRigidBody();
-				// ToDo: Replace this with only a temporary removal so we don't
-				// actually have to re-generate everything.
+				// To avoid saving the generated collider redundantly, remove
+				// all of the generated shapes before saving. We'll add them again later.
+				RigidBody body = this.GameObj.GetComponent<RigidBody>();
+				body.BeginUpdateBodyShape();
+				for (int y = 0; y < this.sectorCount.Y; y++)
+				{
+					for (int x = 0; x < this.sectorCount.X; x++)
+					{
+						Sector sector = this.sectors[x, y];
+						if (sector.Shapes != null)
+						{
+							foreach (ShapeInfo shape in sector.Shapes)
+								body.RemoveShape(shape);
+						}
+					}
+				}
+				body.EndUpdateBodyShape();
 			}
 		}
 
 		private void SourceTilemap_EventTilemapChanged(object sender, TilemapChangedEventArgs e)
 		{
-			Log.Core.Write("TilemapChanged: {0}, [{1}:{2}]", e.Component, e.Pos, e.Size);
-			Log.Core.PushIndent();
-
 			// If we resized our tilemap, we'll have to do a full update
 			Point2 newTileCount = GetTileCount(this.sourceTilemaps);
 			if (newTileCount != this.tileCount)
 			{
-				Log.Core.Write("Resize from {0} to {1}", this.tileCount, newTileCount);
 				this.UpdateRigidBody();
 			}
 			// Otherwise, only update the sectors that are affected by the change
@@ -285,8 +328,6 @@ namespace Duality.Plugins.Tilemaps
 				Point2 maxSector = new Point2(
 					MathF.Clamp(1 + (e.Pos.X + e.Size.X) / SectorSize, 0, this.sectorCount.X),
 					MathF.Clamp(1 + (e.Pos.Y + e.Size.Y) / SectorSize, 0, this.sectorCount.Y));
-				Log.Core.Write("Selective Update of Sectors {0} [inclusive] to {1} [exclusive]", minSector, maxSector);
-				Log.Core.PushIndent();
 				RigidBody body = this.GameObj.GetComponent<RigidBody>();
 				body.BeginUpdateBodyShape();
 				for (int y = minSector.Y; y < maxSector.Y; y++)
@@ -297,10 +338,7 @@ namespace Duality.Plugins.Tilemaps
 					}
 				}
 				body.EndUpdateBodyShape();
-				Log.Core.PopIndent();
 			}
-
-			Log.Core.PopIndent();
 		}
 
 		private static TileInfo[][] GetRawTileData(Tilemap[] tilemaps)
@@ -390,7 +428,7 @@ namespace Duality.Plugins.Tilemaps
 				}
 			}
 		}
-		private static void GenerateCollisionShapes(TileEdgeMap edgeMap, IList<ShapeInfo> shapeList)
+		private static void GenerateCollisionShapes(TileEdgeMap edgeMap, Vector2 origin, Vector2 tileSize, IList<ShapeInfo> shapeList)
 		{
 			// Traverse the edge map and gradually create chain / loop 
 			// shapes until all edges have been used.
@@ -433,7 +471,7 @@ namespace Duality.Plugins.Tilemaps
 				vertexBuffer.Count = isLoop ? currentChain.Count - 1 : currentChain.Count;
 				for (int i = 0; i < vertexBuffer.Count; i++)
 				{
-					vertexBuffer[i] = 20.0f * (Vector2)currentChain[i];
+					vertexBuffer[i] = origin + tileSize * (Vector2)currentChain[i];
 				}
 				shapeList.Add(isLoop ? 
 					(ShapeInfo)new LoopShapeInfo(vertexBuffer) : 
