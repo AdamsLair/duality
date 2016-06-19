@@ -18,7 +18,9 @@ namespace Duality.Plugins.Tilemaps
 		private ContentRef<Tileset> tileset  = null;
 		private TilemapData         tileData = new TilemapData();
 
-		[DontSerialize] private bool isUpdating = false;
+		[DontSerialize] private int    updateStack       = 0;
+		[DontSerialize] private Point2 updateTopLeft     = Point2.Zero;
+		[DontSerialize] private Point2 updateBottomRight = Point2.Zero;
 
 		[DontSerialize] 
 		private EventHandler<TilemapChangedEventArgs> eventTilemapChanged = null;
@@ -98,8 +100,9 @@ namespace Duality.Plugins.Tilemaps
 		/// <returns>The internal tile data of the <see cref="Tilemap"/>, which can now be modified externally</returns>
 		public Grid<Tile> BeginUpdateTiles()
 		{
-			if (this.isUpdating) throw new InvalidOperationException("Can't begin a Tilemap update when there is already one being performed.");
-			this.isUpdating = true;
+			// Push an active editing operation. We'll fire events when the last
+			// editing operation is popped from the update stack.
+			this.updateStack++;
 			return this.tileData.Tiles;
 		}
 		/// <summary>
@@ -114,9 +117,30 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="height"></param>
 		public void EndUpdateTiles(int x, int y, int width, int height)
 		{
-			if (!this.isUpdating) throw new InvalidOperationException("Can't end a Tilemap update when there was none being performed.");
-			this.OnTilesChanged(x, y, width, height);
-			this.isUpdating = false;
+			if (this.updateStack == 0) throw new InvalidOperationException("Can't end a Tilemap update when there was none being performed.");
+
+			// Pop an active editing operation.
+			this.updateStack--;
+
+			// Adjust updated region for the aggregated event we'll fire when its over.
+			// Only do so if we have actually changed something.
+			if (width > 0 && height > 0)
+			{
+				this.updateTopLeft.X = Math.Min(this.updateTopLeft.X, x);
+				this.updateTopLeft.Y = Math.Min(this.updateTopLeft.Y, y);
+				this.updateBottomRight.X = Math.Max(this.updateBottomRight.X, x + width);
+				this.updateBottomRight.Y = Math.Max(this.updateBottomRight.Y, y + height);
+			}
+
+			// If we just ended our last stacked editing operation, fire the change event
+			if (this.updateStack == 0)
+			{
+				this.OnTilesChanged(
+					this.updateTopLeft.X, 
+					this.updateTopLeft.Y, 
+					1 + this.updateBottomRight.X - this.updateTopLeft.X, 
+					1 + this.updateBottomRight.Y - this.updateTopLeft.Y);
+			}
 		}
 		/// <summary>
 		/// Ends an external update operation to the tile data stored in the <see cref="Tilemap"/>. Calling this

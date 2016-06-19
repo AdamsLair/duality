@@ -130,7 +130,6 @@ namespace Duality.Plugins.Tilemaps
 		private void ClearRigidBody()
 		{
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
-			body.BeginUpdateBodyShape();
 			for (int y = 0; y < this.sectorCount.Y; y++)
 			{
 				for (int x = 0; x < this.sectorCount.X; x++)
@@ -146,7 +145,6 @@ namespace Duality.Plugins.Tilemaps
 					this.sectors[x, y] = sector;
 				}
 			}
-			body.EndUpdateBodyShape();
 		}
 		private void UpdateRigidBody(bool rebuildEvenIfUnchanged)
 		{
@@ -172,7 +170,6 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
-			body.BeginUpdateBodyShape();
 			for (int y = 0; y < this.sectorCount.Y; y++)
 			{
 				for (int x = 0; x < this.sectorCount.X; x++)
@@ -180,7 +177,6 @@ namespace Duality.Plugins.Tilemaps
 					this.UpdateRigidBody(body, x, y);
 				}
 			}
-			body.EndUpdateBodyShape();
 		}
 		private void UpdateRigidBody(RigidBody body, int sectorX, int sectorY)
 		{
@@ -318,7 +314,6 @@ namespace Duality.Plugins.Tilemaps
 				// we'll have to add them back now. Note that we don't actually 
 				// re-generate them.
 				RigidBody body = this.GameObj.GetComponent<RigidBody>();
-				body.BeginUpdateBodyShape();
 				for (int y = 0; y < this.sectorCount.Y; y++)
 				{
 					for (int x = 0; x < this.sectorCount.X; x++)
@@ -332,7 +327,6 @@ namespace Duality.Plugins.Tilemaps
 						this.sectors[x, y] = sector;
 					}
 				}
-				body.EndUpdateBodyShape();
 			}
 		}
 		void ICmpInitializable.OnShutdown(Component.ShutdownContext context)
@@ -348,7 +342,6 @@ namespace Duality.Plugins.Tilemaps
 				// To avoid saving the generated collider redundantly, remove
 				// all of the generated shapes before saving. We'll add them again later.
 				RigidBody body = this.GameObj.GetComponent<RigidBody>();
-				body.BeginUpdateBodyShape();
 				for (int y = 0; y < this.sectorCount.Y; y++)
 				{
 					for (int x = 0; x < this.sectorCount.X; x++)
@@ -361,7 +354,6 @@ namespace Duality.Plugins.Tilemaps
 						}
 					}
 				}
-				body.EndUpdateBodyShape();
 			}
 		}
 
@@ -383,7 +375,6 @@ namespace Duality.Plugins.Tilemaps
 					MathF.Clamp(1 + (e.Pos.X + e.Size.X) / SectorSize, 0, this.sectorCount.X),
 					MathF.Clamp(1 + (e.Pos.Y + e.Size.Y) / SectorSize, 0, this.sectorCount.Y));
 				RigidBody body = this.GameObj.GetComponent<RigidBody>();
-				body.BeginUpdateBodyShape();
 				for (int y = minSector.Y; y < maxSector.Y; y++)
 				{
 					for (int x = minSector.X; x < maxSector.X; x++)
@@ -391,7 +382,6 @@ namespace Duality.Plugins.Tilemaps
 						this.UpdateRigidBody(body, x, y);
 					}
 				}
-				body.EndUpdateBodyShape();
 			}
 		}
 
