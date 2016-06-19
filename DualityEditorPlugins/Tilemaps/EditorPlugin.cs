@@ -313,6 +313,35 @@ namespace Duality.Editor.Plugins.Tilemaps
 					changedObj.Add(tilesetRef.Res);
 				}
 			}
+			// If a Tileset has been modified, we'll need to give local Components a chance to update.
+			else if (resRef.Is<Tileset>())
+			{
+				ContentRef<Tileset> tilesetRef = resRef.As<Tileset>();
+				Tileset tileset = tilesetRef.Res;
+
+				// Since we're able to edit tilesets without applying changes yet,
+				// we'll check whether there are new compiled changes. Don't update
+				// stuff unnecessarily if the changes aren't compiled yet anyway.
+				bool appliedTilesetChanges = 
+					tileset != null && 
+					tileset.Compiled && 
+					!tileset.HasChangedSinceCompile;
+				
+				if (appliedTilesetChanges)
+				{
+					foreach (Tilemap tilemap in Scene.Current.FindComponents<Tilemap>())
+					{
+						// Early-out for unaffected tilemaps
+						if (tilemap.Tileset != tilesetRef) continue;
+
+						// Notify every Component that is interested about changes using
+						// a trick: Since they will almost certainly be subscribed to
+						// tilemap changes anyway, pretend to change the entire tilemap.
+						tilemap.BeginUpdateTiles();
+						tilemap.EndUpdateTiles();
+					}
+				}
+			}
 
 			// Notify a change that isn't critical regarding persistence (don't flag stuff unsaved)
 			if (changedObj != null)
