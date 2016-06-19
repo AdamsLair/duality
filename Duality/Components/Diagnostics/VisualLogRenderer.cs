@@ -67,6 +67,7 @@ namespace Duality.Components.Diagnostics
 					{
 						if (logEntry.Anchor == VisualLogAnchor.Screen) continue;
 						target.PushState();
+						target.State.ZOffset += logEntry.DepthOffset;
 						target.State.ColorTint = new ColorRgba(1.0f, logEntry.LifetimeRatio);
 						if (logEntry.Anchor == VisualLogAnchor.Object && logEntry.AnchorObj != null && logEntry.AnchorObj.Transform != null)
 						{

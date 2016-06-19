@@ -49,6 +49,18 @@ namespace Duality
 			return entry;
 		}
 		/// <summary>
+		/// Assigns the log entries depth offset to the specified value.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="entry"></param>
+		/// <param name="depthOffset"></param>
+		/// <returns></returns>
+		public static T WithOffset<T>(this T entry, float depthOffset) where T : VisualLogEntry
+		{
+			entry.DepthOffset = depthOffset;
+			return entry;
+		}
+		/// <summary>
 		/// Aligns the text of this log entry as specified.
 		/// </summary>
 		/// <param name="entry"></param>
