@@ -16,15 +16,16 @@ namespace Duality
 		/// <summary>
 		/// Default width of the outline of a log entries visual representation.
 		/// </summary>
-		protected	const	float	DefaultOutlineWidth	= 1.5f;
-		private		const	float	LifeTimeEpsilon		= 0.000001f;
+		protected const float DefaultOutlineWidth = 1.5f;
+		private   const float LifeTimeEpsilon     = 0.000001f;
 
-		private	float			maxLifetime			= LifeTimeEpsilon;
-		private	float			lifetime			= LifeTimeEpsilon;
-		private	ColorRgba		color				= ColorRgba.White;
-		private bool            lifetimeAsAlpha		= false;   
-		private	VisualLogAnchor	anchor				= VisualLogAnchor.Screen;
-		private	GameObject		anchorObj			= null;
+		private float           maxLifetime     = LifeTimeEpsilon;
+		private float           lifetime        = LifeTimeEpsilon;
+		private float           depthOffset     = 0.0f;
+		private ColorRgba       color           = ColorRgba.White;
+		private bool            lifetimeAsAlpha = false;   
+		private VisualLogAnchor anchor          = VisualLogAnchor.Screen;
+		private GameObject      anchorObj       = null;
 
 
 		/// <summary>
@@ -55,6 +56,14 @@ namespace Duality
 		public virtual float LifetimeRatio
 		{
 			get { return MathF.Clamp(this.lifetime / this.maxLifetime, 0.0f, 1.0f); }
+		}
+		/// <summary>
+		/// [GET / SET] The depth offset that is applied when rendering this visual log entry.
+		/// </summary>
+		public float DepthOffset
+		{
+			get { return this.depthOffset; }
+			set { this.depthOffset = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The log entries individual color.
