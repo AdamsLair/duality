@@ -62,13 +62,14 @@ namespace Duality.Components.Physics
 		private List<ShapeInfo>   shapes    = null;
 		private List<JointInfo>   joints    = null;
 
-		[DontSerialize] private float     lastScale          = 1.0f;
-		[DontSerialize] private InitState bodyInitState      = InitState.Disposed;
-		[DontSerialize] private bool      schedUpdateBody    = false;
-		[DontSerialize] private bool      isUpdatingBody     = false;
-		[DontSerialize] private bool      isProcessingEvents = false;
-		[DontSerialize] private Body      body               = null;
-		[DontSerialize] private List<ColEvent> eventBuffer   = new List<ColEvent>();
+		[DontSerialize] private float     lastScale             = 1.0f;
+		[DontSerialize] private InitState bodyInitState         = InitState.Disposed;
+		[DontSerialize] private bool      schedUpdateBody       = false;
+		[DontSerialize] private bool      enableBodyAfterUpdate = false;
+		[DontSerialize] private bool      isUpdatingBody        = false;
+		[DontSerialize] private bool      isProcessingEvents    = false;
+		[DontSerialize] private Body      body                  = null;
+		[DontSerialize] private List<ColEvent> eventBuffer      = new List<ColEvent>();
 
 
 		internal Body PhysicsBody
@@ -799,6 +800,7 @@ namespace Duality.Components.Physics
 		public void BeginUpdateBodyShape()
 		{
 			if (this.body == null) return;
+			this.enableBodyAfterUpdate = this.body.Enabled;
 			this.body.Enabled = false;
 		}
 		/// <summary>
@@ -807,7 +809,7 @@ namespace Duality.Components.Physics
 		public void EndUpdateBodyShape()
 		{
 			if (this.body == null) return;
-			this.body.Enabled = true;
+			this.body.Enabled = this.enableBodyAfterUpdate;
 		}
 		private void UpdateBodyShape()
 		{
@@ -874,7 +876,24 @@ namespace Duality.Components.Physics
 			if (this.body != null) this.CleanupBody();
 			Transform t = this.GameObj != null ? this.GameObj.Transform : null;
 
+			// Create body and determine its enabled state
 			this.body = new Body(Scene.PhysicsWorld, this);
+
+			// The following line is an optimization: Farseer is really slow when it comes 
+			// to dynamically adding or removing fixtures to an existing world, but that's
+			// exactly what we'll do when in an editor context. 
+			//
+			// If we have large operations where shapes are changed every frame, we'll 
+			// use the BeginUpdateBodyShape / EndUpdateBodyShape API in order to prevent
+			// the changes to be propagated to Farseer each frame. This is a good start.
+			//
+			// However, even then we'll have unnecessary hiccups whenever beginning or
+			// ending an editing operation due to enabling and disabling the Farseer body.
+			// To mitigate this, we'll just have all bodies disabled as long as we're in
+			// and editor context.
+			this.body.Enabled = (DualityApp.ExecContext != DualityApp.ExecutionContext.Editor);
+
+			// Initialize body parameters
 			this.body.BodyType = ToFarseerBodyType(this.bodyType);
 			this.body.LinearDamping = this.linearDamp;
 			this.body.AngularDamping = this.angularDamp;
