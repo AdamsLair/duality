@@ -228,10 +228,10 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 			{
 				// Flat actors need to apply depth individually per vertex
 				float worldBaseY = transform.Pos.Y;
-				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y + this.height * scaleTemp) * depthPerUnit;
-				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y + this.height * scaleTemp) * depthPerUnit;
-				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y + this.height * scaleTemp) * depthPerUnit;
-				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y + this.height * scaleTemp) * depthPerUnit;
+				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y / scaleTemp + this.height) * depthPerUnit;
+				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y / scaleTemp + this.height) * depthPerUnit;
+				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y / scaleTemp + this.height) * depthPerUnit;
+				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y / scaleTemp + this.height) * depthPerUnit;
 			}
 		}
 
