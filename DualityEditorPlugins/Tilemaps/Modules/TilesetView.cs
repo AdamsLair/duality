@@ -901,9 +901,22 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
-			if (this.tileset != null && e.HasObject(this.tileset))
+			if (this.tileset.Res != null)
 			{
-				this.UpdateContentStats();
+				bool affectsTileset = 
+					e.HasObject(this.tileset.Res);
+				bool affectsRenderConfig = 
+					e.HasAnyObject(this.tileset.Res.RenderConfig) || 
+					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
+
+				if (!affectsTileset && !affectsRenderConfig)
+					return;
+
+				if (affectsRenderConfig)
+					this.OnTilesetChanged();
+				else if (affectsTileset)
+					this.UpdateContentStats();
+
 				this.Invalidate();
 			}
 		}

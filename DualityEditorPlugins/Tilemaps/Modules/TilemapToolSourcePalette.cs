@@ -19,6 +19,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 	public partial class TilemapToolSourcePalette : DockContent
 	{
 		private PatternTileDrawSource paletteSource = new PatternTileDrawSource();
+		private bool globalEventsSubscribed = false;
 
 
 		private ContentRef<Tileset> SelectedTileset
@@ -94,34 +95,77 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.tilesetView.ForeColor = darkMode ? Color.FromArgb(255, 255, 255) : Color.FromArgb(0, 0, 0);
 		}
 
+		protected override void OnVisibleChanged(EventArgs e)
+		{
+			base.OnVisibleChanged(e);
+
+			// Since this is a module that will only be hidden and made visible,
+			// rather than being disposed and recreated, we will have to listen
+			// to visibility events as well as OnShown / OnClosed.
+			if (this.IsHidden)
+				this.OnBecameInvisible();
+			else if (!this.IsHidden)
+				this.OnBecameVisible();
+		}
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
+			this.OnBecameVisible();
+		}
+		protected override void OnClosed(EventArgs e)
+		{
+			base.OnClosed(e);
+			this.OnBecameInvisible();
+		}
+		
+		private void OnBecameVisible()
+		{
+			if (!this.globalEventsSubscribed)
+			{
+				this.globalEventsSubscribed = true;
 
-			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
-			Resource.ResourceDisposing        += this.Resource_ResourceDisposing;
-			Scene.Entered                     += this.Scene_Entered;
-			TilemapsEditorPlugin.Instance.TileDrawingSourceChanged += 
-				this.TilemapsEditorPlugin_TileDrawingSourceChanged;
-
+				DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
+				DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
+				Resource.ResourceDisposing             += this.Resource_ResourceDisposing;
+				Scene.Entered                          += this.Scene_Entered;
+				TilemapsEditorPlugin.Instance.TileDrawingSourceChanged += 
+					this.TilemapsEditorPlugin_TileDrawingSourceChanged;
+			}
+				
 			// Apply editor-global tileset selection
 			this.ApplySelectedTileset();
 			// If none is selected, fall back to a tileset from the current Scene
 			this.SelectTilesetFromCurrentScene();
 		}
-		protected override void OnClosed(EventArgs e)
+		private void OnBecameInvisible()
 		{
-			base.OnClosed(e);
-			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
-			Resource.ResourceDisposing        -= this.Resource_ResourceDisposing;
-			Scene.Entered                     -= this.Scene_Entered;
-			TilemapsEditorPlugin.Instance.TileDrawingSourceChanged -= 
-				this.TilemapsEditorPlugin_TileDrawingSourceChanged;
+			if (this.globalEventsSubscribed)
+			{
+				this.globalEventsSubscribed = false;
+
+				DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
+				DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
+				Resource.ResourceDisposing             -= this.Resource_ResourceDisposing;
+				Scene.Entered                          -= this.Scene_Entered;
+				TilemapsEditorPlugin.Instance.TileDrawingSourceChanged -= 
+					this.TilemapsEditorPlugin_TileDrawingSourceChanged;
+			}
 		}
-		
+
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
 			this.ApplyBrightness();
+		}
+		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
+		{
+			// If the user changed the assigned Tileset of a Tilemap present in the current Scene,
+			// we'll need to update the implicit Tileset selection for the palette.
+			if (e.Objects.ComponentCount > 0 &&
+				e.HasProperty(TilemapsReflectionInfo.Property_Tilemap_Tileset) &&
+				e.Objects.Components.OfType<Tilemap>().Any())
+			{
+				this.ApplySelectedTileset();
+			}
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{

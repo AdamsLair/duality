@@ -123,7 +123,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void ApplyGlobalTilesetSelection(SelectionChangeReason changeReason)
 		{
-			Tileset tileset = DualityEditorApp.Selection.Resources.OfType<Tileset>().FirstOrDefault();
+			Tileset tileset = TilemapsEditorSelectionParser.QuerySelectedTileset().Res;
 			if (this.tilesetView.TargetTileset != tileset)
 			{
 				TilesetSelectionChangedEventArgs args = new TilesetSelectionChangedEventArgs(
@@ -314,26 +314,33 @@ namespace Duality.Editor.Plugins.Tilemaps
 		
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
+			// If we changed something about our selected tileset, update the UI to reflect that
 			Tileset tileset = this.SelectedTileset.Res;
-			if (tileset == null) return;
+			if (tileset != null)
+			{
+				bool affectsTileset = e.HasObject(tileset);
+				bool affectsRenderConfig = 
+					e.HasAnyObject(tileset.RenderConfig) || 
+					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
+				if (affectsTileset || affectsRenderConfig)
+				{
+					if (this.activeMode != null)
+						this.activeMode.RaiseOnTilesetModified(e);
 
-			bool affectsTileset = e.HasObject(tileset);
-			bool affectsRenderConfig = 
-				e.HasAnyObject(tileset.RenderConfig) || 
-				e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
-			if (!affectsTileset && !affectsRenderConfig) return;
+					this.applyRequired = tileset.HasChangedSinceCompile;
+					this.buttonApply.Enabled = this.applyRequired;
+					this.buttonRevert.Enabled = this.applyRequired;
+				}
+			}
 
-			if (this.activeMode != null)
-				this.activeMode.RaiseOnTilesetModified(e);
-
-			this.applyRequired = tileset.HasChangedSinceCompile;
-			this.buttonApply.Enabled = this.applyRequired;
-			this.buttonRevert.Enabled = this.applyRequired;
-
-			if (affectsRenderConfig)
-				this.tilesetView.InvalidateTileset();
-			else
-				this.tilesetView.Invalidate();
+			// If the user changed the assigned Tileset of a Tilemap present in the current Scene,
+			// we'll need to update the implicit Tileset selection for the palette.
+			if (e.Objects.ComponentCount > 0 &&
+				e.HasProperty(TilemapsReflectionInfo.Property_Tilemap_Tileset) &&
+				e.Objects.Components.OfType<Tilemap>().Any())
+			{
+				this.ApplyGlobalTilesetSelection(SelectionChangeReason.Unknown);
+			}
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
