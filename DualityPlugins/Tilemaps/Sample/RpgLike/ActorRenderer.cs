@@ -186,28 +186,28 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];
 
 			vertices[0].Pos.X = posTemp.X + edge1.X;
-			vertices[0].Pos.Y = posTemp.Y + edge1.Y - this.height * scaleTemp;
+			vertices[0].Pos.Y = posTemp.Y + edge1.Y - this.height;
 			vertices[0].Pos.Z = posTemp.Z;
 			vertices[0].TexCoord.X = uvLeft;
 			vertices[0].TexCoord.Y = uvTop;
 			vertices[0].Color = mainClr;
 
 			vertices[1].Pos.X = posTemp.X + edge2.X;
-			vertices[1].Pos.Y = posTemp.Y + edge2.Y - this.height * scaleTemp;
+			vertices[1].Pos.Y = posTemp.Y + edge2.Y - this.height;
 			vertices[1].Pos.Z = posTemp.Z;
 			vertices[1].TexCoord.X = uvLeft;
 			vertices[1].TexCoord.Y = uvBottom;
 			vertices[1].Color = mainClr;
 
 			vertices[2].Pos.X = posTemp.X + edge3.X;
-			vertices[2].Pos.Y = posTemp.Y + edge3.Y - this.height * scaleTemp;
+			vertices[2].Pos.Y = posTemp.Y + edge3.Y - this.height;
 			vertices[2].Pos.Z = posTemp.Z;
 			vertices[2].TexCoord.X = uvRight;
 			vertices[2].TexCoord.Y = uvBottom;
 			vertices[2].Color = mainClr;
 				
 			vertices[3].Pos.X = posTemp.X + edge4.X;
-			vertices[3].Pos.Y = posTemp.Y + edge4.Y - this.height * scaleTemp;
+			vertices[3].Pos.Y = posTemp.Y + edge4.Y - this.height;
 			vertices[3].Pos.Z = posTemp.Z;
 			vertices[3].TexCoord.X = uvRight;
 			vertices[3].TexCoord.Y = uvTop;
@@ -228,10 +228,10 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 			{
 				// Flat actors need to apply depth individually per vertex
 				float worldBaseY = transform.Pos.Y;
-				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y / scaleTemp + this.height) * depthPerUnit;
-				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y / scaleTemp + this.height) * depthPerUnit;
-				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y / scaleTemp + this.height) * depthPerUnit;
-				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y / scaleTemp + this.height) * depthPerUnit;
+				vertices[0].Pos.Z += this.offset + (worldBaseY + edge1.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[1].Pos.Z += this.offset + (worldBaseY + edge2.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[2].Pos.Z += this.offset + (worldBaseY + edge3.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
+				vertices[3].Pos.Z += this.offset + (worldBaseY + edge4.Y * transform.Scale / scaleTemp + this.height) * depthPerUnit;
 			}
 		}
 
