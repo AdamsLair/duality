@@ -125,7 +125,52 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
-			TilesetRenderInput newLayer = new TilesetRenderInput();
+			// Determine which texture IDs are already present, so we can
+			// derive which one we'll pick as a default for creating a new one.
+			bool hasMainTex = false;
+			int highestCustomTex = -1;
+			const string MainTexName = "mainTex";
+			const string CustomTexName = "customTex";
+			for (int i = 0; i < tileset.RenderConfig.Count; i++)
+			{
+				if (tileset.RenderConfig[i].Id == MainTexName)
+				{
+					hasMainTex = true;
+				}
+				else if (tileset.RenderConfig[i].Id.StartsWith(CustomTexName))
+				{
+					string customTexIndexString = tileset.RenderConfig[i].Id.Substring(
+						CustomTexName.Length, 
+						tileset.RenderConfig[i].Id.Length - CustomTexName.Length);
+
+					int customTexIndex;
+					if (!int.TryParse(customTexIndexString, out customTexIndex))
+						customTexIndex = 0;
+
+					highestCustomTex = Math.Max(highestCustomTex, customTexIndex);
+				}
+			}
+
+			// Decide upon an id for our new layer
+			string layerId;
+			string layerName;
+			if (!hasMainTex)
+			{
+				layerId = MainTexName;
+				layerName = "Main Texture";
+			}
+			else
+			{
+				layerId = CustomTexName + (highestCustomTex + 1).ToString();
+				layerName = "Custom Texture";
+			}
+
+			// Create a new layer using an UndoRedo action
+			TilesetRenderInput newLayer = new TilesetRenderInput
+			{
+				Id = layerId,
+				Name = layerName
+			};
 			UndoRedoManager.Do(new AddTilesetVisualLayerAction(
 				tileset, 
 				newLayer));

@@ -291,7 +291,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			// Conditional toggle operation on left click
 			if (e.Button == MouseButtons.Left)
 			{
-				TileCollisionShape collision = tileset.TileInput[tileIndex].Collision[this.editLayerIndex];
+				TileInput input = tileset.TileInput.Count > tileIndex ? tileset.TileInput[tileIndex] : default(TileInput);
+				TileCollisionShape collision = input.Collision[this.editLayerIndex];
 				this.drawSimple = false;
 				switch (this.hoveredArea)
 				{
@@ -364,7 +365,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
-			TileInput input = tileset.TileInput[tileIndex];
+			TileInput input = tileset.TileInput.Count > tileIndex ? tileset.TileInput[tileIndex] : default(TileInput);
 			TileCollisionShape lastCollision = input.Collision[this.editLayerIndex];
 
 			if (this.drawMode == CollisionDrawMode.Add)
