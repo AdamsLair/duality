@@ -36,7 +36,7 @@ namespace Duality.Backend.DotNetFramework
 		}
 		void IDualityBackend.Init()
 		{
-			// Write systems specs as a debug log
+			// Log systems specs for diagnostic purposes
 			{
 				string osName = Environment.OSVersion != null ? Environment.OSVersion.ToString() : "Unknown";
 				string osFriendlyName = null;
@@ -59,9 +59,14 @@ namespace Duality.Backend.DotNetFramework
 					else if (Environment.OSVersion.Version >= new Version(5, 0, 0))
 						osFriendlyName = "Windows 2000";
 				}
-				Log.Core.Write("Operating System: {1}{0}64 Bit Process: {2}{0}CLR Version: {3}{0}Processor Count: {4}", 
-					Environment.NewLine,
+				Log.Core.Write(
+					"Operating System: {0}" + Environment.NewLine +
+					"64 Bit OS:        {1}" + Environment.NewLine +
+					"64 Bit Process:   {2}" + Environment.NewLine +
+					"CLR Version:      {3}" + Environment.NewLine +
+					"Processor Count:  {4}", 
 					osName + (osFriendlyName != null ? (" (" + osFriendlyName + ")") : ""),
+					Environment.Is64BitOperatingSystem,
 					Environment.Is64BitProcess,
 					Environment.Version,
 					Environment.ProcessorCount);
@@ -83,7 +88,6 @@ namespace Duality.Backend.DotNetFramework
 			}
 			return this.fileSystem.GetDualityPathFormat(path);
 		}
-
 		IEnumerable<Assembly> ISystemBackend.GetLoadedAssemblies()
 		{
 			return AppDomain.CurrentDomain.GetAssemblies();
