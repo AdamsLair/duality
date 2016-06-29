@@ -92,7 +92,7 @@ namespace Duality.Backend.DefaultOpenTK
 			Log.Core.Write("Initializing OpenTK...");
 			Log.Core.PushIndent();
 			Log.Core.Write(
-				"Platform Backend:     {0}" + Environment.NewLine + 
+				"Platform Backend: {0}" + Environment.NewLine + 
 				"EnableHighResolution: {1}",
 				options.Backend,
 				options.EnableHighResolution);

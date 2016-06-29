@@ -96,9 +96,9 @@ namespace Duality.Backend
 			// Log some information about working directories, so we can debug missing libraries
 			{
 				Log.Core.Write(
-					"Current Directory:  {0}" + Environment.NewLine +
-					"Command Line:       {1}" + Environment.NewLine +
-					"Entry Assembly:     {2}" + Environment.NewLine +
+					"Current Directory: {0}" + Environment.NewLine +
+					"Command Line: {1}" + Environment.NewLine +
+					"Entry Assembly: {2}" + Environment.NewLine +
 					"Entry Assembly Dir: {3}",
 					Environment.CurrentDirectory,
 					Environment.CommandLine,
@@ -107,13 +107,10 @@ namespace Duality.Backend
 			}
 			// Log all currently loaded assemblies as a diagnostic consistency check
 			{
-				Log.Core.Write("Loaded Assemblies:");
-				Log.Core.PushIndent();
-				foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-				{
-					Log.Core.Write(Log.Assembly(assembly));
-				}
-				Log.Core.PopIndent();
+				Log.Core.Write("Loaded Assemblies:" + Environment.NewLine + "{0}",
+					AppDomain.CurrentDomain.GetAssemblies().ToString(
+						assembly => "  " + Log.Assembly(assembly),
+						Environment.NewLine));
 			}
 			AppDomain.CurrentDomain.AssemblyResolve += this.CurrentDomain_AssemblyResolve;
 			AppDomain.CurrentDomain.AssemblyLoad += this.CurrentDomain_AssemblyLoad;
