@@ -61,10 +61,10 @@ namespace Duality.Backend.DotNetFramework
 				}
 				Log.Core.Write(
 					"Operating System: {0}" + Environment.NewLine +
-					"64 Bit OS:        {1}" + Environment.NewLine +
-					"64 Bit Process:   {2}" + Environment.NewLine +
-					"CLR Version:      {3}" + Environment.NewLine +
-					"Processor Count:  {4}", 
+					"64 Bit OS: {1}" + Environment.NewLine +
+					"64 Bit Process: {2}" + Environment.NewLine +
+					"CLR Version: {3}" + Environment.NewLine +
+					"Processor Count: {4}", 
 					osName + (osFriendlyName != null ? (" (" + osFriendlyName + ")") : ""),
 					Environment.Is64BitOperatingSystem,
 					Environment.Is64BitProcess,

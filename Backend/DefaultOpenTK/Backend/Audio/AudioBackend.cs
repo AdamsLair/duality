@@ -74,7 +74,7 @@ namespace Duality.Backend.DefaultOpenTK
 			DefaultOpenTKBackendPlugin.InitOpenTK();
 			
 			Log.Core.Write("Available devices:" + Environment.NewLine + "{0}", 
-				AudioContext.AvailableDevices.ToString(d => "- " + d + (d == AudioContext.DefaultDevice ? " (Default)" : ""), Environment.NewLine));
+				AudioContext.AvailableDevices.ToString(d => "  " + d + (d == AudioContext.DefaultDevice ? " (Default)" : ""), Environment.NewLine));
 
 			// Create OpenAL audio context
 			this.context = new AudioContext();
@@ -268,9 +268,9 @@ namespace Duality.Backend.DefaultOpenTK
 				string versionString = AL.Get(ALGetString.Version);
 				Log.Core.Write(
 					"OpenAL Version: {0}" + Environment.NewLine + 
-					"Vendor:         {1}" + Environment.NewLine + 
-					"Renderer:       {2}" + Environment.NewLine + 
-					"Effects:        {3}",
+					"Vendor: {1}" + Environment.NewLine + 
+					"Renderer: {2}" + Environment.NewLine + 
+					"Effects: {3}",
 					versionString,
 					AL.Get(ALGetString.Vendor),
 					AL.Get(ALGetString.Renderer),
