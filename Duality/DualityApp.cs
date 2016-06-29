@@ -336,10 +336,6 @@ namespace Duality
 			// Process command line options
 			if (commandLineArgs != null)
 			{
-				int logArgIndex = commandLineArgs.IndexOfFirst("logfile");
-				if (logArgIndex != -1 && logArgIndex + 1 < commandLineArgs.Length) logArgIndex++;
-				else logArgIndex = -1;
-
 				// Enter debug mode
 				if (commandLineArgs.Contains(CmdArgDebug)) System.Diagnostics.Debugger.Launch();
 				// Run from editor

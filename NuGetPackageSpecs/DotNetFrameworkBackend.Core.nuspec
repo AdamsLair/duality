@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DotNetFramework</id>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DotNetFramework Backend</title>
@@ -14,11 +14,12 @@
     <description>The default system backend layer for Duality. It uses regular .Net Framework classes, as are available on desktop platforms.</description>
     <tags>Duality Core Plugin Backend</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.1" />
+      <dependency id="AdamsLair.Duality" version="2.6.3" />
     </dependencies>
-    <releaseNotes>System Backend Path Mapping, Added Backend Postbuild for Editor Tests
-#ADD: The default DotNetFramework backend now performs a transparent path mapping between Duality-style path strings and the system's native path strings.
-#FIX: The editor unit testing project didn't receive any editor backend plugins and failed as a result. Adding postbuild events for copying them over to the new testing assembly fixes this.</releaseNotes>
+    <releaseNotes>Logging Tweaks
+#CHANGE: Tweaked monospace / console display of existing system property logs. 
+#ADD: Added plugin loader logs for diagnosing problems with working and executing directory. 
+#ADD: Added self-check logging of all loaded assemblies.</releaseNotes>
   </metadata>
   <files>
     <file src="..\Backend\DotNetFramework\bin\Release\DotNetFrameworkBackend.core.dll" target="lib" />
