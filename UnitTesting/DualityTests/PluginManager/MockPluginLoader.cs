@@ -38,7 +38,7 @@ namespace Duality.Tests.PluginManager
 		{
 			get { return this.assemblyMap; }
 		}
-		public IEnumerable<string> LoadedAssemblies
+		public IEnumerable<string> LoadedAssemblyPaths
 		{
 			get { return this.loadedAssemblies; }
 		}
@@ -49,6 +49,10 @@ namespace Duality.Tests.PluginManager
 		public IEnumerable<string> AvailableAssemblyPaths
 		{
 			get { return this.assemblyMap.Keys.Concat(this.incompatibleDlls); }
+		}
+		public IEnumerable<Assembly> LoadedAssemblies
+		{
+			get { return this.assemblyMap.Values; }
 		}
 		
 

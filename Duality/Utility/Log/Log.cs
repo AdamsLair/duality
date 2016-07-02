@@ -286,7 +286,16 @@ namespace Duality
 		/// <returns></returns>
 		public static string Assembly(Assembly asm)
 		{
-			return asm.GetShortAssemblyName();
+			string shortName = asm.GetShortAssemblyName();
+			try
+			{
+				Version version = asm.GetName().Version;
+				return string.Format("{0} {1}", shortName, version);
+			}
+			catch (Exception)
+			{
+				return string.Format("{0} {1}", shortName, "[Error retrieving Version]");
+			}
 		}
 		/// <summary>
 		/// Returns a string that can be used for representing a <see cref="System.Type"/> in log entries.

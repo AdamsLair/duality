@@ -460,7 +460,7 @@ namespace Duality
 			if (memberResolveCache.TryGetValue(memberString, out result)) return result;
 
 			Assembly[] searchAsm = 
-				DualityApp.SystemBackend.GetLoadedAssemblies()
+				DualityApp.PluginLoader.LoadedAssemblies
 				.Except(DualityApp.PluginManager.DisposedPlugins)
 				.ToArray();
 
@@ -714,7 +714,7 @@ namespace Duality
 			if (searchAsm == null)
 			{
 				searchAsm = 
-					DualityApp.SystemBackend.GetLoadedAssemblies()
+					DualityApp.PluginLoader.LoadedAssemblies
 					.Except(DualityApp.PluginManager.DisposedPlugins)
 					.ToArray();
 			}

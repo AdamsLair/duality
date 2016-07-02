@@ -85,7 +85,7 @@ namespace Duality.Tests.PluginManager
 				// Assert that we loaded core plugin and auxilliary libraries, but not editor plugins
 				CollectionAssert.AreEquivalent(
 					mockLoadedPaths, 
-					pluginLoader.LoadedAssemblies);
+					pluginLoader.LoadedAssemblyPaths);
 
 				// Assert that we can access all assemblies and types from plugins
 				foreach (MockAssembly mockAssembly in mockPlugins)
@@ -344,7 +344,7 @@ namespace Duality.Tests.PluginManager
 				Assert.IsEmpty(pluginManager.DisposedPlugins);
 
 				// Assert that we did not load any assembly twice
-				Assert.AreEqual(3, pluginLoader.LoadedAssemblies.Count());
+				Assert.AreEqual(3, pluginLoader.LoadedAssemblyPaths.Count());
 
 				// Let's try loading assembly duplicates manually
 				for (int i = 0; i < mockPlugins.Length; i++)
@@ -358,7 +358,7 @@ namespace Duality.Tests.PluginManager
 				Assert.IsEmpty(pluginManager.DisposedPlugins);
 
 				// Assert that we did not load any assembly twice
-				Assert.AreEqual(3, pluginLoader.LoadedAssemblies.Count());
+				Assert.AreEqual(3, pluginLoader.LoadedAssemblyPaths.Count());
 
 				pluginManager.Terminate();
 			}
