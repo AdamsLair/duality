@@ -354,6 +354,23 @@ namespace Duality
 				Log.Core.Write("Using '{0}' to load plugins.", pluginLoader.GetType().Name);
 
 				pluginLoader.Init();
+
+				// Log assembly loading data for diagnostic purposes
+				{
+					Log.Core.Write("Currently Loaded Assemblies:" + Environment.NewLine + "{0}",
+						pluginLoader.LoadedAssemblies.ToString(
+							assembly => "  " + Log.Assembly(assembly),
+							Environment.NewLine));
+					Log.Core.Write("Plugin Base Directories:" + Environment.NewLine + "{0}",
+						pluginLoader.BaseDirectories.ToString(
+							path => "  " + path,
+							Environment.NewLine));
+					Log.Core.Write("Available Assembly Paths:" + Environment.NewLine + "{0}",
+						pluginLoader.AvailableAssemblyPaths.ToString(
+							path => "  " + path,
+							Environment.NewLine));
+				}
+
 				pluginManager.Init(pluginLoader);
 				pluginManager.PluginsReady += pluginManager_PluginsReady;
 				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;
