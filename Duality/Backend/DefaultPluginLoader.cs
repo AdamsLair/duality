@@ -54,6 +54,10 @@ namespace Duality.Backend
 				return availLibFiles;
 			}
 		}
+		public IEnumerable<Assembly> LoadedAssemblies
+		{
+			get { return AppDomain.CurrentDomain.GetAssemblies(); }
+		}
 
 		public Assembly LoadAssembly(string assemblyPath, bool anonymous)
 		{
@@ -108,7 +112,7 @@ namespace Duality.Backend
 			// Log all currently loaded assemblies as a diagnostic consistency check
 			{
 				Log.Core.Write("Loaded Assemblies:" + Environment.NewLine + "{0}",
-					AppDomain.CurrentDomain.GetAssemblies().ToString(
+					this.LoadedAssemblies.ToString(
 						assembly => "  " + Log.Assembly(assembly),
 						Environment.NewLine));
 			}

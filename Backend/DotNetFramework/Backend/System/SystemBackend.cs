@@ -88,9 +88,5 @@ namespace Duality.Backend.DotNetFramework
 			}
 			return this.fileSystem.GetDualityPathFormat(path);
 		}
-		IEnumerable<Assembly> ISystemBackend.GetLoadedAssemblies()
-		{
-			return AppDomain.CurrentDomain.GetAssemblies();
-		}
 	}
 }

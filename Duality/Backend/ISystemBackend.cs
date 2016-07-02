@@ -20,10 +20,5 @@ namespace Duality.Backend
 		/// <param name="dir"></param>
 		/// <returns></returns>
 		string GetNamedPath(NamedDirectory dir);
-		/// <summary>
-		/// Enumerates all Assemblies that are currently loaded in the context of this application.
-		/// </summary>
-		/// <returns></returns>
-		IEnumerable<Assembly> GetLoadedAssemblies();
 	}
 }
