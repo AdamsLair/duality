@@ -163,12 +163,82 @@
                     <active dataType="Bool">true</active>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
                     <moveSenseRadius dataType="Float">96</moveSenseRadius>
-                    <speed dataType="Float">5</speed>
+                    <speed dataType="Float">3.5</speed>
                     <targetMovement dataType="Struct" type="Duality.Vector2" />
                   </item>
+                  <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator" id="2170487535">
+                    <active dataType="Bool">true</active>
+                    <activeAnim />
+                    <activeLoopMode dataType="Enum" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator+LoopMode" name="Loop" value="2" />
+                    <animations dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation]]" id="301622227">
+                      <_items dataType="Array" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation[]" id="118561382" length="4">
+                        <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation" id="2771520384">
+                          <duration dataType="Float">2</duration>
+                          <frameCount dataType="Int">1</frameCount>
+                          <name dataType="String">Idle</name>
+                          <preferredLoopMode dataType="Enum" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator+LoopMode" name="PingPong" value="3" />
+                          <startFrame dataType="Array" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping[]" id="2235101596">
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">180</Angle>
+                              <Direction dataType="String">Down</Direction>
+                              <SpriteSheetIndex dataType="Int">4</SpriteSheetIndex>
+                            </item>
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">270</Angle>
+                              <Direction dataType="String">Left</Direction>
+                              <SpriteSheetIndex dataType="Int">7</SpriteSheetIndex>
+                            </item>
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">90</Angle>
+                              <Direction dataType="String">Right</Direction>
+                              <SpriteSheetIndex dataType="Int">10</SpriteSheetIndex>
+                            </item>
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">0</Angle>
+                              <Direction dataType="String">Up</Direction>
+                              <SpriteSheetIndex dataType="Int">13</SpriteSheetIndex>
+                            </item>
+                          </startFrame>
+                        </item>
+                        <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimation" id="1460458702">
+                          <duration dataType="Float">0.5</duration>
+                          <frameCount dataType="Int">3</frameCount>
+                          <name dataType="String">Walk</name>
+                          <preferredLoopMode dataType="Enum" type="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator+LoopMode" name="PingPong" value="3" />
+                          <startFrame dataType="Array" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping[]" id="2299729234">
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">180</Angle>
+                              <Direction dataType="String">Down</Direction>
+                              <SpriteSheetIndex dataType="Int">3</SpriteSheetIndex>
+                            </item>
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">270</Angle>
+                              <Direction dataType="String">Left</Direction>
+                              <SpriteSheetIndex dataType="Int">6</SpriteSheetIndex>
+                            </item>
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">90</Angle>
+                              <Direction dataType="String">Right</Direction>
+                              <SpriteSheetIndex dataType="Int">9</SpriteSheetIndex>
+                            </item>
+                            <item dataType="Struct" type="Duality.Plugins.Tilemaps.Sample.RpgLike.AnimDirMapping">
+                              <Angle dataType="Float">0</Angle>
+                              <Direction dataType="String">Up</Direction>
+                              <SpriteSheetIndex dataType="Int">12</SpriteSheetIndex>
+                            </item>
+                          </startFrame>
+                        </item>
+                      </_items>
+                      <_size dataType="Int">2</_size>
+                      <_version dataType="Int">4</_version>
+                    </animations>
+                    <animDirection dataType="Float">0</animDirection>
+                    <animTime dataType="Float">0</animTime>
+                    <gameobj dataType="ObjectRef">1593919710</gameobj>
+                  </item>
                 </_items>
-                <_size dataType="Int">4</_size>
-                <_version dataType="Int">6</_version>
+                <_size dataType="Int">5</_size>
+                <_version dataType="Int">7</_version>
               </compList>
               <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="111452910" surrogate="true">
                 <header />
@@ -178,12 +248,14 @@
                     <item dataType="Type" id="3361562350" value="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorRenderer" />
                     <item dataType="Type" id="794497900" value="Duality.Components.Physics.RigidBody" />
                     <item dataType="Type" id="1223005970" value="Duality.Plugins.Tilemaps.Sample.RpgLike.CharacterController" />
+                    <item dataType="Type" id="3118878792" value="Duality.Plugins.Tilemaps.Sample.RpgLike.ActorAnimator" />
                   </keys>
                   <values dataType="Array" type="System.Object[]" id="3342871690">
                     <item dataType="ObjectRef">3954234642</item>
                     <item dataType="ObjectRef">3907431145</item>
                     <item dataType="ObjectRef">361728938</item>
                     <item dataType="ObjectRef">479935388</item>
+                    <item dataType="ObjectRef">2170487535</item>
                   </values>
                 </body>
               </compMap>
@@ -529,7 +601,7 @@
                   <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="3389116725">
                     <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="3351026678" length="64" />
                     <_size dataType="Int">0</_size>
-                    <_version dataType="Int">1952</_version>
+                    <_version dataType="Int">2432</_version>
                   </shapes>
                 </item>
                 <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollider" id="2359977928">

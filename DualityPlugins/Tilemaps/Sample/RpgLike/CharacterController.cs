@@ -52,6 +52,10 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 			Transform transform = this.GameObj.Transform;
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
 
+			// We don't want our characters to run head first into a wall at full force,
+			// just because the player demands it. That's just silly. So instead, we'll
+			// do a physics raycast in the movement direction and gradually slow down based
+			// on how far away the obstacle is.
 			Vector2 adjustedTargetMovement = this.targetMovement / MathF.Max(1.0f, this.targetMovement.Length);;
 			if (adjustedTargetMovement.Length > 0.01f && this.moveSenseRadius > 0.0f)
 			{
@@ -68,15 +72,29 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 					float movementRatio = 0.1f + 0.9f * ((firstHit.Pos - rayStart).Length / (rayEnd - rayStart).Length);
 					adjustedTargetMovement *= movementRatio;
 				}
-
-				VisualLog.Default
-					.DrawConnection(rayStart.X, rayStart.Y, 0.0f, hitAnything ? firstHit.Pos.X : rayEnd.X, hitAnything ? firstHit.Pos.Y : rayEnd.Y)
-					.WithOffset(-100);
 			}
 
+			// Determine how fast we want to be and apply a force to reach the target velocity
 			Vector2 targetVelocity = adjustedTargetMovement * this.speed;
 			Vector2 appliedForce = (targetVelocity - body.LinearVelocity) * body.Mass * this.acceleration;
 			body.ApplyLocalForce(appliedForce);
+
+			// Do we have an animated actor? Let it know how to animate!
+			ActorAnimator animator = this.GameObj.GetComponent<ActorAnimator>();
+			if (animator != null)
+			{
+				if (targetVelocity.Length > 0.01f)
+				{
+					animator.AnimationSpeed = adjustedTargetMovement.Length;
+					animator.AnimationDirection = adjustedTargetMovement.Angle;
+					animator.PlayAnimation("Walk");
+				}
+				else
+				{
+					animator.AnimationSpeed = 1.0f;
+					animator.PlayAnimation("Idle");
+				}
+			}
 		}
 	}
 }

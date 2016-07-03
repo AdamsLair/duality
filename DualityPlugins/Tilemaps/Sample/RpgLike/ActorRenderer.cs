@@ -131,6 +131,7 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 		/// When set to -1, the entire <see cref="Texture"/> will be used without any
 		/// sprite sheet functionality.
 		/// </summary>
+		[EditorHintRange(-1, int.MaxValue)]
 		public int SpriteIndex
 		{
 			get { return this.spriteIndex; }
