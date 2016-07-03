@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DotNetFramework</id>
-    <version>2.0.1</version>
+    <version>2.1.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DotNetFramework Backend</title>
@@ -14,11 +14,15 @@
     <description>The default system backend layer for Duality. It uses regular .Net Framework classes, as are available on desktop platforms.</description>
     <tags>Duality Core Plugin Backend</tags>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.2.1" />
+      <dependency id="AdamsLair.Duality" version="2.7.0" />
     </dependencies>
-    <releaseNotes>System Backend Path Mapping, Added Backend Postbuild for Editor Tests
-#ADD: The default DotNetFramework backend now performs a transparent path mapping between Duality-style path strings and the system's native path strings.
-#FIX: The editor unit testing project didn't receive any editor backend plugins and failed as a result. Adding postbuild events for copying them over to the new testing assembly fixes this.</releaseNotes>
+    <releaseNotes>Logging Tweaks, Moved Loaded Assembly Enumeration
+#ADD: Added more plugin loader logs to DualityApp, now tracking exactly what Assemblies are available and where. 
+#CHANGE: Assemblies are now logged with their version number. 
+#CHANGE: Moved environment info logs to DefaultPluginLoader, because it's available much sooner and more reliably than the system backend plugin.
+#CHANGE: Replaced the system backend's GetLoadedAssemblies() API with a new LoadedAssemblies property in the IPluginLoader, so all functionality related to Assembly loading and discovery are in one place. 
+#CHANGE: Adjusted dummy implementations for plugin loading and system backend. 
+#CHANGE: Adjusted unit tests.</releaseNotes>
   </metadata>
   <files>
     <file src="..\Backend\DotNetFramework\bin\Release\DotNetFrameworkBackend.core.dll" target="lib" />

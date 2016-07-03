@@ -135,6 +135,8 @@ namespace Duality
 		
 		/// <summary>
 		/// [GET] The plugin manager that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// If you want to load a plugin, use the <see cref="CorePluginManager"/> from this property.
+		/// If you want to load a non-plugin Assembly, use the <see cref="PluginLoader"/>.
 		/// </summary>
 		public static CorePluginManager PluginManager
 		{
@@ -142,11 +144,12 @@ namespace Duality
 		}
 		/// <summary>
 		/// [GET] The plugin loader that is used by Duality. Don't use this unless you know exactly what you're doing.
+		/// If you want to load a plugin, use the <see cref="PluginManager"/>. 
+		/// If you want to load a non-plugin Assembly, use the <see cref="IPluginLoader"/> from this property.
 		/// </summary>
-		[Obsolete("Use DualityApp.PluginManager instead.")]
 		public static IPluginLoader PluginLoader
 		{
-			get { return pluginManager.PluginLoader; }
+			get { return pluginLoader; }
 		}
 		/// <summary>
 		/// [GET] The system backend that is used by Duality. Don't use this unless you know exactly what you're doing.
@@ -336,10 +339,6 @@ namespace Duality
 			// Process command line options
 			if (commandLineArgs != null)
 			{
-				int logArgIndex = commandLineArgs.IndexOfFirst("logfile");
-				if (logArgIndex != -1 && logArgIndex + 1 < commandLineArgs.Length) logArgIndex++;
-				else logArgIndex = -1;
-
 				// Enter debug mode
 				if (commandLineArgs.Contains(CmdArgDebug)) System.Diagnostics.Debugger.Launch();
 				// Run from editor
@@ -355,6 +354,23 @@ namespace Duality
 				Log.Core.Write("Using '{0}' to load plugins.", pluginLoader.GetType().Name);
 
 				pluginLoader.Init();
+
+				// Log assembly loading data for diagnostic purposes
+				{
+					Log.Core.Write("Currently Loaded Assemblies:" + Environment.NewLine + "{0}",
+						pluginLoader.LoadedAssemblies.ToString(
+							assembly => "  " + Log.Assembly(assembly),
+							Environment.NewLine));
+					Log.Core.Write("Plugin Base Directories:" + Environment.NewLine + "{0}",
+						pluginLoader.BaseDirectories.ToString(
+							path => "  " + path,
+							Environment.NewLine));
+					Log.Core.Write("Available Assembly Paths:" + Environment.NewLine + "{0}",
+						pluginLoader.AvailableAssemblyPaths.ToString(
+							path => "  " + path,
+							Environment.NewLine));
+				}
+
 				pluginManager.Init(pluginLoader);
 				pluginManager.PluginsReady += pluginManager_PluginsReady;
 				pluginManager.PluginsRemoving += pluginManager_PluginsRemoving;

@@ -721,8 +721,11 @@ namespace Duality.Backend.DefaultOpenTK
 			{
 				CheckOpenGLErrors();
 				versionString = GL.GetString(StringName.Version);
-				Log.Core.Write("OpenGL Version: {1}{0}Vendor: {2}{0}Renderer: {3}{0}Shading Language Version: {4}",
-					Environment.NewLine,
+				Log.Core.Write(
+					"OpenGL Version: {0}" + Environment.NewLine +
+					"Vendor: {1}" + Environment.NewLine +
+					"Renderer: {2}" + Environment.NewLine +
+					"Shader Version: {3}",
 					versionString,
 					GL.GetString(StringName.Vendor),
 					GL.GetString(StringName.Renderer),

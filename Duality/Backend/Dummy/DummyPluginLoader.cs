@@ -25,6 +25,10 @@ namespace Duality.Backend.Dummy
 		{
 			get { return Enumerable.Empty<string>(); }
 		}
+		IEnumerable<Assembly> IPluginLoader.LoadedAssemblies
+		{
+			get { return Enumerable.Empty<Assembly>(); }
+		}
 		Assembly IPluginLoader.LoadAssembly(string assemblyPath, bool anonymous)
 		{
 			return null;

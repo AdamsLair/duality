@@ -30,6 +30,11 @@ namespace Duality.Backend
 		/// [GET] Enumerates all plugin Assemblies that are available for loading.
 		/// </summary>
 		IEnumerable<string> AvailableAssemblyPaths { get; }
+		/// <summary>
+		/// [GET] Enumerates all Assemblies that are currently loaded in the context of this application.
+		/// </summary>
+		/// <returns></returns>
+		IEnumerable<Assembly> LoadedAssemblies { get; }
 
 		/// <summary>
 		/// Loads a plugin Assembly from the specified path. For reliable cross-platform

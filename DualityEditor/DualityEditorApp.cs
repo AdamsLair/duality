@@ -734,26 +734,11 @@ namespace Duality.Editor
 			// Replace exec path in user files, since VS doesn't support relative paths there..
 			{
 				XDocument projectDoc;
-				const string coreProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
-				const string editorProjectFile = EditorHelper.SourceCodeProjectEditorPluginFile;
-
+				string coreProjectFile = EditorHelper.SourceCodeProjectCorePluginFile;
+				string editorProjectFile = EditorHelper.SourceCodeProjectEditorPluginFile;
 				string solutionDir = Path.GetFullPath(Path.GetDirectoryName(EditorHelper.SourceCodeSolutionFile));
 
-				if (!File.Exists(coreProjectFile))
-				{
-					using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
-					using (ZipArchive gamePluginZip = null)
-					{
-						foreach (var e in gamePluginZip.Entries)
-						{
-							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(coreProjectFile), StringComparison.InvariantCultureIgnoreCase))
-							{
-								e.Extract(EditorHelper.SourceCodeDirectory, true);
-								break;
-							}
-						}
-					}
-				}
+				// Adjust the core plugin startup parameters, if a core plugin exists under the expected name
 				if (File.Exists(coreProjectFile))
 				{
 					bool anythingChanged = false;
@@ -795,21 +780,7 @@ namespace Duality.Editor
 					}
 				}
 				
-				if (!File.Exists(editorProjectFile))
-				{
-					using (MemoryStream gamePluginStream = new MemoryStream(Properties.GeneralRes.GamePluginTemplate))
-					using (ZipArchive gamePluginZip = null)
-					{
-						foreach (var e in gamePluginZip.Entries)
-						{
-							if (string.Equals(Path.GetFileName(e.FullName), Path.GetFileName(editorProjectFile), StringComparison.InvariantCultureIgnoreCase))
-							{
-								e.Extract(EditorHelper.SourceCodeDirectory, true);
-								break;
-							}
-						}
-					}
-				}
+				// Adjust the editor plugin startup parameters, if an editor plugin exists under the expected name
 				if (File.Exists(editorProjectFile))
 				{
 					bool anythingChanged = false;

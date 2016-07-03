@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>2.1.1</version>
+    <version>2.2.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
@@ -13,12 +13,15 @@
     <summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
     <tags>Duality Launcher</tags>
-    <releaseNotes>Minor Plugin Loader Bugfixes, Console Log Tweaks
-#FIX: Fixed a potential null reference exception when logging a failure to resolve an Assembly.
-#CHANGE: Console logs are now greyed out based on a repetition memory that is three lines long, rather than just one. 
-#CHANGE: When greying out similar log lines, leading whitespace is no longer regarded as different.</releaseNotes>
+    <releaseNotes>Logging Tweaks, Moved Loaded Assembly Enumeration
+#ADD: Added more plugin loader logs to DualityApp, now tracking exactly what Assemblies are available and where. 
+#CHANGE: Assemblies are now logged with their version number. 
+#CHANGE: Moved environment info logs to DefaultPluginLoader, because it's available much sooner and more reliably than the system backend plugin.
+#CHANGE: Replaced the system backend's GetLoadedAssemblies() API with a new LoadedAssemblies property in the IPluginLoader, so all functionality related to Assembly loading and discovery are in one place. 
+#CHANGE: Adjusted dummy implementations for plugin loading and system backend. 
+#CHANGE: Adjusted unit tests.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.6.1" />
+      <dependency id="AdamsLair.Duality" version="2.7.0" />
     </dependencies>
   </metadata>
   <files>

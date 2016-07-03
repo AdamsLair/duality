@@ -81,14 +81,14 @@ namespace Duality.Backend.DefaultOpenTK
 
 			Log.Core.Write(
 				"Window Specification: " + Environment.NewLine +
-				"Buffers: {0}"           + Environment.NewLine +
-				"Samples: {1}"           + Environment.NewLine +
-				"ColorFormat: {2}"       + Environment.NewLine +
-				"AccumulatorFormat: {3}" + Environment.NewLine +
-				"Depth: {4}"             + Environment.NewLine +
-				"Stencil: {5}"           + Environment.NewLine +
-				"VSync: {6}"             + Environment.NewLine +
-				"SwapInterval: {7}", 
+				"  Buffers: {0}"         + Environment.NewLine +
+				"  Samples: {1}"         + Environment.NewLine +
+				"  ColorFormat: {2}"     + Environment.NewLine +
+				"  AccumFormat: {3}"     + Environment.NewLine +
+				"  Depth: {4}"           + Environment.NewLine +
+				"  Stencil: {5}"         + Environment.NewLine +
+				"  VSync: {6}"           + Environment.NewLine +
+				"  SwapInterval: {7}", 
 				this.internalWindow.Context.GraphicsMode.Buffers,
 				this.internalWindow.Context.GraphicsMode.Samples,
 				this.internalWindow.Context.GraphicsMode.ColorFormat,

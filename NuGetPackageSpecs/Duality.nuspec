@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.6.1</version>
+    <version>2.7.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,11 +13,13 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>PluginManager Logging Tweaks, Minor Plugin Loader Bugfixes, Improved Z Sorting
-#CHANGE: Each PluginManager now uses its own local Log reference, rather than accessing the global log. This allows different PluginManagers to use different logs, or no log at all.
-#FIX: Fixed a potential null reference exception when logging a failure to resolve an Assembly.
-#FIX: Fixed precision / "z fighting" issues for sorted blend modes when approaching near-zero depth offsets. 
-#REMOVE: Removed the internal z sort accuracy hack in favour of actual float comparison.</releaseNotes>
+    <releaseNotes>Logging Tweaks, Moved Loaded Assembly Enumeration
+#ADD: Added more plugin loader logs to DualityApp, now tracking exactly what Assemblies are available and where. 
+#CHANGE: Assemblies are now logged with their version number. 
+#CHANGE: Moved environment info logs to DefaultPluginLoader, because it's available much sooner and more reliably than the system backend plugin.
+#CHANGE: Replaced the system backend's GetLoadedAssemblies() API with a new LoadedAssemblies property in the IPluginLoader, so all functionality related to Assembly loading and discovery are in one place. 
+#CHANGE: Adjusted dummy implementations for plugin loading and system backend. 
+#CHANGE: Adjusted unit tests.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />

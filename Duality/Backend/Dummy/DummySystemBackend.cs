@@ -39,9 +39,5 @@ namespace Duality.Backend.Dummy
 		{
 			return string.Empty;
 		}
-		IEnumerable<Assembly> ISystemBackend.GetLoadedAssemblies()
-		{
-			return Enumerable.Empty<Assembly>();
-		}
 	}
 }
