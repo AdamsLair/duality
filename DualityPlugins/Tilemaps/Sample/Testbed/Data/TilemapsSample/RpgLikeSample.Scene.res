@@ -118,6 +118,7 @@
                     <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                       <contentPath dataType="String">Data\TilemapsSample\Actors\Cylinder.Material.res</contentPath>
                     </sharedMat>
+                    <spriteIndex dataType="Int">0</spriteIndex>
                     <visibilityGroup dataType="Enum" type="Duality.Drawing.VisibilityFlag" name="Group0" value="1" />
                   </item>
                   <item dataType="Struct" type="Duality.Components.Physics.RigidBody" id="361728938">
@@ -161,6 +162,7 @@
                     <acceleration dataType="Float">0.15</acceleration>
                     <active dataType="Bool">true</active>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
+                    <moveSenseRadius dataType="Float">96</moveSenseRadius>
                     <speed dataType="Float">5</speed>
                     <targetMovement dataType="Struct" type="Duality.Vector2" />
                   </item>
@@ -527,7 +529,7 @@
                   <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="3389116725">
                     <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="3351026678" length="64" />
                     <_size dataType="Int">0</_size>
-                    <_version dataType="Int">1832</_version>
+                    <_version dataType="Int">1952</_version>
                   </shapes>
                 </item>
                 <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollider" id="2359977928">

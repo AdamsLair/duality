@@ -32,6 +32,7 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 		private float                depthScale     = 0.01f;
 		private bool                 isVertical     = true;
 		private float                height         = 0.0f;
+		private int                  spriteIndex    = -1;
 
 		[DontSerialize] private VertexC1P3T2[] vertices = null;
 
@@ -124,6 +125,16 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 		{
 			get { return this.height; }
 			set { this.height = value; }
+		}
+		/// <summary>
+		/// [GET / SET] The sprite index that should be used for rendering this actor.
+		/// When set to -1, the entire <see cref="Texture"/> will be used without any
+		/// sprite sheet functionality.
+		/// </summary>
+		public int SpriteIndex
+		{
+			get { return this.spriteIndex; }
+			set { this.spriteIndex = value; }
 		}
 		
 
@@ -242,9 +253,16 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 
 			Rect uvRect;
 			if (mainTex != null)
-				uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
+			{
+				if (this.spriteIndex < 0)
+					uvRect = new Rect(mainTex.UVRatio.X, mainTex.UVRatio.Y);
+				else
+					mainTex.LookupAtlas(this.spriteIndex, out uvRect);
+			}
 			else
+			{
 				uvRect = new Rect(1.0f, 1.0f);
+			}
 
 			this.PrepareVertices(ref this.vertices, device, mainClr, uvRect);
 			if (this.customMat != null)
