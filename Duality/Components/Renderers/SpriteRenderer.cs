@@ -218,9 +218,19 @@ namespace Duality.Components.Renderers
 			float bottom = uvRect.BottomY;
 
 			if ((this.flipMode & FlipMode.Horizontal) != FlipMode.None)
-				MathF.Swap(ref left, ref right);
+			{ 
+				edge1.X = -edge1.X;
+				edge2.X = -edge2.X;
+				edge3.X = -edge3.X;
+				edge4.X = -edge4.X;
+			}
 			if ((this.flipMode & FlipMode.Vertical) != FlipMode.None)
-				MathF.Swap(ref top, ref bottom);
+			{
+				edge1.Y = -edge1.Y;
+				edge2.Y = -edge2.Y;
+				edge3.Y = -edge3.Y;
+				edge4.Y = -edge4.Y;
+			}
 
 			if (vertices == null || vertices.Length != 4) vertices = new VertexC1P3T2[4];
 
