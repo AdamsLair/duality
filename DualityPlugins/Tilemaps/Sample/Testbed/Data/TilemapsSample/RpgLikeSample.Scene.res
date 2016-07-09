@@ -746,11 +746,11 @@
                               <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="1214195307">
                                 <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="1426464374" length="64" />
                                 <_size dataType="Int">0</_size>
-                                <_version dataType="Int">3572</_version>
+                                <_version dataType="Int">3632</_version>
                               </shapes>
                             </baseObject>
                             <gameobj dataType="ObjectRef">823148500</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
@@ -883,7 +883,7 @@
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
                             <gameobj dataType="ObjectRef">443677279</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
@@ -1016,7 +1016,7 @@
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
                             <gameobj dataType="ObjectRef">187862302</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
@@ -1149,7 +1149,7 @@
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
                             <gameobj dataType="ObjectRef">4164464433</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
@@ -1282,7 +1282,7 @@
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
                             <gameobj dataType="ObjectRef">875106965</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
@@ -1415,7 +1415,7 @@
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
                             <gameobj dataType="ObjectRef">3096133586</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
@@ -1548,7 +1548,7 @@
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
                             <gameobj dataType="ObjectRef">2158155438</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
@@ -1681,7 +1681,7 @@
                             <baseFriction dataType="Float">10</baseFriction>
                             <baseObject dataType="ObjectRef">3013493237</baseObject>
                             <gameobj dataType="ObjectRef">1548877786</gameobj>
-                            <initialFriction dataType="Float">30</initialFriction>
+                            <initialFriction dataType="Float">25</initialFriction>
                           </item>
                         </_items>
                         <_size dataType="Int">4</_size>
