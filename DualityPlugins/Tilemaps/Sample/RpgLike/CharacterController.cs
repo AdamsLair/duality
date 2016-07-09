@@ -66,8 +66,9 @@ namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 				Vector2 rayStart = transform.Pos.Xy;
 				Vector2 rayEnd = rayStart + targetDir * senseRadius;
 				bool hitAnything = RigidBody.RayCast(rayStart, rayEnd, data => data.Fraction, out firstHit);
+				bool isWorldGeometry = firstHit.Body != null && firstHit.Body.BodyType == BodyType.Static;
 
-				if (hitAnything)
+				if (hitAnything && isWorldGeometry)
 				{
 					float movementRatio = 0.1f + 0.9f * ((firstHit.Pos - rayStart).Length / (rayEnd - rayStart).Length);
 					adjustedTargetMovement *= movementRatio;

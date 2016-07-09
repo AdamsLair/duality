@@ -59,6 +59,7 @@
     <Compile Include="RpgLike\ActorAnimation.cs" />
     <Compile Include="RpgLike\ActorAnimator.cs" />
     <Compile Include="RpgLike\CameraController.cs" />
+    <Compile Include="RpgLike\MoveableObjectPhysics.cs" />
     <Compile Include="RpgLike\Player.cs" />
     <Compile Include="RpgLike\CharacterController.cs" />
     <Compile Include="RpgLike\ActorRenderer.cs" />
