@@ -317,12 +317,12 @@
                             <gameobj dataType="ObjectRef">823148500</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
@@ -746,7 +746,7 @@
                               <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="1214195307">
                                 <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="1426464374" length="64" />
                                 <_size dataType="Int">0</_size>
-                                <_version dataType="Int">3632</_version>
+                                <_version dataType="Int">3692</_version>
                               </shapes>
                             </baseObject>
                             <gameobj dataType="ObjectRef">823148500</gameobj>
@@ -828,12 +828,12 @@
                             <gameobj dataType="ObjectRef">443677279</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
@@ -961,12 +961,12 @@
                             <gameobj dataType="ObjectRef">187862302</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
@@ -1094,12 +1094,12 @@
                             <gameobj dataType="ObjectRef">4164464433</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
@@ -1227,12 +1227,12 @@
                             <gameobj dataType="ObjectRef">875106965</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
@@ -1360,12 +1360,12 @@
                             <gameobj dataType="ObjectRef">3096133586</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
@@ -1493,12 +1493,12 @@
                             <gameobj dataType="ObjectRef">2158155438</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
@@ -1626,12 +1626,12 @@
                             <gameobj dataType="ObjectRef">1548877786</gameobj>
                             <height dataType="Float">0</height>
                             <isVertical dataType="Bool">true</isVertical>
-                            <offset dataType="Float">-0.08</offset>
+                            <offset dataType="Float">-0.1</offset>
                             <rect dataType="Struct" type="Duality.Rect">
-                              <H dataType="Float">32</H>
+                              <H dataType="Float">34</H>
                               <W dataType="Float">32</W>
                               <X dataType="Float">-16</X>
-                              <Y dataType="Float">-24</Y>
+                              <Y dataType="Float">-26</Y>
                             </rect>
                             <sharedMat dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Material]]">
                               <contentPath dataType="String">Data\TilemapsSample\Actors\Barrel.Material.res</contentPath>
