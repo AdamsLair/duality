@@ -13,6 +13,9 @@ using Duality.Plugins.Tilemaps.Sample.RpgLike.Properties;
 
 namespace Duality.Plugins.Tilemaps.Sample.RpgLike
 {
+	/// <summary>
+	/// Applies friction physics to an otherwise passive, moveable object.
+	/// </summary>
 	[RequiredComponent(typeof(RigidBody))]
 	[EditorHintCategory(SampleResNames.CategoryRpgLike)]
 	public class MoveableObjectPhysics : Component, ICmpUpdatable, ICmpInitializable
