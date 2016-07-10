@@ -471,6 +471,58 @@ namespace Duality.Plugins.Tilemaps
 					else                  targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
 				}
 			}
+
+			// Detect diagonal fences next to solid blocks and remove the
+			// edges that might have become redundant. This can't be done
+			// in the above loop without complicating control flow, so it's 
+			// done here.
+			for (int y = 0; y < SectorSize; y++)
+			{
+				for (int x = 0; x < SectorSize; x++)
+				{
+					TileCollisionShape centerShape = collisionData[x, y];
+					bool diagonalDown = (centerShape & TileCollisionShape.DiagonalDown) == TileCollisionShape.DiagonalDown;
+					bool diagonalUp = (centerShape & TileCollisionShape.DiagonalUp) == TileCollisionShape.DiagonalUp;
+
+					// Skip tiles that aren't diagonal fences
+					if (!diagonalDown && !diagonalUp) continue;
+
+					// Determine block collision neighbourhood
+					bool left   = (x == 0)              || (collisionData[x - 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool right  = (x == SectorSize - 1) || (collisionData[x + 1, y] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool top    = (y == 0)              || (collisionData[x, y - 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+					bool bottom = (y == SectorSize - 1) || (collisionData[x, y + 1] & TileCollisionShape.Solid) == TileCollisionShape.Solid;
+
+					// Remove perpendicular edges that are redundant because of the diagonal fence
+					// connecting two adjacent solid blocks.
+					if (diagonalDown)
+					{
+						if (top && right)
+						{
+							targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y));
+							targetEdgeMap.RemoveEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
+						}
+						if (bottom && left)
+						{
+							targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
+							targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x, y + 1));
+						}
+					}
+					else
+					{
+						if (top && left)
+						{
+							targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x + 1, y));
+							targetEdgeMap.RemoveEdge(new Point2(x, y), new Point2(x, y + 1));
+						}
+						if (bottom && right)
+						{
+							targetEdgeMap.RemoveEdge(new Point2(x, y + 1), new Point2(x + 1, y + 1));
+							targetEdgeMap.RemoveEdge(new Point2(x + 1, y), new Point2(x + 1, y + 1));
+						}
+					}
+				}
+			}
 		}
 		private static void AddBorderCollisionEdges(TileEdgeMap targetEdgeMap)
 		{
