@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
+    <Compile Include="DataConverters\ComponentFromTileset.cs" />
+    <Compile Include="DataConverters\TilesetFromPixmap.cs" />
     <Compile Include="EditorActions\OpenTileset.cs" />
     <Compile Include="EditorActions\OpenTilemapResizeDialog.cs" />
     <Compile Include="EditorActions\PixmapToTileset.cs" />
