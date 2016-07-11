@@ -94,6 +94,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TileDrawSources\PatternTileDrawSource.cs" />
+    <Compile Include="UndoRedoActions\ResizeTilemapAction.cs" />
     <Compile Include="UndoRedoActions\EditTilesetTileInputAction.cs" />
     <Compile Include="Utility\TilemapsEditorSelectionParser.cs" />
     <Compile Include="Modules\TilemapToolSourcePalette.cs">

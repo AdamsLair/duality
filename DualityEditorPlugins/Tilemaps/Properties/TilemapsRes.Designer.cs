@@ -701,6 +701,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resize Tilemap.
+        /// </summary>
+        internal static string UndoRedo_ResizeTilemap {
+            get {
+                return ResourceManager.GetString("UndoRedo_ResizeTilemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Revert Tileset Changes.
         /// </summary>
         internal static string UndoRedo_RevertTilesetChanges {

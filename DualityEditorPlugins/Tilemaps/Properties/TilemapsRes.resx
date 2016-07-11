@@ -334,4 +334,7 @@
   <data name="ActionName_CreateTileset" xml:space="preserve">
     <value>Create Tileset</value>
   </data>
+  <data name="UndoRedo_ResizeTilemap" xml:space="preserve">
+    <value>Resize Tilemap</value>
+  </data>
 </root>

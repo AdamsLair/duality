@@ -78,10 +78,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 					(int)this.editorWidth.Value,
 					(int)this.editorHeight.Value);
 				Alignment origin = OriginSelectorToAlignment(this.originSelector.SelectedOrigin);
-				foreach (Tilemap tilemap in this.tilemaps)
-				{
-					tilemap.Resize(newSize.X, newSize.Y, origin);
-				}
+				UndoRedoManager.Do(new UndoRedoActions.ResizeTilemapAction(
+					this.tilemaps, 
+					newSize, 
+					origin));
 			}
 			this.DialogResult = DialogResult.OK;
 			this.Close();
