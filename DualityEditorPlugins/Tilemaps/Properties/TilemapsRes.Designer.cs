@@ -61,6 +61,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Creates a new Tileset Resource based on the Pixmap..
+        /// </summary>
+        internal static string ActionDesc_CreateTileset {
+            get {
+                return ResourceManager.GetString("ActionDesc_CreateTileset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opens the Tileset for editing..
         /// </summary>
         internal static string ActionDesc_OpenTileset {
@@ -75,6 +84,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string ActionDesc_ResizeTilemap {
             get {
                 return ResourceManager.GetString("ActionDesc_ResizeTilemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create Tileset.
+        /// </summary>
+        internal static string ActionName_CreateTileset {
+            get {
+                return ResourceManager.GetString("ActionName_CreateTileset", resourceCulture);
             }
         }
         

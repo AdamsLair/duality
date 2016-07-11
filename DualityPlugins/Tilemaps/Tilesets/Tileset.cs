@@ -49,8 +49,11 @@ namespace Duality.Plugins.Tilemaps
 			{
 				// This private setter is here for editor support
 				this.baseMaterial = value ?? new BatchInfo(DefaultBaseMaterial);
-				this.DiscardRenderMaterial();
-				this.GenerateRenderMaterial();
+				if (this.compiled)
+				{
+					this.DiscardRenderMaterial();
+					this.GenerateRenderMaterial();
+				}
 			}
 		}
 		/// <summary>

@@ -328,4 +328,10 @@
   <data name="CamViewState_TilemapEditor_Name" xml:space="preserve">
     <value>Tilemap Editor</value>
   </data>
+  <data name="ActionDesc_CreateTileset" xml:space="preserve">
+    <value>Creates a new Tileset Resource based on the Pixmap.</value>
+  </data>
+  <data name="ActionName_CreateTileset" xml:space="preserve">
+    <value>Create Tileset</value>
+  </data>
 </root>
