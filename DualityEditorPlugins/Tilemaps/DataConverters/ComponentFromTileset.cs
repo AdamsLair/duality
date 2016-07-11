@@ -34,6 +34,11 @@ namespace Duality.Editor.Plugins.Tilemaps.DataConverters
 		}
 		public override bool Convert(ConvertOperation convert)
 		{
+			// If we already have a renderer in the result set, consider generating
+			// a tilemap to be not the right course of action.
+			if (convert.Result.OfType<ICmpRenderer>().Any())
+				return false;
+
 			List<object> results = new List<object>();
 			List<Tileset> availData = convert.Perform<Tileset>().ToList();
 

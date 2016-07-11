@@ -28,6 +28,11 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 		}
 		public override bool Convert(ConvertOperation convert)
 		{
+			// If we already have a renderer in the result set, consider generating
+			// another one to be not the right course of action.
+			if (convert.Result.OfType<ICmpRenderer>().Any())
+				return false;
+
 			List<object> results = new List<object>();
 			List<Material> availData = convert.Perform<Material>().ToList();
 
