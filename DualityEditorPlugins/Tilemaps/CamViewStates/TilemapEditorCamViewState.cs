@@ -472,7 +472,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (actionTilemaps.Length > 0 && actionTilemaps.All(t => t.TileCount.X == 0 && t.TileCount.Y == 0))
 			{
 				this.askedForResize = true;
-				TilemapSetupDialog resizeDialog = new TilemapSetupDialog();
+				TilemapResizeDialog resizeDialog = new TilemapResizeDialog();
 				resizeDialog.Tilemaps = actionTilemaps;
 				resizeDialog.ShowDialog(DualityEditorApp.MainForm);
 			}

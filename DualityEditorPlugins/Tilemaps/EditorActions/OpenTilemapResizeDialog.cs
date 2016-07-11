@@ -32,7 +32,7 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 
 		public override void Perform(IEnumerable<Tilemap> objEnum)
 		{
-			TilemapSetupDialog resizeDialog = new TilemapSetupDialog();
+			TilemapResizeDialog resizeDialog = new TilemapResizeDialog();
 			resizeDialog.Tilemaps = objEnum;
 			resizeDialog.ShowDialog(DualityEditorApp.MainForm);
 		}

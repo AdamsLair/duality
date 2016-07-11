@@ -1,6 +1,6 @@
 ﻿namespace Duality.Editor.Plugins.Tilemaps
 {
-	partial class TilemapSetupDialog
+	partial class TilemapResizeDialog
 	{
 		/// <summary>
 		/// Required designer variable.

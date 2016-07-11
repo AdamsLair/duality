@@ -14,7 +14,11 @@ using Duality.Editor.Plugins.Tilemaps.Properties;
 
 namespace Duality.Editor.Plugins.Tilemaps
 {
-	public partial class TilemapSetupDialog : Form
+	/// <summary>
+	/// A user dialog for resizing a set of <see cref="Tilemap"/> instances
+	/// relative to a specified origin.
+	/// </summary>
+	public partial class TilemapResizeDialog : Form
 	{
 		private Tilemap[] tilemaps = null;
 		private Point2 currentSize = Point2.Zero;
@@ -33,7 +37,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 
 
-		public TilemapSetupDialog()
+		public TilemapResizeDialog()
 		{
 			this.InitializeComponent();
 			this.UpdateContent();
