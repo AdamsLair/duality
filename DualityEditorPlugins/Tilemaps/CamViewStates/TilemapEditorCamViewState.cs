@@ -443,19 +443,22 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.actionTool.EndAction();
 			this.TileDrawSource.EndAction();
 
-			// Finish the tile update operation, which will fire all the
-			// change events that were aggregated for this tool action.
-			this.activeTilemap.EndUpdateTiles(0, 0, 0, 0);
+			if (this.activeTilemap != null)
+			{
+				// Finish the tile update operation, which will fire all the
+				// change events that were aggregated for this tool action.
+				this.activeTilemap.EndUpdateTiles(0, 0, 0, 0);
 
-			// Since the change events will likely trigger some scene changes,
-			// such as renderers updating some cached values or colliders updating
-			// the generated shapes, we should re-draw the scene. The easiest way
-			// to do that across all CamViews is to trigger a change event for the
-			// affected tilemap.
-			DualityEditorApp.NotifyObjPropChanged(
-				this,
-				new ObjectSelection(this.activeTilemap),
-				TilemapsReflectionInfo.Property_Tilemap_Tiles);
+				// Since the change events will likely trigger some scene changes,
+				// such as renderers updating some cached values or colliders updating
+				// the generated shapes, we should re-draw the scene. The easiest way
+				// to do that across all CamViews is to trigger a change event for the
+				// affected tilemap.
+				DualityEditorApp.NotifyObjPropChanged(
+					this,
+					new ObjectSelection(this.activeTilemap),
+					TilemapsReflectionInfo.Property_Tilemap_Tiles);
+			}
 
 			this.actionTool = this.toolNone;
 			this.actionBeginTile = InvalidTile;
