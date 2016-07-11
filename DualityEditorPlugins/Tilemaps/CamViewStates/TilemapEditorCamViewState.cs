@@ -582,6 +582,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			// Initial update
 			this.UpdateTilemapToolButtons();
 			this.UpdateActionToolButtons();
+			this.selectedTilemap = TilemapsEditorSelectionParser.QuerySelectedTilemap();
 		}
 		protected override void OnLeaveState()
 		{
