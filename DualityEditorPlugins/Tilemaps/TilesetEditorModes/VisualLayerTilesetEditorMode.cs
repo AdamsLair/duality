@@ -129,19 +129,17 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			// derive which one we'll pick as a default for creating a new one.
 			bool hasMainTex = false;
 			int highestCustomTex = -1;
-			const string MainTexName = "mainTex";
-			const string CustomTexName = "customTex";
 			for (int i = 0; i < tileset.RenderConfig.Count; i++)
 			{
-				if (tileset.RenderConfig[i].Id == MainTexName)
+				if (tileset.RenderConfig[i].Id == TilesetRenderInput.MainTexId)
 				{
 					hasMainTex = true;
 				}
-				else if (tileset.RenderConfig[i].Id.StartsWith(CustomTexName))
+				else if (tileset.RenderConfig[i].Id.StartsWith(TilesetRenderInput.CustomTexId))
 				{
 					string customTexIndexString = tileset.RenderConfig[i].Id.Substring(
-						CustomTexName.Length, 
-						tileset.RenderConfig[i].Id.Length - CustomTexName.Length);
+						TilesetRenderInput.CustomTexId.Length, 
+						tileset.RenderConfig[i].Id.Length - TilesetRenderInput.CustomTexId.Length);
 
 					int customTexIndex;
 					if (!int.TryParse(customTexIndexString, out customTexIndex))
@@ -156,13 +154,13 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			string layerName;
 			if (!hasMainTex)
 			{
-				layerId = MainTexName;
-				layerName = "Main Texture";
+				layerId = TilesetRenderInput.MainTexId;
+				layerName = TilesetRenderInput.MainTexName;
 			}
 			else
 			{
-				layerId = CustomTexName + (highestCustomTex + 1).ToString();
-				layerName = "Custom Texture";
+				layerId = TilesetRenderInput.CustomTexId + (highestCustomTex + 1).ToString();
+				layerName = TilesetRenderInput.CustomTexName;
 			}
 
 			// Create a new layer using an UndoRedo action

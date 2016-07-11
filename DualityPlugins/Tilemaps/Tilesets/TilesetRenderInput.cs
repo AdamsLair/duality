@@ -15,8 +15,13 @@ namespace Duality.Plugins.Tilemaps
 	/// </summary>
 	public class TilesetRenderInput
 	{
-		private const string DefaultName = "Rendering Input";
-		private const string DefaultId   = "renderInputId";
+		public static readonly string MainTexName    = "Main Texture";
+		public static readonly string MainTexId      = "mainTex";
+		public static readonly string CustomTexName  = "Custom Texture";
+		public static readonly string CustomTexId    = "customTex";
+
+		private static readonly string DefaultName   = MainTexName;
+		private static readonly string DefaultId     = MainTexId;
 
 		private string             name              = DefaultName;
 		private string             id                = DefaultId;
