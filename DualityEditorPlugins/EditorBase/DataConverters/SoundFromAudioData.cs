@@ -30,7 +30,9 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			if (convert.AllowedOperations.HasFlag(ConvertOperation.Operation.Convert))
 			{
 				List<AudioData> availData = convert.Perform<AudioData>(ConvertOperation.Operation.Convert).ToList();
-				return availData.Any(t => this.FindMatch(t) != null);
+				return availData.Any(t => 
+					this.FindMatchingResources<AudioData,Sound>(t, IsMatch)
+					.Any());
 			}
 
 			return false;
@@ -47,7 +49,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				if (convert.IsObjectHandled(baseRes)) continue;
 
 				// Find target Resource matching the source
-				Sound targetRes = this.FindMatch(baseRes);
+				Sound targetRes = 
+					this.FindMatchingResources<AudioData,Sound>(baseRes, IsMatch)
+					.OrderBy(sound => sound.Data.Count)
+					.FirstOrDefault();
 				if (targetRes != null)
 				{
 					convert.AddResult(targetRes);
@@ -77,46 +82,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 
 			return finishConvertOp;
 		}
-		private Sound FindMatch(AudioData baseRes)
+
+		private static bool IsMatch(AudioData source, Sound target)
 		{
-			if (baseRes == null)
-			{
-				return null;
-			}
-			else if (baseRes.IsDefaultContent)
-			{
-				var defaultContent = ContentProvider.GetDefaultContent<Resource>();
-				return defaultContent.Res().OfType<Sound>().FirstOrDefault(r => r.Data != null && r.Data.Count == 1 && r.MainData == baseRes);
-			}
-			else
-			{
-				// First try a direct approach
-				string fileExt = Resource.GetFileExtByType<Sound>();
-				string targetPath = baseRes.FullName + fileExt;
-				Sound match = ContentProvider.RequestContent<Sound>(targetPath).Res;
-				if (match != null) return match;
-
-				// If that fails, search for other matches
-				string targetName = baseRes.Name + fileExt;
-				string[] resFilePaths = Resource.GetResourceFiles().ToArray();
-				var resNameMatch = resFilePaths.Where(p => Path.GetFileName(p) == targetName);
-				var resQuery = resNameMatch.Concat(resFilePaths).Distinct();
-				List<Sound> matchCandidates = new List<Sound>();
-				foreach (string resFile in resQuery)
-				{
-					if (!resFile.EndsWith(fileExt)) continue;
-					match = ContentProvider.RequestContent<Sound>(resFile).Res;
-					if (match != null && match.Data != null && match.Data.Contains(baseRes)) matchCandidates.Add(match);
-				}
-				// Found some matches? Return the narrowest one
-				if (matchCandidates.Count > 0)
-				{
-					return matchCandidates.OrderBy(m => m.Data.Count).First();
-				}
-
-				// Give up.
-				return null;
-			}
+			return target.Data != null && target.Data.Contains(source);
 		}
 	}
 }
