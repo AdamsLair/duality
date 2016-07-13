@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Base</id>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Editor Base Infrastructure</title>
@@ -13,32 +13,12 @@
     <summary>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</summary>
     <description>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</description>
     <tags>Duality Editor Plugin PropertyEditor Importer Preview EditorAction DataConverter</tags>
-    <releaseNotes>Font Import Editor Tweaks, Font Import Parameters, FontCharSet / FontMetrics Tweaks
-#CHANGE: Adjusted editors to reflect recent changes in the Font import process. 
-#REMOVE: Removed FontContentPropertyEditor, as it is no longer required.
-#CHANGE: Moved all Font import parameters from the Font class to custom AssetInfo data attachments.
-#ADD: FontMetrics now contains information about monospacing. 
-#ADD: Added a more convenient FontCharSet constructor.
-#REMOVE: Removed annoying sound when importing or exporting a Resource successfully. Too much / bad feedback.
-#ADD: Added an immutable FontMetric class for easier transfer of font metrics between classes and methods. 
-#CHANGE: Font Glyph rendering now takes place entirely in the FontAssetImporter. 
-#REMOVE: Removed the old editor extension methods for Font glyph rendering.
-#ADD: The AssetInfo editor now provides some custom help topics.
-#ADD: The AssetInfo editor now allows to edit custom user data as if they were regular properties.
-#ADD: The AssetInfo editor now updated after export operations to account for changes in allowed actions and parameter updates. 
-#ADD: Added a feedback sound when performing an export or import operation successfully using either of the two editor buttons. 
-#ADD: Added more AssetManagement documentation.
-#ADD: Added the basic PropertyEditor class structure for having a top-level wrapper editor with the actual Resource editor and an optional AssetInfo editor as children. 
-#ADD: Started implementing the AssetInfo editor and import / export user actions.
-#CHANGE: The "Open Resource" / double click action now prefers to open already existing media source files and will only export the Resource if they no longer exist.
-#CHANGE: The Font PropertyEditor now selectively switches readonly mode for only the properties that require re-rendering glyphs when editing a Font Resource with or without an embedded ttf font.
-#CHANGE: Updated to AdamsLair.WinForms 1.1.4
-#CHANGE: Updated to AdamsLair.WinForms 1.1.3
-#CHANGE: Enabling and disabling kerning no longer requires re-rendering glyphs. Kerning information is generated in any case, only its usage is de/activated.
-#FIX: Fixed a bug where editing a ShapeInfo instance that is not parented to a RigidBody would cause an exception.</releaseNotes>
+    <releaseNotes>DataConverter Tweaks, Extracted Common DataConverter Code
+#CHANGE: DataConverters will no longer generate redundant ICmpRenderers in batch operations.
+#CHANGE: Extracted a common DataConverter.FindMatchingResources method from the common FindMatch pattern in DataConverters.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.4.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.4.0" />
+      <dependency id="AdamsLair.Duality" version="2.7.1" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.1" />
     </dependencies>
   </metadata>
   <files>
