@@ -1,8 +1,8 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.DynamicLighting</id>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>DynamicLighting (Editor)</title>
@@ -13,11 +13,12 @@
     <summary>Introduces a naive implementation of dynamic lighting Components.</summary>
     <description>Introduces a naive implementation of dynamic lighting Components. Although this can be used in an actual game, this package mainly serves as an example on how to implement dynamic lighting functionality in a custom Duality plugin. You can find the full source code online.</description>
     <tags>Duality Editor Plugin Rendering Lighting Component</tags>
-    <releaseNotes>Initial v2.0 Release</releaseNotes>
+    <releaseNotes>DataConverter Tweaks
+#CHANGE: DataConverters will no longer generate redundant ICmpRenderers in batch operations.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.DynamicLighting" version="2.0.0" />
-      <dependency id="AdamsLair.Duality" version="2.0.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.0.0" />
+      <dependency id="AdamsLair.Duality.Plugins.DynamicLighting" version="2.0.1" />
+      <dependency id="AdamsLair.Duality" version="2.7.1" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.1" />
     </dependencies>
   </metadata>
   <files>

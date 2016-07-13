@@ -12,17 +12,25 @@ namespace Duality.Editor
 {
 	public static class ExtMethodsGraphics
 	{
-		public static void DrawImageAlpha(this Graphics g, Image img, float alpha, Rectangle rect)
+		public static void DrawImageTint(this Graphics g, Image img, Color tint, Rectangle rect)
 		{
 			ImageAttributes attrib = new ImageAttributes();
 			ColorMatrix matrix = new ColorMatrix(new[] {
-				new float[] {	1.0f,	0.0f,	0.0f,	0.0f,	0.0f	},
-				new float[] {	0.0f,	1.0f,	0.0f,	0.0f,	0.0f	},
-				new float[] {	0.0f,	0.0f,	1.0f,	0.0f,	0.0f	},
-				new float[] {	0.0f,	0.0f,	0.0f,	alpha,	0.0f	},
-				new float[] {	0.0f,	0.0f,	0.0f,	0.0f,	1.0f	}});
+				new float[] { (float)tint.R / 255.0f, 0.0f, 0.0f, 0.0f, 0.0f },
+				new float[] { 0.0f, (float)tint.G / 255.0f, 0.0f, 0.0f, 0.0f },
+				new float[] { 0.0f, 0.0f, (float)tint.B / 255.0f, 0.0f, 0.0f },
+				new float[] { 0.0f, 0.0f, 0.0f, (float)tint.A / 255.0f, 0.0f },
+				new float[] { 0.0f, 0.0f, 0.0f, 0.0f, 1.0f }});
 			attrib.SetColorMatrix(matrix);
 			g.DrawImage(img, rect, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, attrib);
+		}
+		public static void DrawImageTint(this Graphics g, Image img, Color tint, int x, int y)
+		{
+			DrawImageTint(g, img, tint, new Rectangle(x, y, img.Width, img.Height));
+		}
+		public static void DrawImageAlpha(this Graphics g, Image img, float alpha, Rectangle rect)
+		{
+			DrawImageTint(g, img, Color.FromArgb(MathF.Clamp((int)(alpha * 255), 0, 255), Color.White), rect);
 		}
 		public static void DrawImageAlpha(this Graphics g, Image img, float alpha, int x, int y)
 		{

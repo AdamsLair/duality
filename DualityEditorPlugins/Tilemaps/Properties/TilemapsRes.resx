@@ -1,0 +1,340 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CursorTileBrush" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\CursorTileBrush.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CursorTileFill" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\CursorTileFill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CursorTileOval" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\CursorTileOval.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CursorTileRect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\CursorTileRect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTileBrush" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTileBrush.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTileOval" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTileOval.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTileFill" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTileFill.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTileRect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTileRect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTileSelect" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTileSelect.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ItemName_TileBrush" xml:space="preserve">
+    <value>Tile Brush</value>
+  </data>
+  <data name="ItemName_TileFill" xml:space="preserve">
+    <value>Flood Fill</value>
+  </data>
+  <data name="ItemName_TileOval" xml:space="preserve">
+    <value>Draw Oval</value>
+  </data>
+  <data name="ItemName_TileRect" xml:space="preserve">
+    <value>Draw Rect</value>
+  </data>
+  <data name="ItemName_TileSelect" xml:space="preserve">
+    <value>Selection Tool</value>
+  </data>
+  <data name="UndoRedo_EditTilemapDrawTiles" xml:space="preserve">
+    <value>Draw Tiles</value>
+  </data>
+  <data name="UndoRedo_EditTilemapFillTileOval" xml:space="preserve">
+    <value>Fill Tile Oval</value>
+  </data>
+  <data name="UndoRedo_EditTilemapFillTileRect" xml:space="preserve">
+    <value>Fill Tile Rect</value>
+  </data>
+  <data name="UndoRedo_EditTilemapFloodFillTiles" xml:space="preserve">
+    <value>Flood Fill Tiles</value>
+  </data>
+  <data name="CursorPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\CursorPick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconPick" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconPick.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ItemName_Pick" xml:space="preserve">
+    <value>Tile Picker</value>
+  </data>
+  <data name="IconTilePalette" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilePalette.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="MenuItemName_TilePalette" xml:space="preserve">
+    <value>Tile Palette</value>
+  </data>
+  <data name="TilePalette_NoTilesetSelected" xml:space="preserve">
+    <value>No Tileset available</value>
+  </data>
+  <data name="TilePalette_SelectedTileset" xml:space="preserve">
+    <value>Tileset: {0}</value>
+  </data>
+  <data name="CamView_Help_TilemapEditorActions" xml:space="preserve">
+    <value>Tilemap Editor Actions</value>
+  </data>
+  <data name="CamView_Help_TilemapEditor_SelectTilemaps" xml:space="preserve">
+    <value>Use the arrow keys to quickly change tilemap selection.</value>
+  </data>
+  <data name="ActionDesc_ResizeTilemap" xml:space="preserve">
+    <value>Opens a user dialog that allows to resize the selected Tilemaps. If no tilemaps are selected, it will resize all currently active, non-hidden tilemaps in the current scene.</value>
+  </data>
+  <data name="ActionName_ResizeTilemap" xml:space="preserve">
+    <value>Resize Tilemap</value>
+  </data>
+  <data name="IconResize" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconResize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilemapSetupHeader_ResizeMultipleTilemaps" xml:space="preserve">
+    <value>Resize {0} Tilemaps</value>
+  </data>
+  <data name="TilemapSetupHeader_ResizeSingleTilemap" xml:space="preserve">
+    <value>Resize '{0}'</value>
+  </data>
+  <data name="MenuItemName_TilesetEditor" xml:space="preserve">
+    <value>Tileset Editor</value>
+  </data>
+  <data name="IconTilesetEditor" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetEditor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTilesetSingleVisualLayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetSingleVisualLayer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTilesetCollisionInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetCollisionInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTilesetDepthInfo" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthInfo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTilesetVisualLayers" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetVisualLayers.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetEditorMode_CollisionInfo_Name" xml:space="preserve">
+    <value>Collision Info</value>
+  </data>
+  <data name="TilesetEditorMode_DepthInfo_Name" xml:space="preserve">
+    <value>Depth Info</value>
+  </data>
+  <data name="TilesetEditorMode_VisualLayer_Name" xml:space="preserve">
+    <value>Visual Layers</value>
+  </data>
+  <data name="TilesetEditor_NoTilesetSelected" xml:space="preserve">
+    <value>No Tileset selected</value>
+  </data>
+  <data name="TilesetEditor_SelectedTileset" xml:space="preserve">
+    <value>Tileset: {0}</value>
+  </data>
+  <data name="UndoRedo_TilesetAddVisualLayer" xml:space="preserve">
+    <value>Add Visual Layer</value>
+  </data>
+  <data name="UndoRedo_TilesetRemoveVisualLayer" xml:space="preserve">
+    <value>Remove Visual Layer</value>
+  </data>
+  <data name="Msg_ApplyOrResetTilesetChanges_Caption" xml:space="preserve">
+    <value>Tileset modified</value>
+  </data>
+  <data name="Msg_ApplyOrResetTilesetChanges_Text" xml:space="preserve">
+    <value>You've made changes to Tileset '{0}'. Do you want to Apply them?</value>
+  </data>
+  <data name="UndoRedo_ApplyTilesetChanges" xml:space="preserve">
+    <value>Apply Tileset Changes</value>
+  </data>
+  <data name="UndoRedo_RevertTilesetChanges" xml:space="preserve">
+    <value>Revert Tileset Changes</value>
+  </data>
+  <data name="IconTilesetDepthLayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthLayer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTilesetDepthVertical" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthVertical.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetEditorDepthOffset_Desc" xml:space="preserve">
+    <value>Tile Rendering Order</value>
+  </data>
+  <data name="TilesetEditorDepthOffset_Name" xml:space="preserve">
+    <value>Depth Offset</value>
+  </data>
+  <data name="TilesetEditorDepthVertical_Desc" xml:space="preserve">
+    <value>Vertical / Flat Tiles</value>
+  </data>
+  <data name="TilesetEditorDepthVertical_Name" xml:space="preserve">
+    <value>Orientation</value>
+  </data>
+  <data name="UndoRedo_TilesetEditTileInput" xml:space="preserve">
+    <value>Edit Tile Input</value>
+  </data>
+  <data name="IconTilesetDepthFlatTile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthFlatTile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconTilesetDepthVerticalTile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetDepthVerticalTile.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ActionDesc_OpenTileset" xml:space="preserve">
+    <value>Opens the Tileset for editing.</value>
+  </data>
+  <data name="ActionName_OpenTileset" xml:space="preserve">
+    <value>Edit Tileset</value>
+  </data>
+  <data name="IconTilesetCollisionLayer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\IconTilesetCollisionLayer.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetEditorCollisionAuxLayer_Name" xml:space="preserve">
+    <value>Aux. Collision</value>
+  </data>
+  <data name="TilesetEditorCollisionLayer_Desc" xml:space="preserve">
+    <value>Layer Index {0}</value>
+  </data>
+  <data name="TilesetEditorCollisionMainLayer_Name" xml:space="preserve">
+    <value>Main Collision</value>
+  </data>
+  <data name="TilesetCollisionBit" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\TilesetCollisionBit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetCollisionDiagDown" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\TilesetCollisionDiagDown.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetCollisionDiagUp" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\TilesetCollisionDiagUp.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetCollisionHorizontal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\TilesetCollisionHorizontal.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TilesetCollisionVertical" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\EmbeddedResources\TilesetCollisionVertical.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CamViewState_TilemapEditor_Name" xml:space="preserve">
+    <value>Tilemap Editor</value>
+  </data>
+  <data name="ActionDesc_CreateTileset" xml:space="preserve">
+    <value>Creates a new Tileset Resource based on the Pixmap.</value>
+  </data>
+  <data name="ActionName_CreateTileset" xml:space="preserve">
+    <value>Create Tileset</value>
+  </data>
+  <data name="UndoRedo_ResizeTilemap" xml:space="preserve">
+    <value>Resize Tilemap</value>
+  </data>
+</root>

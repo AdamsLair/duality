@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)DualityPlugins\Tilemaps\Sample\Testbed\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>$(SolutionDir)DualityEditor\bin\Debug\DualityEditor.exe</StartProgram>
+    <StartWorkingDirectory>$(SolutionDir)DualityPlugins\Tilemaps\Sample\Testbed\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D014227E-3E69-4C8B-984A-1519AA35C1AD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Duality.Plugins.Tilemaps.Sample</RootNamespace>
+    <AssemblyName>Tilemaps.Sample.core</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\..\..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Tilemaps.Sample.core.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>Tilemaps.Sample.core.xml</DocumentationFile>
+    <NoWarn>1591,1592,1573,1571,1570,1572</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="LinearMovement.cs" />
+    <Compile Include="CorePlugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\SampleResNames.cs" />
+    <Compile Include="RpgLike\AnimDirMapping.cs" />
+    <Compile Include="RpgLike\ActorAnimation.cs" />
+    <Compile Include="RpgLike\ActorAnimator.cs" />
+    <Compile Include="RpgLike\CameraController.cs" />
+    <Compile Include="RpgLike\MoveableObjectPhysics.cs" />
+    <Compile Include="RpgLike\Player.cs" />
+    <Compile Include="RpgLike\CharacterController.cs" />
+    <Compile Include="RpgLike\ActorRenderer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\DualityPrimitives\DualityPrimitives.csproj">
+      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
+      <Name>DualityPrimitives</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Duality\Duality.csproj">
+      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
+      <Name>Duality</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tilemaps.Core.csproj">
+      <Project>{2f7d1f9d-0803-4e13-85a6-0af56ac05431}</Project>
+      <Name>Tilemaps.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>mkdir "$(ProjectDir)Testbed\Plugins"
+copy "$(TargetPath)" "$(ProjectDir)Testbed\Plugins"
+copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Testbed\Plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Aktivieren Sie die Wiederherstellung von NuGet-Paketen, um die fehlende Datei herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

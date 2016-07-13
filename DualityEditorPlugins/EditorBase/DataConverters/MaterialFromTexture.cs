@@ -30,8 +30,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 			
 			if (convert.AllowedOperations.HasFlag(ConvertOperation.Operation.Convert))
 			{
-				List<Texture> availTex = convert.Perform<Texture>(ConvertOperation.Operation.Convert).ToList();
-				return availTex.Any(t => this.FindMatch(t) != null);
+				List<Texture> availData = convert.Perform<Texture>(ConvertOperation.Operation.Convert).ToList();
+				return availData.Any(t => 
+					this.FindMatchingResources<Texture,Material>(t, IsMatch)
+					.Any());
 			}
 
 			return false;
@@ -47,7 +49,9 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 				if (convert.IsObjectHandled(baseRes)) continue;
 
 				// Find target Resource matching the source - or create one.
-				Material targetRes = this.FindMatch(baseRes);
+				Material targetRes = 
+					this.FindMatchingResources<Texture,Material>(baseRes, IsMatch)
+					.FirstOrDefault();
 				if (targetRes == null && convert.AllowedOperations.HasFlag(ConvertOperation.Operation.CreateRes))
 				{
 					string resPath = PathHelper.GetFreePath(baseRes.FullName, Resource.GetFileExtByType<Material>());
@@ -63,40 +67,10 @@ namespace Duality.Editor.Plugins.Base.DataConverters
 
 			return finishConvertOp;
 		}
-		private Material FindMatch(Texture baseRes)
-		{
-			if (baseRes == null)
-			{
-				return null;
-			}
-			else if (baseRes.IsDefaultContent)
-			{
-				var defaultContent = ContentProvider.GetDefaultContent<Resource>();
-				return defaultContent.Res().OfType<Material>().FirstOrDefault(r => r.MainTexture == baseRes);
-			}
-			else
-			{
-				// First try a direct approach
-				string fileExt = Resource.GetFileExtByType<Material>();
-				string targetPath = baseRes.FullName + fileExt;
-				Material match = ContentProvider.RequestContent<Material>(targetPath).Res;
-				if (match != null) return match;
-				
-				// If that fails, search for other matches
-				string targetName = baseRes.Name + fileExt;
-				string[] resFilePaths = Resource.GetResourceFiles().ToArray();
-				var resNameMatch = resFilePaths.Where(p => Path.GetFileName(p) == targetName);
-				var resQuery = resNameMatch.Concat(resFilePaths).Distinct();
-				foreach (string resFile in resQuery)
-				{
-					if (!resFile.EndsWith(fileExt)) continue;
-					match = ContentProvider.RequestContent<Material>(resFile).Res;
-					if (match != null && match.MainTexture == baseRes) return match;
-				}
 
-				// Give up.
-				return null;
-			}
+		private static bool IsMatch(Texture source, Material target)
+		{
+			return target.MainTexture == source;
 		}
 	}
 }
