@@ -12,6 +12,21 @@ namespace Duality.Editor
 	/// </summary>
 	public static class ExtMethodsForm
 	{   
+		/// <summary>
+		/// Shows the <see cref="Form"/> centered on its parent, even though it
+		/// isn't modal. (The default <see cref="Form.Show(IWin32Window)"/> method 
+		/// ignores <see cref="FormStartPosition.CenterParent"/> settings.)
+		/// </summary>
+		/// <param name="form"></param>
+		/// <param name="parent"></param>
+		public static void ShowCentered(this Form form, Form parent)
+		{
+			form.StartPosition = FormStartPosition.Manual;
+			form.Location = new Point(
+				parent.Location.X + (parent.Width - form.Width) / 2, 
+				parent.Location.Y + (parent.Height - form.Height) / 2);
+			form.Show(parent);
+		}
         /// <summary>
         /// Draws the specified overlay icon over this form's taskbar button.
         /// </summary>
