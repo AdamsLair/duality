@@ -308,7 +308,7 @@ namespace Duality
 		}
 		/// <summary>
 		/// Initializes the specified plugin. This concludes a manual plugin load or reload operation
-		/// using API like <see cref="LoadPlugin"/> and <see cref="ReloadPlugin"/>.
+		/// using API like <see cref="LoadPlugin(Assembly, string)"/> and <see cref="ReloadPlugin"/>.
 		/// </summary>
 		/// <param name="plugin"></param>
 		public void InitPlugin(T plugin)
