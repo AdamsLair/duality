@@ -117,6 +117,7 @@
     <Compile Include="Backend\EditorGraphics\INativeEditorGraphicsContext.cs" />
     <Compile Include="Backend\EditorGraphics\INativeRenderableSite.cs" />
     <Compile Include="Backend\IEditorGraphicsBackend.cs" />
+    <Compile Include="Controls\PropertyEditors\Point2PropertyEditor.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\ModelItems.cs" />
     <Compile Include="Controls\TreeModels\TypeHierarchy\TypeBrowserTreeModel.cs" />
     <Compile Include="AssetManagement\Export\AssetExportEnvironment.cs" />
