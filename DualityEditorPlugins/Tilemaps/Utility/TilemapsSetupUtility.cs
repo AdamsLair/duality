@@ -16,6 +16,28 @@ namespace Duality.Editor.Plugins.Tilemaps
 		public static readonly Point2 DefaultTilemapSize = new Point2(32, 20);
 
 		/// <summary>
+		/// Determines the default tile index of the specified <see cref="Tileset"/>
+		/// depending on the role of the <see cref="Tilemap"/> in which it is used.
+		/// </summary>
+		/// <param name="tileset"></param>
+		/// <param name="isUpperLayer"></param>
+		/// <returns></returns>
+		public static int GetDefaultTileIndex(Tileset tileset, bool isUpperLayer)
+		{
+			if (tileset == null) return 0;
+
+			for (int i = 0; i < tileset.TileData.Count; i++)
+			{
+				// Use solid tiles for the base layer, but transparent tiles
+				// for all upper layers.
+				if (tileset.TileData[i].IsVisuallyEmpty == isUpperLayer)
+					return i;
+			}
+
+			return 0;
+		}
+
+		/// <summary>
 		/// Prepares the specified <see cref="Tilemap"/> for user editing using the default size.
 		/// </summary>
 		/// <param name="tilemap"></param>
@@ -37,20 +59,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Tileset tileset = tilesetRef.Res;
 
 			// Determine the first tile index that matches the layer type.
-			int fillTileIndex = 0;
-			if (tileset != null)
-			{
-				for (int i = 0; i < tileset.TileData.Count; i++)
-				{
-					// Use solid tiles for the base layer, but transparent tiles
-					// for all upper layers.
-					if (tileset.TileData[i].IsVisuallyEmpty == isUpperLayer)
-					{
-						fillTileIndex = i;
-						break;
-					}
-				}
-			}
+			int fillTileIndex = GetDefaultTileIndex(tileset, isUpperLayer);
 
 			// Resize the Tilemap and fill it with the first visually non-empty tile.
 			tilemap.Tileset = tileset;
