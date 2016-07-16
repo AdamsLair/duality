@@ -13,7 +13,7 @@ using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
 namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 {
 	/// <summary>
-	/// Provides an interface for <see cref="TilemapTool"/> instances to access <see="TilemapEditorCamViewState"/> internals and perform editing operations.
+	/// Provides an interface for <see cref="TilemapTool"/> instances to access <see cref="TilemapEditorCamViewState"/> internals and perform editing operations.
 	/// </summary>
 	public interface ITilemapToolEnvironment
 	{
