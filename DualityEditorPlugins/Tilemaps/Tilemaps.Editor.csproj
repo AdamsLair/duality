@@ -62,6 +62,7 @@
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
     <Compile Include="DataConverters\ComponentFromTileset.cs" />
     <Compile Include="DataConverters\TilesetFromPixmap.cs" />
+    <Compile Include="EditorActions\SetupTilemapForEditing.cs" />
     <Compile Include="EditorActions\OpenTileset.cs" />
     <Compile Include="EditorActions\OpenTilemapResizeDialog.cs" />
     <Compile Include="EditorActions\PixmapToTileset.cs" />
@@ -126,6 +127,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TilemapsRes.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utility\TilemapsSetupUtility.cs" />
     <Compile Include="Utility\TilemapsReflectionInfo.cs" />
     <Compile Include="TilesetEditorModes\DepthInfoTilesetEditorMode.cs" />
     <Compile Include="TilesetEditorModes\CollisionInfoTilesetEditorMode.cs" />

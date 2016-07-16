@@ -57,27 +57,7 @@ namespace Duality.Editor.Plugins.Tilemaps.DataConverters
 				if (tilemap == null)
 				{
 					tilemap = new Tilemap();
-
-					// Determine the first tile index that isn't visually empty
-					int firstNonEmptyTileIndex = 0;
-					for (int i = 0; i < tileset.TileData.Count; i++)
-					{
-						if (!tileset.TileData[i].IsVisuallyEmpty)
-						{
-							firstNonEmptyTileIndex = i;
-							break;
-						}
-					}
-
-					// Resize the Tilemap and fill it with the first visually non-empty tile.
-					tilemap.Resize(10, 10);
-					tilemap.BeginUpdateTiles().Fill(
-						new Tile { Index = firstNonEmptyTileIndex }, 
-						0, 
-						0, 
-						tilemap.TileCount.X, 
-						tilemap.TileCount.Y);
-					tilemap.EndUpdateTiles();
+					TilemapsSetupUtility.SetupTilemap(tilemap, tileset);
 
 					// Add a renderer for this Tilemap to the result list, if there was none before
 					if (tilemapRenderer == null)
