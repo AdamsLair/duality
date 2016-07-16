@@ -92,7 +92,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			
 			// Since the cursor might move faster than one tile per update, we'll need
 			// to expand the previewed actived area along its line of movement.
-			if (this.lastHoveredTile != env.HoveredTile)
+			if (Math.Abs(this.lastHoveredTile.X - env.HoveredTile.X) > 1 ||
+				Math.Abs(this.lastHoveredTile.Y - env.HoveredTile.Y) > 1)
 			{
 				Grid<bool> activeBrush = env.ActiveArea;
 				Point2 brushOffset = new Point2(
