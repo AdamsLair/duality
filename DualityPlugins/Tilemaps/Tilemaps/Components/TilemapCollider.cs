@@ -619,9 +619,12 @@ namespace Duality.Plugins.Tilemaps
 				bool isLoop = (start == currentChain[currentChain.Count - 1]);
 				if (isLoop) currentChain.RemoveAt(currentChain.Count - 1);
 				vertexBuffer.Clear();
+
+				// Rounded corners
 				if (roundedCorners && currentChain.Count >= 3)
 				{
-					vertexBuffer.Count = currentChain.Count * 2;
+					vertexBuffer.Reserve(currentChain.Count * 2);
+					vertexBuffer.Count = 0;
 					for (int i = 0; i < currentChain.Count; i++)
 					{
 						int prevIndex = (i - 1 + currentChain.Count) % currentChain.Count;
@@ -631,23 +634,36 @@ namespace Duality.Plugins.Tilemaps
 						Vector2 prevVert = origin + tileSize * (Vector2)currentChain[prevIndex];
 						Vector2 nextVert = origin + tileSize * (Vector2)currentChain[nextIndex];
 
-						vertexBuffer[i * 2] = currentVert + (prevVert - currentVert).Normalized * tileSize * 0.2f;
-						vertexBuffer[i * 2 + 1] = currentVert + (nextVert - currentVert).Normalized * tileSize * 0.2f;
-					}
-					if (!isLoop)
-					{
-						Vector2 firstVert = origin + tileSize * (Vector2)currentChain[0];
-						Vector2 lastVert = origin + tileSize * (Vector2)currentChain[currentChain.Count - 1];
-						vertexBuffer[0] = firstVert;
-						vertexBuffer[vertexBuffer.Count - 1] = lastVert;
+						if (nextVert - currentVert != currentVert - prevVert)
+						{
+							if (!isLoop && (i == 0 || i == currentChain.Count - 1))
+							{
+								vertexBuffer.Add(currentVert);
+							}
+							else
+							{
+								vertexBuffer.Add(currentVert + (prevVert - currentVert).Normalized * tileSize * 0.2f);
+								vertexBuffer.Add(currentVert + (nextVert - currentVert).Normalized * tileSize * 0.2f);
+							}
+						}
 					}
 				}
+				// Sharp corners
 				else
 				{
-					vertexBuffer.Count = currentChain.Count;
-					for (int i = 0; i < vertexBuffer.Count; i++)
+					vertexBuffer.Reserve(currentChain.Count);
+					vertexBuffer.Count = 0;
+					for (int i = 0; i < currentChain.Count; i++)
 					{
-						vertexBuffer[i] = origin + tileSize * (Vector2)currentChain[i];
+						int prevIndex = (i - 1 + currentChain.Count) % currentChain.Count;
+						int nextIndex = (i + 1) % currentChain.Count;
+
+						Vector2 currentVert = origin + tileSize * (Vector2)currentChain[i];
+						Vector2 prevVert = origin + tileSize * (Vector2)currentChain[prevIndex];
+						Vector2 nextVert = origin + tileSize * (Vector2)currentChain[nextIndex];
+
+						if (nextVert - currentVert != currentVert - prevVert)
+							vertexBuffer.Add(currentVert);
 					}
 				}
 				shapeList.Add(isLoop ? 
