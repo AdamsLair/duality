@@ -126,6 +126,9 @@ namespace Duality.Plugins.Tilemaps
 			// Only do so if we have actually changed something.
 			if (width > 0 && height > 0)
 			{
+				if (this.updateTopLeft == Point2.Zero)
+					this.updateTopLeft = new Point2(x, y);
+
 				this.updateTopLeft.X = Math.Min(this.updateTopLeft.X, x);
 				this.updateTopLeft.Y = Math.Min(this.updateTopLeft.Y, y);
 				this.updateBottomRight.X = Math.Max(this.updateBottomRight.X, x + width);
@@ -138,8 +141,10 @@ namespace Duality.Plugins.Tilemaps
 				this.OnTilesChanged(
 					this.updateTopLeft.X, 
 					this.updateTopLeft.Y, 
-					1 + this.updateBottomRight.X - this.updateTopLeft.X, 
-					1 + this.updateBottomRight.Y - this.updateTopLeft.Y);
+					this.updateBottomRight.X - this.updateTopLeft.X, 
+					this.updateBottomRight.Y - this.updateTopLeft.Y);
+				this.updateTopLeft = Point2.Zero;
+				this.updateBottomRight = Point2.Zero;
 			}
 		}
 		/// <summary>

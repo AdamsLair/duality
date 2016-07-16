@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.6.1</version>
+    <version>2.6.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,10 +13,11 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>Extracted Common DataConverter Code
-#CHANGE: Extracted a common DataConverter.FindMatchingResources method from the common FindMatch pattern in DataConverters.</releaseNotes>
+    <releaseNotes>TilemapSetupDialog, Added Point2PropertyEditor
+#ADD: Introduced a new setup dialog for more complex layered tilemap structures that makes it easier for users to create them.
+#ADD: Added a PropertyEditor for Point2 properties and fields.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.7.1" />
+      <dependency id="AdamsLair.Duality" version="2.7.2" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.6" />
       <dependency id="AdamsLair.WinForms" version="1.1.4" />

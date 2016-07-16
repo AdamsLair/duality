@@ -166,6 +166,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 			{
 				this.ApplySelectedTileset();
 			}
+			// If the Scene itself has changed and we didn't have a selected Tileset, try to
+			// select one from the Scene again.
+			if (e.HasObject(Scene.Current) && this.SelectedTileset == null)
+			{
+				this.SelectTilesetFromCurrentScene();
+			}
 		}
 		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{

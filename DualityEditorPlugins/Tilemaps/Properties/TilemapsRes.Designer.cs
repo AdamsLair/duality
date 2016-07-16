@@ -88,6 +88,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opens a user dialog that helps you quickly create a set of layered Tilemaps..
+        /// </summary>
+        internal static string ActionDesc_SetupTilemap {
+            get {
+                return ResourceManager.GetString("ActionDesc_SetupTilemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Create Tileset.
         /// </summary>
         internal static string ActionName_CreateTileset {
@@ -111,6 +120,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string ActionName_ResizeTilemap {
             get {
                 return ResourceManager.GetString("ActionName_ResizeTilemap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setup Tilemaps.
+        /// </summary>
+        internal static string ActionName_SetupTilemap {
+            get {
+                return ResourceManager.GetString("ActionName_SetupTilemap", resourceCulture);
             }
         }
         
@@ -207,6 +225,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static System.Drawing.Bitmap IconResize {
             get {
                 object obj = ResourceManager.GetObject("IconResize", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconSetup {
+            get {
+                object obj = ResourceManager.GetObject("IconSetup", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

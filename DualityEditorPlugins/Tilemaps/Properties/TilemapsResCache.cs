@@ -25,6 +25,7 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties
 		public static readonly Bitmap IconTilesetEditor            = TilemapsRes.IconTilesetEditor;
 		public static readonly Bitmap IconTilesetSingleVisualLayer = TilemapsRes.IconTilesetSingleVisualLayer;
 		public static readonly Bitmap IconResize                   = TilemapsRes.IconResize;
+		public static readonly Bitmap IconSetup                    = TilemapsRes.IconSetup;
 		public static readonly Bitmap IconTilesetCollisionInfo     = TilemapsRes.IconTilesetCollisionInfo;
 		public static readonly Bitmap IconTilesetDepthInfo         = TilemapsRes.IconTilesetDepthInfo;
 		public static readonly Bitmap IconTilesetDepthLayer        = TilemapsRes.IconTilesetDepthLayer;

@@ -480,6 +480,16 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				resizeDialog.ShowDialog(DualityEditorApp.MainForm);
 			}
 		}
+		
+		protected override string UpdateStatusText()
+		{
+			// Display which Tilemap we're currently using
+			Tilemap displayedTilemap = this.activeTilemap ?? this.selectedTilemap;
+			GameObject tilemapObj = (displayedTilemap != null) ? displayedTilemap.GameObj : null;
+			string tilemapName = (tilemapObj != null) ? tilemapObj.FullName : "None";
+			string escapedTilemapName = tilemapName.Replace("/", "//");
+			return escapedTilemapName;
+		}
 
 		protected override void OnEnterState()
 		{
@@ -792,6 +802,35 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnCamActionRequiresCursorChanged(e);
 			this.OnMouseMove();
 		}
+		
+		protected override void OnDragEnter(DragEventArgs e)
+		{
+			base.OnDragEnter(e);
+
+			DataObject data = e.Data as DataObject;
+			if (new ConvertOperation(data, ConvertOperation.Operation.All).CanPerform<Tileset>())
+				e.Effect = e.AllowedEffect;
+			else
+				e.Effect = DragDropEffects.None;
+		}
+		protected override void OnDragDrop(DragEventArgs e)
+		{
+			base.OnDragDrop(e);
+			
+			DataObject data = e.Data as DataObject;
+			var dragObjQuery = new ConvertOperation(data, ConvertOperation.Operation.All).Perform<Tileset>();
+			if (dragObjQuery != null)
+			{
+				Tileset dragObj = dragObjQuery.FirstOrDefault();
+
+				// Open up the Tilemap setup dialog
+				TilemapSetupDialog setupDialog = new TilemapSetupDialog();
+				setupDialog.Tileset = dragObj;
+				setupDialog.ShowCentered(DualityEditorApp.MainForm);
+
+				e.Effect = e.AllowedEffect;
+			}
+		}
 
 		protected override void OnRenderState()
 		{
@@ -954,6 +993,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			if (e.HasProperty(TilemapsReflectionInfo.Property_Tilemap_Tiles))
 			{
 				this.Invalidate();
+			}
+			else if (e.HasObject(Scene.Current))
+			{
+				this.UpdateActionToolButtons();
 			}
 		}
 		private void DualityEditorApp_UpdatingEngine(object sender, EventArgs e)

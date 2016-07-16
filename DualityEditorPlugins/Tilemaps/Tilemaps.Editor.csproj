@@ -62,9 +62,17 @@
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
     <Compile Include="DataConverters\ComponentFromTileset.cs" />
     <Compile Include="DataConverters\TilesetFromPixmap.cs" />
+    <Compile Include="EditorActions\SetupTilemapForEditing.cs" />
+    <Compile Include="EditorActions\OpenTilemapSetupDialog.cs" />
     <Compile Include="EditorActions\OpenTileset.cs" />
     <Compile Include="EditorActions\OpenTilemapResizeDialog.cs" />
     <Compile Include="EditorActions\PixmapToTileset.cs" />
+    <Compile Include="Modules\TilemapSetupDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\TilemapSetupDialog.Designer.cs">
+      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Modules\TilemapResizeDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -126,6 +134,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>TilemapsRes.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utility\TilemapsSetupUtility.cs" />
     <Compile Include="Utility\TilemapsReflectionInfo.cs" />
     <Compile Include="TilesetEditorModes\DepthInfoTilesetEditorMode.cs" />
     <Compile Include="TilesetEditorModes\CollisionInfoTilesetEditorMode.cs" />
@@ -167,6 +176,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Modules\TilemapSetupDialog.resx">
+      <DependentUpon>TilemapSetupDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Modules\TilemapResizeDialog.resx">
       <DependentUpon>TilemapResizeDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -204,6 +216,8 @@
     <None Include="EmbeddedResources\IconTilesetEditor.ico" />
     <None Include="EmbeddedResources\IconTilesetDepthInfo.png" />
     <None Include="EmbeddedResources\IconTilesetCollisionLayer.png" />
+    <Content Include="EmbeddedResources\IconSetup.png" />
+    <None Include="EmbeddedResources\IconSetupBig.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthFlatTile.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthLayer.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthVertical.png" />
