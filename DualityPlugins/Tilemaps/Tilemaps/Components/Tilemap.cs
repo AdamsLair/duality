@@ -138,8 +138,10 @@ namespace Duality.Plugins.Tilemaps
 				this.OnTilesChanged(
 					this.updateTopLeft.X, 
 					this.updateTopLeft.Y, 
-					1 + this.updateBottomRight.X - this.updateTopLeft.X, 
-					1 + this.updateBottomRight.Y - this.updateTopLeft.Y);
+					this.updateBottomRight.X - this.updateTopLeft.X, 
+					this.updateBottomRight.Y - this.updateTopLeft.Y);
+				this.updateTopLeft = Point2.Zero;
+				this.updateBottomRight = Point2.Zero;
 			}
 		}
 		/// <summary>

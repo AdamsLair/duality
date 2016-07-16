@@ -100,7 +100,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 					if (leftAdd   > 0) data.Fill(fillTile, 0, 0, leftAdd, data.Height);
 					if (bottomAdd > 0) data.Fill(fillTile, 0, data.Height - bottomAdd, data.Width, bottomAdd);
 					if (rightAdd  > 0) data.Fill(fillTile, data.Width - rightAdd, 0, rightAdd, data.Height);
-					this.tilemaps[i].EndUpdateTiles();
+					this.tilemaps[i].EndUpdateTiles(0, 0, 0, 0);
 				}
 			}
 
@@ -112,7 +112,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			{ 
 				this.tilemaps[i].Resize(this.oldData[i].Width, this.oldData[i].Height, this.origin);
 				this.oldData[i].CopyTo(this.tilemaps[i].BeginUpdateTiles());
-				this.tilemaps[i].EndUpdateTiles();
+				this.tilemaps[i].EndUpdateTiles(0, 0, 0, 0);
 			}
 
 			this.OnNotifyPropertyChanged();
