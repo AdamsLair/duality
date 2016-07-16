@@ -129,7 +129,11 @@ namespace Duality.Plugins.Tilemaps
 		
 		private void ClearRigidBody()
 		{
+			if (this.GameObj == null) return;
+
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
+			if (body == null) return;
+
 			for (int y = 0; y < this.sectorCount.Y; y++)
 			{
 				for (int x = 0; x < this.sectorCount.X; x++)
@@ -148,6 +152,8 @@ namespace Duality.Plugins.Tilemaps
 		}
 		private void UpdateRigidBody(bool rebuildEvenIfUnchanged)
 		{
+			if (this.sourceTilemaps == null) return;
+
 			this.tileCount = GetTileCount(this.sourceTilemaps);
 			this.sectorCount = new Point2(
 				1 + ((this.tileCount.X - 1) / SectorSize),
@@ -228,9 +234,6 @@ namespace Duality.Plugins.Tilemaps
 
 			this.sectors[sectorX, sectorY] = sector;
 		}
-		private void GenerateCollisionShapes(Grid<TileCollisionShape> collisionData, TileEdgeMap edgeMap, IList<ShapeInfo> shapeList)
-		{
-		}
 		private int MergeCollisionData(int sectorX, int sectorY, Grid<TileCollisionShape> target)
 		{
 			Point2 beginTile = new Point2(sectorX * SectorSize, sectorY * SectorSize);
@@ -280,6 +283,8 @@ namespace Duality.Plugins.Tilemaps
 		}
 		private void SubscribeSourceEvents()
 		{
+			if (this.sourceTilemaps == null) return;
+
 			EventHandler<TilemapChangedEventArgs> handler = this.SourceTilemap_EventTilemapChanged;
 			for (int i = 0; i < this.sourceTilemaps.Length; i++)
 			{
@@ -292,6 +297,8 @@ namespace Duality.Plugins.Tilemaps
 		}
 		private void UnsubscribeSourceEvents()
 		{
+			if (this.sourceTilemaps == null) return;
+
 			EventHandler<TilemapChangedEventArgs> handler = this.SourceTilemap_EventTilemapChanged;
 			for (int i = 0; i < this.sourceTilemaps.Length; i++)
 			{
