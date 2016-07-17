@@ -1646,11 +1646,15 @@ namespace Duality.Editor.Plugins.SceneView
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
+			// If something Prefab-related changed, update the display state of all objects
+			// to indicate new, removed or broken prefab links.
 			if (e is PrefabAppliedEventArgs || 
-				(e.HasProperty(ReflectionInfo.Property_GameObject_PrefabLink) && e.HasAnyObject(Scene.Current.AllObjects)) || 
-				(e.CompleteChange && e.HasObject(Scene.Current)))
+				(e.HasProperty(ReflectionInfo.Property_GameObject_PrefabLink) && e.HasAnyObject(Scene.Current.AllObjects)))
+			{
 				this.UpdatePrefabLinkStatus(false);
+			}
 
+			// Update the displayed names of objects
 			if (e.HasProperty(ReflectionInfo.Property_GameObject_Name))
 			{
 				foreach (GameObjectNode node in e.Objects.GameObjects.Select(g => this.FindNode(g)))
