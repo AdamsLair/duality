@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.ProjectView</id>
-    <version>2.0.8</version>
+    <version>2.0.9</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Project View</title>
@@ -13,13 +13,11 @@
     <summary>Provides an overview of project Resources and allows importing new Assets.</summary>
     <description>Provides an overview of project Resources and allows importing new Assets.</description>
     <tags>Duality Editor Plugin ProjectView</tags>
-    <releaseNotes>ProjectView Performance, Updated AdamsLair.WinForms Dependency, Updated AdamsLair.WinForms Dependency
-#CHANGE: Improved ProjectView performance in cases where a lot of files are deleted or added at once. Still far from perfect, but to (sanely) implement the biggest improvement here would require FileEventManager events that directly report N files, rather than one file at a time. This is a significant breaking change and thus scheduled for later.
-#CHANGE: Updated to AdamsLair.WinForms 1.1.4
-#CHANGE: Updated to AdamsLair.WinForms 1.1.3</releaseNotes>
+    <releaseNotes>Project View Performance
+#CHANGE: Reduced the number of Project View redraws when the modified state of a Resource changes by actually checking whether it changed since the last redraw.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.4.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.4.0" />
+      <dependency id="AdamsLair.Duality" version="2.7.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.2" />
     </dependencies>
   </metadata>
   <files>

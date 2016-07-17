@@ -56,6 +56,7 @@ namespace Duality.Editor.Plugins.ProjectView
 
 		private	List<ScheduleSelectEntry>	scheduleSelectPath		= new List<ScheduleSelectEntry>();
 		private	List<string>				skipGlobalRenamePath	= new List<string>();
+		private	HashSet<string>				unsavedResRedrawCache	= new HashSet<string>();
 
 		private	Dictionary<Node,bool>	tempNodeVisibilityCache		= new Dictionary<Node,bool>();
 		private	string					tempUpperFilter				= null;
@@ -1489,12 +1490,21 @@ namespace Duality.Editor.Plugins.ProjectView
 			// If a Resources modified state changes, invalidate
 			if (e.Objects.Resources.Any())
 			{
-				this.folderView.Invalidate();
-				foreach (Prefab prefab in e.Objects.Resources.OfType<Prefab>())
+				// Since every "current Scene" change will be a Resource change,
+				// we'd redraw all the time, which can decrease editor performance.
+				// Instead, keep track of the Resources that have been marked unsaved
+				// to avoid duplicate redraws.
+				bool anyVisibleStateChange = false;
+				foreach (Resource res in e.Objects.Resources)
 				{
-					ResourceNode resNode = this.NodeFromPath(prefab.Path) as ResourceNode;
-					if (resNode == null) continue;
-					resNode.UpdateImage();
+					if (DualityEditorApp.IsResourceUnsaved(res) && this.unsavedResRedrawCache.Add(res.Path))
+						anyVisibleStateChange = true;
+				}
+
+				// Did we encounter any visible state change? Redraw if that's the case.
+				if (anyVisibleStateChange)
+				{
+					this.folderView.Invalidate();
 				}
 			}
 		}
@@ -1621,6 +1631,7 @@ namespace Duality.Editor.Plugins.ProjectView
 		{
 			// If a Resources modified state changes, invalidate
 			this.folderView.Invalidate();
+			this.unsavedResRedrawCache.Remove(e.SaveAsPath);
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)

@@ -55,9 +55,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private DateTime            activePreviewTime  = DateTime.Now;
 		private TilemapTool         actionTool         = null;
 		private Point2              actionBeginTile    = InvalidTile;
-
-		private ToolStrip         toolstrip          = null;
-		private bool              askedForResize     = false;
+		private ToolStrip           toolstrip          = null;
 
 
 		public override string StateName
@@ -464,22 +462,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.actionBeginTile = InvalidTile;
 			UndoRedoManager.Finish();
 		}
-
-		/// <summary>
-		/// Checks whether the current <see cref="QueryActionTilemaps">action tilemaps</see> are all
-		/// empty and opens a new resize dialog for them if they are.
-		/// </summary>
-		private void CheckResizeNewTilemaps()
-		{
-			Tilemap[] actionTilemaps = this.QueryActionTilemaps().ToArray();
-			if (actionTilemaps.Length > 0 && actionTilemaps.All(t => t.TileCount.X == 0 && t.TileCount.Y == 0))
-			{
-				this.askedForResize = true;
-				TilemapResizeDialog resizeDialog = new TilemapResizeDialog();
-				resizeDialog.Tilemaps = actionTilemaps;
-				resizeDialog.ShowDialog(DualityEditorApp.MainForm);
-			}
-		}
 		
 		protected override string UpdateStatusText()
 		{
@@ -784,14 +766,6 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				e.Handled = true;
 			}
 		}
-		protected override void OnGotFocus()
-		{
-			base.OnGotFocus();
-			if (!this.askedForResize)
-			{
-				this.CheckResizeNewTilemaps();
-			}
-		}
 		protected override void OnLostFocus()
 		{
 			base.OnLostFocus();
@@ -976,16 +950,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			Tilemap newSelection = TilemapsEditorSelectionParser.QuerySelectedTilemap();
 			if (this.selectedTilemap != newSelection)
 			{
-				this.askedForResize = false;
 				this.selectedTilemap = newSelection;
 				if (this.Mouseover)
 					this.OnMouseMove();
 				this.Invalidate();
 				this.UpdateActionToolButtons();
-				if (this.Focused)
-				{
-					this.CheckResizeNewTilemaps();
-				}
 			}
 		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)

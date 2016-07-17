@@ -147,7 +147,7 @@ namespace Duality.Plugins.Tilemaps
 			{
 				Tilemap tilemap = this.ActiveTilemap;
 				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
-				Point2 tileCount = tilemap != null ? tilemap.TileCount : Point2.Zero;
+				Point2 tileCount = tilemap != null ? tilemap.Size : Point2.Zero;
 				Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 				return Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
 			}
@@ -179,7 +179,7 @@ namespace Duality.Plugins.Tilemaps
 
 			Tilemap tilemap = this.ActiveTilemap;
 			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
-			Point2 tileCount = tilemap != null ? tilemap.TileCount : Point2.Zero;
+			Point2 tileCount = tilemap != null ? tilemap.Size : Point2.Zero;
 			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 
 			// Determine the tile index at the specified local position
@@ -215,7 +215,7 @@ namespace Duality.Plugins.Tilemaps
 
 			Tilemap tilemap = this.ActiveTilemap;
 			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
-			Point2 tileCount = tilemap != null ? tilemap.TileCount : new Point2(1, 1);
+			Point2 tileCount = tilemap != null ? tilemap.Size : new Point2(1, 1);
 			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 
 			float depthPerTile = -tileSize.Y * this.GameObj.Transform.Scale * this.tileDepthScale;
@@ -232,7 +232,7 @@ namespace Duality.Plugins.Tilemaps
 			// Determine basic working data
 			Tilemap tilemap = this.ActiveTilemap;
 			Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
-			Point2 tileCount = tilemap != null ? tilemap.TileCount : new Point2(1, 1);
+			Point2 tileCount = tilemap != null ? tilemap.Size : new Point2(1, 1);
 			Vector2 tileSize = tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
 
 			// Early-out, if insufficient

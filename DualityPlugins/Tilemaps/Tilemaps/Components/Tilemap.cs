@@ -50,9 +50,9 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// [GET] The number of tiles on each axis.
 		/// </summary>
-		public Point2 TileCount
+		public Point2 Size
 		{
-			get { return this.tileData.TileCount; }
+			get { return this.tileData.Size; }
 		}
 
 

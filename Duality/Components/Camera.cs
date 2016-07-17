@@ -353,7 +353,6 @@ namespace Duality.Components
 				Array.Resize(ref this.pickingBuffer, Math.Max(this.pickingBuffer.Length * 2, pxByteNum));
 
 			this.pickingRT.GetPixelData(this.pickingBuffer);
-			PixelData test = this.pickingRT.GetPixelData();
 
 			Profile.TimeVisualPicking.EndMeasure();
 		}

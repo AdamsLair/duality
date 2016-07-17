@@ -12,11 +12,11 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 	{
 		public override bool CanPerformOn(Tilemap obj)
 		{
-			return base.CanPerformOn(obj) && obj.TileCount == Point2.Zero;
+			return base.CanPerformOn(obj) && obj.Size == Point2.Zero;
 		}
 		public override void Perform(Tilemap tilemap)
 		{
-			if (tilemap.TileCount != Point2.Zero) return;
+			if (tilemap.Size != Point2.Zero) return;
 
 			// Set up the tilemap using default settings.
 			TilemapsSetupUtility.SetupTilemap(tilemap, null);

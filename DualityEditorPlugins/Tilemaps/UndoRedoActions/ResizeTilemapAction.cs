@@ -68,25 +68,25 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 					if (this.origin == Alignment.Right || 
 						this.origin == Alignment.TopRight || 
 						this.origin == Alignment.BottomRight)
-						leftAdd = this.newSize.X - this.tilemaps[i].TileCount.X;
+						leftAdd = this.newSize.X - this.tilemaps[i].Size.X;
 					else if (
 						this.origin == Alignment.Center || 
 						this.origin == Alignment.Top || 
 						this.origin == Alignment.Bottom)
-						leftAdd = (this.newSize.X - this.tilemaps[i].TileCount.X) / 2;
+						leftAdd = (this.newSize.X - this.tilemaps[i].Size.X) / 2;
 
 					if (this.origin == Alignment.Bottom || 
 						this.origin == Alignment.BottomLeft || 
 						this.origin == Alignment.BottomRight)
-						topAdd = this.newSize.Y - this.tilemaps[i].TileCount.Y;
+						topAdd = this.newSize.Y - this.tilemaps[i].Size.Y;
 					else if (
 						this.origin == Alignment.Center || 
 						this.origin == Alignment.Left || 
 						this.origin == Alignment.Right)
-						topAdd = (this.newSize.Y - this.tilemaps[i].TileCount.Y) / 2;
+						topAdd = (this.newSize.Y - this.tilemaps[i].Size.Y) / 2;
 
-					rightAdd = (this.newSize.X - this.tilemaps[i].TileCount.X) - leftAdd;
-					bottomAdd = (this.newSize.Y - this.tilemaps[i].TileCount.Y) - topAdd;
+					rightAdd = (this.newSize.X - this.tilemaps[i].Size.X) - leftAdd;
+					bottomAdd = (this.newSize.Y - this.tilemaps[i].Size.Y) - topAdd;
 				}
 
 				// Resize the tilemap
