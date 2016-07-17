@@ -68,8 +68,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				new Tile { Index = fillTileIndex }, 
 				0, 
 				0, 
-				tilemap.TileCount.X, 
-				tilemap.TileCount.Y);
+				tilemap.Size.X, 
+				tilemap.Size.Y);
 			tilemap.EndUpdateTiles();
 		}
 	}

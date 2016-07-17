@@ -50,11 +50,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (this.tilemaps.Length == 0) return;
 
 			this.currentSize = new Point2(
-				this.tilemaps.Min(t => t.TileCount.X),
-				this.tilemaps.Min(t => t.TileCount.Y));
+				this.tilemaps.Min(t => t.Size.X),
+				this.tilemaps.Min(t => t.Size.Y));
 
 			Color multiSizeColor = Color.FromArgb(242, 212, 170);
-			bool multiSize = this.tilemaps.Any(t => t.TileCount != this.currentSize);
+			bool multiSize = this.tilemaps.Any(t => t.Size != this.currentSize);
 
 			this.editorWidth.Value = this.currentSize.X;
 			this.editorHeight.Value = this.currentSize.Y;

@@ -66,7 +66,7 @@ namespace Duality.Editor.Plugins.Tilemaps.EditorActions
 							if (baseTransform.Angle != transform.Angle) continue;
 							if (baseTransform.Scale != transform.Scale) continue;
 
-							if (baseTilemap.TileCount != renderer.ActiveTilemap.TileCount) continue;
+							if (baseTilemap.Size != renderer.ActiveTilemap.Size) continue;
 							if (baseRenderer.LocalTilemapRect != renderer.LocalTilemapRect) continue;
 
 							tilemaps.Add(renderer.ActiveTilemap);

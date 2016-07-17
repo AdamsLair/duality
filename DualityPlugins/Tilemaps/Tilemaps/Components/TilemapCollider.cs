@@ -420,8 +420,8 @@ namespace Duality.Plugins.Tilemaps
 			for (int i = 0; i < tilemaps.Length; i++)
 			{
 				if (tilemaps[i] == null) continue;
-				count.X = Math.Min(count.X, tilemaps[i].TileCount.X);
-				count.Y = Math.Min(count.Y, tilemaps[i].TileCount.Y);
+				count.X = Math.Min(count.X, tilemaps[i].Size.X);
+				count.Y = Math.Min(count.Y, tilemaps[i].Size.Y);
 			}
 			return count;
 		}
