@@ -15,7 +15,7 @@
 	<tags>Duality Core Plugin Tilemaps</tags>
 	<releaseNotes>Initial Release</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.1.2" />
+      <dependency id="AdamsLair.Duality" version="2.7.3" />
     </dependencies>
   </metadata>
   <files>
