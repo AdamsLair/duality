@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.CamView</id>
-    <version>2.3.0</version>
+    <version>2.3.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Camera View</title>
@@ -13,21 +13,11 @@
     <summary>A basic Camera View editor module.</summary>
     <description>A basic Camera View editor module.</description>
     <tags>Duality Editor Plugin CamView</tags>
-    <releaseNotes>RigidBody ChainShape Editor Support, Refactored ObjectEditor, SceneEditor Maintenance
-#ADD: It is now possible to edit ChainShapes in the RigidBodyEditor. 
-#CHANGE: Cleaned up and clarified some old code.
-#CHANGE: ObjectEditor no longer uses public nested classes. Moved and renamed them accordingly.
-#CHANGE: Applied "one file per class" rule to selection wrapper objects of the SceneEditor.
-#CHANGE: Applied "one file per class" rule to selection wrapper objects of the RigidBodyEditor.
-#CHANGE: Extracted the creation of collision geometry from the RigidBodyEditor CamViewState and introduced them as separate editor tool classes. New tools can now be added easily and modifying existing tools does not require knowledge of the entire RigidBodyEditor. 
-#CHANGE: Moved RigidBodyEditor related files into the new RigidBodyEditor folder.
-#CHANGE: Moved the shape index text so it can actually be read beside the selection marker. 
-#CHANGE: Tweaked depth offsets, so selection markers are rendered over rigidbody shape outlines.
-#ADD: Added ChainShape rendering support to the RigidBody shape CamView rendering overlay.
-#CHANGE: Slightly improved selection rendering by fixing Z offsets and selection marker colors.</releaseNotes>
+    <releaseNotes>CamView API Tweaks
+#ADD: Added a CreateOrSwitch method that allows other plugins to acquire a CamView using a certain state while leaving the decision on how to do that to the CamView plugin.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.5.0" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.4.0" />
+      <dependency id="AdamsLair.Duality" version="2.7.3" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.2" />
     </dependencies>
   </metadata>
   <files>
