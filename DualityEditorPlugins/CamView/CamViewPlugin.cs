@@ -36,7 +36,7 @@ namespace Duality.Editor.Plugins.CamView
 			this.isLoading = true;
 			IDockContent result;
 			if (dockContentType == typeof(CamView))
-				result = this.RequestCamView();
+				result = this.CreateCamView();
 			else
 				result = base.DeserializeDockContent(dockContentType);
 			this.isLoading = false;
@@ -80,9 +80,51 @@ namespace Duality.Editor.Plugins.CamView
 			Sandbox.Entering += this.Sandbox_Entering;
 		}
 		
-		public CamView RequestCamView(string initStateTypeName = null)
+		/// <summary>
+		/// Switches an existing <see cref="CamView"/> to the specified <see cref="CamViewState"/> type id,
+		/// or creates a new one, should none exist that is allowed to switch.
+		/// </summary>
+		/// <param name="camViewState"></param>
+		/// <returns></returns>
+		public CamView CreateOrSwitchCamView(string stateTypeId)
 		{
-			CamView cam = new CamView(this.camViews.Count, initStateTypeName);
+			Type stateType = ReflectionHelper.ResolveType(stateTypeId) ?? typeof(CamViewStates.SceneEditorCamViewState);
+			return CreateOrSwitchCamView(stateType);
+		}
+		/// <summary>
+		/// Switches an existing <see cref="CamView"/> to the specified <see cref="CamViewState"/> type,
+		/// or creates a new one, should none exist that is allowed to switch.
+		/// </summary>
+		/// <param name="camViewState"></param>
+		/// <returns></returns>
+		public CamView CreateOrSwitchCamView(Type camViewState)
+		{
+			// Search for existing cam views already using the requested state
+			foreach (CamView view in this.camViews)
+			{
+				if (view.ActiveState == null) continue;
+				if (!camViewState.IsInstanceOfType(view.ActiveState)) continue;
+				return view;
+			}
+
+			// Switch one of the existing cam views to the desired state
+			foreach (CamView view in this.camViews)
+			{
+				view.SetCurrentState(camViewState);
+				return view;
+			}
+
+			// No cam view available? Create one
+			return CreateCamView(camViewState.GetTypeId());
+		}
+		/// <summary>
+		/// Creates a new <see cref="CamView"/> and initializes it with the specified <see cref="CamViewState"/>.
+		/// </summary>
+		/// <param name="initStateTypeId"></param>
+		/// <returns></returns>
+		public CamView CreateCamView(string initStateTypeId = null)
+		{
+			CamView cam = new CamView(this.camViews.Count, initStateTypeId);
 			this.camViews.Add(cam);
 			cam.FormClosed += delegate(object sender, FormClosedEventArgs e) { this.camViews.Remove(sender as CamView); };
 
@@ -106,7 +148,7 @@ namespace Duality.Editor.Plugins.CamView
 			CamView gameView = null;
 			if (this.camViews.Count == 0)
 			{
-				gameView = this.RequestCamView();
+				gameView = this.CreateCamView();
 				gameView.SetCurrentState(typeof(CamViewStates.GameViewCamViewState));
 			}
 			else
@@ -117,7 +159,7 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void menuItemCamView_Click(object sender, EventArgs e)
 		{
-			this.RequestCamView();
+			this.CreateCamView();
 		}
 	}
 }
