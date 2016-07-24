@@ -70,6 +70,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Opens a Camera View in Tilemap Editor mode and selects the Tilemap for editing..
+        /// </summary>
+        internal static string ActionDesc_OpenTilemapEditor {
+            get {
+                return ResourceManager.GetString("ActionDesc_OpenTilemapEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Opens the Tileset for editing..
         /// </summary>
         internal static string ActionDesc_OpenTileset {
@@ -102,6 +111,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string ActionName_CreateTileset {
             get {
                 return ResourceManager.GetString("ActionName_CreateTileset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Tilemap Editor.
+        /// </summary>
+        internal static string ActionName_OpenTilemapEditor {
+            get {
+                return ResourceManager.GetString("ActionName_OpenTilemapEditor", resourceCulture);
             }
         }
         
