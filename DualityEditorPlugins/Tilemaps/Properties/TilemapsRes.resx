@@ -346,4 +346,10 @@
   <data name="ActionName_SetupTilemap" xml:space="preserve">
     <value>Setup Tilemaps</value>
   </data>
+  <data name="ActionDesc_OpenTilemapEditor" xml:space="preserve">
+    <value>Opens a Camera View in Tilemap Editor mode and selects the Tilemap for editing.</value>
+  </data>
+  <data name="ActionName_OpenTilemapEditor" xml:space="preserve">
+    <value>Open Tilemap Editor</value>
+  </data>
 </root>
