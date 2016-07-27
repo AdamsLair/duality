@@ -23,19 +23,19 @@ namespace Duality.Plugins.Tilemaps
 		private static readonly TilesetRenderInput DefaultRenderInput  = new TilesetRenderInput();
 		private static readonly BatchInfo          DefaultBaseMaterial = new BatchInfo(DrawTechnique.Mask, ColorRgba.White);
 
-		[CloneBehavior(typeof(TilesetRenderInput), CloneBehavior.ChildObject)]
-		private List<TilesetRenderInput> renderConfig = new List<TilesetRenderInput>();
-		[CloneBehavior(CloneBehavior.ChildObject)]
-		private BatchInfo                baseMaterial = new BatchInfo(DefaultBaseMaterial);
-		private Vector2                  tileSize     = DefaultTileSize;
-		private RawList<TileInput>       tileInput    = new RawList<TileInput>();
+		private List<TilesetRenderInput>   renderConfig   = new List<TilesetRenderInput>();
+		private List<TilesetAutoTileInput> autoTileConfig = new List<TilesetAutoTileInput>();
+		private BatchInfo                  baseMaterial   = new BatchInfo(DefaultBaseMaterial);
+		private Vector2                    tileSize       = DefaultTileSize;
+		private RawList<TileInput>         tileInput      = new RawList<TileInput>();
 
-		[DontSerialize] private RawList<TileInfo> tileData       = new RawList<TileInfo>();
-		[DontSerialize] private List<Texture>     renderData     = new List<Texture>();
-		[DontSerialize] private Material          renderMaterial = null;
-		[DontSerialize] private bool              compiled       = false;
-		[DontSerialize] private int               compileHash    = 0;
-		[DontSerialize] private int               tileCount      = 0;
+		[DontSerialize] private RawList<TileInfo>         tileData       = new RawList<TileInfo>();
+		[DontSerialize] private List<TilesetAutoTileInfo> autoTileData   = new List<TilesetAutoTileInfo>();
+		[DontSerialize] private List<Texture>             renderData     = new List<Texture>();
+		[DontSerialize] private Material                  renderMaterial = null;
+		[DontSerialize] private bool                      compiled       = false;
+		[DontSerialize] private int                       compileHash    = 0;
+		[DontSerialize] private int                       tileCount      = 0;
 
 		
 		/// <summary>
@@ -64,6 +64,16 @@ namespace Duality.Plugins.Tilemaps
 		public IList<TilesetRenderInput> RenderConfig
 		{
 			get { return this.renderConfig; }
+		}
+		/// <summary>
+		/// [GET] The different auto-tile definitions of this <see cref="Tileset"/>, each specified by
+		/// a single <see cref="TilesetAutoTileInput"/>. This data is user-defined and pre-compilation.
+		/// To access post-compile data, see the <see cref="AutoTileData"/> property.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public IList<TilesetAutoTileInput> AutoTileConfig
+		{
+			get { return this.autoTileConfig; }
 		}
 		/// <summary>
 		/// [GET / SET] The desired size of a tile in world space. How exactly this value is accounted for depends
@@ -104,9 +114,21 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.renderMaterial; }
 		}
 		/// <summary>
+		/// [GET] Provides information about each compiled auto-tile in the <see cref="Tileset"/>.
+		/// This information is generated during the compilation process of a <see cref="Tileset"/>.
+		/// To change any of the settings, instead check out the <see cref="AutoTileConfig"/> property.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public IReadOnlyList<TilesetAutoTileInfo> AutoTileData
+		{
+			get { return this.autoTileData; }
+		}
+		/// <summary>
 		/// [GET] Provides information about each compiled tile in the <see cref="Tileset"/>.
 		/// This information is generated during the compilation process of a <see cref="Tileset"/>.
-		/// Do not modify unless you know exactly what you're doing.
+		/// 
+		/// Do not modify. The only reason this is not read-only is to provide raw / optimized 
+		/// array access in bottleneck paths such as <see cref="Tilemap"/> rendering.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
 		public RawList<TileInfo> TileData
