@@ -62,6 +62,9 @@
     <Compile Include="Tilemaps\Components\Tilemap.cs" />
     <Compile Include="Tilesets\TileCollisionLayer.cs" />
     <Compile Include="Tilesets\TileInput.cs" />
+    <Compile Include="Tilesets\TilesetCompilerOutput.cs" />
+    <Compile Include="Tilesets\TilesetCompilerInput.cs" />
+    <Compile Include="Tilesets\TilesetCompiler.cs" />
     <Compile Include="Tilesets\TilesetAutoTileInfo.cs" />
     <Compile Include="Tilesets\TilesetAutoTileInput.cs" />
     <Compile Include="Tilesets\TilesetRenderInput.cs" />
