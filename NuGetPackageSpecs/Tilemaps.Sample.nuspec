@@ -1,19 +1,20 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps.Sample</id>
-    <version>1.0.0</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <version>1.0.1</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>A sample project to show how to use Tilemaps.</summary>
+    <summary>A sample project to show how to use Tilemaps.</summary>
     <description>A sample project to show how to use Tilemaps.</description>
-	<tags>Duality Sample Plugin Tilemaps</tags>
-	<releaseNotes>Initial Release</releaseNotes>
+    <tags>Duality Sample Plugin Tilemaps</tags>
+    <releaseNotes>Tilemaps Sample Tweaks
+#CHANGE: Removed character movement sensing, as it turned out to make controls feel less responsive.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.0.0" />
       <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.0.0" />
