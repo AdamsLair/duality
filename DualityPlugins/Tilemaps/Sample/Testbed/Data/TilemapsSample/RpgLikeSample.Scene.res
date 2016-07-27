@@ -162,7 +162,7 @@
                     <acceleration dataType="Float">0.15</acceleration>
                     <active dataType="Bool">true</active>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
-                    <moveSenseRadius dataType="Float">96</moveSenseRadius>
+                    <moveSenseRadius dataType="Float">0</moveSenseRadius>
                     <speed dataType="Float">3.5</speed>
                     <targetMovement dataType="Struct" type="Duality.Vector2" />
                   </item>
@@ -746,7 +746,7 @@
                               <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="1214195307">
                                 <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="1426464374" length="64" />
                                 <_size dataType="Int">0</_size>
-                                <_version dataType="Int">3692</_version>
+                                <_version dataType="Int">3812</_version>
                               </shapes>
                             </baseObject>
                             <gameobj dataType="ObjectRef">823148500</gameobj>
