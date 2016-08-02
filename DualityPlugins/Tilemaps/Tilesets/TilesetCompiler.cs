@@ -45,6 +45,38 @@ namespace Duality.Plugins.Tilemaps
 			TilesetCompilerOutput output = input.ExistingOutput;
 			output.TileData = output.TileData ?? new RawList<TileInfo>(input.TileInput.Count);
 			output.RenderData = output.RenderData ?? new List<Texture>();
+			output.AutoTileData = output.AutoTileData ?? new List<TilesetAutoTileInfo>();
+
+			// Clear existing data, but keep the sufficiently big data structures
+			output.TileData.Clear();
+			output.RenderData.Clear();
+			output.AutoTileData.Clear();
+
+			// Transform AutoTile data
+			for (int autoTileIndex = 0; autoTileIndex < input.AutoTileConfig.Count; autoTileIndex++)
+			{
+				TilesetAutoTileInput autoTileInput = input.AutoTileConfig[autoTileIndex];
+
+				// Generate a full tile mapping for all potential connection states
+				int[] tileMapping = new int[(int)TileConnection.All + 1];
+				for (int conIndex = 0; conIndex < tileMapping.Length; conIndex++)
+				{
+					TileConnection connection = (TileConnection)conIndex;
+
+					// Retrieve existing mappings and fallback to the base tile
+					int mapToTile;
+					if (!autoTileInput.BorderTileIndices.TryGetValue(connection, out mapToTile))
+						mapToTile = autoTileInput.BaseTileIndex;
+
+					tileMapping[conIndex] = mapToTile;
+				}
+
+				// Add the complete AutoTile info / mapping to the result data
+				TilesetAutoTileInfo autoTileInfo = new TilesetAutoTileInfo(
+					autoTileInput.BaseTileIndex, 
+					tileMapping);
+				output.AutoTileData.Add(autoTileInfo);
+			}
 
 			// Generate output pixel data
 			int minSourceTileCount = int.MaxValue;
