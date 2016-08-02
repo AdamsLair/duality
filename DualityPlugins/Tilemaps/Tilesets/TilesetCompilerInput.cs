@@ -24,6 +24,10 @@ namespace Duality.Plugins.Tilemaps
 		/// Visual layer configuration. This data is not modified, only read.
 		/// </summary>
 		public IReadOnlyList<TilesetRenderInput> RenderConfig;
+		/// <summary>
+		/// AutoTile configuration. This data is not modified, only read.
+		/// </summary>
+		public IReadOnlyList<TilesetAutoTileInput> AutoTileConfig;
 
 		/// <summary>
 		/// (Optional) potentially existing output that was produced in previous compilations.

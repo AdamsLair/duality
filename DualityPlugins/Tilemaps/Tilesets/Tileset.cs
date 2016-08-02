@@ -208,16 +208,19 @@ namespace Duality.Plugins.Tilemaps
 			{
 				TileInput = this.tileInput,
 				RenderConfig = this.renderConfig,
+				AutoTileConfig = this.autoTileConfig,
 				ExistingOutput = new TilesetCompilerOutput
 				{
 					RenderData = this.renderData,
-					TileData = this.tileData
+					TileData = this.tileData,
+					AutoTileData = this.autoTileData
 				}
 			});
 			
 			// Apply compiled data to the internal tileset data
 			this.renderData = data.RenderData;
 			this.tileData = data.TileData;
+			this.autoTileData = data.AutoTileData;
 			this.tileCount = data.TileCount;
 			this.GenerateRenderMaterial();
 
@@ -249,6 +252,7 @@ namespace Duality.Plugins.Tilemaps
 			}
 			this.renderData.Clear();
 			this.tileData.Clear();
+			this.autoTileData.Clear();
 		}
 		/// <summary>
 		/// Discards a previously generated <see cref="RenderMaterial"/>. Does not discard any
@@ -287,6 +291,19 @@ namespace Duality.Plugins.Tilemaps
 				MathF.CombineHashCode(ref hash, input.TargetMagFilter.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.TargetMinFilter.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.TargetTileSpacing.GetHashCode());
+			}
+
+			foreach (TilesetAutoTileInput autoTile in this.autoTileConfig)
+			{
+				MathF.CombineHashCode(ref hash, autoTile.BaseTileIndex);
+				MathF.CombineHashCode(ref hash, autoTile.GenerateMissingTiles ? 1 : 0);
+				MathF.CombineHashCode(ref hash, autoTile.BorderTileIndices.Count);
+				var stableOrderedTiles = autoTile.BorderTileIndices.OrderBy(p => (int)p.Key);
+				foreach (var pair in stableOrderedTiles)
+				{
+					MathF.CombineHashCode(ref hash, (int)pair.Key);
+					MathF.CombineHashCode(ref hash, pair.Value);
+				}
 			}
 
 			TileInput[] data = this.tileInput.Data;

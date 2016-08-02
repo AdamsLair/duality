@@ -29,5 +29,10 @@ namespace Duality.Plugins.Tilemaps
 		/// layers that were specified in the <see cref="TilesetCompilerInput"/>.
 		/// </summary>
 		public List<Texture> RenderData;
+		/// <summary>
+		/// One AutoTile info for each AutoTile type. Corresponds to the
+		/// AutoTile input that was specified in the <see cref="TilesetCompilerInput"/>.
+		/// </summary>
+		public List<TilesetAutoTileInfo> AutoTileData;
 	}
 }
