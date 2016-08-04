@@ -320,6 +320,26 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetAutoTile {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetAutoTile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetAutoTileLayer {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetAutoTileLayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconTilesetCollisionInfo {
             get {
                 object obj = ResourceManager.GetObject("IconTilesetCollisionInfo", resourceCulture);
@@ -671,6 +691,15 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         internal static string TilesetEditorDepthVertical_Name {
             get {
                 return ResourceManager.GetString("TilesetEditorDepthVertical_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AutoTiles.
+        /// </summary>
+        internal static string TilesetEditorMode_AutoTile_Name {
+            get {
+                return ResourceManager.GetString("TilesetEditorMode_AutoTile_Name", resourceCulture);
             }
         }
         

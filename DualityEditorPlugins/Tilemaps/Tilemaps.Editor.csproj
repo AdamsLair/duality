@@ -103,6 +103,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TileDrawSources\PatternTileDrawSource.cs" />
+    <Compile Include="TilesetEditorModes\AutoTileTilesetEditorMode.cs" />
+    <Compile Include="UndoRedoActions\AddTilesetVisualLayerAction.cs" />
     <Compile Include="UndoRedoActions\ResizeTilemapAction.cs" />
     <Compile Include="UndoRedoActions\EditTilesetTileInputAction.cs" />
     <Compile Include="Utility\TilemapsEditorSelectionParser.cs" />
@@ -147,7 +149,6 @@
     <Compile Include="UndoRedoActions\RevertTilesetChangesAction.cs" />
     <Compile Include="UndoRedoActions\ApplyTilesetChangesAction.cs" />
     <Compile Include="UndoRedoActions\RemoveTilesetVisualLayerAction.cs" />
-    <Compile Include="UndoRedoActions\AddTilesetVisualLayerAction.cs" />
     <Compile Include="UndoRedoActions\EditTilemapActionType.cs" />
     <Compile Include="UndoRedoActions\EditTilemapAction.cs" />
   </ItemGroup>
@@ -219,6 +220,8 @@
     <None Include="EmbeddedResources\IconTilesetCollisionLayer.png" />
     <Content Include="EmbeddedResources\IconSetup.png" />
     <None Include="EmbeddedResources\IconSetupBig.png" />
+    <Content Include="EmbeddedResources\IconTilesetAutoTile.png" />
+    <Content Include="EmbeddedResources\IconTilesetAutoTileLayer.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthFlatTile.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthLayer.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthVertical.png" />
