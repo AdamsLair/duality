@@ -108,6 +108,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				false;
 			this.buttonAddLayer.Visible = canAddRemove;
 			this.buttonRemoveLayer.Visible = canAddRemove;
+			this.buttonRemoveLayer.Enabled = (this.layerView.SelectedNode != null);
 
 			// Invalidate TilesetView because editor modes are likely to
 			// draw custom overlays using its event handlers. Directly show
@@ -382,8 +383,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void buttonRemoveLayer_Click(object sender, EventArgs e)
 		{
+			int selectedIndex = this.layerView.SelectedNode != null ? this.layerView.SelectedNode.Index : -1;
+
 			if (this.activeMode != null)
 				this.activeMode.RemoveLayer();
+
+			if (selectedIndex != -1 && this.layerView.Root.Children.Count > 0)
+			{
+				selectedIndex = MathF.Clamp(selectedIndex - 1, 0, this.layerView.Root.Children.Count - 1);
+				this.layerView.SelectedNode = this.layerView.Root.Children[selectedIndex];
+			}
 		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{

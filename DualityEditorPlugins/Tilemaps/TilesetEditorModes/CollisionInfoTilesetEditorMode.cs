@@ -126,16 +126,16 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			this.SelectLayer(this.layerNodes[0]);
 			this.TilesetView.PaintTiles += this.TilesetView_PaintTiles;
 			this.TilesetView.MouseMove += this.TilesetView_MouseMove;
-			this.TilesetView.MouseDown += TilesetView_MouseDown;
-			this.TilesetView.MouseUp += TilesetView_MouseUp;
+			this.TilesetView.MouseDown += this.TilesetView_MouseDown;
+			this.TilesetView.MouseUp += this.TilesetView_MouseUp;
 		}
 		protected override void OnLeave()
 		{
 			base.OnLeave();
 			this.TilesetView.PaintTiles -= this.TilesetView_PaintTiles;
 			this.TilesetView.MouseMove -= this.TilesetView_MouseMove;
-			this.TilesetView.MouseDown -= TilesetView_MouseDown;
-			this.TilesetView.MouseUp -= TilesetView_MouseUp;
+			this.TilesetView.MouseDown -= this.TilesetView_MouseDown;
+			this.TilesetView.MouseUp -= this.TilesetView_MouseUp;
 		}
 		protected override void OnLayerSelectionChanged(LayerSelectionChangedEventArgs args)
 		{
