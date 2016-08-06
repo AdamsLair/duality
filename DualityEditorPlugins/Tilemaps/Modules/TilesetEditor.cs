@@ -264,7 +264,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 			base.OnClosed(e);
 
 			// Leave the currently active editor mode so it can shut down properly
-			this.SetActiveEditorMode(null);
+			if (DualityApp.ExecContext != DualityApp.ExecutionContext.Terminated)
+			{
+				this.SetActiveEditorMode(null);
+			}
 
 			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;

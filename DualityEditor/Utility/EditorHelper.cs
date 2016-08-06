@@ -8,6 +8,7 @@ using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using System.Reflection;
 using Microsoft.Win32;
 
 using Duality;
@@ -103,6 +104,10 @@ namespace Duality.Editor
 
 		public static string CreateNewProject(string projName, string projFolder, ProjectTemplateInfo template)
 		{
+			// Determine the current executing directory, in addition to Environment.CurrentDirectory
+			Assembly execAssembly = Assembly.GetEntryAssembly() ?? typeof(DualityEditorApp).Assembly;
+			string execDirectory = Path.GetFullPath(Path.GetDirectoryName(execAssembly.Location));
+
 			// Create project folder
 			projFolder = Path.Combine(projFolder, projName);
 			if (!Directory.Exists(projFolder)) Directory.CreateDirectory(projFolder);
@@ -139,39 +144,53 @@ namespace Duality.Editor
 			else if (template.SpecialTag == ProjectTemplateInfo.SpecialInfo.Current)
 			{
 				DualityEditorApp.SaveAllProjectData();
-				PathHelper.CopyDirectory(Environment.CurrentDirectory, projFolder, true, delegate(string path)
-				{
-					bool isDir = Directory.Exists(path);
-					string fullPath = Path.GetFullPath(path);
-					if (isDir)
-					{
-						return fullPath != Path.GetFullPath(EditorHelper.BackupDirectory);
-					}
-					else
-					{
-						return true;
-					}
-				});
-			}
-			else
-			{
-				PathHelper.CopyDirectory(Environment.CurrentDirectory, projFolder, true, delegate(string path)
+
+				Predicate<string> copyPredicate = delegate(string path) 
 				{
 					bool isDir = Directory.Exists(path);
 					string fullPath = Path.GetFullPath(path);
 					if (isDir)
 					{
 						return 
-							fullPath != Path.GetFullPath(DualityApp.DataDirectory) &&
-							fullPath != Path.GetFullPath(EditorHelper.SourceDirectory) &&
-							fullPath != Path.GetFullPath(EditorHelper.BackupDirectory);
+							!PathOp.ArePathsEqual(fullPath, EditorHelper.BackupDirectory) &&
+							!PathOp.ArePathsEqual(fullPath, Path.Combine(execDirectory, EditorHelper.BackupDirectory));
+					}
+					else
+					{
+						return true;
+					}
+				};
+
+				if (!PathOp.ArePathsEqual(execDirectory, Environment.CurrentDirectory))
+					PathHelper.CopyDirectory(execDirectory, projFolder, true, copyPredicate);
+				PathHelper.CopyDirectory(Environment.CurrentDirectory, projFolder, true, copyPredicate);
+			}
+			else
+			{
+				Predicate<string> copyPredicate = delegate(string path) 
+				{
+					bool isDir = Directory.Exists(path);
+					string fullPath = Path.GetFullPath(path);
+					if (isDir)
+					{
+						return 
+							!PathOp.ArePathsEqual(fullPath, DualityApp.DataDirectory) &&
+							!PathOp.ArePathsEqual(fullPath, EditorHelper.SourceDirectory) &&
+							!PathOp.ArePathsEqual(fullPath, EditorHelper.BackupDirectory) &&
+							!PathOp.ArePathsEqual(fullPath, Path.Combine(execDirectory, DualityApp.DataDirectory)) &&
+							!PathOp.ArePathsEqual(fullPath, Path.Combine(execDirectory, EditorHelper.SourceDirectory)) &&
+							!PathOp.ArePathsEqual(fullPath, Path.Combine(execDirectory, EditorHelper.BackupDirectory));
 					}
 					else
 					{
 						string fileName = Path.GetFileName(fullPath);
 						return fileName != "appdata.dat" && fileName != "defaultuserdata.dat" && fileName != "designtimedata.dat";
 					}
-				});
+				};
+
+				if (!PathOp.ArePathsEqual(execDirectory, Environment.CurrentDirectory))
+					PathHelper.CopyDirectory(execDirectory, projFolder, true, copyPredicate);
+				PathHelper.CopyDirectory(Environment.CurrentDirectory, projFolder, true, copyPredicate);
 			}
 
 			// Adjust current directory and perform init operations in the new project folder

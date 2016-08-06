@@ -1,23 +1,24 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Tilemaps</id>
-    <version>1.0.0</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <version>1.0.1</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Tilemaps (Editor)</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>Defines the editor integration of the dependent core tilemap plugin.</summary>
+    <summary>Defines the editor integration of the dependent core tilemap plugin.</summary>
     <description>Defines the editor integration of the dependent core tilemap plugin.</description>
-	<tags>Duality Editor Plugin Tilemaps</tags>
-	<releaseNotes>Initial Release</releaseNotes>
+    <tags>Duality Editor Plugin Tilemaps</tags>
+    <releaseNotes>Tileset Editor Shutdown Bugfix
+#FIX: Fixed an exception that would occur when shutting down the editor while the Tileset Editor was still open while a Tileset VisualLayer was selected.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.0.0" />
       <dependency id="AdamsLair.Duality" version="2.7.3" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.6.2" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.3" />
     </dependencies>
   </metadata>
   <files>
