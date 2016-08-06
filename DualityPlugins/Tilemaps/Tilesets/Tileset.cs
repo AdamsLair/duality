@@ -297,12 +297,11 @@ namespace Duality.Plugins.Tilemaps
 			{
 				MathF.CombineHashCode(ref hash, autoTile.BaseTileIndex);
 				MathF.CombineHashCode(ref hash, autoTile.GenerateMissingTiles ? 1 : 0);
-				MathF.CombineHashCode(ref hash, autoTile.BorderTileIndices.Count);
-				var stableOrderedTiles = autoTile.BorderTileIndices.OrderBy(p => (int)p.Key);
-				foreach (var pair in stableOrderedTiles)
+				MathF.CombineHashCode(ref hash, autoTile.ConnectivityMap.Count);
+				for (int i = 0; i < autoTile.ConnectivityMap.Count; i++)
 				{
-					MathF.CombineHashCode(ref hash, (int)pair.Key);
-					MathF.CombineHashCode(ref hash, pair.Value);
+					MathF.CombineHashCode(ref hash, (int)autoTile.ConnectivityMap[i].Neighbours);
+					MathF.CombineHashCode(ref hash, autoTile.ConnectivityMap[i].TileIndex);
 				}
 			}
 

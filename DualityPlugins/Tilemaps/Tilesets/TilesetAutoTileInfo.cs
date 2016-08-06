@@ -26,7 +26,7 @@ namespace Duality.Plugins.Tilemaps
 		/// [GET] An array where the item at a <see cref="TileConnection"/> index represents the tile index
 		/// of the border tile to use in this connectivity setup.
 		/// </summary>
-		public IReadOnlyList<int> BorderTileIndices
+		public IReadOnlyList<int> ConnectivityMap
 		{
 			get { return this.tiles; }
 		}
@@ -35,15 +35,15 @@ namespace Duality.Plugins.Tilemaps
 		/// Creates a new <see cref="TilesetAutoTileInfo"/> based on prepared data.
 		/// </summary>
 		/// <param name="baseTile">The tile index of the base tile for this AutoTile.</param>
-		/// <param name="borderTiles">
+		/// <param name="connectivityMap">
 		/// An array where the item at a <see cref="TileConnection"/> index represents the tile index
 		/// of the border tile to use in this connectivity setup. This array is not copied. If you plan
 		/// to re-use it, pass a copy as a parameter.
 		/// </param>
-		public TilesetAutoTileInfo(int baseTile, int[] borderTiles)
+		public TilesetAutoTileInfo(int baseTile, int[] connectivityMap)
 		{
-			if (borderTiles == null) throw new ArgumentNullException("borderTiles");
-			if (borderTiles.Length != (int)TileConnection.All + 1) 
+			if (connectivityMap == null) throw new ArgumentNullException("borderTiles");
+			if (connectivityMap.Length != (int)TileConnection.All + 1) 
 			{
 				throw new ArgumentException(
 					string.Format(
@@ -53,7 +53,7 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			this.baseTile = baseTile;
-			this.tiles = borderTiles;
+			this.tiles = connectivityMap;
 		}
 	}
 }

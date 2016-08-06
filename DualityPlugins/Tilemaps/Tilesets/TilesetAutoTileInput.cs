@@ -20,7 +20,7 @@ namespace Duality.Plugins.Tilemaps
 		private string id                   = DefaultId;
 		private int    baseTile             = 0;
 		private bool   generateMissingTiles = true;
-		private Dictionary<TileConnection,int> tiles = new Dictionary<TileConnection,int>();
+		private List<TilesetAutoTileItem> tiles = new List<TilesetAutoTileItem>();
 		
 		/// <summary>
 		/// [GET / SET] The human-friendly name of this AutoTile.
@@ -49,10 +49,10 @@ namespace Duality.Plugins.Tilemaps
 			set { this.baseTile = value; }
 		}
 		/// <summary>
-		/// [GET] A dictionary that maps connectivity states to tile indices.
+		/// [GET] A mapping from connectivity states to tile indices.
 		/// </summary>
 		[EditorHintFlags(MemberFlags.Invisible)]
-		public IDictionary<TileConnection,int> BorderTileIndices
+		public IList<TilesetAutoTileItem> ConnectivityMap
 		{
 			get { return this.tiles; }
 		}
