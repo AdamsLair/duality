@@ -65,10 +65,10 @@ namespace Duality.Plugins.Tilemaps
 				}
 
 				// Use the directly applicable tile mapping as-is
-				for (int mapIndex = autoTileInput.ConnectivityMap.Count - 1; mapIndex >= 0; mapIndex--)
+				for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
 				{
-					TilesetAutoTileItem mapping = autoTileInput.ConnectivityMap[mapIndex];
-					tileMapping[(int)mapping.Neighbours] = mapping.TileIndex;
+					TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
+					tileMapping[(int)tileInput.Neighbours] = tileIndex;
 				}
 
 				// Add the complete AutoTile info / mapping to the result data

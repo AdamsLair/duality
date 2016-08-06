@@ -297,17 +297,22 @@ namespace Duality.Plugins.Tilemaps
 			{
 				MathF.CombineHashCode(ref hash, autoTile.BaseTileIndex);
 				MathF.CombineHashCode(ref hash, autoTile.GenerateMissingTiles ? 1 : 0);
-				MathF.CombineHashCode(ref hash, autoTile.ConnectivityMap.Count);
-				for (int i = 0; i < autoTile.ConnectivityMap.Count; i++)
-				{
-					MathF.CombineHashCode(ref hash, (int)autoTile.ConnectivityMap[i].Neighbours);
-					MathF.CombineHashCode(ref hash, autoTile.ConnectivityMap[i].TileIndex);
-				}
+				MathF.CombineHashCode(ref hash, autoTile.TileInput.Count);
+				MathF.CombineHashCode(ref hash, 
+					GetTileArrayCompileHash(autoTile.TileInput.Data, autoTile.TileInput.Count));
 			}
 
-			TileInput[] data = this.tileInput.Data;
-			int count = this.tileInput.Count;
-			int defaultTileHash = default(TileInput).GetHashCode();
+			{
+				MathF.CombineHashCode(ref hash, 
+					GetTileArrayCompileHash(this.tileInput.Data, this.tileInput.Count));
+			}
+
+			return hash;
+		}
+		private static int GetTileArrayCompileHash<T>(T[] data, int count) where T : struct
+		{
+			int hash = 17;
+			int defaultTileHash = default(T).GetHashCode();
 			for (int i = 0; i < count; i++)
 			{
 				int tileHash = data[i].GetHashCode();
@@ -321,7 +326,6 @@ namespace Duality.Plugins.Tilemaps
 				MathF.CombineHashCode(ref hash, i);
 				MathF.CombineHashCode(ref hash, tileHash);
 			}
-
 			return hash;
 		}
 
