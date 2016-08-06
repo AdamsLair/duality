@@ -14,6 +14,7 @@ using Duality.Editor;
 using Duality.Editor.Forms;
 using Duality.Editor.Properties;
 using Duality.Editor.UndoRedoActions;
+using Duality.Editor.Plugins.CamView.CamViewStates;
 using Duality.Editor.Plugins.CamView.Properties;
 
 
