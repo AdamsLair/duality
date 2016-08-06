@@ -13,14 +13,36 @@ namespace Duality.Plugins.Tilemaps
 	/// </summary>
 	public class TilesetAutoTileInput
 	{
-		private int baseTile = 0;
-		private Dictionary<TileConnection,int> tiles = new Dictionary<TileConnection,int>();
-		private bool generateMissingTiles = true;
+		public static readonly string DefaultName    = "AutoTile";
+		public static readonly string DefaultId      = "autoTile";
 
+		private string name                 = DefaultName;
+		private string id                   = DefaultId;
+		private int    baseTile             = 0;
+		private bool   generateMissingTiles = true;
+		private Dictionary<TileConnection,int> tiles = new Dictionary<TileConnection,int>();
+		
+		/// <summary>
+		/// [GET / SET] The human-friendly name of this AutoTile.
+		/// </summary>
+		public string Name
+		{
+			get { return this.name; }
+			set { this.name = value ?? DefaultName; }
+		}
+		/// <summary>
+		/// [GET / SET] The id of this AutoTile input, which can be used by game and editor code to identify it.
+		/// </summary>
+		public string Id
+		{
+			get { return this.id; }
+			set { this.id = value ?? DefaultId; }
+		}
 		/// <summary>
 		/// [GET / SET] The tile index inside the <see cref="Tileset"/> that is considered to be the base
-		/// tile representing the entire set of connection-dependend tiles inside this auto-tile.
+		/// tile representing the entire set of connection-dependend tiles inside this AutoTile.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public int BaseTileIndex
 		{
 			get { return this.baseTile; }
@@ -29,6 +51,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <summary>
 		/// [GET] A dictionary that maps connectivity states to tile indices.
 		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
 		public IDictionary<TileConnection,int> BorderTileIndices
 		{
 			get { return this.tiles; }

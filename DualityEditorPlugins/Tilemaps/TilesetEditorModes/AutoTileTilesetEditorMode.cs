@@ -24,11 +24,11 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			public override string Title
 			{
-				get { return "ToDo: Title"; }
+				get { return this.autoTile.Name; }
 			}
 			public override string Description
 			{
-				get { return "ToDo: Description"; }
+				get { return this.autoTile.Id; }
 			}
 			public TilesetAutoTileInput AutoTileInput
 			{
@@ -124,13 +124,21 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			base.AddLayer();
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
+			
+			// Decide upon an id for our new layer
+			string autoTileId = TilesetAutoTileInput.DefaultId + (tileset.AutoTileConfig.Count).ToString();
+			string autoTileName = TilesetAutoTileInput.DefaultName;
 
 			// Create a new AutoTile using an UndoRedo action
-			TilesetAutoTileInput newAutoTile = new TilesetAutoTileInput();
-			throw new NotImplementedException("ToDo");
-			//UndoRedoManager.Do(new AddTilesetVisualLayerAction(
-			//	tileset, 
-			//	newAutoTile));
+			TilesetAutoTileInput newAutoTile = new TilesetAutoTileInput
+			{
+				Id = autoTileId,
+				Name = autoTileName
+			};
+			UndoRedoManager.Do(new AddTilesetConfigLayerAction<TilesetAutoTileInput>(
+				tileset, 
+				TilemapsReflectionInfo.Property_Tileset_AutoTileConfig,
+				newAutoTile));
 
 			// Select the newly created AutoTile
 			AutoTileInputNode modelNode = this.treeModel
@@ -149,10 +157,10 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			if (tileset == null) return;
 			if (autoTile == null) return;
 
-			throw new NotImplementedException("ToDo");
-			//UndoRedoManager.Do(new RemoveTilesetVisualLayerAction(
-			//	tileset, 
-			//	autoTile));
+			UndoRedoManager.Do(new RemoveTilesetConfigLayerAction<TilesetAutoTileInput>(
+				tileset, 
+				TilemapsReflectionInfo.Property_Tileset_AutoTileConfig,
+				autoTile));
 		}
 		
 		protected override void OnEnter()

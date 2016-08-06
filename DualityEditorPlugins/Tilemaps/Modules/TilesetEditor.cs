@@ -322,10 +322,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (tileset != null)
 			{
 				bool affectsTileset = e.HasObject(tileset);
-				bool affectsRenderConfig = 
+				bool affectsConfigLayer = 
 					e.HasAnyObject(tileset.RenderConfig) || 
-					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
-				if (affectsTileset || affectsRenderConfig)
+					e.HasAnyObject(tileset.AutoTileConfig) || 
+					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig) || 
+					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_AutoTileConfig);
+				if (affectsTileset || affectsConfigLayer)
 				{
 					if (this.activeMode != null)
 						this.activeMode.RaiseOnTilesetModified(e);
