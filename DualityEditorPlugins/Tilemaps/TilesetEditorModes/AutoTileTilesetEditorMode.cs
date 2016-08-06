@@ -20,23 +20,12 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 	public class AutoTileTilesetEditorMode : TilesetEditorMode
 	{
 		/// <summary>
-		/// Represents a certain area within a tile in the <see cref="TilesetView"/>,
-		/// which can be hovered or clicked by the user.
+		/// Describes how the current user drawing operation will affect existing AutoTile data.
 		/// </summary>
-		private enum TileHotSpot
+		private enum AutoTileDrawMode
 		{
-			None,
-
-			TopLeft,
-			Top,
-			TopRight,
-
-			Left,
-			Right,
-
-			BottomLeft,
-			Bottom,
-			BottomRight
+			AddConnection,
+			RemoveConnection
 		}
 		private class AutoTileInputNode : TilesetEditorLayerNode
 		{
@@ -68,9 +57,22 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 
 
-		private	TreeModel   treeModel      = new TreeModel();
-		private TileHotSpot hoveredArea    = TileHotSpot.None;
-		private bool        isUserDrawing  = false;
+		private static TileConnection[] Neighbourhood = new TileConnection[]
+		{
+			TileConnection.TopLeft,
+			TileConnection.Top,
+			TileConnection.TopRight,
+			TileConnection.Left,
+			TileConnection.Right,
+			TileConnection.BottomLeft,
+			TileConnection.Bottom,
+			TileConnection.BottomRight
+		};
+
+		private	TreeModel        treeModel      = new TreeModel();
+		private TileConnection   hoveredArea    = TileConnection.None;
+		private bool             isUserDrawing  = false;
+		private AutoTileDrawMode userDrawMode   = AutoTileDrawMode.AddConnection;
 
 
 		public override string Id
@@ -232,81 +234,49 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				DualityEditorApp.Select(this, new ObjectSelection(new object[] { selectedNode.AutoTileInput }));
 			else
 				DualityEditorApp.Deselect(this, obj => obj is TilesetAutoTileInput);
-		}
-		protected override void OnApplyRevert()
-		{
-			base.OnApplyRevert();
 
-			// Deselect whichever autotile node we had selected, because
-			// Apply / Revert operations affect the Tileset as a whole
-			// in ways we can't safely predict editor-wise. It may be
-			// best to not make breakable assumptions here.
-			this.SelectLayer(null);
+			this.TilesetView.Invalidate();
 		}
 		
 		private void TilesetView_PaintTiles(object sender, TilesetViewPaintTilesEventArgs e)
 		{
-			Color colorFree = Color.White;
-			Color colorCollision = Color.FromArgb(128, 192, 255);
+			Brush brushNonConnected = new SolidBrush(Color.FromArgb(128, 0, 0, 0));
+			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			
+			// Draw a "disabled" overlay if there is nothing we can edit right now
+			if (autoTile == null)
+			{
+				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, this.TilesetView.BackColor)), e.ClipRectangle);
+				return;
+			}
 
-			TileInput[] tileInput = e.Tileset.TileInput.Data;
+			TilesetAutoTileItem[] tileInput = autoTile.TileInput.Data;
 			for (int i = 0; i < e.PaintedTiles.Count; i++)
 			{
 				TilesetViewPaintTileData paintData = e.PaintedTiles[i];
 
 				// Prepare some data we'll need for drawing the per-tile info overlay
 				bool tileHovered = this.TilesetView.HoveredTileIndex == paintData.TileIndex;
+				TilesetAutoTileItem item = (autoTile.TileInput.Count > paintData.TileIndex) ? 
+					tileInput[paintData.TileIndex] : 
+					default(TilesetAutoTileItem);
 
-				if (tileHovered)
+				// If the tile is not part of this AutoTile definition, overlay it and continue
+				if (!item.IsAutoTile)
 				{
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.TopLeft ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + 0,
-						paintData.ViewRect.Y + 0,
-						5,
-						5);
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.Top ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + paintData.ViewRect.Width / 2 - 5 / 2,
-						paintData.ViewRect.Y + 0,
-						5,
-						5);
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.TopRight ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + paintData.ViewRect.Width - 5,
-						paintData.ViewRect.Y + 0,
-						5,
-						5);
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.Left ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + 0,
-						paintData.ViewRect.Y + paintData.ViewRect.Height / 2 - 5 / 2,
-						5,
-						5);
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.Right ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + paintData.ViewRect.Width - 5,
-						paintData.ViewRect.Y + paintData.ViewRect.Height / 2 - 5 / 2,
-						5,
-						5);
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.BottomLeft ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + 0,
-						paintData.ViewRect.Y + paintData.ViewRect.Height - 5,
-						5,
-						5);
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.Bottom ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + paintData.ViewRect.Width / 2 - 5 / 2,
-						paintData.ViewRect.Y + paintData.ViewRect.Height - 5,
-						5,
-						5);
-					e.Graphics.FillEllipse(
-						this.hoveredArea == TileHotSpot.BottomRight ? Brushes.Red : Brushes.Green,
-						paintData.ViewRect.X + paintData.ViewRect.Width - 5,
-						paintData.ViewRect.Y + paintData.ViewRect.Height - 5,
-						5,
-						5);
+					e.Graphics.FillRectangle(
+						brushNonConnected, 
+						paintData.ViewRect);
+					continue;
+				}
+
+				// Display the tile's connectivity state via overlay
+				foreach (TileConnection neighbour in Neighbourhood)
+				{
+					if (!item.Neighbours.HasFlag(neighbour))
+						e.Graphics.FillRectangle(
+							brushNonConnected, 
+							GetConnectivityDrawRect(neighbour, paintData.ViewRect));
 				}
 			}
 		}
@@ -317,18 +287,18 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Point posOnTile = new Point(e.X - tilePos.X, e.Y - tilePos.Y);
 
 			// Determine the hovered tile hotspot for user interaction
-			TileHotSpot lastHoveredArea = this.hoveredArea;
+			TileConnection lastHoveredArea = this.hoveredArea;
 			{
 				float angle = MathF.Angle(tileSize.Width / 2, tileSize.Height / 2, posOnTile.X, posOnTile.Y);
 				float threshold = MathF.DegToRad(22.5f);
-				if      (MathF.CircularDist(angle, MathF.DegToRad(315.0f)) <= threshold) this.hoveredArea = TileHotSpot.TopLeft;
-				else if (MathF.CircularDist(angle, MathF.DegToRad(  0.0f)) <= threshold) this.hoveredArea = TileHotSpot.Top;
-				else if (MathF.CircularDist(angle, MathF.DegToRad( 45.0f)) <= threshold) this.hoveredArea = TileHotSpot.TopRight;
-				else if (MathF.CircularDist(angle, MathF.DegToRad(270.0f)) <= threshold) this.hoveredArea = TileHotSpot.Left;
-				else if (MathF.CircularDist(angle, MathF.DegToRad( 90.0f)) <= threshold) this.hoveredArea = TileHotSpot.Right;
-				else if (MathF.CircularDist(angle, MathF.DegToRad(225.0f)) <= threshold) this.hoveredArea = TileHotSpot.BottomLeft;
-				else if (MathF.CircularDist(angle, MathF.DegToRad(180.0f)) <= threshold) this.hoveredArea = TileHotSpot.Bottom;
-				else                                                                     this.hoveredArea = TileHotSpot.BottomRight;
+				if      (MathF.CircularDist(angle, MathF.DegToRad(315.0f)) <= threshold) this.hoveredArea = TileConnection.TopLeft;
+				else if (MathF.CircularDist(angle, MathF.DegToRad(  0.0f)) <= threshold) this.hoveredArea = TileConnection.Top;
+				else if (MathF.CircularDist(angle, MathF.DegToRad( 45.0f)) <= threshold) this.hoveredArea = TileConnection.TopRight;
+				else if (MathF.CircularDist(angle, MathF.DegToRad(270.0f)) <= threshold) this.hoveredArea = TileConnection.Left;
+				else if (MathF.CircularDist(angle, MathF.DegToRad( 90.0f)) <= threshold) this.hoveredArea = TileConnection.Right;
+				else if (MathF.CircularDist(angle, MathF.DegToRad(225.0f)) <= threshold) this.hoveredArea = TileConnection.BottomLeft;
+				else if (MathF.CircularDist(angle, MathF.DegToRad(180.0f)) <= threshold) this.hoveredArea = TileConnection.Bottom;
+				else                                                                     this.hoveredArea = TileConnection.BottomRight;
 			}
 			
 			// If the user is in the process of setting or clearing bits, perform the drawing operation
@@ -351,15 +321,17 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
-			// Conditional toggle operation on left click
+			// Draw operation on left click
 			if (e.Button == MouseButtons.Left)
 			{
 				this.isUserDrawing = true;
+				this.userDrawMode = AutoTileDrawMode.AddConnection;
 			}
 			// Clear operation on right click
 			else if (e.Button == MouseButtons.Right)
 			{
 				this.isUserDrawing = true;
+				this.userDrawMode = AutoTileDrawMode.RemoveConnection;
 			}
 
 			// Perform the drawing operation
@@ -372,16 +344,93 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
 
+			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			if (autoTile == null) return;
+
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
-			// ToDo: Perform an UndoRedoAction that will update the AutoTile layer data
+			TilesetAutoTileItem lastInput = (autoTile.TileInput.Count > tileIndex) ? 
+				autoTile.TileInput[tileIndex] : 
+				default(TilesetAutoTileItem);
+			TilesetAutoTileItem newInput = lastInput;
+			if (this.userDrawMode == AutoTileDrawMode.AddConnection)
+			{
+				newInput.Neighbours |= this.hoveredArea;
+				newInput.IsAutoTile = true;
+			}
+			else if (this.userDrawMode == AutoTileDrawMode.RemoveConnection)
+			{ 
+				newInput.Neighbours &= ~this.hoveredArea;
+				newInput.IsAutoTile = (newInput.Neighbours != TileConnection.None);
+			}
 
-			//TileCollisionShape newCollision = input.Collision[this.editLayerIndex];
-			//if (lastCollision != newCollision)
-			//{
-			//	UndoRedoManager.Do(new EditTilesetTileInputAction(tileset, tileIndex, input));
-			//}
+			if (!object.Equals(lastInput, newInput))
+			{
+				UndoRedoManager.Do(new EditTilesetAutoTileItemAction(
+					tileset, 
+					autoTile, 
+					tileIndex, 
+					newInput));
+			}
+		}
+
+		private static Rectangle GetConnectivityDrawRect(TileConnection connectivity, Rectangle baseRect)
+		{
+			Size borderSize = new Size(
+				baseRect.Width / 4,
+				baseRect.Height / 4);
+			switch (connectivity)
+			{
+				default:
+				case TileConnection.All: return 
+					baseRect;
+				case TileConnection.TopLeft: return new Rectangle(
+					baseRect.X,
+					baseRect.Y,
+					borderSize.Width,
+					borderSize.Height);
+				case TileConnection.Top: return new Rectangle(
+					baseRect.X + borderSize.Width,
+					baseRect.Y,
+					baseRect.Width - borderSize.Width * 2,
+					borderSize.Height);
+				case TileConnection.TopRight: return new Rectangle(
+					baseRect.X + baseRect.Width - borderSize.Width,
+					baseRect.Y,
+					borderSize.Width,
+					borderSize.Height);
+				case TileConnection.Left: return new Rectangle(
+					baseRect.X,
+					baseRect.Y + borderSize.Height,
+					borderSize.Width,
+					baseRect.Height - borderSize.Height * 2);
+				case TileConnection.None: return new Rectangle(
+					baseRect.X + borderSize.Width,
+					baseRect.Y + borderSize.Height,
+					baseRect.Width - borderSize.Width * 2,
+					baseRect.Height - borderSize.Height * 2);
+				case TileConnection.Right: return new Rectangle(
+					baseRect.X + baseRect.Width - borderSize.Width,
+					baseRect.Y + borderSize.Height,
+					borderSize.Width,
+					baseRect.Height - borderSize.Height * 2);
+				case TileConnection.BottomLeft: return new Rectangle(
+					baseRect.X,
+					baseRect.Y + baseRect.Height - borderSize.Height,
+					borderSize.Width,
+					borderSize.Height);
+				case TileConnection.Bottom: return new Rectangle(
+					baseRect.X + borderSize.Width,
+					baseRect.Y + baseRect.Height - borderSize.Height,
+					baseRect.Width - borderSize.Width * 2,
+					borderSize.Height);
+				case TileConnection.BottomRight: return new Rectangle(
+					baseRect.X + baseRect.Width - borderSize.Width,
+					baseRect.Y + baseRect.Height - borderSize.Height,
+					borderSize.Width,
+					borderSize.Height);
+			}
 		}
 	}
 }

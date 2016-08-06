@@ -246,15 +246,5 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				this.TilesetView.DisplayedConfigIndex = layerIndex;
 			}
 		}
-		protected override void OnApplyRevert()
-		{
-			base.OnApplyRevert();
-
-			// Deselect whichever layer node we had selected, because
-			// Apply / Revert operations affect the Tileset as a whole
-			// in ways we can't safely predict editor-wise. It may be
-			// best to not make breakable assumptions here.
-			this.SelectLayer(null);
-		}
 	}
 }

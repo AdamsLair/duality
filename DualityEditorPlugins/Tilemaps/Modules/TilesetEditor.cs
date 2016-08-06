@@ -39,6 +39,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private Tileset             tilesetBackup  = null;
 		private bool                applyRequired  = false;
 
+
 		/// <summary>
 		/// [GET] The currently selected <see cref="Tileset"/> in this editor. This property
 		/// is dependent on and automatically set by editor-wide selection events.
@@ -50,6 +51,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 		internal TilesetView TilesetView
 		{
 			get { return this.tilesetView; }
+		}
+		private int SelectedLayerIndex
+		{
+			get { return this.layerView.SelectedNode == null ? -1 : this.layerView.SelectedNode.Index; }
 		}
 
 
@@ -122,6 +127,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 				.Children
 				.FirstOrDefault(v => v.Tag == layerViewTag);
 		}
+		private void SetSelectedLayer(int layerIndex)
+		{
+			if (layerIndex != -1)
+			{
+				layerIndex = MathF.Clamp(layerIndex, 0, this.layerView.Root.Children.Count - 1);
+				this.layerView.SelectedNode = this.layerView.Root.Children[layerIndex];
+			}
+			else
+			{
+				this.layerView.SelectedNode = null;
+			}
+		}
 		private void ApplyGlobalTilesetSelection(SelectionChangeReason changeReason)
 		{
 			Tileset tileset = TilemapsEditorSelectionParser.QuerySelectedTileset().Res;
@@ -161,19 +178,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void ApplyTilesetChanges()
 		{
+			int selectedLayerIndex = this.SelectedLayerIndex;
+
 			UndoRedoManager.Do(new ApplyTilesetChangesAction(
 				this.SelectedTileset.Res, 
 				this.tilesetBackup));
 
 			this.CleanupAfterApplyRevert();
+			this.SetSelectedLayer(selectedLayerIndex);
 		}
 		private void ResetTilesetChanges()
 		{
+			int selectedLayerIndex = this.SelectedLayerIndex;
+
 			UndoRedoManager.Do(new RevertTilesetChangesAction(
 				this.SelectedTileset.Res, 
 				this.tilesetBackup));
 
 			this.CleanupAfterApplyRevert();
+			this.SetSelectedLayer(selectedLayerIndex);
 		}
 		private void CleanupAfterApplyRevert()
 		{
