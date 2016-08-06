@@ -348,7 +348,12 @@ namespace Duality.Editor
 			Application.Idle -= Application_Idle;
 			Resource.ResourceSaved -= Resource_ResourceSaved;
 			Resource.ResourceSaving -= Resource_ResourceSaving;
+			Resource.ResourceDisposing -= Resource_ResourceDisposing;
 			FileEventManager.PluginChanged -= FileEventManager_PluginChanged;
+			editorObjects.GameObjectAdded -= editorObjects_Registered;
+			editorObjects.GameObjectRemoved -= editorObjects_Unregistered;
+			editorObjects.ComponentAdded -= editorObjects_ComponentAdded;
+			editorObjects.ComponentRemoving -= editorObjects_ComponentRemoved;
 
 			// Terminate editor actions
 			editorActions.Clear();
