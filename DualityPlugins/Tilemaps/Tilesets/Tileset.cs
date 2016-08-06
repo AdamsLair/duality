@@ -297,7 +297,6 @@ namespace Duality.Plugins.Tilemaps
 			{
 				MathF.CombineHashCode(ref hash, autoTile.BaseTileIndex);
 				MathF.CombineHashCode(ref hash, autoTile.GenerateMissingTiles ? 1 : 0);
-				MathF.CombineHashCode(ref hash, autoTile.TileInput.Count);
 				MathF.CombineHashCode(ref hash, 
 					GetTileArrayCompileHash(autoTile.TileInput.Data, autoTile.TileInput.Count));
 			}

@@ -18,7 +18,7 @@ namespace Duality.Plugins.Tilemaps
 
 		private string name                 = DefaultName;
 		private string id                   = DefaultId;
-		private int    baseTile             = 0;
+		private int    baseTile             = -1;
 		private bool   generateMissingTiles = true;
 		private RawList<TilesetAutoTileItem> tiles = new RawList<TilesetAutoTileItem>();
 		

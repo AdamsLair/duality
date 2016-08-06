@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Aga.Controls.Tree;
 
 using Duality.Plugins.Tilemaps;
+using Duality.Editor.UndoRedoActions;
 using Duality.Editor.Plugins.Tilemaps;
 using Duality.Editor.Plugins.Tilemaps.Properties;
 using Duality.Editor.Plugins.Tilemaps.UndoRedoActions;
@@ -72,6 +73,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private	TreeModel        treeModel      = new TreeModel();
 		private TileConnection   hoveredArea    = TileConnection.None;
 		private bool             isUserDrawing  = false;
+		private bool             isBaseTileDraw = false;
 		private AutoTileDrawMode userDrawMode   = AutoTileDrawMode.AddConnection;
 
 
@@ -240,16 +242,19 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		
 		private void TilesetView_PaintTiles(object sender, TilesetViewPaintTilesEventArgs e)
 		{
-			Brush brushNonConnected = new SolidBrush(Color.FromArgb(128, 0, 0, 0));
+			Color hoverHighlightColor = Color.FromArgb(255, 255, 255);
+			Color nonConnectedColor = Color.FromArgb(128, 0, 0, 0);
+			Brush brushNonConnected = new SolidBrush(nonConnectedColor);
 			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
 			
-			// Draw a "disabled" overlay if there is nothing we can edit right now
+			// Early-out if there is nothing we can edit right now
 			if (autoTile == null)
-			{
-				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(128, this.TilesetView.BackColor)), e.ClipRectangle);
 				return;
-			}
 
+			TilesetViewPaintTileData hoveredData = default(TilesetViewPaintTileData);
+			TilesetAutoTileItem hoveredItem = default(TilesetAutoTileItem);
+			Region connectedRegion = new Region();
+			connectedRegion.MakeEmpty();
 			TilesetAutoTileItem[] tileInput = autoTile.TileInput.Data;
 			for (int i = 0; i < e.PaintedTiles.Count; i++)
 			{
@@ -257,27 +262,71 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 				// Prepare some data we'll need for drawing the per-tile info overlay
 				bool tileHovered = this.TilesetView.HoveredTileIndex == paintData.TileIndex;
+				bool isBaseTile = autoTile.BaseTileIndex == paintData.TileIndex;
 				TilesetAutoTileItem item = (autoTile.TileInput.Count > paintData.TileIndex) ? 
 					tileInput[paintData.TileIndex] : 
 					default(TilesetAutoTileItem);
 
-				// If the tile is not part of this AutoTile definition, overlay it and continue
-				if (!item.IsAutoTile)
+				// Remember hovered item data for later (post-overlay)
+				if (tileHovered)
 				{
-					e.Graphics.FillRectangle(
-						brushNonConnected, 
-						paintData.ViewRect);
-					continue;
+					hoveredData = paintData;
+					hoveredItem = item;
 				}
 
-				// Display the tile's connectivity state via overlay
-				foreach (TileConnection neighbour in Neighbourhood)
+				// Display the tile's connectivity state by saving connected edges from the overlay
+				if (item.IsAutoTile)
 				{
-					if (!item.Neighbours.HasFlag(neighbour))
-						e.Graphics.FillRectangle(
-							brushNonConnected, 
-							GetConnectivityDrawRect(neighbour, paintData.ViewRect));
+					Rectangle centerRect = GetConnectivityDrawRect(TileConnection.None, paintData.ViewRect);
+					connectedRegion.Union(centerRect);
+					foreach (TileConnection neighbour in Neighbourhood)
+					{
+						if (item.Neighbours.HasFlag(neighbour))
+						{
+							Rectangle borderRect = GetConnectivityDrawRect(neighbour, paintData.ViewRect);
+							connectedRegion.Union(borderRect);
+						}
+					}
 				}
+
+				// Highlight the base tile
+				if (isBaseTile)
+				{
+					Rectangle rect = paintData.ViewRect;
+					rect.Width -= 1;
+					rect.Height -= 1;
+					e.Graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255, 192, 128)), rect);
+					rect.Inflate(-1, -1);
+					e.Graphics.DrawRectangle(new Pen(Color.FromArgb(128, 255, 192, 128)), rect);
+					rect.Inflate(-1, -1);
+					e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, 255, 192, 128)), rect);
+				}
+			}
+
+			// Fill all non-connected regions with the overlay brush
+			Region surroundingRegion = new Region();
+			surroundingRegion.MakeInfinite();
+			surroundingRegion.Exclude(connectedRegion);
+			e.Graphics.IntersectClip(surroundingRegion);
+			e.Graphics.FillRectangle(brushNonConnected, this.TilesetView.ClientRectangle);
+			e.Graphics.ResetClip();
+
+			// Draw a hover indicator
+			if (!hoveredData.ViewRect.IsEmpty)
+			{
+				Rectangle rect;
+				if (autoTile.BaseTileIndex != -1 && autoTile.BaseTileIndex != hoveredData.TileIndex)
+					rect = GetConnectivityDrawRect(this.hoveredArea, hoveredData.ViewRect);
+				else
+					rect = hoveredData.ViewRect;
+
+				rect.Width -= 1;
+				rect.Height -= 1;
+				e.Graphics.DrawRectangle(Pens.Black, rect);
+				rect.Inflate(-1, -1);
+				e.Graphics.DrawRectangle(new Pen(hoverHighlightColor), rect);
+				rect.Inflate(-1, -1);
+				e.Graphics.DrawRectangle(Pens.Black, rect);
 			}
 		}
 		private void TilesetView_MouseMove(object sender, MouseEventArgs e)
@@ -285,9 +334,18 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			Size tileSize = this.TilesetView.DisplayedTileSize;
 			Point tilePos = this.TilesetView.GetTileIndexLocation(this.TilesetView.HoveredTileIndex);
 			Point posOnTile = new Point(e.X - tilePos.X, e.Y - tilePos.Y);
+			Size centerSize = new Size(tileSize.Width / 2, tileSize.Height / 2);
 
 			// Determine the hovered tile hotspot for user interaction
 			TileConnection lastHoveredArea = this.hoveredArea;
+			if (posOnTile.X > (tileSize.Width - centerSize.Width) / 2 &&
+				posOnTile.Y > (tileSize.Height - centerSize.Height) / 2 &&
+				posOnTile.X < (tileSize.Width + centerSize.Width) / 2 &&
+				posOnTile.Y < (tileSize.Height + centerSize.Height) / 2)
+			{
+				this.hoveredArea = TileConnection.None;
+			}
+			else
 			{
 				float angle = MathF.Angle(tileSize.Width / 2, tileSize.Height / 2, posOnTile.X, posOnTile.Y);
 				float threshold = MathF.DegToRad(22.5f);
@@ -300,7 +358,16 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				else if (MathF.CircularDist(angle, MathF.DegToRad(180.0f)) <= threshold) this.hoveredArea = TileConnection.Bottom;
 				else                                                                     this.hoveredArea = TileConnection.BottomRight;
 			}
-			
+
+			// Update action state
+			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			if (autoTile != null)
+			{
+				this.isBaseTileDraw = 
+					autoTile.BaseTileIndex == -1 || 
+					autoTile.BaseTileIndex == this.TilesetView.HoveredTileIndex;
+			}
+
 			// If the user is in the process of setting or clearing bits, perform the drawing operation
 			if (this.isUserDrawing)
 				this.PerformUserDrawAction();
@@ -317,6 +384,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			Tileset tileset = this.SelectedTileset.Res;
 			if (tileset == null) return;
+			
+			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			if (autoTile == null) return;
 
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
@@ -349,22 +419,59 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
-
+			
+			// Determine data before the operation, and set up data for afterwards
+			bool lastIsBaseTile = autoTile.BaseTileIndex == tileIndex;
+			bool newIsBaseTile = lastIsBaseTile;
 			TilesetAutoTileItem lastInput = (autoTile.TileInput.Count > tileIndex) ? 
 				autoTile.TileInput[tileIndex] : 
 				default(TilesetAutoTileItem);
 			TilesetAutoTileItem newInput = lastInput;
+
+			// Determine how data is modified due to our user operation
 			if (this.userDrawMode == AutoTileDrawMode.AddConnection)
 			{
-				newInput.Neighbours |= this.hoveredArea;
-				newInput.IsAutoTile = true;
+				if (this.isBaseTileDraw)
+				{
+					newInput.Neighbours = TileConnection.All;
+					newInput.IsAutoTile = true;
+					newIsBaseTile = true;
+				}
+				else
+				{
+					newInput.Neighbours |= this.hoveredArea;
+					newInput.IsAutoTile = true;
+				}
 			}
 			else if (this.userDrawMode == AutoTileDrawMode.RemoveConnection)
-			{ 
-				newInput.Neighbours &= ~this.hoveredArea;
-				newInput.IsAutoTile = (newInput.Neighbours != TileConnection.None);
+			{
+				if (this.isBaseTileDraw)
+				{
+					newInput.Neighbours = TileConnection.None;
+					newInput.IsAutoTile = false;
+					newIsBaseTile = false;
+				}
+				else if (this.hoveredArea == TileConnection.None)
+				{
+					newInput.Neighbours = TileConnection.None;
+					newInput.IsAutoTile = false;
+				}
+				else
+				{
+					newInput.Neighbours &= ~this.hoveredArea;
+					newInput.IsAutoTile = (newInput.Neighbours != TileConnection.None);
+				}
 			}
-
+			
+			// Apply the new, modified data to the actual data using an UndoRedo operation
+			if (newIsBaseTile != lastIsBaseTile)
+			{
+				UndoRedoManager.Do(new EditPropertyAction(
+					null,
+					TilemapsReflectionInfo.Property_TilesetAutoTileInput_BaseTile,
+					new object[] { autoTile }, 
+					new object[] { newIsBaseTile ? tileIndex : -1 }));
+			}
 			if (!object.Equals(lastInput, newInput))
 			{
 				UndoRedoManager.Do(new EditTilesetAutoTileItemAction(

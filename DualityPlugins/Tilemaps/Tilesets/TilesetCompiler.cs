@@ -52,34 +52,47 @@ namespace Duality.Plugins.Tilemaps
 			output.RenderData.Clear();
 			output.AutoTileData.Clear();
 
+			// Determine how many source tiles we have
+			int sourceTileCount = int.MaxValue;
+			for (int renderInputIndex = 0; renderInputIndex < input.RenderConfig.Count; renderInputIndex++)
+			{
+				TilesetRenderInput renderInput = input.RenderConfig[renderInputIndex] ?? DefaultRenderInput;
+				PixelData sourceLayerData = (renderInput.SourceData.Res ?? Pixmap.Checkerboard.Res).MainLayer;
+				LayerGeometry layerGeometry = this.CalculateLayerGeometry(renderInput, sourceLayerData);
+				sourceTileCount = Math.Min(sourceTileCount, layerGeometry.SourceTileCount);
+			}
+			if (input.RenderConfig.Count == 0) sourceTileCount = 0;
+
 			// Transform AutoTile data
 			for (int autoTileIndex = 0; autoTileIndex < input.AutoTileConfig.Count; autoTileIndex++)
 			{
 				TilesetAutoTileInput autoTileInput = input.AutoTileConfig[autoTileIndex];
 				int[] tileMapping = new int[(int)TileConnection.All + 1];
+				int baseTile = MathF.Clamp(autoTileInput.BaseTileIndex, 0, sourceTileCount - 1);
 				
 				// Initialize the tile mapping for all potential connection states with the base tile
 				for (int conIndex = 0; conIndex < tileMapping.Length; conIndex++)
 				{
-					tileMapping[conIndex] = autoTileInput.BaseTileIndex;
+					tileMapping[conIndex] = baseTile;
 				}
 
 				// Use the directly applicable tile mapping as-is
 				for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
 				{
 					TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
+					if (!tileInput.IsAutoTile) continue;
+
 					tileMapping[(int)tileInput.Neighbours] = tileIndex;
 				}
 
 				// Add the complete AutoTile info / mapping to the result data
 				TilesetAutoTileInfo autoTileInfo = new TilesetAutoTileInfo(
-					autoTileInput.BaseTileIndex, 
+					baseTile, 
 					tileMapping);
 				output.AutoTileData.Add(autoTileInfo);
 			}
 
 			// Generate output pixel data
-			int minSourceTileCount = int.MaxValue;
 			for (int renderInputIndex = 0; renderInputIndex < input.RenderConfig.Count; renderInputIndex++)
 			{
 				TilesetRenderInput renderInput = input.RenderConfig[renderInputIndex] ?? DefaultRenderInput;
@@ -87,7 +100,6 @@ namespace Duality.Plugins.Tilemaps
 
 				// Determine overal geometry values for this layer, such as tile bounds and texture sizes
 				LayerGeometry layerGeometry = this.CalculateLayerGeometry(renderInput, sourceLayerData);
-				minSourceTileCount = Math.Min(minSourceTileCount, layerGeometry.SourceTileCount);
 
 				// Generate pixel data and atlas values for this layer's texture
 				LayerPixelData targetLayerData = this.GenerateLayerPixelData(
@@ -114,11 +126,11 @@ namespace Duality.Plugins.Tilemaps
 			this.TransformTileData(input.TileInput, output.TileData, output.RenderData);
 
 			// Apply global tileset stats
-			output.TileCount = (input.RenderConfig.Count > 0) ? minSourceTileCount : 0;
+			output.TileCount = sourceTileCount;
 
 			return output;
 		}
-
+		
 		/// <summary>
 		/// Determines the overall geometry of a single <see cref="Tileset"/> visual layer. This involves
 		/// tile boundaries in source and target data, as well as texture sizes and similar.
