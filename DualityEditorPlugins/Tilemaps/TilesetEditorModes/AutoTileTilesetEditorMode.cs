@@ -296,8 +296,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				{
 					Rectangle centerRect = GetConnectivityRegionRect(TileConnection.None, paintData.ViewRect);
 					connectedRegion.AddRectangle(centerRect);
-					AddConnectivityRegion(connectedRegion, item.Neighbours, paintData.ViewRect);
-					AddConnectivityOutlines(connectedOutlines, item.Neighbours, paintData.ViewRect);
+					DrawConnectivityRegion(connectedRegion, item.Neighbours, paintData.ViewRect);
+					DrawConnectivityOutlines(connectedOutlines, item.Neighbours, paintData.ViewRect);
 				}
 				else if (item.ConnectsToAutoTile)
 				{
@@ -521,6 +521,21 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 					newInput));
 			}
 		}
+		
+		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			Point globalPos = this.TilesetEditor.PointToScreen(localPos);
+			Point viewPos = this.TilesetView.PointToClient(globalPos);
+
+			if (this.TilesetView.ClientRectangle.Contains(viewPos))
+			{
+				return HelpInfo.FromText(
+					TilemapsRes.TilesetEditorMode_AutoTile_Name, 
+					TilemapsRes.TilesetEditorMode_AutoTile_ViewDesc);
+			}
+
+			return null;
+		}
 
 		private static void DrawTileHighlight(Graphics graphics, Rectangle rect, Color color)
 		{
@@ -542,7 +557,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			rect.Inflate(-1, -1);
 			graphics.DrawRectangle(new Pen(Color.FromArgb(alpha, Color.Black)), rect);
 		}
-		private static void AddConnectivityOutlines(GraphicsPath path, TileConnection connectivity, Rectangle baseRect)
+		private static void DrawConnectivityOutlines(GraphicsPath path, TileConnection connectivity, Rectangle baseRect)
 		{
 			if (connectivity == TileConnection.All) return;
 
@@ -653,7 +668,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			}
 
 		}
-		private static void AddConnectivityRegion(GraphicsPath path, TileConnection connectivity, Rectangle baseRect)
+		private static void DrawConnectivityRegion(GraphicsPath path, TileConnection connectivity, Rectangle baseRect)
 		{
 			if (connectivity == TileConnection.None) return;
 
@@ -831,21 +846,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 					borderSize.Width,
 					borderSize.Height);
 			}
-		}
-
-		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
-		{
-			Point globalPos = this.TilesetEditor.PointToScreen(localPos);
-			Point viewPos = this.TilesetView.PointToClient(globalPos);
-
-			if (this.TilesetView.ClientRectangle.Contains(viewPos))
-			{
-				return HelpInfo.FromText(
-					TilemapsRes.TilesetEditorMode_AutoTile_Name, 
-					TilemapsRes.TilesetEditorMode_AutoTile_ViewDesc);
-			}
-
-			return null;
 		}
 	}
 }
