@@ -12,6 +12,11 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		public bool IsAutoTile;
 		/// <summary>
+		/// Whether or not an AutoTile of this type will connect to this tile.
+		/// This will be assumed true by all tiles where <see cref="IsAutoTile"/> is true.
+		/// </summary>
+		public bool ConnectsToAutoTile;
+		/// <summary>
 		/// Describes which neighbourhood tiles the tile needs to connect to in order to
 		/// match this AutoTile mapping.
 		/// </summary>
@@ -21,6 +26,7 @@ namespace Duality.Plugins.Tilemaps
 		{
 			int hash = 17;
 			MathF.CombineHashCode(ref hash, this.IsAutoTile ? 1 : 0);
+			MathF.CombineHashCode(ref hash, this.ConnectsToAutoTile ? 1 : 0);
 			MathF.CombineHashCode(ref hash, (int)this.Neighbours);
 			return hash;
 		}

@@ -67,28 +67,36 @@ namespace Duality.Plugins.Tilemaps
 			for (int autoTileIndex = 0; autoTileIndex < input.AutoTileConfig.Count; autoTileIndex++)
 			{
 				TilesetAutoTileInput autoTileInput = input.AutoTileConfig[autoTileIndex];
-				int[] tileMapping = new int[(int)TileConnection.All + 1];
+				int[] stateToTileMap = new int[(int)TileConnection.All + 1];
+				bool[] connectionMap = new bool[sourceTileCount];
 				int baseTile = MathF.Clamp(autoTileInput.BaseTileIndex, 0, sourceTileCount - 1);
 				
 				// Initialize the tile mapping for all potential connection states with the base tile
-				for (int conIndex = 0; conIndex < tileMapping.Length; conIndex++)
+				for (int conIndex = 0; conIndex < stateToTileMap.Length; conIndex++)
 				{
-					tileMapping[conIndex] = baseTile;
+					stateToTileMap[conIndex] = baseTile;
 				}
 
 				// Use the directly applicable tile mapping as-is
 				for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
 				{
 					TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
-					if (!tileInput.IsAutoTile) continue;
-
-					tileMapping[(int)tileInput.Neighbours] = tileIndex;
+					if (tileInput.IsAutoTile)
+					{ 
+						stateToTileMap[(int)tileInput.Neighbours] = tileIndex;
+						connectionMap[tileIndex] = true;
+					}
+					else if (tileInput.ConnectsToAutoTile)
+					{
+						connectionMap[tileIndex] = true;
+					}
 				}
 
 				// Add the complete AutoTile info / mapping to the result data
 				TilesetAutoTileInfo autoTileInfo = new TilesetAutoTileInfo(
 					baseTile, 
-					tileMapping);
+					stateToTileMap,
+					connectionMap);
 				output.AutoTileData.Add(autoTileInfo);
 			}
 

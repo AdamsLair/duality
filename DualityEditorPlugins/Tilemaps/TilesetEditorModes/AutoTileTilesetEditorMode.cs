@@ -26,8 +26,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		/// </summary>
 		private enum AutoTileDrawMode
 		{
-			AddConnection,
-			RemoveConnection
+			Add,
+			Remove,
 		}
 		private class AutoTileInputNode : TilesetEditorLayerNode
 		{
@@ -75,7 +75,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		private TileConnection   hoveredArea    = TileConnection.None;
 		private bool             isUserDrawing  = false;
 		private bool             isBaseTileDraw = false;
-		private AutoTileDrawMode userDrawMode   = AutoTileDrawMode.AddConnection;
+		private bool             isExternalDraw = false;
+		private AutoTileDrawMode userDrawMode   = AutoTileDrawMode.Add;
 
 
 		public override string Id
@@ -197,6 +198,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			this.TilesetView.MouseMove += this.TilesetView_MouseMove;
 			this.TilesetView.MouseDown += this.TilesetView_MouseDown;
 			this.TilesetView.MouseUp += this.TilesetView_MouseUp;
+			this.TilesetView.KeyDown += this.TilesetView_KeyDown;
+			this.TilesetView.KeyUp += this.TilesetView_KeyUp;
 		}
 		protected override void OnLeave()
 		{
@@ -205,6 +208,8 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			this.TilesetView.MouseMove -= this.TilesetView_MouseMove;
 			this.TilesetView.MouseDown -= this.TilesetView_MouseDown;
 			this.TilesetView.MouseUp -= this.TilesetView_MouseUp;
+			this.TilesetView.KeyDown -= this.TilesetView_KeyDown;
+			this.TilesetView.KeyUp -= this.TilesetView_KeyUp;
 		}
 		protected override void OnTilesetSelectionChanged(TilesetSelectionChangedEventArgs args)
 		{
@@ -243,7 +248,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		
 		private void TilesetView_PaintTiles(object sender, TilesetViewPaintTilesEventArgs e)
 		{
-			Color hoverHighlightColor = Color.FromArgb(255, 255, 255);
+			Color highlightColor = Color.FromArgb(255, 255, 255);
+			Color baseTileDrawColor = Color.FromArgb(255, 192, 128);
+			Color externalDrawColor = Color.FromArgb(128, 192, 255);
 			Color nonConnectedColor = Color.FromArgb(128, 0, 0, 0);
 			Brush brushNonConnected = new SolidBrush(nonConnectedColor);
 			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
@@ -251,6 +258,12 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			// Early-out if there is nothing we can edit right now
 			if (autoTile == null)
 				return;
+
+			// If we're in a special draw mode, switch highlight colors to indicate this.
+			if (this.isExternalDraw)
+				highlightColor = externalDrawColor;
+			else if (this.isBaseTileDraw)
+				highlightColor = baseTileDrawColor;
 
 			// Set up shared working data
 			TilesetAutoTileItem[] tileInput = autoTile.TileInput.Data;
@@ -294,19 +307,16 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 					}
 					AddConnectivityOutlines(connectedOutlines, item.Neighbours, paintData.ViewRect);
 				}
-
-				// Highlight the base tile
-				if (isBaseTile)
+				else if (item.ConnectsToAutoTile)
 				{
-					Rectangle rect = paintData.ViewRect;
-					rect.Width -= 1;
-					rect.Height -= 1;
-					e.Graphics.DrawRectangle(new Pen(Color.FromArgb(255, 255, 192, 128)), rect);
-					rect.Inflate(-1, -1);
-					e.Graphics.DrawRectangle(new Pen(Color.FromArgb(128, 255, 192, 128)), rect);
-					rect.Inflate(-1, -1);
-					e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, 255, 192, 128)), rect);
+					connectedRegion.Union(paintData.ViewRect);
 				}
+
+				// Highlight base tile and external connecting tiles
+				if (isBaseTile)
+					DrawTileHighlight(e.Graphics, paintData.ViewRect, baseTileDrawColor);
+				else if (!item.IsAutoTile && item.ConnectsToAutoTile)
+					DrawTileHighlight(e.Graphics, paintData.ViewRect, externalDrawColor);
 			}
 
 			// Fill all non-connected regions with the overlay brush
@@ -318,38 +328,20 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			e.Graphics.ResetClip();
 
 			// Draw connected region outlines
-			e.Graphics.DrawPath(new Pen(hoverHighlightColor), connectedOutlines);
+			e.Graphics.DrawPath(Pens.White, connectedOutlines);
 			
 			// Draw a tile-based hover indicator
-			if (!hoveredData.ViewRect.IsEmpty && autoTile.BaseTileIndex != -1 && autoTile.BaseTileIndex != hoveredData.TileIndex)
-			{
-				Rectangle rect = hoveredData.ViewRect;
-
-				rect.Width -= 1;
-				rect.Height -= 1;
-				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, Color.Black)), rect);
-				rect.Inflate(-1, -1);
-				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, hoverHighlightColor)), rect);
-				rect.Inflate(-1, -1);
-				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, Color.Black)), rect);
-			}
+			if (!hoveredData.ViewRect.IsEmpty && !this.isBaseTileDraw && !this.isExternalDraw)
+				DrawHoverIndicator(e.Graphics, hoveredData.ViewRect, 64, highlightColor);
 
 			// Draw a hover indicator for a specific hovered region
 			if (!hoveredData.ViewRect.IsEmpty)
 			{
-				Rectangle rect;
-				if (autoTile.BaseTileIndex != -1 && autoTile.BaseTileIndex != hoveredData.TileIndex)
-					rect = GetConnectivityDrawRect(this.hoveredArea, hoveredData.ViewRect);
+				if (!this.isBaseTileDraw && !this.isExternalDraw)
+					DrawHoverIndicator(e.Graphics, GetConnectivityDrawRect(this.hoveredArea, hoveredData.ViewRect), 255, highlightColor);
 				else
-					rect = hoveredData.ViewRect;
+					DrawHoverIndicator(e.Graphics, hoveredData.ViewRect, 255, highlightColor);
 
-				rect.Width -= 1;
-				rect.Height -= 1;
-				e.Graphics.DrawRectangle(Pens.Black, rect);
-				rect.Inflate(-1, -1);
-				e.Graphics.DrawRectangle(new Pen(hoverHighlightColor), rect);
-				rect.Inflate(-1, -1);
-				e.Graphics.DrawRectangle(Pens.Black, rect);
 			}
 		}
 		private void TilesetView_MouseMove(object sender, MouseEventArgs e)
@@ -390,6 +382,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 					autoTile.BaseTileIndex == -1 || 
 					autoTile.BaseTileIndex == this.TilesetView.HoveredTileIndex;
 			}
+			this.UpdateExternalDrawMode();
 
 			// If the user is in the process of setting or clearing bits, perform the drawing operation
 			if (this.isUserDrawing)
@@ -414,24 +407,51 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			int tileIndex = this.TilesetView.HoveredTileIndex;
 			if (tileIndex < 0 || tileIndex > tileset.TileCount) return;
 
+			// Update modifier key based drawing state
+			this.UpdateExternalDrawMode();
+
 			// Draw operation on left click
 			if (e.Button == MouseButtons.Left)
 			{
 				this.isUserDrawing = true;
-				this.userDrawMode = AutoTileDrawMode.AddConnection;
+				this.userDrawMode = AutoTileDrawMode.Add;
 			}
 			// Clear operation on right click
 			else if (e.Button == MouseButtons.Right)
 			{
 				this.isUserDrawing = true;
-				this.userDrawMode = AutoTileDrawMode.RemoveConnection;
+				this.userDrawMode = AutoTileDrawMode.Remove;
 			}
 
 			// Perform the drawing operation
 			this.PerformUserDrawAction();
 			this.TilesetView.InvalidateTile(tileIndex, 0);
 		}
+		private void TilesetView_KeyDown(object sender, KeyEventArgs e)
+		{
+			this.UpdateExternalDrawMode();
+		}
+		private void TilesetView_KeyUp(object sender, KeyEventArgs e)
+		{
+			this.UpdateExternalDrawMode();
+		}
 
+		private void UpdateExternalDrawMode()
+		{
+			TilesetAutoTileInput autoTile = this.SelectedAutoTile;
+			if (autoTile == null) return;
+
+			bool lastExternalDraw = this.isExternalDraw;
+			int hoveredTile = this.TilesetView.HoveredTileIndex;
+			TilesetAutoTileItem item = (hoveredTile >= 0 && hoveredTile < autoTile.TileInput.Count) ? 
+				autoTile.TileInput[hoveredTile] : 
+				default(TilesetAutoTileItem);
+
+			this.isExternalDraw = Control.ModifierKeys.HasFlag(Keys.Shift) || item.ConnectsToAutoTile;
+
+			if (lastExternalDraw != this.isExternalDraw)
+				this.TilesetView.InvalidateTile(this.TilesetView.HoveredTileIndex, 0);
+		}
 		private void PerformUserDrawAction()
 		{
 			Tileset tileset = this.SelectedTileset.Res;
@@ -452,32 +472,37 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			TilesetAutoTileItem newInput = lastInput;
 
 			// Determine how data is modified due to our user operation
-			if (this.userDrawMode == AutoTileDrawMode.AddConnection)
+			if (this.userDrawMode == AutoTileDrawMode.Add)
 			{
-				if (this.isBaseTileDraw)
+				if (this.isExternalDraw)
+				{
+					newInput.Neighbours = TileConnection.None;
+					newInput.ConnectsToAutoTile = true;
+					newInput.IsAutoTile = false;
+					newIsBaseTile = false;
+				}
+				else if (this.isBaseTileDraw)
 				{
 					newInput.Neighbours = TileConnection.All;
 					newInput.IsAutoTile = true;
+					newInput.ConnectsToAutoTile = false;
 					newIsBaseTile = true;
 				}
 				else
 				{
 					newInput.Neighbours |= this.hoveredArea;
 					newInput.IsAutoTile = true;
+					newInput.ConnectsToAutoTile = false;
 				}
 			}
-			else if (this.userDrawMode == AutoTileDrawMode.RemoveConnection)
+			else if (this.userDrawMode == AutoTileDrawMode.Remove)
 			{
-				if (this.isBaseTileDraw)
+				if (this.isExternalDraw || this.isBaseTileDraw || this.hoveredArea == TileConnection.None)
 				{
 					newInput.Neighbours = TileConnection.None;
+					newInput.ConnectsToAutoTile = false;
 					newInput.IsAutoTile = false;
 					newIsBaseTile = false;
-				}
-				else if (this.hoveredArea == TileConnection.None)
-				{
-					newInput.Neighbours = TileConnection.None;
-					newInput.IsAutoTile = false;
 				}
 				else
 				{
@@ -505,6 +530,26 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			}
 		}
 
+		private static void DrawTileHighlight(Graphics graphics, Rectangle rect, Color color)
+		{
+			rect.Width -= 1;
+			rect.Height -= 1;
+			graphics.DrawRectangle(new Pen(Color.FromArgb(255, color)), rect);
+			rect.Inflate(-1, -1);
+			graphics.DrawRectangle(new Pen(Color.FromArgb(128, color)), rect);
+			rect.Inflate(-1, -1);
+			graphics.DrawRectangle(new Pen(Color.FromArgb(64, color)), rect);
+		}
+		private static void DrawHoverIndicator(Graphics graphics, Rectangle rect, int alpha, Color color)
+		{
+			rect.Width -= 1;
+			rect.Height -= 1;
+			graphics.DrawRectangle(new Pen(Color.FromArgb(alpha, Color.Black)), rect);
+			rect.Inflate(-1, -1);
+			graphics.DrawRectangle(new Pen(Color.FromArgb(alpha, color)), rect);
+			rect.Inflate(-1, -1);
+			graphics.DrawRectangle(new Pen(Color.FromArgb(alpha, Color.Black)), rect);
+		}
 		private static void AddConnectivityOutlines(GraphicsPath path, TileConnection connectivity, Rectangle baseRect)
 		{
 			if (connectivity == TileConnection.All) return;
