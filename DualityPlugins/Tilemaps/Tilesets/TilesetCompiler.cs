@@ -67,36 +67,10 @@ namespace Duality.Plugins.Tilemaps
 			for (int autoTileIndex = 0; autoTileIndex < input.AutoTileConfig.Count; autoTileIndex++)
 			{
 				TilesetAutoTileInput autoTileInput = input.AutoTileConfig[autoTileIndex];
-				int[] stateToTileMap = new int[(int)TileConnection.All + 1];
-				bool[] connectionMap = new bool[sourceTileCount];
-				int baseTile = MathF.Clamp(autoTileInput.BaseTileIndex, 0, sourceTileCount - 1);
-				
-				// Initialize the tile mapping for all potential connection states with the base tile
-				for (int conIndex = 0; conIndex < stateToTileMap.Length; conIndex++)
-				{
-					stateToTileMap[conIndex] = baseTile;
-				}
-
-				// Use the directly applicable tile mapping as-is
-				for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
-				{
-					TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
-					if (tileInput.IsAutoTile)
-					{ 
-						stateToTileMap[(int)tileInput.Neighbours] = tileIndex;
-						connectionMap[tileIndex] = true;
-					}
-					else if (tileInput.ConnectsToAutoTile)
-					{
-						connectionMap[tileIndex] = true;
-					}
-				}
-
-				// Add the complete AutoTile info / mapping to the result data
-				TilesetAutoTileInfo autoTileInfo = new TilesetAutoTileInfo(
-					baseTile, 
-					stateToTileMap,
-					connectionMap);
+				TilesetAutoTileInfo autoTileInfo = this.TransformAutoTileData(
+					autoTileInput, 
+					output.TileData, 
+					sourceTileCount);
 				output.AutoTileData.Add(autoTileInfo);
 			}
 
@@ -139,6 +113,43 @@ namespace Duality.Plugins.Tilemaps
 			return output;
 		}
 		
+		private TilesetAutoTileInfo TransformAutoTileData(TilesetAutoTileInput autoTileInput, RawList<TileInfo> tileData, int sourceTileCount)
+		{
+			int[] stateToTileMap = new int[(int)TileConnection.All + 1];
+			bool[] connectionMap = new bool[sourceTileCount];
+			int baseTile = MathF.Clamp(autoTileInput.BaseTileIndex, 0, sourceTileCount - 1);
+				
+			// Initialize the tile mapping for all potential connection states with the base tile
+			for (int conIndex = 0; conIndex < stateToTileMap.Length; conIndex++)
+			{
+				stateToTileMap[conIndex] = baseTile;
+			}
+
+			// Use the directly applicable tile mapping as-is
+			for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
+			{
+				TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
+				if (tileInput.IsAutoTile)
+				{ 
+					stateToTileMap[(int)tileInput.Neighbours] = tileIndex;
+					connectionMap[tileIndex] = true;
+
+					// Apply base tile information to the main tile dataset
+					tileData.Count = Math.Max(tileData.Count, tileIndex + 1);
+					tileData.Data[tileIndex].BaseTile = baseTile;
+				}
+				else if (tileInput.ConnectsToAutoTile)
+				{
+					connectionMap[tileIndex] = true;
+				}
+			}
+
+			// Add the complete AutoTile info / mapping to the result data
+			return new TilesetAutoTileInfo(
+				baseTile, 
+				stateToTileMap,
+				connectionMap);
+		}
 		/// <summary>
 		/// Determines the overall geometry of a single <see cref="Tileset"/> visual layer. This involves
 		/// tile boundaries in source and target data, as well as texture sizes and similar.
