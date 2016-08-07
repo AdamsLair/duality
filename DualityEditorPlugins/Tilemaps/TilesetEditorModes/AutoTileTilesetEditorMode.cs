@@ -19,7 +19,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 	/// <summary>
 	/// Allows to edit a Tileset's AutoTile layers, which define how similar adjacent tiles join together.
 	/// </summary>
-	public class AutoTileTilesetEditorMode : TilesetEditorMode
+	public class AutoTileTilesetEditorMode : TilesetEditorMode, IHelpProvider
 	{
 		/// <summary>
 		/// Describes how the current user drawing operation will affect existing AutoTile data.
@@ -727,6 +727,21 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 					borderSize.Width,
 					borderSize.Height);
 			}
+		}
+
+		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)
+		{
+			Point globalPos = this.TilesetEditor.PointToScreen(localPos);
+			Point viewPos = this.TilesetView.PointToClient(globalPos);
+
+			if (this.TilesetView.ClientRectangle.Contains(viewPos))
+			{
+				return HelpInfo.FromText(
+					TilemapsRes.TilesetEditorMode_AutoTile_Name, 
+					TilemapsRes.TilesetEditorMode_AutoTile_ViewDesc);
+			}
+
+			return null;
 		}
 	}
 }

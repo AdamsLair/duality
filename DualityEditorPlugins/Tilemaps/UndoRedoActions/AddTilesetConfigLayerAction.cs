@@ -22,7 +22,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 
 		public override string Name
 		{
-			get { return TilemapsRes.UndoRedo_TilesetAddVisualLayer; }
+			get { return TilemapsRes.UndoRedo_TilesetAddConfigLayer; }
 		}
 		public override bool IsVoid
 		{

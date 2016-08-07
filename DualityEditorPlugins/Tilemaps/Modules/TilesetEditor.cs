@@ -449,8 +449,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Retrieve the currently hovered / active item from all child toolstrips
 			ToolStripItem hoveredItem = this.GetHoveredToolStripItem(globalPos, out captured);
 			hoveredObj = (hoveredItem != null) ? hoveredItem.Tag : null;
+			if (hoveredObj is HelpInfo)
+				return hoveredObj as HelpInfo;
 
-			return hoveredObj as HelpInfo;
+			// If the currently active editing mode can provide help, ask for it
+			if (this.activeMode is IHelpProvider)
+			{
+				HelpInfo modeHelp = (this.activeMode as IHelpProvider).ProvideHoverHelp(localPos, ref captured);
+				if (modeHelp != null)
+					return modeHelp;
+			}
+
+			return null;
 		}
 	}
 }
