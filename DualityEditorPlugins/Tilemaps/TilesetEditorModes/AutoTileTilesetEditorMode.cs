@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 using Aga.Controls.Tree;
@@ -251,11 +252,15 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			if (autoTile == null)
 				return;
 
+			// Set up shared working data
+			TilesetAutoTileItem[] tileInput = autoTile.TileInput.Data;
 			TilesetViewPaintTileData hoveredData = default(TilesetViewPaintTileData);
 			TilesetAutoTileItem hoveredItem = default(TilesetAutoTileItem);
+			GraphicsPath connectedOutlines = new GraphicsPath();
 			Region connectedRegion = new Region();
 			connectedRegion.MakeEmpty();
-			TilesetAutoTileItem[] tileInput = autoTile.TileInput.Data;
+
+			// Draw all the tiles that we're supposed to paint
 			for (int i = 0; i < e.PaintedTiles.Count; i++)
 			{
 				TilesetViewPaintTileData paintData = e.PaintedTiles[i];
@@ -274,7 +279,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 					hoveredItem = item;
 				}
 
-				// Display the tile's connectivity state by saving connected edges from the overlay
+				// Accumulate a shared region for displaying connectivity, as well as a path of all their outlines
 				if (item.IsAutoTile)
 				{
 					Rectangle centerRect = GetConnectivityDrawRect(TileConnection.None, paintData.ViewRect);
@@ -287,6 +292,7 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 							connectedRegion.Union(borderRect);
 						}
 					}
+					AddConnectivityOutlines(connectedOutlines, item.Neighbours, paintData.ViewRect);
 				}
 
 				// Highlight the base tile
@@ -311,7 +317,24 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			e.Graphics.FillRectangle(brushNonConnected, this.TilesetView.ClientRectangle);
 			e.Graphics.ResetClip();
 
-			// Draw a hover indicator
+			// Draw connected region outlines
+			e.Graphics.DrawPath(new Pen(hoverHighlightColor), connectedOutlines);
+			
+			// Draw a tile-based hover indicator
+			if (!hoveredData.ViewRect.IsEmpty && autoTile.BaseTileIndex != -1 && autoTile.BaseTileIndex != hoveredData.TileIndex)
+			{
+				Rectangle rect = hoveredData.ViewRect;
+
+				rect.Width -= 1;
+				rect.Height -= 1;
+				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, Color.Black)), rect);
+				rect.Inflate(-1, -1);
+				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, hoverHighlightColor)), rect);
+				rect.Inflate(-1, -1);
+				e.Graphics.DrawRectangle(new Pen(Color.FromArgb(64, Color.Black)), rect);
+			}
+
+			// Draw a hover indicator for a specific hovered region
 			if (!hoveredData.ViewRect.IsEmpty)
 			{
 				Rectangle rect;
@@ -482,6 +505,127 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			}
 		}
 
+		private static void AddConnectivityOutlines(GraphicsPath path, TileConnection connectivity, Rectangle baseRect)
+		{
+			if (connectivity == TileConnection.All) return;
+
+			Size borderSize = new Size(
+				baseRect.Width / 4,
+				baseRect.Height / 4);
+
+			// Add lines for the 4-neighbourhood that is not connected
+			if (!connectivity.HasFlag(TileConnection.Top))
+			{ 
+				path.AddLine(
+					baseRect.X + borderSize.Width, 
+					baseRect.Y + borderSize.Height,
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + borderSize.Height);
+				path.StartFigure();
+			}
+			if (!connectivity.HasFlag(TileConnection.Bottom))
+			{
+				path.AddLine(
+					baseRect.X + borderSize.Width, 
+					baseRect.Y + baseRect.Height - borderSize.Height - 1,
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + baseRect.Height - borderSize.Height - 1);
+				path.StartFigure();
+			}
+			if (!connectivity.HasFlag(TileConnection.Left))
+			{ 
+				path.AddLine(
+					baseRect.X + borderSize.Width, 
+					baseRect.Y + borderSize.Height,
+					baseRect.X + borderSize.Width, 
+					baseRect.Y + baseRect.Height - borderSize.Height - 1);
+				path.StartFigure();
+			}
+			if (!connectivity.HasFlag(TileConnection.Right))
+			{ 
+				path.AddLine(
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + borderSize.Height,
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + baseRect.Height - borderSize.Height - 1);
+				path.StartFigure();
+			}
+
+			// Add lines for connectivity borders between the four corners and the main area
+			if (connectivity.HasFlag(TileConnection.TopLeft) != connectivity.HasFlag(TileConnection.Top))
+			{ 
+				path.AddLine(
+					baseRect.X + borderSize.Width, 
+					baseRect.Y,
+					baseRect.X + borderSize.Width, 
+					baseRect.Y + borderSize.Height);
+				path.StartFigure();
+			}
+			if (connectivity.HasFlag(TileConnection.TopLeft) != connectivity.HasFlag(TileConnection.Left))
+			{ 
+				path.AddLine(
+					baseRect.X, 
+					baseRect.Y + borderSize.Height,
+					baseRect.X + borderSize.Width, 
+					baseRect.Y + borderSize.Height);
+				path.StartFigure();
+			}
+			if (connectivity.HasFlag(TileConnection.TopRight) != connectivity.HasFlag(TileConnection.Top))
+			{ 
+				path.AddLine(
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y,
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + borderSize.Height);
+				path.StartFigure();
+			}
+			if (connectivity.HasFlag(TileConnection.TopRight) != connectivity.HasFlag(TileConnection.Right))
+			{ 
+				path.AddLine(
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + borderSize.Height,
+					baseRect.X + baseRect.Width - 1,
+					baseRect.Y + borderSize.Height);
+				path.StartFigure();
+			}
+			if (connectivity.HasFlag(TileConnection.BottomLeft) != connectivity.HasFlag(TileConnection.Bottom))
+			{ 
+				path.AddLine(
+					baseRect.X + borderSize.Width, 
+					baseRect.Y + baseRect.Height - borderSize.Height - 1,
+					baseRect.X + borderSize.Width,
+					baseRect.Y + baseRect.Height - 1);
+				path.StartFigure();
+			}
+			if (connectivity.HasFlag(TileConnection.BottomLeft) != connectivity.HasFlag(TileConnection.Left))
+			{ 
+				path.AddLine(
+					baseRect.X, 
+					baseRect.Y + baseRect.Height - borderSize.Height - 1,
+					baseRect.X + borderSize.Width,
+					baseRect.Y + baseRect.Height - borderSize.Height - 1);
+				path.StartFigure();
+			}
+			if (connectivity.HasFlag(TileConnection.BottomRight) != connectivity.HasFlag(TileConnection.Bottom))
+			{ 
+				path.AddLine(
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + baseRect.Height - borderSize.Height - 1,
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + baseRect.Height - 1);
+				path.StartFigure();
+			}
+			if (connectivity.HasFlag(TileConnection.BottomRight) != connectivity.HasFlag(TileConnection.Right))
+			{ 
+				path.AddLine(
+					baseRect.X + baseRect.Width - borderSize.Width - 1,
+					baseRect.Y + baseRect.Height - borderSize.Height - 1,
+					baseRect.X + baseRect.Width - 1,
+					baseRect.Y + baseRect.Height - borderSize.Height - 1);
+				path.StartFigure();
+			}
+
+		}
 		private static Rectangle GetConnectivityDrawRect(TileConnection connectivity, Rectangle baseRect)
 		{
 			Size borderSize = new Size(
