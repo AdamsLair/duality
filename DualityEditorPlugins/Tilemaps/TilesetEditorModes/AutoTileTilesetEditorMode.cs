@@ -59,18 +59,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		}
 
 
-		private static TileConnection[] Neighbourhood = new TileConnection[]
-		{
-			TileConnection.TopLeft,
-			TileConnection.Top,
-			TileConnection.TopRight,
-			TileConnection.Left,
-			TileConnection.Right,
-			TileConnection.BottomLeft,
-			TileConnection.Bottom,
-			TileConnection.BottomRight
-		};
-
 		private	TreeModel        treeModel      = new TreeModel();
 		private TileConnection   hoveredArea    = TileConnection.None;
 		private bool             isUserDrawing  = false;
