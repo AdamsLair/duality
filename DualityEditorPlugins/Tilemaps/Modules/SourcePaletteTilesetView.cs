@@ -106,6 +106,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.selectedArea.Width * (this.DisplayedTileSize.Width + this.Spacing.Width) - this.Spacing.Width, 
 					this.selectedArea.Height * (this.DisplayedTileSize.Height + this.Spacing.Height) - this.Spacing.Height);
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
+
+				rect.Inflate(4, 4);
 				selectionClip.Exclude(rect);
 				e.Graphics.Clip = selectionClip;
 			}
