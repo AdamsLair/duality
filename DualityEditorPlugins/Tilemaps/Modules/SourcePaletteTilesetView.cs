@@ -37,6 +37,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 			{
 				if (this.selectedArea == value) return;
 
+				// Invalidate the previous selected area to account for repaints when reducing selection size
+				this.InvalidateTiles(
+					this.GetTileIndex(this.selectedArea.X, this.selectedArea.Y), 
+					this.selectedArea.Width, 
+					this.selectedArea.Height, 
+					6);
+
 				// Determine an actually valid area we can select, in displayed space
 				Rectangle croppedArea = new Rectangle(
 					Math.Max(value.X, 0),
@@ -57,7 +64,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.GetTileIndex(this.selectedArea.X, this.selectedArea.Y), 
 					this.selectedArea.Width, 
 					this.selectedArea.Height, 
-					5);
+					6);
 			}
 		}
 		public IReadOnlyGrid<Tile> SelectedTiles
@@ -99,6 +106,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 					this.selectedArea.Width * (this.DisplayedTileSize.Width + this.Spacing.Width) - this.Spacing.Width, 
 					this.selectedArea.Height * (this.DisplayedTileSize.Height + this.Spacing.Height) - this.Spacing.Height);
 				e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(32, highlightBorderColor)), rect);
+
+				rect.Inflate(4, 4);
 				selectionClip.Exclude(rect);
 				e.Graphics.Clip = selectionClip;
 			}
@@ -233,8 +242,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 				base.OnMouseMove(e);
 				if (lastHovered != this.HoveredTileIndex)
 				{
-					this.InvalidateTile(lastHovered, 5);
-					this.InvalidateTile(this.HoveredTileIndex, 5);
+					this.InvalidateTile(lastHovered, 6);
+					this.InvalidateTile(this.HoveredTileIndex, 6);
 				}
 			}
 		}
