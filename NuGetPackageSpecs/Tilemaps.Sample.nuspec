@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps.Sample</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
@@ -13,11 +13,11 @@
     <summary>A sample project to show how to use Tilemaps.</summary>
     <description>A sample project to show how to use Tilemaps.</description>
     <tags>Duality Sample Plugin Tilemaps</tags>
-    <releaseNotes>Tilemaps Sample Tweaks
-#CHANGE: Removed character movement sensing, as it turned out to make controls feel less responsive.</releaseNotes>
+    <releaseNotes>
+</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.0.0" />
-      <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.0.2" />
+      <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.0.3" />
       <dependency id="AdamsLair.Duality" version="2.7.3" />
     </dependencies>
   </metadata>

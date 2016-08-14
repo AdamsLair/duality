@@ -96,6 +96,6 @@ copy "$(TargetDir)$(TargetName).xml" "$(ProjectDir)Testbed\Plugins"</PostBuildEv
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
-  </Target>
+  </Target> 
   -->
 </Project>
