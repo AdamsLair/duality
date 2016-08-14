@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Tilemaps</id>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Editor)</title>
@@ -13,9 +13,8 @@
     <summary>Defines the editor integration of the dependent core tilemap plugin.</summary>
     <description>Defines the editor integration of the dependent core tilemap plugin.</description>
     <tags>Duality Editor Plugin Tilemaps</tags>
-    <releaseNotes>Minor TilesetView Bugfixes, Minor TilesetView Bugfixes
-#FIX: Fixed tile rendering clip when hovering over selection-adjacent tiles in a certain way.
-#FIX: Fixed tile rendering when selecting a tile area and reducing it in size again within the same mouse operation.</releaseNotes>
+    <releaseNotes>Tilemap Editor Bugfixes
+#FIX: Fixed a bug where click-dragging across a tilemap border using the fill tool could lead to an exception.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.0.0" />
       <dependency id="AdamsLair.Duality" version="2.7.3" />
