@@ -49,6 +49,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			ITilemapToolEnvironment env = this.Environment;
 
+			// Don't update flood fill when hovering a tile that's out of range of the tilemap
+			if (env.HoveredTile.X < 0 || 
+				env.HoveredTile.Y < 0 || 
+				env.HoveredTile.X >= env.ActiveTilemap.Size.X || 
+				env.HoveredTile.Y >= env.ActiveTilemap.Size.Y)
+				return;
+
 			// Don't update flood fill when still hovering the same tile
 			if (env.ActiveOrigin == env.HoveredTile)
 				return;
