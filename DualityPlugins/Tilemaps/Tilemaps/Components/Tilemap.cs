@@ -13,7 +13,7 @@ namespace Duality.Plugins.Tilemaps
 	/// </summary>
 	[EditorHintCategory(TilemapsResNames.CategoryTilemaps)]
 	[EditorHintImage(TilemapsResNames.ImageTilemap)]
-	public class Tilemap : Component
+	public class Tilemap : Component, ICmpInitializable
 	{
 		private ContentRef<Tileset> tileset  = null;
 		private TilemapData         tileData = new TilemapData();
@@ -158,9 +158,51 @@ namespace Duality.Plugins.Tilemaps
 			this.EndUpdateTiles(0, 0, this.tileData.Tiles.Width, this.tileData.Tiles.Height);
 		}
 
+		/// <summary>
+		/// Resolves the <see cref="Tile.Index"/> value of all tiles in the specified area.
+		/// </summary>
+		/// <param name="beginX"></param>
+		/// <param name="beginY"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		private void ResolveTileIndices(int beginX, int beginY, int width, int height)
+		{
+			Tileset tileset = this.tileset.Res;
+			if (tileset == null) return;
+			if (!tileset.Compiled) return;
+
+			TileInfo[] tileData = tileset.TileData.Data;
+
+			Tile[] rawData = this.tileData.Tiles.RawData;
+			int stride = this.tileData.Tiles.Width;
+			for (int y = beginY; y < beginY + height; y++)
+			{
+				for (int x = beginX; x < beginX + width; x++)
+				{
+					int i = y * stride + x;
+					int autoTileIndex = tileData[rawData[i].BaseIndex].AutoTileLayer - 1;
+
+					// Non-AutoTiles always use their base index directly.
+					if (autoTileIndex == -1)
+					{
+						rawData[i].Index = rawData[i].BaseIndex;
+					}
+					// AutoTiles require a dynamic lookup with their connectivity state, because
+					// they might use generated tiles that do not have a consistent index across
+					// different Tileset configs.
+					else
+					{
+						TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
+						rawData[i].Index = autoTile.StateToTile[(int)rawData[i].AutoTileCon];
+					}
+				}
+			}
+		}
+
 		private void OnTilesChanged(int x, int y, int width, int height)
 		{
 			if (width == 0 || height == 0) return;
+			this.ResolveTileIndices(x, y, width, height);
 			if (this.eventTilemapChanged != null)
 				this.eventTilemapChanged(this, new TilemapChangedEventArgs(this, x, y, width, height));
 		}
@@ -168,5 +210,14 @@ namespace Duality.Plugins.Tilemaps
 		{
 			this.OnTilesChanged(0, 0, this.tileData.Tiles.Width, this.tileData.Tiles.Height);
 		}
+
+		void ICmpInitializable.OnInit(Component.InitContext context)
+		{
+			if (context == InitContext.Loaded)
+			{
+				this.ResolveTileIndices(0, 0, this.tileData.Size.X, this.tileData.Size.Y);
+			}
+		}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
 	}
 }

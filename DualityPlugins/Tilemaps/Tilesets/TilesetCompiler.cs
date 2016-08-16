@@ -137,7 +137,7 @@ namespace Duality.Plugins.Tilemaps
 
 					// Apply base tile information to the main tile dataset
 					tileData.Count = Math.Max(tileData.Count, tileIndex + 1);
-					tileData.Data[tileIndex].AutoTileLayer = autoTileIndex;
+					tileData.Data[tileIndex].AutoTileLayer = autoTileIndex + 1;
 				}
 				else if (tileInput.ConnectsToAutoTile)
 				{

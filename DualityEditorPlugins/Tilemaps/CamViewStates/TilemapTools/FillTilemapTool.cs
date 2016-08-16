@@ -308,7 +308,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		}
 		private static bool _FloodFill_TilesEqual(Tile baseTile, Tile otherTile)
 		{
-			return baseTile.Index == otherTile.Index;
+			return baseTile.BaseIndex == otherTile.BaseIndex;
 		}
 		private static bool _FloodFill_IsCandidate(Grid<bool> fillBuffer, Grid<Tile> tiles, Point2 pos, Tile baseTile)
 		{

@@ -143,6 +143,15 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.compiled; }
 		}
 		/// <summary>
+		/// [GET] Returns a hash value that represents the configuration that was used 
+		/// when compiling the <see cref="Tileset"/>.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public int CompileHash
+		{
+			get { return this.compileHash; }
+		}
+		/// <summary>
 		/// [GET] Determines whether the <see cref="Tileset"/> has changed since the last
 		/// time it was compiled. Always true, if the <see cref="Tileset"/> has never been
 		/// compiled before.
@@ -296,7 +305,6 @@ namespace Duality.Plugins.Tilemaps
 			foreach (TilesetAutoTileInput autoTile in this.autoTileConfig)
 			{
 				MathF.CombineHashCode(ref hash, autoTile.BaseTileIndex);
-				MathF.CombineHashCode(ref hash, autoTile.GenerateMissingTiles ? 1 : 0);
 				MathF.CombineHashCode(ref hash, 
 					GetTileArrayCompileHash(autoTile.TileInput.Data, autoTile.TileInput.Count));
 			}

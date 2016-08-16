@@ -270,10 +270,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					Point tilesetPos = this.GetTilesetTilePos(
 						displayedPos.X, 
 						displayedPos.Y);
-					this.selectedTiles[x, y] = new Tile
-					{
-						Index = this.GetTileIndex(tilesetPos.X, tilesetPos.Y)
-					};
+					this.selectedTiles[x, y] = new Tile(this.GetTileIndex(tilesetPos.X, tilesetPos.Y));
 				}
 			}
 		}

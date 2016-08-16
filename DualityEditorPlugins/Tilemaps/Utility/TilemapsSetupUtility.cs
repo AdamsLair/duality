@@ -65,7 +65,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			tilemap.Tileset = tileset;
 			tilemap.Resize(width, height);
 			tilemap.BeginUpdateTiles().Fill(
-				new Tile { Index = fillTileIndex }, 
+				new Tile(fillTileIndex), 
 				0, 
 				0, 
 				tilemap.Size.X, 

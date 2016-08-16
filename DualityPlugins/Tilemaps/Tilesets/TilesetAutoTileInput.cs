@@ -19,7 +19,6 @@ namespace Duality.Plugins.Tilemaps
 		private string name                 = DefaultName;
 		private string id                   = DefaultId;
 		private int    baseTile             = -1;
-		private bool   generateMissingTiles = true;
 		private RawList<TilesetAutoTileItem> tiles = new RawList<TilesetAutoTileItem>();
 		
 		/// <summary>
@@ -56,15 +55,6 @@ namespace Duality.Plugins.Tilemaps
 		public RawList<TilesetAutoTileItem> TileInput
 		{
 			get { return this.tiles; }
-		}
-		/// <summary>
-		/// [GET / SET] Specifies whether the <see cref="Tileset"/> should generate any missing connection tiles for
-		/// this auto-tile when compiled.
-		/// </summary>
-		public bool GenerateMissingTiles
-		{
-			get { return this.generateMissingTiles; }
-			set { this.generateMissingTiles = value; }
 		}
 	}
 }

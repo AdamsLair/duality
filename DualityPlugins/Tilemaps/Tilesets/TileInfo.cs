@@ -28,7 +28,7 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		public int DepthOffset;
 		/// <summary>
-		/// The AutoTile layer index inside the <see cref="Tileset"/> this tile belongs to.
+		/// The AutoTile layer number (index + 1) inside the <see cref="Tileset"/> this tile belongs to.
 		/// </summary>
 		public int AutoTileLayer;
 		/// <summary>
