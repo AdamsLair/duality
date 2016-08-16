@@ -28,9 +28,9 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		public int DepthOffset;
 		/// <summary>
-		/// The tile index inside the <see cref="Tileset"/> that represents the conceptual base tile of this one.
+		/// The AutoTile layer index inside the <see cref="Tileset"/> this tile belongs to.
 		/// </summary>
-		public int BaseTile;
+		public int AutoTileLayer;
 		/// <summary>
 		/// Specifies the per-layer collision shape of this tile.
 		/// </summary>

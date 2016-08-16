@@ -68,6 +68,7 @@ namespace Duality.Plugins.Tilemaps
 			{
 				TilesetAutoTileInput autoTileInput = input.AutoTileConfig[autoTileIndex];
 				TilesetAutoTileInfo autoTileInfo = this.TransformAutoTileData(
+					autoTileIndex,
 					autoTileInput, 
 					output.TileData, 
 					sourceTileCount);
@@ -113,7 +114,7 @@ namespace Duality.Plugins.Tilemaps
 			return output;
 		}
 		
-		private TilesetAutoTileInfo TransformAutoTileData(TilesetAutoTileInput autoTileInput, RawList<TileInfo> tileData, int sourceTileCount)
+		private TilesetAutoTileInfo TransformAutoTileData(int autoTileIndex, TilesetAutoTileInput autoTileInput, RawList<TileInfo> tileData, int sourceTileCount)
 		{
 			int[] stateToTileMap = new int[(int)TileConnection.All + 1];
 			bool[] connectionMap = new bool[sourceTileCount];
@@ -136,7 +137,7 @@ namespace Duality.Plugins.Tilemaps
 
 					// Apply base tile information to the main tile dataset
 					tileData.Count = Math.Max(tileData.Count, tileIndex + 1);
-					tileData.Data[tileIndex].BaseTile = baseTile;
+					tileData.Data[tileIndex].AutoTileLayer = autoTileIndex;
 				}
 				else if (tileInput.ConnectsToAutoTile)
 				{
