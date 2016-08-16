@@ -40,6 +40,12 @@ namespace Duality.Plugins.Tilemaps
 		private bool                     solidOuterEdges = true;
 		private bool                     roundedCorners  = false;
 
+		// Shape property values that are used when generating new shapes.
+		// These are not directly editable, but retrieved from RigidBody
+		// values / generated shapes the user has edited.
+		private float shapeFriction    = 0.3f;
+		private float shapeRestitution = 0.3f;
+
 		[DontSerialize] private Tilemap referenceTilemap = null;
 		[DontSerialize] private Tilemap[] sourceTilemaps = null;
 		[DontSerialize] private Point2 tileCount = Point2.Zero;
@@ -179,9 +185,18 @@ namespace Duality.Plugins.Tilemaps
 			this.sectorCount = newSectorCount;
 
 			RigidBody body = this.GameObj.GetComponent<RigidBody>();
-			for (int y = 0; y < this.sectorCount.Y; y++)
+			this.UpdateRigidBody(body, 0, 0, this.sectorCount.X, this.sectorCount.Y);
+		}
+		private void UpdateRigidBody(RigidBody body, int sectorX, int sectorY, int sectorCountX, int sectorCountY)
+		{
+			// Update shared collision shape properties, so newly generated
+			// shapes match modified existing shapes.
+			this.GetShapeProperties();
+
+			// Update each sector in the specified range
+			for (int y = sectorY; y < sectorY + sectorCountY; y++)
 			{
-				for (int x = 0; x < this.sectorCount.X; x++)
+				for (int x = sectorX; x < sectorX + sectorCountX; x++)
 				{
 					this.UpdateRigidBody(body, x, y);
 				}
@@ -237,7 +252,11 @@ namespace Duality.Plugins.Tilemaps
 
 					// Add all the generated shapes to the target body
 					foreach (ShapeInfo shape in sector.Shapes)
+					{
 						body.AddShape(shape);
+						shape.Friction = this.shapeFriction;
+						shape.Restitution = this.shapeRestitution;
+					}
 				}
 				sector.Checksum = newChecksum;
 			}
@@ -317,6 +336,41 @@ namespace Duality.Plugins.Tilemaps
 				this.sourceTilemaps[i].EventTilemapChanged -= handler;
 			}
 		}
+
+		/// <summary>
+		/// Updates the internal shape property values by averaging existing generated shapes.
+		/// If there are no existing shapes, the internal shape proprety values are left untouched.
+		/// </summary>
+		private void GetShapeProperties()
+		{
+			RigidBody body = this.GameObj.GetComponent<RigidBody>();
+
+			int shapeCount = 0;
+			float friction = 0.0f;
+			float restitution = 0.0f;
+			for (int y = 0; y < this.sectorCount.Y; y++)
+			{
+				for (int x = 0; x < this.sectorCount.X; x++)
+				{
+					Sector sector = this.sectors[x, y];
+					if (sector.Shapes != null)
+					{
+						foreach (ShapeInfo shape in sector.Shapes)
+						{
+							shapeCount++;
+							friction += shape.Friction;
+							restitution += shape.Restitution;
+						}
+					}
+				}
+			}
+
+			if (shapeCount > 0)
+			{
+				this.shapeFriction = friction / (float)shapeCount;
+				this.shapeRestitution = restitution / (float)shapeCount; 
+			}
+		}
 		
 		void ICmpInitializable.OnInit(Component.InitContext context)
 		{
@@ -359,6 +413,7 @@ namespace Duality.Plugins.Tilemaps
 			{
 				// To avoid saving the generated collider redundantly, remove
 				// all of the generated shapes before saving. We'll add them again later.
+				// Also accumulate a shape's default properties for re-init.
 				RigidBody body = this.GameObj.GetComponent<RigidBody>();
 				for (int y = 0; y < this.sectorCount.Y; y++)
 				{
@@ -372,6 +427,7 @@ namespace Duality.Plugins.Tilemaps
 						}
 					}
 				}
+				this.GetShapeProperties();
 			}
 		}
 
@@ -393,13 +449,11 @@ namespace Duality.Plugins.Tilemaps
 					MathF.Clamp(1 + (e.Pos.X + e.Size.X) / SectorSize, 0, this.sectorCount.X),
 					MathF.Clamp(1 + (e.Pos.Y + e.Size.Y) / SectorSize, 0, this.sectorCount.Y));
 				RigidBody body = this.GameObj.GetComponent<RigidBody>();
-				for (int y = minSector.Y; y < maxSector.Y; y++)
-				{
-					for (int x = minSector.X; x < maxSector.X; x++)
-					{
-						this.UpdateRigidBody(body, x, y);
-					}
-				}
+				this.UpdateRigidBody(body, 
+					minSector.X, 
+					minSector.Y, 
+					maxSector.X - minSector.X, 
+					maxSector.Y - minSector.Y);
 			}
 		}
 
