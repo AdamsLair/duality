@@ -1,19 +1,20 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>1.0.0</version>
-	<authors>Fedja Adam</authors>
-	<owners>Fedja Adam</owners>
+    <version>1.0.1</version>
+    <authors>Fedja Adam</authors>
+    <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
-	<iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
-	<licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
+    <iconUrl>https://github.com/AdamsLair/duality/raw/master/NuGetPackageSpecs/Icons/Tilemaps.png</iconUrl>
+    <licenseUrl>https://github.com/AdamsLair/duality/raw/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/AdamsLair/duality</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
+    <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
-	<tags>Duality Core Plugin Tilemaps</tags>
-	<releaseNotes>Initial Release</releaseNotes>
+    <tags>Duality Core Plugin Tilemaps</tags>
+    <releaseNotes>TilemapCollider Friction / Restitution
+#ADD: The TilemapCollider now reacts to changing Friction and Restitution of the generated shapes / the target RigidBody.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.7.3" />
     </dependencies>
