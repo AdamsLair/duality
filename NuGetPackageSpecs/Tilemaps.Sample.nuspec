@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps.Sample</id>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps Sample</title>
@@ -16,7 +16,7 @@
     <releaseNotes>
 </releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.0.0" />
+      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.0.1" />
       <dependency id="AdamsLair.Duality.Editor.Plugins.Tilemaps" version="1.0.3" />
       <dependency id="AdamsLair.Duality" version="2.7.3" />
     </dependencies>
