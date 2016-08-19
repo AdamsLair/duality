@@ -34,6 +34,7 @@ namespace Duality.Plugins.Tilemaps
 			public List<Rect> Atlas;
 		}
 
+		private static readonly TilesetAutoTileFallbackMap AutoTileFallbackMap = new TilesetAutoTileFallbackMap();
 		private static readonly TilesetRenderInput DefaultRenderInput = new TilesetRenderInput();
 
 		/// <summary>
@@ -114,6 +115,15 @@ namespace Duality.Plugins.Tilemaps
 			return output;
 		}
 		
+		/// <summary>
+		/// Transforms regular AutoTile input data into an output format that is optimized for 
+		/// efficient reading and updating operations.
+		/// </summary>
+		/// <param name="autoTileIndex"></param>
+		/// <param name="autoTileInput"></param>
+		/// <param name="tileData"></param>
+		/// <param name="sourceTileCount"></param>
+		/// <returns></returns>
 		private TilesetAutoTileInfo TransformAutoTileData(int autoTileIndex, TilesetAutoTileInput autoTileInput, RawList<TileInfo> tileData, int sourceTileCount)
 		{
 			int[] stateToTileMap = new int[(int)TileConnection.All + 1];
@@ -127,11 +137,13 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			// Use the directly applicable tile mapping as-is
+			bool[] isStateAvailable = new bool[stateToTileMap.Length + 1];
 			for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
 			{
 				TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
 				if (tileInput.IsAutoTile)
 				{ 
+					isStateAvailable[(int)tileInput.Neighbours] = true;
 					stateToTileMap[(int)tileInput.Neighbours] = tileIndex;
 					connectionMap[tileIndex] = true;
 
@@ -142,6 +154,23 @@ namespace Duality.Plugins.Tilemaps
 				else if (tileInput.ConnectsToAutoTile)
 				{
 					connectionMap[tileIndex] = true;
+				}
+			}
+
+			// Fill up unavailable state mappings with the closest available match
+			for (int stateIndex = 0; stateIndex < isStateAvailable.Length; stateIndex++)
+			{
+				if (isStateAvailable[stateIndex]) continue;
+
+				IReadOnlyList<TileConnection> fallbacks = AutoTileFallbackMap.GetFallback((TileConnection)stateIndex);
+				for (int i = 0; i < fallbacks.Count; i++)
+				{
+					int fallbackStateIndex = (int)fallbacks[i];
+					if (isStateAvailable[fallbackStateIndex])
+					{
+						stateToTileMap[stateIndex] = stateToTileMap[fallbackStateIndex];
+						break;
+					}
 				}
 			}
 
