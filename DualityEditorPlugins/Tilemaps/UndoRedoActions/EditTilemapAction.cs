@@ -39,27 +39,72 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		}
 		public override bool IsVoid
 		{
-			get { return this.tilemap == null || this.newTiles == null || this.newTiles.Capacity == 0; }
+			get { return this.newTiles.Capacity == 0; }
 		}
 
 		public EditTilemapAction(Tilemap tilemap, EditTilemapActionType type, Point2 origin, Grid<Tile> newTiles, Grid<bool> editMask)
 		{
+			if (tilemap == null) throw new ArgumentNullException("tilemap");
+			if (newTiles == null) throw new ArgumentNullException("newTiles");
+			if (editMask == null) throw new ArgumentNullException("editMask");
+
+			// Clamp the specified editing area to what is actually valid for this tilemap
+			Point2 clampedOrigin = origin;
+			Point2 clampedSize = new Point2(newTiles.Width, newTiles.Height);
+			clampedSize.X += Math.Min(clampedOrigin.X, 0);
+			clampedSize.Y += Math.Min(clampedOrigin.Y, 0);
+			clampedOrigin.X = MathF.Clamp(clampedOrigin.X, 0, tilemap.Size.X);
+			clampedOrigin.Y = MathF.Clamp(clampedOrigin.Y, 0, tilemap.Size.Y);
+			clampedSize.X = MathF.Clamp(clampedSize.X, 0, tilemap.Size.X - clampedOrigin.X);
+			clampedSize.Y = MathF.Clamp(clampedSize.Y, 0, tilemap.Size.Y - clampedOrigin.Y);
+
 			this.tilemap = tilemap;
 			this.type = type;
-			this.origin = origin;
-			this.newTiles = new Grid<Tile>(newTiles);
-			this.editMask = new Grid<bool>(editMask);
+			this.origin = clampedOrigin;
+
+			// Copy edited tiles to the operation's tilemap-clamped space
+			if (clampedSize.X == newTiles.Width && clampedSize.Y == newTiles.Height)
+			{
+				this.newTiles = new Grid<Tile>(newTiles);
+				this.editMask = new Grid<bool>(editMask);
+			}
+			else
+			{
+				this.newTiles = new Grid<Tile>(clampedSize.X, clampedSize.Y);
+				this.editMask = new Grid<bool>(clampedSize.X, clampedSize.Y);
+				newTiles.CopyTo(this.newTiles, Math.Min(origin.X, 0), Math.Min(origin.Y, 0));
+				editMask.CopyTo(this.editMask, Math.Min(origin.X, 0), Math.Min(origin.Y, 0));
+			}
 		}
 
 		public override void Do()
 		{
 			Grid<Tile> tiles = this.tilemap.BeginUpdateTiles();
-			if (this.oldTiles == null)
 			{
-				this.oldTiles = new Grid<Tile>(this.newTiles.Width, this.newTiles.Height);
-				tiles.CopyTo(this.oldTiles, 0, 0, this.oldTiles.Width, this.oldTiles.Height, this.origin.X, this.origin.Y);
+				// Create a backup for Undo support
+				if (this.oldTiles == null)
+				{
+					this.oldTiles = new Grid<Tile>(this.newTiles.Width, this.newTiles.Height);
+					tiles.CopyTo(this.oldTiles, 0, 0, this.oldTiles.Width, this.oldTiles.Height, this.origin.X, this.origin.Y);
+				}
+
+				// Overwrite the edited tiles
+				MaskedCopyGrid(this.newTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
+
+				// Update the connectivity state of the edited tiles. Note that surrounding tiles
+				// will be updated too!
+				Tileset tileset = this.tilemap.Tileset.Res;
+				if (tileset != null)
+				{
+					Tile.UpdateAutoTileCon(
+						tiles, 
+						MathF.Max(this.origin.X - 1, 0), 
+						MathF.Max(this.origin.Y - 1, 0), 
+						MathF.Min(this.newTiles.Width + 2, tiles.Width - MathF.Max(this.origin.X - 1, 0)), 
+						MathF.Min(this.newTiles.Height + 2, tiles.Height - MathF.Max(this.origin.Y - 1, 0)), 
+						tileset);
+				}
 			}
-			MaskedCopyGrid(this.newTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
 			this.tilemap.EndUpdateTiles(this.origin.X, this.origin.Y, this.newTiles.Width, this.newTiles.Height);
 
 			this.OnNotifyPropertyChanged();
@@ -67,7 +112,10 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		public override void Undo()
 		{
 			Grid<Tile> tiles = this.tilemap.BeginUpdateTiles();
-			MaskedCopyGrid(this.oldTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
+			{
+				// Overwrite the (previously edited) tiles with the backup we made before
+				MaskedCopyGrid(this.oldTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
+			}
 			this.tilemap.EndUpdateTiles(this.origin.X, this.origin.Y, this.oldTiles.Width, this.oldTiles.Height);
 
 			this.OnNotifyPropertyChanged();
