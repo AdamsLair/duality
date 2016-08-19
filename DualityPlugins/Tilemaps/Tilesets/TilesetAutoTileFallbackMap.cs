@@ -16,6 +16,7 @@ namespace Duality.Plugins.Tilemaps
 
 		private static readonly int            StateCount  = (int)TileConnection.All + 1;
 		private static readonly TileConnection None        = TileConnection.None;
+		private static readonly TileConnection All         = TileConnection.All;
 		private static readonly TileConnection TopLeft     = TileConnection.TopLeft;
 		private static readonly TileConnection Top         = TileConnection.Top;
 		private static readonly TileConnection TopRight    = TileConnection.TopRight;
@@ -44,6 +45,7 @@ namespace Duality.Plugins.Tilemaps
 			TileConnection[] directFallbacks = new TileConnection[StateCount];
 
 			//
+			// DontCare permutations, reducing the overall number of required connectivity states to 47.
 			// See here: https://cloud.githubusercontent.com/assets/14859411/11279962/ccc1ac2e-8ef3-11e5-8e99-861b0d7a1c9a.png
 			//
 			MapAllPermutations(directFallbacks, Left | Right | BottomLeft | Bottom | BottomRight, TopLeft, TopRight);
@@ -82,7 +84,52 @@ namespace Duality.Plugins.Tilemaps
 
 			MapAllPermutations(directFallbacks, Right | Bottom,                                   TopLeft, TopRight, BottomLeft);
 			MapAllPermutations(directFallbacks, Top | Right,                                      TopLeft, BottomLeft, BottomRight);
+			
+			//
+			// Actual fallbacks in case a certain connectivity state is unavailable.
+			//
+			directFallbacks[(int)(Top | Left | Right | BottomLeft | Bottom | BottomRight)] = Left | Right | BottomLeft | Bottom | BottomRight;
+			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom)]     = TopLeft | Top | Left | BottomLeft |Bottom;
+			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom | BottomRight)]   = Top | TopRight | Right | Bottom | BottomRight;
+			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom)]       = TopLeft | Top | TopRight | Left | Right;
 
+			directFallbacks[(int)(Top | TopRight | Left | Right | BottomLeft | Bottom | BottomRight)] = All;
+			directFallbacks[(int)(TopLeft | Top | Left | Right | BottomLeft | Bottom | BottomRight)]  = All;
+			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | Bottom | BottomRight)]    = All;
+			directFallbacks[(int)(TopLeft | Top | TopRight | Left | Right | BottomLeft | Bottom)]     = All;
+
+			directFallbacks[(int)(Top | TopRight | Left | Right | BottomLeft | Bottom)] = All;
+			directFallbacks[(int)(TopLeft | Top | Left | Right | Bottom | BottomRight)] = All;
+
+			directFallbacks[(int)(TopLeft | Top | Left | Right | Bottom)]     = All;
+			directFallbacks[(int)(Top | TopRight | Left | Right | Bottom)]    = All;
+			directFallbacks[(int)(Top | Left | Right | BottomLeft | Bottom)]  = All;
+			directFallbacks[(int)(Top | Left | Right | Bottom | BottomRight)] = All;
+
+			directFallbacks[(int)(Left | Right | Top | Bottom)] = All;
+
+			directFallbacks[(int)(Left | Right | BottomLeft | Bottom)]  = Left | Right | BottomLeft | Bottom | BottomRight;
+			directFallbacks[(int)(Left | Right | BottomRight | Bottom)] = Left | Right | BottomLeft | Bottom | BottomRight;
+			directFallbacks[(int)(Left | Right | Bottom)]               = Left | Right | BottomLeft | Bottom | BottomRight;
+
+			directFallbacks[(int)(Top | Left | BottomLeft | Bottom)] = TopLeft | Top | Left | BottomLeft | Bottom;
+			directFallbacks[(int)(TopLeft | Top | Left | Bottom)]    = TopLeft | Top | Left | BottomLeft | Bottom;
+			directFallbacks[(int)(Top | Left | Bottom)]              = TopLeft | Top | Left | BottomLeft | Bottom;
+
+			directFallbacks[(int)(Top | TopRight | Left | Right)] = TopLeft | Top | TopRight | Left | Right;
+			directFallbacks[(int)(TopLeft | Top | Left | Right)]  = TopLeft | Top | TopRight | Left | Right;
+			directFallbacks[(int)(Top | Left | Right)]            = TopLeft | Top | TopRight | Left | Right;
+
+			directFallbacks[(int)(Top | Right | Bottom | BottomRight)] = Top | TopRight | Right | Bottom | BottomRight;
+			directFallbacks[(int)(Top | TopRight | Right | Bottom)]    = Top | TopRight | Right | Bottom | BottomRight;
+			directFallbacks[(int)(Top | Right | Bottom)]               = Top | TopRight | Right | Bottom | BottomRight;
+
+			directFallbacks[(int)(Top | Left)]     = TopLeft | Top | Left;
+			directFallbacks[(int)(Top | Right)]    = Top | TopRight | Right;
+			directFallbacks[(int)(Left | Bottom)]  = Left | BottomLeft | Bottom;
+			directFallbacks[(int)(Right | Bottom)] = Right | Bottom | BottomRight;
+
+			// Create a transitive fallback chain for each connectivity state
 			this.data = CreateTransitiveMap(directFallbacks);
 		}
 
@@ -96,7 +143,7 @@ namespace Duality.Plugins.Tilemaps
 		private static void MapAllPermutations(TileConnection[] mapToFallback, TileConnection fallback, params TileConnection[] stateFlags)
 		{
 			int permutationCount = 1 << stateFlags.Length;
-			for (int permutationIndex = 0; permutationIndex < permutationCount; permutationIndex++)
+			for (int permutationIndex = 1; permutationIndex < permutationCount; permutationIndex++)
 			{
 				// Generate the state bitmask for this permutation of state flags
 				TileConnection state = fallback;
