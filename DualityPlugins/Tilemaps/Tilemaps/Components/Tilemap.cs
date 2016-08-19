@@ -171,32 +171,7 @@ namespace Duality.Plugins.Tilemaps
 			if (tileset == null) return;
 			if (!tileset.Compiled) return;
 
-			TileInfo[] tileData = tileset.TileData.Data;
-
-			Tile[] rawData = this.tileData.Tiles.RawData;
-			int stride = this.tileData.Tiles.Width;
-			for (int y = beginY; y < beginY + height; y++)
-			{
-				for (int x = beginX; x < beginX + width; x++)
-				{
-					int i = y * stride + x;
-					int autoTileIndex = tileData[rawData[i].BaseIndex].AutoTileLayer - 1;
-
-					// Non-AutoTiles always use their base index directly.
-					if (autoTileIndex == -1)
-					{
-						rawData[i].Index = rawData[i].BaseIndex;
-					}
-					// AutoTiles require a dynamic lookup with their connectivity state, because
-					// they might use generated tiles that do not have a consistent index across
-					// different Tileset configs.
-					else
-					{
-						TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
-						rawData[i].Index = autoTile.StateToTile[(int)rawData[i].AutoTileCon];
-					}
-				}
-			}
+			Tile.ResolveIndices(this.tileData.Tiles, beginX, beginY, width, height, tileset);
 		}
 
 		private void OnTilesChanged(int x, int y, int width, int height)

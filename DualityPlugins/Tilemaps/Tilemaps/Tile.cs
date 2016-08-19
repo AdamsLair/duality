@@ -54,5 +54,72 @@ namespace Duality.Plugins.Tilemaps
 		{
 			return string.Format("Tile: {0}, base {1} [c{2}]", this.Index, this.BaseIndex, (byte)this.AutoTileCon);
 		}
+
+		
+		/// <summary>
+		/// Resolves the <see cref="Index"/> values of the specified tile array segment.
+		/// </summary>
+		/// <param name="tiles"></param>
+		/// <param name="index"></param>
+		/// <param name="count"></param>
+		/// <param name="tileset"></param>
+		public static void ResolveIndices(Tile[] tiles, int index, int count, Tileset tileset)
+		{
+			ResolveIndices(tiles, 0, index, 0, count, 1, tileset);
+		}
+		/// <summary>
+		/// Resolves the <see cref="Index"/> values of the specified <see cref="Tile"/> grid area.
+		/// </summary>
+		/// <param name="tileGrid"></param>
+		/// <param name="beginX"></param>
+		/// <param name="beginY"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="tileset"></param>
+		public static void ResolveIndices(Grid<Tile> tileGrid, int beginX, int beginY, int width, int height, Tileset tileset)
+		{
+			Tile[] rawData = tileGrid.RawData;
+			int stride = tileGrid.Width;
+			ResolveIndices(rawData, stride, beginX, beginY, width, height, tileset);
+		}
+		/// <summary>
+		/// Resolves the <see cref="Index"/> values of the specified <see cref="Tile"/> grid area, given the grid's raw data block.
+		/// </summary>
+		/// <param name="tileGridData"></param>
+		/// <param name="beginX"></param>
+		/// <param name="beginY"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="stride"></param>
+		/// <param name="tileset"></param>
+		public static void ResolveIndices(Tile[] tileGridData, int stride, int beginX, int beginY, int width, int height, Tileset tileset)
+		{
+			if (tileset == null) throw new ArgumentNullException("tileset");
+			if (!tileset.Compiled) throw new InvalidOperationException("The specified Tileset needs to be compiled first.");
+
+			TileInfo[] tileData = tileset.TileData.Data;
+			for (int y = beginY; y < beginY + height; y++)
+			{
+				for (int x = beginX; x < beginX + width; x++)
+				{
+					int i = y * stride + x;
+					int autoTileIndex = tileData[tileGridData[i].BaseIndex].AutoTileLayer - 1;
+
+					// Non-AutoTiles always use their base index directly.
+					if (autoTileIndex == -1)
+					{
+						tileGridData[i].Index = tileGridData[i].BaseIndex;
+					}
+					// AutoTiles require a dynamic lookup with their connectivity state, because
+					// they might use generated tiles that do not have a consistent index across
+					// different Tileset configs.
+					else
+					{
+						TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
+						tileGridData[i].Index = autoTile.StateToTile[(int)tileGridData[i].AutoTileCon];
+					}
+				}
+			}
+		}
 	}
 }
