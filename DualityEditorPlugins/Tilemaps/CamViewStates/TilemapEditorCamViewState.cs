@@ -652,10 +652,13 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			base.OnMouseLeave(e);
 			this.hoveredTile = InvalidTile;
 			this.hoveredRenderer = null;
-			this.activeTool = this.toolNone;
-			this.activeTilemap = null;
-			this.activeAreaOrigin = InvalidTile;
-			this.activeArea.ResizeClear(0, 0);
+			if (this.actionTool == this.toolNone)
+			{
+				this.activeTool = this.toolNone;
+				this.activeTilemap = null;
+				this.activeAreaOrigin = InvalidTile;
+				this.activeArea.ResizeClear(0, 0);
+			}
 			this.UpdateCursor();
 			this.Invalidate();
 		}
