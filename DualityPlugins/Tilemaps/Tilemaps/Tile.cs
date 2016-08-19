@@ -123,6 +123,19 @@ namespace Duality.Plugins.Tilemaps
 		}
 
 		/// <summary>
+		/// Updates the <see cref="AutoTileCon"/> state of a rectangular region on the specified tile grid.
+		/// </summary>
+		/// <param name="tileGrid"></param>
+		/// <param name="beginX"></param>
+		/// <param name="beginY"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="tileset"></param>
+		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, int beginX, int beginY, int width, int height, Tileset tileset)
+		{
+			UpdateAutoTileCon(tileGrid, null, beginX, beginY, width, height, tileset);
+		}
+		/// <summary>
 		/// Updates the <see cref="AutoTileCon"/> state of an arbitrary region on the specified tile grid.
 		/// </summary>
 		/// <param name="tileGrid"></param>
@@ -132,11 +145,13 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="tileset"></param>
-		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, int beginX, int beginY, int width, int height, Tileset tileset)
+		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, Grid<bool> updateMask, int beginX, int beginY, int width, int height, Tileset tileset)
 		{
 			TileInfo[] tileData = tileset.TileData.Data;
 			Tile[] tiles = tileGrid.RawData;
+			bool[] maskData = updateMask != null ? updateMask.RawData : null;
 			int tileStride = tileGrid.Width;
+			int maskStride = updateMask.Width;
 			int maxTileX = tileGrid.Width - 1;
 			int maxTileY = tileGrid.Height - 1;
 
@@ -144,6 +159,10 @@ namespace Duality.Plugins.Tilemaps
 			{
 				for (int x = 0; x < width; x++)
 				{
+					// Skip tiles that have been masked away
+					int m = x + maskStride * y;
+					if (maskData != null && !maskData[m]) continue;
+
 					// Determine tilemap coordinates and index
 					int tileX = x + beginX;
 					int tileY = y + beginY;
