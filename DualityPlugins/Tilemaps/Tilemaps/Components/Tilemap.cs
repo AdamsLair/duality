@@ -117,7 +117,16 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="height"></param>
 		public void EndUpdateTiles(int x, int y, int width, int height)
 		{
-			if (this.updateStack == 0) throw new InvalidOperationException("Can't end a Tilemap update when there was none being performed.");
+			if (this.updateStack == 0) 
+				throw new InvalidOperationException("Can't end a Tilemap update when there was none being performed.");
+			
+			// Clamp the specified rect region to a valid range
+			width  += Math.Min(x, 0);
+			height += Math.Min(y, 0);
+			x = MathF.Clamp(x, 0, this.tileData.Size.X);
+			y = MathF.Clamp(y, 0, this.tileData.Size.Y);
+			width  = MathF.Clamp(width,  0, this.tileData.Size.X - x);
+			height = MathF.Clamp(height, 0, this.tileData.Size.Y - y);
 
 			// Pop an active editing operation.
 			this.updateStack--;
