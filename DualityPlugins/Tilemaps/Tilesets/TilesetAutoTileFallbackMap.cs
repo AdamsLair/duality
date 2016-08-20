@@ -43,6 +43,12 @@ namespace Duality.Plugins.Tilemaps
 		private void GenerateData()
 		{
 			TileConnection[] directFallbacks = new TileConnection[StateCount];
+			for (int i = 0; i < directFallbacks.Length; i++)
+			{
+				// Since our default is the AutoTile's base tile, which is fully connected,
+				// use the fully connected state as a default.
+				directFallbacks[i] = TileConnection.All;
+			}
 
 			//
 			// DontCare permutations, reducing the overall number of required connectivity states to 47.
@@ -174,7 +180,7 @@ namespace Duality.Plugins.Tilemaps
 			{
 				// Build the transitive chain of this state
 				int current = stateIndex;
-				while (directMap[current] != TileConnection.None && (int)directMap[current] != current)
+				while (directMap[current] != TileConnection.All && (int)directMap[current] != current)
 				{
 					currentChain.Add(directMap[current]);
 					current = (int)directMap[current];
