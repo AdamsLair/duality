@@ -55,8 +55,24 @@ namespace Duality.Plugins.Tilemaps
 		/// Resolves the <see cref="Index"/> of the <see cref="Tile"/> based on 
 		/// its <see cref="BaseIndex"/> and <see cref="AutoTileCon"/>.
 		/// </summary>
+		/// <param name="tileset"></param>
+		public void ResolveIndex(ContentRef<Tileset> tileset)
+		{
+			if (tileset.Res == null) throw new ArgumentNullException("tileset");
+			if (!tileset.Res.Compiled) throw new InvalidOperationException("The specified Tileset needs to be compiled first.");
+
+			Tileset tilesetRes = tileset.Res;
+			int autoTileIndex = tilesetRes.TileData[this.BaseIndex].AutoTileLayer - 1;
+			TilesetAutoTileInfo autoTile = tilesetRes.AutoTileData[autoTileIndex];
+
+			this.ResolveIndex(autoTile);
+		}
+		/// <summary>
+		/// Resolves the <see cref="Index"/> of the <see cref="Tile"/> based on 
+		/// its <see cref="BaseIndex"/> and <see cref="AutoTileCon"/>.
+		/// </summary>
 		/// <param name="autoTile"></param>
-		public void ResolveIndex(TilesetAutoTileInfo autoTile)
+		private void ResolveIndex(TilesetAutoTileInfo autoTile)
 		{
 			// Non-AutoTiles always use their base index directly.
 			if (autoTile == null)
@@ -101,7 +117,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="index"></param>
 		/// <param name="count"></param>
 		/// <param name="tileset"></param>
-		public static void ResolveIndices(Tile[] tiles, int index, int count, Tileset tileset)
+		public static void ResolveIndices(Tile[] tiles, int index, int count, ContentRef<Tileset> tileset)
 		{
 			ResolveIndices(tiles, 0, index, 0, count, 1, tileset);
 		}
@@ -114,7 +130,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="tileset"></param>
-		public static void ResolveIndices(Grid<Tile> tileGrid, int beginX, int beginY, int width, int height, Tileset tileset)
+		public static void ResolveIndices(Grid<Tile> tileGrid, int beginX, int beginY, int width, int height, ContentRef<Tileset> tileset)
 		{
 			Tile[] rawData = tileGrid.RawData;
 			int stride = tileGrid.Width;
@@ -129,20 +145,21 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="stride"></param>
-		/// <param name="tileset"></param>
-		public static void ResolveIndices(Tile[] tileGridData, int stride, int beginX, int beginY, int width, int height, Tileset tileset)
+		/// <param name="tilesetRes"></param>
+		public static void ResolveIndices(Tile[] tileGridData, int stride, int beginX, int beginY, int width, int height, ContentRef<Tileset> tileset)
 		{
-			if (tileset == null) throw new ArgumentNullException("tileset");
-			if (!tileset.Compiled) throw new InvalidOperationException("The specified Tileset needs to be compiled first.");
+			if (tileset.Res == null) throw new ArgumentNullException("tileset");
+			if (!tileset.Res.Compiled) throw new InvalidOperationException("The specified Tileset needs to be compiled first.");
 
-			TileInfo[] tileData = tileset.TileData.Data;
+			Tileset tilesetRes = tileset.Res;
+			TileInfo[] tileData = tilesetRes.TileData.Data;
 			for (int y = beginY; y < beginY + height; y++)
 			{
 				for (int x = beginX; x < beginX + width; x++)
 				{
 					int i = y * stride + x;
 					int autoTileIndex = tileData[tileGridData[i].BaseIndex].AutoTileLayer - 1;
-					TilesetAutoTileInfo autoTile = autoTileIndex > -1 ? tileset.AutoTileData[autoTileIndex] : null;
+					TilesetAutoTileInfo autoTile = autoTileIndex > -1 ? tilesetRes.AutoTileData[autoTileIndex] : null;
 
 					tileGridData[i].ResolveIndex(autoTile);
 				}
@@ -159,7 +176,7 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="width"></param>
 		/// <param name="height"></param>
 		/// <param name="tileset"></param>
-		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, int beginX, int beginY, int width, int height, Tileset tileset)
+		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, int beginX, int beginY, int width, int height, ContentRef<Tileset> tileset)
 		{
 			UpdateAutoTileCon(tileGrid, null, beginX, beginY, width, height, tileset);
 		}
@@ -173,13 +190,14 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="beginY"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		/// <param name="tileset"></param>
-		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, Grid<bool> updateMask, int beginX, int beginY, int width, int height, Tileset tileset)
+		/// <param name="tilesetRes"></param>
+		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, Grid<bool> updateMask, int beginX, int beginY, int width, int height, ContentRef<Tileset> tileset)
 		{
-			if (tileset == null) throw new ArgumentNullException("tileset");
+			if (tileset.Res == null) throw new ArgumentNullException("tileset");
 			if (tileGrid == null) throw new ArgumentNullException("tileGrid");
 
-			TileInfo[] tileData = tileset.TileData.Data;
+			Tileset tilesetRes = tileset.Res;
+			TileInfo[] tileData = tilesetRes.TileData.Data;
 			Tile[] tiles = tileGrid.RawData;
 			bool[] maskData = updateMask != null ? updateMask.RawData : null;
 			int tileStride = tileGrid.Width;
@@ -205,7 +223,7 @@ namespace Duality.Plugins.Tilemaps
 					if (autoTileIndex == -1) continue;
 
 					// Lookup AutoTile data
-					TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
+					TilesetAutoTileInfo autoTile = tilesetRes.AutoTileData[autoTileIndex];
 					IReadOnlyList<TilesetAutoTileItem> autoTileInfo = autoTile.TileInfo;
 
 					// Check neighbour connectivity
