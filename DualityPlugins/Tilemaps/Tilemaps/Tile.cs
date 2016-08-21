@@ -116,14 +116,30 @@ namespace Duality.Plugins.Tilemaps
 					else
 					{
 						TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
-						tileGridData[i].Index = autoTile.StateToTile[(int)tileGridData[i].AutoTileCon];
+						TilesetAutoTileItem autoTileInfo = autoTile.TileInfo[tileGridData[i].BaseIndex];
+
+						// If the AutoTile connectivity state already matches with the base index, use it directly.
+						// This will allow scenarios where users specify multiple tiles for a certain connectivity
+						// state, without forcing them back to a single one during resolve.
+						if (autoTileInfo.IsAutoTile && autoTileInfo.Neighbours == tileGridData[i].AutoTileCon)
+						{
+							tileGridData[i].Index = tileGridData[i].BaseIndex;
+						}
+						// Otherwise, lookup the expected tile using base index and connectivity. This
+						// will retrieve the proper generated tile, which has an index that may change
+						// between multiple compilations.
+						else
+						{ 
+							tileGridData[i].Index = autoTile.StateToTile[(int)tileGridData[i].AutoTileCon];
+						}
 					}
 				}
 			}
 		}
 
 		/// <summary>
-		/// Updates the <see cref="AutoTileCon"/> state of a rectangular region on the specified tile grid.
+		/// Updates the <see cref="AutoTileCon"/> state of a rectangular region on the specified tile grid
+		/// based on its connectivity state with neighbouring tiles.
 		/// </summary>
 		/// <param name="tileGrid"></param>
 		/// <param name="beginX"></param>
@@ -136,7 +152,8 @@ namespace Duality.Plugins.Tilemaps
 			UpdateAutoTileCon(tileGrid, null, beginX, beginY, width, height, tileset);
 		}
 		/// <summary>
-		/// Updates the <see cref="AutoTileCon"/> state of an arbitrary region on the specified tile grid.
+		/// Updates the <see cref="AutoTileCon"/> state of an arbitrary region on the specified tile grid
+		/// based on its connectivity state with neighbouring tiles.
 		/// </summary>
 		/// <param name="tileGrid"></param>
 		/// <param name="updateMask"></param>
@@ -147,6 +164,9 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="tileset"></param>
 		public static void UpdateAutoTileCon(Grid<Tile> tileGrid, Grid<bool> updateMask, int beginX, int beginY, int width, int height, Tileset tileset)
 		{
+			if (tileset == null) throw new ArgumentNullException("tileset");
+			if (tileGrid == null) throw new ArgumentNullException("tileGrid");
+
 			TileInfo[] tileData = tileset.TileData.Data;
 			Tile[] tiles = tileGrid.RawData;
 			bool[] maskData = updateMask != null ? updateMask.RawData : null;
@@ -174,17 +194,17 @@ namespace Duality.Plugins.Tilemaps
 
 					// Lookup AutoTile data
 					TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
-					IReadOnlyList<bool> connectsTo = autoTile.Connectivity;
+					IReadOnlyList<TilesetAutoTileItem> autoTileInfo = autoTile.TileInfo;
 
 					// Check neighbour connectivity
-					bool topLeft     = (tileX <= 0        || tileY <= 0       ) || connectsTo[tiles[i - 1 - tileStride].Index];
-					bool top         = (                     tileY <= 0       ) || connectsTo[tiles[i     - tileStride].Index];
-					bool topRight    = (tileX >= maxTileX || tileY <= 0       ) || connectsTo[tiles[i + 1 - tileStride].Index];
-					bool left        = (tileX <= 0                            ) || connectsTo[tiles[i - 1             ].Index];
-					bool right       = (tileX >= maxTileX                     ) || connectsTo[tiles[i + 1             ].Index];
-					bool bottomLeft  = (tileX <= 0        || tileY >= maxTileY) || connectsTo[tiles[i - 1 + tileStride].Index];
-					bool bottom      = (                     tileY >= maxTileY) || connectsTo[tiles[i     + tileStride].Index];
-					bool bottomRight = (tileX >= maxTileX || tileY >= maxTileY) || connectsTo[tiles[i + 1 + tileStride].Index];
+					bool topLeft     = (tileX <= 0        || tileY <= 0       ) || autoTileInfo[tiles[i - 1 - tileStride].Index].ConnectsToAutoTile;
+					bool top         = (                     tileY <= 0       ) || autoTileInfo[tiles[i     - tileStride].Index].ConnectsToAutoTile;
+					bool topRight    = (tileX >= maxTileX || tileY <= 0       ) || autoTileInfo[tiles[i + 1 - tileStride].Index].ConnectsToAutoTile;
+					bool left        = (tileX <= 0                            ) || autoTileInfo[tiles[i - 1             ].Index].ConnectsToAutoTile;
+					bool right       = (tileX >= maxTileX                     ) || autoTileInfo[tiles[i + 1             ].Index].ConnectsToAutoTile;
+					bool bottomLeft  = (tileX <= 0        || tileY >= maxTileY) || autoTileInfo[tiles[i - 1 + tileStride].Index].ConnectsToAutoTile;
+					bool bottom      = (                     tileY >= maxTileY) || autoTileInfo[tiles[i     + tileStride].Index].ConnectsToAutoTile;
+					bool bottomRight = (tileX >= maxTileX || tileY >= maxTileY) || autoTileInfo[tiles[i + 1 + tileStride].Index].ConnectsToAutoTile;
 
 					// Create connectivity bitmask
 					TileConnection autoTileCon = TileConnection.None;

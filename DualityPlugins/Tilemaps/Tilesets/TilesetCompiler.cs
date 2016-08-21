@@ -127,7 +127,7 @@ namespace Duality.Plugins.Tilemaps
 		private TilesetAutoTileInfo TransformAutoTileData(int autoTileIndex, TilesetAutoTileInput autoTileInput, RawList<TileInfo> tileData, int sourceTileCount)
 		{
 			int[] stateToTileMap = new int[(int)TileConnection.All + 1];
-			bool[] connectionMap = new bool[sourceTileCount];
+			TilesetAutoTileItem[] autoTileInfo = new TilesetAutoTileItem[sourceTileCount];
 			int baseTile = MathF.Clamp(autoTileInput.BaseTileIndex, 0, sourceTileCount - 1);
 				
 			// Initialize the tile mapping for all potential connection states with the base tile
@@ -141,19 +141,17 @@ namespace Duality.Plugins.Tilemaps
 			for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
 			{
 				TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
+				autoTileInfo[tileIndex] = tileInput;
+
 				if (tileInput.IsAutoTile)
 				{ 
 					isStateAvailable[(int)tileInput.Neighbours] = true;
 					stateToTileMap[(int)tileInput.Neighbours] = tileIndex;
-					connectionMap[tileIndex] = true;
+					autoTileInfo[tileIndex].ConnectsToAutoTile = true;
 
 					// Apply base tile information to the main tile dataset
 					tileData.Count = Math.Max(tileData.Count, tileIndex + 1);
 					tileData.Data[tileIndex].AutoTileLayer = autoTileIndex + 1;
-				}
-				else if (tileInput.ConnectsToAutoTile)
-				{
-					connectionMap[tileIndex] = true;
 				}
 			}
 
@@ -178,7 +176,7 @@ namespace Duality.Plugins.Tilemaps
 			return new TilesetAutoTileInfo(
 				baseTile, 
 				stateToTileMap,
-				connectionMap);
+				autoTileInfo);
 		}
 		/// <summary>
 		/// Determines the overall geometry of a single <see cref="Tileset"/> visual layer. This involves

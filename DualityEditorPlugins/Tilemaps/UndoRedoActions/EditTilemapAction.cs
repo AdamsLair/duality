@@ -23,6 +23,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		private Grid<Tile>            newTiles;
 		private Grid<bool>            editMask;
 		private Grid<bool>            editMaskAutoTile;
+		private AutoTilePaintMode     autoTileMode;
 
 		public override string Name
 		{
@@ -43,16 +44,25 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			get { return this.newTiles.Capacity == 0; }
 		}
 
-		public EditTilemapAction(Tilemap tilemap, EditTilemapActionType type, Point2 origin, Grid<Tile> newTiles, Grid<bool> editMask)
+		public EditTilemapAction(Tilemap tilemap, EditTilemapActionType type, Point2 origin, Grid<Tile> newTiles, Grid<bool> editMask, AutoTilePaintMode autoTileMode)
 		{
 			if (tilemap == null) throw new ArgumentNullException("tilemap");
 			if (newTiles == null) throw new ArgumentNullException("newTiles");
 			if (editMask == null) throw new ArgumentNullException("editMask");
 
-			// Extend the editing area by a margin of one tile, for AutoTile update reasons
-			Point2 size = new Point2(newTiles.Width + 2, newTiles.Height + 2);
-			origin.X -= 1;
-			origin.Y -= 1;
+			Point2 size = new Point2(newTiles.Width, newTiles.Height);
+			Point2 margin = Point2.Zero;
+
+			// If we'll update neighbouring AutoTiles, we'll need a one tile margin
+			// to properly support Undo / Redo and painting.
+			if (autoTileMode == AutoTilePaintMode.Full)
+				margin = new Point2(1, 1);
+
+			// Extend the editing area by the above margin.
+			size.X += margin.X * 2;
+			size.Y += margin.Y * 2;
+			origin.X -= margin.X;
+			origin.Y -= margin.Y;
 
 			// Clamp the specified editing area to what is actually valid for this tilemap
 			Point2 clampedOrigin = origin;
@@ -67,16 +77,20 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			this.tilemap = tilemap;
 			this.type = type;
 			this.origin = clampedOrigin;
+			this.autoTileMode = autoTileMode;
 
-			// Copy edited tiles to the operation's tilemap-clamped space
+			// Copy edited tiles and masking to the operation's tilemap-clamped space
 			this.newTiles = new Grid<Tile>(clampedSize.X, clampedSize.Y);
 			this.editMask = new Grid<bool>(clampedSize.X, clampedSize.Y);
-			newTiles.CopyTo(this.newTiles, 1 + Math.Min(origin.X, 0), 1 + Math.Min(origin.Y, 0));
-			editMask.CopyTo(this.editMask, 1 + Math.Min(origin.X, 0), 1 + Math.Min(origin.Y, 0));
+			this.editMaskAutoTile = new Grid<bool>(clampedSize.X, clampedSize.Y);
+			newTiles.CopyTo(this.newTiles, margin.X + Math.Min(origin.X, 0), margin.X + Math.Min(origin.Y, 0));
+			editMask.CopyTo(this.editMask, margin.Y + Math.Min(origin.X, 0), margin.Y + Math.Min(origin.Y, 0));
+			editMask.CopyTo(this.editMaskAutoTile, margin.Y + Math.Min(origin.X, 0), margin.Y + Math.Min(origin.Y, 0));
 
-			// Create a second editing mask for AutoTiles specifically, which is expanded by one
-			this.editMaskAutoTile = new Grid<bool>(this.editMask);
-			ExpandMask(this.editMaskAutoTile);
+			// If we're updating neighbouring AutoTiles, expand the AutoTile mask by one
+			// so we'll properly undo them too, despite not painting them directly.
+			if (autoTileMode == AutoTilePaintMode.Full)
+				ExpandMask(this.editMaskAutoTile);
 		}
 
 		public override void Do()
@@ -93,8 +107,25 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 				// Overwrite the edited tiles
 				MaskedCopyGrid(this.newTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
 
-				// Update the connectivity state of the edited tiles.
-				this.UpdateAutoTiles(tiles);
+				// Update the connectivity state of the edited tiles and, potentially, their
+				// neighbouring tiles, depending on how the AutoTile editing mask was setup
+				// in the constructor of the edit operation.
+				Tileset tileset = this.tilemap.Tileset.Res;
+				if (tileset != null)
+				{
+					// For AutoTiling, update each tile based on connectivity
+					if (this.autoTileMode != AutoTilePaintMode.None)
+					{
+						Tile.UpdateAutoTileCon(
+							tiles, 
+							this.editMaskAutoTile,
+							this.origin.X, 
+							this.origin.Y, 
+							this.newTiles.Width, 
+							this.newTiles.Height, 
+							tileset);
+					}
+				}
 			}
 			this.tilemap.EndUpdateTiles(this.origin.X, this.origin.Y, this.newTiles.Width, this.newTiles.Height);
 
@@ -190,22 +221,6 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			MaskedCopyGrid(editAction.editMaskAutoTile, this.editMaskAutoTile, editAction.editMaskAutoTile, drawOffset.X, drawOffset.Y);
 		}
 
-		private void UpdateAutoTiles(Grid<Tile> tiles)
-		{
-			Tileset tileset = this.tilemap.Tileset.Res;
-			if (tileset == null) return;
-			
-			// Update the connectivity state of the edited tiles. Note that surrounding tiles
-			// will be updated too!
-			Tile.UpdateAutoTileCon(
-				tiles, 
-				this.editMaskAutoTile,
-				this.origin.X, 
-				this.origin.Y, 
-				this.newTiles.Width, 
-				this.newTiles.Height, 
-				tileset);
-		}
 		private void OnNotifyPropertyChanged()
 		{
 			DualityEditorApp.NotifyObjPropChanged(

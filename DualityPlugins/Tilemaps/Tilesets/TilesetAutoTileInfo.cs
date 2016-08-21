@@ -13,7 +13,7 @@ namespace Duality.Plugins.Tilemaps
 	{
 		private int baseTile = 0;
 		private int[] stateToTile = null;
-		private bool[] connectivity = null;
+		private TilesetAutoTileItem[] tileInfo = null;
 		
 		/// <summary>
 		/// [GET] The tile index inside the <see cref="Tileset"/> that is considered to be the base
@@ -24,7 +24,7 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.baseTile; }
 		}
 		/// <summary>
-		/// [GET] An array where the item at a <see cref="TileConnection"/> index represents the tile index
+		/// [GET] An readonly list where the item at a <see cref="TileConnection"/> index represents the tile index
 		/// of the border tile to use in this connectivity setup.
 		/// </summary>
 		public IReadOnlyList<int> StateToTile
@@ -32,13 +32,13 @@ namespace Duality.Plugins.Tilemaps
 			get { return this.stateToTile; }
 		}
 		/// <summary>
-		/// [GET] An array that specifies for each tile index whether that tile is considered to be connecting
-		/// to this AutoTile. This also involves all the tiles that belong directly to it. Note that the
-		/// returned array may be smaller than the overall amount of valid tile indices.
+		/// [GET] A readonly list where each item extends the regular <see cref="Tileset.TileData"/> description by
+		/// AutoTile-specific information, such as its matching connectivity state, or whether it is considered to
+		/// connect to this AutoTile.
 		/// </summary>
-		public IReadOnlyList<bool> Connectivity
+		public IReadOnlyList<TilesetAutoTileItem> TileInfo
 		{
-			get { return this.connectivity; }
+			get { return this.tileInfo; }
 		}
 
 		/// <summary>
@@ -50,10 +50,10 @@ namespace Duality.Plugins.Tilemaps
 		/// of the border tile to use in this connectivity setup. This array is not copied. If you plan
 		/// to re-use it, pass a copy as a parameter.
 		/// </param>
-		public TilesetAutoTileInfo(int baseTile, int[] stateToTile, bool[] connectivity)
+		public TilesetAutoTileInfo(int baseTile, int[] stateToTile, TilesetAutoTileItem[] tileInfo)
 		{
 			if (stateToTile == null) throw new ArgumentNullException("stateToTile");
-			if (connectivity == null) throw new ArgumentNullException("connectivity");
+			if (tileInfo == null) throw new ArgumentNullException("tileInfo");
 			if (stateToTile.Length != (int)TileConnection.All + 1) 
 			{
 				throw new ArgumentException(
@@ -65,19 +65,7 @@ namespace Duality.Plugins.Tilemaps
 
 			this.baseTile = baseTile;
 			this.stateToTile = stateToTile;
-			this.connectivity = connectivity;
-		}
-
-		/// <summary>
-		/// Determines whether this AutoTile connects to tiles of the specified tile index.
-		/// </summary>
-		/// <param name="tileIndex"></param>
-		/// <returns></returns>
-		public bool ConnectsToTile(int tileIndex)
-		{
-			if (tileIndex < 0) return false;
-			if (tileIndex >= this.connectivity.Length) return false;
-			return this.connectivity[tileIndex];
+			this.tileInfo = tileInfo;
 		}
 	}
 }

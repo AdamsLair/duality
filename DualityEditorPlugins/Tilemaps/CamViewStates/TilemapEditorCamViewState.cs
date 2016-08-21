@@ -1021,7 +1021,8 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				actionType, 
 				pos, 
 				drawPatch,
-				brush));
+				brush,
+				AutoTilePaintMode.Full));
 		}
 
 		[Flags]
