@@ -16,7 +16,8 @@ namespace Duality.Plugins.Tilemaps
 		/// The final, all-things-considered index in the <see cref="Tileset"/> to which this <see cref="Tile"/> refers.
 		/// 
 		/// You usually wouldn't change this value directly, but change <see cref="BaseIndex"/> instead, as <see cref="Index"/>
-		/// will be updated based on <see cref="BaseIndex"/>, but not the other way around.
+		/// will be updated based on <see cref="BaseIndex"/>, but not the other way around. When you change this value, make sure
+		/// to invoke <see cref="ResolveIndex"/> afterwards.
 		/// 
 		/// This value isn't serialized, but generated afterwards, since it may change when the <see cref="Tileset"/>
 		/// configuration changes. Since some tiles might be auto-generated, it is not guaranteed that this index is
@@ -48,6 +49,43 @@ namespace Duality.Plugins.Tilemaps
 			this.BaseIndex = baseIndex;
 			this.DepthOffset = 0;
 			this.AutoTileCon = TileConnection.None;
+		}
+		
+		/// <summary>
+		/// Resolves the <see cref="Index"/> of the <see cref="Tile"/> based on 
+		/// its <see cref="BaseIndex"/> and <see cref="AutoTileCon"/>.
+		/// </summary>
+		/// <param name="autoTile"></param>
+		public void ResolveIndex(TilesetAutoTileInfo autoTile)
+		{
+			// Non-AutoTiles always use their base index directly.
+			if (autoTile == null)
+			{
+				this.Index = this.BaseIndex;
+			}
+			// AutoTiles require a dynamic lookup with their connectivity state, because
+			// they might use generated tiles that do not have a consistent index across
+			// different Tileset configs.
+			else
+			{
+				int targetIndex = autoTile.StateToTile[(int)this.AutoTileCon];
+
+				// If the AutoTile connectivity state already matches the one we'd get with the default
+				// resolved tile index, use the current one directly and don't change it.
+				// This will allow scenarios where users specify multiple tiles for a certain connectivity
+				// state, without forcing them back to a single one during resolve.
+				if (autoTile.TileInfo[this.BaseIndex].Neighbours == autoTile.TileInfo[targetIndex].Neighbours)
+				{
+					this.Index = this.BaseIndex;
+				}
+				// Otherwise, lookup the expected tile using base index and connectivity. This
+				// will retrieve the proper generated tile, which has an index that may change
+				// between multiple compilations.
+				else
+				{ 
+					this.Index = targetIndex;
+				}
+			}
 		}
 
 		public override string ToString()
@@ -104,35 +142,9 @@ namespace Duality.Plugins.Tilemaps
 				{
 					int i = y * stride + x;
 					int autoTileIndex = tileData[tileGridData[i].BaseIndex].AutoTileLayer - 1;
+					TilesetAutoTileInfo autoTile = autoTileIndex > -1 ? tileset.AutoTileData[autoTileIndex] : null;
 
-					// Non-AutoTiles always use their base index directly.
-					if (autoTileIndex == -1)
-					{
-						tileGridData[i].Index = tileGridData[i].BaseIndex;
-					}
-					// AutoTiles require a dynamic lookup with their connectivity state, because
-					// they might use generated tiles that do not have a consistent index across
-					// different Tileset configs.
-					else
-					{
-						TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileIndex];
-						TilesetAutoTileItem autoTileInfo = autoTile.TileInfo[tileGridData[i].BaseIndex];
-
-						// If the AutoTile connectivity state already matches with the base index, use it directly.
-						// This will allow scenarios where users specify multiple tiles for a certain connectivity
-						// state, without forcing them back to a single one during resolve.
-						if (autoTileInfo.IsAutoTile && autoTileInfo.Neighbours == tileGridData[i].AutoTileCon)
-						{
-							tileGridData[i].Index = tileGridData[i].BaseIndex;
-						}
-						// Otherwise, lookup the expected tile using base index and connectivity. This
-						// will retrieve the proper generated tile, which has an index that may change
-						// between multiple compilations.
-						else
-						{ 
-							tileGridData[i].Index = autoTile.StateToTile[(int)tileGridData[i].AutoTileCon];
-						}
-					}
+					tileGridData[i].ResolveIndex(autoTile);
 				}
 			}
 		}
@@ -219,7 +231,7 @@ namespace Duality.Plugins.Tilemaps
 
 					// Update connectivity and re-resolve index
 					tiles[i].AutoTileCon = autoTileCon;
-					tiles[i].Index = autoTile.StateToTile[(int)autoTileCon];
+					tiles[i].ResolveIndex(autoTile);
 				}
 			}
 		}

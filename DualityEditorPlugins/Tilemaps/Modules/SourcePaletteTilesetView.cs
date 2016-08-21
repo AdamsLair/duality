@@ -278,12 +278,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 					// specified for it in the Tileset. This way, when painting the tile unaltered, 
 					// resolving it using base index and connectivity state won't replace it with a
 					// different tile.
-					TileInfo tileInfo = tileset.TileData[tile.BaseIndex];
-					int autoTileLayer = tileInfo.AutoTileLayer;
-					if (autoTileLayer != 0)
+					if (tileset != null)
 					{
-						IReadOnlyList<TilesetAutoTileItem> autoTileInfo = tileset.AutoTileData[autoTileLayer - 1].TileInfo;
-						tile.AutoTileCon = autoTileInfo[tile.BaseIndex].Neighbours;
+						TileInfo tileInfo = tileset.TileData[tile.BaseIndex];
+						int autoTileLayer = tileInfo.AutoTileLayer;
+						if (autoTileLayer != 0)
+						{
+							IReadOnlyList<TilesetAutoTileItem> autoTileInfo = tileset.AutoTileData[autoTileLayer - 1].TileInfo;
+							tile.AutoTileCon = autoTileInfo[tile.BaseIndex].Neighbours;
+						}
 					}
 
 					this.selectedTiles[x, y] = tile;
