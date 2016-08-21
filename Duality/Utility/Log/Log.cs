@@ -169,12 +169,12 @@ namespace Duality
 		{
 			Profile.TimeLog.BeginMeasure();
 
-            if(msg == null) msg = "[null message]";
+                        if(msg == null) msg = "[null message]";
 
-            // Check whether the message contains null characters. If it does, crop it, because it's probably broken.
-            int nullCharIndex = msg.IndexOf('\0');
+                        // Check whether the message contains null characters. If it does, crop it, because it's probably broken.
+                        int nullCharIndex = msg.IndexOf('\0');
             
-            if (nullCharIndex != -1)
+                        if (nullCharIndex != -1)
 			{
 				msg = msg.Substring(0, Math.Min(nullCharIndex, 50)) + " | Contains '\0' and is likely broken.";
 			}
