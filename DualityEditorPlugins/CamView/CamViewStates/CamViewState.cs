@@ -712,6 +712,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private void RenderableControl_Paint(object sender, PaintEventArgs e)
 		{
 			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
+			if (DualityApp.GraphicsBackend == null) return;
 
 			// Only allow one rendered frame per simulated frame to avoid spamming repaints
 			// based on user input like OnMouseMove or similar. Remember that all buffer swaps
