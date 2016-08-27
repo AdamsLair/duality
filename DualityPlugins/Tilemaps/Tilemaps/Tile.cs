@@ -63,7 +63,7 @@ namespace Duality.Plugins.Tilemaps
 
 			Tileset tilesetRes = tileset.Res;
 			int autoTileIndex = tilesetRes.TileData[this.BaseIndex].AutoTileLayer - 1;
-			TilesetAutoTileInfo autoTile = tilesetRes.AutoTileData[autoTileIndex];
+			TilesetAutoTileInfo autoTile = autoTileIndex >= 0 ? tilesetRes.AutoTileData[autoTileIndex] : null;
 
 			this.ResolveIndex(autoTile);
 		}
