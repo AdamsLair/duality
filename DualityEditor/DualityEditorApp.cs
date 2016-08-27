@@ -282,6 +282,9 @@ namespace Duality.Editor
 			}
 			editorActions.StableSort((a, b) => b.Priority.CompareTo(a.Priority));
 
+			// Enter a new, empty Scene, which will trigger the usual updates
+			Scene.SwitchTo(null, true);
+
 			// If there are no Scenes in the current project, init the first one with some default objects.
 			if (!Directory.EnumerateFiles(DualityApp.DataDirectory, "*" + Resource.GetFileExtByType<Scene>(), SearchOption.AllDirectories).Any())
 			{

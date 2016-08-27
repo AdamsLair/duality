@@ -93,7 +93,7 @@ namespace Duality.Editor
 				
 				// Force later Scene reload by disposing it
 				string curPath = null;
-				if (!String.IsNullOrEmpty(Scene.Current.Path))
+				if (!string.IsNullOrEmpty(Scene.Current.Path))
 				{
 					curPath = Scene.CurrentPath;
 					Scene.Current.Dispose();
@@ -104,7 +104,17 @@ namespace Duality.Editor
 
 				// (Re)Load Scene.
 				if (curPath != null)
+				{
 					Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curPath), true);
+				}
+				// If it's a runtime-only / non-persistent scene, leave and re-enter it to allow objects to
+				// re-initialize in the new execution context.
+				else
+				{
+					Scene runtimeScene = Scene.Current;
+					Scene.SwitchTo(null, true);
+					Scene.SwitchTo(runtimeScene, true);
+				}
 			}
 
 			OnSandboxStateChanged();
@@ -146,7 +156,17 @@ namespace Duality.Editor
 			
 			// (Re)Load Scene
 			if (curPath != null)
+			{
 				Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curPath));
+			}
+			// If it's a runtime-only / non-persistent scene, leave and re-enter it to allow objects to
+			// re-initialize in the new execution context.
+			else
+			{
+				Scene runtimeScene = Scene.Current;
+				Scene.SwitchTo(null, true);
+				Scene.SwitchTo(runtimeScene, true);
+			}
 
 			OnLeaveSandbox();
 			OnSandboxStateChanged();
