@@ -307,6 +307,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (cancel) e.Cancel = true;
 			}
 		}
+		protected override void OnGotFocus(EventArgs e)
+		{
+			base.OnGotFocus(e);
+			// When getting focus, fake a selection event so we'll get back inspector 
+			// focus, should that be desired by the active editing mode.
+			this.layerView_SelectionChanged(this, EventArgs.Empty);
+		}
 		private void OnTilesetSelectionChanging(TilesetSelectionChangedEventArgs args)
 		{
 			// When switching to a different tileset, either apply or revert what we did to the current one
@@ -439,6 +446,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (this.activeMode != null && canAddRemove)
 					this.activeMode.RemoveLayer();
 			}
+		}
+		private void layerView_Enter(object sender, EventArgs e)
+		{
+			// When getting focus, fake a selection event so we'll get back inspector 
+			// focus, should that be desired by the active editing mode.
+			this.layerView_SelectionChanged(this, EventArgs.Empty);
 		}
 
 		HelpInfo IHelpProvider.ProvideHoverHelp(Point localPos, ref bool captured)

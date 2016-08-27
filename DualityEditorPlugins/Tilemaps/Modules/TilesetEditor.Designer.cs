@@ -104,6 +104,7 @@
 			this.layerView.TabIndex = 1;
 			this.layerView.UseColumns = true;
 			this.layerView.SelectionChanged += new System.EventHandler(this.layerView_SelectionChanged);
+			this.layerView.Enter += new System.EventHandler(this.layerView_Enter);
 			this.layerView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.layerView_KeyDown);
 			this.layerView.Resize += new System.EventHandler(this.layerView_Resize);
 			// 
