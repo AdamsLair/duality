@@ -28,8 +28,8 @@ namespace Duality.Plugins.Tilemaps
 
 		/// <summary>
 		/// The base / source tile index in the <see cref="Tileset"/> to which this <see cref="Tile"/> refers.
-		/// This is a valid index in the <see cref="Tileset"/> source data, even if the tile it refers to was
-		/// generated during compilation.
+		/// The <see cref="BaseIndex"/> is a valid index in the <see cref="Tileset"/> source data, even if the 
+		/// actually displayed and used <see cref="Index"/> was generated during compilation.
 		/// </summary>
 		/// <seealso cref="Index"/>
 		public int BaseIndex;
@@ -41,6 +41,7 @@ namespace Duality.Plugins.Tilemaps
 		/// The connection state of this <see cref="Tile"/> with regard to AutoTiling rules.
 		/// </summary>
 		public TileConnection AutoTileCon;
+
 
 		public Tile(int baseIndex)
 		{
