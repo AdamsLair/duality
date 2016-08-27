@@ -39,6 +39,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private Tileset             tilesetBackup  = null;
 		private bool                applyRequired  = false;
 
+
 		/// <summary>
 		/// [GET] The currently selected <see cref="Tileset"/> in this editor. This property
 		/// is dependent on and automatically set by editor-wide selection events.
@@ -50,6 +51,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 		internal TilesetView TilesetView
 		{
 			get { return this.tilesetView; }
+		}
+		private int SelectedLayerIndex
+		{
+			get { return this.layerView.SelectedNode == null ? -1 : this.layerView.SelectedNode.Index; }
 		}
 
 
@@ -108,6 +113,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 				false;
 			this.buttonAddLayer.Visible = canAddRemove;
 			this.buttonRemoveLayer.Visible = canAddRemove;
+			this.buttonRemoveLayer.Enabled = (this.layerView.SelectedNode != null);
 
 			// Invalidate TilesetView because editor modes are likely to
 			// draw custom overlays using its event handlers. Directly show
@@ -120,6 +126,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 				.Root
 				.Children
 				.FirstOrDefault(v => v.Tag == layerViewTag);
+		}
+		private void SetSelectedLayer(int layerIndex)
+		{
+			if (layerIndex != -1)
+			{
+				layerIndex = MathF.Clamp(layerIndex, 0, this.layerView.Root.Children.Count - 1);
+				this.layerView.SelectedNode = this.layerView.Root.Children[layerIndex];
+			}
+			else
+			{
+				this.layerView.SelectedNode = null;
+			}
 		}
 		private void ApplyGlobalTilesetSelection(SelectionChangeReason changeReason)
 		{
@@ -160,19 +178,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void ApplyTilesetChanges()
 		{
+			int selectedLayerIndex = this.SelectedLayerIndex;
+
 			UndoRedoManager.Do(new ApplyTilesetChangesAction(
 				this.SelectedTileset.Res, 
 				this.tilesetBackup));
 
 			this.CleanupAfterApplyRevert();
+			this.SetSelectedLayer(selectedLayerIndex);
 		}
 		private void ResetTilesetChanges()
 		{
+			int selectedLayerIndex = this.SelectedLayerIndex;
+
 			UndoRedoManager.Do(new RevertTilesetChangesAction(
 				this.SelectedTileset.Res, 
 				this.tilesetBackup));
 
 			this.CleanupAfterApplyRevert();
+			this.SetSelectedLayer(selectedLayerIndex);
 		}
 		private void CleanupAfterApplyRevert()
 		{
@@ -322,10 +346,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (tileset != null)
 			{
 				bool affectsTileset = e.HasObject(tileset);
-				bool affectsRenderConfig = 
+				bool affectsConfigLayer = 
 					e.HasAnyObject(tileset.RenderConfig) || 
-					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig);
-				if (affectsTileset || affectsRenderConfig)
+					e.HasAnyObject(tileset.AutoTileConfig) || 
+					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_RenderConfig) || 
+					e.HasProperty(TilemapsReflectionInfo.Property_Tileset_AutoTileConfig);
+				if (affectsTileset || affectsConfigLayer)
 				{
 					if (this.activeMode != null)
 						this.activeMode.RaiseOnTilesetModified(e);
@@ -380,8 +406,16 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void buttonRemoveLayer_Click(object sender, EventArgs e)
 		{
+			int selectedIndex = this.layerView.SelectedNode != null ? this.layerView.SelectedNode.Index : -1;
+
 			if (this.activeMode != null)
 				this.activeMode.RemoveLayer();
+
+			if (selectedIndex != -1 && this.layerView.Root.Children.Count > 0)
+			{
+				selectedIndex = MathF.Clamp(selectedIndex - 1, 0, this.layerView.Root.Children.Count - 1);
+				this.layerView.SelectedNode = this.layerView.Root.Children[selectedIndex];
+			}
 		}
 		private void layerView_SelectionChanged(object sender, EventArgs e)
 		{
@@ -415,8 +449,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// Retrieve the currently hovered / active item from all child toolstrips
 			ToolStripItem hoveredItem = this.GetHoveredToolStripItem(globalPos, out captured);
 			hoveredObj = (hoveredItem != null) ? hoveredItem.Tag : null;
+			if (hoveredObj is HelpInfo)
+				return hoveredObj as HelpInfo;
 
-			return hoveredObj as HelpInfo;
+			// If the currently active editing mode can provide help, ask for it
+			if (this.activeMode is IHelpProvider)
+			{
+				HelpInfo modeHelp = (this.activeMode as IHelpProvider).ProvideHoverHelp(localPos, ref captured);
+				if (modeHelp != null)
+					return modeHelp;
+			}
+
+			return null;
 		}
 	}
 }

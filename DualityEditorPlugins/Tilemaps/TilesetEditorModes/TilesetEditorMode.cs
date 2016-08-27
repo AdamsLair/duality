@@ -28,8 +28,15 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			get { return this.editor.SelectedTileset; }
 		}
 		/// <summary>
+		/// [GET] The <see cref="TilesetEditor"/> that hosts this <see cref="TilesetEditorMode"/>.
+		/// </summary>
+		protected TilesetEditor TilesetEditor
+		{
+			get { return this.editor; }
+		}
+		/// <summary>
 		/// [GET] The <see cref="TilesetView"/> of the <see cref="TilesetEditor"/>, which
-		/// can be customized on a per-<see cref="TilesetEditorMode"/> bases.
+		/// can be customized on a per-<see cref="TilesetEditorMode"/> basis.
 		/// </summary>
 		protected TilesetView TilesetView
 		{

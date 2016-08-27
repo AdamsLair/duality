@@ -169,6 +169,9 @@ namespace Duality
 		{
 			Profile.TimeLog.BeginMeasure();
 
+			// If a null message is provided, log that. Don't throw an exception, since logging isn't expected to throw.
+			if (msg == null) msg = "[null message]";
+
 			// Check whether the message contains null characters. If it does, crop it, because it's probably broken.
 			int nullCharIndex = msg.IndexOf('\0');
 			if (nullCharIndex != -1)

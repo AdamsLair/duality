@@ -12,7 +12,7 @@ using Duality.Plugins.Tilemaps;
 
 namespace Duality.Editor.Plugins.Tilemaps
 {
-	public class TilesetView : Panel
+	public class TilesetView : ScrollableControl
 	{
 		public enum HorizontalAlignment
 		{

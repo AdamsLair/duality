@@ -14,12 +14,13 @@ using Duality.Editor.Plugins.Tilemaps.CamViewStates;
 
 namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 {
-	public class EditTilesetTileInputAction : UndoRedoAction
+	public class EditTilesetAutoTileItemAction : UndoRedoAction
 	{
-		private Tileset            tileset;
-		private RawList<TileInput> tileInput;
-		private RawList<bool>      tileInputMask;
-		private RawList<TileInput> backupTileInput;
+		private Tileset                      tileset;
+		private TilesetAutoTileInput         autoTile;
+		private RawList<TilesetAutoTileItem> tileInput;
+		private RawList<bool>                tileInputMask;
+		private RawList<TilesetAutoTileItem> backupTileInput;
 
 		public override string Name
 		{
@@ -27,16 +28,18 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		}
 		public override bool IsVoid
 		{
-			get { return this.tileset == null; }
+			get { return this.tileset == null || this.autoTile == null; }
 		}
 
-		public EditTilesetTileInputAction(Tileset tileset, int tileIndex, TileInput tileInput)
+		public EditTilesetAutoTileItemAction(Tileset tileset, TilesetAutoTileInput autoTile, int tileIndex, TilesetAutoTileItem tileInput)
 		{
 			if (tileset == null) throw new ArgumentNullException("tileset");
+			if (autoTile == null) throw new ArgumentNullException("autoTile");
 
 			this.tileset = tileset;
+			this.autoTile = autoTile;
 
-			this.tileInput = new RawList<TileInput>(tileIndex + 1);
+			this.tileInput = new RawList<TilesetAutoTileItem>(tileIndex + 1);
 			this.tileInput.Count = tileIndex + 1;
 			this.tileInput.Data[tileIndex] = tileInput;
 			
@@ -44,13 +47,15 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			this.tileInputMask.Count = tileIndex + 1;
 			this.tileInputMask.Data[tileIndex] = true;
 		}
-		public EditTilesetTileInputAction(Tileset tileset, RawList<TileInput> tileInput, RawList<bool> tileInputMask)
+		public EditTilesetAutoTileItemAction(Tileset tileset, TilesetAutoTileInput autoTile, RawList<TilesetAutoTileItem> tileInput, RawList<bool> tileInputMask)
 		{
 			if (tileset == null) throw new ArgumentNullException("tileset");
+			if (autoTile == null) throw new ArgumentNullException("autoTile");
 			if (tileInput == null) throw new ArgumentNullException("tileInput");
 			if (tileInputMask == null) throw new ArgumentNullException("tileInputMask");
 			if (tileInputMask.Count != tileInput.Count) throw new ArgumentException("Input Mask needs to be the same size as input.", "tileInputMask");
 
+			this.autoTile = autoTile;
 			this.tileset = tileset;
 			this.tileInput = tileInput;
 			this.tileInputMask = tileInputMask;
@@ -61,22 +66,22 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			// Make a backup copy of the original tile input data block
 			if (this.backupTileInput == null)
 			{
-				this.backupTileInput = new RawList<TileInput>(this.tileset.TileInput);
+				this.backupTileInput = new RawList<TilesetAutoTileItem>(this.autoTile.TileInput);
 			}
 
 			// Expand the tile input when required
-			this.tileset.TileInput.Count = Math.Max(
-				this.tileset.TileInput.Count,
+			this.autoTile.TileInput.Count = Math.Max(
+				this.autoTile.TileInput.Count,
 				this.tileInput.Count);
 
 			// Adjust the backup length to fit the new tile input length
-			this.backupTileInput.Count = this.tileset.TileInput.Count;
+			this.backupTileInput.Count = this.autoTile.TileInput.Count;
 
 			// Copy all edited tile input indices
 			for (int i = 0; i < this.tileInput.Count; i++)
 			{
 				if (!this.tileInputMask[i]) continue;
-				this.tileset.TileInput[i] = this.tileInput[i];
+				this.autoTile.TileInput[i] = this.tileInput[i];
 			}
 
 			// Notify the editor that we changed the tileset
@@ -85,15 +90,15 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		public override void Undo()
 		{
 			// Expand the tile input when required
-			this.tileset.TileInput.Count = Math.Max(
-				this.tileset.TileInput.Count,
+			this.autoTile.TileInput.Count = Math.Max(
+				this.autoTile.TileInput.Count,
 				this.backupTileInput.Count);
 
 			// Copy the original tile input data block back to the tileset where changes occurred
 			for (int i = 0; i < this.tileInput.Count; i++)
 			{
 				if (!this.tileInputMask[i]) continue;
-				this.tileset.TileInput[i] = this.backupTileInput[i];
+				this.autoTile.TileInput[i] = this.backupTileInput[i];
 			}
 
 			// Notify the editor that we changed the tileset
@@ -102,15 +107,15 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 
 		public override bool CanAppend(UndoRedoAction action)
 		{
-			EditTilesetTileInputAction castAction = action as EditTilesetTileInputAction;
+			EditTilesetAutoTileItemAction castAction = action as EditTilesetAutoTileItemAction;
 			if (castAction == null) return false;
-			if (castAction.tileset != this.tileset) return false;
+			if (castAction.autoTile != this.autoTile) return false;
 			return true;
 		}
 		public override void Append(UndoRedoAction action, bool performAction)
 		{
 			base.Append(action, performAction);
-			EditTilesetTileInputAction castAction = action as EditTilesetTileInputAction;
+			EditTilesetAutoTileItemAction castAction = action as EditTilesetAutoTileItemAction;
 
 			if (performAction)
 			{
@@ -129,7 +134,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			}
 
 			// Adjust the backup length to fit the new tile input length
-			this.backupTileInput.Count = this.tileset.TileInput.Count;
+			this.backupTileInput.Count = this.autoTile.TileInput.Count;
 		}
 
 		private void OnNotifyPropertyChanged()
@@ -137,7 +142,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			DualityEditorApp.NotifyObjPropChanged(
 				this,
 				new ObjectSelection(this.tileset),
-				TilemapsReflectionInfo.Property_Tileset_TileInput);
+				TilemapsReflectionInfo.Property_Tileset_AutoTileConfig);
 		}
 	}
 }

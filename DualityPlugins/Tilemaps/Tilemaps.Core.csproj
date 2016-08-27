@@ -48,6 +48,8 @@
     <Compile Include="Tilemaps\Components\TilemapCollisionSource.cs" />
     <Compile Include="Tilesets\TileCollisionShapes.cs" />
     <Compile Include="Tilesets\TileCollisionShape.cs" />
+    <Compile Include="Tilesets\TilesetAutoTileItem.cs" />
+    <Compile Include="Tilesets\TileConnection.cs" />
     <Compile Include="Tilesets\TileInfo.cs" />
     <Compile Include="Tilemaps\Tile.cs" />
     <Compile Include="Tilemaps\TileEdgeMap.cs" />
@@ -61,6 +63,12 @@
     <Compile Include="Tilemaps\Components\Tilemap.cs" />
     <Compile Include="Tilesets\TileCollisionLayer.cs" />
     <Compile Include="Tilesets\TileInput.cs" />
+    <Compile Include="Tilesets\TilesetAutoTileFallbackMap.cs" />
+    <Compile Include="Tilesets\TilesetCompilerOutput.cs" />
+    <Compile Include="Tilesets\TilesetCompilerInput.cs" />
+    <Compile Include="Tilesets\TilesetCompiler.cs" />
+    <Compile Include="Tilesets\TilesetAutoTileInfo.cs" />
+    <Compile Include="Tilesets\TilesetAutoTileInput.cs" />
     <Compile Include="Tilesets\TilesetRenderInput.cs" />
     <Compile Include="Tilesets\Tileset.cs" />
   </ItemGroup>

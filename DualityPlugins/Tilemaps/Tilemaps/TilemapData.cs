@@ -25,6 +25,18 @@ namespace Duality.Plugins.Tilemaps
 		/// Represents the first <see cref="TilemapData"/> version that includes depth offsets.
 		/// </summary>
 		private const int Serialize_Version_DepthOffset = 2;
+		/// <summary>
+		/// Represents the first <see cref="TilemapData"/> version that includes AutoTile data.
+		/// </summary>
+		private const int Serialize_Version_AutoTile    = 3;
+		/// <summary>
+		/// The lowest version identifier that can be handled in deserialization.
+		/// </summary>
+		private const int Serialize_MinVersion = Serialize_Version_ZippedBytes;
+		/// <summary>
+		/// The highest version identifier that can be handled in deserialization.
+		/// </summary>
+		private const int Serialize_MaxVersion = Serialize_Version_AutoTile;
 
 
 		private Grid<Tile> tiles = new Grid<Tile>();
@@ -61,15 +73,16 @@ namespace Duality.Plugins.Tilemaps
 					Tile[] rawData = this.tiles.RawData;
 					for (int i = 0; i < this.tiles.Capacity; i++)
 					{
-						streamWriter.Write((int)rawData[i].Index);
+						streamWriter.Write((int)rawData[i].BaseIndex);
 						streamWriter.Write((short)rawData[i].DepthOffset);
+						streamWriter.Write((byte)rawData[i].AutoTileCon);
 					}
 				}
 				compressedData = compressedStream.ToArray();
 			}
 
 			// Transfer the compressed data to the serializer to handle it
-			writer.WriteValue("version", Serialize_Version_DepthOffset);
+			writer.WriteValue("version", Serialize_Version_AutoTile);
 			writer.WriteValue("data", compressedData);
 		}
 		void ISerializeExplicit.ReadData(IDataReader reader)
@@ -80,8 +93,8 @@ namespace Duality.Plugins.Tilemaps
 			catch (Exception) { version = Serialize_Version_Unknown; }
 			
 			// Read the compressed data and unpack it
-			if (version >= Serialize_Version_ZippedBytes && 
-				version <= Serialize_Version_DepthOffset)
+			if (version >= Serialize_MinVersion && 
+				version <= Serialize_MaxVersion)
 			{
 				byte[] compressedData;
 				reader.ReadValue("data", out compressedData);
@@ -98,6 +111,7 @@ namespace Duality.Plugins.Tilemaps
 					{
 						case Serialize_Version_ZippedBytes: this.ReadBinVersionFirst(streamReader, rawData); break;
 						case Serialize_Version_DepthOffset: this.ReadBinVersionDepth(streamReader, rawData); break;
+						case Serialize_Version_AutoTile: this.ReadBinVersionAutoTile(streamReader, rawData); break;
 					}
 
 					this.tiles = new Grid<Tile>(width, height, rawData);
@@ -115,15 +129,27 @@ namespace Duality.Plugins.Tilemaps
 		{
 			for (int i = 0; i < target.Length; i++)
 			{
-				target[i].Index = reader.ReadInt32();
+				target[i].BaseIndex = reader.ReadInt32();
+				target[i].Index = target[i].BaseIndex;
 			}
 		}
 		private void ReadBinVersionDepth(BinaryReader reader, Tile[] target)
 		{
 			for (int i = 0; i < target.Length; i++)
 			{
-				target[i].Index = reader.ReadInt32();
+				target[i].BaseIndex = reader.ReadInt32();
 				target[i].DepthOffset = reader.ReadInt16();
+				target[i].Index = target[i].BaseIndex;
+			}
+		}
+		private void ReadBinVersionAutoTile(BinaryReader reader, Tile[] target)
+		{
+			for (int i = 0; i < target.Length; i++)
+			{
+				target[i].BaseIndex = reader.ReadInt32();
+				target[i].DepthOffset = reader.ReadInt16();
+				target[i].AutoTileCon = (TileConnection)reader.ReadByte();
+				target[i].Index = target[i].BaseIndex;
 			}
 		}
 	}

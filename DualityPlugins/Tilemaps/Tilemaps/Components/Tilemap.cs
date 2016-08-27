@@ -13,7 +13,7 @@ namespace Duality.Plugins.Tilemaps
 	/// </summary>
 	[EditorHintCategory(TilemapsResNames.CategoryTilemaps)]
 	[EditorHintImage(TilemapsResNames.ImageTilemap)]
-	public class Tilemap : Component
+	public class Tilemap : Component, ICmpInitializable
 	{
 		private ContentRef<Tileset> tileset  = null;
 		private TilemapData         tileData = new TilemapData();
@@ -117,7 +117,16 @@ namespace Duality.Plugins.Tilemaps
 		/// <param name="height"></param>
 		public void EndUpdateTiles(int x, int y, int width, int height)
 		{
-			if (this.updateStack == 0) throw new InvalidOperationException("Can't end a Tilemap update when there was none being performed.");
+			if (this.updateStack == 0) 
+				throw new InvalidOperationException("Can't end a Tilemap update when there was none being performed.");
+			
+			// Clamp the specified rect region to a valid range
+			width  += Math.Min(x, 0);
+			height += Math.Min(y, 0);
+			x = MathF.Clamp(x, 0, this.tileData.Size.X);
+			y = MathF.Clamp(y, 0, this.tileData.Size.Y);
+			width  = MathF.Clamp(width,  0, this.tileData.Size.X - x);
+			height = MathF.Clamp(height, 0, this.tileData.Size.Y - y);
 
 			// Pop an active editing operation.
 			this.updateStack--;
@@ -158,9 +167,26 @@ namespace Duality.Plugins.Tilemaps
 			this.EndUpdateTiles(0, 0, this.tileData.Tiles.Width, this.tileData.Tiles.Height);
 		}
 
+		/// <summary>
+		/// Resolves the <see cref="Tile.Index"/> value of all tiles in the specified area.
+		/// </summary>
+		/// <param name="beginX"></param>
+		/// <param name="beginY"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		private void ResolveTileIndices(int beginX, int beginY, int width, int height)
+		{
+			Tileset tileset = this.tileset.Res;
+			if (tileset == null) return;
+			if (!tileset.Compiled) return;
+
+			Tile.ResolveIndices(this.tileData.Tiles, beginX, beginY, width, height, tileset);
+		}
+
 		private void OnTilesChanged(int x, int y, int width, int height)
 		{
 			if (width == 0 || height == 0) return;
+			this.ResolveTileIndices(x, y, width, height);
 			if (this.eventTilemapChanged != null)
 				this.eventTilemapChanged(this, new TilemapChangedEventArgs(this, x, y, width, height));
 		}
@@ -168,5 +194,14 @@ namespace Duality.Plugins.Tilemaps
 		{
 			this.OnTilesChanged(0, 0, this.tileData.Tiles.Width, this.tileData.Tiles.Height);
 		}
+
+		void ICmpInitializable.OnInit(Component.InitContext context)
+		{
+			if (context == InitContext.Loaded)
+			{
+				this.ResolveTileIndices(0, 0, this.tileData.Size.X, this.tileData.Size.Y);
+			}
+		}
+		void ICmpInitializable.OnShutdown(Component.ShutdownContext context) { }
 	}
 }

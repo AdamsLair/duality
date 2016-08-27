@@ -34,6 +34,8 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties
 		public static readonly Bitmap IconTilesetDepthVerticalTile = TilemapsRes.IconTilesetDepthVerticalTile;
 		public static readonly Bitmap IconTilesetVisualLayers      = TilemapsRes.IconTilesetVisualLayers;
 		public static readonly Bitmap IconTilesetCollisionLayer    = TilemapsRes.IconTilesetCollisionLayer;
+		public static readonly Bitmap IconTilesetAutoTile          = TilemapsRes.IconTilesetAutoTile;
+		public static readonly Bitmap IconTilesetAutoTileLayer     = TilemapsRes.IconTilesetAutoTileLayer;
 		public static readonly Bitmap TilesetCollisionBit          = TilemapsRes.TilesetCollisionBit;
 		public static readonly Bitmap TilesetCollisionDiagUp       = TilemapsRes.TilesetCollisionDiagUp;
 		public static readonly Bitmap TilesetCollisionDiagDown     = TilemapsRes.TilesetCollisionDiagDown;

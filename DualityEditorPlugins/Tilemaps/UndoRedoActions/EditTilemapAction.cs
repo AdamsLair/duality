@@ -22,6 +22,8 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		private Grid<Tile>            oldTiles;
 		private Grid<Tile>            newTiles;
 		private Grid<bool>            editMask;
+		private Grid<bool>            editMaskAutoTile;
+		private AutoTilePaintMode     autoTileMode;
 
 		public override string Name
 		{
@@ -39,27 +41,92 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		}
 		public override bool IsVoid
 		{
-			get { return this.tilemap == null || this.newTiles == null || this.newTiles.Capacity == 0; }
+			get { return this.newTiles.Capacity == 0; }
 		}
 
-		public EditTilemapAction(Tilemap tilemap, EditTilemapActionType type, Point2 origin, Grid<Tile> newTiles, Grid<bool> editMask)
+		public EditTilemapAction(Tilemap tilemap, EditTilemapActionType type, Point2 origin, Grid<Tile> newTiles, Grid<bool> editMask, AutoTilePaintMode autoTileMode)
 		{
+			if (tilemap == null) throw new ArgumentNullException("tilemap");
+			if (newTiles == null) throw new ArgumentNullException("newTiles");
+			if (editMask == null) throw new ArgumentNullException("editMask");
+
+			Point2 size = new Point2(newTiles.Width, newTiles.Height);
+			Point2 margin = Point2.Zero;
+
+			// If we'll update neighbouring AutoTiles, we'll need a one tile margin
+			// to properly support Undo / Redo and painting.
+			if (autoTileMode == AutoTilePaintMode.Full)
+				margin = new Point2(1, 1);
+
+			// Extend the editing area by the above margin.
+			size.X += margin.X * 2;
+			size.Y += margin.Y * 2;
+			origin.X -= margin.X;
+			origin.Y -= margin.Y;
+
+			// Clamp the specified editing area to what is actually valid for this tilemap
+			Point2 clampedOrigin = origin;
+			Point2 clampedSize = size;
+			clampedSize.X += Math.Min(clampedOrigin.X, 0);
+			clampedSize.Y += Math.Min(clampedOrigin.Y, 0);
+			clampedOrigin.X = MathF.Clamp(clampedOrigin.X, 0, tilemap.Size.X);
+			clampedOrigin.Y = MathF.Clamp(clampedOrigin.Y, 0, tilemap.Size.Y);
+			clampedSize.X = MathF.Clamp(clampedSize.X, 0, tilemap.Size.X - clampedOrigin.X);
+			clampedSize.Y = MathF.Clamp(clampedSize.Y, 0, tilemap.Size.Y - clampedOrigin.Y);
+
 			this.tilemap = tilemap;
 			this.type = type;
-			this.origin = origin;
-			this.newTiles = new Grid<Tile>(newTiles);
-			this.editMask = new Grid<bool>(editMask);
+			this.origin = clampedOrigin;
+			this.autoTileMode = autoTileMode;
+
+			// Copy edited tiles and masking to the operation's tilemap-clamped space
+			this.newTiles = new Grid<Tile>(clampedSize.X, clampedSize.Y);
+			this.editMask = new Grid<bool>(clampedSize.X, clampedSize.Y);
+			this.editMaskAutoTile = new Grid<bool>(clampedSize.X, clampedSize.Y);
+			newTiles.CopyTo(this.newTiles, margin.X + Math.Min(origin.X, 0), margin.X + Math.Min(origin.Y, 0));
+			editMask.CopyTo(this.editMask, margin.Y + Math.Min(origin.X, 0), margin.Y + Math.Min(origin.Y, 0));
+			editMask.CopyTo(this.editMaskAutoTile, margin.Y + Math.Min(origin.X, 0), margin.Y + Math.Min(origin.Y, 0));
+
+			// If we're updating neighbouring AutoTiles, expand the AutoTile mask by one
+			// so we'll properly undo them too, despite not painting them directly.
+			if (autoTileMode == AutoTilePaintMode.Full)
+				ExpandMask(this.editMaskAutoTile);
 		}
 
 		public override void Do()
 		{
 			Grid<Tile> tiles = this.tilemap.BeginUpdateTiles();
-			if (this.oldTiles == null)
 			{
-				this.oldTiles = new Grid<Tile>(this.newTiles.Width, this.newTiles.Height);
-				tiles.CopyTo(this.oldTiles, 0, 0, this.oldTiles.Width, this.oldTiles.Height, this.origin.X, this.origin.Y);
+				// Create a backup for Undo support
+				if (this.oldTiles == null)
+				{
+					this.oldTiles = new Grid<Tile>(this.newTiles.Width, this.newTiles.Height);
+					tiles.CopyTo(this.oldTiles, 0, 0, this.oldTiles.Width, this.oldTiles.Height, this.origin.X, this.origin.Y);
+				}
+
+				// Overwrite the edited tiles
+				MaskedCopyGrid(this.newTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
+
+				// Update the connectivity state of the edited tiles and, potentially, their
+				// neighbouring tiles, depending on how the AutoTile editing mask was setup
+				// in the constructor of the edit operation.
+				Tileset tileset = this.tilemap.Tileset.Res;
+				if (tileset != null)
+				{
+					// For AutoTiling, update each tile based on connectivity
+					if (this.autoTileMode != AutoTilePaintMode.None)
+					{
+						Tile.UpdateAutoTileCon(
+							tiles, 
+							this.editMaskAutoTile,
+							this.origin.X, 
+							this.origin.Y, 
+							this.newTiles.Width, 
+							this.newTiles.Height, 
+							tileset);
+					}
+				}
 			}
-			MaskedCopyGrid(this.newTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
 			this.tilemap.EndUpdateTiles(this.origin.X, this.origin.Y, this.newTiles.Width, this.newTiles.Height);
 
 			this.OnNotifyPropertyChanged();
@@ -67,7 +134,10 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 		public override void Undo()
 		{
 			Grid<Tile> tiles = this.tilemap.BeginUpdateTiles();
-			MaskedCopyGrid(this.oldTiles, tiles, this.editMask, this.origin.X, this.origin.Y);
+			{
+				// Overwrite the (previously edited) tiles with the backup we made before
+				MaskedCopyGrid(this.oldTiles, tiles, this.editMaskAutoTile, this.origin.X, this.origin.Y);
+			}
 			this.tilemap.EndUpdateTiles(this.origin.X, this.origin.Y, this.oldTiles.Width, this.oldTiles.Height);
 
 			this.OnNotifyPropertyChanged();
@@ -94,6 +164,26 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			{
 				editAction.Do();
 			}
+
+			// Update AutoTiles that we edited before if we're using direct-only AutoTiling mode,
+			// so at least all the tiles in the edited mask are up-to-date.
+			if (this.autoTileMode == AutoTilePaintMode.DirectOnly)
+			{
+				Tileset tileset = this.tilemap.Tileset.Res;
+				if (tileset != null)
+				{
+					Grid<Tile> tiles = this.tilemap.BeginUpdateTiles();
+					Tile.UpdateAutoTileCon(
+						tiles, 
+						this.editMaskAutoTile,
+						this.origin.X, 
+						this.origin.Y, 
+						this.newTiles.Width, 
+						this.newTiles.Height, 
+						tileset);
+					this.tilemap.EndUpdateTiles(this.origin.X, this.origin.Y, this.newTiles.Width, this.newTiles.Height);
+				}
+			}
 			
 			// Determine working data for merging the two tile grids
 			Point2 originDiff = new Point2(
@@ -119,24 +209,25 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			this.newTiles.AssumeRect(growOffset.X, growOffset.Y, newSize.X, newSize.Y);
 			this.editMask.AssumeRect(growOffset.X, growOffset.Y, newSize.X, newSize.Y);
 			this.oldTiles.AssumeRect(growOffset.X, growOffset.Y, newSize.X, newSize.Y);
+			this.editMaskAutoTile.AssumeRect(growOffset.X, growOffset.Y, newSize.X, newSize.Y);
 
 			// Move the operation origin accordingly
 			this.origin.X += growOffset.X;
 			this.origin.Y += growOffset.Y;
 
 			// Determine the tiles that are edited in the appended operation, but weren't before
-			Grid<bool> newlyEditedMask = new Grid<bool>(editAction.editMask);
+			Grid<bool> newlyEditedMask = new Grid<bool>(editAction.editMaskAutoTile);
 			{
 				Point2 bounds = new Point2(
-					Math.Min(newlyEditedMask.Width, this.editMask.Width - drawOffset.X),
-					Math.Min(newlyEditedMask.Height, this.editMask.Height - drawOffset.Y));
+					Math.Min(newlyEditedMask.Width, this.editMaskAutoTile.Width - drawOffset.X),
+					Math.Min(newlyEditedMask.Height, this.editMaskAutoTile.Height - drawOffset.Y));
 
 				for (int y = 0; y < bounds.Y; y++)
 				{
 					for (int x = 0; x < bounds.X; x++)
 					{
-						bool existingMask = this.editMask[x + drawOffset.X, y + drawOffset.Y];
-						bool appendedMask = editAction.editMask[x, y];
+						bool existingMask = this.editMaskAutoTile[x + drawOffset.X, y + drawOffset.Y];
+						bool appendedMask = editAction.editMaskAutoTile[x, y];
 
 						newlyEditedMask[x, y] = !existingMask && appendedMask;
 					}
@@ -147,6 +238,7 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			MaskedCopyGrid(editAction.newTiles, this.newTiles, editAction.editMask, drawOffset.X, drawOffset.Y);
 			MaskedCopyGrid(editAction.oldTiles, this.oldTiles, newlyEditedMask,     drawOffset.X, drawOffset.Y);
 			MaskedCopyGrid(editAction.editMask, this.editMask, editAction.editMask, drawOffset.X, drawOffset.Y);
+			MaskedCopyGrid(editAction.editMaskAutoTile, this.editMaskAutoTile, editAction.editMaskAutoTile, drawOffset.X, drawOffset.Y);
 		}
 
 		private void OnNotifyPropertyChanged()
@@ -157,6 +249,27 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 				TilemapsReflectionInfo.Property_Tilemap_Tiles);
 		}
 
+		private static void ExpandMask(Grid<bool> mask)
+		{
+			int width = mask.Width;
+			int height = mask.Height;
+			bool[] maskData = mask.RawData;
+			for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					int i = x + width * y;
+					maskData[i] |= x > 0         && y > 0          && maskData[i - 1 - width];
+					maskData[i] |=                  y > 0          && maskData[i     - width];
+					maskData[i] |= x < width - 1 && y > 0          && maskData[i + 1 - width];
+					maskData[i] |= x > 0         &&                   maskData[i - 1];
+					maskData[i] |= x < width - 1 &&                   maskData[i + 1];
+					maskData[i] |= x > 0         && y < height - 1 && maskData[i - 1 + width];
+					maskData[i] |=                  y > 0          && maskData[i     - width];
+					maskData[i] |= x < width - 1 && y < height - 1 && maskData[i + 1 + width];
+				}
+			}
+		}
 		private static void MaskedCopyGrid<T>(Grid<T> source, Grid<T> target, Grid<bool> sourceMask, int destX = 0, int destY = 0, int width = -1, int height = -1, int srcX = 0, int srcY = 0)
 		{
 			if (width == -1) width = source.Width;

@@ -169,8 +169,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 				Id = layerId,
 				Name = layerName
 			};
-			UndoRedoManager.Do(new AddTilesetVisualLayerAction(
+			UndoRedoManager.Do(new AddTilesetConfigLayerAction<TilesetRenderInput>(
 				tileset, 
+				TilemapsReflectionInfo.Property_Tileset_RenderConfig,
 				newLayer));
 
 			// Select the newly created visual layer
@@ -190,8 +191,9 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 			if (tileset == null) return;
 			if (layer == null) return;
 
-			UndoRedoManager.Do(new RemoveTilesetVisualLayerAction(
+			UndoRedoManager.Do(new RemoveTilesetConfigLayerAction<TilesetRenderInput>(
 				tileset, 
+				TilemapsReflectionInfo.Property_Tileset_RenderConfig,
 				layer));
 		}
 		
@@ -243,16 +245,6 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 
 				this.TilesetView.DisplayedConfigIndex = layerIndex;
 			}
-		}
-		protected override void OnApplyRevert()
-		{
-			base.OnApplyRevert();
-
-			// Deselect whichever layer node we had selected, because
-			// Apply / Revert operations affect the Tileset as a whole
-			// in ways we can't safely predict editor-wise. It may be
-			// best to not make breakable assumptions here.
-			this.SelectLayer(null);
 		}
 	}
 }

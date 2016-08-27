@@ -320,6 +320,26 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetAutoTile {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetAutoTile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconTilesetAutoTileLayer {
+            get {
+                object obj = ResourceManager.GetObject("IconTilesetAutoTileLayer", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconTilesetCollisionInfo {
             get {
                 object obj = ResourceManager.GetObject("IconTilesetCollisionInfo", resourceCulture);
@@ -675,6 +695,28 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AutoTiles.
+        /// </summary>
+        internal static string TilesetEditorMode_AutoTile_Name {
+            get {
+                return ResourceManager.GetString("TilesetEditorMode_AutoTile_Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select or create a new AutoTile layer on the left side of the Tileset Editor. After doing so, you will be able to specify each tile&apos;s role when connecting an AutoTile to its surroundings.
+        ///
+        ///The first tile you click on will determine the fully connected base tile (orange). With left and right click, you can then add or remove the connecting parts of the remaining tiles.
+        ///
+        ///Hold the shift key to specify external tiles that are not part of the AutoTile itself, but will be connected to..
+        /// </summary>
+        internal static string TilesetEditorMode_AutoTile_ViewDesc {
+            get {
+                return ResourceManager.GetString("TilesetEditorMode_AutoTile_ViewDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collision Info.
         /// </summary>
         internal static string TilesetEditorMode_CollisionInfo_Name {
@@ -765,11 +807,11 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Visual Layer.
+        ///   Looks up a localized string similar to Add Config Layer.
         /// </summary>
-        internal static string UndoRedo_TilesetAddVisualLayer {
+        internal static string UndoRedo_TilesetAddConfigLayer {
             get {
-                return ResourceManager.GetString("UndoRedo_TilesetAddVisualLayer", resourceCulture);
+                return ResourceManager.GetString("UndoRedo_TilesetAddConfigLayer", resourceCulture);
             }
         }
         
@@ -783,11 +825,11 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove Visual Layer.
+        ///   Looks up a localized string similar to Remove Config Layer.
         /// </summary>
-        internal static string UndoRedo_TilesetRemoveVisualLayer {
+        internal static string UndoRedo_TilesetRemoveConfigLayer {
             get {
-                return ResourceManager.GetString("UndoRedo_TilesetRemoveVisualLayer", resourceCulture);
+                return ResourceManager.GetString("UndoRedo_TilesetRemoveConfigLayer", resourceCulture);
             }
         }
     }

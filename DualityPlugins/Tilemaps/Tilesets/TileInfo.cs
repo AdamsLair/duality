@@ -28,6 +28,14 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		public int DepthOffset;
 		/// <summary>
+		/// The AutoTile layer number (index + 1) inside the <see cref="Tileset"/> this tile belongs to.
+		/// </summary>
+		public int AutoTileLayer;
+		/// <summary>
+		/// Specifies the per-layer collision shape of this tile.
+		/// </summary>
+		public TileCollisionShapes Collision;
+		/// <summary>
 		/// Specifies whether the tile is standing upright / vertical, as opposed to being flat on its <see cref="Tilemap"/> surface.
 		/// </summary>
 		public bool IsVertical;
@@ -35,9 +43,5 @@ namespace Duality.Plugins.Tilemaps
 		/// Specifies whether the tile can be considered visually empty, e.g. by being completely transparent.
 		/// </summary>
 		public bool IsVisuallyEmpty;
-		/// <summary>
-		/// Specifies the per-layer collision shape of this tile.
-		/// </summary>
-		public TileCollisionShapes Collision;
 	}
 }

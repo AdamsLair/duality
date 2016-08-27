@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Reflection;
 
 using Duality;
 using Duality.Plugins.Tilemaps;
@@ -19,6 +20,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		private ITilemapToolEnvironment env;
 		private ToolStripButton toolButton;
 		private HelpInfo info;
+		private TilemapToolSettings settings;
 
 		
 		/// <summary>
@@ -110,6 +112,33 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		public virtual int SortOrder
 		{
 			get { return 0; }
+		}
+		/// <summary>
+		/// [GET] The type of <see cref="TilemapToolSettings"/> that is used by this <see cref="TilemapTool"/>.
+		/// </summary>
+		public virtual Type SettingsType
+		{
+			get { return typeof(TilemapToolSettings); }
+		}
+		/// <summary>
+		/// [GET] Retrieves the object that stores this tool's settings.
+		/// </summary>
+		public TilemapToolSettings Settings
+		{
+			get
+			{
+				if (this.settings == null)
+				{
+					Type settingsType = this.SettingsType ?? typeof(TilemapToolSettings);
+					TypeInfo settingsTypeInfo = settingsType.GetTypeInfo();
+
+					if (!typeof(TilemapToolSettings).IsAssignableFrom(settingsTypeInfo))
+						throw new ArgumentException("A TilemapTool's SettingsType needs to be a subclass of TilemapToolSettings.");
+
+					this.settings = settingsTypeInfo.CreateInstanceOf() as TilemapToolSettings;
+				}
+				return this.settings;
+			}
 		}
 
 

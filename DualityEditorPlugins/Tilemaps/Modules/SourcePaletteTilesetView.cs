@@ -255,6 +255,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void UpdateSelectedTiles()
 		{
+			Tileset tileset = this.TargetTileset.Res;
 			Point selectedDisplayedPos = this.GetDisplayedTilePos(
 				this.selectedArea.X, 
 				this.selectedArea.Y);
@@ -270,10 +271,15 @@ namespace Duality.Editor.Plugins.Tilemaps
 					Point tilesetPos = this.GetTilesetTilePos(
 						displayedPos.X, 
 						displayedPos.Y);
-					this.selectedTiles[x, y] = new Tile
-					{
-						Index = this.GetTileIndex(tilesetPos.X, tilesetPos.Y)
-					};
+					
+					Tile tile;
+					int baseIndex = this.GetTileIndex(tilesetPos.X, tilesetPos.Y);
+					if (tileset != null)
+						tile = new Tile(baseIndex, tileset);
+					else
+						tile = new Tile(baseIndex);
+
+					this.selectedTiles[x, y] = tile;
 				}
 			}
 		}
