@@ -13,6 +13,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 {
 	public abstract class PolyLikeRigidBodyEditorTool : RigidBodyEditorTool
 	{
+		private int initialVertexCount = 0;
 		private int currentVertex = 0;
 		private ShapeInfo actionShape = null;
 
@@ -21,6 +22,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			get { return 1024; }
 		}
 
+		protected virtual Vector2[] GetInitialVertices(Vector2 basePos)
+		{
+			return new Vector2[] 
+			{
+				basePos, 
+				basePos + Vector2.UnitX, 
+				basePos + Vector2.One
+			};
+		}
 		protected abstract ShapeInfo CreateShapeInfo(Vector2[] vertices);
 		protected abstract Vector2[] GetVertices(ShapeInfo shape);
 		protected abstract void SetVertices(ShapeInfo shape, Vector2[] vertices);
@@ -32,13 +42,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override void BeginAction()
 		{
 			base.BeginAction();
+
+			Vector2[] initialVertices = this.GetInitialVertices(this.Environment.ActiveBodyPos);
+
 			this.currentVertex = 1;
-			this.actionShape = this.CreateShapeInfo(new Vector2[] 
-			{
-				this.Environment.ActiveBodyPos, 
-				this.Environment.ActiveBodyPos + Vector2.UnitX, 
-				this.Environment.ActiveBodyPos + Vector2.One
-			});
+			this.actionShape = this.CreateShapeInfo(initialVertices);
+			this.initialVertexCount = initialVertices.Length;
 
 			// Add the shape to the body. We're not doing an actual UndoRedoAction
 			// just yet, because we don't want a potentially invalid under-construction
@@ -62,7 +71,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			// a valid shape. Don't trigger a physics update before something
 			// useful can come out of it. Not updating yet will result in
 			// remaining with the initially defined, valid dummy shape.
-			if (this.currentVertex >= 2)
+			if (this.currentVertex >= this.initialVertexCount - 1)
 				this.SetVertices(this.actionShape, vertices);
 
 			DualityEditorApp.NotifyObjPropChanged(this,
@@ -75,7 +84,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			List<Vector2> vertices = this.GetVertices(this.actionShape).ToList();
 			
 			vertices.RemoveAt(this.currentVertex);
-			if (vertices.Count < 3 || this.currentVertex < 2)
+			if (vertices.Count < this.initialVertexCount || this.currentVertex < this.initialVertexCount - 1)
 			{
 				this.Environment.SelectShapes(null);
 				this.Environment.ActiveBody.RemoveShape(this.actionShape);
@@ -103,7 +112,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			Vector2[] vertices = this.GetVertices(this.actionShape);
 			vertices[this.currentVertex] = this.Environment.ActiveBodyPos;
 
-			if (this.currentVertex <= 2 || this.IsValidPolyon(vertices))
+			if (this.currentVertex < this.initialVertexCount || this.IsValidPolyon(vertices))
 			{
 				this.Environment.LockedWorldPos = this.Environment.ActiveWorldPos;
 
