@@ -189,16 +189,19 @@ namespace Duality.Plugins.Tilemaps
 		public void LookupTileSourceRect(int renderConfigIndex, int tileIndex, out Point2 pos, out Point2 size)
 		{
 			TilesetRenderInput input = this.renderConfig[renderConfigIndex];
-			int rowWidth = input.SourceData.Res.Width;
 
-			size = new Point2(
-				input.SourceTileSize.X + input.SourceTileSpacing * 2,
-				input.SourceTileSize.Y + input.SourceTileSpacing * 2);
+			Point2 advance = input.SourceTileAdvance;
+			Point2 tileCount = input.GetSourceTileCount(
+				input.SourceData.Res.Width, 
+				input.SourceData.Res.Height);
+			Point2 tileCoords = new Point2(
+				tileIndex % tileCount.X,
+				tileIndex / tileCount.X);
 
-			int totalXOffset = tileIndex * size.X;
+			size = input.SourceTileSize;
 			pos = new Point2(
-				totalXOffset % rowWidth,
-				(totalXOffset / rowWidth) * size.Y);
+				tileCoords.X * advance.X,
+				tileCoords.Y * advance.Y);
 		}
 
 		/// <summary>
@@ -299,7 +302,7 @@ namespace Duality.Plugins.Tilemaps
 				MathF.CombineHashCode(ref hash, input.TargetFormat.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.TargetMagFilter.GetHashCode());
 				MathF.CombineHashCode(ref hash, input.TargetMinFilter.GetHashCode());
-				MathF.CombineHashCode(ref hash, input.TargetTileSpacing.GetHashCode());
+				MathF.CombineHashCode(ref hash, input.TargetTileMargin.GetHashCode());
 			}
 
 			foreach (TilesetAutoTileInput autoTile in this.autoTileConfig)
