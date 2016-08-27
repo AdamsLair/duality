@@ -593,6 +593,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		/// </summary>
 		private void SelectToolInInspector()
 		{
+			if (this.selectedTool == null) return;
 			DualityEditorApp.Select(this, new ObjectSelection(new object[] { this.selectedTool.Settings }));
 		}
 		/// <summary>
@@ -601,6 +602,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		/// <seealso cref="SelectToolInInspector"/>
 		private void DeselectToolInInspector()
 		{
+			if (this.selectedTool == null) return;
 			DualityEditorApp.Deselect(this, new ObjectSelection(new object[] { this.selectedTool.Settings }));
 		}
 		
@@ -633,6 +635,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.UpdateTilemapToolButtons();
 			this.UpdateActionToolButtons();
 			this.selectedTilemap = TilemapsEditorSelectionParser.QuerySelectedTilemap();
+
+			// If we're already focused when entering the state, publish the currently selected tilemap tool
+			if (this.Focused)
+				this.SelectToolInInspector();
 		}
 		protected override void OnLeaveState()
 		{
