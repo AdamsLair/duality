@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
@@ -13,35 +13,9 @@
     <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
     <tags>Duality Core Plugin Tilemaps</tags>
-    <releaseNotes>Updated Tilemaps Sample, AutoTile Fallback, Improved Tile API
-#CHANGE: Updated the Tilemaps Sample project with AutoTiling data.
-#ADD: When resolving indices for a tile that wasn't an AutoTile when it was serialized, but is an AutoTile now, its differing base index will be used to derive the appropriate connectivity state.
-#ADD: Added various Tile constructors for different ways to initialize a tile. 
-#ADD: Wrote docs for each Tile constructor.
-#CHANGE: Clarified some docs on the Tile struct.
-#FIX: Fixed a bug where a certain Tile.ResolveIndex version would throw an exception when used on a non-AutoTile.
-#CHANGE: Provided a Tile.ResolveIndex overload that takes a Tileset and made the more specific AutoTile one private to make future changes in this regard easier. 
-#CHANGE: All public Tile API now uses ContentRef&lt;Tileset&gt; instead of Tileset.
-#CHANGE: Tweaked Tile ResolveIndex API. 
-#FIX: Fixed inconsistent AutoTile index resolve code between resolve-only and updating AutoTile connectivity states as well.
-#ADD: Added AutoTilePaintMode enum, as well as the EditTilemapAction's ability to properly handle it. 
-#CHANGE: Compiled AutoTile data now includes the same per-tile information as used in the AutoTile input, instead of just the connectivity state. 
-#CHANGE: The tiles that are provided by the SourcePaletteTilesetView are now pre-initialized with their Tileset's matching connectivity state. 
-#CHANGE: Resolving AutoTile indices will no longer touch tiles that already have a matching connectivity state.
-#FIX: Fixed a bug that would cause AutoTile fallbacks to not work if the fallback was fully unconnected / None.
-#ADD: Tile connectivity is now properly integrated into Undo / Redo operations.
-#ADD: Added AutoTile fallback cases for when the required state is unavailable.
-#ADD: Added DontCare fallbacks for certain AutoTile connectivity states, reducing the overall number of required states to 47.
-#ADD: When drawing an AutoTile in the tilemap editor, it will now update all affected AutoTiles.
-#FIX: Fixed a bug where a Tilemap change event would be triggered with an invalid rect region.
-#CHANGE: Moved the code for resolving a tile's Index to a static Tile method, so it can be accessed easily.
-#ADD: Added a Tile constructor that sets index and base index to the same value, now using it instead of the assignment new. 
-#ADD: Added lots of documentation in comments and XML docs. 
-#CHANGE: When serializing TilemapData, only tile base index and connectivity state are serialized. 
-#CHANGE: Modified Tile struct to distinguish between index and base index. 
-#CHANGE: Modified TileInfo.AutoTileLayer to be a one-based index, so the default zero will be equivalent to not referring an AutoTile layer at all. 
-#REMOVE: Removed GenerateMissingTiles option from AutoTile input until it's actually implemented.
-#CHANGE: The compiled TileInfo struct now holds the AutoTile layer index instead of the BaseTile, which is less redundant and more useful.</releaseNotes>
+    <releaseNotes>Modified Tileset Spacing Rules, Updated Docs
+#CHANGE: Updated tileset source image spacing rules to be a better match with most common tileset layouts.
+#CHANGE: Clarified constructor usage in Tile struct docs.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.7.4" />
     </dependencies>
