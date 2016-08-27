@@ -162,7 +162,6 @@
                     <acceleration dataType="Float">0.15</acceleration>
                     <active dataType="Bool">true</active>
                     <gameobj dataType="ObjectRef">1593919710</gameobj>
-                    <moveSenseRadius dataType="Float">0</moveSenseRadius>
                     <speed dataType="Float">3.5</speed>
                     <targetMovement dataType="Struct" type="Duality.Vector2" />
                   </item>
@@ -410,6 +409,8 @@
                                       <gameobj dataType="ObjectRef">4245684009</gameobj>
                                       <origin dataType="Enum" type="Duality.Alignment" name="Center" value="0" />
                                       <roundedCorners dataType="Bool">true</roundedCorners>
+                                      <shapeFriction dataType="Float">0.300000161</shapeFriction>
+                                      <shapeRestitution dataType="Float">0.300000161</shapeRestitution>
                                       <solidOuterEdges dataType="Bool">true</solidOuterEdges>
                                       <source dataType="Array" type="Duality.Plugins.Tilemaps.TilemapCollisionSource[]" id="2136833472">
                                         <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapCollisionSource">
@@ -499,8 +500,8 @@
                                                             <gameobj dataType="ObjectRef">3085774208</gameobj>
                                                             <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="1434028621" custom="true">
                                                               <body>
-                                                                <version dataType="Int">2</version>
-                                                                <data dataType="Array" type="System.Byte[]" id="3685429798">H4sIAAAAAAAEANWYyU5UURCGG1RIVOioDFFReADCSlyw0MSJpa/QCxcuXagkTiQKEpxwiCbqAsUIGMEhOCfqK1yWvoGPofy1+ZM/dVKn+zaBTvpLpW7VOXXPqTrDHahUKgP//2cqa7/VTc7vJM+S/COznW/r4tWafLoQ6Mt79/TINOKVOyabi8+JGyGeCLeT/IpomvPgBfBiZsuzmfaNcFjk4ZY1XoF8FbxGNmPg22Sb6QrKZbovjxPgJHiT3mIcXAEHW6KtzZP8OjOSFZJH0GMX5J2gV9e9sBwFr9Nb8EwdCsT/DCxIU5A+khucIcfQYx/k48neh/C0Ct6C5nagR+Ucxcycq6u1eEUfRuTt4ENoHpGevbpIfiptFqJhfZH01ajqo83FEfCoxN9H8kvxPQGeFJ4iG6ujF+F4uIJsbbRVJb0vGzvRV5uTe5yx3aTX/CnIxupIs53ZA/aKnlcVL+Z2cBvYRhrP3qI6kLRZJZvugOVBsN956u04vDp1gJ3hqFR/P9M+kj/G+I5TJbkW9rLMnM6M07ilLq8Iz2baP2haJBHqTncuaV9z9JHx1FO69u5V+vrPjnenUOobvcuMakfYMj07ZfFLqa1FdpByqbvGErhMmnmxKYtcC+/DXmnLT+DnBqL6KZrfAa+v4fY9S52LZtd4fb1wnHpPHHO8vPNbWcy915wG9Z5oZyE+J18CL5OvruHpU+4vMJJFudR74pTY2P3rRgO9/Alb7gE1o7zT6R3wLngPnAFHafy9+1czTib7Hb3uO1tBy5PHkJ+AQ5LhfP8yTSv5al+L4JvMyGsljUCEXtX/BT+AH8k+fTcxeueN9Cx7K09VxpZH26v6HvpqER8Nm830eWMXuFv0GoPpOYs6SLYbfbrqNQMj1F3PaKvWXnAfyF8M/gGsx1SBCBgAAA==</data>
+                                                                <version dataType="Int">3</version>
+                                                                <data dataType="Array" type="System.Byte[]" id="3685429798">H4sIAAAAAAAEAN2YyWpVQRCGb6ImoCYXzYQaNQ8gWRkXLhScsvQV7sKFSxdqIE7giHNUFNRFNGJUnIkzGF/hZukb+BhK/tr88FOnus85MeTC5aO6u7qrTldXDyONRmPk3/9IY/G3sMLxnaRpkn5k9vnt/6h3Fjd5ER7d+0qBD1mNeu4XXEF4TFgWJpXEWpKeEazwOHACOJk50HSmXjUYU9JYxyJOQzoDnKWWE8Dr4hECizkXgdE9XAQuAZcBc/McMAfs6Ejsepak55kGzpG0G0b0Q1oPeLlnCArjwHlykyd8Z9i/R0CbCttUF486Dr59MGIY0v5ik0bRpAlcQ+H1sBESM+QRY6Zc18lJZxcc6wbuovAe1bF6P0kP1QhtVch13ET2Is0tCZvNPcBe5d8wSU9VLweAgwqHqKWt6SepdvJitqxv6TBwtjH0YvQuJ8p5kQxQnYzPNrW0NS2XGmMQGFJ1nA49j7qBNUAXFXp6Zu7W4pYL1HIgrLAN2O408TZhTrE9QG+qubJuKlMvHp+G5E24SVIrVd0WwtVMHwyryqnHcTRT785SGRiHPBAcK9ZrOXXxeZDXMmmSl5CWxRR7N0wJ6fS7THPXpSoEprgOfKmv6/hmWiPk9vkGeEuFs6plHeDV+D5VPaDwCfhcibk/VeGvsPrX1PE8BTmbS52JSg7LPsg3iAlH3Ttf14Hcu+9hQL5B2GmU70CTwCnqRe5cgWvLPBAP01zIN4grqqXd3y9UMuzvVIU+QAatd8W4AdwEbgG3gXGaP+/+Xv9BcItTJ/fi1YDF4H1ID4BRtbj4/m6FndSLHP0l8CrTsVamXjXw0tMf4APwkfQCt1aDd64LhI2XOJtqVniqvPQ0SM9vyZ/OQiNwrtsAbFR10jKr4zDtIckenQLpSQZ7HPJ4YLD0uwnYDPAj118H+k2ZCBwAAA==</data>
                                                               </body>
                                                             </tileData>
                                                             <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
@@ -582,8 +583,8 @@
                                                             <gameobj dataType="ObjectRef">1404051932</gameobj>
                                                             <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="1721446049" custom="true">
                                                               <body>
-                                                                <version dataType="Int">2</version>
-                                                                <data dataType="Array" type="System.Byte[]" id="1212744814">H4sIAAAAAAAEAO2YMU7DQBBFd4H0gCgCosgBQpdUkUiBqOmgQIKGQ0AHJ6HkCiincG5CApbAYAnyB4kRo11mie1M4Uh52qxG9pv1rO1JzznX+/peucVn2rJlS/AJnIFzNjM34KbhK/gGFmyGxs9gbsCTuAVugzuM3i+45unHz/gdE6UBc+IuuAfuM2YgrfYLmLP5bKXOI/93jGOr/QGWZvyP4PaoiFxH5AbYUWTdPOu+q2wmzqeyqNm/Cx4Ldis6vtyhdWSRBchjhv+qT7lDzxktVLim/kO29nMp1P42s4gbWvbv+99WmiwsmBMHav9VZUFP2Ek0RlaItXVepv5lpAVnzfpLXoM3BpxT/SnyFrwz4Mw5xi6WPaPlmuGkdx7ZM1pw05Deeahb4T1jtWe5X/oI9LQ6EG4dVj/19QIPifHyXXQQXVX+D0Mz1/3CQDcX7x36jRjmCpMQZe/wffVBfsV5PZxhfFJRdmXUJES+X1K7+0tEnlbkPwuYHILjwFn4fgk9O5rhJyM1CkIIGAAA</data>
+                                                                <version dataType="Int">3</version>
+                                                                <data dataType="Array" type="System.Byte[]" id="1212744814">H4sIAAAAAAAEAO2YsU7DMBCGbaA7IIaCGPoAZSsTEh0QMxsMSLDwEGWDJ2HkFRBPEd6EFiJBIBKov5E46XRxnTg5S6lUfbITx/8f3zm2R8aY0e//xix/Lz169FCCV2AOLEjlQoPAmvgAPoGCVLrSG5BrkCthC9gGdgisXWLNuuL/0hfqSg0eJOwCe8A+QQa4oXoHcnIt0+CB4sj63mnIUH0DpXZ/J1D95N1gHQ02gIH361GBtqfDzcBroSha9jcETjkMI/THTh7xbWYC6J2H9fKBnTwuCVTkUc38k6wk7bZY1V9iNj3Ep+lvbBm5/jZVeJAwWdWfJptucfJcfScbfKmMUTP5xzZQIT7Un4QZcKtBfKP+XIM74F6DeA9MMc2wJxJpRiSFW3GyJxIqBNaEW3G6rSw9kYjY7UOTD3Of8gNO9YDEZ2u7wcfAduxuYlI9HPRwrKNYulJ7NOCxixx3Iz73FiiB3UX+hRRAg4jG2QVKZxFeQVktUALN29AjqGs0OI/gby4IPAamQrc0b6WvaEf4AV6zwTUIHAAA</data>
                                                               </body>
                                                             </tileData>
                                                             <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
@@ -688,8 +689,8 @@
                                             </gameobj>
                                             <tileData dataType="Struct" type="Duality.Plugins.Tilemaps.TilemapData" id="3619145399" custom="true">
                                               <body>
-                                                <version dataType="Int">2</version>
-                                                <data dataType="Array" type="System.Byte[]" id="3510518670">H4sIAAAAAAAEAJ2YS09UQRCF5+5EXfjc+CBXhkFEjbrThYluiGBieGii/FOjMQOKIom6wOiChQuMs5DHX1DqLPicQ3UaK+Hkpqer63R1VVc1bafTaf/+LXf2ZSVwEHiq2cfTgS5nYvxs4LnAfowvJ6iVv9s60nqZYKbl1mnF15F0sZcL8X0x8FI1/x8J/3qtseZw69kKXMeFeySTPrTKnjmqViYfi7hu82nX0ZnUYI0WPdlDPIwXsRc4qOa/Frh+RP41WlkkXCnimPGXLZ7RW1iZDJw6In/XemdW1sFkHP6/VkStOYr5Xa0QqNPpF7k5E9915u3bzbAtepK3Sr20gTydtYSPmMtvd8CkW611txm2Rf4U7UV31LHAEeyO+aKz5umIT9+YrID5vcDpwLZa60EzbGvUfO55wfo1XnFG4uN5IR+K+cPAJ4GT1VqZtyV9498tcu4lv4oP8+Km5ncOmN/vDCO1JqBLLfc2Y178mdc+xzkzljizDbwReD1QEdsUscV8xflV4zOW+FP8Pa8lGedMmBeMWOc8gm/XuhXont8N3DP+3K9nruR4jJwIPFl9a+2C52wzvIvG+NSsI9wM7AdmHSC7Du/6zmMXfr5usYzcBVfbCFyKkZ343sJM5X65Miq7veu7bJxldyNhSOvbxV38Bu5C16Vbzb98j3XMonPbxEzfYxZdvi/JGOpIDf+sgy1zZp7uVcx3LUayR5pyv9yTeE/eqeDwf5i9DtyT9Ce75UyLldGZ++mXo93nu91ljGfvAo2raqiCZNVcfWDPmGR5KilnNJF2GQP+LmA3q3HWDmW0qj+rufqoKTDMfMs8pWTzd2DXY8DfBStg2DMrbaBORJ1AuWt135L/G2B5Pu2SfzlmVHnZJ2Q9gFdziXJBNwYjZzXwVeD7wA/4laewZ3Y9hj2e2Wm41PTMZc+vgjn5D6DLLKauYkmxoYiasPEsHrL+x4W3kNdH8n+d8M/23gYqbvXe4avH45m9pf/n7VHgDHBWaN5j3+L+5yk4f69Kilu9d/jq8XhWP8mY4fdc4DxwAXazzuRT4GfDL4Hynt9FXqNZi3lGM80Bsp/sAcv8ydxfNF/j+1vgtI0MwDCraF7vxH8uvp8FPg7M+knJ88DFwKeBS4dP/Ed+Bv4K1OlzRKefdaHlmuj8KR5F8q1OYcFmlt81NRFChtv43gJSxH8xcD6JeX8tOn9J9q7hCl55GdWeQW8MXV40B/gHqolkAggYAAA=</data>
+                                                <version dataType="Int">3</version>
+                                                <data dataType="Array" type="System.Byte[]" id="3510518670">H4sIAAAAAAAEAKVYy2oUURDtDi5m1IXPRXyEzjxijIq604WgmwEVxEFc6A/4Gf7A/EI+RJTYiRpjwLgRXboR8xtKzmnp0xzr3okFw6EfdW+dW4+umqooiurPb7M4kC3APuBEeQAnAVZO4dlpwBlAjWebAXCj725Nqr8KIFK3Jum2dk3KUNiew9V5wIV5+f1wBh5WfVD+26RoMV3Tip6EGliLesZBHlY9kk9p2HV6aosFa2A+5KurA8YSZ6M0jAH7skqd3nYHsJt+8z/VowBbTsMAoPy4u3r6nWy7ClhLG2jBqr932+6KgSPx3+U0cIcl0RtyMQBdXKettgba44lcdaM0u6sDtBzOLRVAXbwT2EliPOubYuBwXvVbpdld+amQLSttD9CXI9C8ZfSoi2ln7QzkyZPYbcAEUM2rfrc0uy85j9nc1O/7KNvTtNPmJk+exO4BHgFW51WPXEWpAcpvmGY0Dl6hnZqb16gHILE7hQFVX5FVVN26SjOuBmjtsW9aRhqtqlABrgKuAJgkZRoq0WOOXXJ2DgI/1LTT6VEiRpFobmqSWEZ9ubLq1wHWcZLLM96sAXoutrBQjuLmMcDxecuvGFE8KFs3LcyKtOiaAr0aV1Gzru2dbc/PCk0bL4ERGdDQ1KVxsfC8fUqLcmRNlcpoJFiCbHt+0TEatHdaCIxvTAIMI5qAIwI8s0Vjwt8qlc8voyYXbZPUCGt1TxQ6J5EO4Q53LsbTrRyViF80jGQw6pubs+yT6KhrAtmAZpXK6ADtBCbEDptcORCNiNYB6gcdhSJ1bSQssSCkwlSzetaWTXkWzYZ8tgzgxzRqjdizj43xETTZn110GlBbNLLsbKijCZ/pV5RFhy2VtkbsaeU7nVEAmxqiktZb1C6vFip2NtwS48du2wpAp7LByhg/Aq80/DYEMvTUlhqQUQepwMZFe7Cos7Ktkdg5kSLXBOYHwGvANuCjUVc3ztQWmzk2j7Shs5I/EWU4jvy2BchvX1ZxZaZZhdHKqGPQrrhnUZxF/acVV0Y7/YTyewOw/KJTqgDMlYnsq8+Un04F9o/rKdYC7AnM7JFrr2j9p24M+HU+18wVzsU6Hts84hygETky/F5M21eE9chxlM+APQdfAOJGW007nY5rhhpP3y/boHPAWCCbX0PMDr1fcfUNMHE3hV/+CKWv9B4DnwIeAqI5QPgNAS8Bb6dCLJKfgF8AhpTeXGrbGY0RYQdh+anYMKVXxI3r+krG7JsffGq86Gk/0dmG/J7Q3CDj7F8Rlh8lmn11MTGwYevSqRMaGw6sPCvb8Bv2FLL8CBwAAA==</data>
                                               </body>
                                             </tileData>
                                             <tileset dataType="Struct" type="Duality.ContentRef`1[[Duality.Plugins.Tilemaps.Tileset]]">
@@ -746,7 +747,7 @@
                               <shapes dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Components.Physics.ShapeInfo]]" id="1214195307">
                                 <_items dataType="Array" type="Duality.Components.Physics.ShapeInfo[]" id="1426464374" length="64" />
                                 <_size dataType="Int">0</_size>
-                                <_version dataType="Int">3812</_version>
+                                <_version dataType="Int">3932</_version>
                               </shapes>
                             </baseObject>
                             <gameobj dataType="ObjectRef">823148500</gameobj>

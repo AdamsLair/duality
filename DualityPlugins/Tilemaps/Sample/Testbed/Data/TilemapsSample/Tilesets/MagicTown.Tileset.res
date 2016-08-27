@@ -1,6 +1,684 @@
 ﻿<root dataType="Struct" type="Duality.Plugins.Tilemaps.Tileset" id="129723834">
   <assetInfo />
-  <baseMaterial dataType="Struct" type="Duality.Drawing.BatchInfo" id="427169525">
+  <autoTileConfig dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.TilesetAutoTileInput]]" id="427169525">
+    <_items dataType="Array" type="Duality.Plugins.Tilemaps.TilesetAutoTileInput[]" id="1100841590" length="4">
+      <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileInput" id="2824927200">
+        <baseTile dataType="Int">81</baseTile>
+        <id dataType="String">autoTile0</id>
+        <name dataType="String">Stone Pavement</name>
+        <tiles dataType="Struct" type="Duality.RawList`1[[Duality.Plugins.Tilemaps.TilesetAutoTileItem]]" id="3329633244">
+          <count dataType="Int">91</count>
+          <data dataType="Array" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem[]" id="1933056708" length="164">
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Right, Bottom, BottomRight" value="70" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Right, Bottom, Left, BottomRight, BottomLeft" value="206" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Bottom, Left, BottomLeft" value="140" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, Bottom, Left, TopRight, BottomRight, BottomLeft" value="239" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, Bottom, Left, TopLeft, BottomRight, BottomLeft" value="223" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, Bottom, TopRight, BottomRight" value="103" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="All" value="255" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Bottom, Left, TopLeft, BottomLeft" value="157" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, Bottom, Left, TopLeft, TopRight, BottomRight" value="127" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, Bottom, Left, TopLeft, TopRight, BottomLeft" value="191" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, TopRight" value="35" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, Left, TopLeft, TopRight" value="59" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Left, TopLeft" value="25" />
+            </item>
+          </data>
+        </tiles>
+      </item>
+      <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileInput" id="3573126030">
+        <baseTile dataType="Int">1</baseTile>
+        <id dataType="String">autoTile1</id>
+        <name dataType="String">Grassy Pavement</name>
+        <tiles dataType="Struct" type="Duality.RawList`1[[Duality.Plugins.Tilemaps.TilesetAutoTileItem]]" id="1941610290">
+          <count dataType="Int">347</count>
+          <data dataType="Array" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem[]" id="4066652112" length="658">
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="All" value="255" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">true</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">false</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="None" value="0" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Right" value="2" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Left" value="8" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top" value="1" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Bottom" value="4" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, TopRight" value="35" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Left, TopLeft" value="25" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Right, Bottom, BottomRight" value="70" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Bottom, Left, BottomLeft" value="140" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">true</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">false</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="None" value="0" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">true</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">false</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="None" value="0" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">true</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">false</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="None" value="0" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">true</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">false</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="None" value="0" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">true</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">false</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="None" value="0" />
+            </item>
+          </data>
+        </tiles>
+      </item>
+      <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileInput" id="117753596">
+        <baseTile dataType="Int">57</baseTile>
+        <id dataType="String">autoTile2</id>
+        <name dataType="String">Water</name>
+        <tiles dataType="Struct" type="Duality.RawList`1[[Duality.Plugins.Tilemaps.TilesetAutoTileItem]]" id="528324216">
+          <count dataType="Int">60</count>
+          <data dataType="Array" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem[]" id="2023283052" length="116">
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Right, Bottom, BottomRight" value="70" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Right, Bottom, Left, BottomRight, BottomLeft" value="206" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Bottom, Left, BottomLeft" value="140" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Bottom" value="4" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem" />
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Right, Bottom, TopRight, BottomRight" value="103" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="All" value="255" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Bottom, Left, TopLeft, BottomLeft" value="157" />
+            </item>
+            <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetAutoTileItem">
+              <ConnectsToAutoTile dataType="Bool">false</ConnectsToAutoTile>
+              <IsAutoTile dataType="Bool">true</IsAutoTile>
+              <Neighbours dataType="Enum" type="Duality.Plugins.Tilemaps.TileConnection" name="Top, Bottom" value="5" />
+            </item>
+          </data>
+        </tiles>
+      </item>
+    </_items>
+    <_size dataType="Int">3</_size>
+    <_version dataType="Int">3</_version>
+  </autoTileConfig>
+  <baseMaterial dataType="Struct" type="Duality.Drawing.BatchInfo" id="2035693768">
     <dirtyFlag dataType="Enum" type="Duality.Drawing.BatchInfo+DirtyFlag" name="None" value="0" />
     <hashCode dataType="Int">2037530614</hashCode>
     <mainColor dataType="Struct" type="Duality.Drawing.ColorRgba">
@@ -12,7 +690,7 @@
     <technique dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.DrawTechnique]]">
       <contentPath dataType="String">Default:DrawTechnique:Mask</contentPath>
     </technique>
-    <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="1100841590" surrogate="true">
+    <textures dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[Duality.ContentRef`1[[Duality.Resources.Texture]]]]" id="2696347487" surrogate="true">
       <header />
       <body>
         <mainTex dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Texture]]">
@@ -20,14 +698,14 @@
         </mainTex>
       </body>
     </textures>
-    <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="649525530" surrogate="true">
+    <uniforms dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.String],[System.Single[]]]" id="847900448" surrogate="true">
       <header />
       <body />
     </uniforms>
   </baseMaterial>
-  <renderConfig dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.TilesetRenderInput]]" id="2035693768">
-    <_items dataType="Array" type="Duality.Plugins.Tilemaps.TilesetRenderInput[]" id="2696347487" length="4">
-      <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetRenderInput" id="1485019246">
+  <renderConfig dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Plugins.Tilemaps.TilesetRenderInput]]" id="876525375">
+    <_items dataType="Array" type="Duality.Plugins.Tilemaps.TilesetRenderInput[]" id="295733828" length="4">
+      <item dataType="Struct" type="Duality.Plugins.Tilemaps.TilesetRenderInput" id="2142472772">
         <id dataType="String">mainTex</id>
         <name dataType="String">Main Texture</name>
         <sourceData dataType="Struct" type="Duality.ContentRef`1[[Duality.Resources.Pixmap]]">
@@ -47,9 +725,9 @@
     <_size dataType="Int">1</_size>
     <_version dataType="Int">1</_version>
   </renderConfig>
-  <tileInput dataType="Struct" type="Duality.RawList`1[[Duality.Plugins.Tilemaps.TileInput]]" id="876525375">
+  <tileInput dataType="Struct" type="Duality.RawList`1[[Duality.Plugins.Tilemaps.TileInput]]" id="2716248726">
     <count dataType="Int">352</count>
-    <data dataType="Array" type="Duality.Plugins.Tilemaps.TileInput[]" id="295733828" length="556">
+    <data dataType="Array" type="Duality.Plugins.Tilemaps.TileInput[]" id="3244550529" length="556">
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput" />
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput" />
       <item dataType="Struct" type="Duality.Plugins.Tilemaps.TileInput" />
