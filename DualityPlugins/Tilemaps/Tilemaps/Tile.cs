@@ -137,6 +137,16 @@ namespace Duality.Plugins.Tilemaps
 			// different Tileset configs.
 			else
 			{
+				// If there is no connectivity info and a non-matching base index, this tile
+				// was likely painted before it was configured to be an AutoTile. In that case,
+				// derive the appropriate connectivity from the specs and adjust the base index
+				// to match.
+				if (this.BaseIndex != autoTile.BaseTileIndex && this.AutoTileCon == TileConnection.None)
+				{
+					this.AutoTileCon = autoTile.TileInfo[this.BaseIndex].Neighbours;
+					this.BaseIndex = autoTile.BaseTileIndex;
+				}
+
 				int targetIndex = autoTile.StateToTile[(int)this.AutoTileCon];
 
 				// If the AutoTile connectivity state already matches the one we'd get with the default
