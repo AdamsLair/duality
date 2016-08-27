@@ -95,8 +95,10 @@ namespace Duality.Plugins.Tilemaps
 			int autoTileLayer = tileInfo.AutoTileLayer;
 			if (autoTileLayer != 0)
 			{
-				IReadOnlyList<TilesetAutoTileItem> autoTileInfo = tileset.AutoTileData[autoTileLayer - 1].TileInfo;
+				TilesetAutoTileInfo autoTile = tileset.AutoTileData[autoTileLayer - 1];
+				IReadOnlyList<TilesetAutoTileItem> autoTileInfo = autoTile.TileInfo;
 				this.AutoTileCon = autoTileInfo[baseIndex].Neighbours;
+				this.BaseIndex = autoTile.BaseTileIndex;
 			}
 			else
 			{
