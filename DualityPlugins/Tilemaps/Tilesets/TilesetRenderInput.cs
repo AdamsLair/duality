@@ -28,7 +28,7 @@ namespace Duality.Plugins.Tilemaps
 		private ContentRef<Pixmap> sourceData        = null;
 		private Point2             sourceTileSize    = new Point2(32, 32);
 		private int                sourceTileSpacing = 0;
-		private int                targetTileSpacing = 1;
+		private int                targetTileMargin  = 1;
 		private TextureMagFilter   targetMagFilter   = TextureMagFilter.Linear;
 		private TextureMinFilter   targetMinFilter   = TextureMinFilter.LinearMipmapLinear;
 		private TexturePixelFormat targetFormat      = TexturePixelFormat.Rgba;
@@ -70,8 +70,8 @@ namespace Duality.Plugins.Tilemaps
 			set { this.sourceTileSize = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The spacing (in pixels) around each tile in the source data. A spacing of one means that there is a 1-pixel-wide space on
-		/// each side of every tile, meaning that the actual space between two tiles will be two pixels.
+		/// [GET / SET] The spacing (in pixels) around each tile in the source data. A spacing of one means that there is a 1-pixel-wide space between
+		/// two adjacent tiles. It doesn't imply that there is a spacing on any side of the source image.
 		/// </summary>
 		public int SourceTileSpacing
 		{
@@ -79,15 +79,15 @@ namespace Duality.Plugins.Tilemaps
 			set { this.sourceTileSpacing = value; }
 		}
 		/// <summary>
-		/// [GET / SET] The spacing (in pixels) around each tile in the target data. A spacing of one means that there is a 1-pixel-wide space on
+		/// [GET / SET] The margin (in pixels) around each tile in the target data. A margin of one means that there is a 1-pixel-wide space on
 		/// each side of every tile, meaning that the actual space between two tiles will be two pixels. The spacing is also applied on edges of the
 		/// provided pixel data, meaning that the spacing will also generate an offset for top-left and bottom-right tiles. 
 		/// Whether or not this tile spacing is used in the generated target data is up to the <see cref="Tileset"/> implementation.
 		/// </summary>
-		public int TargetTileSpacing
+		public int TargetTileMargin
 		{
-			get { return this.targetTileSpacing; }
-			set { this.targetTileSpacing = value; }
+			get { return this.targetTileMargin; }
+			set { this.targetTileMargin = value; }
 		}
 		/// <summary>
 		/// [GET / SET] The target data's magnification (zooming in) filtering algorithm.
@@ -112,6 +112,48 @@ namespace Duality.Plugins.Tilemaps
 		{
 			get { return this.targetFormat; }
 			set { this.targetFormat = value; }
+		}
+		/// <summary>
+		/// [GET] The number of pixels to skip when advancing from one tile in the source image to the next.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Point2 SourceTileAdvance
+		{
+			get
+			{
+				return new Point2(
+					this.sourceTileSize.X + this.sourceTileSpacing, 
+					this.sourceTileSize.Y + this.sourceTileSpacing);
+			}
+		}
+		/// <summary>
+		/// [GET] The number of pixels to skip when advancing from one tile in the target texture to the next.
+		/// </summary>
+		[EditorHintFlags(MemberFlags.Invisible)]
+		public Point2 TargetTileAdvance
+		{
+			get
+			{
+				return new Point2(
+					this.sourceTileSize.X + this.targetTileMargin * 2, 
+					this.sourceTileSize.Y + this.targetTileMargin * 2);
+			}
+		}
+
+
+		/// <summary>
+		/// Determines the total number of tiles in horizontal and vertical direction, given the
+		/// specified source image size.
+		/// </summary>
+		/// <param name="sourceImageWidth"></param>
+		/// <param name="sourceImageHeight"></param>
+		/// <returns></returns>
+		public Point2 GetSourceTileCount(int sourceImageWidth, int sourceImageHeight)
+		{
+			Point2 advance = this.SourceTileAdvance;
+			return new Point2(
+				(sourceImageWidth + this.sourceTileSpacing) / advance.X,
+				(sourceImageHeight + this.sourceTileSpacing) / advance.Y);
 		}
 	}
 }

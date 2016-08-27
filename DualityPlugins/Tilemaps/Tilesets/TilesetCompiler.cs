@@ -20,12 +20,12 @@ namespace Duality.Plugins.Tilemaps
 		private struct LayerGeometry
 		{
 			public int SourceTileCount;
-			public Point2 SourceTileBounds;
+			public Point2 SourceTileAdvance;
 			public int SourceTilesPerRow;
 			public int SourceTilesPerColumn;
 
 			public int TargetTileCount;
-			public Point2 TargetTileBounds;
+			public Point2 TargetTileAdvance;
 			public Point2 TargetTextureSize;
 		}
 		private struct LayerPixelData
@@ -190,26 +190,23 @@ namespace Duality.Plugins.Tilemaps
 			LayerGeometry geometry;
 
 			// What's the space requirement for each tile?
-			geometry.SourceTileBounds = new Point2(
-				renderInput.SourceTileSize.X + renderInput.SourceTileSpacing * 2, 
-				renderInput.SourceTileSize.Y + renderInput.SourceTileSpacing * 2);
-			geometry.TargetTileBounds = new Point2(
-				renderInput.SourceTileSize.X + renderInput.TargetTileSpacing * 2, 
-				renderInput.SourceTileSize.Y + renderInput.TargetTileSpacing * 2);
+			geometry.SourceTileAdvance = renderInput.SourceTileAdvance;
+			geometry.TargetTileAdvance = renderInput.TargetTileAdvance;
 
 			// How many tiles will we have?
-			geometry.SourceTilesPerRow = layerData.Width / geometry.SourceTileBounds.X;
-			geometry.SourceTilesPerColumn = layerData.Height / geometry.SourceTileBounds.Y;
+			Point2 tileCount = renderInput.GetSourceTileCount(layerData.Width, layerData.Height);
+			geometry.SourceTilesPerRow = tileCount.X;
+			geometry.SourceTilesPerColumn = tileCount.Y;
 			geometry.SourceTileCount = geometry.SourceTilesPerRow * geometry.SourceTilesPerColumn;
 			geometry.TargetTileCount = geometry.SourceTileCount; // ToDo: Account for expanded AutoTiles
 
 			// What's the optimal texture size to include them all?
 			int minTilesPerLine = MathF.Max(1, (int)MathF.Sqrt(geometry.TargetTileCount));
-			geometry.TargetTextureSize.X = MathF.NextPowerOfTwo(geometry.TargetTileBounds.X * minTilesPerLine);
+			geometry.TargetTextureSize.X = MathF.NextPowerOfTwo(geometry.TargetTileAdvance.X * minTilesPerLine);
 
-			int actualTilesPerLine = geometry.TargetTextureSize.X / geometry.TargetTileBounds.X;
+			int actualTilesPerLine = geometry.TargetTextureSize.X / geometry.TargetTileAdvance.X;
 			int requiredLineCount = 1 + (geometry.TargetTileCount / actualTilesPerLine);
-			geometry.TargetTextureSize.Y = MathF.NextPowerOfTwo(geometry.TargetTileBounds.Y * requiredLineCount);
+			geometry.TargetTextureSize.Y = MathF.NextPowerOfTwo(geometry.TargetTileAdvance.Y * requiredLineCount);
 
 			return geometry;
 		}
@@ -241,26 +238,26 @@ namespace Duality.Plugins.Tilemaps
 
 				// Determine where on the source buffer the tile is located
 				Point2 sourceTilePos = new Point2(
-					geometry.SourceTileBounds.X * (tileIndex % geometry.SourceTilesPerRow),
-					geometry.SourceTileBounds.Y * (tileIndex / geometry.SourceTilesPerRow));
+					geometry.SourceTileAdvance.X * (tileIndex % geometry.SourceTilesPerRow),
+					geometry.SourceTileAdvance.Y * (tileIndex / geometry.SourceTilesPerRow));
 
 				// Draw the source tile onto the target buffer, including its spacing / border
 				Point2 targetContentPos = new Point2(
-					targetTilePos.X + renderInput.TargetTileSpacing, 
-					targetTilePos.Y + renderInput.TargetTileSpacing);
+					targetTilePos.X + renderInput.TargetTileMargin, 
+					targetTilePos.Y + renderInput.TargetTileMargin);
 				sourceData.DrawOnto(target.PixelData, 
 					BlendMode.Solid, 
 					targetContentPos.X, 
 					targetContentPos.Y, 
 					renderInput.SourceTileSize.X, 
 					renderInput.SourceTileSize.Y, 
-					sourceTilePos.X + renderInput.SourceTileSpacing, 
-					sourceTilePos.Y + renderInput.SourceTileSpacing);
+					sourceTilePos.X, 
+					sourceTilePos.Y);
 
 				// Fill up the target spacing area with similar pixels
-				if (renderInput.TargetTileSpacing > 0)
+				if (renderInput.TargetTileMargin > 0)
 				{
-					FillTileSpacing(target.PixelData, renderInput.TargetTileSpacing, targetContentPos, renderInput.SourceTileSize);
+					FillTileSpacing(target.PixelData, renderInput.TargetTileMargin, targetContentPos, renderInput.SourceTileSize);
 				}
 
 				// Update whether the tile is considered visually empty
@@ -268,9 +265,7 @@ namespace Duality.Plugins.Tilemaps
 				{
 					bool isLayerVisuallyEmpty = IsCompletelyTransparent(
 						sourceData, 
-						new Point2(
-							sourceTilePos.X + renderInput.SourceTileSpacing,
-							sourceTilePos.Y + renderInput.SourceTileSpacing),
+						sourceTilePos,
 						renderInput.SourceTileSize);
 					if (!isLayerVisuallyEmpty)
 						tileData.Data[tileIndex].IsVisuallyEmpty = false;
@@ -278,18 +273,18 @@ namespace Duality.Plugins.Tilemaps
 
 				// Add an entry to the generated atlas
 				Rect atlasRect = new Rect(
-					targetTilePos.X + renderInput.TargetTileSpacing, 
-					targetTilePos.Y + renderInput.TargetTileSpacing, 
-					geometry.TargetTileBounds.X - renderInput.TargetTileSpacing * 2, 
-					geometry.TargetTileBounds.Y - renderInput.TargetTileSpacing * 2);
+					targetTilePos.X + renderInput.TargetTileMargin, 
+					targetTilePos.Y + renderInput.TargetTileMargin, 
+					geometry.TargetTileAdvance.X - renderInput.TargetTileMargin * 2, 
+					geometry.TargetTileAdvance.Y - renderInput.TargetTileMargin * 2);
 				target.Atlas.Add(atlasRect);
 
 				// Advance the target tile position
-				targetTilePos.X += geometry.TargetTileBounds.X;
-				if (targetTilePos.X + geometry.TargetTileBounds.X > target.PixelData.Width)
+				targetTilePos.X += geometry.TargetTileAdvance.X;
+				if (targetTilePos.X + geometry.TargetTileAdvance.X > target.PixelData.Width)
 				{
 					targetTilePos.X = 0;
-					targetTilePos.Y += geometry.TargetTileBounds.Y;
+					targetTilePos.Y += geometry.TargetTileAdvance.Y;
 				}
 			}
 
