@@ -76,6 +76,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 				this.selectedTool = value;
 				this.UpdateTilemapToolButtons();
+				this.SelectToolInInspector();
 
 				// Invalidate cursor state 
 				this.OnMouseLeave(EventArgs.Empty);
@@ -133,7 +134,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.SetDefaultActiveLayers(
 				typeof(GridCamViewLayer));
 		}
-		
+
 		/// <inheritdoc />
 		public override void GetDisplayedGridData(Point cursorPos, ref GridLayerData data)
 		{
@@ -146,6 +147,129 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 
 			if (this.hoveredRenderer != null)
 				data.DisplayedGridPos = new Vector3(this.hoveredTile);
+		}
+
+		/// <summary>
+		/// Initializes the list of available <see cref="TilemapTool"/> instances.
+		/// </summary>
+		private void InitAvailableTools()
+		{
+			if (this.tools.Count > 0) return;
+
+			TilemapTool[] availableTools = DualityEditorApp.GetAvailDualityEditorTypes(typeof(TilemapTool))
+				.Where(t => !t.IsAbstract)
+				.Select(t => t.CreateInstanceOf() as TilemapTool)
+				.NotNull()
+				.OrderBy(t => t.SortOrder)
+				.ToArray();
+
+			this.toolNone = availableTools.OfType<NoTilemapTool>().FirstOrDefault();
+			this.toolSelect = availableTools.OfType<SelectTilemapTool>().FirstOrDefault();
+
+			this.tools.AddRange(availableTools);
+			foreach (TilemapTool tool in this.tools)
+			{
+				tool.Environment = this;
+			}
+			this.tools.Remove(this.toolNone);
+
+			this.selectedTool = this.tools.FirstOrDefault(t => t != this.toolSelect) ?? this.toolSelect;
+			this.activeTool   = this.toolNone;
+			this.actionTool   = this.toolNone;
+		}
+		/// <summary>
+		/// Initializes the list of available <see cref="Tilemap"/>-related editor actions.
+		/// </summary>
+		private void InitAvailableActions()
+		{
+			if (this.actions.Count > 0) return;
+			
+			IEditorAction[] editorActions = DualityEditorApp.GetEditorActions(
+				typeof(Tilemap), null, TilemapsEditorPlugin.ActionTilemapEditor)
+				.ToArray();
+			foreach (IEditorAction action in editorActions)
+			{
+				this.actions.Add(new TilemapActionEntry
+				{
+					Action = action,
+				});
+			}
+		}
+		/// <summary>
+		/// Creates the tilemap editor's tool buttons based on the available tools and actions.
+		/// </summary>
+		private void InitToolButtons()
+		{
+			this.View.SuspendLayout();
+			this.toolstrip = new ToolStrip();
+			this.toolstrip.SuspendLayout();
+
+			this.toolstrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+			this.toolstrip.Name = "toolstrip";
+			this.toolstrip.Text = "Tilemap Editor Tools";
+			this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
+			this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
+
+			foreach (TilemapTool tool in this.tools)
+			{
+				tool.InitToolButton();
+
+				if (tool.ToolButton == null)
+					continue;
+
+				tool.ToolButton.Tag = tool.HelpInfo;
+				tool.ToolButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
+				tool.ToolButton.AutoToolTip = true;
+				this.toolstrip.Items.Add(tool.ToolButton);
+			}
+			for (int i = 0; i < this.actions.Count; i++)
+			{
+				TilemapActionEntry entry = this.actions[i];
+
+				ToolStripButton button = new ToolStripButton(entry.Action.Name, entry.Action.Icon);
+				button.DisplayStyle = (button.Image != null) ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text;
+				button.AutoToolTip = true;
+				button.Alignment = ToolStripItemAlignment.Right;
+				button.Click += this.actionToolButton_Click;
+
+				string desc = entry.Action.Description;
+				if (!string.IsNullOrEmpty(desc))
+				{
+					button.Tag = HelpInfo.FromText(entry.Action.Name, desc);
+				}
+
+				entry.ToolButton = button;
+				this.toolstrip.Items.Add(button);
+				this.actions[i] = entry;
+			}
+
+			this.View.Controls.Add(this.toolstrip);
+			this.View.Controls.SetChildIndex(this.toolstrip, this.View.Controls.IndexOf(this.View.ToolbarCamera));
+			this.toolstrip.ResumeLayout(true);
+			this.View.ResumeLayout(true);
+		}
+		/// <summary>
+		/// Destroys all previously added tool buttons of the tilemap editor.
+		/// </summary>
+		private void CleanupToolButtons()
+		{
+			foreach (TilemapTool tool in this.tools)
+			{
+				tool.DisposeToolButton();
+			}
+			for (int i = 0; i < this.actions.Count; i++)
+			{
+				TilemapActionEntry entry = this.actions[i];
+				if (entry.ToolButton != null)
+				{
+					entry.ToolButton.Click -= this.actionToolButton_Click;
+					entry.ToolButton.Dispose();
+					entry.ToolButton = null;
+				}
+				this.actions[i] = entry;
+			}
+			this.toolstrip.Dispose();
+			this.toolstrip = null;
 		}
 
 		private IEnumerable<ICmpTilemapRenderer> QueryVisibleTilemapRenderers()
@@ -462,6 +586,23 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 			this.actionBeginTile = InvalidTile;
 			UndoRedoManager.Finish();
 		}
+
+		/// <summary>
+		/// Adds the currently selected <see cref="TilemapTool"/> to the editor-wide selection, so
+		/// it becomes editable in the object inspector and can be configured by the user.
+		/// </summary>
+		private void SelectToolInInspector()
+		{
+			DualityEditorApp.Select(this, new ObjectSelection(new object[] { this.selectedTool.Settings }));
+		}
+		/// <summary>
+		/// Removes the currently selected <see cref="TilemapTool"/> from the editor-wide selection.
+		/// </summary>
+		/// <seealso cref="SelectToolInInspector"/>
+		private void DeselectToolInInspector()
+		{
+			DualityEditorApp.Deselect(this, new ObjectSelection(new object[] { this.selectedTool.Settings }));
+		}
 		
 		protected override string UpdateStatusText()
 		{
@@ -477,96 +618,10 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			base.OnEnterState();
 
-			// Init the available editor actions, if not done before
-			if (this.actions.Count == 0)
-			{
-				IEditorAction[] editorActions = DualityEditorApp.GetEditorActions(
-					typeof(Tilemap), null, TilemapsEditorPlugin.ActionTilemapEditor)
-					.ToArray();
-				foreach (IEditorAction action in editorActions)
-				{
-					this.actions.Add(new TilemapActionEntry
-					{
-						Action = action,
-					});
-				}
-			}
-
-			// Init the available toolset, if not done before
-			if (this.tools.Count == 0)
-			{
-				TilemapTool[] availableTools = DualityEditorApp.GetAvailDualityEditorTypes(typeof(TilemapTool))
-					.Where(t => !t.IsAbstract)
-					.Select(t => t.CreateInstanceOf() as TilemapTool)
-					.NotNull()
-					.OrderBy(t => t.SortOrder)
-					.ToArray();
-
-				this.toolNone = availableTools.OfType<NoTilemapTool>().FirstOrDefault();
-				this.toolSelect = availableTools.OfType<SelectTilemapTool>().FirstOrDefault();
-
-				this.tools.AddRange(availableTools);
-				foreach (TilemapTool tool in this.tools)
-				{
-					tool.Environment = this;
-				}
-				this.tools.Remove(this.toolNone);
-
-				this.selectedTool = this.tools.FirstOrDefault(t => t != this.toolSelect) ?? this.toolSelect;
-				this.activeTool   = this.toolNone;
-				this.actionTool   = this.toolNone;
-			}
-
-			// Init the custom tile editing toolbar
-			{
-				this.View.SuspendLayout();
-				this.toolstrip = new ToolStrip();
-				this.toolstrip.SuspendLayout();
-
-				this.toolstrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-				this.toolstrip.Name = "toolstrip";
-				this.toolstrip.Text = "Tilemap Editor Tools";
-				this.toolstrip.Renderer = new Duality.Editor.Controls.ToolStrip.DualitorToolStripProfessionalRenderer();
-				this.toolstrip.BackColor = Color.FromArgb(212, 212, 212);
-
-				foreach (TilemapTool tool in this.tools)
-				{
-					tool.InitToolButton();
-
-					if (tool.ToolButton == null)
-						continue;
-
-					tool.ToolButton.Tag = tool.HelpInfo;
-					tool.ToolButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
-					tool.ToolButton.AutoToolTip = true;
-					this.toolstrip.Items.Add(tool.ToolButton);
-				}
-				for (int i = 0; i < this.actions.Count; i++)
-				{
-					TilemapActionEntry entry = this.actions[i];
-
-					ToolStripButton button = new ToolStripButton(entry.Action.Name, entry.Action.Icon);
-					button.DisplayStyle = (button.Image != null) ? ToolStripItemDisplayStyle.Image : ToolStripItemDisplayStyle.Text;
-					button.AutoToolTip = true;
-					button.Alignment = ToolStripItemAlignment.Right;
-					button.Click += this.actionToolButton_Click;
-
-					string desc = entry.Action.Description;
-					if (!string.IsNullOrEmpty(desc))
-					{
-						button.Tag = HelpInfo.FromText(entry.Action.Name, desc);
-					}
-
-					entry.ToolButton = button;
-					this.toolstrip.Items.Add(button);
-					this.actions[i] = entry;
-				}
-
-				this.View.Controls.Add(this.toolstrip);
-				this.View.Controls.SetChildIndex(this.toolstrip, this.View.Controls.IndexOf(this.View.ToolbarCamera));
-				this.toolstrip.ResumeLayout(true);
-				this.View.ResumeLayout(true);
-			}
+			// Initialize available tools, actions and the toolbar containing them
+			this.InitAvailableActions();
+			this.InitAvailableTools();
+			this.InitToolButtons();
 
 			// Register events
 			DualityEditorApp.SelectionChanged += this.DualityEditorApp_SelectionChanged;
@@ -583,26 +638,12 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 		{
 			base.OnLeaveState();
 
-			// Cleanup the custom tile editing toolbar
-			{
-				foreach (TilemapTool tool in this.tools)
-				{
-					tool.DisposeToolButton();
-				}
-				for (int i = 0; i < this.actions.Count; i++)
-				{
-					TilemapActionEntry entry = this.actions[i];
-					if (entry.ToolButton != null)
-					{
-						entry.ToolButton.Click -= this.actionToolButton_Click;
-						entry.ToolButton.Dispose();
-						entry.ToolButton = null;
-					}
-					this.actions[i] = entry;
-				}
-				this.toolstrip.Dispose();
-				this.toolstrip = null;
-			}
+			// Make sure to clean up the tilemap tool that is still selected in the inspector
+			this.DeselectToolInInspector();
+
+			// Cleanup the custom tile editing toolbar. We don't cleanup the list of available
+			// tools and actions, as we'll just re-use that when entering this state next time.
+			this.CleanupToolButtons();
 
 			// Unregister events
 			DualityEditorApp.SelectionChanged -= this.DualityEditorApp_SelectionChanged;
@@ -768,6 +809,11 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				this.OverrideTool = null;
 				e.Handled = true;
 			}
+		}
+		protected override void OnGotFocus()
+		{
+			base.OnGotFocus();
+			this.SelectToolInInspector();
 		}
 		protected override void OnLostFocus()
 		{
@@ -1022,7 +1068,7 @@ namespace Duality.Editor.Plugins.Tilemaps.CamViewStates
 				pos, 
 				drawPatch,
 				brush,
-				AutoTilePaintMode.Full));
+				this.actionTool.Settings.UseAutoTiling));
 		}
 
 		[Flags]

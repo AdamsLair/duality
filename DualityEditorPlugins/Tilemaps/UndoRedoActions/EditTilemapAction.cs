@@ -164,6 +164,26 @@ namespace Duality.Editor.Plugins.Tilemaps.UndoRedoActions
 			{
 				editAction.Do();
 			}
+
+			// Update AutoTiles that we edited before if we're using direct-only AutoTiling mode,
+			// so at least all the tiles in the edited mask are up-to-date.
+			if (this.autoTileMode == AutoTilePaintMode.DirectOnly)
+			{
+				Tileset tileset = this.tilemap.Tileset.Res;
+				if (tileset != null)
+				{
+					Grid<Tile> tiles = this.tilemap.BeginUpdateTiles();
+					Tile.UpdateAutoTileCon(
+						tiles, 
+						this.editMaskAutoTile,
+						this.origin.X, 
+						this.origin.Y, 
+						this.newTiles.Width, 
+						this.newTiles.Height, 
+						tileset);
+					this.tilemap.EndUpdateTiles(this.origin.X, this.origin.Y, this.newTiles.Width, this.newTiles.Height);
+				}
+			}
 			
 			// Determine working data for merging the two tile grids
 			Point2 originDiff = new Point2(

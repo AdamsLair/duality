@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CamViewStates\TilemapToolSettings.cs" />
     <Compile Include="CamViewStates\TilemapTools\AutoTilePaintMode.cs" />
     <Compile Include="CamViewStates\TilemapTools\PickTilemapTool.cs" />
     <Compile Include="DataConverters\ComponentFromTileset.cs" />
