@@ -127,7 +127,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		public override string GetActionText()
 		{
 			return string.Format(
-				"Vertex X:{0,9:0.00}/nVertex Y:{0,9:0.00}", 
+				"Vertex X:{0,9:0.00}/nVertex Y:{1,9:0.00}", 
 				this.Environment.ActiveBodyPos.X, 
 				this.Environment.ActiveBodyPos.Y);
 		}
