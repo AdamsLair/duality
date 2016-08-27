@@ -272,22 +272,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 						displayedPos.X, 
 						displayedPos.Y);
 					
-					Tile tile = new Tile(this.GetTileIndex(tilesetPos.X, tilesetPos.Y));
-
-					// By default, pre-initialize the tile with the AutoTile connectivity state that is 
-					// specified for it in the Tileset. This way, when painting the tile unaltered, 
-					// resolving it using base index and connectivity state won't replace it with a
-					// different tile.
+					Tile tile;
+					int baseIndex = this.GetTileIndex(tilesetPos.X, tilesetPos.Y);
 					if (tileset != null)
-					{
-						TileInfo tileInfo = tileset.TileData[tile.BaseIndex];
-						int autoTileLayer = tileInfo.AutoTileLayer;
-						if (autoTileLayer != 0)
-						{
-							IReadOnlyList<TilesetAutoTileItem> autoTileInfo = tileset.AutoTileData[autoTileLayer - 1].TileInfo;
-							tile.AutoTileCon = autoTileInfo[tile.BaseIndex].Neighbours;
-						}
-					}
+						tile = new Tile(baseIndex, tileset);
+					else
+						tile = new Tile(baseIndex);
 
 					this.selectedTiles[x, y] = tile;
 				}

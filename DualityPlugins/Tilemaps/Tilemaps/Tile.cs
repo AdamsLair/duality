@@ -43,13 +43,65 @@ namespace Duality.Plugins.Tilemaps
 		public TileConnection AutoTileCon;
 
 
-		public Tile(int baseIndex)
+		/// <summary>
+		/// Initializes a new tile with the specified <see cref="BaseIndex"/> and the default connectivity.
+		/// The <see cref="Index"/> will be resolved when set in a <see cref="Tilemap"/>.
+		/// 
+		/// If the specified base index refers to an AutoTile with a different connectivity than the default
+		/// one, the actual index of the tile may change when resolved.
+		/// </summary>
+		/// <param name="baseIndex"></param>
+		public Tile(int baseIndex) : this(baseIndex, TileConnection.None) { }
+		/// <summary>
+		/// Initializes a new tile with the specified <see cref="BaseIndex"/> and <see cref="AutoTileCon">AutoTile connectivity</see>.
+		/// The <see cref="Index"/> will be resolved when set in a <see cref="Tilemap"/>.
+		/// </summary>
+		/// <param name="baseIndex"></param>
+		/// <param name="connectivity"></param>
+		public Tile(int baseIndex, TileConnection connectivity)
 		{
 			// As long as not resolved otherwise, use the base index directly.
 			this.Index = baseIndex;
 			this.BaseIndex = baseIndex;
 			this.DepthOffset = 0;
-			this.AutoTileCon = TileConnection.None;
+			this.AutoTileCon = connectivity;
+		}
+		/// <summary>
+		/// Initializes a new tile with the specified <see cref="BaseIndex"/> and derives all other values
+		/// from their defaults as specified in the provided <see cref="Tileset"/>. 
+		/// 
+		/// This guarantees that, even for AutoTiles, the specified <see cref="BaseIndex"/> will be used 
+		/// directly as-is, without the resolve step adjusting it. When possible, prefer other methods of
+		/// initializing tiles, as this one is more expensive than the others.
+		/// </summary>
+		/// <param name="baseIndex"></param>
+		/// <param name="defaultLookup"></param>
+		public Tile(int baseIndex, ContentRef<Tileset> defaultLookup)
+		{
+			Tileset tileset = defaultLookup.Res;
+
+			if (tileset == null) throw new ArgumentNullException("defaultLookup");
+			
+			// As long as not resolved otherwise, use the base index directly.
+			this.Index = baseIndex;
+			this.BaseIndex = baseIndex;
+			this.DepthOffset = 0;
+
+			// By default, pre-initialize the tile with the AutoTile connectivity state that is 
+			// specified for it in the Tileset. This way, when painting the tile unaltered, 
+			// resolving it using base index and connectivity state won't replace it with a
+			// different tile.
+			TileInfo tileInfo = tileset.TileData[baseIndex];
+			int autoTileLayer = tileInfo.AutoTileLayer;
+			if (autoTileLayer != 0)
+			{
+				IReadOnlyList<TilesetAutoTileItem> autoTileInfo = tileset.AutoTileData[autoTileLayer - 1].TileInfo;
+				this.AutoTileCon = autoTileInfo[baseIndex].Neighbours;
+			}
+			else
+			{
+				this.AutoTileCon = TileConnection.None;
+			}
 		}
 		
 		/// <summary>
