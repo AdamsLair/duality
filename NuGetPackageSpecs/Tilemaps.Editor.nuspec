@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Tilemaps</id>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Editor)</title>
@@ -13,12 +13,12 @@
     <summary>Defines the editor integration of the dependent core tilemap plugin.</summary>
     <description>Defines the editor integration of the dependent core tilemap plugin.</description>
     <tags>Duality Editor Plugin Tilemaps</tags>
-    <releaseNotes>Modified Tileset Spacing Rules
-#CHANGE: Updated tileset source image spacing rules to be a better match with most common tileset layouts.</releaseNotes>
+    <releaseNotes>Tileset Editor Focus Tweaks
+#CHANGE: When focusing the Tileset Editor or the main layer view, it will now emit a new selection event in order to acquire inspector focus, should that be desired by the active editing mode.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.1.1" />
+      <dependency id="AdamsLair.Duality.Plugins.Tilemaps" version="1.1.2" />
       <dependency id="AdamsLair.Duality" version="2.7.4" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.6.4" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.5" />
     </dependencies>
   </metadata>
   <files>

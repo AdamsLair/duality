@@ -1117,6 +1117,7 @@ namespace Duality.Editor
 		}
 		private static void OnSelectionChanged(object sender, ObjectSelection.Category changedCategoryFallback, SelectionChangeReason changeReson)
 		{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
 			//if (selectionCurrent == selectionPrevious) return;
 			selectionChanging = true;
 
@@ -1134,6 +1135,8 @@ namespace Duality.Editor
 		}
 		private static void OnObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs args)
 		{
+			if (DualityApp.ExecContext == DualityApp.ExecutionContext.Terminated) return;
+
 			//Log.Editor.Write("OnObjectPropertyChanged: {0}{2}\t{1}", args.PropNames.ToString(", "), args.Objects.Objects.ToString(", "), Environment.NewLine);
 			if (args.PersistenceCritical)
 			{
