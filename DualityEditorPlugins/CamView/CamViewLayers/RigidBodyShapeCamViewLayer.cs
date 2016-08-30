@@ -152,11 +152,15 @@ namespace Duality.Editor.Plugins.CamView.CamViewLayers
 						VertexC1P3T2[] drawVertices = new VertexC1P3T2[shapeVertices.Length];
 						for (int i = 0; i < drawVertices.Length; i++)
 						{
-							drawVertices[i].Pos.X = shapeVertices[i].X * viewSpaceScale + viewSpacePos.X;
-							drawVertices[i].Pos.Y = shapeVertices[i].Y * viewSpaceScale + viewSpacePos.Y;
-							drawVertices[i].Pos.Z = viewSpacePos.Z;
+							drawVertices[i].Pos.X = shapeVertices[i].X;
+							drawVertices[i].Pos.Y = shapeVertices[i].Y;
+							drawVertices[i].Pos.Z = 0.0f;
+							MathF.TransformCoord(ref drawVertices[i].Pos.X, ref drawVertices[i].Pos.Y, objAngle, viewSpaceScale);
+
+							drawVertices[i].Pos.X += viewSpacePos.X;
+							drawVertices[i].Pos.Y += viewSpacePos.Y;
+							drawVertices[i].Pos.Z += viewSpacePos.Z;
 							drawVertices[i].Color = vertexOutlineColor;
-							MathF.TransformCoord(ref drawVertices[i].Pos.X, ref drawVertices[i].Pos.Y, objAngle);
 						}
 
 						// Calculate the center coordinate 
