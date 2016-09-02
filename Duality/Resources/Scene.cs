@@ -179,6 +179,42 @@ namespace Duality.Resources
 			Scene.SwitchTo(target);
 		}
 
+		/// <summary>
+		/// Performs a <see cref="Scene"/> switch operation that was scheduled using
+		/// <see cref="Scene.SwitchTo"/>.
+		/// </summary>
+		/// <returns></returns>
+		private static bool PerformScheduledSwitch()
+		{
+			if (!switchToScheduled) return false;
+
+			// Retrieve the target and reset the scheduled switch
+			string oldName = Scene.Current.FullName;
+			Scene target = switchToTarget.Res;
+			switchToTarget = null;
+			switchToScheduled = false;
+
+			// Perform the scheduled switch
+			Scene.Current = target;
+
+			// If we now end up with another scheduled switch, we might be
+			// caught up in a redirect loop, where a Scene, when activated,
+			// will immediately switch to another Scene, which will do the same.
+			if (switchToScheduled)
+			{
+				switchToTarget = null;
+				switchToScheduled = false;
+				Log.Core.WriteWarning(
+					"Potential Scene redirect loop detected: When performing previously " +
+					"scheduled switch to Scene '{0}', a awitch to Scene '{1}' was immediately scheduled. " +
+					"The second switch will not be performed to avoid entering a loop. Please " +
+					"check when you call Scene.SwitchTo and avoid doing that during object activation.",
+					oldName, Scene.Current.FullName);
+			}
+
+			return true;
+		}
+
 		private static void OnLeaving()
 		{
 			switchLock++;
@@ -472,12 +508,7 @@ namespace Duality.Resources
 			DualityApp.RunCleanup();
 			
 			// Perform a scheduled Scene switch
-			if (switchToScheduled)
-			{
-				Scene.Current = switchToTarget.Res;
-				switchToTarget = null;
-				switchToScheduled = false;
-			}
+			PerformScheduledSwitch();
 
 			switchLock--;
 		}
