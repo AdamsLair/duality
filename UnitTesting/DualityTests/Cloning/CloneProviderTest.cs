@@ -128,6 +128,20 @@ namespace Duality.Tests.Cloning
 			Assert.IsTrue(data.Equals(dataResult));
 			Assert.IsFalse(data.AnyReferenceEquals(dataResult));
 		}
+		[Test] public void InterfaceFieldsOwnership()
+		{
+			InterfaceFieldTestObject data = new InterfaceFieldTestObject
+			{
+				IntValue = 17,
+				InterfaceValue = new int[1] { 42 }
+			};
+			InterfaceFieldTestObject dataResult = data.DeepClone();
+
+			Assert.IsTrue(data.IntValue.Equals(dataResult.IntValue));
+			CollectionAssert.AreEqual(data.InterfaceValue, dataResult.InterfaceValue);
+			Assert.AreNotSame(data, dataResult);
+			Assert.AreNotSame(data.InterfaceValue, dataResult.InterfaceValue);
+		}
 		[Test] public void WeakReferenceBehavior()
 		{
 			WeakReferenceTestObject data = new WeakReferenceTestObject(new[]

@@ -413,6 +413,7 @@ namespace Duality
 
 			// Otherwise, any class is not plain old data
 			if (typeInfo.IsClass) return false;
+			if (typeInfo.IsInterface) return false;
 
 			// If we have no evidence so far, check the cache and iterate fields
 			bool isPlainOldData;

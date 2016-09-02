@@ -66,6 +66,40 @@ namespace Duality.Tests.Utility
 			ReflectionHelper.VisitObjectsDeep<string>(visitedRoot, s => { visitedCount++; return s; });
 			Assert.AreEqual(3, visitedCount);
 		}
+		[Test] public void IsPlainOldData()
+		{
+			// Primitives
+			Assert.IsTrue(typeof(bool).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(byte).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(sbyte).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(short).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(ushort).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(int).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(uint).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(long).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(ulong).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(float).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(double).GetTypeInfo().IsPlainOldData());
+
+			// Primitive special cases
+			Assert.IsTrue(typeof(decimal).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(string).GetTypeInfo().IsPlainOldData());
+			Assert.IsTrue(typeof(Alignment).GetTypeInfo().IsPlainOldData());
+
+			// Pure POD compound types
+			Assert.IsTrue(typeof(Vector2).GetTypeInfo().IsPlainOldData());
+
+			// Non-pure compound types
+			Assert.IsFalse(typeof(ContentRef<Resource>).GetTypeInfo().IsPlainOldData());
+
+			// Various kinds of by-reference types
+			Assert.IsFalse(typeof(object).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(int[]).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(GameObject).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(IComparable).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(IContentRef).GetTypeInfo().IsPlainOldData());
+			Assert.IsFalse(typeof(IComparable<int>).GetTypeInfo().IsPlainOldData());
+		}
 
 		private class TestVisitorClass
 		{
