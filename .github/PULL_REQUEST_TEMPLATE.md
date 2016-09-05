@@ -1,4 +1,4 @@
-#### Pull Request Checklist
+### Pull Request Checklist
 
 _This is a reminder on a few important traits of your Pull Request. **Do not add this to your description**._
 
