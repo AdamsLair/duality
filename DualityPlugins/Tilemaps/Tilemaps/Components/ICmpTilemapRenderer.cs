@@ -47,6 +47,13 @@ namespace Duality.Plugins.Tilemaps
 		/// <returns></returns>
 		Point2 GetTileAtLocalPos(Vector2 localPos, TilePickMode pickMode);
 		/// <summary>
+		/// Gets the local position of the specified tile. The function does not check if the point is a valid tile position.
+		/// </summary>
+		/// <param name="tile">The position of the tile.</param>
+		/// <param name="alignment">Determines the point of the tile that is returned.</param>
+		/// <returns></returns>
+		Vector2 GetLocalPosAtTile(Point2 tile, Alignment alignment = Alignment.Center);
+		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
 		/// This also inclues the renderers overall depth offset.
 		/// </summary>
