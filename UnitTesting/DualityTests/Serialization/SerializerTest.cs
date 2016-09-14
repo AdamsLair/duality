@@ -7,6 +7,7 @@ using System.IO;
 using System.Text;
 
 using Duality;
+using Duality.Components;
 using Duality.IO;
 using Duality.Serialization;
 using Duality.Tests.Properties;
@@ -371,6 +372,66 @@ namespace Duality.Tests.Serialization
 			stream.Dispose();
 			File.Delete(tempFile);
 			serializer.Dispose();
+		}
+		[Test] public void DeserializeNonExistentComponentType()
+		{
+			string correctTypeId = typeof(Transform).GetTypeId();
+			string wrongTypeId = correctTypeId.Replace("Transform", "XYZnsform");
+			byte[] correctTypeIdBytes = Encoding.UTF8.GetBytes(correctTypeId);
+			byte[] wrongTypeIdBytes = Encoding.UTF8.GetBytes(wrongTypeId);
+
+			// Create a very simple object to serialize
+			GameObject writeObj = new GameObject("TestObject");
+			writeObj.AddComponent<Transform>();
+
+			// Write the object into memory
+			byte[] data;
+			using (MemoryStream stream = new MemoryStream())
+			{
+				using (Serializer formatterWrite = Serializer.Create(stream, format))
+				{
+					formatterWrite.WriteObject(writeObj);
+				}
+				data = stream.ToArray();
+			}
+			
+			// Replace all occurrences of the correct type id with the incorrect one.
+			for (int i = 0; i < data.Length - correctTypeIdBytes.Length; i++)
+			{
+				bool matchTypeId = true;
+				for (int j = 0; j < correctTypeIdBytes.Length; j++)
+				{
+					if (data[i + j] != correctTypeIdBytes[j])
+					{
+						matchTypeId = false;
+						break;
+					}
+				}
+
+				if (matchTypeId)
+				{
+					for (int j = 0; j < correctTypeIdBytes.Length; j++)
+						data[i + j] = wrongTypeIdBytes[j];
+				}
+			}
+
+			// Attempt to read back the object
+			GameObject readObj;
+			using (MemoryStream stream = new MemoryStream(data))
+			{
+				stream.Position = 0;
+				using (Serializer formatterRead = Serializer.Create(stream))
+				{
+					readObj = formatterRead.ReadObject<GameObject>();
+				}
+			}
+
+			// Deserialization should never throw an exception due to non-parsable / incompatible 
+			// data, but it may log an error and return null. In this specific case, we expect the
+			// object overall to be functional, but devoid of the faulty Component.
+			Assert.IsNotNull(readObj);
+			Assert.AreEqual(readObj.Name, "TestObject");
+			Assert.IsNull(readObj.GetComponent<Transform>());
 		}
 
 		
