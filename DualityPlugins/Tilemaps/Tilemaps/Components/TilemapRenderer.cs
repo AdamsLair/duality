@@ -152,6 +152,18 @@ namespace Duality.Plugins.Tilemaps
 				return Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
 			}
 		}
+		/// <summary>
+		/// [GET] Returns the size of the bounding rectange of one tile.
+		/// </summary>
+		public Vector2 LocalTileSize
+		{
+			get
+			{
+				Tilemap tilemap = this.ActiveTilemap;
+				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+				return tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+			}
+		}
 		public override float BoundRadius
 		{
 			get
@@ -199,6 +211,17 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			return tileIndex;
+		}
+		/// <summary>
+		/// Gets the local position of the specified tile at the upper left corner.
+		/// The function does not check if the point is a valid tile position.
+		/// </summary>
+		/// <param name="tile">The position of the tile.</param>
+		/// <returns></returns>
+		public Vector2 GetLocalPosAtTile(Point2 tile)
+		{
+			Vector2 tileSize = this.LocalTileSize;
+			return new Vector2(tile.X * tileSize.X, tile.Y * tileSize.Y);
 		}
 		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
