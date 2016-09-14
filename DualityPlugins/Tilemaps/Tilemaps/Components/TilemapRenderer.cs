@@ -152,6 +152,18 @@ namespace Duality.Plugins.Tilemaps
 				return Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
 			}
 		}
+		/// <summary>
+		/// [GET] Returns the size of the bounding rectange of one tile.
+		/// </summary>
+		public Vector2 LocalTileSize
+		{
+			get
+			{
+				Tilemap tilemap = this.ActiveTilemap;
+				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+				return tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+			}
+		}
 		public override float BoundRadius
 		{
 			get
@@ -201,56 +213,15 @@ namespace Duality.Plugins.Tilemaps
 			return tileIndex;
 		}
 		/// <summary>
-		/// Gets the local position of the specified tile. The function does not check if the point is a valid tile position.
+		/// Gets the local position of the specified tile at the upper left corner.
+		/// The function does not check if the point is a valid tile position.
 		/// </summary>
 		/// <param name="tile">The position of the tile.</param>
-		/// <param name="alignment">Determines the point of the tile that is returned.</param>
 		/// <returns></returns>
-		public Vector2 GetLocalPosAtTile(Point2 tile, Alignment alignment = Alignment.Center)
+		public Vector2 GetLocalPosAtTile(Point2 tile)
 		{
-			try
-			{
-				Vector2 tileSize = ActiveTilemap.Tileset.Res.TileSize;
-				Vector2 topLeftPos = new Vector2(tileSize.X * tile.X, tileSize.Y * tile.Y);
-				float xOffset = 0f, yOffset = 0f;
-				switch (alignment)
-				{
-					case Alignment.Center:
-						xOffset = 0.5f; yOffset = 0.5f;
-						break;
-					case Alignment.Left:
-						xOffset = 0f; yOffset = 0.5f;
-						break;
-					case Alignment.Right:
-						xOffset = 1f; yOffset = 0.5f;
-						break;
-					case Alignment.Top:
-						xOffset = 0.5f; yOffset = 0f;
-						break;
-					case Alignment.Bottom:
-						xOffset = 0.5f; yOffset = 1f;
-						break;
-					case Alignment.TopLeft:
-						xOffset = 0f; yOffset = 0f;
-						break;
-					case Alignment.TopRight:
-						xOffset = 1f; yOffset = 0f;
-						break;
-					case Alignment.BottomLeft:
-						xOffset = 0f; yOffset = 1f;
-						break;
-					case Alignment.BottomRight:
-						xOffset = 1f; yOffset = 1f;
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-				return topLeftPos + new Vector2(tileSize.X * xOffset, tileSize.Y * yOffset);	
-			}
-			catch (NullReferenceException)
-			{
-				return Vector2.Zero;
-			}
+			Vector2 tileSize = this.LocalTileSize;
+			return new Vector2(tile.X * tileSize.X, tile.Y * tileSize.Y);
 		}
 		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.

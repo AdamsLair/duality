@@ -27,6 +27,10 @@ namespace Duality.Plugins.Tilemaps
 		/// </summary>
 		Rect LocalTilemapRect { get; }
 		/// <summary>
+		/// [GET] Returns the size of the bounding rectange of one tile.
+		/// </summary>
+		Vector2 LocalTileSize { get; }
+		/// <summary>
 		/// [GET / SET] A color by which the rendered <see cref="Tilemap"/> is tinted.
 		/// </summary>
 		ColorRgba ColorTint { get; set; }
@@ -47,12 +51,12 @@ namespace Duality.Plugins.Tilemaps
 		/// <returns></returns>
 		Point2 GetTileAtLocalPos(Vector2 localPos, TilePickMode pickMode);
 		/// <summary>
-		/// Gets the local position of the specified tile. The function does not check if the point is a valid tile position.
+		/// Gets the local position of the specified tile at the upper left corner.
+		/// The function does not check if the point is a valid tile position.
 		/// </summary>
 		/// <param name="tile">The position of the tile.</param>
-		/// <param name="alignment">Determines the point of the tile that is returned.</param>
 		/// <returns></returns>
-		Vector2 GetLocalPosAtTile(Point2 tile, Alignment alignment = Alignment.Center);
+		Vector2 GetLocalPosAtTile(Point2 tile);
 		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
 		/// This also inclues the renderers overall depth offset.
