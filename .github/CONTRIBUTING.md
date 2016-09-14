@@ -4,7 +4,7 @@ If you need help with using Duality, please consider [asking the community](http
 
 (Of course, if you already have all the evidence, feel free to submit a new issue right away!)
 
-#### Bug Reports
+### Bug Reports
 
 - Short summary of the problem in 1-3 sentences in the first paragraph. Followed by a more thorough description of the issue (if applicable)
 - A few easy steps to reproduce the behavior. Provide sample code and Resources where useful.
@@ -12,7 +12,7 @@ If you need help with using Duality, please consider [asking the community](http
 - Screenshots (if applicable and useful)
 - An existing workaround (if applicable)
 
-#### Feature Requests
+### Feature Requests
 
 - The use cases you see for this feature.
 - If there are other ways to achieve the same, describe them and describe how your feature would be an improvement.

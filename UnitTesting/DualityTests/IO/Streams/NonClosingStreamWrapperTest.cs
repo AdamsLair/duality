@@ -57,5 +57,27 @@ namespace Duality.Tests.IO
 				Assert.IsTrue(baseData.SequenceEqual(buffer.Take(baseData.Length)));
 			}
 		}
+		[Test] public void CloseAlreadyDisposed()
+		{
+			// Prepare stream and wrapper. Make sure it's a stream that won't
+			// allow flushing after disposal, i.e. not a MemoryStream, which is fairly
+			// robust with regard to behavior-after-disposal.
+			string tempFile = Path.GetTempFileName();
+			Stream baseStream = File.Open(tempFile, FileMode.Create);
+			Stream stream = baseStream.NonClosing();
+
+			// Close the wrapped stream first.
+			baseStream.Close();
+			Assert.IsFalse(baseStream.CanRead);
+			Assert.IsFalse(stream.CanRead);
+
+			// Now close the wrapper. This shouldn't raise an Exception.
+			stream.Close();
+			Assert.IsFalse(baseStream.CanRead);
+			Assert.IsFalse(stream.CanRead);
+
+			// Cleanup after the test
+			File.Delete(tempFile);
+		}
 	}
 }

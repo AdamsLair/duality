@@ -351,6 +351,27 @@ namespace Duality.Tests.Serialization
 
 			Assert.Pass();
 		}
+		[Test] public void CleanupAfterDisposedStream()
+		{
+			Random rnd = new Random();
+			
+			// Prepare stream and serializer. Make sure it's a stream that won't
+			// allow flushing after disposal, i.e. not a MemoryStream, which is fairly
+			// robust with regard to behavior-after-disposal.
+			string tempFile = Path.GetTempFileName();
+			Stream stream = File.Open(tempFile, FileMode.Create);
+			Serializer serializer = Serializer.Create(stream, this.PrimaryFormat);
+
+			// Write something arbitrary
+			serializer.WriteObject(rnd.NextVector2());
+
+			// Dispose the stream first, and the serializer afterwards.
+			// Make sure it doesn't fail on cleanup if the stream is already
+			// gone.
+			stream.Dispose();
+			File.Delete(tempFile);
+			serializer.Dispose();
+		}
 
 		
 		private string GetReferenceResourceName(string name, Type format)

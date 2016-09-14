@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.7.5</version>
+    <version>2.7.6</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,11 +13,10 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>ReflectionHelper Bugfixes, Scene Redirect Loop Warning
-#FIX: Fixed a bug where interface types would be erroneously identified as plain-old-data. 
-#FIX: This also fixes a bug where cloning a Scene and disposing the original would cause the clones visibility strategy to be corrupt. 
-#ADD: Added unit tests for this.
-#ADD: Added an explicit warning when perfoming a scheduled scene switch immediately triggers another scene switch, hinting towards a redirect loop.</releaseNotes>
+    <releaseNotes>BinarySerializer / StreamWrapper Bugfixes
+#FIX: Fixed a bug where disposing or garbage-collecting a BinarySerializer would throw an Exception if the underlying target stream was already disposed. 
+#FIX: Fixed a bug where closing a non-closing wrapper stream would throw an Exception if the underlying target stream was already disposed. 
+#ADD: Added tests to check for both conditions.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />

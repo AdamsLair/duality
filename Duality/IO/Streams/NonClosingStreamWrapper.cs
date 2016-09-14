@@ -67,7 +67,9 @@ namespace Duality.IO
 		{
 			if (!this.pretendClosed)
 			{
-				base.Flush();
+				// If the base stream is still open, flush it.
+				if (base.CanWrite)
+					base.Flush();
 			}
 			this.pretendClosed = true;	
 		}
