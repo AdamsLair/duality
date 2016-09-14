@@ -171,7 +171,13 @@ namespace Duality.Serialization
 
 			if (this.writer != null)
 			{
-				this.writer.Flush();
+				// The stream might have been closed in the meantime, in which
+				// case attempting to flush it would be an error and cause an exception.
+				// Also, don't access the BaseStream property, as this will implicitly
+				// flush the stream.
+				if (oldStream.CanWrite)
+					this.writer.Flush();
+
 				this.writer.Dispose();
 				this.writer = null;
 			}
