@@ -429,7 +429,9 @@ namespace Duality.Serialization
 			Type type = null;
 			if (typeStr != null) type = this.ResolveType(typeStr, objId);
 
-			ObjectHeader header = new ObjectHeader(objId, dataType, GetSerializeType(type));
+			ObjectHeader header = (type != null) ? 
+				new ObjectHeader(objId, dataType, GetSerializeType(type)) :
+				new ObjectHeader(objId, dataType, typeStr);
 			if (header.DataType == DataType.Unknown)
 			{
 				this.LocalLog.WriteError("Unable to process DataType: {0}.", dataTypeStr);
@@ -661,7 +663,8 @@ namespace Duality.Serialization
 				if (header.DataType == DataType.Type)
 				{
 					string typeString = element.GetAttributeValue("value");
-					result = this.ResolveType(typeString, header.ObjectId).GetTypeInfo();
+					Type type = this.ResolveType(typeString, header.ObjectId);
+					result = (type != null) ? type.GetTypeInfo() : null;
 				}
 				else
 				{

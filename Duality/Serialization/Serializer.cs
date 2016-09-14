@@ -191,13 +191,20 @@ namespace Duality.Serialization
 			{
 				get { return this.dataType.HasObjectId(); }
 			}
-
+			
 			public ObjectHeader(uint id, DataType dataType, SerializeType serializeType)
 			{
 				this.objectId = id;
 				this.dataType = dataType;
 				this.serializeType = serializeType;
-				this.typeString = serializeType != null ? serializeType.TypeString : null;
+				this.typeString = (serializeType != null) ? serializeType.TypeString : null;
+			}
+			public ObjectHeader(uint id, DataType dataType, string unresolvedTypeString)
+			{
+				this.objectId = id;
+				this.dataType = dataType;
+				this.serializeType = null;
+				this.typeString = unresolvedTypeString;
 			}
 		}
 

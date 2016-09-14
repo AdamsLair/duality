@@ -289,6 +289,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string Assembly(Assembly asm)
 		{
+			if (asm == null) return "null";
 			string shortName = asm.GetShortAssemblyName();
 			try
 			{
@@ -307,6 +308,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string Type(Type type)
 		{
+			if (type == null) return "null";
 			return type.GetTypeCSCodeName(true);
 		}
 		/// <summary>
@@ -316,6 +318,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string Type(TypeInfo type)
 		{
+			if (type == null) return "null";
 			return Log.Type(type.AsType());
 		}
 		/// <summary>
@@ -326,6 +329,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string MethodInfo(MethodInfo info, bool includeDeclaringType = true)
 		{
+			if (info == null) return "null";
 			string declTypeName = Type(info.DeclaringType);
 			string returnTypeName = Type(info.ReturnType);
 			string[] paramNames = info.GetParameters().Select(p => Type(p.ParameterType)).ToArray();
@@ -363,6 +367,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string ConstructorInfo(ConstructorInfo info, bool includeDeclaringType = true)
 		{
+			if (info == null) return "null";
 			string declTypeName = Type(info.DeclaringType);
 			string[] paramNames = info.GetParameters().Select(p => Type(p.ParameterType)).ToArray();
 			return string.Format(System.Globalization.CultureInfo.InvariantCulture, 
@@ -379,6 +384,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string PropertyInfo(PropertyInfo info, bool includeDeclaringType = true)
 		{
+			if (info == null) return "null";
 			string declTypeName = Type(info.DeclaringType);
 			string propTypeName = Type(info.PropertyType);
 			string[] paramNames = info.GetIndexParameters().Select(p => Type(p.ParameterType)).ToArray();
@@ -397,6 +403,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string FieldInfo(FieldInfo info, bool includeDeclaringType = true)
 		{
+			if (info == null) return "null";
 			string declTypeName = Type(info.DeclaringType);
 			string fieldTypeName = Type(info.FieldType);
 			return string.Format(System.Globalization.CultureInfo.InvariantCulture, 
@@ -413,6 +420,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string EventInfo(EventInfo info, bool includeDeclaringType = true)
 		{
+			if (info == null) return "null";
 			string declTypeName = Type(info.DeclaringType);
 			string fieldTypeName = Type(info.EventHandlerType);
 			return string.Format(System.Globalization.CultureInfo.InvariantCulture, 
@@ -456,7 +464,7 @@ namespace Duality
 		/// <returns></returns>
 		public static string Exception(Exception e, bool callStack = true)
 		{
-			if (e == null) return null;
+			if (e == null) return "null";
 
 			string eName = Type(e.GetType());
 
