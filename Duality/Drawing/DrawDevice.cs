@@ -148,6 +148,7 @@ namespace Duality.Drawing
 				return
 					other.VertexMode == this.vertexMode && 
 					other is DrawBatch<T> &&
+					this.vertexCount + other.VertexCount < 1024 &&
 					this.vertexMode.IsBatchableMode() &&
 					other.Material == this.material;
 			}
@@ -539,13 +540,21 @@ namespace Duality.Drawing
 			List<IDrawBatch> buffer = zSort ? this.drawBufferZSort : this.drawBuffer;
 			float zSortIndex = zSort ? DrawBatch<T>.CalcZSortIndex(vertexBuffer, vertexCount) : 0.0f;
 
-			if (buffer.Count > 0 && buffer[buffer.Count - 1].CanAppendJIT<T>(	
-				zSort ? 1.0f : 0.0f, // Obsolete as of 2016-06-17, can be replcaed with zSort bool.
-				zSortIndex, 
-				material, 
-				vertexMode))
+			// Determine if we can append the incoming vertices into the previous batch
+			IDrawBatch prevBatch = buffer.Count > 0 ? buffer[buffer.Count - 1] : null;
+			if (prevBatch != null &&
+				// ToDo: Move into CanAppendJIT on next major version step:
+				// Make sure to not generate batches that will be in the Large Object Heap (>= 85k bytes)
+				// because this will trigger lots and lots of Gen2 collections over time.
+				vertexCount + prevBatch.VertexCount < 1024 &&
+				// Check if the batches do match enough for being merged
+				prevBatch.CanAppendJIT<T>(	
+					zSort ? 1.0f : 0.0f, // Obsolete as of 2016-06-17, can be replcaed with zSort bool.
+					zSortIndex, 
+					material, 
+					vertexMode))
 			{
-				buffer[buffer.Count - 1].AppendJIT(vertexBuffer, vertexCount);
+				prevBatch.AppendJIT(vertexBuffer, vertexCount);
 			}
 			else
 			{

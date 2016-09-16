@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.7.7</version>
+    <version>2.7.8</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,9 +13,8 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>More Robust Deserialization Code, Static Log Method Safety
-#CHANGE: Deserialization of objects with a non-existent type is now a little more robust.
-#CHANGE: Most static Log formatting methods will now simply return "null" when passed a null object to avoid causing Exceptions due to logging.</releaseNotes>
+    <releaseNotes>Batching Perf Tweaks
+#CHANGE: Dynamic batching will no longer take effect when the resulting vertex array will be longer than 1024 vertices, because it might exceed 85k bytes and end up on the Large Object Heap, causing lots of Gen2 collections.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
