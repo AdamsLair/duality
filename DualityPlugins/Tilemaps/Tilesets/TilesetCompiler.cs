@@ -76,6 +76,17 @@ namespace Duality.Plugins.Tilemaps
 				output.AutoTileData.Add(autoTileInfo);
 			}
 
+			// Initialize all tiles to being visually empty. They will be subtractively updated
+			// during output pixel data generation in the next step.
+			{
+				int tileDataCount = output.TileData.Count;
+				TileInfo[] tileData = output.TileData.Data;
+				for (int i = 0; i < tileDataCount; i++)
+				{
+					tileData[i].IsVisuallyEmpty = true;
+				}
+			}
+
 			// Generate output pixel data
 			for (int renderInputIndex = 0; renderInputIndex < input.RenderConfig.Count; renderInputIndex++)
 			{
