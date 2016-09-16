@@ -255,33 +255,34 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 		private void UpdateSelectedTiles()
 		{
-			Tileset tileset = this.TargetTileset.Res;
-			Point selectedDisplayedPos = this.GetDisplayedTilePos(
-				this.selectedArea.X, 
-				this.selectedArea.Y);
-
+			// Allocate and clear a tile rect space of the appropriate size.
 			this.selectedTiles.ResizeClear(this.selectedArea.Width, this.selectedArea.Height);
+
+			// Retrieve the active Tileset and early-out, if there is none.
+			// We can't provide a meaningful tile selection when there are
+			// none to choose from. Keep the default-initialized ones we got above.
+			Tileset tileset = this.TargetTileset.Res;
+			if (tileset == null) return;
+
+			// Determine a tile rect based on the current selection inside the Tileset.
+			Point selectedDisplayedPos = this.GetDisplayedTilePos(
+				this.selectedArea.X,
+				this.selectedArea.Y);
 			for (int y = 0; y < this.selectedArea.Height; y++)
 			{
 				for (int x = 0; x < this.selectedArea.Width; x++)
 				{
 					Point displayedPos = new Point(
-						selectedDisplayedPos.X + x, 
+						selectedDisplayedPos.X + x,
 						selectedDisplayedPos.Y + y);
 					Point tilesetPos = this.GetTilesetTilePos(
-						displayedPos.X, 
+						displayedPos.X,
 						displayedPos.Y);
-					
-					Tile tile;
+
 					int baseIndex = this.GetTileIndex(tilesetPos.X, tilesetPos.Y);
 					baseIndex = MathF.Clamp(baseIndex, 0, tileset.TileCount - 1);
 
-					if (tileset != null)
-						tile = new Tile(baseIndex, tileset);
-					else
-						tile = new Tile(baseIndex);
-
-					this.selectedTiles[x, y] = tile;
+					this.selectedTiles[x, y] = new Tile(baseIndex, tileset);
 				}
 			}
 		}
