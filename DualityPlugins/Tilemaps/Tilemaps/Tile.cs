@@ -218,12 +218,14 @@ namespace Duality.Plugins.Tilemaps
 
 			Tileset tilesetRes = tileset.Res;
 			TileInfo[] tileData = tilesetRes.TileData.Data;
+			int tileCount = tilesetRes.TileCount;
 			for (int y = beginY; y < beginY + height; y++)
 			{
 				for (int x = beginX; x < beginX + width; x++)
 				{
 					int i = y * stride + x;
-					int autoTileIndex = tileData[tileGridData[i].BaseIndex].AutoTileLayer - 1;
+					int baseIndex = MathF.Clamp(tileGridData[i].BaseIndex, 0, tileCount - 1);
+					int autoTileIndex = tileData[baseIndex].AutoTileLayer - 1;
 					TilesetAutoTileInfo autoTile = autoTileIndex > -1 ? tilesetRes.AutoTileData[autoTileIndex] : null;
 
 					tileGridData[i].ResolveIndex(autoTile);

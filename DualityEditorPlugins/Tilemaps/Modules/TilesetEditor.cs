@@ -56,6 +56,20 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			get { return this.layerView.SelectedNode == null ? -1 : this.layerView.SelectedNode.Index; }
 		}
+		private bool ApplyRequired
+		{
+			get { return this.applyRequired; }
+			set
+			{
+				if (this.applyRequired != value)
+				{
+					this.applyRequired = value;
+					this.buttonApply.Enabled = this.applyRequired;
+					this.buttonRevert.Enabled = this.applyRequired;
+					this.labelRequireApply.Visible = this.applyRequired;
+				}
+			}
+		}
 
 
 		public TilesetEditor()
@@ -205,10 +219,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 			// introduce changes to it.
 			this.tilesetBackup = null;
 
-			this.applyRequired = false;
-			this.buttonApply.Enabled = this.applyRequired;
-			this.buttonRevert.Enabled = this.applyRequired;
-
+			this.ApplyRequired = false;
 			this.StartRecordTilesetChanges();
 
 			this.tilesetView.Invalidate();
@@ -363,9 +374,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 					if (this.activeMode != null)
 						this.activeMode.RaiseOnTilesetModified(e);
 
-					this.applyRequired = tileset.HasChangedSinceCompile;
-					this.buttonApply.Enabled = this.applyRequired;
-					this.buttonRevert.Enabled = this.applyRequired;
+					this.ApplyRequired = tileset.HasChangedSinceCompile;
 				}
 			}
 

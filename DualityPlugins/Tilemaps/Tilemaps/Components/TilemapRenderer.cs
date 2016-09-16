@@ -32,7 +32,7 @@ namespace Duality.Plugins.Tilemaps
 
 		
 		/// <summary>
-		/// [GET] The base depth offset that will be used when rendering the <see cref="Tilemap"/>.
+		/// [GET] The base depth offset that will be used when rendering a non-flat / deep <see cref="Tilemap"/>.
 		/// This property represents the sum of all non-local depth adjustments in the rendered <see cref="Tilemap"/>,
 		/// expressed as an offset to the depth that is implicitly defined by the <see cref="Transform"/> Z position.
 		/// 
@@ -152,6 +152,18 @@ namespace Duality.Plugins.Tilemaps
 				return Rect.Align(this.origin, 0, 0, tileCount.X * tileSize.X, tileCount.Y * tileSize.Y);
 			}
 		}
+		/// <summary>
+		/// [GET] Returns the size of a single tile in local / object space.
+		/// </summary>
+		public Vector2 LocalTileSize
+		{
+			get
+			{
+				Tilemap tilemap = this.ActiveTilemap;
+				Tileset tileset = tilemap != null ? tilemap.Tileset.Res : null;
+				return tileset != null ? tileset.TileSize : Tileset.DefaultTileSize;
+			}
+		}
 		public override float BoundRadius
 		{
 			get
@@ -201,12 +213,23 @@ namespace Duality.Plugins.Tilemaps
 			return tileIndex;
 		}
 		/// <summary>
+		/// Gets the local position of the specified tile at the upper left corner.
+		/// The function does not check if the point is a valid tile position.
+		/// </summary>
+		/// <param name="tilePos">The index of the tile of which to calculate the local position.</param>
+		/// <returns></returns>
+		public Vector2 GetLocalPosAtTile(Point2 tilePos)
+		{
+			Vector2 tileSize = this.LocalTileSize;
+			return new Vector2(tilePos.X * tileSize.X, tilePos.Y * tileSize.Y);
+		}
+		/// <summary>
 		/// Determines the generated depth offset for the tile at the specified tile coordinates.
 		/// This also inclues the renderers overall offset as specified in <see cref="DepthOffset"/>,
 		/// but ignores all actual per-tile and tileset depth offsets. The specified tile position
 		/// is considered virtual and does not have to be within the valid tile position range.
 		/// </summary>
-		/// <param name="tilePos"></param>
+		/// <param name="tilePos">The index of the tile of which to calculate the depth offset.</param>
 		/// <returns></returns>
 		public float GetTileDepthOffsetAt(Point2 tilePos)
 		{

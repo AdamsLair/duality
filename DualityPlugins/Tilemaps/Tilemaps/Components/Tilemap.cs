@@ -37,7 +37,14 @@ namespace Duality.Plugins.Tilemaps
 		public ContentRef<Tileset> Tileset
 		{
 			get { return this.tileset; }
-			set { this.tileset = value; }
+			set
+			{
+				if (this.tileset != value)
+				{
+					this.tileset = value;
+					this.OnTilesChanged();
+				}
+			}
 		}
 		/// <summary>
 		/// [GET] An interface providing read access to the tile data in this <see cref="Tilemap"/>.

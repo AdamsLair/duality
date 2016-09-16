@@ -274,6 +274,8 @@ namespace Duality.Editor.Plugins.Tilemaps
 					
 					Tile tile;
 					int baseIndex = this.GetTileIndex(tilesetPos.X, tilesetPos.Y);
+					baseIndex = MathF.Clamp(baseIndex, 0, tileset.TileCount - 1);
+
 					if (tileset != null)
 						tile = new Tile(baseIndex, tileset);
 					else

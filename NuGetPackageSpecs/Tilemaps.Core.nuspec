@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>1.1.3</version>
+    <version>1.1.4</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
@@ -13,11 +13,13 @@
     <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
     <tags>Duality Core Plugin Tilemaps</tags>
-    <releaseNotes>Tile Bugfixes, Tilemap Editor Bugfix
-#FIX: Fixed a bug in one of the Tile constructors that would lead to some AutoTile paint operations being accidentally resolved using the fallback mechanism.
-#FIX: Fixed a bug where starting up Dualitor with the Tilemap Editor open would lead to an exception.</releaseNotes>
+    <releaseNotes>Tilemap Bugfixes, Tilemap Bugfixes, Tilemap XML Docs
+#FIX: Fixed issue 
+#385, where resolving tile indices failed with an Exception when the Tileset has been reduced in tile count since the Tilemap was edited.
+#FIX: Changing a Tilemap base Tileset will now trigger a changed event and re-resolve all tiles, even though the old base indices will likely be meaningless in a different Tileset.
+#CHANGE: Tweaked some Tilemap XML docs.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.7.4" />
+      <dependency id="AdamsLair.Duality" version="2.7.7" />
     </dependencies>
   </metadata>
   <files>
