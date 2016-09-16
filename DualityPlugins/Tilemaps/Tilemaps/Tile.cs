@@ -17,7 +17,7 @@ namespace Duality.Plugins.Tilemaps
 		/// 
 		/// You usually wouldn't change this value directly, but change <see cref="BaseIndex"/> instead, as <see cref="Index"/>
 		/// will be updated based on <see cref="BaseIndex"/>, but not the other way around. When you change this value, make sure
-		/// to invoke <see cref="ResolveIndex"/> afterwards. If you want to initialize a new tile, just use one of the constructors.
+		/// to invoke <see cref="ResolveIndex(ContentRef{Tileset})"/> afterwards. If you want to initialize a new tile, just use one of the constructors.
 		/// 
 		/// This value isn't serialized, but generated afterwards, since it may change when the <see cref="Tileset"/>
 		/// configuration changes. Since some tiles might be auto-generated, it is not guaranteed that this index is
