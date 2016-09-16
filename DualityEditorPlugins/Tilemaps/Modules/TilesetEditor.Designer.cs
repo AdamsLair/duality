@@ -44,6 +44,7 @@
 			this.panelBottom = new System.Windows.Forms.Panel();
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonRevert = new System.Windows.Forms.Button();
+			this.labelRequireApply = new System.Windows.Forms.Label();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -202,19 +203,20 @@
 			// 
 			this.tilesetView.AutoScroll = true;
 			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tilesetView.HoveredTileIndex = -1;
 			this.tilesetView.Location = new System.Drawing.Point(0, 0);
 			this.tilesetView.Margin = new System.Windows.Forms.Padding(0);
 			this.tilesetView.Name = "tilesetView";
 			this.tilesetView.Size = new System.Drawing.Size(345, 267);
 			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
 			this.tilesetView.TabIndex = 2;
-			this.tilesetView.TabStop = true;
 			// 
 			// panelBottom
 			// 
 			this.panelBottom.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.panelBottom.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(212)))), ((int)(((byte)(212)))), ((int)(((byte)(212)))));
+			this.panelBottom.Controls.Add(this.labelRequireApply);
 			this.panelBottom.Controls.Add(this.buttonApply);
 			this.panelBottom.Controls.Add(this.buttonRevert);
 			this.panelBottom.Location = new System.Drawing.Point(0, 316);
@@ -247,6 +249,19 @@
 			this.buttonRevert.Text = "Revert";
 			this.buttonRevert.UseVisualStyleBackColor = true;
 			this.buttonRevert.Click += new System.EventHandler(this.buttonRevert_Click);
+			// 
+			// labelRequireApply
+			// 
+			this.labelRequireApply.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelRequireApply.ForeColor = System.Drawing.Color.Blue;
+			this.labelRequireApply.Location = new System.Drawing.Point(12, 1);
+			this.labelRequireApply.Name = "labelRequireApply";
+			this.labelRequireApply.Size = new System.Drawing.Size(343, 33);
+			this.labelRequireApply.TabIndex = 17;
+			this.labelRequireApply.Text = "Click Apply to recompile the Tileset, so your changes will take effect.";
+			this.labelRequireApply.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelRequireApply.Visible = false;
 			// 
 			// TilesetEditor
 			// 
@@ -298,5 +313,6 @@
 		private System.Windows.Forms.Button buttonRevert;
 		private System.Windows.Forms.ToolStripLabel labelSelectedTileset;
 		private Aga.Controls.Tree.TreeColumn treeColumnMain;
+		private System.Windows.Forms.Label labelRequireApply;
 	}
 }
