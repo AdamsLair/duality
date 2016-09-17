@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Backend.DefaultOpenTK</id>
-    <version>2.0.9</version>
+    <version>2.0.10</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>OpenTK Backend</title>
@@ -13,10 +13,10 @@
     <summary>The default audiovisual backend layer for Duality.</summary>
     <description>The default audiovisual backend layer for Duality. It uses OpenGL and OpenAL, as provided by OpenTK.</description>
     <tags>Duality Core Plugin Backend</tags>
-    <releaseNotes>Logging Tweaks
-#CHANGE: Removed some indentation that actually made readability worse.</releaseNotes>
+    <releaseNotes>MSAA Availability Check
+#CHANGE: Duality will now check whether the offered and requested amount of MSAA samples is actually available, log any difference and disable Alpha-to-Coverage masking if the actual amount is zero.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.6.4" />
+      <dependency id="AdamsLair.Duality" version="2.7.9" />
       <dependency id="AdamsLair.OpenTK" version="1.1.6" />
     </dependencies>
   </metadata>
