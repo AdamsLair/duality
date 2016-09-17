@@ -31,6 +31,8 @@ namespace Duality.Backend.DefaultOpenTK
 		private uint                  primaryVBO              = 0;
 		private NativeWindow          activeWindow            = null;
 		private bool                  useAlphaToCoverageBlend = false;
+		private bool                  msaaIsDriverDisabled    = false;
+		private bool                  contextCapsRetrieved    = false;
 
 		private List<IDrawBatch>      renderBatchesSharingVBO = new List<IDrawBatch>();
 		
@@ -109,6 +111,7 @@ namespace Duality.Backend.DefaultOpenTK
 		void IGraphicsBackend.BeginRendering(IDrawDevice device, RenderOptions options, RenderStats stats)
 		{
 			DebugCheckOpenGLErrors();
+			this.CheckContextCaps();
 
 			this.currentDevice = device;
 			this.renderStats = stats;
@@ -117,12 +120,14 @@ namespace Duality.Backend.DefaultOpenTK
 			NativeRenderTarget.Bind(options.Target as NativeRenderTarget);
 
 			// Determine whether masked blending should use alpha-to-coverage mode
-			if (NativeRenderTarget.BoundRT != null)
+			if (this.msaaIsDriverDisabled)
+				this.useAlphaToCoverageBlend = false;
+			else if (NativeRenderTarget.BoundRT != null)
 				this.useAlphaToCoverageBlend = NativeRenderTarget.BoundRT.Samples > 0;
-			else if (GraphicsBackend.ActiveInstance.ActiveWindow != null)
-				this.useAlphaToCoverageBlend = GraphicsBackend.ActiveInstance.ActiveWindow.IsMultisampled; 
+			else if (this.activeWindow != null)
+				this.useAlphaToCoverageBlend = this.activeWindow.IsMultisampled; 
 			else
-				this.useAlphaToCoverageBlend = GraphicsBackend.ActiveInstance.DefaultGraphicsMode.Samples > 0; 
+				this.useAlphaToCoverageBlend = this.defaultGraphicsMode.Samples > 0; 
 
 			if (this.primaryVBO == 0) GL.GenBuffers(1, out this.primaryVBO);
 			GL.BindBuffer(BufferTarget.ArrayBuffer, this.primaryVBO);
@@ -337,6 +342,45 @@ namespace Duality.Backend.DefaultOpenTK
 			}
 			int targetSampleCount = MathF.RoundToInt(MathF.Pow(2.0f, targetAALevel));
 			this.defaultGraphicsMode = this.availGraphicsModes.LastOrDefault(m => m.Samples <= targetSampleCount) ?? this.availGraphicsModes.Last();
+		}
+		private void CheckContextCaps()
+		{
+			if (this.contextCapsRetrieved) return;
+			this.contextCapsRetrieved = true;
+
+			Log.Core.Write("Determining OpenGL context capabilities...");
+			Log.Core.PushIndent();
+
+			// Make sure we're not on a render target, which may override
+			// some settings that we'd like to get from the main contexts
+			// backbuffer.
+			NativeRenderTarget oldTarget = NativeRenderTarget.BoundRT;
+			NativeRenderTarget.Bind(null);
+
+			int targetSamples = this.defaultGraphicsMode.Samples;
+			int actualSamples;
+
+			// Retrieve how many MSAA samples are actually available, despite what 
+			// was offered and requested vis graphics mode.
+			CheckOpenGLErrors(true);
+			actualSamples = GL.GetInteger(GetPName.Samples);
+			if (CheckOpenGLErrors()) actualSamples = targetSamples;
+
+			// If the sample count differs, mention it in the logs. If it is
+			// actually zero, assume MSAA is driver-disabled.
+			if (targetSamples != actualSamples)
+			{
+				Log.Core.Write("Requested {0} MSAA samples, but got {1} samples instead.", targetSamples, actualSamples);
+				if (actualSamples == 0)
+				{
+					this.msaaIsDriverDisabled = true;
+					Log.Core.Write("Assuming MSAA is unavailable. Duality will not use Alpha-to-Coverage masking techniques.");
+				}
+			}
+
+			NativeRenderTarget.Bind(oldTarget);
+
+			Log.Core.PopIndent();
 		}
 
 		private void PrepareRenderBatch(IDrawBatch renderBatch)
