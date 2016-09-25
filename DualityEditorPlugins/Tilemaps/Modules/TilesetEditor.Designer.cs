@@ -42,9 +42,10 @@
 			this.splitMain = new System.Windows.Forms.SplitContainer();
 			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.TilesetView();
 			this.panelBottom = new System.Windows.Forms.Panel();
+			this.labelRequireApply = new System.Windows.Forms.Label();
 			this.buttonApply = new System.Windows.Forms.Button();
 			this.buttonRevert = new System.Windows.Forms.Button();
-			this.labelRequireApply = new System.Windows.Forms.Label();
+			this.buttonDrawTileIndices = new System.Windows.Forms.ToolStripButton();
 			this.toolStripModeSelect.SuspendLayout();
 			this.toolStripEdit.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitMain)).BeginInit();
@@ -135,7 +136,8 @@
 			this.toolStripEdit.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buttonAddLayer,
             this.buttonRemoveLayer,
-            this.buttonBrightness});
+            this.buttonBrightness,
+            this.buttonDrawTileIndices});
 			this.toolStripEdit.Location = new System.Drawing.Point(0, 25);
 			this.toolStripEdit.Name = "toolStripEdit";
 			this.toolStripEdit.Size = new System.Drawing.Size(529, 25);
@@ -225,6 +227,19 @@
 			this.panelBottom.Size = new System.Drawing.Size(529, 37);
 			this.panelBottom.TabIndex = 4;
 			// 
+			// labelRequireApply
+			// 
+			this.labelRequireApply.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+			this.labelRequireApply.ForeColor = System.Drawing.Color.Blue;
+			this.labelRequireApply.Location = new System.Drawing.Point(12, 1);
+			this.labelRequireApply.Name = "labelRequireApply";
+			this.labelRequireApply.Size = new System.Drawing.Size(343, 33);
+			this.labelRequireApply.TabIndex = 17;
+			this.labelRequireApply.Text = "Click Apply to recompile the Tileset, so your changes will take effect.";
+			this.labelRequireApply.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.labelRequireApply.Visible = false;
+			// 
 			// buttonApply
 			// 
 			this.buttonApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -250,18 +265,16 @@
 			this.buttonRevert.UseVisualStyleBackColor = true;
 			this.buttonRevert.Click += new System.EventHandler(this.buttonRevert_Click);
 			// 
-			// labelRequireApply
+			// buttonDrawTileIndices
 			// 
-			this.labelRequireApply.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.labelRequireApply.ForeColor = System.Drawing.Color.Blue;
-			this.labelRequireApply.Location = new System.Drawing.Point(12, 1);
-			this.labelRequireApply.Name = "labelRequireApply";
-			this.labelRequireApply.Size = new System.Drawing.Size(343, 33);
-			this.labelRequireApply.TabIndex = 17;
-			this.labelRequireApply.Text = "Click Apply to recompile the Tileset, so your changes will take effect.";
-			this.labelRequireApply.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.labelRequireApply.Visible = false;
+			this.buttonDrawTileIndices.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+			this.buttonDrawTileIndices.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonDrawTileIndices.Image = ((System.Drawing.Image)(resources.GetObject("buttonDrawTileIndices.Image")));
+			this.buttonDrawTileIndices.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonDrawTileIndices.Name = "buttonDrawTileIndices";
+			this.buttonDrawTileIndices.Size = new System.Drawing.Size(23, 22);
+			this.buttonDrawTileIndices.Text = "Show Tile Indices";
+			this.buttonDrawTileIndices.Click += new System.EventHandler(this.buttonDrawTileIndices_Click);
 			// 
 			// TilesetEditor
 			// 
@@ -314,5 +327,6 @@
 		private System.Windows.Forms.ToolStripLabel labelSelectedTileset;
 		private Aga.Controls.Tree.TreeColumn treeColumnMain;
 		private System.Windows.Forms.Label labelRequireApply;
+		private System.Windows.Forms.ToolStripButton buttonDrawTileIndices;
 	}
 }
