@@ -143,15 +143,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void SetSelectedLayer(int layerIndex)
 		{
+			layerIndex = MathF.Clamp(layerIndex, 0, this.layerView.Root.Children.Count - 1);
 			if (layerIndex != -1)
-			{
-				layerIndex = MathF.Clamp(layerIndex, 0, this.layerView.Root.Children.Count - 1);
 				this.layerView.SelectedNode = this.layerView.Root.Children[layerIndex];
-			}
 			else
-			{
 				this.layerView.SelectedNode = null;
-			}
 		}
 		private void ApplyGlobalTilesetSelection(SelectionChangeReason changeReason)
 		{
