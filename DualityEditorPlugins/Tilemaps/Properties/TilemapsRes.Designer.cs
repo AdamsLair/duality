@@ -230,6 +230,16 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconHideIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconHideIndices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconPick {
             get {
                 object obj = ResourceManager.GetObject("IconPick", resourceCulture);
@@ -250,9 +260,29 @@ namespace Duality.Editor.Plugins.Tilemaps.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconRevealIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconRevealIndices", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconSetup {
             get {
                 object obj = ResourceManager.GetObject("IconSetup", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconShowIndices {
+            get {
+                object obj = ResourceManager.GetObject("IconShowIndices", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

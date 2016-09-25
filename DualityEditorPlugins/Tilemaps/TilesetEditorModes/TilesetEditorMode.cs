@@ -85,6 +85,14 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			get { return LayerEditingCaps.None; }
 		}
+		/// <summary>
+		/// [GET] Whether this <see cref="TilesetEditorMode"/> allows displaying
+		/// tile indices on top of the tiles, should the user request it.
+		/// </summary>
+		public virtual bool AllowTileIndexDisplay
+		{
+			get { return false; }
+		}
 
 
 		internal void Init(TilesetEditor editor)

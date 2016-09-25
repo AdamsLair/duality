@@ -221,8 +221,11 @@
     <None Include="EmbeddedResources\IconTilesetEditor.ico" />
     <None Include="EmbeddedResources\IconTilesetDepthInfo.png" />
     <None Include="EmbeddedResources\IconTilesetCollisionLayer.png" />
+    <Content Include="EmbeddedResources\IconHideIndices.png" />
+    <Content Include="EmbeddedResources\IconRevealIndices.png" />
     <Content Include="EmbeddedResources\IconSetup.png" />
     <None Include="EmbeddedResources\IconSetupBig.png" />
+    <Content Include="EmbeddedResources\IconShowIndices.png" />
     <Content Include="EmbeddedResources\IconTilesetAutoTile.png" />
     <Content Include="EmbeddedResources\IconTilesetAutoTileLayer.png" />
     <Content Include="EmbeddedResources\IconTilesetDepthFlatTile.png" />

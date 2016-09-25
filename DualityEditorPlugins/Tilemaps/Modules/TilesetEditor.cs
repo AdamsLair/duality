@@ -38,6 +38,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private ContentRef<Tileset> backupTarget   = null;
 		private Tileset             tilesetBackup  = null;
 		private bool                applyRequired  = false;
+		private TilesetView.TileIndexDrawMode tileIndexDrawMode = TilesetView.TileIndexDrawMode.Hovering;
 
 
 		/// <summary>
@@ -86,14 +87,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 		internal void SaveUserData(XElement node)
 		{
 			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
+			node.SetElementValue("DisplayTileIndices", this.tileIndexDrawMode);
 		}
 		internal void LoadUserData(XElement node)
 		{
 			bool tryParseBool;
+			TilesetView.TileIndexDrawMode tryParseTileIndices;
 
 			if (node.GetElementValue("DarkBackground", out tryParseBool)) this.buttonBrightness.Checked = tryParseBool;
+			if (node.GetElementValue("DisplayTileIndices", out tryParseTileIndices)) this.tileIndexDrawMode = tryParseTileIndices;
 
 			this.ApplyBrightness();
+			this.ApplyTileIndexDrawMode();
 		}
 
 		private void SetActiveEditorMode(TilesetEditorMode mode)
@@ -129,6 +134,9 @@ namespace Duality.Editor.Plugins.Tilemaps
 			this.buttonRemoveLayer.Visible = canAddRemove;
 			this.buttonRemoveLayer.Enabled = (this.layerView.SelectedNode != null);
 
+			// Different editor modes might allow or disallow drawing tile indices
+			this.ApplyTileIndexDrawMode();
+
 			// Invalidate TilesetView because editor modes are likely to
 			// draw custom overlays using its event handlers. Directly show
 			// the effect of having a different editing mode selected.
@@ -143,15 +151,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		}
 		private void SetSelectedLayer(int layerIndex)
 		{
+			layerIndex = MathF.Clamp(layerIndex, 0, this.layerView.Root.Children.Count - 1);
 			if (layerIndex != -1)
-			{
-				layerIndex = MathF.Clamp(layerIndex, 0, this.layerView.Root.Children.Count - 1);
 				this.layerView.SelectedNode = this.layerView.Root.Children[layerIndex];
-			}
 			else
-			{
 				this.layerView.SelectedNode = null;
-			}
 		}
 		private void ApplyGlobalTilesetSelection(SelectionChangeReason changeReason)
 		{
@@ -172,6 +176,25 @@ namespace Duality.Editor.Plugins.Tilemaps
 			bool darkMode = this.buttonBrightness.Checked;
 			this.tilesetView.BackColor = darkMode ? Color.FromArgb(64, 64, 64) : Color.FromArgb(192, 192, 192);
 			this.tilesetView.ForeColor = darkMode ? Color.FromArgb(255, 255, 255) : Color.FromArgb(0, 0, 0);
+		}
+		private void ApplyTileIndexDrawMode()
+		{
+			bool allowIndices = (this.activeMode != null) ? this.activeMode.AllowTileIndexDisplay : true;
+
+			this.tilesetView.DrawTileIndices = allowIndices ? this.tileIndexDrawMode : TilesetView.TileIndexDrawMode.Never;
+			this.buttonDrawTileIndices.Enabled = allowIndices;
+			switch (this.tileIndexDrawMode)
+			{
+				case TilesetView.TileIndexDrawMode.Never:
+					this.buttonDrawTileIndices.Image = TilemapsResCache.IconHideIndices;
+					break;
+				case TilesetView.TileIndexDrawMode.Hovering:
+					this.buttonDrawTileIndices.Image = TilemapsResCache.IconRevealIndices;
+					break;
+				case TilesetView.TileIndexDrawMode.Always:
+					this.buttonDrawTileIndices.Image = TilemapsResCache.IconShowIndices;
+					break;
+			}
 		}
 		
 		private void StartRecordTilesetChanges()
@@ -401,6 +424,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private void buttonBrightness_CheckedChanged(object sender, EventArgs e)
 		{
 			this.ApplyBrightness();
+		}
+		private void buttonDrawTileIndices_Click(object sender, EventArgs e)
+		{
+			this.tileIndexDrawMode = (TilesetView.TileIndexDrawMode)(((int)this.tileIndexDrawMode + 1) % 3);
+			this.ApplyTileIndexDrawMode();
 		}
 		private void modeToolButton_Click(object sender, EventArgs e)
 		{

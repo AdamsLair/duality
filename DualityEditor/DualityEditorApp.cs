@@ -449,6 +449,7 @@ namespace Duality.Editor
 							editorAppElement.SetElementValue("Autosaves", autosaveFrequency);
 							editorAppElement.SetElementValue("LauncherPath", launcherApp);
 							editorAppElement.SetElementValue("FirstSession", firstEditorSession);
+							editorAppElement.SetElementValue("ActiveDocumentIndex", mainForm.ActiveDocumentIndex);
 						}
 						if (!editorAppElement.IsEmpty)
 							rootElement.Add(editorAppElement);
@@ -520,6 +521,9 @@ namespace Duality.Editor
 				Log.Editor.PushIndent();
 				try
 				{
+					int activeDocumentIndex = 0;
+
+					// Load main editor data
 					XDocument xmlDoc = XDocument.Parse(editorData.ToString());
 					XElement rootElement = xmlDoc.Root;
 					XElement editorAppElement = rootElement.Elements("EditorApp").FirstOrDefault();
@@ -529,10 +533,16 @@ namespace Duality.Editor
 						editorAppElement.TryGetElementValue("Autosaves", ref autosaveFrequency);
 						editorAppElement.TryGetElementValue("LauncherPath", ref launcherApp);
 						editorAppElement.TryGetElementValue("FirstSession", ref firstEditorSession);
+						editorAppElement.TryGetElementValue("ActiveDocumentIndex", ref activeDocumentIndex);
 					}
+
+					// Load plugin editor data
 					XElement pluginsElement = rootElement.Elements("Plugins").FirstOrDefault();
 					if (pluginsElement != null)
 						pluginManager.LoadUserData(pluginsElement);
+
+					// Set the active document as loaded from user data
+					mainForm.ActiveDocumentIndex = activeDocumentIndex;
 				}
 				catch (Exception e)
 				{

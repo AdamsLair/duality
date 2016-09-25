@@ -75,6 +75,10 @@ namespace Duality.Editor.Plugins.Tilemaps.TilesetEditorModes
 		{
 			get { return LayerEditingCaps.All; }
 		}
+		public override bool AllowTileIndexDisplay
+		{
+			get { return true; }
+		}
 		protected TilesetRenderInput SelectedVisualLayer
 		{
 			get { return DualityEditorApp.Selection.Objects.OfType<TilesetRenderInput>().FirstOrDefault(); }

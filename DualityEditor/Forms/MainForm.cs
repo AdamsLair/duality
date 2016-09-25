@@ -21,25 +21,27 @@ namespace Duality.Editor.Forms
 {
 	public partial class MainForm : Form, IHelpProvider
 	{
-		private	bool				nonUserClosing		= false;
-		private MenuModel			mainMenuModel		= new MenuModel();
-		private	MenuStripMenuView	mainMenuView		= null;
-		private MenuModel			serializerMenuModel	= new MenuModel();
-		private	MenuStripMenuView	serializerMenuView	= null;
-		private WelcomeDialog		welcomeDialog		= null;
+		private int               activeDocumentIndex = -1;
+		private bool              shownWasCalled      = false;
+		private bool              nonUserClosing      = false;
+		private MenuModel         mainMenuModel       = new MenuModel();
+		private MenuStripMenuView mainMenuView        = null;
+		private MenuModel         serializerMenuModel = new MenuModel();
+		private MenuStripMenuView serializerMenuView  = null;
+		private WelcomeDialog     welcomeDialog       = null;
 
 		// Hardcoded main menu items
-		private MenuModelItem	menuRunSandboxPlay		= null;
-		private MenuModelItem	menuRunSandboxPause		= null;
-		private MenuModelItem	menuRunSandboxStop		= null;
-		private MenuModelItem	menuRunSandboxStep		= null;
-		private MenuModelItem	menuRunSandboxFaster	= null;
-		private MenuModelItem	menuRunSandboxSlower	= null;
-		private MenuModelItem	menuEditUndo			= null;
-		private MenuModelItem	menuEditRedo			= null;
-		private MenuModelItem	menuRunApp				= null;
-		private MenuModelItem	menuDebugApp			= null;
-		private MenuModelItem	menuProfileApp			= null;
+		private MenuModelItem menuRunSandboxPlay    = null;
+		private MenuModelItem menuRunSandboxPause   = null;
+		private MenuModelItem menuRunSandboxStop    = null;
+		private MenuModelItem menuRunSandboxStep    = null;
+		private MenuModelItem menuRunSandboxFaster  = null;
+		private MenuModelItem menuRunSandboxSlower  = null;
+		private MenuModelItem menuEditUndo          = null;
+		private MenuModelItem menuEditRedo          = null;
+		private MenuModelItem menuRunApp            = null;
+		private MenuModelItem menuDebugApp          = null;
+		private MenuModelItem menuProfileApp        = null;
 
 
 		public DockPanel MainDockPanel
@@ -49,6 +51,16 @@ namespace Duality.Editor.Forms
 		public MenuModel MainMenu
 		{
 			get { return this.mainMenuModel; }
+		}
+		public int ActiveDocumentIndex
+		{
+			get { return this.activeDocumentIndex; }
+			set
+			{
+				this.activeDocumentIndex = value;
+				if (this.shownWasCalled)
+					this.ApplyActiveDocumentIndex();
+			}
 		}
 
 
@@ -66,49 +78,6 @@ namespace Duality.Editor.Forms
 			this.InitMenus();
 			this.UpdateWindowTitle();
 			this.UpdateLaunchAppActions();
-		}
-		private void ApplyDockPanelSkin()
-		{
-			Color bgColor = Color.FromArgb(255, 162, 162, 162);
-			Color fgColor = Color.FromArgb(255, 196, 196, 196);
-			Color inactiveTab = Color.FromArgb(255, 192, 192, 192);
-			Color inactiveTab2 = Color.FromArgb(255, 224, 224, 224);
-			Color activeTab = Color.FromArgb(255, 224, 224, 224);
-			Color activeTab2 = Color.FromArgb(255, 242, 242, 242);
-
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.DockStripGradient.StartColor = bgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.DockStripGradient.EndColor = bgColor;
-
-			this.dockPanel.Skin.AutoHideStripSkin.DockStripGradient.StartColor = bgColor;
-			this.dockPanel.Skin.AutoHideStripSkin.DockStripGradient.EndColor = bgColor;
-			this.dockPanel.Skin.AutoHideStripSkin.TabGradient.StartColor = fgColor;
-			this.dockPanel.Skin.AutoHideStripSkin.TabGradient.EndColor = fgColor;
-
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveCaptionGradient.StartColor = activeTab2;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveCaptionGradient.EndColor = activeTab;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveCaptionGradient.StartColor = inactiveTab2;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveCaptionGradient.EndColor = inactiveTab;
-
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveTabGradient.StartColor = fgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveTabGradient.EndColor = fgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveTabGradient.StartColor = bgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveTabGradient.EndColor = bgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.DockStripGradient.StartColor = bgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.DockStripGradient.EndColor = bgColor;
-
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.StartColor = fgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.EndColor = fgColor;
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.TextColor = Color.Black;
-
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.StartColor = activeTab2;
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.EndColor = activeTab;
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
-			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.TextColor = Color.Black;
 		}
 		
 		public void CloseNonUser()
@@ -353,6 +322,7 @@ namespace Duality.Editor.Forms
 			this.actionStopSandbox.Tag = HelpInfo.FromText(this.actionStopSandbox.Text, GeneralRes.MenuItemInfo_SandboxStop);
 			this.checkBackups.Tag = HelpInfo.FromText(this.checkBackups.Text, GeneralRes.MenuItemInfo_ToggleBackups);
 		}
+
 		private void UpdateWindowTitle()
 		{
 			string editorName = GeneralRes.EditorApplicationTitle;
@@ -401,6 +371,64 @@ namespace Duality.Editor.Forms
 			this.UpdateSerializerMenu();
 		}
 
+		private void ApplyDockPanelSkin()
+		{
+			Color bgColor = Color.FromArgb(255, 162, 162, 162);
+			Color fgColor = Color.FromArgb(255, 196, 196, 196);
+			Color inactiveTab = Color.FromArgb(255, 192, 192, 192);
+			Color inactiveTab2 = Color.FromArgb(255, 224, 224, 224);
+			Color activeTab = Color.FromArgb(255, 224, 224, 224);
+			Color activeTab2 = Color.FromArgb(255, 242, 242, 242);
+
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.DockStripGradient.StartColor = bgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.DockStripGradient.EndColor = bgColor;
+
+			this.dockPanel.Skin.AutoHideStripSkin.DockStripGradient.StartColor = bgColor;
+			this.dockPanel.Skin.AutoHideStripSkin.DockStripGradient.EndColor = bgColor;
+			this.dockPanel.Skin.AutoHideStripSkin.TabGradient.StartColor = fgColor;
+			this.dockPanel.Skin.AutoHideStripSkin.TabGradient.EndColor = fgColor;
+
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveCaptionGradient.StartColor = activeTab2;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveCaptionGradient.EndColor = activeTab;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveCaptionGradient.StartColor = inactiveTab2;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveCaptionGradient.EndColor = inactiveTab;
+
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveTabGradient.StartColor = fgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveTabGradient.EndColor = fgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.ActiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveTabGradient.StartColor = bgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveTabGradient.EndColor = bgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.InactiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.DockStripGradient.StartColor = bgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.ToolWindowGradient.DockStripGradient.EndColor = bgColor;
+
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.StartColor = fgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.EndColor = fgColor;
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.InactiveTabGradient.TextColor = Color.Black;
+
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.StartColor = activeTab2;
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.EndColor = activeTab;
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.LinearGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Vertical;
+			this.dockPanel.Skin.DockPaneStripSkin.DocumentGradient.ActiveTabGradient.TextColor = Color.Black;
+		}
+		private void ApplyActiveDocumentIndex()
+		{
+			int index = 0;
+			foreach (IDockContent document in this.dockPanel.Documents)
+			{
+				if (index == this.activeDocumentIndex)
+				{
+					if (document != null && document.DockHandler != null)
+						document.DockHandler.Activate();
+					break;
+				}
+				index++;
+			}
+		}
+
 		protected override void OnShown(EventArgs e)
 		{
 			base.OnShown(e);
@@ -413,11 +441,18 @@ namespace Duality.Editor.Forms
 			// Initially update Undo / Redo menu
 			this.UndoRedoManager_StackChanged(null, EventArgs.Empty);
 
+			// Because any DockPanel activity changes before showing it are
+			// lost, apply previously set active document indices now.
+			this.ApplyActiveDocumentIndex();
+
 			// Show the welcome dialog when appropriate
 			if (DualityEditorApp.IsFirstEditorSession)
 			{
 				this.welcomeDialogItem_Click(this, EventArgs.Empty);
 			}
+
+			// We're now fully initialized.
+			this.shownWasCalled = true;
 		}
 		protected override void OnClosed(EventArgs e)
 		{
@@ -712,7 +747,20 @@ namespace Duality.Editor.Forms
 				}
 			}
 		}
+		
+		private void dockPanel_ActiveDocumentChanged(object sender, EventArgs e)
+		{
+			if (!this.shownWasCalled) return;
 
+			// Determine which document (tab) is currently active
+			this.activeDocumentIndex = 0;
+			foreach (IDockContent document in this.dockPanel.Documents)
+			{
+				if (document == this.dockPanel.ActiveDocument)
+					break;
+				this.activeDocumentIndex++;
+			}
+		}
 		private void checkBackups_Clicked(object sender, EventArgs e)
 		{
 			DualityEditorApp.BackupsEnabled = !DualityEditorApp.BackupsEnabled;

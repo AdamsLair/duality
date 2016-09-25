@@ -593,10 +593,10 @@ namespace Duality.Serialization
 		{
 			int arrRank = this.reader.ReadInt32();
 			int arrLength = this.reader.ReadInt32();
-			Type elementType = header.ObjectType.GetElementType();
+			Type elementType = (header.ObjectType != null) ? header.ObjectType.GetElementType() : null;
 
 			// Prepare object reference
-			Array arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, arrLength) : null;
+			Array arrObj = elementType != null ? Array.CreateInstance(elementType, arrLength) : null;
 			this.idManager.Inject(arrObj, header.ObjectId);
 
 			if      (elementType == typeof(bool))    this.ReadArrayData(arrObj as bool[]);
