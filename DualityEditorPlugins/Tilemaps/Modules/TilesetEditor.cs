@@ -87,14 +87,18 @@ namespace Duality.Editor.Plugins.Tilemaps
 		internal void SaveUserData(XElement node)
 		{
 			node.SetElementValue("DarkBackground", this.buttonBrightness.Checked);
+			node.SetElementValue("DisplayTileIndices", this.tileIndexDrawMode);
 		}
 		internal void LoadUserData(XElement node)
 		{
 			bool tryParseBool;
+			TilesetView.TileIndexDrawMode tryParseTileIndices;
 
 			if (node.GetElementValue("DarkBackground", out tryParseBool)) this.buttonBrightness.Checked = tryParseBool;
+			if (node.GetElementValue("DisplayTileIndices", out tryParseTileIndices)) this.tileIndexDrawMode = tryParseTileIndices;
 
 			this.ApplyBrightness();
+			this.ApplyTileIndexDrawMode();
 		}
 
 		private void SetActiveEditorMode(TilesetEditorMode mode)
