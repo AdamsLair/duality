@@ -33,6 +33,7 @@
 			this.labelTileset = new System.Windows.Forms.ToolStripLabel();
 			this.buttonBrightness = new System.Windows.Forms.ToolStripButton();
 			this.tilesetView = new Duality.Editor.Plugins.Tilemaps.SourcePaletteTilesetView();
+			this.buttonDrawTileIndices = new System.Windows.Forms.ToolStripButton();
 			this.mainToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -42,7 +43,8 @@
 			this.mainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
 			this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelTileset,
-            this.buttonBrightness});
+            this.buttonBrightness,
+            this.buttonDrawTileIndices});
 			this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
 			this.mainToolStrip.Name = "mainToolStrip";
 			this.mainToolStrip.Size = new System.Drawing.Size(479, 25);
@@ -69,19 +71,28 @@
 			// tilesetView
 			// 
 			this.tilesetView.AutoScroll = true;
-			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(1, 1);
+			this.tilesetView.AutoScrollMinSize = new System.Drawing.Size(8, 8);
 			this.tilesetView.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tilesetView.ForeColor = System.Drawing.Color.Black;
+			this.tilesetView.HoveredTileIndex = -1;
 			this.tilesetView.Location = new System.Drawing.Point(0, 25);
 			this.tilesetView.Name = "tilesetView";
 			this.tilesetView.Padding = new System.Windows.Forms.Padding(4);
-			this.tilesetView.RowAlignment = Duality.Editor.Plugins.Tilemaps.TilesetView.HorizontalAlignment.Left;
 			this.tilesetView.SelectedArea = new System.Drawing.Rectangle(0, 0, 0, 0);
 			this.tilesetView.Size = new System.Drawing.Size(479, 422);
 			this.tilesetView.Spacing = new System.Drawing.Size(0, 0);
 			this.tilesetView.TabIndex = 0;
-			this.tilesetView.TabStop = true;
 			this.tilesetView.SelectedAreaEditingFinished += new System.EventHandler(this.tilesetView_SelectedAreaEditingFinished);
+			// 
+			// buttonDrawTileIndices
+			// 
+			this.buttonDrawTileIndices.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonDrawTileIndices.Image = ((System.Drawing.Image)(resources.GetObject("buttonDrawTileIndices.Image")));
+			this.buttonDrawTileIndices.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonDrawTileIndices.Name = "buttonDrawTileIndices";
+			this.buttonDrawTileIndices.Size = new System.Drawing.Size(23, 22);
+			this.buttonDrawTileIndices.Text = "Show Tile Indices";
+			this.buttonDrawTileIndices.Click += new System.EventHandler(this.buttonDrawTileIndices_Click);
 			// 
 			// TilemapToolSourcePalette
 			// 
@@ -110,5 +121,6 @@
 		private System.Windows.Forms.ToolStrip mainToolStrip;
 		private System.Windows.Forms.ToolStripLabel labelTileset;
 		private System.Windows.Forms.ToolStripButton buttonBrightness;
+		private System.Windows.Forms.ToolStripButton buttonDrawTileIndices;
 	}
 }
