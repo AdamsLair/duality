@@ -493,8 +493,7 @@ namespace Duality.Serialization
 		private Array ReadArray(XElement element, ObjectHeader header)
 		{
 			Array arrObj;
-			TypeInfo arrayTypeInfo = header.ObjectType;
-			Type elementType = arrayTypeInfo.GetElementType();
+			Type elementType = (header.ObjectType != null) ? header.ObjectType.GetElementType() : null;
 			
 			// Determine the array length based on child elements or explicit value
 			string explicitLengthString = element.GetAttributeValue("length");
@@ -507,7 +506,7 @@ namespace Duality.Serialization
 			// Early-out: Create an empty array
 			if (isEmpty)
 			{
-				arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, 0) : null;
+				arrObj = elementType != null ? Array.CreateInstance(elementType, 0) : null;
 				this.idManager.Inject(arrObj, header.ObjectId);
 			}
 			// Read a primitive value array
@@ -528,7 +527,7 @@ namespace Duality.Serialization
 				else
 				{
 					this.LocalLog.WriteWarning("Can't read primitive value array. Unknown element type '{0}'. Discarding data.", Log.Type(elementType));
-					arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, 0) : null;
+					arrObj = elementType != null ? Array.CreateInstance(elementType, 0) : null;
 				}
 
 				// Set object reference
@@ -540,7 +539,7 @@ namespace Duality.Serialization
 				int arrLength = explicitLength != -1 ? explicitLength : element.Elements().Count();
 
 				// Prepare object reference
-				arrObj = header.ObjectType != null ? Array.CreateInstance(elementType, arrLength) : null;
+				arrObj = elementType != null ? Array.CreateInstance(elementType, arrLength) : null;
 				this.idManager.Inject(arrObj, header.ObjectId);
 
 				int itemIndex = 0;
