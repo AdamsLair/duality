@@ -21,6 +21,13 @@ namespace Duality.Editor.Plugins.Tilemaps
 			Center
 		}
 
+		public enum TileIndexDrawMode
+		{
+			Never,
+			Hovering,
+			Always
+		}
+
 		protected enum MultiColumnMode
 		{
 			None,
@@ -32,6 +39,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private ContentRef<Tileset> tileset                = null;
 		private int                 displayedConfigIndex   = 0;
 		private HorizontalAlignment rowAlignment           = HorizontalAlignment.Left;
+		private TileIndexDrawMode   drawTileIndices        = TileIndexDrawMode.Never;
 		private bool                allowMultiColumnMode   = true;
 		private MultiColumnMode     multiColumnMode        = MultiColumnMode.None;
 		private int                 multiColumnCount       = 1;
@@ -118,6 +126,21 @@ namespace Duality.Editor.Plugins.Tilemaps
 				if (this.allowMultiColumnMode == value) return;
 				this.allowMultiColumnMode = value;
 				this.UpdateContentStats();
+			}
+		}
+		/// <summary>
+		/// [GET / SET] Whether or not each tile's index inside the tileset
+		/// is displayed on top of the tile.
+		/// </summary>
+		[DefaultValue(TileIndexDrawMode.Never)]
+		public TileIndexDrawMode DrawTileIndices
+		{
+			get { return this.drawTileIndices; }
+			set
+			{
+				if (this.drawTileIndices == value) return;
+				this.drawTileIndices = value;
+				this.Invalidate();
 			}
 		}
 		public int HoveredTileIndex
@@ -801,6 +824,11 @@ namespace Duality.Editor.Plugins.Tilemaps
 			else
 				e.Graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
+			// Set up drawing data that we'll re-use
+			Brush indexTextBackBrush = new SolidBrush(Color.FromArgb(128, Color.Black));
+			Brush indexTextForeBrush = new SolidBrush(Color.White);
+			Pen indexTextBackPen = new Pen(Color.Black);
+
 			// Draw the previously determined visible tiles accordingly
 			TilesetViewPaintTileData[] rawPaintData = paintTileBuffer.Data;
 			int paintedTileCount = paintTileBuffer.Count;
@@ -818,11 +846,35 @@ namespace Duality.Editor.Plugins.Tilemaps
 					imageRect.Height += MathF.RoundToInt(scaleFactor.Y / 2.0f);
 				}
 
+				// Draw the tile itself
 				e.Graphics.DrawImage(
 					this.tileBitmap, 
 					imageRect, 
 					rawPaintData[i].SourceRect, 
 					GraphicsUnit.Pixel);
+
+				// Draw each tile's tile index when requested
+				bool displayIndex = 
+					(this.drawTileIndices == TileIndexDrawMode.Always) || 
+					(this.drawTileIndices == TileIndexDrawMode.Hovering && this.hoverIndex == rawPaintData[i].TileIndex);
+				if (displayIndex)
+				{
+					string indexText = rawPaintData[i].TileIndex.ToString();
+					SizeF textSize = e.Graphics.MeasureString(indexText, this.Font);
+					Rectangle textRect = new Rectangle(
+						imageRect.X, 
+						imageRect.Y, 
+						3 + (int)textSize.Width, 
+						3 + (int)textSize.Height);
+					textRect.X += (imageRect.Width - textRect.Width) / 2;
+					textRect.Y += (imageRect.Height - textRect.Height) / 2;
+					PointF textPos = new PointF(
+						textRect.X + textRect.Width * 0.5f - textSize.Width * 0.5f,
+						textRect.Y + textRect.Height * 0.5f - textSize.Height * 0.5f);
+
+					e.Graphics.FillRectangle(indexTextBackBrush, textRect);
+					e.Graphics.DrawString(indexText, this.Font, indexTextForeBrush, textPos.X, textPos.Y);
+				}
 			}
 			e.Graphics.InterpolationMode = InterpolationMode.Default;
 
