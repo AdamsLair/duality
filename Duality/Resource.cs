@@ -197,12 +197,12 @@ namespace Duality
 		}
 		private void WriteToStream(Stream str)
 		{
-			using (var formatter = Serializer.Create(str))
+			using (Serializer serializer = Serializer.Create(str, Serializer.DefaultType))
 			{
-				formatter.AddFieldBlocker(Resource.DontSerializeResourceBlocker);
+				serializer.AddFieldBlocker(Resource.DontSerializeResourceBlocker);
 				if (this is Duality.Resources.Scene) // This is an unfortunate hack. Refactor when necessary.
-					formatter.AddFieldBlocker(Resource.PrefabLinkedFieldBlocker);
-				formatter.WriteObject(this);
+					serializer.AddFieldBlocker(Resource.PrefabLinkedFieldBlocker);
+				serializer.WriteObject(this);
 			}
 		}
 		private bool CheckedOnSaving(string saveAsPath)
