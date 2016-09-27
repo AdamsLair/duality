@@ -8,6 +8,8 @@ using System.Text;
 
 using Duality;
 using Duality.Components;
+using Duality.Drawing;
+using Duality.Resources;
 using Duality.IO;
 using Duality.Serialization;
 using Duality.Tests.Properties;
@@ -20,6 +22,7 @@ namespace Duality.Tests.Serialization
 	[TestFixture(typeof(BinarySerializer))]
 	public class SerializerTest
 	{
+		private TestingLogOutput logWatcher = new TestingLogOutput();
 		private Type format;
 
 		private Type PrimaryFormat
@@ -36,6 +39,24 @@ namespace Duality.Tests.Serialization
 			this.format = format;
 		}
 
+
+		[SetUp] public void Init()
+		{
+			// Watch out for logged errors and warnings. Serialization is
+			// designed to be as robust as possible and trying to not throw
+			// errors. It may log errors and warnings though.
+			this.logWatcher.Reset();
+			Log.AddGlobalOutput(this.logWatcher);
+		}
+		[TearDown] public void Cleanup()
+		{
+			// By default, expect no errors or warnings. If a test expects either,
+			// it will assert for them, which will clear the log watcher state.
+			// If it does not assert for them, we will assume that this is an unexpected
+			// error or warning, and fail the assert here.
+			Log.RemoveGlobalOutput(this.logWatcher);
+			this.logWatcher.AssertNoErrorsOrWarnings();
+		}
 
 		[Test] public void SerializePlainOldData()
 		{
@@ -432,6 +453,52 @@ namespace Duality.Tests.Serialization
 			Assert.IsNotNull(readObj);
 			Assert.AreEqual(readObj.Name, "TestObject");
 			Assert.IsNull(readObj.GetComponent<Transform>());
+
+			// Assert that there was, in fact, an error log.
+			this.logWatcher.AssertError();
+		}
+		[Test] public void SaveMultipleResourcesToStream()
+		{
+			// In this test, we will check whether it's possible to save and load multiple
+			// Resources sequentially into the same stream without problems. Note that this
+			// is specifically about Resources, not "data" in general.
+			Pixmap[] sourceData = new Pixmap[]
+			{
+				new Pixmap(new PixelData(1, 1, ColorRgba.Red)),
+				new Pixmap(new PixelData(1, 1, ColorRgba.Green)),
+				new Pixmap(new PixelData(1, 1, ColorRgba.Blue)),
+			};
+			Pixmap[] targetData = new Pixmap[sourceData.Length];
+
+			TestingLogOutput logWatcher = new TestingLogOutput();
+			Log.AddGlobalOutput(logWatcher);
+
+			// Save and load resources into a memory stream sequentially.
+			// We expect no errors.
+			using (MemoryStream stream = new MemoryStream())
+			{
+				for (int i = 0; i < sourceData.Length; i++)
+					sourceData[i].Save(stream);
+
+				stream.Position = 0;
+
+				for (int i = 0; i < targetData.Length; i++)
+					targetData[i] = Resource.Load<Pixmap>(stream);
+			}
+
+			// Assert that there were no errors or warnings, i.e. everything
+			// went allright.
+			this.logWatcher.AssertNoErrorsOrWarnings();
+
+			// Do a simple sanity check of the data. No extensive comparison,
+			// we've dealt with that in lots of other tests.
+			for (int i = 0; i < sourceData.Length; i++)
+			{
+				Assert.IsNotNull(targetData[i]);
+				Assert.IsNotNull(targetData[i].MainLayer);
+				Assert.AreNotSame(sourceData[i], targetData[i]);
+				Assert.AreNotSame(sourceData[i].MainLayer, targetData[i].MainLayer);
+			}
 		}
 
 		
