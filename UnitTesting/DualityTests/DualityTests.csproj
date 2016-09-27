@@ -81,6 +81,7 @@
     <Compile Include="Cloning\SpecificCloningTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
+    <Compile Include="TestingLogOutput.cs" />
     <Compile Include="IO\PathOpTest.cs" />
     <Compile Include="PluginManager\MockPlugin.cs" />
     <Compile Include="PluginManager\MockPluginManager.cs" />

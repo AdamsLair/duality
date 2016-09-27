@@ -813,7 +813,7 @@ namespace Duality.Serialization
 		public static Serializer Create(Stream stream, Type preferredSerializer = null)
 		{
 			// If no preferred serializer is specified, try to detect which one to use
-			if (preferredSerializer == null && stream.CanRead && stream.CanSeek && stream.Length > 0)
+			if (preferredSerializer == null && stream.CanRead && stream.CanSeek && stream.Length > 0 && stream.Position < stream.Length)
 				preferredSerializer = Detect(stream);
 
 			// If detection wasn't possible, assume the default serializer.
@@ -932,7 +932,7 @@ namespace Duality.Serialization
 		/// <param name="preferredSerializer"></param>
 		public static void WriteObject<T>(T obj, Stream stream, Type preferredSerializer = null)
 		{
-			using (Serializer formatter = Serializer.Create(stream, preferredSerializer))
+			using (Serializer formatter = Serializer.Create(stream, preferredSerializer ?? DefaultType))
 			{
 				formatter.WriteObject(obj);
 			}
