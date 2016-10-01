@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality</id>
-    <version>2.7.11</version>
+    <version>2.7.12</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Core</title>
@@ -13,8 +13,10 @@
     <summary>The Duality engine core.</summary>
     <description>The Duality engine core.</description>
     <tags>Duality Core</tags>
-    <releaseNotes>Resource Serialization Bugfixes
-#FIX: Fixed a rogue error message when saving a Resource into a non-empty, pre-existing stream.</releaseNotes>
+    <releaseNotes>Array Serialization Safety Checks, GameObject Missing Object Warnings
+#ADD: Added a safety check before assigning a deserialized value to an array that will skip items where the object type no longer matches the array element type. 
+#ADD: Added a similar safety check for the dictionary serialization surrogate.
+#CHANGE: Friendlier warning messages on missing Components or child objects due to deserialization problems.</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality.Primitives" version="2.0.0" />
       <dependency id="AdamsLair.NVorbis" version="0.7.5" />
