@@ -578,6 +578,28 @@ namespace Duality.Serialization
 			field.SetValue(obj, fieldValue);
 		}
 		/// <summary>
+		/// Assigns the specified value to a specific array index.
+		/// </summary>
+		/// <param name="objSerializeType"></param>
+		/// <param name="obj"></param>
+		/// <param name="fieldName"></param>
+		/// <param name="fieldValue"></param>
+		protected void AssignValueToArray(SerializeType elementSerializeType, Array array, int index, object value)
+		{
+			if (array == null) return;
+			if (value != null && !elementSerializeType.Type.IsInstanceOfType(value))
+			{
+				this.LocalLog.WriteWarning(
+					"Actual Type '{0}' of array element value at index {1} does not match reflected array element type '{2}'. Skipping item.", 
+					value != null ? Log.Type(value.GetType()) : "unknown", 
+					index, 
+					Log.Type(elementSerializeType.Type));
+				return;
+			}
+
+			array.SetValue(value, index);
+		}
+		/// <summary>
 		/// Resolves the specified Type.
 		/// </summary>
 		/// <param name="typeId"></param>

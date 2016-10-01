@@ -536,6 +536,7 @@ namespace Duality.Serialization
 			// Read a complex value array, where each item is an XML element
 			else
 			{
+				SerializeType elementSerializeType = GetSerializeType(elementType);
 				int arrLength = explicitLength != -1 ? explicitLength : element.Elements().Count();
 
 				// Prepare object reference
@@ -546,7 +547,7 @@ namespace Duality.Serialization
 				foreach (XElement itemElement in element.Elements())
 				{
 					object item = this.ReadObjectData(itemElement);
-					if (arrObj != null) arrObj.SetValue(item, itemIndex);
+					this.AssignValueToArray(elementSerializeType, arrObj, itemIndex, item);
 
 					itemIndex++;
 					if (itemIndex >= arrLength) break;

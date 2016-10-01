@@ -43,12 +43,21 @@ namespace Duality.Serialization.Surrogates
 			IDictionary dict = this.RealObject;
 			TypeInfo dictType = dict.GetType().GetTypeInfo();
 			Type[] genArgs = dictType.GenericTypeArguments;
+			TypeInfo keyTypeInfo = genArgs[0].GetTypeInfo();
+			TypeInfo valueTypeInfo = genArgs[1].GetTypeInfo();
 
 			dict.Clear();
 			if (genArgs[0] == typeof(string))
 			{
-				foreach (var key in reader.Keys)
-					dict.Add(key, reader.ReadValue(key));
+				foreach (string key in reader.Keys)
+				{
+					object value = reader.ReadValue(key);
+
+					if (!CheckKeyType(keyTypeInfo, key)) continue;
+					if (!CheckValueType(valueTypeInfo, value)) continue;
+
+					dict.Add(key, value);
+				}
 			}
 			else
 			{
@@ -60,9 +69,39 @@ namespace Duality.Serialization.Surrogates
 				for (int i = 0; i < keys.Length; i++)
 				{
 					if (keys[i] == null) continue;
+					if (!CheckKeyType(keyTypeInfo, keys[i])) continue;
+					if (!CheckValueType(valueTypeInfo, values[i])) continue;
+
 					dict.Add(keys[i], values[i]);
 				}
 			}
+		}
+
+		private static bool CheckKeyType(TypeInfo keyTypeInfo, object key)
+		{
+			if (!keyTypeInfo.IsInstanceOfType(key))
+			{
+				Log.Core.WriteWarning(
+					"Actual Type '{0}' of dictionary key '{1}' does not match reflected dictionary key type '{2}'. Skipping value.", 
+					key != null ? Log.Type(key.GetType()) : "unknown", 
+					key, 
+					Log.Type(keyTypeInfo));
+				return false;
+			}
+			return true;
+		}
+		private static bool CheckValueType(TypeInfo valueTypeInfo, object value)
+		{
+			if (!valueTypeInfo.IsInstanceOfType(value))
+			{
+				Log.Core.WriteWarning(
+					"Actual Type '{0}' of value in dictionary field '{1}' does not match reflected dictionary field type '{2}'. Skipping value.", 
+					value != null ? Log.Type(value.GetType()) : "unknown", 
+					value, 
+					Log.Type(valueTypeInfo));
+				return false;
+			}
+			return true;
 		}
 	}
 }
