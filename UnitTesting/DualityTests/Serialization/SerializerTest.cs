@@ -417,6 +417,8 @@ namespace Duality.Tests.Serialization
 			}
 			
 			// Replace all occurrences of the correct type id with the incorrect one.
+			// Note: This assumes that type info is stored as raw UTF8 strings inside the
+			// written data. Compressed serializers or similar not accounted for.
 			for (int i = 0; i < data.Length - correctTypeIdBytes.Length; i++)
 			{
 				bool matchTypeId = true;
