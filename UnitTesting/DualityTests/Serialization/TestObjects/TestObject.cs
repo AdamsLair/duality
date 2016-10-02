@@ -8,60 +8,6 @@ using Duality.Serialization;
 
 namespace Duality.Tests.Serialization
 {
-	public enum SomeEnum
-	{
-		Zero,
-		First,
-		Second,
-		Third
-	}
-	public struct TestData : IEquatable<TestData>
-	{
-		public int IntField;
-		public float FloatField;
-		public string StringField;
-		public SomeEnum EnumField;
-
-		public TestData(Random rnd)
-		{
-			this.IntField		= rnd.Next();
-			this.FloatField		= rnd.NextFloat();
-			this.StringField	= rnd.Next().ToString();
-			this.EnumField		= (SomeEnum)rnd.Next(10);
-		}
-
-		public static bool operator ==(TestData first, TestData second)
-		{
-			return first.Equals(second);
-		}
-		public static bool operator !=(TestData first, TestData second)
-		{
-			return !first.Equals(second);
-		}
-		public override int GetHashCode()
-		{
-			return MathF.CombineHashCode(
-				this.IntField.GetHashCode(),
-				this.FloatField.GetHashCode(),
-				this.StringField != null ? this.StringField.GetHashCode() : 0,
-				this.EnumField.GetHashCode());
-		}
-		public override bool Equals(object obj)
-		{
-			if (obj is TestData)
-				return this.Equals((TestData)obj);
-			else
-				return base.Equals(obj);
-		}
-		public bool Equals(TestData other)
-		{
-			return 
-				other.IntField == this.IntField &&
-				other.FloatField == this.FloatField &&
-				other.StringField == this.StringField &&
-				other.EnumField == this.EnumField;
-		}
-	}
 	public class TestObject : IEquatable<TestObject>
 	{
 		public string StringField;
@@ -155,47 +101,6 @@ namespace Duality.Tests.Serialization
 			if (object.ReferenceEquals(first, null)) return false;
 			if (object.ReferenceEquals(second, null)) return false;
 			return first.SetEqual(second);
-		}
-	}
-	public class MemberInfoTestObject
-	{
-		public int Field;
-		public event EventHandler Event;
-		public int Property { get { return 0; } }
-		public int Method(string param) { return 0; }
-		public MemberInfoTestObject() { }
-	}
-	public class NullDefaultTestObject : IEquatable<NullDefaultTestObject>
-	{
-		public int TestField;
-		public TestObject ReferenceTypeField;
-		public TestData ValueTypeField;
-
-		public static bool operator ==(NullDefaultTestObject first, NullDefaultTestObject second)
-		{
-			return first.Equals(second);
-		}
-		public static bool operator !=(NullDefaultTestObject first, NullDefaultTestObject second)
-		{
-			return !first.Equals(second);
-		}
-		public override bool Equals(object obj)
-		{
-			if (obj is NullDefaultTestObject)
-				return this.Equals((NullDefaultTestObject)obj);
-			else
-				return base.Equals(obj);
-		}
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
-		}
-		public bool Equals(NullDefaultTestObject other)
-		{
-			return 
-				other.TestField == this.TestField &&
-				object.Equals(other.ReferenceTypeField, this.ReferenceTypeField) &&
-				object.Equals(other.ValueTypeField, this.ValueTypeField);
 		}
 	}
 }

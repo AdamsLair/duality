@@ -259,6 +259,12 @@ namespace Duality.Editor.Controls.PropertyEditors
 			foreach (NumericEditorTemplate t in this.editor)
 				t.OnMouseUp(e);
 		}
+		protected override void OnMouseDoubleClick(MouseEventArgs e)
+		{
+			base.OnMouseDoubleClick(e);
+			for (int i = 0; i < this.editor.Length; i++)
+				this.editor[i].OnMouseDoubleClick(e);
+		}
 
 		protected override void UpdateGeometry()
 		{
