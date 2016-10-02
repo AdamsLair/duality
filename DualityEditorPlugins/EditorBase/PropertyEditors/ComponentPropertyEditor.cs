@@ -158,6 +158,8 @@ namespace Duality.Editor.Plugins.Base.PropertyEditors
 			{
 				foreach (Component r in c.GameObj.GetComponents<Component>())
 				{
+					if (r == c)
+						continue;
 					if (!r.IsComponentRequirementMet(c))
 					{
 						canRemove = false;
