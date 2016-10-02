@@ -81,6 +81,10 @@
     <Compile Include="Cloning\SpecificCloningTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
+    <Compile Include="Serialization\TestObjects\SomeEnum.cs" />
+    <Compile Include="Serialization\TestObjects\TestObject.cs" />
+    <Compile Include="Serialization\TestObjects\TestData.cs" />
+    <Compile Include="Serialization\TestObjects\MemberInfoTestObject.cs" />
     <Compile Include="TestingLogOutput.cs" />
     <Compile Include="IO\PathOpTest.cs" />
     <Compile Include="PluginManager\MockPlugin.cs" />
@@ -95,7 +99,7 @@
     <Compile Include="Resources\ExplicitReferenceAttributeTest.cs" />
     <Compile Include="Resources\ResourceTest.cs" />
     <Compile Include="Resources\PrefabTest.cs" />
-    <Compile Include="Serialization\TestObjects.cs" />
+    <Compile Include="Serialization\TestObjects\NullDefaultTestObject.cs" />
     <Compile Include="PluginManager\MockAssembly.cs" />
     <Compile Include="PluginManager\MockPluginLoader.cs" />
     <Compile Include="PluginManager\CorePluginManagerTest.cs" />
