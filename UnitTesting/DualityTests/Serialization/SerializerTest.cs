@@ -396,68 +396,41 @@ namespace Duality.Tests.Serialization
 		}
 		[Test] public void DeserializeNonExistentComponentType()
 		{
-			string correctTypeId = typeof(Transform).GetTypeId();
-			string wrongTypeId = correctTypeId.Replace("Transform", "XYZnsform");
-			byte[] correctTypeIdBytes = Encoding.UTF8.GetBytes(correctTypeId);
-			byte[] wrongTypeIdBytes = Encoding.UTF8.GetBytes(wrongTypeId);
+			const string DataName = "NonExistentComponent";
+			Type nonExistentComponent = ReflectionHelper.ResolveType("Duality.Tests.Serialization.NonExistentComponent");
 
-			// Create a very simple object to serialize
-			GameObject writeObj = new GameObject("TestObject");
-			writeObj.AddComponent<Transform>();
-
-			// Write the object into memory
-			byte[] data;
-			using (MemoryStream stream = new MemoryStream())
+			// If we do have the non-existent component type available, re-generate our testing data
+			if (nonExistentComponent != null)
 			{
-				using (Serializer formatterWrite = Serializer.Create(stream, format))
-				{
-					formatterWrite.WriteObject(writeObj);
-				}
-				data = stream.ToArray();
-			}
-			
-			// Replace all occurrences of the correct type id with the incorrect one.
-			// Note: This assumes that type info is stored as raw UTF8 strings inside the
-			// written data. Compressed serializers or similar not accounted for.
-			for (int i = 0; i < data.Length - correctTypeIdBytes.Length; i++)
-			{
-				bool matchTypeId = true;
-				for (int j = 0; j < correctTypeIdBytes.Length; j++)
-				{
-					if (data[i + j] != correctTypeIdBytes[j])
-					{
-						matchTypeId = false;
-						break;
-					}
-				}
+				GameObject writeObj = new GameObject("TestObject");
+				writeObj.AddComponent(nonExistentComponent);
+				writeObj.AddComponent<Transform>();
 
-				if (matchTypeId)
-				{
-					for (int j = 0; j < correctTypeIdBytes.Length; j++)
-						data[i + j] = wrongTypeIdBytes[j];
-				}
+				this.CreateReferenceFile(DataName, writeObj, this.PrimaryFormat);
+
+				Assert.Inconclusive(
+					"Re-generated non-existent type test data. " +
+					"Cannot perform the test as long as the type is actually available.");
 			}
 
-			// Attempt to read back the object
-			GameObject readObj;
-			using (MemoryStream stream = new MemoryStream(data))
-			{
-				stream.Position = 0;
-				using (Serializer formatterRead = Serializer.Create(stream))
-				{
-					readObj = formatterRead.ReadObject<GameObject>();
-				}
-			}
+			// Read the testing data we saved before. The type we used won't actually exist.
+			GameObject readObj = this.ReadReferenceFile(DataName, this.PrimaryFormat) as GameObject;
+
+			// Sanitize the GameObject to give it a chance for cleanup of missing data
+			readObj.PerformSanitaryCheck();
 
 			// Deserialization should never throw an exception due to non-parsable / incompatible 
 			// data, but it may log an error and return null. In this specific case, we expect the
 			// object overall to be functional, but devoid of the faulty Component.
 			Assert.IsNotNull(readObj);
 			Assert.AreEqual(readObj.Name, "TestObject");
-			Assert.IsNull(readObj.GetComponent<Transform>());
+			Assert.IsNotNull(readObj.GetComponent<Transform>());
+			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
 
-			// Assert that there was, in fact, an error log.
+			// Assert an error log for the deserialization failure
 			this.logWatcher.AssertError();
+			// Assert a warning log for the missing Component while sanitizing the GameObject
+			this.logWatcher.AssertWarning();
 		}
 		[Test] public void SaveMultipleResourcesToStream()
 		{
@@ -508,13 +481,25 @@ namespace Duality.Tests.Serialization
 		{
 			return string.Format("SerializerTest{0}{1}Data", name, format.Name);
 		}
-		private void CreateReferenceFile<T>(string name, T writeObj, Type format)
+		private void CreateReferenceFile(string name, object writeObj, Type format)
 		{
 			string filePath = TestHelper.GetEmbeddedResourcePath(GetReferenceResourceName(name, format), ".dat");
 			using (FileStream stream = File.Open(filePath, FileMode.Create))
 			using (Serializer formatter = Serializer.Create(stream, format))
 			{
 				formatter.WriteObject(writeObj);
+			}
+		}
+		private object ReadReferenceFile(string name, Type format)
+		{
+			byte[] data = (byte[])TestRes.ResourceManager.GetObject(
+				this.GetReferenceResourceName(name, format), 
+				System.Globalization.CultureInfo.InvariantCulture);
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (Serializer formatter = Serializer.Create(stream, format))
+			{
+				return formatter.ReadObject();
 			}
 		}
 
@@ -547,13 +532,7 @@ namespace Duality.Tests.Serialization
 		{
 			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
 
-			T readObj;
-			byte[] data = (byte[])TestRes.ResourceManager.GetObject(this.GetReferenceResourceName(name, format), System.Globalization.CultureInfo.InvariantCulture);
-			using (MemoryStream stream = new MemoryStream(data))
-			using (Serializer formatter = Serializer.Create(stream, format))
-			{
-				formatter.ReadObject(out readObj);
-			}
+			T readObj = (T)this.ReadReferenceFile(name, format);
 			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
 		}
 		private void TestWriteRead<T>(T writeObj, Type format, Func<T,T,bool> checkEqual = null)
