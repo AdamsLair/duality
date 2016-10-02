@@ -19,7 +19,7 @@ namespace Duality.Editor.Plugins.Base.PreviewGenerators
 			Point2 cropToSize = new Point2(4096, 4096);
 
 			PixelData layer = pixmap.MainLayer;
-			if (layer == null)
+			if (layer == null || layer.Data.Length == 0)
 			{
 				query.Result = new Bitmap(1, 1);
 				return;
