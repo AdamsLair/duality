@@ -81,6 +81,7 @@
     <Compile Include="Cloning\SpecificCloningTest.cs" />
     <Compile Include="Components\RigidBodyTest.cs" />
     <Compile Include="ExtMethodsPixelData.cs" />
+    <Compile Include="Serialization\TestObjects\MismatchedComponent.cs" />
     <Compile Include="Serialization\TestObjects\NonExistentComponent.cs" />
     <Compile Include="Serialization\TestObjects\SomeEnum.cs" />
     <Compile Include="Serialization\TestObjects\TestObject.cs" />
@@ -146,6 +147,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\CanvasTestNothing.png" />
+    <None Include="EmbeddedResources\SerializerTestMismatchedComponentBinarySerializerData.dat" />
+    <None Include="EmbeddedResources\SerializerTestMismatchedComponentXmlSerializerData.dat" />
     <None Include="EmbeddedResources\SerializerTestNonExistentComponentBinarySerializerData.dat" />
     <None Include="EmbeddedResources\SerializerTestNonExistentComponentXmlSerializerData.dat" />
     <None Include="EmbeddedResources\SerializerTestOldBinarySerializerData.dat" />

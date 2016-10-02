@@ -415,9 +415,15 @@ namespace Duality.Tests.Serialization
 
 			// Read the testing data we saved before. The type we used won't actually exist.
 			GameObject readObj = this.ReadReferenceFile(DataName, this.PrimaryFormat) as GameObject;
+			
+			// Assert an error log for the deserialization failure
+			this.logWatcher.AssertError();
 
 			// Sanitize the GameObject to give it a chance for cleanup of missing data
 			readObj.PerformSanitaryCheck();
+
+			// Assert a warning log for the missing Component while sanitizing the GameObject
+			this.logWatcher.AssertWarning();
 
 			// Deserialization should never throw an exception due to non-parsable / incompatible 
 			// data, but it may log an error and return null. In this specific case, we expect the
@@ -426,11 +432,46 @@ namespace Duality.Tests.Serialization
 			Assert.AreEqual(readObj.Name, "TestObject");
 			Assert.IsNotNull(readObj.GetComponent<Transform>());
 			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
+		}
+		[Test] public void DeserializeMismatchedComponentType()
+		{
+			const string DataName = "MismatchedComponent";
+			Type mismatchedComponent = typeof(MismatchedComponent);
 
-			// Assert an error log for the deserialization failure
-			this.logWatcher.AssertError();
+			// If we do have the mismatched component type available, re-generate our testing data
+			if (typeof(Component).IsAssignableFrom(mismatchedComponent))
+			{
+				GameObject writeObj = new GameObject("TestObject");
+				writeObj.AddComponent(mismatchedComponent);
+				writeObj.AddComponent<Transform>();
+
+				this.CreateReferenceFile(DataName, writeObj, this.PrimaryFormat);
+
+				Assert.Inconclusive(
+					"Re-generated mismatched type test data. " +
+					"Cannot perform the test as long as the type is actually matching.");
+			}
+
+			// Read the testing data we saved before. The type we used won't actually be a Component.
+			GameObject readObj = this.ReadReferenceFile(DataName, this.PrimaryFormat) as GameObject;
+
+			// Assert a warning for not being able to assign the deserialized object as intended
+			// due to mismatching types / no longer being a Component.
+			this.logWatcher.AssertWarning();
+
+			// Sanitize the GameObject to give it a chance for cleanup of missing data
+			readObj.PerformSanitaryCheck();
+
 			// Assert a warning log for the missing Component while sanitizing the GameObject
 			this.logWatcher.AssertWarning();
+
+			// Deserialization should never throw an exception due to non-parsable / incompatible 
+			// data, but it may log an error and return null. In this specific case, we expect the
+			// object overall to be functional, but devoid of the faulty Component.
+			Assert.IsNotNull(readObj);
+			Assert.AreEqual(readObj.Name, "TestObject");
+			Assert.IsNotNull(readObj.GetComponent<Transform>());
+			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
 		}
 		[Test] public void SaveMultipleResourcesToStream()
 		{

@@ -113,6 +113,26 @@ namespace Duality.Tests.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] SerializerTestMismatchedComponentBinarySerializerData {
+            get {
+                object obj = ResourceManager.GetObject("SerializerTestMismatchedComponentBinarySerializerData", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] SerializerTestMismatchedComponentXmlSerializerData {
+            get {
+                object obj = ResourceManager.GetObject("SerializerTestMismatchedComponentXmlSerializerData", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] SerializerTestNonExistentComponentBinarySerializerData {
             get {
                 object obj = ResourceManager.GetObject("SerializerTestNonExistentComponentBinarySerializerData", resourceCulture);

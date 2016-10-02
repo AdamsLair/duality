@@ -1,0 +1,56 @@
+﻿<root dataType="Struct" type="Duality.GameObject" id="3047553640">
+  <active dataType="Bool">true</active>
+  <children />
+  <compList dataType="Struct" type="System.Collections.Generic.List`1[[Duality.Component]]" id="129723834">
+    <_items dataType="Array" type="Duality.Component[]" id="3372662871" length="4">
+      <item dataType="Struct" type="Duality.Tests.Serialization.MismatchedComponent" id="1157958220">
+        <active dataType="Bool">true</active>
+        <gameobj dataType="ObjectRef">3047553640</gameobj>
+      </item>
+      <item dataType="Struct" type="Duality.Components.Transform" id="2876555049">
+        <active dataType="Bool">true</active>
+        <angle dataType="Float">0</angle>
+        <angleAbs dataType="Float">0</angleAbs>
+        <angleVel dataType="Float">0</angleVel>
+        <angleVelAbs dataType="Float">0</angleVelAbs>
+        <deriveAngle dataType="Bool">true</deriveAngle>
+        <gameobj dataType="ObjectRef">3047553640</gameobj>
+        <ignoreParent dataType="Bool">false</ignoreParent>
+        <parentTransform />
+        <pos dataType="Struct" type="Duality.Vector3" />
+        <posAbs dataType="Struct" type="Duality.Vector3" />
+        <scale dataType="Float">1</scale>
+        <scaleAbs dataType="Float">1</scaleAbs>
+        <vel dataType="Struct" type="Duality.Vector3" />
+        <velAbs dataType="Struct" type="Duality.Vector3" />
+      </item>
+    </_items>
+    <_size dataType="Int">2</_size>
+    <_version dataType="Int">2</_version>
+  </compList>
+  <compMap dataType="Struct" type="System.Collections.Generic.Dictionary`2[[System.Type],[Duality.Component]]" id="3180002583" surrogate="true">
+    <header />
+    <body>
+      <keys dataType="Array" type="System.Object[]" id="3634643726">
+        <item dataType="Type" id="3665645008" value="Duality.Tests.Serialization.MismatchedComponent" />
+        <item dataType="Type" id="3957401198" value="Duality.Components.Transform" />
+      </keys>
+      <values dataType="Array" type="System.Object[]" id="183644490">
+        <item dataType="ObjectRef">1157958220</item>
+        <item dataType="ObjectRef">2876555049</item>
+      </values>
+    </body>
+  </compMap>
+  <compTransform dataType="ObjectRef">2876555049</compTransform>
+  <identifier dataType="Struct" type="System.Guid" surrogate="true">
+    <header>
+      <data dataType="Array" type="System.Byte[]" id="24399934">r7TCvGcKt06ftgND39dFcA==</data>
+    </header>
+    <body />
+  </identifier>
+  <initState dataType="Enum" type="Duality.InitState" name="Initialized" value="1" />
+  <name dataType="String">TestObject</name>
+  <parent />
+  <prefabLink />
+</root>
+<!-- XmlFormatterBase Document Separator -->
