@@ -20,11 +20,12 @@ namespace Duality.Editor
 
 	public static class Sandbox
 	{
-		private	static bool			stateChange	= false;
-		private	static int			singleSteps	= 0;
-		private	static int			sceneFreeze	= 0;
-		private	static SandboxState	state		= SandboxState.Inactive;
-		private static bool			askUnsaved	= true;
+		private	static bool					stateChange	= false;
+		private	static int					singleSteps	= 0;
+		private	static int					sceneFreeze	= 0;
+		private	static SandboxState			state		= SandboxState.Inactive;
+		private static bool					askUnsaved	= true;
+		private static ContentRef<Scene>	startScene	= null;
 
 		public	static	event	EventHandler	Entering		= null;
 		public	static	event	EventHandler	Leave			= null;
@@ -90,6 +91,7 @@ namespace Duality.Editor
 
 				// Save the current scene
 				DualityEditorApp.SaveCurrentScene();
+				startScene = Scene.Current;
 				
 				// Force later Scene reload by disposing it
 				string curPath = null;
@@ -157,7 +159,7 @@ namespace Duality.Editor
 			// (Re)Load Scene
 			if (curPath != null)
 			{
-				Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curPath));
+				Scene.SwitchTo(startScene);
 			}
 			// If it's a runtime-only / non-persistent scene, leave and re-enter it to allow objects to
 			// re-initialize in the new execution context.
