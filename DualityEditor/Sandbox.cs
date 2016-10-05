@@ -141,12 +141,8 @@ namespace Duality.Editor
 			stateChange = true;
 
 			// Force later Scene reload by disposing it
-			string curPath = null;
 			if (!String.IsNullOrEmpty(Scene.Current.Path))
-			{
-				curPath = Scene.CurrentPath;
 				Scene.Current.Dispose();
-			}
 
 			// Stopp all audio that might not have been taken care of manually by the user
 			DualityApp.Sound.StopAll();
@@ -157,7 +153,7 @@ namespace Duality.Editor
 			DualityApp.ExecContext = DualityApp.ExecutionContext.Editor;
 			
 			// (Re)Load Scene
-			if (curPath != null)
+			if (startScene.Path != null)
 			{
 				Scene.SwitchTo(startScene);
 			}
