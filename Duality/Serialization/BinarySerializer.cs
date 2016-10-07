@@ -648,7 +648,7 @@ namespace Duality.Serialization
 						else
 							element = defaultValue;
 
-						if (arrObj != null) arrObj.SetValue(element, l);
+						this.AssignValueToArray(elementSerializeType, arrObj, l, element);
 					}
 				}
 				// Otherwise, each element requires a full object entry
@@ -656,8 +656,8 @@ namespace Duality.Serialization
 				{
 					for (int l = 0; l < arrLength; l++)
 					{
-						object elem = this.ReadObjectData();
-						if (arrObj != null) arrObj.SetValue(elem, l);
+						object element = this.ReadObjectData();
+						this.AssignValueToArray(elementSerializeType, arrObj, l, element);
 					}
 				}
 			}

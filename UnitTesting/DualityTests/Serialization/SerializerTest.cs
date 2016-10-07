@@ -396,66 +396,82 @@ namespace Duality.Tests.Serialization
 		}
 		[Test] public void DeserializeNonExistentComponentType()
 		{
-			string correctTypeId = typeof(Transform).GetTypeId();
-			string wrongTypeId = correctTypeId.Replace("Transform", "XYZnsform");
-			byte[] correctTypeIdBytes = Encoding.UTF8.GetBytes(correctTypeId);
-			byte[] wrongTypeIdBytes = Encoding.UTF8.GetBytes(wrongTypeId);
+			const string DataName = "NonExistentComponent";
+			Type nonExistentComponent = ReflectionHelper.ResolveType("Duality.Tests.Serialization.NonExistentComponent");
 
-			// Create a very simple object to serialize
-			GameObject writeObj = new GameObject("TestObject");
-			writeObj.AddComponent<Transform>();
-
-			// Write the object into memory
-			byte[] data;
-			using (MemoryStream stream = new MemoryStream())
+			// If we do have the non-existent component type available, re-generate our testing data
+			if (nonExistentComponent != null)
 			{
-				using (Serializer formatterWrite = Serializer.Create(stream, format))
-				{
-					formatterWrite.WriteObject(writeObj);
-				}
-				data = stream.ToArray();
+				GameObject writeObj = new GameObject("TestObject");
+				writeObj.AddComponent(nonExistentComponent);
+				writeObj.AddComponent<Transform>();
+
+				this.CreateReferenceFile(DataName, writeObj, this.PrimaryFormat);
+
+				Assert.Inconclusive(
+					"Re-generated non-existent type test data. " +
+					"Cannot perform the test as long as the type is actually available.");
 			}
+
+			// Read the testing data we saved before. The type we used won't actually exist.
+			GameObject readObj = this.ReadReferenceFile(DataName, this.PrimaryFormat) as GameObject;
 			
-			// Replace all occurrences of the correct type id with the incorrect one.
-			for (int i = 0; i < data.Length - correctTypeIdBytes.Length; i++)
-			{
-				bool matchTypeId = true;
-				for (int j = 0; j < correctTypeIdBytes.Length; j++)
-				{
-					if (data[i + j] != correctTypeIdBytes[j])
-					{
-						matchTypeId = false;
-						break;
-					}
-				}
+			// Assert an error log for the deserialization failure
+			this.logWatcher.AssertError();
 
-				if (matchTypeId)
-				{
-					for (int j = 0; j < correctTypeIdBytes.Length; j++)
-						data[i + j] = wrongTypeIdBytes[j];
-				}
-			}
+			// Sanitize the GameObject to give it a chance for cleanup of missing data
+			readObj.PerformSanitaryCheck();
 
-			// Attempt to read back the object
-			GameObject readObj;
-			using (MemoryStream stream = new MemoryStream(data))
-			{
-				stream.Position = 0;
-				using (Serializer formatterRead = Serializer.Create(stream))
-				{
-					readObj = formatterRead.ReadObject<GameObject>();
-				}
-			}
+			// Assert a warning log for the missing Component while sanitizing the GameObject
+			this.logWatcher.AssertWarning();
 
 			// Deserialization should never throw an exception due to non-parsable / incompatible 
 			// data, but it may log an error and return null. In this specific case, we expect the
 			// object overall to be functional, but devoid of the faulty Component.
 			Assert.IsNotNull(readObj);
 			Assert.AreEqual(readObj.Name, "TestObject");
-			Assert.IsNull(readObj.GetComponent<Transform>());
+			Assert.IsNotNull(readObj.GetComponent<Transform>());
+			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
+		}
+		[Test] public void DeserializeMismatchedComponentType()
+		{
+			const string DataName = "MismatchedComponent";
+			Type mismatchedComponent = typeof(MismatchedComponent);
 
-			// Assert that there was, in fact, an error log.
-			this.logWatcher.AssertError();
+			// If we do have the mismatched component type available, re-generate our testing data
+			if (typeof(Component).IsAssignableFrom(mismatchedComponent))
+			{
+				GameObject writeObj = new GameObject("TestObject");
+				writeObj.AddComponent(mismatchedComponent);
+				writeObj.AddComponent<Transform>();
+
+				this.CreateReferenceFile(DataName, writeObj, this.PrimaryFormat);
+
+				Assert.Inconclusive(
+					"Re-generated mismatched type test data. " +
+					"Cannot perform the test as long as the type is actually matching.");
+			}
+
+			// Read the testing data we saved before. The type we used won't actually be a Component.
+			GameObject readObj = this.ReadReferenceFile(DataName, this.PrimaryFormat) as GameObject;
+
+			// Assert a warning for not being able to assign the deserialized object as intended
+			// due to mismatching types / no longer being a Component.
+			this.logWatcher.AssertWarning();
+
+			// Sanitize the GameObject to give it a chance for cleanup of missing data
+			readObj.PerformSanitaryCheck();
+
+			// Assert a warning log for the missing Component while sanitizing the GameObject
+			this.logWatcher.AssertWarning();
+
+			// Deserialization should never throw an exception due to non-parsable / incompatible 
+			// data, but it may log an error and return null. In this specific case, we expect the
+			// object overall to be functional, but devoid of the faulty Component.
+			Assert.IsNotNull(readObj);
+			Assert.AreEqual(readObj.Name, "TestObject");
+			Assert.IsNotNull(readObj.GetComponent<Transform>());
+			Assert.AreEqual(1, readObj.GetComponents<Component>().Count());
 		}
 		[Test] public void SaveMultipleResourcesToStream()
 		{
@@ -506,13 +522,25 @@ namespace Duality.Tests.Serialization
 		{
 			return string.Format("SerializerTest{0}{1}Data", name, format.Name);
 		}
-		private void CreateReferenceFile<T>(string name, T writeObj, Type format)
+		private void CreateReferenceFile(string name, object writeObj, Type format)
 		{
 			string filePath = TestHelper.GetEmbeddedResourcePath(GetReferenceResourceName(name, format), ".dat");
 			using (FileStream stream = File.Open(filePath, FileMode.Create))
 			using (Serializer formatter = Serializer.Create(stream, format))
 			{
 				formatter.WriteObject(writeObj);
+			}
+		}
+		private object ReadReferenceFile(string name, Type format)
+		{
+			byte[] data = (byte[])TestRes.ResourceManager.GetObject(
+				this.GetReferenceResourceName(name, format), 
+				System.Globalization.CultureInfo.InvariantCulture);
+
+			using (MemoryStream stream = new MemoryStream(data))
+			using (Serializer formatter = Serializer.Create(stream, format))
+			{
+				return formatter.ReadObject();
 			}
 		}
 
@@ -545,13 +573,7 @@ namespace Duality.Tests.Serialization
 		{
 			if (checkEqual == null) checkEqual = (a, b) => object.Equals(a, b);
 
-			T readObj;
-			byte[] data = (byte[])TestRes.ResourceManager.GetObject(this.GetReferenceResourceName(name, format), System.Globalization.CultureInfo.InvariantCulture);
-			using (MemoryStream stream = new MemoryStream(data))
-			using (Serializer formatter = Serializer.Create(stream, format))
-			{
-				formatter.ReadObject(out readObj);
-			}
+			T readObj = (T)this.ReadReferenceFile(name, format);
 			Assert.IsTrue(checkEqual(writeObj, readObj), "Failed data equality check of Type {0} with Value {1}", typeof(T), writeObj);
 		}
 		private void TestWriteRead<T>(T writeObj, Type format, Func<T,T,bool> checkEqual = null)

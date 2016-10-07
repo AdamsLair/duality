@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor.Plugins.Base</id>
-    <version>2.2.1</version>
+    <version>2.2.3</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Editor Base Infrastructure</title>
@@ -13,12 +13,11 @@
     <summary>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</summary>
     <description>Provides basic infrastructure for the Duality editor, such as PropertyEditors and Importers.</description>
     <tags>Duality Editor Plugin PropertyEditor Importer Preview EditorAction DataConverter</tags>
-    <releaseNotes>DataConverter Tweaks, Extracted Common DataConverter Code
-#CHANGE: DataConverters will no longer generate redundant ICmpRenderers in batch operations.
-#CHANGE: Extracted a common DataConverter.FindMatchingResources method from the common FindMatch pattern in DataConverters.</releaseNotes>
+    <releaseNotes>Fixes crash after creating a texture from an empty pixmap (
+#406)</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.7.1" />
-      <dependency id="AdamsLair.Duality.Editor" version="2.6.1" />
+      <dependency id="AdamsLair.Duality" version="2.7.12" />
+      <dependency id="AdamsLair.Duality.Editor" version="2.6.9" />
     </dependencies>
   </metadata>
   <files>

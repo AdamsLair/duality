@@ -51,32 +51,23 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			base.OnEnterState();
 
-			DualityEditorApp.SelectionChanged		+= this.EditorForm_SelectionChanged;
-			DualityEditorApp.ObjectPropertyChanged	+= this.EditorForm_ObjectPropertyChanged;
+			DualityEditorApp.SelectionChanged      += this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 
 			// Initial selection update
-			ObjectSelection current = DualityEditorApp.Selection;
-			this.allObjSel = current.GameObjects.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj).ToList();
-			{
-				var selectedGameObj = current.GameObjects;
-				var indirectViaCmpQuery = current.Components.GameObject();
-				var indirectViaChildQuery = selectedGameObj.ChildrenDeep();
-				var indirectQuery = indirectViaCmpQuery.Concat(indirectViaChildQuery).Except(selectedGameObj).Distinct();
-				this.indirectObjSel = indirectQuery.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj).ToList();
-			}
-			{
-				var parentlessGameObj = current.GameObjects.Where(g => !current.GameObjects.Any(g2 => g.IsChildOf(g2))).ToList();
-				this.actionObjSel = parentlessGameObj.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj).Where(s => s.HasTransform).ToList();
-			}
-
-			this.InvalidateSelectionStats();
+			this.ApplyEditorSelection(DualityEditorApp.Selection);
 		}
 		internal protected override void OnLeaveState()
 		{
 			base.OnLeaveState();
 
-			DualityEditorApp.SelectionChanged		-= this.EditorForm_SelectionChanged;
-			DualityEditorApp.ObjectPropertyChanged	-= this.EditorForm_ObjectPropertyChanged;
+			// Clear selection lists, they'll be re-populated in OnEnterState again
+			this.allObjSel.Clear();
+			this.actionObjSel.Clear();
+			this.indirectObjSel.Clear();
+
+			DualityEditorApp.SelectionChanged      -= this.DualityEditorApp_SelectionChanged;
+			DualityEditorApp.ObjectPropertyChanged -= this.DualityEditorApp_ObjectPropertyChanged;
 		}
 		protected override void OnSceneChanged()
 		{
@@ -292,12 +283,12 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 		}
 
-		private void EditorForm_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
+		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e.Objects.Components.Any(c => c is Transform || c is ICmpRenderer))
 				this.InvalidateSelectionStats();
 		}
-		private void EditorForm_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		private void DualityEditorApp_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if ((e.AffectedCategories & ObjectSelection.Category.GameObjCmp) == ObjectSelection.Category.None)
 			{
@@ -306,37 +297,69 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 			}
 			if (e.SameObjects) return;
 
-			// Update object selection
-			this.allObjSel = e.Current.GameObjects.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj).ToList();
+			this.ApplyEditorSelection(e.Current);
+		}
 
-			// Update indirect object selection
+		private void ApplyEditorSelection(ObjectSelection selection)
+		{
+			// Update the list of all selected objects
+			this.allObjSel = 
+				selection.GameObjects
+				.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj)
+				.ToList();
+
+			// Update the list of indirectly selected objects
 			{
-				var selectedGameObj = e.Current.GameObjects;
-				var indirectViaCmpQuery = e.Current.Components.GameObject();
-				var indirectViaChildQuery = selectedGameObj.ChildrenDeep();
-				var indirectQuery = indirectViaCmpQuery.Concat(indirectViaChildQuery).Except(selectedGameObj).Distinct();
-				this.indirectObjSel = indirectQuery.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj).ToList();
+				IEnumerable<GameObject> selectedGameObj = selection.GameObjects;
+				IEnumerable<GameObject> indirectViaCmpQuery = selection.Components.GameObject();
+				IEnumerable<GameObject> indirectViaChildQuery = selectedGameObj.ChildrenDeep();
+				IEnumerable<GameObject> indirectQuery = 
+					indirectViaCmpQuery
+					.Concat(indirectViaChildQuery)
+					.Except(selectedGameObj)
+					.Distinct();
+				this.indirectObjSel = 
+					indirectQuery
+					.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj)
+					.ToList();
 			}
 
-			// Update (parent-free) action object selection
+			// Update (parent-free) action list based on the selection changes
 			{
-				// Remove removed objects
-				foreach (ObjectEditorSelObj s in e.Removed.GameObjects.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj)) this.actionObjSel.Remove(s);
-				// Remove objects whichs parents are now added
-				this.actionObjSel.RemoveAll(s => e.Added.GameObjects.Any(o => this.IsAffectedByParent(s.ActualObject as GameObject, o)));
-				// Add objects whichs parents are not located in the current selection
-				var addedParentFreeGameObj = e.Added.GameObjects.Where(o => !this.allObjSel.Any(s => this.IsAffectedByParent(o, s.ActualObject as GameObject)));
-				this.actionObjSel.AddRange(addedParentFreeGameObj.Select(g => new SceneEditorSelGameObj(g) as ObjectEditorSelObj).Where(s => s.HasTransform));
+				// Start by assuming all selected objects to be part of the action
+				this.actionObjSel.Clear();
+				this.actionObjSel.AddRange(this.allObjSel);
+
+				// Remove GameObjects from the action list if their parent is part of 
+				// the selection as well, so we can avoid moving the same object twice.
+				for (int i = this.actionObjSel.Count - 1; i >= 0; i--)
+				{
+					bool parentInSelection = false;
+					for (int j = 0; j < this.actionObjSel.Count; j++)
+					{
+						parentInSelection = this.IsAffectedByParent(
+							this.actionObjSel[i].ActualObject as GameObject, 
+							this.actionObjSel[j].ActualObject as GameObject);
+						if (parentInSelection) break;
+					}
+					if (parentInSelection)
+					{
+						this.actionObjSel.RemoveAt(i);
+					}
+				}
 			}
 
 			this.InvalidateSelectionStats();
 			this.UpdateAction();
 			this.Invalidate();
 		}
-
 		private bool IsAffectedByParent(GameObject child, GameObject parent)
 		{
-			return child.IsChildOf(parent) && child.Transform != null && parent.Transform != null && !child.Transform.IgnoreParent;
+			if (!child.IsChildOf(parent)) return false;
+			if (child.Transform == null) return false;
+			if (parent.Transform == null) return false;
+			if (child.Transform.IgnoreParent) return false;
+			return true;
 		}
 		private void ClearContextMenu()
 		{

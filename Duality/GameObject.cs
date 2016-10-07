@@ -867,7 +867,7 @@ namespace Duality
 					{
 						this.children.RemoveAt(i);
 						Log.Core.WriteWarning(
-							"Missing or Disposed Child in GameObject '{0}'. This should never happen and is likely the cause of malformed data", 
+							"Missing or Disposed Child in GameObject '{0}'. Check for serialization problems. Did you recently rename or remove classes?", 
 							this);
 					}
 				}
@@ -882,7 +882,7 @@ namespace Duality
 					{
 						this.compList.RemoveAt(i);
 						Log.Core.WriteWarning(
-							"Missing or Disposed Component in GameObject '{0}'. This should never happen and is likely the cause of malformed data", 
+							"Missing or Disposed Component in GameObject '{0}'. Check for serialization problems. Did you recently rename or remove classes?", 
 							this);
 					}
 				}
@@ -891,7 +891,7 @@ namespace Duality
 			{
 				this.compList = new List<Component>();
 				Log.Core.WriteWarning(
-					"GameObject '{0}' didn't have a Component list. This should never happen and is likely the cause of malformed data", 
+					"GameObject '{0}' didn't have a Component list. Check for serialization problems. Did you recently rename or remove classes?", 
 					this);
 			}
 
@@ -904,7 +904,7 @@ namespace Duality
 					{
 						this.compMap.Remove(key);
 						Log.Core.WriteWarning(
-							"Missing or Disposed Component '{0}' in GameObject '{1}'. This should never happen and is likely the cause of malformed data", 
+							"Missing or Disposed Component '{0}' in GameObject '{1}'. Check for serialization problems. Did you recently rename or remove classes?", 
 							key,
 							this);
 					}
@@ -914,7 +914,7 @@ namespace Duality
 			{
 				this.compMap = new Dictionary<Type,Component>();
 				Log.Core.WriteWarning(
-					"GameObject '{0}' didn't have a Component map. This should never happen and is likely the cause of malformed data", 
+					"GameObject '{0}' didn't have a Component map. Check for serialization problems. Did you recently rename or remove classes?", 
 					this);
 			}
 		}
