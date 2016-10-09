@@ -30,7 +30,7 @@ namespace Duality
 		private	static	float		lastDelta	= 0.0f;
 		private	static	float		timeMult	= 0.0f;
 		private	static	float		timeScale	= 1.0f;
-		private	static	int			timeFreeze	= 0;
+		private static	bool		timeFrozen	= false;
 		private	static	int			frameCount	= 0;
 		private	static	int			fps			= 0;
 		private	static	int			fps_frames	= 0;
@@ -90,33 +90,41 @@ namespace Duality
 			get { return timeScale; }
 			set { timeScale = value; }
 		}		//	GS
+
 		/// <summary>
 		/// [GET] The number of frames passed since startup
 		/// </summary>
 		public static int FrameCount
 		{
 			get { return frameCount; }
-		}			//	G
+		}        //	G
+
+		/// <summary>
+		/// [Get] Whether or not the game time is frozen.
+		/// </summary>
+		public static bool TimeFrozen
+		{
+			get { return timeFrozen; }
+		}
 
 		/// <summary>
 		/// Freezes game time. This will cause the GameTimer to stop and TimeMult to equal zero.
 		/// </summary>
 		public static void Freeze()
 		{
-			timeFreeze++;
+			timeFrozen = true;
 		}
 		/// <summary>
 		/// Unfreezes game time. TimeMult resumes to its normal value and GameTimer starts running again.
 		/// </summary>
 		public static void Resume()
 		{
-			if (timeFreeze == 0) return;
-			timeFreeze--;
+			timeFrozen = false;
 		}
 		internal static void Resume(bool hardReset)
 		{
 			if (hardReset)
-				timeFreeze = 0;
+				timeFrozen = false;
 			else
 				Resume();
 		}
@@ -135,7 +143,7 @@ namespace Duality
 			lastDelta = forceFixedStep ? MsPFMult : MathF.Min((float)(mainTimer - frameBegin), MsPFMult * 2); // Don't skip more than 2 frames / fall below 30 fps
 			frameBegin = mainTimer;
 
-			if (timeFreeze == 0)
+			if (!timeFrozen)
 			{
 				if (DualityApp.ExecContext == DualityApp.ExecutionContext.Game)
 					gameTimer += TimeSpan.FromTicks((long)(lastDelta * timeScale * TimeSpan.TicksPerMillisecond));
