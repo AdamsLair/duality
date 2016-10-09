@@ -100,7 +100,7 @@ namespace Duality
 		}        //	G
 
 		/// <summary>
-		/// [Get] Whether or not the game time is frozen.
+		/// [GET] Whether or not the game time is frozen.
 		/// </summary>
 		public static bool TimeFrozen
 		{
