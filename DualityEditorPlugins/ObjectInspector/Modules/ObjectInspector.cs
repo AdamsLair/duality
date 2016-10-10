@@ -299,5 +299,10 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		{
 			this.propertyGrid.ShowNonPublic = this.buttonDebug.Checked;
 		}
+
+		private void buttonSortByName_CheckedChanged(object sender, EventArgs e)
+		{
+			this.propertyGrid.SortMembersByName = this.buttonSortByName.Checked;
+		}
 	}
 }
