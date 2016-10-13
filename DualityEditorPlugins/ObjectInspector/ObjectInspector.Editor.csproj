@@ -100,7 +100,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="EmbeddedResources\atoz.png" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="EmbeddedResources\arrow_refresh.png" />
     <None Include="EmbeddedResources\wrench.ico" />
