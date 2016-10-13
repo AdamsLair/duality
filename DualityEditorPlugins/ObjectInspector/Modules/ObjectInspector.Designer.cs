@@ -81,7 +81,7 @@
 			this.propertyGrid.ReadOnly = false;
 			this.propertyGrid.ShowNonPublic = false;
 			this.propertyGrid.Size = new System.Drawing.Size(231, 407);
-			this.propertyGrid.SortMembersByName = true;
+			this.propertyGrid.SortEditorsByName = true;
 			this.propertyGrid.SplitterPosition = 92;
 			this.propertyGrid.SplitterRatio = 0.4F;
 			this.propertyGrid.TabIndex = 0;
