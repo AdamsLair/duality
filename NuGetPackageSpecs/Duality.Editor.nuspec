@@ -13,8 +13,8 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>Sandbox Game Termination Behaviour
-#FIX: When terminating the game, the sandbox will now return to the starting scene after stopping sandbox mode.</releaseNotes>
+    <releaseNotes>Updated AdamsLair.WinForms Dependency
+#CHANGE: Updated to AdamsLair.WinForms 1.1.7</releaseNotes>
     <dependencies>
       <dependency id="AdamsLair.Duality" version="2.7.12" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
