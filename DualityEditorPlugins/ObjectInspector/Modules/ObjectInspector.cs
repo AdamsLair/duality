@@ -60,6 +60,8 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 			other.buttonAutoRefresh.Checked = this.buttonAutoRefresh.Checked;
 			other.buttonLock.Checked = this.buttonLock.Checked;
+			other.buttonDebug.Checked = this.buttonDebug.Checked;
+			other.buttonSortByName.Checked = this.buttonSortByName.Checked;
 
 			this.gridExpandState.CopyTo(other.gridExpandState);
 		}
@@ -110,6 +112,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			node.SetElementValue("Locked", this.buttonLock.Checked);
 			node.SetElementValue("TitleText", this.Text);
 			node.SetElementValue("DebugMode", this.buttonDebug.Checked);
+			node.SetElementValue("SortByName", this.buttonSortByName.Checked);
 		}
 		internal void LoadUserData(XElement node)
 		{
@@ -118,6 +121,7 @@ namespace Duality.Editor.Plugins.ObjectInspector
 			if (node.GetElementValue("AutoRefresh", out tryParseBool)) this.buttonAutoRefresh.Checked = tryParseBool;
 			if (node.GetElementValue("Locked", out tryParseBool)) this.buttonLock.Checked = tryParseBool;
 			if (node.GetElementValue("DebugMode", out tryParseBool)) this.buttonDebug.Checked = tryParseBool;
+			if (node.GetElementValue("SortByName", out tryParseBool)) this.buttonSortByName.Checked = tryParseBool;
 			this.Text = node.GetElementValue("TitleText", this.Text);
 		}
 
@@ -270,7 +274,6 @@ namespace Duality.Editor.Plugins.ObjectInspector
 				this.timerSelectSched.Enabled = false;
 			}
 		}
-
 		private void buttonClone_Click(object sender, EventArgs e)
 		{
 			ObjectInspector objView = ObjectInspectorPlugin.Instance.RequestObjView(true);
@@ -298,6 +301,10 @@ namespace Duality.Editor.Plugins.ObjectInspector
 		private void buttonDebug_CheckedChanged(object sender, EventArgs e)
 		{
 			this.propertyGrid.ShowNonPublic = this.buttonDebug.Checked;
+		}
+		private void buttonSortByName_CheckedChanged(object sender, EventArgs e)
+		{
+			this.propertyGrid.SortEditorsByName = this.buttonSortByName.Checked;
 		}
 	}
 }
