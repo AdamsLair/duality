@@ -60,6 +60,8 @@ namespace Duality.Editor.Plugins.ObjectInspector
 
 			other.buttonAutoRefresh.Checked = this.buttonAutoRefresh.Checked;
 			other.buttonLock.Checked = this.buttonLock.Checked;
+			other.buttonDebug.Checked = this.buttonDebug.Checked;
+			other.buttonSortByName.Checked = this.buttonSortByName.Checked;
 
 			this.gridExpandState.CopyTo(other.gridExpandState);
 		}
