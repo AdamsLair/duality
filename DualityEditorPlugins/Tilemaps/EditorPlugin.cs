@@ -41,6 +41,7 @@ namespace Duality.Editor.Plugins.Tilemaps
 		private XElement                 tilePaletteSettings      = null;
 		private XElement                 tilesetEditorSettings    = null;
 		private ITileDrawSource          tileDrawingSource        = EmptyTileDrawingSource;
+		private HashSet<ContentRef<Tileset>> recompileOnChange    = new HashSet<ContentRef<Tileset>>();
 
 		/// <summary>
 		/// An event that is fired when the <see cref="TileDrawingSource"/> is assigned a new value.
@@ -107,6 +108,10 @@ namespace Duality.Editor.Plugins.Tilemaps
 
 			// Register events
 			FileEventManager.ResourceModified += this.FileEventManager_ResourceModified;
+			FileEventManager.ResourceDeleted += this.FileEventManager_ResourceDeleted;
+			FileEventManager.ResourceRenamed += this.FileEventManager_ResourceRenamed;
+			FileEventManager.ResourceCreated += this.FileEventManager_ResourceCreated;
+			FileEventManager.BeginGlobalRename += this.FileEventManager_BeginGlobalRename;
 			DualityEditorApp.ObjectPropertyChanged += this.DualityEditorApp_ObjectPropertyChanged;
 		}
 		protected override void SaveUserData(XElement node)
@@ -231,6 +236,44 @@ namespace Duality.Editor.Plugins.Tilemaps
 			return this.tilePalette;
 		}
 		
+		/// <summary>
+		/// Given the specified <see cref="Pixmap"/> reference, this method enumerates all
+		/// loaded <see cref="Tileset"/> instances that are candidates for a runtime recompile 
+		/// to account for potential changes.
+		/// </summary>
+		/// <param name="pixmapRef"></param>
+		/// <returns></returns>
+		private List<Tileset> GetRecompileTilesets(ContentRef<Pixmap> pixmapRef)
+		{
+			List<Tileset> recompileTilesets = new List<Tileset>();
+
+			foreach (ContentRef<Tileset> tilesetRef in ContentProvider.GetLoadedContent<Tileset>())
+			{
+				Tileset tileset = tilesetRef.Res;
+
+				// Early-out, if the tileset is unavailable, or we didn't compile it yet anyway
+				if (tileset == null) continue;
+				if (!tileset.Compiled) continue;
+
+				// Determine whether this tileset uses the modified pixmap
+				bool usesModifiedPixmap = false;
+				foreach (TilesetRenderInput input in tileset.RenderConfig)
+				{
+					if (input.SourceData == pixmapRef)
+					{
+						usesModifiedPixmap = true;
+						break;
+					}
+				}
+				if (!usesModifiedPixmap) continue;
+
+				// This tileset is a candidate for recompiling due to pixmap changes
+				recompileTilesets.Add(tileset);
+			}
+
+			return recompileTilesets;
+		}
+
 		private void tilesetEditor_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			this.tilesetEditorSettings = new XElement(ElementNameTilesetEditor);
@@ -270,12 +313,47 @@ namespace Duality.Editor.Plugins.Tilemaps
 		{
 			if (e.IsResource) this.OnResourceModified(e.Content);
 		}
+		private void FileEventManager_ResourceDeleted(object sender, ResourceEventArgs e)
+		{
+			if (e.IsResource) this.OnResourceModified(e.Content);
+		}
+		private void FileEventManager_ResourceRenamed(object sender, ResourceRenamedEventArgs e)
+		{
+			if (e.IsResource)
+			{
+				// Only invoke our modified handler for the new content path, not the previous
+				// one, i.e. renaming an unknown Pixmap so that it now matches a Tileset's
+				// source path. The other case, where it matched the source path already, is
+				// dealt with in our BeginGlobalRename handler, since we need to act only
+				// AFTER the global rename has fixed all references.
+				this.OnResourceModified(e.Content);
+			}
+		}
+		private void FileEventManager_ResourceCreated(object sender, ResourceEventArgs e)
+		{
+			if (e.IsResource) this.OnResourceModified(e.Content);
+		}
+		private void FileEventManager_BeginGlobalRename(object sender, BeginGlobalRenameEventArgs e)
+		{
+			// If we're doing a global rename on a Pixmap, schedule affected Tilemaps
+			// for an automatic recompile as soon as we're done with the rename.
+			if (e.IsResource && e.Content.Is<Pixmap>())
+			{
+				List<Tileset> affectedTilesets = new List<Tileset>();
+				affectedTilesets.AddRange(this.GetRecompileTilesets(e.OldContent.As<Pixmap>()));
+				affectedTilesets.AddRange(this.GetRecompileTilesets(e.Content.As<Pixmap>()));
+				foreach (Tileset tileset in affectedTilesets)
+				{
+					this.recompileOnChange.Add(tileset);
+				}
+			}
+		}
 		private void DualityEditorApp_ObjectPropertyChanged(object sender, ObjectPropertyChangedEventArgs e)
 		{
 			if (e.Objects.ResourceCount > 0)
 			{
-				foreach (var r in e.Objects.Resources)
-					this.OnResourceModified(r);
+				foreach (Resource resource in e.Objects.Resources)
+					this.OnResourceModified(resource);
 			}
 		}
 		private void OnResourceModified(ContentRef<Resource> resRef)
@@ -286,31 +364,14 @@ namespace Duality.Editor.Plugins.Tilemaps
 			if (resRef.Is<Pixmap>())
 			{
 				ContentRef<Pixmap> pixRef = resRef.As<Pixmap>();
-				foreach (ContentRef<Tileset> tilesetRef in ContentProvider.GetLoadedContent<Tileset>())
+				List<Tileset> recompileTilesets = this.GetRecompileTilesets(pixRef);
+				foreach (Tileset tileset in recompileTilesets)
 				{
-					Tileset tileset = tilesetRef.Res;
-
-					// Early-out, if the tileset is unavailable, or we didn't compile it yet anyway
-					if (tileset == null) continue;
-					if (!tileset.Compiled) continue;
-
-					// Determine whether this tileset uses the modified pixmap
-					bool usesModifiedPixmap = false;
-					foreach (TilesetRenderInput input in tileset.RenderConfig)
-					{
-						if (input.SourceData == pixRef)
-						{
-							usesModifiedPixmap = true;
-							break;
-						}
-					}
-					if (!usesModifiedPixmap) continue;
-
 					// Recompile the tileset
 					tileset.Compile();
 
 					if (changedObj == null) changedObj = new List<object>();
-					changedObj.Add(tilesetRef.Res);
+					changedObj.Add(tileset);
 				}
 			}
 			// If a Tileset has been modified, we'll need to give local Components a chance to update.
@@ -318,6 +379,12 @@ namespace Duality.Editor.Plugins.Tilemaps
 			{
 				ContentRef<Tileset> tilesetRef = resRef.As<Tileset>();
 				Tileset tileset = tilesetRef.Res;
+				
+				// A Tileset was modified for which we scheduled an auto-apply / recompile
+				if (tileset.HasChangedSinceCompile && this.recompileOnChange.Remove(tilesetRef))
+				{
+					tileset.Compile();
+				}
 
 				// Since we're able to edit tilesets without applying changes yet,
 				// we'll check whether there are new compiled changes. Don't update
