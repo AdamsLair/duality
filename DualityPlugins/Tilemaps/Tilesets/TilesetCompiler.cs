@@ -148,8 +148,9 @@ namespace Duality.Plugins.Tilemaps
 			}
 
 			// Use the directly applicable tile mapping as-is
+			int autoTileSourceTileCount = MathF.Min(autoTileInput.TileInput.Count, sourceTileCount);
 			bool[] isStateAvailable = new bool[stateToTileMap.Length + 1];
-			for (int tileIndex = autoTileInput.TileInput.Count - 1; tileIndex >= 0; tileIndex--)
+			for (int tileIndex = autoTileSourceTileCount - 1; tileIndex >= 0; tileIndex--)
 			{
 				TilesetAutoTileItem tileInput = autoTileInput.TileInput[tileIndex];
 				autoTileInfo[tileIndex] = tileInput;
