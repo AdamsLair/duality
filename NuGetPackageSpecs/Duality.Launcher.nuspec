@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Launcher</id>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Launcher</title>
@@ -13,15 +13,10 @@
     <summary>The default launcher application for Duality games.</summary>
     <description>The default launcher application for Duality games.</description>
     <tags>Duality Launcher</tags>
-    <releaseNotes>Logging Tweaks, Moved Loaded Assembly Enumeration
-#ADD: Added more plugin loader logs to DualityApp, now tracking exactly what Assemblies are available and where. 
-#CHANGE: Assemblies are now logged with their version number. 
-#CHANGE: Moved environment info logs to DefaultPluginLoader, because it's available much sooner and more reliably than the system backend plugin.
-#CHANGE: Replaced the system backend's GetLoadedAssemblies() API with a new LoadedAssemblies property in the IPluginLoader, so all functionality related to Assembly loading and discovery are in one place. 
-#CHANGE: Adjusted dummy implementations for plugin loading and system backend. 
-#CHANGE: Adjusted unit tests.</releaseNotes>
+    <releaseNotes>Removed Non-Anonymous Assembly Load
+#CHANGE: To avoid potential race conditions in resolving dependencies and loading Assemblies, loading them in non-anonymous mode is no longer supported. All assemblies are now loaded anonymously.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.7.0" />
+      <dependency id="AdamsLair.Duality" version="2.8.0" />
     </dependencies>
   </metadata>
   <files>

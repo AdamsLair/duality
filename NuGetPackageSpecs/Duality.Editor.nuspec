@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Editor</id>
-    <version>2.6.10</version>
+    <version>2.7.0</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Duality Editor</title>
@@ -13,10 +13,10 @@
     <summary>The Duality editor.</summary>
     <description>The Duality editor.</description>
     <tags>Duality Editor</tags>
-    <releaseNotes>Updated AdamsLair.WinForms Dependency
-#CHANGE: Updated to AdamsLair.WinForms 1.1.7</releaseNotes>
+    <releaseNotes>Removed Non-Anonymous Assembly Load
+#CHANGE: To avoid potential race conditions in resolving dependencies and loading Assemblies, loading them in non-anonymous mode is no longer supported. All assemblies are now loaded anonymously.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.7.12" />
+      <dependency id="AdamsLair.Duality" version="2.8.0" />
       <dependency id="AdamsLair.DockPanelSuite" version="2.8.1" />
       <dependency id="AdamsLair.TreeViewAdv" version="1.7.6" />
       <dependency id="AdamsLair.WinForms" version="1.1.7" />

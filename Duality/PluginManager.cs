@@ -279,7 +279,7 @@ namespace Duality
 			Assembly pluginAssembly = null;
 			try
 			{
-				pluginAssembly = this.pluginLoader.LoadAssembly(pluginFilePath, true);
+				pluginAssembly = this.pluginLoader.LoadAssembly(pluginFilePath);
 			}
 			catch (Exception e)
 			{
@@ -354,7 +354,7 @@ namespace Duality
 			Assembly pluginAssembly = null;
 			try
 			{
-				pluginAssembly = this.pluginLoader.LoadAssembly(pluginFilePath, true);
+				pluginAssembly = this.pluginLoader.LoadAssembly(pluginFilePath);
 			}
 			catch (Exception e)
 			{

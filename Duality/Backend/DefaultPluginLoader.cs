@@ -59,29 +59,25 @@ namespace Duality.Backend
 			get { return AppDomain.CurrentDomain.GetAssemblies(); }
 		}
 
-		public Assembly LoadAssembly(string assemblyPath, bool anonymous)
+		public Assembly LoadAssembly(string assemblyPath)
 		{
-			// The regular assembly load can just lock the file and be done with it.
-			if (!anonymous)
-			{
-				return Assembly.LoadFrom(assemblyPath);
-			}
-			// Loading an Assembly anonymously requires not locking the path and hiding its identity.
-			else
-			{
-				// Guess the path of the symbol file
-				string pluginDebugInfoPath = Path.Combine(
-					Path.GetDirectoryName(assemblyPath), 
-					Path.GetFileNameWithoutExtension(assemblyPath)) + ".pdb";
-				if (!File.Exists(pluginDebugInfoPath))
-					pluginDebugInfoPath = null;
+			// Due to complex dependency resolve situations intertwined with our hot-reloadable
+			// plugin system, we should manually resolve all dependencies. This is only possible
+			// when obscuring where a certain Assembly has been loaded from. We need to load them
+			// all as an anonymous data block to circumvent system dependency resolve.
 
-				// Load the assembly - and its symbols, if provided
-				if (pluginDebugInfoPath != null)
-					return Assembly.Load(File.ReadAllBytes(assemblyPath), File.ReadAllBytes(pluginDebugInfoPath));
-				else
-					return Assembly.Load(File.ReadAllBytes(assemblyPath));
-			}
+			// Guess the path of the symbol file
+			string pluginDebugInfoPath = Path.Combine(
+				Path.GetDirectoryName(assemblyPath), 
+				Path.GetFileNameWithoutExtension(assemblyPath)) + ".pdb";
+			if (!File.Exists(pluginDebugInfoPath))
+				pluginDebugInfoPath = null;
+
+			// Load the assembly - and its symbols, if provided
+			if (pluginDebugInfoPath != null)
+				return Assembly.Load(File.ReadAllBytes(assemblyPath), File.ReadAllBytes(pluginDebugInfoPath));
+			else
+				return Assembly.Load(File.ReadAllBytes(assemblyPath));
 		}
 		public int GetAssemblyHash(string assemblyPath)
 		{

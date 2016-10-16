@@ -21,6 +21,7 @@ namespace Duality
 	public class CorePluginManager : PluginManager<CorePlugin>
 	{
 		private Assembly[] coreAssemblies = new Assembly[] { typeof(DualityApp).GetTypeInfo().Assembly };
+		private Dictionary<string,Assembly> auxilRegistry = new Dictionary<string,Assembly>();
 
 		/// <summary>
 		/// <see cref="CorePluginManager"/> should usually not be instantiated by users due to 
@@ -80,7 +81,7 @@ namespace Duality
 					// unmanaged or incompatible Assemblies in the process.
 					try
 					{
-						this.PluginLoader.LoadAssembly(dllPath, false);
+						this.LoadAuxilliaryLibrary(dllPath);
 					}
 					catch (BadImageFormatException) { }
 				}
@@ -146,6 +147,28 @@ namespace Duality
 			plugin.InitPlugin();
 		}
 
+		private Assembly LoadAuxilliaryLibrary(string dllPath)
+		{
+			// Check for already loaded assemblies first
+			string asmName = PathOp.GetFileNameWithoutExtension(dllPath);
+			Assembly auxilAssembly;
+			if (this.auxilRegistry.TryGetValue(asmName, out auxilAssembly))
+				return auxilAssembly;
+
+			// Load the assembly from the specified path
+			auxilAssembly = this.PluginLoader.LoadAssembly(dllPath);
+
+			// If we succeeded, register the loaded assembly for re-use
+			if (auxilAssembly != null)
+			{
+				this.auxilRegistry.Add(
+					auxilAssembly.GetShortAssemblyName(), 
+					auxilAssembly);
+			}
+
+			return auxilAssembly;
+		}
+
 		private void pluginLoader_AssemblyResolve(object sender, AssemblyResolveEventArgs args)
 		{
 			// Early-out, if the Assembly has already been resolved
@@ -181,7 +204,7 @@ namespace Duality
 				string libName = PathOp.GetFileNameWithoutExtension(libFile);
 				if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 				{
-					Assembly assembly = this.PluginLoader.LoadAssembly(libFile, false);
+					Assembly assembly = this.LoadAuxilliaryLibrary(libFile);
 					if (assembly != null)
 					{
 						args.Resolve(assembly);
