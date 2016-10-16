@@ -2,7 +2,7 @@
 <package>
   <metadata>
     <id>AdamsLair.Duality.Plugins.Tilemaps</id>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <authors>Fedja Adam</authors>
     <owners>Fedja Adam</owners>
     <title>Tilemaps (Core)</title>
@@ -13,10 +13,10 @@
     <summary>Defines core Resources and Components for using tilemaps with Duality.</summary>
     <description>Defines core Resources and Components for using tilemaps with Duality.</description>
     <tags>Duality Core Plugin Tilemaps</tags>
-    <releaseNotes>Tileset Empty Tile Bugfixes
-#FIX: Fixed a bug where empty tiles were no longer detected when specifying at least one AutoTile for a Tileset.</releaseNotes>
+    <releaseNotes>AutoTile Compiler Bugfixes
+#FIX: The TilesetCompiler no longer causes an exception when an AutoTile is attempted to generate using tile indices that are exceeding source tile data.</releaseNotes>
     <dependencies>
-      <dependency id="AdamsLair.Duality" version="2.7.8" />
+      <dependency id="AdamsLair.Duality" version="2.8.0" />
     </dependencies>
   </metadata>
   <files>
