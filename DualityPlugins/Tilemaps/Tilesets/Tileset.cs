@@ -191,9 +191,10 @@ namespace Duality.Plugins.Tilemaps
 			TilesetRenderInput input = this.renderConfig[renderConfigIndex];
 
 			Point2 advance = input.SourceTileAdvance;
+			Pixmap sourceData = input.SourceData.Res ?? Pixmap.Checkerboard.Res;
 			Point2 tileCount = input.GetSourceTileCount(
-				input.SourceData.Res.Width, 
-				input.SourceData.Res.Height);
+				sourceData.Width, 
+				sourceData.Height);
 			Point2 tileCoords = new Point2(
 				tileIndex % tileCount.X,
 				tileIndex / tileCount.X);
