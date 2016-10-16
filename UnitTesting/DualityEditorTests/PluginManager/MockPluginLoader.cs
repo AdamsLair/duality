@@ -89,7 +89,7 @@ namespace Duality.Editor.Tests.PluginManager
 			this.AddPlugin(newAssembly);
 		}
 
-		public Assembly LoadAssembly(string assemblyPath, bool anonymous)
+		public Assembly LoadAssembly(string assemblyPath)
 		{
 			string assemblyName = PathOp.GetFileNameWithoutExtension(assemblyPath);
 			bool wasLoaded = this.loadedAssemblies.Contains(assemblyPath);

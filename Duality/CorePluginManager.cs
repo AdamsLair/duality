@@ -156,7 +156,7 @@ namespace Duality
 				return auxilAssembly;
 
 			// Load the assembly from the specified path
-			auxilAssembly = this.PluginLoader.LoadAssembly(dllPath, true);
+			auxilAssembly = this.PluginLoader.LoadAssembly(dllPath);
 
 			// If we succeeded, register the loaded assembly for re-use
 			if (auxilAssembly != null)

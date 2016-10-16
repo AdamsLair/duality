@@ -29,7 +29,7 @@ namespace Duality.Backend.Dummy
 		{
 			get { return Enumerable.Empty<Assembly>(); }
 		}
-		Assembly IPluginLoader.LoadAssembly(string assemblyPath, bool anonymous)
+		Assembly IPluginLoader.LoadAssembly(string assemblyPath)
 		{
 			return null;
 		}

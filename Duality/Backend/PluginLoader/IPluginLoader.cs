@@ -41,14 +41,8 @@ namespace Duality.Backend
 		/// usage, that path should be one of the <see cref="AvailableAssemblyPaths"/>.
 		/// </summary>
 		/// <param name="assemblyPath">The path from which the Assembly will be loaded.</param>
-		/// <param name="anonymous">
-		/// When true, the Assembly is requested to be loaded without being tied to its
-		/// identity path or location. This will avoid both locking the Assembly file and
-		/// caching the Assembly internally, thus allowing to reload the Assembly plugin
-		/// at runtime.
-		/// </param>
 		/// <returns></returns>
-		Assembly LoadAssembly(string assemblyPath, bool anonymous);
+		Assembly LoadAssembly(string assemblyPath);
 		/// <summary>
 		/// Determines the hash code of the specified Assembly. This may be used for
 		/// verification or comparison purposes, such as determining whether two Assemblies
