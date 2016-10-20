@@ -20,9 +20,17 @@ namespace Duality.Editor.Forms
 		}
 		protected MainForm InitEditor()
 		{
-			MainForm main = new MainForm();
-			DualityEditorApp.Init(main, this.recover);
-			return main;
+			try
+			{
+				MainForm main = new MainForm();
+				DualityEditorApp.Init(main, this.recover);
+				return main;
+			}
+			catch (Exception e)
+			{
+				Log.Editor.Write("An error occurred while initializing the editor: {0}", Log.Exception(e));
+				return null;
+			}
 		}
 
 		private void mainFormLoader_DoWork(object sender, DoWorkEventArgs e)
@@ -39,7 +47,17 @@ namespace Duality.Editor.Forms
 			this.Hide();
 			try
 			{
-				(e.Result as MainForm).Show();
+				MainForm mainForm = e.Result as MainForm;
+				if (mainForm != null)
+				{
+					mainForm.Show();
+				}
+				else
+				{
+					// If we don't get a main form back, something went wrong.
+					// Exit, so we don't end up as a hidden process without UI.
+					Application.Exit();
+				}
 			}
 			finally
 			{
