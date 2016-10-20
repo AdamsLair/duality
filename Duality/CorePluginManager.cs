@@ -77,13 +77,9 @@ namespace Duality
 
 				foreach (string dllPath in auxilLibs)
 				{
-					// Load the Assembly in a try-catch block, as we might accidentally stumble upon
+					// Load the Assembly in try-only mode, as we might accidentally stumble upon
 					// unmanaged or incompatible Assemblies in the process.
-					try
-					{
-						this.LoadAuxilliaryLibrary(dllPath);
-					}
-					catch (BadImageFormatException) { }
+					this.LoadAuxilliaryLibrary(dllPath, true);
 				}
 
 				this.PluginLog.PopIndent();
@@ -147,7 +143,19 @@ namespace Duality
 			plugin.InitPlugin();
 		}
 
-		private Assembly LoadAuxilliaryLibrary(string dllPath)
+		/// <summary>
+		/// Loads a managed non-plugin <see cref="Assembly"/> and returns it. Each
+		/// <see cref="Assembly"/> is only loaded once, all subsequent calls will return
+		/// the cached instance.
+		/// </summary>
+		/// <param name="dllPath">The path to load the <see cref="Assembly"/> file from.</param>
+		/// <param name="tryAndFailSilently">
+		/// If true, any exceptions caused by attempting to load the library itself
+		/// (such as <see cref="BadImageFormatException"/>) are catched and ignored
+		/// without reporting an error.
+		/// </param>
+		/// <returns></returns>
+		private Assembly LoadAuxilliaryLibrary(string dllPath, bool tryAndFailSilently)
 		{
 			// Check for already loaded assemblies first
 			string asmName = PathOp.GetFileNameWithoutExtension(dllPath);
@@ -156,7 +164,15 @@ namespace Duality
 				return auxilAssembly;
 
 			// Load the assembly from the specified path
-			auxilAssembly = this.PluginLoader.LoadAssembly(dllPath);
+			try
+			{
+				auxilAssembly = this.PluginLoader.LoadAssembly(dllPath);
+			}
+			catch (Exception)
+			{
+				if (!tryAndFailSilently)
+					throw;
+			}
 
 			// If we succeeded, register the loaded assembly for re-use
 			if (auxilAssembly != null)
@@ -204,7 +220,7 @@ namespace Duality
 				string libName = PathOp.GetFileNameWithoutExtension(libFile);
 				if (libName.Equals(args.AssemblyName, StringComparison.OrdinalIgnoreCase))
 				{
-					Assembly assembly = this.LoadAuxilliaryLibrary(libFile);
+					Assembly assembly = this.LoadAuxilliaryLibrary(libFile, false);
 					if (assembly != null)
 					{
 						args.Resolve(assembly);
