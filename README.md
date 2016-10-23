@@ -1,15 +1,13 @@
 Duality - A 2D GameDev Framework
 =======
 
-Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the [project page](http://duality.adamslair.net).
+Duality is a plugin based 2D game development framework based on C# and OpenTK. To get a quick overview, please visit the [project page](http://duality.adamslair.net). For documentation, take a look at the [Wiki](https://github.com/AdamsLair/duality/wiki/).
 
-Besides the github project overview and documentation, there is also a [developer blog](http://blog.adamslair.net). If you want to contribute to the project, be it by active development, documentation or testing, you should pay a visit to the [community forums](http://forum.adamslair.net). The same applies to any questions or suggestions - feedback is always welcome! However, bugs and feature requests that do not require further discussion should be filed in the issue tracking system, directly here on github.
+If you have questions or just want to say Hi, feel free to join us in the [forum](http://forum.adamslair.net) or our [chat](http://chat.adamslair.net). Also, feedback is always welcome! Bugs and feature requests that do not require further discussion, however, should be filed in the issue tracking system, directly here on github.
 
-Latest binary release: http://dualitybin.adamslair.net/
+### Latest Binary Release
 
-Fork / Contribution Guide: [How to Contribute](https://github.com/AdamsLair/duality/wiki/How-to-Contribute).
-
-Donate: [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC) or [on itch.io](http://adamslair.itch.io/duality)
+You can find the latest binary release [here](http://dualitybin.adamslair.net/). If you already have a Duality project, you can update your Duality version or any of its plugins in the [Package Manager](https://github.com/AdamsLair/duality/wiki/Package-Management).
 
 ### Build status: 
 | [Branch](https://github.com/AdamsLair/duality/wiki/Branch-Descriptions)  | Status |
@@ -17,3 +15,9 @@ Donate: [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_
 | master  | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/master?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/master) |
 | release | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/release?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/release) |
 | 1.x     | [![Build status](https://ci.appveyor.com/api/projects/status/eyxpet6jky1cqy6i/branch/1.x?svg=true)](https://ci.appveyor.com/project/AdamsLairBot/duality/branch/1.x)    |
+
+### Contributing
+
+We're actively looking for contributors. Are you experienced with Duality and want to join the development team? Look at our [contribution guide](https://github.com/AdamsLair/duality/wiki/How-to-Contribute).
+
+If you just want to say "Thank You", feel free to donate [via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PL2U4Z8XNQENC) or [on itch.io](http://adamslair.itch.io/duality).
