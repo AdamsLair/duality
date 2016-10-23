@@ -95,8 +95,9 @@ namespace Duality.Editor.Tests.PluginManager
 			bool wasLoaded = this.loadedAssemblies.Contains(assemblyPath);
 			this.loadedAssemblies.Add(assemblyPath);
 
+			// Don't create a specific exception, so we force the system to be prepared for any.
 			if (this.incompatibleDlls.Contains(assemblyPath))
-				throw new BadImageFormatException("This path has been mocked to be an incompatible dll file.");
+				throw new Exception("This path has been mocked to be an incompatible dll file.");
 
 			Assembly assembly = 
 				this.LookupAssembly(assemblyPath) ?? 
