@@ -183,13 +183,17 @@ namespace Duality.Editor.Plugins.LogView
 			get { return this.displayFilter; }
 			set 
 			{
-				ViewEntry lastEntry = this.GetEntryAt(this.ScrollOffset);
-				int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
+				if (this.displayFilter != value)
+				{
+					ViewEntry lastEntry = this.GetEntryAt(this.ScrollOffset);
+					int entryOff = this.ScrollOffset - this.GetEntryOffset(lastEntry);
 
-				this.displayFilter = value;
-				this.OnContentChanged();
+					this.displayFilter = value;
+					this.UpdateDisplayedEntries();
+					this.OnContentChanged();
 
-				this.ScrollToEntry(lastEntry, entryOff);
+					this.ScrollToEntry(lastEntry, entryOff);
+				}
 			}
 		}
 		public Color BaseColor
