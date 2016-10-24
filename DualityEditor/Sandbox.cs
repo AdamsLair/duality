@@ -91,32 +91,21 @@ namespace Duality.Editor
 
 				// Save the current scene
 				DualityEditorApp.SaveCurrentScene();
-				startScene = Scene.Current;
+				ContentRef<Scene> activeScene = Scene.Current;
+				startScene = activeScene;
+
+				// Leave the current Scene
+				Scene.SwitchTo(null, true);
 				
 				// Force later Scene reload by disposing it
-				string curPath = null;
-				if (!string.IsNullOrEmpty(Scene.Current.Path))
-				{
-					curPath = Scene.CurrentPath;
-					Scene.Current.Dispose();
-				}
+				if (!activeScene.IsRuntimeResource)
+					activeScene.Res.Dispose();
 
 				state = SandboxState.Playing;
 				DualityApp.ExecContext = DualityApp.ExecutionContext.Game;
 
-				// (Re)Load Scene.
-				if (curPath != null)
-				{
-					Scene.SwitchTo(ContentProvider.RequestContent<Scene>(curPath), true);
-				}
-				// If it's a runtime-only / non-persistent scene, leave and re-enter it to allow objects to
-				// re-initialize in the new execution context.
-				else
-				{
-					Scene runtimeScene = Scene.Current;
-					Scene.SwitchTo(null, true);
-					Scene.SwitchTo(runtimeScene, true);
-				}
+				// (Re)Load Scene - now in playing context
+				Scene.SwitchTo(activeScene);
 			}
 
 			OnSandboxStateChanged();
@@ -140,31 +129,25 @@ namespace Duality.Editor
 			if (state == SandboxState.Inactive) return;
 			stateChange = true;
 
+			ContentRef<Scene> activeScene = Scene.Current;
+
+			// Leave the current Scene
+			Scene.SwitchTo(null, true);
+
 			// Force later Scene reload by disposing it
-			if (!String.IsNullOrEmpty(Scene.Current.Path))
-				Scene.Current.Dispose();
+			if (!activeScene.IsRuntimeResource)
+				activeScene.Res.Dispose();
 
 			// Stopp all audio that might not have been taken care of manually by the user
 			DualityApp.Sound.StopAll();
 
-			Time.TimeScale = 1.0f;	// Reset time scale
-			Time.Resume(true);		// Reset any previously (user-)generated time freeze events
+			Time.TimeScale = 1.0f; // Reset time scale
+			Time.Resume(true);     // Reset any previously (user-)generated time freeze events
 			state = SandboxState.Inactive;
 			DualityApp.ExecContext = DualityApp.ExecutionContext.Editor;
-			
-			// (Re)Load Scene
-			if (startScene.Path != null)
-			{
-				Scene.SwitchTo(startScene);
-			}
-			// If it's a runtime-only / non-persistent scene, leave and re-enter it to allow objects to
-			// re-initialize in the new execution context.
-			else
-			{
-				Scene runtimeScene = Scene.Current;
-				Scene.SwitchTo(null, true);
-				Scene.SwitchTo(runtimeScene, true);
-			}
+
+			// (Re)Load Scene - now in editor context
+			Scene.SwitchTo(startScene);
 
 			OnLeaveSandbox();
 			OnSandboxStateChanged();

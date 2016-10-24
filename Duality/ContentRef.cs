@@ -138,7 +138,7 @@ namespace Duality
 		/// </summary>
 		public bool IsRuntimeResource
 		{
-			get { return this.IsLoaded && string.IsNullOrEmpty(this.contentPath); }
+			get { return this.contentInstance != null && string.IsNullOrEmpty(this.contentPath); }
 		}
 		/// <summary>
 		/// [GET] The name of the referenced Resource.
