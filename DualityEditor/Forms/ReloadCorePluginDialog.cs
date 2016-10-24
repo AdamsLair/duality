@@ -475,7 +475,13 @@ namespace Duality.Editor.Forms
 		private static void RestoreTemporaryData(WorkerInterface workInterface, Stream strScene, Stream strData)
 		{
 			StreamReader strDataReader = new StreamReader(strData);
+
+			// Read back current scene path, account for Write/ReadLine transforming
+			// null values into an empty string.
 			string scenePath = strDataReader.ReadLine();
+			if (string.IsNullOrEmpty(scenePath))
+				scenePath = null;
+
 			workInterface.MainForm.Invoke((Action)(() => workInterface.TempScene = Resource.Load<Scene>(strScene, scenePath)));
 			if (!workInterface.TempScene.IsRuntimeResource)
 			{
