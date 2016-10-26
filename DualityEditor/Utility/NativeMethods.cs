@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace Duality.Editor
 {
@@ -30,61 +31,61 @@ namespace Duality.Editor
 			public Point p;
 		}
 		
-        /// <summary>
-        /// Possible flags for the SHFileOperation method.
-        /// </summary>
-        [Flags]
-        public enum FileOperationFlags: ushort
-        {
-            /// <summary>
-            /// Do not show a dialog during the process
-            /// </summary>
-            FOF_SILENT =                0x0004,
-            /// <summary>
-            /// Do not ask the user to confirm selection
-            /// </summary>
-            FOF_NOCONFIRMATION =        0x0010,
-            /// <summary>
-            /// Delete the file to the recycle bin.  (Required flag to send a file to the bin
-            /// </summary>
-            FOF_ALLOWUNDO =             0x0040,
-            /// <summary>
-            /// Do not show the names of the files or folders that are being recycled.
-            /// </summary>
-            FOF_SIMPLEPROGRESS =        0x0100,
-            /// <summary>
-            /// Surpress errors, if any occur during the process.
-            /// </summary>
-            FOF_NOERRORUI =             0x0400,
-            /// <summary>
-            /// Warn if files are too big to fit in the recycle bin and will need
-            /// to be deleted completely.
-            /// </summary>
-            FOF_WANTNUKEWARNING =       0x4000,
-        }
+		/// <summary>
+		/// Possible flags for the SHFileOperation method.
+		/// </summary>
+		[Flags]
+		public enum FileOperationFlags: ushort
+		{
+			/// <summary>
+			/// Do not show a dialog during the process
+			/// </summary>
+			FOF_SILENT =                0x0004,
+			/// <summary>
+			/// Do not ask the user to confirm selection
+			/// </summary>
+			FOF_NOCONFIRMATION =        0x0010,
+			/// <summary>
+			/// Delete the file to the recycle bin.  (Required flag to send a file to the bin
+			/// </summary>
+			FOF_ALLOWUNDO =             0x0040,
+			/// <summary>
+			/// Do not show the names of the files or folders that are being recycled.
+			/// </summary>
+			FOF_SIMPLEPROGRESS =        0x0100,
+			/// <summary>
+			/// Surpress errors, if any occur during the process.
+			/// </summary>
+			FOF_NOERRORUI =             0x0400,
+			/// <summary>
+			/// Warn if files are too big to fit in the recycle bin and will need
+			/// to be deleted completely.
+			/// </summary>
+			FOF_WANTNUKEWARNING =       0x4000,
+		}
 
-        /// <summary>
-        /// File Operation Function Type for SHFileOperation
-        /// </summary>
-        public enum FileOperationType: uint
-        {
-            /// <summary>
-            /// Move the objects
-            /// </summary>
-            FO_MOVE =                   0x0001,
-            /// <summary>
-            /// Copy the objects
-            /// </summary>
-            FO_COPY =                   0x0002,
-            /// <summary>
-            /// Delete (or recycle) the objects
-            /// </summary>
-            FO_DELETE =                 0x0003,
-            /// <summary>
-            /// Rename the object(s)
-            /// </summary>
-            FO_RENAME =                 0x0004,
-        }
+		/// <summary>
+		/// File Operation Function Type for SHFileOperation
+		/// </summary>
+		public enum FileOperationType: uint
+		{
+			/// <summary>
+			/// Move the objects
+			/// </summary>
+			FO_MOVE =                   0x0001,
+			/// <summary>
+			/// Copy the objects
+			/// </summary>
+			FO_COPY =                   0x0002,
+			/// <summary>
+			/// Delete (or recycle) the objects
+			/// </summary>
+			FO_DELETE =                 0x0003,
+			/// <summary>
+			/// Rename the object(s)
+			/// </summary>
+			FO_RENAME =                 0x0004,
+		}
 
 		public enum KeyMapType : uint 
 		{
@@ -96,44 +97,61 @@ namespace Duality.Editor
 		}
 
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
-        public struct SHFILEOPSTRUCT_x86
-        {
-            public IntPtr hwnd;
-            [MarshalAs(UnmanagedType.U4)]
-            public FileOperationType wFunc;
-            public string pFrom;
-            public string pTo;
-            public FileOperationFlags fFlags;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fAnyOperationsAborted;
-            public IntPtr hNameMappings;
-            public string lpszProgressTitle;
-        }
+		public struct SHFILEOPSTRUCT_x86
+		{
+			public IntPtr hwnd;
+			[MarshalAs(UnmanagedType.U4)]
+			public FileOperationType wFunc;
+			public string pFrom;
+			public string pTo;
+			public FileOperationFlags fFlags;
+			[MarshalAs(UnmanagedType.Bool)]
+			public bool fAnyOperationsAborted;
+			public IntPtr hNameMappings;
+			public string lpszProgressTitle;
+		}
 
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-        public struct SHFILEOPSTRUCT_x64
-        {
-            public IntPtr hwnd;
-            [MarshalAs(UnmanagedType.U4)]
-            public FileOperationType wFunc;
-            public string pFrom;
-            public string pTo;
-            public FileOperationFlags fFlags;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool fAnyOperationsAborted;
-            public IntPtr hNameMappings;
-            public string lpszProgressTitle;
-        }
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		public struct SHFILEOPSTRUCT_x64
+		{
+			public IntPtr hwnd;
+			[MarshalAs(UnmanagedType.U4)]
+			public FileOperationType wFunc;
+			public string pFrom;
+			public string pTo;
+			public FileOperationFlags fFlags;
+			[MarshalAs(UnmanagedType.Bool)]
+			public bool fAnyOperationsAborted;
+			public IntPtr hNameMappings;
+			public string lpszProgressTitle;
+		}
 
-        public static bool IsWOW64Process()
-        {
-            return IntPtr.Size == 8;
-        }
+		[StructLayout(LayoutKind.Sequential)]
+		public struct Point
+		{
+			public int x;
+			public int y;
+		}
 
-        [DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint = "SHFileOperation")]
-        public static extern int SHFileOperation_x86(ref SHFILEOPSTRUCT_x86 FileOp);
-        [DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint="SHFileOperation")]
-        public static extern int SHFileOperation_x64(ref SHFILEOPSTRUCT_x64 FileOp);
+		[StructLayout(LayoutKind.Sequential)]
+		public struct LowLevelHookStruct
+		{
+			public Point pt;
+			public uint mouseData;
+			public uint flags;
+			public uint time;
+			public IntPtr dwExtraInfo;
+		}
+
+		public static bool IsWOW64Process()
+		{
+			return IntPtr.Size == 8;
+		}
+
+		[DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint = "SHFileOperation")]
+		public static extern int SHFileOperation_x86(ref SHFILEOPSTRUCT_x86 FileOp);
+		[DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint="SHFileOperation")]
+		public static extern int SHFileOperation_x64(ref SHFILEOPSTRUCT_x64 FileOp);
 
 		[System.Security.SuppressUnmanagedCodeSecurity] // We won't use this maliciously
 		[DllImport("User32.dll", CharSet=CharSet.Auto)]
@@ -157,5 +175,49 @@ namespace Duality.Editor
 
 		[DllImport("user32.dll")]
 		public static extern uint MapVirtualKey(uint code, KeyMapType mapType);
+
+		// Copy from screen
+		[DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
+		public static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
+
+		#region Global Hooks
+		public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+		// https://msdn.microsoft.com/en-us/library/windows/desktop/ms644988(v=vs.85).aspx see Return value
+		public static IntPtr SUPPRESS_OTHER_HOOKS = new IntPtr(1);
+		private const int WH_MOUSE_LL = 14;
+
+		public enum MouseMessages
+		{
+			WM_LBUTTONDOWN = 0x0201,
+			WM_LBUTTONUP = 0x0202,
+			WM_MOUSEMOVE = 0x0200,
+			WM_MOUSEWHEEL = 0x020A,
+			WM_RBUTTONDOWN = 0x0204,
+			WM_RBUTTONUP = 0x0205
+		}
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool UnhookWindowsHookEx(IntPtr hhk);
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelMouseProc lpfn, IntPtr hMod, uint dwThreadId);
+		public static IntPtr SetWindowsMouseHookEx(LowLevelMouseProc proc)
+		{
+			using (Process curProcess = Process.GetCurrentProcess())
+			{
+				using (ProcessModule curModule = curProcess.MainModule)
+				{
+					return SetWindowsHookEx(WH_MOUSE_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+				}
+			}
+		}
+		#endregion
+
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern IntPtr GetModuleHandle(string lpModuleName);
 	}
 }
