@@ -23,9 +23,15 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected	ColorPickerDialog	dialog	= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
 		protected	IColorData	value			= null;
 		protected	Rectangle	rectPanel		= Rectangle.Empty;
+		protected	Rectangle	rectCDiagButton	= Rectangle.Empty;
+		protected	Rectangle	rectCPickButton	= Rectangle.Empty;
 		protected	bool		buttonCDiagHovered	= false;
 		protected	bool		buttonCDiagPressed	= false;
+		protected	bool		buttonCPickHovered	= false;
+		protected	bool		buttonCPickPressed	= false;
+		protected	bool		panelHovered		= false;
 		private		Point		panelDragBegin	= Point.Empty;
+		private		IColorData	lastValue		= null;
 
 		private		NativeMethods.LowLevelMouseProc	mouseHook   = null;
 		private     IntPtr							hookPtr     = IntPtr.Zero;
