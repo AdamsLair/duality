@@ -160,6 +160,7 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="EmbeddedResources\ObjectVisibility.png" />
+    <Content Include="EmbeddedResources\ObjectVisibilityFiltered.png" />
     <Content Include="EmbeddedResources\SnapToGrid.png" />
     <None Include="EmbeddedResources\shape_perspective.png" />
     <None Include="EmbeddedResources\curArrowCreateCircle.png" />

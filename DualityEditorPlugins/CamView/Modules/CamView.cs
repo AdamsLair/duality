@@ -781,12 +781,12 @@ namespace Duality.Editor.Plugins.CamView
 		public void SetObjectVisibility(IEnumerable<Type> visibleObjectTypes)
 		{
 			this.objectVisibility.SetMatchingTypes(visibleObjectTypes);
-			this.RenderableControl.Invalidate();
+			this.OnObjectVisibilityFilterChanged();
 		}
 		public void SetObjectVisibility(Type objectType, bool visible)
 		{
 			if (this.objectVisibility.SetTypeMatches(objectType, visible))
-				this.RenderableControl.Invalidate();
+				this.OnObjectVisibilityFilterChanged();
 		}
 
 		public void MakeDualityTarget()
@@ -978,6 +978,13 @@ namespace Duality.Editor.Plugins.CamView
 		}
 
 
+		private void OnObjectVisibilityFilterChanged()
+		{
+			this.objectVisibilitySelector.Image = this.objectVisibility.IsEmpty ?
+				Properties.CamViewResCache.ObjectVisibility :
+				Properties.CamViewResCache.ObjectVisibilityFiltered;
+			this.RenderableControl.Invalidate();
+		}
 		private void OnPerspectiveChanged()
 		{
 			if (this.camObj != this.nativeCamObj)

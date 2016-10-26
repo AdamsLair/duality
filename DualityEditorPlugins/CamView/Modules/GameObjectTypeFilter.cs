@@ -25,6 +25,13 @@ namespace Duality.Editor.Plugins.CamView
 				return this.typeCache;
 			}
 		}
+		/// <summary>
+		/// [GET] Returns whether this filter is currently empty.
+		/// </summary>
+		public bool IsEmpty
+		{
+			get { return this.typeIds.Count == 0; }
+		}
 
 		/// <summary>
 		/// Returns true if the specified <see cref="GameObject"/> has any of the matching
