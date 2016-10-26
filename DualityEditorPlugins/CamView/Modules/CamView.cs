@@ -172,8 +172,7 @@ namespace Duality.Editor.Plugins.CamView
 		private	CamViewState			activeState					= null;
 		private	List<CamViewLayer>		activeLayers				= null;
 		private	HashSet<Type>			lockedLayers				= new HashSet<Type>();
-		private	HashSet<string>			objectVisibility			= new HashSet<string>();
-		private	HashSet<Type>			objectVisibilityCache		= new HashSet<Type>();
+		private	GameObjectTypeFilter	objectVisibility			= new GameObjectTypeFilter();
 		private MenuModel				objectVisibilityMenuModel	= new MenuModel();
 		private MenuStripMenuView		objectVisibilityMenuView	= null;
 		private	EditingGuide			editingUserGuides			= new EditingGuide();
@@ -279,11 +278,7 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		public IEnumerable<Type> ObjectVisibility
 		{
-			get 
-			{
-				this.UpdateObjectVisibilityCache();
-				return this.objectVisibilityCache;
-			}
+			get { return this.objectVisibility.MatchingTypes; }
 		}
 		public EditingGuide EditingUserGuides
 		{
@@ -564,14 +559,13 @@ namespace Duality.Editor.Plugins.CamView
 				.Select(type => new
 				{
 					Type = type, 
-					TypeId = type.GetTypeId(),
 					Count = Scene.Current.FindComponents(type).Count()
 				})
 				.ToArray();
 
 			typesWithCount =
 				typesWithCount
-				.Where(item => item.Count > 0 || this.objectVisibility.Contains(item.TypeId))
+				.Where(item => item.Count > 0 || this.objectVisibility.Matches(item.Type))
 				.OrderByDescending(item => item.Count)
 				.ToArray();
 			
@@ -604,7 +598,7 @@ namespace Duality.Editor.Plugins.CamView
 				typeItem.SortValue = sortVal;
 				typeItem.Tag = entry;
 				typeItem.Checkable = true;
-				typeItem.Checked = this.objectVisibility.Contains(typeInfo.TypeId);
+				typeItem.Checked = this.objectVisibility.Matches(typeInfo.Type);
 				typeItem.ActionHandler = this.objectVisibilitySelector_ItemPerformAction;
 				
 				index++;
@@ -786,45 +780,13 @@ namespace Duality.Editor.Plugins.CamView
 
 		public void SetObjectVisibility(IEnumerable<Type> visibleObjectTypes)
 		{
-			this.objectVisibility.Clear();
-			foreach (Type type in visibleObjectTypes)
-			{
-				this.objectVisibility.Add(type.GetTypeId());
-			}
-			this.objectVisibilityCache.Clear();
+			this.objectVisibility.SetMatchingTypes(visibleObjectTypes);
 			this.RenderableControl.Invalidate();
 		}
 		public void SetObjectVisibility(Type objectType, bool visible)
 		{
-			string objectTypeId = objectType.GetTypeId();
-			if (visible)
-			{
-				if (this.objectVisibility.Add(objectTypeId))
-				{
-					this.objectVisibilityCache.Clear();
-					this.RenderableControl.Invalidate();
-				}
-			}
-			else
-			{
-				if (this.objectVisibility.Remove(objectTypeId))
-				{
-					this.objectVisibilityCache.Clear();
-					this.RenderableControl.Invalidate();
-				}
-			}
-		}
-		private void UpdateObjectVisibilityCache()
-		{
-			if (this.objectVisibilityCache.Count == 0 && this.objectVisibility.Count > 0)
-			{
-				this.objectVisibilityCache.Clear();
-				foreach (string typeId in this.objectVisibility)
-				{
-					Type type = ReflectionHelper.ResolveType(typeId);
-					if (type != null) this.objectVisibilityCache.Add(type);
-				}
-			}
+			if (this.objectVisibility.SetTypeMatches(objectType, visible))
+				this.RenderableControl.Invalidate();
 		}
 
 		public void MakeDualityTarget()
@@ -1042,20 +1004,8 @@ namespace Duality.Editor.Plugins.CamView
 		{
 			GameObject obj = (r as Component).GameObj;
 
-			if (this.objectVisibility.Count > 0)
-			{
-				this.UpdateObjectVisibilityCache();
-				bool match = false;
-				foreach (Type type in this.objectVisibilityCache)
-				{
-					if (obj.GetComponent(type) != null)
-					{
-						match = true;
-						break;
-					}
-				}
-				if (!match) return false;
-			}
+			if (!this.objectVisibility.Matches(obj))
+				return false;
 
 			DesignTimeObjectData data = DesignTimeObjectData.Get(obj);
 			return !data.IsHidden;
@@ -1356,7 +1306,7 @@ namespace Duality.Editor.Plugins.CamView
 		}
 		private void DualityApp_DiscardPluginData(object sender, EventArgs e)
 		{
-			this.objectVisibilityCache.Clear();
+			this.objectVisibility.ClearTypeCache();
 		}
 		private void DualityEditorApp_Terminating(object sender, EventArgs e)
 		{
