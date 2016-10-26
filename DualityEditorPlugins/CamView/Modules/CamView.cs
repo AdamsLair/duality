@@ -558,7 +558,7 @@ namespace Duality.Editor.Plugins.CamView
 
 			typesWithCount = (
 				from typeInfo in typesWithCount
-				where typeInfo.Count > 0
+				where (typeInfo.Count > 0 || (this.objectVisibility != null && this.objectVisibility.Contains(typeInfo.Type)))
 				orderby typeInfo.Count descending
 				select typeInfo
 				).ToArray();
@@ -594,7 +594,7 @@ namespace Duality.Editor.Plugins.CamView
 				typeItem.Checkable = true;
 				typeItem.Checked = this.objectVisibility != null && this.objectVisibility.Contains(typeInfo.Type);
 				typeItem.ActionHandler = this.objectVisibilitySelector_ItemPerformAction;
-
+				
 				index++;
 			}
 			if (hierarchial)
