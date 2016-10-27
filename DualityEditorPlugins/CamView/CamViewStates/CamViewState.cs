@@ -60,7 +60,7 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		private FormattedText statusText             = new FormattedText();
 		private FormattedText actionText             = new FormattedText();
 		private List<Type>    lastActiveLayers       = new List<Type>();
-		private List<Type>    lastObjVisibility      = new List<Type>();
+		private List<string>  lastObjVisibility      = new List<string>();
 		private int           renderFrameLast        = -1;
 		private bool          renderFrameScheduled   = false;
 
@@ -302,9 +302,9 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				node.Add(activeLayersNode);
 
 			XElement objVisibilityNode = new XElement("ObjectVisibility");
-			foreach (Type t in this.lastObjVisibility)
+			foreach (string typeId in this.lastObjVisibility)
 			{
-				XElement typeEntry = new XElement("Item", t.GetTypeId());
+				XElement typeEntry = new XElement("Item", typeId);
 				objVisibilityNode.Add(typeEntry);
 			}
 			if (!objVisibilityNode.IsEmpty)
@@ -329,8 +329,10 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 				this.lastObjVisibility.Clear();
 				foreach (XElement typeNode in objVisibilityNode.Elements("Item"))
 				{
+					// Try to resolve the type. If it's successful, keep its type ID.
+					// This will also correct renamed types if resolving invokes an error handler.
 					Type type = ReflectionHelper.ResolveType(typeNode.Value);
-					if (type != null) this.lastObjVisibility.Add(type);
+					if (type != null) this.lastObjVisibility.Add(type.GetTypeId());
 				}
 			}
 
@@ -580,17 +582,29 @@ namespace Duality.Editor.Plugins.CamView.CamViewStates
 		{
 			this.View.SetActiveLayers(this.lastActiveLayers);
 		}
-		protected void SetDefaultObjectVisibility(params Type[] activeLayers)
+		protected void SetDefaultObjectVisibility(params Type[] visibleObjectTypes)
 		{
-			this.lastObjVisibility = activeLayers.ToList();
+			this.lastObjVisibility.Clear();
+			foreach (Type type in visibleObjectTypes)
+			{
+				this.lastObjVisibility.Add(type.GetTypeId());
+			}
 		}
 		protected void SaveObjectVisibility()
 		{
-			this.lastObjVisibility = this.View.ObjectVisibility.ToList();
+			this.lastObjVisibility.Clear();
+			foreach (Type type in this.View.ObjectVisibility)
+			{
+				this.lastObjVisibility.Add(type.GetTypeId());
+			}
 		}
 		protected void RestoreObjectVisibility()
 		{
-			this.View.SetObjectVisibility(this.lastObjVisibility);
+			IEnumerable<Type> resolvedTypes = 
+				this.lastObjVisibility
+				.Select(typeId => ReflectionHelper.ResolveType(typeId))
+				.NotNull();
+			this.View.SetObjectVisibility(resolvedTypes);
 		}
 		
 		protected void CollectLayerDrawcalls(Canvas canvas)
