@@ -54,14 +54,32 @@ namespace Duality.Editor.Controls.TreeModels.TypeHierarchy
 		private void InitAssemblyCache()
 		{
 			if (this.assemblies != null) return;
-			this.assemblies = 
-				DualityApp.GetDualityAssemblies()
-				.Concat(DualityApp.GetDualityAssemblies().SelectMany(a => a.GetReferencedAssemblies().Select(n => Assembly.Load(n))))
-				.Distinct()
+
+			// Retrieve a list of all loaded, non-disposed Assemblies
+			Assembly[] loadedAssemblies = 
+				DualityApp.PluginLoader.LoadedAssemblies
 				.Where(a => !DualityApp.PluginManager.DisposedPlugins.Contains(a))
 				.ToArray();
+
+			// Aggregate selectable assemblies based on Duality core Assemblies and their dependencies
+			HashSet<Assembly> selectableAssemblies = new HashSet<Assembly>();
+			foreach (Assembly coreAssembly in DualityApp.GetDualityAssemblies())
+			{
+				selectableAssemblies.Add(coreAssembly);
+
+				AssemblyName[] referencedAssemblies = coreAssembly.GetReferencedAssemblies();
+				foreach (AssemblyName reference in referencedAssemblies)
+				{
+					string shortName = reference.GetShortAssemblyName();
+					Assembly dependency = loadedAssemblies.FirstOrDefault(a => a.GetShortAssemblyName() == shortName);
+					if (dependency != null)
+						selectableAssemblies.Add(dependency);
+				}
+			}
+
+			this.assemblies = selectableAssemblies.ToArray();
 			this.namespaces = this.assemblies
-				.SelectMany(a => a.GetExportedTypes())
+				.SelectMany(a => { try { return a.GetExportedTypes(); } catch (Exception) { return new Type[0]; } })
 				.Select(t => t.Namespace)
 				.Distinct()
 				.Where(n => !string.IsNullOrEmpty(n))
