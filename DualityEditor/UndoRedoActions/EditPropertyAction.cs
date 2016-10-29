@@ -53,6 +53,13 @@ namespace Duality.Editor.UndoRedoActions
 			if (castAction.targetProperty != this.targetProperty) return false;
 			if (!castAction.targetObj.SequenceEqual(this.targetObj)) return false;
 
+			// If we're using an indexer, make sure both actions do and use the same indices
+			if (castAction.targetIndices != null || this.targetIndices != null)
+			{
+				if (castAction.targetIndices == null || this.targetIndices == null) return false;
+				if (!castAction.targetIndices.SequenceEqual(this.targetIndices)) return false;
+			}
+
 			return true;
 		}
 		public override void Append(UndoRedoAction action, bool performAction)
