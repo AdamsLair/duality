@@ -380,32 +380,31 @@ namespace Duality.Editor.Plugins.Tilemaps
 				ContentRef<Tileset> tilesetRef = resRef.As<Tileset>();
 				Tileset tileset = tilesetRef.Res;
 				
-				// A Tileset was modified for which we scheduled an auto-apply / recompile
-				if (tileset.HasChangedSinceCompile && this.recompileOnChange.Remove(tilesetRef))
+				if (tileset != null)
 				{
-					tileset.Compile();
-				}
-
-				// Since we're able to edit tilesets without applying changes yet,
-				// we'll check whether there are new compiled changes. Don't update
-				// stuff unnecessarily if the changes aren't compiled yet anyway.
-				bool appliedTilesetChanges = 
-					tileset != null && 
-					tileset.Compiled && 
-					!tileset.HasChangedSinceCompile;
-				
-				if (appliedTilesetChanges)
-				{
-					foreach (Tilemap tilemap in Scene.Current.FindComponents<Tilemap>())
+					// A Tileset was modified for which we scheduled an auto-apply / recompile
+					if (tileset.HasChangedSinceCompile && this.recompileOnChange.Remove(tilesetRef))
 					{
-						// Early-out for unaffected tilemaps
-						if (tilemap.Tileset != tilesetRef) continue;
+						tileset.Compile();
+					}
 
-						// Notify every Component that is interested about changes using
-						// a trick: Since they will almost certainly be subscribed to
-						// tilemap changes anyway, pretend to change the entire tilemap.
-						tilemap.BeginUpdateTiles();
-						tilemap.EndUpdateTiles();
+					// Since we're able to edit tilesets without applying changes yet,
+					// we'll check whether there are new compiled changes. Don't update
+					// stuff unnecessarily if the changes aren't compiled yet anyway.
+					bool appliedTilesetChanges = tileset.Compiled && !tileset.HasChangedSinceCompile;
+					if (appliedTilesetChanges)
+					{
+						foreach (Tilemap tilemap in Scene.Current.FindComponents<Tilemap>())
+						{
+							// Early-out for unaffected tilemaps
+							if (tilemap.Tileset != tilesetRef) continue;
+
+							// Notify every Component that is interested about changes using
+							// a trick: Since they will almost certainly be subscribed to
+							// tilemap changes anyway, pretend to change the entire tilemap.
+							tilemap.BeginUpdateTiles();
+							tilemap.EndUpdateTiles();
+						}
 					}
 				}
 			}
