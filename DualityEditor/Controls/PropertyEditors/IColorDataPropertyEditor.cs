@@ -298,14 +298,14 @@ namespace Duality.Editor.Controls.PropertyEditors
 				22,
 				this.ClientRectangle.Height);
 			this.rectCPickButton = new Rectangle(
-				this.ClientRectangle.Right - this.rectCDiagButton.Width - 2 - 22,
+				this.ClientRectangle.Right - this.rectCDiagButton.Width - 22,
 				this.ClientRectangle.Top,
 				22,
 				this.ClientRectangle.Height);
 			this.rectPanel = new Rectangle(
 				this.ClientRectangle.X,
 				this.ClientRectangle.Y,
-				this.ClientRectangle.Width - this.rectCDiagButton.Width - 2 - this.rectCPickButton.Width - 2,
+				this.ClientRectangle.Width - this.rectCDiagButton.Width - this.rectCPickButton.Width - 1,
 				this.ClientRectangle.Height - 1);
 		}
 		
