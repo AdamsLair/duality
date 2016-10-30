@@ -16,6 +16,7 @@ namespace Duality.Editor.Properties
 		public static readonly Bitmap	arrow_undo				= GeneralRes.arrow_undo;
 		public static readonly Bitmap	arrow_redo				= GeneralRes.arrow_redo;
 		public static readonly Bitmap	ColorWheel				= GeneralRes.ColorWheel;
+		public static readonly Bitmap	ColorPick				= GeneralRes.ColorPick; 
 		public static readonly Bitmap	CursorArrow				= GeneralRes.CursorArrow;
 		public static readonly Bitmap	CursorArrowAction		= GeneralRes.CursorArrowAction;
 		public static readonly Bitmap	CursorArrowActionMove	= GeneralRes.CursorArrowActionMove;

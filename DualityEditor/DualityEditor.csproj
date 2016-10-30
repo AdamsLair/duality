@@ -413,6 +413,7 @@
     <EmbeddedResource Include="EmbeddedResources\Class.png" />
     <EmbeddedResource Include="EmbeddedResources\AssetImporter.png" />
     <Content Include="DualityLogoIcon.ico" />
+    <None Include="EmbeddedResources\color_pick.png" />
     <Content Include="EmbeddedResources\namespace.png" />
     <None Include="EmbeddedResources\page_white.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />

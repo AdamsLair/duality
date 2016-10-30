@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 using AdamsLair.WinForms.ColorControls;
 using AdamsLair.WinForms.PropertyEditing;
@@ -21,11 +23,19 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected	ColorPickerDialog	dialog	= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
 		protected	IColorData	value			= null;
 		protected	Rectangle	rectPanel		= Rectangle.Empty;
-		protected	Rectangle	rectButton		= Rectangle.Empty;
-		protected	bool		buttonHovered	= false;
-		protected	bool		buttonPressed	= false;
-		protected	bool		panelHovered	= false;
+		protected	Rectangle	rectCDiagButton	= Rectangle.Empty;
+		protected	Rectangle	rectCPickButton	= Rectangle.Empty;
+		protected	bool		buttonCDiagHovered	= false;
+		protected	bool		buttonCDiagPressed	= false;
+		protected	bool		buttonCPickHovered	= false;
+		protected	bool		buttonCPickPressed	= false;
+		protected	bool		panelHovered		= false;
 		private		Point		panelDragBegin	= Point.Empty;
+		private		IColorData	lastValue		= null;
+
+		private		NativeMethods.LowLevelMouseProc	mouseHook	= null;
+		private		IntPtr							hookPtr		= IntPtr.Zero;
+		private		Bitmap							screenPixel	= new Bitmap(1, 1, PixelFormat.Format32bppArgb);
 
 		public override object DisplayedValue
 		{
@@ -37,27 +47,11 @@ namespace Duality.Editor.Controls.PropertyEditors
 		{
 			this.Height = 22;
 			this.dialog.ColorEdited += this.dialog_ColorEdited;
-		}
 
-		protected override void OnGetValue()
-		{
-			base.OnGetValue();
-			IColorData[] values = this.GetValue().Cast<IColorData>().ToArray();
-
-			this.BeginUpdate();
-			int oldValue = this.value != null ? this.value.ToIntRgba() : -1;
-			if (!values.Any())
-			{
-				this.value = ColorRgba.TransparentBlack;
-			}
-			else
-			{
-				this.value = (IColorData)values.NotNull().FirstOrDefault();
-
-				// No visual appearance of "multiple values" yet - need one?
-			}
-			this.EndUpdate();
-			if (oldValue != (this.value != null ? this.value.ToIntRgba() : -1)) this.Invalidate();
+			
+			// This is needed in order to stop the Garbage Collector
+			// from removing the hook
+			mouseHook = new NativeMethods.LowLevelMouseProc(MouseHookCallback);
 		}
 
 		public void ShowColorDialog()
@@ -78,6 +72,96 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.PerformGetValue();
 		}
 
+		private void StartColorPick()
+		{
+			this.lastValue = this.value;
+			this.hookPtr = NativeMethods.SetWindowsMouseHookEx(this.mouseHook);
+		}
+		private void EndColorPick()
+		{
+			NativeMethods.UnhookWindowsHookEx(this.hookPtr);
+		}
+		private Color GetColorAt(int x, int y)
+		{
+			/* http://stackoverflow.com/questions/1483928/how-to-read-the-color-of-a-screen-pixel */
+			using (Graphics gdest = Graphics.FromImage(this.screenPixel))
+			{
+				using (Graphics gsrc = Graphics.FromHwnd(IntPtr.Zero))
+				{
+					IntPtr hSrcDC = gsrc.GetHdc();
+					IntPtr hDC = gdest.GetHdc();
+					int retval = NativeMethods.BitBlt(hDC, 0, 0, 1, 1, hSrcDC, x, y, (int)CopyPixelOperation.SourceCopy);
+					gdest.ReleaseHdc();
+					gsrc.ReleaseHdc();
+				}
+			}
+			return this.screenPixel.GetPixel(0, 0);
+		}
+		private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+		{
+			bool mouseDownUp = false;
+
+			if (nCode >= 0)
+			{
+				NativeMethods.LowLevelHookStruct hookStruct = (NativeMethods.LowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(NativeMethods.LowLevelHookStruct));
+
+				if (NativeMethods.MouseMessages.WM_MOUSEMOVE == (NativeMethods.MouseMessages)wParam)
+				{
+					this.value = this.GetColorAt(hookStruct.pt.x, hookStruct.pt.y).ToDualityRgba();
+					this.PerformSetValue();
+					this.PerformGetValue();
+				}
+				
+				if (NativeMethods.MouseMessages.WM_LBUTTONDOWN == (NativeMethods.MouseMessages)wParam ||
+					NativeMethods.MouseMessages.WM_RBUTTONDOWN == (NativeMethods.MouseMessages)wParam)
+				{
+					mouseDownUp = true;
+				}
+
+				if (NativeMethods.MouseMessages.WM_LBUTTONUP == (NativeMethods.MouseMessages)wParam ||
+					NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam)
+				{
+					mouseDownUp = true;
+					this.EndColorPick();
+
+					if (NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam) 
+						this.ResetValue();
+				}
+			}
+
+			return mouseDownUp ? NativeMethods.SUPPRESS_OTHER_HOOKS : NativeMethods.CallNextHookEx(hookPtr, nCode, wParam, lParam);
+		}
+
+		private void ResetValue()
+		{
+			if (this.lastValue != null)
+			{
+				this.value = this.lastValue;
+				this.PerformSetValue();
+				this.PerformGetValue();
+			}
+		}
+		
+		protected override void OnGetValue()
+		{
+			base.OnGetValue();
+			IColorData[] values = this.GetValue().Cast<IColorData>().ToArray();
+
+			this.BeginUpdate();
+			int oldValue = this.value != null ? this.value.ToIntRgba() : -1;
+			if (!values.Any())
+			{
+				this.value = ColorRgba.TransparentBlack;
+			}
+			else
+			{
+				this.value = (IColorData)values.NotNull().FirstOrDefault();
+
+				// No visual appearance of "multiple values" yet - need one?
+			}
+			this.EndUpdate();
+			if (oldValue != (this.value != null ? this.value.ToIntRgba() : -1)) this.Invalidate();
+		}
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
@@ -122,19 +206,33 @@ namespace Duality.Editor.Controls.PropertyEditors
 				this.rectPanel.Height - 2);
 			e.Graphics.DrawRectangle(SystemPens.ControlDark, this.rectPanel);
 
-			ButtonState buttonState = ButtonState.Disabled;
+			ButtonState buttonCDiagState = ButtonState.Disabled;
 			if (!this.ReadOnly && this.Enabled)
 			{
-				if (this.buttonPressed)							buttonState = ButtonState.Pressed;
-				else if (this.buttonHovered || this.Focused)	buttonState = ButtonState.Hot;
-				else											buttonState = ButtonState.Normal;
+				if (this.buttonCDiagPressed)                        buttonCDiagState = ButtonState.Pressed;
+				else if (this.buttonCDiagHovered)					buttonCDiagState = ButtonState.Hot;
+				else                                                buttonCDiagState = ButtonState.Normal;
 			}
 			ControlRenderer.DrawButton(
 				e.Graphics, 
-				this.rectButton, 
-				buttonState, 
+				this.rectCDiagButton,
+				buttonCDiagState, 
 				null, 
 				Properties.GeneralResCache.ColorWheel);
+
+			ButtonState buttonCPickState = ButtonState.Disabled;
+			if (!this.ReadOnly && this.Enabled)
+			{
+				if (this.buttonCPickPressed)                        buttonCPickState = ButtonState.Pressed;
+				else if (this.buttonCPickHovered)					buttonCPickState = ButtonState.Hot;
+				else                                                buttonCPickState = ButtonState.Normal;
+			}
+			ControlRenderer.DrawButton(
+				e.Graphics,
+				this.rectCPickButton,
+				buttonCPickState,
+				null,
+				Properties.GeneralResCache.ColorPick);
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -171,11 +269,17 @@ namespace Duality.Editor.Controls.PropertyEditors
 		{
 			base.OnMouseMove(e);
 
-			bool lastButtonHovered = this.buttonHovered;
+			bool lastCDiagButtonHovered = this.buttonCDiagHovered;
+			bool lastCPickButtonHovered = this.buttonCPickHovered;
 			bool lastPanelHovered = this.panelHovered;
-			this.buttonHovered = !this.ReadOnly && this.rectButton.Contains(e.Location);
+			this.buttonCDiagHovered = !this.ReadOnly && this.rectCDiagButton.Contains(e.Location);
+			this.buttonCPickHovered = !this.ReadOnly && this.rectCPickButton.Contains(e.Location);
 			this.panelHovered = this.rectPanel.Contains(e.Location);
-			if (lastButtonHovered != this.buttonHovered || lastPanelHovered != this.panelHovered) this.Invalidate();
+
+			if (lastCDiagButtonHovered != this.buttonCDiagHovered ||
+				lastCPickButtonHovered != this.buttonCPickHovered || 
+				lastPanelHovered != this.panelHovered) 
+				this.Invalidate();
 			
 			if (this.panelDragBegin != Point.Empty)
 			{
@@ -190,17 +294,23 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			base.OnMouseLeave(e);
-			if (this.buttonHovered || this.panelHovered) this.Invalidate();
-			this.buttonHovered = false;
+			if (this.buttonCDiagHovered || this.buttonCPickHovered || this.panelHovered) this.Invalidate();
+			this.buttonCDiagHovered = false;
+			this.buttonCPickHovered = false;
 			this.panelHovered = false;
 			this.panelDragBegin = Point.Empty;
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (this.buttonHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			if (this.buttonCDiagHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
-				this.buttonPressed = true;
+				this.buttonCDiagPressed = true;
+				this.Invalidate();
+			}
+			if (this.buttonCPickHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			{
+				this.buttonCPickPressed = true;
 				this.Invalidate();
 			}
 			else if (this.panelHovered)
@@ -211,10 +321,16 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-			if (this.buttonPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			if (this.buttonCDiagPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
-				if (this.buttonPressed && this.buttonHovered) this.ShowColorDialog();
-				this.buttonPressed = false;
+				if (this.buttonCDiagPressed && this.buttonCDiagHovered) this.ShowColorDialog();
+				this.buttonCDiagPressed = false;
+				this.Invalidate();
+			}
+			if (this.buttonCPickPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			{
+				if (this.buttonCPickPressed && this.buttonCPickHovered) this.StartColorPick();
+				this.buttonCPickPressed = false;
 				this.Invalidate();
 			}
 		}
@@ -249,15 +365,20 @@ namespace Duality.Editor.Controls.PropertyEditors
 		{
 			base.UpdateGeometry();
 
-			this.rectButton = new Rectangle(
+			this.rectCDiagButton = new Rectangle(
 				this.ClientRectangle.Right - 22,
+				this.ClientRectangle.Top,
+				22,
+				this.ClientRectangle.Height);
+			this.rectCPickButton = new Rectangle(
+				this.ClientRectangle.Right - this.rectCDiagButton.Width - 2 - 22,
 				this.ClientRectangle.Top,
 				22,
 				this.ClientRectangle.Height);
 			this.rectPanel = new Rectangle(
 				this.ClientRectangle.X,
 				this.ClientRectangle.Y,
-				this.ClientRectangle.Width - this.rectButton.Width - 2,
+				this.ClientRectangle.Width - this.rectCDiagButton.Width - 2 - this.rectCPickButton.Width - 2,
 				this.ClientRectangle.Height - 1);
 		}
 	}
