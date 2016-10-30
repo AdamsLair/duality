@@ -33,8 +33,8 @@ namespace Duality.Editor.Controls.PropertyEditors
 		private		Point		panelDragBegin	= Point.Empty;
 		private		IColorData	lastValue		= null;
 
-		private		NativeMethods.LowLevelMouseProc	mouseHook   = null;
-		private     IntPtr							hookPtr     = IntPtr.Zero;
+		private		NativeMethods.LowLevelMouseProc	mouseHook	= null;
+		private		IntPtr							hookPtr		= IntPtr.Zero;
 		private		Bitmap							screenPixel	= new Bitmap(1, 1, PixelFormat.Format32bppArgb);
 
 		public override object DisplayedValue
@@ -54,6 +54,94 @@ namespace Duality.Editor.Controls.PropertyEditors
 			mouseHook = new NativeMethods.LowLevelMouseProc(MouseHookCallback);
 		}
 
+		public void ShowColorDialog()
+		{
+			this.dialog.OldColor = (this.value ?? ColorRgba.TransparentBlack).ToSysDrawColor();
+			this.dialog.SelectedColor = this.dialog.OldColor;
+			DialogResult result = this.dialog.ShowDialog(this.ParentGrid);
+
+			this.value = (result == DialogResult.OK) ? this.dialog.SelectedColor.ToDualityRgba() : this.dialog.OldColor.ToDualityRgba();
+			this.PerformSetValue();
+			this.PerformGetValue();
+			this.OnEditingFinished(result == DialogResult.OK ? FinishReason.UserAccept : FinishReason.LostFocus);
+		}
+		private void dialog_ColorEdited(object sender, EventArgs e)
+		{
+			this.value = this.dialog.SelectedColor.ToDualityRgba();
+			this.PerformSetValue();
+			this.PerformGetValue();
+		}
+
+		private void StartColorPick()
+		{
+			this.lastValue = this.value;
+			this.hookPtr = NativeMethods.SetWindowsMouseHookEx(this.mouseHook);
+		}
+		private void EndColorPick()
+		{
+			NativeMethods.UnhookWindowsHookEx(this.hookPtr);
+		}
+		private Color GetColorAt(int x, int y)
+		{
+			/* http://stackoverflow.com/questions/1483928/how-to-read-the-color-of-a-screen-pixel */
+			using (Graphics gdest = Graphics.FromImage(this.screenPixel))
+			{
+				using (Graphics gsrc = Graphics.FromHwnd(IntPtr.Zero))
+				{
+					IntPtr hSrcDC = gsrc.GetHdc();
+					IntPtr hDC = gdest.GetHdc();
+					int retval = NativeMethods.BitBlt(hDC, 0, 0, 1, 1, hSrcDC, x, y, (int)CopyPixelOperation.SourceCopy);
+					gdest.ReleaseHdc();
+					gsrc.ReleaseHdc();
+				}
+			}
+			return this.screenPixel.GetPixel(0, 0);
+		}
+		private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+		{
+			bool mouseDownUp = false;
+
+			if (nCode >= 0)
+			{
+				NativeMethods.LowLevelHookStruct hookStruct = (NativeMethods.LowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(NativeMethods.LowLevelHookStruct));
+
+				if (NativeMethods.MouseMessages.WM_MOUSEMOVE == (NativeMethods.MouseMessages)wParam)
+				{
+					this.value = this.GetColorAt(hookStruct.pt.x, hookStruct.pt.y).ToDualityRgba();
+					this.PerformSetValue();
+					this.PerformGetValue();
+				}
+				
+				if (NativeMethods.MouseMessages.WM_LBUTTONDOWN == (NativeMethods.MouseMessages)wParam ||
+					NativeMethods.MouseMessages.WM_RBUTTONDOWN == (NativeMethods.MouseMessages)wParam)
+				{
+					mouseDownUp = true;
+				}
+
+				if (NativeMethods.MouseMessages.WM_LBUTTONUP == (NativeMethods.MouseMessages)wParam ||
+					NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam)
+				{
+					mouseDownUp = true;
+					this.EndColorPick();
+
+					if (NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam) 
+						this.ResetValue();
+				}
+			}
+
+			return mouseDownUp ? NativeMethods.SUPPRESS_OTHER_HOOKS : NativeMethods.CallNextHookEx(hookPtr, nCode, wParam, lParam);
+		}
+
+		private void ResetValue()
+		{
+			if (this.lastValue != null)
+			{
+				this.value = this.lastValue;
+				this.PerformSetValue();
+				this.PerformGetValue();
+			}
+		}
+		
 		protected override void OnGetValue()
 		{
 			base.OnGetValue();
@@ -74,99 +162,6 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.EndUpdate();
 			if (oldValue != (this.value != null ? this.value.ToIntRgba() : -1)) this.Invalidate();
 		}
-
-		public void ShowColorDialog()
-		{
-			this.dialog.OldColor = (this.value ?? ColorRgba.TransparentBlack).ToSysDrawColor();
-			this.dialog.SelectedColor = this.dialog.OldColor;
-			DialogResult result = this.dialog.ShowDialog(this.ParentGrid);
-
-			this.value = (result == DialogResult.OK) ? this.dialog.SelectedColor.ToDualityRgba() : this.dialog.OldColor.ToDualityRgba();
-			this.PerformSetValue();
-			this.PerformGetValue();
-			this.OnEditingFinished(result == DialogResult.OK ? FinishReason.UserAccept : FinishReason.LostFocus);
-		}
-
-		private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-		{
-			bool mouseDownUp = false;
-
-			if (nCode >= 0)
-			{
-				NativeMethods.LowLevelHookStruct hookStruct = (NativeMethods.LowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(NativeMethods.LowLevelHookStruct));
-
-				if (NativeMethods.MouseMessages.WM_MOUSEMOVE == (NativeMethods.MouseMessages)wParam)
-				{
-					this.value = GetColorAt(hookStruct.pt.x, hookStruct.pt.y).ToDualityRgba();
-					this.PerformSetValue();
-					this.PerformGetValue();
-				}
-				
-				if (NativeMethods.MouseMessages.WM_LBUTTONDOWN == (NativeMethods.MouseMessages)wParam ||
-					NativeMethods.MouseMessages.WM_RBUTTONDOWN == (NativeMethods.MouseMessages)wParam)
-				{
-					mouseDownUp = true;
-				}
-
-				if (NativeMethods.MouseMessages.WM_LBUTTONUP == (NativeMethods.MouseMessages)wParam ||
-					NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam)
-				{
-					mouseDownUp = true;
-					EndColorPick();
-
-					if (NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam) ResetValue();
-				}
-			}
-
-			return mouseDownUp ? NativeMethods.SUPPRESS_OTHER_HOOKS : NativeMethods.CallNextHookEx(hookPtr, nCode, wParam, lParam);
-		}
-
-		private void StartColorPick()
-		{
-			this.lastValue = this.value;
-
-			hookPtr = NativeMethods.SetWindowsMouseHookEx(mouseHook);
-		}
-
-		private void EndColorPick()
-		{
-			NativeMethods.UnhookWindowsHookEx(hookPtr);
-		}
-
-		/* http://stackoverflow.com/questions/1483928/how-to-read-the-color-of-a-screen-pixel */
-		private Color GetColorAt(int x, int y)
-		{
-			using (Graphics gdest = Graphics.FromImage(screenPixel))
-			{
-				using (Graphics gsrc = Graphics.FromHwnd(IntPtr.Zero))
-				{
-					IntPtr hSrcDC = gsrc.GetHdc();
-					IntPtr hDC = gdest.GetHdc();
-					int retval = NativeMethods.BitBlt(hDC, 0, 0, 1, 1, hSrcDC, x, y, (int)CopyPixelOperation.SourceCopy);
-					gdest.ReleaseHdc();
-					gsrc.ReleaseHdc();
-				}
-			}
-			return screenPixel.GetPixel(0, 0);
-		}
-
-		private void ResetValue()
-		{
-			if (this.lastValue != null)
-			{
-				this.value = this.lastValue;
-				this.PerformSetValue();
-				this.PerformGetValue();
-			}
-		}
-
-		private void dialog_ColorEdited(object sender, EventArgs e)
-		{
-			this.value = this.dialog.SelectedColor.ToDualityRgba();
-			this.PerformSetValue();
-			this.PerformGetValue();
-		}
-
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);

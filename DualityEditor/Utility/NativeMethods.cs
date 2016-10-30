@@ -176,7 +176,6 @@ namespace Duality.Editor
 		[DllImport("user32.dll")]
 		public static extern uint MapVirtualKey(uint code, KeyMapType mapType);
 
-		// Copy from screen
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		public static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
 
