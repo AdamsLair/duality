@@ -117,7 +117,6 @@ namespace Duality.Editor
 			this.cursorFormTimer.Tick += this.cursorFormTimer_Tick;
 
 			this.cursorFormTimer.Start();
-			this.cursorForm.Show();
 		}
 		private void DisposePickingWindow()
 		{
@@ -140,6 +139,10 @@ namespace Duality.Editor
 					this.pickedColor = color;
 					this.OnPickedColorChanged();
 				}
+
+				// Display the preview form, if not visible yet
+				if (!this.cursorForm.Visible)
+					this.cursorForm.Show();
 			}
 
 			// Adjust the picking window color
