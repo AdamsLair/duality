@@ -16,7 +16,7 @@ namespace Duality.Editor
 	/// lot better to call an API method once for N files than N times for each 
 	/// file individually.
     /// </summary>
-    public class RecycleBin
+    public static class RecycleBin
     {
         /// <summary>
         /// Send file to recycle bin

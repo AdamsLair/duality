@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 using AdamsLair.WinForms.ColorControls;
 using AdamsLair.WinForms.PropertyEditing;
@@ -21,11 +23,16 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected	ColorPickerDialog	dialog	= new ColorPickerDialog { BackColor = Color.FromArgb(212, 212, 212) };
 		protected	IColorData	value			= null;
 		protected	Rectangle	rectPanel		= Rectangle.Empty;
-		protected	Rectangle	rectButton		= Rectangle.Empty;
-		protected	bool		buttonHovered	= false;
-		protected	bool		buttonPressed	= false;
-		protected	bool		panelHovered	= false;
-		private		Point		panelDragBegin	= Point.Empty;
+		protected	Rectangle	rectCDiagButton	= Rectangle.Empty;
+		protected	Rectangle	rectCPickButton	= Rectangle.Empty;
+		protected	bool		buttonCDiagHovered	= false;
+		protected	bool		buttonCDiagPressed	= false;
+		protected	bool		buttonCPickHovered	= false;
+		protected	bool		buttonCPickPressed	= false;
+		protected	bool		panelHovered		= false;
+		private		Point		panelDragBegin		= Point.Empty;
+		private		IColorData	valueBeforePicking	= null;
+		private		GlobalColorPickOperation	pickingOperation	= null;
 
 		public override object DisplayedValue
 		{
@@ -39,6 +46,29 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.dialog.ColorEdited += this.dialog_ColorEdited;
 		}
 
+		private void ShowColorDialog()
+		{
+			this.dialog.OldColor = (this.value ?? ColorRgba.TransparentBlack).ToSysDrawColor();
+			this.dialog.SelectedColor = this.dialog.OldColor;
+			DialogResult result = this.dialog.ShowDialog(this.ParentGrid);
+
+			this.value = (result == DialogResult.OK) ? this.dialog.SelectedColor.ToDualityRgba() : this.dialog.OldColor.ToDualityRgba();
+			this.PerformSetValue();
+			this.PerformGetValue();
+			this.OnEditingFinished(result == DialogResult.OK ? FinishReason.UserAccept : FinishReason.LostFocus);
+		}
+		private void StartColorPick()
+		{
+			this.valueBeforePicking = this.value;
+
+			if (this.pickingOperation == null)
+				this.pickingOperation = new GlobalColorPickOperation();
+
+			this.pickingOperation.PickedColorChanged += this.pickingOperation_PickedColorChanged;
+			this.pickingOperation.OperationEnded     += this.pickingOperation_OperationEnded;
+			this.pickingOperation.Start();
+		}
+		
 		protected override void OnGetValue()
 		{
 			base.OnGetValue();
@@ -59,25 +89,6 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.EndUpdate();
 			if (oldValue != (this.value != null ? this.value.ToIntRgba() : -1)) this.Invalidate();
 		}
-
-		public void ShowColorDialog()
-		{
-			this.dialog.OldColor = (this.value ?? ColorRgba.TransparentBlack).ToSysDrawColor();
-			this.dialog.SelectedColor = this.dialog.OldColor;
-			DialogResult result = this.dialog.ShowDialog(this.ParentGrid);
-
-			this.value = (result == DialogResult.OK) ? this.dialog.SelectedColor.ToDualityRgba() : this.dialog.OldColor.ToDualityRgba();
-			this.PerformSetValue();
-			this.PerformGetValue();
-			this.OnEditingFinished(result == DialogResult.OK ? FinishReason.UserAccept : FinishReason.LostFocus);
-		}
-		private void dialog_ColorEdited(object sender, EventArgs e)
-		{
-			this.value = this.dialog.SelectedColor.ToDualityRgba();
-			this.PerformSetValue();
-			this.PerformGetValue();
-		}
-
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			base.OnPaint(e);
@@ -122,19 +133,33 @@ namespace Duality.Editor.Controls.PropertyEditors
 				this.rectPanel.Height - 2);
 			e.Graphics.DrawRectangle(SystemPens.ControlDark, this.rectPanel);
 
-			ButtonState buttonState = ButtonState.Disabled;
+			ButtonState buttonCDiagState = ButtonState.Disabled;
 			if (!this.ReadOnly && this.Enabled)
 			{
-				if (this.buttonPressed)							buttonState = ButtonState.Pressed;
-				else if (this.buttonHovered || this.Focused)	buttonState = ButtonState.Hot;
-				else											buttonState = ButtonState.Normal;
+				if (this.buttonCDiagPressed)                        buttonCDiagState = ButtonState.Pressed;
+				else if (this.buttonCDiagHovered)					buttonCDiagState = ButtonState.Hot;
+				else                                                buttonCDiagState = ButtonState.Normal;
 			}
 			ControlRenderer.DrawButton(
 				e.Graphics, 
-				this.rectButton, 
-				buttonState, 
+				this.rectCDiagButton,
+				buttonCDiagState, 
 				null, 
 				Properties.GeneralResCache.ColorWheel);
+
+			ButtonState buttonCPickState = ButtonState.Disabled;
+			if (!this.ReadOnly && this.Enabled)
+			{
+				if (this.buttonCPickPressed)                        buttonCPickState = ButtonState.Pressed;
+				else if (this.buttonCPickHovered)					buttonCPickState = ButtonState.Hot;
+				else                                                buttonCPickState = ButtonState.Normal;
+			}
+			ControlRenderer.DrawButton(
+				e.Graphics,
+				this.rectCPickButton,
+				buttonCPickState,
+				null,
+				Properties.GeneralResCache.ColorPick);
 		}
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
@@ -171,11 +196,17 @@ namespace Duality.Editor.Controls.PropertyEditors
 		{
 			base.OnMouseMove(e);
 
-			bool lastButtonHovered = this.buttonHovered;
+			bool lastCDiagButtonHovered = this.buttonCDiagHovered;
+			bool lastCPickButtonHovered = this.buttonCPickHovered;
 			bool lastPanelHovered = this.panelHovered;
-			this.buttonHovered = !this.ReadOnly && this.rectButton.Contains(e.Location);
+			this.buttonCDiagHovered = !this.ReadOnly && this.rectCDiagButton.Contains(e.Location);
+			this.buttonCPickHovered = !this.ReadOnly && this.rectCPickButton.Contains(e.Location);
 			this.panelHovered = this.rectPanel.Contains(e.Location);
-			if (lastButtonHovered != this.buttonHovered || lastPanelHovered != this.panelHovered) this.Invalidate();
+
+			if (lastCDiagButtonHovered != this.buttonCDiagHovered ||
+				lastCPickButtonHovered != this.buttonCPickHovered || 
+				lastPanelHovered != this.panelHovered) 
+				this.Invalidate();
 			
 			if (this.panelDragBegin != Point.Empty)
 			{
@@ -190,17 +221,23 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected override void OnMouseLeave(EventArgs e)
 		{
 			base.OnMouseLeave(e);
-			if (this.buttonHovered || this.panelHovered) this.Invalidate();
-			this.buttonHovered = false;
+			if (this.buttonCDiagHovered || this.buttonCPickHovered || this.panelHovered) this.Invalidate();
+			this.buttonCDiagHovered = false;
+			this.buttonCPickHovered = false;
 			this.panelHovered = false;
 			this.panelDragBegin = Point.Empty;
 		}
 		protected override void OnMouseDown(MouseEventArgs e)
 		{
 			base.OnMouseDown(e);
-			if (this.buttonHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			if (this.buttonCDiagHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
-				this.buttonPressed = true;
+				this.buttonCDiagPressed = true;
+				this.Invalidate();
+			}
+			if (this.buttonCPickHovered && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			{
+				this.buttonCPickPressed = true;
 				this.Invalidate();
 			}
 			else if (this.panelHovered)
@@ -211,10 +248,16 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected override void OnMouseUp(MouseEventArgs e)
 		{
 			base.OnMouseUp(e);
-			if (this.buttonPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			if (this.buttonCDiagPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
 			{
-				if (this.buttonPressed && this.buttonHovered) this.ShowColorDialog();
-				this.buttonPressed = false;
+				if (this.buttonCDiagPressed && this.buttonCDiagHovered) this.ShowColorDialog();
+				this.buttonCDiagPressed = false;
+				this.Invalidate();
+			}
+			if (this.buttonCPickPressed && (e.Button & MouseButtons.Left) != MouseButtons.None)
+			{
+				if (this.buttonCPickPressed && this.buttonCPickHovered) this.StartColorPick();
+				this.buttonCPickPressed = false;
 				this.Invalidate();
 			}
 		}
@@ -249,16 +292,45 @@ namespace Duality.Editor.Controls.PropertyEditors
 		{
 			base.UpdateGeometry();
 
-			this.rectButton = new Rectangle(
+			this.rectCDiagButton = new Rectangle(
 				this.ClientRectangle.Right - 22,
+				this.ClientRectangle.Top,
+				22,
+				this.ClientRectangle.Height);
+			this.rectCPickButton = new Rectangle(
+				this.ClientRectangle.Right - this.rectCDiagButton.Width - 2 - 22,
 				this.ClientRectangle.Top,
 				22,
 				this.ClientRectangle.Height);
 			this.rectPanel = new Rectangle(
 				this.ClientRectangle.X,
 				this.ClientRectangle.Y,
-				this.ClientRectangle.Width - this.rectButton.Width - 2,
+				this.ClientRectangle.Width - this.rectCDiagButton.Width - 2 - this.rectCPickButton.Width - 2,
 				this.ClientRectangle.Height - 1);
+		}
+		
+		private void dialog_ColorEdited(object sender, EventArgs e)
+		{
+			this.value = this.dialog.SelectedColor.ToDualityRgba();
+			this.PerformSetValue();
+			this.PerformGetValue();
+		}
+		private void pickingOperation_PickedColorChanged(object sender, EventArgs e)
+		{
+			this.value = this.pickingOperation.PickedColor.ToDualityRgba();
+			this.PerformSetValue();
+			this.PerformGetValue();
+		}
+		private void pickingOperation_OperationEnded(object sender, EventArgs e)
+		{
+			if (this.pickingOperation.IsCanceled)
+			{
+				this.value = this.valueBeforePicking;
+				this.PerformSetValue();
+				this.PerformGetValue();
+			}
+			this.pickingOperation.PickedColorChanged -= this.pickingOperation_PickedColorChanged;
+			this.pickingOperation.OperationEnded     -= this.pickingOperation_OperationEnded;
 		}
 	}
 }

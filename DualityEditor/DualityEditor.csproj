@@ -217,6 +217,7 @@
     <Compile Include="Utility\EventArgs\HighlightObjectEventArgs.cs" />
     <Compile Include="Utility\EventArgs\SelectionChangedEventArgs.cs" />
     <Compile Include="Utility\EventArgs\HelpStackChangedEventArgs.cs" />
+    <Compile Include="Utility\GlobalColorPickOperation.cs" />
     <Compile Include="Utility\SelectionChangeReason.cs" />
     <Compile Include="Utility\HighlightMode.cs" />
     <Compile Include="Utility\AutosaveFrequency.cs" />
@@ -413,6 +414,7 @@
     <EmbeddedResource Include="EmbeddedResources\Class.png" />
     <EmbeddedResource Include="EmbeddedResources\AssetImporter.png" />
     <Content Include="DualityLogoIcon.ico" />
+    <None Include="EmbeddedResources\color_pick.png" />
     <Content Include="EmbeddedResources\namespace.png" />
     <None Include="EmbeddedResources\page_white.png" />
     <Content Include="EmbeddedResources\WorkingFolderIcon.ico" />
