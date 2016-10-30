@@ -9,6 +9,10 @@ namespace Duality.Editor
 	{
 		public const int GW_HWNDNEXT = 2; // The next window is below the specified window
 		public const int GW_HWNDPREV = 3; // The previous window is above
+		public const int WH_MOUSE_LL = 14;
+		
+		// https://msdn.microsoft.com/en-us/library/windows/desktop/ms644988(v=vs.85).aspx see Return value
+		public static readonly IntPtr SUPPRESS_OTHER_HOOKS = new IntPtr(1);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct IconInfo
@@ -143,6 +147,19 @@ namespace Duality.Editor
 			public IntPtr dwExtraInfo;
 		}
 
+		public enum MouseMessages
+		{
+			WM_LBUTTONDOWN = 0x0201,
+			WM_LBUTTONUP = 0x0202,
+			WM_MOUSEMOVE = 0x0200,
+			WM_MOUSEWHEEL = 0x020A,
+			WM_RBUTTONDOWN = 0x0204,
+			WM_RBUTTONUP = 0x0205
+		}
+
+		public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+
 		public static bool IsWOW64Process()
 		{
 			return IntPtr.Size == 8;
@@ -179,23 +196,6 @@ namespace Duality.Editor
 		[DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
 		public static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
 
-		#region Global Hooks
-		public delegate IntPtr LowLevelMouseProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-		// https://msdn.microsoft.com/en-us/library/windows/desktop/ms644988(v=vs.85).aspx see Return value
-		public static IntPtr SUPPRESS_OTHER_HOOKS = new IntPtr(1);
-		private const int WH_MOUSE_LL = 14;
-
-		public enum MouseMessages
-		{
-			WM_LBUTTONDOWN = 0x0201,
-			WM_LBUTTONUP = 0x0202,
-			WM_MOUSEMOVE = 0x0200,
-			WM_MOUSEWHEEL = 0x020A,
-			WM_RBUTTONDOWN = 0x0204,
-			WM_RBUTTONUP = 0x0205
-		}
-
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool UnhookWindowsHookEx(IntPtr hhk);
@@ -214,7 +214,6 @@ namespace Duality.Editor
 				}
 			}
 		}
-		#endregion
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern IntPtr GetModuleHandle(string lpModuleName);
