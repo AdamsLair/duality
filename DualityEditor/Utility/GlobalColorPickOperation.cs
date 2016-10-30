@@ -8,6 +8,11 @@ using Microsoft.Win32;
 
 namespace Duality.Editor
 {
+	/// <summary>
+	/// Represents a system-wide color picking operation that allows you to click anywhere
+	/// and pick the color of the pixel at that position. A single <see cref="GlobalColorPickOperation"/>
+	/// object can be used for any number of picking operations.
+	/// </summary>
     public class GlobalColorPickOperation
     {
 		private IntPtr hookPtr     = IntPtr.Zero;
@@ -22,20 +27,30 @@ namespace Duality.Editor
 
 		private NativeMethods.LowLevelMouseProc mouseHook = null;
 		private InteractionFilter interactionFilter = null;
+		private Point pickedCursorPos = Point.Empty;
 		private Point globalCursorPos = Point.Empty;
 
 		public event EventHandler PickedColorChanged = null;
 		public event EventHandler OperationEnded = null;
 
 
+		/// <summary>
+		/// [GET] Whether the picking operation is currently in progress.
+		/// </summary>
 		public bool InProgress
 		{
 			get { return this.active; }
 		}
+		/// <summary>
+		/// [GET] Whether the operation was canceled.
+		/// </summary>
 		public bool IsCanceled
 		{
 			get { return this.canceled; }
 		}
+		/// <summary>
+		/// [GET] The color that was picked at the cursor position.
+		/// </summary>
 		public Color PickedColor
 		{
 			get { return this.pickedColor; }
@@ -48,6 +63,9 @@ namespace Duality.Editor
 			this.mouseHook = this.MouseHookCallback;
 		}
 
+		/// <summary>
+		/// Starts a global picking operation. This will disable some mouse interaction.
+		/// </summary>
 		public void Start()
 		{
 			if (this.active) throw new InvalidOperationException("Can't start picking operation when one is already in progress.");
@@ -56,7 +74,10 @@ namespace Duality.Editor
 			this.InstallGlobalHook();
 			this.DisplayPickingWindow();
 		}
-		public void End()
+		/// <summary>
+		/// Cancels the currently active picking operation.
+		/// </summary>
+		public void Cancel()
 		{
 			this.End(true);
 		}
@@ -92,7 +113,7 @@ namespace Duality.Editor
 			this.cursorForm.Controls.Add(this.cursorFormPanel);
 
 			this.cursorFormTimer = new Timer();
-			this.cursorFormTimer.Interval = 1;
+			this.cursorFormTimer.Interval = 16;
 			this.cursorFormTimer.Tick += this.cursorFormTimer_Tick;
 
 			this.cursorFormTimer.Start();
@@ -110,11 +131,15 @@ namespace Duality.Editor
 		private void cursorFormTimer_Tick(object sender, EventArgs e)
 		{
 			// Pick color from global mouse coordinates
-			Color color = this.GetColorAt(this.globalCursorPos.X, this.globalCursorPos.Y);
-			if (this.pickedColor != color)
+			if (this.pickedCursorPos != this.globalCursorPos)
 			{
-				this.pickedColor = color;
-				this.OnPickedColorChanged();
+				Color color = this.GetColorAt(this.globalCursorPos.X, this.globalCursorPos.Y);
+				if (this.pickedColor != color)
+				{
+					this.pickedCursorPos = this.globalCursorPos;
+					this.pickedColor = color;
+					this.OnPickedColorChanged();
+				}
 			}
 
 			// Adjust the picking window color
