@@ -30,12 +30,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 		protected	bool		buttonCPickHovered	= false;
 		protected	bool		buttonCPickPressed	= false;
 		protected	bool		panelHovered		= false;
-		private		Point		panelDragBegin	= Point.Empty;
-		private		IColorData	lastValue		= null;
-
-		private		NativeMethods.LowLevelMouseProc	mouseHook	= null;
-		private		IntPtr							hookPtr		= IntPtr.Zero;
-		private		Bitmap							screenPixel	= new Bitmap(1, 1, PixelFormat.Format32bppArgb);
+		private		Point		panelDragBegin		= Point.Empty;
+		private		IColorData	valueBeforePicking	= null;
+		private		GlobalColorPickOperation	pickingOperation	= null;
 
 		public override object DisplayedValue
 		{
@@ -47,14 +44,9 @@ namespace Duality.Editor.Controls.PropertyEditors
 		{
 			this.Height = 22;
 			this.dialog.ColorEdited += this.dialog_ColorEdited;
-
-			
-			// This is needed in order to stop the Garbage Collector
-			// from removing the hook
-			mouseHook = new NativeMethods.LowLevelMouseProc(MouseHookCallback);
 		}
 
-		public void ShowColorDialog()
+		private void ShowColorDialog()
 		{
 			this.dialog.OldColor = (this.value ?? ColorRgba.TransparentBlack).ToSysDrawColor();
 			this.dialog.SelectedColor = this.dialog.OldColor;
@@ -65,81 +57,16 @@ namespace Duality.Editor.Controls.PropertyEditors
 			this.PerformGetValue();
 			this.OnEditingFinished(result == DialogResult.OK ? FinishReason.UserAccept : FinishReason.LostFocus);
 		}
-		private void dialog_ColorEdited(object sender, EventArgs e)
-		{
-			this.value = this.dialog.SelectedColor.ToDualityRgba();
-			this.PerformSetValue();
-			this.PerformGetValue();
-		}
-
 		private void StartColorPick()
 		{
-			this.lastValue = this.value;
-			this.hookPtr = NativeMethods.SetWindowsMouseHookEx(this.mouseHook);
-		}
-		private void EndColorPick()
-		{
-			NativeMethods.UnhookWindowsHookEx(this.hookPtr);
-		}
-		private Color GetColorAt(int x, int y)
-		{
-			/* http://stackoverflow.com/questions/1483928/how-to-read-the-color-of-a-screen-pixel */
-			using (Graphics gdest = Graphics.FromImage(this.screenPixel))
-			{
-				using (Graphics gsrc = Graphics.FromHwnd(IntPtr.Zero))
-				{
-					IntPtr hSrcDC = gsrc.GetHdc();
-					IntPtr hDC = gdest.GetHdc();
-					int retval = NativeMethods.BitBlt(hDC, 0, 0, 1, 1, hSrcDC, x, y, (int)CopyPixelOperation.SourceCopy);
-					gdest.ReleaseHdc();
-					gsrc.ReleaseHdc();
-				}
-			}
-			return this.screenPixel.GetPixel(0, 0);
-		}
-		private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-		{
-			bool mouseDownUp = false;
+			this.valueBeforePicking = this.value;
 
-			if (nCode >= 0)
-			{
-				NativeMethods.LowLevelHookStruct hookStruct = (NativeMethods.LowLevelHookStruct)Marshal.PtrToStructure(lParam, typeof(NativeMethods.LowLevelHookStruct));
+			if (this.pickingOperation == null)
+				this.pickingOperation = new GlobalColorPickOperation();
 
-				if (NativeMethods.MouseMessages.WM_MOUSEMOVE == (NativeMethods.MouseMessages)wParam)
-				{
-					this.value = this.GetColorAt(hookStruct.pt.x, hookStruct.pt.y).ToDualityRgba();
-					this.PerformSetValue();
-					this.PerformGetValue();
-				}
-				
-				if (NativeMethods.MouseMessages.WM_LBUTTONDOWN == (NativeMethods.MouseMessages)wParam ||
-					NativeMethods.MouseMessages.WM_RBUTTONDOWN == (NativeMethods.MouseMessages)wParam)
-				{
-					mouseDownUp = true;
-				}
-
-				if (NativeMethods.MouseMessages.WM_LBUTTONUP == (NativeMethods.MouseMessages)wParam ||
-					NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam)
-				{
-					mouseDownUp = true;
-					this.EndColorPick();
-
-					if (NativeMethods.MouseMessages.WM_RBUTTONUP == (NativeMethods.MouseMessages)wParam) 
-						this.ResetValue();
-				}
-			}
-
-			return mouseDownUp ? NativeMethods.SUPPRESS_OTHER_HOOKS : NativeMethods.CallNextHookEx(hookPtr, nCode, wParam, lParam);
-		}
-
-		private void ResetValue()
-		{
-			if (this.lastValue != null)
-			{
-				this.value = this.lastValue;
-				this.PerformSetValue();
-				this.PerformGetValue();
-			}
+			this.pickingOperation.PickedColorChanged += this.pickingOperation_PickedColorChanged;
+			this.pickingOperation.OperationEnded     += this.pickingOperation_OperationEnded;
+			this.pickingOperation.Start();
 		}
 		
 		protected override void OnGetValue()
@@ -380,6 +307,30 @@ namespace Duality.Editor.Controls.PropertyEditors
 				this.ClientRectangle.Y,
 				this.ClientRectangle.Width - this.rectCDiagButton.Width - 2 - this.rectCPickButton.Width - 2,
 				this.ClientRectangle.Height - 1);
+		}
+		
+		private void dialog_ColorEdited(object sender, EventArgs e)
+		{
+			this.value = this.dialog.SelectedColor.ToDualityRgba();
+			this.PerformSetValue();
+			this.PerformGetValue();
+		}
+		private void pickingOperation_PickedColorChanged(object sender, EventArgs e)
+		{
+			this.value = this.pickingOperation.PickedColor.ToDualityRgba();
+			this.PerformSetValue();
+			this.PerformGetValue();
+		}
+		private void pickingOperation_OperationEnded(object sender, EventArgs e)
+		{
+			if (this.pickingOperation.IsCanceled)
+			{
+				this.value = this.valueBeforePicking;
+				this.PerformSetValue();
+				this.PerformGetValue();
+			}
+			this.pickingOperation.PickedColorChanged -= this.pickingOperation_PickedColorChanged;
+			this.pickingOperation.OperationEnded     -= this.pickingOperation_OperationEnded;
 		}
 	}
 }
