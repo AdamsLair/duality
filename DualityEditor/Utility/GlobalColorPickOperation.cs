@@ -20,7 +20,8 @@ namespace Duality.Editor
 		private Panel  cursorFormPanel = null;
 		private Timer  cursorFormTimer = null;
 
-		private NativeMethods.LowLevelMouseProc mouseHook   = null;
+		private NativeMethods.LowLevelMouseProc mouseHook = null;
+		private InteractionFilter interactionFilter = null;
 		private Point globalCursorPos = Point.Empty;
 
 		public event EventHandler PickedColorChanged = null;
@@ -122,11 +123,20 @@ namespace Duality.Editor
 
 		private void InstallGlobalHook()
 		{
+			// We'll install a system global hook to detect mouse movement
+			// and intercept clicks even outside Duality
 			this.hookPtr = NativeMethods.SetWindowsMouseHookEx(this.mouseHook);
+
+			// At the same time, we'll filter all interaction events within
+			// Duality, so the UI doesn't highlight on hover, etc.
+			this.interactionFilter = new InteractionFilter();
+			Application.AddMessageFilter(this.interactionFilter);
 		}
 		private void ReleaseGlobalHook()
 		{
 			NativeMethods.UnhookWindowsHookEx(this.hookPtr);
+			Application.RemoveMessageFilter(this.interactionFilter);
+			this.interactionFilter = null;
 		}
 		private IntPtr MouseHookCallback(int nCode, IntPtr wParam, IntPtr lParam)
 		{
@@ -192,6 +202,20 @@ namespace Duality.Editor
 		{
 			if (this.OperationEnded != null)
 				this.OperationEnded(this, EventArgs.Empty);
+		}
+
+		private class InteractionFilter : IMessageFilter
+		{
+			public bool PreFilterMessage(ref Message m)
+			{
+				if (m.Msg == (int)WindowsMessages.WM_MOUSEMOVE ||
+					m.Msg == (int)WindowsMessages.WM_MOUSELEAVE ||
+					m.Msg == (int)WindowsMessages.WM_MOUSEWHEEL)
+				{
+					return true;
+				}
+				return false;
+			}
 		}
 	}
 }
