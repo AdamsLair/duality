@@ -463,7 +463,7 @@ namespace Duality.Plugins.Tilemaps
 			for (int i = 0; i < tilemaps.Length; i++)
 			{
 				if (tilemaps[i] == null) continue;
-				if (tilemaps[i].Tileset == null) continue;
+				if (tilemaps[i].Tileset.Res == null) continue;
 				tileData[i] = tilemaps[i].Tileset.Res.TileData.Data;
 			}
 			return tileData;
