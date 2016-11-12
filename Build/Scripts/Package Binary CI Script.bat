@@ -1,4 +1,4 @@
-cd %~dp0./../../Other/NightlyBuild/
+cd %~dp0./../../Build/NightlyBuild/
 
 :: delete old nupkg files, so failed packages don't generate artifacts
 for /r %%i in (NuGetPackages\*.nupkg) do del %%i

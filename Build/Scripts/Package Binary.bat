@@ -1,2 +1,2 @@
-cd %~dp0./../../Other/NightlyBuild/
+cd %~dp0./../../Build/NightlyBuild/
 NightlyBuilder.exe
