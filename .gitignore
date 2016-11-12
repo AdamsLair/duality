@@ -2,9 +2,9 @@
 *.shfbproj_*
 *.csproj.user
 *.vshost.*
-*/obj/*
-*/bin/*
-*/Backup/*
+obj/
+bin/
+Backup/
 */Thumbs.db
 */logfile.txt
 */perflog.txt
@@ -19,4 +19,4 @@
 */Data/desktop.ini
 */Data/WorkingFolderIcon.ico
 
-!*/Build/Scripts/bin/*
+!Build/Scripts/bin/
