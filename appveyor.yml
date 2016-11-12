@@ -13,6 +13,9 @@ skip_tags: true
 platform: Any CPU
 configuration: Release
 
+before_build:
+  - nuget restore
+  
 build:
   project: Duality.sln
   verbosity: minimal
