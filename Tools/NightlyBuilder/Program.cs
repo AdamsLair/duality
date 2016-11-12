@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.IO.Compression;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -13,8 +14,6 @@ using Microsoft.Win32;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Logging;
 using Microsoft.Build.Framework;
-
-using Ionic.Zip;
 
 namespace NightlyBuilder
 {
@@ -274,10 +273,21 @@ namespace NightlyBuilder
 				if (!Directory.Exists(config.PackageDir))
 					Directory.CreateDirectory(config.PackageDir);
 
-				ZipFile package = new ZipFile();
 				string[] files = Directory.GetFiles(config.IntermediateTargetDir, "*", SearchOption.AllDirectories);
-				package.AddFiles(files);
-				package.Save(packagePath);
+				using (FileStream packageStream = File.Open(packagePath, FileMode.Create))
+				using (ZipArchive archive = new ZipArchive(packageStream, ZipArchiveMode.Create, true))
+				{
+					foreach (string filePath in files)
+					{                    
+						ZipArchiveEntry fileEntry = archive.CreateEntry(filePath);
+						using (Stream entryStream = fileEntry.Open())
+						using (BinaryWriter entryWriter = new BinaryWriter(entryStream))
+						{
+							byte[] fileData = File.ReadAllBytes(filePath);
+							entryWriter.Write(fileData);
+						}
+					}
+				}
 			}
 			Console.WriteLine("===============================================================================");
 			Console.WriteLine();

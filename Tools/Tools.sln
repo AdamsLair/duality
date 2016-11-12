@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NightlyBuilder", "NightlyBu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionUpdater", "VersionUpdater\VersionUpdater.csproj", "{013AC6D1-F420-4039-A6AC-8AEF177601FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityDebugging", "VisualStudio\DualityDebugging\DualityDebugging.csproj", "{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DualityDebuggingTest", "VisualStudio\DualityDebuggingTest\DualityDebuggingTest.csproj", "{7FA1C4E4-626E-476A-84A5-DEB9A7D83377}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VisualStudio", "VisualStudio", "{EF556CD2-3208-40B5-AF2E-D9145ACE102E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +27,20 @@ Global
 		{013AC6D1-F420-4039-A6AC-8AEF177601FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{013AC6D1-F420-4039-A6AC-8AEF177601FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{013AC6D1-F420-4039-A6AC-8AEF177601FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{238DDEBC-D828-4FF8-92EC-7B29315D4EC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FA1C4E4-626E-476A-84A5-DEB9A7D83377}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FA1C4E4-626E-476A-84A5-DEB9A7D83377}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FA1C4E4-626E-476A-84A5-DEB9A7D83377}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FA1C4E4-626E-476A-84A5-DEB9A7D83377}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{238DDEBC-D828-4FF8-92EC-7B29315D4EC3} = {EF556CD2-3208-40B5-AF2E-D9145ACE102E}
+		{7FA1C4E4-626E-476A-84A5-DEB9A7D83377} = {EF556CD2-3208-40B5-AF2E-D9145ACE102E}
 	EndGlobalSection
 EndGlobal

@@ -35,6 +35,12 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Duality">
+      <HintPath>..\..\..\Source\Core\Duality\bin\Debug\Duality.dll</HintPath>
+    </Reference>
+    <Reference Include="DualityPrimitives">
+      <HintPath>..\..\..\Source\Core\Duality\bin\Debug\DualityPrimitives.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -71,16 +77,6 @@
     <Compile Include="TextureVisualizer.cs" />
     <Compile Include="PixmapVisualizer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\DualityPrimitives\DualityPrimitives.csproj">
-      <Project>{c87a6a2f-e537-48fa-a789-3c54cf29cc09}</Project>
-      <Name>DualityPrimitives</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Duality\Duality.csproj">
-      <Project>{D821AFB9-BCC9-4025-9A9C-798E2BC546AB}</Project>
-      <Name>Duality</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="BitmapView.resx">
