@@ -6,7 +6,7 @@
   <AdditionalFileDir>AdditionalFiles</AdditionalFileDir>
   <NUnitBinDir>..\..\packages\NUnit.Runners.2.6.4\tools</NUnitBinDir>
   <UnitTestProjectDir>..\..\UnitTesting\</UnitTestProjectDir>
-  <NuGetPath>..\..\.nuget\NuGet.exe</NuGetPath>
+  <NuGetPath>nuget.exe</NuGetPath>
   <NuGetPackageSpecsDir>..\..\NuGetPackageSpecs</NuGetPackageSpecsDir>
   <NuGetPackageTargetDir>NuGetPackages</NuGetPackageTargetDir>
   <IntermediateTargetDir>Duality</IntermediateTargetDir>

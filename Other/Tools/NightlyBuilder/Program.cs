@@ -47,27 +47,31 @@ namespace NightlyBuilder
 				configOverride.Add(prop);
 			}
 
-			// Write some initial data
-			Console.WriteLine("===================================== Init ====================================");
-			{
-				Console.WriteLine("NightlyBuilder launched");
-				Console.WriteLine("Working Dir: {0}", Environment.CurrentDirectory);
-				Console.WriteLine("Command Line: {0}", args.Aggregate("", (acc, arg) => acc + " " + arg));
-				Console.WriteLine("Config:");
-				foreach (PropertyInfo prop in configProps)
-				{
-					if (configOverride.Contains(prop))
-						Console.ForegroundColor = ConsoleColor.White;
-					Console.WriteLine("  {0}: {1}", prop.Name, prop.GetValue(config, null));
-					Console.ForegroundColor = ConsoleColor.Gray;
-				}
-			}
-			Console.WriteLine("===============================================================================");
-			Console.WriteLine();
-			Console.WriteLine();
-
 			try
 			{
+				// Resolve tool paths
+				config.NuGetPath = FindToolPath(config.NuGetPath);
+
+				// Write some initial data
+				Console.WriteLine("===================================== Init ====================================");
+				{
+					Console.WriteLine("NightlyBuilder launched");
+					Console.WriteLine("Working Dir: {0}", Environment.CurrentDirectory);
+					Console.WriteLine("Command Line: {0}", args.Aggregate("", (acc, arg) => acc + " " + arg));
+					Console.WriteLine("Config:");
+					foreach (PropertyInfo prop in configProps)
+					{
+						if (configOverride.Contains(prop))
+							Console.ForegroundColor = ConsoleColor.White;
+						Console.WriteLine("  {0}: {1}", prop.Name, prop.GetValue(config, null));
+						Console.ForegroundColor = ConsoleColor.Gray;
+					}
+				}
+				Console.WriteLine("===============================================================================");
+				Console.WriteLine();
+				Console.WriteLine();
+
+				// Run the build
 				PerformNightlyBuild(config);
 			}
 			catch (Exception e)
@@ -416,6 +420,22 @@ namespace NightlyBuilder
 				Console.ReadLine();
 		}
 
+		public static string FindToolPath(string preferredPath)
+		{
+			if (string.IsNullOrEmpty(preferredPath)) return preferredPath;
+			if (File.Exists(preferredPath)) return preferredPath;
+
+			string fileName = Path.GetFileName(preferredPath);
+			string[] paths = (Environment.GetEnvironmentVariable("PATH") ?? "").Split(';');
+			foreach (string path in paths)
+			{
+				string toolPathCandidate = Path.Combine(path, fileName);
+				if (File.Exists(toolPathCandidate))
+					return toolPathCandidate;
+			}
+
+			return preferredPath;
+		}
 		public static string WildcardToRegex(string pattern)
 		{
 			return "^" + Regex.Escape(pattern).
